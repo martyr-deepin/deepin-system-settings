@@ -38,7 +38,7 @@ class ActionBar(gtk.Alignment):
         # Init.
         gtk.Alignment.__init__(self)
         self.set(0.5, 0.5, 1, 1)
-        self.set_padding(0, 0, 2, 2)
+        self.set_padding(0, 0, 0, 0)
         self.set_size_request(-1, 36)
 
         # Init action box.
@@ -94,7 +94,7 @@ class ActionBar(gtk.Alignment):
         x, y, w, h = rect.x, rect.y, rect.width, rect.height
 
         cr.set_source_rgba(1, 1, 1, 0.7)
-        cr.rectangle(x + 2, y, w - 4, h)
+        cr.rectangle(x, y, w, h)
         cr.fill()
 
 gobject.type_register(ActionBar)

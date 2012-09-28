@@ -49,6 +49,9 @@ if __name__ == "__main__":
         )
     
     # Init main box.
+    main_align = gtk.Alignment()
+    main_align.set(0.5, 0.5, 1, 1)
+    main_align.set_padding(0, 2, 2, 2)
     main_box = gtk.VBox()
     body_box = gtk.VBox()
     
@@ -62,6 +65,7 @@ if __name__ == "__main__":
     body_box.pack_start(navigate_panel, True, True)
     main_box.pack_start(action_bar, False, False)
     main_box.pack_start(body_box, True, True)
-    application.main_box.pack_start(main_box)
+    main_align.add(main_box)
+    application.main_box.pack_start(main_align)
     
     application.run()

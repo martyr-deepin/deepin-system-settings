@@ -47,7 +47,7 @@ class NavigatePanel(gtk.Alignment):
         
         # Init widgets.
         self.set(0.5, 0.5, 1, 1)
-        self.set_padding(50, 0, 2, 2)
+        self.set_padding(50, 0, 0, 0)
         self.layout = gtk.VBox()        
         self.first_iconview = IconView(20)
         self.second_iconview = IconView(20)
@@ -95,9 +95,9 @@ class NavigatePanel(gtk.Alignment):
         cr = widget.window.cairo_create()
         rect = widget.allocation
 
-        self.draw_mask(cr, rect.x, rect.y, rect.width, rect.height, 2, 2)
+        self.draw_mask(cr, rect.x, rect.y, rect.width, rect.height)
             
-    def draw_mask(self, cr, x, y, w, h, padding_x=0, offset_y=0):
+    def draw_mask(self, cr, x, y, w, h):
         '''
         Draw mask interface.
         
@@ -108,7 +108,7 @@ class NavigatePanel(gtk.Alignment):
         @param h: Height of draw area.
         '''
         cr.set_source_rgba(1, 1, 1, 0.7)
-        cr.rectangle(x + padding_x, y, w - padding_x * 2, h - offset_y)
+        cr.rectangle(x, y, w, h)
         cr.fill()
         
 gobject.type_register(NavigatePanel)
@@ -170,15 +170,24 @@ class IconItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
+        # Init size.
         icon_width = self.icon_pixbuf.get_width()
         icon_height = self.icon_pixbuf.get_height()
         
+        # Draw background.
+        if self.hover_flag:
+            cr.set_source_rgb(1, 0.5, 0.5)
+            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+            cr.fill()
+        
+        # Draw icon.
         draw_pixbuf(
             cr, 
             self.icon_pixbuf,
             rect.x + (rect.width - icon_width) / 2,
             rect.y + self.icon_padding_y)
         
+        # Draw icon name.
         draw_text(cr, self.module_name, 
                   rect.x, 
                   rect.y + self.icon_padding_y + icon_height + self.name_padding_y,
