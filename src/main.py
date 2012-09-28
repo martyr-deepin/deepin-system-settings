@@ -20,21 +20,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir
-import os
-
-app_theme = init_skin(
-    "deepin-ui-demo", 
-    "1.0",
-    "01",
-    os.path.join(get_parent_dir(__file__, 2), "skin"),
-    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
-    )
-
+from theme import app_theme
 from dtk.ui.application import Application
-
+from action_bar import ActionBar
 from navigate_panel import NavigatePanel
+import gtk
 
 if __name__ == "__main__":
     # Init application.
@@ -42,6 +32,7 @@ if __name__ == "__main__":
 
     # Set application default size.
     application.set_default_size(846, 547)
+    application.window.set_resizable(False)
 
     # Set application icon.
     application.set_icon(app_theme.get_pixbuf("icon.ico"))
@@ -51,14 +42,26 @@ if __name__ == "__main__":
     
     # Add titlebar.
     application.add_titlebar(
-        ["theme", "max", "min", "close"], 
+        ["theme", "min", "close"], 
         app_theme.get_pixbuf("logo.png"), 
         None,
         "系统设置",
         )
     
-    # Add navigate panel.
+    # Init main box.
+    main_box = gtk.VBox()
+    body_box = gtk.VBox()
+    
+    # Init action bar.
+    action_bar = ActionBar()
+    
+    # Init navigate panel.
     navigate_panel = NavigatePanel()
-    application.main_box.pack_start(navigate_panel)
+    
+    # Connect widgets.
+    body_box.pack_start(navigate_panel, True, True)
+    main_box.pack_start(action_bar, False, False)
+    main_box.pack_start(body_box, True, True)
+    application.main_box.pack_start(main_box)
     
     application.run()

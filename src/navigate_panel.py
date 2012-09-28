@@ -47,7 +47,7 @@ class NavigatePanel(gtk.Alignment):
         
         # Init widgets.
         self.set(0.5, 0.5, 1, 1)
-        self.set_padding(0, 0, 2, 2)
+        self.set_padding(50, 0, 2, 2)
         self.layout = gtk.VBox()        
         self.first_iconview = IconView(20)
         self.second_iconview = IconView(20)
@@ -73,6 +73,12 @@ class NavigatePanel(gtk.Alignment):
         self.add_modules(self.second_modules, self.second_iconview, self.second_iconview_scrolledwindow)
         self.add_modules(self.third_modules, self.third_iconview, self.third_iconview_scrolledwindow)
         self.add_modules(self.extend_modules, self.extend_iconview, self.extend_iconview_scrolledwindow)
+        
+        self.first_iconview.draw_mask = self.draw_mask
+        self.second_iconview.draw_mask = self.draw_mask
+        self.third_iconview.draw_mask = self.draw_mask
+        self.extend_iconview.draw_mask = self.draw_mask
+        self.connect("expose-event", self.expose_navigate_panel)
             
     def add_modules(self, modules, icon_view, scrolled_window):
         if len(modules) > 0:    
@@ -84,6 +90,26 @@ class NavigatePanel(gtk.Alignment):
             scrolled_window.add_child(icon_view)
             scrolled_window.set_size_request(-1, ICON_SIZE)
             self.layout.pack_start(scrolled_window, False, False)
+            
+    def expose_navigate_panel(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        self.draw_mask(cr, rect.x, rect.y, rect.width, rect.height, 2, 2)
+            
+    def draw_mask(self, cr, x, y, w, h, padding_x=0, offset_y=0):
+        '''
+        Draw mask interface.
+        
+        @param cr: Cairo context.
+        @param x: X coordiante of draw area.
+        @param y: Y coordiante of draw area.
+        @param w: Width of draw area.
+        @param h: Height of draw area.
+        '''
+        cr.set_source_rgba(1, 1, 1, 0.7)
+        cr.rectangle(x + padding_x, y, w - padding_x * 2, h - offset_y)
+        cr.fill()
         
 gobject.type_register(NavigatePanel)
 
