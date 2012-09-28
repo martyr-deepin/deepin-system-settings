@@ -33,7 +33,6 @@ app_theme = init_skin(
     )
 
 from dtk.ui.application import Application
-from dtk.ui.constant import DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT
 
 from navigate_panel import NavigatePanel
 
@@ -42,7 +41,7 @@ if __name__ == "__main__":
     application = Application()
 
     # Set application default size.
-    application.set_default_size(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)
+    application.set_default_size(846, 547)
 
     # Set application icon.
     application.set_icon(app_theme.get_pixbuf("icon.ico"))

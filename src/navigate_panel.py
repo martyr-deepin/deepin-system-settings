@@ -30,7 +30,9 @@ import gtk
 import gobject
 import os
 
-class NavigatePanel(ScrolledWindow):
+ICON_SIZE = 106
+
+class NavigatePanel(gtk.Alignment):
     '''
     class docs
     '''
@@ -40,26 +42,24 @@ class NavigatePanel(ScrolledWindow):
         init docs
         '''
         # Init.
-        ScrolledWindow.__init__(self, 0, 0)
+        gtk.Alignment.__init__(self)
         self.module_dir = os.path.join(os.path.dirname(__file__), "modules")        
         
         # Init widgets.
-        self.align = gtk.Alignment()
-        self.align.set(0.5, 0.5, 1, 1)
-        self.align.set_padding(0, 0, 2, 2)
+        self.set(0.5, 0.5, 1, 1)
+        self.set_padding(0, 0, 2, 2)
         self.layout = gtk.VBox()        
-        self.first_iconview = IconView()
-        self.second_iconview = IconView()
-        self.third_iconview = IconView()
-        self.extend_iconview = IconView()
+        self.first_iconview = IconView(20)
+        self.second_iconview = IconView(20)
+        self.third_iconview = IconView(20)
+        self.extend_iconview = IconView(20)
         self.first_iconview_scrolledwindow = ScrolledWindow()
         self.second_iconview_scrolledwindow = ScrolledWindow()
         self.third_iconview_scrolledwindow = ScrolledWindow()
         self.extend_iconview_scrolledwindow = ScrolledWindow()
         
         # Connect widgets.
-        self.add_child(self.align)
-        self.align.add(self.layout)
+        self.add(self.layout)
         
         # Init icon lists.
         self.all_modules = filter(lambda module_name: os.path.isdir(os.path.join(self.module_dir, module_name)), os.listdir(self.module_dir))        
@@ -82,7 +82,8 @@ class NavigatePanel(ScrolledWindow):
             
             icon_view.add_items(items)    
             scrolled_window.add_child(icon_view)
-            self.layout.pack_start(scrolled_window, True, True)
+            scrolled_window.set_size_request(-1, ICON_SIZE)
+            self.layout.pack_start(scrolled_window, False, False)
         
 gobject.type_register(NavigatePanel)
 
@@ -108,6 +109,8 @@ class IconItem(gobject.GObject):
         self.module_config.load()
         self.module_name = self.module_config.get("name", "zh_CN")
         self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.module_path, self.module_config.get("icon", "icon")))
+        self.icon_padding_y = 21
+        self.name_padding_y = 8
         self.hover_flag = False
         self.highlight_flag = False
         
@@ -125,7 +128,7 @@ class IconItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        return 100
+        return ICON_SIZE
         
     def get_height(self):
         '''
@@ -133,7 +136,7 @@ class IconItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        return 100
+        return ICON_SIZE
     
     def render(self, cr, rect):
         '''
@@ -148,9 +151,14 @@ class IconItem(gobject.GObject):
             cr, 
             self.icon_pixbuf,
             rect.x + (rect.width - icon_width) / 2,
-            rect.y + (rect.height - icon_height) / 2)
+            rect.y + self.icon_padding_y)
         
-        draw_text(cr, self.module_name, rect.x, rect.y + icon_height - DEFAULT_FONT_SIZE, rect.width, rect.height, alignment=pango.ALIGN_CENTER)
+        draw_text(cr, self.module_name, 
+                  rect.x, 
+                  rect.y + self.icon_padding_y + icon_height + self.name_padding_y,
+                  rect.width, 
+                  DEFAULT_FONT_SIZE, 
+                  alignment=pango.ALIGN_CENTER)
         
     def icon_item_motion_notify(self, x, y):
         '''
