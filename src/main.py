@@ -22,8 +22,11 @@
 
 from theme import app_theme
 from dtk.ui.application import Application
+from dtk.ui.slider import Slider
+from search_page import SearchPage
+from content_page import ContentPage
 from action_bar import ActionBar
-from navigate_panel import NavigatePanel
+from navigate_page import NavigatePage
 import gtk
 
 if __name__ == "__main__":
@@ -58,11 +61,23 @@ if __name__ == "__main__":
     # Init action bar.
     action_bar = ActionBar()
     
-    # Init navigate panel.
-    navigate_panel = NavigatePanel()
+    # Init search page.
+    search_page = SearchPage()
+    
+    # Init navigate page.
+    navigate_page = NavigatePage()
+    
+    # Init content page.
+    content_page = ContentPage()
+    
+    # Init slider.
+    slider = Slider(default_index=1)
+    slider.append_widget(search_page)
+    slider.append_widget(navigate_page)
+    slider.append_widget(content_page)
     
     # Connect widgets.
-    body_box.pack_start(navigate_panel, True, True)
+    body_box.pack_start(slider, True, True)
     main_box.pack_start(action_bar, False, False)
     main_box.pack_start(body_box, True, True)
     main_align.add(main_box)

@@ -93,7 +93,7 @@ class ActionBar(gtk.Alignment):
         rect = widget.allocation
         x, y, w, h = rect.x, rect.y, rect.width, rect.height
 
-        cr.set_source_rgba(1, 1, 1, 0.7)
+        cr.set_source_rgba(1, 1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
 

@@ -32,7 +32,7 @@ import os
 
 ICON_SIZE = 106
 
-class NavigatePanel(gtk.Alignment):
+class NavigatePage(gtk.Alignment):
     '''
     class docs
     '''
@@ -78,7 +78,7 @@ class NavigatePanel(gtk.Alignment):
         self.second_iconview.draw_mask = self.draw_mask
         self.third_iconview.draw_mask = self.draw_mask
         self.extend_iconview.draw_mask = self.draw_mask
-        self.connect("expose-event", self.expose_navigate_panel)
+        self.connect("expose-event", self.expose_navigate_page)
             
     def add_modules(self, modules, icon_view, scrolled_window):
         if len(modules) > 0:    
@@ -91,7 +91,7 @@ class NavigatePanel(gtk.Alignment):
             scrolled_window.set_size_request(-1, ICON_SIZE)
             self.layout.pack_start(scrolled_window, False, False)
             
-    def expose_navigate_panel(self, widget, event):
+    def expose_navigate_page(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
 
@@ -107,11 +107,11 @@ class NavigatePanel(gtk.Alignment):
         @param w: Width of draw area.
         @param h: Height of draw area.
         '''
-        cr.set_source_rgba(1, 1, 1, 0.7)
+        cr.set_source_rgba(1, 1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
         
-gobject.type_register(NavigatePanel)
+gobject.type_register(NavigatePage)
 
 
 class IconItem(gobject.GObject):
