@@ -28,7 +28,19 @@ from content_page import ContentPage
 from action_bar import ActionBar
 from navigate_page import NavigatePage
 import gtk
+import subprocess
+import os
 
+def start_module_process(slider, content_page, module_path, module_config):
+    print "start module process"
+    
+    module_id = module_config.get("main", "id")
+    if content_page.module_id != module_id:
+        content_page.module_id = module_id
+        slider.slide_to(content_page)
+        
+        subprocess.Popen("python %s" % (os.path.join(module_path, module_config.get("main", "program"))), shell=True)
+            
 if __name__ == "__main__":
     # Init application.
     application = Application()
@@ -61,20 +73,26 @@ if __name__ == "__main__":
     # Init action bar.
     action_bar = ActionBar()
     
+    # Init slider.
+    slider = Slider(default_index=1)
+    
     # Init search page.
     search_page = SearchPage()
-    
-    # Init navigate page.
-    navigate_page = NavigatePage()
     
     # Init content page.
     content_page = ContentPage()
     
-    # Init slider.
-    slider = Slider(default_index=1)
+    # Init navigate page.
+    navigate_page = NavigatePage(lambda path, config: start_module_process(slider, content_page, path, config))
+    
+    # Append widgets to slider.
     slider.append_widget(search_page)
     slider.append_widget(navigate_page)
     slider.append_widget(content_page)
+    search_page.set_size_request(834, 474)
+    navigate_page.set_size_request(834, 474)
+    content_page.set_size_request(834, 474)
+    application.window.connect("realize", lambda w: slider.set_widget(navigate_page))
     
     # Connect widgets.
     body_box.pack_start(slider, True, True)

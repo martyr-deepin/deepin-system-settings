@@ -20,22 +20,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
-import gobject
-
-class ContentPage(gtk.VBox):
-    '''
-    class docs
-    '''
-	
-    def __init__(self):
-        '''
-        init docs
-        '''
-        gtk.VBox.__init__(self)
-        self.socket = gtk.Socket()
-        self.module_id = None
-        
-        self.pack_start(self.socket, True, True)
-                
-gobject.type_register(ContentPage)
+if __name__ == "__main__":
+    print "screen"

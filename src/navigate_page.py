@@ -37,12 +37,13 @@ class NavigatePage(gtk.Alignment):
     class docs
     '''
 	
-    def __init__(self):
+    def __init__(self, start_callback):
         '''
         init docs
         '''
         # Init.
         gtk.Alignment.__init__(self)
+        self.start_callback = start_callback
         self.module_dir = os.path.join(os.path.dirname(__file__), "modules")        
         
         # Init widgets.
@@ -84,7 +85,7 @@ class NavigatePage(gtk.Alignment):
         if len(modules) > 0:    
             items = []
             for module_name in modules:
-                items.append(IconItem(os.path.join(self.module_dir, module_name)))
+                items.append(IconItem(os.path.join(self.module_dir, module_name), self.start_callback))
             
             icon_view.add_items(items)    
             scrolled_window.add_child(icon_view)
@@ -123,18 +124,19 @@ class IconItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    def __init__(self, module_path):
+    def __init__(self, module_path, start_callback):
         '''
         Initialize ItemIcon class.
         
         @param pixbuf: Icon pixbuf.
         '''
         gobject.GObject.__init__(self)
+        self.start_callback = start_callback
         self.module_path = module_path
         self.module_config = Config(os.path.join(self.module_path, "config.ini"))
         self.module_config.load()
         self.module_name = self.module_config.get("name", "zh_CN")
-        self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.module_path, self.module_config.get("icon", "icon")))
+        self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.module_path, self.module_config.get("main", "icon")))
         self.icon_padding_y = 21
         self.name_padding_y = 8
         self.hover_flag = False
@@ -241,7 +243,7 @@ class IconItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass        
+        pass
     
     def icon_item_button_release(self, x, y):
         '''
@@ -257,7 +259,7 @@ class IconItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        self.start_callback(self.module_path, self.module_config)
 
     def icon_item_double_click(self, x, y):
         '''
