@@ -23,6 +23,8 @@
 from theme import app_theme
 from dtk.ui.entry import InputEntry
 from dtk.ui.button import ImageButton
+from dtk.ui.breadcrumb import Bread
+from dtk.ui.menu import Menu
 import gtk
 import gobject
 
@@ -62,6 +64,8 @@ class ActionBar(gtk.Alignment):
         
         # Init navigate bar.
         self.navigate_bar = gtk.HBox()
+        self.bread = Bread([("系统设置", Menu([])),
+                            ("屏幕", Menu([]))])
         
         # Init search entry.
         self.search_button = ImageButton(
@@ -80,6 +84,7 @@ class ActionBar(gtk.Alignment):
         self.search_align.add(self.search_entry)
         self.action_box.pack_start(self.backward_button)
         self.action_box.pack_start(self.forward_button)
+        self.navigate_bar.pack_start(self.bread, False, False)
         self.main_box.pack_start(self.action_align, False, False)
         self.main_box.pack_start(self.navigate_bar, True, True)
         self.main_box.pack_start(self.search_align, False, False)
