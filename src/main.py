@@ -110,7 +110,7 @@ if __name__ == "__main__":
     action_bar = ActionBar(module_infos)
     
     # Init slider.
-    slider = Slider(default_index=1)
+    slider = Slider()
     
     # Init search page.
     search_page = SearchPage()
