@@ -22,7 +22,6 @@
 
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
-from dtk.ui.config import Config
 from dtk.ui.draw import draw_pixbuf, draw_text
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 import pango
@@ -37,12 +36,13 @@ class NavigatePage(gtk.Alignment):
     class docs
     '''
 	
-    def __init__(self, start_callback):
+    def __init__(self, module_infos, start_callback):
         '''
         init docs
         '''
         # Init.
         gtk.Alignment.__init__(self)
+        (self.first_module_infos, self.second_module_infos, self.third_module_infos, self.extend_module_infos) = module_infos
         self.start_callback = start_callback
         self.module_dir = os.path.join(os.path.dirname(__file__), "modules")        
         
@@ -62,18 +62,11 @@ class NavigatePage(gtk.Alignment):
         # Connect widgets.
         self.add(self.layout)
         
-        # Init icon lists.
-        self.all_modules = filter(lambda module_name: os.path.isdir(os.path.join(self.module_dir, module_name)), os.listdir(self.module_dir))        
-        self.first_modules = ["screen", "sound", "individuation", "date_time", "power"]
-        self.second_modules = ["keyboard", "mouse", "touchpad", "printer", "network", "bluetooth", "driver"]
-        self.third_modules = ["account", "auxiliary", "application_associate", "system_information"]
-        self.extend_modules = list(set(self.all_modules) - set(self.first_modules) - set(self.second_modules) - set(self.third_modules))
-        
         # Add icons.
-        self.add_modules(self.first_modules, self.first_iconview, self.first_iconview_scrolledwindow)
-        self.add_modules(self.second_modules, self.second_iconview, self.second_iconview_scrolledwindow)
-        self.add_modules(self.third_modules, self.third_iconview, self.third_iconview_scrolledwindow)
-        self.add_modules(self.extend_modules, self.extend_iconview, self.extend_iconview_scrolledwindow)
+        self.add_modules(self.first_module_infos, self.first_iconview, self.first_iconview_scrolledwindow)
+        self.add_modules(self.second_module_infos, self.second_iconview, self.second_iconview_scrolledwindow)
+        self.add_modules(self.third_module_infos, self.third_iconview, self.third_iconview_scrolledwindow)
+        self.add_modules(self.extend_module_infos, self.extend_iconview, self.extend_iconview_scrolledwindow)
         
         self.first_iconview.draw_mask = self.draw_mask
         self.second_iconview.draw_mask = self.draw_mask
@@ -81,11 +74,11 @@ class NavigatePage(gtk.Alignment):
         self.extend_iconview.draw_mask = self.draw_mask
         self.connect("expose-event", self.expose_navigate_page)
             
-    def add_modules(self, modules, icon_view, scrolled_window):
-        if len(modules) > 0:    
+    def add_modules(self, module_infos, icon_view, scrolled_window):
+        if len(module_infos) > 0:    
             items = []
-            for module_name in modules:
-                items.append(IconItem(os.path.join(self.module_dir, module_name), self.start_callback))
+            for module_info in module_infos:
+                items.append(IconItem(module_info, self.start_callback))
             
             icon_view.add_items(items)    
             scrolled_window.add_child(icon_view)
@@ -124,7 +117,7 @@ class IconItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    def __init__(self, module_path, start_callback):
+    def __init__(self, module_info, start_callback):
         '''
         Initialize ItemIcon class.
         
@@ -132,11 +125,7 @@ class IconItem(gobject.GObject):
         '''
         gobject.GObject.__init__(self)
         self.start_callback = start_callback
-        self.module_path = module_path
-        self.module_config = Config(os.path.join(self.module_path, "config.ini"))
-        self.module_config.load()
-        self.module_name = self.module_config.get("name", "zh_CN")
-        self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.module_path, self.module_config.get("main", "icon")))
+        self.module_info = module_info
         self.icon_padding_y = 21
         self.name_padding_y = 8
         self.hover_flag = False
@@ -173,8 +162,8 @@ class IconItem(gobject.GObject):
         This is IconView interface, you should implement it.
         '''
         # Init size.
-        icon_width = self.icon_pixbuf.get_width()
-        icon_height = self.icon_pixbuf.get_height()
+        icon_width = self.module_info.icon_pixbuf.get_width()
+        icon_height = self.module_info.icon_pixbuf.get_height()
         
         # Draw background.
         if self.hover_flag:
@@ -185,12 +174,12 @@ class IconItem(gobject.GObject):
         # Draw icon.
         draw_pixbuf(
             cr, 
-            self.icon_pixbuf,
+            self.module_info.icon_pixbuf,
             rect.x + (rect.width - icon_width) / 2,
             rect.y + self.icon_padding_y)
         
         # Draw icon name.
-        draw_text(cr, self.module_name, 
+        draw_text(cr, self.module_info.name, 
                   rect.x, 
                   rect.y + self.icon_padding_y + icon_height + self.name_padding_y,
                   rect.width, 
@@ -259,7 +248,7 @@ class IconItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        self.start_callback(self.module_path, self.module_config)
+        self.start_callback(self.module_info.path, self.module_info.config)
 
     def icon_item_double_click(self, x, y):
         '''

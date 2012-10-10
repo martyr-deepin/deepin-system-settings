@@ -37,5 +37,10 @@ class ContentPage(gtk.VBox):
         self.module_id = None
         
         self.pack_start(self.socket, True, True)
+        
+    def add_plug_id(self, plug_id):
+        self.module_id = plug_id
+        
+        self.socket.add_id(plug_id)
                 
 gobject.type_register(ContentPage)

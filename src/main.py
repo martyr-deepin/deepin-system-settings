@@ -30,6 +30,31 @@ from navigate_page import NavigatePage
 import gtk
 import subprocess
 import os
+from module_info import get_module_infos
+from dbus.mainloop.glib import DBusGMainLoop
+import dbus
+import dbus.service
+
+class DBusService(dbus.service.Object):
+    def __init__(self, 
+                 bus_name, 
+                 app_dbus_name, 
+                 app_object_name, 
+                 content_page,
+                 ):
+        # Init dbus object.
+        dbus.service.Object.__init__(self, bus_name, app_object_name)
+
+        # Define DBus method.
+        def receive_plug_id(self, *message):
+            print (message[0])
+            content_page.add_plug_id(message[0])
+                    
+        # Below code export dbus method dyanmically.
+        # Don't use @dbus.service.method !
+        setattr(DBusService, 
+                'receive_plug_id', 
+                dbus.service.method(app_dbus_name)(receive_plug_id))
 
 def start_module_process(slider, content_page, module_path, module_config):
     print "start module process"
@@ -42,6 +67,14 @@ def start_module_process(slider, content_page, module_path, module_config):
         subprocess.Popen("python %s" % (os.path.join(module_path, module_config.get("main", "program"))), shell=True)
             
 if __name__ == "__main__":
+    # WARING: only use once in one process
+    DBusGMainLoop(set_as_default=True) 
+    
+    # Build DBus name.
+    app_dbus_name = "com.deepin.system_settings"
+    app_object_name = "/com/deepin/system_settings"
+    app_bus_name = dbus.service.BusName(app_dbus_name, bus=dbus.SessionBus())
+    
     # Init application.
     application = Application()
 
@@ -70,8 +103,11 @@ if __name__ == "__main__":
     main_box = gtk.VBox()
     body_box = gtk.VBox()
     
+    # Init module infos.
+    module_infos = get_module_infos()
+    
     # Init action bar.
-    action_bar = ActionBar()
+    action_bar = ActionBar(module_infos)
     
     # Init slider.
     slider = Slider(default_index=1)
@@ -83,7 +119,7 @@ if __name__ == "__main__":
     content_page = ContentPage()
     
     # Init navigate page.
-    navigate_page = NavigatePage(lambda path, config: start_module_process(slider, content_page, path, config))
+    navigate_page = NavigatePage(module_infos, lambda path, config: start_module_process(slider, content_page, path, config))
     
     # Append widgets to slider.
     slider.append_widget(search_page)
@@ -100,5 +136,8 @@ if __name__ == "__main__":
     main_box.pack_start(body_box, True, True)
     main_align.add(main_box)
     application.main_box.pack_start(main_align)
+    
+    # Start dbus service.
+    DBusService(app_bus_name, app_dbus_name, app_object_name, content_page)
     
     application.run()
