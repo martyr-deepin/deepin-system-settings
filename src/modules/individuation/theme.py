@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import pango
 import os
 import math
 import dtk_cairo_blur
@@ -27,9 +28,9 @@ from dtk.ui.config import Config
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
 from dtk.ui.label import Label
-from dtk.ui.constant import COLOR_NAME_DICT
+from dtk.ui.constant import COLOR_NAME_DICT, DEFAULT_FONT_SIZE
 from dtk.ui.theme import ui_theme
-from dtk.ui.draw import draw_window_frame, draw_pixbuf
+from dtk.ui.draw import draw_window_frame, draw_pixbuf, draw_text
 from dtk.ui.utils import alpha_color_hex_to_cairo, get_optimum_pixbuf_from_file, cairo_disable_antialias, color_hex_to_cairo, cairo_state
 import cairo
 import gobject
@@ -144,7 +145,7 @@ class ThemeItem(gobject.GObject):
     }
     
     ITEM_WIDTH = 220
-    ITEM_HEIGHT = 180
+    ITEM_HEIGHT = 200
     
     def __init__(self, theme, switch_setting_view):
         '''
@@ -169,6 +170,8 @@ class ThemeItem(gobject.GObject):
         self.window_frame_width = 48
         self.window_frame_height = 48
         self.reflection_height = 23
+        self.title_padding_y = 10
+        self.title_size = DEFAULT_FONT_SIZE
         
     def emit_redraw_request(self):
         '''
@@ -278,6 +281,16 @@ class ThemeItem(gobject.GObject):
                           ui_theme.get_alpha_color("window_frame_inside_1"),
                           ui_theme.get_alpha_color("window_frame_inside_2"),
                           )
+        
+        draw_text(cr, 
+                  self.theme.title, 
+                  rect.x, 
+                  rect.y + self.window_frame_padding_y + self.window_frame_height + self.title_padding_y, 
+                  rect.width,
+                  DEFAULT_FONT_SIZE,
+                  self.title_size,
+                  alignment=pango.ALIGN_CENTER
+                  )
         
     def render_wallpaper(self, cr, pixbuf, wallpaper_draw_x, wallpaper_draw_y, reflection=False):    
         cr.set_source_rgba(1, 1, 1, 1)
