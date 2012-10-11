@@ -22,6 +22,7 @@
 
 import os
 import math
+import dtk_cairo_blur
 from dtk.ui.config import Config
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
@@ -200,9 +201,6 @@ class ThemeItem(gobject.GObject):
         This is IconView interface, you should implement it.
         '''
         # Draw wallpapers.
-        wallpaper_x = rect.x + self.wallpaper_offset_x
-        wallpaper_y = rect.y + self.wallpaper_offset_y
-        
         if self.pixbufs == []:
             user_wallpaper_files = map(lambda wallpaper_file: os.path.join(BACKGROUND_DIR, wallpaper_file), self.theme.user_wallpapers)
             system_wallpaper_files = map(lambda wallpaper_file: os.path.join(BACKGROUND_DIR, wallpaper_file), self.theme.system_wallpapers)
@@ -213,15 +211,17 @@ class ThemeItem(gobject.GObject):
         theme_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, rect.width, rect.height)   
         theme_surface_cr = gtk.gdk.CairoContext(cairo.Context(theme_surface))
         
-        with cairo_state(cr):
+        with cairo_state(theme_surface_cr):
             reflection_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.wallpaper_width + self.wallpaper_frame_size * 2 + 2, self.reflection_height)
             reflection_surface_cr = gtk.gdk.CairoContext(cairo.Context(reflection_surface))
+            wallpaper_x = self.wallpaper_offset_x
+            wallpaper_y = self.wallpaper_offset_y
         
             for (index, pixbuf) in enumerate(self.pixbufs):
                 wallpaper_draw_x = wallpaper_x - 3 * self.wallpaper_render_offset + (len(self.pixbufs) - index) * self.wallpaper_render_offset
                 wallpaper_draw_y = wallpaper_y + 3 * self.wallpaper_render_offset - (len(self.pixbufs) - index) * self.wallpaper_render_offset
                 
-                self.render_wallpaper(cr, pixbuf, wallpaper_draw_x, wallpaper_draw_y)
+                self.render_wallpaper(theme_surface_cr, pixbuf, wallpaper_draw_x, wallpaper_draw_y)
                 
                 if index == len(self.pixbufs) - 1:
                     self.render_wallpaper(reflection_surface_cr, 
@@ -232,25 +232,39 @@ class ThemeItem(gobject.GObject):
                     
                     i = 0
                     while (i <= self.reflection_height):
-                        with cairo_state(cr):
-                            cr.rectangle(
+                        with cairo_state(theme_surface_cr):
+                            theme_surface_cr.rectangle(
                                 wallpaper_draw_x - self.wallpaper_frame_size - 1, 
                                 wallpaper_draw_y + self.wallpaper_height + self.wallpaper_frame_size + i,
                                 self.wallpaper_width + self.wallpaper_frame_size * 2 + 2,
                                 1)
-                            cr.clip()
-                            cr.set_source_surface(
+                            theme_surface_cr.clip()
+                            theme_surface_cr.set_source_surface(
                                 reflection_surface, 
                                 wallpaper_draw_x - self.wallpaper_frame_size - 1, 
                                 wallpaper_draw_y + self.wallpaper_frame_size + self.wallpaper_height
                                 )
-                            cr.paint_with_alpha(1.0 - (math.sin(i * math.pi / 2 / self.reflection_height)))
+                            theme_surface_cr.paint_with_alpha(1.0 - (math.sin(i * math.pi / 2 / self.reflection_height)))
                         i += 1    
+            
+        # Paint wallpapers.
+        cr.set_source_surface(theme_surface, rect.x, rect.y)                
+        cr.paint()
         
-        # Draw window frame.
+        # Init window coordiante.
         window_frame_x = rect.x + self.window_frame_padding_x
         window_frame_y = rect.y + self.window_frame_padding_y
         
+        # Paint gaussian area.
+        gaussian_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.window_frame_width, self.window_frame_height)   
+        gaussian_surface_cr = gtk.gdk.CairoContext(cairo.Context(gaussian_surface))
+        gaussian_surface_cr.set_source_surface(theme_surface, -self.window_frame_padding_x, -self.window_frame_padding_y)
+        gaussian_surface_cr.paint()
+        dtk_cairo_blur.gaussian_blur(gaussian_surface, 3)
+        cr.set_source_surface(gaussian_surface, window_frame_x, window_frame_y)
+        cr.paint()
+        
+        # Draw window frame.
         cr.set_source_rgba(*alpha_color_hex_to_cairo((COLOR_NAME_DICT[self.theme.color], 0.5)))
         cr.rectangle(window_frame_x + 1, window_frame_y, self.window_frame_width - 2, 1)
         cr.rectangle(window_frame_x, window_frame_y + 1, self.window_frame_width, self.window_frame_height - 2)
