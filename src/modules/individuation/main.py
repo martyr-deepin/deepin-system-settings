@@ -36,6 +36,8 @@ import dbus
 import dbus.service
 import gtk
 from theme import ThemeView
+from theme_setting import ThemeSettingView
+from dtk.ui.slider import Slider
 
 def send_plug_id(plug):
     if bus.request_name(app_dbus_name) != dbus.bus.REQUEST_NAME_REPLY_PRIMARY_OWNER:
@@ -43,6 +45,10 @@ def send_plug_id(plug):
         method = bus_object.get_dbus_method("receive_plug_id")
         method(plug.get_id())
             
+def switch_setting_view(slider, theme_setting_view, theme):
+    slider.slide_to(theme_setting_view)
+    theme_setting_view.set_theme(theme)
+        
 if __name__ == "__main__":
     # WARING: only use once in one process
     DBusGMainLoop(set_as_default=True) 
@@ -58,18 +64,28 @@ if __name__ == "__main__":
     # Init plug window.
     plug = gtk.Plug(0)
     
-    # Init wallpaper box.
-    theme_view = ThemeView()
+    # Init slider.
+    slider = Slider()
     
-    # Init window theme box.
-    window_theme_box = gtk.VBox()
+    # Init theme setting view.
+    theme_setting_view = ThemeSettingView()
+    
+    # Init theme view.
+    theme_view = ThemeView(lambda theme: switch_setting_view(slider, theme_setting_view, theme))
+    
+    # Add widgets in slider.
+    slider.append_widget(theme_view)
+    slider.append_widget(theme_setting_view)
+    theme_view.set_size_request(834, 474)
+    theme_setting_view.set_size_request(834, 474)
         
     # Connect widgets.
-    plug.add(theme_view)
+    plug.add(slider)
 
     # Handle signals.
     plug.connect("destroy", lambda w: gtk.main_quit())
     plug.connect("realize", send_plug_id)    
+    plug.connect("realize", lambda w: slider.set_widget(theme_view))
     
     # Show.
     plug.show_all()
