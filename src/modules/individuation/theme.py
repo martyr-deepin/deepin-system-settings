@@ -167,6 +167,7 @@ class ThemeItem(gobject.GObject):
         self.window_frame_padding_y = 120
         self.window_frame_width = 48
         self.window_frame_height = 48
+        self.reflection_height = 23
         
     def emit_redraw_request(self):
         '''
@@ -209,43 +210,42 @@ class ThemeItem(gobject.GObject):
             for wallpaper_file in user_wallpaper_files + system_wallpaper_files[:3]:
                 self.pixbufs.append(get_optimum_pixbuf_from_file(wallpaper_file, self.wallpaper_width, self.wallpaper_height))
                 
-        reflection_height = 23
-        reflection_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.wallpaper_width + self.wallpaper_frame_size * 2 + 2, reflection_height)        
-        reflection_surface_cr = gtk.gdk.CairoContext(cairo.Context(reflection_surface))
-                
+        theme_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, rect.width, rect.height)   
+        theme_surface_cr = gtk.gdk.CairoContext(cairo.Context(theme_surface))
+        
         with cairo_state(cr):
-            if len(self.pixbufs) == 1:
-                draw_pixbuf(cr, self.pixbufs[0], wallpaper_x, wallpaper_y)
-            elif len(self.pixbufs) > 1:
-                for (index, pixbuf) in enumerate(self.pixbufs):
-                    wallpaper_draw_x = wallpaper_x - index * self.wallpaper_render_offset
-                    wallpaper_draw_y = wallpaper_y + 3 * self.wallpaper_render_offset - (len(self.pixbufs) - index) * self.wallpaper_render_offset
+            reflection_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.wallpaper_width + self.wallpaper_frame_size * 2 + 2, self.reflection_height)
+            reflection_surface_cr = gtk.gdk.CairoContext(cairo.Context(reflection_surface))
+        
+            for (index, pixbuf) in enumerate(self.pixbufs):
+                wallpaper_draw_x = wallpaper_x - 3 * self.wallpaper_render_offset + (len(self.pixbufs) - index) * self.wallpaper_render_offset
+                wallpaper_draw_y = wallpaper_y + 3 * self.wallpaper_render_offset - (len(self.pixbufs) - index) * self.wallpaper_render_offset
+                
+                self.render_wallpaper(cr, pixbuf, wallpaper_draw_x, wallpaper_draw_y)
+                
+                if index == len(self.pixbufs) - 1:
+                    self.render_wallpaper(reflection_surface_cr, 
+                                          pixbuf, 
+                                          self.wallpaper_frame_size + 1, 
+                                          self.wallpaper_frame_size + 1,
+                                          True)
                     
-                    self.render_wallpaper(cr, pixbuf, wallpaper_draw_x, wallpaper_draw_y)
-                    
-                    if index == len(self.pixbufs) - 1:
-                        self.render_wallpaper(reflection_surface_cr, 
-                                              pixbuf, 
-                                              self.wallpaper_frame_size + 1, 
-                                              self.wallpaper_frame_size + 1,
-                                              True)
-                        
-                        i = 0
-                        while (i <= reflection_height):
-                            with cairo_state(cr):
-                                cr.rectangle(
-                                    wallpaper_draw_x - self.wallpaper_frame_size - 1, 
-                                    wallpaper_draw_y + self.wallpaper_height + self.wallpaper_frame_size + i,
-                                    self.wallpaper_width + self.wallpaper_frame_size * 2 + 2,
-                                    1)
-                                cr.clip()
-                                cr.set_source_surface(
-                                    reflection_surface, 
-                                    wallpaper_draw_x - self.wallpaper_frame_size - 1, 
-                                    wallpaper_draw_y + self.wallpaper_frame_size + self.wallpaper_height
-                                    )
-                                cr.paint_with_alpha(1.0 - (math.sin(i * math.pi / 2 / reflection_height)))
-                            i += 1    
+                    i = 0
+                    while (i <= self.reflection_height):
+                        with cairo_state(cr):
+                            cr.rectangle(
+                                wallpaper_draw_x - self.wallpaper_frame_size - 1, 
+                                wallpaper_draw_y + self.wallpaper_height + self.wallpaper_frame_size + i,
+                                self.wallpaper_width + self.wallpaper_frame_size * 2 + 2,
+                                1)
+                            cr.clip()
+                            cr.set_source_surface(
+                                reflection_surface, 
+                                wallpaper_draw_x - self.wallpaper_frame_size - 1, 
+                                wallpaper_draw_y + self.wallpaper_frame_size + self.wallpaper_height
+                                )
+                            cr.paint_with_alpha(1.0 - (math.sin(i * math.pi / 2 / self.reflection_height)))
+                        i += 1    
         
         # Draw window frame.
         window_frame_x = rect.x + self.window_frame_padding_x
