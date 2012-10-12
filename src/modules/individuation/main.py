@@ -20,23 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir
-import os
-app_theme = init_skin(
-    "deepin-individuation-settings", 
-    "1.0",
-    "01",
-    os.path.join(get_parent_dir(__file__), "skin"),
-    os.path.join(get_parent_dir(__file__), "app_theme"),
-    )
-
 from dbus.mainloop.glib import DBusGMainLoop
 import dbus
 import dbus.service
 import gtk
-from theme import ThemeView
-from theme_setting import ThemeSettingView
+from theme_view import ThemeView
+from theme_setting_view import ThemeSettingView
 from dtk.ui.slider import Slider
 
 def send_plug_id(plug):
