@@ -79,8 +79,11 @@ if __name__ == "__main__":
     application = Application()
 
     # Set application default size.
-    application.set_default_size(846, 547)
-    application.window.set_resizable(False)
+    application.window.set_geometry_hints(
+        None,
+        846, 547,
+        846, 547,
+        )
 
     # Set application icon.
     application.set_icon(app_theme.get_pixbuf("icon.ico"))

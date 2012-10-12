@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from dtk.ui.timeline import Timeline, CURVE_SINE
 from theme import app_theme
 import gtk
 import gobject
@@ -27,7 +28,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.tab_window import TabBox
 from dtk.ui.iconview import IconView
 from dtk.ui.utils import get_optimum_pixbuf_from_file, cairo_disable_antialias
-from dtk.ui.draw import draw_pixbuf, draw_shadow, draw_window_shadow
+from dtk.ui.draw import draw_pixbuf, draw_shadow
 
 ITEM_PADDING_X = 19
 ITEM_PADDING_Y = 15
@@ -50,8 +51,8 @@ class ThemeSettingView(TabBox):
         self.theme_icon_view.draw_mask = self.draw_mask
         self.theme_scrolledwindow = ScrolledWindow()
         
-        self.add_items([("壁纸", self.wallpaper_box),
-                        ("窗口主题", self.window_theme_box)])
+        self.add_items([("桌面壁纸", self.wallpaper_box),
+                        ("窗口设置", self.window_theme_box)])
         
         self.theme_scrolledwindow.add_child(self.theme_icon_view)
         self.wallpaper_box.pack_start(self.theme_scrolledwindow, True, True)
@@ -106,6 +107,9 @@ class WallpaperItem(gobject.GObject):
         self.wallpaper_height = 100
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
+        self.anmiation_duration = 200
+        self.anmiation_distance = 4
+        self.anmiation_offset = 0
         
     def emit_redraw_request(self):
         '''
@@ -142,7 +146,7 @@ class WallpaperItem(gobject.GObject):
             self.pixbuf = get_optimum_pixbuf_from_file(self.path, self.wallpaper_width, self.wallpaper_height)
             
         wallpaper_x = rect.x + (rect.width - self.wallpaper_width) / 2
-        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2
+        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2 + self.anmiation_offset
         
         # Draw shadow.
         drop_shadow_padding = 7
@@ -179,15 +183,31 @@ class WallpaperItem(gobject.GObject):
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.stroke()
         
+    def move_up(self, source, status):
+        if self.hover_flag:
+            self.anmiation_offset = max(self.anmiation_offset - (self.anmiation_distance * status),
+                                        -self.anmiation_distance)
+        
+            self.emit_redraw_request()
+
+    def move_down(self, source, status):
+        if not self.hover_flag:
+            self.anmiation_offset = min(self.anmiation_offset + self.anmiation_distance * status, 0)
+        
+            self.emit_redraw_request()
+            
     def icon_item_motion_notify(self, x, y):
         '''
         Handle `motion-notify-event` signal.
         
         This is IconView interface, you should implement it.
         '''
-        self.hover_flag = True
-        
-        self.emit_redraw_request()
+        if not self.hover_flag:
+            self.hover_flag = True
+            
+            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
+            timeline.connect('update', self.move_up)
+            timeline.run()
         
     def icon_item_lost_focus(self):
         '''
@@ -195,9 +215,12 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        self.hover_flag = False
-        
-        self.emit_redraw_request()
+        if self.hover_flag:
+            self.hover_flag = False
+            
+            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
+            timeline.connect('update', self.move_down)
+            timeline.run()
         
     def icon_item_highlight(self):
         '''
