@@ -20,15 +20,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.timeline import Timeline, CURVE_SINE
 from theme import app_theme
 import gtk
 import gobject
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.tab_window import TabBox
 from dtk.ui.iconview import IconView
-from dtk.ui.utils import get_optimum_pixbuf_from_file, cairo_disable_antialias
+from dtk.ui.utils import get_optimum_pixbuf_from_file, cairo_disable_antialias, run_command
 from dtk.ui.draw import draw_pixbuf, draw_shadow
+from dtk.ui.label import Label
+from dtk.ui.button import Button, CheckButton
+from dtk.ui.combo import ComboBox
 
 ITEM_PADDING_X = 19
 ITEM_PADDING_Y = 15
@@ -51,11 +53,59 @@ class ThemeSettingView(TabBox):
         self.theme_icon_view.draw_mask = self.draw_mask
         self.theme_scrolledwindow = ScrolledWindow()
         
+        self.action_bar = gtk.HBox()
+        self.position_label = Label("图片位置")
+        self.position_combobox = ComboBox(
+            [("拉伸", 1),
+             ("居中", 2),
+             ("平铺", 3),
+             ("适应", 4),
+             ("填充", 5),
+             ]
+            )
+        self.time_label = Label("图片时间间隔")
+        self.time_combobox = ComboBox(
+            [("10秒", 1),
+             ("30秒", 2),
+             ("1分钟", 3),
+             ("3分钟", 4),
+             ("5分钟", 5),
+             ("10分钟", 6),
+             ("15分钟", 7),
+             ("20分钟", 8),
+             ("30分钟", 9),
+             ("1个小时", 10),
+             ("2个小时", 11),
+             ("3个小时", 12),
+             ("4个小时", 13),
+             ("6个小时", 14),
+             ("12个小时", 15),
+             ("24个小时", 16),
+             ]          
+            )
+        self.unorder_play = CheckButton("无序播放")
+        self.unselect_all = Button("全不选")
+        self.select_all = Button("全选")
+        
+        self.delete_button = Button("删除")
+        self.delete_align = gtk.Alignment()
+        self.delete_align.set(1.0, 0.5, 0, 0)
+                
         self.add_items([("桌面壁纸", self.wallpaper_box),
                         ("窗口设置", self.window_theme_box)])
         
         self.theme_scrolledwindow.add_child(self.theme_icon_view)
+        self.delete_align.add(self.delete_button)
+        self.action_bar.pack_start(self.position_label, False, False, 4)
+        self.action_bar.pack_start(self.position_combobox, False, False, 4)
+        self.action_bar.pack_start(self.time_label, False, False, 4)
+        self.action_bar.pack_start(self.time_combobox, False, False, 4)
+        self.action_bar.pack_start(self.unorder_play, False, False, 4)
+        self.action_bar.pack_start(self.unselect_all, False, False, 4)
+        self.action_bar.pack_start(self.select_all, False, False, 4)
         self.wallpaper_box.pack_start(self.theme_scrolledwindow, True, True)
+        self.wallpaper_box.pack_start(self.action_bar, False, False)
+        self.wallpaper_box.pack_start(self.delete_align, False, False)
         
     def set_theme(self, theme):
         self.theme = theme
@@ -109,9 +159,6 @@ class WallpaperItem(gobject.GObject):
         self.wallpaper_height = 100
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
-        self.anmiation_duration = 200
-        self.anmiation_distance = 4
-        self.anmiation_offset = 0
         
     def emit_redraw_request(self):
         '''
@@ -148,7 +195,7 @@ class WallpaperItem(gobject.GObject):
             self.pixbuf = get_optimum_pixbuf_from_file(self.path, self.wallpaper_width, self.wallpaper_height)
             
         wallpaper_x = rect.x + (rect.width - self.wallpaper_width) / 2
-        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2 + self.anmiation_offset
+        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2
         
         # Draw shadow.
         drop_shadow_padding = 7
@@ -185,31 +232,13 @@ class WallpaperItem(gobject.GObject):
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.stroke()
         
-    def move_up(self, source, status):
-        if self.hover_flag:
-            self.anmiation_offset = max(self.anmiation_offset - (self.anmiation_distance * status),
-                                        -self.anmiation_distance)
-        
-            self.emit_redraw_request()
-
-    def move_down(self, source, status):
-        if not self.hover_flag:
-            self.anmiation_offset = min(self.anmiation_offset + self.anmiation_distance * status, 0)
-        
-            self.emit_redraw_request()
-            
     def icon_item_motion_notify(self, x, y):
         '''
         Handle `motion-notify-event` signal.
         
         This is IconView interface, you should implement it.
         '''
-        if not self.hover_flag:
-            self.hover_flag = True
-            
-            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
-            timeline.connect('update', self.move_up)
-            timeline.run()
+        pass
         
     def icon_item_lost_focus(self):
         '''
@@ -217,12 +246,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        if self.hover_flag:
-            self.hover_flag = False
-            
-            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
-            timeline.connect('update', self.move_down)
-            timeline.run()
+        pass
         
     def icon_item_highlight(self):
         '''
@@ -250,7 +274,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass        
+        run_command("gsettings set org.gnome.desktop.background picture-uri 'file://%s'" % self.path)
     
     def icon_item_button_release(self, x, y):
         '''
@@ -322,9 +346,6 @@ class AddItem(gobject.GObject):
         self.wallpaper_height = 100
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
-        self.anmiation_duration = 200
-        self.anmiation_distance = 4
-        self.anmiation_offset = 0
         
     def emit_redraw_request(self):
         '''
@@ -358,7 +379,7 @@ class AddItem(gobject.GObject):
         '''
         # Init.
         wallpaper_x = rect.x + (rect.width - self.wallpaper_width) / 2
-        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2 + self.anmiation_offset
+        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2
         
         # Draw shadow.
         drop_shadow_padding = 7
@@ -412,31 +433,13 @@ class AddItem(gobject.GObject):
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.stroke()
         
-    def move_up(self, source, status):
-        if self.hover_flag:
-            self.anmiation_offset = max(self.anmiation_offset - (self.anmiation_distance * status),
-                                        -self.anmiation_distance)
-        
-            self.emit_redraw_request()
-
-    def move_down(self, source, status):
-        if not self.hover_flag:
-            self.anmiation_offset = min(self.anmiation_offset + self.anmiation_distance * status, 0)
-        
-            self.emit_redraw_request()
-            
     def icon_item_motion_notify(self, x, y):
         '''
         Handle `motion-notify-event` signal.
         
         This is IconView interface, you should implement it.
         '''
-        if not self.hover_flag:
-            self.hover_flag = True
-            
-            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
-            timeline.connect('update', self.move_up)
-            timeline.run()
+        pass
         
     def icon_item_lost_focus(self):
         '''
@@ -444,12 +447,7 @@ class AddItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        if self.hover_flag:
-            self.hover_flag = False
-            
-            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
-            timeline.connect('update', self.move_down)
-            timeline.run()
+        pass
         
     def icon_item_highlight(self):
         '''
