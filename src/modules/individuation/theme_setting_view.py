@@ -65,6 +65,8 @@ class ThemeSettingView(TabBox):
         for wallpaper_path in self.theme.get_wallpaper_paths():
             items.append(WallpaperItem(wallpaper_path))
             
+        items.append(AddItem())    
+            
         self.theme_icon_view.add_items(items)    
         
     def draw_mask(self, cr, x, y, w, h):
@@ -297,3 +299,226 @@ class WallpaperItem(gobject.GObject):
         return True
         
 gobject.type_register(WallpaperItem)
+
+class AddItem(gobject.GObject):
+    '''
+    Icon item.
+    '''
+	
+    __gsignals__ = {
+        "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }
+    
+    def __init__(self):
+        '''
+        Initialize ItemIcon class.
+        
+        @param pixbuf: Icon pixbuf.
+        '''
+        gobject.GObject.__init__(self)
+        self.hover_flag = False
+        self.highlight_flag = False
+        self.wallpaper_width = 160
+        self.wallpaper_height = 100
+        self.width = self.wallpaper_width + ITEM_PADDING_X * 2
+        self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
+        self.anmiation_duration = 200
+        self.anmiation_distance = 4
+        self.anmiation_offset = 0
+        
+    def emit_redraw_request(self):
+        '''
+        Emit `redraw-request` signal.
+        
+        This is IconView interface, you should implement it.
+        '''
+        self.emit("redraw-request")
+        
+    def get_width(self):
+        '''
+        Get item width.
+        
+        This is IconView interface, you should implement it.
+        '''
+        return self.width
+        
+    def get_height(self):
+        '''
+        Get item height.
+        
+        This is IconView interface, you should implement it.
+        '''
+        return self.height
+    
+    def render(self, cr, rect):
+        '''
+        Render item.
+        
+        This is IconView interface, you should implement it.
+        '''
+        # Init.
+        wallpaper_x = rect.x + (rect.width - self.wallpaper_width) / 2
+        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2 + self.anmiation_offset
+        
+        # Draw shadow.
+        drop_shadow_padding = 7
+        drop_shadow_radious = 7
+        draw_shadow(
+            cr,
+            wallpaper_x,
+            wallpaper_y,
+            self.wallpaper_width + drop_shadow_padding,
+            self.wallpaper_height + drop_shadow_padding,
+            drop_shadow_radious,
+            app_theme.get_shadow_color("window_shadow")
+            )
+
+        outside_shadow_padding = 4
+        outside_shadow_radious = 5
+        draw_shadow(
+            cr,
+            wallpaper_x - outside_shadow_padding,
+            wallpaper_y - outside_shadow_padding,
+            self.wallpaper_width + outside_shadow_padding * 2,
+            self.wallpaper_height + outside_shadow_padding * 2,
+            outside_shadow_radious,
+            app_theme.get_shadow_color("window_shadow")
+            )
+        
+        # Draw add button.
+        cr.set_source_rgb(0.7, 0.7, 0.7)
+        cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
+        cr.fill()
+        
+        add_button_width = 8
+        add_button_height = 40
+        cr.set_source_rgb(0.3, 0.3, 0.3)
+        cr.rectangle(wallpaper_x + (self.wallpaper_width - add_button_height) / 2,
+                     wallpaper_y + (self.wallpaper_height - add_button_width) / 2, 
+                     add_button_height,
+                     add_button_width)
+        cr.fill()
+        
+        cr.rectangle(wallpaper_x + (self.wallpaper_width - add_button_width) / 2,
+                     wallpaper_y + (self.wallpaper_height - add_button_height) / 2, 
+                     add_button_width,
+                     add_button_height)
+        cr.fill()
+        
+        # Draw wallpaper frame.
+        with cairo_disable_antialias(cr):
+            cr.set_line_width(2)
+            cr.set_source_rgba(1, 1, 1, 1)
+            cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
+            cr.stroke()
+        
+    def move_up(self, source, status):
+        if self.hover_flag:
+            self.anmiation_offset = max(self.anmiation_offset - (self.anmiation_distance * status),
+                                        -self.anmiation_distance)
+        
+            self.emit_redraw_request()
+
+    def move_down(self, source, status):
+        if not self.hover_flag:
+            self.anmiation_offset = min(self.anmiation_offset + self.anmiation_distance * status, 0)
+        
+            self.emit_redraw_request()
+            
+    def icon_item_motion_notify(self, x, y):
+        '''
+        Handle `motion-notify-event` signal.
+        
+        This is IconView interface, you should implement it.
+        '''
+        if not self.hover_flag:
+            self.hover_flag = True
+            
+            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
+            timeline.connect('update', self.move_up)
+            timeline.run()
+        
+    def icon_item_lost_focus(self):
+        '''
+        Lost focus.
+        
+        This is IconView interface, you should implement it.
+        '''
+        if self.hover_flag:
+            self.hover_flag = False
+            
+            timeline = Timeline(self.anmiation_duration, CURVE_SINE)
+            timeline.connect('update', self.move_down)
+            timeline.run()
+        
+    def icon_item_highlight(self):
+        '''
+        Highlight item.
+        
+        This is IconView interface, you should implement it.
+        '''
+        self.highlight_flag = True
+
+        self.emit_redraw_request()
+        
+    def icon_item_normal(self):
+        '''
+        Set item with normal status.
+        
+        This is IconView interface, you should implement it.
+        '''
+        self.highlight_flag = False
+        
+        self.emit_redraw_request()
+    
+    def icon_item_button_press(self, x, y):
+        '''
+        Handle button-press event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        pass        
+    
+    def icon_item_button_release(self, x, y):
+        '''
+        Handle button-release event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        pass
+    
+    def icon_item_single_click(self, x, y):
+        '''
+        Handle single click event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        pass
+
+    def icon_item_double_click(self, x, y):
+        '''
+        Handle double click event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        pass
+    
+    def icon_item_release_resource(self):
+        '''
+        Release item resource.
+
+        If you have pixbuf in item, you should release memory resource like below code:
+
+        >>> del self.pixbuf
+        >>> self.pixbuf = None
+
+        This is IconView interface, you should implement it.
+        
+        @return: Return True if do release work, otherwise return False.
+        
+        When this function return True, IconView will call function gc.collect() to release object to release memory.
+        '''
+        # Return True to tell IconView call gc.collect() to release memory resource.
+        return True
+        
+gobject.type_register(AddItem)
