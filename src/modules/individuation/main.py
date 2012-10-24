@@ -27,17 +27,31 @@ import gtk
 from theme_view import ThemeView
 from theme_setting_view import ThemeSettingView
 from dtk.ui.slider import Slider
+from dtk.ui.config import Config
+from dtk.ui.utils import get_parent_dir
+import os
 
-def send_plug_id(plug):
+def send_message(message_type, message_content):
     if bus.request_name(app_dbus_name) != dbus.bus.REQUEST_NAME_REPLY_PRIMARY_OWNER:
         bus_object = bus.get_object(app_dbus_name, app_object_name)
-        method = bus_object.get_dbus_method("receive_plug_id")
-        method(plug.get_id())
+        method = bus_object.get_dbus_method("message_receiver")
+        method(message_type, message_content)
+        
+def send_plug_id(plug):
+    send_message("send_plug_id", plug.get_id())
+
+def send_crumb_info(plug):
+    config = Config(os.path.join(get_parent_dir(__file__), "config.ini"))
+    config.load()
+    send_message("send_crumb_info", 
+                 (1, 
+                  (config.get("main", "id"), config.get("name", "zh_CN"))
+                  ))
             
 def switch_setting_view(slider, theme_setting_view, theme):
     slider.slide_to(theme_setting_view)
     theme_setting_view.set_theme(theme)
-        
+    
 if __name__ == "__main__":
     # WARING: only use once in one process
     DBusGMainLoop(set_as_default=True) 
@@ -74,6 +88,7 @@ if __name__ == "__main__":
     # Handle signals.
     plug.connect("destroy", lambda w: gtk.main_quit())
     plug.connect("realize", send_plug_id)    
+    plug.connect("realize", send_crumb_info)    
     plug.connect("realize", lambda w: slider.set_widget(theme_view))
     
     # Show.

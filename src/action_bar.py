@@ -34,7 +34,7 @@ class ActionBar(gtk.Alignment):
     class docs
     '''
 	
-    def __init__(self, module_infos):
+    def __init__(self, module_infos, switch_page):
         '''
         init docs
         '''
@@ -73,6 +73,7 @@ class ActionBar(gtk.Alignment):
                                                              module_info.name),
                                  list(itertools.chain(*module_infos)))),
                             ])
+        self.bread.connect("item_clicked", switch_page)
         
         # Init search entry.
         self.search_button = ImageButton(

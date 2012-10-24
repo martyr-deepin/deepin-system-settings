@@ -83,7 +83,7 @@ class ThemeSettingView(TabBox):
              ("24个小时", 16),
              ]          
             )
-        self.unorder_play = CheckButton("无序播放")
+        self.unorder_play = CheckButton("随机播放")
         self.unselect_all = Button("全不选")
         self.select_all = Button("全选")
         

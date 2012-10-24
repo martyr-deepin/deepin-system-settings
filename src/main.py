@@ -46,16 +46,26 @@ class DBusService(dbus.service.Object):
         dbus.service.Object.__init__(self, bus_name, app_object_name)
 
         # Define DBus method.
-        def receive_plug_id(self, *message):
-            print (message[0])
-            content_page.add_plug_id(message[0])
+        def message_receiver(self, *message):
+            (message_type, message_content) = message
+            if message_type == "send_plug_id":
+                content_page.add_plug_id(message_content)
+            else:
+                print message
                     
         # Below code export dbus method dyanmically.
         # Don't use @dbus.service.method !
         setattr(DBusService, 
-                'receive_plug_id', 
-                dbus.service.method(app_dbus_name)(receive_plug_id))
+                'message_receiver', 
+                dbus.service.method(app_dbus_name)(message_receiver))
 
+def switch_page(index, label, slider, navigate_page):
+    if index == 0 and label == "系统设置":
+        slider.slide_to(navigate_page)
+        
+def add_crumb(index, label):
+    print (index, label)
+        
 def start_module_process(slider, content_page, module_path, module_config):
     print "start module process"
     
@@ -110,7 +120,7 @@ if __name__ == "__main__":
     module_infos = get_module_infos()
     
     # Init action bar.
-    action_bar = ActionBar(module_infos)
+    action_bar = ActionBar(module_infos, lambda bread, index, label: switch_page(index, label, slider, navigate_page))
     
     # Init slider.
     slider = Slider()
