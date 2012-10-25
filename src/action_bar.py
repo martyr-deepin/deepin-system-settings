@@ -92,7 +92,7 @@ class ActionBar(gtk.Alignment):
         self.search_align.add(self.search_entry)
         self.action_box.pack_start(self.backward_button)
         self.action_box.pack_start(self.forward_button)
-        self.navigate_bar.pack_start(self.bread, False, False)
+        self.navigate_bar.pack_start(self.bread, True, True)
         self.main_box.pack_start(self.action_align, False, False)
         self.main_box.pack_start(self.navigate_bar, True, True)
         self.main_box.pack_start(self.search_align, False, False)

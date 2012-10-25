@@ -39,18 +39,23 @@ def send_message(message_type, message_content):
         
 def send_plug_id(plug):
     send_message("send_plug_id", plug.get_id())
-
-def send_crumb_info(plug):
+    
+def send_module_info(plug):
     config = Config(os.path.join(get_parent_dir(__file__), "config.ini"))
     config.load()
-    send_message("send_crumb_info", 
+    send_message("send_module_info", 
                  (1, 
                   (config.get("main", "id"), config.get("name", "zh_CN"))
                   ))
+
+def send_submodule_crumb(crumb_index, crumb_name):
+    send_message("send_submodule_info", (crumb_index, crumb_name))
             
 def switch_setting_view(slider, theme_setting_view, theme):
     slider.slide_to(theme_setting_view)
     theme_setting_view.set_theme(theme)
+    
+    send_submodule_crumb(2, "主题设置")
     
 if __name__ == "__main__":
     # WARING: only use once in one process
@@ -88,7 +93,7 @@ if __name__ == "__main__":
     # Handle signals.
     plug.connect("destroy", lambda w: gtk.main_quit())
     plug.connect("realize", send_plug_id)    
-    plug.connect("realize", send_crumb_info)    
+    plug.connect("realize", send_module_info)    
     plug.connect("realize", lambda w: slider.set_widget(theme_view))
     
     # Show.

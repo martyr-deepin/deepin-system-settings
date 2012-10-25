@@ -23,6 +23,7 @@
 from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.slider import Slider
+from dtk.ui.breadcrumb import Crumb
 from search_page import SearchPage
 from content_page import ContentPage
 from action_bar import ActionBar
@@ -40,6 +41,7 @@ class DBusService(dbus.service.Object):
                  bus_name, 
                  app_dbus_name, 
                  app_object_name, 
+                 action_bar,
                  content_page,
                  ):
         # Init dbus object.
@@ -50,6 +52,12 @@ class DBusService(dbus.service.Object):
             (message_type, message_content) = message
             if message_type == "send_plug_id":
                 content_page.add_plug_id(message_content)
+            elif message_type == "send_module_info":
+                (index, (module_id, crumb_name)) = message_content
+                action_bar.bread.add(Crumb(crumb_name, None))
+            elif message_type == "send_submodule_info":
+                (crumb_index, crumb_name) = message_content
+                action_bar.bread.add(Crumb(crumb_name, None))
             else:
                 print message
                     
@@ -59,7 +67,7 @@ class DBusService(dbus.service.Object):
                 'message_receiver', 
                 dbus.service.method(app_dbus_name)(message_receiver))
 
-def switch_page(index, label, slider, navigate_page):
+def switch_page(bread, index, label, slider, navigate_page):
     if index == 0 and label == "系统设置":
         slider.slide_to(navigate_page)
         
@@ -118,9 +126,13 @@ if __name__ == "__main__":
     
     # Init module infos.
     module_infos = get_module_infos()
+    module_dict = {}
+    for module_info_list in module_infos:
+        for module_info in module_info_list:
+            module_dict[module_info.id] = module_info
     
     # Init action bar.
-    action_bar = ActionBar(module_infos, lambda bread, index, label: switch_page(index, label, slider, navigate_page))
+    action_bar = ActionBar(module_infos, lambda bread, index, label: switch_page(bread, index, label, slider, navigate_page))
     
     # Init slider.
     slider = Slider()
@@ -151,6 +163,6 @@ if __name__ == "__main__":
     application.main_box.pack_start(main_align)
     
     # Start dbus service.
-    DBusService(app_bus_name, app_dbus_name, app_object_name, content_page)
+    DBusService(app_bus_name, app_dbus_name, app_object_name, action_bar, content_page)
     
     application.run()

@@ -25,6 +25,9 @@ import gtk
 import os
 
 MODULE_DIR = os.path.join(os.path.dirname(__file__), "modules")        
+FIRST_MODULE_NAMES = ["screen", "sound", "individuation", "date_time", "power"]
+SECOND_MODULE_NAMES = ["keyboard", "mouse", "touchpad", "printer", "network", "bluetooth", "driver"]
+THIRD_MODULE_NAMES = ["account", "auxiliary", "application_associate", "system_information"]
 
 class ModuleInfo(object):
     '''
@@ -38,17 +41,15 @@ class ModuleInfo(object):
         self.path = module_path
         self.config = Config(os.path.join(self.path, "config.ini"))
         self.config.load()
+        self.id = self.config.get("main", "id")
         self.name = self.config.get("name", "zh_CN")
         self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "icon")))
         self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "menu_icon")))
         
 def get_module_infos():
     all_module_names = filter(lambda module_name: os.path.isdir(os.path.join(MODULE_DIR, module_name)), os.listdir(MODULE_DIR))        
-    first_module_names = ["screen", "sound", "individuation", "date_time", "power"]
-    second_module_names = ["keyboard", "mouse", "touchpad", "printer", "network", "bluetooth", "driver"]
-    third_module_names = ["account", "auxiliary", "application_associate", "system_information"]
-    extend_module_names = list(set(all_module_names) - set(first_module_names) - set(second_module_names) - set(third_module_names))
+    extend_module_names = list(set(all_module_names) - set(FIRST_MODULE_NAMES) - set(SECOND_MODULE_NAMES) - set(THIRD_MODULE_NAMES))
     
     return map(lambda names: 
                map(lambda name: ModuleInfo(os.path.join(MODULE_DIR, name)), names), 
-                   [first_module_names, second_module_names, third_module_names, extend_module_names])
+                   [FIRST_MODULE_NAMES, SECOND_MODULE_NAMES, THIRD_MODULE_NAMES, extend_module_names])
