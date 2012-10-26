@@ -24,6 +24,7 @@ from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.slider import Slider
 from dtk.ui.breadcrumb import Crumb
+from dtk.ui.utils import is_dbus_name_exists
 from search_page import SearchPage
 from content_page import ContentPage
 from action_bar import ActionBar
@@ -33,6 +34,8 @@ import subprocess
 import os
 from module_info import get_module_infos
 from dbus.mainloop.glib import DBusGMainLoop
+import dbus
+import dbus.service
 import dbus
 import dbus.service
 
@@ -53,7 +56,7 @@ class DBusService(dbus.service.Object):
             if message_type == "send_plug_id":
                 content_page.add_plug_id(message_content)
             elif message_type == "send_module_info":
-                (index, (module_id, crumb_name)) = message_content
+                (crumb_index, (module_id, crumb_name)) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name) = message_content
@@ -67,22 +70,50 @@ class DBusService(dbus.service.Object):
                 'message_receiver', 
                 dbus.service.method(app_dbus_name)(message_receiver))
 
-def switch_page(bread, index, label, slider, navigate_page):
-    if index == 0 and label == "系统设置":
-        slider.slide_to(navigate_page)
+def handle_dbus_reply(*reply):
+    print "com.deepin.system_settings (reply): %s" % (str(reply))
+    
+def handle_dbus_error(*error):
+    print "com.deepin.system_settings (error): %s" % (str(error))
+        
+def send_message(module_id, message_type, message_content):
+    bus = dbus.SessionBus()
+    module_dbus_name = "com.deepin.%s_settings" % (module_id)
+    module_object_name = "/com/deepin/%s_settings" % (module_id)
+    if is_dbus_name_exists(module_dbus_name):
+        bus_object = bus.get_object(module_dbus_name, module_object_name)
+        method = bus_object.get_dbus_method("message_receiver")
+        method(message_type, 
+               message_content,
+               reply_handler=handle_dbus_reply,
+               error_handler=handle_dbus_error
+               )
+        
+def switch_page(bread, content_page, index, label, slider, navigate_page):
+    if index == 0:
+        if label == "系统设置":
+            slider.slide_to(navigate_page)
+            content_page.module_id = None
+    else:
+        send_message(content_page.module_id,
+                     "click_crumb",
+                     (index, label))
         
 def add_crumb(index, label):
     print (index, label)
         
 def start_module_process(slider, content_page, module_path, module_config):
-    print "start module process"
-    
     module_id = module_config.get("main", "id")
     if content_page.module_id != module_id:
         content_page.module_id = module_id
         slider.slide_to(content_page)
         
-        subprocess.Popen("python %s" % (os.path.join(module_path, module_config.get("main", "program"))), shell=True)
+        # bus = dbus.SessionBus()
+        module_dbus_name = "com.deepin.%s_settings" % (module_id)
+        if not is_dbus_name_exists(module_dbus_name):
+            subprocess.Popen("python %s" % (os.path.join(module_path, module_config.get("main", "program"))), shell=True)
+        else:
+            send_message(content_page.module_id, "show_again", "")
             
 if __name__ == "__main__":
     # WARING: only use once in one process
@@ -132,7 +163,7 @@ if __name__ == "__main__":
             module_dict[module_info.id] = module_info
     
     # Init action bar.
-    action_bar = ActionBar(module_infos, lambda bread, index, label: switch_page(bread, index, label, slider, navigate_page))
+    action_bar = ActionBar(module_infos, lambda bread, index, label: switch_page(bread, content_page, index, label, slider, navigate_page))
     
     # Init slider.
     slider = Slider()
