@@ -21,10 +21,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.config import Config
+from dtk.ui.utils import get_parent_dir
 import gtk
 import os
 
-MODULE_DIR = os.path.join(os.path.dirname(__file__), "modules")        
+MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        
 FIRST_MODULE_NAMES = ["screen", "sound", "individuation", "date_time", "power"]
 SECOND_MODULE_NAMES = ["keyboard", "mouse", "touchpad", "printer", "network", "bluetooth", "driver"]
 THIRD_MODULE_NAMES = ["account", "auxiliary", "application_associate", "system_information"]
