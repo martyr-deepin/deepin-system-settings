@@ -27,6 +27,6 @@ app_theme = init_skin(
     "deepin-individuation-settings", 
     "1.0",
     "01",
-    os.path.join(get_parent_dir(__file__), "skin"),
-    os.path.join(get_parent_dir(__file__), "app_theme"),
+    os.path.join(get_parent_dir(__file__, 2), "skin"),
+    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
     )

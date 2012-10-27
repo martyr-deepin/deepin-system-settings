@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from constant import APP_DBUS_NAME, APP_OBJECT_NAME
 from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.slider import Slider
@@ -41,14 +42,12 @@ import dbus.service
 
 class DBusService(dbus.service.Object):
     def __init__(self, 
-                 bus_name, 
-                 app_dbus_name, 
-                 app_object_name, 
                  action_bar,
                  content_page,
                  ):
         # Init dbus object.
-        dbus.service.Object.__init__(self, bus_name, app_object_name)
+        bus_name = dbus.service.BusName(APP_DBUS_NAME, bus=dbus.SessionBus())
+        dbus.service.Object.__init__(self, bus_name, APP_OBJECT_NAME)
 
         # Define DBus method.
         def message_receiver(self, *message):
@@ -68,7 +67,7 @@ class DBusService(dbus.service.Object):
         # Don't use @dbus.service.method !
         setattr(DBusService, 
                 'message_receiver', 
-                dbus.service.method(app_dbus_name)(message_receiver))
+                dbus.service.method(APP_DBUS_NAME)(message_receiver))
 
 def handle_dbus_reply(*reply):
     print "com.deepin.system_settings (reply): %s" % (str(reply))
@@ -118,11 +117,6 @@ def start_module_process(slider, content_page, module_path, module_config):
 if __name__ == "__main__":
     # WARING: only use once in one process
     DBusGMainLoop(set_as_default=True) 
-    
-    # Build DBus name.
-    app_dbus_name = "com.deepin.system_settings"
-    app_object_name = "/com/deepin/system_settings"
-    app_bus_name = dbus.service.BusName(app_dbus_name, bus=dbus.SessionBus())
     
     # Init application.
     application = Application()
@@ -194,6 +188,6 @@ if __name__ == "__main__":
     application.main_box.pack_start(main_align)
     
     # Start dbus service.
-    DBusService(app_bus_name, app_dbus_name, app_object_name, action_bar, content_page)
+    DBusService(action_bar, content_page)
     
     application.run()

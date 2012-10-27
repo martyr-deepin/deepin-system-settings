@@ -31,13 +31,13 @@ from dtk.ui.label import Label
 from dtk.ui.constant import COLOR_NAME_DICT, DEFAULT_FONT_SIZE
 from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_window_frame, draw_pixbuf, draw_text
-from dtk.ui.utils import alpha_color_hex_to_cairo, get_optimum_pixbuf_from_file, cairo_disable_antialias, color_hex_to_cairo, cairo_state
+from dtk.ui.utils import alpha_color_hex_to_cairo, get_optimum_pixbuf_from_file, cairo_disable_antialias, color_hex_to_cairo, cairo_state, get_parent_dir
 import cairo
 import gobject
 import gtk
 
-THEME_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "theme")
-BACKGROUND_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "background")
+THEME_DIR = os.path.join(get_parent_dir(__file__, 2), "theme")
+BACKGROUND_DIR = os.path.join(get_parent_dir(__file__, 2), "background")
 
 class Theme(object):
     '''
