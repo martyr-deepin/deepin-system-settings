@@ -111,8 +111,6 @@ class MouseSetting(object):
         self.button_widgets["keyboard_setting"] = Label(_("Keyboard Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
         self.button_widgets["mouse_setting"] = Label(_("Mouse Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
         # container init
-        # self.container_widgets["window"] = Window()
-        # self.container_widgets["titlebar"] = Titlebar(["close"])
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
         self.container_widgets["right_vbox"] = gtk.VBox(False)
@@ -198,11 +196,6 @@ class MouseSetting(object):
      
     def __adjust_widget(self):
         ''' adjust widget '''
-        # self.container_widgets["window"].set_size_request(800, 400)
-        # self.container_widgets["window"].window_frame.pack_start(
-        #     self.container_widgets["titlebar"], False, False)
-        # self.container_widgets["window"].window_frame.pack_start(
-        #     self.container_widgets["main_hbox"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right"], False, False)
         self.alignment_widgets["left"].add(self.container_widgets["left_vbox"])
@@ -409,12 +402,6 @@ class MouseSetting(object):
     def __signals_connect(self):
         ''' widget signals connect'''
         # window signals
-        # self.container_widgets["window"].add_move_event(
-        #     self.container_widgets["titlebar"])
-        # self.container_widgets["titlebar"].close_button.connect(
-        #     "clicked", lambda w :self.container_widgets["window"].destroy())
-        # self.container_widgets["window"].connect("destroy", gtk.main_quit)
-        # left-handed operation
         self.button_widgets["right_hand_radio"].connect("toggled", self.left_or_right_set, "right")
         self.button_widgets["left_hand_radio"].connect("toggled", self.left_or_right_set, "left")
         self.settings.connect("changed::left-handed", self.left_or_right_setting_changed)
@@ -526,14 +513,7 @@ class MouseSetting(object):
         '''set to the default'''
         settings.mouse_set_to_default()
     
-    # def show(self):
-        # '''show window'''
-        # self.container_widgets["window"].show_window()
-        # gtk.main()
-
-    
 if __name__ == '__main__':
-    # MouseSetting().show()
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
     mouse_settings = MouseSetting()
@@ -548,4 +528,3 @@ if __name__ == '__main__':
     module_frame.module_message_handler = message_handler        
     
     module_frame.run()
-    
