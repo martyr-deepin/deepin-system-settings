@@ -22,3 +22,6 @@
 
 APP_DBUS_NAME = "com.deepin.system_settings"
 APP_OBJECT_NAME = "/com/deepin/system_settings"
+
+PAGE_WIDTH = 834
+PAGE_HEIGHT = 474

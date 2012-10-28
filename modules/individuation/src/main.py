@@ -25,22 +25,23 @@ import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
-from dtk.ui.slider import Slider
+from dtk.ui.new_slider import HSlider
 from theme_setting_view import ThemeSettingView
 from theme_view import ThemeView
 from module_frame import ModuleFrame
+from constant import PAGE_WIDTH, PAGE_HEIGHT
 
 if __name__ == "__main__":
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
     
     # Init slider.
-    slider = Slider()
+    slider = HSlider()
     
     # Init theme setting view.
     theme_setting_view = ThemeSettingView()
     
     def switch_setting_view(slider, theme_setting_view, theme):
-        slider.slide_to(theme_setting_view)
+        slider.slide_to_page(theme_setting_view, "right")
         theme_setting_view.set_theme(theme)
         
         module_frame.send_submodule_crumb(2, "主题设置")
@@ -49,24 +50,24 @@ if __name__ == "__main__":
     theme_view = ThemeView(lambda theme: switch_setting_view(slider, theme_setting_view, theme))
     
     # Add widgets in slider.
-    slider.append_widget(theme_view)
-    slider.append_widget(theme_setting_view)
-    theme_view.set_size_request(834, 474)
-    theme_setting_view.set_size_request(834, 474)
+    slider.append_page(theme_view)
+    slider.append_page(theme_setting_view)
+    theme_view.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
+    theme_setting_view.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
         
     # Connect widgets.
     module_frame.add(slider)
     
-    module_frame.connect("realize", lambda w: slider.set_widget(theme_view))
+    module_frame.connect("realize", lambda w: slider.set_to_page(theme_view))
     
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
             if crumb_index == 1:
-                slider.slide_to(theme_view)
+                slider.slide_to_page(theme_view, "left")
         elif message_type == "show_again":
-            slider.set_widget(theme_view)
+            slider.set_to_page(theme_view)
             module_frame.send_module_info()
 
     module_frame.module_message_handler = message_handler        

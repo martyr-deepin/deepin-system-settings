@@ -20,10 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.scrolled_window import ScrolledWindow
+# from dtk.ui.scrolled_window import ScrolledWindow
 import gobject
+import gtk
 
-class SearchPage(ScrolledWindow):
+# class SearchPage(ScrolledWindow):
+class SearchPage(gtk.VBox):
     '''
     class docs
     '''
@@ -32,6 +34,6 @@ class SearchPage(ScrolledWindow):
         '''
         init docs
         '''
-        ScrolledWindow.__init__(self, 0, 0)
+        gtk.VBox.__init__(self)
         
 gobject.type_register(SearchPage)

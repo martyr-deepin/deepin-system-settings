@@ -124,7 +124,7 @@ class ModuleFrame(gtk.Plug):
         print "%s (error): %s" % (self.module_dbus_name, str(error))
     
     def send_plug_id(self):
-        self.send_message("send_plug_id", self.get_id())
+        self.send_message("send_plug_id", (self.module_id, self.get_id()))
         
     def send_module_info(self):
         self.send_message("send_module_info", 
