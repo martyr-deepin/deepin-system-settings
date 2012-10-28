@@ -74,6 +74,7 @@ class ThemeView(ScrolledWindow):
         init docs
         '''
         ScrolledWindow.__init__(self, 0, 0)
+        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.switch_setting_view = switch_setting_view
         self.themes = map(lambda theme_file: Theme(theme_file), 
                           filter(lambda theme_file: os.path.isfile(os.path.join(THEME_DIR, theme_file)) and theme_file.endswith("ini"), os.listdir(THEME_DIR)))
