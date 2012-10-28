@@ -22,8 +22,6 @@
 
 import gtk
 import gobject
-from constant import PAGE_WIDTH, PAGE_HEIGHT
-from dtk.ui.utils import container_remove_all
 
 class ContentPage(gtk.VBox):
     '''

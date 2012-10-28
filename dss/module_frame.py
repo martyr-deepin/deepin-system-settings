@@ -118,10 +118,12 @@ class ModuleFrame(gtk.Plug):
                    )
             
     def handle_dbus_reply(self, *reply):
-        print "%s (reply): %s" % (self.module_dbus_name, str(reply))
+        # print "%s (reply): %s" % (self.module_dbus_name, str(reply))
+        pass
         
     def handle_dbus_error(self, *error):
-        print "%s (error): %s" % (self.module_dbus_name, str(error))
+        # print "%s (error): %s" % (self.module_dbus_name, str(error))
+        pass
     
     def send_plug_id(self):
         self.send_message("send_plug_id", (self.module_id, self.get_id()))
