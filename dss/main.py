@@ -100,6 +100,11 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page):
                      "click_crumb",
                      (index, label))
         
+def click_module_menu_item(slider, content_page_info, action_bar, module_info):
+    if module_info.id != content_page_info.get_active_module_id():
+        action_bar.bread.remove_node_after_index(0)
+        start_module_process(slider, content_page_info, module_info.path, module_info.config)
+        
 def add_crumb(index, label):
     print (index, label)
         
@@ -159,7 +164,9 @@ if __name__ == "__main__":
             module_dict[module_info.id] = module_info
     
     # Init action bar.
-    action_bar = ActionBar(module_infos, lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page))
+    action_bar = ActionBar(module_infos, 
+                           lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page),
+                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info))
     
     # Init slider.
     slider = HSlider()
