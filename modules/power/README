@@ -1,0 +1,5 @@
+dependence (Gentoo):
+sys-power/acpid, sys-power/pm-utils
+
+acpid socket local client testcase https://github.com/xiangzhai/xcloud/blob/master/test/helloacpid.cpp
+but write what to acpid socket to set the /etc/acpi/XXX and restart related service?

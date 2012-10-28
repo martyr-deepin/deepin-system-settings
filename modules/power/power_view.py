@@ -31,16 +31,12 @@ app_theme = init_skin(
     os.path.join(get_parent_dir(__file__), "app_theme"),
     )
 
-import os
-import dtk_cairo_blur
-from dtk.ui.config import Config
+#import os
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
-from dtk.ui.constant import COLOR_NAME_DICT, DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
-from dtk.ui.theme import ui_theme
-from dtk.ui.draw import draw_window_frame, draw_pixbuf, draw_text
-from dtk.ui.utils import alpha_color_hex_to_cairo, get_optimum_pixbuf_from_file, cairo_disable_antialias, color_hex_to_cairo, cairo_state
-import cairo
+from dtk.ui.button import ToggleButton
+from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
+from dtk.ui.utils import get_optimum_pixbuf_from_file
 import gobject
 import gtk
 
@@ -57,6 +53,7 @@ class PowerView(gtk.VBox):
         self.label_padding_x = 10
         self.label_padding_y = 10
         self.hbox_spacing = 10
+        self.wait_duration_items = [("5分钟", 1), ("10分钟", 2), ("30分钟", 3), ("1小时", 4)]
         '''
         power button config
         '''
@@ -71,6 +68,7 @@ class PowerView(gtk.VBox):
         self.press_power_button_label = self.m_setup_label("按电源按钮时")
         self.press_power_button_combo = self.m_setup_combo(
             [("关机", 1), ("休眠", 2), ("不采取任何措施", 3)])
+        self.press_power_button_combo.connect("item-selected", self.m_combo_item_selected, "press_power_button")
         self.m_widget_pack_start(self.press_power_button_box, 
             [self.press_power_button_label, self.press_power_button_combo])
         self.press_power_button_align.add(self.press_power_button_box)
@@ -86,16 +84,16 @@ class PowerView(gtk.VBox):
             [self.close_notebook_cover_label, self.close_notebook_cover_combo])
         self.close_notebook_cover_align.add(self.close_notebook_cover_box)
         '''
-        press hibenate button
+        press hibernate button
         '''
-        self.press_hibenate_button_align = self.m_setup_align()
-        self.press_hibenate_button_box = gtk.HBox(spacing=self.hbox_spacing)
-        self.press_hibenate_button_label = self.m_setup_label("按休眠按钮时")
-        self.press_hibenate_button_combo = self.m_setup_combo(
+        self.press_hibernate_button_align = self.m_setup_align()
+        self.press_hibernate_button_box = gtk.HBox(spacing=self.hbox_spacing)
+        self.press_hibernate_button_label = self.m_setup_label("按休眠按钮时")
+        self.press_hibernate_button_combo = self.m_setup_combo(
             [("休眠", 1), ("不采取任何措施", 2), ("关机", 3)])
-        self.m_widget_pack_start(self.press_hibenate_button_box, 
-            [self.press_hibenate_button_label, self.press_hibenate_button_combo])
-        self.press_hibenate_button_align.add(self.press_hibenate_button_box)
+        self.m_widget_pack_start(self.press_hibernate_button_box, 
+            [self.press_hibernate_button_label, self.press_hibernate_button_combo])
+        self.press_hibernate_button_align.add(self.press_hibernate_button_box)
         '''
         power save config
         '''
@@ -103,22 +101,22 @@ class PowerView(gtk.VBox):
         self.power_save_config_label = self.m_setup_label("电源节能设置", ALIGN_START)
         self.power_save_config_align.add(self.power_save_config_label)
         '''
-        hibenate status
+        hibernate status
         '''
-        self.hibenate_status_align = self.m_setup_align()
-        self.hibenate_status_box = gtk.HBox(spacing=self.hbox_spacing)
-        self.hibenate_status_label = self.m_setup_label("进入休眠状态")
-        self.hibenate_status_combo = self.m_setup_combo([("", 1)])
-        self.m_widget_pack_start(self.hibenate_status_box, 
-            [self.hibenate_status_label, self.hibenate_status_combo])
-        self.hibenate_status_align.add(self.hibenate_status_box)
+        self.hibernate_status_align = self.m_setup_align()
+        self.hibernate_status_box = gtk.HBox(spacing=self.hbox_spacing)
+        self.hibernate_status_label = self.m_setup_label("进入休眠状态")
+        self.hibernate_status_combo = self.m_setup_combo(self.wait_duration_items)
+        self.m_widget_pack_start(self.hibernate_status_box, 
+            [self.hibernate_status_label, self.hibernate_status_combo])
+        self.hibernate_status_align.add(self.hibernate_status_box)
         '''
         close harddisk
         '''
         self.close_hardisk_align = self.m_setup_align()
         self.close_hardisk_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_hardisk_label = self.m_setup_label("关闭硬盘")
-        self.close_hardisk_combo = self.m_setup_combo([("", 1)])
+        self.close_hardisk_combo = self.m_setup_combo(self.wait_duration_items)
         self.m_widget_pack_start(self.close_hardisk_box, 
             [self.close_hardisk_label, self.close_hardisk_combo])
         self.close_hardisk_align.add(self.close_hardisk_box)
@@ -128,7 +126,7 @@ class PowerView(gtk.VBox):
         self.close_monitor_align = self.m_setup_align()
         self.close_monitor_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_monitor_label = self.m_setup_label("关闭显示器")
-        self.close_monitor_combo = self.m_setup_combo([("", 1)])
+        self.close_monitor_combo = self.m_setup_combo(self.wait_duration_items)
         self.m_widget_pack_start(self.close_monitor_box, 
             [self.close_monitor_label, self.close_monitor_combo])
         self.close_monitor_align.add(self.close_monitor_box)
@@ -138,8 +136,10 @@ class PowerView(gtk.VBox):
         self.wakeup_password_align = self.m_setup_align()
         self.wakeup_password_box = gtk.HBox(spacing=self.hbox_spacing)
         self.wakeup_password_label = self.m_setup_label("唤醒时的密码保护")
+        self.wakeup_password_toggle = self.m_setup_toggle()
+        self.wakeup_password_toggle.connect("toggled", self.m_toggled, "wakeup_password")
         self.m_widget_pack_start(self.wakeup_password_box, 
-            [self.wakeup_password_label])
+            [self.wakeup_password_label, self.wakeup_password_toggle])
         self.wakeup_password_align.add(self.wakeup_password_box)
         '''
         tray battery status
@@ -147,8 +147,9 @@ class PowerView(gtk.VBox):
         self.tray_battery_status_align = self.m_setup_align()
         self.tray_battery_status_box = gtk.HBox(spacing=self.hbox_spacing)
         self.tray_battery_status_label = self.m_setup_label("在系统托盘显示电池状态")
+        self.tray_battery_status_toggle = self.m_setup_toggle()
         self.m_widget_pack_start(self.tray_battery_status_box, 
-            [self.tray_battery_status_label])
+            [self.tray_battery_status_label, self.tray_battery_status_toggle])
         self.tray_battery_status_align.add(self.tray_battery_status_box)
         '''
         this->gtk.VBox pack_start
@@ -157,9 +158,9 @@ class PowerView(gtk.VBox):
             [self.power_button_config_align, 
              self.press_power_button_align, 
              self.close_notebook_cover_align, 
-             self.press_hibenate_button_align, 
+             self.press_hibernate_button_align, 
              self.power_save_config_align, 
-             self.hibenate_status_align, 
+             self.hibernate_status_align, 
              self.close_hardisk_align, 
              self.close_monitor_align, 
              self.wakeup_password_align, 
@@ -176,6 +177,14 @@ class PowerView(gtk.VBox):
         combo = ComboBox(items, None, 0, 120)
         return combo
 
+    '''
+    temperary pixbuf I am not a designer :)
+    '''
+    def m_setup_toggle(self):
+        toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
+            app_theme.get_pixbuf("active_normal.png"))
+        return toggle
+
     def m_setup_align(self):
         align = gtk.Alignment()
         align.set(0.0, 0.5, 0, 0)
@@ -187,5 +196,20 @@ class PowerView(gtk.VBox):
             return
         for item in widgets:
             parent_widget.pack_start(item, False, False)
+
+    def m_combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
+        if object == "press_power_button":
+            '''
+            There is no org.gnome.power-manager suspend or hibernate keys in gnome 3 any more
+            so could not use gsettings set/get way
+            '''
+            pass
+
+    def m_toggled(self, widget, data=None):
+        print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
+        '''
+        Same situation as m_combo_item_selected callback
+        '''
+        pass
 
 gobject.type_register(PowerView)        
