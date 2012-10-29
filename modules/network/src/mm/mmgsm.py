@@ -48,29 +48,53 @@ class MMGsmCard(MMGsm):
         return self.properties["supportedModes"]
 
     def get_imei(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetImei())
+        return TypeConvert.dbus2py(self.dbus_method("GetImei"))
 
     def get_imsi(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetImsi())
+        return TypeConvert.dbus2py(self.dbus_method("GetImsi"))
 
     def get_operator_id(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetOperatorId())
+        return TypeConvert.dbus2py(self.dbus_method("GetOperatorId)"))
 
     def get_spn(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetSpn())
+        return TypeConvert.dbus2py(self.dbus_method("GetSpn"))
 
     def send_puk(self, puk, pin):
-        self.dbus_interface.SendPuk(self, puk, pin)
+        self.dbus_method("SendPuk", puk, pin, reply_handler = self.send_puk_finish, error_handler = self.send_puk_error)
+
+    def send_puk_finish(self, *reply):    
+        pass
+
+    def send_puk_error(self, *error):
+        pass
 
     def send_pin(self, pin):
-        self.dbus_interface.SendPin(self, pin)
+        self.dbus_method("SendPin", pin, reply_handler = self.send_pin_finish, error_handler = self.send_pin_error)
+
+    def send_pin_finish(self, *reply):
+        pass
+
+    def send_pin_error(self, *error):
+        pass
 
     def enable_pin(self, enable, pin):
-        self.dbus_interface.EnablePin(self, enable, pin)
+        self.dbus_method("EnablePin", enable, pin, reply_handler = self.enable_pin_finish, error_handler = self.enable_pin_error)
+
+    def enable_pin_finish(self, *reply):
+        pass
+        
+    def enable_pin_error(self, *error):
+        pass
 
     def change_pin(self, old_pin, new_pin):
-        self.dbus_interface.ChangePin(self, old_pin, new_pin)
+        self.dbus_method("ChangePin", old_pin, new_pin, reply_handler = self.change_pin_finish, 
+                         error_handler = self.change_pin_error)
 
+    def change_pin_finish(self, *reply):
+        pass
+
+    def change_pin_error(self, *error):
+        pass
 
 class MMGsmContacts(MMGsm):
     '''MMGsmContacts'''
@@ -79,22 +103,28 @@ class MMGsmContacts(MMGsm):
         MMGsm.__init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Gsm.Contacts")
 
     def add(self, name, number):
-        return TypeConvert.dbus2py(self.dbus_interface.Add(name, number))
+        return TypeConvert.dbus2py(self.dbus_method("Add", name, number))
         
     def delete(self, index):
-        self.dbus_interface.Delete(index)
+        self.dbus_method("Delete", index, reply_handler = self.delete_finish, error_handler = self.delete_error)
+
+    def delete_finish(self, *reply):
+        pass
+
+    def delete_error(self, *error):
+        pass
 
     def get(self, index):
-        return TypeConvert.dbus2py(self.dbus_interface.Get(index))
+        return TypeConvert.dbus2py(self.dbus_method("Get", index))
 
     def list(self):
-        return TypeConvert.dbus2py(self.dbus_interface.List())
+        return TypeConvert.dbus2py(self.dbus_method("List"))
 
     def find(self, pattern):
-        return TypeConvert.dbus2py(self.dbus_interface.Find(pattern))
+        return TypeConvert.dbus2py(self.dbus_method("Find", pattern))
 
     def get_count(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetCount())
+        return TypeConvert.dbus2py(self.dbus_method("GetCount"))
 
 class MMGsmNetwork(MMGsm):
     '''MMGsmNetwork'''
@@ -123,34 +153,68 @@ class MMGsmNetwork(MMGsm):
         return self.properties["AccessTechnology"]
 
     def register(self, network_id):
-        self.dbus_interface.Register(network_id)
+        self.dbus_method("Register", network_id, reply_handler = self.register_finish, error_handler = self.register_error)
+
+    def register_finish(self, *reply):
+        pass
+
+    def register_error(self, *error):
+        pass
 
     def scan(self):
-        return TypeConvert.dbus2py(self.dbus_interface.Scan())
+        return TypeConvert.dbus2py(self.dbus_method("Scan"))
 
     def set_apn(self, apn):
-        self.dbus_interface.SetApn(apn)
+        self.dbus_method("SetApn", apn, reply_handler = self.set_apn_finish, error_handler = self.set_apn_error)
+
+    def set_apn_finish(self, *reply):
+        pass
+
+    def set_apn_error(self, *error):
+        pass
 
     def get_signal_quality(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetSignalQuality())
+        return TypeConvert.dbus2py(self.dbus_method("GetSignalQuality"))
 
     def set_band(self, band):
-        self.dbus_interface.SetBand(band)
+        self.dbus_method("SetBand", band, reply_handler = self.set_band_finish, error_handler = self.set_band_error)
+
+    def set_band_finish(self, *reply):
+        pass
+
+    def set_band_error(self, *error):
+        pass
 
     def get_band(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetBand())
+        return TypeConvert.dbus2py(self.dbus_method("GetBand"))
 
     def set_network_mode(self, mode):
         self.dbus_interface.SetNetworkMode(mode)
+        self.dbus_method("SetNetworkMode", mode, reply_handler = self.set_network_mode_finish,
+                         error_handler = self.set_network_mode_error)
+
+    def set_network_mode_finish(self, *reply):
+        pass
+
+    def set_network_mode_error(self, *error):
+        pass
 
     def get_network_mode(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetNetworkMode())
+        return TypeConvert.dbus2py(self.dbus_method("GetNetworkMode"))
 
     def get_registration_info(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetRegistrationInfo())
+        return TypeConvert.dbus2py(self.dbus_method("GetRegistrationInfo"))
 
     def set_allowed_mode(self, mode):
         self.dbus_interface.SetAllowedMode(mode)
+        self.dbus_method("SetAllowedMode", mode, reply_handler = self.set_allowed_mode_finish,
+                         error_handler = self.set_allowed_mode_error)
+
+    def set_allowed_mode_finish(self, *reply):
+        pass
+
+    def set_allowed_mode_error(self, *error):
+        pass
 
     def signal_quality_cb(self, quality):
         print quality
@@ -181,34 +245,59 @@ class MMGsmSms(MMGsm):
         self.bus.add_signal_receiver(self.completed_cb, dbus_interface = self.object_interface, signal_name = "Completed")
 
     def delete(self, index):
-        self.dbus_interface.Delete(index)
+        self.dbus_method("Delete", index, reply_handler = self.delete_finish, error_handler = self.delete_error)
+
+    def delete_finish(self, *reply):
+        pass
+
+    def delete_error(self, *error):
+        pass
 
     def get(self, index):
-        return TypeConvert.dbus2py(self.dbus_interface.Get(index))
+        return TypeConvert.dbus2py(self.dbus_method("Get", index))
 
     def get_format(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetFormat())
+        return TypeConvert.dbus2py(self.dbus_method("GetFormat"))
 
-    def set_format(self, format):
-        self.dbus_interface.SetFormat(format)
+    def set_format(self, new_format):
+        self.dbus_method("SetFormat", new_format, reply_handler = self.set_format_finish, error_handler = self.set_format_error )
+
+    def set_format_finish(self, *reply):
+        pass
+
+    def set_format_error(self, *error):
+        pass
 
     def get_smsc(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetSmsc())
+        return TypeConvert.dbus2py(self.dbus_method("GetSmsc"))
 
     def list(self):
-        return TypeConvert.dbus2py(self.dbus_interface.List())
+        return TypeConvert.dbus2py(self.dbus_method("List"))
 
     def save(self, prop_dict):
-        return TypeConvert.dbus2py(self.dbus_interface.Save(prop_dict))
+        return TypeConvert.dbus2py(self.dbus_method("Save", prop_dict))
 
     def send(self, prop_dict):
-        return TypeConvert.dbus2py(self.dbus_interface.Send(prop_dict))
+        return TypeConvert.dbus2py(self.dbus_method("Send", prop_dict))
 
     def send_from_storage(self, index):
-        self.dbus_interface.SendFromStorage(index)
+        self.dbus_method("SendFromStorage", index, reply_handler = self.send_from_storage_finish,
+                         error_handler = self.send_from_storage_error)
+
+    def send_from_storage_finish(self, *reply):
+        pass
+
+    def send_from_storage_error(self, *error):
+        pass
 
     def set_indication(self, mode, mt, bm, ds, bfr):
-        self.dbus_interface.SetIndication(mode, mt, bm, ds, bfr)
+        self.dbus_method("SetIndication", mode, mt, bm, ds, bfr, reply_handler = self.set_indication_finish, error_handler = self.set_indication_error)
+
+    def set_indication_finish(self, *reply):
+        pass
+
+    def set_indication_error(self, *error):
+        pass
 
     def sms_received_cb(self, index, completed):
         print index
@@ -245,14 +334,19 @@ class MMGsmUssd(MMGsm):
         return self.properties["NetworkRequest"]
 
     def initiate(self, command):
-        return TypeConvert.dbus2py(self.dbus_interface.Initiate(command))
+        return TypeConvert.dbus2py(self.dbus_method("Initiate", command))
 
     def respond(self, response):
-        return TypeConvert.dbus2py(self.dbus_interface.Respond(response))
+        return TypeConvert.dbus2py(self.dbus_method("Respond", response))
 
     def cancel(self):
-        self.dbus_interface.Cancel()
+        self.dbus_method("Cancel", reply_handler = self.cancel_finish, error_handler = self.cancel_error)
 
+    def cancel_finish(self, *reply):
+        pass
+
+    def cancel_error(self, *error):
+        pass
 
 if __name__ == "__main__":
     pass
