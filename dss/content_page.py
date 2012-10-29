@@ -28,17 +28,47 @@ class ContentPage(gtk.VBox):
     class docs
     '''
 	
-    def __init__(self):
+    def __init__(self, module_id):
         '''
         init docs
         '''
         gtk.VBox.__init__(self)
-        self.socket = gtk.Socket()
-        self.module_id = None
+        self.module_id = module_id
         
+        self.socket = gtk.Socket()
         self.pack_start(self.socket, True, True)
         
     def add_plug_id(self, plug_id):
         self.socket.add_id(plug_id)
                 
 gobject.type_register(ContentPage)
+
+class ContentPageInfo(object):
+    '''
+    class docs
+    '''
+	
+    def __init__(self, slider):
+        '''
+        init docs
+        '''
+        self.slider = slider
+        self.page_dict = {}
+        self.active_module_id = 0
+        
+    def set_active_module_id(self, module_id):
+        self.active_module_id = module_id
+        
+    def get_active_module_id(self):
+        return self.active_module_id
+        
+    def create_content_page(self, module_id):
+        content_page = ContentPage(module_id)
+        self.page_dict[module_id] = content_page
+        self.slider.append_page(content_page)
+    
+    def get_content_page(self, module_id):
+        if not self.page_dict.has_key(module_id):
+            self.create_content_page(module_id)
+            
+        return self.page_dict[module_id]

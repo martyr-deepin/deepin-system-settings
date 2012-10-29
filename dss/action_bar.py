@@ -34,7 +34,7 @@ class ActionBar(gtk.Alignment):
     class docs
     '''
 	
-    def __init__(self, module_infos, switch_page):
+    def __init__(self, module_infos, switch_page, click_module_item):
         '''
         init docs
         '''
@@ -66,11 +66,7 @@ class ActionBar(gtk.Alignment):
         # Init navigate bar.
         self.navigate_bar = gtk.HBox()
         self.bread = Bread([("系统设置", 
-                             map(lambda module_info: IconTextItem((module_info.menu_icon_pixbuf,
-                                                              module_info.menu_icon_pixbuf,
-                                                              module_info.menu_icon_pixbuf,
-                                                              ),
-                                                             module_info.name),
+                             map(lambda module_info: ModuleMenuItem(module_info, click_module_item),
                                  list(itertools.chain(*module_infos)))),
                             ])
         self.bread.connect("item_clicked", switch_page)
@@ -111,3 +107,29 @@ class ActionBar(gtk.Alignment):
         cr.fill()
 
 gobject.type_register(ActionBar)
+
+class ModuleMenuItem(IconTextItem):
+    '''
+    class docs
+    '''
+	
+    def __init__(self, module_info, click_callback):
+        '''
+        init docs
+        '''
+        IconTextItem.__init__(
+            self, 
+            (module_info.menu_icon_pixbuf,
+             module_info.menu_icon_pixbuf,
+             module_info.menu_icon_pixbuf,
+             ),
+            module_info.name
+            )
+        self.module_info = module_info
+        self.click_callback = click_callback
+        
+    def button_press(self, column, offset_x, offset_y):
+        self.click_callback(self.module_info)
+        
+gobject.type_register(ModuleMenuItem)
+        
