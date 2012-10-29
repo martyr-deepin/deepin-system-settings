@@ -80,6 +80,7 @@ class PowerView(gtk.VBox):
         self.close_notebook_cover_label = self.m_setup_label("合上笔记本盖子")
         self.close_notebook_cover_combo = self.m_setup_combo(
             [("不采取任何措施", 1), ("关机", 2), ("休眠", 3)])
+        self.close_notebook_cover_combo.connect("item-selected", self.m_combo_item_selected, "close_notebook_cover")
         self.m_widget_pack_start(self.close_notebook_cover_box, 
             [self.close_notebook_cover_label, self.close_notebook_cover_combo])
         self.close_notebook_cover_align.add(self.close_notebook_cover_box)
@@ -91,6 +92,7 @@ class PowerView(gtk.VBox):
         self.press_hibernate_button_label = self.m_setup_label("按休眠按钮时")
         self.press_hibernate_button_combo = self.m_setup_combo(
             [("休眠", 1), ("不采取任何措施", 2), ("关机", 3)])
+        self.press_hibernate_button_combo.connect("item-selected", self.m_combo_item_selected, "press_hibernate_button")
         self.m_widget_pack_start(self.press_hibernate_button_box, 
             [self.press_hibernate_button_label, self.press_hibernate_button_combo])
         self.press_hibernate_button_align.add(self.press_hibernate_button_box)
@@ -107,6 +109,7 @@ class PowerView(gtk.VBox):
         self.hibernate_status_box = gtk.HBox(spacing=self.hbox_spacing)
         self.hibernate_status_label = self.m_setup_label("进入休眠状态")
         self.hibernate_status_combo = self.m_setup_combo(self.wait_duration_items)
+        self.hibernate_status_combo.connect("item-selected", self.m_combo_item_selected, "hibernate_status")
         self.m_widget_pack_start(self.hibernate_status_box, 
             [self.hibernate_status_label, self.hibernate_status_combo])
         self.hibernate_status_align.add(self.hibernate_status_box)
@@ -117,6 +120,7 @@ class PowerView(gtk.VBox):
         self.close_hardisk_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_hardisk_label = self.m_setup_label("关闭硬盘")
         self.close_hardisk_combo = self.m_setup_combo(self.wait_duration_items)
+        self.close_hardisk_combo.connect("item-selected", self.m_combo_item_selected, "close_hardisk")
         self.m_widget_pack_start(self.close_hardisk_box, 
             [self.close_hardisk_label, self.close_hardisk_combo])
         self.close_hardisk_align.add(self.close_hardisk_box)
@@ -127,6 +131,7 @@ class PowerView(gtk.VBox):
         self.close_monitor_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_monitor_label = self.m_setup_label("关闭显示器")
         self.close_monitor_combo = self.m_setup_combo(self.wait_duration_items)
+        self.close_monitor_combo.connect("item-selected", self.m_combo_item_selected, "close_monitor")
         self.m_widget_pack_start(self.close_monitor_box, 
             [self.close_monitor_label, self.close_monitor_combo])
         self.close_monitor_align.add(self.close_monitor_box)
@@ -148,6 +153,7 @@ class PowerView(gtk.VBox):
         self.tray_battery_status_box = gtk.HBox(spacing=self.hbox_spacing)
         self.tray_battery_status_label = self.m_setup_label("在系统托盘显示电池状态")
         self.tray_battery_status_toggle = self.m_setup_toggle()
+        self.tray_battery_status_toggle.connect("toggled", self.m_toggled, "tray_battery_status")
         self.m_widget_pack_start(self.tray_battery_status_box, 
             [self.tray_battery_status_label, self.tray_battery_status_toggle])
         self.tray_battery_status_align.add(self.tray_battery_status_box)
@@ -171,9 +177,6 @@ class PowerView(gtk.VBox):
         return label
 
     def m_setup_combo(self, items=[]):
-        '''
-        FIXME: set max_width, but when ComboBox`s items is empty, then ComboBox.width < max_width
-        '''
         combo = ComboBox(items, None, 0, 120)
         return combo
 
@@ -201,12 +204,14 @@ class PowerView(gtk.VBox):
         if object == "press_power_button":
             '''
             There is no org.gnome.power-manager suspend or hibernate keys in gnome 3 any more
-            so could not use gsettings set/get way
+            so could not use gsettings set/get way.
+            I want to use /etc/acpi/* script at first, if /var/run/acpid.socket is available to 
+            control acpid daemon, then changed the script way.
             '''
             pass
 
     def m_toggled(self, widget, data=None):
-        print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
+        #print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
         '''
         Same situation as m_combo_item_selected callback
         '''
