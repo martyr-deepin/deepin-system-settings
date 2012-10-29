@@ -1,0 +1,600 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-10-29 13:27+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.py:61 ../src/main.py:541 ../src/main.py:1024
+#: ../src/main.py:1025 ../src/main.py:1055 ../src/main.py:1059
+msgid "Custom Shortcuts"
+msgstr ""
+
+#: ../src/main.py:109
+msgid "Repeat"
+msgstr ""
+
+#: ../src/main.py:110
+msgid "Repeat Delay"
+msgstr ""
+
+#: ../src/main.py:111
+msgid "Repeat Interval"
+msgstr ""
+
+#: ../src/main.py:113 ../src/main.py:119
+msgid "Fast"
+msgstr ""
+
+#: ../src/main.py:114 ../src/main.py:120
+msgid "Slow"
+msgstr ""
+
+#: ../src/main.py:115
+msgid "Long"
+msgstr ""
+
+#: ../src/main.py:116
+msgid "Short"
+msgstr ""
+
+#: ../src/main.py:117
+msgid "Cursor Blink"
+msgstr ""
+
+#: ../src/main.py:121
+msgid "Disable touchpad while typing"
+msgstr ""
+
+#: ../src/main.py:124
+msgid "Relevant input device Settings "
+msgstr ""
+
+#: ../src/main.py:130
+msgid "Mouse Setting"
+msgstr ""
+
+#: ../src/main.py:131
+msgid "TouchPad Setting"
+msgstr ""
+
+#: ../src/main.py:209 ../src/main.py:239 ../src/main.py:806
+msgid "Add"
+msgstr ""
+
+#: ../src/main.py:210 ../src/main.py:240
+msgid "Remove"
+msgstr ""
+
+#: ../src/main.py:236
+msgid ""
+"To edit a shortcut, click the row and hold down the new keys or press "
+"Backspace to clear."
+msgstr ""
+
+#: ../src/main.py:267
+msgid "Typing"
+msgstr ""
+
+#: ../src/main.py:268
+msgid "Layout"
+msgstr ""
+
+#: ../src/main.py:269
+msgid "Shortcuts"
+msgstr ""
+
+#: ../src/main.py:667
+msgid "Click here and hold a key to test repeat rate"
+msgstr ""
+
+#: ../src/main.py:794
+msgid "Select an input source to add"
+msgstr ""
+
+#: ../src/main.py:808 ../src/main.py:962 ../src/main.py:982
+msgid "Cancel"
+msgstr ""
+
+#: ../src/main.py:958
+#, python-format
+msgid ""
+"The shortcut \"%s\" cannot be used because it will become impossible to type "
+"using this key."
+msgstr ""
+
+#: ../src/main.py:959
+msgid "Please try with a key such as Control, Alt or Shift at the same time."
+msgstr ""
+
+#: ../src/main.py:977
+#, python-format
+msgid "The shortcut \"%s\" is already used for\"%s\""
+msgstr ""
+
+#: ../src/main.py:978
+#, python-format
+msgid ""
+"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
+msgstr ""
+
+#: ../src/main.py:981
+msgid "Reassign"
+msgstr ""
+
+#: ../src/main.py:992
+msgid "New accelerator.."
+msgstr ""
+
+#: ../src/main.py:1064
+msgid "name"
+msgstr ""
+
+#: ../src/main.py:1066
+msgid "action"
+msgstr ""
+
+#: ../src/main.py:1079
+msgid "Ok"
+msgstr ""
+
+#: ../src/shortcuts.py:27
+msgid "System"
+msgstr ""
+
+#: ../src/shortcuts.py:28
+msgid "Log out"
+msgstr ""
+
+#: ../src/shortcuts.py:29
+msgid "Lock screen"
+msgstr ""
+
+#: ../src/shortcuts.py:30
+msgid "Launchers"
+msgstr ""
+
+#: ../src/shortcuts.py:31
+msgid "Launch help browser"
+msgstr ""
+
+#: ../src/shortcuts.py:32
+msgid "Launch calculator"
+msgstr ""
+
+#: ../src/shortcuts.py:33
+msgid "Launch email client"
+msgstr ""
+
+#: ../src/shortcuts.py:34
+msgid "Launch web browser"
+msgstr ""
+
+#: ../src/shortcuts.py:35
+msgid "Search"
+msgstr ""
+
+#: ../src/shortcuts.py:36
+msgid "Sound and Media"
+msgstr ""
+
+#: ../src/shortcuts.py:37
+msgid "Volume mute"
+msgstr ""
+
+#: ../src/shortcuts.py:38
+msgid "Volume down"
+msgstr ""
+
+#: ../src/shortcuts.py:39
+msgid "Volume up"
+msgstr ""
+
+#: ../src/shortcuts.py:40
+msgid "Launch media player"
+msgstr ""
+
+#: ../src/shortcuts.py:41
+msgid "Play (or play/pause)"
+msgstr ""
+
+#: ../src/shortcuts.py:42
+msgid "Pause playback"
+msgstr ""
+
+#: ../src/shortcuts.py:43
+msgid "Stop playback"
+msgstr ""
+
+#: ../src/shortcuts.py:44
+msgid "Previous track"
+msgstr ""
+
+#: ../src/shortcuts.py:45
+msgid "Next track"
+msgstr ""
+
+#: ../src/shortcuts.py:46
+msgid "Eject"
+msgstr ""
+
+#: ../src/shortcuts.py:47
+msgid "Screenshots"
+msgstr ""
+
+#: ../src/shortcuts.py:48
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../src/shortcuts.py:49
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../src/shortcuts.py:50
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../src/shortcuts.py:51
+msgid "Copy a screenshot to clipboard"
+msgstr ""
+
+#: ../src/shortcuts.py:52
+msgid "Copy a screenshot of a window to clipboard"
+msgstr ""
+
+#: ../src/shortcuts.py:53
+msgid "Copy a screenshot of an area to clipboard"
+msgstr ""
+
+#: ../src/shortcuts.py:54
+msgid "Universal Access"
+msgstr ""
+
+#: ../src/shortcuts.py:55
+msgid "Turn zoom on or off"
+msgstr ""
+
+#: ../src/shortcuts.py:56
+msgid "Zoom in"
+msgstr ""
+
+#: ../src/shortcuts.py:57
+msgid "Zoom out"
+msgstr ""
+
+#: ../src/shortcuts.py:58
+msgid "Turn screen reader on or off"
+msgstr ""
+
+#: ../src/shortcuts.py:59
+msgid "Turn on-screen keyboard on or off"
+msgstr ""
+
+#: ../src/shortcuts.py:60
+msgid "Increase text size"
+msgstr ""
+
+#: ../src/shortcuts.py:61
+msgid "Decrease text size"
+msgstr ""
+
+#: ../src/shortcuts.py:62
+msgid "High contrast on or off"
+msgstr ""
+
+#: ../src/shortcuts.py:66
+msgid "Navigation"
+msgstr ""
+
+#: ../src/shortcuts.py:67
+msgid "Move window to workspace 1"
+msgstr ""
+
+#: ../src/shortcuts.py:68
+msgid "Move window to workspace 2"
+msgstr ""
+
+#: ../src/shortcuts.py:69
+msgid "Move window to workspace 3"
+msgstr ""
+
+#: ../src/shortcuts.py:70
+msgid "Move window to workspace 4"
+msgstr ""
+
+#: ../src/shortcuts.py:71
+msgid "Move window to workspace 5"
+msgstr ""
+
+#: ../src/shortcuts.py:72
+msgid "Move window to workspace 6"
+msgstr ""
+
+#: ../src/shortcuts.py:73
+msgid "Move window to workspace 7"
+msgstr ""
+
+#: ../src/shortcuts.py:74
+msgid "Move window to workspace 8"
+msgstr ""
+
+#: ../src/shortcuts.py:75
+msgid "Move window to workspace 9"
+msgstr ""
+
+#: ../src/shortcuts.py:76
+msgid "Move window to workspace 10"
+msgstr ""
+
+#: ../src/shortcuts.py:77
+msgid "Move window to workspace 11"
+msgstr ""
+
+#: ../src/shortcuts.py:78
+msgid "Move window to workspace 12"
+msgstr ""
+
+#: ../src/shortcuts.py:79
+msgid "Move window one workspace to the left"
+msgstr ""
+
+#: ../src/shortcuts.py:80
+msgid "Move window one workspace to the right"
+msgstr ""
+
+#: ../src/shortcuts.py:81
+msgid "Move window one workspace up"
+msgstr ""
+
+#: ../src/shortcuts.py:82
+msgid "Move window one workspace down"
+msgstr ""
+
+#: ../src/shortcuts.py:84
+msgid "Switch windows of an application"
+msgstr ""
+
+#: ../src/shortcuts.py:85
+msgid "Reverse switch windows of an application"
+msgstr ""
+
+#: ../src/shortcuts.py:86
+msgid "Switch applications"
+msgstr ""
+
+#: ../src/shortcuts.py:87
+msgid "Reverse switch applications"
+msgstr ""
+
+#: ../src/shortcuts.py:88
+msgid "Switch system controls"
+msgstr ""
+
+#: ../src/shortcuts.py:89
+msgid "Reverse switch system controls"
+msgstr ""
+
+#: ../src/shortcuts.py:90
+msgid "Switch windows of an app directly"
+msgstr ""
+
+#: ../src/shortcuts.py:91
+msgid "Reverse switch windows of an app directly"
+msgstr ""
+
+#: ../src/shortcuts.py:92
+msgid "Switch windows directly"
+msgstr ""
+
+#: ../src/shortcuts.py:93
+msgid "Reverse switch windows directly"
+msgstr ""
+
+#: ../src/shortcuts.py:94
+msgid "Switch system controls directly"
+msgstr ""
+
+#: ../src/shortcuts.py:95
+msgid "Reverse switch system controls directly"
+msgstr ""
+
+#: ../src/shortcuts.py:97
+msgid "Switch to workspace 1"
+msgstr ""
+
+#: ../src/shortcuts.py:98
+msgid "Switch to workspace 2"
+msgstr ""
+
+#: ../src/shortcuts.py:99
+msgid "Switch to workspace 3"
+msgstr ""
+
+#: ../src/shortcuts.py:100
+msgid "Switch to workspace 4"
+msgstr ""
+
+#: ../src/shortcuts.py:101
+msgid "Switch to workspace 5"
+msgstr ""
+
+#: ../src/shortcuts.py:102
+msgid "Switch to workspace 6"
+msgstr ""
+
+#: ../src/shortcuts.py:103
+msgid "Switch to workspace 7"
+msgstr ""
+
+#: ../src/shortcuts.py:104
+msgid "Switch to workspace 8"
+msgstr ""
+
+#: ../src/shortcuts.py:105
+msgid "Switch to workspace 9"
+msgstr ""
+
+#: ../src/shortcuts.py:106
+msgid "Switch to workspace 10"
+msgstr ""
+
+#: ../src/shortcuts.py:107
+msgid "Switch to workspace 11"
+msgstr ""
+
+#: ../src/shortcuts.py:108
+msgid "Switch to workspace 12"
+msgstr ""
+
+#: ../src/shortcuts.py:109
+msgid "Switch to workspace left"
+msgstr ""
+
+#: ../src/shortcuts.py:110
+msgid "Switch to workspace right"
+msgstr ""
+
+#: ../src/shortcuts.py:111
+msgid "Switch to workspace above"
+msgstr ""
+
+#: ../src/shortcuts.py:112
+msgid "Switch to workspace below"
+msgstr ""
+
+#: ../src/shortcuts.py:114
+msgid "Windows"
+msgstr ""
+
+#: ../src/shortcuts.py:115
+msgid "Show desktop"
+msgstr ""
+
+#: ../src/shortcuts.py:116
+msgid "Show the activities overview"
+msgstr ""
+
+#: ../src/shortcuts.py:117
+msgid "Show the run command prompt"
+msgstr ""
+
+#: ../src/shortcuts.py:118
+msgid "Activate the window menu"
+msgstr ""
+
+#: ../src/shortcuts.py:119
+msgid "Toggle fullscreen mode"
+msgstr ""
+
+#: ../src/shortcuts.py:120
+msgid "Toggle maximization state"
+msgstr ""
+
+#: ../src/shortcuts.py:121
+msgid "Toggle window always appearing on top"
+msgstr ""
+
+#: ../src/shortcuts.py:122
+msgid "Maximize window"
+msgstr ""
+
+#: ../src/shortcuts.py:123
+msgid "Restore window"
+msgstr ""
+
+#: ../src/shortcuts.py:124
+msgid "Toggle shaded state"
+msgstr ""
+
+#: ../src/shortcuts.py:125
+msgid "Minimize window"
+msgstr ""
+
+#: ../src/shortcuts.py:126
+msgid "Close window"
+msgstr ""
+
+#: ../src/shortcuts.py:127
+msgid "Move window"
+msgstr ""
+
+#: ../src/shortcuts.py:128
+msgid "Resize window"
+msgstr ""
+
+#: ../src/shortcuts.py:129
+msgid "Toggle window on all workspaces or one"
+msgstr ""
+
+#: ../src/shortcuts.py:130
+msgid "Raise window if covered, otherwise lower it"
+msgstr ""
+
+#: ../src/shortcuts.py:131
+msgid "Raise window above other windows"
+msgstr ""
+
+#: ../src/shortcuts.py:132
+msgid "Lower window below other windows"
+msgstr ""
+
+#: ../src/shortcuts.py:133
+msgid "Maximize window vertically"
+msgstr ""
+
+#: ../src/shortcuts.py:134
+msgid "Maximize window horizontally"
+msgstr ""
+
+#: ../src/shortcuts.py:136
+msgid "Move window to top left corner"
+msgstr ""
+
+#: ../src/shortcuts.py:137
+msgid "Move window to top right corner"
+msgstr ""
+
+#: ../src/shortcuts.py:138
+msgid "Move window to bottom left corner"
+msgstr ""
+
+#: ../src/shortcuts.py:139
+msgid "Move window to bottom right corner"
+msgstr ""
+
+#: ../src/shortcuts.py:140
+msgid "Move window to top edge of screen"
+msgstr ""
+
+#: ../src/shortcuts.py:141
+msgid "Move window to bottom edge of screen"
+msgstr ""
+
+#: ../src/shortcuts.py:142
+msgid "Move window to right side of screen"
+msgstr ""
+
+#: ../src/shortcuts.py:143
+msgid "Move window to left side of screen"
+msgstr ""
+
+#: ../src/shortcuts.py:144
+msgid "Move window to center of screen"
+msgstr ""
+
+#: ../src/shortcuts.py:179 ../src/shortcuts.py:206 ../src/shortcuts.py:230
+#: ../src/treeitem.py:664
+msgid "disable"
+msgstr ""
