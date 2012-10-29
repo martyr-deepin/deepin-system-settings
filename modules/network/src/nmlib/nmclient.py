@@ -34,6 +34,7 @@ class NMClient(NMObject):
     __gsignals__  = {
             "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, )),
             "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
+            "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
             "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT))
             }
 
