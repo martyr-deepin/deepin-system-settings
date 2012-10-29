@@ -27,8 +27,8 @@ app_theme = init_skin(
     "deepin-power-settings", 
     "1.0",
     "01",
-    os.path.join(get_parent_dir(__file__), "skin"),
-    os.path.join(get_parent_dir(__file__), "app_theme"),
+    os.path.join(get_parent_dir(__file__, 2), "skin"),
+    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
     )
 
 #import os
@@ -36,7 +36,6 @@ from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
-from dtk.ui.utils import get_optimum_pixbuf_from_file
 import gobject
 import gtk
 
