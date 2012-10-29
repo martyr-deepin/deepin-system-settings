@@ -4,8 +4,8 @@
 # Copyright (C) 2011 ~ 2012 Deepin, Inc.
 #               2012 Zhai Xiang
 # 
-# Author:     Zhai Xiang <xiangzhai83@gmail.com>
-# Maintainer: Zhai Xiang <xiangzhai83@gmail.com>
+# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
+# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 from dtk.ui.init_skin import init_skin
 from dtk.ui.utils import get_parent_dir
 import os
+print os.path.join(get_parent_dir(__file__, 2), "skin")
 app_theme = init_skin(
     "deepin-power-settings", 
     "1.0",
@@ -31,11 +32,12 @@ app_theme = init_skin(
     os.path.join(get_parent_dir(__file__, 2), "app_theme"),
     )
 
-#import os
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
+from dtk.ui.utils import get_optimum_pixbuf_from_file
+from power_manager import PowerManager
 import gobject
 import gtk
 
@@ -53,6 +55,7 @@ class PowerView(gtk.VBox):
         self.label_padding_y = 10
         self.hbox_spacing = 10
         self.wait_duration_items = [("5分钟", 1), ("10分钟", 2), ("30分钟", 3), ("1小时", 4)]
+        self.power_manager = PowerManager()
         '''
         power button config
         '''
@@ -65,8 +68,9 @@ class PowerView(gtk.VBox):
         self.press_power_button_align = self.m_setup_align()
         self.press_power_button_box = gtk.HBox(spacing=self.hbox_spacing)
         self.press_power_button_label = self.m_setup_label("按电源按钮时")
-        self.press_power_button_combo = self.m_setup_combo(
-            [("关机", 1), ("休眠", 2), ("不采取任何措施", 3)])
+        items = [("关机", 0), ("休眠", 1), ("不采取任何措施", 2)]
+        self.press_power_button_combo = self.m_setup_combo(items)
+        self.press_power_button_combo.set_select_index(self.power_manager.get_press_power_button(items))
         self.press_power_button_combo.connect("item-selected", self.m_combo_item_selected, "press_power_button")
         self.m_widget_pack_start(self.press_power_button_box, 
             [self.press_power_button_label, self.press_power_button_combo])
@@ -77,8 +81,9 @@ class PowerView(gtk.VBox):
         self.close_notebook_cover_align = self.m_setup_align()
         self.close_notebook_cover_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_notebook_cover_label = self.m_setup_label("合上笔记本盖子")
-        self.close_notebook_cover_combo = self.m_setup_combo(
-            [("不采取任何措施", 1), ("关机", 2), ("休眠", 3)])
+        items = [("不采取任何措施", 0), ("关机", 1), ("休眠", 2)]
+        self.close_notebook_cover_combo = self.m_setup_combo(items)
+        self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(items))
         self.close_notebook_cover_combo.connect("item-selected", self.m_combo_item_selected, "close_notebook_cover")
         self.m_widget_pack_start(self.close_notebook_cover_box, 
             [self.close_notebook_cover_label, self.close_notebook_cover_combo])
@@ -208,6 +213,8 @@ class PowerView(gtk.VBox):
             control acpid daemon, then changed the script way.
             '''
             pass
+        if object == "close_notebook_cover":
+            return
 
     def m_toggled(self, widget, data=None):
         #print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
