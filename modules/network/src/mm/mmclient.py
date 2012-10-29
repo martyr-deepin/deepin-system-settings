@@ -51,10 +51,16 @@ class MMClient(MMObject):
         self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, signal_name = "DeviceRemoved")
 
     def enumerate_devices(self):
-        return TypeConvert.dbus2py(self.dbus_interface.EnumerateDevices())
-    
+        return TypeConvert.dbus2py(self.dbus_method("EnumerateDevices"))
+
     def set_logging(self, level):
-        self.dbus_interface.SetLogging(level)
+        self.dbus_method("SetLogging", level, reply_handler = self.set_logging_finish, error_handler = self.set_logging_error)
+
+    def set_logging_finish(self, *reply):
+        pass
+
+    def set_logging_error(self, *error):
+        pass
 
     def get_cdma_device(self):
         return filter(lambda x:MMDevice(x).get_type() == 2, self.enumerate_devices())[0]

@@ -1,0 +1,109 @@
+# Chinese translations for PACKAGE package.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-10-11 17:03+0800\n"
+"PO-Revision-Date: 2012-10-10 17:53+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_HK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.py:70
+msgid "Custom"
+msgstr "使用習慣"
+
+#: ../src/main.py:71
+msgid "Pointer speed"
+msgstr "指針速度"
+
+#: ../src/main.py:72
+msgid "Acceleration"
+msgstr "移動速度"
+
+#: ../src/main.py:74 ../src/main.py:83
+msgid "Fast"
+msgstr "快"
+
+#: ../src/main.py:75 ../src/main.py:84
+msgid "Slow"
+msgstr "慢"
+
+#: ../src/main.py:76
+msgid "Sensitivity"
+msgstr "精確度"
+
+#: ../src/main.py:78
+msgid "Low"
+msgstr "低"
+
+#: ../src/main.py:79
+msgid "High"
+msgstr "高"
+
+#: ../src/main.py:80
+msgid "Double-click"
+msgstr "雙擊速度"
+
+#: ../src/main.py:81
+msgid "Frequency"
+msgstr "點擊頻率"
+
+#: ../src/main.py:85
+msgid "Double-click on the folder to test your settings."
+msgstr "雙擊文件夾測試您的設置。"
+
+#: ../src/main.py:86
+msgid "Mouse wheel"
+msgstr "鼠標滾輪"
+
+#: ../src/main.py:87
+msgid "Vertical Scrolling:"
+msgstr "垂直滾動"
+
+#: ../src/main.py:89
+msgid "Horizontal Scrolling:"
+msgstr "水平滾動"
+
+#: ../src/main.py:91 ../src/main.py:99
+msgid "A rolling"
+msgstr "壹次滾動"
+
+#: ../src/main.py:93
+msgid "lines"
+msgstr "行"
+
+#: ../src/main.py:94
+msgid "Characters"
+msgstr "字符"
+
+#: ../src/main.py:95
+msgid "Relevant input device Settings "
+msgstr "相關輸入設備設置"
+
+#: ../src/main.py:97
+msgid "Right-handed"
+msgstr "慣用右手"
+
+#: ../src/main.py:98
+msgid "Left-handed"
+msgstr "慣用左手"
+
+#: ../src/main.py:100
+msgid "A rolling a screen "
+msgstr "壹次滾動壹個屏幕"
+
+#: ../src/main.py:105
+msgid "Keyboard Setting"
+msgstr "鍵盤設置"
+
+#: ../src/main.py:106
+msgid "TouchPad Setting"
+msgstr "觸摸板設置"

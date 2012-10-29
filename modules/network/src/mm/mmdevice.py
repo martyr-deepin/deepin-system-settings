@@ -72,26 +72,56 @@ class MMDevice(MMObject):
         return self.properties["UnlockRetries"]
 
     def connect(self, number):
-        self.dbus_interface.Connect(number)
+        self.dbus_method("Connect", number, reply_handler = self.connect_finish, error_handler = self.connect_error)
+
+    def connect_finish(self, *reply):
+        pass
+    
+    def connect_error(self, *error):
+        pass
 
     def disconnect(self):
-        self.dbus_interface.Disconnect()
+        self.dbus_method("Disconnect", reply_handler = self.disconnect_finish, error_handler = self.disconnect_error)
+
+    def disconnect_finish(self, *reply):
+        pass
+
+    def disconnect_error(self, *error):
+        pass
 
     def enable(self, enable):
-        self.dbus_interface.Enable(enable)
+        self.dbus_method("Enabled", enable, reply_handler = self.enable_finish, error_handler = self.enable_error)
+
+    def enable_finish(self, *reply):
+        pass
+
+    def enable_error(self, *error):
+        pass
 
     def factory_reset(self, code):
-        self.dbus_interface.FactoryReset(code)
-        
+        self.dbus_method("FactoryReset", code, reply_handler = self.factory_reset_finish, error_handler = self.factory_reset_error)
+
+    def factory_reset_finish(self, *reply):
+        pass
+
+    def factory_reset_error(self, *error):
+        pass
+
     def get_ip4config(self):
         if self.get_ip_method() == 1:
-            return TypeConvert.dbus2py(self.dbus_interface.GetIP4Config())
+            return TypeConvert.dbus2py(self.dbus_method("GetIP4Config"))
 
     def get_info(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetInfo())
+        return TypeConvert.dbus2py(self.dbus_method("GetInfo"))
 
     def reset(self):
-        self.dbus_interface.Reset()
+        self.dbus_method("Reset", reply_handler = self.reset_finish, error_handler = self.reset_error)
+
+    def reset_finish(self, *reply):
+        pass
+
+    def reset_error(self, *error):
+        pass
 
     def state_changed_cb(self, old_state, new_state, reason):
         print "state_changed_cb"
@@ -108,10 +138,16 @@ class MMSimple(MMObject):
         MMObject.__init__(self, object_path, object_interface)
 
     def connect(self, prop_dict):
-        self.dbus_interface.Connect(prop_dict)
+        self.dbus_method("Connect", prop_dict, reply_handler = self.connect_finish, error_handler = self.connect_error)
+
+    def connect_finish(self, *reply):
+        pass
+
+    def connect_error(self, *error):
+        pass
 
     def get_status(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetStatus())
+        return TypeConvert.dbus2py(self.dbus_method("GetStatus"))
 
 class MMLocation(MMObject):
     '''MMLocation'''
@@ -134,10 +170,16 @@ class MMLocation(MMObject):
         return self.properties["Location"]
 
     def enable(self, enable, signal_location):
-        self.dbus_interface.Enable(enable, signal_location)
+        self.dbus_method("Enable", signal_location, reply_handler = self.enable_finish, error_handler = self.enable_error)
+
+    def enable_finish(self, *reply):
+        pass
+
+    def enable_error(self, *error):
+        pass
 
     def getlocation(self):
-        return TypeConvert.dbus2py(self.GetLocation())
+        return TypeConvert.dbus2py(self.dbus_method("GetLocation"))
 
 if __name__ == "__main__":
     pass

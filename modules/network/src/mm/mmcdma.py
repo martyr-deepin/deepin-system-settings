@@ -50,21 +50,30 @@ class MMCdma(MMDevice):
 
     def activate(self, carrier):
         return TypeConvert.dbus2py(self.dbus_interface.Activate(carrier))
+        return TypeConvert.dbus2py(self.dbus_method("Activate", carrier))
 
     def activate_manual(self, prop_dict):
         self.dbus_interface.ActivateManual(prop_dict)
+        self.dbus_method("ActivateManual", prop_dict, reply_handler = self.activate_manual_finish,
+                         error_handler = self.activate_manual_error)
+
+    def activate_manual_finish(self, *reply):
+        pass
+
+    def activate_manual_error(self, *error):
+        pass
 
     def get_esn(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetEsn())
+        return TypeConvert.dbus2py(self.dbus_method("GetEsn"))
 
     def get_registration_state(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetRegistrationState())
+        return TypeConvert.dbus2py(self.dbus_method("GetRegistrationState"))
 
     def get_serving_system(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetServingSystem())
+        return TypeConvert.dbus2py(self.dbus_method("GetServingSystem"))
 
     def get_signal_quality(self):
-        return TypeConvert.dbus2py(self.dbus_interface.GetSignalQuality())
+        return TypeConvert.dbus2py(self.dbus_method("GetSignalQuality"))
 
     def activation_state_changed_cb(self, activation_state, activation_error, state_changes_dict):
         print activation_state
