@@ -10,7 +10,7 @@ from dtk.ui.new_treeview import TreeView
 from dtk.ui.draw import draw_pixbuf, draw_line
 from dtk.ui.utils import color_hex_to_cairo, get_parent_dir
 from dtk.ui.label import Label
-from dtk.ui.slider import Slider
+from dtk.ui.new_slider import HSlider
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.threads import post_gui
 import gtk
@@ -25,18 +25,18 @@ from wlan_config import WirelessSetting
 
 from nmlib.nmobject import dbus_loop
 from wired import *
-slider = Slider()
+slider = HSlider()
 PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
 
-def slider_append(slide, item):
-    layout_child = slide.layout.get_children()
-    if len(layout_child) > 1:
-        slide.layout.remove(layout_child[1])
+#def slider_append(slide, item):
+    #layout_child = slide.layout.get_children()
+    #if len(layout_child) > 1:
+        #slide.layout.remove(layout_child[1])
 
-    slide.append_widget(item)
-    item.show_all()
+    #slide.append_widget(item)
+    #item.show_all()
     
 #class LoadingThread(td.Thread):
     #def __init__(self, obj, device, setting):
@@ -86,7 +86,8 @@ class WiredSection(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
-
+        
+        self.settings = None
         self.pack_start(wire, False, False)
         self.tree = TreeView([])
         self.tree.set_no_show_all(True)
@@ -98,11 +99,13 @@ class WiredSection(gtk.VBox):
         self.align.add(self.tree)
         self.pack_start(self.align, False, False, 0)
 
+    def add_setting_page(self, setting_page):
+        self.settings = setting_page
+
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            self.wired_setting = WiredSetting(slider)
-            slider_append(slider, self.wired_setting)
+            #self.wired_setting = WiredSetting(slider)
             t = self.retrieve_list()
             self.tree.add_items(t,0,True)
             self.tree.visible_items[-1].is_last = True
@@ -128,7 +131,7 @@ class WiredSection(gtk.VBox):
             self.active_one = -1
         else:
             self.active_one = 0
-        return [WiredItem(wired_device.get_device_desc(), self.wired_setting, slider)]
+        return [WiredItem(wired_device.get_device_desc(), self.settings, lambda : slider.slide_to_page(self.settings, "right"))]
 
     def device_activate(self, widget ,event):
         print "activate"
@@ -150,7 +153,7 @@ class Wireless(gtk.VBox):
         self.tree = TreeView([], enable_multiple_select = False)
         #self.tree.set_no_show_all(True)
         #self.tree.hide()
-
+        self.settings = None
         self.wifi = WifiSection()
         #self.wifi.set_no_show_all(True)
         #self.wifi.hide()
@@ -168,13 +171,14 @@ class Wireless(gtk.VBox):
         self.align.add(self.vbox)
 
         self.pack_start(self.align, False, False, 0)
+    
+    def add_setting_page(self, page):
+        self.settings = page
 
     def toggle_cb(self, widget):
 
         active = widget.get_active()
         if active:
-            self.global_setting = WirelessSetting(None,slider)
-            slider_append(slider, self.global_setting)
             device_path = nmclient.get_wireless_device()
             wireless_devices = NMDeviceWifi(device_path.object_path)
             active_connection = wireless_device.get_active_connection()
@@ -212,7 +216,7 @@ class Wireless(gtk.VBox):
         #print nm_remote_settings.get_ssid_associate_connections(ap_list[3].get_ssid())
         
         ## After Loading
-        items = [WirelessItem(i,self.global_setting, slider) for i in ap_list]
+        items = [WirelessItem(i,self.settings, lambda : slider.slide_to_page(self.settings, "right")) for i in ap_list]
         return [items, index]
 
 
@@ -343,10 +347,10 @@ class Proxy(gtk.VBox):
 
 
 
-
 if __name__ == '__main__':
-    module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
+    module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
+    
     wireless = Wireless()
     wired = WiredSection()
     #wifi = WifiSection()
@@ -368,10 +372,18 @@ if __name__ == '__main__':
     scroll_win.set_size_request(825, 425)
 
     scroll_win.add_with_viewport(vbox)
-    align = gtk.Alignment(0,0,0,0)
-    align.set_padding(11,11,11,11)
-    align.add(scroll_win)
-    slider.append_widget(align)
+    main_align = gtk.Alignment(0,0,0,0)
+    main_align.set_padding(11,11,11,11)
+    main_align.add(scroll_win)
+    
+    wired_setting_page = WiredSetting(lambda  : slider.slide_to_page(main_align, "left"))
+    wired.add_setting_page(wired_setting_page)
+    wireless_setting_page = WirelessSetting(None, lambda : slider.slide_to_page(main_align, "left"))
+    wireless.add_setting_page(wireless_setting_page)
+
+    slider.append_page(main_align)
+    slider.append_page(wired_setting_page)
+    slider.append_page(wireless_setting_page)
 
     #slider.append_widget(WiredSetting(slider))
     #slider.append_widget(gtk.EventBox())

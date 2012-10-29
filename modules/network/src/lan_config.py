@@ -40,9 +40,9 @@ else:
 
 class WiredSetting(gtk.HBox):
 
-    def __init__(self, slider):
+    def __init__(self, slide_back_cb):
         gtk.HBox.__init__(self)
-        self.slide = slider
+        self.slide_back_cb = slide_back_cb
 
         #self.tab_window.set_size_request(585,-1)
 
@@ -109,13 +109,14 @@ class WiredSetting(gtk.HBox):
             self.sidebar.wired_setting = self.wired_setting
 
     def cancel_changes(self, widget):
-        self.slide.slide_to(self.slide.layout.get_children()[0])
+        self.slide_back_cb()
         
     def save_changes(self, widget):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
 
-        self.slide.slide_to(self.slide.layout.get_children()[0])
+        #self.slide.slide_to_page(self.slide.layout.get_children()[0], "left")
+        self.slide_back_cb()
         
 
     def expose_event(self, widget, event):

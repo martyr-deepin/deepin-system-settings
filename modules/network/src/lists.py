@@ -41,12 +41,12 @@ class WirelessItem(TreeItem):
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
 
-    def __init__(self,connection, setting_object = None, slider = None, active_cb = None, font_size = DEFAULT_FONT_SIZE):
+    def __init__(self,connection, setting_object = None, slide_to_setting_cb = None, active_cb = None, font_size = DEFAULT_FONT_SIZE):
 
         TreeItem.__init__(self)
         self.setting_object = setting_object
         self.connection = connection
-        self.slider = slider
+        self.slide_to_setting = slide_to_setting_cb
         self.essid = connection.get_ssid()
         self.active_cb = active_cb
         self.strength = connection.get_strength()
@@ -189,7 +189,7 @@ class WirelessItem(TreeItem):
                 if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
                     nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
                 self.setting_object.init_connection(self.connection)
-            self.slider.slide_to(self.slider.layout.get_children()[1] )
+            self.slide_to_setting() 
         #if self.redraw_request_callback:
             #self.redraw_request_callback(self)
 
@@ -206,10 +206,10 @@ class WiredItem(TreeItem):
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
     
-    def __init__(self, essid, setting, slider = None,active= False, font_size = DEFAULT_FONT_SIZE):
+    def __init__(self, essid, setting, slide_to_setting_cb = None,active= False, font_size = DEFAULT_FONT_SIZE):
         
         TreeItem.__init__(self)
-        self.slider = slider
+        self.slide_to_setting = slide_to_setting_cb
         self.essid = essid
         self.items = None
         self.setting = setting
@@ -305,7 +305,7 @@ class WiredItem(TreeItem):
         elif column == 2:
             if not isinstance(self.setting.ipv4, NoSetting):
                 self.setting.ipv4.reset(self.setting.ipv4.connection)
-            self.slider.slide_to(self.slider.layout.get_children()[1] )
+            self.slide_to_setting()
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
