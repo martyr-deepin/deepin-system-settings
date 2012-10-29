@@ -57,6 +57,7 @@ class ModuleFrame(gtk.Plug):
         '''
         init docs
         '''
+        # Init.
         gtk.Plug.__init__(self, 0)
         self.module_config_path = module_config_path
         self.module_config = Config(self.module_config_path)
@@ -71,13 +72,9 @@ class ModuleFrame(gtk.Plug):
     
         # Init dbus.
         self.bus = dbus.SessionBus()
-        
-        # Init module dbus.
         self.module_dbus_name = "com.deepin.%s_settings" % (self.module_id)
         self.module_object_name = "/com/deepin/%s_settings" % (self.module_id)
-        self.module_bus_name = dbus.service.BusName(
-            self.module_dbus_name, 
-            bus=self.bus)
+        self.module_bus_name = dbus.service.BusName(self.module_dbus_name, bus=self.bus)
         
         # Handle signals.
         self.connect("realize", self.module_frame_realize)
@@ -99,7 +96,10 @@ class ModuleFrame(gtk.Plug):
         gtk.main()
         
     def module_frame_realize(self, widget):
+        # Send module information.
         self.send_module_info()
+        
+        # Send plug id to main process.
         self.send_plug_id()
         
     def module_frame_exit(self, widget):
@@ -113,8 +113,8 @@ class ModuleFrame(gtk.Plug):
             method = bus_object.get_dbus_method("message_receiver")
             method(message_type, 
                    message_content,
-                   reply_handler=self.handle_dbus_reply,
-                   error_handler=self.handle_dbus_error
+                   reply_handler=self.handle_dbus_reply, # add reply handler
+                   error_handler=self.handle_dbus_error  # add error handler
                    )
             
     def handle_dbus_reply(self, *reply):
