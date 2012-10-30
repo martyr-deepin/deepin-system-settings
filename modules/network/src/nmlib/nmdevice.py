@@ -33,9 +33,10 @@ class NMDevice(NMObject):
     '''NMDevice'''
 
     __gsignals__  = {
-            # "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
             "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
+            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
             }
 
     def __init__(self, device_object_path, device_interface = "org.freedesktop.NetworkManager.Device"):
@@ -158,8 +159,10 @@ class NMDevice(NMObject):
         self.init_nmobject_with_properties()
         if old_state != 100 and new_state == 100:
             self.emit("device-active", reason)
-        elif old_state == 100 and new_state != 100:
+        if old_state == 100 and new_state != 100:
             self.emit("device-deactive", reason)
+        if old_state < 30 and new_state >= 30:
+            self.emit("device-available")
 
 if __name__ == "__main__":
     nmdevice = NMDevice("/org/freedesktop/NetworkManager/Devices/1")
