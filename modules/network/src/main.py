@@ -40,7 +40,7 @@ class WiredSection(gtk.VBox):
         
         wired_device.connect("device-active", self.device_activate)
         wired_device.connect("device-deactive", self.device_deactive)
-
+        wired_device.connect("device-available", lambda w,s: NMDeviceEthernet(wired_device.object_path).auto_connect())
         self.settings = None
         self.pack_start(self.wire, False, False)
         self.tree = TreeView([])
@@ -96,10 +96,9 @@ class WiredSection(gtk.VBox):
         self.queue_draw()
 
     def device_deactive(self, widget, event):
-        pass
         #print "deactive"
-        #self.tree.visible_items[self.active_one].is_select = False
-        #self.queue_draw()
+        self.tree.visible_items[self.active_one].is_select = False
+        self.queue_draw()
 
 class Wireless(gtk.VBox):
     def __init__(self):
