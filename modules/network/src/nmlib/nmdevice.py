@@ -62,7 +62,7 @@ class NMDevice(NMObject):
 
     def is_active(self):
         try:
-            if self.get_state() == 100 or self.get_active_connection():
+            if self.get_state() == 100 and self.get_active_connection():
                 return True
             else:
                 return False
