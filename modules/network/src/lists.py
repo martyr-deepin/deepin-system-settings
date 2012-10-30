@@ -184,9 +184,7 @@ class WirelessItem(TreeItem):
         #self.setting_object.init_connection(None)
             # Connect to this ap
         if column == 0:
-            print "check button clicked"
             self.check_select_flag = not self.check_select_flag
-            print self.check_select_flag
             if self.redraw_request_callback:
                 self.redraw_request_callback(self)
 

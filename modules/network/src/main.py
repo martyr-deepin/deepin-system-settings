@@ -59,7 +59,6 @@ class WiredSection(gtk.VBox):
             t = self.retrieve_list()
             self.tree.add_items(t,0,True)
             self.tree.visible_items[-1].is_last = True
-
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
             
@@ -94,11 +93,12 @@ class WiredSection(gtk.VBox):
         self.queue_draw()
 
 class Wireless(gtk.VBox):
-
     def __init__(self):
         gtk.VBox.__init__(self)
         wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
-
+        
+        wireless_device.connect("device-active", self.device_is_active)
+        wireless_device.connect("device-deactive", self.device_is_deactive)
         self.pack_start(wireless, False, False)
         self.tree = TreeView([], enable_multiple_select = False)
         self.settings = None
@@ -117,6 +117,19 @@ class Wireless(gtk.VBox):
 
         self.pack_start(self.align, False, False, 0)
     
+    def device_is_active(self, widget, state):
+        print "active"
+        print wireless_device.get_state()
+        print wireless_device.is_active()
+        #active = wireless_device.get_active_connection()
+        #print active
+        #index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+
+        #self.tree.visible_items[index].check_select_flag = True
+    
+    def device_is_deactive(self, widget, event):
+        print "deactive"
+
     def add_setting_page(self, page):
         self.settings = page
 
@@ -134,7 +147,6 @@ class Wireless(gtk.VBox):
             self.show_all()
             if index > 0:
                 self.tree.visible_items[index].check_select_flag = True
-
         else:
             self.tree.add_items([],0,True)
             self.vbox.hide()
@@ -144,29 +156,19 @@ class Wireless(gtk.VBox):
         retrieve network lists, will use thread
         """
         #device = nmclient.get_wireless_device()
-        wireless_devices = NMDeviceWifi(wireless_device.object_path)
-        
-        print wireless_device
-        print wireless_devices
-        print wireless_devices.properties
-        print wireless_device.properties["State"]
-
-        if wireless_devices.auto_connect():
+        device_wifi = NMDeviceWifi(wireless_device.object_path)
+        self.ap_list = device_wifi.order_ap_list()
+        if wireless_device.get_state() == 100:
             active_connection = wireless_device.get_active_connection()
+            index = [ap.object_path for ap in self.ap_list].index(active_connection.get_specific_object())
         else:
-            active_connection = None
-
-        ap_list = wireless_devices.order_ap_list()
-        
-        if active_connection == None:
+            device_wifi.auto_connect()
             index = -1
-        else:
-            index = [ap.object_path for ap in ap_list].index(active_connection.get_specific_object())
 
         #print nm_remote_settings.get_ssid_associate_connections(ap_list[3].get_ssid())
         
         ## After Loading
-        items = [WirelessItem(i,self.settings, lambda : slider.slide_to_page(self.settings, "right")) for i in ap_list]
+        items = [WirelessItem(i,self.settings, lambda : slider.slide_to_page(self.settings, "right")) for i in self.ap_list]
         return [items, index]
 
 
