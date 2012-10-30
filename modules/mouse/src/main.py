@@ -348,62 +348,62 @@ class MouseSetting(object):
         self.button_widgets["double_test"].set_size_request(66, 66)
 
         # mouse wheel
-        self.alignment_widgets["mouse_wheel_label"].add(self.container_widgets["mouse_wheel_label_hbox"])
-        self.alignment_widgets["mouse_wheel_table"].add(self.container_widgets["mouse_wheel_table"])
-        self.alignment_widgets["mouse_wheel_label"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["mouse_wheel_table"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["mouse_wheel_label"].set_padding(0, 0, 5, 5)
-        self.alignment_widgets["mouse_wheel_table"].set_padding(0, 0, 35, 5)
-        self.container_widgets["mouse_wheel_main_vbox"].pack_start(
-            self.alignment_widgets["mouse_wheel_label"])
-        self.container_widgets["mouse_wheel_main_vbox"].pack_start(
-            self.alignment_widgets["mouse_wheel_table"])
-        # tips lable
-        self.container_widgets["mouse_wheel_label_hbox"].pack_start(
-            self.image_widgets["wheel"], False, False)
-        self.container_widgets["mouse_wheel_label_hbox"].pack_start(
-            self.label_widgets["mouse_wheel"], False, False, 15)
-        # vertical set
-        #self.container_widgets["mouse_wheel_vertical_hbox"].pack_start(
-            #self.container_widgets["mouse_wheel_vertical_line_hbox"])
-        #self.container_widgets["mouse_wheel_vertical_hbox"].pack_start(
-            #self.container_widgets["mouse_wheel_vertical_screen_hbox"])
-        # scroll lines
-        self.button_widgets["wheel_vertical_entry"].set_size(30, 20)
-        self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
-            self.button_widgets["wheel_lines_radio"], False, False, 2)
-        self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
-            self.button_widgets["wheel_vertical_entry"], False, False, 2)
-        self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
-            self.label_widgets["lines"])
-        # scroll screen
-        self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
-            self.button_widgets["wheel_screen_radio"], True, True, 20)
-        # vertical table attach
-        self.container_widgets["mouse_wheel_table"].attach(
-            self.label_widgets["vertical_scroll"], 0, 1, 0, 1, 0, 0, 15, 10)
-        self.container_widgets["mouse_wheel_table"].attach(
-            self.container_widgets["mouse_wheel_vertical_line_hbox"], 1, 3, 0, 1, 5, 0)
-        # horizontal set
-        self.button_widgets["wheel_horizontal_entry"].set_size(30, 20)
-        self.container_widgets["mouse_wheel_horizontal_hbox"].pack_start(
-            self.label_widgets["wheel_a_roll"], False, False, 2)
-        self.container_widgets["mouse_wheel_horizontal_hbox"].pack_start(
-            self.button_widgets["wheel_horizontal_entry"], False, False, 2)
-        self.container_widgets["mouse_wheel_horizontal_hbox"].pack_start(
-            self.label_widgets["chars"])
-        self.alignment_widgets["mouse_wheel_horizontal"].set(0, 0.5, 0, 0)
-        self.alignment_widgets["mouse_wheel_horizontal"].set_padding(5, 0, 33, 0)
-        self.alignment_widgets["mouse_wheel_horizontal"].add(self.container_widgets["mouse_wheel_horizontal_hbox"])
-        # horizontal table attach
-        self.container_widgets["mouse_wheel_table"].attach(
-            self.label_widgets["horizontal_scroll"], 0, 1, 1, 2, 0, 0, 15, 10)
-        self.container_widgets["mouse_wheel_table"].attach(
-            self.alignment_widgets["mouse_wheel_horizontal"], 1, 3, 1, 2, 5, 0)
-        # TODO 鼠标滚轮初始值
-        self.button_widgets["wheel_lines_radio"].set_active(True)
-        self.button_widgets["wheel_vertical_entry"].set_text('3')
-        self.button_widgets["wheel_horizontal_entry"].set_text('3')
+        #self.alignment_widgets["mouse_wheel_label"].add(self.container_widgets["mouse_wheel_label_hbox"])
+        #self.alignment_widgets["mouse_wheel_table"].add(self.container_widgets["mouse_wheel_table"])
+        #self.alignment_widgets["mouse_wheel_label"].set(0.5, 0.5, 1.0, 1.0)
+        #self.alignment_widgets["mouse_wheel_table"].set(0.5, 0.5, 1.0, 1.0)
+        #self.alignment_widgets["mouse_wheel_label"].set_padding(0, 0, 5, 5)
+        #self.alignment_widgets["mouse_wheel_table"].set_padding(0, 0, 35, 5)
+        #self.container_widgets["mouse_wheel_main_vbox"].pack_start(
+            #self.alignment_widgets["mouse_wheel_label"])
+        #self.container_widgets["mouse_wheel_main_vbox"].pack_start(
+            #self.alignment_widgets["mouse_wheel_table"])
+        ## tips lable
+        #self.container_widgets["mouse_wheel_label_hbox"].pack_start(
+            #self.image_widgets["wheel"], False, False)
+        #self.container_widgets["mouse_wheel_label_hbox"].pack_start(
+            #self.label_widgets["mouse_wheel"], False, False, 15)
+        ## vertical set
+        ##self.container_widgets["mouse_wheel_vertical_hbox"].pack_start(
+            ##self.container_widgets["mouse_wheel_vertical_line_hbox"])
+        ##self.container_widgets["mouse_wheel_vertical_hbox"].pack_start(
+            ##self.container_widgets["mouse_wheel_vertical_screen_hbox"])
+        ## scroll lines
+        #self.button_widgets["wheel_vertical_entry"].set_size(30, 20)
+        #self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
+            #self.button_widgets["wheel_lines_radio"], False, False, 2)
+        #self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
+            #self.button_widgets["wheel_vertical_entry"], False, False, 2)
+        #self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
+            #self.label_widgets["lines"])
+        ## scroll screen
+        #self.container_widgets["mouse_wheel_vertical_line_hbox"].pack_start(
+            #self.button_widgets["wheel_screen_radio"], True, True, 20)
+        ## vertical table attach
+        #self.container_widgets["mouse_wheel_table"].attach(
+            #self.label_widgets["vertical_scroll"], 0, 1, 0, 1, 0, 0, 15, 10)
+        #self.container_widgets["mouse_wheel_table"].attach(
+            #self.container_widgets["mouse_wheel_vertical_line_hbox"], 1, 3, 0, 1, 5, 0)
+        ## horizontal set
+        #self.button_widgets["wheel_horizontal_entry"].set_size(30, 20)
+        #self.container_widgets["mouse_wheel_horizontal_hbox"].pack_start(
+            #self.label_widgets["wheel_a_roll"], False, False, 2)
+        #self.container_widgets["mouse_wheel_horizontal_hbox"].pack_start(
+            #self.button_widgets["wheel_horizontal_entry"], False, False, 2)
+        #self.container_widgets["mouse_wheel_horizontal_hbox"].pack_start(
+            #self.label_widgets["chars"])
+        #self.alignment_widgets["mouse_wheel_horizontal"].set(0, 0.5, 0, 0)
+        #self.alignment_widgets["mouse_wheel_horizontal"].set_padding(5, 0, 33, 0)
+        #self.alignment_widgets["mouse_wheel_horizontal"].add(self.container_widgets["mouse_wheel_horizontal_hbox"])
+        ## horizontal table attach
+        #self.container_widgets["mouse_wheel_table"].attach(
+            #self.label_widgets["horizontal_scroll"], 0, 1, 1, 2, 0, 0, 15, 10)
+        #self.container_widgets["mouse_wheel_table"].attach(
+            #self.alignment_widgets["mouse_wheel_horizontal"], 1, 3, 1, 2, 5, 0)
+        ## TODO 鼠标滚轮初始值
+        #self.button_widgets["wheel_lines_radio"].set_active(True)
+        #self.button_widgets["wheel_vertical_entry"].set_text('3')
+        #self.button_widgets["wheel_horizontal_entry"].set_text('3')
         
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
