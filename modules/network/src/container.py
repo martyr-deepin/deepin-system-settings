@@ -3,27 +3,19 @@
 
 
 from theme import app_theme
-from dtk.ui.button import Button, ToggleButton
-from dtk.ui.theme import ui_theme
-from dtk.ui.entry import Entry
-from dtk.ui.box import EventBox
-from dtk.ui.draw import draw_pixbuf, draw_text
-from dtk.ui.constant import DEFAULT_FONT_SIZE
-from dtk.ui.utils import get_content_size
-
+from dtk.ui.button import  ToggleButton
+#from dtk.ui.draw import draw_pixbuf, draw_text
+#from dtk.ui.constant import DEFAULT_FONT_SIZE
 import gtk
-import pango
 
 ICON_PADDING = 5
 TEXT_PADDING = 5
 BUTTON_PADDING = 5
 class Contain(gtk.Alignment):
 
-
     def __init__(self, icon, text, switch_callback= None):
 
         gtk.Alignment.__init__(self, 0,0,0,0)
-       
 
         self.icon = icon
         self.text = text
@@ -46,7 +38,9 @@ class Contain(gtk.Alignment):
 
         self.switch.connect("toggled", self.active_cb)
         self.hbox.pack_start(self.switch)
-
+    
+    def set_active(self, state):
+        self.switch.set_active(state)
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

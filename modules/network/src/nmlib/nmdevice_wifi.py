@@ -23,7 +23,6 @@
 import gobject
 import traceback
 from nmdevice import NMDevice
-# from nmaccesspoint import NMAccessPoint
 from nmcache import cache
 from nm_utils import TypeConvert
 from nmclient import nmclient
@@ -42,6 +41,7 @@ class NMDeviceWifi(NMDevice):
     def __init__(self, wifi_device_object_path):
         NMDevice.__init__(self, wifi_device_object_path, "org.freedesktop.NetworkManager.Device.Wireless")
         self.prop_list = ["HwAddress", "PermHwAddress", "Mode", "Bitrate", "ActiveAccessPoint", "WirelessCapabilities"]
+
         self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface, signal_name = "AccessPointAdded")
         self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, signal_name = "AccessPointRemoved")
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
@@ -84,12 +84,14 @@ class NMDeviceWifi(NMDevice):
         print error
 
     def auto_connect(self):
-        if self.is_active():
+        if cache.getobject(self.object_path).is_active():
             return True
+        if cache.getobject(self.object_path).get_state() < 30:
+            return False
         wireless_connections = nm_remote_settings.get_wireless_connections()
         if len(wireless_connections) != 0:
             for conn in wireless_connections:
-                ssid = conn.settings_dict["connection"]["ssid"]
+                ssid = conn.get_setting("802-11-wireless").ssid
                 if ssid not in self.__get_ssid_record():
                     continue
                 else:
@@ -98,8 +100,14 @@ class NMDeviceWifi(NMDevice):
                         nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
                         if self.is_active():
                             return True
+                        else:
+                            continue
                     except:
-                        print "can't connect any exist wireless connection"
+                        continue
+            else:
+                return False
+        else:
+            return False
 
     def update_ap_list(self):
         return map(lambda ssid:self.__get_same_ssid_ap(ssid)[0], self.__get_ssid_record())
@@ -133,9 +141,7 @@ class NMDeviceWifi(NMDevice):
         self.emit("access-point-removed", cache.getobject(ap_object_path))
 
     def properties_changed_cb(self, prop_dict):
-        # print "PropertiesChanged"
-        # print TypeConvert.dbus2py(prop_dict)
-        pass
+        self.init_nmobject_with_properties()
 
 if __name__ == "__main__":
     wifi_device = NMDeviceWifi("/org/freedesktop/NetworkManager/Devices/0")

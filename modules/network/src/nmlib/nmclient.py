@@ -103,12 +103,11 @@ class NMClient(NMObject):
             traceback.print_exc()
         
 
-    def add_activate_finish(self, path, activate_connection):
-        return (path, activate_connection)
+    def add_activate_finish(self, *reply):
+        return reply
 
-    def add_activate_error(self, error):
-        print "add and activate connection failed!\n"
-        print error
+    def add_activate_error(self, *error):
+        pass
 
     def deactive_connection(self, active_object_path):
         return self.dbus_method("DeactivateConnection", active_object_path)
@@ -215,8 +214,8 @@ class NMClient(NMObject):
         self.emit("state-changed", TypeConvert.dbus2py(state))
     
     def properties_changed_cb(self, prop_dict):
-        # self.emit("properties-changed", TypeConvert.dbus2py(prop_dict))
-        pass
+        self.init_nmobject_with_properties()
+
 
 nmclient = NMClient()
 

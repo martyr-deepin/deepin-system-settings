@@ -24,6 +24,7 @@ from nmdevice import NMDevice
 from nm_utils import TypeConvert
 from nm_remote_settings import nm_remote_settings
 from nmclient import nmclient
+from nmcache import cache
 
 class NMDeviceEthernet(NMDevice):
     '''NMDeviceEthernet'''
@@ -48,37 +49,35 @@ class NMDeviceEthernet(NMDevice):
         return self.properties["Speed"]
 
     def auto_connect(self):
-        if self.is_active():
+        if cache.getobject(self.object_path).is_active():
             return True
-        connected_flag = False
+        if cache.getobject(self.object_path).get_state() < 30:
+            return False
+
         wired_connections = nm_remote_settings.get_wired_connections()
         if len(wired_connections) != 0:
             for conn in wired_connections:
                 try:
-                    nmclient.activate_connection(conn, self.object_path, "/")
+                    nmclient.activate_connection(conn.object_path, self.object_path, "/")
                     if self.is_active():
-                        connected_flag = True
                         return True
                     else:
                         continue
                 except:
                     continue
-
-        if connected_flag == False:        
+        else:        
             try:
                 conn = nm_remote_settings.new_wired_connection()
-                nmclient.activate_connection(conn, self.object_path, "/")
+                nmclient.activate_connection(conn.object_path, self.object_path, "/")
                 if self.is_active():
-                    connected_flag = True
                     return True
                 else:
-                    print "cann't active the device"
                     return False
             except:
                 return False
 
     def properties_changed_cb(self, prop_dict):
-        print TypeConvert.dbus2py(prop_dict)
+        self.init_nmobject_with_properties()
 
 if __name__ == "__main__":
     ethernet_device = NMDeviceEthernet ("/org/freedesktop/NetworkManager/Devices/0")

@@ -30,65 +30,19 @@ PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
 
-#def slider_append(slide, item):
-    #layout_child = slide.layout.get_children()
-    #if len(layout_child) > 1:
-        #slide.layout.remove(layout_child[1])
-
-    #slide.append_widget(item)
-    #item.show_all()
-    
-#class LoadingThread(td.Thread):
-    #def __init__(self, obj, device, setting):
-        #td.Thread.__init__(self)
-        #self.setDaemon(True)
-        #self.obj = obj
-        #self.tree = self.obj.tree
-        #self.device = device
-        #self.setting = setting
-
-    #def run(self):
-        #print "enter thread"
-        #ap_list = self.device.order_ap_list()
-        #print "leave thread"
-        #items = [WirelessItem(i,self.setting, slider) for i in ap_list]
-        #self.render_list([items, 3]) 
-        #self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-        ##except Exception, e:
-            ##print "class LoadingThread got error: %s" % (e)
-            ##traceback.print_exc(file=sys.stdout)
-        #### After Loading
-
-    #@post_gui
-    #def render_list(self,item_list):
-        #"""
-        #retrieve network lists, will use thread
-        #"""
-        #print "gui"
-        ##self.tree.visible_items[-1].is_last = False
-        #self.tree.add_items(item_list[0],0,True)
-        #self.tree.visible_items[-1].is_last = True
-        #self.tree.select_items([self.tree.visible_items[item_list[1]]])
-class DSL(gtk.VBox):
-
-    def __init__(self):
-        gtk.VBox.__init__(self)
-        dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
-        self.pack_start(dsl, False, False)
-
-    def toggle_cb(self, widget):
-        pass
-
         
 
 class WiredSection(gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
-        wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
+        self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
         
+        wired_device.connect("device-active", self.device_activate)
+        wired_device.connect("device-deactive", self.device_deactive)
+
         self.settings = None
-        self.pack_start(wire, False, False)
+        self.pack_start(self.wire, False, False)
         self.tree = TreeView([])
         self.tree.set_no_show_all(True)
         self.tree.hide()
@@ -101,15 +55,17 @@ class WiredSection(gtk.VBox):
 
     def add_setting_page(self, setting_page):
         self.settings = setting_page
+        if wired_device.is_active():
+            self.wire.set_active(True)
+        else:
+            self.wire.set_active(False)
 
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            #self.wired_setting = WiredSetting(slider)
             t = self.retrieve_list()
             self.tree.add_items(t,0,True)
             self.tree.visible_items[-1].is_last = True
-
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
             
@@ -119,18 +75,19 @@ class WiredSection(gtk.VBox):
         else:
             self.tree.add_items([],0,True)
             self.tree.hide()
+            wired_device.nm_device_disconnect()
             #self.h.get_children()[1].destroy()
 
     def retrieve_list(self):
         """
         retrieve network lists, will use thread
         """
-        wired_device.connect("device-active", self.device_activate)
-        wired_device.connect("device-deactive", self.device_deactive)
-        if wired_device.get_state() == 20:
-            self.active_one = -1
+        if wired_device.is_active():
+           self.active_one = 0
         else:
-            self.active_one = 0
+            device_ethernet = NMDeviceEthernet(wired_device.object_path)
+            device_ethernet.auto_connect()
+            self.active_one = -1
         return [WiredItem(wired_device.get_device_desc(), self.settings, lambda : slider.slide_to_page(self.settings, "right"))]
 
     def device_activate(self, widget ,event):
@@ -139,25 +96,22 @@ class WiredSection(gtk.VBox):
         self.queue_draw()
 
     def device_deactive(self, widget, event):
-        print "deactive"
-        self.tree.visible_items[self.active_one].is_select = False
-        self.queue_draw()
+        pass
+        #print "deactive"
+        #self.tree.visible_items[self.active_one].is_select = False
+        #self.queue_draw()
 
 class Wireless(gtk.VBox):
-
     def __init__(self):
         gtk.VBox.__init__(self)
-        wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
-
-        self.pack_start(wireless, False, False)
+        self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
+        
+        wireless_device.connect("device-active", self.device_is_active)
+        wireless_device.connect("device-deactive", self.device_is_deactive)
+        self.pack_start(self.wireless, False, False)
         self.tree = TreeView([], enable_multiple_select = False)
-        #self.tree.set_no_show_all(True)
-        #self.tree.hide()
         self.settings = None
         self.wifi = WifiSection()
-        #self.wifi.set_no_show_all(True)
-        #self.wifi.hide()
-
 
         self.vbox = gtk.VBox()
         self.vbox.pack_start(self.tree)
@@ -172,21 +126,33 @@ class Wireless(gtk.VBox):
 
         self.pack_start(self.align, False, False, 0)
     
+    def device_is_active(self, widget, state):
+        print "active"
+        print wireless_device.get_state()
+        print wireless_device.is_active()
+        active = wireless_device.get_active_connection()
+        print active
+        index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+        print index
+        self.tree.select_items([self.tree.visible_items[index]])
+        self.tree.visible_items[index].check_select_flag = True
+        ##self.tree.select_items([self.tree.visible_items[index]])
+    
+    def device_is_deactive(self, widget, event):
+        print "deactive"
+
     def add_setting_page(self, page):
         self.settings = page
 
-    def toggle_cb(self, widget):
+        if wireless_device.is_active():
+            self.wireless.set_active(True)
+        else:
+            self.wireless.set_active(False)
 
+    def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            device_path = nmclient.get_wireless_device()
-            wireless_devices = NMDeviceWifi(device_path.object_path)
-            active_connection = wireless_device.get_active_connection()
-            #LoadingThread(self, wireless_devices, global_setting).start()
-            #self.tree.set_no_show_all(False)
             ap_list = self.retrieve_list()
-            #self.queue_draw()
-            #self.show_all()
             item_list = ap_list[0]
             index = ap_list[1]
             self.tree.add_items(item_list,0,True)
@@ -195,28 +161,33 @@ class Wireless(gtk.VBox):
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
             self.queue_draw()
             self.show_all()
-            self.tree.select_items([self.tree.visible_items[index]])
-
+            if index > 0:
+                self.tree.select_items([self.tree.visible_items[index]])
+                self.tree.visible_items[index].check_select_flag = True
+                #self.tree.queue_draw()
         else:
             self.tree.add_items([],0,True)
             self.vbox.hide()
-            #self.h.get_children()[1].destroy()
+            wireless_device.nm_device_disconnect()
 
     def retrieve_list(self):
         """
         retrieve network lists, will use thread
         """
-        device_path = nmclient.get_wireless_device()
-        wireless_devices = NMDeviceWifi(device_path.object_path)
-        #active_connection = NMActiveConnection(wireless_device.get_active_connection())
-        ap_list = wireless_devices.order_ap_list()
-        #index = [ap.object_path for ap in ap_list].index(active_connection.get_specific_object())
-        index = 3
+        #device = nmclient.get_wireless_device()
+        device_wifi = NMDeviceWifi(wireless_device.object_path)
+        self.ap_list = device_wifi.order_ap_list()
+        if wireless_device.get_state() == 100:
+            active_connection = wireless_device.get_active_connection()
+            index = [ap.object_path for ap in self.ap_list].index(active_connection.get_specific_object())
+        else:
+            device_wifi.auto_connect()
+            index = -1
 
         #print nm_remote_settings.get_ssid_associate_connections(ap_list[3].get_ssid())
         
         ## After Loading
-        items = [WirelessItem(i,self.settings, lambda : slider.slide_to_page(self.settings, "right")) for i in ap_list]
+        items = [WirelessItem(i,self.settings, lambda : slider.slide_to_page(self.settings, "right")) for i in self.ap_list]
         return [items, index]
 
 
@@ -227,12 +198,9 @@ class WifiSection(gtk.VBox):
         cont = Contain(app_theme.get_pixbuf("/Network/wifi.png"), "个人热点", self.toggle_cb)
         self.pack_start(cont, False, False)
 
-
     def toggle_cb(self, widget):
-
         active = widget.get_active()
         if active:
-
             self.align = gtk.Alignment(0, 0.0, 1, 1)
             self.align.set_padding(0, 0, PADDING,0)
             self.align.show()
@@ -248,6 +216,16 @@ class WifiSection(gtk.VBox):
             self.pack_start(self.align, False, True, 0)
         else:
             self.h.destroy()
+
+class DSL(gtk.VBox):
+
+    def __init__(self):
+        gtk.VBox.__init__(self)
+        dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
+        self.pack_start(dsl, False, False)
+
+    def toggle_cb(self, widget):
+        pass
 
 class VpnSection(gtk.VBox):
     def __init__(self):
@@ -376,9 +354,9 @@ if __name__ == '__main__':
     main_align.set_padding(11,11,11,11)
     main_align.add(scroll_win)
     
-    wired_setting_page = WiredSetting(lambda  : slider.slide_to_page(main_align, "left"))
+    wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"))
     wired.add_setting_page(wired_setting_page)
-    wireless_setting_page = WirelessSetting(None, lambda : slider.slide_to_page(main_align, "left"))
+    wireless_setting_page = WirelessSetting(None, lambda :slider.slide_to_page(main_align, "left"))
     wireless.add_setting_page(wireless_setting_page)
 
     slider.append_page(main_align)
@@ -397,48 +375,3 @@ if __name__ == '__main__':
     module_frame.module_message_handler = message_handler
     
     module_frame.run()
-#if __name__ == "__main__":
-
-    #win = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    #win.set_title("Main")
-    #win.set_size_request(770,500)
-    ##win.set_border_width(11)
-    #win.set_resizable(True)
-    #win.connect("destroy", lambda w: gtk.main_quit())
-
-    #wireless = Wireless()
-    #wired = WiredSection()
-    ##wifi = WifiSection()
-    #dsl = DSL()
-    #vpn = VpnSection()
-    #mobile = ThreeG()
-    #proxy = Proxy()
-
-    #vbox = gtk.VBox(False, 17)
-    #vbox.pack_start(wired, False, True,5)
-    #vbox.pack_start(wireless, False, True, 0)
-    ##vbox.pack_start(wifi, False, True, 0)
-    #vbox.pack_start(dsl, False, True, 0)
-    #vbox.pack_start(mobile, False, True, 0)
-    #vbox.pack_start(vpn, False, True, 0)
-    #vbox.pack_start(proxy, False, True, 0)
-    
-    #scroll_win = ScrolledWindow()
-    #scroll_win.set_size_request(765, 482)
-
-    #scroll_win.add_with_viewport(vbox)
-    #align = gtk.Alignment(0,0,0,0)
-    #align.set_padding(11,11,11,11)
-    #align.add(scroll_win)
-    #slider.append_widget(align)
-
-    ##slider.append_widget(WiredSetting(slider))
-    ##slider.append_widget(gtk.EventBox())
-
-    #win.add(slider)
-    
-        
-    #win.show_all()
-
-    #gtk.main()
-

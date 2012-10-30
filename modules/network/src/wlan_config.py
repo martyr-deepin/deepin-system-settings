@@ -614,6 +614,7 @@ class Security(gtk.VBox):
         gtk.VBox.__init__(self)
         self.connection = connection
 
+        self.setting = self.connection.get_setting("802-11-wireless-security")
         self.security_label = Label("Security:")
         self.key_label = Label("Key:")
         self.wep_index_label = Label("Wep index:")
@@ -643,10 +644,10 @@ class Security(gtk.VBox):
         ## Create table
         self.table = gtk.Table(5, 4, True)
         keys = [None, "none", "none","wpa-psk"]
-
-        self.key_mgmt = self.connection.get_setting("802-11-wireless-security").key_mgmt
+        
+        self.key_mgmt = self.setting.key_mgmt
         if self.key_mgmt == "none":
-            key_type = self.connection.get_setting("802-11-wireless-security").wep_key_type
+            key_type = self.setting.wep_key_type
             self.security_combo.set_active(key_type)
         else:
             self.security_combo.set_active(keys.index(self.key_mgmt))
@@ -667,16 +668,15 @@ class Security(gtk.VBox):
         container_remove_all(self.table)
         self.table.attach(self.security_label, 0, 1, 0, 1)
         self.table.attach(self.security_combo, 1, 4, 0, 1)
-        
-        secret = self.connection.get_secrets("802-11-wireless-security")
-        if self.security_combo.get_active() == 0:
-            pass
-        elif self.security_combo.get_active() == 3:
+        if not self.security_combo.get_active() == 0: 
+            secret = self.connection.get_secrets("802-11-wireless-security")
+
+        if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
             self.table.attach(self.password_entry, 1, 4, 1, 2)
 
             self.password_entry.set_text(secret["802-11-wireless-security"]["psk"])
-        else:
+        elif self.security_combo.get_active() >=1:
             # Add Key
             self.table.attach(self.key_label, 0, 1, 1, 2)
             self.table.attach(self.key_entry, 1, 4, 1, 2)
@@ -707,19 +707,27 @@ class Security(gtk.VBox):
             pass
     
     def changed_cb(self, widget):
-        print "changed"
-        #model = widget.get_model()
-        #active = widget.get_active()
         self.reset(True)
 
     def wep_index_spin_cb(self, widget, value):
-        pass
+        secret = self.connection.get_secrets("802-11-wireless-security")
+        try:
+            key = secret["802-11-wireless-security"]["wep-key%d"%value]
+        except KeyError:
+            key = ''
+        #key = self.setting.get_wep_key(value)
+        #print key
+        self.key_entry.set_text(key)
+        #self.key_entry.queue_draw()
 
     def save_setting(self):
         # Save wpa settings
-        if self.security_combo.get_active() == 3:
+        active = self.security_combo.get_active()
+        if active == 3:
             passwd = self.password_entry.get_text()
-        # TODO add save settings
+            key_mgmt = "wpa-psk"
+            self.setting.key_mgmt = key_mgmt
+        # TODO add save settingsma
 
         # Save wep settings
         else:

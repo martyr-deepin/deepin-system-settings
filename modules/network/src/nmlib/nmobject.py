@@ -77,6 +77,9 @@ class NMObject(gobject.GObject):
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
 
         except dbus.exceptions.DBusException:
+            print method_name
+            print args
+            print kwargs
             traceback.print_exc()
 
     def init_properties(self): 

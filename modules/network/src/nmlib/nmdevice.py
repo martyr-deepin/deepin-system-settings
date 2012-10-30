@@ -25,11 +25,6 @@ import gudev
 import os
 import traceback
 from nmobject import NMObject
-# from nm_active_connection import NMActiveConnection
-# from nmdhcp4config import NMDHCP4Config
-# from nmdhcp6config import NMDHCP6Config
-# from nmip4config import NMIP4Config
-# from nmip6config import NMIP6Config
 from nmcache import cache
 
 udev_client = gudev.Client("net")
@@ -40,12 +35,13 @@ class NMDevice(NMObject):
     __gsignals__  = {
             "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
             "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
+            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
             }
 
     def __init__(self, device_object_path, device_interface = "org.freedesktop.NetworkManager.Device"):
         NMObject.__init__(self, device_object_path, device_interface)
-        self.prop_list = ["Capabilities", "DeviceType", "ActiveConnection", "Dhcp4Config", "Dhcp6Config", "Driver", "FirmwareMissing", "Interface", "IpInterface", "Ip4Config", "Ip6Config", "Managed"]
+        self.prop_list = ["Capabilities", "DeviceType", "ActiveConnection", "Dhcp4Config", "Dhcp6Config", "Driver", "FirmwareMissing", "Interface", "IpInterface", "Ip4Config", "Ip6Config", "Managed", "State"]
         self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, signal_name = "StateChanged")
         self.init_nmobject_with_properties()
         self.udev_device = ""
@@ -61,11 +57,12 @@ class NMDevice(NMObject):
         return cache.getobject(self.properties["ActiveConnection"])
 
     def is_active(self):
-        if self.get_state() == 100:
-            return True
-        elif self.get_active_connection() != None:
-            return True
-        else:
+        try:
+            if self.get_state() == 100 and self.get_active_connection():
+                return True
+            else:
+                return False
+        except:
             return False
 
     def is_connection_active(self, connection_path):
@@ -104,7 +101,7 @@ class NMDevice(NMObject):
 
     def get_state(self):
         return self.properties["State"]
-
+    
     def get_udi(self):
         return self.properties["Udi"]
 
@@ -149,14 +146,23 @@ class NMDevice(NMObject):
             return os.popen(cmd).read().split(":")[-1].split("(")[0]
 
     def nm_device_disconnect(self):
-        self.dbus_method("Disconnect")
+        self.dbus_method("Disconnect", reply_handler = self.disconnect_finish, error_handler = self.disconnect_error)
+
+    def disconnect_finish(self, *reply):
+        pass
+        
+    def disconnect_error(self, *error):
+        pass
 
     def state_changed_cb(self, new_state, old_state, reason):
-        self.emit("state-changed", new_state, old_state, reason)
+        # self.emit("state-changed", new_state, old_state, reason)
+        self.init_nmobject_with_properties()
         if old_state != 100 and new_state == 100:
             self.emit("device-active", reason)
-        elif old_state == 100 and new_state != 100:
+        if old_state == 100 and new_state != 100:
             self.emit("device-deactive", reason)
+        if old_state < 30 and new_state >= 30:
+            self.emit("device-available", new_state)
 
 if __name__ == "__main__":
     nmdevice = NMDevice("/org/freedesktop/NetworkManager/Devices/1")
