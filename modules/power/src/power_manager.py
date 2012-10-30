@@ -136,6 +136,10 @@ class PowerManager:
 
     def set_wakeup_password(self, value):
         self.m_set_value("other", "wakeup_password", str(value))
+        if value == True:
+            run_command("gsettings set org.gnome.desktop.lockdown disable-lock-screen false")
+        else:
+            run_command("gsettings set org.gnome.desktop.lockdown disable-lock-screen true")
 
     def get_tray_battery_status(self):
         if self.config.get("other", "tray_battery_status") == "False":
