@@ -66,8 +66,12 @@ class WirelessItem(TreeItem):
 
     def render_check(self, cr, rect):
         render_background(cr,rect)
-        if self.check_select_flag :
-            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        #print self.is_select, self.check_select_flag
+        if self.is_select:
+            if self.check_select_flag :
+                check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+            else:
+                check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
 
@@ -154,8 +158,8 @@ class WirelessItem(TreeItem):
         return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height()+ self.VERTICAL_PADDING*2
         
     def select(self):
+        print "select"
         self.is_select = True
-        print "select is",self.is_select
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
 
@@ -184,7 +188,9 @@ class WirelessItem(TreeItem):
     def single_click(self, column, x, y):
         #self.setting_object.init_connection(None)
             # Connect to this ap
+        print "click"
         if column == 0:
+
             self.check_select_flag = not self.check_select_flag
             #print self.check_select_flag
             if self.redraw_request_callback:
@@ -309,9 +315,9 @@ class WiredItem(TreeItem):
         pass
 
     def single_click(self, column, x, y):
-        if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
-            self.is_select = not self.is_select
-        elif column == 2:
+        #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
+            #self.is_select = not self.is_select
+        if column == 2:
             if not isinstance(self.setting.ipv4, NoSetting):
                 self.setting.ipv4.reset(self.setting.ipv4.connection)
             self.slide_to_setting()
@@ -337,14 +343,3 @@ if __name__=="__main__":
     win.show_all()
 
     gtk.main()
-
-        
-
-
-                 
-
-
-        
-
-            
-

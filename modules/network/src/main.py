@@ -160,9 +160,9 @@ class Wireless(gtk.VBox):
             self.queue_draw()
             self.show_all()
             if index > 0:
-
                 self.tree.select_items([self.tree.visible_items[index]])
                 self.tree.visible_items[index].check_select_flag = True
+                #self.tree.queue_draw()
         else:
             self.tree.add_items([],0,True)
             self.vbox.hide()
