@@ -38,6 +38,9 @@ class WiredSection(gtk.VBox):
         gtk.VBox.__init__(self)
         wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
         
+        wired_device.connect("device-active", self.device_activate)
+        wired_device.connect("device-deactive", self.device_deactive)
+
         self.settings = None
         self.pack_start(wire, False, False)
         self.tree = TreeView([])
@@ -74,12 +77,12 @@ class WiredSection(gtk.VBox):
         """
         retrieve network lists, will use thread
         """
-        wired_device.connect("device-active", self.device_activate)
-        wired_device.connect("device-deactive", self.device_deactive)
-        if wired_device.get_state() == 20:
-            self.active_one = -1
+        if wired_device.is_active():
+           self.active_one = 0
         else:
-            self.active_one = 0
+            device_ethernet = NMDeviceEthernet(wired_device.object_path)
+            device_ethernet.auto_connect()
+            self.active_one = -1
         return [WiredItem(wired_device.get_device_desc(), self.settings, lambda : slider.slide_to_page(self.settings, "right"))]
 
     def device_activate(self, widget ,event):
@@ -121,11 +124,13 @@ class Wireless(gtk.VBox):
         print "active"
         print wireless_device.get_state()
         print wireless_device.is_active()
-        #active = wireless_device.get_active_connection()
-        #print active
-        #index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+        active = wireless_device.get_active_connection()
+        print active
+        index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
 
-        #self.tree.visible_items[index].check_select_flag = True
+        self.tree.visible_items[index].check_select_flag = True
+        #self.tree.select_items([self.tree.visible_items[index]])
+        self.tree.queue_draw()
     
     def device_is_deactive(self, widget, event):
         print "deactive"
@@ -146,6 +151,8 @@ class Wireless(gtk.VBox):
             self.queue_draw()
             self.show_all()
             if index > 0:
+
+                self.tree.select_items([self.tree.visible_items[index]])
                 self.tree.visible_items[index].check_select_flag = True
         else:
             self.tree.add_items([],0,True)

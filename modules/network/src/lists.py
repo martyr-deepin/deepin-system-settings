@@ -66,7 +66,7 @@ class WirelessItem(TreeItem):
 
     def render_check(self, cr, rect):
         render_background(cr,rect)
-        if self.check_select_flag:
+        if self.check_select_flag :
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
@@ -154,10 +154,10 @@ class WirelessItem(TreeItem):
         return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height()+ self.VERTICAL_PADDING*2
         
     def select(self):
-        pass
-        #self.is_select = True
-        #if self.redraw_request_callback:
-            #self.redraw_request_callback(self)
+        self.is_select = True
+        print "select is",self.is_select
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
 
     def set_active(self, b):
         if b:
@@ -169,6 +169,7 @@ class WirelessItem(TreeItem):
         return self.is_select
 
     def unselect(self):
+        print "unselect"
         self.is_select = False
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
@@ -185,6 +186,7 @@ class WirelessItem(TreeItem):
             # Connect to this ap
         if column == 0:
             self.check_select_flag = not self.check_select_flag
+            #print self.check_select_flag
             if self.redraw_request_callback:
                 self.redraw_request_callback(self)
 
