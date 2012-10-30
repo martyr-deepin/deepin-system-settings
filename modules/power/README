@@ -1,8 +1,9 @@
 dependence (Gentoo):
 sys-power/acpid, sys-power/pm-utils
 
-echo 'hello' > test
-echo 'hello world' >> test
+Power Management Guide http://www.gentoo.org/doc/en/power-management-guide.xml
+ACPI Configuration http://www.gentoo-wiki.info/ACPI/Configuration
+HOWTO Automatically turn off your monitor  http://www.gentoo-wiki.info/HOWTO_Automatically_turn_off_your_monitor
 
 acpid socket local client testcase https://github.com/xiangzhai/xcloud/blob/master/test/helloacpid.cpp
 but write what to acpid socket to set the /etc/acpi/XXX and restart related service?

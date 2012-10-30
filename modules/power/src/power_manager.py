@@ -21,15 +21,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from dtk.ui.utils import get_parent_dir
+from dtk.ui.utils import get_parent_dir, run_command
 from dtk.ui.config import Config
 
-'''
-There is no org.gnome.power-manager suspend or hibernate keys in gnome 3 any more, 
-so could not using gsettings set/get dbus style.
-I want to use /etc/acpi/* script way at first, if /var/run/acpid.socket is available to 
-control acpid daemon, then removed script way.
-'''
 class PowerManager:
     '''
     enum
@@ -59,8 +53,12 @@ class PowerManager:
 
         if section == "power_save_config":
             for item, value in items:
-                if self.config.get(section, key) == str(value):
-                    return i
+                if key == "close_monitor":
+                    if self.config.get(section, key) == str(value * 60):
+                        return i
+                else:
+                    if self.config.get(section, key) == str(value):
+                        return i
                 i = i + 1
 
         return 0
@@ -82,46 +80,37 @@ class PowerManager:
             self.config.set(section, key, value)
         self.config.write()
 
-    def m_set_action_script(self, value):
-        if value == PowerManager.nothing:
-            os.system("sudo echo 'action=/etc/acpi/nothing.sh' >> /etc/acpi/events/default")
-        elif value == PowerManager.hibernate:
-            os.system("sudo echo 'action=/etc/acpi/hibernate.sh' >> /etc/acpi/events/default")
-        elif value == PowerManager.poweroff:
-            os.system("sudo echo 'action=/etc/acpi/poweroff.sh' >> /etc/acpi/events/default")
-        else:
-            os.system("sudo echo 'action=/etc/acpi/nothing.sh' >> /etc/acpi/events/default")
-        os.system("sudo /etc/init.d/acpid restart")
-
     def get_press_power_button(self, items):
         return self.m_get_item("power_button_config", "press_power_button", items)
 
     def set_press_power_button(self, value):
         self.m_set_value("power_button_config", "press_power_button", value)
-        os.system("sudo echo 'event=button/power' > /etc/acpi/events/default")
-        self.m_set_action_script(value)
+        run_command("gsettings set org.gnome.settings-daemon.plugins.power button-power %s" % value)
 
     def get_close_notebook_cover(self, items):
         return self.m_get_item("power_button_config", "close_notebook_cover", items)
     
     def set_close_notebook_cover(self, value):
         self.m_set_value("power_button_config", "close_notebook_cover", value)
-        os.system("sudo echo 'event=button/lid' > /etc/acpi/events/default")
-        self.m_set_action_script(value)
+        run_command("gsettings set org.gnome.settings-daemon.plugins.power lid-close-ac-action %s" % value)
+        run_command("gsettings set org.gnome.settings-daemon.plugins.power lid-close-battery-action %s" % value)
 
     def get_press_hibernate_button(self, items):
         return self.m_get_item("power_button_config", "press_hibernate_button", items)
 
     def set_press_hibernate_button(self, value):
         self.m_set_value("power_button_config", "press_hibernate_button", value)
-        os.system("sudo echo 'event=button/hibernate' > /etc/acpi/events/default")
-        self.m_set_action_script(value)
+        run_command("gsettings set org.gnome.settings-daemon.plugins.power button-hibernate %s" % value)
 
     def get_hibernate_status(self, items):
         return self.m_get_item("power_save_config", "hibernate_status", items)
 
     def set_hibernate_status(self, value):
         self.m_set_value("power_save_config", "hibernate_status", str(value))
+        '''
+        unit: minute
+        '''
+        run_command("gsettings set org.gnome.settings-daemon.plugins.power idle-dim-time %d" % value)
 
     def get_close_harddisk(self, items):
         return self.m_get_item("power_save_config", "close_harddisk", items)
@@ -133,7 +122,12 @@ class PowerManager:
         return self.m_get_item("power_save_config", "close_monitor", items)
 
     def set_close_monitor(self, value):
-        self.m_set_value("power_save_config", "close_monitor", str(value))
+        self.m_set_value("power_save_config", "close_monitor", str(value * 60))
+        '''
+        unit: second
+        '''
+        run_command("gsettings set org.gnome.settings-daemon.plugins.power sleep-display-ac %d" % (value * 60))
+        run_command("gsettings set org.gnome.settings-daemon.plugins.power sleep-display-battery %d" % (value * 60))
 
     def get_wakeup_password(self):
         if self.config.get("other", "wakeup_password") == "False":
