@@ -24,6 +24,7 @@ import gobject
 import traceback
 from nmdevice import NMDevice
 # from nmaccesspoint import NMAccessPoint
+import time
 from nmcache import cache
 from nm_utils import TypeConvert
 from nmclient import nmclient
@@ -98,9 +99,12 @@ class NMDeviceWifi(NMDevice):
                         nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
                         if self.is_active():
                             return True
+                        else:
+                            continue
                     except:
-                        print "can't connect any exist wireless connection"
-                        return False
+                        continue
+            else:
+                return False
         else:
             return False
 
