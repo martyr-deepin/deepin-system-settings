@@ -100,6 +100,9 @@ class NMDeviceWifi(NMDevice):
                             return True
                     except:
                         print "can't connect any exist wireless connection"
+                        return False
+        else:
+            return False
 
     def update_ap_list(self):
         return map(lambda ssid:self.__get_same_ssid_ap(ssid)[0], self.__get_ssid_record())
