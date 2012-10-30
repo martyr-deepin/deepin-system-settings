@@ -94,9 +94,12 @@ class TypeConvert(object):
         if isinstance(prop, dbus.Signature):
             return str(prop)
 
+    # def dbus_string_2py(self, prop):
+    #     if isinstance(prop, dbus.String):
+    #         return unicode(prop)
     def dbus_string_2py(self, prop):
         if isinstance(prop, dbus.String):
-            return unicode(prop)
+            return str(prop)
 
     def dbus_struct_2py(self, prop):
         if isinstance(prop, dbus.Struct):

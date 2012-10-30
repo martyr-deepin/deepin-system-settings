@@ -24,6 +24,7 @@ from nmdevice import NMDevice
 from nm_utils import TypeConvert
 from nm_remote_settings import nm_remote_settings
 from nmclient import nmclient
+from nmcache import cache
 
 class NMDeviceEthernet(NMDevice):
     '''NMDeviceEthernet'''
@@ -48,8 +49,10 @@ class NMDeviceEthernet(NMDevice):
         return self.properties["Speed"]
 
     def auto_connect(self):
-        if self.is_active():
+        if cache.getobject(self.object_path).is_active():
             return True
+        if cache.getobject(self.object_path).get_state() < 30:
+            return False
         connected_flag = False
         wired_connections = nm_remote_settings.get_wired_connections()
         if len(wired_connections) != 0:
