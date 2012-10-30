@@ -36,13 +36,13 @@ class WiredSection(gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
-        wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
+        self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
         
         wired_device.connect("device-active", self.device_activate)
         wired_device.connect("device-deactive", self.device_deactive)
 
         self.settings = None
-        self.pack_start(wire, False, False)
+        self.pack_start(self.wire, False, False)
         self.tree = TreeView([])
         self.tree.set_no_show_all(True)
         self.tree.hide()
@@ -52,12 +52,13 @@ class WiredSection(gtk.VBox):
         self.align.set_padding(0,0,PADDING,11*2)
         self.align.add(self.tree)
         self.pack_start(self.align, False, False, 0)
-        if wired_device.is_active():
-            wire.set_active(True)
-        else:
-            wire.set_active(False)
+
     def add_setting_page(self, setting_page):
         self.settings = setting_page
+        if wired_device.is_active():
+            self.wire.set_active(True)
+        else:
+            self.wire.set_active(False)
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -103,11 +104,11 @@ class WiredSection(gtk.VBox):
 class Wireless(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
-        wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
+        self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
         
         wireless_device.connect("device-active", self.device_is_active)
         wireless_device.connect("device-deactive", self.device_is_deactive)
-        self.pack_start(wireless, False, False)
+        self.pack_start(self.wireless, False, False)
         self.tree = TreeView([], enable_multiple_select = False)
         self.settings = None
         self.wifi = WifiSection()
@@ -124,11 +125,6 @@ class Wireless(gtk.VBox):
         self.align.add(self.vbox)
 
         self.pack_start(self.align, False, False, 0)
-
-        if wireless_device.is_active():
-            wireless.set_active(True)
-        else:
-            wireless.set_active(False)
     
     def device_is_active(self, widget, state):
         print "active"
@@ -147,6 +143,11 @@ class Wireless(gtk.VBox):
 
     def add_setting_page(self, page):
         self.settings = page
+
+        if wireless_device.is_active():
+            self.wireless.set_active(True)
+        else:
+            self.wireless.set_active(False)
 
     def toggle_cb(self, widget):
         active = widget.get_active()
