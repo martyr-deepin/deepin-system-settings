@@ -103,12 +103,11 @@ class NMClient(NMObject):
             traceback.print_exc()
         
 
-    def add_activate_finish(self, path, activate_connection):
-        return (path, activate_connection)
+    def add_activate_finish(self, *reply):
+        return reply
 
-    def add_activate_error(self, error):
-        print "add and activate connection failed!\n"
-        print error
+    def add_activate_error(self, *error):
+        pass
 
     def deactive_connection(self, active_object_path):
         return self.dbus_method("DeactivateConnection", active_object_path)

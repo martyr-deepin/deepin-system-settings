@@ -38,6 +38,7 @@ class NMAgentManager(NMObject):
         
     def __init__(self):
         NMObject.__init__(self, "/org/freedesktop/NetworkManager/AgentManager", "org.freedesktop.NetworkManager.AgentManager")
+        self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface, signal_name = "AccessPointAdded")
         self.connect("registration-result", self.registration_result_cb)
 
         self.auto_register = ""
@@ -89,7 +90,7 @@ class NMSecretAgent(dbus.service.Object):
         return "nm_" + uuid + "_" + setting_name 
 
     @dbus.service.method(DBUS_SECRET_AGENT,
-                         in_signature='a{sa{sv}}osasu',
+                         in_signature='ossu',
                          out_signature='a{sa{sv}}',
                          sender_keyword='sender',
                          connection_keyword='conn')
@@ -108,7 +109,7 @@ class NMSecretAgent(dbus.service.Object):
 
 
     @dbus.service.method(DBUS_SECRET_AGENT,
-                         in_signature='a{sa{sv}}o',
+                         in_signature="os",
                          out_signature='',
                          sender_keyword='sender',
                          connection_keyword='conn')
