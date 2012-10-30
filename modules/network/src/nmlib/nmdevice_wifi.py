@@ -24,7 +24,6 @@ import gobject
 import traceback
 from nmdevice import NMDevice
 # from nmaccesspoint import NMAccessPoint
-import time
 from nmcache import cache
 from nm_utils import TypeConvert
 from nmclient import nmclient

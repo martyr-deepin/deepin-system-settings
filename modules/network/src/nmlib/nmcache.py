@@ -39,15 +39,15 @@ class NMCache(object):
         elif key == "Devices":
             try:
                 from nmdevice import NMDevice
+                return NMDevice(path)
             except:
                 pass
-            return NMDevice(path)
         elif key == "AccessPoint":
             try:
                 from nmaccesspoint import NMAccessPoint
+                return NMAccessPoint(path)
             except:
                 pass
-            return NMAccessPoint(path)
         elif key == "ActiveConnection":
             try:
                 from nm_active_connection import NMActiveConnection

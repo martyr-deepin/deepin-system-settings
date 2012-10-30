@@ -1,0 +1,6 @@
+[D-BUS Service]
+Name=org.freedesktop.NetworkManager.pptp-ppp
+Exec=/usr/lib/NetworkManager/nm-pptp-service       
+
+User=root
+

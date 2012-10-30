@@ -63,8 +63,9 @@ class NMActiveConnection(NMObject):
 
     ###Signals###
     def properties_changed_cb(self, prop_dict):
-        print "PropertiesChanged"
-        print TypeConvert.dbus2py(prop_dict)
+        # print "PropertiesChanged"
+        # print TypeConvert.dbus2py(prop_dict)
+        pass
 
 if __name__ == "__main__":
     nm_active_connection = NMActiveConnection("/org/freedesktop/NetworkManager/ActiveConnection/4");
