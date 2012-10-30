@@ -23,7 +23,7 @@
 from dtk.ui.init_skin import init_skin
 from dtk.ui.utils import get_parent_dir
 import os
-print os.path.join(get_parent_dir(__file__, 2), "skin")
+
 app_theme = init_skin(
     "deepin-power-settings", 
     "1.0",
@@ -54,8 +54,12 @@ class PowerView(gtk.VBox):
         self.label_padding_x = 10
         self.label_padding_y = 10
         self.hbox_spacing = 10
-        self.wait_duration_items = [("5分钟", 1), ("10分钟", 2), ("30分钟", 3), ("1小时", 4)]
+        self.wait_duration_items = [("5分钟", 5), ("10分钟", 10), ("30分钟", 30), ("1小时", 60)]
         self.power_manager = PowerManager()
+        self.power_manage_items = [("不采取任何措施", self.power_manager.nothing), 
+                                   ("休眠", self.power_manager.hibernate), 
+                                   ("关机", self.power_manager.poweroff)
+                                  ]
         '''
         power button config
         '''
@@ -68,9 +72,8 @@ class PowerView(gtk.VBox):
         self.press_power_button_align = self.m_setup_align()
         self.press_power_button_box = gtk.HBox(spacing=self.hbox_spacing)
         self.press_power_button_label = self.m_setup_label("按电源按钮时")
-        items = [("关机", 0), ("休眠", 1), ("不采取任何措施", 2)]
-        self.press_power_button_combo = self.m_setup_combo(items)
-        self.press_power_button_combo.set_select_index(self.power_manager.get_press_power_button(items))
+        self.press_power_button_combo = self.m_setup_combo(self.power_manage_items)
+        self.press_power_button_combo.set_select_index(self.power_manager.get_press_power_button(self.power_manage_items))
         self.press_power_button_combo.connect("item-selected", self.m_combo_item_selected, "press_power_button")
         self.m_widget_pack_start(self.press_power_button_box, 
             [self.press_power_button_label, self.press_power_button_combo])
@@ -81,9 +84,8 @@ class PowerView(gtk.VBox):
         self.close_notebook_cover_align = self.m_setup_align()
         self.close_notebook_cover_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_notebook_cover_label = self.m_setup_label("合上笔记本盖子")
-        items = [("不采取任何措施", 0), ("关机", 1), ("休眠", 2)]
-        self.close_notebook_cover_combo = self.m_setup_combo(items)
-        self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(items))
+        self.close_notebook_cover_combo = self.m_setup_combo(self.power_manage_items)
+        self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(self.power_manage_items))
         self.close_notebook_cover_combo.connect("item-selected", self.m_combo_item_selected, "close_notebook_cover")
         self.m_widget_pack_start(self.close_notebook_cover_box, 
             [self.close_notebook_cover_label, self.close_notebook_cover_combo])
@@ -94,8 +96,8 @@ class PowerView(gtk.VBox):
         self.press_hibernate_button_align = self.m_setup_align()
         self.press_hibernate_button_box = gtk.HBox(spacing=self.hbox_spacing)
         self.press_hibernate_button_label = self.m_setup_label("按休眠按钮时")
-        self.press_hibernate_button_combo = self.m_setup_combo(
-            [("休眠", 1), ("不采取任何措施", 2), ("关机", 3)])
+        self.press_hibernate_button_combo = self.m_setup_combo(self.power_manage_items)
+        self.press_hibernate_button_combo.set_select_index(self.power_manager.get_press_hibernate_button(self.power_manage_items))
         self.press_hibernate_button_combo.connect("item-selected", self.m_combo_item_selected, "press_hibernate_button")
         self.m_widget_pack_start(self.press_hibernate_button_box, 
             [self.press_hibernate_button_label, self.press_hibernate_button_combo])
@@ -113,6 +115,7 @@ class PowerView(gtk.VBox):
         self.hibernate_status_box = gtk.HBox(spacing=self.hbox_spacing)
         self.hibernate_status_label = self.m_setup_label("进入休眠状态")
         self.hibernate_status_combo = self.m_setup_combo(self.wait_duration_items)
+        self.hibernate_status_combo.set_select_index(self.power_manager.get_hibernate_status(self.wait_duration_items))
         self.hibernate_status_combo.connect("item-selected", self.m_combo_item_selected, "hibernate_status")
         self.m_widget_pack_start(self.hibernate_status_box, 
             [self.hibernate_status_label, self.hibernate_status_combo])
@@ -120,14 +123,15 @@ class PowerView(gtk.VBox):
         '''
         close harddisk
         '''
-        self.close_hardisk_align = self.m_setup_align()
-        self.close_hardisk_box = gtk.HBox(spacing=self.hbox_spacing)
-        self.close_hardisk_label = self.m_setup_label("关闭硬盘")
-        self.close_hardisk_combo = self.m_setup_combo(self.wait_duration_items)
-        self.close_hardisk_combo.connect("item-selected", self.m_combo_item_selected, "close_hardisk")
-        self.m_widget_pack_start(self.close_hardisk_box, 
-            [self.close_hardisk_label, self.close_hardisk_combo])
-        self.close_hardisk_align.add(self.close_hardisk_box)
+        self.close_harddisk_align = self.m_setup_align()
+        self.close_harddisk_box = gtk.HBox(spacing=self.hbox_spacing)
+        self.close_harddisk_label = self.m_setup_label("关闭硬盘")
+        self.close_harddisk_combo = self.m_setup_combo(self.wait_duration_items)
+        self.close_harddisk_combo.set_select_index(self.power_manager.get_close_harddisk(self.wait_duration_items))
+        self.close_harddisk_combo.connect("item-selected", self.m_combo_item_selected, "close_harddisk")
+        self.m_widget_pack_start(self.close_harddisk_box, 
+            [self.close_harddisk_label, self.close_harddisk_combo])
+        self.close_harddisk_align.add(self.close_harddisk_box)
         '''
         close monitor
         '''
@@ -135,6 +139,7 @@ class PowerView(gtk.VBox):
         self.close_monitor_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_monitor_label = self.m_setup_label("关闭显示器")
         self.close_monitor_combo = self.m_setup_combo(self.wait_duration_items)
+        self.close_monitor_combo.set_select_index(self.power_manager.get_close_monitor(self.wait_duration_items))
         self.close_monitor_combo.connect("item-selected", self.m_combo_item_selected, "close_monitor")
         self.m_widget_pack_start(self.close_monitor_box, 
             [self.close_monitor_label, self.close_monitor_combo])
@@ -146,6 +151,7 @@ class PowerView(gtk.VBox):
         self.wakeup_password_box = gtk.HBox(spacing=self.hbox_spacing)
         self.wakeup_password_label = self.m_setup_label("唤醒时的密码保护")
         self.wakeup_password_toggle = self.m_setup_toggle()
+        self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle.connect("toggled", self.m_toggled, "wakeup_password")
         self.m_widget_pack_start(self.wakeup_password_box, 
             [self.wakeup_password_label, self.wakeup_password_toggle])
@@ -157,6 +163,7 @@ class PowerView(gtk.VBox):
         self.tray_battery_status_box = gtk.HBox(spacing=self.hbox_spacing)
         self.tray_battery_status_label = self.m_setup_label("在系统托盘显示电池状态")
         self.tray_battery_status_toggle = self.m_setup_toggle()
+        self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle.connect("toggled", self.m_toggled, "tray_battery_status")
         self.m_widget_pack_start(self.tray_battery_status_box, 
             [self.tray_battery_status_label, self.tray_battery_status_toggle])
@@ -171,7 +178,7 @@ class PowerView(gtk.VBox):
              self.press_hibernate_button_align, 
              self.power_save_config_align, 
              self.hibernate_status_align, 
-             self.close_hardisk_align, 
+             self.close_harddisk_align, 
              self.close_monitor_align, 
              self.wakeup_password_align, 
              self.tray_battery_status_align])
@@ -205,6 +212,7 @@ class PowerView(gtk.VBox):
             parent_widget.pack_start(item, False, False)
 
     def m_combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
+        print widget, item_text, item_value, item_index, object
         if object == "press_power_button":
             '''
             There is no org.gnome.power-manager suspend or hibernate keys in gnome 3 any more

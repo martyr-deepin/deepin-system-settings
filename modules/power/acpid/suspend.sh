@@ -1,4 +1,4 @@
 #!/bin/bash
-# /etc/acpi/default.sh
+# /etc/acpi/suspend.sh
 # for suspend as the name shown below
 pm-suspend

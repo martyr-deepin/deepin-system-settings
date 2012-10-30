@@ -24,7 +24,14 @@ import os
 from dtk.ui.utils import get_parent_dir
 from dtk.ui.config import Config
 
-class PowerManager():
+class PowerManager:
+    '''
+    enum
+    '''
+    nothing     = 0
+    hibernate   = 1
+    poweroff    = 2
+
     '''
     class docs
     '''
@@ -33,9 +40,22 @@ class PowerManager():
         self.config.load()
 
     def m_get_item(self, section, key, items=[]):
-        for item, i in items:
-            if item == self.config.get(section, key):
-                return i
+        i = 0
+        
+        if section == "power_button_config":
+            for item, value in items:
+                if self.config.get(section, key) == "nothing" and value == PowerManager.nothing:
+                    return value
+                if self.config.get(section, key) == "hibernate" and value == PowerManager.hibernate:
+                    return value
+                if self.config.get(section, key) == "poweroff" and value == PowerManager.poweroff:
+                    return value
+
+        if section == "power_save_config":
+            for item, value in items:
+                if self.config.get(section, key) == str(value):
+                    return i
+                i = i + 1
 
         return 0
 
@@ -45,7 +65,25 @@ class PowerManager():
         self.config.set(section, key, value)
 
     def get_press_power_button(self, items):
-        return self.m_get_item("press_button_config", "press_power_button", items)
+        return self.m_get_item("power_button_config", "press_power_button", items)
 
     def get_close_notebook_cover(self, items):
-        return self.m_get_item("press_button_config", "close_notebook_cover", items)
+        return self.m_get_item("power_button_config", "close_notebook_cover", items)
+
+    def get_press_hibernate_button(self, items):
+        return self.m_get_item("power_button_config", "press_hibernate_button", items)
+
+    def get_hibernate_status(self, items):
+        return self.m_get_item("power_save_config", "hibernate_status", items)
+
+    def get_close_harddisk(self, items):
+        return self.m_get_item("power_save_config", "close_harddisk", items)
+
+    def get_close_monitor(self, items):
+        return self.m_get_item("power_save_config", "close_monitor", items)
+
+    def get_wakeup_password(self):
+        return bool(self.config.get("other", "wakeup_password"))
+
+    def get_tray_battery_status(self):
+        return bool(self.config.get("other", "tray_battery_status"))
