@@ -212,23 +212,24 @@ class PowerView(gtk.VBox):
             parent_widget.pack_start(item, False, False)
 
     def m_combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
-        print widget, item_text, item_value, item_index, object
         if object == "press_power_button":
-            '''
-            There is no org.gnome.power-manager suspend or hibernate keys in gnome 3 any more
-            so could not use gsettings set/get way.
-            I want to use /etc/acpi/* script at first, if /var/run/acpid.socket is available to 
-            control acpid daemon, then changed the script way.
-            '''
-            pass
-        if object == "close_notebook_cover":
+            self.power_manager.set_press_power_button(item_value)
             return
 
-    def m_toggled(self, widget, data=None):
-        #print "%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()])
-        '''
-        Same situation as m_combo_item_selected callback
-        '''
-        pass
+        if object == "close_notebook_cover":
+            self.power_manager.set_close_notebook_cover(item_value)
+            return
+
+        if object == "press_hibernate_button":
+            self.power_manager.set_press_hibernate_button(item_value)
+
+    def m_toggled(self, widget, object=None):
+        if object == "wakeup_password":
+            self.power_manager.set_wakeup_password(widget.get_active())
+            return
+
+        if object == "tray_battery_status":
+            self.power_manager.set_tray_battery_status(widget.get_active())
+            return
 
 gobject.type_register(PowerView)        

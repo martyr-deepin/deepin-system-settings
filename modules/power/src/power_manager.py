@@ -24,6 +24,12 @@ import os
 from dtk.ui.utils import get_parent_dir
 from dtk.ui.config import Config
 
+'''
+There is no org.gnome.power-manager suspend or hibernate keys in gnome 3 any more, 
+so could not using gsettings set/get dbus style.
+I want to use /etc/acpi/* script way at first, if /var/run/acpid.socket is available to 
+control acpid daemon, then removed script way.
+'''
 class PowerManager:
     '''
     enum
@@ -62,28 +68,80 @@ class PowerManager:
     def m_set_value(self, section, key, value):
         if section == None or key == None or value == None:
             return
-        self.config.set(section, key, value)
+
+        if section == "power_button_config":
+            if value == PowerManager.nothing:
+                self.config.set(section, key, "nothing")
+            elif value == PowerManager.hibernate:
+                self.config.set(section, key, "hibernate")
+            elif value == PowerManager.poweroff:
+                self.config.set(section, key, "poweroff")
+            else:
+                pass
+
+        self.config.write()
+
+    def m_set_action_script(self, value):
+        if value == PowerManager.nothing:
+            os.system("sudo echo 'action=/etc/acpi/nothing.sh' >> /etc/acpi/events/default")
+        elif value == PowerManager.hibernate:
+            os.system("sudo echo 'action=/etc/acpi/hibernate.sh' >> /etc/acpi/events/default")
+        elif value == PowerManager.poweroff:
+            os.system("sudo echo 'action=/etc/acpi/poweroff.sh' >> /etc/acpi/events/default")
+        else:
+            os.system("sudo echo 'action=/etc/acpi/nothing.sh' >> /etc/acpi/events/default")
+        os.system("sudo /etc/init.d/acpid restart")
 
     def get_press_power_button(self, items):
         return self.m_get_item("power_button_config", "press_power_button", items)
 
+    def set_press_power_button(self, value):
+        self.m_set_value("power_button_config", "press_power_button", value)
+        os.system("sudo echo 'event=button/power' > /etc/acpi/events/default")
+        self.m_set_action_script(value)
+
     def get_close_notebook_cover(self, items):
         return self.m_get_item("power_button_config", "close_notebook_cover", items)
+    
+    def set_close_notebook_cover(self, value):
+        self.m_set_value("power_button_config", "close_notebook_cover", value)
+        os.system("sudo echo 'event=button/lid' > /etc/acpi/events/default")
+        self.m_set_action_script(value)
 
     def get_press_hibernate_button(self, items):
         return self.m_get_item("power_button_config", "press_hibernate_button", items)
 
+    def set_press_hibernate_button(self, value):
+        self.m_set_value("power_button_config", "press_hibernate_button", value)
+        os.system("sudo echo 'event=button/hibernate' > /etc/acpi/events/default")
+        self.m_set_action_script(value)
+
     def get_hibernate_status(self, items):
         return self.m_get_item("power_save_config", "hibernate_status", items)
 
+    def set_hibernate_status(self, value):
+        self.m_set_value("power_save_config", "hibernate_status", str(value))
+
     def get_close_harddisk(self, items):
-        return self.m_get_item("power_save_config", "close_harddisk", items)
+        self.m_get_item("power_save_config", "close_harddisk", items)
+
+    def set_close_harddisk(self, value):
+        self.m_set_value("power_save_config", "close_harddisk", str(value))
 
     def get_close_monitor(self, items):
         return self.m_get_item("power_save_config", "close_monitor", items)
 
+    def set_close_monitor(self, value):
+        self.m_set_value("power_save_config", "close_monitor", str(value))
+
     def get_wakeup_password(self):
         return bool(self.config.get("other", "wakeup_password"))
 
+    def set_wakeup_password(self, value):
+        self.m_set_value("other", "wakeup_password", str(value))
+
     def get_tray_battery_status(self):
         return bool(self.config.get("other", "tray_battery_status"))
+
+    def set_tray_battery_status(self, value):
+        self.m_set_value("other", "tray_battery_status", str(value))
