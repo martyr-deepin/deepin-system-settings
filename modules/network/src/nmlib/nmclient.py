@@ -214,8 +214,8 @@ class NMClient(NMObject):
         self.emit("state-changed", TypeConvert.dbus2py(state))
     
     def properties_changed_cb(self, prop_dict):
-        # self.emit("properties-changed", TypeConvert.dbus2py(prop_dict))
-        pass
+        self.init_nmobject_with_properties()
+
 
 nmclient = NMClient()
 

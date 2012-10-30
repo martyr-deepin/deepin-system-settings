@@ -25,11 +25,6 @@ import gudev
 import os
 import traceback
 from nmobject import NMObject
-# from nm_active_connection import NMActiveConnection
-# from nmdhcp4config import NMDHCP4Config
-# from nmdhcp6config import NMDHCP6Config
-# from nmip4config import NMIP4Config
-# from nmip6config import NMIP6Config
 from nmcache import cache
 
 udev_client = gudev.Client("net")
@@ -38,7 +33,7 @@ class NMDevice(NMObject):
     '''NMDevice'''
 
     __gsignals__  = {
-            "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            # "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
             "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
             "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
             }
@@ -153,7 +148,8 @@ class NMDevice(NMObject):
         self.dbus_method("Disconnect")
 
     def state_changed_cb(self, new_state, old_state, reason):
-        self.emit("state-changed", new_state, old_state, reason)
+        # self.emit("state-changed", new_state, old_state, reason)
+        self.init_nmobject_with_properties()
         if old_state != 100 and new_state == 100:
             self.emit("device-active", reason)
         elif old_state == 100 and new_state != 100:

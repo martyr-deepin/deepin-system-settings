@@ -23,7 +23,6 @@
 import gobject
 import traceback
 from nmdevice import NMDevice
-# from nmaccesspoint import NMAccessPoint
 from nmcache import cache
 from nm_utils import TypeConvert
 from nmclient import nmclient
@@ -139,9 +138,7 @@ class NMDeviceWifi(NMDevice):
         self.emit("access-point-removed", cache.getobject(ap_object_path))
 
     def properties_changed_cb(self, prop_dict):
-        # print "PropertiesChanged"
-        # print TypeConvert.dbus2py(prop_dict)
-        pass
+        self.init_nmobject_with_properties()
 
 if __name__ == "__main__":
     wifi_device = NMDeviceWifi("/org/freedesktop/NetworkManager/Devices/0")

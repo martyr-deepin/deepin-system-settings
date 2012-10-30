@@ -30,12 +30,17 @@ class NMDHCP4Config(NMObject):
         self.prop_list = ["Options"]
         self.init_nmobject_with_properties()
         self.options = self.get_options()
-    ###Methods###
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
+
     def get_options(self):
         return self.properties["Options"]
 
     def get_one_option(self, option):
         return self.options[option]
+
+    def properties_changed_cb(self, prop_dict):
+        self.init_nmobject_with_properties()
+
 
 if __name__ == "__main__":
     nm_dhcp4_config = NMDHCP4Config("/org/freedesktop/NetworkManager/DHCP4Config/0")

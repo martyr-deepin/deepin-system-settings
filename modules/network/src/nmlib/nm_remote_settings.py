@@ -21,13 +21,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import uuid
-# import dbus
 import time
 import re
 import gobject
 from nmobject import NMObject
 from nm_utils import TypeConvert
-# from nm_remote_connection import NMRemoteConnection
 from nmcache import cache
 from nmutils.nmsetting_connection import NMSettingConnection
 from nmutils.nmsetting_wired import NMSettingWired
@@ -396,10 +394,8 @@ class NMRemoteSettings(NMObject, object):
     def get_cdma_connections(self):
         return filter(lambda x: x.settings_dict["connection"]["type"] == "cdma", self.list_connections())
 
-    ###Signals###
     def properties_changed_cb(self, prop_dict):
-        print "PropertiesChanged"
-        print TypeConvert.dbus2py(prop_dict)
+        self.init_nmobject_with_properties()
 
     def new_connection_cb(self, arg):
         self.emit("new-connection", arg)

@@ -32,7 +32,7 @@ class NMAccessPoint(NMObject):
         self.init_nmobject_with_properties()
         self.bssid = ""
 
-        # self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
 
     ###Methods###
     def get_flags(self):
@@ -71,10 +71,8 @@ class NMAccessPoint(NMObject):
     def get_hw_address(self):
         return self.properties["HwAddress"]
 
-    # def properties_changed_cb(self, prop_dict):
-    #     # print "properties changed"
-    #     # print TypeConvert.dbus2py(prop_dict)
-    #     pass
+    def properties_changed_cb(self, prop_dict):
+        pass
 
 if __name__ == "__main__":
     nm_access_point = NMAccessPoint("/org/freedesktop/NetworkManager/AccessPoint/840")
