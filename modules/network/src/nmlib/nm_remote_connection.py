@@ -62,7 +62,7 @@ class NMRemoteConnection(NMObject, NMConnection):
         print error
 
     def get_settings(self):
-        return TypeConvert.dbus2py(self.dbus_method("GetSettings"))
+        return self.dbus_method("GetSettings")
 
     def get_secrets(self, setting_name):
         return TypeConvert.dbus2py(self.dbus_method("GetSecrets", setting_name))
