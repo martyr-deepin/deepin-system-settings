@@ -95,9 +95,10 @@ class WiredSection(gtk.VBox):
         self.queue_draw()
 
     def device_deactive(self, widget, event):
-        print "deactive"
-        self.tree.visible_items[self.active_one].is_select = False
-        self.queue_draw()
+        pass
+        #print "deactive"
+        #self.tree.visible_items[self.active_one].is_select = False
+        #self.queue_draw()
 
 class Wireless(gtk.VBox):
     def __init__(self):
@@ -136,10 +137,10 @@ class Wireless(gtk.VBox):
         active = wireless_device.get_active_connection()
         print active
         index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-
+        print index
+        self.tree.select_items([self.tree.visible_items[index]])
         self.tree.visible_items[index].check_select_flag = True
-        #self.tree.select_items([self.tree.visible_items[index]])
-        self.tree.queue_draw()
+        ##self.tree.select_items([self.tree.visible_items[index]])
     
     def device_is_deactive(self, widget, event):
         print "deactive"
