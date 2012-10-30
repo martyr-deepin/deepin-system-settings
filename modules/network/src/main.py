@@ -52,7 +52,10 @@ class WiredSection(gtk.VBox):
         self.align.set_padding(0,0,PADDING,11*2)
         self.align.add(self.tree)
         self.pack_start(self.align, False, False, 0)
-
+        if wired_device.is_active():
+            wire.set_active(True)
+        else:
+            wire.set_active(False)
     def add_setting_page(self, setting_page):
         self.settings = setting_page
 
@@ -71,6 +74,7 @@ class WiredSection(gtk.VBox):
         else:
             self.tree.add_items([],0,True)
             self.tree.hide()
+            wired_device.nm_device_disconnect()
             #self.h.get_children()[1].destroy()
 
     def retrieve_list(self):
@@ -119,6 +123,11 @@ class Wireless(gtk.VBox):
         self.align.add(self.vbox)
 
         self.pack_start(self.align, False, False, 0)
+
+        if wireless_device.is_active():
+            wireless.set_active(True)
+        else:
+            wireless.set_active(False)
     
     def device_is_active(self, widget, state):
         print "active"
@@ -157,6 +166,7 @@ class Wireless(gtk.VBox):
         else:
             self.tree.add_items([],0,True)
             self.vbox.hide()
+            wireless_device.nm_device_disconnect()
 
     def retrieve_list(self):
         """

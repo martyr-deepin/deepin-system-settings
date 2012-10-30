@@ -13,7 +13,6 @@ TEXT_PADDING = 5
 BUTTON_PADDING = 5
 class Contain(gtk.Alignment):
 
-
     def __init__(self, icon, text, switch_callback= None):
 
         gtk.Alignment.__init__(self, 0,0,0,0)
@@ -39,7 +38,9 @@ class Contain(gtk.Alignment):
 
         self.switch.connect("toggled", self.active_cb)
         self.hbox.pack_start(self.switch)
-
+    
+    def set_active(self, state):
+        self.switch.set_active(state)
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)
