@@ -100,7 +100,7 @@ class NMDevice(NMObject):
 
     def get_state(self):
         return self.properties["State"]
-
+    
     def get_udi(self):
         return self.properties["Udi"]
 
@@ -145,7 +145,13 @@ class NMDevice(NMObject):
             return os.popen(cmd).read().split(":")[-1].split("(")[0]
 
     def nm_device_disconnect(self):
-        self.dbus_method("Disconnect")
+        self.dbus_method("Disconnect", reply_handler = self.disconnect_finish, error_handler = self.disconnect_error)
+
+    def disconnect_finish(self, *reply):
+        pass
+        
+    def disconnect_error(self, *error):
+        pass
 
     def state_changed_cb(self, new_state, old_state, reason):
         # self.emit("state-changed", new_state, old_state, reason)

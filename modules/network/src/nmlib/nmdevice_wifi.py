@@ -41,6 +41,7 @@ class NMDeviceWifi(NMDevice):
     def __init__(self, wifi_device_object_path):
         NMDevice.__init__(self, wifi_device_object_path, "org.freedesktop.NetworkManager.Device.Wireless")
         self.prop_list = ["HwAddress", "PermHwAddress", "Mode", "Bitrate", "ActiveAccessPoint", "WirelessCapabilities"]
+
         self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface, signal_name = "AccessPointAdded")
         self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, signal_name = "AccessPointRemoved")
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
@@ -83,8 +84,10 @@ class NMDeviceWifi(NMDevice):
         print error
 
     def auto_connect(self):
-        if self.is_active():
+        if cache.getobject(self.object_path).is_active():
             return True
+        if cache.getobject(self.object_path).get_state() < 30:
+            return False
         wireless_connections = nm_remote_settings.get_wireless_connections()
         if len(wireless_connections) != 0:
             for conn in wireless_connections:
