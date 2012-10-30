@@ -24,6 +24,7 @@ class NMCache(object):
 
     def __init__(self):
         self.cache_dict = {}
+        self.spec_cache_dict = {}
     
     def new_object(self, path):
         key = path.split("/")[-2]
@@ -99,12 +100,65 @@ class NMCache(object):
         if path in self.cache_dict.iterkeys():
             del self.cache_dict[path]
     
-    def clearcache(self, path):
+    def clearcache(self):
         self.cache_dict.clear()
     
     def replaceobject(self, path, object):
         if path in self.cache_dict.iterkeys():
             self.cache_dict[path] = object
+        else:
+            print "doesn't exist"
+
+    def new_spec_object(self, path):
+        if path in self.spec_cache_dict.iterkeys():
+            return self.cache_dict[path]
+
+        key = self.getobject(path).get_device_type()
+        if key == 1:
+            try:
+                from nmdevice_ethernet import NMDeviceEthernet
+                return NMDeviceEthernet(path)
+            except:
+                pass
+        elif key == 2:
+            try:
+                from nmdevice_wifi import NMDeviceWifi
+                return NMDeviceWifi(path)
+            except:
+                pass
+        elif key == 8:
+            try:
+                from nmdevice_modem import NMDeviceModem
+                return NMDeviceModem(path)
+            except:
+                pass
+        else:
+            print "unsupport spec type"
+            print path
+
+    def put_spec_object(self, path, object):
+        if path not in self.spec_cache_dict.iterkeys():
+            self.spec_cache_dict[path] = object
+        else:
+            print "already stored the object"
+
+    def get_spec_object(self, path):
+        if path in self.spec_cache_dict.iterkeys():
+            return self.spec_cache_dict[path]
+        else:
+            self.put_spec_object(path, self.new_spec_object(path))
+            return self.spec_cache_dict[path]
+
+    def del_spec_object(self, path):
+        if path in self.spec_cache_dict.iterkeys():
+            del self.spec_cache_dict[path]
+
+    def clear_spec_cache(self):
+        self.spec_cache_dict.clear()
+
+    def replace_spec_object(self, path, object):
+        if path in self.spec_cache_dict.iterkeys():
+            self.spec_cache_dict[path] = object
         else:
             print "doesn't exist"
 
