@@ -78,7 +78,8 @@ class PowerManager:
                 self.config.set(section, key, "poweroff")
             else:
                 pass
-
+        else:
+            self.config.set(section, key, value)
         self.config.write()
 
     def m_set_action_script(self, value):
@@ -123,7 +124,7 @@ class PowerManager:
         self.m_set_value("power_save_config", "hibernate_status", str(value))
 
     def get_close_harddisk(self, items):
-        self.m_get_item("power_save_config", "close_harddisk", items)
+        return self.m_get_item("power_save_config", "close_harddisk", items)
 
     def set_close_harddisk(self, value):
         self.m_set_value("power_save_config", "close_harddisk", str(value))
@@ -135,13 +136,17 @@ class PowerManager:
         self.m_set_value("power_save_config", "close_monitor", str(value))
 
     def get_wakeup_password(self):
-        return bool(self.config.get("other", "wakeup_password"))
+        if self.config.get("other", "wakeup_password") == "False":
+            return False
+        return True
 
     def set_wakeup_password(self, value):
         self.m_set_value("other", "wakeup_password", str(value))
 
     def get_tray_battery_status(self):
-        return bool(self.config.get("other", "tray_battery_status"))
+        if self.config.get("other", "tray_battery_status") == "False":
+            return False
+        return True
 
     def set_tray_battery_status(self, value):
         self.m_set_value("other", "tray_battery_status", str(value))

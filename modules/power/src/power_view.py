@@ -222,6 +222,19 @@ class PowerView(gtk.VBox):
 
         if object == "press_hibernate_button":
             self.power_manager.set_press_hibernate_button(item_value)
+            return
+
+        if object == "hibernate_status":
+            self.power_manager.set_hibernate_status(item_value)
+            return
+
+        if object == "close_harddisk":
+            self.power_manager.set_close_harddisk(item_value)
+            return
+
+        if object == "close_monitor":
+            self.power_manager.set_close_monitor(item_value)
+            return
 
     def m_toggled(self, widget, object=None):
         if object == "wakeup_password":
