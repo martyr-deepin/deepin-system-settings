@@ -32,24 +32,18 @@ from nmobject import NMObject
 class NMAgentManager(NMObject):
     '''NMAgentManager'''
         
-    __gsignals__  = {
-            "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
-            }
-        
     def __init__(self):
         NMObject.__init__(self, "/org/freedesktop/NetworkManager/AgentManager", "org.freedesktop.NetworkManager.AgentManager")
-        self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface, signal_name = "AccessPointAdded")
-        self.connect("registration-result", self.registration_result_cb)
-
-        self.auto_register = ""
-        self.identifier = ""
-        self.registered = ""
 
     def register(self, identifier):
         try:
-            self.dbus_interface.Register(identifier)
+            if self.validate_identifier(identifier):
+                self.dbus_method("Register", identifier, reply_handler = self.register_finish, error_handler = self.register_error)
         except:
             traceback.print_exc()
+
+    def          
+
 
     def unregister(self):
         try:
@@ -70,9 +64,6 @@ class NMAgentManager(NMObject):
                 return False
         return True    
 
-    ###Signals###
-    def registration_result_cb(self):
-        self.emit("registration-result")
 
 agent_manager = NMAgentManager()
 
@@ -80,10 +71,21 @@ class NMSecretAgent(dbus.service.Object):
     '''NMSecretAgent'''
     
     DBUS_SECRET_AGENT = "org.freedesktop.NetworkManager.SecretAgent"
+        
+    __gsignals__  = {
+            "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
+            }
     
     def __init__(self):
 
+        self.auto_register = ""
+        self.identifier = ""
+        self.registered = ""
+
         dbus.service.Object.__init__(self, dbus.SystemBus(), "/org/freedesktop/NetworkManager/SecretAgent")
+        self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface, signal_name = "AccessPointAdded")
+
+
         agent_manager.register("org.freedesktop.NetworkManager.SecretAgent")
 
     def generate_service_name(self, uuid, setting_name):
@@ -129,6 +131,10 @@ class NMSecretAgent(dbus.service.Object):
         username = getpass.get_user()
         if keyring.get_password(service, username):
             keyring.set_password(service, username, "")
+
+    ###Signals###
+    def registration_result_cb(self):
+        self.emit("registration-result")
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  
