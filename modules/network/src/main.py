@@ -145,7 +145,11 @@ class Wireless(gtk.VBox):
         """
         #device = nmclient.get_wireless_device()
         wireless_devices = NMDeviceWifi(wireless_device.object_path)
-
+        
+        print wireless_device
+        print wireless_devices
+        print wireless_devices.properties
+        print wireless_device.properties["State"]
 
         if wireless_devices.auto_connect():
             active_connection = wireless_device.get_active_connection()

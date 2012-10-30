@@ -89,7 +89,7 @@ class NMDeviceWifi(NMDevice):
         wireless_connections = nm_remote_settings.get_wireless_connections()
         if len(wireless_connections) != 0:
             for conn in wireless_connections:
-                ssid = conn.settings_dict["connection"]["ssid"]
+                ssid = conn.get_setting("802-11-wireless").ssid
                 if ssid not in self.__get_ssid_record():
                     continue
                 else:
