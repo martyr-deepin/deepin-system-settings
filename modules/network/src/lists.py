@@ -41,7 +41,12 @@ class WirelessItem(TreeItem):
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
 
-    def __init__(self,connection, setting_object = None, slide_to_setting_cb = None, active_cb = None, font_size = DEFAULT_FONT_SIZE):
+    def __init__(self,
+                 connection,
+                 setting_object = None, 
+                 slide_to_setting_cb = None, 
+                 active_cb = None,
+                 font_size = DEFAULT_FONT_SIZE):
 
         TreeItem.__init__(self)
         self.setting_object = setting_object
@@ -56,12 +61,12 @@ class WirelessItem(TreeItem):
         self.essid_width = self.get_essid_width(self.essid)
         self.signal_width = self.get_signal_width()
         self.jumpto_width = self.get_jumpto_width()
-
+        
+        self.check_select_flag = False
 
     def render_check(self, cr, rect):
-
         render_background(cr,rect)
-        if self.is_select:
+        if self.check_select_flag:
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
@@ -93,8 +98,6 @@ class WirelessItem(TreeItem):
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
             cr.rectangle(rect.x, rect.y, rect.width, 1)
             cr.fill()
-        #cr.set_source_rgb(1,1,1)
-        #draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y)
 
     def render_signal(self, cr, rect):
         render_background(cr,rect)
@@ -114,7 +117,6 @@ class WirelessItem(TreeItem):
             cr.fill()
     
     def render_jumpto(self, cr, rect):
-
         render_background(cr,rect)
         if self.is_select:
             pass
@@ -132,11 +134,13 @@ class WirelessItem(TreeItem):
     def get_check_width(self):
         check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
         return check_icon.get_width()+ self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
+
     def get_essid_width(self, essid):
         return get_content_size(essid)[0]
     
     def get_signal_width(self):
         return app_theme.get_pixbuf("/Network/strength_1.png").get_pixbuf().get_width() + self.SIGNAL_RIGHT_PADDING
+
     def get_jumpto_width(self):
         return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
 
@@ -147,14 +151,13 @@ class WirelessItem(TreeItem):
         return [self.render_check, self.render_essid, self.render_signal, self.render_jumpto]
 
     def get_height(self):
-
         return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height()+ self.VERTICAL_PADDING*2
         
     def select(self):
-        self.is_select = True
-
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        pass
+        #self.is_select = True
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
 
     def set_active(self, b):
         if b:
@@ -167,7 +170,6 @@ class WirelessItem(TreeItem):
 
     def unselect(self):
         self.is_select = False
-
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
         
@@ -180,9 +182,16 @@ class WirelessItem(TreeItem):
 
     def single_click(self, column, x, y):
         #self.setting_object.init_connection(None)
-        active_connection = wireless_device.get_active_connection()
             # Connect to this ap
+        if column == 0:
+            print "check button clicked"
+            self.check_select_flag = not self.check_select_flag
+            print self.check_select_flag
+            if self.redraw_request_callback:
+                self.redraw_request_callback(self)
+
         if column == 3:
+            active_connection = wireless_device.get_active_connection()
             if self.connection.object_path == active_connection.get_specific_object():
                 self.setting_object.init_connection(self.connection)
             else:

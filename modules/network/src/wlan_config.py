@@ -722,9 +722,12 @@ class Security(gtk.VBox):
 
     def save_setting(self):
         # Save wpa settings
-        if self.security_combo.get_active() == 3:
+        active = self.security_combo.get_active()
+        if active == 3:
             passwd = self.password_entry.get_text()
-        # TODO add save settings
+            key_mgmt = "wpa-psk"
+            self.setting.key_mgmt = key_mgmt
+        # TODO add save settingsma
 
         # Save wep settings
         else:
