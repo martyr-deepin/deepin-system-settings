@@ -408,7 +408,7 @@ nm_remote_settings = NMRemoteSettings()
 if __name__ == "__main__":
     nm_remote_settings = NMRemoteSettings()
     # nm_remote_settings.new_cdma_connection()
-    # print nm_remote_settings.list_connections()
+    # print nm_remote_settings.dbus_interface.ListConnections()
     # print nm_remote_settings.get_hostname()
     # print nm_remote_settings.get_can_modify()
 

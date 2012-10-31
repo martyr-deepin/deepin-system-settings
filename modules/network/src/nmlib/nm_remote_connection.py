@@ -65,9 +65,9 @@ class NMRemoteConnection(NMObject, NMConnection):
         
     def update(self):
         try:
-            secret_agent.agent_save_secrets(self.object_path, "802-11-wireless-security")
+            secret_agent.agent_save_secrets(self.object_path, "802-11-wireless-security", "psk")
             self.dbus_interface.Update(self.settings_dict, reply_handler = self.update_finish, error_handler = self.update_error)
-            print secret_agent.agent_get_secrets(self.object_path, "802-11-wireless-security")
+            print secret_agent.agent_get_secrets(self.object_path, "802-11-wireless-security", "psk")
         except:
             traceback.print_exc()
 

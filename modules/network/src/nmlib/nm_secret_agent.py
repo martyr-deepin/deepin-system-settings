@@ -81,11 +81,7 @@ agent_manager = NMAgentManager()
 class NMSecretAgent(NMObject):
     '''NMSecretAgent'''
     # __gsignals__  = {
-<<<<<<< HEAD
     #         "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
-=======
-    #         "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,)),
->>>>>>> origin/master
     #         }
     
     def __init__(self):
@@ -123,7 +119,7 @@ class NMSecretAgent(NMObject):
         if keyring.get_password(service, username):
             keyring.set_password(service, username, "")
 
-# secret_agent = NMSecretAgent()
+secret_agent = NMSecretAgent()
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  
