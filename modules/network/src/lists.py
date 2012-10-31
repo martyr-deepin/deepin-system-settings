@@ -193,24 +193,10 @@ class WirelessItem(TreeItem):
         pass
 
     def single_click(self, column, x, y):
-        #self.setting_object.init_connection(None)
-            # Connect to this ap
-        #print "click"
-        #if column == 0:
-
-            #self.check_select_flag = not self.check_select_flag
-            ##print self.check_select_flag
-            #if self.redraw_request_callback:
-                #self.redraw_request_callback(self)
-
         if column == 3:
-            #active_connection = wireless_device.get_active_connection()
-            #if active_connection != None:
-                #if self.connection.object_path == active_connection.get_specific_object():
-                    #self.setting_object.init_connection(self.connection)
-                #else:
             if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
                 nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
+
             self.setting_object.init_connection(self.connection)
             self.send_to_crumb()
             self.slide_to_setting() 
@@ -229,7 +215,6 @@ class WiredItem(TreeItem):
     CHECK_RIGHT_PADIING = 10
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
-
 
     def __init__(self, essid, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
         
@@ -316,7 +301,6 @@ class WiredItem(TreeItem):
     def unselect(self):
         self.is_select = False
         
-
     def hover(self, column, offset_x, offset_y):
         pass
 
