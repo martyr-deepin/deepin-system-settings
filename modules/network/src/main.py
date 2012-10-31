@@ -25,9 +25,6 @@ from wlan_config import WirelessSetting
 
 from nmlib.nmobject import dbus_loop
 from wired import *
-
-from nmlib.nm_secret_agent import secret_agent
-
 slider = HSlider()
 PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
