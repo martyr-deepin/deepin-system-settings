@@ -35,7 +35,9 @@ class NMDeviceWifi(NMDevice):
             "access-point-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (
                 gobject.TYPE_PYOBJECT,)),
             "access-point-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (
-                gobject.TYPE_PYOBJECT,))
+                gobject.TYPE_PYOBJECT,)),
+            "try-ssid-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+            "try-ssid-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
             }
 
     def __init__(self, wifi_device_object_path):
@@ -97,7 +99,9 @@ class NMDeviceWifi(NMDevice):
                 else:
                     try:
                         specific = self.get_ap_by_ssid(ssid)
+                        self.emit("try-ssid-begin", specific)
                         nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
+                        self.emit("try-ssid-end", specific)
                         if self.is_active():
                             return True
                         else:
