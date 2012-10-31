@@ -78,7 +78,7 @@ class WirelessItem(TreeItem):
             #check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
             path = get_parent_dir(__file__, 2) + "/theme/dark_grey/image/Network/loading.gif"
             #print path
-            check_icon = gtk.gdk.PixbufAnimation(path).get_static_image()
+            check_icon = gtk.gdk.PixbufAnimation(path).get_iter(0.0).get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
 

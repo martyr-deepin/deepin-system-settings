@@ -32,7 +32,7 @@ import gobject
 # from nmlib.nm_utils import TypeConvert
 
 class NMSetting (gobject.GObject):
-    '''NMSetting'''
+    '''NMSetting, should be abstract'''
     
     def __init__(self):
         gobject.GObject.__init__(self)

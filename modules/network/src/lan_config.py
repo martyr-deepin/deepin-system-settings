@@ -86,7 +86,7 @@ class WiredSetting(gtk.HBox):
         self.cancel_button = gtk.Button("Cancel")
         self.cancel_button.connect("clicked", self.cancel_changes)
         self.apply_button.connect("clicked", self.save_changes)
-        hbox.pack_start(self.cancel_button, False, False, 0)
+        #hbox.pack_start(self.cancel_button, False, False, 0)
         hbox.pack_start(self.apply_button, False, False, 0)
         aligns.add(hbox)
         vbox.pack_start(aligns, False , False)
