@@ -40,7 +40,7 @@ from nmutils.nmsetting_gsm import NMSettingGsm
 from nmutils.nmsetting_serial import NMSettingSerial
 from nmutils.nmsetting_ppp import NMSettingPPP
 
-class NMRemoteSettings(NMObject, object):
+class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
 
     __gsignals__  = {
