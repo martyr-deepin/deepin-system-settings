@@ -374,7 +374,7 @@ if __name__ == '__main__':
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
-            slider.set_to_page(main_align, "left")
+            slider.set_to_page(main_align)
             module_frame.send_module_info()
         elif message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
