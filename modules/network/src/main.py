@@ -174,7 +174,8 @@ class Wireless(gtk.VBox):
                 self.index = index
             else:
                 wlan = cache.get_spec_object(wireless_device.object_path)
-                wlan.auto_connect()
+                # FIXME close auto_connect
+                #wlan.auto_connect()
                 #self.tree.queue_draw()
         else:
             self.tree.add_items([],0,True)
@@ -188,7 +189,7 @@ class Wireless(gtk.VBox):
         #device = nmclient.get_wireless_device()
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         device_wifi.connect("try-ssid-begin", self.try_to_connect)
-        device_wifi.connect("try-ssid-end", self.try_to_connect_end)
+        #device_wifi.connect("try-ssid-end", self.try_to_connect_end)
         self.ap_list = device_wifi.order_ap_list()
         if wireless_device.get_state() == 100:
             active_connection = wireless_device.get_active_connection()
@@ -207,15 +208,18 @@ class Wireless(gtk.VBox):
         return [items, index]
 
     def try_to_connect(self, widget, ap_object):
+        print "trying"
         index = self.ap_list.index(ap_object)
+        print index
         self.tree.visible_items[index].network_state = 1
         self.tree.queue_draw()
     
-    def try_to_connect_end(self, widget, ap_object):
-        print ap_object.get_ssid(),"end"
-        index = self.ap_list.index(ap_object)
-        self.tree.visible_items[index].network_state = 0
-        self.tree.queue_draw()
+    #def try_to_connect_end(self, widget, ap_object):
+        #pass
+        #print ap_object.get_ssid(),"end"
+        #index = self.ap_list.index(ap_object)
+        #self.tree.visible_items[index].network_state = 0
+        #self.tree.queue_draw()
 
 
 
