@@ -208,16 +208,14 @@ class Wireless(gtk.VBox):
 
     def try_to_connect(self, widget, ap_object):
         index = self.ap_list.index(ap_object)
-        print index
         self.tree.visible_items[index].network_state = 1
         self.tree.queue_draw()
     
     def try_to_connect_end(self, widget, ap_object):
-        pass
-        #index = self.ap_list.index(ap_object)
-        #print index
-        #self.tree.visible_items[index].network_state = 0
-        #self.tree.queue_draw()
+        print ap_object.get_ssid(),"end"
+        index = self.ap_list.index(ap_object)
+        self.tree.visible_items[index].network_state = 0
+        self.tree.queue_draw()
 
 
 
