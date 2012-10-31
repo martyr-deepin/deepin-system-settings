@@ -25,6 +25,7 @@ import traceback
 from nmobject import NMObject
 from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
+from nm_secret_agent import secret_agent
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''
@@ -32,7 +33,8 @@ class NMRemoteConnection(NMObject, NMConnection):
     __gsignals__  = {
             "removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "updated":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "visible":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (str,))
+            "visible":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (str,)),
+            "request-password":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
             }
 
     def __init__(self, object_path):
@@ -60,11 +62,16 @@ class NMRemoteConnection(NMObject, NMConnection):
         return self.dbus_method("GetSettings")
 
     def get_secrets(self, setting_name):
-        return TypeConvert.dbus2py(self.dbus_method("GetSecrets", setting_name))
-        
+        try:
+            return TypeConvert.dbus2py(self.dbus_method("GetSecrets", setting_name))
+        except:
+            return {}
+
     def update(self):
         try:
+            secret_agent.agent_save_secrets(self.object_path, "802-11-wireless-security", "psk")
             self.dbus_interface.Update(self.settings_dict, reply_handler = self.update_finish, error_handler = self.update_error)
+            print secret_agent.agent_get_secrets(self.object_path, "802-11-wireless-security", "psk")
         except:
             traceback.print_exc()
 

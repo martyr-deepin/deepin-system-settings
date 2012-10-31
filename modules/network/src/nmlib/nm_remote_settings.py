@@ -40,7 +40,7 @@ from nmutils.nmsetting_gsm import NMSettingGsm
 from nmutils.nmsetting_serial import NMSettingSerial
 from nmutils.nmsetting_ppp import NMSettingPPP
 
-class NMRemoteSettings(NMObject, object):
+class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
 
     __gsignals__  = {
@@ -169,7 +169,7 @@ class NMRemoteSettings(NMObject, object):
                          "ipv4":s_ip4config.prop_dict
                          ,"ipv6":s_ip6config.prop_dict
                          }
-        settings_dict["802-11-wireless-security"]["psk"] = "Wireless Password"
+        settings_dict["802-11-wireless-security"]["psk"] = "Password"
 
         return self.add_connection(settings_dict)
 
@@ -408,7 +408,7 @@ nm_remote_settings = NMRemoteSettings()
 if __name__ == "__main__":
     nm_remote_settings = NMRemoteSettings()
     # nm_remote_settings.new_cdma_connection()
-    # print nm_remote_settings.list_connections()
+    # print nm_remote_settings.dbus_interface.ListConnections()
     # print nm_remote_settings.get_hostname()
     # print nm_remote_settings.get_can_modify()
 
