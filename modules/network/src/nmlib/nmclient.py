@@ -35,7 +35,9 @@ class NMClient(NMObject):
             "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, )),
             "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
-            "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT))
+            "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT)),
+            "try-activate-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, str, str)),
+            "try-activate-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, str, str))
             }
 
     def __init__(self):
@@ -77,7 +79,10 @@ class NMClient(NMObject):
 
     def activate_connection(self, connection_path, device_path, specific_object_path):
         '''return active_connection_path object'''
-        return cache.getobject(self.dbus_method("ActivateConnection", connection_path, device_path, specific_object_path))
+        self.emit("try-activate-begin", connection_path, device_path, specific_object_path)
+        active = cache.getobject(self.dbus_method("ActivateConnection", connection_path, device_path, specific_object_path))
+        self.emit("try-activate-end", connection_path, device_path, specific_object_path)
+        return active
 
     def activate_connection_async(self, connection_path, device_path, specific_object_path):
         try:
