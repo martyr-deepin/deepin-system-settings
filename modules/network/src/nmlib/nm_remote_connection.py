@@ -33,7 +33,8 @@ class NMRemoteConnection(NMObject, NMConnection):
     __gsignals__  = {
             "removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "updated":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "visible":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (str,))
+            "visible":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (str,)),
+            "request-password":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
             }
 
     def __init__(self, object_path):
@@ -61,8 +62,11 @@ class NMRemoteConnection(NMObject, NMConnection):
         return self.dbus_method("GetSettings")
 
     def get_secrets(self, setting_name):
-        return TypeConvert.dbus2py(self.dbus_method("GetSecrets", setting_name))
-        
+        try:
+            return TypeConvert.dbus2py(self.dbus_method("GetSecrets", setting_name))
+        except:
+            return {}
+
     def update(self):
         try:
             secret_agent.agent_save_secrets(self.object_path, "802-11-wireless-security", "psk")
