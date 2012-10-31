@@ -28,6 +28,8 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 from nmobject import NMObject
+from nmcache import cache
+from nm_utils import TypeConvert
 
 class NMAgentManager(NMObject):
     '''NMAgentManager'''
@@ -66,7 +68,7 @@ class NMAgentManager(NMObject):
         if identifier.startswith('.') or identifier.endswith('.'):
             return False
         li = list(identifier)
-        for i in range(li):
+        for i in range(len(li)):
             if li[i] == '.' and li[i+1] == '.':
                 return False
             if not li[i].isalnum() and li[i] not in ["_","-","."]:
@@ -78,9 +80,9 @@ agent_manager = NMAgentManager()
 
 class NMSecretAgent(NMObject):
     '''NMSecretAgent'''
-    __gsignals__  = {
-            "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
-            }
+    # __gsignals__  = {
+    #         "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
+    #         }
     
     def __init__(self):
         self.auto_register = ""
@@ -89,25 +91,30 @@ class NMSecretAgent(NMObject):
         
         agent_manager.register(self.identifier)
 
-    def generate_service_name(self, uuid, setting_name):
-        return "nm_" + uuid +"_" + setting_name
+    def generate_service_name(self, uuid, setting_name, method):
+        return "nm_" + uuid +"_" + setting_name + "_" + method
 
-    def GetSecrets(self, connection, setting_name):
-        service = self.generate_service_name(connection.settings_dict["connection"]["uuid"], setting_name)
+    def agent_get_secrets(self, conn_path, setting_name, method):
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], setting_name)
         username = getpass.getuser()
         return keyring.get_password(service, username)
 
-    def CancelGetSecrets(self, connection, setting_name):
+    def agent_cancel_secrets(self, connection, setting_name):
         pass
 
-    def SaveSecrets(self, connection, setting_name):
-        service = self.generate_service_name(connection.settings_dict["connection"]["uuid"], setting_name)
+    def agent_save_secrets(self, conn_path, setting_name, method):
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
+                                             setting_name, method)
         username = getpass.getuser()
-        password = connection.get_secrets(setting_name)
+        # password = TypeConvert.dbus2py(cache.getobject(conn_path).settings_dict[setting_name])
+        password = cache.getobject(conn_path).get_secrets(setting_name)[setting_name][method]
+        print service
+        print username
+        print password
         keyring.set_password(service, username, password)
 
-    def DeleteSecrets(self, connection, setting_name):
-        service = self.generate_service_name(connection.settings_dict["connection"]["uuid"], setting_name)
+    def agent_delete_secrets(self, conn_path, setting_name):
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], setting_name)
         username = getpass.get_user()
         if keyring.get_password(service, username):
             keyring.set_password(service, username, "")

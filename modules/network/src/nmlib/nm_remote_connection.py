@@ -25,6 +25,7 @@ import traceback
 from nmobject import NMObject
 from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
+from nm_secret_agent import secret_agent
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''
@@ -64,7 +65,9 @@ class NMRemoteConnection(NMObject, NMConnection):
         
     def update(self):
         try:
+            secret_agent.agent_save_secrets(self.object_path, "802-11-wireless-security")
             self.dbus_interface.Update(self.settings_dict, reply_handler = self.update_finish, error_handler = self.update_error)
+            print secret_agent.agent_get_secrets(self.object_path, "802-11-wireless-security")
         except:
             traceback.print_exc()
 

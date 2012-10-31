@@ -169,7 +169,7 @@ class NMRemoteSettings(NMObject, object):
                          "ipv4":s_ip4config.prop_dict
                          ,"ipv6":s_ip6config.prop_dict
                          }
-        settings_dict["802-11-wireless-security"]["psk"] = "Wireless Password"
+        settings_dict["802-11-wireless-security"]["psk"] = "Password"
 
         return self.add_connection(settings_dict)
 
