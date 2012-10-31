@@ -4,8 +4,8 @@
 # Copyright (C) 2012 Deepin, Inc.
 #               2012 Zhai Xiang
 # 
-# Author:     Zhai Xiang <xiangzhai83@gmail.com>
-# Maintainer: Zhai Xiang <xiangzhai83@gmail.com>
+# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
+# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,11 +24,9 @@ import sys
 import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-from module_frame import ModuleFrame
 
 from power_view import PowerView
-from dtk.ui.utils import get_parent_dir
-import os
+from module_frame import ModuleFrame
 
 if __name__ == "__main__":
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
