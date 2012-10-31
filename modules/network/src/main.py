@@ -34,13 +34,14 @@ from module_frame import ModuleFrame
 
 class WiredSection(gtk.VBox):
 
-    def __init__(self):
+    def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
-        
+        self.send_to_crumb_cb = send_to_crumb_cb
+
         wired_device.connect("device-active", self.device_activate)
         wired_device.connect("device-deactive", self.device_deactive)
-        wired_device.connect("device-available", lambda w,s: NMDeviceEthernet(wired_device.object_path).auto_connect())
+        wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
         self.settings = None
         self.pack_start(self.wire, False, False)
         self.tree = TreeView([])
@@ -85,10 +86,13 @@ class WiredSection(gtk.VBox):
         if wired_device.is_active():
            self.active_one = 0
         else:
-            device_ethernet = NMDeviceEthernet(wired_device.object_path)
+            device_ethernet = cache.get_spec_object(wired_device.object_path)
             device_ethernet.auto_connect()
             self.active_one = -1
-        return [WiredItem(wired_device.get_device_desc(), self.settings, lambda : slider.slide_to_page(self.settings, "right"))]
+        return [WiredItem(wired_device.get_device_desc(),
+                          self.settings, 
+                          lambda : slider.slide_to_page(self.settings, "right"),
+                          self.send_to_crumb_cb)]
 
     def device_activate(self, widget ,event):
         print "activate"
@@ -101,10 +105,10 @@ class WiredSection(gtk.VBox):
         self.queue_draw()
 
 class Wireless(gtk.VBox):
-    def __init__(self):
+    def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
-        
+        self.send_to_crumb_cb = send_to_crumb_cb
         wireless_device.connect("device-active", self.device_is_active)
         wireless_device.connect("device-deactive", self.device_is_deactive)
         self.pack_start(self.wireless, False, False)
@@ -174,7 +178,7 @@ class Wireless(gtk.VBox):
         retrieve network lists, will use thread
         """
         #device = nmclient.get_wireless_device()
-        device_wifi = NMDeviceWifi(wireless_device.object_path)
+        device_wifi = cache.get_spec_object(wireless_device.object_path)
         self.ap_list = device_wifi.order_ap_list()
         if wireless_device.get_state() == 100:
             active_connection = wireless_device.get_active_connection()
@@ -186,7 +190,10 @@ class Wireless(gtk.VBox):
         #print nm_remote_settings.get_ssid_associate_connections(ap_list[3].get_ssid())
         
         ## After Loading
-        items = [WirelessItem(i,self.settings, lambda : slider.slide_to_page(self.settings, "right")) for i in self.ap_list]
+        items = [WirelessItem(i,
+                              self.settings,
+                              lambda : slider.slide_to_page(self.settings, "right"),
+                              self.send_to_crumb_cb) for i in self.ap_list]
         return [items, index]
 
 
@@ -328,8 +335,8 @@ if __name__ == '__main__':
 
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
     
-    wireless = Wireless()
-    wired = WiredSection()
+    wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+    wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
     #wifi = WifiSection()
     dsl = DSL()
     vpn = VpnSection()
@@ -362,14 +369,17 @@ if __name__ == '__main__':
     slider.append_page(wired_setting_page)
     slider.append_page(wireless_setting_page)
 
-    #slider.append_widget(WiredSetting(slider))
-    #slider.append_widget(gtk.EventBox())
     module_frame.add(slider)
     
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
+            slider.set_to_page(main_align, "left")
             module_frame.send_module_info()
+        elif message_type == "click_crumb":
+            (crumb_index, crumb_label) = message_content
+            if crumb_index == 1:
+                slider.slide_to_page(main_align, "left")
 
     module_frame.module_message_handler = message_handler
     

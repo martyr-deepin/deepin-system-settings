@@ -22,11 +22,12 @@
 
 import sys
 from nmlib.nmclient import nmclient
-from nmlib.nmdevice_ethernet import NMDeviceEthernet
+#from nmlib.nmdevice_ethernet import NMDeviceEthernet
 from nmlib.nm_remote_settings import nm_remote_settings
 # from nmlib.nm_remote_connection import NMRemoteConnection
 # from nmlib.nm_active_connection import NMActiveConnection
-from nmlib.nmdevice_wifi import NMDeviceWifi
+#from nmlib.nmdevice_wifi import NMDeviceWifi
+from nmlib.nmcache import cache
 # from nmlib.nmdevice import NMDevice
 # from nmlib.nm_utils import TypeConvert
 

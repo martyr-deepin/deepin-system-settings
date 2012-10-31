@@ -45,7 +45,7 @@ class WirelessItem(TreeItem):
                  connection,
                  setting_object = None, 
                  slide_to_setting_cb = None, 
-                 active_cb = None,
+                 send_to_crumb = None,
                  font_size = DEFAULT_FONT_SIZE):
 
         TreeItem.__init__(self)
@@ -53,7 +53,7 @@ class WirelessItem(TreeItem):
         self.connection = connection
         self.slide_to_setting = slide_to_setting_cb
         self.essid = connection.get_ssid()
-        self.active_cb = active_cb
+        self.send_to_crumb = send_to_crumb
         self.strength = connection.get_strength()
         self.font_size = font_size
         self.is_last = False
@@ -204,6 +204,7 @@ class WirelessItem(TreeItem):
                 if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
                     nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
                 self.setting_object.init_connection(self.connection)
+            self.send_to_crumb()
             self.slide_to_setting() 
         #if self.redraw_request_callback:
             #self.redraw_request_callback(self)
@@ -221,7 +222,7 @@ class WiredItem(TreeItem):
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
     
-    def __init__(self, essid, setting, slide_to_setting_cb = None,active= False, font_size = DEFAULT_FONT_SIZE):
+    def __init__(self, essid, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
         
         TreeItem.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
@@ -229,7 +230,7 @@ class WiredItem(TreeItem):
         self.items = None
         self.setting = setting
         self.is_last = False
-        self.active = active
+        self.send_to_crumb = send_to_crumb
         self.font_size = font_size
         self.check_width = self.get_check_width()
         self.essid_width = self.get_essid_width(essid)
@@ -321,6 +322,7 @@ class WiredItem(TreeItem):
             if not isinstance(self.setting.ipv4, NoSetting):
                 self.setting.ipv4.reset(self.setting.ipv4.connection)
             self.slide_to_setting()
+            self.send_to_crumb()
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
