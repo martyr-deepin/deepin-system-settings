@@ -88,8 +88,10 @@ class NMSecretAgent(NMObject):
         self.auto_register = ""
         self.identifier = "org.freedesktop.NetworkManager.SecretAgent"
         self.registered = ""
-        
-        agent_manager.register(self.identifier)
+        try:
+            agent_manager.register(self.identifier)
+        except:
+            traceback.print_exc()
 
     def generate_service_name(self, uuid, setting_name, method):
         return str("nm_" + uuid +"_" + setting_name + "_" + method)
@@ -98,7 +100,10 @@ class NMSecretAgent(NMObject):
         service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"],
                                              setting_name, method)
         username = getpass.getuser()
-        return keyring.get_password(service, username)
+        try:
+            return keyring.get_password(service, username)
+        except:
+            traceback.print_exc()
 
     def agent_cancel_secrets(self, connection, setting_name):
         pass
@@ -107,9 +112,7 @@ class NMSecretAgent(NMObject):
         service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
                                              setting_name, method)
         username = getpass.getuser()
-        # password = TypeConvert.dbus2py(cache.getobject(conn_path).settings_dict[setting_name])
-        # password = cache.getobject(conn_path).get_secrets(setting_name)[setting_name][method]
-        password = "test"
+        password = cache.getobject(conn_path).get_setting(setting_name).prop_dict[setting_name][method]
         try:
             keyring.set_password(service, username, password)
         except:
@@ -119,8 +122,11 @@ class NMSecretAgent(NMObject):
         service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
                                              setting_name, method)
         username = getpass.get_user()
-        if keyring.get_password(service, username):
-            keyring.set_password(service, username, "")
+        try:
+            if keyring.get_password(service, username):
+                keyring.set_password(service, username, "")
+        except:
+            traceback.print_exc()
 
 secret_agent = NMSecretAgent()
 

@@ -46,6 +46,10 @@ class NMRemoteConnection(NMObject, NMConnection):
         # self.settings_dict = self.get_settings()
         self.init_settings_prop_dict()
 
+        ###used by secret agent
+        self.secret_setting_name = ""
+        self.secret_method = ""
+
     def delete(self):
         try:
             self.dbus_interface.Delete(reply_handler = self.delete_finish, error_handler = self.delete_error)
@@ -67,11 +71,16 @@ class NMRemoteConnection(NMObject, NMConnection):
         except:
             return {}
 
+    def guess_secret_info(self):
+        '''guess_secret_info'''
+        self.secret_setting_name = ""
+        self.secret_method = ""
+
     def update(self):
         try:
-            secret_agent.agent_save_secrets(self.object_path, "802-11-wireless-security", "psk")
+            secret_agent.agent_save_secrets(self.object_path, self.secret_setting_name, self.secret_method)
             self.dbus_interface.Update(self.settings_dict, reply_handler = self.update_finish, error_handler = self.update_error)
-            print secret_agent.agent_get_secrets(self.object_path, "802-11-wireless-security", "psk")
+            print secret_agent.agent_get_secrets(self.object_path, self.secret_setting_name, self.secret_method)
         except:
             traceback.print_exc()
 
