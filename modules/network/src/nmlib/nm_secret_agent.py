@@ -95,7 +95,8 @@ class NMSecretAgent(NMObject):
         return "nm_" + uuid +"_" + setting_name + "_" + method
 
     def agent_get_secrets(self, conn_path, setting_name, method):
-        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], setting_name)
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"],
+                                             setting_name, method)
         username = getpass.getuser()
         return keyring.get_password(service, username)
 
@@ -113,8 +114,9 @@ class NMSecretAgent(NMObject):
         print password
         keyring.set_password(service, username, password)
 
-    def agent_delete_secrets(self, conn_path, setting_name):
-        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], setting_name)
+    def agent_delete_secrets(self, conn_path, setting_name, method):
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
+                                             setting_name, method)
         username = getpass.get_user()
         if keyring.get_password(service, username):
             keyring.set_password(service, username, "")
