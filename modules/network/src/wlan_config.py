@@ -727,15 +727,18 @@ class Security(gtk.VBox):
             key_mgmt = "wpa-psk"
             self.setting.key_mgmt = key_mgmt
             self.setting.psk = passwd
-            self.setting.adapt_wpa_commit()
-            self.connection.update()
-        # TODO add save settings
-
-        # Save wep settings
         else:
             passwd = self.key_entry.get_text()
-            pass
-
+        # Update
+        self.setting.adapt_wireless_security_commit()
+        self.connection.update()
+        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        setting = self.connection.get_setting("802-11-wireless")
+        ssid = setting.ssid
+        ap = device_wifi.get_ap_by_ssid(ssid)
+        nmclient.activate_connection(self.connection.object_path,
+                                   wireless_device.object_path,
+                                   ap.object_path)
 
 
 
@@ -855,16 +858,3 @@ class Wireless(gtk.VBox):
         #connection.adapt_ip4config_commit()
         #self.connection.update()
         
-    
-#if __name__=="__main__":
-    #win = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    #win.set_title("sadfsdf")
-    #win.set_size_request(770,500)
-    #win.border_width(2)
-    #win.connect("destroy", lambda w: gtk.main_quit())
-    #tab = WirelessSetting(slide) 
-    
-    #win.add(tab)
-    #win.show_all()
-
-    #gtk.main()
