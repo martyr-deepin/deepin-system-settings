@@ -283,18 +283,31 @@ class NMSettingWirelessSecurity (NMSetting):
         return True        
 
     def adapt_wireless_security_commit(self):
-        if self.prop_dict["auth-alg"] in ["open", "shared"]:
+        if self.auth_alg in ["open", "shared"]:
             self.adapt_wep_commit()
-        elif self.prop_dict["auth-alg"] == "leap":
+        elif self.auth_alg == "leap":
             self.adapt_leap_commit()
-        elif self.prop_dict["key-mgmt"] == "ieee8021x":
+        elif self.key_mgmt == "ieee8021x":
             self.adapt_dynamic_wep_commit()
-        elif self.prop_dict["key-mgmt"] == "wpa-psk":
+        elif self.key_mgmt == "wpa-psk":
             self.adapt_wpa_psk_commit()
-        elif self.prop_dict["key-mgmt"] == "wpa-eap":
+        elif self.key_mgmt == "wpa-eap":
             self.adapt_wpa_commit()
         else:
             pass
+
+        # if self.prop_dict["auth-alg"] in ["open", "shared"]:
+        #     self.adapt_wep_commit()
+        # elif self.prop_dict["auth-alg"] == "leap":
+        #     self.adapt_leap_commit()
+        # elif self.prop_dict["key-mgmt"] == "ieee8021x":
+        #     self.adapt_dynamic_wep_commit()
+        # elif self.prop_dict["key-mgmt"] == "wpa-psk":
+        #     self.adapt_wpa_psk_commit()
+        # elif self.prop_dict["key-mgmt"] == "wpa-eap":
+        #     self.adapt_wpa_commit()
+        # else:
+        #     pass
 
     def adapt_wep_commit(self):
         for key in self.prop_dict.keys():
