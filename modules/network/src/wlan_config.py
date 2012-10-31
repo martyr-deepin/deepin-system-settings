@@ -74,14 +74,13 @@ class WirelessSetting(gtk.HBox):
         self.cancel_button = gtk.Button("Cancel")
         self.cancel_button.connect("clicked", self.cancel_changes)
         self.apply_button.connect("clicked", self.save_changes)
-        hbox.pack_start(self.cancel_button, False, False, 0)
+        #hbox.pack_start(self.cancel_button, False, False, 0)
         hbox.pack_start(self.apply_button, False, False, 0)
         aligns.add(hbox)
         vbox.pack_start(aligns, False , False)
         hbox.connect("expose-event", self.expose_event)
 
-    def init_connection(self, access_point):
-        ap = access_point
+    def init_connection(self, ap):
         if ap == None:
             self.ipv4 = NoSetting()
             self.ipv6 = NoSetting()
@@ -98,7 +97,6 @@ class WirelessSetting(gtk.HBox):
             self.ap =  ap
             self.cons = nm_remote_settings.get_ssid_associate_connections(self.ap.get_ssid())
             if self.cons:
-
                 self.ipv4_setting = [IPV4Conf(conn) for conn in self.cons]
                 self.ipv6_setting = [IPV6Conf(conn) for conn in self.cons]
                 self.security_setting = [Security(conn) for conn in self.cons]
@@ -118,6 +116,7 @@ class WirelessSetting(gtk.HBox):
     def save_changes(self, widget):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
+        self.security.save_setting()
 
         self.slide_back() 
     def expose_event(self, widget, event):
@@ -297,7 +296,7 @@ class IPV4Conf(gtk.VBox):
     def check_mask_valid(self, widget):
         text = widget.get_text()
         if TypeConvert.is_valid_netmask(text):
-            print "valid"
+            pass
         else:
             print "invalid"
 
@@ -727,13 +726,19 @@ class Security(gtk.VBox):
             passwd = self.password_entry.get_text()
             key_mgmt = "wpa-psk"
             self.setting.key_mgmt = key_mgmt
-        # TODO add save settingsma
-
-        # Save wep settings
+            self.setting.psk = passwd
         else:
             passwd = self.key_entry.get_text()
-            pass
-
+        # Update
+        self.setting.adapt_wireless_security_commit()
+        self.connection.update()
+        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        setting = self.connection.get_setting("802-11-wireless")
+        ssid = setting.ssid
+        ap = device_wifi.get_ap_by_ssid(ssid)
+        nmclient.activate_connection(self.connection.object_path,
+                                   wireless_device.object_path,
+                                   ap.object_path)
 
 
 
@@ -746,18 +751,15 @@ class Wireless(gtk.VBox):
         ### UI
         self.ssid_label = Label("SSID:")
         self.ssid_entry = gtk.Entry()
+
         self.mode_label = Label("Mode:")
-        #self.mode_combo = ComboBox([("Infrastracture", 1),
-                                    #("Ad-hoc", 2)])
         self.mode_combo = gtk.combo_box_new_text()
         map(lambda s: self.mode_combo.append_text(s), ["Infrastructure", "Ad-hoc"])
 
         self.band_label = Label("Band:")
-        #self.band_combo = ComboBox([("Automatic", 0),
-                                    #("a (5 GHZ)", 1),
-                                    #("b/g (2.4)", 2)])
         self.band_combo = gtk.combo_box_new_text()
         map(lambda s: self.band_combo.append_text(s), ["Automatic", "a (5 GHZ)", "b/g (2.4)"])
+
         self.channel_label = Label("Channel:")
         self.channel_spin = SpinBox(0, 0, 1500, 1, 55)
         # BSSID
@@ -819,95 +821,6 @@ class Wireless(gtk.VBox):
         table.set_size_request(450, 300)
 
 
-    #def mode_combo_select(self, widget, content, value, index):
-        #if value == 1:
-            #self.band_label.hide()
-            #self.band_combo.hide()
-            #self.channel_label.hide()
-            #self.channel_spin.hide()
-        #else:
-            #self.band_label.show()
-            #self.band_combo.show()
-            #self.channel_label.show()
-            #self.channel_spin.show()
-
-        
-
-    #def init_table(self, mode): 
-        #if self.get_children() !=[]:
-            #self.remove(self.get_children()[0])
-        
-        #if mode == 2:
-
-            #table = gtk.Table(8, 2, True)
-            ## SSID
-            #table.attach(self.ssid_label, 0, 1, 0, 1)
-            #table.attach(self.ssid_entry, 1, 2, 0, 1)
-            ## Mode
-            #table.attach(self.mode_label, 0, 1, 1, 2)
-            #table.attach(self.mode_combo, 1, 2, 1, 2)
-            ##Band
-            #table.attach(self.band_label, 0, 1, 2, 3)
-            #table.attach(self.band_combo, 1, 2, 2, 3)
-            ## Channel
-            #table.attach(self.channel_label, 0, 1, 3, 4)
-            #table.attach(self.channel_spin, 1, 2, 3, 4)
-            ## Bssid
-            #table.attach(self.bssid_label, 0, 1, 4, 5)
-            #table.attach(self.bssid_entry, 1, 2, 4, 5)
-
-            ## MAC
-            #table.attach(self.mac_address, 0, 1, 5, 6)
-            #table.attach(self.mac_entry, 1, 2, 5, 6)
-            ## MAC_CLONE
-            #table.attach(self.clone_addr, 0, 1, 6, 7)
-            #table.attach(self.clone_entry, 1,2, 6, 7)
-            ## MTU
-            #table.attach(self.mtu_spin, 1, 2, 7, 8)
-            #table.attach(self.mtu, 0, 1, 7, 8)
-            
-            #align = gtk.Alignment(0.5, 0.5, 0, 0)
-            #align.add(table)
-
-            #self.add(align)
-        #else:
-
-            #table = gtk.Table(6, 2, True)
-            ## SSID
-            #table.attach(self.ssid_label, 0, 1, 0, 1)
-            #table.attach(self.ssid_entry, 1, 2, 0, 1)
-            ## Mode
-            #table.attach(self.mode_label, 0, 1, 1, 2)
-            #table.attach(self.mode_combo, 1, 2, 1, 2)
-            ## BSSID
-            #table.attach(self.bssid_label, 0, 1, 2, 3)
-            #table.attach(self.bssid_entry, 1, 2, 2, 3)
-            ## MAC
-            #table.attach(self.mac_address, 0, 1, 3, 4)
-            #table.attach(self.mac_entry, 1, 2, 3, 4)
-            ## MAC_CLONE
-            #table.attach(self.clone_addr, 0, 1, 4, 5)
-            #table.attach(self.clone_entry, 1,2, 4, 5)
-            ## MTU
-            #table.attach(self.mtu_spin, 1, 2, 5, 6)
-            #table.attach(self.mtu, 0, 1, 5, 6)
-            
-            #align = gtk.Alignment(0.5, 0.5, 0, 0)
-            #align.add(table)
-
-            #self.add(align)
-
-        #self.show_all()
-
-
-        ## entries
-        #self.ssid_entry.connect("active", self.ssid_entry_active)
-        #self.mode_combo.connect("item-selected", self.mode_combo_select)
-        #self.bssid_entry.connect("active", self.bssid_entry_active)
-        #self.mac_entry.connect("active", self.mac_entry_active)
-        #self.clone_entry.connect("active", self.clone_entry_active)
-        #self.mtu_spin.connect("value-changed", self.mtu_value_change)
-
     def reset(self):
         wireless = self.wireless
         ## retrieve wireless info
@@ -924,7 +837,6 @@ class Wireless(gtk.VBox):
             #self.mode_combo.set_select_index(1)
             self.mode_combo.set_active(1)
 
-            
         if wireless.mac_address != None:
             self.mac_entry.set_text(wireless.mac_address)
 
@@ -946,16 +858,3 @@ class Wireless(gtk.VBox):
         #connection.adapt_ip4config_commit()
         #self.connection.update()
         
-    
-#if __name__=="__main__":
-    #win = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    #win.set_title("sadfsdf")
-    #win.set_size_request(770,500)
-    #win.border_width(2)
-    #win.connect("destroy", lambda w: gtk.main_quit())
-    #tab = WirelessSetting(slide) 
-    
-    #win.add(tab)
-    #win.show_all()
-
-    #gtk.main()

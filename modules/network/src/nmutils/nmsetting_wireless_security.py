@@ -283,44 +283,57 @@ class NMSettingWirelessSecurity (NMSetting):
         return True        
 
     def adapt_wireless_security_commit(self):
-        if self.prop_dict["auth-alg"] in ["open", "shared"]:
+        if self.auth_alg in ["open", "shared"]:
             self.adapt_wep_commit()
-        elif self.prop_dict["auth-alg"] == "leap":
+        elif self.auth_alg == "leap":
             self.adapt_leap_commit()
-        elif self.prop_dict["key-mgmt"] == "ieee8021x":
+        elif self.key_mgmt == "ieee8021x":
             self.adapt_dynamic_wep_commit()
-        elif self.prop_dict["key-mgmt"] == "wpa-psk":
+        elif self.key_mgmt == "wpa-psk":
             self.adapt_wpa_psk_commit()
-        elif self.prop_dict["key-mgmt"] == "wpa-eap":
+        elif self.key_mgmt == "wpa-eap":
             self.adapt_wpa_commit()
         else:
             pass
 
+        # if self.prop_dict["auth-alg"] in ["open", "shared"]:
+        #     self.adapt_wep_commit()
+        # elif self.prop_dict["auth-alg"] == "leap":
+        #     self.adapt_leap_commit()
+        # elif self.prop_dict["key-mgmt"] == "ieee8021x":
+        #     self.adapt_dynamic_wep_commit()
+        # elif self.prop_dict["key-mgmt"] == "wpa-psk":
+        #     self.adapt_wpa_psk_commit()
+        # elif self.prop_dict["key-mgmt"] == "wpa-eap":
+        #     self.adapt_wpa_commit()
+        # else:
+        #     pass
+
     def adapt_wep_commit(self):
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["auth-alg", "key-mgmt", "wep-key-type", "wep-tx-keyidx",
                            "wep-key0", "wep-key1", "wep-key2", "wep-key3"]:
                 del self.prop_dict[key]
 
     def adapt_leap_commit(self):
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["auth-alg", "key-mgmt", "leap-username", "leap-password"]:
                 del self.prop_dict[key]
 
     def adapt_dynamic_wep_commit(self):
         '''need adapt 802-1x'''
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["key-mgmt", "group", "pairwise"]:
                 del self.prop_dict[key]
                 
     def adapt_wpa_psk_commit(self):
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["key-mgmt"]:
                 del self.prop_dict[key]
 
     def adapt_wpa_commit(self):
         '''need adapt 802-1x'''                
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["key-mgmt"]:
                 del self.prop_dict[key]
 

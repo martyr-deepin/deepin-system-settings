@@ -137,12 +137,16 @@ class Wireless(gtk.VBox):
         print active
         index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
         print index
-        self.tree.select_items([self.tree.visible_items[index]])
-        self.tree.visible_items[index].check_select_flag = True
+        #self.tree.select_items([self.tree.visible_items[index]])
+        self.tree.visible_items[index].network_state = 2
+        self.tree.queue_draw()
         ##self.tree.select_items([self.tree.visible_items[index]])
     
     def device_is_deactive(self, widget, event):
         print "deactive"
+        if not self.tree.visible_items == []:
+            self.tree.visible_items[self.index].network_state = 0
+            self.tree.queue_draw()
 
     def add_setting_page(self, page):
         self.settings = page
@@ -165,8 +169,12 @@ class Wireless(gtk.VBox):
             self.queue_draw()
             self.show_all()
             if index > 0:
-                self.tree.select_items([self.tree.visible_items[index]])
-                self.tree.visible_items[index].check_select_flag = True
+                #self.tree.select_items([self.tree.visible_items[index]])
+                self.tree.visible_items[index].network_state = 2
+                self.index = index
+            else:
+                wlan = cache.get_spec_object(wireless_device.object_path)
+                wlan.auto_connect()
                 #self.tree.queue_draw()
         else:
             self.tree.add_items([],0,True)
@@ -179,12 +187,14 @@ class Wireless(gtk.VBox):
         """
         #device = nmclient.get_wireless_device()
         device_wifi = cache.get_spec_object(wireless_device.object_path)
+        device_wifi.connect("try-ssid-begin", self.try_to_connect)
+        device_wifi.connect("try-ssid-end", self.try_to_connect_end)
         self.ap_list = device_wifi.order_ap_list()
         if wireless_device.get_state() == 100:
             active_connection = wireless_device.get_active_connection()
             index = [ap.object_path for ap in self.ap_list].index(active_connection.get_specific_object())
         else:
-            device_wifi.auto_connect()
+            #device_wifi.auto_connect()
             index = -1
 
         #print nm_remote_settings.get_ssid_associate_connections(ap_list[3].get_ssid())
@@ -195,6 +205,19 @@ class Wireless(gtk.VBox):
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
         return [items, index]
+
+    def try_to_connect(self, widget, ap_object):
+        index = self.ap_list.index(ap_object)
+        self.tree.visible_items[index].network_state = 1
+        self.tree.queue_draw()
+    
+    def try_to_connect_end(self, widget, ap_object):
+        print ap_object.get_ssid(),"end"
+        index = self.ap_list.index(ap_object)
+        self.tree.visible_items[index].network_state = 0
+        self.tree.queue_draw()
+
+
 
 
 class WifiSection(gtk.VBox):

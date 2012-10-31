@@ -24,16 +24,15 @@ sys.path.append("../")
 
 import dbus
 import gobject
-import copy
-from nmlib.nmconstant import NMSettingCompareFlags as cflags
-from nmlib.nmconstant import NMSettingParamFlags as pflags
-from nmlib.nmconstant import NMSettingSecretFlags as sflags
+# import copy
+# from nmlib.nmconstant import NMSettingCompareFlags as cflags
+# from nmlib.nmconstant import NMSettingParamFlags as pflags
+# from nmlib.nmconstant import NMSettingSecretFlags as sflags
 # from pynm.nmlib.nm_remote_connection import NMRemoteConnection
+# from nmlib.nm_utils import TypeConvert
 
-from nmlib.nm_utils import TypeConvert
-
-class NMSetting (gobject.GObject, object):
-    '''NMSetting'''
+class NMSetting (gobject.GObject):
+    '''NMSetting, should be abstract'''
     
     def __init__(self):
         gobject.GObject.__init__(self)
@@ -63,102 +62,102 @@ class NMSetting (gobject.GObject, object):
     #                     setattr(self, prop, self.prop_dict[key])
 
 
-    def compare_property(self, first, second, name ,flags):
-        if first.prop_flags[name] & pflags.NM_SETTING_PARAM_SECRET:
-            if first.prop_flags[name] != second.prop_flags[name]:
-                return False
+    # def compare_property(self, first, second, name ,flags):
+    #     if first.prop_flags[name] & pflags.NM_SETTING_PARAM_SECRET:
+    #         if first.prop_flags[name] != second.prop_flags[name]:
+    #             return False
 
-            if ((flags & cflags.NM_SETTING_COMPARE_FLAG_IGNORE_AGENT_OWNED_SECRETS)
-                and (first.prop_flags[name] & sflags.NM_SETTING_SECRET_FLAG_AGENT_OWNED)):
-                return True
+    #         if ((flags & cflags.NM_SETTING_COMPARE_FLAG_IGNORE_AGENT_OWNED_SECRETS)
+    #             and (first.prop_flags[name] & sflags.NM_SETTING_SECRET_FLAG_AGENT_OWNED)):
+    #             return True
 
-            if ((flags & cflags.NM_SETTING_COMPARE_FLAG_IGNORE_NOT_SAVED_SECRETS)
-                and (first.prop_flags[name] & sflags.NM_SETTING_SECRET_FLAG_NOT_SAVED)):
-                return True
+    #         if ((flags & cflags.NM_SETTING_COMPARE_FLAG_IGNORE_NOT_SAVED_SECRETS)
+    #             and (first.prop_flags[name] & sflags.NM_SETTING_SECRET_FLAG_NOT_SAVED)):
+    #             return True
 
-        return getattr(first, name) == getattr(second, name)
+    #     return getattr(first, name) == getattr(second, name)
 
-    def compare(self, first, second, flags):
-        if type(first) != type(second):
-            return False
-        same = True
-        for name in first.prop_list and same:
-            if flags & cflags.NM_SETTING_COMPARE_FLAG_FUZZY and (
-                first.prop_flags[name] & (pflags.NM_SETTING_PARAM_FUZZY_IGNORE or pflags.NM_SETTING_PARAM_SECRET)):
-                continue
+    # def compare(self, first, second, flags):
+    #     if type(first) != type(second):
+    #         return False
+    #     same = True
+    #     for name in first.prop_list and same:
+    #         if flags & cflags.NM_SETTING_COMPARE_FLAG_FUZZY and (
+    #             first.prop_flags[name] & (pflags.NM_SETTING_PARAM_FUZZY_IGNORE or pflags.NM_SETTING_PARAM_SECRET)):
+    #             continue
 
-            if flags & cflags.NM_SETTING_COMPARE_FLAG_IGNORE_SECRETS and (
-                first.prop_flags[name] & pflags.NM_SETTING_PARAM_SECRET):
-                continue
+    #         if flags & cflags.NM_SETTING_COMPARE_FLAG_IGNORE_SECRETS and (
+    #             first.prop_flags[name] & pflags.NM_SETTING_PARAM_SECRET):
+    #             continue
 
-            same = self.compare_property(first, second, name, flags)
+    #         same = self.compare_property(first, second, name, flags)
 
-        return same    
+    #     return same    
 
 
-    def duplicate (self):
-        nm_setting = NMSetting()
-        nm_setting = copy.deepcopy(self.name)
-        nm_setting.prop_dict = copy.deepcopy(self.prop_dict)
-        nm_setting.prop_flags = copy.deepcopy(self.prop_flags)
-        return nm_setting
+    # def duplicate (self):
+    #     nm_setting = NMSetting()
+    #     nm_setting = copy.deepcopy(self.name)
+    #     nm_setting.prop_dict = copy.deepcopy(self.prop_dict)
+    #     nm_setting.prop_flags = copy.deepcopy(self.prop_flags)
+    #     return nm_setting
 
-    def diff (self, b, flags, invert_results):
-        pass
+    # def diff (self, b, flags, invert_results):
+    #     pass
 
-    def clear_secrets(self):
-        for name in self.prop_flags.iterkeys():
-            if self.prop_flags[name] & pflags.NM_SETTING_PARAM_SECRET:
-                self.prop_dict[name]= ""
+    # def clear_secrets(self):
+    #     for name in self.prop_flags.iterkeys():
+    #         if self.prop_flags[name] & pflags.NM_SETTING_PARAM_SECRET:
+    #             self.prop_dict[name]= ""
 
-    def __clear_secrets_with_flags(self, prop, func, user_data):
-        pass
+    # def __clear_secrets_with_flags(self, prop, func, user_data):
+    #     pass
 
-    def clear_secrets_with_flags(self):
-        pass
+    # def clear_secrets_with_flags(self):
+    #     pass
 
-    def need_secrets (self):
-        pass
+    # def need_secrets (self):
+    #     pass
 
-    def __update_one_secret(self, key, value):
-        if key not in self.prop_dict.iterkeys():
-            return False
-        if not self.prop_flags[key] & pflags.NM_SETTING_PARAM_SECRET:
-            return True
-        self.prop_dict[key] = value
-        return True
+    # def __update_one_secret(self, key, value):
+    #     if key not in self.prop_dict.iterkeys():
+    #         return False
+    #     if not self.prop_flags[key] & pflags.NM_SETTING_PARAM_SECRET:
+    #         return True
+    #     self.prop_dict[key] = value
+    #     return True
 
-    def update_secrets (self, secrets_dict):
-        for key, value in enumerate(secrets_dict):
-            self.__update_one_secret(key, value)
+    # def update_secrets (self, secrets_dict):
+    #     for key, value in enumerate(secrets_dict):
+    #         self.__update_one_secret(key, value)
 
-    def __is_secret_prop(self, secret_name):
-        if secret_name not in self.prop_dict.iterkeys():
-            print "invalid prop secret_name %s\n" % secret_name
-            return False
-        else:    
-            return self.prop_flags[secret_name] & pflags.NM_SETTING_PARAM_SECRET
+    # def __is_secret_prop(self, secret_name):
+    #     if secret_name not in self.prop_dict.iterkeys():
+    #         print "invalid prop secret_name %s\n" % secret_name
+    #         return False
+    #     else:    
+    #         return self.prop_flags[secret_name] & pflags.NM_SETTING_PARAM_SECRET
     
-    def get_secret_flags (self, secret_name):
-        if not self.__is_secret_prop(secret_name):
-            print "not a secret_prop %s " % secret_name
-        else:
-            return self.prop_flags[secret_name]
+    # def get_secret_flags (self, secret_name):
+    #     if not self.__is_secret_prop(secret_name):
+    #         print "not a secret_prop %s " % secret_name
+    #     else:
+    #         return self.prop_flags[secret_name]
 
-    def set_secret_flags (self, secret_name, out_flags):
-        if secret_name not in self.prop_flags.iterkeys():
-            print "%s is not a valid property" % secret_name
-        elif not self.__is_secret_prop(secret_name):
-            print "not a secret_prop %s " % secret_name
-        else:
-            self.prop_flags[secret_name] = out_flags
+    # def set_secret_flags (self, secret_name, out_flags):
+    #     if secret_name not in self.prop_flags.iterkeys():
+    #         print "%s is not a valid property" % secret_name
+    #     elif not self.__is_secret_prop(secret_name):
+    #         print "not a secret_prop %s " % secret_name
+    #     else:
+    #         self.prop_flags[secret_name] = out_flags
 
-    def get_virtual_iface_name (self):
-        pass
+    # def get_virtual_iface_name (self):
+    #     pass
 
-    def __set_property(self):
-        pass
+    # def __set_property(self):
+    #     pass
 
-    def __get_property(self):
-        pass
+    # def __get_property(self):
+    #     pass
 

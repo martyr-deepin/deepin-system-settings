@@ -22,13 +22,14 @@ from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text, draw_line
-from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 
 from lan_config import WiredSetting, NoSetting
 from wlan_config import WirelessSetting
 from wired import *
 import gtk
+import os
 import pango
 BORDER_COLOR = color_hex_to_cairo("#aeaeae")
 
@@ -40,6 +41,10 @@ class WirelessItem(TreeItem):
     SIGNAL_RIGHT_PADDING = 27
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
+
+    NETWORK_DISCONNECT = 0
+    NETWORK_LOADING = 1
+    NETWORK_CONNECTED = 2
 
     def __init__(self,
                  connection,
@@ -62,18 +67,20 @@ class WirelessItem(TreeItem):
         self.signal_width = self.get_signal_width()
         self.jumpto_width = self.get_jumpto_width()
         
-        self.check_select_flag = False
+        self.network_state = self.NETWORK_DISCONNECT
 
     def render_check(self, cr, rect):
         render_background(cr,rect)
         #print self.is_select, self.check_select_flag
-        if self.is_select:
-            if self.check_select_flag :
-                check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
-            else:
-                check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
-        else:
+        if self.network_state == self.NETWORK_DISCONNECT:
             check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+        elif self.network_state == self.NETWORK_LOADING:
+            #check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
+            path = get_parent_dir(__file__, 2) + "/theme/dark_grey/image/Network/loading.gif"
+            #print path
+            check_icon = gtk.gdk.PixbufAnimation(path).get_iter(0.0).get_pixbuf()
+        else:
+            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
 
         draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + self.VERTICAL_PADDING)
 
@@ -186,24 +193,11 @@ class WirelessItem(TreeItem):
         pass
 
     def single_click(self, column, x, y):
-        #self.setting_object.init_connection(None)
-            # Connect to this ap
-        print "click"
-        if column == 0:
-
-            self.check_select_flag = not self.check_select_flag
-            #print self.check_select_flag
-            if self.redraw_request_callback:
-                self.redraw_request_callback(self)
-
         if column == 3:
-            active_connection = wireless_device.get_active_connection()
-            if self.connection.object_path == active_connection.get_specific_object():
-                self.setting_object.init_connection(self.connection)
-            else:
-                if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
-                    nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
-                self.setting_object.init_connection(self.connection)
+            if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
+                nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
+
+            self.setting_object.init_connection(self.connection)
             self.send_to_crumb()
             self.slide_to_setting() 
         #if self.redraw_request_callback:
@@ -221,7 +215,7 @@ class WiredItem(TreeItem):
     CHECK_RIGHT_PADIING = 10
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
-    
+
     def __init__(self, essid, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
         
         TreeItem.__init__(self)
@@ -307,7 +301,6 @@ class WiredItem(TreeItem):
     def unselect(self):
         self.is_select = False
         
-
     def hover(self, column, offset_x, offset_y):
         pass
 

@@ -38,16 +38,12 @@ class NMRemoteConnection(NMObject, NMConnection):
     def __init__(self, object_path):
         NMConnection.__init__(self)
         NMObject.__init__(self, object_path, "org.freedesktop.NetworkManager.Settings.Connection")
-        # self.dbus_interface.connect_to_signal("Removed", self.removed_cb)
-        # self.dbus_interface.connect_to_signal("Updated", self.updated_cb)
         self.bus.add_signal_receiver(self.removed_cb, dbus_interface = self.object_interface, signal_name = "Removed")
         self.bus.add_signal_receiver(self.updated_cb, dbus_interface = self.object_interface, signal_name = "Updated")
 
         # self.settings_dict = self.get_settings()
         self.init_settings_prop_dict()
-
-    def is_active(self):
-        pass
+        self.succeed_flag = 0
 
     def delete(self):
         try:

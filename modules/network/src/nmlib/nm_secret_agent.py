@@ -66,7 +66,7 @@ class NMAgentManager(NMObject):
         if identifier.startswith('.') or identifier.endswith('.'):
             return False
         li = list(identifier)
-        for i in range(li):
+        for i in range(len(li)):
             if li[i] == '.' and li[i+1] == '.':
                 return False
             if not li[i].isalnum() and li[i] not in ["_","-","."]:
@@ -78,16 +78,16 @@ agent_manager = NMAgentManager()
 
 class NMSecretAgent(NMObject):
     '''NMSecretAgent'''
-    __gsignals__  = {
-            "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
-            }
+    # __gsignals__  = {
+    #         "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,)),
+    #         }
     
     def __init__(self):
         self.auto_register = ""
-        self.identifier = ""
+        self.identifier = "org.freedesktop.NetworkManager.SecretAgent"
         self.registered = ""
         
-        agent_manager.register("org.freedesktop.NetworkManager.SecretAgent")
+        agent_manager.register(self.identifier)
 
     def generate_service_name(self, uuid, setting_name):
         return "nm_" + uuid +"_" + setting_name
@@ -111,6 +111,8 @@ class NMSecretAgent(NMObject):
         username = getpass.get_user()
         if keyring.get_password(service, username):
             keyring.set_password(service, username, "")
+
+# secret_agent = NMSecretAgent()
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  
