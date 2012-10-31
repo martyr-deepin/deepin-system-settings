@@ -669,7 +669,8 @@ class Security(gtk.VBox):
         self.table.attach(self.security_label, 0, 1, 0, 1)
         self.table.attach(self.security_combo, 1, 4, 0, 1)
         if not self.security_combo.get_active() == 0: 
-            secret = self.connection.get_secrets("802-11-wireless-security")
+            #secret = self.connection.get_secrets("802-11-wireless-security")
+            secret = {}
 
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
@@ -756,7 +757,7 @@ class Security(gtk.VBox):
 
         wlan = cache.get_spec_object(wireless_device.object_path)
         wlan.emit("try-ssid-begin", ap)
-        nmclient.activate_connection(self.connection.object_path,
+        nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)
         #print self.connection.get_setting("connection").id
