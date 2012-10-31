@@ -92,7 +92,7 @@ class NMSecretAgent(NMObject):
         agent_manager.register(self.identifier)
 
     def generate_service_name(self, uuid, setting_name, method):
-        return "nm_" + uuid +"_" + setting_name + "_" + method
+        return str("nm_" + uuid +"_" + setting_name + "_" + method)
 
     def agent_get_secrets(self, conn_path, setting_name, method):
         service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"],
@@ -108,11 +108,12 @@ class NMSecretAgent(NMObject):
                                              setting_name, method)
         username = getpass.getuser()
         # password = TypeConvert.dbus2py(cache.getobject(conn_path).settings_dict[setting_name])
-        password = cache.getobject(conn_path).get_secrets(setting_name)[setting_name][method]
-        print service
-        print username
-        print password
-        keyring.set_password(service, username, password)
+        # password = cache.getobject(conn_path).get_secrets(setting_name)[setting_name][method]
+        password = "test"
+        try:
+            keyring.set_password(service, username, password)
+        except:
+            traceback.print_exc()
 
     def agent_delete_secrets(self, conn_path, setting_name, method):
         service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
