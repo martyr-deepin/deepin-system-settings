@@ -101,10 +101,11 @@ class NMDeviceWifi(NMDevice):
                         specific = self.get_ap_by_ssid(ssid)
                         self.emit("try-ssid-begin", specific)
                         nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
-                        self.emit("try-ssid-end", specific)
                         if self.is_active():
+                            self.emit("try-ssid-end", specific)
                             return True
                         else:
+                            self.emit("try-ssid-end", specific)
                             continue
                     except:
                         continue

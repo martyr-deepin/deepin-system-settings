@@ -66,7 +66,7 @@ class NMAgentManager(NMObject):
         if identifier.startswith('.') or identifier.endswith('.'):
             return False
         li = list(identifier)
-        for i in range(li):
+        for i in range(len(li)):
             if li[i] == '.' and li[i+1] == '.':
                 return False
             if not li[i].isalnum() and li[i] not in ["_","-","."]:
@@ -78,9 +78,9 @@ agent_manager = NMAgentManager()
 
 class NMSecretAgent(NMObject):
     '''NMSecretAgent'''
-    __gsignals__  = {
-            "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
-            }
+    # __gsignals__  = {
+    #         "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,)),
+    #         }
     
     def __init__(self):
         self.auto_register = ""
