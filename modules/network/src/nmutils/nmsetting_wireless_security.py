@@ -297,30 +297,30 @@ class NMSettingWirelessSecurity (NMSetting):
             pass
 
     def adapt_wep_commit(self):
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["auth-alg", "key-mgmt", "wep-key-type", "wep-tx-keyidx",
                            "wep-key0", "wep-key1", "wep-key2", "wep-key3"]:
                 del self.prop_dict[key]
 
     def adapt_leap_commit(self):
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["auth-alg", "key-mgmt", "leap-username", "leap-password"]:
                 del self.prop_dict[key]
 
     def adapt_dynamic_wep_commit(self):
         '''need adapt 802-1x'''
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["key-mgmt", "group", "pairwise"]:
                 del self.prop_dict[key]
                 
     def adapt_wpa_psk_commit(self):
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["key-mgmt"]:
                 del self.prop_dict[key]
 
     def adapt_wpa_commit(self):
         '''need adapt 802-1x'''                
-        for key in self.prop_dict.iterkeys():
+        for key in self.prop_dict.keys():
             if key not in ["key-mgmt"]:
                 del self.prop_dict[key]
 

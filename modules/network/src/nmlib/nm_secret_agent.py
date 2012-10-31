@@ -112,7 +112,7 @@ class NMSecretAgent(NMObject):
         if keyring.get_password(service, username):
             keyring.set_password(service, username, "")
 
-secret_agent = NMSecretAgent()
+# secret_agent = NMSecretAgent()
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  
