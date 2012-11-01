@@ -39,8 +39,9 @@ class WiredSection(gtk.VBox):
         self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
         self.send_to_crumb_cb = send_to_crumb_cb
 
-        #wired_device.connect("device-active", self.device_activate)
-        #wired_device.connect("device-deactive", self.device_deactive)
+        self.device_ethernet = cache.get_spec_object(wired_device.object_path)
+        self.device_ethernet.connect("ethernet-device-active", self.device_activate)
+        self.device_ethernet.connect("ethernet-device-deactive", self.device_deactive)
         #wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
         self.settings = None
         self.pack_start(self.wire, False, False)
@@ -86,8 +87,7 @@ class WiredSection(gtk.VBox):
         if wired_device.is_active():
            self.active_one = 0
         else:
-            device_ethernet = cache.get_spec_object(wired_device.object_path)
-            device_ethernet.auto_connect()
+            self.evice_ethernet.auto_connect()
             self.active_one = -1
         return [WiredItem(wired_device.get_device_desc(),
                           self.settings, 
