@@ -677,12 +677,15 @@ class Security(gtk.VBox):
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
-                secret = secret_agent.agent_get_secret(self.connection.object_path,
+                secret = secret_agent.agent_get_secrets(self.connection.object_path,
                                                        "802-11-wireless-security",
                                                        "psk")
-                print secret
             except:
-                secret = ""
+                try:
+                    secret = self.connection.get_secrets("802-11-wireless-security")["802-11-wireless-security"]["psk"]
+                except:
+
+                    secret = ""
 
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
