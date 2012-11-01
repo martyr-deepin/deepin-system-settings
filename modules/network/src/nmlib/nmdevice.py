@@ -34,8 +34,8 @@ class NMDevice(NMObject):
 
     __gsignals__  = {
             "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
             "device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
             "device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
             }
@@ -160,9 +160,9 @@ class NMDevice(NMObject):
         self.init_nmobject_with_properties()
 
         if old_state != 100 and new_state == 100:
-            self.emit("device-active", reason)
+            self.emit("device-active", reason, self.get_device_type())
         elif old_state == 100 and new_state != 100:
-            self.emit("device-deactive", reason)
+            self.emit("device-deactive", reason, self.get_device_type())
 
         if old_state < 30 and new_state >= 30:
             self.emit("device-available", new_state)
