@@ -90,7 +90,9 @@ class NMDeviceWifi(NMDevice):
             return True
         if cache.getobject(self.object_path).get_state() < 30:
             return False
-        wireless_connections = nm_remote_settings.get_wireless_connections()
+        # wireless_connections = nm_remote_settings.get_wireless_connections()
+        wireless_connections = sorted(nm_remote_settings.get_wireless_connections(), lambda x:x.succeed_flag)
+
         if len(wireless_connections) != 0:
             for conn in wireless_connections:
                 ssid = conn.get_setting("802-11-wireless").ssid

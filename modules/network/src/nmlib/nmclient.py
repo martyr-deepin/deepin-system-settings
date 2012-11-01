@@ -35,9 +35,9 @@ class NMClient(NMObject):
             "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, )),
             "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
-            "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT))# ,
-            # "try-activate-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, str, str)),
-            # "try-activate-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, str, str))
+            # "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT)),
+            "activate-succeed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
+            "activate-failed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
             }
 
     def __init__(self):
@@ -77,34 +77,38 @@ class NMClient(NMObject):
     def get_device_by_iface(self, iface):
         return cache.getobject(self.dbus_method("GetDeviceByIpIface", iface))
 
-    def activate_connection(self, connection_path, device_path, specific_object_path):
-        '''return active_connection_path object'''
-        # self.emit("try-activate-begin", connection_path, device_path, specific_object_path)
-        return cache.getobject(self.dbus_method("ActivateConnection", connection_path, device_path, specific_object_path))
-        # self.emit("try-activate-end", connection_path, device_path, specific_object_path)
-
+    # def activate_connection(self, connection_path, device_path, specific_object_path):
+    #     '''return active_connection_path object'''
+    #     return cache.getobject(self.dbus_method("ActivateConnection", connection_path, device_path, specific_object_path))
 
     def activate_connection_async(self, connection_path, device_path, specific_object_path):
         try:
             self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path,                                                                                reply_handler = self.activate_finish, error_handler = self.activate_error)
+            self.emit("activate-succeed", connection_path)
+            cache.getobject(connection_path).succeed_flag -= 2
         except:
+            self.emit("activate-failed", connection_path)
+            cache.getobject(connection_path).succeed_flag += 1
             traceback.print_exc()
 
     def activate_finish(self, active_connection):
         return cache.getobject(active_connection)
     
-    def activate_error(self, error):
-        print "activate connection failed!\n"
-        print error
+    def activate_error(self, *error):
+        pass
 
-    def add_and_activate_connection(self, connection_path, device_path, specific_object_path):
-        return self.dbus_method("AddAndActivateConnection", connection_path, device_path, specific_object_path)
+    # def add_and_activate_connection(self, connection_path, device_path, specific_object_path):
+    #     return self.dbus_method("AddAndActivateConnection", connection_path, device_path, specific_object_path)
 
     def add_and_activate_connection_async(self, connection_path, device_path, specific_object_path):
         try:
             self.dbus_interface.AddAndActivateConnection(connection_path, device_path, specific_object_path,
                                              reply_handler = self.add_activate_finish, error_handler = self.add_activate_error)
+            self.emit("activate-succeed", connection_path)
+            cache.getobject(connection_path).succeed_flag += 2
         except:
+            self.emit("activate-failed", connection_path)
+            cache.getobject(connection_path).succeed_flag -= 1
             traceback.print_exc()
         
 
@@ -114,8 +118,8 @@ class NMClient(NMObject):
     def add_activate_error(self, *error):
         pass
 
-    def deactive_connection(self, active_object_path):
-        return self.dbus_method("DeactivateConnection", active_object_path)
+    # def deactive_connection(self, active_object_path):
+    #     return self.dbus_method("DeactivateConnection", active_object_path)
 
     def deactive_connection_async(self, active_object_path):
         try:
@@ -124,11 +128,10 @@ class NMClient(NMObject):
         except:
             traceback.print_exc()
 
-    def deactive_finish(self):
-        print "devactive connection finish!\n"
+    def deactive_finish(self, *reply):
+        pass
 
-    def deactive_error(self, error):
-        print "devactive connection failed!\n"
+    def deactive_error(self, *error):
         print error
 
     def nm_client_sleep(self, sleep_flag):

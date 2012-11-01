@@ -43,6 +43,7 @@ class NMRemoteConnection(NMObject, NMConnection):
 
         # self.settings_dict = self.get_settings()
         self.init_settings_prop_dict()
+        self.succeed_flag = 0
 
     def delete(self):
         try:
