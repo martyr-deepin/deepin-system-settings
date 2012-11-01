@@ -107,7 +107,7 @@ class NMDeviceWifi(NMDevice):
                         specific = self.get_ap_by_ssid(ssid)
                         self.emit("try-ssid-begin", specific)
                         nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
-                        if self.is_active():
+                        if cache.getobject(self.object_path).is_active():
                             self.emit("try-ssid-end", specific)
                             return True
                         else:
@@ -158,9 +158,9 @@ class NMDeviceWifi(NMDevice):
         self.init_nmobject_with_properties()
 
         if old_state != 100 and new_state == 100:
-            self.emit("wifi-device-active", reason, self.get_device_type())
+            self.emit("wifi-device-active", reason, cache.getobject(self.object_path).get_device_type())
         elif old_state == 100 and new_state != 100:
-            self.emit("wifi-device-deactive", reason, self.get_device_type())
+            self.emit("wifi-device-deactive", reason, cache.getobject(self.object_path).get_device_type())
 
         if old_state < 30 and new_state >= 30:
             self.emit("wifi-device-available", new_state)

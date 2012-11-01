@@ -94,9 +94,9 @@ class NMDeviceEthernet(NMDevice):
         self.init_nmobject_with_properties()
 
         if old_state != 100 and new_state == 100:
-            self.emit("ethernet-device-active", reason, self.get_device_type())
+            self.emit("ethernet-device-active", reason, cache.getobject(self.object_path).get_device_type())
         elif old_state == 100 and new_state != 100:
-            self.emit("ethernet-device-deactive", reason, self.get_device_type())
+            self.emit("ethernet-device-deactive", reason, cache.getobject(self.object_path).get_device_type())
 
         if old_state < 30 and new_state >= 30:
             self.emit("ethernet-device-available", new_state)
