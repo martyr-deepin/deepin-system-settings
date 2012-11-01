@@ -680,6 +680,7 @@ class Security(gtk.VBox):
                 secret = secret_agent.agent_get_secret(self.connection.object_path,
                                                        "802-11-wireless-security",
                                                        "psk")
+                print secret
             except:
                 secret = ""
 
