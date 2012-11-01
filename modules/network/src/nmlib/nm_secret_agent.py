@@ -112,7 +112,7 @@ class NMSecretAgent(NMObject):
         service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
                                              setting_name, method)
         username = getpass.getuser()
-        password = cache.getobject(conn_path).get_setting(setting_name).prop_dict[setting_name][method]
+        password = cache.getobject(conn_path).settings_dict[setting_name][method]
         try:
             keyring.set_password(service, username, password)
         except:

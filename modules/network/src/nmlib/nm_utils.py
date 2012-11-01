@@ -37,6 +37,7 @@ class TypeConvert(object):
                               "UInt32": "dbus_uint32_2py", "UInt64": "dbus_uint64_2py",
                               "UTF8String": "dbus_utf8string_2py", "UnixFD": "dbus_unixfd_2py",
                               "tuple":"tuple_dbus2py", "unicode": "dbus_string_2py",
+                              "str": "str_2str"
                               }
 
     def dbus2py(self, prop):
@@ -45,6 +46,9 @@ class TypeConvert(object):
 
     def py2dbus(self, prop):
         pass
+
+    def str_2str(self, prop):
+        return str(prop)
 
     def tuple_dbus2py(self, prop):
         '''convert a python tuple who contains dbus type items'''
