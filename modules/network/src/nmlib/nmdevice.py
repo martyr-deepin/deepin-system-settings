@@ -32,18 +32,18 @@ udev_client = gudev.Client("net")
 class NMDevice(NMObject):
     '''NMDevice'''
 
-    __gsignals__  = {
-            "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+    # __gsignals__  = {
+    #         "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
             # "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
             # "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
             # "device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
             # "device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
-            }
+            # }
 
     def __init__(self, device_object_path, device_interface = "org.freedesktop.NetworkManager.Device"):
         NMObject.__init__(self, device_object_path, device_interface)
         self.prop_list = ["Capabilities", "DeviceType", "ActiveConnection", "Dhcp4Config", "Dhcp6Config", "Driver", "FirmwareMissing", "Interface", "IpInterface", "Ip4Config", "Ip6Config", "Managed", "State"]
-        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, signal_name = "StateChanged")
+        # self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, signal_name = "StateChanged")
         self.init_nmobject_with_properties()
         self.udev_device = ""
 
@@ -155,10 +155,10 @@ class NMDevice(NMObject):
     def disconnect_error(self, *error):
         pass
 
-    def state_changed_cb(self, new_state, old_state, reason):
+    # def state_changed_cb(self, new_state, old_state, reason):
         # self.emit("state-changed", new_state, old_state, reason)
         # self.init_nmobject_with_properties()
-        pass
+        # pass
         # if old_state != 100 and new_state == 100:
         #     self.emit("device-active", reason, self.get_device_type())
         # elif old_state == 100 and new_state != 100:

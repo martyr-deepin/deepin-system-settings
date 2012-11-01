@@ -43,7 +43,7 @@ class NMDeviceEthernet(NMDevice):
         self.prop_list = ["Carrier", "HwAddress", "PermHwAddress", "Speed"]
         self.init_nmobject_with_properties()
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
-        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, signal_name = "StateChanged")
+        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = "org.freedesktop.NetworkManager.Device", signal_name = "StateChanged")
 
     ###Methods###
     def get_carrier(self):
