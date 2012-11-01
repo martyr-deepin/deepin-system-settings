@@ -31,6 +31,7 @@ from wired import *
 from widgets import SettingButton
 import gtk
 
+
 class WirelessSetting(gtk.HBox):
 
     def __init__(self, access_point, slide_back_cb):
@@ -670,14 +671,19 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo, 1, 4, 0, 1)
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
-            secret = {}
+            try:
+                secret = secret_agent.agent_get_secret(self.connection.object_path,
+                                                       "802-11-wireless-security",
+                                                       "psk")
+            except:
+                secret = {}
 
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
             self.table.attach(self.password_entry, 1, 4, 1, 2)
             
             try:
-                self.password_entry.set_text(secret["802-11-wireless-security"]["psk"])
+                self.password_entry.set_text(secret)
             except:
                 self.password_entry.set_text("")
 

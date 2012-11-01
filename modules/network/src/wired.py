@@ -22,31 +22,8 @@
 
 import sys
 from nmlib.nmclient import nmclient
-#from nmlib.nmdevice_ethernet import NMDeviceEthernet
 from nmlib.nm_remote_settings import nm_remote_settings
-# from nmlib.nm_remote_connection import NMRemoteConnection
-# from nmlib.nm_active_connection import NMActiveConnection
-#from nmlib.nmdevice_wifi import NMDeviceWifi
 from nmlib.nmcache import cache
-# from nmlib.nmdevice import NMDevice
-# from nmlib.nm_utils import TypeConvert
-
-# wired_device = NMDevice(nmclient.get_wired_devices()[0])
+from nmlib.nm_secret_agent import secret_agent
 wired_device = nmclient.get_wired_devices()[0]
-#print nmclient.get_wireless_devices()
-# wireless_device = NMDevice(nmclient.get_wireless_devices()[0])
 wireless_device = nmclient.get_wireless_devices()[0]
-#wireless_device.get_active_connection()
-
-#activate_connection = NMActiveConnection(wireless_device.get_active_connection())
-#print activate_connection.get_specific_object()
-#remote_connection = NMRemoteConnection(activate_connection.get_connection())
-#print remote_connection
-#ethernet = NMDeviceEthernet(wired_device.object_path)
-
-#if not device.get_active_connection() == "/":
-    #activate_connection = NMActiveConnection(device.get_active_connection())
-    #remote_connection = NMRemoteConnection(activate_connection.get_connection())
-#else:
-    #activate_connection = None
-    #remote_connection = NMRemoteConnection(nm_remote_settings.get_wired_connections()[0])
