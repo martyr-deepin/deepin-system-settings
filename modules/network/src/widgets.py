@@ -2,11 +2,88 @@
 #-*- coding:utf-8 -*-
 from theme import app_theme
 from dtk.ui.button import ImageButton, ToggleButton
+from dtk.ui.dialog import DialogBox
 from dtk.ui.entry import Entry
 from dtk.ui.theme import ui_theme
 from dtk.ui.utils import color_hex_to_cairo, alpha_color_hex_to_cairo, cairo_disable_antialias, container_remove_all, is_single_click, is_double_click
 
 import gtk
+
+class AskPasswordDialog(DialogBox):
+    '''
+    Simple input dialog.
+    
+    @undocumented: click_confirm_button
+    @undocumented: click_cancel_button
+    '''
+	
+    def __init__(self, 
+                 title, 
+                 init_text, 
+                 default_width=330,
+                 default_height=145,
+                 confirm_callback=None, 
+                 cancel_callback=None):
+        '''
+        Initialize InputDialog class.
+        
+        @param title: Input dialog title.
+        @param init_text: Initialize input text.
+        @param default_width: Width of dialog, default is 330 pixel.
+        @param default_height: Height of dialog, default is 330 pixel.
+        @param confirm_callback: Callback when user click confirm button, this callback accept one argument that return by user input text.
+        @param cancel_callback: Callback when user click cancel button, this callback not need argument.
+        '''
+        # Init.
+        DialogBox.__init__(self, title, default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        self.confirm_callback = confirm_callback
+        self.cancel_callback = cancel_callback
+        
+        self.entry_align = gtk.Alignment()
+        self.entry_align.set(0.5, 0.5, 0, 0)
+        self.entry_align.set_padding(0, 0, 8, 8)
+        self.entry = InputEntry(init_text)
+        self.entry.set_size(default_width - 20, 25)
+        
+        self.confirm_button = Button(_("OK"))
+        self.cancel_button = Button(_("Cancel"))
+        
+        self.confirm_button.connect("clicked", lambda w: self.click_confirm_button())
+        self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
+        
+        self.entry_align.add(self.entry)
+        self.body_box.pack_start(self.entry_align, True, True)
+        
+        self.right_button_box.set_buttons([self.confirm_button, self.cancel_button])
+        
+        self.connect("show", self.focus_input)
+        
+    def focus_input(self, widget):
+        '''
+        Grab focus on input entry.
+        
+        @param widget: InputDialog widget.
+        '''
+        self.entry.entry.grab_focus()        
+        
+    def click_confirm_button(self):
+        '''
+        Inernal fucntion to handle click confirm button.
+        '''
+        if self.confirm_callback != None:
+            self.confirm_callback(self.entry.get_text())        
+        
+        self.destroy()
+        
+    def click_cancel_button(self):
+        '''
+        Inernal fucntion to handle click cancel button.
+        '''
+        if self.cancel_callback != None:
+            self.cancel_callback()
+        
+        self.destroy()
+        
 class CheckButtonM(ToggleButton):
 
     def __init__(self, group,connection ,callback,padding_x = 8):
