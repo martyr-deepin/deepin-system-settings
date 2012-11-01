@@ -38,10 +38,9 @@ class WiredSection(gtk.VBox):
         gtk.VBox.__init__(self)
         self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
         self.send_to_crumb_cb = send_to_crumb_cb
-
         self.device_ethernet = cache.get_spec_object(wired_device.object_path)
-        self.device_ethernet.connect("ethernet-device-active", self.device_activate)
-        self.device_ethernet.connect("ethernet-device-deactive", self.device_deactive)
+        wired_device.connect("device-active", self.device_activate)
+        wired_device.connect("device-deactive", self.device_deactive)
         #wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
         self.settings = None
         self.pack_start(self.wire, False, False)
@@ -87,25 +86,21 @@ class WiredSection(gtk.VBox):
         if wired_device.is_active():
            self.active_one = 0
         else:
-            self.evice_ethernet.auto_connect()
+            self.device_ethernet.auto_connect()
             self.active_one = -1
         return [WiredItem(wired_device.get_device_desc(),
                           self.settings, 
                           lambda : slider.slide_to_page(self.settings, "right"),
                           self.send_to_crumb_cb)]
 
-    def device_activate(self, widget ,reason, device_type):
-        print "wired device", reason, device_type
-        #if device_type == 1:
-            #self.tree.visible_items[0].is_select = True
-            #self.queue_draw()
+    def device_activate(self, widget ,reason):
+        self.tree.visible_items[0].is_select = True
+        self.queue_draw()
 
-    def device_deactive(self, widget, reason, device_type):
-        print "wired device", reason, device_type
-        #if device_type == 1:
-            #if self.tree.visible_items != []:
-                #self.tree.visible_items[0].is_select = False
-                #self.queue_draw()
+    def device_deactive(self, widget, reason):
+        if self.tree.visible_items != []:
+            self.tree.visible_items[0].is_select = False
+            self.queue_draw()
 
 class Wireless(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
@@ -113,8 +108,9 @@ class Wireless(gtk.VBox):
         self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
         self.send_to_crumb_cb = send_to_crumb_cb
         self.device_wifi = cache.get_spec_object(wireless_device.object_path)
-        self.device_wifi.connect("wifi-device-active", self.device_is_active)
-        self.device_wifi.connect("wifi-device-deactive", self.device_is_deactive)
+        wireless_device.connect("device-active", self.device_is_active)
+        wireless_device.connect("device-deactive", self.device_is_deactive)
+        self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
 
         self.pack_start(self.wireless, False, False)
         self.tree = TreeView([], enable_multiple_select = False)
@@ -134,19 +130,15 @@ class Wireless(gtk.VBox):
 
         self.pack_start(self.align, False, False, 0)
     
-    def device_is_active(self, widget, reason , device_type):
-        print "wireless device", reason, device_type
-        #if device_type == 2:
-            #active = wireless_device.get_active_connection()
-            #index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-            #self.tree.visible_items[index].network_state = 2
-            #self.tree.queue_draw()
+    def device_is_active(self, widget, reason):
+        active = wireless_device.get_active_connection()
+        index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+        self.tree.visible_items[index].network_state = 2
+        self.tree.queue_draw()
     
-    def device_is_deactive(self, widget, reason, device_type):
-        print "wireless device", reason, device_type
-        #if device_type == 2 and not self.tree.visible_items == []:
-            #self.tree.visible_items[self.index].network_state = 0
-            #self.tree.queue_draw()
+    def device_is_deactive(self, widget, reason):
+        self.tree.visible_items[self.index].network_state = 0
+        self.tree.queue_draw()
 
     def add_setting_page(self, page):
         self.settings = page
@@ -205,9 +197,7 @@ class Wireless(gtk.VBox):
         return [items, index]
 
     def try_to_connect(self, widget, ap_object):
-        print "trying"
         index = self.ap_list.index(ap_object)
-        print index
         self.tree.visible_items[index].network_state = 1
         self.tree.queue_draw()
     
