@@ -352,17 +352,17 @@ if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
     
     wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-    #wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-    #wifi = WifiSection()
+    wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
+    wifi = WifiSection()
     dsl = DSL()
     vpn = VpnSection()
     mobile = ThreeG()
     proxy = Proxy()
 
     vbox = gtk.VBox(False, 17)
-    #vbox.pack_start(wired, False, True,5)
+    vbox.pack_start(wired, False, True,5)
     vbox.pack_start(wireless, False, True, 0)
-    #vbox.pack_start(wifi, False, True, 0)
+    vbox.pack_start(wifi, False, True, 0)
     vbox.pack_start(dsl, False, True, 0)
     vbox.pack_start(mobile, False, True, 0)
     vbox.pack_start(vpn, False, True, 0)
@@ -386,7 +386,7 @@ if __name__ == '__main__':
     wireless.add_setting_page(wireless_setting_page)
 
     slider.append_page(main_align)
-    #slider.append_page(wired_setting_page)
+    slider.append_page(wired_setting_page)
     slider.append_page(wireless_setting_page)
 
     module_frame.add(slider)
