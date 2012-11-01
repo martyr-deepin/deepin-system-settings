@@ -339,7 +339,7 @@ class NMSettingWirelessSecurity (NMSetting):
     def adapt_wpa_commit(self):
         '''need adapt 802-1x'''                
         for key in self.prop_dict.keys():
-            if key not in ["key-mgmt", "group", "pairwise", "proto", "auth-alg"]:
+            if key not in ["key-mgmt", "group", "pairwise", "proto"]:
                 del self.prop_dict[key]
 
 if __name__ == "__main__":

@@ -79,13 +79,16 @@ class NMRemoteConnection(NMObject, NMConnection):
             self.secret_method = ""
         elif "802-11-wireless" in info_dict.iterkeys() and "802-11-wireless-security" in info_dict.iterkeys():
             self.secret_setting_name = "802-11-wireless-security"
-            if "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
+            if "auth-alg" in info_dict["802-11-wireless-security"].iterkeys():
+                if info_dict["802-11-wireless-security"] == "shared":
+                    pass
+                elif info_dict["802-11-wireless-security"] == "open":
+                    pass
+            elif "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
                 if info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
                     self.secret_method = "psk"
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
                     self.secret_method = ""
-                    
-
         elif "ppp" in info_dict.iterkeys():
             self.secret_setting_name = ""
             self.secret_method = ""
