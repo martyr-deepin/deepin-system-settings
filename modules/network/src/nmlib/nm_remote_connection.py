@@ -73,9 +73,34 @@ class NMRemoteConnection(NMObject, NMConnection):
 
     def guess_secret_info(self):
         '''guess_secret_info'''
-        TypeConvert.dbus2py(self.settings_dict)
-        self.secret_setting_name = ""
-        self.secret_method = ""
+        info_dict = TypeConvert.dbus2py(self.settings_dict)
+        if "vpn" in info_dict.iterkeys():
+            self.secret_setting_name = "vpn"
+            self.secret_method = ""
+        elif "802-11-wireless" in info_dict.iterkeys() and "802-11-wireless-security" in info_dict.iterkeys():
+            self.secret_setting_name = "802-11-wireless-security"
+            if "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
+                if info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
+                    self.secret_method = "psk"
+                elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
+                    self.secret_method = ""
+                    
+
+        elif "ppp" in info_dict.iterkeys():
+            self.secret_setting_name = ""
+            self.secret_method = ""
+        elif "802-1x" in info_dict.iterkeys():
+            self.secret_setting_name = ""
+            self.secret_method = ""
+        elif "cdma" in info_dict.iterkeys():
+            self.secret_setting_name = "cdma"
+            self.secret_method = ""
+        elif "gsm" in info_dict.iterkeys():
+            self.secret_setting_name = "gsm"
+            self.secret_method = ""
+        else:
+            self.secret_setting_name = ""
+            self.secret_method = ""
 
     def update(self):
         try:
