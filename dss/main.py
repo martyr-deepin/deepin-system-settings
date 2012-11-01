@@ -63,6 +63,9 @@ class DBusService(dbus.service.Object):
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
+            elif message_type == "change_crumb":
+                crumb_index = message_content
+                action_bar.bread.remove_node_after_index(crumb_index)
             else:
                 print message
                     
