@@ -21,6 +21,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import traceback
 
+class NewObjectFailed(Exception):
+
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return repr(self.path)
+
 class NMCache(object):
 
     def __init__(self):
@@ -35,49 +43,81 @@ class NMCache(object):
         elif key == "Settings":
             try:
                 from nm_remote_connection import NMRemoteConnection
-                return NMRemoteConnection(path)
+                remote_connection =  NMRemoteConnection(path)
+                if remote_connection:
+                    return remote_connection
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         elif key == "Devices":
             try:
                 from nmdevice import NMDevice
-                return NMDevice(path)
+                device = NMDevice(path)
+                if device:
+                    return device
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         elif key == "AccessPoint":
             try:
                 from nmaccesspoint import NMAccessPoint
-                return NMAccessPoint(path)
+                ap = NMAccessPoint(path)
+                if ap:
+                    return ap
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         elif key == "ActiveConnection":
             try:
                 from nm_active_connection import NMActiveConnection
-                return NMActiveConnection(path)
+                active_connection = NMActiveConnection(path)
+                if active_connection:
+                    return active_connection
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         elif key == "IP4Config":
             try:
                 from nmip4config import NMIP4Config
-                return NMIP4Config(path)
+                ip4config = NMIP4Config(path)
+                if ip4config:
+                    return ip4config
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         elif key == "DHCP4Config":
             try:
                 from nmdhcp4config import NMDHCP4Config
-                return NMDHCP4Config(path)
+                dhcp4config = NMDHCP4Config(path)
+                if dhcp4config:
+                    return dhcp4config
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         elif key == "IP6Config":
             try:
                 from nmip6config import NMIP6Config
-                return NMIP6Config(path)
+                ip6config = NMIP6Config(path)
+                if ip6config:
+                    return ip6config
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         elif key == "DHCP6Config":
             try:
                 from nmdhcp6config import NMDHCP6Config
-                return NMDHCP6Config(path)
+                dhcp6config = NMDHCP6Config(path)
+                if dhcp6config:
+                    return dhcp6config
+                else:
+                    raise NewObjectFailed(path)
             except:
                 traceback.print_exc()
         else:
@@ -118,21 +158,33 @@ class NMCache(object):
         if key == 1:
             try:
                 from nmdevice_ethernet import NMDeviceEthernet
-                return NMDeviceEthernet(path)
+                device_ethernet = NMDeviceEthernet(path)
+                if device_ethernet:
+                    return device_ethernet
+                else:
+                    raise NewObjectFailed(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == 2:
             try:
                 from nmdevice_wifi import NMDeviceWifi
-                return NMDeviceWifi(path)
+                device_wifi = NMDeviceWifi(path)
+                if device_wifi:
+                    return device_wifi
+                else:
+                    raise NewObjectFailed(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == 8:
             try:
                 from nmdevice_modem import NMDeviceModem
-                return NMDeviceModem(path)
+                device_modem = NMDeviceModem(path)
+                if device_modem:
+                    return device_modem
+                else:
+                    raise NewObjectFailed(device_modem)
             except:
-                pass
+                traceback.print_exc()
         else:
             print "unsupport spec type"
             print path
