@@ -25,15 +25,25 @@ from nm_utils import TypeConvert
 from nm_remote_settings import nm_remote_settings
 from nmclient import nmclient
 from nmcache import cache
+import gobject
 
 class NMDeviceEthernet(NMDevice):
     '''NMDeviceEthernet'''
+        
+    __gsignals__  = {
+            "ethernet-device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "ethernet-device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "ethernet-device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "ethernet-device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
+            }
+
 
     def __init__(self, ethernet_device_object_path):
         NMDevice.__init__(self, ethernet_device_object_path, "org.freedesktop.NetworkManager.Device.Wired")
         self.prop_list = ["Carrier", "HwAddress", "PermHwAddress", "Speed"]
         self.init_nmobject_with_properties()
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
+        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, signal_name = "StateChanged")
 
     ###Methods###
     def get_carrier(self):
@@ -79,6 +89,19 @@ class NMDeviceEthernet(NMDevice):
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
+
+    def state_changed_cb(self, new_state, old_state, reason):
+        self.init_nmobject_with_properties()
+
+        if old_state != 100 and new_state == 100:
+            self.emit("ethernet-device-active", reason, self.get_device_type())
+        elif old_state == 100 and new_state != 100:
+            self.emit("ethernet-device-deactive", reason, self.get_device_type())
+
+        if old_state < 30 and new_state >= 30:
+            self.emit("ethernet-device-available", new_state)
+        elif old_state >=30 and new_state < 30:
+            self.emit("ethernet-device-unavailable", new_state)
 
 if __name__ == "__main__":
     ethernet_device = NMDeviceEthernet ("/org/freedesktop/NetworkManager/Devices/0")
