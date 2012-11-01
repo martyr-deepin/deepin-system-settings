@@ -119,6 +119,7 @@ class WirelessSetting(gtk.HBox):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
         self.security.save_setting()
+
         self.change_crumb()
         self.slide_back() 
         
@@ -289,6 +290,9 @@ class IPV4Conf(gtk.VBox):
         #self.apply_button.connect("clicked", self.save_changes, self.cs)
         #self.cancel_button.connect("clicked", self.cancel_changes)
 
+    def get_this_connection(self):
+        return self.connection
+
     def check_ip_valid(self, widget ):
         text = widget.get_text()
         if TypeConvert.is_valid_ip4(text):
@@ -408,7 +412,6 @@ class IPV4Conf(gtk.VBox):
             if not self.slave_entry.get_text() == "":
                 connection.add_dns(self.slave_entry.get_text())
         connection.adapt_ip4config_commit()
-        self.connection.update()
 
 class IPV6Conf(gtk.VBox):
 
@@ -608,7 +611,6 @@ class IPV6Conf(gtk.VBox):
                 connection.add_dns(self.slave_entry.get_text())
         #connection.adapt_ip6config_commit()
         #print self.connection.get_setting("connection").id
-        self.connection.update()
 
 class Security(gtk.VBox):
 

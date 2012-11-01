@@ -39,9 +39,9 @@ class WiredSection(gtk.VBox):
         self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
         self.send_to_crumb_cb = send_to_crumb_cb
 
-        wired_device.connect("device-active", self.device_activate)
-        wired_device.connect("device-deactive", self.device_deactive)
-        wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
+        #wired_device.connect("device-active", self.device_activate)
+        #wired_device.connect("device-deactive", self.device_deactive)
+        #wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
         self.settings = None
         self.pack_start(self.wire, False, False)
         self.tree = TreeView([])
@@ -112,8 +112,10 @@ class Wireless(gtk.VBox):
         gtk.VBox.__init__(self)
         self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
         self.send_to_crumb_cb = send_to_crumb_cb
-        wireless_device.connect("device-active", self.device_is_active)
-        wireless_device.connect("device-deactive", self.device_is_deactive)
+        self.device_wifi = cache.get_spec_object(wireless_device.object_path)
+        self.device_wifi.connect("wifi-device-active", self.device_is_active)
+        self.device_wifi.connect("wifi-device-deactive", self.device_is_deactive)
+
         self.pack_start(self.wireless, False, False)
         self.tree = TreeView([], enable_multiple_select = False)
         self.settings = None
@@ -167,13 +169,11 @@ class Wireless(gtk.VBox):
             self.queue_draw()
             self.show_all()
             if index > 0:
-                #self.tree.select_items([self.tree.visible_items[index]])
                 self.tree.visible_items[index].network_state = 2
             else:
-                wlan = cache.get_spec_object(wireless_device.object_path)
                 # FIXME close auto_connect
                 print "try to connect"
-                wlan.auto_connect()
+                self.device_wifi.auto_connect()
                 #self.tree.queue_draw()
             self.index = index
         else:
@@ -186,10 +186,8 @@ class Wireless(gtk.VBox):
         retrieve network lists, will use thread
         """
         #device = nmclient.get_wireless_device()
-        device_wifi = cache.get_spec_object(wireless_device.object_path)
-        device_wifi.connect("try-ssid-begin", self.try_to_connect)
         #device_wifi.connect("try-ssid-end", self.try_to_connect_end)
-        self.ap_list = device_wifi.order_ap_list()
+        self.ap_list = self.device_wifi.order_ap_list()
         if wireless_device.get_state() == 100:
             active_connection = wireless_device.get_active_connection()
             index = [ap.object_path for ap in self.ap_list].index(active_connection.get_specific_object())
