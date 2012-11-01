@@ -144,9 +144,9 @@ class Wireless(gtk.VBox):
     
     def device_is_deactive(self, widget, event):
         print "deactive"
-        if not self.tree.visible_items == []:
-            self.tree.visible_items[self.index].network_state = 0
-            self.tree.queue_draw()
+        #if not self.tree.visible_items == []:
+            #self.tree.visible_items[self.index].network_state = 0
+            #self.tree.queue_draw()
 
     def add_setting_page(self, page):
         self.settings = page
@@ -158,7 +158,7 @@ class Wireless(gtk.VBox):
 
     def toggle_cb(self, widget):
         active = widget.get_active()
-        if active:
+        if active: 
             ap_list = self.retrieve_list()
             item_list = ap_list[0]
             index = ap_list[1]
@@ -171,12 +171,13 @@ class Wireless(gtk.VBox):
             if index > 0:
                 #self.tree.select_items([self.tree.visible_items[index]])
                 self.tree.visible_items[index].network_state = 2
-                self.index = index
             else:
                 wlan = cache.get_spec_object(wireless_device.object_path)
                 # FIXME close auto_connect
+                print "try to connect"
                 wlan.auto_connect()
                 #self.tree.queue_draw()
+            self.index = index
         else:
             self.tree.add_items([],0,True)
             self.vbox.hide()

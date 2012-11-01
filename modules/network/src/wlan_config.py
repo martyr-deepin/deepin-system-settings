@@ -756,7 +756,7 @@ class Security(gtk.VBox):
 
         wlan = cache.get_spec_object(wireless_device.object_path)
         wlan.emit("try-ssid-begin", ap)
-        nmclient.activate_connection(self.connection.object_path,
+        nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)
         #print self.connection.get_setting("connection").id
@@ -874,7 +874,8 @@ class Wireless(gtk.VBox):
         self.wireless.mac_address = self.mac_entry.get_text()
         self.wireless.cloned_mac_address = self.clone_entry.get_text()
         self.wireless.mtu = self.mtu_spin.get_value()
+        self.wireless.adapt_wireless_commit()
         # TODO add update functions
         #connection.adapt_ip4config_commit()
-        #self.connection.update()
+        self.connection.update()
         
