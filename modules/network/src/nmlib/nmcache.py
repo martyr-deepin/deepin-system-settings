@@ -48,6 +48,8 @@ class NMCache(object):
                     return remote_connection
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == "Devices":
@@ -58,6 +60,8 @@ class NMCache(object):
                     return device
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == "AccessPoint":
@@ -68,6 +72,8 @@ class NMCache(object):
                     return ap
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == "ActiveConnection":
@@ -78,6 +84,8 @@ class NMCache(object):
                     return active_connection
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == "IP4Config":
@@ -88,6 +96,8 @@ class NMCache(object):
                     return ip4config
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == "DHCP4Config":
@@ -98,6 +108,8 @@ class NMCache(object):
                     return dhcp4config
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == "IP6Config":
@@ -108,6 +120,8 @@ class NMCache(object):
                     return ip6config
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == "DHCP6Config":
@@ -118,6 +132,8 @@ class NMCache(object):
                     return dhcp6config
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         else:
@@ -163,6 +179,8 @@ class NMCache(object):
                     return device_ethernet
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == 2:
@@ -173,6 +191,8 @@ class NMCache(object):
                     return device_wifi
                 else:
                     raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         elif key == 8:
@@ -183,6 +203,8 @@ class NMCache(object):
                     return device_modem
                 else:
                     raise NewObjectFailed(device_modem)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
         else:
