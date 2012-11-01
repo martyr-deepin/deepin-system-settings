@@ -407,7 +407,6 @@ class IPV4Conf(gtk.VBox):
             if not self.slave_entry.get_text() == "":
                 connection.add_dns(self.slave_entry.get_text())
         connection.adapt_ip4config_commit()
-        self.connection.update()
 
 class IPV6Conf(gtk.VBox):
 
@@ -607,7 +606,6 @@ class IPV6Conf(gtk.VBox):
                 connection.add_dns(self.slave_entry.get_text())
         #connection.adapt_ip6config_commit()
         #print self.connection.get_setting("connection").id
-        self.connection.update()
 
 class Security(gtk.VBox):
 
@@ -676,7 +674,7 @@ class Security(gtk.VBox):
                                                        "802-11-wireless-security",
                                                        "psk")
             except:
-                secret = {}
+                secret = ""
 
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
