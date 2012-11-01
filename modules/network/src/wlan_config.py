@@ -113,12 +113,13 @@ class WirelessSetting(gtk.HBox):
 
     def cancel_changes(self, widget):
         self.slide_back() 
+
     def save_changes(self, widget):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
         self.security.save_setting()
-
         self.slide_back() 
+        
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
@@ -673,8 +674,12 @@ class Security(gtk.VBox):
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
             self.table.attach(self.password_entry, 1, 4, 1, 2)
+            
+            try:
+                self.password_entry.set_text(secret["802-11-wireless-security"]["psk"])
+            except:
+                self.password_entry.set_text("")
 
-            self.password_entry.set_text(secret["802-11-wireless-security"]["psk"])
         elif self.security_combo.get_active() >=1:
             # Add Key
             self.table.attach(self.key_label, 0, 1, 1, 2)
@@ -690,12 +695,18 @@ class Security(gtk.VBox):
 
             # Retrieve wep properties
             setting = self.connection.get_setting("802-11-wireless-security")
-            key = secret["802-11-wireless-security"]["wep-key0"]
-            index = setting.wep_tx_keyidx
-            auth = setting.auth_alg
-            self.key_entry.set_text(key)
-            self.wep_index_spin.set_value(index)
-            self.auth_combo.set_active(['open', 'shared'].index(auth))
+            try:
+                key = secret["802-11-wireless-security"]["wep-key0"]
+                self.key_entry.set_text(key)
+                index = setting.wep_tx_keyidx
+                auth = setting.auth_alg
+                self.wep_index_spin.set_value(index)
+                self.auth_combo.set_active(['open', 'shared'].index(auth))
+
+            except:
+                self.key_entry.set_text("")
+                self.wep_index_spin.set_value(0)
+                self.auth_combo.set_active(0)
 
         self.table.show_all()
         #if secret:
@@ -712,7 +723,7 @@ class Security(gtk.VBox):
         secret = self.connection.get_secrets("802-11-wireless-security")
         try:
             key = secret["802-11-wireless-security"]["wep-key%d"%value]
-        except KeyError:
+        except:
             key = ''
         #key = self.setting.get_wep_key(value)
         #print key
@@ -722,24 +733,33 @@ class Security(gtk.VBox):
     def save_setting(self):
         # Save wpa settings
         active = self.security_combo.get_active()
-        if active == 3:
+        if active == 0:
+            pass
+        elif active == 3:
             passwd = self.password_entry.get_text()
             key_mgmt = "wpa-psk"
             self.setting.key_mgmt = key_mgmt
+
             self.setting.psk = passwd
-        else:
+        elif active == 1:
             passwd = self.key_entry.get_text()
+            index = self.wep_index_spin.get_value()
+            key_mgmt = "wep04"
         # Update
-        self.setting.adapt_wireless_security_commit()
+        #self.setting.adapt_wireless_security_commit()
+        from nmlib.nm_utils import TypeConvert
         self.connection.update()
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
+
+        wlan = cache.get_spec_object(wireless_device.object_path)
+        wlan.emit("try-ssid-begin", ap)
         nmclient.activate_connection(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)
-
+        #print self.connection.get_setting("connection").id
 
 
 class Wireless(gtk.VBox):
