@@ -142,11 +142,11 @@ class Wireless(gtk.VBox):
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active: 
+            nmclient.wireless_set_enabled(True)
             ap_list = self.retrieve_list()
             item_list = ap_list[0]
             index = ap_list[1]
             self.tree.add_items(item_list,0,True)
-            print self.tree.visible_items
             self.tree.visible_items[-1].is_last = True
             self.vbox.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
@@ -171,7 +171,7 @@ class Wireless(gtk.VBox):
         """
         #device = nmclient.get_wireless_device()
         #device_wifi.connect("try-ssid-end", self.try_to_connect_end)
-        self.ap_list = self.device_wifi.update_opt_ap_list()
+        self.ap_list = self.device_wifi.order_ap_list()
         if wireless_device.get_state() == 100:
             active_connection = wireless_device.get_active_connection()
             index = [ap.object_path for ap in self.ap_list].index(active_connection.get_specific_object())
