@@ -77,49 +77,76 @@ class NMClient(NMObject):
     def get_device_by_iface(self, iface):
         return cache.getobject(self.dbus_method("GetDeviceByIpIface", iface))
 
-    # def activate_connection(self, connection_path, device_path, specific_object_path):
-    #     '''return active_connection_path object'''
-    #     return cache.getobject(self.dbus_method("ActivateConnection", connection_path, device_path, specific_object_path))
-
-    def activate_connection_async(self, connection_path, device_path, specific_object_path):
+    def activate_connection(self, connection_path, device_path, specific_object_path):
+        '''used for multi activate, must run one by one'''
         try:
-            self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path,                                                                                reply_handler = self.activate_finish, error_handler = self.activate_error)
-            self.emit("activate-succeed", connection_path)
-            cache.getobject(connection_path).succeed_flag -= 2
+            active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
+            if active:
+                self.emit("activate-succeed", connection_path)
+                cache.getobject(connection_path).succeed_flag -= 2
+                return cache.getobject(active)
+            else:
+                self.emit("activate-failed", connection_path)
+                cache.getobject(connection_path).succeed_flag += 1
         except:
-            self.emit("activate-failed", connection_path)
-            cache.getobject(connection_path).succeed_flag += 1
             traceback.print_exc()
 
-    def activate_finish(self, active_connection):
-        return cache.getobject(active_connection)
+    def activate_connection_async(self, connection_path, device_path, specific_object_path):
+        '''used for only one activate'''
+        try:
+            active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path,                                                                                reply_handler = self.activate_finish, error_handler = self.activate_error)
+            if active:
+                self.emit("activate-succeed", connection_path)
+                cache.getobject(connection_path).succeed_flag -= 2
+            else:
+                self.emit("activate-failed", connection_path)
+                cache.getobject(connection_path).succeed_flag += 1
+        except:
+            traceback.print_exc()
+
+    def activate_finish(self, active_path):
+        if active_path:
+            active = cache.getobject(active_path)
+            self.emit("activate-succeed", active.get_connection().object_path)
+            active.get_connection().succeed_flag -= 2
+            return active
     
     def activate_error(self, *error):
         pass
 
-    # def add_and_activate_connection(self, connection_path, device_path, specific_object_path):
-    #     return self.dbus_method("AddAndActivateConnection", connection_path, device_path, specific_object_path)
+    def add_and_activate_connection(self, connection_path, device_path, specific_object_path):
+        try:
+            active = self.dbus_interface.AddAndActivateConnection(connection_path, device_path, specific_object_path)
+            if active:
+                self.emit("activate-succeed", connection_path)
+                cache.getobject(connection_path).succeed_flag -= 2
+                return cache.getobject(active)
+            else:
+                self.emit("activate-failed", connection_path)
+                cache.getobject(connection_path).succeed_flag += 1
+        except:
+            traceback.print_exc()
+
 
     def add_and_activate_connection_async(self, connection_path, device_path, specific_object_path):
         try:
             self.dbus_interface.AddAndActivateConnection(connection_path, device_path, specific_object_path,
                                              reply_handler = self.add_activate_finish, error_handler = self.add_activate_error)
-            self.emit("activate-succeed", connection_path)
-            cache.getobject(connection_path).succeed_flag += 2
         except:
-            self.emit("activate-failed", connection_path)
-            cache.getobject(connection_path).succeed_flag -= 1
             traceback.print_exc()
-        
 
-    def add_activate_finish(self, *reply):
-        return reply
+    def add_activate_finish(self, active_path):
+        if active_path:
+            active = cache.getobject(active_path)
+            self.emit("activate-succeed", active.get_connection().object_path)
+            active.get_connection().succeed_flag -= 2
+            return active
 
     def add_activate_error(self, *error):
         pass
 
-    # def deactive_connection(self, active_object_path):
-    #     return self.dbus_method("DeactivateConnection", active_object_path)
+    def deactive_connection(self, active_object_path):
+        return self.dbus_method("DeactivateConnection", active_object_path)
 
     def deactive_connection_async(self, active_object_path):
         try:
