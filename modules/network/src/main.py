@@ -130,15 +130,6 @@ class Wireless(gtk.VBox):
 
         self.pack_start(self.align, False, False, 0)
     
-    def device_is_active(self, widget, reason):
-        active = wireless_device.get_active_connection()
-        index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-        self.tree.visible_items[index].network_state = 2
-        self.tree.queue_draw()
-    
-    def device_is_deactive(self, widget, reason):
-        self.tree.visible_items[self.index].network_state = 0
-        self.tree.queue_draw()
 
     def add_setting_page(self, page):
         self.settings = page
@@ -197,10 +188,21 @@ class Wireless(gtk.VBox):
         return [items, index]
 
     def try_to_connect(self, widget, ap_object):
+        print "trying"
         index = self.ap_list.index(ap_object)
         self.tree.visible_items[index].network_state = 1
         self.tree.queue_draw()
     
+    def device_is_active(self, widget, reason):
+        active = wireless_device.get_active_connection()
+        index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+        self.tree.visible_items[index].network_state = 2
+        self.tree.queue_draw()
+    
+    def device_is_deactive(self, widget, reason):
+        print "deative"
+        self.tree.visible_items[self.index].network_state = 0
+        self.tree.queue_draw()
     #def try_to_connect_end(self, widget, ap_object):
         #pass
         #print ap_object.get_ssid(),"end"

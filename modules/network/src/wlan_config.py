@@ -119,7 +119,8 @@ class WirelessSetting(gtk.HBox):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
         self.security.save_setting()
-
+        wlan = cache.get_spec_object(wireless_device.object_path)
+        wlan.emit("try-ssid-begin", self.ap)
         self.change_crumb()
         self.slide_back() 
         
@@ -758,8 +759,6 @@ class Security(gtk.VBox):
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
 
-        wlan = cache.get_spec_object(wireless_device.object_path)
-        wlan.emit("try-ssid-begin", ap)
         nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)
