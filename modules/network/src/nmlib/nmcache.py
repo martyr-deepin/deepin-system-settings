@@ -19,6 +19,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import traceback
 
 class NMCache(object):
 
@@ -36,49 +37,49 @@ class NMCache(object):
                 from nm_remote_connection import NMRemoteConnection
                 return NMRemoteConnection(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == "Devices":
             try:
                 from nmdevice import NMDevice
                 return NMDevice(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == "AccessPoint":
             try:
                 from nmaccesspoint import NMAccessPoint
                 return NMAccessPoint(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == "ActiveConnection":
             try:
                 from nm_active_connection import NMActiveConnection
                 return NMActiveConnection(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == "IP4Config":
             try:
                 from nmip4config import NMIP4Config
                 return NMIP4Config(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == "DHCP4Config":
             try:
                 from nmdhcp4config import NMDHCP4Config
                 return NMDHCP4Config(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == "IP6Config":
             try:
                 from nmip6config import NMIP6Config
                 return NMIP6Config(path)
             except:
-                pass
+                traceback.print_exc()
         elif key == "DHCP6Config":
             try:
                 from nmdhcp6config import NMDHCP6Config
                 return NMDHCP6Config(path)
             except:
-                pass
+                traceback.print_exc()
         else:
             print "unsupport type"
             print path
