@@ -747,8 +747,9 @@ class Security(gtk.VBox):
             index = self.wep_index_spin.get_value()
             key_mgmt = "wep04"
         # Update
+        print self.setting.prop_dict
         #self.setting.adapt_wireless_security_commit()
-        from nmlib.nm_utils import TypeConvert
+        #from nmlib.nm_utils import TypeConvert
         self.connection.update()
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
