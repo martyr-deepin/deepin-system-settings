@@ -36,10 +36,6 @@ class NMDeviceWifi(NMDevice):
             "access-point-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
             "try-ssid-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
             "try-ssid-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
-            # "wifi-device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            # "wifi-device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            # "wifi-device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            # "wifi-device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
             }
 
     def __init__(self, wifi_device_object_path):
@@ -49,7 +45,6 @@ class NMDeviceWifi(NMDevice):
         self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface, signal_name = "AccessPointAdded")
         self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, signal_name = "AccessPointRemoved")
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
-        # self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = "org.freedesktop.NetworkManager.Device", signal_name = "StateChanged")
 
         self.init_nmobject_with_properties()
         self.origin_ap_list = self.get_access_points()
@@ -153,19 +148,6 @@ class NMDeviceWifi(NMDevice):
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
-
-    # def state_changed_cb(self, new_state, old_state, reason):
-    #     self.init_nmobject_with_properties()
-        
-    #     if old_state != 100 and new_state == 100:
-    #         self.emit("wifi-device-active", reason, cache.getobject(self.object_path).get_device_type())
-    #     elif old_state == 100 and new_state != 100:
-    #         self.emit("wifi-device-deactive", reason, cache.getobject(self.object_path).get_device_type())
-
-    #     if old_state < 30 and new_state >= 30:
-    #         self.emit("wifi-device-available", new_state)
-    #     elif old_state >=30 and new_state < 30:
-    #         self.emit("wifi-device-unavailable", new_state)
 
 if __name__ == "__main__":
     wifi_device = NMDeviceWifi("/org/freedesktop/NetworkManager/Devices/0")

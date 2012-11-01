@@ -34,15 +34,10 @@ class NMDevice(NMObject):
 
     __gsignals__  = {
             "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "ethernet-device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "ethernet-device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "ethernet-device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "ethernet-device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "wifi-device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "wifi-device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "wifi-device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "wifi-device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
-
+            "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
             }
 
     def __init__(self, device_object_path, device_interface = "org.freedesktop.NetworkManager.Device"):
@@ -165,34 +160,14 @@ class NMDevice(NMObject):
         self.init_nmobject_with_properties()
 
         if old_state != 100 and new_state == 100:
-            if self.get_device_type() == 1:
-                self.emit("ethernet-device-active", reason, self.get_device_type())
-            elif self.get_device_type() == 2:
-                self.emit("wifi-device-active", reason, self.get_device_type())
-            else:
-                pass
+            self.emit("device-active", reason)
         elif old_state == 100 and new_state != 100:
-            if self.get_device_type() == 1:
-                self.emit("ethernet-device-deactive", reason, self.get_device_type())
-            elif self.get_device_type() == 2:
-                self.emit("wifi-device-deactive", reason, self.get_device_type())
-            else:
-                pass
+            self.emit("device-deactive", reason)
 
         if old_state < 30 and new_state >= 30:
-            if self.get_device_type() == 1:
-                self.emit("ethernet-device-available", new_state)
-            elif self.get_device_type() == 2:
-                self.emit("wifi-device-available", new_state)
-            else:
-                pass
+            self.emit("device-available", new_state)
         elif old_state >=30 and new_state < 30:
-            if self.get_device_type() == 1:
-                self.emit("ethernet-device-unavailable", new_state)
-            elif self.get_device_type() == 2:
-                self.emit("wifi-device-unavailable", new_state)
-            else:
-                pass
+            self.emit("device-unavailable", new_state)
 
 if __name__ == "__main__":
     nmdevice = NMDevice("/org/freedesktop/NetworkManager/Devices/1")
