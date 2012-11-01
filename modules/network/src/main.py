@@ -175,7 +175,7 @@ class Wireless(gtk.VBox):
             else:
                 wlan = cache.get_spec_object(wireless_device.object_path)
                 # FIXME close auto_connect
-                #wlan.auto_connect()
+                wlan.auto_connect()
                 #self.tree.queue_draw()
         else:
             self.tree.add_items([],0,True)
