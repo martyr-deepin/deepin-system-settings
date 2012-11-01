@@ -46,6 +46,9 @@ class NMDeviceWifi(NMDevice):
         self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, signal_name = "AccessPointRemoved")
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
 
+        if nmclient.wireless_get_enabled() == 0:
+            nmclient.wireless_set_enabled(True)
+
         self.init_nmobject_with_properties()
         self.origin_ap_list = self.get_access_points()
 
