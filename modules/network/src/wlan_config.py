@@ -33,9 +33,10 @@ import gtk
 
 class WirelessSetting(gtk.HBox):
 
-    def __init__(self, access_point, slide_back_cb):
+    def __init__(self, access_point, slide_back_cb, change_crumb_cb):
         gtk.HBox.__init__(self)
         self.slide_back = slide_back_cb
+        self.change_crumb = change_crumb_cb
         self.sidebar = None
 
         #self.ipv4 = IPV4Conf(active)
@@ -118,6 +119,7 @@ class WirelessSetting(gtk.HBox):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
         self.security.save_setting()
+        self.change_crumb()
         self.slide_back() 
         
     def expose_event(self, widget, event):

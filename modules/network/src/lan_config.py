@@ -40,10 +40,10 @@ else:
 
 class WiredSetting(gtk.HBox):
 
-    def __init__(self, slide_back_cb):
+    def __init__(self, slide_back_cb, change_crumb_cb):
         gtk.HBox.__init__(self)
         self.slide_back_cb = slide_back_cb
-
+        self.change_crumb = change_crumb_cb
         #self.tab_window.set_size_request(585,-1)
 
         self.tab_window = TabBox()
@@ -116,6 +116,7 @@ class WiredSetting(gtk.HBox):
         self.ipv6.save_changes()
 
         #self.slide.slide_to_page(self.slide.layout.get_children()[0], "left")
+        self.change_crumb()
         self.slide_back_cb()
         
 

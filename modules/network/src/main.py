@@ -94,15 +94,18 @@ class WiredSection(gtk.VBox):
                           lambda : slider.slide_to_page(self.settings, "right"),
                           self.send_to_crumb_cb)]
 
-    def device_activate(self, widget ,event):
-        print "activate"
-        self.tree.visible_items[self.active_one].is_select = True
-        self.queue_draw()
+    def device_activate(self, widget ,reason, device_type):
+        print "wired device", reason, device_type
+        #if device_type == 1:
+            #self.tree.visible_items[0].is_select = True
+            #self.queue_draw()
 
-    def device_deactive(self, widget, event):
-        #print "deactive"
-        self.tree.visible_items[self.active_one].is_select = False
-        self.queue_draw()
+    def device_deactive(self, widget, reason, device_type):
+        print "wired device", reason, device_type
+        #if device_type == 1:
+            #if self.tree.visible_items != []:
+                #self.tree.visible_items[0].is_select = False
+                #self.queue_draw()
 
 class Wireless(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
@@ -129,22 +132,17 @@ class Wireless(gtk.VBox):
 
         self.pack_start(self.align, False, False, 0)
     
-    def device_is_active(self, widget, state):
-        print "active"
-        print wireless_device.get_state()
-        print wireless_device.is_active()
-        active = wireless_device.get_active_connection()
-        print active
-        index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-        print index
-        #self.tree.select_items([self.tree.visible_items[index]])
-        self.tree.visible_items[index].network_state = 2
-        self.tree.queue_draw()
-        ##self.tree.select_items([self.tree.visible_items[index]])
+    def device_is_active(self, widget, reason , device_type):
+        print "wireless device", reason, device_type
+        #if device_type == 2:
+            #active = wireless_device.get_active_connection()
+            #index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+            #self.tree.visible_items[index].network_state = 2
+            #self.tree.queue_draw()
     
-    def device_is_deactive(self, widget, event):
-        print "deactive"
-        #if not self.tree.visible_items == []:
+    def device_is_deactive(self, widget, reason, device_type):
+        print "wireless device", reason, device_type
+        #if device_type == 2 and not self.tree.visible_items == []:
             #self.tree.visible_items[self.index].network_state = 0
             #self.tree.queue_draw()
 
@@ -388,9 +386,11 @@ if __name__ == '__main__':
     main_align.set_padding(11,11,11,11)
     main_align.add(scroll_win)
     
-    wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"))
+    wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"),
+                                      lambda  : module_frame.send_message("change_crumb", 1))
     wired.add_setting_page(wired_setting_page)
-    wireless_setting_page = WirelessSetting(None, lambda :slider.slide_to_page(main_align, "left"))
+    wireless_setting_page = WirelessSetting(None, lambda :slider.slide_to_page(main_align, "left"),
+                                                  lambda : module_frame.send_message("change_crumb", 1))
     wireless.add_setting_page(wireless_setting_page)
 
     slider.append_page(main_align)
