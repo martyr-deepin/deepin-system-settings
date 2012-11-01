@@ -31,6 +31,7 @@ from wired import *
 from widgets import SettingButton
 import gtk
 
+
 class WirelessSetting(gtk.HBox):
 
     def __init__(self, access_point, slide_back_cb, change_crumb_cb):
@@ -674,14 +675,20 @@ class Security(gtk.VBox):
         self.table.attach(self.security_label, 0, 1, 0, 1)
         self.table.attach(self.security_combo, 1, 4, 0, 1)
         if not self.security_combo.get_active() == 0: 
-            secret = self.connection.get_secrets("802-11-wireless-security")
+            #secret = self.connection.get_secrets("802-11-wireless-security")
+            try:
+                secret = secret_agent.agent_get_secret(self.connection.object_path,
+                                                       "802-11-wireless-security",
+                                                       "psk")
+            except:
+                secret = ""
 
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
             self.table.attach(self.password_entry, 1, 4, 1, 2)
             
             try:
-                self.password_entry.set_text(secret["802-11-wireless-security"]["psk"])
+                self.password_entry.set_text(secret)
             except:
                 self.password_entry.set_text("")
 
@@ -751,13 +758,19 @@ class Security(gtk.VBox):
             index = self.wep_index_spin.get_value()
             key_mgmt = "wep04"
         # Update
+        print self.setting.prop_dict
         #self.setting.adapt_wireless_security_commit()
-        from nmlib.nm_utils import TypeConvert
+        #from nmlib.nm_utils import TypeConvert
         self.connection.update()
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
+
+
+
+        wlan = cache.get_spec_object(wireless_device.object_path)
+        wlan.emit("try-ssid-begin", ap)
 
         nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,

@@ -28,6 +28,8 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 from nmobject import NMObject
+from nmcache import cache
+from nm_utils import TypeConvert
 
 class NMAgentManager(NMObject):
     '''NMAgentManager'''
@@ -79,40 +81,54 @@ agent_manager = NMAgentManager()
 class NMSecretAgent(NMObject):
     '''NMSecretAgent'''
     # __gsignals__  = {
-    #         "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,)),
+    #         "registration-result":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_NONE,))
     #         }
     
     def __init__(self):
         self.auto_register = ""
         self.identifier = "org.freedesktop.NetworkManager.SecretAgent"
         self.registered = ""
-        
-        agent_manager.register(self.identifier)
+        try:
+            agent_manager.register(self.identifier)
+        except:
+            traceback.print_exc()
 
-    def generate_service_name(self, uuid, setting_name):
-        return "nm_" + uuid +"_" + setting_name
+    def generate_service_name(self, uuid, setting_name, method):
+        return str("nm_" + uuid +"_" + setting_name + "_" + method)
 
-    def GetSecrets(self, connection, setting_name):
-        service = self.generate_service_name(connection.settings_dict["connection"]["uuid"], setting_name)
+    def agent_get_secrets(self, conn_path, setting_name, method):
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"],
+                                             setting_name, method)
         username = getpass.getuser()
-        return keyring.get_password(service, username)
+        try:
+            return keyring.get_password(service, username)
+        except:
+            traceback.print_exc()
 
-    def CancelGetSecrets(self, connection, setting_name):
+    def agent_cancel_secrets(self, connection, setting_name):
         pass
 
-    def SaveSecrets(self, connection, setting_name):
-        service = self.generate_service_name(connection.settings_dict["connection"]["uuid"], setting_name)
+    def agent_save_secrets(self, conn_path, setting_name, method):
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
+                                             setting_name, method)
         username = getpass.getuser()
-        password = connection.get_secrets(setting_name)
-        keyring.set_password(service, username, password)
+        password = cache.getobject(conn_path).settings_dict[setting_name][method]
+        try:
+            keyring.set_password(service, username, password)
+        except:
+            traceback.print_exc()
 
-    def DeleteSecrets(self, connection, setting_name):
-        service = self.generate_service_name(connection.settings_dict["connection"]["uuid"], setting_name)
+    def agent_delete_secrets(self, conn_path, setting_name, method):
+        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
+                                             setting_name, method)
         username = getpass.get_user()
-        if keyring.get_password(service, username):
-            keyring.set_password(service, username, "")
+        try:
+            if keyring.get_password(service, username):
+                keyring.set_password(service, username, "")
+        except:
+            traceback.print_exc()
 
-# secret_agent = NMSecretAgent()
+secret_agent = NMSecretAgent()
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  

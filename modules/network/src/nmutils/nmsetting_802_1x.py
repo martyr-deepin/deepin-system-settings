@@ -27,12 +27,11 @@ from nmlib.nm_utils import TypeConvert
 class NMSetting8021x (NMSetting):
     '''NMSetting8021x'''
 
-    def __init__(self, nm_remote_connection):
-        NMSetting.__init__(self, nm_remote_connection)
+    def __init__(self):
+        NMSetting.__init__(self)
 
         self.name = "802-1x"
 
-        self.init_setting_properties()
     @property
     def eap(self):
         if "eap" not in self.prop_dict.iterkeys():

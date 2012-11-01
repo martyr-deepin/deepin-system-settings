@@ -25,6 +25,7 @@ import traceback
 from nmobject import NMObject
 from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
+from nm_secret_agent import secret_agent
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''
@@ -32,7 +33,8 @@ class NMRemoteConnection(NMObject, NMConnection):
     __gsignals__  = {
             "removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "updated":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "visible":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (str,))
+            "visible":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (str,)),
+            "request-password":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
             }
 
     def __init__(self, object_path):
@@ -44,6 +46,10 @@ class NMRemoteConnection(NMObject, NMConnection):
         # self.settings_dict = self.get_settings()
         self.init_settings_prop_dict()
         self.succeed_flag = 0
+
+        ###used by secret agent
+        self.secret_setting_name = ""
+        self.secret_method = ""
 
     def delete(self):
         try:
@@ -61,11 +67,52 @@ class NMRemoteConnection(NMObject, NMConnection):
         return self.dbus_method("GetSettings")
 
     def get_secrets(self, setting_name):
-        return TypeConvert.dbus2py(self.dbus_method("GetSecrets", setting_name))
-        
+        try:
+            return TypeConvert.dbus2py(self.dbus_method("GetSecrets", setting_name))
+        except:
+            return {}
+
+    def guess_secret_info(self):
+        '''guess_secret_info'''
+        info_dict = TypeConvert.dbus2py(self.settings_dict)
+
+        if "vpn" in info_dict.iterkeys():
+            self.secret_setting_name = "vpn"
+            self.secret_method = ""
+        elif "802-11-wireless" in info_dict.iterkeys() and "802-11-wireless-security" in info_dict.iterkeys():
+            self.secret_setting_name = "802-11-wireless-security"
+            if "auth-alg" in info_dict["802-11-wireless-security"].iterkeys():
+                if info_dict["802-11-wireless-security"] == "shared":
+                    pass
+                elif info_dict["802-11-wireless-security"] == "open":
+                    pass
+            elif "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
+                if info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
+                    self.secret_method = "psk"
+                elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
+                    self.secret_method = ""
+        elif "ppp" in info_dict.iterkeys():
+            self.secret_setting_name = ""
+            self.secret_method = ""
+        elif "802-1x" in info_dict.iterkeys():
+            self.secret_setting_name = ""
+            self.secret_method = ""
+        elif "cdma" in info_dict.iterkeys():
+            self.secret_setting_name = "cdma"
+            self.secret_method = ""
+        elif "gsm" in info_dict.iterkeys():
+            self.secret_setting_name = "gsm"
+            self.secret_method = ""
+        else:
+            self.secret_setting_name = ""
+            self.secret_method = ""
+
     def update(self):
         try:
+            self.guess_secret_info()
+            secret_agent.agent_save_secrets(self.object_path, self.secret_setting_name, self.secret_method)
             self.dbus_interface.Update(self.settings_dict, reply_handler = self.update_finish, error_handler = self.update_error)
+            # print secret_agent.agent_get_secrets(self.object_path, self.secret_setting_name, self.secret_method)
         except:
             traceback.print_exc()
 
