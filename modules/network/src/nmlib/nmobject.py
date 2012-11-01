@@ -105,7 +105,7 @@ class NMObject(gobject.GObject):
         if not self.check_property_can_write(prop_name):
             print "sorry, cann't write to the prop:%s" % prop_name
         try:
-            self.properties_interface.set(self.dbus_interface, prop_name, prop_value)
+            self.properties_interface.Set(self.object_interface, prop_name, prop_value)
             self.properties[prop_name] = prop_value
         except dbus.exceptions.DBusException:
             traceback.print_exc()
