@@ -83,18 +83,56 @@ class NMRemoteConnection(NMObject, NMConnection):
         if "vpn" in info_dict.iterkeys():
             self.secret_setting_name = "vpn"
             self.secret_method = ""
+            return (self.secret_setting_name, self.secret_method)
+
         elif "802-11-wireless" in info_dict.iterkeys() and "802-11-wireless-security" in info_dict.iterkeys():
+
             self.secret_setting_name = "802-11-wireless-security"
-            if "auth-alg" in info_dict["802-11-wireless-security"].iterkeys():
-                if info_dict["802-11-wireless-security"] == "shared":
-                    pass
-                elif info_dict["802-11-wireless-security"] == "open":
-                    pass
-            elif "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
+
+            if "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
                 if info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
                     self.secret_method = "psk"
+                    return (self.secret_setting_name, self.secret_method)
+                    
+                elif info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
+                    if "wep-key-type" in info_dict["802-11-wireless-security"].iterkeys():
+
+                        if "wep-tx-keyidx" in info_dict["802-11-wireless-security"].iterkeys():
+                            if info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 0:
+                                self.secret_method = "wep-key0"
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 1:
+                                self.secret_method = "wep-key1"
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 2:
+                                self.secret_method = "wep-key2"
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 3:
+                                self.secret_method = "wep-key3"
+                            else:
+                                print "unsupported wep key idx"
+
+                            return (self.secret_setting_name, self.secret_method)    
+                        else:
+                            self.secret_method = "wep-key0"
+                            return (self.secret_setting_name, self.secret_method)
+                    else:
+                        print "must have wep-key-type to indicate wep connection"
+
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
-                    self.secret_method = ""
+                    print "no agent available for wpa-eap"
+                    
+                elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
+                    if "auth-alg" in info_dict["802-11-wireless-security"].iterkeys():
+                        if info_dict["802-11-wireless-security"]["auth-alg"] == "leap":
+                            self.secret_method = "leap-password"
+                            return (self.secret_setting_name, self.secret_method)
+                    else:
+                        print "no ageent available for dynamic wep"
+                else:
+                    print "unknown key mgmt"
+
+            else:
+                print "must have key mgmt for 802.11 wireless security"
+
+
         elif "ppp" in info_dict.iterkeys():
             self.secret_setting_name = ""
             self.secret_method = ""
