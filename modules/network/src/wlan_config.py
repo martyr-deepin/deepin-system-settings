@@ -97,12 +97,14 @@ class WirelessSetting(gtk.HBox):
 
         else:
             self.ap =  ap
-            self.cons = nm_remote_settings.get_ssid_associate_connections(self.ap.get_ssid())
+            self.connect_associate = nm_remote_settings.get_ssid_associate_connections(self.ap.get_ssid())
+            self.connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.ap.get_ssid())
+            self.cons = self.connect_associate + self.connect_not_assocaite +[len(self.connect_associate)]
             if self.cons:
-                self.ipv4_setting = [IPV4Conf(conn) for conn in self.cons]
-                self.ipv6_setting = [IPV6Conf(conn) for conn in self.cons]
-                self.security_setting = [Security(conn) for conn in self.cons]
-                self.wired_setting = [Wireless(conn) for conn in self.cons]
+                self.ipv4_setting = [IPV4Conf(conn) for conn in self.cons[:-1]]
+                self.ipv6_setting = [IPV6Conf(conn) for conn in self.cons[:-1]]
+                self.security_setting = [Security(conn) for conn in self.cons[:-1]]
+                self.wired_setting = [Wireless(conn) for conn in self.cons[:-1]]
             if not self.sidebar == None:
                 self.sidebar.cons = self.cons
                 self.sidebar.ipv4_setting = self.ipv4_setting
@@ -169,6 +171,11 @@ class Sidebar(gtk.VBox):
         # determin the active one
         self.buttonbox = gtk.VBox(False, 6)
         self.pack_start(self.buttonbox, False, False)
+        label = Label("--------------")
+        self.pack_start(label, False, False)
+        self.buttonbox_b = gtk.VBox(False, 6)
+        self.pack_start(self.buttonbox_b, False, False)
+
         self.refresh()
         add_button = Button("Add setting")
         add_button.connect("clicked", self.add_new_setting)
@@ -181,24 +188,36 @@ class Sidebar(gtk.VBox):
         else: 
             active =None
         if self.cons != None and self.ipv4_setting != None: 
-            btn = SettingButton(None, self.cons[0], self.ipv4_setting[0], self.sidebar_callback)
-            #btn.set_size(160)
+            if isinstance(self.cons[-1], int):
+                self.split = self.cons.pop()
+
             container_remove_all(self.buttonbox)
+            container_remove_all(self.buttonbox_b)
+            btn = SettingButton(None, self.cons[0], self.ipv4_setting[0], self.sidebar_callback)
             self.buttonbox.pack_start(btn, False, False,6)
 
-            for index,c in enumerate(self.cons[1:]):
+            for index,c in enumerate(self.cons[1:self.split]):
                 button = SettingButton(btn, c, self.ipv4_setting[index + 1], self.sidebar_callback)
                 #button.set_size(160)
                 self.buttonbox.pack_start(button, False ,False, 6)
 
+            if self.cons[self.split:] !=[]:
+                for index,c in enumerate(self.cons[self.split:]):
+                    button = SettingButton(btn, c, self.ipv4_setting[index + 1], self.sidebar_callback)
+                    self.buttonbox_b.pack_start(button, False ,False, 6)
+
             for index, c in enumerate(self.cons):
-                if active != None and c.get_setting("connection").id == active.get_setting("connection").id:
+                if active != None and (active in self.cons[:self.split]) and c == active:
                     self.buttonbox.get_children()[index].check.set_active(True)
+                else:
+                    self.buttonbox.get_children()[0].check.set_active(True)
+
 
 
     def add_new_setting(self, widget):
         nm_remote_settings.new_wireless_connection(self.ap.get_ssid())
         container_remove_all(self.buttonbox)
+        container_remove_all(self.buttonbox_b)
         self.init_cb(self.ap)
         self.refresh()
 
@@ -733,11 +752,6 @@ class Security(gtk.VBox):
             key = secret
             index = self.setting.wep_tx_keyidx
             auth = self.setting.auth_alg
-            #except:
-                #key = ""
-                #index = 0
-                #auth = "open"
-
             self.key_entry.set_text(key)
             self.wep_index_spin.set_value(index)
             self.auth_combo.set_active(["open", "shared"].index(auth))
@@ -797,7 +811,6 @@ class Security(gtk.VBox):
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
-
         nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)

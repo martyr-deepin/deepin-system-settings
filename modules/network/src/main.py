@@ -372,17 +372,19 @@ class Proxy(gtk.VBox):
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
 
-
-
-
 if __name__ == '__main__':
 
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
     if wireless_device != []: 
         wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+        wireless_setting_page = WirelessSetting(None, 
+                                                lambda :slider.slide_to_page(main_align, "left"),
+                                                lambda : module_frame.send_message("change_crumb", 1))
+        wireless.add_setting_page(wireless_setting_page)
+
     wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
     wifi = WifiSection()
-    dsl = DSL()
+    #dsl = DSL()
     vpn = VpnSection()
     mobile = ThreeG()
     proxy = Proxy()
@@ -392,7 +394,7 @@ if __name__ == '__main__':
     if wireless_device != []: 
         vbox.pack_start(wireless, False, True, 0)
     #vbox.pack_start(wifi, False, True, 0)
-    vbox.pack_start(dsl, False, True, 0)
+    #vbox.pack_start(dsl, False, True, 0)
     vbox.pack_start(mobile, False, True, 0)
     vbox.pack_start(vpn, False, True, 0)
     vbox.pack_start(proxy, False, True, 0)
@@ -405,14 +407,9 @@ if __name__ == '__main__':
     main_align.set_padding(11,11,11,11)
     main_align.add(scroll_win)
     
-
     wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"),
                                       lambda  : module_frame.send_message("change_crumb", 1))
     wired.add_setting_page(wired_setting_page)
-    if wireless_device != []: 
-        wireless_setting_page = WirelessSetting(None, lambda :slider.slide_to_page(main_align, "left"),
-                                                  lambda : module_frame.send_message("change_crumb", 1))
-        wireless.add_setting_page(wireless_setting_page)
 
     slider.append_page(main_align)
     slider.append_page(wired_setting_page)
