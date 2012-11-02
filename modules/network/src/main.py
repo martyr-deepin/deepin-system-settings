@@ -91,6 +91,7 @@ class WiredSection(gtk.VBox):
            self.active_one = 0
         else:
             self.device_ethernet.auto_connect()
+            self.device_ethernet.emit("try-activate-begin")
             self.active_one = -1
         return [WiredItem(wired_device.get_device_desc(),
                           self.settings, 
@@ -98,8 +99,10 @@ class WiredSection(gtk.VBox):
                           self.send_to_crumb_cb)]
 
     def device_activate(self, widget ,reason):
-        self.tree.visible_items[0].network_state = 2
-        self.queue_draw()
+
+        if self.tree.visible_items != []:
+            self.tree.visible_items[0].network_state = 2
+            self.queue_draw()
 
     def device_deactive(self, widget, reason):
         if not reason == 0:
@@ -108,8 +111,9 @@ class WiredSection(gtk.VBox):
                 self.queue_draw()
 
     def try_activate_begin(self, widget):
-        self.tree.visible_items[0].network_state = 1
-        self.queue_draw()
+        if self.tree.visible_items != []:
+            self.tree.visible_items[0].network_state = 1
+            self.queue_draw()
 
          
         
