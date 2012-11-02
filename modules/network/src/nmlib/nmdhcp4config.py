@@ -30,7 +30,9 @@ class NMDHCP4Config(NMObject):
         self.prop_list = ["Options"]
         self.init_nmobject_with_properties()
         self.options = self.get_options()
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
+
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertiesChanged")
 
     def get_options(self):
         return self.properties["Options"]

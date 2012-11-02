@@ -42,8 +42,12 @@ class NMDevice(NMObject):
 
     def __init__(self, device_object_path, device_interface = "org.freedesktop.NetworkManager.Device"):
         NMObject.__init__(self, device_object_path, device_interface)
+
         self.prop_list = ["Capabilities", "DeviceType", "ActiveConnection", "Dhcp4Config", "Dhcp6Config", "Driver", "FirmwareMissing", "Interface", "IpInterface", "Ip4Config", "Ip6Config", "Managed", "State"]
-        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, path = self.object_path, signal_name = "StateChanged")
+
+        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "StateChanged")
+
         self.init_nmobject_with_properties()
         self.udev_device = ""
 

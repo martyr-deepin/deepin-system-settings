@@ -46,11 +46,20 @@ class NMClient(NMObject):
         self.manager_running = False
         self.init_nmobject_with_properties()
 
-        self.bus.add_signal_receiver(self.permisson_changed_cb, dbus_interface = self.object_interface, signal_name = "CheckPermissions")
-        self.bus.add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface, signal_name = "DeviceAdded")
-        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, signal_name = "DeviceRemoved")
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
-        self.bus.add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, signal_name = "StateChanged")
+        self.bus.add_signal_receiver(self.permisson_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "CheckPermissions")
+
+        self.bus.add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "DeviceAdded")
+
+        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "DeviceRemoved")
+
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertiesChanged")
+
+        self.bus.add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
+                                     path = self.object_path,signal_name = "StateChanged")
 
 
     def get_devices(self):

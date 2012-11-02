@@ -40,8 +40,12 @@ class NMRemoteConnection(NMObject, NMConnection):
     def __init__(self, object_path):
         NMConnection.__init__(self)
         NMObject.__init__(self, object_path, "org.freedesktop.NetworkManager.Settings.Connection")
-        self.bus.add_signal_receiver(self.removed_cb, dbus_interface = self.object_interface, signal_name = "Removed")
-        self.bus.add_signal_receiver(self.updated_cb, dbus_interface = self.object_interface, signal_name = "Updated")
+
+        self.bus.add_signal_receiver(self.removed_cb, dbus_interface = self.object_interface,
+                                     path = self.object_path, signal_name = "Removed")
+
+        self.bus.add_signal_receiver(self.updated_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "Updated")
 
         # self.settings_dict = self.get_settings()
         self.init_settings_prop_dict()

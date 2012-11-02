@@ -42,9 +42,14 @@ class NMDeviceWifi(NMDevice):
         NMDevice.__init__(self, wifi_device_object_path, "org.freedesktop.NetworkManager.Device.Wireless")
         self.prop_list = ["HwAddress", "PermHwAddress", "Mode", "Bitrate", "ActiveAccessPoint", "WirelessCapabilities"]
 
-        self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface, signal_name = "AccessPointAdded")
-        self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, signal_name = "AccessPointRemoved")
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
+        self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface,
+                                     path = self.object_path, signal_name = "AccessPointAdded")
+
+        self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "AccessPointRemoved")
+
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertiesChanged")
 
         self.init_nmobject_with_properties()
         self.origin_ap_list = self.get_access_points()
