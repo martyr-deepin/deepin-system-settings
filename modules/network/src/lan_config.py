@@ -29,6 +29,7 @@ from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox
 from wired import *
 from widgets import SettingButton
+from nmlib.nm_utils import TypeConvert
 import gtk
 
 from nmutils.nmsetting_802_1x import NMSetting8021x
@@ -173,6 +174,9 @@ class Sidebar(gtk.VBox):
         #btn.set_size(160)
         self.buttonbox.pack_start(btn, False, False,6)
 
+        active_connection = wired_device.get_active_connection()
+        if active_connection:
+            active = active_connection.get_connection()
         for index,c in enumerate(self.cons[1:]):
             button = SettingButton(btn, c, self.ipv4_setting[index + 1], self.sidebar_callback)
             #button.set_size(160)

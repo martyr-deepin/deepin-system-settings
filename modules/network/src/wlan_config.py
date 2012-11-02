@@ -121,6 +121,7 @@ class WirelessSetting(gtk.HBox):
     def save_changes(self, widget):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
+        self.wireless.save_change()
         self.security.save_setting()
         wlan = cache.get_spec_object(wireless_device.object_path)
         wlan.emit("try-ssid-begin", self.ap)
@@ -188,6 +189,7 @@ class Sidebar(gtk.VBox):
         else: 
             active =None
         if self.cons != None and self.ipv4_setting != None: 
+            # TODO must simplify this code 
             if isinstance(self.cons[-1], int):
                 self.split = self.cons.pop()
 
@@ -829,13 +831,14 @@ class Wireless(gtk.VBox):
         self.mode_label = Label("Mode:")
         self.mode_combo = gtk.combo_box_new_text()
         map(lambda s: self.mode_combo.append_text(s), ["Infrastructure", "Ad-hoc"])
+        
+        # TODO need to put this section to personal wifi
+        #self.band_label = Label("Band:")
+        #self.band_combo = gtk.combo_box_new_text()
+        #map(lambda s: self.band_combo.append_text(s), ["Automatic", "a (5 GHZ)", "b/g (2.4)"])
 
-        self.band_label = Label("Band:")
-        self.band_combo = gtk.combo_box_new_text()
-        map(lambda s: self.band_combo.append_text(s), ["Automatic", "a (5 GHZ)", "b/g (2.4)"])
-
-        self.channel_label = Label("Channel:")
-        self.channel_spin = SpinBox(0, 0, 1500, 1, 55)
+        #self.channel_label = Label("Channel:")
+        #self.channel_spin = SpinBox(0, 0, 1500, 1, 55)
         # BSSID
         self.bssid_label = Label("BSSID:")
         self.bssid_entry = gtk.Entry()
@@ -858,16 +861,16 @@ class Wireless(gtk.VBox):
         table.attach(self.mode_label, 0, 1, 1, 2)
         table.attach(self.mode_combo, 1, 2, 1, 2)
         #Band
-        table.attach(self.band_label, 0, 1, 2, 3)
-        table.attach(self.band_combo, 1, 2, 2, 3)
+        #table.attach(self.band_label, 0, 1, 2, 3)
+        #table.attach(self.band_combo, 1, 2, 2, 3)
 
         #self.band_label.set_no_show_all(True)
         #self.band_combo.set_no_show_all(True)
         #self.band_label.hide()
         #self.band_combo.hide()
         # Channel
-        table.attach(self.channel_label, 0, 1, 3, 4)
-        table.attach(self.channel_spin, 1, 2, 3, 4)
+        #table.attach(self.channel_label, 0, 1, 3, 4)
+        #table.attach(self.channel_spin, 1, 2, 3, 4)
         #self.channel_label.set_no_show_all(True)
         #self.channel_spin.set_no_show_all(True)
 
@@ -923,7 +926,9 @@ class Wireless(gtk.VBox):
     def save_change(self):
 
         self.wireless.ssid = self.ssid_entry.get_text()
-        self.wireless.mode = self.mode_combo.get_current_item()[0]
+        model = self.mode_combo.get_model()
+        active = self.mode_combo.get_active()
+        self.wireless.mode = model[active][0]
         self.wireless.bssid = self.bssid_entry.get_text()
         self.wireless.mac_address = self.mac_entry.get_text()
         self.wireless.cloned_mac_address = self.clone_entry.get_text()
