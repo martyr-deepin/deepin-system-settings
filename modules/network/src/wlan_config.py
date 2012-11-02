@@ -693,7 +693,6 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo, 1, 4, 0, 1)
 
         (setting_name, method) = self.connection.guess_secret_info() 
-        print setting_name, method
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
@@ -740,7 +739,7 @@ class Security(gtk.VBox):
                 #auth = "open"
 
             self.key_entry.set_text(key)
-            self.wep_index_spin.get_value(index)
+            self.wep_index_spin.set_value(index)
             self.auth_combo.set_active(["open", "shared"].index(auth))
 
         self.table.show_all()
@@ -791,25 +790,17 @@ class Security(gtk.VBox):
                 self.setting.auth_alg = "shared"
 
         # Update
-        print self.setting.prop_dict
-        #from nmlib.nm_utils import TypeConvert
         
         self.setting.adapt_wireless_security_commit()
         self.connection.update()
-        #device_wifi = cache.get_spec_object(wireless_device.object_path)
-        #setting = self.connection.get_setting("802-11-wireless")
-        #ssid = setting.ssid
-        #ap = device_wifi.get_ap_by_ssid(ssid)
+        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        setting = self.connection.get_setting("802-11-wireless")
+        ssid = setting.ssid
+        ap = device_wifi.get_ap_by_ssid(ssid)
 
-
-
-        #wlan = cache.get_spec_object(wireless_device.object_path)
-        ##wlan.emit("try-ssid-begin", ap)
-
-        #nmclient.activate_connection_async(self.connection.object_path,
-                                   #wireless_device.object_path,
-                                   #ap.object_path)
-        #print self.connection.get_setting("connection").id
+        nmclient.activate_connection_async(self.connection.object_path,
+                                   wireless_device.object_path,
+                                   ap.object_path)
 
 
 class Wireless(gtk.VBox):
