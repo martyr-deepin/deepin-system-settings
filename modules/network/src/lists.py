@@ -165,7 +165,7 @@ class WirelessItem(TreeItem):
         return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height()+ self.VERTICAL_PADDING*2
         
     def select(self):
-        print "select"
+        #print "select"
         self.is_select = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
@@ -180,7 +180,7 @@ class WirelessItem(TreeItem):
         return self.is_select
 
     def unselect(self):
-        print "unselect"
+        #print "unselect"
         self.is_select = False
         if self.redraw_request_callback:
             self.redraw_request_callback(self)

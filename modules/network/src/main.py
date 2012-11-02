@@ -105,6 +105,8 @@ class WiredSection(gtk.VBox):
 class Wireless(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
+
+        nmclient.wireless_set_enabled(True)
         self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
         self.send_to_crumb_cb = send_to_crumb_cb
         self.device_wifi = cache.get_spec_object(wireless_device.object_path)
@@ -142,7 +144,6 @@ class Wireless(gtk.VBox):
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active: 
-            nmclient.wireless_set_enabled(True)
             ap_list = self.retrieve_list()
             item_list = ap_list[0]
             index = ap_list[1]
@@ -189,7 +190,6 @@ class Wireless(gtk.VBox):
         return [items, index]
 
     def try_to_connect(self, widget, ap_object):
-        print "trying"
         index = self.ap_list.index(ap_object)
         self.tree.visible_items[index].network_state = 1
         self.tree.queue_draw()
@@ -202,10 +202,10 @@ class Wireless(gtk.VBox):
         self.tree.queue_draw()
     
     def device_is_deactive(self, widget, reason):
-        print "deative"
-        if self.tree.visible_items != []:
-            self.tree.visible_items[self.index].network_state = 0
-            self.tree.queue_draw()
+        if not reason == 0:
+            if self.tree.visible_items != []:
+                self.tree.visible_items[self.index].network_state = 0
+                self.tree.queue_draw()
     #def try_to_connect_end(self, widget, ap_object):
         #pass
         #print ap_object.get_ssid(),"end"

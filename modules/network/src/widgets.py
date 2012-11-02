@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 from theme import app_theme
-from dtk.ui.button import ImageButton, ToggleButton
+from dtk.ui.button import ImageButton, ToggleButton, Button
 from dtk.ui.dialog import DialogBox
-from dtk.ui.entry import Entry
+from dtk.ui.entry import Entry, InputEntry
 from dtk.ui.theme import ui_theme
 from dtk.ui.utils import color_hex_to_cairo, alpha_color_hex_to_cairo, cairo_disable_antialias, container_remove_all, is_single_click, is_double_click
 
+from dtk.ui.locales import _
+from dtk.ui.label import Label
 import gtk
-
+DIALOG_MASK_SINGLE_PAGE = 0
+DIALOG_MASK_GLASS_PAGE = 1
+DIALOG_MASK_MULTIPLE_PAGE = 2
+DIALOG_MASK_TAB_PAGE = 3
 class AskPasswordDialog(DialogBox):
     '''
     Simple input dialog.
@@ -19,6 +24,7 @@ class AskPasswordDialog(DialogBox):
 	
     def __init__(self, 
                  title, 
+                 ssid,
                  init_text, 
                  default_width=330,
                  default_height=145,
@@ -39,6 +45,12 @@ class AskPasswordDialog(DialogBox):
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
         
+        self.hint_align = gtk.Alignment()
+        self.hint_align.set(0.5, 0.5, 0, 0)
+        self.hint_align.set_padding(0, 0, 8, 8)
+        self.hint_text = Label("Please input password for %s :"%ssid)
+        self.hint_align.add(self.hint_text)
+
         self.entry_align = gtk.Alignment()
         self.entry_align.set(0.5, 0.5, 0, 0)
         self.entry_align.set_padding(0, 0, 8, 8)
@@ -52,6 +64,7 @@ class AskPasswordDialog(DialogBox):
         self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
         
         self.entry_align.add(self.entry)
+        self.body_box.pack_start(self.hint_align, True, True)
         self.body_box.pack_start(self.entry_align, True, True)
         
         self.right_button_box.set_buttons([self.confirm_button, self.cancel_button])
@@ -279,8 +292,10 @@ if __name__ == "__main__":
     align = gtk.Alignment(1 , 1, 0,0)
     vbox = gtk.VBox()
 
-    my_button = SettingButton("another setting")
-    my_button.set_size(200)
+    #my_button = SettingButton("another setting")
+    my_button = gtk.Button("click")
+    my_button.connect("clicked", lambda w: AskPasswordDialog("test","DeepinWork" ,"").show_all())
+    my_button.set_size_request(200, 200)
     align.add(my_button)
     win.add(align)
 
