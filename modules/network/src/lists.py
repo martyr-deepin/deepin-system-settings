@@ -230,12 +230,19 @@ class WiredItem(TreeItem):
     def render_check(self, cr, rect):
         render_background(cr, rect)
 
-        if self.is_select:
-            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
-        else:
-            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+        #if self.is_select:
+            #check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        #else:
+            #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
 
-        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + self.VERTICAL_PADDING)
+        if self.network_state == 0:
+            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+        elif self.network_state == 1:
+            check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
+        else:
+            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+
+        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)

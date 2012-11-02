@@ -41,6 +41,7 @@ class WiredSection(gtk.VBox):
         self.device_ethernet = cache.get_spec_object(wired_device.object_path)
         wired_device.connect("device-active", self.device_activate)
         wired_device.connect("device-deactive", self.device_deactive)
+        self.device_ethernet.connect("try-activate-begin", self.try_activate_begin)
         #wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
         self.settings = None
         self.pack_start(self.wire, False, False)
@@ -71,7 +72,10 @@ class WiredSection(gtk.VBox):
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
             
             if self.active_one >= 0:
-                self.tree.visible_items[self.active_one].is_select = True
+                self.tree.visible_items[self.active_one].network_state = 2
+            else:
+                self.tree.visible_items[0].network_state = 0
+
             self.show_all()
         else:
             self.tree.add_items([],0,True)
@@ -94,13 +98,21 @@ class WiredSection(gtk.VBox):
                           self.send_to_crumb_cb)]
 
     def device_activate(self, widget ,reason):
-        self.tree.visible_items[0].is_select = True
+        self.tree.visible_items[0].network_state = 2
         self.queue_draw()
 
     def device_deactive(self, widget, reason):
-        if self.tree.visible_items != []:
-            self.tree.visible_items[0].is_select = False
-            self.queue_draw()
+        if not reason == 0:
+            if self.tree.visible_items != []:
+                self.tree.visible_items[0].network_state = 0
+                self.queue_draw()
+
+    def try_activate_begin(self, widget):
+        self.tree.visible_items[0].network_state = 1
+        self.queue_draw()
+
+         
+        
 
 class Wireless(gtk.VBox):
     def __init__(self, send_to_crumb_cb):

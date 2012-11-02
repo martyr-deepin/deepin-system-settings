@@ -117,6 +117,9 @@ class WiredSetting(gtk.HBox):
         self.ipv6.save_changes()
 
         #self.slide.slide_to_page(self.slide.layout.get_children()[0], "left")
+
+        self.device_ethernet = cache.get_spec_object(wired_device.object_path)
+        self.device_ethernet.emit("try-activate-begin")
         self.change_crumb()
         self.slide_back_cb()
         
@@ -187,6 +190,10 @@ class Sidebar(gtk.VBox):
         for index, c in enumerate(self.cons):
             if active !=None and c.get_setting("connection").id == active.get_setting("connection").id:
                 self.buttonbox.get_children()[index].check.set_active(True)
+            else:
+                self.buttonbox.get_children()[0].check.set_active(True)
+
+
 
 
     def add_new_setting(self, widget):
@@ -404,8 +411,13 @@ class IPV4Conf(gtk.VBox):
                 connection.add_dns(self.master_entry.get_text())
             if not self.slave_entry.get_text() == "":
                 connection.add_dns(self.slave_entry.get_text())
+        
         connection.adapt_ip4config_commit()
         self.connection.update()
+
+        nmclient.activate_connection_async(self.connection.object_path,
+                                           wired_device.object_path,
+                                           "/")
 
 class IPV6Conf(gtk.VBox):
 
