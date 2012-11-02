@@ -177,6 +177,8 @@ class Sidebar(gtk.VBox):
         active_connection = wired_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
+        else:
+            active = None
         for index,c in enumerate(self.cons[1:]):
             button = SettingButton(btn, c, self.ipv4_setting[index + 1], self.sidebar_callback)
             #button.set_size(160)
