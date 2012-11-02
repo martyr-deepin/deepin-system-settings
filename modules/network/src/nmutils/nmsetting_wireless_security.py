@@ -283,7 +283,7 @@ class NMSettingWirelessSecurity (NMSetting):
         return True        
 
     def adapt_wireless_security_commit(self):
-        if self.prop_dict["key-mamt"] == "none":
+        if self.prop_dict["key-mgmt"] == "none":
             self.adapt_wep_commit()
         elif self.prop_dict["key-mgmt"] == "ieee8021x" and self.prop_dict["auth-alg"] == "leap":
             self.adapt_leap_commit()
