@@ -90,7 +90,10 @@ class NMDeviceWifi(NMDevice):
         if cache.getobject(self.object_path).get_state() < 30:
             return False
         # wireless_connections = nm_remote_settings.get_wireless_connections()
-        wireless_connections = sorted(nm_remote_settings.get_wireless_connections(), key = lambda x:x.succeed_flag)
+        # wireless_connections = sorted(nm_remote_settings.get_wireless_connections(), key = lambda x:x.succeed_flag)
+        from nm_secret_agent import secret_agent
+        wireless_connections = sorted(nm_remote_settings.get_wireless_connections(),
+                                      key = lambda x:secret_agent.get_conn_priority(x.object_path))
 
         if len(wireless_connections) != 0:
             for conn in wireless_connections:

@@ -27,6 +27,7 @@ from nm_utils import TypeConvert
 # from nm_active_connection import NMActiveConnection
 import traceback
 from nmcache import cache
+from nm_secret_agent import secret_agent
 
 class NMClient(NMObject):
     '''NMClient'''
@@ -84,10 +85,12 @@ class NMClient(NMObject):
             if active:
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
+                # secret_agent.increase_conn_priority(connection_path)
                 return cache.getobject(active)
             else:
                 self.emit("activate-failed", connection_path)
                 cache.getobject(connection_path).succeed_flag += 1
+                # secret_agent.decrease_conn_priority(connection_path)
         except:
             traceback.print_exc()
 
@@ -98,9 +101,11 @@ class NMClient(NMObject):
             if active:
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
+                # secret_agent.increase_conn_priority(connection_path)
             else:
                 self.emit("activate-failed", connection_path)
                 cache.getobject(connection_path).succeed_flag += 1
+                # secret_agent.decrease_conn_priority(connection_path)
         except:
             traceback.print_exc()
 
@@ -109,6 +114,7 @@ class NMClient(NMObject):
             active = cache.getobject(active_path)
             self.emit("activate-succeed", active.get_connection().object_path)
             active.get_connection().succeed_flag -= 2
+            # secret_agent.increase_conn_priority(active.get_connection().object_path)
             return active
     
     def activate_error(self, *error):
@@ -120,10 +126,12 @@ class NMClient(NMObject):
             if active:
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
+                # secret_agent.increase_conn_priority(connection_path)
                 return cache.getobject(active)
             else:
                 self.emit("activate-failed", connection_path)
                 cache.getobject(connection_path).succeed_flag += 1
+                # secret_agent.decrease_conn_priority(connection_path)
         except:
             traceback.print_exc()
 
@@ -140,6 +148,7 @@ class NMClient(NMObject):
             active = cache.getobject(active_path)
             self.emit("activate-succeed", active.get_connection().object_path)
             active.get_connection().succeed_flag -= 2
+            # secret_agent.increase_conn_priority(active.get_connection().object_path)
             return active
 
     def add_activate_error(self, *error):
