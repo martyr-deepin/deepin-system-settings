@@ -75,14 +75,11 @@ class WirelessItem(TreeItem):
         if self.network_state == self.NETWORK_DISCONNECT:
             check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
         elif self.network_state == self.NETWORK_LOADING:
-            #check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
-            path = get_parent_dir(__file__, 2) + "/theme/dark_grey/image/Network/loading.gif"
-            #print path
-            check_icon = gtk.gdk.PixbufAnimation(path).get_iter(0.0).get_pixbuf()
+            check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
 
-        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + self.VERTICAL_PADDING)
+        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
 
         #draw outline
         with cairo_disable_antialias(cr):
@@ -321,6 +318,116 @@ class WiredItem(TreeItem):
             self.redraw_request_callback(self)
         
 
+class DSLItem(TreeItem):
+    CHECK_LEFT_PADDING = 10
+    CHECK_RIGHT_PADIING = 10
+    JUMPTO_RIGHT_PADDING = 10
+    VERTICAL_PADDING = 5
+
+    def __init__(self, essid, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
+        
+        TreeItem.__init__(self)
+        self.slide_to_setting = slide_to_setting_cb
+        self.essid = essid
+        self.items = None
+        self.setting = setting
+        self.is_last = False
+        self.send_to_crumb = send_to_crumb
+        self.font_size = font_size
+        self.check_width = self.get_check_width()
+        self.essid_width = self.get_essid_width(essid)
+        self.jumpto_width = self.get_jumpto_width()
+
+    def render_check(self, cr, rect):
+        render_background(cr, rect)
+
+        if self.is_select:
+            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        else:
+            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+
+        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + self.VERTICAL_PADDING)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x , rect.y, 1, rect.height)
+            cr.fill()
+
+
+    def render_essid(self, cr, rect):
+        render_background(cr, rect)
+        (text_width, text_height) = get_content_size(self.essid)
+        if self.is_select:
+            text_color = None
+        draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def render_jumpto(self, cr, rect):
+
+        render_background(cr, rect)
+        if self.is_select:
+            pass
+        jumpto_icon = app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf()
+        draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
+            cr.fill()
+
+    def get_check_width(self):
+        check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
+    def get_essid_width(self, essid):
+        return get_content_size(essid)[0]
+    
+    def get_jumpto_width(self):
+        return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+
+    def get_column_widths(self):
+        return [self.check_width, -1,self.jumpto_width]
+
+    def get_column_renders(self):
+        return [self.render_check, self.render_essid, self.render_jumpto]
+
+    def get_height(self):
+        return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        
+    def unselect(self):
+        self.is_select = False
+        
+    def hover(self, column, offset_x, offset_y):
+        pass
+
+    def unhover(self, column, offset_x, offset_y):
+        #print column, offset_x, offset_y
+        pass
+
+    def single_click(self, column, x, y):
+        #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
+            #self.is_select = not self.is_select
+        if column == 2:
+            if not isinstance(self.setting.ipv4, NoSetting):
+                self.setting.ipv4.reset(self.setting.ipv4.connection)
+            self.slide_to_setting()
+            self.send_to_crumb()
+
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+        
 if __name__=="__main__":
 
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

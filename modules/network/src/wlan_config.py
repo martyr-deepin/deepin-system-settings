@@ -637,9 +637,11 @@ class Security(gtk.VBox):
         map(lambda s: self.security_combo.append_text(s), self.encry_list)
         self.security_combo.connect("changed", self.changed_cb)
         self.key_entry = InputEntry()
+        self.key_entry.entry.connect("press-return", self.check_wep_validation)
         self.key_entry.set_size(200, 50)
         self.password_entry = InputEntry()
         self.password_entry.set_size(200, 50)
+        self.password_entry.entry.connect("press-return", self.check_wpa_validate)
         self.show_key_check = CheckButton("Show key")
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
         self.wep_index_spin = SpinBox(0, 0,3,1 ,55 )
@@ -668,24 +670,42 @@ class Security(gtk.VBox):
         align.add(self.table)
         self.add(align)
 
+    def check_wpa_validate(self, widget):
+        text = widget.get_text()
+        if self.setting.verify_wpa_psk(text):
+            print "valid"
+        else:
+            print "invalid"
+
+    def check_wep_validation(self, widget):
+        key = widget.get_text()
+        print key, self.setting.wep_key_type
+        active = self.security_combo.get_active()
+        if self.setting.verify_wep_key(key, 1):
+            print "valid"
+        else:
+            print "invalid"
 
     def reset(self, secret = False):
         ## Add security
         container_remove_all(self.table)
         self.table.attach(self.security_label, 0, 1, 0, 1)
         self.table.attach(self.security_combo, 1, 4, 0, 1)
+
+        (setting_name, method) = self.connection.guess_secret_info() 
+        print setting_name, method
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
-                secret = secret_agent.agent_get_secrets(self.connection.object_path,
-                                                       "802-11-wireless-security",
-                                                       "psk")
-            except:
-                try:
-                    secret = self.connection.get_secrets("802-11-wireless-security")["802-11-wireless-security"]["psk"]
-                except:
 
-                    secret = ""
+                secret = secret_agent.agent_get_secrets(self.connection.object_path,
+                                                       setting_name,
+                                                       method)
+            except:
+                #try:
+                    #secret = self.connection.get_secrets("802-11-wireless-security")["802-11-wireless-security"]["psk"]
+                #except:
+                secret = ""
 
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
@@ -710,19 +730,18 @@ class Security(gtk.VBox):
             #table_wpa.attach(show_key_check, 1, 4, 2, 3 )
 
             # Retrieve wep properties
-            setting = self.connection.get_setting("802-11-wireless-security")
-            try:
-                key = secret["802-11-wireless-security"]["wep-key0"]
-                self.key_entry.set_text(key)
-                index = setting.wep_tx_keyidx
-                auth = setting.auth_alg
-                self.wep_index_spin.set_value(index)
-                self.auth_combo.set_active(['open', 'shared'].index(auth))
+            #try:
+            key = secret
+            index = self.setting.wep_tx_keyidx
+            auth = self.setting.auth_alg
+            #except:
+                #key = ""
+                #index = 0
+                #auth = "open"
 
-            except:
-                self.key_entry.set_text("")
-                self.wep_index_spin.set_value(0)
-                self.auth_combo.set_active(0)
+            self.key_entry.set_text(key)
+            self.wep_index_spin.get_value(index)
+            self.auth_combo.set_active(["open", "shared"].index(auth))
 
         self.table.show_all()
         #if secret:
@@ -736,13 +755,12 @@ class Security(gtk.VBox):
         self.reset(True)
 
     def wep_index_spin_cb(self, widget, value):
-        secret = self.connection.get_secrets("802-11-wireless-security")
-        try:
-            key = secret["802-11-wireless-security"]["wep-key%d"%value]
-        except:
+        key = secret_agent.agent_get_secrets(self.connection.object_path,
+                                                   "802-11-wireless-security",
+                                                   "wep-key%d"%value)
+
+        if key == None:
             key = ''
-        #key = self.setting.get_wep_key(value)
-        #print key
         self.key_entry.set_text(key)
         #self.key_entry.queue_draw()
 
@@ -757,28 +775,40 @@ class Security(gtk.VBox):
             self.setting.key_mgmt = key_mgmt
 
             self.setting.psk = passwd
-        elif active == 1:
+        else:
             passwd = self.key_entry.get_text()
             index = self.wep_index_spin.get_value()
-            key_mgmt = "wep04"
+            key_mgmt = "none"
+            auth_active = self.auth_combo.get_active()
+
+            self.setting.key_mgmt = key_mgmt
+            self.setting.wep_key_type = active
+            self.setting.set_wep_key(index, passwd)
+            self.setting.wep_tx_keyidx = index
+            if auth_active == 0:
+                self.setting.auth_alg = "open"
+            else:
+                self.setting.auth_alg = "shared"
+
         # Update
         print self.setting.prop_dict
-        #self.setting.adapt_wireless_security_commit()
         #from nmlib.nm_utils import TypeConvert
+        
+        self.setting.adapt_wireless_security_commit()
         self.connection.update()
-        device_wifi = cache.get_spec_object(wireless_device.object_path)
-        setting = self.connection.get_setting("802-11-wireless")
-        ssid = setting.ssid
-        ap = device_wifi.get_ap_by_ssid(ssid)
+        #device_wifi = cache.get_spec_object(wireless_device.object_path)
+        #setting = self.connection.get_setting("802-11-wireless")
+        #ssid = setting.ssid
+        #ap = device_wifi.get_ap_by_ssid(ssid)
 
 
 
-        wlan = cache.get_spec_object(wireless_device.object_path)
-        wlan.emit("try-ssid-begin", ap)
+        #wlan = cache.get_spec_object(wireless_device.object_path)
+        ##wlan.emit("try-ssid-begin", ap)
 
-        nmclient.activate_connection_async(self.connection.object_path,
-                                   wireless_device.object_path,
-                                   ap.object_path)
+        #nmclient.activate_connection_async(self.connection.object_path,
+                                   #wireless_device.object_path,
+                                   #ap.object_path)
         #print self.connection.get_setting("connection").id
 
 

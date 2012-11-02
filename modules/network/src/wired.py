@@ -26,4 +26,6 @@ from nmlib.nm_remote_settings import nm_remote_settings
 from nmlib.nmcache import cache
 from nmlib.nm_secret_agent import secret_agent
 wired_device = nmclient.get_wired_devices()[0]
-wireless_device = nmclient.get_wireless_devices()[0]
+if nmclient.get_wireless_devices() != []:
+    wireless_device = nmclient.get_wireless_devices()[0]
+#wireless_device = []

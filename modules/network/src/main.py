@@ -248,9 +248,34 @@ class DSL(gtk.VBox):
         gtk.VBox.__init__(self)
         dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
         self.pack_start(dsl, False, False)
+        pppoe_connections =  nm_remote_settings.get_pppoe_connections()
 
     def toggle_cb(self, widget):
-        pass
+        if widget.get_active():
+            t = self.retrieve_list()
+            self.tree.add_items(t,0,True)
+            self.tree.visible_items[-1].is_last = True
+            self.tree.set_no_show_all(False)
+            self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+            
+            if self.active_one >= 0:
+                self.tree.visible_items[self.active_one].is_select = True
+            self.show_all()
+        else:
+            self.tree.add_items([],0,True)
+            self.tree.hide()
+            wired_device.nm_device_disconnect()
+            #self.h.get_children()[1].destroy()
+
+    def retrieve_list(self):
+        """
+        retrieve network lists, will use thread
+        """
+        # TODO not finish yet
+        return [WiredItem(wired_device.get_device_desc(),
+                          self.settings, 
+                          lambda : slider.slide_to_page(self.settings, "right"),
+                          self.send_to_crumb_cb)]
 
 class VpnSection(gtk.VBox):
     def __init__(self):
@@ -353,8 +378,8 @@ class Proxy(gtk.VBox):
 if __name__ == '__main__':
 
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-    
-    wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+    if wireless_device != []: 
+        wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
     wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
     wifi = WifiSection()
     dsl = DSL()
@@ -364,8 +389,9 @@ if __name__ == '__main__':
 
     vbox = gtk.VBox(False, 17)
     vbox.pack_start(wired, False, True,5)
-    vbox.pack_start(wireless, False, True, 0)
-    vbox.pack_start(wifi, False, True, 0)
+    if wireless_device != []: 
+        vbox.pack_start(wireless, False, True, 0)
+    #vbox.pack_start(wifi, False, True, 0)
     vbox.pack_start(dsl, False, True, 0)
     vbox.pack_start(mobile, False, True, 0)
     vbox.pack_start(vpn, False, True, 0)
@@ -383,14 +409,15 @@ if __name__ == '__main__':
     wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"),
                                       lambda  : module_frame.send_message("change_crumb", 1))
     wired.add_setting_page(wired_setting_page)
-    wireless_setting_page = WirelessSetting(None, lambda :slider.slide_to_page(main_align, "left"),
+    if wireless_device != []: 
+        wireless_setting_page = WirelessSetting(None, lambda :slider.slide_to_page(main_align, "left"),
                                                   lambda : module_frame.send_message("change_crumb", 1))
-
-    wireless.add_setting_page(wireless_setting_page)
+        wireless.add_setting_page(wireless_setting_page)
 
     slider.append_page(main_align)
     slider.append_page(wired_setting_page)
-    slider.append_page(wireless_setting_page)
+    if wireless_device != []: 
+        slider.append_page(wireless_setting_page)
 
     module_frame.add(slider)
     
