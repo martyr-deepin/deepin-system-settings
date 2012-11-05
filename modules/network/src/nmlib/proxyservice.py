@@ -229,7 +229,7 @@ class ProxyService(dbus.service.Object):
         
         """
         if not authWithPolicyKit(sender, conn, 
-                                 "com.ubuntu.systemservice.setproxy"):
+                                 "com.linuxdeepin.proxyservice.setproxy"):
             if not authWithPolicyKit(sender, conn,
                                      "org.gnome.gconf.defaults.set-system"):
                 raise PermissionDeniedError, "Permission denied by policy"
@@ -291,7 +291,7 @@ class ProxyService(dbus.service.Object):
         
         """
         if not authWithPolicyKit(sender, conn, 
-                                 "com.ubuntu.systemservice.setnoproxy"):
+                                 "com.linuxdeepin.proxyservice.setnoproxy"):
             if not authWithPolicyKit(sender, conn,
                                      "org.gnome.gconf.defaults.set-system"):
                 raise PermissionDeniedError, "Permission denied by policy"
