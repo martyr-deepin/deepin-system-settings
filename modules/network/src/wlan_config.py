@@ -121,7 +121,7 @@ class WirelessSetting(gtk.HBox):
     def save_changes(self, widget):
         self.ipv4.save_changes()
         self.ipv6.save_changes()
-        self.wireless.save_change()
+        #self.wireless.save_change()
         self.security.save_setting()
         wlan = cache.get_spec_object(wireless_device.object_path)
         wlan.emit("try-ssid-begin", self.ap)
@@ -717,14 +717,10 @@ class Security(gtk.VBox):
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
-
                 secret = secret_agent.agent_get_secrets(self.connection.object_path,
-                                                       setting_name,
-                                                       method)
+                                                        setting_name,
+                                                        method)
             except:
-                #try:
-                    #secret = self.connection.get_secrets("802-11-wireless-security")["802-11-wireless-security"]["psk"]
-                #except:
                 secret = ""
 
         if self.security_combo.get_active() == 3:
@@ -751,9 +747,17 @@ class Security(gtk.VBox):
 
             # Retrieve wep properties
             #try:
-            key = secret
-            index = self.setting.wep_tx_keyidx
-            auth = self.setting.auth_alg
+            try:
+                key = secret
+                index = self.setting.wep_tx_keyidx
+                auth = self.setting.auth_alg
+                self.auth_combo.set_active(["open", "shared"].index(auth))
+            except:
+                key = ""
+                index = 0
+                auth = "open"
+            # must convert long int to int 
+            index = int(index)
             self.key_entry.set_text(key)
             self.wep_index_spin.set_value(index)
             self.auth_combo.set_active(["open", "shared"].index(auth))
@@ -813,6 +817,7 @@ class Security(gtk.VBox):
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
+        # Activate
         nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)

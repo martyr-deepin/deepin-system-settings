@@ -22,6 +22,7 @@ from lists import WiredItem, WirelessItem
 
 from lan_config import WiredSetting
 from wlan_config import WirelessSetting
+from dsl_config import DSLSetting
 
 from nmlib.nmobject import dbus_loop
 from wired import *
@@ -260,38 +261,73 @@ class WifiSection(gtk.VBox):
 
 class DSL(gtk.VBox):
 
-    def __init__(self):
+    def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
+        self.slide_to_setting = slide_to_setting_cb
+        self.setting_page = None
         dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
         self.pack_start(dsl, False, False)
         pppoe_connections =  nm_remote_settings.get_pppoe_connections()
 
+
     def toggle_cb(self, widget):
-        if widget.get_active():
-            t = self.retrieve_list()
-            self.tree.add_items(t,0,True)
-            self.tree.visible_items[-1].is_last = True
-            self.tree.set_no_show_all(False)
-            self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-            
-            if self.active_one >= 0:
-                self.tree.visible_items[self.active_one].is_select = True
+        active = widget.get_active()
+        if active:
+            self.align = gtk.Alignment(0,0,0,0)
+            self.align.set_padding(0,0,PADDING,11)
+            label = Label("DSL setting", ui_theme.get_color("link_text"))
+            label.connect("button-release-event", self.slide_to_event)
+
+            self.align.add(label)
+            self.align.connect("expose-event", self.expose_event)
+            self.add(self.align)
             self.show_all()
         else:
-            self.tree.add_items([],0,True)
-            self.tree.hide()
-            wired_device.nm_device_disconnect()
-            #self.h.get_children()[1].destroy()
+            self.align.destroy()
 
-    def retrieve_list(self):
-        """
-        retrieve network lists, will use thread
-        """
-        # TODO not finish yet
-        return [WiredItem(wired_device.get_device_desc(),
-                          self.settings, 
-                          lambda : slider.slide_to_page(self.settings, "right"),
-                          self.send_to_crumb_cb)]
+    def add_setting_page(self, setting_page):
+        self.setting_page = setting_page
+
+
+
+    def slide_to_event(self, widget, event):
+        self.setting_page.init()
+        self.slide_to_setting()
+        slider.slide_to_page(self.setting_page, "right")
+
+
+    def expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.child.allocation
+        cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
+        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
+    #def toggle_cb(self, widget):
+        #if widget.get_active():
+            #t = self.retrieve_list()
+            #self.tree.add_items(t,0,True)
+            #self.tree.visible_items[-1].is_last = True
+            #self.tree.set_no_show_all(False)
+            #self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+            
+            #if self.active_one >= 0:
+                #self.tree.visible_items[self.active_one].is_select = True
+            #self.show_all()
+        #else:
+            #self.tree.add_items([],0,True)
+            #self.tree.hide()
+            #wired_device.nm_device_disconnect()
+            ##self.h.get_children()[1].destroy()
+
+    #def retrieve_list(self):
+        #"""
+        #retrieve network lists, will use thread
+        #"""
+        ## TODO not finish yet
+
+        #return [WiredItem(wired_device.get_device_desc(),
+                          #self.settings, 
+                          #lambda : slider.slide_to_page(self.settings, "right"),
+                          #self.send_to_crumb_cb)]
 
 class VpnSection(gtk.VBox):
     def __init__(self):
@@ -400,7 +436,7 @@ if __name__ == '__main__':
 
     wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
     wifi = WifiSection()
-    #dsl = DSL()
+    dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
     vpn = VpnSection()
     mobile = ThreeG()
     proxy = Proxy()
@@ -409,8 +445,7 @@ if __name__ == '__main__':
     vbox.pack_start(wired, False, True,5)
     if wireless_device != []: 
         vbox.pack_start(wireless, False, True, 0)
-    #vbox.pack_start(wifi, False, True, 0)
-    #vbox.pack_start(dsl, False, True, 0)
+    vbox.pack_start(dsl, False, True, 0)
     vbox.pack_start(mobile, False, True, 0)
     vbox.pack_start(vpn, False, True, 0)
     vbox.pack_start(proxy, False, True, 0)
@@ -427,8 +462,13 @@ if __name__ == '__main__':
                                       lambda  : module_frame.send_message("change_crumb", 1))
     wired.add_setting_page(wired_setting_page)
 
+    dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(main_align, "left"),
+                                      lambda  : module_frame.send_message("change_crumb", 1))
+    dsl.add_setting_page(dsl_setting_page)
+
     slider.append_page(main_align)
     slider.append_page(wired_setting_page)
+    slider.append_page(dsl_setting_page)
     if wireless_device != []: 
         slider.append_page(wireless_setting_page)
 

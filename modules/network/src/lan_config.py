@@ -172,7 +172,7 @@ class Sidebar(gtk.VBox):
         self.pack_start(add_button, False, False, 6)
 
     def refresh(self):
-        
+
         btn = SettingButton(None, self.cons[0], self.ipv4_setting[0], self.sidebar_callback)
         #btn.set_size(160)
         self.buttonbox.pack_start(btn, False, False,6)
