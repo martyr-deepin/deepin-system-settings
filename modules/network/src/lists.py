@@ -316,8 +316,7 @@ class WiredItem(TreeItem):
         #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
             #self.is_select = not self.is_select
         if column == 2:
-            if not isinstance(self.setting.ipv4, NoSetting):
-                self.setting.ipv4.reset(self.setting.ipv4.connection)
+            self.setting.init()
             self.slide_to_setting()
             self.send_to_crumb()
 

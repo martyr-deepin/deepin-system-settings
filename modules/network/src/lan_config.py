@@ -32,7 +32,6 @@ from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
 import gtk
 
-from nmutils.nmsetting_802_1x import NMSetting8021x
 active_connection = wired_device.get_active_connection()
 if active_connection:
     active = active_connection.get_connection()
@@ -43,86 +42,34 @@ class WiredSetting(gtk.HBox):
 
     def __init__(self, slide_back_cb, change_crumb_cb):
         gtk.HBox.__init__(self)
-        self.slide_back_cb = slide_back_cb
+        self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
-        #self.tab_window.set_size_request(585,-1)
+
+        self.wired = None
+        self.ipv4 = None
+        self.ipv6 = None
 
         self.tab_window = TabBox()
-        if active == None:
-            self.ipv4 = NoSetting()
-            self.ipv6 = NoSetting()
-            #self.security = NoSetting()
-            self.wired = NoSetting()
-        else:
-            self.ipv4 = IPV4Conf(active)
-            self.ipv6 = IPV6Conf(active)
-            #self.security = Security(active)
-            self.wired = Wired(active)
-
-        self.items = [("有线", self.wired),
-                      ("IPv4设置", self.ipv4),
-                      ("IPv6设置", self.ipv6),
-                      ("802.1x安全性", NoSetting())]
+        self.items = [("有线", NoSetting()),
+                      ("IPv4设置", NoSetting()),
+                      ("IPv6设置", NoSetting())]
         self.tab_window.add_items(self.items)
-        self.sidebar = None
+        self.sidebar = SideBar( None, self.init, self.check_click)
 
-        self.init_connection()
-        self.sidebar = Sidebar(self.cons, 
-                               self.ipv4_setting,
-                               self.ipv6_setting,
-                               self.wired_setting ,
-                               self.init_connection,
-                               self.global_setting_callback)
-        self.pack_start(self.sidebar, False ,False)
-
+        # Build ui
+        self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
         vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
-
-        ## reformate apply and cancel
-        aligns = gtk.Alignment(0.5,1,0,0)
         hbox = gtk.HBox()
-        self.apply_button = gtk.Button("Apply")
-        self.cancel_button = gtk.Button("Cancel")
-        self.cancel_button.connect("clicked", self.cancel_changes)
-        self.apply_button.connect("clicked", self.save_changes)
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        hbox.pack_start(self.apply_button, False, False, 0)
-        aligns.add(hbox)
-        vbox.pack_start(aligns, False , False)
+        apply_button = gtk.Button("Apply")
+        apply_button.connect("clicked", self.save_changes)
+        hbox.pack_start(apply_button, False, False, 0)
+        buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
+        buttons_aligns.add(hbox)
+        vbox.pack_start(buttons_aligns, False , False)
         hbox.connect("expose-event", self.expose_event)
-
-    def init_connection(self):
-        self.cons = nm_remote_settings.get_wired_connections()
-        if not self.cons:
-            nm_remote_settings.new_wired_connection()
-            self.cons = nm_remote_settings.get_wired_connections()
-        self.ipv4_setting = [IPV4Conf(conn) for conn in self.cons]
-        self.ipv6_setting = [IPV6Conf(conn) for conn in self.cons]
-        #self.security_setting = [Security(conn) for conn in self.cons]
-        self.wired_setting = [Wired(conn) for conn in self.cons]
-
-        if not self.sidebar == None:
-            self.sidebar.cons = self.cons
-            self.sidebar.ipv4_setting = self.ipv4_setting
-            self.sidebar.ipv6_setting = self.ipv6_setting
-            self.sidebar.wired_setting = self.wired_setting
-
-    def cancel_changes(self, widget):
-        self.slide_back_cb()
-        
-    def save_changes(self, widget):
-        self.ipv4.save_changes()
-        self.ipv6.save_changes()
-
-        #self.slide.slide_to_page(self.slide.layout.get_children()[0], "left")
-
-        self.device_ethernet = cache.get_spec_object(wired_device.object_path)
-        self.device_ethernet.emit("try-activate-begin")
-        self.change_crumb()
-        self.slide_back_cb()
-        
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -131,78 +78,108 @@ class WiredSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def global_setting_callback(self, connection):
-        index = self.cons.index(connection)
-        self.ipv4 = self.ipv4_setting[index]
-        self.tab_window.tab_items[1] = ("IPv4设置",self.ipv4)
+    def init(self):
+        # Get all connections  
+        connections = nm_remote_settings.get_wired_connections()
+        # Check connections
+        if connections == []:
+            nm_remote_setting.new_wired_connection()
+            connections = nm_remote_settings.get_wired_connections()
 
-        self.ipv6 = self.ipv6_setting[index]
-        self.tab_window.tab_items[2] = ("IPv6设置",self.ipv6)
+        self.wired_setting = [Wired(con) for con in connections]
+        self.ipv4_setting = [IPV4Conf(con) for con in connections]
+        self.ipv6_setting = [IPV6Conf(con) for con in connections]
 
-        #self.security = self.sidebar.security_setting[index]
-        #self.tab_window.tab_items[2] = ("802.1x安全性", self.security)
-
+        self.sidebar.init(connections, self.ipv4_setting)
+        index = self.sidebar.get_active()
         self.wired = self.wired_setting[index]
-        self.tab_window.tab_items[0] = ("有线", self.wired)
+        self.ipv4 = self.ipv4_setting[index]
+        self.ipv6 = self.ipv6_setting[index]
 
+        self.init_tab_box()
+
+    def init_tab_box(self):
+        self.tab_window.tab_items[0] = ("有线", self.wired)
+        self.tab_window.tab_items[1] = ("IPV4设置",self.ipv4)
+        self.tab_window.tab_items[2] = ("IPV6设置",self.ipv6)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
         self.queue_draw()
 
+    def check_click(self, connection):
+        index = self.sidebar.get_active()
+        self.wired = self.wired_setting[index]
+        self.ipv4 = self.ipv4_setting[index]
+        self.ipv6 = self.ipv6_setting[index]
 
-class Sidebar(gtk.VBox):
+        self.init_tab_box()
 
-    def __init__(self, cons, ipv4, ipv6, wired, init_cb, sidebar_callback):
+    def save_changes(self, widget):
+        self.ipv4.save_changes()
+        self.ipv6.save_changes()
+        self.device_ethernet = cache.get_spec_object(wired_device.object_path)
+        self.device_ethernet.emit("try-activate-begin")
+        self.change_crumb()
+        self.slide_back()
+        
+class SideBar(gtk.VBox):
+
+    def __init__(self, connections, main_init_cb, check_click_cb):
         gtk.VBox.__init__(self, False, 5)
-        self.cons = cons
-        self.ipv4_setting = ipv4
-        self.ipv6_setting = ipv6
-        self.wired_setting = wired
-        self.init_cb = init_cb
-        self.sidebar_callback = sidebar_callback
-        self.set_size_request(160, -1)
+        self.connections = connections
+        self.main_init_cb = main_init_cb
+        self.check_click_cb = check_click_cb
 
         # determin the active one
         self.buttonbox = gtk.VBox(False, 6)
         self.pack_start(self.buttonbox, False, False)
-        self.refresh()
         add_button = Button("Add setting")
         add_button.connect("clicked", self.add_new_setting)
         self.pack_start(add_button, False, False, 6)
 
-    def refresh(self):
+    def init(self, connection_list, ipv4setting):
 
-        btn = SettingButton(None, self.cons[0], self.ipv4_setting[0], self.sidebar_callback)
-        #btn.set_size(160)
-        self.buttonbox.pack_start(btn, False, False,6)
-
+        # check active
         active_connection = wired_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
         else:
             active = None
-        for index,c in enumerate(self.cons[1:]):
-            button = SettingButton(btn, c, self.ipv4_setting[index + 1], self.sidebar_callback)
-            #button.set_size(160)
-            self.buttonbox.pack_start(button, False ,False, 6)
 
-        for index, c in enumerate(self.cons):
-            if active !=None and c.get_setting("connection").id == active.get_setting("connection").id:
-                self.buttonbox.get_children()[index].check.set_active(True)
-            else:
-                self.buttonbox.get_children()[0].check.set_active(True)
+        self.connections = connection_list
+        self.setting = ipv4setting
+        
+        # Add connection buttons
+        container_remove_all(self.buttonbox)
+        btn = SettingButton(None, 
+                            self.connections[0],
+                            self.setting[0],
+                            self.check_click_cb)
+        self.buttonbox.pack_start(btn, False, False, 6)
+        for index, connection in enumerate(self.connections[1:]):
+            button = SettingButton(btn,
+                                   connection,
+                                   self.setting[index + 1],
+                                   self.check_click_cb)
+            self.buttonbox.pack_start(button, False, False, 6)
 
+        try:
+            index = self.connections.index(active)
+            self.buttonbox.get_children()[index].check.set_active(True)
+        except ValueError:
+            self.buttonbox.get_children()[0].check.set_active(True)
 
-
+    def get_active(self):
+        checks = self.buttonbox.get_children()
+        for index,c in enumerate(checks):
+            if c.check.get_active():
+                return index
 
     def add_new_setting(self, widget):
         nm_remote_settings.new_wired_connection()
-        container_remove_all(self.buttonbox)
-        self.init_cb()
-        self.refresh()
+        self.main_init_cb()
 
-        
 class NoSetting(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)

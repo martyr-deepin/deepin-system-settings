@@ -37,8 +37,7 @@ class DSLSetting(gtk.HBox):
         self.items = [("PPP", NoSetting()),
                       ("Wired", NoSetting()),
                       ("IPv4 Setting", NoSetting()),
-                      ("DSL", NoSetting()),
-                      ]
+                      ("DSL", NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
@@ -119,7 +118,6 @@ class SideBar(gtk.VBox):
         self.connections = connections
         self.main_init_cb = main_init_cb
         self.check_click_cb = check_click_cb
-        self.index = 0
 
         # Build ui
         self.buttonbox = gtk.VBox(False, 6)
