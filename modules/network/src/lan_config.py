@@ -136,6 +136,7 @@ class SideBar(gtk.VBox):
         add_button = Button("Add setting")
         add_button.connect("clicked", self.add_new_setting)
         self.pack_start(add_button, False, False, 6)
+        self.set_size_request(160, -1)
 
     def init(self, connection_list, ipv4setting):
 
