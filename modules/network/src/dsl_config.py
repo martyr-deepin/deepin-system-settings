@@ -69,7 +69,7 @@ class DSLSetting(gtk.HBox):
         # Check connections
         if connections == []:
             # Create a new connection
-            nm_remote_setting.new_pppoe_connection()
+            nm_remote_settings.new_pppoe_connection()
             connections = nm_remote_settings.get_pppoe_connections()
 
         self.wired_setting = [Wired(con) for con in connections]
