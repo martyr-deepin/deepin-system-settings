@@ -83,7 +83,7 @@ class WiredSetting(gtk.HBox):
         connections = nm_remote_settings.get_wired_connections()
         # Check connections
         if connections == []:
-            nm_remote_setting.new_wired_connection()
+            nm_remote_settings.new_wired_connection()
             connections = nm_remote_settings.get_wired_connections()
 
         self.wired_setting = [Wired(con) for con in connections]
@@ -124,7 +124,6 @@ class WiredSetting(gtk.HBox):
         self.slide_back()
         
 class SideBar(gtk.VBox):
-
     def __init__(self, connections, main_init_cb, check_click_cb):
         gtk.VBox.__init__(self, False, 5)
         self.connections = connections

@@ -31,103 +31,49 @@ from wired import *
 from widgets import SettingButton
 import gtk
 
+# NM lib import 
+from nmlib.nm_utils import TypeConvert
+from nmlib.nmclient import nmclient
+from nmlib.nm_remote_settings import nm_remote_settings
 
 class WirelessSetting(gtk.HBox):
 
     def __init__(self, access_point, slide_back_cb, change_crumb_cb):
         gtk.HBox.__init__(self)
+        self.access_point = access_point
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
-        self.sidebar = None
 
-        #self.ipv4 = IPV4Conf(active)
-        #self.ipv6 = IPV6Conf(active)
-        #self.security = Security(active)
-        #self.wireless = Wireless(active)
-
-        self.init_connection(access_point)
+        self.wireless = None
+        self.ipv4 = None
+        self.ipv6 = None
+        self.security = None
 
         self.tab_window = TabBox()
-        #self.tab_window.set_size_request(585,-1)
-
-        self.items = [("无线", self.wireless),
-                      ("IPv4设置", self.ipv4),
-                      ("IPv6设置", self.ipv6),
-                      ("无线安全性", self.security)]
+        self.items = [("Wireless", NoSetting()),
+                      ("IPV4", NoSetting()),
+                      ("IPv6", NoSetting()),
+                      ("Security", NoSetting())]
         self.tab_window.add_items(self.items)
 
-        self.sidebar = Sidebar(self.cons, 
-                               self.ipv4_setting,
-                               self.ipv6_setting,
-                               self.wired_setting ,
-                               self.security_setting,
-                               self.init_connection,
-                               self.global_setting_callback)
-        self.pack_start(self.sidebar, False ,False)
+        self.sidebar = SideBar( None,self.init, self.check_click)
+
+        # Build ui
+        self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
         vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
-
-        ## reformate apply and cancel
-        aligns = gtk.Alignment(0.5,1,0,0)
         hbox = gtk.HBox()
-        self.apply_button = gtk.Button("Apply")
-        self.cancel_button = gtk.Button("Cancel")
-        self.cancel_button.connect("clicked", self.cancel_changes)
-        self.apply_button.connect("clicked", self.save_changes)
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        hbox.pack_start(self.apply_button, False, False, 0)
-        aligns.add(hbox)
-        vbox.pack_start(aligns, False , False)
+        apply_button = gtk.Button("Apply")
+        apply_button.connect("clicked", self.save_changes)
+        hbox.pack_start(apply_button, False, False, 0)
+        buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
+        buttons_aligns.add(hbox)
+        vbox.pack_start(buttons_aligns, False , False)
         hbox.connect("expose-event", self.expose_event)
 
-    def init_connection(self, ap):
-        if ap == None:
-            self.ipv4 = NoSetting()
-            self.ipv6 = NoSetting()
-            self.security = NoSetting()
-            self.wireless = NoSetting()
-            self.cons = None
-            self.ipv4_setting = None
-            self.ipv6_setting = None
-            self.security_setting = None
-            self.wired_setting = None
-            self.ap = None
 
-        else:
-            self.ap =  ap
-            self.connect_associate = nm_remote_settings.get_ssid_associate_connections(self.ap.get_ssid())
-            self.connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.ap.get_ssid())
-            self.cons = self.connect_associate + self.connect_not_assocaite +[len(self.connect_associate)]
-            if self.cons:
-                self.ipv4_setting = [IPV4Conf(conn) for conn in self.cons[:-1]]
-                self.ipv6_setting = [IPV6Conf(conn) for conn in self.cons[:-1]]
-                self.security_setting = [Security(conn) for conn in self.cons[:-1]]
-                self.wired_setting = [Wireless(conn) for conn in self.cons[:-1]]
-            if not self.sidebar == None:
-                self.sidebar.cons = self.cons
-                self.sidebar.ipv4_setting = self.ipv4_setting
-                self.sidebar.ipv6_setting = self.ipv6_setting
-                self.sidebar.wired_setting = self.wired_setting
-                self.sidebar.security_setting = self.security_setting
-                self.sidebar.ap = self.ap
-                self.sidebar.refresh()
-
-
-    def cancel_changes(self, widget):
-        self.slide_back() 
-
-    def save_changes(self, widget):
-        self.ipv4.save_changes()
-        self.ipv6.save_changes()
-        #self.wireless.save_change()
-        self.security.save_setting()
-        wlan = cache.get_spec_object(wireless_device.object_path)
-        wlan.emit("try-ssid-begin", self.ap)
-        self.change_crumb()
-        self.slide_back() 
-        
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
@@ -135,93 +81,144 @@ class WirelessSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def global_setting_callback(self, connection):
-        index = self.cons.index(connection)
+    def init(self, access_point):
+        self.access_point = access_point
+        # Get all connections  
+        connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
+        connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
+
+        connections = connection_associate + connect_not_assocaite
+        # Check connections
+        if connection_associate == []:
+            nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
+            connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
+            connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
+            connections = connection_associate + connect_not_assocaite
+
+        self.wireless_setting = [Wireless(con) for con in connections]
+        self.ipv4_setting = [IPV4Conf(con) for con in connections]
+        self.ipv6_setting = [IPV6Conf(con) for con in connections]
+        self.security_setting = [Security(con) for con in connections]
+
+        self.sidebar.init(connections,
+                          self.ipv4_setting,
+                          len(connection_associate),
+                          self.access_point)
+        index = self.sidebar.get_active()
+        self.wireless = self.wireless_setting[index]
         self.ipv4 = self.ipv4_setting[index]
-        self.tab_window.tab_items[1] = ("IPv4设置",self.ipv4)
-
         self.ipv6 = self.ipv6_setting[index]
-        self.tab_window.tab_items[2] = ("IPv6设置",self.ipv6)
+        self.security = self.security_setting[index]
 
-        self.security = self.sidebar.security_setting[index]
-        self.tab_window.tab_items[3] = ("无线安全性", self.security)
+        self.init_tab_box()
 
-        self.wireless = self.wired_setting[index]
-        self.tab_window.tab_items[0] = ("无线", self.wireless)
-
+    def init_tab_box(self):
+        self.tab_window.tab_items[0] = ("Wireless", self.wireless)
+        self.tab_window.tab_items[1] = ("IPV4",self.ipv4)
+        self.tab_window.tab_items[2] = ("IPV6",self.ipv6)
+        self.tab_window.tab_items[3] = ("Security", self.security)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
         self.queue_draw()
 
+    def check_click(self, connection):
+        index = self.sidebar.get_active()
+        self.wireless = self.wireless_setting[index]
+        self.ipv4 = self.ipv4_setting[index]
+        self.ipv6 = self.ipv6_setting[index]
+        self.security = self.security_setting[index]
 
-class Sidebar(gtk.VBox):
+        self.init_tab_box()
 
-    def __init__(self, cons, ipv4, ipv6, wired, security, init_cb, sidebar_callback):
+    def save_changes(self, widget):
+        self.ipv4.save_changes()
+        self.ipv6.save_changes()
+        #self.wireless.save_change()
+        self.security.save_setting()
+        wlan = cache.get_spec_object(wireless_device.object_path)
+        wlan.emit("try-ssid-begin", self.access_point)
+        self.change_crumb()
+        self.slide_back() 
+        
+
+class SideBar(gtk.VBox):
+
+    def __init__(self, connections, main_init_cb, check_click_cb):
         gtk.VBox.__init__(self, False, 5)
-        self.cons = cons
-        self.ipv4_setting = ipv4
-        self.ipv6_setting = ipv6
-        self.wired_setting = wired
-        self.security_setting = security
-        self.ap = None
-        self.init_cb = init_cb
-        self.sidebar_callback = sidebar_callback
+        self.connections = connections
+        self.main_init_cb = main_init_cb
+        self.check_click_cb = check_click_cb
+
+        # Build ui
+        self.associate_buttonbox = gtk.VBox(False, 6)
+        self.pack_start(self.associate_buttonbox, False, False)
+        
+        self.spacer = Label("-------------")
+        self.pack_start(self.spacer, False, False, 6)
+        self.unassociate_buttonbox = gtk.VBox(False, 6)
+        self.pack_start(self.unassociate_buttonbox, False, False)
+
+        add_button = Button("Add setting")
+        add_button.connect("clicked", self.add_new_connection)
+        self.pack_start(add_button, False, False, 6)
         self.set_size_request(160, -1)
 
-        # determin the active one
-        self.buttonbox = gtk.VBox(False, 6)
-        self.pack_start(self.buttonbox, False, False)
-        label = Label("--------------")
-        self.pack_start(label, False, False)
-        self.buttonbox_b = gtk.VBox(False, 6)
-        self.pack_start(self.buttonbox_b, False, False)
-
-        self.refresh()
-        add_button = Button("Add setting")
-        add_button.connect("clicked", self.add_new_setting)
-        self.pack_start(add_button, False, False, 6)
-
-    def refresh(self):
+    def init(self, connection_list, ipv4setting, associate_len, access_point):
         active_connection = wireless_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
         else: 
             active =None
-        if self.cons != None and self.ipv4_setting != None: 
-            # TODO must simplify this code 
-            if isinstance(self.cons[-1], int):
-                self.split = self.cons.pop()
 
-            container_remove_all(self.buttonbox)
-            container_remove_all(self.buttonbox_b)
-            btn = SettingButton(None, self.cons[0], self.ipv4_setting[0], self.sidebar_callback)
-            self.buttonbox.pack_start(btn, False, False,6)
+        self.connections = connection_list
+        self.setting = ipv4setting
+        self.split = associate_len
+        self.access_point = access_point
+        self.ssid = self.access_point.get_ssid()
 
-            for index,c in enumerate(self.cons[1:self.split]):
-                button = SettingButton(btn, c, self.ipv4_setting[index + 1], self.sidebar_callback)
-                #button.set_size(160)
-                self.buttonbox.pack_start(button, False ,False, 6)
+        container_remove_all(self.associate_buttonbox)
+        container_remove_all(self.unassociate_buttonbox)
+        btn = SettingButton(None,
+                            self.connections[0],
+                            self.setting[0],
+                            self.check_click_cb)
+        self.associate_buttonbox.pack_start(btn, False, False,6)
 
-            if self.cons[self.split:] !=[]:
-                for index,c in enumerate(self.cons[self.split:]):
-                    button = SettingButton(btn, c, self.ipv4_setting[index + 1], self.sidebar_callback)
-                    self.buttonbox_b.pack_start(button, False ,False, 6)
+        for index, connection in enumerate(self.connections[1:self.split]):
+            button = SettingButton(btn,
+                                   connection,
+                                   self.setting[index + 1],
+                                   self.check_click_cb)
+            self.associate_buttonbox.pack_start(button, False ,False, 6)
 
-            for index, c in enumerate(self.cons):
-                if active != None and (active in self.cons[:self.split]) and c == active:
-                    self.buttonbox.get_children()[index].check.set_active(True)
-                else:
-                    self.buttonbox.get_children()[0].check.set_active(True)
+        if self.connections[self.split:] !=[]:
+            for index, connection in enumerate(self.connections[self.split:]):
+                button = SettingButton(btn,
+                                       connection,
+                                       self.setting[index + 1],
+                                       self.check_click_cb)
+                self.unassociate_buttonbox.pack_start(button, False ,False, 6)
 
+        self.buttonbox = self.associate_buttonbox.get_children() + self.unassociate_buttonbox.get_children()
+        try:
+            index = self.connections.index(active)
+            if index < self.split:
+                self.buttonbox[index].check.set_active(True)
+            else:
+                self.buttonbox[0].check.set_active(True)
 
+        except ValueError:
+            self.buttonbox[0].check.set_active(True)
 
-    def add_new_setting(self, widget):
-        nm_remote_settings.new_wireless_connection(self.ap.get_ssid())
-        container_remove_all(self.buttonbox)
-        container_remove_all(self.buttonbox_b)
-        self.init_cb(self.ap)
-        self.refresh()
+    def get_active(self):
+        for index,c in enumerate(self.buttonbox):
+            if c.check.get_active():
+                return index
+
+    def add_new_connection(self, widget):
+        nm_remote_settings.new_wireless_connection(self.ssid)
+        self.main_init_cb(self.access_point)
 
         
 class NoSetting(gtk.VBox):
