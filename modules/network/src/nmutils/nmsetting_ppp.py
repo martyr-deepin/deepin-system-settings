@@ -35,6 +35,8 @@ class NMSettingPPP (NMSetting):
     def noauth(self):
         if "noauth" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["noauth"])
+        else:
+            return True
     
     @noauth.setter
     def noauth(self, new_noauth):
@@ -44,6 +46,8 @@ class NMSettingPPP (NMSetting):
     def refuse_eap(self):
         if "refuse-eap" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["refuse-eap"])
+        else:
+            return False
 
     @refuse_eap.setter
     def refuse_eap(self, new_refuse_eap):
@@ -53,6 +57,8 @@ class NMSettingPPP (NMSetting):
     def refuse_pap(self):
         if "refuse-pap" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["refuse-pap"])
+        else:
+            return False
 
     @refuse_pap.setter
     def refuse_pap(self, new_refuse_pap):
@@ -62,6 +68,8 @@ class NMSettingPPP (NMSetting):
     def refuse_chap(self):
         if "refuse-chap" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["refuse-chap"])
+        else:
+            return False
 
     @refuse_chap.setter
     def refuse_chap(self, new_refuse_chap):
@@ -71,6 +79,8 @@ class NMSettingPPP (NMSetting):
     def refuse_mschap(self):
         if "refuse-mschap" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["refuse-mschap"])
+        else:
+            return False
 
     @refuse_mschap.setter
     def refuse_mschap(self, new_refuse_mschap):
@@ -80,6 +90,8 @@ class NMSettingPPP (NMSetting):
     def refuse_mschapv2(self):
         if "refuse_mschapv2" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["refuse-mschapv2"])
+        else:
+            return False
 
     @refuse_mschapv2.setter
     def refuse_mschapv2(self, new_refuse_mschapv2):
@@ -89,7 +101,9 @@ class NMSettingPPP (NMSetting):
     def nobsdcomp(self):
         if "nobsdcomp" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["nobsdcomp"])
-    
+        else:
+            return False
+
     @nobsdcomp.setter
     def nobsdcomp(self, new_nobsdcomp):
         self.prop_dict["nobsdcomp"] = TypeConvert.py2_dbus_boolean(new_nobsdcomp)
@@ -98,6 +112,8 @@ class NMSettingPPP (NMSetting):
     def nodeflate(self):
         if "nodeflate" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["nodeflate"])
+        else:
+            return False
 
     @nodeflate.setter
     def nodeflate(self, new_nodeflate):
@@ -107,6 +123,8 @@ class NMSettingPPP (NMSetting):
     def no_vj_comp(self):
         if "no-vj-comp" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["no-vj-comp"])
+        else:
+            return False
 
     @no_vj_comp.setter
     def no_vj_comp(self, new_no_vj_comp):
@@ -116,6 +134,8 @@ class NMSettingPPP (NMSetting):
     def require_mppe(self):
         if "require-mppe" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["require-mppe"])
+        else:
+            return False
 
     @require_mppe.setter
     def require_mppe(self, new_require_mppe):
@@ -125,6 +145,8 @@ class NMSettingPPP (NMSetting):
     def require_mppe_128(self):
         if "require-mppe-128" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["require-mppe-128"])
+        else:
+            return False
 
     @require_mppe_128.setter
     def require_mppe_128(self, new_require_mppe_128):
@@ -134,6 +156,8 @@ class NMSettingPPP (NMSetting):
     def mppe_stateful(self):
         if "mppe_stateful" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["mppe_stateful"])
+        else:
+            return False
 
     @mppe_stateful.setter
     def mppe_stateful(self ,new_mppe_stateful):
@@ -143,6 +167,8 @@ class NMSettingPPP (NMSetting):
     def crtscts(self):
         if "crtscts" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["crtscts"])
+        else:
+            return False
 
     @crtscts.setter
     def crtscts(self, new_crtscts):
@@ -152,6 +178,8 @@ class NMSettingPPP (NMSetting):
     def baud(self):
         if "baud" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["baud"])
+        else:
+            return 0
 
     @baud.setter
     def baud(self, new_baud):
@@ -161,6 +189,8 @@ class NMSettingPPP (NMSetting):
     def mru(self):
         if "mru" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["mru"])
+        else:
+            return 0
 
     @mru.setter
     def mru(self, new_mru):
@@ -170,6 +200,8 @@ class NMSettingPPP (NMSetting):
     def mtu(self):
         if "mtu" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["mtu"])
+        else:
+            return 0
 
     @mtu.setter
     def mtu(self, new_mtu):
@@ -179,6 +211,8 @@ class NMSettingPPP (NMSetting):
     def lcp_echo_failure(self):
         if "lcp-echo-failure" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["lcp-echo-failure"])
+        else:
+            return 0
 
     @lcp_echo_failure.setter
     def lcp_echo_failure(self, new_lcp_echo_failure):
@@ -188,6 +222,8 @@ class NMSettingPPP (NMSetting):
     def lcp_echo_interval(self):
         if "lcp-echo-interval" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["lcp-echo-interval"])
+        else:
+            return 0
 
     @lcp_echo_interval.setter
     def lcp_echo_interval(self, new_lcp_echo_interval):

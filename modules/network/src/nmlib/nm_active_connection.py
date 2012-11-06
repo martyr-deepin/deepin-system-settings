@@ -51,7 +51,10 @@ class NMActiveConnection(NMObject):
         return self.properties["SpecificObject"]
 
     def get_devices(self):
-        return map(lambda x:cache.getobject(x), self.properties["Devices"])
+        if self.properties["Devices"]:
+            return map(lambda x:cache.getobject(x), self.properties["Devices"])
+        else:
+            return []
 
     def get_state(self):
         return self.properties["State"]

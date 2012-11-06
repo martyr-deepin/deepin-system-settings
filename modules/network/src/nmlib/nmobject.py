@@ -31,6 +31,7 @@ import traceback
 import gobject
 # import re
 from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_dbus_name_exists
+from nm_utils import InvalidObjectPath , InvalidObjectInterface, InvalidService
 
 # name_re = re.compile("[0-9a-zA-Z-]*")
 dbus_loop = gobject.MainLoop()
@@ -38,25 +39,30 @@ nm_bus = dbus.SystemBus()
     
 class NMObject(gobject.GObject):
     '''NMObject'''
+
+    __gsignals__  = {
+            "name-lost":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
+            }
+
     def __init__(self, object_path, object_interface, service_name = "org.freedesktop.NetworkManager", bus = nm_bus):
         gobject.GObject.__init__(self)
 
         self.bus = bus
+        self.service_name = service_name
+        self.bus.activate_name_owner(service_name)
 
         if not is_dbus_name_exists(service_name, False):
-            raise dbus.exceptions.DBusException
+            raise InvalidService(service_name)
 
         if valid_object_path(object_path):
             self.object_path = object_path
         else:
-            print "invalid object path :%s" % object_path
-            raise dbus.exceptions.DBusException
+            raise InvalidObjectPath(object_path)
 
         if valid_object_interface(object_interface):
             self.object_interface = object_interface
         else:
-            print "invalid object path :%s" % object_interface
-            raise dbus.exceptions.DBusException
+            raise InvalidObjectInterface(object_interface)
 
         try:
             self.dbus_proxy = self.bus.get_object (service_name, object_path)
@@ -78,10 +84,16 @@ class NMObject(gobject.GObject):
         try:
             # return TypeConvert.dbus2py(apply(getattr(self.dbus_interface, method_name), args, kwargs))
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
-        except dbus.exceptions.DBusException:
+        except dbus.exceptions.UnknownMethodException, e:    
+            print "unknown dbus method"
+            print method_name
+            print e
+        except dbus.exceptions.DBusException, e:
+            print "call dbus method failed:\n"
             print method_name
             print args
             print kwargs
+            print e
             # traceback.print_exc()
 
     def init_properties(self): 
@@ -115,6 +127,8 @@ class NMObject(gobject.GObject):
     def introspect(self):
         try:
             return self.introspect_interface.Introspect()
+        except dbus.exceptions.IntrospectionParserException:
+            print "introspect error"
         except dbus.exceptions.DBusException:
             traceback.print_exc()
 

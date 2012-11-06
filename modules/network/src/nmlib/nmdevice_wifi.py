@@ -178,14 +178,16 @@ class NMDeviceWifi(NMDevice):
             return []
     #Signals##
     def access_point_added_cb(self, ap_object_path):
-        self.origin_ap_list = self.get_access_points()
-        self.update_ap_list()
-        self.emit("access-point-added", cache.getobject(ap_object_path))
+        # self.origin_ap_list = self.get_access_points()
+        # self.update_ap_list()
+        # self.emit("access-point-added", cache.getobject(ap_object_path))
+        pass
 
     def access_point_removed_cb(self, ap_object_path):
-        self.origin_ap_list = self.get_access_points()
-        self.update_ap_list()
-        self.emit("access-point-removed", cache.getobject(ap_object_path))
+        # self.origin_ap_list = self.get_access_points()
+        # self.update_ap_list()
+        # self.emit("access-point-removed", cache.getobject(ap_object_path))
+        pass
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()

@@ -27,7 +27,6 @@ from nm_utils import TypeConvert
 # from nm_active_connection import NMActiveConnection
 import traceback
 from nmcache import cache
-from nm_secret_agent import secret_agent
 
 class NMClient(NMObject):
     '''NMClient'''
@@ -64,30 +63,46 @@ class NMClient(NMObject):
         self.bus.add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
                                      path = self.object_path,signal_name = "StateChanged")
 
+        self.devices = self.get_devices()
     def get_devices(self):
         '''return father device objects'''
         return map(lambda x: cache.getobject(x), TypeConvert.dbus2py(self.dbus_method("GetDevices")))
 
     def get_wired_devices(self):
-        return filter(lambda x:x.get_device_type() == 1, self.get_devices())
+        # return filter(lambda x:x.get_device_type() == 1, self.get_devices())
+        if self.devices:
+            return filter(lambda x:x.get_device_type() == 1, self.devices)
+        else:
+            return []
 
     def get_wired_device(self):
         return self.get_wired_devices()[0]
 
     def get_wireless_devices(self):
-        return filter(lambda x:x.get_device_type() == 2, self.get_devices())
+        if self.devices:
+            return filter(lambda x:x.get_device_type() == 2, self.devices)
+        else:
+            return []
 
     def get_wireless_device(self):
         return self.get_wireless_devices()[0]
 
     def get_modem_devices(self):
-        return filter(lambda x:x.get_device_type() == 8, self.get_devices())
+        if self.devices:
+            return filter(lambda x:x.get_device_type() == 8, self.devices)
+        else:
+            return []
 
     def get_modem_device(self):
         return self.get_modem_devices()[0]
 
     def get_device_by_iface(self, iface):
-        return cache.getobject(self.dbus_method("GetDeviceByIpIface", iface))
+        # return cache.getobject(self.dbus_method("GetDeviceByIpIface", iface))
+        device = self.dbus_method("GetDeviceByIpIface", iface)
+        if device:
+            return cache.getobject(device)
+        else:
+            return None
 
     def activate_connection(self, connection_path, device_path, specific_object_path):
         '''used for multi activate, must run one by one'''
@@ -269,15 +284,18 @@ class NMClient(NMObject):
 
     ###Signals ###
     def device_added_cb(self, device_object_path):
+        self.devices = self.get_devices()
         self.emit("device-added", device_object_path)
 
     def device_removed_cb(self, device_object_path):
+        self.devices = self.get_devices()
         self.emit("device-removed", device_object_path)
 
     def permisson_changed_cb(self):
         self.emit("permission-changed")
 
     def state_changed_cb(self, state):
+        print "network manager state:%s" %state
         self.emit("state-changed", TypeConvert.dbus2py(state))
     
     def properties_changed_cb(self, prop_dict):

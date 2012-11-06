@@ -487,6 +487,32 @@ def valid_object_interface(object_interface):
 
     return all(map(lambda x:name_re.match(x), object_interface.split(".")))    
 
+class InvalidService(Exception):
+
+    def __init__(self, service):
+        self.service = service
+
+    def __str__(self):
+        return repr("InvalidService:" + self.service)
+    
+
+class InvalidObjectPath(Exception):
+    
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return repr("InvalidObjectPath:" + self.path)
+
+class InvalidObjectInterface(Exception):
+    
+    def __init__(self, interface):
+        self.interface = interface
+
+    def __str__(self):
+        return repr("InvalidObjectInterface:" + self.interface)
+
+
 def authWithPolicyKit(sender, connection, priv, interactive=1):
     #print "_authWithPolicyKit()"
     system_bus = dbus.SystemBus()

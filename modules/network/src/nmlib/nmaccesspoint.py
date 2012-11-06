@@ -46,7 +46,10 @@ class NMAccessPoint(NMObject):
         return self.properties["RsnFlags"]
 
     def get_ssid (self):
-        return TypeConvert.ssid_ascii2string(self.properties["Ssid"])
+        if self.properties["Ssid"]:
+            return TypeConvert.ssid_ascii2string(self.properties["Ssid"])
+        else:
+            return None
 
     def get_bytearray_ssid(self):
         return self.properties["Ssid"]
