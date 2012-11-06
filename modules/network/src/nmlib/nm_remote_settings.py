@@ -367,10 +367,10 @@ class NMRemoteSettings(NMObject):
         return self.properties["Hostname"]
 
     def get_wired_connections(self):
-        if len(self.list_connections()):
+        if self.list_connections():
             return filter(lambda x: x.settings_dict["connection"]["type"] == "802-3-ethernet", self.list_connections())
         else:
-            print "no connections"
+            return []
 
     def get_wired_active_connection(self):
         for conn in self.get_wired_connections():
@@ -378,43 +378,48 @@ class NMRemoteSettings(NMObject):
 
     def get_wireless_connections(self):
         '''return wireless connections object'''
-        if len(self.list_connections()):
+        if self.list_connections():
             return filter(lambda x: x.settings_dict["connection"]["type"] == "802-11-wireless", self.list_connections())
         else:
-            print "no connections"
+            return []
 
     def get_ssid_associate_connections(self, ssid):
         '''return wireless connection objects have the given ssid'''
-        return filter(lambda x: TypeConvert.ssid_ascii2string(x.settings_dict["802-11-wireless"]["ssid"]) == ssid, 
+        if self.get_wireless_connections():
+            return filter(lambda x: TypeConvert.ssid_ascii2string(x.settings_dict["802-11-wireless"]["ssid"]) == ssid, 
                       self.get_wireless_connections())
+        else:
+            return []
 
     def get_ssid_not_associate_connections(self, ssid):
-        return filter(lambda x: TypeConvert.ssid_ascii2string(x.settings_dict["802-11-wireless"]["ssid"]) != ssid, 
+        if self.get_wireless_connections():
+            return filter(lambda x: TypeConvert.ssid_ascii2string(x.settings_dict["802-11-wireless"]["ssid"]) != ssid, 
                       self.get_wireless_connections())
-        
+        else:
+            return []
     def get_pppoe_connections(self):
-        if len(self.list_connections()):
+        if self.list_connections():
             return filter(lambda x: x.settings_dict["connection"]["type"] == "pppoe", self.list_connections())
         else:
-            print "no connections"
+            return []
 
     def get_vpn_connections(self):
-        if len(self.list_connections()):
+        if self.list_connections():
             return filter(lambda x: x.settings_dict["connection"]["type"] == "vpn", self.list_connections())
         else:
-            print "no connections"
+            return []
 
     def get_gsm_connections(self):
-        if len(self.list_connections()):
+        if self.list_connections():
             return filter(lambda x: x.settings_dict["connection"]["type"] == "gsm", self.list_connections())
         else:
-            print "no connections"
+            return []
 
     def get_cdma_connections(self):
-        if len(self.list_connections()):
+        if self.list_connections():
             return filter(lambda x: x.settings_dict["connection"]["type"] == "cdma", self.list_connections())
         else:
-            print "no connections"
+            return []
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
