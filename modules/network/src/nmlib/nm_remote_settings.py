@@ -61,8 +61,12 @@ class NMRemoteSettings(NMObject):
 
     def list_connections(self):
         '''return connections object'''
-        return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(self.dbus_method("ListConnections")))
-    
+        conns = self.dbus_method("ListConnections")
+        if conns:
+            return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(conns))
+        else:
+            return []
+
     def get_connection_by_uuid(self, uuid):
         return cache.getobject(self.dbus_method("GetConnectionByUuid", uuid))
 
@@ -70,7 +74,12 @@ class NMRemoteSettings(NMObject):
         self.dbus_method("SaveHostname", hostname)
     
     def add_connection(self, settings_dict):
-        return cache.getobject(self.dbus_method("AddConnection", settings_dict))
+        # return cache.getobject(self.dbus_method("AddConnection", settings_dict))
+        conn_path = self.dbus_method("AddConnection", settings_dict)
+        if conn_path:
+            return cache.getobject(conn_path)
+        else:
+            return None
 
     def generate_connection_id(self, connection_type):
 

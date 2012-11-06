@@ -59,7 +59,10 @@ class NMDevice(NMObject):
 
     def get_active_connection(self):
         '''return active connection object'''
-        return cache.getobject(self.properties["ActiveConnection"])
+        if self.properties["ActiveConnection"]:
+            return cache.getobject(self.properties["ActiveConnection"])
+        else:
+            return None
 
     def is_active(self):
         try:

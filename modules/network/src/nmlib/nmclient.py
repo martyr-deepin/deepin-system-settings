@@ -43,6 +43,9 @@ class NMClient(NMObject):
 
     def __init__(self):
         NMObject.__init__(self, "/org/freedesktop/NetworkManager", "org.freedesktop.NetworkManager")
+        self.prop_list = ["NetworkingEnabled", "WirelessEnabled", "WirelessHardwareEnabled", "WwanEnabled", "Version",
+                          "WwanHardwareEnabled", "WimaxEnabled", "WimaxHardwareEnabled", "ActivateConnections", "State"]
+
         self.manager_running = False
         self.init_nmobject_with_properties()
 
@@ -60,7 +63,6 @@ class NMClient(NMObject):
 
         self.bus.add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
                                      path = self.object_path,signal_name = "StateChanged")
-
 
     def get_devices(self):
         '''return father device objects'''
@@ -232,16 +234,28 @@ class NMClient(NMObject):
 
     def get_active_connections(self):
         '''return active connections objects'''
-        return map(lambda x: cache.getobject(x), self.properties["ActiveConnections"])
+        if self.properties["ActivateConnections"]:
+            return map(lambda x: cache.getobject(x), self.properties["ActiveConnections"])
+        else:
+            return []
 
     def get_vpn_active_connection(self):
-        return filter(lambda x:x.get_vpn() == 1, self.get_active_connections())[0]
+        if self.get_active_connections():
+            return filter(lambda x:x.get_vpn() == 1, self.get_active_connections())[0]
+        else:
+            return []
 
     def get_wired_active_connection(self):
-        return filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())[0]
+        if self.get_active_connections():
+            return filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())[0]
+        else:
+            return []
 
     def get_wireless_active_connection(self):
-        return filter(lambda x:x.get_devices()[0] == self.get_wireless_device(), self.get_active_connections())[0]
+        if self.get_active_connections():
+            return filter(lambda x:x.get_devices()[0] == self.get_wireless_device(), self.get_active_connections())[0]
+        else:
+            return []
 
     def get_pppoe_active_connection(self):
         pass

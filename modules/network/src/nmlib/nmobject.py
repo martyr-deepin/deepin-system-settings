@@ -29,13 +29,13 @@ DBusGMainLoop(set_as_default = True)
 from xml.dom import minidom
 import traceback
 import gobject
-import re
-from nm_utils import TypeConvert
+# import re
+from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_dbus_name_exists
 
-name_re = re.compile("[0-9a-zA-Z-]*")
+# name_re = re.compile("[0-9a-zA-Z-]*")
 dbus_loop = gobject.MainLoop()
 nm_bus = dbus.SystemBus()
-
+    
 class NMObject(gobject.GObject):
     '''NMObject'''
     def __init__(self, object_path, object_interface, service_name = "org.freedesktop.NetworkManager", bus = nm_bus):
@@ -43,13 +43,16 @@ class NMObject(gobject.GObject):
 
         self.bus = bus
 
-        if self.valid_object_path(object_path):
+        if not is_dbus_name_exists(service_name, False):
+            raise dbus.exceptions.DBusException
+
+        if valid_object_path(object_path):
             self.object_path = object_path
         else:
             print "invalid object path :%s" % object_path
             raise dbus.exceptions.DBusException
 
-        if self.valid_object_interface(object_interface):
+        if valid_object_interface(object_interface):
             self.object_interface = object_interface
         else:
             print "invalid object path :%s" % object_interface
@@ -75,12 +78,11 @@ class NMObject(gobject.GObject):
         try:
             # return TypeConvert.dbus2py(apply(getattr(self.dbus_interface, method_name), args, kwargs))
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
-
         except dbus.exceptions.DBusException:
             print method_name
             print args
             print kwargs
-            traceback.print_exc()
+            # traceback.print_exc()
 
     def init_properties(self): 
         try:
@@ -131,30 +133,5 @@ class NMObject(gobject.GObject):
 
         return "write" in self.properties_access[prop_name]
 
-    def valid_object_path(self, object_path):
-        if not isinstance(object_path, str):
-            return False
-        if not object_path.startswith("/"):
-            return False
-
-        return all(map(lambda x:name_re.match(x), object_path.split(".")))    
-
-    def valid_object_interface(self, object_interface):
-        if not isinstance(object_interface, str):
-            return False
-        if object_interface.startswith("."):
-            return False
-        if len(object_interface.split(".")) < 2:
-            return False
-
-        for item in object_interface.split("."):
-            if len(item) == 0:
-                return False
-            if item[0].isdigit():
-                return False
-
-        return all(map(lambda x:name_re.match(x), object_interface.split(".")))    
-
-
-
-
+if __name__ == "__main__":
+    pass

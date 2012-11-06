@@ -445,6 +445,48 @@ class TypeConvert(object):
 
 TypeConvert = TypeConvert()
 
+import re
+name_re = re.compile("[0-9a-zA-Z-]*")
+
+def is_dbus_name_exists(dbus_name, request_session_bus=True):
+    if request_session_bus:
+        bus = dbus.SessionBus()
+    else:
+        bus = dbus.SystemBus()
+        
+    dbus_object = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
+    
+    dbus_iface = dbus.Interface(dbus_object, 'org.freedesktop.DBus')
+    
+    return dbus_name in dbus_iface.ListNames()
+
+def valid_object_path(object_path):
+    if not isinstance(object_path, str):
+        return False
+
+    if not object_path.startswith("/"):
+        return False
+
+    return all(map(lambda x:name_re.match(x), object_path.split(".")))    
+
+def valid_object_interface(object_interface):
+    if not isinstance(object_interface, str):
+        return False
+
+    if object_interface.startswith("."):
+        return False
+
+    if len(object_interface.split(".")) < 2:
+        return False
+
+    for item in object_interface.split("."):
+        if len(item) == 0:
+            return False
+        if item[0].isdigit():
+            return False
+
+    return all(map(lambda x:name_re.match(x), object_interface.split(".")))    
+
 def authWithPolicyKit(sender, connection, priv, interactive=1):
     #print "_authWithPolicyKit()"
     system_bus = dbus.SystemBus()

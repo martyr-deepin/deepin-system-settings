@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import traceback
+from nm_utils import valid_object_path
 
 class NewObjectFailed(Exception):
 
@@ -27,7 +28,7 @@ class NewObjectFailed(Exception):
         self.path = path
 
     def __str__(self):
-        return repr(self.path)
+        return repr("NewObjectFailed:" + self.path)
 
 class NMCache(object):
 
@@ -36,7 +37,10 @@ class NMCache(object):
         self.spec_cache_dict = {}
     
     def new_object(self, path):
-        key = path.split("/")[-2]
+        if valid_object_path(path):
+            key = path.split("/")[-2]
+        else:    
+            raise NewObjectFailed(path)
 
         if path in self.cache_dict.iterkeys():
             return self.cache_dict[path]
