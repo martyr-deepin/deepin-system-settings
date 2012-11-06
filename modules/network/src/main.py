@@ -122,38 +122,43 @@ class WiredSection(gtk.VBox):
 class Wireless(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
+        
+        wireless_devices = nmclient.get_wireless_devices()
+        if wireless_devices:
+            # FIXME will support multi devices
+            self.wireless_device = wireless_devices[0]
+            nmclient.wireless_set_enabled(True)
 
-        nmclient.wireless_set_enabled(True)
-        self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
-        self.send_to_crumb_cb = send_to_crumb_cb
-        self.device_wifi = cache.get_spec_object(wireless_device.object_path)
-        wireless_device.connect("device-active", self.device_is_active)
-        wireless_device.connect("device-deactive", self.device_is_deactive)
-        self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
+            self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
+            self.send_to_crumb_cb = send_to_crumb_cb
+            self.device_wifi = cache.get_spec_object(self.wireless_device.object_path)
+            self.wireless_device.connect("device-active", self.device_is_active)
+            self.wireless_device.connect("device-deactive", self.device_is_deactive)
+            self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
 
-        self.pack_start(self.wireless, False, False)
-        self.tree = TreeView([], enable_multiple_select = False)
-        self.settings = None
-        self.wifi = WifiSection()
+            self.pack_start(self.wireless, False, False)
+            self.tree = TreeView([], enable_multiple_select = False)
+            self.settings = None
+            self.wifi = WifiSection()
 
-        self.vbox = gtk.VBox()
-        self.vbox.pack_start(self.tree)
-        self.vbox.pack_start(self.wifi)
-        self.vbox.set_no_show_all(True)
-        self.vbox.hide()
-        self.align = gtk.Alignment()
-        self.align.show()
-        self.align.set(0,0,1,1)
-        self.align.set_padding(0,0,PADDING,11 + 11)
-        self.align.add(self.vbox)
+            self.vbox = gtk.VBox()
+            self.vbox.pack_start(self.tree)
+            self.vbox.pack_start(self.wifi)
+            self.vbox.set_no_show_all(True)
+            self.vbox.hide()
+            self.align = gtk.Alignment()
+            self.align.show()
+            self.align.set(0,0,1,1)
+            self.align.set_padding(0,0,PADDING,11 + 11)
+            self.align.add(self.vbox)
 
-        self.pack_start(self.align, False, False, 0)
+            self.pack_start(self.align, False, False, 0)
     
 
     def add_setting_page(self, page):
         self.settings = page
 
-        if wireless_device.is_active():
+        if self.wireless_device.is_active():
             self.wireless.set_active(True)
         else:
             self.wireless.set_active(False)
@@ -181,7 +186,7 @@ class Wireless(gtk.VBox):
         else:
             self.tree.add_items([],0,True)
             self.vbox.hide()
-            wireless_device.nm_device_disconnect()
+            self.wireless_device.nm_device_disconnect()
 
     def retrieve_list(self):
         """
@@ -190,8 +195,8 @@ class Wireless(gtk.VBox):
         #device = nmclient.get_wireless_device()
         #device_wifi.connect("try-ssid-end", self.try_to_connect_end)
         self.ap_list = self.device_wifi.order_ap_list()
-        if wireless_device.get_state() == 100:
-            active_connection = wireless_device.get_active_connection()
+        if self.wireless_device.get_state() == 100:
+            active_connection = self.wireless_device.get_active_connection()
             index = [ap.object_path for ap in self.ap_list].index(active_connection.get_specific_object())
         else:
             #device_wifi.auto_connect()
@@ -212,7 +217,7 @@ class Wireless(gtk.VBox):
         self.tree.queue_draw()
     
     def device_is_active(self, widget, reason):
-        active = wireless_device.get_active_connection()
+        active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
             index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
@@ -429,12 +434,11 @@ class Proxy(gtk.VBox):
 if __name__ == '__main__':
 
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-    if wireless_device != []: 
-        wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-        wireless_setting_page = WirelessSetting(None, 
-                                                lambda :slider.slide_to_page(main_align, "left"),
-                                                lambda : module_frame.send_message("change_crumb", 1))
-        wireless.add_setting_page(wireless_setting_page)
+    wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+    wireless_setting_page = WirelessSetting(None, 
+                                            lambda :slider.slide_to_page(main_align, "left"),
+                                            lambda : module_frame.send_message("change_crumb", 1))
+    wireless.add_setting_page(wireless_setting_page)
 
     wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
     wifi = WifiSection()
@@ -445,8 +449,7 @@ if __name__ == '__main__':
 
     vbox = gtk.VBox(False, 17)
     vbox.pack_start(wired, False, True,5)
-    if wireless_device != []: 
-        vbox.pack_start(wireless, False, True, 0)
+    vbox.pack_start(wireless, False, True, 0)
     vbox.pack_start(dsl, False, True, 0)
     vbox.pack_start(mobile, False, True, 0)
     vbox.pack_start(vpn, False, True, 0)
@@ -471,8 +474,7 @@ if __name__ == '__main__':
     slider.append_page(main_align)
     slider.append_page(wired_setting_page)
     slider.append_page(dsl_setting_page)
-    if wireless_device != []: 
-        slider.append_page(wireless_setting_page)
+    slider.append_page(wireless_setting_page)
 
     module_frame.add(slider)
     
