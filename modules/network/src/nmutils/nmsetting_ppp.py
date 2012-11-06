@@ -88,7 +88,7 @@ class NMSettingPPP (NMSetting):
 
     @property
     def refuse_mschapv2(self):
-        if "refuse_mschapv2" in self.prop_dict.iterkeys():
+        if "refuse-mschapv2" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["refuse-mschapv2"])
         else:
             return False

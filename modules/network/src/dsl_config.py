@@ -639,6 +639,9 @@ class PPPConf(gtk.VBox):
         if echo:
             lcp_echo_failure = 5
             lcp_echo_interval = 30
+        else:
+            lcp_echo_failure = 0
+            lcp_echo_interval = 0
 
         print self.ppp_setting.prop_dict
 
