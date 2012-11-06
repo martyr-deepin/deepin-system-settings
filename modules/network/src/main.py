@@ -123,10 +123,10 @@ class Wireless(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         
-        wireless_devices = nmclient.get_wireless_devices()
-        if wireless_devices:
+        self.wireless_devices = nmclient.get_wireless_devices()
+        if self.wireless_devices:
             # FIXME will support multi devices
-            self.wireless_device = wireless_devices[0]
+            self.wireless_device = self.wireless_devices[0]
             nmclient.wireless_set_enabled(True)
 
             self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
@@ -156,12 +156,13 @@ class Wireless(gtk.VBox):
     
 
     def add_setting_page(self, page):
-        self.settings = page
+        if self.wireless_devices:
+            self.settings = page
 
-        if self.wireless_device.is_active():
-            self.wireless.set_active(True)
-        else:
-            self.wireless.set_active(False)
+            if self.wireless_device.is_active():
+                self.wireless.set_active(True)
+            else:
+                self.wireless.set_active(False)
 
     def toggle_cb(self, widget):
         active = widget.get_active()
