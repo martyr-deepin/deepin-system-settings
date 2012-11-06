@@ -174,7 +174,7 @@ class Wireless(gtk.VBox):
                 self.tree.visible_items[index].network_state = 2
             else:
                 # FIXME close auto_connect
-                print "try to connect"
+                #if nm_remote_settings.get_wireless_connections():
                 self.device_wifi.auto_connect()
                 #self.tree.queue_draw()
             self.index = index
