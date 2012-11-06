@@ -338,7 +338,6 @@ class IPV4Conf(gtk.VBox):
         else:
             print "invalid"
 
-
     def reset(self, connection):
         self.cs = connection.get_setting("ipv4")       
         self.clear_entry()
@@ -519,14 +518,13 @@ class PPPConf(gtk.VBox):
         self.method_table.attach(self.refuse_mschap, 0, 8, 3, 4)
         self.method_table.attach(self.refuse_mschapv2, 0, 8, 4, 5)
 
-        self.pack_start(method, False, False)
-        self.pack_start(self.method_table, False, False)
         # visible settings
         table = gtk.Table(9, 8, False)
         compression = Label("Compression")
         table.attach(compression, 0, 5, 0 ,1)
 
         self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
+        self.require_mppe.connect("toggled", self.mppe_toggled)
         self.require_mppe_128 = CheckButton("Require 128-bit encryption")
         self.mppe_stateful = CheckButton("Use stataful MPPE")
         
@@ -546,8 +544,16 @@ class PPPConf(gtk.VBox):
         table.attach(echo, 0, 5, 7, 8)
         table.attach(self.ppp_echo, 0, 10, 8, 9)
 
-        self.pack_start(table, False, False)
+        vbox = gtk.VBox()
+        vbox.pack_start(method, False, False)
+        vbox.pack_start(self.method_table, False, False)
+        vbox.pack_start(table, False, False)
+        align = gtk.Alignment(0.5, 0.5, 0, 0)
+        align.add(vbox)
+        self.add(align)
 
+        self.require_mppe_128.set_sensitive(False)
+        self.mppe_stateful.set_sensitive(False)
         self.refresh()
 
     def refresh(self):
@@ -571,6 +577,15 @@ class PPPConf(gtk.VBox):
         lcp_echo_interval = self.ppp_setting.lcp_echo_interval
 
         # entering ui
+        #if widget.get_active():
+            #self.require_mppe_128.set_sensitive(True)
+            #self.mppe_stateful.set_sensitive(True)
+        #else:
+            #self.require_mppe_128.set_active(False)
+            #self.mppe_stateful.set_active(False)
+            #self.require_mppe_128.set_sensitive(False)
+            #self.mppe_stateful.set_sensitive(False)
+
         self.refuse_eap.set_active( not refuse_eap)
         self.refuse_pap.set_active(not refuse_pap)
         self.refuse_chap.set_active(not refuse_chap)
@@ -627,7 +642,17 @@ class PPPConf(gtk.VBox):
 
         print self.ppp_setting.prop_dict
 
-        
+    def mppe_toggled(self, widget):
+        print "toggled"
+        if widget.get_active():
+            self.require_mppe_128.set_sensitive(True)
+            self.mppe_stateful.set_sensitive(True)
+        else:
+            self.require_mppe_128.set_active(False)
+            self.mppe_stateful.set_active(False)
+            self.require_mppe_128.set_sensitive(False)
+            self.mppe_stateful.set_sensitive(False)
+
     def toggle_cb(self, widget):
         if widget.get_active():
             self.method_table.set_no_show_all(False)

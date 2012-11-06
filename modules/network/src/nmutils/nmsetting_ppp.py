@@ -139,7 +139,7 @@ class NMSettingPPP (NMSetting):
 
     @require_mppe.setter
     def require_mppe(self, new_require_mppe):
-        self.prop_dict["new_require_mppe"] = TypeConvert.py2_dbus_boolean(new_require_mppe)
+        self.prop_dict["require-mppe"] = TypeConvert.py2_dbus_boolean(new_require_mppe)
 
     @property
     def require_mppe_128(self):
@@ -154,8 +154,8 @@ class NMSettingPPP (NMSetting):
 
     @property
     def mppe_stateful(self):
-        if "mppe_stateful" in self.prop_dict.iterkeys():
-            return TypeConvert.dbus2py(self.prop_dict["mppe_stateful"])
+        if "mppe-stateful" in self.prop_dict.iterkeys():
+            return TypeConvert.dbus2py(self.prop_dict["mppe-stateful"])
         else:
             return False
 
