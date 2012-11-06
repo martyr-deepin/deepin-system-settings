@@ -213,10 +213,12 @@ class Wireless(gtk.VBox):
     
     def device_is_active(self, widget, reason):
         active = wireless_device.get_active_connection()
-        index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-        self.index = index
-        self.tree.visible_items[index].network_state = 2
-        self.tree.queue_draw()
+        # FIXME little wierd
+        if widget.is_active():
+            index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+            self.index = index
+            self.tree.visible_items[index].network_state = 2
+            self.tree.queue_draw()
     
     def device_is_deactive(self, widget, reason):
         if not reason == 0:

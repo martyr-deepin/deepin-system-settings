@@ -74,6 +74,7 @@ class WirelessSetting(gtk.HBox):
         hbox.connect("expose-event", self.expose_event)
 
 
+        # FIXME cairo bug need to be fixed
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
