@@ -643,10 +643,10 @@ class PPPConf(gtk.VBox):
             lcp_echo_failure = 0
             lcp_echo_interval = 0
 
-        print self.ppp_setting.prop_dict
+        #print self.ppp_setting.prop_dict
 
     def mppe_toggled(self, widget):
-        print "toggled"
+        #print "toggled"
         if widget.get_active():
             self.require_mppe_128.set_sensitive(True)
             self.mppe_stateful.set_sensitive(True)

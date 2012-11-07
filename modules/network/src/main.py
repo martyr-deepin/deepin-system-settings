@@ -8,7 +8,7 @@ from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeView
 from dtk.ui.draw import draw_pixbuf, draw_line
-from dtk.ui.utils import color_hex_to_cairo, get_parent_dir
+from dtk.ui.utils import color_hex_to_cairo, get_parent_dir, is_dbus_name_exists
 from dtk.ui.label import Label
 from dtk.ui.new_slider import HSlider
 from dtk.ui.scrolled_window import ScrolledWindow
@@ -37,7 +37,6 @@ from module_frame import ModuleFrame
         
 
 class WiredDevice(object):
-
     def __init__(self, device, treeview, index):
         self.wired_device = device
         self.tree = treeview
@@ -96,12 +95,6 @@ class WiredSection(gtk.VBox):
                 WiredDevice(wired_device,self.tree, index )
 
             self.try_active()
-            #index = self.get_active()
-            #if index:
-                #self.tree.visible_items[index].network_state = 2
-            ##else:
-                ##self.tree.visible_items[0].network_state = 0
-
             self.show_all()
         else:
             self.tree.add_items([],0,True)
@@ -123,11 +116,11 @@ class WiredSection(gtk.VBox):
                                          self.send_to_crumb_cb))
         return wired_items
 
-    def get_active(self):
-        for index, device in enumerate(self.wired_devices):
-            if device.is_active:
-                return index
-        return False
+    #def get_active(self):
+        #for index, device in enumerate(self.wired_devices):
+            #if device.is_active:
+                #return index
+        #return False
 
     def try_active(self):
         for index, device in enumerate(self.wired_devices):
@@ -180,7 +173,6 @@ class WirelessSection(gtk.VBox):
 
             self.pack_start(self.align, False, False, 0)
     
-
     def add_setting_page(self, page):
         if self.wireless_devices:
             self.settings = page
@@ -226,10 +218,8 @@ class WirelessSection(gtk.VBox):
             active_connection = self.wireless_device.get_active_connection()
             index = [ap.object_path for ap in self.ap_list].index(active_connection.get_specific_object())
         else:
-            #device_wifi.auto_connect()
             index = -1
 
-        #print nm_remote_settings.get_ssid_associate_connections(ap_list[3].get_ssid())
         
         ## After Loading
         items = [WirelessItem(i,
@@ -432,62 +422,62 @@ class Proxy(gtk.VBox):
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
 
 if __name__ == '__main__':
+    if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+        module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
+        wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+        wireless_setting_page = WirelessSetting(None, 
+                                                lambda :slider.slide_to_page(main_align, "left"),
+                                                lambda : module_frame.send_message("change_crumb", 1))
+        wireless.add_setting_page(wireless_setting_page)
 
-    module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-    wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-    wireless_setting_page = WirelessSetting(None, 
-                                            lambda :slider.slide_to_page(main_align, "left"),
-                                            lambda : module_frame.send_message("change_crumb", 1))
-    wireless.add_setting_page(wireless_setting_page)
+        wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
+        wifi = WifiSection()
+        dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
+        vpn = VpnSection()
+        mobile = ThreeG()
+        proxy = Proxy()
 
-    wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-    wifi = WifiSection()
-    dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
-    vpn = VpnSection()
-    mobile = ThreeG()
-    proxy = Proxy()
+        vbox = gtk.VBox(False, 17)
+        vbox.pack_start(wired, False, True,5)
+        vbox.pack_start(wireless, False, True, 0)
+        vbox.pack_start(dsl, False, True, 0)
+        vbox.pack_start(mobile, False, True, 0)
+        vbox.pack_start(vpn, False, True, 0)
+        vbox.pack_start(proxy, False, True, 0)
+        
+        scroll_win = ScrolledWindow()
+        scroll_win.set_size_request(825, 425)
 
-    vbox = gtk.VBox(False, 17)
-    vbox.pack_start(wired, False, True,5)
-    vbox.pack_start(wireless, False, True, 0)
-    vbox.pack_start(dsl, False, True, 0)
-    vbox.pack_start(mobile, False, True, 0)
-    vbox.pack_start(vpn, False, True, 0)
-    vbox.pack_start(proxy, False, True, 0)
-    
-    scroll_win = ScrolledWindow()
-    scroll_win.set_size_request(825, 425)
+        scroll_win.add_with_viewport(vbox)
+        main_align = gtk.Alignment(0,0,0,0)
+        main_align.set_padding(11,11,11,11)
+        main_align.add(scroll_win)
+        
+        wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        wired.add_setting_page(wired_setting_page)
 
-    scroll_win.add_with_viewport(vbox)
-    main_align = gtk.Alignment(0,0,0,0)
-    main_align.set_padding(11,11,11,11)
-    main_align.add(scroll_win)
-    
-    wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"),
-                                      lambda  : module_frame.send_message("change_crumb", 1))
-    wired.add_setting_page(wired_setting_page)
+        dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        dsl.add_setting_page(dsl_setting_page)
 
-    dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(main_align, "left"),
-                                      lambda  : module_frame.send_message("change_crumb", 1))
-    dsl.add_setting_page(dsl_setting_page)
+        slider.append_page(main_align)
+        slider.append_page(wired_setting_page)
+        slider.append_page(dsl_setting_page)
+        slider.append_page(wireless_setting_page)
 
-    slider.append_page(main_align)
-    slider.append_page(wired_setting_page)
-    slider.append_page(dsl_setting_page)
-    slider.append_page(wireless_setting_page)
+        module_frame.add(slider)
+        
+        def message_handler(*message):
+            (message_type, message_content) = message
+            if message_type == "show_again":
+                slider.set_to_page(main_align)
+                module_frame.send_module_info()
+            elif message_type == "click_crumb":
+                (crumb_index, crumb_label) = message_content
+                if crumb_index == 1:
+                    slider.slide_to_page(main_align, "left")
 
-    module_frame.add(slider)
-    
-    def message_handler(*message):
-        (message_type, message_content) = message
-        if message_type == "show_again":
-            slider.set_to_page(main_align)
-            module_frame.send_module_info()
-        elif message_type == "click_crumb":
-            (crumb_index, crumb_label) = message_content
-            if crumb_index == 1:
-                slider.slide_to_page(main_align, "left")
-
-    module_frame.module_message_handler = message_handler
-    
-    module_frame.run()
+        module_frame.module_message_handler = message_handler
+        
+        module_frame.run()

@@ -20,7 +20,33 @@ error list
     message, timeout)
 DBusException: org.freedesktop.Secret.Error.IsLocked: Cannot create an item in a locked collection
 
-2.
+
+2. Traceback (most recent call last):
+  File "/home/andy/deepin-system-settings/modules/network/src/nmlib/nmobject.py", line 77, in dbus_method
+    return apply(getattr(self.dbus_interface, method_name), args, kwargs)
+  File "/usr/lib/python2.7/dist-packages/dbus/proxies.py", line 145, in __call__
+    **keywords)
+  File "/usr/lib/python2.7/dist-packages/dbus/connection.py", line 651, in call_blocking
+    message, timeout)
+DBusException: org.freedesktop.NetworkManager.Settings.NotPrivileged: Insufficient privileges.
+Traceback (most recent call last):
+  File "/usr/local/lib/python2.7/dist-packages/dtk-0.1-py2.7-linux-x86_64.egg/dtk/ui/new_treeview.py", line 1017, in button_release_tree_view
+    self.release_item(event)
+  File "/usr/local/lib/python2.7/dist-packages/dtk-0.1-py2.7-linux-x86_64.egg/dtk/ui/new_treeview.py", line 1032, in release_item
+    self.visible_items[release_row].single_click(release_column, offset_x, offset_y)
+  File "/home/andy/deepin-system-settings/modules/network/src/lists.py", line 197, in single_click
+    self.setting_object.init(self.connection)
+  File "/home/andy/deepin-system-settings/modules/network/src/wlan_config.py", line 93, in init
+    nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
+  File "/home/andy/deepin-system-settings/modules/network/src/nmlib/nm_remote_settings.py", line 178, in new_wireless_connection
+    return self.add_connection(settings_dict)
+  File "/home/andy/deepin-system-settings/modules/network/src/nmlib/nm_remote_settings.py", line 73, in add_connection
+    return cache.getobject(self.dbus_method("AddConnection", settings_dict))
+  File "/home/andy/deepin-system-settings/modules/network/src/nmlib/nmcache.py", line 153, in getobject
+    self.putobject(path, self.new_object(path))
+  File "/home/andy/deepin-system-settings/modules/network/src/nmlib/nmcache.py", line 39, in new_object
+    key = path.split("/")[-2]
+AttributeError: 'NoneType' object has no attribute 'split'
 
 
 
