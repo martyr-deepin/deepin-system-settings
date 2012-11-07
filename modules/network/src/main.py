@@ -45,7 +45,6 @@ class WiredDevice(object):
         self.wired_device.connect("device-active", self.device_activate)
         self.wired_device.connect("device-deactive", self.device_deactive)
         device_ethernet.connect("try-activate-begin", self.try_activate_begin)
-            #wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
 
     def device_activate(self, widget ,reason):
         if self.tree.visible_items != []:

@@ -39,6 +39,7 @@ from nmlib.nm_remote_settings import nm_remote_settings
 class WirelessSetting(gtk.HBox):
 
     def __init__(self, access_point, slide_back_cb, change_crumb_cb):
+
         gtk.HBox.__init__(self)
         self.access_point = access_point
         self.slide_back = slide_back_cb
@@ -84,8 +85,6 @@ class WirelessSetting(gtk.HBox):
 
     def init(self, access_point):
         self.access_point = access_point
-        wireless_device = nmclient.get_wireless_devices()[0]
-        global wireless_device
         # Get all connections  
         connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
         connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
@@ -139,6 +138,7 @@ class WirelessSetting(gtk.HBox):
         self.ipv6.save_changes()
         #self.wireless.save_change()
         self.security.save_setting()
+        wireless_device = nmclient.get_wireless_devices()[0]
         wlan = cache.get_spec_object(wireless_device.object_path)
         wlan.emit("try-ssid-begin", self.access_point)
         self.change_crumb()
@@ -168,6 +168,7 @@ class SideBar(gtk.VBox):
         self.set_size_request(160, -1)
 
     def init(self, connection_list, ipv4setting, associate_len, access_point):
+        wireless_device = nmclient.get_wireless_devices()[0]
         active_connection = wireless_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
@@ -815,6 +816,7 @@ class Security(gtk.VBox):
         
         self.setting.adapt_wireless_security_commit()
         self.connection.update()
+        wireless_device = nmclient.get_wireless_devices()[0]
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
