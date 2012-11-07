@@ -25,7 +25,10 @@ from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 
 from nmlib.nmobject import dbus_loop
-from wired import *
+from nmlib.nmclient import nmclient
+from nmlib.nm_remote_settings import nm_remote_settings
+from nmlib.nmcache import cache
+
 slider = HSlider()
 PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
@@ -33,93 +36,116 @@ from module_frame import ModuleFrame
 
         
 
-class WiredSection(gtk.VBox):
+class WiredDevice(object):
 
+    def __init__(self, device, treeview, index):
+        self.wired_device = device
+        self.tree = treeview
+        self.index = index
+        device_ethernet = cache.get_spec_object(self.wired_device.object_path)
+        self.wired_device.connect("device-active", self.device_activate)
+        self.wired_device.connect("device-deactive", self.device_deactive)
+        device_ethernet.connect("try-activate-begin", self.try_activate_begin)
+            #wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
+
+    def device_activate(self, widget ,reason):
+        if self.tree.visible_items != []:
+            self.tree.visible_items[self.index].network_state = 2
+            self.tree.queue_draw()
+
+    def device_deactive(self, widget, reason):
+        if not reason == 0:
+            if self.tree.visible_items != []:
+                self.tree.visible_items[self.index].network_state = 0
+                self.tree.queue_draw()
+
+    def try_activate_begin(self, widget):
+        if self.tree.visible_items != []:
+            self.tree.visible_items[self.index].network_state = 1
+            self.tree.queue_draw()
+
+class WiredSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
-        self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
-        self.send_to_crumb_cb = send_to_crumb_cb
-        self.device_ethernet = cache.get_spec_object(wired_device.object_path)
-        wired_device.connect("device-active", self.device_activate)
-        wired_device.connect("device-deactive", self.device_deactive)
-        self.device_ethernet.connect("try-activate-begin", self.try_activate_begin)
-        #wired_device.connect("device-available", lambda w,s: cache.get_spec_object(wired_device.object_path).auto_connect())
-        self.settings = None
-        self.pack_start(self.wire, False, False)
-        self.tree = TreeView([])
-        self.tree.set_no_show_all(True)
-        self.tree.hide()
-        self.align = gtk.Alignment()
-        self.align.show()
-        self.align.set(0,0,1,1)
-        self.align.set_padding(0,0,PADDING,11*2)
-        self.align.add(self.tree)
-        self.pack_start(self.align, False, False, 0)
-
-    def add_setting_page(self, setting_page):
-        self.settings = setting_page
-        if wired_device.is_active():
-            self.wire.set_active(True)
-        else:
-            self.wire.set_active(False)
-
+        self.wired_devices = nmclient.get_wired_devices()
+        if self.wired_devices:
+            self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
+            self.send_to_crumb_cb = send_to_crumb_cb
+            self.pack_start(self.wire, False, False, 0)
+            self.settings = None
+            self.tree = TreeView([])
+            self.tree.set_no_show_all(True)
+            self.tree.hide()
+            self.align = gtk.Alignment()
+            self.align.show()
+            self.align.set(0,0,1,1)
+            self.align.set_padding(0,0,PADDING,11*2)
+            self.align.add(self.tree)
+            self.pack_start(self.align, False, False, 0)
+            
+         
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            t = self.retrieve_list()
-            self.tree.add_items(t,0,True)
+            item_list = self.retrieve_list()
+            self.tree.add_items(item_list, 0, True)
             self.tree.visible_items[-1].is_last = True
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-            
-            if self.active_one >= 0:
-                self.tree.visible_items[self.active_one].network_state = 2
-            else:
-                self.tree.visible_items[0].network_state = 0
+            for index, wired_device in enumerate(self.wired_devices):
+                WiredDevice(wired_device,self.tree, index )
+
+            self.try_active()
+            #index = self.get_active()
+            #if index:
+                #self.tree.visible_items[index].network_state = 2
+            ##else:
+                ##self.tree.visible_items[0].network_state = 0
 
             self.show_all()
         else:
             self.tree.add_items([],0,True)
             self.tree.hide()
-            wired_device.nm_device_disconnect()
-            #self.h.get_children()[1].destroy()
+            for wired_device in self.wired_devices:
+                wired_device.nm_device_disconnect()
 
     def retrieve_list(self):
         """
         retrieve network lists, will use thread
         """
-        if wired_device.is_active():
-           self.active_one = 0
-        else:
-            self.device_ethernet.auto_connect()
-            self.device_ethernet.emit("try-activate-begin")
-            self.active_one = -1
-        return [WiredItem(wired_device.get_device_desc(),
-                          self.settings, 
-                          lambda : slider.slide_to_page(self.settings, "right"),
-                          self.send_to_crumb_cb)]
+        wired_items = []
+        for wired_device in self.wired_devices:
+                #self.device_ethernet.auto_connect()
+                #self.device_ethernet.emit("try-activate-begin")
+            wired_items.append(WiredItem(wired_device,
+                                         self.settings, 
+                                         lambda : slider.slide_to_page(self.settings, "right"),
+                                         self.send_to_crumb_cb))
+        return wired_items
 
-    def device_activate(self, widget ,reason):
+    def get_active(self):
+        for index, device in enumerate(self.wired_devices):
+            if device.is_active:
+                return index
+        return False
 
-        if self.tree.visible_items != []:
-            self.tree.visible_items[0].network_state = 2
-            self.queue_draw()
+    def try_active(self):
+        for index, device in enumerate(self.wired_devices):
+            if not device.is_active():
+                device_ethernet = cache.get_spec_object(device.object_path)
+                device_ethernet.auto_connect()
+                device_ethernet.emit("try-activate-begin")
+            else:
+                self.tree.visible_items[index].network_state = 2
 
-    def device_deactive(self, widget, reason):
-        if not reason == 0:
-            if self.tree.visible_items != []:
-                self.tree.visible_items[0].network_state = 0
-                self.queue_draw()
+    def add_setting_page(self, setting_page):
+        self.settings = setting_page
+        if self.wired_devices:
+            for device in self.wired_devices:
+                if device.is_active():
+                    self.wire.set_active(True)
 
-    def try_activate_begin(self, widget):
-        if self.tree.visible_items != []:
-            self.tree.visible_items[0].network_state = 1
-            self.queue_draw()
-
-         
-        
-
-class Wireless(gtk.VBox):
+class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         
@@ -309,33 +335,6 @@ class DSL(gtk.VBox):
         rect = widget.child.allocation
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
-    #def toggle_cb(self, widget):
-        #if widget.get_active():
-            #t = self.retrieve_list()
-            #self.tree.add_items(t,0,True)
-            #self.tree.visible_items[-1].is_last = True
-            #self.tree.set_no_show_all(False)
-            #self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-            
-            #if self.active_one >= 0:
-                #self.tree.visible_items[self.active_one].is_select = True
-            #self.show_all()
-        #else:
-            #self.tree.add_items([],0,True)
-            #self.tree.hide()
-            #wired_device.nm_device_disconnect()
-            ##self.h.get_children()[1].destroy()
-
-    #def retrieve_list(self):
-        #"""
-        #retrieve network lists, will use thread
-        #"""
-        ## TODO not finish yet
-
-        #return [WiredItem(wired_device.get_device_desc(),
-                          #self.settings, 
-                          #lambda : slider.slide_to_page(self.settings, "right"),
-                          #self.send_to_crumb_cb)]
 
 class VpnSection(gtk.VBox):
     def __init__(self):
@@ -435,7 +434,7 @@ class Proxy(gtk.VBox):
 if __name__ == '__main__':
 
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-    wireless = Wireless(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+    wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
     wireless_setting_page = WirelessSetting(None, 
                                             lambda :slider.slide_to_page(main_align, "left"),
                                             lambda : module_frame.send_message("change_crumb", 1))

@@ -32,11 +32,11 @@ from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
 import gtk
 
-active_connection = wired_device.get_active_connection()
-if active_connection:
-    active = active_connection.get_connection()
-else: 
-    active =None
+#active_connection = wired_device.get_active_connection()
+#if active_connection:
+    #active = active_connection.get_connection()
+#else: 
+    #active =None
 
 class WiredSetting(gtk.HBox):
 
@@ -78,8 +78,10 @@ class WiredSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self):
-        # Get all connections  
+    def init(self, device):
+        # Get all connections
+        wired_device = device
+        global wired_device
         connections = nm_remote_settings.get_wired_connections()
         # Check connections
         if connections == []:
