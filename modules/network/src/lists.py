@@ -213,19 +213,21 @@ class WiredItem(TreeItem):
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
 
-    def __init__(self, essid, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
+    def __init__(self, device, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
         
         TreeItem.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
-        self.essid = essid
+        self.device = device
+        self.essid = self.device.get_device_desc()
         self.items = None
         self.setting = setting
         self.is_last = False
         self.send_to_crumb = send_to_crumb
         self.font_size = font_size
         self.check_width = self.get_check_width()
-        self.essid_width = self.get_essid_width(essid)
+        self.essid_width = self.get_essid_width(self.essid)
         self.jumpto_width = self.get_jumpto_width()
+        self.network_state = 0
 
     def render_check(self, cr, rect):
         render_background(cr, rect)
@@ -316,7 +318,7 @@ class WiredItem(TreeItem):
         #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
             #self.is_select = not self.is_select
         if column == 2:
-            self.setting.init()
+            self.setting.init(self.device)
             self.slide_to_setting()
             self.send_to_crumb()
 
