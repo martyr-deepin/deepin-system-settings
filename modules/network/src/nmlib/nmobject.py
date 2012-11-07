@@ -49,7 +49,7 @@ class NMObject(gobject.GObject):
 
         self.bus = bus
         self.service_name = service_name
-        self.bus.activate_name_owner(service_name)
+        # self.bus.activate_name_owner(service_name)
 
         if not is_dbus_name_exists(service_name, False):
             raise InvalidService(service_name)
