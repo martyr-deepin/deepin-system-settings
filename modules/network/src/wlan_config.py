@@ -84,6 +84,8 @@ class WirelessSetting(gtk.HBox):
 
     def init(self, access_point):
         self.access_point = access_point
+        wireless_device = nmclient.get_wireless_devices()[0]
+        global wireless_device
         # Get all connections  
         connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
         connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
@@ -718,8 +720,10 @@ class Security(gtk.VBox):
                 secret = secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
-            except:
+            except Exception, e:
+                print "Exception",str(e)
                 secret = ""
+
 
         if self.security_combo.get_active() == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
