@@ -25,6 +25,9 @@ import gobject
 import re
 import traceback
 
+from dbus.mainloop.glib import DBusGMainLoop
+DBusGMainLoop(set_as_default = True)
+
 name_re = re.compile("[0-9a-zA-Z-]*")
 accounts_bus = dbus.SystemBus()
 
@@ -57,7 +60,7 @@ class InvalidObjectPath(Exception):
         return repr("InvalidObjectPath:" + self.path)
 
 
-class BusBase(gobject.Gobject):
+class BusBase(gobject.GObject):
     
     def __init__(self, path, interface, service = "org.freedesktop.Accounts", bus = accounts_bus):
 
@@ -89,19 +92,16 @@ class BusBase(gobject.Gobject):
                 print "get properties failed"
                 traceback.print_exc()
 
-    def call_sync(self, method_name, *args, **kwargs):
+    def dbus_method(self, method_name, *args, **kwargs):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException:
             print "call dbus method failed:%s\n" % method_name
             traceback.print_exc()
-    
-    def call_async(self, method_name, signature = None, reply = None, error = None, *args, **kwargs):
-        try:
-            self.bus.call_async(bus_name = self.service, object_path = self.object_path, object_interface = self.object_interface,
-                                method = method_name, signature = signature, args = args, reply_handler = reply, 
-                                error_handler = error, timeout = -1.0, byte_arrays = False, require_main_loop = True,  **kwargs)
 
+    def call_async(self, method_name, *args, **kwargs):
+        try:
+            return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException:
             print "call dbus method failed:%s\n" % method_name
             traceback.print_exc()
@@ -128,19 +128,19 @@ class Accounts(BusBase):
         return self.properties["DaemonVersion"]
 
     def create_user(self, name, fullname, account_type):
-        return self.call_sync("CreateUser", name, fullname, account_type)
+        return str(self.dbus_method("CreateUser", name, fullname, account_type))
 
     def delete_user(self, id, remove_files_flag):
-        return self.call_async("DeleteUser", id, remove_files_flag)
+        self.call_async("DeleteUser", id, remove_files_flag, reply_handler = None, error_handler = None)
 
     def find_user_by_id(self, id):
-        return self.call_sync("FindUserById", id)
+        return str(self.dbus_method("FindUserById", id))
 
     def find_user_by_name(self, name):
-        return self.call_sync("FindUserByName", name)
+        return str(self.dbus_method("FindUserByName", name))
 
     def list_cached_users(self):
-        return self.call_sync("ListCachedUsers")
+        return map(lambda x:str(x), self.dbus_method("ListCachedUsers"))
 
     def user_added_cb(self, userpath):
         self.emit("user-added", userpath)
@@ -162,7 +162,10 @@ class User(BusBase):
 
     ###get properties    
     def get_x_keyboard_layouts(self):
-        return self.properties["XKeyboardLayouts"]
+        if self.properties["XKeyboardLayouts"]:
+            return map(lambda x:str(x), self.properties["XKeyboardLayouts"])
+        else:
+            return []
 
     def get_automatic_login(self):
         return self.properties["AutomaticLogin"]
@@ -223,72 +226,62 @@ class User(BusBase):
 
     ###set methods
     def set_account_type(self, account_type):
-        self.call_async("SetAccountType", account_type)
+        self.call_async("SetAccountType", account_type, reply_handler = None, error_handler = None)
 
     def set_automatic_login(self, automatic_login):
-        self.call_async("SetAutomaticLogin", automatic_login)
+        self.call_async("SetAutomaticLogin", automatic_login, reply_handler = None, error_handler = None)
 
     def set_background_file(self, background_file):
-        self.call_async("SetBackgroundFile", background_file)
+        self.call_async("SetBackgroundFile", background_file, reply_handler = None, error_handler = None)
 
     def set_email(self, email):
-        self.call_async("SetEmail", email)
+        self.call_async("SetEmail", email, reply_handler = None, error_handler = None)
 
     def set_formats_locale(self, formats_locale):
-        self.call_async("SetFormatsLocale", formats_locale)
+        self.call_async("SetFormatsLocale", formats_locale, reply_handler = None, error_handler = None)
 
     def set_home_directory(self, home_directory):
-        self.call_async("SetHomeDirectory", home_directory)
+        self.call_async("SetHomeDirectory", home_directory, reply_handler = None, error_handler = None)
 
     def set_icon_file(self, filename):
-        self.call_async("SetIconFile", filename)
+        self.call_async("SetIconFile", filename, reply_handler = None, error_handler = None)
 
     def set_language(self, language):
-        self.call_async("SetLanguage", language)
+        self.call_async("SetLanguage", language, reply_handler = None, error_handler = None)
 
     def set_location(self, location):
-        self.call_async("SetLocation", location)
+        self.call_async("SetLocation", location, reply_handler = None, error_handler = None)
 
     def set_locked(self, locked):
-        self.call_async("SetLocked", locked)
+        self.call_async("SetLocked", locked, reply_handler = None, error_handler = None)
 
     def set_password(self, password, hint):
-        self.call_async("SetPassword", password, hint)
+        self.call_async("SetPassword", password, hint, reply_handler = None, error_handler = None)
 
     def set_password_mode(self, password_mode):
-        self.call_async("SetPasswordMode", password_mode)
+        self.call_async("SetPasswordMode", password_mode, reply_handler = None, error_handler = None)
 
     def set_real_name(self, name):
-        self.call_async("SetRealName", name)
+        self.call_async("SetRealName", name, reply_handler = None, error_handler = None)
 
     def set_shell(self, shell):
-        self.call_async("SetShell", shell)
+        self.call_async("SetShell", shell, reply_handler = None, error_handler = None)
 
     def set_user_name(self, username):
-        self.call_async("SetUserName", username)
+        self.call_async("SetUserName", username, reply_handler = None, error_handler = None)
 
     def set_x_has_messages(self, has_messages):
-        self.call_async("SetXHasMessages", has_messages)
+        self.call_async("SetXHasMessages", has_messages, reply_handler = None, error_handler = None)
 
     def set_x_keyboard_layouts(self, layouts):
-        self.call_async("SetXKeyboardLayouts", layouts)
+        self.call_async("SetXKeyboardLayouts", layouts, reply_handler = None, error_handler = None)
 
     def set_x_session(self, x_session):
-        self.call_async("SetXSession", x_session)
+        self.call_async("SetXSession", x_session, reply_handler = None, error_handler = None)
 
     ###signals
     def changed_cb(self):
         self.emit("changed")
 
-def test_sync():
-    pass
-
-def test_async():
-    pass
-
-def test_async_reply():
-    pass
-
 if __name__ == "__main__":
-    from dbus.mainloop.glib import DBusGMainLoop
-    DBusGMainLoop(set_as_default = True)
+    gobject.MainLoop().run()

@@ -36,12 +36,17 @@ class TypeConvert(object):
                               "Struct": "dbus_struct_2py", "UInt16": "dbus_uint16_2py",
                               "UInt32": "dbus_uint32_2py", "UInt64": "dbus_uint64_2py",
                               "UTF8String": "dbus_utf8string_2py", "UnixFD": "dbus_unixfd_2py",
-                              "tuple":"tuple_dbus2py", "unicode": "dbus_string_2py",
-                              "str": "str_2str"
+                              "tuple":"tuple_dbus2py", "unicode": "dbus_string_2py"
+                              # "str": "str_2str"
                               }
 
     def dbus2py(self, prop):
-        return getattr(self, self.dbus_2py_dict[type(prop).__name__])(prop)
+        # return getattr(self, self.dbus_2py_dict[type(prop).__name__])(prop)
+        if type(prop).__name__ in self.dbus_2py_dict.iterkeys():
+            return getattr(self, self.dbus_2py_dict[type(prop).__name__])(prop)
+        else:
+            return prop
+
         # return apply(self.dbus_2py_dict[type(prop).__name, prop])
 
     def py2dbus(self, prop):
