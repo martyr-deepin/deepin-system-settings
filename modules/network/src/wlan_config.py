@@ -79,6 +79,7 @@ class WirelessSetting(gtk.HBox):
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
+        print rect.width,rect.height
         cr.set_source_rgb( 1, 1, 1) 
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()

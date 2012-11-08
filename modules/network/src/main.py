@@ -23,6 +23,7 @@ from lists import WiredItem, WirelessItem
 from lan_config import WiredSetting
 from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
+from proxy_config import ProxyConfig
 
 from nmlib.nmobject import dbus_loop
 from nmlib.nmclient import nmclient
@@ -442,7 +443,7 @@ if __name__ == '__main__':
         dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
         vpn = VpnSection()
         mobile = ThreeG()
-        proxy = Proxy()
+        proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
 
         vbox = gtk.VBox(False, 17)
         vbox.pack_start(wired, False, True,5)
@@ -468,10 +469,15 @@ if __name__ == '__main__':
                                           lambda  : module_frame.send_message("change_crumb", 1))
         dsl.add_setting_page(dsl_setting_page)
 
+        proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        proxy.add_setting_page(proxy_setting_page)
+
         slider.append_page(main_align)
         slider.append_page(wired_setting_page)
         slider.append_page(dsl_setting_page)
         slider.append_page(wireless_setting_page)
+        slider.append_page(proxy_setting_page)
 
         module_frame.add(slider)
         
