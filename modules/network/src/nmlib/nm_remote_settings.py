@@ -443,6 +443,7 @@ class NMRemoteSettings(NMObject):
 nm_remote_settings = NMRemoteSettings()
 
 def refresh_nm_remote_settings():
+    global nm_remote_settings
     nm_remote_settings = NMRemoteSettings()
     return nm_remote_settings
 

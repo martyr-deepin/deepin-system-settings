@@ -171,6 +171,7 @@ class NMSecretAgent(NMObject):
 secret_agent = NMSecretAgent()
 
 def refresh_nm_secret_agent():
+    global secret_agent
     secret_agent = NMSecretAgent()
     return secret_agent
 

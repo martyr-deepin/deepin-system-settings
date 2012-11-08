@@ -306,6 +306,7 @@ class NMClient(NMObject):
 nmclient = NMClient()
 
 def refresh_nm_client():
+    global nmclient
     nmclient = NMClient()
     return nmclient
 

@@ -138,6 +138,7 @@ class ProxySettings(object):
 proxy_settings = ProxySettings()
 
 def refresh_proxy_settings():
+    global proxy_settings
     proxy_settings = ProxySettings()
     return proxy_settings
 
