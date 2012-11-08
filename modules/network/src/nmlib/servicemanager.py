@@ -30,8 +30,9 @@ manager_interface = dbus.Interface(manager_proxy, "org.freedesktop.DBus")
 class ServiceManager(gobject.GObject):
         
     __gsignals__  = {
-            "name-lost":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "nameowner-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
+            "name-owner-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
+            "service-start":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
+            "service-stop":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
             }
     
     def __init__(self):
@@ -40,19 +41,29 @@ class ServiceManager(gobject.GObject):
         manager_bus.add_signal_receiver(self.name_lost_cb, dbus_interface = "org.freedesktop.DBus",
                                         path = "/org/freedesktop/DBus", signal_name = "NameLost")
 
-        manager_bus.add_signal_receiver(self.nameowner_changed_cb, dbus_interface = "org.freedesktop.DBus",
+        manager_bus.add_signal_receiver(self.name_owner_changed_cb, dbus_interface = "org.freedesktop.DBus",
                                         path = "/org/freedesktop/DBus", signal_name = "NameOwnerChanged")
 
+        manager_bus.add_signal_receiver(self.name_accuired_cb, dbus_interface = "org.freedesktop.DBus",
+                                        path = "/org/freedesktop/DBus", signal_name = "NameAccuired")
+
+    def list_names(self):
+        return map(lambda x:str(x), manager_interface.ListNames())
+
     def name_has_owner(self, name):
-        pass
+        return manager_interface.NameHasOwner(name)
 
-    def name_lost_cb(self, *args):
-        print args
-        if args == "org.freedesktop.NetworkManager":
-            print "service networkmanager stop"
+    def get_name_owner(self, name):
+        if self.name_has_owner(name):
+            return manager_interface.GetNameOwner(name)
 
-    def nameowner_changed_cb(self, wellknown, old_name, new_name):
-        if wellknown == "org.freedesktop.NetworkManager" and not new_name:
-            self.emit("nameowner-changed", wellknown)
+    def name_owner_changed_cb(self, wellknown, old_name, new_name):
+        if wellknown == "org.freedesktop.NetworkManager":
+            if old_name and not new_name:
+                self.emit("service-stop", "org.freedesktop.NetworkManager")
+            if new_name and not old_name:
+                self.emit("service-start", "org.freedesktop.NetworkManager")
+        else:
+            pass
 
 servicemanager = ServiceManager()
