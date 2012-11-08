@@ -35,7 +35,7 @@ class NMClient(NMObject):
             "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, )),
             "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
-            # "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT)),
+            "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, ()),
             "activate-succeed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "activate-failed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
             }
@@ -292,6 +292,7 @@ class NMClient(NMObject):
         self.emit("device-removed", device_object_path)
 
     def permisson_changed_cb(self):
+        print "permisson_changed_cb triggerd in nmclient"
         self.emit("permission-changed")
 
     def state_changed_cb(self, state):

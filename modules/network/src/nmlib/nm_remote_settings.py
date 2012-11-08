@@ -159,6 +159,7 @@ class NMRemoteSettings(NMObject):
         s_connection.autoconnect = True
         s_connection.uuid = uuid.uuid4()
         s_connection.timestamp = time.time()
+        s_connection.permissions = []
 
         s_wireless.mode = "infrastructure"
         s_wireless.ssid = ssid
