@@ -10,7 +10,7 @@ import gtk
 
 class ProxyConfig(gtk.VBox):
 
-    def __init__(self, ):
+    def __init__(self,a,b ):
         gtk.VBox.__init__(self)
         self.proxysetting = ProxySettings()
 

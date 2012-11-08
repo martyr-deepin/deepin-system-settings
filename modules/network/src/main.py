@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+#from proxy_config import ProxyConfig
 import sys
 import os
 sys.path.append("../")
@@ -23,7 +24,6 @@ from lists import WiredItem, WirelessItem
 from lan_config import WiredSetting
 from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
-from proxy_config import ProxyConfig
 
 from nmlib.nmobject import dbus_loop
 from nmlib.nmclient import nmclient
@@ -399,10 +399,11 @@ class ThreeG(gtk.VBox):
 
 
 class Proxy(gtk.VBox):
-    def __init__(self):
-
+    def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
+        self.slide_to_setting = slide_to_setting_cb
         proxy = Contain(app_theme.get_pixbuf("/Network/misc.png"), "网络代理", self.toggle_cb)
+        self.settings = None
         self.add(proxy)
 
     def toggle_cb(self, widget):
@@ -422,12 +423,25 @@ class Proxy(gtk.VBox):
 
     def slide_to_event(self, widget, event):
         print "clicked proxy config"
+        self.settings.init()
+        self.slide_to_setting()
+        slider.slide_to_page(self.setting_page, "right")
+
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.child.allocation
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
+
+    def add_setting_page(self, setting_page):
+        self.settings = setting_page
+        #if self.wired_devices:
+            #for device in self.wired_devices:
+                #if device.is_active():
+                    #self.wire.set_active(True)
+                #else:
+                    #self.wire.set_active(False)
 
 if __name__ == '__main__':
     if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
@@ -469,15 +483,15 @@ if __name__ == '__main__':
                                           lambda  : module_frame.send_message("change_crumb", 1))
         dsl.add_setting_page(dsl_setting_page)
 
-        proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(main_align, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        proxy.add_setting_page(proxy_setting_page)
+        #proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(main_align, "left"),
+                                          #lambda  : module_frame.send_message("change_crumb", 1))
+        #proxy.add_setting_page(proxy_setting_page)
 
         slider.append_page(main_align)
         slider.append_page(wired_setting_page)
         slider.append_page(dsl_setting_page)
         slider.append_page(wireless_setting_page)
-        slider.append_page(proxy_setting_page)
+        #slider.append_page(proxy_setting_page)
 
         module_frame.add(slider)
         
