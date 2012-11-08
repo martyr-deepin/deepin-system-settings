@@ -36,7 +36,7 @@ class ServiceManager(gobject.GObject):
             }
     
     def __init__(self):
-        gobject.GObject.__init__()
+        gobject.GObject.__init__(self)
 
         manager_bus.add_signal_receiver(self.name_lost_cb, dbus_interface = "org.freedesktop.DBus",
                                         path = "/org/freedesktop/DBus", signal_name = "NameLost")
@@ -65,5 +65,13 @@ class ServiceManager(gobject.GObject):
                 self.emit("service-start", "org.freedesktop.NetworkManager")
         else:
             pass
+
+    def name_lost_cb(self, *args):
+        print "name lost"
+        print args
+
+    def name_accuired_cb(self, *args):
+        print "name accuired"
+        print args
 
 servicemanager = ServiceManager()
