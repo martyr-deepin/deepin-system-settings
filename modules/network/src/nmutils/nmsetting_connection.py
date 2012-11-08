@@ -41,20 +41,18 @@ class NMSettingConnection (NMSetting):
         self.prop_dict["permissions"] = TypeConvert.py2_dbus_array(new_permissions)
 
     def add_permission(self, type, id, reserved):
-        self._permissions.append(":".join([type,id,reserved]))
-        self.nm_remote_connection.settings_dict[self.name]["permissions"] = self._permissions
+        self.prop_dict["permissions"].append(":".join([type,id,reserved]))
+
 
     def permissions_user_allowed (self, uname):
-        return uname in map(lambda x: x[1], self._permissions)
+        return uname in map(lambda x: x[1], self.prop_dict["permissions"])
 
     def remove_permission (self, id):
         if self.permissions_user_allowed(id):
-            self._permissions = filter(lambda x: x[1] != id, self._permissions)
-        self.nm_remote_connection.settings_dict[self.name]["permissions"] = self._permissions
+            self.prop_dict["permissions"] = filter(lambda x: x[1] != id, self.prop_dict["permissions"])
 
     def clear_permissions(self):
-        self._permissions = []
-        self.nm_remote_connection.settings_dict[self.name]["permissions"] = dbus.Array(signature = dbus.Signature('s'))
+        self.prop_dict["permissions"] = dbus.Array(signature = dbus.Signature('s'))
 
     @property
     def autoconnect(self):

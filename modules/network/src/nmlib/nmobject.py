@@ -40,16 +40,11 @@ nm_bus = dbus.SystemBus()
 class NMObject(gobject.GObject):
     '''NMObject'''
 
-    __gsignals__  = {
-            "name-lost":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
-            }
-
     def __init__(self, object_path, object_interface, service_name = "org.freedesktop.NetworkManager", bus = nm_bus):
         gobject.GObject.__init__(self)
 
         self.bus = bus
         self.service_name = service_name
-        # self.bus.activate_name_owner(service_name)
 
         if not is_dbus_name_exists(service_name, False):
             raise InvalidService(service_name)
