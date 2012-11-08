@@ -305,6 +305,10 @@ class NMClient(NMObject):
 
 nmclient = NMClient()
 
+def refresh_nm_client():
+    nmclient = NMClient()
+    return nmclient
+
 if __name__ == "__main__":
     from nmobject import dbus_loop
     

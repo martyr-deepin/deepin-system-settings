@@ -170,6 +170,10 @@ class NMSecretAgent(NMObject):
 
 secret_agent = NMSecretAgent()
 
+def refresh_nm_secret_agent():
+    secret_agent = NMSecretAgent()
+    return secret_agent
+
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  
     agent = NMSecretAgent()
