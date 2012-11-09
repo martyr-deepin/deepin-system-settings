@@ -14,8 +14,8 @@ def connect():
     else:
         bus = dbus.SessionBus()
         server_lookup = bus.get_object("org.PulseAudio1", "/org/pulseaudio/server_lookup1")
-        address = server_lookup.Get("org.PulseAudio.ServerLookup1", "Address", dbus_interface="org.freedesktop.DBus.Properties")
         #print "address:", address
+        address = server_lookup.Get("org.PulseAudio.ServerLookup1", "Address", dbus_interface="org.freedesktop.DBus.Properties")
 
     return dbus.connection.Connection(address)
 
