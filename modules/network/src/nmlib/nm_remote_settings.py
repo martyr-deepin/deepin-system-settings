@@ -43,10 +43,10 @@ from nmutils.nmsetting_ppp import NMSettingPPP
 class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
 
-    __gsignals__  = {
-            "connections-read":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_POINTER,)),
-            "new-connection":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
-            }
+    # __gsignals__  = {
+    #         "connections-read":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_POINTER,)),
+    #         "new-connection":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+    #         }
 
     def __init__(self):
         NMObject.__init__(self, "/org/freedesktop/NetworkManager/Settings", "org.freedesktop.NetworkManager.Settings")
@@ -54,8 +54,8 @@ class NMRemoteSettings(NMObject):
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
-        self.bus.add_signal_receiver(self.new_connection_cb, dbus_interface = self.object_interface, 
-                                     path = self.object_path, signal_name = "NewConnection")
+        # self.bus.add_signal_receiver(self.new_connection_cb, dbus_interface = self.object_interface, 
+        #                              path = self.object_path, signal_name = "NewConnection")
 
         self.init_nmobject_with_properties()
 
@@ -434,11 +434,11 @@ class NMRemoteSettings(NMObject):
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
 
-    def new_connection_cb(self, arg):
-        self.emit("new-connection", arg)
+    # def new_connection_cb(self, arg):
+    #     self.emit("new-connection", arg)
 
-    def connections_read_cb(self, user_data):
-        self.emit("connections-read", user_data)
+    # def connections_read_cb(self, user_data):
+    #     self.emit("connections-read", user_data)
 
 nm_remote_settings = NMRemoteSettings()
 

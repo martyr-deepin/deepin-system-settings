@@ -64,9 +64,13 @@ class NMClient(NMObject):
                                      path = self.object_path,signal_name = "StateChanged")
 
         self.devices = self.get_devices()
+
     def get_devices(self):
         '''return father device objects'''
-        return map(lambda x: cache.getobject(x), TypeConvert.dbus2py(self.dbus_method("GetDevices")))
+        if self.dbus_method("GetDevices"):
+            return map(lambda x: cache.getobject(x), TypeConvert.dbus2py(self.dbus_method("GetDevices")))
+        else:
+            return []
 
     def get_wired_devices(self):
         # return filter(lambda x:x.get_device_type() == 1, self.get_devices())
