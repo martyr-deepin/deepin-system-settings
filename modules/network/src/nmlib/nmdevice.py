@@ -136,22 +136,43 @@ class NMDevice(NMObject):
     def get_device_desc(self):
         self.udev_device = self.get_udev_device()
 
-        if self.udev_device.has_property("ID_VENDOR_FROM_DATABASE") and self.udev_device.has_property("ID_MODEL_FROM_DATABASE"):
-            return self.udev_device.get_property("ID_VENDOR_FROM_DATABASE") + " "+self.udev_device.get_property("ID_MODEL_FROM_DATABASE")
-        elif self.udev_device.has_property("ID_MODEL_FROM_DATABASE"):
-            return self.udev_device.get_property("ID_MODEL_FROM_DATABASE")
+        if self.udev_device.has_property("ID_BUS"):
 
-        elif self.udev_device.has_property("ID_MODEL_ID"):
-            cmd = "lspci -s %s" % self.udev_device.get_property("ID_MODEL_ID").split("/")[-1]
-            return os.popen(cmd).read().split(":")[-1].split("(")[0]
+            if self.udev_device.get_property("ID_BUS") == "pci":
 
-        elif self.udev_device.has_property("DEVPATH"):
-            cmd = "lspci -s %s" % self.udev_device.get_property("DEVPATH").split("/")[-3]
-            return os.popen(cmd).read().split(":")[-1].split("(")[0]
+                if self.udev_device.has_property("ID_VENDOR_FROM_DATABASE") and self.udev_device.has_property(
+                    "ID_MODEL_FROM_DATABASE"):
+                    return self.udev_device.get_property("ID_VENDOR_FROM_DATABASE") + " "+ self.udev_device.get_property("ID_MODEL_FROM_DATABASE")
+                elif self.udev_device.has_property("ID_MODEL_FROM_DATABASE"):
+                    return self.udev_device.get_property("ID_MODEL_FROM_DATABASE")
 
+                elif self.udev_device.has_property("ID_MODEL_ID"):
+                    cmd = "lspci -s %s" % self.udev_device.get_property("ID_MODEL_ID").split("/")[-1]
+                    return os.popen(cmd).read().split(":")[-1].split("(")[0]
+        
+                elif self.udev_device.has_property("DEVPATH"):
+                    cmd = "lspci -s %s" % self.udev_device.get_property("DEVPATH").split("/")[-3]
+                    return os.popen(cmd).read().split(":")[-1].split("(")[0]
+
+                elif self.udev_device.has_property("ID_VENDOR_FROM_DATABASE"):
+                    return self.udev_device.get_property("ID_VENDOR_FROM_DATABASE")
+        
+                else:
+                    cmd = "lspci -s %s" % self.udev_device.get_sysfs_path().split("/")[-3]
+                    return os.popen(cmd).read().split(":")[-1].split("(")[0]
+
+            elif self.udev_device.get_property("ID_BUS") == "usb":
+
+                if self.udev_device.has_property("ID_VENDOR_FROM_DATABASE") and self.udev_device.has_property("ID_MODEL"):
+                    return self.udev_device.get_property("ID_VENDOR_FROM_DATABASE") + " "+self.udev_device.get_property("ID_MODEL")
+
+                elif self.udev_device.has_property("ID_MODEL"):
+                    return self.udev_device.get_property("ID_MODEL")
+
+                elif self.udev_device.has_property("ID_VENDOR"):
+                    return self.udev_device.get_property("ID_VENDOR")
         else:
-            cmd = "lspci -s %s" % self.udev_device.get_sysfs_path().split("/")[-3]
-            return os.popen(cmd).read().split(":")[-1].split("(")[0]
+            return "unknown device"
 
     def nm_device_disconnect(self):
         self.dbus_method("Disconnect", reply_handler = self.disconnect_finish, error_handler = self.disconnect_error)
