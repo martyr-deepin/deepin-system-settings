@@ -181,9 +181,9 @@ class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.wireless_devices = nmclient.get_wireless_devices()
+        nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
-            nmclient.wireless_set_enabled(True)
 
             self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
@@ -236,6 +236,7 @@ class WirelessSection(gtk.VBox):
             else:
                 for wireless_device in self.wireless_devices:
                     device_wifi = cache.get_spec_object(wireless_device.object_path)
+                    print "try connect"
                     device_wifi.auto_connect()
             self.index = index
         else:
