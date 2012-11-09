@@ -62,33 +62,32 @@ class WirelessSetting(gtk.HBox):
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.vbox_expose_event)
+        vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
-        hbox = gtk.HBox()
         apply_button = gtk.Button("Apply")
         apply_button.connect("clicked", self.save_changes)
-        hbox.pack_start(apply_button, False, False, 0)
+        #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(hbox)
+        buttons_aligns.add(apply_button)
         vbox.pack_start(buttons_aligns, False , False)
-        hbox.connect("expose-event", self.hbox_expose_event)
+        #hbox.connect("expose-event", self.hbox_expose_event)
 
 
         # FIXME cairo bug need to be fixed
-    def vbox_expose_event(self, widget, event):
+    def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         cr.set_source_rgb( 1, 1, 1) 
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def hbox_expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
+    #def hbox_expose_event(self, widget, event):
+        #cr = widget.window.cairo_create()
+        #rect = widget.allocation
+        #cr.set_source_rgb( 1, 1, 1) 
+        #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        #cr.fill()
 
     def init(self, access_point):
         self.access_point = access_point
