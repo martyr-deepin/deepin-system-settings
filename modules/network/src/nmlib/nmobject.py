@@ -32,10 +32,10 @@ import gobject
 # import re
 from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_dbus_name_exists
 from nm_utils import InvalidObjectPath , InvalidObjectInterface, InvalidService
-
+from servicemanager import nm_bus
 # name_re = re.compile("[0-9a-zA-Z-]*")
-dbus_loop = gobject.MainLoop()
-nm_bus = dbus.SystemBus()
+# dbus_loop = gobject.MainLoop()
+# nm_bus = dbus.SystemBus()
     
 class NMObject(gobject.GObject):
     '''NMObject'''

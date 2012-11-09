@@ -24,6 +24,12 @@ import gobject
 import dbus
 
 manager_bus = dbus.SystemBus()
+nm_bus = dbus.SystemBus()
+def refresh_nm_bus():
+    global nm_bus
+    nm_bus = dbus.SystemBus()
+    return nm_bus
+
 manager_proxy = manager_bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
 manager_interface = dbus.Interface(manager_proxy, "org.freedesktop.DBus")
 
