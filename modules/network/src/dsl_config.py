@@ -15,7 +15,6 @@ from widgets import SettingButton
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nmlib.nmclient import nmclient
-wired_device = nmclient.get_wired_devices()[0]
 from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
 
@@ -138,6 +137,7 @@ class SideBar(gtk.VBox):
     
     def init(self, connection_list, ip4setting):
         # check active
+        wired_device = nmclient.get_wired_devices()[0]
         active_connection = wired_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()

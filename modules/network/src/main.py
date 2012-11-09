@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 
 #from proxy_config import ProxyConfig
+from proxy_config import ProxyConfig
 import sys
 import os
 sys.path.append("../")
@@ -25,7 +26,7 @@ from lan_config import WiredSetting
 from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 
-from nmlib.nmobject import dbus_loop
+#from nmlib.nmobject import dbus_loop
 from nmlib.nmclient import nmclient
 from nmlib.nm_remote_settings import nm_remote_settings
 from nmlib.nmcache import cache
@@ -422,10 +423,9 @@ class Proxy(gtk.VBox):
             self.align.destroy()
 
     def slide_to_event(self, widget, event):
-        print "clicked proxy config"
         self.settings.init()
         self.slide_to_setting()
-        slider.slide_to_page(self.setting_page, "right")
+        slider.slide_to_page(self.settings, "right")
 
 
     def expose_event(self, widget, event):
@@ -483,15 +483,15 @@ if __name__ == '__main__':
                                           lambda  : module_frame.send_message("change_crumb", 1))
         dsl.add_setting_page(dsl_setting_page)
 
-        #proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(main_align, "left"),
-                                          #lambda  : module_frame.send_message("change_crumb", 1))
-        #proxy.add_setting_page(proxy_setting_page)
+        proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        proxy.add_setting_page(proxy_setting_page)
 
         slider.append_page(main_align)
         slider.append_page(wired_setting_page)
         slider.append_page(dsl_setting_page)
         slider.append_page(wireless_setting_page)
-        #slider.append_page(proxy_setting_page)
+        slider.append_page(proxy_setting_page)
 
         module_frame.add(slider)
         
