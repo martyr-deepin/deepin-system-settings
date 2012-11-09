@@ -423,7 +423,7 @@ class Proxy(gtk.VBox):
             self.align.destroy()
 
     def slide_to_event(self, widget, event):
-        self.settings.init()
+        self.settings.init(True)
         self.slide_to_setting()
         slider.slide_to_page(self.settings, "right")
 

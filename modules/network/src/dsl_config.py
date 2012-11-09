@@ -47,14 +47,14 @@ class DSLSetting(gtk.HBox):
         vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
-        hbox = gtk.HBox()
+        #hbox = gtk.HBox()
         apply_button = gtk.Button("Apply")
         apply_button.connect("clicked", self.save_changes)
-        hbox.pack_start(apply_button, False, False, 0)
+        #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(hbox)
+        buttons_aligns.add(apply_button)
         vbox.pack_start(buttons_aligns, False , False)
-        hbox.connect("expose-event", self.expose_event)
+        #hbox.connect("expose-event", self.expose_event)
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
