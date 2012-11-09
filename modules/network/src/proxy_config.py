@@ -70,6 +70,7 @@ class ProxyConfig(gtk.VBox):
         if first_start:
             mode = self.proxysetting.get_proxy_mode()
             self.methods.set_active(mode_list.index(mode))
+            #self.proxysetting.set_http_enabled(True)
         else:
             container_remove_all(self.table)
             mode = self.methods.get_active()
@@ -94,7 +95,7 @@ class ProxyConfig(gtk.VBox):
                 self.table.attach(self.socks_entry, 1, 3, 4, 5)
                 self.table.attach(self.socks_spin, 3, 4, 4, 5)
 
-                #self.proxysetting.set_http_enabled(True)
+                self.proxysetting.set_http_enabled(True)
 
                 http_host = self.proxysetting.get_http_host()
                 http_port = self.proxysetting.get_http_port()
