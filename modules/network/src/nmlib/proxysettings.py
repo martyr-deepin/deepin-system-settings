@@ -49,7 +49,7 @@ class ProxySettings(object):
         self.proxy_settings.set_string("autoconfig-url", autoconfig_url)
         
     def get_proxy_authconfig_url(self):
-        return self.proxy_settings.get_string("authconfig-url")
+        return self.proxy_settings.get_string("autoconfig-url")
 
     def set_proxy_ignore_hosts(self, ignore_hosts):
         self.proxy_settings.set_strv("ignore-hosts", ignore_hosts)
@@ -88,10 +88,10 @@ class ProxySettings(object):
         return self.http_settings.get_string("host")
 
     def set_http_port(self, port):
-        self.http_settings.set_uint("port", port)
+        self.http_settings.set_int("port", port)
 
     def get_http_port(self):
-        return self.http_settings.get_uint("port")
+        return self.http_settings.get_int("port")
 
     def set_http_use_authentication(self, use_authentication):
         self.http_settings.set_boolean("use-authentication", use_authentication)
@@ -106,10 +106,10 @@ class ProxySettings(object):
         return self.ftp_settings.get_string("host")
     
     def set_ftp_port(self, port):
-        self.ftp_settings.set_uint("port", port)
+        self.ftp_settings.set_int("port", port)
 
     def get_ftp_port(self):
-        return self.ftp_settings.get_uint("port")
+        return self.ftp_settings.get_int("port")
 
     def set_https_host(self, host):
         self.http_settings.set_string("host", host)
@@ -118,10 +118,10 @@ class ProxySettings(object):
         return self.http_settings.get_string("host")
 
     def set_https_port(self, port):
-        self.http_settings.set_uint("port", port)
+        self.http_settings.set_int("port", port)
 
     def get_https_port(self):
-        return self.http_settings.get_uint("port")
+        return self.http_settings.get_int("port")
 
     def set_socks_host(self, host):
         self.socks_settings.set_string("host", host)
@@ -130,10 +130,10 @@ class ProxySettings(object):
         return self.socks_settings.get_string("host")
 
     def set_socks_port(self, port):
-        self.socks_settings.set_uint("port", port)
+        self.socks_settings.set_int("port", port)
 
     def get_socks_port(self):
-        return self.socks_settings.get_uint("port")
+        return self.socks_settings.get_int("port")
 
 proxy_settings = ProxySettings()
 
