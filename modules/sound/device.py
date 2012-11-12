@@ -29,7 +29,6 @@ class Device(BusBase):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
-        
     ###Props    
     def get_index(self):
         return self.properties["Index"]
@@ -65,9 +64,11 @@ class Device(BusBase):
     def get_has_flat_volume(self):
         pass
 
+    def get_has_convertible_to_decibel_volume(self):
+        pass
+
+    
     
     ###Signals
-    
-    
 if __name__ == "__main__":
     pass
