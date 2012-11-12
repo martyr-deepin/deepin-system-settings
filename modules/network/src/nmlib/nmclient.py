@@ -314,13 +314,8 @@ class NMClient(NMObject):
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
 
+# nmclient = NMClient()
 
-nmclient = NMClient()
-
-def refresh_nm_client():
-    global nmclient
-    nmclient = NMClient()
-    return nmclient
 
 if __name__ == "__main__":
     from nmobject import dbus_loop

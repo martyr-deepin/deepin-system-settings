@@ -25,8 +25,10 @@ import traceback
 from nmdevice import NMDevice
 from nmcache import cache
 from nm_utils import TypeConvert
-from nmclient import nmclient
-from nm_remote_settings import nm_remote_settings
+# from nmclient import nmclient
+# from nm_remote_settings import nm_remote_settings
+nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 class NMDeviceWifi(NMDevice):
     '''NMDeviceWifi'''

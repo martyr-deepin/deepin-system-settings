@@ -22,10 +22,12 @@
 
 from nmdevice import NMDevice
 from nm_utils import TypeConvert
-from nm_remote_settings import nm_remote_settings
-from nmclient import nmclient
+# from nm_remote_settings import nm_remote_settings
+# from nmclient import nmclient
 from nmcache import cache
 import gobject
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 
 class NMDeviceEthernet(NMDevice):
     '''NMDeviceEthernet'''

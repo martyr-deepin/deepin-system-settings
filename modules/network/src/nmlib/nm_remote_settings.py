@@ -440,12 +440,12 @@ class NMRemoteSettings(NMObject):
     # def connections_read_cb(self, user_data):
     #     self.emit("connections-read", user_data)
 
-nm_remote_settings = NMRemoteSettings()
+# nm_remote_settings = NMRemoteSettings()
 
-def refresh_nm_remote_settings():
-    global nm_remote_settings
-    nm_remote_settings = NMRemoteSettings()
-    return nm_remote_settings
+# def refresh_nm_remote_settings():
+#     global nm_remote_settings
+#     nm_remote_settings = NMRemoteSettings()
+#     return nm_remote_settings
 
 if __name__ == "__main__":
     nm_remote_settings = NMRemoteSettings()

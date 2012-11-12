@@ -92,6 +92,42 @@ class NMCache(object):
                 print "create object:%s failed" % e.path
             except:
                 traceback.print_exc()
+        elif path.split("/")[-1] == "NetworkManager":
+            try:
+                from nmclient import NMClient
+                nmclient = NMClient()
+                if nmclient:
+                    return nmclient
+                else:
+                    raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
+            except:
+                traceback.print_exc()
+        elif path.split("/")[-1] == "Settings":
+            try:
+                from nm_remote_settings import NMRemoteSettings
+                nm_remote_settings = NMRemoteSettings()
+                if nm_remote_settings:
+                    return nm_remote_settings
+                else:
+                    raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
+            except:
+                traceback.print_exc()
+        elif path.split("/")[-1] == "AgentManager":
+            try:
+                from nm_secret_agent import NMAgentManager
+                agent_manager = NMAgentManager()
+                if agent_manager:
+                    return agent_manager
+                else:
+                    raise NewObjectFailed(path)
+            except NewObjectFailed, e:
+                print "create object:%s failed" % e.path
+            except:
+                traceback.print_exc()
         elif key == "IP4Config":
             try:
                 from nmip4config import NMIP4Config
