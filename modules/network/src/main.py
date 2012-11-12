@@ -368,7 +368,6 @@ class VpnSection(gtk.VBox):
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
 
-
 class ThreeG(gtk.VBox):
     def __init__(self):
 
@@ -445,21 +444,18 @@ class Proxy(gtk.VBox):
                 #else:
                     #self.wire.set_active(False)
 
-if __name__ == '__main__':
-    if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
-        module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-        wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-        wireless_setting_page = WirelessSetting(None, 
-                                                lambda :slider.slide_to_page(main_align, "left"),
-                                                lambda : module_frame.send_message("change_crumb", 1))
-        wireless.add_setting_page(wireless_setting_page)
+class Network(object):
+
+    def __init__(self, module_frame):
+
 
         wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-        wifi = WifiSection()
+        wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
+        proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
+        wifi = WifiSection()
         vpn = VpnSection()
         mobile = ThreeG()
-        proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
 
         vbox = gtk.VBox(False, 17)
         vbox.pack_start(wired, False, True,5)
@@ -473,28 +469,43 @@ if __name__ == '__main__':
         scroll_win.set_size_request(825, 425)
 
         scroll_win.add_with_viewport(vbox)
-        main_align = gtk.Alignment(0,0,0,0)
-        main_align.set_padding(11,11,11,11)
-        main_align.add(scroll_win)
+        self.main_align = gtk.Alignment(0,0,0,0)
+        self.main_align.set_padding(11,11,11,11)
+        self.main_align.add(scroll_win)
         
-        wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"),
+        wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         wired.add_setting_page(wired_setting_page)
 
-        dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(main_align, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        dsl.add_setting_page(dsl_setting_page)
+        #wireless_setting_page = WirelessSetting(None, 
+                                                #lambda :slider.slide_to_page(self.main_align, "left"),
+                                                #lambda : module_frame.send_message("change_crumb", 1))
+        #wireless.add_setting_page(wireless_setting_page)
 
-        proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(main_align, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        proxy.add_setting_page(proxy_setting_page)
+        #dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          #lambda  : module_frame.send_message("change_crumb", 1))
+        #dsl.add_setting_page(dsl_setting_page)
 
-        slider.append_page(main_align)
+        #proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          #lambda  : module_frame.send_message("change_crumb", 1))
+        #proxy.add_setting_page(proxy_setting_page)
+
+        slider.append_page(self.main_align)
         slider.append_page(wired_setting_page)
-        slider.append_page(dsl_setting_page)
-        slider.append_page(wireless_setting_page)
-        slider.append_page(proxy_setting_page)
+        #slider.append_page(dsl_setting_page)
+        #slider.append_page(wireless_setting_page)
+        #slider.append_page(proxy_setting_page)
 
+    def get_main_page(self):
+        return self.main_align
+
+
+if __name__ == '__main__':
+    if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+        module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
+
+        network = Network(module_frame)
+        main_align = network.get_main_page()
         module_frame.add(slider)
         
         def message_handler(*message):
