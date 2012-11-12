@@ -24,11 +24,36 @@ from pulseaudio import BusBase
 import gobject
 
 class Device(BusBase):
+
+    __gsignals__  = {
+            "volume-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+            "mute-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+            "state-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "active-port-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "property-list-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+            }
     
     def __init__(self, path, interface = "org.PulseAudio.Core1.Device"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
+
+        self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("StateUpdated", self.state_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("ActivePortUpdated", self.active_port_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+
     ###Props    
     def get_index(self):
         return self.properties["Index"]
@@ -126,6 +151,21 @@ class Device(BusBase):
         return str(self.dbus_method("GetPortByName", name))
 
     ###Signals
+    def volume_updated_cb(self, volume):
+        self.emit("volume-updated", volume)
+
+    def mute_updated_cb(self, mute):
+        self.emit("mute-updated", mute)
+
+    def state_updated_cb(self, state):
+        self.emit("state-updated", state)
+
+    def active_port_updated_cb(self, port):
+        self.emit("active-port-updated", port)
+
+    def property_list_updated_cb(self, property_list):
+        self.emit("property-list-updated", property_list)
+
 
 class Sink(Device):
 

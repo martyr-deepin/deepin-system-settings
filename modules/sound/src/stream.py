@@ -25,11 +25,38 @@ import gobject
 
 class Stream(BusBase):
     
+    __gsignals__  = {
+            "device-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "sample-rate-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "volume-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+            "mute-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+            "property-list-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+            "stream-event":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
+            } 
+
     def __init__(self, path ,interface = "org.PulseAudio.Core1.Stream"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
-        
+                
+        self.dbus_proxy.connect_to_signal("DeviceUpdated", self.device_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("SampleRateUpdated", self.sample_rate_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("StreamEvent", self.stream_event_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None, arg1 = None)
+
     ###Props    
     def get_index(self):
         return self.properties["Index"]
@@ -96,13 +123,42 @@ class Stream(BusBase):
         self.call_async("Kill", reply_handler = None, error_handler = None)
         
     ###Signal
+    def device_updated_cb(self, device):
+        self.emit("device-updated", device)
+
+    def sample_rate_updated_cb(self, sample_rate):
+        self.emit("sample-rate-updated", sample_rate)
+
+    def volume_updated_cb(self, volume):
+        self.emit("volume-updated", volume)
+
+    def mute_updated_cb(self, muted):
+        self.emit("mute-updated", muted)
+
+    def property_list_updated_cb(self, property_list):
+        self.emit("property-list-updated", property_list)
+
+    def stream_event_cb(self, name, property_list):
+        self.emit("stream-event", name, property_list)
 
 class StreamRestore(BusBase):
     
+    __gsignals__  = {
+            "new-entry":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "entry-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
+            } 
+
     def __init__(self, path = "/org/pulseaudio/stream_restore1", interface = "org.PulseAudio.Ext.StreamRestore1"):
         BusBase.__init__(self, path, interface)
         
         self.init_dbus_properties()
+
+        self.dbus_proxy.connect_to_signal("NewEntry", self.new_entry_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("EntryRemoved", self.entry_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
 
     ###Props    
     def get_interface_revision(self):
@@ -122,9 +178,20 @@ class StreamRestore(BusBase):
         return str(self.dbus_method("GetEntryByName", name))
 
     ###Signals
+    def new_entry_cb(self, entry):
+        self.emit("new-entry", entry)
     
+    def entry_removed_cb(self, entry):
+        self.emit("entry-removed", entry)
+
 
 class RestoreEntry(BusBase):
+
+    __gsignals__  = {
+            "device-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "volume-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+            "mute-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,))
+            } 
 
     def __init__(self, path , interface = "org.PulseAudio.Ext.StreamRestore1.RestoreEntry"):
 
@@ -132,6 +199,14 @@ class RestoreEntry(BusBase):
 
         self.init_dbus_properties()
 
+        self.dbus_proxy.connect_to_signal("DeviceUpdated", self.device_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
     ###Props    
     def get_index(self):
         return self.properties["Index"]
@@ -145,7 +220,7 @@ class RestoreEntry(BusBase):
     def set_device(self):
         pass
 
-    def get_voluem(self):
+    def get_volume(self):
         pass
 
     def set_volume(self):
@@ -160,6 +235,16 @@ class RestoreEntry(BusBase):
     ####Methods
     def remove(self):
         self.call_async("Remove", reply_handler = None, error_handler = None)
+
+    ###Signals
+    def device_updated_cb(self, device):
+        self.emit("device-updated", device)
+
+    def volume_updated_cb(self, volume):
+        self.emit("volume-updated", volume)
+
+    def mute_updated_cb(self, muted):
+        self.emit("mute-updated", muted)
 
 if __name__ == "__main__":
     pass

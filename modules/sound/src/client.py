@@ -25,11 +25,22 @@ import gobject
 
 class Client(BusBase):
     
+    
+    __gsignals__  = {
+            "property-list-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+            "client-event":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT,))
+            }
+
     def __init__(self, path ,interface = "org.PulseAudio.Core1.Client"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
         
+        self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("ClientEvent", self.client_event_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None, arg1 = None)
     ###Props    
     def get_index(self):
         return self.properties["Index"]
@@ -66,9 +77,11 @@ class Client(BusBase):
         self.call_async("RemoveProperties", key, reply_handler = None, error_handler = None)
 
     ###Signals
+    def property_list_updated_cb(self, property_list):
+        self.emit("property-list-updated", property_list)
 
-    
+    def client_event_cb(self, name, property_list):
+        self.emit("client-event", name, property_list)
     
 if __name__ == "__main__":
-    core = Core()
-    print    core.get_name()
+    pass

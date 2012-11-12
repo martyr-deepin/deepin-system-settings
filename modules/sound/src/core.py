@@ -24,11 +24,90 @@ from pulseaudio import BusBase
 import gobject
 
 class Core(BusBase):
+        
+    __gsignals__  = {
+            "new-card":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "card-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "new-sink":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "sink-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "fallback-sink-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "fallback-sink-unset":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            "new-source":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "source-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "fallback-source-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "fallback-source-unset":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            "new-playback-stream":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "playback-stream-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "new-record-stream":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "record-stream-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "new-sample":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "sample-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "new-module":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "module-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "new-client":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "client-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "new-extension":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "extension-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
+            }
     
     def __init__(self, path = "/org/pulseaudio/core1", interface = "org.PulseAudio.Core1"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
+        
+        self.dbus_proxy.connect_to_signal("NewCard", self.new_card_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("CardRemoved", self.card_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("NewSink", self.new_sink_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("SinkRemoved", self.sink_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("FallbackSinkUpdated", self.fallback_sink_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("FallbackSinkUnset", self.fallback_sink_unset_cb, dbus_interface = 
+                                          self.object_interface)
+
+        self.dbus_proxy.connect_to_signal("NewPlaybackStream", self.new_palyback_stream_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("PlaybackStreamRemoved", self.palyback_stream_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("NewRecordStream", self.new_record_stream_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("RecordStreamRemoved", self.record_stream_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("NewSample", self.new_sample_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+
+        self.dbus_proxy.connect_to_signal("SampleRemoved", self.sample_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+        
+        self.dbus_proxy.connect_to_signal("NewModule", self.new_module_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+        
+        self.dbus_proxy.connect_to_signal("ModuleRemoved", self.module_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+        
+        self.dbus_proxy.connect_to_signal("NewClient", self.new_client_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+        
+        self.dbus_proxy.connect_to_signal("ClientRemoved", self.client_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+        
+        self.dbus_proxy.connect_to_signal("NewExtension", self.new_extension_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
+        
+        self.dbus_proxy.connect_to_signal("ExtensionRemoved", self.extension_removed_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
         
     ###Props    
     def get_interface_revision(self):
@@ -163,8 +242,72 @@ class Core(BusBase):
         self.call_async("StopListeningForSignal", signal)
 
     ###Signals
+    def new_card_cb(self, card):
+        self.emit("new-card", card)
+
+    def card_removed_cb(self, card):
+        self.emit("card-removed", card)
     
+    def new_sink_cb(self, sink):
+        self.emit("new-sink", sink)
     
+    def sink_removed_cb(self, sink):
+        self.emit("sink-removed", sink)
+
+    def fallback_sink_updated_cb(self, sink):
+        self.emit("fallback-sink-updated", sink)
+
+    def fallback_sink_unset(self):
+        self.emit("fallback-sink-unset")
+
+    def new_source_cb(self, source):
+        self.emit("new-source", source)
+
+    def source_removed_cb(self, source):
+        self.emit("source-removed", source)
+
+    def fallback_source_udpated_cb(self, source):
+        self.emit("fallback-source-updated", source)
+
+    def fallback_source_unset_cb(self):
+        self.emit("fallback-source-unset")
+
+    def new_playback_stream_cb(self, playback_stream):
+        self.emit("new-playback-stream", playback_stream)
+
+    def playback_stream_removed_cb(self, playback_stream):
+        self.emit("playback-stream-removed", playback_stream)
+
+    def new_record_stream_cb(self, record_stream):
+        self.emit("new-record-stream", record_stream)
+
+    def record_stream_removed_cb(self, record_stream):
+        self.emit("record-stream-removed", record_stream)
+
+    def new_sample_cb(self, sample):
+        self.emit("new-sample", sample)
+
+    def sample_removed_cb(self, sample):
+        self.emit("sample-removed", sample)
+
+    def new_module_cb(self, module):
+        self.emit("new-module", module)
+
+    def module_removed_cb(self, module):
+        self.emit("module-removed", module)
+
+    def new_client_cb(self, client):
+        self.emit("new-client", client)
+
+    def client_removed_cb(self, client):
+        self.emit("client-removed", client)
+
+    def new_extension_cb(self, extension):
+        self.emit("new-extension", extension)
+
+    def extension_removed_cb(self, extension):
+        self.emit("extension-removed", extension)
+
 if __name__ == "__main__":
     core = Core()
     print core.get_modules()

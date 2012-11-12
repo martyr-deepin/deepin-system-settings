@@ -25,10 +25,17 @@ import gobject
 
 class Sample(BusBase):
     
+    __gsignals__  = {
+            "property-list-updated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
+            }
+
     def __init__(self, path , interface = "org.PulseAudio.Core1.Sample"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
+
+        self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
+                                          self.object_interface, arg0 = None)
         
     ###Props    
     def get_index(self):
@@ -76,8 +83,8 @@ class Sample(BusBase):
 
 
     ###Signals
-    
+    def property_list_updated_cb(self, property_list):
+        self.emit("property-list-updated", property_list)
     
 if __name__ == "__main__":
-    core = Core()
-    print    core.get_name()
+    pass
