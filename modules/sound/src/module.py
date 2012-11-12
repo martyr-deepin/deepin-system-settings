@@ -23,27 +23,35 @@
 from pulseaudio import BusBase
 import gobject
 
-class Core(BusBase):
+class Module(BusBase):
     
-    def __init__(self, path = "/org/pulseaudio/core1", interface = "org.PulseAudio.Core1"):
+    def __init__(self, path , interface = "org.PulseAudio.Core1.Module"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
         
     ###Props    
-    def get_interface_revision(self):
-        return self.properties["InterfaceRevision"]
+    def get_index(self):
+        return self.properties["Index"]
 
     def get_name(self):
         return self.properties["Name"]
         
+    def get_arguments(self):
+        return self.properties["Arguments"]
+
+    def get_usage_counter(self):
+        return self.properties["UsageCounter"]
+
+    def get_property_list(self):
+        return self.properties["PropertyList"]
+
     ###Methods
-    def get_card_by_name(self, name):
-        pass
+    def unload(self):
+        self.call_async("Unload", reply_handler = None, error_handler = None)
 
     ###Signals
     
     
 if __name__ == "__main__":
-    core = Core()
-    print    core.get_name()
+    pass

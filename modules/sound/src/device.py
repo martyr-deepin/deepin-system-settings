@@ -67,8 +67,104 @@ class Device(BusBase):
     def get_has_convertible_to_decibel_volume(self):
         pass
 
+    def get_base_volume(self):
+        return self.properties["BaseVolume"]
     
+    def get_volume_steps(self):
+        return self.properties["VolumeSteps"]
+
+    def get_mute(self):
+        return self.properties["Mute"]
+
+    def set_mute(self):
+        pass
+
+    def get_has_hardware_volume(self):
+        return self.properties["HasHardwareVolume"]
+
+    def get_has_hardware_mute(self):
+        return self.properties["HasHardwareMute"]
+
+    def get_configured_latency(self):
+        return self.properties["ConfiguredLatency"]
     
+    def get_has_dynamic_latency(self):
+        return self.properties["HasDynamicLatency"]
+
+    def get_latency(self):
+        return self.properties["Latency"]
+
+    def get_is_hardware_device(self):
+        return self.properties["IsHardwareDevice"]
+
+    def get_is_network_device(self):
+        return self.properties["IsNetworkDevice"]
+
+    def get_state(self):
+        return self.properties["State"]
+
+    def get_ports(self):
+        if self.properties["ports"]:
+            return map(lambda x:str(x), self.properties["ports"])
+        else:
+            return []
+
+    def get_active_port(self):
+        return str(self.properties["ActivePort"])
+
+    def set_active_port(self):
+        pass
+
+    def get_property_list(self):
+        return self.properties["PropertyList"]
+
+    ###Methods
+    def suspend(self, bool):
+        self.call_async("suspend", bool, reply_handler = None, error_handler = None)
+
+    def get_port_by_name(self, name):
+        return str(self.dbus_method("GetPortByName", name))
+
     ###Signals
+
+class Sink(Device):
+
+    def __init__(self, path, interface = "org.PulseAudio.Core1.Sink"):
+        Device.__init__(self, path, interface)
+    
+        self.init_dbus_properties()
+
+    def get_monitor_source(self):
+        return str(self.properties["MonitorSource"])
+
+class Source(Device):
+
+    def __init__(self, path, interface = "org.PulseAudio.Core1.Source"):
+        Device.__init__(self, path, interface)
+        
+        self.init_dbus_properties()
+
+    def get_monitor_of_sink(self):
+        return str(self.properties["MonitorOfSink"])
+
+class DevicePort(BusBase):
+    
+    def __init__(self, path, interface = "org.PulseAudio.Core1.DevicePort"):
+        BusBase.__init__(self, path, interface)
+        
+        self.init_dbus_properties()
+
+    def get_index(self):
+        return self.properties["Index"]
+
+    def get_name(self):
+        return self.properties["Name"]
+
+    def get_description(self):
+        return self.properties["Description"]
+
+    def get_priority(self):
+        return self.properties["Priority"]
+
 if __name__ == "__main__":
     pass

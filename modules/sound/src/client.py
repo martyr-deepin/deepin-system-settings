@@ -23,9 +23,9 @@
 from pulseaudio import BusBase
 import gobject
 
-class Sample(BusBase):
+class Client(BusBase):
     
-    def __init__(self, path , interface = "org.PulseAudio.Core1.Sample"):
+    def __init__(self, path ,interface = "org.PulseAudio.Core1.Client"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
@@ -33,49 +33,40 @@ class Sample(BusBase):
     ###Props    
     def get_index(self):
         return self.properties["Index"]
-
-    def get_name(self):
-        return self.properties["Name"]
         
-    def get_sample_format(self):
-        return self.properties["SampleFormat"]
+    def get_driver(self):
+        return self.properties["Driver"]
 
-    def get_sample_rate(self):
-        return self.properties["SampleRate"]
+    def get_owner_module(self):
+        return self.properties["OwnerModule"]
 
-    def get_channels(self):
-        if self.properties["Channels"]:
-            return map(lambda x:int(x), self.properties["Channels"])
+    def get_playback_streams(self):
+        if self.properties["PlaybackStreams"]:
+            return map(lambda x:str(x), self.properties["PlaybackStreams"])
         else:
             return []
 
-    def get_default_volume(self):
-        if self.properties["DefaultVolume"]:
-            return map(lambda x:int(x), self.properties["DefaultVolume"])
+    def get_record_streams(self):
+        if self.properties["RecordStreams"]:
+            return map(lambda x:str(x), self.properties["RecordStreams"])
         else:
             return []
-
-    def get_duration(self):
-        return self.properties["Duration"]
-
-    def get_bytes(self):
-        return self.properties["Bytes"]
 
     def get_property_list(self):
         return self.properties["PropertyList"]
 
     ###Methods
-    def play(self, volume, property_list):
-        self.call_async("Play", volume, property_list, reply_handler = None, error_handler = None)
+    def kill(self):
+        self.call_async("Kill", reply_handler = None, error_handler = None)
 
-    def play_to_sink(self, sink, volume, property_list):
-        self.call_async("PlayToSink", sink, volume, property_list, reply_handler = None, error_handler = None)
+    def update_properties(self, property_list, update_mode):
+        self.call_async("UpdateProperties", property_list, update_mode, reply_handler = None, error_handler = None)
 
-    def Remove(self):
-        self.call_async("Remove", reply_handler = None, error_handler = None)
-
+    def remove_properties(self, key):
+        self.call_async("RemoveProperties", key, reply_handler = None, error_handler = None)
 
     ###Signals
+
     
     
 if __name__ == "__main__":
