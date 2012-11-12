@@ -21,29 +21,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from pulseaudio import BusBase
-import gobject
 
-class Core(BusBase):
+class MemStat(BusBase):
     
-    def __init__(self, path = "/org/pulseaudio/core1", interface = "org.PulseAudio.Core1"):
+    def __init__(self, path = "/org/pulseaudio/core1/memstats", interface = "org.PulseAudio.Core1.Memstats"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
         
     ###Props    
-    def get_interface_revision(self):
-        return self.properties["InterfaceRevision"]
+    def get_current_mem_blocks(self):
+        return self.properties["CurrentMemBlocks"]
 
-    def get_name(self):
-        return self.properties["Name"]
-        
+    def get_current_mem_blocks_size(self):
+        return self.properties["CurrentMemBlocksSize"]
+
+    def get_accumulated_mem_blocks(self):
+        return self.properties["AccumulatedMemBlocks"]
+
+    def get_accumulated_mem_blocks_size(self):
+        return self.properties["AccumulatedMemBlocksSize"]
+
+    def get_sample_cache_size(self):
+        return self.properties["SampleCacheSize"]
     ###Methods
-    def get_card_by_name(self, name):
-        pass
 
     ###Signals
     
-    
 if __name__ == "__main__":
-    core = Core()
-    print    core.get_name()
+    pass

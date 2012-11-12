@@ -91,7 +91,7 @@ class NMObject(gobject.GObject):
             print args
             print kwargs
             print e
-            # traceback.print_exc()
+            traceback.print_exc()
 
     def init_properties(self): 
         try:

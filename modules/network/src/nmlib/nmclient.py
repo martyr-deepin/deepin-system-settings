@@ -63,10 +63,13 @@ class NMClient(NMObject):
         self.bus().add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
                                      path = self.object_path,signal_name = "StateChanged")
 
+        print "nmclient init get device start"
         self.devices = self.get_devices()
+        print "nmclient init get device finish"
 
     def get_devices(self):
         '''return father device objects'''
+        print "in nmclient:begin get device"
         if self.dbus_method("GetDevices"):
             return map(lambda x: cache.getobject(x), TypeConvert.dbus2py(self.dbus_method("GetDevices")))
         else:
@@ -74,21 +77,26 @@ class NMClient(NMObject):
 
     def get_wired_devices(self):
         # return filter(lambda x:x.get_device_type() == 1, self.get_devices())
+        print "in nmclient:get wired device"
         if self.devices:
             return filter(lambda x:x.get_device_type() == 1, self.devices)
         else:
             return []
 
     def get_wired_device(self):
+        print "in nmcliet:get wired device"
         return self.get_wired_devices()[0]
 
     def get_wireless_devices(self):
+        print "in nmclient:get wireless_devices"
+
         if self.devices:
             return filter(lambda x:x.get_device_type() == 2, self.devices)
         else:
             return []
 
     def get_wireless_device(self):
+        print "in nmclient:get wireless device"
         return self.get_wireless_devices()[0]
 
     def get_modem_devices(self):

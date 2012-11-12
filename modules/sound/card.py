@@ -21,29 +21,85 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from pulseaudio import BusBase
-import gobject
 
-class Core(BusBase):
+class Card(BusBase):
     
-    def __init__(self, path = "/org/pulseaudio/core1", interface = "org.PulseAudio.Core1"):
+    def __init__(self, path, interface = "org.PulseAudio.Core1.Card"):
         BusBase.__init__(self, path, interface)
 
         self.init_dbus_properties()
         
     ###Props    
-    def get_interface_revision(self):
-        return self.properties["InterfaceRevision"]
+    def get_index(self):
+        return self.properties["Index"]
 
     def get_name(self):
         return self.properties["Name"]
-        
-    ###Methods
-    def get_card_by_name(self, name):
+
+    def get_driver(self):
+        return self.properties["Driver"]
+
+    def get_own_module(self):
+        return self.properties["OwnModule"]
+
+    def get_sinks(self):
+        if self.properties["Sinks"]:
+            return map(lambda x:str(x), self.properties["Sinks"])
+        else:
+            return []
+
+    def get_sources(self):
+        if self.properties["Sources"]:
+            return map(lambda x:str(x), self.properties["Sources"])
+        else:
+            return []
+
+    def get_profiles(self):
+        if self.properties["Profiles"]:
+            return map(lambda x:str(x), self.properties["Profiles"])
+        else:
+            return []
+
+    def get_active_profile(self):
+        return str(self.properties["ActiveProfile"])
+
+    def set_active_profile(self):
         pass
 
-    ###Signals
+    def get_property_list(self):
+        return self.properties["PropertyList"]
     
+    ###Methods
+    def get_profile_by_name(self, name):
+        return str(self.dbus_method("GetProfileByName", name))
+
+    ###Signals
+
+class CardProfile(BusBase):
+    
+    def __init__(self, path, interface = "org.PulseAudio.Core1.CardProfile"):
+        BusBase.__init__(self, path, interface)
+
+        self.init_dbus_properties()
+    
+    ###Props    
+    def get_index(self):
+        return self.properties["Index"]
+
+    def get_name(self):
+        return self.properties["Name"]
+
+    def get_description(self):
+        return self.properties["Description"]
+
+    def get_sinks(self):
+        return self.properties["Sinks"]
+
+    def get_sources(self):
+        return self.properties["Sources"]
+
+    def get_priority(self):
+        return self.properties["Priority"]
     
 if __name__ == "__main__":
-    core = Core()
-    print    core.get_name()
+    pass
