@@ -27,9 +27,13 @@ from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 
 #from nmlib.nmobject import dbus_loop
-from nmlib.nmclient import nmclient
-from nmlib.nm_remote_settings import nm_remote_settings
-from nmlib.nmcache import cache
+#from nmlib.nmclient import nmclient
+#from nmlib.nm_remote_settings import nm_remote_settings
+#from nmlib.nmcache import cache
+from wired import NMRemoteSettings, NMClient, NMSecretAgent,NMCache
+nmclient = NMClient()
+nm_remote_settings = NMRemoteSettings()
+cache = NMCache()
 
 slider = HSlider()
 PADDING = 32
@@ -495,6 +499,8 @@ class Network(object):
         #slider.append_page(dsl_setting_page)
         #slider.append_page(wireless_setting_page)
         #slider.append_page(proxy_setting_page)
+
+
 
     def get_main_page(self):
         return self.main_align
