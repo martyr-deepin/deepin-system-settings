@@ -45,10 +45,10 @@ class NMDeviceWifi(NMDevice):
         self.bus().add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "AccessPointAdded")
 
-        self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "AccessPointRemoved")
 
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
         self.init_nmobject_with_properties()

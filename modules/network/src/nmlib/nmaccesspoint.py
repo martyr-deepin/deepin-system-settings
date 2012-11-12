@@ -32,7 +32,7 @@ class NMAccessPoint(NMObject):
         self.init_nmobject_with_properties()
         self.bssid = ""
 
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
+        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
     ###Methods###

@@ -53,10 +53,8 @@ class ServiceManager(gobject.GObject):
         manager_bus.add_signal_receiver(self.name_accuired_cb, dbus_interface = "org.freedesktop.DBus",
                                         path = "/org/freedesktop/DBus", signal_name = "NameAccuired")
 
-        self.nm_bus = dbus.SystemBus()
 
     def get_nm_bus(self):
-        self.nm_bus = None
         self.nm_bus = dbus.SystemBus()
         return self.nm_bus
 
