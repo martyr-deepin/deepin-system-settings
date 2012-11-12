@@ -45,7 +45,6 @@ class NModule(object):
     @nm_remote_settings.setter
     def nm_remote_settings(self, val):
         self.setting = NMRemoteSettings()
-
     @property
     def secret_agent(self):
         return self.agent

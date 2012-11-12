@@ -29,11 +29,9 @@ from dsl_config import DSLSetting
 #from nmlib.nmobject import dbus_loop
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
-#from nmlib.nmcache import cache
-from wired import NMRemoteSettings, NMClient, NMSecretAgent,NMCache
-nmclient = NMClient()
-nm_remote_settings = NMRemoteSettings()
-cache = NMCache()
+from nmlib.nmcache import cache
+#from wired import NMRemoteSettings, NMClient, NMSecretAgent,NMCache
+from nm_modules import nm_module
 
 slider = HSlider()
 PADDING = 32
@@ -71,7 +69,8 @@ class WiredDevice(object):
 class WiredSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
-        self.wired_devices = nmclient.get_wired_devices()
+
+        self.wired_devices = nm_module.nmclient.get_wired_devices()
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
@@ -185,8 +184,8 @@ class WirelessDevice(object):
 class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
-        self.wireless_devices = nmclient.get_wireless_devices()
-        nmclient.wireless_set_enabled(True)
+        self.wireless_devices = nm_module.nmclient.get_wireless_devices()
+        nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
 
@@ -310,7 +309,7 @@ class DSL(gtk.VBox):
         self.setting_page = None
         dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
         self.pack_start(dsl, False, False)
-        pppoe_connections =  nm_remote_settings.get_pppoe_connections()
+        pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -452,7 +451,7 @@ class Network(object):
 
     def __init__(self, module_frame):
 
-
+        print nm_module.nmclient
         wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
@@ -500,6 +499,19 @@ class Network(object):
         #slider.append_page(wireless_setting_page)
         #slider.append_page(proxy_setting_page)
 
+    def refresh(self):
+
+        from nmlib.nmclient import NMClient
+        from nmlib.nm_remote_settings import NMRemoteSettings
+        from nmlib.nm_secret_agent import NMSecretAgent
+        nm_module.nmclient = NMClient()
+        nm_module.nm_remote_settings = NMRemoteSettings()
+        nm_module.secret_agent = NMSecretAgent()
+        global cache
+        cache.clearcache()
+        cache.clear_spec_cache()
+
+
 
 
     def get_main_page(self):
@@ -509,8 +521,13 @@ class Network(object):
 if __name__ == '__main__':
     if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
         module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-
+        
         network = Network(module_frame)
+        from nmlib.servicemanager import servicemanager
+        def service_start_cb(widget, s):
+            network.refresh()
+
+        servicemanager.connect("service-start", service_start_cb)
         main_align = network.get_main_page()
         module_frame.add(slider)
         

@@ -27,16 +27,18 @@ from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
-from wired import *
+from nm_modules import nm_module
 from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
+from nmlib.nmcache import cache
 import gtk
-
+wired_device = []
 #active_connection = wired_device.get_active_connection()
 #if active_connection:
     #active = active_connection.get_connection()
 #else: 
     #active =None
+
 
 class WiredSetting(gtk.HBox):
 
@@ -80,13 +82,14 @@ class WiredSetting(gtk.HBox):
 
     def init(self, device):
         # Get all connections
+        print "*in lan_config* ", nm_module.nmclient
         wired_device = device
         global wired_device
-        connections = nm_remote_settings.get_wired_connections()
+        connections = nm_module.nm_remote_settings.get_wired_connections()
         # Check connections
         if connections == []:
-            nm_remote_settings.new_wired_connection()
-            connections = nm_remote_settings.get_wired_connections()
+            nm_module.nm_remote_settings.new_wired_connection()
+            connections = nm_module.nm_remote_settings.get_wired_connections()
 
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
@@ -179,7 +182,7 @@ class SideBar(gtk.VBox):
                 return index
 
     def add_new_setting(self, widget):
-        nm_remote_settings.new_wired_connection()
+        nm_module.nm_remote_settings.new_wired_connection()
         self.main_init_cb()
 
 class NoSetting(gtk.VBox):
@@ -394,7 +397,7 @@ class IPV4Conf(gtk.VBox):
         connection.adapt_ip4config_commit()
         self.connection.update()
 
-        nmclient.activate_connection_async(self.connection.object_path,
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
                                            wired_device.object_path,
                                            "/")
 
