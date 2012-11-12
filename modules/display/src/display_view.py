@@ -25,13 +25,14 @@ from dtk.ui.utils import get_parent_dir
 import os
 
 app_theme = init_skin(
-    "deepin-power-settings", 
+    "deepin-display-settings", 
     "1.0",
     "01",
     os.path.join(get_parent_dir(__file__, 2), "skin"),
     os.path.join(get_parent_dir(__file__, 2), "app_theme"),
     )
 
+from dtk.ui.box import ResizableBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
@@ -50,8 +51,19 @@ class DisplayView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
-        self.label_padding_x = 10
-        self.label_padding_y = 10
+        self.padding_x = 10
+        self.padding_y = 10
+        self.width = 800
+        '''
+        monitor operation && detect
+        '''
+        self.monitor_op_align = self.m_setup_align()
+        self.monitor_op_box = ResizableBox(self.padding_x, self.width)
+        self.monitor_op_align.add(self.monitor_op_box)
+        '''
+        this->VBox pack_start
+        '''
+        self.m_widget_pack_start(self, [self.monitor_op_align])
 
     def m_setup_label(self, text="", align=ALIGN_END):
         label = Label(text, None, DEFAULT_FONT_SIZE, align, 140)
@@ -61,9 +73,6 @@ class DisplayView(gtk.VBox):
         combo = ComboBox(items, None, 0, 120)
         return combo
 
-    '''
-    temperary pixbuf I am not a designer :)
-    '''
     def m_setup_toggle(self):
         toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
             app_theme.get_pixbuf("active_normal.png"))
@@ -71,8 +80,8 @@ class DisplayView(gtk.VBox):
 
     def m_setup_align(self):
         align = gtk.Alignment()
-        align.set(0.0, 0.5, 0, 0)
-        align.set_padding(self.label_padding_y, self.label_padding_y, self.label_padding_x, 0)
+        align.set(0, 0.5, 0, 0)
+        align.set_padding(self.padding_y, self.padding_y, self.padding_x, 0)
         return align
 
     def m_widget_pack_start(self, parent_widget, widgets=[]):
