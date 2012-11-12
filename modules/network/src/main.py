@@ -173,9 +173,12 @@ class WirelessDevice(object):
     
     def device_is_deactive(self, widget, reason):
         if not reason == 0:
-            if self.tree.visible_items != []:
-                self.tree.visible_items[self.index].network_state = 0
-                self.tree.queue_draw()
+            try:
+                if self.tree.visible_items != []:
+                    self.tree.visible_items[self.index].network_state = 0
+                    self.tree.queue_draw()
+            except:
+                pass
     #def try_to_connect_end(self, widget, ap_object):
         #pass
         #print ap_object.get_ssid(),"end"
