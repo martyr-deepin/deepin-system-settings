@@ -157,6 +157,7 @@ class WirelessDevice(object):
         self.tree.queue_draw()
     
     def device_is_active(self, widget, reason):
+        print "sctive"
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
@@ -234,9 +235,9 @@ class WirelessSection(gtk.VBox):
                 for i in index:
                     self.tree.visible_items[i].network_state = 2
             else:
+                print "try to connect"
                 for wireless_device in self.wireless_devices:
                     device_wifi = cache.get_spec_object(wireless_device.object_path)
-                    print "try connect"
                     device_wifi.auto_connect()
             self.index = index
         else:

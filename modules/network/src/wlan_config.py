@@ -725,9 +725,11 @@ class Security(gtk.VBox):
                 secret = secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
-            except Exception, e:
-                print "Exception",str(e)
-                secret = ""
+            except:
+                try:
+                    secret = self.connection.get_secrets("802-11-wireless-security")
+                except:
+                    secret = ""
 
 
         if self.security_combo.get_active() == 3:
@@ -825,7 +827,7 @@ class Security(gtk.VBox):
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
-        #device_wifi.emit("try-ssid-begin", ap)
+        device_wifi.emit("try-ssid-begin", ap)
         # Activate
         nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
