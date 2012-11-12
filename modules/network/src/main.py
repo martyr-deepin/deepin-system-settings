@@ -53,6 +53,7 @@ class WiredDevice(object):
         device_ethernet.connect("try-activate-begin", self.try_activate_begin)
 
     def device_activate(self, widget ,reason):
+        print "wired active"
         if self.tree.visible_items != []:
             self.tree.visible_items[self.index].network_state = 2
             self.tree.queue_draw()
@@ -162,7 +163,7 @@ class WirelessDevice(object):
         self.tree.queue_draw()
     
     def device_is_active(self, widget, reason):
-        print "sctive"
+        print "wireless active"
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
@@ -513,6 +514,11 @@ class Network(object):
         nm_module.nmclient = NMClient()
         nm_module.nm_remote_settings = NMRemoteSettings()
         nm_module.secret_agent = NMSecretAgent()
+
+        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
+        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+        self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
+        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
 
         self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
