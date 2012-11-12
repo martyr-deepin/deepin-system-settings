@@ -104,11 +104,12 @@ for path in sink_paths:
     # Set ActivePort还有问题
     #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", Ports[1])
     #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", device.GetPortByName('analog-output-headphones'))
-    property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", property_manager.Get("org.PulseAudio.Core1.Device", "ActivePort"))
+    #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", property_manager.Get("org.PulseAudio.Core1.Device", "ActivePort"))
     #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", dbus.ObjectPath("analog-output-headphones"))
     #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", "<analog-output-headphones>")
     #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", "耳机")
     #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", dbus.ObjectPath(device.GetPortByName('analog-output')))
+    #property_manager.Set("org.PulseAudio.Core1.Device", "ActivePort", ("/org/pulseaudio/core1/sink0/port0"))
     ####
     print '-'*20
     #print "PortByName:", device.GetPortByName('1')
