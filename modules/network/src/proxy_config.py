@@ -122,7 +122,7 @@ class ProxyConfig(gtk.VBox):
                 self.table.attach(self.conf_label, 0, 1, 1, 2)
                 self.table.attach(self.conf_entry, 1, 4, 1, 2)
                 conf_url = self.proxysetting.get_proxy_authconfig_url()
-                self.conf_url.set_text(conf_url)
+                self.conf_entry.set_text(conf_url)
 
 
         self.table.show_all()

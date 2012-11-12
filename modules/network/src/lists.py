@@ -27,7 +27,7 @@ from dtk.ui.constant import DEFAULT_FONT_SIZE
 
 from lan_config import WiredSetting, NoSetting
 from wlan_config import WirelessSetting
-from wired import *
+#from wired import *
 import gtk
 import os
 import pango

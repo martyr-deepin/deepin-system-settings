@@ -27,9 +27,11 @@ from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 
 #from nmlib.nmobject import dbus_loop
-from nmlib.nmclient import nmclient
-from nmlib.nm_remote_settings import nm_remote_settings
+#from nmlib.nmclient import nmclient
+#from nmlib.nm_remote_settings import nm_remote_settings
 from nmlib.nmcache import cache
+#from wired import NMRemoteSettings, NMClient, NMSecretAgent,NMCache
+from nm_modules import nm_module
 
 slider = HSlider()
 PADDING = 32
@@ -67,7 +69,8 @@ class WiredDevice(object):
 class WiredSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
-        self.wired_devices = nmclient.get_wired_devices()
+
+        self.wired_devices = nm_module.nmclient.get_wired_devices()
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
@@ -157,6 +160,7 @@ class WirelessDevice(object):
         self.tree.queue_draw()
     
     def device_is_active(self, widget, reason):
+        print "sctive"
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
@@ -180,8 +184,8 @@ class WirelessDevice(object):
 class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
-        self.wireless_devices = nmclient.get_wireless_devices()
-        nmclient.wireless_set_enabled(True)
+        self.wireless_devices = nm_module.nmclient.get_wireless_devices()
+        nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
 
@@ -234,9 +238,9 @@ class WirelessSection(gtk.VBox):
                 for i in index:
                     self.tree.visible_items[i].network_state = 2
             else:
+                print "try to connect"
                 for wireless_device in self.wireless_devices:
                     device_wifi = cache.get_spec_object(wireless_device.object_path)
-                    print "try connect"
                     device_wifi.auto_connect()
             self.index = index
         else:
@@ -305,7 +309,7 @@ class DSL(gtk.VBox):
         self.setting_page = None
         dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
         self.pack_start(dsl, False, False)
-        pppoe_connections =  nm_remote_settings.get_pppoe_connections()
+        pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -366,7 +370,6 @@ class VpnSection(gtk.VBox):
         rect = widget.child.allocation
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
-
 
 class ThreeG(gtk.VBox):
     def __init__(self):
@@ -444,21 +447,18 @@ class Proxy(gtk.VBox):
                 #else:
                     #self.wire.set_active(False)
 
-if __name__ == '__main__':
-    if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
-        module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-        wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-        wireless_setting_page = WirelessSetting(None, 
-                                                lambda :slider.slide_to_page(main_align, "left"),
-                                                lambda : module_frame.send_message("change_crumb", 1))
-        wireless.add_setting_page(wireless_setting_page)
+class Network(object):
 
+    def __init__(self, module_frame):
+
+        print nm_module.nmclient
         wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-        wifi = WifiSection()
+        wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
+        proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
+        wifi = WifiSection()
         vpn = VpnSection()
         mobile = ThreeG()
-        proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
 
         vbox = gtk.VBox(False, 17)
         vbox.pack_start(wired, False, True,5)
@@ -472,28 +472,63 @@ if __name__ == '__main__':
         scroll_win.set_size_request(825, 425)
 
         scroll_win.add_with_viewport(vbox)
-        main_align = gtk.Alignment(0,0,0,0)
-        main_align.set_padding(11,11,11,11)
-        main_align.add(scroll_win)
+        self.main_align = gtk.Alignment(0,0,0,0)
+        self.main_align.set_padding(11,11,11,11)
+        self.main_align.add(scroll_win)
         
-        wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(main_align, "left"),
+        wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         wired.add_setting_page(wired_setting_page)
 
-        dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(main_align, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        dsl.add_setting_page(dsl_setting_page)
+        #wireless_setting_page = WirelessSetting(None, 
+                                                #lambda :slider.slide_to_page(self.main_align, "left"),
+                                                #lambda : module_frame.send_message("change_crumb", 1))
+        #wireless.add_setting_page(wireless_setting_page)
 
-        proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(main_align, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        proxy.add_setting_page(proxy_setting_page)
+        #dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          #lambda  : module_frame.send_message("change_crumb", 1))
+        #dsl.add_setting_page(dsl_setting_page)
 
-        slider.append_page(main_align)
+        #proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          #lambda  : module_frame.send_message("change_crumb", 1))
+        #proxy.add_setting_page(proxy_setting_page)
+
+        slider.append_page(self.main_align)
         slider.append_page(wired_setting_page)
-        slider.append_page(dsl_setting_page)
-        slider.append_page(wireless_setting_page)
-        slider.append_page(proxy_setting_page)
+        #slider.append_page(dsl_setting_page)
+        #slider.append_page(wireless_setting_page)
+        #slider.append_page(proxy_setting_page)
 
+    def refresh(self):
+
+        from nmlib.nmclient import NMClient
+        from nmlib.nm_remote_settings import NMRemoteSettings
+        from nmlib.nm_secret_agent import NMSecretAgent
+        nm_module.nmclient = NMClient()
+        nm_module.nm_remote_settings = NMRemoteSettings()
+        nm_module.secret_agent = NMSecretAgent()
+        global cache
+        cache.clearcache()
+        cache.clear_spec_cache()
+
+
+
+
+    def get_main_page(self):
+        return self.main_align
+
+
+if __name__ == '__main__':
+    if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+        module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
+        
+        network = Network(module_frame)
+        from nmlib.servicemanager import servicemanager
+        def service_start_cb(widget, s):
+            network.refresh()
+
+        servicemanager.connect("service-start", service_start_cb)
+        main_align = network.get_main_page()
         module_frame.add(slider)
         
         def message_handler(*message):
