@@ -312,8 +312,8 @@ class DSL(gtk.VBox):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
         self.setting_page = None
-        dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
-        self.pack_start(dsl, False, False)
+        self.dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
+        self.pack_start(self.dsl, False, False)
         pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
     def toggle_cb(self, widget):
@@ -459,20 +459,20 @@ class Network(object):
         #print "first start", nm_module.nmclient.bus
         print 'first start', nm_module.nmclient.dbus_proxy
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-        wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-        dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
-        proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
+        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+        self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
+        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
         wifi = WifiSection()
         vpn = VpnSection()
         mobile = ThreeG()
 
         vbox = gtk.VBox(False, 17)
         vbox.pack_start(self.wired, False, True,5)
-        vbox.pack_start(wireless, False, True, 0)
-        vbox.pack_start(dsl, False, True, 0)
+        vbox.pack_start(self.wireless, False, True, 0)
+        vbox.pack_start(self.dsl, False, True, 0)
         vbox.pack_start(mobile, False, True, 0)
         vbox.pack_start(vpn, False, True, 0)
-        vbox.pack_start(proxy, False, True, 0)
+        vbox.pack_start(self.proxy, False, True, 0)
         
         scroll_win = ScrolledWindow()
         scroll_win.set_size_request(825, 425)
@@ -482,28 +482,28 @@ class Network(object):
         self.main_align.set_padding(11,11,11,11)
         self.main_align.add(scroll_win)
         
-        wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
-        self.wired.add_setting_page(wired_setting_page)
+        self.wired.add_setting_page(self.wired_setting_page)
 
-        wireless_setting_page = WirelessSetting(None, 
+        self.wireless_setting_page = WirelessSetting(None, 
                                                 lambda :slider.slide_to_page(self.main_align, "left"),
                                                 lambda : module_frame.send_message("change_crumb", 1))
-        wireless.add_setting_page(wireless_setting_page)
+        self.wireless.add_setting_page(self.wireless_setting_page)
 
-        dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
-        dsl.add_setting_page(dsl_setting_page)
+        self.dsl.add_setting_page(self.dsl_setting_page)
 
-        proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
-        proxy.add_setting_page(proxy_setting_page)
+        self.proxy.add_setting_page(self.proxy_setting_page)
 
         slider.append_page(self.main_align)
-        slider.append_page(wired_setting_page)
-        #slider.append_page(dsl_setting_page)
-        #slider.append_page(wireless_setting_page)
-        #slider.append_page(proxy_setting_page)
+        slider.append_page(self.wired_setting_page)
+        slider.append_page(self.dsl_setting_page)
+        slider.append_page(self.wireless_setting_page)
+        slider.append_page(self.proxy_setting_page)
 
     def refresh(self):
         from nmlib.nmobject import NMObject
@@ -513,11 +513,32 @@ class Network(object):
         nm_module.nmclient = NMClient()
         nm_module.nm_remote_settings = NMRemoteSettings()
         nm_module.secret_agent = NMSecretAgent()
-        global cache
-        cache.clearcache()
-        cache.clear_spec_cache()
 
-        print 'refresh', nm_module.nmclient.dbus_proxy
+        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        self.wired.add_setting_page(self.wired_setting_page)
+
+        self.wireless_setting_page = WirelessSetting(None, 
+                                                lambda :slider.slide_to_page(self.main_align, "left"),
+                                                lambda : module_frame.send_message("change_crumb", 1))
+        self.wireless.add_setting_page(self.wireless_setting_page)
+
+        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        self.dsl.add_setting_page(self.dsl_setting_page)
+
+        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        self.proxy.add_setting_page(self.proxy_setting_page)
+
+    def stop(self):
+        self.wired.wire.set_active(False)
+        self.wireless.wireless.set_active(False)
+        self.dsl.dsl.set_active(False)
+        
+        self.wired_setting_page = None
+        self.wireless_setting_page = None
+        self.dsl_setting_page = None
         
 
     def get_main_page(self):
@@ -530,11 +551,31 @@ if __name__ == '__main__':
         
         network = Network(module_frame)
 
+
+        def service_stop_cb(widget, s):
+            print "service stop"
+            network.stop()
+            #from nmlib.nmobject import NMObject
+            #from nmlib.nmclient import NMClient
+            #from nmlib.nm_remote_settings import NMRemoteSettings
+            #from nmlib.nm_secret_agent import NMSecretAgent
+            #nm_module.nm_remote_settings = None
+            #nm_module.nmclient = None
+            #nm_module.secret_agent = None
+            global cache
+            cache.clearcache()
+            cache.clear_spec_cache()
+
+
+
+
         def service_start_cb(widget, s):
+            print "service start"
             #bus = servicemanager.get_nm_bus()
             network.refresh()
 
         servicemanager.connect("service-start", service_start_cb)
+        servicemanager.connect("service-stop", service_stop_cb)
         main_align = network.get_main_page()
         module_frame.add(slider)
         
