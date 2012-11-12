@@ -74,6 +74,7 @@ class WiredSection(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.wired_devices = nm_module.nmclient.get_wired_devices()
+        print "==WiredSection get_device"
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
@@ -191,6 +192,7 @@ class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
+        print "==WirelessSection get_device"
         nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices

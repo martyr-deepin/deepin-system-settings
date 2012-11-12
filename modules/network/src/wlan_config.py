@@ -173,6 +173,7 @@ class SideBar(gtk.VBox):
 
     def init(self, connection_list, ipv4setting, associate_len, access_point):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        print "in wlan_config get device"
         active_connection = wireless_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
