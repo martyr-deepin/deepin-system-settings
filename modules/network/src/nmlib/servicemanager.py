@@ -58,6 +58,7 @@ class ServiceManager(gobject.GObject):
     def get_nm_bus(self):
         self.nm_bus = None
         self.nm_bus = dbus.SystemBus()
+        return self.nm_bus
 
     def list_names(self):
         return map(lambda x:str(x), manager_interface.ListNames())

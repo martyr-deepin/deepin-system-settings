@@ -16,6 +16,7 @@ from dtk.ui.new_slider import HSlider
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.threads import post_gui
 import gtk
+import dbus
 import traceback
 import threading as td
 
@@ -37,6 +38,7 @@ slider = HSlider()
 PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
+from nmlib.servicemanager import servicemanager
 
         
 
@@ -450,9 +452,10 @@ class Proxy(gtk.VBox):
 class Network(object):
 
     def __init__(self, module_frame):
-
-        print nm_module.nmclient
-        wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
+        
+        #print "first start", nm_module.nmclient.bus
+        print 'first start', nm_module.nmclient.dbus_proxy
+        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
         proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
@@ -461,7 +464,7 @@ class Network(object):
         mobile = ThreeG()
 
         vbox = gtk.VBox(False, 17)
-        vbox.pack_start(wired, False, True,5)
+        vbox.pack_start(self.wired, False, True,5)
         vbox.pack_start(wireless, False, True, 0)
         vbox.pack_start(dsl, False, True, 0)
         vbox.pack_start(mobile, False, True, 0)
@@ -478,7 +481,7 @@ class Network(object):
         
         wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
-        wired.add_setting_page(wired_setting_page)
+        self.wired.add_setting_page(wired_setting_page)
 
         #wireless_setting_page = WirelessSetting(None, 
                                                 #lambda :slider.slide_to_page(self.main_align, "left"),
@@ -500,7 +503,7 @@ class Network(object):
         #slider.append_page(proxy_setting_page)
 
     def refresh(self):
-
+        from nmlib.nmobject import NMObject
         from nmlib.nmclient import NMClient
         from nmlib.nm_remote_settings import NMRemoteSettings
         from nmlib.nm_secret_agent import NMSecretAgent
@@ -511,8 +514,8 @@ class Network(object):
         cache.clearcache()
         cache.clear_spec_cache()
 
-
-
+        print 'refresh', nm_module.nmclient.dbus_proxy
+        
 
     def get_main_page(self):
         return self.main_align
@@ -523,8 +526,9 @@ if __name__ == '__main__':
         module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
         
         network = Network(module_frame)
-        from nmlib.servicemanager import servicemanager
+
         def service_start_cb(widget, s):
+            #bus = servicemanager.get_nm_bus()
             network.refresh()
 
         servicemanager.connect("service-start", service_start_cb)

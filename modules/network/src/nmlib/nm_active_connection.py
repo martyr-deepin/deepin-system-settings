@@ -32,7 +32,7 @@ class NMActiveConnection(NMObject):
 
         self.prop_list = ["Vpn", "Master", "Uuid", "Connection", "SpecificObject", "Devices", "State", "Default", "Default6"]
         self.init_nmobject_with_properties()
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
     def get_vpn(self):
