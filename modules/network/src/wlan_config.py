@@ -27,14 +27,14 @@ from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
-from wired import *
+from nm_modules import nm_module
 from widgets import SettingButton
 import gtk
 
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
-from nmlib.nmclient import nmclient
-from nmlib.nm_remote_settings import nm_remote_settings
+#from nmlib.nmclient import nmclient
+#from nmlib.nm_remote_settings import nm_remote_settings
 
 class WirelessSetting(gtk.HBox):
 
@@ -92,15 +92,15 @@ class WirelessSetting(gtk.HBox):
     def init(self, access_point):
         self.access_point = access_point
         # Get all connections  
-        connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
-        connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
+        connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
+        connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
 
         connections = connection_associate + connect_not_assocaite
         # Check connections
         if connection_associate == []:
-            nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
-            connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
-            connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
+            nm_module.nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
+            connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
+            connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
             connections = connection_associate + connect_not_assocaite
 
         self.wireless_setting = [Wireless(con) for con in connections]
@@ -172,7 +172,7 @@ class SideBar(gtk.VBox):
         self.set_size_request(160, -1)
 
     def init(self, connection_list, ipv4setting, associate_len, access_point):
-        wireless_device = nmclient.get_wireless_devices()[0]
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         active_connection = wireless_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
@@ -225,7 +225,7 @@ class SideBar(gtk.VBox):
                 return index
 
     def add_new_connection(self, widget):
-        nm_remote_settings.new_wireless_connection(self.ssid)
+        nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
         self.main_init_cb(self.access_point)
 
         
@@ -822,14 +822,14 @@ class Security(gtk.VBox):
         
         self.setting.adapt_wireless_security_commit()
         self.connection.update()
-        wireless_device = nmclient.get_wireless_devices()[0]
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
         device_wifi.emit("try-ssid-begin", ap)
         # Activate
-        nmclient.activate_connection_async(self.connection.object_path,
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)
 

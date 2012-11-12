@@ -483,18 +483,18 @@ class Network(object):
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.wired.add_setting_page(wired_setting_page)
 
-        #wireless_setting_page = WirelessSetting(None, 
-                                                #lambda :slider.slide_to_page(self.main_align, "left"),
-                                                #lambda : module_frame.send_message("change_crumb", 1))
-        #wireless.add_setting_page(wireless_setting_page)
+        wireless_setting_page = WirelessSetting(None, 
+                                                lambda :slider.slide_to_page(self.main_align, "left"),
+                                                lambda : module_frame.send_message("change_crumb", 1))
+        wireless.add_setting_page(wireless_setting_page)
 
-        #dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
-                                          #lambda  : module_frame.send_message("change_crumb", 1))
-        #dsl.add_setting_page(dsl_setting_page)
+        dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        dsl.add_setting_page(dsl_setting_page)
 
-        #proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
-                                          #lambda  : module_frame.send_message("change_crumb", 1))
-        #proxy.add_setting_page(proxy_setting_page)
+        proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        proxy.add_setting_page(proxy_setting_page)
 
         slider.append_page(self.main_align)
         slider.append_page(wired_setting_page)
@@ -546,5 +546,4 @@ if __name__ == '__main__':
                     slider.slide_to_page(main_align, "left")
 
         module_frame.module_message_handler = message_handler
-        
         module_frame.run()

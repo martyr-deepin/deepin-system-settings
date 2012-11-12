@@ -14,8 +14,9 @@ from dtk.ui.combo import ComboBox
 from widgets import SettingButton
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
-from nmlib.nmclient import nmclient
-from nmlib.nm_remote_settings import nm_remote_settings
+from nm_modules import nm_module
+#from nmlib.nmclient import nmclient
+#from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
 
 import gtk
@@ -65,12 +66,12 @@ class DSLSetting(gtk.HBox):
 
     def init(self):
         # Get all connections  
-        connections = nm_remote_settings.get_pppoe_connections()
+        connections = nm_module.nm_remote_settings.get_pppoe_connections()
         # Check connections
         if connections == []:
             # Create a new connection
-            nm_remote_settings.new_pppoe_connection()
-            connections = nm_remote_settings.get_pppoe_connections()
+            nm_module.nm_remote_settings.new_pppoe_connection()
+            connections = nm_module.nm_remote_settings.get_pppoe_connections()
 
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
@@ -137,7 +138,7 @@ class SideBar(gtk.VBox):
     
     def init(self, connection_list, ip4setting):
         # check active
-        wired_device = nmclient.get_wired_devices()[0]
+        wired_device = nm_module.nmclient.get_wired_devices()[0]
         active_connection = wired_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
@@ -174,7 +175,7 @@ class SideBar(gtk.VBox):
                 return index
     
     def add_new_connection(self, widget):
-        new_connection = nm_remote_settings.new_pppoe_connection()
+        new_connection = nm_module.nm_remote_settings.new_pppoe_connection()
         self.main_init_cb()
 
 
