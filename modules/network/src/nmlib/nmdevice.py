@@ -118,9 +118,14 @@ class NMDevice(NMObject):
             pass
         else:
             try:
-                self.udev_device =  udev_client.query_by_sysfs_path(self.get_udi())
-                if not self.udev_device:
+                if self.get_udi():
+                    self.udev_device =  udev_client.query_by_sysfs_path(self.get_udi())
+                elif self.get_iface():
                     self.udev_device =  udev_client.query_by_subsystem_and_name("net", self.get_iface())
+                else:
+                    pass
+                if not self.udev_device:
+                    raise Exception
             except:
                 traceback.print_exc()
         return self.udev_device    
@@ -135,6 +140,9 @@ class NMDevice(NMObject):
 
     def get_device_desc(self):
         self.udev_device = self.get_udev_device()
+
+        if not self.udev_device:
+            return "unknown device"
 
         if self.udev_device.has_property("ID_BUS"):
 

@@ -22,6 +22,7 @@
 
 from pulseaudio import BusBase
 import gobject
+import traceback
 
 class Device(BusBase):
 
@@ -81,16 +82,22 @@ class Device(BusBase):
             return map(lambda x:int(x), self.properties["Channels"])
 
     def get_volume(self):
-        pass
+        if self.properties["Volume"]:
+            return map(lambda x:int(x), self.properties["Volume"])
+        else:
+            return []
 
-    def set_volume(self):
-        pass
+    def set_volume(self, volume):
+        try:
+            self.dbus_interface.Set(self.object_interface, "Volume", volume)
+        except:
+            traceback.print_exc()
 
     def get_has_flat_volume(self):
-        pass
+        return self.properties["HasFlatVolume"]
 
     def get_has_convertible_to_decibel_volume(self):
-        pass
+        return self.properties["HasConvertibleToDecibelVolume"]
 
     def get_base_volume(self):
         return self.properties["BaseVolume"]
@@ -101,8 +108,11 @@ class Device(BusBase):
     def get_mute(self):
         return self.properties["Mute"]
 
-    def set_mute(self):
-        pass
+    def set_mute(self, muted):
+        try:
+            self.property_interface.Set(self.object_interface, "Mute", muted)
+        except:
+            traceback.print_exc()
 
     def get_has_hardware_volume(self):
         return self.properties["HasHardwareVolume"]
@@ -137,8 +147,11 @@ class Device(BusBase):
     def get_active_port(self):
         return str(self.properties["ActivePort"])
 
-    def set_active_port(self):
-        pass
+    def set_active_port(self, active_port):
+        try:
+            self.property_interface.Set(self.object_interface, "ActivePort", active_port)
+        except:
+            traceback.print_exc()
 
     def get_property_list(self):
         return self.properties["PropertyList"]

@@ -119,6 +119,7 @@ class NMObject(gobject.GObject):
             self.properties_interface.Set(self.object_interface, prop_name, prop_value)
             self.properties[prop_name] = prop_value
         except dbus.exceptions.DBusException:
+            print "set property failed"
             traceback.print_exc()
 
     def introspect(self):
@@ -127,14 +128,19 @@ class NMObject(gobject.GObject):
         except dbus.exceptions.IntrospectionParserException:
             print "introspect error"
         except dbus.exceptions.DBusException:
+            print "Introspect Failed"
             traceback.print_exc()
 
     def init_properties_access(self):  
         prop_access_dict = {}
-        xmldoc = minidom.parseString(str(self.introspect())) 
-        root = xmldoc.documentElement
-        for node in root.getElementsByTagName("property"):
-            prop_access_dict[node.getAttribute("name")] = node.getAttribute("access")
+        try:
+            xmldoc = minidom.parseString(str(self.introspect())) 
+            root = xmldoc.documentElement
+            for node in root.getElementsByTagName("property"):
+                prop_access_dict[node.getAttribute("name")] = node.getAttribute("access")
+        except:
+            print "init properties access failed"
+            traceback.print_exc()
 
         return prop_access_dict    
 

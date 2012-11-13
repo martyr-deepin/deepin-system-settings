@@ -193,7 +193,8 @@ class WirelessSection(gtk.VBox):
         gtk.VBox.__init__(self)
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
         print "==WirelessSection get_device"
-        nm_module.nmclient.wireless_set_enabled(True)
+        if not nm_module.nmclient.wireless_get_enabled():
+            nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
 
@@ -509,12 +510,14 @@ class Network(object):
         slider.append_page(self.proxy_setting_page)
 
     def refresh(self):
-        from nmlib.nmobject import NMObject
-        from nmlib.nmclient import NMClient
-        from nmlib.nm_remote_settings import NMRemoteSettings
+        #from nmlib.nmobject import NMObject
+        #from nmlib.nmclient import NMClient
+        #from nmlib.nm_remote_settings import NMRemoteSettings
         from nmlib.nm_secret_agent import NMSecretAgent
-        nm_module.nmclient = NMClient()
-        nm_module.nm_remote_settings = NMRemoteSettings()
+        #nm_module.nmclient = NMClient()
+        #nm_module.nm_remote_settings = NMRemoteSettings()
+        nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+        nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         nm_module.secret_agent = NMSecretAgent()
 
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
@@ -537,13 +540,19 @@ class Network(object):
 
         self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
+
         self.proxy.add_setting_page(self.proxy_setting_page)
+        self.main_align.queue_draw()
 
     def stop(self):
-        self.wired.wire.set_active(False)
-        self.wireless.wireless.set_active(False)
-        self.dsl.dsl.set_active(False)
+        #self.wired.wire.set_active(False)
+        #self.wireless.wireless.set_active(False)
+        #self.dsl.dsl.set_active(False)
         
+        self.wired = None
+        self.wireless = None
+        self.dsl = None
+
         self.wired_setting_page = None
         self.wireless_setting_page = None
         self.dsl_setting_page = None
