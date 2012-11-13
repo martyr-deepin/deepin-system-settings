@@ -28,6 +28,7 @@ from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
 from nm_modules import nm_module
+from nmlib.nmcache import cache
 from widgets import SettingButton
 import gtk
 
@@ -663,12 +664,12 @@ class Security(gtk.VBox):
                       "WPA & WPA2 Personal"]
         map(lambda s: self.security_combo.append_text(s), self.encry_list)
         self.security_combo.connect("changed", self.changed_cb)
-        self.key_entry = InputEntry()
-        self.key_entry.entry.connect("press-return", self.check_wep_validation)
-        self.key_entry.set_size(200, 50)
-        self.password_entry = InputEntry()
-        self.password_entry.set_size(200, 50)
-        self.password_entry.entry.connect("press-return", self.check_wpa_validate)
+        self.key_entry = gtk.Entry()
+        self.key_entry.connect("activate", self.check_wep_validation)
+        #self.key_entry.set_size(200, 50)
+        self.password_entry = gtk.Entry()
+        #self.password_entry.set_size(200, 50)
+        self.password_entry.connect("activate", self.check_wpa_validate)
         self.show_key_check = CheckButton("Show key")
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
         self.wep_index_spin = SpinBox(0, 0,3,1 ,55 )
@@ -828,7 +829,7 @@ class Security(gtk.VBox):
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
-        device_wifi.emit("try-ssid-begin", ap)
+        #device_wifi.emit("try-ssid-begin", ap)
         # Activate
         nm_module.nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
