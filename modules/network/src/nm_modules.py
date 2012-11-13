@@ -29,8 +29,8 @@ from nmlib.nm_secret_agent import NMSecretAgent
 class NModule(object):
 
     def __init__(self):
-        self.client = NMClient()
-        self.setting = NMRemoteSettings()
+        self.client = cache.getobject("/org/freedesktop/NetworkManager")
+        self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         self.agent = NMSecretAgent()
 
     @property

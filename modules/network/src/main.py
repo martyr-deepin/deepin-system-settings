@@ -509,12 +509,14 @@ class Network(object):
         slider.append_page(self.proxy_setting_page)
 
     def refresh(self):
-        from nmlib.nmobject import NMObject
-        from nmlib.nmclient import NMClient
-        from nmlib.nm_remote_settings import NMRemoteSettings
+        #from nmlib.nmobject import NMObject
+        #from nmlib.nmclient import NMClient
+        #from nmlib.nm_remote_settings import NMRemoteSettings
         from nmlib.nm_secret_agent import NMSecretAgent
-        nm_module.nmclient = NMClient()
-        nm_module.nm_remote_settings = NMRemoteSettings()
+        #nm_module.nmclient = NMClient()
+        #nm_module.nm_remote_settings = NMRemoteSettings()
+        self.client = cache.getobject("/org/freedesktop/NetworkManager")
+        self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         nm_module.secret_agent = NMSecretAgent()
 
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
