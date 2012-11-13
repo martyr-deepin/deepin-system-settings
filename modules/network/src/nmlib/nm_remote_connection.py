@@ -136,7 +136,6 @@ class NMRemoteConnection(NMObject, NMConnection):
             else:
                 print "must have key mgmt for 802.11 wireless security"
 
-
         elif "ppp" in info_dict.iterkeys():
             self.secret_setting_name = ""
             self.secret_method = ""
