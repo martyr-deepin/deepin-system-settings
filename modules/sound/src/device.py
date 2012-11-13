@@ -220,4 +220,6 @@ class DevicePort(BusBase):
         return self.properties["Priority"]
 
 if __name__ == "__main__":
-    pass
+
+    device = Device("/org/pulseaudio/core1/sink0")
+    print device.get_name()

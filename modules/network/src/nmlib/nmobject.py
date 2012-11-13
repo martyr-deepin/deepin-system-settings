@@ -125,14 +125,16 @@ class NMObject(gobject.GObject):
     def introspect(self):
         try:
             return self.introspect_interface.Introspect()
-        except dbus.exceptions.IntrospectionParserException:
-            print "introspect error"
         except dbus.exceptions.DBusException:
             print "Introspect Failed"
             traceback.print_exc()
+            return None
 
     def init_properties_access(self):  
         prop_access_dict = {}
+        if not self.introspect():
+            print "introspect failed to init_properties_access"
+            return None
         try:
             xmldoc = minidom.parseString(str(self.introspect())) 
             root = xmldoc.documentElement
