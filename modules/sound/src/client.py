@@ -33,8 +33,6 @@ class Client(BusBase):
 
     def __init__(self, path ,interface = "org.PulseAudio.Core1.Client"):
         BusBase.__init__(self, path, interface)
-
-        self.init_dbus_properties()
         
         self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
@@ -43,28 +41,28 @@ class Client(BusBase):
                                           self.object_interface, arg0 = None, arg1 = None)
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
         
     def get_driver(self):
-        return self.properties["Driver"]
+        return str(self.get_property("Driver"))
 
     def get_owner_module(self):
-        return self.properties["OwnerModule"]
+        return str(self.get_property("OwnerModule"))
 
     def get_playback_streams(self):
-        if self.properties["PlaybackStreams"]:
-            return map(lambda x:str(x), self.properties["PlaybackStreams"])
+        if self.get_property("PlaybackStreams"):
+            return map(lambda x:str(x), self.get_property("PlaybackStreams"))
         else:
             return []
 
     def get_record_streams(self):
-        if self.properties["RecordStreams"]:
-            return map(lambda x:str(x), self.properties["RecordStreams"])
+        if self.get_property("RecordStreams"):
+            return map(lambda x:str(x), self.get_property("RecordStreams"))
         else:
             return []
 
     def get_property_list(self):
-        return self.properties["PropertyList"]
+        return dict(self.get_property("PropertyList"))
 
     ###Methods
     def kill(self):

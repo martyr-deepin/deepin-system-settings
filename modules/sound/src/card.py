@@ -35,8 +35,6 @@ class Card(BusBase):
     def __init__(self, path, interface = "org.PulseAudio.Core1.Card"):
         BusBase.__init__(self, path, interface)
 
-        self.init_dbus_properties()
-
         self.dbus_proxy.connect_to_signal("ActiveProfileUpdated", self.active_profile_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
 
@@ -52,44 +50,44 @@ class Card(BusBase):
 
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
 
     def get_driver(self):
-        return self.properties["Driver"]
+        return str(self.get_property("Driver"))
 
-    def get_own_module(self):
-        return self.properties["OwnModule"]
+    def get_owner_module(self):
+        return str(self.get_property("OwnerModule"))
 
     def get_sinks(self):
-        if self.properties["Sinks"]:
-            return map(lambda x:str(x), self.properties["Sinks"])
+        if self.get_property("Sinks"):
+            return map(lambda x:str(x), self.get_property("Sinks"))
         else:
             return []
 
     def get_sources(self):
-        if self.properties["Sources"]:
-            return map(lambda x:str(x), self.properties["Sources"])
+        if self.get_property("Sources"):
+            return map(lambda x:str(x), self.get_property("Sources"))
         else:
             return []
 
     def get_profiles(self):
-        if self.properties["Profiles"]:
-            return map(lambda x:str(x), self.properties["Profiles"])
+        if self.get_property("Profiles"):
+            return map(lambda x:str(x), self.get_property("Profiles"))
         else:
             return []
 
     def get_active_profile(self):
-        return str(self.properties["ActiveProfile"])
+        return str(self.get_property("ActiveProfile"))
 
-    def set_active_profile(self):
-        pass
+    def set_active_profile(self, active_profile):
+        self.set_property("ActiveProfile", active_profile)
 
     def get_property_list(self):
-        return self.properties["PropertyList"]
-    
+        return dict(self.get_property("PropertyList"))
+
     ###Methods
     def get_profile_by_name(self, name):
         return str(self.dbus_method("GetProfileByName", name))
@@ -112,27 +110,25 @@ class CardProfile(BusBase):
     
     def __init__(self, path, interface = "org.PulseAudio.Core1.CardProfile"):
         BusBase.__init__(self, path, interface)
-
-        self.init_dbus_properties()
     
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
 
     def get_description(self):
-        return self.properties["Description"]
+        return str(self.get_property("Description"))
 
     def get_sinks(self):
-        return self.properties["Sinks"]
+        return int(self.get_property("Sinks"))
 
     def get_sources(self):
-        return self.properties["Sources"]
+        return int(self.get_property("Sources"))
 
     def get_priority(self):
-        return self.properties["Priority"]
+        return int(self.get_property("Priority"))
     
 if __name__ == "__main__":
     pass

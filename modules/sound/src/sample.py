@@ -32,44 +32,42 @@ class Sample(BusBase):
     def __init__(self, path , interface = "org.PulseAudio.Core1.Sample"):
         BusBase.__init__(self, path, interface)
 
-        self.init_dbus_properties()
-
         self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
         
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
         
     def get_sample_format(self):
-        return self.properties["SampleFormat"]
+        return int(self.get_property("SampleFormat"))
 
     def get_sample_rate(self):
-        return self.properties["SampleRate"]
+        return int(self.get_property("SampleRate"))
 
     def get_channels(self):
-        if self.properties["Channels"]:
-            return map(lambda x:int(x), self.properties["Channels"])
+        if self.get_property("Channels"):
+            return map(lambda x:int(x), self.get_property("Channels"))
         else:
             return []
 
     def get_default_volume(self):
-        if self.properties["DefaultVolume"]:
-            return map(lambda x:int(x), self.properties["DefaultVolume"])
+        if self.get_property("DefaultVolume"):
+            return map(lambda x:int(x), self.get_property("DefaultVolume"))
         else:
             return []
 
     def get_duration(self):
-        return self.properties["Duration"]
+        return int(self.get_property("Duration"))
 
     def get_bytes(self):
-        return self.properties["Bytes"]
+        return int(self.get_property("Bytes"))
 
     def get_property_list(self):
-        return self.properties["PropertyList"]
+        return dict(self.get_property("PropertyList"))
 
     ###Methods
     def play(self, volume, property_list):

@@ -32,27 +32,24 @@ class Module(BusBase):
     def __init__(self, path , interface = "org.PulseAudio.Core1.Module"):
         BusBase.__init__(self, path, interface)
 
-        self.init_dbus_properties()
-
         self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
         
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
         
     def get_arguments(self):
-        return self.properties["Arguments"]
+        return dict(self.get_property("Arguments"))
 
     def get_usage_counter(self):
-        return self.properties["UsageCounter"]
+        return int(self.get_property("UsageCounter"))
 
     def get_property_list(self):
-        return self.properties["PropertyList"]
-
+        return dict(self.get_property("PropertyList"))
     ###Methods
     def unload(self):
         self.call_async("Unload", reply_handler = None, error_handler = None)
