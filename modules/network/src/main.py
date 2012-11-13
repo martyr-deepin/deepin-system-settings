@@ -53,7 +53,7 @@ class WiredDevice(object):
         device_ethernet.connect("try-activate-begin", self.try_activate_begin)
 
     def device_activate(self, widget ,reason):
-        print "wired active"
+
         if self.tree.visible_items != []:
             self.tree.visible_items[self.index].network_state = 2
             self.tree.queue_draw()
@@ -74,7 +74,7 @@ class WiredSection(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.wired_devices = nm_module.nmclient.get_wired_devices()
-        print "==WiredSection get_device"
+        #print "==WiredSection get_device"
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
@@ -161,8 +161,8 @@ class WirelessDevice(object):
         #self.device_wifi.connect("try-ssid-end", self.try_ssid_end)
 
     def try_to_connect(self, widget, ssid):
-        print "try_to_connect"
-        print ssid
+        #print "try_to_connect"
+        #print ssid
         ap_list  = [ap.get_ssid() for ap in self.ap_list]
         index = ap_list.index(ssid)
         self.tree.visible_items[index].network_state = 1
@@ -186,11 +186,11 @@ class WirelessDevice(object):
             
     
     def device_is_active(self, widget, reason):
-        print "wireless active"
+        #print "wireless active"
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
-            print "widget is active"
+            #print "widget is active"
             index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
             self.index = index
             self.tree.visible_items[index].network_state = 2
@@ -215,7 +215,7 @@ class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
-        print "==WirelessSection get_device"
+        #print "==WirelessSection get_device"
         if not nm_module.nmclient.wireless_get_enabled():
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
@@ -270,7 +270,7 @@ class WirelessSection(gtk.VBox):
                 for i in index:
                     self.tree.visible_items[i].network_state = 2
             else:
-                print "try to connect"
+                #print "try to connect"
                 for wireless_device in self.wireless_devices:
                     device_wifi = cache.get_spec_object(wireless_device.object_path)
                     device_wifi.auto_connect()
@@ -484,7 +484,7 @@ class Network(object):
     def __init__(self, module_frame):
         
         #print "first start", nm_module.nmclient.bus
-        print 'first start', nm_module.nmclient.dbus_proxy
+        #print 'first start', nm_module.nmclient.dbus_proxy
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
@@ -593,7 +593,7 @@ if __name__ == '__main__':
 
 
         def service_stop_cb(widget, s):
-            print "service stop"
+            #print "service stop"
             network.stop()
             #from nmlib.nmobject import NMObject
             #from nmlib.nmclient import NMClient
@@ -607,7 +607,7 @@ if __name__ == '__main__':
             cache.clear_spec_cache()
 
         def service_start_cb(widget, s):
-            print "service start"
+            #print "service start"
             #bus = servicemanager.get_nm_bus()
             network.refresh()
 
