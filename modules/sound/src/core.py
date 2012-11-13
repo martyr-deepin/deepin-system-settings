@@ -74,10 +74,10 @@ class Core(BusBase):
         self.dbus_proxy.connect_to_signal("FallbackSinkUnset", self.fallback_sink_unset_cb, dbus_interface = 
                                           self.object_interface)
 
-        self.dbus_proxy.connect_to_signal("NewPlaybackStream", self.new_palyback_stream_cb, dbus_interface = 
+        self.dbus_proxy.connect_to_signal("NewPlaybackStream", self.new_playback_stream_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("PlaybackStreamRemoved", self.palyback_stream_removed_cb, dbus_interface = 
+        self.dbus_proxy.connect_to_signal("PlaybackStreamRemoved", self.playback_stream_removed_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
 
         self.dbus_proxy.connect_to_signal("NewRecordStream", self.new_record_stream_cb, dbus_interface = 
@@ -121,7 +121,7 @@ class Core(BusBase):
         return self.properties["Version"]
     
     def get_is_local(self):
-        return self.properties["IsLoacl"]
+        return self.properties["IsLocal"]
 
     def get_username(self):
         return self.properties["Username"]
@@ -195,7 +195,7 @@ class Core(BusBase):
         except:
             traceback.print_exc()
 
-    def get_palyback_streams(self):
+    def get_playback_streams(self):
         if self.properties["PlaybackStreams"]:
             return map(lambda x:str(x), self.properties["PlaybackStreams"])
         else:
@@ -279,7 +279,7 @@ class Core(BusBase):
     def fallback_sink_updated_cb(self, sink):
         self.emit("fallback-sink-updated", sink)
 
-    def fallback_sink_unset(self):
+    def fallback_sink_unset_cb(self):
         self.emit("fallback-sink-unset")
 
     def new_source_cb(self, source):
