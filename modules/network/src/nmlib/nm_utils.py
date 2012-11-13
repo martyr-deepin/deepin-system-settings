@@ -197,7 +197,10 @@ class TypeConvert(object):
 
     def is_valid_mac_address(self, mac_string):
         if len(mac_string.split(':')) == 6:
-            return all(map(lambda x: -1<x<256, map(int, mac_string.split(':'))))
+            try:
+                return all(map(lambda x: -1<x<256, map(lambda x:int(x,16), mac_string.split(':'))))
+            except:
+                return False
         else:
             return False
 
@@ -238,7 +241,10 @@ class TypeConvert(object):
     def is_valid_ip4(self, ipstr):
         '''check address is valid addr/prefix/gateway presentation'''
         if len(ipstr.split('.')) == 4:
-            return all(map(lambda x: -1<x<256, map(int,ipstr.split('.'))))
+            try:
+                return all(map(lambda x: -1<x<256, map(int, ipstr.split('.'))))
+            except:
+                return False
         else:
             return False
 
@@ -258,11 +264,13 @@ class TypeConvert(object):
     def is_valid_gw(self, ipstr, mask_str, gw_str):
         if not self.is_valid_ip4(gw_str):
             return False
-
-        return all(map(lambda i: int(bin(int(ipstr.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:]) == 
+        
+        try:
+            return all(map(lambda i: int(bin(int(ipstr.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:]) == 
                      int(bin(int(gw_str.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:])
                      ,[0,1,2,3]))
-
+        except:
+            return False
 
     def is_valid_ip6(self, ip_string):
         if len(ip_string.split('::')) > 3:
