@@ -158,10 +158,32 @@ class WirelessDevice(object):
         self.wireless_device.connect("device-deactive", self.device_is_deactive)
         self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
 
-    def try_to_connect(self, widget, ap_object):
-        index = self.ap_list.index(ap_object)
+        self.device_wifi.connect("try-ssid-end", self.try_ssid_end)
+
+    def try_to_connect(self, widget, ssid):
+        print "try_to_connect"
+        print ssid
+        ap_list  = [ap.get_ssid() for ap in self.ap_list]
+        index = ap_list.index(ssid)
         self.tree.visible_items[index].network_state = 1
         self.tree.queue_draw()
+
+    #def try_ssid_end(self, widget, ssid):
+        #if ssid[0] == "@":
+            #print "not active"
+            #ap_list  = [ap.get_ssid() for ap in self.ap_list]
+            #index = ap_list.index(ssid[1:])
+            #self.tree.visible_items[index].network_state = 0
+            #self.tree.queue_draw()
+        #else:
+            #print "is active"
+            #ap_list  = [ap.get_ssid() for ap in self.ap_list]
+            #index = ap_list.index(ssid)
+            #self.tree.visible_items[index].network_state = 1
+            #self.tree.queue_draw()
+
+
+            
     
     def device_is_active(self, widget, reason):
         print "wireless active"
@@ -582,9 +604,6 @@ if __name__ == '__main__':
             global cache
             cache.clearcache()
             cache.clear_spec_cache()
-
-
-
 
         def service_start_cb(widget, s):
             print "service start"

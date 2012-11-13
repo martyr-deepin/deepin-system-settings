@@ -828,9 +828,9 @@ class Security(gtk.VBox):
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
-        ap = device_wifi.get_ap_by_ssid(ssid)
-        print ap
-        device_wifi.emit("try-ssid-begin", ap)
+        #ap = device_wifi.get_ap_by_ssid(ssid)
+        #print ap
+        device_wifi.emit("try-ssid-begin", ssid)
         # Activate
         nm_module.nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
