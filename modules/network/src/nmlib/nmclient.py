@@ -66,6 +66,10 @@ class NMClient(NMObject):
         print "nmclient init get device start"
         self.devices = self.get_devices()
         print "nmclient init get device finish"
+        print "you create an new nmclient"
+
+        print "\n\n\n"
+
 
     def get_devices(self):
         '''return father device objects'''
@@ -296,12 +300,14 @@ class NMClient(NMObject):
 
     ###Signals ###
     def device_added_cb(self, device_object_path):
-        self.devices = self.get_devices()
-        self.emit("device-added", device_object_path)
+        # self.devices = self.get_devices()
+        # self.emit("device-added", device_object_path)
+        pass
 
     def device_removed_cb(self, device_object_path):
-        self.devices = self.get_devices()
-        self.emit("device-removed", device_object_path)
+        # self.devices = self.get_devices()
+        # self.emit("device-removed", device_object_path)
+        pass
 
     def permisson_changed_cb(self):
         print "permisson_changed_cb triggerd in nmclient"
@@ -330,6 +336,6 @@ if __name__ == "__main__":
     # nmclient.update_properties()
     # print nmclient.get_state()
 
-    nmclient.dbus_proxy.StateChanged(10)
+    # nmclient.dbus_proxy.StateChanged(10)
 
     dbus_loop.run()
