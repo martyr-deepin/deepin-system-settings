@@ -74,9 +74,7 @@ class NMAgentManager(NMObject):
             if not li[i].isalnum() and li[i] not in ["_","-","."]:
                 return False
         return True    
-
-
-agent_manager = NMAgentManager()
+# agent_manager = NMAgentManager()
 
 class NMSecretAgent(NMObject):
     '''NMSecretAgent'''
@@ -89,7 +87,7 @@ class NMSecretAgent(NMObject):
         self.identifier = "org.freedesktop.NetworkManager.SecretAgent"
         self.registered = ""
         try:
-            agent_manager.register(self.identifier)
+            cache.getobject("/org/freedesktop/NetworkManager/AgentManager").register(self.identifier)
         except:
             traceback.print_exc()
 
@@ -168,12 +166,12 @@ class NMSecretAgent(NMObject):
         except:
             traceback.print_exc()
 
-secret_agent = NMSecretAgent()
+# secret_agent = NMSecretAgent()
 
-def refresh_nm_secret_agent():
-    global secret_agent
-    secret_agent = NMSecretAgent()
-    return secret_agent
+# def refresh_nm_secret_agent():
+#     global secret_agent
+#     secret_agent = NMSecretAgent()
+#     return secret_agent
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  

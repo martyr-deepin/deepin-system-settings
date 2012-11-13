@@ -54,18 +54,48 @@ class BusBase(gobject.GObject):
         except dbus.exceptions.DBusException:
             traceback.print_exc()
 
-    def init_dbus_properties(self):        
-        try:
-            self.properties_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties" )
-        except dbus.exceptions.DBusException:
-            traceback.print_exc()
+    # def init_dbus_properties(self):        
+    #     try:
+    #         self.properties_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties" )
+    #     except dbus.exceptions.DBusException:
+    #         traceback.print_exc()
 
-        if self.properties_interface:
+    #     if self.properties_interface:
+    #         try:
+    #             self.properties = self.properties_interface.GetAll(self.object_interface)
+    #         except:
+    #             print "get properties failed"
+    #             traceback.print_exc()
+
+    def get_property(self, prop_name):
+        try:
+            self.property_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
+        except dbus.exceptions.DBusException:
+            print "get property_interface failed"
+            traceback.print_exc()
+   
+        if self.property_interface:    
             try:
-                self.properties = self.properties_interface.GetAll(self.object_interface)
+                return self.property_interface.Get(self.object_interface, prop_name)
             except:
                 print "get properties failed"
                 traceback.print_exc()
+                return None
+
+    def set_property(self, prop_name, prop_value):
+        try:
+            self.property_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
+        except dbus.exceptions.DBusException:
+            print "get property_interface failed"
+            traceback.print_exc()
+   
+        if self.property_interface:    
+            try:
+                return self.property_interface.Set(self.object_interface, prop_name, prop_value)
+            except:
+                print "get properties failed"
+                traceback.print_exc()
+                return None
 
     def dbus_method(self, method_name, *args, **kwargs):
         try:
