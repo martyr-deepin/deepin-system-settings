@@ -22,6 +22,7 @@
 
 from pulseaudio import BusBase
 import gobject
+import traceback
 
 class Core(BusBase):
         
@@ -129,19 +130,34 @@ class Core(BusBase):
         return self.properties["Hostname"]
 
     def get_default_channels(self):
-        return self.properties["DefaultChannels"]
+        if self.properties["DefaultChannels"]:
+            return map(lambda x:int(x), self.properties["DefaultChannels"])
+        else:
+            return []
 
-    def set_default_channels(self):
-        pass
+    def set_default_channels(self, default_channels):
+        try:
+            self.property_interface.Set(self.object_interface, "DefaultChannels", default_channels)
+        except:
+            traceback.print_exc()
 
     def get_default_sample_format(self):
         return self.properties["DefaultSampleFormat"]
 
-    def set_default_sample_format(self):
-        pass
+    def set_default_sample_format(self, default_sample_format):
+        try:
+            self.property_interface.Set(self.object_interface, "DefaultSampleFormat", default_sample_format)
+        except:
+            traceback.print_exc()
 
     def get_default_sample_rate(self):
         return self.properties["DefaultSampleRate"]
+
+    def set_default_sample_rate(self, default_sample_rate):
+        try:
+            self.property_interface.Set(self.object_interface, "DefaultSampleRate", default_sample_rate)
+        except:
+            traceback.print_exc()
 
     def get_cards(self):
         if self.properties["Cards"]:
@@ -156,10 +172,13 @@ class Core(BusBase):
             return []
 
     def get_fallback_sink(self):
-        pass
+        return str(self.properties["FallbackSink"])
 
-    def set_fallback_sink(self):
-        pass
+    def set_fallback_sink(self, fallback_sink):
+        try:
+            self.property_interface.Set(self.object_interface, "FallbackSink", fallback_sink)
+        except:
+            traceback.print_exc()
 
     def get_sources(self):
         if self.properties["Sources"]:
@@ -168,10 +187,13 @@ class Core(BusBase):
             return []
 
     def get_fallback_source(self):
-        pass
+        return str(self.properties["FallbackSource"])
 
-    def set_fallback_source(self):
-        pass
+    def set_fallback_source(self, fallback_source):
+        try:
+            self.property_interface.Set(self.object_interface, "FallbackSource", fallback_source)
+        except:
+            traceback.print_exc()
 
     def get_palyback_streams(self):
         if self.properties["PlaybackStreams"]:

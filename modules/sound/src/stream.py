@@ -22,6 +22,7 @@
 
 from pulseaudio import BusBase
 import gobject
+import traceback
 
 class Stream(BusBase):
     
@@ -91,17 +92,23 @@ class Stream(BusBase):
         else:
             return []
 
-    def set_volume(self):
-        pass
-
+    def set_volume(self, volume):
+        try:
+            self.property_interface.Set(self.object_interface, "Volume", volume)
+        except:
+            traceback.print_exc()
+            
     def get_volume_writable(self):
         return self.properties["VolumeWritable"]
 
     def get_mute(self):
         return self.properties["Mute"]
 
-    def set_mute(self):
-        pass
+    def set_mute(self, muted):
+        try:
+            self.property_interface.Set(self.object_interface, "Mute", muted)
+        except:
+            traceback.print_exc()
 
     def get_buffer_latency(self):
         return self.properties["BufferLatency"]
@@ -217,20 +224,32 @@ class RestoreEntry(BusBase):
     def get_device(self):
         return self.properties["Device"]
 
-    def set_device(self):
-        pass
+    def set_device(self, device):
+        try:
+            self.property_interface.Set(self.object_interface, "Device", device)
+        except:
+            traceback.print_exc()
 
     def get_volume(self):
-        pass
+        if self.properties["Volume"]:
+            return map(lambda x:int(x), self.properties["Volume"])
+        else:
+            return []
 
-    def set_volume(self):
-        pass
+    def set_volume(self, volume):
+        try:
+            self.property_interface.Set(self.object_interface, "Volume", volume)
+        except:
+            traceback.print_exc()
 
     def get_mute(self):
-        pass
+        return self.properties["Mute"]
 
-    def set_mute(self):
-        pass
+    def set_mute(self, muted):
+        try:
+            self.property_interface.Set(self.object_interface, "Mute", muted)
+        except:
+            traceback.print_exc()
 
     ####Methods
     def remove(self):
