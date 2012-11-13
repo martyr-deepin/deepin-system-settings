@@ -42,6 +42,9 @@ class Contain(gtk.Alignment):
     def set_active(self, state):
         self.switch.set_active(state)
 
+    def set_sensitive(self, state):
+        self.switch.set_inconsistent(state)
+
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)
     win.set_title("Container")

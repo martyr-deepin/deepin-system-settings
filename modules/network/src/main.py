@@ -190,6 +190,7 @@ class WirelessDevice(object):
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
+            print "widget is active"
             index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
             self.index = index
             self.tree.visible_items[index].network_state = 2
@@ -567,13 +568,13 @@ class Network(object):
         self.main_align.queue_draw()
 
     def stop(self):
-        #self.wired.wire.set_active(False)
-        #self.wireless.wireless.set_active(False)
-        #self.dsl.dsl.set_active(False)
+        self.wired.wire.set_sensitive(True)
+        self.wireless.wireless.set_sensitive(True)
+        self.dsl.dsl.set_sensitive(True)
         
-        self.wired = None
-        self.wireless = None
-        self.dsl = None
+        #self.wired = None
+        #self.wireless = None
+        #self.dsl = None
 
         self.wired_setting_page = None
         self.wireless_setting_page = None

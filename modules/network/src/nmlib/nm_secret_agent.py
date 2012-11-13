@@ -166,7 +166,7 @@ class NMSecretAgent(NMObject):
         except:
             traceback.print_exc()
 
-# secret_agent = NMSecretAgent()
+secret_agent = NMSecretAgent()
 
 # def refresh_nm_secret_agent():
 #     global secret_agent
