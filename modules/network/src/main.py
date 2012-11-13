@@ -158,7 +158,7 @@ class WirelessDevice(object):
         self.wireless_device.connect("device-deactive", self.device_is_deactive)
         self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
 
-        #self.device_wifi.connect("try-ssid-end", self.try_ssid_end)
+        #self.device_wifi.connect_after("try-ssid-end", self.try_ssid_end)
 
     def try_to_connect(self, widget, ssid):
         #print "try_to_connect"
@@ -568,13 +568,13 @@ class Network(object):
         self.main_align.queue_draw()
 
     def stop(self):
-        self.wired.wire.set_sensitive(True)
-        self.wireless.wireless.set_sensitive(True)
-        self.dsl.dsl.set_sensitive(True)
+        #self.wired.wire.set_sensitive(True)
+        #self.wireless.wireless.set_sensitive(True)
+        #self.dsl.dsl.set_sensitive(True)
         
-        #self.wired = None
-        #self.wireless = None
-        #self.dsl = None
+        self.wired = None
+        self.wireless = None
+        self.dsl = None
 
         self.wired_setting_page = None
         self.wireless_setting_page = None
