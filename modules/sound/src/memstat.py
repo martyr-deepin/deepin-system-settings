@@ -26,24 +26,22 @@ class MemStat(BusBase):
     
     def __init__(self, path = "/org/pulseaudio/core1/memstats", interface = "org.PulseAudio.Core1.Memstats"):
         BusBase.__init__(self, path, interface)
-
-        self.init_dbus_properties()
         
     ###Props    
     def get_current_mem_blocks(self):
-        return self.properties["CurrentMemBlocks"]
+        return int(self.get_property("CurrentMemBlocks"))
 
     def get_current_mem_blocks_size(self):
-        return self.properties["CurrentMemBlocksSize"]
+        return int(self.get_property("CurrentMemBlocksSize"))
 
     def get_accumulated_mem_blocks(self):
-        return self.properties["AccumulatedMemBlocks"]
+        return int(self.get_property("AccumulatedMemBlocks"))
 
     def get_accumulated_mem_blocks_size(self):
-        return self.properties["AccumulatedMemBlocksSize"]
+        return int(self.get_property("AccumulatedMemBlocksSize"))
 
     def get_sample_cache_size(self):
-        return self.properties["SampleCacheSize"]
+        return int(self.get_property("SampleCacheSize"))
     ###Methods
 
     ###Signals

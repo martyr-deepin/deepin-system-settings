@@ -37,8 +37,6 @@ class Device(BusBase):
     def __init__(self, path, interface = "org.PulseAudio.Core1.Device"):
         BusBase.__init__(self, path, interface)
 
-        self.init_dbus_properties()
-
         self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
 
@@ -57,104 +55,104 @@ class Device(BusBase):
 
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_priority("Index"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
 
     def get_driver(self):
-        return self.properties["Driver"]
+        return str(self.get_property("Driver"))
 
     def get_owner_module(self):
-        return str(self.properties["OwnerModule"])
+        return str(self.get_property("OwnerModule"))
 
     def get_card(self):
-        return str(self.properties["Card"])
+        return str(self.get_property("Card"))
 
     def get_sample_format(self):
-        return self.properties["SampleFormat"]
+        return int(self.get_property("SampleFormat"))
 
     def get_sample_rate(self):
-        return self.properties
+        return int(self.get_property("SampleRate"))
 
     def get_channels(self):
-        if self.properties["Channels"]:
-            return map(lambda x:int(x), self.properties["Channels"])
+        if self.get_property("Channels"):
+            return map(lambda x:int(x), self.get_property("Channels"))
 
     def get_volume(self):
-        if self.properties["Volume"]:
-            return map(lambda x:int(x), self.properties["Volume"])
+        if self.get_property("Volume"):
+            return map(lambda x:int(x), self.get_property("Volume"))
         else:
             return []
 
     def set_volume(self, volume):
         try:
-            self.dbus_interface.Set(self.object_interface, "Volume", volume)
+            self.set_property("Volume", volume)
         except:
             traceback.print_exc()
 
     def get_has_flat_volume(self):
-        return self.properties["HasFlatVolume"]
+        return bool(self.get_property("HasFlatVolume"))
 
     def get_has_convertible_to_decibel_volume(self):
-        return self.properties["HasConvertibleToDecibelVolume"]
+        return bool(self.get_property("HasConvertibleToDecibelVolume"))
 
     def get_base_volume(self):
-        return self.properties["BaseVolume"]
+        return int(self.get_property("BaseVolume"))
     
     def get_volume_steps(self):
-        return self.properties["VolumeSteps"]
+        return int(self.get_property("VolumeSteps"))
 
     def get_mute(self):
-        return self.properties["Mute"]
+        return bool(self.get_property("Mute"))
 
     def set_mute(self, muted):
         try:
-            self.property_interface.Set(self.object_interface, "Mute", muted)
+            self.set_property("Mute", muted)
         except:
             traceback.print_exc()
 
     def get_has_hardware_volume(self):
-        return self.properties["HasHardwareVolume"]
+        return bool(self.get_property("HasHardwareVolume"))
 
     def get_has_hardware_mute(self):
-        return self.properties["HasHardwareMute"]
+        return bool(self.get_property("HasHardwareMute"))
 
     def get_configured_latency(self):
-        return self.properties["ConfiguredLatency"]
+        return int(self.get_property("ConfiguredLatency"))
     
     def get_has_dynamic_latency(self):
-        return self.properties["HasDynamicLatency"]
+        return bool(self.get_property("HasDynamicLatency"))
 
     def get_latency(self):
-        return self.properties["Latency"]
+        return int(self.get_property("Latency"))
 
     def get_is_hardware_device(self):
-        return self.properties["IsHardwareDevice"]
+        return bool(self.get_property("IsHardwareDevice"))
 
     def get_is_network_device(self):
-        return self.properties["IsNetworkDevice"]
+        return self.get_property("IsNetworkDevice")
 
     def get_state(self):
-        return self.properties["State"]
+        return int(self.get_property("State"))
 
     def get_ports(self):
-        if self.properties["ports"]:
-            return map(lambda x:str(x), self.properties["ports"])
+        if self.get_property("Ports"):
+            return map(lambda x:str(x), self.get_property("Ports"))
         else:
             return []
 
     def get_active_port(self):
-        return str(self.properties["ActivePort"])
+        return str(self.get_property("ActivePort"))
 
     def set_active_port(self, active_port):
         try:
-            self.property_interface.Set(self.object_interface, "ActivePort", active_port)
+            self.set_property("ActivePort", active_port)
         except:
             traceback.print_exc()
 
     def get_property_list(self):
-        return self.properties["PropertyList"]
+        return dict(self.get_property("PropertyList"))
 
     ###Methods
     def suspend(self, bool):

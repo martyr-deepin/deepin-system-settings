@@ -54,8 +54,6 @@ class Core(BusBase):
     def __init__(self, path = "/org/pulseaudio/core1", interface = "org.PulseAudio.Core1"):
         BusBase.__init__(self, path, interface)
 
-        self.init_dbus_properties()
-        
         self.dbus_proxy.connect_to_signal("NewCard", self.new_card_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
 
@@ -112,125 +110,124 @@ class Core(BusBase):
         
     ###Props    
     def get_interface_revision(self):
-        return self.properties["InterfaceRevision"]
+        return int(self.get_property("InterfaceRevision"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
 
     def get_version(self):
-        return self.properties["Version"]
+        return str(self.get_property("Version"))
     
     def get_is_local(self):
-        return self.properties["IsLocal"]
+        return bool(self.get_property("IsLocal"))
 
     def get_username(self):
-        return self.properties["Username"]
+        return str(self.get_property("Username"))
 
     def get_hostname(self):
-        return self.properties["Hostname"]
+        return str(self.get_property("Hostname"))
 
     def get_default_channels(self):
-        if self.properties["DefaultChannels"]:
-            return map(lambda x:int(x), self.properties["DefaultChannels"])
+        if self.get_property("DefaultChannels"):
+            return map(lambda x:int(x), self.get_property("DefaultChannels"))
         else:
             return []
 
     def set_default_channels(self, default_channels):
         try:
-            self.property_interface.Set(self.object_interface, "DefaultChannels", default_channels)
+            self.set_property("DefaultChannels", default_channels)
         except:
             traceback.print_exc()
 
     def get_default_sample_format(self):
-        return self.properties["DefaultSampleFormat"]
+        return int(self.properties["DefaultSampleFormat"])
 
     def set_default_sample_format(self, default_sample_format):
         try:
-            self.property_interface.Set(self.object_interface, "DefaultSampleFormat", default_sample_format)
+            self.set_property("DefaultSampleFormat", default_sample_format)
         except:
             traceback.print_exc()
 
     def get_default_sample_rate(self):
-        return self.properties["DefaultSampleRate"]
+        return int(self.properties["DefaultSampleRate"])
 
     def set_default_sample_rate(self, default_sample_rate):
         try:
-            self.property_interface.Set(self.object_interface, "DefaultSampleRate", default_sample_rate)
+            self.set_property("DefaultSampleRate", default_sample_rate)
         except:
             traceback.print_exc()
 
     def get_cards(self):
-        if self.properties["Cards"]:
-            return map(lambda x:str(x), self.properties["Cards"])
+        if self.get_property("Cards"):
+            return map(lambda x:str(x), self.get_property("Cards"))
         else:
             return []
 
     def get_sinks(self):
-        if self.properties["Sinks"]:
-            return map(lambda x:str(x), self.properties["Sinks"])
+        if self.get_property("Sinks"):
+            return map(lambda x:str(x), self.get_property("Sinks"))
         else:
             return []
 
     def get_fallback_sink(self):
-        return str(self.properties["FallbackSink"])
+        return str(self.get_property("FallbackSink"))
 
     def set_fallback_sink(self, fallback_sink):
         try:
-            self.property_interface.Set(self.object_interface, "FallbackSink", fallback_sink)
+            self.set_property("FallbackSink", fallback_sink)
         except:
             traceback.print_exc()
 
     def get_sources(self):
-        if self.properties["Sources"]:
-            return map(lambda x:str(x), self.properties["Sources"])
+        if self.get_property("Sources"):
+            return map(lambda x:str(x), self.get_property("Sources"))
         else:
             return []
 
     def get_fallback_source(self):
-        return str(self.properties["FallbackSource"])
+        return str(self.get_property("FallbackSource"))
 
     def set_fallback_source(self, fallback_source):
         try:
-            self.property_interface.Set(self.object_interface, "FallbackSource", fallback_source)
+            self.set_property("FallbackSource", fallback_source)
         except:
             traceback.print_exc()
 
     def get_playback_streams(self):
-        if self.properties["PlaybackStreams"]:
-            return map(lambda x:str(x), self.properties["PlaybackStreams"])
+        if self.get_property("PlaybackStreams"):
+            return map(lambda x:str(x), self.get_property("PlaybackStreams"))
         else:
             return []
 
     def get_record_streams(self):
-        if self.properties["RecordStreams"]:
-            return map(lambda x:str(x), self.properties["RecordStreams"])
+        if self.get_property("RecordStreams"):
+            return map(lambda x:str(x), self.get_property("RecordStreams"))
         else:
             return []
 
     def get_samples(self):
-        if self.properties["Samples"]:
-            return map(lambda x:str(x), self.properties["Samples"])
+        if self.get_property("Samples"):
+            return map(lambda x:str(x), self.get_property("Samples"))
         else:
             return []
 
     def get_modules(self):
-        if self.properties["Modules"]:
-            return map(lambda x:str(x), self.properties["Modules"])
+        if self.get_property("Modules"):
+            return map(lambda x:str(x), self.get_property("Modules"))
         else:
             return []
 
     def get_clients(self):
-        if self.properties["Clients"]:
-            return map(lambda x:str(x), self.properties["Clients"])
+        if self.get_property("Clients"):
+            return map(lambda x:str(x), self.get_property("Clients"))
         else:
             return []
 
     def get_my_client(self):
-        return self.properties["MyClient"]
+        return str(self.get_property("MyClient"))
 
     def get_extensions(self):
-        return self.properties["Extensions"]
-    
+        return str(self.get_property("Extensions"))
     ###Methods
     def get_card_by_name(self, name):
         return str(self.dbus_method("GetCardByName", name))

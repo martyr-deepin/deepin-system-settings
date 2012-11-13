@@ -37,8 +37,6 @@ class Stream(BusBase):
 
     def __init__(self, path ,interface = "org.PulseAudio.Core1.Stream"):
         BusBase.__init__(self, path, interface)
-
-        self.init_dbus_properties()
                 
         self.dbus_proxy.connect_to_signal("DeviceUpdated", self.device_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
@@ -60,67 +58,67 @@ class Stream(BusBase):
 
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
         
     def get_driver(self):
-        return self.properties["Driver"]
+        return str(self.get_property("Driver"))
 
     def get_owner_module(self):
-        return self.properties["OwnerModule"]
+        return str(self.get_property("OwnerModule"))
 
     def get_client(self):
-        return str(self.properties["Client"])
+        return str(self.get_property("Client"))
 
     def get_device(self):
-        return str(self.properties["Device"])
+        return str(self.get_property("Device"))
 
     def get_sample_format(self):
-        return self.properties["SampleFormat"]
+        return int(self.get_property("SampleFormat"))
 
     def get_smaple_rate(self):
-        return self.properties["SampleRate"]
+        return int(self.get_property("SampleRate"))
 
     def get_channels(self):
-        if self.properties["Channels"]:
-            return map(lambda x:int(x), self.properties["Channels"])
+        if self.get_property("Channels"):
+            return map(lambda x:int(x), self.get_property("Channels"))
         else:
             return []
 
     def get_volume(self):
-        if self.properties["Volume"]:
-            return map(lambda x:int(x), self.properties["Volume"])
+        if self.get_property("Volume"):
+            return map(lambda x:int(x), self.get_property("Volume"))
         else:
             return []
 
     def set_volume(self, volume):
         try:
-            self.property_interface.Set(self.object_interface, "Volume", volume)
+            self.set_property("Volume", volume)
         except:
             traceback.print_exc()
             
     def get_volume_writable(self):
-        return self.properties["VolumeWritable"]
+        return bool(self.get_property("VolumeWritable"))
 
     def get_mute(self):
-        return self.properties["Mute"]
+        return bool(self.get_property("Mute"))
 
     def set_mute(self, muted):
         try:
-            self.property_interface.Set(self.object_interface, "Mute", muted)
+            self.set_property("Mute", muted)
         except:
             traceback.print_exc()
 
     def get_buffer_latency(self):
-        return self.properties["BufferLatency"]
+        return int(self.get_property("BufferLatency"))
 
     def get_device_latency(self):
-        return self.properties["DeviceLatency"]
+        return int(self.get_property("DeviceLatency"))
 
     def get_resample_method(self):
-        return self.properties["ResampleMethod"]
+        return str(self.get_property("ResampleMethod"))
     
     def get_property_list(self):
-        return self.properties["PropertyList"]
+        return dict(self.get_property("PropertyList"))
 
     ###Methods
     def move(self, device):
@@ -157,8 +155,6 @@ class StreamRestore(BusBase):
 
     def __init__(self, path = "/org/pulseaudio/stream_restore1", interface = "org.PulseAudio.Ext.StreamRestore1"):
         BusBase.__init__(self, path, interface)
-        
-        self.init_dbus_properties()
 
         self.dbus_proxy.connect_to_signal("NewEntry", self.new_entry_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
@@ -169,11 +165,11 @@ class StreamRestore(BusBase):
 
     ###Props    
     def get_interface_revision(self):
-        return self.properties["InterfaceRevision"]
+        return int(self.get_property("InterfaceRevision"))
 
     def get_entries(self):
-        if self.properties["Entries"]:
-            return map(lambda x:str(x), self.properties["Entries"])
+        if self.get_property("Entries"):
+            return map(lambda x:str(x), self.get_property("Entries"))
         else:
             return []
 
@@ -204,8 +200,6 @@ class RestoreEntry(BusBase):
 
         BusBase.__init__(self, path, interface)
 
-        self.init_dbus_properties()
-
         self.dbus_proxy.connect_to_signal("DeviceUpdated", self.device_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
 
@@ -216,34 +210,34 @@ class RestoreEntry(BusBase):
                                           self.object_interface, arg0 = None)
     ###Props    
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
 
     def get_device(self):
-        return self.properties["Device"]
+        return str(self.get_property("Device"))
 
     def set_device(self, device):
         try:
-            self.property_interface.Set(self.object_interface, "Device", device)
+            return self.set_property("Device", device)
         except:
             traceback.print_exc()
 
     def get_volume(self):
-        if self.properties["Volume"]:
-            return map(lambda x:int(x), self.properties["Volume"])
+        if self.get_property("Volume"):
+            return map(lambda x:int(x), self.get_property("Volume"))
         else:
             return []
 
     def set_volume(self, volume):
         try:
-            self.property_interface.Set(self.object_interface, "Volume", volume)
+            self.set_volume("Volume", volume)
         except:
             traceback.print_exc()
 
     def get_mute(self):
-        return self.properties["Mute"]
+        return bool(self.get_property("Mute"))
 
     def set_mute(self, muted):
         try:
