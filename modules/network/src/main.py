@@ -539,13 +539,19 @@ class Network(object):
 
         self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
+
         self.proxy.add_setting_page(self.proxy_setting_page)
+        self.main_align.queue_draw()
 
     def stop(self):
-        self.wired.wire.set_active(False)
-        self.wireless.wireless.set_active(False)
-        self.dsl.dsl.set_active(False)
+        #self.wired.wire.set_active(False)
+        #self.wireless.wireless.set_active(False)
+        #self.dsl.dsl.set_active(False)
         
+        self.wired = None
+        self.wireless = None
+        self.dsl = None
+
         self.wired_setting_page = None
         self.wireless_setting_page = None
         self.dsl_setting_page = None
