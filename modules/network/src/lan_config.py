@@ -122,6 +122,7 @@ class WiredSetting(gtk.HBox):
         self.init_tab_box()
 
     def save_changes(self, widget):
+        self.wired.save_setting()
         self.ipv4.save_changes()
         self.ipv6.save_changes()
         self.device_ethernet = cache.get_spec_object(wired_device.object_path)
@@ -642,39 +643,62 @@ class Wired(gtk.VBox):
     def __init__(self, connection):
         gtk.VBox.__init__(self)
         
-        ethernet = connection.get_setting("802-3-ethernet")
+        self.ethernet = connection.get_setting("802-3-ethernet")
 
         table = gtk.Table(3, 2, False)
         
         mac_address = Label("Device Mac address:")
         table.attach(mac_address, 0, 1, 0, 1)
 
-        mac_entry = gtk.Entry()
-        table.attach(mac_entry, 1, 2, 0, 1)
+        self.mac_entry = gtk.Entry()
+        self.mac_entry.connect("activate", self.check_mac)
+        table.attach(self.mac_entry, 1, 2, 0, 1)
 
         clone_addr = Label("Cloned Mac Adrress:")
         table.attach(clone_addr, 0, 1, 1, 2)
-        clone_entry = gtk.Entry()
-        table.attach(clone_entry, 1,2, 1, 2)
+        self.clone_entry = gtk.Entry()
+        self.clone_entry.connect("activate", self.check_mac)
+        table.attach(self.clone_entry, 1,2, 1, 2)
 
         mtu = Label("MTU:")
         table.attach(mtu, 0,1,2,3)
-        mtu_spin = SpinBox(0,0, 1500, 1, 55)
-        table.attach(mtu_spin, 1,2,2,3)
+        self.mtu_spin = SpinBox(0,0, 1500, 1, 55)
+        table.attach(self.mtu_spin, 1,2,2,3)
         
         align = gtk.Alignment(0.5, 0.5, 0, 0)
         align.add(table)
         self.add(align)
 
         ## retrieve wired info
-        (mac, clone_mac, mtu) = ethernet.mac_address, ethernet.cloned_mac_address, ethernet.mtu
+        (mac, clone_mac, mtu) = self.ethernet.mac_address, self.ethernet.cloned_mac_address, self.ethernet.mtu
         #print mac, clone_mac, mtu
         if mac != None:
-            mac_entry.set_text(mac)
+            self.mac_entry.set_text(mac)
         if clone_mac !=None:
-            clone_entry.set_text(clone_mac)
+            self.clone_entry.set_text(clone_mac)
         if mtu != None:
-            mtu_spin.set_value(int(mtu))
+            self.mtu_spin.set_value(int(mtu))
+
+    def check_mac(self, widget):
+        mac_string = widget.get_text()
+        from nmlib.nm_utils import TypeConvert
+        if TypeConvert.is_valid_mac_address(mac_string):
+            print "valid"
+        else:
+            print "invalid"
+
+    def save_setting(self):
+        mac_entry = self.mac_entry.get_text()
+        clone_entry = self.clone_entry.get_text()
+        mtu = self.mtu_spin.get_value()
+        
+        self.ethernet.mac_address = mac_entry
+        self.ethernet.cloned_mac_address = clone_entry
+        self.ethernet.mtu = mtu
+
+
+
+
 
     
 #if __name__=="__main__":

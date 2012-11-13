@@ -141,9 +141,9 @@ class WirelessSetting(gtk.HBox):
         self.init_tab_box()
 
     def save_changes(self, widget):
+        self.wireless.save_change()
         self.ipv4.save_changes()
         self.ipv6.save_changes()
-        #self.wireless.save_change()
         self.security.save_setting()
         #wireless_device = nmclient.get_wireless_devices()[0]
         self.change_crumb()
@@ -955,5 +955,5 @@ class Wireless(gtk.VBox):
         self.wireless.adapt_wireless_commit()
         # TODO add update functions
         #connection.adapt_ip4config_commit()
-        self.connection.update()
+        #self.connection.update()
         

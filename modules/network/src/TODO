@@ -3,6 +3,7 @@
 	finish DSL ui module
 	test DSL module
 #TODO 服务停止时保留画面但是整个界面无法点击
+#TODO mac正确性少一位依然是valid的bug
 
 error list
 1. Traceback (most recent call last):
