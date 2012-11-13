@@ -229,7 +229,7 @@ class SoundSetting(object):
         self.container_widgets["balance_label_hbox"].pack_start(
             self.button_widgets["balance"], False, False, 25)
         self.button_widgets["balance"].set_size_request(49, 22)
-        # TODO设置均衡器的值
+        # TODO 设置均衡器的值
         # 
         self.container_widgets["balance_scale_hbox"].pack_start(self.label_widgets["left"], False, False)
         self.container_widgets["balance_scale_hbox"].pack_start(self.scale_widgets["balance"])
@@ -255,7 +255,7 @@ class SoundSetting(object):
         self.container_widgets["speaker_label_hbox"].pack_start(
             self.button_widgets["speaker"], False, False, 25)
         self.button_widgets["speaker"].set_size_request(49, 22)
-        # TODO设置值
+        # TODO 设置值
         self.container_widgets["speaker_table"].attach(
             self.button_widgets["speaker_combo"], 0, 1, 0, 1)
         self.container_widgets["speaker_table"].attach(
@@ -281,7 +281,7 @@ class SoundSetting(object):
         self.container_widgets["microphone_label_hbox"].pack_start(
             self.button_widgets["microphone"], False, False, 25)
         self.button_widgets["microphone"].set_size_request(49, 22)
-        #TODO
+        # TODO
         self.container_widgets["microphone_table"].attach(
             self.button_widgets["microphone_combo"], 0, 1, 0, 1)
         self.container_widgets["microphone_table"].attach(
@@ -297,13 +297,13 @@ class SoundSetting(object):
         self.alignment_widgets["advance_output_box"].add(self.container_widgets["advance_output_box"])
         self.alignment_widgets["advance_hardware_box"].add(self.container_widgets["advance_hardware_box"])
 
-        self.alignment_widgets["advance_input_box"].set_padding(0, 0, 10, 10)
-        self.alignment_widgets["advance_output_box"].set_padding(0, 0, 10, 10)
-        self.alignment_widgets["advance_hardware_box"].set_padding(0, 0, 10, 10)
+        self.alignment_widgets["advance_input_box"].set_padding(0, 0, 20, 10)
+        self.alignment_widgets["advance_output_box"].set_padding(0, 0, 20, 10)
+        self.alignment_widgets["advance_hardware_box"].set_padding(0, 0, 20, 10)
         
-        self.container_widgets["advance_input_box"].set_size_request(780, 380)
-        self.container_widgets["advance_output_box"].set_size_request(780, 380)
-        self.container_widgets["advance_hardware_box"].set_size_request(780, 380)
+        self.container_widgets["advance_input_box"].set_size_request(790, 380)
+        self.container_widgets["advance_output_box"].set_size_request(790, 380)
+        self.container_widgets["advance_hardware_box"].set_size_request(790, 380)
         
         self.container_widgets["advance_input_box"].pack_start(self.label_widgets["ad_output"], False, False, 10)
         self.container_widgets["advance_input_box"].pack_start(self.view_widgets["ad_output"])
@@ -390,7 +390,7 @@ class SoundSetting(object):
     
     def set_to_default(self):
         '''set to the default'''
-        settings.keyboard_set_to_default()
+        pass
     
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
