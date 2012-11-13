@@ -724,13 +724,13 @@ class Security(gtk.VBox):
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
-                secret = secret_agent.agent_get_secrets(self.connection.object_path,
+                secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
             except:
-                try:
-                    secret = self.connection.get_secrets("802-11-wireless-security")
-                except:
+                #try:
+                    #secret = self.connection.get_secrets("802-11-wireless-security")
+                #except:
                     secret = ""
 
 
@@ -785,7 +785,7 @@ class Security(gtk.VBox):
         self.reset(True)
 
     def wep_index_spin_cb(self, widget, value):
-        key = secret_agent.agent_get_secrets(self.connection.object_path,
+        key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                    "802-11-wireless-security",
                                                    "wep-key%d"%value)
 
@@ -828,7 +828,7 @@ class Security(gtk.VBox):
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
-        #ap = device_wifi.get_ap_by_ssid(ssid)
+        ap = device_wifi.get_ap_by_ssid(ssid)
         #print ap
         device_wifi.emit("try-ssid-begin", ssid)
         # Activate
