@@ -193,7 +193,8 @@ class WirelessSection(gtk.VBox):
         gtk.VBox.__init__(self)
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
         print "==WirelessSection get_device"
-        nm_module.nmclient.wireless_set_enabled(True)
+        if not nm_module.nmclient.wireless_get_enabled():
+            nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
 
@@ -515,8 +516,8 @@ class Network(object):
         from nmlib.nm_secret_agent import NMSecretAgent
         #nm_module.nmclient = NMClient()
         #nm_module.nm_remote_settings = NMRemoteSettings()
-        self.client = cache.getobject("/org/freedesktop/NetworkManager")
-        self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+        nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+        nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         nm_module.secret_agent = NMSecretAgent()
 
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))

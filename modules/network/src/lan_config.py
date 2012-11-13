@@ -80,11 +80,12 @@ class WiredSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self, device):
+    def init(self, device = None):
         # Get all connections
         print "*in lan_config* ", nm_module.nmclient
-        wired_device = device
-        global wired_device
+        if device != None:
+            wired_device = device
+            global wired_device
         connections = nm_module.nm_remote_settings.get_wired_connections()
         # Check connections
         if connections == []:

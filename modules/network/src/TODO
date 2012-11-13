@@ -2,7 +2,7 @@
 +-	finish wireless & and wired module
 	finish DSL ui module
 	test DSL module
-
+#TODO 服务停止时保留画面但是整个界面无法点击
 
 error list
 1. Traceback (most recent call last):
