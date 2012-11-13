@@ -195,7 +195,7 @@ class Core(BusBase):
         except:
             traceback.print_exc()
 
-    def get_palyback_streams(self):
+    def get_playback_streams(self):
         if self.properties["PlaybackStreams"]:
             return map(lambda x:str(x), self.properties["PlaybackStreams"])
         else:
