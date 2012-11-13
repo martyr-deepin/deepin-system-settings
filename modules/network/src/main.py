@@ -158,7 +158,7 @@ class WirelessDevice(object):
         self.wireless_device.connect("device-deactive", self.device_is_deactive)
         self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
 
-        self.device_wifi.connect("try-ssid-end", self.try_ssid_end)
+        #self.device_wifi.connect("try-ssid-end", self.try_ssid_end)
 
     def try_to_connect(self, widget, ssid):
         print "try_to_connect"
