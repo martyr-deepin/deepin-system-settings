@@ -942,16 +942,22 @@ class Wireless(gtk.VBox):
 
         if wireless.mtu != None:
             self.mtu_spin.set_value(int(wireless.mtu))
+
     
     def save_change(self):
-
+        
         self.wireless.ssid = self.ssid_entry.get_text()
         model = self.mode_combo.get_model()
         active = self.mode_combo.get_active()
         self.wireless.mode = model[active][0]
-        self.wireless.bssid = self.bssid_entry.get_text()
-        self.wireless.mac_address = self.mac_entry.get_text()
-        self.wireless.cloned_mac_address = self.clone_entry.get_text()
+
+        if self.bssid_entry.get_text() != "":
+            self.wireless.bssid = self.bssid_entry.get_text()
+        if self.mac_entry.get_text() != "":
+            self.wireless.mac_address = self.mac_entry.get_text()
+        if self.clone_entry.get_text() != "":
+            self.wireless.cloned_mac_address = self.clone_entry.get_text()
+
         self.wireless.mtu = self.mtu_spin.get_value()
         self.wireless.adapt_wireless_commit()
         # TODO add update functions

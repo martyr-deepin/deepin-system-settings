@@ -84,8 +84,8 @@ class SoundSetting(object):
         self.image_widgets["device"] = gtk.gdk.pixbuf_new_from_file(
             app_theme.get_theme_file_path("image/set/device.png"))
         # label init
-        self.label_widgets["left"] = Label(_("Left"))
-        self.label_widgets["right"] = Label(_("Right"))
+        #self.label_widgets["left"] = Label(_("Left"))
+        #self.label_widgets["right"] = Label(_("Right"))
         # button init
         self.button_widgets["balance"] = gtk.ToggleButton()
         self.button_widgets["speaker"] = gtk.ToggleButton()
@@ -120,7 +120,7 @@ class SoundSetting(object):
         self.alignment_widgets["microphone_set"] = gtk.Alignment()
         self.alignment_widgets["advanced"] = gtk.Alignment()
         # adjust init
-        self.adjust_widgets["balance"] = gtk.Adjustment(0, 0, 100)
+        self.adjust_widgets["balance"] = gtk.Adjustment(0, -100, 100)
         self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 100)
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 100)
         # scale init
@@ -231,9 +231,12 @@ class SoundSetting(object):
         self.button_widgets["balance"].set_size_request(49, 22)
         # TODO 设置均衡器的值
         # 
-        self.container_widgets["balance_scale_hbox"].pack_start(self.label_widgets["left"], False, False)
+        #self.container_widgets["balance_scale_hbox"].pack_start(self.label_widgets["left"], False, False)
         self.container_widgets["balance_scale_hbox"].pack_start(self.scale_widgets["balance"])
-        self.container_widgets["balance_scale_hbox"].pack_start(self.label_widgets["right"], False, False)
+        #self.container_widgets["balance_scale_hbox"].pack_start(self.label_widgets["right"], False, False)
+        self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_lower(), gtk.POS_BOTTOM, _("Left"))
+        self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_upper(), gtk.POS_BOTTOM, _("Right"))
+        self.scale_widgets["balance"].add_mark(0, gtk.POS_TOP, "0")
 
         # speaker
         self.alignment_widgets["speaker_label"].add(self.container_widgets["speaker_label_hbox"])
@@ -314,6 +317,7 @@ class SoundSetting(object):
         self.container_widgets["advance_hardware_box"].pack_start(self.label_widgets["ad_hardware"], False, False, 10)
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
         # TODO 获取设备信息列表
+        # TODO 双击切换设备
         self.view_widgets["ad_output"].add_items(
             [TreeItem(self.image_widgets["device"], "test"),
              TreeItem(self.image_widgets["device"], "test")])
@@ -364,12 +368,15 @@ class SoundSetting(object):
         callback(button.get_active())
     
     def balance_toggled(self, active):
+        # active为False，则默认均衡
         self.container_widgets["balance_table"].set_sensitive(active)
     
     def speaker_toggled(self, active):
+        # avtive为False，则静音。调节音量后又激活该按钮
         self.container_widgets["speaker_table"].set_sensitive(active)
     
     def microphone_toggled(self, active):
+        # avtive为False，则静音。调节音量后又激活该按钮
         self.container_widgets["microphone_table"].set_sensitive(active)
     
     def adjustment_value_changed(self, adjustment, key):
