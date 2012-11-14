@@ -478,14 +478,14 @@ class DSLConf(gtk.VBox):
         service = self.dsl_setting.service
         #print self.connection.guess_secret_info()
         #password = self.dsl_setting.password
-        #(setting_name, method) = self.connection.guess_secret_info() 
+        (setting_name, method) = self.connection.guess_secret_info() 
         #setting_name = "802-3-ethernet"
         #method = "pppoe"
         try:
-            #password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
-                                                    #setting_name,
-                                                    #method)
-            password = self.connection.get_secrets("pppoe")["pppoe"]["password"]
+            password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                    setting_name,
+                                                    method)
+            #password = self.connection.get_secrets("pppoe")["pppoe"]["password"]
 
         except:
             #try:
