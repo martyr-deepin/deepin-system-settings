@@ -472,26 +472,18 @@ class DSLConf(gtk.VBox):
         self.refresh()
 
     def refresh(self):
-        print ">>>",self.connection.settings_dict
+        #print ">>>",self.connection.settings_dict
         # get dsl settings
         username = self.dsl_setting.username
         service = self.dsl_setting.service
-        #print self.connection.guess_secret_info()
-        #password = self.dsl_setting.password
         (setting_name, method) = self.connection.guess_secret_info() 
-        #setting_name = "802-3-ethernet"
-        #method = "pppoe"
         try:
             password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                     setting_name,
                                                     method)
-            #password = self.connection.get_secrets("pppoe")["pppoe"]["password"]
 
         except:
-            #try:
-                #secret = self.connection.get_secrets("802-11-wireless-security")
-            #except:
-                password = ""
+            password = ""
         
         # check if empty
         if username == None:
