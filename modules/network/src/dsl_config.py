@@ -113,10 +113,16 @@ class DSLSetting(gtk.HBox):
     def save_changes(self, widget):
         print "saving"
         self.dsl.save_setting()
-        self.ppp.save_setting()
+        #self.ppp.save_setting()
 
         connection = self.dsl.connection
+        print connection
         connection.update()
+
+        #FIXME need to change device path into variables
+        nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           "/org/freedesktop/NetworkManager/Devices/0",
+                                           "/")
         self.change_crumb()
         self.slide_back() 
 
@@ -466,10 +472,26 @@ class DSLConf(gtk.VBox):
         self.refresh()
 
     def refresh(self):
+        print ">>>",self.connection.settings_dict
         # get dsl settings
         username = self.dsl_setting.username
         service = self.dsl_setting.service
-        password = self.dsl_setting.password
+        #print self.connection.guess_secret_info()
+        #password = self.dsl_setting.password
+        (setting_name, method) = self.connection.guess_secret_info() 
+        #setting_name = "802-3-ethernet"
+        #method = "pppoe"
+        try:
+            password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                    setting_name,
+                                                    method)
+            #password = self.connection.get_secrets("pppoe")["pppoe"]["password"]
+
+        except:
+            #try:
+                #secret = self.connection.get_secrets("802-11-wireless-security")
+            #except:
+                password = ""
         
         # check if empty
         if username == None:
@@ -479,18 +501,21 @@ class DSLConf(gtk.VBox):
         if password == None:
             password = ""
         # fill entry
-        self.username_entry.set_text(username)
-        self.service_entry.set_text(service)
-        self.password_entry.set_text(password)
+        self.username_entry.set_text(str(username))
+        self.service_entry.set_text(str(service))
+        self.password_entry.set_text(str(password))
         
     def save_setting(self):
         username = self.username_entry.get_text()
         service = self.service_entry.get_text()
         password = self.password_entry.get_text()
 
-        self.dsl_setting.username = username
-        self.dsl_setting.service = service
-        self.dsl_setting.password = password
+        if username != "":
+            self.dsl_setting.username = username
+        if service != "":
+            self.dsl_setting.service = service
+        if password !="":
+            self.dsl_setting.password = password
 
 
 

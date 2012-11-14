@@ -721,6 +721,7 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo, 1, 4, 0, 1)
 
         (setting_name, method) = self.connection.guess_secret_info() 
+        print setting_name, method
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
