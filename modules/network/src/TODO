@@ -4,6 +4,7 @@
 	test DSL module
 #TODO 服务停止时保留画面但是整个界面无法点击
 #TODO mac正确性少一位依然是valid的bug
+#TODO dsl 连接成功。但是在获取password的时候secret-agent有问题
 
 error list
 1. Traceback (most recent call last):

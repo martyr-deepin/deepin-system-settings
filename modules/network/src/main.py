@@ -100,6 +100,7 @@ class WiredSection(gtk.VBox):
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
             for index, wired_device in enumerate(self.wired_devices):
+                print wired_device.object_path
                 WiredDevice(wired_device,self.tree, index )
 
             self.try_active()
