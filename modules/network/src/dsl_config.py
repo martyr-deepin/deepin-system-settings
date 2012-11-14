@@ -14,8 +14,9 @@ from dtk.ui.combo import ComboBox
 from widgets import SettingButton
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
-from nmlib.nmclient import nmclient
-from nmlib.nm_remote_settings import nm_remote_settings
+from nm_modules import nm_module
+#from nmlib.nmclient import nmclient
+#from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
 
 import gtk
@@ -65,12 +66,12 @@ class DSLSetting(gtk.HBox):
 
     def init(self):
         # Get all connections  
-        connections = nm_remote_settings.get_pppoe_connections()
+        connections = nm_module.nm_remote_settings.get_pppoe_connections()
         # Check connections
         if connections == []:
             # Create a new connection
-            nm_remote_settings.new_pppoe_connection()
-            connections = nm_remote_settings.get_pppoe_connections()
+            nm_module.nm_remote_settings.new_pppoe_connection()
+            connections = nm_module.nm_remote_settings.get_pppoe_connections()
 
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
@@ -112,10 +113,16 @@ class DSLSetting(gtk.HBox):
     def save_changes(self, widget):
         print "saving"
         self.dsl.save_setting()
-        self.ppp.save_setting()
+        #self.ppp.save_setting()
 
         connection = self.dsl.connection
+        print connection
         connection.update()
+
+        #FIXME need to change device path into variables
+        nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           "/org/freedesktop/NetworkManager/Devices/0",
+                                           "/")
         self.change_crumb()
         self.slide_back() 
 
@@ -137,7 +144,7 @@ class SideBar(gtk.VBox):
     
     def init(self, connection_list, ip4setting):
         # check active
-        wired_device = nmclient.get_wired_devices()[0]
+        wired_device = nm_module.nmclient.get_wired_devices()[0]
         active_connection = wired_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
@@ -174,7 +181,7 @@ class SideBar(gtk.VBox):
                 return index
     
     def add_new_connection(self, widget):
-        new_connection = nm_remote_settings.new_pppoe_connection()
+        new_connection = nm_module.nm_remote_settings.new_pppoe_connection()
         self.main_init_cb()
 
 
@@ -465,10 +472,18 @@ class DSLConf(gtk.VBox):
         self.refresh()
 
     def refresh(self):
+        #print ">>>",self.connection.settings_dict
         # get dsl settings
         username = self.dsl_setting.username
         service = self.dsl_setting.service
-        password = self.dsl_setting.password
+        (setting_name, method) = self.connection.guess_secret_info() 
+        try:
+            password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                    setting_name,
+                                                    method)
+
+        except:
+            password = ""
         
         # check if empty
         if username == None:
@@ -478,18 +493,21 @@ class DSLConf(gtk.VBox):
         if password == None:
             password = ""
         # fill entry
-        self.username_entry.set_text(username)
-        self.service_entry.set_text(service)
-        self.password_entry.set_text(password)
+        self.username_entry.set_text(str(username))
+        self.service_entry.set_text(str(service))
+        self.password_entry.set_text(str(password))
         
     def save_setting(self):
         username = self.username_entry.get_text()
         service = self.service_entry.get_text()
         password = self.password_entry.get_text()
 
-        self.dsl_setting.username = username
-        self.dsl_setting.service = service
-        self.dsl_setting.password = password
+        if username != "":
+            self.dsl_setting.username = username
+        if service != "":
+            self.dsl_setting.service = service
+        if password !="":
+            self.dsl_setting.password = password
 
 
 

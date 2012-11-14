@@ -24,11 +24,11 @@ import gobject
 import dbus
 
 manager_bus = dbus.SystemBus()
-nm_bus = dbus.SystemBus()
-def refresh_nm_bus():
-    global nm_bus
-    nm_bus = dbus.SystemBus()
-    return nm_bus
+# nm_bus = dbus.SystemBus()
+# def refresh_nm_bus():
+#     global nm_bus
+#     nm_bus = dbus.SystemBus()
+#     return nm_bus
 
 manager_proxy = manager_bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
 manager_interface = dbus.Interface(manager_proxy, "org.freedesktop.DBus")
@@ -52,6 +52,11 @@ class ServiceManager(gobject.GObject):
 
         manager_bus.add_signal_receiver(self.name_accuired_cb, dbus_interface = "org.freedesktop.DBus",
                                         path = "/org/freedesktop/DBus", signal_name = "NameAccuired")
+
+
+    def get_nm_bus(self):
+        self.nm_bus = dbus.SystemBus()
+        return self.nm_bus
 
     def list_names(self):
         return map(lambda x:str(x), manager_interface.ListNames())

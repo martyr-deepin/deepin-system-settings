@@ -22,10 +22,12 @@
 
 from nmdevice import NMDevice
 from nm_utils import TypeConvert
-from nm_remote_settings import nm_remote_settings
-from nmclient import nmclient
+# from nm_remote_settings import nm_remote_settings
+# from nmclient import nmclient
 from nmcache import cache
 import gobject
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 
 class NMDeviceEthernet(NMDevice):
     '''NMDeviceEthernet'''
@@ -39,7 +41,7 @@ class NMDeviceEthernet(NMDevice):
         NMDevice.__init__(self, ethernet_device_object_path, "org.freedesktop.NetworkManager.Device.Wired")
         self.prop_list = ["Carrier", "HwAddress", "PermHwAddress", "Speed"]
         self.init_nmobject_with_properties()
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
     ###Methods###

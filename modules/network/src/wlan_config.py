@@ -27,14 +27,15 @@ from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
-from wired import *
+from nm_modules import nm_module
+from nmlib.nmcache import cache
 from widgets import SettingButton
 import gtk
 
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
-from nmlib.nmclient import nmclient
-from nmlib.nm_remote_settings import nm_remote_settings
+#from nmlib.nmclient import nmclient
+#from nmlib.nm_remote_settings import nm_remote_settings
 
 class WirelessSetting(gtk.HBox):
 
@@ -92,15 +93,15 @@ class WirelessSetting(gtk.HBox):
     def init(self, access_point):
         self.access_point = access_point
         # Get all connections  
-        connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
-        connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
+        connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
+        connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
 
         connections = connection_associate + connect_not_assocaite
         # Check connections
         if connection_associate == []:
-            nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
-            connection_associate = nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
-            connect_not_assocaite = nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
+            nm_module.nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
+            connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
+            connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
             connections = connection_associate + connect_not_assocaite
 
         self.wireless_setting = [Wireless(con) for con in connections]
@@ -140,9 +141,9 @@ class WirelessSetting(gtk.HBox):
         self.init_tab_box()
 
     def save_changes(self, widget):
+        self.wireless.save_change()
         self.ipv4.save_changes()
         self.ipv6.save_changes()
-        #self.wireless.save_change()
         self.security.save_setting()
         #wireless_device = nmclient.get_wireless_devices()[0]
         self.change_crumb()
@@ -172,7 +173,8 @@ class SideBar(gtk.VBox):
         self.set_size_request(160, -1)
 
     def init(self, connection_list, ipv4setting, associate_len, access_point):
-        wireless_device = nmclient.get_wireless_devices()[0]
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        #print "in wlan_config get device"
         active_connection = wireless_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
@@ -225,7 +227,7 @@ class SideBar(gtk.VBox):
                 return index
 
     def add_new_connection(self, widget):
-        nm_remote_settings.new_wireless_connection(self.ssid)
+        nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
         self.main_init_cb(self.access_point)
 
         
@@ -662,12 +664,12 @@ class Security(gtk.VBox):
                       "WPA & WPA2 Personal"]
         map(lambda s: self.security_combo.append_text(s), self.encry_list)
         self.security_combo.connect("changed", self.changed_cb)
-        self.key_entry = InputEntry()
-        self.key_entry.entry.connect("press-return", self.check_wep_validation)
-        self.key_entry.set_size(200, 50)
-        self.password_entry = InputEntry()
-        self.password_entry.set_size(200, 50)
-        self.password_entry.entry.connect("press-return", self.check_wpa_validate)
+        self.key_entry = gtk.Entry()
+        self.key_entry.connect("activate", self.check_wep_validation)
+        #self.key_entry.set_size(200, 50)
+        self.password_entry = gtk.Entry()
+        #self.password_entry.set_size(200, 50)
+        self.password_entry.connect("activate", self.check_wpa_validate)
         self.show_key_check = CheckButton("Show key")
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
         self.wep_index_spin = SpinBox(0, 0,3,1 ,55 )
@@ -719,15 +721,18 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo, 1, 4, 0, 1)
 
         (setting_name, method) = self.connection.guess_secret_info() 
+        print setting_name, method
         if not self.security_combo.get_active() == 0: 
             #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
-                secret = secret_agent.agent_get_secrets(self.connection.object_path,
+                secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
-            except Exception, e:
-                print "Exception",str(e)
-                secret = ""
+            except:
+                #try:
+                    #secret = self.connection.get_secrets("802-11-wireless-security")
+                #except:
+                    secret = ""
 
 
         if self.security_combo.get_active() == 3:
@@ -781,7 +786,7 @@ class Security(gtk.VBox):
         self.reset(True)
 
     def wep_index_spin_cb(self, widget, value):
-        key = secret_agent.agent_get_secrets(self.connection.object_path,
+        key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                    "802-11-wireless-security",
                                                    "wep-key%d"%value)
 
@@ -820,14 +825,15 @@ class Security(gtk.VBox):
         
         self.setting.adapt_wireless_security_commit()
         self.connection.update()
-        wireless_device = nmclient.get_wireless_devices()[0]
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
-        #device_wifi.emit("try-ssid-begin", ap)
+        #print ap
+        device_wifi.emit("try-ssid-begin", ssid)
         # Activate
-        nmclient.activate_connection_async(self.connection.object_path,
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    ap.object_path)
 
@@ -936,19 +942,25 @@ class Wireless(gtk.VBox):
 
         if wireless.mtu != None:
             self.mtu_spin.set_value(int(wireless.mtu))
+
     
     def save_change(self):
-
+        
         self.wireless.ssid = self.ssid_entry.get_text()
         model = self.mode_combo.get_model()
         active = self.mode_combo.get_active()
         self.wireless.mode = model[active][0]
-        self.wireless.bssid = self.bssid_entry.get_text()
-        self.wireless.mac_address = self.mac_entry.get_text()
-        self.wireless.cloned_mac_address = self.clone_entry.get_text()
+
+        if self.bssid_entry.get_text() != "":
+            self.wireless.bssid = self.bssid_entry.get_text()
+        if self.mac_entry.get_text() != "":
+            self.wireless.mac_address = self.mac_entry.get_text()
+        if self.clone_entry.get_text() != "":
+            self.wireless.cloned_mac_address = self.clone_entry.get_text()
+
         self.wireless.mtu = self.mtu_spin.get_value()
         self.wireless.adapt_wireless_commit()
         # TODO add update functions
         #connection.adapt_ip4config_commit()
-        self.connection.update()
+        #self.connection.update()
         

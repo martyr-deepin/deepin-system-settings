@@ -20,24 +20,72 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import traceback
+import os
+import syslog
+import re
+
 def run_command(command):
+    try:
+        os.system(command)
+    except:
+        for line in traceback.format_exc().split("\n"):
+            syslog.syslog(syslog.LOG_ERR,line)
+
+def get_command_oneput(command):
+    '''run command directly use os.system,return a string item'''
+    result=" "
+    try:
+        f = os.popen(command)
+        result = f.readline()
+    except:
+        for line in traceback.format_exc().split("\n"):
+            syslog.syslog(syslog.LOG_ERR,line)
+    finally:
+        f.close()
+
+    return result    
+
+def get_command_output(command):
+    '''run command directly use os.system,return result:[]'''
+    data = None
+    try:
+        f = os.popen(command)
+        data = f.readlines()
+    except:
+        for line in traceback.format_exc().split("\n"):
+            syslog.syslog(syslog.LOG_ERR,line)
+    finally:
+        f.close()
+
+    return data
+
+index_re = re.compile(r" *index")
+
+def parse_output():
     pass
 
 class PulseAudio(object):
 
     def __init__(self):
-        pass
+        self.modules = []
 
     def list_modules(self):
+        mod_dict = {}
         command = "pacmd list-modules"
-        run_command(command)
+        modules = index_re.split(",".join(get_command_output(command)[2:]))
+
+        for i in range(len(modules)):
+            mod_dict[i] = modules[i].split(",")
+                
+        return mod_dict        
 
     def list_sinks(self):
         command = "pacmd list-sinks"
         run_command(command)
 
     def list_sources(self):
-        command = "pacmd list-sources"
+        command = "pacmd list-sourcesd"
         run_command(command)
 
     def list_clients(self):
@@ -244,5 +292,5 @@ class PulseAudio(object):
         
 
 if __name__ == "__main__":
-    pass
-
+    pa = PulseAudio()
+    print pa.list_modules()

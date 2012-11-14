@@ -25,8 +25,10 @@ import traceback
 from nmdevice import NMDevice
 from nmcache import cache
 from nm_utils import TypeConvert
-from nmclient import nmclient
-from nm_remote_settings import nm_remote_settings
+# from nmclient import nmclient
+# from nm_remote_settings import nm_remote_settings
+nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 class NMDeviceWifi(NMDevice):
     '''NMDeviceWifi'''
@@ -34,21 +36,21 @@ class NMDeviceWifi(NMDevice):
     __gsignals__  = {
             "access-point-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
             "access-point-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
-            "try-ssid-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
-            "try-ssid-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
+            "try-ssid-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
+            "try-ssid-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             }
 
     def __init__(self, wifi_device_object_path):
         NMDevice.__init__(self, wifi_device_object_path, "org.freedesktop.NetworkManager.Device.Wireless")
         self.prop_list = ["HwAddress", "PermHwAddress", "Mode", "Bitrate", "ActiveAccessPoint", "WirelessCapabilities"]
 
-        self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface,
+        self.bus().add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "AccessPointAdded")
 
-        self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "AccessPointRemoved")
 
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
         self.init_nmobject_with_properties()
@@ -114,13 +116,13 @@ class NMDeviceWifi(NMDevice):
                 else:
                     try:
                         specific = self.get_ap_by_ssid(ssid)
-                        self.emit("try-ssid-begin", specific)
+                        self.emit("try-ssid-begin", ssid)
                         nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
                         if cache.getobject(self.object_path).is_active():
-                            self.emit("try-ssid-end", specific)
+                            self.emit("try-ssid-end", ssid)
                             return True
                         else:
-                            self.emit("try-ssid-end", specific)
+                            self.emit("try-ssid-end", "@"+ssid)
                             continue
                     except:
                         continue

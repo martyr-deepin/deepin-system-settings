@@ -41,10 +41,10 @@ class NMRemoteConnection(NMObject, NMConnection):
         NMConnection.__init__(self)
         NMObject.__init__(self, object_path, "org.freedesktop.NetworkManager.Settings.Connection")
 
-        self.bus.add_signal_receiver(self.removed_cb, dbus_interface = self.object_interface,
+        self.bus().add_signal_receiver(self.removed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "Removed")
 
-        self.bus.add_signal_receiver(self.updated_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.updated_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "Updated")
 
         # self.settings_dict = self.get_settings()
@@ -85,9 +85,10 @@ class NMRemoteConnection(NMObject, NMConnection):
             self.secret_method = None
             return (self.secret_setting_name, self.secret_method)
 
-        elif "802-3-ethernet" in info_dict.iterkeys():
-            self.secret_setting_name = None
-            self.secret_method = None
+        elif "pppoe" in info_dict.iterkeys() and "802-3-ethernet" in info_dict.iterkeys():
+            self.secret_setting_name = "pppoe"
+            self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
         elif "802-11-wireless" in info_dict.iterkeys() and "802-11-wireless-security" in info_dict.iterkeys():
 
@@ -136,19 +137,26 @@ class NMRemoteConnection(NMObject, NMConnection):
             else:
                 print "must have key mgmt for 802.11 wireless security"
 
+        elif "802-3-ethernet" in info_dict.iterkeys():
+            self.secret_setting_name = None
+            self.secret_method = None
 
         elif "ppp" in info_dict.iterkeys():
             self.secret_setting_name = ""
             self.secret_method = ""
+
         elif "802-1x" in info_dict.iterkeys():
             self.secret_setting_name = ""
             self.secret_method = ""
+
         elif "cdma" in info_dict.iterkeys():
             self.secret_setting_name = "cdma"
             self.secret_method = ""
+
         elif "gsm" in info_dict.iterkeys():
             self.secret_setting_name = "gsm"
             self.secret_method = ""
+
         else:
             self.secret_setting_name = ""
             self.secret_method = ""

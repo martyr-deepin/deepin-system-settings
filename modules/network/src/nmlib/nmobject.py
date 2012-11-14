@@ -32,10 +32,12 @@ import gobject
 # import re
 from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_dbus_name_exists
 from nm_utils import InvalidObjectPath , InvalidObjectInterface, InvalidService
-from servicemanager import nm_bus
+# from servicemanager import nm_bus
+from servicemanager import servicemanager
+
 # name_re = re.compile("[0-9a-zA-Z-]*")
 # dbus_loop = gobject.MainLoop()
-# nm_bus = dbus.SystemBus()
+nm_bus = servicemanager.get_nm_bus
     
 class NMObject(gobject.GObject):
     '''NMObject'''
@@ -60,7 +62,7 @@ class NMObject(gobject.GObject):
             raise InvalidObjectInterface(object_interface)
 
         try:
-            self.dbus_proxy = self.bus.get_object (service_name, object_path)
+            self.dbus_proxy = self.bus().get_object (service_name, object_path)
             self.dbus_interface = dbus.Interface (self.dbus_proxy, object_interface)
         except dbus.exceptions.DBusException:
             traceback.print_exc()
@@ -89,7 +91,7 @@ class NMObject(gobject.GObject):
             print args
             print kwargs
             print e
-            # traceback.print_exc()
+            traceback.print_exc()
 
     def init_properties(self): 
         try:
@@ -117,22 +119,30 @@ class NMObject(gobject.GObject):
             self.properties_interface.Set(self.object_interface, prop_name, prop_value)
             self.properties[prop_name] = prop_value
         except dbus.exceptions.DBusException:
+            print "set property failed"
             traceback.print_exc()
 
     def introspect(self):
         try:
             return self.introspect_interface.Introspect()
-        except dbus.exceptions.IntrospectionParserException:
-            print "introspect error"
         except dbus.exceptions.DBusException:
+            print "Introspect Failed"
             traceback.print_exc()
+            return None
 
     def init_properties_access(self):  
         prop_access_dict = {}
-        xmldoc = minidom.parseString(str(self.introspect())) 
-        root = xmldoc.documentElement
-        for node in root.getElementsByTagName("property"):
-            prop_access_dict[node.getAttribute("name")] = node.getAttribute("access")
+        if not self.introspect():
+            print "introspect failed to init_properties_access"
+            return None
+        try:
+            xmldoc = minidom.parseString(str(self.introspect())) 
+            root = xmldoc.documentElement
+            for node in root.getElementsByTagName("property"):
+                prop_access_dict[node.getAttribute("name")] = node.getAttribute("access")
+        except:
+            print "init properties access failed"
+            traceback.print_exc()
 
         return prop_access_dict    
 

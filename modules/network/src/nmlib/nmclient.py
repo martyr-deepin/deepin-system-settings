@@ -48,21 +48,20 @@ class NMClient(NMObject):
         self.manager_running = False
         self.init_nmobject_with_properties()
 
-        self.bus.add_signal_receiver(self.permisson_changed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.permisson_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "CheckPermissions")
 
-        self.bus.add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "DeviceAdded")
 
-        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "DeviceRemoved")
 
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
-        self.bus.add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
+        self.bus().add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
                                      path = self.object_path,signal_name = "StateChanged")
-
         self.devices = self.get_devices()
 
     def get_devices(self):
@@ -83,6 +82,7 @@ class NMClient(NMObject):
         return self.get_wired_devices()[0]
 
     def get_wireless_devices(self):
+
         if self.devices:
             return filter(lambda x:x.get_device_type() == 2, self.devices)
         else:
@@ -288,12 +288,14 @@ class NMClient(NMObject):
 
     ###Signals ###
     def device_added_cb(self, device_object_path):
-        self.devices = self.get_devices()
-        self.emit("device-added", device_object_path)
+        # self.devices = self.get_devices()
+        # self.emit("device-added", device_object_path)
+        pass
 
     def device_removed_cb(self, device_object_path):
-        self.devices = self.get_devices()
-        self.emit("device-removed", device_object_path)
+        # self.devices = self.get_devices()
+        # self.emit("device-removed", device_object_path)
+        pass
 
     def permisson_changed_cb(self):
         print "permisson_changed_cb triggerd in nmclient"
@@ -306,13 +308,8 @@ class NMClient(NMObject):
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
 
+# nmclient = NMClient()
 
-nmclient = NMClient()
-
-def refresh_nm_client():
-    global nmclient
-    nmclient = NMClient()
-    return nmclient
 
 if __name__ == "__main__":
     from nmobject import dbus_loop
@@ -327,6 +324,6 @@ if __name__ == "__main__":
     # nmclient.update_properties()
     # print nmclient.get_state()
 
-    nmclient.dbus_proxy.StateChanged(10)
+    # nmclient.dbus_proxy.StateChanged(10)
 
     dbus_loop.run()
