@@ -152,7 +152,7 @@ class Device(BusBase):
             traceback.print_exc()
 
     def get_property_list(self):
-        return dict(self.get_property("PropertyList"))
+        return (self.get_property("PropertyList"))
 
     ###Methods
     def suspend(self, bool):
@@ -183,39 +183,39 @@ class Sink(Device):
     def __init__(self, path, interface = "org.PulseAudio.Core1.Sink"):
         Device.__init__(self, path, interface)
     
-        self.init_dbus_properties()
+        #self.init_dbus_properties()
 
     def get_monitor_source(self):
-        return str(self.properties["MonitorSource"])
+        return self.get_property("MonitorSource")
 
 class Source(Device):
 
     def __init__(self, path, interface = "org.PulseAudio.Core1.Source"):
         Device.__init__(self, path, interface)
         
-        self.init_dbus_properties()
+        #self.init_dbus_properties()
 
     def get_monitor_of_sink(self):
-        return str(self.properties["MonitorOfSink"])
+        return self.get_property("MonitorOfSink")
 
 class DevicePort(BusBase):
     
     def __init__(self, path, interface = "org.PulseAudio.Core1.DevicePort"):
         BusBase.__init__(self, path, interface)
         
-        self.init_dbus_properties()
+        #self.init_dbus_properties()
 
     def get_index(self):
-        return self.properties["Index"]
+        return int(self.get_property("Index"))
 
     def get_name(self):
-        return self.properties["Name"]
+        return str(self.get_property("Name"))
 
     def get_description(self):
-        return self.properties["Description"]
+        return str(self.get_property("Description"))
 
     def get_priority(self):
-        return self.properties["Priority"]
+        return int(self.get_property("Priority"))
 
 if __name__ == "__main__":
 

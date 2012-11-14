@@ -86,7 +86,7 @@ class Card(BusBase):
         self.set_property("ActiveProfile", active_profile)
 
     def get_property_list(self):
-        return dict(self.get_property("PropertyList"))
+        return (self.get_property("PropertyList"))
 
     ###Methods
     def get_profile_by_name(self, name):

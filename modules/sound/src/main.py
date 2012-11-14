@@ -35,6 +35,9 @@ from nls import _
 import gtk
 import pangocairo
 import pango
+import settings
+import device
+import card
 
 import sys
 import os
@@ -139,7 +142,7 @@ class SoundSetting(object):
             #app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["balance"].set_adjustment(self.adjust_widgets["balance"])
         self.scale_widgets["speaker"] = gtk.HScale()
-        self.scale_widgets["speaker"].set_draw_value(False)
+        #self.scale_widgets["speaker"].set_draw_value(False)
         #self.scale_widgets["speaker"] = HScalebar(
             #app_theme.get_pixbuf("scalebar/l_fg.png"),
             #app_theme.get_pixbuf("scalebar/l_bg.png"),
@@ -150,7 +153,7 @@ class SoundSetting(object):
             #app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["speaker"].set_adjustment(self.adjust_widgets["speaker"])
         self.scale_widgets["microphone"] = gtk.HScale()
-        self.scale_widgets["microphone"].set_draw_value(False)
+        #self.scale_widgets["microphone"].set_draw_value(False)
         #self.scale_widgets["microphone"] = HScalebar(
             #app_theme.get_pixbuf("scalebar/l_fg.png"),
             #app_theme.get_pixbuf("scalebar/l_bg.png"),
@@ -261,12 +264,26 @@ class SoundSetting(object):
         self.container_widgets["speaker_label_hbox"].pack_start(
             self.button_widgets["speaker"], False, False, 25)
         self.button_widgets["speaker"].set_size_request(49, 22)
-        # TODO 设置值
+        # 
         self.container_widgets["speaker_table"].attach(
             self.button_widgets["speaker_combo"], 0, 1, 0, 1)
         self.container_widgets["speaker_table"].attach(
             self.scale_widgets["speaker"], 0, 1, 1, 2)
         self.container_widgets["speaker_table"].set_row_spacing(0, 10)
+        # TODO 设置值
+        if settings.CURRENT_SINK:
+            self.button_widgets["speaker"].set_active(not settings.get_mute(settings.CURRENT_SINK))
+        self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
+        if self.speaker_ports:
+            items = []
+            i = 0
+            select_index = self.speaker_ports[1]
+            for port in self.speaker_ports[0]:
+                items.append((port.get_description(), i))
+                i += 1
+            self.button_widgets["speaker_combo"].set_items(items, select_index, 530)
+        self.adjust_widgets["speaker"].set_value(
+            settings.get_volume(settings.CURRENT_SINK) / settings.FULL_VOLUME_VALUE * 100)
         
         # microphone
         self.alignment_widgets["microphone_label"].add(self.container_widgets["microphone_label_hbox"])
@@ -287,12 +304,26 @@ class SoundSetting(object):
         self.container_widgets["microphone_label_hbox"].pack_start(
             self.button_widgets["microphone"], False, False, 25)
         self.button_widgets["microphone"].set_size_request(49, 22)
-        # TODO
+        #
         self.container_widgets["microphone_table"].attach(
             self.button_widgets["microphone_combo"], 0, 1, 0, 1)
         self.container_widgets["microphone_table"].attach(
             self.scale_widgets["microphone"], 0, 1, 1, 2)
         self.container_widgets["microphone_table"].set_row_spacing(0, 10)
+        # TODO 设置值
+        if settings.CURRENT_SOURCE:
+            self.button_widgets["microphone"].set_active(not settings.get_mute(settings.CURRENT_SOURCE))
+        self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
+        if self.microphone_ports:
+            items = []
+            select_index = self.microphone_ports[1]
+            i = 0
+            for port in self.microphone_ports[0]:
+                items.append((port.get_description(), i))
+                i += 1
+            self.button_widgets["microphone_combo"].set_items(items, select_index, 530)
+        self.adjust_widgets["microphone"].set_value(
+            settings.get_volume(settings.CURRENT_SOURCE) / settings.FULL_VOLUME_VALUE * 100)
 
         self.alignment_widgets["advanced"].set(1.0, 0.5, 0, 0)
         self.alignment_widgets["advanced"].set_padding(0, 0, 20, 71)
@@ -321,9 +352,39 @@ class SoundSetting(object):
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
         # TODO 获取设备信息列表
         # TODO 双击切换设备
-        self.view_widgets["ad_output"].add_items(
-            [TreeItem(self.image_widgets["device"], "test"),
-             TreeItem(self.image_widgets["device"], "test")])
+        # output list
+        output_list = []
+        for sink in settings.PA_SINK_LIST:
+            prop = settings.get_object_property_list(device.Device(sink))
+            output_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+        self.view_widgets["ad_output"].add_items(output_list)
+        
+        # input list
+        input_list = []
+        for source in settings.PA_SOURCE_LIST:
+            prop = settings.get_object_property_list(device.Device(source))
+            input_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+        self.view_widgets["ad_input"].add_items(output_list)
+        
+        # hardware list
+        card_list = []
+        for cards in settings.PA_SOURCE_LIST:
+            prop = settings.get_object_property_list(card.Card(cards))
+            if prop:
+                card_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+        self.view_widgets["ad_hardware"].add_items(card_list)
+        
+        # if PulseAudio connect error, set the widget insensitive
+        if settings.PA_CORE is None:
+            self.container_widgets["main_hbox"].set_sensitive(False)
+        if settings.CURRENT_SINK is None:
+            self.container_widgets["balance_main_vbox"].set_sensitive(False)
+            self.container_widgets["speaker_main_vbox"].set_sensitive(False)
+        if settings.CURRENT_SOURCE is None:
+            self.container_widgets["microphone_main_vbox"].set_sensitive(False)
+        # if is Mono
+        if settings.PA_OUTPUT_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
+            self.container_widgets["balance_main_vbox"].set_sensitive(False)
         
     def __signals_connect(self):
         ''' widget signals connect'''
@@ -334,6 +395,9 @@ class SoundSetting(object):
         self.button_widgets["balance"].connect("toggled", self.toggle_button_toggled, "balance")
         self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")
         self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
+
+        self.scale_widgets["speaker"].connect("format-value", lambda w, v: "%d%%" % (v))
+        self.scale_widgets["microphone"].connect("format-value", lambda w, v: "%d%%" % (v))
 
         self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
     
