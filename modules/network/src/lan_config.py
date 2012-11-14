@@ -82,7 +82,7 @@ class WiredSetting(gtk.HBox):
 
     def init(self, device = None):
         # Get all connections
-        print "*in lan_config* ", nm_module.nmclient
+        #print "*in lan_config* ", nm_module.nmclient
         if device != None:
             wired_device = device
             global wired_device
@@ -691,9 +691,10 @@ class Wired(gtk.VBox):
         mac_entry = self.mac_entry.get_text()
         clone_entry = self.clone_entry.get_text()
         mtu = self.mtu_spin.get_value()
-        
-        self.ethernet.mac_address = mac_entry
-        self.ethernet.cloned_mac_address = clone_entry
+        if mac_entry != "": 
+            self.ethernet.mac_address = mac_entry
+        if clone_entry != "":
+            self.ethernet.cloned_mac_address = clone_entry
         self.ethernet.mtu = mtu
 
 

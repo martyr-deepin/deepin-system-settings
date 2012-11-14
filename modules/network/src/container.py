@@ -34,7 +34,9 @@ class Contain(gtk.Alignment):
 
         self.switch = ToggleButton(
                 app_theme.get_pixbuf("/Network/switch_off.png"), 
-                app_theme.get_pixbuf("/Network/switch_on.png"))
+                app_theme.get_pixbuf("/Network/switch_on.png"),
+                inactive_disable_dpixbuf = app_theme.get_pixbuf("/Network/switch_off.png"),
+                active_disable_dpixbuf = app_theme.get_pixbuf("/Network/switch_off_active.png"))
 
         self.switch.connect("toggled", self.active_cb)
         self.hbox.pack_start(self.switch)
@@ -42,8 +44,12 @@ class Contain(gtk.Alignment):
     def set_active(self, state):
         self.switch.set_active(state)
 
+    def get_active(self):
+        return self.switch.get_active()
+
     def set_sensitive(self, state):
-        self.switch.set_inconsistent(state)
+        #self.switch.set_inconsistent(state)
+        self.switch.set_sensitive(state)
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

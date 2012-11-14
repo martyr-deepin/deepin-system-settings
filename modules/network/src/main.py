@@ -27,11 +27,7 @@ from lan_config import WiredSetting
 from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 
-#from nmlib.nmobject import dbus_loop
-#from nmlib.nmclient import nmclient
-#from nmlib.nm_remote_settings import nm_remote_settings
 from nmlib.nmcache import cache
-#from wired import NMRemoteSettings, NMClient, NMSecretAgent,NMCache
 from nm_modules import nm_module
 
 slider = HSlider()
@@ -39,8 +35,6 @@ PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
 from nmlib.servicemanager import servicemanager
-
-        
 
 class WiredDevice(object):
     def __init__(self, device, treeview, index):
@@ -53,12 +47,13 @@ class WiredDevice(object):
         device_ethernet.connect("try-activate-begin", self.try_activate_begin)
 
     def device_activate(self, widget ,reason):
-
+        print "wired is active"
         if self.tree.visible_items != []:
             self.tree.visible_items[self.index].network_state = 2
             self.tree.queue_draw()
 
     def device_deactive(self, widget, reason):
+        print "wired is deactive"
         if not reason == 0:
             if self.tree.visible_items != []:
                 self.tree.visible_items[self.index].network_state = 0
@@ -89,23 +84,24 @@ class WiredSection(gtk.VBox):
             self.align.set_padding(0,0,PADDING,11*2)
             self.align.add(self.tree)
             self.pack_start(self.align, False, False, 0)
-            
-         
+
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
+            print "toggle active"
             item_list = self.retrieve_list()
             self.tree.add_items(item_list, 0, True)
             self.tree.visible_items[-1].is_last = True
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
             for index, wired_device in enumerate(self.wired_devices):
-                print wired_device.object_path
+                #print "add wiredDevice"
                 WiredDevice(wired_device,self.tree, index )
 
             self.try_active()
             self.show_all()
         else:
+            print "toggle deactive"
             self.tree.add_items([],0,True)
             self.tree.hide()
             for wired_device in self.wired_devices:
@@ -187,7 +183,7 @@ class WirelessDevice(object):
             
     
     def device_is_active(self, widget, reason):
-        #print "wireless active"
+        print "wireless active"
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
@@ -198,6 +194,7 @@ class WirelessDevice(object):
             self.tree.queue_draw()
     
     def device_is_deactive(self, widget, reason):
+        print "wireless deactive"
         if not reason == 0:
             try:
                 if self.tree.visible_items != []:
@@ -484,8 +481,6 @@ class Network(object):
 
     def __init__(self, module_frame):
         
-        #print "first start", nm_module.nmclient.bus
-        #print 'first start', nm_module.nmclient.dbus_proxy
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
@@ -509,37 +504,39 @@ class Network(object):
         self.main_align = gtk.Alignment(0,0,0,0)
         self.main_align.set_padding(11,11,11,11)
         self.main_align.add(scroll_win)
+
+        self.eventbox = gtk.EventBox()
+        #self.eventbox.set_visible_window(True)
         
-        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.eventbox.set_above_child(False)
+        self.eventbox.add(self.main_align)
+        
+        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.wired.add_setting_page(self.wired_setting_page)
 
         self.wireless_setting_page = WirelessSetting(None, 
-                                                lambda :slider.slide_to_page(self.main_align, "left"),
+                                                lambda :slider.slide_to_page(self.eventbox, "left"),
                                                 lambda : module_frame.send_message("change_crumb", 1))
         self.wireless.add_setting_page(self.wireless_setting_page)
 
-        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.dsl.add_setting_page(self.dsl_setting_page)
 
-        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.proxy.add_setting_page(self.proxy_setting_page)
 
-        slider.append_page(self.main_align)
+        slider.append_page(self.eventbox)
         slider.append_page(self.wired_setting_page)
         slider.append_page(self.dsl_setting_page)
         slider.append_page(self.wireless_setting_page)
         slider.append_page(self.proxy_setting_page)
 
     def refresh(self):
-        #from nmlib.nmobject import NMObject
-        #from nmlib.nmclient import NMClient
-        #from nmlib.nm_remote_settings import NMRemoteSettings
+
         from nmlib.nm_secret_agent import NMSecretAgent
-        #nm_module.nmclient = NMClient()
-        #nm_module.nm_remote_settings = NMRemoteSettings()
         nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
         nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         nm_module.secret_agent = NMSecretAgent()
@@ -548,34 +545,35 @@ class Network(object):
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
         self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
+        
 
-        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.wired.add_setting_page(self.wired_setting_page)
 
         self.wireless_setting_page = WirelessSetting(None, 
-                                                lambda :slider.slide_to_page(self.main_align, "left"),
+                                                lambda :slider.slide_to_page(self.eventbox, "left"),
                                                 lambda : module_frame.send_message("change_crumb", 1))
         self.wireless.add_setting_page(self.wireless_setting_page)
 
-        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.dsl.add_setting_page(self.dsl_setting_page)
 
-        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.main_align, "left"),
+        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
 
         self.proxy.add_setting_page(self.proxy_setting_page)
-        self.main_align.queue_draw()
+        self.eventbox.set_above_child(False)
+        self.eventbox.queue_draw()
 
     def stop(self):
-        #self.wired.wire.set_sensitive(True)
-        #self.wireless.wireless.set_sensitive(True)
-        #self.dsl.dsl.set_sensitive(True)
         
-        self.wired = None
-        self.wireless = None
-        self.dsl = None
+        self.eventbox.set_above_child(True)
+        #self.wired_active = self.wired.wire.get_active()
+        #self.wired = None
+        #self.wireless = None
+        #self.dsl = None
 
         self.wired_setting_page = None
         self.wireless_setting_page = None
@@ -583,7 +581,7 @@ class Network(object):
         
 
     def get_main_page(self):
-        return self.main_align
+        return self.eventbox
 
 
 if __name__ == '__main__':
@@ -592,24 +590,13 @@ if __name__ == '__main__':
         
         network = Network(module_frame)
 
-
         def service_stop_cb(widget, s):
-            #print "service stop"
             network.stop()
-            #from nmlib.nmobject import NMObject
-            #from nmlib.nmclient import NMClient
-            #from nmlib.nm_remote_settings import NMRemoteSettings
-            #from nmlib.nm_secret_agent import NMSecretAgent
-            #nm_module.nm_remote_settings = None
-            #nm_module.nmclient = None
-            #nm_module.secret_agent = None
             global cache
             cache.clearcache()
             cache.clear_spec_cache()
 
         def service_start_cb(widget, s):
-            #print "service start"
-            #bus = servicemanager.get_nm_bus()
             network.refresh()
 
         servicemanager.connect("service-start", service_start_cb)
