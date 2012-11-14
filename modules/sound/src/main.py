@@ -91,8 +91,11 @@ class SoundSetting(object):
         self.button_widgets["speaker"] = gtk.ToggleButton()
         self.button_widgets["microphone"] = gtk.ToggleButton()
         self.button_widgets["advanced"] = Button("Adcanced")
-        self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], 50)
-        self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], 50)
+        '''
+        TODO: it is able to set max_width to make ComboBox more cute :)
+        '''
+        self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=530)
+        self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=530)
         # container init
         self.container_widgets["slider"] = HSlider()
         self.container_widgets["advance_set_tab_box"] = TabBox()
