@@ -23,6 +23,7 @@
 from pulseaudio import BusBase
 import gobject
 import traceback
+import dbus
 
 class Core(BusBase):
         
@@ -174,7 +175,7 @@ class Core(BusBase):
 
     def set_fallback_sink(self, fallback_sink):
         try:
-            self.set_property("FallbackSink", fallback_sink)
+            self.set_property("FallbackSink", dbus.ObjectPath(fallback_sink))
         except:
             traceback.print_exc()
 
@@ -189,7 +190,7 @@ class Core(BusBase):
 
     def set_fallback_source(self, fallback_source):
         try:
-            self.set_property("FallbackSource", fallback_source)
+            self.set_property("FallbackSource", dbus.ObjectPath(fallback_source))
         except:
             traceback.print_exc()
 

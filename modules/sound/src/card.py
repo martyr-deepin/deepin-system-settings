@@ -22,6 +22,7 @@
 
 from pulseaudio import BusBase
 import gobject
+import dbus
 
 class Card(BusBase):
 
@@ -83,7 +84,7 @@ class Card(BusBase):
         return str(self.get_property("ActiveProfile"))
 
     def set_active_profile(self, active_profile):
-        self.set_property("ActiveProfile", active_profile)
+        self.set_property("ActiveProfile", dbus.ObjectPath(active_profile))
 
     def get_property_list(self):
         return (self.get_property("PropertyList"))
