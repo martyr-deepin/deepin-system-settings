@@ -29,7 +29,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 DBusGMainLoop(set_as_default = True)
 
 name_re = re.compile("[0-9a-zA-Z-]*")
-accounts_bus = dbus.SystemBus()
+datetime_bus = dbus.SystemBus()
 
 def valid_object_path(object_path):
     if not isinstance(object_path, str):
@@ -62,7 +62,7 @@ class InvalidObjectPath(Exception):
 
 class BusBase(gobject.GObject):
     
-    def __init__(self, path, interface, service = "org.gnome.SettingsDaemon.DateTimeMechanism", bus = accounts_bus):
+    def __init__(self, path, interface, service = "com.linuxdeepin.datetime", bus = datetime_bus):
 
         if valid_object_path(path):
             self.object_path = path
@@ -109,7 +109,7 @@ class BusBase(gobject.GObject):
 class DateTime(BusBase):
     
     def __init__(self):
-        BusBase.__init__(self, path = "/", interface = "org.gnome.SettingsDaemon.DateTimeMechanism")
+        BusBase.__init__(self, path = "/", interface = "com.linuxdeepin.datetime")
 
     def adjust_time(self, seconds_to_add):
         self.call_async("AdjustTime", seconds_to_add)

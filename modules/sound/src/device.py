@@ -23,6 +23,7 @@
 from pulseaudio import BusBase
 import gobject
 import traceback
+import dbus
 
 class Device(BusBase):
 
@@ -37,11 +38,17 @@ class Device(BusBase):
     def __init__(self, path, interface = "org.PulseAudio.Core1.Device"):
         BusBase.__init__(self, path, interface)
 
-        self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        # self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
+        #                                   self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.volume_updated_cb, signal_name = "VolumeUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.mute_updated_cb, signal_name = "MuteUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        # self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
+                                          # self.object_interface, arg0 = None)
 
         self.dbus_proxy.connect_to_signal("StateUpdated", self.state_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
@@ -55,7 +62,7 @@ class Device(BusBase):
 
     ###Props    
     def get_index(self):
-        return int(self.get_priority("Index"))
+        return int(self.get_property("Index"))
 
     def get_name(self):
         return str(self.get_property("Name"))
@@ -147,22 +154,41 @@ class Device(BusBase):
 
     def set_active_port(self, active_port):
         try:
-            self.set_property("ActivePort", active_port)
-        except:
-            traceback.print_exc()
+            self.property_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
+        except dbus.exceptions.DBusException:
+            print "get property_interface failed"
+   
+        if self.property_interface:    
+            try:
+                return self.property_interface.Set(self.object_interface, "ActivePort", dbus.ObjectPath(active_port))
+            except:
+                print "set active port with pacmd"
+                try:
+                    port = DevicePort(active_port)
+                    index = self.get_index()
+                    name = port.get_name()
+                    if "sink" in active_port:
+                        command = "pacmd set-sink-port %d %s" % (index, name)
+                    elif "source" in active_port:
+                        command = "pacmd set-source-port %d %s" % (index, name)
+                    import subprocess
+                    subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
+                except:
+                    traceback.print_exc()
 
     def get_property_list(self):
         return (self.get_property("PropertyList"))
 
     ###Methods
     def suspend(self, bool):
-        self.call_async("suspend", bool, reply_handler = None, error_handler = None)
+        self.call_async("Suspend", bool, reply_handler = None, error_handler = None)
 
     def get_port_by_name(self, name):
         return str(self.dbus_method("GetPortByName", name))
 
     ###Signals
     def volume_updated_cb(self, volume):
+        print "volume updated"
         self.emit("volume-updated", volume)
 
     def mute_updated_cb(self, mute):

@@ -516,7 +516,8 @@ class SoundSetting(object):
         print port.get_description()
         print port.object_path, port.dbus_proxy
         dev = settings.PA_DEVICE[settings.CURRENT_SINK]
-        dev.set_active_port(port.dbus_proxy)
+        import dbus
+        dev.set_active_port(dbus.ObjectPath(port.object_path))
         
     def microphone_port_changed(self, combo, content, value, index):
         print "port changed:", content, value, index

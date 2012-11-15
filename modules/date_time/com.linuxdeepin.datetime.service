@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.linuxdeepin.datetime
+Exec=@LIBEXECDIR@/datetime-daemon
+User=root
