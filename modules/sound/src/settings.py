@@ -22,6 +22,7 @@
 
 import core
 import device
+import card
 import dbus
 import traceback
 
@@ -68,18 +69,15 @@ CURRENT_SINK = None
 CURRENT_SOURCE = None
 
 PA_CARDS = {}           # All Device that this Card container.
-if PA_CORE:
-    if PA_CARD_LIST:
-        CURRENT_CARD = PA_CARD_LIST[0]
-    else:
-        CURRENT_CARD = None
-    for card in PA_CARD_LIST:
-        PA_CARDS[card] = {"sink": [], "source": []}
+if PA_CARD_LIST:
+    CURRENT_CARD = PA_CARD_LIST[0]
+else:
+    CURRENT_CARD = None
+for cards in PA_CARD_LIST:
+    PA_CARDS[cards] = {"obj": card.Card(cards), "sink": [], "source": []}
 
-PA_INPUT_DEVICE = {}    # All Sources Device
-PA_INPUT_CHANNELS = {}  # Each Sources' Channels
-PA_OUTPUT_DEVICE = {}   # All Sinks Device
-PA_OUTPUT_CHANNELS = {} # Each Sinks' Channel
+PA_DEVICE = {}    # All Device
+PA_CHANNELS = {}  # Each Channels
 
 LEFT_CHANNELS = [1, 5, 8, 10, 45, 48]
 RIGHT_CHANNELS = [2, 6, 9, 11, 46, 49]
@@ -87,9 +85,9 @@ for sink in PA_SINK_LIST:
     dev = device.Device(sink)
     if not dev.get_ports(): # if the device does not have any ports, ignore it
         continue
-    PA_OUTPUT_DEVICE[sink] = dev
+    PA_DEVICE[sink] = dev
     dev_channels = {}
-    channels = PA_OUTPUT_DEVICE[sink].get_channels()
+    channels = PA_DEVICE[sink].get_channels()
     dev_channels["channel_num"] = len(channels)
     dev_channels["left"] = []
     dev_channels["right"] = []
@@ -104,21 +102,21 @@ for sink in PA_SINK_LIST:
             dev_channels["other"].append(i)
         i += 1
     try:
-        card = dev.get_card()
-        if card == CURRENT_CARD and CURRENT_SINK is None:
+        cards = dev.get_card()
+        if cards == CURRENT_CARD and CURRENT_SINK is None:
             CURRENT_SINK = sink
-        PA_CARDS[card]["sink"].append(dev)
+        PA_CARDS[cards]["sink"].append(dev)
     except:
         traceback.print_exc()
-    PA_OUTPUT_CHANNELS[sink] = dev_channels
+    PA_CHANNELS[sink] = dev_channels
 
 for source in PA_SOURCE_LIST:
     dev = device.Device(source)
     if not dev.get_ports(): # if the device does not have any ports, ignore it
         continue
-    PA_INPUT_DEVICE[source] = dev
+    PA_DEVICE[source] = dev
     dev_channels = {}
-    channels = PA_INPUT_DEVICE[source].get_channels()
+    channels = PA_DEVICE[source].get_channels()
     dev_channels["channel_num"] = len(channels)
     dev_channels["left"] = []
     dev_channels["right"] = []
@@ -134,12 +132,12 @@ for source in PA_SOURCE_LIST:
         i += 1
     try:
         card = dev.get_card()
-        if card == CURRENT_CARD and CURRENT_SOURCE is None:
+        if cards == CURRENT_CARD and CURRENT_SOURCE is None:
             CURRENT_SOURCE = source
-        PA_CARDS[card]["source"].append(dev)
+        PA_CARDS[cards]["source"].append(dev)
     except:
         traceback.print_exc()
-    PA_INPUT_CHANNELS[source] = dev_channels
+    PA_CHANNELS[source] = dev_channels
 
 def get_object_property_list(obj):
     '''
@@ -161,7 +159,62 @@ def get_volume(dev):
     @param dev: a device path
     @return: a int type
     '''
-    return max(device.Device(dev).get_volume())
+    return max(PA_DEVICE[dev].get_volume())
+
+def set_volume(dev, volume):
+    '''
+    get device volume
+    @param dev: a device path
+    @param volume: a int type
+    '''
+    volumes_list = [volume] * PA_CHANNELS[dev]["channel_num"]
+    PA_DEVICE[dev].set_volume(dbus.Array(volumes_list, signature=dbus.Signature('u')))
+
+def set_volumes(dev, volumes):
+    '''
+    get device volume
+    @param dev: a device path
+    @param volumes: a list contain left-volume and right-volume
+    '''
+    volumes_list = [0] * PA_CHANNELS[dev]["channel_num"]
+    for channel in PA_CHANNELS[dev]["left"]:
+        volumes_list[channel] = volumes[0]
+    for channel in PA_CHANNELS[dev]["right"]:
+        volumes_list[channel] = volumes[1]
+    for channel in PA_CHANNELS[dev]["other"]:
+        if volumes[0] < volumes[1]:     # is right channel
+            volumes_list[channel] = volumes[1]
+        else:                           # is left channel
+            volumes_list[channel] = volumes[0]
+    PA_DEVICE[dev].set_volume(dbus.Array(volumes_list, signature=dbus.Signature('u')))
+
+def get_volumes(dev):
+    '''
+    get device volume
+    @param dev: a device path
+    @return: a list contain left-volume and right-volume
+    '''
+    d = PA_DEVICE[dev]
+    volume = d.get_volume()
+    left_volumes = []
+    right_volumes = []
+    for channel in PA_CHANNELS[dev]['left']:
+        left_volumes.append(volume[channel])
+    for channel in PA_CHANNELS[dev]['right']:
+        right_volumes.append(volume[channel])
+    if not left_volumes:
+        left_volumes.append(0)
+    if not right_volumes:
+        right_volumes.append(0)
+    return [max(left_volumes), max(right_volumes)]
+
+def set_mute(dev, is_mute):
+    '''
+    get device whether mute
+    @param dev: a device path
+    @param is_mute: whether is mute, a bool type
+    '''
+    device.Device(dev).set_mute(is_mute)
 
 def get_mute(dev):
     '''
@@ -194,8 +247,6 @@ def get_port_list(dev):
     return (back, n)
     
 
-#print PA_INPUT_CHANNELS
-#print PA_INPUT_DEVICE
-#print PA_OUTPUT_CHANNELS
-#print PA_OUTPUT_DEVICE
+#print PA_CHANNELS
+#print PA_DEVICE
 #print PA_CARDS

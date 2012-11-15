@@ -45,6 +45,7 @@ class BusBase(gobject.GObject):
     
     def __init__(self, path, interface, bus = client_bus):
 
+        gobject.GObject.__init__(self)
         self.object_path = path
         self.object_interface = interface
         self.bus = bus
@@ -78,7 +79,7 @@ class BusBase(gobject.GObject):
             try:
                 return self.property_interface.Get(self.object_interface, prop_name)
             except:
-                print "get properties failed"
+                print "get properties failed", prop_name
                 traceback.print_exc()
                 return None
         else:
