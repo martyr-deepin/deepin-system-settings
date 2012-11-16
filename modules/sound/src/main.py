@@ -6,6 +6,7 @@
 # 
 # Author:     Long Changjin <admin@longchangjin.cn>
 # Maintainer: Long Changjin <admin@longchangjin.cn>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,6 +42,33 @@ import sys
 import os
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame
+import threading as td
+import traceback
+
+'''
+TODO: setting volume thread
+'''
+class SettingVolumeThread(td.Thread):
+    def __init__(self, argv):
+        td.Thread.__init__(self)
+        # it need a mutex locker
+        self.mutex = td.Lock()
+        self.setDaemon(True)
+        self.ThisPtr = argv
+
+    def run(self):
+        try:
+            self.setting_volume()
+        except Exception, e:
+            print "class LoadingThread got error: %s" % (e)
+            traceback.print_exc(file=sys.stdout)
+
+    def setting_volume(self):
+        # lock it
+        self.mutex.acquire()
+        self.ThisPtr.m_setting_volume()
+        # unlock it
+        self.mutex.release()
 
 class SoundSetting(object):
     '''keyboard setting class'''
@@ -55,6 +83,7 @@ class SoundSetting(object):
         self.alignment_widgets = {}
         self.container_widgets = {}
         self.view_widgets = {}
+        self.m_volume_value = -1
 
         self.__create_widget()
         self.__adjust_widget()
@@ -317,7 +346,7 @@ class SoundSetting(object):
         self.container_widgets["advance_hardware_box"].pack_start(self.label_widgets["ad_hardware"], False, False, 10)
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
         # if PulseAudio connect error, set the widget insensitive
-        if settings.PA_CORE is None:
+        if settings.PA_CORE is None or not settings.PA_CARDS:
             self.container_widgets["main_hbox"].set_sensitive(False)
             return
         # if sinks list is empty, then can't set output volume
@@ -416,6 +445,14 @@ class SoundSetting(object):
         if settings.CURRENT_SINK:
             sink = settings.PA_DEVICE[settings.CURRENT_SINK]
             sink.connect("volume-updated", self.speaker_volume_update)
+            sink.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["speaker"])
+            sink.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["speaker_combo"])
+            #sink.connect("property-list-updated", self.speaker_volume_update)
+        if settings.CURRENT_SOURCE:
+            source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
+            source.connect("volume-updated", self.microphone_volume_update)
+            source.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["microphone"])
+            source.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["microphone_combo"])
 
         self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
     
@@ -480,14 +517,13 @@ class SoundSetting(object):
             settings.set_volumes(sink, [volume2, volume])
         else:               # is balance
             settings.set_volume(sink, settings.get_volume(sink))
+        #settings.PA_DEVICE[sink].stop_emission('volume-updated')
     
-    def speaker_value_changed(self, adjustment):
-        '''set output volume'''
-        value = adjustment.get_value()
+    def m_setting_volume(self):
         balance = self.adjust_widgets["balance"].get_value()
         sink = settings.CURRENT_SINK
         volume_list = []
-        volume = value / 100 * settings.FULL_VOLUME_VALUE
+        volume = self.m_volume_value / 100 * settings.FULL_VOLUME_VALUE
         if balance < 0:
             volume_list.append(volume)
             volume_list.append(volume * (1 + balance))
@@ -497,7 +533,16 @@ class SoundSetting(object):
         settings.set_volumes(sink, volume_list)
         if not self.button_widgets["speaker"].get_active():
             self.button_widgets["speaker"].set_active(True)
-    
+
+    '''
+    TODO: put it into thread
+    '''
+    def speaker_value_changed(self, adjustment):
+        '''set output volume'''
+        self.m_volume_value = adjustment.get_value()
+        #self.m_setting_volume()
+        SettingVolumeThread(self).start()
+
     def microphone_value_changed(self, adjustment):
         ''' set input volume'''
         value = adjustment.get_value()
@@ -507,17 +552,51 @@ class SoundSetting(object):
         if not self.button_widgets["microphone"].get_active():
             self.button_widgets["microphone"].set_active(True)
     
-    def speaker_volume_update(self, sink, volume):
-        print "sink volume update:", volume
-
     def speaker_port_changed(self, combo, content, value, index):
-        print "port changed:", content, value, index
+        #print "port changed:", content, value, index
         port = self.speaker_ports[0][index]
         print port.get_description()
         print port.object_path, port.dbus_proxy
         dev = settings.PA_DEVICE[settings.CURRENT_SINK]
-        import dbus
-        dev.set_active_port(dbus.ObjectPath(port.object_path))
+        #import dbus
+        #dev.set_active_port(dbus.ObjectPath(port.object_path))
+        dev.set_active_port(port.object_path)
+    
+    def pulse_mute_updated(self, dev, is_mute, button):
+        button.set_active(not is_mute)
+    
+    def speaker_volume_update(self, sink, volume):
+        print "sink volume update:", sink.object_path, volume
+        # set output volume
+        self.adjust_widgets["speaker"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
+        ## set balance
+        #dev = sink.object_path
+        #left_volumes = []
+        #right_volumes = []
+        #for channel in settings.PA_CHANNELS[dev]['left']:
+            #left_volumes.append(volume[channel])
+        #for channel in settings.PA_CHANNELS[dev]['right']:
+            #right_volumes.append(volume[channel])
+        #if not left_volumes:
+            #left_volumes.append(0)
+        #if not right_volumes:
+            #right_volumes.append(0)
+        #(left_volume, right_volume) = [max(left_volumes), max(right_volumes)]
+        #if left_volume == right_volume:
+            #value = 0
+        #elif left_volume > right_volume: # if left
+            #value = float(left_volume) / right_volume - 1
+        #else:
+            #value = 1 - float(left_volume) / right_volume
+        #self.adjust_widgets["balance"].set_value(value)
+
+    def microphone_volume_update(self, source, volume):
+        # set output volume
+        print "source volume update:", source.object_path, volume
+        self.adjust_widgets["microphone"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
+    
+    def pulse_active_port_updated(self, dev, port, combo):
+        print "active port updated:", dev.object_path, port
         
     def microphone_port_changed(self, combo, content, value, index):
         print "port changed:", content, value, index

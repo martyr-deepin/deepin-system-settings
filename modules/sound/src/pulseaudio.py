@@ -26,6 +26,11 @@ import gobject
 import traceback
 from dbus.mainloop.glib import DBusGMainLoop
 DBusGMainLoop(set_as_default=True)
+'''
+TODO: open the thread-safe switch
+'''
+gobject.threads_init()
+dbus.mainloop.glib.threads_init()
 
 def connect_bus():
     if 'PULSE_DBUS_SERVER' in os.environ:
@@ -38,7 +43,11 @@ def connect_bus():
 
     return dbus.connection.Connection(address)
 
-client_bus = connect_bus()
+try:
+    client_bus = connect_bus()
+except dbus.exceptions.DBusException:
+    client_bus = None
+    traceback.print_exc()
 
 
 class BusBase(gobject.GObject):
@@ -52,7 +61,8 @@ class BusBase(gobject.GObject):
         try:
             self.dbus_proxy = self.bus.get_object(object_path = self.object_path)
             self.dbus_interface = dbus.Interface(self.dbus_proxy, self.object_interface)
-        except dbus.exceptions.DBusException:
+        #except dbus.exceptions.DBusException:
+        except :
             traceback.print_exc()
 
     # def init_dbus_properties(self):        
@@ -74,6 +84,7 @@ class BusBase(gobject.GObject):
         except dbus.exceptions.DBusException:
             print "get property_interface failed"
             traceback.print_exc()
+            return None
    
         if self.property_interface:    
             try:
@@ -91,6 +102,7 @@ class BusBase(gobject.GObject):
         except dbus.exceptions.DBusException:
             print "get property_interface failed"
             traceback.print_exc()
+            return None
    
         if self.property_interface:    
             try:

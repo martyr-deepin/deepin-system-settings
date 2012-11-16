@@ -39,7 +39,7 @@ class Device(BusBase):
         BusBase.__init__(self, path, interface)
 
         # self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
-        #                                   self.object_interface, arg0 = None)
+        #                                    self.object_interface)
 
         self.bus.add_signal_receiver(self.volume_updated_cb, signal_name = "VolumeUpdated", dbus_interface = 
                                      self.object_interface, path = self.object_path)
@@ -47,14 +47,14 @@ class Device(BusBase):
         self.bus.add_signal_receiver(self.mute_updated_cb, signal_name = "MuteUpdated", dbus_interface = 
                                      self.object_interface, path = self.object_path)
 
-        # self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
-                                          # self.object_interface, arg0 = None)
+        self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
+                                           self.object_interface)
 
         self.dbus_proxy.connect_to_signal("StateUpdated", self.state_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
 
         self.dbus_proxy.connect_to_signal("ActivePortUpdated", self.active_port_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+                                          self.object_interface)
 
         self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
@@ -157,6 +157,7 @@ class Device(BusBase):
             self.property_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
         except dbus.exceptions.DBusException:
             print "get property_interface failed"
+            return None
    
         if self.property_interface:    
             try:
@@ -188,7 +189,6 @@ class Device(BusBase):
 
     ###Signals
     def volume_updated_cb(self, volume):
-        print "volume updated"
         self.emit("volume-updated", volume)
 
     def mute_updated_cb(self, mute):
@@ -198,6 +198,7 @@ class Device(BusBase):
         self.emit("state-updated", state)
 
     def active_port_updated_cb(self, port):
+        print "------------------active port update", self.object_path
         self.emit("active-port-updated", port)
 
     def property_list_updated_cb(self, property_list):
