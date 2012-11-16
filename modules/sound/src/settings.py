@@ -250,3 +250,4 @@ def get_port_list(dev):
 #print PA_CHANNELS
 #print PA_DEVICE
 #print PA_CARDS
+#print CURRENT_CARD

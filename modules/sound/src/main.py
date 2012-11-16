@@ -317,7 +317,7 @@ class SoundSetting(object):
         self.container_widgets["advance_hardware_box"].pack_start(self.label_widgets["ad_hardware"], False, False, 10)
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
         # if PulseAudio connect error, set the widget insensitive
-        if settings.PA_CORE is None:
+        if settings.PA_CORE is None or not settings.PA_CARDS:
             self.container_widgets["main_hbox"].set_sensitive(False)
             return
         # if sinks list is empty, then can't set output volume
@@ -416,6 +416,14 @@ class SoundSetting(object):
         if settings.CURRENT_SINK:
             sink = settings.PA_DEVICE[settings.CURRENT_SINK]
             sink.connect("volume-updated", self.speaker_volume_update)
+            sink.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["speaker"])
+            sink.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["speaker_combo"])
+            #sink.connect("property-list-updated", self.speaker_volume_update)
+        if settings.CURRENT_SOURCE:
+            source = settings.PA_DEVICE[settings.CURRENT_SINK]
+            source.connect("volume-updated", self.microphone_volume_update)
+            source.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["microphone"])
+            source.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["microphone_combo"])
 
         self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
     
@@ -461,7 +469,7 @@ class SoundSetting(object):
     def speaker_toggled(self, active):
         if settings.CURRENT_SINK:
             settings.set_mute(settings.CURRENT_SINK, not active)
-        
+    
     def microphone_toggled(self, active):
         if settings.CURRENT_SOURCE:
             settings.set_mute(settings.CURRENT_SOURCE, not active)
@@ -507,17 +515,28 @@ class SoundSetting(object):
         if not self.button_widgets["microphone"].get_active():
             self.button_widgets["microphone"].set_active(True)
     
-    def speaker_volume_update(self, sink, volume):
-        print "sink volume update:", volume
-
     def speaker_port_changed(self, combo, content, value, index):
-        print "port changed:", content, value, index
+        #print "port changed:", content, value, index
         port = self.speaker_ports[0][index]
         print port.get_description()
         print port.object_path, port.dbus_proxy
         dev = settings.PA_DEVICE[settings.CURRENT_SINK]
-        import dbus
-        dev.set_active_port(dbus.ObjectPath(port.object_path))
+        #import dbus
+        #dev.set_active_port(dbus.ObjectPath(port.object_path))
+        dev.set_active_port(port.object_path)
+    
+    def pulse_mute_updated(self, dev, is_mute, button):
+        print "mute update:", dev.object_path
+        button.set_active(not is_mute)
+    
+    def speaker_volume_update(self, sink, volume):
+        print "sink volume update:", volume
+
+    def microphone_volume_update(self, source, volume):
+        print "source volume update:", volume
+    
+    def pulse_active_port_updated(self, dev, port, combo):
+        print "active port updated:", port
         
     def microphone_port_changed(self, combo, content, value, index):
         print "port changed:", content, value, index

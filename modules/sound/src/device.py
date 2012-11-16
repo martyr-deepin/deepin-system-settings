@@ -157,6 +157,7 @@ class Device(BusBase):
             self.property_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
         except dbus.exceptions.DBusException:
             print "get property_interface failed"
+            return None
    
         if self.property_interface:    
             try:
@@ -188,7 +189,6 @@ class Device(BusBase):
 
     ###Signals
     def volume_updated_cb(self, volume):
-        print "volume updated"
         self.emit("volume-updated", volume)
 
     def mute_updated_cb(self, mute):
