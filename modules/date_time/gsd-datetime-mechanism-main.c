@@ -162,8 +162,8 @@ main (int argc, char **argv)
 
         g_main_loop_run (loop);
 
-        g_object_unref (mechanism);
-        g_main_loop_unref (loop);
+        /* g_object_unref (mechanism); */
+        /* g_main_loop_unref (loop); */
         ret = 0;
 
 out:
