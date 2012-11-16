@@ -55,7 +55,7 @@ class Core(BusBase):
     def __init__(self, path = "/org/pulseaudio/core1", interface = "org.PulseAudio.Core1"):
         BusBase.__init__(self, path, interface)
 
-        self.listen_for_signal("", dbus.Array(signature = 'o'))
+        self.listen_for_signal("", dbus.Array([], signature = 'o'))
 
         self.dbus_proxy.connect_to_signal("NewCard", self.new_card_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)

@@ -420,7 +420,7 @@ class SoundSetting(object):
             sink.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["speaker_combo"])
             #sink.connect("property-list-updated", self.speaker_volume_update)
         if settings.CURRENT_SOURCE:
-            source = settings.PA_DEVICE[settings.CURRENT_SINK]
+            source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
             source.connect("volume-updated", self.microphone_volume_update)
             source.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["microphone"])
             source.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["microphone_combo"])
@@ -488,6 +488,7 @@ class SoundSetting(object):
             settings.set_volumes(sink, [volume2, volume])
         else:               # is balance
             settings.set_volume(sink, settings.get_volume(sink))
+        #settings.PA_DEVICE[sink].stop_emission('volume-updated')
     
     def speaker_value_changed(self, adjustment):
         '''set output volume'''
@@ -526,17 +527,40 @@ class SoundSetting(object):
         dev.set_active_port(port.object_path)
     
     def pulse_mute_updated(self, dev, is_mute, button):
-        print "mute update:", dev.object_path
         button.set_active(not is_mute)
     
     def speaker_volume_update(self, sink, volume):
-        print "sink volume update:", volume
+        print "sink volume update:", sink.object_path, volume
+        # set output volume
+        self.adjust_widgets["speaker"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
+        ## set balance
+        #dev = sink.object_path
+        #left_volumes = []
+        #right_volumes = []
+        #for channel in settings.PA_CHANNELS[dev]['left']:
+            #left_volumes.append(volume[channel])
+        #for channel in settings.PA_CHANNELS[dev]['right']:
+            #right_volumes.append(volume[channel])
+        #if not left_volumes:
+            #left_volumes.append(0)
+        #if not right_volumes:
+            #right_volumes.append(0)
+        #(left_volume, right_volume) = [max(left_volumes), max(right_volumes)]
+        #if left_volume == right_volume:
+            #value = 0
+        #elif left_volume > right_volume: # if left
+            #value = float(left_volume) / right_volume - 1
+        #else:
+            #value = 1 - float(left_volume) / right_volume
+        #self.adjust_widgets["balance"].set_value(value)
 
     def microphone_volume_update(self, source, volume):
-        print "source volume update:", volume
+        # set output volume
+        print "source volume update:", source.object_path, volume
+        self.adjust_widgets["microphone"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
     
     def pulse_active_port_updated(self, dev, port, combo):
-        print "active port updated:", port
+        print "active port updated:", dev.object_path, port
         
     def microphone_port_changed(self, combo, content, value, index):
         print "port changed:", content, value, index
