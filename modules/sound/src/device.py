@@ -192,6 +192,7 @@ class Device(BusBase):
         self.emit("volume-updated", volume)
 
     def mute_updated_cb(self, mute):
+        print "mute updated"
         self.emit("mute-updated", mute)
 
     def state_updated_cb(self, state):

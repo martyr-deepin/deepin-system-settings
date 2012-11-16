@@ -461,7 +461,7 @@ class SoundSetting(object):
     def speaker_toggled(self, active):
         if settings.CURRENT_SINK:
             settings.set_mute(settings.CURRENT_SINK, not active)
-    
+        
     def microphone_toggled(self, active):
         if settings.CURRENT_SOURCE:
             settings.set_mute(settings.CURRENT_SOURCE, not active)
