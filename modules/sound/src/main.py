@@ -6,6 +6,7 @@
 # 
 # Author:     Long Changjin <admin@longchangjin.cn>
 # Maintainer: Long Changjin <admin@longchangjin.cn>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,6 +42,33 @@ import sys
 import os
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame
+import threading as td
+import traceback
+
+'''
+TODO: setting volume thread
+'''
+class SettingVolumeThread(td.Thread):
+    def __init__(self, argv):
+        td.Thread.__init__(self)
+        # it need a mutex locker
+        self.mutex = td.Lock()
+        self.setDaemon(True)
+        self.ThisPtr = argv
+
+    def run(self):
+        try:
+            self.setting_volume()
+        except Exception, e:
+            print "class LoadingThread got error: %s" % (e)
+            traceback.print_exc(file=sys.stdout)
+
+    def setting_volume(self):
+        # lock it
+        self.mutex.acquire()
+        self.ThisPtr.m_setting_volume()
+        # unlock it
+        self.mutex.release()
 
 class SoundSetting(object):
     '''keyboard setting class'''
@@ -55,6 +83,7 @@ class SoundSetting(object):
         self.alignment_widgets = {}
         self.container_widgets = {}
         self.view_widgets = {}
+        self.m_volume_value = -1
 
         self.__create_widget()
         self.__adjust_widget()
@@ -490,13 +519,11 @@ class SoundSetting(object):
             settings.set_volume(sink, settings.get_volume(sink))
         #settings.PA_DEVICE[sink].stop_emission('volume-updated')
     
-    def speaker_value_changed(self, adjustment):
-        '''set output volume'''
-        value = adjustment.get_value()
+    def m_setting_volume(self):
         balance = self.adjust_widgets["balance"].get_value()
         sink = settings.CURRENT_SINK
         volume_list = []
-        volume = value / 100 * settings.FULL_VOLUME_VALUE
+        volume = self.m_volume_value / 100 * settings.FULL_VOLUME_VALUE
         if balance < 0:
             volume_list.append(volume)
             volume_list.append(volume * (1 + balance))
@@ -506,7 +533,16 @@ class SoundSetting(object):
         settings.set_volumes(sink, volume_list)
         if not self.button_widgets["speaker"].get_active():
             self.button_widgets["speaker"].set_active(True)
-    
+
+    '''
+    TODO: put it into thread
+    '''
+    def speaker_value_changed(self, adjustment):
+        '''set output volume'''
+        self.m_volume_value = adjustment.get_value()
+        #self.m_setting_volume()
+        SettingVolumeThread(self).start()
+
     def microphone_value_changed(self, adjustment):
         ''' set input volume'''
         value = adjustment.get_value()

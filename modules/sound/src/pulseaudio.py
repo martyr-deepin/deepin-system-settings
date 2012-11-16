@@ -26,6 +26,11 @@ import gobject
 import traceback
 from dbus.mainloop.glib import DBusGMainLoop
 DBusGMainLoop(set_as_default=True)
+'''
+TODO: open the thread-safe switch
+'''
+gobject.threads_init()
+dbus.mainloop.glib.threads_init()
 
 def connect_bus():
     if 'PULSE_DBUS_SERVER' in os.environ:
