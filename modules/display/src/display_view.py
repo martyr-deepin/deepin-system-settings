@@ -32,6 +32,7 @@ app_theme = init_skin(
     os.path.join(get_parent_dir(__file__, 2), "app_theme"),
     )
 
+from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.box import ResizableBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
@@ -54,9 +55,9 @@ class DisplayView(gtk.VBox):
         self.padding_x = 10
         self.padding_y = 5
         self.box_spacing = 10
-        self.monitor_items = ["DEBUG"]
-        self.resolution_items = ["DEBUG"]
-        self.direction_items = ["DEBUG"]
+        self.monitor_items = [("DEBUG", 0)]
+        self.resolution_items = [("DEBUG", 0)]
+        self.direction_items = [("DEBUG", 0)]
         self.duration_items = [("1分钟", 1), 
                                ("2分钟", 2), 
                                ("3分钟", 3), 
@@ -65,6 +66,16 @@ class DisplayView(gtk.VBox):
                                ("30分钟", 30), 
                                ("60分钟", 60), 
                                ("从不", -1)]
+        '''
+        main box
+        '''
+        self.main_box = gtk.VBox(False, spacing=self.box_spacing)
+        '''
+        scrolled_window
+        '''
+        self.scrolled_window = ScrolledWindow()
+        self.scrolled_window.set_size_request(825, 425)
+        self.scrolled_window.add_with_viewport(self.main_box)
         '''
         top, left, right align
         '''
@@ -177,10 +188,6 @@ class DisplayView(gtk.VBox):
              self.lock_display_combo])
         self.auto_lock_align.add(self.auto_lock_box)
         '''
-        top_align pack_start
-        '''
-        self.top_align.add(self.monitor_op_box)
-        '''
         left_align pack_start
         '''
         self.m_widget_pack_start(self.left_box, 
@@ -202,7 +209,7 @@ class DisplayView(gtk.VBox):
         '''
         this->HBox pack_start
         '''
-        self.pack_start(self.top_align)
+        self.pack_start(self.main_box)
         self.pack_start(self.left_align, False, False)
         self.pack_start(self.right_align, False, False)
 
