@@ -36,6 +36,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.box import ResizableBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
+from dtk.ui.scalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
 from dtk.ui.utils import get_optimum_pixbuf_from_file
@@ -144,9 +145,18 @@ class DisplayView(gtk.VBox):
         self.brightness_align = self.m_setup_align()
         self.brightness_box = gtk.HBox(spacing = self.box_spacing)
         self.brightness_label = self.m_setup_label("亮度")
-        self.brightness_scale = gtk.HScale()
-        self.brightness_scale.set_range(0, 100)
-        self.brightness_scale.set_size_request(353, -1)
+        self.brightness_scale = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"), 
+            app_theme.get_pixbuf("scalebar/l_bg.png"), 
+            app_theme.get_pixbuf("scalebar/m_fg.png"), 
+            app_theme.get_pixbuf("scalebar/m_bg.png"), 
+            app_theme.get_pixbuf("scalebar/r_fg.png"), 
+            app_theme.get_pixbuf("scalebar/r_bg.png"), 
+            app_theme.get_pixbuf("scalebar/point.png"), 
+            True)
+        self.brightness_adjust = gtk.Adjustment(0, 0, 100)
+        self.brightness_scale.set_adjustment(self.brightness_adjust)
+        self.brightness_scale.set_size_request(355, DEFAULT_FONT_SIZE * 4)
         self.m_widget_pack_start(self.brightness_box, 
             [self.brightness_label, 
              self.brightness_scale])
