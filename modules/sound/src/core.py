@@ -23,6 +23,7 @@
 from pulseaudio import BusBase
 import gobject
 import traceback
+import dbus
 
 class Core(BusBase):
         
@@ -53,6 +54,8 @@ class Core(BusBase):
     
     def __init__(self, path = "/org/pulseaudio/core1", interface = "org.PulseAudio.Core1"):
         BusBase.__init__(self, path, interface)
+
+        self.listen_for_signal("", dbus.Array([], signature = 'o'))
 
         self.dbus_proxy.connect_to_signal("NewCard", self.new_card_cb, dbus_interface = 
                                           self.object_interface, arg0 = None)
@@ -174,7 +177,7 @@ class Core(BusBase):
 
     def set_fallback_sink(self, fallback_sink):
         try:
-            self.set_property("FallbackSink", fallback_sink)
+            self.set_property("FallbackSink", dbus.ObjectPath(fallback_sink))
         except:
             traceback.print_exc()
 
@@ -189,7 +192,7 @@ class Core(BusBase):
 
     def set_fallback_source(self, fallback_source):
         try:
-            self.set_property("FallbackSource", fallback_source)
+            self.set_property("FallbackSource", dbus.ObjectPath(fallback_source))
         except:
             traceback.print_exc()
 
@@ -251,11 +254,8 @@ class Core(BusBase):
     def exit(self):
         self.call_async("Exit", reply_handler = None, error_handler = None)
 
-    def listen_for_signal(self, signal):
-        if self.dbus_method("ListenForSignal", signal):
-            return map(lambda x:str(x), self.dbus_method("ListenForSignal", signal))
-        else:
-            return []
+    def listen_for_signal(self, signal, objects):
+        self.call_async("ListenForSignal", signal, objects)
 
     def stop_listening_for_signal(self, signal):
         self.call_async("StopListeningForSignal", signal)

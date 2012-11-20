@@ -324,7 +324,8 @@ _set_time (GsdDatetimeMechanism  *mechanism,
                 error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
                                      GSD_DATETIME_MECHANISM_ERROR_GENERAL,
                                      "Error calling settimeofday({%lld,%lld}): %s",
-                                     (gint64) tv->tv_sec, (gint64) tv->tv_usec,
+                                     /* (gint64) tv->tv_sec, (gint64) tv->tv_usec, */
+                                     (long long int) tv->tv_sec, (long long int) tv->tv_usec,
                                      strerror (errno));
                 dbus_g_method_return_error (context, error);
                 g_error_free (error);

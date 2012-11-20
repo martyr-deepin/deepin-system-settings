@@ -412,7 +412,8 @@ system_timezone_write_key_file (const char  *filename,
 static char *
 system_timezone_read_etc_TIMEZONE (void)
 {
-        return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
+
+    return system_timezone_read_key_file (ETC_TIMEZONE_MAJ,
                                               "TZ");
 }
 
@@ -601,28 +602,26 @@ files_are_identical_inode (struct stat *a_stat,
                            gsize        a_content_len,
                            const char  *b_filename)
 {
-        return (a_stat->st_ino == b_stat->st_ino);
+    return (a_stat->st_ino == b_stat->st_ino);
 }
-
-
 /* Determine if /etc/localtime is a hard link to some file, by looking at
  * the inodes */
 static char *
 system_timezone_read_etc_localtime_hardlink (void)
 {
-        struct stat stat_localtime;
+    struct stat stat_localtime;
 
-        if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
-                return NULL;
+    if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
+        return NULL;
 
-        if (!S_ISREG (stat_localtime.st_mode))
-                return NULL;
+    if (!S_ISREG (stat_localtime.st_mode))
+        return NULL;
 
-        return recursive_compare (&stat_localtime,
-                                  NULL,
-                                  0,
-                                  SYSTEM_ZONEINFODIR,
-                                  files_are_identical_inode);
+    return recursive_compare (&stat_localtime,
+                              NULL,
+                              0,
+                              SYSTEM_ZONEINFODIR,
+                              files_are_identical_inode);
 }
 
 static gboolean
@@ -632,58 +631,58 @@ files_are_identical_content (struct stat *a_stat,
                              gsize        a_content_len,
                              const char  *b_filename)
 {
-        char  *b_content = NULL;
-        gsize  b_content_len = -1;
-        int    cmp;
+    char  *b_content = NULL;
+    gsize  b_content_len = -1;
+    int    cmp;
 
-        if (a_stat->st_size != b_stat->st_size)
-                return FALSE;
+    if (a_stat->st_size != b_stat->st_size)
+        return FALSE;
 
-        if (!g_file_get_contents (b_filename,
-                                  &b_content, &b_content_len, NULL))
-                return FALSE;
+    if (!g_file_get_contents (b_filename,
+                              &b_content, &b_content_len, NULL))
+        return FALSE;
 
-        if (a_content_len != b_content_len) {
-                g_free (b_content);
-                return FALSE;
-        }
-
-        cmp = memcmp (a_content, b_content, a_content_len);
+    if (a_content_len != b_content_len) {
         g_free (b_content);
+        return FALSE;
+    }
 
-        return (cmp == 0);
+    cmp = memcmp (a_content, b_content, a_content_len);
+    g_free (b_content);
+
+    return (cmp == 0);
 }
 
 /* Determine if /etc/localtime is a copy of a timezone file */
 static char *
 system_timezone_read_etc_localtime_content (void)
 {
-        struct stat  stat_localtime;
-        char        *localtime_content = NULL;
-        gsize        localtime_content_len = -1;
-        char        *retval;
+    struct stat  stat_localtime;
+    char        *localtime_content = NULL;
+    gsize        localtime_content_len = -1;
+    char        *retval;
 
-        if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
-                return NULL;
+    if (g_stat (ETC_LOCALTIME, &stat_localtime) != 0)
+        return NULL;
 
-        if (!S_ISREG (stat_localtime.st_mode))
-                return NULL;
+    if (!S_ISREG (stat_localtime.st_mode))
+        return NULL;
 
-        if (!g_file_get_contents (ETC_LOCALTIME,
-                                  &localtime_content,
-                                  &localtime_content_len,
-                                  NULL))
-                return NULL;
+    if (!g_file_get_contents (ETC_LOCALTIME,
+                              &localtime_content,
+                              &localtime_content_len,
+                              NULL))
+        return NULL;
 
-        retval = recursive_compare (&stat_localtime,
-                                   localtime_content,
-                                   localtime_content_len,
-                                   SYSTEM_ZONEINFODIR,
-                                   files_are_identical_content);
+    retval = recursive_compare (&stat_localtime,
+                                localtime_content,
+                                localtime_content_len,
+                                SYSTEM_ZONEINFODIR,
+                                files_are_identical_content);
 
-        g_free (localtime_content);
+    g_free (localtime_content);
 
-        return retval;
+    return retval;
 }
 
 typedef char * (*GetSystemTimezone) (void);
@@ -752,106 +751,106 @@ static gboolean
 system_timezone_is_zone_file_valid (const char  *zone_file,
                                     GError     **error)
 {
-        GError     *our_error;
-        GIOChannel *channel;
-        char        buffer[strlen (TZ_MAGIC)];
-        gsize       read;
+    GError     *our_error;
+    GIOChannel *channel;
+    char        buffer[strlen (TZ_MAGIC)];
+    gsize       read;
 
-        /* First, check the zone_file is properly rooted */
-        if (!g_str_has_prefix (zone_file, SYSTEM_ZONEINFODIR"/")) {
-                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
-                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
-                             "Timezone file needs to be under "SYSTEM_ZONEINFODIR);
-                return FALSE;
-        }
+    /* First, check the zone_file is properly rooted */
+    if (!g_str_has_prefix (zone_file, SYSTEM_ZONEINFODIR"/")) {
+        g_set_error (error, SYSTEM_TIMEZONE_ERROR,
+                     SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
+                     "Timezone file needs to be under "SYSTEM_ZONEINFODIR);
+        return FALSE;
+    }
 
-        /* Second, check it's a regular file that exists */
-        if (!g_file_test (zone_file, G_FILE_TEST_IS_REGULAR)) {
-                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
-                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
-                             "No such timezone file %s", zone_file);
-                return FALSE;
-        }
+    /* Second, check it's a regular file that exists */
+    if (!g_file_test (zone_file, G_FILE_TEST_IS_REGULAR)) {
+        g_set_error (error, SYSTEM_TIMEZONE_ERROR,
+                     SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
+                     "No such timezone file %s", zone_file);
+        return FALSE;
+    }
 
-        /* Third, check that it's a tzfile (see tzfile(5)). The file has a 4
-         * bytes header which is TZ_MAGIC.
-         *
-         * TODO: is there glibc API for this? */
-        our_error = NULL;
-        channel = g_io_channel_new_file (zone_file, "r", &our_error);
-        if (!our_error)
-                g_io_channel_read_chars (channel,
-                                         buffer, strlen (TZ_MAGIC),
-                                         &read, &our_error);
-        if (channel)
-                g_io_channel_unref (channel);
+    /* Third, check that it's a tzfile (see tzfile(5)). The file has a 4
+     * bytes header which is TZ_MAGIC.
+     *
+     * TODO: is there glibc API for this? */
+    our_error = NULL;
+    channel = g_io_channel_new_file (zone_file, "r", &our_error);
+    if (!our_error)
+        g_io_channel_read_chars (channel,
+                                 buffer, strlen (TZ_MAGIC),
+                                 &read, &our_error);
+    if (channel)
+        g_io_channel_unref (channel);
 
-        if (our_error) {
-                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
-                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
-                             "Timezone file %s cannot be read: %s",
-                             zone_file, our_error->message);
-                g_error_free (our_error);
-                return FALSE;
-        }
+    if (our_error) {
+        g_set_error (error, SYSTEM_TIMEZONE_ERROR,
+                     SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
+                     "Timezone file %s cannot be read: %s",
+                     zone_file, our_error->message);
+        g_error_free (our_error);
+        return FALSE;
+    }
 
-        if (read != strlen (TZ_MAGIC) || strncmp (buffer, TZ_MAGIC, strlen (TZ_MAGIC)) != 0) {
-                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
-                             SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
-                             "%s is not a timezone file",
-                             zone_file);
-                return FALSE;
-        }
+    if (read != strlen (TZ_MAGIC) || strncmp (buffer, TZ_MAGIC, strlen (TZ_MAGIC)) != 0) {
+        g_set_error (error, SYSTEM_TIMEZONE_ERROR,
+                     SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE,
+                     "%s is not a timezone file",
+                     zone_file);
+        return FALSE;
+    }
 
-        return TRUE;
+    return TRUE;
 }
 
 static gboolean
 system_timezone_set_etc_timezone (const char  *zone_file,
                                   GError     **error)
 {
-        GError *our_error;
-        char   *content;
-        gsize   len;
+    GError *our_error;
+    char   *content;
+    gsize   len;
 
-        if (!system_timezone_is_zone_file_valid (zone_file, error))
-                return FALSE;
+    if (!system_timezone_is_zone_file_valid (zone_file, error))
+        return FALSE;
 
-        /* If /etc/localtime is a symlink, write a symlink */
-        if (g_file_test (ETC_LOCALTIME, G_FILE_TEST_IS_SYMLINK)) {
-                if (g_unlink (ETC_LOCALTIME) == 0 &&
-                    symlink (zone_file, ETC_LOCALTIME) == 0)
-                        return TRUE;
+    /* If /etc/localtime is a symlink, write a symlink */
+    if (g_file_test (ETC_LOCALTIME, G_FILE_TEST_IS_SYMLINK)) {
+        if (g_unlink (ETC_LOCALTIME) == 0 &&
+            symlink (zone_file, ETC_LOCALTIME) == 0)
+            return TRUE;
 
-                /* If we couldn't symlink the file, we'll just fallback on
-                 * copying it */
-        }
+        /* If we couldn't symlink the file, we'll just fallback on
+         * copying it */
+    }
 
-        /* Else copy the file to /etc/localtime. We explicitly avoid doing
-         * hard links since they break with different partitions */
-        our_error = NULL;
-        if (!g_file_get_contents (zone_file, &content, &len, &our_error)) {
-                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
-                             SYSTEM_TIMEZONE_ERROR_GENERAL,
-                             "Timezone file %s cannot be read: %s",
-                             zone_file, our_error->message);
-                g_error_free (our_error);
-                return FALSE;
-        }
+    /* Else copy the file to /etc/localtime. We explicitly avoid doing
+     * hard links since they break with different partitions */
+    our_error = NULL;
+    if (!g_file_get_contents (zone_file, &content, &len, &our_error)) {
+        g_set_error (error, SYSTEM_TIMEZONE_ERROR,
+                     SYSTEM_TIMEZONE_ERROR_GENERAL,
+                     "Timezone file %s cannot be read: %s",
+                     zone_file, our_error->message);
+        g_error_free (our_error);
+        return FALSE;
+    }
 
-        if (!g_file_set_contents (ETC_LOCALTIME, content, len, &our_error)) {
-                g_set_error (error, SYSTEM_TIMEZONE_ERROR,
-                             SYSTEM_TIMEZONE_ERROR_GENERAL,
-                             ETC_LOCALTIME" cannot be overwritten: %s",
-                             our_error->message);
-                g_error_free (our_error);
-                g_free (content);
-                return FALSE;
-        }
-
+    if (!g_file_set_contents (ETC_LOCALTIME, content, len, &our_error)) {
+        g_set_error (error, SYSTEM_TIMEZONE_ERROR,
+                     SYSTEM_TIMEZONE_ERROR_GENERAL,
+                     ETC_LOCALTIME" cannot be overwritten: %s",
+                     our_error->message);
+        g_error_free (our_error);
         g_free (content);
+        return FALSE;
+    }
 
-        return TRUE;
+    g_free (content);
+
+    return TRUE;
 }
 
 typedef gboolean (*SetSystemTimezone) (const char  *tz,

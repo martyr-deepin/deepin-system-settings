@@ -6,6 +6,7 @@
 # 
 # Author:     Long Changjin <admin@longchangjin.cn>
 # Maintainer: Long Changjin <admin@longchangjin.cn>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,11 +36,39 @@ from nls import _
 import gtk
 import pangocairo
 import pango
+import settings
 
 import sys
 import os
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame
+import threading as td
+import traceback
+
+'''
+TODO: setting volume thread
+'''
+class SettingVolumeThread(td.Thread):
+    def __init__(self, argv):
+        td.Thread.__init__(self)
+        # it need a mutex locker
+        self.mutex = td.Lock()
+        self.setDaemon(True)
+        self.ThisPtr = argv
+
+    def run(self):
+        try:
+            self.setting_volume()
+        except Exception, e:
+            print "class LoadingThread got error: %s" % (e)
+            traceback.print_exc(file=sys.stdout)
+
+    def setting_volume(self):
+        # lock it
+        self.mutex.acquire()
+        self.ThisPtr.m_setting_volume()
+        # unlock it
+        self.mutex.release()
 
 class SoundSetting(object):
     '''keyboard setting class'''
@@ -54,6 +83,7 @@ class SoundSetting(object):
         self.alignment_widgets = {}
         self.container_widgets = {}
         self.view_widgets = {}
+        self.m_volume_value = -1
 
         self.__create_widget()
         self.__adjust_widget()
@@ -83,9 +113,6 @@ class SoundSetting(object):
             app_theme.get_theme_file_path("image/set/toggle_fg.png"))
         self.image_widgets["device"] = gtk.gdk.pixbuf_new_from_file(
             app_theme.get_theme_file_path("image/set/device.png"))
-        # label init
-        #self.label_widgets["left"] = Label(_("Left"))
-        #self.label_widgets["right"] = Label(_("Right"))
         # button init
         self.button_widgets["balance"] = gtk.ToggleButton()
         self.button_widgets["speaker"] = gtk.ToggleButton()
@@ -123,9 +150,9 @@ class SoundSetting(object):
         self.alignment_widgets["microphone_set"] = gtk.Alignment()
         self.alignment_widgets["advanced"] = gtk.Alignment()
         # adjust init
-        self.adjust_widgets["balance"] = gtk.Adjustment(0, -100, 100)
-        self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 100)
-        self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 100)
+        self.adjust_widgets["balance"] = gtk.Adjustment(0, -1.0, 1.0)
+        self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 150)
+        self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150)
         # scale init
         self.scale_widgets["balance"] = gtk.HScale()
         self.scale_widgets["balance"].set_draw_value(False)
@@ -139,7 +166,7 @@ class SoundSetting(object):
             #app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["balance"].set_adjustment(self.adjust_widgets["balance"])
         self.scale_widgets["speaker"] = gtk.HScale()
-        self.scale_widgets["speaker"].set_draw_value(False)
+        #self.scale_widgets["speaker"].set_draw_value(False)
         #self.scale_widgets["speaker"] = HScalebar(
             #app_theme.get_pixbuf("scalebar/l_fg.png"),
             #app_theme.get_pixbuf("scalebar/l_bg.png"),
@@ -150,7 +177,7 @@ class SoundSetting(object):
             #app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["speaker"].set_adjustment(self.adjust_widgets["speaker"])
         self.scale_widgets["microphone"] = gtk.HScale()
-        self.scale_widgets["microphone"].set_draw_value(False)
+        #self.scale_widgets["microphone"].set_draw_value(False)
         #self.scale_widgets["microphone"] = HScalebar(
             #app_theme.get_pixbuf("scalebar/l_fg.png"),
             #app_theme.get_pixbuf("scalebar/l_bg.png"),
@@ -232,11 +259,8 @@ class SoundSetting(object):
         self.container_widgets["balance_label_hbox"].pack_start(
             self.button_widgets["balance"], False, False, 25)
         self.button_widgets["balance"].set_size_request(49, 22)
-        # TODO 设置均衡器的值
         # 
-        #self.container_widgets["balance_scale_hbox"].pack_start(self.label_widgets["left"], False, False)
         self.container_widgets["balance_scale_hbox"].pack_start(self.scale_widgets["balance"])
-        #self.container_widgets["balance_scale_hbox"].pack_start(self.label_widgets["right"], False, False)
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_lower(), gtk.POS_BOTTOM, _("Left"))
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_upper(), gtk.POS_BOTTOM, _("Right"))
         self.scale_widgets["balance"].add_mark(0, gtk.POS_TOP, "0")
@@ -261,12 +285,13 @@ class SoundSetting(object):
         self.container_widgets["speaker_label_hbox"].pack_start(
             self.button_widgets["speaker"], False, False, 25)
         self.button_widgets["speaker"].set_size_request(49, 22)
-        # TODO 设置值
+        # 
         self.container_widgets["speaker_table"].attach(
             self.button_widgets["speaker_combo"], 0, 1, 0, 1)
         self.container_widgets["speaker_table"].attach(
             self.scale_widgets["speaker"], 0, 1, 1, 2)
         self.container_widgets["speaker_table"].set_row_spacing(0, 10)
+        #self.scale_widgets["speaker"].add_mark(100, gtk.POS_BOTTOM, "100%")
         
         # microphone
         self.alignment_widgets["microphone_label"].add(self.container_widgets["microphone_label_hbox"])
@@ -287,12 +312,13 @@ class SoundSetting(object):
         self.container_widgets["microphone_label_hbox"].pack_start(
             self.button_widgets["microphone"], False, False, 25)
         self.button_widgets["microphone"].set_size_request(49, 22)
-        # TODO
+        #
         self.container_widgets["microphone_table"].attach(
             self.button_widgets["microphone_combo"], 0, 1, 0, 1)
         self.container_widgets["microphone_table"].attach(
             self.scale_widgets["microphone"], 0, 1, 1, 2)
         self.container_widgets["microphone_table"].set_row_spacing(0, 10)
+        #self.scale_widgets["microphone"].add_mark(100, gtk.POS_BOTTOM, "100%")
 
         self.alignment_widgets["advanced"].set(1.0, 0.5, 0, 0)
         self.alignment_widgets["advanced"].set_padding(0, 0, 20, 71)
@@ -319,11 +345,83 @@ class SoundSetting(object):
 
         self.container_widgets["advance_hardware_box"].pack_start(self.label_widgets["ad_hardware"], False, False, 10)
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
-        # TODO 获取设备信息列表
+        # if PulseAudio connect error, set the widget insensitive
+        if settings.PA_CORE is None or not settings.PA_CARDS:
+            self.container_widgets["main_hbox"].set_sensitive(False)
+            return
+        # if sinks list is empty, then can't set output volume
+        if settings.CURRENT_SINK is None:
+            self.container_widgets["balance_main_vbox"].set_sensitive(False)
+            self.container_widgets["speaker_main_vbox"].set_sensitive(False)
+        # if sources list is empty, then can't set input volume
+        if settings.CURRENT_SOURCE is None:
+            self.container_widgets["microphone_main_vbox"].set_sensitive(False)
+        
+        # TODO 设置均衡器的值
+        # set output volume
+        if settings.CURRENT_SINK:
+            # set balance
+            # if is Mono
+            if settings.PA_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
+                self.container_widgets["balance_main_vbox"].set_sensitive(False)
+            else:
+                volumes = settings.get_volumes(settings.CURRENT_SINK)
+                if volumes[0] == volumes[1]:
+                    value = 0
+                elif volumes[0] > volumes[1]:     # if left
+                    value = float(volumes[1]) / volumes[0] - 1
+                else:
+                    value = 1 - float(volumes[0]) / volumes[1]
+                self.adjust_widgets["balance"].set_value(value)
+            self.button_widgets["balance"].set_active(True) # TODO 
+            self.button_widgets["speaker"].set_active(not settings.get_mute(settings.CURRENT_SINK))
+            self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
+            if self.speaker_ports:
+                items = []
+                i = 0
+                select_index = self.speaker_ports[1]
+                for port in self.speaker_ports[0]:
+                    items.append((port.get_description(), i))
+                    i += 1
+                self.button_widgets["speaker_combo"].set_items(items, select_index, 530)
+            self.adjust_widgets["speaker"].set_value(
+                settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
+        # set input volume
+        if settings.CURRENT_SOURCE:
+            self.button_widgets["microphone"].set_active(not settings.get_mute(settings.CURRENT_SOURCE))
+            self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
+            if self.microphone_ports:
+                items = []
+                select_index = self.microphone_ports[1]
+                i = 0
+                for port in self.microphone_ports[0]:
+                    items.append((port.get_description(), i))
+                    i += 1
+                self.button_widgets["microphone_combo"].set_items(items, select_index, 530)
+            self.adjust_widgets["microphone"].set_value(
+                settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
         # TODO 双击切换设备
-        self.view_widgets["ad_output"].add_items(
-            [TreeItem(self.image_widgets["device"], "test"),
-             TreeItem(self.image_widgets["device"], "test")])
+        # output list
+        output_list = []
+        for sink in settings.PA_CARDS[settings.CURRENT_CARD]["sink"]:
+            prop = settings.get_object_property_list(sink)
+            if prop:
+                output_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+        self.view_widgets["ad_output"].add_items(output_list)
+        # input list
+        input_list = []
+        for source in settings.PA_CARDS[settings.CURRENT_CARD]["source"]:
+            prop = settings.get_object_property_list(source)
+            if prop:
+                input_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+        self.view_widgets["ad_input"].add_items(input_list)
+        # hardware list
+        card_list = []
+        for cards in settings.PA_CARD_LIST:
+            prop = settings.get_object_property_list(settings.PA_CARDS[cards]['obj'])
+            if prop:
+                card_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+        self.view_widgets["ad_hardware"].add_items(card_list)
         
     def __signals_connect(self):
         ''' widget signals connect'''
@@ -334,6 +432,27 @@ class SoundSetting(object):
         self.button_widgets["balance"].connect("toggled", self.toggle_button_toggled, "balance")
         self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")
         self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
+
+        self.scale_widgets["speaker"].connect("format-value", lambda w, v: "%d%%" % (v))
+        self.scale_widgets["microphone"].connect("format-value", lambda w, v: "%d%%" % (v))
+        
+        self.adjust_widgets["balance"].connect("value-changed", self.balance_value_changed)
+        self.adjust_widgets["speaker"].connect("value-changed", self.speaker_value_changed)
+        self.adjust_widgets["microphone"].connect("value-changed", self.microphone_value_changed)
+
+        self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
+        self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
+        if settings.CURRENT_SINK:
+            sink = settings.PA_DEVICE[settings.CURRENT_SINK]
+            sink.connect("volume-updated", self.speaker_volume_update)
+            sink.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["speaker"])
+            sink.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["speaker_combo"])
+            #sink.connect("property-list-updated", self.speaker_volume_update)
+        if settings.CURRENT_SOURCE:
+            source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
+            source.connect("volume-updated", self.microphone_volume_update)
+            source.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["microphone"])
+            source.connect("active-port-updated", self.pulse_active_port_updated, self.button_widgets["microphone_combo"])
 
         self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
     
@@ -371,28 +490,121 @@ class SoundSetting(object):
         callback(button.get_active())
     
     def balance_toggled(self, active):
-        # active为False，则默认均衡
-        self.container_widgets["balance_table"].set_sensitive(active)
+        if not active:
+            self.adjust_widgets["balance"].set_value(0)
+            #self.adjust_widgets["balance"].value_changed()
+        self.scale_widgets["balance"].set_sensitive(active)
     
     def speaker_toggled(self, active):
-        # avtive为False，则静音。调节音量后又激活该按钮
-        self.container_widgets["speaker_table"].set_sensitive(active)
+        if settings.CURRENT_SINK:
+            settings.set_mute(settings.CURRENT_SINK, not active)
     
     def microphone_toggled(self, active):
-        # avtive为False，则静音。调节音量后又激活该按钮
-        self.container_widgets["microphone_table"].set_sensitive(active)
+        if settings.CURRENT_SOURCE:
+            settings.set_mute(settings.CURRENT_SOURCE, not active)
     
-    def adjustment_value_changed(self, adjustment, key):
-        '''adjustment value changed, and settings set the value'''
-        value = adjustment.get_upper() - adjustment.get_value() + adjustment.get_lower()
-        self.scale_set[key](value)
+    def balance_value_changed(self, adjustment):
+        ''' set balance value'''
+        value = adjustment.get_value()
+        sink = settings.CURRENT_SINK
+        if value < 0:       # is left, and reduce right volume
+            volume = settings.get_volume(sink)
+            volume2 = volume * (1 + value)
+            settings.set_volumes(sink, [volume, volume2])
+        elif value > 0:     # is right, and reduce left volume
+            volume = settings.get_volume(sink)
+            volume2 = volume * (1 - value)
+            settings.set_volumes(sink, [volume2, volume])
+        else:               # is balance
+            settings.set_volume(sink, settings.get_volume(sink))
+        #settings.PA_DEVICE[sink].stop_emission('volume-updated')
     
-    def settings_value_changed(self, settings, key, adjustment):
-        '''settings value changed, and adjustment set the value'''
-        return  # if want settings relate to adjustment widget, please delete this line.
-        value = adjustment.get_upper() + adjustment.get_lower() - self.scale_get[key]()
-        adjustment.set_value(value)
+    def m_setting_volume(self):
+        balance = self.adjust_widgets["balance"].get_value()
+        sink = settings.CURRENT_SINK
+        volume_list = []
+        volume = self.m_volume_value / 100 * settings.FULL_VOLUME_VALUE
+        if balance < 0:
+            volume_list.append(volume)
+            volume_list.append(volume * (1 + balance))
+        else:
+            volume_list.append(volume * (1 - balance))
+            volume_list.append(volume)
+        settings.set_volumes(sink, volume_list)
+        if not self.button_widgets["speaker"].get_active():
+            self.button_widgets["speaker"].set_active(True)
 
+    '''
+    TODO: put it into thread
+    '''
+    def speaker_value_changed(self, adjustment):
+        '''set output volume'''
+        self.m_volume_value = adjustment.get_value()
+        #self.m_setting_volume()
+        SettingVolumeThread(self).start()
+
+    def microphone_value_changed(self, adjustment):
+        ''' set input volume'''
+        value = adjustment.get_value()
+        volume = value / 100 * settings.FULL_VOLUME_VALUE
+        source = settings.CURRENT_SOURCE
+        settings.set_volume(source, volume)
+        if not self.button_widgets["microphone"].get_active():
+            self.button_widgets["microphone"].set_active(True)
+    
+    def speaker_port_changed(self, combo, content, value, index):
+        #print "port changed:", content, value, index
+        port = self.speaker_ports[0][index]
+        print port.get_description()
+        print port.object_path, port.dbus_proxy
+        dev = settings.PA_DEVICE[settings.CURRENT_SINK]
+        #import dbus
+        #dev.set_active_port(dbus.ObjectPath(port.object_path))
+        dev.set_active_port(port.object_path)
+    
+    def pulse_mute_updated(self, dev, is_mute, button):
+        button.set_active(not is_mute)
+    
+    def speaker_volume_update(self, sink, volume):
+        '''
+        TODO: too much verbose info
+        '''
+        #print "sink volume update:", sink.object_path, volume
+        # set output volume
+        self.adjust_widgets["speaker"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
+        ## set balance
+        #dev = sink.object_path
+        #left_volumes = []
+        #right_volumes = []
+        #for channel in settings.PA_CHANNELS[dev]['left']:
+            #left_volumes.append(volume[channel])
+        #for channel in settings.PA_CHANNELS[dev]['right']:
+            #right_volumes.append(volume[channel])
+        #if not left_volumes:
+            #left_volumes.append(0)
+        #if not right_volumes:
+            #right_volumes.append(0)
+        #(left_volume, right_volume) = [max(left_volumes), max(right_volumes)]
+        #if left_volume == right_volume:
+            #value = 0
+        #elif left_volume > right_volume: # if left
+            #value = float(left_volume) / right_volume - 1
+        #else:
+            #value = 1 - float(left_volume) / right_volume
+        #self.adjust_widgets["balance"].set_value(value)
+
+    def microphone_volume_update(self, source, volume):
+        # set output volume
+        print "source volume update:", source.object_path, volume
+        self.adjust_widgets["microphone"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
+    
+    def pulse_active_port_updated(self, dev, port, combo):
+        print "active port updated:", dev.object_path, port
+        
+    def microphone_port_changed(self, combo, content, value, index):
+        print "port changed:", content, value, index
+        print self.microphone_ports[0][index].get_description()
+    
     def slider_to_advanced(self, button):
             self.container_widgets["slider"].slide_to_page(
                 self.container_widgets["advance_set_tab_box"], "right")
