@@ -72,7 +72,7 @@ class NMSettingVpn(NMSetting):
             self.prop_dict["secrets"] = dbus.Dictionary({}, signature = dbus.Signature('ss'))
         self.prop_dict["secrets"][item] = value
 
-    def delete_secret_item(self, item):
+    def delete_secret_item(self, item): 
         del self.prop_dict["secrets"][item]
 
     @property
