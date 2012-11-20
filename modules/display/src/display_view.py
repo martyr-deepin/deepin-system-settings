@@ -56,6 +56,8 @@ class DisplayView(gtk.VBox):
         self.padding_x = 10
         self.padding_y = 5
         self.box_spacing = 10
+        self.resize_width = 790
+        self.resize_height = 200
         self.monitor_items = [("DEBUG", 0)]
         self.resolution_items = [("DEBUG", 0)]
         self.direction_items = [("DEBUG", 0)]
@@ -68,19 +70,13 @@ class DisplayView(gtk.VBox):
                                ("60分钟", 60), 
                                ("从不", -1)]
         '''
-        main box
-        '''
-        self.main_box = gtk.VBox(False, spacing=self.box_spacing)
-        '''
         scrolled_window
         '''
         self.scrolled_window = ScrolledWindow()
         self.scrolled_window.set_size_request(825, 425)
-        self.scrolled_window.add_with_viewport(self.main_box)
         '''
-        top, left, right align
+        left, right align
         '''
-        self.top_align = self.m_setup_align()
         self.left_align = self.m_setup_align()
         self.right_align = self.m_setup_align()
         '''
@@ -91,7 +87,9 @@ class DisplayView(gtk.VBox):
         '''
         monitor operation && detect
         '''
-        self.monitor_op_box = ResizableBox(800, 130)
+        self.monitor_op_box = ResizableBox()
+        self.monitor_op_box.set_size_request(self.resize_width, self.resize_height)
+        self.monitor_op_box.connect("resize", self.m_resize_box)
         '''
         monitor display
         '''
@@ -201,7 +199,8 @@ class DisplayView(gtk.VBox):
         left_align pack_start
         '''
         self.m_widget_pack_start(self.left_box, 
-            [self.monitor_display_align, 
+            [self.monitor_op_box, 
+             self.monitor_display_align, 
              self.monitor_align, 
              self.resolution_align, 
              self.monitor_bright_align, 
@@ -212,16 +211,18 @@ class DisplayView(gtk.VBox):
         self.left_align.add(self.left_box)
         '''
         right_align pack_start
+        '''
         self.m_widget_pack_start(self.right_box, 
             [self.goto_align])
         self.right_align.add(self.right_box)
         '''
-        '''
         this->HBox pack_start
         '''
-        self.pack_start(self.main_box)
-        self.pack_start(self.left_align, False, False)
-        self.pack_start(self.right_align, False, False)
+        self.scrolled_window.add_child(self.left_align)
+        self.pack_start(self.scrolled_window)
+
+    def m_resize_box(self, widget, height):
+        self.monitor_op_box.set_size_request(self.resize_width, height - self.padding_y)
 
     def m_setup_label(self, text="", width=50, align=ALIGN_END):
         label = Label(text, None, DEFAULT_FONT_SIZE, align, width)

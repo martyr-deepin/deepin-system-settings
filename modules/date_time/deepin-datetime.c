@@ -397,7 +397,7 @@ static gboolean deepin_datetime_check_tz_name(const char *tz, GError **error)
     file = g_file_new_for_path(tz_path);
     actual_path = g_file_get_path(file);
 
-    g_obejct_unref(file);
+    g_object_unref(file);
 
     if(g_strcmp0(tz_path, actual_path) != 0){
         g_set_error(error, DEEPIN_DATETIME_ERROR,
@@ -433,7 +433,7 @@ gboolean deepin_datetime_set_timezone(DeepinDatetime *datetime, const char *tz, 
         GError *error2;
         int code;
         
-        if(error->code == SYSTEM_TIMEZONE_ERROR_INVALIE_TIMEZONE_FILE)
+        if(error->code == SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE)
             code = DEEPIN_DATETIME_ERROR_INVALID_TIMEZONE_FILE;
         else
             code = DEEPIN_DATETIME_ERROR_GENERAL;
@@ -464,7 +464,7 @@ gboolean deepin_datetime_get_timezone(DeepinDatetime *datetime, DBusGMethodInvoc
 
     dbus_g_method_return(context, timezone);
     
-    reutrn TRUE;
+    return TRUE;
 }
 
 gboolean deepin_datetime_get_hardware_clock_using_utc(DeepinDatetime *datetime, DBusGMethodInvocation *context)
@@ -526,12 +526,12 @@ gboolean deepin_datetime_get_hardware_clock_using_utc(DeepinDatetime *datetime, 
     return TRUE;
 }
 
-gboolean deepin_datetime_set_hardware_clock_using_utc(DeepinDatetime *datetime,gboolean using_utc, DBusGMethodInvocation *context)
+gboolean deepin_datetime_set_hardware_clock_using_utc(DeepinDatetime *datetime, gboolean using_utc, DBusGMethodInvocation *context)
 {
     GError *error;
     error = NULL;
     
-    if(!_check_polkit_for_action(mechanism, context))
+    if(!_check_polkit_for_action(datetime, context))
         return FALSE;
     
     if(g_file_test("/sbin/hwclock", G_FILE_TEST_EXISTS | G_FILE_TEST_IS_REGULAR | G_FILE_TEST_IS_EXECUTABLE)){
@@ -593,7 +593,7 @@ gboolean deepin_datetime_set_using_ntp(DeepinDatetime *datetime, gboolean using_
     if(!_check_polkit_for_action(datetime, context))
         return FALSE;
     
-    if(g_file_test("/usr/sbin/update-rc.d", G_FILE_EXISTS))
+    if(g_file_test("/usr/sbin/update-rc.d", G_FILE_TEST_EXISTS))
         ret = _set_using_ntp_debian(context, using_ntp);
     else{
         error = g_error_new(DEEPIN_DATETIME_ERROR,
