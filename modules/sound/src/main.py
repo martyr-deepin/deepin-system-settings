@@ -566,7 +566,10 @@ class SoundSetting(object):
         button.set_active(not is_mute)
     
     def speaker_volume_update(self, sink, volume):
-        print "sink volume update:", sink.object_path, volume
+        '''
+        TODO: too much verbose info
+        '''
+        #print "sink volume update:", sink.object_path, volume
         # set output volume
         self.adjust_widgets["speaker"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
         ## set balance

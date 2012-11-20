@@ -26,6 +26,7 @@ from lists import WiredItem, WirelessItem
 from lan_config import WiredSetting
 from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
+from vpn_config import VPNSetting
 
 from nmlib.nmcache import cache
 from nm_modules import nm_module
@@ -371,9 +372,9 @@ class DSL(gtk.VBox):
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
 
 class VpnSection(gtk.VBox):
-    def __init__(self):
-
+    def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
+        self.slide_to_subcrumb = slide_to_subcrumb_cb
         vpn = Contain(app_theme.get_pixbuf("/Network/misc.png"), "VPN网络", self.toggle_cb)
         self.add(vpn)
 
@@ -393,13 +394,18 @@ class VpnSection(gtk.VBox):
             self.align.destroy()
 
     def slide_to_event(self, widget, event):
-        print "clicked this label"
+        self.setting.init()
+        self.slide_to_subcrumb()
+        slider.slide_to_page(self.setting, "right")
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.child.allocation
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
+
+    def add_setting_page(self, setting_page):
+        self.setting = setting_page
 
 class ThreeG(gtk.VBox):
     def __init__(self):
@@ -481,20 +487,14 @@ class Network(object):
 
     def __init__(self, module_frame):
         
-        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-        self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
-        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
-        wifi = WifiSection()
-        vpn = VpnSection()
-        mobile = ThreeG()
-
+        self.module_frame = module_frame
+        self.init_sections(self.module_frame)
         vbox = gtk.VBox(False, 17)
         vbox.pack_start(self.wired, False, True,5)
         vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
-        vbox.pack_start(mobile, False, True, 0)
-        vbox.pack_start(vpn, False, True, 0)
+        #vbox.pack_start(mobile, False, True, 0)
+        vbox.pack_start(self.vpn, False, True, 0)
         vbox.pack_start(self.proxy, False, True, 0)
         
         scroll_win = ScrolledWindow()
@@ -506,11 +506,24 @@ class Network(object):
         self.main_align.add(scroll_win)
 
         self.eventbox = gtk.EventBox()
-        #self.eventbox.set_visible_window(True)
-        
         self.eventbox.set_above_child(False)
         self.eventbox.add(self.main_align)
         
+
+        slider.append_page(self.eventbox)
+        slider.append_page(self.wired_setting_page)
+        slider.append_page(self.dsl_setting_page)
+        slider.append_page(self.wireless_setting_page)
+        slider.append_page(self.proxy_setting_page)
+        slider.append_page(self.vpn_setting_page)
+    
+    def init_sections(self, module_frame):
+        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
+        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
+        self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
+        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
+        self.vpn = VpnSection(lambda : module_frame.send_submodule_crumb(2, "VPN"))
+
         self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.wired.add_setting_page(self.wired_setting_page)
@@ -527,12 +540,11 @@ class Network(object):
         self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.proxy.add_setting_page(self.proxy_setting_page)
-
-        slider.append_page(self.eventbox)
-        slider.append_page(self.wired_setting_page)
-        slider.append_page(self.dsl_setting_page)
-        slider.append_page(self.wireless_setting_page)
-        slider.append_page(self.proxy_setting_page)
+        self.vpn_setting_page = VPNSetting( lambda : slider.slide_to_page(self.eventbox, "left"),
+                               lambda : module_frame.send_message("change_crumb", 1))
+        self.vpn.add_setting_page(self.vpn_setting_page)
+        wifi = WifiSection()
+        mobile = ThreeG()
 
     def refresh(self):
 
@@ -540,30 +552,7 @@ class Network(object):
         nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
         nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         nm_module.secret_agent = NMSecretAgent()
-
-        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-        self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
-        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
-        
-
-        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        self.wired.add_setting_page(self.wired_setting_page)
-
-        self.wireless_setting_page = WirelessSetting(None, 
-                                                lambda :slider.slide_to_page(self.eventbox, "left"),
-                                                lambda : module_frame.send_message("change_crumb", 1))
-        self.wireless.add_setting_page(self.wireless_setting_page)
-
-        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        self.dsl.add_setting_page(self.dsl_setting_page)
-
-        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-
-        self.proxy.add_setting_page(self.proxy_setting_page)
+        self.init_sections(self.module_frame)
         self.eventbox.set_above_child(False)
         self.eventbox.queue_draw()
 
