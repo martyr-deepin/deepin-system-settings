@@ -109,7 +109,7 @@ class BusBase(gobject.GObject):
             try:
                 return self.property_interface.Set(self.object_interface, prop_name, prop_value)
             except:
-                print "set properties failed"
+                print "set properties failed", prop_name, prop_value
                 traceback.print_exc()
 
     def dbus_method(self, method_name, *args, **kwargs):

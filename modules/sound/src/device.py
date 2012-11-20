@@ -115,7 +115,7 @@ class Device(BusBase):
 
     def set_mute(self, muted):
         try:
-            self.set_property("Mute", muted)
+            self.set_property("Mute", dbus.Boolean(muted))
         except:
             traceback.print_exc()
 
@@ -198,7 +198,7 @@ class Device(BusBase):
         self.emit("state-updated", state)
 
     def active_port_updated_cb(self, port):
-        print "------------------active port update", self.object_path
+        #print "------------------active port update", self.object_path
         self.emit("active-port-updated", port)
 
     def property_list_updated_cb(self, property_list):

@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
+
 from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.entry import InputEntry, TextEntry
+from dtk.ui.entry import InputEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -20,7 +21,7 @@ from container import Contain
 
 import gtk
 
-class DSLSetting(gtk.HBox):
+class VPNSetting(gtk.HBox):
 
     def __init__(self, slide_back_cb = None, change_crumb_cb = None):
 
@@ -28,16 +29,12 @@ class DSLSetting(gtk.HBox):
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
         
-        self.wired = None
+        self.pptp = None
         self.ipv4 = None
-        self.dsl = None
-        self.ppp = None
 
         self.tab_window = TabBox()
-        self.items = [("DSL", NoSetting()),
-                      ("Wired", NoSetting()),
-                      ("IPv4 Setting", NoSetting()),
-                      ("PPP", NoSetting())]
+        self.items = [("PPTP", NoSetting()),
+                      ("IPv4 Setting", NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
@@ -65,34 +62,28 @@ class DSLSetting(gtk.HBox):
 
     def init(self):
         # Get all connections  
-        connections = nm_module.nm_remote_settings.get_pppoe_connections()
+        connections = nm_module.nm_remote_settings.get_vpn_connections()
         # Check connections
         if connections == []:
             # Create a new connection
-            nm_module.nm_remote_settings.new_pppoe_connection()
-            connections = nm_module.nm_remote_settings.get_pppoe_connections()
+            nm_module.nm_remote_settings.new_vpn_pptp_connection()
+            connections = nm_module.nm_remote_settings.get_vpn_connections()
 
-        self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
-        self.dsl_setting = [DSLConf(con) for con in connections]
-        self.ppp_setting = [PPPConf(con) for con in connections]
+        self.pptp_setting = [PPTPConf(con) for con in connections]
 
         self.sidebar.init(connections, self.ipv4_setting)
         index = self.sidebar.get_active()
-        self.wired = self.wired_setting[index]
         self.ipv4 = self.ipv4_setting[index]
-        self.dsl = self.dsl_setting[index]
-        self.ppp = self.ppp_setting[index]
+        self.pptp = self.pptp_setting[index]
         #self.dsl = NoSetting()
         #self.ppp = NoSetting()
 
         self.init_tab_box()
 
     def init_tab_box(self):
-        self.tab_window.tab_items[0] = ("DSL", self.dsl)
-        self.tab_window.tab_items[1] = ("Wired",self.wired)
-        self.tab_window.tab_items[2] = ("IPV4 setting",self.ipv4)
-        self.tab_window.tab_items[3] = ("PPP", self.ppp)
+        self.tab_window.tab_items[1] = ("IPV4 setting",self.ipv4)
+        self.tab_window.tab_items[0] = ("PPTP", self.pptp)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -100,30 +91,25 @@ class DSLSetting(gtk.HBox):
 
     def check_click(self, connection):
         index = self.sidebar.get_active()
-        self.wired = self.wired_setting[index]
         self.ipv4 = self.ipv4_setting[index]
-        self.dsl = self.dsl_setting[index]
-        self.ppp = self.ppp_setting[index]
-        ##self.dsl = NoSetting()
-        #self.ppp = NoSetting()
+        self.pptp = self.pptp_setting[index]
 
         self.init_tab_box()
         
     def save_changes(self, widget):
         print "saving"
-        self.dsl.save_setting()
-        #self.ppp.save_setting()
+        pass
 
-        connection = self.dsl.connection
-        print connection
-        connection.update()
+        #connection = self.dsl.connection
+        #print connection
+        #connection.update()
 
-        #FIXME need to change device path into variables
-        nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           "/org/freedesktop/NetworkManager/Devices/0",
-                                           "/")
-        self.change_crumb()
-        self.slide_back() 
+        ##FIXME need to change device path into variables
+        #nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           #"/org/freedesktop/NetworkManager/Devices/0",
+                                           #"/")
+        #self.change_crumb()
+        #self.slide_back() 
 
 
 class SideBar(gtk.VBox):
@@ -143,8 +129,8 @@ class SideBar(gtk.VBox):
     
     def init(self, connection_list, ip4setting):
         # check active
-        wired_device = nm_module.nmclient.get_wired_devices()[0]
-        active_connection = wired_device.get_active_connection()
+        #active_connection = nm_module.nmclient.get_vpn_active_connection()
+        active_connection = None
         if active_connection:
             active = active_connection.get_connection()
         else:
@@ -180,7 +166,7 @@ class SideBar(gtk.VBox):
                 return index
     
     def add_new_connection(self, widget):
-        new_connection = nm_module.nm_remote_settings.new_pppoe_connection()
+        new_connection = nm_module.nm_remote_settings.new_vpn_pptp_connection()
         self.main_init_cb()
 
 
@@ -190,48 +176,11 @@ class NoSetting(gtk.VBox):
 
         label_align = gtk.Alignment(0.5,0.5,0,0)
 
-        label = Label("No active connection")
+        label = Label("No connection available")
         label_align.add(label)
         self.add(label_align)
 
 
-class Wired(gtk.VBox):
-    def __init__(self, connection):
-        gtk.VBox.__init__(self)
-        
-        ethernet_setting = connection.get_setting("802-3-ethernet")
-
-        table = gtk.Table(3, 2, False)
-        
-        mac_address = Label("Device Mac address:")
-        table.attach(mac_address, 0, 1, 0, 1)
-
-        mac_entry = gtk.Entry()
-        table.attach(mac_entry, 1, 2, 0, 1)
-
-        clone_addr = Label("Cloned Mac Adrress:")
-        table.attach(clone_addr, 0, 1, 1, 2)
-        clone_entry = gtk.Entry()
-        table.attach(clone_entry, 1,2, 1, 2)
-
-        mtu = Label("MTU:")
-        table.attach(mtu, 0,1,2,3)
-        mtu_spin = SpinBox(0,0, 1500, 1, 55)
-        table.attach(mtu_spin, 1,2,2,3)
-        
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(table)
-        self.add(align)
-
-        ## retrieve wired info
-        (mac, clone_mac, mtu) = ethernet_setting.mac_address, ethernet_setting.cloned_mac_address, ethernet_setting.mtu
-        #print mac, clone_mac, mtu
-        if mac != None:
-            mac_entry.set_text(mac)
-        if clone_mac !=None:
-            clone_entry.set_text(clone_mac)
-        if mtu != None:
-            mtu_spin.set_value(int(mtu))
 
 class IPV4Conf(gtk.VBox):
 
@@ -292,16 +241,7 @@ class IPV4Conf(gtk.VBox):
         align.add(table)
         self.add(align)
         
-        #aligns = gtk.Alignment(0.5,0.5,0,0)
-        #hbox = gtk.HBox()
-        #self.apply_button = gtk.Button("Apply")
         self.show_all()
-        #self.cancel_button = gtk.Button("Cancel")
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        #hbox.pack_start(self.apply_button, False, False, 0)
-        #aligns.add(hbox)
-        #self.add(aligns)
-        
         
         self.cs =None
         self.reset(connection)
@@ -434,81 +374,97 @@ class IPV4Conf(gtk.VBox):
         #self.connection.update()
 
 
-class DSLConf(gtk.VBox):
+class PPTPConf(gtk.VBox):
 
     def __init__(self, connection):
         gtk.VBox.__init__(self)
         self.connection = connection
-        self.dsl_setting = self.connection.get_setting("pppoe")
+        self.vpn_setting = self.connection.get_setting("vpn")
 
         # UI
-        dsl_table = gtk.Table(4, 3, False)
-        username_label = Label("Username:")
-        service_label = Label("Service:")
+        pptp_table = gtk.Table(4, 3, False)
+        gateway_label = Label("Gateway:")
+        user_label = Label("User:")
         password_label = Label("Password:")
+        nt_domain_label = Label("NT Domain:")
         #pack labels
-        dsl_table.attach(username_label, 0, 1 , 0, 1)
-        dsl_table.attach(service_label, 0, 1, 1, 2)
-        dsl_table.attach(password_label, 0, 1, 2, 3)
+        pptp_table.attach(gateway_label, 0, 1 , 0, 1)
+        pptp_table.attach(user_label, 0, 1, 1, 2)
+        pptp_table.attach(password_label, 0, 1, 2, 3)
 
         # entries
-        self.username_entry = InputEntry()
-        self.username_entry.set_size(200,20)
-        self.service_entry = InputEntry()
-        self.service_entry.set_size(200,20 )
+        self.gateway_entry = InputEntry()
+        self.gateway_entry.set_size(200,25 )
+        self.user_entry = InputEntry()
+        self.user_entry.set_size(200,25)
         self.password_entry = InputEntry()
-        self.password_entry.set_size(200, 20)
+        self.password_entry.set_size(200, 25)
+        self.nt_domain_entry = InputEntry()
+        self.nt_domain_entry.set_size(200,25 )
 
         #pack entries
-        dsl_table.attach(self.username_entry, 1, 3, 0, 1)
-        dsl_table.attach(self.service_entry, 1, 3, 1, 2)
-        dsl_table.attach(self.password_entry, 1, 3, 2, 3)
+        pptp_table.attach(self.gateway_entry, 1, 3, 0, 1)
+        pptp_table.attach(self.user_entry, 1, 3, 1, 2)
+        pptp_table.attach(self.password_entry, 1, 3, 2, 3)
+        pptp_table.attach(self.nt_domain_entry, 1, 3, 3, 4)
+
+        # set signals
 
         align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(dsl_table)
+        align.add(pptp_table)
         self.add(align)
         self.show_all()
         self.refresh()
 
     def refresh(self):
-        #print ">>>",self.connection.settings_dict
-        # get dsl settings
-        username = self.dsl_setting.username
-        service = self.dsl_setting.service
+        print ">>>",self.vpn_setting.data
+        gateway = self.vpn_setting.get_data_item("gateway")
+        user = self.vpn_setting.get_data_item("user")
+        #password_flags = self.vpn_setting.get_data_item("password-flags")
+        domain = self.vpn_setting.get_data_item("domain")
+
+        self.gateway_entry.entry.connect("press-return", self.entry_changed, "gateway")
+        self.user_entry.entry.connect("press-return", self.entry_changed, "user")
+        self.password_entry.entry.connect("press-return", self.entry_changed, "password")
+        self.nt_domain_entry.entry.connect("press-return", self.entry_changed, "domain")
+
+        if gateway:
+            self.gateway_entry.set_text(gateway)
+        if user:
+            self.user_entry.set_text(user)
+        #if password_flags == 1:
         (setting_name, method) = self.connection.guess_secret_info() 
+        print ">>>>> setting_name and method",setting_name, method
         try:
             password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                     setting_name,
                                                     method)
-
+            self.password_entry = password
         except:
-            password = ""
-        
-        # check if empty
-        if username == None:
-            username = ""
-        if service == None:
-            service = ""
-        if password == None:
-            password = ""
-        # fill entry
-        self.username_entry.set_text(str(username))
-        self.service_entry.set_text(str(service))
-        self.password_entry.set_text(str(password))
-        
+            print "failed to get password"
+
+        if domain:
+            self.nt_domain_entry.set_text(domain)
+                
     def save_setting(self):
-        username = self.username_entry.get_text()
-        service = self.service_entry.get_text()
-        password = self.password_entry.get_text()
+        pass
+        #username = self.username_entry.get_text()
+        #service = self.service_entry.get_text()
+        #password = self.password_entry.get_text()
 
-        if username != "":
-            self.dsl_setting.username = username
-        if service != "":
-            self.dsl_setting.service = service
-        if password !="":
-            self.dsl_setting.password = password
+        #if username:
+            #self.dsl_setting.username = username
+        #if service:
+            #self.dsl_setting.service = service
+        #if password:
+            #self.dsl_setting.password = password
 
-
+    def entry_changed(self, widget, item):
+        text = widget.get_text()
+        if text:
+            self.vpn_setting.set_data_item(item, text)
+        else:
+            self.vpn_setting.set_data_item(item, None)
 
 class PPPConf(gtk.VBox):
 

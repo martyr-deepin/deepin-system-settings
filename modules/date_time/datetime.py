@@ -62,7 +62,7 @@ class InvalidObjectPath(Exception):
 
 class BusBase(gobject.GObject):
     
-    def __init__(self, path, interface, service = "org.gnome.SettingsDaemon.DateTimeMechanism", bus = datetime_bus):
+    def __init__(self, path, interface, service = "com.linuxdeepin.datetime", bus = datetime_bus):
 
         if valid_object_path(path):
             self.object_path = path
@@ -109,7 +109,7 @@ class BusBase(gobject.GObject):
 class DateTime(BusBase):
     
     def __init__(self):
-        BusBase.__init__(self, path = "/", interface = "org.gnome.SettingsDaemon.DateTimeMechanism")
+        BusBase.__init__(self, path = "/", interface = "com.linuxdeepin.datetime")
 
     def adjust_time(self, seconds_to_add):
         self.call_async("AdjustTime", seconds_to_add)
@@ -148,37 +148,7 @@ class DateTime(BusBase):
         return self.call_async("SetUsingNtp", is_using_ntp)
 
 if __name__ == "__main__":
-
     datetime = DateTime()
-
-    print "adjust_time :pass"
-
-    print "can set time:"
-    print datetime.can_set_time()
-
-    print "can set timezone:"
-    print datetime.can_set_timezone()
-
-    print "can set using ntp:"
-    print datetime.can_set_using_ntp()
-
-    print "get hardware clock using utc:"
-    # print datetime.get_hardware_clock_using_utc()
-
     print "get timezone:"
     print datetime.get_timezone()
-
-    print "get using ntp:"
-    print datetime.get_using_ntp()
-
-    print "set date:pass"
-
-    print "set hardware_clock_using_utc: pass"
-    print datetime.set_hardware_clock_using_utc(True)
-
-    print "set time:pass"
-
-    print "set timezone:pass"
-
-    print "set using ntp:pass"
-
+    gobject.MainLoop().run()

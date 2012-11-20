@@ -70,16 +70,20 @@ class NMSettingVpn(NMSetting):
     def set_secret_item(self, item, value):
         if "secrets" not in self.prop_dict.iterkeys():
             self.prop_dict["secrets"] = dbus.Dictionary({}, signature = dbus.Signature('ss'))
+        self.clear_secret_item(item)    
         self.prop_dict["secrets"][item] = value
 
-    def delete_secret_item(self, item):
+    def delete_secret_item(self, item): 
         del self.prop_dict["secrets"][item]
+
+    def clear_secret_item(self, item):
+        self.prop_dict["secrets"][item] = ""
 
     @property
     def data(self):
         if "data" not in self.prop_dict.iterkeys():
             self.prop_dict["data"] = dbus.Dictionary({}, signature = dbus.Signature('ss'))
-        TypeConvert.dbus2py(self.prop_dict["data"])
+        return TypeConvert.dbus2py(self.prop_dict["data"])
 
     @data.setter
     def data(self, new_data):
@@ -96,12 +100,14 @@ class NMSettingVpn(NMSetting):
     def set_data_item(self, item, value):
         if "data" not in self.prop_dict.iterkeys():
             self.prop_dict["data"] = dbus.Dictionary({}, signature = dbus.Signature('ss'))
+        self.clear_data_item(item)    
         self.prop_dict["data"][item] = value
 
     def delete_data_item(self, item):
         del self.prop_dict["data"][item]
 
-
+    def clear_data_item(self, item):
+        self.prop_dict["data"][item] = ""
 
 if __name__ == "__main__":
     pass

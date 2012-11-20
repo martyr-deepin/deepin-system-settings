@@ -5,7 +5,7 @@
 #TODO 服务停止时保留画面但是整个界面无法点击
 #TODO mac正确性少一位依然是valid的bug
 #TODO dsl 连接成功。但是在获取password的时候secret-agent有问题
-#TODO 添加无线弹窗
+#TODO 添加无线弹窗,添加连接隐藏网络的按钮
 
 error list
 1. Traceback (most recent call last):
