@@ -378,7 +378,7 @@ class PPTPConf(gtk.VBox):
 
     def __init__(self, connection):
         gtk.VBox.__init__(self)
-        self.c onnection = connection
+        self.connection = connection
         self.vpn_setting = self.connection.get_setting("vpn")
 
         # UI

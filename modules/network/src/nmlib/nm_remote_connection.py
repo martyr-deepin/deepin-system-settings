@@ -82,7 +82,7 @@ class NMRemoteConnection(NMObject, NMConnection):
 
         if "vpn" in info_dict.iterkeys():
             self.secret_setting_name = "vpn"
-            self.secret_method = None
+            self.secret_method = "secrets"
             return (self.secret_setting_name, self.secret_method)
 
         elif "pppoe" in info_dict.iterkeys() and "802-3-ethernet" in info_dict.iterkeys():
