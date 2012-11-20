@@ -33,12 +33,6 @@ from nmlib.nm_utils import TypeConvert
 from nmlib.nmcache import cache
 import gtk
 wired_device = []
-#active_connection = wired_device.get_active_connection()
-#if active_connection:
-    #active = active_connection.get_connection()
-#else: 
-    #active =None
-
 
 class WiredSetting(gtk.HBox):
 
