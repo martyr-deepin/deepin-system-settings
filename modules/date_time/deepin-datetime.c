@@ -397,7 +397,7 @@ static gboolean deepin_datetime_check_tz_name(const char *tz, GError **error)
     file = g_file_new_for_path(tz_path);
     actual_path = g_file_get_path(file);
 
-    g_obejct_unref(file);
+    g_object_unref(file);
 
     if(g_strcmp0(tz_path, actual_path) != 0){
         g_set_error(error, DEEPIN_DATETIME_ERROR,
@@ -464,7 +464,7 @@ gboolean deepin_datetime_get_timezone(DeepinDatetime *datetime, DBusGMethodInvoc
 
     dbus_g_method_return(context, timezone);
     
-    reutrn TRUE;
+    return TRUE;
 }
 
 gboolean deepin_datetime_get_hardware_clock_using_utc(DeepinDatetime *datetime, DBusGMethodInvocation *context)

@@ -61,7 +61,7 @@ static gboolean acquire_name_on_proxy(DBusGProxy *bus_proxy)
             g_warning("Failed to acquire %s:%s", BUS_NAME, error->message);
             g_error_free(error);
         }else {
-            g_warining("Failed to acquire %s", BUS_NAME);
+            g_warning("Failed to acquire %s", BUS_NAME);
         }
         goto out;
     }
@@ -71,7 +71,7 @@ static gboolean acquire_name_on_proxy(DBusGProxy *bus_proxy)
             g_warning("Failed to acquire %s:%s", BUS_NAME, error->message);
             g_error_free(error);
         }else{
-            g_waring("Failed to acquire %s", BUS_NAME);
+            g_warning("Failed to acquire %s", BUS_NAME);
         }
         goto out;
     }

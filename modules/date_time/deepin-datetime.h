@@ -62,7 +62,7 @@ gboolean deepin_datetime_adjust_time(DeepinDatetime *datetime, gint64 seconds_to
 
 gboolean deepin_datetime_get_hardware_clock_using_utc (DeepinDatetime *datetime, DBusGMethodInvocation *context);
 
-gboolean deepin_datetime_set_hardware_clock_usint_utc (DeepinDatetime *datetime, gboolean using_utc, DBusGMethodInvocation *context);
+gboolean deepin_datetime_set_hardware_clock_using_utc (DeepinDatetime *datetime, gboolean using_utc, DBusGMethodInvocation *context);
 gboolean deepin_datetime_get_using_ntp(DeepinDatetime *datetime, DBusGMethodInvocation *context);
 
 gboolean deepin_datetime_set_using_ntp(DeepinDatetime *datetime, gboolean using_ntp, DBusGMethodInvocation *context);
