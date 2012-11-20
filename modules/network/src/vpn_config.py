@@ -5,7 +5,7 @@ from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.new_entry import InputEntry, PasswordEntry 
+from dtk.ui.entry import InputEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -129,7 +129,8 @@ class SideBar(gtk.VBox):
     
     def init(self, connection_list, ip4setting):
         # check active
-        active_connection = nm_module.nmclient.get_vpn_active_connection()
+        #active_connection = nm_module.nmclient.get_vpn_active_connection()
+        active_connection = None
         if active_connection:
             active = active_connection.get_connection()
         else:
@@ -379,8 +380,6 @@ class PPTPConf(gtk.VBox):
         gtk.VBox.__init__(self)
         self.connection = connection
         self.vpn_setting = self.connection.get_setting("vpn")
-        print ">>>>>>>>",self.vpn_setting.data
-        print self.vpn_setting.prop_dict
 
         # UI
         pptp_table = gtk.Table(4, 3, False)
@@ -395,13 +394,13 @@ class PPTPConf(gtk.VBox):
 
         # entries
         self.gateway_entry = InputEntry()
-        self.gateway_entry.set_size(200,20 )
+        self.gateway_entry.set_size(200,25 )
         self.user_entry = InputEntry()
-        self.user_entry.set_size(200,20)
+        self.user_entry.set_size(200,25)
         self.password_entry = InputEntry()
-        self.password_entry.set_size(200, 20)
+        self.password_entry.set_size(200, 25)
         self.nt_domain_entry = InputEntry()
-        self.nt_domain_entry.set_size(200,20 )
+        self.nt_domain_entry.set_size(200,25 )
 
         #pack entries
         pptp_table.attach(self.gateway_entry, 1, 3, 0, 1)
@@ -410,10 +409,6 @@ class PPTPConf(gtk.VBox):
         pptp_table.attach(self.nt_domain_entry, 1, 3, 3, 4)
 
         # set signals
-        self.gateway_entry.entry.connect("press-return", self.entry_changed, self.vpn_setting.gateway)
-        self.user_entry.entry.connect("press-return", self.entry_changed, self.vpn_setting.user)
-        self.password_entry.entry.connect("press-return", self.entry_changed, self.vpn_setting.password)
-        self.nt_domain_entry.entry.connect("press-return", self.entry_changed, self.vpn_setting.domain)
 
         align = gtk.Alignment(0.5, 0.5, 0, 0)
         align.add(pptp_table)
@@ -422,25 +417,31 @@ class PPTPConf(gtk.VBox):
         self.refresh()
 
     def refresh(self):
-        #print ">>>",self.connection.settings_dict
-        gateway = self.vpn_setting.gateway
-        user = self.vpn_setting.user
-        password_flags = vpn_setting.password_flags
-        domain = vpn_setting.domain
+        print ">>>",self.vpn_setting.data
+        gateway = self.vpn_setting.get_data_item("gateway")
+        user = self.vpn_setting.get_data_item("user")
+        #password_flags = self.vpn_setting.get_data_item("password-flags")
+        domain = self.vpn_setting.get_data_item("domain")
+
+        self.gateway_entry.entry.connect("press-return", self.entry_changed, "gateway")
+        self.user_entry.entry.connect("press-return", self.entry_changed, "user")
+        self.password_entry.entry.connect("press-return", self.entry_changed, "password")
+        self.nt_domain_entry.entry.connect("press-return", self.entry_changed, "domain")
 
         if gateway:
             self.gateway_entry.set_text(gateway)
         if user:
             self.user_entry.set_text(user)
-        if password_flags == 1:
-            (setting_name, method) = self.connection.guess_secret_info() 
-            try:
-                password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
-                                                        setting_name,
-                                                        method)
-                self.password_entry = password
-            except:
-                print "failed to get password"
+        #if password_flags == 1:
+        (setting_name, method) = self.connection.guess_secret_info() 
+        print ">>>>> setting_name and method",setting_name, method
+        try:
+            password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                    setting_name,
+                                                    method)
+            self.password_entry = password
+        except:
+            print "failed to get password"
 
         if domain:
             self.nt_domain_entry.set_text(domain)
@@ -458,12 +459,12 @@ class PPTPConf(gtk.VBox):
         #if password:
             #self.dsl_setting.password = password
 
-    def entry_changed(self, widget, receiver):
+    def entry_changed(self, widget, item):
         text = widget.get_text()
         if text:
-            receiver = text
+            self.vpn_setting.set_data_item(item, text)
         else:
-            receiver = None
+            self.vpn_setting.set_data_item(item, None)
 
 class PPPConf(gtk.VBox):
 
