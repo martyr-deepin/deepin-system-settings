@@ -174,7 +174,7 @@ if __name__ == "__main__":
     print "set date:pass"
 
     print "set hardware_clock_using_utc: pass"
-    print datetime.set_hardware_clock_using_utc(True)
+    # print datetime.set_hardware_clock_using_utc(True)
 
     print "set time:pass"
 
@@ -182,3 +182,5 @@ if __name__ == "__main__":
 
     print "set using ntp:pass"
 
+
+    gobject.MainLoop().run()

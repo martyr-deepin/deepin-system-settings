@@ -138,12 +138,13 @@ main (int argc, char **argv)
 
         connection = get_system_bus ();
         if (connection == NULL) {
+            g_warning ("connection == NULL; bailing out");
                 goto out;
         }
 
         bus_proxy = get_bus_proxy (connection);
         if (bus_proxy == NULL) {
-                g_warning ("Could not construct bus_proxy object; bailing out");
+            g_warning ("Could not construct bus_proxy object; bailing out");
                 goto out;
         }
 
@@ -155,6 +156,7 @@ main (int argc, char **argv)
         mechanism = gsd_datetime_mechanism_new ();
 
         if (mechanism == NULL) {
+            g_warning ("mechanism == NULL; bailing out");
                 goto out;
         }
 
@@ -167,5 +169,6 @@ main (int argc, char **argv)
         ret = 0;
 
 out:
+        printf("go to out\n");
         return ret;
 }

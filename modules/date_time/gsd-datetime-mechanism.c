@@ -50,21 +50,21 @@
 static gboolean
 do_exit (gpointer user_data)
 {
-        g_debug ("Exiting due to inactivity");
-        exit (1);
-        return FALSE;
+    g_debug ("Exiting due to inactivity");
+    exit (1);
+    return FALSE;
 }
 
 static void
 reset_killtimer (void)
 {
-        static guint timer_id = 0;
+    static guint timer_id = 0;
 
-        if (timer_id > 0) {
-                g_source_remove (timer_id);
-        }
-        g_debug ("Setting killtimer to 30 seconds...");
-        timer_id = g_timeout_add_seconds (30, do_exit, NULL);
+    if (timer_id > 0) {
+        g_source_remove (timer_id);
+    }
+    g_debug ("Setting killtimer to 30 seconds...");
+    timer_id = g_timeout_add_seconds (30, do_exit, NULL);
 }
 
 struct GsdDatetimeMechanismPrivate
@@ -256,6 +256,7 @@ _check_polkit_for_action (GsdDatetimeMechanism *mechanism, DBusGMethodInvocation
 
         if (error) {
                 dbus_g_method_return_error (context, error);
+
                 g_error_free (error);
 
                 return FALSE;
@@ -332,6 +333,7 @@ _set_time (GsdDatetimeMechanism  *mechanism,
                 return FALSE;
         }
 
+
         if (!_sync_hwclock (context))
                 return FALSE;
 
@@ -362,7 +364,6 @@ _set_date (GsdDatetimeMechanism  *mechanism,
         date_cmd = g_strdup_printf ("/bin/date -s \"%s %s\" +\"%%D %%R:%%S\"", date_str, time_str);
         g_free (date_str);
         g_free (time_str);
-
         if (!g_spawn_command_line_sync (date_cmd, NULL, NULL, &exit_status, &error)) {
                 GError *error2;
                 error2 = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
@@ -675,6 +676,7 @@ gsd_datetime_mechanism_set_using_ntp  (GsdDatetimeMechanism    *mechanism,
                 return FALSE;
         }
 
+
         return ret;
 }
 
@@ -701,7 +703,6 @@ check_can_do (GsdDatetimeMechanism  *mechanism,
                                                             NULL,
                                                             &error);
         g_object_unref (subject);
-
         if (error) {
                 dbus_g_method_return_error (context, error);
                 g_error_free (error);
@@ -709,7 +710,7 @@ check_can_do (GsdDatetimeMechanism  *mechanism,
         }
 
         if (polkit_authorization_result_get_is_authorized (result)) {
-                dbus_g_method_return (context, 2);
+            dbus_g_method_return (context, 2);
         }
         else if (polkit_authorization_result_get_is_challenge (result)) {
                 dbus_g_method_return (context, 1);
