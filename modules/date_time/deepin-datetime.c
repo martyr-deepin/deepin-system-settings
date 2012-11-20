@@ -27,7 +27,8 @@ static gboolean
 do_exit (gpointer user_data)
 {
     g_debug ("Exiting due to inactivity");
-    exit (1);
+    printf("do_exit called!\n");
+    /* exit (1); */
     return FALSE;
 }
 

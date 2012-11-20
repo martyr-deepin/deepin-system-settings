@@ -150,5 +150,7 @@ class DateTime(BusBase):
 if __name__ == "__main__":
     datetime = DateTime()
     print "get timezone:"
+
     print datetime.get_timezone()
+
     gobject.MainLoop().run()
