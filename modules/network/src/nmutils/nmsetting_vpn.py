@@ -79,7 +79,7 @@ class NMSettingVpn(NMSetting):
     def data(self):
         if "data" not in self.prop_dict.iterkeys():
             self.prop_dict["data"] = dbus.Dictionary({}, signature = dbus.Signature('ss'))
-        TypeConvert.dbus2py(self.prop_dict["data"])
+        return TypeConvert.dbus2py(self.prop_dict["data"])
 
     @data.setter
     def data(self, new_data):
