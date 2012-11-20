@@ -65,16 +65,19 @@ except:
     PA_SOURCE_LIST = []
     PA_CARD_LIST = []
 
-CURRENT_SINK = None
-CURRENT_SOURCE = None
+try:
+    CURRENT_SINK = PA_CORE.get_fallback_sink()
+except:
+    CURRENT_SINK = None
+try:
+    CURRENT_SOURCE = PA_CORE.get_fallback_source()
+except:
+    CURRENT_SOURCE = None
 
 PA_CARDS = {}           # All Device that this Card container.
-if PA_CARD_LIST:
-    CURRENT_CARD = PA_CARD_LIST[0]
-else:
-    CURRENT_CARD = None
 for cards in PA_CARD_LIST:
     PA_CARDS[cards] = {"obj": card.Card(cards), "sink": [], "source": []}
+PA_CARDS[None] = {"obj": None, "sink": [], "source": []}
 
 PA_DEVICE = {}    # All Device
 PA_CHANNELS = {}  # Each Channels
@@ -83,7 +86,7 @@ LEFT_CHANNELS = [1, 5, 8, 10, 45, 48]
 RIGHT_CHANNELS = [2, 6, 9, 11, 46, 49]
 for sink in PA_SINK_LIST:
     dev = device.Device(sink)
-    if not dev.get_ports(): # if the device does not have any ports, ignore it
+    if not dev.get_ports() and sink != CURRENT_SINK: # if the device does not have any ports, ignore it
         continue
     PA_DEVICE[sink] = dev
     dev_channels = {}
@@ -103,8 +106,6 @@ for sink in PA_SINK_LIST:
         i += 1
     try:
         cards = dev.get_card()
-        if cards == CURRENT_CARD and CURRENT_SINK is None:
-            CURRENT_SINK = sink
         PA_CARDS[cards]["sink"].append(dev)
     except:
         traceback.print_exc()
@@ -112,7 +113,7 @@ for sink in PA_SINK_LIST:
 
 for source in PA_SOURCE_LIST:
     dev = device.Device(source)
-    if not dev.get_ports(): # if the device does not have any ports, ignore it
+    if not dev.get_ports() and source != CURRENT_SOURCE: # if the device does not have any ports, ignore it
         continue
     PA_DEVICE[source] = dev
     dev_channels = {}
@@ -131,9 +132,7 @@ for source in PA_SOURCE_LIST:
             dev_channels["other"].append(i)
         i += 1
     try:
-        card = dev.get_card()
-        if cards == CURRENT_CARD and CURRENT_SOURCE is None:
-            CURRENT_SOURCE = source
+        cards = dev.get_card()
         PA_CARDS[cards]["source"].append(dev)
     except:
         traceback.print_exc()
@@ -245,9 +244,12 @@ def get_port_list(dev):
         back.append(p)
         i += 1
     return (back, n)
-    
 
-#print PA_CHANNELS
+#print PA_CORE
 #print PA_DEVICE
+print PA_CHANNELS
+print PA_SINK_LIST
+#print PA_SOURCE_LIST
+#print PA_CARD_LIST
 #print PA_CARDS
-#print CURRENT_CARD
+#print CURRENT_SINK, CURRENT_SOURCE

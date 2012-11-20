@@ -45,9 +45,9 @@ from module_frame import ModuleFrame
 import threading as td
 import traceback
 
-'''
-TODO: setting volume thread
-'''
+from device import Device
+
+
 class SettingVolumeThread(td.Thread):
     def __init__(self, obj, func, *args):
         td.Thread.__init__(self)
@@ -358,11 +358,10 @@ class SoundSetting(object):
         if settings.CURRENT_SOURCE is None:
             self.container_widgets["microphone_main_vbox"].set_sensitive(False)
         
-        # TODO 设置均衡器的值
         # set output volume
         if settings.CURRENT_SINK:
             # set balance
-            # if is Mono
+            # if is Mono, set it insensitive
             if settings.PA_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
                 self.container_widgets["balance_main_vbox"].set_sensitive(False)
             else:
@@ -374,7 +373,7 @@ class SoundSetting(object):
                 else:
                     value = 1 - float(volumes[0]) / volumes[1]
                 self.adjust_widgets["balance"].set_value(value)
-            self.button_widgets["balance"].set_active(True) # TODO 
+            self.button_widgets["balance"].set_active(True)
             self.button_widgets["speaker"].set_active(not settings.get_mute(settings.CURRENT_SINK))
             self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
             if self.speaker_ports:
@@ -391,6 +390,7 @@ class SoundSetting(object):
         if settings.CURRENT_SOURCE:
             self.button_widgets["microphone"].set_active(not settings.get_mute(settings.CURRENT_SOURCE))
             self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
+            print "microphone_ports:", self.microphone_ports
             if self.microphone_ports:
                 items = []
                 select_index = self.microphone_ports[1]
@@ -402,26 +402,28 @@ class SoundSetting(object):
             self.adjust_widgets["microphone"].set_value(
                 settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
         # TODO 双击切换设备
-        # output list
-        output_list = []
-        for sink in settings.PA_CARDS[settings.CURRENT_CARD]["sink"]:
-            prop = settings.get_object_property_list(sink)
-            if prop:
-                output_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
-        self.view_widgets["ad_output"].add_items(output_list)
-        # input list
-        input_list = []
-        for source in settings.PA_CARDS[settings.CURRENT_CARD]["source"]:
-            prop = settings.get_object_property_list(source)
-            if prop:
-                input_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
-        self.view_widgets["ad_input"].add_items(input_list)
-        # hardware list
         card_list = []
-        for cards in settings.PA_CARD_LIST:
+        output_list = []
+        input_list = []
+        for cards in settings.PA_CARDS:
+            # output list
+            for sink in settings.PA_CARDS[cards]["sink"]:
+                prop = settings.get_object_property_list(sink)
+                if prop:
+                    output_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+            # input list
+            for source in settings.PA_CARDS[cards]["source"]:
+                prop = settings.get_object_property_list(source)
+                if prop:
+                    input_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+            # hardware list
+            if not cards:
+                continue
             prop = settings.get_object_property_list(settings.PA_CARDS[cards]['obj'])
             if prop:
                 card_list.append(TreeItem(self.image_widgets["device"], prop["device.description"]))
+        self.view_widgets["ad_output"].add_items(output_list)
+        self.view_widgets["ad_input"].add_items(input_list)
         self.view_widgets["ad_hardware"].add_items(card_list)
         
     def __signals_connect(self):
@@ -443,23 +445,38 @@ class SoundSetting(object):
 
         self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
         self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
+        
+        self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
+        # dbus signals
         if settings.CURRENT_SINK:
             sink = settings.PA_DEVICE[settings.CURRENT_SINK]
-            sink.connect("volume-updated", self.speaker_volume_update)
+            sink.connect("volume-updated", self.speaker_volume_updated)
             sink.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["speaker"])
             sink.connect("active-port-updated", self.pulse_active_port_updated,
                          self.button_widgets["speaker_combo"], self.speaker_ports)
-            #sink.connect("property-list-updated", self.speaker_volume_update)
+            #sink.connect("property-list-updated", self.speaker_volume_updated)
         if settings.CURRENT_SOURCE:
             source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-            source.connect("volume-updated", self.microphone_volume_update)
+            source.connect("volume-updated", self.microphone_volume_updated)
             source.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["microphone"])
             source.connect("active-port-updated", self.pulse_active_port_updated,
                            self.button_widgets["microphone_combo"], self.microphone_ports)
-
-        self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
+        if settings.PA_CORE:
+            core = settings.PA_CORE
+            core.connect("new-card", self.new_card_cb)
+            core.connect("new-sink", self.new_sink_cb)
+            core.connect("new-source", self.new_source_cb)
+            core.connect("card-removed", self.card_removed_cb)
+            core.connect("sink-removed", self.sink_removed_cb)
+            core.connect("source-removed", self.source_removed_cb)
+            core.connect("fallback-sink-updated", self.fallback_sink_updated_cb)
+            core.connect("fallback-sink-unset", self.fallback_sink_unset_cb)
+            core.connect("fallback-source-updated", self.fallback_source_udpated_cb)
+            core.connect("fallback-source-unset", self.fallback_source_unset_cb)
     
     ######################################
+    # signals callback begine
+    # widget signals
     def toggle_button_expose(self, button, event):
         ''' toggle button expose'''
         cr = button.window.cairo_create()
@@ -576,16 +593,31 @@ class SoundSetting(object):
         
     def speaker_port_changed(self, combo, content, value, index):
         ''' set active port'''
+        if not self.speaker_ports:
+            return
         port = self.speaker_ports[0][index]
         dev = settings.PA_DEVICE[settings.CURRENT_SINK]
         SettingVolumeThread(self, self.speaker_port_changed_thread, port, dev).start()
     
+    def microphone_port_changed_thread(self, port, dev):
+        ''' set active port thread '''
+        dev.set_active_port(port.object_path)
+    
+    def microphone_port_changed(self, combo, content, value, index):
+        if not self.microphone_ports:
+            return
+        port = self.microphone_ports[0][index]
+        dev = settings.PA_DEVICE[settings.CURRENT_SOURCE]
+        SettingVolumeThread(self, self.microphone_port_changed_thread, port, dev).start()
+    
+    #########################
+    # dbus signals 
     def pulse_mute_updated(self, dev, is_mute, button):
         if button.get_active() == is_mute:
             button.set_data("changed-by-other-app", True)
             button.set_active(not is_mute)
     
-    def speaker_volume_update(self, sink, volume):
+    def speaker_volume_updated(self, sink, volume):
         # set output volume
         self.adjust_widgets["speaker"].set_data("changed-by-other-app", True)
         self.adjust_widgets["speaker"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
@@ -604,41 +636,115 @@ class SoundSetting(object):
         (left_volume, right_volume) = [max(left_volumes), max(right_volumes)]
         if left_volume == right_volume:
             value = 0
-        elif right_volume == 0:
-            value = -1
-        elif left_volume == 0:
-            value = 1
+        elif left_volume > right_volume:
+            value = float(right_volume) / left_volume - 1
         else:
-            if left_volume > right_volume:
-                value = float(right_volume) / left_volume - 1
-            else:
-                value = 1 - float(left_volume) / right_volume
+            value = 1 - float(left_volume) / right_volume
         self.adjust_widgets["balance"].set_data("changed-by-other-app", True)
         self.adjust_widgets["balance"].set_value(value)
 
-    def microphone_volume_update(self, source, volume):
+    def microphone_volume_updated(self, source, volume):
         # set output volume
         self.adjust_widgets["microphone"].set_data("changed-by-other-app", True)
         self.adjust_widgets["microphone"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
     
     def pulse_active_port_updated(self, dev, port, combo, port_list):
-        length = len(port_list)
+        if not port_list:
+            return
+        length = len(port_list[0])
         i = 0
         while i < length:
             if port == port_list[0][i].object_path:
                 combo.set_select_index(i)
                 return
             i += 1
+    
+    def new_card_cb(self, core, card):
+        ''' new card '''
+        print "new card", core, card
+        if not self.container_widgets["main_hbox"].get_sensitive():
+            pass
         
-    def microphone_port_changed_thread(self, port, dev):
-        ''' set active port thread '''
-        dev.set_active_port(port.object_path)
-    
-    def microphone_port_changed(self, combo, content, value, index):
-        port = self.microphone_ports[0][index]
-        dev = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-        SettingVolumeThread(self, self.microphone_port_changed_thread, port, dev).start()
-    
+    def new_source_cb(self, core, source):
+        ''' new source'''
+        print "new source", core, source
+        print Device(source).get_card()
+        
+    def new_sink_cb(self, core, sink):
+        ''' new sink '''
+        print "new sink", core, sink
+        print Device(sink).get_card()
+
+    def card_removed_cb(self, core, card):
+        print 'removed card:', card
+        
+    def sink_removed_cb(self, core, sink):
+        print 'removed sink:', sink
+        
+    def source_removed_cb(self, core, source):
+        print 'removed source:', source
+        
+    def fallback_sink_updated_cb(self, core, sink):
+        print 'fallback sink updated', sink
+        if not self.container_widgets["balance_main_vbox"].get_sensitive():
+            self.container_widgets["balance_main_vbox"].set_sensitive(True)
+        if not self.container_widgets["speaker_main_vbox"].get_sensitive():
+            self.container_widgets["speaker_main_vbox"].set_sensitive(True)
+        settings.CURRENT_SINK = sink
+        if settings.PA_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
+            self.container_widgets["balance_main_vbox"].set_sensitive(False)
+        else:
+            volumes = settings.get_volumes(settings.CURRENT_SINK)
+            if volumes[0] == volumes[1]:
+                value = 0
+            elif volumes[0] > volumes[1]:     # if left
+                value = float(volumes[1]) / volumes[0] - 1
+            else:
+                value = 1 - float(volumes[0]) / volumes[1]
+            self.adjust_widgets["balance"].set_value(value)
+        self.button_widgets["balance"].set_active(True)
+        self.button_widgets["speaker"].set_active(not settings.get_mute(settings.CURRENT_SINK))
+        self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
+        if self.speaker_ports:
+            items = []
+            i = 0
+            select_index = self.speaker_ports[1]
+            for port in self.speaker_ports[0]:
+                items.append((port.get_description(), i))
+                i += 1
+            self.button_widgets["speaker_combo"].set_items(items, select_index, 530)
+        self.adjust_widgets["speaker"].set_value(
+            settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
+        
+    def fallback_source_udpated_cb(self, core, source):
+        print 'fallback source updated', source
+        if not self.container_widgets["microphone_main_vbox"].get_sensitive():
+            self.container_widgets["microphone_main_vbox"].set_sensitive(True)
+        settings.CURRENT_SOURCE = source
+        self.button_widgets["microphone"].set_active(not settings.get_mute(settings.CURRENT_SOURCE))
+        self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
+        if self.microphone_ports:
+            items = []
+            select_index = self.microphone_ports[1]
+            i = 0
+            for port in self.microphone_ports[0]:
+                items.append((port.get_description(), i))
+                i += 1
+            self.button_widgets["microphone_combo"].set_items(items, select_index, 530)
+        self.adjust_widgets["microphone"].set_value(
+            settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
+        
+    def fallback_sink_unset_cb(self, core):
+        print 'fallback sink unset'
+        self.container_widgets["balance_main_vbox"].set_sensitive(False)
+        self.container_widgets["speaker_main_vbox"].set_sensitive(False)
+        
+    def fallback_source_unset_cb(self, core):
+        print 'fallback source unset'
+        self.container_widgets["microphone_main_vbox"].set_sensitive(False)
+        
+    # signals callback end
+    ######################################
     def slider_to_advanced(self, button):
         self.container_widgets["slider"].slide_to_page(
             self.container_widgets["advance_set_tab_box"], "right")

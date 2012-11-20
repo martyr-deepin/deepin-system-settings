@@ -48,7 +48,7 @@ try:
     client_bus = connect_bus()
 except dbus.exceptions.DBusException:
     client_bus = None
-    traceback.print_exc()
+    print "dbus connect error."
 
 
 class BusBase(gobject.GObject):

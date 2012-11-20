@@ -41,24 +41,32 @@ class Device(BusBase):
         # self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
         #                                    self.object_interface)
 
+        #self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
+                                           #self.object_interface)
+        
+        #self.dbus_proxy.connect_to_signal("StateUpdated", self.state_updated_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
+
+        #self.dbus_proxy.connect_to_signal("ActivePortUpdated", self.active_port_updated_cb, dbus_interface = 
+                                          #self.object_interface)
+
+        #self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
+
         self.bus.add_signal_receiver(self.volume_updated_cb, signal_name = "VolumeUpdated", dbus_interface = 
                                      self.object_interface, path = self.object_path)
 
         self.bus.add_signal_receiver(self.mute_updated_cb, signal_name = "MuteUpdated", dbus_interface = 
                                      self.object_interface, path = self.object_path)
 
-        self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
-                                           self.object_interface)
+        self.bus.add_signal_receiver(self.state_updated_cb, signal_name = "StateUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
-        self.dbus_proxy.connect_to_signal("StateUpdated", self.state_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.active_port_updated_cb, signal_name = "ActivePortUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
-        self.dbus_proxy.connect_to_signal("ActivePortUpdated", self.active_port_updated_cb, dbus_interface = 
-                                          self.object_interface)
-
-        self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
-
+        self.bus.add_signal_receiver(self.property_list_updated_cb, signal_name = "PropertyListUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
     ###Props    
     def get_index(self):
@@ -74,7 +82,7 @@ class Device(BusBase):
         return str(self.get_property("OwnerModule"))
 
     def get_card(self):
-        return str(self.get_property("Card"))
+        return self.get_property("Card")
 
     def get_sample_format(self):
         return int(self.get_property("SampleFormat"))
@@ -198,7 +206,6 @@ class Device(BusBase):
         self.emit("state-updated", state)
 
     def active_port_updated_cb(self, port):
-        #print "------------------active port update", self.object_path
         self.emit("active-port-updated", port)
 
     def property_list_updated_cb(self, property_list):

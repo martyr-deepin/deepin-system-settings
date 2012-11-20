@@ -57,59 +57,83 @@ class Core(BusBase):
 
         self.listen_for_signal("", dbus.Array([], signature = 'o'))
 
-        self.dbus_proxy.connect_to_signal("NewCard", self.new_card_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("NewCard", self.new_card_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("CardRemoved", self.card_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("CardRemoved", self.card_removed_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("NewSink", self.new_sink_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("NewSink", self.new_sink_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("SinkRemoved", self.sink_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("SinkRemoved", self.sink_removed_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
+        ######
+        self.bus.add_signal_receiver(self.new_card_cb, signal_name = "NewCard", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
-        self.dbus_proxy.connect_to_signal("FallbackSinkUpdated", self.fallback_sink_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
-
-        self.dbus_proxy.connect_to_signal("FallbackSinkUnset", self.fallback_sink_unset_cb, dbus_interface = 
-                                          self.object_interface)
-
-        self.dbus_proxy.connect_to_signal("NewPlaybackStream", self.new_playback_stream_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
-
-        self.dbus_proxy.connect_to_signal("PlaybackStreamRemoved", self.playback_stream_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
-
-        self.dbus_proxy.connect_to_signal("NewRecordStream", self.new_record_stream_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
-
-        self.dbus_proxy.connect_to_signal("RecordStreamRemoved", self.record_stream_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
-
-        self.dbus_proxy.connect_to_signal("NewSample", self.new_sample_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
-
-        self.dbus_proxy.connect_to_signal("SampleRemoved", self.sample_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.card_removed_cb, signal_name = "CardRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
         
-        self.dbus_proxy.connect_to_signal("NewModule", self.new_module_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.new_sink_cb, signal_name = "NewSink", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.sink_removed_cb, signal_name = "SinkRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
         
-        self.dbus_proxy.connect_to_signal("ModuleRemoved", self.module_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.fallback_sink_updated_cb, signal_name = "FallbackSinkUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.fallback_sink_unset_cb, signal_name = "FallbackSinkUnset", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
         
-        self.dbus_proxy.connect_to_signal("NewClient", self.new_client_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.new_source_cb, signal_name = "NewSource", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.source_removed_cb, signal_name = "SourceRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
         
-        self.dbus_proxy.connect_to_signal("ClientRemoved", self.client_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.fallback_source_udpated_cb, signal_name = "FallbackSourceUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.fallback_source_unset_cb, signal_name = "FallbackSourceUnset", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
         
-        self.dbus_proxy.connect_to_signal("NewExtension", self.new_extension_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.new_playback_stream_cb, signal_name = "NewPlaybackStream", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.playback_stream_removed_cb, signal_name = "PlaybackStreamRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
         
-        self.dbus_proxy.connect_to_signal("ExtensionRemoved", self.extension_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.new_record_stream_cb, signal_name = "NewRecordStream", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.record_stream_removed_cb, signal_name = "RecordStreamRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+        
+        self.bus.add_signal_receiver(self.new_sample_cb, signal_name = "NewSample", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.sample_removed_cb, signal_name = "SampleRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+        
+        self.bus.add_signal_receiver(self.new_module_cb, signal_name = "NewModule", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.module_removed_cb, signal_name = "ModuleRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+        
+        self.bus.add_signal_receiver(self.new_client_cb, signal_name = "NewClient", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.client_removed_cb, signal_name = "ClientRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+        
+        self.bus.add_signal_receiver(self.new_extension_cb, signal_name = "NewExtension", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.extension_removed_cb, signal_name = "ExtensionRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
         
     ###Props    
     def get_interface_revision(self):
