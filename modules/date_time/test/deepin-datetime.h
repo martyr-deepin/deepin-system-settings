@@ -9,7 +9,7 @@ G_BEGIN_DECLS
 #define DEEPIN_DATETIME_TYPE                 (deepin_datetime_get_type())
 #define DEEPIN_DATETIME(o)                   (G_TYPE_CHECK_INSTANCE_CAST((o), DEEPIN_DATETIME_TYPE, DeepinDatetime))
 #define DEEPIN_DATETIME_CLASS(k)             (G_TYPE_CHECK_CLASS_CAST((k), DEEPIN_DATETIME_TYPE, DeepinDatetimeClass))
-#define DEEPIN_IS_DATETIME                   (G_TYPE_CHECK_INSTANCE_TYPE((o), DEEPIN_DATETIME_TYPE))
+#define DEEPIN_IS_DATETIME(o)                   (G_TYPE_CHECK_INSTANCE_TYPE((o), DEEPIN_DATETIME_TYPE))
 #define DEEPIN_IS_DATETIME_CLASS(k)          (G_TYPE_CHECK_CLASS_TYPE((k), DEEPIN_DATETIME_TYPE))
 #define DEEPIN_GET_DATETIME_CLASS(o)         (G_TYPE_INSTANCE_GET_CLASS((o), DEEPIN_DATETIME_TYPE, DeepinDatetimeClass))
 
@@ -50,7 +50,7 @@ gboolean deepin_datetime_get_timezone(DeepinDatetime *datetime, DBusGMethodInvoc
 
 gboolean deepin_datetime_set_timezone(DeepinDatetime *datetime, const char *zone_file, DBusGMethodInvocation *context);
 
-gboolean deepin_datetime_can_set_timezone(DeepinDatetime DBusGMethodInvocation *context);
+gboolean deepin_datetime_can_set_timezone(DeepinDatetime *datetime, DBusGMethodInvocation *context);
 
 gboolean deepin_datetime_set_time(DeepinDatetime *datetime, gint64 seconds_since_epoch, DBusGMethodInvocation *context);
 
@@ -62,6 +62,7 @@ gboolean deepin_datetime_adjust_time(DeepinDatetime *datetime, gint64 seconds_to
 
 gboolean deepin_datetime_get_hardware_clock_using_utc (DeepinDatetime *datetime, DBusGMethodInvocation *context);
 
+gboolean deepin_datetime_set_hardware_clock_usint_utc (DeepinDatetime *datetime, gboolean using_utc, DBusGMethodInvocation *context);
 gboolean deepin_datetime_get_using_ntp(DeepinDatetime *datetime, DBusGMethodInvocation *context);
 
 gboolean deepin_datetime_set_using_ntp(DeepinDatetime *datetime, gboolean using_ntp, DBusGMethodInvocation *context);

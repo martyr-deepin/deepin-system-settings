@@ -20,7 +20,7 @@
 
 #include "deepin-datetime.h"
 
-static DBUSGProxy * get_bus_proxy(DBusGConnection *connection)
+static DBusGProxy * get_bus_proxy(DBusGConnection *connection)
 {
     DBusGProxy *bus_proxy;
     bus_proxy = dbus_g_proxy_new_for_name(connection,

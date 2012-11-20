@@ -101,7 +101,5 @@ class NMSettingVpn(NMSetting):
     def delete_data_item(self, item):
         del self.prop_dict["data"][item]
 
-
-
 if __name__ == "__main__":
     pass

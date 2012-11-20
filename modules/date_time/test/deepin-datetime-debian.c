@@ -7,7 +7,7 @@
 
 static void _get_using_ntpdate(gboolean *can_use, gboolean *is_using, GError **error)
 {
-    if(!g_file_test("/usr/sbin/ntpdate-debian", G_FILE_TEST_EXIST))
+    if(!g_file_test("/usr/sbin/ntpdate-debian", G_FILE_TEST_EXISTS))
         return ;
     *can_use = TRUE;
     
@@ -65,9 +65,6 @@ static void _set_using_ntpdate(gboolean using_ntp, GError **error)
     const gchar *cmd = NULL;
     GError  *tmp_error = NULL;
 
-    /* Debian uses an if-up.d script to sync network time when an interface
-       comes up.  This is a separate mechanism from ntpd altogether. */
-
 #define NTPDATE_ENABLED  "/etc/network/if-up.d/ntpdate"
 #define NTPDATE_DISABLED "/etc/network/if-up.d/ntpdate.disabled"
 
@@ -80,8 +77,8 @@ static void _set_using_ntpdate(gboolean using_ntp, GError **error)
 
     if (!g_spawn_command_line_sync (cmd, NULL, NULL, NULL, &tmp_error)) {
         if (error != NULL && *error == NULL) {
-            *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
-                                  GSD_DATETIME_MECHANISM_ERROR_GENERAL,
+            *error = g_error_new (DEEPIN_DATETIME_ERROR,
+                                  DEEPIN_DATETIME_ERROR_GENERAL,
                                   "Error spawning /bin/mv: %s",
                                   tmp_error->message);
         }
@@ -89,13 +86,12 @@ static void _set_using_ntpdate(gboolean using_ntp, GError **error)
         return;
     }
 
-    /* Kick start ntpdate to sync time immediately */
     if (using_ntp &&
         !g_spawn_command_line_sync ("/etc/network/if-up.d/ntpdate",
                                     NULL, NULL, NULL, &tmp_error)) {
         if (error != NULL && *error == NULL) {
-            *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
-                                  GSD_DATETIME_MECHANISM_ERROR_GENERAL,
+            *error = g_error_new (DEEPIN_DATETIME_ERROR,
+                                  DEEPIN_DATETIME_ERROR_GENERAL,
                                   "Error spawning /etc/network/if-up.d/ntpdate: %s",
                                   tmp_error->message);
         }
@@ -106,8 +102,7 @@ static void _set_using_ntpdate(gboolean using_ntp, GError **error)
 }
 
 
-static void
-_set_using_ntpd (gboolean using_ntp, GError **error)
+static void _set_using_ntpd (gboolean using_ntp, GError **error)
 {
     GError *tmp_error = NULL;
     int exit_status;
@@ -120,8 +115,8 @@ _set_using_ntpd (gboolean using_ntp, GError **error)
 
     if (!g_spawn_command_line_sync (cmd, NULL, NULL, &exit_status, &tmp_error)) {
         if (error != NULL && *error == NULL) {
-            *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
-                                  GSD_DATETIME_MECHANISM_ERROR_GENERAL,
+            *error = g_error_new (DEEPIN_DATETIME_ERROR,
+                                  DEEPIN_DATETIME_ERROR_GENERAL,
                                   "Error spawning '%s': %s",
                                   cmd, tmp_error->message);
         }
@@ -136,8 +131,8 @@ _set_using_ntpd (gboolean using_ntp, GError **error)
 
     if (!g_spawn_command_line_sync (cmd, NULL, NULL, &exit_status, &tmp_error)) {
         if (error != NULL && *error == NULL) {
-            *error = g_error_new (GSD_DATETIME_MECHANISM_ERROR,
-                                  GSD_DATETIME_MECHANISM_ERROR_GENERAL,
+            *error = g_error_new (DEEPIN_DATETIME_ERROR,
+                                  DEEPIN_DATETIME_ERROR_GENERAL,
                                   "Error spawning '%s': %s",
                                   cmd, tmp_error->message);
         }
@@ -149,14 +144,10 @@ _set_using_ntpd (gboolean using_ntp, GError **error)
     g_free (cmd);
 }
 
-gboolean
-_set_using_ntp_debian  (DBusGMethodInvocation   *context,
+gboolean _set_using_ntp_debian  (DBusGMethodInvocation   *context,
                         gboolean                 using_ntp)
 {
     GError *error = NULL;
-
-    /* In Debian, ntpdate and ntpd may be installed separately, so don't
-       assume both are valid. */
 
     _set_using_ntpdate (using_ntp, &error);
     _set_using_ntpd (using_ntp, &error);
