@@ -23,12 +23,12 @@ import gtk
 
 class VPNSetting(gtk.HBox):
 
-    def __init__(self, slide_back_cb = None, change_crumb_cb = None, slide_advance_cb = None):
+    def __init__(self, slide_back_cb = None, change_crumb_cb = None, module_frame = None):
 
         gtk.HBox.__init__(self)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
-        self.to_avdance_page = slide_advance_cb
+        self.module_frame = module_frame
         
         self.pptp = None
         self.ipv4 = None
@@ -71,7 +71,7 @@ class VPNSetting(gtk.HBox):
             connections = nm_module.nm_remote_settings.get_vpn_connections()
 
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
-        self.pptp_setting = [PPTPConf(con, self.to_avdance_page) for con in connections]
+        self.pptp_setting = [PPTPConf(con, self.module_frame) for con in connections]
 
         self.sidebar.init(connections, self.ipv4_setting)
         index = self.sidebar.get_active()
@@ -179,7 +179,6 @@ class NoSetting(gtk.VBox):
         label = Label("No connection available")
         label_align.add(label)
         self.add(label_align)
-
 
 
 class IPV4Conf(gtk.VBox):
@@ -376,12 +375,14 @@ class IPV4Conf(gtk.VBox):
 
 class PPTPConf(gtk.VBox):
 
-    def __init__(self, connection, to_advance_page):
+    def __init__(self, connection, module_frame):
         gtk.VBox.__init__(self)
         self.connection = connection
-        self.to_advance_page = to_advance_page
+        self.module_frame = module_frame
         self.vpn_setting = self.connection.get_setting("vpn")
-        self.ppp = PPPConf(self.connection)
+        self.ppp = PPPConf(self.connection, module_frame)
+        slider.append_page(self.ppp)
+        self.ppp.show_all()
 
         # UI
         pptp_table = gtk.Table(6, 4, False)
@@ -437,7 +438,7 @@ class PPTPConf(gtk.VBox):
 
     def refresh(self, service_type):
         #print ">>>",self.vpn_setting.data
-        print self.vpn_setting.data
+        #print self.vpn_setting.data
         gateway = self.vpn_setting.get_data_item("gateway")
         user = self.vpn_setting.get_data_item("user")
         domain = self.vpn_setting.get_data_item("domain")
@@ -485,19 +486,18 @@ class PPTPConf(gtk.VBox):
         self.refresh()
 
     def advanced_button_click(self, widget):
-        slider.append_page(self.ppp)
-        self.ppp.show_all()
-        self.to_advance_page()
+        self.ppp.refresh()
+        self.module_frame.send_submodule_crumb(3, "高级设置")
         slider.slide_to_page(self.ppp, "right")
         #pass
 
 
 class PPPConf(gtk.VBox):
 
-    def __init__(self, connection):
+    def __init__(self, connection, module_frame):
         gtk.VBox.__init__(self)
         
-        self.set_size_request(770,500)
+        self.module_frame = module_frame
         self.connection = connection
         self.vpn_setting = self.connection.get_setting("vpn")
         
@@ -520,12 +520,12 @@ class PPPConf(gtk.VBox):
         self.method_table.attach(self.refuse_mschapv2, 0, 8, 4, 5)
 
         # visible settings
-        table = gtk.Table(9, 8, False)
+        table = gtk.Table(9, 10, False)
         compression = Label("Security and Compression")
         table.attach(compression, 0, 5, 0 ,1)
 
         self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
-        self.require_mppe.connect("toggled", self.mppe_toggled)
+        #self.require_mppe.connect("toggled", self.mppe_toggled)
         self.require_mppe_128 = CheckButton("Require 128-bit encryption")
         self.mppe_stateful = CheckButton("Use stataful MPPE")
         
@@ -553,42 +553,60 @@ class PPPConf(gtk.VBox):
         align.add(vbox)
         self.add(align)
 
+        confirm_button = Button("Confirm")
+        confirm_button.connect("clicked", self.confirm_button_cb)
+        button_aligns = gtk.Alignment(0.5 , 1, 0, 0)
+
+        button_aligns.add(confirm_button)
+        self.add(button_aligns)
+
         self.require_mppe_128.set_sensitive(False)
         self.mppe_stateful.set_sensitive(False)
-        self.refresh()
+        #self.refresh()
+
+        self.refuse_eap.connect("toggled", self.check_button_cb, "refuse-eap")
+        self.refuse_pap.connect("toggled", self.check_button_cb, "refuse-pap")
+        self.refuse_chap.connect("toggled", self.check_button_cb, "refuse-chap")
+        self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse-mschap")
+        self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse-mschapv2")
+        self.require_mppe.connect("toggled", self.check_button_cb, "require-mppe")
+        self.require_mppe_128.connect("toggled", self.check_button_cb, "require-mppe-128")
+        self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe-stateful")
+        self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
+        self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
+        self.no_vj_comp.connect("toggled", self.check_button_cb, "novj")
+        self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
 
     def refresh(self):
+        print self.vpn_setting.data
         #=========================
         # retreieve settings
-        refuse_eap = self.vpn_setting.get_data_item("refuse_eap")
+        refuse_eap = self.vpn_setting.get_data_item("refuse-eap")
         
-        refuse_pap = self.vpn_setting.get_data_item("refuse_pap")
-        refuse_chap = self.vpn_setting.get_data_item("refuse_chap")
-        refuse_mschap = self.vpn_setting.get_data_item("refuse_mschap")
-        refuse_mschapv2 = self.vpn_setting.get_data_item("refuse_mschapv2")
+        refuse_pap = self.vpn_setting.get_data_item("refuse-pap")
+        refuse_chap = self.vpn_setting.get_data_item("refuse-chap")
+        refuse_mschap = self.vpn_setting.get_data_item("refuse-mschap")
+        refuse_mschapv2 = self.vpn_setting.get_data_item("refuse-mschapv2")
 
-        require_mppe = self.vpn_setting.get_data_item("require_mppe")
-        require_mppe_128 = self.vpn_setting.get_data_item("require_mppe_128")
-        mppe_stateful = self.vpn_setting.get_data_item("mppe_stateful")
+        require_mppe = self.vpn_setting.get_data_item("require-mppe")
+        require_mppe_128 = self.vpn_setting.get_data_item("require-mppe-128")
+        mppe_stateful = self.vpn_setting.get_data_item("mppe-stateful")
 
         nobsdcomp = self.vpn_setting.get_data_item("nobsdcomp")
         nodeflate = self.vpn_setting.get_data_item("nodeflate")
-        no_vj_comp = self.vpn_setting.get_data_item("no_vj_comp")
+        no_vj_comp = self.vpn_setting.get_data_item("novj")
 
-        lcp_echo_failure = self.vpn_setting.get_data_item("lcp_echo_failure")
-        lcp_echo_interval = self.vpn_setting.get_data_item("lcp_echo_interval")
+        lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
+        lcp_echo_interval = self.vpn_setting.get_data_item("lcp-echo-interval")
         
-        print "mschap",refuse_mschap
-
+        self.require_mppe.set_active(require_mppe != None)
         self.refuse_eap.set_active(refuse_eap is None)
         self.refuse_pap.set_active(refuse_pap is None)
         self.refuse_chap.set_active(refuse_chap is None)
         self.refuse_mschap.set_active(refuse_mschap is None)
         self.refuse_mschapv2.set_active(refuse_mschapv2 is None)
 
-        self.require_mppe.set_active(require_mppe != None)
         self.require_mppe_128.set_active(require_mppe_128 != None)
-        # FIXME umcomment it when backend ready
         self.mppe_stateful.set_active(mppe_stateful != None)
         self.nobsdcomp.set_active(nobsdcomp is None)
         self.nodeflate.set_active(nodeflate is None)
@@ -598,57 +616,82 @@ class PPPConf(gtk.VBox):
             self.ppp_echo.set_active(False)
         else:
             self.ppp_echo.set_active(True)
+
         #==================================
+        # Connect signal
+        
+    def check_button_cb(self, widget, key):
+        active = widget.get_active()
+        if key.startswith("refuse") or key.startswith("no"):
+            if self.auth_lock():
+                self.require_mppe.set_sensitive(True)
+            else:
+                self.require_mppe.set_sensitive(False)
+                self.require_mppe.set_active(False)
+                self.set_group_sensitive(True)
+                self.set_group_active(True)
+            if active:
+                self.vpn_setting.delete_data_item(key)
+            else:
+                self.vpn_setting.set_data_item(key, "yes")
+
+        elif key == "echo":
+            if active:
+                self.vpn_setting.set_data_item("lcp_echo_failure", 5)
+                self.vpn_setting.set_data_item("lcp_echo_interval", 30)
+            else:
+                self.vpn_setting.delete_data_item("lcp_echo_failure")
+                self.vpn_setting.delete_data_item("lcp_echo_interval")
+        else:
+            if key == "require-mppe":
+                if active:
+                    self.vpn_setting.set_data_item(key, "yes")
+                    self.set_group_active(False)
+                    self.set_group_sensitive(False)
+
+                    self.require_mppe_128.set_sensitive(True)
+                    self.mppe_stateful.set_sensitive(True)
+                else:
+                    self.vpn_setting.delete_data_item(key)
+                    self.set_group_active(True)
+                    self.set_group_sensitive(True)
+                    self.require_mppe_128.set_sensitive(False)
+                    self.mppe_stateful.set_sensitive(False)
+                    self.require_mppe_128.set_active(False)
+                    self.mppe_stateful.set_active(False)
+            else:
+                if active:
+                    self.vpn_setting.set_data_item(key, "yes")
+                else:
+                    self.vpn_setting.delete_data_item(key)
+
+    def confirm_button_cb(self, widget):
+        self.module_frame.send_message("change_crumb", 2)
+        layout = slider.layout.get_children()
+        for widget in layout:
+            if isinstance(widget, VPNSetting):
+                slider.slide_to_page(widget, "left")
+        
+
+    def auth_lock(self):
+        if self.refuse_mschap.get_active() or self.refuse_mschapv2.get_active():
+            return True
+        else:
+            return False
+
+    def set_group_active(self, boolean):
+        self.refuse_eap.set_active(boolean)
+        self.refuse_pap.set_active(boolean)
+        self.refuse_chap.set_active(boolean)
+
+    def set_group_sensitive(self, boolean):
+        self.refuse_eap.set_sensitive(boolean)
+        self.refuse_pap.set_sensitive(boolean)
+        self.refuse_chap.set_sensitive(boolean)
+
 
     def save_setting(self):
-        refuse_eap = not self.refuse_eap.get_active()
-        refuse_pap = not self.refuse_pap.get_active()
-        refuse_chap = not self.refuse_chap.get_active()
-        refuse_mschap = not self.refuse_mschap.get_active()
-        refuse_mschapv2 = not self.refuse_mschapv2.get_active()
-
-        require_mppe = self.require_mppe.get_active()
-        require_mppe_128 = self.require_mppe_128.get_active()
-        mppe_stateful = self.mppe_stateful.get_active()
-
-        nobsdcomp = not self.nobsdcomp.get_active()
-        nodeflate = not self.nodeflate.get_active()
-        no_vj_comp = not  self.no_vj_comp.get_active()
-
-        echo = self.ppp_echo.get_active()
-
-        self.vpn_setting.refuse_eap = refuse_eap
-        self.vpn_setting.refuse_pap = refuse_pap
-        self.vpn_setting.refuse_chap = refuse_chap
-        self.vpn_setting.refuse_mschap = refuse_mschap 
-        self.vpn_setting.refuse_mschapv2 = refuse_mschapv2
-        self.vpn_setting.require_mppe = require_mppe
-        self.vpn_setting.require_mppe_128 = require_mppe_128
-        self.vpn_setting.mppe_stateful = mppe_stateful
-
-        self.vpn_setting.nobsdcomp = nobsdcomp
-        self.vpn_setting.nodeflate = nodeflate
-        self.vpn_setting.no_vj_comp = no_vj_comp
-
-        if echo:
-            lcp_echo_failure = 5
-            lcp_echo_interval = 30
-        else:
-            lcp_echo_failure = 0
-            lcp_echo_interval = 0
-
-        #print self.vpn_setting.prop_dict
-
-    def mppe_toggled(self, widget):
-        #print "toggled"
-        if widget.get_active():
-            self.require_mppe_128.set_sensitive(True)
-            self.mppe_stateful.set_sensitive(True)
-        else:
-            self.require_mppe_128.set_active(False)
-            self.mppe_stateful.set_active(False)
-            self.require_mppe_128.set_sensitive(False)
-            self.mppe_stateful.set_sensitive(False)
+        pass
 
     def toggle_cb(self, widget):
         if widget.get_active():
@@ -657,7 +700,4 @@ class PPPConf(gtk.VBox):
         else:
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
-
-
-
         # Check Buttons
