@@ -104,7 +104,10 @@ class NMSettingVpn(NMSetting):
         self.prop_dict["data"][item] = value
 
     def delete_data_item(self, item):
-        del self.prop_dict["data"][item]
+        try:
+            del self.prop_dict["data"][item]
+        except:
+            pass
 
     def clear_data_item(self, item):
         self.prop_dict["data"][item] = ""

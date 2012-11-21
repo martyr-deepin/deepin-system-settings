@@ -541,7 +541,7 @@ class Network(object):
         self.proxy.add_setting_page(self.proxy_setting_page)
         self.vpn_setting_page = VPNSetting( lambda : slider.slide_to_page(self.eventbox, "left"),
                                lambda : module_frame.send_message("change_crumb", 1),
-                               lambda : module_frame.send_submodule_crumb(3, "高级设置"))
+                               module_frame)
         self.vpn.add_setting_page(self.vpn_setting_page)
         wifi = WifiSection()
         mobile = ThreeG()
