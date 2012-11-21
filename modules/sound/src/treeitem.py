@@ -23,13 +23,13 @@
 #from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
+from dtk.ui.constant import DEFAULT_FONT, DEFAULT_FONT_SIZE
 from dtk.ui.utils import (color_hex_to_cairo, is_left_button, 
                           is_double_click, is_single_click)
-#from gtk import gdk
-#from gtk import accelerator_name, accelerator_parse, accelerator_get_label
-#from nls import _
 import gobject
 import copy
+import pangocairo
+import pango
 
 
 class MyTreeView(TreeView):

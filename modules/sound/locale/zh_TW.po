@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-12 16:11+0800\n"
-"PO-Revision-Date: 2012-11-12 16:11+0800\n"
+"POT-Creation-Date: 2012-11-21 15:53+0800\n"
+"PO-Revision-Date: 2012-11-21 15:41+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
@@ -16,54 +16,66 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:69
+#: ../src/main.py:95
 msgid "Balance"
-msgstr ""
+msgstr "均衡器"
 
-#: ../src/main.py:70
+#: ../src/main.py:96
 msgid "Speaker"
-msgstr ""
+msgstr "揚聲器"
 
-#: ../src/main.py:71
+#: ../src/main.py:97
 msgid "Microphone"
-msgstr ""
+msgstr "麥剋風"
 
-#: ../src/main.py:89
-msgid "Left"
-msgstr ""
-
-#: ../src/main.py:90
-msgid "Right"
-msgstr ""
-
-#: ../src/main.py:171
+#: ../src/main.py:199
 msgid "Choose a device for sound output:"
-msgstr ""
+msgstr "選擇音頻輸齣設備"
 
-#: ../src/main.py:172
+#: ../src/main.py:200
 msgid "Choose a device for sound input:"
-msgstr ""
+msgstr "選擇音頻輸入設備"
 
-#: ../src/main.py:173
+#: ../src/main.py:201
 msgid "Choose a device to configure:"
-msgstr ""
+msgstr "選擇要配置的設備"
 
-#: ../src/main.py:189
-msgid "Input"
-msgstr ""
-
-#: ../src/main.py:190
+#: ../src/main.py:217
 msgid "Output"
-msgstr ""
+msgstr "輸齣"
 
-#: ../src/main.py:191
+#: ../src/main.py:218
+msgid "Input"
+msgstr "輸入"
+
+#: ../src/main.py:219
 msgid "Hardware"
-msgstr ""
+msgstr "硬件"
 
-#: ../src/main.py:353
+#: ../src/main.py:264
+msgid "Left"
+msgstr "左"
+
+#: ../src/main.py:265
+msgid "Right"
+msgstr "右"
+
+#: ../src/main.py:437 ../src/main.py:767 ../src/main.py:790
+msgid "%d Outputs"
+msgstr "%d 路輸齣"
+
+#: ../src/main.py:439 ../src/main.py:769 ../src/main.py:792
+msgid "%d Output"
+msgstr "%d 路輸齣"
+
+#: ../src/main.py:441 ../src/main.py:771 ../src/main.py:794
+msgid "%d Inputs"
+msgstr "%d 路輸入"
+
+#: ../src/main.py:443 ../src/main.py:773 ../src/main.py:796
+msgid "%d Input"
+msgstr "%d 路輸入"
+
+#: ../src/main.py:972
 msgid "Advanced"
-msgstr ""
-
-#: ../src/treeitem.py:664
-msgid "disable"
-msgstr ""
+msgstr "高級設置"

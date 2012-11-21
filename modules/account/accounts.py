@@ -201,4 +201,6 @@ class User(BusBase):
         self.emit("changed")
 
 if __name__ == "__main__":
+    accounts = Accounts()
+    accounts.create_user("test", "test", 1)
     gobject.MainLoop().run()

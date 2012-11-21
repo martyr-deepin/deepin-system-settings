@@ -229,6 +229,34 @@ def get_port_list(dev):
         back.append(p)
         i += 1
     return (back, n)
+
+def get_card_profile_property(profile):
+    '''
+    get CardProfile property
+    @param profile: a profile path
+    @return: a dict type
+    '''
+    p = card.CardProfile(profile)
+    index = p.get_index()
+    name = p.get_name()
+    description = p.get_description()
+    sinks = p.get_sinks()
+    sources = p.get_sources()
+    priority = p.get_priority()
+    if sinks is not None:
+        sinks = int(sinks)
+    else:
+        sinks = 0
+    if sources is not None:
+        sources = int(sources)
+    else:
+        sources = 0
+    return {'index': index,
+            'name': name,
+            'description': description,
+            'sinks': sinks,
+            'sources': sources,
+            'priority': priority}
 ##########################################################
 def refresh_info():
     ''' refresh and update pulseaudio info '''

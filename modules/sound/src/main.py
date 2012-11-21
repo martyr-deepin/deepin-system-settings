@@ -27,15 +27,14 @@ from dtk.ui.button import Button
 from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.combo import ComboBox
-#from dtk.ui.scalebar import HScalebar
+from dtk.ui.scalebar import HScalebar
 #from dtk.ui.new_treeview import TreeView
 from dtk.ui.utils import cairo_disable_antialias, get_parent_dir
+from dtk.ui.constant import DEFAULT_FONT_SIZE
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
 from nls import _
 import gtk
-import pangocairo
-import pango
 import settings
 
 import sys
@@ -44,8 +43,6 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame
 import threading as td
 import traceback
-
-from device import Device
 
 
 class SettingVolumeThread(td.Thread):
@@ -118,7 +115,7 @@ class SoundSetting(object):
         self.button_widgets["balance"] = gtk.ToggleButton()
         self.button_widgets["speaker"] = gtk.ToggleButton()
         self.button_widgets["microphone"] = gtk.ToggleButton()
-        self.button_widgets["advanced"] = Button("Adcanced")
+        self.button_widgets["advanced"] = Button(_("Advanced"))
         self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=530)
         self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=530)
         # container init
@@ -152,39 +149,46 @@ class SoundSetting(object):
         self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 150)
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150)
         # scale init
-        self.scale_widgets["balance"] = gtk.HScale()
-        self.scale_widgets["balance"].set_draw_value(False)
-        #self.scale_widgets["balance"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["balance"] = gtk.HScale()
+        #self.scale_widgets["balance"].set_draw_value(False)
+        self.scale_widgets["balance"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["balance"].set_adjustment(self.adjust_widgets["balance"])
-        self.scale_widgets["speaker"] = gtk.HScale()
+        self.scale_widgets["balance"].set_size_request(530, DEFAULT_FONT_SIZE * 4)
+        #self.scale_widgets["speaker"] = gtk.HScale()
         #self.scale_widgets["speaker"].set_draw_value(False)
-        #self.scale_widgets["speaker"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        self.scale_widgets["speaker"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"),
+            True,
+            '%')
         self.scale_widgets["speaker"].set_adjustment(self.adjust_widgets["speaker"])
-        self.scale_widgets["microphone"] = gtk.HScale()
+        self.scale_widgets["speaker"].set_size_request(530, DEFAULT_FONT_SIZE * 4)
+        #self.scale_widgets["microphone"] = gtk.HScale()
         #self.scale_widgets["microphone"].set_draw_value(False)
-        #self.scale_widgets["microphone"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        self.scale_widgets["microphone"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"),
+            True,
+            '%')
         self.scale_widgets["microphone"].set_adjustment(self.adjust_widgets["microphone"])
+        self.scale_widgets["microphone"].set_size_request(530, DEFAULT_FONT_SIZE * 4)
         ###################################
         # advance set
         self.container_widgets["advance_input_box"] = gtk.VBox(False)
@@ -428,7 +432,21 @@ class SoundSetting(object):
                 continue
             prop = settings.get_object_property_list(settings.PA_CARDS[cards]['obj'])
             if prop:
-                card_list.append(TreeItem(self.image_widgets["device"], prop["device.description"], cards))
+                active_profile = settings.PA_CARDS[cards]['obj'].get_active_profile()
+                if active_profile:
+                    profile = settings.get_card_profile_property(active_profile)
+                    if profile['sinks'] > 1:
+                        io_num = _("%d Outputs") % profile['sinks']
+                    else:
+                        io_num = _("%d Output") % profile['sinks']
+                    if profile['sources'] > 1:
+                        io_num += " / " + _("%d Inputs") % profile['sources']
+                    else:
+                        io_num += " / " + _("%d Input") % profile['sources']
+                    card_info = "%s(%s)[%s]" % (prop['device.description'].strip('\x00'), io_num, profile['description'])
+                else:
+                    card_info = prop["device.description"]
+                card_list.append(TreeItem(self.image_widgets["device"], card_info, cards))
         self.view_widgets["ad_output"].add_items(output_list)
         self.view_widgets["ad_input"].add_items(input_list)
         self.view_widgets["ad_hardware"].add_items(card_list)
@@ -491,6 +509,10 @@ class SoundSetting(object):
             core.connect("fallback-sink-unset", self.fallback_sink_unset_cb)
             core.connect("fallback-source-updated", self.fallback_source_udpated_cb)
             core.connect("fallback-source-unset", self.fallback_source_unset_cb)
+        for cards in settings.PA_CARDS:
+            if not cards:
+                continue
+            settings.PA_CARDS[cards]['obj'].connect("active-profile-updated", self.card_active_profile_update)
     
     ######################################
     # signals callback begine
@@ -528,7 +550,11 @@ class SoundSetting(object):
             callback = self.microphone_toggled
         else:
             return
-        SettingVolumeThread(self, callback, button.get_active()).start()
+        try:
+            SettingVolumeThread(self, callback, button.get_active()).start()
+        except:
+            traceback.print_exc()
+            pass
     
     def balance_toggled(self, active):
         if not active:
@@ -563,7 +589,11 @@ class SoundSetting(object):
         if adjustment.get_data("changed-by-other-app"):
             adjustment.set_data("changed-by-other-app", False)
             return
-        SettingVolumeThread(self, self.balance_value_changed_thread).start()
+        try:
+            SettingVolumeThread(self, self.balance_value_changed_thread).start()
+        except:
+            traceback.print_exc()
+            pass
     
     def speaker_value_changed_thread(self):
         ''' speaker hscale value changed callback thread '''
@@ -587,7 +617,11 @@ class SoundSetting(object):
         if adjustment.get_data("changed-by-other-app"):
             adjustment.set_data("changed-by-other-app", False)
             return
-        SettingVolumeThread(self, self.speaker_value_changed_thread).start()
+        try:
+            SettingVolumeThread(self, self.speaker_value_changed_thread).start()
+        except:
+            traceback.print_exc()
+            pass
 
     def microphone_value_changed_thread(self):
         ''' microphone value changed callback thread'''
@@ -603,7 +637,11 @@ class SoundSetting(object):
         if adjustment.get_data("changed-by-other-app"):
             adjustment.set_data("changed-by-other-app", False)
             return
-        SettingVolumeThread(self, self.microphone_value_changed_thread).start()
+        try:
+            SettingVolumeThread(self, self.microphone_value_changed_thread).start()
+        except:
+            traceback.print_exc()
+            pass
     
     def speaker_port_changed_thread(self, port, dev):
         ''' set active port thread '''
@@ -615,7 +653,11 @@ class SoundSetting(object):
             return
         port = self.speaker_ports[0][index]
         dev = settings.PA_DEVICE[settings.CURRENT_SINK]
-        SettingVolumeThread(self, self.speaker_port_changed_thread, port, dev).start()
+        try:
+            SettingVolumeThread(self, self.speaker_port_changed_thread, port, dev).start()
+        except:
+            traceback.print_exc()
+            pass
     
     def microphone_port_changed_thread(self, port, dev):
         ''' set active port thread '''
@@ -626,7 +668,11 @@ class SoundSetting(object):
             return
         port = self.microphone_ports[0][index]
         dev = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-        SettingVolumeThread(self, self.microphone_port_changed_thread, port, dev).start()
+        try:
+            SettingVolumeThread(self, self.microphone_port_changed_thread, port, dev).start()
+        except:
+            traceback.print_exc()
+            pass
     
     def output_treeview_clicked(self, tree_view, item, row):
         if item.obj_path == settings.CURRENT_SINK:
@@ -640,7 +686,7 @@ class SoundSetting(object):
         if settings.PA_CORE:
             settings.PA_CORE.set_fallback_source(item.obj_path)
         
-    # TODO 选择声卡
+    # TODO 选择声卡，设置声卡ActiveProfile
     def card_treeview_clicked(self, tree_view, item, row):
         print "treeview clicked", item.obj_path, item.content, row
     
@@ -716,11 +762,46 @@ class SoundSetting(object):
                 continue
             prop = settings.get_object_property_list(settings.PA_CARDS[cards]['obj'])
             if prop:
-                card_list.append(TreeItem(self.image_widgets['device'], prop['device.description'], cards))
+                active_profile = settings.PA_CARDS[cards]['obj'].get_active_profile()
+                if active_profile:
+                    profile = settings.get_card_profile_property(active_profile)
+                    if profile['sinks'] > 1:
+                        io_num = _("%d Outputs") % profile['sinks']
+                    else:
+                        io_num = _("%d Output") % profile['sinks']
+                    if profile['sources'] > 1:
+                        io_num += " / " + _("%d Inputs") % profile['sources']
+                    else:
+                        io_num += " / " + _("%d Input") % profile['sources']
+                    card_info = "%s (%s) [%s]" % (prop["device.description"].strip('\x00'), io_num, profile['description'])
+                else:
+                    card_info = prop["device.description"]
+                card_list.append(TreeItem(self.image_widgets['device'], card_info, cards))
         self.view_widgets["ad_hardware"].add_items(card_list, clear_first=True)
         if card_list:
             self.view_widgets["ad_hardware"].set_select_rows([0])
         
+    def card_active_profile_update(self, cards, active_profile):
+        ''' Card ActiveProfileUpdted '''
+        for item in self.view_widgets["ad_hardware"].visible_items:
+            if item.obj_path == cards.object_path:
+                prop = settings.get_object_property_list(cards)
+                if prop:
+                    profile = settings.get_card_profile_property(active_profile)
+                    if profile['sinks'] > 1:
+                        io_num = _("%d Outputs") % profile['sinks']
+                    else:
+                        io_num = _("%d Output") % profile['sinks']
+                    if profile['sources'] > 1:
+                        io_num += " / " + _("%d Inputs") % profile['sources']
+                    else:
+                        io_num += " / " + _("%d Input") % profile['sources']
+                    card_info = "%s (%s) [%s]" % (prop["device.description"].strip('\x00'), io_num, profile['description'])
+                    item.content = card_info
+                    if item.redraw_request_callback:
+                        item.redraw_request_callback(item)
+                break
+    
     def new_source_cb(self, core, source):
         ''' new source'''
         print "new source", core, source
