@@ -6,6 +6,7 @@
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
+#             Long Changjin <admin@longchangjin.cn>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,17 +37,28 @@ class Card(BusBase):
     def __init__(self, path, interface = "org.PulseAudio.Core1.Card"):
         BusBase.__init__(self, path, interface)
 
-        self.dbus_proxy.connect_to_signal("ActiveProfileUpdated", self.active_profile_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("ActiveProfileUpdated", self.active_profile_updated_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("NewProfile", self.new_profile_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("NewProfile", self.new_profile_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
 
-        self.dbus_proxy.connect_to_signal("ProfileRemoved", self.profile_removed_cb, dbus_interface = 
-                                          self.object_interface, arg0 = None)
+        #self.dbus_proxy.connect_to_signal("ProfileRemoved", self.profile_removed_cb, dbus_interface = 
+                                          #self.object_interface, arg0 = None)
+        self.bus.add_signal_receiver(self.active_profile_updated_cb, signal_name = "ActiveProfileUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.new_profile_cb, signal_name = "NewProfile", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.property_list_updated_cb, signal_name = "PropertyListUpdated", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.profile_removed_cb, signal_name = "ProfileRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
 
     ###Props    
@@ -114,7 +126,7 @@ class CardProfile(BusBase):
     
     ###Props    
     def get_index(self):
-        return int(self.get_property("Index"))
+        return self.get_property("Index")
 
     def get_name(self):
         return str(self.get_property("Name"))
@@ -123,13 +135,13 @@ class CardProfile(BusBase):
         return str(self.get_property("Description"))
 
     def get_sinks(self):
-        return int(self.get_property("Sinks"))
+        return self.get_property("Sinks")
 
     def get_sources(self):
-        return int(self.get_property("Sources"))
+        return self.get_property("Sources")
 
     def get_priority(self):
-        return int(self.get_property("Priority"))
+        return self.get_property("Priority")
     
 if __name__ == "__main__":
     pass
