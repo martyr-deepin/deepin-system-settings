@@ -140,7 +140,7 @@ class MyTreeView(TreeView):
                     if self.double_click_row == release_row:
                         self.visible_items[release_row].double_click(release_column, offset_x, offset_y)
                     elif self.single_click_row == release_row:
-                        self.emit("clicked", self.visible_items[release_row], release_column)
+                        self.emit("clicked", self.visible_items[release_row], release_row)
                         self.visible_items[release_row].single_click(release_column, offset_x, offset_y)
                 
                 if self.start_drag and self.is_in_visible_area(event):
@@ -164,7 +164,7 @@ class MyTreeItem(TreeItem):
     '''TreeItem class'''
     __gsignals__ = {"select": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))}
 
-    def __init__(self, icon, content):
+    def __init__(self, icon, content, obj_path=None):
         '''
         initialization.
         @param icon: a gtk.gdk.Pixbuf type
@@ -176,6 +176,7 @@ class MyTreeItem(TreeItem):
         self.padding_x = 5
         self.icon = icon
         self.content = content
+        self.obj_path = obj_path
     
     def get_height(self):
         return self.height

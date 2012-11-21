@@ -6,6 +6,7 @@
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
+#             Long Changjin <admin@longchangjin.cn>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -7,6 +7,7 @@
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
 #             Zhai Xiang <zhaixiang@linuxdeepin.com>
+#             Long Changjin <admin@longchangjin.cn>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,7 +49,7 @@ try:
     client_bus = connect_bus()
 except dbus.exceptions.DBusException:
     client_bus = None
-    print "dbus connect error."
+    print "connect to dbus server error."
 
 
 class BusBase(gobject.GObject):
@@ -64,7 +65,8 @@ class BusBase(gobject.GObject):
             self.dbus_interface = dbus.Interface(self.dbus_proxy, self.object_interface)
         #except dbus.exceptions.DBusException:
         except :
-            traceback.print_exc()
+            #traceback.print_exc()
+            print "dbus connect error"
 
     # def init_dbus_properties(self):        
     #     try:
@@ -83,16 +85,16 @@ class BusBase(gobject.GObject):
         try:
             self.property_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
         except dbus.exceptions.DBusException:
-            print "get property_interface failed"
-            traceback.print_exc()
+            print "get property_interface failed", prop_name
+            #traceback.print_exc()
             return None
    
         if self.property_interface:    
             try:
                 return self.property_interface.Get(self.object_interface, prop_name)
             except:
-                print "get properties failed", prop_name
-                traceback.print_exc()
+                print "get properties failed (%s)" % prop_name
+                #traceback.print_exc()
                 return None
         else:
             return None
@@ -101,8 +103,8 @@ class BusBase(gobject.GObject):
         try:
             self.property_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
         except dbus.exceptions.DBusException:
-            print "get property_interface failed"
-            traceback.print_exc()
+            print "set property_interface failed", prop_name
+            #traceback.print_exc()
             return None
    
         if self.property_interface:    
@@ -110,7 +112,7 @@ class BusBase(gobject.GObject):
                 return self.property_interface.Set(self.object_interface, prop_name, prop_value)
             except:
                 print "set properties failed", prop_name, prop_value
-                traceback.print_exc()
+                #traceback.print_exc()
 
     def dbus_method(self, method_name, *args, **kwargs):
         try:

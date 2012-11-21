@@ -29,7 +29,47 @@ from dbus.mainloop.glib import DBusGMainLoop
 DBusGMainLoop(set_as_default = True)
 
 name_re = re.compile("[0-9a-zA-Z-]*")
-accounts_bus = dbus.SystemBus()
+system_bus = dbus.SystemBus()
+
+def authWithPolicyKit(bus_name , cancel_id = "", priv = "", interactive = 1):
+    obj = system_bus.get_object("org.freedesktop.PolicyKit1", 
+                                "/org/freedesktop/PolicyKit1/Authority", 
+                                "org.freedesktop.PolicyKit1.Authority")
+
+    policykit = dbus.Interface(obj, "org.freedesktop.PolicyKit1.Authority")
+
+    info = dbus.Interface(system_bus.get_object('org.freedesktop.DBus',
+                                                '/org/freedesktop/DBus/Bus', 
+                                                False), 
+                          'org.freedesktop.DBus')
+    if bus_name in info.ListNames():
+        name = info.GetNameOwner(bus_name)
+    else:
+        return False
+
+    subject = ('system-bus-name', 
+               { 
+                 'name': dbus.String(name, variant_level = 1)
+                 }
+               )
+
+    details = { '' : '' }
+    flags = dbus.UInt32(interactive)
+
+    (ok, notused, details) = policykit.CheckAuthorization(subject, priv, details, flags, cancel_id)
+
+    return ok
+
+def cancelAuth(cancel_id):
+    obj = system_bus.get_object("org.freedesktop.PolicyKit1", 
+                                "/org/freedesktop/PolicyKit1/Authority", 
+                                "org.freedesktop.PolicyKit1.Authority")
+
+    policykit = dbus.Interface(obj, "org.freedesktop.PolicyKit1.Authority")
+
+    policykit.CancelCheckAuthorization(cancel_id)
+
+
 
 def valid_object_path(object_path):
     if not isinstance(object_path, str):
@@ -62,7 +102,7 @@ class InvalidObjectPath(Exception):
 
 class BusBase(gobject.GObject):
     
-    def __init__(self, path, interface, service = "org.freedesktop.Accounts", bus = accounts_bus):
+    def __init__(self, path, interface, service = "org.freedesktop.Accounts", bus = system_bus):
 
         if valid_object_path(path):
             self.object_path = path
