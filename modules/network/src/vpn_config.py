@@ -434,19 +434,19 @@ class PPTPConf(gtk.VBox):
         align.add(pptp_table)
         self.add(align)
         self.show_all()
-        self.refresh(service_type)
+        self.refresh()
 
-    def refresh(self, service_type):
+    def refresh(self):
         #print ">>>",self.vpn_setting.data
         #print self.vpn_setting.data
         gateway = self.vpn_setting.get_data_item("gateway")
         user = self.vpn_setting.get_data_item("user")
         domain = self.vpn_setting.get_data_item("domain")
 
-        self.gateway_entry.entry.connect("press-return", self.entry_changed, "gateway")
-        self.user_entry.entry.connect("press-return", self.entry_changed, "user")
-        self.password_entry.entry.connect("press-return", self.entry_changed, "password")
-        self.nt_domain_entry.entry.connect("press-return", self.entry_changed, "domain")
+        self.gateway_entry.entry.connect("focus-out-event", self.entry_changed, "gateway")
+        self.user_entry.entry.connect("focus-out-event", self.entry_changed, "user")
+        self.password_entry.entry.connect("focus-out-event", self.entry_changed, "password")
+        self.nt_domain_entry.entry.connect("focus-out-event", self.entry_changed, "domain")
 
 
         if gateway:
@@ -471,7 +471,8 @@ class PPTPConf(gtk.VBox):
     def save_setting(self):
         pass
 
-    def entry_changed(self, widget, item):
+    def entry_changed(self, widget, event, item):
+        print "focus out"
         text = widget.get_text()
         if text:
             if item == "password":
@@ -479,7 +480,7 @@ class PPTPConf(gtk.VBox):
             else:
                 self.vpn_setting.set_data_item(item, text)
         else:
-            self.vpn_setting.set_data_item(item, None)
+            self.vpn_setting.delete_data_item(item)
     
     def radio_toggled(self, widget, service_type):
         self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
@@ -577,8 +578,9 @@ class PPPConf(gtk.VBox):
         self.no_vj_comp.connect("toggled", self.check_button_cb, "novj")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
 
+        method.set_active(True)
+
     def refresh(self):
-        print self.vpn_setting.data
         #=========================
         # retreieve settings
         refuse_eap = self.vpn_setting.get_data_item("refuse-eap")
@@ -637,8 +639,8 @@ class PPPConf(gtk.VBox):
 
         elif key == "echo":
             if active:
-                self.vpn_setting.set_data_item("lcp_echo_failure", 5)
-                self.vpn_setting.set_data_item("lcp_echo_interval", 30)
+                self.vpn_setting.set_data_item("lcp_echo_failure", "5")
+                self.vpn_setting.set_data_item("lcp_echo_interval", "30")
             else:
                 self.vpn_setting.delete_data_item("lcp_echo_failure")
                 self.vpn_setting.delete_data_item("lcp_echo_interval")
