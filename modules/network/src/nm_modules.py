@@ -26,6 +26,9 @@ from nmlib.nm_remote_settings import NMRemoteSettings
 from nmlib.nmcache import NMCache, cache
 from nmlib.nm_secret_agent import NMSecretAgent
 
+from dtk.ui.new_slider import HSlider
+slider = HSlider()
+
 class NModule(object):
 
     def __init__(self):

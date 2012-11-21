@@ -29,9 +29,8 @@ from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 
 from nmlib.nmcache import cache
-from nm_modules import nm_module
+from nm_modules import nm_module, slider
 
-slider = HSlider()
 PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
@@ -541,7 +540,8 @@ class Network(object):
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.proxy.add_setting_page(self.proxy_setting_page)
         self.vpn_setting_page = VPNSetting( lambda : slider.slide_to_page(self.eventbox, "left"),
-                               lambda : module_frame.send_message("change_crumb", 1))
+                               lambda : module_frame.send_message("change_crumb", 1),
+                               lambda : module_frame.send_submodule_crumb(3, "高级设置"))
         self.vpn.add_setting_page(self.vpn_setting_page)
         wifi = WifiSection()
         mobile = ThreeG()
@@ -602,6 +602,11 @@ if __name__ == '__main__':
                 (crumb_index, crumb_label) = message_content
                 if crumb_index == 1:
                     slider.slide_to_page(main_align, "left")
+                if crumb_label == "VPN":
+                    layout = slider.layout.get_children()
+                    for widget in layout:
+                        if isinstance(widget, VPNSetting):
+                            slider.slide_to_page(widget, "left")
 
         module_frame.module_message_handler = message_handler
         module_frame.run()

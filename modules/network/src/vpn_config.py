@@ -14,7 +14,7 @@ from dtk.ui.combo import ComboBox
 from widgets import SettingButton
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
-from nm_modules import nm_module
+from nm_modules import nm_module, slider
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
@@ -23,11 +23,12 @@ import gtk
 
 class VPNSetting(gtk.HBox):
 
-    def __init__(self, slide_back_cb = None, change_crumb_cb = None):
+    def __init__(self, slide_back_cb = None, change_crumb_cb = None, slide_advance_cb = None):
 
         gtk.HBox.__init__(self)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
+        self.to_avdance_page = slide_advance_cb
         
         self.pptp = None
         self.ipv4 = None
@@ -70,7 +71,7 @@ class VPNSetting(gtk.HBox):
             connections = nm_module.nm_remote_settings.get_vpn_connections()
 
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
-        self.pptp_setting = [PPTPConf(con) for con in connections]
+        self.pptp_setting = [PPTPConf(con, self.to_avdance_page) for con in connections]
 
         self.sidebar.init(connections, self.ipv4_setting)
         index = self.sidebar.get_active()
@@ -375,10 +376,12 @@ class IPV4Conf(gtk.VBox):
 
 class PPTPConf(gtk.VBox):
 
-    def __init__(self, connection):
+    def __init__(self, connection, to_advance_page):
         gtk.VBox.__init__(self)
         self.connection = connection
+        self.to_advance_page = to_advance_page
         self.vpn_setting = self.connection.get_setting("vpn")
+        self.ppp = PPPConf(self.connection)
 
         # UI
         pptp_table = gtk.Table(6, 4, False)
@@ -412,7 +415,11 @@ class PPTPConf(gtk.VBox):
         pptp_table.attach(self.user_entry, 2, 4, 2, 3)
         pptp_table.attach(self.password_entry, 2, 4, 3, 4)
         pptp_table.attach(self.nt_domain_entry, 2, 4, 4, 5)
+        # Advance setting button
+        advanced_button = Button("Advanced Setting")
+        advanced_button.connect("clicked", self.advanced_button_click)
 
+        pptp_table.attach(advanced_button, 3, 4, 5, 6)
         service_type = self.vpn_setting.service_type.split(".")[-1]
         if service_type == "l2tp":
             self.l2tp_radio.set_active(True)
@@ -426,15 +433,13 @@ class PPTPConf(gtk.VBox):
         align.add(pptp_table)
         self.add(align)
         self.show_all()
-        self.refresh()
+        self.refresh(service_type)
 
-    def refresh(self):
+    def refresh(self, service_type):
         #print ">>>",self.vpn_setting.data
-
-
+        print self.vpn_setting.data
         gateway = self.vpn_setting.get_data_item("gateway")
         user = self.vpn_setting.get_data_item("user")
-        #password_flags = self.vpn_setting.get_data_item("password-flags")
         domain = self.vpn_setting.get_data_item("domain")
 
         self.gateway_entry.entry.connect("press-return", self.entry_changed, "gateway")
@@ -477,14 +482,22 @@ class PPTPConf(gtk.VBox):
     
     def radio_toggled(self, widget, service_type):
         self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
-        refresh()
+        self.refresh()
+
+    def advanced_button_click(self, widget):
+        slider.append_page(self.ppp)
+        self.ppp.show_all()
+        self.to_advance_page()
+        slider.slide_to_page(self.ppp, "right")
+        #pass
 
 
 class PPPConf(gtk.VBox):
 
     def __init__(self, connection):
         gtk.VBox.__init__(self)
-
+        
+        self.set_size_request(770,500)
         self.connection = connection
         self.vpn_setting = self.connection.get_setting("vpn")
         
@@ -548,6 +561,7 @@ class PPPConf(gtk.VBox):
         #=========================
         # retreieve settings
         refuse_eap = self.vpn_setting.get_data_item("refuse_eap")
+        
         refuse_pap = self.vpn_setting.get_data_item("refuse_pap")
         refuse_chap = self.vpn_setting.get_data_item("refuse_chap")
         refuse_mschap = self.vpn_setting.get_data_item("refuse_mschap")
@@ -566,19 +580,19 @@ class PPPConf(gtk.VBox):
         
         print "mschap",refuse_mschap
 
-        self.refuse_eap.set_active( not refuse_eap)
-        self.refuse_pap.set_active(not refuse_pap)
-        self.refuse_chap.set_active(not refuse_chap)
-        self.refuse_mschap.set_active(not refuse_mschap)
-        self.refuse_mschapv2.set_active(not refuse_mschapv2)
+        self.refuse_eap.set_active(refuse_eap is None)
+        self.refuse_pap.set_active(refuse_pap is None)
+        self.refuse_chap.set_active(refuse_chap is None)
+        self.refuse_mschap.set_active(refuse_mschap is None)
+        self.refuse_mschapv2.set_active(refuse_mschapv2 is None)
 
-        self.require_mppe.set_active(require_mppe)
-        self.require_mppe_128.set_active(require_mppe_128)
+        self.require_mppe.set_active(require_mppe != None)
+        self.require_mppe_128.set_active(require_mppe_128 != None)
         # FIXME umcomment it when backend ready
-        self.mppe_stateful.set_active(mppe_stateful)
-        self.nobsdcomp.set_active(not nobsdcomp)
-        self.nodeflate.set_active(not nodeflate)
-        self.no_vj_comp.set_active(not no_vj_comp)
+        self.mppe_stateful.set_active(mppe_stateful != None)
+        self.nobsdcomp.set_active(nobsdcomp is None)
+        self.nodeflate.set_active(nodeflate is None)
+        self.no_vj_comp.set_active(no_vj_comp is None)
 
         if lcp_echo_failure == None and lcp_echo_interval == None:
             self.ppp_echo.set_active(False)
