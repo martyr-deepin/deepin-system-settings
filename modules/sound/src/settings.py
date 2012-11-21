@@ -75,69 +75,54 @@ except:
     CURRENT_SOURCE = None
 
 PA_CARDS = {}           # All Device that this Card container.
+PA_CARDS[None] = {"obj": None, "sink": [], "source": []}
 for cards in PA_CARD_LIST:
     PA_CARDS[cards] = {"obj": card.Card(cards), "sink": [], "source": []}
-PA_CARDS[None] = {"obj": None, "sink": [], "source": []}
 
 PA_DEVICE = {}    # All Device
 PA_CHANNELS = {}  # Each Channels
 
 LEFT_CHANNELS = [1, 5, 8, 10, 45, 48]
 RIGHT_CHANNELS = [2, 6, 9, 11, 46, 49]
-for sink in PA_SINK_LIST:
-    dev = device.Device(sink)
-    if not dev.get_ports() and sink != CURRENT_SINK: # if the device does not have any ports, ignore it
-        continue
-    PA_DEVICE[sink] = dev
-    dev_channels = {}
-    channels = PA_DEVICE[sink].get_channels()
-    dev_channels["channel_num"] = len(channels)
-    dev_channels["left"] = []
-    dev_channels["right"] = []
-    dev_channels["other"] = []
-    i = 0
-    while i < dev_channels["channel_num"]:
-        if channels[i] in LEFT_CHANNELS:
-            dev_channels["left"].append(i)
-        elif channels[i] in RIGHT_CHANNELS:
-            dev_channels["right"].append(i)
+def init_dev_list(dev_list, dev_type):
+    global PA_DEVICE
+    global PA_CHANNELS
+    global PA_CARDS
+    for d in dev_list:
+        dev = device.Device(d)
+        if dev_type == 'sink':
+            if not dev.get_ports() and d != CURRENT_SINK: # if the device does not have any ports, ignore it
+                continue
         else:
-            dev_channels["other"].append(i)
-        i += 1
-    try:
-        cards = dev.get_card()
-        PA_CARDS[cards]["sink"].append(dev)
-    except:
-        traceback.print_exc()
-    PA_CHANNELS[sink] = dev_channels
+            if not dev.get_ports() and d != CURRENT_SOURCE: # if the device does not have any ports, ignore it
+                continue
+        PA_DEVICE[d] = dev
+        dev_channels = {}
+        channels = PA_DEVICE[d].get_channels()
+        dev_channels["channel_num"] = len(channels)
+        dev_channels["left"] = []
+        dev_channels["right"] = []
+        dev_channels["other"] = []
+        i = 0
+        while i < dev_channels["channel_num"]:
+            if channels[i] in LEFT_CHANNELS:
+                dev_channels["left"].append(i)
+            elif channels[i] in RIGHT_CHANNELS:
+                dev_channels["right"].append(i)
+            else:
+                dev_channels["other"].append(i)
+            i += 1
+        try:
+            cards = dev.get_card()
+            PA_CARDS[cards][dev_type].append(dev)
+        except:
+            traceback.print_exc()
+        PA_CHANNELS[d] = dev_channels
 
-for source in PA_SOURCE_LIST:
-    dev = device.Device(source)
-    if not dev.get_ports() and source != CURRENT_SOURCE: # if the device does not have any ports, ignore it
-        continue
-    PA_DEVICE[source] = dev
-    dev_channels = {}
-    channels = PA_DEVICE[source].get_channels()
-    dev_channels["channel_num"] = len(channels)
-    dev_channels["left"] = []
-    dev_channels["right"] = []
-    dev_channels["other"] = []
-    i = 0
-    while i < dev_channels["channel_num"]:
-        if channels[i] in LEFT_CHANNELS:
-            dev_channels["left"].append(i)
-        elif channels[i] in RIGHT_CHANNELS:
-            dev_channels["right"].append(i)
-        else:
-            dev_channels["other"].append(i)
-        i += 1
-    try:
-        cards = dev.get_card()
-        PA_CARDS[cards]["source"].append(dev)
-    except:
-        traceback.print_exc()
-    PA_CHANNELS[source] = dev_channels
+init_dev_list(PA_SINK_LIST, 'sink')
+init_dev_list(PA_SOURCE_LIST, 'source')
 
+###############################################
 def get_object_property_list(obj):
     '''
     get DBus Object PropertyList
@@ -244,11 +229,53 @@ def get_port_list(dev):
         back.append(p)
         i += 1
     return (back, n)
+##########################################################
+def refresh_info():
+    ''' refresh and update pulseaudio info '''
+    if not PA_CORE:
+        return
+    # get device list
+    global PA_SINK_LIST
+    global PA_SOURCE_LIST
+    global PA_CARD_LIST
+    try:
+        PA_SINK_LIST = PA_CORE.get_sinks()
+        PA_SOURCE_LIST = PA_CORE.get_sources()
+        PA_CARD_LIST = PA_CORE.get_cards()
+    except:
+        print "PulseAudio dbus error: ---------------------------------------------"
+        traceback.print_exc()
+        PA_SINK_LIST = []
+        PA_SOURCE_LIST = []
+        PA_CARD_LIST = []
+    # get current device
+    global CURRENT_SINK
+    global CURRENT_SOURCE
+    try:
+        CURRENT_SINK = PA_CORE.get_fallback_sink()
+    except:
+        CURRENT_SINK = None
+    try:
+        CURRENT_SOURCE = PA_CORE.get_fallback_source()
+    except:
+        CURRENT_SOURCE = None
+    global PA_DEVICE
+    global PA_CHANNELS
+    global PA_CARDS
+    PA_CARDS = {}
+    PA_CARDS[None] = {"obj": None, "sink": [], "source": []}
+    for cards in PA_CARD_LIST:
+        PA_CARDS[cards] = {"obj": card.Card(cards), "sink": [], "source": []}
+    PA_DEVICE = {}
+    PA_CHANNELS = {}
+    init_dev_list(PA_SINK_LIST, 'sink')
+    init_dev_list(PA_SOURCE_LIST, 'source')
+
 
 #print PA_CORE
 #print PA_DEVICE
-print PA_CHANNELS
-print PA_SINK_LIST
+#print PA_CHANNELS
+#print PA_SINK_LIST
 #print PA_SOURCE_LIST
 #print PA_CARD_LIST
 #print PA_CARDS
