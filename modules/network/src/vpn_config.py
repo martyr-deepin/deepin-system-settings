@@ -5,7 +5,7 @@ from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.entry import InputEntry
+from dtk.ui.new_entry import InputEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -98,11 +98,10 @@ class VPNSetting(gtk.HBox):
         
     def save_changes(self, widget):
         print "saving"
-        pass
 
-        #connection = self.dsl.connection
-        #print connection
-        #connection.update()
+        connection = self.ipv4.connection
+        print connection.object_path
+        connection.update()
 
         ##FIXME need to change device path into variables
         #nm_module.nmclient.activate_connection_async(connection.object_path,
@@ -382,15 +381,21 @@ class PPTPConf(gtk.VBox):
         self.vpn_setting = self.connection.get_setting("vpn")
 
         # UI
-        pptp_table = gtk.Table(4, 3, False)
+        pptp_table = gtk.Table(6, 4, False)
         gateway_label = Label("Gateway:")
         user_label = Label("User:")
         password_label = Label("Password:")
         nt_domain_label = Label("NT Domain:")
+        # Radio Button
+        self.pptp_radio = RadioButton("PPTP")
+        self.l2tp_radio = RadioButton("L2TP")
         #pack labels
-        pptp_table.attach(gateway_label, 0, 1 , 0, 1)
-        pptp_table.attach(user_label, 0, 1, 1, 2)
-        pptp_table.attach(password_label, 0, 1, 2, 3)
+        pptp_table.attach(self.pptp_radio, 0, 2, 0, 1)
+        pptp_table.attach(self.l2tp_radio, 2, 4, 0, 1)
+        pptp_table.attach(gateway_label, 0, 2 , 1, 2)
+        pptp_table.attach(user_label, 0, 2, 2, 3)
+        pptp_table.attach(password_label, 0, 2, 3, 4)
+        pptp_table.attach(nt_domain_label, 0, 1, 4, 5)
 
         # entries
         self.gateway_entry = InputEntry()
@@ -403,11 +408,18 @@ class PPTPConf(gtk.VBox):
         self.nt_domain_entry.set_size(200,25 )
 
         #pack entries
-        pptp_table.attach(self.gateway_entry, 1, 3, 0, 1)
-        pptp_table.attach(self.user_entry, 1, 3, 1, 2)
-        pptp_table.attach(self.password_entry, 1, 3, 2, 3)
-        pptp_table.attach(self.nt_domain_entry, 1, 3, 3, 4)
+        pptp_table.attach(self.gateway_entry, 2, 4, 1, 2)
+        pptp_table.attach(self.user_entry, 2, 4, 2, 3)
+        pptp_table.attach(self.password_entry, 2, 4, 3, 4)
+        pptp_table.attach(self.nt_domain_entry, 2, 4, 4, 5)
 
+        service_type = self.vpn_setting.service_type.split(".")[-1]
+        if service_type == "l2tp":
+            self.l2tp_radio.set_active(True)
+        else:
+            self.pptp_radio.set_active(True)
+        self.pptp_radio.connect("toggled",self.radio_toggled, "pptp")
+        self.l2tp_radio.connect("toggled",self.radio_toggled, "l2tp")
         # set signals
 
         align = gtk.Alignment(0.5, 0.5, 0, 0)
@@ -417,7 +429,9 @@ class PPTPConf(gtk.VBox):
         self.refresh()
 
     def refresh(self):
-        print ">>>",self.vpn_setting.data
+        #print ">>>",self.vpn_setting.data
+
+
         gateway = self.vpn_setting.get_data_item("gateway")
         user = self.vpn_setting.get_data_item("user")
         #password_flags = self.vpn_setting.get_data_item("password-flags")
@@ -428,18 +442,20 @@ class PPTPConf(gtk.VBox):
         self.password_entry.entry.connect("press-return", self.entry_changed, "password")
         self.nt_domain_entry.entry.connect("press-return", self.entry_changed, "domain")
 
+
         if gateway:
             self.gateway_entry.set_text(gateway)
         if user:
             self.user_entry.set_text(user)
-        #if password_flags == 1:
         (setting_name, method) = self.connection.guess_secret_info() 
-        print ">>>>> setting_name and method",setting_name, method
         try:
             password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                     setting_name,
                                                     method)
-            self.password_entry = password
+            if password == None:
+                self.password_entry.set_text("")
+            else:
+                self.password_entry.set_text(password)
         except:
             print "failed to get password"
 
@@ -448,23 +464,21 @@ class PPTPConf(gtk.VBox):
                 
     def save_setting(self):
         pass
-        #username = self.username_entry.get_text()
-        #service = self.service_entry.get_text()
-        #password = self.password_entry.get_text()
-
-        #if username:
-            #self.dsl_setting.username = username
-        #if service:
-            #self.dsl_setting.service = service
-        #if password:
-            #self.dsl_setting.password = password
 
     def entry_changed(self, widget, item):
         text = widget.get_text()
         if text:
-            self.vpn_setting.set_data_item(item, text)
+            if item == "password":
+                self.vpn_setting.set_secret_item(item, text)
+            else:
+                self.vpn_setting.set_data_item(item, text)
         else:
             self.vpn_setting.set_data_item(item, None)
+    
+    def radio_toggled(self, widget, service_type):
+        self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
+        refresh()
+
 
 class PPPConf(gtk.VBox):
 
@@ -472,7 +486,8 @@ class PPPConf(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.connection = connection
-        self.ppp_setting = self.connection.get_setting("ppp")
+        self.vpn_setting = self.connection.get_setting("vpn")
+        
 
         method = Contain(app_theme.get_pixbuf("/Network/misc.png"), "Configure Method", self.toggle_cb)
         # invisable settings
@@ -493,7 +508,7 @@ class PPPConf(gtk.VBox):
 
         # visible settings
         table = gtk.Table(9, 8, False)
-        compression = Label("Compression")
+        compression = Label("Security and Compression")
         table.attach(compression, 0, 5, 0 ,1)
 
         self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
@@ -532,32 +547,24 @@ class PPPConf(gtk.VBox):
     def refresh(self):
         #=========================
         # retreieve settings
-        refuse_eap = self.ppp_setting.refuse_eap
-        refuse_pap = self.ppp_setting.refuse_pap
-        refuse_chap = self.ppp_setting.refuse_chap
-        refuse_mschap = self.ppp_setting.refuse_mschap
-        refuse_mschapv2 = self.ppp_setting.refuse_mschapv2
+        refuse_eap = self.vpn_setting.get_data_item("refuse_eap")
+        refuse_pap = self.vpn_setting.get_data_item("refuse_pap")
+        refuse_chap = self.vpn_setting.get_data_item("refuse_chap")
+        refuse_mschap = self.vpn_setting.get_data_item("refuse_mschap")
+        refuse_mschapv2 = self.vpn_setting.get_data_item("refuse_mschapv2")
 
-        require_mppe = self.ppp_setting.require_mppe
-        require_mppe_128 = self.ppp_setting.require_mppe_128
-        mppe_stateful = self.ppp_setting.mppe_stateful
+        require_mppe = self.vpn_setting.get_data_item("require_mppe")
+        require_mppe_128 = self.vpn_setting.get_data_item("require_mppe_128")
+        mppe_stateful = self.vpn_setting.get_data_item("mppe_stateful")
 
-        nobsdcomp = self.ppp_setting.nobsdcomp
-        nodeflate = self.ppp_setting.nodeflate
-        no_vj_comp = self.ppp_setting.no_vj_comp
+        nobsdcomp = self.vpn_setting.get_data_item("nobsdcomp")
+        nodeflate = self.vpn_setting.get_data_item("nodeflate")
+        no_vj_comp = self.vpn_setting.get_data_item("no_vj_comp")
 
-        lcp_echo_failure = self.ppp_setting.lcp_echo_failure
-        lcp_echo_interval = self.ppp_setting.lcp_echo_interval
-
-        # entering ui
-        #if widget.get_active():
-            #self.require_mppe_128.set_sensitive(True)
-            #self.mppe_stateful.set_sensitive(True)
-        #else:
-            #self.require_mppe_128.set_active(False)
-            #self.mppe_stateful.set_active(False)
-            #self.require_mppe_128.set_sensitive(False)
-            #self.mppe_stateful.set_sensitive(False)
+        lcp_echo_failure = self.vpn_setting.get_data_item("lcp_echo_failure")
+        lcp_echo_interval = self.vpn_setting.get_data_item("lcp_echo_interval")
+        
+        print "mschap",refuse_mschap
 
         self.refuse_eap.set_active( not refuse_eap)
         self.refuse_pap.set_active(not refuse_pap)
@@ -596,18 +603,18 @@ class PPPConf(gtk.VBox):
 
         echo = self.ppp_echo.get_active()
 
-        self.ppp_setting.refuse_eap = refuse_eap
-        self.ppp_setting.refuse_pap = refuse_pap
-        self.ppp_setting.refuse_chap = refuse_chap
-        self.ppp_setting.refuse_mschap = refuse_mschap 
-        self.ppp_setting.refuse_mschapv2 = refuse_mschapv2
-        self.ppp_setting.require_mppe = require_mppe
-        self.ppp_setting.require_mppe_128 = require_mppe_128
-        self.ppp_setting.mppe_stateful = mppe_stateful
+        self.vpn_setting.refuse_eap = refuse_eap
+        self.vpn_setting.refuse_pap = refuse_pap
+        self.vpn_setting.refuse_chap = refuse_chap
+        self.vpn_setting.refuse_mschap = refuse_mschap 
+        self.vpn_setting.refuse_mschapv2 = refuse_mschapv2
+        self.vpn_setting.require_mppe = require_mppe
+        self.vpn_setting.require_mppe_128 = require_mppe_128
+        self.vpn_setting.mppe_stateful = mppe_stateful
 
-        self.ppp_setting.nobsdcomp = nobsdcomp
-        self.ppp_setting.nodeflate = nodeflate
-        self.ppp_setting.no_vj_comp = no_vj_comp
+        self.vpn_setting.nobsdcomp = nobsdcomp
+        self.vpn_setting.nodeflate = nodeflate
+        self.vpn_setting.no_vj_comp = no_vj_comp
 
         if echo:
             lcp_echo_failure = 5
@@ -616,7 +623,7 @@ class PPPConf(gtk.VBox):
             lcp_echo_failure = 0
             lcp_echo_interval = 0
 
-        #print self.ppp_setting.prop_dict
+        #print self.vpn_setting.prop_dict
 
     def mppe_toggled(self, widget):
         #print "toggled"
@@ -636,7 +643,6 @@ class PPPConf(gtk.VBox):
         else:
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
-
 
 
 

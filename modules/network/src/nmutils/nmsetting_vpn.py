@@ -96,6 +96,8 @@ class NMSettingVpn(NMSetting):
     def get_data_item(self, item):
         if item in self.data.iterkeys():
             return self.data[item]
+        else:
+            return None
 
     def set_data_item(self, item, value):
         if "data" not in self.prop_dict.iterkeys():
