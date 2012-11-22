@@ -58,18 +58,6 @@ class Core(BusBase):
 
         self.listen_for_signal("", dbus.Array([], signature = 'o'))
 
-        #self.dbus_proxy.connect_to_signal("NewCard", self.new_card_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
-        #self.dbus_proxy.connect_to_signal("CardRemoved", self.card_removed_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
-        #self.dbus_proxy.connect_to_signal("NewSink", self.new_sink_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
-        #self.dbus_proxy.connect_to_signal("SinkRemoved", self.sink_removed_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-        ######
         self.bus.add_signal_receiver(self.new_card_cb, signal_name = "NewCard", dbus_interface = 
                                      self.object_interface, path = self.object_path)
 

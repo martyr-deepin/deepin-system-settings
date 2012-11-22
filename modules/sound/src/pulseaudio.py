@@ -39,14 +39,27 @@ def connect_bus():
         address = os.environ['PULSE_DBUS_SERVER']
     else:
         bus = dbus.SessionBus()
+
+        monitor_object = bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
+        monitor_interface = dbus.Interface(monitor_object, "org.freedesktop.DBus")
+
+        if "org.PulseAudio1" not in monitor_interface.ListNames():
+            try:
+                monitor_interface.StartServiceByName("org.PulseAudio1", 1)
+            except:
+                print "StartServiceByName:org.PulseAudio1 Failed"
+
         server_lookup = bus.get_object("org.PulseAudio1", "/org/pulseaudio/server_lookup1")
-        #print "address:", address
         address = server_lookup.Get("org.PulseAudio.ServerLookup1", "Address", dbus_interface="org.freedesktop.DBus.Properties")
 
-    return dbus.connection.Connection(address)
-
+    try:    
+        return dbus.connection.Connection(address)
+    except:
+        print "return pulseaudio client bus failed"
 try:
     client_bus = connect_bus()
+    if not client_bus:
+        raise dbus.exceptions.DBusException
 except dbus.exceptions.DBusException:
     client_bus = None
     print "connect to dbus server error."
