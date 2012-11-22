@@ -186,4 +186,4 @@ class PolkitPermission:
             pass
 
 if __name__ == "__main__":
-    permission = PolkitPermission("org.freedesktop.Accounts.user-administration")
+    permission = PolkitPermission("org.freedesktop.accounts.user-administration")
