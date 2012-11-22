@@ -129,6 +129,7 @@ class NMClient(NMObject):
         '''used for only one activate'''
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path,                                                                                reply_handler = self.activate_finish, error_handler = self.activate_error)
+            print "##",active
             if active:
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2

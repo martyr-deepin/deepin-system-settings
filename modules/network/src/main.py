@@ -512,7 +512,7 @@ class Network(object):
     
     def activate_succeed(self, widget, connection_path):
         ob = cache.getobject(connection_path)
-        print ob
+        print ">>>",ob
 
     def init_sections(self, module_frame):
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
