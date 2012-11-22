@@ -426,8 +426,8 @@ class PPTPConf(gtk.VBox):
         advanced_button.connect("clicked", self.advanced_button_click)
 
         pptp_table.attach(advanced_button, 3, 4, 5, 6)
-        service_type = self.vpn_setting.service_type.split(".")[-1]
-        if service_type == "l2tp":
+        self.service_type = self.vpn_setting.service_type.split(".")[-1]
+        if self.service_type == "l2tp":
             self.l2tp_radio.set_active(True)
         else:
             self.pptp_radio.set_active(True)
@@ -488,8 +488,10 @@ class PPTPConf(gtk.VBox):
             self.vpn_setting.delete_data_item(item)
     
     def radio_toggled(self, widget, service_type):
-        self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
-        self.refresh()
+        if widget.get_active():
+            self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
+            self.service_type = service_type
+            self.refresh()
 
     def advanced_button_click(self, widget):
         self.ppp.refresh()
@@ -526,35 +528,29 @@ class PPPConf(gtk.VBox):
         self.method_table.attach(self.refuse_mschapv2, 0, 8, 4, 5)
 
         # visible settings
-        table = gtk.Table(9, 10, False)
-        compression = Label("Security and Compression")
-        table.attach(compression, 0, 5, 0 ,1)
+        self.compression = Label("Security and Compression")
 
         self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
-        #self.require_mppe.connect("toggled", self.mppe_toggled)
         self.require_mppe_128 = CheckButton("Require 128-bit encryption")
         self.mppe_stateful = CheckButton("Use stataful MPPE")
         
         self.nobsdcomp = CheckButton("Allow BSD data Compression")
         self.nodeflate = CheckButton("Allow Deflate date compression")
         self.no_vj_comp = CheckButton("Use TCP header compression")
+        self.nopcomp = CheckButton("Use protocal field compression negotiation")
+        self.noaccomp = CheckButton("Use Address/Control compression")
 
-        echo = Label("Echo")
+        self.echo = Label("Echo")
         self.ppp_echo = CheckButton("Send PPP echo packets")
+
+        self.table = gtk.Table(11, 10, False)
+        self.init_ui()
         #self.mppe.set_size_request(100, 10)
-        table.attach(self.require_mppe, 0, 10, 1, 2)
-        table.attach(self.require_mppe_128, 1, 10, 2, 3)
-        table.attach(self.mppe_stateful, 1, 10, 3, 4)
-        table.attach(self.nobsdcomp, 0, 10, 4, 5)
-        table.attach(self.nodeflate, 0, 10, 5, 6)
-        table.attach(self.no_vj_comp, 0, 10, 6, 7)
-        table.attach(echo, 0, 5, 7, 8)
-        table.attach(self.ppp_echo, 0, 10, 8, 9)
 
         vbox = gtk.VBox()
         vbox.pack_start(method, False, False)
         vbox.pack_start(self.method_table, False, False)
-        vbox.pack_start(table, False, False)
+        vbox.pack_start(self.table, False, False)
         align = gtk.Alignment(0.5, 0.5, 0, 0)
         align.add(vbox)
         self.add(align)
@@ -582,12 +578,36 @@ class PPPConf(gtk.VBox):
         self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
         self.no_vj_comp.connect("toggled", self.check_button_cb, "novj")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
+        self.nopcomp.connect("toggled", self.check_button_cb, "nopcomp")
+        self.noaccomp.connect("toggled", self.check_button_cb, "noaccomp")
 
         method.set_active(True)
+
+    def init_ui(self):
+        self.service_type = self.vpn_setting.service_type.split(".")[-1]
+        print self.service_type
+        container_remove_all(self.table)
+        self.table.attach(self.compression, 0, 5, 0 ,1)
+        self.table.attach(self.require_mppe, 0, 10, 1, 2)
+        self.table.attach(self.require_mppe_128, 1, 10, 2, 3)
+        self.table.attach(self.mppe_stateful, 1, 10, 3, 4)
+        self.table.attach(self.nobsdcomp, 0, 10, 4, 5)
+        self.table.attach(self.nodeflate, 0, 10, 5, 6)
+        self.table.attach(self.no_vj_comp, 0, 10, 6, 7)
+        self.table.attach(self.echo, 0, 5, 9, 10)
+        self.table.attach(self.ppp_echo, 0, 10, 10, 11)
+
+        if self.service_type == "l2tp":
+            self.table.attach(self.nopcomp, 0, 10, 7, 8)
+            self.table.attach(self.noaccomp, 0, 10 , 8, 9)
+            #self.nopcomp.set_active(True)
+            #self.noaccomp.set_active(True)
+        self.table.show_all()
 
     def refresh(self):
         #=========================
         # retreieve settings
+        self.init_ui()
         refuse_eap = self.vpn_setting.get_data_item("refuse-eap")
         
         refuse_pap = self.vpn_setting.get_data_item("refuse-pap")
@@ -603,9 +623,17 @@ class PPPConf(gtk.VBox):
         nodeflate = self.vpn_setting.get_data_item("nodeflate")
         no_vj_comp = self.vpn_setting.get_data_item("novj")
 
+        if self.service_type == "l2tp":
+            no_vj_comp = self.vpn_setting.get_data_item("no_vj_comp")
+            nopcomp = self.vpn_setting.get_data_item("nopcomp")
+            noaccomp = self.vpn_setting.get_data_item("noaccomp")
+            self.nopcomp.set_active(nopcomp is None)
+            self.noaccomp.set_active(noaccomp is None)
+
         lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
         lcp_echo_interval = self.vpn_setting.get_data_item("lcp-echo-interval")
         
+
         self.require_mppe.set_active(require_mppe != None)
         self.refuse_eap.set_active(refuse_eap is None)
         self.refuse_pap.set_active(refuse_pap is None)
