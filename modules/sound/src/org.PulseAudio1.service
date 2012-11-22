@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.PulseAudio1
+Exec=/usr/bin/pulseaudio
