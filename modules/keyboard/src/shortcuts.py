@@ -228,7 +228,6 @@ def get_shortcuts_custom_shortcut_item(client):
         binding = client.get("%s/binding" %(dirs)).get_string()
         if not binding:
             binding = _("disable")
-        print "binding '%s'" % binding
         name = client.get("%s/name" %(dirs)).get_string()
         item = ShortcutItem(name, binding, action)
         item.set_accel_buffer_from_accel(binding)

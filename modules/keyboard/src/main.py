@@ -36,8 +36,7 @@ from dtk.ui.label import Label
 from dtk.ui.button import RadioButton, Button
 from dtk.ui.entry import InputEntry
 from dtk.ui.tab_window import TabBox
-#from dtk.ui.scalebar import HScalebar
-#from dtk.ui.new_treeview import TreeView
+from dtk.ui.scalebar import HScalebar
 from dtk.ui.utils import cairo_disable_antialias
 from treeitem import (SelectItem, LayoutItem, OptionItem,
                       CheckButtonItem, RadioButtonItem,
@@ -49,16 +48,16 @@ import gtk
 import shortcuts
 import pangocairo
 import pango
-import copy
 from module_frame import ModuleFrame
 
 
 class KeySetting(object):
     '''keyboard setting class'''
-    def __init__(self):
+    def __init__(self, module_frame):
         self.settings = settings.KEYBOARD_SETTINGS
         self.settings1 = settings.DESKTOP_SETTINGS
         self.settings2 = settings.TOUCHPAD_SETTINGS
+        self.module_frame = module_frame
         self.xkb = xkb.XKeyBoard()
         self.__layout_items = self.xkb.get_layout_treeitems()
         self.__shortcuts_items = shortcuts.get_shortcuts_wm_shortcut_item(settings.WM_SHORTCUTS_SETTINGS)
@@ -94,9 +93,6 @@ class KeySetting(object):
         title_item_font_size = 12
         option_item_font_szie = 9
 
-        #self.label_widgets["typing"] = Label(_("Typing"))
-        #self.label_widgets["layout"] = Label(_("Layout"))
-        #self.label_widgets["shortcuts"] = Label(_("Shortcuts"))
         #####################################
         # Typing widgets create
         # image init
@@ -170,38 +166,38 @@ class KeySetting(object):
         self.adjust_widgets["repeat_interval"] = gtk.Adjustment(0, 20, 2000)
         self.adjust_widgets["blink_cursor"] = gtk.Adjustment(0, 100, 2500)
         # scale init
-        self.scale_widgets["repeat_delay"] = gtk.HScale()
-        self.scale_widgets["repeat_delay"].set_draw_value(False)
-        #self.scale_widgets["repeat_delay"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["repeat_delay"] = gtk.HScale()
+        #self.scale_widgets["repeat_delay"].set_draw_value(False)
+        self.scale_widgets["repeat_delay"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["repeat_delay"].set_adjustment( self.adjust_widgets["repeat_delay"])
-        self.scale_widgets["repeat_interval"] = gtk.HScale()
-        self.scale_widgets["repeat_interval"].set_draw_value(False)
-        #self.scale_widgets["repeat_interval"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["repeat_interval"] = gtk.HScale()
+        #self.scale_widgets["repeat_interval"].set_draw_value(False)
+        self.scale_widgets["repeat_interval"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["repeat_interval"].set_adjustment( self.adjust_widgets["repeat_interval"])
-        self.scale_widgets["blink_cursor"] = gtk.HScale()
-        self.scale_widgets["blink_cursor"].set_draw_value(False)
-        #self.scale_widgets["blink_cursor"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["blink_cursor"] = gtk.HScale()
+        #self.scale_widgets["blink_cursor"].set_draw_value(False)
+        self.scale_widgets["blink_cursor"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["blink_cursor"].set_adjustment( self.adjust_widgets["blink_cursor"])
         #####################################
         # Layout widgets create
@@ -488,28 +484,21 @@ class KeySetting(object):
         ##################################
         # typing widget signal
         # repeat delay
+        self.settings.connect("changed", self.keyboard_setting_changed_cb)
+        self.settings1.connect("changed", self.desktop_setting_changed_cb)
+        self.settings2.connect("changed", self.touchpad_setting_changed_cb)
         self.adjust_widgets["repeat_delay"].connect(
             "value-changed", self.adjustment_value_changed, "delay")
-        self.settings.connect(
-            "changed::delay", self.settings_value_changed,
-            self.adjust_widgets["repeat_delay"])
         # repeat interval
         self.adjust_widgets["repeat_interval"].connect(
             "value-changed", self.adjustment_value_changed, "repeat-interval")
-        self.settings.connect(
-            "changed::repeat-interval", self.settings_value_changed,
-            self.adjust_widgets["repeat_interval"])
         self.button_widgets["repeat_test_entry"].connect("expose-event", self.repeat_entry_expose)
         # blink
         self.adjust_widgets["blink_cursor"].connect(
             "value-changed", self.adjustment_value_changed, "cursor-blink-time")
-        self.settings1.connect(
-            "changed::corsor-blink-time", self.settings_value_changed,
-            self.adjust_widgets["blink_cursor"])
         # touchpad disable 
         self.button_widgets["touchpad_disable"].connect("toggled", self.disable_while_typing_set)
         self.button_widgets["touchpad_disable"].connect("expose-event", self.disable_while_typing_expose)
-        self.settings2.connect("changed::disable-while-typing", self.disable_while_typing_change)
         
         # relevant setting
         self.alignment_widgets["mouse_setting"].connect("expose-event",
@@ -543,6 +532,35 @@ class KeySetting(object):
         self.button_widgets["shortcuts_add"].connect("clicked", lambda b: self.__add_shortcuts_item())
     
     ######################################
+    def keyboard_setting_changed_cb(self, setting, key):
+        args = [setting, key]
+        if key == 'delay':
+            callback = self.settings_value_changed
+            args.append(self.adjust_widgets["repeat_delay"])
+        elif key == 'repeat-interval':
+            callback = self.settings_value_changed
+            args.append(self.adjust_widgets["repeat_interval"])
+        else:
+            return
+        callback(*args)
+    
+    def desktop_setting_changed_cb(self, setting, key):
+        args = [setting, key]
+        if key == 'cursor-blink-time':
+            callback = self.settings_value_changed
+            args.append(self.adjust_widgets["blink_cursor"])
+        else:
+            return
+        callback(*args)
+
+    def touchpad_setting_changed_cb(self, setting, key):
+        args = [setting, key]
+        if key == 'disable-while-typing':
+            callback = self.disable_while_typing_change
+        else:
+            return
+        callback(*args)
+
     # typing widget callback
     def disable_while_typing_set(self, button):
         ''' set left-handed '''
@@ -577,14 +595,17 @@ class KeySetting(object):
     
     def adjustment_value_changed(self, adjustment, key):
         '''adjustment value changed, and settings set the value'''
+        if adjustment.get_data("changed-by-other-app"):
+            adjustment.set_data("changed-by-other-app", False)
+            return
         value = adjustment.get_upper() - adjustment.get_value() + adjustment.get_lower()
         self.scale_set[key](value)
     
     def settings_value_changed(self, settings, key, adjustment):
         '''settings value changed, and adjustment set the value'''
-        return  # if want settings relate to adjustment widget, please delete this line.
         value = adjustment.get_upper() + adjustment.get_lower() - self.scale_get[key]()
         adjustment.set_value(value)
+        adjustment.set_data("changed-by-other-app", True)
 
     def repeat_entry_expose(self, widget, event):
         text = widget.get_text()
@@ -617,7 +638,10 @@ class KeySetting(object):
     # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
-        print "%s press" % action
+        if action == 'mouse':
+            print "goto mouse"
+        elif action == 'touchpad':
+            print "goto touchpad"
 
     ######################################
     # layout widget callback
@@ -636,18 +660,7 @@ class KeySetting(object):
             cr.stroke()
     
     def layout_treeview_selecte(self, tree_view, item, row_index):
-        print "select:", item.name, item.layout, item.variants, row_index
-        # set if can click up
-        #if row_index == 0 and self.button_widgets["layout_up"].get_sensitive():
-            #self.button_widgets["layout_up"].set_sensitive(False)
-        #elif not self.button_widgets["layout_up"].get_sensitive():
-            #self.button_widgets["layout_up"].set_sensitive(True)
-        # set if can click down
-        #if row_index == len(tree_view.visible_items)-1\
-                #and self.button_widgets["layout_down"].get_sensitive():
-            #self.button_widgets["layout_down"].set_sensitive(False)
-        #elif not self.button_widgets["layout_down"].get_sensitive():
-            #self.button_widgets["layout_down"].set_sensitive(True)
+        #print "select:", item.name, item.layout, item.variants, row_index
         # set if can click remove
         if len(tree_view.visible_items) == 1\
                 and self.button_widgets["layout_remove"].get_sensitive():
@@ -657,12 +670,15 @@ class KeySetting(object):
     
     def layout_remove_button_clicked(self, button):
         '''remove selected layout'''
+        print "remove button clicked no select row to remove"
         if not self.view_widgets["layout_selected"].select_rows:
+            print "no select row to remove"
             return
         layout_treeview = self.view_widgets["layout_selected"]
         select_row = layout_treeview.select_rows[0]
         layout_list = settings.xkb_get_layouts()
         if select_row >= len(layout_list):
+            print "selec row out range", layout_list
             return
         del layout_list[select_row]
         settings.xkb_set_layouts(layout_list)
@@ -691,9 +707,6 @@ class KeySetting(object):
                     button.set_sensitive(False)
             elif not button.get_sensitive():
                 button.set_sensitive(True)
-            #print row, item.name, item.layout, item.variants
-            #print layouts, variants
-            #print item.layout in layouts, item.variants in variants
 
         def add_layout(treeview, dialog):
             if not treeview.select_rows:
@@ -762,12 +775,9 @@ class KeySetting(object):
             cr.rectangle(x1, y1, w1+1, h1+1)
             cr.rectangle(x2, y2, w2+1, h2+h3+1)
             cr.stroke()
-            #cr.set_source_rgba(0.0, 0.0, 0.0, 0.3)
-            #cr.rectangle(x2+1, y3+1, w2-1, h3-1)
-            #cr.fill()
     
     def shortcuts_treeview_selecte(self, tree_view, item, row_index):
-        print "select:", item.text, row_index
+        #print "select:", item.text, row_index
         self.button_widgets["shortcuts_remove"].set_sensitive(False)
         self.view_widgets["shortcuts_shortcut"].set_select_rows([])
         self.view_widgets["shortcuts_shortcut"].add_items(
@@ -780,10 +790,9 @@ class KeySetting(object):
         vadjust.set_value(vadjust.get_lower())
         vadjust.value_changed()
         self.view_widgets["shortcuts_shortcut"].queue_draw()
-        print "is_custom", tree_view.get_data('is_custom'), vadjust.get_lower(), vadjust.get_upper(), vadjust.get_value()
     
     def shortcuts_selecte(self, tree_view, item, row_index):
-        print "shortcuts select:", item.description, item.keyname, item.name, row_index
+        #print "shortcuts select:", item.description, item.keyname, item.name, row_index
         if self.view_widgets["shortcuts_selected"].get_data('is_custom'):
             if not self.button_widgets["shortcuts_remove"].get_sensitive():
                 self.button_widgets["shortcuts_remove"].set_sensitive(True)
@@ -797,7 +806,6 @@ class KeySetting(object):
             return
         
         def button_press_callback(widget, event, item):
-            print "clicked", event
             gtk.gdk.keyboard_ungrab(0)
             gtk.gdk.pointer_ungrab(0)
             widget.destroy()
@@ -805,12 +813,9 @@ class KeySetting(object):
             item.redraw_request_callback(item)
         
         def key_press_callback(widget, event, item, tv):
-            #print "key press", get_keyevent_name(event)
             if event.is_modifier:
-                print "is modifier"
                 return
             
-            #print item.description, item.keyname, item.name
             def cancel_reassign(dialog):
                 item.keyname = item.old_keyname
                 item.redraw_request_callback(item)
@@ -830,9 +835,6 @@ class KeySetting(object):
                 for category in self.__shortcuts_items:
                     for items in self.__shortcuts_items[category]:
                         if items != item and items.accel_buffer == accel_buf:
-                            #print "items:", items.accel_buffer.keyval, items.accel_buffer.state
-                            #print "accel_buf:", accel_buf.keyval, accel_buf.state
-                            #print items.accel_buffer == accel_buf
                             return items
                 return None
             gtk.gdk.keyboard_ungrab(0)
@@ -936,10 +938,12 @@ class KeySetting(object):
         event_box.show_all()
         if gtk.gdk.keyboard_grab(event_box.window, False, 0) != gtk.gdk.GRAB_SUCCESS:
             event_box.destroy()
+            item.keyname = item.old_keyname
             return None
         if gtk.gdk.pointer_grab(event_box.window, False, gtk.gdk.BUTTON_PRESS_MASK, None, None, 0) != gtk.gdk.GRAB_SUCCESS:
             gtk.gdk.keyboard_ungrab(0)
             event_box.destroy()
+            item.keyname = item.old_keyname
             return None
         event_box.set_can_focus(True)
         event_box.grab_focus()
@@ -988,8 +992,10 @@ class KeySetting(object):
                 i += 1
             print "add:", name, action, key_dir
             settings.shortcuts_custom_set(key_dir, (action, '', name))
-            item = ShortcutItem(name, '', action)
+            item = ShortcutItem(name, _('disable'), action)
             item.set_data('gconf-dir', '%s/%s' % (base_dir, key_dir))
+            item.set_data('setting-type', 'gconf')
+            item.set_data('settings', settings.GCONF_CLIENT)
             self.__shortcuts_items[_('Custom Shortcuts')].append(item)
             self.view_widgets["shortcuts_shortcut"].add_items([item])
             self.view_widgets["shortcuts_shortcut"].queue_draw()
@@ -1031,7 +1037,7 @@ class KeySetting(object):
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
-    key_settings = KeySetting()
+    key_settings = KeySetting(module_frame)
     
     module_frame.add(key_settings.alignment_widgets["notebook"])
     
