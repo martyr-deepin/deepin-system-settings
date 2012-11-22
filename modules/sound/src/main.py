@@ -978,6 +978,7 @@ class SoundSetting(object):
         pass
     
 if __name__ == '__main__':
+    gtk.gdk.threads_init()
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
     mouse_settings = SoundSetting(module_frame)
