@@ -33,15 +33,17 @@ from nls import _
 from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton
+from dtk.ui.scalebar import HScalebar
 from dtk.ui.utils import propagate_expose, cairo_disable_antialias
 import gtk
 from module_frame import ModuleFrame
 
-class MouseSetting(object):
-    '''mouse setting class'''
-    def __init__(self):
+class TouchpadSetting(object):
+    '''touchpad setting class'''
+    def __init__(self, module_frame):
         self.settings = settings.TOUCHPAD_SETTINGS
         self.settings1 = settings.MOUSE_SETTINGS
+        self.module_frame = module_frame
         self.scale_set= {
             "motion-acceleration" : settings.touchpad_set_motion_acceleration,
             "motion-threshold"    : settings.touchpad_set_motion_threshold,
@@ -149,49 +151,49 @@ class MouseSetting(object):
         self.adjust_widgets["double_click_rate"] = gtk.Adjustment(0, 100, 1000)
         self.adjust_widgets["drag_threshold_time"] = gtk.Adjustment(0, 1, 10)
         # scale init
-        self.scale_widgets["pointer_speed_accel"] = gtk.HScale()
-        self.scale_widgets["pointer_speed_accel"].set_draw_value(False)
-        #self.scale_widgets["pointer_speed_accel"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["pointer_speed_accel"] = gtk.HScale()
+        #self.scale_widgets["pointer_speed_accel"].set_draw_value(False)
+        self.scale_widgets["pointer_speed_accel"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["pointer_speed_accel"].set_adjustment( self.adjust_widgets["pointer_speed_accel"])
-        self.scale_widgets["pointer_speed_sensitiv"] = gtk.HScale()
-        self.scale_widgets["pointer_speed_sensitiv"].set_draw_value(False)
-        #self.scale_widgets["pointer_speed_sensitiv"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["pointer_speed_sensitiv"] = gtk.HScale()
+        #self.scale_widgets["pointer_speed_sensitiv"].set_draw_value(False)
+        self.scale_widgets["pointer_speed_sensitiv"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["pointer_speed_sensitiv"].set_adjustment( self.adjust_widgets["pointer_speed_sensitiv"])
-        self.scale_widgets["double_click_rate"] = gtk.HScale()
-        self.scale_widgets["double_click_rate"].set_draw_value(False)
-        #self.scale_widgets["double_click_rate"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["double_click_rate"] = gtk.HScale()
+        #self.scale_widgets["double_click_rate"].set_draw_value(False)
+        self.scale_widgets["double_click_rate"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["double_click_rate"].set_adjustment( self.adjust_widgets["double_click_rate"])
-        self.scale_widgets["drag_threshold_time"] = gtk.HScale()
-        self.scale_widgets["drag_threshold_time"].set_draw_value(False)
-        #self.scale_widgets["double_click_rate"] = HScalebar(
-            #app_theme.get_pixbuf("scalebar/l_fg.png"),
-            #app_theme.get_pixbuf("scalebar/l_bg.png"),
-            #app_theme.get_pixbuf("scalebar/m_fg.png"),
-            #app_theme.get_pixbuf("scalebar/m_bg.png"),
-            #app_theme.get_pixbuf("scalebar/r_fg.png"),
-            #app_theme.get_pixbuf("scalebar/r_bg.png"),
-            #app_theme.get_pixbuf("scalebar/point.png"))
+        #self.scale_widgets["drag_threshold_time"] = gtk.HScale()
+        #self.scale_widgets["drag_threshold_time"].set_draw_value(False)
+        self.scale_widgets["drag_threshold_time"] = HScalebar(
+            app_theme.get_pixbuf("scalebar/l_fg.png"),
+            app_theme.get_pixbuf("scalebar/l_bg.png"),
+            app_theme.get_pixbuf("scalebar/m_fg.png"),
+            app_theme.get_pixbuf("scalebar/m_bg.png"),
+            app_theme.get_pixbuf("scalebar/r_fg.png"),
+            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["drag_threshold_time"].set_adjustment( self.adjust_widgets["drag_threshold_time"])
      
     def __adjust_widget(self):
@@ -404,32 +406,22 @@ class MouseSetting(object):
         # window signals
         self.button_widgets["right_hand_radio"].connect("toggled", self.left_or_right_set, "right")
         self.button_widgets["left_hand_radio"].connect("toggled", self.left_or_right_set, "left")
-        self.settings.connect("changed::left-handed", self.left_or_right_setting_changed)
+        self.settings.connect("changed", self.touchpad_setting_changed_cb)
+        self.settings1.connect("changed", self.mouse_setting_changed_cb)
         # acceleration operation
         self.adjust_widgets["pointer_speed_accel"].connect(
             "value-changed", self.adjustment_value_changed, "motion-acceleration")
-        self.settings.connect(
-            "changed::motion-acceleration", self.settings_value_changed,
-            self.adjust_widgets["pointer_speed_accel"])
         # sensitivity operation
         self.adjust_widgets["pointer_speed_sensitiv"].connect(
             "value-changed", self.adjustment_value_changed, "motion-threshold")
-        self.settings.connect(
-            "changed::motion-threshold", self.settings_value_changed,
-            self.adjust_widgets["pointer_speed_sensitiv"])
         # double-click operation
         self.adjust_widgets["double_click_rate"].connect(
             "value-changed", self.adjustment_value_changed, "double-click")
-        self.settings1.connect(
-            "changed::double-click", self.settings_value_changed,
-            self.adjust_widgets["double_click_rate"])
+        
         self.button_widgets["double_test"].connect("button-press-event", self.double_click_test)
         self.button_widgets["double_test"].connect("expose-event", self.double_click_test_expose)
         self.adjust_widgets["drag_threshold_time"].connect(
             "value-changed", self.adjustment_value_changed, "drag-threshold")
-        self.settings1.connect(
-            "changed::drag-threshold", self.settings_value_changed,
-            self.adjust_widgets["drag_threshold_time"])
         
         # relevant setting
         self.alignment_widgets["keyboard_setting"].connect("expose-event",
@@ -437,10 +429,39 @@ class MouseSetting(object):
         self.button_widgets["keyboard_setting"].connect("button-press-event", self.relevant_press, "keyboard")
         self.alignment_widgets["mouse_setting"].connect("expose-event",
             self.relevant_expose, self.button_widgets["mouse_setting"])
-        self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "touchpad")
+        self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")
+    
+    def touchpad_setting_changed_cb(self, setting, key):
+        args = [setting, key]
+        if key == "left-handed":
+            callback = self.left_or_right_setting_changed
+        elif key == "motion-acceleration":
+            callback = self.settings_value_changed
+            args.append(self.adjust_widgets["pointer_speed_accel"])
+        elif key == "motion-threshold":
+            callback = self.settings_value_changed
+            args.append(self.adjust_widgets["pointer_speed_sensitiv"])
+        else:
+            return
+        callback(*args)
+    
+    def mouse_setting_changed_cb(self, setting, key):
+        args = [setting, key]
+        if key == "double-click":
+            callback = self.settings_value_changed
+            args.append(self.adjust_widgets["double_click_rate"])
+        elif key == "drag-threshold":
+            callback = self.settings_value_changed
+            args.append(self.adjust_widgets["drag_threshold_time"])
+        else:
+            return
+        callback(*args)
     
     def left_or_right_set(self, button, active):
         ''' set left-handed '''
+        if button.get_data("changed-by-other-app"):
+            button.set_data("changed-by-other-app", False)
+            return
         if button.get_active():
             settings.touchpad_set_left_handed(active)
     
@@ -450,13 +471,19 @@ class MouseSetting(object):
         if is_left == "mouse":
             if settings.mouse_get_left_handed():
                 self.button_widgets["left_hand_radio"].set_active(True)
+                self.button_widgets["left_hand_radio"].set_data("changed-by-other-app", True)
             else:
                 self.button_widgets["right_hand_radio"].set_active(True)
+                self.button_widgets["right_hand_radio"].set_data("changed-by-other-app", True)
         else:
             self.button_widgets["%s_hand_radio" % is_left].set_active(True)
+            self.button_widgets["%s_hand_radio" % is_left].set_data("changed-by-other-app", True)
     
     def adjustment_value_changed(self, adjustment, key):
         '''adjustment value changed, and settings set the value'''
+        if adjustment.get_data("changed-by-other-app"):
+            adjustment.set_data("changed-by-other-app", False)
+            return
         value = adjustment.get_value()
         if key == "motion-threshold" or key == "drag-threshold":   # motion-threshold or drag-threshold is an int type
             new_value = value
@@ -471,17 +498,13 @@ class MouseSetting(object):
     
     def settings_value_changed(self, settings, key, adjustment):
         '''settings value changed, and adjustment set the value'''
-        return  # if want settings relate to adjustment widget, please delete this line.
         adjustment.set_value(self.scale_get[key]())
+        adjustment.set_data("changed-by-other-app", True)
 
     def double_click_test(self, widget, event):
         '''double clicked callback, to test the double-click time'''
         if event.type == gtk.gdk._2BUTTON_PRESS:
             print "double-clicked:" 
-            dev = event.device
-            axes = event.axes
-            print dev.name, dev.has_cursor, dev.mode, dev.source, dev.num_axes, dev.num_keys
-            print axes
             print "-"*20
     
     def double_click_test_expose(self, widget, event):
@@ -507,7 +530,10 @@ class MouseSetting(object):
     # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
-        print "%s press" % action
+        if action == 'keyboard':
+            print "goto keyboard"
+        elif action == 'mouse':
+            print "goto mouse"
 
     def set_to_default(self):
         '''set to the default'''
@@ -516,7 +542,7 @@ class MouseSetting(object):
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
-    mouse_settings = MouseSetting()
+    mouse_settings = TouchpadSetting(module_frame)
     
     module_frame.add(mouse_settings.container_widgets["main_hbox"])
     
