@@ -103,7 +103,12 @@ class VPNSetting(gtk.HBox):
         connection = self.ipv4.connection
         print connection.object_path
         connection.update()
-
+        
+        active_connections = nm_module.nmclient.get_active_connections()
+        specific_object = active_connections[0].get_specific_object()
+        nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           "/org/freedesktop/NetworkManager/Devices/0",
+                                           specific_object)
         ##FIXME need to change device path into variables
         #nm_module.nmclient.activate_connection_async(connection.object_path,
                                            #"/org/freedesktop/NetworkManager/Devices/0",

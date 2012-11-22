@@ -112,6 +112,7 @@ class NMClient(NMObject):
         '''used for multi activate, must run one by one'''
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
+            print "##",active
             if active:
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
@@ -253,7 +254,7 @@ class NMClient(NMObject):
 
     def get_active_connections(self):
         '''return active connections objects'''
-        if self.properties["ActivateConnections"]:
+        if self.properties["ActiveConnections"]:
             return map(lambda x: cache.getobject(x), self.properties["ActiveConnections"])
         else:
             return []

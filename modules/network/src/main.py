@@ -475,12 +475,6 @@ class Proxy(gtk.VBox):
 
     def add_setting_page(self, setting_page):
         self.settings = setting_page
-        #if self.wired_devices:
-            #for device in self.wired_devices:
-                #if device.is_active():
-                    #self.wire.set_active(True)
-                #else:
-                    #self.wire.set_active(False)
 
 class Network(object):
 
@@ -507,7 +501,7 @@ class Network(object):
         self.eventbox = gtk.EventBox()
         self.eventbox.set_above_child(False)
         self.eventbox.add(self.main_align)
-        
+        nm_module.nmclient.connect("activate-succeed", self.activate_succeed) 
 
         slider.append_page(self.eventbox)
         slider.append_page(self.wired_setting_page)
@@ -516,6 +510,10 @@ class Network(object):
         slider.append_page(self.proxy_setting_page)
         slider.append_page(self.vpn_setting_page)
     
+    def activate_succeed(self, widget, connection_path):
+        ob = cache.getobject(connection_path)
+        print ob
+
     def init_sections(self, module_frame):
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
