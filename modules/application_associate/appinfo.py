@@ -51,6 +51,7 @@ class AppManager(gobject.GObject):
         gobject.GObject.__init__(self)
 
         self.http_content_type = ContentType.get_from_mime_type("x-scheme-handler/http")
+        self.https_content_type = ContentType.get_from_mime_type("x-scheme-handler/https")
         self.mail_content_type = ContentType.get_from_mime_type("x-scheme-handler/mailto")
         self.calendar_content_type = ContentType.get_from_mime_type("text/calendar")
         self.audio_content_type = ContentType.get_from_mime_type("audio/x-vorbis+ogg")
@@ -75,6 +76,7 @@ class AppManager(gobject.GObject):
 
     def set_http_default(self, desktopappinfo):
         desktopappinfo.set_as_default_for_type(self.http_content_type)
+        desktopappinfo.set_as_default_for_type(self.https_content_type)
 
     def set_mail_default(self, desktopappinfo):
         desktopappinfo.set_as_default_for_type(self.mail_content_type)
