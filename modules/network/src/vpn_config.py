@@ -101,14 +101,46 @@ class VPNSetting(gtk.HBox):
         print "saving"
 
         connection = self.ipv4.connection
-        print connection.object_path
         connection.update()
         
-        active_connections = nm_module.nmclient.get_active_connections()
-        specific_object = active_connections[0].get_specific_object()
-        nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           "/org/freedesktop/NetworkManager/Devices/0",
-                                           specific_object)
+        # FIXME Now just support one device
+        wired_devices = nm_module.nmclient.get_wired_devices()
+        wireless_devices = nm_module.nmclient.get_wireless_devices() 
+        if wired_devices:
+            try:
+                self.try_to_connect_wired_device(wired_devices[0], connection)
+            except Exception:
+                if wireless_devices:
+                    self.try_to_connect_wireless_device(wireless_devices[0], connection)
+
+    def try_to_connect_wired_device(self, device, connection):
+        active = device.get_active_connection()
+        if active:
+            device_path = device.object_path
+            specific_path = active.get_specific_object()
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                               device_path,
+                                               specific_path)
+        else:
+            raise Exception
+    def try_to_connect_wireless_device(self, device, connection):
+        active = device.get_active_connection()
+        if active:
+            print active
+            device_path = device.object_path
+            specific_path = active.get_connection().object_path
+            print "connection path", connection.object_path
+            print "wireless device path:", device_path
+            print "wireless spec path:", specific_path
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                               device_path,
+                                               specific_path)
+
+
+
+
+
+
         ##FIXME need to change device path into variables
         #nm_module.nmclient.activate_connection_async(connection.object_path,
                                            #"/org/freedesktop/NetworkManager/Devices/0",
