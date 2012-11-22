@@ -539,11 +539,25 @@ class PPPConf(gtk.VBox):
         self.no_vj_comp = CheckButton("Use TCP header compression")
         self.nopcomp = CheckButton("Use protocal field compression negotiation")
         self.noaccomp = CheckButton("Use Address/Control compression")
+        
+        ## Settings for IPSec
+        self.ip_sec_enable = CheckButton("Enable IPSec tunnel to l2tp host")
+        self.group_name_label = Label("Group Label:")
+        self.gateway_id_label = Label("Gateway ID:")
+        self.pre_shared_key_label = Label("Pre_Shared_key")
+        self.group_name = InputEntry()
+        self.group_name.set_size(200, 25)
+        self.gateway_id = InputEntry()
+        self.gateway_id.set_size(200, 25)
+        self.pre_shared_key = InputEntry()
+        self.pre_shared_key.set_size(200, 25)
 
         self.echo = Label("Echo")
         self.ppp_echo = CheckButton("Send PPP echo packets")
-
+        
         self.table = gtk.Table(11, 10, False)
+        self.ip_sec_table = gtk.Table(4, 3, False)
+        self.ip_sec_table.set_size_request(100, 20)
         self.init_ui()
         #self.mppe.set_size_request(100, 10)
 
@@ -551,8 +565,13 @@ class PPPConf(gtk.VBox):
         vbox.pack_start(method, False, False)
         vbox.pack_start(self.method_table, False, False)
         vbox.pack_start(self.table, False, False)
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(vbox)
+        hbox = gtk.HBox()
+        hbox.pack_start(vbox, False, False)
+        ip_sec_vbox = gtk.VBox()
+        ip_sec_vbox.pack_start(self.ip_sec_table, False, False)
+        hbox.pack_start(ip_sec_vbox, False, False)
+        align = gtk.Alignment(0.5, 0.5, 0.5, 0.5)
+        align.add(hbox)
         self.add(align)
 
         confirm_button = Button("Confirm")
@@ -587,6 +606,7 @@ class PPPConf(gtk.VBox):
         self.service_type = self.vpn_setting.service_type.split(".")[-1]
         print self.service_type
         container_remove_all(self.table)
+        container_remove_all(self.ip_sec_table)
         self.table.attach(self.compression, 0, 5, 0 ,1)
         self.table.attach(self.require_mppe, 0, 10, 1, 2)
         self.table.attach(self.require_mppe_128, 1, 10, 2, 3)
@@ -600,6 +620,17 @@ class PPPConf(gtk.VBox):
         if self.service_type == "l2tp":
             self.table.attach(self.nopcomp, 0, 10, 7, 8)
             self.table.attach(self.noaccomp, 0, 10 , 8, 9)
+
+            self.ip_sec_table.attach(self.ip_sec_enable, 0, 3, 0, 1)
+            self.ip_sec_table.attach(self.group_name_label, 0, 1, 1, 2)
+            self.ip_sec_table.attach(self.group_name, 1, 3, 1, 2)
+            self.ip_sec_table.attach(self.gateway_id_label, 0, 1, 2, 3)
+            self.ip_sec_table.attach(self.gateway_id, 1, 3, 2, 3)
+            self.ip_sec_table.attach(self.pre_shared_key_label, 0, 1, 3, 4)
+            self.ip_sec_table.attach(self.pre_shared_key, 1, 3, 3, 4)
+            self.ip_sec_table.show_all()
+
+
             #self.nopcomp.set_active(True)
             #self.noaccomp.set_active(True)
         self.table.show_all()
