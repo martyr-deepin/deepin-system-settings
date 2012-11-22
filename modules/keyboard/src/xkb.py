@@ -175,37 +175,6 @@ class XKeyBoard(object):
             i += 1
         return variants_name
     
-    def get_option_treeitems(self):
-        '''
-        get option items
-        @return: a dict contain data that OptionItem need.
-        '''
-        items = []
-        sub_items = []
-        is_check_control= {
-            'grp'        : True,
-            'lv3'        : True,
-            'ctrl'       : True,
-            'grp_led'    : True,
-            'keypad'     : False,
-            'kpd1'       : False,
-            'caps'       : False,
-            'altwin'     : False,
-            'Compese key': True,
-            'compat'     : True,
-            'eurosign'   : True,
-            'lv5'        : True,
-            'nbsp'       : False,
-            'japan'      : True,
-            'esperanto'  : False ,
-            'terminate'  : True}
-        for option in self.option_groups:
-            if option in is_check_control:
-                self.option_groups[option]['is_check'] = is_check_control[option]
-            else:
-                self.option_groups[option]['is_check'] = False
-        return self.option_groups
-
 def search_layout_treeitems(treeitems, key):
     '''
     search layout name contain key from treeitems
