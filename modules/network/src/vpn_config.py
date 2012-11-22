@@ -542,7 +542,7 @@ class PPPConf(gtk.VBox):
         
         ## Settings for IPSec
         self.ip_sec_enable = CheckButton("Enable IPSec tunnel to l2tp host")
-        self.group_name_label = Label("Group Label:")
+        self.group_name_label = Label("Group Name:")
         self.gateway_id_label = Label("Gateway ID:")
         self.pre_shared_key_label = Label("Pre_Shared_key")
         self.group_name = InputEntry()
@@ -570,7 +570,7 @@ class PPPConf(gtk.VBox):
         ip_sec_vbox = gtk.VBox()
         ip_sec_vbox.pack_start(self.ip_sec_table, False, False)
         hbox.pack_start(ip_sec_vbox, False, False)
-        align = gtk.Alignment(0.5, 0.5, 0.5, 0.5)
+        align = gtk.Alignment(0.5, 0.5, 0.5, 0)
         align.add(hbox)
         self.add(align)
 
@@ -599,6 +599,14 @@ class PPPConf(gtk.VBox):
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
         self.nopcomp.connect("toggled", self.check_button_cb, "nopcomp")
         self.noaccomp.connect("toggled", self.check_button_cb, "noaccomp")
+
+        self.ip_sec_enable.connect("toggled", self.enable_ipsec_cb)
+        self.group_name.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-group-name")
+        self.gateway_id.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-gataway-id")
+        self.pre_shared_key.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-psk")
+        self.group_name.entry.connect("changed", self.entry_changed_cb, "ipsec-group-name")
+        self.gateway_id.entry.connect("changed", self.entry_changed_cb, "ipsec-gateway-id")
+        self.pre_shared_key.entry.connect("changed", self.entry_changed_cb, "ipsec-psk")
 
         method.set_active(True)
 
@@ -629,10 +637,6 @@ class PPPConf(gtk.VBox):
             self.ip_sec_table.attach(self.pre_shared_key_label, 0, 1, 3, 4)
             self.ip_sec_table.attach(self.pre_shared_key, 1, 3, 3, 4)
             self.ip_sec_table.show_all()
-
-
-            #self.nopcomp.set_active(True)
-            #self.noaccomp.set_active(True)
         self.table.show_all()
 
     def refresh(self):
@@ -640,6 +644,7 @@ class PPPConf(gtk.VBox):
         # retreieve settings
         self.init_ui()
         refuse_eap = self.vpn_setting.get_data_item("refuse-eap")
+        print ">>",self.vpn_setting.data
         
         refuse_pap = self.vpn_setting.get_data_item("refuse-pap")
         refuse_chap = self.vpn_setting.get_data_item("refuse-chap")
@@ -654,12 +659,6 @@ class PPPConf(gtk.VBox):
         nodeflate = self.vpn_setting.get_data_item("nodeflate")
         no_vj_comp = self.vpn_setting.get_data_item("novj")
 
-        if self.service_type == "l2tp":
-            no_vj_comp = self.vpn_setting.get_data_item("no_vj_comp")
-            nopcomp = self.vpn_setting.get_data_item("nopcomp")
-            noaccomp = self.vpn_setting.get_data_item("noaccomp")
-            self.nopcomp.set_active(nopcomp is None)
-            self.noaccomp.set_active(noaccomp is None)
 
         lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
         lcp_echo_interval = self.vpn_setting.get_data_item("lcp-echo-interval")
@@ -678,6 +677,21 @@ class PPPConf(gtk.VBox):
         self.nodeflate.set_active(nodeflate is None)
         self.no_vj_comp.set_active(no_vj_comp is None)
 
+        if self.service_type == "l2tp":
+            #no_vj_comp = self.vpn_setting.get_data_item("no_vj_comp")
+            nopcomp = self.vpn_setting.get_data_item("nopcomp")
+            noaccomp = self.vpn_setting.get_data_item("noaccomp")
+            ipsec_enabled = self.vpn_setting.get_data_item("ipsec-enabled")
+
+            self.nopcomp.set_active(nopcomp is None)
+            self.noaccomp.set_active(noaccomp is None)
+            
+            if ipsec_enabled:
+                self.ip_sec_enable.set_active(True)
+
+            else:
+                self.ip_sec_enable.set_active(False)
+
         if lcp_echo_failure == None and lcp_echo_interval == None:
             self.ppp_echo.set_active(False)
         else:
@@ -685,17 +699,63 @@ class PPPConf(gtk.VBox):
 
         #==================================
         # Connect signal
+    def enable_ipsec_cb(self, widget):
+        active = widget.get_active()
+        if active:
+            self.vpn_setting.set_data_item("ipsec-enabled", "yes")
+            self.group_name.set_sensitive(True)
+            self.gateway_id.set_sensitive(True)
+            self.pre_shared_key.set_sensitive(True)
+
+            ipsec_group_name = self.vpn_setting.get_data_item("ipsec-group-name")
+            ipsec_gateway_id = self.vpn_setting.get_data_item("ipsec-gateway-id")
+            ipsec_psk = self.vpn_setting.get_data_item("ipsec-psk")
+
+            self.group_name.set_text(ipsec_group_name)
+            self.gateway_id.set_text(ipsec_gateway_id)
+            self.pre_shared_key.set_text(ipsec_psk)
+        else:
+            self.vpn_setting.delete_data_item("ipsec-enabled")
+            self.group_name.set_text("")
+            self.gateway_id.set_text("")
+            self.pre_shared_key.set_text("")
+
+            self.group_name.set_sensitive(False)
+            self.gateway_id.set_sensitive(False)
+            self.pre_shared_key.set_sensitive(False)
+
+    def entry_focus_out_cb(self, widget, event, key):
+        text = widget.get_text()
+        if text:
+            self.vpn_setting.set_data_item(key, text)
+        else:
+            self.vpn_setting.delete_data_item(key)
+    def entry_changed_cb(self, widget, string, key):
+        if string == "":
+            print key,"entry is empty"
+            self.vpn_setting.delete_data_item(key)
+
+
         
     def check_button_cb(self, widget, key):
         active = widget.get_active()
-        if key.startswith("refuse") or key.startswith("no"):
+        if key.startswith("refuse"):
+            if active:
+                self.vpn_setting.delete_data_item(key)
+            else:
+                self.vpn_setting.set_data_item(key, "yes")
+
             if self.auth_lock():
                 self.require_mppe.set_sensitive(True)
             else:
                 self.require_mppe.set_sensitive(False)
                 self.require_mppe.set_active(False)
-                self.set_group_sensitive(True)
-                self.set_group_active(True)
+                # FIXME auth_lock false, still can change others bug
+                #self.set_group_sensitive(True)
+                #self.set_group_active(True)
+                #if self.refuse_eap.get_active():
+                    #print key
+        elif key.startswith("no"):
             if active:
                 self.vpn_setting.delete_data_item(key)
             else:
