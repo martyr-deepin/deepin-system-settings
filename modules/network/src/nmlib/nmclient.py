@@ -264,19 +264,19 @@ class NMClient(NMObject):
 
     def get_vpn_active_connection(self):
         if self.get_active_connections():
-            return filter(lambda x:x.get_vpn() == 1, self.get_active_connections())[0]
+            return filter(lambda x:x.get_vpn() == 1, self.get_active_connections())
         else:
             return []
 
     def get_wired_active_connection(self):
         if self.get_active_connections():
-            return filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())[0]
+            return filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())
         else:
             return []
 
     def get_wireless_active_connection(self):
         if self.get_active_connections():
-            return filter(lambda x:x.get_devices()[0] == self.get_wireless_device(), self.get_active_connections())[0]
+            return filter(lambda x:x.get_devices()[0] == self.get_wireless_device(), self.get_active_connections())
         else:
             return []
 
