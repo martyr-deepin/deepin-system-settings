@@ -23,6 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import subprocess
 import dbus
 import gobject
 import traceback
@@ -44,10 +45,17 @@ def connect_bus():
         monitor_interface = dbus.Interface(monitor_object, "org.freedesktop.DBus")
 
         if "org.PulseAudio1" not in monitor_interface.ListNames():
-            try:
-                monitor_interface.StartServiceByName("org.PulseAudio1", 1)
-            except:
-                print "StartServiceByName:org.PulseAudio1 Failed"
+            if "org.pulseaudio.Service" not in monitor_interface.ListNames():
+                try:
+                    if int(os.popen("ps -ef |grep pulseaudio | wc -l").read().strip()) > 1:
+                        command = "pkill -9 pulseaudio"
+                        subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
+
+                    command = "service pulseaudio restart"
+                    subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
+                    monitor_interface.StartServiceByName("org.PulseAudio1", 1)
+                except:
+                    print "StartServiceByName:org.PulseAudio1 Failed"
 
         server_lookup = bus.get_object("org.PulseAudio1", "/org/pulseaudio/server_lookup1")
         address = server_lookup.Get("org.PulseAudio.ServerLookup1", "Address", dbus_interface="org.freedesktop.DBus.Properties")
