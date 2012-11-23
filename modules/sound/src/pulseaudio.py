@@ -48,10 +48,10 @@ def connect_bus():
             if "org.pulseaudio.Service" not in monitor_interface.ListNames():
                 try:
                     if int(os.popen("ps -ef |grep pulseaudio | wc -l").read().strip()) > 1:
-                        command = "pkill -9 pulseaudio"
+                        command = "pulseaudio --kill"
                         subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
 
-                    command = "service pulseaudio restart"
+                    command = "pulseaudio --start"
                     subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
                     monitor_interface.StartServiceByName("org.PulseAudio1", 1)
                 except:
