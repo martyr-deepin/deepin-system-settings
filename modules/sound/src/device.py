@@ -39,21 +39,6 @@ class Device(BusBase):
     def __init__(self, path, interface = "org.PulseAudio.Core1.Device"):
         BusBase.__init__(self, path, interface)
 
-        # self.dbus_proxy.connect_to_signal("VolumeUpdated", self.volume_updated_cb, dbus_interface = 
-        #                                    self.object_interface)
-
-        #self.dbus_proxy.connect_to_signal("MuteUpdated", self.mute_updated_cb, dbus_interface = 
-                                           #self.object_interface)
-        
-        #self.dbus_proxy.connect_to_signal("StateUpdated", self.state_updated_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
-        #self.dbus_proxy.connect_to_signal("ActivePortUpdated", self.active_port_updated_cb, dbus_interface = 
-                                          #self.object_interface)
-
-        #self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
         self.bus.add_signal_receiver(self.volume_updated_cb, signal_name = "VolumeUpdated", dbus_interface = 
                                      self.object_interface, path = self.object_path)
 

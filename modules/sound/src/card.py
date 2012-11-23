@@ -37,17 +37,6 @@ class Card(BusBase):
     def __init__(self, path, interface = "org.PulseAudio.Core1.Card"):
         BusBase.__init__(self, path, interface)
 
-        #self.dbus_proxy.connect_to_signal("ActiveProfileUpdated", self.active_profile_updated_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
-        #self.dbus_proxy.connect_to_signal("NewProfile", self.new_profile_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
-        #self.dbus_proxy.connect_to_signal("PropertyListUpdated", self.property_list_updated_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
-
-        #self.dbus_proxy.connect_to_signal("ProfileRemoved", self.profile_removed_cb, dbus_interface = 
-                                          #self.object_interface, arg0 = None)
         self.bus.add_signal_receiver(self.active_profile_updated_cb, signal_name = "ActiveProfileUpdated", dbus_interface = 
                                      self.object_interface, path = self.object_path)
 
@@ -59,7 +48,6 @@ class Card(BusBase):
 
         self.bus.add_signal_receiver(self.profile_removed_cb, signal_name = "ProfileRemoved", dbus_interface = 
                                      self.object_interface, path = self.object_path)
-
 
     ###Props    
     def get_index(self):
