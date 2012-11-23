@@ -120,7 +120,7 @@ class VPNSetting(gtk.HBox):
         if active:
             device_path = device.object_path
             specific_path = active.get_specific_object()
-            nm_module.nmclient.activate_connection_async(connection.object_path,
+            nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
         else:
@@ -134,7 +134,7 @@ class VPNSetting(gtk.HBox):
             print "connection path", connection.object_path
             print "wireless device path:", device_path
             print "wireless spec path:", specific_path
-            nm_module.nmclient.activate_connection_async(connection.object_path,
+            nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
 

@@ -114,11 +114,13 @@ class NMClient(NMObject):
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
             print "##",active
             if active:
+                print "##activae-succeed",active
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
                 # secret_agent.increase_conn_priority(connection_path)
                 return cache.getobject(active)
             else:
+                print "##activae-failed",active
                 self.emit("activate-failed", connection_path)
                 cache.getobject(connection_path).succeed_flag += 1
                 # secret_agent.decrease_conn_priority(connection_path)
