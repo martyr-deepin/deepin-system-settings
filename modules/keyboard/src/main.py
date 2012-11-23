@@ -28,18 +28,15 @@ from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from theme import app_theme
-from dtk.ui.window import Window
 from dtk.ui.dialog import DialogBox
 from dtk.ui.scrolled_window import ScrolledWindow
-from dtk.ui.titlebar import Titlebar
 from dtk.ui.label import Label
-from dtk.ui.button import RadioButton, Button
+from dtk.ui.button import Button
 from dtk.ui.entry import InputEntry
 from dtk.ui.tab_window import TabBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.utils import cairo_disable_antialias
-from treeitem import (SelectItem, LayoutItem, OptionItem,
-                      CheckButtonItem, RadioButtonItem,
+from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
 from treeitem import MyTreeView as TreeView
 from nls import _

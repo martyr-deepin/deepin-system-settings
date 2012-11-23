@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
     account_settings = AccountSetting(module_frame)
     
-    module_frame.add(account_settings.container_widgets["main_hbox"])
+    #module_frame.add(account_settings.container_widgets["main_hbox"])
     
     def message_handler(*message):
         (message_type, message_content) = message
