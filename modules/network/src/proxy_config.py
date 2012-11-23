@@ -5,6 +5,7 @@ from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
 from dtk.ui.spin import SpinBox
+from dtk.ui.combo import ComboBox
 from dtk.ui.utils import container_remove_all
 import gtk
 
@@ -18,6 +19,10 @@ class ProxyConfig(gtk.VBox):
         self.change_crumb = change_crumb_cb
 
         self.table = gtk.Table(5, 4, False)
+        #self.table.set_size_request(290, 165)
+        table_align = gtk.Alignment(0, 0 ,0 , 0)
+        table_align.set_padding(57, 0, 110, 0)
+        table_align.add(self.table)
 
         self.method_label = Label("Method")
         self.http_label = Label("Http Proxy")
@@ -27,9 +32,11 @@ class ProxyConfig(gtk.VBox):
         self.conf_label = Label("Configuration url")
 
         self.methods = gtk.combo_box_new_text()
+        method_list = ["None", "Manual", "Automatic"]
+        #self.methods = ComboBox([lambda m,i: (m, i), enumerate(method_list)])
         self.methods.connect("changed", self.method_changed)
 
-        method_list = ["None", "Manual", "Automatic"]
+        #method_list = ["None", "Manual", "Automatic"]
         map(lambda m: self.methods.append_text(m), method_list)
         
         width ,height = 100 ,20
@@ -49,7 +56,7 @@ class ProxyConfig(gtk.VBox):
         self.conf_entry.set_size(width, height)
         self.init(True)
 
-        self.pack_start(self.table, False, False)
+        self.pack_start(table_align, False, False)
         apply_button = gtk.Button("Apply")
         apply_button.connect("clicked", self.save_changes)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)

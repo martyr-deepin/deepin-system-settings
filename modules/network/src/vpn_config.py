@@ -15,12 +15,14 @@ from widgets import SettingButton
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module, slider
+from nmlib.nm_vpn_plugin import NMVpnL2tpPlugin, NMVpnPptpPlugin
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
 
 import gtk
-
+#l2tp_plugin = NMVpnL2tpPlugin
+#pptp_plugin = NMVpnPptpPlugin
 class VPNSetting(gtk.HBox):
 
     def __init__(self, slide_back_cb = None, change_crumb_cb = None, module_frame = None):
@@ -128,7 +130,7 @@ class VPNSetting(gtk.HBox):
         if active:
             print active
             device_path = device.object_path
-            specific_path = active.get_connection().object_path
+            specific_path = active.object_path
             print "connection path", connection.object_path
             print "wireless device path:", device_path
             print "wireless spec path:", specific_path
