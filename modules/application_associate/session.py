@@ -109,8 +109,35 @@ class BusBase(gobject.GObject):
 
 class SessionManager(BusBase):
 
+    __gsignals__  = {
+            "client-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "client-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "inhibitor-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "inhibitor-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "session-running":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            "session-over":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+            }
+
     def __init__(self):
         BusBase.__init__(self, path = "/org/gnome/SessionManager", interface = "org.gnome.SessionManager")
+
+        self.bus.add_signal_receiver(self.client_added_cb, signal_name = "ClientAdded", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.client_removed_cb, signal_name = "ClientRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.inhibitor_added_cb, signal_name = "InhibitorAdded", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.inhibitor_removed_cb, signal_name = "InhibitorRemoved", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.session_running_cb, signal_name = "SessionRunning", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.session_over_cb, signal_name = "SessionOver", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
     ###Methods
     def can_shutdown(self):
@@ -168,7 +195,23 @@ class SessionManager(BusBase):
         self.call_async("UnRegisterClient", client_id)
 
     ####Signals
-    
+    def client_added_cb(self, client):
+        self.emit("client-added", client)
+
+    def client_removed_cb(self, client):
+        self.emit("client-removed", client)
+
+    def inhibitor_added_cb(self, inhibitor):
+        self.emit("inhibitor-added", inhibitor)
+
+    def inhibitor_removed_cb(self, inhibitor):
+        self.emit("inhibitor-removed", inhibitor)
+
+    def session_running_cb(self):
+        self.emit("session-running")
+
+    def session_over_cb(self):
+        self.emit("session-over")
 
 class App(BusBase):
 
@@ -208,14 +251,44 @@ class Client(BusBase):
         self.call_async("Stop")
 
 class ClientPrivate(BusBase):
+
+    __gsignals__  = {
+            "stop":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            "query-end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT)),
+            "end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT)),
+            "cancel-end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+            }
     
     def __init__(self, path):
         BusBase.__init__(self, path, interface = "org.gnome.SessionManager.ClientPrivate")
+
+        self.bus.add_signal_receiver(self.stop_cb, signal_name = "Stop", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.query_end_session_cb, signal_name = "QueryEndSession", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.end_session_cb, signal_name = "EndSession", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.cancel_end_session_cb, signal_name = "CancelEndSession", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
     def end_session_response(self, is_ok, reason):
         self.dbus_method("EndSessionResponse", is_ok, reason)
 
     ###Signals    
+    def stop_cb(self):
+        self.emit("stop")
+
+    def query_end_session_cb(self, flags):
+        self.emit("query-end-session", flags)
+
+    def end_session_cb(self, flags):
+        self.emit("end-session", flags)
+
+    def cancel_end_session_cb(self):
+        self.emit("cancel-end-session")
 
 class Inhibitor(BusBase):
     
@@ -239,9 +312,20 @@ class Inhibitor(BusBase):
 
 class Presence(BusBase):
     
+    __gsignals__  = {
+            "status-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT)),
+            "status-text-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
+            }
+    
     def __init__(self):
         BusBase.__init__(path = "/org/gnome/SessionManager/Presence", interface = "org.gnome.SessionManager.Presence")
         self.init_dbus_properties()
+
+        self.bus.add_signal_receiver(self.status_changed_cb, signal_name = "StatusChanged", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
+
+        self.bus.add_signal_receiver(self.status_text_changed_cb, signal_name = "StatusTextChanged", dbus_interface = 
+                                     self.object_interface, path = self.object_path)
 
     def set_status(self, status):
         self.call_async("SetStatus", status)
@@ -256,8 +340,11 @@ class Presence(BusBase):
         return self.properties["StatusText"]
 
     ###Signals
+    def status_changed_cb(self, status):
+        self.emit("status-changed", status)
 
-
+    def status_text_changed_cb(self, status_text):
+        self.emit("status-text-changed", status_text)
 
 if __name__ == "__main__":
     pass
