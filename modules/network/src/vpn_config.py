@@ -5,7 +5,7 @@ from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -424,7 +424,7 @@ class PPTPConf(gtk.VBox):
         self.ppp.show_all()
 
         # UI
-        pptp_table = gtk.Table(6, 4, False)
+        pptp_table = gtk.Table(7, 4, False)
         gateway_label = Label("Gateway:")
         user_label = Label("User:")
         password_label = Label("Password:")
@@ -438,15 +438,20 @@ class PPTPConf(gtk.VBox):
         pptp_table.attach(gateway_label, 0, 2 , 1, 2)
         pptp_table.attach(user_label, 0, 2, 2, 3)
         pptp_table.attach(password_label, 0, 2, 3, 4)
-        pptp_table.attach(nt_domain_label, 0, 1, 4, 5)
+        pptp_table.attach(nt_domain_label, 0, 1, 5, 6)
 
         # entries
         self.gateway_entry = InputEntry()
         self.gateway_entry.set_size(200,25 )
         self.user_entry = InputEntry()
         self.user_entry.set_size(200,25)
-        self.password_entry = InputEntry()
-        self.password_entry.set_size(200, 25)
+        # FIXME should change to new_entry PasswordEntry
+        self.password_entry = gtk.Entry()
+        self.password_entry.set_visibility(False)
+        #self.password_entry.set_size(200, 25)
+        self.password_show = CheckButton("Show Password")
+        self.password_show.set_active(False)
+        self.password_show.connect("toggled", self.show_password)
         self.nt_domain_entry = InputEntry()
         self.nt_domain_entry.set_size(200,25 )
 
@@ -454,12 +459,13 @@ class PPTPConf(gtk.VBox):
         pptp_table.attach(self.gateway_entry, 2, 4, 1, 2)
         pptp_table.attach(self.user_entry, 2, 4, 2, 3)
         pptp_table.attach(self.password_entry, 2, 4, 3, 4)
-        pptp_table.attach(self.nt_domain_entry, 2, 4, 4, 5)
+        pptp_table.attach(self.password_show, 2, 4, 4, 5)
+        pptp_table.attach(self.nt_domain_entry, 2, 4, 5, 6)
         # Advance setting button
         advanced_button = Button("Advanced Setting")
         advanced_button.connect("clicked", self.advanced_button_click)
 
-        pptp_table.attach(advanced_button, 3, 4, 5, 6)
+        pptp_table.attach(advanced_button, 3, 4, 6, 7)
         self.service_type = self.vpn_setting.service_type.split(".")[-1]
         if self.service_type == "l2tp":
             self.l2tp_radio.set_active(True)
@@ -484,7 +490,8 @@ class PPTPConf(gtk.VBox):
 
         self.gateway_entry.entry.connect("focus-out-event", self.entry_changed, "gateway")
         self.user_entry.entry.connect("focus-out-event", self.entry_changed, "user")
-        self.password_entry.entry.connect("focus-out-event", self.entry_changed, "password")
+        #self.password_entry.entry.connect("focus-out-event", self.entry_changed, "password")
+        self.password_entry.connect("focus-out-event", self.entry_changed, "password")
         self.nt_domain_entry.entry.connect("focus-out-event", self.entry_changed, "domain")
 
 
@@ -498,8 +505,10 @@ class PPTPConf(gtk.VBox):
                                                     setting_name,
                                                     method)
             if password == None:
+                #self.password_entry.entry.set_text("")
                 self.password_entry.set_text("")
             else:
+                #self.password_entry.entry.set_text(password)
                 self.password_entry.set_text(password)
         except:
             print "failed to get password"
@@ -509,6 +518,13 @@ class PPTPConf(gtk.VBox):
                 
     def save_setting(self):
         pass
+
+    def show_password(self, widget):
+        if widget.get_active():
+            self.password_entry.set_visibility(True)
+        else:
+            self.password_entry.set_visibility(False)
+
 
     def entry_changed(self, widget, event, item):
         print "focus out"

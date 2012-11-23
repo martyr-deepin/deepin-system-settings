@@ -502,6 +502,8 @@ class Network(object):
         self.eventbox.set_above_child(False)
         self.eventbox.add(self.main_align)
         nm_module.nmclient.connect("activate-succeed", self.activate_succeed) 
+        nm_module.nmclient.connect("activate-failed", self.activate_failed) 
+
 
         slider.append_page(self.eventbox)
         slider.append_page(self.wired_setting_page)
@@ -513,6 +515,9 @@ class Network(object):
     def activate_succeed(self, widget, connection_path):
         ob = cache.getobject(connection_path)
         print ">>>",ob
+
+    def activate_failed(self, widget):
+        print "failed"
 
     def init_sections(self, module_frame):
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
@@ -557,10 +562,6 @@ class Network(object):
     def stop(self):
         
         self.eventbox.set_above_child(True)
-        #self.wired_active = self.wired.wire.get_active()
-        #self.wired = None
-        #self.wireless = None
-        #self.dsl = None
 
         self.wired_setting_page = None
         self.wireless_setting_page = None
