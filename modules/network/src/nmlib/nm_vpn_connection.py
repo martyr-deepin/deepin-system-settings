@@ -32,8 +32,10 @@ class NMVpnConnection(NMActiveConnection):
 
     def __init__(self, vpn_connection_object_path):
         NMActiveConnection.__init__(self, vpn_connection_object_path, "org.freedesktop.NetworkManager.VPN.Connection")
-        self.bus.add_signal_receiver(self.vpn_state_changed_cb, dbus_interface = self.object_interface, signal_name = "Vpnstatechanged")
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, signal_name = "PropertiesChanged")
+        self.bus.add_signal_receiver(self.vpn_state_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "Vpnstatechanged")
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertiesChanged")
 
         self.init_nmobject_with_properties()
 
