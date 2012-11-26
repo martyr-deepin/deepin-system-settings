@@ -310,11 +310,11 @@ class NMRemoteSettings(NMObject):
 
         s_vpn.service_type = "org.freedesktop.NetworkManager.l2tp"
 
-        s_vpn.set_data_item("user", "ssh_lazycat")
-        s_vpn.set_data_item("gateway", "95.143.43.70")
+        s_vpn.set_data_item("user", "")
+        s_vpn.set_data_item("gateway", "")
         s_vpn.set_data_item("password-flags", "0")
 
-        s_vpn.set_secret_item("password","123456")
+        s_vpn.set_secret_item("password","")
 
         s_ip4config.method = "auto"
         s_ip4config.clear_addresses()
@@ -346,12 +346,13 @@ class NMRemoteSettings(NMObject):
 
         s_vpn.service_type = "org.freedesktop.NetworkManager.pptp"
 
-        s_vpn.set_data_item("user", "wosuopu")
-        s_vpn.set_data_item("gateway", "98.126.157.70")
+        s_vpn.set_data_item("user", "")
+        s_vpn.set_data_item("gateway", "")
         s_vpn.set_data_item("password-flags", "0")
         s_vpn.set_data_item("require-mppe", "yes")
+        s_vpn.set_data_item("refuse-eap", "yes")
 
-        s_vpn.set_secret_item("password","654321")
+        s_vpn.set_secret_item("password","")
 
         s_ip4config.method = "auto"
         s_ip4config.clear_addresses()
