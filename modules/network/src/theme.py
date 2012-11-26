@@ -22,6 +22,7 @@
 
 from dtk.ui.init_skin import init_skin
 from dtk.ui.utils import get_parent_dir
+from dtk.ui.theme import ui_theme
 import os
 
 app_theme = init_skin(
