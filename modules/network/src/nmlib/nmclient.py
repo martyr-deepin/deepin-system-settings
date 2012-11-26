@@ -115,18 +115,18 @@ class NMClient(NMObject):
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
             if active:
                 if "ActiveConnection" in specific_object_path:
-                    from nm_vpn_connection import NMVpnConnectionn
-                    vpn_active_connection = NMVpnConnectionn(active)
+                    vpn_active_connection = cache.get_spec_object(active)
 
                     if vpn_active_connection.get_vpnstate() == 5:
                         self.emit("activate-succeed", connection_path)
                         cache.getobject(connection_path).succeed_flag -= 2
                         return cache.getobject(active)
-                    elif vpn_active_connection.get_vpnstate() == 6:
+                    # elif vpn_active_connection.get_vpnstate() == 6:
+                    #     self.emit("activate-failed", connection_path)
+                    #     cache.getobject(connection_path).succeed_flag += 1
+                    else:
                         self.emit("activate-failed", connection_path)
                         cache.getobject(connection_path).succeed_flag += 1
-                    else:
-                        print "vpn state"
                         print vpn_active_connection.get_vpnstate()
 
                 else:    

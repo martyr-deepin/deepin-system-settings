@@ -44,8 +44,8 @@ class NMVpnConnection(NMActiveConnection):
         return self.properties["VpnState"]
 
     ###Signals###
-    def vpn_state_changed_cb(self, arg1, arg2):
-        self.emit("vpn-state-changed", arg1, arg2)
+    def vpn_state_changed_cb(self, state, reason):
+        self.emit("vpn-state-changed", state, reason)
 
     
 if __name__ == "__main__":
