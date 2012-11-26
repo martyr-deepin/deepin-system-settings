@@ -1,0 +1,6 @@
+glib-networking
+python-gudev
+python-keyring
+network-manager-pptp
+network-manager-l2tp
+modem-manager

@@ -122,12 +122,17 @@ class NMClient(NMObject):
                         vpn_active_connection.emit("vpn-connected")
                         cache.getobject(connection_path).succeed_flag -= 2
                         return cache.getobject(active)
+
                     elif vpn_active_connection.get_vpnstate() == 6:
                         self.emit("activate-failed", connection_path)
                         vpn_active_connection.emit("vpn-disconnected")
                         cache.getobject(connection_path).succeed_flag += 1
+                        return None
+
                     else:
                         vpn_active_connection.emit("vpn-state-changed", vpn_active_connection.get_vpnstate(), 1)
+                        return cache.getobject(active)
+
                 else:    
                     self.emit("activate-succeed", connection_path)
                     cache.getobject(connection_path).succeed_flag -= 2
@@ -137,8 +142,10 @@ class NMClient(NMObject):
                 self.emit("activate-failed", connection_path)
                 cache.getobject(connection_path).succeed_flag += 1
                 # secret_agent.decrease_conn_priority(connection_path)
+                return None
         except:
             traceback.print_exc()
+            return None
 
     def activate_connection_async(self, connection_path, device_path, specific_object_path):
         '''used for only one activate'''
