@@ -159,8 +159,7 @@ class EntryTreeView(TreeView):
         item.entry = entry
 
     def edit_done(self, entry, box, item):
-
-
+        item.set_connection_name(entry.get_text())
         item.entry = None
         item.entry_buffer.set_property('cursor-visible', False)
         item.entry_buffer.move_to_start()
@@ -307,6 +306,11 @@ class SettingItem(TreeItem):
         self.connection_active = active
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+    
+    def set_connection_name(self, text):
+        #self.vpn_setting["connection"]["id"] = text
+        self.connection.get_setting("connection").id = text
+        #print self.connection.get_setting("connection").prop_dict
     
     def render_content(self, cr, rect):
         self.render_background(cr,rect)
