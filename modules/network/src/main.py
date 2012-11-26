@@ -516,7 +516,7 @@ class Network(object):
         ob = cache.getobject(connection_path)
         print ">>>",ob
 
-    def activate_failed(self, widget):
+    def activate_failed(self, widget, connection_path):
         print "failed"
 
     def init_sections(self, module_frame):

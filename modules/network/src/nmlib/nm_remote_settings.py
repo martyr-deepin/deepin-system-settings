@@ -51,7 +51,7 @@ class NMRemoteSettings(NMObject):
     def __init__(self):
         NMObject.__init__(self, "/org/freedesktop/NetworkManager/Settings", "org.freedesktop.NetworkManager.Settings")
 
-        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
         # self.bus.add_signal_receiver(self.new_connection_cb, dbus_interface = self.object_interface, 

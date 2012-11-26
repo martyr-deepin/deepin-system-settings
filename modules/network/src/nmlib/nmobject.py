@@ -37,7 +37,7 @@ from servicemanager import servicemanager
 
 # name_re = re.compile("[0-9a-zA-Z-]*")
 # dbus_loop = gobject.MainLoop()
-nm_bus = servicemanager.get_nm_bus
+nm_bus = servicemanager.get_nm_bus()
     
 class NMObject(gobject.GObject):
     '''NMObject'''
@@ -62,7 +62,7 @@ class NMObject(gobject.GObject):
             raise InvalidObjectInterface(object_interface)
 
         try:
-            self.dbus_proxy = self.bus().get_object (service_name, object_path)
+            self.dbus_proxy = self.bus.get_object (service_name, object_path)
             self.dbus_interface = dbus.Interface (self.dbus_proxy, object_interface)
         except dbus.exceptions.DBusException:
             traceback.print_exc()

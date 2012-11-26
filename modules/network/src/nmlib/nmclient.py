@@ -27,6 +27,7 @@ from nm_utils import TypeConvert
 # from nm_active_connection import NMActiveConnection
 import traceback
 from nmcache import cache
+import time
 
 class NMClient(NMObject):
     '''NMClient'''
@@ -48,19 +49,19 @@ class NMClient(NMObject):
         self.manager_running = False
         self.init_nmobject_with_properties()
 
-        self.bus().add_signal_receiver(self.permisson_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.permisson_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "CheckPermissions")
 
-        self.bus().add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "DeviceAdded")
 
-        self.bus().add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "DeviceRemoved")
 
-        self.bus().add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
-        self.bus().add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
                                      path = self.object_path,signal_name = "StateChanged")
         self.devices = self.get_devices()
 
@@ -112,15 +113,16 @@ class NMClient(NMObject):
         '''used for multi activate, must run one by one'''
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
-            print "##",active
-            if active:
-                print "##activae-succeed",active
+            if "ActiveConnection" in specific_object_path:
+                print "sleep"
+                time.sleep(5)
+            self.init_nmobject_with_properties()
+            if self.get_active_connections() and active in map(lambda x:x.object_path, self.get_active_connections()):
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
                 # secret_agent.increase_conn_priority(connection_path)
                 return cache.getobject(active)
             else:
-                print "##activae-failed",active
                 self.emit("activate-failed", connection_path)
                 cache.getobject(connection_path).succeed_flag += 1
                 # secret_agent.decrease_conn_priority(connection_path)
@@ -131,8 +133,8 @@ class NMClient(NMObject):
         '''used for only one activate'''
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path,                                                                                reply_handler = self.activate_finish, error_handler = self.activate_error)
-            print "##",active
-            if active:
+            self.init_nmobject_with_properties()
+            if active in self.get_active_connections():
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
                 # secret_agent.increase_conn_priority(connection_path)
@@ -157,7 +159,8 @@ class NMClient(NMObject):
     def add_and_activate_connection(self, connection_path, device_path, specific_object_path):
         try:
             active = self.dbus_interface.AddAndActivateConnection(connection_path, device_path, specific_object_path)
-            if active:
+            self.init_nmobject_with_properties()
+            if active in self.get_active_connections():
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
                 # secret_agent.increase_conn_priority(connection_path)
