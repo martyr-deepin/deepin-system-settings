@@ -11,7 +11,8 @@ from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
-from widgets import SettingButton
+#from widgets import SettingButton
+from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module, slider
@@ -103,6 +104,7 @@ class VPNSetting(gtk.HBox):
         print "saving"
 
         connection = self.ipv4.connection
+        print connection.object_path
         connection.update()
         
         # FIXME Now just support one device
@@ -114,6 +116,13 @@ class VPNSetting(gtk.HBox):
             except Exception:
                 if wireless_devices:
                     self.try_to_connect_wireless_device(wireless_devices[0], connection)
+                    #print connection.object_path
+                    #from nmlib.nm_vpn_plugin import NMVpnPptpPlugin
+                    #pptp = NMVpnPptpPlugin()
+                    #print nm_module.nm_remote_settings.pptp_settings_dict
+                    #pptp.connect(connection.prop_dict)
+
+
 
     def try_to_connect_wired_device(self, device, connection):
         active = device.get_active_connection()
@@ -137,11 +146,6 @@ class VPNSetting(gtk.HBox):
             nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
-
-
-
-
-
 
         ##FIXME need to change device path into variables
         #nm_module.nmclient.activate_connection_async(connection.object_path,
@@ -168,10 +172,11 @@ class SideBar(gtk.VBox):
     
     def init(self, connection_list, ip4setting):
         # check active
-        #active_connection = nm_module.nmclient.get_vpn_active_connection()
-        active_connection = None
+        active_connection = nm_module.nmclient.get_vpn_active_connection()
+        #print ">>>>>>", active_connection
+        #active_connection = None
         if active_connection:
-            active = active_connection.get_connection()
+            active = active_connection[0].get_connection()
         else:
             active = None
 
@@ -180,29 +185,42 @@ class SideBar(gtk.VBox):
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
-        btn = SettingButton(None, 
-                            self.connections[0],
-                            self.setting[0],
-                            self.check_click_cb)
-        self.buttonbox.pack_start(btn, False, False, 6)
-        for index, connection in enumerate(self.connections[1:]):
-            button = SettingButton(btn,
-                                   connection,
-                                   self.setting[index + 1],
-                                   self.check_click_cb)
-            self.buttonbox.pack_start(button, False, False, 6)
+        #btn = SettingButton(None, 
+                            #self.connections[0],
+                            #self.setting[0],
+                            #self.check_click_cb)
+        #self.buttonbox.pack_start(btn, False, False, 6)
+        #for index, connection in enumerate(self.connections[1:]):
+            #button = SettingButton(btn,
+                                   #connection,
+                                   #self.setting[index + 1],
+                                   #self.check_click_cb)
+            #self.buttonbox.pack_start(button, False, False, 6)
+        cons = []
+        for index, connection in enumerate(self.connections):
+            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb))
+
+        self.connection_tree = EntryTreeView(cons)
+        self.connection_tree.show_all()
+
+        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
 
         try:
             index = self.connections.index(active)
-            self.buttonbox.get_children()[index].check.set_active(True)
+            this_connection = self.connection_tree.visible_items[index]
+            this_connection.set_active(True)
+            self.connection_tree.select_items([this_connection])
+            #self.buttonbox.get_children()[index].check.set_active(True)
         except ValueError:
-            self.buttonbox.get_children()[0].check.set_active(True)
+            #self.buttonbox.get_children()[0].check.set_active(True)
+            self.connection_tree.select_first_item()
 
     def get_active(self):
-        checks = self.buttonbox.get_children()
-        for index,c in enumerate(checks):
-            if c.check.get_active():
-                return index
+        #checks = self.buttonbox.get_children()
+        #for index,c in enumerate(checks):
+            #if c.check.get_active():
+                #return index
+        return self.connection_tree.select_rows[0]
     
     def add_new_connection(self, widget):
         new_connection = nm_module.nm_remote_settings.new_vpn_pptp_connection()
