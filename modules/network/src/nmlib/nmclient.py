@@ -119,10 +119,12 @@ class NMClient(NMObject):
 
                     if vpn_active_connection.get_vpnstate() == 5:
                         self.emit("activate-succeed", connection_path)
+                        vpn_active_connection.emit("vpn-connected")
                         cache.getobject(connection_path).succeed_flag -= 2
                         return cache.getobject(active)
                     elif vpn_active_connection.get_vpnstate() == 6:
                         self.emit("activate-failed", connection_path)
+                        vpn_active_connection.emit("vpn-disconnected")
                         cache.getobject(connection_path).succeed_flag += 1
                     else:
                         vpn_active_connection.emit("vpn-state-changed", vpn_active_connection.get_vpnstate(), 1)

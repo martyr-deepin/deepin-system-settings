@@ -27,7 +27,9 @@ class NMVpnConnection(NMActiveConnection):
     '''NMVpnConnection'''
         
     __gsignals__  = {
-            "vpn-state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "vpn-state-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "vpn-connected":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            "vpn-disconnected":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
             }
 
     def __init__(self, vpn_connection_object_path):
@@ -48,9 +50,10 @@ class NMVpnConnection(NMActiveConnection):
     ###Signals###
     def vpn_state_changed_cb(self, state, reason):
         self.emit("vpn-state-changed", state, reason)
-        print "vpn_state_changed_cb"
-        print state
-        print reason
+        if state == 5:
+            self.emit("vpn-connected")
+        elif state == 6 or state == 7:    
+            self.emit("vpn-disconnected")
 
 if __name__ == "__main__":
     pass
