@@ -113,15 +113,27 @@ class NMClient(NMObject):
         '''used for multi activate, must run one by one'''
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
-            if "ActiveConnection" in specific_object_path:
-                print "sleep"
-                time.sleep(5)
-            self.init_nmobject_with_properties()
-            if self.get_active_connections() and active in map(lambda x:x.object_path, self.get_active_connections()):
-                self.emit("activate-succeed", connection_path)
-                cache.getobject(connection_path).succeed_flag -= 2
-                # secret_agent.increase_conn_priority(connection_path)
-                return cache.getobject(active)
+            if active:
+                if "ActiveConnection" in specific_object_path:
+                    from nm_vpn_connection import NMVpnConnectionn
+                    vpn_active_connection = NMVpnConnectionn(active)
+
+                    if vpn_active_connection.get_vpnstate() == 5:
+                        self.emit("activate-succeed", connection_path)
+                        cache.getobject(connection_path).succeed_flag -= 2
+                        return cache.getobject(active)
+                    elif vpn_active_connection.get_vpnstate() == 6:
+                        self.emit("activate-failed", connection_path)
+                        cache.getobject(connection_path).succeed_flag += 1
+                    else:
+                        print "vpn state"
+                        print vpn_active_connection.get_vpnstate()
+
+                else:    
+                    self.emit("activate-succeed", connection_path)
+                    cache.getobject(connection_path).succeed_flag -= 2
+                    # secret_agent.increase_conn_priority(connection_path)
+                    return cache.getobject(active)
             else:
                 self.emit("activate-failed", connection_path)
                 cache.getobject(connection_path).succeed_flag += 1
@@ -133,8 +145,7 @@ class NMClient(NMObject):
         '''used for only one activate'''
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path,                                                                                reply_handler = self.activate_finish, error_handler = self.activate_error)
-            self.init_nmobject_with_properties()
-            if active in self.get_active_connections():
+            if active:
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
                 # secret_agent.increase_conn_priority(connection_path)
@@ -159,8 +170,7 @@ class NMClient(NMObject):
     def add_and_activate_connection(self, connection_path, device_path, specific_object_path):
         try:
             active = self.dbus_interface.AddAndActivateConnection(connection_path, device_path, specific_object_path)
-            self.init_nmobject_with_properties()
-            if active in self.get_active_connections():
+            if active:
                 self.emit("activate-succeed", connection_path)
                 cache.getobject(connection_path).succeed_flag -= 2
                 # secret_agent.increase_conn_priority(connection_path)

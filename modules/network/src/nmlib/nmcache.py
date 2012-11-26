@@ -210,45 +210,61 @@ class NMCache(object):
         if path in self.spec_cache_dict.iterkeys():
             return self.cache_dict[path]
 
-        key = self.getobject(path).get_device_type()
-        if key == 1:
+        if "Devices" in path:
+            key = self.getobject(path).get_device_type()
+            if key == 1:
+                try:
+                    from nmdevice_ethernet import NMDeviceEthernet
+                    device_ethernet = NMDeviceEthernet(path)
+                    if device_ethernet:
+                        return device_ethernet
+                    else:
+                        raise NewObjectFailed(path)
+                except NewObjectFailed, e:
+                    print "create object:%s failed" % e.path
+                except:
+                    traceback.print_exc()
+            elif key == 2:
+                try:
+                    from nmdevice_wifi import NMDeviceWifi
+                    device_wifi = NMDeviceWifi(path)
+                    if device_wifi:
+                        return device_wifi
+                    else:
+                        raise NewObjectFailed(path)
+                except NewObjectFailed, e:
+                    print "create object:%s failed" % e.path
+                except:
+                    traceback.print_exc()
+            elif key == 8:
+                try:
+                    from nmdevice_modem import NMDeviceModem
+                    device_modem = NMDeviceModem(path)
+                    if device_modem:
+                        return device_modem
+                    else:
+                        raise NewObjectFailed(device_modem)
+                except NewObjectFailed, e:
+                    print "create object:%s failed" % e.path
+                except:
+                    traceback.print_exc()
+            else:
+                print "unsupport device type"
+                print path
+
+        elif "ActiveConnection" in path:
             try:
-                from nmdevice_ethernet import NMDeviceEthernet
-                device_ethernet = NMDeviceEthernet(path)
-                if device_ethernet:
-                    return device_ethernet
+                from nm_vpn_connection import NMVpnConnection
+                vpn_connection = NMVpnConnection(path)
+                if vpn_connection:
+                    return vpn_connection
                 else:
-                    raise NewObjectFailed(path)
-            except NewObjectFailed, e:
+                    raise NewObjectFailed(vpn_connection)
+            except NewObjectFailed ,e:
                 print "create object:%s failed" % e.path
-            except:
-                traceback.print_exc()
-        elif key == 2:
-            try:
-                from nmdevice_wifi import NMDeviceWifi
-                device_wifi = NMDeviceWifi(path)
-                if device_wifi:
-                    return device_wifi
-                else:
-                    raise NewObjectFailed(path)
-            except NewObjectFailed, e:
-                print "create object:%s failed" % e.path
-            except:
-                traceback.print_exc()
-        elif key == 8:
-            try:
-                from nmdevice_modem import NMDeviceModem
-                device_modem = NMDeviceModem(path)
-                if device_modem:
-                    return device_modem
-                else:
-                    raise NewObjectFailed(device_modem)
-            except NewObjectFailed, e:
-                print "create object:%s failed" % e.path
-            except:
-                traceback.print_exc()
+
         else:
-            print "unsupport spec type"
+            print "unsupport spec path"
             print path
 
     def put_spec_object(self, path, object):
