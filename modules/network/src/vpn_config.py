@@ -129,9 +129,12 @@ class VPNSetting(gtk.HBox):
         if active:
             device_path = device.object_path
             specific_path = active.get_specific_object()
-            nm_module.nmclient.activate_connection(connection.object_path,
+            active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
+
+            print "fsdafdsf",active_object
+            print "sfsdfsd",cache.get_spec_object(active_object.object_path)
         else:
             raise Exception
     def try_to_connect_wireless_device(self, device, connection):
@@ -185,17 +188,6 @@ class SideBar(gtk.VBox):
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
-        #btn = SettingButton(None, 
-                            #self.connections[0],
-                            #self.setting[0],
-                            #self.check_click_cb)
-        #self.buttonbox.pack_start(btn, False, False, 6)
-        #for index, connection in enumerate(self.connections[1:]):
-            #button = SettingButton(btn,
-                                   #connection,
-                                   #self.setting[index + 1],
-                                   #self.check_click_cb)
-            #self.buttonbox.pack_start(button, False, False, 6)
         cons = []
         for index, connection in enumerate(self.connections):
             cons.append(SettingItem(connection, self.setting[index], self.check_click_cb))
@@ -210,16 +202,10 @@ class SideBar(gtk.VBox):
             this_connection = self.connection_tree.visible_items[index]
             this_connection.set_active(True)
             self.connection_tree.select_items([this_connection])
-            #self.buttonbox.get_children()[index].check.set_active(True)
         except ValueError:
-            #self.buttonbox.get_children()[0].check.set_active(True)
             self.connection_tree.select_first_item()
 
     def get_active(self):
-        #checks = self.buttonbox.get_children()
-        #for index,c in enumerate(checks):
-            #if c.check.get_active():
-                #return index
         return self.connection_tree.select_rows[0]
     
     def add_new_connection(self, widget):
@@ -731,7 +717,6 @@ class PPPConf(gtk.VBox):
         lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
         lcp_echo_interval = self.vpn_setting.get_data_item("lcp-echo-interval")
         
-
         self.require_mppe.set_active(require_mppe != None)
         self.refuse_eap.set_active(refuse_eap is None)
         self.refuse_pap.set_active(refuse_pap is None)
@@ -803,8 +788,6 @@ class PPPConf(gtk.VBox):
             print key,"entry is empty"
             self.vpn_setting.delete_data_item(key)
 
-
-        
     def check_button_cb(self, widget, key):
         active = widget.get_active()
         if key.startswith("refuse"):

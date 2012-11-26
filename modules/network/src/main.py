@@ -513,8 +513,9 @@ class Network(object):
         slider.append_page(self.vpn_setting_page)
     
     def activate_succeed(self, widget, connection_path):
-        ob = cache.getobject(connection_path)
-        print ">>>",ob
+        pass
+        #ob = cache.get_specific_object(connection_path)
+        #print ">>>",ob
 
     def activate_failed(self, widget, connection_path):
         print "failed"

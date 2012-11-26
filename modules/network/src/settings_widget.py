@@ -308,9 +308,7 @@ class SettingItem(TreeItem):
             self.redraw_request_callback(self)
     
     def set_connection_name(self, text):
-        #self.vpn_setting["connection"]["id"] = text
         self.connection.get_setting("connection").id = text
-        #print self.connection.get_setting("connection").prop_dict
     
     def render_content(self, cr, rect):
         self.render_background(cr,rect)
@@ -385,10 +383,11 @@ class SettingItem(TreeItem):
             self.check_select = not self.check_select
             print "check clicked"
         elif column == 2:
-            print "delete clicked"
-            self.connection.delete()
-            self.destroy()
-            self.setting.destroy()
+            pass
+            #print "delete clicked"
+            #self.connection.delete()
+            #self.destroy()
+            #self.setting.destroy()
 
 
         if self.redraw_request_callback:
