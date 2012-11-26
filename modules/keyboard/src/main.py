@@ -524,7 +524,7 @@ class KeySetting(object):
         self.view_widgets["shortcuts_selected"].connect("select", self.shortcuts_treeview_selecte)
         self.view_widgets["shortcuts_shortcut"].connect("select", self.shortcuts_selecte)
         self.view_widgets["shortcuts_shortcut"].add_events(gtk.gdk.ALL_EVENTS_MASK)
-        self.view_widgets["shortcuts_shortcut"].connect("clicked", self.shortcuts_clicked)
+        self.view_widgets["shortcuts_shortcut"].connect("single-click-item", self.shortcuts_clicked)
         self.button_widgets["shortcuts_remove"].connect("clicked", self.__remove_shortcuts_item)
         self.button_widgets["shortcuts_add"].connect("clicked", lambda b: self.__add_shortcuts_item())
     
@@ -797,7 +797,7 @@ class KeySetting(object):
             if self.button_widgets["shortcuts_remove"].get_sensitive():
                 self.button_widgets["shortcuts_remove"].set_sensitive(False)
     
-    def shortcuts_clicked(self, treeview, item, column):
+    def shortcuts_clicked(self, treeview, item, column, *args):
         ''' '''
         if column != item.COLUMN_ACCEL:
             return
