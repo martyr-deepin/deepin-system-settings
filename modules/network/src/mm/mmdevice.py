@@ -119,6 +119,15 @@ class MMDevice(MMObject):
     def get_info(self):
         return TypeConvert.dbus2py(self.dbus_method("GetInfo"))
 
+    def get_manufacturer(self):
+        return self.get_info()[0].split(":")[-1].strip()
+
+    def get_model(self):
+        return self.get_info()[1]
+
+    def get_version(self):
+        return self.get_info()[2]
+
     def reset(self):
         self.dbus_method("Reset", reply_handler = self.reset_finish, error_handler = self.reset_error)
 
@@ -188,5 +197,7 @@ class MMLocation(MMObject):
         return TypeConvert.dbus2py(self.dbus_method("GetLocation"))
 
 if __name__ == "__main__":
-    device = MMDevice("/org/freedesktop/ModemManager/Modems/0")
+    device = MMDevice("/org/freedesktop/ModemManager/Modems/1")
     print device.get_info()
+    print device.get_manufacturer()
+    print device.get_model()
