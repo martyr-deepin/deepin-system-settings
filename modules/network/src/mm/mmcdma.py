@@ -26,34 +26,34 @@ from nmlib.nm_utils import TypeConvert
 
 class MMCdma(MMDevice):
     '''MMCdma'''
+
     __gsignals__  = {
-            "activation-state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_PYOBJECT)),
-            "signal-quality":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "registration-state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT))
+            "activation-state-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_PYOBJECT)),
+            "signal-quality":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "registration-state-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,gobject.TYPE_UINT))
             }
 
     def __init__(self, object_path):
         MMDevice.__init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Cdma")
 
         self.init_mmobject_with_properties()
+
         self.bus.add_signal_receiver(self.activation_state_changed_cb, dbus_interface = self.object_interface,
-                                     signal_name = "ActivationStateChanged")
+                                     path = self.object_path, signal_name = "ActivationStateChanged")
 
         self.bus.add_signal_receiver(self.signal_quality_cb, dbus_interface = self.object_interface,
-                                     signal_name = "SignalQuality")
+                                     path = self.object_path, signal_name = "SignalQuality")
 
         self.bus.add_signal_receiver(self.registration_state_changed_cb, dbus_interface = self.object_interface,
-                                     signal_name = "RegistrationStateChanged")
+                                     path = self.object_path, signal_name = "RegistrationStateChanged")
 
     def get_meid(self):
         return self.properties["Meid"]
 
     def activate(self, carrier):
-        return TypeConvert.dbus2py(self.dbus_interface.Activate(carrier))
         return TypeConvert.dbus2py(self.dbus_method("Activate", carrier))
 
     def activate_manual(self, prop_dict):
-        self.dbus_interface.ActivateManual(prop_dict)
         self.dbus_method("ActivateManual", prop_dict, reply_handler = self.activate_manual_finish,
                          error_handler = self.activate_manual_error)
 

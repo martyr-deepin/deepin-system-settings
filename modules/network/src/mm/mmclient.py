@@ -47,8 +47,12 @@ class MMClient(MMObject):
 
     def __init__(self):
         MMObject.__init__(self)
-        self.bus.add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface, signal_name = "DeviceAdded")
-        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, signal_name = "DeviceRemoved")
+
+        self.bus.add_signal_receiver(self.device_added_cb, dbus_interface = self.object_interface,
+                                     path = self.object_path, signal_name = "DeviceAdded")
+
+        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "DeviceRemoved")
 
     def enumerate_devices(self):
         return TypeConvert.dbus2py(self.dbus_method("EnumerateDevices"))
@@ -63,10 +67,10 @@ class MMClient(MMObject):
         pass
 
     def get_cdma_device(self):
-        return filter(lambda x:MMDevice(x).get_type() == 2, self.enumerate_devices())[0]
+        return filter(lambda x:MMDevice(x).get_type() == 2, self.enumerate_devices())
 
     def get_gsm_device(self):
-        return filter(lambda x:MMDevice(x).get_type() == 1, self.enumerate_devices())[0]
+        return filter(lambda x:MMDevice(x).get_type() == 1, self.enumerate_devices())
 
     def device_added_cb(self, device_path):
         print "device_added_cb"

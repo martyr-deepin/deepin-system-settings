@@ -130,19 +130,20 @@ class MMGsmNetwork(MMGsm):
     '''MMGsmNetwork'''
 
     __gsignals__  = {
-            "signal-quality":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
-            "registration-info":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, str, str)),
-            "network-mode":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, ))
+            "signal-quality":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
+            "registration-info":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, str, str)),
+            "network-mode":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, ))
             }
 
     def __init__(self, object_path):
         MMGsm.__init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Gsm.Network")
+
         self.bus.add_signal_receiver(self.signal_quality_cb, dbus_interface = self.object_interface, 
-                                     signal_name = "SignalQuality")
+                                     path = self.object_path, signal_name = "SignalQuality")
         self.bus.add_signal_receiver(self.registration_info_cb, dbus_interface = self.object_interface, 
-                                     signal_name = "RegistrationInfo")
+                                     path = self.object_path, signal_name = "RegistrationInfo")
         self.bus.add_signal_receiver(self.network_mode_cb, dbus_interface = self.object_interface, 
-                                     signal_name = "NetworkMode")
+                                     path = self.object_path, signal_name = "NetworkMode")
 
         self.init_mmobject_with_properties()
 
@@ -189,7 +190,6 @@ class MMGsmNetwork(MMGsm):
         return TypeConvert.dbus2py(self.dbus_method("GetBand"))
 
     def set_network_mode(self, mode):
-        self.dbus_interface.SetNetworkMode(mode)
         self.dbus_method("SetNetworkMode", mode, reply_handler = self.set_network_mode_finish,
                          error_handler = self.set_network_mode_error)
 
@@ -206,7 +206,6 @@ class MMGsmNetwork(MMGsm):
         return TypeConvert.dbus2py(self.dbus_method("GetRegistrationInfo"))
 
     def set_allowed_mode(self, mode):
-        self.dbus_interface.SetAllowedMode(mode)
         self.dbus_method("SetAllowedMode", mode, reply_handler = self.set_allowed_mode_finish,
                          error_handler = self.set_allowed_mode_error)
 
@@ -235,14 +234,18 @@ class MMGsmSms(MMGsm):
     '''MMGsmSms'''
 
     __gsignals__  = {
-            "sms-received":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_BOOLEAN)),
-            "completed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_BOOLEAN))
+            "sms-received":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_BOOLEAN)),
+            "completed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_BOOLEAN))
             }
 
     def __init__(self, object_path):
         MMGsm.__init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Gsm.Sms")
-        self.bus.add_signal_receiver(self.sms_received_cb, dbus_interface = self.object_interface, signal_name = "SmsReceived")
-        self.bus.add_signal_receiver(self.completed_cb, dbus_interface = self.object_interface, signal_name = "Completed")
+
+        self.bus.add_signal_receiver(self.sms_received_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "SmsReceived")
+
+        self.bus.add_signal_receiver(self.completed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "Completed")
 
     def delete(self, index):
         self.dbus_method("Delete", index, reply_handler = self.delete_finish, error_handler = self.delete_error)

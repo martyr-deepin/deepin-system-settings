@@ -28,14 +28,17 @@ class MMDevice(MMObject):
     '''MMDevice'''
 
     __gsignals__  = {
-            "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
+            "state-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "device-active":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "device-deactive":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
             }
 
     def __init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem"):
         MMObject.__init__(self, object_path, object_interface)
-        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, signal_name = "StateChanged")
+
+        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "StateChanged")
+
         self.init_mmobject_with_properties()
 
     def get_enabled(self):
