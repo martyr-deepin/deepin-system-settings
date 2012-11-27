@@ -36,6 +36,8 @@ class MMCdma(MMDevice):
     def __init__(self, object_path):
         MMDevice.__init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Cdma")
 
+        self.prop_list = ["Meid"]
+
         self.init_mmobject_with_properties()
 
         self.bus.add_signal_receiver(self.activation_state_changed_cb, dbus_interface = self.object_interface,

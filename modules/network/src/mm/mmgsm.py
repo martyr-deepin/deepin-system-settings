@@ -36,6 +36,7 @@ class MMGsmCard(MMGsm):
     def __init__(self, object_path):
         MMGsm.__init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Gsm.Card")
 
+        self.prop_list = ["SimIdentifier", "SupportedBands", "SupportedModes"]
         self.init_mmobject_with_properties()
 
     def get_simidentifier(self):
@@ -45,7 +46,7 @@ class MMGsmCard(MMGsm):
         return self.properties["SupportedBands"]
 
     def get_supportedModes(self):
-        return self.properties["supportedModes"]
+        return self.properties["SupportedModes"]
 
     def get_imei(self):
         return TypeConvert.dbus2py(self.dbus_method("GetImei"))
@@ -140,10 +141,14 @@ class MMGsmNetwork(MMGsm):
 
         self.bus.add_signal_receiver(self.signal_quality_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "SignalQuality")
+
         self.bus.add_signal_receiver(self.registration_info_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "RegistrationInfo")
+
         self.bus.add_signal_receiver(self.network_mode_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "NetworkMode")
+
+        self.prop_list = ["AllowedMode", "AccessTechnology"]
 
         self.init_mmobject_with_properties()
 
@@ -325,6 +330,7 @@ class MMGsmUssd(MMGsm):
     def __init__(self, object_path):
         MMGsm.__init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Gsm.Ussd")
 
+        self.prop_list = ["State", "NetworkNotification", "NetworkRequest"]
         self.init_mmobject_with_properties()
 
     def get_state(self):

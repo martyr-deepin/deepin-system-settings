@@ -16,15 +16,18 @@
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-#
+  #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
+sys.path.append("../")
 
 import dbus
 import gobject
 from nmlib.nmobject import NMObject
 from nmlib.nm_utils import TypeConvert
-from mmdevice import MMDevice
+# from mmdevice import MMDevice
 
 mm_bus = dbus.SystemBus()
 
@@ -44,7 +47,7 @@ class MMClient(MMObject):
             "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
             }
-
+    
     def __init__(self):
         MMObject.__init__(self)
 
@@ -67,9 +70,13 @@ class MMClient(MMObject):
         pass
 
     def get_cdma_device(self):
+        from mmdevice import MMDevice
+
         return filter(lambda x:MMDevice(x).get_type() == 2, self.enumerate_devices())
 
     def get_gsm_device(self):
+        from mmdevice import MMDevice
+
         return filter(lambda x:MMDevice(x).get_type() == 1, self.enumerate_devices())
 
     def device_added_cb(self, device_path):
@@ -83,4 +90,4 @@ class MMClient(MMObject):
         self.emit("device-removed", device_path)
 
 if __name__ == "__main__":
-    pass
+    print "test import"

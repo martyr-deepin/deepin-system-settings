@@ -39,6 +39,8 @@ class MMDevice(MMObject):
         self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "StateChanged")
 
+        self.prop_list = ["Enabled", "Device", "DeviceIdentifier", "Driver", "EquipmentIdentifier", "MasterDevice",
+                          "UnlockRequired", "IpMethod", "State", "Type", "UnlockRetries"]
         self.init_mmobject_with_properties()
 
     def get_enabled(self):
@@ -158,6 +160,7 @@ class MMLocation(MMObject):
     def __init__(self, object_path, object_interface = "org.freedesktop.ModemManager.Modem.Location"):
         MMObject.__init__(self, object_path, object_interface)
 
+        self.prop_list = ["Capabilities", "Enabled", "SignalsLocation", "Location"]
         self.init_mmobject_with_properties()
 
     def get_capabilities(self):
@@ -185,4 +188,5 @@ class MMLocation(MMObject):
         return TypeConvert.dbus2py(self.dbus_method("GetLocation"))
 
 if __name__ == "__main__":
-    pass
+    device = MMDevice("/org/freedesktop/ModemManager/Modems/0")
+    print device.get_info()
