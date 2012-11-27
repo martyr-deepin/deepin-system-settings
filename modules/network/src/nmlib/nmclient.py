@@ -114,7 +114,7 @@ class NMClient(NMObject):
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
             if active:
-                if "ActiveConnection" in specific_object_path:
+                if "vpn" in cache.getobject(connection_path).settings_dict.iterkeys():
                     vpn_active_connection = cache.get_spec_object(active)
                     
                     if vpn_active_connection.get_vpnstate() in [1, 2, 3, 4]:
