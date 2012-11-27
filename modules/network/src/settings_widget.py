@@ -241,8 +241,6 @@ class SettingItem(TreeItem):
     
             
     def render_check(self, cr, rect):
-        #print "check"
-        #self.check_rect = rect
         self.render_background(cr,rect)
         if self.is_select:
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
@@ -266,13 +264,6 @@ class SettingItem(TreeItem):
         self.set_highlight(True)
 
     def render_delete(self, cr, rect):
-        #\ccprint "delete"
-        #bg_x = self.check_rect.x
-        #bg_y = self.check_rect.y
-        #bg_width = self.check_rect.width + self.content_rect.width + rect.width
-        #bg_height = rect.height
-        #print bg_x, rect.x
-
          
         #self.render_background(cr,bg_x, bg_y, bg_width, bg_height)
         self.render_background(cr, rect)
@@ -325,16 +316,11 @@ class SettingItem(TreeItem):
             #cr.rectangle(rect.)
             cr.fill()
         if self.is_select:
-            #text_color = "#FFFFFF"
             bg_color = "#3399FF"
-            #bg_color = "#FFFFFF"
             text_color = "#3399FF"
 
             if not self.is_double_click:
                 pass
-                #cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-                #cr.rectangle(rect.x + 2, rect.y + 5, rect.width, )
-                #cr.paint()
         else:
             text_color = "#000000"
             self.entry_buffer.move_to_start()

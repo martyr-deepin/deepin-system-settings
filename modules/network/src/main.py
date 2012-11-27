@@ -377,6 +377,8 @@ class VpnSection(gtk.VBox):
         vpn = Contain(app_theme.get_pixbuf("/Network/misc.png"), "VPN网络", self.toggle_cb)
         self.add(vpn)
 
+        ## detect vpn active_connection
+
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
@@ -391,6 +393,9 @@ class VpnSection(gtk.VBox):
             self.show_all()
         else:
             self.align.destroy()
+            vpn_active = nm_module.nmclient.get_vpn_active_connection()
+            if vpn_active:
+                nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
 
     def slide_to_event(self, widget, event):
         self.setting.init()
@@ -488,7 +493,7 @@ class Network(object):
         vbox.pack_start(self.dsl, False, True, 0)
         #vbox.pack_start(mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
-        vbox.pack_start(self.proxy, False, True, 0)
+        #vbox.pack_start(self.proxy, False, True, 0)
         
         scroll_win = ScrolledWindow()
         scroll_win.set_size_request(825, 425)
@@ -509,7 +514,7 @@ class Network(object):
         slider.append_page(self.wired_setting_page)
         slider.append_page(self.dsl_setting_page)
         slider.append_page(self.wireless_setting_page)
-        slider.append_page(self.proxy_setting_page)
+        #slider.append_page(self.proxy_setting_page)
         slider.append_page(self.vpn_setting_page)
     
     def activate_succeed(self, widget, connection_path):
@@ -524,7 +529,7 @@ class Network(object):
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
-        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
+        #self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
         self.vpn = VpnSection(lambda : module_frame.send_submodule_crumb(2, "VPN"))
 
         self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
@@ -540,9 +545,9 @@ class Network(object):
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.dsl.add_setting_page(self.dsl_setting_page)
 
-        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        self.proxy.add_setting_page(self.proxy_setting_page)
+        #self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
+                                          #lambda  : module_frame.send_message("change_crumb", 1))
+        #self.proxy.add_setting_page(self.proxy_setting_page)
         self.vpn_setting_page = VPNSetting( lambda : slider.slide_to_page(self.eventbox, "left"),
                                lambda : module_frame.send_message("change_crumb", 1),
                                module_frame)

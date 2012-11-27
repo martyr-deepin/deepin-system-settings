@@ -3,7 +3,7 @@
 
 
 from theme import app_theme
-from dtk.ui.button import  ToggleButton
+from dtk.ui.button import ToggleButton
 #from dtk.ui.draw import draw_pixbuf, draw_text
 #from dtk.ui.constant import DEFAULT_FONT_SIZE
 import gtk
@@ -13,7 +13,7 @@ TEXT_PADDING = 5
 BUTTON_PADDING = 5
 class Contain(gtk.Alignment):
 
-    def __init__(self, icon, text, switch_callback= None):
+    def __init__(self, icon, text, switch_callback=None):
 
         gtk.Alignment.__init__(self, 0,0,0,0)
 
@@ -58,7 +58,7 @@ if __name__=="__main__":
 
     win.connect("destroy", lambda w: gtk.main_quit())
     
-    con = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", lambda w : "sfdsf")
+    con = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", lambda w: "sfdsf")
 
     vbox = gtk.VBox(False)
     vbox.pack_start(con)

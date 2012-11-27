@@ -131,14 +131,21 @@ class VPNSetting(gtk.HBox):
             except Exception:
                 if wireless_devices:
                     self.try_to_connect_wireless_device(wireless_devices[0], connection)
-                    #print connection.object_path
-                    #from nmlib.nm_vpn_plugin import NMVpnPptpPlugin
-                    #pptp = NMVpnPptpPlugin()
-                    #print nm_module.nm_remote_settings.pptp_settings_dict
-                    #pptp.connect(connection.prop_dict)
 
     def vpn_state_changed(self, widget, state, reason):
         print "changed",state
+
+    def vpn_connected(self, widget):
+        print "vpn connected"
+        self.sidebar.set_active()
+
+    def vpn_connecting(self, widget):
+        print "vpn connecting"
+
+    def vpn_disconnected(self, widget):
+        print "vpn disconnected"
+        #self.sidebar.clear_active()
+
 
     def try_to_connect_wired_device(self, device, connection):
         active = device.get_active_connection()
@@ -148,10 +155,11 @@ class VPNSetting(gtk.HBox):
             active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
-
             if active_object != None:
                 active_vpn = cache.get_spec_object(active_object.object_path)
-                active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
+                active_vpn.connect("vpn-connected", self.vpn_connected)
+                active_vpn.connect("vpn-connecting", self.vpn_connecting)
+                active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
             else:
                 raise Exception
         else:
@@ -162,15 +170,14 @@ class VPNSetting(gtk.HBox):
             print active
             device_path = device.object_path
             specific_path = active.object_path
-            #print "connection path", connection.object_path
-            #print "wireless device path:", device_path
-            #print "wireless spec path:", specific_path
             active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
             if active_object != None:
                 active_vpn = cache.get_spec_object(active_object.object_path)
-                active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
+                active_vpn.connect("vpn-connected", self.vpn_connected)
+                active_vpn.connect("vpn-connecting", self.vpn_connecting)
+                active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
 
 
 class SideBar(gtk.VBox):
@@ -225,14 +232,22 @@ class SideBar(gtk.VBox):
         self.connection_tree.delete_select_items()
         self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
-
     def get_active(self):
         return self.connection_tree.select_rows[0]
+
+    def set_active(self):
+        index = self.get_active()
+        this_connection = self.connection_tree.visible_items[index]
+        this_connection.set_active(True)
+
+    def clear_active(self):
+        items = self.connection_tree.visible_items
+        for item in items:
+            item.set_active(False)
     
     def add_new_connection(self, widget):
         new_connection = nm_module.nm_remote_settings.new_vpn_pptp_connection()
         self.main_init_cb()
-
 
 class NoSetting(gtk.VBox):
     def __init__(self):
