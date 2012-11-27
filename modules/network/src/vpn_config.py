@@ -16,6 +16,7 @@ from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module, slider
+from nmlib.nmcache import cache
 from nmlib.nm_vpn_plugin import NMVpnL2tpPlugin, NMVpnPptpPlugin
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
@@ -108,6 +109,20 @@ class VPNSetting(gtk.HBox):
         connection.update()
         
         # FIXME Now just support one device
+
+        #active_connections = nm_module.nmclient.get_active_connections()
+        #if active_connections:
+            #device_path = active_connections[0].get_devices()[0].object_path
+            #specific_path = active_connections[0].object_path
+            #active_object = nm_module.nmclient.activate_connection(connection.object_path,
+                                           #device_path,
+                                           #specific_path)
+            #print active_object
+            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
+        #else:
+            #print "no active connection available"
+
+
         wired_devices = nm_module.nmclient.get_wired_devices()
         wireless_devices = nm_module.nmclient.get_wireless_devices() 
         if wired_devices:
@@ -122,7 +137,8 @@ class VPNSetting(gtk.HBox):
                     #print nm_module.nm_remote_settings.pptp_settings_dict
                     #pptp.connect(connection.prop_dict)
 
-
+    def vpn_state_changed(self, widget, state, reason):
+        print "changed",state
 
     def try_to_connect_wired_device(self, device, connection):
         active = device.get_active_connection()
@@ -133,8 +149,8 @@ class VPNSetting(gtk.HBox):
                                                device_path,
                                                specific_path)
 
-            print "fsdafdsf",active_object
-            print "sfsdfsd",cache.get_spec_object(active_object.object_path)
+            active_vpn = cache.get_spec_object(active_object.object_path)
+            active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
         else:
             raise Exception
     def try_to_connect_wireless_device(self, device, connection):
@@ -143,12 +159,14 @@ class VPNSetting(gtk.HBox):
             print active
             device_path = device.object_path
             specific_path = active.object_path
-            print "connection path", connection.object_path
-            print "wireless device path:", device_path
-            print "wireless spec path:", specific_path
-            nm_module.nmclient.activate_connection(connection.object_path,
+            #print "connection path", connection.object_path
+            #print "wireless device path:", device_path
+            #print "wireless spec path:", specific_path
+            active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
+            active_vpn = cache.get_spec_object(active_object.object_path)
+            active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
 
         ##FIXME need to change device path into variables
         #nm_module.nmclient.activate_connection_async(connection.object_path,
