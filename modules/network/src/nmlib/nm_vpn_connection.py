@@ -42,6 +42,7 @@ class NMVpnConnection(NMActiveConnection):
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = "org.freedesktop.NetworkManager.VPN.Connection",
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
+        self.prop_list = ["VpnState", "Banner"]
         self.init_nmobject_with_properties()
 
     def get_banner(self):
