@@ -53,10 +53,12 @@ class NMVpnConnection(NMActiveConnection):
 
     ###Signals###
     def vpn_state_changed_cb(self, state, reason):
-        self.emit("vpn-state-changed", state, reason)
-        if state == 5:
+        # self.emit("vpn-state-changed", state, reason)
+        if state in [1, 2, 3, 4]:
+            self.emit("vpn-connecting")
+        elif state == 5:
             self.emit("vpn-connected")
-        elif state == 6 or state == 7:    
+        else:
             self.emit("vpn-disconnected")
 
 if __name__ == "__main__":

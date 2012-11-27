@@ -21,7 +21,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from nmobject import NMObject
-from nm_utils import TypeConvert
 from nmcache import cache
 
 class NMActiveConnection(NMObject):
