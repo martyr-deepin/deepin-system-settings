@@ -478,9 +478,9 @@ class SoundSetting(object):
         self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
         
         self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
-        self.view_widgets["ad_output"].connect("clicked", self.output_treeview_clicked)
-        self.view_widgets["ad_input"].connect("clicked", self.input_treeview_clicked)
-        self.view_widgets["ad_hardware"].connect("clicked", self.card_treeview_clicked)
+        self.view_widgets["ad_output"].connect("single-click-item", self.output_treeview_clicked)
+        self.view_widgets["ad_input"].connect("single-click-item", self.input_treeview_clicked)
+        self.view_widgets["ad_hardware"].connect("single-click-item", self.card_treeview_clicked)
         # dbus signals
         self.current_sink = None
         if settings.CURRENT_SINK:
@@ -674,20 +674,20 @@ class SoundSetting(object):
             traceback.print_exc()
             pass
     
-    def output_treeview_clicked(self, tree_view, item, row):
+    def output_treeview_clicked(self, tree_view, item, row, *args):
         if item.obj_path == settings.CURRENT_SINK:
             return
         if settings.PA_CORE:
             settings.PA_CORE.set_fallback_sink(item.obj_path)
         
-    def input_treeview_clicked(self, tree_view, item, row):
+    def input_treeview_clicked(self, tree_view, item, row, *args):
         if item.obj_path == settings.CURRENT_SOURCE:
             return
         if settings.PA_CORE:
             settings.PA_CORE.set_fallback_source(item.obj_path)
         
     # TODO 选择声卡，设置声卡ActiveProfile
-    def card_treeview_clicked(self, tree_view, item, row):
+    def card_treeview_clicked(self, tree_view, item, row, *args):
         print "treeview clicked", item.obj_path, item.content, row
     
     #########################

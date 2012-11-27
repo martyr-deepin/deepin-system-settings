@@ -23,21 +23,16 @@
 #from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
-from dtk.ui.constant import DEFAULT_FONT, DEFAULT_FONT_SIZE
-from dtk.ui.utils import (color_hex_to_cairo, is_left_button, 
-                          is_double_click, is_single_click)
+from dtk.ui.utils import (color_hex_to_cairo, is_left_button)
 import gobject
-import copy
-import pangocairo
-import pango
 
 
 class MyTreeView(TreeView):
     ''' my TreeView'''
     __gsignals__ = {
-        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int)),
+        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT, int)),
         "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        "clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int))}
+        "clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT, int))}
 
     def __init__(self,
                  items=[],
@@ -69,100 +64,56 @@ class MyTreeView(TreeView):
         '''
         Add items.
         '''
+        super(MyTreeView, self).add_items(items, insert_pos, clear_first)
         with self.keep_select_status():
-            if clear_first:
-                self.visible_items = []
-            
-            if insert_pos == None:
-                self.visible_items += items
-            else:
-                self.visible_items = self.visible_items[0:insert_pos] + items + self.visible_items[insert_pos::]
-            
-            # Update redraw callback.
-            # Callback is better way to avoid perfermance problem than gobject signal.
             for item in items:
-                item.redraw_request_callback = self.redraw_request
-                item.add_items_callback = self.add_items
-                item.delete_items_callback = self.delete_items
                 item.treeview = self
-            
-            self.update_item_index()    
-            
-            self.update_item_widths()
-                
-            self.update_vadjustment()
         
-    def click_item(self, event):
-        cell = self.get_cell_with_event(event)
-        if cell != None:
-            (click_row, click_column, offset_x, offset_y) = cell
+    #def click_item(self, event):
+        #cell = self.get_cell_with_event(event)
+        #if cell != None:
+            #(click_row, click_column, offset_x, offset_y) = cell
             
-            if self.left_button_press:
-                if click_row == None:
-                    self.unselect_all()
-                else:
-                    if self.enable_drag_drop and click_row in self.select_rows:
-                        self.start_drag = True
-                        # Record press_in_select_rows, disable select rows if mouse not move after release button.
-                        self.press_in_select_rows = click_row
-                    else:
-                        self.start_drag = False
-                        self.start_select_row = click_row
-                        self.set_select_rows([click_row])
+            #if self.left_button_press:
+                #if click_row == None:
+                    #self.unselect_all()
+                #else:
+                    #if self.enable_drag_drop and click_row in self.select_rows:
+                        #self.start_drag = True
+                        ## Record press_in_select_rows, disable select rows if mouse not move after release button.
+                        #self.press_in_select_rows = click_row
+                    #else:
+                        #self.start_drag = False
+                        #self.start_select_row = click_row
+                        #self.set_select_rows([click_row])
                         
-                        self.visible_items[click_row].button_press(click_column, offset_x, offset_y)
+                        #self.visible_items[click_row].button_press(click_column, offset_x, offset_y)
                             
-                if is_double_click(event):
-                    self.double_click_row = copy.deepcopy(click_row)
-                elif is_single_click(event):
-                    self.single_click_row = copy.deepcopy(click_row)                
+                #if is_double_click(event):
+                    #self.double_click_row = copy.deepcopy(click_row)
+                #elif is_single_click(event):
+                    #self.single_click_row = copy.deepcopy(click_row)                
     
     def set_select_rows(self, rows):
-        for select_row in self.select_rows:
-            self.visible_items[select_row].unselect()
-            
-        self.select_rows = rows
-        
-        if rows == []:
-            self.start_select_row = None
-        else:
+        super(MyTreeView, self).set_select_rows(rows)
+        if rows:
             for select_row in self.select_rows:
-                self.visible_items[select_row].select()
                 self.emit("select", self.visible_items[select_row], select_row)
     
-    def release_item(self, event):
-        if is_left_button(event):
-            cell = self.get_cell_with_event(event)
-            if cell is not None:
-                (release_row, release_column, offset_x, offset_y) = cell
-                
-                if release_row is not None:
-                    if self.double_click_row == release_row:
-                        self.visible_items[release_row].double_click(release_column, offset_x, offset_y)
-                    elif self.single_click_row == release_row:
-                        self.emit("clicked", self.visible_items[release_row], release_row)
-                        self.visible_items[release_row].single_click(release_column, offset_x, offset_y)
-                
-                if self.start_drag and self.is_in_visible_area(event):
-                    self.drag_select_items_at_cursor()
-                    
-                self.double_click_row = None    
-                self.single_click_row = None    
-                self.start_drag = False
-                
-                # Disable select rows when press_in_select_rows valid after button release.
-                if self.press_in_select_rows:
-                    self.set_select_rows([self.press_in_select_rows])
-                    self.start_select_row = self.press_in_select_rows
-                    self.press_in_select_rows = None
-                
-                self.set_drag_row(None)
+    #def release_item(self, event):
+        #super(MyTreeView, self).release_item(event)
+        #if is_left_button(event):
+            #cell = self.get_cell_with_event(event)
+            #if cell is not None:
+                #(release_row, release_column, offset_x, offset_y) = cell
+                #if release_row is not None:
+                    #if self.single_click_row == release_row:
+                        #self.emit("clicked", self.visible_items[release_row], release_column)
 gobject.type_register(MyTreeView)
         
 
 class MyTreeItem(TreeItem):
     '''TreeItem class'''
-    __gsignals__ = {"select": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (int,))}
 
     def __init__(self, icon, content, obj_path=None):
         '''
@@ -200,7 +151,6 @@ class MyTreeItem(TreeItem):
         
     def select(self):
         self.is_select = True
-        #self.emit("select", self.row_index)
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
 
