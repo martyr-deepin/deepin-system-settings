@@ -149,8 +149,11 @@ class VPNSetting(gtk.HBox):
                                                device_path,
                                                specific_path)
 
-            active_vpn = cache.get_spec_object(active_object.object_path)
-            active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
+            if active_object != None:
+                active_vpn = cache.get_spec_object(active_object.object_path)
+                active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
+            else:
+                raise Exception
         else:
             raise Exception
     def try_to_connect_wireless_device(self, device, connection):
@@ -165,15 +168,9 @@ class VPNSetting(gtk.HBox):
             active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
-            active_vpn = cache.get_spec_object(active_object.object_path)
-            active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
-
-        ##FIXME need to change device path into variables
-        #nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           #"/org/freedesktop/NetworkManager/Devices/0",
-                                           #"/")
-        #self.change_crumb()
-        #self.slide_back() 
+            if active_object != None:
+                active_vpn = cache.get_spec_object(active_object.object_path)
+                active_vpn.connect("vpn-state-changed", self.vpn_state_changed)
 
 
 class SideBar(gtk.VBox):
@@ -207,10 +204,11 @@ class SideBar(gtk.VBox):
         # Add connection buttons
         container_remove_all(self.buttonbox)
         cons = []
-        for index, connection in enumerate(self.connections):
-            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb))
-
         self.connection_tree = EntryTreeView(cons)
+        for index, connection in enumerate(self.connections):
+            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+        self.connection_tree.add_items(cons)
+
         self.connection_tree.show_all()
 
         self.buttonbox.pack_start(self.connection_tree, False, False, 6)
@@ -222,6 +220,11 @@ class SideBar(gtk.VBox):
             self.connection_tree.select_items([this_connection])
         except ValueError:
             self.connection_tree.select_first_item()
+
+    def delete_item_cb(self):
+        self.connection_tree.delete_select_items()
+        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+
 
     def get_active(self):
         return self.connection_tree.select_rows[0]

@@ -204,12 +204,13 @@ class EntryTreeView(TreeView):
 class SettingItem(TreeItem):
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10
-    def __init__(self, connection, setting, click_cb):
+    def __init__(self, connection, setting, click_cb, delete_cb):
         TreeItem.__init__(self)
         #self.title = title
         self.connection = connection
         self.setting = setting
         self.click = click_cb
+        self.delete = delete_cb
         self.entry = None
         self.entry_buffer = EntryBuffer(connection.get_setting("connection").id)
         self.entry_buffer.set_property('cursor-visible', False)
@@ -275,7 +276,7 @@ class SettingItem(TreeItem):
          
         #self.render_background(cr,bg_x, bg_y, bg_width, bg_height)
         self.render_background(cr, rect)
-        if self.delete_hover:
+        if self.is_select:
             delete_icon = app_theme.get_pixbuf("/Network/delete.png").get_pixbuf()
             draw_pixbuf(cr, delete_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - delete_icon.get_height())/2)
 
@@ -364,16 +365,22 @@ class SettingItem(TreeItem):
             self.redraw_request_callback(self)
     
     def hover(self, column, offset_x, offset_y):
-        if column == 2:
-            self.delete_hover = True
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        pass
+        #print column
+        #if column == 2:
+            #self.delete_hover = True
+        #else:
+            #self.delete_hover = False
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
 
     def unhover(self, column, offset_x, offset_y):
-        if column == 2:
-            self.delete_hover = False
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        pass
+        #print "unhover"
+        #if column != 2:
+            #self.delete_hover = False
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
 
     def single_click(self, column, offset_x, offset_y):
         self.is_double_click = False
@@ -385,11 +392,11 @@ class SettingItem(TreeItem):
         elif column == 2:
             pass
             #print "delete clicked"
-            #self.connection.delete()
+            self.connection.delete()
+            self.delete()
             #self.destroy()
-            #self.setting.destroy()
-
-
+            self.setting.destroy()
+            
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
     
