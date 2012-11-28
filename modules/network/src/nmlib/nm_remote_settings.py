@@ -221,7 +221,7 @@ class NMRemoteSettings(NMObject):
         
     def new_gsm_connection(self):
         s_connection = NMSettingConnection()
-        s_gsm = NMSettingGsm
+        s_gsm = NMSettingGsm()
         s_serial = NMSettingSerial()
         s_ppp = NMSettingPPP()
         s_ip4config = NMSettingIP4Config()
@@ -238,7 +238,7 @@ class NMRemoteSettings(NMObject):
 
         s_connection.type = "gsm"
         # s_connection.id = "gsm连接"
-        s_connection.id = self.generate_connection_id("cdma")
+        s_connection.id = self.generate_connection_id("gsm")
         s_connection.autoconnect = False
         s_connection.uuid = uuid.uuid4()
         s_connection.timestamp = time.time()

@@ -44,8 +44,8 @@ class MMClient(MMObject):
     '''MMClient'''
         
     __gsignals__  = {
-            "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
+            "device-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
             }
     
     def __init__(self):
@@ -80,13 +80,9 @@ class MMClient(MMObject):
         return filter(lambda x:MMDevice(x).get_type() == 1, self.enumerate_devices())
 
     def device_added_cb(self, device_path):
-        print "device_added_cb"
-        print device_path
         self.emit("device-added", device_path)
 
     def device_removed_cb(self, device_path):
-        print "device_removed_cb"
-        print device_path
         self.emit("device-removed", device_path)
 
 if __name__ == "__main__":
