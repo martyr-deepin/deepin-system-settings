@@ -20,8 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Polkit
-from gi.repository import Gio
+import _polkitpermission as polkitpermission
 
 import dbus
 import gobject
@@ -34,49 +33,6 @@ DBusGMainLoop(set_as_default = True)
 name_re = re.compile("[0-9a-zA-Z-]*")
 
 system_bus = dbus.SystemBus()
-
-# polkit_object = system_bus.get_object("org.freedesktop.PolicyKit1", "/org/freedesktop/PolicyKit1/Authority")
-
-# polkit_interface = dbus.Interface(polkit_object, "org.freedesktop.PolicyKit1.Authority")
-
-# dbus_interface = dbus.Interface(system_bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus'), 'org.freedesktop.DBus')
-
-# def check_authorization(subject, action_id, details, flags, cancellation_id):
-#     (is_authorized, is_challenge, detail) = polkit_interface.CheckAuthorization(subject, action_id,
-#                                                                                 details, flags, cancellation_id)
-
-#     return (is_authorized, is_challenge, detail)
-
-# def cancel_check_authorization(cancellation_id):
-#     polkit_interface.CancelCheckAuthorization(cancellation_id)
-
-# def service_is_authorized(bus_name):
-#     if bus_name in dbus_interface.ListNames():
-#         unique_name = dbus_interface.GetNameOwner(bus_name)
-#     else:
-#         return False
-
-#     subject = ('system-bus-name', 
-#                { 
-#                  'name': dbus.String(unique_name, variant_level = 1)
-#                  }
-#                )
-
-#     return check_authorization(subject, None, None, 0, None)
-
-# def auth_service(bus_name, cancellation_id = None):
-#     if bus_name in dbus_interface.ListNames():
-#         unique_name = dbus_interface.GetNameOwner(bus_name)
-#     else:
-#         return False
-
-#     subject = ('system-bus-name', 
-#                { 
-#                  'name': dbus.String(unique_name, variant_level = 1)
-#                  }
-#                )
-    
-#     return check_authorization(subject, None, None, 1, cancellation_id)
 
 def valid_object_path(object_path):
     if not isinstance(object_path, str):
@@ -155,33 +111,33 @@ class BusBase(gobject.GObject):
 
 class PolkitPermission:
     
-    def __init__(self, action, subject = None, cancellable = None):
-        self.permission =  Polkit.Permission.new_sync(action, subject, cancellable)
+    def __init__(self, action, subject = None):
+        self.permission =  polkitpermission.new_sync(action, subject)
     
     def get_action_id(self):
-        return self.permission.get_action_id()
+        return polkitpermission.get_action_id(self.permission)
 
     def get_subject(self):
-        return self.permission.get_subject()
+        return polkitpermission.get_subject(self.permission)
 
     def get_allowed(self):
-        return self.permission.get_allowed()
+        return polkitpermission.get_allowed(self.permission)
 
     def get_can_acquire(self):
-        return self.permission.get_can_acquire()
+        return polkitpermission.get_can_acquire(self.permission)
 
     def get_can_release(self):
-        return self.permission.get_can_release()
+        return polkitpermission.get_can_release(self.permission)
     
-    def acquire(self, cancellable = None):
+    def acquire(self):
         if self.get_can_acuire():
-            self.permission.acquire(cancellable)
+            return polkitpermission.acquire(self.permission)
         else:
             pass
 
-    def release(self, cancellable = None):
+    def release(self):
         if self.get_can_release():
-            self.permission.release(cancellable)
+            return polkitpermission.release(self.permission)
         else:
             pass
 
