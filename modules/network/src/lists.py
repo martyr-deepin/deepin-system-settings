@@ -435,6 +435,124 @@ class DSLItem(TreeItem):
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+
+class GeneralItem(TreeItem):
+    CHECK_LEFT_PADDING = 10
+    CHECK_RIGHT_PADIING = 10
+    JUMPTO_RIGHT_PADDING = 10
+    VERTICAL_PADDING = 5
+
+    def __init__(self,
+                 name,
+                 setting_page,
+                 slide_to_setting_page_cb,
+                 send_to_crumb,
+                 font_size=DEFAULT_FONT_SIZE):
+
+        TreeItem.__init__(self)
+
+        self.name = name
+        self.setting = setting_page
+        self.slide_to_setting = slide_to_setting_page_cb
+        self.send_to_crumb = send_to_crumb
+        self.font_size = font_size
+        self.check_width = self.get_check_width()
+        self.essid_width = self.get_essid_width(self.name)
+        self.jumpto_width = self.get_jumpto_width()
+        self.network_state = 2
+        self.is_last = True
+
+    def render_check(self, cr, rect):
+        render_background(cr, rect)
+
+        if self.network_state == 0:
+            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+        elif self.network_state == 1:
+            check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
+        else:
+            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+
+        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x , rect.y, 1, rect.height)
+            cr.fill()
+
+    def render_name(self, cr, rect):
+        render_background(cr, rect)
+        (text_width, text_height) = get_content_size(self.name)
+        if self.is_select:
+            text_color = None
+        draw_text(cr, self.name, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def render_jumpto(self, cr, rect):
+
+        render_background(cr, rect)
+        if self.is_select:
+            pass
+        jumpto_icon = app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf()
+        draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
+            cr.fill()
+
+    def get_check_width(self):
+        check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
+    def get_essid_width(self, essid):
+        return get_content_size(essid)[0]
+    
+    def get_jumpto_width(self):
+        return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+
+    def get_column_widths(self):
+        return [self.check_width, -1,self.jumpto_width]
+
+    def get_column_renders(self):
+        return [self.render_check, self.render_name, self.render_jumpto]
+
+    def get_height(self):
+        return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        
+    def unselect(self):
+        self.is_select = False
+        
+    def hover(self, column, offset_x, offset_y):
+        pass
+
+    def unhover(self, column, offset_x, offset_y):
+        #print column, offset_x, offset_y
+        pass
+
+    def single_click(self, column, x, y):
+        #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
+            #self.is_select = not self.is_select
+        if column == 2:
+            self.setting.init(self.device)
+            self.slide_to_setting()
+            self.send_to_crumb()
+
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+
         
 if __name__=="__main__":
 
