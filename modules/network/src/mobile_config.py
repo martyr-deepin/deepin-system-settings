@@ -205,17 +205,15 @@ class Region(NoSetting):
 class Broadband(gtk.VBox):
     def __init__(self, connection):
         gtk.VBox.__init__(self)
-        
-        mobile_type = connection.get_setting("connection").type
-        broadband_setting = connection.get_setting(mobile_type)
+        self.connection = connection        
 
         # Init widgets
-        self.table = gtk.Table(10, 4, False)
+        self.table = gtk.Table(11, 4, False)
 
-        label_basic = Label("Basic")
-        label_number = Label("Number:")
-        label_username = Label("Username:")
-        label_password = Label("Password:")
+        self.label_basic = Label("Basic")
+        self.label_number = Label("Number:")
+        self.label_username = Label("Username:")
+        self.label_password = Label("Password:")
 
         self.number = InputEntry()
         self.number.set_size(200,25 )
@@ -224,52 +222,88 @@ class Broadband(gtk.VBox):
         self.password = InputEntry()
         self.password.set_size(200,25 )
 
-        self.table.attach(label_basic, 0 ,1 ,0, 1)
-        self.table.attach(label_number, 1, 2, 1, 2)
-        self.table.attach(label_username, 1, 2, 2, 3)
-        self.table.attach(label_password, 1, 2, 3, 4)
-
-        self.table.attach(self.number, 2, 4, 1, 2)
-        self.table.attach(self.username, 2, 4, 2, 3)
-        self.table.attach(self.password, 2, 4, 3, 4)
 
         #self.table = gtk.Table(6, 4, False)
-        label_advanced = Label("Advanced")
-        label_apn = Label("APN:")
-        label_network = Label("Network ID:")
-        label_type = Label("Type:")
-        label_pin = Label("PIN:")
+        self.label_advanced = Label("Advanced")
+        self.label_apn = Label("APN:")
+        self.label_network = Label("Network ID:")
+        self.label_type = Label("Type:")
+        self.label_pin = Label("PIN:")
 
         self.apn = InputEntry()
         self.apn.set_size(200,25 )
         self.network_id = InputEntry()
         self.network_id.set_size(200,25 )
-        self.mobile_type = InputEntry()
-        self.mobile_type.set_size(200,25 )
+        self.network_type = InputEntry()
+        self.network_type.set_size(200,25 )
         self.roam_check = CheckButton("Allow roaming if home network is not available")
         self.pin = InputEntry()
         self.pin.set_size(200,25 )
-
-        self.table.attach(label_advanced, 0, 1, 5, 6)
-        self.table.attach(label_apn, 1, 2 , 6, 7)
-        self.table.attach(label_network, 1, 2, 7, 8)
-        self.table.attach(label_type, 1, 2, 8, 9)
-        self.table.attach(label_pin, 1, 2, 9, 10)
-
-        self.table.attach(self.apn, 2, 4, 5, 6)
-        self.table.attach(self.network_id, 2, 4, 6, 7)
-        self.table.attach(self.mobile_type, 2, 4, 7, 8)
-        #self.table.attach(self.roam_check, 3, 4, 4, 5)
-        self.table.attach(self.pin, 2, 4, 9, 10)
-
-        #table_wrap = gtk.VBox()
-        #table_wrap.pack_start(self.table, False, False)
-        #table_wrap.pack_start(self.table, False, False)
-
-
+        
         align = gtk.Alignment(0.5, 0.5, 0, 0)
         align.add(self.table)
         self.add(align)
+
+        # Refesh
+        self.refresh()
+
+    def init_table(self, network_type):
+        container_remove_all(self.table)
+        self.table.attach(self.label_basic, 0 ,1 ,0, 1)
+        self.table.attach(self.label_number, 1, 2, 1, 2)
+        self.table.attach(self.label_username, 1, 2, 2, 3)
+        self.table.attach(self.label_password, 1, 2, 3, 4)
+
+        self.table.attach(self.number, 2, 4, 1, 2)
+        self.table.attach(self.username, 2, 4, 2, 3)
+        self.table.attach(self.password, 2, 4, 3, 4)
+        if network_type == "gsm":
+            self.table.attach(self.label_advanced, 0, 1, 5, 6)
+            self.table.attach(self.label_apn, 1, 2 , 6, 7)
+            self.table.attach(self.label_network, 1, 2, 7, 8)
+            self.table.attach(self.label_type, 1, 2, 8, 9)
+            self.table.attach(self.label_pin, 1, 2, 9, 10)
+
+            self.table.attach(self.apn, 2, 4, 6, 7)
+            self.table.attach(self.network_id, 2, 4, 7, 8)
+            self.table.attach(self.network_type, 2, 4, 8, 9)
+            self.table.attach(self.roam_check, 3, 4, 9, 10)
+            self.table.attach(self.pin, 2, 4, 10, 11)
+            
+    def refresh(self):
+        # get_settings
+        mobile_type = self.connection.get_setting("connection").type
+        self.broadband_setting = self.connection.get_setting(mobile_type)
+        number = self.broadband_setting.number
+        username = self.broadband_setting.username
+        
+        try:
+            (setting_name, method) = self.connection.guess_secret_info() 
+            password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                    setting_name,
+                                                    method)
+        except:
+            password = ""
+
+        # both
+        self.number.set_text(number)
+        self.username.set_text(username)
+        self.password.set_text(password)
+
+        if  mobile_type == "gsm":
+            apn = self.broadband_setting.apn
+            network_id = self.broadband_setting.network_id
+            network_type = self.broadband_setting.network_type
+            home_only = self.broadband_setting.home_only
+            pin = self.broadband_setting.pin
+            
+            # gsm
+            self.apn.set_text(apn)
+            self.network_id.set_text(network_id)
+            self.network_type.set_text(str(network_type))
+            self.roam_check.set_active(home_only is None)
+
+        self.init_table(mobile_type)
 
         ## retrieve wired info
 
