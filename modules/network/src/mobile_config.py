@@ -69,7 +69,7 @@ class MobileSetting(gtk.HBox):
         connections = get_mobile_connections()
         # Check connections
         if connections == []:
-            nm_module.nm_remote_settings.new_cmda_connection()
+            nm_module.nm_remote_settings.new_cdma_connection()
             connections = get_mobile_connections()
 
         self.region_setting = [Region(con) for con in connections]
@@ -234,8 +234,12 @@ class Broadband(gtk.VBox):
         self.apn.set_size(200,25 )
         self.network_id = InputEntry()
         self.network_id.set_size(200,25 )
-        self.network_type = InputEntry()
-        self.network_type.set_size(200,25 )
+        self.network_type = ComboBox([("Any", None),
+                                      ("3G", 0),
+                                      ("2G", 1),
+                                      ("Prefer 3G", 2),
+                                      ("Prefer 2G", 3)])
+        #self.network_type.set_size(200,25 )
         self.roam_check = CheckButton("Allow roaming if home network is not available")
         self.pin = InputEntry()
         self.pin.set_size(200,25 )
@@ -300,7 +304,11 @@ class Broadband(gtk.VBox):
             # gsm
             self.apn.set_text(apn)
             self.network_id.set_text(network_id)
-            self.network_type.set_text(str(network_type))
+            if network_type:
+                self.network_type.set_select_index(network_type + 1)
+            else:
+                self.network_type.set_select_index(0)
+
             self.roam_check.set_active(home_only is None)
 
         self.init_table(mobile_type)
