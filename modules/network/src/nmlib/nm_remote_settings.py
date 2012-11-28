@@ -97,7 +97,7 @@ class NMRemoteSettings(NMObject):
             conn_start = "VPN连接"
         elif connection_type == "cdma":
             conn_list = self.get_cdma_connections()
-            conn_list = "CDMA连接"
+            conn_start = "CDMA连接"
         elif connection_type == "gsm":
             conn_list = self.get_gsm_connections()
             conn_start = "GSM连接"
@@ -105,10 +105,11 @@ class NMRemoteSettings(NMObject):
             return "新建连接"
 
         index_list = [0, ]
-        for conn in conn_list:
-            tmp = re.findall("\d+$", conn.settings_dict["connection"]["id"])
-            if tmp:
-                index_list.append(int(tmp[-1]))
+        if conn_list:
+            for conn in conn_list:
+                tmp = re.findall("\d+$", conn.settings_dict["connection"]["id"])
+                if tmp:
+                    index_list.append(int(tmp[-1]))
 
         return "%s" % conn_start + str(1 + max(index_list))        
 

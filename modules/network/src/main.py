@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 #from proxy_config import ProxyConfig
-from proxy_config import ProxyConfig
+# from proxy_config import ProxyConfig
 import sys
 import os
 sys.path.append("../")
