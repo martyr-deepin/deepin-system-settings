@@ -25,6 +25,7 @@ from nmlib.nmclient import NMClient
 from nmlib.nm_remote_settings import NMRemoteSettings
 from nmlib.nmcache import NMCache, cache
 from nmlib.nm_secret_agent import NMSecretAgent
+from mm.mmclient import MMClient
 
 from dtk.ui.new_slider import HSlider
 slider = HSlider()
@@ -35,6 +36,7 @@ class NModule(object):
         self.client = cache.getobject("/org/freedesktop/NetworkManager")
         self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         self.agent = NMSecretAgent()
+        self.mclient = MMClient()
 
     @property
     def nmclient(self):
@@ -54,6 +56,12 @@ class NModule(object):
     @secret_agent.setter
     def secret_agent(self, val):
         self.agent = NMSecretAgent()
+    @property
+    def mmclient(self):
+        return self.mclient
+    @mmclient.setter
+    def mmclient(self, val):
+        self.mclient = MMClient()
 
 nm_module = NModule()
 #wired_device = nmclient.get_wired_devices()[0]

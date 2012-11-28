@@ -255,9 +255,9 @@ class SettingItem(TreeItem):
             cr.set_line_width(1)
             #if self.is_last:
                 #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x , rect.y +1, rect.width, 1)
+            cr.rectangle(rect.x , rect.y , rect.width, 1)
             cr.rectangle(rect.x, rect.y , 1, rect.height)
-            cr.rectangle(rect.x , rect.y + rect.height - 3, rect.width, 1)
+            cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
             #cr.rectangle(rect.)
             cr.fill()
     def highlight(self, widget):
@@ -277,9 +277,9 @@ class SettingItem(TreeItem):
             cr.set_line_width(1)
             #if self.is_last:
                 #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x , rect.y +1, rect.width, 1)
-            cr.rectangle(rect.x + rect.width - 3 , rect.y , 1, rect.height)
-            cr.rectangle(rect.x , rect.y + rect.height - 3, rect.width, 1)
+            cr.rectangle(rect.x , rect.y , rect.width, 1)
+            cr.rectangle(rect.x + rect.width - 7 , rect.y , 1, rect.height - 1)
+            cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
             #cr.rectangle(rect.)
             cr.fill()
 
@@ -310,9 +310,9 @@ class SettingItem(TreeItem):
             cr.set_line_width(1)
             #if self.is_last:
                 #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x , rect.y +1, rect.width, 1)
+            cr.rectangle(rect.x , rect.y , rect.width, 1)
             #cr.rectangle(rect.x, rect.y , 1, rect.height)
-            cr.rectangle(rect.x , rect.y + rect.height - 3, rect.width, 1)
+            cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
             #cr.rectangle(rect.)
             cr.fill()
         if self.is_select:

@@ -50,7 +50,7 @@ class VPNSetting(gtk.HBox):
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
         #hbox = gtk.HBox()
-        apply_button = gtk.Button("Apply")
+        apply_button = Button("Apply")
         apply_button.connect("clicked", self.save_changes)
         #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
@@ -144,6 +144,7 @@ class VPNSetting(gtk.HBox):
 
     def vpn_disconnected(self, widget):
         print "vpn disconnected"
+        cache.del_spec_object(widget.object_path)
         #self.sidebar.clear_active()
 
 
@@ -269,8 +270,10 @@ class IPV4Conf(gtk.VBox):
         table = gtk.Table(9, 2 , False)
         # Ip configuration
         self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
+        self.auto_ip.set_sensitive(False)
         table.attach(self.auto_ip, 0,1,0,1,)
         self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
+        self.manual_ip.set_sensitive(False)
         table.attach(self.manual_ip, 0,1,1,2)
 
         addr_label = Label("IP地址:")
@@ -323,8 +326,8 @@ class IPV4Conf(gtk.VBox):
         
         self.cs =None
         self.reset(connection)
-        self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
-        self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
+        #self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
+        #self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
         self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
         self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
         #self.apply_button.connect("clicked", self.save_changes, self.cs)

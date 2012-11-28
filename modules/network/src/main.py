@@ -10,7 +10,7 @@ from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeView
 from dtk.ui.draw import draw_pixbuf, draw_line
-from dtk.ui.utils import color_hex_to_cairo, get_parent_dir, is_dbus_name_exists
+from dtk.ui.utils import color_hex_to_cairo, get_parent_dir, is_dbus_name_exists, container_remove_all
 from dtk.ui.label import Label
 from dtk.ui.new_slider import HSlider
 from dtk.ui.scrolled_window import ScrolledWindow
@@ -21,12 +21,13 @@ import traceback
 import threading as td
 
 from container import Contain
-from lists import WiredItem, WirelessItem
+from lists import WiredItem, WirelessItem, GeneralItem
 
 from lan_config import WiredSetting
 from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
+from mobile_config import MobileSetting
 
 from nmlib.nmcache import cache
 from nm_modules import nm_module, slider
@@ -69,7 +70,6 @@ class WiredSection(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.wired_devices = nm_module.nmclient.get_wired_devices()
-        #print "==WiredSection get_device"
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
@@ -95,8 +95,7 @@ class WiredSection(gtk.VBox):
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
             for index, wired_device in enumerate(self.wired_devices):
-                #print "add wiredDevice"
-                WiredDevice(wired_device,self.tree, index )
+                WiredDevice(wired_device,self.tree, index)
 
             self.try_active()
             self.show_all()
@@ -113,19 +112,12 @@ class WiredSection(gtk.VBox):
         """
         wired_items = []
         for wired_device in self.wired_devices:
-                #self.device_ethernet.auto_connect()
-                #self.device_ethernet.emit("try-activate-begin")
             wired_items.append(WiredItem(wired_device,
                                          self.settings, 
                                          lambda : slider.slide_to_page(self.settings, "right"),
                                          self.send_to_crumb_cb))
         return wired_items
 
-    #def get_active(self):
-        #for index, device in enumerate(self.wired_devices):
-            #if device.is_active:
-                #return index
-        #return False
 
     def try_active(self):
         for index, device in enumerate(self.wired_devices):
@@ -164,23 +156,6 @@ class WirelessDevice(object):
         index = ap_list.index(ssid)
         self.tree.visible_items[index].network_state = 1
         self.tree.queue_draw()
-
-    #def try_ssid_end(self, widget, ssid):
-        #if ssid[0] == "@":
-            #print "not active"
-            #ap_list  = [ap.get_ssid() for ap in self.ap_list]
-            #index = ap_list.index(ssid[1:])
-            #self.tree.visible_items[index].network_state = 0
-            #self.tree.queue_draw()
-        #else:
-            #print "is active"
-            #ap_list  = [ap.get_ssid() for ap in self.ap_list]
-            #index = ap_list.index(ssid)
-            #self.tree.visible_items[index].network_state = 1
-            #self.tree.queue_draw()
-
-
-            
     
     def device_is_active(self, widget, reason):
         print "wireless active"
@@ -411,30 +386,64 @@ class VpnSection(gtk.VBox):
     def add_setting_page(self, setting_page):
         self.setting = setting_page
 
-class ThreeG(gtk.VBox):
-    def __init__(self):
+class Mobile(gtk.VBox):
+    def __init__(self,
+                 send_to_crumb_cb):
 
         gtk.VBox.__init__(self)
+        self.send_to_crumb_cb = send_to_crumb_cb
         mobile = Contain(app_theme.get_pixbuf("/Network/3g.png"), "移动网络", self.toggle_cb)
         self.add(mobile)
+        self.settings = None
+
+        nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
+        
 
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
             self.align = gtk.Alignment(0,0,0,0)
-            self.align.set_padding(0,0,PADDING,11)
-            label = Label("设置3G网络", ui_theme.get_color("link_text"))
-            label.connect("button-release-event", self.slide_to_event)
-
-            self.align.add(label)
-            self.align.connect("expose-event", self.expose_event)
+            self.align.set_padding(0,0,PADDING,11 + 11)
             self.add(self.align)
+        # Check if there's any mobile device
+            mobile_device = nm_module.mmclient.get_cdma_device()
+            if mobile_device:
+                self.show_device(mobile_device[0])
+            else:
+                self.show_link()
             self.show_all()
         else:
             self.align.destroy()
 
+    def show_link(self):
+        container_remove_all(self.align)
+        label = Label("设置移动网络", ui_theme.get_color("link_text"))
+        label.connect("button-release-event", self.slide_to_event)
+        self.align.add(label)
+        self.align.connect("expose-event", self.expose_event)
+
+    def show_device(self, device_path):
+        from mm.mmdevice import MMDevice
+        container_remove_all(self.align)
+        device = MMDevice(device_path)
+        manufacturer = device.get_manufacturer()
+        model = device.get_model()
+        info = model + " " + manufacturer
+        item = GeneralItem(info,
+                           self.settings,
+                           lambda :slider.slide_to_page(self.settings, "right"),
+                           self.send_to_crumb_cb)
+        self.tree = TreeView([item])
+        self.tree.set_size_request(758, len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+        self.tree.show_all()
+        self.align.add(self.tree)
+
     def slide_to_event(self, widget, event):
-        print "clicked 3G"
+        self.settings.init()
+        self.send_to_crumb_cb()
+        slider.slide_to_page(self.settings, "right")
+    def add_setting_page(self, setting_page):
+        self.settings = setting_page
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -491,7 +500,7 @@ class Network(object):
         vbox.pack_start(self.wired, False, True,5)
         vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
-        #vbox.pack_start(mobile, False, True, 0)
+        vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
         #vbox.pack_start(self.proxy, False, True, 0)
         
@@ -516,6 +525,7 @@ class Network(object):
         slider.append_page(self.wireless_setting_page)
         #slider.append_page(self.proxy_setting_page)
         slider.append_page(self.vpn_setting_page)
+        slider.append_page(self.mobile_setting_page)
     
     def activate_succeed(self, widget, connection_path):
         pass
@@ -552,11 +562,14 @@ class Network(object):
                                lambda : module_frame.send_message("change_crumb", 1),
                                module_frame)
         self.vpn.add_setting_page(self.vpn_setting_page)
+
+        self.mobile = Mobile(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
+        self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        self.mobile.add_setting_page(self.mobile_setting_page)
         wifi = WifiSection()
-        mobile = ThreeG()
 
     def refresh(self):
-
         from nmlib.nm_secret_agent import NMSecretAgent
         nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
         nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
