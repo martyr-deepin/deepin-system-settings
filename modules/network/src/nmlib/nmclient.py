@@ -23,11 +23,8 @@
 import gobject
 from nmobject import NMObject
 from nm_utils import TypeConvert
-# from nmdevice import NMDevice
-# from nm_active_connection import NMActiveConnection
 import traceback
 from nmcache import cache
-import time
 
 class NMClient(NMObject):
     '''NMClient'''
@@ -73,7 +70,6 @@ class NMClient(NMObject):
             return []
 
     def get_wired_devices(self):
-        # return filter(lambda x:x.get_device_type() == 1, self.get_devices())
         if self.devices:
             return filter(lambda x:x.get_device_type() == 1, self.devices)
         else:
@@ -102,7 +98,6 @@ class NMClient(NMObject):
         return self.get_modem_devices()[0]
 
     def get_device_by_iface(self, iface):
-        # return cache.getobject(self.dbus_method("GetDeviceByIpIface", iface))
         device = self.dbus_method("GetDeviceByIpIface", iface)
         if device:
             return cache.getobject(device)
@@ -302,12 +297,11 @@ class NMClient(NMObject):
     def get_pppoe_active_connection(self):
         pass
 
-    def get_gsm_active_connection(self):
-        pass
-
-    def get_cdma_active_connection(self):
-        # return filter(lambda x:NMActiveConnection(x).get_devices()[0] == self.get_cdma_device(), self.get_active_connections())[0]
-        pass
+    def get_mobile_active_connection(self):
+        if self.get_active_connections():
+            return filter(lambda x:cache.getobject(x.get_devices()[0]).get_device_type == 8, self.get_active_connections())
+        else:
+            return []
 
     ###Signals ###
     def device_added_cb(self, device_object_path):
