@@ -15,7 +15,7 @@ static PyObject* new_sync(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    permission = polkit_permission_new_sync(action_id, subject, NULL, NULL);
+    permission =(PyObject *) polkit_permission_new_sync(action_id, subject, NULL, NULL);
     if(!permission){
         return NULL;
     }
@@ -23,16 +23,17 @@ static PyObject* new_sync(PyObject *self, PyObject *args)
     return permission;
 }
 
+
 static PyObject* get_action_id(PyObject *self, PyObject *args)
 {
-    const gchar* action_id;
+    PyObject* action_id;
     PolkitPermission* permission;
 
     if(!PyArg_ParseTuple(args, "o", &permission)){
         return NULL;
     }
     
-    action_id = polkit_permission_get_action_id(permission);
+    action_id =(PyObject *) polkit_permission_get_action_id(permission);
 
     if(!action_id){
         return NULL;
@@ -43,14 +44,14 @@ static PyObject* get_action_id(PyObject *self, PyObject *args)
 
 static PyObject* get_subject(PyObject *self, PyObject *args)
 {
-    PolkitSubject *subject;
+    PyObject *subject;
     PolkitPermission *permission;
 
     if(!PyArg_ParseTuple(args, "o", &permission)){
         return NULL;
     }
 
-    subject = polkit_permission_get_subject(permission);
+    subject = (PyObject *)polkit_permission_get_subject(permission);
 
     if(!subject){
         return NULL;
@@ -61,7 +62,7 @@ static PyObject* get_subject(PyObject *self, PyObject *args)
 
 static PyObject* get_allowed(PyObject *self, PyObject *args)
 {
-    gboolean allowed;
+    gboolean allowed = 0;
     PolkitPermission *permission;
     
     if(!PyArg_ParseTuple(args, "o", &permission)){
@@ -70,12 +71,17 @@ static PyObject* get_allowed(PyObject *self, PyObject *args)
 
     allowed = g_permission_get_allowed((GPermission *)permission);
 
-    return allowed;
+    if(allowed){
+        return Py_True;
+    }else{
+        return Py_False;
+    }
+    
 }
 
 static PyObject* get_can_acquire(PyObject *self, PyObject *args)
 {
-    gboolean acquire;
+    gboolean acquire = 0;
     PolkitPermission *permission;
 
     if(!PyArg_ParseTuple(args, "o", &permission)){
@@ -84,12 +90,16 @@ static PyObject* get_can_acquire(PyObject *self, PyObject *args)
     
     acquire = g_permission_get_can_acquire((GPermission *)permission);
 
-    return acquire;
+    if(acquire){
+        return Py_True;
+    } else{
+        return Py_False;
+    }
 }
 
 static PyObject* get_can_release(PyObject *self, PyObject *args)
 {
-    gboolean release;
+    gboolean release = 0;
     PolkitPermission *permission;
 
     if(!PyArg_ParseTuple(args, "o", &permission)){
@@ -98,12 +108,16 @@ static PyObject* get_can_release(PyObject *self, PyObject *args)
     
     release = g_permission_get_can_release((GPermission *)permission);
 
-    return release;
+    if(release){
+        return Py_True;
+    }else{
+        return Py_False;
+    }
 }
 
 static PyObject* acquire(PyObject *self, PyObject *args)
 {
-    gboolean acquire;
+    gboolean acquire = 0;
     PolkitPermission *permission;
     
     if(!PyArg_ParseTuple(args, "o", &permission)){
@@ -112,12 +126,17 @@ static PyObject* acquire(PyObject *self, PyObject *args)
 
     acquire = g_permission_acquire((GPermission *)permission, NULL, NULL);
 
-    return acquire;
+    if(acquire){
+        return Py_True;          
+    }else{
+        return Py_False;
+    }
+
 }
 
 static PyObject* release(PyObject *self, PyObject *args)
 {
-    gboolean release;
+    gboolean release = 0;
     PolkitPermission *permission;
 
     if(!PyArg_ParseTuple(args, "o", &permission)){
@@ -126,19 +145,23 @@ static PyObject* release(PyObject *self, PyObject *args)
 
     release = g_permission_release((GPermission *)permission, NULL, NULL);
 
-    return release;
+    if(release){
+        return Py_True;
+    }else{
+        return Py_False;
+    }
 }
 
 static PyMethodDef polkitpermission_methods[] = 
 {
-    {"new_sync", new_sync, METH_VARARGS, "create an new Polkit Permission Object"},
-    {"get_action_id", get_action_id, METH_VARARGS, "get action id"},
-    {"get_subject", get_subject, METH_VARARGS, "get subject"},
-    {"get_allowed", get_allowed, METH_VARARGS, "get allowed"},
-    {"get_can_acquire", get_can_acquire, METH_VARARGS, "get can acquire"},
-    {"get_can_release", get_can_release, METH_VARARGS, "get can release"},
-    {"acquire", acquire, METH_VARARGS, "acquire"},
-    {"release", release, METH_VARARGS, "release"},
+    {"new_sync", (PyCFunction) new_sync, METH_VARARGS, "create an new Polkit Permission Object"},
+    {"get_action_id", (PyCFunction) get_action_id, METH_VARARGS, "get action id"},
+    {"get_subject", (PyCFunction) get_subject, METH_VARARGS, "get subject"},
+    {"get_allowed", (PyCFunction) get_allowed, METH_VARARGS, "get allowed"},
+    {"get_can_acquire", (PyCFunction) get_can_acquire, METH_VARARGS, "get can acquire"},
+    {"get_can_release", (PyCFunction) get_can_release, METH_VARARGS, "get can release"},
+    {"acquire", (PyCFunction) acquire, METH_VARARGS, "acquire"},
+    {"release", (PyCFunction) release, METH_VARARGS, "release"},
     {NULL, NULL, 0, NULL}
 };
 
