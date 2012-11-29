@@ -515,7 +515,7 @@ class SoundSetting(object):
             settings.PA_CARDS[cards]['obj'].connect("active-profile-updated", self.card_active_profile_update)
     
     ######################################
-    # signals callback begine
+    # signals callback begin
     # widget signals
     def toggle_button_expose(self, button, event):
         ''' toggle button expose'''

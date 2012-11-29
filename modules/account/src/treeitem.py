@@ -72,7 +72,7 @@ gobject.type_register(MyTreeView)
 class MyTreeItem(TreeItem):
     '''TreeItem class'''
 
-    def __init__(self, icon, user_name, user_type, dbus_obj, is_myowner=False):
+    def __init__(self, icon, real_name, user_name, user_type, dbus_obj, is_myowner=False):
         '''
         initialization.
         @param icon: a gtk.gdk.Pixbuf type
@@ -92,9 +92,11 @@ class MyTreeItem(TreeItem):
         self.padding_x = 5
         self.padding_y = 3
         self.icon = icon
+        self.real_name = real_name
         self.user_name = user_name
         self.user_type = user_type
         self.dbus_obj = dbus_obj
+        self.is_unique = True
     
     def get_height(self):
         return self.height + 2 * self.title_height
@@ -129,7 +131,11 @@ class MyTreeItem(TreeItem):
             text_color = "#000000"
         x = rect.x+self.padding_x
         user_name_y = rect.y+self.title_height+self.padding_y
-        draw_text(cr, "<b>%s</b>" % self.user_name,
+        if self.is_unique:
+            show_name = "<b>%s</b>" % self.real_name
+        else:
+            show_name = "<b>%s (%s)</b>" % (self.real_name, self.user_name)
+        draw_text(cr, show_name,
                   x, user_name_y,
                   rect.width-self.padding_x,
                   self.user_name_height,

@@ -167,23 +167,7 @@ class AccountSetting(object):
         self.alignment_widgets["button_hbox"].set(0, 0, 1, 1)
         self.view_widgets["account"].set_size_request(325, 355)
         # init treeview item
-        user_list = settings.get_user_list()
-        user_items = []
-        account_type = ["Standard", "Administrator"]
-        for user in user_list:
-            icon_file = user.get_icon_file()
-            if os.path.exists(icon_file):
-                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-                    icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
-            else:
-                icon_pixbuf = self.image_widgets["default_icon"]
-            if settings.check_is_myown(user.get_uid()):
-                user_items.insert(0, TreeItem(icon_pixbuf, user.get_real_name(),
-                                  account_type[user.get_account_type()], user, True))
-            else:
-                user_items.append(TreeItem(icon_pixbuf, user.get_real_name(),
-                                  account_type[user.get_account_type()], user))
-        self.view_widgets["account"].add_items(user_items, clear_first=True)
+        self.view_widgets["account"].add_items(self.get_user_list_treeitem(), clear_first=True)
         ###############
         # accounts info
         self.alignment_widgets["right_vbox"].set(0, 0, 1, 1)
@@ -202,11 +186,12 @@ class AccountSetting(object):
         self.container_widgets["account_info_table"].attach(self.label_widgets["deepin_account_tips"], 0, 1, 4, 5, 4, ypadding=10)
         self.container_widgets["account_info_table"].attach(self.label_widgets["deepin_account"], 1, 2, 4, 5, 4, 5, 50, ypadding=10)
         # TODO 绑定深度帐号
-        # TODO 获取授权状态
         #self.container_widgets["right_vbox"].set_sensitive(False)
         self.button_widgets["auto_login"].set_size_request(49, 22)
         self.image_widgets["account_icon"].set_size_request(48, 48)
+        # TODO 获取授权状态
         self.button_widgets["lock"].set_size_request(16, 16)
+        self.button_widgets["lock"].set_data("unlocked", False)
         self.alignment_widgets["account_info_hbox"].set(0.5, 0.5, 1, 1)
         self.alignment_widgets["account_info_hbox"].add(self.container_widgets["account_info_hbox"])
         self.container_widgets["account_info_hbox"].pack_start(self.label_widgets["account_name"], False, False)
@@ -262,6 +247,7 @@ class AccountSetting(object):
         self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_create"], False, False)
 
     def __signals_connect(self):
+        self.current_select_user = None
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
         self.button_widgets["add_account"].connect("clicked", self.add_account_button_clicked)
@@ -282,7 +268,7 @@ class AccountSetting(object):
         self.button_widgets["lock"].connect("clicked", self.lock_button_clicked)
 
     ######################################
-    # signals callback begine
+    # signals callback begin
     # widget signals
     def toggle_button_expose(self, button, event):
         ''' toggle button expose'''
@@ -306,7 +292,9 @@ class AccountSetting(object):
         return True
 
     def auto_login_toggled(self, button):
-        pass
+        if not self.current_select_user:
+            return
+        self.current_select_user.set_automatic_login(button.get_active())
     
     def add_account_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
@@ -324,10 +312,19 @@ class AccountSetting(object):
         self.button_widgets["add_account"].set_sensitive(True)
 
     def account_treeview_select(self, tv, item, row):
-        dbus_obj = item.dbus_obj
+        self.current_select_user = dbus_obj = item.dbus_obj
         self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
         self.label_widgets["account_name"].set_text("<b>%s</b>" % item.user_name)
         self.button_widgets["account_type"].set_select_index(dbus_obj.get_account_type())
+        self.button_widgets["auto_login"].set_active(dbus_obj.get_automatic_login())
+        # TODO 当前选中的不是当前帐号，并且未获得授权，则禁用删除按钮
+        if self.button_widgets["lock"].get_data("unlocked"):
+            if item.is_myowner:
+                if self.button_widgets["del_account"].get_sensitive():
+                    self.button_widgets["del_account"].set_sensitive(False)
+            else:
+                if not self.button_widgets["del_account"].get_sensitive():
+                    self.button_widgets["del_account"].set_sensitive(True)
     
     def lock_button_expose(self, button, event):
         cr = button.window.cairo_create()
@@ -343,6 +340,38 @@ class AccountSetting(object):
     
     def lock_button_clicked(self, widget):
         print "lock clicked"
+    # signals callback end
+    ######################################
+    
+    def get_user_list_treeitem(self):
+        '''
+        get TreeItems of user
+        @return: a list contain TreeItem of account
+        '''
+        user_list = settings.get_user_list()
+        user_items = []
+        account_type = ["Standard", "Administrator"]
+        for user in user_list:
+            icon_file = user.get_icon_file()
+            if os.path.exists(icon_file):
+                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                    icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            else:
+                icon_pixbuf = self.image_widgets["default_icon"]
+            if settings.check_is_myown(user.get_uid()):
+                item = TreeItem(icon_pixbuf, user.get_real_name(), user.get_user_name(),
+                                account_type[user.get_account_type()], user, True)
+                user_items.insert(0, item)
+            else:
+                item = TreeItem(icon_pixbuf, user.get_real_name(), user.get_user_name(),
+                                account_type[user.get_account_type()], user)
+                user_items.append(item)
+            for compare_user in user_list:
+                if user == compare_user:
+                    continue
+                if user.get_real_name() == compare_user.get_real_name():
+                    item.is_unique = False
+        return user_items
     
 if __name__ == '__main__':
     gtk.gdk.threads_init()
