@@ -228,10 +228,13 @@ class WirelessSection(gtk.VBox):
         active = widget.get_active()
         if active: 
             item_list = self.retrieve_list()
-            self.tree.add_items(item_list,0,True)
-            self.tree.visible_items[-1].is_last = True
-            self.vbox.set_no_show_all(False)
-            self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+            if item_list:
+                self.tree.add_items(item_list,0,True)
+                self.tree.visible_items[-1].is_last = True
+                self.vbox.set_no_show_all(False)
+                self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+            else:
+                self.tree.delete_all_items()
             self.queue_draw()
             self.show_all()
 

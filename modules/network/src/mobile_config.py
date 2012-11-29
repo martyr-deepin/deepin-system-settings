@@ -232,6 +232,8 @@ class Region(gtk.HBox):
         self.__sp = ServiceProviders()
         country_list = self.__sp.get_country_name_list()
         self.country_tree.add_items([Item(country) for country in country_list])
+
+        code = self.__sp.get_country_from_timezone()
         
     
     def country_selected(self, widget, w, a, b, c ):
