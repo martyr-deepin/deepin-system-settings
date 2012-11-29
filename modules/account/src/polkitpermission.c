@@ -1,7 +1,7 @@
 #include <Python.h>
 #include <polkit/polkit.h>
 #include <glib.h>
-#include <gio.h>
+#include <gio/gio.h>
 
 static PyObject* PolkitPermissionError;
 
@@ -15,7 +15,7 @@ static PyObject* new_sync(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    permission = polkit_permission_new_sync(action_id, subject, None, None);
+    permission = polkit_permission_new_sync(action_id, subject, NULL, NULL);
     if(!permission){
         return NULL;
     }
@@ -110,7 +110,7 @@ static PyObject* acquire(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    acquire = g_permission_acquire((GPermission *)permission, None, None);
+    acquire = g_permission_acquire((GPermission *)permission, NULL, NULL);
 
     return acquire;
 }
@@ -124,7 +124,7 @@ static PyObject* release(PyObject *self, PyObject *args)
         return NULL;
     }
 
-    release = g_permission_release((GPermission *)permission, None, None);
+    release = g_permission_release((GPermission *)permission, NULL, NULL);
 
     return release;
 }
