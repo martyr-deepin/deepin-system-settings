@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from theme import app_theme
+from theme import app_theme, ui_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
-from dtk.ui.new_treeview import TreeView
+from dtk.ui.new_treeview import TreeView, TreeItem
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
+from dtk.ui.draw import draw_text, draw_vlinear
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
 from widgets import SettingButton
@@ -20,6 +21,7 @@ from nm_modules import nm_module
 from container import Contain
 
 import gtk
+import pango
 
 class MobileSetting(gtk.HBox):
 
@@ -202,29 +204,49 @@ class Region(gtk.HBox):
         gtk.HBox.__init__(self, False, spacing = 10)
         
         country_label = Label("Country:")
-        country_tree = TreeView()
-        country_tree.set_size_request(300, -1)
+        self.country_tree = TreeView(enable_multiple_select = False,
+                                     enable_drag_drop = False)
+        self.country_tree.set_size_request(300, 400)
+        self.country_tree.connect("button-press-item", self.country_selected)
 
         left_box = gtk.VBox()
         left_box.pack_start(country_label, False, False)
-        left_box.pack_start(country_tree, False, False)
+        left_box.pack_start(self.country_tree, False, False)
         provider_label = Label("Provider:")
-        provider_tree = TreeView()
-        provider_tree.set_size_request(300, -1)
+        self.provider_tree = TreeView()
+        self.provider_tree.set_size_request(300, 400)
         right_box = gtk.VBox()
         right_box.pack_start(provider_label, False, False)
-        right_box.pack_start(provider_tree, False, False)
+        right_box.pack_start(self.provider_tree, False, False)
 
         self.pack_start(left_box, False, False)
         self.pack_start(right_box, False, False)
 
         self.show_all()
+        self.init()
 
 
     
     def init(self):
         from mm.provider import ServiceProviders
-        sp = ServiceProviders()
+        self.__sp = ServiceProviders()
+        country_list = self.__sp.get_country_name_list()
+        self.country_tree.add_items([Item(country) for country in country_list])
+        
+    
+    def country_selected(self, widget, w, a, b, c ):
+        country_codes = self.__sp.get_country_list()
+        self.provider_tree.delete_all_items()
+        provider_names = self.__sp.get_country_providers_name(country_codes[widget.select_rows[0]])
+        print provider_names
+        self.provider_tree.add_items([Item(p) for p in provider_names])
+        self.provider_tree.show_all()
+
+
+
+
+
+        
 
 
 
@@ -315,7 +337,9 @@ class Broadband(gtk.VBox):
         self.table.attach(self.number, 2, 4, 1, 2)
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
-        self.table.attach(self.password_show, 2, 4, 4, 5)
+        align = gtk.Alignment(0,0.5, 0, 0)
+        align.add(self.password_show)
+        self.table.attach(align, 2, 4, 4, 5)
         if network_type == "gsm":
             self.table.attach(self.label_advanced, 0, 1, 5, 6)
             self.table.attach(self.label_apn, 1, 2 , 6, 7)
@@ -829,6 +853,11 @@ class PPPConf(gtk.VBox):
 
         # Check Buttons
 
+def render_background( cr, rect):
+    background_color = [(0,["#ffffff", 1.0]),
+                        (1,["#ffffff", 1.0])]
+    draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
+
 class Item(TreeItem):
 
     def __init__(self, content):
@@ -837,14 +866,32 @@ class Item(TreeItem):
         self.content = content
         
     def render_content(self, cr, rect):
-        (text_width, text_height) = get_content_size(self.content)
-        draw_text(cr, self.name, rect.x, rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_LEFT)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.fill()
+        #(text_width, text_height) = get_content_size(self.content)
+        if self.is_select:
+            draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height,
+                         ui_theme.get_shadow_color("listview_select").get_color_info())
+        else:
+            render_background(cr, rect)
+        draw_text(cr, self.content, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_CENTER)
+
+    def get_column_widths(self):
+        return [-1]
+
+    def get_column_renders(self):
+        return [self.render_content]
+    
+    def get_height(self):
+        #(text_width, text_height) = get_content_size(self.content)
+        return 40
+        
+    def select(self):
+        self.is_select = True
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+    
+    def unselect(self):
+        self.is_select = False
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
             

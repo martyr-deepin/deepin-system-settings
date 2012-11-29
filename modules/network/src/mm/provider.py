@@ -27,10 +27,10 @@ except ImportError:
 
 import commands
 import os
+from dtk.ui.utils import get_parent_dir
+providers = ET.ElementTree(file = get_parent_dir(__file__) + "/serviceproviders.xml")
 
-providers = ET.ElementTree(file = "serviceproviders.xml")
-
-countryxml = ET.ElementTree(file = "iso_3166.xml")
+countryxml = ET.ElementTree(file = get_parent_dir(__file__) + "/iso_3166.xml")
 
 class ServiceProviders(object):
 
