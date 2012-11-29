@@ -299,7 +299,7 @@ class NMClient(NMObject):
 
     def get_mobile_active_connection(self):
         if self.get_active_connections():
-            return filter(lambda x:cache.getobject(x.get_devices()[0]).get_device_type == 8, self.get_active_connections())
+            return filter(lambda x: x.get_devices()[0].get_device_type() == 8, self.get_active_connections())
         else:
             return []
 
