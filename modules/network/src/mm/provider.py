@@ -57,6 +57,9 @@ class ServiceProviders(object):
         else:
             return None
 
+    def get_country_name_list(self):
+        return map(lambda x:self.get_country_name(x), self.get_provider_country_list())
+
     def get_country_code(self, name):
         pass
 
