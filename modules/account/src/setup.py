@@ -27,7 +27,7 @@ import commands
 def pkg_config_cflags(pkgs):
     return map(lambda path: path[2::], commands.getoutput('pkg-config --cflags-only-I %s' % (' '.join(pkgs))).split())
     
-polkitpermission_mod = Extension('_polkitpermission',
+polkitpermission_mod = Extension('polkit_permission',
                                  include_dirs = pkg_config_cflags(['glib-2.0', 'gio-2.0', 'polkit-gobject-1']),
                                  libraries = ['glib-2.0', 'gio-2.0', 'polkit-gobject-1'],
                                  sources = ['polkitpermission.c']

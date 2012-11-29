@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import _polkitpermission as polkitpermission
+import polkit_permission as polkitpermission
 
 import dbus
 import gobject
@@ -111,35 +111,45 @@ class BusBase(gobject.GObject):
 
 class PolkitPermission:
     
-    def __init__(self, action, subject = None):
-        self.permission =  polkitpermission.new_sync(action, subject)
+    def __init__(self, action, subject = "subject"):
+        self.permission =  polkitpermission.new(action)
     
     def get_action_id(self):
-        return polkitpermission.get_action_id(self.permission)
+        return self.permission.get_action_id()
 
-    def get_subject(self):
-        return polkitpermission.get_subject(self.permission)
+    # def get_subject(self):
+    #     return self.permission.get_subject()
 
     def get_allowed(self):
-        return polkitpermission.get_allowed(self.permission)
+        return self.permission.get_allowed()
 
     def get_can_acquire(self):
-        return polkitpermission.get_can_acquire(self.permission)
+        return self.permission.get_can_acquire()
 
     def get_can_release(self):
-        return polkitpermission.get_can_release(self.permission)
+        return self.permission.get_can_release()
     
     def acquire(self):
-        if self.get_can_acuire():
-            return polkitpermission.acquire(self.permission)
+        if self.get_can_acquire():
+            return self.permission.acquire()
         else:
             pass
 
     def release(self):
         if self.get_can_release():
-            return polkitpermission.release(self.permission)
+            return self.permission.release()
         else:
             pass
 
 if __name__ == "__main__":
     permission = PolkitPermission("org.freedesktop.accounts.user-administration")
+    print "action_id:"
+    print permission.get_action_id()
+    print "allowed:"
+    print permission.get_allowed()
+    print "can_acuire:"
+    print permission.get_can_acquire()
+    print "can_release:"
+    print permission.get_can_release()
+
+    permission.acquire()

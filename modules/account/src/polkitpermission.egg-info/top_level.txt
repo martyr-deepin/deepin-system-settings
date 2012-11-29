@@ -1,1 +1,1 @@
-_polkitpermission
+polkit_permission
