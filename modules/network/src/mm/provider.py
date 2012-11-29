@@ -38,7 +38,7 @@ class ServiceProviders(object):
 
     def __init__(self):
         self.provider_dict = {}
-        self.country_list = self.get_provider_country_list()
+        self.country_list = self.get_country_list()
         self.__country = None
         self.__providers = []
         self.__provider = None
@@ -46,7 +46,7 @@ class ServiceProviders(object):
         self.__apns = []
         self.__apn = None
 
-    def get_provider_country_list(self):
+    def get_country_list(self):
         return  map(lambda x: x.get("code"), providers.iterfind("country"))    
 
     def get_country_name(self, code):
@@ -63,7 +63,7 @@ class ServiceProviders(object):
             return None
 
     def get_country_name_list(self):
-        return map(lambda x:self.get_country_name(x), self.get_provider_country_list())
+        return map(lambda x:self.get_country_name(x), self.get_country_list())
 
     def get_country_code(self, name):
         pass
@@ -220,6 +220,11 @@ class ServiceProviders(object):
 
 if __name__ == "__main__":
     sp = ServiceProviders()
+    country_code =  sp.get_country_list()
+    country = sp.get_country_name_list()
+    print country_code[country.index("China")]
+    
+
     print sp.get_country_providers_name("cn")
     print sp.get_country_gsm_providers_name("cn")
     print sp.get_country_cdma_providers_name("cn")
