@@ -42,7 +42,7 @@ class Accounts(BusBase):
         self.init_dbus_properties()
 
     def get_daemon_version(self):
-        return self.properties["DaemonVersion"]
+        return str(self.properties["DaemonVersion"])
 
     def create_user(self, name, fullname, account_type):
         return str(self.dbus_method("CreateUser", name, fullname, account_type))
@@ -85,64 +85,64 @@ class User(BusBase):
             return []
 
     def get_automatic_login(self):
-        return self.properties["AutomaticLogin"]
+        return bool(self.properties["AutomaticLogin"])
 
     def get_locked(self):
-        return self.properties["Locked"]
+        return bool(self.properties["Locked"])
 
     def get_system_account(self):
-        return self.properties["SystemAccount"]
+        return bool(self.properties["SystemAccount"])
 
     def get_x_has_messages(self):
-        return self.properties["XHasMessages"]
+        return bool(self.properties["XHasMessages"])
 
     def get_account_type(self):
-        return self.properties["AccountType"]
+        return int(self.properties["AccountType"])
 
     def get_password_mode(self):
-        return self.properties["PasswordMode"]
+        return int(self.properties["PasswordMode"])
 
     def get_background_file(self):
-        return self.properties["BackgroundFile"]
+        return str(self.properties["BackgroundFile"])
 
     def get_email(self):
-        return self.properties["Email"]
+        return str(self.properties["Email"])
 
     def get_formats_locale(self):
-        return self.properties["FormatsLocale"]
+        return str(self.properties["FormatsLocale"])
 
     def get_home_directory(self):
-        return self.properties["HomeDirectory"]
+        return str(self.properties["HomeDirectory"])
     
     def get_icon_file(self):
-        return self.properties["IconFile"]
+        return str(self.properties["IconFile"])
 
     def get_language(self):
-        return self.properties["Language"]
+        return str(self.properties["Language"])
 
     def get_location(self):
-        return self.properties["Location"]
+        return str(self.properties["Location"])
 
     def get_password_hint(self):
-        return self.properties["PasswordHint"]
+        return str(self.properties["PasswordHint"])
 
     def get_real_name(self):
-        return self.properties["RealName"]
+        return str(self.properties["RealName"])
 
     def get_shell(self):
-        return self.properties["Shell"]
+        return str(self.properties["Shell"])
     
     def get_user_name(self):
-        return self.properties["UserName"]
+        return str(self.properties["UserName"])
 
     def get_x_session(self):
-        return self.properties["XSession"]
+        return str(self.properties["XSession"])
 
     def get_login_frequency(self):
-        return self.properties["LoginFrequency"]
+        return long(self.properties["LoginFrequency"])
 
     def get_uid(self):
-        return self.properties["Uid"]
+        return long(self.properties["Uid"])
 
     ###set methods
     def set_account_type(self, account_type):

@@ -87,7 +87,6 @@ class ConsoleKit(BusBase):
         else:
             return []
 
-
     def get_system_idle_hint(self):
         return bool(self.dbus_method("GetSystemIdleHint"))
 
