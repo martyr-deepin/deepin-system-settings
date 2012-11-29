@@ -45,7 +45,7 @@ class WiredSetting(gtk.HBox):
         self.ipv4 = None
         self.ipv6 = None
 
-        self.tab_window = TabBox()
+        self.tab_window = TabBox(dockfill = True)
         self.items = [("有线", NoSetting()),
                       ("IPv4设置", NoSetting()),
                       ("IPv6设置", NoSetting())]

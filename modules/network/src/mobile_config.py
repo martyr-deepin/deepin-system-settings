@@ -33,7 +33,7 @@ class MobileSetting(gtk.HBox):
         self.broadband = None
         self.ppp = None
 
-        self.tab_window = TabBox()
+        self.tab_window = TabBox(dockfill = True)
         self.items = [("country/provider", NoSetting()),
                       ("Mobile Broadband", NoSetting()),
                       ("PPP", NoSetting()),
@@ -144,7 +144,7 @@ class SideBar(gtk.VBox):
         #wired_device = nm_module.nmclient.get_wired_devices()[0]
         #active_connection = wired_device.get_active_connection()
         # FIXME 
-        active_connection = []
+        active_connection = nm_module.nmclient.get_mobile_active_connection()
         if active_connection:
             active = active_connection.get_connection()
         else:
@@ -208,7 +208,7 @@ class Broadband(gtk.VBox):
         self.connection = connection        
 
         # Init widgets
-        self.table = gtk.Table(11, 4, False)
+        self.table = gtk.Table(11, 4, True)
 
         self.label_basic = Label("Basic")
         self.label_number = Label("Number:")

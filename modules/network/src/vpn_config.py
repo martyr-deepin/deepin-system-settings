@@ -230,8 +230,9 @@ class SideBar(gtk.VBox):
             self.connection_tree.select_first_item()
 
     def delete_item_cb(self):
-        self.connection_tree.delete_select_items()
-        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        if len(self.connection_tree.visible_items) != 1:
+            self.connection_tree.delete_select_items()
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]

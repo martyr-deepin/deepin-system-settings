@@ -376,7 +376,6 @@ class SettingItem(TreeItem):
             self.check_select = not self.check_select
             print "check clicked"
         elif column == 2:
-            pass
             #print "delete clicked"
             self.connection.delete()
             self.delete()
