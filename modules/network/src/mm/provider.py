@@ -25,6 +25,11 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET
 
+try:
+    import pytz
+except ImportError:
+    print "pytz not installed"
+
 providers = ET.ElementTree(file = "serviceproviders.xml")
 
 countryxml = ET.ElementTree(file = "iso_3166.xml")
@@ -204,6 +209,15 @@ class ServiceProviders(object):
             return None
 
 
+    def get_country_from_timezone(self, timezone):
+        timezone_country = {}
+        for countrycode in self.country_list:
+            timezones = pytz.country_timezones[countrycode]
+            for timezone in timezones:
+                timezone_country[timezone] = countrycode
+
+        return timezone_country(timezone)        
+
 if __name__ == "__main__":
     sp = ServiceProviders()
     print sp.get_country_providers_name("cn")
@@ -216,3 +230,4 @@ if __name__ == "__main__":
     print sp.get_provider_password("cn", "China Mobile")
     print sp.get_provider_username("cn", "China Telecom")
     print sp.get_provider_password("cn", "China Telecom")
+    print sp.get_country_from_timezone("Asia/Shanghai")
