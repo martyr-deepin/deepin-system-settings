@@ -66,7 +66,7 @@ class InvalidObjectPath(Exception):
 class BusBase(gobject.GObject):
     
     def __init__(self, path, interface, service = "org.freedesktop.Accounts", bus = system_bus):
-
+        gobject.GObject.__init__(self)
         if valid_object_path(path):
             self.object_path = path
         else:
@@ -131,7 +131,11 @@ class PolkitPermission:
     
     def acquire(self):
         if self.get_can_acquire():
+<<<<<<< HEAD
             return self.permission.acquire()
+=======
+            return polkitpermission.acquire(self.permission)
+>>>>>>> 49775eda950e5eca9cdb310428b87cfa646d1e28
         else:
             pass
 

@@ -131,6 +131,9 @@ class User(BusBase):
 
     def get_shell(self):
         return self.properties["Shell"]
+    
+    def get_user_name(self):
+        return self.properties["UserName"]
 
     def get_x_session(self):
         return self.properties["XSession"]
@@ -202,5 +205,5 @@ class User(BusBase):
 
 if __name__ == "__main__":
     accounts = Accounts()
-    accounts.create_user("test", "test", 1)
+    accounts.create_user("test1", "test1", 1)
     gobject.MainLoop().run()
