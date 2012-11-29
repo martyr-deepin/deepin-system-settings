@@ -39,6 +39,11 @@ class NMSettingCdma (NMSetting):
     def number(self, new_number):
         self.prop_dict["number"] = TypeConvert.py2_dbus_string(new_number)
 
+    @number.deleter
+    def number(self):
+        if "number" in self.prop_dict.iterkeys():
+            del self.prop_dict["number"]
+
     @property
     def username(self):
         if "username" in self.prop_dict.iterkeys():
@@ -48,6 +53,11 @@ class NMSettingCdma (NMSetting):
     def username(self, new_user_name):
         self.prop_dict["username"] = TypeConvert.py2_dbus_string(new_user_name)
     
+    @username.deleter
+    def username(self):
+        if "username" in self.prop_dict.iterkeys():
+            del self.prop_dict["username"]
+
     @property
     def password(self):
         if "password" in self.prop_dict.iterkeys():
@@ -57,6 +67,11 @@ class NMSettingCdma (NMSetting):
     def password(self, new_password):
         self.prop_dict["password"] = TypeConvert.py2_dbus_string(new_password)
 
+    @password.deleter
+    def password(self):
+        if "password" in self.prop_dict.iterkeys():
+            del self.prop_dict["password"]
+
     @property
     def password_flags(self):
         if "password-flags" in self.prop_dict.iterkeys():
@@ -65,6 +80,11 @@ class NMSettingCdma (NMSetting):
     @password_flags.setter
     def password_flags(self, new_password_flags):
         self.prop_dict["password-flags"] = TypeConvert.py2_dbus_uint32(new_password_flags)
+
+    @password_flags.deleter
+    def password_flags(self):
+        if "password-flags" in self.prop_dict.iterkeys():
+            del self.prop_dict["password-flags"]
 
 if __name__ == "__main__":
     pass

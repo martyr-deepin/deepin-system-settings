@@ -39,6 +39,11 @@ class NMSettingGsm (NMSetting):
     def number(self, new_number):
         self.prop_dict["number"] = TypeConvert.py2_dbus_string(new_number)
 
+    @number.deleter
+    def number(self):
+        if "number" in self.prop_dict.iterkeys():
+            del self.prop_dict["number"]
+
     @property
     def username(self):
         if "username" in self.prop_dict.iterkeys():
@@ -48,6 +53,11 @@ class NMSettingGsm (NMSetting):
     def username(self, new_user_name):
         self.prop_dict["username"] = TypeConvert.py2_dbus_string(new_user_name)
     
+    @username.deleter
+    def username(self):
+        if "username" in self.prop_dict.iterkeys():
+            del self.prop_dict["username"]
+
     @property
     def password(self):
         if "password" in self.prop_dict.iterkeys():
@@ -56,6 +66,11 @@ class NMSettingGsm (NMSetting):
     @password.setter
     def password(self, new_password):
         self.prop_dict["password"] = TypeConvert.py2_dbus_string(new_password)
+
+    @password.deleter
+    def password(self):
+        if "password" in self.prop_dict.iterkeys():
+            del self.prop_dict["password"]
 
     @property
     def password_flags(self):
@@ -66,6 +81,11 @@ class NMSettingGsm (NMSetting):
     def password_flags(self, new_password_flags):
         self.prop_dict["password-flags"] = TypeConvert.py2_dbus_uint32(new_password_flags)
 
+    @password_flags.deleter
+    def password_flags(self):
+        if "password-flags" in self.prop_dict.iterkeys():
+            del self.prop_dict["password-flags"]
+
     @property
     def apn(self):
         if "apn" in self.prop_dict.iterkeys():
@@ -74,6 +94,11 @@ class NMSettingGsm (NMSetting):
     @apn.setter
     def apn(self, new_apn):
         self.prop_dict["apn"] = TypeConvert.py2_dbus_string(new_apn)
+
+    @apn.deleter
+    def apn(self):
+        if "apn" in self.prop_dict.iterkeys():
+            del self.prop_dict["apn"]
 
     @property
     def network_id(self):
@@ -84,6 +109,11 @@ class NMSettingGsm (NMSetting):
     def network_id(self, new_network_id):
         self.prop_dict["network-id"] = TypeConvert.py2_dbus_string(new_network_id)
 
+    @network_id.deleter
+    def network_id(self):
+        if "network-id" in self.prop_dict.iterkeys():
+            del self.prop_dict["network-id"]
+
     @property
     def network_type(self):
         if "network-type" in self.prop_dict.iterkeys():
@@ -92,6 +122,11 @@ class NMSettingGsm (NMSetting):
     @network_type.setter
     def network_type(self, new_network_type):
         self.prop_dict["network-type"] = TypeConvert.py2_dbus_uint32(new_network_type)
+
+    @network_type.deleter
+    def network_type(self):
+        if "network-type" in self.prop_dict.iterkeys():
+            del self.prop_dict["network-type"]
 
     @property
     def allowed_bands(self):
@@ -102,6 +137,11 @@ class NMSettingGsm (NMSetting):
     def allowed_bands(self, new_allowed_bands):
         self.prop_dict["allowed-bands"] = TypeConvert.py2_dbus_uint32(new_allowed_bands)
 
+    @allowed_bands.deleter
+    def allowed_bands(self):
+        if "allowed-bands" in self.prop_dict.iterkeys():
+            del self.prop_dict["allowed-bands"]
+
     @property
     def pin(self):
         if "pin" in self.prop_dict.iterkeys():
@@ -110,6 +150,11 @@ class NMSettingGsm (NMSetting):
     @pin.setter
     def pin(self, new_pin):
         self.prop_dict["pin"] = TypeConvert.py2_dbus_string(new_pin)
+
+    @pin.deleter
+    def pin(self):
+        if "pin" in self.prop_dict.iterkeys():
+            del self.prop_dict["pin"]
 
     @property
     def pin_flags(self):
@@ -120,6 +165,11 @@ class NMSettingGsm (NMSetting):
     def pin_flags(self, new_pin_flags):
         self.prop_dict["pin-flags"] = TypeConvert.py2_dbus_uint32(new_pin_flags)
 
+    @pin_flags.deleter
+    def pin_flags(self):
+        if "pin-flags" in self.prop_dict.iterkeys():
+            del self.prop_dict["pin-flags"]
+
     @property
     def home_only(self):
         if "home-only" in self.prop_dict.iterkeys():
@@ -128,3 +178,11 @@ class NMSettingGsm (NMSetting):
     @home_only.setter
     def home_only(self, new_home_only):
         self.prop_dict["home-only"] = TypeConvert.py2_dbus_boolean(new_home_only)
+
+    @home_only.deleter
+    def home_only(self):
+        if "home-only" in self.prop_dict.iterkeys():
+            del self.prop_dict["home-only"]
+
+if __name__ == "__main__":
+    pass
