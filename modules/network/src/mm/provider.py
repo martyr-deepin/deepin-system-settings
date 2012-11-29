@@ -25,10 +25,8 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET
 
-try:
-    import pytz
-except ImportError:
-    print "pytz not installed"
+import commands
+import os
 
 providers = ET.ElementTree(file = "serviceproviders.xml")
 
@@ -208,23 +206,65 @@ class ServiceProviders(object):
         else:
             return None
 
+    def get_country_from_timezone(self):
+        try:
+            import pytz
+        except ImportError:
+            print "pytz not installed"
+            return self.get_country_from_language()
 
-    def get_country_from_timezone(self, timezone):
         timezone_country = {}
-        for countrycode in self.country_list:
-            timezones = pytz.country_timezones[countrycode]
-            for timezone in timezones:
-                timezone_country[timezone] = countrycode
 
-        return timezone_country(timezone)        
+        for country in self.country_list:
+            country_zones = pytz.country_timezones(country)
+
+            for zone in country_zones:
+                if zone not in timezone_country.iterkeys():
+                    timezone_country[zone] = []
+
+                if country not in timezone_country[zone]:
+                    timezone_country[zone].append(country)
+        if "TZ" in os.environ.keys():
+            timezone = os.environ.get("TZ")
+        else:    
+            timezone = commands.getoutput("cat /etc/timezone")            
+
+        if timezone in timezone_country.iterkeys():
+            if len(timezone_country[timezone]) == 1:
+                return timezone_country[timezone][0]
+            else:
+                return self.get_country_from_language(timezone_country[timezone])
+        else:
+            return self.get_country_from_language()
+
+    def get_country_from_language(self, country_list = []):
+        try:
+            import pycountry
+        except ImportError:
+            print "pycountry not installed"
+            return self.country_list[0]
+
+        if "LANG" in os.environ.keys():
+            lang = os.environ.get("LANG").split(".")
+        else:
+            lang = commands.getoutput("locale |grep 'LANG='").split("=")[-1]
+
+        language_alpha2 = str.lower(lang[0][:2])
+
+        if not country_list:
+            country_list = self.country_list
+
+        for country in country_list:
+            ####add language handle here###
+            return country_list[0]
+        else:
+            return country_list[0]
 
 if __name__ == "__main__":
     sp = ServiceProviders()
     country_code =  sp.get_country_list()
     country = sp.get_country_name_list()
     print country_code[country.index("China")]
-    
-
     print sp.get_country_providers_name("cn")
     print sp.get_country_gsm_providers_name("cn")
     print sp.get_country_cdma_providers_name("cn")
@@ -235,4 +275,4 @@ if __name__ == "__main__":
     print sp.get_provider_password("cn", "China Mobile")
     print sp.get_provider_username("cn", "China Telecom")
     print sp.get_provider_password("cn", "China Telecom")
-    print sp.get_country_from_timezone("Asia/Shanghai")
+    print sp.get_country_from_timezone()
