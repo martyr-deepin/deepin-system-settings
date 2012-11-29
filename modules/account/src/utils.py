@@ -131,11 +131,7 @@ class PolkitPermission:
     
     def acquire(self):
         if self.get_can_acquire():
-<<<<<<< HEAD
             return self.permission.acquire()
-=======
-            return polkitpermission.acquire(self.permission)
->>>>>>> 49775eda950e5eca9cdb310428b87cfa646d1e28
         else:
             pass
 
