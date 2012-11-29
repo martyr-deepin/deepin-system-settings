@@ -563,7 +563,7 @@ class Network(object):
                                module_frame)
         self.vpn.add_setting_page(self.vpn_setting_page)
 
-        self.mobile = Mobile(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
+        self.mobile = Mobile(lambda : module_frame.send_submodule_crumb(2, "移动网络"))
         self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.mobile.add_setting_page(self.mobile_setting_page)

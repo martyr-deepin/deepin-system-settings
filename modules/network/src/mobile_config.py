@@ -4,7 +4,8 @@ from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.entry import InputEntry, TextEntry
+from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -196,9 +197,42 @@ class NoSetting(gtk.VBox):
         label_align.add(label)
         self.add(label_align)
 
-class Region(NoSetting):
+class Region(gtk.HBox):
     def __init__(self, connection):
-        NoSetting.__init__(self)
+        gtk.HBox.__init__(self, False, spacing = 10)
+        
+        country_label = Label("Country:")
+        country_tree = TreeView()
+        country_tree.set_size_request(300, -1)
+
+        left_box = gtk.VBox()
+        left_box.pack_start(country_label, False, False)
+        left_box.pack_start(country_tree, False, False)
+        provider_label = Label("Provider:")
+        provider_tree = TreeView()
+        provider_tree.set_size_request(300, -1)
+        right_box = gtk.VBox()
+        right_box.pack_start(provider_label, False, False)
+        right_box.pack_start(provider_tree, False, False)
+
+        self.pack_start(left_box, False, False)
+        self.pack_start(right_box, False, False)
+
+        self.show_all()
+
+
+    
+    def init(self):
+        from mm.provider import ServiceProviders
+        sp = ServiceProviders()
+
+
+
+         
+
+        
+
+
 
 
 
@@ -208,7 +242,7 @@ class Broadband(gtk.VBox):
         self.connection = connection        
 
         # Init widgets
-        self.table = gtk.Table(11, 4, True)
+        self.table = gtk.Table(12, 4, True)
 
         self.label_basic = Label("Basic")
         self.label_number = Label("Number:")
@@ -219,8 +253,9 @@ class Broadband(gtk.VBox):
         self.number.set_size(200,25 )
         self.username = InputEntry()
         self.username.set_size(200,25 )
-        self.password = InputEntry()
+        self.password = PasswordEntry()
         self.password.set_size(200,25 )
+        self.password_show = CheckButton("show password")
 
 
         #self.table = gtk.Table(6, 4, False)
@@ -238,7 +273,8 @@ class Broadband(gtk.VBox):
                                       ("3G", 0),
                                       ("2G", 1),
                                       ("Prefer 3G", 2),
-                                      ("Prefer 2G", 3)])
+                                      ("Prefer 2G", 3)],
+                                      max_width = 100)
         #self.network_type.set_size(200,25 )
         self.roam_check = CheckButton("Allow roaming if home network is not available")
         self.pin = InputEntry()
@@ -247,9 +283,27 @@ class Broadband(gtk.VBox):
         align = gtk.Alignment(0.5, 0.5, 0, 0)
         align.add(self.table)
         self.add(align)
+        
+        # Connect signals
+        self.number.entry.connect("changed", self.save_settings_by, "number")
+        self.username.entry.connect("changed", self.save_settings_by, "username")
+        self.password.entry.connect("changed", self.save_settings_by, "password")
+        self.apn.entry.connect("changed", self.save_settings_by, "apn")
+        self.network_id.entry.connect("changed", self.save_settings_by, "network_id")
+        self.network_type.connect("item-selected", self.network_type_selected)
 
+        self.password_show.connect("toggled", self.password_show_toggled)
+        self.roam_check.connect("toggled", self.roam_check_toggled)
         # Refesh
         self.refresh()
+
+    def password_show_toggled(self, widget):
+        if widget.get_active():
+            self.password.show_password(True)
+        else:
+            self.password.show_password(False)
+
+
 
     def init_table(self, network_type):
         container_remove_all(self.table)
@@ -261,6 +315,7 @@ class Broadband(gtk.VBox):
         self.table.attach(self.number, 2, 4, 1, 2)
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
+        self.table.attach(self.password_show, 2, 4, 4, 5)
         if network_type == "gsm":
             self.table.attach(self.label_advanced, 0, 1, 5, 6)
             self.table.attach(self.label_apn, 1, 2 , 6, 7)
@@ -292,7 +347,7 @@ class Broadband(gtk.VBox):
         # both
         self.number.set_text(number)
         self.username.set_text(username)
-        self.password.set_text(password)
+        self.password.entry.set_text(password)
 
         if  mobile_type == "gsm":
             apn = self.broadband_setting.apn
@@ -315,6 +370,24 @@ class Broadband(gtk.VBox):
 
         ## retrieve wired info
 
+    def save_settings_by(self, widget, text, attr):
+        if text == "":
+            delattr(self.broadband_setting, attr)
+        else:
+            setattr(self.broadband_setting, attr, text)
+
+    def network_type_selected(self, widget, content, value, index):
+        if value == None:
+            del self.broadband_seting.network_type
+        else:
+            self.broadband_setting.network_type = value
+
+    def roam_check_toggled(self, widget):
+        if widget.get_active():
+            del self.broadband_setting.home_only
+        else:
+            self.broadband_setting.home_only = 1
+
 class IPV4Conf(gtk.VBox):
 
     def __init__(self, connection = None):
@@ -324,11 +397,15 @@ class IPV4Conf(gtk.VBox):
         table = gtk.Table(9, 2 , False)
         # Ip configuration
         self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        table.attach(self.auto_ip, 0,1,0,1,)
         self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
-        table.attach(self.manual_ip, 0,1,1,2)
 
         addr_label = Label("IP地址:")
+        mask_label = Label("子网掩码:")
+        gate_label = Label("默认网关")
+
+        table.attach(self.auto_ip, 0,1,0,1,)
+        table.attach(self.manual_ip, 0,1,1,2)
+
         table.attach(addr_label, 0,1,2,3)
         self.addr_entry = gtk.Entry()
         #self.addr_entry.set_size(30, 25)
@@ -336,14 +413,12 @@ class IPV4Conf(gtk.VBox):
         self.addr_entry.set_sensitive(False)
         table.attach(self.addr_entry, 1,2,2,3)
 
-        mask_label = Label("子网掩码:")
         table.attach(mask_label, 0,1,3,4)
         self.mask_entry = gtk.Entry()
         #self.mask_entry.set_size(30, 25)
         self.mask_entry.connect("activate", self.check_mask_valid)
         table.attach(self.mask_entry, 1,2,3,4)
         
-        gate_label = Label("默认网关")
         table.attach(gate_label, 0,1,4,5)
         self.gate_entry = gtk.Entry()
         #self.gate_entry.set_size(30, 25)
@@ -374,25 +449,14 @@ class IPV4Conf(gtk.VBox):
         align.add(table)
         self.add(align)
         
-        #aligns = gtk.Alignment(0.5,0.5,0,0)
-        #hbox = gtk.HBox()
-        #self.apply_button = gtk.Button("Apply")
-        self.show_all()
-        #self.cancel_button = gtk.Button("Cancel")
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        #hbox.pack_start(self.apply_button, False, False, 0)
-        #aligns.add(hbox)
-        #self.add(aligns)
-        
-        
         self.cs =None
         self.reset(connection)
         self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
         self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
         self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
         self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
-        #self.apply_button.connect("clicked", self.save_changes, self.cs)
-        #self.cancel_button.connect("clicked", self.cancel_changes)
+
+        self.show_all()
 
     def check_ip_valid(self, widget ):
         text = widget.get_text()
@@ -418,7 +482,6 @@ class IPV4Conf(gtk.VBox):
         else:
             print "invalid"
         
-
     def check_dns_valid(self, widget):
         text = widget.get_text()
         if TypeConvert.is_valid_ip4(text):
@@ -562,7 +625,6 @@ class DSLConf(gtk.VBox):
             password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                     setting_name,
                                                     method)
-
         except:
             password = ""
         
@@ -589,7 +651,6 @@ class DSLConf(gtk.VBox):
             self.broadband_setting.service = service
         if password !="":
             self.broadband_setting.password = password
-
 
 
 class PPPConf(gtk.VBox):
@@ -767,3 +828,23 @@ class PPPConf(gtk.VBox):
 
 
         # Check Buttons
+
+class Item(TreeItem):
+
+    def __init__(self, content):
+        TreeItem.__init__(self)
+
+        self.content = content
+        
+    def render_content(self, cr, rect):
+        (text_width, text_height) = get_content_size(self.content)
+        draw_text(cr, self.name, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+            
