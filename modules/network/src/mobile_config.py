@@ -15,13 +15,14 @@ from dtk.ui.combo import ComboBox
 from widgets import SettingButton
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
-from nm_modules import nm_module
+from nm_modules import nm_module, slider
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
 
 import gtk
 import pango
+
 
 class MobileSetting(gtk.HBox):
 
@@ -37,8 +38,7 @@ class MobileSetting(gtk.HBox):
         self.ppp = None
 
         self.tab_window = TabBox(dockfill = True)
-        self.items = [("country/provider", NoSetting()),
-                      ("Mobile Broadband", NoSetting()),
+        self.items = [("Mobile Broadband", NoSetting()),
                       ("PPP", NoSetting()),
                       ("IPv4 Setting", NoSetting())]
         self.tab_window.add_items(self.items)
@@ -47,7 +47,7 @@ class MobileSetting(gtk.HBox):
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.expose_event)
+        #vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
         apply_button = Button("Apply")
@@ -55,6 +55,13 @@ class MobileSetting(gtk.HBox):
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
         buttons_aligns.add(apply_button)
         vbox.pack_start(buttons_aligns, False , False)
+        
+        global region
+        region = Region(None)
+        slider.append_page(region)
+            #if type(p) == gtk.EventBox:
+                #print "slide"
+                #slider.slide_to_page(p)
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -184,10 +191,10 @@ class SideBar(gtk.VBox):
     
     def add_new_connection(self, widget):
         # FIXME 
-        pass
+        nm_module.nm_remote_settings.new_cdma_connection()
         #new_connection = nm_module.nm_remote_settings.new_pppoe_connection()
+        slider.slide_to_page(region, "left")
         #self.main_init_cb()
-
 
 class NoSetting(gtk.VBox):
     def __init__(self):
@@ -206,7 +213,7 @@ class Region(gtk.HBox):
         country_label = Label("Country:")
         self.country_tree = TreeView(enable_multiple_select = False,
                                      enable_drag_drop = False)
-        self.country_tree.set_size_request(300, 400)
+        self.country_tree.set_size_request(380, 400)
         self.country_tree.connect("button-press-item", self.country_selected)
 
         left_box = gtk.VBox()
@@ -214,19 +221,22 @@ class Region(gtk.HBox):
         left_box.pack_start(self.country_tree, False, False)
         provider_label = Label("Provider:")
         self.provider_tree = TreeView()
-        self.provider_tree.set_size_request(300, 400)
+        self.provider_tree.set_size_request(380, 400)
         right_box = gtk.VBox()
         right_box.pack_start(provider_label, False, False)
         right_box.pack_start(self.provider_tree, False, False)
-
+        
         self.pack_start(left_box, False, False)
-        self.pack_start(right_box, False, False)
+        self.pack_end(right_box, False, False)
+
+        next_button = Button("Next")
+        align = gtk.Alignment(0.5, 1, 0, 0)
+        align.add(next_button)
+        self.pack_start(align)
 
         self.show_all()
         self.init()
 
-
-    
     def init(self):
         from mm.provider import ServiceProviders
         self.__sp = ServiceProviders()
@@ -234,30 +244,21 @@ class Region(gtk.HBox):
         self.country_tree.add_items([Item(country) for country in country_list])
 
         code = self.__sp.get_country_from_timezone()
+        country_codes = self.__sp.get_country_list()
+        try:
+            selected_country = self.country_tree.visible_items[country_codes.index(code)]
+            self.country_tree.select_items([selected_country])
+            self.country_tree.emit("button-press-item", selected_country, 0, 1, 1)
+        except:
+            pass
         
     
     def country_selected(self, widget, w, a, b, c ):
         country_codes = self.__sp.get_country_list()
         self.provider_tree.delete_all_items()
         provider_names = self.__sp.get_country_providers_name(country_codes[widget.select_rows[0]])
-        print provider_names
         self.provider_tree.add_items([Item(p) for p in provider_names])
         self.provider_tree.show_all()
-
-
-
-
-
-        
-
-
-
-         
-
-        
-
-
-
 
 
 class Broadband(gtk.VBox):

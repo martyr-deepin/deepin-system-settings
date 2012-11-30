@@ -529,6 +529,7 @@ class Network(object):
         #slider.append_page(self.proxy_setting_page)
         slider.append_page(self.vpn_setting_page)
         slider.append_page(self.mobile_setting_page)
+        slider.set_to_page(self.eventbox)
     
     def activate_succeed(self, widget, connection_path):
         pass
@@ -574,9 +575,11 @@ class Network(object):
 
     def refresh(self):
         from nmlib.nm_secret_agent import NMSecretAgent
+        from mm.mmclient import MMClient
         nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
         nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         nm_module.secret_agent = NMSecretAgent()
+        nm_module.mmclient = MMClient
         self.init_sections(self.module_frame)
         self.eventbox.set_above_child(False)
         self.eventbox.queue_draw()
