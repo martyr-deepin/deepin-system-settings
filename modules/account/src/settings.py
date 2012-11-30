@@ -22,8 +22,10 @@
 
 import accounts
 import os
+import utils
 
 ACCOUNT = accounts.Accounts()
+PERMISSION = utils.PolkitPermission("org.freedesktop.accounts.user-administration")
 
 def check_is_myown(uid):
     '''
@@ -34,5 +36,19 @@ def check_is_myown(uid):
     return uid == os.getuid()
 
 def get_user_list(account=ACCOUNT):
+    '''
+    @param account: a accounts.Accounts object
+    @return: a list container some accounts.User objects
+    '''
     user_list = account.list_cached_users()
     return map(accounts.User, user_list)
+
+def get_user_info(user_path):
+    '''
+    @param user_path: a object path of dbus, a string type
+    @return: a tuple container some info of the user
+    '''
+    u = accounts.User(user_path)
+    return (u, u.get_icon_file(), u.get_real_name(),
+            u.get_user_name(), u.get_account_type(),
+            check_is_myown(u.get_uid()))

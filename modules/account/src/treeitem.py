@@ -72,6 +72,7 @@ gobject.type_register(MyTreeView)
 class MyTreeItem(TreeItem):
     '''TreeItem class'''
 
+    ACCOUNT_TYPE = ["Standard", "Administrator"]
     def __init__(self, icon, real_name, user_name, user_type, dbus_obj, is_myowner=False):
         '''
         initialization.
@@ -140,7 +141,7 @@ class MyTreeItem(TreeItem):
                   rect.width-self.padding_x,
                   self.user_name_height,
                   text_color=text_color)
-        draw_text(cr, self.user_type,
+        draw_text(cr, self.ACCOUNT_TYPE[self.user_type],
                   x, user_name_y+self.user_name_height,
                   rect.width-self.padding_x,
                   self.user_name_height,

@@ -1,6 +1,0 @@
-polkitpermission.c
-setup.py
-polkitpermission.egg-info/PKG-INFO
-polkitpermission.egg-info/SOURCES.txt
-polkitpermission.egg-info/dependency_links.txt
-polkitpermission.egg-info/top_level.txt
