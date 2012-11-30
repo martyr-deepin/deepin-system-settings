@@ -30,16 +30,17 @@ class NMClient(NMObject):
     '''NMClient'''
         
     __gsignals__  = {
-            "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, )),
-            "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
-            "permisson-changed":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, ()),
-            "activate-succeed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "activate-failed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
+            "device-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, )),
+            "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "state-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, )),
+            "permission-changed":(gobject.SIGNAL_RUN_LAST,gobject.TYPE_NONE, ()),
+            "activate-succeed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            "activate-failed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
             }
 
     def __init__(self):
         NMObject.__init__(self, "/org/freedesktop/NetworkManager", "org.freedesktop.NetworkManager")
+
         self.prop_list = ["NetworkingEnabled", "WirelessEnabled", "WirelessHardwareEnabled", "WwanEnabled", "Version",
                           "WwanHardwareEnabled", "WimaxEnabled", "WimaxHardwareEnabled", "ActivateConnections", "State"]
 
@@ -315,11 +316,9 @@ class NMClient(NMObject):
         pass
 
     def permisson_changed_cb(self):
-        print "permisson_changed_cb triggerd in nmclient"
         self.emit("permission-changed")
 
     def state_changed_cb(self, state):
-        print "network manager state:%s" %state
         self.emit("state-changed", TypeConvert.dbus2py(state))
     
     def properties_changed_cb(self, prop_dict):

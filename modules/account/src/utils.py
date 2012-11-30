@@ -98,16 +98,28 @@ class BusBase(gobject.GObject):
     def dbus_method(self, method_name, *args, **kwargs):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
-        except dbus.exceptions.DBusException:
-            print "call dbus method failed:%s\n" % method_name
-            traceback.print_exc()
+        except dbus.exceptions.DBusException, e:
+            if "org.freedesktop.Accounts.Error.PermissionDenied" in e:
+                pass
+            elif "org.freedesktop.Accounts.Error.UserExists" in e:
+                pass
+            elif "org.freedesktop.Accounts.Error.Failed" in e:
+                pass
+            else:
+                traceback.print_exc()
 
     def call_async(self, method_name, *args, **kwargs):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
-        except dbus.exceptions.DBusException:
-            print "call dbus method failed:%s\n" % method_name
-            traceback.print_exc()
+        except dbus.exceptions.DBusException, e:
+            if "org.freedesktop.Accounts.Error.PermissionDenied" in e:
+                pass
+            elif "org.freedesktop.Accounts.Error.UserExists" in e:
+                pass
+            elif "org.freedesktop.Accounts.Error.Failed" in e:
+                pass
+            else:
+                traceback.print_exc()
 
 class PolkitPermission:
     

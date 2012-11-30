@@ -25,11 +25,6 @@ import gobject
 import commands
 from consolekit import ck
 
-class AccountException(Exception):
-    
-    def __init__(self):
-        Exception.__init__(self)
-
 class Accounts(BusBase):
 
     __gsignals__  = {
@@ -88,6 +83,9 @@ class Accounts(BusBase):
 
     def get_exist_username_list(self):
         return commands.getoutput("awk -F : '{print $1}' /etc/passwd").split("\n")
+
+    def is_username_exists(self, username):
+        return username in self.get_exist_username_list()
 
     def user_added_cb(self, userpath):
         self.emit("user-added", userpath)
@@ -248,8 +246,8 @@ if __name__ == "__main__":
     user_path = accounts.create_user("acu", "acu", 0)
     user = User(user_path)
     
-    # user.set_password("acu", "acu")
-    user.set_user_name("account_user")
+    user.set_password("acu", "acu")
+    # user.set_user_name("account_user")
     # print accounts.get_exist_username_list()
     
     gobject.MainLoop().run()
