@@ -38,6 +38,7 @@ class VPNSetting(gtk.HBox):
         self.ipv4 = None
 
         self.tab_window = TabBox()
+        self.tab_window.set_size_request(674, 408)
         self.items = [("PPTP", NoSetting()),
                       ("IPv4 Setting", NoSetting())]
         self.tab_window.add_items(self.items)
@@ -46,7 +47,7 @@ class VPNSetting(gtk.HBox):
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.expose_event)
+        #vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
         #hbox = gtk.HBox()

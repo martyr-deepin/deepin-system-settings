@@ -38,6 +38,7 @@ class MobileSetting(gtk.HBox):
         self.ppp = None
 
         self.tab_window = TabBox(dockfill = True)
+        self.tab_window.set_size_request(674, 408)
         self.items = [("Mobile Broadband", NoSetting()),
                       ("PPP", NoSetting()),
                       ("IPv4 Setting", NoSetting())]
@@ -57,7 +58,7 @@ class MobileSetting(gtk.HBox):
         vbox.pack_start(buttons_aligns, False , False)
         
         global region
-        region = Region(None)
+        region = Region()
         slider.append_page(region)
             #if type(p) == gtk.EventBox:
                 #print "slide"
@@ -82,14 +83,14 @@ class MobileSetting(gtk.HBox):
             nm_module.nm_remote_settings.new_cdma_connection()
             connections = get_mobile_connections()
 
-        self.region_setting = [Region(con) for con in connections]
+        #self.region_setting = [Region(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
         self.broadband_setting = [Broadband(con) for con in connections]
         self.ppp_setting = [PPPConf(con) for con in connections]
 
         self.sidebar.init(connections, self.ipv4_setting)
         index = self.sidebar.get_active()
-        self.region = self.region_setting[index]
+        #self.region = self.region_setting[index]
         self.ipv4 = self.ipv4_setting[index]
         self.broadband = self.broadband_setting[index]
         self.ppp = self.ppp_setting[index]
@@ -99,10 +100,10 @@ class MobileSetting(gtk.HBox):
         self.init_tab_box()
 
     def init_tab_box(self):
-        self.tab_window.tab_items[0] = ("Region", self.region)
-        self.tab_window.tab_items[1] = ("Broadband",self.broadband)
-        self.tab_window.tab_items[2] = ("IPV4 setting",self.ipv4)
-        self.tab_window.tab_items[3] = ("PPP", self.ppp)
+        #self.tab_window.tab_items[0] = ("Region", self.region)
+        self.tab_window.tab_items[0] = ("Broadband",self.broadband)
+        self.tab_window.tab_items[1] = ("IPV4 setting",self.ipv4)
+        self.tab_window.tab_items[2] = ("PPP", self.ppp)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -110,7 +111,7 @@ class MobileSetting(gtk.HBox):
 
     def check_click(self, connection):
         index = self.sidebar.get_active()
-        self.region = self.region_setting[index]
+        #self.region = self.region_setting[index]
         self.ipv4 = self.ipv4_setting[index]
         self.broadband = self.broadband_setting[index]
         self.ppp = self.ppp_setting[index]
@@ -207,46 +208,63 @@ class NoSetting(gtk.VBox):
         self.add(label_align)
 
 class Region(gtk.HBox):
-    def __init__(self, connection):
+    def __init__(self, connection = None):
         gtk.HBox.__init__(self, False, spacing = 10)
         
-        country_label = Label("Country:")
-        self.country_tree = TreeView(enable_multiple_select = False,
-                                     enable_drag_drop = False)
-        self.country_tree.set_size_request(380, 400)
-        self.country_tree.connect("button-press-item", self.country_selected)
+        #country_label = Label("Country:")
+        #self.country_tree = TreeView(enable_multiple_select = False,
+                                     #enable_drag_drop = False)
+        #self.country_tree.set_size_request(380, 400)
+        #self.country_tree.connect("button-press-item", self.country_selected)
 
-        left_box = gtk.VBox()
-        left_box.pack_start(country_label, False, False)
-        left_box.pack_start(self.country_tree, False, False)
-        provider_label = Label("Provider:")
-        self.provider_tree = TreeView()
-        self.provider_tree.set_size_request(380, 400)
-        right_box = gtk.VBox()
-        right_box.pack_start(provider_label, False, False)
-        right_box.pack_start(self.provider_tree, False, False)
+        #left_box = gtk.VBox()
+        #left_box.pack_start(country_label, False, False)
+        #left_box.pack_start(self.country_tree, False, False)
+        #provider_label = Label("Provider:")
+        #self.provider_tree = TreeView()
+        #self.provider_tree.set_size_request(380, 400)
+        #right_box = gtk.VBox()
+        #right_box.pack_start(provider_label, False, False)
+        #right_box.pack_start(self.provider_tree, False, False)
         
-        self.pack_start(left_box, False, False)
-        self.pack_end(right_box, False, False)
+        #self.pack_start(left_box, False, False)
+        #self.pack_end(right_box, False, False)
 
-        next_button = Button("Next")
-        align = gtk.Alignment(0.5, 1, 0, 0)
-        align.add(next_button)
-        self.pack_start(align)
+        #next_button = Button("Next")
+        #next_button.connect("clicked", self.next_button_clicked)
+        #align = gtk.Alignment(0.5, 1, 0, 0)
+        #align.add(next_button)
+        #self.pack_start(align)
 
-        self.show_all()
-        self.init()
+        #self.show_all()
+        #self.init()
+
+    def next_button_clicked(self, widget):
+        
+        country_index = self.country_tree.select_rows
+        provider_index = self.country_tree.select_rows
+        
+        if country_index and provider_index:
+            country_index = country_index[0]
+            provider_index = provider_index[0]
+
+
+        else:
+            print "select!!"
+
+    #def fill_entries(self, country_code, provider)
 
     def init(self):
         from mm.provider import ServiceProviders
         self.__sp = ServiceProviders()
-        country_list = self.__sp.get_country_name_list()
-        self.country_tree.add_items([Item(country) for country in country_list])
+        self.country_list = self.__sp.get_country_name_list()
+        self.country_tree.add_items([Item(country) for country in self.country_list])
 
-        code = self.__sp.get_country_from_timezone()
-        country_codes = self.__sp.get_country_list()
+        #code = self.__sp.get_country_from_timezone()
+        code = 'cn'
+        self.country_codes = self.__sp.get_country_list()
         try:
-            selected_country = self.country_tree.visible_items[country_codes.index(code)]
+            selected_country = self.country_tree.visible_items[self.country_codes.index(code)]
             self.country_tree.select_items([selected_country])
             self.country_tree.emit("button-press-item", selected_country, 0, 1, 1)
         except:
@@ -254,9 +272,8 @@ class Region(gtk.HBox):
         
     
     def country_selected(self, widget, w, a, b, c ):
-        country_codes = self.__sp.get_country_list()
         self.provider_tree.delete_all_items()
-        provider_names = self.__sp.get_country_providers_name(country_codes[widget.select_rows[0]])
+        provider_names = self.__sp.get_country_providers_name(self.country_codes[widget.select_rows[0]])
         self.provider_tree.add_items([Item(p) for p in provider_names])
         self.provider_tree.show_all()
 
