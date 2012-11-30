@@ -15,7 +15,7 @@ from dtk.ui.combo import ComboBox
 from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
-from nm_modules import nm_module, slider
+from nm_modules import nm_module
 from nmlib.nmcache import cache
 from nmlib.nm_vpn_plugin import NMVpnL2tpPlugin, NMVpnPptpPlugin
 #from nmlib.nmclient import nmclient
@@ -23,6 +23,8 @@ from nmlib.nm_vpn_plugin import NMVpnL2tpPlugin, NMVpnPptpPlugin
 from container import Contain
 
 import gtk
+
+slider = nm_module.slider
 #l2tp_plugin = NMVpnL2tpPlugin
 #pptp_plugin = NMVpnPptpPlugin
 class VPNSetting(gtk.HBox):

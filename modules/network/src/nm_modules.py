@@ -28,7 +28,39 @@ from nmlib.nm_secret_agent import NMSecretAgent
 from mm.mmclient import MMClient
 
 from dtk.ui.new_slider import HSlider
-slider = HSlider()
+
+class MySlider(HSlider):
+
+    def __init__(self):
+        HSlider.__init__(self)
+
+        self.__slider_dict = {}
+
+    def _append_page(self, page, name):
+        super(MySlider, self).append_page(page)
+        self.__slider_dict[name] = page
+
+    def __get_page_by_name(self, name):
+        return self.__slider_dict[name]
+
+    
+    def _set_to_page(self, name):
+        try:
+            page = self.__get_page_by_name(name)
+            super(MySlider,self).set_to_page(page)
+        except :
+            print self.__slider_dict
+
+    def _slide_to_page(self, name, direction):
+        try:
+            page = self.__get_page_by_name(name)
+            super(MySlider,self).slide_to_page(page, direction)
+        except :
+            print self.__slider_dict
+
+
+
+
 
 class NModule(object):
 
@@ -37,6 +69,7 @@ class NModule(object):
         self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         self.agent = NMSecretAgent()
         self.mclient = MMClient()
+        self.hslider = MySlider()
 
     @property
     def nmclient(self):
@@ -62,7 +95,11 @@ class NModule(object):
     @mmclient.setter
     def mmclient(self, val):
         self.mclient = MMClient()
-
+    
+    @property
+    def slider(self):
+        return self.hslider
+    
 nm_module = NModule()
 #wired_device = nmclient.get_wired_devices()[0]
 #wireless_device = nmclient.get_wireless_devices()[0]

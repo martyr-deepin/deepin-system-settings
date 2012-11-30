@@ -28,14 +28,17 @@ from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
+from regions import Region
 
 from nmlib.nmcache import cache
-from nm_modules import nm_module, slider
+from nm_modules import nm_module
 
 PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
 from nmlib.servicemanager import servicemanager
+
+slider = nm_module.slider
 
 class WiredDevice(object):
     def __init__(self, device, treeview, index):
@@ -493,6 +496,7 @@ class Proxy(gtk.VBox):
     def add_setting_page(self, setting_page):
         self.settings = setting_page
 
+
 class Network(object):
 
     def __init__(self, module_frame):
@@ -522,14 +526,15 @@ class Network(object):
         nm_module.nmclient.connect("activate-failed", self.activate_failed) 
 
 
-        slider.append_page(self.eventbox)
-        slider.append_page(self.wired_setting_page)
-        slider.append_page(self.dsl_setting_page)
-        slider.append_page(self.wireless_setting_page)
+        slider._append_page(self.eventbox, "main")
+        slider._append_page(self.wired_setting_page, "wired")
+        slider._append_page(self.dsl_setting_page, "dsl")
+        slider._append_page(self.wireless_setting_page, "wireless")
         #slider.append_page(self.proxy_setting_page)
-        slider.append_page(self.vpn_setting_page)
-        slider.append_page(self.mobile_setting_page)
-        slider.set_to_page(self.eventbox)
+        slider._append_page(self.vpn_setting_page, "vpn")
+        slider._append_page(self.mobile_setting_page, "mobile")
+        slider._append_page(Region(), "region")
+        slider._set_to_page("main")
     
     def activate_succeed(self, widget, connection_path):
         pass
@@ -540,6 +545,7 @@ class Network(object):
         print "failed"
 
     def init_sections(self, module_frame):
+        #slider._set_to_page("main")
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
