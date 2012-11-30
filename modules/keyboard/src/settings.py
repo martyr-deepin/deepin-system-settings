@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
+import deepin_gsettings
 import gconf
 
 # typing setting
@@ -35,15 +35,15 @@ WM_SHORTCUTS_SETTINGS_CONF = "org.gnome.desktop.wm.keybindings"
 SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.media-keys"
 
 # typing setting
-KEYBOARD_SETTINGS = Gio.Settings.new(KEYBOARD_SETTINGS_CONF)
-TOUCHPAD_SETTINGS = Gio.Settings.new(TOUCHPAD_SETTINGS_CONF)
-DESKTOP_SETTINGS = Gio.Settings.new(DESKTOP_SETTINGS_CONF)
+KEYBOARD_SETTINGS = deepin_gsettings.new(KEYBOARD_SETTINGS_CONF)
+TOUCHPAD_SETTINGS = deepin_gsettings.new(TOUCHPAD_SETTINGS_CONF)
+DESKTOP_SETTINGS = deepin_gsettings.new(DESKTOP_SETTINGS_CONF)
 # layout setting
-XKB_DESKTOP_SETTINGS = Gio.Settings.new(XKB_DESKTOP_SETTINGS_CONF)
-XKB_KEYBOARS_SETTINGS = Gio.Settings.new(XKB_KEYBOARD_SETTINGS_CONF)
+XKB_DESKTOP_SETTINGS = deepin_gsettings.new(XKB_DESKTOP_SETTINGS_CONF)
+XKB_KEYBOARS_SETTINGS = deepin_gsettings.new(XKB_KEYBOARD_SETTINGS_CONF)
 # shortcuts setting
-WM_SHORTCUTS_SETTINGS = Gio.Settings.new(WM_SHORTCUTS_SETTINGS_CONF)
-SHORTCUTS_SETTINGS = Gio.Settings.new(SHORTCUTS_SETTINGS_CONF)
+WM_SHORTCUTS_SETTINGS = deepin_gsettings.new(WM_SHORTCUTS_SETTINGS_CONF)
+SHORTCUTS_SETTINGS = deepin_gsettings.new(SHORTCUTS_SETTINGS_CONF)
 GCONF_CLIENT = gconf.client_get_default()
 
 KEYBOARD_DEFAULT_SETTINGS = {
