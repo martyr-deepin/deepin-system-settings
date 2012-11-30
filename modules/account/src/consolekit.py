@@ -26,9 +26,9 @@ import gobject
 class ConsoleKit(BusBase):
 
     __gsignals__  = {
-        "seat-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-        "seat-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-        "system-idle-hint-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN))
+        "seat-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "seat-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "system-idle-hint-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,))
             }
 
     def __init__(self):
@@ -76,14 +76,14 @@ class ConsoleKit(BusBase):
             return []
 
     def get_sessions_for_unix_user(self, uid):
-        if self.dbus_method("GetSessionsForUnixUser"):
-            return map(lambda x:str(x), self.dbus_method("GetSessionsForUnixUser"))
+        if self.dbus_method("GetSessionsForUnixUser", uid):
+            return map(lambda x:str(x), self.dbus_method("GetSessionsForUnixUser", uid))
         else:
             return []
 
     def get_sessions_for_user(self, uid):
-        if self.dbus_method("GetSessionsForUser"):
-            return map(lambda x:str(x), self.dbus_method("GetSessionsForUser"))
+        if self.dbus_method("GetSessionsForUser", uid):
+            return map(lambda x:str(x), self.dbus_method("GetSessionsForUser", uid))
         else:
             return []
 
@@ -118,11 +118,11 @@ class ConsoleKit(BusBase):
 class Seat(BusBase):
 
     __gsignals__  = {
-        "active-session-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-        "device-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, str)),
-        "device-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, str)),
-        "session-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-        "session-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
+        "active-session-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "device-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, str)),
+        "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, str)),
+        "session-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "session-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
             }
     
     def __init__(self, seatpath):
@@ -189,10 +189,10 @@ class Seat(BusBase):
 class Session(BusBase):
 
     __gsignals__  = {
-        "active-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (bool,)),
-        "idle-hint-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (bool,)),
-        "lock":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
-        "unlock":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+        "active-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (bool,)),
+        "idle-hint-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (bool,)),
+        "lock":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        "unlock":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
             }
     
     def __init__(self, seatpath):
@@ -281,6 +281,8 @@ class Session(BusBase):
 
     def unlock_cb(self):
         self.emit("unlock")
+
+ck = ConsoleKit()
         
 if __name__ == "__main__":
     pass

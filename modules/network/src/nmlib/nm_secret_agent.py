@@ -29,7 +29,6 @@ import dbus.service
 import dbus.mainloop.glib
 from nmobject import NMObject
 from nmcache import cache
-from nm_utils import TypeConvert
 
 class NMAgentManager(NMObject):
     '''NMAgentManager'''

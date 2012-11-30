@@ -22,12 +22,13 @@
 
 from utils import BusBase
 import gobject
+from consolekit import ck
 
 class Accounts(BusBase):
 
     __gsignals__  = {
-        "user-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-        "user-deleted":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,))
+        "user-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "user-deleted":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
             }
 
     def __init__(self):
@@ -59,6 +60,19 @@ class Accounts(BusBase):
     def list_cached_users(self):
         return map(lambda x:str(x), self.dbus_method("ListCachedUsers"))
 
+    def get_current_user(self):
+        for uid in map(lambda x:User(x).get_uid(), self.list_cached_users()):
+            if ck.get_sessions_for_unix_user(uid):
+                return uid
+            else:
+                continue
+        else:
+            print "must have a user logged in"
+
+    def get_username_from_uid(self, uid):
+        if self.find_user_by_id(uid):
+            return User(self.find_user_by_id(uid)).get_user_name()
+
     def user_added_cb(self, userpath):
         self.emit("user-added", userpath)
 
@@ -69,7 +83,7 @@ class Accounts(BusBase):
 class User(BusBase):
 
     __gsignals__  = {
-        "changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
+        "changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
             }
     
     def __init__(self, userpath):
@@ -207,5 +221,5 @@ class User(BusBase):
 
 if __name__ == "__main__":
     accounts = Accounts()
-    accounts.create_user("test1", "test1", 1)
+    print accounts.get_current_user()
     gobject.MainLoop().run()
