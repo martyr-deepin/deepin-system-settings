@@ -22,7 +22,13 @@
 
 from utils import BusBase
 import gobject
+import commands
 from consolekit import ck
+
+class AccountException(Exception):
+    
+    def __init__(self):
+        Exception.__init__(self)
 
 class Accounts(BusBase):
 
@@ -45,11 +51,18 @@ class Accounts(BusBase):
     def get_daemon_version(self):
         return str(self.properties["DaemonVersion"])
 
-    def create_user(self, name, fullname, account_type):
-        return str(self.dbus_method("CreateUser", name, fullname, account_type))
+    def create_user(self, name, fullname , account_type = 0):
+        if name in self.get_exist_username_list():
+            print "user exists"
+            return self.find_user_by_name(name)
+        else:
+            return str(self.dbus_method("CreateUser", name, fullname, account_type))
 
     def delete_user(self, id, remove_files_flag):
-        self.call_async("DeleteUser", id, remove_files_flag, reply_handler = None, error_handler = None)
+        if self.find_user_by_id(id):
+            self.call_async("DeleteUser", id, remove_files_flag, reply_handler = None, error_handler = None)
+        else:
+            print "user doesn't exists"
 
     def find_user_by_id(self, id):
         return str(self.dbus_method("FindUserById", id))
@@ -73,12 +86,16 @@ class Accounts(BusBase):
         if self.find_user_by_id(uid):
             return User(self.find_user_by_id(uid)).get_user_name()
 
+    def get_exist_username_list(self):
+        return commands.getoutput("awk -F : '{print $1}' /etc/passwd").split("\n")
+
     def user_added_cb(self, userpath):
         self.emit("user-added", userpath)
 
     def user_deleted_cb(self, userpath):
         self.emit("user-deleted", userpath)
 
+accounts = Accounts()
 
 class User(BusBase):
 
@@ -190,20 +207,25 @@ class User(BusBase):
     def set_locked(self, locked):
         self.call_async("SetLocked", locked, reply_handler = None, error_handler = None)
 
-    def set_password(self, password, hint):
+    def set_password(self, password, hint = ""):
         self.call_async("SetPassword", password, hint, reply_handler = None, error_handler = None)
 
-    def set_password_mode(self, password_mode):
+    def set_password_mode(self, password_mode = 1):
         self.call_async("SetPasswordMode", password_mode, reply_handler = None, error_handler = None)
 
     def set_real_name(self, name):
         self.call_async("SetRealName", name, reply_handler = None, error_handler = None)
 
-    def set_shell(self, shell):
+    def set_shell(self, shell = "/bin/bash"):
         self.call_async("SetShell", shell, reply_handler = None, error_handler = None)
 
     def set_user_name(self, username):
-        self.call_async("SetUserName", username, reply_handler = None, error_handler = None)
+        if username == self.get_user_name():
+            pass
+        elif username in accounts.get_exist_username_list():
+            pass
+        else:
+            self.call_async("SetUserName", username, reply_handler = None, error_handler = None)
 
     def set_x_has_messages(self, has_messages):
         self.call_async("SetXHasMessages", has_messages, reply_handler = None, error_handler = None)
@@ -222,4 +244,12 @@ class User(BusBase):
 if __name__ == "__main__":
     accounts = Accounts()
     print accounts.get_current_user()
+
+    user_path = accounts.create_user("acu", "acu", 0)
+    user = User(user_path)
+    
+    # user.set_password("acu", "acu")
+    user.set_user_name("account_user")
+    # print accounts.get_exist_username_list()
+    
     gobject.MainLoop().run()
