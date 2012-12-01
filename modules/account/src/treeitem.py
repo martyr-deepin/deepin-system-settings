@@ -133,7 +133,10 @@ class MyTreeItem(TreeItem):
         x = rect.x+self.padding_x
         user_name_y = rect.y+self.title_height+self.padding_y
         if self.is_unique:
-            show_name = "<b>%s</b>" % self.real_name
+            if self.real_name:
+                show_name = "<b>%s</b>" % self.real_name
+            else:
+                show_name = "<b>(%s)</b>" % self.user_name
         else:
             show_name = "<b>%s (%s)</b>" % (self.real_name, self.user_name)
         draw_text(cr, show_name,

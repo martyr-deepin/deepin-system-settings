@@ -33,9 +33,10 @@ from dtk.ui.button import CheckButton, Button
 from dtk.ui.new_entry import InputEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.new_slider import HSlider
-from dtk.ui.utils import propagate_expose, cairo_disable_antialias, container_remove_all
+from dtk.ui.utils import container_remove_all
 from treeitem import MyTreeView as TreeView
 from treeitem import MyTreeItem as TreeItem
+from dbus.exceptions import DBusException
 import gtk
 from module_frame import ModuleFrame
 
@@ -63,11 +64,13 @@ class AccountSetting(object):
         self.__signals_connect()
     
     def __create_widget(self):
+        #####################################
+        # account list page
         # label 
-        self.label_widgets["account_name"] = Label("", label_width=210, enable_select=False)
+        self.label_widgets["account_name"] = Label("", label_width=230, enable_select=False)
         self.label_widgets["account"] = Label(_("Account type"))
         self.label_widgets["passwd"] = Label(_("Password"))
-        self.label_widgets["passwd_char"] = Label("****")
+        self.label_widgets["passwd_char"] = Label("****", enable_select=False)
         self.label_widgets["auto_login"] = Label(_("Automatic Login"))
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"))
         self.label_widgets["deepin_account"] = Label(_("Unbound"))
@@ -92,7 +95,7 @@ class AccountSetting(object):
         # button
         self.button_widgets["account_name"] = InputEntry()
         self.button_widgets["lock"] = gtk.Button()
-        self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=125)
+        self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=165)
         self.button_widgets["auto_login"] = gtk.ToggleButton()
         self.button_widgets["passwd"] = InputEntry()
         self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"))
@@ -110,7 +113,7 @@ class AccountSetting(object):
         self.button_widgets["add_account"] = Button(_("Add"))
         self.button_widgets["del_account"] = Button(_("Delete"))
         self.button_widgets["account_create"] = Button(_("Create"))
-        self.button_widgets["account_cancle"] = Button(_("Cancle"))
+        self.button_widgets["account_cancle"] = Button(_("Cancel"))
         self.button_widgets["account_type_new"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=125)
         self.button_widgets["net_access_check_new"] = CheckButton(_("网络访问权限"))
         self.button_widgets["disk_readonly_check_new"] = CheckButton(_("磁盘操作权限只读"))
@@ -148,11 +151,20 @@ class AccountSetting(object):
         self.alignment_widgets["lock_button"] = gtk.Alignment()
         self.alignment_widgets["account_add_vbox"] = gtk.Alignment()
         self.alignment_widgets["button_hbox_new"] = gtk.Alignment()
+        #####################################
+        # change password page
         self.alignment_widgets["change_pswd"] = gtk.Alignment()
+        self.container_widgets["change_pswd_main_vbox"] = gtk.VBox(False)
+        #####################################
+        # delete account page
+        self.alignment_widgets["delete_account"] = gtk.Alignment()
+        self.container_widgets["del_main_vbox"] = gtk.VBox(False)
+
     
     def __adjust_widget(self):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
+        self.container_widgets["slider"].append_page(self.alignment_widgets["delete_account"])
 
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"], False, False)
@@ -161,7 +173,8 @@ class AccountSetting(object):
         self.alignment_widgets["right_vbox"].add(self.container_widgets["right_vbox"])
         self.alignment_widgets["main_hbox"].set(0.5, 0.5, 1, 1)
         self.alignment_widgets["main_hbox"].set_padding(5, 5, 5, 5)
-        # accounts list
+        ##############################
+        # accounts list page
         self.container_widgets["left_vbox"].pack_start(self.view_widgets["account"])
         self.container_widgets["left_vbox"].pack_start(self.container_widgets["button_hbox"], False, False, 10)
         self.container_widgets["button_hbox"].pack_start(self.alignment_widgets["button_hbox"])
@@ -199,7 +212,7 @@ class AccountSetting(object):
         self.container_widgets["account_info_hbox"].pack_start(self.alignment_widgets["lock_button"], False, False)
         self.alignment_widgets["lock_button"].add(self.button_widgets["lock"])
         self.alignment_widgets["lock_button"].set(1.0, 0.5, 1, 1)
-        self.alignment_widgets["lock_button"].set_padding(16, 16, 0, 0)
+        self.alignment_widgets["lock_button"].set_padding(16, 16, 20, 0)
 
         self.container_widgets["backup_check_group_hbox"].pack_start(self.alignment_widgets["backup_check_group"], False, False)
         self.container_widgets["backup_check_group_hbox"].pack_start(self.container_widgets["backup_check_group_vbox"], False, False)
@@ -249,14 +262,26 @@ class AccountSetting(object):
         
         # set widget state
         self.set_widget_state_with_author()
+        ###########################
+        # change account password page
+        self.alignment_widgets["change_pswd"].set(0.5, 0.5, 1, 1)
+        self.alignment_widgets["change_pswd"].set_padding(50, 50, 70, 70)
+        ###########################
+        # delete account page
+        self.alignment_widgets["delete_account"].set(0.5, 0.5, 1, 1)
+        self.alignment_widgets["delete_account"].set_padding(50, 50, 70, 70)
 
     def __signals_connect(self):
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
         self.button_widgets["add_account"].connect("clicked", self.add_account_button_clicked)
+        self.button_widgets["del_account"].connect("clicked", self.del_account_button_clicked)
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
+        self.button_widgets["account_create"].connect("clicked", self.account_create_button_clicked)
         self.button_widgets["auto_login"].connect("expose-event", self.toggle_button_expose)
         self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
+
+        self.button_widgets["account_type"].connect("item-selected", self.account_type_item_selected)
 
         self.button_widgets["lock"].connect("expose-event", self.lock_button_expose)
         self.button_widgets["lock"].connect("clicked", self.lock_button_clicked)
@@ -266,7 +291,7 @@ class AccountSetting(object):
         self.label_widgets["account_name"].connect("button-press-event", self.label_button_press_cb)
         self.label_widgets["passwd_char"].connect("enter-notify-event", self.label_enter_notify_cb)
         self.label_widgets["passwd_char"].connect("leave-notify-event", self.label_leave_notify_cb)
-        self.label_widgets["passwd_char"].connect("button-press-event", self.label_button_press_cb)
+        self.label_widgets["passwd_char"].connect("button-press-event", self.password_change_press_cb)
 
         self.label_widgets["backup_check_group"].connect(
             "button-press-event",
@@ -320,6 +345,14 @@ class AccountSetting(object):
         self.container_widgets["right_vbox"].show_all()
         button.set_sensitive(False)
     
+    def del_account_button_clicked(self, button):
+        if not self.current_select_user:
+            return
+        self.__init_del_user_page(self.current_select_user)
+        self.container_widgets["slider"].slide_to_page(
+            account_settings.alignment_widgets["delete_account"], "right")
+        #self.module_frame.send_submodule_crumb(2, _("Delete User"))
+    
     def account_cancle_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
@@ -327,10 +360,16 @@ class AccountSetting(object):
         self.container_widgets["right_vbox"].show_all()
         self.button_widgets["add_account"].set_sensitive(True)
 
+    def account_create_button_clicked(self, button):
+        pass
+    
     def account_treeview_select(self, tv, item, row):
         self.current_select_user = dbus_obj = item.dbus_obj
         self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
-        self.label_widgets["account_name"].set_text("<b>%s</b>" % item.user_name)
+        if item.real_name:
+            self.label_widgets["account_name"].set_text("<b>%s</b>" % item.real_name)
+        else:
+            self.label_widgets["account_name"].set_text("<b>--</b>")
         self.button_widgets["account_type"].set_select_index(item.user_type)
         if dbus_obj.get_locked():
             self.label_widgets["passwd_char"].set_text(_("Account disabled"))
@@ -379,6 +418,14 @@ class AccountSetting(object):
                 button.set_data("unlocked", True)
         self.set_widget_state_with_author()
     
+    def account_type_item_selected(self, combo_box, item_content, item_value, item_index):
+        if not self.current_select_user:
+            return
+        try:
+            self.current_select_user.set_account_type(item_value)
+        except:
+            pass
+    
     def label_enter_notify_cb(self, widget, event):
         widget.set_data("old_content", widget.get_text())
         widget.set_text("<u>%s</u>" % widget.get_text())
@@ -388,6 +435,14 @@ class AccountSetting(object):
     
     def label_button_press_cb(self, widget, event):
         print "press"
+    
+    def password_change_press_cb(self, widget, event):
+        if not self.current_select_user:
+            return
+        self.__init_change_pswd_page(self.current_select_user)
+        self.container_widgets["slider"].slide_to_page(
+            account_settings.alignment_widgets["change_pswd"], "right")
+        #self.module_frame.send_submodule_crumb(2, _("Change Password"))
 
     # dbus signals
     def user_info_changed_cb(self, user, item):
@@ -401,9 +456,14 @@ class AccountSetting(object):
         item.user_name = user.get_user_name()
         item.real_name = user.get_real_name()
         item.user_type = user.get_account_type()
+        if item.redraw_request_callback:
+            item.redraw_request_callback(item)
         if self.current_select_user == user:
             self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
-            self.label_widgets["account_name"].set_text("<b>%s</b>" % item.user_name)
+            if item.real_name:
+                self.label_widgets["account_name"].set_text("<b>%s</b>" % item.real_name)
+            else:
+                self.label_widgets["account_name"].set_text("<b>--</b>")
             self.button_widgets["account_type"].set_select_index(item.user_type)
             if user.get_locked():
                 self.label_widgets["passwd_char"].set_text(_("Account disabled"))
@@ -488,12 +548,67 @@ class AccountSetting(object):
         if self.current_select_user and not settings.check_is_myown(self.current_select_user.get_uid()):
             self.label_widgets["account_name"].set_sensitive(authorized)
             self.label_widgets["passwd_char"].set_sensitive(authorized)
+            self.button_widgets["del_account"].set_sensitive(authorized)
     
     def get_authorized(self):
         '''
         @return: True if current process has been authorized, else False
         '''
         return self.permission.get_allowed()
+    
+    def __init_del_user_page(self, current_del_user):
+        def cancel_delete_user(button):
+            self.container_widgets["slider"].slide_to_page(
+                self.alignment_widgets["main_hbox"], "left")
+        
+        def delete_user_file_cd(button, del_file):
+            try:
+                button_hbox.set_sensitive(False)
+                self.account_dbus.delete_user(current_del_user.get_uid(), del_file)
+                self.container_widgets["slider"].slide_to_page(
+                    self.alignment_widgets["main_hbox"], "left")
+            except DBusException, e:    # TODO 删除用户出错时显示错误信息
+                error_label.set_text("<span foreground='red'>Error:%s</span>" % e.message)
+            except Exception, e:
+                error_label.set_text("<span foreground='red'>Error:%s</span>" % str(e))
+            
+        self.container_widgets["del_main_vbox"].destroy()
+        self.container_widgets["del_main_vbox"] = gtk.VBox(False)
+        self.alignment_widgets["delete_account"].add(self.container_widgets["del_main_vbox"])
+
+        if current_del_user.get_real_name():
+            show_name = current_del_user.get_real_name() 
+        else:
+            show_name = current_del_user.get_user_name()
+        tips_label = Label(_("<b>Do you want to keep <u>%s</u>'s files?</b>") % show_name,
+                           text_size=13, wrap_width=660, enable_select=False)
+        tips_label2 = Label(_("It is possible to keep the home directory when deleting a user account."),
+                            wrap_width=660, enable_select=False)
+        error_label = Label("", wrap_width=660, enable_select=False)
+        button_align = gtk.Alignment()
+        button_hbox = gtk.HBox(False)
+        button_align.set(1, 0.5, 1, 1)
+        del_button = Button(_("Delete Files"))
+        keep_button = Button(_("Keep Files"))
+        cancel_button = Button(_("Cancel"))
+        del_button.connect("clicked", delete_user_file_cd, True)
+        keep_button.connect("clicked", delete_user_file_cd, False)
+        cancel_button.connect("clicked", cancel_delete_user)
+        button_hbox.pack_start(button_align)
+        button_hbox.pack_start(del_button, False, False)
+        button_hbox.pack_start(keep_button, False, False, 10)
+        button_hbox.pack_start(cancel_button, False, False)
+        self.container_widgets["del_main_vbox"].pack_start(tips_label, False, False)
+        self.container_widgets["del_main_vbox"].pack_start(tips_label2, False, False, 15)
+        self.container_widgets["del_main_vbox"].pack_start(button_hbox, False, False, 15)
+        self.container_widgets["del_main_vbox"].pack_start(error_label, False, False, 15)
+        self.container_widgets["del_main_vbox"].show_all()
+    
+    def __init_change_pswd_page(self, current_set_user):
+        self.container_widgets["change_pswd_main_vbox"].destroy()
+        self.container_widgets["change_pswd_main_vbox"] = gtk.VBox(False)
+        self.alignment_widgets["change_pswd"].add(self.container_widgets["change_pswd_main_vbox"])
+
     
 if __name__ == '__main__':
     gtk.gdk.threads_init()
@@ -508,7 +623,14 @@ if __name__ == '__main__':
     
     def message_handler(*message):
         (message_type, message_content) = message
-        if message_type == "show_again":
+        if message_type == "click_crumb":
+            (crumb_index, crumb_label) = message_content
+            if crumb_index == 1:
+                account_settings.container_widgets["slider"].slide_to_page(
+                    account_settings.alignment_widgets["main_hbox"], "left")
+        elif message_type == "show_again":
+            account_settings.container_widgets["slider"].set_to_page(
+                account_settings.alignment_widgets["main_hbox"])
             module_frame.send_module_info()
 
     module_frame.module_message_handler = message_handler        
