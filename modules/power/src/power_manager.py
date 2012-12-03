@@ -79,10 +79,10 @@ class PowerManager:
         self.__set_item_value("button-hibernate", value)
 
     '''
-    TODO: idle-dim-item unit is minute
+    TODO: sleep-inactive-ac-timeout unit is second
     '''
     def get_hibernate_status(self, items):
-        hibernate_status_value = self.power_settings.get_int("idle-dim-time")
+        hibernate_status_value = self.power_settings.get_int("sleep-inactive-battery-timeout") / 60
         i = 0
 
         for item, value in items:
@@ -93,7 +93,10 @@ class PowerManager:
         return 0
 
     def set_hibernate_status(self, value):
-        self.power_settings.set_int("idle-dim-time", value)
+        self.power_settings.set_string("sleep-inactive-battery-type", "hibernate")
+        self.power_settings.set_int("sleep-inactive-battery-timeout", value * 60)
+        self.power_settings.set_string("sleep-inactive-ac-type", "hibernate")
+        self.power_settings.set_int("sleep-inactive-ac-timeout", value * 60)
 
     def get_close_harddisk(self, items):
         return 0
