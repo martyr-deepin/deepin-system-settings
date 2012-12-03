@@ -536,7 +536,7 @@ class Network(object):
         slider._append_page(self.vpn_setting_page, "vpn")
         slider._append_page(self.mobile_setting_page, "mobile")
         #pdb.set_trace()
-        #slider._append_page(Region(), "region")
+        slider._append_page(Region(), "region")
 
     
     def activate_succeed(self, widget, connection_path):
