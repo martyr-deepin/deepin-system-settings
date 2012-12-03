@@ -50,7 +50,7 @@ class ThemeSettingView(TabBox):
         TabBox.__init__(self)
         self.theme = None
         
-        self.background_gsettings = deepin_gsettings.new("org.gnome.desktop.background")
+        self.background_gsettings = deepin_gsettings.new("com.deepin.desktop.background")
         
         self.wallpaper_box = gtk.VBox()
         self.window_theme_box = gtk.VBox()
