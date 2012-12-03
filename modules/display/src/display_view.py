@@ -34,14 +34,31 @@ app_theme = init_skin(
 
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.box import ResizableBox
+from dtk.ui.button import Button
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
 from dtk.ui.utils import get_optimum_pixbuf_from_file
+from dtk.ui.draw import cairo_state
 import gobject
 import gtk
+from display_manager import DisplayManager
+
+class MonitorResizableBox(ResizableBox):
+    def __init__(self):
+        ResizableBox.__init__(self)
+        self.screen_width = 200
+
+    def expose_override(self, cr, rect):
+        x, y = rect.x, rect.y
+        x = (self.width - self.screen_width) / 2
+        y += 10
+        
+        with cairo_state(cr):
+            cr.rectangle(x, y, self.screen_width, self.height - y * 3)
+            cr.stroke()
 
 class DisplayView(gtk.VBox):
     '''
@@ -53,13 +70,18 @@ class DisplayView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
+
+        self.display_manager = DisplayManager()
+
         self.padding_x = 10
         self.padding_y = 5
         self.box_spacing = 10
         self.resize_width = 790
         self.resize_height = 200
-        self.monitor_items = [("DEBUG", 0)]
-        self.resolution_items = [("DEBUG", 0)]
+        self.monitor_items = []
+        self.__setup_monitor_items()
+        self.sizes_items = []
+        self.__setup_sizes_items()
         self.direction_items = [("DEBUG", 0)]
         self.duration_items = [("1分钟", 1), 
                                ("2分钟", 2), 
@@ -77,8 +99,8 @@ class DisplayView(gtk.VBox):
         '''
         left, right align
         '''
-        self.left_align = self.m_setup_align()
-        self.right_align = self.m_setup_align()
+        self.left_align = self.__setup_align()
+        self.right_align = self.__setup_align()
         '''
         left, right box
         '''
@@ -87,62 +109,64 @@ class DisplayView(gtk.VBox):
         '''
         monitor operation && detect
         '''
-        self.monitor_op_box = ResizableBox()
-        self.monitor_op_box.set_size_request(self.resize_width, self.resize_height)
-        self.monitor_op_box.connect("resize", self.m_resize_box)
+        self.monitor_resize_box = MonitorResizableBox()
+        self.monitor_resize_box.set_size_request(self.resize_width, self.resize_height)
+        self.monitor_resize_box.connect("resize", self.__resize_box)
         '''
         monitor display
         '''
-        self.monitor_display_align = self.m_setup_align()
-        self.monitor_display_label = self.m_setup_label("屏幕显示", align = ALIGN_START)
+        self.monitor_display_align = self.__setup_align()
+        self.monitor_display_label = self.__setup_label("屏幕显示", align = ALIGN_START)
         self.monitor_display_align.add(self.monitor_display_label)
         '''
         monitor
         '''
-        self.monitor_align = self.m_setup_align()
+        self.monitor_align = self.__setup_align()
         self.monitor_box = gtk.HBox(spacing = self.box_spacing)
-        self.monitor_label = self.m_setup_label("显示器")
-        self.monitor_combo = self.m_setup_combo(self.monitor_items, 350)
-        self.m_widget_pack_start(self.monitor_box, 
+        self.monitor_label = self.__setup_label("显示器")
+        self.monitor_combo = self.__setup_combo(self.monitor_items, 350)
+        self.monitor_combo.set_select_index(self.display_manager.get_current_screen())
+        self.monitor_combo.connect("item-selected", self.__item_selected)
+        self.__widget_pack_start(self.monitor_box, 
             [self.monitor_label, 
              self.monitor_combo])
         self.monitor_align.add(self.monitor_box)
         '''
         goto individuation or power setting
         '''
-        self.goto_align = self.m_setup_align(0.0, 0.0, 0.0, 0.0)
+        self.goto_align = self.__setup_align(0.0, 0.0, 0.0, 0.0)
         self.goto_box = gtk.VBox(spacing = self.box_spacing)
-        self.goto_label = self.m_setup_label("DEBUG")
-        self.m_widget_pack_start(self.goto_box, 
+        self.goto_label = self.__setup_label("DEBUG")
+        self.__widget_pack_start(self.goto_box, 
             [self.goto_label])
         self.goto_align.add(self.goto_box)
         '''
-        resolution && direction
+        sizes && direction
         '''
-        self.resolution_align = self.m_setup_align()
-        self.resolution_box = gtk.HBox(spacing = self.box_spacing)
-        self.resolution_label = self.m_setup_label("分辨率")
-        self.resolution_combo = self.m_setup_combo(self.resolution_items, 160)
-        self.direction_label = self.m_setup_label("方向")
-        self.direction_combo = self.m_setup_combo(self.direction_items)
-        self.m_widget_pack_start(self.resolution_box, 
-            [self.resolution_label, 
-             self.resolution_combo, 
+        self.sizes_align = self.__setup_align()
+        self.sizes_box = gtk.HBox(spacing = self.box_spacing)
+        self.sizes_label = self.__setup_label("分辨率")
+        self.sizes_combo = self.__setup_combo(self.sizes_items, 160)
+        self.direction_label = self.__setup_label("方向")
+        self.direction_combo = self.__setup_combo(self.direction_items)
+        self.__widget_pack_start(self.sizes_box, 
+            [self.sizes_label, 
+             self.sizes_combo, 
              self.direction_label, 
              self.direction_combo])
-        self.resolution_align.add(self.resolution_box)
+        self.sizes_align.add(self.sizes_box)
         '''
         monitor brightness
         '''
-        self.monitor_bright_align = self.m_setup_align()
-        self.monitor_bright_label = self.m_setup_label("屏幕亮度", align = ALIGN_START)
+        self.monitor_bright_align = self.__setup_align()
+        self.monitor_bright_label = self.__setup_label("屏幕亮度", align = ALIGN_START)
         self.monitor_bright_align.add(self.monitor_bright_label)
         '''
         brightness
         '''
-        self.brightness_align = self.m_setup_align()
+        self.brightness_align = self.__setup_align()
         self.brightness_box = gtk.HBox(spacing = self.box_spacing)
-        self.brightness_label = self.m_setup_label("亮度")
+        self.brightness_label = self.__setup_label("亮度")
         self.brightness_scale = HScalebar(
             app_theme.get_pixbuf("scalebar/l_fg.png"), 
             app_theme.get_pixbuf("scalebar/l_bg.png"), 
@@ -155,20 +179,20 @@ class DisplayView(gtk.VBox):
         self.brightness_adjust = gtk.Adjustment(0, 0, 100)
         self.brightness_scale.set_adjustment(self.brightness_adjust)
         self.brightness_scale.set_size_request(355, DEFAULT_FONT_SIZE * 4)
-        self.m_widget_pack_start(self.brightness_box, 
+        self.__widget_pack_start(self.brightness_box, 
             [self.brightness_label, 
              self.brightness_scale])
         self.brightness_align.add(self.brightness_box)
         '''
         auto adjust monitor brightness
         '''
-        self.auto_adjust_align = self.m_setup_align()
+        self.auto_adjust_align = self.__setup_align()
         self.auto_adjust_box = gtk.HBox(spacing = self.box_spacing)
-        self.auto_adjust_label = self.m_setup_label("自动调节屏幕亮度", 120)
-        self.auto_adjust_toggle = self.m_setup_toggle()
-        self.close_monitor_label = self.m_setup_label("关闭屏幕", 90)
-        self.close_monitor_combo = self.m_setup_combo(self.duration_items)
-        self.m_widget_pack_start(self.auto_adjust_box, 
+        self.auto_adjust_label = self.__setup_label("自动调节屏幕亮度", 120)
+        self.auto_adjust_toggle = self.__setup_toggle()
+        self.close_monitor_label = self.__setup_label("关闭屏幕", 90)
+        self.close_monitor_combo = self.__setup_combo(self.duration_items)
+        self.__widget_pack_start(self.auto_adjust_box, 
             [self.auto_adjust_label, 
              self.auto_adjust_toggle, 
              self.close_monitor_label, 
@@ -177,19 +201,19 @@ class DisplayView(gtk.VBox):
         '''
         monitor lock
         '''
-        self.monitor_lock_align = self.m_setup_align()
-        self.monitor_lock_label = self.m_setup_label("屏幕锁定", align = ALIGN_START)
+        self.monitor_lock_align = self.__setup_align()
+        self.monitor_lock_label = self.__setup_label("屏幕锁定", align = ALIGN_START)
         self.monitor_lock_align.add(self.monitor_lock_label)
         '''
         auto monitor lock
         '''
-        self.auto_lock_align = self.m_setup_align()
+        self.auto_lock_align = self.__setup_align()
         self.auto_lock_box = gtk.HBox(spacing = self.box_spacing)
-        self.auto_lock_label = self.m_setup_label("自动锁定用户屏幕", 120)
-        self.auto_lock_toggle = self.m_setup_toggle()
-        self.lock_display_label = self.m_setup_label("锁定屏幕", 90)
-        self.lock_display_combo = self.m_setup_combo(self.duration_items)
-        self.m_widget_pack_start(self.auto_lock_box, 
+        self.auto_lock_label = self.__setup_label("自动锁定用户屏幕", 120)
+        self.auto_lock_toggle = self.__setup_toggle()
+        self.lock_display_label = self.__setup_label("锁定屏幕", 90)
+        self.lock_display_combo = self.__setup_combo(self.duration_items)
+        self.__widget_pack_start(self.auto_lock_box, 
             [self.auto_lock_label, 
              self.auto_lock_toggle, 
              self.lock_display_label, 
@@ -198,11 +222,11 @@ class DisplayView(gtk.VBox):
         '''
         left_align pack_start
         '''
-        self.m_widget_pack_start(self.left_box, 
-            [self.monitor_op_box, 
+        self.__widget_pack_start(self.left_box, 
+            [self.monitor_resize_box, 
              self.monitor_display_align, 
              self.monitor_align, 
-             self.resolution_align, 
+             self.sizes_align, 
              self.monitor_bright_align, 
              self.brightness_align, 
              self.auto_adjust_align, 
@@ -212,7 +236,7 @@ class DisplayView(gtk.VBox):
         '''
         right_align pack_start
         '''
-        self.m_widget_pack_start(self.right_box, 
+        self.__widget_pack_start(self.right_box, 
             [self.goto_align])
         self.right_align.add(self.right_box)
         '''
@@ -221,29 +245,49 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.left_align)
         self.pack_start(self.scrolled_window)
 
-    def m_resize_box(self, widget, height):
-        self.monitor_op_box.set_size_request(self.resize_width, height - self.padding_y)
+    def __setup_monitor_items(self):
+        i = self.display_manager.get_screen_count()
 
-    def m_setup_label(self, text="", width=50, align=ALIGN_END):
+        while (i):
+            self.monitor_items.append(("显示器%d" % (i), i))
+            i -= 1
+
+    def __setup_sizes_items(self, screen=-1):
+        i = 0
+        
+        if screen == -1:
+            screen = self.display_manager.get_current_screen()
+        
+        for size in self.display_manager.get_screen_sizes(screen):
+            self.sizes_items.append(("%s x %s" % (size.width, size.height), i))
+            i += 1
+
+    def __item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
+        pass
+    
+    def __resize_box(self, widget, height):
+        self.monitor_resize_box.set_size_request(self.resize_width, height - self.padding_y)
+
+    def __setup_label(self, text="", width=50, align=ALIGN_END):
         label = Label(text, None, DEFAULT_FONT_SIZE, align, width)
         return label
 
-    def m_setup_combo(self, items=[], width=120):
+    def __setup_combo(self, items=[], width=120):
         combo = ComboBox(items, None, 0, width)
         return combo
 
-    def m_setup_toggle(self):
+    def __setup_toggle(self):
         toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
             app_theme.get_pixbuf("active_normal.png"))
         return toggle
 
-    def m_setup_align(self, xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0):
+    def __setup_align(self, xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0):
         align = gtk.Alignment()
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(self.padding_y, self.padding_y, self.padding_x, 0)
         return align
 
-    def m_widget_pack_start(self, parent_widget, widgets=[], expand=False, fill=False):
+    def __widget_pack_start(self, parent_widget, widgets=[], expand=False, fill=False):
         if parent_widget == None:
             return
         for item in widgets:

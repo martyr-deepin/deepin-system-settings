@@ -1,0 +1,8 @@
+Dependence (Debian)
+
+Python XRandR Bindings
+原始地址 https://launchpad.net/python-xrandr
+维护地址 https://github.com/linuxdeepin/deepin-xrandr
+
+sudo cp xxx.xml /usr/share/glib-2.0/schemas/ 
+sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
