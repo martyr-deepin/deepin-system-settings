@@ -23,6 +23,7 @@
 from theme import app_theme
 import gtk
 import gobject
+import deepin_gsettings
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.tab_window import TabBox
 from dtk.ui.iconview import IconView
@@ -46,6 +47,8 @@ class ThemeSettingView(TabBox):
         '''
         TabBox.__init__(self)
         self.theme = None
+        
+        self.background_gsettings = deepin_gsettings.new("org.gnome.desktop.background")
         
         self.wallpaper_box = gtk.VBox()
         self.window_theme_box = gtk.VBox()
@@ -86,6 +89,7 @@ class ThemeSettingView(TabBox):
         self.unorder_play = CheckButton("随机播放")
         self.unselect_all = Button("全不选")
         self.select_all = Button("全选")
+        self.select_all.connect("clicked", self.__select_all_clicked)
         
         self.delete_button = Button("删除")
         self.delete_align = gtk.Alignment()
@@ -107,8 +111,28 @@ class ThemeSettingView(TabBox):
         self.wallpaper_box.pack_start(self.action_bar, False, False)
         self.wallpaper_box.pack_start(self.delete_align, False, False)
         
+    def __select_all_clicked(self, widget):
+        picture_uri = ""
+        i = 0
+
+        for item in self.theme_icon_view.items:
+            if not hasattr(item, "path"):
+                continue
+            if not i == 0:
+                picture_uri += ";"
+            picture_uri += item.path
+            i += 1
+
+        if picture_uri == ""
+            return
+
+        self.background_gsettings.set_string("picture-uri", picture_uri)
+
     def set_theme(self, theme):
         self.theme = theme
+        '''
+        TODO: self.theme.name
+        '''
         self.theme_icon_view.clear()
         
         items = []
@@ -116,8 +140,7 @@ class ThemeSettingView(TabBox):
             items.append(WallpaperItem(wallpaper_path))
             
         items.append(AddItem())    
-            
-        self.theme_icon_view.add_items(items)    
+        self.theme_icon_view.add_items(items)
         
     def draw_mask(self, cr, x, y, w, h):
         '''
