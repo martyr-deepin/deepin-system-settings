@@ -32,6 +32,8 @@ from dtk.ui.draw import draw_pixbuf, draw_shadow
 from dtk.ui.label import Label
 from dtk.ui.button import Button, CheckButton
 from dtk.ui.combo import ComboBox
+from dtk.ui.scalebar import HScalebar
+from dtk.ui.constant import ALIGN_END
 
 ITEM_PADDING_X = 19
 ITEM_PADDING_Y = 15
@@ -110,7 +112,47 @@ class ThemeSettingView(TabBox):
         self.wallpaper_box.pack_start(self.theme_scrolledwindow, True, True)
         self.wallpaper_box.pack_start(self.action_bar, False, False)
         self.wallpaper_box.pack_start(self.delete_align, False, False)
+
+        '''
+        Window Effect
+        '''
+        self.window_effect_align = gtk.Alignment()
+        self.window_effect_align.set(0.0, 0.5, 0, 0)
+        self.window_effect_align.set_padding(10, 10, 10, 0)
+        self.window_effect_box = gtk.HBox()
+        self.window_effect_button = CheckButton("开启毛玻璃效果")
+        self.window_effect_box.pack_start(self.window_effect_button, False, False, 4)
+        self.window_effect_align.add(self.window_effect_box)
+        '''
+        Color Deepth
+        '''
+        self.color_deepth_align = gtk.Alignment()
+        self.color_deepth_align.set(0.0, 0.5, 0, 0)
+        self.color_deepth_align.set_padding(10, 10, 10, 0)
+        self.color_deepth_box = gtk.HBox(spacing=10)
+        self.color_deepth_label = Label("颜色浓度", text_x_align=ALIGN_END, label_width=60)
+        self.color_deepth_scalbar = HScalebar(                                                      
+            app_theme.get_pixbuf("scalebar/l_fg.png"),                               
+            app_theme.get_pixbuf("scalebar/l_bg.png"),                               
+            app_theme.get_pixbuf("scalebar/m_fg.png"),                               
+            app_theme.get_pixbuf("scalebar/m_bg.png"),                               
+            app_theme.get_pixbuf("scalebar/r_fg.png"),                               
+            app_theme.get_pixbuf("scalebar/r_bg.png"),                               
+            app_theme.get_pixbuf("scalebar/point.png"), 
+            True, 
+            "%")
+        self.color_deepth_adjust = gtk.Adjustment(0, 0, 100)
+        self.color_deepth_scalbar.set_adjustment(self.color_deepth_adjust)
+        self.color_deepth_scalbar.set_size_request(355, 40)
+        self.color_deepth_box.pack_start(self.color_deepth_label)
+        self.color_deepth_box.pack_start(self.color_deepth_scalbar)
+        self.color_deepth_align.add(self.color_deepth_box)
+        self.window_theme_box.pack_start(self.window_effect_align, False, False)
+        self.window_theme_box.pack_start(self.color_deepth_align, False, False)
         
+    '''
+    TODO: It might need to add select all UE
+    '''
     def __select_all_clicked(self, widget):
         picture_uri = ""
         i = 0
@@ -123,7 +165,7 @@ class ThemeSettingView(TabBox):
             picture_uri += item.path
             i += 1
 
-        if picture_uri == ""
+        if picture_uri == "":
             return
 
         self.background_gsettings.set_string("picture-uri", picture_uri)
