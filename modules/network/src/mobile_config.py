@@ -12,7 +12,8 @@ from dtk.ui.utils import container_remove_all
 from dtk.ui.draw import draw_text, draw_vlinear
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
-from widgets import SettingButton
+#from widgets import SettingButton
+from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
@@ -57,6 +58,7 @@ class MobileSetting(gtk.HBox):
         buttons_aligns.add(apply_button)
         vbox.pack_start(buttons_aligns, False , False)
         
+        self.show_all()
         #global region
             #if type(p) == gtk.EventBox:
                 #print "slide"
@@ -164,6 +166,24 @@ class SideBar(gtk.VBox):
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
+        cons = []
+        self.connection_tree = EntryTreeView(cons)
+        for index, connection in enumerate(self.connections):
+            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+        self.connection_tree.add_items(cons)
+
+        self.connection_tree.show_all()
+
+        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
+
+        try:
+            index = self.connections.index(active)
+            this_connection = self.connection_tree.visible_items[index]
+            this_connection.set_active(True)
+            self.connection_tree.select_items([this_connection])
+        except ValueError:
+            self.connection_tree.select_first_item()
+        '''
         btn = SettingButton(None, 
                             self.connections[0],
                             self.setting[0],
@@ -181,12 +201,20 @@ class SideBar(gtk.VBox):
             self.buttonbox.get_children()[index].check.set_active(True)
         except ValueError:
             self.buttonbox.get_children()[0].check.set_active(True)
+        '''
+    def check_click_cb(self):
+        '''docstring for check_click_cb'''
+        pass
 
+    def delete_item_cb(self):
+        '''docstring for delete_item_cb'''
+        pass
     def get_active(self):
-        checks = self.buttonbox.get_children()
-        for index,c in enumerate(checks):
-            if c.check.get_active():
-                return index
+        return 0
+        #checks = self.buttonbox.get_children()
+        #for index,c in enumerate(checks):
+            #if c.check.get_active():
+                #return index
     
     def add_new_connection(self, widget):
         # FIXME 
@@ -274,8 +302,6 @@ class Broadband(gtk.VBox):
         else:
             self.password.show_password(False)
 
-
-
     def init_table(self, network_type):
         container_remove_all(self.table)
         self.table.attach(self.label_basic, 0 ,1 ,0, 1)
@@ -286,21 +312,25 @@ class Broadband(gtk.VBox):
         self.table.attach(self.number, 2, 4, 1, 2)
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
+        
+        button_to_region = Button("Region Setting")
+        self.table.attach(button_to_region, 2,4,5,6)
+        button_to_region.connect("clicked", lambda w :slider._slide_to_page("region", "left"))
         align = gtk.Alignment(0,0.5, 0, 0)
         align.add(self.password_show)
         self.table.attach(align, 2, 4, 4, 5)
         if network_type == "gsm":
-            self.table.attach(self.label_advanced, 0, 1, 5, 6)
-            self.table.attach(self.label_apn, 1, 2 , 6, 7)
-            self.table.attach(self.label_network, 1, 2, 7, 8)
-            self.table.attach(self.label_type, 1, 2, 8, 9)
-            self.table.attach(self.label_pin, 1, 2, 9, 10)
+            self.table.attach(self.label_advanced, 0, 1, 6, 7)
+            self.table.attach(self.label_apn, 1, 2 , 7, 8)
+            self.table.attach(self.label_network, 1, 2, 8, 9)
+            self.table.attach(self.label_type, 1, 2, 9, 10)
+            self.table.attach(self.label_pin, 1, 2, 10, 11)
 
-            self.table.attach(self.apn, 2, 4, 6, 7)
-            self.table.attach(self.network_id, 2, 4, 7, 8)
-            self.table.attach(self.network_type, 2, 4, 8, 9)
-            self.table.attach(self.roam_check, 3, 4, 9, 10)
-            self.table.attach(self.pin, 2, 4, 10, 11)
+            self.table.attach(self.apn, 2, 4, 7, 8)
+            self.table.attach(self.network_id, 2, 4, 8, 9)
+            self.table.attach(self.network_type, 2, 4, 9, 10)
+            self.table.attach(self.roam_check, 3, 4, 10, 11)
+            self.table.attach(self.pin, 2, 4, 11, 12)
             
     def refresh(self):
         # get_settings

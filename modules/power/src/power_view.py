@@ -58,26 +58,26 @@ class PowerView(gtk.VBox):
         self.power_manager = PowerManager()
         self.power_manage_items = [("不采取任何措施", self.power_manager.nothing), 
                                    ("休眠", self.power_manager.hibernate), 
-                                   ("关机", self.power_manager.poweroff)
+                                   ("关机", self.power_manager.shutdown)
                                   ]
         '''
-        power button config
+        button power config
         '''
-        self.power_button_config_align = self.m_setup_align()
-        self.power_button_config_label = self.m_setup_label("电源按钮设置", ALIGN_START)
-        self.power_button_config_align.add(self.power_button_config_label)
+        self.button_power_config_align = self.m_setup_align()
+        self.button_power_config_label = self.m_setup_label("电源按钮设置", ALIGN_START)
+        self.button_power_config_align.add(self.button_power_config_label)
         '''
-        press power button
+        press button power
         '''
-        self.press_power_button_align = self.m_setup_align()
-        self.press_power_button_box = gtk.HBox(spacing=self.hbox_spacing)
-        self.press_power_button_label = self.m_setup_label("按电源按钮时")
-        self.press_power_button_combo = self.m_setup_combo(self.power_manage_items)
-        self.press_power_button_combo.set_select_index(self.power_manager.get_press_power_button(self.power_manage_items))
-        self.press_power_button_combo.connect("item-selected", self.m_combo_item_selected, "press_power_button")
-        self.m_widget_pack_start(self.press_power_button_box, 
-            [self.press_power_button_label, self.press_power_button_combo])
-        self.press_power_button_align.add(self.press_power_button_box)
+        self.press_button_power_align = self.m_setup_align()
+        self.press_button_power_box = gtk.HBox(spacing=self.hbox_spacing)
+        self.press_button_power_label = self.m_setup_label("按电源按钮时")
+        self.press_button_power_combo = self.m_setup_combo(self.power_manage_items)
+        self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
+        self.press_button_power_combo.connect("item-selected", self.m_combo_item_selected, "press_button_power")
+        self.m_widget_pack_start(self.press_button_power_box, 
+            [self.press_button_power_label, self.press_button_power_combo])
+        self.press_button_power_align.add(self.press_button_power_box)
         '''
         close notebook cover
         '''
@@ -91,17 +91,17 @@ class PowerView(gtk.VBox):
             [self.close_notebook_cover_label, self.close_notebook_cover_combo])
         self.close_notebook_cover_align.add(self.close_notebook_cover_box)
         '''
-        press hibernate button
+        press button hibernate
         '''
-        self.press_hibernate_button_align = self.m_setup_align()
-        self.press_hibernate_button_box = gtk.HBox(spacing=self.hbox_spacing)
-        self.press_hibernate_button_label = self.m_setup_label("按休眠按钮时")
-        self.press_hibernate_button_combo = self.m_setup_combo(self.power_manage_items)
-        self.press_hibernate_button_combo.set_select_index(self.power_manager.get_press_hibernate_button(self.power_manage_items))
-        self.press_hibernate_button_combo.connect("item-selected", self.m_combo_item_selected, "press_hibernate_button")
-        self.m_widget_pack_start(self.press_hibernate_button_box, 
-            [self.press_hibernate_button_label, self.press_hibernate_button_combo])
-        self.press_hibernate_button_align.add(self.press_hibernate_button_box)
+        self.press_button_hibernate_align = self.m_setup_align()
+        self.press_button_hibernate_box = gtk.HBox(spacing=self.hbox_spacing)
+        self.press_button_hibernate_label = self.m_setup_label("按休眠按钮时")
+        self.press_button_hibernate_combo = self.m_setup_combo(self.power_manage_items)
+        self.press_button_hibernate_combo.set_select_index(self.power_manager.get_press_button_hibernate(self.power_manage_items))
+        self.press_button_hibernate_combo.connect("item-selected", self.m_combo_item_selected, "press_button_hibernate")
+        self.m_widget_pack_start(self.press_button_hibernate_box, 
+            [self.press_button_hibernate_label, self.press_button_hibernate_combo])
+        self.press_button_hibernate_align.add(self.press_button_hibernate_box)
         '''
         power save config
         '''
@@ -172,10 +172,10 @@ class PowerView(gtk.VBox):
         this->gtk.VBox pack_start
         '''
         self.m_widget_pack_start(self, 
-            [self.power_button_config_align, 
-             self.press_power_button_align, 
+            [self.button_power_config_align, 
+             self.press_button_power_align, 
              self.close_notebook_cover_align, 
-             self.press_hibernate_button_align, 
+             self.press_button_hibernate_align, 
              self.power_save_config_align, 
              self.hibernate_status_align, 
              self.close_harddisk_align, 
@@ -212,16 +212,16 @@ class PowerView(gtk.VBox):
             parent_widget.pack_start(item, False, False)
 
     def m_combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
-        if object == "press_power_button":
-            self.power_manager.set_press_power_button(item_value)
+        if object == "press_button_power":
+            self.power_manager.set_press_button_power(item_value)
             return
 
         if object == "close_notebook_cover":
             self.power_manager.set_close_notebook_cover(item_value)
             return
 
-        if object == "press_hibernate_button":
-            self.power_manager.set_press_hibernate_button(item_value)
+        if object == "press_button_hibernate":
+            self.power_manager.set_press_button_hibernate(item_value)
             return
 
         if object == "hibernate_status":
