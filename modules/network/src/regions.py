@@ -17,7 +17,10 @@ def render_background( cr, rect):
 
 class Region(gtk.HBox):
     def __init__(self, connection = None):
+        import pdb
+        #pdb.set_trace()
         gtk.HBox.__init__(self, False, spacing = 10)
+        #self.set_size_request(680,300)
         
         country_label = Label("Country:")
         self.country_tree = TreeView(enable_multiple_select = False,
@@ -90,7 +93,6 @@ class Item(TreeItem):
 
     def __init__(self, content):
         TreeItem.__init__(self)
-
         self.content = content
         
     def render_content(self, cr, rect):

@@ -32,6 +32,7 @@ from regions import Region
 
 from nmlib.nmcache import cache
 from nm_modules import nm_module
+import pdb
 
 PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
@@ -527,14 +528,18 @@ class Network(object):
 
 
         slider._append_page(self.eventbox, "main")
+        slider._set_to_page("main")
         slider._append_page(self.wired_setting_page, "wired")
         slider._append_page(self.dsl_setting_page, "dsl")
         slider._append_page(self.wireless_setting_page, "wireless")
         #slider.append_page(self.proxy_setting_page)
         slider._append_page(self.vpn_setting_page, "vpn")
         slider._append_page(self.mobile_setting_page, "mobile")
+        #pdb.set_trace()
         slider._append_page(Region(), "region")
-        slider._set_to_page("main")
+        slider.show_all()
+
+
     
     def activate_succeed(self, widget, connection_path):
         pass

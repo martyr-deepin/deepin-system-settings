@@ -52,7 +52,6 @@ class WiredSetting(gtk.HBox):
                       ("IPv6设置", NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
-
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
@@ -692,11 +691,6 @@ class Wired(gtk.VBox):
             self.ethernet.cloned_mac_address = clone_entry
         self.ethernet.mtu = mtu
 
-
-
-
-
-    
 #if __name__=="__main__":
     #win = gtk.Window(gtk.WINDOW_TOPLEVEL)
     #win.set_title("sadfsdf")

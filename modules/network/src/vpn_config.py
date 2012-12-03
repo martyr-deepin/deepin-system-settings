@@ -467,7 +467,7 @@ class PPTPConf(gtk.VBox):
         self.module_frame = module_frame
         self.vpn_setting = self.connection.get_setting("vpn")
         self.ppp = PPPConf(self.connection, module_frame)
-        slider.append_page(self.ppp)
+        slider._append_page(self.ppp, "ppp")
         self.ppp.show_all()
 
         # UI
@@ -921,3 +921,15 @@ class PPPConf(gtk.VBox):
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
         # Check Buttons
+if __name__ == "__main__":
+
+    win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    win.set_size_request(600, 600)
+    win.connect("destroy", lambda w: gtk.main_quit())
+
+    mobile = VPNSetting()
+    mobile.init()
+
+    win.add(mobile)
+    win.show_all()
+    gtk.main()
