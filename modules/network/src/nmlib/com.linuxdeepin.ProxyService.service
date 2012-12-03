@@ -1,4 +1,0 @@
-[D-BUS Service]
-Name=com.linuxdeepin.ProxyService
-Exec=/home/yilang/Project/deepin-software/deepin-network-settings/pynm/proxyservice.py
-User=root
