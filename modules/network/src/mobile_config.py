@@ -12,7 +12,8 @@ from dtk.ui.utils import container_remove_all
 from dtk.ui.draw import draw_text, draw_vlinear
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
-from widgets import SettingButton
+#from widgets import SettingButton
+from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
@@ -165,6 +166,24 @@ class SideBar(gtk.VBox):
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
+        cons = []
+        self.connection_tree = EntryTreeView(cons)
+        for index, connection in enumerate(self.connections):
+            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+        self.connection_tree.add_items(cons)
+
+        self.connection_tree.show_all()
+
+        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
+
+        try:
+            index = self.connections.index(active)
+            this_connection = self.connection_tree.visible_items[index]
+            this_connection.set_active(True)
+            self.connection_tree.select_items([this_connection])
+        except ValueError:
+            self.connection_tree.select_first_item()
+        '''
         btn = SettingButton(None, 
                             self.connections[0],
                             self.setting[0],
@@ -182,12 +201,20 @@ class SideBar(gtk.VBox):
             self.buttonbox.get_children()[index].check.set_active(True)
         except ValueError:
             self.buttonbox.get_children()[0].check.set_active(True)
+        '''
+    def check_click_cb(self):
+        '''docstring for check_click_cb'''
+        pass
 
+    def delete_item_cb(self):
+        '''docstring for delete_item_cb'''
+        pass
     def get_active(self):
-        checks = self.buttonbox.get_children()
-        for index,c in enumerate(checks):
-            if c.check.get_active():
-                return index
+        return 0
+        #checks = self.buttonbox.get_children()
+        #for index,c in enumerate(checks):
+            #if c.check.get_active():
+                #return index
     
     def add_new_connection(self, widget):
         # FIXME 
