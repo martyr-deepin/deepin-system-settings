@@ -33,9 +33,9 @@ import gobject
 class MyTreeView(TreeView):
     ''' my TreeView'''
     __gsignals__ = {
-        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT, int)),
+        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, int)),
         "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        "clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT, int))}
+        "clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, int))}
 
     def __init__(self,
                  items=[],
@@ -101,6 +101,7 @@ class MyTreeView(TreeView):
         super(MyTreeView, self).set_select_rows(rows)
         if rows:
             for select_row in self.select_rows:
+                print self.visible_items[select_row]
                 self.emit("select", self.visible_items[select_row], select_row)
     
     #def release_item(self, event):
@@ -114,7 +115,6 @@ class MyTreeView(TreeView):
                         #self.emit("clicked", self.visible_items[release_row], release_column)
 
 gobject.type_register(MyTreeView)
-        
 
 class BaseItem(TreeItem):
     '''the base TreeItem class'''
@@ -141,6 +141,7 @@ class BaseItem(TreeItem):
         self.is_select = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+
 gobject.type_register(BaseItem)
 
 class SelectItem(BaseItem):
@@ -170,6 +171,7 @@ class SelectItem(BaseItem):
         else:
             text_color = "#000000"
         draw_text(cr, self.text, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+
 gobject.type_register(SelectItem)
 
 class LayoutItem(BaseItem):
@@ -221,6 +223,7 @@ class LayoutItem(BaseItem):
         else:
             text_color = "#000000"
         draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_size=12, text_color=text_color)
+
 gobject.type_register(LayoutItem)
 
 class AccelBuffer(object):
