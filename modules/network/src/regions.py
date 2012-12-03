@@ -22,33 +22,33 @@ class Region(gtk.HBox):
         gtk.HBox.__init__(self, False, spacing = 10)
         #self.set_size_request(680,300)
         
-        #country_label = Label("Country:")
-        #self.country_tree = TreeView(enable_multiple_select = False,
-                                     #enable_drag_drop = False)
-        #self.country_tree.set_size_request(380, 400)
-        #self.country_tree.connect("button-press-item", self.country_selected)
+        country_label = Label("Country:")
+        self.country_tree = TreeView(enable_multiple_select = False,
+                                     enable_drag_drop = False)
+        self.country_tree.set_size_request(380, 400)
+        self.country_tree.connect("button-press-item", self.country_selected)
 
-        #left_box = gtk.VBox()
-        #left_box.pack_start(country_label, False, False)
-        #left_box.pack_start(self.country_tree, False, False)
-        #provider_label = Label("Provider:")
-        #self.provider_tree = TreeView()
-        #self.provider_tree.set_size_request(380, 400)
-        #right_box = gtk.VBox()
-        #right_box.pack_start(provider_label, False, False)
-        #right_box.pack_start(self.provider_tree, False, False)
+        left_box = gtk.VBox()
+        left_box.pack_start(country_label, False, False)
+        left_box.pack_start(self.country_tree, False, False)
+        provider_label = Label("Provider:")
+        self.provider_tree = TreeView()
+        self.provider_tree.set_size_request(380, 400)
+        right_box = gtk.VBox()
+        right_box.pack_start(provider_label, False, False)
+        right_box.pack_start(self.provider_tree, False, False)
         
-        #self.pack_start(left_box, False, False)
-        #self.pack_end(right_box, False, False)
+        self.pack_start(left_box, False, False)
+        self.pack_end(right_box, False, False)
 
-        #next_button = Button("Next")
-        #next_button.connect("clicked", self.next_button_clicked)
-        #align = gtk.Alignment(0.5, 1, 0, 0)
-        #align.add(next_button)
-        #self.pack_start(align)
+        next_button = Button("Next")
+        next_button.connect("clicked", self.next_button_clicked)
+        align = gtk.Alignment(0.5, 1, 0, 0)
+        align.add(next_button)
+        self.pack_start(align)
 
-        #self.show_all()
-        #self.init()
+        self.show_all()
+        self.init()
 
     def next_button_clicked(self, widget):
         
