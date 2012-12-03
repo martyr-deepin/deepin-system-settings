@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from proxy_config import ProxyConfig
+# from proxy_config import ProxyConfig
 import sys
 import os
 sys.path.append("../")
@@ -528,14 +529,14 @@ class Network(object):
 
         slider._append_page(self.eventbox, "main")
         # FIXME add too many pages will cause cairo_error
-        slider._append_page(self.wired_setting_page, "wired")
+        #slider._append_page(self.wired_setting_page, "wired")
         slider._append_page(self.dsl_setting_page, "dsl")
         slider._append_page(self.wireless_setting_page, "wireless")
         slider.append_page(self.proxy_setting_page)
         slider._append_page(self.vpn_setting_page, "vpn")
         slider._append_page(self.mobile_setting_page, "mobile")
         #pdb.set_trace()
-        slider._append_page(Region(), "region")
+        #slider._append_page(Region(), "region")
         slider.show_all()
         slider._set_to_page("main")
 

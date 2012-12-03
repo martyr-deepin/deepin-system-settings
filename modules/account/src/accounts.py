@@ -46,11 +46,12 @@ class Accounts(BusBase):
     def get_daemon_version(self):
         return str(self.properties["DaemonVersion"])
 
-    def create_user(self, name, fullname , account_type = 0):
+    def create_user(self, name, fullname = "", account_type = 0):
         if name in self.get_exist_username_list():
-            print "user exists"
             return self.find_user_by_name(name)
         else:
+            if not fullname:
+                fullname = name
             return str(self.dbus_method("CreateUser", name, fullname, account_type))
 
     def delete_user(self, id, remove_files_flag):
@@ -211,6 +212,9 @@ class User(BusBase):
     def set_password_mode(self, password_mode = 1):
         self.call_async("SetPasswordMode", password_mode, reply_handler = None, error_handler = None)
 
+    def modify_password(self, old_password, new_password):
+        pass
+
     def set_real_name(self, name):
         self.call_async("SetRealName", name, reply_handler = None, error_handler = None)
 
@@ -243,11 +247,16 @@ if __name__ == "__main__":
     accounts = Accounts()
     print accounts.get_current_user()
 
-    user_path = accounts.create_user("acu", "acu", 0)
+    # user_path = accounts.create_user("acu", "acu", 0)
+    # user = User(user_path)
+    
+    # user.set_password("acu", "acu")
+    # # user.set_user_name("account_user")
+    # # print accounts.get_exist_username_list()
+
+    user_path = accounts.find_user_by_name("lfs");
     user = User(user_path)
-    
-    user.set_password("acu", "acu")
-    # user.set_user_name("account_user")
-    # print accounts.get_exist_username_list()
-    
+
+    user.set_password("lfs", "lfs");
+
     gobject.MainLoop().run()
