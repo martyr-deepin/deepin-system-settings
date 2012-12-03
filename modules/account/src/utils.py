@@ -62,6 +62,30 @@ class InvalidObjectPath(Exception):
     def __str__(self):
         return repr("InvalidObjectPath:" + self.path)
 
+class AccountsPermissionDenied(Exception):
+    
+    def __init__(self, msg = ""):
+        self.msg = msg
+
+    def __str__(self):
+        return repr(self.msg)
+
+class AccountsUserExists(Exception):
+    
+    def __init__(self, msg = ""):
+        self.msg = msg
+
+    def __str__(self):
+        return repr(self.msg)
+
+class AccountsFailed(Exception):
+    
+    def __init__(self, msg = ""):
+        self.msg = msg
+
+    def __str__(self):
+        return repr(self.msg)
+
 
 class BusBase(gobject.GObject):
     
@@ -100,11 +124,11 @@ class BusBase(gobject.GObject):
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException, e:
             if "org.freedesktop.Accounts.Error.PermissionDenied" in e:
-                pass
+                raise AccountsPermissionDenied(e)
             elif "org.freedesktop.Accounts.Error.UserExists" in e:
-                pass
+                raise AccountsUserExists(e)
             elif "org.freedesktop.Accounts.Error.Failed" in e:
-                pass
+                raise AccountsFailed(e)
             else:
                 traceback.print_exc()
 
@@ -113,11 +137,11 @@ class BusBase(gobject.GObject):
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException, e:
             if "org.freedesktop.Accounts.Error.PermissionDenied" in e:
-                pass
+                raise AccountsPermissionDenied(e)
             elif "org.freedesktop.Accounts.Error.UserExists" in e:
-                pass
+                raise AccountsUserExists(e)
             elif "org.freedesktop.Accounts.Error.Failed" in e:
-                pass
+                raise AccountsFailed(e)
             else:
                 traceback.print_exc()
 
