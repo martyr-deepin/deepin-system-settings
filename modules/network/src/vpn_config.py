@@ -921,3 +921,15 @@ class PPPConf(gtk.VBox):
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
         # Check Buttons
+if __name__ == "__main__":
+
+    win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    win.set_size_request(600, 600)
+    win.connect("destroy", lambda w: gtk.main_quit())
+
+    mobile = VPNSetting()
+    mobile.init()
+
+    win.add(mobile)
+    win.show_all()
+    gtk.main()

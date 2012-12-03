@@ -799,6 +799,19 @@ class PPPConf(gtk.VBox):
 
 
 
+if __name__ == "__main__":
+
+    win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    win.set_size_request(600, 600)
+    win.connect("destroy", lambda w: gtk.main_quit())
+
+    mobile = MobileSetting()
+    mobile.init()
+
+    win.add(mobile)
+    win.show_all()
+    gtk.main()
+
 
         # Check Buttons
 
