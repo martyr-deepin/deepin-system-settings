@@ -467,7 +467,7 @@ class PPTPConf(gtk.VBox):
         self.module_frame = module_frame
         self.vpn_setting = self.connection.get_setting("vpn")
         self.ppp = PPPConf(self.connection, module_frame)
-        slider.append_page(self.ppp)
+        slider._append_page(self.ppp, "ppp")
         self.ppp.show_all()
 
         # UI

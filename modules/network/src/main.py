@@ -537,6 +537,8 @@ class Network(object):
         slider._append_page(self.mobile_setting_page, "mobile")
         #pdb.set_trace()
         slider._append_page(Region(), "region")
+        slider.show_all()
+
 
     
     def activate_succeed(self, widget, connection_path):
