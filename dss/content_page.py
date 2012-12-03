@@ -34,12 +34,21 @@ class ContentPage(gtk.VBox):
         '''
         gtk.VBox.__init__(self)
         self.module_id = module_id
+        self.socket = None
+        self.connect("realize", self._add_socket)
         
+    def _add_socket(self, w):
+        #must create an new socket, because socket will be destroyed when it reparent!!!
+        if self.socket:
+            self.socket.destroy()
         self.socket = gtk.Socket()
         self.pack_start(self.socket, True, True)
-        
+        self.socket.realize()
+
     def add_plug_id(self, plug_id):
+        self._add_socket(None)
         self.socket.add_id(plug_id)
+        self.show_all()
                 
 gobject.type_register(ContentPage)
 

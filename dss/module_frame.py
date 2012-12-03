@@ -95,12 +95,14 @@ class ModuleFrame(gtk.Plug):
         
         gtk.main()
         
+    def do_delete_event(self, w):
+        #a trick to prevent plug destroyed!.  the  better way is recreate an GtkPlug when need reuse it's content
+        return True
+
     def module_frame_realize(self, widget):
         # Send module information.
         self.send_module_info()
         
-        # Send plug id to main process.
-        self.send_plug_id()
         
     def module_frame_exit(self, widget):
         print "%s module exit" % (self.module_id)
@@ -122,11 +124,9 @@ class ModuleFrame(gtk.Plug):
         pass
         
     def handle_dbus_error(self, *error):
-        # print "%s (error): %s" % (self.module_dbus_name, str(error))
+        #print "%s (error): %s" % (self.module_dbus_name, str(error))
         pass
     
-    def send_plug_id(self):
-        self.send_message("send_plug_id", (self.module_id, self.get_id()))
         
     def send_module_info(self):
         self.send_message("send_module_info", 
@@ -134,6 +134,7 @@ class ModuleFrame(gtk.Plug):
                            (self.module_config.get("main", "id"), 
                             self.module_config.get("name", "zh_CN"))
                            ))
+        self.send_message("send_plug_id", (self.module_id, self.get_id()))
         
     def send_submodule_crumb(self, crumb_index, crumb_name):
         self.send_message("send_submodule_info", (crumb_index, crumb_name))
