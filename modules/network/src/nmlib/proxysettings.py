@@ -112,16 +112,16 @@ class ProxySettings(object):
         return self.ftp_settings.get_int("port")
 
     def set_https_host(self, host):
-        self.http_settings.set_string("host", host)
+        self.https_settings.set_string("host", host)
 
     def get_https_host(self):
-        return self.http_settings.get_string("host")
+        return self.https_settings.get_string("host")
 
     def set_https_port(self, port):
-        self.http_settings.set_int("port", port)
+        self.https_settings.set_int("port", port)
 
     def get_https_port(self):
-        return self.http_settings.get_int("port")
+        return self.https_settings.get_int("port")
 
     def set_socks_host(self, host):
         self.socks_settings.set_string("host", host)
