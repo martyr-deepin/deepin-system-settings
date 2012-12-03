@@ -528,7 +528,8 @@ class Network(object):
 
 
         slider._append_page(self.eventbox, "main")
-        slider._append_page(self.wired_setting_page, "wired")
+        # FIXME add too many pages will cause cairo_error
+        #slider._append_page(self.wired_setting_page, "wired")
         slider._append_page(self.dsl_setting_page, "dsl")
         slider._append_page(self.wireless_setting_page, "wireless")
         #slider.append_page(self.proxy_setting_page)

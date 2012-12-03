@@ -54,16 +54,17 @@ class Region(gtk.HBox):
         
         country_index = self.country_tree.select_rows
         provider_index = self.country_tree.select_rows
+        print provider_index
         
-        if country_index and provider_index:
-            country_index = country_index[0]
-            provider_index = provider_index[0]
+        #if country_index and provider_index:
+            #country_index = country_index[0]
+            #provider_index = provider_index[0]
 
 
 
 
-        else:
-            print "select!!"
+        #else:
+            #print "select!!"
 
     #def fill_entries(self, country_code, provider)
 
@@ -113,7 +114,7 @@ class Item(TreeItem):
         else:
             render_background(cr, rect)
         draw_text(cr, self.content, rect.x, rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_CENTER)
+                alignment = pango.ALIGN_LEFT)
 
     def get_column_widths(self):
         return [-1]
@@ -155,7 +156,7 @@ class Item(TreeItem):
             self.redraw_request_callback(self)
         self.is_expand = False
     
-    def double_click(self, column, offset_x, offset_y):
+    def single_click(self, column, offset_x, offset_y):
         if self.is_expand:
             self.unexpand()
         else:

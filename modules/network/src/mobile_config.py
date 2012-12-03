@@ -302,8 +302,6 @@ class Broadband(gtk.VBox):
         else:
             self.password.show_password(False)
 
-
-
     def init_table(self, network_type):
         container_remove_all(self.table)
         self.table.attach(self.label_basic, 0 ,1 ,0, 1)
@@ -314,21 +312,25 @@ class Broadband(gtk.VBox):
         self.table.attach(self.number, 2, 4, 1, 2)
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
+        
+        button_to_region = Button("Region Setting")
+        self.table.attach(button_to_region, 2,4,5,6)
+        button_to_region.connect("clicked", lambda w :slider._slide_to_page("region", "left"))
         align = gtk.Alignment(0,0.5, 0, 0)
         align.add(self.password_show)
         self.table.attach(align, 2, 4, 4, 5)
         if network_type == "gsm":
-            self.table.attach(self.label_advanced, 0, 1, 5, 6)
-            self.table.attach(self.label_apn, 1, 2 , 6, 7)
-            self.table.attach(self.label_network, 1, 2, 7, 8)
-            self.table.attach(self.label_type, 1, 2, 8, 9)
-            self.table.attach(self.label_pin, 1, 2, 9, 10)
+            self.table.attach(self.label_advanced, 0, 1, 6, 7)
+            self.table.attach(self.label_apn, 1, 2 , 7, 8)
+            self.table.attach(self.label_network, 1, 2, 8, 9)
+            self.table.attach(self.label_type, 1, 2, 9, 10)
+            self.table.attach(self.label_pin, 1, 2, 10, 11)
 
-            self.table.attach(self.apn, 2, 4, 6, 7)
-            self.table.attach(self.network_id, 2, 4, 7, 8)
-            self.table.attach(self.network_type, 2, 4, 8, 9)
-            self.table.attach(self.roam_check, 3, 4, 9, 10)
-            self.table.attach(self.pin, 2, 4, 10, 11)
+            self.table.attach(self.apn, 2, 4, 7, 8)
+            self.table.attach(self.network_id, 2, 4, 8, 9)
+            self.table.attach(self.network_type, 2, 4, 9, 10)
+            self.table.attach(self.roam_check, 3, 4, 10, 11)
+            self.table.attach(self.pin, 2, 4, 11, 12)
             
     def refresh(self):
         # get_settings
