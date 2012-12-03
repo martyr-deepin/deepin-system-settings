@@ -57,6 +57,7 @@ class MobileSetting(gtk.HBox):
         buttons_aligns.add(apply_button)
         vbox.pack_start(buttons_aligns, False , False)
         
+        self.show_all()
         #global region
             #if type(p) == gtk.EventBox:
                 #print "slide"

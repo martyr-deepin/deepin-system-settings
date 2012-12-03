@@ -528,7 +528,6 @@ class Network(object):
 
 
         slider._append_page(self.eventbox, "main")
-        slider._set_to_page("main")
         slider._append_page(self.wired_setting_page, "wired")
         slider._append_page(self.dsl_setting_page, "dsl")
         slider._append_page(self.wireless_setting_page, "wireless")
@@ -538,6 +537,7 @@ class Network(object):
         #pdb.set_trace()
         slider._append_page(Region(), "region")
         slider.show_all()
+        slider._set_to_page("main")
 
 
     
