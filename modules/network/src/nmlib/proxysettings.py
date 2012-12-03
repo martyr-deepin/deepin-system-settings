@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
+import deepin_gsettings
 
 PROXY_SETTINGS = "org.gnome.system.proxy"
 FTP_SETTINGS = "org.gnome.system.proxy.ftp"
@@ -32,11 +32,11 @@ class ProxySettings(object):
     '''ProxySettings'''
 
     def __init__(self):
-        self.proxy_settings = Gio.Settings.new(PROXY_SETTINGS)
-        self.ftp_settings = Gio.Settings.new(FTP_SETTINGS)
-        self.http_settings = Gio.Settings.new(HTTP_SETTINGS)
-        self.https_settings = Gio.Settings.new(HTTPS_SETTINGS)
-        self.socks_settings = Gio.Settings.new(SOCKS_SETTINGS)
+        self.proxy_settings = deepin_gsettings.new(PROXY_SETTINGS)
+        self.ftp_settings = deepin_gsettings.new(FTP_SETTINGS)
+        self.http_settings = deepin_gsettings.new(HTTP_SETTINGS)
+        self.https_settings = deepin_gsettings.new(HTTPS_SETTINGS)
+        self.socks_settings = deepin_gsettings.new(SOCKS_SETTINGS)
 
     def set_proxy_mode(self, mode):
         if mode in ["none", "auto", "manual"]:
