@@ -174,7 +174,6 @@ class Item(TreeItem):
             self.child_items = [SubItem(apn) for apn in apns]
             return True
         
-
 class SubItem(TreeItem):
     def __init__(self, content):
         TreeItem.__init__(self)

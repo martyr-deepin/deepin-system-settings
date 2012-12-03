@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-#from proxy_config import ProxyConfig
+from proxy_config import ProxyConfig
 # from proxy_config import ProxyConfig
 import sys
 import os
@@ -510,7 +510,7 @@ class Network(object):
         vbox.pack_start(self.dsl, False, True, 0)
         vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
-        #vbox.pack_start(self.proxy, False, True, 0)
+        vbox.pack_start(self.proxy, False, True, 0)
         
         scroll_win = ScrolledWindow()
         scroll_win.set_size_request(825, 425)
@@ -532,11 +532,11 @@ class Network(object):
         #slider._append_page(self.wired_setting_page, "wired")
         slider._append_page(self.dsl_setting_page, "dsl")
         slider._append_page(self.wireless_setting_page, "wireless")
-        #slider.append_page(self.proxy_setting_page)
+        slider.append_page(self.proxy_setting_page)
         slider._append_page(self.vpn_setting_page, "vpn")
         slider._append_page(self.mobile_setting_page, "mobile")
         #pdb.set_trace()
-        slider._append_page(Region(), "region")
+        #slider._append_page(Region(), "region")
         slider.show_all()
         slider._set_to_page("main")
 
@@ -555,7 +555,7 @@ class Network(object):
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
-        #self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
+        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
         self.vpn = VpnSection(lambda : module_frame.send_submodule_crumb(2, "VPN"))
 
         self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
@@ -571,9 +571,9 @@ class Network(object):
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.dsl.add_setting_page(self.dsl_setting_page)
 
-        #self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          #lambda  : module_frame.send_message("change_crumb", 1))
-        #self.proxy.add_setting_page(self.proxy_setting_page)
+        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
+                                          lambda  : module_frame.send_message("change_crumb", 1))
+        self.proxy.add_setting_page(self.proxy_setting_page)
         self.vpn_setting_page = VPNSetting( lambda : slider.slide_to_page(self.eventbox, "left"),
                                lambda : module_frame.send_message("change_crumb", 1),
                                module_frame)
