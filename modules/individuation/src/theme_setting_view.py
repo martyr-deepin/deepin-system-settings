@@ -339,7 +339,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        run_command("gsettings set org.gnome.desktop.background picture-uri 'file://%s'" % self.path)
+        run_command("gsettings set com.deepin.desktop.background picture-uri 'file://%s'" % self.path)
     
     def icon_item_button_release(self, x, y):
         '''
