@@ -123,7 +123,10 @@ class MobileSetting(gtk.HBox):
         ##self.ppp.save_setting()
 
         connection = self.ipv4.connection
-        print "dict >",connection.settings_dict
+        mobile_type = connection.get_setting("connection").type
+        self.broadband_setting = connection.get_setting(mobile_type)
+        print "dict >",self.broadband_setting.prop_dict
+        print "connection >", connection.settings_dict
         #print connection
         connection.update()
 
@@ -340,11 +343,13 @@ class Broadband(gtk.VBox):
         number = self.broadband_setting.number
         username = self.broadband_setting.username
         
-        try:
-            password = self.broadband_setting.password
-        except KeyError:
+        password = self.broadband_setting.password
+        print "pwd" ,password
+        if password == None:
+            print "try agent"
             try:
                 (setting_name, method) = self.connection.guess_secret_info() 
+                print ">>>>>>>>>.",setting_name, method
                 password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
@@ -381,7 +386,9 @@ class Broadband(gtk.VBox):
     def set_new_values(self, new_dict):
         network_type = new_dict.keys()[0]
         self.connection.get_setting("connection").type = network_type
+        print "network_type", network_type
         self.broadband_setting = self.connection.get_setting(network_type)
+        print self.broadband_setting
         
         params = new_dict[network_type]
 
