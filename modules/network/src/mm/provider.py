@@ -209,7 +209,6 @@ class ServiceProviders(object):
         else:
             return None
 
-
     def get_provider_apn_password(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
         if self._apn:
