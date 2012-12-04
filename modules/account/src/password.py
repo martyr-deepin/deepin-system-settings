@@ -56,7 +56,6 @@ class PasswdHandler(object):
         self.chpasswd_cb = None
         self.chpasswd_cb_data = None
 
-
     def child_watch_cb(self):
 	pass
 
