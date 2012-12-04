@@ -1,8 +1,8 @@
-SUCKME
-
-killall python to Terminated running plugin 
-
 Dependence (Debian)
+
+sudo apt-get install libpolkit-gobject-1-dev
+cd modules/account/src/
+sudo python setup.py install
 
 Python XRandR Bindings
 原始地址 https://launchpad.net/python-xrandr

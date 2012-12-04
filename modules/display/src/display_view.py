@@ -284,6 +284,7 @@ class DisplayView(gtk.VBox):
             return
         
         if object == "rotation_combo":
+            self.display_manager.set_screen_rotation(self.rots_items[item_value][0])
             return
 
     def __resize_box(self, widget, height):

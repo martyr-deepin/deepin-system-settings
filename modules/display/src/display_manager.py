@@ -22,6 +22,7 @@
 
 from xrandr import xrandr
 import re
+from dtk.ui.utils import run_command
 
 class DisplayManager:
     def __init__(self):
@@ -54,14 +55,15 @@ class DisplayManager:
 
     def set_screen_size(self, size):
         match = re.search('(\d+) x (\d+)', size)
-        '''
-        FIXME: Python XRandR Binding get fb_width/height_mm is wrong
-        '''
-        mwidth = self.__screen.get_output_by_name("LVDS").get_physical_width()
-        mheight = self.__screen.get_output_by_name("LVDS").get_physical_height()
+        output_names = self.get_output_names()
+        i = 0
         
-        print "DEBUG set_screen_size ", mwidth, mheight
-        self.__screen.set_size(int(match.group(1)), int(match.group(2)), mwidth, mheight)
+        while (i < len(output_names)):
+            run_command("xrandr --output %s --mode %sx%s" % (output_names[i], match.group(1), match.group(2)))
+            i += 1
 
+    def set_screen_rotation(self, rotation):
+        run_command("xrandr -o %s" % (rotation))
+    
     def get_screen_rots(self):
         return self.__screen.get_rotations()
