@@ -22,6 +22,7 @@
 
 import gtk
 import gobject
+import glib
 from constant import APP_DBUS_NAME, APP_OBJECT_NAME
 from dtk.ui.config import Config
 from dtk.ui.utils import is_dbus_name_exists
@@ -79,7 +80,16 @@ class ModuleFrame(gtk.Plug):
         # Handle signals.
         self.connect("realize", self.module_frame_realize)
         self.connect("destroy", self.module_frame_exit)
-        
+
+        glib.timeout_add(1000, self.is_exist)
+
+    def is_exist(self):
+        if dbus.SessionBus().name_has_owner("com.deepin.system_settings"):
+            return True
+        else:
+            glib.timeout_add(0, gtk.main_quit)
+            return False
+
     def run(self):    
         if not hasattr(self, "module_message_handler"):
             raise Exception, "Please customize your own module_message_handler for module_frame"
@@ -102,8 +112,7 @@ class ModuleFrame(gtk.Plug):
     def module_frame_realize(self, widget):
         # Send module information.
         self.send_module_info()
-        
-        
+
     def module_frame_exit(self, widget):
         print "%s module exit" % (self.module_id)
         
