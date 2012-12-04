@@ -33,5 +33,4 @@ class DisplayManager:
         return self.__xrandr.get_current_screen()
     
     def get_screen_sizes(self, screen):
-        screen = self.__xrandr.get_current_screen()
         return screen.get_available_sizes()

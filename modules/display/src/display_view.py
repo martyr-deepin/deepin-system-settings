@@ -246,11 +246,13 @@ class DisplayView(gtk.VBox):
         self.pack_start(self.scrolled_window)
 
     def __setup_monitor_items(self):
-        i = self.display_manager.get_screen_count()
+        print "DEBUG xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        count = self.display_manager.get_screen_count()
+        i = 0
 
-        while (i):
+        while (i < count):
             self.monitor_items.append(("显示器%d" % (i), i))
-            i -= 1
+            i += 1
 
     def __setup_sizes_items(self, screen=-1):
         i = 0
