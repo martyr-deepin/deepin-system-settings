@@ -58,13 +58,9 @@ class DisplayManager:
         output_names = self.get_output_names()
         i = 0
         
-        '''
-        FIXME: HOWTO set other outputs?
         while (i < len(output_names)):
             run_command("xrandr --output %s --mode %sx%s" % (output_names[i], match.group(1), match.group(2)))
-        '''
-        
-        run_command("xrandr --output LVDS --mode %sx%s" % (match.group(1), match.group(2)))
+            i += 1
 
     def set_screen_rotation(self, rotation):
         run_command("xrandr -o %s" % (rotation))
