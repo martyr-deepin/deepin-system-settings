@@ -310,10 +310,10 @@ class Broadband(gtk.VBox):
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
         
-        align = gtk.Alignment(0,0.5, 0, 0)
-        align.add(self.password_show)
-        #self.table.attach(self.password_show, 2, 4, 4, 5)
-        self.table.attach(align, 2, 4, 4, 5)
+        #align = gtk.Alignment(0,0.5, 0, 0)
+        #align.add(self.password_show)
+        self.table.attach(self.password_show, 2, 4, 4, 5)
+        #self.table.attach(align, 2, 4, 4, 5)
 
         button_to_region = Button("Region Setting")
         self.table.attach(button_to_region, 2,4,5,6)
