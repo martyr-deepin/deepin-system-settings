@@ -32,6 +32,8 @@ providers = ET.ElementTree(file = get_parent_dir(__file__) + "/serviceproviders.
 
 countryxml = ET.ElementTree(file = get_parent_dir(__file__) + "/iso_3166.xml")
 
+languagexml = ET.ElementTree(file = get_parent_dir(__file__) + "/iso639.xml")
+
 class ServiceProviders(object):
 
     def __init__(self):
@@ -43,6 +45,8 @@ class ServiceProviders(object):
         self.__networks = []
         self.__apns = []
         self.__apn = None
+        self.language_dict = None
+        self.country_languages_dict = None
 
     def get_country_list(self):
         return  map(lambda x: x.get("code"), providers.iterfind("country"))    
@@ -237,12 +241,30 @@ class ServiceProviders(object):
         else:
             return self.get_country_from_language()
 
+    def get_country_languages(self, code):
+
+        if not self.country_languages_dict:
+            self.country_languages_dict = {}
+            try:
+                pfile = open("country_languages.txt", "r").read().strip().splitlines()
+                for item in pfile:
+                    country = item.split("\t")[0].strip()
+                    if "," in item:
+                        languages = item.split("\t")[1].strip().split(",")
+
+                    self.country_languages_dict[country] = languages
+            except:
+                return []
+
+        country_name = self.get_country_name(code)    
+        if country_name in self.country_languages_dict.iterkeys():
+            return self.country_languages_dict[country_name]
+        else:
+            return []
+
     def get_country_from_language(self, country_list = []):
-        try:
-            import pycountry
-        except ImportError:
-            print "pycountry not installed"
-            return self.country_list[0]
+        if not country_list:
+            country_list = self.country_list
 
         if "LANG" in os.environ.keys():
             lang = os.environ.get("LANG").split(".")
@@ -251,28 +273,42 @@ class ServiceProviders(object):
 
         language_alpha2 = str.lower(lang[0][:2])
 
-        if not country_list:
-            country_list = self.country_list
+        if not self.language_dict:
+            self.language_dict = {}
+            for language in languagexml.iter():
+                if not language.get("iso_639_1_code"):
+                    continue
+                else:
+                    self.language_dict[language.get("iso_639_1_code")] = language.get("name")
 
-        for country in country_list:
-            ####add language handle here###
+        if language_alpha2 not in self.language_dict.iterkeys():
             return country_list[0]
         else:
+            current_language = self.language_dict[language_alpha2]
+            for country in country_list:
+                for l in self.get_country_languages(country):
+                    if current_language in l:
+                        return country
+                else:
+                    continue
             return country_list[0]
 
 if __name__ == "__main__":
     sp = ServiceProviders()
-    country_code =  sp.get_country_list()
-    country = sp.get_country_name_list()
-    print country_code[country.index("China")]
-    print sp.get_country_providers_name("cn")
-    print sp.get_country_gsm_providers_name("cn")
-    print sp.get_country_cdma_providers_name("cn")
-    print "networks",sp.get_provider_networks("cn", "China Mobile")
-    print "apns_name",sp.get_provider_apns_name("cn", "China Mobile")
-    print "apn_plan>",sp.get_provider_apn_plan("cn", "China Mobile", "cmwap")
-    print "username>",sp.get_provider_username("cn", "China Mobile")
-    print "password",sp.get_provider_password("cn", "China Mobile")
-    print sp.get_provider_username("cn", "China Telecom")
-    print sp.get_provider_password("cn", "China Telecom")
-    print sp.get_country_from_timezone()
+    # country_code =  sp.get_country_list()
+    # country = sp.get_country_name_list()
+    # print country_code[country.index("China")]
+    # print sp.get_country_providers_name("cn")
+    # print sp.get_country_gsm_providers_name("cn")
+    # print sp.get_country_cdma_providers_name("cn")
+    # print "networks",sp.get_provider_networks("cn", "China Mobile")
+    # print "apns_name",sp.get_provider_apns_name("cn", "China Mobile")
+    # print "apn_plan>",sp.get_provider_apn_plan("cn", "China Mobile", "cmwap")
+    # print "username>",sp.get_provider_username("cn", "China Mobile")
+    # print "password",sp.get_provider_password("cn", "China Mobile")
+    # print sp.get_provider_username("cn", "China Telecom")
+    # print sp.get_provider_password("cn", "China Telecom")
+    # print sp.get_country_from_timezone()
+    print sp.get_country_languages("cn")
+
+
