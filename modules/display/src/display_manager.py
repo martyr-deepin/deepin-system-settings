@@ -58,5 +58,8 @@ class DisplayManager:
         
         run_command("xrandr --output LVDS --mode %sx%s" % (match.group(1), match.group(2)))
 
+    def set_screen_rotation(self, rotation):
+        run_command("xrandr -o %s" % (rotation))
+    
     def get_screen_rots(self):
         return self.__screen.get_rotations()
