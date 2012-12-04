@@ -119,13 +119,13 @@ class MobileSetting(gtk.HBox):
         self.init_tab_box()
         
     def save_changes(self, widget):
-        print "saving"
         #self.dsl.save_setting()
         ##self.ppp.save_setting()
 
-        #connection = self.ipv4.connection
+        connection = self.ipv4.connection
+        print "dict >",connection.settings_dict
         #print connection
-        #connection.update()
+        connection.update()
 
         ##FIXME need to change device path into variables
         #nm_module.nmclient.activate_connection_async(connection.object_path,
@@ -310,14 +310,16 @@ class Broadband(gtk.VBox):
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
         
+        #align = gtk.Alignment(0,0.5, 0, 0)
+        #align.add(self.password_show)
+        self.table.attach(self.password_show, 2, 4, 4, 5)
+        #self.table.attach(align, 2, 4, 4, 5)
+
         button_to_region = Button("Region Setting")
         self.table.attach(button_to_region, 2,4,5,6)
         button_to_region.connect("clicked", lambda w :slider._slide_to_page("region", "left"))
-        align = gtk.Alignment(0,0.5, 0, 0)
-        align.add(self.password_show)
-        self.table.attach(align, 2, 4, 4, 5)
+
         if network_type == "gsm":
-            print "gsm"
             self.table.attach(self.label_advanced, 0, 1, 6, 7)
             self.table.attach(self.label_apn, 1, 2 , 7, 8)
             self.table.attach(self.label_network, 1, 2, 8, 9)
@@ -329,6 +331,7 @@ class Broadband(gtk.VBox):
             self.table.attach(self.network_type, 2, 4, 9, 10)
             self.table.attach(self.roam_check, 3, 4, 10, 11)
             self.table.attach(self.pin, 2, 4, 11, 12)
+
             
     def refresh(self):
         # get_settings

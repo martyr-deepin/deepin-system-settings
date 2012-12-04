@@ -69,6 +69,7 @@ class Region(gtk.HBox):
                  "username": username,
                  "password": password}})
         if self.plan_select:
+            print "not cdma"
             self.prop_dict.pop("cdma")
             apn = self.plan_select
             index = self.__sp.get_provider_apns_name(self.code, self.provider_select).index(apn)
@@ -111,6 +112,7 @@ class Region(gtk.HBox):
     def provider_selected(self, widget, item, column , offset_x, offset_y):
         if type(item) is Item:
             self.provider_select = item.content
+            self.plan_select = None
         else:
             self.plan_select = item.content
 

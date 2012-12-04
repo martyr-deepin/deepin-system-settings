@@ -151,15 +151,15 @@ class NMRemoteConnection(NMObject, NMConnection):
 
         elif "cdma" in info_dict.iterkeys():
             self.secret_setting_name = "cdma"
-            self.secret_method = ""
+            self.secret_method = "password"
 
         elif "gsm" in info_dict.iterkeys():
             self.secret_setting_name = "gsm"
-            self.secret_method = ""
+            self.secret_method = "password"
 
         else:
-            self.secret_setting_name = ""
-            self.secret_method = ""
+            self.secret_setting_name = None
+            self.secret_method = None
 
     def update(self):
         try:

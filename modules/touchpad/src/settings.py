@@ -20,12 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
+import deepin_gsettings
 
 MOUSE_SETTINGS_CONF = "org.gnome.settings-daemon.peripherals.mouse"
 TOUCHPAD_SETTINGS_CONF = "org.gnome.settings-daemon.peripherals.touchpad"
-MOUSE_SETTINGS = Gio.Settings.new(MOUSE_SETTINGS_CONF)
-TOUCHPAD_SETTINGS = Gio.Settings.new(TOUCHPAD_SETTINGS_CONF)
+MOUSE_SETTINGS = deepin_gsettings.new(MOUSE_SETTINGS_CONF)
+TOUCHPAD_SETTINGS = deepin_gsettings.new(TOUCHPAD_SETTINGS_CONF)
 
 TOUCHPAD_DEFAULT_SETTINGS = {
     "left_handed"           : "mouse",

@@ -531,7 +531,7 @@ class Network(object):
         slider._append_page(self.wired_setting_page, "wired")
         slider._append_page(self.dsl_setting_page, "dsl")
         slider._append_page(self.wireless_setting_page, "wireless")
-        slider.append_page(self.proxy_setting_page)
+        slider._append_page(self.proxy_setting_page, "proxy")
         slider._append_page(self.vpn_setting_page, "vpn")
         slider._append_page(Region(), "region")
         slider._append_page(self.mobile_setting_page, "mobile")
@@ -597,7 +597,6 @@ class Network(object):
     def stop(self):
         
         self.eventbox.set_above_child(True)
-
         self.wired_setting_page = None
         self.wireless_setting_page = None
         self.dsl_setting_page = None
@@ -630,9 +629,10 @@ if __name__ == '__main__':
         def message_handler(*message):
             (message_type, message_content) = message
             if message_type == "show_again":
-                slider.set_to_page(main_align)
+                slider._set_to_page("main")
                 module_frame.send_module_info()
             elif message_type == "click_crumb":
+                print "click_crumb"
                 (crumb_index, crumb_label) = message_content
                 if crumb_index == 1:
                     slider.slide_to_page(main_align, "left")

@@ -49,7 +49,10 @@ class ServiceProviders(object):
         self.country_languages_dict = None
 
     def get_country_list(self):
-        return  map(lambda x: x.get("code"), providers.iterfind("country"))    
+        try:
+            return  map(lambda x: x.get("code"), providers.iterfind("country"))    
+        except:
+            return []
 
     def get_country_name(self, code):
         if len(code) != 2:
@@ -65,7 +68,10 @@ class ServiceProviders(object):
             return None
 
     def get_country_name_list(self):
-        return map(lambda x:self.get_country_name(x), self.get_country_list())
+        try:
+            return map(lambda x:self.get_country_name(x), self.get_country_list())
+        except:
+            return []
 
     def get_country_code(self, name):
         pass
@@ -86,7 +92,10 @@ class ServiceProviders(object):
     def get_country_providers_name(self, code):
         self.__providers = self.__get_country_providers(code)
         if self.__providers:
-            return map(lambda x:x.find("name").text, self.__providers)
+            try:
+                return map(lambda x:x.find("name").text, self.__providers)
+            except:
+                return []
         else:
             return []
     
@@ -95,8 +104,11 @@ class ServiceProviders(object):
         if self.__providers:
             has_gsm = filter(lambda x: x.find("gsm") != None, self.__providers)
             if has_gsm:
-                self.__providers = map(lambda x:x.find("name").text, has_gsm)
-                return self.__providers
+                try:
+                    self.__providers = map(lambda x:x.find("name").text, has_gsm)
+                    return self.__providers
+                except:
+                    return []
             else:
                 return []
         else:
@@ -107,8 +119,11 @@ class ServiceProviders(object):
         if self.__providers:
             has_cdma = filter(lambda x: x.find("cdma") != None, self.__providers)
             if has_cdma:
-                self.__providers = map(lambda x:x.find("name").text, has_cdma)
-                return self.__providers
+                try:
+                    self.__providers = map(lambda x:x.find("name").text, has_cdma)
+                    return self.__providers
+                except:
+                    return []
             else:
                 return []
         else:
@@ -130,7 +145,10 @@ class ServiceProviders(object):
         if self.__provider:
             self.__networks = self.__provider.findall(".//network-id")
             if self.__networks:
-                return map(lambda x:( x.get("mcc"), x.get("mnc") ), self.__networks)
+                try:
+                    return map(lambda x:( x.get("mcc"), x.get("mnc") ), self.__networks)
+                except:
+                    return None
             else:
                 return None
         else:
@@ -140,8 +158,11 @@ class ServiceProviders(object):
         '''only for gsm'''
         self.__provider = self.__get_country_provider(code, name)
         if self.__provider:
-            self.__apns = self.__provider.findall(".//apn")
-            return self.__apns
+            try:
+                self.__apns = self.__provider.findall(".//apn")
+                return self.__apns
+            except:
+                return None
         else:
             return None
 
@@ -149,7 +170,10 @@ class ServiceProviders(object):
         '''only for gsm'''
         self.__apns = self.__get_provider_apns(code, name)
         if self.__apns:
-            return map(lambda x: x.get("value"), self.__apns)
+            try:
+                return map(lambda x: x.get("value"), self.__apns)
+            except:
+                return []
         else:
             return []
 
@@ -168,29 +192,40 @@ class ServiceProviders(object):
     def get_provider_apn_plan(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
         if self._apn:
-            return self._apn.find("plan").get("type")
+            try:
+                return self._apn.find("plan").get("type")
+            except:
+                return None
         else:
             return None
 
     def get_provider_apn_username(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
         if self._apn:
-            return self._apn.find("username").text
+            try:
+                return self._apn.find("username").text
+            except:
+                return None
         else:
             return None
-
 
     def get_provider_apn_password(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
         if self._apn:
-            return self._apn.find("password").text
+            try:
+                return self._apn.find("password").text
+            except:
+                return None
         else:
             return None
 
     def get_provider_apn_dns(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
         if self._apn:
-            return self._apn.find("dns").text
+            try:
+                return self._apn.find("dns").text
+            except:
+                return None
         else:
             return None
 
@@ -198,7 +233,10 @@ class ServiceProviders(object):
         '''available for both of gsm and cdma, get the default one'''
         self.__provider = self.__get_country_provider(code, provider)
         if self.__provider:
-            return self.__provider.find(".//username").text
+            try:
+                return self.__provider.find(".//username").text
+            except:
+                return None
         else:
             return None
 
@@ -206,7 +244,10 @@ class ServiceProviders(object):
         '''available for both of gsm and cdma'''
         self.__provider = self.__get_country_provider(code, provider)
         if self.__provider:
-            return self.__provider.find(".//password").text
+            try:
+                return self.__provider.find(".//password").text
+            except:
+                return None
         else:
             return None
 
