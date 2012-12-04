@@ -47,3 +47,6 @@ class DisplayManager:
     '''
     def get_screen_sizes(self):
         return self.__screen.get_available_sizes()
+
+    def get_screen_rots(self):
+        return self.__screen.get_rotations()

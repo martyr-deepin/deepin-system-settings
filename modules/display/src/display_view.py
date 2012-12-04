@@ -82,7 +82,8 @@ class DisplayView(gtk.VBox):
         self.__setup_monitor_items()
         self.sizes_items = []
         self.__setup_sizes_items()
-        self.direction_items = [("DEBUG", 0)]
+        self.rots_items = []
+        self.__setup_rots_items()
         self.duration_items = [("1分钟", 1), 
                                ("2分钟", 2), 
                                ("3分钟", 3), 
@@ -141,19 +142,19 @@ class DisplayView(gtk.VBox):
             [self.goto_label])
         self.goto_align.add(self.goto_box)
         '''
-        sizes && direction
+        sizes && rotation
         '''
         self.sizes_align = self.__setup_align()
         self.sizes_box = gtk.HBox(spacing = self.box_spacing)
         self.sizes_label = self.__setup_label("分辨率")
         self.sizes_combo = self.__setup_combo(self.sizes_items, 160)
-        self.direction_label = self.__setup_label("方向")
-        self.direction_combo = self.__setup_combo(self.direction_items)
+        self.rotation_label = self.__setup_label("方向")
+        self.rotation_combo = self.__setup_combo(self.rots_items)
         self.__widget_pack_start(self.sizes_box, 
             [self.sizes_label, 
              self.sizes_combo, 
-             self.direction_label, 
-             self.direction_combo])
+             self.rotation_label, 
+             self.rotation_combo])
         self.sizes_align.add(self.sizes_box)
         '''
         monitor brightness
@@ -255,16 +256,25 @@ class DisplayView(gtk.VBox):
 
     def __setup_sizes_items(self):
         i = 0
-        
         self.sizes_items = []
+        
         for size in self.display_manager.get_screen_sizes():
             self.sizes_items.append(("%s x %s" % (size.width, size.height), i))
+            i += 1
+
+    def __setup_rots_items(self):
+        i = 0
+        self.rots_items = []
+        
+        for rot in self.display_manager.get_screen_rots():
+            self.rots_items.append((rot, i))
             i += 1
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "monitor_combo":
             self.display_manager.set_current_screen(item_value)
             self.__setup_sizes_items()
+            self.__setup_rots_items()
             return
 
     def __resize_box(self, widget, height):
