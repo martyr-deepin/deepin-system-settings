@@ -61,6 +61,16 @@ class PasswdHandler(object):
 
     def spawn_password(self):
 	pass    
-
+	    
 if __name__ == "__main__":
-    pass
+
+	p = subprocess.Popen("/usr/bin/passwd", stdin = subprocess.PIPE,
+			     stdout = subprocess.PIPE, stderr = subprocess.PIPE)	
+
+	p.stdin.write("deepin");
+	p.stdin.flush()
+
+	print "stdout"
+	print p.stdout.read()
+	print "error"
+	print p.stderr.read()

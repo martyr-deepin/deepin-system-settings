@@ -140,22 +140,27 @@ class NMRemoteConnection(NMObject, NMConnection):
         elif "802-3-ethernet" in info_dict.iterkeys():
             self.secret_setting_name = None
             self.secret_method = None
+            return (self.secret_setting_name, self.secret_method)
 
         elif "ppp" in info_dict.iterkeys():
             self.secret_setting_name = ""
             self.secret_method = ""
+            return (self.secret_setting_name, self.secret_method)
 
         elif "802-1x" in info_dict.iterkeys():
             self.secret_setting_name = ""
             self.secret_method = ""
+            return (self.secret_setting_name, self.secret_method)
 
         elif "cdma" in info_dict.iterkeys():
             self.secret_setting_name = "cdma"
             self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
         elif "gsm" in info_dict.iterkeys():
             self.secret_setting_name = "gsm"
             self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
         else:
             self.secret_setting_name = None

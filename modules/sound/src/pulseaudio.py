@@ -49,11 +49,13 @@ def connect_bus():
                 try:
                     if int(os.popen("ps -ef |grep pulseaudio | wc -l").read().strip()) > 1:
                         command = "pulseaudio --kill"
-                        subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
+                        # subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
+                        subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
 
                     command = "pulseaudio --start"
-                    subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
-                    monitor_interface.StartServiceByName("org.PulseAudio1", 1)
+                    # subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
+                    subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
+                    # monitor_interface.StartServiceByName("org.PulseAudio1", 1)
                 except:
                     print "StartServiceByName:org.PulseAudio1 Failed"
 

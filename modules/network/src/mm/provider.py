@@ -95,9 +95,8 @@ class ServiceProviders(object):
             try:
                 return map(lambda x:x.find("name").text, self.__providers)
             except:
-                return []
-        else:
-            return []
+                pass
+        return []      
     
     def get_country_gsm_providers_name(self, code):
         self.__providers = self.__get_country_providers(code)
@@ -108,11 +107,8 @@ class ServiceProviders(object):
                     self.__providers = map(lambda x:x.find("name").text, has_gsm)
                     return self.__providers
                 except:
-                    return []
-            else:
-                return []
-        else:
-            return []
+                    pass
+        return []
 
     def get_country_cdma_providers_name(self, code):
         self.__providers = self.__get_country_providers(code)
@@ -123,11 +119,8 @@ class ServiceProviders(object):
                     self.__providers = map(lambda x:x.find("name").text, has_cdma)
                     return self.__providers
                 except:
-                    return []
-            else:
-                return []
-        else:
-            return []
+                    pass
+        return []
 
     def __get_country_provider(self, code, name):    
         self.__providers = self.__get_country_providers(code)
@@ -135,10 +128,8 @@ class ServiceProviders(object):
             self.__provider = filter(lambda x:x.find("name").text == name, self.__providers)
             if self.__provider:
                 return self.__provider[0]
-            else:
-                return None
-        else:
-            return None
+
+        return None    
 
     def get_provider_networks(self, code, name):
         self.__provider = self.__get_country_provider(code, name)
@@ -148,11 +139,9 @@ class ServiceProviders(object):
                 try:
                     return map(lambda x:( x.get("mcc"), x.get("mnc") ), self.__networks)
                 except:
-                    return None
-            else:
-                return None
-        else:
-            return None
+                    pass
+
+        return None        
 
     def __get_provider_apns(self, code, name):    
         '''only for gsm'''
@@ -162,9 +151,9 @@ class ServiceProviders(object):
                 self.__apns = self.__provider.findall(".//apn")
                 return self.__apns
             except:
-                return None
-        else:
-            return None
+                pass
+
+        return None
 
     def get_provider_apns_name(self, code, name):
         '''only for gsm'''
@@ -173,9 +162,9 @@ class ServiceProviders(object):
             try:
                 return map(lambda x: x.get("value"), self.__apns)
             except:
-                return []
-        else:
-            return []
+                pass
+
+        return []
 
     def __get_provider_apn(self, code, provider_name, apn_name):
         self.__apns = self.__get_provider_apns(code, provider_name)
@@ -183,11 +172,8 @@ class ServiceProviders(object):
             self.__apn = filter(lambda x: x.get("value") == apn_name, self.__apns)
             if self.__apn:
                 return self.__apn[0]
-            else:
-                return None
-        else:
-            return None
 
+        return None
 
     def get_provider_apn_plan(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
@@ -195,9 +181,9 @@ class ServiceProviders(object):
             try:
                 return self._apn.find("plan").get("type")
             except:
-                return None
-        else:
-            return None
+                pass
+
+        return None
 
     def get_provider_apn_username(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
@@ -205,9 +191,9 @@ class ServiceProviders(object):
             try:
                 return self._apn.find("username").text
             except:
-                return None
-        else:
-            return None
+                pass
+
+        return None
 
     def get_provider_apn_password(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
@@ -215,9 +201,9 @@ class ServiceProviders(object):
             try:
                 return self._apn.find("password").text
             except:
-                return None
-        else:
-            return None
+                pass
+
+        return None
 
     def get_provider_apn_dns(self, code, provider_name, apn_name):
         self._apn = self.__get_provider_apn(code, provider_name, apn_name)
@@ -225,9 +211,9 @@ class ServiceProviders(object):
             try:
                 return self._apn.find("dns").text
             except:
-                return None
-        else:
-            return None
+                pass
+
+        return None
 
     def get_provider_username(self, code, provider):
         '''available for both of gsm and cdma, get the default one'''
@@ -236,9 +222,9 @@ class ServiceProviders(object):
             try:
                 return self.__provider.find(".//username").text
             except:
-                return None
-        else:
-            return None
+                pass
+
+        return None    
 
     def get_provider_password(self, code, provider):
         '''available for both of gsm and cdma'''
@@ -247,9 +233,9 @@ class ServiceProviders(object):
             try:
                 return self.__provider.find(".//password").text
             except:
-                return None
-        else:
-            return None
+                pass
+
+        return None    
 
     def get_country_from_timezone(self):
         try:
