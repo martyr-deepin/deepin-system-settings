@@ -202,15 +202,12 @@ class SideBar(gtk.VBox):
         except ValueError:
             self.buttonbox.get_children()[0].check.set_active(True)
         '''
-    def check_click_cb(self):
-        '''docstring for check_click_cb'''
-        pass
 
     def delete_item_cb(self):
         '''docstring for delete_item_cb'''
         pass
     def get_active(self):
-        return 0
+        return self.connection_tree.select_rows[0]
         #checks = self.buttonbox.get_children()
         #for index,c in enumerate(checks):
             #if c.check.get_active():
@@ -320,6 +317,7 @@ class Broadband(gtk.VBox):
         align.add(self.password_show)
         self.table.attach(align, 2, 4, 4, 5)
         if network_type == "gsm":
+            print "gsm"
             self.table.attach(self.label_advanced, 0, 1, 6, 7)
             self.table.attach(self.label_apn, 1, 2 , 7, 8)
             self.table.attach(self.label_network, 1, 2, 8, 9)
@@ -340,12 +338,16 @@ class Broadband(gtk.VBox):
         username = self.broadband_setting.username
         
         try:
-            (setting_name, method) = self.connection.guess_secret_info() 
-            password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
-                                                    setting_name,
-                                                    method)
-        except:
-            password = ""
+            password = self.broadband_setting.password
+        except KeyError:
+            try:
+                (setting_name, method) = self.connection.guess_secret_info() 
+                password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                        setting_name,
+                                                        method)
+            except:
+                password = ""
+
 
         # both
         self.number.set_text(number)
@@ -370,8 +372,19 @@ class Broadband(gtk.VBox):
             self.roam_check.set_active(home_only is None)
 
         self.init_table(mobile_type)
-
+        
         ## retrieve wired info
+
+    def set_new_values(self, new_dict):
+        network_type = new_dict.keys()[0]
+        self.connection.get_setting("connection").type = network_type
+        self.broadband_setting = self.connection.get_setting(network_type)
+        
+        params = new_dict[network_type]
+
+        for key, value in params.iteritems():
+            setattr(self.broadband_setting, key, value)
+        self.refresh()
 
     def save_settings_by(self, widget, text, attr):
         if text == "":

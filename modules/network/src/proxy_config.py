@@ -169,5 +169,6 @@ class ProxyConfig(gtk.VBox):
             self.proxysetting.set_proxy_mode = "auto"
             self.proxysetting.set_proxy_autoconfig_url = conf_url
 
+
         self.slide_back()
         self.change_crumb()
