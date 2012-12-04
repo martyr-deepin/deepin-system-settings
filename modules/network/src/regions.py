@@ -6,6 +6,7 @@ from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_vlinear, draw_text
 from dtk.ui.label import Label
 from dtk.ui.button import Button
+from nm_modules import nm_module
 import gtk
 import pango
 
@@ -19,6 +20,8 @@ class Region(gtk.HBox):
     def __init__(self, connection = None):
         gtk.HBox.__init__(self, False, spacing = 10)
         self.set_size_request(680,300)
+
+        self.prop_dict = {}
         
         country_label = Label("Country:")
         self.country_tree = TreeView(enable_multiple_select = False,
@@ -49,24 +52,38 @@ class Region(gtk.HBox):
         self.show_all()
         self.init()
 
-
     def next_button_clicked(self, widget):
+        try:
+            self.plan_select
+        except:
+            self.plan_select = None
         
-        country_index = self.country_tree.select_rows
-        provider_index = self.country_tree.select_rows
-        print provider_index
-        
-        #if country_index and provider_index:
-            #country_index = country_index[0]
-            #provider_index = provider_index[0]
+        def add_keys(settings):
+            self.prop_dict = settings
+            
 
+        username = self.__sp.get_provider_username(self.code, self.provider_select)
+        password = self.__sp.get_provider_password(self.code, self.provider_select)
+        add_keys({"cdma": {
+                 "number": "#777",
+                 "username": username,
+                 "password": password}})
+        if self.plan_select:
+            self.prop_dict.pop("cdma")
+            apn = self.plan_select
+            index = self.__sp.get_provider_apns_name(self.code, self.provider_select).index(apn)
+            (network_id, network_type) = self.__sp.get_provider_networks(self.code, self.provider_select)[index]
+            add_keys({"gsm":{
+                     "number": "*99#",
+                     "username": username,
+                     "password": password,
+                     "apn": apn,
+                     "network_id": network_id,
+                     "network_type": network_type}})
 
-
-
-        #else:
-            #print "select!!"
-
-    #def fill_entries(self, country_code, provider)
+        setting_page = nm_module.slider.get_page_by_name("mobile")
+        setting_page.broadband.set_new_values(self.prop_dict)
+        nm_module.slider._slide_to_page("mobile", "right")
 
     def init(self):
         from mm.provider import ServiceProviders
@@ -84,7 +101,6 @@ class Region(gtk.HBox):
         except:
             pass
         
-    
     def country_selected(self, widget, w, a, b, c ):
         self.provider_tree.delete_all_items()
         self.code = self.country_codes[widget.select_rows[0]]
@@ -92,9 +108,11 @@ class Region(gtk.HBox):
         self.provider_tree.add_items([Item(p, self.__sp, self.code) for p in self.provider_names])
         self.provider_tree.show_all()
 
-    def provider_selected(self, widget, w, a, b, c):
-        pass
-
+    def provider_selected(self, widget, item, column , offset_x, offset_y):
+        if type(item) is Item:
+            self.provider_select = item.content
+        else:
+            self.plan_select = item.content
 
 class Item(TreeItem):
 
