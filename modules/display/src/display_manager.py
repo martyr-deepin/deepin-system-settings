@@ -25,12 +25,25 @@ from xrandr import xrandr
 class DisplayManager:
     def __init__(self):
         self.__xrandr = xrandr
+        '''
+        By default it is the current screen
+        '''
+        self.__screen = self.__xrandr.get_current_screen()
 
+    def __del__(self):
+        self.__xrandr = None
+    
     def get_screen_count(self):
         return self.__xrandr.get_screen_count()
 
     def get_current_screen(self):
         return self.__xrandr.get_current_screen()
+
+    def set_current_screen(self, index):
+        self.__screen = self.__xrandr.set_current_screen(index)
     
-    def get_screen_sizes(self, screen):
-        return screen.get_available_sizes()
+    '''
+    TODO: it need to support several screens such as 0, 1, ... n
+    '''
+    def get_screen_sizes(self):
+        return self.__screen.get_available_sizes()
