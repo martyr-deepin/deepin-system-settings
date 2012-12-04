@@ -61,7 +61,6 @@ class Region(gtk.HBox):
         def add_keys(settings):
             self.prop_dict = settings
             
-
         username = self.__sp.get_provider_username(self.code, self.provider_select)
         password = self.__sp.get_provider_password(self.code, self.provider_select)
         add_keys({"cdma": {
@@ -102,14 +101,14 @@ class Region(gtk.HBox):
         except:
             pass
         
-    def country_selected(self, widget, w, a, b, c ):
+    def country_selected(self, widget, w, a, b, c):
         self.provider_tree.delete_all_items()
         self.code = self.country_codes[widget.select_rows[0]]
         self.provider_names = self.__sp.get_country_providers_name(self.code)
         self.provider_tree.add_items([Item(p, self.__sp, self.code) for p in self.provider_names])
         self.provider_tree.show_all()
 
-    def provider_selected(self, widget, item, column , offset_x, offset_y):
+    def provider_selected(self, widget, item, column, offset_x, offset_y):
         if type(item) is Item:
             self.provider_select = item.content
             self.plan_select = None
@@ -129,12 +128,12 @@ class Item(TreeItem):
     def render_content(self, cr, rect):
         #(text_width, text_height) = get_content_size(self.content)
         if self.is_select:
-            draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height,
+            draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height,
                          ui_theme.get_shadow_color("listview_select").get_color_info())
         else:
             render_background(cr, rect)
         draw_text(cr, self.content, rect.x, rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_LEFT)
+                    alignment = pango.ALIGN_LEFT)
 
     def get_column_widths(self):
         return [-1]
