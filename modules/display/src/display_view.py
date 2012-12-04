@@ -148,8 +148,10 @@ class DisplayView(gtk.VBox):
         self.sizes_box = gtk.HBox(spacing = self.box_spacing)
         self.sizes_label = self.__setup_label("分辨率")
         self.sizes_combo = self.__setup_combo(self.sizes_items, 160)
+        self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
         self.rotation_label = self.__setup_label("方向")
         self.rotation_combo = self.__setup_combo(self.rots_items)
+        self.rotation_combo.connect("item-selected", self.__combo_item_selected, "rotation_combo")
         self.__widget_pack_start(self.sizes_box, 
             [self.sizes_label, 
              self.sizes_combo, 
@@ -275,6 +277,13 @@ class DisplayView(gtk.VBox):
             self.display_manager.set_current_screen(item_value)
             self.__setup_sizes_items()
             self.__setup_rots_items()
+            return
+
+        if object == "sizes_combo":
+            self.display_manager.set_screen_size(self.sizes_items[item_value][0])
+            return
+        
+        if object == "rotation_combo":
             return
 
     def __resize_box(self, widget, height):
