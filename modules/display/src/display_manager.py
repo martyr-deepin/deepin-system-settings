@@ -67,3 +67,11 @@ class DisplayManager:
     
     def get_screen_rots(self):
         return self.__screen.get_rotations()
+
+    def set_screen_brightness(self, value):
+        output_names = self.get_output_names()
+        i = 0
+
+        while (i < len(output_names)):
+            run_command("xrandr --output %s --brightness %f" % (output_names[i], value))
+            i += 1

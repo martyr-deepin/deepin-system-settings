@@ -182,6 +182,8 @@ class DisplayView(gtk.VBox):
         self.brightness_adjust = gtk.Adjustment(0, 0, 100)
         self.brightness_scale.set_adjustment(self.brightness_adjust)
         self.brightness_scale.set_size_request(355, DEFAULT_FONT_SIZE * 4)
+        #self.brightness_scale.connect("value-changed", self.__set_brightness)
+        self.brightness_scale.connect("button-release-event", self.__set_brightness)
         self.__widget_pack_start(self.brightness_box, 
             [self.brightness_label, 
              self.brightness_scale])
@@ -248,6 +250,9 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.left_align)
         self.pack_start(self.scrolled_window)
 
+    def __set_brightness(self, widget, event):
+        self.display_manager.set_screen_brightness(self.brightness_adjust.get_value() / 100)
+    
     def __setup_monitor_items(self):
         count = self.display_manager.get_screen_count()
         i = 0
