@@ -126,7 +126,7 @@ class DisplayView(gtk.VBox):
         self.monitor_label = self.__setup_label("显示器")
         self.monitor_combo = self.__setup_combo(self.monitor_items, 350)
         self.monitor_combo.set_select_index(self.display_manager.get_current_screen())
-        self.monitor_combo.connect("item-selected", self.__item_selected)
+        self.monitor_combo.connect("item-selected", self.__combo_item_selected, "monitor_combo")
         self.__widget_pack_start(self.monitor_box, 
             [self.monitor_label, 
              self.monitor_combo])
@@ -246,27 +246,27 @@ class DisplayView(gtk.VBox):
         self.pack_start(self.scrolled_window)
 
     def __setup_monitor_items(self):
-        print "DEBUG xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
         count = self.display_manager.get_screen_count()
         i = 0
 
         while (i < count):
-            self.monitor_items.append(("显示器%d" % (i), i))
+            self.monitor_items.append(("显示器%d" % (i + 1), i))
             i += 1
 
-    def __setup_sizes_items(self, screen=-1):
+    def __setup_sizes_items(self):
         i = 0
         
-        if screen == -1:
-            screen = self.display_manager.get_current_screen()
-        
-        for size in self.display_manager.get_screen_sizes(screen):
+        self.sizes_items = []
+        for size in self.display_manager.get_screen_sizes():
             self.sizes_items.append(("%s x %s" % (size.width, size.height), i))
             i += 1
 
-    def __item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
-        pass
-    
+    def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
+        if object == "monitor_combo":
+            self.display_manager.set_current_screen(item_value)
+            self.__setup_sizes_items()
+            return
+
     def __resize_box(self, widget, height):
         self.monitor_resize_box.set_size_request(self.resize_width, height - self.padding_y)
 
