@@ -138,10 +138,10 @@ class MMDevice(MMObject):
         pass
 
     def state_changed_cb(self, old_state, new_state, reason):
-        print "state_changed_cb"
-        print old_state
-        print new_state
-        print reason
+        # print "state_changed_cb"
+        # print old_state
+        # print new_state
+        # print reason
         self.emit("state-changed", old_state, new_state, reason)
 
 
