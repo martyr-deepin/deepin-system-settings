@@ -67,6 +67,7 @@ class Region(gtk.HBox):
                  "number": "#777",
                  "username": username,
                  "password": password}})
+        provider_type = "cdma"
         if self.plan_select:
             print "not cdma"
             self.prop_dict.pop("cdma")
@@ -80,12 +81,23 @@ class Region(gtk.HBox):
                      "apn": apn,
                      "network_id": network_id,
                      "network_type": network_type}})
+            provider_type = "gsm"
 
-        setting_page = nm_module.slider.get_page_by_name("mobile")
-        setting_page.broadband.set_new_values(self.prop_dict)
+        if self.need_new_connection:
+            new_connection = getattr(nm_module.nm_remote_settings, "new_%s_connection"%provider_type)()
+            setting_page = nm_module.slider.get_page_by_name("mobile")
+            setting_page.broadband.set_new_values(self.prop_dict, provider_type)
+            setting_page.init()
+            setting_page.sidebar.set_active(new_connection)
+        else:
+            setting_page = nm_module.slider.get_page_by_name("mobile")
+            setting_page.broadband.set_new_values(self.prop_dict, provider_type)
+
         nm_module.slider._slide_to_page("mobile", "right")
 
-    def init(self):
+    def init(self, connection_type=None):
+        self.need_new_connection = True
+        self.connection_type = connection_type
         from mm.provider import ServiceProviders
         self.__sp = ServiceProviders()
         self.country_list = self.__sp.get_country_name_list()
@@ -100,11 +112,16 @@ class Region(gtk.HBox):
             self.country_tree.emit("button-press-item", selected_country, 0, 1, 1)
         except:
             pass
+
         
     def country_selected(self, widget, w, a, b, c):
         self.provider_tree.delete_all_items()
         self.code = self.country_codes[widget.select_rows[0]]
-        self.provider_names = self.__sp.get_country_providers_name(self.code)
+        if self.connection_type:
+            self.provider_names = getattr(self.__sp, "get_country_%s_providers_name"%self.connection_type)(self.code)
+        else:
+            self.provider_names = self.__sp.get_country_providers_name(self.code)
+        
         self.provider_tree.add_items([Item(p, self.__sp, self.code) for p in self.provider_names])
         self.provider_tree.show_all()
 

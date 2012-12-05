@@ -169,11 +169,11 @@ class SideBar(gtk.VBox):
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
-        cons = []
-        self.connection_tree = EntryTreeView(cons)
+        self.cons = []
+        self.connection_tree = EntryTreeView(self.cons)
         for index, connection in enumerate(self.connections):
-            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
-        self.connection_tree.add_items(cons)
+            self.cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+        self.connection_tree.add_items(self.cons)
 
         self.connection_tree.show_all()
 
@@ -209,18 +209,28 @@ class SideBar(gtk.VBox):
     def delete_item_cb(self):
         '''docstring for delete_item_cb'''
         pass
+
     def get_active(self):
         return self.connection_tree.select_rows[0]
         #checks = self.buttonbox.get_children()
         #for index,c in enumerate(checks):
             #if c.check.get_active():
                 #return index
+    def set_active(self, connection):
+        item = self.cons[self.connections.index(connection)]
+        self.connection_tree.select_items([item])
     
     def add_new_connection(self, widget):
-        # FIXME 
-        nm_module.nm_remote_settings.new_cdma_connection()
-        #new_connection = nm_module.nm_remote_settings.new_pppoe_connection()
+        region = slider.get_page_by_name("region")
+        region.init()
         slider._slide_to_page("region", "left")
+        #connection = nm_module.nm_remote_settings.new_cdma_connection()
+        #self.main_init_cb()
+        #self.set_active(connection)
+        
+        
+
+        #new_connection = nm_module.nm_remote_settings.new_pppoe_connection()
         #self.main_init_cb()
 
 class NoSetting(gtk.VBox):
@@ -320,7 +330,14 @@ class Broadband(gtk.VBox):
 
         button_to_region = Button("Region Setting")
         self.table.attach(button_to_region, 2,4,5,6)
-        button_to_region.connect("clicked", lambda w :slider._slide_to_page("region", "left"))
+        
+        def to_region(widget):
+            region = slider.get_page_by_name("region")
+            region.init(network_type)
+            region.need_new_connection =False
+            slider._slide_to_page("region", "left")
+
+        button_to_region.connect("clicked", to_region)
 
         if network_type == "gsm":
             self.table.attach(self.label_advanced, 0, 1, 6, 7)
@@ -348,6 +365,7 @@ class Broadband(gtk.VBox):
         if password == None:
             print "try agent"
             try:
+                print "........"
                 (setting_name, method) = self.connection.guess_secret_info() 
                 print ">>>>>>>>>.",setting_name, method
                 password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
@@ -383,14 +401,8 @@ class Broadband(gtk.VBox):
         
         ## retrieve wired info
 
-    def set_new_values(self, new_dict):
-        network_type = new_dict.keys()[0]
-        self.connection.get_setting("connection").type = network_type
-        print "network_type", network_type
-        self.broadband_setting = self.connection.get_setting(network_type)
-        print self.broadband_setting
-        
-        params = new_dict[network_type]
+    def set_new_values(self, new_dict, type):
+        params = new_dict[type]
 
         for key, value in params.iteritems():
             setattr(self.broadband_setting, key, value)
