@@ -1,0 +1,4 @@
+env = Environment(CCFLAGS='-g')
+env.ParseConfig('pkg-config --cflags --libs gtk+-3.0')
+
+env.Program('hello_map', ['hello_map.c', 'cc-timezone-map.c', 'tz.c'])

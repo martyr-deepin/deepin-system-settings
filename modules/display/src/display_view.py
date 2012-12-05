@@ -199,6 +199,8 @@ class DisplayView(gtk.VBox):
         self.auto_adjust_toggle = self.__setup_toggle()
         self.close_monitor_label = self.__setup_label("关闭屏幕", 90)
         self.close_monitor_combo = self.__setup_combo(self.duration_items)
+        self.close_monitor_combo.set_select_index(self.display_manager.get_close_monitor_index(self.duration_items))
+        self.close_monitor_combo.connect("item-selected", self.__combo_item_selected, "close_monitor_combo")
         self.__widget_pack_start(self.auto_adjust_box, 
             [self.auto_adjust_label, 
              self.auto_adjust_toggle, 
@@ -220,6 +222,8 @@ class DisplayView(gtk.VBox):
         self.auto_lock_toggle = self.__setup_toggle()
         self.lock_display_label = self.__setup_label("锁定屏幕", 90)
         self.lock_display_combo = self.__setup_combo(self.duration_items)
+        self.lock_display_combo.set_select_index(self.display_manager.get_lock_display_index(self.duration_items))
+        self.lock_display_combo.connect("item-selected", self.__combo_item_selected, "lock_display_combo")
         self.__widget_pack_start(self.auto_lock_box, 
             [self.auto_lock_label, 
              self.auto_lock_toggle, 
@@ -292,6 +296,14 @@ class DisplayView(gtk.VBox):
         
         if object == "rotation_combo":
             self.display_manager.set_screen_rotation(self.rots_items[item_value][0])
+            return
+
+        if object == "close_monitor_combo":
+            self.display_manager.set_close_monitor(item_value)
+            return
+
+        if object == "lock_display_combo":
+            self.display_manager.set_lock_display(item_value)
             return
 
     def __resize_box(self, widget, height):
