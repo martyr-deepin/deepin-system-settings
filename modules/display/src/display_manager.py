@@ -20,7 +20,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from xrandr import xrandr
+try:
+    from xrandr import xrandr
+except ImportError:
+    print "----------Please Install Python XRandR Binding----------"
+    print "git clone git@github.com:linuxdeepin/deepin-xrandr.git"
+    print "--------------------------------------------------------"
+
 import re
 import os
 from dtk.ui.config import Config
