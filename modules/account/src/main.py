@@ -30,14 +30,15 @@ from nls import _
 from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.button import CheckButton, Button
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.utils import container_remove_all
 from treeitem import MyTreeView as TreeView
 from treeitem import MyTreeItem as TreeItem
-from dbus.exceptions import DBusException
+from utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
 import gtk
+import pango
 from module_frame import ModuleFrame
 
 
@@ -78,6 +79,7 @@ class AccountSetting(object):
         self.label_widgets["account_type_new"] = Label(_("Account type"))
         self.label_widgets["deepin_account_tips_new"] = Label(_("Deepin Account"))
         self.label_widgets["deepin_account_new"] = Label(_("Unbound"))
+        self.label_widgets["account_create_error"] = Label("", wrap_width=360)
         # image
         self.image_widgets["lock_pixbuf"] = gtk.gdk.pixbuf_new_from_file(
             app_theme.get_theme_file_path("image/set/lock.png"))
@@ -302,6 +304,9 @@ class AccountSetting(object):
             lambda w, e:self.button_widgets["backup_check_group_new"].set_active(
                 not self.button_widgets["backup_check_group_new"].get_active()))
 
+        self.button_widgets["account_name"].entry.connect(
+            "changed", self.account_name_input_changed, self.button_widgets["account_create"])
+
         self.account_dbus.connect("user-added", self.account_user_added_cb)
         self.account_dbus.connect("user-deleted", self.account_user_deleted_cb)
 
@@ -341,7 +346,13 @@ class AccountSetting(object):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table_new"], False, False)
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table_new"], False, False)
+        self.container_widgets["right_vbox"].pack_start(self.label_widgets["account_create_error"], False, False, 10)
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["button_hbox_new"], False, False)
+        # TODO 绑定深度
+        self.button_widgets["account_name"].set_text("")
+        self.button_widgets["account_type"].set_select_index(0)
+        self.label_widgets["account_create_error"].set_text("")
+        self.button_widgets["account_create"].set_sensitive(False)
         self.container_widgets["right_vbox"].show_all()
         button.set_sensitive(False)
     
@@ -361,15 +372,26 @@ class AccountSetting(object):
         self.button_widgets["add_account"].set_sensitive(True)
 
     def account_create_button_clicked(self, button):
-        pass
+        username = self.button_widgets["account_name"].get_text()
+        account_type = self.button_widgets["account_type_new"].get_current_item()[1]
+        try:
+            self.account_dbus.create_user(username, username, account_type)
+        except Exception, e:
+            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                self.label_widgets["account_create_error"].set_text("<span foreground='red'>Error:%s</span>" % e.msg)
+            return
+        self.account_cancle_button_clicked(None)
     
     def account_treeview_select(self, tv, item, row):
         self.current_select_user = dbus_obj = item.dbus_obj
+        print "treeview current select:", self.current_select_user.get_user_name()
         self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
         if item.real_name:
             self.label_widgets["account_name"].set_text("<b>%s</b>" % item.real_name)
         else:
             self.label_widgets["account_name"].set_text("<b>--</b>")
+        self.label_widgets["account_name"].queue_draw()
+        print "treeview account name:", self.label_widgets["account_name"].get_text()
         self.button_widgets["account_type"].set_select_index(item.user_type)
         if dbus_obj.get_locked():
             self.label_widgets["passwd_char"].set_text(_("Account disabled"))
@@ -434,7 +456,39 @@ class AccountSetting(object):
         widget.set_text(widget.get_data("old_content"))
     
     def label_button_press_cb(self, widget, event):
-        print "press"
+        if not self.current_select_user:
+            return
+        
+        def change_account_name(widget, *args):
+            print "current select:", self.current_select_user.get_user_name()
+            if self.label_widgets["account_name"].get_parent():
+                return
+            text = widget.get_text()
+            self.container_widgets["account_info_hbox"].pack_start(
+                self.label_widgets["account_name"])
+            self.container_widgets["account_info_hbox"].reorder_child(
+                self.label_widgets["account_name"], 0)
+            if text:
+                # TODO 设置用户的命名
+                self.label_widgets["account_name"].set_text("<b>%s</b>" % self.escape_markup_string(text))
+            self.label_widgets["account_name"].queue_draw()
+            print "account name changed:", self.label_widgets["account_name"].get_text()
+            align.destroy()
+        
+        self.container_widgets["account_info_hbox"].remove(self.label_widgets["account_name"])
+        text = pango.parse_markup(widget.get_text())[1]
+        align = gtk.Alignment()
+        align.set(0.5, 0.5, 1, 1)
+        align.set_padding(12, 0, 0, 0)
+        input_entry = InputEntry(text)
+        input_entry.set_size(180, 25)
+        input_entry.connect("expose-event", lambda w, e: input_entry.entry.grab_focus())
+        input_entry.entry.connect("press-return", change_account_name)
+        input_entry.entry.connect("focus-out-event", change_account_name)
+        align.add(input_entry)
+        align.show_all()
+        self.container_widgets["account_info_hbox"].pack_start(align)
+        self.container_widgets["account_info_hbox"].reorder_child(align, 0)
     
     def password_change_press_cb(self, widget, event):
         if not self.current_select_user:
@@ -443,6 +497,14 @@ class AccountSetting(object):
         self.container_widgets["slider"].slide_to_page(
             account_settings.alignment_widgets["change_pswd"], "right")
         #self.module_frame.send_submodule_crumb(2, _("Change Password"))
+    
+    def account_name_input_changed(self, entry, value, button):
+        if entry.get_text():
+            if not button.get_sensitive():
+                button.set_sensitive(True)
+        else:
+            if button.get_sensitive():
+                button.set_sensitive(False)
 
     # dbus signals
     def user_info_changed_cb(self, user, item):
@@ -453,8 +515,8 @@ class AccountSetting(object):
         else:
             icon_pixbuf = self.image_widgets["default_icon"]
         item.icon = icon_pixbuf
-        item.user_name = user.get_user_name()
-        item.real_name = user.get_real_name()
+        item.user_name = self.escape_markup_string(user.get_user_name())
+        item.real_name = self.escape_markup_string(user.get_real_name())
         item.user_type = user.get_account_type()
         if item.redraw_request_callback:
             item.redraw_request_callback(item)
@@ -484,7 +546,8 @@ class AccountSetting(object):
                 icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
         else:
             icon_pixbuf = self.image_widgets["default_icon"]
-        user_item = TreeItem(icon_pixbuf, user_info[2], user_info[3],
+        user_item = TreeItem(icon_pixbuf, self.escape_markup_string(user_info[2]),
+                             self.escape_markup_string(user_info[3]),
                              user_info[4], user_info[0])
         self.view_widgets["account"].add_items([user_item])
         
@@ -521,11 +584,13 @@ class AccountSetting(object):
             else:
                 icon_pixbuf = self.image_widgets["default_icon"]
             if settings.check_is_myown(user.get_uid()):
-                item = TreeItem(icon_pixbuf, user.get_real_name(), user.get_user_name(),
+                item = TreeItem(icon_pixbuf, self.escape_markup_string(user.get_real_name()),
+                                self.escape_markup_string(user.get_user_name()),
                                 user.get_account_type(), user, True)
                 user_items.insert(0, item)
             else:
-                item = TreeItem(icon_pixbuf, user.get_real_name(), user.get_user_name(),
+                item = TreeItem(icon_pixbuf, self.escape_markup_string(user.get_real_name()),
+                                self.escape_markup_string(user.get_user_name()),
                                 user.get_account_type(), user)
                 user_items.append(item)
             user.connect("changed", self.user_info_changed_cb, item)
@@ -565,12 +630,12 @@ class AccountSetting(object):
             try:
                 button_hbox.set_sensitive(False)
                 self.account_dbus.delete_user(current_del_user.get_uid(), del_file)
-                self.container_widgets["slider"].slide_to_page(
-                    self.alignment_widgets["main_hbox"], "left")
-            except DBusException, e:    # TODO 删除用户出错时显示错误信息
-                error_label.set_text("<span foreground='red'>Error:%s</span>" % e.message)
             except Exception, e:
-                error_label.set_text("<span foreground='red'>Error:%s</span>" % str(e))
+                if isinstance(e, (AccountsPermissionDenied)):
+                    error_label.set_text("<span foreground='red'>Error:%s</span>" % e.msg)
+                return
+            self.container_widgets["slider"].slide_to_page(
+                self.alignment_widgets["main_hbox"], "left")
             
         self.container_widgets["del_main_vbox"].destroy()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
@@ -580,7 +645,8 @@ class AccountSetting(object):
             show_name = current_del_user.get_real_name() 
         else:
             show_name = current_del_user.get_user_name()
-        tips_label = Label(_("<b>Do you want to keep <u>%s</u>'s files?</b>") % show_name,
+        tips_label = Label(_("<b>Do you want to keep <u>%s</u>'s files?</b>") % 
+                           self.escape_markup_string(show_name),
                            text_size=13, wrap_width=660, enable_select=False)
         tips_label2 = Label(_("It is possible to keep the home directory when deleting a user account."),
                             wrap_width=660, enable_select=False)
@@ -609,7 +675,86 @@ class AccountSetting(object):
         self.container_widgets["change_pswd_main_vbox"] = gtk.VBox(False)
         self.alignment_widgets["change_pswd"].add(self.container_widgets["change_pswd_main_vbox"])
 
+        table1 = gtk.Table(2, 2)
+        table2 = gtk.Table(7, 2)
+        button_hbox = gtk.HBox(False)
+        
+        if current_set_user.get_real_name():
+            show_name = current_set_user.get_real_name() 
+        else:
+            show_name = current_set_user.get_user_name()
+        icon_file = current_set_user.get_icon_file()
+        if os.path.exists(icon_file):
+            icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+        else:
+            icon_pixbuf = self.image_widgets["default_icon"]
+        icon = gtk.Image()
+        icon.set_from_pixbuf(icon_pixbuf)
+        tips_label = Label(_("Changing password for"), enable_select=False)
+        username_label = Label(self.escape_markup_string(show_name),
+                               text_size=13, enable_select=False)
+        table1.attach(icon, 0, 1, 0, 2, 0, 0, 10)
+        table1.attach(tips_label, 1, 2, 0, 1)
+        table1.attach(username_label, 1, 2, 1, 2)
+        
+        label1 = Label(_("Action"))
+        label2 = Label(_("Current password"))
+        label3 = Label(_("New password"))
+        label4 = Label(_("Confirm password"))
+        if self.get_authorized():
+            table2.attach(label1, 0, 1, 0, 1, 4, 0, 10, 7)
+        if settings.check_is_myown(current_set_user.get_uid()):
+            table2.attach(label2, 0, 1, 1, 2, 4, 0, 10, 7)
+        table2.attach(label3, 0, 1, 2, 3, 4, 0, 10, 7)
+        table2.attach(label4, 0, 1, 3, 4, 4, 0, 10, 7)
+        
+        action_items = [(_("Set a password now"), 0), (_("Log in without a password"), 1)]
+        if current_set_user.get_locked():
+            action_items.append((_("Enable this account"), 2))
+        else:
+            action_items.append((_("Disable this account"), 2))
+        action_combo = ComboBox(action_items, max_width=180)
+        current_pswd_input = PasswordEntry()
+        new_pswd_input = PasswordEntry()
+        confirm_pswd_input = PasswordEntry()
+        current_pswd_input.set_size(180, 25)
+        new_pswd_input.set_size(180, 25)
+        confirm_pswd_input.set_size(180, 25)
+        show_pswd_check = CheckButton(_("Show password"))
+        if self.get_authorized():
+            table2.attach(action_combo, 1, 2, 0, 1, 4, 0)
+        if settings.check_is_myown(current_set_user.get_uid()):
+            table2.attach(current_pswd_input, 1, 2, 1, 2, 4, 0)
+        table2.attach(new_pswd_input, 1, 2, 2, 3, 4, 0)
+        table2.attach(confirm_pswd_input, 1, 2, 3, 4, 4, 0)
+        table2.attach(show_pswd_check, 1, 2, 4, 5, 4, 0)
+        table2.attach(button_hbox, 1, 2, 6, 7, 4, 0, 0, 30)
+        
+        button_align = gtk.Alignment()
+        cancel_button = Button(_("Cancel"))
+        change_button = Button(_("Change"))
+        button_hbox.pack_start(button_align)
+        button_hbox.pack_start(cancel_button, False, False, 15)
+        button_hbox.pack_start(change_button, False, False)
+        
+        error_label = Label("")
+        
+        self.container_widgets["change_pswd_main_vbox"].pack_start(table1, False, False)
+        self.container_widgets["change_pswd_main_vbox"].pack_start(table2, False, False, 40)
+        #self.container_widgets["change_pswd_main_vbox"].pack_start(button_hbox, False, False, 20)
+        self.container_widgets["change_pswd_main_vbox"].pack_start(error_label, False, False, 20)
+        self.container_widgets["change_pswd_main_vbox"].show_all()
+
     
+    def escape_markup_string(self, string):
+        '''
+        escape markup string
+        @param string: a markup string
+        @return: a escaped string
+        '''
+        return string.replace('&', '&#38;').replace('<', '&#60;').replace('>', '&#62;')    
+        
 if __name__ == '__main__':
     gtk.gdk.threads_init()
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
