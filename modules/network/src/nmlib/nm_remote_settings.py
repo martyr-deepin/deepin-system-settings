@@ -220,7 +220,7 @@ class NMRemoteSettings(NMObject):
 
         return self.add_connection(settings_dict)
         
-    def new_gsm_connection(self):
+    def new_gsm_connection(self, username = "username", password = "password", apn = "apn"):
         s_connection = NMSettingConnection()
         s_gsm = NMSettingGsm()
         s_serial = NMSettingSerial()
@@ -228,9 +228,9 @@ class NMRemoteSettings(NMObject):
         s_ip4config = NMSettingIP4Config()
 
         s_gsm.number = "*99#"
-        s_gsm.username = ""
-        s_gsm.password = ""
-        s_gsm.apn = ""
+        s_gsm.username = username
+        s_gsm.password = password
+        s_gsm.apn = apn
 
         s_serial.baud = 115200
         s_serial.bits = 8
@@ -259,7 +259,7 @@ class NMRemoteSettings(NMObject):
 
         return self.add_connection(settings_dict)
 
-    def new_cdma_connection(self):
+    def new_cdma_connection(self, username = "username", password = "password"):
         s_connection = NMSettingConnection()
         s_cdma = NMSettingCdma()
         s_serial = NMSettingSerial()
@@ -267,8 +267,8 @@ class NMRemoteSettings(NMObject):
         s_ip4config = NMSettingIP4Config()
 
         s_cdma.number = "#777"
-        s_cdma.username = "CARD"
-        s_cdma.password = "CARD"
+        s_cdma.username = username
+        s_cdma.password = password
 
         s_serial.baud = 115200
         s_serial.bits = 8
