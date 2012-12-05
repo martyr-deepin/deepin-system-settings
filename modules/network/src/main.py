@@ -444,6 +444,13 @@ class Mobile(gtk.VBox):
         self.tree.show_all()
         self.align.add(self.tree)
 
+    def device_is_active(self, widget, a):
+        print a, "active"
+
+    def device_is_deactive(self, widget, a):
+        '''docstring for device_is_deactive'''
+        print a, "deactive"
+
     def slide_to_event(self, widget, event):
         self.settings.init()
         self.send_to_crumb_cb()
@@ -541,7 +548,8 @@ class Network(object):
 
     
     def activate_succeed(self, widget, connection_path):
-        pass
+        print connection_path
+
         #ob = cache.get_specific_object(connection_path)
         #print ">>>",ob
 

@@ -1,0 +1,9 @@
+Dependence (Debian)
+sudo apt-get install scons
+
+Build
+scons PREFIX=/usr
+
+Install
+sudo scons install
+sudo python setup.py install
