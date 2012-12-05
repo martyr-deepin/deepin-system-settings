@@ -134,9 +134,16 @@ class MobileSetting(gtk.HBox):
         if device:
             print nm_module.nmclient.get_modem_devices()
             device_path = nm_module.nmclient.get_modem_device().object_path
-            nm_module.nmclient.activate_connection(connection.object_path,
+            active_connection = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                device[0])
+
+            if active_connection != None:
+                print ">>",active_connection
+                #active_vpn = cache.get_spec_object(active_object.object_path)
+                #active_vpn.connect("vpn-connected", self.vpn_connected)
+                #active_vpn.connect("vpn-connecting", self.vpn_connecting)
+                #active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
         else:
             print "no active device"
         #self.change_crumb()
@@ -165,7 +172,7 @@ class SideBar(gtk.VBox):
         # FIXME 
         active_connection = nm_module.nmclient.get_mobile_active_connection()
         if active_connection:
-            active = active_connection.get_connection()
+            active = active_connection[0].get_connection()
         else:
             active = None
 
@@ -213,7 +220,9 @@ class SideBar(gtk.VBox):
 
     def delete_item_cb(self):
         '''docstring for delete_item_cb'''
-        pass
+        if len(self.connection_tree.visible_items) != 1:
+            self.connection_tree.delete_select_items()
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]
@@ -407,6 +416,7 @@ class Broadband(gtk.VBox):
 
         for key, value in params.iteritems():
             setattr(self.broadband_setting, key, value)
+
         self.refresh()
 
     def save_settings_by(self, widget, text, attr):

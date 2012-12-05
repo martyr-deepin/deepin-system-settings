@@ -14,18 +14,18 @@ import pango
 def render_background( cr, rect):
     background_color = [(0,["#ffffff", 1.0]),
                         (1,["#ffffff", 1.0])]
-    draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
+    draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height, background_color)
 
 class Region(gtk.HBox):
-    def __init__(self, connection = None):
-        gtk.HBox.__init__(self, False, spacing = 10)
+    def __init__(self, connection=None):
+        gtk.HBox.__init__(self, False, spacing=10)
         self.set_size_request(680,300)
 
         self.prop_dict = {}
         
         country_label = Label("Country:")
-        self.country_tree = TreeView(enable_multiple_select = False,
-                                     enable_drag_drop = False)
+        self.country_tree = TreeView(enable_multiple_select=False,
+                                     enable_drag_drop=False)
         self.country_tree.set_size_request(380, 400)
         self.country_tree.connect("button-press-item", self.country_selected)
 
@@ -69,7 +69,6 @@ class Region(gtk.HBox):
                  "password": password}})
         provider_type = "cdma"
         if self.plan_select:
-            print "not cdma"
             self.prop_dict.pop("cdma")
             apn = self.plan_select
             index = self.__sp.get_provider_apns_name(self.code, self.provider_select).index(apn)
@@ -86,9 +85,9 @@ class Region(gtk.HBox):
         if self.need_new_connection:
             new_connection = getattr(nm_module.nm_remote_settings, "new_%s_connection"%provider_type)()
             setting_page = nm_module.slider.get_page_by_name("mobile")
-            setting_page.broadband.set_new_values(self.prop_dict, provider_type)
             setting_page.init()
             setting_page.sidebar.set_active(new_connection)
+            setting_page.broadband.set_new_values(self.prop_dict, provider_type)
         else:
             setting_page = nm_module.slider.get_page_by_name("mobile")
             setting_page.broadband.set_new_values(self.prop_dict, provider_type)
@@ -114,7 +113,6 @@ class Region(gtk.HBox):
         except:
             pass
 
-        
     def country_selected(self, widget, w, a, b, c):
         self.provider_tree.delete_all_items()
         self.code = self.country_codes[widget.select_rows[0]]
@@ -151,9 +149,7 @@ class Item(TreeItem):
         else:
             render_background(cr, rect)
         draw_text(cr, self.content, rect.x, rect.y, rect.width, rect.height,
-                    alignment = pango.ALIGN_LEFT)
-
- 
+                alignment=pango.ALIGN_LEFT)
 
     def get_column_widths(self):
         return [-1]
@@ -222,7 +218,7 @@ class SubItem(TreeItem):
     def render_content(self, cr, rect):
         #(text_width, text_height) = get_content_size(self.content)
         if self.is_select:
-            draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height,
+            draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height,
                          ui_theme.get_shadow_color("listview_select").get_color_info())
         else:
             render_background(cr, rect)
