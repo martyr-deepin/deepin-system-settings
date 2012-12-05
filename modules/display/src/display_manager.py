@@ -22,7 +22,9 @@
 
 from xrandr import xrandr
 import re
-from dtk.ui.utils import run_command
+import os
+from dtk.ui.config import Config
+from dtk.ui.utils import run_command, get_parent_dir
 
 class DisplayManager:
     def __init__(self):
@@ -31,9 +33,13 @@ class DisplayManager:
         By default it use the current screen
         '''
         self.__screen = self.__xrandr.get_current_screen()
+        self.__config = Config(os.path.join(get_parent_dir(__file__, 2), "src/config.ini"))
+        self.__config.load()
 
     def __del__(self):
         self.__xrandr = None
+        self.__screen = None
+        self.__config = None
     
     def get_output_names(self):
         return self.__screen.get_output_names()
@@ -95,6 +101,9 @@ class DisplayManager:
     def get_screen_rots(self):
         return self.__screen.get_rotations()
 
+    def get_screen_brightness(self):
+        return float(self.__config.get("screen", "brightness")) * 100.0
+    
     def set_screen_brightness(self, value):
         output_names = self.get_output_names()
         i = 0
@@ -103,3 +112,6 @@ class DisplayManager:
             if self.__screen.get_output_by_name(output_names[i]).is_connected():
                 run_command("xrandr --output %s --brightness %f" % (output_names[i], value))
             i += 1
+
+        self.__config.set("screen", "brightness", str(value))
+        self.__config.write()
