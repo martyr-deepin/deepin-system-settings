@@ -82,9 +82,11 @@ class Region(gtk.HBox):
                      "network_id": network_id,
                      "network_type": network_type}})
             provider_type = "gsm"
+
         if self.need_new_connection:
             new_connection = getattr(nm_module.nm_remote_settings, "new_%s_connection"%provider_type)()
             setting_page = nm_module.slider.get_page_by_name("mobile")
+            setting_page.broadband.set_new_values(self.prop_dict, provider_type)
             setting_page.init()
             setting_page.sidebar.set_active(new_connection)
         else:
