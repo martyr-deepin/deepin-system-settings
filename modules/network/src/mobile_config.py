@@ -125,15 +125,21 @@ class MobileSetting(gtk.HBox):
         connection = self.ipv4.connection
         mobile_type = connection.get_setting("connection").type
         self.broadband_setting = connection.get_setting(mobile_type)
-        print "dict >",self.broadband_setting.prop_dict
-        print "connection >", connection.settings_dict
-        #print connection
         connection.update()
 
         ##FIXME need to change device path into variables
-        #nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           #"/org/freedesktop/NetworkManager/Devices/0",
-                                           #"/")
+        cdma_device = nm_module.mmclient.get_cdma_device()
+        gsm_device = nm_module.mmclient.get_gsm_device()
+        device = cdma_device + gsm_device
+
+
+        #print cdma_device, gsm_device
+        device_path = nm_module.nmclient.get_modem_device().object_path
+        print device_path
+        print device[0]
+        nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           device_path,
+                                           device[0])
         #self.change_crumb()
         #self.slide_back() 
 
@@ -265,6 +271,7 @@ class Broadband(gtk.VBox):
         self.password = PasswordEntry()
         self.password.set_size(200,25 )
         self.password_show = CheckButton("show password")
+        self.button_to_region = Button("Region Setting")
 
 
         #self.table = gtk.Table(6, 4, False)
@@ -328,8 +335,6 @@ class Broadband(gtk.VBox):
         self.table.attach(self.password_show, 2, 4, 4, 5)
         #self.table.attach(align, 2, 4, 4, 5)
 
-        button_to_region = Button("Region Setting")
-        self.table.attach(button_to_region, 2,4,5,6)
         
         def to_region(widget):
             region = slider.get_page_by_name("region")
@@ -337,9 +342,10 @@ class Broadband(gtk.VBox):
             region.need_new_connection =False
             slider._slide_to_page("region", "left")
 
-        button_to_region.connect("clicked", to_region)
 
         if network_type == "gsm":
+            self.button_to_region.connect("clicked", to_region)
+            self.table.attach(self.button_to_region, 2,4,5,6)
             self.table.attach(self.label_advanced, 0, 1, 6, 7)
             self.table.attach(self.label_apn, 1, 2 , 7, 8)
             self.table.attach(self.label_network, 1, 2, 8, 9)
@@ -361,13 +367,9 @@ class Broadband(gtk.VBox):
         username = self.broadband_setting.username
         
         password = self.broadband_setting.password
-        print "pwd" ,password
         if password == None:
-            print "try agent"
             try:
-                print "........"
                 (setting_name, method) = self.connection.guess_secret_info() 
-                print ">>>>>>>>>.",setting_name, method
                 password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
@@ -416,7 +418,7 @@ class Broadband(gtk.VBox):
 
     def network_type_selected(self, widget, content, value, index):
         if value == None:
-            del self.broadband_seting.network_type
+            del self.broadband_setting.network_type
         else:
             self.broadband_setting.network_type = value
 
