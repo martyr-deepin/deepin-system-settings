@@ -20,20 +20,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from xrandr import xrandr
+try:
+    from xrandr import xrandr
+except ImportError:
+    print "----------Please Install Python XRandR Binding----------"
+    print "git clone git@github.com:linuxdeepin/deepin-xrandr.git"
+    print "--------------------------------------------------------"
+
 import re
-from dtk.ui.utils import run_command
+import os
+from dtk.ui.config import Config
+from dtk.ui.utils import run_command, get_parent_dir
 
 class DisplayManager:
     def __init__(self):
         self.__xrandr = xrandr
         '''
-        By default it is the current screen
+        By default it use the current screen
         '''
         self.__screen = self.__xrandr.get_current_screen()
+        self.__config = Config(os.path.join(get_parent_dir(__file__, 2), "src/config.ini"))
+        self.__config.load()
 
     def __del__(self):
         self.__xrandr = None
+        self.__screen = None
+        self.__config = None
     
     def get_output_names(self):
         return self.__screen.get_output_names()
@@ -47,31 +59,65 @@ class DisplayManager:
     def set_current_screen(self, index):
         self.__screen = self.__xrandr.set_current_screen(index)
     
-    '''
-    TODO: it need to support several screens such as 0, 1, ... n
-    '''
     def get_screen_sizes(self):
         return self.__screen.get_available_sizes()
 
+    def get_screen_size(self):
+        return self.__screen.get_size()
+    
+    def get_screen_size_index(self, items):
+        i = 0
+        width, height, width_mm, height_mm = self.get_screen_size()
+        
+        for item in items:
+            match = re.search('(\d+) x (\d+)', item[0])
+            if int(match.group(1)) == width and int(match.group(2)) == height:
+                return i
+            i += 1
+
+        return 0
+    
     def set_screen_size(self, size):
         match = re.search('(\d+) x (\d+)', size)
         output_names = self.get_output_names()
         i = 0
         
         while (i < len(output_names)):
-            run_command("xrandr --output %s --mode %sx%s" % (output_names[i], match.group(1), match.group(2)))
+            if self.__screen.get_output_by_name(output_names[i]).is_connected():
+                run_command("xrandr --output %s --mode %sx%s" % (output_names[i], match.group(1), match.group(2)))
             i += 1
 
+    def get_screen_rotation(self):
+        return self.__screen.get_rotation()
+    
+    def get_screen_rotation_index(self, items):
+        rotation = self.get_screen_rotation()
+        i = 0
+
+        while (i < len(items)):
+            if items[i] == rotation:
+                return i
+            i += 1
+        
+        return 0
+    
     def set_screen_rotation(self, rotation):
         run_command("xrandr -o %s" % (rotation))
     
     def get_screen_rots(self):
         return self.__screen.get_rotations()
 
+    def get_screen_brightness(self):
+        return float(self.__config.get("screen", "brightness")) * 100.0
+    
     def set_screen_brightness(self, value):
         output_names = self.get_output_names()
         i = 0
 
         while (i < len(output_names)):
-            run_command("xrandr --output %s --brightness %f" % (output_names[i], value))
+            if self.__screen.get_output_by_name(output_names[i]).is_connected():
+                run_command("xrandr --output %s --brightness %f" % (output_names[i], value))
             i += 1
+
+        self.__config.set("screen", "brightness", str(value))
+        self.__config.write()

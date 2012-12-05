@@ -23,7 +23,13 @@
 from theme import app_theme
 import gtk
 import gobject
-import deepin_gsettings
+try:                                                                             
+    import deepin_gsettings                                                      
+except ImportError:                                                                 
+    print "----------Please Install Deepin GSettings Python Binding----------"   
+    print "git clone git@github.com:linuxdeepin/deepin-gsettings.git"            
+    print "------------------------------------------------------------------"
+
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.tab_window import TabBox
 from dtk.ui.iconview import IconView

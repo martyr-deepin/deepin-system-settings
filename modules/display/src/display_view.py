@@ -148,9 +148,11 @@ class DisplayView(gtk.VBox):
         self.sizes_box = gtk.HBox(spacing = self.box_spacing)
         self.sizes_label = self.__setup_label("分辨率")
         self.sizes_combo = self.__setup_combo(self.sizes_items, 160)
+        self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.sizes_items))
         self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
         self.rotation_label = self.__setup_label("方向")
         self.rotation_combo = self.__setup_combo(self.rots_items)
+        self.rotation_combo.set_select_index(self.display_manager.get_screen_rotation_index(self.rots_items))
         self.rotation_combo.connect("item-selected", self.__combo_item_selected, "rotation_combo")
         self.__widget_pack_start(self.sizes_box, 
             [self.sizes_label, 
@@ -180,9 +182,9 @@ class DisplayView(gtk.VBox):
             app_theme.get_pixbuf("scalebar/point.png"), 
             True)
         self.brightness_adjust = gtk.Adjustment(0, 0, 100)
+        self.brightness_adjust.set_value(self.display_manager.get_screen_brightness())
         self.brightness_scale.set_adjustment(self.brightness_adjust)
         self.brightness_scale.set_size_request(355, DEFAULT_FONT_SIZE * 4)
-        #self.brightness_scale.connect("value-changed", self.__set_brightness)
         self.brightness_scale.connect("button-release-event", self.__set_brightness)
         self.__widget_pack_start(self.brightness_box, 
             [self.brightness_label, 

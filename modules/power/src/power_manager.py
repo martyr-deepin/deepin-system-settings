@@ -20,7 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import deepin_gsettings
+try:
+    import deepin_gsettings
+except ImportError:
+    print "----------Please Install Deepin GSettings Python Binding----------"
+    print "git clone git@github.com:linuxdeepin/deepin-gsettings.git"
+    print "------------------------------------------------------------------"
 
 class PowerManager:
     '''
