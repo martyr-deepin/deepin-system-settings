@@ -123,23 +123,22 @@ class MobileSetting(gtk.HBox):
         ##self.ppp.save_setting()
 
         connection = self.ipv4.connection
-        mobile_type = connection.get_setting("connection").type
-        self.broadband_setting = connection.get_setting(mobile_type)
+        #mobile_type = connection.get_setting("connection").type
+        #self.broadband = connection.get_setting(mobile_type)
         connection.update()
 
         ##FIXME need to change device path into variables
         cdma_device = nm_module.mmclient.get_cdma_device()
         gsm_device = nm_module.mmclient.get_gsm_device()
         device = cdma_device + gsm_device
-
-
-        #print cdma_device, gsm_device
-        device_path = nm_module.nmclient.get_modem_device().object_path
-        print device_path
-        print device[0]
-        nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           device_path,
-                                           device[0])
+        if device:
+            print nm_module.nmclient.get_modem_devices()
+            device_path = nm_module.nmclient.get_modem_device().object_path
+            nm_module.nmclient.activate_connection(connection.object_path,
+                                               device_path,
+                                               device[0])
+        else:
+            print "no active device"
         #self.change_crumb()
         #self.slide_back() 
 
