@@ -20,6 +20,7 @@
  */
 
 #include <Python.h>
+#include <pygobject.h>
 #include <cc-timezone-map.h>
 
 /* Safe XDECREF for object states that handles nested deallocations */
@@ -43,15 +44,17 @@ static DeepinTzmapObject *m_new(PyObject *self, PyObject *args);
 
 static PyMethodDef deepin_tzmap_methods[] = 
 {
-    {"new", m_new, METH_VARARGS, "Deepin Tzmap Construction"}, 
+    {"new", m_new, METH_NOARGS, "Deepin Tzmap Construction"}, 
     {NULL, NULL, 0, NULL}
 };
 
 static PyObject *m_delete(DeepinTzmapObject *self);
+static PyObject *m_add(DeepinTzmapObject *self, PyObject *args);
 
 static PyMethodDef deepin_tzmap_object_methods[] = 
 {
     {"delete", m_delete, METH_NOARGS, "Deepin Tzmap Object Destruction"}, 
+    {"add", m_add, METH_VARARGS, "Let parent widget add me"}, 
     {NULL, NULL, 0, NULL}
 };
 
@@ -220,4 +223,20 @@ static PyObject *m_delete(DeepinTzmapObject *self)
 
     Py_INCREF(Py_None);
     return Py_None;
+}
+
+static PyObject *m_add(DeepinTzmapObject *self, PyObject *args) 
+{
+    PyGObject *parent = NULL;
+    
+    if (!PyArg_ParseTuple(args, "O", &parent)) 
+        return Py_False;
+
+    if (self->handle) 
+        return Py_False;
+
+    gtk_container_add(GTK_CONTAINER(parent), self->handle);
+    gtk_widget_show(self->handle);
+
+    return Py_True;
 }
