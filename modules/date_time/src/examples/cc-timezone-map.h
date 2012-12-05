@@ -69,10 +69,8 @@ struct _CcTimezoneMapClass
 GType cc_timezone_map_get_type (void) G_GNUC_CONST;
 
 CcTimezoneMap *cc_timezone_map_new (void);
-
-gboolean cc_timezone_map_set_timezone (CcTimezoneMap *map,
-                                       const gchar   *timezone);
-TzLocation * cc_timezone_map_get_location (CcTimezoneMap *map);
+void cc_timezone_map_set_timezone (CcTimezoneMap *map,
+                                   const gchar   *timezone);
 
 G_END_DECLS
 
