@@ -27,6 +27,13 @@ except ImportError:
     print "git clone git@github.com:linuxdeepin/deepin-xrandr.git"
     print "--------------------------------------------------------"
 
+try:
+    import deepin_gsettings
+except ImportError:
+    print "----------Please Install Deepin GSettings Python Binding----------"
+    print "git clone git@github.com:linuxdeepin/deepin-gsettings.git"
+    print "------------------------------------------------------------------"
+
 import re
 import os
 from dtk.ui.config import Config
@@ -39,12 +46,16 @@ class DisplayManager:
         By default it use the current screen
         '''
         self.__screen = self.__xrandr.get_current_screen()
+        self.__power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
+        self.__session_settings = deepin_gsettings.new("org.gnome.desktop.session")
         self.__config = Config(os.path.join(get_parent_dir(__file__, 2), "src/config.ini"))
         self.__config.load()
 
     def __del__(self):
         self.__xrandr = None
         self.__screen = None
+        self.__power_settings = None
+        self.__session_settings = None
         self.__config = None
     
     def get_output_names(self):
@@ -121,3 +132,42 @@ class DisplayManager:
 
         self.__config.set("screen", "brightness", str(value))
         self.__config.write()
+
+    '''
+    TODO: unit is second
+    '''
+    def get_close_monitor(self):
+        '''
+        TODO: I use notebook so consider battery at first :)
+        '''
+        return self.__power_settings.get_int("sleep-display-battery")
+
+    def __get_duration_index(self, value, items):
+        i = 0
+
+        for item in items:
+            if item[1] == value:
+                return i
+
+            i += 1
+
+        return 0
+    
+    def get_close_monitor_index(self, items):
+        return self.__get_duration_index(self.get_close_monitor() / 60, items)
+
+    def set_close_monitor(self, value):
+        self.__power_settings.set_int("sleep-display-battery", value * 60)
+        self.__power_settings.set_int("sleep-display-ac", value * 60)
+
+    '''
+    TODO: unit is second
+    '''
+    def get_lock_display(self):
+        return self.__session_settings.get_uint("idle-delay")
+
+    def get_lock_display_index(self, items):
+        return self.__get_duration_index(self.get_lock_display() / 60, items)
+
+    def set_lock_display(self, value):
+        self.__session_settings.set_uint("idle-delay", value * 60)
