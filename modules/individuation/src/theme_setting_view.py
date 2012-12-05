@@ -168,7 +168,7 @@ class ThemeSettingView(TabBox):
                 continue
             if not i == 0:
                 picture_uri += ";"
-            picture_uri += item.path
+            picture_uri += "file://" + item.path
             i += 1
 
         if picture_uri == "":
