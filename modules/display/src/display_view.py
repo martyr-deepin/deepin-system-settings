@@ -152,6 +152,7 @@ class DisplayView(gtk.VBox):
         self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
         self.rotation_label = self.__setup_label("方向")
         self.rotation_combo = self.__setup_combo(self.rots_items)
+        self.rotation_combo.set_select_index(self.display_manager.get_screen_rotation_index(self.rots_items))
         self.rotation_combo.connect("item-selected", self.__combo_item_selected, "rotation_combo")
         self.__widget_pack_start(self.sizes_box, 
             [self.sizes_label, 

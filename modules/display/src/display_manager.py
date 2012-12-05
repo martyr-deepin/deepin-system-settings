@@ -28,7 +28,7 @@ class DisplayManager:
     def __init__(self):
         self.__xrandr = xrandr
         '''
-        By default it is the current screen
+        By default it use the current screen
         '''
         self.__screen = self.__xrandr.get_current_screen()
 
@@ -47,9 +47,6 @@ class DisplayManager:
     def set_current_screen(self, index):
         self.__screen = self.__xrandr.set_current_screen(index)
     
-    '''
-    TODO: it need to support several screens such as 0, 1, ... n
-    '''
     def get_screen_sizes(self):
         return self.__screen.get_available_sizes()
 
@@ -78,6 +75,20 @@ class DisplayManager:
                 run_command("xrandr --output %s --mode %sx%s" % (output_names[i], match.group(1), match.group(2)))
             i += 1
 
+    def get_screen_rotation(self):
+        return self.__screen.get_rotation()
+    
+    def get_screen_rotation_index(self, items):
+        rotation = self.get_screen_rotation()
+        i = 0
+
+        while (i < len(items)):
+            if items[i] == rotation:
+                return i
+            i += 1
+        
+        return 0
+    
     def set_screen_rotation(self, rotation):
         run_command("xrandr -o %s" % (rotation))
     
@@ -89,5 +100,6 @@ class DisplayManager:
         i = 0
 
         while (i < len(output_names)):
-            run_command("xrandr --output %s --brightness %f" % (output_names[i], value))
+            if self.__screen.get_output_by_name(output_names[i]).is_connected():
+                run_command("xrandr --output %s --brightness %f" % (output_names[i], value))
             i += 1
