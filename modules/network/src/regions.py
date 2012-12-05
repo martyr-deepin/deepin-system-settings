@@ -101,6 +101,7 @@ class Region(gtk.HBox):
         from mm.provider import ServiceProviders
         self.__sp = ServiceProviders()
         self.country_list = self.__sp.get_country_name_list()
+        self.country_tree.delete_all_items()
         self.country_tree.add_items([SubItem(country) for country in self.country_list])
 
         code = self.__sp.get_country_from_timezone()
@@ -151,6 +152,8 @@ class Item(TreeItem):
             render_background(cr, rect)
         draw_text(cr, self.content, rect.x, rect.y, rect.width, rect.height,
                     alignment = pango.ALIGN_LEFT)
+
+ 
 
     def get_column_widths(self):
         return [-1]
@@ -214,6 +217,7 @@ class SubItem(TreeItem):
     def __init__(self, content):
         TreeItem.__init__(self)
         self.content = content
+        #self.escape_content = self.html_escape(content)
         
     def render_content(self, cr, rect):
         #(text_width, text_height) = get_content_size(self.content)
@@ -250,3 +254,13 @@ class SubItem(TreeItem):
 
     def unexpand(self):
         pass
+
+    def html_escape(self, text):
+        html_escape_table = {
+             "&": "&amp;",
+             '"': "&quot;",
+             "'": "&apos;",
+             ">": "&gt;",
+             "<": "&lt;",
+             }
+        return "".join(html_escape_table.get(c,c) for c in text)
