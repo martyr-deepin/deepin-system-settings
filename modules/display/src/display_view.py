@@ -148,6 +148,7 @@ class DisplayView(gtk.VBox):
         self.sizes_box = gtk.HBox(spacing = self.box_spacing)
         self.sizes_label = self.__setup_label("分辨率")
         self.sizes_combo = self.__setup_combo(self.sizes_items, 160)
+        self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.sizes_items))
         self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
         self.rotation_label = self.__setup_label("方向")
         self.rotation_combo = self.__setup_combo(self.rots_items)

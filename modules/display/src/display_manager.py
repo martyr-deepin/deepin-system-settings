@@ -53,13 +53,29 @@ class DisplayManager:
     def get_screen_sizes(self):
         return self.__screen.get_available_sizes()
 
+    def get_screen_size(self):
+        return self.__screen.get_size()
+    
+    def get_screen_size_index(self, items):
+        i = 0
+        width, height, width_mm, height_mm = self.get_screen_size()
+        
+        for item in items:
+            match = re.search('(\d+) x (\d+)', item[0])
+            if int(match.group(1)) == width and int(match.group(2)) == height:
+                return i
+            i += 1
+
+        return 0
+    
     def set_screen_size(self, size):
         match = re.search('(\d+) x (\d+)', size)
         output_names = self.get_output_names()
         i = 0
         
         while (i < len(output_names)):
-            run_command("xrandr --output %s --mode %sx%s" % (output_names[i], match.group(1), match.group(2)))
+            if self.__screen.get_output_by_name(output_names[i]).is_connected():
+                run_command("xrandr --output %s --mode %sx%s" % (output_names[i], match.group(1), match.group(2)))
             i += 1
 
     def set_screen_rotation(self, rotation):
