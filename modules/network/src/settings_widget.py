@@ -347,6 +347,7 @@ class SettingItem(TreeItem):
     def select(self):
         #print self.get_highlight()
         self.is_select = True
+        self.click(self.connection)
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
     
@@ -371,7 +372,7 @@ class SettingItem(TreeItem):
     def single_click(self, column, offset_x, offset_y):
         self.is_double_click = False
 
-        self.click(self.connection)
+        #self.click(self.connection)
         if column == 0:
             self.check_select = not self.check_select
             print "check clicked"

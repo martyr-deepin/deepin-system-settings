@@ -71,6 +71,7 @@ class NMClient(NMObject):
             return []
 
     def get_wired_devices(self):
+        self.devices = self.get_devices()
         if self.devices:
             return filter(lambda x:x.get_device_type() == 1, self.devices)
         else:
@@ -80,7 +81,7 @@ class NMClient(NMObject):
         return self.get_wired_devices()[0]
 
     def get_wireless_devices(self):
-
+        self.devices = self.get_devices()
         if self.devices:
             return filter(lambda x:x.get_device_type() == 2, self.devices)
         else:
@@ -90,6 +91,7 @@ class NMClient(NMObject):
         return self.get_wireless_devices()[0]
 
     def get_modem_devices(self):
+        self.devices = self.get_devices()
         if self.devices:
             return filter(lambda x:x.get_device_type() == 8, self.devices)
         else:
