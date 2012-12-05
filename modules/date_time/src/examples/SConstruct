@@ -1,4 +1,18 @@
 env = Environment(CCFLAGS='-g')
-env.ParseConfig('pkg-config --cflags --libs gtk+-2.0')
+env.ParseConfig('pkg-config --cflags --libs gtk+-2.0 glib-2.0')
 
-env.Program('hello_map', ['hello_map.c', 'cc-timezone-map.c', 'tz.c'])
+opts = Variables('deepin_tzmap.conf')                                             
+opts.Add(PathVariable('PREFIX', 'Directory to install under', '/usr', PathVariable.PathIsDir))
+opts.Update(env)                                                                 
+opts.Save('deepin_tzmap.conf', env)                                               
+
+libdeepin_tzmap_dir_prefix = '$PREFIX'                  
+libdeepin_tzmap_dir_lib    = '$PREFIX/lib'                                               
+libdeepin_tzmap_dir_inc    = '$PREFIX/include/deepin_tzmap'                                      
+
+libdeepin_tzmap = env.SharedLibrary('libdeepin_tzmap', ['cc-timezone-map.c', 'tz.c'])
+hello_tzmap = env.Program('hello_tzmap', ['hello_tzmap.c', 'cc-timezone-map.c', 'tz.c'])
+
+env.Install(libdeepin_tzmap_dir_lib, libdeepin_tzmap)                                            
+env.Install(libdeepin_tzmap_dir_inc, ['cc-timezone-map.h', 'tz.h'])
+env.Alias('install', libdeepin_tzmap_dir_prefix)
