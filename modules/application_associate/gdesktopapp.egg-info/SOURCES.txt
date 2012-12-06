@@ -1,6 +1,0 @@
-appinfo.c
-setup.py
-gdesktopapp.egg-info/PKG-INFO
-gdesktopapp.egg-info/SOURCES.txt
-gdesktopapp.egg-info/dependency_links.txt
-gdesktopapp.egg-info/top_level.txt
