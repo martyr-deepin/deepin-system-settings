@@ -10,7 +10,7 @@ Python XRandR Bindings
 
 NOTE
 
-根据deepin-desktop的要求，将com.deepin.desktop.background.gschema.xml归入
+根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入
 deepin-desktop/schemas
-sudo cp deepin-desktop/schemas/com.deepin.desktop.background.gschema.xml /usr/share/glib-2.0/schemas/ 
+sudo cp deepin-desktop/schemas/com.deepin.dde.background.gschema.xml /usr/share/glib-2.0/schemas/ 
 sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
