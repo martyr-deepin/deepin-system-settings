@@ -21,7 +21,7 @@
 from theme import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.entry import InputEntry, TextEntry
+from dtk.ui.new_entry import InputEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -258,24 +258,24 @@ class IPV4Conf(gtk.VBox):
 
         addr_label = Label("IP地址:")
         table.attach(addr_label, 0,1,2,3)
-        self.addr_entry = gtk.Entry()
+        self.addr_entry = InputEntry()
         #self.addr_entry.set_size(30, 25)
-        self.addr_entry.connect("activate", self.check_ip_valid)
+        self.addr_entry.entry.connect("press-return", self.check_ip_valid)
         self.addr_entry.set_sensitive(False)
         table.attach(self.addr_entry, 1,2,2,3)
 
         mask_label = Label("子网掩码:")
         table.attach(mask_label, 0,1,3,4)
-        self.mask_entry = gtk.Entry()
+        self.mask_entry = InputEntry()
         #self.mask_entry.set_size(30, 25)
-        self.mask_entry.connect("activate", self.check_mask_valid)
+        self.mask_entry.entry.connect("press-return", self.check_mask_valid)
         table.attach(self.mask_entry, 1,2,3,4)
         
         gate_label = Label("默认网关")
         table.attach(gate_label, 0,1,4,5)
-        self.gate_entry = gtk.Entry()
+        self.gate_entry = InputEntry()
         #self.gate_entry.set_size(30, 25)
-        self.gate_entry.connect("activate", self.check_gate_valid)
+        self.gate_entry.entry.connect("press-return", self.check_gate_valid)
         table.attach(self.gate_entry, 1,2,4,5)
         
         #DNS configuration
@@ -286,22 +286,30 @@ class IPV4Conf(gtk.VBox):
 
         master_dns = Label("首选DNS服务器地址:")
         slave_dns = Label("使用下面的DNS服务器地址:")
-        self.master_entry = gtk.Entry()
-        self.slave_entry = gtk.Entry()
+        self.master_entry = InputEntry()
+        self.slave_entry = InputEntry()
         #self.master_entry.set_size(30, 25)
         #self.slave_entry.set_size(30, 25)
-        self.master_entry.connect("activate", self.check_dns_valid)
-        self.slave_entry.connect("activate", self.check_dns_valid)
+        self.master_entry.entry.connect("press-return", self.check_dns_valid)
+        self.slave_entry.entry.connect("press-return", self.check_dns_valid)
         
         table.attach(master_dns, 0, 1, 7, 8)
         table.attach(self.master_entry, 1, 2, 7, 8)
         table.attach(slave_dns, 0, 1, 8, 9)
         table.attach(self.slave_entry, 1, 2, 8, 9)
 
-        align = gtk.Alignment(0.5,0.5,0.5,0.5)
+        # TODO UI change 
+        table.set_size_request(340, 227)
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(35, 0, 120, 0)
         align.add(table)
         self.add(align)
         
+        self.addr_entry.set_size(222, 22)
+        self.gate_entry.set_size(222, 22)
+        self.mask_entry.set_size(222, 22)
+        self.master_entry.set_size(222, 22)
+        self.slave_entry.set_size(222, 22)
         #aligns = gtk.Alignment(0.5,0.5,0,0)
         #hbox = gtk.HBox()
         #self.apply_button = gtk.Button("Apply")
@@ -459,24 +467,24 @@ class IPV6Conf(gtk.VBox):
 
         addr_label = Label("IP地址:")
         table.attach(addr_label, 0,1,2,3)
-        self.addr_entry = gtk.Entry()
+        self.addr_entry = InputEntry()
         #self.addr_entry.set_size(30, 25)
-        self.addr_entry.connect("activate", self.check_ip_valid)
+        self.addr_entry.entry.connect("press-return", self.check_ip_valid)
         self.addr_entry.set_sensitive(False)
         table.attach(self.addr_entry, 1,2,2,3)
 
         mask_label = Label("前缀:")
         table.attach(mask_label, 0,1,3,4)
-        self.mask_entry = gtk.Entry()
+        self.mask_entry = InputEntry()
         #self.mask_entry.set_size(30, 25)
-        self.mask_entry.connect("activate", self.check_mask_valid)
+        self.mask_entry.entry.connect("press-return", self.check_mask_valid)
         table.attach(self.mask_entry, 1,2,3,4)
         
         gate_label = Label("默认网关")
         table.attach(gate_label, 0,1,4,5)
-        self.gate_entry = gtk.Entry()
+        self.gate_entry = InputEntry()
         #self.gate_entry.set_size(30, 25)
-        self.gate_entry.connect("activate", self.check_gate_valid)
+        self.gate_entry.entry.connect("press-return", self.check_gate_valid)
         table.attach(self.gate_entry, 1,2,4,5)
         
         #DNS configuration
@@ -487,22 +495,30 @@ class IPV6Conf(gtk.VBox):
 
         master_dns = Label("首选DNS服务器地址:")
         slave_dns = Label("使用下面的DNS服务器地址:")
-        self.master_entry = gtk.Entry()
-        self.slave_entry = gtk.Entry()
+        self.master_entry = InputEntry()
+        self.slave_entry = InputEntry()
         #self.master_entry.set_size(30, 25)
         #self.slave_entry.set_size(30, 25)
-        self.master_entry.connect("activate", self.check_dns_valid)
-        self.slave_entry.connect("activate", self.check_dns_valid)
+        self.master_entry.entry.connect("press-return", self.check_dns_valid)
+        self.slave_entry.entry.connect("press-return", self.check_dns_valid)
         
         table.attach(master_dns, 0, 1, 7, 8)
         table.attach(self.master_entry, 1, 2, 7, 8)
         table.attach(slave_dns, 0, 1, 8, 9)
         table.attach(self.slave_entry, 1, 2, 8, 9)
 
-        align = gtk.Alignment(0.5,0.5,0.5,0.5)
+        # TODO UI change 
+        table.set_size_request(340, 227)
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(35, 0, 120, 0)
         align.add(table)
         self.add(align)
         
+        self.addr_entry.set_size(222, 22)
+        self.gate_entry.set_size(222, 22)
+        self.mask_entry.set_size(222, 22)
+        self.master_entry.set_size(222, 22)
+        self.slave_entry.set_size(222, 22)
         #aligns = gtk.Alignment(0.5,0.5,0,0)
         #hbox = gtk.HBox()
         #self.apply_button = gtk.Button("Apply")
@@ -665,12 +681,12 @@ class Security(gtk.VBox):
                       "WPA & WPA2 Personal"]
         map(lambda s: self.security_combo.append_text(s), self.encry_list)
         self.security_combo.connect("changed", self.changed_cb)
-        self.key_entry = gtk.Entry()
-        self.key_entry.connect("activate", self.check_wep_validation)
+        self.key_entry = InputEntry()
+        self.key_entry.entry.connect("press-return", self.check_wep_validation)
         #self.key_entry.set_size(200, 50)
-        self.password_entry = gtk.Entry()
+        self.password_entry = InputEntry()
         #self.password_entry.set_size(200, 50)
-        self.password_entry.connect("activate", self.check_wpa_validate)
+        self.password_entry.entry.connect("press-return", self.check_wpa_validate)
         self.show_key_check = CheckButton("Show key")
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
         self.wep_index_spin = SpinBox(0, 0,3,1 ,55 )
@@ -694,9 +710,12 @@ class Security(gtk.VBox):
         #table_wpa = gtk.Table(3, 4, True)
         #table_wpa.attach(security_label, 0, 1, 0, 1)
         #table_wpa.attach(self.security_combo, 1 ,4, 0 ,1)
+        #TODO UI change
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(35, 0, 120, 0)
 
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
         align.add(self.table)
+
         self.add(align)
 
     def check_wpa_validate(self, widget):
@@ -722,9 +741,7 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo, 1, 4, 0, 1)
 
         (setting_name, method) = self.connection.guess_secret_info() 
-        #print setting_name, method
         if not self.security_combo.get_active() == 0: 
-            #secret = self.connection.get_secrets("802-11-wireless-security")
             try:
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
@@ -835,7 +852,6 @@ class Security(gtk.VBox):
                                    wireless_device.object_path,
                                    ap.object_path)
 
-
 class Wireless(gtk.VBox):
 
     def __init__(self, connection):
@@ -844,7 +860,7 @@ class Wireless(gtk.VBox):
         self.wireless = self.connection.get_setting("802-11-wireless")
         ### UI
         self.ssid_label = Label("SSID:")
-        self.ssid_entry = gtk.Entry()
+        self.ssid_entry = InputEntry()
 
         self.mode_label = Label("Mode:")
         self.mode_combo = gtk.combo_box_new_text()
@@ -859,11 +875,11 @@ class Wireless(gtk.VBox):
         #self.channel_spin = SpinBox(0, 0, 1500, 1, 55)
         # BSSID
         self.bssid_label = Label("BSSID:")
-        self.bssid_entry = gtk.Entry()
+        self.bssid_entry = InputEntry()
         self.mac_address = Label("Device Mac address:")
-        self.mac_entry = gtk.Entry()
+        self.mac_entry = InputEntry()
         self.clone_addr = Label("Cloned Mac Adrress:")
-        self.clone_entry = gtk.Entry()
+        self.clone_entry = InputEntry()
         self.mtu = Label("MTU:")
         self.mtu_spin = SpinBox(0, 0, 1500, 1, 55)
         #self.mode_combo.connect("item-selected", self.mode_combo_select)
@@ -907,13 +923,18 @@ class Wireless(gtk.VBox):
         # MTU
         table.attach(self.mtu_spin, 1, 2, 7, 8)
         table.attach(self.mtu, 0, 1, 7, 8)
-        
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(table)
 
+        #TODO UI change
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(35, 0, 120, 0)
+        align.add(table)
         self.add(align)
-        # TODO table size need to be determined 
-        table.set_size_request(450, 300)
+        table.set_size_request(340, 227)
+
+        self.ssid_entry.set_size(222, 22)
+        self.bssid_entry.set_size(222, 22)
+        self.mac_entry.set_size(222, 22)
+        self.clone_entry.set_size(222, 22)
 
 
     def reset(self):

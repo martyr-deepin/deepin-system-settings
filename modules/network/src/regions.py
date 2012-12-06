@@ -25,7 +25,8 @@ class Region(gtk.HBox):
         
         country_label = Label("Country:")
         self.country_tree = TreeView(enable_multiple_select=False,
-                                     enable_drag_drop=False)
+                                     enable_drag_drop=False,
+                                     enable_hover=False)
         self.country_tree.set_size_request(380, 400)
         self.country_tree.connect("button-press-item", self.country_selected)
 
@@ -33,7 +34,9 @@ class Region(gtk.HBox):
         left_box.pack_start(country_label, False, False)
         left_box.pack_start(self.country_tree, False, False)
         provider_label = Label("Provider:")
-        self.provider_tree = TreeView()
+        self.provider_tree = TreeView(enable_multiple_select=False,
+                                     enable_drag_drop=False,
+                                     enable_hover=False)
         self.provider_tree.set_size_request(380, 400)
         self.provider_tree.connect("button-press-item", self.provider_selected)
         right_box = gtk.VBox()
