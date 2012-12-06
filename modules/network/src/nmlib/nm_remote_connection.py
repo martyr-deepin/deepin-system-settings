@@ -90,18 +90,25 @@ class NMRemoteConnection(NMObject, NMConnection):
             self.secret_method = "password"
             return (self.secret_setting_name, self.secret_method)
 
-        elif "802-11-wireless" in info_dict.iterkeys() and "802-11-wireless-security" in info_dict.iterkeys():
+        elif "802-11-wireless" in info_dict.iterkeys():
+            ###for wireless no password
+            if not "802-11-wireless-security" in info_dict.iterkeys():
+                self.secret_setting_name = None
+                self.secret_method = None
+                return (self.secret_setting_name, self.secret_method)
 
+            ###for wireless has password
             self.secret_setting_name = "802-11-wireless-security"
 
             if "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
+                ###for wpa/psk
                 if info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
                     self.secret_method = "psk"
                     return (self.secret_setting_name, self.secret_method)
                     
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
+                ###for wep    
                     if "wep-key-type" in info_dict["802-11-wireless-security"].iterkeys():
-
                         if "wep-tx-keyidx" in info_dict["802-11-wireless-security"].iterkeys():
                             if info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 0:
                                 self.secret_method = "wep-key0"
@@ -113,29 +120,47 @@ class NMRemoteConnection(NMObject, NMConnection):
                                 self.secret_method = "wep-key3"
                             else:
                                 print "unsupported wep key idx"
+                                self.secret_method = None
 
                             return (self.secret_setting_name, self.secret_method)    
                         else:
+                            ###set default for wep key index
                             self.secret_method = "wep-key0"
                             return (self.secret_setting_name, self.secret_method)
                     else:
-                        print "must have wep-key-type to indicate wep connection"
+                        # print "must have wep-key-type to indicate wep connection"
+                        self.secret_method = None
+                        return (self.secret_setting_name, self.secret_method)
 
+                ###for wpa    
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
-                    print "no agent available for wpa-eap"
-                    
+                    # print "no agent available for wpa-eap"
+                    self.secret_method = None
+                    return (self.secret_setting_name, self.secret_method)
+
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
                     if "auth-alg" in info_dict["802-11-wireless-security"].iterkeys():
                         if info_dict["802-11-wireless-security"]["auth-alg"] == "leap":
                             self.secret_method = "leap-password"
                             return (self.secret_setting_name, self.secret_method)
                     else:
-                        print "no ageent available for dynamic wep"
+                        # print "no ageent available for dynamic wep"
+                        self.secret_method = None
+                        return (self.secret_setting_name, self.secret_method)
                 else:
-                    print "unknown key mgmt"
+                    # print "unknown key mgmt"
+                    self.secret_method = None
+                    return (self.secret_setting_name, self.secret_method)
 
             else:
-                print "must have key mgmt for 802.11 wireless security"
+                # print "must have key mgmt for 802.11 wireless security"
+                self.secret_method = None
+                return (self.secret_setting_name, self.secret_method)
+
+        elif "gsm" in info_dict.iterkeys():
+            self.secret_setting_name = "gsm"
+            self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
         elif "802-3-ethernet" in info_dict.iterkeys():
             self.secret_setting_name = None
@@ -157,14 +182,10 @@ class NMRemoteConnection(NMObject, NMConnection):
             self.secret_method = "password"
             return (self.secret_setting_name, self.secret_method)
 
-        elif "gsm" in info_dict.iterkeys():
-            self.secret_setting_name = "gsm"
-            self.secret_method = "password"
-            return (self.secret_setting_name, self.secret_method)
-
         else:
             self.secret_setting_name = None
             self.secret_method = None
+            return (self.secret_setting_name, self.secret_method)
 
     def update(self):
         try:

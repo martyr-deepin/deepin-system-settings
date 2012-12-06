@@ -20,12 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import Gio
+import deepin_gsettings
 
 class MediaAutorun(object):
     
     def __init__(self):
-        self.media_autorun_settings = Gio.Settings.new("org.gnome.desktop.media-handling")
+        self.media_autorun_settings = deepin_gsettings.new("org.gnome.desktop.media-handling")
         
     def get_automount(self):
         if self.media_autorun_settings.get_boolean("automount") != None:

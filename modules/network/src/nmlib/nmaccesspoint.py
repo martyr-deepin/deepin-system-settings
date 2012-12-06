@@ -45,6 +45,9 @@ class NMAccessPoint(NMObject):
     def get_rsn_flags(self):
         return self.properties["RsnFlags"]
 
+    def get_key_mgmt(self):
+        pass
+
     def get_ssid (self):
         if self.properties["Ssid"]:
             return TypeConvert.ssid_ascii2string(self.properties["Ssid"])

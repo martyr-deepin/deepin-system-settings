@@ -148,7 +148,7 @@ class NMRemoteSettings(NMObject):
 
         return self.add_connection(settings_dict)
 
-    def new_wireless_connection(self, ssid = "Wireless Connection"):
+    def new_wireless_connection(self, ssid = None, key_mgmt = "wpa-psk"):
         s_connection = NMSettingConnection()
         s_wireless = NMSettingWireless()
         s_wireless_security = NMSettingWirelessSecurity()
@@ -166,7 +166,8 @@ class NMRemoteSettings(NMObject):
         s_wireless.ssid = ssid
         s_wireless.security = "802-11-wireless-security"
 
-        s_wireless_security.key_mgmt = "wpa-psk"
+        if key_mgmt:
+            s_wireless_security.key_mgmt = key_mgmt
 
         s_ip4config.method = "auto"
         s_ip4config.clear_addresses()
