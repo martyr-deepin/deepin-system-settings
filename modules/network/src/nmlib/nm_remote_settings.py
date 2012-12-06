@@ -43,19 +43,11 @@ from nmutils.nmsetting_ppp import NMSettingPPP
 class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
 
-    # __gsignals__  = {
-    #         "connections-read":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_POINTER,)),
-    #         "new-connection":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
-    #         }
-
     def __init__(self):
         NMObject.__init__(self, "/org/freedesktop/NetworkManager/Settings", "org.freedesktop.NetworkManager.Settings")
 
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
-
-        # self.bus.add_signal_receiver(self.new_connection_cb, dbus_interface = self.object_interface, 
-        #                              path = self.object_path, signal_name = "NewConnection")
 
         self.init_nmobject_with_properties()
 
@@ -148,7 +140,8 @@ class NMRemoteSettings(NMObject):
 
         return self.add_connection(settings_dict)
 
-    def new_wireless_connection(self, ssid = None, key_mgmt = "wpa-psk"):
+    def new_wireless_connection(self, ssid = None, key_mgmt = None):
+        ###Please pass key_mgmt as the wireless isn't privacy
         s_connection = NMSettingConnection()
         s_wireless = NMSettingWireless()
         s_wireless_security = NMSettingWirelessSecurity()
@@ -164,9 +157,9 @@ class NMRemoteSettings(NMObject):
 
         s_wireless.mode = "infrastructure"
         s_wireless.ssid = ssid
-        s_wireless.security = "802-11-wireless-security"
 
         if key_mgmt:
+            s_wireless.security = "802-11-wireless-security"
             s_wireless_security.key_mgmt = key_mgmt
 
         s_ip4config.method = "auto"
