@@ -288,9 +288,9 @@ class AccountSetting(object):
         self.button_widgets["lock"].connect("expose-event", self.lock_button_expose)
         self.button_widgets["lock"].connect("clicked", self.lock_button_clicked)
 
-        self.label_widgets["account_name"].connect("enter-notify-event", self.label_enter_notify_cb)
-        self.label_widgets["account_name"].connect("leave-notify-event", self.label_leave_notify_cb)
-        self.label_widgets["account_name"].connect("button-press-event", self.label_button_press_cb)
+        self.label_widgets["account_name"].connect("enter-notify-event", self.label_enter_notify_cb, True)
+        self.label_widgets["account_name"].connect("leave-notify-event", self.label_leave_notify_cb, True)
+        self.label_widgets["account_name"].connect("button-press-event", self.realname_change_press_cb)
         self.label_widgets["passwd_char"].connect("enter-notify-event", self.label_enter_notify_cb)
         self.label_widgets["passwd_char"].connect("leave-notify-event", self.label_leave_notify_cb)
         self.label_widgets["passwd_char"].connect("button-press-event", self.password_change_press_cb)
@@ -384,6 +384,7 @@ class AccountSetting(object):
     
     def account_treeview_select(self, tv, item, row):
         self.current_select_user = dbus_obj = item.dbus_obj
+        self.current_select_item = item
         print "treeview current select:", self.current_select_user.get_user_name()
         self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
         if item.real_name:
@@ -391,7 +392,7 @@ class AccountSetting(object):
         else:
             self.label_widgets["account_name"].set_text("<b>--</b>")
         self.label_widgets["account_name"].queue_draw()
-        print "treeview account name:", self.label_widgets["account_name"].get_text()
+        #print "treeview account name:", self.label_widgets["account_name"].get_text()
         self.button_widgets["account_type"].set_select_index(item.user_type)
         if dbus_obj.get_locked():
             self.label_widgets["passwd_char"].set_text(_("Account disabled"))
@@ -448,19 +449,36 @@ class AccountSetting(object):
         except:
             pass
     
-    def label_enter_notify_cb(self, widget, event):
-        widget.set_data("old_content", widget.get_text())
-        widget.set_text("<u>%s</u>" % widget.get_text())
+    def label_enter_notify_cb(self, widget, event, is_realname=False):
+        if not self.current_select_item:
+            return
+        if is_realname:
+            realname = self.current_select_item.real_name
+            if realname:
+                widget.set_text("<u><b>%s</b></u>" % realname)
+            else:
+                widget.set_text("<u><b>%s</b></u>" % "--")
+        else:
+            widget.set_text("<u>%s</u>" % pango.parse_markup(widget.get_text())[1])
     
-    def label_leave_notify_cb(self, widget, event):
-        widget.set_text(widget.get_data("old_content"))
+    def label_leave_notify_cb(self, widget, event, is_realname=False):
+        if not self.current_select_user:
+            return
+        if is_realname:
+            realname = self.current_select_item.real_name
+            if realname:
+                widget.set_text("<b>%s</b>" % realname)
+            else:
+                widget.set_text("<b>%s</b>" % "--")
+        else:
+            widget.set_text("%s" % pango.parse_markup(widget.get_text())[1])
     
-    def label_button_press_cb(self, widget, event):
+    def realname_change_press_cb(self, widget, event):
         if not self.current_select_user:
             return
         
         def change_account_name(widget, *args):
-            print "current select:", self.current_select_user.get_user_name()
+            #print "current select:", self.current_select_user.get_user_name()
             if self.label_widgets["account_name"].get_parent():
                 return
             text = widget.get_text()
@@ -468,15 +486,19 @@ class AccountSetting(object):
                 self.label_widgets["account_name"])
             self.container_widgets["account_info_hbox"].reorder_child(
                 self.label_widgets["account_name"], 0)
-            if text:
-                # TODO 设置用户的命名
-                self.label_widgets["account_name"].set_text("<b>%s</b>" % self.escape_markup_string(text))
+            if text != self.current_select_user.get_real_name():
+                #self.label_widgets["account_name"].set_text("<b>%s</b>" % self.escape_markup_string(text))
+                try:
+                    self.current_select_user.set_real_name(text)
+                except:
+                    pass
             self.label_widgets["account_name"].queue_draw()
             print "account name changed:", self.label_widgets["account_name"].get_text()
             align.destroy()
         
         self.container_widgets["account_info_hbox"].remove(self.label_widgets["account_name"])
-        text = pango.parse_markup(widget.get_text())[1]
+        #text = pango.parse_markup(widget.get_text())[1]
+        text = self.current_select_user.get_real_name()
         align = gtk.Alignment()
         align.set(0.5, 0.5, 1, 1)
         align.set_padding(12, 0, 0, 0)
@@ -671,6 +693,13 @@ class AccountSetting(object):
         self.container_widgets["del_main_vbox"].show_all()
     
     def __init_change_pswd_page(self, current_set_user):
+        def show_input_password(button):
+            new_pswd_input.show_password(button.get_active())
+            confirm_pswd_input.show_password(button.get_active())
+        
+        def change_user_password(button):
+            # TODO 设置用户的密码
+            pass
         self.container_widgets["change_pswd_main_vbox"].destroy()
         self.container_widgets["change_pswd_main_vbox"] = gtk.VBox(False)
         self.alignment_widgets["change_pswd"].add(self.container_widgets["change_pswd_main_vbox"])
@@ -702,10 +731,6 @@ class AccountSetting(object):
         label2 = Label(_("Current password"))
         label3 = Label(_("New password"))
         label4 = Label(_("Confirm password"))
-        if self.get_authorized():
-            table2.attach(label1, 0, 1, 0, 1, 4, 0, 10, 7)
-        if settings.check_is_myown(current_set_user.get_uid()):
-            table2.attach(label2, 0, 1, 1, 2, 4, 0, 10, 7)
         table2.attach(label3, 0, 1, 2, 3, 4, 0, 10, 7)
         table2.attach(label4, 0, 1, 3, 4, 4, 0, 10, 7)
         
@@ -723,8 +748,10 @@ class AccountSetting(object):
         confirm_pswd_input.set_size(180, 25)
         show_pswd_check = CheckButton(_("Show password"))
         if self.get_authorized():
+            table2.attach(label1, 0, 1, 0, 1, 4, 0, 10, 7)
             table2.attach(action_combo, 1, 2, 0, 1, 4, 0)
         if settings.check_is_myown(current_set_user.get_uid()):
+            table2.attach(label2, 0, 1, 1, 2, 4, 0, 10, 7)
             table2.attach(current_pswd_input, 1, 2, 1, 2, 4, 0)
         table2.attach(new_pswd_input, 1, 2, 2, 3, 4, 0)
         table2.attach(confirm_pswd_input, 1, 2, 3, 4, 4, 0)
@@ -734,6 +761,7 @@ class AccountSetting(object):
         button_align = gtk.Alignment()
         cancel_button = Button(_("Cancel"))
         change_button = Button(_("Change"))
+        change_button.set_sensitive(False)
         button_hbox.pack_start(button_align)
         button_hbox.pack_start(cancel_button, False, False, 15)
         button_hbox.pack_start(change_button, False, False)
@@ -745,6 +773,11 @@ class AccountSetting(object):
         #self.container_widgets["change_pswd_main_vbox"].pack_start(button_hbox, False, False, 20)
         self.container_widgets["change_pswd_main_vbox"].pack_start(error_label, False, False, 20)
         self.container_widgets["change_pswd_main_vbox"].show_all()
+
+        show_pswd_check.connect("toggled", show_input_password)
+        cancel_button.connect("clicked", lambda w: self.container_widgets["slider"].slide_to_page(
+            self.alignment_widgets["main_hbox"], "left"))
+        change_button.connect("clicked", change_user_password)
 
     
     def escape_markup_string(self, string):
