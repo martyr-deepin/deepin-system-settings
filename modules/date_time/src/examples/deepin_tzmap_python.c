@@ -40,7 +40,7 @@ static PyObject *m_deepin_tzmap_object_constants = NULL;
 static PyTypeObject *m_DeepinTzmap_Type = NULL;
 
 static DeepinTzmapObject *m_init_deepin_tzmap_object();
-static DeepinTzmapObject *m_new(PyObject *self, PyObject *args);
+static PyObject *m_new(PyObject *self, PyObject *args);
 
 static PyMethodDef deepin_tzmap_methods[] = 
 {
@@ -176,6 +176,8 @@ static PyTypeObject DeepinTzmap_Type = {
 PyMODINIT_FUNC initdeepin_tzmap() 
 {
     PyObject *m = NULL;
+
+    init_pygobject();
              
     m_DeepinTzmap_Type = &DeepinTzmap_Type;
     DeepinTzmap_Type.ob_type = &PyType_Type;
@@ -203,7 +205,7 @@ static DeepinTzmapObject *m_init_deepin_tzmap_object()
     return self;
 }
 
-static DeepinTzmapObject *m_new(PyObject *dummy, PyObject *args) 
+static PyObject *m_new(PyObject *dummy, PyObject *args) 
 {
     DeepinTzmapObject *self = NULL;
     
@@ -213,7 +215,7 @@ static DeepinTzmapObject *m_new(PyObject *dummy, PyObject *args)
     
     self->handle = cc_timezone_map_new();
     
-    return self;
+    return pygobject_new(G_OBJECT(self->handle));
 }
 
 static PyObject *m_delete(DeepinTzmapObject *self) 
