@@ -9,7 +9,7 @@ def pkg_config_cflags(pkgs):
     return map(lambda path: path[2::], commands.getoutput('pkg-config --cflags-only-I %s' % (' '.join(pkgs))).split())
 
 deepin_tzmap_mod = Extension('deepin_tzmap', 
-                include_dirs = pkg_config_cflags(['gtk+-2.0']) + ['/usr/include/deepin_tzmap'],
+                include_dirs = pkg_config_cflags(['gtk+-2.0', 'pygtk-2.0']) + ['/usr/include/deepin_tzmap'],
                 libraries = ['glib-2.0', 'deepin_tzmap'], 
                 sources = ['deepin_tzmap_python.c'])
 

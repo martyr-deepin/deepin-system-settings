@@ -56,7 +56,7 @@ class ThemeSettingView(TabBox):
         TabBox.__init__(self)
         self.theme = None
         
-        self.background_gsettings = deepin_gsettings.new("com.deepin.desktop.background")
+        self.background_gsettings = deepin_gsettings.new("com.deepin.dde.background")
         
         self.wallpaper_box = gtk.VBox()
         self.window_theme_box = gtk.VBox()
@@ -160,21 +160,21 @@ class ThemeSettingView(TabBox):
     TODO: It might need to add select all UE
     '''
     def __select_all_clicked(self, widget):
-        picture_uri = ""
+        picture_uris = ""
         i = 0
 
         for item in self.theme_icon_view.items:
             if not hasattr(item, "path"):
                 continue
             if not i == 0:
-                picture_uri += ";"
-            picture_uri += "file://" + item.path
+                picture_uris += ";"
+            picture_uris += "file://" + item.path
             i += 1
 
-        if picture_uri == "":
+        if picture_uris == "":
             return
 
-        self.background_gsettings.set_string("picture-uri", picture_uri)
+        self.background_gsettings.set_string("picture-uris", picture_uris)
 
     def set_theme(self, theme):
         self.theme = theme
@@ -345,7 +345,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        run_command("gsettings set com.deepin.desktop.background picture-uri 'file://%s'" % self.path)
+        run_command("gsettings set com.deepin.dde.background picture-uris 'file://%s'" % self.path)
     
     def icon_item_button_release(self, x, y):
         '''

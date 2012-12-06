@@ -78,6 +78,14 @@ class AccountsUserExists(Exception):
     def __str__(self):
         return repr(self.msg)
 
+class AccountsUserDoesNotExist(Exception):
+    
+    def __init__(self, msg = ""):
+        self.msg = msg
+
+    def __str__(self):
+        return repr(self.msg)
+
 class AccountsFailed(Exception):
     
     def __init__(self, msg = ""):
@@ -123,12 +131,14 @@ class BusBase(gobject.GObject):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException, e:
-            if "org.freedesktop.Accounts.Error.PermissionDenied" in e:
-                raise AccountsPermissionDenied(e)
-            elif "org.freedesktop.Accounts.Error.UserExists" in e:
-                raise AccountsUserExists(e)
-            elif "org.freedesktop.Accounts.Error.Failed" in e:
-                raise AccountsFailed(e)
+            if "org.freedesktop.Accounts.Error.PermissionDenied" == e.get_dbus_name():
+                raise AccountsPermissionDenied(e.message)
+            elif "org.freedesktop.Accounts.Error.UserDoesNotExist" == e.get_dbus_name():
+                raise AccountsUserDoesNotExist(e.message)
+            elif "org.freedesktop.Accounts.Error.UserExists" == e.get_dbus_name():
+                raise AccountsUserExists(e.message)
+            elif "org.freedesktop.Accounts.Error.Failed" == e.get_dbus_name():
+                raise AccountsFailed(e.message)
             else:
                 traceback.print_exc()
 
@@ -136,12 +146,14 @@ class BusBase(gobject.GObject):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException, e:
-            if "org.freedesktop.Accounts.Error.PermissionDenied" in e:
-                raise AccountsPermissionDenied(e)
-            elif "org.freedesktop.Accounts.Error.UserExists" in e:
-                raise AccountsUserExists(e)
-            elif "org.freedesktop.Accounts.Error.Failed" in e:
-                raise AccountsFailed(e)
+            if "org.freedesktop.Accounts.Error.PermissionDenied" == e.get_dbus_name():
+                raise AccountsPermissionDenied(e.message)
+            elif "org.freedesktop.Accounts.Error.UserDoesNotExist" == e.get_dbus_name():
+                raise AccountsUserDoesNotExist(e.message)
+            elif "org.freedesktop.Accounts.Error.UserExists" == e.get_dbus_name():
+                raise AccountsUserExists(e.message)
+            elif "org.freedesktop.Accounts.Error.Failed" == e.get_dbus_name():
+                raise AccountsFailed(e.message)
             else:
                 traceback.print_exc()
 
