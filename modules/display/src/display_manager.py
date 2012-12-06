@@ -119,9 +119,13 @@ class DisplayManager:
         return self.__screen.get_rotations()
 
     def get_screen_brightness(self):
-        return float(self.__config.get("screen", "brightness")) * 100.0
+        brightness = float(self.__config.get("screen", "brightness"))
+        
+        self.set_screen_brightness(brightness)
+
+        return brightness * 100.0
     
-    def set_screen_brightness(self, value):
+    def set_screen_brightness(self, value, write=True):
         output_names = self.get_output_names()
         i = 0
 
@@ -130,8 +134,9 @@ class DisplayManager:
                 run_command("xrandr --output %s --brightness %f" % (output_names[i], value))
             i += 1
 
-        self.__config.set("screen", "brightness", str(value))
-        self.__config.write()
+        if write:
+            self.__config.set("screen", "brightness", str(value))
+            self.__config.write()
 
     '''
     TODO: unit is second
