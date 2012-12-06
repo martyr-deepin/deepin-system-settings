@@ -25,7 +25,7 @@ from dtk.ui.utils import get_parent_dir
 import os
 
 app_theme = init_skin(
-    "deepin-power-settings", 
+    "deepin-a11y-settings", 
     "1.0",
     "01",
     os.path.join(get_parent_dir(__file__, 2), "skin"),
@@ -72,20 +72,23 @@ class A11yView(gtk.VBox):
         self.high_contrast_theme_align = self.__setup_align()
         self.high_contrast_theme_box = gtk.HBox(spacing=self.hbox_spacing)
         self.high_contrast_theme_label = self.__setup_label("请选择一个高对比度主题")
-        self.high_contrast_theme_combo = self.__setup_combo(self.high_contrast_theme_items)
-        #self.high_contrast_theme_combo.set_select_index(self.a11y_manager.get_press_button_power(self.power_manage_items))
+        self.high_contrast_theme_combo = self.__setup_combo(self.high_contrast_theme_items, 160)
+        #self.high_contrast_theme_combo.set_select_index(self.a11y_manager.get_press_button_power(self.high_contrast_theme_items))
         self.high_contrast_theme_combo.connect("item-selected", self.__combo_item_selected, "high_contrast_theme")
-        self.__widget_pack_start(self.press_button_power_box, 
-            [self.press_button_power_label, self.press_button_power_combo])
-        self.press_button_power_align.add(self.press_button_power_box)
+        self.high_contrast_theme_config_label = self.__setup_label_link("并设置")
+        self.__widget_pack_start(self.high_contrast_theme_box, 
+                                 [self.high_contrast_theme_label, 
+                                  self.high_contrast_theme_combo, 
+                                  self.high_contrast_theme_config_label])
+        self.high_contrast_theme_align.add(self.high_contrast_theme_box)
         '''
         close notebook cover
         '''
         self.close_notebook_cover_align = self.__setup_align()
         self.close_notebook_cover_box = gtk.HBox(spacing=self.hbox_spacing)
         self.close_notebook_cover_label = self.__setup_label("合上笔记本盖子")
-        self.close_notebook_cover_combo = self.__setup_combo(self.power_manage_items)
-        self.close_notebook_cover_combo.set_select_index(self.a11y_manager.get_close_notebook_cover(self.power_manage_items))
+        self.close_notebook_cover_combo = self.__setup_combo(self.high_contrast_theme_items)
+        #self.close_notebook_cover_combo.set_select_index(self.a11y_manager.get_close_notebook_cover(self.high_contrast_theme_items))
         self.close_notebook_cover_combo.connect("item-selected", self.__combo_item_selected, "close_notebook_cover")
         self.__widget_pack_start(self.close_notebook_cover_box, 
             [self.close_notebook_cover_label, self.close_notebook_cover_combo])
@@ -96,8 +99,8 @@ class A11yView(gtk.VBox):
         self.press_button_hibernate_align = self.__setup_align()
         self.press_button_hibernate_box = gtk.HBox(spacing=self.hbox_spacing)
         self.press_button_hibernate_label = self.__setup_label("按休眠按钮时")
-        self.press_button_hibernate_combo = self.__setup_combo(self.power_manage_items)
-        self.press_button_hibernate_combo.set_select_index(self.a11y_manager.get_press_button_hibernate(self.power_manage_items))
+        self.press_button_hibernate_combo = self.__setup_combo(self.high_contrast_theme_items)
+        #self.press_button_hibernate_combo.set_select_index(self.a11y_manager.get_press_button_hibernate(self.high_contrast_theme_items))
         self.press_button_hibernate_combo.connect("item-selected", self.__combo_item_selected, "press_button_hibernate")
         self.__widget_pack_start(self.press_button_hibernate_box, 
             [self.press_button_hibernate_label, self.press_button_hibernate_combo])
@@ -173,7 +176,7 @@ class A11yView(gtk.VBox):
         '''
         self.__widget_pack_start(self, 
             [self.high_contrast_align, 
-             self.press_button_power_align, 
+             self.high_contrast_theme_align, 
              self.close_notebook_cover_align, 
              self.press_button_hibernate_align, 
              self.power_save_config_align, 
@@ -183,12 +186,16 @@ class A11yView(gtk.VBox):
              self.wakeup_password_align, 
              self.tray_battery_status_align])
 
-    def __setup_label(self, text="", align=ALIGN_END):
-        label = Label(text, None, DEFAULT_FONT_SIZE, align, 140)
+    def __setup_label(self, text="", size=DEFAULT_FONT_SIZE, align=ALIGN_END):
+        label = Label(text, None, size, align, 140)
         return label
 
-    def __setup_combo(self, items=[]):
-        combo = ComboBox(items, None, 0, 120)
+    def __setup_label_link(self, text="", align=ALIGN_START):
+        label = Label(text, text_size = DEFAULT_FONT_SIZE, text_x_align = align, text_color = app_theme.get_color("link_text"))
+        return label
+
+    def __setup_combo(self, items=[], width=120):
+        combo = ComboBox(items, None, 0, width)
         return combo
 
     '''

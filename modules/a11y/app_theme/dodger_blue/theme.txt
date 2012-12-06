@@ -1,4 +1,5 @@
 {"colors" : {
+ "link_text"  : "#1A70b1",
  "recommend" : "#FF0000",
  "windowMask" : "#FFFFFF",
  "menuFont" : "#000000",
