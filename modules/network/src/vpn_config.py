@@ -211,6 +211,7 @@ class SideBar(gtk.VBox):
 
         self.connections = connection_list
         self.setting = ip4setting
+        print '>>>',self.connections
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
@@ -232,10 +233,11 @@ class SideBar(gtk.VBox):
         except ValueError:
             self.connection_tree.select_first_item()
 
-    def delete_item_cb(self):
-        if len(self.connection_tree.visible_items) != 1:
-            self.connection_tree.delete_select_items()
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+    def delete_item_cb(self, connection):
+
+        self.connection_tree.delete_select_items()
+        connection.delete()
+        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]

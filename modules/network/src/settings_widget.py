@@ -37,7 +37,7 @@ class EntryTreeView(TreeView):
     def __init__(self, 
             items=[],
             drag_data=None,
-            enable_hover=True,
+            enable_hover=False,
             enable_highlight=True,
             enable_multiple_select=False,
             enable_drag_drop=False,
@@ -210,7 +210,7 @@ class SettingItem(TreeItem):
         self.connection = connection
         self.setting = setting
         self.click = click_cb
-        self.delete = delete_cb
+        self.delete_connection = delete_cb
         self.entry = None
         self.entry_buffer = EntryBuffer(connection.get_setting("connection").id)
         self.entry_buffer.set_property('cursor-visible', False)
@@ -261,7 +261,8 @@ class SettingItem(TreeItem):
             #cr.rectangle(rect.)
             cr.fill()
     def highlight(self, widget):
-        self.set_highlight(True)
+        #self.set_highlight(True)
+        pass
 
     def render_delete(self, cr, rect):
          
@@ -353,21 +354,9 @@ class SettingItem(TreeItem):
     
     def hover(self, column, offset_x, offset_y):
         pass
-        #print column
-        #if column == 2:
-            #self.delete_hover = True
-        #else:
-            #self.delete_hover = False
-        #if self.redraw_request_callback:
-            #self.redraw_request_callback(self)
 
     def unhover(self, column, offset_x, offset_y):
         pass
-        #print "unhover"
-        #if column != 2:
-            #self.delete_hover = False
-        #if self.redraw_request_callback:
-            #self.redraw_request_callback(self)
 
     def single_click(self, column, offset_x, offset_y):
         self.is_double_click = False
@@ -377,11 +366,7 @@ class SettingItem(TreeItem):
             self.check_select = not self.check_select
             print "check clicked"
         elif column == 2:
-            #print "delete clicked"
-            self.connection.delete()
-            self.delete()
-            #self.destroy()
-            self.setting.destroy()
+            self.delete_connection(self.connection)
             
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
@@ -403,6 +388,3 @@ class SettingItem(TreeItem):
 
 gobject.type_register(SettingItem)
 
-'''
-Please play with the demo entry_treeview_demo.py
-'''
