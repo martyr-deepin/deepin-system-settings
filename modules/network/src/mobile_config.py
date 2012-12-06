@@ -218,11 +218,15 @@ class SideBar(gtk.VBox):
             self.buttonbox.get_children()[0].check.set_active(True)
         '''
 
-    def delete_item_cb(self):
+    def delete_item_cb(self, connection):
         '''docstring for delete_item_cb'''
-        if len(self.connection_tree.visible_items) != 1:
-            self.connection_tree.delete_select_items()
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        self.connection_tree.delete_select_items()
+        connection.delete()
+        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        #self.main_init_cb()
+        #if len(self.connection_tree.visible_items) != 1:
+            #self.connection_tree.delete_select_items()
+            #self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]
@@ -297,8 +301,7 @@ class Broadband(gtk.VBox):
                                       ("3G", 0),
                                       ("2G", 1),
                                       ("Prefer 3G", 2),
-                                      ("Prefer 2G", 3)],
-                                      max_width = 100)
+                                      ("Prefer 2G", 3)])
         #self.network_type.set_size(200,25 )
         self.roam_check = CheckButton("Allow roaming if home network is not available")
         self.pin = InputEntry()

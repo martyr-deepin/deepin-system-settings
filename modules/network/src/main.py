@@ -609,10 +609,8 @@ class Network(object):
         self.wireless_setting_page = None
         self.dsl_setting_page = None
         
-
     def get_main_page(self):
         return self.eventbox
-
 
 if __name__ == '__main__':
     if is_dbus_name_exists("org.freedesktop.NetworkManager", False):

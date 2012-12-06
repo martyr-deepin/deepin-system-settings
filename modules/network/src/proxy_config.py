@@ -31,13 +31,15 @@ class ProxyConfig(gtk.VBox):
         self.socks_label = Label("Socks Proxy")
         self.conf_label = Label("Configuration url")
 
-        self.methods = gtk.combo_box_new_text()
-        method_list = ["None", "Manual", "Automatic"]
-        #self.methods = ComboBox([lambda m,i: (m, i), enumerate(method_list)])
-        self.methods.connect("changed", self.method_changed)
+        #self.methods = gtk.combo_box_new_text()
+        #method_list = ["None", "Manual", "Automatic"]
+        self.methods = ComboBox([("None", 0),
+                                 ("Manual", 1),
+                                 ("Automatic", 2)])
+        self.methods.connect("item-selected", self.method_changed)
 
         #method_list = ["None", "Manual", "Automatic"]
-        map(lambda m: self.methods.append_text(m), method_list)
+        #map(lambda m: self.methods.append_text(m), method_list)
         
         width ,height = 100 ,20
         self.http_entry = InputEntry()
@@ -73,14 +75,18 @@ class ProxyConfig(gtk.VBox):
 
         # Build ui
     def init(self, first_start = False):
+        method_list = ["None", "Manual", "Automatic"]
         mode_list = ["none", "manual", "auto"]
         if first_start:
             mode = self.proxysetting.get_proxy_mode()
-            self.methods.set_active(mode_list.index(mode))
+            index = mode_list.index(mode)
+            self.methods.set_select_index(index)
+            # Just emit signal
+            self.methods.emit("item-selected", None, 0, 0)
             #self.proxysetting.set_http_enabled(True)
         else:
             container_remove_all(self.table)
-            mode = self.methods.get_active()
+            mode = self.methods.get_current_item()[1]
             if mode == 0:
                 self.table.attach(self.method_label, 0, 1, 0, 1)
                 self.table.attach(self.methods, 1, 4, 0, 1)
@@ -134,7 +140,8 @@ class ProxyConfig(gtk.VBox):
 
         self.table.show_all()
 
-    def method_changed(self, widget):
+    def method_changed(self, widget, content, value, index):
+        print "changed"
         self.init()
             
     def save_changes(self, widget):
