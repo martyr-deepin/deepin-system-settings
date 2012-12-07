@@ -113,10 +113,16 @@ def add_crumb(index, label):
         
 def start_module_process(slider, content_page_info, module_path, module_config):
     module_id = module_config.get("main", "id")
+    module_slide_to_page = True
+    if module_config.has_option("main", "slide_to_page"):
+        if module_config.get("main", "slide_to_page") == "False":
+            module_slide_to_page = False
+
     content_page = content_page_info.get_content_page(module_id)
     content_page_info.set_active_module_id(module_id)
     
-    slider.slide_to_page(content_page, "right")
+    if module_slide_to_page:
+        slider.slide_to_page(content_page, "right")
     
     module_dbus_name = "com.deepin.%s_settings" % (module_id)
     if not is_dbus_name_exists(module_dbus_name):
