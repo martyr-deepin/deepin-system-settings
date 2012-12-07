@@ -140,6 +140,7 @@ class NMRemoteSettings(NMObject):
         new_connection = NMConnection()
         for item in settings_dict.iterkeys():
             new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
         return new_connection    
 
@@ -187,6 +188,7 @@ class NMRemoteSettings(NMObject):
         new_connection = NMConnection()
         for item in settings_dict.iterkeys():
             new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
         return new_connection    
 
@@ -224,6 +226,7 @@ class NMRemoteSettings(NMObject):
         new_connection = NMConnection()
         for item in settings_dict.iterkeys():
             new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
         return new_connection    
         
@@ -268,6 +271,7 @@ class NMRemoteSettings(NMObject):
         new_connection = NMConnection()
         for item in settings_dict.iterkeys():
             new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
         return new_connection    
 
@@ -311,6 +315,7 @@ class NMRemoteSettings(NMObject):
         new_connection = NMConnection()
         for item in settings_dict.iterkeys():
             new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
         return new_connection    
 
@@ -349,6 +354,7 @@ class NMRemoteSettings(NMObject):
         new_connection = NMConnection()
         for item in settings_dict.iterkeys():
             new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
         return new_connection    
 
@@ -388,6 +394,7 @@ class NMRemoteSettings(NMObject):
         new_connection = NMConnection()
         for item in settings_dict.iterkeys():
             new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
         return new_connection    
 
