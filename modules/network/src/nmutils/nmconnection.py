@@ -43,7 +43,7 @@ from nmsetting_cdma import NMSettingCdma
 from nmsetting_olpcmesh import NMSettingOlpcMesh
 from nmsetting_infiniband import NMSettingInfiniband
 from nmsetting_wireless_security import NMSettingWirelessSecurity
-from nmlib.nmutils import TypeConvert
+from nmlib.nm_utils import TypeConvert
 
 class NMConnection(gobject.GObject):
     '''NMConnection'''
@@ -108,26 +108,26 @@ class NMConnection(gobject.GObject):
             return getattr(self, self.settings_info[setting_name][3])    
 
 
-    def check_setting_finish(self, settings_dict):
+    def check_setting_finish(self):
         ###check if user complete his setting
+        info_dict = TypeConvert.dbus2py(self.settings_dict)
         try:
-            if settings_dict["connection"]["type"] == "802-3-ethernet":
+            if info_dict["connection"]["type"] == "802-3-ethernet":
                 pass
-            elif settings_dict["connection"]["type"] == "802-11-wireless":
+            elif info_dict["connection"]["type"] == "802-11-wireless":
                 pass
-            elif settings_dict["connection"]["type"] == "pppoe":
+            elif info_dict["connection"]["type"] == "pppoe":
                 pass
-            elif settings_dict["connection"]["type"] == "vpn":
+            elif info_dict["connection"]["type"] == "vpn":
                 pass
-            elif settings_dict["connection"]["type"] == "cdma":
+            elif info_dict["connection"]["type"] == "cdma":
                 pass
-            elif settings_dict["connection"]["type"] == "gsm":
+            elif info_dict["connection"]["type"] == "gsm":
                 pass
             else:
                 print "invalid connection_type"
         except:        
             pass
-
 
     def guess_secret_info(self):
         '''guess_secret_info'''
@@ -239,68 +239,4 @@ class NMConnection(gobject.GObject):
             self.secret_setting_name = None
             self.secret_method = None
             return (self.secret_setting_name, self.secret_method)
-
-    # def get_setting_type(self, setting_name):
-    #     return self.settings_info[setting_name][0]
-
-    # def get_setting_priority(self, setting_name):
-    #     return self.settings_info[setting_name][1]
-
-    # def get_setting_base_type(self, setting_name):
-    #     return self.settings_info[setting_name][4]
-
-    # def add_setting(self, setting):
-    #     if isinstance(setting, NMSetting):
-    #         if setting.name not in self.settings_info.iterkeys():
-    #             print "error:%s unknown setting" % setting.name
-    #         elif setting.name not in self.settings_dict.iterkeys():
-    #             self.settings_dict[setting.name] = setting
-    #         else:
-    #             print "error:%s has already added" % setting.name
-    #     else:
-    #         print "error:%s is not a type of NMSetting" % setting.name
-
-    # def remove_setting(self, setting_name):
-    #     if setting_name not in self.settings_dict.iterkeys():
-    #         print "error:%s hadn't been added" % setting_name
-    #     else:
-    #         del self.settings_dict[setting_name]
-
-    # def update_setting(self, setting):
-    #     self.remove_setting(setting.name)
-    #     self.add_setting(setting)
-    #     setattr(self, self.settings_info[setting.name][3], setting)
-
-    # def replace_settings(self, new_settings):
-    #     self.settings_dict.clear()
-    #     self.settings_dict = copy.deepcopy(new_settings)
-    #     return self.settings_dict
-
-    # def update_secrets(self, setting_name, secrets_dict):
-    #     if setting_name:
-    #         setting = self.get_setting(setting_name)
-    #         if not setting:
-    #             return False
-    #         setting.update_secrets(secrets_dict)
-    #     else:
-    #         pass
-
-    # def need_secrets(self, hints):
-    #     pass
-    
-    # def clear_secrets(self):
-    #     for setting in self.settings_dict.values():
-    #         setting.clear_secrets()
-    #     # g_signal_emit (connection, signals[SECRETS_CLEARED], 0);
-
-    # def clear_secrets_with_flags(self, func, user_data):
-    #     for setting in self.settings_dict.values():
-    #         setting.clear_secrets_with_flags()
-    #     # g_signal_emit (connection, signals[SECRETS_CLEARED], 0);
-
-    # def get_uuid(self):
-    #     return self.get_setting["connection"].get_uuid()
-
-    # def get_id(self):
-    #     return self.get_setting["connection"].get_id()
 
