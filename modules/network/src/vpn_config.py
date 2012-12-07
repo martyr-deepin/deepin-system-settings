@@ -17,7 +17,7 @@ from settings_widget import SettingItem, EntryTreeView
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 from nmlib.nmcache import cache
-from nmlib.nm_vpn_plugin import NMVpnL2tpPlugin, NMVpnPptpPlugin
+from nmlib.nm_remote_connection import NMRemoteConnection
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
@@ -49,15 +49,21 @@ class VPNSetting(gtk.HBox):
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        #vbox.connect("expose-event", self.expose_event)
+        vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
         #hbox = gtk.HBox()
-        apply_button = Button("Apply")
-        apply_button.connect("clicked", self.save_changes)
-        #hbox.pack_start(apply_button, False, False, 0)
+        save_button = Button("Save")
+        apply_button = Button("Connect")
+        #apply_button.set_sensitive(False)
+        button_box = gtk.HBox()
+        button_box.add(save_button)
+        button_box.add(apply_button)
+        apply_button.connect("clicked", self.apply_changes)
+        save_button.connect("clicked", self.save_changes)
+
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(apply_button)
+        buttons_aligns.add(button_box)
         vbox.pack_start(buttons_aligns, False , False)
         #hbox.connect("expose-event", self.expose_event)
 
@@ -113,9 +119,16 @@ class VPNSetting(gtk.HBox):
         print "saving"
 
         connection = self.ipv4.connection
-        print connection.object_path
-        connection.update()
-        
+        if isinstance(connection, NMRemoteConnection):
+            connection.update()
+        else:
+            nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
+            index = self.sidebar.new_connection_list.index(connection)
+            self.sidebar.new_connection_list.pop(index)
+            self.init(self.sidebar.new_connection_list)
+
+    def apply_changes(self, widget):
+        connection = self.ipv4.connection
         # FIXME Now just support one device
 
         #active_connections = nm_module.nmclient.get_active_connections()
@@ -129,7 +142,6 @@ class VPNSetting(gtk.HBox):
             #active_object.connect("vpn-state-changed", self.vpn_state_changed)
         #else:
             #print "no active connection available"
-
 
         wired_devices = nm_module.nmclient.get_wired_devices()
         wireless_devices = nm_module.nmclient.get_wireless_devices() 

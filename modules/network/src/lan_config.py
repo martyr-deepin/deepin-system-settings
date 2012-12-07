@@ -31,6 +31,7 @@ from nm_modules import nm_module
 from settings_widget import EntryTreeView, SettingItem
 from nmlib.nm_utils import TypeConvert
 from nmlib.nmcache import cache
+from nmlib.nm_remote_connection import NMRemoteConnection
 import gtk
 wired_device = []
 
@@ -62,7 +63,7 @@ class WiredSetting(gtk.HBox):
 
         save_button = Button("Save")
         apply_button = Button("Connect")
-        apply_button.set_sensitive(False)
+        #apply_button.set_sensitive(False)
         button_box = gtk.HBox()
         button_box.add(save_button)
         button_box.add(apply_button)
@@ -96,6 +97,8 @@ class WiredSetting(gtk.HBox):
 
         if new_connection:
             connections += new_connection
+        else:
+            self.sidebar.new_connection_list = []
             
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
@@ -132,11 +135,17 @@ class WiredSetting(gtk.HBox):
         self.ipv6.save_changes()
         
         connection = self.ipv4.connection
-        print "connection", connection
-        connection.update()
+        if isinstance(connection, NMRemoteConnection):
+            connection.update()
+        else:
+            nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+            index = self.sidebar.new_connection_list.index(connection)
+            self.sidebar.new_connection_list.pop(index)
+            self.init(None, self.sidebar.new_connection_list)
 
     def apply_changes(self, widget):
-        nm_module.nmclient.activate_connection_async(self.connection.object_path,
+        connection = self.ipv4.connection
+        nm_module.nmclient.activate_connection_async(connection.object_path,
                                            wired_device.object_path,
                                            "/")
         self.device_ethernet = cache.get_spec_object(wired_device.object_path)
@@ -162,9 +171,7 @@ class SideBar(gtk.VBox):
         self.new_connection_list =[]
 
     def init(self, connection_list, ipv4setting):
-
         # check active
-        print wired_device
         active_connection = wired_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()

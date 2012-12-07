@@ -537,15 +537,11 @@ class Network(object):
         slider.show_all()
         slider._set_to_page("main")
 
-    
     def activate_succeed(self, widget, connection_path):
         print connection_path
 
-        #ob = cache.get_specific_object(connection_path)
-        #print ">>>",ob
-
     def activate_failed(self, widget, connection_path):
-        print "failed"
+        pass
 
     def init_sections(self, module_frame):
         #slider._set_to_page("main")
