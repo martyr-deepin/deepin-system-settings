@@ -40,6 +40,6 @@ if __name__ == "__main__":
         if message_type == "show_again":
             module_frame.send_module_info()
 
-    module_frame.module_message_handler = message_handler        
+    module_frame.module_message_handler = message_handler 
     
     module_frame.run()
