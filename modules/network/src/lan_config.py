@@ -26,7 +26,6 @@ from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
-from dtk.ui.combo import ComboBox
 from nm_modules import nm_module
 from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
@@ -74,18 +73,21 @@ class WiredSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self, device = None):
+    def init(self, device=None, new_connection=None):
         # Get all connections
         #print "*in lan_config* ", nm_module.nmclient
-        if device != None:
+        if device is not None:
             wired_device = device
             global wired_device
         connections = nm_module.nm_remote_settings.get_wired_connections()
         # Check connections
         if connections == []:
-            nm_module.nm_remote_settings.new_wired_connection()
-            connections = nm_module.nm_remote_settings.get_wired_connections()
+            connections = [].append(nm_module.nm_remote_settings.new_wired_connection())
+            #connections = nm_module.nm_remote_settings.get_wired_connections()
 
+        if new_connection:
+            connections += new_connection
+            
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
         self.ipv6_setting = [IPV6Conf(con) for con in connections]
@@ -139,9 +141,12 @@ class SideBar(gtk.VBox):
         self.pack_start(add_button, False, False, 6)
         self.set_size_request(160, -1)
 
+        self.new_connection_list =[]
+
     def init(self, connection_list, ipv4setting):
 
         # check active
+        print wired_device
         active_connection = wired_device.get_active_connection()
         if active_connection:
             active = active_connection.get_connection()
@@ -178,8 +183,9 @@ class SideBar(gtk.VBox):
                 return index
 
     def add_new_setting(self, widget):
-        nm_module.nm_remote_settings.new_wired_connection()
-        self.main_init_cb()
+        connection = nm_module.nm_remote_settings.new_wired_connection()
+        self.new_connection_list.append(connection)
+        self.main_init_cb(new_connection=self.new_connection_list)
 
 class NoSetting(gtk.VBox):
     def __init__(self):
@@ -191,9 +197,7 @@ class NoSetting(gtk.VBox):
         label_align.add(label)
         self.add(label_align)
 
-
 class IPV4Conf(gtk.VBox):
-
     def __init__(self, connection = None):
         
         gtk.VBox.__init__(self)

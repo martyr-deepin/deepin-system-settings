@@ -91,17 +91,20 @@ class WirelessSetting(gtk.HBox):
         #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         #cr.fill()
 
-    def init(self, access_point):
+    def init(self, access_point, new_connection_list=None):
         self.access_point = access_point
         # Get all connections  
         connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
         connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
 
+        if new_connection_list:
+            connection_associate += new_connection_list
         connections = connection_associate + connect_not_assocaite
+
         # Check connections
         if connection_associate == []:
-            nm_module.nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
-            connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
+            connection = nm_module.nm_remote_settings.new_wireless_connection(self.access_point.get_ssid())
+            connection_associate.append(connection)
             connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())
             connections = connection_associate + connect_not_assocaite
 
@@ -172,6 +175,7 @@ class SideBar(gtk.VBox):
         add_button.connect("clicked", self.add_new_connection)
         self.pack_start(add_button, False, False, 6)
         self.set_size_request(160, -1)
+        self.new_connection_list = []
 
     def init(self, connection_list, ipv4setting, associate_len, access_point):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
@@ -228,8 +232,10 @@ class SideBar(gtk.VBox):
                 return index
 
     def add_new_connection(self, widget):
-        nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
-        self.main_init_cb(self.access_point)
+        connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
+
+        self.new_connection_list.append(connection)
+        self.main_init_cb(self.access_point, self.new_connection_list)
 
         
 class NoSetting(gtk.VBox):
@@ -743,9 +749,9 @@ class Security(gtk.VBox):
         self.table.attach(self.security_label, 0, 1, 0, 1)
         self.table.attach(self.security_combo, 1, 4, 0, 1)
 
-        (setting_name, method) = self.connection.guess_secret_info() 
         if not self.security_combo.get_current_item()[1] == 0: 
             try:
+                (setting_name, method) = self.connection.guess_secret_info() 
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
