@@ -1,20 +1,22 @@
 Dependence (Debian)
 
+请模块作者、维护者列出import的Python模块、自己开发的、第三方的Python Bindings
+
+Python polkit_permission Bindings
 sudo apt-get install libpolkit-gobject-1-dev
 cd modules/account/src/
 sudo python setup.py install
 
 Python XRandR Bindings
-原始地址 https://launchpad.net/python-xrandr
-维护地址 https://github.com/linuxdeepin/deepin-xrandr
-
-Deepin GSettings
-git@github.com:linuxdeepin/deepin-gsettings.git
+git clone git@github.com:linuxdeepin/deepin-xrandr.git
 sudo python setup.py install
 
-NOTE
+Python Deepin GSettings Bindings
+git clone git@github.com:linuxdeepin/deepin-gsettings.git
+sudo python setup.py install
 
-根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入
-deepin-desktop/schemas
+注意
+
+根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入deepin-desktop/schemas/
 sudo cp deepin-desktop/schemas/com.deepin.dde.background.gschema.xml /usr/share/glib-2.0/schemas/ 
 sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
