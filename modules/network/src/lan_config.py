@@ -27,7 +27,8 @@ from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
 from nm_modules import nm_module
-from widgets import SettingButton
+#from widgets import SettingButton
+from settings_widget import EntryTreeView, SettingItem
 from nmlib.nm_utils import TypeConvert
 from nmlib.nmcache import cache
 import gtk
@@ -54,15 +55,23 @@ class WiredSetting(gtk.HBox):
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        #vbox.connect("expose-event", self.expose_event)
+        vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
         #hbox = gtk.HBox()
-        apply_button = gtk.Button("Apply")
-        apply_button.connect("clicked", self.save_changes)
+
+        save_button = Button("Save")
+        apply_button = Button("Connect")
+        apply_button.set_sensitive(False)
+        button_box = gtk.HBox()
+        button_box.add(save_button)
+        button_box.add(apply_button)
+        apply_button.connect("clicked", self.apply_changes)
+        save_button.connect("clicked", self.save_changes)
+
         #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(apply_button)
+        buttons_aligns.add(button_box)
         vbox.pack_start(buttons_aligns, False , False)
         #hbox.connect("expose-event", self.expose_event)
 
@@ -121,6 +130,15 @@ class WiredSetting(gtk.HBox):
         self.wired.save_setting()
         self.ipv4.save_changes()
         self.ipv6.save_changes()
+        
+        connection = self.ipv4.connection
+        print "connection", connection
+        connection.update()
+
+    def apply_changes(self, widget):
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
+                                           wired_device.object_path,
+                                           "/")
         self.device_ethernet = cache.get_spec_object(wired_device.object_path)
         self.device_ethernet.emit("try-activate-begin")
         self.change_crumb()
@@ -158,29 +176,49 @@ class SideBar(gtk.VBox):
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
-        btn = SettingButton(None, 
-                            self.connections[0],
-                            self.setting[0],
-                            self.check_click_cb)
-        self.buttonbox.pack_start(btn, False, False, 6)
-        for index, connection in enumerate(self.connections[1:]):
-            button = SettingButton(btn,
-                                   connection,
-                                   self.setting[index + 1],
-                                   self.check_click_cb)
-            self.buttonbox.pack_start(button, False, False, 6)
+        cons = []
+        self.connection_tree = EntryTreeView(cons)
+        for index, connection in enumerate(self.connections):
+            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+        self.connection_tree.add_items(cons)
+
+        self.connection_tree.show_all()
+
+        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
 
         try:
             index = self.connections.index(active)
-            self.buttonbox.get_children()[index].check.set_active(True)
+            this_connection = self.connection_tree.visible_items[index]
+            this_connection.set_active(True)
+            self.connection_tree.select_items([this_connection])
         except ValueError:
-            self.buttonbox.get_children()[0].check.set_active(True)
+            self.connection_tree.select_first_item()
+        if self.new_connection_list:
+            connect = self.connection_tree.visible_items[-1]
+            self.connection_tree.select_items([connect])
+
+    def delete_item_cb(self, connection):
+        from nmlib.nm_remote_connection import NMRemoteConnection
+        self.connection_tree.delete_select_items()
+        if isinstance(connection, NMRemoteConnection):
+            connection.delete()
+        else:
+            index = self.new_connection_list.index(connection)
+            self.new_connection_list.pop(index)
+        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
-        checks = self.buttonbox.get_children()
-        for index,c in enumerate(checks):
-            if c.check.get_active():
-                return index
+        return self.connection_tree.select_rows[0]
+
+    def set_active(self):
+        index = self.get_active()
+        this_connection = self.connection_tree.visible_items[index]
+        this_connection.set_active(True)
+
+    def clear_active(self):
+        items = self.connection_tree.visible_items
+        for item in items:
+            item.set_active(False)
 
     def add_new_setting(self, widget):
         connection = nm_module.nm_remote_settings.new_wired_connection()
@@ -296,7 +334,6 @@ class IPV4Conf(gtk.VBox):
         else:
             print "invalid"
 
-
     def check_gate_valid(self, widget):
         text = widget.get_text()
         if TypeConvert.is_valid_gw(self.addr_entry.get_text(),
@@ -306,7 +343,6 @@ class IPV4Conf(gtk.VBox):
         else:
             print "invalid"
         
-
     def check_dns_valid(self, widget):
         text = widget.get_text()
         if TypeConvert.is_valid_ip4(text):
@@ -401,12 +437,7 @@ class IPV4Conf(gtk.VBox):
             if not self.slave_entry.get_text() == "":
                 connection.add_dns(self.slave_entry.get_text())
         
-        connection.adapt_ip4config_commit()
-        self.connection.update()
-
-        nm_module.nmclient.activate_connection_async(self.connection.object_path,
-                                           wired_device.object_path,
-                                           "/")
+        #connection.adapt_ip4config_commit()
 
 class IPV6Conf(gtk.VBox):
 
@@ -528,10 +559,6 @@ class IPV6Conf(gtk.VBox):
     def reset(self, connection):
         self.cs = connection.get_setting("ipv6")       
         self.clear_entry()
-        #print connection.get_setting("connection").id,self.cs.method
-        #print self.cs.method, connection.get_setting("connection").ssid
-        #print "###########" + connection.get_setting("connection").id
-        #print connection.settings_dict
         if self.cs.method == "auto":
             self.auto_ip.set_active(True)
             self.addr_entry.set_sensitive(False)
@@ -616,11 +643,9 @@ class IPV6Conf(gtk.VBox):
             if not self.slave_entry.get_text() == "":
                 connection.add_dns(self.slave_entry.get_text())
 
-        print "connection address:"        
-        print connection.addresses
-        connection.adapt_ip6config_commit()
+        #connection.adapt_ip6config_commit()
         #print self.connection.get_setting("connection").id
-        self.connection.update()
+        #self.connection.update()
 
 #class Security(gtk.VBox):
 

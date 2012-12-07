@@ -68,14 +68,19 @@ class VPNSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self):
+    def init(self, new_connection=None):
         # Get all connections  
         connections = nm_module.nm_remote_settings.get_vpn_connections()
         # Check connections
         if connections == []:
             # Create a new connection
-            nm_module.nm_remote_settings.new_vpn_pptp_connection()
-            connections = nm_module.nm_remote_settings.get_vpn_connections()
+            connect = nm_module.nm_remote_settings.new_vpn_pptp_connection()
+            connections = connections.append(connect)
+
+        if new_connection:
+            connections += new_connection
+        else:
+            self.sidebar.new_connection_list = []
 
         self.ipv4_setting = [IPV4Conf(con) for con in connections]
         self.pptp_setting = [PPTPConf(con, self.module_frame) for con in connections]
@@ -198,6 +203,8 @@ class SideBar(gtk.VBox):
         add_button.connect("clicked", self.add_new_connection)
         self.pack_start(add_button, False, False, 6)
         self.set_size_request(160, -1)
+
+        self.new_connection_list = []
     
     def init(self, connection_list, ip4setting):
         # check active
@@ -211,7 +218,6 @@ class SideBar(gtk.VBox):
 
         self.connections = connection_list
         self.setting = ip4setting
-        print '>>>',self.connections
         
         # Add connection buttons
         container_remove_all(self.buttonbox)
@@ -232,10 +238,19 @@ class SideBar(gtk.VBox):
             self.connection_tree.select_items([this_connection])
         except ValueError:
             self.connection_tree.select_first_item()
+        if self.new_connection_list:
+            connect = self.connection_tree.visible_items[-1]
+            self.connection_tree.select_items([connect])
 
     def delete_item_cb(self, connection):
+
+        from nmlib.nm_remote_connection import NMRemoteConnection
         self.connection_tree.delete_select_items()
-        connection.delete()
+        if isinstance(connection, NMRemoteConnection):
+            connection.delete()
+        else:
+            index = self.new_connection_list.index(connection)
+            self.new_connection_list.pop(index)
         self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
@@ -253,7 +268,8 @@ class SideBar(gtk.VBox):
     
     def add_new_connection(self, widget):
         new_connection = nm_module.nm_remote_settings.new_vpn_pptp_connection()
-        self.main_init_cb()
+        self.new_connection_list.append(new_connection)
+        self.main_init_cb(self.new_connection_list)
 
 class NoSetting(gtk.VBox):
     def __init__(self):
@@ -559,7 +575,7 @@ class PPTPConf(gtk.VBox):
                 #self.password_entry.entry.set_text(password)
                 self.password_entry.set_text(password)
         except:
-            print "failed to get password"
+            pass
 
         if domain:
             self.nt_domain_entry.set_text(domain)
@@ -710,7 +726,7 @@ class PPPConf(gtk.VBox):
 
     def init_ui(self):
         self.service_type = self.vpn_setting.service_type.split(".")[-1]
-        print self.service_type
+        #print self.service_type
         container_remove_all(self.table)
         container_remove_all(self.ip_sec_table)
         self.table.attach(self.compression, 0, 5, 0 ,1)
@@ -742,7 +758,7 @@ class PPPConf(gtk.VBox):
         # retreieve settings
         self.init_ui()
         refuse_eap = self.vpn_setting.get_data_item("refuse-eap")
-        print ">>",self.vpn_setting.data
+        #print ">>",self.vpn_setting.data
         
         refuse_pap = self.vpn_setting.get_data_item("refuse-pap")
         refuse_chap = self.vpn_setting.get_data_item("refuse-chap")
