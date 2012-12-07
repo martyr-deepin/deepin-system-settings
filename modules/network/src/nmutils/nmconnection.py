@@ -107,9 +107,8 @@ class NMConnection(gobject.GObject):
                 setattr(self, self.settings_info[setting_name][3], apply(self.settings_info[setting_name][0]))
             return getattr(self, self.settings_info[setting_name][3])    
 
-
     def check_setting_finish(self):
-        ###check if user complete his setting
+        ###check if user complete his setting, avoid the missing property exception
         info_dict = TypeConvert.dbus2py(self.settings_dict)
         try:
             if info_dict["connection"]["type"] == "802-3-ethernet":
@@ -118,6 +117,49 @@ class NMConnection(gobject.GObject):
                 pass
             elif info_dict["connection"]["type"] == "pppoe":
                 pass
+            elif info_dict["connection"]["type"] == "vpn":
+                pass
+            elif info_dict["connection"]["type"] == "cdma":
+                pass
+            elif info_dict["connection"]["type"] == "gsm":
+                pass
+            else:
+                print "invalid connection_type"
+        except:        
+            pass
+
+    def check_setting_commit(self):
+        ###delete invalid setting property before update
+        info_dict = TypeConvert.dbus2py(self.settings_dict)
+        try:
+            if info_dict["connection"]["type"] == "802-3-ethernet":
+                if not self.get_setting("802-3-ethernet").wired_valid():
+                    ###or raise exception
+                    return False
+                self.get_setting("ipv4").adapt_ip4config_commit()
+
+                if "ipv6" in info_dict.iterkeys():
+                    self.get_setting("ipv6").apapt_ip6config_commit()
+
+            elif info_dict["connection"]["type"] == "802-11-wireless":
+                self.get_setting("802-11-wireless").adapt_wireless_commit()
+
+                if "802-11-wireless-security" in info_dict.iterkeys():
+                    self.get_setting("802-11-wireles-security").adapt_wireless_security_commit()
+
+                self.get_setting("ipv4").adapt_ip4config_commit()
+
+                if "ipv6" in info_dict.iterkeys():
+                    self.get_setting("ipv6").apapt_ip6config_commit()
+
+            elif info_dict["connection"]["type"] == "pppoe":
+                if not self.get_setting("802-3-ethernet").wired_valid():
+                    return False
+                self.get_setting("ipv4").adapt_ip4config_commit()
+
+                if "ipv6" in info_dict.iterkeys():
+                    self.get_setting("ipv6").apapt_ip6config_commit()
+
             elif info_dict["connection"]["type"] == "vpn":
                 pass
             elif info_dict["connection"]["type"] == "cdma":
@@ -239,4 +281,3 @@ class NMConnection(gobject.GObject):
             self.secret_setting_name = None
             self.secret_method = None
             return (self.secret_setting_name, self.secret_method)
-

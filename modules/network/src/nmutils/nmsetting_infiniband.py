@@ -28,5 +28,4 @@ class NMSettingInfiniband(NMSetting):
     
     def __init__(self):
         NMSetting.__init__(self)
-        
         self.name = "infiniband"

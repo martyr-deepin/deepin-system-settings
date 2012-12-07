@@ -21,7 +21,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from nmsetting import NMSetting
-from nmlib.nmconstant import NMSettingParamFlags as pflag
 
 class NMSettingOlpcMesh(NMSetting):
     '''NMSettingOlpcMesh'''
@@ -29,27 +28,3 @@ class NMSettingOlpcMesh(NMSetting):
     def __init__(self):
         NMSetting.__init__(self)
         self.name = "802-11-olpc-mesh"
-
-    @property    
-    def ssid(self):
-        return self._ssid
-
-    @ssid.setter
-    def ssid(self, new_ssid):
-        self._ssid = new_ssid
-
-    @property
-    def channel(self):
-        return self._channel
-
-    @channel.setter
-    def channel(self, new_channel):
-        self._channel = new_channel
-
-    @property
-    def dhcp_anycast_addr(self):
-        return self._dhcp_anycast_addr
-
-    @dhcp_anycast_addr.setter
-    def dhcp_anycast_addr(self, new_dhcp_anycast_addr):
-        self._dhcp_anycast_addr = new_dhcp_anycast_addr

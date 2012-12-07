@@ -132,51 +132,52 @@ class NMDeviceWifi(NMDevice):
             return False
 
     def update_ap_list(self):
-        ssids = self.__get_ssid_record()
-        if ssids:
-            return map(lambda ssid:self.__get_same_ssid_ap(ssid)[0], ssids)
-        else:
+        try:
+            ssids = self.__get_ssid_record()
+            if ssids:
+                return map(lambda ssid:self.__get_same_ssid_ap(ssid)[0], ssids)
+        except:    
             return []
 
     def update_opt_ap_list(self):
         '''return the ap list whoes item have the most strength signal with the same ssid'''
-        # return map(lambda ssid:self.get_ap_by_ssid(ssid), self.__get_ssid_record())
-        ssids = self.__get_ssid_record()
-        if ssids:
-            return map(lambda ssid:self.get_ap_by_ssid(ssid), ssids)
-        else:
+        try:
+            ssids = self.__get_ssid_record()
+            if ssids:
+                return map(lambda ssid:self.get_ap_by_ssid(ssid), ssids)
+        except:    
             return []
 
     def order_ap_list(self):
         '''order different ssis ap'''
-        # return sorted(self.update_opt_ap_list(), key = lambda x:(101 - int(x.get_strength())))
-        aps = self.update_opt_ap_list()
-        if aps:
-            return sorted(self.update_opt_ap_list(), key = lambda x:(101 - int(x.get_strength())))
-        else:
+        try:
+            aps = self.update_opt_ap_list()
+            if aps:
+                return sorted(self.update_opt_ap_list(), key = lambda x:(101 - int(x.get_strength())))
+        except:
             return []
 
     def get_ap_by_ssid(self, ssid):
-        # return sorted(self.__get_same_ssid_ap(ssid), key = lambda x:x.get_strength())[-1]
-        ssid_aps = self.__get_same_ssid_ap(ssid)
-        if ssid_aps:
-            return sorted(self.__get_same_ssid_ap(ssid), key = lambda x:x.get_strength())[-1]
-        else:
+        try:
+            ssid_aps = self.__get_same_ssid_ap(ssid)
+            if ssid_aps:
+                return sorted(self.__get_same_ssid_ap(ssid), key = lambda x:x.get_strength())[-1]
+        except:    
             return []
 
     def __get_ssid_record(self):
-        # return list(set(map(lambda x:x.get_ssid(), self.origin_ap_list)))
-        aps = self.origin_ap_list
-        if aps:
-            return list(set(map(lambda x:x.get_ssid(), self.origin_ap_list)))
-        else:
+        try:
+            aps = self.origin_ap_list
+            if aps:
+                return list(set(map(lambda x:x.get_ssid(), self.origin_ap_list)))
+        except:
             return []
 
     def __get_same_ssid_ap(self, ssid):
-        # return filter(lambda x:x.get_ssid() == ssid, self.origin_ap_list)
-        if self.origin_ap_list:
-            return filter(lambda x:x.get_ssid() == ssid, self.origin_ap_list)
-        else:
+        try:
+            if self.origin_ap_list:
+                return filter(lambda x:x.get_ssid() == ssid, self.origin_ap_list)
+        except:
             return []
     #Signals##
     def access_point_added_cb(self, ap_object_path):

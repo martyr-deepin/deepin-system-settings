@@ -66,12 +66,6 @@ class NMSettingPPPOE (NMSetting):
     def password_flags(self, new_password_flags):
         self.prop_dict["password-flags"] = TypeConvert.py2_dbus_uint32(new_password_flags)
 
-    def __verify(self):
-        pass
-
-    def __need_secrets(self):
-        pass
-
 if __name__ == "__main__":
     pass
     
