@@ -8,6 +8,10 @@ Python XRandR Bindings
 原始地址 https://launchpad.net/python-xrandr
 维护地址 https://github.com/linuxdeepin/deepin-xrandr
 
+Deepin GSettings
+git@github.com:linuxdeepin/deepin-gsettings.git
+sudo python setup.py install
+
 NOTE
 
 根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入

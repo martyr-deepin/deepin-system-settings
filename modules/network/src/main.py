@@ -180,12 +180,6 @@ class WirelessDevice(object):
                     self.tree.queue_draw()
             except:
                 pass
-    #def try_to_connect_end(self, widget, ap_object):
-        #pass
-        #print ap_object.get_ssid(),"end"
-        #index = self.ap_list.index(ap_object)
-        #self.tree.visible_items[index].network_state = 0
-        #self.tree.queue_draw()
 
 class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
@@ -284,8 +278,6 @@ class WirelessSection(gtk.VBox):
 
         return index
                 
-
-
 class WifiSection(gtk.VBox):
 
     def __init__(self):
@@ -313,7 +305,6 @@ class WifiSection(gtk.VBox):
             self.h.destroy()
 
 class DSL(gtk.VBox):
-
     def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb

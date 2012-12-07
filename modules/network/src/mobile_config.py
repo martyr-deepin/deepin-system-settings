@@ -223,17 +223,10 @@ class SideBar(gtk.VBox):
         self.connection_tree.delete_select_items()
         connection.delete()
         self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
-        #self.main_init_cb()
-        #if len(self.connection_tree.visible_items) != 1:
-            #self.connection_tree.delete_select_items()
-            #self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]
-        #checks = self.buttonbox.get_children()
-        #for index,c in enumerate(checks):
-            #if c.check.get_active():
-                #return index
+
     def set_active(self, connection):
         item = self.cons[self.connections.index(connection)]
         self.connection_tree.select_items([item])
@@ -270,7 +263,8 @@ class Broadband(gtk.VBox):
 
         # Init widgets
         self.table = gtk.Table(12, 4, True)
-
+        self.table.set_size_request(500,500)
+        
         self.label_basic = Label("Basic")
         self.label_number = Label("Number:")
         self.label_username = Label("Username:")
@@ -301,13 +295,15 @@ class Broadband(gtk.VBox):
                                       ("3G", 0),
                                       ("2G", 1),
                                       ("Prefer 3G", 2),
-                                      ("Prefer 2G", 3)])
+                                      ("Prefer 2G", 3)],
+                                      max_width=300)
         #self.network_type.set_size(200,25 )
         self.roam_check = CheckButton("Allow roaming if home network is not available")
         self.pin = InputEntry()
         self.pin.set_size(200,25 )
         
         align = gtk.Alignment(0.5, 0.5, 0, 0)
+        align.set_padding(50,50,0,0)
         align.add(self.table)
         self.add(align)
         
