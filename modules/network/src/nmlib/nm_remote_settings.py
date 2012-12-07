@@ -54,6 +54,8 @@ class NMRemoteSettings(NMObject):
         '''return connections object'''
         conns = self.dbus_method("ListConnections")
         if conns:
+            ###order connections by their object path
+            conns = sorted(conns, key = lambda x:x.split("/")[-1])
             return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(conns))
         else:
             return []
