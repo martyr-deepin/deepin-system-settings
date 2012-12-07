@@ -870,8 +870,7 @@ class Wireless(gtk.VBox):
         self.ssid_entry = InputEntry()
 
         self.mode_label = Label("Mode:")
-        self.mode_combo = gtk.combo_box_new_text()
-        map(lambda s: self.mode_combo.append_text(s), ["Infrastructure", "Ad-hoc"])
+        self.mode_combo = ComboBox([("Infrastructure",0),( "Ad-hoc", 1)], max_width=170)
         
         # TODO need to put this section to personal wifi
         #self.band_label = Label("Band:")
@@ -955,10 +954,10 @@ class Wireless(gtk.VBox):
 
         if wireless.mode == 'infrastructure':
             #self.mode_combo.set_select_index(0)
-            self.mode_combo.set_active(0)
+            self.mode_combo.set_select_index(0)
         else:
             #self.mode_combo.set_select_index(1)
-            self.mode_combo.set_active(1)
+            self.mode_combo.set_select_index(1)
 
         if wireless.mac_address != None:
             self.mac_entry.set_text(wireless.mac_address)
@@ -973,9 +972,7 @@ class Wireless(gtk.VBox):
     def save_change(self):
         
         self.wireless.ssid = self.ssid_entry.get_text()
-        model = self.mode_combo.get_model()
-        active = self.mode_combo.get_active()
-        self.wireless.mode = model[active][0]
+        self.wireless.mode = self.mode_combo.get_current_item()[0]
 
         if self.bssid_entry.get_text() != "":
             self.wireless.bssid = self.bssid_entry.get_text()
@@ -989,4 +986,4 @@ class Wireless(gtk.VBox):
         # TODO add update functions
         #connection.adapt_ip4config_commit()
         #self.connection.update()
-        
+

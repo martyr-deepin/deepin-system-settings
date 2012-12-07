@@ -243,7 +243,6 @@ class WirelessSection(gtk.VBox):
                 for i in index:
                     self.tree.visible_items[i].network_state = 2
             else:
-                #print "try to connect"
                 for wireless_device in self.wireless_devices:
                     device_wifi = cache.get_spec_object(wireless_device.object_path)
                     device_wifi.auto_connect()
@@ -267,6 +266,11 @@ class WirelessSection(gtk.VBox):
                               self.settings,
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
+
+        items.append(GeneralItem("connect to hiden newwork",
+                                 self.settings,
+                                 lambda :slider.slide_to_page(self.settings, "right"),
+                                 self.send_to_crumb_cb))
         return items
 
     def get_actives(self, ap_list):

@@ -33,6 +33,7 @@ import os
 import pango
 BORDER_COLOR = color_hex_to_cairo("#aeaeae")
 
+
 class WirelessItem(TreeItem):
 
     CHECK_LEFT_PADDING = 10
@@ -523,10 +524,18 @@ class GeneralItem(TreeItem):
         return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
-        return [self.check_width, -1,self.jumpto_width]
+        return [self.check_width, -1,-1, self.jumpto_width]
 
     def get_column_renders(self):
-        return [self.render_check, self.render_name, self.render_jumpto]
+        return [self.render_check,
+                self.render_name,
+                lambda cr, rect: self.render_background(self, cr, rect),
+                self.render_jumpto]
+
+    def render_background(self, item, cr, rect):
+        if item.is_select:
+            draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height,
+                         ui_theme.get_shadow_color("listview_select").get_color_info())
 
     def get_height(self):
         return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
