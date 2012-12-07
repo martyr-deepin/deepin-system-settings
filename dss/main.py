@@ -26,6 +26,7 @@ from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
 from dtk.ui.breadcrumb import Crumb
 from dtk.ui.utils import is_dbus_name_exists
+from dtk.ui.unique_service import UniqueService, is_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo
 from action_bar import ActionBar
@@ -131,11 +132,19 @@ def start_module_process(slider, content_page_info, module_path, module_config):
         send_message(module_id, "show_again", "")
             
 if __name__ == "__main__":
+    # Check unique.                                                              
+    if is_exists(APP_DBUS_NAME, APP_OBJECT_NAME):                                
+        sys.exit()
+
     # WARING: only use once in one process
     DBusGMainLoop(set_as_default=True) 
     
     # Init application.
     application = Application()
+
+    # Startup unique service, must after application code.                       
+    #app_bus_name = dbus.service.BusName(APP_DBUS_NAME, bus=dbus.SessionBus())       
+    #UniqueService(app_bus_name, APP_DBUS_NAME, APP_OBJECT_NAME, application.raise_to_top)
 
     # Set application default size.
     application.window.set_geometry_hints(
