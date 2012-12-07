@@ -392,28 +392,6 @@ class NMRemoteSettings(NMObject):
         return new_connection    
 
     def new_connection_finish(self, settings_dict, connection_type):
-        if connection_type == "wired":
-            pass
-        elif connection_type == "wireless":
-            try:
-                if settings_dict["connection"]["type"] == "802-11-wireless":
-                    if "802-11-wireless-security" in settings_dict.iterkeys():
-                        if "key-mgmt" not in settings_dict["802-11-wireless-security"].iterkeys():
-                            print "invalid"
-                else:
-                    print "invalid connection_type"
-            except:
-                    print "invalid connection_type"
-        elif connection_type == "pppoe":
-            pass
-        elif connection_type == "vpn":
-            pass
-        elif connection_type == "cdma":
-            pass
-        elif connection_type == "gsm":
-            pass
-        else:
-            print "invalid connection_type"
 
         return self.add_connection(settings_dict)
 
