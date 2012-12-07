@@ -66,7 +66,6 @@ class NMRemoteSettings(NMObject):
         self.dbus_method("SaveHostname", hostname)
     
     def add_connection(self, settings_dict):
-        # return cache.getobject(self.dbus_method("AddConnection", settings_dict))
         conn_path = self.dbus_method("AddConnection", settings_dict)
         if conn_path:
             return cache.getobject(conn_path)
@@ -140,7 +139,7 @@ class NMRemoteSettings(NMObject):
 
         return self.add_connection(settings_dict)
 
-    def new_wireless_connection(self, ssid = None, key_mgmt = None):
+    def new_wireless_connection(self, ssid = None, key_mgmt = "wpa-psk"):
         ###Please pass key_mgmt as the wireless isn't privacy
         s_connection = NMSettingConnection()
         s_wireless = NMSettingWireless()
@@ -181,6 +180,7 @@ class NMRemoteSettings(NMObject):
         settings_dict["802-11-wireless-security"]["psk"] = "Password"
 
         return self.add_connection(settings_dict)
+        # return settings_dict
 
     def new_pppoe_connection(self):
         s_connection = NMSettingConnection()
@@ -361,8 +361,34 @@ class NMRemoteSettings(NMObject):
                          "ipv4":s_ip4config.prop_dict
                          }
         #just for debug
-        self.pptp_settings_dict = settings_dict
+        # self.pptp_settings_dict = settings_dict
         #just for debug
+
+        return self.add_connection(settings_dict)
+
+    def new_connection_finish(self, settings_dict, connection_type):
+        if connection_type == "wired":
+            pass
+        elif connection_type == "wireless":
+            try:
+                if settings_dict["connection"]["type"] == "802-11-wireless":
+                    if "802-11-wireless-security" in settings_dict.iterkeys():
+                        if "key-mgmt" not in settings_dict["802-11-wireless-security"].iterkeys():
+                            print "invalid"
+                else:
+                    print "invalid connection_type"
+            except:
+                    print "invalid connection_type"
+        elif connection_type == "pppoe":
+            pass
+        elif connection_type == "vpn":
+            pass
+        elif connection_type == "cdma":
+            pass
+        elif connection_type == "gsm":
+            pass
+        else:
+            print "invalid connection_type"
 
         return self.add_connection(settings_dict)
 
