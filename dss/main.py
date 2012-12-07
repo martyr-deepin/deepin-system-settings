@@ -26,7 +26,7 @@ from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
 from dtk.ui.breadcrumb import Crumb
 from dtk.ui.utils import is_dbus_name_exists
-from dtk.ui.unique_service import UniqueService, is_exists
+from dtk.ui.unique_service import is_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo
 from action_bar import ActionBar
@@ -36,6 +36,7 @@ import subprocess
 import os
 from module_info import get_module_infos
 from dbus.mainloop.glib import DBusGMainLoop
+import sys
 import dbus
 import dbus.service
 import dbus
@@ -43,14 +44,19 @@ import dbus.service
 
 class DBusService(dbus.service.Object):
     def __init__(self, 
-                 action_bar,
-                 content_page_info,
+                 action_bar, 
+                 content_page_info, 
+                 application=None
                  ):
         # Init dbus object.
         bus_name = dbus.service.BusName(APP_DBUS_NAME, bus=dbus.SessionBus())
         dbus.service.Object.__init__(self, bus_name, APP_OBJECT_NAME)
 
         # Define DBus method.
+        def unique(self):
+            if application:
+                application.raise_to_top()
+        
         def message_receiver(self, *message):
             (message_type, message_content) = message
             if message_type == "send_plug_id":
@@ -75,7 +81,10 @@ class DBusService(dbus.service.Object):
         setattr(DBusService, 
                 'message_receiver', 
                 dbus.service.method(APP_DBUS_NAME)(message_receiver))
-        
+        setattr(DBusService, 
+                'unique', 
+                dbus.service.method(APP_DBUS_NAME)(unique))
+
 def handle_dbus_reply(*reply):
     print "com.deepin.system_settings (reply): %s" % (str(reply))
     
@@ -141,10 +150,6 @@ if __name__ == "__main__":
     
     # Init application.
     application = Application()
-
-    # Startup unique service, must after application code.                       
-    #app_bus_name = dbus.service.BusName(APP_DBUS_NAME, bus=dbus.SessionBus())       
-    #UniqueService(app_bus_name, APP_DBUS_NAME, APP_OBJECT_NAME, application.raise_to_top)
 
     # Set application default size.
     application.window.set_geometry_hints(
@@ -215,6 +220,6 @@ if __name__ == "__main__":
     application.main_box.pack_start(main_align)
     
     # Start dbus service.
-    DBusService(action_bar, content_page_info)
+    DBusService(action_bar, content_page_info, application)
     
     application.run()
