@@ -21,7 +21,7 @@
 from theme import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -672,27 +672,27 @@ class Security(gtk.VBox):
         self.auth_label = Label("Authentication:")
         self.password_label = Label("Password:")
 
-        self.security_combo = gtk.combo_box_new_text()
-        self.model = self.security_combo.get_model()
-
         self.encry_list = ["None", 
                       "WEP (Hex or ASCII)",
                       "WEP 104/128-bit Passphrase",
-                      "WPA & WPA2 Personal"]
-        map(lambda s: self.security_combo.append_text(s), self.encry_list)
-        self.security_combo.connect("changed", self.changed_cb)
-        self.key_entry = InputEntry()
+                      "WPA WPA2 Personal"]
+        entry_item = map(lambda l: (l[1],l[0]), enumerate(self.encry_list))
+        self.security_combo = ComboBox(entry_item, max_width=222)
+        self.security_combo.set_size_request(222, 22)
+
+        self.security_combo.connect("item-selected", self.changed_cb)
+        self.key_entry = PasswordEntry()
         self.key_entry.entry.connect("press-return", self.check_wep_validation)
         #self.key_entry.set_size(200, 50)
-        self.password_entry = InputEntry()
+        self.password_entry = PasswordEntry()
         #self.password_entry.set_size(200, 50)
         self.password_entry.entry.connect("press-return", self.check_wpa_validate)
         self.show_key_check = CheckButton("Show key")
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
-        self.wep_index_spin = SpinBox(0, 0,3,1 ,55 )
+        self.wep_index_spin = SpinBox(0, 0,3,1 ,55)
         self.wep_index_spin.connect("value-changed", self.wep_index_spin_cb)
-        self.auth_combo = gtk.combo_box_new_text()
-        map(lambda s: self.auth_combo.append_text(s), ["Open System", "Shared Key"])
+        self.auth_combo = ComboBox(map(lambda l:(l[1],l[0]), enumerate(["Open System", "Shared Key"])))
+        #map(lambda s: self.auth_combo.append_text(s), ["Open System", "Shared Key"])
 
         ## Create table
         self.table = gtk.Table(5, 4, True)
@@ -701,9 +701,10 @@ class Security(gtk.VBox):
         self.key_mgmt = self.setting.key_mgmt
         if self.key_mgmt == "none":
             key_type = self.setting.wep_key_type
-            self.security_combo.set_active(key_type)
+            self.security_combo.set_select_index(key_type)
         else:
-            self.security_combo.set_active(keys.index(self.key_mgmt))
+            self.security_combo.set_select_index(keys.index(self.key_mgmt))
+        self.security_combo.emit("item-selected", None, 0, 0)
             
         #self.reset(True)
 
@@ -713,8 +714,10 @@ class Security(gtk.VBox):
         #TODO UI change
         align = gtk.Alignment(0, 0, 0, 0)
         align.set_padding(35, 0, 120, 0)
-
         align.add(self.table)
+        self.table.set_size_request(340, -1)
+        self.key_entry.set_size(222, 22)
+        self.password_entry.set_size(222, 22)
 
         self.add(align)
 
@@ -728,7 +731,7 @@ class Security(gtk.VBox):
     def check_wep_validation(self, widget):
         key = widget.get_text()
         print key, self.setting.wep_key_type
-        active = self.security_combo.get_active()
+        active = self.security_combo.get_current_item(1)
         if self.setting.verify_wep_key(key, 1):
             print "valid"
         else:
@@ -741,7 +744,7 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo, 1, 4, 0, 1)
 
         (setting_name, method) = self.connection.guess_secret_info() 
-        if not self.security_combo.get_active() == 0: 
+        if not self.security_combo.get_current_item()[1] == 0: 
             try:
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
@@ -750,16 +753,17 @@ class Security(gtk.VBox):
                 secret = ""
 
 
-        if self.security_combo.get_active() == 3:
+        if self.security_combo.get_current_item()[1] == 3:
             self.table.attach(self.password_label, 0, 1, 1, 2)
             self.table.attach(self.password_entry, 1, 4, 1, 2)
+            self.table.attach(self.show_key_check, 1, 4, 2, 3)
             
             try:
-                self.password_entry.set_text(secret)
+                self.password_entry.entry.set_text(secret)
             except:
-                self.password_entry.set_text("")
+                self.password_entry.entry.set_text("")
 
-        elif self.security_combo.get_active() >=1:
+        elif self.security_combo.get_current_item()[1] >=1:
             # Add Key
             self.table.attach(self.key_label, 0, 1, 1, 2)
             self.table.attach(self.key_entry, 1, 4, 1, 2)
@@ -778,26 +782,30 @@ class Security(gtk.VBox):
                 key = secret
                 index = self.setting.wep_tx_keyidx
                 auth = self.setting.auth_alg
-                self.auth_combo.set_active(["open", "shared"].index(auth))
+                self.auth_combo.set_select_index(["open", "shared"].index(auth))
             except:
                 key = ""
                 index = 0
                 auth = "open"
             # must convert long int to int 
             index = int(index)
-            self.key_entry.set_text(key)
+            self.key_entry.entry.set_text(key)
             self.wep_index_spin.set_value(index)
-            self.auth_combo.set_active(["open", "shared"].index(auth))
+            self.auth_combo.set_select_index(["open", "shared"].index(auth))
 
         self.table.show_all()
         #if secret:
             ## TODO need to add entry show password 
     
     def show_key_check_button_cb(self, widget):
+        index = self.security_combo.get_current_item()[1]
+        entry = [self.password_entry, self.key_entry][index is not 3]
         if widget.get_active():
-            pass
+            entry.show_password(True)
+        else:
+            entry.show_password(False)
     
-    def changed_cb(self, widget):
+    def changed_cb(self, widget, content, value, index):
         self.reset(True)
 
     def wep_index_spin_cb(self, widget, value):
@@ -807,25 +815,25 @@ class Security(gtk.VBox):
 
         if key == None:
             key = ''
-        self.key_entry.set_text(key)
+        self.key_entry.entry.set_text(key)
         #self.key_entry.queue_draw()
 
     def save_setting(self):
         # Save wpa settings
-        active = self.security_combo.get_active()
+        active = self.security_combo.get_current_item()[1]
         if active == 0:
             pass
         elif active == 3:
-            passwd = self.password_entry.get_text()
+            passwd = self.password_entry.entry.get_text()
             key_mgmt = "wpa-psk"
             self.setting.key_mgmt = key_mgmt
 
             self.setting.psk = passwd
         else:
-            passwd = self.key_entry.get_text()
+            passwd = self.key_entry.entry.get_text()
             index = self.wep_index_spin.get_value()
             key_mgmt = "none"
-            auth_active = self.auth_combo.get_active()
+            auth_active = self.auth_combo.get_current_item()[0]
 
             self.setting.key_mgmt = key_mgmt
             self.setting.wep_key_type = active
@@ -837,7 +845,6 @@ class Security(gtk.VBox):
                 self.setting.auth_alg = "shared"
 
         # Update
-        
         self.setting.adapt_wireless_security_commit()
         self.connection.update()
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
