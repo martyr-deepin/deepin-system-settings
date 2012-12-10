@@ -249,7 +249,9 @@ class WirelessSection(gtk.VBox):
                     device_wifi.auto_connect()
             self.index = index
         else:
-            self.tree.add_items([],0,True)
+            self.tree.delete_all_items()
+            #self.tree.add_items([],0,True)
+            self.vbox.set_no_show_all(True)
             self.vbox.hide()
             for wireless_device in self.wireless_devices:
                 wireless_device.nm_device_disconnect()
