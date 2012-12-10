@@ -370,7 +370,7 @@ class VpnSection(gtk.VBox):
                 nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
 
     def slide_to_event(self, widget, event):
-        self.setting.init()
+        self.setting.init(init_connection=True)
         self.slide_to_subcrumb()
         slider.slide_to_page(self.setting, "right")
 
@@ -386,15 +386,12 @@ class VpnSection(gtk.VBox):
 class Mobile(gtk.VBox):
     def __init__(self,
                  send_to_crumb_cb):
-
         gtk.VBox.__init__(self)
         self.send_to_crumb_cb = send_to_crumb_cb
         mobile = Contain(app_theme.get_pixbuf("/Network/3g.png"), "移动网络", self.toggle_cb)
         self.add(mobile)
         self.settings = None
-
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
-        
 
     def toggle_cb(self, widget):
         active = widget.get_active()

@@ -254,26 +254,20 @@ class IPV4Conf(gtk.VBox):
         self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
         table.attach(self.manual_ip, 0,1,1,2)
 
-        addr_label = Label("IP地址:")
-        table.attach(addr_label, 0,1,2,3)
+        self.addr_label = Label("IP地址:")
+        table.attach(self.addr_label, 0,1,2,3)
         self.addr_entry = InputEntry()
-        #self.addr_entry.set_size(30, 25)
-        self.addr_entry.entry.connect("press-return", self.check_ip_valid)
         self.addr_entry.set_sensitive(False)
         table.attach(self.addr_entry, 1,2,2,3)
 
-        mask_label = Label("子网掩码:")
-        table.attach(mask_label, 0,1,3,4)
+        self.mask_label = Label("子网掩码:")
+        table.attach(self.mask_label, 0,1,3,4)
         self.mask_entry = InputEntry()
-        #self.mask_entry.set_size(30, 25)
-        self.mask_entry.entry.connect("press-return", self.check_mask_valid)
         table.attach(self.mask_entry, 1,2,3,4)
         
-        gate_label = Label("默认网关")
-        table.attach(gate_label, 0,1,4,5)
+        self.gate_label = Label("默认网关")
+        table.attach(self.gate_label, 0,1,4,5)
         self.gate_entry = InputEntry()
-        #self.gate_entry.set_size(30, 25)
-        self.gate_entry.entry.connect("press-return", self.check_gate_valid)
         table.attach(self.gate_entry, 1,2,4,5)
         
         #DNS configuration
@@ -282,20 +276,17 @@ class IPV4Conf(gtk.VBox):
         table.attach(self.auto_dns, 0, 1, 5, 6) 
         table.attach(self.manual_dns, 0, 1, 6, 7)
 
-        master_dns = Label("首选DNS服务器地址:")
-        slave_dns = Label("使用下面的DNS服务器地址:")
+        self.master_dns = Label("首选DNS服务器地址:")
+        self.slave_dns = Label("使用下面的DNS服务器地址:")
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
-        #self.master_entry.set_size(30, 25)
-        #self.slave_entry.set_size(30, 25)
-        self.master_entry.entry.connect("press-return", self.check_dns_valid)
-        self.slave_entry.entry.connect("press-return", self.check_dns_valid)
         
-        table.attach(master_dns, 0, 1, 7, 8)
+        table.attach(self.master_dns, 0, 1, 7, 8)
         table.attach(self.master_entry, 1, 2, 7, 8)
-        table.attach(slave_dns, 0, 1, 8, 9)
+        table.attach(self.slave_dns, 0, 1, 8, 9)
         table.attach(self.slave_entry, 1, 2, 8, 9)
 
+        # TODO UI change
         table.set_size_request(340, 227)
         align = gtk.Alignment(0, 0, 0, 0)
         align.set_padding(35, 0, 120, 0)
@@ -307,142 +298,155 @@ class IPV4Conf(gtk.VBox):
         self.mask_entry.set_size(222, 22)
         self.master_entry.set_size(222, 22)
         self.slave_entry.set_size(222, 22)
-        #aligns = gtk.Alignment(0.5,0.5,0,0)
-        #hbox = gtk.HBox()
-        #self.apply_button = gtk.Button("Apply")
         self.show_all()
-        #self.cancel_button = gtk.Button("Cancel")
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        #hbox.pack_start(self.apply_button, False, False, 0)
-        #aligns.add(hbox)
-        #self.add(aligns)
         
-        
-        self.cs =None
         self.reset(connection)
-        self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
-        self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
-        self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
-        self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
-        #self.apply_button.connect("clicked", self.save_changes, self.cs)
-        #self.cancel_button.connect("clicked", self.cancel_changes)
-
-    def check_ip_valid(self, widget ):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
-
-    def check_mask_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_netmask(text):
-            print "valid"
-        else:
-            print "invalid"
-
-    def check_gate_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_gw(self.addr_entry.get_text(),
-                                   self.mask_entry.get_text(),
-                                   text):
-            print "valid"
-        else:
-            print "invalid"
+        self.addr_entry.entry.connect("changed", self.set_ip_address, 0)
+        self.mask_entry.entry.connect("changed", self.set_ip_address, 1)
+        self.gate_entry.entry.connect("changed", self.set_ip_address, 2)
+        self.master_entry.entry.connect("changed", self.set_dns_address, 0)
+        self.slave_entry.entry.connect("changed", self.set_dns_address, 1)
         
-    def check_dns_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
-
+        self.manual_ip.connect("toggled", self.manual_ip_entry)
+        self.auto_ip.connect("toggled", self.auto_get_ip_addr)
+        self.auto_dns.connect("toggled", self.auto_dns_set)
+        self.manual_dns.connect("toggled", self.manual_dns_set)
+        self.ip = ["","",""]
+        self.dns = ["",""]
 
     def reset(self, connection):
-        self.cs = connection.get_setting("ipv4")       
-        self.clear_entry()
-        #print self.cs.dns
-        #print self.cs.method, connection.get_setting("connection").id
-        if self.cs.method == "auto":
+        self.setting = connection.get_setting("ipv4")       
+
+        if self.setting.method == "auto":
             self.auto_ip.set_active(True)
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
+            self.set_group_sensitive("ip", False)
             
         else:
             self.manual_ip.set_active(True)
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not self.cs.addresses == []:
-                self.addr_entry.set_text(self.cs.addresses[0][0])
-                self.mask_entry.set_text(self.cs.addresses[0][1])
-                self.gate_entry.set_text(self.cs.addresses[0][2])
+            self.set_group_sensitive("ip", True)
+            if not self.setting.addresses == []:
+                self.addr_entry.set_text(self.setting.addresses[0][0])
+                self.mask_entry.set_text(self.setting.addresses[0][1])
+                self.gate_entry.set_text(self.setting.addresses[0][2])
 
-        if self.cs.dns == []:
+        if self.setting.dns == []:
             self.auto_dns.set_active(True)
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
+            self.set_group_sensitive("dns", False)
         else:
             self.manual_dns.set_active(True)
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(self.cs.dns) > 1:
-                self.slave_entry.set_text(self.cs.dns[1])
-            self.master_entry.set_text(self.cs.dns[0])
+            self.set_group_sensitive("dns", True)
+            if len(self.setting.dns) > 1:
+                self.slave_entry.set_text(self.setting.dns[1])
+            self.master_entry.set_text(self.setting.dns[0])
 
+    def set_group_sensitive(self, group_name, sensitive):
+        if group_name is "ip":
+            self.addr_label.set_sensitive(sensitive)
+            self.mask_label.set_sensitive(sensitive)
+            self.gate_label.set_sensitive(sensitive)
+            self.addr_entry.set_sensitive(sensitive)
+            self.mask_entry.set_sensitive(sensitive)
+            self.gate_entry.set_sensitive(sensitive)
+            if not sensitive:
+                self.addr_entry.set_text("")
+                self.mask_entry.set_text("")
+                self.gate_entry.set_text("")
+        elif group_name is "dns":
+            self.master_dns.set_sensitive(sensitive)
+            self.slave_dns.set_sensitive(sensitive)
+            self.master_entry.set_sensitive(sensitive)
+            self.slave_entry.set_sensitive(sensitive)
+            if not sensitive:
+                self.master_entry.set_text("")
+                self.slave_entry.set_text("")
 
-    def auto_dns_set(self, widget, connection):
+    def set_ip_address(self, widget, content, index):
+        names = ["ip4", "netmask", "gw"]
+        self.ip[index] = content
+        if self.check_valid(names[index]):
+            setattr(self, names[index] + "_flag", True)
+            #print "valid"+ names[index]
+        else:
+            setattr(self, names[index] + "_flag", False)
+
+        if self.check_valid("gw"):
+            #print "update ip4"
+            if self.setting.addresses:
+                self.setting.clear_addresses()
+            self.setting.add_address(self.ip)
+        else:
+            self.setting.clear_addresses()
+
+    def set_dns_address(self, widget, content, index):
+        self.dns[index] = content
+        names = ["master", "slaver"]
+        if TypeConvert.is_valid_ip4(content):
+            setattr(self, names[index] + "_flag", True)
+            #print "valid"+ names[index]
+        else:
+            setattr(self, names[index] + "_flag", False)
+
+        dns = self.check_complete_dns()
+        if dns:
+            #print "update dns"
+            self.setting.clear_dns()
+            for d in dns:
+                self.setting.add_dns(d)
+        else:
+            self.setting.clear_dns()
+            
+    def check_complete_dns(self):
+        dns = []
+        for address in self.dns:
+            if TypeConvert.is_valid_ip4(address):
+                dns.append(address)
+            else:
+                return dns
+        return dns
+
+    def check_valid(self, name):
+        if name == "ip4":
+            return TypeConvert.is_valid_ip4(self.ip[0])
+        elif name == "netmask":
+            return TypeConvert.is_valid_netmask(self.ip[1])
+        elif name == "gw":
+            return TypeConvert.is_valid_gw(self.ip[0], self.ip[1], self.ip[2])
+
+    def auto_dns_set(self, widget):
         if widget.get_active():
-            connection.clear_dns()
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
+            self.setting.clear_dns()
+            self.dns = ["",""]
+            self.set_group_sensitive("dns", False)
 
-    def manual_dns_set(self, widget, connection):
+    def manual_dns_set(self, widget):
         if widget.get_active():
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(connection.dns) == 1:
-                self.master_entry.set_text(connection.dns[0])
-            elif len(connection.dns) > 1:
-                self.slave_entry.set_text(connection.dns[1])
+            self.set_group_sensitive("dns", True)
 
-    def clear_entry(self):
-        self.addr_entry.set_text("")
-        self.mask_entry.set_text("")
-        self.gate_entry.set_text("")
-        self.master_entry.set_text("")
-        self.slave_entry.set_text("")
+    def auto_get_ip_addr(self, widget):
+        if widget.get_active():
+            self.setting.clear_addresses()
+            self.ip = ["","",""]
+            self.setting.method = 'auto'
+            self.set_group_sensitive("ip", False)
 
-    def auto_get_ip_addr(self, widget, connection):
+    def manual_ip_entry(self,widget):
         if widget.get_active():
-            connection.method = 'auto'
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-    def manual_ip_entry(self,widget, connection):
-        if widget.get_active():
-            connection.method = 'manual'
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not connection.addresses == []:
-                self.addr_entry.set_text(connection.addresses[0][0])
-                self.mask_entry.set_text(connection.addresses[0][1])
-                self.gate_entry.set_text(connection.addresses[0][2])
+            self.setting.method = 'manual'
+            self.set_group_sensitive("ip", True)
     
     def save_changes(self):
-        connection = self.cs
-        if connection.method =="manual": 
-            connection.clear_addresses()
-            connection.add_address([self.addr_entry.get_text(),
-                                     self.mask_entry.get_text(),
-                                     self.gate_entry.get_text()])
-            connection.clear_dns()
-            if not self.master_entry.get_text() == "":
-                connection.add_dns(self.master_entry.get_text())
-            if not self.slave_entry.get_text() == "":
-                connection.add_dns(self.slave_entry.get_text())
+        pass
+        #connection = self.setting
+        #if connection.method =="manual": 
+            #connection.clear_addresses()
+            #connection.add_address([self.addr_entry.get_text(),
+                                     #self.mask_entry.get_text(),
+                                     #self.gate_entry.get_text()])
+            #connection.clear_dns()
+            #if not self.master_entry.get_text() == "":
+                #connection.add_dns(self.master_entry.get_text())
+            #if not self.slave_entry.get_text() == "":
+                #connection.add_dns(self.slave_entry.get_text())
         
         #connection.adapt_ip4config_commit()
 
@@ -459,26 +463,20 @@ class IPV6Conf(gtk.VBox):
         self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
         table.attach(self.manual_ip, 0,1,1,2)
 
-        addr_label = Label("IP地址:")
-        table.attach(addr_label, 0,1,2,3)
+        self.addr_label = Label("IP地址:")
+        table.attach(self.addr_label, 0,1,2,3)
         self.addr_entry = InputEntry()
-        #self.addr_entry.set_size(30, 25)
-        self.addr_entry.entry.connect("press-return", self.check_ip_valid)
         self.addr_entry.set_sensitive(False)
         table.attach(self.addr_entry, 1,2,2,3)
 
-        mask_label = Label("前缀:")
-        table.attach(mask_label, 0,1,3,4)
+        self.mask_label = Label("前缀:")
+        table.attach(self.mask_label, 0,1,3,4)
         self.mask_entry = InputEntry()
-        #self.mask_entry.set_size(30, 25)
-        self.mask_entry.entry.connect("press-return", self.check_mask_valid)
         table.attach(self.mask_entry, 1,2,3,4)
         
-        gate_label = Label("默认网关")
-        table.attach(gate_label, 0,1,4,5)
+        self.gate_label = Label("默认网关")
+        table.attach(self.gate_label, 0,1,4,5)
         self.gate_entry = InputEntry()
-        #self.gate_entry.set_size(30, 25)
-        self.gate_entry.entry.connect("press-return", self.check_gate_valid)
         table.attach(self.gate_entry, 1,2,4,5)
         
         #DNS configuration
@@ -487,35 +485,23 @@ class IPV6Conf(gtk.VBox):
         table.attach(self.auto_dns, 0, 1, 5, 6) 
         table.attach(self.manual_dns, 0, 1, 6, 7)
 
-        master_dns = Label("首选DNS服务器地址:")
-        slave_dns = Label("使用下面的DNS服务器地址:")
+        self.master_dns = Label("首选DNS服务器地址:")
+        self.slave_dns = Label("使用下面的DNS服务器地址:")
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
-        #self.master_entry.set_size(30, 25)
-        #self.slave_entry.set_size(30, 25)
-        self.master_entry.entry.connect("press-return", self.check_dns_valid)
-        self.slave_entry.entry.connect("press-return", self.check_dns_valid)
         
-        table.attach(master_dns, 0, 1, 7, 8)
+        table.attach(self.master_dns, 0, 1, 7, 8)
         table.attach(self.master_entry, 1, 2, 7, 8)
-        table.attach(slave_dns, 0, 1, 8, 9)
+        table.attach(self.slave_dns, 0, 1, 8, 9)
         table.attach(self.slave_entry, 1, 2, 8, 9)
 
-        
+        # TODO UI change 
         table.set_size_request(340, 227)
         align = gtk.Alignment( 0, 0, 0, 0)
         align.set_padding( 35, 0, 120, 0)
         align.add(table)
         self.add(align)
         
-        #aligns = gtk.Alignment(0.5,0.5,0,0)
-        #hbox = gtk.HBox()
-        #self.apply_button = gtk.Button("Apply")
-        #self.cancel_button = gtk.Button("Cancel")
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        #hbox.pack_start(self.apply_button, False, False, 0)
-        #aligns.add(hbox)
-        #self.add(aligns)
         self.addr_entry.set_size(222, 22)
         self.gate_entry.set_size(222, 22)
         self.mask_entry.set_size(222, 22)
@@ -523,132 +509,303 @@ class IPV6Conf(gtk.VBox):
         self.slave_entry.set_size(222, 22)
         
         
-        self.cs =None
+        self.setting =None
         self.reset(connection)
-        self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
-        self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
-        self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
-        self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
-        #self.apply_button.connect("clicked", self.save_changes, self.cs)
-        #self.cancel_button.connect("clicked", self.cancel_changes)
+        self.addr_entry.entry.connect("changed", self.set_ip_address, 0)
+        self.mask_entry.entry.connect("changed", self.set_ip_address, 1)
+        self.gate_entry.entry.connect("changed", self.set_ip_address, 2)
+        self.master_entry.entry.connect("changed", self.set_dns_address, 0)
+        self.slave_entry.entry.connect("changed", self.set_dns_address, 1)
 
-    def check_ip_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip6(text):
-            print "valid"
-        else:
-            print "invalid"
+        self.manual_ip.connect("toggled", self.manual_ip_entry)
+        self.auto_ip.connect("toggled", self.auto_get_ip_addr)
+        self.auto_dns.connect("toggled", self.auto_dns_set)
+        self.manual_dns.connect("toggled", self.manual_dns_set)
 
-    def check_mask_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_netmask(text):
-            print "valid"
-        else:
-            print "invalid"
-
-
-    def check_gate_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_gw(text):
-            print "valid"
-        else:
-            print "invalid"
-        
-
-    def check_dns_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
+        self.ip = ["","",""]
+        self.dns = ["",""]
 
 
     def reset(self, connection):
-        self.cs = connection.get_setting("ipv6")       
-        self.clear_entry()
-        if self.cs.method == "auto":
+        self.setting = connection.get_setting("ipv6")       
+
+        if self.setting.method == "auto":
             self.auto_ip.set_active(True)
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
+            self.set_group_sensitive("ip", False)
             
         else:
             self.manual_ip.set_active(True)
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not self.cs.addresses == []:
-                self.addr_entry.set_text(self.cs.addresses[0][0])
-                self.mask_entry.set_text(self.cs.addresses[0][1])
-                self.gate_entry.set_text(self.cs.addresses[0][2])
+            self.set_group_sensitive("ip", True)
+            if not self.setting.addresses == []:
+                self.addr_entry.set_text(self.setting.addresses[0][0])
+                self.mask_entry.set_text(self.setting.addresses[0][1])
+                self.gate_entry.set_text(self.setting.addresses[0][2])
 
-        if self.cs.dns == []:
+        if self.setting.dns == []:
             self.auto_dns.set_active(True)
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
+            self.set_group_sensitive("dns", False)
         else:
             self.manual_dns.set_active(True)
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(self.cs.dns) > 1:
-                self.slave_entry.set_text(self.cs.dns[1])
-            self.master_entry.set_text(self.cs.dns[0])
+            self.set_group_sensitive("dns", True)
+            if len(self.setting.dns) > 1:
+                self.slave_entry.set_text(self.setting.dns[1])
+            self.master_entry.set_text(self.setting.dns[0])
 
+    def set_group_sensitive(self, group_name, sensitive):
+        if group_name is "ip":
+            self.addr_label.set_sensitive(sensitive)
+            self.mask_label.set_sensitive(sensitive)
+            self.gate_label.set_sensitive(sensitive)
+            self.addr_entry.set_sensitive(sensitive)
+            self.mask_entry.set_sensitive(sensitive)
+            self.gate_entry.set_sensitive(sensitive)
+            if not sensitive:
+                self.addr_entry.set_text("")
+                self.mask_entry.set_text("")
+                self.gate_entry.set_text("")
+        elif group_name is "dns":
+            self.master_dns.set_sensitive(sensitive)
+            self.slave_dns.set_sensitive(sensitive)
+            self.master_entry.set_sensitive(sensitive)
+            self.slave_entry.set_sensitive(sensitive)
+            if not sensitive:
+                self.master_entry.set_text("")
+                self.slave_entry.set_text("")
 
-    def auto_dns_set(self, widget, connection):
+    def set_ip_address(self, widget, content, index):
+        names = ["ip6", "netmask", "gw"]
+        self.ip[index] = content
+        if self.check_valid(names[index]):
+            setattr(self, names[index] + "_flag", True)
+            #print "valid"+ names[index]
+        else:
+            setattr(self, names[index] + "_flag", False)
+
+        if self.check_valid("gw"):
+            #print "update ip4"
+            if self.setting.addresses:
+                self.setting.clear_addresses()
+            self.setting.add_address(self.ip)
+        else:
+            self.setting.clear_addresses()
+
+    def set_dns_address(self, widget, content, index):
+        self.dns[index] = content
+        names = ["master", "slaver"]
+        if TypeConvert.is_valid_ip6(content):
+            setattr(self, names[index] + "_flag", True)
+            print "valid"+ names[index]
+        else:
+            setattr(self, names[index] + "_flag", False)
+
+        dns = self.check_complete_dns()
+        if dns:
+            print "update dns"
+            self.setting.clear_dns()
+            for d in dns:
+                self.setting.add_dns(d)
+        else:
+            self.setting.clear_dns()
+            
+    def check_complete_dns(self):
+        dns = []
+        for address in self.dns:
+            if TypeConvert.is_valid_ip6(address):
+                dns.append(address)
+            else:
+                return dns
+        return dns
+
+    def check_valid(self, name):
+        if name == "ip6":
+            return TypeConvert.is_valid_ip6(self.ip[0])
+        elif name == "netmask":
+            return TypeConvert.is_valid_netmask(self.ip[1])
+        elif name == "gw":
+            return TypeConvert.is_valid_gw(self.ip[0], self.ip[1], self.ip[2])
+
+    def auto_dns_set(self, widget):
         if widget.get_active():
-            connection.clear_dns()
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
+            self.setting.clear_dns()
+            self.dns = ["",""]
+            self.set_group_sensitive("dns", False)
 
-    def manual_dns_set(self, widget, connection):
+    def manual_dns_set(self, widget):
         if widget.get_active():
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(connection.dns) == 1:
-                self.master_entry.set_text(connection.dns[0])
-            elif len(connection.dns) > 1:
-                self.slave_entry.set_text(connection.dns[1])
+            self.set_group_sensitive("dns", True)
 
-    def clear_entry(self):
-        self.addr_entry.set_text("")
-        self.mask_entry.set_text("")
-        self.gate_entry.set_text("")
-        self.master_entry.set_text("")
-        self.slave_entry.set_text("")
+    def auto_get_ip_addr(self, widget):
+        if widget.get_active():
+            self.setting.clear_addresses()
+            self.ip = ["","",""]
+            self.setting.method = 'auto'
+            self.set_group_sensitive("ip", False)
 
-    def auto_get_ip_addr(self, widget, connection):
+    def manual_ip_entry(self,widget):
         if widget.get_active():
-            connection.method = 'auto'
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-    def manual_ip_entry(self,widget, connection):
-        if widget.get_active():
-            connection.method = 'manual'
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not connection.addresses == []:
-                self.addr_entry.set_text(connection.addresses[0][0])
-                self.mask_entry.set_text(connection.addresses[0][1])
-                self.gate_entry.set_text(connection.addresses[0][2])
+            self.setting.method = 'manual'
+            self.set_group_sensitive("ip", True)
     
     def save_changes(self):
-        connection = self.cs
-        if connection.method =="manual": 
-            connection.clear_addresses()
+        pass
+    #def set_addresses(self, widget, content, index):
+        #self.ip_address[index] = content
+        #if self.check_complete():
+            #self.setting.addresses = self.ip_address
+            #print "address>>>>",self.setting.addresses
+        #else:
+            #self.setting.clear_addresses()
+            #self.ip_address = ["","",""]
 
-            print self.addr_entry.get_text()
+        
+    #def check_complete(self):
+        #names = ["ip6", "netmask", "gw"]
+        #for index, content in enumerate(self.ip_address):
+            #if self.check_valid(names[index], content):
+                #pass
+            #else:
+                #return False
+        #return True
 
-            connection.add_address([self.addr_entry.get_text(),
-                                     self.mask_entry.get_text(),
-                                     self.gate_entry.get_text()])
-            connection.clear_dns()
-            if not self.master_entry.get_text() == "":
-                connection.add_dns(self.master_entry.get_text())
-            if not self.slave_entry.get_text() == "":
-                connection.add_dns(self.slave_entry.get_text())
+
+    #def check_valid(self, name, content):
+        ## Name: ip6, netmask, gw
+        #if getattr(TypeConvert, "is_valid_%s"%name)(content):
+            #return True
+        #else:
+            #return False
+
+
+    #def check_ip_valid(self, widget):
+        #text = widget.get_text()
+        #if TypeConvert.is_valid_ip6(text):
+            #print "valid"
+        #else:
+            #print "invalid"
+
+    #def check_mask_valid(self, widget):
+        #text = widget.get_text()
+        #if TypeConvert.is_valid_netmask(text):
+            #print "valid"
+        #else:
+            #print "invalid"
+
+
+    #def check_gate_valid(self, widget):
+        #text = widget.get_text()
+        #if TypeConvert.is_valid_gw(text):
+            #print "valid"
+        #else:
+            #print "invalid"
+        
+
+    #def check_dns_valid(self, widget):
+        #text = widget.get_text()
+        #if TypeConvert.is_valid_ip4(text):
+            #print "valid"
+        #else:
+            #print "invalid"
+
+
+    #def reset(self, connection):
+        #self.connection = connection
+        #self.setting = connection.get_setting("ipv6")       
+        #self.clear_entry()
+        #if self.setting.method == "auto":
+            #self.auto_ip.set_active(True)
+            #self.set_group_sensitive("ip", False)
+            
+        #else:
+            #self.manual_ip.set_active(True)
+            #self.set_group_sensitive("ip", True)
+
+            #if not self.setting.addresses == []:
+                #self.addr_entry.set_text(self.setting.addresses[0][0])
+                #self.mask_entry.set_text(self.setting.addresses[0][1])
+                #self.gate_entry.set_text(self.setting.addresses[0][2])
+
+        #if self.setting.dns == []:
+            #self.auto_dns.set_active(True)
+            #self.set_group_sensitive("dns", False)
+        #else:
+            #self.manual_dns.set_active(True)
+            #self.set_group_sensitive("dns", True)
+            #if len(self.setting.dns) > 1:
+                #self.slave_entry.set_text(self.setting.dns[1])
+            #self.master_entry.set_text(self.setting.dns[0])
+    
+    #def set_group_sensitive(self, group_name, sensitive):
+        #if group_name is "ip":
+            #self.addr_label.set_sensitive(sensitive)
+            #self.mask_label.set_sensitive(sensitive)
+            #self.gate_label.set_sensitive(sensitive)
+            #self.addr_entry.set_sensitive(sensitive)
+            #self.mask_entry.set_sensitive(sensitive)
+            #self.gate_entry.set_sensitive(sensitive)
+            #if not sensitive:
+                #self.addr_entry.set_text("")
+                #self.mask_entry.set_text("")
+                #self.gate_entry.set_text("")
+        #elif group_name is "dns":
+            #self.master_dns.set_sensitive(sensitive)
+            #self.slave_dns.set_sensitive(sensitive)
+            #self.master_entry.set_sensitive(sensitive)
+            #self.slave_entry.set_sensitive(sensitive)
+            #if not sensitive:
+                #self.master_entry.set_text("")
+                #self.slave_entry.set_text("")
+
+    #def auto_dns_set(self, widget, connection):
+        #if widget.get_active():
+            #print "asfsd"
+            #connection.clear_dns()
+            #self.set_group_sensitive('dns', False)
+            ##self.master_entry.set_sensitive(False)
+            ##self.slave_entry.set_sensitive(False)
+
+    #def manual_dns_set(self, widget, connection):
+        #if widget.get_active():
+            #self.set_group_sensitive('dns', True)
+            #if len(connection.dns) == 1:
+                #self.master_entry.set_text(connection.dns[0])
+            #elif len(connection.dns) > 1:
+                #self.slave_entry.set_text(connection.dns[1])
+
+    #def clear_entry(self):
+        #self.addr_entry.set_text("")
+        #self.mask_entry.set_text("")
+        #self.gate_entry.set_text("")
+        #self.master_entry.set_text("")
+        #self.slave_entry.set_text("")
+
+    #def auto_get_ip_addr(self, widget, connection):
+        #if widget.get_active():
+            #self.connection.method = 'auto'
+            #self.set_group_sensitive('ip', False)
+    #def manual_ip_entry(self,widget, connection):
+        #if widget.get_active():
+            #self.connection.method = 'manual'
+            #self.set_group_sensitive('ip', True)
+            #if not connection.addresses == []:
+                #self.addr_entry.set_text(connection.addresses[0][0])
+                #self.mask_entry.set_text(connection.addresses[0][1])
+                #self.gate_entry.set_text(connection.addresses[0][2])
+    
+    #def save_changes(self):
+        #connection = self.setting
+        #if connection.method =="manual": 
+            #connection.clear_addresses()
+
+            #print self.addr_entry.get_text()
+
+            #connection.add_address([self.addr_entry.get_text(),
+                                     #self.mask_entry.get_text(),
+                                     #self.gate_entry.get_text()])
+            #connection.clear_dns()
+            #if not self.master_entry.get_text() == "":
+                #connection.add_dns(self.master_entry.get_text())
+            #if not self.slave_entry.get_text() == "":
+                #connection.add_dns(self.slave_entry.get_text())
 
         #connection.adapt_ip6config_commit()
         #print self.connection.get_setting("connection").id

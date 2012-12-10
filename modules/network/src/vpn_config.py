@@ -74,9 +74,13 @@ class VPNSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self, new_connection=None):
+    def init(self, new_connection=None, init_connection=False):
         # Get all connections  
         connections = nm_module.nm_remote_settings.get_vpn_connections()
+        
+        if init_connection:
+            for connection in connections:
+                connection.init_settings_prop_dict()
         # Check connections
         if connections == []:
             # Create a new connection
