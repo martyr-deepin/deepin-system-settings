@@ -23,6 +23,7 @@
 from utils import BusBase
 import gobject
 import commands
+import pexpect
 import subprocess
 from consolekit import ck
 
@@ -79,13 +80,58 @@ class Accounts(BusBase):
         else:
             print "must have a user logged in"
 
-    def modify_user_passwd(self, username, old_password, new_password):
-        p = subprocess.Popen("/usr/bin/passwd " +username, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
-        p.wait()
-        p.stdin.write(old_password+"\n")
-        p.stdin.write(new_password+"\n")
-        p.stdin.write(new_password+"\n")
-        return p.returncode
+    # def modify_user_passwd(self, username, old_password, new_password):
+    #     p = subprocess.Popen("/usr/bin/passwd " +username, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
+    #     p.wait()
+    #     p.stdin.write(old_password+"\n")
+    #     p.stdin.write(new_password+"\n")
+    #     p.stdin.write(new_password+"\n")
+    #     return p.returncode
+
+    def modify_user_passwd(self, new_password, username, password_mode = 0, old_password = None):
+        ###for normal password
+
+        if len(new_password) < 6:
+            return False
+
+        passwd = pexpect.spawn("/usr/bin/passwd %s" %username)
+
+        if password_mode == 0:
+            try:
+                passwd.expect("（当前）UNIX 密码：")
+                passwd.sendline(old_password)
+                
+                passwd.expect("输入新的 UNIX 密码：")
+                passwd.sendline(new_password)
+
+                passwd.expect("重新输入新的 UNIX 密码：")
+                passwd.sendline(new_password)
+
+                print "succeed\n"
+                passwd.expect("已成功更新密码")
+
+                return True
+            except:
+                print "failed\n"
+                return False
+
+        elif password_mode == 1:
+            pass
+
+        ###currently no old password
+        elif password_mode == 2:
+            try:
+                passwd.expect("输入新的 UNIX 密码：")
+                passwd.sendline(new_password)
+
+                passwd.expect("重新输入新的 UNIX 密码：")
+                passwd.sendline(new_password)
+
+                return True
+            except:
+                return False
+        else:
+            return False
 
     def get_username_from_uid(self, uid):
         if self.find_user_by_id(uid):
