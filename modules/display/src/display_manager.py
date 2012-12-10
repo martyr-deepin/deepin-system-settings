@@ -60,6 +60,21 @@ class DisplayManager:
     
     def get_output_names(self):
         return self.__screen.get_output_names()
+
+    '''
+    TODO: get connected output count
+    '''
+    def get_output_count(self):
+        output_names = self.get_output_names()
+        output_count = 0
+        i = 0
+
+        while (i < len(output_names)):
+            if self.__screen.get_output_by_name(output_names[i]).is_connected():
+                output_count += 1
+            i += 1
+
+        return output_count
     
     def get_screen_count(self):
         return self.__xrandr.get_screen_count()
