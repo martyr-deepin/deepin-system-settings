@@ -711,6 +711,7 @@ class Wired(gtk.VBox):
         gtk.VBox.__init__(self)
         
         self.ethernet = connection.get_setting("802-3-ethernet")
+        self.connection = connection
         self.set_button = set_button_callback
         table = gtk.Table(3, 2, False)
         
@@ -757,39 +758,15 @@ class Wired(gtk.VBox):
         if type(value) is str:
             if TypeConvert.is_valid_mac_address(value):
                 setattr(self.ethernet, types, value)
-            elif value is "":
-                delattr(self.ethernet, types)
+                if self.connection.check_setting_finish():
+                    self.set_button("save", True)
+            else:
+                self.set_button("save", False)
+                if value is "":
+                    #delattr(self.ethernet, types)
+                    self.set_button("save", True)
         else:
             setattr(self.ethernet, types, value)
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
 
-    #def check_mac(self, widget):
-        #mac_string = widget.get_text()
-        #from nmlib.nm_utils import TypeConvert
-        #if TypeConvert.is_valid_mac_address(mac_string):
-            #print "valid"
-        #else:
-            #print "invalid"
-
-    def save_setting(self):
-        pass
-        #mac_entry = self.mac_entry.get_text()
-        #clone_entry = self.clone_entry.get_text()
-        #mtu = self.mtu_spin.get_value()
-        #if mac_entry != "": 
-            #self.ethernet.mac_address = mac_entry
-        #if clone_entry != "":
-            #self.ethernet.cloned_mac_address = clone_entry
-        #self.ethernet.mtu = mtu
-
-#if __name__=="__main__":
-    #win = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    #win.set_title("sadfsdf")
-    #win.set_size_request(770,500)
-    #win.border_width(2)
-    #win.connect("destroy", lambda w: gtk.main_quit())
-    #tab = WiredSetting(slide) 
-    
-    #win.add(tab)
-    #win.show_all()
-
-    #gtk.main()
