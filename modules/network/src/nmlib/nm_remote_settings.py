@@ -55,7 +55,7 @@ class NMRemoteSettings(NMObject):
         conns = self.dbus_method("ListConnections")
         if conns:
             ###order connections by their object path
-            conns = sorted(conns, key = lambda x:x.split("/")[-1])
+            conns = sorted(conns, key = lambda x:int(x.split("/")[-1]))
             return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(conns))
         else:
             return []
@@ -400,7 +400,7 @@ class NMRemoteSettings(NMObject):
 
         return new_connection    
 
-    def new_connection_finish(self, settings_dict, connection_type):
+    def new_connection_finish(self, settings_dict, connection_type = "802-3-ethernet"):
 
         return self.add_connection(settings_dict)
 

@@ -72,7 +72,7 @@ class NMConnection(gobject.GObject):
         self.nm_setting_802_1x = ""
         self.nm_setting_adsl = ""
 
-        self.settings_dict = {} ####{name:{prop_key:prop_value}, initied in NMRemoteConnection
+        self.settings_dict = {} ####{name:{prop_key:prop_value}, initied in NMRemoteConnection, read from this
         self.settings_info = {} ####{name:[type, priority, get_method, base_type]}
         self.init_settings_info()
 
@@ -111,22 +111,93 @@ class NMConnection(gobject.GObject):
         ###check if user complete his setting, avoid the missing property exception
         info_dict = TypeConvert.dbus2py(self.settings_dict)
         try:
+            ###wired
             if info_dict["connection"]["type"] == "802-3-ethernet":
-                pass
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                return True
+            ###wireless
             elif info_dict["connection"]["type"] == "802-11-wireless":
-                pass
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                if len(info_dict["802-11-wireless"]["ssid"]) == 0:
+                    return False
+
+                if "802-11-wireless-security" in info_dict.iterkeys():
+                    if info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
+
+                        ####wep
+                        if "wep-tx-keyidx" in info_dict["802-11-wireless-security"].iterkeys():
+                            if info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 0:
+                                if not info_dict["802-11-wireless-security"]["wep-key0"]:
+                                    return False
+
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 1:
+                                if not info_dict["802-11-wireless-security"]["wep-key1"]:
+                                    return False
+
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 2:
+                                if not info_dict["802-11-wireless-security"]["wep-key2"]:
+                                    return False
+
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 3:
+                                if not info_dict["802-11-wireless-security"]["wep-key3"]:
+                                    return False
+                            else:
+                                    return False
+                        else:
+                            if not info_dict["802-11-wireless-security"]["wep-key0"]:
+                                return False
+
+                        ###psk    
+                    elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
+                        # currently not support
+                        return False
+
+                    elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
+                        # currently not support
+                        return False
+                    else:
+                        return False
+
+                return True
+
             elif info_dict["connection"]["type"] == "pppoe":
-                pass
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                if not info_dict["pppoe"]["username"] or not info_dict["pppoe"]["password"]:
+                    return False
+
+                return True
+
             elif info_dict["connection"]["type"] == "vpn":
-                pass
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                if not info_dict["vpn"]["user-name"] or not info_dict["vpn"]["secrets"] or not info_dict["vpn"]["data"]:
+                    return False
+
+                return True
+
             elif info_dict["connection"]["type"] == "cdma":
-                pass
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                return True
+
             elif info_dict["connection"]["type"] == "gsm":
-                pass
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                return True
+
             else:
-                print "invalid connection_type"
+                return False
         except:        
-            pass
+            return False
 
     def check_setting_commit(self):
         ###delete invalid setting property before update
