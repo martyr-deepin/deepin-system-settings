@@ -23,6 +23,7 @@
 from utils import BusBase
 import gobject
 import commands
+import subprocess
 from consolekit import ck
 
 class Accounts(BusBase):
@@ -77,6 +78,12 @@ class Accounts(BusBase):
                 continue
         else:
             print "must have a user logged in"
+
+    def modify_user_passwd(self, username, old_password, new_password):
+        p = subprocess.Popen("/usr/bin/passwd " +username, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
+        p.stdin.write(old_password+"\n")
+        p.stdin.write(new_password+"\n")
+        p.stdin.write(new_password+"\n")
 
     def get_username_from_uid(self, uid):
         if self.find_user_by_id(uid):
