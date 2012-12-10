@@ -10,6 +10,3 @@ echo "Copy .conf file to /etc/dbus-1/system.d/"
 
 cp passwdservice.py /usr/lib/passwdservice.py
 echo "cp passwdservice.py"
-
-rm -f /usr/lib/passwdservice.py
-echo "remove passwdservice.py"
