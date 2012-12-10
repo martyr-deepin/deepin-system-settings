@@ -61,14 +61,16 @@ class WiredSetting(gtk.HBox):
         self.pack_start(vbox, True, True)
         #hbox = gtk.HBox()
 
-        save_button = Button("Save")
-        apply_button = Button("Connect")
+        self.save_button = Button("Save")
+        self.apply_button = Button("Connect")
         #apply_button.set_sensitive(False)
         button_box = gtk.HBox()
-        button_box.add(save_button)
-        button_box.add(apply_button)
-        apply_button.connect("clicked", self.apply_changes)
-        save_button.connect("clicked", self.save_changes)
+        button_box.add(self.save_button)
+        #button_box.add(self.apply_button)
+        #self.apply_button.connect("clicked", self.apply_changes)
+        self.save_button.connect("clicked", self.save_changes)
+        self.set_button("save", False)
+        #self.set_button("apply", False)
 
         #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
@@ -105,9 +107,9 @@ class WiredSetting(gtk.HBox):
         else:
             self.sidebar.new_connection_list = []
             
-        self.wired_setting = [Wired(con) for con in self.connections]
-        self.ipv4_setting = [IPV4Conf(con) for con in self.connections]
-        self.ipv6_setting = [IPV6Conf(con) for con in self.connections]
+        self.wired_setting = [Wired(con, self.set_button) for con in self.connections]
+        self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in self.connections]
+        self.ipv6_setting = [IPV6Conf(con, self.set_button) for con in self.connections]
 
         self.sidebar.init(self.connections, self.ipv4_setting)
         index = self.sidebar.get_active()
@@ -134,29 +136,39 @@ class WiredSetting(gtk.HBox):
 
         self.init_tab_box()
 
-    def save_changes(self, widget):
-        self.wired.save_setting()
-        self.ipv4.save_changes()
-        self.ipv6.save_changes()
-
-        connection = self.ipv4.connection
-        if connection.check_setting_finish():
-            this_index = self.connections.index(connection)
-            if isinstance(connection, NMRemoteConnection):
-                connection.update()
-            else:
-                nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                index = self.sidebar.new_connection_list.index(connection)
-                self.sidebar.new_connection_list.pop(index)
-                self.init(None, self.sidebar.new_connection_list)
-
-                # reset index
-                con = self.sidebar.connection_tree.visible_items[this_index]
-                self.sidebar.connection_tree.select_items([con])
+    def set_button(self, name, state):
+        if name == "save":
+            self.save_button.set_label(name)
+            self.save_button.set_sensitive(state)
         else:
-            print "not complete"
+            self.save_button.set_label("connect")
+            self.save_button.set_sensitive(state)
 
-    def apply_changes(self, widget):
+    
+    def save_changes(self, widget):
+        connection = self.ipv4.connection
+        if widget.label == "save":
+            if connection.check_setting_finish():
+                this_index = self.connections.index(connection)
+                if isinstance(connection, NMRemoteConnection):
+                    connection.update()
+                else:
+                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                    index = self.sidebar.new_connection_list.index(connection)
+                    self.sidebar.new_connection_list.pop(index)
+                    self.init(None, self.sidebar.new_connection_list)
+
+                    # reset index
+                    con = self.sidebar.connection_tree.visible_items[this_index]
+                    self.sidebar.connection_tree.select_items([con])
+
+                self.set_button("apply", True)
+            else:
+                print "not complete"
+        else:
+            self.apply_changes()
+
+    def apply_changes(self):
         connection = self.ipv4.connection
         nm_module.nmclient.activate_connection_async(connection.object_path,
                                            wired_device.object_path,
@@ -256,10 +268,11 @@ class NoSetting(gtk.VBox):
         self.add(label_align)
 
 class IPV4Conf(gtk.VBox):
-    def __init__(self, connection = None):
+    def __init__(self, connection = None, set_button_callback=None):
         
         gtk.VBox.__init__(self)
         self.connection = connection 
+        self.set_button = set_button_callback
         table = gtk.Table(9, 2 , False)
         # Ip configuration
         self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
@@ -327,6 +340,8 @@ class IPV4Conf(gtk.VBox):
         self.auto_dns.connect("toggled", self.auto_dns_set)
         self.manual_dns.connect("toggled", self.manual_dns_set)
 
+        self.set_button("apply", True)
+
     def reset(self, connection):
         self.setting = connection.get_setting("ipv4")       
 
@@ -387,29 +402,38 @@ class IPV4Conf(gtk.VBox):
             setattr(self, names[index] + "_flag", False)
 
         if self.check_valid("gw"):
-            #print "update ip4"
             if self.setting.addresses:
                 self.setting.clear_addresses()
             self.setting.add_address(self.ip)
+
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
+            else:
+                self.set_button("save", False)
         else:
             self.setting.clear_addresses()
 
     def set_dns_address(self, widget, content, index):
         self.dns[index] = content
         names = ["master", "slaver"]
-        if TypeConvert.is_valid_ip4(content):
-            setattr(self, names[index] + "_flag", True)
-            print "valid"+ names[index]
-        else:
-            setattr(self, names[index] + "_flag", False)
 
         dns = self.check_complete_dns()
         if dns:
+            self.set_button("save", True)
             self.setting.clear_dns()
             for d in dns:
                 self.setting.add_dns(d)
         else:
             self.setting.clear_dns()
+
+        if TypeConvert.is_valid_ip4(content):
+            setattr(self, names[index] + "_flag", True)
+            print "valid"+ names[index]
+        else:
+            if content is not "":
+                self.set_button("save", False)
+            setattr(self, names[index] + "_flag", False)
+
             
     def check_complete_dns(self):
         dns = []
@@ -433,10 +457,15 @@ class IPV4Conf(gtk.VBox):
             self.setting.clear_dns()
             self.dns = ["",""]
             self.set_group_sensitive("dns", False)
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
+            else:
+                self.set_button("save", False)
 
     def manual_dns_set(self, widget):
         if widget.get_active():
             self.set_group_sensitive("dns", True)
+            self.set_button("save", False)
 
     def auto_get_ip_addr(self, widget):
         if widget.get_active():
@@ -444,11 +473,19 @@ class IPV4Conf(gtk.VBox):
             self.ip = ["","",""]
             self.setting.method = 'auto'
             self.set_group_sensitive("ip", False)
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
+            else:
+                self.set_button("save", False)
 
     def manual_ip_entry(self,widget):
         if widget.get_active():
             self.setting.method = 'manual'
             self.set_group_sensitive("ip", True)
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
+            else:
+                self.set_button("save", False)
     
     def save_changes(self):
         pass
@@ -468,10 +505,11 @@ class IPV4Conf(gtk.VBox):
 
 class IPV6Conf(gtk.VBox):
 
-    def __init__(self, connection = None):
+    def __init__(self, connection = None, set_button_callback=None):
         
         gtk.VBox.__init__(self)
         self.connection = connection 
+        self.set_button = set_button_callback
         table = gtk.Table(9, 2 , False)
         # Ip configuration
         self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
@@ -666,205 +704,14 @@ class IPV6Conf(gtk.VBox):
     
     def save_changes(self):
         pass
-    #def set_addresses(self, widget, content, index):
-        #self.ip_address[index] = content
-        #if self.check_complete():
-            #self.setting.addresses = self.ip_address
-            #print "address>>>>",self.setting.addresses
-        #else:
-            #self.setting.clear_addresses()
-            #self.ip_address = ["","",""]
-
-        
-    #def check_complete(self):
-        #names = ["ip6", "netmask", "gw"]
-        #for index, content in enumerate(self.ip_address):
-            #if self.check_valid(names[index], content):
-                #pass
-            #else:
-                #return False
-        #return True
-
-
-    #def check_valid(self, name, content):
-        ## Name: ip6, netmask, gw
-        #if getattr(TypeConvert, "is_valid_%s"%name)(content):
-            #return True
-        #else:
-            #return False
-
-
-    #def check_ip_valid(self, widget):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_ip6(text):
-            #print "valid"
-        #else:
-            #print "invalid"
-
-    #def check_mask_valid(self, widget):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_netmask(text):
-            #print "valid"
-        #else:
-            #print "invalid"
-
-
-    #def check_gate_valid(self, widget):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_gw(text):
-            #print "valid"
-        #else:
-            #print "invalid"
-        
-
-    #def check_dns_valid(self, widget):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_ip4(text):
-            #print "valid"
-        #else:
-            #print "invalid"
-
-
-    #def reset(self, connection):
-        #self.connection = connection
-        #self.setting = connection.get_setting("ipv6")       
-        #self.clear_entry()
-        #if self.setting.method == "auto":
-            #self.auto_ip.set_active(True)
-            #self.set_group_sensitive("ip", False)
-            
-        #else:
-            #self.manual_ip.set_active(True)
-            #self.set_group_sensitive("ip", True)
-
-            #if not self.setting.addresses == []:
-                #self.addr_entry.set_text(self.setting.addresses[0][0])
-                #self.mask_entry.set_text(self.setting.addresses[0][1])
-                #self.gate_entry.set_text(self.setting.addresses[0][2])
-
-        #if self.setting.dns == []:
-            #self.auto_dns.set_active(True)
-            #self.set_group_sensitive("dns", False)
-        #else:
-            #self.manual_dns.set_active(True)
-            #self.set_group_sensitive("dns", True)
-            #if len(self.setting.dns) > 1:
-                #self.slave_entry.set_text(self.setting.dns[1])
-            #self.master_entry.set_text(self.setting.dns[0])
-    
-    #def set_group_sensitive(self, group_name, sensitive):
-        #if group_name is "ip":
-            #self.addr_label.set_sensitive(sensitive)
-            #self.mask_label.set_sensitive(sensitive)
-            #self.gate_label.set_sensitive(sensitive)
-            #self.addr_entry.set_sensitive(sensitive)
-            #self.mask_entry.set_sensitive(sensitive)
-            #self.gate_entry.set_sensitive(sensitive)
-            #if not sensitive:
-                #self.addr_entry.set_text("")
-                #self.mask_entry.set_text("")
-                #self.gate_entry.set_text("")
-        #elif group_name is "dns":
-            #self.master_dns.set_sensitive(sensitive)
-            #self.slave_dns.set_sensitive(sensitive)
-            #self.master_entry.set_sensitive(sensitive)
-            #self.slave_entry.set_sensitive(sensitive)
-            #if not sensitive:
-                #self.master_entry.set_text("")
-                #self.slave_entry.set_text("")
-
-    #def auto_dns_set(self, widget, connection):
-        #if widget.get_active():
-            #print "asfsd"
-            #connection.clear_dns()
-            #self.set_group_sensitive('dns', False)
-            ##self.master_entry.set_sensitive(False)
-            ##self.slave_entry.set_sensitive(False)
-
-    #def manual_dns_set(self, widget, connection):
-        #if widget.get_active():
-            #self.set_group_sensitive('dns', True)
-            #if len(connection.dns) == 1:
-                #self.master_entry.set_text(connection.dns[0])
-            #elif len(connection.dns) > 1:
-                #self.slave_entry.set_text(connection.dns[1])
-
-    #def clear_entry(self):
-        #self.addr_entry.set_text("")
-        #self.mask_entry.set_text("")
-        #self.gate_entry.set_text("")
-        #self.master_entry.set_text("")
-        #self.slave_entry.set_text("")
-
-    #def auto_get_ip_addr(self, widget, connection):
-        #if widget.get_active():
-            #self.connection.method = 'auto'
-            #self.set_group_sensitive('ip', False)
-    #def manual_ip_entry(self,widget, connection):
-        #if widget.get_active():
-            #self.connection.method = 'manual'
-            #self.set_group_sensitive('ip', True)
-            #if not connection.addresses == []:
-                #self.addr_entry.set_text(connection.addresses[0][0])
-                #self.mask_entry.set_text(connection.addresses[0][1])
-                #self.gate_entry.set_text(connection.addresses[0][2])
-    
-    #def save_changes(self):
-        #connection = self.setting
-        #if connection.method =="manual": 
-            #connection.clear_addresses()
-
-            #print self.addr_entry.get_text()
-
-            #connection.add_address([self.addr_entry.get_text(),
-                                     #self.mask_entry.get_text(),
-                                     #self.gate_entry.get_text()])
-            #connection.clear_dns()
-            #if not self.master_entry.get_text() == "":
-                #connection.add_dns(self.master_entry.get_text())
-            #if not self.slave_entry.get_text() == "":
-                #connection.add_dns(self.slave_entry.get_text())
-
-        #connection.adapt_ip6config_commit()
-        #print self.connection.get_setting("connection").id
-        #self.connection.update()
-
-#class Security(gtk.VBox):
-
-    #def __init__(self, connection):
-        #gtk.VBox.__init__(self)
-        ##xs = NMSetting8021x(connection)
-        #check_button = CheckButton("Use 802.1x security for this connection")
-        #check_align = gtk.Alignment(0, 0.1, 0, 0)
-        #auth_align = gtk.Alignment(0, 0.1, 0, 0)
-        #check_align.add(check_button)
-        
-        ##auth = ComboBox([("MD5", None),
-                         ##("TLS", None),
-                         ##("Fast", None),
-                         ##("Tunneled TLS", None),
-                         ##("PEAP", None)])
-
-        ##TODO need change it to deepin-ui ComboBox, the menu in ComboBox doesnt looks correct
-
-        #auth = gtk.combo_box_new_text()
-        #s_list = ["MD5", "TLS", "FAST", "Tunneled TLS", "PEAP"]
-        #for l in s_list:
-            #auth.append_text(l)
-
-        #auth_align.add(auth)
-        #auth_align.set_padding(0,0,10,0)
-
-        #self.pack_start(check_align, False, False)
-        #self.pack_start(auth_align, False, False)
 
 class Wired(gtk.VBox):
 
-    def __init__(self, connection):
+    def __init__(self, connection, set_button_callback=None):
         gtk.VBox.__init__(self)
         
         self.ethernet = connection.get_setting("802-3-ethernet")
-
+        self.set_button = set_button_callback
         table = gtk.Table(3, 2, False)
         
         mac_address = Label("Device Mac address:")
@@ -895,7 +742,6 @@ class Wired(gtk.VBox):
         self.mac_entry.entry.connect("changed", self.save_settings, "mac_address")
         self.clone_entry.entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
-
 
         ## retrieve wired info
         (mac, clone_mac, mtu) = self.ethernet.mac_address, self.ethernet.cloned_mac_address, self.ethernet.mtu
