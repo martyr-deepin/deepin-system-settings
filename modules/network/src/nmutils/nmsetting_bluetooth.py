@@ -29,32 +29,3 @@ class NMSettingBluetooth (NMSetting):
     def __init__(self):
         NMSetting.__init__(self)
         self.name = "bluetooth"
-
-    @property    
-    def type(self):
-        return self._type
-
-    @type.setter
-    def type(self, new_type):
-        self._type = new_type
-
-    @property
-    def bdaddr(self):
-        return self._bdaddr
-
-    @bdaddr.setter
-    def bdaddr(self, new_bdaddr):
-        self._bdaddr = new_bdaddr
-
-    def __find_setting_by_name(self, a ,b):
-        pass
-
-    def __verify(self):
-        pass
-
-    def __set_property(self):
-        pass
-
-    def __get_property(self):
-        pass
-

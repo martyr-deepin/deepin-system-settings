@@ -318,7 +318,7 @@ class WiredItem(TreeItem):
         #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
             #self.is_select = not self.is_select
         if column == 2:
-            self.setting.init(self.device)
+            self.setting.init(self.device, init_connection=True)
             self.slide_to_setting()
             self.send_to_crumb()
 

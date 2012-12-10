@@ -157,8 +157,8 @@ class SettingButton(gtk.HBox):
     
     def delete_setting(self, widget, connection):
         connection.delete()
-        self.destroy()
         self.setting.destroy()
+        self.destroy()
 
     def enter_notify(self, widget, event):
         pass

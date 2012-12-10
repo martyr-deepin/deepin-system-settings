@@ -249,7 +249,9 @@ class WirelessSection(gtk.VBox):
                     device_wifi.auto_connect()
             self.index = index
         else:
-            self.tree.add_items([],0,True)
+            self.tree.delete_all_items()
+            #self.tree.add_items([],0,True)
+            self.vbox.set_no_show_all(True)
             self.vbox.hide()
             for wireless_device in self.wireless_devices:
                 wireless_device.nm_device_disconnect()
@@ -370,7 +372,7 @@ class VpnSection(gtk.VBox):
                 nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
 
     def slide_to_event(self, widget, event):
-        self.setting.init()
+        self.setting.init(init_connection=True)
         self.slide_to_subcrumb()
         slider.slide_to_page(self.setting, "right")
 
@@ -386,15 +388,12 @@ class VpnSection(gtk.VBox):
 class Mobile(gtk.VBox):
     def __init__(self,
                  send_to_crumb_cb):
-
         gtk.VBox.__init__(self)
         self.send_to_crumb_cb = send_to_crumb_cb
         mobile = Contain(app_theme.get_pixbuf("/Network/3g.png"), "移动网络", self.toggle_cb)
         self.add(mobile)
         self.settings = None
-
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
-        
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -537,15 +536,11 @@ class Network(object):
         slider.show_all()
         slider._set_to_page("main")
 
-    
     def activate_succeed(self, widget, connection_path):
         print connection_path
 
-        #ob = cache.get_specific_object(connection_path)
-        #print ">>>",ob
-
     def activate_failed(self, widget, connection_path):
-        print "failed"
+        pass
 
     def init_sections(self, module_frame):
         #slider._set_to_page("main")

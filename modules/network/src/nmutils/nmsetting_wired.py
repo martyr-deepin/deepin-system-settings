@@ -21,7 +21,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from nmsetting import NMSetting
-from nmlib.nmconstant import NMSettingParamFlags as pflag
 from nmlib.nm_utils import TypeConvert
 import dbus
 
@@ -179,14 +178,18 @@ class NMSettingWired (NMSetting):
     def speed(self, new_speed):
         self.prop_dict["speed"] = TypeConvert.py2_dbus_uint32(new_speed)
             
-    def __verify(self):
+    def wired_verify(self):
         valid = self.WiredValid()
         if self.port and self.port not in valid.valid_ports:
             return False
         if self.duplex and self.duplex not in valid.valid_duplex:
             return False
-        else:
-            return True
+        if self.nettype and self.nettype not in valid.valid_nettype:
+            return False
+        if self.s390_options and self.s390_options not in valid.valid_s390_opts:
+            return False
+
+        return True
 
     class WiredValid:
         def __init__(self):

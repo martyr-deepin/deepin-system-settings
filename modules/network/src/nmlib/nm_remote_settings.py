@@ -23,7 +23,6 @@
 import uuid
 import time
 import re
-import gobject
 from nmobject import NMObject
 from nm_utils import TypeConvert
 from nmcache import cache
@@ -55,6 +54,8 @@ class NMRemoteSettings(NMObject):
         '''return connections object'''
         conns = self.dbus_method("ListConnections")
         if conns:
+            ###order connections by their object path
+            conns = sorted(conns, key = lambda x:int(x.split("/")[-1]))
             return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(conns))
         else:
             return []
@@ -137,7 +138,13 @@ class NMRemoteSettings(NMObject):
                          ,"ipv6":s_ip6config.prop_dict
                          }
 
-        return self.add_connection(settings_dict)
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
+
+        return new_connection    
 
     def new_wireless_connection(self, ssid = None, key_mgmt = "wpa-psk"):
         ###Please pass key_mgmt as the wireless isn't privacy
@@ -179,8 +186,13 @@ class NMRemoteSettings(NMObject):
                          }
         settings_dict["802-11-wireless-security"]["psk"] = "Password"
 
-        return self.add_connection(settings_dict)
-        # return settings_dict
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
+
+        return new_connection    
 
     def new_pppoe_connection(self):
         s_connection = NMSettingConnection()
@@ -212,7 +224,13 @@ class NMRemoteSettings(NMObject):
                          "pppoe":s_pppoe.prop_dict
                          }
 
-        return self.add_connection(settings_dict)
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
+
+        return new_connection    
         
     def new_gsm_connection(self, username = "username", password = "password", apn = "apn"):
         s_connection = NMSettingConnection()
@@ -251,7 +269,13 @@ class NMRemoteSettings(NMObject):
                          "ppp":s_ppp.prop_dict
                          }
 
-        return self.add_connection(settings_dict)
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
+
+        return new_connection    
 
     def new_cdma_connection(self, username = "username", password = "password"):
         s_connection = NMSettingConnection()
@@ -289,7 +313,13 @@ class NMRemoteSettings(NMObject):
                          "ppp":s_ppp.prop_dict
                          }
 
-        return self.add_connection(settings_dict)
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
+
+        return new_connection    
 
     def new_vpn_l2tp_connection(self):
         s_connection = NMSettingConnection()
@@ -321,11 +351,14 @@ class NMRemoteSettings(NMObject):
                          "connection":s_connection.prop_dict,
                          "ipv4":s_ip4config.prop_dict
                          }
-        #just for debug
-        self.l2tp_settings_dict = settings_dict
-        #just for debug
 
-        return self.add_connection(settings_dict)
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
+
+        return new_connection    
 
     def new_vpn_pptp_connection(self):
         s_connection = NMSettingConnection()
@@ -353,42 +386,21 @@ class NMRemoteSettings(NMObject):
         s_ip4config.clear_addresses()
         s_ip4config.clear_routes()
         s_ip4config.clear_dns()
-        # s_ip4config.add_dns("202.114.88.10")
-        # s_ip4config.add_dns_search("www.linuxdeepin.com")
 
         settings_dict = {"vpn":s_vpn.prop_dict,
                          "connection":s_connection.prop_dict,
                          "ipv4":s_ip4config.prop_dict
                          }
-        #just for debug
-        # self.pptp_settings_dict = settings_dict
-        #just for debug
 
-        return self.add_connection(settings_dict)
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
 
-    def new_connection_finish(self, settings_dict, connection_type):
-        if connection_type == "wired":
-            pass
-        elif connection_type == "wireless":
-            try:
-                if settings_dict["connection"]["type"] == "802-11-wireless":
-                    if "802-11-wireless-security" in settings_dict.iterkeys():
-                        if "key-mgmt" not in settings_dict["802-11-wireless-security"].iterkeys():
-                            print "invalid"
-                else:
-                    print "invalid connection_type"
-            except:
-                    print "invalid connection_type"
-        elif connection_type == "pppoe":
-            pass
-        elif connection_type == "vpn":
-            pass
-        elif connection_type == "cdma":
-            pass
-        elif connection_type == "gsm":
-            pass
-        else:
-            print "invalid connection_type"
+        return new_connection    
+
+    def new_connection_finish(self, settings_dict, connection_type = "802-3-ethernet"):
 
         return self.add_connection(settings_dict)
 
@@ -456,39 +468,5 @@ class NMRemoteSettings(NMObject):
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
 
-    # def new_connection_cb(self, arg):
-    #     self.emit("new-connection", arg)
-
-    # def connections_read_cb(self, user_data):
-    #     self.emit("connections-read", user_data)
-
-# nm_remote_settings = NMRemoteSettings()
-
-# def refresh_nm_remote_settings():
-#     global nm_remote_settings
-#     nm_remote_settings = NMRemoteSettings()
-#     return nm_remote_settings
-
 if __name__ == "__main__":
     nm_remote_settings = NMRemoteSettings()
-    # nm_remote_settings.new_cdma_connection()
-    # print nm_remote_settings.dbus_interface.ListConnections()
-    # print nm_remote_settings.get_hostname()
-    # print nm_remote_settings.get_can_modify()
-
-    # nm_remote_settings.new_wired_connection()
-
-    # NMRemoteConnection(nm_remote_settings.new_wireless_connection())
-    # NMRemoteConnection(nm_remote_settings.new_pppoe_connection())
-
-    # from nmclient import NMClient
-
-    # remote_connection = nm_remote_settings.new_vpn_connection()
-    # nmclient = NMClient()
-    # device_path = nmclient.get_wireless_device()
-
-    # from nmdevice import NMDevice
-    # nmdevice = NMDevice(device_path, None)
-    # specific_path = nmdevice.get_active_connection()
-    
-    # nmclient.activate_connection(remote_connection, device_path, specific_path)

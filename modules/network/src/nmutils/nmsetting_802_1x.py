@@ -29,7 +29,6 @@ class NMSetting8021x (NMSetting):
 
     def __init__(self):
         NMSetting.__init__(self)
-
         self.name = "802-1x"
 
     @property

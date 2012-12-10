@@ -28,6 +28,4 @@ class NMSettingBond (NMSetting):
 
     def __init__(self):
         NMSetting.__init__(self)
-        
-    ###Props###
         self.name = "bond"
