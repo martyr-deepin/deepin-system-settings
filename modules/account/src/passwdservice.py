@@ -56,7 +56,7 @@ def authWithPolicyKit(sender, connection, action, interactive=1):
 
 class PasswdService(dbus.service.Object):
 
-    DBUS_INTERFACE_NAME = "com.deepin.password"
+    DBUS_INTERFACE_NAME = "com.deepin.passwdservice"
 
     def __init__(self, bus = None):
         if bus is None:
