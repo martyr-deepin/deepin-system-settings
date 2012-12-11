@@ -22,8 +22,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from theme import app_theme,ui_theme
 from dtk.ui.new_treeview import TreeView, TreeItem
-from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear
-from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button
+from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear,draw_vlinear
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size
 from dtk.ui.new_entry import EntryBuffer, Entry
 import gobject
 import gtk
@@ -200,7 +200,67 @@ class EntryTreeView(TreeView):
                     self.press_in_select_rows = None
                 
                 self.set_drag_row(None)
+
+def render_background( cr, rect):
+    background_color = [(0,["#ffffff", 1.0]),
+                        (1,["#ffffff", 1.0])]
+    draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
+class ShowOthers(TreeItem):
+    CHECK_LEFT_PADDING = 10
+    CHECK_RIGHT_PADIING = 10
+    def __init__(self, child_list):
+        TreeItem.__init__(self)
+        self.children = child_list
+
+    def render_content(self, cr, rect):
+        (text_width, text_height) = get_content_size("show all")
+        import pango
+        draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
+                alignment=pango.ALIGN_CENTER)
+
+    def get_column_renders(self):
+        return [lambda cr, rect: render_background(self, cr, rect),
+                self.render_background,
+                lambda cr, rect: render_background(self, cr, rect)]
+
+    def get_column_widths(self):
+        return [-1,92,-1]
+
+    def single_click(self, column, offset_x, offset_y):
+        pass
+
+    def expand(self):
+        self.is_expand = True
+        self.add_child_item()
+
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+    def unexpand(self):
+        '''docstring for unexpand'''
+        self.delete_child_item()
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+
+    def add_child_item(self):
+        self.child_items = self.children
+        self.add_items_callback(self.child_items, self.row_index + 1)
         
+    def delete_child_item(self):
+        self.delete_items_callback(self.child_items)
+
+
+        
+
+
+
+
+
+
+
+
+
 class SettingItem(TreeItem):
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10

@@ -75,6 +75,31 @@ class NMDeviceWifi(NMDevice):
     def get_capabilities(self):
         return self.properties["WirelessCapabilities"]
 
+    def connection_compatible(self, connection):
+        info_dict = TypeConvert.dbus2py(connection.settings_dict)
+
+        if info_dict["connection"]["type"] != "802-11-wireless":
+            return False
+        
+        if "802-11-wireless" not in info_dict.iterkeys():
+            return False
+
+        if self.get_perm_hw_address():
+            if "mac-address" in info_dict.iterkeys():
+                if self.get_perm_hw_address() != info_dict["802-11-wireless"]["mac-address"]:
+                    return False
+
+        if "802-11-wireless-security" in info_dict.iterkeys():
+            if info_dict["802-11-wireless-security"]["key-mgmt"] in ["wpa-none", "wpa-psk", "wpa-eap"]:
+                if self.get_capabilities() not in [4, 8, 16, 32]:
+                    return False
+
+                protos = info_dict["802-11-wireless-security"]["proto"]
+                if protos:
+                    if "rsn" in protos and "wpa" not in protos and self.get_capabilities() not in [8, 32]:
+                        return False
+        return True        
+
     def get_access_points(self):
         ap = self.dbus_method("GetAccessPoints")
         if ap:

@@ -21,7 +21,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from nmsetting import NMSetting
-# from pynm.nmlib.nmconstant import NMSettingParamFlags as pflag
 from nmlib.nm_utils import TypeConvert
 import dbus
 
