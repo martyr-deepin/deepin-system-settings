@@ -44,6 +44,7 @@ class DisplayManager:
         self.__xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
         self.__power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.__session_settings = deepin_gsettings.new("org.gnome.desktop.session")
+        self.__output_names = []
 
     def __del__(self):
         self.__deepin_xrandr.delete()
@@ -57,7 +58,6 @@ class DisplayManager:
     
     def get_output_names(self):
         output_names = self.__xrandr_settings.get_strv("output-names")
-        ret_output_names = []
         i = 0
 
         while i < len(output_names):
@@ -65,11 +65,11 @@ class DisplayManager:
             TODO: NULL means disconnected
             '''
             if output_names[i] != "NULL":
-                ret_output_names.append(output_names[i])
+                self.__output_names.append(output_names[i])
 
             i += 1
  
-        return ret_output_names
+        return self.__output_names
 
     def get_screen_sizes(self, output_name):
         return self.__deepin_xrandr.get_screen_sizes(output_name)
@@ -127,7 +127,16 @@ class DisplayManager:
         return self.__xrandr_settings.get_double("brightness") * 100.0
     
     def set_screen_brightness(self, value):
+        if value <= 0.0 or value > 1.0:
+            return
+
         self.__xrandr_settings.set_double("brightness", value)
+        i = 0
+
+        while i < len(self.__output_names):
+            run_command("xrandr --output %s --brightness %f" % (self.__output_names[i], value))
+
+            i += 1
 
     '''
     TODO: unit is second
