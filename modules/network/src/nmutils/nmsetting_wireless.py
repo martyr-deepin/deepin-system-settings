@@ -209,5 +209,3 @@ class NMSettingWireless (NMSetting):
             if key not in ["band","bssid", "channel", "cloned-mac-address", "mac-address", "mode",
                            "mtu", "ssid"]:
                 del self.prop_dict[key]
-
-        

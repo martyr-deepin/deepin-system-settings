@@ -79,7 +79,7 @@ class AccountSetting(object):
         self.label_widgets["account_type_new"] = Label(_("Account type"))
         self.label_widgets["deepin_account_tips_new"] = Label(_("Deepin Account"))
         self.label_widgets["deepin_account_new"] = Label(_("Unbound"))
-        self.label_widgets["account_create_error"] = Label("", wrap_width=360)
+        self.label_widgets["account_create_error"] = Label("", wrap_width=360, enable_select=False)
         # image
         self.image_widgets["lock_pixbuf"] = gtk.gdk.pixbuf_new_from_file(
             app_theme.get_theme_file_path("image/set/lock.png"))
@@ -697,9 +697,67 @@ class AccountSetting(object):
             new_pswd_input.show_password(button.get_active())
             confirm_pswd_input.show_password(button.get_active())
         
+        def password_input_changed(entry, text, variety, atleast=0):
+            if not text or len(text)<atleast:
+                is_input_empty[variety] = True
+            else:
+                is_input_empty[variety] = False
+            if (is_myown and is_input_empty[CURRENT_PSWD]) or\
+                    is_input_empty[NEW_PSWD] or is_input_empty[CONFIRM_PSWD]:
+                change_button.set_sensitive(False)
+            else:
+                change_button.set_sensitive(True)
+        
+        def action_combo_selected(combo_box, item_content, item_value, item_index):
+            if item_value == ACTION_ENABLE or item_value == ACTION_DISABLE or item_value == ACTION_NO_PSWD:
+                current_pswd_input.set_sensitive(False)
+                new_pswd_input.set_sensitive(False)
+                confirm_pswd_input.set_sensitive(False)
+                show_pswd_check.set_sensitive(False)
+            else:
+                current_pswd_input.set_sensitive(True)
+                new_pswd_input.set_sensitive(True)
+                confirm_pswd_input.set_sensitive(True)
+                show_pswd_check.set_sensitive(True)
+        
         def change_user_password(button):
             # TODO 设置用户的密码
-            pass
+            if is_authorized:
+                do_action = action_combo.get_current_item()[1]
+                try:
+                    if do_action == ACTION_ENABLE:
+                        current_set_user.set_locked(False)
+                    elif do_action == ACTION_DISABLE:
+                        current_set_user.set_locked(True)
+                    elif do_action == ACTION_NO_PSWD:
+                        current_set_user.set_password_mode(2)
+                except Exception, e:
+                    if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                        error_label.set_text("<span foreground='red'>Error:%s</span>" % e.msg)
+                        return
+                # action is not setting password, then return
+                if do_action != ACTION_SET_PSWD:
+                    self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+                    return
+            if new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
+                error_label.set_text("<span foreground='red'>%s</span>" % _("两次输入的密码不一致"))
+                return
+            self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+        CURRENT_PSWD = 0
+        NEW_PSWD = 1
+        CONFIRM_PSWD = 2
+
+        ACTION_SET_PSWD = 0
+        ACTION_NO_PSWD = 1
+        ACTION_ENABLE = 2
+        ACTION_DISABLE = 3
+        is_input_empty = {
+            CURRENT_PSWD: True,
+            NEW_PSWD: True,
+            CONFIRM_PSWD: True}
+        is_authorized = self.get_authorized()
+        is_myown = settings.check_is_myown(current_set_user.get_uid())
+        
         self.container_widgets["change_pswd_main_vbox"].destroy()
         self.container_widgets["change_pswd_main_vbox"] = gtk.VBox(False)
         self.alignment_widgets["change_pswd"].add(self.container_widgets["change_pswd_main_vbox"])
@@ -734,11 +792,12 @@ class AccountSetting(object):
         table2.attach(label3, 0, 1, 2, 3, 4, 0, 10, 7)
         table2.attach(label4, 0, 1, 3, 4, 4, 0, 10, 7)
         
-        action_items = [(_("Set a password now"), 0), (_("Log in without a password"), 1)]
+        action_items = [(_("Set a password now"), ACTION_SET_PSWD),
+                        (_("Log in without a password"), ACTION_NO_PSWD)]
         if current_set_user.get_locked():
-            action_items.append((_("Enable this account"), 2))
+            action_items.append((_("Enable this account"), ACTION_ENABLE))
         else:
-            action_items.append((_("Disable this account"), 2))
+            action_items.append((_("Disable this account"), ACTION_DISABLE))
         action_combo = ComboBox(action_items, max_width=180)
         current_pswd_input = PasswordEntry()
         new_pswd_input = PasswordEntry()
@@ -747,16 +806,16 @@ class AccountSetting(object):
         new_pswd_input.set_size(180, 25)
         confirm_pswd_input.set_size(180, 25)
         show_pswd_check = CheckButton(_("Show password"))
-        if self.get_authorized():
+        if is_authorized:
             table2.attach(label1, 0, 1, 0, 1, 4, 0, 10, 7)
             table2.attach(action_combo, 1, 2, 0, 1, 4, 0)
-        if settings.check_is_myown(current_set_user.get_uid()):
+        if is_myown:
             table2.attach(label2, 0, 1, 1, 2, 4, 0, 10, 7)
             table2.attach(current_pswd_input, 1, 2, 1, 2, 4, 0)
         table2.attach(new_pswd_input, 1, 2, 2, 3, 4, 0)
         table2.attach(confirm_pswd_input, 1, 2, 3, 4, 4, 0)
         table2.attach(show_pswd_check, 1, 2, 4, 5, 4, 0)
-        table2.attach(button_hbox, 1, 2, 6, 7, 4, 0, 0, 30)
+        table2.attach(button_hbox, 1, 2, 6, 7, 4, 0, 0, 10)
         
         button_align = gtk.Alignment()
         cancel_button = Button(_("Cancel"))
@@ -767,19 +826,23 @@ class AccountSetting(object):
         button_hbox.pack_start(change_button, False, False)
         
         error_label = Label("")
+        #table2.attach(error_label, 0, 2, 5, 6, 4, 0)
         
         self.container_widgets["change_pswd_main_vbox"].pack_start(table1, False, False)
         self.container_widgets["change_pswd_main_vbox"].pack_start(table2, False, False, 40)
-        #self.container_widgets["change_pswd_main_vbox"].pack_start(button_hbox, False, False, 20)
-        self.container_widgets["change_pswd_main_vbox"].pack_start(error_label, False, False, 20)
+        self.container_widgets["change_pswd_main_vbox"].pack_start(error_label, False, False)
+        self.container_widgets["change_pswd_main_vbox"].pack_start(gtk.Alignment(0, 0, 1, 1))
         self.container_widgets["change_pswd_main_vbox"].show_all()
 
+        action_combo.connect("item-selected", action_combo_selected)
+        current_pswd_input.entry.connect("changed", password_input_changed, CURRENT_PSWD)
+        new_pswd_input.entry.connect("changed", password_input_changed, NEW_PSWD, 6)
+        confirm_pswd_input.entry.connect("changed", password_input_changed, CONFIRM_PSWD, 6)
         show_pswd_check.connect("toggled", show_input_password)
         cancel_button.connect("clicked", lambda w: self.container_widgets["slider"].slide_to_page(
             self.alignment_widgets["main_hbox"], "left"))
         change_button.connect("clicked", change_user_password)
 
-    
     def escape_markup_string(self, string):
         '''
         escape markup string

@@ -21,7 +21,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from nmsetting import NMSetting
-from nmlib.nmconstant import NMSettingParamFlags as pflag
 
 class NMSettingWimax(NMSetting):
     '''NMSettingWimax'''
@@ -30,20 +29,3 @@ class NMSettingWimax(NMSetting):
         NMSetting.__init__(self)
         self.name = "wimax"
 
-    @property    
-    def network_name(self):
-        return self._network_name
-
-    @network_name.setter
-    def network_name(self, new_network_name):
-        self._network_name = new_network_name
-
-    @property
-    def mac_address(self):
-        return self._mac_address
-
-    @mac_address.setter
-    def mac_address(self, new_mac_address):
-        self._mac_address = new_mac_address
-
- 

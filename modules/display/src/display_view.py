@@ -260,7 +260,7 @@ class DisplayView(gtk.VBox):
         self.display_manager.set_screen_brightness(self.brightness_adjust.get_value() / 100)
     
     def __setup_monitor_items(self):
-        count = self.display_manager.get_screen_count()
+        count = self.display_manager.get_output_count()
         i = 0
 
         while (i < count):

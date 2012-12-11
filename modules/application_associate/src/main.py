@@ -25,21 +25,21 @@ import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
-from display_view import DisplayView
+from app_asso_view import AppAssoView
 from module_frame import ModuleFrame
 
 if __name__ == "__main__":
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
-    display_view = DisplayView()
+    app_asso_view = AppAssoView()
     
-    module_frame.add(display_view)
+    module_frame.add(app_asso_view)
     
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
             module_frame.send_module_info()
 
-    module_frame.module_message_handler = message_handler 
+    module_frame.module_message_handler = message_handler        
     
     module_frame.run()

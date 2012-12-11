@@ -6,6 +6,7 @@
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
+#             Long Changjin <admin@longchangjin.cn>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +24,9 @@
 from utils import BusBase
 import gobject
 import commands
+import pexpect
+import time
+import subprocess
 from consolekit import ck
 
 class Accounts(BusBase):
@@ -47,12 +51,9 @@ class Accounts(BusBase):
         return str(self.properties["DaemonVersion"])
 
     def create_user(self, name, fullname = "", account_type = 0):
-        if name in self.get_exist_username_list():
-            return self.find_user_by_name(name)
-        else:
-            if not fullname:
-                fullname = name
-            return str(self.dbus_method("CreateUser", name, fullname, account_type))
+        if not fullname:
+            fullname = name
+        return str(self.dbus_method("CreateUser", name, fullname, account_type))
 
     def delete_user(self, id, remove_files_flag):
         if self.find_user_by_id(id):
@@ -77,6 +78,15 @@ class Accounts(BusBase):
                 continue
         else:
             print "must have a user logged in"
+
+    def modify_user_passwd(self, new_password, username, need_old = 0, old_password = None):
+        import dbus
+
+        bus = dbus.SystemBus()
+        dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+        dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
+
+        return dbus_interface.modify_user_passwd(new_password, username, need_old, old_password)
 
     def get_username_from_uid(self, uid):
         if self.find_user_by_id(uid):

@@ -41,6 +41,7 @@ import dbus
 import dbus.service
 import dbus
 import dbus.service
+import getopt
 
 class DBusService(dbus.service.Object):
     def __init__(self, 
@@ -140,7 +141,20 @@ def start_module_process(slider, content_page_info, module_path, module_config):
     else:
         send_message(module_id, "show_again", "")
             
+def __call_module_by_name(module_name, module_dict, slider, content_page_info):
+    if module_name in module_dict.keys():                                    
+        start_module_process(slider,                                         
+                             content_page_info,                              
+                             module_dict[module_name].path,                  
+                             module_dict[module_name].config)
+
 if __name__ == "__main__":
+    ops, args = getopt.getopt(sys.argv[1:], '')
+    module_name = None
+
+    if len(args):
+        module_name = args[0]
+
     # Check unique.                                                              
     if is_exists(APP_DBUS_NAME, APP_OBJECT_NAME):                                
         sys.exit()
@@ -221,5 +235,7 @@ if __name__ == "__main__":
     
     # Start dbus service.
     DBusService(action_bar, content_page_info, application)
-    
+
+    __call_module_by_name(module_name, module_dict, slider, content_page_info)
+
     application.run()

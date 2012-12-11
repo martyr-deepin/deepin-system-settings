@@ -43,14 +43,11 @@ from nmsetting_cdma import NMSettingCdma
 from nmsetting_olpcmesh import NMSettingOlpcMesh
 from nmsetting_infiniband import NMSettingInfiniband
 from nmsetting_wireless_security import NMSettingWirelessSecurity
+from nmlib.nm_utils import TypeConvert
 
 class NMConnection(gobject.GObject):
     '''NMConnection'''
 
-    # __gsignals__ = {
-    #     "secrets-cleared":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE, (gobject.TYPE_NONE,)),
-    #     "secrets-updated":(gobject.SIGNAL_RUN_FIRST,gobject.TYPE_NONE,(str,)),
-    #     }
     def __init__(self):
         gobject.GObject.__init__(self)
 
@@ -75,7 +72,7 @@ class NMConnection(gobject.GObject):
         self.nm_setting_802_1x = ""
         self.nm_setting_adsl = ""
 
-        self.settings_dict = {} ####{name:{prop_key:prop_value}, initied in NMRemoteConnection
+        self.settings_dict = {} ####{name:{prop_key:prop_value}, initied in NMRemoteConnection, read from this
         self.settings_info = {} ####{name:[type, priority, get_method, base_type]}
         self.init_settings_info()
 
@@ -102,9 +99,6 @@ class NMConnection(gobject.GObject):
         self.settings_info["802-1x"] = [NMSetting8021x, 1, "get_setting_802_1x", "nm_setting_802_1x", True]
         self.settings_info["adsl"] = [NMSettingAdsl, 1, "get_setting_adsl", "nm_setting_adsl", True]
 
-    # def get_setting(self, setting_name):
-    #     return getattr(self, self.settings_info[setting_name][2])()
-
     def get_setting(self, setting_name):
         if setting_name not in self.settings_info.iterkeys():
             return "unknown setting_name"
@@ -113,194 +107,248 @@ class NMConnection(gobject.GObject):
                 setattr(self, self.settings_info[setting_name][3], apply(self.settings_info[setting_name][0]))
             return getattr(self, self.settings_info[setting_name][3])    
 
-    def get_setting_type(self, setting_name):
-        return self.settings_info[setting_name][0]
+    def check_setting_finish(self):
+        ###check if user complete his setting, avoid the missing property exception
+        info_dict = TypeConvert.dbus2py(self.settings_dict)
+        try:
+            ###wired
+            if info_dict["connection"]["type"] == "802-3-ethernet":
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
 
-    def get_setting_priority(self, setting_name):
-        return self.settings_info[setting_name][1]
+                return True
+            ###wireless
+            elif info_dict["connection"]["type"] == "802-11-wireless":
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
 
-    def get_setting_base_type(self, setting_name):
-        return self.settings_info[setting_name][4]
+                if len(info_dict["802-11-wireless"]["ssid"]) == 0:
+                    return False
 
-    def add_setting(self, setting):
-        if isinstance(setting, NMSetting):
-            if setting.name not in self.settings_info.iterkeys():
-                print "error:%s unknown setting" % setting.name
-            elif setting.name not in self.settings_dict.iterkeys():
-                self.settings_dict[setting.name] = setting
+                if "802-11-wireless-security" in info_dict.iterkeys():
+                    if info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
+
+                        ####wep
+                        if "wep-tx-keyidx" in info_dict["802-11-wireless-security"].iterkeys():
+                            if info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 0:
+                                if not info_dict["802-11-wireless-security"]["wep-key0"]:
+                                    return False
+
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 1:
+                                if not info_dict["802-11-wireless-security"]["wep-key1"]:
+                                    return False
+
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 2:
+                                if not info_dict["802-11-wireless-security"]["wep-key2"]:
+                                    return False
+
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 3:
+                                if not info_dict["802-11-wireless-security"]["wep-key3"]:
+                                    return False
+                            else:
+                                    return False
+                        else:
+                            if not info_dict["802-11-wireless-security"]["wep-key0"]:
+                                return False
+
+                        ###psk    
+                    elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
+                        # currently not support
+                        return False
+
+                    elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
+                        # currently not support
+                        return False
+                    else:
+                        return False
+
+                return True
+
+            elif info_dict["connection"]["type"] == "pppoe":
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                if not info_dict["pppoe"]["username"] or not info_dict["pppoe"]["password"]:
+                    return False
+
+                return True
+
+            elif info_dict["connection"]["type"] == "vpn":
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                if not info_dict["vpn"]["user-name"] or not info_dict["vpn"]["secrets"] or not info_dict["vpn"]["data"]:
+                    return False
+
+                return True
+
+            elif info_dict["connection"]["type"] == "cdma":
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                return True
+
+            elif info_dict["connection"]["type"] == "gsm":
+                if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                return True
+
             else:
-                print "error:%s has already added" % setting.name
-        else:
-            print "error:%s is not a type of NMSetting" % setting.name
-
-    def remove_setting(self, setting_name):
-        if setting_name not in self.settings_dict.iterkeys():
-            print "error:%s hadn't been added" % setting_name
-        else:
-            del self.settings_dict[setting_name]
-
-    def update_setting(self, setting):
-        self.remove_setting(setting.name)
-        self.add_setting(setting)
-        setattr(self, self.settings_info[setting.name][3], setting)
-
-    def replace_settings(self, new_settings):
-        self.settings_dict.clear()
-        self.settings_dict = copy.deepcopy(new_settings)
-        return self.settings_dict
-
-    def update_secrets(self, setting_name, secrets_dict):
-        if setting_name:
-            setting = self.get_setting(setting_name)
-            if not setting:
                 return False
-            setting.update_secrets(secrets_dict)
-        else:
+        except:        
+            return False
+
+    def check_setting_commit(self):
+        ###delete invalid setting property before update
+        info_dict = TypeConvert.dbus2py(self.settings_dict)
+        try:
+            if info_dict["connection"]["type"] == "802-3-ethernet":
+                if not self.get_setting("802-3-ethernet").wired_valid():
+                    ###or raise exception
+                    return False
+                self.get_setting("ipv4").adapt_ip4config_commit()
+
+                if "ipv6" in info_dict.iterkeys():
+                    self.get_setting("ipv6").apapt_ip6config_commit()
+
+            elif info_dict["connection"]["type"] == "802-11-wireless":
+                self.get_setting("802-11-wireless").adapt_wireless_commit()
+
+                if "802-11-wireless-security" in info_dict.iterkeys():
+                    self.get_setting("802-11-wireles-security").adapt_wireless_security_commit()
+
+                self.get_setting("ipv4").adapt_ip4config_commit()
+
+                if "ipv6" in info_dict.iterkeys():
+                    self.get_setting("ipv6").apapt_ip6config_commit()
+
+            elif info_dict["connection"]["type"] == "pppoe":
+                if not self.get_setting("802-3-ethernet").wired_valid():
+                    return False
+                self.get_setting("ipv4").adapt_ip4config_commit()
+
+                if "ipv6" in info_dict.iterkeys():
+                    self.get_setting("ipv6").apapt_ip6config_commit()
+
+            elif info_dict["connection"]["type"] == "vpn":
+                pass
+            elif info_dict["connection"]["type"] == "cdma":
+                pass
+            elif info_dict["connection"]["type"] == "gsm":
+                pass
+            else:
+                print "invalid connection_type"
+        except:        
             pass
 
-    def need_secrets(self, hints):
-        pass
-    
-    def clear_secrets(self):
-        for setting in self.settings_dict.values():
-            setting.clear_secrets()
-	# g_signal_emit (connection, signals[SECRETS_CLEARED], 0);
+    def guess_secret_info(self):
+        '''guess_secret_info'''
+        info_dict = TypeConvert.dbus2py(self.settings_dict)
 
-    def clear_secrets_with_flags(self, func, user_data):
-        for setting in self.settings_dict.values():
-            setting.clear_secrets_with_flags()
-	# g_signal_emit (connection, signals[SECRETS_CLEARED], 0);
+        if "vpn" in info_dict.iterkeys():
+            self.secret_setting_name = "vpn"
+            self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
-    def get_uuid(self):
-        return self.get_setting["connection"].get_uuid()
+        elif "pppoe" in info_dict.iterkeys() and "802-3-ethernet" in info_dict.iterkeys():
+            self.secret_setting_name = "pppoe"
+            self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
-    def get_id(self):
-        return self.get_setting["connection"].get_id()
+        elif "802-11-wireless" in info_dict.iterkeys():
+            ###for wireless no password
+            if not "802-11-wireless-security" in info_dict.iterkeys():
+                self.secret_setting_name = None
+                self.secret_method = None
+                return (self.secret_setting_name, self.secret_method)
 
+            ###for wireless has password
+            self.secret_setting_name = "802-11-wireless-security"
 
-    # def get_setting_connection(self):
-    #     if not self.nm_setting_connection:
-    #         self.nm_setting_connection = NMSettingConnection()
+            if "key-mgmt" in info_dict["802-11-wireless-security"].iterkeys():
+                ###for wpa/psk
+                if info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
+                    self.secret_method = "psk"
+                    return (self.secret_setting_name, self.secret_method)
+                    
+                elif info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
+                ###for wep    
+                    if "wep-key-type" in info_dict["802-11-wireless-security"].iterkeys():
+                        if "wep-tx-keyidx" in info_dict["802-11-wireless-security"].iterkeys():
+                            if info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 0:
+                                self.secret_method = "wep-key0"
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 1:
+                                self.secret_method = "wep-key1"
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 2:
+                                self.secret_method = "wep-key2"
+                            elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 3:
+                                self.secret_method = "wep-key3"
+                            else:
+                                print "unsupported wep key idx"
+                                self.secret_method = None
 
-    #     return self.nm_setting_connection
+                            return (self.secret_setting_name, self.secret_method)    
+                        else:
+                            ###set default for wep key index
+                            self.secret_method = "wep-key0"
+                            return (self.secret_setting_name, self.secret_method)
+                    else:
+                        # print "must have wep-key-type to indicate wep connection"
+                        self.secret_method = None
+                        return (self.secret_setting_name, self.secret_method)
 
-    # def get_setting_802_1x(self):
-    #     if not self.nm_setting_802_1x:
-    #         self.nm_setting_802_1x = NMSetting8021x()
+                ###for wpa    
+                elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
+                    # print "no agent available for wpa-eap"
+                    self.secret_method = None
+                    return (self.secret_setting_name, self.secret_method)
 
-    #     return self.nm_setting_802_1x
+                elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
+                    if "auth-alg" in info_dict["802-11-wireless-security"].iterkeys():
+                        if info_dict["802-11-wireless-security"]["auth-alg"] == "leap":
+                            self.secret_method = "leap-password"
+                            return (self.secret_setting_name, self.secret_method)
+                    else:
+                        # print "no ageent available for dynamic wep"
+                        self.secret_method = None
+                        return (self.secret_setting_name, self.secret_method)
+                else:
+                    # print "unknown key mgmt"
+                    self.secret_method = None
+                    return (self.secret_setting_name, self.secret_method)
 
-    # def get_setting_adsl(self):
-    #     if not self.nm_setting_adsl:
-    #         self.nm_setting_adsl = NMSettingAdsl()
+            else:
+                # print "must have key mgmt for 802.11 wireless security"
+                self.secret_method = None
+                return (self.secret_setting_name, self.secret_method)
 
-    #     return self.nm_setting_adsl
+        elif "gsm" in info_dict.iterkeys():
+            self.secret_setting_name = "gsm"
+            self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
-    # def get_setting_bluetooth(self):
-    #     if not self.nm_setting_bluetooth:
-    #         self.nm_setting_bluetooth = NMSettingBluetooth()
+        elif "802-3-ethernet" in info_dict.iterkeys():
+            self.secret_setting_name = None
+            self.secret_method = None
+            return (self.secret_setting_name, self.secret_method)
 
-    #     return self.nm_setting_bluetooth
+        elif "ppp" in info_dict.iterkeys():
+            self.secret_setting_name = ""
+            self.secret_method = ""
+            return (self.secret_setting_name, self.secret_method)
 
-    # def get_setting_bond(self):
-    #     if not self.nm_setting_bond:
-    #         self.nm_setting_bond = NMSettingBond()
+        elif "802-1x" in info_dict.iterkeys():
+            self.secret_setting_name = ""
+            self.secret_method = ""
+            return (self.secret_setting_name, self.secret_method)
 
-    #     return self.nm_setting_bond
+        elif "cdma" in info_dict.iterkeys():
+            self.secret_setting_name = "cdma"
+            self.secret_method = "password"
+            return (self.secret_setting_name, self.secret_method)
 
-    # def get_setting_cdma(self):
-    #     if not self.nm_setting_cdma:
-    #         self.nm_setting_cdma = NMSettingCdma()
-
-    #     return self.nm_setting_cdma
-
-    # def get_setting_gsm(self):
-    #     if not self.nm_setting_gsm:
-    #         self.nm_setting_gsm = NMSettingGsm()
-
-    #     return self.nm_setting_gsm
-
-    # def get_setting_infiniband(self):
-    #     if not self.nm_setting_infiniband:
-    #         self.nm_setting_infiniband = NMSettingInfiniband()
-
-    #     return self.nm_setting_infiniband
-
-    # def get_setting_ip4_config(self):
-    #     if not self.nm_setting_ip4_config:
-    #         self.nm_setting_ip4_config = NMSettingIP4Config()
-
-    #     return self.nm_setting_ip4_config
-
-    # def get_setting_ip6_config(self):
-    #     if not self.nm_setting_ip6_config:
-    #         self.nm_setting_ip6_config = NMSettingIP6Config()
-
-    #     return self.nm_setting_ip6_config
-
-    # def get_setting_olpc_mesh(self):
-    #     if not self.nm_setting_olpc_mesh:
-    #         self.nm_setting_olpc_mesh = NMSettingOlpcMesh()
-
-    #     return self.nm_setting_olpc_mesh
-
-    # def get_setting_ppp(self):
-    #     if not self.nm_setting_ppp:
-    #         self.nm_setting_ppp = NMSettingPPP()
-
-    #     return self.nm_setting_ppp
-
-    # def get_setting_pppoe(self):
-    #     if not self.nm_setting_pppoe:
-    #         self.nm_setting_pppoe = NMSettingPPPOE()
-
-    #     return self.nm_setting_pppoe
-
-    # def get_setting_serial(self):
-    #     if not self.nm_setting_serial:
-    #         self.nm_setting_serial = NMSettingSerial()
-
-    #     return self.nm_setting_serial
-
-    # def get_setting_vlan(self):
-    #     if not self.nm_setting_vlan:
-    #         self.nm_setting_vlan = NMSettingVlan()
-
-    #     return self.nm_setting_vlan
-
-    # def get_setting_vpn(self):
-    #     if not self.nm_setting_vpn:
-    #         self.nm_setting_vpn = NMSettingVpn()
-
-    #     return self.nm_setting_vpn
-
-    # def get_setting_wimax(self):
-    #     if not self.nm_setting_wimax:
-    #         self.nm_setting_wimax = NMSettingWimax()
-
-    #     return self.nm_setting_wimax
-
-    # def get_setting_wired(self):
-    #     if not self.nm_setting_wired:
-    #         self.nm_setting_wired = NMSettingWired()
-
-    #     return self.nm_setting_wired
-
-    # def get_setting_wireless(self):
-    #     if not self.nm_setting_wireless:
-    #         self.nm_setting_wireless = NMSettingWireless()
-
-    #     return self.nm_setting_wireless
-
-    # def get_setting_wireless_security(self):
-    #     if not self.nm_setting_wireless_security:
-    #         self.nm_setting_wireless_security = NMSettingWirelessSecurity()
-
-    #     return self.nm_setting_wireless_security
-
-    ###Signals###
-    def secrets_cleared_cb(self):
-        pass
-
-    def secrets_updated_cb(self, setting_name):
-        pass
+        else:
+            self.secret_setting_name = None
+            self.secret_method = None
+            return (self.secret_setting_name, self.secret_method)
