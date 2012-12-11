@@ -23,6 +23,71 @@
 from nmobject import NMObject
 from nm_utils import TypeConvert
 
+a_table = {
+     7:5035,
+     8:5040,
+     9:5045,
+    11:5055,
+    12:5060,
+    16:5080,
+    34:5170,
+    36:5180,
+    38:5190,
+    40:5200,
+    42:5210,
+    44:5220,
+    46:5230,
+    48:5240,
+    50:5250,
+    52:5260,
+    56:5280,
+    58:5290,
+    60:5300,
+    64:5320,
+   100:5500,
+   104:5520,
+   108:5540,
+   112:5560,
+   116:5580,
+   120:5600,
+   124:5620,
+   128:5640,
+   132:5660,
+   136:5680,
+   140:5700,
+   149:5745,
+   152:5760,
+   153:5765,
+   157:5785,
+   160:5800,
+   161:5801,
+   165:5825,
+   183:4915,
+   184:4920,
+   185:4925,
+   187:4935,
+   188:4945,
+   192:4960,
+   196:4980
+}
+
+bg_table = { 
+    1:2412,
+    2:2417,
+    3:2422,
+    4:2427,
+    5:2432,
+    6:2437,
+    7:2442,
+    8:2447,
+    9:2452,
+    10:2457,
+    11:2462,
+    12:2467,
+    13:2472,
+    14:2484
+}
+
 class NMAccessPoint(NMObject):
     '''NMAccessPoint'''
 
@@ -63,6 +128,23 @@ class NMAccessPoint(NMObject):
     def get_frequency(self):
         return self.properties["Frequency"]
 
+    def get_channel(self):
+        ###get channel from frequency
+        if self.get_frequency() > 4900:
+            for key, value in enumerate(a_table):
+                if value < self.get_frequency():
+                    continue
+                else:
+                    return key
+        else:
+            for key, value in enumerate(bg_table):
+                if value < self.get_frequency():
+                    continue
+                else:
+                    return key
+
+        return 0
+    
     def get_mode(self):
         return self.properties["Mode"]
 
@@ -73,8 +155,50 @@ class NMAccessPoint(NMObject):
         return self.properties["Strength"]
 
     def filter_connections (self, connections):
-        pass
+        return filter(lambda x: self.is_connection_valid(x), connections)
 
+    def is_connection_valid(self, connection):
+        info_dict = TypeConvert.dbus2py(connection.settings_dict)
+
+        if info_dict["connection"]["type"] != "802-11-wireless":
+            return False
+        
+        if "802-11-wireless" not in info_dict.iterkeys():
+            return False
+
+        if self.get_ssid() != info_dict["802-11-wireless"]["ssid"]:
+            return False
+            
+        if self.get_bssid() != None and info_dict["802-11-wireless"]["bssid"] != None:
+            pass
+        
+        if self.get_mode() != None:
+            if self.get_mode() == 0 or "mode" not in info_dict["802-11-wireless"].iterkeys():
+                return False
+
+            if self.get_mode() == 1 and info_dict["802-11-wireless"]["mode"] !="adhoc":
+                return False
+
+            if self.get_mode() == 2 and info_dict["802-11-wireless"]["mode"] != "infrastructure":
+                return False
+
+        if self.get_frequency() > 0:
+            if info_dict["802-11-wireless"]["band"] == "a":
+                if self.get_frequency() < 4915 or self.get_frequency() > 5825:
+                    return False
+
+            if info_dict["802-11-wireless"]["band"] == "bg":
+                if self.get_frequency() < 2412 or self.get_frequency() > 2484:
+                    return False
+
+            if "channel" in info_dict["802-11-wireless"].iterkeys():
+                if self.get_channel() != info_dict["802-11-wireless"]["channel"]:
+                    return False
+
+        ###assert wireless security
+
+        return True        
+                
     def get_hw_address(self):
         return self.properties["HwAddress"]
 
