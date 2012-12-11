@@ -21,8 +21,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gobject
-import copy
-from nmsetting import NMSetting
 from nmsetting_wired import NMSettingWired
 from nmsetting_wireless import NMSettingWireless
 from nmsetting_adsl import NMSettingAdsl
