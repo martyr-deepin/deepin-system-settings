@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+# Copyright (C) 2012 Deepin, Inc.
 #               2012 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -79,11 +79,15 @@ class DisplayView(gtk.VBox):
         self.resize_width = 790
         self.resize_height = 200
         self.monitor_items = []
+        self.__output_names = []
         self.__setup_monitor_items()
         self.sizes_items = []
+        self.monitor_combo = None
         self.__setup_sizes_items()
-        self.rots_items = []
-        self.__setup_rots_items()
+        self.rotation_items = [("正常", 1), 
+                               ("逆时针", 2), 
+                               ("顺时针", 3), 
+                               ("180度", 4)]
         self.duration_items = [("1分钟", 1), 
                                ("2分钟", 2), 
                                ("3分钟", 3), 
@@ -126,7 +130,7 @@ class DisplayView(gtk.VBox):
         self.monitor_box = gtk.HBox(spacing = self.box_spacing)
         self.monitor_label = self.__setup_label("显示器")
         self.monitor_combo = self.__setup_combo(self.monitor_items, 350)
-        self.monitor_combo.set_select_index(self.display_manager.get_current_screen())
+        self.monitor_combo.set_select_index(0)
         self.monitor_combo.connect("item-selected", self.__combo_item_selected, "monitor_combo")
         self.__widget_pack_start(self.monitor_box, 
             [self.monitor_label, 
@@ -151,8 +155,8 @@ class DisplayView(gtk.VBox):
         self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.sizes_items))
         self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
         self.rotation_label = self.__setup_label("方向")
-        self.rotation_combo = self.__setup_combo(self.rots_items)
-        self.rotation_combo.set_select_index(self.display_manager.get_screen_rotation_index(self.rots_items))
+        self.rotation_combo = self.__setup_combo(self.rotation_items)
+        self.rotation_combo.set_select_index(self.display_manager.get_screen_rotation_index())
         self.rotation_combo.connect("item-selected", self.__combo_item_selected, "rotation_combo")
         self.__widget_pack_start(self.sizes_box, 
             [self.sizes_label, 
@@ -260,27 +264,24 @@ class DisplayView(gtk.VBox):
         self.display_manager.set_screen_brightness(self.brightness_adjust.get_value() / 100)
     
     def __setup_monitor_items(self):
-        count = self.display_manager.get_output_count()
+        self.__output_names = self.display_manager.get_output_names()
         i = 0
 
-        while (i < count):
-            self.monitor_items.append(("显示器%d" % (i + 1), i))
+        while (i < len(self.__output_names)):
+            self.monitor_items.append((self.__output_names[i], i))
             i += 1
 
     def __setup_sizes_items(self):
+        output_name = self.__output_names[0]
         i = 0
-        self.sizes_items = []
-        
-        for size in self.display_manager.get_screen_sizes():
-            self.sizes_items.append(("%s x %s" % (size.width, size.height), i))
-            i += 1
 
-    def __setup_rots_items(self):
-        i = 0
-        self.rots_items = []
-        
-        for rot in self.display_manager.get_screen_rots():
-            self.rots_items.append((rot, i))
+        if not self.monitor_combo == None:
+            output_name = self.monitor_combo.items[self.monitor_combo.select_index]
+
+        screen_sizes = self.display_manager.get_screen_sizes(output_name)
+        self.size_items = []
+        while i < len(screen_sizes):
+            self.sizes_items.append((screen_sizes[i], i))
             i += 1
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
@@ -291,11 +292,12 @@ class DisplayView(gtk.VBox):
             return
 
         if object == "sizes_combo":
-            self.display_manager.set_screen_size(self.sizes_items[item_value][0])
+            self.display_manager.set_screen_size(self.monitor_combo.items[self.monitor_combo.select_index][0], 
+                                                 self.sizes_items[item_value][0])
             return
         
         if object == "rotation_combo":
-            self.display_manager.set_screen_rotation(self.rots_items[item_value][0])
+            self.display_manager.set_screen_rotation(item_value)
             return
 
         if object == "close_monitor_combo":

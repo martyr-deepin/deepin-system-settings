@@ -23,4 +23,4 @@
 from dtk.ui.utils import run_command
 
 if __name__ == "__main__":
-    run_command("gnome-control-center printers")
+    run_command("system-config-printer")

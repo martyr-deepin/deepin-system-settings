@@ -2,12 +2,15 @@ Dependence (Debian)
 
 请模块作者、维护者列出import的Python模块、自己开发的、第三方的Python Bindings
 
+Deepin Settings Daemon
+git clone git@github.com:linuxdeepin/deepin-settings-daemon.git
+
 Python polkit_permission Bindings
 sudo apt-get install libpolkit-gobject-1-dev
 cd modules/account/src/
 sudo python setup.py install
 
-Python XRandR Bindings
+Deepin XRandR Python Bindings
 git clone git@github.com:linuxdeepin/deepin-xrandr.git
 sudo python setup.py install
 
