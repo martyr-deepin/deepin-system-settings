@@ -196,8 +196,55 @@ class NMAccessPoint(NMObject):
                     return False
 
         ###assert wireless security
+        if not "802-11-wireless-security" in info_dict.iterkeys():
+            if self.get_flags() ==1 or self.get_wpa_flags() !=0 or self.get_rsn_flags() != 0:
+                return False
+        else:
+            if "key-mgmt" not in info_dict["802-11-wireless-security"].iterkeys():
+                return False
 
+            ###static wep
+            elif info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
+                if self.get_flags() == 0 or self.get_wpa_flags() != 0 or self.get_rsn_flags() != 0:
+                    return False
+                return True
+            ###adhoc wpa    
+            elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-none":
+                if self.get_mode() != 1:
+                    return False
+                return True
+            
+            else:
+                if self.get_mode() != 2:
+                    return False
+                
+                ###dynamic wep or leap
+                if self.info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
+                    if self.get_flags() == 0:
+                        return False
+
+                    if self.get_wpa_flags() != 0:
+                        if self.get_wpa_flags() != 200:
+                            return False
+
+                        if self.get_wpa_flags() not in [1, 2, 10, 20]:
+                            return False
+
+                        pass
+                        pass
+                        pass
+                        pass
+
+
+                elif self.info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
+                    if self.get_wpa_flags() != 100 and self.get_rsn_flags() != 100:
+                        return False
+                
+                elif self.info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
+                    if self.get_wpa_flags() != 200 and self.get_rsn_flags() != 200:
+                        return False
         return True        
+
                 
     def get_hw_address(self):
         return self.properties["HwAddress"]
