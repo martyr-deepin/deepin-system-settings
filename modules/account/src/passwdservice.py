@@ -118,4 +118,6 @@ class PasswdService(dbus.service.Object):
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     PasswdService()
-    gobject.MainLoop().run()
+    mainloop = gobject.MainLoop()
+    gobject.timeout_add(60000, lambda : mainloop.quit())
+    mainloop.run()

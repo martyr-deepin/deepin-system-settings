@@ -1,0 +1,11 @@
+Metadata-Version: 1.1
+Name: polkitpermission
+Version: 0.1
+Summary: python binding for PolkitPermission
+Home-page: www.linuxdeepin.com
+Author: Linux Deepin Team
+Author-email: longwei@linuxdeepin.com
+License: GPL-3
+Download-URL: www.linuxdeepin.com
+Description: python binding for PolkitPermission
+Platform: Linux
