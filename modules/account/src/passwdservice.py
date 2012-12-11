@@ -26,6 +26,7 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 import gobject
+import getpass
     
 def authWithPolicyKit(sender, connection, action, interactive=1):
     system_bus = dbus.SystemBus()
@@ -68,10 +69,10 @@ class PasswdService(dbus.service.Object):
     @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ssis", out_signature = "b", 
                          sender_keyword = 'sender', connection_keyword = 'conn')    
     def modify_user_passwd(self, new_password, username, need_old, old_password, sender = None, conn = None):
-
-        if not authWithPolicyKit(sender, conn, "com.deepin.passwdservice.modify-password"):
-            print "not authWithPolicyKit"
-            return False
+        if getpass.getuser() != username:
+            if not authWithPolicyKit(sender, conn, "com.deepin.passwdservice.modify-password"):
+                print "not authWithPolicyKit"
+                return False
 
         return self.__modify_user_passwd(new_password, username, need_old, old_password)
 

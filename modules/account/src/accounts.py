@@ -81,51 +81,14 @@ class Accounts(BusBase):
         else:
             print "must have a user logged in"
 
-    # def modify_user_passwd(self, username, old_password, new_password):
-    #     p = subprocess.Popen("/usr/bin/passwd " +username, stdin = subprocess.PIPE, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell = True)
-    #     p.wait()
-    #     p.stdin.write(old_password+"\n")
-    #     p.stdin.write(new_password+"\n")
-    #     p.stdin.write(new_password+"\n")
-    #     return p.returncode
-
     def modify_user_passwd(self, new_password, username, need_old = 0, old_password = None):
-        ###for normal password
-        if len(new_password) < 6:
-            return False
+        import dbus
 
-        passwd = pexpect.spawn("/usr/bin/passwd %s" %username)
+        bus = dbus.SystemBus()
+        dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+        dbus_interface = dbus.interface(dbus_object, "com.deepin.passwdservice")
 
-        if need_old == 1:
-            try:
-                passwd.expect("UNIX")
-                print "input old"
-                passwd.sendline(old_password)
-                time.sleep(0.1)
-            except:
-                return False
-
-        try:
-            # passwd.expect("输入新的 UNIX 密码：")
-            passwd.expect("UNIX")
-            print "input new"
-            passwd.sendline(new_password)
-            time.sleep(0.1)
-
-            # passwd.expect("重新输入新的 UNIX 密码：")
-            passwd.expect("UNIX")
-            print "confirm new"
-            passwd.sendline(new_password)
-            time.sleep(0.1)
-
-            print "succeed\n"
-            passwd.expect("已成功更新密码")
-
-            return True
-
-        except Exception, e:
-            print e
-            return False
+        return dbus_interface.modify_user_passwd(new_password, username, need_old, old_password)
 
     def get_username_from_uid(self, uid):
         if self.find_user_by_id(uid):
