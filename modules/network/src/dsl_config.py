@@ -4,12 +4,11 @@ from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.entry import InputEntry, TextEntry
+from dtk.ui.entry import InputEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
-from dtk.ui.combo import ComboBox
 #from widgets import SettingButton
 from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
@@ -80,7 +79,7 @@ class DSLSetting(gtk.HBox):
         # Check connections
         if connections == []:
             # Create a new connection
-            connections = [nm_module.nm_remote_settings.get_pppoe_connections()]
+            connections = [nm_module.nm_remote_settings.new_pppoe_connection()]
 
         if new_connection:
             connections += new_connection
@@ -261,6 +260,7 @@ class Wired(gtk.VBox):
         align.add(table)
         self.add(align)
 
+        table.set_row_spacings(5)
         self.mac_entry.set_size(222, 22)
         self.clone_entry.set_size(222, 22)
         ## retrieve wired info

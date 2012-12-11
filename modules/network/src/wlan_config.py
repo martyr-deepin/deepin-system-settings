@@ -90,8 +90,10 @@ class WirelessSetting(gtk.HBox):
         #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         #cr.fill()
 
-    def init(self, access_point, new_connection_list=None):
+    def init(self, access_point, new_connection_list=None, init_connections=False):
         self.access_point = access_point
+        if init_connections:
+            self.sidebar.new_connection_list = []
         # Get all connections  
         connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.access_point.get_ssid())
         connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.access_point.get_ssid())

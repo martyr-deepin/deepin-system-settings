@@ -195,7 +195,7 @@ class WirelessItem(TreeItem):
             #if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
                 #nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
 
-            self.setting_object.init(self.connection)
+            self.setting_object.init(self.connection, init_connections=True)
             self.send_to_crumb()
             self.slide_to_setting() 
         #if self.redraw_request_callback:

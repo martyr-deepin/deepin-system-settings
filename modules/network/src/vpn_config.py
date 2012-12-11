@@ -86,7 +86,7 @@ class VPNSetting(gtk.HBox):
         if connections == []:
             # Create a new connection
             connect = nm_module.nm_remote_settings.new_vpn_pptp_connection()
-            connections = connections.append(connect)
+            connections.append(connect)
 
         if new_connection:
             connections += new_connection

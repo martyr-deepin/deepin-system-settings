@@ -2,6 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from dtk.ui.label import Label
+from dtk.ui.button import RadioButton
 from dtk.ui.entry import InputEntry
 from nmlib.nm_utils import TypeConvert
 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -16,9 +17,12 @@ class IPV4Conf(gtk.VBox):
         self.dns_only = dns_only
         table = gtk.Table(9, 2, False)
         # Ip configuration
+        #ip_group_box = gtk.VBox()
         self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        table.attach(self.auto_ip, 0,1,0,1,)
-        self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
+        self.manual_ip = gtk.RadioButton(self.auto_ip,"手动添加IP地址")
+        #ip_group_box.pack_start(self.auto_ip, False, False)
+        #ip_group_box.pack_start(self.manual_ip, False, False)
+        table.attach(self.auto_ip, 0,1,0,1)
         table.attach(self.manual_ip, 0,1,1,2)
 
         self.addr_label = Label("IP地址:")
@@ -85,7 +89,6 @@ class IPV4Conf(gtk.VBox):
             self.set_button("apply", True)
         else:
             self.set_button("save", True)
-
 
     def reset(self, connection):
         self.setting = connection.get_setting("ipv4")       
