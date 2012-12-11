@@ -91,13 +91,15 @@ class NMDeviceWifi(NMDevice):
 
         if "802-11-wireless-security" in info_dict.iterkeys():
             if info_dict["802-11-wireless-security"]["key-mgmt"] in ["wpa-none", "wpa-psk", "wpa-eap"]:
-                if self.get_capabilities() not in [4, 8, 16, 32]:
+                caps = self.get_capabilities()
+                if not caps & 4 or not caps & 8 or not caps & 16 or not caps &32:
                     return False
 
                 protos = info_dict["802-11-wireless-security"]["proto"]
                 if protos:
-                    if "rsn" in protos and "wpa" not in protos and self.get_capabilities() not in [8, 32]:
-                        return False
+                    if "rsn" in protos and "wpa" not in protos:
+                        if not caps & 8 or not caps & 32:
+                            return False
         return True        
 
     def get_access_points(self):
