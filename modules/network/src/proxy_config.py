@@ -3,11 +3,21 @@
 from nmlib.proxysettings import ProxySettings
 from theme import app_theme
 from dtk.ui.label import Label
+from dtk.ui.button import Button
 from dtk.ui.entry import InputEntry
 from dtk.ui.spin import SpinBox
 from dtk.ui.combo import ComboBox
 from dtk.ui.utils import container_remove_all
 import gtk
+
+#class ProxyConfig(gtk.Alignment):
+    #def __init__(self, slide_back_cb=None, change_crumb_cb=None):
+        #gtk.Alignment.__init__(self, 0, 0, 0, 0)
+        #self.set_padding(12, 12, 10, 10)
+        #self.add(Proxy(slide_back_cb, change_crumb_cb))
+        #self.show_all()
+
+
 
 class ProxyConfig(gtk.VBox):
 
@@ -19,10 +29,15 @@ class ProxyConfig(gtk.VBox):
         self.change_crumb = change_crumb_cb
 
         self.table = gtk.Table(5, 4, False)
-        #self.table.set_size_request(290, 165)
+        self.table.set_row_spacings(17)
+        self.table.set_col_spacing(0, 30)
+        self.table.set_size_request(340, -1)
+
+        hbox = gtk.HBox()
+        hbox.add(self.table)
         table_align = gtk.Alignment(0, 0 ,0 , 0)
-        table_align.set_padding(57, 0, 110, 0)
-        table_align.add(self.table)
+        table_align.set_padding(55, 0, 106, 0)
+        table_align.add(hbox)
 
         self.method_label = Label("Method")
         self.http_label = Label("Http Proxy")
@@ -35,13 +50,15 @@ class ProxyConfig(gtk.VBox):
         #method_list = ["None", "Manual", "Automatic"]
         self.methods = ComboBox([("None", 0),
                                  ("Manual", 1),
-                                 ("Automatic", 2)])
+                                 ("Automatic", 2)],
+                                 max_width=222)
+        self.methods.set_size_request(222,22)
         self.methods.connect("item-selected", self.method_changed)
 
         #method_list = ["None", "Manual", "Automatic"]
         #map(lambda m: self.methods.append_text(m), method_list)
         
-        width ,height = 100 ,20
+        width ,height = 222 ,22
         self.http_entry = InputEntry()
         self.http_entry.set_size(width, height)
         self.http_spin = SpinBox(8080, 0, 49151, 1, 50)
@@ -59,13 +76,14 @@ class ProxyConfig(gtk.VBox):
         self.init(True)
 
         self.pack_start(table_align, False, False)
-        apply_button = gtk.Button("Apply")
+        apply_button = Button("Apply")
         apply_button.connect("clicked", self.save_changes)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
         buttons_aligns.add(apply_button)
-        self.pack_start(buttons_aligns, False , False)
+        self.pack_end(buttons_aligns, False , False)
+        self.connect("expose-event", self.expose_event)
 
-
+        
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
