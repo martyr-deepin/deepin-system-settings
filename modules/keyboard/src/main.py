@@ -20,8 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import settings             # must be before "import gtk"
-
+import settings
 import sys
 import os
 from dtk.ui.utils import get_parent_dir
@@ -529,8 +528,10 @@ class KeySetting(object):
         self.button_widgets["shortcuts_add"].connect("clicked", lambda b: self.__add_shortcuts_item())
     
     ######################################
-    def keyboard_setting_changed_cb(self, setting, key):
-        args = [setting, key]
+    def keyboard_setting_changed_cb(self, key):
+        print "keyboard setting changed:", key
+        return
+        args = [self.settings, key]
         if key == 'delay':
             callback = self.settings_value_changed
             args.append(self.adjust_widgets["repeat_delay"])
@@ -541,8 +542,10 @@ class KeySetting(object):
             return
         callback(*args)
     
-    def desktop_setting_changed_cb(self, setting, key):
-        args = [setting, key]
+    def desktop_setting_changed_cb(self, key):
+        print "setting changed:", key
+        return
+        args = [self.settings1, key]
         if key == 'cursor-blink-time':
             callback = self.settings_value_changed
             args.append(self.adjust_widgets["blink_cursor"])
@@ -550,8 +553,10 @@ class KeySetting(object):
             return
         callback(*args)
 
-    def touchpad_setting_changed_cb(self, setting, key):
-        args = [setting, key]
+    def touchpad_setting_changed_cb(self, key):
+        print "setting changed:", key
+        return
+        args = [self.settings, key]
         if key == 'disable-while-typing':
             callback = self.disable_while_typing_change
         else:
@@ -592,6 +597,8 @@ class KeySetting(object):
     
     def adjustment_value_changed(self, adjustment, key):
         '''adjustment value changed, and settings set the value'''
+        #print "adjustment value changed:", adjustment, key
+        #return
         if adjustment.get_data("changed-by-other-app"):
             adjustment.set_data("changed-by-other-app", False)
             return
