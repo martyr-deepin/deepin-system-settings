@@ -69,7 +69,10 @@ class NMRemoteSettings(NMObject):
     def add_connection(self, settings_dict):
         conn_path = self.dbus_method("AddConnection", settings_dict)
         if conn_path:
-            return cache.getobject(conn_path)
+            nm_connection = cache.getobject(conn_path)
+            nm_connection.settings_dict = settings_dict
+            nm_connection.update()
+            return nm_connection
         else:
             return None
 

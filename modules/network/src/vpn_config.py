@@ -4,17 +4,14 @@
 from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
+from dtk.ui.button import Button, RadioButton, CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
-from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
-from dtk.ui.combo import ComboBox
 #from widgets import SettingButton
 from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
-from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -30,7 +27,7 @@ slider = nm_module.slider
 #pptp_plugin = NMVpnPptpPlugin
 class VPNSetting(gtk.HBox):
 
-    def __init__(self, slide_back_cb = None, change_crumb_cb = None, module_frame = None):
+    def __init__(self, slide_back_cb=None, change_crumb_cb=None, module_frame=None):
 
         gtk.HBox.__init__(self)
         self.slide_back = slide_back_cb

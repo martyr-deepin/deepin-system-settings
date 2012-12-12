@@ -446,7 +446,7 @@ class Mobile(gtk.VBox):
         print a, "deactive"
 
     def slide_to_event(self, widget, event):
-        self.settings.init()
+        self.settings.init(init_connections=True)
         self.send_to_crumb_cb()
         slider.slide_to_page(self.settings, "right")
     def add_setting_page(self, setting_page):
@@ -631,12 +631,9 @@ if __name__ == '__main__':
                 print "click_crumb"
                 (crumb_index, crumb_label) = message_content
                 if crumb_index == 1:
-                    slider.slide_to_page(main_align, "left")
+                    slider._slide_to_page("main", "left")
                 if crumb_label == "VPN":
-                    layout = slider.layout.get_children()
-                    for widget in layout:
-                        if isinstance(widget, VPNSetting):
-                            slider.slide_to_page(widget, "left")
+                    slider._slide_to_page("vpn", "left")
 
         module_frame.module_message_handler = message_handler
         module_frame.run()

@@ -12,7 +12,7 @@ from dtk.ui.utils import container_remove_all
 #from widgets import SettingButton
 from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
-from nmlib.nm_utils import TypeConvert
+#from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
@@ -28,8 +28,6 @@ def check_settings(connection, fn):
     else:
         fn("save", False)
         #print "not pass"
-
-
 
 class DSLSetting(gtk.HBox):
 
@@ -95,6 +93,8 @@ class DSLSetting(gtk.HBox):
             connections += new_connection
         else:
             self.sidebar.new_connection_list = []
+        
+        self.connections = connections
 
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in connections]
@@ -137,10 +137,22 @@ class DSLSetting(gtk.HBox):
         connection = self.dsl.connection
         if widget.label is "save":
             print "saving"
-            self.dsl.save_setting()
             self.ppp.save_setting()
+            
+            if connection.check_setting_finish():
+                this_index = self.connections.index(connection)
+                from nmlib.nm_remote_connection import NMRemoteConnection
+                if isinstance(connection, NMRemoteConnection):
+                    connection.update()
+                else:
+                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                    index = self.sidebar.new_connection_list.index(connection)
+                    self.sidebar.new_connection_list.pop(index)
+                    self.init(self.sidebar.new_connection_list)
 
-            connection.update()
+                    # reset index
+                    con = self.sidebar.connection_tree.visible_items[this_index]
+                    self.sidebar.connection_tree.select_items([con])
             self.set_button("apply", True)
         else:
             device_path = nm_module.nmclient.get_wired_devices()[0].object_path
@@ -148,8 +160,8 @@ class DSLSetting(gtk.HBox):
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                            device_path,
                                            "/")
-        self.change_crumb()
-        self.slide_back() 
+            self.change_crumb()
+            self.slide_back() 
 
 
 class SideBar(gtk.VBox):
