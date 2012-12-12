@@ -39,6 +39,11 @@ class NMSettingPPPOE (NMSetting):
     def service(self, new_service):
         self.prop_dict["service"] = TypeConvert.py2_dbus_string(new_service)
 
+    @service.delete
+    def service(self):
+        if "service" in self.prop_dict.iterkeys():
+            del self.prop_dict["service"]
+
     @property
     def username(self):
         if "username" in self.prop_dict.iterkeys():
@@ -47,6 +52,11 @@ class NMSettingPPPOE (NMSetting):
     @username.setter
     def username(self, new_username):
         self.prop_dict["username"] = TypeConvert.py2_dbus_string(new_username)
+
+    @username.deleter
+    def username(self):
+        if "username" in self.prop_dict.iterkeys():
+            del self.prop_dict["username"]
 
     @property
     def password(self):
@@ -57,6 +67,10 @@ class NMSettingPPPOE (NMSetting):
     def password(self, new_password):
         self.prop_dict["password"] = TypeConvert.py2_dbus_string(new_password)
 
+    @password.deleter
+    def password(self):
+        if "password" in self.prop_dict.iterkeys():
+            del self.prop_dict["password"]
     @property
     def password_flags(self):
         if "password-flags" in self.prop_dict.iterkeys():
@@ -65,6 +79,11 @@ class NMSettingPPPOE (NMSetting):
     @password_flags.setter
     def password_flags(self, new_password_flags):
         self.prop_dict["password-flags"] = TypeConvert.py2_dbus_uint32(new_password_flags)
+
+    @password_flags.deleter
+    def password_flags(self):
+        if "password-flags" in self.prop_dict.iterkeys():
+            del self.prop_dict["password-flags"]
 
 if __name__ == "__main__":
     pass
