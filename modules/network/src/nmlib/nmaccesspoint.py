@@ -261,11 +261,9 @@ class NMAccessPoint(NMObject):
                                     if self.match_cipher(cipher, "wep40", wpa_flags, wpa_flags, 1):
                                         found = True
                                         break
-
                                     if self.match_cipher(cipher, "wep104", wpa_flags, wpa_flags, 2):
                                         found = True
                                         break
-
                                 if not found:
                                     return False
 
@@ -283,11 +281,9 @@ class NMAccessPoint(NMObject):
                                     if self.match_cipher(cipher, "wep40", wpa_flags, wpa_flags, 16):
                                         found = True
                                         break
-                                    
                                     if self.match_cipher(cipher, "wep104", wpa_flags, wpa_flags, 32):
                                         found = True
                                         break
-
                                 if not found:
                                     return False
                             else:

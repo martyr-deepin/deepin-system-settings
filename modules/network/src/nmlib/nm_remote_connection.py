@@ -104,9 +104,11 @@ class NMRemoteConnection(NMObject, NMConnection):
         print error
 
     def init_settings_prop_dict(self):
+        self.settings_dict = {}
         self.settings_dict = self.get_settings()
         for item in self.settings_dict.iterkeys():
             # self.get_setting(item).prop_dict = copy.deepcopy(self.settings_dict[item])
+            self.get_setting(item).prop_dict = {}
             self.get_setting(item).prop_dict = self.settings_dict[item]
 
     def update_settings_prop_dict(self):

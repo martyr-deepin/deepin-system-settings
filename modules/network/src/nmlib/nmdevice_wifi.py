@@ -109,18 +109,18 @@ class NMDeviceWifi(NMDevice):
         else:
             return []
 
-    def get_access_points_async(self):
-        try:
-            self.dbus_interface.GetAccessPoints(reply_handler = self.get_ap_finish, error_handler = self.get_ap_error)
-        except:
-            traceback.print_exc()
+    # def get_access_points_async(self):
+    #     try:
+    #         self.dbus_interface.GetAccessPoints(reply_handler = self.get_ap_finish, error_handler = self.get_ap_error)
+    #     except:
+    #         traceback.print_exc()
 
-    def get_ap_finish(self, result):    
-        self.origin_ap_list = map(lambda x:cache.getobject(x), TypeConvert.dbus2py(result))
+    # def get_ap_finish(self, result):    
+    #     self.origin_ap_list = map(lambda x:cache.getobject(x), TypeConvert.dbus2py(result))
 
-    def get_ap_error(self, error):
-        print "get access points failed!\n"
-        print error
+    # def get_ap_error(self, error):
+    #     print "get access points failed!\n"
+    #     print error
 
     def auto_connect(self):
         if cache.getobject(self.object_path).is_active():
@@ -185,14 +185,16 @@ class NMDeviceWifi(NMDevice):
             return []
 
     def get_ap_by_ssid(self, ssid):
+        '''get the optimal ap according to the given ssid'''
         try:
             ssid_aps = self.__get_same_ssid_ap(ssid)
             if ssid_aps:
-                return sorted(self.__get_same_ssid_ap(ssid), key = lambda x:x.get_strength())[-1]
+                return sorted(ssid_aps, key = lambda x:x.get_strength())[-1]
         except:    
             return []
 
     def __get_ssid_record(self):
+        '''return the uniquee str ssid of access points'''
         try:
             aps = self.origin_ap_list
             if aps:
@@ -201,6 +203,7 @@ class NMDeviceWifi(NMDevice):
             return []
 
     def __get_same_ssid_ap(self, ssid):
+        '''return accesspoints that have the same ssid'''
         try:
             if self.origin_ap_list:
                 return filter(lambda x:x.get_ssid() == ssid, self.origin_ap_list)
