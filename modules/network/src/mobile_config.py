@@ -21,6 +21,15 @@ from container import Contain
 import gtk
 
 slider = nm_module.slider
+
+def check_settings(connection, fn):
+    if connection.check_setting_finish():
+        fn('save', True)
+        print "pass"
+    else:
+        fn("save", False)
+        print "not pass"
+
 class MobileSetting(gtk.HBox):
 
     def __init__(self, slide_back_cb = None, change_crumb_cb = None):
@@ -318,6 +327,7 @@ class Broadband(gtk.VBox):
         align.add(self.table)
         self.add(align)
         
+        self.refresh()
         # Connect signals
         self.number.entry.connect("changed", self.save_settings_by, "number")
         self.username.entry.connect("changed", self.save_settings_by, "username")
@@ -329,7 +339,6 @@ class Broadband(gtk.VBox):
         self.password_show.connect("toggled", self.password_show_toggled)
         self.roam_check.connect("toggled", self.roam_check_toggled)
         # Refesh
-        self.refresh()
 
     def password_show_toggled(self, widget):
         if widget.get_active():
@@ -347,19 +356,13 @@ class Broadband(gtk.VBox):
         self.table.attach(self.number, 2, 4, 1, 2)
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
-        
-        #align = gtk.Alignment(0,0.5, 0, 0)
-        #align.add(self.password_show)
         self.table.attach(self.password_show, 2, 4, 4, 5)
-        #self.table.attach(align, 2, 4, 4, 5)
 
-        
         def to_region(widget):
             region = slider.get_page_by_name("region")
             region.init(network_type)
             region.need_new_connection =False
             slider._slide_to_page("region", "left")
-
 
         if network_type == "gsm":
             self.button_to_region.connect("clicked", to_region)
@@ -376,7 +379,6 @@ class Broadband(gtk.VBox):
             self.table.attach(self.roam_check, 3, 4, 10, 11)
             self.table.attach(self.pin, 2, 4, 11, 12)
 
-            
     def refresh(self):
         # get_settings
         mobile_type = self.connection.get_setting("connection").type

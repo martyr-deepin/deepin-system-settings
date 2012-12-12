@@ -37,7 +37,7 @@ class EntryTreeView(TreeView):
     def __init__(self, 
             items=[],
             drag_data=None,
-            enable_hover=False,
+            enable_hover=True,
             enable_highlight=True,
             enable_multiple_select=False,
             enable_drag_drop=False,
@@ -251,16 +251,6 @@ class ShowOthers(TreeItem):
         self.delete_items_callback(self.child_items)
 
 
-        
-
-
-
-
-
-
-
-
-
 class SettingItem(TreeItem):
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10
@@ -283,6 +273,7 @@ class SettingItem(TreeItem):
         self.is_double_click = False
 
         self.check_select = False
+        self.is_hover = False
         self.delete_hover = False
         self.connection_active = False
     
@@ -328,7 +319,7 @@ class SettingItem(TreeItem):
          
         #self.render_background(cr,bg_x, bg_y, bg_width, bg_height)
         self.render_background(cr, rect)
-        if self.is_select:
+        if self.delete_hover:
             delete_icon = app_theme.get_pixbuf("/Network/delete.png").get_pixbuf()
             draw_pixbuf(cr, delete_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - delete_icon.get_height())/2)
 
@@ -408,15 +399,32 @@ class SettingItem(TreeItem):
     def select(self):
         #print self.get_highlight()
         self.is_select = True
+        if self.is_hover:
+            self.hover(0,0,0)
         self.click(self.connection)
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
     
     def hover(self, column, offset_x, offset_y):
-        pass
+        self.is_hover = True
+        if self.is_select:
+            self.timer = gobject.timeout_add(1500, self.show_delete)
+
+    def show_delete(self):
+        self.delete_hover = True
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+        return False
 
     def unhover(self, column, offset_x, offset_y):
-        pass
+        self.is_hover = False
+        # FIXME once delete an item , trigger unhover but hover_row doesnt exist 
+        if hasattr(self, "timer"):
+            gobject.source_remove(self.timer)
+        self.delete_hover = False
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
 
     def single_click(self, column, offset_x, offset_y):
         self.is_double_click = False
@@ -425,7 +433,8 @@ class SettingItem(TreeItem):
         if column == 0:
             self.check_select = not self.check_select
             print "check clicked"
-        elif column == 2:
+        elif column == 2 and self.delete_hover:
+
             self.delete_connection(self.connection)
             
         if self.redraw_request_callback:
@@ -435,16 +444,18 @@ class SettingItem(TreeItem):
         self.is_double_click = True
 
     def expand(self):
-        if self.is_expand:
-            return
-        self.is_expand = True
-        self.add_items_callback(self.child_items, self.row_index+1)
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        pass
+        #if self.is_expand:
+            #return
+        #self.is_expand = True
+        #self.add_items_callback(self.child_items, self.row_index+1)
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
     
     def unexpand(self):
-        self.is_expand = False
-        self.delete_items_callback(self.child_items)
+        pass
+        #self.is_expand = False
+        #self.delete_items_callback(self.child_items)
 
 gobject.type_register(SettingItem)
 

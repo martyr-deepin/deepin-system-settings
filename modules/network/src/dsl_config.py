@@ -149,7 +149,6 @@ class DSLSetting(gtk.HBox):
                     index = self.sidebar.new_connection_list.index(connection)
                     self.sidebar.new_connection_list.pop(index)
                     self.init(self.sidebar.new_connection_list)
-
                     # reset index
                     con = self.sidebar.connection_tree.visible_items[this_index]
                     self.sidebar.connection_tree.select_items([con])

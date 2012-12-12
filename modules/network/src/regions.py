@@ -81,7 +81,7 @@ class Region(gtk.HBox):
                      "username": username,
                      "password": password,
                      "apn": apn,
-                     "network_id": network_id,
+                     #"network_id": network_id,
                      "network_type": network_type}})
             provider_type = "gsm"
 
