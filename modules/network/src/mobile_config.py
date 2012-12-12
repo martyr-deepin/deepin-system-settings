@@ -3,13 +3,10 @@
 from theme import app_theme, ui_theme
 
 from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
+from dtk.ui.button import Button,CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
-from dtk.ui.new_treeview import TreeView, TreeItem
 from dtk.ui.label import Label
-from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
-from dtk.ui.draw import draw_text, draw_vlinear
 #from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
 #from widgets import SettingButton
@@ -22,9 +19,17 @@ from nm_modules import nm_module
 from container import Contain
 
 import gtk
-import pango
 
 slider = nm_module.slider
+
+def check_settings(connection, fn):
+    if connection.check_setting_finish():
+        fn('save', True)
+        print "pass"
+    else:
+        fn("save", False)
+        print "not pass"
+
 class MobileSetting(gtk.HBox):
 
     def __init__(self, slide_back_cb = None, change_crumb_cb = None):
@@ -49,20 +54,16 @@ class MobileSetting(gtk.HBox):
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        #vbox.connect("expose-event", self.expose_event)
+        vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
-        apply_button = Button("Apply")
-        apply_button.connect("clicked", self.save_changes)
+        self.save_button = Button("save")
+        self.save_button.connect("clicked", self.save_changes)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(apply_button)
+        buttons_aligns.add(self.save_button)
         vbox.pack_start(buttons_aligns, False , False)
         
         self.show_all()
-        #global region
-            #if type(p) == gtk.EventBox:
-                #print "slide"
-                #slider.slide_to_page(p)
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -71,33 +72,41 @@ class MobileSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self):
+    def init(self, new_connection=None, init_connections=False):
         # Get all connections  
         def get_mobile_connections():
             cdma = nm_module.nm_remote_settings.get_cdma_connections()
             gsm = nm_module.nm_remote_settings.get_gsm_connections()
             return cdma + gsm
         connections = get_mobile_connections()
+        
+        if init_connections:
+            self.sidebar.new_connection_list =[]
+
+        if new_connection:
+            connections += new_connection
+
         # Check connections
         if connections == []:
-            nm_module.nm_remote_settings.new_cdma_connection()
-            connections = get_mobile_connections()
+            region = slider.get_page_by_name("region")
+            region.init()
+            slider._slide_to_page("region", "right")
+        else:
+            self.connections = connections
+            self.ipv4_setting = [IPV4Conf(con) for con in connections]
+            self.broadband_setting = [Broadband(con) for con in connections]
+            self.ppp_setting = [PPPConf(con) for con in connections]
 
-        #self.region_setting = [Region(con) for con in connections]
-        self.ipv4_setting = [IPV4Conf(con) for con in connections]
-        self.broadband_setting = [Broadband(con) for con in connections]
-        self.ppp_setting = [PPPConf(con) for con in connections]
+            self.sidebar.init(connections, self.ipv4_setting)
+            index = self.sidebar.get_active()
+            #self.region = self.region_setting[index]
+            self.ipv4 = self.ipv4_setting[index]
+            self.broadband = self.broadband_setting[index]
+            self.ppp = self.ppp_setting[index]
+            #self.dsl = NoSetting()
+            #self.ppp = NoSetting()
 
-        self.sidebar.init(connections, self.ipv4_setting)
-        index = self.sidebar.get_active()
-        #self.region = self.region_setting[index]
-        self.ipv4 = self.ipv4_setting[index]
-        self.broadband = self.broadband_setting[index]
-        self.ppp = self.ppp_setting[index]
-        #self.dsl = NoSetting()
-        #self.ppp = NoSetting()
-
-        self.init_tab_box()
+            self.init_tab_box()
 
     def init_tab_box(self):
         #self.tab_window.tab_items[0] = ("Region", self.region)
@@ -121,13 +130,29 @@ class MobileSetting(gtk.HBox):
     def save_changes(self, widget):
         #self.dsl.save_setting()
         ##self.ppp.save_setting()
-
         connection = self.ipv4.connection
-        #mobile_type = connection.get_setting("connection").type
-        #self.broadband = connection.get_setting(mobile_type)
-        connection.update()
+        if widget.label is "save":
+            if connection.check_setting_finish():
+                this_index = self.connections.index(connection)
+                from nmlib.nm_remote_connection import NMRemoteConnection
+                if isinstance(connection, NMRemoteConnection):
+                    connection.update()
+                else:
+                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                    index = self.sidebar.new_connection_list.index(connection)
+                    self.sidebar.new_connection_list.pop(index)
+                    self.init(self.sidebar.new_connection_list)
+
+                    # reset index
+                    con = self.sidebar.connection_tree.visible_items[this_index]
+                    self.sidebar.connection_tree.select_items([con])
+            self.set_button("apply", True)
+        else:
+            self.apply_change()
 
         ##FIXME need to change device path into variables
+    def apply_change(self):
+        connection = self.ipv4.connection
         cdma_device = nm_module.mmclient.get_cdma_device()
         gsm_device = nm_module.mmclient.get_gsm_device()
         device = cdma_device + gsm_device
@@ -148,6 +173,13 @@ class MobileSetting(gtk.HBox):
             print "no active device"
         #self.change_crumb()
         #self.slide_back() 
+    def set_button(self, name, state):
+        if name == "save":
+            self.save_button.set_label(name)
+            self.save_button.set_sensitive(state)
+        else:
+            self.save_button.set_label("connect")
+            self.save_button.set_sensitive(state)
 
 
 class SideBar(gtk.VBox):
@@ -164,6 +196,7 @@ class SideBar(gtk.VBox):
         add_button.connect("clicked", self.add_new_connection)
         self.pack_start(add_button, False, False, 6)
         self.set_size_request(160, -1)
+        self.new_connection_list = []
     
     def init(self, connection_list, ip4setting):
         # check active
@@ -198,31 +231,18 @@ class SideBar(gtk.VBox):
             self.connection_tree.select_items([this_connection])
         except ValueError:
             self.connection_tree.select_first_item()
-        '''
-        btn = SettingButton(None, 
-                            self.connections[0],
-                            self.setting[0],
-                            self.check_click_cb)
-        self.buttonbox.pack_start(btn, False, False, 6)
-        for index, connection in enumerate(self.connections[1:]):
-            button = SettingButton(btn,
-                                   connection,
-                                   self.setting[index + 1],
-                                   self.check_click_cb)
-            self.buttonbox.pack_start(button, False, False, 6)
-
-        try:
-            index = self.connections.index(active)
-            self.buttonbox.get_children()[index].check.set_active(True)
-        except ValueError:
-            self.buttonbox.get_children()[0].check.set_active(True)
-        '''
 
     def delete_item_cb(self, connection):
         '''docstring for delete_item_cb'''
+        from nmlib.nm_remote_connection import NMRemoteConnection
         self.connection_tree.delete_select_items()
-        connection.delete()
-        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        if isinstance(connection, NMRemoteConnection):
+            connection.delete()
+        else:
+            index = self.new_connection_list.index(connection)
+            self.new_connection_list.pop(index)
+        if self.connection_tree.visible_items:
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]
@@ -307,6 +327,7 @@ class Broadband(gtk.VBox):
         align.add(self.table)
         self.add(align)
         
+        self.refresh()
         # Connect signals
         self.number.entry.connect("changed", self.save_settings_by, "number")
         self.username.entry.connect("changed", self.save_settings_by, "username")
@@ -318,7 +339,6 @@ class Broadband(gtk.VBox):
         self.password_show.connect("toggled", self.password_show_toggled)
         self.roam_check.connect("toggled", self.roam_check_toggled)
         # Refesh
-        self.refresh()
 
     def password_show_toggled(self, widget):
         if widget.get_active():
@@ -336,19 +356,13 @@ class Broadband(gtk.VBox):
         self.table.attach(self.number, 2, 4, 1, 2)
         self.table.attach(self.username, 2, 4, 2, 3)
         self.table.attach(self.password, 2, 4, 3, 4)
-        
-        #align = gtk.Alignment(0,0.5, 0, 0)
-        #align.add(self.password_show)
         self.table.attach(self.password_show, 2, 4, 4, 5)
-        #self.table.attach(align, 2, 4, 4, 5)
 
-        
         def to_region(widget):
             region = slider.get_page_by_name("region")
             region.init(network_type)
             region.need_new_connection =False
             slider._slide_to_page("region", "left")
-
 
         if network_type == "gsm":
             self.button_to_region.connect("clicked", to_region)
@@ -365,7 +379,6 @@ class Broadband(gtk.VBox):
             self.table.attach(self.roam_check, 3, 4, 10, 11)
             self.table.attach(self.pin, 2, 4, 11, 12)
 
-            
     def refresh(self):
         # get_settings
         mobile_type = self.connection.get_setting("connection").type

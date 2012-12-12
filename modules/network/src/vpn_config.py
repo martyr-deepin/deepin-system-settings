@@ -4,17 +4,14 @@
 from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
+from dtk.ui.button import Button, RadioButton, CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
-from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 #from dtk.ui.droplist import Droplist
-from dtk.ui.combo import ComboBox
 #from widgets import SettingButton
 from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
-from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -30,7 +27,7 @@ slider = nm_module.slider
 #pptp_plugin = NMVpnPptpPlugin
 class VPNSetting(gtk.HBox):
 
-    def __init__(self, slide_back_cb = None, change_crumb_cb = None, module_frame = None):
+    def __init__(self, slide_back_cb=None, change_crumb_cb=None, module_frame=None):
 
         gtk.HBox.__init__(self)
         self.slide_back = slide_back_cb
@@ -130,17 +127,20 @@ class VPNSetting(gtk.HBox):
         
     def save_changes(self, widget):
         print "saving"
-
-        connection = self.ipv4.connection
-        if isinstance(connection, NMRemoteConnection):
-            connection.update()
+        if widget.label == "save":
+            connection = self.ipv4.connection
+            if isinstance(connection, NMRemoteConnection):
+                connection.update()
+            else:
+                nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
+                index = self.sidebar.new_connection_list.index(connection)
+                self.sidebar.new_connection_list.pop(index)
+                self.init(self.sidebar.new_connection_list)
+            self.set_button("apply", True)
         else:
-            nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
-            index = self.sidebar.new_connection_list.index(connection)
-            self.sidebar.new_connection_list.pop(index)
-            self.init(self.sidebar.new_connection_list)
+            self.apply_changes()
 
-    def apply_changes(self, widget):
+    def apply_changes(self):
         connection = self.ipv4.connection
         # FIXME Now just support one device
 
@@ -507,8 +507,10 @@ class PPTPConf(gtk.VBox):
         gtk.VBox.__init__(self)
         self.connection = connection
         self.module_frame = module_frame
+        self.set_button = set_button_callback
         self.vpn_setting = self.connection.get_setting("vpn")
         self.ppp = PPPConf(self.connection, module_frame)
+        nm_module.slider._append_page(self.ppp, "PPP")
         slider._append_page(self.ppp, "ppp")
         self.ppp.show_all()
 
@@ -535,9 +537,9 @@ class PPTPConf(gtk.VBox):
         self.user_entry = InputEntry()
         self.user_entry.set_size(200,25)
         # FIXME should change to new_entry PasswordEntry
-        self.password_entry = gtk.Entry()
-        self.password_entry.set_visibility(False)
-        #self.password_entry.set_size(200, 25)
+        self.password_entry = PasswordEntry()
+        #self.password_entry.set_visibility(False)
+        self.password_entry.set_size(200, 25)
         self.password_show = CheckButton("Show Password")
         self.password_show.set_active(False)
         self.password_show.connect("toggled", self.show_password)
@@ -577,17 +579,16 @@ class PPTPConf(gtk.VBox):
         user = self.vpn_setting.get_data_item("user")
         domain = self.vpn_setting.get_data_item("domain")
 
-        self.gateway_entry.entry.connect("focus-out-event", self.entry_changed, "gateway")
-        self.user_entry.entry.connect("focus-out-event", self.entry_changed, "user")
-        #self.password_entry.entry.connect("focus-out-event", self.entry_changed, "password")
-        self.password_entry.connect("focus-out-event", self.entry_changed, "password")
-        self.nt_domain_entry.entry.connect("focus-out-event", self.entry_changed, "domain")
-
-
         if gateway:
             self.gateway_entry.set_text(gateway)
         if user:
             self.user_entry.set_text(user)
+
+        self.gateway_entry.entry.connect("changed", self.entry_changed, "gateway")
+        self.user_entry.entry.connect("changed", self.entry_changed, "user")
+        #self.password_entry.entry.connect("focus-out-event", self.entry_changed, "password")
+        self.password_entry.entry.connect("changed", self.entry_changed, "password")
+        self.nt_domain_entry.entry.connect("changed", self.entry_changed, "domain")
         (setting_name, method) = self.connection.guess_secret_info() 
         try:
             password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
@@ -595,10 +596,10 @@ class PPTPConf(gtk.VBox):
                                                     method)
             if password == None:
                 #self.password_entry.entry.set_text("")
-                self.password_entry.set_text("")
+                self.password_entry.entry.set_text("")
             else:
                 #self.password_entry.entry.set_text(password)
-                self.password_entry.set_text(password)
+                self.password_entry.entry.set_text(password)
         except:
             pass
 
@@ -610,21 +611,29 @@ class PPTPConf(gtk.VBox):
 
     def show_password(self, widget):
         if widget.get_active():
-            self.password_entry.set_visibility(True)
+            self.password_entry.show_password(True)
         else:
-            self.password_entry.set_visibility(False)
+            self.password_entry.show_password(False)
 
 
-    def entry_changed(self, widget, event, item):
-        print "focus out"
-        text = widget.get_text()
+    def entry_changed(self, widget, content, item):
+        text = content
         if text:
             if item == "password":
                 self.vpn_setting.set_secret_item(item, text)
             else:
                 self.vpn_setting.set_data_item(item, text)
+            
         else:
-            self.vpn_setting.delete_data_item(item)
+            if item == "password":
+                self.vpn_setting.delete_secret_item(item)
+            else:
+                self.vpn_setting.delete_data_item(item)
+
+        if self.connection.check_setting_finish():
+            self.set_button("save", True)
+        else:
+            self.set_button("save", False)
     
     def radio_toggled(self, widget, service_type):
         if widget.get_active():
@@ -635,9 +644,8 @@ class PPTPConf(gtk.VBox):
     def advanced_button_click(self, widget):
         self.ppp.refresh()
         self.module_frame.send_submodule_crumb(3, "高级设置")
-        slider.slide_to_page(self.ppp, "right")
+        nm_module.slider._slide_to_page("PPP", "right")
         #pass
-
 
 class PPPConf(gtk.VBox):
 
@@ -929,10 +937,7 @@ class PPPConf(gtk.VBox):
 
     def confirm_button_cb(self, widget):
         self.module_frame.send_message("change_crumb", 2)
-        layout = slider.layout.get_children()
-        for widget in layout:
-            if isinstance(widget, VPNSetting):
-                slider.slide_to_page(widget, "left")
+        nm_module,slider._slide_to_page("vpn", "left")
         
 
     def auth_lock(self):
@@ -962,16 +967,3 @@ class PPPConf(gtk.VBox):
         else:
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
-        # Check Buttons
-if __name__ == "__main__":
-
-    win = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    win.set_size_request(600, 600)
-    win.connect("destroy", lambda w: gtk.main_quit())
-
-    mobile = VPNSetting()
-    mobile.init()
-
-    win.add(mobile)
-    win.show_all()
-    gtk.main()

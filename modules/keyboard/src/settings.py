@@ -118,7 +118,7 @@ def keyboard_set_cursor_blink_time(value):
     '''
     if not DESKTOP_SETTINGS.get_boolean("cursor-blink"):
         DESKTOP_SETTINGS.set_boolean("cursor-blink", True)
-    DESKTOP_SETTINGS.set_int("cursor-blink-time", (value))
+    DESKTOP_SETTINGS.set_int("cursor-blink-time", int(value))
 
 
 def keyboard_get_cursor_blink_time():

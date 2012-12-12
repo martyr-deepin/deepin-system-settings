@@ -166,7 +166,7 @@ class NMConnection(gobject.GObject):
                 if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
                     return False
 
-                if not info_dict["pppoe"]["username"] or not info_dict["pppoe"]["password"]:
+                if not info_dict["pppoe"]["username"]:
                     return False
 
                 return True
