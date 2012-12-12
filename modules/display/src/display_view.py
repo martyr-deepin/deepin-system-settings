@@ -185,7 +185,7 @@ class DisplayView(gtk.VBox):
             app_theme.get_pixbuf("scalebar/r_bg.png"), 
             app_theme.get_pixbuf("scalebar/point.png"), 
             True)
-        self.brightness_adjust = gtk.Adjustment(0, 0, 100)
+        self.brightness_adjust = gtk.Adjustment(5, 5, 100)
         self.brightness_adjust.set_value(self.display_manager.get_screen_brightness())
         self.brightness_scale.set_adjustment(self.brightness_adjust)
         self.brightness_scale.set_size_request(355, DEFAULT_FONT_SIZE * 4)
