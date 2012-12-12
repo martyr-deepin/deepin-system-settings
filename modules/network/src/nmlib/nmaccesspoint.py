@@ -196,56 +196,180 @@ class NMAccessPoint(NMObject):
                     return False
 
         ###assert wireless security
+        if self.get_flags() != None:
+            flags = self.get_flags()
+        else:
+            flags = 0
+
+        if self.get_wpa_flags() != None:
+            wpa_flags = self.get_wpa_flags()
+        else:
+            wpa_flags = 0
+
+        if self.get_rsn_flags() != None:
+            rsn_flags = self.get_rsn_flags()
+        else:
+            rsn_flags = 0
+
         if not "802-11-wireless-security" in info_dict.iterkeys():
-            if self.get_flags() ==1 or self.get_wpa_flags() !=0 or self.get_rsn_flags() != 0:
+            if flags == 1 or wpa_flags !=0 or rsn_flags != 0:
                 return False
+
+            return True
         else:
             if "key-mgmt" not in info_dict["802-11-wireless-security"].iterkeys():
                 return False
 
             ###static wep
             elif info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
-                if self.get_flags() == 0 or self.get_wpa_flags() != 0 or self.get_rsn_flags() != 0:
+                if not flags & 1 or wpa_flags != 0 or rsn_flags != 0:
                     return False
                 return True
+
             ###adhoc wpa    
             elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-none":
                 if self.get_mode() != 1:
                     return False
                 return True
-            
+
+            # stuff after this point requires infrastructure
             else:
                 if self.get_mode() != 2:
                     return False
                 
                 ###dynamic wep or leap
                 if self.info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
-                    if self.get_flags() == 0:
+                    if not flags & 1:
                         return False
 
-                    if self.get_wpa_flags() != 0:
-                        if self.get_wpa_flags() != 200:
+                # if the ap is advertising a WPA IE, make sure it supports WEP ciphers
+                    if wpa_flags != 0:
+                        if not wpa_flags & 512:
                             return False
 
-                        if self.get_wpa_flags() not in [1, 2, 10, 20]:
+                        # quick check; can't use AP if it doesn't support at least one
+			# WEP cipher in both pairwise and group suites.
+                        if not (wpa_flags & (1 | 2)) or not (wpa_flags & (16 | 32)):
                             return False
 
-                        pass
-                        pass
-                        pass
-                        pass
+			# Match at least one pairwise cipher with AP's capability if the
+			# wireless-security setting explicitly lists pairwise ciphers
+                        if "pairwise" in self.info_dict["802-11-wireless-security"].iterkeys():
+                            if self.info_dict["802-11-wireless-security"]["pairwise"]:
+                                found = False
+                                for cipher in self.info_dict["802-11-wireless-security"]["pairwise"]:
+                                    if self.match_cipher(cipher, "wep40", wpa_flags, wpa_flags, 1):
+                                        found = True
+                                        break
 
+                                    if self.match_cipher(cipher, "wep104", wpa_flags, wpa_flags, 2):
+                                        found = True
+                                        break
 
-                elif self.info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
-                    if self.get_wpa_flags() != 100 and self.get_rsn_flags() != 100:
-                        return False
+                                if not found:
+                                    return False
+
+                            else:
+                                pass
+                        else:
+                            pass
+
+			# Match at least one group cipher with AP's capability if the
+			# wireless-security setting explicitly lists group ciphers
+                        if "group" in self.info_dict["802-11-wireless-security"].iterkeys():
+                            if self.info_dict["802-11-wireless-security"]["group"]:
+                                found = False
+                                for cipher in self.info_dict["802-11-wireless-security"]["group"]:
+                                    if self.match_cipher(cipher, "wep40", wpa_flags, wpa_flags, 16):
+                                        found = True
+                                        break
+                                    
+                                    if self.match_cipher(cipher, "wep104", wpa_flags, wpa_flags, 32):
+                                        found = True
+                                        break
+
+                                if not found:
+                                    return False
+                            else:
+                                pass
+                        else:
+                            pass
+
+                    return True
+
+                # WPA[2]-PSK and WPA[2] Enterprise 
+                elif self.info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk" or "wpa-eap":
+                    if self.info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
+                        if not (wpa_flags & 256) and not (rsn_flags & 256):
+                            return False
                 
-                elif self.info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
-                    if self.get_wpa_flags() != 200 and self.get_rsn_flags() != 200:
-                        return False
+                    elif self.info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
+                        if not (wpa_flags & 512) and not (rsn_flags & 512):
+                            return False
+
+                 #   FIXME: should handle WPA and RSN separately here to ensure that
+		 #   if the Connection only uses WPA we don't match a cipher against
+		 #   the AP's RSN IE instead
+
+	         #   Match at least one pairwise cipher with AP's capability if the
+		 #   wireless-security setting explicitly lists pairwise ciphers
+                    if "pairwise" in self.info_dict["802-11-wireless-security"].iterkeys():
+                        if self.info_dict["802-11-wireless-security"]["pairwise"]:
+                            found = False
+                            for cipher in self.info_dict["802-11-wireless-security"]["pairwise"]:
+                                if self.match_cipher(cipher, "tkip", wpa_flags, rsn_flags, 8):
+                                    found = True
+                                    break
+                                if self.match_cipher(cipher, "ccmp", wpa_flags, rsn_flags, 10):
+                                    found = True
+                                    break
+
+                            if not found:
+                                return False
+
+                        else:
+                            pass
+                    else:
+                        pass
+
+		#    Match at least one group cipher with AP's capability if the
+		#    wireless-security setting explicitly lists group ciphers
+                    if "group" in self.info_dict["802-11-wireless-security"].iterkeys():
+                        if self.info_dict["802-11-wireless-security"]["group"]:
+                            found = False
+                            for cipher in self.info_dict["802-11-wireless-security"]["group"]:
+                                if self.match_cipher(cipher, "wep40", wpa_flags, rsn_flags, 16):
+                                    found = True
+                                    break
+                                if self.match_cipher(cipher, "wep104", wpa_flags, rsn_flags, 32):
+                                    found = True
+                                    break
+                                if self.match_cipher(cipher, "tkip", wpa_flags, rsn_flags, 64):
+                                    found = True
+                                    break
+                                if self.match_cipher(cipher, "ccmp", wpa_flags,rsn_flags, 128):
+                                    found = True
+                                    break
+
+                            if not found:
+                                return False
+                        else:
+                            pass
+                    else:
+                        pass
+
+                    return True    
         return True        
 
-                
+    def match_cipher(self, cipher, expected, wpa_flags, rsn_flags, flag):
+        if cipher != expected:
+            return False
+        
+        if not (wpa_flags & flag) and not (rsn_flags & flag):
+            return False
+
+        return True
+
     def get_hw_address(self):
         return self.properties["HwAddress"]
 
