@@ -4,7 +4,7 @@ from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
-from dtk.ui.entry import InputEntry
+from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -20,6 +20,16 @@ from container import Contain
 from shared_widget import IPV4Conf
 
 import gtk
+
+def check_settings(connection, fn):
+    if connection.check_setting_finish():
+        fn('save', True)
+        #print "pass"
+    else:
+        fn("save", False)
+        #print "not pass"
+
+
 
 class DSLSetting(gtk.HBox):
 
@@ -88,7 +98,7 @@ class DSLSetting(gtk.HBox):
 
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in connections]
-        self.dsl_setting = [DSLConf(con) for con in connections]
+        self.dsl_setting = [DSLConf(con, self.set_button) for con in connections]
         self.ppp_setting = [PPPConf(con) for con in connections]
 
         self.sidebar.init(connections, self.ipv4_setting)
@@ -124,16 +134,19 @@ class DSLSetting(gtk.HBox):
         self.init_tab_box()
         
     def save_changes(self, widget):
-        print "saving"
-        self.dsl.save_setting()
-        #self.ppp.save_setting()
-
         connection = self.dsl.connection
-        connection.update()
+        if widget.label is "save":
+            print "saving"
+            self.dsl.save_setting()
+            self.ppp.save_setting()
 
+            connection.update()
+            self.set_button("apply", True)
+        else:
+            device_path = nm_module.nmclient.get_wired_devices()[0].object_path
         #FIXME need to change device path into variables
-        nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           "/org/freedesktop/NetworkManager/Devices/0",
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           device_path,
                                            "/")
         self.change_crumb()
         self.slide_back() 
@@ -496,9 +509,10 @@ class Wired(gtk.VBox):
 
 class DSLConf(gtk.VBox):
 
-    def __init__(self, connection):
+    def __init__(self, connection, set_button_callback=None):
         gtk.VBox.__init__(self)
         self.connection = connection
+        self.set_button = set_button_callback
         self.dsl_setting = self.connection.get_setting("pppoe")
 
         # UI
@@ -516,21 +530,33 @@ class DSLConf(gtk.VBox):
         self.username_entry.set_size(200,20)
         self.service_entry = InputEntry()
         self.service_entry.set_size(200,20 )
-        self.password_entry = InputEntry()
+        self.password_entry = PasswordEntry()
         self.password_entry.set_size(200, 20)
+        self.show_password = CheckButton("Show Password")
+        def show_password(widget):
+            if widget.get_active():
+                self.password_entry.show_password(True)
+            else:
+                self.password_entry.show_password(False)
+        self.show_password.connect("toggled", show_password)
 
         #pack entries
         dsl_table.attach(self.username_entry, 1, 3, 0, 1)
         dsl_table.attach(self.service_entry, 1, 3, 1, 2)
         dsl_table.attach(self.password_entry, 1, 3, 2, 3)
+        dsl_table.attach(self.show_password, 2,3,3,4)
 
         # TODO UI change
+        dsl_table.set_row_spacings(5)
         align = gtk.Alignment(0, 0, 0, 0)
         align.set_padding(35, 0, 120, 0)
         align.add(dsl_table)
         self.add(align)
         self.show_all()
         self.refresh()
+        self.username_entry.entry.connect("changed", self.save_changes, "username")
+        self.service_entry.entry.connect("changed", self.save_changes, "service")
+        self.password_entry.entry.connect("changed", self.save_changes, "password")
 
     def refresh(self):
         #print ">>>",self.connection.settings_dict
@@ -542,10 +568,8 @@ class DSLConf(gtk.VBox):
             password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                     setting_name,
                                                     method)
-
         except:
             password = ""
-        
         # check if empty
         if username == None:
             username = ""
@@ -554,23 +578,18 @@ class DSLConf(gtk.VBox):
         if password == None:
             password = ""
         # fill entry
-        self.username_entry.set_text(str(username))
-        self.service_entry.set_text(str(service))
-        self.password_entry.set_text(str(password))
+        self.username_entry.entry.set_text(str(username))
+        self.service_entry.entry.set_text(str(service))
+        self.password_entry.entry.set_text(str(password))
         
-    def save_setting(self):
-        username = self.username_entry.get_text()
-        service = self.service_entry.get_text()
-        password = self.password_entry.get_text()
+    def save_changes(self, widget, value, types):
+        print types," dsl changed"
+        if value:
+            setattr(self.dsl_setting, types, value)
+        else:
+            delattr(self.dsl_setting, types)
 
-        if username != "":
-            self.dsl_setting.username = username
-        if service != "":
-            self.dsl_setting.service = service
-        if password !="":
-            self.dsl_setting.password = password
-
-
+        check_settings(self.connection, self.set_button)
 
 class PPPConf(gtk.VBox):
 
@@ -743,7 +762,3 @@ class PPPConf(gtk.VBox):
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
 
-
-
-
-        # Check Buttons

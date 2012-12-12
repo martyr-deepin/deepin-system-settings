@@ -39,7 +39,7 @@ class NMSettingPPPOE (NMSetting):
     def service(self, new_service):
         self.prop_dict["service"] = TypeConvert.py2_dbus_string(new_service)
 
-    @service.delete
+    @service.deleter
     def service(self):
         if "service" in self.prop_dict.iterkeys():
             del self.prop_dict["service"]
