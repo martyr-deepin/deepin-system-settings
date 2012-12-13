@@ -414,7 +414,6 @@ class SettingItem(TreeItem):
         self.delete_hover = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
-
         return False
 
     def unhover(self, column, offset_x, offset_y):

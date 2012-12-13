@@ -338,7 +338,7 @@ class DSL(gtk.VBox):
         self.setting_page = setting_page
 
     def slide_to_event(self, widget, event):
-        self.setting_page.init()
+        self.setting_page.init(init_connections=True)
         self.slide_to_setting()
         slider.slide_to_page(self.setting_page, "right")
 

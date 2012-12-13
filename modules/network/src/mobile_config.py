@@ -12,11 +12,11 @@ from dtk.ui.combo import ComboBox
 #from widgets import SettingButton
 from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
-from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
+from shared_widget import IPV4Conf
 
 import gtk
 
@@ -74,27 +74,26 @@ class MobileSetting(gtk.HBox):
 
     def init(self, new_connection=None, init_connections=False):
         # Get all connections  
+        if init_connections:
+            self.sidebar.new_connection_list ={"cdma":[],"gsm":[]}
+
         def get_mobile_connections():
             cdma = nm_module.nm_remote_settings.get_cdma_connections()
             gsm = nm_module.nm_remote_settings.get_gsm_connections()
+            if new_connection:
+                cdma +=new_connection["cdma"]
+                gsm += new_connection["gsm"]
             return cdma + gsm
         connections = get_mobile_connections()
         
-        if init_connections:
-            self.sidebar.new_connection_list =[]
-
-        if new_connection:
-            connections += new_connection
-
-        # Check connections
         if connections == []:
             region = slider.get_page_by_name("region")
             region.init()
             slider._slide_to_page("region", "right")
         else:
             self.connections = connections
-            self.ipv4_setting = [IPV4Conf(con) for con in connections]
-            self.broadband_setting = [Broadband(con) for con in connections]
+            self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in connections]
+            self.broadband_setting = [Broadband(con, self.set_button) for con in connections]
             self.ppp_setting = [PPPConf(con) for con in connections]
 
             self.sidebar.init(connections, self.ipv4_setting)
@@ -171,8 +170,8 @@ class MobileSetting(gtk.HBox):
                 #active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
         else:
             print "no active device"
-        #self.change_crumb()
-        #self.slide_back() 
+        self.change_crumb()
+        self.slide_back() 
     def set_button(self, name, state):
         if name == "save":
             self.save_button.set_label(name)
@@ -180,7 +179,6 @@ class MobileSetting(gtk.HBox):
         else:
             self.save_button.set_label("connect")
             self.save_button.set_sensitive(state)
-
 
 class SideBar(gtk.VBox):
     def __init__(self, connections , main_init_cb, check_click_cb):
@@ -196,7 +194,7 @@ class SideBar(gtk.VBox):
         add_button.connect("clicked", self.add_new_connection)
         self.pack_start(add_button, False, False, 6)
         self.set_size_request(160, -1)
-        self.new_connection_list = []
+        self.new_connection_list = {'cdma':[], "gsm":[]}
     
     def init(self, connection_list, ip4setting):
         # check active
@@ -277,10 +275,10 @@ class NoSetting(gtk.VBox):
 
 
 class Broadband(gtk.VBox):
-    def __init__(self, connection):
+    def __init__(self, connection, set_button_callback):
         gtk.VBox.__init__(self)
         self.connection = connection        
-
+        self.set_button = set_button_callback
         # Init widgets
         self.table = gtk.Table(12, 4, True)
         self.table.set_size_request(500,500)
@@ -327,7 +325,6 @@ class Broadband(gtk.VBox):
         align.add(self.table)
         self.add(align)
         
-        self.refresh()
         # Connect signals
         self.number.entry.connect("changed", self.save_settings_by, "number")
         self.username.entry.connect("changed", self.save_settings_by, "username")
@@ -338,6 +335,7 @@ class Broadband(gtk.VBox):
 
         self.password_show.connect("toggled", self.password_show_toggled)
         self.roam_check.connect("toggled", self.roam_check_toggled)
+        self.refresh()
         # Refesh
 
     def password_show_toggled(self, widget):
@@ -436,6 +434,7 @@ class Broadband(gtk.VBox):
             delattr(self.broadband_setting, attr)
         else:
             setattr(self.broadband_setting, attr, text)
+        self.set_button("save", True)
 
     def network_type_selected(self, widget, content, value, index):
         if value == None:
@@ -448,270 +447,6 @@ class Broadband(gtk.VBox):
             del self.broadband_setting.home_only
         else:
             self.broadband_setting.home_only = 1
-
-class IPV4Conf(gtk.VBox):
-
-    def __init__(self, connection = None):
-        
-        gtk.VBox.__init__(self)
-        self.connection = connection 
-        table = gtk.Table(9, 2 , False)
-        # Ip configuration
-        self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
-
-        addr_label = Label("IP地址:")
-        mask_label = Label("子网掩码:")
-        gate_label = Label("默认网关")
-
-        table.attach(self.auto_ip, 0,1,0,1,)
-        table.attach(self.manual_ip, 0,1,1,2)
-
-        table.attach(addr_label, 0,1,2,3)
-        self.addr_entry = gtk.Entry()
-        #self.addr_entry.set_size(30, 25)
-        self.addr_entry.connect("activate", self.check_ip_valid)
-        self.addr_entry.set_sensitive(False)
-        table.attach(self.addr_entry, 1,2,2,3)
-
-        table.attach(mask_label, 0,1,3,4)
-        self.mask_entry = gtk.Entry()
-        #self.mask_entry.set_size(30, 25)
-        self.mask_entry.connect("activate", self.check_mask_valid)
-        table.attach(self.mask_entry, 1,2,3,4)
-        
-        table.attach(gate_label, 0,1,4,5)
-        self.gate_entry = gtk.Entry()
-        #self.gate_entry.set_size(30, 25)
-        self.gate_entry.connect("activate", self.check_gate_valid)
-        table.attach(self.gate_entry, 1,2,4,5)
-        
-        #DNS configuration
-        self.auto_dns = gtk.RadioButton(None, "自动获得DNS服务器地址")
-        self.manual_dns = gtk.RadioButton(self.auto_dns,"使用下面的dns服务器:")
-        table.attach(self.auto_dns, 0, 1, 5, 6) 
-        table.attach(self.manual_dns, 0, 1, 6, 7)
-
-        master_dns = Label("首选DNS服务器地址:")
-        slave_dns = Label("使用下面的DNS服务器地址:")
-        self.master_entry = gtk.Entry()
-        self.slave_entry = gtk.Entry()
-        #self.master_entry.set_size(30, 25)
-        #self.slave_entry.set_size(30, 25)
-        self.master_entry.connect("activate", self.check_dns_valid)
-        self.slave_entry.connect("activate", self.check_dns_valid)
-        
-        table.attach(master_dns, 0, 1, 7, 8)
-        table.attach(self.master_entry, 1, 2, 7, 8)
-        table.attach(slave_dns, 0, 1, 8, 9)
-        table.attach(self.slave_entry, 1, 2, 8, 9)
-
-        align = gtk.Alignment(0.5,0.5,0.5,0.5)
-        align.add(table)
-        self.add(align)
-        
-        self.cs =None
-        self.reset(connection)
-        self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
-        self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
-        self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
-        self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
-
-        self.show_all()
-
-    def check_ip_valid(self, widget ):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
-
-    def check_mask_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_netmask(text):
-            print "valid"
-        else:
-            print "invalid"
-
-
-    def check_gate_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_gw(self.addr_entry.get_text(),
-                                   self.mask_entry.get_text(),
-                                   text):
-            print "valid"
-        else:
-            print "invalid"
-        
-    def check_dns_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
-
-    def reset(self, connection):
-        self.cs = connection.get_setting("ipv4")       
-        self.clear_entry()
-        #print self.cs.dns
-        #print self.cs.method, connection.get_setting("connection").id
-        if self.cs.method == "auto":
-            self.auto_ip.set_active(True)
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-            
-        else:
-            self.manual_ip.set_active(True)
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not self.cs.addresses == []:
-                self.addr_entry.set_text(self.cs.addresses[0][0])
-                self.mask_entry.set_text(self.cs.addresses[0][1])
-                self.gate_entry.set_text(self.cs.addresses[0][2])
-
-        if self.cs.dns == []:
-            self.auto_dns.set_active(True)
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
-        else:
-            self.manual_dns.set_active(True)
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(self.cs.dns) > 1:
-                self.slave_entry.set_text(self.cs.dns[1])
-            self.master_entry.set_text(self.cs.dns[0])
-
-
-    def auto_dns_set(self, widget, connection):
-        if widget.get_active():
-            connection.clear_dns()
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
-
-    def manual_dns_set(self, widget, connection):
-        if widget.get_active():
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(connection.dns) == 1:
-                self.master_entry.set_text(connection.dns[0])
-            elif len(connection.dns) > 1:
-                self.slave_entry.set_text(connection.dns[1])
-
-    def clear_entry(self):
-        self.addr_entry.set_text("")
-        self.mask_entry.set_text("")
-        self.gate_entry.set_text("")
-        self.master_entry.set_text("")
-        self.slave_entry.set_text("")
-
-    def auto_get_ip_addr(self, widget, connection):
-        if widget.get_active():
-            connection.method = 'auto'
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-    def manual_ip_entry(self,widget, connection):
-        if widget.get_active():
-            connection.method = 'manual'
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not connection.addresses == []:
-                self.addr_entry.set_text(connection.addresses[0][0])
-                self.mask_entry.set_text(connection.addresses[0][1])
-                self.gate_entry.set_text(connection.addresses[0][2])
-    
-    def save_changes(self):
-        connection = self.cs
-        if connection.method =="manual": 
-            connection.clear_addresses()
-            connection.add_address([self.addr_entry.get_text(),
-                                     self.mask_entry.get_text(),
-                                     self.gate_entry.get_text()])
-            connection.clear_dns()
-            if not self.master_entry.get_text() == "":
-                connection.add_dns(self.master_entry.get_text())
-            if not self.slave_entry.get_text() == "":
-                connection.add_dns(self.slave_entry.get_text())
-        
-        connection.adapt_ip4config_commit()
-        #self.connection.update()
-
-
-class DSLConf(gtk.VBox):
-
-    def __init__(self, connection):
-        gtk.VBox.__init__(self)
-        self.connection = connection
-        self.broadband_setting = self.connection.get_setting("pppoe")
-
-        # UI
-        dsl_table = gtk.Table(4, 3, False)
-        username_label = Label("Username:")
-        service_label = Label("Service:")
-        password_label = Label("Password:")
-        #pack labels
-        dsl_table.attach(username_label, 0, 1 , 0, 1)
-        dsl_table.attach(service_label, 0, 1, 1, 2)
-        dsl_table.attach(password_label, 0, 1, 2, 3)
-
-        # entries
-        self.username_entry = InputEntry()
-        self.username_entry.set_size(200,20)
-        self.service_entry = InputEntry()
-        self.service_entry.set_size(200,20 )
-        self.password_entry = InputEntry()
-        self.password_entry.set_size(200, 20)
-
-        #pack entries
-        dsl_table.attach(self.username_entry, 1, 3, 0, 1)
-        dsl_table.attach(self.service_entry, 1, 3, 1, 2)
-        dsl_table.attach(self.password_entry, 1, 3, 2, 3)
-
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(dsl_table)
-        self.add(align)
-        self.show_all()
-        self.refresh()
-
-    def refresh(self):
-        #print ">>>",self.connection.settings_dict
-        # get dsl settings
-        username = self.broadband_setting.username
-        service = self.broadband_setting.service
-        (setting_name, method) = self.connection.guess_secret_info() 
-        try:
-            password = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
-                                                    setting_name,
-                                                    method)
-        except:
-            password = ""
-        
-        # check if empty
-        if username == None:
-            username = ""
-        if service == None:
-            service = ""
-        if password == None:
-            password = ""
-        # fill entry
-        self.username_entry.set_text(str(username))
-        self.service_entry.set_text(str(service))
-        self.password_entry.set_text(str(password))
-        
-    def save_setting(self):
-        username = self.username_entry.get_text()
-        service = self.service_entry.get_text()
-        password = self.password_entry.get_text()
-
-        if username != "":
-            self.broadband_setting.username = username
-        if service != "":
-            self.broadband_setting.service = service
-        if password !="":
-            self.broadband_setting.password = password
 
 
 class PPPConf(gtk.VBox):
@@ -884,22 +619,3 @@ class PPPConf(gtk.VBox):
         else:
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
-
-
-
-if __name__ == "__main__":
-
-    win = gtk.Window(gtk.WINDOW_TOPLEVEL)
-    win.set_size_request(600, 600)
-    win.connect("destroy", lambda w: gtk.main_quit())
-
-    mobile = MobileSetting()
-    mobile.init()
-
-    win.add(mobile)
-    win.show_all()
-    gtk.main()
-
-
-        # Check Buttons
-

@@ -10,15 +10,6 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.utils import container_remove_all
 import gtk
 
-#class ProxyConfig(gtk.Alignment):
-    #def __init__(self, slide_back_cb=None, change_crumb_cb=None):
-        #gtk.Alignment.__init__(self, 0, 0, 0, 0)
-        #self.set_padding(12, 12, 10, 10)
-        #self.add(Proxy(slide_back_cb, change_crumb_cb))
-        #self.show_all()
-
-
-
 class ProxyConfig(gtk.VBox):
 
     def __init__(self, slide_back_cb = None, change_crumb_cb = None):
@@ -93,7 +84,6 @@ class ProxyConfig(gtk.VBox):
 
         # Build ui
     def init(self, first_start = False):
-        method_list = ["None", "Manual", "Automatic"]
         mode_list = ["none", "manual", "auto"]
         if first_start:
             mode = self.proxysetting.get_proxy_mode()
@@ -163,7 +153,7 @@ class ProxyConfig(gtk.VBox):
         self.init()
             
     def save_changes(self, widget):
-        active = self.methods.get_active()
+        active = self.methods.get_current_item()[1] 
         if active == 0:
             self.proxysetting.set_proxy_mode("none")
             

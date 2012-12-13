@@ -12,7 +12,7 @@ from dtk.ui.utils import container_remove_all
 #from widgets import SettingButton
 from settings_widget import SettingItem, EntryTreeView
 # NM lib import 
-#from nmlib.nm_utils import TypeConvert
+from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
@@ -24,10 +24,8 @@ import gtk
 def check_settings(connection, fn):
     if connection.check_setting_finish():
         fn('save', True)
-        #print "pass"
     else:
         fn("save", False)
-        #print "not pass"
 
 class DSLSetting(gtk.HBox):
 
@@ -57,14 +55,11 @@ class DSLSetting(gtk.HBox):
         vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
-        #hbox = gtk.HBox()
         self.save_button = Button("Connect")
         self.save_button.connect("clicked", self.save_changes)
-        #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
         buttons_aligns.add(self.save_button)
         vbox.pack_start(buttons_aligns, False , False)
-        #hbox.connect("expose-event", self.expose_event)
 
     def set_button(self, name, state):
         if name == "save":
@@ -81,9 +76,12 @@ class DSLSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self, new_connection=None):
+    def init(self, new_connection=None, init_connections=False):
         # Get all connections  
         connections = nm_module.nm_remote_settings.get_pppoe_connections()
+        if init_connections:
+            for con in connections:
+                con.init_settings_prop_dict()
         # Check connections
         if connections == []:
             # Create a new connection
@@ -99,7 +97,7 @@ class DSLSetting(gtk.HBox):
         self.wired_setting = [Wired(con) for con in connections]
         self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in connections]
         self.dsl_setting = [DSLConf(con, self.set_button) for con in connections]
-        self.ppp_setting = [PPPConf(con) for con in connections]
+        self.ppp_setting = [PPPConf(con, self.set_button) for con in connections]
 
         self.sidebar.init(connections, self.ipv4_setting)
         index = self.sidebar.get_active()
@@ -128,8 +126,6 @@ class DSLSetting(gtk.HBox):
         self.ipv4 = self.ipv4_setting[index]
         self.dsl = self.dsl_setting[index]
         self.ppp = self.ppp_setting[index]
-        ##self.dsl = NoSetting()
-        #self.ppp = NoSetting()
 
         self.init_tab_box()
         
@@ -137,16 +133,17 @@ class DSLSetting(gtk.HBox):
         connection = self.dsl.connection
         if widget.label is "save":
             print "saving"
-            self.ppp.save_setting()
-            
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
                 from nmlib.nm_remote_connection import NMRemoteConnection
                 if isinstance(connection, NMRemoteConnection):
+                    print "before update", TypeConvert.dbus2py(connection.settings_dict)
                     connection.update()
+                    print "after update", TypeConvert.dbus2py(connection.settings_dict)
+
                 else:
-                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                     index = self.sidebar.new_connection_list.index(connection)
+                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                     self.sidebar.new_connection_list.pop(index)
                     self.init(self.sidebar.new_connection_list)
                     # reset index
@@ -253,7 +250,6 @@ class NoSetting(gtk.VBox):
         label_align.add(label)
         self.add(label_align)
 
-
 class Wired(gtk.VBox):
     def __init__(self, connection):
         gtk.VBox.__init__(self)
@@ -316,207 +312,6 @@ class Wired(gtk.VBox):
             setattr(self.ethernet, types, value)
             if self.connection.check_setting_finish():
                 self.set_button("save", True)
-
-#class IPV4Conf(gtk.VBox):
-
-    #def __init__(self, connection = None):
-        
-        #gtk.VBox.__init__(self)
-        #self.connection = connection 
-        #table = gtk.Table(9, 2 , False)
-        ## Ip configuration
-        #self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        #table.attach(self.auto_ip, 0,1,0,1,)
-        #self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
-        #table.attach(self.manual_ip, 0,1,1,2)
-
-        #addr_label = Label("IP地址:")
-        #table.attach(addr_label, 0,1,2,3)
-        #self.addr_entry = gtk.Entry()
-        ##self.addr_entry.set_size(30, 25)
-        #self.addr_entry.connect("activate", self.check_ip_valid)
-        #self.addr_entry.set_sensitive(False)
-        #table.attach(self.addr_entry, 1,2,2,3)
-
-        #mask_label = Label("子网掩码:")
-        #table.attach(mask_label, 0,1,3,4)
-        #self.mask_entry = gtk.Entry()
-        ##self.mask_entry.set_size(30, 25)
-        #self.mask_entry.connect("activate", self.check_mask_valid)
-        #table.attach(self.mask_entry, 1,2,3,4)
-        
-        #gate_label = Label("默认网关")
-        #table.attach(gate_label, 0,1,4,5)
-        #self.gate_entry = gtk.Entry()
-        ##self.gate_entry.set_size(30, 25)
-        #self.gate_entry.connect("activate", self.check_gate_valid)
-        #table.attach(self.gate_entry, 1,2,4,5)
-        
-        ##DNS configuration
-        #self.auto_dns = gtk.RadioButton(None, "自动获得DNS服务器地址")
-        #self.manual_dns = gtk.RadioButton(self.auto_dns,"使用下面的dns服务器:")
-        #table.attach(self.auto_dns, 0, 1, 5, 6) 
-        #table.attach(self.manual_dns, 0, 1, 6, 7)
-
-        #master_dns = Label("首选DNS服务器地址:")
-        #slave_dns = Label("使用下面的DNS服务器地址:")
-        #self.master_entry = gtk.Entry()
-        #self.slave_entry = gtk.Entry()
-        ##self.master_entry.set_size(30, 25)
-        ##self.slave_entry.set_size(30, 25)
-        #self.master_entry.connect("activate", self.check_dns_valid)
-        #self.slave_entry.connect("activate", self.check_dns_valid)
-        
-        #table.attach(master_dns, 0, 1, 7, 8)
-        #table.attach(self.master_entry, 1, 2, 7, 8)
-        #table.attach(slave_dns, 0, 1, 8, 9)
-        #table.attach(self.slave_entry, 1, 2, 8, 9)
-
-        #align = gtk.Alignment(0.5,0.5,0.5,0.5)
-        #align.add(table)
-        #self.add(align)
-        
-        ##aligns = gtk.Alignment(0.5,0.5,0,0)
-        ##hbox = gtk.HBox()
-        ##self.apply_button = gtk.Button("Apply")
-        #self.show_all()
-        ##self.cancel_button = gtk.Button("Cancel")
-        ##hbox.pack_start(self.cancel_button, False, False, 0)
-        ##hbox.pack_start(self.apply_button, False, False, 0)
-        ##aligns.add(hbox)
-        ##self.add(aligns)
-        
-        
-        #self.cs =None
-        #self.reset(connection)
-        #self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
-        #self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
-        #self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
-        #self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
-        ##self.apply_button.connect("clicked", self.save_changes, self.cs)
-        ##self.cancel_button.connect("clicked", self.cancel_changes)
-
-    #def check_ip_valid(self, widget ):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_ip4(text):
-            #print "valid"
-        #else:
-            #print "invalid"
-
-    #def check_mask_valid(self, widget):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_netmask(text):
-            #print "valid"
-        #else:
-            #print "invalid"
-
-
-    #def check_gate_valid(self, widget):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_gw(self.addr_entry.get_text(),
-                                   #self.mask_entry.get_text(),
-                                   #text):
-            #print "valid"
-        #else:
-            #print "invalid"
-        
-
-    #def check_dns_valid(self, widget):
-        #text = widget.get_text()
-        #if TypeConvert.is_valid_ip4(text):
-            #print "valid"
-        #else:
-            #print "invalid"
-
-    #def reset(self, connection):
-        #self.cs = connection.get_setting("ipv4")       
-        #self.clear_entry()
-        ##print self.cs.dns
-        ##print self.cs.method, connection.get_setting("connection").id
-        #if self.cs.method == "auto":
-            #self.auto_ip.set_active(True)
-            #self.addr_entry.set_sensitive(False)
-            #self.mask_entry.set_sensitive(False)
-            #self.gate_entry.set_sensitive(False)
-            
-        #else:
-            #self.manual_ip.set_active(True)
-            #self.addr_entry.set_sensitive(True)
-            #self.mask_entry.set_sensitive(True)
-            #self.gate_entry.set_sensitive(True)
-            #if not self.cs.addresses == []:
-                #self.addr_entry.set_text(self.cs.addresses[0][0])
-                #self.mask_entry.set_text(self.cs.addresses[0][1])
-                #self.gate_entry.set_text(self.cs.addresses[0][2])
-
-        #if self.cs.dns == []:
-            #self.auto_dns.set_active(True)
-            #self.master_entry.set_sensitive(False)
-            #self.slave_entry.set_sensitive(False)
-        #else:
-            #self.manual_dns.set_active(True)
-            #self.master_entry.set_sensitive(True)
-            #self.slave_entry.set_sensitive(True)
-            #if len(self.cs.dns) > 1:
-                #self.slave_entry.set_text(self.cs.dns[1])
-            #self.master_entry.set_text(self.cs.dns[0])
-
-
-    #def auto_dns_set(self, widget, connection):
-        #if widget.get_active():
-            #connection.clear_dns()
-            #self.master_entry.set_sensitive(False)
-            #self.slave_entry.set_sensitive(False)
-
-    #def manual_dns_set(self, widget, connection):
-        #if widget.get_active():
-            #self.master_entry.set_sensitive(True)
-            #self.slave_entry.set_sensitive(True)
-            #if len(connection.dns) == 1:
-                #self.master_entry.set_text(connection.dns[0])
-            #elif len(connection.dns) > 1:
-                #self.slave_entry.set_text(connection.dns[1])
-
-    #def clear_entry(self):
-        #self.addr_entry.set_text("")
-        #self.mask_entry.set_text("")
-        #self.gate_entry.set_text("")
-        #self.master_entry.set_text("")
-        #self.slave_entry.set_text("")
-
-    #def auto_get_ip_addr(self, widget, connection):
-        #if widget.get_active():
-            #connection.method = 'auto'
-            #self.addr_entry.set_sensitive(False)
-            #self.mask_entry.set_sensitive(False)
-            #self.gate_entry.set_sensitive(False)
-    #def manual_ip_entry(self,widget, connection):
-        #if widget.get_active():
-            #connection.method = 'manual'
-            #self.addr_entry.set_sensitive(True)
-            #self.mask_entry.set_sensitive(True)
-            #self.gate_entry.set_sensitive(True)
-            #if not connection.addresses == []:
-                #self.addr_entry.set_text(connection.addresses[0][0])
-                #self.mask_entry.set_text(connection.addresses[0][1])
-                #self.gate_entry.set_text(connection.addresses[0][2])
-    
-    #def save_changes(self):
-        #connection = self.cs
-        #if connection.method =="manual": 
-            #connection.clear_addresses()
-            #connection.add_address([self.addr_entry.get_text(),
-                                     #self.mask_entry.get_text(),
-                                     #self.gate_entry.get_text()])
-            #connection.clear_dns()
-            #if not self.master_entry.get_text() == "":
-                #connection.add_dns(self.master_entry.get_text())
-            #if not self.slave_entry.get_text() == "":
-                #connection.add_dns(self.slave_entry.get_text())
-        
-        #connection.adapt_ip4config_commit()
-        ##self.connection.update()
-
 
 class DSLConf(gtk.VBox):
 
@@ -592,6 +387,8 @@ class DSLConf(gtk.VBox):
         self.username_entry.entry.set_text(str(username))
         self.service_entry.entry.set_text(str(service))
         self.password_entry.entry.set_text(str(password))
+        setattr(self.dsl_setting, "password", str(password))
+
         
     def save_changes(self, widget, value, types):
         print types," dsl changed"
@@ -599,16 +396,17 @@ class DSLConf(gtk.VBox):
             setattr(self.dsl_setting, types, value)
         else:
             delattr(self.dsl_setting, types)
-
         check_settings(self.connection, self.set_button)
 
 class PPPConf(gtk.VBox):
-
-    def __init__(self, connection):
+    def __init__(self, connection, set_button_callback):
         gtk.VBox.__init__(self)
 
         self.connection = connection
+        self.set_button = set_button_callback
         self.ppp_setting = self.connection.get_setting("ppp")
+        print ">>>setting", TypeConvert.dbus2py(self.connection.settings_dict)
+        print ">>>>", TypeConvert.dbus2py(self.ppp_setting.prop_dict)
 
         method = Contain(app_theme.get_pixbuf("/Network/misc.png"), "Configure Method", self.toggle_cb)
         # invisable settings
@@ -633,7 +431,6 @@ class PPPConf(gtk.VBox):
         table.attach(compression, 0, 5, 0 ,1)
 
         self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
-        self.require_mppe.connect("toggled", self.mppe_toggled)
         self.require_mppe_128 = CheckButton("Require 128-bit encryption")
         self.mppe_stateful = CheckButton("Use stataful MPPE")
         
@@ -661,9 +458,20 @@ class PPPConf(gtk.VBox):
         align.add(vbox)
         self.add(align)
 
-        self.require_mppe_128.set_sensitive(False)
-        self.mppe_stateful.set_sensitive(False)
         self.refresh()
+
+        self.refuse_eap.connect("toggled", self.check_button_cb, "refuse_eap")
+        self.refuse_pap.connect("toggled", self.check_button_cb, "refuse_pap")
+        self.refuse_chap.connect("toggled", self.check_button_cb, "refuse_chap")
+        self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse_mschap")
+        self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse_mschapv2")
+        self.require_mppe.connect("toggled", self.check_button_cb, "require_mppe")
+        self.require_mppe_128.connect("toggled", self.check_button_cb, "require_mppe_128")
+        self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe_stateful")
+        self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
+        self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
+        self.no_vj_comp.connect("toggled", self.check_button_cb, "no_vj_comp")
+        self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
 
     def refresh(self):
         #=========================
@@ -685,15 +493,14 @@ class PPPConf(gtk.VBox):
         lcp_echo_failure = self.ppp_setting.lcp_echo_failure
         lcp_echo_interval = self.ppp_setting.lcp_echo_interval
 
-        # entering ui
-        #if widget.get_active():
-            #self.require_mppe_128.set_sensitive(True)
-            #self.mppe_stateful.set_sensitive(True)
-        #else:
-            #self.require_mppe_128.set_active(False)
-            #self.mppe_stateful.set_active(False)
-            #self.require_mppe_128.set_sensitive(False)
-            #self.mppe_stateful.set_sensitive(False)
+        if require_mppe:
+            self.require_mppe_128.set_sensitive(True)
+            self.mppe_stateful.set_sensitive(True)
+        else:
+            self.require_mppe_128.set_active(False)
+            self.mppe_stateful.set_active(False)
+            self.require_mppe_128.set_sensitive(False)
+            self.mppe_stateful.set_sensitive(False)
 
         self.refuse_eap.set_active( not refuse_eap)
         self.refuse_pap.set_active(not refuse_pap)
@@ -715,55 +522,41 @@ class PPPConf(gtk.VBox):
             self.ppp_echo.set_active(True)
         #==================================
 
-    def save_setting(self):
-        refuse_eap = not self.refuse_eap.get_active()
-        refuse_pap = not self.refuse_pap.get_active()
-        refuse_chap = not self.refuse_chap.get_active()
-        refuse_mschap = not self.refuse_mschap.get_active()
-        refuse_mschapv2 = not self.refuse_mschapv2.get_active()
-
-        require_mppe = self.require_mppe.get_active()
-        require_mppe_128 = self.require_mppe_128.get_active()
-        mppe_stateful = self.mppe_stateful.get_active()
-
-        nobsdcomp = not self.nobsdcomp.get_active()
-        nodeflate = not self.nodeflate.get_active()
-        no_vj_comp = not  self.no_vj_comp.get_active()
-
-        echo = self.ppp_echo.get_active()
-
-        self.ppp_setting.refuse_eap = refuse_eap
-        self.ppp_setting.refuse_pap = refuse_pap
-        self.ppp_setting.refuse_chap = refuse_chap
-        self.ppp_setting.refuse_mschap = refuse_mschap 
-        self.ppp_setting.refuse_mschapv2 = refuse_mschapv2
-        self.ppp_setting.require_mppe = require_mppe
-        self.ppp_setting.require_mppe_128 = require_mppe_128
-        self.ppp_setting.mppe_stateful = mppe_stateful
-
-        self.ppp_setting.nobsdcomp = nobsdcomp
-        self.ppp_setting.nodeflate = nodeflate
-        self.ppp_setting.no_vj_comp = no_vj_comp
-
-        if echo:
-            lcp_echo_failure = 5
-            lcp_echo_interval = 30
+    def check_button_cb(self, widget, key):
+        active = widget.get_active()
+        if key.startswith("refuse"):
+            if active:
+                setattr(self.ppp_setting, key, False)
+            else:
+                setattr(self.ppp_setting, key, True)
+        elif key.startswith("no"):
+            if active:
+                setattr(self.ppp_setting, key, False)
+            else:
+                setattr(self.ppp_setting, key, True)
+        elif key is "echo":
+            if active:
+                setattr(self.ppp_setting, "lcp_echo_failure", 5)
+                setattr(self.ppp_setting, "lcp_echo_interval", 30)
+            else:
+                setattr(self.ppp_setting, "lcp_echo_failure", 0)
+                setattr(self.ppp_setting, "lcp_echo_interval", 0)
         else:
-            lcp_echo_failure = 0
-            lcp_echo_interval = 0
+            if active:
+                setattr(self.ppp_setting, key, True)
+            else:
+                setattr(self.ppp_setting, key, False)
+        check_settings(self.connection, self.set_button)
 
-        #print self.ppp_setting.prop_dict
-
-    def mppe_toggled(self, widget):
-        #print "toggled"
-        if widget.get_active():
-            self.require_mppe_128.set_sensitive(True)
-            self.mppe_stateful.set_sensitive(True)
-        else:
-            self.require_mppe_128.set_active(False)
-            self.mppe_stateful.set_active(False)
-            self.require_mppe_128.set_sensitive(False)
-            self.mppe_stateful.set_sensitive(False)
+        if key is "require_mppe":
+            if active:
+                self.require_mppe_128.set_sensitive(True)
+                self.mppe_stateful.set_sensitive(True)
+            else:
+                self.require_mppe_128.set_active(False)
+                self.mppe_stateful.set_active(False)
+                self.require_mppe_128.set_sensitive(False)
+                self.mppe_stateful.set_sensitive(False)
 
     def toggle_cb(self, widget):
         if widget.get_active():
@@ -772,4 +565,3 @@ class PPPConf(gtk.VBox):
         else:
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
-

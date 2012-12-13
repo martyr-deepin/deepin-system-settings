@@ -88,7 +88,7 @@ class Region(gtk.HBox):
         if self.need_new_connection:
             new_connection = getattr(nm_module.nm_remote_settings, "new_%s_connection"%provider_type)()
             setting_page = nm_module.slider.get_page_by_name("mobile")
-            setting_page.sidebar.new_connection_list.append(new_connection)
+            setting_page.sidebar.new_connection_list[provider_type].append(new_connection)
             setting_page.init(setting_page.sidebar.new_connection_list)
             setting_page.sidebar.set_active(new_connection)
             setting_page.broadband.set_new_values(self.prop_dict, provider_type)
@@ -176,10 +176,7 @@ class Item(TreeItem):
             self.redraw_request_callback(self)
 
     def expand(self):
-        print self.content
-        print self.gsm_providers
         if self.content in self.gsm_providers:
-            print "expand!"
             self.is_expand = True  
             self.add_apns_name(self.code, self.content)
 
