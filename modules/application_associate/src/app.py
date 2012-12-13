@@ -32,6 +32,7 @@ class AppManager(gobject.GObject):
         self.https_content_type = "x-scheme-handler/https"
         self.mail_content_type = "x-scheme-handler/mailto"
         self.calendar_content_type = "text/calendar"
+        self.editor_content_type = "text/plain"
         self.audio_content_type = "audio/x-vorbis+ogg"
         self.video_content_type = "video/x-ogm+ogg"
         self.photo_content_type = "image/jpeg"

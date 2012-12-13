@@ -32,10 +32,8 @@ from nmlib.nmcache import cache
 from widgets import SettingButton
 import gtk
 
-# NM lib import 
 from nmlib.nm_utils import TypeConvert
-#from nmlib.nmclient import nmclient
-#from nmlib.nm_remote_settings import nm_remote_settings
+from shared_widget import IPV4Conf, IPV6Conf
 
 class WirelessSetting(gtk.HBox):
 
@@ -67,11 +65,11 @@ class WirelessSetting(gtk.HBox):
         vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         self.pack_start(vbox, True, True)
-        apply_button = gtk.Button("Apply")
-        apply_button.connect("clicked", self.save_changes)
+        self.save_button = Button("Apply")
+        self.save_button.connect("clicked", self.save_changes)
         #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(apply_button)
+        buttons_aligns.add(self.save_button)
         vbox.pack_start(buttons_aligns, False , False)
         #hbox.connect("expose-event", self.hbox_expose_event)
 
@@ -82,13 +80,6 @@ class WirelessSetting(gtk.HBox):
         cr.set_source_rgb( 1, 1, 1) 
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
-
-    #def hbox_expose_event(self, widget, event):
-        #cr = widget.window.cairo_create()
-        #rect = widget.allocation
-        #cr.set_source_rgb( 1, 1, 1) 
-        #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        #cr.fill()
 
     def init(self, access_point, new_connection_list=None, init_connections=False):
         self.access_point = access_point
@@ -110,8 +101,8 @@ class WirelessSetting(gtk.HBox):
             connections = connection_associate + connect_not_assocaite
 
         self.wireless_setting = [Wireless(con) for con in connections]
-        self.ipv4_setting = [IPV4Conf(con) for con in connections]
-        self.ipv6_setting = [IPV6Conf(con) for con in connections]
+        self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in connections]
+        self.ipv6_setting = [IPV6Conf(con, self.set_button) for con in connections]
         self.security_setting = [Security(con) for con in connections]
 
         self.sidebar.init(connections,
@@ -154,6 +145,13 @@ class WirelessSetting(gtk.HBox):
         self.change_crumb()
         self.slide_back() 
         
+    def set_button(self, name, state):
+        if name == "save":
+            self.save_button.set_label(name)
+            self.save_button.set_sensitive(state)
+        else:
+            self.save_button.set_label("connect")
+            self.save_button.set_sensitive(state)
 
 class SideBar(gtk.VBox):
 
@@ -248,423 +246,6 @@ class NoSetting(gtk.VBox):
         label = Label("No active connection")
         label_align.add(label)
         self.add(label_align)
-
-
-class IPV4Conf(gtk.VBox):
-
-    def __init__(self, connection = None):
-        
-        gtk.VBox.__init__(self)
-        self.connection = connection 
-        table = gtk.Table(9, 2 , False)
-        # Ip configuration
-        self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        table.attach(self.auto_ip, 0,1,0,1,)
-        self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
-        table.attach(self.manual_ip, 0,1,1,2)
-
-        addr_label = Label("IP地址:")
-        table.attach(addr_label, 0,1,2,3)
-        self.addr_entry = InputEntry()
-        #self.addr_entry.set_size(30, 25)
-        self.addr_entry.entry.connect("press-return", self.check_ip_valid)
-        self.addr_entry.set_sensitive(False)
-        table.attach(self.addr_entry, 1,2,2,3)
-
-        mask_label = Label("子网掩码:")
-        table.attach(mask_label, 0,1,3,4)
-        self.mask_entry = InputEntry()
-        #self.mask_entry.set_size(30, 25)
-        self.mask_entry.entry.connect("press-return", self.check_mask_valid)
-        table.attach(self.mask_entry, 1,2,3,4)
-        
-        gate_label = Label("默认网关")
-        table.attach(gate_label, 0,1,4,5)
-        self.gate_entry = InputEntry()
-        #self.gate_entry.set_size(30, 25)
-        self.gate_entry.entry.connect("press-return", self.check_gate_valid)
-        table.attach(self.gate_entry, 1,2,4,5)
-        
-        #DNS configuration
-        self.auto_dns = gtk.RadioButton(None, "自动获得DNS服务器地址")
-        self.manual_dns = gtk.RadioButton(self.auto_dns,"使用下面的dns服务器:")
-        table.attach(self.auto_dns, 0, 1, 5, 6) 
-        table.attach(self.manual_dns, 0, 1, 6, 7)
-
-        master_dns = Label("首选DNS服务器地址:")
-        slave_dns = Label("使用下面的DNS服务器地址:")
-        self.master_entry = InputEntry()
-        self.slave_entry = InputEntry()
-        #self.master_entry.set_size(30, 25)
-        #self.slave_entry.set_size(30, 25)
-        self.master_entry.entry.connect("press-return", self.check_dns_valid)
-        self.slave_entry.entry.connect("press-return", self.check_dns_valid)
-        
-        table.attach(master_dns, 0, 1, 7, 8)
-        table.attach(self.master_entry, 1, 2, 7, 8)
-        table.attach(slave_dns, 0, 1, 8, 9)
-        table.attach(self.slave_entry, 1, 2, 8, 9)
-
-        # TODO UI change 
-        table.set_size_request(340, 227)
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(35, 0, 120, 0)
-        align.add(table)
-        self.add(align)
-        
-        self.addr_entry.set_size(222, 22)
-        self.gate_entry.set_size(222, 22)
-        self.mask_entry.set_size(222, 22)
-        self.master_entry.set_size(222, 22)
-        self.slave_entry.set_size(222, 22)
-        #aligns = gtk.Alignment(0.5,0.5,0,0)
-        #hbox = gtk.HBox()
-        #self.apply_button = gtk.Button("Apply")
-        #self.cancel_button = gtk.Button("Cancel")
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        #hbox.pack_start(self.apply_button, False, False, 0)
-        #aligns.add(hbox)
-        #self.add(aligns)
-        
-        
-        self.cs =None
-        self.reset(connection)
-        self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
-        self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
-        self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
-        self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
-        #self.apply_button.connect("clicked", self.save_changes, self.cs)
-        #self.cancel_button.connect("clicked", self.cancel_changes)
-
-    def get_this_connection(self):
-        return self.connection
-
-    def check_ip_valid(self, widget ):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
-
-    def check_mask_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_netmask(text):
-            pass
-        else:
-            print "invalid"
-
-
-    def check_gate_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_gw(self.addr_entry.get_text(),
-                                   self.mask_entry.get_text(),
-                                   text):
-            print "valid"
-        else:
-            print "invalid"
-        
-
-    def check_dns_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
-
-
-    def reset(self, connection):
-        self.cs = connection.get_setting("ipv4")       
-        self.clear_entry()
-        #print self.cs.dns
-        #print self.cs.method, connection.get_setting("connection").id
-        if self.cs.method == "auto":
-            self.auto_ip.set_active(True)
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-            
-        else:
-            self.manual_ip.set_active(True)
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not self.cs.addresses == []:
-                self.addr_entry.set_text(self.cs.addresses[0][0])
-                self.mask_entry.set_text(self.cs.addresses[0][1])
-                self.gate_entry.set_text(self.cs.addresses[0][2])
-
-        if self.cs.dns == []:
-            self.auto_dns.set_active(True)
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
-        else:
-            self.manual_dns.set_active(True)
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(self.cs.dns) > 1:
-                self.slave_entry.set_text(self.cs.dns[1])
-            self.master_entry.set_text(self.cs.dns[0])
-
-
-    def auto_dns_set(self, widget, connection):
-        if widget.get_active():
-            connection.clear_dns()
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
-
-    def manual_dns_set(self, widget, connection):
-        if widget.get_active():
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(connection.dns) == 1:
-                self.master_entry.set_text(connection.dns[0])
-            elif len(connection.dns) > 1:
-                self.slave_entry.set_text(connection.dns[1])
-
-    def clear_entry(self):
-        self.addr_entry.set_text("")
-        self.mask_entry.set_text("")
-        self.gate_entry.set_text("")
-        self.master_entry.set_text("")
-        self.slave_entry.set_text("")
-
-    def auto_get_ip_addr(self, widget, connection):
-        if widget.get_active():
-            connection.method = 'auto'
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-    def manual_ip_entry(self,widget, connection):
-        if widget.get_active():
-            connection.method = 'manual'
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not connection.addresses == []:
-                self.addr_entry.set_text(connection.addresses[0][0])
-                self.mask_entry.set_text(connection.addresses[0][1])
-                self.gate_entry.set_text(connection.addresses[0][2])
-    
-    def save_changes(self):
-        connection = self.cs
-        if connection.method =="manual": 
-            connection.clear_addresses()
-            connection.add_address([self.addr_entry.get_text(),
-                                     self.mask_entry.get_text(),
-                                     self.gate_entry.get_text()])
-            connection.clear_dns()
-            if not self.master_entry.get_text() == "":
-                connection.add_dns(self.master_entry.get_text())
-            if not self.slave_entry.get_text() == "":
-                connection.add_dns(self.slave_entry.get_text())
-        connection.adapt_ip4config_commit()
-
-class IPV6Conf(gtk.VBox):
-
-    def __init__(self, connection = None):
-        
-        gtk.VBox.__init__(self)
-        self.connection = connection 
-        table = gtk.Table(9, 2 , False)
-        # Ip configuration
-        self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        table.attach(self.auto_ip, 0,1,0,1,)
-        self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
-        table.attach(self.manual_ip, 0,1,1,2)
-
-        addr_label = Label("IP地址:")
-        table.attach(addr_label, 0,1,2,3)
-        self.addr_entry = InputEntry()
-        #self.addr_entry.set_size(30, 25)
-        self.addr_entry.entry.connect("press-return", self.check_ip_valid)
-        self.addr_entry.set_sensitive(False)
-        table.attach(self.addr_entry, 1,2,2,3)
-
-        mask_label = Label("前缀:")
-        table.attach(mask_label, 0,1,3,4)
-        self.mask_entry = InputEntry()
-        #self.mask_entry.set_size(30, 25)
-        self.mask_entry.entry.connect("press-return", self.check_mask_valid)
-        table.attach(self.mask_entry, 1,2,3,4)
-        
-        gate_label = Label("默认网关")
-        table.attach(gate_label, 0,1,4,5)
-        self.gate_entry = InputEntry()
-        #self.gate_entry.set_size(30, 25)
-        self.gate_entry.entry.connect("press-return", self.check_gate_valid)
-        table.attach(self.gate_entry, 1,2,4,5)
-        
-        #DNS configuration
-        self.auto_dns = gtk.RadioButton(None, "自动获得DNS服务器地址")
-        self.manual_dns = gtk.RadioButton(self.auto_dns,"使用下面的dns服务器:")
-        table.attach(self.auto_dns, 0, 1, 5, 6) 
-        table.attach(self.manual_dns, 0, 1, 6, 7)
-
-        master_dns = Label("首选DNS服务器地址:")
-        slave_dns = Label("使用下面的DNS服务器地址:")
-        self.master_entry = InputEntry()
-        self.slave_entry = InputEntry()
-        #self.master_entry.set_size(30, 25)
-        #self.slave_entry.set_size(30, 25)
-        self.master_entry.entry.connect("press-return", self.check_dns_valid)
-        self.slave_entry.entry.connect("press-return", self.check_dns_valid)
-        
-        table.attach(master_dns, 0, 1, 7, 8)
-        table.attach(self.master_entry, 1, 2, 7, 8)
-        table.attach(slave_dns, 0, 1, 8, 9)
-        table.attach(self.slave_entry, 1, 2, 8, 9)
-
-        # TODO UI change 
-        table.set_size_request(340, 227)
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(35, 0, 120, 0)
-        align.add(table)
-        self.add(align)
-        
-        self.addr_entry.set_size(222, 22)
-        self.gate_entry.set_size(222, 22)
-        self.mask_entry.set_size(222, 22)
-        self.master_entry.set_size(222, 22)
-        self.slave_entry.set_size(222, 22)
-        #aligns = gtk.Alignment(0.5,0.5,0,0)
-        #hbox = gtk.HBox()
-        #self.apply_button = gtk.Button("Apply")
-        #self.cancel_button = gtk.Button("Cancel")
-        #hbox.pack_start(self.cancel_button, False, False, 0)
-        #hbox.pack_start(self.apply_button, False, False, 0)
-        #aligns.add(hbox)
-        #self.add(aligns)
-        
-        
-        self.cs =None
-        self.reset(connection)
-        self.manual_ip.connect("toggled", self.manual_ip_entry, self.cs)
-        self.auto_ip.connect("toggled", self.auto_get_ip_addr, self.cs)
-        self.auto_dns.connect("toggled", self.auto_dns_set, self.cs)
-        self.manual_dns.connect("toggled", self.manual_dns_set, self.cs)
-        #self.apply_button.connect("clicked", self.save_changes, self.cs)
-        #self.cancel_button.connect("clicked", self.cancel_changes)
-
-    def check_ip_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip6(text):
-            print "valid"
-        else:
-            print "invalid"
-
-    def check_mask_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_netmask(text):
-            print "valid"
-        else:
-            print "invalid"
-
-
-    def check_gate_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_gw(text):
-            print "valid"
-        else:
-            print "invalid"
-        
-
-    def check_dns_valid(self, widget):
-        text = widget.get_text()
-        if TypeConvert.is_valid_ip4(text):
-            print "valid"
-        else:
-            print "invalid"
-
-
-    def reset(self, connection):
-        self.cs = connection.get_setting("ipv6")       
-        self.clear_entry()
-        #print connection.get_setting("connection").id,self.cs.method
-        #print self.cs.method, connection.get_setting("connection").ssid
-        #print "###########" + connection.get_setting("connection").id
-        #print connection.settings_dict
-        if self.cs.method == "auto":
-            self.auto_ip.set_active(True)
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-            
-        else:
-            self.manual_ip.set_active(True)
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not self.cs.addresses == []:
-                self.addr_entry.set_text(self.cs.addresses[0][0])
-                self.mask_entry.set_text(self.cs.addresses[0][1])
-                self.gate_entry.set_text(self.cs.addresses[0][2])
-
-        if self.cs.dns == []:
-            self.auto_dns.set_active(True)
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
-        else:
-            self.manual_dns.set_active(True)
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(self.cs.dns) > 1:
-                self.slave_entry.set_text(self.cs.dns[1])
-            self.master_entry.set_text(self.cs.dns[0])
-
-
-    def auto_dns_set(self, widget, connection):
-        if widget.get_active():
-            connection.clear_dns()
-            self.master_entry.set_sensitive(False)
-            self.slave_entry.set_sensitive(False)
-
-    def manual_dns_set(self, widget, connection):
-        if widget.get_active():
-            self.master_entry.set_sensitive(True)
-            self.slave_entry.set_sensitive(True)
-            if len(connection.dns) == 1:
-                self.master_entry.set_text(connection.dns[0])
-            elif len(connection.dns) > 1:
-                self.slave_entry.set_text(connection.dns[1])
-
-    def clear_entry(self):
-        self.addr_entry.set_text("")
-        self.mask_entry.set_text("")
-        self.gate_entry.set_text("")
-        self.master_entry.set_text("")
-        self.slave_entry.set_text("")
-
-    def auto_get_ip_addr(self, widget, connection):
-        if widget.get_active():
-            connection.method = 'auto'
-            self.addr_entry.set_sensitive(False)
-            self.mask_entry.set_sensitive(False)
-            self.gate_entry.set_sensitive(False)
-    def manual_ip_entry(self,widget, connection):
-        if widget.get_active():
-            connection.method = 'manual'
-            self.addr_entry.set_sensitive(True)
-            self.mask_entry.set_sensitive(True)
-            self.gate_entry.set_sensitive(True)
-            if not connection.addresses == []:
-                self.addr_entry.set_text(connection.addresses[0][0])
-                self.mask_entry.set_text(connection.addresses[0][1])
-                self.gate_entry.set_text(connection.addresses[0][2])
-    
-    def save_changes(self):
-        connection = self.cs
-        if connection.method =="manual": 
-            connection.clear_addresses()
-            connection.add_address([self.addr_entry.get_text(),
-                                     self.mask_entry.get_text(),
-                                     self.gate_entry.get_text()])
-            connection.clear_dns()
-            if not self.master_entry.get_text() == "":
-                connection.add_dns(self.master_entry.get_text())
-            if not self.slave_entry.get_text() == "":
-                connection.add_dns(self.slave_entry.get_text())
-        #connection.adapt_ip6config_commit()
-        #print self.connection.get_setting("connection").id
 
 class Security(gtk.VBox):
 

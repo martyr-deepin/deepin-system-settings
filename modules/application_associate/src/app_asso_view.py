@@ -29,7 +29,7 @@ app_theme = init_skin(
     "1.0",
     "01",
     os.path.join(get_parent_dir(__file__, 2), "skin"),
-    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
+    os.path.join(get_parent_dir(__file__, 2), "theme"),
     )
 
 from dtk.ui.tab_window import TabBox
@@ -38,6 +38,8 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
 import gobject
 import gtk
+
+from app_view import AppView
 
 class AppAssoView(TabBox):
     '''
@@ -50,7 +52,7 @@ class AppAssoView(TabBox):
         '''
         TabBox.__init__(self)
 
-        self.app_box = gtk.VBox()
+        self.app_box = AppView()
         self.autorun_box = gtk.VBox()
         self.boot_box = gtk.VBox()
 

@@ -289,6 +289,7 @@ class IPV6Conf(gtk.VBox):
 
         # TODO UI change 
         table.set_size_request(340, 227)
+        table.set_row_spacings(5)
         align = gtk.Alignment( 0, 0, 0, 0)
         align.set_padding( 35, 0, 120, 0)
         align.add(table)
