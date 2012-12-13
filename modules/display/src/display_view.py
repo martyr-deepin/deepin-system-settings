@@ -115,7 +115,6 @@ class DisplayView(gtk.VBox):
         monitor operation && detect
         '''
         self.monitor_resize_box = MonitorResizableBox()
-        self.monitor_resize_box.set_size_request(self.resize_width, self.resize_height)
         self.monitor_resize_box.connect("resize", self.__resize_box)
         '''
         monitor display
