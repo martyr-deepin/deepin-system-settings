@@ -39,7 +39,9 @@ from treeitem import MyTreeItem as TreeItem
 from utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
 import gtk
 import pango
+import threading
 from module_frame import ModuleFrame
+from pexpect import TIMEOUT, EOF
 
 
 class AccountSetting(object):
@@ -49,6 +51,7 @@ class AccountSetting(object):
         self.module_frame = module_frame
         self.account_dbus = settings.ACCOUNT
         self.permission = settings.PERMISSION
+        self.permission1 = settings.PERMISSION1
         
         self.image_widgets = {}
         self.label_widgets = {}
@@ -378,7 +381,7 @@ class AccountSetting(object):
             self.account_dbus.create_user(username, username, account_type)
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                self.label_widgets["account_create_error"].set_text("<span foreground='red'>Error:%s</span>" % e.msg)
+                self.label_widgets["account_create_error"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
             return
         self.account_cancle_button_clicked(None)
     
@@ -396,7 +399,9 @@ class AccountSetting(object):
         self.button_widgets["account_type"].set_select_index(item.user_type)
         if dbus_obj.get_locked():
             self.label_widgets["passwd_char"].set_text(_("Account disabled"))
-        elif dbus_obj.get_password_mode():
+        elif dbus_obj.get_password_mode() == 1:
+            self.label_widgets["passwd_char"].set_text(_("To be set at next login"))
+        elif dbus_obj.get_password_mode() == 2:
             self.label_widgets["passwd_char"].set_text(_("None"))
         else:
             self.label_widgets["passwd_char"].set_text("****")
@@ -436,9 +441,15 @@ class AccountSetting(object):
         if self.get_authorized():
             if self.permission.release():
                 button.set_data("unlocked", False)
+            #self.permission1.release()
+            #print self.permission.get_allowed()
+            #print self.permission1.get_allowed()
         else:
             if self.permission.acquire():
                 button.set_data("unlocked", True)
+            #self.permission1.acquire()
+            #print self.permission.get_allowed()
+            #print self.permission1.get_allowed()
         self.set_widget_state_with_author()
     
     def account_type_item_selected(self, combo_box, item_content, item_value, item_index):
@@ -551,7 +562,9 @@ class AccountSetting(object):
             self.button_widgets["account_type"].set_select_index(item.user_type)
             if user.get_locked():
                 self.label_widgets["passwd_char"].set_text(_("Account disabled"))
-            elif user.get_password_mode():
+            elif user.get_password_mode() == 1:
+                self.label_widgets["passwd_char"].set_text(_("To be set at next login"))
+            elif user.get_password_mode() == 2:
                 self.label_widgets["passwd_char"].set_text(_("None"))
             else:
                 self.label_widgets["passwd_char"].set_text("****")
@@ -654,7 +667,7 @@ class AccountSetting(object):
                 self.account_dbus.delete_user(current_del_user.get_uid(), del_file)
             except Exception, e:
                 if isinstance(e, (AccountsPermissionDenied)):
-                    error_label.set_text("<span foreground='red'>Error:%s</span>" % e.msg)
+                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
                 return
             self.container_widgets["slider"].slide_to_page(
                 self.alignment_widgets["main_hbox"], "left")
@@ -703,25 +716,70 @@ class AccountSetting(object):
             else:
                 is_input_empty[variety] = False
             if (is_myown and is_input_empty[CURRENT_PSWD]) or\
-                    is_input_empty[NEW_PSWD] or is_input_empty[CONFIRM_PSWD]:
+                    is_input_empty[NEW_PSWD] or\
+                    is_input_empty[CONFIRM_PSWD] or\
+                    new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
                 change_button.set_sensitive(False)
             else:
                 change_button.set_sensitive(True)
         
         def action_combo_selected(combo_box, item_content, item_value, item_index):
-            if item_value == ACTION_ENABLE or item_value == ACTION_DISABLE or item_value == ACTION_NO_PSWD:
+            if item_value != ACTION_SET_PSWD:
                 current_pswd_input.set_sensitive(False)
                 new_pswd_input.set_sensitive(False)
                 confirm_pswd_input.set_sensitive(False)
                 show_pswd_check.set_sensitive(False)
+                if not change_button.get_sensitive():
+                    change_button.set_sensitive(True)
             else:
                 current_pswd_input.set_sensitive(True)
                 new_pswd_input.set_sensitive(True)
                 confirm_pswd_input.set_sensitive(True)
                 show_pswd_check.set_sensitive(True)
+                if (is_myown and is_input_empty[CURRENT_PSWD]) or\
+                        is_input_empty[NEW_PSWD] or\
+                        is_input_empty[CONFIRM_PSWD] or\
+                        new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
+                    change_button.set_sensitive(False)
+                else:
+                    change_button.set_sensitive(True)
         
+        def change_user_password_thread(new_pswd):
+            print "in thread"
+            try:
+                if is_myown:
+                    old_pswd = current_pswd_input.entry.get_text()
+                else:
+                    old_pswd = " "
+                b = self.account_dbus.modify_user_passwd(new_pswd, current_set_user.get_user_name(), old_pswd)
+                print "changed status:", b
+                if b != 0:
+                    error_msg = _("password unchanged")
+                    if b == 10:
+                        error_msg = _("Authentication token manipulation error")
+                    if b == -2:
+                        error_msg = _("new and old password are too similar")
+                    gtk.gdk.threads_enter()
+                    error_label.set_text("<span foreground='red'>%s%s</span>" % (
+                        _("Error:"), error_msg))
+                    button_hbox.set_sensitive(True)
+                    gtk.gdk.threads_leave()
+                else:
+                    gtk.gdk.threads_enter()
+                    self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+                    gtk.gdk.threads_leave()
+            except Exception, e:
+                if not isinstance(e, (TIMEOUT, EOF)):
+                    error_msg = e.message
+                else:
+                    error_msg = _("password unchanged")
+                gtk.gdk.threads_enter()
+                error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), error_msg))
+                button_hbox.set_sensitive(True)
+                gtk.gdk.threads_leave()
+            
         def change_user_password(button):
-            # TODO 设置用户的密码
+            button_hbox.set_sensitive(False)
             if is_authorized:
                 do_action = action_combo.get_current_item()[1]
                 try:
@@ -733,16 +791,21 @@ class AccountSetting(object):
                         current_set_user.set_password_mode(2)
                 except Exception, e:
                     if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                        error_label.set_text("<span foreground='red'>Error:%s</span>" % e.msg)
+                        error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
                         return
                 # action is not setting password, then return
                 if do_action != ACTION_SET_PSWD:
                     self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
                     return
-            if new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
+            new_pswd = new_pswd_input.entry.get_text()
+            confirm_pswd = confirm_pswd_input.entry.get_text()
+            if new_pswd != confirm_pswd:
                 error_label.set_text("<span foreground='red'>%s</span>" % _("两次输入的密码不一致"))
+                button_hbox.set_sensitive(True)
                 return
-            self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+            t = threading.Thread(target=change_user_password_thread, args=(new_pswd, ))
+            t.setDaemon(True)
+            t.start()
         CURRENT_PSWD = 0
         NEW_PSWD = 1
         CONFIRM_PSWD = 2
