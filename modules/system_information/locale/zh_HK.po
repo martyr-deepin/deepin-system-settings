@@ -1,0 +1,37 @@
+# Chinese translations for PACKAGE package.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-13 17:41+0800\n"
+"PO-Revision-Date: 2012-12-13 17:41+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_HK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.py:53
+msgid "版权所有© 2009  深之度科技有限公司。保留所有权利。"
+msgstr ""
+
+#: ../src/main.py:54
+msgid "Processor"
+msgstr ""
+
+#: ../src/main.py:55
+msgid "Memory"
+msgstr ""
+
+#: ../src/main.py:56
+msgid "OS Type"
+msgstr ""
+
+#: ../src/main.py:57
+msgid "Disk"
+msgstr ""
