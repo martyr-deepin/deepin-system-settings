@@ -6,6 +6,7 @@
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
+#             Long Changjin <admin@longchangjin.cn>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -66,53 +67,54 @@ class PasswdService(dbus.service.Object):
         bus_name = dbus.service.BusName(self.DBUS_INTERFACE_NAME, bus = bus)    
         dbus.service.Object.__init__(self, bus_name, "/")
 
-    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ssis", out_signature = "b", 
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "sss", out_signature = "i", 
                          sender_keyword = 'sender', connection_keyword = 'conn')    
-    def modify_user_passwd(self, new_password, username, need_old, old_password, sender = None, conn = None):
+    def modify_user_passwd(self, new_password, username, old_password, sender = None, conn = None):
         if getpass.getuser() != username:
             if not authWithPolicyKit(sender, conn, "com.deepin.passwdservice.modify-password"):
-                print "not authWithPolicyKit"
-                return False
+                raise dbus.DBusException("not authWithPolicyKit")
 
-        return self.__modify_user_passwd(new_password, username, need_old, old_password)
+        return self.__modify_user_passwd(new_password, username, old_password)
 
-    def __modify_user_passwd(self, new_password, username, need_old = 0, old_password = None):
+    def __modify_user_passwd(self, new_password, username, old_password = " "):
         ###for normal password
         if len(new_password) < 6:
-            return False
+            raise Exception("You must choose a longer password")
 
-        passwd = pexpect.spawn("/usr/bin/passwd %s" %username)
-
-        if need_old == 1:
+        passwd = pexpect.spawn("/usr/bin/passwd %s" %username, timeout=8, env={"LANGUAGE": "en_US"})
+        passwd.setecho(False)
+        
+        if passwd.expect(["(current)", pexpect.EOF, pexpect.TIMEOUT], 5) == 0:
             try:
-                passwd.expect("UNIX")
-                print "input old"
+                #print "input old:'%s'" % old_password
                 passwd.sendline(old_password)
-                time.sleep(0.1)
-            except:
-                return False
-
+                passwd.expect(["new", "New", pexpect.EOF, pexpect.TIMEOUT], 5)
+                if not passwd.isalive():
+                    return passwd.exitstatus
+            except Exception, e:
+                raise e
         try:
-            # passwd.expect("输入新的 UNIX 密码：")
-            passwd.expect("UNIX")
-            print "input new"
+            #print "input new"
             passwd.sendline(new_password)
             time.sleep(0.1)
 
-            # passwd.expect("重新输入新的 UNIX 密码：")
-            passwd.expect("UNIX")
-            print "confirm new"
+            #print "confirm new"
             passwd.sendline(new_password)
             time.sleep(0.1)
 
-            print "succeed\n"
-            passwd.expect("已成功更新密码")
-
-            return True
-
+            #print passwd.read()
+            code = -1
+            if passwd.expect(["Bad", pexpect.EOF, pexpect.TIMEOUT], 3) == 0:
+                code = -2
+            if passwd.isalive():
+                if not passwd.terminate():
+                    passwd.kill(9)
+                return code
+            #print "succeed\n"
+            #passwd.expect("已成功更新密码")
+            return passwd.exitstatus
         except Exception, e:
-            print e
-            return False
+            raise e
 
 
 if __name__ == "__main__":
