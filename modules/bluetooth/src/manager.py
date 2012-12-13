@@ -6,7 +6,6 @@
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
-#             Long Changjin <admin@longchangjin.cn>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,12 +48,33 @@ class Manager(BusBase):
                                      path = self.object_path, signal_name = "PropertyChanged")
 
     def get_default_adapter(self):
-        return str(self.dbus_interface.DefaultAdapter())
+        return str(self.dbus_method("DefaultAdapter"))
 
-    def find_adapter(self, string):
-        return str(self.dbus_interface.FindAdapter(string))
+    def find_adapter(self, dev_id):
+        return str(self.dbus_method("FindAdapter", dev_id))
  
+    def get_properties(self):
+        return dict(self.dbus_method("GetProperties"))
 
+    def list_adapters(self):
+        adapters = self.dbus_method("ListAdapters")
+        if adapters:
+            return map(lambda x:str(x), adapters)
+        else:
+            return []
+
+    def adapter_added_cb(self, path):
+        self.emit("adapter-added", path)
+
+    def adapter_removed_cb(self, path):
+        self.emit("adapter-removed", path)
+
+    def default_adapter_changed_cb(self, path):
+        self.emit("default-adapter-changed", path)
+
+    def property_changed_cb(self, key, value):
+        self.emit("property-changed", key, value)
 
 if __name__ == "__main__":
-    pass
+    manager = Manager()
+    print manager.get_properties()
