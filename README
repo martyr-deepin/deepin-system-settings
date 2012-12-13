@@ -18,6 +18,15 @@ Python Deepin GSettings Bindings
 git clone git@github.com:linuxdeepin/deepin-gsettings.git
 sudo python setup.py install
 
+python-pexpect
+sudo apt-get install python-pexpect
+
+Python binding for libxklavier
+sudo apt-get install python-xklavier
+
+GNOME library to manage keyboard configuration
+sudo apt-get install libgnomekbd-common
+
 注意
 
 根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入deepin-desktop/schemas/

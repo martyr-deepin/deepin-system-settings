@@ -74,7 +74,7 @@ class AccountSetting(object):
         self.label_widgets["account_name"] = Label("", label_width=230, enable_select=False)
         self.label_widgets["account"] = Label(_("Account type"))
         self.label_widgets["passwd"] = Label(_("Password"))
-        self.label_widgets["passwd_char"] = Label("****", enable_select=False)
+        self.label_widgets["passwd_char"] = Label("****", label_width=140, enable_select=False)
         self.label_widgets["auto_login"] = Label(_("Automatic Login"))
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"))
         self.label_widgets["deepin_account"] = Label(_("Unbound"))
@@ -164,7 +164,6 @@ class AccountSetting(object):
         # delete account page
         self.alignment_widgets["delete_account"] = gtk.Alignment()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
-
     
     def __adjust_widget(self):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
@@ -680,7 +679,7 @@ class AccountSetting(object):
             show_name = current_del_user.get_real_name() 
         else:
             show_name = current_del_user.get_user_name()
-        tips_label = Label(_("<b>Do you want to keep <u>%s</u>'s files?</b>") % 
+        tips_label = Label("<b>%s</b>" % _("Do you want to keep <u>%s</u>'s files?") % 
                            self.escape_markup_string(show_name),
                            text_size=13, wrap_width=660, enable_select=False)
         tips_label2 = Label(_("It is possible to keep the home directory when deleting a user account."),
@@ -762,7 +761,7 @@ class AccountSetting(object):
                     gtk.gdk.threads_enter()
                     error_label.set_text("<span foreground='red'>%s%s</span>" % (
                         _("Error:"), error_msg))
-                    button_hbox.set_sensitive(True)
+                    table2.set_sensitive(True)
                     gtk.gdk.threads_leave()
                 else:
                     gtk.gdk.threads_enter()
@@ -775,11 +774,11 @@ class AccountSetting(object):
                     error_msg = _("password unchanged")
                 gtk.gdk.threads_enter()
                 error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), error_msg))
-                button_hbox.set_sensitive(True)
+                table2.set_sensitive(True)
                 gtk.gdk.threads_leave()
             
         def change_user_password(button):
-            button_hbox.set_sensitive(False)
+            table2.set_sensitive(False)
             if is_authorized:
                 do_action = action_combo.get_current_item()[1]
                 try:
@@ -801,7 +800,7 @@ class AccountSetting(object):
             confirm_pswd = confirm_pswd_input.entry.get_text()
             if new_pswd != confirm_pswd:
                 error_label.set_text("<span foreground='red'>%s</span>" % _("两次输入的密码不一致"))
-                button_hbox.set_sensitive(True)
+                table2.set_sensitive(True)
                 return
             t = threading.Thread(target=change_user_password_thread, args=(new_pswd, ))
             t.setDaemon(True)
@@ -921,8 +920,7 @@ if __name__ == '__main__':
     account_settings = AccountSetting(module_frame)
     
     module_frame.add(account_settings.container_widgets["slider"])
-    module_frame.connect("realize", 
-        lambda w: account_settings.container_widgets["slider"].set_to_page(
+    module_frame.connect("realize", lambda w: account_settings.container_widgets["slider"].set_to_page(
         account_settings.alignment_widgets["main_hbox"]))
     
     def message_handler(*message):
