@@ -40,6 +40,14 @@ import gobject
 import gtk
 
 from app_view import AppView
+from media_view import MediaView
+
+class AppMain(gtk.Alignment):
+
+    def __init__(self):
+        gtk.Alignment.__init__(self, 0.5, 0.5, 1, 1)
+        self.set_padding(15, 15, 27, 27)
+        self.add(AppAssoView())
 
 class AppAssoView(TabBox):
     '''
@@ -51,9 +59,10 @@ class AppAssoView(TabBox):
         init docs
         '''
         TabBox.__init__(self)
-
+        #self.set_size_request(722, 356)
+        
         self.app_box = AppView()
-        self.autorun_box = gtk.VBox()
+        self.autorun_box = MediaView()
         self.boot_box = gtk.VBox()
 
         self.add_items([("应用程序", self.app_box), 

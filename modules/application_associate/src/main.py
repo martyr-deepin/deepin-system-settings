@@ -25,13 +25,13 @@ import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
-from app_asso_view import AppAssoView
+from app_asso_view import AppAssoView, AppMain
 from module_frame import ModuleFrame
 
 if __name__ == "__main__":
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
-    app_asso_view = AppAssoView()
+    app_asso_view = AppMain()
     
     module_frame.add(app_asso_view)
     

@@ -29,12 +29,13 @@ class AppView(gtk.VBox):
 
     def app_table(self):
         # Labels 
-        web_label = Label("Web")
-        mail_label = Label("Mail")
-        editor_label = Label("Editor")
-        music_label = Label("Music")
-        movie_label = Label("Movie")
-        pic_label = Label("Pictrue")
+        info_label = Label("您可以根据自己需要对深度系统在默认情况下使用的程序进行设置")
+        web_label = Label("网络")
+        mail_label = Label("邮件")
+        editor_label = Label("文本")
+        music_label = Label("音乐")
+        movie_label = Label("视频")
+        pic_label = Label("图片")
 
         self.web = ComboBox([("None",0)], max_width=408)
         self.mail = ComboBox([("None",0)], max_width=408)
@@ -43,31 +44,31 @@ class AppView(gtk.VBox):
         self.movie = ComboBox([("None",0)], max_width=408)
         self.pic = ComboBox([("None",0)], max_width=408)
 
-        table = gtk.Table(6, 2, False)
+        table = gtk.Table(7, 2, False)
         
-        table.attach(web_label, 0, 1, 0, 1)
-        table.attach(mail_label, 0, 1, 1, 2)
-        table.attach(editor_label, 0, 1, 2, 3)
-        table.attach(music_label, 0, 1, 3, 4)
-        table.attach(movie_label, 0, 1, 4, 5)
-        table.attach(pic_label, 0, 1 ,5, 6)
+        table.attach(info_label, 0, 2, 0, 1)
+        table.attach(web_label, 0, 1, 1, 2)
+        table.attach(mail_label, 0, 1, 2, 3)
+        table.attach(editor_label, 0, 1, 3, 4)
+        table.attach(music_label, 0, 1, 4, 5)
+        table.attach(movie_label, 0, 1, 5, 6)
+        table.attach(pic_label, 0, 1 ,6, 7)
 
-        table.attach(self.web, 1, 2, 0, 1, 0)
-        table.attach(self.mail,1, 2, 1, 2, 0)
-        table.attach(self.editor, 1, 2, 2, 3, 0)
-        table.attach(self.music, 1, 2, 3, 4, 0)
-        table.attach(self.movie, 1, 2, 4, 5, 0)
-        table.attach(self.pic, 1, 2, 5, 6, 0)
+        table.attach(self.web, 1, 2, 1, 2, 0)
+        table.attach(self.mail,1, 2, 2, 3, 0)
+        table.attach(self.editor, 1, 2, 3, 4, 0)
+        table.attach(self.music, 1, 2, 4, 5, 0)
+        table.attach(self.movie, 1, 2, 5, 6, 0)
+        table.attach(self.pic, 1, 2, 6, 7, 0)
 
         table.set_size_request(455, 230)
-        table.set_row_spacings(10)
+        table.set_row_spacings(20)
         table_align = gtk.Alignment(0.5, 0.5, 0, 0)
         table_align.set_padding(25, 0, 0, 0)
         table_align.add(table)
 
         self.pack_start(table_align, False, False)
 
-        # get_items 
         all_app_dict = self.get_all_app()
         print all_app_dict
         apps = [self.web, self.mail, self.editor, self.music, self.movie, self.pic]
@@ -95,7 +96,7 @@ class AppView(gtk.VBox):
             
 
     def item_select(self, widget, content, value, index, types):
-        print content, value, index
+        pass
         
         # set items
 
