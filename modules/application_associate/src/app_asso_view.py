@@ -41,6 +41,7 @@ import gtk
 
 from app_view import AppView
 from media_view import MediaView
+from session_view import SessionView
 
 class AppMain(gtk.Alignment):
 
@@ -63,7 +64,7 @@ class AppAssoView(TabBox):
         
         self.app_box = AppView()
         self.autorun_box = MediaView()
-        self.boot_box = gtk.VBox()
+        self.boot_box = SessionView()
 
         self.add_items([("应用程序", self.app_box), 
                         ("自动运行", self.autorun_box), 

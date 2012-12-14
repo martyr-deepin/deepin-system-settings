@@ -52,7 +52,7 @@ class AppView(gtk.VBox):
         table.attach(editor_label, 0, 1, 3, 4)
         table.attach(music_label, 0, 1, 4, 5)
         table.attach(movie_label, 0, 1, 5, 6)
-        table.attach(pic_label, 0, 1 ,6, 7)
+        table.attach(pic_label, 0, 1, 6, 7)
 
         table.attach(self.web, 1, 2, 1, 2, 0)
         table.attach(self.mail,1, 2, 2, 3, 0)
@@ -70,20 +70,18 @@ class AppView(gtk.VBox):
         self.pack_start(table_align, False, False)
 
         all_app_dict = self.get_all_app()
-        print all_app_dict
         apps = [self.web, self.mail, self.editor, self.music, self.movie, self.pic]
         for app in apps:
             app.set_size_request(408, 25)
         for key in all_app_dict.iterkeys():
-            if all_app_dict[key]:
-                apps[key].set_items(all_app_dict[key], max_width=408)
+            apps[key].set_items(all_app_dict[key], max_width=408)
 
-
-    
     def get_default_app(self):
         dic = {}
         for index, value in enumerate(self.content_type_list):
-            dic[index] = self.app.get_default_for_type(value).get_name()
+            default_app = self.app.get_default_for_type(value)
+            if default_app:
+                dic[index] = default_app
 
         return dic
 
@@ -91,18 +89,17 @@ class AppView(gtk.VBox):
         dic = {}
         for index, value in enumerate(self.content_type_list):
             all_app = self.app.get_all_for_type(value)
-            dic[index] = map(lambda w: (w[1].get_name(), w[0]), enumerate(all_app))
-        return dic
+            dic[index] = map(lambda w: (w.get_name(), w), all_app)
+
+        def filter_empty(dic):
+            d = {}
+            for i in dic.iterkeys():
+                if dic[i] != []:
+                    d[i] = dic[i]
+            return d
+        return filter_empty(dic)
             
-
     def item_select(self, widget, content, value, index, types):
-        pass
-        
-        # set items
-
-
-
-
-    
-
-    
+        default_apps = self.get_default_app()
+        if content != "None" and default_apps[types].get_name() != content:
+            self.app.set_default_for_type(value, self.content_type_list[types])
