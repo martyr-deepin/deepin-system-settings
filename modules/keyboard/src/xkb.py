@@ -22,7 +22,6 @@
 
 import xklavier
 import gtk
-# TODO libgnomekbd库实现键盘布局设置
 
 
 class XKeyBoard(object):

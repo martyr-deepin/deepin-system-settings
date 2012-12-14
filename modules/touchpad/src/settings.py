@@ -90,7 +90,7 @@ def touchpad_set_motion_threshold(value):
     set touchpad motion threshold
     @param value: the threshold value, an int type, 1 ~ 10
     '''
-    TOUCHPAD_SETTINGS.set_int("motion-threshold", value)
+    TOUCHPAD_SETTINGS.set_int("motion-threshold", int(value))
 
 
 def touchpad_get_motion_threshold():
@@ -106,7 +106,7 @@ def touchpad_set_double_click(value):
     set touchpad double click time
     @param value: the double click time, an int type, 100 ~ 1000
     '''
-    MOUSE_SETTINGS.set_int("double-click", value)
+    MOUSE_SETTINGS.set_int("double-click", int(value))
 
 
 def touchpad_get_double_click():
@@ -121,7 +121,7 @@ def touchpad_set_drag_threshold(value):
     set drag threshold time out
     @param value: the drag threshold time, an int type, 1 ~ 10
     '''
-    MOUSE_SETTINGS.set_int("drag-threshold", value)
+    MOUSE_SETTINGS.set_int("drag-threshold", int(value))
 
 def touchpad_get_drag_threshold():
     '''

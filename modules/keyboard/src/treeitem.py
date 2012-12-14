@@ -23,7 +23,7 @@
 from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
-from dtk.ui.utils import (color_hex_to_cairo, is_left_button)
+from dtk.ui.utils import color_hex_to_cairo 
 from gtk import gdk
 from gtk import accelerator_name, accelerator_parse, accelerator_get_label
 from nls import _
@@ -72,31 +72,6 @@ class MyTreeView(TreeView):
             for item in items:
                 item.treeview = self
         
-    #def click_item(self, event):
-        #cell = self.get_cell_with_event(event)
-        #if cell != None:
-            #(click_row, click_column, offset_x, offset_y) = cell
-            
-            #if self.left_button_press:
-                #if click_row == None:
-                    #self.unselect_all()
-                #else:
-                    #if self.enable_drag_drop and click_row in self.select_rows:
-                        #self.start_drag = True
-                        ## Record press_in_select_rows, disable select rows if mouse not move after release button.
-                        #self.press_in_select_rows = click_row
-                    #else:
-                        #self.start_drag = False
-                        #self.start_select_row = click_row
-                        #self.set_select_rows([click_row])
-                        
-                        #self.visible_items[click_row].button_press(click_column, offset_x, offset_y)
-                            
-                #if is_double_click(event):
-                    #self.double_click_row = copy.deepcopy(click_row)
-                #elif is_single_click(event):
-                    #self.single_click_row = copy.deepcopy(click_row)                
-    
     def set_select_rows(self, rows):
         super(MyTreeView, self).set_select_rows(rows)
         if rows:
@@ -104,16 +79,6 @@ class MyTreeView(TreeView):
                 print self.visible_items[select_row]
                 self.emit("select", self.visible_items[select_row], select_row)
     
-    #def release_item(self, event):
-        #super(MyTreeView, self).release_item(event)
-        #if is_left_button(event):
-            #cell = self.get_cell_with_event(event)
-            #if cell is not None:
-                #(release_row, release_column, offset_x, offset_y) = cell
-                #if release_row is not None:
-                    #if self.single_click_row == release_row:
-                        #self.emit("clicked", self.visible_items[release_row], release_column)
-
 gobject.type_register(MyTreeView)
 
 class BaseItem(TreeItem):

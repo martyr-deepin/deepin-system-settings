@@ -110,8 +110,10 @@ class TouchpadSetting(object):
         self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"))
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
-        self.button_widgets["keyboard_setting"] = Label(_("Keyboard Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
-        self.button_widgets["mouse_setting"] = Label(_("Mouse Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
+        self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
+            text_size=10, text_color=app_theme.get_color("link_text"), enable_select=False)
+        self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Setting"),
+            text_size=10, text_color=app_theme.get_color("link_text"), enable_select=False)
         # container init
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
@@ -409,30 +411,26 @@ class TouchpadSetting(object):
         self.settings.connect("changed", self.touchpad_setting_changed_cb)
         self.settings1.connect("changed", self.mouse_setting_changed_cb)
         # acceleration operation
-        self.adjust_widgets["pointer_speed_accel"].connect(
-            "value-changed", self.adjustment_value_changed, "motion-acceleration")
+        self.scale_widgets["pointer_speed_accel"].connect(
+            "button-release-event", self.adjustment_value_changed, "motion-acceleration")
         # sensitivity operation
-        self.adjust_widgets["pointer_speed_sensitiv"].connect(
-            "value-changed", self.adjustment_value_changed, "motion-threshold")
+        self.scale_widgets["pointer_speed_sensitiv"].connect(
+            "button-release-event", self.adjustment_value_changed, "motion-threshold")
         # double-click operation
-        self.adjust_widgets["double_click_rate"].connect(
-            "value-changed", self.adjustment_value_changed, "double-click")
+        self.scale_widgets["double_click_rate"].connect(
+            "button-release-event", self.adjustment_value_changed, "double-click")
         
         self.button_widgets["double_test"].connect("button-press-event", self.double_click_test)
         self.button_widgets["double_test"].connect("expose-event", self.double_click_test_expose)
-        self.adjust_widgets["drag_threshold_time"].connect(
-            "value-changed", self.adjustment_value_changed, "drag-threshold")
+        self.scale_widgets["drag_threshold_time"].connect(
+            "button-release-event", self.adjustment_value_changed, "drag-threshold")
         
         # relevant setting
-        self.alignment_widgets["keyboard_setting"].connect("expose-event",
-            self.relevant_expose, self.button_widgets["keyboard_setting"])
         self.button_widgets["keyboard_setting"].connect("button-press-event", self.relevant_press, "keyboard")
-        self.alignment_widgets["mouse_setting"].connect("expose-event",
-            self.relevant_expose, self.button_widgets["mouse_setting"])
         self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")
     
-    def touchpad_setting_changed_cb(self, setting, key):
-        args = [setting, key]
+    def touchpad_setting_changed_cb(self, key):
+        args = [key]
         if key == "left-handed":
             callback = self.left_or_right_setting_changed
         elif key == "motion-acceleration":
@@ -445,8 +443,8 @@ class TouchpadSetting(object):
             return
         callback(*args)
     
-    def mouse_setting_changed_cb(self, setting, key):
-        args = [setting, key]
+    def mouse_setting_changed_cb(self, key):
+        args = [key]
         if key == "double-click":
             callback = self.settings_value_changed
             args.append(self.adjust_widgets["double_click_rate"])
@@ -465,7 +463,7 @@ class TouchpadSetting(object):
         if button.get_active():
             settings.touchpad_set_left_handed(active)
     
-    def left_or_right_setting_changed(self, gset, key):
+    def left_or_right_setting_changed(self, *args):
         ''' set left or right radio button active '''
         is_left = settings.touchpad_get_left_handed()
         if is_left == "mouse":
@@ -479,11 +477,9 @@ class TouchpadSetting(object):
             self.button_widgets["%s_hand_radio" % is_left].set_active(True)
             self.button_widgets["%s_hand_radio" % is_left].set_data("changed-by-other-app", True)
     
-    def adjustment_value_changed(self, adjustment, key):
+    def adjustment_value_changed(self, widget, event, key):
         '''adjustment value changed, and settings set the value'''
-        if adjustment.get_data("changed-by-other-app"):
-            adjustment.set_data("changed-by-other-app", False)
-            return
+        adjustment = widget.get_adjustment()
         value = adjustment.get_value()
         if key == "motion-threshold" or key == "drag-threshold":   # motion-threshold or drag-threshold is an int type
             new_value = value
@@ -496,10 +492,9 @@ class TouchpadSetting(object):
                 value = int(new_value)
         self.scale_set[key](value)
     
-    def settings_value_changed(self, settings, key, adjustment):
+    def settings_value_changed(self, key, adjustment):
         '''settings value changed, and adjustment set the value'''
         adjustment.set_value(self.scale_get[key]())
-        adjustment.set_data("changed-by-other-app", True)
 
     def double_click_test(self, widget, event):
         '''double clicked callback, to test the double-click time'''
@@ -514,18 +509,6 @@ class TouchpadSetting(object):
         cr.paint()
         propagate_expose(widget, event)
         return True
-    
-    def relevant_expose(self, widget, event, label):
-        '''relevant button expose'''
-        cr = widget.window.cairo_create()
-        with cairo_disable_antialias(cr):
-            x, y, w, h = label.allocation
-            # #1A70b1
-            cr.set_source_rgba(0.1, 0.43, 0.69, 1.0)
-            cr.set_line_width(1)
-            cr.move_to(x, y+h-2)
-            cr.line_to(x+w, y+h-2)
-            cr.stroke()
     
     # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):

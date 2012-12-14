@@ -75,7 +75,7 @@ def mouse_set_motion_threshold(value):
     set mouse motion threshold
     @param value: the threshold value, an int type, 1 ~ 10
     '''
-    MOUSE_SETTINGS.set_int("motion-threshold", value)
+    MOUSE_SETTINGS.set_int("motion-threshold", int(value))
 
 
 def mouse_get_motion_threshold():
@@ -91,7 +91,7 @@ def mouse_set_double_click(value):
     set mouse double click time
     @param value: the double click time, an int type, 100 ~ 1000
     '''
-    MOUSE_SETTINGS.set_int("double-click", value)
+    MOUSE_SETTINGS.set_int("double-click", int(value))
 
 
 def mouse_get_double_click():
