@@ -78,3 +78,4 @@ class Manager(BusBase):
 if __name__ == "__main__":
     manager = Manager()
     print manager.get_properties()
+    print manager.list_adapters()

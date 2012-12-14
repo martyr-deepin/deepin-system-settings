@@ -44,4 +44,12 @@ class Service(BusBase):
         return self.dbus_method("UnregisterCharacteristicsWatcher", watcher_path)
 
 if __name__ == "__main__":
-    pass
+    from manager import Manager
+    from adapter import Adapter
+    from device import Device
+
+    adapter = Adapter(Manager().get_default_adapter())
+    device = Device(adapter.get_devices()[0])
+    service = Service(device.get_services()[0])
+
+    print service
