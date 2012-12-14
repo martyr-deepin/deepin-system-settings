@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import dbus
 import gobject
 from utils import BusBase
 
@@ -48,11 +49,83 @@ class Device(BusBase):
     def cancel_discovery(self):
         return self.dbus_method("CancelDiscovery")
 
+    ###Props
     def get_properties(self):
         return self.dbus_method("GetProperties")
 
     def set_property(self, key, value):
         return self.dbus_method("SetProperty", key, value)
+
+    def get_name(self):
+        if "Name" in self.get_properties().keys():
+            return self.get_properties()["Name"]
+
+    def get_alias(self):
+        if "Alias" in self.get_properties().keys():
+            return self.get_properties()["Alias"]
+
+    def set_alias(self, alias):
+        self.set_property("Alias", alias)
+
+    def get_icon(self):
+        if "Icon" in self.get_properties().keys():
+            return self.get_properties()["Icon"]
+
+    def get_paired(self):
+        if "Paired" in self.get_properties().keys():
+            return bool(self.get_properties()["Paired"])
+
+    def get_connected(self):
+        if "Connected" in self.get_properties().keys():
+            return bool(self.get_properties()["Connected"])
+
+    def get_blocked(self):
+        if "Blocked" in self.get_properties().keys():
+            return bool(self.get_properties()["Blocked"])
+
+    def set_blocked(self, blocked):    
+        self.set_property("Blocked", dbus.Boolean(blocked))
+
+    def get_trusted(self):
+        if "Trusted" in self.get_properties().keys():
+            return bool(self.get_properties()["Trusted"])
+
+    def set_trusted(self, trusted):    
+        self.set_property("Trusted", dbus.Boolean(trusted))
+
+    def get_adapter(self):
+        if "Adapter" in self.get_properties().keys():
+            return str(self.get_properties()["Adapter"])
+
+    def get_address(self):
+        if "Address" in self.get_properties().keys():
+            return self.get_properties()["Address"]
+        else:
+            return None
+
+    def get_class(self):
+        if "Class" in self.get_properties().keys():
+            return self.get_properties()["Class"]
+        else:
+            return None
+
+    def get_uuids(self):
+        uuids = []
+        if "UUIDs" in self.get_properties().keys():
+            uuids = self.get_properties()["UUIDs"]
+            if uuids:
+                uuids = map(lambda x:str(x), uuids)
+
+        return uuids        
+
+    def get_services(self):
+        services = []
+        if "Services" in self.get_properties().keys():
+            services = self.get_properties()["Services"]
+            if services:
+                services = map(lambda x:str(x), services)
+
+        return services        
 
     def disconnect_requested_cb(self):
         self.emit("disconnect-requested")
@@ -218,5 +291,26 @@ class Serial(BusBase):
 
 
 if __name__ == "__main__":
-    pass
+    from manager import Manager
+    from adapter import Adapter
+    
+    adapter = Adapter(Manager().get_default_adapter())
 
+    device = Device(adapter.get_devices()[0])
+
+    print "Name:\n    %s" % device.get_name()
+    device.set_alias("Long's Phone")
+    print "Alias:\n    %s" % device.get_alias()
+    print "Paired:\n    %s" % device.get_paired()
+    print "Adapter:\n   %s" % device.get_adapter()
+    print "Connected:\n   %s" % device.get_connected()
+    print "UUIDs:\n   %s" % device.get_uuids()
+    print "Address:\n   %s" % device.get_address()
+    print "Find Device:\n   %s" %adapter.find_device(device.get_address())
+    print "Services:\n   %s" % device.get_services()
+    print "Class:\n   %s" % device.get_class()
+    device.set_blocked(True)
+    print "Blocked:\n   %s" % device.get_blocked()
+    device.set_trusted(False)
+    print "Trusted:\n   %s" % device.get_trusted()
+    print "Icon:\n   %s" % device.get_icon()

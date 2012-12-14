@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import dbus
 import gobject
 from utils import BusBase
 
@@ -29,7 +30,7 @@ class Adapter(BusBase):
         "device-created":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "device-disappeared":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "device-found":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
-        "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYDICT)),
+        "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
         "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
             }
 
@@ -60,30 +61,31 @@ class Adapter(BusBase):
     def create_paired_device(self, string1, string2, string3):
         return str(self.dbus_method("CreatePairedDevice", string1, string2, string3))
     
-    def find_device(self, dev_id):
-        return str(self.dbus_method("FindDevice"), dev_id)
+    def find_device(self, address):
+        return str(self.dbus_method("FindDevice", address))
 
     def remove_device(self, dev_path):
         return self.dbus_method("RemoveDevice", dev_path)
 
-    def list_devices(self):
-        devices = self.dbus_method("GetDevices")
-        if devices:
-            return map(lambda x:str(x), devices)
+    def get_devices(self):
+        devices = []
+
+        if "Devices" in self.get_properties().keys():
+            devices = self.get_properties()["Devices"]
+            if devices:
+                devices = map(lambda x:str(x), devices)
         else:
-            return []
+            devices = self.dbus_method("ListDevices")
+            if devices:
+                devices = map(lambda x:str(x), devices)
+
+        return devices    
 
     def start_discovery(self):
         self.dbus_method("StartDiscovery")
 
     def stop_discovery(self):
         self.dbus_method("StopDiscovery")
-
-    def get_properties(self):
-        return self.dbus_method("GetProperties")
-
-    def set_property(self, key, value):
-        return self.dbus_method("SetProperty", key, value)
 
     def register_agent(self, string1, string2):
         return self.dbus_method("RegisterAgent", string1, string2)
@@ -96,6 +98,94 @@ class Adapter(BusBase):
 
     def release_session(self):
         return self.dbus_method("ReleaseSession")
+
+    ###Props    
+    def get_properties(self):
+        return self.dbus_method("GetProperties")
+
+    def set_property(self, key, value):
+        return self.dbus_method("SetProperty", key, value)
+
+    def get_name(self):
+        if "Name" in self.get_properties().keys():
+            return self.get_properties()["Name"]
+        else:
+            return None
+
+    def set_name(self, name):
+        self.set_property("Name", str(name))
+
+    def get_powered(self):
+        if "Powered" in self.get_properties().keys():
+            return self.get_properties()["Powered"]
+        else:
+            return False
+
+    def set_powered(self, powered):
+        self.set_property("Powered", dbus.Boolean(powered))
+
+    def get_discoverable(self):
+        if "Discoverable" in self.get_properties().keys():
+            return self.get_properties()["Discoverable"]
+        else:
+            return False
+
+    def set_discoverable(self, discoverable):
+        self.set_property("Discoverable", dbus.Boolean(discoverable))
+
+    def get_discovering(self):
+        if "Discovering" in self.get_properties().keys():
+            return self.get_properties()["Discovering"]
+        else:
+            return False
+
+    def get_discoverable_timeout(self):
+        if "DiscoverableTimeout" in self.get_properties().keys():
+            return self.get_properties()["DiscoverableTimeout"]
+        else:
+            return 0
+
+    def set_discoverable_timeout(self, timeout):
+        self.set_property("DiscoverableTimeout", dbus.UInt32(timeout))
+
+    def get_pairable(self):
+        if "Pairable" in self.get_properties().keys():
+            return self.get_properties()["Pairable"]
+        else:
+            return False
+
+    def set_pairable(self, pairable):
+        self.set_property("Pairable", dbus.Boolean(pairable))
+
+    def get_pairable_timeout(self):
+        if "PairableTimeout" in self.get_properties().keys():
+            return self.get_properties()["PairableTimeout"]
+        else:
+            return 0
+
+    def set_pairable_timeout(self, timeout):
+        self.set_property("PairableTimeout", dbus.UInt32(timeout))
+
+    def get_address(self):
+        if "Address" in self.get_properties().keys():
+            return self.get_properties()["Address"]
+        else:
+            return None
+
+    def get_class(self):
+        if "Class" in self.get_properties().keys():
+            return self.get_properties()["Class"]
+        else:
+            return None
+
+    def get_uuids(self):
+        uuids = []
+        if "UUIDs" in self.get_properties().keys():
+            uuids = self.get_properties()["UUIDs"]
+            if uuids:
+                uuids = map(lambda x:str(x), uuids)
+
+        return uuids        
 
     ###Signals
     def device_created_cb(self, dev_path):
@@ -228,4 +318,33 @@ class SimAccess(BusBase):
             return False
 
 if __name__ == "__main__":
-    pass
+    from manager import Manager
+    manager = Manager()
+    adapter = Adapter(manager.get_default_adapter())
+
+    print "get devices:\n    %s" % adapter.get_devices()
+
+    adapter.set_name("Long Wei's PC")
+    print "get name:\n    %s" % adapter.get_name()
+
+    adapter.set_powered(True)
+    print "get powered:\n    %s" % adapter.get_powered()
+
+    adapter.set_discoverable(False)
+    print "get discoverable:\n    %s" % adapter.get_discoverable()
+
+    print "get discovering:\n    %s" % adapter.get_discovering()
+
+    adapter.set_discoverable_timeout(120)
+    print "get discoverable_timeout:\n    %s" % adapter.get_discoverable_timeout()
+
+    adapter.set_pairable(False)
+    print "get pairable:\n    %s" % adapter.get_pairable()
+
+    adapter.set_pairable_timeout(180)
+    print "get pairable timeout:\n    %s" % adapter.get_pairable_timeout()
+
+    print "get class:\n    %s" % adapter.get_class()
+    print "get address:\n    %s" % adapter.get_address()
+    print "get uuids:\n    %s" % adapter.get_uuids()
+    
