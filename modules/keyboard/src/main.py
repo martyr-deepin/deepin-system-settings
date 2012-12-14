@@ -126,8 +126,10 @@ class KeySetting(object):
         self.button_widgets["blink_test_entry"] = gtk.Entry()
         self.button_widgets["touchpad_disable"] = gtk.ToggleButton()
         # relevant settings button
-        self.button_widgets["mouse_setting"] = Label(_("Mouse Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
-        self.button_widgets["touchpad_setting"] = Label(_("TouchPad Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
+        self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Setting"),
+            text_size=10, text_color=app_theme.get_color("link_text"), enable_select=False)
+        self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
+            text_size=10, text_color=app_theme.get_color("link_text"), enable_select=False)
         # container init
         self.container_widgets["tab_box"] = TabBox()
         self.container_widgets["type_main_hbox"] = gtk.HBox(False)
@@ -172,7 +174,7 @@ class KeySetting(object):
             app_theme.get_pixbuf("scalebar/r_fg.png"),
             app_theme.get_pixbuf("scalebar/r_bg.png"),
             app_theme.get_pixbuf("scalebar/point.png"))
-        self.scale_widgets["repeat_delay"].set_adjustment( self.adjust_widgets["repeat_delay"])
+        self.scale_widgets["repeat_delay"].set_adjustment(self.adjust_widgets["repeat_delay"])
         #self.scale_widgets["repeat_interval"] = gtk.HScale()
         #self.scale_widgets["repeat_interval"].set_draw_value(False)
         self.scale_widgets["repeat_interval"] = HScalebar(
@@ -183,7 +185,7 @@ class KeySetting(object):
             app_theme.get_pixbuf("scalebar/r_fg.png"),
             app_theme.get_pixbuf("scalebar/r_bg.png"),
             app_theme.get_pixbuf("scalebar/point.png"))
-        self.scale_widgets["repeat_interval"].set_adjustment( self.adjust_widgets["repeat_interval"])
+        self.scale_widgets["repeat_interval"].set_adjustment(self.adjust_widgets["repeat_interval"])
         #self.scale_widgets["blink_cursor"] = gtk.HScale()
         #self.scale_widgets["blink_cursor"].set_draw_value(False)
         self.scale_widgets["blink_cursor"] = HScalebar(
@@ -194,7 +196,7 @@ class KeySetting(object):
             app_theme.get_pixbuf("scalebar/r_fg.png"),
             app_theme.get_pixbuf("scalebar/r_bg.png"),
             app_theme.get_pixbuf("scalebar/point.png"))
-        self.scale_widgets["blink_cursor"].set_adjustment( self.adjust_widgets["blink_cursor"])
+        self.scale_widgets["blink_cursor"].set_adjustment(self.adjust_widgets["blink_cursor"])
         #####################################
         # Layout widgets create
         # button init
@@ -483,25 +485,21 @@ class KeySetting(object):
         self.settings.connect("changed", self.keyboard_setting_changed_cb)
         self.settings1.connect("changed", self.desktop_setting_changed_cb)
         self.settings2.connect("changed", self.touchpad_setting_changed_cb)
-        self.adjust_widgets["repeat_delay"].connect(
-            "value-changed", self.adjustment_value_changed, "delay")
+        self.scale_widgets["repeat_delay"].connect(
+            "button-release-event", self.adjustment_value_changed, "delay")
         # repeat interval
-        self.adjust_widgets["repeat_interval"].connect(
-            "value-changed", self.adjustment_value_changed, "repeat-interval")
+        self.scale_widgets["repeat_interval"].connect(
+            "button-release-event", self.adjustment_value_changed, "repeat-interval")
         self.button_widgets["repeat_test_entry"].connect("expose-event", self.repeat_entry_expose)
         # blink
-        self.adjust_widgets["blink_cursor"].connect(
-            "value-changed", self.adjustment_value_changed, "cursor-blink-time")
+        self.scale_widgets["blink_cursor"].connect(
+            "button-release-event", self.adjustment_value_changed, "cursor-blink-time")
         # touchpad disable 
         self.button_widgets["touchpad_disable"].connect("toggled", self.disable_while_typing_set)
         self.button_widgets["touchpad_disable"].connect("expose-event", self.disable_while_typing_expose)
         
         # relevant setting
-        self.alignment_widgets["mouse_setting"].connect("expose-event",
-            self.relevant_expose, self.button_widgets["mouse_setting"])
         self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")
-        self.alignment_widgets["touchpad_setting"].connect("expose-event",
-            self.relevant_expose, self.button_widgets["touchpad_setting"])
         self.button_widgets["touchpad_setting"].connect("button-press-event", self.relevant_press, "touchpad")
         ########################
         # layout widget signal
@@ -529,8 +527,6 @@ class KeySetting(object):
     
     ######################################
     def keyboard_setting_changed_cb(self, key):
-        print "keyboard setting changed:", key
-        return
         args = [self.settings, key]
         if key == 'delay':
             callback = self.settings_value_changed
@@ -543,8 +539,6 @@ class KeySetting(object):
         callback(*args)
     
     def desktop_setting_changed_cb(self, key):
-        print "setting changed:", key
-        return
         args = [self.settings1, key]
         if key == 'cursor-blink-time':
             callback = self.settings_value_changed
@@ -554,9 +548,7 @@ class KeySetting(object):
         callback(*args)
 
     def touchpad_setting_changed_cb(self, key):
-        print "setting changed:", key
-        return
-        args = [self.settings, key]
+        args = [key]
         if key == 'disable-while-typing':
             callback = self.disable_while_typing_change
         else:
@@ -590,18 +582,19 @@ class KeySetting(object):
             cr.paint()
         return True
     
-    def disable_while_typing_change(self, setting, key):
+    def disable_while_typing_change(self, key):
         ''' set left or right radio button active '''
         self.button_widgets["touchpad_disable"].set_active(
             settings.keyboard_get_disable_touchpad_while_typing())
     
-    def adjustment_value_changed(self, adjustment, key):
+    def adjustment_value_changed(self, widget, event, key):
         '''adjustment value changed, and settings set the value'''
         #print "adjustment value changed:", adjustment, key
         #return
-        if adjustment.get_data("changed-by-other-app"):
-            adjustment.set_data("changed-by-other-app", False)
+        if widget.get_data("changed-by-other-app"):
+            widget.set_data("changed-by-other-app", False)
             return
+        adjustment = widget.get_adjustment()
         value = adjustment.get_upper() - adjustment.get_value() + adjustment.get_lower()
         self.scale_set[key](value)
     
@@ -626,18 +619,6 @@ class KeySetting(object):
             context.update_layout(layout)
             context.show_layout(layout)
             return True
-    
-    def relevant_expose(self, widget, event, label):
-        '''relevant button expose'''
-        cr = widget.window.cairo_create()
-        with cairo_disable_antialias(cr):
-            x, y, w, h = label.allocation
-            # #1A70b1
-            cr.set_source_rgba(0.1, 0.43, 0.69, 1.0)
-            cr.set_line_width(1)
-            cr.move_to(x, y+h-2)
-            cr.line_to(x+w, y+h-2)
-            cr.stroke()
     
     # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):

@@ -81,7 +81,7 @@ def keyboard_set_repeat_delay(value):
     '''
     if not KEYBOARD_SETTINGS.get_boolean("repeat"):
         KEYBOARD_SETTINGS.set_boolean("repeat", True)
-    KEYBOARD_SETTINGS.set_uint("delay", (value))
+    KEYBOARD_SETTINGS.set_uint("delay", int(value))
 
 
 def keyboard_get_repeat_delay():
@@ -99,7 +99,7 @@ def keyboard_set_repeat_interval(value):
     '''
     if not KEYBOARD_SETTINGS.get_boolean("repeat"):
         KEYBOARD_SETTINGS.set_boolean("repeat", True)
-    KEYBOARD_SETTINGS.set_uint("repeat-interval", (value))
+    KEYBOARD_SETTINGS.set_uint("repeat-interval", int(value))
 
 
 def keyboard_get_repeat_interval():
@@ -177,7 +177,7 @@ def xkb_set_default_group(default_group):
     set the desktop window default-group layout
     @param default_group: the default group, an int type
     '''
-    return XKB_DESKTOP_SETTINGS.set_int("default-group", (default_group))
+    return XKB_DESKTOP_SETTINGS.set_int("default-group", int(default_group))
 
 
 def xkb_get_group_per_window():

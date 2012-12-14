@@ -99,8 +99,10 @@ class MouseSetting(object):
         self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"))
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
-        self.button_widgets["keyboard_setting"] = Label(_("Keyboard Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
-        self.button_widgets["touchpad_setting"] = Label(_("TouchPad Setting"), text_size=10, text_color=app_theme.get_color("link_text"))
+        self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
+            text_size=10, text_color=app_theme.get_color("link_text"), enable_select=False)
+        self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
+            text_size=10, text_color=app_theme.get_color("link_text"), enable_select=False)
         # container init
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
@@ -333,27 +335,23 @@ class MouseSetting(object):
         self.button_widgets["right_hand_radio"].connect("toggled", self.left_or_right_set, False)
         self.button_widgets["left_hand_radio"].connect("toggled", self.left_or_right_set, True)
         # acceleration operation
-        self.adjust_widgets["pointer_speed_accel"].connect(
-            "value-changed", self.adjustment_value_changed, "motion-acceleration")
+        self.scale_widgets["pointer_speed_accel"].connect(
+            "button-release-event", self.adjustment_value_changed, "motion-acceleration")
         # sensitivity operation
-        self.adjust_widgets["pointer_speed_sensitiv"].connect(
-            "value-changed", self.adjustment_value_changed, "motion-threshold")
+        self.scale_widgets["pointer_speed_sensitiv"].connect(
+            "button-release-event", self.adjustment_value_changed, "motion-threshold")
         # double-click operation
-        self.adjust_widgets["double_click_rate"].connect(
-            "value-changed", self.adjustment_value_changed, "double-click")
+        self.scale_widgets["double_click_rate"].connect(
+            "button-release-event", self.adjustment_value_changed, "double-click")
         self.button_widgets["double_test"].connect("button-press-event", self.double_click_test)
         self.button_widgets["double_test"].connect("expose-event", self.double_click_test_expose)
         
         # relevant setting
-        self.alignment_widgets["keyboard_setting"].connect("expose-event",
-            self.relevant_expose, self.button_widgets["keyboard_setting"])
         self.button_widgets["keyboard_setting"].connect("button-press-event", self.relevant_press, "keyboard")
-        self.alignment_widgets["touchpad_setting"].connect("expose-event",
-            self.relevant_expose, self.button_widgets["touchpad_setting"])
         self.button_widgets["touchpad_setting"].connect("button-press-event", self.relevant_press, "touchpad")
     
-    def settings_changed_cb(self, setting, key):
-        args = [setting, key]
+    def settings_changed_cb(self, key):
+        args = [self.settings, key]
         if key == 'left-handed':
             callback = self.left_or_right_setting_changed
         elif key == 'motion-acceleration':
@@ -386,11 +384,12 @@ class MouseSetting(object):
             self.button_widgets["right_hand_radio"].set_active(True)
             self.button_widgets["right_hand_radio"].set_data("changed-by-other-app", True)
     
-    def adjustment_value_changed(self, adjustment, key):
+    def adjustment_value_changed(self, widget, event, key):
         '''adjustment value changed, and settings set the value'''
-        if adjustment.get_data("changed-by-other-app"):
-            adjustment.set_data("changed-by-other-app", False)
-            return
+        #if adjustment.get_data("changed-by-other-app"):
+            #adjustment.set_data("changed-by-other-app", False)
+            #return
+        adjustment = widget.get_adjustment()
         value = adjustment.get_value()
         if key == "motion-threshold":   # motion-threshold is an int type
             new_value = value
@@ -421,18 +420,6 @@ class MouseSetting(object):
         cr.paint()
         propagate_expose(widget, event)
         return True
-    
-    def relevant_expose(self, widget, event, label):
-        '''relevant button expose'''
-        cr = widget.window.cairo_create()
-        with cairo_disable_antialias(cr):
-            x, y, w, h = label.allocation
-            # #1A70b1
-            cr.set_source_rgba(0.1, 0.43, 0.69, 1.0)
-            cr.set_line_width(1)
-            cr.move_to(x, y+h-2)
-            cr.line_to(x+w, y+h-2)
-            cr.stroke()
     
     # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):

@@ -27,6 +27,9 @@ sudo apt-get install python-xklavier
 GNOME library to manage keyboard configuration
 sudo apt-get install libgnomekbd-common
 
+Python bindings for the Gtop library
+sudo apt-get install python-gtop
+
 注意
 
 根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入deepin-desktop/schemas/
