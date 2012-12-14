@@ -470,9 +470,6 @@ class Control(BusBase):
         self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-    def is_connected(self):
-        return bool(self.dbus_method("IsConnected"))
-
     def volume_up(self):
         return self.dbus_method("VolumeUp")
 
@@ -481,6 +478,12 @@ class Control(BusBase):
 
     def get_properties(self):
         return self.dbus_method("GetProperties")
+
+    def get_connected(self):
+        if "Connected" in self.get_properties().keys():
+            return self.get_properties()["Connected"]
+        else:
+            return bool(self.dbus_method("IsConnected"))
 
     def connected_cb(self):
         self.emit("connected")
@@ -511,6 +514,10 @@ class HandsFreeGateway(BusBase):
     def get_properties(self):
         return self.dbus_method("GetProperties")
 
+    def get_state(self):
+        if "State" in self.get_properties().keys():
+            return self.get_properties()["State"]
+
     def register_agent(self, agent_path):
         return self.dbus_method("RegisterAgent", agent_path)
 
@@ -540,6 +547,34 @@ class Network(BusBase):
 
     def get_properties(self):
         return self.dbus_method("GetProperties")
+
+    def property_changed_cb(self, key, value):
+        self.emit("property-changed", key, value)
+
+class Input(BusBase):
+
+    __gsignals__  = {
+        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
+            }
+
+    def __init__(self, device_path):
+        BusBase.__init__(self, path = device_path, interface = "org.bluez.Input")
+
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertyChanged")
+
+    def connect(self):
+        return self.dbus_method("Connect")
+
+    def disconnect(self):
+        return self.dbus_method("Disconnect")
+
+    def get_properties(self):
+        return self.dbus_method("GetProperties")
+
+    def get_connected(self):
+        if "Connected" in self.get_properties().keys():
+            return self.get_properties()["Connected"]
 
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)

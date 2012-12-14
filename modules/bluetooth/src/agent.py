@@ -89,6 +89,23 @@ class Agent(dbus.service.Object):
 	def Cancel(self):
 	    print "Cancel"
 
+class HandsfreeAgent(dbus.service.Object):
+	
+	def __init__(self, path = "/org/bluez/agent", bus = None):
+	    if bus is None:
+		bus = dbus.SystemBus()    
+
+	    dbus.service.Object.__init__(self, bus, path)	
+
+	@dbus.service.method("org.bluez.HandsfreeAgent", in_signature="", out_signature="")
+	def Release(self):
+	    if self.exit_on_release:
+		mainloop.quit()
+
+	@dbus.service.method("org.bluez.HandsfreeAgent", in_signature="ou", out_signature="")
+	def NewConnection(self, fd, version):
+	    pass
+
 if __name__ == '__main__':
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 
