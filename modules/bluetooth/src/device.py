@@ -206,6 +206,126 @@ class Audio(BusBase):
     def get_properties(self):
         return self.dbus_method("GetProperties")
 
+    def get_state(self):
+        if "State" in self.get_properties().keys():
+            return self.get_properties()["State"]
+
+    def property_changed_cb(self, key, value):
+        self.emit("property-changed", key, value)
+
+class Headset(BusBase):
+
+    __gsignals__  = {
+        "answer-requested":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
+            }
+
+    def __init__(self, device_path):
+        BusBase.__init__(self, path = device_path, interface = "org.bluez.Headset")
+
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertyChanged")
+
+        self.bus.add_signal_receiver(self.answer_requested_cb, dbus_interface = self.object_interface,
+                                     path = self.object_path, signal_name = "AnswerRequested")
+
+    def connect(self):
+        return self.dbus_method("Connect")
+
+    def disconnect(self):
+        return self.dbus_method("Disconnect")
+
+    def is_connected(self):
+        return self.dbus_method("IsConnected")
+
+    def indicate_call(self):
+        return self.dbus_method("IndicateCall")
+
+    def cancel_call(self):
+        return self.dbus_method("CancelCall")
+
+    def play(self):
+        return self.dbus_method("Play")
+
+    def stop(self):
+        return self.dbus_method("Stop")
+
+    def get_properties(self):
+        return self.dbus_method("GetProperties")
+
+    def set_property(self, key, value):
+        return self.dbus_method("SetProperty", key, value)
+
+    def get_state(self):
+        if "State" in self.get_properties().keys():
+            return self.get_properties()["State"]
+
+    def get_connected(self):
+        if "Connected" in self.get_properties().keys():
+            return self.get_properties()["Connected"]
+
+    def get_playing(self):
+        if "Playing" in self.get_properties().keys():
+            return self.get_properties()["Playing"]
+        else:
+            return self.dbus_method("IsPlaying")
+
+    def get_speaker_gain(self):
+        if "SpeakerGain" in self.get_properties().keys():
+            return self.get_properties()["SpeakerGain"]
+        else:
+            return self.dbus_method("GetSpeakerGain")
+
+    def set_speaker_gain(self, gain):
+        self.set_property("SpeakerGain", gain)
+
+    def get_microphone_gain(self):
+        if "MicrophoneGain" in self.get_properties().keys():
+            return self.get_properties()["MicrophoneGain"]
+        else:
+            return self.dbus_method("GetMicrophoneGain")
+
+    def set_microphone_gain(self, gain):
+        self.set_property("MicrophoneGain", gain)
+
+    def property_changed_cb(self, key, value):
+        self.emit("property-changed", key, value)
+
+    def answer_requested_cb(self, key, value):
+        self.emit("answer-requested", key, value)
+
+class AudioSink(BusBase):
+
+    __gsignals__  = {
+        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
+            }
+
+    def __init__(self, device_path):
+        BusBase.__init__(self, path = device_path, interface = "org.bluez.AudioSink")
+
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertyChanged")
+    def connect(self):
+        return self.dbus_method("Connect")
+
+    def disconnect(self):
+        return self.dbus_method("Disconnect")
+
+    def get_properties(self):
+        return self.dbus_method("GetProperties")
+
+    def get_state(self):
+        if "State" in self.get_properties().keys():
+            return self.get_properties()["State"]
+
+    def get_connected(self):
+        if "Connected" in self.get_properties().keys():
+            return self.get_properties()["Connected"]
+
+    def get_playing(self):
+        if "Playing" in self.get_properties().keys():
+            return self.get_properties()["Playing"]
+
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
 
@@ -231,6 +351,104 @@ class AudioSource(BusBase):
 
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
+
+class HeadsetFreeGateway(BusBase):
+
+    __gsignals__  = {
+        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
+        "ring":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "call-terminated":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        "call-started":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        "call-ended":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            }
+
+    def __init__(self, device_path):
+        BusBase.__init__(self, path = device_path, interface = "org.bluez.HeadsetGateway")
+
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertyChanged")
+
+        self.bus.add_signal_receiver(self.ring_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "Ring")
+
+        self.bus.add_signal_receiver(self.call_terminated_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "CallTerminated")
+
+        self.bus.add_signal_receiver(self.call_started_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "CallStarted")
+
+        self.bus.add_signal_receiver(self.call_ended_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "CallEnded")
+
+    def connect(self):
+        return self.dbus_method("Connect")
+
+    def disconnect(self):
+        return self.dbus_method("Disconnect")
+
+    def answer_call(self):
+        return self.dbus_method("AnswerCall")
+
+    def terminate_call(self):
+        return self.dbus_method("TerminateCall")
+
+    def call(self, number):
+        return self.dbus_method("Call", number)
+
+    def get_operator_name(self):
+        return self.dbus_method("GetOperatorName")
+
+    def send_dtmf(self, digits):
+        return self.dbus_method("SendDTMF", digits)
+
+    def get_subscriber_number(self):
+        return self.dbus_method("GetSubscriberNumber")
+    
+    def get_properties(self):
+        return self.dbus_method("GetProperties")
+
+    def get_connected(self):
+        if "Connected" in self.get_properties().keys():
+            return self.get_properties()["Connected"]
+    
+    def get_registration_status(self):
+        if "RegistrationStatus" in self.get_properties().keys():
+            return self.get_properties()["RegistrationStatus"]
+    
+    def get_signal_strength(self):
+        if "SignalStrength" in self.get_properties().keys():
+            return self.get_properties()["SignalStrength"]
+    
+    def get_roaming_status(self):
+        if "RoamingStatus" in self.get_properties().keys():
+            return self.get_properties()["RoamingStatus"]
+    
+    def get_battery_charge(self):
+        if "BatteryCharge" in self.get_properties().keys():
+            return self.get_properties()["BatteryCharge"]
+    
+    def get_speaker_gain(self):
+        if "Connected" in self.get_properties().keys():
+            return self.get_properties()["Connected"]
+    
+    def get_microphone_gain(self):
+        if "MicrophoneGain" in self.get_properties().keys():
+            return self.get_properties()["MicrophoneGain"]
+    
+    def property_changed_cb(self, key, value):
+        self.emit("property-changed", key, value)
+
+    def ring_cb(self, number):
+        self.emit("ring", number)
+
+    def call_terminated_cb(self):
+        self.emit("call-terminated")
+
+    def call_started_cb(self):
+        self.emit("call-started")
+
+    def call_ended_cb(self):
+        self.emit("call-ended")
 
 class Control(BusBase):
 
