@@ -9,10 +9,15 @@ from dtk.ui.draw import (draw_pixbuf, draw_text,
 import gtk
 import pango
 
-def render_background( cr, rect):
-    background_color = [(0,["#ffffff", 1.0]),
-                        (1,["#ffffff", 1.0])]
-    draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
+def render_background(cr, rect, is_select=False):
+    if is_select:
+        background_color = [(0,["#91aadd", 1.0]),
+                            (1,["#91aadd", 1.0])]
+    else:
+        background_color = [(0,["#ffffff", 1.0]),
+                            (1,["#ffffff", 1.0])]
+
+    draw_vlinear(cr, rect.x ,rect.y, rect.width , rect.height, background_color)
 
 class SessionMain(gtk.VBox):
     def __init__(self):
@@ -46,7 +51,7 @@ class SessionItem(TreeItem):
         self.state = "Active"
 
     def render_app(self, cr, rect):
-        render_background(cr, rect)
+        render_background(cr, rect, self.is_select)
         CHECK_LEFT_PADDING = 5
         CHECK_RIGHT_PADDING = 5
         
@@ -64,13 +69,14 @@ class SessionItem(TreeItem):
                 alignment = pango.ALIGN_LEFT)
 
     def render_company(self, cr, rect):
-        render_background(cr, rect)
+
+        render_background(cr, rect, self.is_select)
         (text_width, text_height) = get_content_size(self.company_name)
         draw_text(cr, self.company_name, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
         
     def render_state(self, cr, rect):
-        render_background(cr, rect)
+        render_background(cr, rect, self.is_select)
         (text_width, text_height) = get_content_size(self.state)
         draw_text(cr, self.state, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
