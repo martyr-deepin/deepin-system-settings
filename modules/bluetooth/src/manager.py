@@ -50,18 +50,22 @@ class Manager(BusBase):
     def get_default_adapter(self):
         return str(self.dbus_method("DefaultAdapter"))
 
-    def find_adapter(self, dev_id):
-        return str(self.dbus_method("FindAdapter", dev_id))
+    def find_adapter(self, pattern):
+        return str(self.dbus_method("FindAdapter", pattern))
  
     def get_properties(self):
         return dict(self.dbus_method("GetProperties"))
 
-    def list_adapters(self):
-        adapters = self.dbus_method("ListAdapters")
-        if adapters:
-            return map(lambda x:str(x), adapters)
-        else:
-            return []
+    def get_adapters(self):
+        adapters = []
+        if "Adapters" in self.get_properties().keys():
+            adapters = self.get_properties()["Adapters"]
+            if adapters:
+                adapters = map(lambda x:str(x), adapters)
+        else:        
+            adapters = self.dbus_method("ListAdapters")
+
+        return adapters    
 
     def adapter_added_cb(self, path):
         self.emit("adapter-added", path)
@@ -79,3 +83,6 @@ if __name__ == "__main__":
     manager = Manager()
     print manager.get_properties()
     print manager.list_adapters()
+    # from adapter import Adapter
+    # adapter = Adapter(manager.get_default_adapter())
+    # print manager.find_adapter(adapter.get_address())

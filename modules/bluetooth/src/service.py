@@ -37,6 +37,10 @@ class Service(BusBase):
     def get_properties(self):
         return self.dbus_method("GetProperties")
 
+    def get_uuid(self):
+        if "UUID" in self.get_properties().keys():
+            return self.get_properties()["UUID"]
+
     def register_characteristics_watcher(self, watcher_path):
         return self.dbus_method("RegisterCharacteristicsWatcher", watcher_path)
 
@@ -52,4 +56,4 @@ if __name__ == "__main__":
     device = Device(adapter.get_devices()[0])
     service = Service(device.get_services()[0])
 
-    print service
+    print "uuid:\n    %s" % service.get_uuid()

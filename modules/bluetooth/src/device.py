@@ -28,7 +28,9 @@ class Device(BusBase):
 
     __gsignals__  = {
         "disconnect-requested":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
+        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
+        "node-created":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, )),
+        "node-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, ))
             }
 
     def __init__(self, device_path):
@@ -40,14 +42,33 @@ class Device(BusBase):
         self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertyChanged")
 
+        self.bus.add_signal_receiver(self.node_created_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "NodeCreated")
+
+        self.bus.add_signal_receiver(self.node_removed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "NodeRemoved")
+
     def disconnect(self):
         return self.dbus_method("Disconnect")
 
-    def discovery_services(self, string):
-        return self.dbus_method("DiscoveryServices", string)
+    def discovery_services(self, pattern):
+        return self.dbus_method("DiscoveryServices", pattern)
 
     def cancel_discovery(self):
         return self.dbus_method("CancelDiscovery")
+
+    def list_nodes(self):
+        nodes = self.dbus_method("ListNodes")
+        if nodes:
+            nodes = map(lambda x:str(x), nodes)
+
+        return nodes    
+
+    def create_node(self, uuid):
+        return self.dbus_method("CreateNode", uuid)
+
+    def remove_node(self, node_path):
+        return self.dbus_method("RemoveNode", node_path)
 
     ###Props
     def get_properties(self):
@@ -60,6 +81,22 @@ class Device(BusBase):
         if "Name" in self.get_properties().keys():
             return self.get_properties()["Name"]
 
+    def get_vendor(self):
+        if "Vendor" in self.get_properties().keys():
+            return self.get_properties()["Vendor"]
+
+    def get_product(self):
+        if "Product" in self.get_properties().keys():
+            return self.get_properties()["Product"]
+
+    def get_version(self):
+        if "Version" in self.get_properties().keys():
+            return self.get_properties()["Version"]
+
+    def get_legacy_pairing(self):
+        if "LegacyPairing" in self.get_properties().keys():
+            return self.get_properties()["LegacyPairing"]
+
     def get_alias(self):
         if "Alias" in self.get_properties().keys():
             return self.get_properties()["Alias"]
@@ -70,6 +107,15 @@ class Device(BusBase):
     def get_icon(self):
         if "Icon" in self.get_properties().keys():
             return self.get_properties()["Icon"]
+
+    def get_nodes(self):
+        nodes = []
+        if "Nodes" in self.get_properties().keys():
+            nodes =  self.get_properties()["Nodes"]
+            if nodes:
+                nodes = map(lambda x:str(x), nodes)
+
+        return nodes        
 
     def get_paired(self):
         if "Paired" in self.get_properties().keys():
@@ -133,6 +179,11 @@ class Device(BusBase):
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
 
+    def node_created_cb(self, node_path):
+        self.emit("node-created", node_path)
+
+    def node_removed_cb(self, node_path):
+        self.emit("node-removed", node_path)
 
 class Audio(BusBase):
 

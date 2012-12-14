@@ -52,14 +52,14 @@ class Adapter(BusBase):
         self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-    def create_device(self, string):
-        return str(self.dbus_method("CreateDevice"))
+    def create_device(self, address):
+        return str(self.dbus_method("CreateDevice", address))
 
-    def cancel_device_creation(self, string):
-        return self.dbus_method("CancelDeviceCreation")
+    def cancel_device_creation(self, address):
+        return self.dbus_method("CancelDeviceCreation", address)
     
-    def create_paired_device(self, string1, string2, string3):
-        return str(self.dbus_method("CreatePairedDevice", string1, string2, string3))
+    def create_paired_device(self, address, agent_path, capability):
+        return str(self.dbus_method("CreatePairedDevice", address, agent_path, capability))
     
     def find_device(self, address):
         return str(self.dbus_method("FindDevice", address))
@@ -82,13 +82,15 @@ class Adapter(BusBase):
         return devices    
 
     def start_discovery(self):
+        if not self.get_discoverable():
+            self.set_discoverable(True)
         self.dbus_method("StartDiscovery")
 
     def stop_discovery(self):
         self.dbus_method("StopDiscovery")
 
-    def register_agent(self, string1, string2):
-        return self.dbus_method("RegisterAgent", string1, string2)
+    def register_agent(self, agent_path, capability):
+        return self.dbus_method("RegisterAgent", agent_path, capability)
     
     def unregister_agent(self, agent_path):
         return self.dbus_method("UnRegisterAgent")
@@ -191,11 +193,11 @@ class Adapter(BusBase):
     def device_created_cb(self, dev_path):
         self.emit("device-created", dev_path)
 
-    def device_disappeared_cb(self, dev_string):
-        self.emit("device-disappeared", dev_string)
+    def device_disappeared_cb(self, address):
+        self.emit("device-disappeared", address)
 
-    def device_found_cb(self, dev_string, dev_dict):
-        self.emti("device-found", dev_string, dev_dict)
+    def device_found_cb(self, dev_string, values):
+        self.emti("device-found", dev_string, values)
 
     def device_removed_cb(self, dev_path):
         self.emit("device-removed", dev_path)
@@ -208,11 +210,11 @@ class Service(BusBase):
     def __init__(self, adapter_path):
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.Service")
 
-    def add_record(self, record_str):
-        return int(self.dbus_method("AddRecord"), record_str)
+    def add_record(self, record_xml):
+        return int(self.dbus_method("AddRecord"), record_xml)
 
-    def remove_record(self, record_int):
-        return self.dbus_method("RemoveRecord", record_int)
+    def remove_record(self, record_id):
+        return self.dbus_method("RemoveRecord", record_id)
 
     def request_authorization(self, record_str, record_int):
         return self.dbus_method("RequestAuthorization", record_str, record_int)
@@ -220,8 +222,8 @@ class Service(BusBase):
     def cancel_authorization(self):
         return self.dbus_method("CancelAuthorization")
 
-    def update_record(self, record_int, record_str):
-        return self.dbus_method("UpdateRecord", record_int, record_str)
+    def update_record(self, record_id, record_xml):
+        return self.dbus_method("UpdateRecord", record_id, record_xml)
 
 class Media(BusBase):
 
@@ -317,10 +319,16 @@ class SimAccess(BusBase):
         else:
             return False
 
-if __name__ == "__main__":
+def test_adapter():
     from manager import Manager
     manager = Manager()
     adapter = Adapter(manager.get_default_adapter())
+
+    from device import Device
+    device_address = Device(adapter.get_devices()[0]).get_address()
+    print "find device:\n    %s" % adapter.find_device(device_address)
+    print "remove device:\n    %s" % adapter.remove_device(adapter.find_device(device_address))
+    # print "create device:\n    %s" % adapter.create_device(device_address)
 
     print "get devices:\n    %s" % adapter.get_devices()
 
@@ -330,7 +338,7 @@ if __name__ == "__main__":
     adapter.set_powered(True)
     print "get powered:\n    %s" % adapter.get_powered()
 
-    adapter.set_discoverable(False)
+    adapter.set_discoverable(True)
     print "get discoverable:\n    %s" % adapter.get_discoverable()
 
     print "get discovering:\n    %s" % adapter.get_discovering()
@@ -338,7 +346,7 @@ if __name__ == "__main__":
     adapter.set_discoverable_timeout(120)
     print "get discoverable_timeout:\n    %s" % adapter.get_discoverable_timeout()
 
-    adapter.set_pairable(False)
+    adapter.set_pairable(True)
     print "get pairable:\n    %s" % adapter.get_pairable()
 
     adapter.set_pairable_timeout(180)
@@ -347,4 +355,13 @@ if __name__ == "__main__":
     print "get class:\n    %s" % adapter.get_class()
     print "get address:\n    %s" % adapter.get_address()
     print "get uuids:\n    %s" % adapter.get_uuids()
+
+
+
+def test_service():
+    pass
     
+if __name__ == "__main__":
+    test_adapter()
+
+    # test_service()
