@@ -230,14 +230,14 @@ class Media(BusBase):
     def __init__(self, adapter_path):
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.Media")
             
-    def register_end_point(self,string1, dict1):
-        return self.dbus_method("RegisterEndPoint", string1, dict1)
+    def register_end_point(self, endpoint, properties):
+        return self.dbus_method("RegisterEndPoint", endpoint, properties)
 
-    def unregister_end_point(self, end_point_path):
-        return self.dbus_method("UnregisterEndPoint", end_point_path)
+    def unregister_end_point(self, endpoint):
+        return self.dbus_method("UnregisterEndPoint", endpoint)
 
-    def register_player(self, string1, dict1, dict2):
-        return self.dbus_method("RegisterPlayer", string1, dict1, dict2)
+    def register_player(self, player, properties, metadata):
+        return self.dbus_method("RegisterPlayer", player, properties, metadata)
 
     def unregister_player(self, player_path):
         return self.dbus_method("UnregisterPlayer", player_path)
