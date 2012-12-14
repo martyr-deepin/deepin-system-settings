@@ -143,7 +143,11 @@ def get_volume(dev):
     @param dev: a device path
     @return: a int type
     '''
-    return max(PA_DEVICE[dev].get_volume())
+    volumes = PA_DEVICE[dev].get_volume()
+    if volumes:
+        return max(volumes)
+    else:
+        return 0
 
 def set_volume(dev, volume):
     '''

@@ -28,8 +28,7 @@ from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
-#from dtk.ui.new_treeview import TreeView
-from dtk.ui.utils import cairo_disable_antialias, get_parent_dir
+from dtk.ui.utils import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
@@ -467,12 +466,12 @@ class SoundSetting(object):
         self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")
         self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
 
-        self.scale_widgets["speaker"].connect("format-value", lambda w, v: "%d%%" % (v))
-        self.scale_widgets["microphone"].connect("format-value", lambda w, v: "%d%%" % (v))
+        #self.scale_widgets["speaker"].connect("format-value", lambda w, v: "%d%%" % (v))
+        #self.scale_widgets["microphone"].connect("format-value", lambda w, v: "%d%%" % (v))
         
-        self.adjust_widgets["balance"].connect("value-changed", self.balance_value_changed)
-        self.adjust_widgets["speaker"].connect("value-changed", self.speaker_value_changed)
-        self.adjust_widgets["microphone"].connect("value-changed", self.microphone_value_changed)
+        self.scale_widgets["balance"].connect("button-release-event", self.balance_value_changed)
+        self.scale_widgets["speaker"].connect("button-release-event", self.speaker_value_changed)
+        self.scale_widgets["microphone"].connect("button-release-event", self.microphone_value_changed)
 
         self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
         self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
@@ -584,11 +583,8 @@ class SoundSetting(object):
         else:               # is balance
             settings.set_volume(sink, settings.get_volume(sink))
     
-    def balance_value_changed(self, adjustment):
+    def balance_value_changed(self, widget, event):
         ''' set balance value'''
-        if adjustment.get_data("changed-by-other-app"):
-            adjustment.set_data("changed-by-other-app", False)
-            return
         try:
             SettingVolumeThread(self, self.balance_value_changed_thread).start()
         except:
@@ -612,11 +608,8 @@ class SoundSetting(object):
         if not self.button_widgets["speaker"].get_active():
             self.button_widgets["speaker"].set_active(True)
 
-    def speaker_value_changed(self, adjustment):
+    def speaker_value_changed(self, widget, event):
         '''set output volume'''
-        if adjustment.get_data("changed-by-other-app"):
-            adjustment.set_data("changed-by-other-app", False)
-            return
         try:
             SettingVolumeThread(self, self.speaker_value_changed_thread).start()
         except:
@@ -632,11 +625,8 @@ class SoundSetting(object):
         if not self.button_widgets["microphone"].get_active():
             self.button_widgets["microphone"].set_active(True)
         
-    def microphone_value_changed(self, adjustment):
+    def microphone_value_changed(self, widget, event):
         ''' set input volume'''
-        if adjustment.get_data("changed-by-other-app"):
-            adjustment.set_data("changed-by-other-app", False)
-            return
         try:
             SettingVolumeThread(self, self.microphone_value_changed_thread).start()
         except:
@@ -686,7 +676,6 @@ class SoundSetting(object):
         if settings.PA_CORE:
             settings.PA_CORE.set_fallback_source(item.obj_path)
         
-    # TODO 选择声卡，设置声卡ActiveProfile
     def card_treeview_clicked(self, tree_view, item, row, *args):
         print "treeview clicked", item.obj_path, item.content, row
     
