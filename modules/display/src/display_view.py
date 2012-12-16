@@ -49,15 +49,16 @@ from display_manager import DisplayManager
 class MonitorResizableBox(ResizableBox):
     def __init__(self):
         ResizableBox.__init__(self)
-        self.screen_width = 200
+        self.output_width = 230
+        self.output_height = 170
 
     def expose_override(self, cr, rect):
         x, y = rect.x, rect.y
-        x = (self.width - self.screen_width) / 2
+        x = (self.width - self.output_width) / 2
         y += 10
         
         with cairo_state(cr):
-            cr.rectangle(x, y, self.screen_width, self.height - y * 3)
+            cr.rectangle(x, y, self.output_width, self.output_height)
             cr.stroke()
 
 class DisplayView(gtk.VBox):
@@ -72,6 +73,8 @@ class DisplayView(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.display_manager = DisplayManager()
+        self.__xrandr_settings = self.display_manager.get_xrandr_settings()
+        self.__xrandr_settings.connect("changed", self.__xrandr_changed)
 
         self.padding_x = 10
         self.padding_y = 5
@@ -80,6 +83,7 @@ class DisplayView(gtk.VBox):
         self.resize_height = 200
         self.monitor_items = []
         self.__output_names = []
+        self.__current_output_name = None
         self.__setup_monitor_items()
         self.sizes_items = []
         self.monitor_combo = None
@@ -129,7 +133,7 @@ class DisplayView(gtk.VBox):
         self.monitor_box = gtk.HBox(spacing = self.box_spacing)
         self.monitor_label = self.__setup_label("显示器")
         self.monitor_combo = self.__setup_combo(self.monitor_items, 350)
-        self.monitor_combo.set_select_index(0)
+        self.monitor_combo.set_select_index(self.display_manager.get_primary_output_name_index(self.monitor_items))
         self.monitor_combo.connect("item-selected", self.__combo_item_selected, "monitor_combo")
         self.__widget_pack_start(self.monitor_box, 
             [self.monitor_label, 
@@ -151,11 +155,12 @@ class DisplayView(gtk.VBox):
         self.sizes_box = gtk.HBox(spacing = self.box_spacing)
         self.sizes_label = self.__setup_label("分辨率")
         self.sizes_combo = self.__setup_combo(self.sizes_items, 160)
-        self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.sizes_items))
+        self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.__current_output_name, 
+                                                                                     self.sizes_items))
         self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
         self.rotation_label = self.__setup_label("方向")
         self.rotation_combo = self.__setup_combo(self.rotation_items)
-        self.rotation_combo.set_select_index(self.display_manager.get_screen_rotation_index())
+        self.rotation_combo.set_select_index(self.display_manager.get_screen_rotation_index(self.__current_output_name))
         self.rotation_combo.connect("item-selected", self.__combo_item_selected, "rotation_combo")
         self.__widget_pack_start(self.sizes_box, 
             [self.sizes_label, 
@@ -259,25 +264,32 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.left_align)
         self.pack_start(self.scrolled_window)
 
+    def __xrandr_changed(self, key):
+        if key != "output-names":
+            return
+
+        self.__setup_monitor_items()
+        self.monitor_combo.set_items(items = self.monitor_items, max_width = 350)
+
     def __set_brightness(self, widget, event):
-        self.display_manager.set_screen_brightness(self.brightness_adjust.get_value() / 100)
+        self.display_manager.set_screen_brightness(self.monitor_combo.items[self.monitor_combo.select_index][0], 
+                                                   self.brightness_adjust.get_value() / 100)
     
     def __setup_monitor_items(self):
         self.__output_names = self.display_manager.get_output_names()
         i = 0
 
+        self.monitor_items = []
         while (i < len(self.__output_names)):
             self.monitor_items.append((self.__output_names[i], i))
             i += 1
 
     def __setup_sizes_items(self):
-        output_name = self.__output_names[0]
+        if self.__current_output_name == None:
+            self.__current_output_name = self.display_manager.get_primary_output_name()
         i = 0
 
-        if not self.monitor_combo == None:
-            output_name = self.monitor_combo.items[self.monitor_combo.select_index]
-
-        screen_sizes = self.display_manager.get_screen_sizes(output_name)
+        screen_sizes = self.display_manager.get_screen_sizes(self.__current_output_name)
         self.size_items = []
         while i < len(screen_sizes):
             self.sizes_items.append((screen_sizes[i], i))
@@ -285,9 +297,8 @@ class DisplayView(gtk.VBox):
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "monitor_combo":
-            self.display_manager.set_current_screen(item_value)
+            self.__current_output_name = self.monitor_combo.items[self.monitor_combo.select_index][0]
             self.__setup_sizes_items()
-            self.__setup_rots_items()
             return
 
         if object == "sizes_combo":
