@@ -30,6 +30,12 @@ sudo apt-get install libgnomekbd-common
 Python bindings for the Gtop library
 sudo apt-get install python-gtop
 
+Python network
+sudo apt-get install modemmanager, glib-networking, python-gudev,python-keyring ,network-manager, network-manager-pptp 
+network-manager-l2tp 安装参考https://launchpad.net/~seriy-pr/+archive/network-manager-l2tp
+sudo easy_install pytz
+
+
 注意
 
 根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入deepin-desktop/schemas/

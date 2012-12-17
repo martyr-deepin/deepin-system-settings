@@ -151,7 +151,7 @@ class NMConnection(gobject.GObject):
 
                         ###psk    
                     elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
-                        if not info_dict["802-11-wireless-secrets"]["psk"]:
+                        if not info_dict["802-11-wireless-security"]["psk"]:
                             return False
 
                     elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
