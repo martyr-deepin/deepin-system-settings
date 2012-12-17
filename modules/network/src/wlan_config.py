@@ -34,6 +34,7 @@ import gtk
 
 #from nmlib.nm_utils import TypeConvert
 from shared_widget import IPV4Conf, IPV6Conf
+from nmlib.nm_remote_connection import NMRemoteConnection
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -105,7 +106,9 @@ class WirelessSetting(gtk.HBox):
             connection_associate += new_connection_list
         connections = connection_associate + connect_not_assocaite
 
-        self.wireless_setting = [Wireless(con) for con in connections]
+        self.connections = connections
+
+        self.wireless_setting = [Wireless(con, self.set_button) for con in connections]
         self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in connections]
         self.ipv6_setting = [IPV6Conf(con, self.set_button) for con in connections]
         self.security_setting = [Security(con, self.set_button) for con in connections]
@@ -142,13 +145,43 @@ class WirelessSetting(gtk.HBox):
         self.init_tab_box()
 
     def save_changes(self, widget):
-        self.wireless.save_change()
+        connection = self.ipv4.connection
+        #self.wireless.save_change()
         #self.ipv4.save_changes()
         #self.ipv6.save_changes()
         #self.security.save_setting()
         #wireless_device = nmclient.get_wireless_devices()[0]
-        self.change_crumb()
-        self.slide_back() 
+        if widget.label == "save":
+            self.wireless.wireless.adapt_wireless_commit()
+            if connection.check_setting_finish():
+                this_index = self.connections.index(connection)
+                if isinstance(connection, NMRemoteConnection):
+                    connection.update()
+                else:
+                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                    index = self.sidebar.new_connection_list.index(connection)
+                    self.sidebar.new_connection_list.pop(index)
+                    self.init(None, self.sidebar.new_connection_list)
+
+                    # reset index
+                    con = self.sidebar.connection_tree.visible_items[this_index]
+                    self.sidebar.connection_tree.select_items([con])
+                self.set_button("apply", True)
+            else:
+                print "not complete"
+
+        else:
+            wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+            device_wifi = cache.get_spec_object(wireless_device.object_path)
+            ap = device_wifi.get_ap_by_ssid(self.ssid)
+
+            device_wifi.emit("try-ssid-begin", self.ssid)
+            # Activate
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                       wireless_device.object_path,
+                                       ap.object_path)
+            self.change_crumb()
+            self.slide_back() 
         
     def set_button(self, name, state):
         if name == "save":
@@ -305,22 +338,15 @@ class Security(gtk.VBox):
         self.auth_combo = ComboBox([("Open System", "open"),
                                     ("Shared Key", "shared")], max_width=222)
 
+        ## Create table
+        self.table = gtk.Table(5, 4, True)
+        self.reset()
         self.security_combo.connect("item-selected", self.change_encry_type)
         self.key_entry.entry.connect("changed", self.save_wep_pwd)
         self.password_entry.entry.connect("changed", self.save_wpa_pwd)
         self.wep_index_spin.connect("value-changed", self.wep_index_spin_cb)
         self.auth_combo.connect("item-selected", self.save_auth_cb)
-        ## Create table
-        self.table = gtk.Table(5, 4, True)
-        keys = [None, "none", "none","wpa-psk"]
-        
-        self.key_mgmt = self.setting.key_mgmt
-        if self.key_mgmt == "none":
-            key_type = self.setting.wep_key_type
-            self.security_combo.set_select_index(key_type)
-        else:
-            self.security_combo.set_select_index(keys.index(self.key_mgmt))
-        self.security_combo.emit("item-selected", None, 0, 0)
+        #self.security_combo.emit("item-selected", None, 0, 0)
             
         #self.reset(True)
 
@@ -337,39 +363,21 @@ class Security(gtk.VBox):
 
         self.add(align)
 
-    def change_encry_type(self, widget, content, value, index):
-        self.setting.key_mgmt = value
-        # FIXME Maybe needed
-        self.setting.adapt_wireless_security_commit()
-        if value == "none":
-            self.setting.wep_key_type = index
-        self.set_button("save", False)
-        self.reset()
-        
-    def save_wpa_pwd(self, widget, content):
-        if self.setting.verify_wpa_psk(content):
-            self.setting.psk = content
-            check_settings(self.connection, self.set_button)
-        else:
-            self.set_button("save", False)
-            print "invalid"
-
-    def save_wep_pwd(self, widget, content):
-        active = self.setting.wep_tx_keyidx
-        if self.setting.verify_wep_key(content, active):
-            self.setting.set_wep_key(active, content)
-            check_settings(self.connection, self.set_button)
-            print "valid"
-        else:
-            self.set_button("save", False)
-            print "invalid"
-
     def reset(self):
         ## Add security
         container_remove_all(self.table)
         self.table.attach(self.security_label, 0, 1, 0, 1)
         self.table.attach(self.security_combo, 1, 4, 0, 1)
-
+        
+        keys = [None, "none", "none","wpa-psk"]
+        
+        self.key_mgmt = self.setting.key_mgmt
+        if self.key_mgmt == "none":
+            key_type = self.setting.wep_key_type
+            self.security_combo.set_select_index(key_type)
+        else:
+            self.security_combo.set_select_index(keys.index(self.key_mgmt))
+        
         if not self.security_combo.get_current_item()[1] == None: 
             try:
                 (setting_name, method) = self.connection.guess_secret_info() 
@@ -415,10 +423,37 @@ class Security(gtk.VBox):
             self.auth_combo.set_select_index(["open", "shared"].index(auth))
 
         self.table.show_all()
+    def change_encry_type(self, widget, content, value, index):
+        self.setting.key_mgmt = value
+        # FIXME Maybe needed
+        self.setting.adapt_wireless_security_commit()
+        if value == "none":
+            self.setting.wep_key_type = index
+        self.set_button("save", False)
+        self.reset()
+    def save_wpa_pwd(self, widget, content):
+        if self.setting.verify_wpa_psk(content):
+            self.setting.psk = content
+            check_settings(self.connection, self.set_button)
+        else:
+            self.set_button("save", False)
+            print "invalid"
+
+    def save_wep_pwd(self, widget, content):
+        active = self.setting.wep_tx_keyidx
+        if self.setting.verify_wep_key(content, active):
+            self.setting.set_wep_key(active, content)
+            check_settings(self.connection, self.set_button)
+
+            print "wep_valid"
+        else:
+            self.set_button("save", False)
+            print "invalid"
+
     
     def show_key_check_button_cb(self, widget):
-        index = self.security_combo.get_current_item()[1]
-        entry = [self.password_entry, self.key_entry][index is not 3]
+        name = self.security_combo.get_current_item()[1]
+        entry = [self.password_entry, self.key_entry][name=="none"]
         if widget.get_active():
             entry.show_password(True)
         else:
@@ -482,23 +517,23 @@ class Security(gtk.VBox):
 
 class Wireless(gtk.VBox):
 
-    def __init__(self, connection):
+    def __init__(self, connection, set_button_cb):
         gtk.VBox.__init__(self)
         self.connection = connection 
+        self.set_button = set_button_cb
         self.wireless = self.connection.get_setting("802-11-wireless")
         ### UI
         self.ssid_label = Label("SSID:")
         self.ssid_entry = InputEntry()
 
         self.mode_label = Label("Mode:")
-        self.mode_combo = ComboBox([("Infrastructure",0),( "Ad-hoc", 1)], max_width=170)
+        self.mode_combo = ComboBox([("Infrastructure","infrastructure"),( "Ad-hoc", "adhoc")], max_width=170)
         
         # TODO need to put this section to personal wifi
         self.band_label = Label("Band:")
-        self.band_combo = ComboBox([("Automatic", 0),
-                                    ("a (5 GHZ)", 1),
-                                    ("b/g (2.4)", 2)])
-
+        self.band_combo = ComboBox([("Automatic", None),
+                                    ("a (5 GHZ)", "a"),
+                                    ("b/g (2.4)", "bg")])
         self.channel_label = Label("Channel:")
         self.channel_spin = SpinBox(0, 0, 1500, 1, 55)
         # BSSID
@@ -511,7 +546,6 @@ class Wireless(gtk.VBox):
         self.mtu = Label("MTU:")
         self.mtu_spin = SpinBox(0, 0, 1500, 1, 55)
         #self.mode_combo.connect("item-selected", self.mode_combo_select)
-
         #self.init_table(self.mode_combo.get_current_item()[1]) 
 
         self.table = gtk.Table(8, 2, True)
@@ -530,39 +564,55 @@ class Wireless(gtk.VBox):
         self.clone_entry.set_size(222, 22)
 
         self.reset()
-
         self.mode_combo.connect("item-selected", self.mode_combo_selected)
+        self.band_combo.connect("item-selected", self.band_combo_selected)
+        self.mtu_spin.connect("value-changed", self.spin_value_changed, "mtu")
+        self.channel_spin.connect("value-changed", self.spin_value_changed, "channel")
+        self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
+        self.bssid_entry.entry.connect("changed", self.entry_changed, "bssid")
+        self.mac_entry.entry.connect("changed", self.entry_changed, "mac_address")
+        self.clone_entry.entry.connect("changed", self.entry_changed, "cloned_mac_address")
+
+
+    def spin_value_changed(self, widget, value, types):
+        setattr(self.wireless, types, value)
+
+    def entry_changed(self, widget, content, types):
+        if types.endswith("ssid"):
+            setattr(self.wireless, types, content)
+        else:
+            from nmlib.nm_utils import TypeConvert
+            if TypeConvert.is_valid_mac_address(content):
+                setattr(self.ethernet, types, content)
+                check_settings(self.connection, self.set_button)
+            else:
+                self.set_button("save", False)
+
+    def band_combo_selected(self, widget, content, value, index):
+        self.wirless.band = value
 
 
     def mode_combo_selected(self, widget, content, value, index):
-        pass
-
+        self.wireless.mode = value
+        # FIXME got some problem when adapt wireless commit
+        #self.wireless.adapt_wireless_commit()
+        self.reset_table()
 
     def reset_table(self):
         container_remove_all(self.table)
-        mode = self.band_combo.get_current_item()[1]
+        mode = self.mode_combo.get_current_item()[1]
 
         self.table.attach(self.ssid_label, 0, 1, 0, 1)
         self.table.attach(self.ssid_entry, 1, 2, 0, 1)
         # Mode
         self.table.attach(self.mode_label, 0, 1, 1, 2)
         self.table.attach(self.mode_combo, 1, 2, 1, 2)
-        if mode == 1:
+        if mode == "adhoc":
             self.table.attach(self.band_label, 0, 1, 2, 3)
-            self.able.attach(self.band_combo, 1, 2, 2, 3)
+            self.table.attach(self.band_combo, 1, 2, 2, 3)
             self.table.attach(self.channel_label, 0, 1, 3, 4)
             self.table.attach(self.channel_spin, 1, 2, 3, 4)
 
-        #self.band_label.set_no_show_all(True)
-        #self.band_combo.set_no_show_all(True)
-        #self.band_label.hide()
-        #self.band_combo.hide()
-        # Channel
-        #self.channel_label.set_no_show_all(True)
-        #self.channel_spin.set_no_show_all(True)
-
-        #self.channel_label.hide()
-        #self.channel_spin.hide()
         # Bssid
         self.table.attach(self.bssid_label, 0, 1, 4, 5)
         self.table.attach(self.bssid_entry, 1, 2, 4, 5)
