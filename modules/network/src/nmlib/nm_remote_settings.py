@@ -197,11 +197,53 @@ class NMRemoteSettings(NMObject):
 
         return new_connection    
 
+    def new_adhoc_connection(self, ssid = None, key_mgmt = "none"):
+        ###Please pass key_mgmt as the wireless isn't privacy
+        s_connection = NMSettingConnection()
+        s_wireless = NMSettingWireless()
+        s_wireless_security = NMSettingWirelessSecurity()
+        s_ip4config = NMSettingIP4Config()
+
+        s_connection.type = "802-11-wireless"
+        s_connection.id = self.generate_connection_id("wireless")
+        s_connection.autoconnect = True
+        s_connection.uuid = uuid.uuid4()
+        s_connection.timestamp = time.time()
+        s_connection.permissions = []
+
+        s_wireless.mode = "adhoc"
+        s_wireless.ssid = ssid
+
+        if key_mgmt:
+            s_wireless.security = "802-11-wireless-security"
+            s_wireless_security.key_mgmt = key_mgmt
+
+        s_ip4config.method = "auto"
+        s_ip4config.clear_addresses()
+        s_ip4config.clear_routes()
+        s_ip4config.clear_dns()
+
+        settings_dict = {"802-11-wireless":s_wireless.prop_dict,
+                         "802-11-wireless-security":s_wireless_security.prop_dict,
+                         "connection":s_connection.prop_dict,
+                         "ipv4":s_ip4config.prop_dict
+                         }
+        settings_dict["802-11-wireless-security"]["psk"] = "Password"
+
+        from nmutils.nmconnection import NMConnection
+        new_connection = NMConnection()
+        for item in settings_dict.iterkeys():
+            new_connection.get_setting(item).prop_dict = settings_dict[item]
+        new_connection.settings_dict = settings_dict    
+
+        return new_connection    
+
     def new_pppoe_connection(self):
         s_connection = NMSettingConnection()
         s_wired = NMSettingWired()
         s_ip4config = NMSettingIP4Config()
         s_pppoe = NMSettingPPPOE()
+        s_ppp = NMSettingPPP()
 
         s_connection.type = "pppoe"
         # s_connection.id = "DSL连接1"
@@ -224,7 +266,8 @@ class NMRemoteSettings(NMObject):
         settings_dict = {"802-3-ethernet":s_wired.prop_dict,
                          "connection":s_connection.prop_dict,
                          "ipv4":s_ip4config.prop_dict,
-                         "pppoe":s_pppoe.prop_dict
+                         "pppoe":s_pppoe.prop_dict,
+                         "ppp":s_ppp.prop_dict
                          }
 
         from nmutils.nmconnection import NMConnection
