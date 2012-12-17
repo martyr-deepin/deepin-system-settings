@@ -180,7 +180,7 @@ if __name__ == "__main__":
     
     # Add titlebar.
     application.add_titlebar(
-        ["theme", "min", "close"], 
+        ["min", "close"], 
         app_theme.get_pixbuf("logo.png"), 
         None,
         "系统设置",
