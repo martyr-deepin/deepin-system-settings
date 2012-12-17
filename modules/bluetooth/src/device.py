@@ -494,6 +494,51 @@ class Control(BusBase):
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
 
+class HealthManager(BusBase):
+
+    __gsignals__  = {
+        "channel-connected":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "channel-deleted":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
+            }
+
+    def __init__(self, device_path):
+        BusBase.__init__(self, path = device_path, interface = "org.bluez.HealthDevice")
+
+        self.bus.add_signal_receiver(self.channel_connected_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "ChannelConnected")
+
+        self.bus.add_signal_receiver(self.channel_deleted_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "ChannelDeleted")
+
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "PropertyChanged")
+
+    def echo(self):
+        return self.dbus_method("Echo")
+
+    def create_channel(self, application, configuration):
+        return self.dbus_method("CreateChannel", application, configuration)
+
+    def destroy_channel(self, channel):
+        return self.dbus_method("DestroyChannel", channel)
+
+    def get_properties(self):
+        return self.dbus_method("GetProperties")
+
+    def get_mainchannel(self):
+        if "MainChannel" in self.get_properties().keys():
+            return self.get_properties()["MainChannel"]
+
+    def channel_connected_cb(self, channel):
+        self.emit("channel-connected", channel)
+
+    def channel_deleted_cb(self, channel):
+        self.emit("disconnected", channel)
+
+    def property_changed_cb(self, key, value):
+        self.emit("property-changed", key, value)
+
 class HandsFreeGateway(BusBase):
 
     __gsignals__  = {
