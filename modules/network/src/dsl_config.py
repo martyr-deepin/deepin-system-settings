@@ -82,15 +82,15 @@ class DSLSetting(gtk.HBox):
         if init_connections:
             for con in connections:
                 con.init_settings_prop_dict()
+            self.sidebar.new_connection_list = []
         # Check connections
         if connections == []:
             # Create a new connection
             connections = [nm_module.nm_remote_settings.new_pppoe_connection()]
+            self.sidebar.new_connection_list.extend(connections)
 
         if new_connection:
             connections += new_connection
-        else:
-            self.sidebar.new_connection_list = []
         
         self.connections = connections
 
@@ -134,14 +134,15 @@ class DSLSetting(gtk.HBox):
         if widget.label is "save":
             print "saving"
             if connection.check_setting_finish():
+
                 this_index = self.connections.index(connection)
                 from nmlib.nm_remote_connection import NMRemoteConnection
                 if isinstance(connection, NMRemoteConnection):
                     print "before update", TypeConvert.dbus2py(connection.settings_dict)
                     connection.update()
                     print "after update", TypeConvert.dbus2py(connection.settings_dict)
-
                 else:
+                    print self.sidebar.new_connection_list
                     index = self.sidebar.new_connection_list.index(connection)
                     nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                     self.sidebar.new_connection_list.pop(index)

@@ -9,16 +9,11 @@ sys.path.append("../")
 from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeView
-from dtk.ui.draw import draw_pixbuf, draw_line
+from dtk.ui.draw import  draw_line
 from dtk.ui.utils import color_hex_to_cairo, get_parent_dir, is_dbus_name_exists, container_remove_all
 from dtk.ui.label import Label
-from dtk.ui.new_slider import HSlider
 from dtk.ui.scrolled_window import ScrolledWindow
-from dtk.ui.threads import post_gui
 import gtk
-import dbus
-import traceback
-import threading as td
 
 from container import Contain
 from lists import WiredItem, WirelessItem, GeneralItem
@@ -197,7 +192,7 @@ class WirelessSection(gtk.VBox):
             self.pack_start(self.wireless, False, False)
             self.tree = TreeView([], enable_multiple_select = False)
             self.settings = None
-            self.wifi = WifiSection()
+            self.wifi = PersonalWifi(self.send_to_crumb_cb)
 
             self.vbox = gtk.VBox()
             self.vbox.pack_start(self.tree)
@@ -214,6 +209,7 @@ class WirelessSection(gtk.VBox):
     
     def add_setting_page(self, page):
         self.settings = page
+        self.wifi.add_setting_page(page)
         if self.wireless_devices:
             for wireless_device in self.wireless_devices:
                 if wireless_device.is_active():
@@ -285,31 +281,57 @@ class WirelessSection(gtk.VBox):
 
         return index
                 
-class WifiSection(gtk.VBox):
+class PersonalWifi(gtk.VBox):
 
-    def __init__(self):
+    def __init__(self, send_to_crumb_cb):
+
         gtk.VBox.__init__(self, 0)
         cont = Contain(app_theme.get_pixbuf("/Network/wifi.png"), "个人热点", self.toggle_cb)
         self.pack_start(cont, False, False)
+        self.send_to_crumb_cb = send_to_crumb_cb
+        self.settings = None
 
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
             self.align = gtk.Alignment(0, 0.0, 1, 1)
             self.align.set_padding(0, 0, PADDING,0)
-            self.align.show()
-            self.h = gtk.HBox()
-            self.h.show()
-            label = gtk.Label("热点密码 ")
-            label.show()
-            entry = gtk.Entry()
-            entry.show()
-            self.align.add(self.h)
-            self.h.pack_start(label, False, False, 0)
-            self.h.pack_start(entry, False, True, 0)
+            #self.align.show()
+            #self.h = gtk.HBox()
+            #self.h.show()
+            #label = gtk.Label("热点密码 ")
+            #label.show()
+            #entry = gtk.Entry()
+            #entry.show()
+            #self.align.add(self.h)
+            #self.h.pack_start(label, False, False, 0)
+            #self.h.pack_start(entry, False, True, 0)
+            label = Label("设置热点密码", ui_theme.get_color("link_text"))
+            label.connect("button-release-event", self.slide_to_event)
+            self.align.connect("expose-event", self.expose_event)
+            self.align.add(label)
+            self.align.show_all()
             self.pack_start(self.align, False, True, 0)
         else:
-            self.h.destroy()
+            pass
+            #self.h.destroy()
+    def slide_to_event(self, widget, event):
+        #connection = nm_module.nm_remote_settings.new_wireless_connection("")
+        #self.settings.sidebar.new_connection_list.append(connection)
+        self.settings.init("your personal wifi",init_connections=True)
+        self.settings.wireless.wireless.mode = "adhoc"
+        self.settings.security.reset()
+        self.send_to_crumb_cb()
+        slider.slide_to_page(self.settings, "right")
+
+    def add_setting_page(self, setting_page):
+        self.settings = setting_page
+
+    def expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.child.allocation
+        cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
+        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
 
 class DSL(gtk.VBox):
     def __init__(self, slide_to_setting_cb):
@@ -579,7 +601,7 @@ class Network(object):
         self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.mobile.add_setting_page(self.mobile_setting_page)
-        wifi = WifiSection()
+        #wifi = PersonalWifi()
 
     def refresh(self):
         from nmlib.nm_secret_agent import NMSecretAgent

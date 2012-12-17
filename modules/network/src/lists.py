@@ -514,6 +514,17 @@ class GeneralItem(TreeItem):
             cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
             cr.fill()
 
+    def render_blank(self, cr, rect):
+        render_background(cr, rect)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+
     def get_check_width(self):
         check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
         return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
@@ -529,13 +540,14 @@ class GeneralItem(TreeItem):
     def get_column_renders(self):
         return [self.render_check,
                 self.render_name,
-                lambda cr, rect: render_background(cr, rect),
+                self.render_blank,
                 self.render_jumpto]
 
     def render_background(self, item, cr, rect):
-        if item.is_select:
-            draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height,
-                         ui_theme.get_shadow_color("listview_select").get_color_info())
+        draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height,
+                     ui_theme.get_shadow_color("listview_select").get_color_info())
+
+
 
     def get_height(self):
         return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 

@@ -1,8 +1,2 @@
-11.5 -- 11.9
-+-	finish wireless & and wired module
-	finish DSL ui module
-	test DSL module
 #TODO mac正确性少一位依然是valid的bug
-#TODO 添加无线弹窗,添加连接隐藏网络的按钮
-
 #TODO IPV6的判定有问题了

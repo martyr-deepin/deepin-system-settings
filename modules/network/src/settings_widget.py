@@ -426,7 +426,7 @@ class SettingItem(TreeItem):
     def hover(self, column, offset_x, offset_y):
         self.is_hover = True
         if self.is_select:
-            self.timer = gobject.timeout_add(1500, self.show_delete)
+            self.timer = gobject.timeout_add(300, self.show_delete)
 
     def show_delete(self):
         self.delete_hover = True

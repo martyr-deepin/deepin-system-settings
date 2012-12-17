@@ -152,7 +152,6 @@ class WirelessSetting(gtk.HBox):
         #self.security.save_setting()
         #wireless_device = nmclient.get_wireless_devices()[0]
         if widget.label == "save":
-            self.wireless.wireless.adapt_wireless_commit()
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
                 if isinstance(connection, NMRemoteConnection):
@@ -370,6 +369,11 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo, 1, 4, 0, 1)
         
         keys = [None, "none", "none","wpa-psk"]
+        
+        if self.connection.get_setting("802-11-wireless").mode == "adhoc":
+            self.security_combo.set_items([("None", None),
+                      ("WEP (Hex or ASCII)", "none"),
+                      ("WEP 104/128-bit Passphrase", "none")])
         
         self.key_mgmt = self.setting.key_mgmt
         if self.key_mgmt == "none":
@@ -594,8 +598,7 @@ class Wireless(gtk.VBox):
 
     def mode_combo_selected(self, widget, content, value, index):
         self.wireless.mode = value
-        # FIXME got some problem when adapt wireless commit
-        #self.wireless.adapt_wireless_commit()
+        self.wireless.adapt_wireless_commit()
         self.reset_table()
 
     def reset_table(self):
