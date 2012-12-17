@@ -150,6 +150,10 @@ class NMConnection(gobject.GObject):
                                 return False
 
                         ###psk    
+                    elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
+                        if not info_dict["802-11-wireless-secrets"]["psk"]:
+                            return False
+
                     elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
                         # currently not support
                         return False
