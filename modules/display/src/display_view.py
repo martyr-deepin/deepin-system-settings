@@ -307,7 +307,8 @@ class DisplayView(gtk.VBox):
             return
         
         if object == "rotation_combo":
-            self.display_manager.set_screen_rotation(item_value)
+            self.display_manager.set_screen_rotation(self.monitor_combo.items[self.monitor_combo.select_index][0], 
+                                                     item_value)
             return
 
         if object == "close_monitor_combo":

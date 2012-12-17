@@ -109,7 +109,13 @@ class DisplayManager:
                 continue
 
             if width_value != None:
-                width.child.firstChild.data = width_value
+                width[0].firstChild.data = width_value
+
+            if height_value != None:
+                height[0].firstChild.data = height_value
+
+            if rotation_value != None:
+                rotation[0].firstChild.data = rotation_value
 
         f = open(self.__monitors_xml_filename, 'w')
         self.__xmldoc.writexml(f)
@@ -180,11 +186,7 @@ class DisplayManager:
     def set_screen_size(self, output_name, size):
         m = re.match('(\d+)x(\d+)', size)
         
-        '''
-        if len(m.group):
-            print "DEBUG", m.group(1), m.group(2)
-            self.__update_xml(output_name, m.group(1), m.group(2))
-        '''
+        self.__update_xml(output_name, m.group(1), m.group(2))
 
         run_command("xrandr --output %s --mode %s" % (output_name, size))
 
@@ -210,7 +212,7 @@ class DisplayManager:
         
         return 0
     
-    def set_screen_rotation(self, rotation):
+    def set_screen_rotation(self, output_name, rotation):
         rotation_str = "normal"
 
         if rotation == 1:
@@ -221,6 +223,10 @@ class DisplayManager:
             rotation_str = "left"
         elif rotation == 4:
             rotation_str = "inverted"
+
+        self.__update_xml(output_name, rotation_str)
+
+        run_command("xrandr -o %s" % rotation_str)
 
     def get_screen_brightness(self):
         return self.__xrandr_settings.get_double("brightness") * 100.0
