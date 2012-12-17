@@ -29,9 +29,9 @@ class Adapter(BusBase):
     __gsignals__  = {
         "device-created":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "device-disappeared":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
-        "device-found":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "device-found":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
         "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
-        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
+        "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
             }
 
     def __init__(self, adapter_path):
@@ -53,7 +53,10 @@ class Adapter(BusBase):
                                      path = self.object_path, signal_name = "PropertyChanged")
 
     def create_device(self, address):
-        return str(self.dbus_method("CreateDevice", address))
+        if address not in self.get_address_records():
+            return str(self.dbus_method("CreateDevice", address))
+        else:
+            return self.find_device(address)
 
     def cancel_device_creation(self, address):
         return self.dbus_method("CancelDeviceCreation", address)
@@ -80,6 +83,17 @@ class Adapter(BusBase):
                 devices = map(lambda x:str(x), devices)
 
         return devices    
+
+    def get_address_records(self):
+        addresses = []
+        try:
+            from device import Device
+            for item in self.get_devices():
+                addresses.append(Device(item).get_address())
+        except:
+            pass
+
+        return addresses
 
     def start_discovery(self):
         if not self.get_discoverable():
@@ -196,8 +210,8 @@ class Adapter(BusBase):
     def device_disappeared_cb(self, address):
         self.emit("device-disappeared", address)
 
-    def device_found_cb(self, dev_string, values):
-        self.emti("device-found", dev_string, values)
+    def device_found_cb(self, address, values):
+        self.emit("device-found", address, values)
 
     def device_removed_cb(self, dev_path):
         self.emit("device-removed", dev_path)
@@ -319,49 +333,5 @@ class SimAccess(BusBase):
         else:
             return False
 
-def test_adapter():
-    from manager import Manager
-    manager = Manager()
-    adapter = Adapter(manager.get_default_adapter())
-
-    from device import Device
-    device_address = Device(adapter.get_devices()[0]).get_address()
-    print "find device:\n    %s" % adapter.find_device(device_address)
-    print "remove device:\n    %s" % adapter.remove_device(adapter.find_device(device_address))
-    # print "create device:\n    %s" % adapter.create_device(device_address)
-
-    print "get devices:\n    %s" % adapter.get_devices()
-
-    adapter.set_name("Long Wei's PC")
-    print "get name:\n    %s" % adapter.get_name()
-
-    adapter.set_powered(True)
-    print "get powered:\n    %s" % adapter.get_powered()
-
-    adapter.set_discoverable(True)
-    print "get discoverable:\n    %s" % adapter.get_discoverable()
-
-    print "get discovering:\n    %s" % adapter.get_discovering()
-
-    adapter.set_discoverable_timeout(120)
-    print "get discoverable_timeout:\n    %s" % adapter.get_discoverable_timeout()
-
-    adapter.set_pairable(True)
-    print "get pairable:\n    %s" % adapter.get_pairable()
-
-    adapter.set_pairable_timeout(180)
-    print "get pairable timeout:\n    %s" % adapter.get_pairable_timeout()
-
-    print "get class:\n    %s" % adapter.get_class()
-    print "get address:\n    %s" % adapter.get_address()
-    print "get uuids:\n    %s" % adapter.get_uuids()
-
-
-
-def test_service():
-    pass
-    
 if __name__ == "__main__":
-    test_adapter()
-
-    # test_service()
+    pass

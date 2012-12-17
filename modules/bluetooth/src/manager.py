@@ -51,6 +51,7 @@ class Manager(BusBase):
         return str(self.dbus_method("DefaultAdapter"))
 
     def find_adapter(self, pattern):
+        # Valid patterns are "hci0" or "00:11:22:33:44:55".
         return str(self.dbus_method("FindAdapter", pattern))
  
     def get_properties(self):

@@ -51,8 +51,8 @@ class Device(BusBase):
     def disconnect(self):
         return self.dbus_method("Disconnect")
 
-    def discovery_services(self, pattern):
-        return self.dbus_method("DiscoveryServices", pattern)
+    def discover_services(self, pattern = ""):
+        return self.dbus_method("DiscoverServices", pattern)
 
     def cancel_discovery(self):
         return self.dbus_method("CancelDiscovery")
