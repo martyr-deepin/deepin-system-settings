@@ -539,14 +539,26 @@ class Network(BusBase):
         self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-    def connect(self):
-        return self.dbus_method("Connect")
+    def connect(self, uuid):
+        return self.dbus_method("Connect", uuid)
 
     def disconnect(self):
         return self.dbus_method("Disconnect")
 
     def get_properties(self):
         return self.dbus_method("GetProperties")
+
+    def get_connected(self):
+        if "Connected" in self.get_properties().keys():
+            return self.get_properties()["Connected"]
+
+    def get_interface(self):
+        if "Interface" in self.get_properties().keys():
+            return self.get_properties()["Interface"]
+
+    def get_uuid(self):
+        if "UUID" in self.get_properties().keys():
+            return self.get_properties()["UUID"]
 
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
@@ -584,14 +596,14 @@ class Serial(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Serial")
 
-    def connect(self, string):
-        return self.dbus_method("Connect", string)
+    def connect(self, pattern):
+        return self.dbus_method("Connect", pattern)
     
-    def connect_fd(self, string):
-        return self.dbus_method("ConnectFD", string)
+    def connect_fd(self, pattern):
+        return self.dbus_method("ConnectFD", pattern)
 
-    def disconnect(self, string):
-        return self.dbus_method("Disconnect", string)
+    def disconnect(self, device):
+        return self.dbus_method("Disconnect", device)
 
 
 if __name__ == "__main__":
