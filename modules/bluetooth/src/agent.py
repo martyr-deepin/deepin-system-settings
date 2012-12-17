@@ -46,7 +46,7 @@ class Agent(dbus.service.Object):
         if self.exit_on_release:
 	   mainloop.quit()
     
-    @dbus.service.method("org.bluez.Agent",	in_signature="os", out_signature="")
+    @dbus.service.method("org.bluez.Agent", in_signature="os", out_signature="")
     def Authorize(self, device_path, uuid):
         print "Authorize (%s, %s)" % (device_path, uuid)
         authorize = raw_input("Authorize connection (yes/no): ")
@@ -54,22 +54,22 @@ class Agent(dbus.service.Object):
             return
         raise Rejected("Connection rejected by user")
     
-    @dbus.service.method("org.bluez.Agent",	in_signature="o", out_signature="s")
+    @dbus.service.method("org.bluez.Agent", in_signature="o", out_signature="s")
     def RequestPinCode(self, device_path):
         print "RequestPinCode (%s)" % (device_path)
         return raw_input("Enter PIN Code: ")
     
-    @dbus.service.method("org.bluez.Agent",	in_signature="o", out_signature="u")
+    @dbus.service.method("org.bluez.Agent", in_signature="o", out_signature="u")
     def RequestPasskey(self, device_path):
         print "RequestPasskey (%s)" % (device_path)
         passkey = raw_input("Enter passkey: ")
         return dbus.UInt32(passkey)
     
-    @dbus.service.method("org.bluez.Agent",	in_signature="ouq", out_signature="")
+    @dbus.service.method("org.bluez.Agent", in_signature="ouq", out_signature="")
     def DisplayPasskey(self, device_path, passkey, entered):
 	print "DisplayPasskey (%s, %d)" % (device_path, passkey, entered)
     
-    @dbus.service.method("org.bluez.Agent",	in_signature="ou", out_signature="")
+    @dbus.service.method("org.bluez.Agent", in_signature="ou", out_signature="")
     def RequestConfirmation(self, device_path, passkey):
         print "RequestConfirmation (%s, %d)" % (device_path, passkey)
         confirm = raw_input("Confirm passkey (yes/no): ")
@@ -77,7 +77,7 @@ class Agent(dbus.service.Object):
             return
         raise Rejected("Passkey doesn't match")
     
-    @dbus.service.method("org.bluez.Agent",	in_signature="s", out_signature="")
+    @dbus.service.method("org.bluez.Agent", in_signature="s", out_signature="")
     def ConfirmModeChange(self, mode):
         print "ConfirmModeChange (%s)" % (mode)
         authorize = raw_input("Authorize mode change (yes/no): ")
@@ -85,9 +85,9 @@ class Agent(dbus.service.Object):
 	   return
         raise Rejected("Mode change by user")
     
-    @dbus.service.method("org.bluez.Agent",	in_signature="", out_signature="")
+    @dbus.service.method("org.bluez.Agent", in_signature="", out_signature="")
     def Cancel(self):
-    	    print "Cancel"
+    	print "Cancel"
 
 
 if __name__ == '__main__':

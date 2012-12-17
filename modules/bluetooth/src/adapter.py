@@ -104,8 +104,11 @@ class Adapter(BusBase):
         self.dbus_method("StopDiscovery")
 
     def register_agent(self, agent_path, capability):
-        return self.dbus_method("RegisterAgent", agent_path, capability)
-    
+        if capability in ["DisplayOnly", "DisplayYesNo", "KeyboardOnly", "NoInputNoOutput", ""]:
+            return self.dbus_method("RegisterAgent", agent_path, capability)
+        else:
+            pass
+
     def unregister_agent(self, agent_path):
         return self.dbus_method("UnRegisterAgent")
 

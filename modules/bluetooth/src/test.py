@@ -97,6 +97,8 @@ def test_adapter():
             continue
 
     device = Device(adapter.get_devices()[0])
+
+    ###discovery services
     # print "device discovery service:\n %s" % device.discover_services()
     # services = device.discover_services()
     # import re
@@ -107,19 +109,45 @@ def test_adapter():
     #     print xml
     #     print
 
-    # print "device properties:\n %s" % device.get_properties()
-    servs = device.get_services()
-    from device_service import DeviceService
-    if servs:
-        service = DeviceService(servs[0])
-        print service.get_properties()
+    ###get services
+    # servs = device.get_services()
+    # from device_service import DeviceService
+    # if servs:
+    #     service = DeviceService(servs[0])
+    #     # print service.get_properties()
+    #     uuid = service.get_uuid()
+
+    print "device nodes:\n %s" % device.get_nodes()    
 
     mainloop = gobject.MainLoop()
     mainloop.run()
 
-def test_service():
-    pass
-    
+def test_pair():
+
+    from manager import Manager
+    from adapter import Adapter
+    manager = Manager()
+    adapter = Adapter(manager.get_default_adapter())
+    adapter.set_powered(True)
+    adapter.set_discoverable(True)
+    adapter.set_pairable(True)
+
+    from device import Device
+    while not adapter.get_devices():
+        adapter.start_discovery()
+        if adapter.get_devices():
+            adapter.stop_discovery()
+            break
+        else:
+            continue
+
+    device = Device(adapter.get_devices()[0])
+    adapter.create_paired_device(device.get_address(), "/org/bluez/agent", "DisplayYesNo")
+
+    mainloop = gobject.MainLoop()
+    mainloop.run()
 
 if __name__ == "__main__":
-    test_adapter()
+    # test_adapter()
+    test_pair()
+    pass
