@@ -105,11 +105,13 @@ class DisplayView(gtk.VBox):
         '''
         self.scrolled_window = ScrolledWindow()
         self.scrolled_window.set_size_request(825, 425)
+        self.main_box = gtk.VBox(spacing = self.box_spacing)
+        self.body_box = gtk.HBox(spacing = self.box_spacing)
         '''
         left, right align
         '''
         self.left_align = self.__setup_align()
-        self.right_align = self.__setup_align()
+        self.right_align = self.__setup_align(0.0, 0.0, 0.0, 0.0)
         '''
         left, right box
         '''
@@ -118,8 +120,10 @@ class DisplayView(gtk.VBox):
         '''
         monitor operation && detect
         '''
+        self.monitor_resize_align = self.__setup_align()
         self.monitor_resize_box = MonitorResizableBox()
         self.monitor_resize_box.connect("resize", self.__resize_box)
+        self.monitor_resize_align.add(self.monitor_resize_box)
         '''
         monitor display
         '''
@@ -144,7 +148,7 @@ class DisplayView(gtk.VBox):
         '''
         self.goto_align = self.__setup_align(0.0, 0.0, 0.0, 0.0)
         self.goto_box = gtk.VBox(spacing = self.box_spacing)
-        self.goto_label = self.__setup_label("DEBUG")
+        self.goto_label = self.__setup_label("如需要设置桌面壁纸和系统主题，请点击 个性化设置 ，电源相关设置请点击 电源设置。")
         self.__widget_pack_start(self.goto_box, 
             [self.goto_label])
         self.goto_align.add(self.goto_box)
@@ -242,8 +246,7 @@ class DisplayView(gtk.VBox):
         left_align pack_start
         '''
         self.__widget_pack_start(self.left_box, 
-            [self.monitor_resize_box, 
-             self.monitor_display_align, 
+            [self.monitor_display_align, 
              self.monitor_align, 
              self.sizes_align, 
              self.monitor_bright_align, 
@@ -257,11 +260,19 @@ class DisplayView(gtk.VBox):
         '''
         self.__widget_pack_start(self.right_box, 
             [self.goto_align])
+        self.right_box.set_size_request(200, -1)
         self.right_align.add(self.right_box)
+        '''
+        main && body box
+        '''
+        self.main_box.pack_start(self.monitor_resize_align)
+        self.body_box.pack_start(self.left_align)
+        self.body_box.pack_start(self.right_align, False, False)
+        self.main_box.pack_start(self.body_box)
         '''
         this->HBox pack_start
         '''
-        self.scrolled_window.add_child(self.left_align)
+        self.scrolled_window.add_child(self.main_box)
         self.pack_start(self.scrolled_window)
 
     def __xrandr_changed(self, key):
