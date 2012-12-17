@@ -45,7 +45,12 @@ class DisplayManager:
         self.__xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
         self.__power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.__session_settings = deepin_gsettings.new("org.gnome.desktop.session")
-        self.__xmldoc = minidom.parse("%s/.config/monitors.xml" % os.path.expanduser('~')) 
+        
+        self.__monitors_xml_filename = "%s/.config/monitors.xml" % os.path.expanduser('~')
+        if not os.path.exists(self.__monitors_xml_filename):
+            self.__create_monitors_xml()
+
+        self.__xmldoc = minidom.parse(self.__monitors_xml_filename) 
         self.__primary_output_name = None
         self.__output_names = []
         self.__screen_sizes_by_xml = {}
@@ -62,28 +67,53 @@ class DisplayManager:
         self.__session_settings.delete()
         self.__session_settings = None
 
+    def __create_monitors_xml(self):
+        pass
+    
     def __init_xml(self):
-        outputs = self.__xmldoc.getElementsByTagName("output")
+        if self.__xmldoc != None:
+            outputs = self.__xmldoc.getElementsByTagName("output")
         
+            for output in outputs:
+                output_name = output.attributes["name"].value
+                width = output.getElementsByTagName("width")
+                height = output.getElementsByTagName("height")
+                rotation = output.getElementsByTagName("rotation")
+                primary = output.getElementsByTagName("primary")
+                is_primary = "no"
+            
+                if len(width) == 0 or len(height) == 0 or len(rotation) == 0 or len(primary) == 0:
+                    continue
+            
+                is_primary = self.__getText(primary[0].childNodes)
+                if is_primary == "yes":
+                    self.__primary_output_name = output_name
+                
+                self.__screen_sizes_by_xml[output_name] = {
+                    'screen_size':"%sx%s" % (self.__getText(width[0].childNodes), self.__getText(height[0].childNodes)),
+                    'rotation':self.__getText(rotation[0].childNodes), 
+                    'primary':is_primary}
+    
+    def __update_xml(self, output_name, width_value=None, height_value=None, rotation_value=None):
+        outputs = self.__xmldoc.getElementsByTagName("output")
+
         for output in outputs:
-            output_name = output.attributes["name"].value
+            if output_name != output.attributes["name"].value:
+                continue
+
             width = output.getElementsByTagName("width")
             height = output.getElementsByTagName("height")
             rotation = output.getElementsByTagName("rotation")
-            primary = output.getElementsByTagName("primary")
-            is_primary = "no"
-            
-            if len(width) == 0 or len(height) == 0 or len(rotation) == 0 or len(primary) == 0:
+
+            if len(width) == 0 or len(height) == 0 or len(rotation) == 0:
                 continue
-            
-            is_primary = self.__getText(primary[0].childNodes)
-            if is_primary == "yes":
-                self.__primary_output_name = output_name
-                
-            self.__screen_sizes_by_xml[output_name] = {
-                'screen_size':"%sx%s" % (self.__getText(width[0].childNodes), self.__getText(height[0].childNodes)),
-                'rotation':self.__getText(rotation[0].childNodes), 
-                'primary':is_primary}
+
+            if width_value != None:
+                width.child.firstChild.data = width_value
+
+        f = open(self.__monitors_xml_filename, 'w')
+        self.__xmldoc.writexml(f)
+        f.close()
     
     def __getText(self, nodelist):
         rc = []
@@ -148,7 +178,14 @@ class DisplayManager:
         return 0
     
     def set_screen_size(self, output_name, size):
-        self.__xrandr_settings.set_string("screen-size", size)
+        m = re.match('(\d+)x(\d+)', size)
+        
+        '''
+        if len(m.group):
+            print "DEBUG", m.group(1), m.group(2)
+            self.__update_xml(output_name, m.group(1), m.group(2))
+        '''
+
         run_command("xrandr --output %s --mode %s" % (output_name, size))
 
     def get_screen_rotation(self, output_name):
@@ -184,8 +221,6 @@ class DisplayManager:
             rotation_str = "left"
         elif rotation == 4:
             rotation_str = "inverted"
-
-        self.__xrandr_settings.set_string("screen-rotation", rotation_str)
 
     def get_screen_brightness(self):
         return self.__xrandr_settings.get_double("brightness") * 100.0
