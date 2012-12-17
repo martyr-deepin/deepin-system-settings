@@ -210,20 +210,20 @@ class Service(BusBase):
     def __init__(self, adapter_path):
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.Service")
 
-    def add_record(self, record_xml):
-        return int(self.dbus_method("AddRecord"), record_xml)
+    def add_record(self, record):
+        return int(self.dbus_method("AddRecord"), record)
 
-    def remove_record(self, record_id):
-        return self.dbus_method("RemoveRecord", record_id)
+    def remove_record(self, handle):
+        return self.dbus_method("RemoveRecord", handle)
 
-    def request_authorization(self, record_str, record_int):
-        return self.dbus_method("RequestAuthorization", record_str, record_int)
+    def request_authorization(self, address, handle):
+        return self.dbus_method("RequestAuthorization", address, handle)
 
     def cancel_authorization(self):
         return self.dbus_method("CancelAuthorization")
 
-    def update_record(self, record_id, record_xml):
-        return self.dbus_method("UpdateRecord", record_id, record_xml)
+    def update_record(self, handle, record):
+        return self.dbus_method("UpdateRecord", handle, record)
 
 class Media(BusBase):
 
@@ -247,10 +247,10 @@ class NetworkServer(BusBase):
     def __init__(self, adapter_path):
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.NetworkServer")
 
-    def register(self, string1, string2):
-        return self.dbus_method("Register", string1, string2)
+    def register(self, uuid, bridge):
+        return self.dbus_method("Register", uuid, bridge)
 
-    def unregister(self, string1):
+    def unregister(self, uuid):
         return self.dbus_method("Unregister")
 
 class OutOfBand(BusBase):
@@ -283,11 +283,11 @@ class SerialProxyManager(BusBase):
         self.bus.add_signal_receiver(self.proxy_removed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "ProxyRemoved")
 
-    def create_proxy(self, string1, string2):
-        return str(self.dbus_method("CreateProxy"), string1, string2)
+    def create_proxy(self, pattern, address):
+        return str(self.dbus_method("CreateProxy", pattern, address))
 
-    def remove_proxy(self, proxy_string):
-        return self.dbus_method("RemoveProxy", proxy_string)
+    def remove_proxy(self, path):
+        return self.dbus_method("RemoveProxy", path)
 
     def list_proxies(self):
         proxies = self.dbus_method("ListProxies")
@@ -296,11 +296,11 @@ class SerialProxyManager(BusBase):
         else:
             return []
 
-    def proxy_created_cb(self, proxy_string):
-        self.emit("proxy-created", proxy_string)
+    def proxy_created_cb(self, path):
+        self.emit("proxy-created", path)
 
-    def proxy_removed_cb(self, proxy_string):
-        self.emit("proxy-removed", proxy_string)
+    def proxy_removed_cb(self, path):
+        self.emit("proxy-removed", path)
 
 class SimAccess(BusBase):
 
