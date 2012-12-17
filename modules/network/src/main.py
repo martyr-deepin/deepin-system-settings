@@ -269,10 +269,11 @@ class WirelessSection(gtk.VBox):
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
 
-        items.append(GeneralItem("connect to hiden newwork",
+        items.append(GeneralItem("connect to hiden network",
                                  self.settings,
                                  lambda :slider.slide_to_page(self.settings, "right"),
-                                 self.send_to_crumb_cb))
+                                 self.send_to_crumb_cb,
+                                 check_state=0))
         return items
 
     def get_actives(self, ap_list):
@@ -558,8 +559,7 @@ class Network(object):
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.wired.add_setting_page(self.wired_setting_page)
 
-        self.wireless_setting_page = WirelessSetting(None, 
-                                                lambda :slider.slide_to_page(self.eventbox, "left"),
+        self.wireless_setting_page = WirelessSetting(lambda :slider.slide_to_page(self.eventbox, "left"),
                                                 lambda : module_frame.send_message("change_crumb", 1))
         self.wireless.add_setting_page(self.wireless_setting_page)
 

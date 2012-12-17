@@ -53,7 +53,7 @@ class WiredSetting(gtk.HBox):
                       ("IPv4设置", NoSetting()),
                       ("IPv6设置", NoSetting())]
         self.tab_window.add_items(self.items)
-        self.sidebar = SideBar( None, self.init, self.check_click)
+        self.sidebar = SideBar( None, self.init, self.check_click, self.set_button)
         # Build ui
         self.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
@@ -179,11 +179,12 @@ class WiredSetting(gtk.HBox):
         self.slide_back()
         
 class SideBar(gtk.VBox):
-    def __init__(self, connections, main_init_cb, check_click_cb):
+    def __init__(self, connections, main_init_cb, check_click_cb, set_button_cb):
         gtk.VBox.__init__(self, False, 5)
         self.connections = connections
         self.main_init_cb = main_init_cb
         self.check_click_cb = check_click_cb
+        self.set_button = set_button_cb
 
         # determin the active one
         self.buttonbox = gtk.VBox(False, 6)
@@ -211,7 +212,11 @@ class SideBar(gtk.VBox):
         cons = []
         self.connection_tree = EntryTreeView(cons)
         for index, connection in enumerate(self.connections):
-            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+            cons.append(SettingItem(connection,
+                                    self.setting[index],
+                                    self.check_click_cb, 
+                                    self.delete_item_cb,
+                                    self.set_button))
         self.connection_tree.add_items(cons)
 
         self.connection_tree.show_all()

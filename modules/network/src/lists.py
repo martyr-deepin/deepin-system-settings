@@ -29,7 +29,6 @@ from lan_config import WiredSetting, NoSetting
 from wlan_config import WirelessSetting
 #from wired import *
 import gtk
-import os
 import pango
 BORDER_COLOR = color_hex_to_cairo("#aeaeae")
 
@@ -195,7 +194,7 @@ class WirelessItem(TreeItem):
             #if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
                 #nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
 
-            self.setting_object.init(self.connection, init_connections=True)
+            self.setting_object.init(self.connection.get_ssid(), init_connections=True)
             self.send_to_crumb()
             self.slide_to_setting() 
         #if self.redraw_request_callback:
@@ -448,6 +447,7 @@ class GeneralItem(TreeItem):
                  setting_page,
                  slide_to_setting_page_cb,
                  send_to_crumb,
+                 check_state=2,
                  font_size=DEFAULT_FONT_SIZE):
 
         TreeItem.__init__(self)
@@ -460,7 +460,7 @@ class GeneralItem(TreeItem):
         self.check_width = self.get_check_width()
         self.essid_width = self.get_essid_width(self.name)
         self.jumpto_width = self.get_jumpto_width()
-        self.network_state = 2
+        self.network_state = check_state
         self.is_last = True
 
     def render_check(self, cr, rect):
@@ -529,7 +529,7 @@ class GeneralItem(TreeItem):
     def get_column_renders(self):
         return [self.render_check,
                 self.render_name,
-                lambda cr, rect: self.render_background(self, cr, rect),
+                lambda cr, rect: render_background(cr, rect),
                 self.render_jumpto]
 
     def render_background(self, item, cr, rect):
@@ -551,12 +551,16 @@ class GeneralItem(TreeItem):
         pass
 
     def single_click(self, column, x, y):
-        #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
-            #self.is_select = not self.is_select
         if column == 2:
             self.setting.init()
             self.slide_to_setting()
             self.send_to_crumb()
+        if column == 3:
+            self.setting.init("", init_connections=True)
+            self.slide_to_setting()
+            self.send_to_crumb()
+
+
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)

@@ -205,29 +205,40 @@ def render_background( cr, rect):
     background_color = [(0,["#ffffff", 1.0]),
                         (1,["#ffffff", 1.0])]
     draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
+
 class ShowOthers(TreeItem):
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10
-    def __init__(self, child_list):
+
+    def __init__(self, child_list, resize_tree_cb):
         TreeItem.__init__(self)
         self.children = child_list
+        self.resize_tree = resize_tree_cb
 
     def render_content(self, cr, rect):
+        render_background(cr, rect)
         (text_width, text_height) = get_content_size("show all")
         import pango
-        draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
+        draw_text(cr, "show all", rect.x, rect.y, rect.width, rect.height,
                 alignment=pango.ALIGN_CENTER)
 
     def get_column_renders(self):
-        return [lambda cr, rect: render_background(self, cr, rect),
-                self.render_background,
-                lambda cr, rect: render_background(self, cr, rect)]
+        return [lambda cr, rect: render_background( cr, rect),
+                self.render_content,
+                lambda cr, rect: render_background( cr, rect)]
 
     def get_column_widths(self):
         return [-1,92,-1]
 
+    def get_height(self):
+        return 26
+
     def single_click(self, column, offset_x, offset_y):
-        pass
+        if self.is_expand:
+            self.unexpand()
+        else:
+            self.expand()
+
 
     def expand(self):
         self.is_expand = True
@@ -235,13 +246,16 @@ class ShowOthers(TreeItem):
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+        self.resize_tree()
 
     def unexpand(self):
         '''docstring for unexpand'''
         self.delete_child_item()
+
+        self.is_expand = False
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
-
+        self.resize_tree()
 
     def add_child_item(self):
         self.child_items = self.children
@@ -254,13 +268,14 @@ class ShowOthers(TreeItem):
 class SettingItem(TreeItem):
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10
-    def __init__(self, connection, setting, click_cb, delete_cb):
+    def __init__(self, connection, setting, click_cb, delete_cb, set_button_cb=None):
         TreeItem.__init__(self)
         #self.title = title
         self.connection = connection
         self.setting = setting
         self.click = click_cb
         self.delete_connection = delete_cb
+        self.set_button = set_button_cb
         self.entry = None
         self.entry_buffer = EntryBuffer(connection.get_setting("connection").id)
         self.entry_buffer.set_property('cursor-visible', False)
@@ -353,6 +368,9 @@ class SettingItem(TreeItem):
     
     def set_connection_name(self, text):
         self.connection.get_setting("connection").id = text
+        if self.set_button:
+            self.set_button("save", True)
+
     
     def render_content(self, cr, rect):
         self.render_background(cr,rect)
@@ -433,8 +451,8 @@ class SettingItem(TreeItem):
             self.check_select = not self.check_select
             print "check clicked"
         elif column == 2 and self.delete_hover:
-
-            self.delete_connection(self.connection)
+            if self.is_hover:
+                self.delete_connection(self.connection)
             
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
