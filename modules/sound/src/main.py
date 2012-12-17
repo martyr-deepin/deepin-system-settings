@@ -558,6 +558,7 @@ class SoundSetting(object):
     def balance_toggled(self, active):
         if not active:
             self.adjust_widgets["balance"].set_value(0)
+            self.balance_value_changed(self.scale_widgets["balance"], None)
         self.scale_widgets["balance"].set_sensitive(active)
     
     def speaker_toggled(self, active):

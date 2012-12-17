@@ -5,35 +5,60 @@ Dependence (Debian)
 Deepin Settings Daemon
 git clone git@github.com:linuxdeepin/deepin-settings-daemon.git
 
+== Account module ==
 Python polkit_permission Bindings
 sudo apt-get install libpolkit-gobject-1-dev
 cd modules/account/src/
 sudo python setup.py install
 
+python-pexpect
+sudo apt-get install python-pexpect
+
+
+== display module ==
 Deepin XRandR Python Bindings
 git clone git@github.com:linuxdeepin/deepin-xrandr.git
 sudo python setup.py install
+
 
 Python Deepin GSettings Bindings
 git clone git@github.com:linuxdeepin/deepin-gsettings.git
 sudo python setup.py install
 
-python-pexpect
-sudo apt-get install python-pexpect
 
+== Keyboard module ==
 Python binding for libxklavier
 sudo apt-get install python-xklavier
+
+Python bindings for the GConf configuration database system
+sudo apt-get install python-gconf
 
 GNOME library to manage keyboard configuration
 sudo apt-get install libgnomekbd-common
 
+
+== system_information module ==
 Python bindings for the Gtop library
 sudo apt-get install python-gtop
 
+
+== network module ==
 Python network
 sudo apt-get install modemmanager, glib-networking, python-gudev,python-keyring ,network-manager, network-manager-pptp 
 network-manager-l2tp 安装参考https://launchpad.net/~seriy-pr/+archive/network-manager-l2tp
 sudo easy_install pytz
+
+
+== Sound module ==
+Python binding for DBus
+sudo apt-get install python-dbus
+同时还需要修改/etc/pulse/default.pa文件，将137行的内容：
+### Load DBus protocol
+#.ifexists module-dbus-protocol.so
+#load-module module-dbus-protocol
+#.endif
+前的注释去掉。
+
 
 
 注意
