@@ -88,7 +88,7 @@ class WirelessSetting(gtk.HBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self, access_point, new_connection_list=None, init_connections=False):
+    def init(self, access_point, new_connection_list=None, init_connections=False, all_adhoc=False):
         self.ssid = access_point
         if init_connections:
             self.sidebar.new_connection_list = []
@@ -98,8 +98,14 @@ class WirelessSetting(gtk.HBox):
 
         # Check connections
         if connection_associate == []:
-            connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
+            if all_adhoc:
+                self.sidebar.all_adhoc = True
+                connection = nm_module.nm_remote_settings.new_adhoc_connection("")
+            else:
+                self.sidebar.all_adhoc = False
+                connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
             connection_associate.append(connection)
+            self.sidebar.new_connection_list.append(connection)
             connections = connection_associate + connect_not_assocaite
 
         if new_connection_list:
@@ -146,21 +152,16 @@ class WirelessSetting(gtk.HBox):
 
     def save_changes(self, widget):
         connection = self.ipv4.connection
-        #self.wireless.save_change()
-        #self.ipv4.save_changes()
-        #self.ipv6.save_changes()
-        #self.security.save_setting()
-        #wireless_device = nmclient.get_wireless_devices()[0]
         if widget.label == "save":
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
                 if isinstance(connection, NMRemoteConnection):
                     connection.update()
                 else:
-                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                     index = self.sidebar.new_connection_list.index(connection)
+                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                     self.sidebar.new_connection_list.pop(index)
-                    self.init(None, self.sidebar.new_connection_list)
+                    self.init(self.wireless.wireless.ssid, self.sidebar.new_connection_list)
 
                     # reset index
                     con = self.sidebar.connection_tree.visible_items[this_index]
@@ -198,6 +199,7 @@ class SideBar(gtk.VBox):
         self.main_init_cb = main_init_cb
         self.check_click_cb = check_click_cb
         self.set_button = set_button_cb
+        self.all_adhoc = False
 
         # Build ui
         self.buttonbox = gtk.VBox(False, 6)
@@ -292,7 +294,10 @@ class SideBar(gtk.VBox):
             item.set_active(False)
 
     def add_new_connection(self, widget):
-        connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
+        if self.all_adhoc:
+            connection = nm_module.nm_remote_settings.new_adhoc_connection("")
+        else:
+            connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
         self.new_connection_list.append(connection)
         self.main_init_cb(self.ssid, self.new_connection_list)
 

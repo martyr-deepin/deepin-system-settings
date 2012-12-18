@@ -189,22 +189,24 @@ class NMSettingWireless (NMSetting):
         pass
 
     def adapt_wireless_commit(self):
+        import copy
+        clone_dict = copy.copy(self.prop_dict)
         if self.prop_dict["mode"] == "infrastructure":
-            self.adapt_infrastructure_commit()
+            self.adapt_infrastructure_commit(clone_dict)
         elif self.prop_dict["mode"] == "adhoc":
-            self.adapt_adhoc_commit()
+            self.adapt_adhoc_commit(clone_dict)
         else:
             pass
 
-    def adapt_infrastructure_commit(self):
-        for key in self.prop_dict.iterkeys():
+    def adapt_infrastructure_commit(self, clone_dict):
+        for key in clone_dict.iterkeys():
             if key not in ["bssid", "cloned-mac-address", "mac-address", "mode",
                            "mtu", "security", "ssid"]:
                 del self.prop_dict[key]
 
-    def adapt_adhoc_commit(self):
+    def adapt_adhoc_commit(self, clone_dict):
         '''need limit encrpty method in wireless security'''
-        for key in self.prop_dict.iterkeys():
+        for key in clone_dict.iterkeys():
             if key not in ["band","bssid", "channel", "cloned-mac-address", "mac-address", "mode",
                            "mtu", "ssid"]:
                 del self.prop_dict[key]

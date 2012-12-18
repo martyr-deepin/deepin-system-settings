@@ -192,7 +192,7 @@ class WirelessSection(gtk.VBox):
             self.pack_start(self.wireless, False, False)
             self.tree = TreeView([], enable_multiple_select = False)
             self.settings = None
-            self.wifi = PersonalWifi(self.send_to_crumb_cb)
+            self.wifi = PersonalWifi(send_to_crumb_cb)
 
             self.vbox = gtk.VBox()
             self.vbox.pack_start(self.tree)
@@ -284,12 +284,11 @@ class WirelessSection(gtk.VBox):
 class PersonalWifi(gtk.VBox):
 
     def __init__(self, send_to_crumb_cb):
-
         gtk.VBox.__init__(self, 0)
         cont = Contain(app_theme.get_pixbuf("/Network/wifi.png"), "个人热点", self.toggle_cb)
         self.pack_start(cont, False, False)
-        self.send_to_crumb_cb = send_to_crumb_cb
         self.settings = None
+        self.send_to_crumb_cb = send_to_crumb_cb
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -318,9 +317,7 @@ class PersonalWifi(gtk.VBox):
     def slide_to_event(self, widget, event):
         #connection = nm_module.nm_remote_settings.new_wireless_connection("")
         #self.settings.sidebar.new_connection_list.append(connection)
-        self.settings.init("your personal wifi",init_connections=True)
-        self.settings.wireless.wireless.mode = "adhoc"
-        self.settings.security.reset()
+        self.settings.init("",init_connections=True, all_adhoc=True)
         self.send_to_crumb_cb()
         slider.slide_to_page(self.settings, "right")
 
@@ -601,7 +598,6 @@ class Network(object):
         self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.mobile.add_setting_page(self.mobile_setting_page)
-        #wifi = PersonalWifi()
 
     def refresh(self):
         from nmlib.nm_secret_agent import NMSecretAgent
