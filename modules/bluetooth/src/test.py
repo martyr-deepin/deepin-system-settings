@@ -83,7 +83,7 @@ def test_adapter():
     adapter.set_powered(True)
     adapter.set_discoverable(True)
     adapter.set_pairable(True)
-    print "adapter properties:\n %s" % adapter.get_properties()
+    # print "adapter properties:\n %s" % adapter.get_properties()
     adapter.connect("device-found", on_device_found)
     adapter.connect("device-created", on_device_created)
 
@@ -117,37 +117,19 @@ def test_adapter():
     #     # print service.get_properties()
     #     uuid = service.get_uuid()
 
-    print "device nodes:\n %s" % device.get_nodes()    
+    # print "device nodes:\n %s" % device.get_nodes()    
 
-    mainloop = gobject.MainLoop()
-    mainloop.run()
-
-def test_pair():
-
-    from manager import Manager
-    from adapter import Adapter
-    manager = Manager()
-    adapter = Adapter(manager.get_default_adapter())
-    adapter.set_powered(True)
-    adapter.set_discoverable(True)
-    adapter.set_pairable(True)
-
-    from device import Device
-    while not adapter.get_devices():
-        adapter.start_discovery()
-        if adapter.get_devices():
-            adapter.stop_discovery()
-            break
-        else:
-            continue
-
-    device = Device(adapter.get_devices()[0])
-    adapter.create_paired_device(device.get_address(), "/org/bluez/agent", "DisplayYesNo")
+    ###pair
+    print device
+    from agent import Agent
+    path = "/org/bluez/agent"
+    agent = Agent(path)
+    agent.set_exit_on_release(False)
+    adapter.create_paired_device(device.get_address(), path, "DisplayYesNo")
 
     mainloop = gobject.MainLoop()
     mainloop.run()
 
 if __name__ == "__main__":
-    # test_adapter()
-    test_pair()
+    test_adapter()
     pass

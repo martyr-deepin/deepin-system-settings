@@ -22,7 +22,6 @@
 
 import dbus
 from nmsetting import NMSetting
-from nmlib.nmconstant import NMSettingParamFlags as pflag
 from nmlib.nm_utils import TypeConvert
 
 class NMSettingIP4Config (NMSetting):
