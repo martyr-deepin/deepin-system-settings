@@ -120,7 +120,10 @@ class Adapter(BusBase):
 
     ###Props    
     def get_properties(self):
-        return self.dbus_method("GetProperties")
+        if self.dbus_method("GetProperties"):
+            return self.dbus_method("GetProperties")
+        else:
+            return {}
 
     def set_property(self, key, value):
         return self.dbus_method("SetProperty", key, value)
