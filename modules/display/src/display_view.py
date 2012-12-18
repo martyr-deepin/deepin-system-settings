@@ -40,7 +40,7 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
-from dtk.ui.utils import get_optimum_pixbuf_from_file
+from dtk.ui.utils import get_optimum_pixbuf_from_file, color_hex_to_cairo
 from dtk.ui.draw import cairo_state
 import gobject
 import gtk
@@ -49,8 +49,8 @@ from display_manager import DisplayManager
 class MonitorResizableBox(ResizableBox):
     def __init__(self):
         ResizableBox.__init__(self)
-        self.output_width = 230
-        self.output_height = 170
+        self.output_width = 220
+        self.output_height = 120
 
     def expose_override(self, cr, rect):
         x, y = rect.x, rect.y
@@ -58,6 +58,11 @@ class MonitorResizableBox(ResizableBox):
         y += 10
         
         with cairo_state(cr):
+            cr.set_source_rgb(*color_hex_to_cairo("#DFDFDF"))
+            cr.rectangle(x, y, self.output_width, self.output_height)
+            cr.fill()
+            
+            cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
             cr.rectangle(x, y, self.output_width, self.output_height)
             cr.stroke()
 
@@ -148,7 +153,7 @@ class DisplayView(gtk.VBox):
         '''
         self.goto_align = self.__setup_align(0.0, 0.0, 0.0, 0.0)
         self.goto_box = gtk.VBox(spacing = self.box_spacing)
-        self.goto_label = self.__setup_label("如需要设置桌面壁纸和系统主题，请点击 个性化设置 ，电源相关设置请点击 电源设置。")
+        self.goto_label = self.__setup_label(text = "如需要设置桌面壁纸和系统主题，请点击 <span foreground=\"blue\" underline=\"single\">个性化设置</span> ，电源相关设置请点击 <span foreground=\"blue\" underline=\"single\">电源设置</span>。", wrap_width = 160)
         self.__widget_pack_start(self.goto_box, 
             [self.goto_label])
         self.goto_align.add(self.goto_box)
@@ -260,7 +265,7 @@ class DisplayView(gtk.VBox):
         '''
         self.__widget_pack_start(self.right_box, 
             [self.goto_align])
-        self.right_box.set_size_request(200, -1)
+        self.right_box.set_size_request(300, -1)
         self.right_align.add(self.right_box)
         '''
         main && body box
@@ -333,8 +338,13 @@ class DisplayView(gtk.VBox):
     def __resize_box(self, widget, height):
         self.monitor_resize_box.set_size_request(self.resize_width, height - self.padding_y)
 
-    def __setup_label(self, text="", width=50, align=ALIGN_END):
-        label = Label(text, None, DEFAULT_FONT_SIZE, align, width)
+    def __setup_label(self, text="", width=50, align=ALIGN_END, wrap_width=None):
+        label = Label(text = text, 
+                      text_color = None, 
+                      text_size = DEFAULT_FONT_SIZE, 
+                      text_x_align = align, 
+                      label_width = width, 
+                      wrap_width = wrap_width)
         return label
 
     def __setup_combo(self, items=[], width=120):
