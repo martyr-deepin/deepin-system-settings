@@ -20,6 +20,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+def bluetooth_verify_address(bdaddr):
+    if bdaddr == None:
+        return False
+
+    if len(bdaddr) != 17:
+        return False
+
+    for i in range(len(bdaddr)):
+        if ((i + 1) % 3) == 0:
+            if bdaddr[i] != ":":
+                return False
+            continue
+        if bdaddr[i] not in "0123456789abcdefABCDEF":
+            return False
+
+    return True    
 
 def bluetooth_class_to_type(klass):
     p = (klass & 0x1f00) >> 8
