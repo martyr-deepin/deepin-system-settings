@@ -145,5 +145,29 @@ def uuid16_to_string(uuid16):
     else:
         return None
 
+def bluetooth_uuid_to_string(uuid):
+    try:
+        is_custom = uuid.endswith("-0000-1000-8000-0002ee000002")
+    except:
+        print "is_custom except"
+        is_custom = False
+
+    parts = uuid.split("-")    
+
+    try:
+        import struct
+        uuid16 = struct.unpack("Q", parts[0])
+    except:
+        print "unpack uuid16 except"
+        uuid16 == 0
+
+    if uuid16 == 0:
+        return None
+    
+    if is_custom == False:
+        return uuid16_to_string(uuid16)
+    else:
+        return uuid16_custom_to_string(uuid16)
+
 if __name__ == "__main__":
     pass
