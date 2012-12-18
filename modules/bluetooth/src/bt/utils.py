@@ -79,5 +79,71 @@ def bluetooth_class_to_type(klass):
 
     return "any"    
         
+def uuid16_custom_to_string (uuid16):
+    if uuid16 == 0x2:
+	return "SyncMLClient"
+    elif uuid16 == 0x5601:
+        return "Nokia SyncML Server";
+    else:
+        return None
+
+def uuid16_to_string(uuid16):
+
+    if uuid16 == 0x1101:
+	return "SerialPort"
+    elif uuid16 == 0x1103:
+	return "DialupNetworking"
+    elif uuid16 == 0x1104:
+	return "IrMCSync"
+    elif uuid16 == 0x1105:
+	return "OBEXObjectPush"
+    elif uuid16 == 0x1106:
+	return "OBEXFileTransfer"
+    elif uuid16 == 0x1108:
+	return "HSP"
+    elif uuid16 == 0x110A:
+	return "AudioSource"
+    elif uuid16 == 0x110B:
+	return "AudioSink"
+    elif uuid16 == 0x110c:
+	return "A/V_RemoteControlTarget"
+    elif uuid16 == 0x110e:
+	return "A/V_RemoteControl"
+    elif uuid16 == 0x1112:
+	return "Headset_-_AG"
+    elif uuid16 == 0x1115:
+	return "PANU"
+    elif uuid16 == 0x1116:
+	return "NAP"
+    elif uuid16 == 0x1117:
+	return "GN"
+    elif uuid16 == 0x111e:
+	return "Handsfree";
+    elif uuid16 == 0x111F:
+	return "HandsfreeAudioGateway"
+    elif uuid16 == 0x1124:
+	return "HumanInterfaceDeviceService"
+    elif uuid16 == 0x112d:
+	return "SIM_Access"
+    elif uuid16 == 0x112F:
+	return "Phonebook_Access_-_PSE"
+    elif uuid16 == 0x1203:
+	return "GenericAudio";
+    elif uuid16 in [0x1000, 0x1200]:
+        # /* ServiceDiscoveryServerServiceClassID */
+        # /* PnPInformation */
+	# /* Those are ignored */
+        pass
+    elif uuid16 == 0x1201:
+	return "GenericNetworking";
+    elif uuid16 == 0x1303:
+	return "VideoSource";
+    elif uuid16 in [0x8e771303, 0x8e771301]:
+	return "SEMC HLA";
+    elif uuid16 == 0x8e771401:
+	return "SEMC Watch Phone";
+    else:
+        return None
+
 if __name__ == "__main__":
     pass
