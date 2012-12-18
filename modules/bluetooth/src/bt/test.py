@@ -120,11 +120,12 @@ def test_adapter():
     # print "device nodes:\n %s" % device.get_nodes()    
 
     ###pair
-    print device
+    print device.get_properties()
     from agent import Agent
     path = "/org/bluez/agent"
     agent = Agent(path)
     agent.set_exit_on_release(False)
+    print "create paired device"
     adapter.create_paired_device(device.get_address(), path, "DisplayYesNo")
 
     mainloop = gobject.MainLoop()

@@ -22,7 +22,7 @@
 
 import dbus
 import gobject
-from utils import BusBase
+from bus_utils import BusBase
 
 class Device(BusBase):
 

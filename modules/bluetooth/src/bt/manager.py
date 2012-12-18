@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gobject
-from utils import BusBase
+from bus_utils import BusBase
 
 class Manager(BusBase):
 
