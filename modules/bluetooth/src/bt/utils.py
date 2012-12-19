@@ -190,6 +190,19 @@ def bluetooth_uuid_to_string(uuid):
 def get_pincode_for_device(bttype, address, name, max_digits):
     pass
 
+def mount_ready_cb(result, user_data):
+    print "mount_ready_cb"
+    print result
+    print user_data
+    
+
+def bluetooth_browse_address(address):
+    import gio
+
+    address_uri = "obex://[%s]/" % address
+    address_file = gio.File(uri = address_uri)
+    address_file.mount_enclosing_volume(gio.MountOperation(), mount_ready_cb, gio.FILE_COPY_NONE, None, None)
 
 if __name__ == "__main__":
+    # bluetooth_browse_address("C4:6A:B7:1C:36:99")
     pass
