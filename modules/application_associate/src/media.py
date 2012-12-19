@@ -26,62 +26,106 @@ class MediaAutorun(object):
     
     def __init__(self):
         self.media_autorun_settings = deepin_gsettings.new("org.gnome.desktop.media-handling")
+
+        self.cd_content_type = "x-content/audio-cdda"
+        self.dvd_content_type = "x-content/video-dvd"
+        self.player_content_type = "x-content/audio-player"
+        self.photo_content_type = "x-content/image-dcf"
+        self.software_content_type = "x-content/unix-software"
         
-    def get_automount(self):
+    @property
+    def automount(self):
         if self.media_autorun_settings.get_boolean("automount") != None:
             return self.media_autorun_settings.get_boolean("automount")
         else:
             return True
-
-    def set_automount(self, automount):
+    @automount.setter
+    def automount(self, automount):
         self.media_autorun_settings.set_boolean("automount", automount)
     
-    def get_automount_open(self):
+    @property
+    def automount_open(self):
         if self.media_autorun_settings.get_boolean("automount-open") != None:
             return self.media_autorun_settings.get_boolean("automount-open")
         else:
             return True
-
-    def set_automount_open(self, automount_open):
+    @automount_open.setter
+    def automount_open(self, automount_open):
         self.media_autorun_settings.set_boolean("automount-open", automount_open)
 
-    def get_autorun_never(self):
+    @property
+    def autorun_never(self):
         if self.media_autorun_settings.get_boolean("autorun-never") != None:
             return self.media_autorun_settings.get_boolean("autorun-never")
         else:
             return False
-
-    def set_autorun_never(self, autorun_never):
+    @autorun_never.setter
+    def autorun_never(self, autorun_never):
         self.media_autorun_settings.set_boolean("autorun-never", autorun_never)
 
-    ###Attention for below list    
-    def get_autorun_x_content_ignore(self):
-        if self.media_autorun_settings.get_autorun_x_content_ignore() != None:
-            return self.media_autorun_settings.get_autorun_x_content_ignore()
+    @property
+    def autorun_x_content_ignore(self):
+        content = self.media_autorun_settings.get_strv("autorun-x-content-ignore")
+        if content is not None:
+            return content
         else:
             return []
 
-    def set_autorun_x_content_ignore(self, autorun_x_content_ignore):
+    @autorun_x_content_ignore.setter
+    def autorun_x_content_ignore(self, autorun_x_content_ignore):
         self.media_autorun_settings.set_strv("autorun-x-content-ignore", autorun_x_content_ignore)
 
-    def get_autorun_x_content_open_folder(self):
-        if self.media_autorun_settings.get_autorun_x_content_open_folder() != None:
-            return self.media_autorun_settings.get_autorun_x_content_open_folder()
+    def add_x_content_ignore(self, x_content):
+        if x_content not in self.autorun_x_content_ignore:
+            self.autorun_x_content_ignore += [x_content]
+    
+    def remove_x_content_ignore(self, x_content):
+        if x_content in self.autorun_x_content_ignore:
+            content = self.autorun_x_content_ignore
+            content.remove(x_content)
+            self.autorun_x_content_ignore = content
+
+    @property
+    def autorun_x_content_open_folder(self):
+        content = self.media_autorun_settings.get_strv("autorun-x-content-open-folder")
+        if content is not None:
+            return content
         else:
             return []
-        
-    def set_autorun_x_content_open_folder(self, autorun_x_content_open_folder):
+    @autorun_x_content_open_folder.setter 
+    def autorun_x_content_open_folder(self, autorun_x_content_open_folder):
         self.media_autorun_settings.set_strv("autorun-x-content-open-folder",autorun_x_content_open_folder)
         
-    def get_autorun_x_content_start_app(self):
-        if self.media_autorun_settings.get_autorun_x_content_start_app() != None:
-            return self.media_autorun_settings.get_autorun_x_content_start_app()
+    def add_x_content_open_folder(self, x_content):
+        if x_content not in self.autorun_x_content_open_folder:
+            self.autorun_x_content_open_folder += [x_content]
+    
+    def remove_x_content_open_folder(self, x_content):
+        if x_content in self.autorun_x_content_open_folder:
+            content = self.autorun_x_content_open_folder
+            content.remove(x_content)
+            self.autorun_x_content_open_folder = content
+    @property
+    def autorun_x_content_start_app(self):
+        content = self.media_autorun_settings.get_strv("autorun-x-content-start-app")
+        if content is not None:
+            return content
         else:
             return []
-        
-    def set_autorun_x_content_start_app(self, autorun_x_content_start_app):
+
+    @autorun_x_content_start_app.setter 
+    def autorun_x_content_start_app(self, autorun_x_content_start_app):
         self.media_autorun_settings.set_strv("autorun-x-content-start-app", autorun_x_content_start_app)
 
+    def add_x_content_start_app(self, x_content):
+        if x_content not in self.autorun_x_content_start_app:
+            self.autorun_x_content_start_app += [x_content]
+    
+    def remove_x_content_start_app(self, x_content):
+        if x_content in self.autorun_x_content_start_app:
+            content = self.autorun_x_content_start_app
+            content.remove(x_content)
+            self.autorun_x_content_start_app = content
 
 if __name__ == "__main__":
     pass
