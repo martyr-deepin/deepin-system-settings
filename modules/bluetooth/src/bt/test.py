@@ -163,6 +163,6 @@ def test_service():
 
 if __name__ == "__main__":
     # test_adapter_prop()
-    # test_found_pair()
-    test_service()
+    test_found_pair()
+    # test_service()
     pass
