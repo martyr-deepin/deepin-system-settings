@@ -232,6 +232,7 @@ class DisplayManager:
         return self.__xrandr_settings.get_double("brightness") * 100.0
     
     def set_screen_brightness(self, output_name, value):
+        pattern = re.compile(r"(.*?) \((.*?)\)")
         i = 0
         
         if value <= 0.0 or value > 1.0:
@@ -239,7 +240,9 @@ class DisplayManager:
 
         self.__xrandr_settings.set_double("brightness", value)
         while i < len(self.__output_names):
-            run_command("xrandr --output %s --brightness %f" % (self.__output_names[i], value))
+            result = pattern.search(self.__output_names[i])
+            if result != None:
+                run_command("xrandr --output %s --brightness %f" % (result.group(2), value))
 
             i += 1
 
