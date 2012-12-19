@@ -42,30 +42,87 @@ from dtk.ui.scalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
 from dtk.ui.utils import get_optimum_pixbuf_from_file, color_hex_to_cairo
-from dtk.ui.draw import cairo_state
+from dtk.ui.draw import cairo_state, draw_text
 import gobject
 import gtk
+import pango
+
 from display_manager import DisplayManager
 
 class MonitorResizableBox(ResizableBox):
-    def __init__(self):
+    def __init__(self, display_manager):
         ResizableBox.__init__(self)
+
+        self.__display_manager = display_manager
+
         self.output_width = 220
         self.output_height = 120
+        self.output_padding = 3
+        self.output_small_size = 20
+        self.text_size = 10
+
+        self.__eventx = 0
+        self.__eventy = 0
+
+        self.connect("button-press-event", self.__button_press)
+
+    def __button_press(self, widget, event):
+        self.__eventx = event.x
+        self.__eventy = event.y
+        self.invalidate()
 
     def expose_override(self, cr, rect):
         x, y = rect.x, rect.y
         x = (self.width - self.output_width) / 2
         y += 10
         
+        output_infos = self.__display_manager.get_output_info()
+        i = 0
+
         with cairo_state(cr):
-            cr.set_source_rgb(*color_hex_to_cairo("#DFDFDF"))
-            cr.rectangle(x, y, self.output_width, self.output_height)
-            cr.fill()
-            
-            cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
-            cr.rectangle(x, y, self.output_width, self.output_height)
-            cr.stroke()
+            for output_name in output_infos:
+                output_x = x + i * (self.output_width + self.output_padding)
+                output_width = self.output_width - i * self.output_small_size
+                output_height = self.output_height - i * self.output_small_size
+                output_display_name = self.__display_manager.get_output_display_name(output_name)
+
+                cr.set_source_rgb(*color_hex_to_cairo("#DFDFDF"))
+                cr.rectangle(output_x, 
+                             y, 
+                             output_width, 
+                             output_height)
+                cr.fill()
+
+                draw_text(cr = cr, 
+                          markup = output_display_name, 
+                          x = output_x, 
+                          y = y + (output_height - self.text_size) / 2, 
+                          w = output_width, 
+                          h = 10,
+                          text_size = self.text_size, 
+                          alignment = pango.ALIGN_CENTER)
+           
+                cr.set_source_rgb(*color_hex_to_cairo("#797979"))
+                cr.rectangle(output_x, 
+                             y, 
+                             output_width, 
+                             output_height)
+                cr.stroke()
+
+                if self.__eventx > output_x + output_width or self.__eventx < output_x:
+                    i += 1
+                    continue
+
+                cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
+                cr.rectangle(output_x, 
+                             y, 
+                             output_width, 
+                             output_height)
+                cr.stroke()
+
+                i += 1
+
+gobject.type_register(MonitorResizableBox)
 
 class DisplayView(gtk.VBox):
     '''
@@ -127,7 +184,7 @@ class DisplayView(gtk.VBox):
         monitor operation && detect
         '''
         self.monitor_resize_align = self.__setup_align()
-        self.monitor_resize_box = MonitorResizableBox()
+        self.monitor_resize_box = MonitorResizableBox(self.display_manager)
         self.monitor_resize_box.connect("resize", self.__resize_box)
         self.monitor_resize_align.add(self.monitor_resize_box)
         '''
@@ -315,6 +372,8 @@ class DisplayView(gtk.VBox):
             self.__current_output_name = item_value
             self.__setup_sizes_items()
             self.sizes_combo.set_items(items = self.sizes_items, max_width = 160)
+            self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.__current_output_name, 
+                                                                                         self.sizes_items))
             return
 
         if object == "sizes_combo":
