@@ -161,8 +161,42 @@ def test_service():
     mainloop = gobject.MainLoop()
     mainloop.run()
 
+def test_phone():
+    '''must had paired first, use xiaomi for test'''
+
+    def send_file(device, files):
+        pass
+
+    def browse_device(device):
+        pass
+    
+    def connect_phone_audio(device):
+        from device import AudioSource
+        audiosource = AudioSource(device.object_path)
+        ###when connect, voice switch from phone to my'pc
+        if audiosource.get_state() == "disconnected":
+            audiosource.connect()
+
+
+    from manager import Manager
+    from adapter import Adapter
+    from device import Device
+
+    manager = Manager()
+    adapter = Adapter(manager.get_default_adapter())
+    if adapter.get_devices():
+        device = Device(adapter.get_devices()[0])
+    else:
+        print "after paired, should exists devices"
+
+    connect_phone_audio(device)    
+
+    mainloop = gobject.MainLoop()
+    mainloop.run()
+
 if __name__ == "__main__":
     # test_adapter_prop()
-    test_found_pair()
+    # test_found_pair()
     # test_service()
+    test_phone()
     pass

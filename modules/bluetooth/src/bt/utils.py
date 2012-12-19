@@ -190,12 +190,6 @@ def bluetooth_uuid_to_string(uuid):
 def get_pincode_for_device(bttype, address, name, max_digits):
     pass
 
-def mount_ready_cb(result, user_data):
-    print "mount_ready_cb"
-    print result
-    print user_data
-    
-
 def bluetooth_browse_address(address):
     import subprocess
 
