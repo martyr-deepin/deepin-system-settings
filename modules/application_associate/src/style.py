@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+
+# 框架类别-上下间距
+FRAME_HORIZONTAL_SPACING = 4
+# 框架类别-左右间距
+FRAME_VERTICAL_SPACING = 4
+
+# 框架类别-窗口左空白
+FRAME_LEFT_PADDING = 20
+# 框架类别-窗口上空白
+FRAME_TOP_PADDING = 15
+
+# 文字控件类别-窗口左空白
+TEXT_WINDOW_LEFT_PADDING = 50
+TEXT_WINDOW_TOP_PADDING = 35
+# 文字控件类别-右对齐间距
+TEXT_WINDOW_RIGHT_WIDGET_PADDING = 10
+# 文字控件类别-提示信息宽
+TIP_BOX_WIDTH = 180
+
+# 默认文字大小
+DEFAULT_FONT_SIZE = 12
+# 标题文字大小
+TITLE_FONT_SIZE = 14
+# 垂直间隔
+BETWEEN_SPACING = 15
+# 容器高度
+CONTAINNER_HEIGHT = 30
+# 容器内间距
+WIDGET_SPACING = 10
+
+# 提示信息
+# STATUS_HEIGHT = 35
+
+
+WINDOW_HEIGHT = 535
+WINDOW_WIDTH = 800
