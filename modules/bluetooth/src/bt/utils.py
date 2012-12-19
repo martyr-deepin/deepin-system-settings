@@ -197,11 +197,11 @@ def mount_ready_cb(result, user_data):
     
 
 def bluetooth_browse_address(address):
-    import gio
+    import subprocess
 
     address_uri = "obex://[%s]/" % address
-    address_file = gio.File(uri = address_uri)
-    address_file.mount_enclosing_volume(gio.MountOperation(), mount_ready_cb, gio.FILE_COPY_NONE, None, None)
+    commands = "xdg-open %s" % address_uri
+    subprocess.call(commands, shell = True)
 
 if __name__ == "__main__":
     # bluetooth_browse_address("C4:6A:B7:1C:36:99")
