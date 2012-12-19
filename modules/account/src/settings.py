@@ -26,7 +26,7 @@ import utils
 
 ACCOUNT = accounts.Accounts()
 PERMISSION = utils.PolkitPermission("org.freedesktop.accounts.user-administration")
-PERMISSION1 = utils.PolkitPermission("com.deepin.passwdservice.modify-password")
+#PERMISSION1 = utils.PolkitPermission("com.deepin.passwdservice.modify-password")
 
 def check_is_myown(uid):
     '''
