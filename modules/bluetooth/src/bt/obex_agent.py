@@ -25,65 +25,41 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 
-class Rejected(dbus.DBusException):
-    _dbus_error_name = "org.bluez.Error.Rejected"
-
-class MediaPlayer(dbus.service.Object):
-
-    def __init__(self, path = "/org/bluez/mediaplayer", bus = None):
+class ObexAgent(dbus.service.Object):
+	
+    def __init__(self, path = "/org/openobex/agent", bus = None):
         if bus is None:
-	    bus = dbus.SystemBus()    
+	    bus = dbus.SessionBus()    
     
         dbus.service.Object.__init__(self, bus, path)	
-	
-    @property
-    def Equalizer(self):
-	pass
-
-    @property
-    def Repeat(self):
-	pass    
-
-    @property
-    def Shuffle(self):
-	pass
-
-    @property
-    def Scan(self):
-	pass
-
-    @property
-    def Status(self):
-    ###readonly	    
-	pass    
     
-    @property
-    def Position(self):
-    ###readonly
-	pass    
-
-    @dbus.service.method("org.bluez.MediaPlayer", in_signature="sv", out_signature="")
-    def SetProperty(self, key, value):
-	pass
+    @dbus.service.method("org.openobex.Agent", in_signature="o", out_signature="s")
+    def Request(self, transfer):
+        pass
     
-    @dbus.service.method("org.bluez.MediaPlayer", in_signature="", out_signature="")
+    @dbus.service.method("org.openobex.Agent", in_signature="ot", out_signature="")
+    def Progress(self, transfer, transferred):
+        pass
+
+    @dbus.service.method("org.openobex.Agent", in_signature="o", out_signature="")
+    def Complete(self, transfer):
+        pass
+    
+    @dbus.service.method("org.openobex.Agent", in_signature="", out_signature="")
     def Release(self):
-	pass
+        pass
     
-    @dbus.service.signal("org.bluez.MediaPlayer", in_signature="sv", out_signature="")
-    def PropertyChanged(self, setting, value):
-	pass
-    
-    @dbus.service.signal("org.bluez.MediaPlayer", in_signature="v", out_signature="")
-    def TrackChanged(self, metadata):
-	pass    
+    @dbus.service.method("org.openobex.Agent", in_signature="os", out_signature="")
+    def Error(self, transfer, message):
+        pass
+
 
 if __name__ == '__main__':
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 
-    bus = dbus.SystemBus()
-    path = "/test/mediaplayer"
+    path = "/org/openobex/agent"
 
-    mediaplayer = MediaPlayer(path, bus)
+    agent = ObexAgent(path)
+
     mainloop = gobject.MainLoop()
     mainloop.run()

@@ -53,7 +53,7 @@ class DisplayManager:
         self.__xmldoc = minidom.parse(self.__monitors_xml_filename) 
         self.__primary_output_name = None
         self.__output_names = []
-        self.__output_info_by_xml = {}
+        self.__output_info_by_xml = []
 
         self.init_xml()
 
@@ -72,11 +72,12 @@ class DisplayManager:
     
     def init_xml(self):
         self.__xmldoc = minidom.parse(self.__monitors_xml_filename)
+        tmp_list = []
 
         if self.__xmldoc != None:
             outputs = self.__xmldoc.getElementsByTagName("output")
        
-            self.__output_info_by_xml.clear()
+            del self.__output_info_by_xml[:]
             for output in outputs:
                 output_name = output.attributes["name"].value
                 width = output.getElementsByTagName("width")
@@ -89,17 +90,34 @@ class DisplayManager:
             
                 if len(width) == 0 or len(height) == 0 or len(x) ==0 or len(y) == 0 or len(rotation) == 0 or len(primary) == 0:
                     continue
+
+                if output_name in tmp_list:
+                    continue
+                else:
+                    tmp_list.append(output_name)
             
+                '''
+                TODO: self.__output_info_by_xml {
+                          output_name, 
+                          screen_size, 
+                          x, 
+                          y, 
+                          rotation, 
+                          is_primary
+                      }
+                '''
                 is_primary = self.__getText(primary[0].childNodes)
+                output_item = (output_name, 
+                               "%sx%s" % (self.__getText(width[0].childNodes), self.__getText(height[0].childNodes)), 
+                               self.__getText(x[0].childNodes), 
+                               self.__getText(y[0].childNodes), 
+                               self.__getText(rotation[0].childNodes), 
+                               is_primary)
                 if is_primary == "yes":
                     self.__primary_output_name = output_name
-                
-                self.__output_info_by_xml[output_name] = {
-                    'screen_size':"%sx%s" % (self.__getText(width[0].childNodes), self.__getText(height[0].childNodes)),
-                    'x':self.__getText(x[0].childNodes), 
-                    'y':self.__getText(y[0].childNodes), 
-                    'rotation':self.__getText(rotation[0].childNodes), 
-                    'primary':is_primary}
+                    self.__output_info_by_xml.insert(0, output_item)
+                else:
+                    self.__output_info_by_xml.append(output_item)
     
     def get_output_info(self):
         return self.__output_info_by_xml
@@ -157,6 +175,17 @@ class DisplayManager:
     
     def get_primary_output_name(self):
         return self.__primary_output_name
+    
+    def get_output_name_index(self, output_name, items):
+        i = 0
+
+        for item in items:
+            if item[1] == output_name:
+                return i
+
+            i += 1
+
+        return 0
     
     def get_primary_output_name_index(self, items):
         i = 0
@@ -220,12 +249,15 @@ class DisplayManager:
         return ret_sizes
 
     def get_screen_size(self, output_name):
-        screen_size = ""
+        i = 0
 
-        if self.__output_info_by_xml.has_key(output_name):
-            screen_size = self.__output_info_by_xml[output_name]['screen_size']
+        while i < len(self.__output_info_by_xml):
+            if self.__output_info_by_xml[i][0] == output_name:
+                return self.__output_info_by_xml[i][1]
 
-        return screen_size
+            i += 1
+
+        return ""
 
     def get_screen_size_index(self, output_name, items):
         screen_size = self.get_screen_size(output_name)
@@ -249,12 +281,15 @@ class DisplayManager:
         self.__update_xml(output_name = output_name_value, x = x_value, y = y_value)
 
     def get_screen_rotation(self, output_name):
-        rotation = ""
+        i = 0
 
-        if self.__output_info_by_xml.has_key(output_name):
-            rotation = self.__output_info_by_xml[output_name]['rotation']
+        while i < len(self.__output_info_by_xml):
+            if self.__output_info_by_xml[i][0] == output_name:
+                return self.__output_info_by_xml[i][4]
 
-        return rotation
+            i += 1
+
+        return ""
 
     def get_screen_rotation_index(self, output_name):
         rotation = self.get_screen_rotation(output_name)

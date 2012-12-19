@@ -50,10 +50,15 @@ import pango
 from display_manager import DisplayManager
 
 class MonitorResizableBox(ResizableBox):
+    __gsignals__ = {                                                             
+        "select-output" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),}
+    
     def __init__(self, display_manager):
         ResizableBox.__init__(self)
 
         self.__display_manager = display_manager
+
+        self.select_output_name = None
 
         self.output_width = 220
         self.output_height = 120
@@ -67,10 +72,22 @@ class MonitorResizableBox(ResizableBox):
         self.connect("button-press-event", self.__button_press)
 
     def __button_press(self, widget, event):
+        self.select_output_name = None
         self.__eventx = event.x
         self.__eventy = event.y
         self.invalidate()
 
+    def select_output(self, output_name):
+        output_names = self.__display_manager.get_output_names()
+        i = 0
+
+        while i < len(output_names):
+            if output_names[i].find(output_name):
+                self.select_output_name = output_name
+                return
+
+            i += 1
+    
     def expose_override(self, cr, rect):
         x, y = rect.x, rect.y
         x = (self.width - self.output_width) / 2
@@ -80,12 +97,13 @@ class MonitorResizableBox(ResizableBox):
         i = 0
 
         with cairo_state(cr):
-            for output_name in output_infos:
+            while i < len(output_infos):
                 output_x = x + i * (self.output_width + self.output_padding)
                 output_width = self.output_width - i * self.output_small_size
                 output_height = self.output_height - i * self.output_small_size
+                output_name = output_infos[i][0]
                 output_display_name = self.__display_manager.get_output_display_name(output_name)
-
+                
                 cr.set_source_rgb(*color_hex_to_cairo("#DFDFDF"))
                 cr.rectangle(output_x, 
                              y, 
@@ -109,6 +127,11 @@ class MonitorResizableBox(ResizableBox):
                              output_height)
                 cr.stroke()
 
+                if self.select_output_name == output_name:
+                    cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
+                    cr.rectangle(output_x, y, output_width, output_height)
+                    cr.stroke()
+                
                 if self.__eventx > output_x + output_width or self.__eventx < output_x:
                     i += 1
                     continue
@@ -119,6 +142,7 @@ class MonitorResizableBox(ResizableBox):
                              output_width, 
                              output_height)
                 cr.stroke()
+                self.emit("select-output", output_name)
 
                 i += 1
 
@@ -185,6 +209,8 @@ class DisplayView(gtk.VBox):
         '''
         self.monitor_resize_align = self.__setup_align()
         self.monitor_resize_box = MonitorResizableBox(self.display_manager)
+        self.monitor_resize_box.select_output(self.__current_output_name)
+        self.monitor_resize_box.connect("select-output", self.__select_output)
         self.monitor_resize_box.connect("resize", self.__resize_box)
         self.monitor_resize_align.add(self.monitor_resize_box)
         '''
@@ -338,6 +364,20 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.main_box)
         self.pack_start(self.scrolled_window)
 
+    def __change_current_output(self, output_name, from_monitor_combo=True):
+        self.__current_output_name = output_name
+
+        if not from_monitor_combo:
+            self.monitor_combo.set_select_index(self.display_manager.get_output_name_index(output_name, self.monitor_items))
+
+        self.__setup_sizes_items()                                           
+        self.sizes_combo.set_items(items = self.sizes_items, max_width = 160)
+        self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(
+            self.__current_output_name, self.sizes_items))
+    
+    def __select_output(self, widget, output_name):
+        self.__change_current_output(output_name, False)
+    
     def __xrandr_changed(self, key):
         if key != "output-names":
             return
@@ -369,11 +409,7 @@ class DisplayView(gtk.VBox):
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "monitor_combo":
-            self.__current_output_name = item_value
-            self.__setup_sizes_items()
-            self.sizes_combo.set_items(items = self.sizes_items, max_width = 160)
-            self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.__current_output_name, 
-                                                                                         self.sizes_items))
+            self.__change_current_output(item_value)
             return
 
         if object == "sizes_combo":

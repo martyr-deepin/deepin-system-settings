@@ -60,8 +60,8 @@ def test_adapter_prop():
     print "get address:\n    %s" % adapter.get_address()
     print "get uuids:\n    %s" % adapter.get_uuids()
 
-def test_adapter():
-
+def test_found_pair():
+    '''test_found_pair'''
     def on_device_found(adapter, address, values):
         print "address of found device \n %s " % address
         if address not in adapter.get_address_records():
@@ -70,35 +70,15 @@ def test_adapter():
             return adapter.create_device(address)
         else:
             # print "device already exists"
-            # return adapter.find_device(address)
+            if adapter.get_discovering():
+                print "stop discovery"
+                adapter.stop_discovery()
             pass
 
     def on_device_created(adapter, dev_path):
         print "path of created device \n %s" % dev_path
         device = Device(dev_path)
         pair(device)
-
-    def discover_services(device):
-        # discovery services
-        print "device discovery service:\n %s" % device.discover_services()
-        services = device.discover_services()
-        import re
-        for key in services.keys():
-            p = re.compile(">.*?<")
-            xml = p.sub("><", services[key].replace("\n", ""))
-            print "[ 0x%5x ]" % (key)
-            print xml
-            print
-
-    def get_services(device):
-        # get services
-        servs = device.get_services()
-        from device_service import DeviceService
-        if servs:
-            service = DeviceService(servs[0])
-            # print service.get_properties()
-            uuid = service.get_uuid()
-            print uuid
 
     def pair(device):        
         from agent import Agent
@@ -112,11 +92,9 @@ def test_adapter():
 
     def create_paired_reply(device):
         print "succeed paired device (%s)" % (device)
-	mainloop.quit()
 
     def create_paired_error(error):
         print "paired device failed: %s" % (error)
-	mainloop.quit()
 
     from manager import Manager
     from adapter import Adapter
@@ -136,11 +114,55 @@ def test_adapter():
     else:
         pass
 
+    print "begin discovery \n"
     adapter.start_discovery()
 
     mainloop = gobject.MainLoop()
     mainloop.run()
 
+def test_service():
+    '''should had paired first'''
+    def device_discover_services(device):
+        # discovery services
+        services = device.discover_services()
+        import re
+        for key in services.keys():
+            p = re.compile(">.*?<")
+            xml = p.sub("><", services[key].replace("\n", ""))
+            print "[ 0x%5x ]" % (key)
+            print xml
+            print
+
+    def device_get_services(device):
+        # get services
+        from device_service import DeviceService
+        from utils import bluetooth_uuid_to_string
+
+        for serv in device.get_services():
+            service = DeviceService(serv)
+            uuid = service.get_uuid()
+            print "uuid:%s" % uuid
+            print bluetooth_uuid_to_string(uuid)
+
+    from manager import Manager
+    from adapter import Adapter
+    from device import Device
+
+    manager = Manager()
+    adapter = Adapter(manager.get_default_adapter())
+    if adapter.get_devices():
+        device = Device(adapter.get_devices()[0])
+    else:
+        print "after paired, should exists devices"
+
+    # device_get_services(device)    
+    device_discover_services(device)    
+
+    mainloop = gobject.MainLoop()
+    mainloop.run()
+
 if __name__ == "__main__":
-    test_adapter()
+    # test_adapter_prop()
+    # test_found_pair()
+    test_service()
     pass
