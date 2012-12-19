@@ -20,6 +20,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    import xml.etree.cElementTree as ET
+except:
+    import xml.etree.ElementTree as ET
+
 def bluetooth_verify_address(bdaddr):
     if bdaddr == None:
         return False
