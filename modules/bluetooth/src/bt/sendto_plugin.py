@@ -20,6 +20,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import deepin_gsettings
+
+nst_settings = deepin_gsettings.new("org.gnome.Bluetooth.nst")
+contacts_settings = deepin_gsettings.new("org.gnome.Contacts")
+sendto_settings = deepin_gsettings.new("org.gnome.Nautilus.Sendto")
+
+def get_last_used_device():
+    '''The last Bluetooth device we sent files to'''
+    return nst_settings.get_string("last-used")
+
+def set_last_used_device(address):
+    nst_settings.set_string("last-used", address)
+
+def get_contacts_first_setup():
+    if contacts_settings.get_boolean("did-initial-setup") == None:
+        return False
+    return contacts_settings.get_boolean("did-initial-setup")
+
+def get_sendto_last_compress():
+    return sendto_settings.get_int("last-compress")
+
+def get_sendto_last_meidum():
+    return sendto_settings.get_string("last-medium")
 
 if __name__ == "__main__":
     pass
