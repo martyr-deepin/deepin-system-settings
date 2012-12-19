@@ -23,6 +23,7 @@
 from dtk.ui.init_skin import init_skin
 from dtk.ui.utils import get_parent_dir
 import os
+import re
 
 app_theme = init_skin(
     "deepin-display-settings", 
@@ -88,7 +89,7 @@ class DisplayView(gtk.VBox):
         self.resize_height = 200
         self.monitor_items = []
         self.__output_names = []
-        self.__current_output_name = None
+        self.__current_output_name = self.display_manager.get_primary_output_name()
         self.__setup_monitor_items()
         self.sizes_items = []
         self.monitor_combo = None
@@ -293,16 +294,17 @@ class DisplayView(gtk.VBox):
     
     def __setup_monitor_items(self):
         self.__output_names = self.display_manager.get_output_names()
+        pattern = re.compile(r"(.*?) \((.*?)\)")
         i = 0
 
         self.monitor_items = []
         while (i < len(self.__output_names)):
-            self.monitor_items.append((self.__output_names[i], i))
+            result = pattern.search(self.__output_names[i])
+            if result != None:
+                self.monitor_items.append((result.group(1), result.group(2)))
             i += 1
 
     def __setup_sizes_items(self):
-        if self.__current_output_name == None:
-            self.__current_output_name = self.display_manager.get_primary_output_name()
         i = 0
 
         screen_sizes = self.display_manager.get_screen_sizes(self.__current_output_name)
@@ -313,18 +315,16 @@ class DisplayView(gtk.VBox):
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "monitor_combo":
-            self.__current_output_name = self.monitor_combo.items[self.monitor_combo.select_index][0]
+            self.__current_output_name = item_value
             self.__setup_sizes_items()
             return
 
         if object == "sizes_combo":
-            self.display_manager.set_screen_size(self.monitor_combo.items[self.monitor_combo.select_index][0], 
-                                                 self.sizes_items[item_value][0])
+            self.display_manager.set_screen_size(self.__current_output_name, self.sizes_items[item_value][0])
             return
         
         if object == "rotation_combo":
-            self.display_manager.set_screen_rotation(self.monitor_combo.items[self.monitor_combo.select_index][0], 
-                                                     item_value)
+            self.display_manager.set_screen_rotation(self.__current_output_name, item_value)
             return
 
         if object == "close_monitor_combo":
