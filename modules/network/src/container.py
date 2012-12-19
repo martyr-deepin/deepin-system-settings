@@ -39,7 +39,7 @@ class Contain(gtk.Alignment):
                 active_disable_dpixbuf = app_theme.get_pixbuf("/Network/switch_off_active.png"))
 
         self.switch.connect("toggled", self.active_cb)
-        self.hbox.pack_start(self.switch)
+        self.hbox.pack_start(self.switch, False , False)
     
     def set_active(self, state):
         self.switch.set_active(state)

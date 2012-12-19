@@ -10,7 +10,7 @@ from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeView
 from dtk.ui.draw import  draw_line
-from dtk.ui.utils import color_hex_to_cairo, get_parent_dir, is_dbus_name_exists, container_remove_all
+from dtk.ui.utils import color_hex_to_cairo, get_parent_dir, is_dbus_name_exists, container_remove_all, get_content_size
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
@@ -136,19 +136,21 @@ class WiredSection(gtk.VBox):
                     self.wire.set_active(False)
 
 class WirelessDevice(object):
-    def __init__(self, device, treeview, ap_list):
+    def __init__(self, device, treeview, ap_list, refresh_list):
         self.wireless_device = device
         self.ap_list = ap_list
         self.tree = treeview
+        self.refresh_list = refresh_list
         self.device_wifi = cache.get_spec_object(self.wireless_device.object_path)
         self.wireless_device.connect("device-active", self.device_is_active)
         self.wireless_device.connect("device-deactive", self.device_is_deactive)
         self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
+        self.device_wifi.connect("access-point-added", self.ap_added)
 
         #self.device_wifi.connect_after("try-ssid-end", self.try_ssid_end)
 
     def try_to_connect(self, widget, ssid):
-        #print "try_to_connect"
+        print "try_to_connect"
         #print ssid
         ap_list  = [ap.get_ssid() for ap in self.ap_list]
         index = ap_list.index(ssid)
@@ -161,11 +163,17 @@ class WirelessDevice(object):
         # FIXME little wierd
         if widget.is_active():
             #print "widget is active"
-            index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-            self.index = index
-            self.tree.visible_items[index].network_state = 2
-            self.tree.queue_draw()
-    
+            try:
+                index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+                self.index = index
+                self.tree.visible_items[index].network_state = 2
+                self.tree.queue_draw()
+            except IndexError:
+                pass
+
+    def ap_added(self, ap_object):
+        print "ad_added"
+
     def device_is_deactive(self, widget, reason):
         print "wireless deactive"
         if not reason == 0:
@@ -185,18 +193,16 @@ class WirelessSection(gtk.VBox):
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
-
             self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
 
             self.pack_start(self.wireless, False, False)
-            self.tree = TreeView([], enable_multiple_select = False)
+            self.tree = TreeView([], enable_multiple_select=False)
             self.settings = None
-            self.wifi = PersonalWifi(send_to_crumb_cb)
-
-            self.vbox = gtk.VBox()
+            self.hotspot = HotSpot(send_to_crumb_cb)
+            self.vbox = gtk.VBox(False, False)
             self.vbox.pack_start(self.tree)
-            self.vbox.pack_start(self.wifi)
+            self.vbox.pack_start(self.hotspot)
             self.vbox.set_no_show_all(True)
             self.vbox.hide()
             self.align = gtk.Alignment()
@@ -206,43 +212,50 @@ class WirelessSection(gtk.VBox):
             self.align.add(self.vbox)
 
             self.pack_start(self.align, False, False, 0)
+
+    def ap_added(self):
+        self.show_ap_list()
     
     def add_setting_page(self, page):
         self.settings = page
-        self.wifi.add_setting_page(page)
+        self.hotspot.add_setting_page(page)
         if self.wireless_devices:
             for wireless_device in self.wireless_devices:
                 if wireless_device.is_active():
                     self.wireless.set_active(True)
                 else:
                     self.wireless.set_active(False)
+    
+    def show_ap_list(self):
+        item_list = self.retrieve_list()
+        if item_list:
+            self.tree.add_items(item_list,0,True)
+            self.tree.visible_items[-1].is_last = True
+            self.vbox.set_no_show_all(False)
+            self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+        else:
+            self.tree.delete_all_items()
+        self.queue_draw()
+        self.show_all()
+
+        for wireless_device in self.wireless_devices:
+            WirelessDevice(wireless_device, self.tree, self.ap_list,self.show_ap_list)
+
+        index = self.get_actives(self.ap_list)
+        if index:
+            for i in index:
+                self.tree.visible_items[i].network_state = 2
+        else:
+            for wireless_device in self.wireless_devices:
+                device_wifi = cache.get_spec_object(wireless_device.object_path)
+                device_wifi.auto_connect()
+        self.index = index
 
     def toggle_cb(self, widget):
+        print "toggled"
         active = widget.get_active()
         if active: 
-            item_list = self.retrieve_list()
-            if item_list:
-                self.tree.add_items(item_list,0,True)
-                self.tree.visible_items[-1].is_last = True
-                self.vbox.set_no_show_all(False)
-                self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-            else:
-                self.tree.delete_all_items()
-            self.queue_draw()
-            self.show_all()
-
-            for wireless_device in self.wireless_devices:
-                WirelessDevice(wireless_device, self.tree, self.ap_list)
-
-            index = self.get_actives(self.ap_list)
-            if index:
-                for i in index:
-                    self.tree.visible_items[i].network_state = 2
-            else:
-                for wireless_device in self.wireless_devices:
-                    device_wifi = cache.get_spec_object(wireless_device.object_path)
-                    device_wifi.auto_connect()
-            self.index = index
+            self.show_ap_list()
         else:
             self.tree.delete_all_items()
             #self.tree.add_items([],0,True)
@@ -281,7 +294,7 @@ class WirelessSection(gtk.VBox):
 
         return index
                 
-class PersonalWifi(gtk.VBox):
+class HotSpot(gtk.VBox):
 
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self, 0)
@@ -295,28 +308,15 @@ class PersonalWifi(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0, 0.0, 1, 1)
             self.align.set_padding(0, 0, PADDING,0)
-            #self.align.show()
-            #self.h = gtk.HBox()
-            #self.h.show()
-            #label = gtk.Label("热点密码 ")
-            #label.show()
-            #entry = gtk.Entry()
-            #entry.show()
-            #self.align.add(self.h)
-            #self.h.pack_start(label, False, False, 0)
-            #self.h.pack_start(entry, False, True, 0)
             label = Label("设置热点密码", ui_theme.get_color("link_text"))
             label.connect("button-release-event", self.slide_to_event)
             self.align.connect("expose-event", self.expose_event)
             self.align.add(label)
             self.align.show_all()
-            self.pack_start(self.align, False, True, 0)
+            self.add(self.align)
         else:
-            pass
-            #self.h.destroy()
+            self.remove(self.align)
     def slide_to_event(self, widget, event):
-        #connection = nm_module.nm_remote_settings.new_wireless_connection("")
-        #self.settings.sidebar.new_connection_list.append(connection)
         self.settings.init("",init_connections=True, all_adhoc=True)
         self.send_to_crumb_cb()
         slider.slide_to_page(self.settings, "right")
@@ -327,8 +327,9 @@ class PersonalWifi(gtk.VBox):
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.child.allocation
+        width, height = get_content_size("设置热点密码")
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
-        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
+        draw_line(cr, rect.x, rect.y + rect.height, rect.x + width, rect.y + rect.height)
 
 class DSL(gtk.VBox):
     def __init__(self, slide_to_setting_cb):
@@ -337,7 +338,7 @@ class DSL(gtk.VBox):
         self.setting_page = None
         self.dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
         self.pack_start(self.dsl, False, False)
-        pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
+        #pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
     def toggle_cb(self, widget):
         active = widget.get_active()

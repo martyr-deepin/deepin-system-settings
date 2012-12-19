@@ -95,7 +95,6 @@ class WirelessSetting(gtk.HBox):
         # Get all connections  
         connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.ssid)
         connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.ssid)
-
         # Check connections
         if connection_associate == []:
             if all_adhoc:
@@ -175,11 +174,17 @@ class WirelessSetting(gtk.HBox):
             device_wifi = cache.get_spec_object(wireless_device.object_path)
             ap = device_wifi.get_ap_by_ssid(self.ssid)
 
-            device_wifi.emit("try-ssid-begin", self.ssid)
-            # Activate
-            nm_module.nmclient.activate_connection_async(connection.object_path,
-                                       wireless_device.object_path,
-                                       ap.object_path)
+            if ap == None:
+                nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           wireless_device.object_path,
+                                           "/")
+
+            else:
+                device_wifi.emit("try-ssid-begin", self.ssid)
+                # Activate
+                nm_module.nmclient.activate_connection_async(connection.object_path,
+                                           wireless_device.object_path,
+                                           ap.object_path)
             self.change_crumb()
             self.slide_back() 
         
