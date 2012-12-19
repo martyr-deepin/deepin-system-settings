@@ -66,17 +66,27 @@ class MediaView(gtk.VBox):
         table_align.add(table)
 
         self.pack_start(table_align, False, False)
+
         self.refresh_app_list(default_list)
+        if self.media_handle.autorun_never:
+            for combo in self.all_app_dict:
+                combo.set_sensitive(False)
+                self.auto_check.set_active(False)
+        else:
+            for combo in self.all_app_dict:
+                combo.set_sensitive(True)
+                self.auto_check.set_active(True)
+
         self.connect_signal_to_combos()
 
     def refresh_app_list(self, default_list):
+        self.default_list = default_list
         self.all_app_dict = {self.cd: self.media_handle.cd_content_type,
                              self.dvd: self.media_handle.dvd_content_type,
                              self.player: self.media_handle.player_content_type,
                              self.photo: self.media_handle.photo_content_type,
                              self.software: self.media_handle.software_content_type
                              }
-        autorun_x_content_start_app = self.media_handle.autorun_x_content_start_app
 
         for key, value in self.all_app_dict.iteritems():
             app_info_list = []
@@ -93,6 +103,7 @@ class MediaView(gtk.VBox):
     def connect_signal_to_combos(self):
         for combo in self.all_app_dict:
             combo.connect("item-selected", self.change_autorun_callback)
+        self.auto_check.connect("toggled", self.autorun_toggle_cb)
 
     def change_autorun_callback(self, widget, content, value, index):
         if type(value) is not str:
@@ -101,32 +112,52 @@ class MediaView(gtk.VBox):
         else:
             self.set_media_handler_preference(self.all_app_dict[widget], value)
 
+    def autorun_toggle_cb(self, widget):
+        self.media_handle.autorun_never = not widget.get_active()
+        
+        if widget.get_active():
+            for combo in self.all_app_dict:
+                combo.set_sensitive(True)
+        else:
+            for combo in self.all_app_dict:
+                combo.set_sensitive(False)
+
     def set_media_handler_preference(self, x_content, action_name=None):
         if action_name == "ask":
             self.media_handle.remove_x_content_start_app(x_content)
             self.media_handle.remove_x_content_ignore(x_content)
             self.media_handle.remove_x_content_open_folder(x_content)
+            print action_name, ">>>",self.get_state(x_content)
 
-            #print action_name, ">>>",self.get_state(x_content)
         elif action_name == "do_nothing":
             self.media_handle.remove_x_content_start_app(x_content)
             self.media_handle.add_x_content_ignore(x_content)
             self.media_handle.remove_x_content_open_folder(x_content)
-            #print action_name, ">>>",self.get_state(x_content)
+            print action_name, ">>>",self.get_state(x_content)
 
         elif action_name == "open_folder":
             self.media_handle.remove_x_content_start_app(x_content)
             self.media_handle.remove_x_content_ignore(x_content)
             self.media_handle.add_x_content_open_folder(x_content)
-            #print action_name, ">>>",self.get_state(x_content)
+            print action_name, ">>>",self.get_state(x_content)
 
         elif action_name == "set_default":
             self.media_handle.add_x_content_start_app(x_content)
             self.media_handle.remove_x_content_ignore(x_content)
             self.media_handle.remove_x_content_open_folder(x_content)
-            #print action_name, ">>>",self.get_state(x_content)
+            print action_name, ">>>",self.get_state(x_content)
         else:
-            pass
+            from dtk.ui.dialog import OpenFileDialog
+            OpenFileDialog("test", self.get_toplevel(), lambda name: self.add_app_info(name, x_content))
+
+    def add_app_info(self, app_name, x_content):
+        import os
+        app_name = os.path.basename(app_name)
+        app_info = self.app_manager.get_app_info(app_name + " %u", app_name)
+        self.set_media_handler_preference(x_content, "set_default")
+        self.app_manager.set_default_for_type(app_info, x_content)
+        self.app_manager.get_all_for_type(x_content)
+        self.refresh_app_list(self.default_list)
 
     def get_state(self, x_content):
         start_up = self.media_handle.autorun_x_content_start_app
