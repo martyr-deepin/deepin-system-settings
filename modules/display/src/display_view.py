@@ -289,26 +289,23 @@ class DisplayView(gtk.VBox):
         self.monitor_combo.set_items(items = self.monitor_items, max_width = 350)
 
     def __set_brightness(self, widget, event):
-        self.display_manager.set_screen_brightness(self.monitor_combo.items[self.monitor_combo.select_index][0], 
+        self.display_manager.set_screen_brightness(self.__current_output_name, 
                                                    self.brightness_adjust.get_value() / 100)
     
     def __setup_monitor_items(self):
         self.__output_names = self.display_manager.get_output_names()
-        pattern = re.compile(r"(.*?) \((.*?)\)")
+        del self.monitor_items[:]
         i = 0
 
-        self.monitor_items = []
         while (i < len(self.__output_names)):
-            result = pattern.search(self.__output_names[i])
-            if result != None:
-                self.monitor_items.append((result.group(1), result.group(2)))
+            self.monitor_items.append(self.display_manager.get_output_name(self.__output_names[i]))
             i += 1
 
     def __setup_sizes_items(self):
+        screen_sizes = self.display_manager.get_screen_sizes(self.__current_output_name)
+        del self.sizes_items[:]
         i = 0
 
-        screen_sizes = self.display_manager.get_screen_sizes(self.__current_output_name)
-        self.size_items = []
         while i < len(screen_sizes):
             self.sizes_items.append((screen_sizes[i], i))
             i += 1
@@ -317,6 +314,7 @@ class DisplayView(gtk.VBox):
         if object == "monitor_combo":
             self.__current_output_name = item_value
             self.__setup_sizes_items()
+            self.sizes_combo.set_items(items = self.sizes_items, max_width = 160)
             return
 
         if object == "sizes_combo":

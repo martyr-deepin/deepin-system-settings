@@ -138,12 +138,20 @@ class DisplayManager:
         i = 0
         
         for item in items:
-            if item[0] == self.__primary_output_name:
+            if item[1] == self.__primary_output_name:
                 return i
 
             i += 1
 
         return 0
+    
+    def get_output_name(self, ori_output_name):
+        pattern = re.compile(r"(.*?) \((.*?)\)")
+        result = pattern.search(ori_output_name)
+        if result == None:
+            return None
+        else:
+            return (result.group(1), result.group(2))
     
     def get_output_names(self):
         output_names = self.__xrandr_settings.get_strv("output-names")
@@ -162,7 +170,17 @@ class DisplayManager:
         return self.__output_names
 
     def get_screen_sizes(self, output_name):
-        return self.__deepin_xrandr.get_screen_sizes(output_name)
+        ret_sizes = []
+        screen_sizes = self.__deepin_xrandr.get_screen_sizes(output_name)
+        i = 0
+        
+        while i < len(screen_sizes):
+            if not screen_sizes[i] in ret_sizes:
+                ret_sizes.append(screen_sizes[i])
+
+            i += 1
+        
+        return ret_sizes
 
     def get_screen_size(self, output_name):
         screen_size = ""
@@ -232,7 +250,6 @@ class DisplayManager:
         return self.__xrandr_settings.get_double("brightness") * 100.0
     
     def set_screen_brightness(self, output_name, value):
-        pattern = re.compile(r"(.*?) \((.*?)\)")
         i = 0
         
         if value <= 0.0 or value > 1.0:
@@ -240,9 +257,7 @@ class DisplayManager:
 
         self.__xrandr_settings.set_double("brightness", value)
         while i < len(self.__output_names):
-            result = pattern.search(self.__output_names[i])
-            if result != None:
-                run_command("xrandr --output %s --brightness %f" % (result.group(2), value))
+            run_command("xrandr --output %s --brightness %f" % (self.get_output_name(self.__output_names[i])[0], value))
 
             i += 1
 
