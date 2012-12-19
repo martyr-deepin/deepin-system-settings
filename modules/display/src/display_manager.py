@@ -176,6 +176,17 @@ class DisplayManager:
     def get_primary_output_name(self):
         return self.__primary_output_name
     
+    def get_output_name_index(self, output_name, items):
+        i = 0
+
+        for item in items:
+            if item[1] == output_name:
+                return i
+
+            i += 1
+
+        return 0
+    
     def get_primary_output_name_index(self, items):
         i = 0
         
