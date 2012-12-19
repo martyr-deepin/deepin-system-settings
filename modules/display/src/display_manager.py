@@ -53,9 +53,9 @@ class DisplayManager:
         self.__xmldoc = minidom.parse(self.__monitors_xml_filename) 
         self.__primary_output_name = None
         self.__output_names = []
-        self.__screen_sizes_by_xml = {}
+        self.__output_info_by_xml = {}
 
-        self.__init_xml()
+        self.init_xml()
 
     def __del__(self):
         self.__deepin_xrandr.delete()
@@ -70,31 +70,47 @@ class DisplayManager:
     def __create_monitors_xml(self):
         pass
     
-    def __init_xml(self):
+    def init_xml(self):
+        self.__xmldoc = minidom.parse(self.__monitors_xml_filename)
+
         if self.__xmldoc != None:
             outputs = self.__xmldoc.getElementsByTagName("output")
-        
+       
+            self.__output_info_by_xml.clear()
             for output in outputs:
                 output_name = output.attributes["name"].value
                 width = output.getElementsByTagName("width")
                 height = output.getElementsByTagName("height")
+                x = output.getElementsByTagName("x")
+                y = output.getElementsByTagName("y")
                 rotation = output.getElementsByTagName("rotation")
                 primary = output.getElementsByTagName("primary")
                 is_primary = "no"
             
-                if len(width) == 0 or len(height) == 0 or len(rotation) == 0 or len(primary) == 0:
+                if len(width) == 0 or len(height) == 0 or len(x) ==0 or len(y) == 0 or len(rotation) == 0 or len(primary) == 0:
                     continue
             
                 is_primary = self.__getText(primary[0].childNodes)
                 if is_primary == "yes":
                     self.__primary_output_name = output_name
                 
-                self.__screen_sizes_by_xml[output_name] = {
+                self.__output_info_by_xml[output_name] = {
                     'screen_size':"%sx%s" % (self.__getText(width[0].childNodes), self.__getText(height[0].childNodes)),
+                    'x':self.__getText(x[0].childNodes), 
+                    'y':self.__getText(y[0].childNodes), 
                     'rotation':self.__getText(rotation[0].childNodes), 
                     'primary':is_primary}
     
-    def __update_xml(self, output_name, width_value=None, height_value=None, rotation_value=None):
+    def get_output_info(self):
+        return self.__output_info_by_xml
+    
+    def __update_xml(self, 
+                     output_name=None, 
+                     width_value=None, 
+                     height_value=None, 
+                     x_value=None, 
+                     y_value=None, 
+                     rotation_value=None):
         outputs = self.__xmldoc.getElementsByTagName("output")
 
         for output in outputs:
@@ -103,9 +119,11 @@ class DisplayManager:
 
             width = output.getElementsByTagName("width")
             height = output.getElementsByTagName("height")
+            x = output.getElementsByTagName("x")
+            y = output.getElementsByTagName("y")
             rotation = output.getElementsByTagName("rotation")
 
-            if len(width) == 0 or len(height) == 0 or len(rotation) == 0:
+            if len(width) == 0 or len(height) == 0 or len(x) == 0 or len(y) == 0 or len(rotation) == 0:
                 continue
 
             if width_value != None:
@@ -113,6 +131,12 @@ class DisplayManager:
 
             if height_value != None:
                 height[0].firstChild.data = height_value
+
+            if x_value != None:
+                x[0].firstChild.data = x_value
+
+            if y_value != None:
+                y[0].firstChild.data = y_value
 
             if rotation_value != None:
                 rotation[0].firstChild.data = rotation_value
@@ -149,15 +173,28 @@ class DisplayManager:
         pattern = re.compile(r"(.*?) \((.*?)\)")
         result = pattern.search(ori_output_name)
         if result == None:
-            return None
+            return ("", "")
         else:
             return (result.group(1), result.group(2))
+    
+    def get_output_display_name(self, output_name_value):
+        output_names = self.__xrandr_settings.get_strv("output-names")
+        i = 0
+
+        while i < len(output_names):
+            (output_display_name, output_name) = self.get_output_name(output_names[i])
+            if output_name == output_name_value:
+                return output_display_name
+            
+            i += 1
+
+        return ""
     
     def get_output_names(self):
         output_names = self.__xrandr_settings.get_strv("output-names")
         i = 0
 
-        self.__output_names = []
+        del self.__output_names[:]
         while i < len(output_names):
             '''
             TODO: NULL means disconnected
@@ -185,8 +222,8 @@ class DisplayManager:
     def get_screen_size(self, output_name):
         screen_size = ""
 
-        if self.__screen_sizes_by_xml.has_key(output_name):
-            screen_size = self.__screen_sizes_by_xml[output_name]['screen_size']
+        if self.__output_info_by_xml.has_key(output_name):
+            screen_size = self.__output_info_by_xml[output_name]['screen_size']
 
         return screen_size
 
@@ -208,11 +245,14 @@ class DisplayManager:
 
         run_command("xrandr --output %s --mode %s" % (output_name, size))
 
+    def set_screen_pos(self, output_name_value, x_value, y_value):
+        self.__update_xml(output_name = output_name_value, x = x_value, y = y_value)
+
     def get_screen_rotation(self, output_name):
         rotation = ""
 
-        if self.__screen_sizes_by_xml.has_key(output_name):
-            rotation = self.__screen_sizes_by_xml[output_name]['rotation']
+        if self.__output_info_by_xml.has_key(output_name):
+            rotation = self.__output_info_by_xml[output_name]['rotation']
 
         return rotation
 
@@ -230,7 +270,7 @@ class DisplayManager:
         
         return 0
     
-    def set_screen_rotation(self, output_name, rotation):
+    def set_screen_rotation(self, output_name_value, rotation):
         rotation_str = "normal"
 
         if rotation == 1:
@@ -242,7 +282,7 @@ class DisplayManager:
         elif rotation == 4:
             rotation_str = "inverted"
 
-        self.__update_xml(output_name, rotation_str)
+        self.__update_xml(output_name = output_name_value, rotation_value = rotation_str)
 
         run_command("xrandr -o %s" % rotation_str)
 
@@ -257,7 +297,8 @@ class DisplayManager:
 
         self.__xrandr_settings.set_double("brightness", value)
         while i < len(self.__output_names):
-            run_command("xrandr --output %s --brightness %f" % (self.get_output_name(self.__output_names[i])[0], value))
+            (output_display_name, output_name) = self.get_output_name(self.__output_names[i])
+            run_command("xrandr --output %s --brightness %f" % (output_name, value))
 
             i += 1
 
