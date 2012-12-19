@@ -80,11 +80,11 @@ class MonitorResizableBox(ResizableBox):
         i = 0
 
         with cairo_state(cr):
-            for output_name in output_infos:
+            while i < len(output_infos):
                 output_x = x + i * (self.output_width + self.output_padding)
                 output_width = self.output_width - i * self.output_small_size
                 output_height = self.output_height - i * self.output_small_size
-                output_display_name = self.__display_manager.get_output_display_name(output_name)
+                output_display_name = self.__display_manager.get_output_display_name(output_infos[i][0])
 
                 cr.set_source_rgb(*color_hex_to_cairo("#DFDFDF"))
                 cr.rectangle(output_x, 
