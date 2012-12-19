@@ -69,15 +69,59 @@ def test_adapter():
             print "now create device"
             return adapter.create_device(address)
         else:
-            print "device already exists"
-            return adapter.find_device(address)
+            # print "device already exists"
+            # return adapter.find_device(address)
+            pass
 
     def on_device_created(adapter, dev_path):
         print "path of created device \n %s" % dev_path
-        return dev_path
+        device = Device(dev_path)
+        pair(device)
+
+    def discover_services(device):
+        # discovery services
+        print "device discovery service:\n %s" % device.discover_services()
+        services = device.discover_services()
+        import re
+        for key in services.keys():
+            p = re.compile(">.*?<")
+            xml = p.sub("><", services[key].replace("\n", ""))
+            print "[ 0x%5x ]" % (key)
+            print xml
+            print
+
+    def get_services(device):
+        # get services
+        servs = device.get_services()
+        from device_service import DeviceService
+        if servs:
+            service = DeviceService(servs[0])
+            # print service.get_properties()
+            uuid = service.get_uuid()
+            print uuid
+
+    def pair(device):        
+        from agent import Agent
+        path = "/org/bluez/agent"
+        agent = Agent(path)
+        agent.set_exit_on_release(False)
+        device.set_trusted(True)
+        if not device.get_paired():
+            print "create paired device"
+            adapter.create_paired_device(device.get_address(), path, "DisplayYesNo")
+
+    def create_paired_reply(device):
+        print "succeed paired device (%s)" % (device)
+	mainloop.quit()
+
+    def create_paired_error(error):
+        print "paired device failed: %s" % (error)
+	mainloop.quit()
 
     from manager import Manager
     from adapter import Adapter
+    from device import Device
+
     manager = Manager()
     adapter = Adapter(manager.get_default_adapter())
     adapter.set_powered(True)
@@ -87,45 +131,12 @@ def test_adapter():
     adapter.connect("device-found", on_device_found)
     adapter.connect("device-created", on_device_created)
 
-    from device import Device
-    while not adapter.get_devices():
-        adapter.start_discovery()
-        if adapter.get_devices():
-            adapter.stop_discovery()
-            break
-        else:
-            continue
+    for dev in  adapter.get_devices():
+        adapter.remove_device(dev)
+    else:
+        pass
 
-    device = Device(adapter.get_devices()[0])
-
-    ###discovery services
-    # print "device discovery service:\n %s" % device.discover_services()
-    # services = device.discover_services()
-    # import re
-    # for key in services.keys():
-    #     p = re.compile(">.*?<")
-    #     xml = p.sub("><", services[key].replace("\n", ""))
-    #     print "[ 0x%5x ]" % (key)
-    #     print xml
-    #     print
-
-    ###get services
-    # servs = device.get_services()
-    # from device_service import DeviceService
-    # if servs:
-    #     service = DeviceService(servs[0])
-    #     # print service.get_properties()
-    #     uuid = service.get_uuid()
-
-    # print "device nodes:\n %s" % device.get_nodes()    
-
-    ###pair
-    print device
-    from agent import Agent
-    path = "/org/bluez/agent"
-    agent = Agent(path)
-    agent.set_exit_on_release(False)
-    adapter.create_paired_device(device.get_address(), path, "DisplayYesNo")
+    adapter.start_discovery()
 
     mainloop = gobject.MainLoop()
     mainloop.run()

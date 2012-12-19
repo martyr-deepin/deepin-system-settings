@@ -22,7 +22,7 @@
 
 import dbus
 import gobject
-from utils import BusBase
+from bus_utils import BusBase
 
 class Adapter(BusBase):
 
@@ -30,7 +30,7 @@ class Adapter(BusBase):
         "device-created":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "device-disappeared":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "device-found":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
-        "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
+        "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
             }
 
@@ -62,8 +62,16 @@ class Adapter(BusBase):
         return self.dbus_method("CancelDeviceCreation", address)
     
     def create_paired_device(self, address, agent_path, capability):
-        return str(self.dbus_method("CreatePairedDevice", address, agent_path, capability))
+        return self.dbus_method("CreatePairedDevice", address, agent_path, capability, 
+                                reply_handler = self.create_paired_reply,
+                                error_handler = self.create_paired_error)
     
+    def create_paired_reply(self, device):
+        print "paried %s succeed\n" % device
+
+    def create_paired_error(self, error):
+        print "paired %s error\n" % error
+
     def find_device(self, address):
         return str(self.dbus_method("FindDevice", address))
 

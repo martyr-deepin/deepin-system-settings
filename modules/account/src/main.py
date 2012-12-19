@@ -364,7 +364,7 @@ class AccountSetting(object):
         self.__init_del_user_page(self.current_select_user)
         self.container_widgets["slider"].slide_to_page(
             account_settings.alignment_widgets["delete_account"], "right")
-        #self.module_frame.send_submodule_crumb(2, _("Delete User"))
+        self.module_frame.send_submodule_crumb(2, _("Delete User"))
     
     def account_cancle_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
@@ -528,7 +528,7 @@ class AccountSetting(object):
         self.__init_change_pswd_page(self.current_select_user)
         self.container_widgets["slider"].slide_to_page(
             account_settings.alignment_widgets["change_pswd"], "right")
-        #self.module_frame.send_submodule_crumb(2, _("Change Password"))
+        self.module_frame.send_submodule_crumb(2, _("Change Password"))
     
     def account_name_input_changed(self, entry, value, button):
         if entry.get_text():
@@ -659,6 +659,7 @@ class AccountSetting(object):
         def cancel_delete_user(button):
             self.container_widgets["slider"].slide_to_page(
                 self.alignment_widgets["main_hbox"], "left")
+            self.change_crumb(1)
         
         def delete_user_file_cd(button, del_file):
             try:
@@ -670,6 +671,7 @@ class AccountSetting(object):
                 return
             self.container_widgets["slider"].slide_to_page(
                 self.alignment_widgets["main_hbox"], "left")
+            self.change_crumb(1)
             
         self.container_widgets["del_main_vbox"].destroy()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
@@ -766,6 +768,7 @@ class AccountSetting(object):
                 else:
                     gtk.gdk.threads_enter()
                     self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+                    self.change_crumb(1)
                     gtk.gdk.threads_leave()
             except Exception, e:
                 if not isinstance(e, (TIMEOUT, EOF)):
@@ -795,6 +798,7 @@ class AccountSetting(object):
                 # action is not setting password, then return
                 if do_action != ACTION_SET_PSWD:
                     self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+                    self.change_crumb(1)
                     return
             new_pswd = new_pswd_input.entry.get_text()
             confirm_pswd = confirm_pswd_input.entry.get_text()
@@ -805,6 +809,10 @@ class AccountSetting(object):
             t = threading.Thread(target=change_user_password_thread, args=(new_pswd, ))
             t.setDaemon(True)
             t.start()
+        
+        def cancel_change_password(button):
+            self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+            self.change_crumb(1)
         CURRENT_PSWD = 0
         NEW_PSWD = 1
         CONFIRM_PSWD = 2
@@ -901,8 +909,7 @@ class AccountSetting(object):
         new_pswd_input.entry.connect("changed", password_input_changed, NEW_PSWD, 6)
         confirm_pswd_input.entry.connect("changed", password_input_changed, CONFIRM_PSWD, 6)
         show_pswd_check.connect("toggled", show_input_password)
-        cancel_button.connect("clicked", lambda w: self.container_widgets["slider"].slide_to_page(
-            self.alignment_widgets["main_hbox"], "left"))
+        cancel_button.connect("clicked", cancel_change_password)
         change_button.connect("clicked", change_user_password)
 
     def escape_markup_string(self, string):
@@ -912,6 +919,9 @@ class AccountSetting(object):
         @return: a escaped string
         '''
         return string.replace('&', '&#38;').replace('<', '&#60;').replace('>', '&#62;')    
+    
+    def change_crumb(self, crumb_index):
+        self.module_frame.send_message("change_crumb", crumb_index)
         
 if __name__ == '__main__':
     gtk.gdk.threads_init()

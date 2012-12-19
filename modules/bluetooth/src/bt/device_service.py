@@ -20,15 +20,31 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from utils import BusBase
+from bus_utils import BusBase
 
-class DeviceCharacteristic(BusBase):
+class DeviceService(BusBase):
 
-    def __init__(self, path):
-        BusBase.__init__(self, path = path , interface = "org.bluez.Characteristic")
+    def __init__(self, service_path):
+        BusBase.__init__(self, path = service_path , interface = "org.bluez.Characteristic")
+
+    def discover_characteristics(self):
+        characteristics = self.dbus_method("DiscoverCharacteristics")
+        if characteristics:
+            return map(lambda x:str(x), characteristics)
+        else:
+            return []
+
+    def register_characteristics_watcher(self, agent):
+        return self.dbus_method("RegisterCharacteristicsWatcher", agent)
+
+    def unregister_characteristics_watcher(self, agent):
+        return self.dbus_method("UnregisterCharacteristicsWatcher", agent)
 
     def get_properties(self):
         return self.dbus_method("GetProperties")
+
+    def set_property(self, key, value):
+        return self.dbus_method("SetProperty", key, value)
 
     def get_uuid(self):
         if "UUID" in self.get_properties().keys():
@@ -42,20 +58,18 @@ class DeviceCharacteristic(BusBase):
         if "Description" in self.get_properties().keys():
             return self.get_properties()["Description"]
 
-    def get_format(self):
-        if "Format" in self.get_properties().keys():
-            return self.get_properties()["Format"]
-
-    def get_value(self):
-        if "Value" in self.get_properties().keys():
-            return self.get_properties()["Value"]
-
-    def set_value(self, value):
-        return self.set_property("Value", value)
-
-    def get_representation(self):
-        if "Representation" in self.get_properties().keys():
-            return self.get_properties()["Representation"]
+    def get_characteristics(self):
+        if "Characteristics" in self.get_properties().keys():
+            return self.get_properties()["Characteristics"]
 
 if __name__ == "__main__":
-    pass
+    from manager import Manager
+    from adapter import Adapter
+    from device import Device
+    # from utils import bluetooth_uuid_to_string
+
+    adapter = Adapter(Manager().get_default_adapter())
+    device = Device(adapter.get_devices()[0])
+    for serv in device.get_services():
+        service = DeviceService(serv)
+        print "uuid:\n    %s" % service.get_uuid()

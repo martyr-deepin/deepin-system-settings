@@ -22,7 +22,7 @@
 
 import dbus
 import gobject
-from utils import BusBase
+from bus_utils import BusBase
 
 class Device(BusBase):
 
@@ -659,19 +659,26 @@ if __name__ == "__main__":
 
     device = Device(adapter.get_devices()[0])
 
-    print "Name:\n    %s" % device.get_name()
-    device.set_alias("Long's Phone")
-    print "Alias:\n    %s" % device.get_alias()
-    print "Paired:\n    %s" % device.get_paired()
-    print "Adapter:\n   %s" % device.get_adapter()
-    print "Connected:\n   %s" % device.get_connected()
-    print "UUIDs:\n   %s" % device.get_uuids()
-    print "Address:\n   %s" % device.get_address()
-    print "Find Device:\n   %s" %adapter.find_device(device.get_address())
-    print "Services:\n   %s" % device.get_services()
-    print "Class:\n   %s" % device.get_class()
-    device.set_blocked(True)
-    print "Blocked:\n   %s" % device.get_blocked()
-    device.set_trusted(False)
-    print "Trusted:\n   %s" % device.get_trusted()
-    print "Icon:\n   %s" % device.get_icon()
+    # print "Name:\n    %s" % device.get_name()
+    # device.set_alias("Long's Phone")
+    # print "Alias:\n    %s" % device.get_alias()
+    # print "Paired:\n    %s" % device.get_paired()
+    # print "Adapter:\n   %s" % device.get_adapter()
+    # print "Connected:\n   %s" % device.get_connected()
+    # print "UUIDs:\n   %s" % device.get_uuids()
+    # print "Address:\n   %s" % device.get_address()
+    # print "Find Device:\n   %s" %adapter.find_device(device.get_address())
+    # print "Services:\n   %s" % device.get_services()
+    # print "Class:\n   %s" % device.get_class()
+    # device.set_blocked(True)
+    # print "Blocked:\n   %s" % device.get_blocked()
+    # device.set_trusted(False)
+    # print "Trusted:\n   %s" % device.get_trusted()
+    # print "Icon:\n   %s" % device.get_icon()
+
+    # from utils import bluetooth_uuid_to_string
+    # for uuid in device.get_uuids():
+    #     print bluetooth_uuid_to_string(uuid)
+
+    from utils import bluetooth_class_to_type
+    print bluetooth_class_to_type(device.get_class())
