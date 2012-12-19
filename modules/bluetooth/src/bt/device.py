@@ -493,7 +493,7 @@ class Control(BusBase):
     def connected_cb(self):
         self.emit("connected")
 
-    def disconected_cb(self):
+    def disconnected_cb(self):
         self.emit("disconnected")
 
     def property_changed_cb(self, key, value):

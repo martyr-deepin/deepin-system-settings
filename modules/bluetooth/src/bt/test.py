@@ -144,6 +144,12 @@ def test_service():
             print "uuid:%s" % uuid
             print bluetooth_uuid_to_string(uuid)
 
+    def device_get_uuids(device):
+        from utils import bluetooth_uuid_to_string
+        for uuid in device.get_uuids():
+            print uuid
+            print bluetooth_uuid_to_string(uuid)
+
     from manager import Manager
     from adapter import Adapter
     from device import Device
@@ -156,7 +162,8 @@ def test_service():
         print "after paired, should exists devices"
 
     # device_get_services(device)    
-    device_discover_services(device)    
+    # device_discover_services(device)    
+    device_get_uuids(device)    
 
     mainloop = gobject.MainLoop()
     mainloop.run()
@@ -164,19 +171,47 @@ def test_service():
 def test_phone():
     '''must had paired first, use xiaomi for test'''
 
+    def get_device_supported_services(device):
+        services = []
+        from utils import bluetooth_uuid_to_string
+        for uuid in device.get_uuids():
+            if bluetooth_uuid_to_string(uuid) != None:
+                services.append(bluetooth_uuid_to_string(uuid))
+            else:
+                continue
+
+        return services    
+
     def send_file(device, files):
+        ###please see the example in obex_agent.py
         pass
 
     def browse_device(device):
+        ###please see the example in utils.py
         pass
     
     def connect_phone_audio(device):
         from device import AudioSource
+        from device import Control
+
+        if "AudioSource" not in get_device_supported_services(device):
+            print "device not support AudioSource"
+            return 
+
         audiosource = AudioSource(device.object_path)
         ###when connect, voice switch from phone to my'pc
         if audiosource.get_state() == "disconnected":
             audiosource.connect()
 
+        if "A/V_RemoteControlTarget" not in get_device_supported_services(device):
+            print "device not support A/V control"
+            return
+        
+        control = Control(device.object_path)
+        if not control.get_connected():
+            control.connect()
+            
+        control.volume_up()    
 
     from manager import Manager
     from adapter import Adapter
