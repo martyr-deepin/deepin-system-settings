@@ -42,6 +42,7 @@ import pango
 import threading
 from module_frame import ModuleFrame
 from pexpect import TIMEOUT, EOF
+from glib import markup_escape_text
 
 
 class AccountSetting(object):
@@ -51,7 +52,6 @@ class AccountSetting(object):
         self.module_frame = module_frame
         self.account_dbus = settings.ACCOUNT
         self.permission = settings.PERMISSION
-        self.permission1 = settings.PERMISSION1
         
         self.image_widgets = {}
         self.label_widgets = {}
@@ -440,15 +440,14 @@ class AccountSetting(object):
         if self.get_authorized():
             if self.permission.release():
                 button.set_data("unlocked", False)
-            #self.permission1.release()
-            #print self.permission.get_allowed()
-            #print self.permission1.get_allowed()
+            #print "get_allowed:", self.permission.get_allowed()
         else:
             if self.permission.acquire():
                 button.set_data("unlocked", True)
-            #self.permission1.acquire()
-            #print self.permission.get_allowed()
-            #print self.permission1.get_allowed()
+            #print "get_allowed:", self.permission.get_allowed()
+        print "get_allowed:", self.permission.get_allowed(),
+        print "get_can_acquire:", self.permission.get_can_acquire(),
+        print "get_can_release:", self.permission.get_can_release()
         self.set_widget_state_with_author()
     
     def account_type_item_selected(self, combo_box, item_content, item_value, item_index):
@@ -503,7 +502,7 @@ class AccountSetting(object):
                 except:
                     pass
             self.label_widgets["account_name"].queue_draw()
-            print "account name changed:", self.label_widgets["account_name"].get_text()
+            #print "account name changed:", self.label_widgets["account_name"].get_text()
             align.destroy()
         
         self.container_widgets["account_info_hbox"].remove(self.label_widgets["account_name"])
@@ -542,8 +541,11 @@ class AccountSetting(object):
     def user_info_changed_cb(self, user, item):
         icon_file = user.get_icon_file()
         if os.path.exists(icon_file):
-            icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-                icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            try:
+                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                    icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            except:
+                icon_pixbuf = self.image_widgets["default_icon"]
         else:
             icon_pixbuf = self.image_widgets["default_icon"]
         item.icon = icon_pixbuf
@@ -576,8 +578,11 @@ class AccountSetting(object):
         user_info = settings.get_user_info(user_path)
         icon_file = user_info[1]
         if os.path.exists(icon_file):
-            icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-                icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            try:
+                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                    icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            except:
+                icon_pixbuf = self.image_widgets["default_icon"]
         else:
             icon_pixbuf = self.image_widgets["default_icon"]
         user_item = TreeItem(icon_pixbuf, self.escape_markup_string(user_info[2]),
@@ -613,8 +618,11 @@ class AccountSetting(object):
         for user in user_list:
             icon_file = user.get_icon_file()
             if os.path.exists(icon_file):
-                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-                    icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+                try:
+                    icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                        icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+                except:
+                    icon_pixbuf = self.image_widgets["default_icon"]
             else:
                 icon_pixbuf = self.image_widgets["default_icon"]
             if settings.check_is_myown(user.get_uid()):
@@ -842,8 +850,11 @@ class AccountSetting(object):
             show_name = current_set_user.get_user_name()
         icon_file = current_set_user.get_icon_file()
         if os.path.exists(icon_file):
-            icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-                icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            try:
+                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                    icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            except:
+                icon_pixbuf = self.image_widgets["default_icon"]
         else:
             icon_pixbuf = self.image_widgets["default_icon"]
         icon = gtk.Image()
@@ -918,7 +929,8 @@ class AccountSetting(object):
         @param string: a markup string
         @return: a escaped string
         '''
-        return string.replace('&', '&#38;').replace('<', '&#60;').replace('>', '&#62;')    
+        #return string.replace('&', '&#38;').replace('<', '&#60;').replace('>', '&#62;')    
+        return markup_escape_text(string)
     
     def change_crumb(self, crumb_index):
         self.module_frame.send_message("change_crumb", crumb_index)

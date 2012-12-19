@@ -256,7 +256,8 @@ class SoundSetting(object):
         self.alignment_widgets["speaker_label"].add(self.container_widgets["speaker_label_hbox"])
         self.alignment_widgets["speaker_set"].add(self.container_widgets["speaker_table"])
         #
-        self.alignment_widgets["speaker_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["speaker_label"].set_size_request(-1, 30)
+        self.alignment_widgets["speaker_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["speaker_set"].set(0.0, 0.5, 1.0, 1.0)
         self.alignment_widgets["speaker_set"].set_padding(0, 0, 26, 0)
         self.container_widgets["speaker_main_vbox"].pack_start(
@@ -282,7 +283,7 @@ class SoundSetting(object):
         self.container_widgets["speaker_table"].attach(
             self.container_widgets["balance_scale_hbox"], 0, 2, 2, 3, 4)
         self.alignment_widgets["speaker_button"].add(self.button_widgets["speaker"])
-        self.alignment_widgets["speaker_button"].set(0, 0.5, 1, 1)
+        self.alignment_widgets["speaker_button"].set(0, 0.5, 1, 0)
         self.scale_widgets["speaker"].set_size_request(411, 30)
         self.button_widgets["speaker"].set_size_request(49, 22)
         #self.scale_widgets["speaker"].add_mark(100, gtk.POS_TOP, " ")
@@ -290,7 +291,8 @@ class SoundSetting(object):
         # microphone
         self.alignment_widgets["microphone_label"].add(self.container_widgets["microphone_label_hbox"])
         self.alignment_widgets["microphone_set"].add(self.container_widgets["microphone_table"])
-        self.alignment_widgets["microphone_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["microphone_label"].set_size_request(-1, 30)
+        self.alignment_widgets["microphone_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["microphone_set"].set(0.0, 0.5, 1.0, 1.0)
         self.alignment_widgets["microphone_set"].set_padding(0, 0, 26, 0)
         self.container_widgets["microphone_main_vbox"].pack_start(
@@ -315,7 +317,7 @@ class SoundSetting(object):
             self.alignment_widgets["microphone_button"], 1, 2, 1, 2, 0)
         #self.scale_widgets["microphone"].add_mark(100, gtk.POS_TOP, " ")
         self.alignment_widgets["microphone_button"].add(self.button_widgets["microphone"])
-        self.alignment_widgets["microphone_button"].set(0, 0.5, 1, 1)
+        self.alignment_widgets["microphone_button"].set(0, 0.5, 1, 0)
         self.scale_widgets["microphone"].set_size_request(411, 30)
         self.button_widgets["microphone"].set_size_request(49, 22)
 

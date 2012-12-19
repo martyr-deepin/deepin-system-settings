@@ -35,19 +35,20 @@ app_theme = init_skin(
 from dtk.ui.tab_window import TabBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
-from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
+from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_END
 import gobject
 import gtk
 
 from app_view import AppView
 from media_view import MediaView
 from session_view import SessionView
+from style import FRAME_LEFT_PADDING, FRAME_TOP_PADDING
 
 class AppMain(gtk.Alignment):
 
     def __init__(self):
         gtk.Alignment.__init__(self, 0.5, 0.5, 1, 1)
-        self.set_padding(15, 15, 27, 27)
+        self.set_padding(FRAME_TOP_PADDING, 0, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
         self.add(AppAssoView())
 
 class AppAssoView(TabBox):
