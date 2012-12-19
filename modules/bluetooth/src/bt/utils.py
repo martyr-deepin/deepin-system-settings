@@ -165,17 +165,14 @@ def bluetooth_uuid_to_string(uuid):
     try:
         is_custom = uuid.endswith("-0000-1000-8000-0002ee000002")
     except:
-        print "is_custom except"
         is_custom = False
 
     parts = uuid.split("-")    
 
     try:
-        import struct
-        uuid16 = struct.unpack("Q", parts[0])
+        uuid16 = int(parts[0], 16)
     except:
-        print "unpack uuid16 except"
-        uuid16 == 0
+        uuid16 = 0
 
     if uuid16 == 0:
         return None
@@ -184,6 +181,10 @@ def bluetooth_uuid_to_string(uuid):
         return uuid16_to_string(uuid16)
     else:
         return uuid16_custom_to_string(uuid16)
+
+def get_pincode_for_device(bttype, address, name, max_digits):
+    pass
+
 
 if __name__ == "__main__":
     pass

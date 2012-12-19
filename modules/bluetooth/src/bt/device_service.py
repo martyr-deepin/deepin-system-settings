@@ -66,9 +66,10 @@ if __name__ == "__main__":
     from manager import Manager
     from adapter import Adapter
     from device import Device
+    # from utils import bluetooth_uuid_to_string
 
     adapter = Adapter(Manager().get_default_adapter())
     device = Device(adapter.get_devices()[0])
-    service = DeviceService(device.get_services()[0])
-
-    print "uuid:\n    %s" % service.get_uuid()
+    for serv in device.get_services():
+        service = DeviceService(serv)
+        print "uuid:\n    %s" % service.get_uuid()

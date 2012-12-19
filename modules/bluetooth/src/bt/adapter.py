@@ -30,7 +30,7 @@ class Adapter(BusBase):
         "device-created":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "device-disappeared":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "device-found":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
-        "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT)),
+        "device-removed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
             }
 

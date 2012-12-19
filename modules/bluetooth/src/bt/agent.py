@@ -65,7 +65,7 @@ class Agent(dbus.service.Object):
         passkey = raw_input("Enter passkey: ")
         return dbus.UInt32(passkey)
     
-    @dbus.service.method("org.bluez.Agent", in_signature="ouq", out_signature="")
+    @dbus.service.method("org.bluez.Agent", in_signature="oub", out_signature="")
     def DisplayPasskey(self, device_path, passkey, entered):
 	print "DisplayPasskey (%s, %d)" % (device_path, passkey, entered)
     
