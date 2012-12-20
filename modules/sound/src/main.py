@@ -40,6 +40,7 @@ import sys
 import os
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame
+from constant import *
 import threading as td
 import traceback
 
@@ -88,8 +89,8 @@ class SoundSetting(object):
 
     def __create_widget(self):
         '''create gtk widget'''
-        title_item_font_size = 14
-        option_item_font_szie = 12
+        title_item_font_size = TITLE_FONT_SIZE
+        option_item_font_szie = DEFAULT_FONT_SIZE
 
         self.label_widgets["balance"] = Label(_("Balance"), text_size=title_item_font_size)
         self.label_widgets["speaker"] = Label(_("Speaker"), text_size=title_item_font_size)
@@ -132,6 +133,8 @@ class SoundSetting(object):
         self.container_widgets["microphone_table"] = gtk.Table(2, 2)
         # alignment init
         self.alignment_widgets["slider"] = gtk.Alignment()
+        self.alignment_widgets["main_hbox"] = gtk.Alignment()
+        self.alignment_widgets["advance_set_tab_box"] = gtk.Alignment()
         self.alignment_widgets["left"] = gtk.Alignment()
         self.alignment_widgets["right"] = gtk.Alignment()
         self.alignment_widgets["speaker_button"] = gtk.Alignment()
@@ -210,15 +213,21 @@ class SoundSetting(object):
     def __adjust_widget(self):
         ''' adjust widget '''
         MID_SPACING = 10
-        TITLE_SPACING = 10
-        RIGHT_WIDTH = 160
+        RIGHT_BOX_WIDTH = TIP_BOX_WIDTH - 20
         MAIN_AREA_WIDTH = 460
-        EACH_ROW_HEIGHT = 30
+        OPTION_LEFT_PADDING = WIDGET_SPACING + 16
         self.alignment_widgets["slider"].add(self.container_widgets["slider"])
         self.alignment_widgets["slider"].set(0, 0, 1, 1)
-        self.alignment_widgets["slider"].set_padding(35, 0, 50, 20)
-        self.container_widgets["slider"].append_page(self.container_widgets["main_hbox"])
-        self.container_widgets["slider"].append_page(self.container_widgets["advance_set_tab_box"])
+        #self.alignment_widgets["slider"].set_padding(
+            #TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+        self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
+        self.container_widgets["slider"].append_page(self.alignment_widgets["advance_set_tab_box"])
+        self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
+        self.alignment_widgets["advance_set_tab_box"].add(self.container_widgets["advance_set_tab_box"])
+        self.alignment_widgets["main_hbox"].set_padding(
+            TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+        self.alignment_widgets["advance_set_tab_box"].set_padding(
+            FRAME_TOP_PADDING, 0, FRAME_LEFT_PADDING, 20)
         
         self.container_widgets["advance_set_tab_box"].add_items(
             [(_("Output"), self.alignment_widgets["advance_output_box"]),
@@ -230,15 +239,15 @@ class SoundSetting(object):
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right"], False, False)
         self.alignment_widgets["left"].add(self.container_widgets["left_vbox"])
         self.alignment_widgets["right"].add(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].set_size_request(RIGHT_WIDTH, -1)
+        self.container_widgets["right_vbox"].set_size_request(RIGHT_BOX_WIDTH, -1)
         # set left padding
         self.alignment_widgets["left"].set(0.0, 0.0, 1.0, 1.0)
         #self.alignment_widgets["left"].set_padding(15, 0, 20, 0)
         # set right padding
-        self.alignment_widgets["right"].set(0.0, 0.0, 0.0, 0.0)
-        #self.alignment_widgets["right"].set_padding(15, 0, 0, 0)
+        self.alignment_widgets["right"].set(0.0, 0.0, 1.0, 1.0)
+        self.alignment_widgets["right"].set_padding(0, 0, 0, 20)
         
-        self.container_widgets["left_vbox"].set_spacing(15)
+        self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["left_vbox"].pack_start(
             self.container_widgets["speaker_main_vbox"], False, False)
         self.container_widgets["left_vbox"].pack_start(
@@ -246,8 +255,7 @@ class SoundSetting(object):
         self.container_widgets["left_vbox"].pack_start(
             self.alignment_widgets["advanced"], False, False)
         ## balance
-        self.scale_widgets["balance"].set_size_request(460, 30)
-        self.container_widgets["balance_scale_hbox"].pack_start(self.scale_widgets["balance"])
+        #self.container_widgets["balance_scale_hbox"].pack_start(self.scale_widgets["balance"])
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_lower(), gtk.POS_BOTTOM, _("Left"))
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_upper(), gtk.POS_BOTTOM, _("Right"))
         self.scale_widgets["balance"].add_mark(0, gtk.POS_TOP, "0")
@@ -259,19 +267,20 @@ class SoundSetting(object):
         self.alignment_widgets["speaker_label"].set_size_request(-1, 30)
         self.alignment_widgets["speaker_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["speaker_set"].set(0.0, 0.5, 1.0, 1.0)
-        self.alignment_widgets["speaker_set"].set_padding(0, 0, 26, 0)
+        self.alignment_widgets["speaker_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["speaker_main_vbox"].pack_start(
             self.alignment_widgets["speaker_label"])
         self.container_widgets["speaker_main_vbox"].pack_start(
-            self.alignment_widgets["speaker_set"], True, True)
+            self.alignment_widgets["speaker_set"])
         # tips lable
-        self.container_widgets["speaker_label_hbox"].set_spacing(TITLE_SPACING)
+        self.container_widgets["speaker_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["speaker_label_hbox"].pack_start(
             self.image_widgets["speaker"], False, False)
         self.container_widgets["speaker_label_hbox"].pack_start(
             self.label_widgets["speaker"], False, False)
         # 
         self.container_widgets["speaker_table"].set_size_request(MAIN_AREA_WIDTH, -1)
+        self.container_widgets["speaker_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["speaker_table"].attach(
             self.button_widgets["speaker_combo"], 0, 2, 0, 1, 4)
         self.container_widgets["speaker_table"].attach(
@@ -281,12 +290,14 @@ class SoundSetting(object):
         self.container_widgets["speaker_table"].attach(
             self.alignment_widgets["speaker_button"], 1, 2, 1, 2, 0)
         self.container_widgets["speaker_table"].attach(
-            self.container_widgets["balance_scale_hbox"], 0, 2, 2, 3, 4)
+            self.scale_widgets["balance"], 0, 2, 2, 3, 4)
+        #self.container_widgets["speaker_table"].attach(
+            #self.container_widgets["balance_scale_hbox"], 0, 2, 2, 3, 0)
         self.alignment_widgets["speaker_button"].add(self.button_widgets["speaker"])
         self.alignment_widgets["speaker_button"].set(0, 0.5, 1, 0)
-        self.scale_widgets["speaker"].set_size_request(411, 30)
         self.button_widgets["speaker"].set_size_request(49, 22)
-        #self.scale_widgets["speaker"].add_mark(100, gtk.POS_TOP, " ")
+        self.scale_widgets["speaker"].set_size_request(MAIN_AREA_WIDTH-49, 30)
+        self.scale_widgets["balance"].set_size_request(MAIN_AREA_WIDTH, 30)
         
         # microphone
         self.alignment_widgets["microphone_label"].add(self.container_widgets["microphone_label_hbox"])
@@ -294,19 +305,20 @@ class SoundSetting(object):
         self.alignment_widgets["microphone_label"].set_size_request(-1, 30)
         self.alignment_widgets["microphone_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["microphone_set"].set(0.0, 0.5, 1.0, 1.0)
-        self.alignment_widgets["microphone_set"].set_padding(0, 0, 26, 0)
+        self.alignment_widgets["microphone_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["microphone_main_vbox"].pack_start(
             self.alignment_widgets["microphone_label"])
         self.container_widgets["microphone_main_vbox"].pack_start(
-            self.alignment_widgets["microphone_set"], True, True)
+            self.alignment_widgets["microphone_set"])
         # tips lable
-        self.container_widgets["microphone_label_hbox"].set_spacing(TITLE_SPACING)
+        self.container_widgets["microphone_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["microphone_label_hbox"].pack_start(
             self.image_widgets["microphone"], False, False)
         self.container_widgets["microphone_label_hbox"].pack_start(
             self.label_widgets["microphone"], False, False)
         #
         self.container_widgets["microphone_table"].set_size_request(MAIN_AREA_WIDTH, -1)
+        self.container_widgets["microphone_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["microphone_table"].attach(
             self.button_widgets["microphone_combo"], 0, 2, 0, 1, 4)
         self.container_widgets["microphone_table"].attach(
@@ -321,8 +333,10 @@ class SoundSetting(object):
         self.scale_widgets["microphone"].set_size_request(411, 30)
         self.button_widgets["microphone"].set_size_request(49, 22)
 
-        self.alignment_widgets["advanced"].set(1.0, 0.5, 0, 0)
-        self.alignment_widgets["advanced"].set_padding(0, 0, 0, 110)
+        self.alignment_widgets["advanced"].set(0.0, 0.5, 0, 0)
+        advance_button_width = self.button_widgets["advanced"].get_size_request()[0]
+        self.alignment_widgets["advanced"].set_padding(0, 0,
+            OPTION_LEFT_PADDING+MAIN_AREA_WIDTH-advance_button_width+WIDGET_SPACING, 0)
         self.alignment_widgets["advanced"].add(self.button_widgets["advanced"])
 
         # advanced
@@ -334,9 +348,9 @@ class SoundSetting(object):
         self.alignment_widgets["advance_output_box"].set_padding(0, 0, 20, 10)
         self.alignment_widgets["advance_hardware_box"].set_padding(0, 0, 20, 10)
         
-        self.container_widgets["advance_input_box"].set_size_request(790, 380)
-        self.container_widgets["advance_output_box"].set_size_request(790, 380)
-        self.container_widgets["advance_hardware_box"].set_size_request(790, 380)
+        self.container_widgets["advance_input_box"].set_size_request(750, 380)
+        self.container_widgets["advance_output_box"].set_size_request(750, 380)
+        self.container_widgets["advance_hardware_box"].set_size_request(750, 380)
         
         self.container_widgets["advance_input_box"].pack_start(self.label_widgets["ad_input"], False, False, 10)
         self.container_widgets["advance_input_box"].pack_start(self.view_widgets["ad_input"])
@@ -972,7 +986,9 @@ class SoundSetting(object):
     ######################################
     def slider_to_advanced(self, button):
         self.container_widgets["slider"].slide_to_page(
-            self.container_widgets["advance_set_tab_box"], "right")
+            self.alignment_widgets["advance_set_tab_box"], "right")
+        #self.container_widgets["slider"].slide_to_page(
+            #self.container_widgets["advance_set_tab_box"], "right")
         self.module_frame.send_submodule_crumb(2, _("Advanced"))
     
     def set_to_default(self):
@@ -988,7 +1004,7 @@ if __name__ == '__main__':
     module_frame.add(mouse_settings.alignment_widgets["slider"])
     module_frame.connect("realize", 
         lambda w: mouse_settings.container_widgets["slider"].set_to_page(
-        mouse_settings.container_widgets["main_hbox"]))
+        mouse_settings.alignment_widgets["main_hbox"]))
     
     def message_handler(*message):
         (message_type, message_content) = message
@@ -996,10 +1012,12 @@ if __name__ == '__main__':
             (crumb_index, crumb_label) = message_content
             if crumb_index == 1:
                 mouse_settings.container_widgets["slider"].slide_to_page(
-                    mouse_settings.container_widgets["main_hbox"], "left")
+                    mouse_settings.alignment_widgets["main_hbox"], "left")
+                #mouse_settings.container_widgets["slider"].slide_to_page(
+                    #mouse_settings.container_widgets["main_hbox"], "left")
         elif message_type == "show_again":
             mouse_settings.container_widgets["slider"].set_to_page(
-                mouse_settings.container_widgets["main_hbox"])
+                mouse_settings.alignment_widgets["main_hbox"])
             module_frame.send_module_info()
 
     module_frame.module_message_handler = message_handler        
