@@ -82,7 +82,7 @@ class MonitorResizableBox(ResizableBox):
         i = 0
 
         while i < len(output_names):
-            if output_names[i].find(output_name):
+            if output_names[i].find(output_name) != -1:
                 self.select_output_name = output_name
                 return
 
@@ -383,6 +383,7 @@ class DisplayView(gtk.VBox):
         if key != "output-names":
             return
 
+        self.display_manager.init_xml()
         self.__setup_monitor_items()
         self.monitor_combo.set_items(items = self.monitor_items, max_width = 350)
 

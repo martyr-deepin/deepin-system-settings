@@ -10,7 +10,7 @@ import gtk
 
 ICON_PADDING = 5
 TEXT_PADDING = 5
-BUTTON_PADDING = 5
+BUTTON_PADDING = 30
 class Contain(gtk.Alignment):
 
     def __init__(self, icon, text, switch_callback=None):
@@ -39,7 +39,7 @@ class Contain(gtk.Alignment):
                 active_disable_dpixbuf = app_theme.get_pixbuf("/Network/switch_off_active.png"))
 
         self.switch.connect("toggled", self.active_cb)
-        self.hbox.pack_start(self.switch, False , False)
+        self.hbox.pack_start(self.switch, False , False, BUTTON_PADDING)
     
     def set_active(self, state):
         self.switch.set_active(state)
