@@ -45,6 +45,7 @@ import shortcuts
 import pangocairo
 import pango
 from module_frame import ModuleFrame
+from constant import *
 
 
 class KeySetting(object):
@@ -86,8 +87,8 @@ class KeySetting(object):
 
     def __create_widget(self):
         '''create gtk widget'''
-        title_item_font_size = 12
-        option_item_font_szie = 9
+        title_item_font_size = TITLE_FONT_SIZE
+        option_item_font_szie = DEFAULT_FONT_SIZE
 
         #####################################
         # Typing widgets create
@@ -106,9 +107,8 @@ class KeySetting(object):
             app_theme.get_theme_file_path("image/set/toggle_fg.png"))
         # label init
         self.label_widgets["repeat"] = Label(_("Repeat"), text_size=title_item_font_size)
-        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"))
-        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"),
-            text_size=option_item_font_szie)
+        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_szie)
+        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"), text_size=option_item_font_szie)
         self.label_widgets["repeat_fast"] = Label(_("Fast"))
         self.label_widgets["repeat_slow"] = Label(_("Slow"))
         self.label_widgets["repeat_long"] = Label(_("Long"))
@@ -120,7 +120,7 @@ class KeySetting(object):
         self.label_widgets["touchpad"] = Label(_("Disable touchpad while typing"),
             text_size=title_item_font_size)
 
-        self.label_widgets["relevant"] = Label(_("Relevant input device Settings "), text_size=10)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=10)
         # button init
         self.button_widgets["repeat_test_entry"] = gtk.Entry()
         self.button_widgets["blink_test_entry"] = gtk.Entry()
@@ -234,9 +234,12 @@ class KeySetting(object):
      
     def __adjust_widget(self):
         ''' adjust widget '''
-        self.alignment_widgets["notebook"].set(0.5, 0.5, 1, 1)
-        self.alignment_widgets["notebook"].set_padding(20, 20, 20, 20)
-        #self.alignment_widgets["notebook"].add(self.container_widgets["notebook"])
+        MID_SPACING = 10
+        RIGHT_BOX_WIDTH = TIP_BOX_WIDTH - 20
+        MAIN_AREA_WIDTH = 460
+        OPTION_LEFT_PADDING = WIDGET_SPACING + 16
+        self.alignment_widgets["notebook"].set(0.0, 0.0, 1, 1)
+        self.alignment_widgets["notebook"].set_padding(FRAME_TOP_PADDING, 0, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
         self.alignment_widgets["notebook"].add(self.container_widgets["tab_box"])
         tab_box_item = [
             (_("Typing"), self.container_widgets["type_main_hbox"]),
@@ -245,24 +248,26 @@ class KeySetting(object):
         self.container_widgets["tab_box"].add_items(tab_box_item)
         ###########################
         # typing set
+        self.container_widgets["type_main_hbox"].set_spacing(MID_SPACING)
         self.container_widgets["type_main_hbox"].pack_start(self.alignment_widgets["left"])
         self.container_widgets["type_main_hbox"].pack_start(self.alignment_widgets["right"], False, False)
         self.alignment_widgets["left"].add(self.container_widgets["left_vbox"])
         self.alignment_widgets["right"].add(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].set_size_request(200, -1)
+        self.container_widgets["right_vbox"].set_size_request(RIGHT_BOX_WIDTH, -1)
         # set left padding
-        self.alignment_widgets["left"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["left"].set_padding(15, 0, 20, 0)
+        self.alignment_widgets["left"].set(0.0, 0.0, 1.0, 1.0)
+        self.alignment_widgets["left"].set_padding(10, 0, 10, 0)
         # set right padding
         self.alignment_widgets["right"].set(0.0, 0.0, 0.0, 0.0)
-        self.alignment_widgets["right"].set_padding(15, 0, 0, 0)
+        self.alignment_widgets["right"].set_padding(10, 0, 0, 20)
         
+        self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["left_vbox"].pack_start(
             self.container_widgets["repeat_main_vbox"], False, False)
         self.container_widgets["left_vbox"].pack_start(
-            self.container_widgets["blink_main_vbox"], False, False, 10)
+            self.container_widgets["blink_main_vbox"], False, False)
         self.container_widgets["left_vbox"].pack_start(
-            self.container_widgets["touchpad_main_vbox"], False, False, 10)
+            self.container_widgets["touchpad_main_vbox"], False, False)
         # set option label width
         label_widgets = self.label_widgets
         label_width = max(
@@ -271,119 +276,97 @@ class KeySetting(object):
         label_widgets["repeat_delay"].set_size_request(label_width, -1)
         label_widgets["repeat_interval"].set_size_request(label_width, -1)
         self.button_widgets["blink_test_entry"].set_size_request(label_width, 20)
-        #self.button_widgets["blink_test_entry"].set_editable(False)
-        # set scale label width
-        label_width = max(
-            label_widgets["repeat_fast"].size_request()[0],
-            label_widgets["repeat_slow"].size_request()[0],
-            label_widgets["repeat_short"].size_request()[0],
-            label_widgets["repeat_long"].size_request()[0],
-            label_widgets["blink_fast"].size_request()[0],
-            label_widgets["blink_slow"].size_request()[0])
-        label_widgets["repeat_fast"].set_size_request(label_width, -1)
-        label_widgets["repeat_slow"].set_size_request(label_width, -1)
-        label_widgets["repeat_short"].set_size_request(label_width, -1)
-        label_widgets["repeat_long"].set_size_request(label_width, -1)
-        label_widgets["blink_fast"].set_size_request(label_width, -1)
-        label_widgets["blink_slow"].set_size_request(label_width, -1)
 
         # repeat
         self.alignment_widgets["type_label"].add(self.container_widgets["repeat_label_hbox"])
         self.alignment_widgets["type_table"].add(self.container_widgets["repeat_table"])
         # alignment set
-        self.alignment_widgets["type_label"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["type_table"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["type_label"].set_padding(0, 0, 5, 5)
-        self.alignment_widgets["type_table"].set_padding(0, 0, 20, 71)
+        self.alignment_widgets["type_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["type_table"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["type_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["repeat_main_vbox"].pack_start(
             self.alignment_widgets["type_label"])
         self.container_widgets["repeat_main_vbox"].pack_start(
-            self.alignment_widgets["type_table"], True, True, 10)
+            self.alignment_widgets["type_table"])
         # tips lable
+        self.container_widgets["repeat_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["repeat_label_hbox"].pack_start(
             self.image_widgets["repeat"], False, False)
         self.container_widgets["repeat_label_hbox"].pack_start(
-            self.label_widgets["repeat"], False, False, 15)
+            self.label_widgets["repeat"], False, False)
         # repeat delay
         value = self.adjust_widgets["repeat_delay"].get_upper() + self.adjust_widgets["repeat_delay"].get_lower() - settings.keyboard_get_repeat_delay()
         self.adjust_widgets["repeat_delay"].set_value(value)
-        self.container_widgets["repeat_delay_hbox"].pack_start(
-            self.label_widgets["repeat_long"], False, False)
-        self.container_widgets["repeat_delay_hbox"].pack_start(
-            self.scale_widgets["repeat_delay"], True, True, 2)
-        self.container_widgets["repeat_delay_hbox"].pack_start(
-            self.label_widgets["repeat_short"], False, False)
+        self.scale_widgets["repeat_delay"].add_mark(self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Long"))
+        self.scale_widgets["repeat_delay"].add_mark(self.adjust_widgets["repeat_delay"].get_upper(), gtk.POS_BOTTOM, _("Short"))
+        self.scale_widgets["repeat_delay"].set_size_request(MAIN_AREA_WIDTH-120, 30)
         # table attach
         self.container_widgets["repeat_table"].attach(
-            self.label_widgets["repeat_delay"], 0, 1, 0, 1, 0, 0, 15, 10)
+            self.label_widgets["repeat_delay"], 0, 1, 0, 1, 4)
         self.container_widgets["repeat_table"].attach(
-            self.container_widgets["repeat_delay_hbox"], 1, 3, 0, 1, 5, 0)
+            self.scale_widgets["repeat_delay"], 1, 3, 0, 1, 4)
         # repeat interval
         value = self.adjust_widgets["repeat_interval"].get_upper() + self.adjust_widgets["repeat_interval"].get_lower() - settings.keyboard_get_repeat_interval()
         self.adjust_widgets["repeat_interval"].set_value(value)
-        self.container_widgets["repeat_interval_hbox"].pack_start(
-            self.label_widgets["repeat_slow"], False, False)
-        self.container_widgets["repeat_interval_hbox"].pack_start(
-            self.scale_widgets["repeat_interval"], True, True, 2)
-        self.container_widgets["repeat_interval_hbox"].pack_start(
-            self.label_widgets["repeat_fast"], False, False)
+        self.scale_widgets["repeat_interval"].add_mark(self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
+        self.scale_widgets["repeat_interval"].add_mark(self.adjust_widgets["repeat_interval"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
+        self.scale_widgets["repeat_interval"].set_size_request(MAIN_AREA_WIDTH-120, 30)
         # table attach
         self.container_widgets["repeat_table"].attach(
-            self.label_widgets["repeat_interval"], 0, 1, 1, 2, 0, 0, 15, 10)
+            self.label_widgets["repeat_interval"], 0, 1, 1, 2, 4)
         self.container_widgets["repeat_table"].attach(
-            self.container_widgets["repeat_interval_hbox"], 1, 3, 1, 2, 5, 0)
+            self.scale_widgets["repeat_interval"], 1, 3, 1, 2, 4)
         self.container_widgets["repeat_table"].attach(
-            self.button_widgets["repeat_test_entry"], 1, 3, 2, 3, 5, 0)
-        self.container_widgets["repeat_table"].set_row_spacing(0, 15)
-        self.container_widgets["repeat_table"].set_row_spacing(1, 15)
-        #self.button_widgets["repeat_test_entry"].entry.set_size_request(-1, 24)
+            self.button_widgets["repeat_test_entry"], 1, 3, 2, 3, 4, 0)
+        self.container_widgets["repeat_table"].set_size_request(MAIN_AREA_WIDTH, -1)
+        self.container_widgets["repeat_table"].set_col_spacings(WIDGET_SPACING)
+        #self.container_widgets["repeat_table"].set_row_spacings(5)
         self.button_widgets["repeat_test_entry"].set_size_request(-1, 24)
 
         # blink
         self.alignment_widgets["blink_label"].add(self.container_widgets["blink_label_hbox"])
         self.alignment_widgets["blink_table"].add(self.container_widgets["blink_table"])
-        self.alignment_widgets["blink_label"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["blink_table"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["blink_label"].set_padding(0, 0, 5, 5)
-        self.alignment_widgets["blink_table"].set_padding(0, 0, 20, 71)
+        self.alignment_widgets["blink_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["blink_table"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["blink_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["blink_main_vbox"].pack_start(
             self.alignment_widgets["blink_label"])
         self.container_widgets["blink_main_vbox"].pack_start(
             self.alignment_widgets["blink_table"])
         # tips lable
+        self.container_widgets["blink_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["blink_label_hbox"].pack_start(
             self.image_widgets["blink"], False, False)
         self.container_widgets["blink_label_hbox"].pack_start(
-            self.label_widgets["blink"], False, False, 15)
+            self.label_widgets["blink"], False, False)
         # blink time
 
         value = self.adjust_widgets["blink_cursor"].get_upper() + self.adjust_widgets["blink_cursor"].get_lower() - settings.keyboard_get_cursor_blink_time()
         self.adjust_widgets["blink_cursor"].set_value(value)
-        self.container_widgets["blink_cursor_hbox"].pack_start(
-            self.label_widgets["blink_slow"], False, False)
-        self.container_widgets["blink_cursor_hbox"].pack_start(
-            self.scale_widgets["blink_cursor"], True, True, 2)
-        self.container_widgets["blink_cursor_hbox"].pack_start(
-            self.label_widgets["blink_fast"], False, False)
+        self.scale_widgets["blink_cursor"].add_mark(self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
+        self.scale_widgets["blink_cursor"].add_mark(self.adjust_widgets["blink_cursor"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
+        self.scale_widgets["blink_cursor"].set_size_request(MAIN_AREA_WIDTH-120, 30)
         # table attach
         self.container_widgets["blink_table"].attach(
-            self.button_widgets["blink_test_entry"], 0, 1, 0, 1, 0, 0, 15, 5)
+            self.button_widgets["blink_test_entry"], 0, 1, 0, 1, 4)
         self.container_widgets["blink_table"].attach(
-            self.container_widgets["blink_cursor_hbox"], 1, 3, 0, 1, 5, 0)
+            self.scale_widgets["blink_cursor"], 1, 3, 0, 1, 4)
+        self.container_widgets["blink_table"].set_size_request(MAIN_AREA_WIDTH, -1)
+        self.container_widgets["blink_table"].set_col_spacings(WIDGET_SPACING)
 
         # touchpad
         self.alignment_widgets["touchpad_label"].add(self.container_widgets["touchpad_label_hbox"])
-        self.alignment_widgets["touchpad_label"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["touchpad_label"].set_padding(0, 0, 5, 5)
+        self.alignment_widgets["touchpad_label"].set(0.0, 0.5, 1.0, 1.0)
         self.container_widgets["touchpad_main_vbox"].pack_start(
             self.alignment_widgets["touchpad_label"])
         # tips lable
+        self.container_widgets["touchpad_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["touchpad_label_hbox"].pack_start(
             self.image_widgets["touchpad"], False, False)
         self.container_widgets["touchpad_label_hbox"].pack_start(
-            self.label_widgets["touchpad"], False, False, 15)
+            self.label_widgets["touchpad"], False, False)
         self.container_widgets["touchpad_label_hbox"].pack_start(
-            self.button_widgets["touchpad_disable"], False, False, 25)
+            self.button_widgets["touchpad_disable"], False, False)
         self.button_widgets["touchpad_disable"].set_active(
             settings.keyboard_get_disable_touchpad_while_typing())
         self.button_widgets["touchpad_disable"].set_size_request(49, 22)
@@ -408,14 +391,15 @@ class KeySetting(object):
             self.container_widgets["layout_table"])
         self.container_widgets["layout_swindow"].add_child(
             self.view_widgets["layout_selected"])
-        self.alignment_widgets["layout_table"].set(0.5, 0.5, 1, 1)
+        self.alignment_widgets["layout_table"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["layout_table"].set_padding(10, 10, 10, 10)
         # layout toolbar
         self.alignment_widgets["layout_button_hbox"].set(1.0, 0.5, 0, 0)
         self.alignment_widgets["layout_button_hbox"].set_padding(5, 5, 0, 10)
         self.alignment_widgets["layout_button_hbox"].add(self.container_widgets["layout_button_hbox"])
+        self.container_widgets["layout_button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_add"])
-        self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_remove"], True, True, 5)
+        self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_remove"])
         # table attach
         self.container_widgets["layout_table"].attach(
             self.container_widgets["layout_swindow"], 0, 3, 0, 1)
@@ -442,14 +426,15 @@ class KeySetting(object):
             self.view_widgets["shortcuts_shortcut"])
         self.container_widgets["shortcuts_swindow1"].set_size_request(140, 260)
         self.container_widgets["shortcuts_swindow2"].set_size_request(575, 230)
-        self.alignment_widgets["shortcuts_table"].set(0.5, 0.5, 1, 1)
+        self.alignment_widgets["shortcuts_table"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["shortcuts_table"].set_padding(10, 10, 10, 10)
         # shortcut toolbar
         self.alignment_widgets["shortcuts_toolbar"].set(1.0, 0.5, 0, 0)
         self.alignment_widgets["shortcuts_toolbar"].set_padding(5, 5, 0, 10)
         self.alignment_widgets["shortcuts_toolbar"].add(self.container_widgets["shortcuts_toolbar_hbox"])
+        self.container_widgets["shortcuts_toolbar_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_add"])
-        self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_remove"], True, True, 5)
+        self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_remove"])
 
         self.alignment_widgets["shortcuts_tips"].add(self.label_widgets["shortcuts_tips"])
         self.alignment_widgets["shortcuts_tips"].set(0.0, 0.5, 1, 1)
@@ -458,7 +443,7 @@ class KeySetting(object):
         self.container_widgets["shortcuts_table"].attach(
             self.container_widgets["shortcuts_swindow1"], 0, 1, 0, 2, 0, 0)
         self.container_widgets["shortcuts_table"].attach(
-            self.container_widgets["shortcuts_swindow2"], 1, 2, 0, 1, 5, 0, 10)
+            self.container_widgets["shortcuts_swindow2"], 1, 2, 0, 1, 5, 0, 4)
         self.container_widgets["shortcuts_table"].attach(
             self.alignment_widgets["shortcuts_toolbar"], 1, 2, 1, 2, 5, 0)
         self.container_widgets["shortcuts_table"].attach(

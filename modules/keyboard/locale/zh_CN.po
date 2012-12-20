@@ -59,8 +59,8 @@ msgid "Disable touchpad while typing"
 msgstr "打字时禁用触摸板"
 
 #: ../src/main.py:124
-msgid "Relevant input device Settings "
-msgstr "相关输入设备设置"
+msgid "Relevant Settings"
+msgstr "相关设置"
 
 #: ../src/main.py:130
 msgid "Mouse Setting"
