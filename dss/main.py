@@ -168,8 +168,8 @@ if __name__ == "__main__":
     # Set application default size.
     application.window.set_geometry_hints(
         None,
-        846, 547,
-        846, 547,
+        800, 535,
+        800, 535,
         )
 
     # Set application icon.

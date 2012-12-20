@@ -59,6 +59,8 @@ sudo apt-get install python-dbus
 #.endif
 前的注释去掉。
 
+== Bluetooth module ==
+sudo apt-get install libopenobex1 bluez 
 
 
 注意
