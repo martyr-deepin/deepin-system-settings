@@ -45,23 +45,20 @@ def connect_bus():
         monitor_interface = dbus.Interface(monitor_object, "org.freedesktop.DBus")
 
         if "org.PulseAudio1" not in monitor_interface.ListNames():
-            if "org.pulseaudio.Service" not in monitor_interface.ListNames():
-                try:
-                    if int(os.popen("ps -ef |grep pulseaudio | wc -l").read().strip()) > 1:
-                        command = "pulseaudio --kill"
-                        # subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
-                        subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
-
-                    command = "pulseaudio --start"
-                    # subprocess.Popen("nohup %s > /dev/null 2>&1" % (command), shell=True)
+            # if "org.pulseaudio.Service" not in monitor_interface.ListNames():
+            try:
+                while int(os.popen("ps -ef |grep pulseaudio | wc -l").read().strip()) > 1:
+                    command = "pulseaudio --kill"
                     subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
-                    # monitor_interface.StartServiceByName("org.PulseAudio1", 1)
-                except:
-                    print "StartServiceByName:org.PulseAudio1 Failed"
+
+                command = "pulseaudio --start"
+                subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
+            except:
+                print "StartServiceByName:org.PulseAudio1 Failed"
 
         server_lookup = bus.get_object("org.PulseAudio1", "/org/pulseaudio/server_lookup1")
-        address = server_lookup.Get("org.PulseAudio.ServerLookup1", "Address", dbus_interface="org.freedesktop.DBus.Properties")
-
+        prop_interface = dbus.Interface(server_lookup, "org.freedesktop.DBus.Properties")
+        address = prop_interface.Get("org.PulseAudio.ServerLookup1", "Address")
     try:    
         return dbus.connection.Connection(address)
     except:
@@ -73,7 +70,6 @@ try:
 except dbus.exceptions.DBusException:
     client_bus = None
     print "connect to dbus server error."
-
 
 class BusBase(gobject.GObject):
     
