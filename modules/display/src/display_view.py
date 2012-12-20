@@ -82,7 +82,7 @@ class MonitorResizableBox(ResizableBox):
         i = 0
 
         while i < len(output_names):
-            if output_names[i].find(output_name):
+            if output_names[i].find(output_name) != -1:
                 self.select_output_name = output_name
                 return
 
