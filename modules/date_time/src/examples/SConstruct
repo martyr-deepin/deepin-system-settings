@@ -13,6 +13,8 @@ libdeepin_tzmap_dir_inc    = '$PREFIX/include/deepin_tzmap'
 libdeepin_tzmap = env.SharedLibrary('libdeepin_tzmap', ['cc-timezone-map.c', 'tz.c'])
 hello_tzmap = env.Program('hello_tzmap', ['hello_tzmap.c', 'cc-timezone-map.c', 'tz.c'])
 
+env.Program('hello_time.c')
+
 env.Install(libdeepin_tzmap_dir_lib, libdeepin_tzmap)                                            
 env.Install(libdeepin_tzmap_dir_inc, ['cc-timezone-map.h', 'tz.h'])
 env.Alias('install', libdeepin_tzmap_dir_prefix)
