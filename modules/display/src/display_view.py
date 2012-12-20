@@ -299,6 +299,8 @@ class DisplayView(gtk.VBox):
         self.auto_adjust_box = gtk.HBox(spacing = self.box_spacing)
         self.auto_adjust_label = self.__setup_label("自动调节屏幕亮度", 120)
         self.auto_adjust_toggle = self.__setup_toggle()
+        self.auto_adjust_toggle.set_active(self.display_manager.is_enable_close_monitor())
+        self.auto_adjust_toggle.connect("toggled", self.__toggled, "auto_adjust_toggle")
         self.close_monitor_label = self.__setup_label("关闭屏幕", 90)
         self.close_monitor_combo = self.__setup_combo(self.duration_items)
         self.close_monitor_combo.set_select_index(self.display_manager.get_close_monitor_index(self.duration_items))
@@ -322,6 +324,8 @@ class DisplayView(gtk.VBox):
         self.auto_lock_box = gtk.HBox(spacing = self.box_spacing)
         self.auto_lock_label = self.__setup_label("自动锁定用户屏幕", 120)
         self.auto_lock_toggle = self.__setup_toggle()
+        self.auto_lock_toggle.set_active(self.display_manager.is_enable_lock_display())
+        self.auto_lock_toggle.connect("toggled", self.__toggled, "auto_lock_toggle")
         self.lock_display_label = self.__setup_label("锁定屏幕", 90)
         self.lock_display_combo = self.__setup_combo(self.duration_items)
         self.lock_display_combo.set_select_index(self.display_manager.get_lock_display_index(self.duration_items))
@@ -408,6 +412,17 @@ class DisplayView(gtk.VBox):
         while i < len(screen_sizes):
             self.sizes_items.append((screen_sizes[i], i))
             i += 1
+
+    def __toggled(self, widget, object=None):
+        if object == "auto_adjust_toggle":
+            if not widget.get_active():
+                self.display_manager.set_close_monitor(DisplayManager.BIG_NUM / 60)
+            return
+
+        if object == "auto_lock_toggle":
+            if not widget.get_active():
+                self.display_manager.set_lock_display(DisplayManager.BIG_NUM / 60)
+            return
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "monitor_combo":

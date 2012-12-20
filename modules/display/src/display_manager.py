@@ -40,6 +40,8 @@ from xml.dom import minidom
 from dtk.ui.utils import run_command
 
 class DisplayManager:
+    BIG_NUM = 2147483647
+    
     def __init__(self):
         self.__deepin_xrandr = deepin_xrandr.new()
         self.__xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
@@ -70,6 +72,9 @@ class DisplayManager:
     def __create_monitors_xml(self):
         pass
     
+    '''
+    TODO: Only shown connected outputs
+    '''
     def init_xml(self):
         self.__xmldoc = minidom.parse(self.__monitors_xml_filename)
         tmp_list = []
@@ -353,6 +358,12 @@ class DisplayManager:
 
             i += 1
 
+    def is_enable_close_monitor(self):
+        if self.__power_settings.get_int("sleep-display-battery") < self.BIG_NUM:
+            return True
+
+        return False
+    
     '''
     TODO: unit is second
     '''
@@ -380,6 +391,12 @@ class DisplayManager:
         self.__power_settings.set_int("sleep-display-battery", value * 60)
         self.__power_settings.set_int("sleep-display-ac", value * 60)
 
+    def is_enable_lock_display(self):
+        if self.__session_settings.get_uint("idle-delay") < self.BIG_NUM:
+            return True
+
+        return False
+    
     '''
     TODO: unit is second
     '''
