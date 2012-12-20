@@ -383,6 +383,7 @@ class DisplayView(gtk.VBox):
         if key != "output-names":
             return
 
+        self.display_manager.init_xml()
         self.__setup_monitor_items()
         self.monitor_combo.set_items(items = self.monitor_items, max_width = 350)
 
