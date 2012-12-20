@@ -407,6 +407,7 @@ class Security(gtk.VBox):
             self.table.attach(self.show_key_check, 1, 4, 2, 3)
             
             self.password_entry.entry.set_text(secret)
+            self.setting.psk = secret
 
         elif self.security_combo.get_current_item()[1] == "none":
             # Add Key
@@ -433,6 +434,7 @@ class Security(gtk.VBox):
             # must convert long int to int 
             index = int(index)
             self.key_entry.entry.set_text(key)
+            self.setting.set_wep_key(index, secret)
             self.wep_index_spin.set_value(index)
             self.auth_combo.set_select_index(["open", "shared"].index(auth))
 
