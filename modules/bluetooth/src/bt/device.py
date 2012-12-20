@@ -349,6 +349,11 @@ class AudioSource(BusBase):
     def get_properties(self):
         return self.dbus_method("GetProperties")
 
+    def get_state(self):
+        # Possible values: "disconnected", "connecting", "connected", "playing"
+        if "State" in self.get_properties().keys():
+            return self.get_properties()["State"]
+
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
 
@@ -488,7 +493,7 @@ class Control(BusBase):
     def connected_cb(self):
         self.emit("connected")
 
-    def disconected_cb(self):
+    def disconnected_cb(self):
         self.emit("disconnected")
 
     def property_changed_cb(self, key, value):

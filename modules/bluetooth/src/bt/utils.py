@@ -190,6 +190,13 @@ def bluetooth_uuid_to_string(uuid):
 def get_pincode_for_device(bttype, address, name, max_digits):
     pass
 
+def bluetooth_browse_address(address):
+    import subprocess
+
+    address_uri = "obex://[%s]/" % address
+    commands = "xdg-open %s" % address_uri
+    subprocess.call(commands, shell = True)
 
 if __name__ == "__main__":
+    # bluetooth_browse_address("C4:6A:B7:1C:36:99")
     pass
