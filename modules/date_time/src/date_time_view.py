@@ -67,8 +67,8 @@ class DatetimeView(gtk.VBox):
         '''
         self.timezone_align = self.__setup_align()
         self.timezone_box = gtk.HBox(spacing=40)
-        self.timezone = TimeZone(width=400, height=230)
-        self.datetime = DateTime(12, 12, width=400, height=145, box_spacing=180)
+        self.timezone = TimeZone(width=350, height=230)
+        self.datetime = DateTime(12, 12, width=350, height=145, box_spacing=180)
         self.__widget_pack_start(self.timezone_box, [self.timezone, self.datetime])
         self.timezone_align.add(self.timezone_box)
         '''
