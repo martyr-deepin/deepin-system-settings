@@ -6,6 +6,7 @@
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.entry import InputEntry
+from dtk.ui.new_entry import InputEntry
 from dtk.ui.button import ImageButton
 from dtk.ui.breadcrumb import Bread
 from dtk.ui.poplist import IconTextItem
@@ -65,10 +66,11 @@ class ActionBar(gtk.Alignment):
         
         # Init navigate bar.
         self.navigate_bar = gtk.HBox()
-        self.bread = Bread([("系统设置", 
+        self.bread = Bread(crumb = [("系统设置", 
                              map(lambda module_info: ModuleMenuItem(module_info, click_module_item),
                                  list(itertools.chain(*module_infos)))),
-                            ])
+                            ], 
+                           show_left_right_box = False)
         self.bread.connect("item_clicked", switch_page)
         
         # Init search entry.
@@ -98,13 +100,7 @@ class ActionBar(gtk.Alignment):
         self.connect("expose-event", self.expose_action_bar)
         
     def expose_action_bar(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        x, y, w, h = rect.x, rect.y, rect.width, rect.height
-
-        cr.set_source_rgba(1, 1, 1, 1)
-        cr.rectangle(x, y, w, h)
-        cr.fill()
+        pass
 
 gobject.type_register(ActionBar)
 

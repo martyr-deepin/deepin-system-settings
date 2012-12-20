@@ -103,30 +103,46 @@ class MonitorResizableBox(ResizableBox):
                 output_height = self.output_height - i * self.output_small_size
                 output_name = output_infos[i][0]
                 output_display_name = self.__display_manager.get_output_display_name(output_name)
-                
+                '''
+                background
+                '''
                 cr.set_source_rgb(*color_hex_to_cairo("#DFDFDF"))
                 cr.rectangle(output_x, 
                              y, 
                              output_width, 
                              output_height)
                 cr.fill()
-
+                '''
+                output display name
+                '''
                 draw_text(cr = cr, 
                           markup = output_display_name, 
                           x = output_x, 
                           y = y + (output_height - self.text_size) / 2, 
                           w = output_width, 
-                          h = 10,
+                          h = self.text_size,
                           text_size = self.text_size, 
                           alignment = pango.ALIGN_CENTER)
-           
+                draw_text(cr = cr, 
+                          markup = str(i + 1), 
+                          x = output_x + output_width - self.text_size, 
+                          y = y + output_height - self.text_size * 2, 
+                          w = self.text_size, 
+                          h = self.text_size, 
+                          text_size = self.text_size, 
+                          alignment = pango.ALIGN_LEFT)
+                '''
+                stroke
+                '''
                 cr.set_source_rgb(*color_hex_to_cairo("#797979"))
                 cr.rectangle(output_x, 
                              y, 
                              output_width, 
                              output_height)
                 cr.stroke()
-
+                '''
+                selected stroke
+                '''
                 if self.select_output_name == output_name:
                     cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
                     cr.rectangle(output_x, y, output_width, output_height)
@@ -135,12 +151,11 @@ class MonitorResizableBox(ResizableBox):
                 if self.__eventx > output_x + output_width or self.__eventx < output_x:
                     i += 1
                     continue
-
+                '''
+                selected stroke && emit
+                '''
                 cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
-                cr.rectangle(output_x, 
-                             y, 
-                             output_width, 
-                             output_height)
+                cr.rectangle(output_x, y, output_width, output_height)
                 cr.stroke()
                 self.emit("select-output", output_name)
 
