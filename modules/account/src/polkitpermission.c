@@ -372,4 +372,3 @@ static PyObject* release(PolkitPermissionObject *self)
         return Py_False;
     }
 }
-

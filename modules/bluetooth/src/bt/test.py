@@ -194,6 +194,7 @@ def test_phone():
         from device import AudioSource
         from device import Control
 
+        ###AudioSource
         if "AudioSource" not in get_device_supported_services(device):
             print "device not support AudioSource"
             return 
@@ -203,15 +204,31 @@ def test_phone():
         if audiosource.get_state() == "disconnected":
             audiosource.connect()
 
+        ###Control    
         if "A/V_RemoteControlTarget" not in get_device_supported_services(device):
             print "device not support A/V control"
             return
         
         control = Control(device.object_path)
         if not control.get_connected():
-            control.connect()
-            
-        control.volume_up()    
+            return
+
+        for i in range(10):    
+            control.volume_up()    
+
+        ###HandsFreeGateway    
+        from device import HandsfreeGateway
+        from handsfree_agent import HandsfreeAgent
+        if not "HandsfreeAudioGateway" in get_device_supported_services(device):
+            print "device not support handsfree gateway"
+            return 
+
+        hfg = HandsfreeGateway(device.object_path)
+        hfagent = HandsfreeAgent("/org/bluez/HandsfreeAgent")
+        hfg.register_agent("/org/bluez/HandsfreeAgent")
+
+        hfg.connect()
+        
 
     from manager import Manager
     from adapter import Adapter

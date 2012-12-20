@@ -42,7 +42,9 @@ class HandsfreeAgent(dbus.service.Object):
     
     @dbus.service.method("org.bluez.HandsfreeAgent", in_signature="ou", out_signature="")
     def NewConnection(self, fd, version):
-        pass
+        print "NewConnection:\n"
+        print fd
+        print version
 
 if __name__ == '__main__':
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)

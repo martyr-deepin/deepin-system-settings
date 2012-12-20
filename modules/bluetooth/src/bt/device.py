@@ -544,14 +544,14 @@ class HealthManager(BusBase):
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
 
-class HandsFreeGateway(BusBase):
+class HandsfreeGateway(BusBase):
 
     __gsignals__  = {
         "property-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, gobject.TYPE_PYOBJECT))
             }
 
     def __init__(self, device_path):
-        BusBase.__init__(self, path = device_path, interface = "org.bluez.HandsFreeGateway")
+        BusBase.__init__(self, path = device_path, interface = "org.bluez.HandsfreeGateway")
 
         self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertyChanged")
