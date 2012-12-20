@@ -80,6 +80,10 @@ class DisplayManager:
             del self.__output_info_by_xml[:]
             for output in outputs:
                 output_name = output.attributes["name"].value
+                
+                if not self.is_output_connected(output_name):
+                    continue
+                
                 width = output.getElementsByTagName("width")
                 height = output.getElementsByTagName("height")
                 x = output.getElementsByTagName("x")
@@ -218,6 +222,18 @@ class DisplayManager:
             i += 1
 
         return ""
+    
+    def is_output_connected(self, output_name):
+        output_names = self.__xrandr_settings.get_strv("output-names")
+        i = 0
+
+        while i < len(output_names):
+            if output_names[i].find(output_name) != -1:
+                return True
+            
+            i += 1
+
+        return False
     
     def get_output_names(self):
         output_names = self.__xrandr_settings.get_strv("output-names")
