@@ -6,7 +6,8 @@
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
-# 
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -20,7 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from constant import APP_DBUS_NAME, APP_OBJECT_NAME
+from constant import APP_DBUS_NAME, APP_OBJECT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT
 from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
@@ -168,8 +169,8 @@ if __name__ == "__main__":
     # Set application default size.
     application.window.set_geometry_hints(
         None,
-        800, 535,
-        800, 535,
+        WINDOW_WIDTH, WINDOW_HEIGHT,
+        WINDOW_WIDTH, WINDOW_HEIGHT,
         )
 
     # Set application icon.
