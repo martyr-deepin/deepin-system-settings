@@ -49,10 +49,10 @@ TEXT_WINDOW_RIGHT_WIDGET_PADDING = 10
 # 文字控件类别-提示信息宽
 TIP_BOX_WIDTH = 180
 
-# 默认文字大小
-DEFAULT_FONT_SIZE = 12
-# 标题文字大小
-TITLE_FONT_SIZE = 14
+# 默认文字大小 12像素对应7
+DEFAULT_FONT_SIZE = 7
+# 标题文字大小 14像素对应8.5
+TITLE_FONT_SIZE = 8.5
 # 垂直间隔
 BETWEEN_SPACING = 15
 # 容器高度
