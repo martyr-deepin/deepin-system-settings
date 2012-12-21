@@ -26,6 +26,11 @@ APP_OBJECT_NAME = "/com/deepin/system_settings"
 PAGE_WIDTH = 834
 PAGE_HEIGHT = 474
 
+'''
+module background color
+'''
+MODULE_BG_COLOR = "#FFFFFF"
+
 # 框架类别-上下间距
 FRAME_HORIZONTAL_SPACING = 4
 # 框架类别-左右间距

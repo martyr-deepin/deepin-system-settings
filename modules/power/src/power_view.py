@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir
+from dtk.ui.utils import get_parent_dir, color_hex_to_cairo
 import os
 
 app_theme = init_skin(
@@ -36,7 +36,7 @@ from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
-from dtk.ui.utils import get_optimum_pixbuf_from_file
+from constant import *
 from power_manager import PowerManager
 import gobject
 import gtk
@@ -182,6 +182,16 @@ class PowerView(gtk.VBox):
              self.close_monitor_align, 
              self.wakeup_password_align, 
              self.tray_battery_status_align])
+
+        self.connect("expose-event", self.__expose)
+
+    def __expose(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                                                 
+        cr.fill()
 
     def __setup_label(self, text="", align=ALIGN_END):
         label = Label(text, None, DEFAULT_FONT_SIZE, align, 140)
