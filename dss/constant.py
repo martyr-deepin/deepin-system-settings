@@ -63,5 +63,11 @@ WIDGET_SPACING = 10
 # 提示信息
 STATUS_HEIGHT = 35
 
+'''
+* text widget category
+image width beside title
+'''
+IMG_WIDTH = 16
+
 WINDOW_HEIGHT = 535
 WINDOW_WIDTH = 800
