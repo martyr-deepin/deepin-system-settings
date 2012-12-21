@@ -19,14 +19,11 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-import sys
 from nmlib.nmclient import NMClient
 from nmlib.nm_remote_settings import NMRemoteSettings
 from nmlib.nmcache import NMCache, cache
 from nmlib.nm_secret_agent import NMSecretAgent
 from mm.mmclient import MMClient
-
 from dtk.ui.new_slider import HSlider
 
 class MySlider(HSlider):

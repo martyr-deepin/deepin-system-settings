@@ -30,8 +30,13 @@ from wlan_config import WirelessSetting
 #from wired import *
 import gtk
 import pango
-BORDER_COLOR = color_hex_to_cairo("#aeaeae")
+BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
+import sys,os
+from dtk.ui.utils import get_parent_dir
+from dtk.ui.label import Label
+sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
+from constant import *
 
 class WirelessItem(TreeItem):
 
@@ -159,7 +164,8 @@ class WirelessItem(TreeItem):
         return [self.render_check, self.render_essid, self.render_signal, self.render_jumpto]
 
     def get_height(self):
-        return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height()+ self.VERTICAL_PADDING*2
+        #return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height()+ self.VERTICAL_PADDING*2
+        return CONTAINNER_HEIGHT
         
     def select(self):
         #print "select"
@@ -201,8 +207,8 @@ class WirelessItem(TreeItem):
             #self.redraw_request_callback(self)
 
 def render_background( cr, rect):
-    background_color = [(0,["#ffffff", 1.0]),
-                        (1,["#ffffff", 1.0])]
+    background_color = [(0,["#f6f6f6", 1.0]),
+                        (1,["#f6f6f6", 1.0])]
     draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
 
 
@@ -302,7 +308,8 @@ class WiredItem(TreeItem):
         return [self.render_check, self.render_essid, self.render_jumpto]
 
     def get_height(self):
-        return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        #return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        return CONTAINNER_HEIGHT
         
     def unselect(self):
         self.is_select = False
@@ -550,7 +557,8 @@ class GeneralItem(TreeItem):
 
 
     def get_height(self):
-        return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        #return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        return CONTAINNER_HEIGHT
         
     def unselect(self):
         self.is_select = False
