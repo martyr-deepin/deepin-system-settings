@@ -218,8 +218,8 @@ class WirelessSection(gtk.VBox):
     
     def add_setting_page(self, page):
         self.settings = page
-        self.hotspot.add_setting_page(page)
         if self.wireless_devices:
+            self.hotspot.add_setting_page(page)
             for wireless_device in self.wireless_devices:
                 if wireless_device.is_active():
                     self.wireless.set_active(True)
