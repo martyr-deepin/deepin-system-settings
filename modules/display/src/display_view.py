@@ -46,7 +46,7 @@ from dtk.ui.draw import cairo_state, draw_text
 import gobject
 import gtk
 import pango
-
+from constant import *
 from display_manager import DisplayManager
 
 class MonitorResizableBox(ResizableBox):
@@ -208,8 +208,8 @@ class DisplayView(gtk.VBox):
         self.scrolled_window = ScrolledWindow()
         self.scrolled_window.set_size_request(800, 425)
         self.scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.main_box = gtk.VBox(spacing = self.box_spacing)
-        self.body_box = gtk.HBox(spacing = self.box_spacing)
+        self.main_box = gtk.VBox()
+        self.body_box = gtk.HBox()
         '''
         left, right align
         '''
@@ -356,7 +356,6 @@ class DisplayView(gtk.VBox):
         '''
         self.__widget_pack_start(self.left_box, 
             [self.monitor_display_align, 
-             self.monitor_align, 
              self.sizes_align, 
              self.monitor_bright_align, 
              self.brightness_align, 
@@ -374,7 +373,7 @@ class DisplayView(gtk.VBox):
         '''
         main && body box
         '''
-        self.main_box.pack_start(self.monitor_resize_align)
+        self.main_box.pack_start(self.monitor_resize_align, False, False)
         self.body_box.pack_start(self.left_align)
         self.body_box.pack_start(self.right_align, False, False)
         self.main_box.pack_start(self.body_box)
@@ -383,6 +382,15 @@ class DisplayView(gtk.VBox):
         '''
         self.scrolled_window.add_child(self.main_box)
         self.pack_start(self.scrolled_window)
+        self.connect("expose-event", self.__expose)
+
+    def __expose(self, widget, event):
+        cr = widget.window.cairo_create()                                        
+        rect = widget.allocation                                                 
+        
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                  
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                    
+        cr.fill()
 
     def __change_current_output(self, output_name, from_monitor_combo=True):
         self.__current_output_name = output_name
@@ -485,6 +493,7 @@ class DisplayView(gtk.VBox):
         align = gtk.Alignment()
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(self.padding_y, self.padding_y, self.padding_x, 0)
+        align.connect("expose-event", self.__expose)
         return align
 
     def __widget_pack_start(self, parent_widget, widgets=[], expand=False, fill=False):
