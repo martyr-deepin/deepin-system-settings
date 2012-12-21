@@ -23,12 +23,12 @@
 
 from theme import app_theme
 from dtk.ui.label import Label
-from dtk.ui.button import Button
+from dtk.ui.button import Button, ToggleButton
 from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
-from dtk.ui.utils import get_parent_dir
+from dtk.ui.utils import get_parent_dir, propagate_expose, color_hex_to_cairo
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
@@ -103,18 +103,18 @@ class SoundSetting(object):
             app_theme.get_theme_file_path("image/set/speaker.png"))
         self.image_widgets["microphone"] = gtk.image_new_from_file(
             app_theme.get_theme_file_path("image/set/microphone.png"))
-        self.image_widgets["switch_bg_active"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/toggle_bg_active.png"))
-        self.image_widgets["switch_bg_nornal"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/toggle_bg_normal.png"))
-        self.image_widgets["switch_fg"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/toggle_fg.png"))
         self.image_widgets["device"] = gtk.gdk.pixbuf_new_from_file(
             app_theme.get_theme_file_path("image/set/device.png"))
         # button init
-        self.button_widgets["balance"] = gtk.ToggleButton()
-        self.button_widgets["speaker"] = gtk.ToggleButton()
-        self.button_widgets["microphone"] = gtk.ToggleButton()
+        self.button_widgets["balance"] = ToggleButton(
+            app_theme.get_pixbuf("set/inactive_normal.png"),
+            app_theme.get_pixbuf("set/active_normal.png"))
+        self.button_widgets["speaker"] = ToggleButton(
+            app_theme.get_pixbuf("set/inactive_normal.png"),
+            app_theme.get_pixbuf("set/active_normal.png"))
+        self.button_widgets["microphone"] = ToggleButton(
+            app_theme.get_pixbuf("set/inactive_normal.png"),
+            app_theme.get_pixbuf("set/active_normal.png"))
         self.button_widgets["advanced"] = Button(_("Advanced"))
         self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=460)
         self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=460)
@@ -124,7 +124,6 @@ class SoundSetting(object):
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
         self.container_widgets["right_vbox"] = gtk.VBox(False)
-        self.container_widgets["balance_scale_hbox"] = gtk.HBox(False)
         self.container_widgets["speaker_main_vbox"] = gtk.VBox(False)     # speaker
         self.container_widgets["speaker_label_hbox"] = gtk.HBox(False)
         self.container_widgets["speaker_table"] = gtk.Table(3, 2)
@@ -149,8 +148,6 @@ class SoundSetting(object):
         self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 150)
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150)
         # scale init
-        #self.scale_widgets["balance"] = gtk.HScale()
-        #self.scale_widgets["balance"].set_draw_value(False)
         self.scale_widgets["balance"] = HScalebar(
             app_theme.get_pixbuf("scalebar/l_fg.png"),
             app_theme.get_pixbuf("scalebar/l_bg.png"),
@@ -160,9 +157,6 @@ class SoundSetting(object):
             app_theme.get_pixbuf("scalebar/r_bg.png"),
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["balance"].set_adjustment(self.adjust_widgets["balance"])
-        self.scale_widgets["balance"].set_size_request(530, DEFAULT_FONT_SIZE * 4)
-        #self.scale_widgets["speaker"] = gtk.HScale()
-        #self.scale_widgets["speaker"].set_draw_value(False)
         self.scale_widgets["speaker"] = HScalebar(
             app_theme.get_pixbuf("scalebar/l_fg.png"),
             app_theme.get_pixbuf("scalebar/l_bg.png"),
@@ -174,9 +168,6 @@ class SoundSetting(object):
             True,
             '%')
         self.scale_widgets["speaker"].set_adjustment(self.adjust_widgets["speaker"])
-        self.scale_widgets["speaker"].set_size_request(530, DEFAULT_FONT_SIZE * 4)
-        #self.scale_widgets["microphone"] = gtk.HScale()
-        #self.scale_widgets["microphone"].set_draw_value(False)
         self.scale_widgets["microphone"] = HScalebar(
             app_theme.get_pixbuf("scalebar/l_fg.png"),
             app_theme.get_pixbuf("scalebar/l_bg.png"),
@@ -188,7 +179,6 @@ class SoundSetting(object):
             True,
             '%')
         self.scale_widgets["microphone"].set_adjustment(self.adjust_widgets["microphone"])
-        self.scale_widgets["microphone"].set_size_request(530, DEFAULT_FONT_SIZE * 4)
         ###################################
         # advance set
         self.container_widgets["advance_input_box"] = gtk.VBox(False)
@@ -255,7 +245,6 @@ class SoundSetting(object):
         self.container_widgets["left_vbox"].pack_start(
             self.alignment_widgets["advanced"], False, False)
         ## balance
-        #self.container_widgets["balance_scale_hbox"].pack_start(self.scale_widgets["balance"])
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_lower(), gtk.POS_BOTTOM, _("Left"))
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_upper(), gtk.POS_BOTTOM, _("Right"))
         self.scale_widgets["balance"].add_mark(0, gtk.POS_TOP, "0")
@@ -291,8 +280,6 @@ class SoundSetting(object):
             self.alignment_widgets["speaker_button"], 1, 2, 1, 2, 0)
         self.container_widgets["speaker_table"].attach(
             self.scale_widgets["balance"], 0, 2, 2, 3, 4)
-        #self.container_widgets["speaker_table"].attach(
-            #self.container_widgets["balance_scale_hbox"], 0, 2, 2, 3, 0)
         self.alignment_widgets["speaker_button"].add(self.button_widgets["speaker"])
         self.alignment_widgets["speaker_button"].set(0, 0.5, 1, 0)
         self.button_widgets["speaker"].set_size_request(49, 22)
@@ -472,10 +459,18 @@ class SoundSetting(object):
         
     def __signals_connect(self):
         ''' widget signals connect'''
-        self.button_widgets["balance"].connect("expose-event", self.toggle_button_expose)
-        self.button_widgets["speaker"].connect("expose-event", self.toggle_button_expose)
-        self.button_widgets["microphone"].connect("expose-event", self.toggle_button_expose)
-
+        # redraw container background white
+        #self.alignment_widgets["slider"].connect("expose-event", self.container_expose_cb)
+        #self.container_widgets["slider"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["advance_set_tab_box"].connect("expose-event", self.container_expose_cb)
+        #self.container_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
+        #self.container_widgets["advance_set_tab_box"].connect("expose-event", self.container_expose_cb)
+        #self.alignment_widgets["left"].connect("expose-event", self.container_expose_cb)
+        #self.alignment_widgets["right"].connect("expose-event", self.container_expose_cb)
+        #self.container_widgets["left_vbox"].connect("expose-event", self.container_expose_cb)
+        #self.container_widgets["right_vbox"].connect("expose-event", self.container_expose_cb)
+        
         self.button_widgets["balance"].connect("toggled", self.toggle_button_toggled, "balance")
         self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")
         self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
@@ -533,27 +528,15 @@ class SoundSetting(object):
     ######################################
     # signals callback begin
     # widget signals
-    def toggle_button_expose(self, button, event):
-        ''' toggle button expose'''
-        cr = button.window.cairo_create()
-        x, y, w, h = button.allocation
-        if button.get_active():
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_bg_active"], x, y) 
-            cr.paint()
-            offet_x = self.image_widgets["switch_bg_active"].get_width() - self.image_widgets["switch_fg"].get_width()
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_fg"], x+offet_x, y) 
-            cr.paint()
-        else:
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_bg_nornal"], x, y) 
-            cr.paint()
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_fg"], x, y) 
-            cr.paint()
-        return True
-
+    def container_expose_cb(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                                                 
+        cr.fill()
+        #propagate_expose(widget, event)
+        #return True
+    
     def toggle_button_toggled(self, button, tp):
         if button.get_data("changed-by-other-app"):
             button.set_data("changed-by-other-app", False)
@@ -982,8 +965,21 @@ class SoundSetting(object):
     def fallback_source_unset_cb(self, core):
         print 'fallback source unset'
         self.container_widgets["microphone_main_vbox"].set_sensitive(False)
+    
     # signals callback end
     ######################################
+    def __make_align(self, xalign=0.0, yalign=0.5, xscale=1.0, yscale=1.0,
+                     padding_top=0, padding_bottom=0, padding_left=0, padding_right=0,
+                     widget=None, redraw=True):
+        align = gtk.Alignment()
+        align.set(xalign, yalign, xscale, yscale)
+        align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
+        if widget:
+            align.add(widget)
+        if redraw:
+            align.connect("expose-event", self.container_expose_cb)
+        return align
+    
     def slider_to_advanced(self, button):
         self.container_widgets["slider"].slide_to_page(
             self.alignment_widgets["advance_set_tab_box"], "right")
