@@ -32,6 +32,7 @@ PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
 from nmlib.servicemanager import servicemanager
+from constant import *
 
 slider = nm_module.slider
 
@@ -69,7 +70,7 @@ class WiredSection(gtk.VBox):
 
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         if self.wired_devices:
-            self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
+            self.wire = Contain(app_theme.get_pixbuf("/Network/cable.png"), "有线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
             self.pack_start(self.wire, False, False, 0)
             self.settings = None
@@ -193,7 +194,7 @@ class WirelessSection(gtk.VBox):
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
-            self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
+            self.wireless = Contain(app_theme.get_pixbuf("/Network/wifi.png"), "无线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
 
             self.pack_start(self.wireless, False, False)
@@ -218,8 +219,8 @@ class WirelessSection(gtk.VBox):
     
     def add_setting_page(self, page):
         self.settings = page
-        self.hotspot.add_setting_page(page)
         if self.wireless_devices:
+            self.hotspot.add_setting_page(page)
             for wireless_device in self.wireless_devices:
                 if wireless_device.is_active():
                     self.wireless.set_active(True)
@@ -336,7 +337,7 @@ class DSL(gtk.VBox):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
         self.setting_page = None
-        self.dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
+        self.dsl = Contain(app_theme.get_pixbuf("/Network/dsl.png"), "宽带拨号", self.toggle_cb)
         self.pack_start(self.dsl, False, False)
         #pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
@@ -373,7 +374,7 @@ class VpnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
         self.slide_to_subcrumb = slide_to_subcrumb_cb
-        vpn = Contain(app_theme.get_pixbuf("/Network/misc.png"), "VPN网络", self.toggle_cb)
+        vpn = Contain(app_theme.get_pixbuf("/Network/vpn.png"), "VPN网络", self.toggle_cb)
         self.add(vpn)
 
         ## detect vpn active_connection
@@ -484,7 +485,7 @@ class Proxy(gtk.VBox):
     def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
-        proxy = Contain(app_theme.get_pixbuf("/Network/misc.png"), "网络代理", self.toggle_cb)
+        proxy = Contain(app_theme.get_pixbuf("/Network/proxy.png"), "网络代理", self.toggle_cb)
         self.settings = None
         self.add(proxy)
 
@@ -525,31 +526,37 @@ class Network(object):
         
         self.module_frame = module_frame
         self.init_sections(self.module_frame)
-        vbox = gtk.VBox(False, 17)
-        vbox.pack_start(self.wired, False, True,5)
+        vbox = gtk.VBox(False, BETWEEN_SPACING)
+        vbox.pack_start(self.wired, False, True,0)
         vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
         vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
         vbox.pack_start(self.proxy, False, True, 0)
+        vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
         
-        scroll_win = ScrolledWindow()
-        scroll_win.set_size_request(825, 425)
+        scroll_win = ScrolledWindow(right_space=0, top_bottom_space=0)
+        scroll_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
-        scroll_win.add_with_viewport(vbox)
-        self.main_align = gtk.Alignment(0,0,0,0)
-        self.main_align.set_padding(11,11,11,11)
-        self.main_align.add(scroll_win)
+        # FIXME UI a align to adjust ui
+        ui_align = gtk.Alignment(0, 0, 0, 0)
+        ui_align.set_padding(TEXT_WINDOW_TOP_PADDING,
+                                    TEXT_WINDOW_TOP_PADDING,
+                                    TEXT_WINDOW_LEFT_PADDING,
+                                    TEXT_WINDOW_LEFT_PADDING)
+        ui_align.add(vbox)
+        scroll_win.add_with_viewport(ui_align)
 
         self.eventbox = gtk.EventBox()
         self.eventbox.set_above_child(False)
-        self.eventbox.add(self.main_align)
+        self.eventbox.add(scroll_win)
+        vbox.connect("expose-event", self.expose_callback)
+        ui_align.connect("expose-event", self.expose_callback)
         nm_module.nmclient.connect("activate-succeed", self.activate_succeed) 
         nm_module.nmclient.connect("activate-failed", self.activate_failed) 
 
 
         slider._append_page(self.eventbox, "main")
-        # FIXME add too many pages will cause cairo_error
         slider._append_page(self.wired_setting_page, "wired")
         slider._append_page(self.dsl_setting_page, "dsl")
         slider._append_page(self.wireless_setting_page, "wireless")
@@ -560,6 +567,13 @@ class Network(object):
         #pdb.set_trace()
         slider.show_all()
         slider._set_to_page("main")
+
+    def expose_callback(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        cr.set_source_rgb( 1, 1, 1) 
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
 
     def activate_succeed(self, widget, connection_path):
         print connection_path

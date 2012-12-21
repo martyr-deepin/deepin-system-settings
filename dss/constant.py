@@ -26,6 +26,11 @@ APP_OBJECT_NAME = "/com/deepin/system_settings"
 PAGE_WIDTH = 834
 PAGE_HEIGHT = 474
 
+'''
+module background color
+'''
+MODULE_BG_COLOR = "#FFFFFF"
+
 # 框架类别-上下间距
 FRAME_HORIZONTAL_SPACING = 4
 # 框架类别-左右间距
@@ -44,10 +49,10 @@ TEXT_WINDOW_RIGHT_WIDGET_PADDING = 10
 # 文字控件类别-提示信息宽
 TIP_BOX_WIDTH = 180
 
-# 默认文字大小
-DEFAULT_FONT_SIZE = 12
-# 标题文字大小
-TITLE_FONT_SIZE = 14
+# 默认文字大小 12像素对应7
+CONTENT_FONT_SIZE = 9
+# 标题文字大小 14像素对应8.5
+TITLE_FONT_SIZE = 10
 # 垂直间隔
 BETWEEN_SPACING = 15
 # 容器高度
@@ -57,6 +62,17 @@ WIDGET_SPACING = 10
 
 # 提示信息
 STATUS_HEIGHT = 35
+
+'''
+* text widget category
+image width beside title
+'''
+IMG_WIDTH = 16
+
+'''
+ComboBox, Label widget height
+'''
+WIDGET_HEIGHT = 22
 
 WINDOW_HEIGHT = 535
 WINDOW_WIDTH = 800

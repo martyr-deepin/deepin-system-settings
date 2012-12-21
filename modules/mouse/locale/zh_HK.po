@@ -85,8 +85,8 @@ msgid "Characters"
 msgstr "字符"
 
 #: ../src/main.py:95
-msgid "Relevant input device Settings "
-msgstr "相關輸入設備設置"
+msgid "Relevant Settings"
+msgstr "相關設置"
 
 #: ../src/main.py:97
 msgid "Right-handed"

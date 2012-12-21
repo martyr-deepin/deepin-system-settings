@@ -62,6 +62,7 @@ class AccountSetting(object):
         self.dialog_widget = {}
         
         self.current_select_user = None
+        self.current_select_item = None
 
         self.__create_widget()
         self.__adjust_widget()

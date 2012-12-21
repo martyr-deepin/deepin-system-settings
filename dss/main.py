@@ -183,7 +183,6 @@ if __name__ == "__main__":
     application.add_titlebar(
         ["min", "close"], 
         app_theme.get_pixbuf("logo.png"), 
-        None,
         "系统设置",
         )
     
