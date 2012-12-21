@@ -109,7 +109,7 @@ class PowerView(gtk.VBox):
         '''
         power save config
         '''
-        self.power_save_config_align = self.__setup_align(padding_left = TEXT_WINDOW_LEFT_PADDING)
+        self.power_save_config_align = self.__setup_align(padding_top = BETWEEN_SPACING, padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.power_save_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.power_save_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/power_save.png"))
         self.power_save_config_label = self.__setup_label("电源节能设置", TITLE_FONT_SIZE)
@@ -155,7 +155,8 @@ class PowerView(gtk.VBox):
         '''
         wakeup password
         '''
-        self.wakeup_password_align = self.__setup_align(padding_left = TEXT_WINDOW_LEFT_PADDING)
+        self.wakeup_password_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
+                                                        padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.wakeup_password_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.wakeup_password_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/wakeup_password.png"))
         self.wakeup_password_label = self.__setup_label("唤醒时的密码保护", TITLE_FONT_SIZE)
@@ -168,7 +169,8 @@ class PowerView(gtk.VBox):
         '''
         tray battery status
         '''
-        self.tray_battery_status_align = self.__setup_align(padding_left = TEXT_WINDOW_LEFT_PADDING)
+        self.tray_battery_status_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
+                                                            padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.tray_battery_status_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.tray_battery_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/tray_battery.png"))
         self.tray_battery_status_label = self.__setup_label("在系统托盘显示电池状态", TITLE_FONT_SIZE)
@@ -209,6 +211,7 @@ class PowerView(gtk.VBox):
 
     def __setup_combo(self, items=[]):
         combo = ComboBox(items, None, 0, 120)
+        combo.set_size_request(-1, WIDGET_HEIGHT)
         return combo
 
     def __setup_toggle(self):
@@ -217,7 +220,7 @@ class PowerView(gtk.VBox):
         return toggle
 
     def __setup_align(self, 
-                      padding_top=BETWEEN_SPACING, 
+                      padding_top=8, 
                       padding_bottom=0, 
                       padding_left=TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING, 
                       padding_right=0):
