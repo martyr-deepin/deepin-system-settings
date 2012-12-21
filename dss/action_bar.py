@@ -51,7 +51,7 @@ class ActionBar(gtk.Alignment):
         self.main_box = gtk.HBox()
         
         self.cache_bg_pixbuf = CachePixbuf()
-        self.bg_pixbuf = app_theme.get_pixbuf("titlebar_bg.png")
+        self.bg_pixbuf = app_theme.get_pixbuf("crumbs_bg.png")
 
         # Init action button.
         self.backward_align = gtk.Alignment()
@@ -116,7 +116,7 @@ class ActionBar(gtk.Alignment):
         cr = widget.window.cairo_create()                                        
         rect = widget.allocation
         
-        self.cache_bg_pixbuf.scale(self.bg_pixbuf.get_pixbuf(), rect.width, rect.height, False, True)
+        self.cache_bg_pixbuf.scale(self.bg_pixbuf.get_pixbuf(), rect.width, rect.height)
         draw_pixbuf(cr, self.cache_bg_pixbuf.get_cache(), rect.x, rect.y)
 
 gobject.type_register(ActionBar)
