@@ -96,7 +96,7 @@ class ActionBar(gtk.Alignment):
         self.search_entry.set_size(150, 24)
         self.search_align = gtk.Alignment()
         self.search_align.set(0.5, 0.5, 0, 0)
-        self.search_align.set_padding(0, 0, 5, 5)
+        self.search_align.set_padding(5, 0, 5, 5)
         
         # Connect widgets.
         self.action_align.add(self.action_box)
