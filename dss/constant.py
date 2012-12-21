@@ -69,5 +69,10 @@ image width beside title
 '''
 IMG_WIDTH = 16
 
+'''
+ComboBox, Label widget height
+'''
+WIDGET_HEIGHT = 22
+
 WINDOW_HEIGHT = 535
 WINDOW_WIDTH = 800
