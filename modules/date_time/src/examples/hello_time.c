@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 #include <time.h>
 
 int main(int argc, char **argv) 
@@ -11,6 +12,9 @@ int main(int argc, char **argv)
            time_value, 
            tm_local_value->tm_zone, 
            tm_local_value->tm_gmtoff / 3600);
+
+    putenv("TZ=CST6CDT");
+    tzset();
 
     return 0;
 }
