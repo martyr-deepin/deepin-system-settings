@@ -32,9 +32,10 @@ from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton
 from dtk.ui.scalebar import HScalebar
-from dtk.ui.utils import propagate_expose, cairo_disable_antialias
+from dtk.ui.utils import propagate_expose
 import gtk
 from module_frame import ModuleFrame
+from constant import *
 
 
 class MouseSetting(object):
@@ -65,8 +66,8 @@ class MouseSetting(object):
 
     def __create_widget(self):
         '''create gtk widget'''
-        title_item_font_size = 12
-        option_item_font_szie = 9
+        title_item_font_size = TITLE_FONT_SIZE
+        option_item_font_szie = DEFAULT_FONT_SIZE
         # image init
         self.image_widgets["custom"] = gtk.image_new_from_file(
             app_theme.get_theme_file_path("image/set/custom.png"))
@@ -92,8 +93,8 @@ class MouseSetting(object):
             text_size=option_item_font_szie)
         self.label_widgets["click_fast"] = Label(_("Fast"))
         self.label_widgets["click_slow"] = Label(_("Slow"))
-        self.label_widgets["double_test"] = Label(_("Double-click on the folder to test your settings."), text_size=option_item_font_szie)
-        self.label_widgets["relevant"] = Label(_("Relevant input device Settings "), text_size=10)
+        self.label_widgets["double_test"] = Label(_("Double-click on the folder to test your settings."))
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=10)
         # button init
         self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"))
         self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"))
@@ -120,6 +121,7 @@ class MouseSetting(object):
         self.container_widgets["double_click_table"] = gtk.Table(2, 4, False)
         self.container_widgets["double_click_rate_hbox"] = gtk.HBox(False)
         # alignment init
+        self.alignment_widgets["main_hbox"] = gtk.Alignment()
         self.alignment_widgets["left"] = gtk.Alignment()
         self.alignment_widgets["right"] = gtk.Alignment()
         self.alignment_widgets["custom_label"] = gtk.Alignment()            # custom
@@ -171,24 +173,34 @@ class MouseSetting(object):
      
     def __adjust_widget(self):
         ''' adjust widget '''
+        MID_SPACING = 10
+        RIGHT_BOX_WIDTH = TIP_BOX_WIDTH - 20
+        MAIN_AREA_WIDTH = 460
+        OPTION_LEFT_PADDING = WIDGET_SPACING + 16
+        self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
+        self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1.0, 1.0)
+        self.alignment_widgets["main_hbox"].set_padding(
+            TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+        
+        self.container_widgets["main_hbox"].set_spacing(MID_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right"], False, False)
         self.alignment_widgets["left"].add(self.container_widgets["left_vbox"])
         self.alignment_widgets["right"].add(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].set_size_request(200, -1)
+        self.container_widgets["right_vbox"].set_size_request(RIGHT_BOX_WIDTH, -1)
         # set left padding
-        self.alignment_widgets["left"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["left"].set_padding(15, 0, 20, 0)
+        self.alignment_widgets["left"].set(0.0, 0.5, 1.0, 1.0)
         # set right padding
-        self.alignment_widgets["right"].set(0.0, 0.0, 0.0, 0.0)
-        self.alignment_widgets["right"].set_padding(15, 0, 0, 0)
+        self.alignment_widgets["right"].set(0.0, 0.0, 1.0, 1.0)
+        self.alignment_widgets["right"].set_padding(0, 0, 0, 20)
         
+        self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["left_vbox"].pack_start(
             self.container_widgets["custom_main_vbox"], False, False)
         self.container_widgets["left_vbox"].pack_start(
-            self.container_widgets["pointer_speed_main_vbox"], False, False, 10)
+            self.container_widgets["pointer_speed_main_vbox"], False, False)
         self.container_widgets["left_vbox"].pack_start(
-            self.container_widgets["double_click_main_vbox"], False, False, 10)
+            self.container_widgets["double_click_main_vbox"], False, False)
         # set option label width
         label_widgets = self.label_widgets
         label_width = max(label_widgets["acceleration"].size_request()[0],
@@ -197,132 +209,114 @@ class MouseSetting(object):
         label_widgets["acceleration"].set_size_request(label_width, -1)
         label_widgets["sensitivity"].set_size_request(label_width, -1)
         label_widgets["click_rate"].set_size_request(label_width, -1)
-        # set scale label width
-        label_width = max(label_widgets["accel_fast"].size_request()[0],
-            label_widgets["accel_slow"].size_request()[0],
-            label_widgets["sensitiv_low"].size_request()[0],
-            label_widgets["sensitiv_high"].size_request()[0],
-            label_widgets["click_fast"].size_request()[0],
-            label_widgets["click_slow"].size_request()[0])
-        label_widgets["accel_slow"].set_size_request(label_width, -1)
-        label_widgets["accel_fast"].set_size_request(label_width, -1)
-        label_widgets["sensitiv_low"].set_size_request(label_width, -1)
-        label_widgets["sensitiv_high"].set_size_request(label_width, -1)
-        label_widgets["click_fast"].set_size_request(label_width, -1)
-        label_widgets["click_slow"].set_size_request(label_width, -1)
         # custom
         self.alignment_widgets["custom_label"].add(self.container_widgets["custom_label_hbox"])
         self.alignment_widgets["custom_button"].add(self.container_widgets["custom_button_hbox"])
         # alignment set
-        self.alignment_widgets["custom_label"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["custom_button"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["custom_label"].set_padding(0, 0, 5, 5)
-        self.alignment_widgets["custom_button"].set_padding(0, 0, 0, 5)
+        self.alignment_widgets["custom_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["custom_button"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["custom_button"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["custom_main_vbox"].pack_start(
             self.alignment_widgets["custom_label"])
         self.container_widgets["custom_main_vbox"].pack_start(
-            self.alignment_widgets["custom_button"], True, True, 10)
+            self.alignment_widgets["custom_button"])
         # tips label
+        self.container_widgets["custom_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["custom_label_hbox"].pack_start(
             self.image_widgets["custom"], False, False)
         self.container_widgets["custom_label_hbox"].pack_start(
-            self.label_widgets["custom"], False, False, 15)
+            self.label_widgets["custom"], False, False)
         # radio button set
         if settings.mouse_get_left_handed():
             self.button_widgets["left_hand_radio"].set_active(True)
         else:
             self.button_widgets["right_hand_radio"].set_active(True)
         self.container_widgets["custom_button_hbox"].pack_start(
-            self.button_widgets["left_hand_radio"], False, False, 40)
+            self.button_widgets["left_hand_radio"], False, False)
         self.container_widgets["custom_button_hbox"].pack_start(
-            self.button_widgets["right_hand_radio"], False, False, 60)
+            self.button_widgets["right_hand_radio"], False, False)
 
         # pointer speed
         self.alignment_widgets["pointer_speed_label"].add(self.container_widgets["pointer_speed_label_hbox"])
         self.alignment_widgets["pointer_speed_table"].add(self.container_widgets["pointer_speed_table"])
         # alignment set
-        self.alignment_widgets["pointer_speed_label"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["pointer_speed_table"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["pointer_speed_label"].set_padding(0, 0, 5, 5)
-        self.alignment_widgets["pointer_speed_table"].set_padding(0, 0, 35, 71)
+        self.alignment_widgets["pointer_speed_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["pointer_speed_table"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["pointer_speed_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
             self.alignment_widgets["pointer_speed_label"])
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
-            self.alignment_widgets["pointer_speed_table"], True, True, 10)
+            self.alignment_widgets["pointer_speed_table"])
         # tips lable
+        self.container_widgets["pointer_speed_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["pointer_speed_label_hbox"].pack_start(
             self.image_widgets["speed"], False, False)
         self.container_widgets["pointer_speed_label_hbox"].pack_start(
-            self.label_widgets["pointer_speed"], False, False, 15)
+            self.label_widgets["pointer_speed"], False, False)
         # motion acceleration
         self.adjust_widgets["pointer_speed_accel"].set_value(settings.mouse_get_motion_acceleration())
-        self.container_widgets["pointer_speed_accel_hbox"].pack_start(
-            self.label_widgets["accel_slow"], False, False)
-        self.container_widgets["pointer_speed_accel_hbox"].pack_start(
-            self.scale_widgets["pointer_speed_accel"], True, True, 2)
-        self.container_widgets["pointer_speed_accel_hbox"].pack_start(
-            self.label_widgets["accel_fast"], False, False)
+        self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
+        self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
+        self.scale_widgets["pointer_speed_accel"].set_size_request(MAIN_AREA_WIDTH-140, 30)
         # table attach
+        self.container_widgets["pointer_speed_table"].set_size_request(MAIN_AREA_WIDTH, -1)
+        self.container_widgets["pointer_speed_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["pointer_speed_table"].attach(
-            self.label_widgets["acceleration"], 0, 1, 0, 1, 0, 0, 15, 10)
+            self.label_widgets["acceleration"], 0, 1, 0, 1, 4)
         self.container_widgets["pointer_speed_table"].attach(
-            self.container_widgets["pointer_speed_accel_hbox"], 1, 3, 0, 1, 5, 0)
+            self.scale_widgets["pointer_speed_accel"], 1, 3, 0, 1, 4)
         # motion threshold
         self.adjust_widgets["pointer_speed_sensitiv"].set_value(settings.mouse_get_motion_threshold())
-        self.container_widgets["pointer_speed_sensitiv_hbox"].pack_start(
-            self.label_widgets["sensitiv_low"], False, False)
-        self.container_widgets["pointer_speed_sensitiv_hbox"].pack_start(
-            self.scale_widgets["pointer_speed_sensitiv"], True, True, 2)
-        self.container_widgets["pointer_speed_sensitiv_hbox"].pack_start(
-            self.label_widgets["sensitiv_high"], False, False)
+        self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_lower(), gtk.POS_BOTTOM, _("Low"))
+        self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_upper(), gtk.POS_BOTTOM, _("High"))
+        self.scale_widgets["pointer_speed_sensitiv"].set_size_request(MAIN_AREA_WIDTH-140, 30)
         # table attach
         self.container_widgets["pointer_speed_table"].attach(
-            self.label_widgets["sensitivity"], 0, 1, 1, 2, 0, 0, 15, 10)
+            self.label_widgets["sensitivity"], 0, 1, 1, 2, 4)
         self.container_widgets["pointer_speed_table"].attach(
-            self.container_widgets["pointer_speed_sensitiv_hbox"], 1, 3, 1, 2, 5, 0)
+            self.scale_widgets["pointer_speed_sensitiv"], 1, 3, 1, 2, 4)
 
         # double click
         self.alignment_widgets["double_click_label"].add(self.container_widgets["double_click_label_hbox"])
         self.alignment_widgets["double_click_table"].add(self.container_widgets["double_click_table"])
-        self.alignment_widgets["double_click_label"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["double_click_table"].set(0.5, 0.5, 1.0, 1.0)
-        self.alignment_widgets["double_click_label"].set_padding(0, 0, 5, 5)
-        self.alignment_widgets["double_click_table"].set_padding(0, 0, 35, 5)
+        self.alignment_widgets["double_click_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["double_click_table"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["double_click_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["double_click_main_vbox"].pack_start(
             self.alignment_widgets["double_click_label"])
         self.container_widgets["double_click_main_vbox"].pack_start(
             self.alignment_widgets["double_click_table"])
         # tips lable
+        self.container_widgets["double_click_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["double_click_label_hbox"].pack_start(
             self.image_widgets["double"], False, False)
         self.container_widgets["double_click_label_hbox"].pack_start(
-            self.label_widgets["double_click"], False, False, 15)
+            self.label_widgets["double_click"], False, False)
         # double click rate
         self.adjust_widgets["double_click_rate"].set_value(settings.mouse_get_double_click())
-        self.container_widgets["double_click_rate_hbox"].pack_start(
-            self.label_widgets["click_slow"], False, False)
-        self.container_widgets["double_click_rate_hbox"].pack_start(
-            self.scale_widgets["double_click_rate"], True, True, 2)
-        self.container_widgets["double_click_rate_hbox"].pack_start(
-            self.label_widgets["click_fast"], False, False)
+        self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
+        self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
+        self.scale_widgets["double_click_rate"].set_size_request(MAIN_AREA_WIDTH-140, 30)
         # table attach
+        self.container_widgets["double_click_table"].set_size_request(MAIN_AREA_WIDTH, -1)
+        self.container_widgets["double_click_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["double_click_table"].attach(
-            self.label_widgets["click_rate"], 0, 1, 0, 1, 0, 0, 15, 5)
+            self.label_widgets["click_rate"], 0, 1, 0, 1, 4)
         self.container_widgets["double_click_table"].attach(
-            self.container_widgets["double_click_rate_hbox"], 1, 3, 0, 1, 5, 0)
+            self.scale_widgets["double_click_rate"], 1, 3, 0, 1, 4)
         self.container_widgets["double_click_table"].attach(
-            self.label_widgets["double_test"], 1, 3, 1, 2, 5, 0, 0, 5)
+            self.label_widgets["double_test"], 1, 3, 1, 2, 4)
         self.container_widgets["double_click_table"].attach(
             self.button_widgets["double_test"], 3, 4, 0, 2, 0, 0, 0)
         self.button_widgets["double_test"].set_size_request(66, 66)
 
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.label_widgets["relevant"])
+            self.label_widgets["relevant"], False, False)
         self.container_widgets["right_vbox"].pack_start(
-            self.alignment_widgets["keyboard_setting"])
+            self.alignment_widgets["keyboard_setting"], False, False)
         self.container_widgets["right_vbox"].pack_start(
-            self.alignment_widgets["touchpad_setting"])
+            self.alignment_widgets["touchpad_setting"], False, False)
         self.alignment_widgets["keyboard_setting"].add(self.button_widgets["keyboard_setting"])
         self.alignment_widgets["touchpad_setting"].add(self.button_widgets["touchpad_setting"])
         self.alignment_widgets["keyboard_setting"].set_padding(15, 0, 9, 0)
@@ -439,7 +433,7 @@ if __name__ == '__main__':
 
     mouse_settings = MouseSetting(module_frame)
     
-    module_frame.add(mouse_settings.container_widgets["main_hbox"])
+    module_frame.add(mouse_settings.alignment_widgets["main_hbox"])
     
     def message_handler(*message):
         (message_type, message_content) = message
