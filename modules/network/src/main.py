@@ -70,7 +70,7 @@ class WiredSection(gtk.VBox):
 
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         if self.wired_devices:
-            self.wire = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", self.toggle_cb)
+            self.wire = Contain(app_theme.get_pixbuf("/Network/cable.png"), "有线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
             self.pack_start(self.wire, False, False, 0)
             self.settings = None
@@ -194,7 +194,7 @@ class WirelessSection(gtk.VBox):
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
-            self.wireless = Contain(app_theme.get_pixbuf("/Network/wireless.png"), "无线网络", self.toggle_cb)
+            self.wireless = Contain(app_theme.get_pixbuf("/Network/wifi.png"), "无线网络", self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
 
             self.pack_start(self.wireless, False, False)
@@ -337,7 +337,7 @@ class DSL(gtk.VBox):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
         self.setting_page = None
-        self.dsl = Contain(app_theme.get_pixbuf("/Network/wired.png"), "宽带拨号", self.toggle_cb)
+        self.dsl = Contain(app_theme.get_pixbuf("/Network/dsl.png"), "宽带拨号", self.toggle_cb)
         self.pack_start(self.dsl, False, False)
         #pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
@@ -374,7 +374,7 @@ class VpnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
         self.slide_to_subcrumb = slide_to_subcrumb_cb
-        vpn = Contain(app_theme.get_pixbuf("/Network/misc.png"), "VPN网络", self.toggle_cb)
+        vpn = Contain(app_theme.get_pixbuf("/Network/vpn.png"), "VPN网络", self.toggle_cb)
         self.add(vpn)
 
         ## detect vpn active_connection
@@ -485,7 +485,7 @@ class Proxy(gtk.VBox):
     def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
-        proxy = Contain(app_theme.get_pixbuf("/Network/misc.png"), "网络代理", self.toggle_cb)
+        proxy = Contain(app_theme.get_pixbuf("/Network/proxy.png"), "网络代理", self.toggle_cb)
         self.settings = None
         self.add(proxy)
 

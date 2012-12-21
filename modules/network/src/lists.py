@@ -78,13 +78,15 @@ class WirelessItem(TreeItem):
         render_background(cr,rect)
         #print self.is_select, self.check_select_flag
         if self.network_state == self.NETWORK_DISCONNECT:
-            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+            #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+            check_icon = None
         elif self.network_state == self.NETWORK_LOADING:
             check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
-
-        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+        
+        if check_icon:
+            draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
 
         #draw outline
         with cairo_disable_antialias(cr):
@@ -116,11 +118,21 @@ class WirelessItem(TreeItem):
         render_background(cr,rect)
         if self.is_select:
             pass
-        if self.strength > 50:
-            signal_icon = app_theme.get_pixbuf("/Network/strength_1.png").get_pixbuf()
+
+        # FIXME need to detect encry or not
+        lock_icon = app_theme.get_pixbuf("/Network/lock.png").get_pixbuf()
+
+        if self.strength > 80:
+            signal_icon = app_theme.get_pixbuf("/Network/Wifi_3.png").get_pixbuf()
+        elif self.strength > 60:
+            signal_icon = app_theme.get_pixbuf("/Network/Wifi_2.png").get_pixbuf()
+        elif self.strength > 60:
+            signal_icon = app_theme.get_pixbuf("/Network/Wifi_1.png").get_pixbuf()
         else:
-            signal_icon = app_theme.get_pixbuf("/Network/strength0.png").get_pixbuf()
-        draw_pixbuf(cr, signal_icon, rect.x , rect.y + self.VERTICAL_PADDING)
+            signal_icon = app_theme.get_pixbuf("/Network/Wifi_0.png").get_pixbuf()
+        
+        draw_pixbuf(cr, lock_icon, rect.x , rect.y + self.VERTICAL_PADDING)
+        draw_pixbuf(cr, signal_icon, rect.x + 16 , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -244,13 +256,15 @@ class WiredItem(TreeItem):
             #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
 
         if self.network_state == 0:
-            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+            #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+            check_icon = None
         elif self.network_state == 1:
             check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
 
-        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+        if check_icon:
+            draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -474,13 +488,14 @@ class GeneralItem(TreeItem):
         render_background(cr, rect)
 
         if self.network_state == 0:
-            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+            check_icon = None
         elif self.network_state == 1:
             check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
-
-        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+        
+        if check_icon:
+            draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)

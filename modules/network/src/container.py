@@ -34,9 +34,9 @@ class Contain(gtk.Alignment):
         self.height = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_height()
         self.width = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_width()
         self.image.set_from_pixbuf(icon.get_pixbuf())
-        self.hbox.pack_start(self.image, False, False, ICON_PADDING)
-        self.label = Label(text, text_size=10, label_width=70)
-        self.hbox.pack_start(self.label, False, False, TEXT_PADDING)
+        self.hbox.pack_start(self.image, False, True, ICON_PADDING)
+        self.label = Label(text, text_size=TITLE_FONT_SIZE, label_width=70)
+        self.hbox.pack_start(self.label, False, True, TEXT_PADDING)
 
         self.switch = ToggleButton(
                 app_theme.get_pixbuf("/inactive_normal.png"), 
@@ -45,8 +45,15 @@ class Contain(gtk.Alignment):
                 active_disable_dpixbuf = app_theme.get_pixbuf("/inactive_normal.png"))
 
         self.switch.connect("toggled", self.active_cb)
-        self.hbox.pack_start(self.switch, False , False, BUTTON_PADDING)
+        self.hbox.pack_start(self.switch, False , True, BUTTON_PADDING)
+        self.hbox.connect("expose-event", self.expose_callback)
     
+    def expose_callback(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        cr.set_source_rgb( 1, 1, 1) 
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
     def set_active(self, state):
         self.switch.set_active(state)
 
