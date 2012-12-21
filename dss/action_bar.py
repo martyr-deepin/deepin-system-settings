@@ -22,6 +22,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
+from dtk.ui.cache_pixbuf import CachePixbuf
+from dtk.ui.draw import draw_pixbuf
 from dtk.ui.new_entry import InputEntry
 from dtk.ui.button import ImageButton
 from dtk.ui.breadcrumb import Bread
@@ -48,6 +50,9 @@ class ActionBar(gtk.Alignment):
         # Init action box.
         self.main_box = gtk.HBox()
         
+        self.cache_bg_pixbuf = CachePixbuf()
+        self.bg_pixbuf = app_theme.get_pixbuf("titlebar_bg.png")
+
         # Init action button.
         self.backward_align = gtk.Alignment()
         self.backward_align.set(0, 0, 0, 0)
@@ -108,7 +113,11 @@ class ActionBar(gtk.Alignment):
         self.connect("expose-event", self.expose_action_bar)
         
     def expose_action_bar(self, widget, event):
-        pass
+        cr = widget.window.cairo_create()                                        
+        rect = widget.allocation
+        
+        self.cache_bg_pixbuf.scale(self.bg_pixbuf.get_pixbuf(), rect.width, rect.height, False, True)
+        draw_pixbuf(cr, self.cache_bg_pixbuf.get_cache(), rect.x, rect.y)
 
 gobject.type_register(ActionBar)
 
