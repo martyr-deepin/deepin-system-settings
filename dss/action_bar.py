@@ -49,16 +49,24 @@ class ActionBar(gtk.Alignment):
         self.main_box = gtk.HBox()
         
         # Init action button.
+        self.backward_align = gtk.Alignment()
+        self.backward_align.set(0, 0, 0, 0)
+        self.backward_align.set_padding(10, 5, 10, 0)
         self.backward_button = ImageButton(
             app_theme.get_pixbuf("action_button/backward_normal.png"),
             app_theme.get_pixbuf("action_button/backward_hover.png"),
             app_theme.get_pixbuf("action_button/backward_press.png"),
             )
+        self.backward_align.add(self.backward_button)
+        self.forward_align = gtk.Alignment()
+        self.forward_align.set(0, 0, 0, 0)
+        self.forward_align.set_padding(10, 5, 10, 0)
         self.forward_button = ImageButton(
             app_theme.get_pixbuf("action_button/forward_normal.png"),
             app_theme.get_pixbuf("action_button/forward_hover.png"),
             app_theme.get_pixbuf("action_button/forward_press.png"),
             )
+        self.forward_align.add(self.forward_button)
         self.action_box = gtk.HBox()
         self.action_align = gtk.Alignment()
         self.action_align.set(0.5, 0, 0, 0)
@@ -88,8 +96,8 @@ class ActionBar(gtk.Alignment):
         # Connect widgets.
         self.action_align.add(self.action_box)
         self.search_align.add(self.search_entry)
-        self.action_box.pack_start(self.backward_button)
-        self.action_box.pack_start(self.forward_button)
+        self.action_box.pack_start(self.backward_align)
+        self.action_box.pack_start(self.forward_align)
         self.navigate_bar.pack_start(self.bread, True, True)
         self.main_box.pack_start(self.action_align, False, False)
         self.main_box.pack_start(self.navigate_bar, True, True)
