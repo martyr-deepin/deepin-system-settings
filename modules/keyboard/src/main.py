@@ -88,7 +88,7 @@ class KeySetting(object):
     def __create_widget(self):
         '''create gtk widget'''
         title_item_font_size = TITLE_FONT_SIZE
-        option_item_font_szie = DEFAULT_FONT_SIZE
+        option_item_font_szie = CONTENT_FONT_SIZE
 
         #####################################
         # Typing widgets create

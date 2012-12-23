@@ -67,7 +67,7 @@ class MouseSetting(object):
     def __create_widget(self):
         '''create gtk widget'''
         title_item_font_size = TITLE_FONT_SIZE
-        option_item_font_szie = DEFAULT_FONT_SIZE
+        option_item_font_szie = CONTENT_FONT_SIZE
         # image init
         self.image_widgets["custom"] = gtk.image_new_from_file(
             app_theme.get_theme_file_path("image/set/custom.png"))
