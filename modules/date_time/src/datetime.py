@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 ~ 2013 Deepin, Inc.
-#               2012 ~ 2013 Long Wei
+# Copyright (C) 2012 Deepin, Inc.
+#               2012 Long Wei
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -62,7 +63,7 @@ class InvalidObjectPath(Exception):
 
 class BusBase(gobject.GObject):
     
-    def __init__(self, path, interface, service = "com.linuxdeepin.datetime", bus = datetime_bus):
+    def __init__(self, path, interface, service = "org.gnome.SettingsDaemon.DateTimeMechanism", bus = datetime_bus):
 
         if valid_object_path(path):
             self.object_path = path
@@ -109,7 +110,7 @@ class BusBase(gobject.GObject):
 class DateTime(BusBase):
     
     def __init__(self):
-        BusBase.__init__(self, path = "/", interface = "com.linuxdeepin.datetime")
+        BusBase.__init__(self, path = "/", interface = "org.gnome.SettingsDaemon.DateTimeMechanism")
 
     def adjust_time(self, seconds_to_add):
         self.call_async("AdjustTime", seconds_to_add)
@@ -152,5 +153,6 @@ if __name__ == "__main__":
     print "get timezone:"
 
     print datetime.get_timezone()
+    datetime.set_timezone("Asia/Shanghai")
 
-    gobject.MainLoop().run()
+    #gobject.MainLoop().run()
