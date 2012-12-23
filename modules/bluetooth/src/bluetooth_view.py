@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir
+from dtk.ui.utils import get_parent_dir, color_hex_to_cairo
 import os
 
 app_theme = init_skin(
@@ -38,9 +38,10 @@ from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
+from dtk.ui.constant import ALIGN_START, ALIGN_END
 import gobject
 import gtk
+from constant import *
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -58,9 +59,13 @@ class DeviceIconView(ScrolledWindow):
         self.add_child(self.device_scrolledwindow)
 
     def draw_mask(self, cr, x, y, w, h):
-        cr.set_source_rgb(1, 1, 1)
+        cr.set_source_rgb(*color_hex_to_cairo("#FFFFFF"))
         cr.rectangle(x, y, w, h)
         cr.fill()
+        
+        cr.set_source_rgb(*color_hex_to_cairo("#AEAEAE"))
+        cr.rectangle(x, y, w, h)
+        cr.stroke()
 
     def add_items(self, items, clear=False):
         if clear:
@@ -240,46 +245,54 @@ class BlueToothView(gtk.VBox):
         '''
         enable open
         '''
-        self.enable_align = self.__setup_align(padding_top=30)
+        self.enable_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.enable_box = gtk.HBox(spacing=self.box_spacing)
+        self.enable_open_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/enable_open.png"))
         self.enable_open_label = self.__setup_label("蓝牙是否开启")
         self.enable_open_toggle = self.__setup_toggle()
-        self.__widget_pack_start(self.enable_box, [self.enable_open_label, self.enable_open_toggle])
+        self.__widget_pack_start(self.enable_box, 
+                                 [self.enable_open_image, self.enable_open_label, self.enable_open_toggle])
         self.enable_align.add(self.enable_box)
         '''
         display
         '''
         self.display_align = self.__setup_align()
         self.display_box = gtk.HBox(spacing=self.box_spacing)
+        self.display_device_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/display_device.png"))
         self.display_device_label = self.__setup_label("显示设备名称")
         self.display_device_entry = InputEntry("Sirtoozee PC")
         self.display_device_entry.set_size(150, 24)
-        self.__widget_pack_start(self.display_box, [self.display_device_label, self.display_device_entry])
+        self.__widget_pack_start(self.display_box, 
+                                 [self.display_device_image, self.display_device_label, self.display_device_entry])
         self.display_align.add(self.display_box)
         '''
         enable searchable
         '''
         self.search_align = self.__setup_align()
         self.search_box = gtk.HBox(spacing=self.box_spacing)
+        self.search_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/search.png"))
         self.search_label = self.__setup_label("是否可被发现")
         self.search_toggle = self.__setup_toggle()
-        self.__widget_pack_start(self.search_box, [self.search_label, self.search_toggle])
+        self.__widget_pack_start(self.search_box, 
+                                 [self.search_image, self.search_label, self.search_toggle])
         self.search_align.add(self.search_box)
         '''
         device timeout
         '''
         self.timeout_align = self.__setup_align()
         self.timeout_box = gtk.HBox(spacing=self.box_spacing)
+        self.timeout_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/timeout.png"))
         self.timeout_label = self.__setup_label("可检测到设备的时间超时")
         self.timeout_combo = ComboBox(self.timeout_items, max_width = 150)
-        self.__widget_pack_start(self.timeout_box, [self.timeout_label, self.timeout_combo])
+        self.__widget_pack_start(self.timeout_box, 
+                                 [self.timeout_image, self.timeout_label, self.timeout_combo])
         self.timeout_align.add(self.timeout_box)
         '''
         device iconview
         '''
-        self.device_align = self.__setup_align(padding_top=40)
+        self.device_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.device_iconview = DeviceIconView()
-        self.device_iconview.set_size_request(400, 260)
+        self.device_iconview.set_size_request(690, 240)
         self.device_align.add(self.device_iconview)
         '''
         this->gtk.VBox pack_start
@@ -290,16 +303,27 @@ class BlueToothView(gtk.VBox):
                                   self.search_align, 
                                   self.timeout_align, 
                                   self.device_align])
+
+        self.connect("expose-event", self.__expose)
+
+    def __expose(self, widget, event):                                           
+        cr = widget.window.cairo_create()                                        
+        rect = widget.allocation                                                 
+        
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                  
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                    
+        cr.fill()  
     
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         pass
 
-    def __setup_label(self, text="", width=140, align=ALIGN_START):
-        label = Label(text, None, DEFAULT_FONT_SIZE, align, width)
+    def __setup_label(self, text="", width=180, align=ALIGN_START):
+        label = Label(text, None, TITLE_FONT_SIZE, align, width)
         return label
 
     def __setup_combo(self, items=[], width=120):
         combo = ComboBox(items, None, 0, width)
+        combo.set_size_request(width, WIDGET_HEIGHT)
         return combo
 
     def __setup_toggle(self):
@@ -307,8 +331,11 @@ class BlueToothView(gtk.VBox):
             app_theme.get_pixbuf("active_normal.png"))
         return toggle
 
-    def __setup_align(self, xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0, 
-                      padding_top=10, padding_bottom=0, padding_left=20, padding_right=20):
+    def __setup_align(self, xalign=0, yalign=0, xscale=0, yscale=0, 
+                      padding_top=BETWEEN_SPACING, 
+                      padding_bottom=0, 
+                      padding_left=TEXT_WINDOW_LEFT_PADDING, 
+                      padding_right=20):
         align = gtk.Alignment()
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)

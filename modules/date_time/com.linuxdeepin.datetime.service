@@ -1,4 +1,0 @@
-[D-BUS Service]
-Name=com.linuxdeepin.datetime
-Exec=/usr/lib/deepin-datetime-main
-User=root

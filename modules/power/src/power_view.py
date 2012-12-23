@@ -35,7 +35,7 @@ app_theme = init_skin(
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START
+from dtk.ui.constant import ALIGN_START
 from constant import *
 from power_manager import PowerManager
 import gobject
@@ -205,7 +205,7 @@ class PowerView(gtk.VBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)                                                 
         cr.fill()
 
-    def __setup_label(self, text="", text_size=DEFAULT_FONT_SIZE, align=ALIGN_START):
+    def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_START):
         label = Label(text, None, text_size, align, 180)
         return label
 
