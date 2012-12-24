@@ -32,6 +32,8 @@ app_theme = init_skin(
     os.path.join(get_parent_dir(__file__, 2), "app_theme"),
     )
 
+from dtk.ui.theme import ui_theme
+from dtk.ui.draw import draw_pixbuf, draw_text, draw_vlinear
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
 from dtk.ui.label import Label
@@ -41,7 +43,14 @@ from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 import gobject
 import gtk
+import pango
 from constant import *
+from bt.manager import Manager
+from bt.adapter import Adapter
+from bt.device import Device
+from bt.utils import bluetooth_class_to_type
+import threading as td
+import time
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -80,10 +89,14 @@ class DeviceItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),     
     }
     
-    def __init__(self):
+    def __init__(self, name, pixbuf):
         gobject.GObject.__init__(self)
 
-        self.pixbuf = None
+        self.name = name
+        self.pixbuf = pixbuf
+
+        self.icon_size = 48
+        self.is_button_press = False
 
         self.__const_padding_y = 10
 
@@ -105,8 +118,8 @@ class DeviceItem(gobject.GObject):
                   rect.x,
                   rect.y + self.icon_size + self.__const_padding_y * 2,
                   rect.width, 
-                  DEFAULT_FONT_SIZE, 
-                  DEFAULT_FONT_SIZE, 
+                  CONTENT_FONT_SIZE, 
+                  CONTENT_FONT_SIZE, 
                   alignment=pango.ALIGN_CENTER)
         
     def emit_redraw_request(self):
@@ -131,7 +144,7 @@ class DeviceItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        return self.icon_size + DEFAULT_FONT_SIZE + self.__const_padding_y * 3
+        return self.icon_size + CONTENT_FONT_SIZE + self.__const_padding_y * 3
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -227,6 +240,25 @@ class DeviceItem(gobject.GObject):
 
 gobject.type_register(DeviceItem)
 
+class DiscoveryDeviceThread(td.Thread):
+    
+    def __init__(self, ThisPtr):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.ThisPtr = ThisPtr
+
+    def run(self):
+        try:
+            for dev in self.ThisPtr.adapter.get_devices():
+                self.ThisPtr.adapter.remove_device(dev)
+
+            self.ThisPtr.adapter.start_discovery()
+
+            while True:
+                time.sleep(100)
+        except Exception, e:
+            print "class DiscoveryDeviceThread got error: %s" % e
+
 class BlueToothView(gtk.VBox):
     '''
     class docs
@@ -238,7 +270,9 @@ class BlueToothView(gtk.VBox):
         '''
         gtk.VBox.__init__(self)
 
-        self.box_spacing = 10
+        self.manager = Manager()
+        self.adapter = Adapter(self.manager.get_default_adapter())
+        self.adapter.connect("device-found", self.__device_found)
 
         self.timeout_items = [("10分钟", 1)]
 
@@ -246,10 +280,14 @@ class BlueToothView(gtk.VBox):
         enable open
         '''
         self.enable_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
-        self.enable_box = gtk.HBox(spacing=self.box_spacing)
+        self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.enable_open_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/enable_open.png"))
         self.enable_open_label = self.__setup_label("蓝牙是否开启")
         self.enable_open_toggle = self.__setup_toggle()
+        self.enable_open_toggle.set_active(self.adapter.get_powered())
+        if self.adapter.get_powered():
+            DiscoveryDeviceThread(self).start()
+        self.enable_open_toggle.connect("toggled", self.__toggled, "enable_open")
         self.__widget_pack_start(self.enable_box, 
                                  [self.enable_open_image, self.enable_open_label, self.enable_open_toggle])
         self.enable_align.add(self.enable_box)
@@ -257,10 +295,10 @@ class BlueToothView(gtk.VBox):
         display
         '''
         self.display_align = self.__setup_align()
-        self.display_box = gtk.HBox(spacing=self.box_spacing)
+        self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.display_device_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/display_device.png"))
         self.display_device_label = self.__setup_label("显示设备名称")
-        self.display_device_entry = InputEntry("Sirtoozee PC")
+        self.display_device_entry = InputEntry(self.adapter.get_name())
         self.display_device_entry.set_size(150, 24)
         self.__widget_pack_start(self.display_box, 
                                  [self.display_device_image, self.display_device_label, self.display_device_entry])
@@ -269,10 +307,12 @@ class BlueToothView(gtk.VBox):
         enable searchable
         '''
         self.search_align = self.__setup_align()
-        self.search_box = gtk.HBox(spacing=self.box_spacing)
+        self.search_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.search_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/search.png"))
         self.search_label = self.__setup_label("是否可被发现")
         self.search_toggle = self.__setup_toggle()
+        self.search_toggle.set_active(self.adapter.get_discoverable())
+        self.search_toggle.connect("toggled", self.__toggled, "search")
         self.__widget_pack_start(self.search_box, 
                                  [self.search_image, self.search_label, self.search_toggle])
         self.search_align.add(self.search_box)
@@ -280,7 +320,7 @@ class BlueToothView(gtk.VBox):
         device timeout
         '''
         self.timeout_align = self.__setup_align()
-        self.timeout_box = gtk.HBox(spacing=self.box_spacing)
+        self.timeout_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.timeout_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/timeout.png"))
         self.timeout_label = self.__setup_label("可检测到设备的时间超时")
         self.timeout_combo = ComboBox(self.timeout_items, max_width = 150)
@@ -305,6 +345,27 @@ class BlueToothView(gtk.VBox):
                                   self.device_align])
 
         self.connect("expose-event", self.__expose)
+
+    def __device_found(self, adapter, address, values):
+        if address not in adapter.get_address_records():
+            device = Device(adapter.create_device(address))
+            items = []
+            items.append(DeviceItem(values['Name'], 
+                         app_theme.get_pixbuf("%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf()))
+            self.device_iconview.add_items(items)
+        else:
+            if adapter.get_discovering():
+                adapter.stop_discovery()
+                pass
+
+    def __toggled(self, widget, object):
+        if object == "enable_open":
+            self.adapter.set_powered(widget.get_active())
+            return
+
+        if object == "search":
+            self.adapter.set_discoverable(widget.get_active())
+            return
 
     def __expose(self, widget, event):                                           
         cr = widget.window.cairo_create()                                        
