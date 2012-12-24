@@ -211,7 +211,7 @@ class DisplayView(gtk.VBox):
         '''
         left, right align
         '''
-        self.left_align = self.__setup_align(padding_top = FRAME_TOP_PADDING, padding_left = FRAME_LEFT_PADDING)
+        self.left_align = self.__setup_align(padding_top = FRAME_TOP_PADDING, padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.right_align = self.__setup_align(padding_top = FRAME_TOP_PADDING + CONTAINNER_HEIGHT)
         '''
         left, right box
@@ -221,7 +221,8 @@ class DisplayView(gtk.VBox):
         '''
         monitor operation && detect
         '''
-        self.monitor_resize_align = self.__setup_align(padding_top = 8, padding_left = 10)
+        self.monitor_resize_align = self.__setup_align(padding_top = 11, 
+                                                       padding_left = int(TEXT_WINDOW_LEFT_PADDING / 2))
         self.monitor_resize_box = MonitorResizableBox(self.display_manager)
         self.monitor_resize_box.select_output(self.__current_output_name)
         self.monitor_resize_box.connect("select-output", self.__select_output)
