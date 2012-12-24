@@ -49,6 +49,10 @@ network-manager-l2tp 安装参考https://launchpad.net/~seriy-pr/+archive/networ
 sudo easy_install pytz
 
 
+== bluetooth module ==
+sudo apt-get install bluez
+
+
 == Sound module ==
 Python binding for DBus
 sudo apt-get install python-dbus
