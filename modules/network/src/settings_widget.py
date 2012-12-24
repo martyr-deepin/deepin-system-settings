@@ -22,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from theme import app_theme,ui_theme
 from dtk.ui.new_treeview import TreeView, TreeItem
-from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear,draw_vlinear
+from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear,draw_vlinear, draw_line
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size
 from dtk.ui.new_entry import EntryBuffer, Entry
 import gobject
@@ -283,7 +283,7 @@ class SettingItem(TreeItem):
         self.entry_buffer.connect("insert-pos-changed", self.entry_buffer_changed)
         self.entry_buffer.connect("selection-pos-changed", self.entry_buffer_changed)
         self.child_items = []
-        self.height = 26
+        self.height = 30
         self.ENTRY_COLUMN = 1
         self.is_double_click = False
 
@@ -321,11 +321,13 @@ class SettingItem(TreeItem):
             cr.set_line_width(1)
             #if self.is_last:
                 #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x , rect.y , rect.width, 1)
-            cr.rectangle(rect.x, rect.y , 1, rect.height)
-            cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
+            #cr.rectangle(rect.x , rect.y , rect.width, 1)
+            #cr.rectangle(rect.x, rect.y , 1, rect.height)
+            #cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
+            cr.rectangle(rect.x +1, rect.y + 4, rect.width, 22)
             #cr.rectangle(rect.)
-            cr.fill()
+            #cr.fill()
+            cr.stroke()
     def highlight(self, widget):
         #self.set_highlight(True)
         pass
@@ -344,11 +346,12 @@ class SettingItem(TreeItem):
             cr.set_line_width(1)
             #if self.is_last:
                 #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x , rect.y , rect.width, 1)
-            cr.rectangle(rect.x + rect.width - 7 , rect.y , 1, rect.height - 1)
-            cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
+            #cr.rectangle(rect.x , rect.y , rect.width, 1)
+            #cr.rectangle(rect.x + rect.width - 7 , rect.y , 1, rect.height - 1)
+            #cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
+            cr.rectangle(rect.x , rect.y + 4, rect.width -6, 22)
             #cr.rectangle(rect.)
-            cr.fill()
+            cr.stroke()
 
     def render_background(self,  cr, rect):
         if self.connection_active:
@@ -358,7 +361,7 @@ class SettingItem(TreeItem):
             background_color = [(0,["#ffffff", 1.0]),
                                 (1,["#ffffff", 1.0])]
         
-        draw_hlinear(cr, rect.x  ,rect.y + 2, rect.width, rect.height -4, background_color)
+        draw_hlinear(cr, rect.x  ,rect.y + 4, rect.width, rect.height -8, background_color)
         #draw_hlinear(cr, x  ,y + 2, width, height -4, background_color)
 
     def set_active(self, active):
@@ -380,11 +383,14 @@ class SettingItem(TreeItem):
             cr.set_line_width(1)
             #if self.is_last:
                 #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x , rect.y , rect.width, 1)
+            #cr.rectangle(rect.x , rect.y + 4, rect.width, 1)
             #cr.rectangle(rect.x, rect.y , 1, rect.height)
-            cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
+            #cr.rectangle(rect.x , rect.y + 22, rect.width, 1)
             #cr.rectangle(rect.)
-            cr.fill()
+            #cr.rectangle(rect.x +1, rect.y + 4, rect.width, 22)
+            draw_line(cr, rect.x, rect.y + 4, rect.x + rect.width, rect.y + 4)
+            draw_line(cr, rect.x, rect.y + 26, rect.x + rect.width, rect.y + 26)
+            #cr.stroke()
         if self.is_select:
             bg_color = "#3399FF"
             text_color = "#3399FF"
