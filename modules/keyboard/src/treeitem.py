@@ -187,7 +187,7 @@ class LayoutItem(BaseItem):
             cr.paint()
         else:
             text_color = "#000000"
-        draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_size=12, text_color=text_color)
+        draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
 
 gobject.type_register(LayoutItem)
 
@@ -282,7 +282,7 @@ class ShortcutItem(BaseItem):
         return self.height
     
     def get_column_widths(self):
-        return [400, 270]
+        return [380, 140]
     
     def get_column_renders(self):
         return [self.render_description, self.render_keyname]
