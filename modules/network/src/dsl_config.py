@@ -40,7 +40,7 @@ class DSLSetting(gtk.HBox):
         self.dsl = None
         self.ppp = None
 
-        self.tab_window = TabBox(dockfill = True)
+        self.tab_window = TabBox(dockfill = False)
         self.tab_window.set_size_request(674, 408)
         self.items = [("DSL", NoSetting()),
                       ("Wired", NoSetting()),

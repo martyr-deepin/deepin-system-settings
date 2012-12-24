@@ -313,9 +313,9 @@ class SettingItem(TreeItem):
         else:
             check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
 
-        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (22 - check_icon.get_height())/2)
         #draw outline
-        BORDER_COLOR = color_hex_to_cairo("#aeaeae")
+        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -324,7 +324,7 @@ class SettingItem(TreeItem):
             #cr.rectangle(rect.x , rect.y , rect.width, 1)
             #cr.rectangle(rect.x, rect.y , 1, rect.height)
             #cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
-            cr.rectangle(rect.x +1, rect.y + 4, rect.width, 22)
+            cr.rectangle(rect.x , rect.y , rect.width + 1, 22)
             #cr.rectangle(rect.)
             #cr.fill()
             cr.stroke()
@@ -338,18 +338,18 @@ class SettingItem(TreeItem):
         self.render_background(cr, rect)
         if self.delete_hover:
             delete_icon = app_theme.get_pixbuf("/Network/delete.png").get_pixbuf()
-            draw_pixbuf(cr, delete_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - delete_icon.get_height())/2)
+            draw_pixbuf(cr, delete_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height -8- delete_icon.get_height())/2)
 
-        BORDER_COLOR = color_hex_to_cairo("#aeaeae")
+        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
             #if self.is_last:
                 #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
             #cr.rectangle(rect.x , rect.y , rect.width, 1)
-            #cr.rectangle(rect.x + rect.width - 7 , rect.y , 1, rect.height - 1)
+            cr.rectangle(rect.x + rect.width - 6 , rect.y , 1, rect.height )
             #cr.rectangle(rect.x , rect.y + rect.height - 2, rect.width, 1)
-            cr.rectangle(rect.x , rect.y + 4, rect.width -6, 22)
+            cr.rectangle(rect.x , rect.y , rect.width -6, 22)
             #cr.rectangle(rect.)
             cr.stroke()
 
@@ -358,11 +358,12 @@ class SettingItem(TreeItem):
             background_color = [(0,["#cce3ef", 1.0]),
                             (1,["#cce3ef", 1.0])]
         else:
-            background_color = [(0,["#ffffff", 1.0]),
-                                (1,["#ffffff", 1.0])]
-        
-        draw_hlinear(cr, rect.x  ,rect.y + 4, rect.width, rect.height -8, background_color)
-        #draw_hlinear(cr, x  ,y + 2, width, height -4, background_color)
+            background_color = [(0,["#f6f6f6", 1.0]),
+                                (1,["#f6f6f6", 1.0])]
+
+        draw_hlinear(cr, rect.x, rect.y, rect.width , rect.height, [(0,["#ffffff", 1.0]),
+                                (1,["#ffffff", 1.0])])
+        draw_hlinear(cr, rect.x  , rect.y, rect.width, 22, background_color)
 
     def set_active(self, active):
         self.connection_active = active
@@ -377,7 +378,7 @@ class SettingItem(TreeItem):
     
     def render_content(self, cr, rect):
         self.render_background(cr,rect)
-        BORDER_COLOR = color_hex_to_cairo("#aeaeae")
+        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -388,8 +389,8 @@ class SettingItem(TreeItem):
             #cr.rectangle(rect.x , rect.y + 22, rect.width, 1)
             #cr.rectangle(rect.)
             #cr.rectangle(rect.x +1, rect.y + 4, rect.width, 22)
-            draw_line(cr, rect.x, rect.y + 4, rect.x + rect.width, rect.y + 4)
-            draw_line(cr, rect.x, rect.y + 26, rect.x + rect.width, rect.y + 26)
+            draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y )
+            draw_line(cr, rect.x, rect.y + 22, rect.x + rect.width, rect.y + 22)
             #cr.stroke()
         if self.is_select:
             bg_color = "#3399FF"
@@ -402,7 +403,7 @@ class SettingItem(TreeItem):
             self.entry_buffer.move_to_start()
         self.entry_buffer.set_text_color(text_color)
         height = self.entry_buffer.get_pixel_size()[1]
-        offset = (self.height - height)/2
+        offset = (self.height - 8 - height)/2
         if offset < 0 :
             offset = 0
         rect.y += offset  

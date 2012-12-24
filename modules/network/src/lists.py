@@ -30,13 +30,13 @@ from wlan_config import WirelessSetting
 #from wired import *
 import gtk
 import pango
-BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 import sys,os
 from dtk.ui.utils import get_parent_dir
 from dtk.ui.label import Label
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
+BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 class WirelessItem(TreeItem):
 
