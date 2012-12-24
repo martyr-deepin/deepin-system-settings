@@ -1,5 +1,6 @@
 {"colors" : {
  "link_text"  : "#1A70b1",
+ "line_border": "#AEAEAE",
  },	
  "alpha_colors" : {
  },
