@@ -414,8 +414,9 @@ class DisplayView(gtk.VBox):
         if not from_monitor_combo:
             self.monitor_combo.set_select_index(self.display_manager.get_output_name_index(output_name, self.monitor_items))
 
-        self.__setup_sizes_items()                                           
-        self.sizes_combo.set_items(items = self.sizes_items, max_width = 160)
+        self.__setup_sizes_items()
+        if len(self.sizes_items):
+            self.sizes_combo.set_items(items = self.sizes_items, max_width = 160)
         self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(
             self.__current_output_name, self.sizes_items))
     
