@@ -76,3 +76,10 @@ WIDGET_HEIGHT = 22
 
 WINDOW_HEIGHT = 535
 WINDOW_WIDTH = 800
+
+'''
+Border color and backgroud color for treeview
+'''
+BORDER_COLOR = "#d2d2d2"
+TREEVIEW_BG_COLOR = "#f6f6f6"
+

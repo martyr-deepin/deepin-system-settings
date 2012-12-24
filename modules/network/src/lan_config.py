@@ -35,19 +35,32 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 from shared_widget import IPV4Conf, IPV6Conf
 import gtk
 wired_device = []
+import sys
+import os
+from dtk.ui.utils import get_parent_dir
+sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
+from constant import *
 
-class WiredSetting(gtk.HBox):
+class WiredSetting(gtk.Alignment):
 
     def __init__(self, slide_back_cb, change_crumb_cb):
-        gtk.HBox.__init__(self)
+        #gtk.HBox.__init__(self, spacing=FRAME_VERTICAL_SPACING)
+        gtk.Alignment.__init__(self, 0, 0, 0, 0)
+        self.set_padding(FRAME_TOP_PADDING, STATUS_HEIGHT, FRAME_LEFT_PADDING, 0)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
+        
+        # Add UI Align
+        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        self.add(hbox)
+
+
 
         self.wired = None
         self.ipv4 = None
         self.ipv6 = None
 
-        self.tab_window = TabBox(dockfill = True)
+        self.tab_window = TabBox(dockfill = False)
         self.tab_window.set_size_request(674, 408)
         self.items = [("有线", NoSetting()),
                       ("IPv4设置", NoSetting()),
@@ -55,11 +68,11 @@ class WiredSetting(gtk.HBox):
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click, self.set_button)
         # Build ui
-        self.pack_start(self.sidebar, False , False)
+        hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.expose_event)
+        #self.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
-        self.pack_start(vbox, True, True)
+        hbox.pack_start(vbox, True, True)
         #hbox = gtk.HBox()
 
         self.save_button = Button("Save")
@@ -67,6 +80,7 @@ class WiredSetting(gtk.HBox):
         #apply_button.set_sensitive(False)
         button_box = gtk.HBox()
         button_box.add(self.save_button)
+        vbox.connect("expose-event", self.expose_event)
         #button_box.add(self.apply_button)
         #self.apply_button.connect("clicked", self.apply_changes)
         self.save_button.connect("clicked", self.save_changes)
@@ -221,7 +235,7 @@ class SideBar(gtk.VBox):
 
         self.connection_tree.show_all()
 
-        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
+        self.buttonbox.pack_start(self.connection_tree, False, False, 0)
 
         try:
             index = self.connections.index(active)

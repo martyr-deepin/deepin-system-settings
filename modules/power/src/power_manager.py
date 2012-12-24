@@ -35,6 +35,8 @@ class PowerManager:
     hibernate   = 1
     shutdown    = 2
 
+    BIG_NUM = 2147483647
+
     '''
     class docs
     '''
@@ -87,7 +89,7 @@ class PowerManager:
     TODO: sleep-inactive-ac-timeout unit is second
     '''
     def get_hibernate_status(self, items):
-        hibernate_status_value = self.power_settings.get_int("sleep-inactive-battery-timeout") / 60
+        hibernate_status_value = self.power_settings.get_int("sleep-inactive-battery-timeout")
         i = 0
 
         for item, value in items:
@@ -99,9 +101,9 @@ class PowerManager:
 
     def set_hibernate_status(self, value):
         self.power_settings.set_string("sleep-inactive-battery-type", "hibernate")
-        self.power_settings.set_int("sleep-inactive-battery-timeout", value * 60)
+        self.power_settings.set_int("sleep-inactive-battery-timeout", value)
         self.power_settings.set_string("sleep-inactive-ac-type", "hibernate")
-        self.power_settings.set_int("sleep-inactive-ac-timeout", value * 60)
+        self.power_settings.set_int("sleep-inactive-ac-timeout", value)
 
     def get_close_harddisk(self, items):
         return 0
@@ -113,7 +115,7 @@ class PowerManager:
     TODO: unit is second
     '''
     def get_close_monitor(self, items):
-        close_monitor_value = self.power_settings.get_int("sleep-display-battery") / 60
+        close_monitor_value = self.power_settings.get_int("sleep-display-battery")
         i = 0
 
         for item, value in items:
@@ -124,8 +126,8 @@ class PowerManager:
         return 0
 
     def set_close_monitor(self, value):
-        self.power_settings.set_int("sleep-display-battery", value * 60)
-        self.power_settings.set_int("sleep-display-ac", value * 60)
+        self.power_settings.set_int("sleep-display-battery", value)
+        self.power_settings.set_int("sleep-display-ac", value)
 
     def get_wakeup_password(self):
         return self.lockdown_settings.get_boolean("disable-lock-screen")

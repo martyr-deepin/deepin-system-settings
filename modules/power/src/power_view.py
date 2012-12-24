@@ -53,7 +53,12 @@ class PowerView(gtk.VBox):
         gtk.VBox.__init__(self)
         self.label_padding_x = 10
         self.label_padding_y = 10
-        self.wait_duration_items = [("5分钟", 5), ("10分钟", 10), ("30分钟", 30), ("1小时", 60)]
+        self.wait_duration_items = [("5分钟", 300), 
+                                    ("10分钟", 600), 
+                                    ("30分钟", 1800), 
+                                    ("1小时", 3600), 
+                                    ("从不", PowerManager.BIG_NUM)
+                                   ]
         self.power_manager = PowerManager()
         self.power_manage_items = [("不采取任何措施", self.power_manager.nothing), 
                                    ("休眠", self.power_manager.hibernate), 
