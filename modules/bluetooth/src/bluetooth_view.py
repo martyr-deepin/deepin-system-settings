@@ -350,6 +350,13 @@ class BlueToothView(gtk.VBox):
         if address not in adapter.get_address_records():
             device = Device(adapter.create_device(address))
             items = []
+            
+            '''
+            FIXME: why there is no Name key sometime?
+            '''
+            if not values.has_key("Name"):
+                return
+
             items.append(DeviceItem(values['Name'], 
                          app_theme.get_pixbuf("%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf()))
             self.device_iconview.add_items(items)
