@@ -255,7 +255,7 @@ class DiscoveryDeviceThread(td.Thread):
             self.ThisPtr.adapter.start_discovery()
 
             while True:
-                time.sleep(100)
+                time.sleep(0.1)
         except Exception, e:
             print "class DiscoveryDeviceThread got error: %s" % e
 
