@@ -80,7 +80,6 @@ WINDOW_WIDTH = 800
 '''
 Border color and backgroud color for treeview
 '''
-BORDER_COLOR = #d2d2d2
-TREEVIEW_BGD_COLOR = #f6f6f6
-
+BORDER_COLOR = "#d2d2d2"
+TREEVIEW_BG_COLOR = "#f6f6f6"
 
