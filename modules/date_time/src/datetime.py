@@ -25,6 +25,8 @@ import dbus
 import gobject
 import re
 import traceback
+import time
+import deepin_tz
 
 from dbus.mainloop.glib import DBusGMainLoop
 DBusGMainLoop(set_as_default = True)
@@ -107,7 +109,7 @@ class BusBase(gobject.GObject):
             print "call dbus method failed:%s\n" % method_name
             traceback.print_exc()
 
-class DateTime(BusBase):
+class DeepinDateTime(BusBase):
     
     def __init__(self):
         BusBase.__init__(self, path = "/", interface = "org.gnome.SettingsDaemon.DateTimeMechanism")
@@ -126,9 +128,12 @@ class DateTime(BusBase):
 
     def get_hardware_clock_using_utc(self):
         return self.dbus_method("GetHardwareClockUsingUtc")
-
+    
     def get_timezone(self):
         return self.dbus_method("GetTimezone")
+
+    def get_gmtoff(self):
+        return deepin_tz.gmtoff()
 
     def get_using_ntp(self):
         return self.dbus_method("GetUsingNtp")
@@ -142,6 +147,60 @@ class DateTime(BusBase):
     def set_time(self, seconds_since_epoch):
         return self.call_async("SetTime", seconds_since_epoch)
 
+    def set_timezone_by_gmtoff(self, gmtoff):
+        tz = "Asia/Shanghai"
+
+        if gmtoff == -11:
+            tz = "Pacific/Pago_Pago"
+        elif gmtoff == -10:
+            tz = "Pacific/Tahiti"
+        elif gmtoff == -9:
+            tz = "Pacific/Gambier"
+        elif gmtoff == -8:
+            tz = "America/Los_Angeles"
+        elif gmtoff == -7:
+            tz = "America/Edmonton"
+        elif gmtoff == -6:
+            tz = "America/Rainy_River"
+        elif gmtoff == -5:
+            tz = "America/Montreal"
+        elif gmtoff == -4:
+            tz = "America/Goose_Bay"
+        elif gmtoff == -3:
+            tz = "America/Godthab"
+        elif gmtoff == -2:
+            tz = "America/Noronha"
+        elif gmtoff == -1:
+            tz = "America/Scoresbysund"
+        elif gmtoff == 0:
+            tz = "Africa/Bamako"
+        elif gmtoff == 1:
+            tz = "Africa/Ndjamena"
+        elif gmtoff == 2:
+            tz = "Africa/Lusaka"
+        elif gmtoff == 3:
+            tz = "Africa/Addis_Ababa"
+        elif gmtoff == 4:
+            tz = "Asia/Dubai"
+        elif gmtoff == 5:
+            tz = "Indian/Maldives"
+        elif gmtoff == 6:
+            tz = "Asia/Almaty"
+        elif gmtoff == 7:
+            tz = "Asia/Phnom_Penh"
+        elif gmtoff == 8:
+            tz = "Asia/Shanghai"
+        elif gmtoff == 9:
+            tz = "Asia/Tokyo"
+        elif gmtoff == 10:
+            tz = "Asia/Yakutsk"
+        elif gmtoff == 11:
+            tz = "Pacific/Guadalcanal"
+        elif gmtoff == 12:
+            tz = "Asia/Kamchatka"
+        
+        self.set_timezone(tz)
+    
     def set_timezone(self, tz):
         return self.call_async("SetTimezone", tz)
 
@@ -149,10 +208,10 @@ class DateTime(BusBase):
         return self.call_async("SetUsingNtp", is_using_ntp)
 
 if __name__ == "__main__":
-    datetime = DateTime()
+    datetime = DeepinDateTime()
     print "get timezone:"
 
-    print datetime.get_timezone()
-    datetime.set_timezone("Asia/Shanghai")
+    print datetime.get_timezone(), datetime.get_gmtoff()
+    #datetime.set_timezone("Asia/Shanghai")
 
     #gobject.MainLoop().run()
