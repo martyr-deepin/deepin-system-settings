@@ -114,7 +114,7 @@ class KeySetting(object):
         self.label_widgets["touchpad"] = Label(_("Disable touchpad while typing"),
             text_size=title_item_font_size)
 
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=10)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
         # button init
         self.button_widgets["repeat_test_entry"] = gtk.Entry()
         self.button_widgets["blink_test_entry"] = gtk.Entry()
@@ -265,7 +265,7 @@ class KeySetting(object):
         label_widgets = self.label_widgets
         label_width = max(
             label_widgets["repeat_delay"].size_request()[0],
-            label_widgets["repeat_interval"].size_request()[0])
+            label_widgets["repeat_interval"].size_request()[0]) + 2
         label_widgets["repeat_delay"].set_size_request(label_width, WIDGET_HEIGHT)
         label_widgets["repeat_interval"].set_size_request(label_width, WIDGET_HEIGHT)
         self.button_widgets["blink_test_entry"].set_size_request(label_width, WIDGET_HEIGHT)
@@ -293,7 +293,7 @@ class KeySetting(object):
         self.adjust_widgets["repeat_delay"].set_value(value)
         self.scale_widgets["repeat_delay"].add_mark(self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Long"))
         self.scale_widgets["repeat_delay"].add_mark(self.adjust_widgets["repeat_delay"].get_upper(), gtk.POS_BOTTOM, _("Short"))
-        self.scale_widgets["repeat_delay"].set_size_request(MAIN_AREA_WIDTH-120, 30)
+        self.scale_widgets["repeat_delay"].set_size_request(MAIN_AREA_WIDTH-120, -1)
         # table attach
         self.container_widgets["repeat_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["repeat_table"].set_row_spacing(0, TABLE_ROW_SPACING)
@@ -306,7 +306,7 @@ class KeySetting(object):
         self.adjust_widgets["repeat_interval"].set_value(value)
         self.scale_widgets["repeat_interval"].add_mark(self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["repeat_interval"].add_mark(self.adjust_widgets["repeat_interval"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
-        self.scale_widgets["repeat_interval"].set_size_request(MAIN_AREA_WIDTH-120, 30)
+        self.scale_widgets["repeat_interval"].set_size_request(MAIN_AREA_WIDTH-120, -1)
         # table attach
         self.container_widgets["repeat_table"].attach(
             self.__make_align(self.label_widgets["repeat_interval"], yalign=0.0, yscale=0.0), 0, 1, 1, 2, 4)
@@ -340,7 +340,7 @@ class KeySetting(object):
         self.adjust_widgets["blink_cursor"].set_value(value)
         self.scale_widgets["blink_cursor"].add_mark(self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["blink_cursor"].add_mark(self.adjust_widgets["blink_cursor"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
-        self.scale_widgets["blink_cursor"].set_size_request(MAIN_AREA_WIDTH-120, 30)
+        self.scale_widgets["blink_cursor"].set_size_request(MAIN_AREA_WIDTH-120, -1)
         # table attach
         self.container_widgets["blink_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["blink_table"].attach(
@@ -375,8 +375,12 @@ class KeySetting(object):
             self.alignment_widgets["touchpad_setting"])
         self.alignment_widgets["mouse_setting"].add(self.button_widgets["mouse_setting"])
         self.alignment_widgets["touchpad_setting"].add(self.button_widgets["touchpad_setting"])
-        self.alignment_widgets["mouse_setting"].set_padding(15, 0, 9, 0)
-        self.alignment_widgets["touchpad_setting"].set_padding(10, 0, 9, 0)
+        self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 1.0, 0.0)
+        self.alignment_widgets["touchpad_setting"].set(0.0, 0.5, 1.0, 0.0)
+        self.alignment_widgets["mouse_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["touchpad_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["mouse_setting"].set_padding(0, 0, 10, 0)
+        self.alignment_widgets["touchpad_setting"].set_padding(0, 0, 10, 0)
 
         ###################################
         # layout set
