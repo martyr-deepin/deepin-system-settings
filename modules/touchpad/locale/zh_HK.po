@@ -77,8 +77,8 @@ msgid "Long"
 msgstr "長"
 
 #: ../src/main.py:102
-msgid "Relevant input device Settings "
-msgstr "相關輸入設備設置"
+msgid "Relevant Settings"
+msgstr "相關設置"
 
 #: ../src/main.py:104
 msgid "Right-handed"

@@ -78,8 +78,8 @@ msgid "Long"
 msgstr "长"
 
 #: ../src/main.py:102
-msgid "Relevant input device Settings "
-msgstr "相关输入设备设置"
+msgid "Relevant Settings"
+msgstr "相关设置"
 
 #: ../src/main.py:104
 msgid "Right-handed"

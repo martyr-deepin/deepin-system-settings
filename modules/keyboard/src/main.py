@@ -227,7 +227,8 @@ class KeySetting(object):
         ''' adjust widget '''
         MID_SPACING = 10
         RIGHT_BOX_WIDTH = TIP_BOX_WIDTH - 20
-        MAIN_AREA_WIDTH = 460
+        MAIN_AREA_WIDTH = 480
+        LABEL_WIDTH = 180
         OPTION_LEFT_PADDING = WIDGET_SPACING + 16
         TABLE_ROW_SPACING = 15
         self.alignment_widgets["notebook"].set(0.0, 0.0, 1, 1)
@@ -293,7 +294,7 @@ class KeySetting(object):
         self.adjust_widgets["repeat_delay"].set_value(value)
         self.scale_widgets["repeat_delay"].add_mark(self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Long"))
         self.scale_widgets["repeat_delay"].add_mark(self.adjust_widgets["repeat_delay"].get_upper(), gtk.POS_BOTTOM, _("Short"))
-        self.scale_widgets["repeat_delay"].set_size_request(MAIN_AREA_WIDTH-120, -1)
+        self.scale_widgets["repeat_delay"].set_size_request(MAIN_AREA_WIDTH-LABEL_WIDTH, -1)
         # table attach
         self.container_widgets["repeat_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["repeat_table"].set_row_spacing(0, TABLE_ROW_SPACING)
@@ -306,7 +307,7 @@ class KeySetting(object):
         self.adjust_widgets["repeat_interval"].set_value(value)
         self.scale_widgets["repeat_interval"].add_mark(self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["repeat_interval"].add_mark(self.adjust_widgets["repeat_interval"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
-        self.scale_widgets["repeat_interval"].set_size_request(MAIN_AREA_WIDTH-120, -1)
+        self.scale_widgets["repeat_interval"].set_size_request(MAIN_AREA_WIDTH-LABEL_WIDTH, -1)
         # table attach
         self.container_widgets["repeat_table"].attach(
             self.__make_align(self.label_widgets["repeat_interval"], yalign=0.0, yscale=0.0), 0, 1, 1, 2, 4)
@@ -340,7 +341,7 @@ class KeySetting(object):
         self.adjust_widgets["blink_cursor"].set_value(value)
         self.scale_widgets["blink_cursor"].add_mark(self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["blink_cursor"].add_mark(self.adjust_widgets["blink_cursor"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
-        self.scale_widgets["blink_cursor"].set_size_request(MAIN_AREA_WIDTH-120, -1)
+        self.scale_widgets["blink_cursor"].set_size_request(MAIN_AREA_WIDTH-LABEL_WIDTH, -1)
         # table attach
         self.container_widgets["blink_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["blink_table"].attach(
