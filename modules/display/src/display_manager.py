@@ -228,12 +228,13 @@ class DisplayManager:
 
         return ""
     
-    def is_output_connected(self, output_name):
+    def is_output_connected(self, output_name_value):
         output_names = self.__xrandr_settings.get_strv("output-names")
         i = 0
 
         while i < len(output_names):
-            if output_names[i].find(output_name) != -1:
+            (output_display_name, output_name) = self.get_output_name(output_names[i])
+            if output_name == output_name_value:
                 return True
             
             i += 1

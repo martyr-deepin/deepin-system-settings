@@ -59,7 +59,7 @@ class DeviceIconView(ScrolledWindow):
         self.device_iconview = IconView()
         self.device_iconview.draw_mask = self.draw_mask
 
-        if items != None:
+        if items:
             self.device_iconview.add_items(items)
 
         self.device_scrolledwindow = ScrolledWindow()
@@ -255,7 +255,7 @@ class DiscoveryDeviceThread(td.Thread):
             self.ThisPtr.adapter.start_discovery()
 
             while True:
-                time.sleep(100)
+                time.sleep(0.1)
         except Exception, e:
             print "class DiscoveryDeviceThread got error: %s" % e
 
@@ -271,8 +271,10 @@ class BlueToothView(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.manager = Manager()
-        self.adapter = Adapter(self.manager.get_default_adapter())
-        self.adapter.connect("device-found", self.__device_found)
+        self.adapter = None
+        if self.manager.get_default_adapter() != "None":
+            self.adapter = Adapter(self.manager.get_default_adapter())
+            self.adapter.connect("device-found", self.__device_found)
 
         self.timeout_items = [("10分钟", 1)]
 
@@ -284,9 +286,10 @@ class BlueToothView(gtk.VBox):
         self.enable_open_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/enable_open.png"))
         self.enable_open_label = self.__setup_label("蓝牙是否开启")
         self.enable_open_toggle = self.__setup_toggle()
-        self.enable_open_toggle.set_active(self.adapter.get_powered())
-        if self.adapter.get_powered():
-            DiscoveryDeviceThread(self).start()
+        if self.adapter:
+            self.enable_open_toggle.set_active(self.adapter.get_powered())
+            if self.adapter.get_powered():
+                DiscoveryDeviceThread(self).start()
         self.enable_open_toggle.connect("toggled", self.__toggled, "enable_open")
         self.__widget_pack_start(self.enable_box, 
                                  [self.enable_open_image, self.enable_open_label, self.enable_open_toggle])
@@ -298,7 +301,9 @@ class BlueToothView(gtk.VBox):
         self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.display_device_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/display_device.png"))
         self.display_device_label = self.__setup_label("显示设备名称")
-        self.display_device_entry = InputEntry(self.adapter.get_name())
+        self.display_device_entry = InputEntry()
+        if self.adapter:
+            self.display_device_entry.set_text(self.adapter.get_name())
         self.display_device_entry.set_size(150, 24)
         self.__widget_pack_start(self.display_box, 
                                  [self.display_device_image, self.display_device_label, self.display_device_entry])
@@ -311,7 +316,8 @@ class BlueToothView(gtk.VBox):
         self.search_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/search.png"))
         self.search_label = self.__setup_label("是否可被发现")
         self.search_toggle = self.__setup_toggle()
-        self.search_toggle.set_active(self.adapter.get_discoverable())
+        if self.adapter:
+            self.search_toggle.set_active(self.adapter.get_discoverable())
         self.search_toggle.connect("toggled", self.__toggled, "search")
         self.__widget_pack_start(self.search_box, 
                                  [self.search_image, self.search_label, self.search_toggle])
@@ -366,6 +372,9 @@ class BlueToothView(gtk.VBox):
                 pass
 
     def __toggled(self, widget, object):
+        if self.adapter == None:
+            return
+
         if object == "enable_open":
             self.adapter.set_powered(widget.get_active())
             return

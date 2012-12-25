@@ -49,9 +49,9 @@ TEXT_WINDOW_RIGHT_WIDGET_PADDING = 10
 # 文字控件类别-提示信息宽
 TIP_BOX_WIDTH = 180
 
-# 默认文字大小 12像素对应7
+# 默认文字大小 12像素对应9
 CONTENT_FONT_SIZE = 9
-# 标题文字大小 14像素对应8.5
+# 标题文字大小 14像素对应10, 计算方式为 14 × 72/ 96 = 10
 TITLE_FONT_SIZE = 10
 # 垂直间隔
 BETWEEN_SPACING = 15
@@ -80,6 +80,6 @@ WINDOW_WIDTH = 800
 '''
 Border color and backgroud color for treeview
 '''
-BORDER_COLOR = "#d2d2d2"
+TREEVIEW_BORDER_COLOR = "#d2d2d2"
 TREEVIEW_BG_COLOR = "#f6f6f6"
 

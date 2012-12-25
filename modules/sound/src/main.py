@@ -213,6 +213,7 @@ class SoundSetting(object):
         self.container_widgets["slider"].append_page(self.alignment_widgets["advance_set_tab_box"])
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.alignment_widgets["advance_set_tab_box"].add(self.container_widgets["advance_set_tab_box"])
+        self.container_widgets["advance_set_tab_box"].set_size_request(WINDOW_WIDTH, -1)
         self.alignment_widgets["main_hbox"].set_padding(
             TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
         self.alignment_widgets["advance_set_tab_box"].set_padding(
@@ -274,7 +275,8 @@ class SoundSetting(object):
         self.container_widgets["speaker_table"].attach(
             self.__make_align(self.button_widgets["speaker"], padding_top=18), 1, 2, 1, 2, 0)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.scale_widgets["balance"], height=53), 0, 1, 2, 3, 4)
+            self.__make_align(self.scale_widgets["balance"], height=43), 0, 1, 2, 3, 4)
+        self.container_widgets["speaker_table"].set_row_spacing(1, 15)
         button_width = self.button_widgets["speaker"].get_size_request()[0]
         self.button_widgets["speaker_combo"].set_size_request(-1, WIDGET_HEIGHT)
         self.scale_widgets["speaker"].set_size_request(MAIN_AREA_WIDTH-button_width, -1)
@@ -456,7 +458,6 @@ class SoundSetting(object):
         self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")
         self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
 
-        # TODO 使用键盘改变scale的值
         self.scale_widgets["balance"].connect("button-release-event", self.balance_scale_value_changed)
         self.scale_widgets["balance"].connect("button-press-event", lambda w, e: self.scale_widgets["balance"].set_data("has_pressed", True))
         self.scale_widgets["balance"].connect("move-slider", self.balance_scale_move_slider_cb)
@@ -681,7 +682,7 @@ class SoundSetting(object):
         rect = treeview.allocation
         cr = widget.window.cairo_create()
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(app_theme.get_color("line_border").get_color()))
+            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
             cr.set_line_width(1)
             cr.rectangle(rect.x, rect.y, rect.width+1, rect.height+1)
             cr.stroke()

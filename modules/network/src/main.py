@@ -279,7 +279,7 @@ class WirelessSection(gtk.VBox):
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
 
-        items.append(GeneralItem("connect to hiden network",
+        items.append(GeneralItem("connect to hidden network",
                                  self.settings,
                                  lambda :slider.slide_to_page(self.settings, "right"),
                                  self.send_to_crumb_cb,

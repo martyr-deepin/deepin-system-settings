@@ -26,6 +26,12 @@ git clone git@github.com:linuxdeepin/deepin-gsettings.git
 sudo python setup.py install
 
 
+== DateTime module ==
+Python Deepin TimeZone bindings
+cd modules/date_time/src/
+sudo python setup.py install
+
+
 == Keyboard module ==
 Python binding for libxklavier
 sudo apt-get install python-xklavier

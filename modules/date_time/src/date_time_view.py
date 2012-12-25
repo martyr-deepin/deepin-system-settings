@@ -37,10 +37,13 @@ from dtk.ui.datetime import DateTime
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
+from dtk.ui.spin import SpinBox
 from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
-from dtk.ui.utils import get_optimum_pixbuf_from_file
+from dtk.ui.utils import color_hex_to_cairo
 import gobject
 import gtk
+from constant import *
+from datetime import DeepinDateTime
 
 class DatetimeView(gtk.VBox):
     '''
@@ -52,6 +55,9 @@ class DatetimeView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
+
+        self.deepin_dt = DeepinDateTime()
+        self.current_tz_gmtoff = self.deepin_dt.get_gmtoff()
 
         self.timezone_items = []
         i = -11
@@ -65,54 +71,94 @@ class DatetimeView(gtk.VBox):
         '''
         timezone map && datetime
         '''
-        self.timezone_align = self.__setup_align()
-        self.timezone_box = gtk.HBox(spacing=40)
-        self.timezone = TimeZone(width=350, height=230)
-        self.datetime = DateTime(12, 12, width=350, height=145, box_spacing=180)
-        self.__widget_pack_start(self.timezone_box, [self.timezone, self.datetime])
+        self.timezone_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING, 
+                                                 padding_left = TEXT_WINDOW_LEFT_PADDING)
+        self.timezone_box = gtk.HBox()
+        self.timezone = TimeZone(self.current_tz_gmtoff, 
+                                 380, 
+                                 230, 
+                                 TEXT_WINDOW_TOP_PADDING, 
+                                 TEXT_WINDOW_LEFT_PADDING)
+        self.timezone.connect("changed", self.__timezone_changed)
+        self.datetime_box = gtk.VBox()
+        self.datetime_align = self.__setup_align(padding_top = 0, padding_left = 80)
+        self.datetime = DateTime()
+        self.datetime_align.add(self.datetime)
+        self.datetime_edit_align = self.__setup_align(padding_left = 100)
+        self.datetime_edit_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.hour_spin = SpinBox(12, 0, 24, 1)
+        self.min_spin = SpinBox(12, 0, 60, 1)
+        self.__widget_pack_start(self.datetime_edit_box, [self.hour_spin, self.min_spin])
+        self.datetime_edit_align.add(self.datetime_edit_box)
+        self.__widget_pack_start(self.datetime_box, [self.datetime_align, self.datetime_edit_align])
+        self.__widget_pack_start(self.timezone_box, [self.timezone, self.datetime_box])
         self.timezone_align.add(self.timezone_box)
         '''
         choose timezone
         '''
-        self.set_align = self.__setup_align()
-        self.set_box = gtk.HBox(spacing=10)
-        self.timezone_label = self.__setup_label("时区")
+        self.set_align = self.__setup_align(padding_left = TEXT_WINDOW_LEFT_PADDING)
+        self.set_box = gtk.HBox(spacing=WIDGET_SPACING)
+        self.timezone_label = self.__setup_label(text = "时区", width = 30, align = ALIGN_START)
         self.timezone_combo = ComboBox(self.timezone_items, max_width = 340)
+        self.timezone_combo.set_select_index(self.current_tz_gmtoff + 11)
+        self.timezone_combo.connect("item-selected", self.__combo_item_selected)
         self.auto_set_time_label = self.__setup_label("自动设置时间", 100)
+        self.auto_set_time_align = self.__setup_align(padding_top = 4, padding_left = 0, padding_right = 0)
         self.auto_set_time_toggle = self.__setup_toggle()
+        self.auto_set_time_align.add(self.auto_set_time_toggle)
         self.time_display_label = self.__setup_label("24小时置显示", 100)
+        self.time_display_align = self.__setup_align(padding_top = 4, padding_left = 0, padding_right = 0)
         self.time_display_toggle = self.__setup_toggle()
+        self.time_display_align.add(self.time_display_toggle)
         self.__widget_pack_start(self.set_box, 
                                  [self.timezone_label, 
                                   self.timezone_combo, 
                                   self.auto_set_time_label, 
-                                  self.auto_set_time_toggle, 
+                                  self.auto_set_time_align, 
                                   self.time_display_label, 
-                                  self.time_display_toggle])
+                                  self.time_display_align])
         self.set_align.add(self.set_box)
         '''
         this->gtk.VBox pack_start
         '''
         self.__widget_pack_start(self, [self.timezone_align, self.set_align])
+
+        self.connect("expose-event", self.__expose)
+
+    def __timezone_changed(self, widget, timezone):
+        self.timezone_combo.set_select_index(timezone + 11)
+        self.deepin_dt.set_timezone_by_gmtoff(timezone)
+
+    def __expose(self, widget, event):                                           
+        cr = widget.window.cairo_create()                                        
+        rect = widget.allocation                                    
+        
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                 
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                        
+        cr.fill()
     
-    def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
-        pass
+    def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None):
+        self.timezone.set_timezone(item_value - 11)
+        self.deepin_dt.set_timezone_by_gmtoff(item_value - 11)
 
     def __setup_label(self, text="", width=50, align=ALIGN_END):
         label = Label(text, None, DEFAULT_FONT_SIZE, align, width)
         return label
-
-    def __setup_combo(self, items=[], width=120):
-        combo = ComboBox(items, None, 0, width)
-        return combo
 
     def __setup_toggle(self):
         toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
             app_theme.get_pixbuf("active_normal.png"))
         return toggle
 
-    def __setup_align(self, xalign=0.5, yalign=0.5, xscale=1.0, yscale=1.0, 
-                      padding_top=20, padding_bottom=20, padding_left=20, padding_right=20):
+    def __setup_align(self, 
+                      xalign=0, 
+                      yalign=0, 
+                      xscale=0, 
+                      yscale=0, 
+                      padding_top=BETWEEN_SPACING, 
+                      padding_bottom=0, 
+                      padding_left=TEXT_WINDOW_LEFT_PADDING, 
+                      padding_right=20):
         align = gtk.Alignment()
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)

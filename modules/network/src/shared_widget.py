@@ -8,6 +8,10 @@ from nmlib.nm_utils import TypeConvert
 from nmlib.nm_remote_connection import NMRemoteConnection
 import gtk
 
+import style
+from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE
+
+
 class IPV4Conf(gtk.VBox):
     def __init__(self, connection=None, set_button_callback=None, dns_only=False):
         
@@ -17,38 +21,41 @@ class IPV4Conf(gtk.VBox):
         self.dns_only = dns_only
         table = gtk.Table(9, 2, False)
         # Ip configuration
-        #ip_group_box = gtk.VBox()
-        self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        self.manual_ip = gtk.RadioButton(self.auto_ip,"手动添加IP地址")
-        #ip_group_box.pack_start(self.auto_ip, False, False)
-        #ip_group_box.pack_start(self.manual_ip, False, False)
-        table.attach(self.auto_ip, 0,1,0,1)
-        table.attach(self.manual_ip, 0,1,1,2)
+        ip_group_box = gtk.VBox(spacing=10)
+        #self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
+        #self.manual_ip = gtk.RadioButton(self.auto_ip,"手动添加IP地址")
+        self.auto_ip = RadioButton("  自动获得IP地址", padding_x=0, font_size = TITLE_FONT_SIZE)
+        self.manual_ip = RadioButton("  手动添加IP地址", padding_x=0, font_size=TITLE_FONT_SIZE)
+        ip_group_box.pack_start(self.auto_ip, False, False)
+        ip_group_box.pack_start(self.manual_ip, False, False)
+        #table.attach(self.auto_ip, 0,1,0,1)
+        #table.attach(self.manual_ip, 0,1,1,2)
+        table.attach(ip_group_box, 0, 1, 0, 2)
 
-        self.addr_label = Label("IP地址:")
+        self.addr_label = Label("IP地址:", text_size=CONTENT_FONT_SIZE)
         table.attach(self.addr_label, 0,1,2,3)
         self.addr_entry = InputEntry()
         self.addr_entry.set_sensitive(False)
         table.attach(self.addr_entry, 1,2,2,3)
 
-        self.mask_label = Label("子网掩码:")
+        self.mask_label = Label("子网掩码:", text_size=CONTENT_FONT_SIZE)
         table.attach(self.mask_label, 0,1,3,4)
         self.mask_entry = InputEntry()
         table.attach(self.mask_entry, 1,2,3,4)
         
-        self.gate_label = Label("默认网关")
+        self.gate_label = Label("默认网关", text_size=CONTENT_FONT_SIZE)
         table.attach(self.gate_label, 0,1,4,5)
         self.gate_entry = InputEntry()
         table.attach(self.gate_entry, 1,2,4,5)
         
         #DNS configuration
-        self.auto_dns = gtk.RadioButton(None, "自动获得DNS服务器地址")
-        self.manual_dns = gtk.RadioButton(self.auto_dns,"使用下面的dns服务器:")
+        self.auto_dns = RadioButton("  自动获得DNS服务器地址", padding_x=0, font_size=TITLE_FONT_SIZE)
+        self.manual_dns = RadioButton("  使用下面的dns服务器:", padding_x=0, font_size=TITLE_FONT_SIZE)
         table.attach(self.auto_dns, 0, 1, 5, 6) 
         table.attach(self.manual_dns, 0, 1, 6, 7)
 
-        self.master_dns = Label("首选DNS服务器地址:")
-        self.slave_dns = Label("使用下面的DNS服务器地址:")
+        self.master_dns = Label("首选DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
+        self.slave_dns = Label("使用下面的DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
         
@@ -58,20 +65,20 @@ class IPV4Conf(gtk.VBox):
         table.attach(self.slave_entry, 1, 2, 8, 9)
 
         # TODO UI change
-        table.set_size_request(340, 227)
-        table.set_row_spacings(5)
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(35, 0, 120, 0)
-        align.add(table)
+        #table.set_size_request(340, 227)
+        style.set_table(table)
+        align = style.set_box_with_align(table, 'text')
         self.add(align)
         
-        self.addr_entry.set_size(222, 22)
-        self.gate_entry.set_size(222, 22)
-        self.mask_entry.set_size(222, 22)
-        self.master_entry.set_size(222, 22)
-        self.slave_entry.set_size(222, 22)
+        style.set_table_items(table, "entry")
+        #self.addr_entry.set_size(222, WIDGET_HEIGHT)
+        #self.gate_entry.set_size(222, WIDGET_HEIGHT)
+        #self.mask_entry.set_size(222, WIDGET_HEIGHT)
+        #self.master_entry.set_size(222, WIDGET_HEIGHT)
+        #self.slave_entry.set_size(222, WIDGET_HEIGHT)
         self.show_all()
-        
+
+        # Init Settings
         self.ip = ["","",""]
         self.dns = ["",""]
         self.reset(connection)
@@ -250,35 +257,41 @@ class IPV6Conf(gtk.VBox):
         self.set_button = set_button_callback
         table = gtk.Table(9, 2, False)
         # Ip configuration
-        self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        table.attach(self.auto_ip, 0,1,0,1,)
-        self.manual_ip = gtk.RadioButton(self.auto_ip, "手动添加IP地址")
-        table.attach(self.manual_ip, 0,1,1,2)
+        ip_group_box = gtk.VBox(spacing=10)
+        #self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
+        #self.manual_ip = gtk.RadioButton(self.auto_ip,"手动添加IP地址")
+        self.auto_ip = RadioButton("  自动获得IP地址", padding_x=0, font_size = TITLE_FONT_SIZE)
+        self.manual_ip = RadioButton("  手动添加IP地址", padding_x=0, font_size=TITLE_FONT_SIZE)
+        ip_group_box.pack_start(self.auto_ip, False, False)
+        ip_group_box.pack_start(self.manual_ip, False, False)
+        #table.attach(self.auto_ip, 0,1,0,1)
+        #table.attach(self.manual_ip, 0,1,1,2)
+        table.attach(ip_group_box, 0, 1, 0, 2)
 
-        self.addr_label = Label("IP地址:")
+        self.addr_label = Label("IP地址:", text_size=CONTENT_FONT_SIZE)
         table.attach(self.addr_label, 0,1,2,3)
         self.addr_entry = InputEntry()
         self.addr_entry.set_sensitive(False)
         table.attach(self.addr_entry, 1,2,2,3)
 
-        self.mask_label = Label("前缀:")
+        self.mask_label = Label("前缀:", text_size=CONTENT_FONT_SIZE)
         table.attach(self.mask_label, 0,1,3,4)
         self.mask_entry = InputEntry()
         table.attach(self.mask_entry, 1,2,3,4)
         
-        self.gate_label = Label("默认网关")
+        self.gate_label = Label("默认网关", text_size=CONTENT_FONT_SIZE)
         table.attach(self.gate_label, 0,1,4,5)
         self.gate_entry = InputEntry()
         table.attach(self.gate_entry, 1,2,4,5)
         
         #DNS configuration
-        self.auto_dns = gtk.RadioButton(None, "自动获得DNS服务器地址")
-        self.manual_dns = gtk.RadioButton(self.auto_dns,"使用下面的dns服务器:")
+        self.auto_dns = RadioButton("  自动获得DNS服务器地址", padding_x=0, font_size=TITLE_FONT_SIZE)
+        self.manual_dns = RadioButton("  使用下面的dns服务器", padding_x=0, font_size=TITLE_FONT_SIZE)
         table.attach(self.auto_dns, 0, 1, 5, 6) 
         table.attach(self.manual_dns, 0, 1, 6, 7)
 
-        self.master_dns = Label("首选DNS服务器地址:")
-        self.slave_dns = Label("使用下面的DNS服务器地址:")
+        self.master_dns = Label("首选DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
+        self.slave_dns = Label("使用下面的DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
         
@@ -288,11 +301,10 @@ class IPV6Conf(gtk.VBox):
         table.attach(self.slave_entry, 1, 2, 8, 9)
 
         # TODO UI change 
-        table.set_size_request(340, 227)
-        table.set_row_spacings(5)
-        align = gtk.Alignment( 0, 0, 0, 0)
-        align.set_padding( 35, 0, 120, 0)
-        align.add(table)
+        #table.set_size_request(340, 227)
+
+        style.set_table(table)
+        align = style.set_box_with_align(table, 'text')
         self.add(align)
         
         self.addr_entry.set_size(222, 22)
