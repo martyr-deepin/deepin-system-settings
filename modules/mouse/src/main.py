@@ -202,9 +202,9 @@ class MouseSetting(object):
         label_width = max(label_widgets["acceleration"].size_request()[0],
                           label_widgets["sensitivity"].size_request()[0],
                           label_widgets["click_rate"].size_request()[0]) + 2
-        label_widgets["acceleration"].set_size_request(label_width, -1)
-        label_widgets["sensitivity"].set_size_request(label_width, -1)
-        label_widgets["click_rate"].set_size_request(label_width, -1)
+        label_widgets["acceleration"].set_size_request(label_width, WIDGET_HEIGHT)
+        label_widgets["sensitivity"].set_size_request(label_width, WIDGET_HEIGHT)
+        label_widgets["click_rate"].set_size_request(label_width, WIDGET_HEIGHT)
         # custom
         self.alignment_widgets["custom_label"].add(self.container_widgets["custom_label_hbox"])
         self.alignment_widgets["custom_button"].add(self.container_widgets["custom_button_hbox"])
