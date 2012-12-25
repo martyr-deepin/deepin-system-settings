@@ -34,6 +34,8 @@ from module_frame import ModuleFrame
 from nmlib.servicemanager import servicemanager
 from constant import *
 
+from nls import _
+
 slider = nm_module.slider
 
 class WiredDevice(object):
@@ -70,7 +72,7 @@ class WiredSection(gtk.VBox):
 
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         if self.wired_devices:
-            self.wire = Contain(app_theme.get_pixbuf("/Network/cable.png"), "有线网络", self.toggle_cb)
+            self.wire = Contain(app_theme.get_pixbuf("/Network/cable.png"), _("Wired"), self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
             self.pack_start(self.wire, False, False, 0)
             self.settings = None
@@ -194,7 +196,7 @@ class WirelessSection(gtk.VBox):
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
-            self.wireless = Contain(app_theme.get_pixbuf("/Network/wifi.png"), "无线网络", self.toggle_cb)
+            self.wireless = Contain(app_theme.get_pixbuf("/Network/wifi.png"), _("Wireless"), self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
 
             self.pack_start(self.wireless, False, False)
@@ -279,7 +281,7 @@ class WirelessSection(gtk.VBox):
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
 
-        items.append(GeneralItem("connect to hidden network",
+        items.append(GeneralItem(_("connect to hidden network"),
                                  self.settings,
                                  lambda :slider.slide_to_page(self.settings, "right"),
                                  self.send_to_crumb_cb,
@@ -299,7 +301,7 @@ class HotSpot(gtk.VBox):
 
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self, 0)
-        cont = Contain(app_theme.get_pixbuf("/Network/wifi.png"), "个人热点", self.toggle_cb)
+        cont = Contain(app_theme.get_pixbuf("/Network/wifi.png"), _("Hotspot"), self.toggle_cb)
         self.pack_start(cont, False, False)
         self.settings = None
         self.send_to_crumb_cb = send_to_crumb_cb
@@ -309,7 +311,7 @@ class HotSpot(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0, 0.0, 1, 1)
             self.align.set_padding(0, 0, PADDING,0)
-            label = Label("设置热点密码", ui_theme.get_color("link_text"))
+            label = Label(_("Hotspot Configuration"), ui_theme.get_color("link_text"))
             label.connect("button-release-event", self.slide_to_event)
             self.align.connect("expose-event", self.expose_event)
             self.align.add(label)
@@ -328,7 +330,7 @@ class HotSpot(gtk.VBox):
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.child.allocation
-        width, height = get_content_size("设置热点密码")
+        width, height = get_content_size(_("Hotspot Configuration"))
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + width, rect.y + rect.height)
 
@@ -337,7 +339,7 @@ class DSL(gtk.VBox):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
         self.setting_page = None
-        self.dsl = Contain(app_theme.get_pixbuf("/Network/dsl.png"), "宽带拨号", self.toggle_cb)
+        self.dsl = Contain(app_theme.get_pixbuf("/Network/dsl.png"), _("DSL"), self.toggle_cb)
         self.pack_start(self.dsl, False, False)
         #pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
@@ -346,7 +348,7 @@ class DSL(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
-            label = Label("DSL setting", ui_theme.get_color("link_text"))
+            label = Label(_("DSL Configuration"), ui_theme.get_color("link_text"))
             label.connect("button-release-event", self.slide_to_event)
 
             self.align.add(label)
@@ -374,7 +376,7 @@ class VpnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
         self.slide_to_subcrumb = slide_to_subcrumb_cb
-        vpn = Contain(app_theme.get_pixbuf("/Network/vpn.png"), "VPN网络", self.toggle_cb)
+        vpn = Contain(app_theme.get_pixbuf("/Network/vpn.png"), _("VPN Network"), self.toggle_cb)
         self.add(vpn)
 
         ## detect vpn active_connection
@@ -384,7 +386,7 @@ class VpnSection(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
-            label = Label("添加vpn网络", ui_theme.get_color("link_text"))
+            label = Label(_("Add Vpn"), ui_theme.get_color("link_text"))
             label.connect("button-release-event", self.slide_to_event)
 
             self.align.add(label)
@@ -416,7 +418,7 @@ class Mobile(gtk.VBox):
                  send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.send_to_crumb_cb = send_to_crumb_cb
-        mobile = Contain(app_theme.get_pixbuf("/Network/3g.png"), "移动网络", self.toggle_cb)
+        mobile = Contain(app_theme.get_pixbuf("/Network/3g.png"), _("Mobile Network"), self.toggle_cb)
         self.add(mobile)
         self.settings = None
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
@@ -439,7 +441,7 @@ class Mobile(gtk.VBox):
 
     def show_link(self):
         container_remove_all(self.align)
-        label = Label("设置移动网络", ui_theme.get_color("link_text"))
+        label = Label(_("Mobile Configuration"), ui_theme.get_color("link_text"))
         label.connect("button-release-event", self.slide_to_event)
         self.align.add(label)
         self.align.connect("expose-event", self.expose_event)
@@ -485,7 +487,7 @@ class Proxy(gtk.VBox):
     def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
-        proxy = Contain(app_theme.get_pixbuf("/Network/proxy.png"), "网络代理", self.toggle_cb)
+        proxy = Contain(app_theme.get_pixbuf("/Network/proxy.png"), _("Proxy"), self.toggle_cb)
         self.settings = None
         self.add(proxy)
 
@@ -494,7 +496,7 @@ class Proxy(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
-            label = Label("设置网络代理", ui_theme.get_color("link_text"))
+            label = Label(_("Proxy Configuration"), ui_theme.get_color("link_text"))
             label.connect("button-release-event", self.slide_to_event)
 
             self.align.add(label)

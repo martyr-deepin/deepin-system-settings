@@ -14,7 +14,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
 
 ICON_PADDING = 5
-TEXT_PADDING = 5
+TEXT_PADDING = 30
 BUTTON_PADDING = 0
 class Contain(gtk.Alignment):
 
@@ -35,7 +35,7 @@ class Contain(gtk.Alignment):
         self.width = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_width()
         self.image.set_from_pixbuf(icon.get_pixbuf())
         self.hbox.pack_start(self.image, False, True, ICON_PADDING)
-        self.label = Label(text, text_size=TITLE_FONT_SIZE, label_width=70)
+        self.label = Label(text, text_size=TITLE_FONT_SIZE)
         self.hbox.pack_start(self.label, False, True, TEXT_PADDING)
 
         self.switch = ToggleButton(
