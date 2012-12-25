@@ -321,20 +321,40 @@ class AddSettingItem(TreeItem):
             cr.stroke()
 
     def render_background(self,  cr, rect):
-        if self.is_select:
+        if self.is_hover:
             background_color = [(0,["#cce3ef", 1.0]),
                             (1,["#cce3ef", 1.0])]
         else:
             background_color = [(0,["#f6f6f6", 1.0]),
                                 (1,["#f6f6f6", 1.0])]
+
         draw_hlinear(cr, rect.x  , rect.y, rect.width , rect.height, background_color)
 
 
     def hover(self, column, offset_x, offset_y):
-        pass
+        self.is_hover = True
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+    def unhover(self,  column, offset_x, offset_y):
+        self.is_hover = False
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+    def select(self):
+        self.is_select = True
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+    def unselect(self):
+        self.is_select = False
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
 
     def single_click(self, column, offset_x, offset_y):
-        pass
+        self.add_setting()
+
         
         
 

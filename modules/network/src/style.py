@@ -45,8 +45,9 @@ def set_table_items(table, item_name):
     children = table.get_children()
     for child in children:
         if item_name is "entry":
-            from dtk.ui.entry import InputEntry
-            if type(child).__name__ == type(InputEntry()).__name__:
+            from dtk.ui.new_entry import InputEntry, PasswordEntry
+            if type(child).__name__ == type(InputEntry()).__name__ or \
+                type(child).__name__ == type(PasswordEntry()).__name__:
                 child.set_size(222, WIDGET_HEIGHT)
 
 

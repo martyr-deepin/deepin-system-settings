@@ -5,17 +5,18 @@ from theme import app_theme, ui_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox
-from settings_widget import SettingItem, EntryTreeView
+from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 from nm_modules import nm_module
 from container import Contain
 from shared_widget import IPV4Conf
 
 import gtk
 
-from constants import *
+from constants import TITLE_FONT_SIZE, FRAME_VERTICAL_SPACING
 import style
 
 slider = nm_module.slider
@@ -46,7 +47,7 @@ class MobileSetting(gtk.Alignment):
         self.broadband = None
         self.ppp = None
 
-        self.tab_window = TabBox(dockfill = True)
+        self.tab_window = TabBox(dockfill = False)
         self.tab_window.set_size_request(674, 408)
         self.items = [("移动宽带", NoSetting()),
                       ("PPP", NoSetting()),
@@ -120,8 +121,8 @@ class MobileSetting(gtk.Alignment):
 
     def init_tab_box(self):
         #self.tab_window.tab_items[0] = ("Region", self.region)
-        self.tab_window.tab_items[0] = ("Broadband",self.broadband)
-        self.tab_window.tab_items[1] = ("IPV4 setting",self.ipv4)
+        self.tab_window.tab_items[0] = ("宽带",self.broadband)
+        self.tab_window.tab_items[1] = ("IPV4设置",self.ipv4)
         self.tab_window.tab_items[2] = ("PPP", self.ppp)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
@@ -201,9 +202,10 @@ class SideBar(gtk.VBox):
         # Build ui
         self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
-        add_button = Button("Add setting")
-        add_button.connect("clicked", self.add_new_connection)
-        self.pack_start(add_button, False, False)
+        add_button = AddSettingItem("创建新连接",self.add_new_connection)
+        self.pack_start(TreeView([add_button]), False, False)
+        #add_button.connect("clicked", self.add_new_connection)
+        #self.pack_start(add_button, False, False)
         self.set_size_request(160, -1)
         self.new_connection_list = {'cdma':[], "gsm":[]}
     
@@ -291,19 +293,19 @@ class Broadband(gtk.VBox):
         self.connection = connection        
         self.set_button = set_button_callback
         # Init widgets
-        self.table = gtk.Table(12, 4, True)
+        self.table = gtk.Table(12, 4, False)
         #self.table.set_size_request(500,500)
         
-        self.label_basic = Label("Basic")
-        self.label_number = Label("Number:")
-        self.label_username = Label("Username:")
-        self.label_password = Label("Password:")
+        self.label_basic = Label("基本设置", text_size = TITLE_FONT_SIZE)
+        self.label_number = Label("代号:")
+        self.label_username = Label("用户名:")
+        self.label_password = Label("密码:")
 
         self.number = InputEntry()
         self.username = InputEntry()
         self.password = PasswordEntry()
-        self.password_show = CheckButton("show password")
-        self.button_to_region = Button("Region Setting")
+        self.password_show = CheckButton("显示密码", padding_x=0)
+        self.button_to_region = Button("地区运营商设置")
 
 
         #self.table = gtk.Table(6, 4, False)
@@ -376,8 +378,8 @@ class Broadband(gtk.VBox):
             self.table.attach(self.network_type, 2, 4, 9, 10)
             self.table.attach(self.roam_check, 3, 4, 10, 11)
             self.table.attach(self.pin, 2, 4, 11, 12)
-        style.set_table_items(self.table, 'entry')
         #TODO ui change
+        style.set_table_items(self.table, 'entry')
         style.set_table(self.table)
         align = style.set_box_with_align(self.table, "text")
         self.add(align)
