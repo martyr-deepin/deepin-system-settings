@@ -26,6 +26,7 @@ from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 from dtk.ui.draw import color_hex_to_cairo, draw_window_rectangle
+from dtk.ui.new_treeview import TreeView
 #from dtk.ui.droplist import Droplist
 from nm_modules import nm_module
 #from widgets import SettingButton
@@ -208,10 +209,12 @@ class SideBar(gtk.VBox):
         #add_button.set_size_request(-1, CONTAINNER_HEIGHT)
         #add_button.connect("clicked", self.add_new_setting)
         #self.pack_start(add_button, False, False)
+        add_button = AddSettingItem("创建新连接",self.add_new_setting)
+        self.pack_start(TreeView([add_button]), False, False)
         self.new_connection_list =[]
         
         #TODO UI change
-        self.set_size_request(160, -1)
+        self.set_size_request(160, -1 )
 
     def init(self, connection_list, ipv4setting):
         # check active
@@ -236,7 +239,6 @@ class SideBar(gtk.VBox):
                                     self.set_button))
         self.connection_tree.add_items(cons)
 
-        self.connection_tree.add_items([AddSettingItem("创建新连接",self.add_new_setting)])
 
         self.connection_tree.show_all()
 
