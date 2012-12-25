@@ -7,18 +7,16 @@ from dtk.ui.button import Button,CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
-#from dtk.ui.droplist import Droplist
 from dtk.ui.combo import ComboBox
-#from widgets import SettingButton
 from settings_widget import SettingItem, EntryTreeView
-# NM lib import 
 from nm_modules import nm_module
-#from nmlib.nmclient import nmclient
-#from nmlib.nm_remote_settings import nm_remote_settings
 from container import Contain
 from shared_widget import IPV4Conf
 
 import gtk
+
+from constants import *
+import style
 
 slider = nm_module.slider
 
@@ -30,14 +28,19 @@ def check_settings(connection, fn):
         fn("save", False)
         print "not pass"
 
-class MobileSetting(gtk.HBox):
+class MobileSetting(gtk.Alignment):
 
     def __init__(self, slide_back_cb = None, change_crumb_cb = None):
 
-        gtk.HBox.__init__(self)
+        gtk.Alignment.__init__(self, 0, 0, 0, 0)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
         
+        # Add UI Align
+        style.set_main_window(self)
+        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        self.add(hbox)
+
         self.region = None
         self.ipv4 = None
         self.broadband = None
@@ -45,18 +48,17 @@ class MobileSetting(gtk.HBox):
 
         self.tab_window = TabBox(dockfill = True)
         self.tab_window.set_size_request(674, 408)
-        self.items = [("Mobile Broadband", NoSetting()),
+        self.items = [("移动宽带", NoSetting()),
                       ("PPP", NoSetting()),
-                      ("IPv4 Setting", NoSetting())]
+                      ("IPv4 设置", NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
         # Build ui
-        self.pack_start(self.sidebar, False , False)
+        hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
-        self.pack_start(vbox, True, True)
+        hbox.pack_start(vbox, True, True)
         self.save_button = Button("save")
         self.save_button.connect("clicked", self.save_changes)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
@@ -64,6 +66,15 @@ class MobileSetting(gtk.HBox):
         vbox.pack_start(buttons_aligns, False , False)
         
         self.show_all()
+        self.connect("expose-event", self.expose_event)
+        vbox.connect("expose-event", self.expose_outline, ["top"])
+        self.sidebar.connect("expose-event", self.expose_outline, [])
+
+    def expose_outline(self, widget, event, exclude):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        style.draw_out_line(cr, rect, exclude)
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -182,17 +193,17 @@ class MobileSetting(gtk.HBox):
 
 class SideBar(gtk.VBox):
     def __init__(self, connections , main_init_cb, check_click_cb):
-        gtk.VBox.__init__(self, False, 5)
+        gtk.VBox.__init__(self, False)
         self.connections = connections
         self.main_init_cb = main_init_cb
         self.check_click_cb = check_click_cb
 
         # Build ui
-        self.buttonbox = gtk.VBox(False, 6)
+        self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
         add_button = Button("Add setting")
         add_button.connect("clicked", self.add_new_connection)
-        self.pack_start(add_button, False, False, 6)
+        self.pack_start(add_button, False, False)
         self.set_size_request(160, -1)
         self.new_connection_list = {'cdma':[], "gsm":[]}
     
@@ -220,7 +231,7 @@ class SideBar(gtk.VBox):
 
         self.connection_tree.show_all()
 
-        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
+        self.buttonbox.pack_start(self.connection_tree, False, False)
 
         try:
             index = self.connections.index(active)
@@ -281,7 +292,7 @@ class Broadband(gtk.VBox):
         self.set_button = set_button_callback
         # Init widgets
         self.table = gtk.Table(12, 4, True)
-        self.table.set_size_request(500,500)
+        #self.table.set_size_request(500,500)
         
         self.label_basic = Label("Basic")
         self.label_number = Label("Number:")
@@ -289,11 +300,8 @@ class Broadband(gtk.VBox):
         self.label_password = Label("Password:")
 
         self.number = InputEntry()
-        self.number.set_size(200,25 )
         self.username = InputEntry()
-        self.username.set_size(200,25 )
         self.password = PasswordEntry()
-        self.password.set_size(200,25 )
         self.password_show = CheckButton("show password")
         self.button_to_region = Button("Region Setting")
 
@@ -306,24 +314,16 @@ class Broadband(gtk.VBox):
         self.label_pin = Label("PIN:")
 
         self.apn = InputEntry()
-        self.apn.set_size(200,25 )
         self.network_id = InputEntry()
-        self.network_id.set_size(200,25 )
         self.network_type = ComboBox([("Any", None),
                                       ("3G", 0),
                                       ("2G", 1),
                                       ("Prefer 3G", 2),
                                       ("Prefer 2G", 3)],
                                       max_width=300)
-        #self.network_type.set_size(200,25 )
         self.roam_check = CheckButton("Allow roaming if home network is not available")
         self.pin = InputEntry()
-        self.pin.set_size(200,25 )
         
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.set_padding(50,50,0,0)
-        align.add(self.table)
-        self.add(align)
         
         # Connect signals
         self.number.entry.connect("changed", self.save_settings_by, "number")
@@ -376,6 +376,11 @@ class Broadband(gtk.VBox):
             self.table.attach(self.network_type, 2, 4, 9, 10)
             self.table.attach(self.roam_check, 3, 4, 10, 11)
             self.table.attach(self.pin, 2, 4, 11, 12)
+        style.set_table_items(self.table, 'entry')
+        #TODO ui change
+        style.set_table(self.table)
+        align = style.set_box_with_align(self.table, "text")
+        self.add(align)
 
     def refresh(self):
         # get_settings

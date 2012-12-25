@@ -57,7 +57,7 @@ class WirelessSetting(gtk.HBox):
         self.ipv6 = None
         self.security = None
 
-        self.tab_window = TabBox(dockfill = True)
+        self.tab_window = TabBox(dockfill = False)
         self.tab_window.set_size_request(674, 408)
         self.items = [("Wireless", NoSetting()),
                       ("IPV4", NoSetting()),

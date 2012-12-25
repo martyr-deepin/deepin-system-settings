@@ -41,6 +41,14 @@ def set_table(table):
     table.set_row_spacings(CONTAINNER_HEIGHT - WIDGET_HEIGHT)
     table.set_col_spacings(BETWEEN_SPACING)
 
+def set_table_items(table, item_name):
+    children = table.get_children()
+    for child in children:
+        if item_name is "entry":
+            from dtk.ui.entry import InputEntry
+            if type(child).__name__ == type(InputEntry()).__name__:
+                child.set_size(222, WIDGET_HEIGHT)
+
 
 def draw_out_line(cr, rect, exclude=[]):
     with cairo_disable_antialias(cr):
@@ -49,11 +57,15 @@ def draw_out_line(cr, rect, exclude=[]):
         cr.set_line_width(1)
         
         # Top
-        #draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y)
+        if "top" not in exclude:
+            draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y)
         # bottom
-        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
+        if "bot" not in exclude:
+            draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
         # left
-        draw_line(cr, rect.x , rect.y , rect.x, rect.y + rect.height)
+        if "left" not in exclude:
+            draw_line(cr, rect.x , rect.y , rect.x, rect.y + rect.height)
         # right
-        draw_line(cr, rect.x + rect.width + 1, rect.y + 29, rect.x + rect.width + 1, rect.y + rect.height)
+        if "right" not in exclude:
+            draw_line(cr, rect.x + rect.width , rect.y + 29, rect.x + rect.width , rect.y + rect.height)
 

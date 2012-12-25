@@ -21,20 +21,28 @@ from shared_widget import IPV4Conf
 
 import gtk
 
+# UI
+import style
+from constants import FRAME_VERTICAL_SPACING
+
 def check_settings(connection, fn):
     if connection.check_setting_finish():
         fn('save', True)
     else:
         fn("save", False)
 
-class DSLSetting(gtk.HBox):
+class DSLSetting(gtk.Alignment):
 
     def __init__(self, slide_back_cb = None, change_crumb_cb = None):
-
-        gtk.HBox.__init__(self)
+        gtk.Alignment.__init__(self)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
         
+        # Add UI Align
+        style.set_main_window(self)
+        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        self.add(hbox)
+
         self.wired = None
         self.ipv4 = None
         self.dsl = None
@@ -50,17 +58,19 @@ class DSLSetting(gtk.HBox):
         self.sidebar = SideBar( None, self.init, self.check_click)
 
         # Build ui
-        self.pack_start(self.sidebar, False , False)
+        hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
-        self.pack_start(vbox, True, True)
+        hbox.pack_start(vbox, True, True)
         self.save_button = Button("Connect")
         self.save_button.connect("clicked", self.save_changes)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
         buttons_aligns.add(self.save_button)
         vbox.pack_start(buttons_aligns, False , False)
 
+        self.connect("expose-event", self.expose_event)
+        vbox.connect("expose-event", self.expose_outline, ["top"])
+        self.sidebar.connect("expose-event", self.expose_outline, [])
     def set_button(self, name, state):
         if name == "save":
             self.save_button.set_label(name)
@@ -68,6 +78,13 @@ class DSLSetting(gtk.HBox):
         else:
             self.save_button.set_label("connect")
             self.save_button.set_sensitive(state)
+
+    def expose_outline(self, widget, event, exclude):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        from style import draw_out_line
+        draw_out_line(cr, rect, exclude)
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -163,17 +180,18 @@ class DSLSetting(gtk.HBox):
 
 class SideBar(gtk.VBox):
     def __init__(self, connections , main_init_cb, check_click_cb):
-        gtk.VBox.__init__(self, False, 5)
+        gtk.VBox.__init__(self, False)
         self.connections = connections
         self.main_init_cb = main_init_cb
         self.check_click_cb = check_click_cb
 
         # Build ui
-        self.buttonbox = gtk.VBox(False, 6)
+        self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
-        add_button = Button("Add setting")
+        add_button = Button("创建新连接")
         add_button.connect("clicked", self.add_new_connection)
-        self.pack_start(add_button, False, False, 6)
+        self.pack_start(add_button, False, False)
+
         self.set_size_request(160, -1)
 
         self.new_connection_list = []
@@ -199,7 +217,7 @@ class SideBar(gtk.VBox):
 
         self.connection_tree.show_all()
 
-        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
+        self.buttonbox.pack_start(self.connection_tree, False, False)
 
         try:
             index = self.connections.index(active)
