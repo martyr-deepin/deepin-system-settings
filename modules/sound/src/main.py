@@ -23,7 +23,7 @@
 
 from theme import app_theme
 from dtk.ui.label import Label
-from dtk.ui.button import Button, ToggleButton
+from dtk.ui.button import Button, OffButton 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.combo import ComboBox
@@ -107,15 +107,18 @@ class SoundSetting(object):
         self.image_widgets["device"] = gtk.gdk.pixbuf_new_from_file(
             app_theme.get_theme_file_path("image/set/device.png"))
         # button init
-        self.button_widgets["balance"] = ToggleButton(
-            app_theme.get_pixbuf("set/inactive_normal.png"),
-            app_theme.get_pixbuf("set/active_normal.png"))
-        self.button_widgets["speaker"] = ToggleButton(
-            app_theme.get_pixbuf("set/inactive_normal.png"),
-            app_theme.get_pixbuf("set/active_normal.png"))
-        self.button_widgets["microphone"] = ToggleButton(
-            app_theme.get_pixbuf("set/inactive_normal.png"),
-            app_theme.get_pixbuf("set/active_normal.png"))
+        #self.button_widgets["balance"] = ToggleButton(
+            #app_theme.get_pixbuf("set/inactive_normal.png"),
+            #app_theme.get_pixbuf("set/active_normal.png"))
+        #self.button_widgets["speaker"] = ToggleButton(
+            #app_theme.get_pixbuf("set/inactive_normal.png"),
+            #app_theme.get_pixbuf("set/active_normal.png"))
+        #self.button_widgets["microphone"] = ToggleButton(
+            #app_theme.get_pixbuf("set/inactive_normal.png"),
+            #app_theme.get_pixbuf("set/active_normal.png"))
+        self.button_widgets["balance"] = OffButton()
+        self.button_widgets["speaker"] = OffButton()
+        self.button_widgets["microphone"] = OffButton()
         self.button_widgets["advanced"] = Button(_("Advanced"))
         self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=420)
         self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=420)

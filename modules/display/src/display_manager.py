@@ -128,6 +128,13 @@ class DisplayManager:
                 else:
                     self.__output_info_by_xml.append(output_item)
     
+            '''
+            TODO: gnome-settings-daemon generated monitors.xml
+                  but there is no primary output defined! wired!
+            '''
+            if self.__primary_output_name == None:
+                self.__primary_output_name = self.__output_info_by_xml[0][0]
+    
     def get_output_info(self):
         return self.__output_info_by_xml
     

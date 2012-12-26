@@ -178,7 +178,6 @@ class DisplayView(gtk.VBox):
         self.__xrandr_settings = self.display_manager.get_xrandr_settings()
         self.__xrandr_settings.connect("changed", self.__xrandr_changed)
 
-        self.box_spacing = 10
         self.resize_width = 790
         self.resize_height = 200
         self.monitor_items = []
@@ -216,8 +215,8 @@ class DisplayView(gtk.VBox):
         '''
         left, right box
         '''
-        self.left_box = gtk.VBox(spacing = self.box_spacing)
-        self.right_box = gtk.VBox(spacing = self.box_spacing)
+        self.left_box = gtk.VBox(spacing = WIDGET_SPACING)
+        self.right_box = gtk.VBox(spacing = WIDGET_SPACING)
         '''
         monitor operation && detect
         '''
@@ -255,7 +254,7 @@ class DisplayView(gtk.VBox):
         goto individuation or power setting
         '''
         self.goto_align = self.__setup_align()
-        self.goto_box = gtk.VBox(spacing = self.box_spacing)
+        self.goto_box = gtk.VBox(spacing = WIDGET_SPACING)
         self.goto_label = self.__setup_label(text = "如需要设置桌面壁纸和系统主题，请点击 <span foreground=\"blue\" underline=\"single\">个性化设置</span> ，电源相关设置请点击 <span foreground=\"blue\" underline=\"single\">电源设置</span>。", wrap_width = 180)
         self.__widget_pack_start(self.goto_box, 
             [self.goto_label])
@@ -320,7 +319,7 @@ class DisplayView(gtk.VBox):
         auto adjust monitor brightness
         '''
         self.auto_adjust_align = self.__setup_align()
-        self.auto_adjust_box = gtk.HBox(spacing = self.box_spacing)
+        self.auto_adjust_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.auto_adjust_label = self.__setup_label("自动调节屏幕亮度", width = 120)
         self.auto_adjust_toggle_align = self.__setup_align(padding_top = 4, padding_left = 0)
         self.auto_adjust_toggle = self.__setup_toggle()
@@ -351,7 +350,7 @@ class DisplayView(gtk.VBox):
         auto monitor lock
         '''
         self.auto_lock_align = self.__setup_align()
-        self.auto_lock_box = gtk.HBox(spacing = self.box_spacing)
+        self.auto_lock_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.auto_lock_label = self.__setup_label("自动锁定用户屏幕", width = 120)
         self.auto_lock_toggle_align = self.__setup_align(padding_top = 4, padding_left = 0)
         self.auto_lock_toggle = self.__setup_toggle()

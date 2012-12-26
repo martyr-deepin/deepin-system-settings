@@ -184,7 +184,9 @@ if __name__ == "__main__":
         ["min", "close"], 
         app_theme.get_pixbuf("logo.png"), 
         "系统设置",
-        )
+        enable_gaussian=False,
+        titlebar_bg_pixbuf=app_theme.get_pixbuf("titlebar_bg.png")
+	)
     
     # Init main box.
     main_align = gtk.Alignment()

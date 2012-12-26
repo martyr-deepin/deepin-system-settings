@@ -90,7 +90,7 @@ class DatetimeView(gtk.VBox):
         self.min_spin = SpinBox(12, 0, 60, 1)
         self.__widget_pack_start(self.datetime_edit_box, [self.hour_spin, self.min_spin])
         self.datetime_edit_align.add(self.datetime_edit_box)
-        self.__widget_pack_start(self.datetime_box, [self.datetime_align, self.datetime_edit_align])
+        self.__widget_pack_start(self.datetime_box, [self.datetime_align])
         self.__widget_pack_start(self.timezone_box, [self.timezone, self.datetime_box])
         self.timezone_align.add(self.timezone_box)
         '''
