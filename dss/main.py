@@ -44,7 +44,43 @@ import dbus
 import dbus.service
 import getopt
 
-op_history = ["/"]
+MAIN_MODULE = "main"
+
+module_history = [MAIN_MODULE]
+module_history_index = 1
+
+def record_module_history(module_name):
+    global module_history
+    global module_history_index
+    
+    (backward_modules, forward_modules) = module_history[0:module_history_index], module_history[module_history_index::]
+    
+    backward_modules = filter(lambda backward_module: backward_module != module_name, backward_modules)
+    forward_modules = filter(lambda forward_module: forward_module != module_name, forward_modules)
+    module_history_index = len(backward_modules)
+    module_history = backward_modules + [module_name] + forward_modules
+    
+def get_backward_module():
+    global module_history
+    global module_history_index
+    
+    if module_history_index == 0:
+        return None
+    else:
+        module_history_index = max(0, module_history_index - 1)
+        
+        return module_history[module_history_index]
+
+def get_forward_module():
+    global module_history
+    global module_history_index
+
+    if module_history_index == len(module_history) - 1:
+        return None
+    else:
+        module_history_index = min(len(module_history) - 1, module_history_index + 1)
+        
+        return module_history[module_history_index]
 
 class DBusService(dbus.service.Object):
     def __init__(self, 
@@ -65,17 +101,18 @@ class DBusService(dbus.service.Object):
             (message_type, message_content) = message
             if message_type == "send_plug_id":
                 (module_id, plug_id) = message_content
-                print (module_id, plug_id)
                 content_page = content_page_info.get_content_page(module_id)
                 content_page.add_plug_id(plug_id)
             elif message_type == "send_module_info":
                 (crumb_index, (module_id, crumb_name)) = message_content
-                op_history.append("/%s" % module_id)
                 action_bar.bread.add(Crumb(crumb_name, None))
+                
+                record_module_history(module_id)
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
-                op_history.append("/%s/%s" % (module_id, crumb_name))
                 action_bar.bread.add(Crumb(crumb_name, None))
+                
+                record_module_history(module_id)
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
@@ -97,16 +134,23 @@ def handle_dbus_reply(*reply):
 def handle_dbus_error(*error):
     print "com.deepin.system_settings (error): %s" % (str(error))
 
-def titlebar_forward_cb():
-    print "DEBUG forward", op_history
+def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info):
+    module_id = get_backward_module()
+    if module_id:
+        action_bar.bread.remove_node_after_index(0)
+        if module_id == MAIN_MODULE:
+            slider.slide_to_page(navigate_page, "right")
+        else:
+            __call_module_by_name(module_id, module_dict, slider, content_page_info, "right")        
 
-def titlebar_backward_cb():
-    print "DEBUG backward", op_history, len(op_history)
-    if len(op_history) < 3:
-        return
-
-    print "DEBUG backward", op_history[len(op_history) - 2]
-    send_message("individuation", "show_again", "")
+def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info):
+    module_id = get_forward_module()
+    if module_id:
+        action_bar.bread.remove_node_after_index(0)
+        if module_id == MAIN_MODULE:
+            slider.slide_to_page(navigate_page, "left")
+        else:
+            __call_module_by_name(module_id, module_dict, slider, content_page_info, "left")        
 
 def send_message(module_id, message_type, message_content):
     bus = dbus.SessionBus()
@@ -124,7 +168,8 @@ def send_message(module_id, message_type, message_content):
 def switch_page(bread, content_page_info, index, label, slider, navigate_page):
     if index == 0:
         if label == "系统设置":
-            op_history.append("/")
+            record_module_history(MAIN_MODULE)
+            
             slider.slide_to_page(navigate_page, "left")
     else:
         send_message(content_page_info.get_active_module_id(),
@@ -139,7 +184,7 @@ def click_module_menu_item(slider, content_page_info, action_bar, module_info):
 def add_crumb(index, label):
     print (index, label)
         
-def start_module_process(slider, content_page_info, module_path, module_config):
+def start_module_process(slider, content_page_info, module_path, module_config, force_direction=None):
     module_id = module_config.get("main", "id")
     module_slide_to_page = True
     if module_config.has_option("main", "slide_to_page"):
@@ -150,7 +195,10 @@ def start_module_process(slider, content_page_info, module_path, module_config):
     content_page_info.set_active_module_id(module_id)
     
     if module_slide_to_page:
-        slider.slide_to_page(content_page, "right")
+        if force_direction:
+            slider.slide_to_page(content_page, force_direction)
+        else:
+            slider.slide_to_page(content_page, "right")
     
     module_dbus_name = "com.deepin.%s_settings" % (module_id)
     if not is_dbus_name_exists(module_dbus_name):
@@ -158,12 +206,13 @@ def start_module_process(slider, content_page_info, module_path, module_config):
     else:
         send_message(module_id, "show_again", "")
             
-def __call_module_by_name(module_name, module_dict, slider, content_page_info):
-    if module_name in module_dict.keys():                                    
+def __call_module_by_name(module_name, module_dict, slider, content_page_info, force_direction=None):
+    if module_dict.has_key(module_name):
         start_module_process(slider,                                         
                              content_page_info,                              
                              module_dict[module_name].path,                  
-                             module_dict[module_name].config)
+                             module_dict[module_name].config,
+                             force_direction)
 
 if __name__ == "__main__":
     ops, args = getopt.getopt(sys.argv[1:], '')
@@ -221,7 +270,9 @@ if __name__ == "__main__":
     # Init action bar.
     action_bar = ActionBar(module_infos, 
                            lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page),
-                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info), titlebar_backward_cb, titlebar_forward_cb)
+                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info), 
+                           lambda : titlebar_backward_cb(module_dict, action_bar, slider, content_page_info), 
+                           lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info))
     
     # Init slider.
     slider = HSlider()

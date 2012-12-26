@@ -37,13 +37,18 @@ class ActionBar(gtk.Alignment):
     class docs
     '''
 	
-    def __init__(self, module_infos, switch_page, click_module_item, 
-                 backward_cb=None, forward_cb=None):
+    def __init__(self, 
+                 module_infos, 
+                 switch_page, 
+                 click_module_item, 
+                 backward_cb=None, 
+                 forward_cb=None):
         '''
         init docs
         '''
         # Init.
         gtk.Alignment.__init__(self)
+        self.module_infos = module_infos
         self.set(0.5, 0.5, 1, 1)
         self.set_padding(0, 0, 0, 0)
         self.set_size_request(-1, 36)
