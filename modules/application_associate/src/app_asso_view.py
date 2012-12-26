@@ -61,6 +61,7 @@ class AppAssoView(TabBox):
         init docs
         '''
         TabBox.__init__(self)
+        self.draw_title_background = self.draw_tab_title_background
         #self.set_size_request(722, 356)
         
         self.app_box = AppView()
@@ -71,6 +72,13 @@ class AppAssoView(TabBox):
                         ("自动运行", self.autorun_box), 
                         ("启动项", self.boot_box)])
 
+
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def __setup_label(self, text="", align=ALIGN_END):
         label = Label(text, None, DEFAULT_FONT_SIZE, align, 140)
         return label

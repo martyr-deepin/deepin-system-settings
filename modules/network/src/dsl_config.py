@@ -49,6 +49,7 @@ class DSLSetting(gtk.Alignment):
         self.ppp = None
 
         self.tab_window = TabBox(dockfill = False)
+        self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [("DSL", NoSetting()),
                       ("Wired", NoSetting()),
@@ -71,6 +72,13 @@ class DSLSetting(gtk.Alignment):
         self.connect("expose-event", self.expose_event)
         vbox.connect("expose-event", self.expose_outline, ["top"])
         self.sidebar.connect("expose-event", self.expose_outline, [])
+        
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def set_button(self, name, state):
         if name == "save":
             self.save_button.set_label(name)

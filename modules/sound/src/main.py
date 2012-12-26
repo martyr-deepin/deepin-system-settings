@@ -125,6 +125,7 @@ class SoundSetting(object):
         # container init
         self.container_widgets["slider"] = HSlider()
         self.container_widgets["advance_set_tab_box"] = TabBox()
+        self.container_widgets["advance_set_tab_box"].draw_title_background = self.draw_tab_title_background
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
         self.container_widgets["right_vbox"] = gtk.VBox(False)
@@ -204,6 +205,12 @@ class SoundSetting(object):
         self.view_widgets["ad_input"] = TreeView()
         self.view_widgets["ad_hardware"] = TreeView()
      
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def __adjust_widget(self):
         ''' adjust widget '''
         MID_SPACING = 10
