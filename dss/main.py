@@ -47,7 +47,7 @@ import getopt
 MAIN_MODULE = "main"
 
 module_history = [MAIN_MODULE]
-module_history_index = 1
+module_history_index = 0
 
 def record_module_history(module_name):
     global module_history
@@ -168,8 +168,6 @@ def send_message(module_id, message_type, message_content):
 def switch_page(bread, content_page_info, index, label, slider, navigate_page):
     if index == 0:
         if label == "系统设置":
-            record_module_history(MAIN_MODULE)
-            
             slider.slide_to_page(navigate_page, "left")
     else:
         send_message(content_page_info.get_active_module_id(),
