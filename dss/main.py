@@ -44,6 +44,8 @@ import dbus
 import dbus.service
 import getopt
 
+op_history = ["/"]
+
 class DBusService(dbus.service.Object):
     def __init__(self, 
                  action_bar, 
@@ -68,9 +70,11 @@ class DBusService(dbus.service.Object):
                 content_page.add_plug_id(plug_id)
             elif message_type == "send_module_info":
                 (crumb_index, (module_id, crumb_name)) = message_content
+                op_history.append("/%s" % module_id)
                 action_bar.bread.add(Crumb(crumb_name, None))
             elif message_type == "send_submodule_info":
-                (crumb_index, crumb_name) = message_content
+                (crumb_index, crumb_name, module_id) = message_content
+                op_history.append("/%s/%s" % (module_id, crumb_name))
                 action_bar.bread.add(Crumb(crumb_name, None))
             elif message_type == "change_crumb":
                 crumb_index = message_content
@@ -92,7 +96,18 @@ def handle_dbus_reply(*reply):
     
 def handle_dbus_error(*error):
     print "com.deepin.system_settings (error): %s" % (str(error))
-        
+
+def titlebar_forward_cb():
+    print "DEBUG forward", op_history
+
+def titlebar_backward_cb():
+    print "DEBUG backward", op_history, len(op_history)
+    if len(op_history) < 3:
+        return
+
+    print "DEBUG backward", op_history[len(op_history) - 2]
+    send_message("individuation", "show_again", "")
+
 def send_message(module_id, message_type, message_content):
     bus = dbus.SessionBus()
     module_dbus_name = "com.deepin.%s_settings" % (module_id)
@@ -109,6 +124,7 @@ def send_message(module_id, message_type, message_content):
 def switch_page(bread, content_page_info, index, label, slider, navigate_page):
     if index == 0:
         if label == "系统设置":
+            op_history.append("/")
             slider.slide_to_page(navigate_page, "left")
     else:
         send_message(content_page_info.get_active_module_id(),
@@ -205,7 +221,7 @@ if __name__ == "__main__":
     # Init action bar.
     action_bar = ActionBar(module_infos, 
                            lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page),
-                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info))
+                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info), titlebar_backward_cb, titlebar_forward_cb)
     
     # Init slider.
     slider = HSlider()
