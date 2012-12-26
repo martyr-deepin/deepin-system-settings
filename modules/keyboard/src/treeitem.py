@@ -282,7 +282,7 @@ class ShortcutItem(BaseItem):
         return self.height
     
     def get_column_widths(self):
-        return [380, 140]
+        return [380, -1]
     
     def get_column_renders(self):
         return [self.render_description, self.render_keyname]

@@ -30,11 +30,11 @@ from theme import app_theme
 from dtk.ui.dialog import DialogBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
-from dtk.ui.button import Button, ToggleButton
+from dtk.ui.button import Button, OffButton
 from dtk.ui.entry import InputEntry
 from dtk.ui.tab_window import TabBox
 from dtk.ui.scalebar import HScalebar
-from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor
 from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
 from treeitem import MyTreeView as TreeView
@@ -118,9 +118,10 @@ class KeySetting(object):
         # button init
         self.button_widgets["repeat_test_entry"] = gtk.Entry()
         self.button_widgets["blink_test_entry"] = gtk.Entry()
-        self.button_widgets["touchpad_disable"] = ToggleButton(
-            app_theme.get_pixbuf("set/inactive_normal.png"),
-            app_theme.get_pixbuf("set/active_normal.png"))
+        #self.button_widgets["touchpad_disable"] = ToggleButton(
+            #app_theme.get_pixbuf("set/inactive_normal.png"),
+            #app_theme.get_pixbuf("set/active_normal.png"))
+        self.button_widgets["touchpad_disable"] = OffButton()
         # relevant settings button
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Setting"),
             text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
@@ -376,8 +377,8 @@ class KeySetting(object):
             self.alignment_widgets["touchpad_setting"])
         self.alignment_widgets["mouse_setting"].add(self.button_widgets["mouse_setting"])
         self.alignment_widgets["touchpad_setting"].add(self.button_widgets["touchpad_setting"])
-        self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["touchpad_setting"].set(0.0, 0.5, 1.0, 0.0)
+        self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 0.0, 0.0)
+        self.alignment_widgets["touchpad_setting"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["mouse_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["touchpad_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["mouse_setting"].set_padding(0, 0, 10, 0)
@@ -480,6 +481,8 @@ class KeySetting(object):
         # relevant setting
         self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")
         self.button_widgets["touchpad_setting"].connect("button-press-event", self.relevant_press, "touchpad")
+        set_clickable_cursor(self.button_widgets["mouse_setting"])
+        set_clickable_cursor(self.button_widgets["touchpad_setting"])
         ########################
         # layout widget signal
         self.container_widgets["layout_table"].connect("expose-event", self.layout_table_expose)
