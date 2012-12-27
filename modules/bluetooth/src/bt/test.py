@@ -189,7 +189,8 @@ def test_phone():
     def browse_device(device):
         ###please see the example in utils.py
         pass
-    
+
+    ### test phone audio 
     def connect_phone_audio(device):
         from device import AudioSource
         from device import Control
@@ -224,11 +225,30 @@ def test_phone():
             return 
 
         hfg = HandsfreeGateway(device.object_path)
-        hfagent = HandsfreeAgent("/org/bluez/HandsfreeAgent")
+        HandsfreeAgent("/org/bluez/HandsfreeAgent")
         hfg.register_agent("/org/bluez/HandsfreeAgent")
 
-        hfg.connect()
+        if hfg.get_state() == "disconnected":
+            hfg.connect()
+
+    def connect_phone_network(adapter, device):
+        '''for my phone, it's nap'''
+        from device import Network
+        from adapter import NetworkServer
         
+        if "NAP" not in get_device_supported_services(device):
+            print "device not support NAP"
+            return 
+
+        network = Network(device.object_path)
+        server = NetworkServer(adapter.object_path)
+
+        server.register("nap", "wlan0")
+
+        network.connect("nap")
+
+    def connect_phone_serial(adapter, device):
+        pass
 
     from manager import Manager
     from adapter import Adapter
@@ -242,6 +262,7 @@ def test_phone():
         print "after paired, should exists devices"
 
     connect_phone_audio(device)    
+    # connect_phone_network(adapter, device)    
 
     mainloop = gobject.MainLoop()
     mainloop.run()
