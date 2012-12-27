@@ -65,6 +65,7 @@ class WirelessItem(TreeItem):
         self.essid = connection.get_ssid()
         self.send_to_crumb = send_to_crumb
         self.strength = connection.get_strength()
+        self.security = int(connection.get_flags())
         self.font_size = font_size
         self.is_last = False
         self.check_width = self.get_check_width()
@@ -120,7 +121,9 @@ class WirelessItem(TreeItem):
             pass
 
         # FIXME need to detect encry or not
-        lock_icon = app_theme.get_pixbuf("/Network/lock.png").get_pixbuf()
+        if self.security:
+            lock_icon = app_theme.get_pixbuf("/Network/lock.png").get_pixbuf()
+            draw_pixbuf(cr, lock_icon, rect.x , rect.y + self.VERTICAL_PADDING)
 
         if self.strength > 80:
             signal_icon = app_theme.get_pixbuf("/Network/Wifi_3.png").get_pixbuf()
@@ -131,7 +134,6 @@ class WirelessItem(TreeItem):
         else:
             signal_icon = app_theme.get_pixbuf("/Network/Wifi_0.png").get_pixbuf()
         
-        draw_pixbuf(cr, lock_icon, rect.x , rect.y + self.VERTICAL_PADDING)
         draw_pixbuf(cr, signal_icon, rect.x + 16 , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
