@@ -23,7 +23,6 @@
 from dtk.ui.init_skin import init_skin
 from dtk.ui.utils import get_parent_dir
 import os
-import re
 
 app_theme = init_skin(
     "deepin-display-settings", 
@@ -35,13 +34,12 @@ app_theme = init_skin(
 
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.box import ResizableBox
-from dtk.ui.button import Button
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
-from dtk.ui.utils import get_optimum_pixbuf_from_file, color_hex_to_cairo
+from dtk.ui.constant import ALIGN_START, ALIGN_END
+from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.draw import cairo_state, draw_text
 import gobject
 import gtk
