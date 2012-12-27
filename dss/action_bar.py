@@ -57,7 +57,7 @@ class ActionBar(gtk.Alignment):
         self.main_box = gtk.HBox()
         
         self.cache_bg_pixbuf = CachePixbuf()
-        self.bg_pixbuf = app_theme.get_pixbuf("crumbs_bg.png")
+        self.bg_pixbuf = app_theme.get_pixbuf("crumb/crumbs_bg.png")
 
         # Init action button.
         self.backward_align = gtk.Alignment()

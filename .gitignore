@@ -8,3 +8,6 @@ dtk.egg-info
 *.po~
 *.swp
 .zcache
+*.egg-info
+*.egg-info/*
+#*#

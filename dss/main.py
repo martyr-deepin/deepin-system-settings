@@ -256,7 +256,7 @@ if __name__ == "__main__":
         app_theme.get_pixbuf("logo.png"), 
         "系统设置",
         enable_gaussian=False,
-        titlebar_bg_pixbuf=app_theme.get_pixbuf("titlebar_bg.png")
+        titlebar_bg_pixbuf=app_theme.get_pixbuf("titlebar/titlebar_bg.png")
 	)
     
     # Init main box.

@@ -20,18 +20,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir, color_hex_to_cairo
-import os
-
-app_theme = init_skin(
-    "deepin-power-settings", 
-    "1.0",
-    "01",
-    os.path.join(get_parent_dir(__file__, 2), "skin"),
-    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
-    )
-
+from theme import app_theme
+from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
@@ -70,7 +61,7 @@ class PowerView(gtk.VBox):
         self.button_power_config_align = self.__setup_align(
             padding_top = TEXT_WINDOW_TOP_PADDING, padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.button_power_config_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.button_power_config_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/button_power.png"))
+        self.button_power_config_image = ImageBox(app_theme.get_pixbuf("power/button_power.png"))
         self.button_power_config_label = self.__setup_label("电源按钮设置", TITLE_FONT_SIZE)
         self.__widget_pack_start(self.button_power_config_box, 
                                  [self.button_power_config_image, self.button_power_config_label])
@@ -116,7 +107,7 @@ class PowerView(gtk.VBox):
         '''
         self.power_save_config_align = self.__setup_align(padding_top = BETWEEN_SPACING, padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.power_save_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.power_save_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/power_save.png"))
+        self.power_save_image = ImageBox(app_theme.get_pixbuf("power/power_save.png"))
         self.power_save_config_label = self.__setup_label("电源节能设置", TITLE_FONT_SIZE)
         self.__widget_pack_start(self.power_save_box, 
                                  [self.power_save_image, self.power_save_config_label])
@@ -163,7 +154,7 @@ class PowerView(gtk.VBox):
         self.wakeup_password_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
                                                         padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.wakeup_password_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.wakeup_password_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/wakeup_password.png"))
+        self.wakeup_password_image = ImageBox(app_theme.get_pixbuf("power/wakeup_password.png"))
         self.wakeup_password_label = self.__setup_label("唤醒时的密码保护", TITLE_FONT_SIZE)
         self.wakeup_password_toggle = self.__setup_toggle()
         self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
@@ -177,7 +168,7 @@ class PowerView(gtk.VBox):
         self.tray_battery_status_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
                                                             padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.tray_battery_status_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.tray_battery_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/tray_battery.png"))
+        self.tray_battery_image = ImageBox(app_theme.get_pixbuf("power/tray_battery.png"))
         self.tray_battery_status_label = self.__setup_label("在系统托盘显示电池状态", TITLE_FONT_SIZE)
         self.tray_battery_status_toggle = self.__setup_toggle()
         self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
@@ -220,8 +211,8 @@ class PowerView(gtk.VBox):
         return combo
 
     def __setup_toggle(self):
-        toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
-            app_theme.get_pixbuf("active_normal.png"))
+        toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            app_theme.get_pixbuf("toggle_button/active_normal.png"))
         return toggle
 
     def __setup_align(self, 
