@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from theme import app_theme, ui_theme
+#from theme import app_theme, ui_theme
 
+from dss import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
@@ -16,8 +17,9 @@ from shared_widget import IPV4Conf
 
 import gtk
 
-from constants import TITLE_FONT_SIZE, FRAME_VERTICAL_SPACING
+from constants import TITLE_FONT_SIZE, FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE
 import style
+from nls import _
 
 slider = nm_module.slider
 
@@ -273,14 +275,6 @@ class SideBar(gtk.VBox):
         region = slider.get_page_by_name("region")
         region.init()
         slider._slide_to_page("region", "left")
-        #connection = nm_module.nm_remote_settings.new_cdma_connection()
-        #self.main_init_cb()
-        #self.set_active(connection)
-        
-        
-
-        #new_connection = nm_module.nm_remote_settings.new_pppoe_connection()
-        #self.main_init_cb()
 
 class NoSetting(gtk.VBox):
     def __init__(self):
@@ -292,8 +286,6 @@ class NoSetting(gtk.VBox):
         label_align.add(label)
         self.add(label_align)
 
-
-
 class Broadband(gtk.VBox):
     def __init__(self, connection, set_button_callback):
         gtk.VBox.__init__(self)
@@ -303,24 +295,24 @@ class Broadband(gtk.VBox):
         self.table = gtk.Table(12, 4, False)
         #self.table.set_size_request(500,500)
         
-        self.label_basic = Label("基本设置", text_size = TITLE_FONT_SIZE)
-        self.label_number = Label("代号:")
-        self.label_username = Label("用户名:")
-        self.label_password = Label("密码:")
+        self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE)
+        self.label_number = Label(_("Code:"), text_size=CONTENT_FONT_SIZE)
+        self.label_username = Label(_("Username:"), text_size=CONTENT_FONT_SIZE)
+        self.label_password = Label(_("password:"), text_size=CONTENT_FONT_SIZE)
 
         self.number = InputEntry()
         self.username = InputEntry()
         self.password = PasswordEntry()
-        self.password_show = CheckButton("显示密码", padding_x=0)
-        self.button_to_region = Button("地区运营商设置")
+        self.password_show = CheckButton(_("show password"), padding_x=0)
+        self.button_to_region = Button(_("Regions setting"))
 
 
         #self.table = gtk.Table(6, 4, False)
-        self.label_advanced = Label("Advanced")
-        self.label_apn = Label("APN:")
-        self.label_network = Label("Network ID:")
-        self.label_type = Label("Type:")
-        self.label_pin = Label("PIN:")
+        self.label_advanced = Label(_("Advanced"), text_size=TITLE_FONT_SIZE)
+        self.label_apn = Label(_("APN:"), text_size=CONTENT_FONT_SIZE)
+        self.label_network = Label(_("Network ID:"), text_size=CONTENT_FONT_SIZE)
+        self.label_type = Label(_("Type:"), text_size=CONTENT_FONT_SIZE)
+        self.label_pin = Label(_("PIN:"), text_size=CONTENT_FONT_SIZE)
 
         self.apn = InputEntry()
         self.network_id = InputEntry()
@@ -330,7 +322,7 @@ class Broadband(gtk.VBox):
                                       ("Prefer 3G", 2),
                                       ("Prefer 2G", 3)],
                                       max_width=300)
-        self.roam_check = CheckButton("Allow roaming if home network is not available")
+        self.roam_check = CheckButton(_("Allow roaming if home network is not available"))
         self.pin = InputEntry()
         
         
@@ -344,6 +336,8 @@ class Broadband(gtk.VBox):
 
         self.password_show.connect("toggled", self.password_show_toggled)
         self.roam_check.connect("toggled", self.roam_check_toggled)
+        align = style.set_box_with_align(self.table, "text")
+        self.add(align)
         self.refresh()
         # Refesh
 
@@ -355,15 +349,15 @@ class Broadband(gtk.VBox):
 
     def init_table(self, network_type):
         container_remove_all(self.table)
-        self.table.attach(self.label_basic, 0 ,1 ,0, 1)
-        self.table.attach(self.label_number, 1, 2, 1, 2)
-        self.table.attach(self.label_username, 1, 2, 2, 3)
-        self.table.attach(self.label_password, 1, 2, 3, 4)
+        self.table.attach(style.wrap_with_align(self.label_basic), 0,1 ,0, 1)
+        self.table.attach(style.wrap_with_align(self.label_number), 0, 1, 1, 2)
+        self.table.attach(style.wrap_with_align(self.label_username), 0, 1, 2, 3)
+        self.table.attach(style.wrap_with_align(self.label_password), 0, 1, 3, 4)
 
-        self.table.attach(self.number, 2, 4, 1, 2)
-        self.table.attach(self.username, 2, 4, 2, 3)
-        self.table.attach(self.password, 2, 4, 3, 4)
-        self.table.attach(self.password_show, 2, 4, 4, 5)
+        self.table.attach(style.wrap_with_align(self.number), 1, 2, 1, 2)
+        self.table.attach(style.wrap_with_align(self.username), 1, 2, 2, 3)
+        self.table.attach(style.wrap_with_align(self.password), 1, 2, 3, 4)
+        self.table.attach(style.wrap_with_align(self.password_show), 1, 2, 4, 5)
 
         def to_region(widget):
             region = slider.get_page_by_name("region")
@@ -373,23 +367,22 @@ class Broadband(gtk.VBox):
 
         if network_type == "gsm":
             self.button_to_region.connect("clicked", to_region)
-            self.table.attach(self.button_to_region, 2,4,5,6)
-            self.table.attach(self.label_advanced, 0, 1, 6, 7)
-            self.table.attach(self.label_apn, 1, 2 , 7, 8)
-            self.table.attach(self.label_network, 1, 2, 8, 9)
-            self.table.attach(self.label_type, 1, 2, 9, 10)
-            self.table.attach(self.label_pin, 1, 2, 10, 11)
+            self.table.attach(style.wrap_with_align(self.button_to_region), 1,2,5,6)
+            self.table.attach(style.wrap_with_align(self.label_advanced), 0, 1, 6, 7)
+            self.table.attach(style.wrap_with_align(self.label_apn), 0, 1 , 7, 8)
+            self.table.attach(style.wrap_with_align(self.label_network), 0, 1, 8, 9)
+            self.table.attach(style.wrap_with_align(self.label_type), 0, 1, 9, 10)
+            self.table.attach(style.wrap_with_align(self.label_pin), 0, 1, 10, 11)
 
-            self.table.attach(self.apn, 2, 4, 7, 8)
-            self.table.attach(self.network_id, 2, 4, 8, 9)
-            self.table.attach(self.network_type, 2, 4, 9, 10)
-            self.table.attach(self.roam_check, 3, 4, 10, 11)
-            self.table.attach(self.pin, 2, 4, 11, 12)
+            self.table.attach(style.wrap_with_align(self.apn), 1, 2, 7, 8)
+            self.table.attach(style.wrap_with_align(self.network_id), 1, 2, 8, 9)
+            self.table.attach(style.wrap_with_align(self.network_type), 1, 2, 9, 10)
+            self.table.attach(style.wrap_with_align(self.roam_check), 1, 2, 10, 11)
+            self.table.attach(style.wrap_with_align(self.pin), 1, 2, 11, 12)
+        self.table.show()
         #TODO ui change
         style.set_table_items(self.table, 'entry')
         style.set_table(self.table)
-        align = style.set_box_with_align(self.table, "text")
-        self.add(align)
 
     def refresh(self):
         # get_settings
@@ -471,7 +464,7 @@ class PPPConf(gtk.VBox):
         self.connection = connection
         self.ppp_setting = self.connection.get_setting("ppp")
 
-        method = Contain(app_theme.get_pixbuf("/Network/misc.png"), "Configure Method", self.toggle_cb)
+        method = Contain(app_theme.get_pixbuf("network/misc.png"), "Configure Method", self.toggle_cb)
         # invisable settings
         self.refuse_eap = CheckButton("EAP")
         self.refuse_pap = CheckButton("PAP")

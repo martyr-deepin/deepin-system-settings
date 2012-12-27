@@ -103,8 +103,8 @@ class CheckButtonM(ToggleButton):
         self.label = connection.get_setting("connection").id
 
         ToggleButton.__init__(self,
-                              app_theme.get_pixbuf("Network/check_box_out.png"),
-                              app_theme.get_pixbuf("Network/check_box.png"),
+                              app_theme.get_pixbuf("network/check_box_out.png"),
+                              app_theme.get_pixbuf("network/check_box.png"),
                               button_label = self.label, padding_x = padding_x)
         self.group_list = []
         self.leader = None
@@ -138,7 +138,7 @@ class SettingButton(gtk.HBox):
 
         self.pack_start(self.check, False, False)
         
-        right_action_button_pixbuf = app_theme.get_pixbuf("Network/delete.png")
+        right_action_button_pixbuf = app_theme.get_pixbuf("network/delete.png")
         self.right_button = ImageButton(right_action_button_pixbuf,
                                        right_action_button_pixbuf,
                                        right_action_button_pixbuf)

@@ -18,7 +18,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from theme import app_theme
+#from theme import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
 from dtk.ui.new_entry import InputEntry

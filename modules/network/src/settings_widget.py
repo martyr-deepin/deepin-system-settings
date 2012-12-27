@@ -20,7 +20,7 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from theme import app_theme,ui_theme
+from dss import app_theme
 from dtk.ui.new_treeview import TreeView, TreeItem
 from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear,draw_vlinear, draw_line
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size
@@ -287,7 +287,7 @@ class AddSettingItem(TreeItem):
             
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
-        check_icon = app_theme.get_pixbuf("/Network/add.png").get_pixbuf()
+        check_icon = app_theme.get_pixbuf("network/add.png").get_pixbuf()
         draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
         #draw outline
         BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
@@ -404,7 +404,7 @@ class SettingItem(TreeItem):
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
         if self.is_select:
-            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         else:
             check_icon = None
 
@@ -455,7 +455,7 @@ class SettingItem(TreeItem):
          
         self.render_background(cr, rect)
         if self.delete_hover:
-            delete_icon = app_theme.get_pixbuf("/Network/delete.png").get_pixbuf()
+            delete_icon = app_theme.get_pixbuf("network/delete.png").get_pixbuf()
             draw_pixbuf(cr, delete_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - delete_icon.get_height())/2)
         BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
         with cairo_disable_antialias(cr):

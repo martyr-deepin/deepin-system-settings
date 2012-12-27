@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from theme import app_theme
+#from theme import app_theme
 
+from dss import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
@@ -443,11 +444,11 @@ class PPPConf(ScrolledWindow):
 
         # invisable settings
         method_image = gtk.Image()
-        method_image.set_from_pixbuf(app_theme.get_pixbuf("/Network/validation.png").get_pixbuf())
+        method_image.set_from_pixbuf(app_theme.get_pixbuf("network/validation.png").get_pixbuf())
         compress_image = gtk.Image()
-        compress_image.set_from_pixbuf(app_theme.get_pixbuf("/Network/zip.png").get_pixbuf())
+        compress_image.set_from_pixbuf(app_theme.get_pixbuf("network/zip.png").get_pixbuf())
         echo_image = gtk.Image()
-        echo_image.set_from_pixbuf(app_theme.get_pixbuf("/Network/echo.png").get_pixbuf())
+        echo_image.set_from_pixbuf(app_theme.get_pixbuf("network/echo.png").get_pixbuf())
 
         self.method_label = Label("Configure Method", text_size=TITLE_FONT_SIZE)
         self.refuse_eap_label = Label("EAP", text_size=CONTENT_FONT_SIZE)
