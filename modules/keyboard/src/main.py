@@ -31,7 +31,7 @@ from dtk.ui.dialog import DialogBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
-from dtk.ui.entry import InputEntry
+from dtk.ui.new_entry import InputEntry
 from dtk.ui.tab_window import TabBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor
