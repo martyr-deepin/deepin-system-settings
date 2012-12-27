@@ -285,7 +285,7 @@ if __name__ == "__main__":
     slider = HSlider()
     
     # Init search page.
-    search_page = SearchPage()
+    search_page = SearchPage(module_infos)
     
     # Init navigate page.
     navigate_page = NavigatePage(module_infos, lambda path, config: start_module_process(slider, content_page_info, path, config))

@@ -23,6 +23,17 @@
 # from dtk.ui.scrolled_window import ScrolledWindow
 import gobject
 import gtk
+import xappy
+
+class DeepinSearch():
+    def __init__(self):
+        self.__xappy
+
+    def build_index(self, remove_old=True):
+        pass
+
+    def search_query(self, keywords):
+        pass
 
 # class SearchPage(ScrolledWindow):
 class SearchPage(gtk.VBox):
@@ -30,10 +41,23 @@ class SearchPage(gtk.VBox):
     class docs
     '''
 	
-    def __init__(self):
+    def __init__(self, module_infos):
         '''
         init docs
         '''
         gtk.VBox.__init__(self)
-        
+
+        self.__keyword = []
+
+        self.__module_infos = module_infos
+        '''
+        FIXME: try to import each module keywords
+        for module_info_list in self.__module_infos:
+            for module_info in module_info_list:
+                if module_info.search_keyword != "None":
+                    from .modules.power.src.search_keyword import keywords
+
+                    print keywords
+        '''
+
 gobject.type_register(SearchPage)

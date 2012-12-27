@@ -73,6 +73,10 @@ sudo apt-get install python-dbus
 sudo apt-get install libopenobex1 bluez 
 
 
+== search page ==
+sudo apt-get install python-xappy
+
+
 注意
 
 根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入deepin-desktop/schemas/

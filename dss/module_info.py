@@ -46,6 +46,7 @@ class ModuleInfo(object):
         self.name = self.config.get("name", "zh_CN")
         self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "icon")))
         self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "menu_icon")))
+        self.search_keyword = self.config.get("main", "search_keyword")
         
 def get_module_infos():
     all_module_names = filter(lambda module_name: os.path.isdir(os.path.join(MODULE_DIR, module_name)), os.listdir(MODULE_DIR))        
