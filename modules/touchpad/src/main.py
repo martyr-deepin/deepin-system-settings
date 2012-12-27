@@ -35,7 +35,7 @@ from dtk.ui.label import Label
 from dtk.ui.button import RadioButton
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.scrolled_window import ScrolledWindow
-from dtk.ui.utils import propagate_expose, color_hex_to_cairo
+from dtk.ui.utils import propagate_expose, color_hex_to_cairo, set_clickable_cursor
 import gtk
 from module_frame import ModuleFrame
 from constant import *
@@ -100,8 +100,8 @@ class TouchpadSetting(object):
             text_size=option_item_font_szie)
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
         # button init
-        self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"))
-        self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"))
+        self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=0)
+        self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=0)
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
         self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
@@ -378,8 +378,8 @@ class TouchpadSetting(object):
             self.alignment_widgets["mouse_setting"], False, False)
         self.alignment_widgets["keyboard_setting"].add(self.button_widgets["keyboard_setting"])
         self.alignment_widgets["mouse_setting"].add(self.button_widgets["mouse_setting"])
-        self.alignment_widgets["keyboard_setting"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 1.0, 0.0)
+        self.alignment_widgets["keyboard_setting"].set(0.0, 0.5, 0.0, 0.0)
+        self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["keyboard_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["mouse_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["keyboard_setting"].set_padding(0, 0, 10, 0)
@@ -411,6 +411,8 @@ class TouchpadSetting(object):
         # relevant setting
         self.button_widgets["keyboard_setting"].connect("button-press-event", self.relevant_press, "keyboard")
         self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")
+        set_clickable_cursor(self.button_widgets["keyboard_setting"])
+        set_clickable_cursor(self.button_widgets["mouse_setting"])
     
     ############################
     def container_expose_cb(self, widget, event):

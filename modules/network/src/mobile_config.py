@@ -48,6 +48,7 @@ class MobileSetting(gtk.Alignment):
         self.ppp = None
 
         self.tab_window = TabBox(dockfill = False)
+        self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [("移动宽带", NoSetting()),
                       ("PPP", NoSetting()),
@@ -71,6 +72,12 @@ class MobileSetting(gtk.Alignment):
         vbox.connect("expose-event", self.expose_outline, ["top"])
         self.sidebar.connect("expose-event", self.expose_outline, [])
 
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def expose_outline(self, widget, event, exclude):
         cr = widget.window.cairo_create()
         rect = widget.allocation

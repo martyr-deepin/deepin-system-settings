@@ -36,6 +36,7 @@ class VPNSetting(gtk.HBox):
         self.ipv4 = None
 
         self.tab_window = TabBox()
+        self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [("PPTP", NoSetting()),
                       ("IPv4 Setting", NoSetting())]
@@ -63,6 +64,12 @@ class VPNSetting(gtk.HBox):
         vbox.pack_start(buttons_aligns, False , False)
         #hbox.connect("expose-event", self.expose_event)
 
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation

@@ -23,7 +23,7 @@
 
 from theme import app_theme
 from dtk.ui.label import Label
-from dtk.ui.button import Button, ToggleButton
+from dtk.ui.button import Button, OffButton 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.combo import ComboBox
@@ -107,21 +107,25 @@ class SoundSetting(object):
         self.image_widgets["device"] = gtk.gdk.pixbuf_new_from_file(
             app_theme.get_theme_file_path("image/set/device.png"))
         # button init
-        self.button_widgets["balance"] = ToggleButton(
-            app_theme.get_pixbuf("set/inactive_normal.png"),
-            app_theme.get_pixbuf("set/active_normal.png"))
-        self.button_widgets["speaker"] = ToggleButton(
-            app_theme.get_pixbuf("set/inactive_normal.png"),
-            app_theme.get_pixbuf("set/active_normal.png"))
-        self.button_widgets["microphone"] = ToggleButton(
-            app_theme.get_pixbuf("set/inactive_normal.png"),
-            app_theme.get_pixbuf("set/active_normal.png"))
+        #self.button_widgets["balance"] = ToggleButton(
+            #app_theme.get_pixbuf("set/inactive_normal.png"),
+            #app_theme.get_pixbuf("set/active_normal.png"))
+        #self.button_widgets["speaker"] = ToggleButton(
+            #app_theme.get_pixbuf("set/inactive_normal.png"),
+            #app_theme.get_pixbuf("set/active_normal.png"))
+        #self.button_widgets["microphone"] = ToggleButton(
+            #app_theme.get_pixbuf("set/inactive_normal.png"),
+            #app_theme.get_pixbuf("set/active_normal.png"))
+        self.button_widgets["balance"] = OffButton()
+        self.button_widgets["speaker"] = OffButton()
+        self.button_widgets["microphone"] = OffButton()
         self.button_widgets["advanced"] = Button(_("Advanced"))
         self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=420)
         self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=420)
         # container init
         self.container_widgets["slider"] = HSlider()
         self.container_widgets["advance_set_tab_box"] = TabBox()
+        self.container_widgets["advance_set_tab_box"].draw_title_background = self.draw_tab_title_background
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
         self.container_widgets["right_vbox"] = gtk.VBox(False)
@@ -201,6 +205,12 @@ class SoundSetting(object):
         self.view_widgets["ad_input"] = TreeView()
         self.view_widgets["ad_hardware"] = TreeView()
      
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def __adjust_widget(self):
         ''' adjust widget '''
         MID_SPACING = 10

@@ -146,6 +146,6 @@ class ModuleFrame(gtk.Plug):
         self.send_message("send_plug_id", (self.module_id, self.get_id()))
         
     def send_submodule_crumb(self, crumb_index, crumb_name):
-        self.send_message("send_submodule_info", (crumb_index, crumb_name))
+        self.send_message("send_submodule_info", (crumb_index, crumb_name, self.module_id))
 
 gobject.type_register(ModuleFrame)

@@ -102,7 +102,7 @@ class BusBase(gobject.GObject):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except:
-            traceback.print_exc()
+            print "no bluetooth device"
 
     def call_async(self, method_name, *args, **kwargs):
         try:
