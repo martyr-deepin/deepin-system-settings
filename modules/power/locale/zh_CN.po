@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-27 18:31+0800\n"
+"POT-Creation-Date: 2012-12-27 22:31+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -41,7 +41,7 @@ msgstr "休眠"
 msgid "Shutdown"
 msgstr "关机"
 
-#: ../src/power_view.py:66 ../src/search_keyword.py:25
+#: ../src/power_view.py:66 ../src/search_keyword.py:29
 msgid "Power Button Configuration"
 msgstr "电源按钮配置"
 

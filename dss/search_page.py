@@ -20,24 +20,58 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.utils import get_parent_dir
+from dtk.ui.utils import get_parent_dir, remove_directory
 import sys
 import os
 import gobject
 import gtk
 import xappy
+import jieba
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 2), "modules"))
 
-class DeepinSearch():
-    def __init__(self):
-        self.__xappy
+SEARCH_DB_DIR = os.path.join(get_parent_dir(__file__, 2), "search_db")
+
+class KeywordSearch:
+    def __init__(self, keywords):
+        self.__xappy = None
+
+        self.__keywords = keywords
 
     def build_index(self, remove_old=True):
-        pass
+        if remove_old:
+            remove_directory(SEARCH_DB_DIR)
+
+        self.__xappy = xappy.IndexerConnection(SEARCH_DB_DIR)
+
+        self.__xappy.add_field_action("module_id", 
+                                      xappy.FieldActions.STORE_CONTENT)
+
+        self.__xappy.add_field_action("keyword_term", 
+                                      xappy.FieldActions.INDEX_FREETEXT, 
+                                      nopos=True)
+
+        for module_keyword in self.__keywords:
+            for keyword in module_keyword[1]:
+                module_doc = xappy.UnprocessedDocument()
+                
+                module_doc.fields.append(xappy.Field("module_id", keyword[0]))
+                
+                terms = list(jieba.cut(keyword[1]))
+                module_doc.fields.append(xappy.Field("keyword_term", ' '.join(terms)))
+                
+                self.__xappy.add(module_doc)
+
+        self.__xappy.close()
 
     def search_query(self, keywords):
-        pass
+        sconn = xappy.SearchConnection(SEARCH_DB_DIR)
+
+        search = ' '.join(keywords)
+        q = sconn.query_parse(search, default_op=sconn.OP_AND)
+        results = sconn.search(q, 0, sconn.get_doccount())
+
+        return map(lambda result: result.data["module_id"][0], results) 
 
 class SearchPage(gtk.VBox):
     '''
@@ -50,6 +84,12 @@ class SearchPage(gtk.VBox):
         '''
         gtk.VBox.__init__(self)
 
+        '''
+        struct keywords {
+            module_id, 
+            keywords
+        }
+        '''
         self.__keywords = []
 
         self.__module_infos = module_infos
@@ -60,7 +100,14 @@ class SearchPage(gtk.VBox):
             for module_info in module_info_list:
                 if module_info.search_keyword != "None":
                     module = __import__("%s.src.search_keyword" % module_info.id, fromlist=["keywords"])
+                    self.__keywords.append((module_info.id, module.keywords))
 
-                    print module.keywords
+        self.__keyword_search = KeywordSearch(self.__keywords)
+        '''
+        TODO: it might be a heavey operation depend on keywords count
+        '''
+        self.__keyword_search.build_index()
+
+        print "DEBUG module_id", self.__keyword_search.search_query(["电源", "配置"])
 
 gobject.type_register(SearchPage)
