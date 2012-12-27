@@ -28,6 +28,7 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START
 from constant import *
+from nls import _
 from power_manager import PowerManager
 import gobject
 import gtk
@@ -44,16 +45,16 @@ class PowerView(gtk.VBox):
         gtk.VBox.__init__(self)
         self.label_padding_x = 10
         self.label_padding_y = 10
-        self.wait_duration_items = [("5分钟", 300), 
-                                    ("10分钟", 600), 
-                                    ("30分钟", 1800), 
-                                    ("1小时", 3600), 
-                                    ("从不", PowerManager.BIG_NUM)
+        self.wait_duration_items = [("5 %s" % _("Minutes"), 300), 
+                                    ("10 %s" % _("Minutes"), 600), 
+                                    ("30 %s" % _("Minutes"), 1800), 
+                                    ("1 %s" % _("Hour"), 3600), 
+                                    (_("Never"), PowerManager.BIG_NUM)
                                    ]
         self.power_manager = PowerManager()
-        self.power_manage_items = [("不采取任何措施", self.power_manager.nothing), 
-                                   ("休眠", self.power_manager.hibernate), 
-                                   ("关机", self.power_manager.shutdown)
+        self.power_manage_items = [(_("Nothing"), self.power_manager.nothing), 
+                                   (_("Hibernate"), self.power_manager.hibernate), 
+                                   (_("Shutdown"), self.power_manager.shutdown)
                                   ]
         '''
         button power config
@@ -62,7 +63,7 @@ class PowerView(gtk.VBox):
             padding_top = TEXT_WINDOW_TOP_PADDING, padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.button_power_config_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.button_power_config_image = ImageBox(app_theme.get_pixbuf("power/button_power.png"))
-        self.button_power_config_label = self.__setup_label("电源按钮设置", TITLE_FONT_SIZE)
+        self.button_power_config_label = self.__setup_label(_("Power Button Configuration"), TITLE_FONT_SIZE)
         self.__widget_pack_start(self.button_power_config_box, 
                                  [self.button_power_config_image, self.button_power_config_label])
         self.button_power_config_align.add(self.button_power_config_box)
@@ -71,7 +72,7 @@ class PowerView(gtk.VBox):
         '''
         self.press_button_power_align = self.__setup_align()
         self.press_button_power_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.press_button_power_label = self.__setup_label("按电源按钮时")
+        self.press_button_power_label = self.__setup_label(_("Press Power Button"))
         self.press_button_power_combo = self.__setup_combo(self.power_manage_items)
         self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
         self.press_button_power_combo.connect("item-selected", self.__combo_item_selected, "press_button_power")
@@ -83,7 +84,7 @@ class PowerView(gtk.VBox):
         '''
         self.close_notebook_cover_align = self.__setup_align()
         self.close_notebook_cover_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.close_notebook_cover_label = self.__setup_label("合上笔记本盖子")
+        self.close_notebook_cover_label = self.__setup_label(_("Close Notebook Cover"))
         self.close_notebook_cover_combo = self.__setup_combo(self.power_manage_items)
         self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(self.power_manage_items))
         self.close_notebook_cover_combo.connect("item-selected", self.__combo_item_selected, "close_notebook_cover")
@@ -95,7 +96,7 @@ class PowerView(gtk.VBox):
         '''
         self.press_button_hibernate_align = self.__setup_align()
         self.press_button_hibernate_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.press_button_hibernate_label = self.__setup_label("按休眠按钮时")
+        self.press_button_hibernate_label = self.__setup_label(_("Press Hibernate Button"))
         self.press_button_hibernate_combo = self.__setup_combo(self.power_manage_items)
         self.press_button_hibernate_combo.set_select_index(self.power_manager.get_press_button_hibernate(self.power_manage_items))
         self.press_button_hibernate_combo.connect("item-selected", self.__combo_item_selected, "press_button_hibernate")
@@ -108,7 +109,7 @@ class PowerView(gtk.VBox):
         self.power_save_config_align = self.__setup_align(padding_top = BETWEEN_SPACING, padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.power_save_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.power_save_image = ImageBox(app_theme.get_pixbuf("power/power_save.png"))
-        self.power_save_config_label = self.__setup_label("电源节能设置", TITLE_FONT_SIZE)
+        self.power_save_config_label = self.__setup_label(_("Saving Power Configuration"), TITLE_FONT_SIZE)
         self.__widget_pack_start(self.power_save_box, 
                                  [self.power_save_image, self.power_save_config_label])
         self.power_save_config_align.add(self.power_save_box)
@@ -117,7 +118,7 @@ class PowerView(gtk.VBox):
         '''
         self.hibernate_status_align = self.__setup_align()
         self.hibernate_status_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.hibernate_status_label = self.__setup_label("进入休眠状态")
+        self.hibernate_status_label = self.__setup_label(_("Being Hibernate"))
         self.hibernate_status_combo = self.__setup_combo(self.wait_duration_items)
         self.hibernate_status_combo.set_select_index(self.power_manager.get_hibernate_status(self.wait_duration_items))
         self.hibernate_status_combo.connect("item-selected", self.__combo_item_selected, "hibernate_status")
@@ -129,7 +130,7 @@ class PowerView(gtk.VBox):
         '''
         self.close_harddisk_align = self.__setup_align()
         self.close_harddisk_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.close_harddisk_label = self.__setup_label("关闭硬盘")
+        self.close_harddisk_label = self.__setup_label(_("Close Harddisk"))
         self.close_harddisk_combo = self.__setup_combo(self.wait_duration_items)
         self.close_harddisk_combo.set_select_index(self.power_manager.get_close_harddisk(self.wait_duration_items))
         self.close_harddisk_combo.connect("item-selected", self.__combo_item_selected, "close_harddisk")
@@ -141,7 +142,7 @@ class PowerView(gtk.VBox):
         '''
         self.close_monitor_align = self.__setup_align()
         self.close_monitor_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.close_monitor_label = self.__setup_label("关闭显示器")
+        self.close_monitor_label = self.__setup_label(_("Close Monitor"))
         self.close_monitor_combo = self.__setup_combo(self.wait_duration_items)
         self.close_monitor_combo.set_select_index(self.power_manager.get_close_monitor(self.wait_duration_items))
         self.close_monitor_combo.connect("item-selected", self.__combo_item_selected, "close_monitor")
@@ -155,7 +156,7 @@ class PowerView(gtk.VBox):
                                                         padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.wakeup_password_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.wakeup_password_image = ImageBox(app_theme.get_pixbuf("power/wakeup_password.png"))
-        self.wakeup_password_label = self.__setup_label("唤醒时的密码保护", TITLE_FONT_SIZE)
+        self.wakeup_password_label = self.__setup_label(_("Password Protection Wakeup"), TITLE_FONT_SIZE)
         self.wakeup_password_toggle = self.__setup_toggle()
         self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle.connect("toggled", self.__toggled, "wakeup_password")
@@ -169,7 +170,7 @@ class PowerView(gtk.VBox):
                                                             padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.tray_battery_status_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.tray_battery_image = ImageBox(app_theme.get_pixbuf("power/tray_battery.png"))
-        self.tray_battery_status_label = self.__setup_label("在系统托盘显示电池状态", TITLE_FONT_SIZE)
+        self.tray_battery_status_label = self.__setup_label(_("Show Battery Status In The Tray"), TITLE_FONT_SIZE)
         self.tray_battery_status_toggle = self.__setup_toggle()
         self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle.connect("toggled", self.__toggled, "tray_battery_status")
@@ -202,7 +203,7 @@ class PowerView(gtk.VBox):
         cr.fill()
 
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_START):
-        label = Label(text, None, text_size, align, 180)
+        label = Label(text, None, text_size, align, 220)
         return label
 
     def __setup_combo(self, items=[]):
