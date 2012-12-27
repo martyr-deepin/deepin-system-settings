@@ -20,13 +20,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import settings
 import sys
 import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-
 from theme import app_theme
+
+import settings
+
+from dtk.ui.theme import ui_theme
 from dtk.ui.dialog import DialogBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
@@ -34,6 +36,7 @@ from dtk.ui.button import Button, OffButton
 from dtk.ui.new_entry import InputEntry
 from dtk.ui.tab_window import TabBox
 from dtk.ui.scalebar import HScalebar
+from dtk.ui.box import ImageBox
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor
 from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
@@ -93,12 +96,9 @@ class KeySetting(object):
         #####################################
         # Typing widgets create
         # image init
-        self.image_widgets["repeat"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/repeat.png"))
-        self.image_widgets["blink"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/blink.png"))
-        self.image_widgets["touchpad"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/typing.png"))
+        self.image_widgets["repeat"] = ImageBox(app_theme.get_pixbuf("keyboard/repeat.png"))
+        self.image_widgets["blink"] = ImageBox(app_theme.get_pixbuf("keyboard/blink.png"))
+        self.image_widgets["touchpad"] = ImageBox(app_theme.get_pixbuf("keyboard/typing.png"))
         # label init
         self.label_widgets["repeat"] = Label(_("Repeat"), text_size=title_item_font_size)
         self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_szie)
@@ -118,15 +118,12 @@ class KeySetting(object):
         # button init
         self.button_widgets["repeat_test_entry"] = gtk.Entry()
         self.button_widgets["blink_test_entry"] = gtk.Entry()
-        #self.button_widgets["touchpad_disable"] = ToggleButton(
-            #app_theme.get_pixbuf("set/inactive_normal.png"),
-            #app_theme.get_pixbuf("set/active_normal.png"))
         self.button_widgets["touchpad_disable"] = OffButton()
         # relevant settings button
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Setting"),
-            text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
+            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
-            text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
+            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         # container init
         self.container_widgets["tab_box"] = TabBox()
         self.container_widgets["tab_box"].draw_title_background = self.draw_tab_title_background
@@ -162,37 +159,16 @@ class KeySetting(object):
         self.adjust_widgets["repeat_interval"] = gtk.Adjustment(20, 20, 2000, 100, 500)
         self.adjust_widgets["blink_cursor"] = gtk.Adjustment(100, 100, 2500, 100, 501)
         # scale init
-        #self.scale_widgets["repeat_delay"] = gtk.HScale()
-        #self.scale_widgets["repeat_delay"].set_draw_value(False)
         self.scale_widgets["repeat_delay"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["repeat_delay"].set_adjustment(self.adjust_widgets["repeat_delay"])
-        #self.scale_widgets["repeat_interval"] = gtk.HScale()
-        #self.scale_widgets["repeat_interval"].set_draw_value(False)
         self.scale_widgets["repeat_interval"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["repeat_interval"].set_adjustment(self.adjust_widgets["repeat_interval"])
-        #self.scale_widgets["blink_cursor"] = gtk.HScale()
-        #self.scale_widgets["blink_cursor"].set_draw_value(False)
         self.scale_widgets["blink_cursor"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["blink_cursor"].set_adjustment(self.adjust_widgets["blink_cursor"])
         #####################################
@@ -283,7 +259,7 @@ class KeySetting(object):
         self.alignment_widgets["type_label"].add(self.container_widgets["repeat_label_hbox"])
         self.alignment_widgets["type_table"].add(self.container_widgets["repeat_table"])
         # alignment set
-        self.alignment_widgets["type_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["type_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["type_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["type_table"].set(0.0, 0.5, 1.0, 1.0)
         self.alignment_widgets["type_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
@@ -294,7 +270,7 @@ class KeySetting(object):
         # tips lable
         self.container_widgets["repeat_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["repeat_label_hbox"].pack_start(
-            self.image_widgets["repeat"], False, False)
+            self.__make_align(self.image_widgets["repeat"]), False, False)
         self.container_widgets["repeat_label_hbox"].pack_start(
             self.label_widgets["repeat"], False, False)
         # repeat delay
@@ -329,7 +305,7 @@ class KeySetting(object):
         # blink
         self.alignment_widgets["blink_label"].add(self.container_widgets["blink_label_hbox"])
         self.alignment_widgets["blink_table"].add(self.container_widgets["blink_table"])
-        self.alignment_widgets["blink_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["blink_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["blink_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["blink_table"].set(0.0, 0.5, 1.0, 1.0)
         self.alignment_widgets["blink_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
@@ -340,7 +316,7 @@ class KeySetting(object):
         # tips lable
         self.container_widgets["blink_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["blink_label_hbox"].pack_start(
-            self.image_widgets["blink"], False, False)
+            self.__make_align(self.image_widgets["blink"]), False, False)
         self.container_widgets["blink_label_hbox"].pack_start(
             self.label_widgets["blink"], False, False)
         # blink time
@@ -360,14 +336,14 @@ class KeySetting(object):
 
         # touchpad
         self.alignment_widgets["touchpad_label"].add(self.container_widgets["touchpad_label_hbox"])
-        self.alignment_widgets["touchpad_label"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["touchpad_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["touchpad_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.container_widgets["touchpad_main_vbox"].pack_start(
             self.alignment_widgets["touchpad_label"])
         # tips lable
         self.container_widgets["touchpad_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["touchpad_label_hbox"].pack_start(
-            self.image_widgets["touchpad"], False, False)
+            self.__make_align(self.image_widgets["touchpad"]), False, False)
         self.container_widgets["touchpad_label_hbox"].pack_start(
             self.label_widgets["touchpad"], False, False)
         self.container_widgets["touchpad_label_hbox"].pack_start(
@@ -483,7 +459,6 @@ class KeySetting(object):
             "button-release-event", self.adjustment_value_changed, "cursor-blink-time")
         # touchpad disable 
         self.button_widgets["touchpad_disable"].connect("toggled", self.disable_while_typing_set)
-        self.button_widgets["touchpad_disable"].connect("expose-event", self.disable_while_typing_expose)
         
         # relevant setting
         self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")
@@ -554,27 +529,6 @@ class KeySetting(object):
         settings.keyboard_set_disable_touchpad_while_typing(
             button.get_active())
     
-    def disable_while_typing_expose(self, button, event):
-        ''' disable touchpad toggle button expose'''
-        cr = button.window.cairo_create()
-        x, y, w, h = button.allocation
-        if button.get_active():
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_bg_active"], x, y) 
-            cr.paint()
-            offet_x = self.image_widgets["switch_bg_active"].get_width() - self.image_widgets["switch_fg"].get_width()
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_fg"], x+offet_x, y) 
-            cr.paint()
-        else:
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_bg_nornal"], x, y) 
-            cr.paint()
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_fg"], x, y) 
-            cr.paint()
-        return True
-    
     def disable_while_typing_change(self, key):
         ''' set left or right radio button active '''
         self.button_widgets["touchpad_disable"].set_active(
@@ -613,13 +567,9 @@ class KeySetting(object):
             context.show_layout(layout)
             return True
     
-    # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
-        if action == 'mouse':
-            print "goto mouse"
-        elif action == 'touchpad':
-            print "goto touchpad"
+        self.module_frame.send_message("goto", action)
 
     ######################################
     # layout widget callback

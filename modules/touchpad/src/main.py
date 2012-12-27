@@ -22,18 +22,21 @@
 
 # The way to mix PyGTK+ and PyGObject code, 
 # run code `gi.repository` before any `import gobject`.
-import settings
 
 import sys
 import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
+from theme import app_theme
+
+import settings
 
 from nls import _
-from theme import app_theme
+from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton
 from dtk.ui.scalebar import HScalebar
+from dtk.ui.box import ImageBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import propagate_expose, color_hex_to_cairo, set_clickable_cursor
 import gtk
@@ -74,16 +77,11 @@ class TouchpadSetting(object):
         title_item_font_size = TITLE_FONT_SIZE
         option_item_font_szie = CONTENT_FONT_SIZE
         # image init
-        self.image_widgets["custom"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/custom.png"))
-        self.image_widgets["speed"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/pointer.png"))
-        self.image_widgets["double"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/double-click.png"))
-        self.image_widgets["drag"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/drag.png"))
-        self.image_widgets["double_test"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/double-test.png"))
+        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("touchpad/custom.png"))
+        self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("touchpad/pointer.png"))
+        self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("touchpad/double-click.png"))
+        self.image_widgets["drag"] = ImageBox(app_theme.get_pixbuf("touchpad/drag.png"))
+        self.image_widgets["double_test"] = app_theme.get_pixbuf("touchpad/double-test.png").get_pixbuf()
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
         self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)
@@ -105,9 +103,9 @@ class TouchpadSetting(object):
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
         self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
-            text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
+            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Setting"),
-            text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
+            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         # container init
         self.container_widgets["main_swindow"] = ScrolledWindow()
         self.container_widgets["main_hbox"] = gtk.HBox(False)
@@ -145,39 +143,19 @@ class TouchpadSetting(object):
         self.adjust_widgets["drag_threshold_time"] = gtk.Adjustment(1, 1, 10, 1, 2)
         # scale init
         self.scale_widgets["pointer_speed_accel"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["pointer_speed_accel"].set_adjustment( self.adjust_widgets["pointer_speed_accel"])
         self.scale_widgets["pointer_speed_sensitiv"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["pointer_speed_sensitiv"].set_adjustment( self.adjust_widgets["pointer_speed_sensitiv"])
         self.scale_widgets["double_click_rate"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["double_click_rate"].set_adjustment( self.adjust_widgets["double_click_rate"])
         self.scale_widgets["drag_threshold_time"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["drag_threshold_time"].set_adjustment( self.adjust_widgets["drag_threshold_time"])
      
@@ -506,13 +484,9 @@ class TouchpadSetting(object):
         propagate_expose(widget, event)
         return True
     
-    # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
-        if action == 'keyboard':
-            print "goto keyboard"
-        elif action == 'mouse':
-            print "goto mouse"
+        self.module_frame.send_message("goto", action)
     
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=1.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,

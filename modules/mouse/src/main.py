@@ -20,20 +20,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import settings
-
 import sys
 import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-
-from nls import _
 from theme import app_theme
+
+import settings
+
+from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton
 from dtk.ui.scalebar import HScalebar
+from dtk.ui.box import ImageBox
 from dtk.ui.utils import propagate_expose, color_hex_to_cairo, set_clickable_cursor
 import gtk
+from nls import _
 from module_frame import ModuleFrame
 from constant import *
 
@@ -69,14 +71,10 @@ class MouseSetting(object):
         title_item_font_size = TITLE_FONT_SIZE
         option_item_font_szie = CONTENT_FONT_SIZE
         # image init
-        self.image_widgets["custom"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/custom.png"))
-        self.image_widgets["speed"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/pointer.png"))
-        self.image_widgets["double"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/double-click.png"))
-        self.image_widgets["double_test"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/double-test.png"))
+        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("mouse/custom.png"))
+        self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("mouse/pointer.png"))
+        self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("mouse/double-click.png"))
+        self.image_widgets["double_test"] = app_theme.get_pixbuf("mouse/double-test.png").get_pixbuf()
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
         self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)
@@ -101,9 +99,9 @@ class MouseSetting(object):
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
         self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
-            text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
+            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
-            text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
+            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         # container init
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
@@ -138,30 +136,15 @@ class MouseSetting(object):
         self.adjust_widgets["double_click_rate"] = gtk.Adjustment(100, 100, 1000, 100, 200)
         # scale init
         self.scale_widgets["pointer_speed_accel"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["pointer_speed_accel"].set_adjustment( self.adjust_widgets["pointer_speed_accel"])
         self.scale_widgets["pointer_speed_sensitiv"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["pointer_speed_sensitiv"].set_adjustment( self.adjust_widgets["pointer_speed_sensitiv"])
         self.scale_widgets["double_click_rate"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["double_click_rate"].set_adjustment( self.adjust_widgets["double_click_rate"])
      
@@ -435,13 +418,9 @@ class MouseSetting(object):
         propagate_expose(widget, event)
         return True
     
-    # TODO 相关设置按钮
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
-        if action == 'keyboard':
-            print "goto keyboard"
-        elif action == 'touchpad':
-            print 'goto touchpad'
+        self.module_frame.send_message("goto", action)
     
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=1.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
