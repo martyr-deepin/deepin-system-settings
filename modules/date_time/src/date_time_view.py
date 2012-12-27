@@ -20,18 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir
-import os
-
-app_theme = init_skin(
-    "deepin-date_time-settings", 
-    "1.0",
-    "01",
-    os.path.join(get_parent_dir(__file__, 2), "skin"),
-    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
-    )
-
+from theme import app_theme
 from dtk.ui.timezone import TimeZone
 from dtk.ui.datetime import DateTime
 from dtk.ui.label import Label
@@ -146,8 +135,8 @@ class DatetimeView(gtk.VBox):
         return label
 
     def __setup_toggle(self):
-        toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
-            app_theme.get_pixbuf("active_normal.png"))
+        toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            app_theme.get_pixbuf("toggle_button/active_normal.png"))
         return toggle
 
     def __setup_align(self, 

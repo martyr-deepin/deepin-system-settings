@@ -20,23 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir
-import os
-
-app_theme = init_skin(
-    "deepin-display-settings", 
-    "1.0",
-    "01",
-    os.path.join(get_parent_dir(__file__, 2), "skin"),
-    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
-    )
-
+from theme import app_theme
 from dtk.ui.scrolled_window import ScrolledWindow
-from dtk.ui.box import ResizableBox
+from dtk.ui.box import ResizableBox, ImageBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
-from dtk.ui.scalebar import HScalebar
+from dtk.ui.hscalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo, is_dbus_name_exists
@@ -231,7 +220,7 @@ class DisplayView(gtk.VBox):
         '''
         self.monitor_display_align = self.__setup_align(padding_left = 0)
         self.monitor_display_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.monitor_display_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/monitor_display.png"))
+        self.monitor_display_image = ImageBox(app_theme.get_pixbuf("display/monitor_display.png"))
         self.monitor_display_label = self.__setup_label("屏幕显示", TITLE_FONT_SIZE, 180)
         self.__widget_pack_start(self.monitor_display_box, 
                                  [self.monitor_display_image, self.monitor_display_label])
@@ -290,7 +279,7 @@ class DisplayView(gtk.VBox):
         '''
         self.monitor_bright_align = self.__setup_align(padding_left = 0)
         self.monitor_bright_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.monitor_bright_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/monitor_bright.png")) 
+        self.monitor_bright_image = ImageBox(app_theme.get_pixbuf("display/monitor_bright.png")) 
         self.monitor_bright_label = self.__setup_label("屏幕亮度", text_size = TITLE_FONT_SIZE, width = 180)
         self.__widget_pack_start(self.monitor_bright_box, 
                                  [self.monitor_bright_image, self.monitor_bright_label])
@@ -303,18 +292,8 @@ class DisplayView(gtk.VBox):
         self.brightness_label_align = self.__setup_align(padding_top = 16, padding_left = 0)
         self.brightness_label = self.__setup_label("亮度")
         self.brightness_label_align.add(self.brightness_label)
-        self.brightness_scale = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"), 
-            app_theme.get_pixbuf("scalebar/l_bg.png"), 
-            app_theme.get_pixbuf("scalebar/m_fg.png"), 
-            app_theme.get_pixbuf("scalebar/m_bg.png"), 
-            app_theme.get_pixbuf("scalebar/r_fg.png"), 
-            app_theme.get_pixbuf("scalebar/r_bg.png"), 
-            app_theme.get_pixbuf("scalebar/point.png"), 
-            True)
-        self.brightness_adjust = gtk.Adjustment(5, 5, 100)
-        self.brightness_adjust.set_value(self.display_manager.get_screen_brightness())
-        self.brightness_scale.set_adjustment(self.brightness_adjust)
+        
+        self.brightness_scale = HScalebar(value_min = 5, value_max = 100)
         self.brightness_scale.set_size_request(362, 33)
         self.brightness_scale.connect("button-release-event", self.__set_brightness)
         self.__widget_pack_start(self.brightness_box, 
@@ -347,7 +326,7 @@ class DisplayView(gtk.VBox):
         '''
         self.monitor_lock_align = self.__setup_align(padding_left = 0)
         self.monitor_lock_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.monitor_lock_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/monitor_lock.png"))
+        self.monitor_lock_image = ImageBox(app_theme.get_pixbuf("lock/lock.png"))
         self.monitor_lock_label = self.__setup_label(text = "屏幕锁定", text_size = TITLE_FONT_SIZE, width = 180)
         self.__widget_pack_start(self.monitor_lock_box, 
                                  [self.monitor_lock_image, self.monitor_lock_label])
@@ -527,8 +506,8 @@ class DisplayView(gtk.VBox):
         return combo
 
     def __setup_toggle(self):
-        toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
-            app_theme.get_pixbuf("active_normal.png"))
+        toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            app_theme.get_pixbuf("toggle_button/active_normal.png"))
         return toggle
 
     def __setup_align(self, 

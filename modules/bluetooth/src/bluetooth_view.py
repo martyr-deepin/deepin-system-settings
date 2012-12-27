@@ -20,27 +20,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir, color_hex_to_cairo
-import os
-
-app_theme = init_skin(
-    "deepin-bluetooth-settings", 
-    "1.0",
-    "01",
-    os.path.join(get_parent_dir(__file__, 2), "skin"),
-    os.path.join(get_parent_dir(__file__, 2), "app_theme"),
-    )
-
+from theme import app_theme
+from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_pixbuf, draw_text, draw_vlinear
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
+from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import ALIGN_START, ALIGN_END
+from dtk.ui.constant import ALIGN_START
 import gobject
 import gtk
 import pango
@@ -283,7 +274,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.enable_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.enable_open_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/enable_open.png"))
+        self.enable_open_image = ImageBox(app_theme.get_pixbuf("bluetooth/enable_open.png"))
         self.enable_open_label = self.__setup_label("蓝牙是否开启")
         self.enable_open_toggle = self.__setup_toggle()
         if self.adapter:
@@ -299,7 +290,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.display_align = self.__setup_align()
         self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.display_device_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/display_device.png"))
+        self.display_device_image = ImageBox(app_theme.get_pixbuf("bluetooth/display_device.png"))
         self.display_device_label = self.__setup_label("显示设备名称")
         self.display_device_entry = InputEntry()
         if self.adapter:
@@ -313,7 +304,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.search_align = self.__setup_align()
         self.search_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.search_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/search.png"))
+        self.search_image = ImageBox(app_theme.get_pixbuf("bluetooth/search.png"))
         self.search_label = self.__setup_label("是否可被发现")
         self.search_toggle = self.__setup_toggle()
         if self.adapter:
@@ -327,7 +318,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.timeout_align = self.__setup_align()
         self.timeout_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.timeout_image = gtk.image_new_from_file(app_theme.get_theme_file_path("image/timeout.png"))
+        self.timeout_image = ImageBox(app_theme.get_pixbuf("bluetooth/timeout.png"))
         self.timeout_label = self.__setup_label("可检测到设备的时间超时")
         self.timeout_combo = ComboBox(self.timeout_items, max_width = 150)
         self.__widget_pack_start(self.timeout_box, 
@@ -364,7 +355,7 @@ class BlueToothView(gtk.VBox):
                 return
 
             items.append(DeviceItem(values['Name'], 
-                         app_theme.get_pixbuf("%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf()))
+                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf()))
             self.device_iconview.add_items(items)
         else:
             if adapter.get_discovering():
@@ -404,8 +395,8 @@ class BlueToothView(gtk.VBox):
         return combo
 
     def __setup_toggle(self):
-        toggle = ToggleButton(app_theme.get_pixbuf("inactive_normal.png"), 
-            app_theme.get_pixbuf("active_normal.png"))
+        toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            app_theme.get_pixbuf("toggle_button/active_normal.png"))
         return toggle
 
     def __setup_align(self, xalign=0, yalign=0, xscale=0, yscale=0, 
