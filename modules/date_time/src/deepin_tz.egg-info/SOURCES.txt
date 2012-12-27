@@ -1,6 +1,0 @@
-deepin_tz.c
-setup.py
-deepin_tz.egg-info/PKG-INFO
-deepin_tz.egg-info/SOURCES.txt
-deepin_tz.egg-info/dependency_links.txt
-deepin_tz.egg-info/top_level.txt
