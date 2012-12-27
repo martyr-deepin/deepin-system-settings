@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from theme import app_theme
-from dtk.ui.button import ToggleButton
+from dtk.ui.button import OffButton, ToggleButton, RadioButton
 #from dtk.ui.draw import draw_pixbuf, draw_text
 #from dtk.ui.constant import DEFAULT_FONT_SIZE
 import gtk
@@ -38,11 +38,7 @@ class Contain(gtk.Alignment):
         self.label = Label(text, text_size=TITLE_FONT_SIZE)
         self.hbox.pack_start(self.label, False, True, TEXT_PADDING)
 
-        self.switch = ToggleButton(
-                app_theme.get_pixbuf("/inactive_normal.png"), 
-                app_theme.get_pixbuf("/active_normal.png"),
-                inactive_disable_dpixbuf = app_theme.get_pixbuf("/inactive_normal.png"),
-                active_disable_dpixbuf = app_theme.get_pixbuf("/inactive_normal.png"))
+        self.switch = OffButton()
 
         self.switch.connect("toggled", self.active_cb)
         self.hbox.pack_start(self.switch, False , True, BUTTON_PADDING)
@@ -63,6 +59,43 @@ class Contain(gtk.Alignment):
     def set_sensitive(self, state):
         #self.switch.set_inconsistent(state)
         self.switch.set_sensitive(state)
+
+class MyToggleButton(OffButton):
+
+    def __init__(self):
+        OffButton.__init__(self)
+        #ToggleButton.__init__(self, 
+                              #app_theme.get_pixbuf("/inactive_normal.png"), 
+                              #app_theme.get_pixbuf("/active_normal.png"),
+                              #inactive_disable_dpixbuf = app_theme.get_pixbuf("/inactive_normal.png"),
+                              #active_disable_dpixbuf = app_theme.get_pixbuf("/inactive_normal.png")
+
+
+class MyRadioButton(RadioButton):
+    '''docstring for MyRadioButton'''
+    def __init__(self, main_button, label_text=None, padding_x=0, font_size=12):
+        super(MyRadioButton, self).__init__(label_text, padding_x, font_size)
+        self.main_button = main_button
+        self.switch_lock = False
+
+        if self.main_button:
+            self.main_button.button_list.append(self)
+        else:
+            self.button_list = [self]
+        self.connect("clicked", self.click_radio_button)
+
+    def click_radio_button(self, widget):
+        if self.main_button:
+            buttons = self.main_button.button_list
+        else:
+            buttons = self.button_list
+
+        if not self.switch_lock:
+            for w in buttons:
+                w.switch_lock = True
+                w.set_active(w == self)
+                w.switch_lock = False
+        
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

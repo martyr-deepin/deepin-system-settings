@@ -262,7 +262,7 @@ class SideBar(gtk.VBox):
         item = self.cons[self.connections.index(connection)]
         self.connection_tree.select_items([item])
     
-    def add_new_connection(self, widget):
+    def add_new_connection(self):
         region = slider.get_page_by_name("region")
         region.init()
         slider._slide_to_page("region", "left")

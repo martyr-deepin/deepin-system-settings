@@ -2,14 +2,15 @@
 #-*- coding:utf-8 -*-
 
 from dtk.ui.label import Label
-from dtk.ui.button import RadioButton
 from dtk.ui.entry import InputEntry
 from nmlib.nm_utils import TypeConvert
 from nmlib.nm_remote_connection import NMRemoteConnection
 import gtk
 
 import style
-from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE
+from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, WIDGET_HEIGHT
+from nls import _
+from container import MyRadioButton as RadioButton
 
 
 class IPV4Conf(gtk.VBox):
@@ -21,48 +22,42 @@ class IPV4Conf(gtk.VBox):
         self.dns_only = dns_only
         table = gtk.Table(9, 2, False)
         # Ip configuration
-        ip_group_box = gtk.VBox(spacing=10)
-        #self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        #self.manual_ip = gtk.RadioButton(self.auto_ip,"手动添加IP地址")
-        self.auto_ip = RadioButton("  自动获得IP地址", padding_x=0, font_size = TITLE_FONT_SIZE)
-        self.manual_ip = RadioButton("  手动添加IP地址", padding_x=0, font_size=TITLE_FONT_SIZE)
-        ip_group_box.pack_start(self.auto_ip, False, False)
-        ip_group_box.pack_start(self.manual_ip, False, False)
-        #table.attach(self.auto_ip, 0,1,0,1)
-        #table.attach(self.manual_ip, 0,1,1,2)
-        table.attach(ip_group_box, 0, 1, 0, 2)
+        self.auto_ip = RadioButton(None, _("Automatic get IP address"), padding_x=0, font_size=TITLE_FONT_SIZE)
+        self.manual_ip = RadioButton(self.auto_ip, _("Manually get IP address"), padding_x=0, font_size=TITLE_FONT_SIZE)
+        table.attach(style.wrap_with_align(self.auto_ip), 0,1,0,1)
+        table.attach(style.wrap_with_align(self.manual_ip), 0,1,1,2)
 
-        self.addr_label = Label("IP地址:", text_size=CONTENT_FONT_SIZE)
-        table.attach(self.addr_label, 0,1,2,3)
+        self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE)
+        table.attach(style.wrap_with_align(self.addr_label), 0,1,2,3)
         self.addr_entry = InputEntry()
         self.addr_entry.set_sensitive(False)
-        table.attach(self.addr_entry, 1,2,2,3)
+        table.attach(style.wrap_with_align(self.addr_entry), 1,2,2,3)
 
-        self.mask_label = Label("子网掩码:", text_size=CONTENT_FONT_SIZE)
-        table.attach(self.mask_label, 0,1,3,4)
+        self.mask_label = Label(_("Mask:"), text_size=CONTENT_FONT_SIZE)
+        table.attach(style.wrap_with_align(self.mask_label), 0,1,3,4)
         self.mask_entry = InputEntry()
-        table.attach(self.mask_entry, 1,2,3,4)
+        table.attach(style.wrap_with_align(self.mask_entry), 1,2,3,4)
         
-        self.gate_label = Label("默认网关", text_size=CONTENT_FONT_SIZE)
-        table.attach(self.gate_label, 0,1,4,5)
+        self.gate_label = Label(_("Gateway:"), text_size=CONTENT_FONT_SIZE)
+        table.attach(style.wrap_with_align(self.gate_label), 0,1,4,5)
         self.gate_entry = InputEntry()
-        table.attach(self.gate_entry, 1,2,4,5)
+        table.attach(style.wrap_with_align(self.gate_entry), 1,2,4,5)
         
         #DNS configuration
-        self.auto_dns = RadioButton("  自动获得DNS服务器地址", padding_x=0, font_size=TITLE_FONT_SIZE)
-        self.manual_dns = RadioButton("  使用下面的dns服务器:", padding_x=0, font_size=TITLE_FONT_SIZE)
-        table.attach(self.auto_dns, 0, 1, 5, 6) 
-        table.attach(self.manual_dns, 0, 1, 6, 7)
+        self.auto_dns = RadioButton(None, _("Automatic get DNS server"), padding_x=0, font_size=TITLE_FONT_SIZE)
+        self.manual_dns = RadioButton(self.auto_dns,_("Use following DNS server"), padding_x=0, font_size=TITLE_FONT_SIZE)
+        table.attach(style.wrap_with_align(self.auto_dns), 0, 1, 5, 6) 
+        table.attach(style.wrap_with_align(self.manual_dns), 0, 1, 6, 7)
 
-        self.master_dns = Label("首选DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
-        self.slave_dns = Label("使用下面的DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
+        self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE)
+        self.slave_dns = Label(_("Slave DNS server address:"), text_size=CONTENT_FONT_SIZE)
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
         
-        table.attach(self.master_dns, 0, 1, 7, 8)
-        table.attach(self.master_entry, 1, 2, 7, 8)
-        table.attach(self.slave_dns, 0, 1, 8, 9)
-        table.attach(self.slave_entry, 1, 2, 8, 9)
+        table.attach(style.wrap_with_align(self.master_dns), 0, 1, 7, 8)
+        table.attach(style.wrap_with_align(self.master_entry), 1, 2, 7, 8)
+        table.attach(style.wrap_with_align(self.slave_dns), 0, 1, 8, 9)
+        table.attach(style.wrap_with_align(self.slave_entry), 1, 2, 8, 9)
 
         # TODO UI change
         #table.set_size_request(340, 227)
@@ -70,12 +65,13 @@ class IPV4Conf(gtk.VBox):
         align = style.set_box_with_align(table, 'text')
         self.add(align)
         
-        style.set_table_items(table, "entry")
-        #self.addr_entry.set_size(222, WIDGET_HEIGHT)
-        #self.gate_entry.set_size(222, WIDGET_HEIGHT)
-        #self.mask_entry.set_size(222, WIDGET_HEIGHT)
-        #self.master_entry.set_size(222, WIDGET_HEIGHT)
-        #self.slave_entry.set_size(222, WIDGET_HEIGHT)
+        #style.set_table_items(table, "entry")
+        self.addr_entry.set_size(222, WIDGET_HEIGHT)
+        self.gate_entry.set_size(222, WIDGET_HEIGHT)
+        self.mask_entry.set_size(222, WIDGET_HEIGHT)
+        self.master_entry.set_size(222, WIDGET_HEIGHT)
+        self.slave_entry.set_size(222, WIDGET_HEIGHT)
+        
         self.show_all()
 
         # Init Settings
@@ -257,48 +253,42 @@ class IPV6Conf(gtk.VBox):
         self.set_button = set_button_callback
         table = gtk.Table(9, 2, False)
         # Ip configuration
-        ip_group_box = gtk.VBox(spacing=10)
-        #self.auto_ip = gtk.RadioButton(None, "自动获得IP地址")
-        #self.manual_ip = gtk.RadioButton(self.auto_ip,"手动添加IP地址")
-        self.auto_ip = RadioButton("  自动获得IP地址", padding_x=0, font_size = TITLE_FONT_SIZE)
-        self.manual_ip = RadioButton("  手动添加IP地址", padding_x=0, font_size=TITLE_FONT_SIZE)
-        ip_group_box.pack_start(self.auto_ip, False, False)
-        ip_group_box.pack_start(self.manual_ip, False, False)
-        #table.attach(self.auto_ip, 0,1,0,1)
-        #table.attach(self.manual_ip, 0,1,1,2)
-        table.attach(ip_group_box, 0, 1, 0, 2)
+        self.auto_ip = RadioButton(None, "自动获得IP地址", padding_x=0, font_size = TITLE_FONT_SIZE)
+        self.manual_ip = RadioButton(self.auto_ip, "手动添加IP地址", padding_x=0, font_size=TITLE_FONT_SIZE)
+        table.attach(style.wrap_with_align(self.auto_ip), 0,1,0,1)
+        table.attach(style.wrap_with_align(self.manual_ip), 0,1,1,2)
 
         self.addr_label = Label("IP地址:", text_size=CONTENT_FONT_SIZE)
-        table.attach(self.addr_label, 0,1,2,3)
+        table.attach(style.wrap_with_align(self.addr_label), 0,1,2,3)
         self.addr_entry = InputEntry()
         self.addr_entry.set_sensitive(False)
-        table.attach(self.addr_entry, 1,2,2,3)
+        table.attach(style.wrap_with_align(self.addr_entry), 1,2,2,3)
 
         self.mask_label = Label("前缀:", text_size=CONTENT_FONT_SIZE)
-        table.attach(self.mask_label, 0,1,3,4)
+        table.attach(style.wrap_with_align(self.mask_label), 0,1,3,4)
         self.mask_entry = InputEntry()
-        table.attach(self.mask_entry, 1,2,3,4)
+        table.attach(style.wrap_with_align(self.mask_entry), 1,2,3,4)
         
         self.gate_label = Label("默认网关", text_size=CONTENT_FONT_SIZE)
-        table.attach(self.gate_label, 0,1,4,5)
+        table.attach(style.wrap_with_align(self.gate_label), 0,1,4,5)
         self.gate_entry = InputEntry()
-        table.attach(self.gate_entry, 1,2,4,5)
+        table.attach(style.wrap_with_align(self.gate_entry), 1,2,4,5)
         
         #DNS configuration
-        self.auto_dns = RadioButton("  自动获得DNS服务器地址", padding_x=0, font_size=TITLE_FONT_SIZE)
-        self.manual_dns = RadioButton("  使用下面的dns服务器", padding_x=0, font_size=TITLE_FONT_SIZE)
-        table.attach(self.auto_dns, 0, 1, 5, 6) 
-        table.attach(self.manual_dns, 0, 1, 6, 7)
+        self.auto_dns = RadioButton(None, "  自动获得DNS服务器地址", padding_x=0, font_size=TITLE_FONT_SIZE)
+        self.manual_dns = RadioButton(self.auto_dns,"  使用下面的dns服务器", padding_x=0, font_size=TITLE_FONT_SIZE)
+        table.attach(style.wrap_with_align(self.auto_dns), 0, 1, 5, 6) 
+        table.attach(style.wrap_with_align(self.manual_dns), 0, 1, 6, 7)
 
         self.master_dns = Label("首选DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
         self.slave_dns = Label("使用下面的DNS服务器地址:", text_size=CONTENT_FONT_SIZE)
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
         
-        table.attach(self.master_dns, 0, 1, 7, 8)
-        table.attach(self.master_entry, 1, 2, 7, 8)
-        table.attach(self.slave_dns, 0, 1, 8, 9)
-        table.attach(self.slave_entry, 1, 2, 8, 9)
+        table.attach(style.wrap_with_align(self.master_dns), 0, 1, 7, 8)
+        table.attach(style.wrap_with_align(self.master_entry), 1, 2, 7, 8)
+        table.attach(style.wrap_with_align(self.slave_dns), 0, 1, 8, 9)
+        table.attach(style.wrap_with_align(self.slave_entry), 1, 2, 8, 9)
 
         # TODO UI change 
         #table.set_size_request(340, 227)

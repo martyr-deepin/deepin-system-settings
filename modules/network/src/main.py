@@ -255,8 +255,9 @@ class WirelessSection(gtk.VBox):
         self.index = index
 
     def toggle_cb(self, widget):
-        print "toggled"
         active = widget.get_active()
+        print "toggled", active
+    
         if active: 
             self.show_ap_list()
         else:
