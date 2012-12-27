@@ -24,15 +24,18 @@ import sys
 import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
+from theme import app_theme
 
 from nls import _
-from theme import app_theme
 from dtk.ui.label import Label
+from dtk.ui.box import ImageBox
 from dtk.ui.utils import color_hex_to_cairo
 from constant import *
 from module_frame import ModuleFrame
 import gtk
 import settings
+
+MODULE_NAME = "system_information"
 
 class SysInfo(object):
     '''system infomation'''
@@ -63,8 +66,7 @@ class SysInfo(object):
         self.label_widgets["disk_info"] = Label("")
 
         # image widget
-        self.image_widgets["logo"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path('image/logo.png'))
+        self.image_widgets["logo"] = ImageBox(app_theme.get_pixbuf('%s/logo.png' % MODULE_NAME))
         
         # container widget
         self.container_widgets["main_hbox"] = gtk.HBox(False)

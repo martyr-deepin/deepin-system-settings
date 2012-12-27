@@ -50,6 +50,7 @@ import pango
 from module_frame import ModuleFrame
 from constant import *
 
+MODULE_NAME = "keyboard"
 
 class KeySetting(object):
     '''keyboard setting class'''
@@ -96,9 +97,9 @@ class KeySetting(object):
         #####################################
         # Typing widgets create
         # image init
-        self.image_widgets["repeat"] = ImageBox(app_theme.get_pixbuf("keyboard/repeat.png"))
-        self.image_widgets["blink"] = ImageBox(app_theme.get_pixbuf("keyboard/blink.png"))
-        self.image_widgets["touchpad"] = ImageBox(app_theme.get_pixbuf("keyboard/typing.png"))
+        self.image_widgets["repeat"] = ImageBox(app_theme.get_pixbuf("%s/repeat.png" % MODULE_NAME))
+        self.image_widgets["blink"] = ImageBox(app_theme.get_pixbuf("%s/blink.png" % MODULE_NAME))
+        self.image_widgets["touchpad"] = ImageBox(app_theme.get_pixbuf("%s/typing.png" % MODULE_NAME))
         # label init
         self.label_widgets["repeat"] = Label(_("Repeat"), text_size=title_item_font_size)
         self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_szie)

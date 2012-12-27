@@ -20,15 +20,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import settings
 import sys
 import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-
-from nls import _
 from theme import app_theme
+
+import settings
+from nls import _
+from icon_button import IconButton
 from dtk.ui.label import Label
+from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.button import CheckButton, Button, OffButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.combo import ComboBox
@@ -45,6 +47,7 @@ from constant import *
 from pexpect import TIMEOUT, EOF
 from glib import markup_escape_text
 
+MODULE_NAME = "account"
 
 class AccountSetting(object):
     '''account setting'''
@@ -86,19 +89,10 @@ class AccountSetting(object):
         self.label_widgets["deepin_account_new"] = Label(_("Unbound"))
         self.label_widgets["account_create_error"] = Label("", wrap_width=360, enable_select=False)
         # image
-        self.image_widgets["lock_pixbuf"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/lock.png"))
-        self.image_widgets["unlock_pixbuf"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/unlock.png"))
-        self.image_widgets["switch_bg_active"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/toggle_bg_active.png"))
-        self.image_widgets["switch_bg_nornal"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/toggle_bg_normal.png"))
-        self.image_widgets["switch_fg"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/toggle_fg.png"))
-        self.image_widgets["default_icon"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/icon.png"))
-        self.image_widgets["account_icon"] = gtk.Image()
+        self.image_widgets["lock_pixbuf"] = app_theme.get_pixbuf("lock/lock.png").get_pixbuf()
+        self.image_widgets["unlock_pixbuf"] = app_theme.get_pixbuf("lock/unlock.png").get_pixbuf()
+        self.image_widgets["default_icon"] = app_theme.get_pixbuf("%s/icon.png" % MODULE_NAME).get_pixbuf()
+        self.image_widgets["account_icon"] = IconButton(self.image_widgets["default_icon"])
         # button
         self.button_widgets["account_name"] = InputEntry()
         self.button_widgets["lock"] = gtk.Button()
@@ -176,6 +170,7 @@ class AccountSetting(object):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["delete_account"])
+        self.container_widgets["slider"].append_page(self.alignment_widgets["set_iconfile"])
         
         self.alignment_widgets["change_pswd"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
         self.alignment_widgets["delete_account"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
@@ -214,7 +209,7 @@ class AccountSetting(object):
 
         self.container_widgets["account_info_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.image_widgets["account_icon"], height=48), 0, 1, 0, 1, 4)
+            self.__make_align(self.image_widgets["account_icon"], height=58), 0, 1, 0, 1, 4)
         self.container_widgets["account_info_table"].attach(self.alignment_widgets["account_info_hbox"], 1, 2, 0, 1, 4)
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.label_widgets["account"]), 0, 1, 1, 2, 4)
@@ -234,7 +229,7 @@ class AccountSetting(object):
             self.__make_align(self.label_widgets["deepin_account"]), 1, 2, 4, 5, 4)
         # TODO 绑定深度帐号
         self.button_widgets["account_type"].set_size_request(-1, WIDGET_HEIGHT)
-        self.image_widgets["account_icon"].set_size_request(48, 48)
+        #self.image_widgets["account_icon"].set_size_request(48, 48)
         self.button_widgets["lock"].set_size_request(16, 16)
         self.alignment_widgets["account_info_hbox"].set(0.5, 0.5, 0, 0)
         self.alignment_widgets["account_info_hbox"].add(self.container_widgets["account_info_hbox"])
@@ -334,7 +329,6 @@ class AccountSetting(object):
         self.button_widgets["del_account"].connect("clicked", self.del_account_button_clicked)
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
         self.button_widgets["account_create"].connect("clicked", self.account_create_button_clicked)
-        self.button_widgets["auto_login"].connect("expose-event", self.toggle_button_expose)
         self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
 
         self.button_widgets["account_type"].connect("item-selected", self.account_type_item_selected)
@@ -342,6 +336,7 @@ class AccountSetting(object):
         self.button_widgets["lock"].connect("expose-event", self.lock_button_expose)
         self.button_widgets["lock"].connect("clicked", self.lock_button_clicked)
 
+        self.image_widgets["account_icon"].connect("button-press-event", self.icon_file_press_cb)
         self.label_widgets["account_name"].connect("enter-notify-event", self.label_enter_notify_cb, True)
         self.label_widgets["account_name"].connect("leave-notify-event", self.label_leave_notify_cb, True)
         self.label_widgets["account_name"].connect("button-press-event", self.realname_change_press_cb)
@@ -388,27 +383,6 @@ class AccountSetting(object):
             cr.line_to(x+w+3, y+h+2-h2)
             cr.stroke()
     
-    def toggle_button_expose(self, button, event):
-        ''' toggle button expose'''
-        cr = button.window.cairo_create()
-        x, y, w, h = button.allocation
-        if button.get_active():
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_bg_active"], x, y) 
-            cr.paint()
-            offet_x = self.image_widgets["switch_bg_active"].get_width() - self.image_widgets["switch_fg"].get_width()
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_fg"], x+offet_x, y) 
-            cr.paint()
-        else:
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_bg_nornal"], x, y) 
-            cr.paint()
-            cr.set_source_pixbuf(
-                self.image_widgets["switch_fg"], x, y) 
-            cr.paint()
-        return True
-
     def auto_login_toggled(self, button):
         if not self.current_select_user:
             return
@@ -486,6 +460,8 @@ class AccountSetting(object):
         if item.is_myowner:     # is current user that current process' owner
             if self.button_widgets["del_account"].get_sensitive():
                 self.button_widgets["del_account"].set_sensitive(False)
+            if not self.image_widgets["account_icon"].get_sensitive():
+                self.image_widgets["account_icon"].set_sensitive(True)
             if not self.label_widgets["account_name"].get_sensitive():
                 self.label_widgets["account_name"].set_sensitive(True)
             if not self.label_widgets["passwd_char"].get_sensitive():
@@ -494,6 +470,8 @@ class AccountSetting(object):
             if not self.button_widgets["del_account"].get_sensitive():
                 self.button_widgets["del_account"].set_sensitive(True)
         else:
+            if self.image_widgets["account_icon"].get_sensitive():
+                self.image_widgets["account_icon"].set_sensitive(False)
             if self.label_widgets["account_name"].get_sensitive():
                 self.label_widgets["account_name"].set_sensitive(False)
             if self.label_widgets["passwd_char"].get_sensitive():
@@ -512,6 +490,7 @@ class AccountSetting(object):
             cr.set_source_rgba(1, 1, 1, 0.6)                                               
             cr.rectangle(x, y, w, h)                                                 
             cr.fill()
+            cr.paint()
         return True
     
     def lock_button_clicked(self, button):
@@ -606,6 +585,14 @@ class AccountSetting(object):
         self.container_widgets["slider"].slide_to_page(
             account_settings.alignment_widgets["change_pswd"], "right")
         self.module_frame.send_submodule_crumb(2, _("Change Password"))
+    
+    def icon_file_press_cb(self, widget, event):
+        if not self.current_select_user:
+            return
+        self.__init_set_icon_page(self.current_select_user)
+        self.container_widgets["slider"].slide_to_page(
+            account_settings.alignment_widgets["set_iconfile"], "right")
+        self.module_frame.send_submodule_crumb(2, _("Set Icon"))
     
     def account_name_input_changed(self, entry, value, button):
         if entry.get_text():
@@ -731,6 +718,7 @@ class AccountSetting(object):
         self.button_widgets["auto_login"].set_sensitive(authorized)
         self.container_widgets["check_button_table"].set_sensitive(authorized)
         if self.current_select_user and not settings.check_is_myown(self.current_select_user.get_uid()):
+            self.image_widgets["account_icon"].set_sensitive(authorized)
             self.label_widgets["account_name"].set_sensitive(authorized)
             self.label_widgets["passwd_char"].set_sensitive(authorized)
             self.button_widgets["del_account"].set_sensitive(authorized)
@@ -793,6 +781,114 @@ class AccountSetting(object):
         self.container_widgets["del_main_vbox"].pack_start(button_hbox, False, False)
         self.container_widgets["del_main_vbox"].pack_start(error_label, False, False)
         self.container_widgets["del_main_vbox"].show_all()
+    
+    def __init_set_icon_page(self, current_set_user):
+        def cancel_set_icon(button):
+            self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
+            self.change_crumb(1)
+        
+        def choose_picture(button, event):
+            file_filter = gtk.FileFilter()
+            file_filter.add_pixbuf_formats()
+            f = gtk.FileChooserDialog(buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OPEN, gtk.RESPONSE_ACCEPT))
+            f.set_filter(file_filter)
+            response = f.run()
+            filename = f.get_filename()
+            f.destroy()
+            if response != gtk.RESPONSE_ACCEPT:
+                return
+            try:
+                current_set_user.set_icon_file(filename)
+            except Exception, e:
+                if isinstance(e, (AccountsPermissionDenied)):
+                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                return
+            self.container_widgets["slider"].slide_to_page(
+                self.alignment_widgets["main_hbox"], "left")
+            self.change_crumb(1)
+
+        def table_expose_cb(widget, event):
+            x, y, w, h = widget.allocation
+            print x, y, w, h
+            cr = widget.window.cairo_create()
+            cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
+            cr.rectangle(x, y, 370, 257)                                                 
+            cr.paint()
+            with cairo_disable_antialias(cr):
+                cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))                                               
+                cr.rectangle(0, 0, 372, 259)                                                 
+                cr.stroke()
+        
+        def icon_bt_release_cb(widget, event):
+            try:
+                file_path = widget.get_image_path()
+                current_set_user.set_icon_file(file_path)
+            except Exception, e:
+                if isinstance(e, (AccountsPermissionDenied)):
+                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                return
+            self.container_widgets["slider"].slide_to_page(
+                self.alignment_widgets["main_hbox"], "left")
+            self.change_crumb(1)
+        self.container_widgets["set_iconfile_main_vbox"].destroy()
+        self.container_widgets["set_iconfile_main_vbox"] = gtk.VBox(False)
+        self.alignment_widgets["set_iconfile"].add(self.container_widgets["set_iconfile_main_vbox"])
+        
+        if current_set_user.get_real_name():
+            show_name = current_set_user.get_real_name() 
+        else:
+            show_name = current_set_user.get_user_name()
+        tips_label = Label("<b>%s</b>" % _("Set <u>%s</u>'s icon") % 
+                           self.escape_markup_string(show_name),
+                           text_size=13, wrap_width=460, enable_select=False)
+        error_label = Label("", wrap_width=560, enable_select=False)
+        swin = ScrolledWindow()
+        face_dir = '/usr/share/pixmaps/faces'
+        pic_list = os.listdir(face_dir)
+        row_num = (len(pic_list) + 1) / 5 + 1
+        table = gtk.Table(row_num, 5)
+        table.set_col_spacings(FRAME_VERTICAL_SPACING)
+        table.set_row_spacings(FRAME_HORIZONTAL_SPACING)
+        i = 0
+        j = 0
+        for pic in pic_list:
+            try:
+                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                    "%s/%s" %(face_dir, pic)).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            except:
+                continue
+            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(face_dir, pic))
+            icon_bt.connect("button-release-event", icon_bt_release_cb)
+            table.attach(icon_bt, j, j+1, i, i+1, 4, 4)
+            j += 1
+            if j > 5:
+                j = 0
+                i += 1
+        more_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
+        more_button.connect("button-release-event", choose_picture)
+        table.attach(more_button, j, j+1, i, i+1, 4, 4)
+        swin.add_child(self.__make_align(table, yalign=0.0, padding_top=3, padding_left=2, height=-1))
+        swin.set_size_request(382, 259)
+        #table.connect("expose-event", table_expose_cb)
+        table.connect("expose-event", self.container_expose_cb)
+
+        button_hbox = gtk.HBox(False)
+        button_hbox.set_spacing(WIDGET_SPACING)
+        #more_button = Button(_("More"))
+        cancel_button = Button(_("Cancel"))
+        #button_hbox.pack_start(self.__make_align(height=-1))
+        #button_hbox.pack_start(more_button, False, False)
+        button_hbox.pack_start(cancel_button, False, False)
+
+        cancel_button.connect("clicked", cancel_set_icon)
+        #more_button.connect("clicked", choose_picture)
+
+        self.container_widgets["set_iconfile_main_vbox"].set_spacing(BETWEEN_SPACING)
+        self.container_widgets["set_iconfile_main_vbox"].pack_start(tips_label, False, False)
+        self.container_widgets["set_iconfile_main_vbox"].pack_start(self.__make_align(swin, yalign=0.0, height=-1))
+        self.container_widgets["set_iconfile_main_vbox"].pack_start(error_label, False, False)
+        self.container_widgets["set_iconfile_main_vbox"].pack_start(button_hbox, False, False)
+        self.container_widgets["set_iconfile_main_vbox"].show_all()
     
     def __init_change_pswd_page(self, current_set_user):
         def show_input_password(button):
