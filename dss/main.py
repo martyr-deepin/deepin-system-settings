@@ -82,11 +82,21 @@ def get_forward_module():
         
         return module_history[module_history_index]
 
+def call_module_by_name(module_name, module_dict, slider, content_page_info, force_direction=None):
+    if module_dict.has_key(module_name):
+        start_module_process(slider,                                         
+                             content_page_info,                              
+                             module_dict[module_name].path,                  
+                             module_dict[module_name].config,
+                             force_direction)
+
 class DBusService(dbus.service.Object):
     def __init__(self, 
                  action_bar, 
                  content_page_info, 
-                 application=None
+                 application=None,
+                 module_dict=None,
+                 slider=None
                  ):
         # Init dbus object.
         bus_name = dbus.service.BusName(APP_DBUS_NAME, bus=dbus.SessionBus())
@@ -116,6 +126,12 @@ class DBusService(dbus.service.Object):
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
+            elif message_type == "goto":
+                module_id = message_content
+                
+                call_module_by_name(module_id, module_dict, slider, content_page_info, "right")
+                
+                record_module_history(module_id)
             else:
                 print message
                     
@@ -141,7 +157,7 @@ def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info):
         if module_id == MAIN_MODULE:
             slider.slide_to_page(navigate_page, "right")
         else:
-            __call_module_by_name(module_id, module_dict, slider, content_page_info, "right")        
+            call_module_by_name(module_id, module_dict, slider, content_page_info, "right")        
 
 def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info):
     module_id = get_forward_module()
@@ -150,7 +166,7 @@ def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info):
         if module_id == MAIN_MODULE:
             slider.slide_to_page(navigate_page, "left")
         else:
-            __call_module_by_name(module_id, module_dict, slider, content_page_info, "left")        
+            call_module_by_name(module_id, module_dict, slider, content_page_info, "left")        
 
 def send_message(module_id, message_type, message_content):
     bus = dbus.SessionBus()
@@ -203,14 +219,6 @@ def start_module_process(slider, content_page_info, module_path, module_config, 
         subprocess.Popen("python %s" % (os.path.join(module_path, module_config.get("main", "program"))), shell=True)
     else:
         send_message(module_id, "show_again", "")
-            
-def __call_module_by_name(module_name, module_dict, slider, content_page_info, force_direction=None):
-    if module_dict.has_key(module_name):
-        start_module_process(slider,                                         
-                             content_page_info,                              
-                             module_dict[module_name].path,                  
-                             module_dict[module_name].config,
-                             force_direction)
 
 if __name__ == "__main__":
     ops, args = getopt.getopt(sys.argv[1:], '')
@@ -301,8 +309,8 @@ if __name__ == "__main__":
     application.main_box.pack_start(main_align)
     
     # Start dbus service.
-    DBusService(action_bar, content_page_info, application)
+    DBusService(action_bar, content_page_info, application, module_dict, slider)
 
-    __call_module_by_name(module_name, module_dict, slider, content_page_info)
+    call_module_by_name(module_name, module_dict, slider, content_page_info)
 
     application.run()
