@@ -31,8 +31,8 @@ class Contain(gtk.Alignment):
         self.add(self.hbox)
 
         self.image = gtk.Image()
-        self.height = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_height()
-        self.width = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_width()
+        #self.height = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_height()
+        #self.width = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_width()
         self.image.set_from_pixbuf(icon.get_pixbuf())
         self.hbox.pack_start(self.image, False, True, ICON_PADDING)
         self.label = Label(text, text_size=TITLE_FONT_SIZE, label_width=100)
@@ -104,7 +104,7 @@ if __name__=="__main__":
 
     win.connect("destroy", lambda w: gtk.main_quit())
     
-    con = Contain(app_theme.get_pixbuf("/Network/wired.png"), "有线网络", lambda w: "sfdsf")
+    con = Contain(app_theme.get_pixbuf("network/wired.png"), "有线网络", lambda w: "sfdsf")
 
     vbox = gtk.VBox(False)
     vbox.pack_start(con)

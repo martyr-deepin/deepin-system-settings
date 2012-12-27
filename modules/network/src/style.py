@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from theme import app_theme,ui_theme
 import sys
 import os
 from dtk.ui.utils import get_parent_dir, cairo_disable_antialias, color_hex_to_cairo
 from dtk.ui.draw import draw_line
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-from constant import *
+from constants import *
 import gtk
 
 # Setting UI styles
@@ -53,9 +52,11 @@ def set_table_items(table, item_name):
     for child in children:
         if item_name is "entry":
             from dtk.ui.new_entry import InputEntry, PasswordEntry
-            if type(child).__name__ == type(InputEntry()).__name__ or \
-                type(child).__name__ == type(PasswordEntry()).__name__:
-                child.set_size(222, WIDGET_HEIGHT)
+            if type(child) is gtk.Alignment:
+                c = child.get_children()[0]
+                if type(c).__name__ == type(InputEntry()).__name__ or \
+                    type(c).__name__ == type(PasswordEntry()).__name__:
+                    c.set_size(222, WIDGET_HEIGHT)
 
 
 def draw_out_line(cr, rect, exclude=[]):

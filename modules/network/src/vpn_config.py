@@ -467,7 +467,7 @@ class PPPConf(gtk.VBox):
         self.vpn_setting = self.connection.get_setting("vpn")
         
 
-        method = Contain(app_theme.get_pixbuf("/Network/misc.png"), "Configure Method", self.toggle_cb)
+        method = Contain(app_theme.get_pixbuf("network/misc.png"), "Configure Method", self.toggle_cb)
         # invisable settings
         self.refuse_eap = CheckButton("EAP")
         self.refuse_pap = CheckButton("PAP")

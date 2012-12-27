@@ -82,9 +82,9 @@ class WirelessItem(TreeItem):
             #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
             check_icon = None
         elif self.network_state == self.NETWORK_LOADING:
-            check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/loading.png").get_pixbuf()
         else:
-            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         
         if check_icon:
             draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
@@ -122,17 +122,17 @@ class WirelessItem(TreeItem):
 
         # FIXME need to detect encry or not
         if self.security:
-            lock_icon = app_theme.get_pixbuf("/Network/lock.png").get_pixbuf()
+            lock_icon = app_theme.get_pixbuf("lock/lock.png").get_pixbuf()
             draw_pixbuf(cr, lock_icon, rect.x , rect.y + self.VERTICAL_PADDING)
 
         if self.strength > 80:
-            signal_icon = app_theme.get_pixbuf("/Network/Wifi_3.png").get_pixbuf()
+            signal_icon = app_theme.get_pixbuf("network/Wifi_3.png").get_pixbuf()
         elif self.strength > 60:
-            signal_icon = app_theme.get_pixbuf("/Network/Wifi_2.png").get_pixbuf()
+            signal_icon = app_theme.get_pixbuf("network/Wifi_2.png").get_pixbuf()
         elif self.strength > 60:
-            signal_icon = app_theme.get_pixbuf("/Network/Wifi_1.png").get_pixbuf()
+            signal_icon = app_theme.get_pixbuf("network/Wifi_1.png").get_pixbuf()
         else:
-            signal_icon = app_theme.get_pixbuf("/Network/Wifi_0.png").get_pixbuf()
+            signal_icon = app_theme.get_pixbuf("network/Wifi_0.png").get_pixbuf()
         
         draw_pixbuf(cr, signal_icon, rect.x + 16 , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
@@ -147,7 +147,7 @@ class WirelessItem(TreeItem):
         render_background(cr,rect)
         if self.is_select:
             pass
-        jumpto_icon = app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf()
+        jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
         draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
@@ -159,17 +159,17 @@ class WirelessItem(TreeItem):
             cr.fill()
 
     def get_check_width(self):
-        check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         return check_icon.get_width()+ self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
 
     def get_essid_width(self, essid):
         return get_content_size(essid)[0]
     
     def get_signal_width(self):
-        return app_theme.get_pixbuf("/Network/strength_1.png").get_pixbuf().get_width() + self.SIGNAL_RIGHT_PADDING
+        return app_theme.get_pixbuf("network/Wifi_0.png").get_pixbuf().get_width() + self.SIGNAL_RIGHT_PADDING
 
     def get_jumpto_width(self):
-        return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+        return app_theme.get_pixbuf("network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
         return [self.check_width, -1, self.signal_width, self.jumpto_width]
@@ -261,9 +261,9 @@ class WiredItem(TreeItem):
             #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
             check_icon = None
         elif self.network_state == 1:
-            check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/loading.png").get_pixbuf()
         else:
-            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
 
         if check_icon:
             draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
@@ -297,7 +297,7 @@ class WiredItem(TreeItem):
         render_background(cr, rect)
         if self.is_select:
             pass
-        jumpto_icon = app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf()
+        jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
         draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
@@ -309,13 +309,13 @@ class WiredItem(TreeItem):
             cr.fill()
 
     def get_check_width(self):
-        check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
     def get_essid_width(self, essid):
         return get_content_size(essid)[0]
     
     def get_jumpto_width(self):
-        return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+        return app_theme.get_pixbuf("network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
         return [self.check_width, -1,self.jumpto_width]
@@ -373,9 +373,9 @@ class DSLItem(TreeItem):
         render_background(cr, rect)
 
         if self.is_select:
-            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         else:
-            check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/check_box_out.png").get_pixbuf()
 
         draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
@@ -408,7 +408,7 @@ class DSLItem(TreeItem):
         render_background(cr, rect)
         if self.is_select:
             pass
-        jumpto_icon = app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf()
+        jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
         draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
@@ -420,13 +420,13 @@ class DSLItem(TreeItem):
             cr.fill()
 
     def get_check_width(self):
-        check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
     def get_essid_width(self, essid):
         return get_content_size(essid)[0]
     
     def get_jumpto_width(self):
-        return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+        return app_theme.get_pixbuf("network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
         return [self.check_width, -1,self.jumpto_width]
@@ -435,7 +435,7 @@ class DSLItem(TreeItem):
         return [self.render_check, self.render_essid, self.render_jumpto]
 
     def get_height(self):
-        return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        return  app_theme.get_pixbuf("network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
         
     def unselect(self):
         self.is_select = False
@@ -492,9 +492,9 @@ class GeneralItem(TreeItem):
         if self.network_state == 0:
             check_icon = None
         elif self.network_state == 1:
-            check_icon = app_theme.get_pixbuf("/Network/loading.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/loading.png").get_pixbuf()
         else:
-            check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         
         if check_icon:
             draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
@@ -527,7 +527,7 @@ class GeneralItem(TreeItem):
         render_background(cr, rect)
         if self.is_select:
             pass
-        jumpto_icon = app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf()
+        jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
         draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
@@ -550,13 +550,13 @@ class GeneralItem(TreeItem):
 
 
     def get_check_width(self):
-        check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
+        check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
         return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
     def get_essid_width(self, essid):
         return get_content_size(essid)[0]
     
     def get_jumpto_width(self):
-        return app_theme.get_pixbuf("/Network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+        return app_theme.get_pixbuf("network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
         return [self.check_width, -1,-1, self.jumpto_width]
@@ -574,7 +574,7 @@ class GeneralItem(TreeItem):
 
 
     def get_height(self):
-        #return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
+        #return  app_theme.get_pixbuf("/network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
         return CONTAINNER_HEIGHT
         
     def unselect(self):

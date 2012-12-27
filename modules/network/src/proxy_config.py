@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 from nmlib.proxysettings import ProxySettings
-from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 from dtk.ui.entry import InputEntry
