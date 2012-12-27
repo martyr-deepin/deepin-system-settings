@@ -22,13 +22,15 @@
 
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
-from dtk.ui.utils import color_hex_to_cairo
-from dtk.ui.draw import draw_pixbuf, draw_text, draw_round_rectangle
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_in_rect
+from dtk.ui.draw import draw_pixbuf, draw_text
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 import pango
 import gtk
 import gobject
 import os
+
+from theme import app_theme
 
 ICON_SIZE = 106
 
@@ -131,6 +133,13 @@ class IconItem(gobject.GObject):
         self.name_padding_y = 8
         self.hover_flag = False
         self.highlight_flag = False
+        self.hover_offset = 5
+        self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
+        self.hover_fill_dcolor = app_theme.get_color("globalHoverFill")
+        self.hover_response_rect = gtk.gdk.Rectangle(
+            self.hover_offset, self.hover_offset, 
+            ICON_SIZE - self.hover_offset * 2, 
+            ICON_SIZE - self.hover_offset * 2) 
         
     def emit_redraw_request(self):
         '''
@@ -168,13 +177,16 @@ class IconItem(gobject.GObject):
         
         # Draw background.
         if self.hover_flag:
-            cr.set_source_rgb(*color_hex_to_cairo("#EBF4FD"))
-            draw_round_rectangle(cr, rect.x, rect.y, rect.width, rect.height, 2)
-            cr.fill()
-            
-            cr.set_source_rgb(*color_hex_to_cairo("#7DA2CE"))
-            draw_round_rectangle(cr, rect.x, rect.y, rect.width, rect.height, 2)
-            cr.stroke()
+            with cairo_disable_antialias(cr):
+                cr.set_source_rgb(*color_hex_to_cairo(self.hover_fill_dcolor.get_color()))
+                cr.rectangle(rect.x + self.hover_offset, 
+                             rect.y + self.hover_offset, 
+                             rect.width - self.hover_offset * 2, 
+                             rect.height - self.hover_offset * 2)
+                cr.fill_preserve()
+                cr.set_line_width(1)
+                cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
+                cr.stroke()
         
         # Draw icon.
         draw_pixbuf(
@@ -197,7 +209,13 @@ class IconItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        self.hover_flag = True
+        if is_in_rect((x, y), (self.hover_response_rect.x,
+                               self.hover_response_rect.y,
+                               self.hover_response_rect.width,
+                               self.hover_response_rect.height)):
+            self.hover_flag = True
+        else:    
+            self.hover_flag = False
         
         self.emit_redraw_request()
         

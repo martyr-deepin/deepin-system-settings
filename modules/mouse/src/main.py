@@ -39,6 +39,7 @@ from nls import _
 from module_frame import ModuleFrame
 from constant import *
 
+MODULE_NAME = "mouse"
 
 class MouseSetting(object):
     '''mouse setting class'''
@@ -71,10 +72,10 @@ class MouseSetting(object):
         title_item_font_size = TITLE_FONT_SIZE
         option_item_font_szie = CONTENT_FONT_SIZE
         # image init
-        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("mouse/custom.png"))
-        self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("mouse/pointer.png"))
-        self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("mouse/double-click.png"))
-        self.image_widgets["double_test"] = app_theme.get_pixbuf("mouse/double-test.png").get_pixbuf()
+        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("%s/custom.png" % MODULE_NAME))
+        self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("%s/pointer.png" % MODULE_NAME))
+        self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("%s/double-click.png" % MODULE_NAME))
+        self.image_widgets["double_test"] = app_theme.get_pixbuf("%s/double-test.png" % MODULE_NAME).get_pixbuf()
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
         self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)

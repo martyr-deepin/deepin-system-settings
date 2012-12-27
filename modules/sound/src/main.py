@@ -21,28 +21,32 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+import os
+from dtk.ui.utils import get_parent_dir 
+sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
+
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.combo import ComboBox
+from dtk.ui.box import ImageBox
 from dtk.ui.scalebar import HScalebar
-from dtk.ui.utils import get_parent_dir, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
 from nls import _
 import gtk
 import settings
 
-import sys
-import os
-sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame
 from constant import *
 import threading as td
 import traceback
 
+MODULE_NAME = "sound"
 
 class SettingVolumeThread(td.Thread):
     def __init__(self, obj, func, *args):
@@ -98,24 +102,11 @@ class SoundSetting(object):
         self.label_widgets["right"] = Label(_("Right"))
         #####################################
         # image init
-        self.image_widgets["balance"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/balance.png"))
-        self.image_widgets["speaker"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/speaker.png"))
-        self.image_widgets["microphone"] = gtk.image_new_from_file(
-            app_theme.get_theme_file_path("image/set/microphone.png"))
-        self.image_widgets["device"] = gtk.gdk.pixbuf_new_from_file(
-            app_theme.get_theme_file_path("image/set/device.png"))
+        self.image_widgets["balance"] = ImageBox(app_theme.get_pixbuf("%s/balance.png" % MODULE_NAME))
+        self.image_widgets["speaker"] = ImageBox(app_theme.get_pixbuf("%s/speaker.png" % MODULE_NAME))
+        self.image_widgets["microphone"] = ImageBox(app_theme.get_pixbuf("%s/microphone.png" % MODULE_NAME))
+        self.image_widgets["device"] = app_theme.get_pixbuf("%s/device.png" % MODULE_NAME).get_pixbuf()
         # button init
-        #self.button_widgets["balance"] = ToggleButton(
-            #app_theme.get_pixbuf("set/inactive_normal.png"),
-            #app_theme.get_pixbuf("set/active_normal.png"))
-        #self.button_widgets["speaker"] = ToggleButton(
-            #app_theme.get_pixbuf("set/inactive_normal.png"),
-            #app_theme.get_pixbuf("set/active_normal.png"))
-        #self.button_widgets["microphone"] = ToggleButton(
-            #app_theme.get_pixbuf("set/inactive_normal.png"),
-            #app_theme.get_pixbuf("set/active_normal.png"))
         self.button_widgets["balance"] = OffButton()
         self.button_widgets["speaker"] = OffButton()
         self.button_widgets["microphone"] = OffButton()
@@ -154,32 +145,17 @@ class SoundSetting(object):
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150, 1, 5)
         # scale init
         self.scale_widgets["balance"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"))
         self.scale_widgets["balance"].set_adjustment(self.adjust_widgets["balance"])
         self.scale_widgets["speaker"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"),
             True,
             '%')
         self.scale_widgets["speaker"].set_adjustment(self.adjust_widgets["speaker"])
         self.scale_widgets["microphone"] = HScalebar(
-            app_theme.get_pixbuf("scalebar/l_fg.png"),
-            app_theme.get_pixbuf("scalebar/l_bg.png"),
-            app_theme.get_pixbuf("scalebar/m_fg.png"),
-            app_theme.get_pixbuf("scalebar/m_bg.png"),
-            app_theme.get_pixbuf("scalebar/r_fg.png"),
-            app_theme.get_pixbuf("scalebar/r_bg.png"),
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"),
             True,
             '%')
