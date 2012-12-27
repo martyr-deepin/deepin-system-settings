@@ -511,7 +511,9 @@ class PPPConf(gtk.VBox):
         vbox.pack_start(method, False, False)
         vbox.pack_start(self.method_table, False, False)
         vbox.pack_start(table, False, False)
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
+        
+        # TODO ui change
+        align = style.set_box_with_align(vbox, "text")
         align.add(vbox)
         self.add(align)
 
