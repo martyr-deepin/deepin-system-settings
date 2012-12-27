@@ -37,6 +37,11 @@ class SessionView(gtk.VBox):
 
 
     def get_list(self):
+        try:
+            from session import SessionManager
+        except:
+            raise
+
         return [SessionItem("htop", "xx"), 
                 SessionItem("firefox", "yy")]
 

@@ -514,7 +514,6 @@ class PPPConf(gtk.VBox):
         
         # TODO ui change
         align = style.set_box_with_align(vbox, "text")
-        align.add(vbox)
         self.add(align)
 
         self.require_mppe_128.set_sensitive(False)

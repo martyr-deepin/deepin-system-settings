@@ -5,7 +5,7 @@ from nmlib.nmcache import cache
 
 def get_wired_state():
     wired_devices = nm_module.nmclient.get_wired_devices()
-    if wired_devices == None:
+    if wired_devices is None:
         # 没有有限设备
         return False
     else:
