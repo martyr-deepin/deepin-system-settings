@@ -139,12 +139,7 @@ class ThemeSettingView(TabBox):
         self.color_deepth_box = gtk.HBox(spacing=10)
         self.color_deepth_label = Label("颜色浓度", text_x_align=ALIGN_END, label_width=60)
         self.color_deepth_scalbar = HScalebar(                                                      
-            app_theme.get_pixbuf("scalebar/l_fg.png"),                               
-            app_theme.get_pixbuf("scalebar/l_bg.png"),                               
-            app_theme.get_pixbuf("scalebar/m_fg.png"),                               
-            app_theme.get_pixbuf("scalebar/m_bg.png"),                               
-            app_theme.get_pixbuf("scalebar/r_fg.png"),                               
-            app_theme.get_pixbuf("scalebar/r_bg.png"),                               
+            None, None, None, None, None, None,
             app_theme.get_pixbuf("scalebar/point.png"), 
             True, 
             "%")

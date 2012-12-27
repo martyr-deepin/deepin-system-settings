@@ -14,6 +14,8 @@
  "buttonBorderPrelight" : "#b18ecf",
  "buttonBorderActive" : "#9372c9",
  "buttonFont" : "#000000",
+ "globalHoverStroke" : "#7DA2CE",
+ "globalHoverFill" : "#EBF4FD",
  },	
  "alpha_colors" : {
      "frame" : ("#000000", 0.5),
@@ -127,6 +129,11 @@
         (0, ("#cfa2e4",1)),
         (1, ("#c797e0",1)),
      ],
+    "window_shadow" : [
+         (0, ("#000000", 0)),
+         (0.66, ("#000000", 0.2)),
+         (1, ("#000000", 0.5)),
+         ],	 
  },
  "text_styles" : {
      "default" : ("#FFFFFF", "#000000", "#000000", 11, 14, 1),
