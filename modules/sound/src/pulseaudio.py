@@ -68,8 +68,13 @@ try:
     if not client_bus:
         raise dbus.exceptions.DBusException
 except dbus.exceptions.DBusException:
-    client_bus = None
-    print "connect to dbus server error."
+    try:
+        client_bus = connect_bus()
+        if not client_bus:
+            raise dbus.exceptions.DBusException
+    except:    
+        client_bus = None
+        print "connect to dbus server error."
 
 class BusBase(gobject.GObject):
     

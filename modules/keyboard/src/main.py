@@ -31,7 +31,7 @@ from dtk.ui.dialog import DialogBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
-from dtk.ui.entry import InputEntry
+from dtk.ui.new_entry import InputEntry
 from dtk.ui.tab_window import TabBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor
@@ -129,6 +129,7 @@ class KeySetting(object):
             text_size=option_item_font_szie, text_color=app_theme.get_color("link_text"), enable_select=False)
         # container init
         self.container_widgets["tab_box"] = TabBox()
+        self.container_widgets["tab_box"].draw_title_background = self.draw_tab_title_background
         self.container_widgets["type_main_hbox"] = gtk.HBox(False)
         self.container_widgets["layout_main_hbox"] = gtk.HBox(False)
         self.container_widgets["shortcuts_main_hbox"] = gtk.HBox(False)
@@ -224,6 +225,12 @@ class KeySetting(object):
         # alignment init
         self.alignment_widgets["shortcuts_table"] = gtk.Alignment()
      
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def __adjust_widget(self):
         ''' adjust widget '''
         MID_SPACING = 10

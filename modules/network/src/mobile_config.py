@@ -48,6 +48,7 @@ class MobileSetting(gtk.Alignment):
         self.ppp = None
 
         self.tab_window = TabBox(dockfill = False)
+        self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [("移动宽带", NoSetting()),
                       ("PPP", NoSetting()),
@@ -71,6 +72,12 @@ class MobileSetting(gtk.Alignment):
         vbox.connect("expose-event", self.expose_outline, ["top"])
         self.sidebar.connect("expose-event", self.expose_outline, [])
 
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def expose_outline(self, widget, event, exclude):
         cr = widget.window.cairo_create()
         rect = widget.allocation
@@ -262,7 +269,7 @@ class SideBar(gtk.VBox):
         item = self.cons[self.connections.index(connection)]
         self.connection_tree.select_items([item])
     
-    def add_new_connection(self, widget):
+    def add_new_connection(self):
         region = slider.get_page_by_name("region")
         region.init()
         slider._slide_to_page("region", "left")
@@ -511,8 +518,9 @@ class PPPConf(gtk.VBox):
         vbox.pack_start(method, False, False)
         vbox.pack_start(self.method_table, False, False)
         vbox.pack_start(table, False, False)
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(vbox)
+        
+        # TODO ui change
+        align = style.set_box_with_align(vbox, "text")
         self.add(align)
 
         self.require_mppe_128.set_sensitive(False)

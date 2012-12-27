@@ -5,25 +5,28 @@ from theme import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
+from dtk.ui.scrolled_window import ScrolledWindow
 #from dtk.ui.droplist import Droplist
 #from widgets import SettingButton
-from settings_widget import SettingItem, EntryTreeView
+from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 # NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
-from container import Contain
+from container import MyToggleButton as SwitchButton
 from shared_widget import IPV4Conf
 
 import gtk
 
+from nls import _
 # UI
 import style
-from constants import FRAME_VERTICAL_SPACING
+from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -49,6 +52,7 @@ class DSLSetting(gtk.Alignment):
         self.ppp = None
 
         self.tab_window = TabBox(dockfill = False)
+        self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [("DSL", NoSetting()),
                       ("Wired", NoSetting()),
@@ -63,6 +67,7 @@ class DSLSetting(gtk.Alignment):
         vbox.pack_start(self.tab_window ,True, True)
         hbox.pack_start(vbox, True, True)
         self.save_button = Button("Connect")
+        self.set_default_button = Button("Set To Default")
         self.save_button.connect("clicked", self.save_changes)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
         buttons_aligns.add(self.save_button)
@@ -71,6 +76,13 @@ class DSLSetting(gtk.Alignment):
         self.connect("expose-event", self.expose_event)
         vbox.connect("expose-event", self.expose_outline, ["top"])
         self.sidebar.connect("expose-event", self.expose_outline, [])
+        
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
+        
     def set_button(self, name, state):
         if name == "save":
             self.save_button.set_label(name)
@@ -188,9 +200,9 @@ class SideBar(gtk.VBox):
         # Build ui
         self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
-        add_button = Button("创建新连接")
-        add_button.connect("clicked", self.add_new_connection)
-        self.pack_start(add_button, False, False)
+
+        add_button = AddSettingItem("创建新连接",self.add_new_connection)
+        self.pack_start(TreeView([add_button]), False, False)
 
         self.set_size_request(160, -1)
 
@@ -253,7 +265,7 @@ class SideBar(gtk.VBox):
         for item in items:
             item.set_active(False)
     
-    def add_new_connection(self, widget):
+    def add_new_connection(self):
         connection = nm_module.nm_remote_settings.new_pppoe_connection()
         self.new_connection_list.append(connection)
         self.main_init_cb(new_connection=self.new_connection_list)
@@ -277,29 +289,31 @@ class Wired(gtk.VBox):
 
         table = gtk.Table(3, 2, False)
         
-        mac_address = Label("Device Mac address:")
-        table.attach(mac_address, 0, 1, 0, 1)
+        mac_address = Label("Device Mac address:", text_size=CONTENT_FONT_SIZE)
 
         self.mac_entry = InputEntry()
-        table.attach(self.mac_entry, 1, 2, 0, 1)
 
-        clone_addr = Label("Cloned Mac Adrress:")
-        table.attach(clone_addr, 0, 1, 1, 2)
+        clone_addr = Label("Cloned Mac Adrress:", text_size=CONTENT_FONT_SIZE)
         self.clone_entry = InputEntry()
-        table.attach(self.clone_entry, 1,2, 1, 2)
 
-        mtu = Label("MTU:")
-        table.attach(mtu, 0,1,2,3)
+        mtu = Label("MTU:", text_size=CONTENT_FONT_SIZE)
         self.mtu_spin = SpinBox(0,0, 1500, 1, 55)
-        table.attach(self.mtu_spin, 1,2,2,3)
         
-        # TODO UI change
-        align = gtk.Alignment( 0, 0, 0, 0)
-        align.set_padding(35, 0, 120, 0)
-        align.add(table)
-        self.add(align)
+        '''
+        Park table
+        '''
+        table.attach(style.wrap_with_align(mac_address), 0, 1, 0, 1)
+        table.attach(style.wrap_with_align(self.mac_entry), 1, 2, 0, 1)
+        table.attach(style.wrap_with_align(clone_addr), 0, 1, 1, 2)
+        table.attach(style.wrap_with_align(self.clone_entry), 1,2, 1, 2)
+        table.attach(style.wrap_with_align(mtu), 0,1,2,3)
+        table.attach(style.wrap_with_align(self.mtu_spin), 1,2,2,3)
 
-        table.set_row_spacings(5)
+        # TODO UI change
+        align = style.set_box_with_align(table, "text")
+        self.add(align)
+        style.set_table(table)
+
         self.mac_entry.set_size(222, 22)
         self.clone_entry.set_size(222, 22)
         ## retrieve wired info
@@ -342,9 +356,9 @@ class DSLConf(gtk.VBox):
 
         # UI
         dsl_table = gtk.Table(4, 3, False)
-        username_label = Label("Username:")
-        service_label = Label("Service:")
-        password_label = Label("Password:")
+        username_label = Label(_("Username:"), text_size=CONTENT_FONT_SIZE)
+        service_label = Label(_("Service:"), text_size=CONTENT_FONT_SIZE)
+        password_label = Label(_("Password:"), text_size=CONTENT_FONT_SIZE)
         #pack labels
         dsl_table.attach(username_label, 0, 1 , 0, 1)
         dsl_table.attach(service_label, 0, 1, 1, 2)
@@ -352,12 +366,12 @@ class DSLConf(gtk.VBox):
 
         # entries
         self.username_entry = InputEntry()
-        self.username_entry.set_size(200,20)
+        self.username_entry.set_size(220,22)
         self.service_entry = InputEntry()
-        self.service_entry.set_size(200,20 )
+        self.service_entry.set_size(220,22 )
         self.password_entry = PasswordEntry()
-        self.password_entry.set_size(200, 20)
-        self.show_password = CheckButton("Show Password")
+        self.password_entry.set_size(220, 22)
+        self.show_password = CheckButton(_("Show Password"), font_size=CONTENT_FONT_SIZE, padding_x=0)
         def show_password(widget):
             if widget.get_active():
                 self.password_entry.show_password(True)
@@ -366,19 +380,19 @@ class DSLConf(gtk.VBox):
         self.show_password.connect("toggled", show_password)
 
         #pack entries
-        dsl_table.attach(self.username_entry, 1, 3, 0, 1)
-        dsl_table.attach(self.service_entry, 1, 3, 1, 2)
-        dsl_table.attach(self.password_entry, 1, 3, 2, 3)
-        dsl_table.attach(self.show_password, 2,3,3,4)
+        dsl_table.attach(style.wrap_with_align(self.username_entry), 1, 3, 0, 1)
+        dsl_table.attach(style.wrap_with_align(self.service_entry), 1, 3, 1, 2)
+        dsl_table.attach(style.wrap_with_align(self.password_entry), 1, 3, 2, 3)
+        dsl_table.attach(style.wrap_with_align(self.show_password), 1,3,3,4)
 
         # TODO UI change
-        dsl_table.set_row_spacings(5)
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(35, 0, 120, 0)
-        align.add(dsl_table)
+        align = style.set_box_with_align(dsl_table, "text")
+        style.set_table(dsl_table)
         self.add(align)
         self.show_all()
         self.refresh()
+
+
         self.username_entry.entry.connect("changed", self.save_changes, "username")
         self.service_entry.entry.connect("changed", self.save_changes, "service")
         self.password_entry.entry.connect("changed", self.save_changes, "password")
@@ -417,65 +431,107 @@ class DSLConf(gtk.VBox):
             delattr(self.dsl_setting, types)
         check_settings(self.connection, self.set_button)
 
-class PPPConf(gtk.VBox):
+class PPPConf(ScrolledWindow):
     def __init__(self, connection, set_button_callback):
-        gtk.VBox.__init__(self)
+        ScrolledWindow.__init__(self)
+
+        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
         self.connection = connection
         self.set_button = set_button_callback
         self.ppp_setting = self.connection.get_setting("ppp")
-        print ">>>setting", TypeConvert.dbus2py(self.connection.settings_dict)
-        print ">>>>", TypeConvert.dbus2py(self.ppp_setting.prop_dict)
 
-        method = Contain(app_theme.get_pixbuf("/Network/misc.png"), "Configure Method", self.toggle_cb)
         # invisable settings
-        self.refuse_eap = CheckButton("EAP")
-        self.refuse_pap = CheckButton("PAP")
-        self.refuse_chap = CheckButton("CHAP")
-        self.refuse_mschap = CheckButton("MSCHAP")
-        self.refuse_mschapv2 = CheckButton("MSCHAP v2")
+        method_image = gtk.Image()
+        method_image.set_from_pixbuf(app_theme.get_pixbuf("/Network/validation.png").get_pixbuf())
+        compress_image = gtk.Image()
+        compress_image.set_from_pixbuf(app_theme.get_pixbuf("/Network/zip.png").get_pixbuf())
+        echo_image = gtk.Image()
+        echo_image.set_from_pixbuf(app_theme.get_pixbuf("/Network/echo.png").get_pixbuf())
+
+        self.method_label = Label("Configure Method", text_size=TITLE_FONT_SIZE)
+        self.refuse_eap_label = Label("EAP", text_size=CONTENT_FONT_SIZE)
+        self.refuse_pap_label = Label("PAP", text_size=CONTENT_FONT_SIZE)
+        self.refuse_chap_label = Label("CHAP", text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschap_label = Label("MSCHAP", text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschapv2_label = Label("MSCHAP v2", text_size=CONTENT_FONT_SIZE)
+        self.refuse_eap = SwitchButton()
+        self.refuse_pap = SwitchButton()
+        self.refuse_chap = SwitchButton()
+        self.refuse_mschap = SwitchButton()
+        self.refuse_mschapv2 = SwitchButton()
         
-        self.method_table = gtk.Table(5, 8, False)
-        self.method_table.set_no_show_all(True)
-        self.method_table.hide()
-        self.method_table.attach(self.refuse_eap, 0, 8, 0, 1)
-        self.method_table.attach(self.refuse_pap, 0, 8, 1, 2)
-        self.method_table.attach(self.refuse_chap, 0, 8, 2, 3)
-        self.method_table.attach(self.refuse_mschap, 0, 8, 3, 4)
-        self.method_table.attach(self.refuse_mschapv2, 0, 8, 4, 5)
+        self.method_table = gtk.Table(16, 3, False)
+
+
+        self.method_table.attach(style.wrap_with_align(method_image), 0, 1, 9, 10)
+        self.method_table.attach(style.wrap_with_align(self.method_label), 1, 2, 9, 10)
+        self.method_table.attach(style.wrap_with_align(self.refuse_eap_label), 1, 2, 10, 11, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.refuse_pap_label), 1, 2, 11, 12, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.refuse_chap_label), 1, 2, 12, 13, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.refuse_mschap_label), 1, 2, 13, 14, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2_label), 1, 2, 14, 15, xpadding=10)
+
+        self.method_table.attach(style.wrap_with_align(self.refuse_eap), 2, 3, 10, 11, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.refuse_pap), 2, 3, 11, 12, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.refuse_chap), 2, 3, 12, 13, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.refuse_mschap), 2, 3, 13, 14, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2), 2, 3, 14, 15, xpadding=15)
+
+        #style.set_table(self.method_table, row_spacing=)
+
 
         # visible settings
-        table = gtk.Table(9, 8, False)
-        compression = Label("Compression")
-        table.attach(compression, 0, 5, 0 ,1)
+        compression = Label("Compression", text_size=TITLE_FONT_SIZE)
+        self.require_mppe_label = Label("Use point-to-point encryption(mppe)", text_size=CONTENT_FONT_SIZE)
+        self.require_mppe_128_label = Label("Require 128-bit encryption", text_size=CONTENT_FONT_SIZE)
+        self.mppe_stateful_label = Label("Use stataful MPPE", text_size=CONTENT_FONT_SIZE)
+        self.nobsdcomp_label = Label("Allow BSD data Compression", text_size=CONTENT_FONT_SIZE)
+        self.nodeflate_label = Label("Allow Deflate date compression", text_size=CONTENT_FONT_SIZE)
+        self.no_vj_comp_label = Label("Use TCP header compression", text_size=CONTENT_FONT_SIZE)
+        echo = Label("Echo", text_size=TITLE_FONT_SIZE)
+        self.ppp_echo_label = Label("Send PPP echo packets", text_size=CONTENT_FONT_SIZE)
 
-        self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
-        self.require_mppe_128 = CheckButton("Require 128-bit encryption")
-        self.mppe_stateful = CheckButton("Use stataful MPPE")
+        self.require_mppe = SwitchButton()
+        self.require_mppe_128 = SwitchButton()
+        self.mppe_stateful = SwitchButton()
         
-        self.nobsdcomp = CheckButton("Allow BSD data Compression")
-        self.nodeflate = CheckButton("Allow Deflate date compression")
-        self.no_vj_comp = CheckButton("Use TCP header compression")
+        self.nobsdcomp = SwitchButton()
+        self.nodeflate = SwitchButton()
+        self.no_vj_comp = SwitchButton()
+        self.ppp_echo = SwitchButton()
 
-        echo = Label("Echo")
-        self.ppp_echo = CheckButton("Send PPP echo packets")
-        #self.mppe.set_size_request(100, 10)
-        table.attach(self.require_mppe, 0, 10, 1, 2)
-        table.attach(self.require_mppe_128, 1, 10, 2, 3)
-        table.attach(self.mppe_stateful, 1, 10, 3, 4)
-        table.attach(self.nobsdcomp, 0, 10, 4, 5)
-        table.attach(self.nodeflate, 0, 10, 5, 6)
-        table.attach(self.no_vj_comp, 0, 10, 6, 7)
-        table.attach(echo, 0, 5, 7, 8)
-        table.attach(self.ppp_echo, 0, 10, 8, 9)
+        self.method_table.attach(style.wrap_with_align(compress_image), 0, 1, 0 ,1)
+        self.method_table.attach(style.wrap_with_align(compression), 1, 2, 0 ,1)
+        self.method_table.attach(style.wrap_with_align(self.require_mppe_label), 1, 2, 1, 2, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.require_mppe_128_label), 1, 2, 2, 3, xpadding=30)
+        self.method_table.attach(style.wrap_with_align(self.mppe_stateful_label), 1, 2, 3, 4, xpadding=30)
+        self.method_table.attach(style.wrap_with_align(self.nobsdcomp_label), 1, 2, 4, 5, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.nodeflate_label), 1, 2, 5, 6, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.no_vj_comp_label), 1, 2, 6, 7, xpadding=10)
+
+        self.method_table.attach(style.wrap_with_align(echo_image), 0, 1, 7, 8)
+        self.method_table.attach(style.wrap_with_align(echo), 1, 2, 7, 8)
+        self.method_table.attach(style.wrap_with_align(self.ppp_echo_label), 1, 2, 8, 9, xpadding=10)
+
+        self.method_table.attach(style.wrap_with_align(self.require_mppe), 2, 3, 1, 2, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.require_mppe_128), 2, 3, 2, 3)
+        self.method_table.attach(style.wrap_with_align(self.mppe_stateful), 2, 3, 3, 4)
+        self.method_table.attach(style.wrap_with_align(self.nobsdcomp), 2, 3, 4, 5, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.nodeflate), 2, 3, 5, 6, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.no_vj_comp), 2, 3, 6, 7, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.ppp_echo), 2, 3, 8, 9, xpadding=15)
 
         vbox = gtk.VBox()
-        vbox.pack_start(method, False, False)
+        #vbox.pack_start(method, False, False)
+        #vbox.pack_start(table, False, False)
         vbox.pack_start(self.method_table, False, False)
-        vbox.pack_start(table, False, False)
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(vbox)
-        self.add(align)
+        self.method_table.set_col_spacing(0, 10)
+        self.method_table.set_row_spacing(6, 15)
+        self.method_table.set_row_spacing(8, 15)
+        align = style.set_box_with_align(vbox, "text")
+        self.add_with_viewport(align)
+        align.connect("expose-event", self.expose_bg)
 
         self.refresh()
 
@@ -513,13 +569,18 @@ class PPPConf(gtk.VBox):
         lcp_echo_interval = self.ppp_setting.lcp_echo_interval
 
         if require_mppe:
+            self.require_mppe_128_label.set_sensitive(True)
+            self.mppe_stateful_label.set_sensitive(True)
             self.require_mppe_128.set_sensitive(True)
             self.mppe_stateful.set_sensitive(True)
         else:
+            self.require_mppe_128_label.set_sensitive(False)
+            self.mppe_stateful_label.set_sensitive(False)
             self.require_mppe_128.set_active(False)
             self.mppe_stateful.set_active(False)
             self.require_mppe_128.set_sensitive(False)
             self.mppe_stateful.set_sensitive(False)
+
 
         self.refuse_eap.set_active( not refuse_eap)
         self.refuse_pap.set_active(not refuse_pap)
@@ -569,11 +630,15 @@ class PPPConf(gtk.VBox):
 
         if key is "require_mppe":
             if active:
+                self.require_mppe_128_label.set_sensitive(True)
+                self.mppe_stateful_label.set_sensitive(True)
                 self.require_mppe_128.set_sensitive(True)
                 self.mppe_stateful.set_sensitive(True)
             else:
                 self.require_mppe_128.set_active(False)
                 self.mppe_stateful.set_active(False)
+                self.require_mppe_128_label.set_sensitive(False)
+                self.mppe_stateful_label.set_sensitive(False)
                 self.require_mppe_128.set_sensitive(False)
                 self.mppe_stateful.set_sensitive(False)
 
@@ -584,3 +649,12 @@ class PPPConf(gtk.VBox):
         else:
             self.method_table.set_no_show_all(True)
             self.method_table.hide()
+
+    def expose_bg(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        cr.set_source_rgb( 1, 1, 1) 
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
+
+

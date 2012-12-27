@@ -63,7 +63,7 @@ class InvalidObjectPath(Exception):
 
 class BusBase(gobject.GObject):
     
-    def __init__(self, path, interface, service = "org.gnome.SessionManager", bus = session_bus):
+    def __init__(self, path, interface, service = "org.gnome.SessionManager", bus=session_bus):
 
         if valid_object_path(path):
             self.object_path = path
@@ -78,6 +78,7 @@ class BusBase(gobject.GObject):
             self.dbus_proxy = self.bus.get_object(self.service, self.object_path)
             self.dbus_interface = dbus.Interface(self.dbus_proxy, self.object_interface)
         except dbus.exceptions.DBusException:
+            print "sdafsdfdsf"
             traceback.print_exc()
 
     def init_dbus_properties(self):        
@@ -145,13 +146,13 @@ class SessionManager(BusBase):
 
     def get_clients(self):
         if self.dbus_method("GetClients"):
-            return map(lambda x:str(x), self.dbus_method("GetClients"))
+            return map(lambda x:Client(str(x)), self.dbus_method("GetClients"))
         else:
             return []
 
     def get_inhibitors(self):
         if self.dbus_method("GetInhibitors"):
-            return map(lambda x:str(x), self.dbus_method("GetInhibitors"))
+            return map(lambda x:Inhibitor(str(x)), self.dbus_method("GetInhibitors"))
         else:
             return []
 
@@ -254,8 +255,8 @@ class ClientPrivate(BusBase):
 
     __gsignals__  = {
             "stop":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-            "query-end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT)),
-            "end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT)),
+            "query-end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
+            "end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
             "cancel-end-session":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
             }
     
@@ -313,7 +314,7 @@ class Inhibitor(BusBase):
 class Presence(BusBase):
     
     __gsignals__  = {
-            "status-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT)),
+            "status-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
             "status-text-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
             }
     

@@ -54,6 +54,7 @@ class ThemeSettingView(TabBox):
         init docs
         '''
         TabBox.__init__(self)
+        self.draw_title_background = self.draw_tab_title_background
         self.theme = None
         
         self.background_gsettings = deepin_gsettings.new("com.deepin.dde.background")
@@ -155,6 +156,12 @@ class ThemeSettingView(TabBox):
         self.color_deepth_align.add(self.color_deepth_box)
         self.window_theme_box.pack_start(self.window_effect_align, False, False)
         self.window_theme_box.pack_start(self.color_deepth_align, False, False)
+        
+    def draw_tab_title_background(self, cr, widget):
+        rect = widget.allocation
+        cr.set_source_rgb(1, 1, 1)    
+        cr.rectangle(0, 0, rect.width, rect.height - 1)
+        cr.fill()
         
     '''
     TODO: It might need to add select all UE

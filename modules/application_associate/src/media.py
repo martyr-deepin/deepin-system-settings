@@ -32,6 +32,18 @@ class MediaAutorun(object):
         self.player_content_type = "x-content/audio-player"
         self.photo_content_type = "x-content/image-dcf"
         self.software_content_type = "x-content/unix-software"
+
+        self.other_content_types = {"x-content/audio-dvd", "audio DVD",
+                                    "x-content/blank-bd", "blank Blu-ray disc",
+                                    "x-content/blank-cd", "blank CD disc",
+                                    "x-content/blank-dvd", "blank DVD disc",
+                                    "x-content/blank-hddvd", "blank HD DVD disc",
+                                    "x-content/video-bluray", "Blu-ray video disc",
+                                    "x-content/ebook-reader", "e-book reader",
+                                    "x-content/video-hddvd", "HD DVD video disc",
+                                    "x-content/image-picturecd", "Picture CD",
+                                    "x-content/video-svcd", "Super Video CD",
+                                    "x-content/video-vcd", "Video CD" }
         
     @property
     def automount(self):

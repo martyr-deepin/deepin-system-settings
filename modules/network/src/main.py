@@ -102,7 +102,8 @@ class WiredSection(gtk.VBox):
             self.show_all()
         else:
             print "toggle deactive"
-            self.tree.add_items([],0,True)
+            self.tree.delete_all_items()
+            self.tree.set_no_show_all(True)
             self.tree.hide()
             for wired_device in self.wired_devices:
                 wired_device.nm_device_disconnect()
@@ -255,8 +256,9 @@ class WirelessSection(gtk.VBox):
         self.index = index
 
     def toggle_cb(self, widget):
-        print "toggled"
         active = widget.get_active()
+        print "toggled", active
+    
         if active: 
             self.show_ap_list()
         else:

@@ -29,11 +29,11 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from nls import _
 from theme import app_theme
 from dtk.ui.label import Label
-from dtk.ui.button import CheckButton, Button
+from dtk.ui.button import CheckButton, Button, OffButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.new_slider import HSlider
-from dtk.ui.utils import container_remove_all
+from dtk.ui.utils import container_remove_all, color_hex_to_cairo, cairo_disable_antialias
 from treeitem import MyTreeView as TreeView
 from treeitem import MyTreeItem as TreeItem
 from utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
@@ -41,6 +41,7 @@ import gtk
 import pango
 import threading
 from module_frame import ModuleFrame
+from constant import *
 from pexpect import TIMEOUT, EOF
 from glib import markup_escape_text
 
@@ -102,14 +103,15 @@ class AccountSetting(object):
         self.button_widgets["account_name"] = InputEntry()
         self.button_widgets["lock"] = gtk.Button()
         self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=165)
-        self.button_widgets["auto_login"] = gtk.ToggleButton()
+        #self.button_widgets["auto_login"] = gtk.ToggleButton()
+        self.button_widgets["auto_login"] = OffButton()
         self.button_widgets["passwd"] = InputEntry()
-        self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"))
-        self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"))
-        self.button_widgets["mountable_check"] = CheckButton(_("可加载移动设备"))
-        self.button_widgets["disk_readwrite_check"] = CheckButton(_("磁盘操作权限完全"))
+        self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
+        self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
+        self.button_widgets["mountable_check"] = CheckButton(_("可加载移动设备"), padding_x=0)
+        self.button_widgets["disk_readwrite_check"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
 
-        self.button_widgets["backup_check_group"] = CheckButton("")
+        self.button_widgets["backup_check_group"] = CheckButton("", padding_x=0)
         self.label_widgets["backup_check_group"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False)
         self.alignment_widgets["backup_check_group"] = gtk.Alignment()
         self.container_widgets["backup_check_group_hbox"] = gtk.HBox(False)
@@ -121,12 +123,12 @@ class AccountSetting(object):
         self.button_widgets["account_create"] = Button(_("Create"))
         self.button_widgets["account_cancle"] = Button(_("Cancel"))
         self.button_widgets["account_type_new"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=125)
-        self.button_widgets["net_access_check_new"] = CheckButton(_("网络访问权限"))
-        self.button_widgets["disk_readonly_check_new"] = CheckButton(_("磁盘操作权限只读"))
-        self.button_widgets["mountable_check_new"] = CheckButton(_("可加载移动设备"))
-        self.button_widgets["disk_readwrite_check_new"] = CheckButton(_("磁盘操作权限完全"))
+        self.button_widgets["net_access_check_new"] = CheckButton(_("网络访问权限"), padding_x=0)
+        self.button_widgets["disk_readonly_check_new"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
+        self.button_widgets["mountable_check_new"] = CheckButton(_("可加载移动设备"), padding_x=0)
+        self.button_widgets["disk_readwrite_check_new"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
 
-        self.button_widgets["backup_check_group_new"] = CheckButton("")
+        self.button_widgets["backup_check_group_new"] = CheckButton("", padding_x=0)
         self.label_widgets["backup_check_group_new"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False)
         self.alignment_widgets["backup_check_group_new"] = gtk.Alignment()
         self.container_widgets["backup_check_group_hbox_new"] = gtk.HBox(False)
@@ -165,118 +167,167 @@ class AccountSetting(object):
         # delete account page
         self.alignment_widgets["delete_account"] = gtk.Alignment()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
+        #####################################
+        # delete account page
+        self.alignment_widgets["set_iconfile"] = gtk.Alignment()
+        self.container_widgets["set_iconfile_main_vbox"] = gtk.VBox(False)
     
     def __adjust_widget(self):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["delete_account"])
+        
+        self.alignment_widgets["change_pswd"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
+        self.alignment_widgets["delete_account"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
+        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
 
+        self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
+        self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
+        self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"], False, False)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right_vbox"])
         self.alignment_widgets["left_vbox"].add(self.container_widgets["left_vbox"])
+        self.alignment_widgets["left_vbox"].set(0, 0, 1, 1)
+        self.alignment_widgets["left_vbox"].set_padding(1, 1, 1, 1)
         self.alignment_widgets["right_vbox"].add(self.container_widgets["right_vbox"])
-        self.alignment_widgets["main_hbox"].set(0.5, 0.5, 1, 1)
-        self.alignment_widgets["main_hbox"].set_padding(5, 5, 5, 5)
+        self.container_widgets["left_vbox"].set_size_request(325, -1)
+        #self.view_widgets["account"].set_size_request(325, 370)
         ##############################
         # accounts list page
         self.container_widgets["left_vbox"].pack_start(self.view_widgets["account"])
-        self.container_widgets["left_vbox"].pack_start(self.container_widgets["button_hbox"], False, False, 10)
-        self.container_widgets["button_hbox"].pack_start(self.alignment_widgets["button_hbox"])
-        self.container_widgets["button_hbox"].pack_start(self.button_widgets["add_account"], False, False, 10)
+        self.container_widgets["left_vbox"].pack_start(self.alignment_widgets["button_hbox"], False, False)
+        self.alignment_widgets["button_hbox"].add(self.container_widgets["button_hbox"])
+        self.alignment_widgets["button_hbox"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["button_hbox"].set(1.0, 0.5, 0, 0)
+        self.container_widgets["button_hbox"].set_spacing(WIDGET_SPACING)
+        self.container_widgets["button_hbox"].pack_start(self.button_widgets["add_account"], False, False)
         self.container_widgets["button_hbox"].pack_start(self.button_widgets["del_account"], False, False)
-        self.alignment_widgets["button_hbox"].set(0, 0, 1, 1)
-        self.view_widgets["account"].set_size_request(325, 355)
         # init treeview item
         self.view_widgets["account"].add_items(self.get_user_list_treeitem(), clear_first=True)
         ###############
         # accounts info
         self.alignment_widgets["right_vbox"].set(0, 0, 1, 1)
-        self.alignment_widgets["right_vbox"].set_padding(0, 0, 20, 20)
+        #self.alignment_widgets["right_vbox"].set_padding(0, 0, 20, 20)
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
 
-        self.container_widgets["account_info_table"].attach(self.image_widgets["account_icon"], 0, 1, 0, 1, 4, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.alignment_widgets["account_info_hbox"], 1, 2, 0, 1, 4, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.label_widgets["account"], 0, 1, 1, 2, 4, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.button_widgets["account_type"], 1, 2, 1, 2, 4, 5, 50, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.label_widgets["passwd"], 0, 1, 2, 3, 4, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.label_widgets["passwd_char"], 1, 2, 2, 3, 4, 5, 50, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.label_widgets["auto_login"], 0, 1, 3, 4, 4, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.button_widgets["auto_login"], 1, 2, 3, 4, 4, 5, 50, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.label_widgets["deepin_account_tips"], 0, 1, 4, 5, 4, ypadding=10)
-        self.container_widgets["account_info_table"].attach(self.label_widgets["deepin_account"], 1, 2, 4, 5, 4, 5, 50, ypadding=10)
+        self.container_widgets["account_info_table"].set_col_spacings(WIDGET_SPACING)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.image_widgets["account_icon"], height=48), 0, 1, 0, 1, 4)
+        self.container_widgets["account_info_table"].attach(self.alignment_widgets["account_info_hbox"], 1, 2, 0, 1, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["account"]), 0, 1, 1, 2, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.button_widgets["account_type"]), 1, 2, 1, 2, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["passwd"]), 0, 1, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["passwd_char"]), 1, 2, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["auto_login"]), 0, 1, 3, 4, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.button_widgets["auto_login"]), 1, 2, 3, 4, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 4, 5, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["deepin_account"]), 1, 2, 4, 5, 4)
         # TODO 绑定深度帐号
-        #self.container_widgets["right_vbox"].set_sensitive(False)
-        self.button_widgets["auto_login"].set_size_request(49, 22)
+        self.button_widgets["account_type"].set_size_request(-1, WIDGET_HEIGHT)
         self.image_widgets["account_icon"].set_size_request(48, 48)
         self.button_widgets["lock"].set_size_request(16, 16)
-        self.alignment_widgets["account_info_hbox"].set(0.5, 0.5, 1, 1)
+        self.alignment_widgets["account_info_hbox"].set(0.5, 0.5, 0, 0)
         self.alignment_widgets["account_info_hbox"].add(self.container_widgets["account_info_hbox"])
         self.container_widgets["account_info_hbox"].pack_start(self.label_widgets["account_name"], False, False)
         self.container_widgets["account_info_hbox"].pack_start(self.alignment_widgets["lock_button"], False, False)
         self.alignment_widgets["lock_button"].add(self.button_widgets["lock"])
-        self.alignment_widgets["lock_button"].set(1.0, 0.5, 1, 1)
-        self.alignment_widgets["lock_button"].set_padding(16, 16, 20, 0)
+        self.alignment_widgets["lock_button"].set(1.0, 0.5, 0, 0)
 
         self.container_widgets["backup_check_group_hbox"].pack_start(self.alignment_widgets["backup_check_group"], False, False)
         self.container_widgets["backup_check_group_hbox"].pack_start(self.container_widgets["backup_check_group_vbox"], False, False)
         self.alignment_widgets["backup_check_group"].add(self.button_widgets["backup_check_group"])
-        self.alignment_widgets["backup_check_group"].set(0, 0, 1, 1)
         self.container_widgets["backup_check_group_vbox"].pack_start(self.label_widgets["backup_check_group"], False, False)
-        self.container_widgets["backup_check_group_vbox"].pack_start(self.button_widgets["binding"], False, False, 20)
+        self.container_widgets["backup_check_group_vbox"].pack_start(self.button_widgets["binding"], False, False, BETWEEN_SPACING)
 
-        self.container_widgets["check_button_table"].attach(self.button_widgets["net_access_check"], 0, 1, 0, 1, ypadding=10)
-        self.container_widgets["check_button_table"].attach(self.button_widgets["disk_readonly_check"], 1, 2, 0, 1, ypadding=10)
-        self.container_widgets["check_button_table"].attach(self.button_widgets["mountable_check"], 0, 1, 1, 2, ypadding=10)
-        self.container_widgets["check_button_table"].attach(self.button_widgets["disk_readwrite_check"], 1, 2, 1, 2, ypadding=10)
-        self.container_widgets["check_button_table"].attach(self.container_widgets["backup_check_group_hbox"], 0, 2, 2, 3, ypadding=10)
+        self.container_widgets["check_button_table"].set_col_spacings(WIDGET_SPACING)
+        self.container_widgets["check_button_table"].attach(
+            self.__make_align(self.button_widgets["net_access_check"]), 0, 1, 0, 1)
+        self.container_widgets["check_button_table"].attach(
+            self.__make_align(self.button_widgets["disk_readonly_check"]), 1, 2, 0, 1)
+        self.container_widgets["check_button_table"].attach(
+            self.__make_align(self.button_widgets["mountable_check"]), 0, 1, 1, 2)
+        self.container_widgets["check_button_table"].attach(
+            self.__make_align(self.button_widgets["disk_readwrite_check"]), 1, 2, 1, 2)
+        self.container_widgets["check_button_table"].attach(
+            self.__make_align(self.container_widgets["backup_check_group_hbox"]), 0, 2, 2, 3)
 
         ####################
         # create new account
-        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table_new"], False, False)
-        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table_new"], False, False)
-        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["button_hbox_new"], False, False)
+        self.container_widgets["account_info_table_new"].set_col_spacings(WIDGET_SPACING)
+        self.container_widgets["account_info_table_new"].attach(
+            self.__make_align(self.label_widgets["account_name_new"]), 0, 1, 0, 1, 4)
+        self.container_widgets["account_info_table_new"].attach(
+            self.__make_align(self.button_widgets["account_name"]), 1, 2, 0, 1, 4)
+        self.container_widgets["account_info_table_new"].attach(
+            self.__make_align(self.label_widgets["account_type_new"]), 0, 1, 1, 2, 4)
+        self.container_widgets["account_info_table_new"].attach(
+            self.__make_align(self.button_widgets["account_type_new"]), 1, 2, 1, 2, 4)
+        self.container_widgets["account_info_table_new"].attach(
+            self.__make_align(self.label_widgets["deepin_account_tips_new"]), 0, 1, 2, 3, 4)
+        self.container_widgets["account_info_table_new"].attach(
+            self.__make_align(self.label_widgets["deepin_account_new"]), 1, 2, 2, 3, 4)
 
-        self.container_widgets["account_info_table_new"].attach(self.label_widgets["account_name_new"], 0, 1, 0, 1, 4, ypadding=10)
-        self.container_widgets["account_info_table_new"].attach(self.button_widgets["account_name"], 1, 2, 0, 1, 4, 5, 50, ypadding=10)
-        self.container_widgets["account_info_table_new"].attach(self.label_widgets["account_type_new"], 0, 1, 1, 2, 4, ypadding=10)
-        self.container_widgets["account_info_table_new"].attach(self.button_widgets["account_type_new"], 1, 2, 1, 2, 4, 5, 50, ypadding=10)
-        self.container_widgets["account_info_table_new"].attach(self.label_widgets["deepin_account_tips_new"], 0, 1, 2, 3, 4, ypadding=10)
-        self.container_widgets["account_info_table_new"].attach(self.label_widgets["deepin_account_new"], 1, 2, 2, 3, 4, 5, 50, ypadding=10)
-
-        self.button_widgets["account_name"].set_size(115, 20)
+        self.button_widgets["account_name"].set_size(125, WIDGET_HEIGHT)
+        self.button_widgets["account_type_new"].set_size_request(-1, WIDGET_HEIGHT)
 
         self.container_widgets["backup_check_group_hbox_new"].pack_start(self.alignment_widgets["backup_check_group_new"], False, False)
         self.container_widgets["backup_check_group_hbox_new"].pack_start(self.container_widgets["backup_check_group_vbox_new"], False, False)
         self.alignment_widgets["backup_check_group_new"].add(self.button_widgets["backup_check_group_new"])
-        self.alignment_widgets["backup_check_group_new"].set(0, 0, 1, 1)
         self.container_widgets["backup_check_group_vbox_new"].pack_start(self.label_widgets["backup_check_group_new"], False, False)
-        self.container_widgets["backup_check_group_vbox_new"].pack_start(self.button_widgets["binding_new"], False, False, 20)
+        self.container_widgets["backup_check_group_vbox_new"].pack_start(self.button_widgets["binding_new"], False, False, BETWEEN_SPACING)
         
-        self.container_widgets["check_button_table_new"].attach(self.button_widgets["net_access_check_new"], 0, 1, 0, 1, ypadding=10)
-        self.container_widgets["check_button_table_new"].attach(self.button_widgets["disk_readonly_check_new"], 1, 2, 0, 1, ypadding=10)
-        self.container_widgets["check_button_table_new"].attach(self.button_widgets["mountable_check_new"], 0, 1, 1, 2, ypadding=10)
-        self.container_widgets["check_button_table_new"].attach(self.button_widgets["disk_readwrite_check_new"], 1, 2, 1, 2, ypadding=10)
-        self.container_widgets["check_button_table_new"].attach(self.container_widgets["backup_check_group_hbox_new"], 0, 2, 2, 3, ypadding=10)
+        self.container_widgets["check_button_table_new"].set_col_spacings(WIDGET_SPACING)
+        self.container_widgets["check_button_table_new"].attach(
+            self.__make_align(self.button_widgets["net_access_check_new"]), 0, 1, 0, 1)
+        self.container_widgets["check_button_table_new"].attach(
+            self.__make_align(self.button_widgets["disk_readonly_check_new"]), 1, 2, 0, 1)
+        self.container_widgets["check_button_table_new"].attach(
+            self.__make_align(self.button_widgets["mountable_check_new"]), 0, 1, 1, 2)
+        self.container_widgets["check_button_table_new"].attach(
+            self.__make_align(self.button_widgets["disk_readwrite_check_new"]), 1, 2, 1, 2)
+        self.container_widgets["check_button_table_new"].attach(
+            self.__make_align(self.container_widgets["backup_check_group_hbox_new"]), 0, 2, 2, 3)
 
-        self.alignment_widgets["button_hbox_new"].set(0, 0, 1, 1)
-        self.container_widgets["button_hbox_new"].pack_start(self.alignment_widgets["button_hbox_new"])
-        self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_cancle"], False, False, 10)
+        self.alignment_widgets["account_create_error"] = self.__make_align(self.label_widgets["account_create_error"])
+        self.alignment_widgets["button_hbox_new"].set(0, 0, 1, 0)
+        self.alignment_widgets["button_hbox_new"].set_padding(BETWEEN_SPACING, 0, 0, 0)
+        self.alignment_widgets["button_hbox_new"].add(self.container_widgets["button_hbox_new"])
+        self.container_widgets["button_hbox_new"].pack_start(self.__make_align(height=-1))
+        self.container_widgets["button_hbox_new"].set_spacing(WIDGET_SPACING)
+        self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_cancle"], False, False)
         self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_create"], False, False)
         
         # set widget state
+        if not self.permission.get_can_acquire() and not self.permission.get_can_release():
+            self.button_widgets["lock"].set_sensitive(False)
         self.set_widget_state_with_author()
         ###########################
         # change account password page
         self.alignment_widgets["change_pswd"].set(0.5, 0.5, 1, 1)
-        self.alignment_widgets["change_pswd"].set_padding(50, 50, 70, 70)
         ###########################
         # delete account page
         self.alignment_widgets["delete_account"].set(0.5, 0.5, 1, 1)
-        self.alignment_widgets["delete_account"].set_padding(50, 50, 70, 70)
+        # set icon file
+        self.alignment_widgets["set_iconfile"].set(0.5, 0.5, 1, 1)
 
     def __signals_connect(self):
+        self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["change_pswd"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["delete_account"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["set_iconfile"].connect("expose-event", self.container_expose_cb)
+        
+        #self.container_widgets["left_vbox"].connect("expose-event", self.on_left_vbox_expose_cb)
+        
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
         self.button_widgets["add_account"].connect("clicked", self.add_account_button_clicked)
@@ -316,6 +367,27 @@ class AccountSetting(object):
     ######################################
     # signals callback begin
     # widget signals
+    def container_expose_cb(self, widget, event):
+        cr = widget.window.cairo_create()
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
+        cr.rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)                                                 
+        cr.fill()
+    
+    def on_left_vbox_expose_cb(self, widget, event):
+        cr = widget.window.cairo_create()
+        x, y, w, h = widget.allocation
+        x2, y2, w2, h2 = self.alignment_widgets["button_hbox"].allocation
+        print "x y w h:", x, y, w, h
+        print "widget:", widget.get_size_request()
+        print "main hbox", self.alignment_widgets["main_hbox"].allocation
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            cr.set_line_width(1)
+            cr.rectangle(x-1, y-1, w+3, h+2)
+            cr.move_to(x, y+h+2-h2)
+            cr.line_to(x+w+3, y+h+2-h2)
+            cr.stroke()
+    
     def toggle_button_expose(self, button, event):
         ''' toggle button expose'''
         cr = button.window.cairo_create()
@@ -349,8 +421,10 @@ class AccountSetting(object):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table_new"], False, False)
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table_new"], False, False)
-        self.container_widgets["right_vbox"].pack_start(self.label_widgets["account_create_error"], False, False, 10)
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["button_hbox_new"], False, False)
+        self.container_widgets["right_vbox"].pack_start(self.__make_align(), False, False)
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_create_error"], False, False, BETWEEN_SPACING)
+        self.container_widgets["right_vbox"].pack_start(self.__make_align())
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["button_hbox_new"], False, False)
         # TODO 绑定深度
         self.button_widgets["account_name"].set_text("")
         self.button_widgets["account_type"].set_select_index(0)
@@ -429,12 +503,15 @@ class AccountSetting(object):
         cr = button.window.cairo_create()
         x, y, w, h = button.allocation
         if button.get_data("unlocked"):
-            cr.set_source_pixbuf(self.image_widgets["lock_pixbuf"], x, y) 
+            cr.set_source_pixbuf(self.image_widgets["unlock_pixbuf"], x, y) 
             cr.paint()
         else:
-            cr.set_source_pixbuf(
-                self.image_widgets["unlock_pixbuf"], x, y) 
+            cr.set_source_pixbuf(self.image_widgets["lock_pixbuf"], x, y) 
             cr.paint()
+        if not button.get_sensitive():
+            cr.set_source_rgba(1, 1, 1, 0.6)                                               
+            cr.rectangle(x, y, w, h)                                                 
+            cr.fill()
         return True
     
     def lock_button_clicked(self, button):
@@ -706,13 +783,15 @@ class AccountSetting(object):
         keep_button.connect("clicked", delete_user_file_cd, False)
         cancel_button.connect("clicked", cancel_delete_user)
         button_hbox.pack_start(button_align)
+        button_hbox.set_spacing(WIDGET_SPACING)
         button_hbox.pack_start(del_button, False, False)
-        button_hbox.pack_start(keep_button, False, False, 10)
+        button_hbox.pack_start(keep_button, False, False)
         button_hbox.pack_start(cancel_button, False, False)
+        self.container_widgets["del_main_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["del_main_vbox"].pack_start(tips_label, False, False)
-        self.container_widgets["del_main_vbox"].pack_start(tips_label2, False, False, 15)
-        self.container_widgets["del_main_vbox"].pack_start(button_hbox, False, False, 15)
-        self.container_widgets["del_main_vbox"].pack_start(error_label, False, False, 15)
+        self.container_widgets["del_main_vbox"].pack_start(tips_label2, False, False)
+        self.container_widgets["del_main_vbox"].pack_start(button_hbox, False, False)
+        self.container_widgets["del_main_vbox"].pack_start(error_label, False, False)
         self.container_widgets["del_main_vbox"].show_all()
     
     def __init_change_pswd_page(self, current_set_user):
@@ -861,18 +940,19 @@ class AccountSetting(object):
         icon = gtk.Image()
         icon.set_from_pixbuf(icon_pixbuf)
         tips_label = Label(_("Changing password for"), enable_select=False)
-        username_label = Label(self.escape_markup_string(show_name),
-                               text_size=13, enable_select=False)
-        table1.attach(icon, 0, 1, 0, 2, 0, 0, 10)
-        table1.attach(tips_label, 1, 2, 0, 1)
-        table1.attach(username_label, 1, 2, 1, 2)
+        username_label = Label(self.escape_markup_string(show_name), enable_select=False)
+        table1.set_col_spacings(WIDGET_SPACING)
+        table1.attach(self.__make_align(icon, height=48), 0, 1, 0, 2, 4)
+        table1.attach(self.__make_align(tips_label), 1, 2, 0, 1)
+        table1.attach(self.__make_align(username_label), 1, 2, 1, 2)
         
         label1 = Label(_("Action"))
         label2 = Label(_("Current password"))
         label3 = Label(_("New password"))
         label4 = Label(_("Confirm password"))
-        table2.attach(label3, 0, 1, 2, 3, 4, 0, 10, 7)
-        table2.attach(label4, 0, 1, 3, 4, 4, 0, 10, 7)
+        table2.set_col_spacings(WIDGET_SPACING)
+        table2.attach(self.__make_align(label3), 0, 1, 2, 3, 4)
+        table2.attach(self.__make_align(label4), 0, 1, 3, 4, 4)
         
         action_items = [(_("Set a password now"), ACTION_SET_PSWD),
                         (_("Log in without a password"), ACTION_NO_PSWD)]
@@ -881,37 +961,38 @@ class AccountSetting(object):
         else:
             action_items.append((_("Disable this account"), ACTION_DISABLE))
         action_combo = ComboBox(action_items, max_width=180)
+        action_combo.set_size_request(-1, WIDGET_HEIGHT)
         current_pswd_input = PasswordEntry()
         new_pswd_input = PasswordEntry()
         confirm_pswd_input = PasswordEntry()
-        current_pswd_input.set_size(180, 25)
-        new_pswd_input.set_size(180, 25)
-        confirm_pswd_input.set_size(180, 25)
-        show_pswd_check = CheckButton(_("Show password"))
+        current_pswd_input.set_size(180, WIDGET_HEIGHT)
+        new_pswd_input.set_size(180, WIDGET_HEIGHT)
+        confirm_pswd_input.set_size(180, WIDGET_HEIGHT)
+        show_pswd_check = CheckButton(_("Show password"), padding_x=0)
         if is_authorized:
-            table2.attach(label1, 0, 1, 0, 1, 4, 0, 10, 7)
-            table2.attach(action_combo, 1, 2, 0, 1, 4, 0)
+            table2.attach(self.__make_align(label1), 0, 1, 0, 1, 4)
+            table2.attach(self.__make_align(action_combo), 1, 2, 0, 1, 4)
         if is_myown:
-            table2.attach(label2, 0, 1, 1, 2, 4, 0, 10, 7)
-            table2.attach(current_pswd_input, 1, 2, 1, 2, 4, 0)
-        table2.attach(new_pswd_input, 1, 2, 2, 3, 4, 0)
-        table2.attach(confirm_pswd_input, 1, 2, 3, 4, 4, 0)
-        table2.attach(show_pswd_check, 1, 2, 4, 5, 4, 0)
-        table2.attach(button_hbox, 1, 2, 6, 7, 4, 0, 0, 10)
+            table2.attach(self.__make_align(label2), 0, 1, 1, 2, 4)
+            table2.attach(self.__make_align(current_pswd_input), 1, 2, 1, 2, 4)
+        table2.attach(self.__make_align(new_pswd_input), 1, 2, 2, 3, 4)
+        table2.attach(self.__make_align(confirm_pswd_input), 1, 2, 3, 4, 4)
+        table2.attach(self.__make_align(show_pswd_check), 1, 2, 4, 5, 4)
+        table2.attach(self.__make_align(button_hbox, xalign=1.0), 1, 2, 6, 7, 4)
         
-        button_align = gtk.Alignment()
         cancel_button = Button(_("Cancel"))
         change_button = Button(_("Change"))
         change_button.set_sensitive(False)
-        button_hbox.pack_start(button_align)
-        button_hbox.pack_start(cancel_button, False, False, 15)
+        button_hbox.set_spacing(WIDGET_SPACING)
+        button_hbox.pack_start(cancel_button, False, False)
         button_hbox.pack_start(change_button, False, False)
         
         error_label = Label("")
         #table2.attach(error_label, 0, 2, 5, 6, 4, 0)
         
+        self.container_widgets["change_pswd_main_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["change_pswd_main_vbox"].pack_start(table1, False, False)
-        self.container_widgets["change_pswd_main_vbox"].pack_start(table2, False, False, 40)
+        self.container_widgets["change_pswd_main_vbox"].pack_start(table2, False, False)
         self.container_widgets["change_pswd_main_vbox"].pack_start(error_label, False, False)
         self.container_widgets["change_pswd_main_vbox"].pack_start(gtk.Alignment(0, 0, 1, 1))
         self.container_widgets["change_pswd_main_vbox"].show_all()
@@ -923,6 +1004,17 @@ class AccountSetting(object):
         show_pswd_check.connect("toggled", show_input_password)
         cancel_button.connect("clicked", cancel_change_password)
         change_button.connect("clicked", change_user_password)
+
+    def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
+                     yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
+                     padding_right=0, height=CONTAINNER_HEIGHT):
+        align = gtk.Alignment()
+        align.set_size_request(-1, height)
+        align.set(xalign, yalign, xscale, yscale)
+        align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
+        if widget:
+            align.add(widget)
+        return align
 
     def escape_markup_string(self, string):
         '''

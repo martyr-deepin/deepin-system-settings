@@ -35,11 +35,18 @@ def set_align_text_box(align):
     align.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
 
 def set_main_window(align):
-    align.set_padding(FRAME_TOP_PADDING, STATUS_HEIGHT, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
+    align.set_padding(FRAME_TOP_PADDING, STATUS_HEIGHT, FRAME_LEFT_PADDING, 1)
 
 def set_table(table):
-    table.set_row_spacings(CONTAINNER_HEIGHT - WIDGET_HEIGHT)
+    #table.set_row_spacings(8)
     table.set_col_spacings(BETWEEN_SPACING)
+
+def wrap_with_align(widget):
+    align = gtk.Alignment(0, 0.5, 1, 0)
+    align.set_size_request(-1, CONTAINNER_HEIGHT )
+    align.add(widget)
+    return align
+
 
 def set_table_items(table, item_name):
     children = table.get_children()
@@ -62,7 +69,7 @@ def draw_out_line(cr, rect, exclude=[]):
             draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y)
         # bottom
         if "bot" not in exclude:
-            draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
+            draw_line(cr, rect.x, rect.y + rect.height + 1, rect.x + rect.width, rect.y + rect.height +1)
         # left
         if "left" not in exclude:
             draw_line(cr, rect.x , rect.y , rect.x, rect.y + rect.height)

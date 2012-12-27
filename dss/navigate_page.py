@@ -22,7 +22,8 @@
 
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
-from dtk.ui.draw import draw_pixbuf, draw_text
+from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.draw import draw_pixbuf, draw_text, draw_round_rectangle
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 import pango
 import gtk
@@ -167,9 +168,13 @@ class IconItem(gobject.GObject):
         
         # Draw background.
         if self.hover_flag:
-            cr.set_source_rgb(1, 0.5, 0.5)
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+            cr.set_source_rgb(*color_hex_to_cairo("#EBF4FD"))
+            draw_round_rectangle(cr, rect.x, rect.y, rect.width, rect.height, 2)
             cr.fill()
+            
+            cr.set_source_rgb(*color_hex_to_cairo("#7DA2CE"))
+            draw_round_rectangle(cr, rect.x, rect.y, rect.width, rect.height, 2)
+            cr.stroke()
         
         # Draw icon.
         draw_pixbuf(

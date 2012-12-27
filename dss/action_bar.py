@@ -37,12 +37,18 @@ class ActionBar(gtk.Alignment):
     class docs
     '''
 	
-    def __init__(self, module_infos, switch_page, click_module_item):
+    def __init__(self, 
+                 module_infos, 
+                 switch_page, 
+                 click_module_item, 
+                 backward_cb=None, 
+                 forward_cb=None):
         '''
         init docs
         '''
         # Init.
         gtk.Alignment.__init__(self)
+        self.module_infos = module_infos
         self.set(0.5, 0.5, 1, 1)
         self.set_padding(0, 0, 0, 0)
         self.set_size_request(-1, 36)
@@ -62,6 +68,8 @@ class ActionBar(gtk.Alignment):
             app_theme.get_pixbuf("action_button/backward_hover.png"),
             app_theme.get_pixbuf("action_button/backward_press.png"),
             )
+        self.backward_cb = backward_cb
+        self.backward_button.connect("clicked", self.__backward_clicked)
         self.backward_align.add(self.backward_button)
         self.forward_align = gtk.Alignment()
         self.forward_align.set(0, 0, 0, 0)
@@ -71,6 +79,8 @@ class ActionBar(gtk.Alignment):
             app_theme.get_pixbuf("action_button/forward_hover.png"),
             app_theme.get_pixbuf("action_button/forward_press.png"),
             )
+        self.forward_cb = forward_cb
+        self.forward_button.connect("clicked", self.__forward_clicked)
         self.forward_align.add(self.forward_button)
         self.action_box = gtk.HBox()
         self.action_align = gtk.Alignment()
@@ -111,7 +121,15 @@ class ActionBar(gtk.Alignment):
         
         # Connect signals.
         self.connect("expose-event", self.expose_action_bar)
-        
+    
+    def __backward_clicked(self, widget):
+        if self.backward_cb:
+            self.backward_cb()
+
+    def __forward_clicked(self, widget):
+        if self.forward_cb:
+            self.forward_cb()
+    
     def expose_action_bar(self, widget, event):
         cr = widget.window.cairo_create()                                        
         rect = widget.allocation
