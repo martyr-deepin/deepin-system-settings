@@ -72,7 +72,7 @@ class WiredSection(gtk.VBox):
 
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         if self.wired_devices:
-            self.wire = Contain(app_theme.get_pixbuf("/network/cable.png"), _("Wired"), self.toggle_cb)
+            self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
             self.pack_start(self.wire, False, False, 0)
             self.settings = None
@@ -197,7 +197,7 @@ class WirelessSection(gtk.VBox):
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
             # FIXME will support multi devices
-            self.wireless = Contain(app_theme.get_pixbuf("/network/wifi.png"), _("Wireless"), self.toggle_cb)
+            self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
 
             self.pack_start(self.wireless, False, False)
@@ -303,7 +303,7 @@ class HotSpot(gtk.VBox):
 
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self, 0)
-        cont = Contain(app_theme.get_pixbuf("/network/wifi.png"), _("Hotspot"), self.toggle_cb)
+        cont = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Hotspot"), self.toggle_cb)
         self.pack_start(cont, False, False)
         self.settings = None
         self.send_to_crumb_cb = send_to_crumb_cb
@@ -341,7 +341,7 @@ class DSL(gtk.VBox):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
         self.setting_page = None
-        self.dsl = Contain(app_theme.get_pixbuf("/network/dsl.png"), _("DSL"), self.toggle_cb)
+        self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), self.toggle_cb)
         self.pack_start(self.dsl, False, False)
         #pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
@@ -378,7 +378,7 @@ class VpnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
         self.slide_to_subcrumb = slide_to_subcrumb_cb
-        vpn = Contain(app_theme.get_pixbuf("/network/vpn.png"), _("VPN Network"), self.toggle_cb)
+        vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.toggle_cb)
         self.add(vpn)
 
         ## detect vpn active_connection
@@ -420,7 +420,7 @@ class Mobile(gtk.VBox):
                  send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.send_to_crumb_cb = send_to_crumb_cb
-        mobile = Contain(app_theme.get_pixbuf("/network/3g.png"), _("Mobile Network"), self.toggle_cb)
+        mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.toggle_cb)
         self.add(mobile)
         self.settings = None
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
@@ -489,7 +489,7 @@ class Proxy(gtk.VBox):
     def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
         self.slide_to_setting = slide_to_setting_cb
-        proxy = Contain(app_theme.get_pixbuf("/network/proxy.png"), _("Proxy"), self.toggle_cb)
+        proxy = Contain(app_theme.get_pixbuf("network/proxy.png"), _("Proxy"), self.toggle_cb)
         self.settings = None
         self.add(proxy)
 
