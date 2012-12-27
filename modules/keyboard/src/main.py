@@ -663,9 +663,11 @@ class KeySetting(object):
                     and self.button_widgets["layout_add"].get_sensitive():
                 self.button_widgets["layout_add"].set_sensitive(False)
             dialog.destroy()
+        self.container_widgets["layout_button_hbox"].set_sensitive(False)
         dialog_width = 400
         dialog_heigth = 380
         dialog = DialogBox(_("Select an input source to add"), dialog_width, dialog_heigth)
+        dialog.connect("destroy", lambda w: self.container_widgets["layout_button_hbox"].set_sensitive(True))
         dialog.set_keep_above(True)
         dialog.set_modal(True)
         #dialog.set_transient_for(parent)
@@ -939,7 +941,9 @@ class KeySetting(object):
             self.view_widgets["shortcuts_shortcut"].add_items([item])
             self.view_widgets["shortcuts_shortcut"].queue_draw()
             dialog.destroy()
+        self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(False)
         dialog = DialogBox(_("Custom Shortcuts"), 250, 150)
+        dialog.connect("destroy", lambda w:self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(True))
         dialog.set_keep_above(True)
         dialog.set_modal(True)
         #dialog.set_transient_for(self.container_widgets["window"])

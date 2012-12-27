@@ -20,13 +20,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from theme import app_theme
+#from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
 from dtk.ui.utils import color_hex_to_cairo 
 from gtk import gdk
 from gtk import accelerator_name, accelerator_parse, accelerator_get_label
 from nls import _
+from glib import markup_escape_text
 import gobject
 
 
@@ -149,7 +150,7 @@ class LayoutItem(BaseItem):
         @param variants: the variants name, a string type.
         '''
         super(LayoutItem, self).__init__()
-        self.name = name
+        self.name = markup_escape_text(name)
         self.layout = layout
         self.variants = variants
         self.height = 35
@@ -270,7 +271,7 @@ class ShortcutItem(BaseItem):
     '''a shortcut item in TreeView'''
     def __init__(self, description, keyname, name): 
         super(ShortcutItem, self).__init__()
-        self.description = description
+        self.description = markup_escape_text(description)
         self.keyname = keyname
         self.name = name
         self.height = 24
