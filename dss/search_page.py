@@ -25,18 +25,33 @@ import sys
 import os
 import gobject
 import gtk
+from split_word import init_jieba, split_word
 import xappy
-import jieba
+import threading as td
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 2), "modules"))
 
 SEARCH_DB_DIR = os.path.join(get_parent_dir(__file__, 2), "search_db")
+
+class BuildIndexThread(td.Thread):
+    def __init__(self, ThisPtr):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.ThisPtr = ThisPtr
+
+    def run(self):
+        try:
+            self.ThisPtr.build_index()
+        except Exception, e:
+            print "class BuildIndexThread got error" % e
 
 class KeywordSearch:
     def __init__(self, keywords):
         self.__xappy = None
 
         self.__keywords = keywords
+
+        init_jieba()
 
     def build_index(self, remove_old=True):
         if remove_old:
@@ -57,7 +72,7 @@ class KeywordSearch:
                 
                 module_doc.fields.append(xappy.Field("module_id", keyword[0]))
                 
-                terms = list(jieba.cut(keyword[1]))
+                terms = list(split_word(keyword[1]))
                 module_doc.fields.append(xappy.Field("keyword_term", ' '.join(terms)))
                 
                 self.__xappy.add(module_doc)
@@ -99,15 +114,18 @@ class SearchPage(gtk.VBox):
         for module_info_list in self.__module_infos:
             for module_info in module_info_list:
                 if module_info.search_keyword != "None":
-                    module = __import__("%s.src.search_keyword" % module_info.id, fromlist=["keywords"])
+                    module = __import__("%s.%s" % (module_info.id, module_info.search_keyword), fromlist=["keywords"])
                     self.__keywords.append((module_info.id, module.keywords))
 
         self.__keyword_search = KeywordSearch(self.__keywords)
         '''
-        TODO: it might be a heavey operation depend on keywords count
+        TODO: build index might be a heavey operation depend on keywords count
         '''
-        self.__keyword_search.build_index()
+        BuildIndexThread(self).start()
 
-        print "DEBUG module_id", self.__keyword_search.search_query(["电源", "配置"])
+        #print "DEBUG module_id", self.__keyword_search.search_query(["电源", "配置"])
+
+    def build_index(self):
+        self.__keyword_search.build_index()
 
 gobject.type_register(SearchPage)

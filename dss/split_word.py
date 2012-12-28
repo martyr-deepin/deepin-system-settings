@@ -1,11 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Wang Yong
 # 
-# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
-# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
+# Author:     Wang Yong <lazycat.manatee@gmail.com>
+# Maintainer: Wang Yong <lazycat.manatee@gmail.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,12 +20,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from nls import _ 
+jieba_cut = None
 
-'''
-TODO: keywords list
-      item (module_id, search_keyword)
-'''
-keywords = [("power_1", _("Power Button Configuration")), 
-            ("power_2", _("Press Power Button")), 
-           ]
+def init_jieba():
+    # Because import jieba will execute many code, 
+    # so this function make jieba just import one time.
+    global jieba_cut
+    
+    import jieba
+
+    jieba_cut = jieba.cut
+
+def split_word(string, full_mode=False):
+    global jieba_cut
+
+    return jieba_cut(string, full_mode)
