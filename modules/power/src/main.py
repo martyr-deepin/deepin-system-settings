@@ -22,6 +22,7 @@
 
 import sys
 import os
+import getopt
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
@@ -29,6 +30,13 @@ from power_view import PowerView
 from module_frame import ModuleFrame
 
 if __name__ == "__main__":
+    ops, args = getopt.getopt(sys.argv[1:], '')
+    module_uid = None
+
+    if len(args):
+        module_uid = args[0]
+        print "DEBUG getopt module_uid", module_uid
+    
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
     power_view = PowerView()
@@ -38,6 +46,7 @@ if __name__ == "__main__":
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
+            print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
 
     module_frame.module_message_handler = message_handler        

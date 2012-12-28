@@ -82,13 +82,14 @@ def get_forward_module():
         
         return module_history[module_history_index]
 
-def call_module_by_name(module_name, module_dict, slider, content_page_info, force_direction=None):
+def call_module_by_name(module_name, module_dict, slider, content_page_info, force_direction=None, module_uid=None):
     if module_dict.has_key(module_name):
         start_module_process(slider,                                         
                              content_page_info,                              
                              module_dict[module_name].path,                  
                              module_dict[module_name].config,
-                             force_direction)
+                             force_direction, 
+                             module_uid)
 
 class DBusService(dbus.service.Object):
     def __init__(self, 
@@ -130,7 +131,7 @@ class DBusService(dbus.service.Object):
                 (module_id, module_uid) = message_content
                 
                 action_bar.bread.remove_node_after_index(0)
-                call_module_by_name(module_id, module_dict, slider, content_page_info, "right")
+                call_module_by_name(module_id, module_dict, slider, content_page_info, "right", module_uid)
                 
                 record_module_history(module_id)
             else:
@@ -202,8 +203,9 @@ def click_module_menu_item(slider, content_page_info, action_bar, module_info):
         
 def add_crumb(index, label):
     print (index, label)
-        
-def start_module_process(slider, content_page_info, module_path, module_config, force_direction=None):
+
+def start_module_process(slider, content_page_info, module_path, module_config, force_direction=None, 
+                         module_uid=None):
     module_id = module_config.get("main", "id")
     module_slide_to_page = True
     if module_config.has_option("main", "slide_to_page"):
@@ -221,9 +223,15 @@ def start_module_process(slider, content_page_info, module_path, module_config, 
     
     module_dbus_name = "com.deepin.%s_settings" % (module_id)
     if not is_dbus_name_exists(module_dbus_name):
-        subprocess.Popen("python %s" % (os.path.join(module_path, module_config.get("main", "program"))), shell=True)
+        if module_uid:
+            subprocess.Popen("python %s %s" % (os.path.join(module_path, module_config.get("main", "program")), module_uid), shell=True)            
+        else:
+            subprocess.Popen("python %s" % (os.path.join(module_path, module_config.get("main", "program"))), shell=True)
     else:
-        send_message(module_id, "show_again", "")
+        if module_uid:
+            send_message(module_id, "show_again", module_uid)
+        else:
+            send_message(module_id, "show_again", "")
 
 if __name__ == "__main__":
     ops, args = getopt.getopt(sys.argv[1:], '')

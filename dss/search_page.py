@@ -211,7 +211,7 @@ class SearchPage(gtk.VBox):
                 if keyword[0] in results:
                     if not is_drawn_module_name:
                         module_name_align = self.__setup_align()
-                        module_name_label = self.__setup_label("<span underline=\"single\">%s</span>" % module_keyword[1], TITLE_FONT_SIZE)
+                        module_name_label = self.__setup_label("<span foreground=\"blue\" underline=\"single\">%s</span>" % module_keyword[1], TITLE_FONT_SIZE)
                         set_clickable_cursor(module_name_label)
                         module_name_label.connect("button-press-event", 
                                                   self.__button_press, 
@@ -221,7 +221,12 @@ class SearchPage(gtk.VBox):
                         is_drawn_module_name = True
                     
                     module_keyword_align = self.__setup_align(padding_left = 15)
-                    module_keyword_label = self.__setup_label(keyword[1])
+                    module_keyword_label = self.__setup_label("<span foreground=\"blue\" underline=\"single\">%s</span>" % keyword[1])
+                    set_clickable_cursor(module_keyword_label)
+                    module_keyword_label.connect("button-press-event", 
+                                                 self.__button_press, 
+                                                 module_keyword[0], 
+                                                 keyword[0])
                     module_keyword_align.add(module_keyword_label)
                     self.result_box.pack_start(module_keyword_align, False, False)
 
