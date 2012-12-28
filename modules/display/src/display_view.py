@@ -28,7 +28,8 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
-from dtk.ui.utils import color_hex_to_cairo, is_dbus_name_exists
+from dtk.ui.utils import (color_hex_to_cairo, set_clickable_cursor, 
+                          is_dbus_name_exists)
 from dtk.ui.draw import cairo_state, draw_text
 import gobject
 import gtk
@@ -247,10 +248,12 @@ class DisplayView(gtk.VBox):
         self.goto_individuation_label.connect("button-press-event", 
                                               self.__button_press, 
                                               "individuation")
+        set_clickable_cursor(self.goto_individuation_label)
         self.goto_power_label = self.__setup_label(text = "电源相关设置请点击 <span foreground=\"blue\" underline=\"single\">电源设置</span>。", width = 180)
         self.goto_power_label.connect("button-press-event", 
                                       self.__button_press, 
                                       "power")
+        set_clickable_cursor(self.goto_power_label)
         self.__widget_pack_start(self.goto_box, 
             [self.goto_individuation_label, self.goto_power_label])
         self.goto_align.add(self.goto_box)
@@ -404,7 +407,7 @@ class DisplayView(gtk.VBox):
                    error_handler=self.__handle_dbus_error)
 
     def __button_press(self, widget, event, module_id):
-        self.__send_message("goto", module_id)
+        self.__send_message("goto", (module_id, ""))
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                        

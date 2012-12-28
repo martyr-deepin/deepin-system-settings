@@ -127,7 +127,7 @@ class DBusService(dbus.service.Object):
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
             elif message_type == "goto":
-                module_id = message_content
+                (module_id, module_uid) = message_content
                 
                 action_bar.bread.remove_node_after_index(0)
                 call_module_by_name(module_id, module_dict, slider, content_page_info, "right")

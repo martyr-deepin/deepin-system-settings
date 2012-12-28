@@ -21,13 +21,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.utils import get_parent_dir, remove_directory, color_hex_to_cairo
+from dtk.ui.utils import (get_parent_dir, remove_directory, color_hex_to_cairo, 
+                          set_clickable_cursor, is_dbus_name_exists)
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 import sys
 import os
 import gobject
 import gtk
+import dbus
 from split_word import init_jieba, split_word
 from constant import *
 import xappy
@@ -71,7 +73,7 @@ class KeywordSearch:
                                       nopos=True)
 
         for module_keyword in self.__keywords:
-            for keyword in module_keyword[1]:
+            for keyword in module_keyword[2]:
                 module_doc = xappy.UnprocessedDocument()
                 
                 module_doc.fields.append(xappy.Field("module_id", keyword[0]))
@@ -108,13 +110,20 @@ class SearchPage(gtk.VBox):
 
         self.scrolled_window = ScrolledWindow()
         self.scrolled_window.set_size_request(800, 425)
+        self.result_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING, 
+                                               padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.result_box = gtk.VBox()
         self.result_box.connect("expose-event", self.__expose)
+        self.result_align.add(self.result_box)
 
         '''
         struct keywords {
             module_id, 
-            keywords
+            module_name, 
+            module_keywords {
+                uid, 
+                keyword
+            }
         }
         '''
         self.__keywords = []
@@ -127,7 +136,7 @@ class SearchPage(gtk.VBox):
             for module_info in module_info_list:
                 if module_info.search_keyword != "None":
                     module = __import__("%s.%s" % (module_info.id, module_info.search_keyword), fromlist=["keywords"])
-                    self.__keywords.append((module_info.name, module.keywords))
+                    self.__keywords.append((module_info.id, module_info.name, module.keywords))
 
         self.__keyword_search = KeywordSearch(self.__keywords)
         '''
@@ -135,7 +144,7 @@ class SearchPage(gtk.VBox):
         '''
         BuildIndexThread(self).start()
 
-        self.scrolled_window.add_child(self.result_box)
+        self.scrolled_window.add_child(self.result_align)
         self.pack_start(self.scrolled_window)
 
     def __expose(self, widget, event):
@@ -157,6 +166,7 @@ class SearchPage(gtk.VBox):
                           padding_bottom, 
                           padding_left, 
                           padding_right)
+        align.connect("expose-event", self.__expose)
         return align
 
     def __setup_label(self, 
@@ -169,7 +179,22 @@ class SearchPage(gtk.VBox):
                       label_width = label_width, 
                       wrap_width = wrap_width)
         return label
-    
+  
+    def __handle_dbus_replay(self, *reply):
+        pass
+
+    def __handle_dbus_error(self, *error):
+        pass
+
+    def __button_press(self, widget, event, module_id, module_uid=""):
+        if is_dbus_name_exists(APP_DBUS_NAME):
+            bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
+            method = bus_object.get_dbus_method("message_receiver")
+            method("goto", 
+                   (module_id, module_uid), 
+                   reply_handler=self.__handle_dbus_replay, 
+                   error_handler=self.__handle_dbus_error)
+
     def query(self, keyword):
         results = self.__keyword_search.query(keyword)
         is_drawn_module_name = False
@@ -182,11 +207,15 @@ class SearchPage(gtk.VBox):
 
         for module_keyword in self.__keywords:
             is_drawn_module_name = False
-            for keyword in module_keyword[1]:
+            for keyword in module_keyword[2]:
                 if keyword[0] in results:
                     if not is_drawn_module_name:
                         module_name_align = self.__setup_align()
-                        module_name_label = self.__setup_label(module_keyword[0], TITLE_FONT_SIZE)
+                        module_name_label = self.__setup_label("<span underline=\"single\">%s</span>" % module_keyword[1], TITLE_FONT_SIZE)
+                        set_clickable_cursor(module_name_label)
+                        module_name_label.connect("button-press-event", 
+                                                  self.__button_press, 
+                                                  module_keyword[0])
                         module_name_align.add(module_name_label)
                         self.result_box.pack_start(module_name_align, False, False)
                         is_drawn_module_name = True
