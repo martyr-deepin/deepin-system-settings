@@ -1,0 +1,21 @@
+模块搜索
+
+以Power模块为例子
+
+*创建空__init__.py文件
+
+power/__init__.py
+power/src/__init__.py 
+
+*修改config.ini文件
+
+power/config.ini
+修改[main]中search_keyword的值, 例如src.search_keyword
+src.search_keyword的目的是让dss自动from power.src.search_keyword import keywords
+
+*创建search_keyword.py文件
+
+search_keyword.py文件的内容 keywords = [("模块ID", "关键词"),]
+
+TODO LIST
+*向模块发送搜索结果module_id, 模块根据module_id进行界面上的定位
