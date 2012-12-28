@@ -172,7 +172,7 @@ class SearchPage(gtk.VBox):
     def __setup_label(self, 
                       text="", 
                       text_size=CONTENT_FONT_SIZE, 
-                      label_width=180, 
+                      label_width=680, 
                       wrap_width=None):
         label = Label(text = text, 
                       text_size = text_size, 
