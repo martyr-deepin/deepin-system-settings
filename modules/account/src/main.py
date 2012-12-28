@@ -89,10 +89,10 @@ class AccountSetting(object):
         self.label_widgets["deepin_account_new"] = Label(_("Unbound"))
         self.label_widgets["account_create_error"] = Label("", wrap_width=360, enable_select=False)
         # image
-        self.image_widgets["lock_pixbuf"] = app_theme.get_pixbuf("lock/lock.png").get_pixbuf()
-        self.image_widgets["unlock_pixbuf"] = app_theme.get_pixbuf("lock/unlock.png").get_pixbuf()
-        self.image_widgets["default_icon"] = app_theme.get_pixbuf("%s/icon.png" % MODULE_NAME).get_pixbuf()
-        self.image_widgets["account_icon"] = IconButton(self.image_widgets["default_icon"])
+        self.image_widgets["lock_pixbuf"] = app_theme.get_pixbuf("lock/lock.png")
+        self.image_widgets["unlock_pixbuf"] = app_theme.get_pixbuf("lock/unlock.png")
+        self.image_widgets["default_icon"] = app_theme.get_pixbuf("%s/icon.png" % MODULE_NAME)
+        self.image_widgets["account_icon"] = IconButton(self.image_widgets["default_icon"].get_pixbuf())
         # button
         self.button_widgets["account_name"] = InputEntry()
         self.button_widgets["lock"] = gtk.Button()
@@ -161,20 +161,29 @@ class AccountSetting(object):
         # delete account page
         self.alignment_widgets["delete_account"] = gtk.Alignment()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
+        self.label_widgets["del_account_tips"] = Label("", wrap_width=400, enable_select=False)
+        self.label_widgets["del_account_tips2"] = Label(
+            _("It is possible to keep the home directory when deleting a user account."),
+            wrap_width=400, enable_select=False)
+        self.label_widgets["del_account_error_label"] = Label("", wrap_width=390, enable_select=False)
+        self.button_widgets["del_button"] = Button(_("Delete Files"))
+        self.button_widgets["keep_button"] = Button(_("Keep Files"))
+        self.button_widgets["cancel_button"] = Button(_("Cancel"))
+        self.container_widgets["del_account_button_hbox"] = gtk.HBox(False)
         #####################################
-        # delete account page
+        # set icon page
         self.alignment_widgets["set_iconfile"] = gtk.Alignment()
         self.container_widgets["set_iconfile_main_vbox"] = gtk.VBox(False)
     
     def __adjust_widget(self):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
-        self.container_widgets["slider"].append_page(self.alignment_widgets["delete_account"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["set_iconfile"])
+        #self.container_widgets["slider"].append_page(self.alignment_widgets["delete_account"])
         
         self.alignment_widgets["change_pswd"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
-        self.alignment_widgets["delete_account"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
-        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
+        #self.alignment_widgets["delete_account"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
+        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 20)
 
         self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
@@ -195,6 +204,7 @@ class AccountSetting(object):
         self.alignment_widgets["button_hbox"].add(self.container_widgets["button_hbox"])
         self.alignment_widgets["button_hbox"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["button_hbox"].set(1.0, 0.5, 0, 0)
+        #self.alignment_widgets["button_hbox"].set_padding(0, 0, 0, 10)
         self.container_widgets["button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["button_hbox"].pack_start(self.button_widgets["add_account"], False, False)
         self.container_widgets["button_hbox"].pack_start(self.button_widgets["del_account"], False, False)
@@ -301,7 +311,20 @@ class AccountSetting(object):
         self.container_widgets["button_hbox_new"].set_spacing(WIDGET_SPACING)
         self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_cancle"], False, False)
         self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_create"], False, False)
-        
+        #############################
+        # del account
+        self.container_widgets["del_main_vbox"].set_spacing(BETWEEN_SPACING)
+        self.container_widgets["del_main_vbox"].pack_start(self.label_widgets["del_account_tips"], False, False)
+        self.container_widgets["del_main_vbox"].pack_start(self.label_widgets["del_account_tips2"], False, False)
+        self.container_widgets["del_main_vbox"].pack_start(self.label_widgets["del_account_error_label"], False, False)
+        button_align = gtk.Alignment()
+        button_align.set(1, 0.5, 1, 1)
+        self.container_widgets["del_account_button_hbox"].pack_start(button_align)
+        self.container_widgets["del_account_button_hbox"].set_spacing(WIDGET_SPACING)
+        self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["del_button"], False, False)
+        self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["keep_button"], False, False)
+        self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["cancel_button"], False, False)
+        self.container_widgets["del_main_vbox"].pack_start(self.container_widgets["del_account_button_hbox"], False, False)
         # set widget state
         if not self.permission.get_can_acquire() and not self.permission.get_can_release():
             self.button_widgets["lock"].set_sensitive(False)
@@ -311,7 +334,7 @@ class AccountSetting(object):
         self.alignment_widgets["change_pswd"].set(0.5, 0.5, 1, 1)
         ###########################
         # delete account page
-        self.alignment_widgets["delete_account"].set(0.5, 0.5, 1, 1)
+        self.alignment_widgets["delete_account"].set(0.5, 0.0, 1, 1)
         # set icon file
         self.alignment_widgets["set_iconfile"].set(0.5, 0.5, 1, 1)
 
@@ -330,6 +353,10 @@ class AccountSetting(object):
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
         self.button_widgets["account_create"].connect("clicked", self.account_create_button_clicked)
         self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
+        
+        self.button_widgets["del_button"].connect("clicked", self.del_delete_user_file_cd, True)
+        self.button_widgets["keep_button"].connect("clicked", self.del_delete_user_file_cd, False)
+        self.button_widgets["cancel_button"].connect("clicked", self.del_cancel_delete_cb)
 
         self.button_widgets["account_type"].connect("item-selected", self.account_type_item_selected)
 
@@ -407,13 +434,38 @@ class AccountSetting(object):
         self.container_widgets["right_vbox"].show_all()
         button.set_sensitive(False)
     
+    def del_cancel_delete_cb(self, button):
+        container_remove_all(self.container_widgets["right_vbox"])
+        self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
+        self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
+        self.container_widgets["right_vbox"].show_all()
+        
+    def del_delete_user_file_cd(self, button, del_file):
+        try:
+            self.container_widgets["del_account_button_hbox"].set_sensitive(False)
+            self.account_dbus.delete_user(self.current_del_user.get_uid(), del_file)
+        except Exception, e:
+            if isinstance(e, (AccountsPermissionDenied)):
+                error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+            return
+        self.del_cancel_delete_cb(button)
+        
     def del_account_button_clicked(self, button):
         if not self.current_select_user:
             return
-        self.__init_del_user_page(self.current_select_user)
-        self.container_widgets["slider"].slide_to_page(
-            account_settings.alignment_widgets["delete_account"], "right")
-        self.module_frame.send_submodule_crumb(2, _("Delete User"))
+        self.current_del_user = self.current_select_user
+        container_remove_all(self.container_widgets["right_vbox"])
+        self.container_widgets["right_vbox"].pack_start(self.container_widgets["del_main_vbox"])
+        if self.current_select_user.get_real_name():
+            show_name = self.current_select_user.get_real_name() 
+        else:
+            show_name = self.current_select_user.get_user_name()
+        self.label_widgets["del_account_tips"].set_text(
+            "<b>%s</b>" % _("Do you want to keep <u>%s</u>'s files?") % 
+            self.escape_markup_string(show_name))
+        self.label_widgets["del_account_error_label"].set_text("")
+        self.container_widgets["del_account_button_hbox"].set_sensitive(True)
+        self.container_widgets["right_vbox"].show_all()
     
     def account_cancle_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
@@ -481,10 +533,10 @@ class AccountSetting(object):
         cr = button.window.cairo_create()
         x, y, w, h = button.allocation
         if button.get_data("unlocked"):
-            cr.set_source_pixbuf(self.image_widgets["unlock_pixbuf"], x, y) 
+            cr.set_source_pixbuf(self.image_widgets["unlock_pixbuf"].get_pixbuf(), x, y) 
             cr.paint()
         else:
-            cr.set_source_pixbuf(self.image_widgets["lock_pixbuf"], x, y) 
+            cr.set_source_pixbuf(self.image_widgets["lock_pixbuf"].get_pixbuf(), x, y) 
             cr.paint()
         if not button.get_sensitive():
             cr.set_source_rgba(1, 1, 1, 0.6)                                               
@@ -610,9 +662,9 @@ class AccountSetting(object):
                 icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
                     icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
             except:
-                icon_pixbuf = self.image_widgets["default_icon"]
+                icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         else:
-            icon_pixbuf = self.image_widgets["default_icon"]
+            icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         item.icon = icon_pixbuf
         item.user_name = self.escape_markup_string(user.get_user_name())
         item.real_name = self.escape_markup_string(user.get_real_name())
@@ -647,9 +699,9 @@ class AccountSetting(object):
                 icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
                     icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
             except:
-                icon_pixbuf = self.image_widgets["default_icon"]
+                icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         else:
-            icon_pixbuf = self.image_widgets["default_icon"]
+            icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         user_item = TreeItem(icon_pixbuf, self.escape_markup_string(user_info[2]),
                              self.escape_markup_string(user_info[3]),
                              user_info[4], user_info[0])
@@ -687,9 +739,9 @@ class AccountSetting(object):
                     icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
                         icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
                 except:
-                    icon_pixbuf = self.image_widgets["default_icon"]
+                    icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
             else:
-                icon_pixbuf = self.image_widgets["default_icon"]
+                icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
             if settings.check_is_myown(user.get_uid()):
                 item = TreeItem(icon_pixbuf, self.escape_markup_string(user.get_real_name()),
                                 self.escape_markup_string(user.get_user_name()),
@@ -728,59 +780,6 @@ class AccountSetting(object):
         @return: True if current process has been authorized, else False
         '''
         return self.permission.get_allowed()
-    
-    def __init_del_user_page(self, current_del_user):
-        def cancel_delete_user(button):
-            self.container_widgets["slider"].slide_to_page(
-                self.alignment_widgets["main_hbox"], "left")
-            self.change_crumb(1)
-        
-        def delete_user_file_cd(button, del_file):
-            try:
-                button_hbox.set_sensitive(False)
-                self.account_dbus.delete_user(current_del_user.get_uid(), del_file)
-            except Exception, e:
-                if isinstance(e, (AccountsPermissionDenied)):
-                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
-                return
-            self.container_widgets["slider"].slide_to_page(
-                self.alignment_widgets["main_hbox"], "left")
-            self.change_crumb(1)
-            
-        self.container_widgets["del_main_vbox"].destroy()
-        self.container_widgets["del_main_vbox"] = gtk.VBox(False)
-        self.alignment_widgets["delete_account"].add(self.container_widgets["del_main_vbox"])
-
-        if current_del_user.get_real_name():
-            show_name = current_del_user.get_real_name() 
-        else:
-            show_name = current_del_user.get_user_name()
-        tips_label = Label("<b>%s</b>" % _("Do you want to keep <u>%s</u>'s files?") % 
-                           self.escape_markup_string(show_name),
-                           text_size=13, wrap_width=660, enable_select=False)
-        tips_label2 = Label(_("It is possible to keep the home directory when deleting a user account."),
-                            wrap_width=660, enable_select=False)
-        error_label = Label("", wrap_width=660, enable_select=False)
-        button_align = gtk.Alignment()
-        button_hbox = gtk.HBox(False)
-        button_align.set(1, 0.5, 1, 1)
-        del_button = Button(_("Delete Files"))
-        keep_button = Button(_("Keep Files"))
-        cancel_button = Button(_("Cancel"))
-        del_button.connect("clicked", delete_user_file_cd, True)
-        keep_button.connect("clicked", delete_user_file_cd, False)
-        cancel_button.connect("clicked", cancel_delete_user)
-        button_hbox.pack_start(button_align)
-        button_hbox.set_spacing(WIDGET_SPACING)
-        button_hbox.pack_start(del_button, False, False)
-        button_hbox.pack_start(keep_button, False, False)
-        button_hbox.pack_start(cancel_button, False, False)
-        self.container_widgets["del_main_vbox"].set_spacing(BETWEEN_SPACING)
-        self.container_widgets["del_main_vbox"].pack_start(tips_label, False, False)
-        self.container_widgets["del_main_vbox"].pack_start(tips_label2, False, False)
-        self.container_widgets["del_main_vbox"].pack_start(button_hbox, False, False)
-        self.container_widgets["del_main_vbox"].pack_start(error_label, False, False)
-        self.container_widgets["del_main_vbox"].show_all()
     
     def __init_set_icon_page(self, current_set_user):
         def cancel_set_icon(button):
@@ -845,8 +844,8 @@ class AccountSetting(object):
         swin = ScrolledWindow()
         face_dir = '/usr/share/pixmaps/faces'
         pic_list = os.listdir(face_dir)
-        row_num = (len(pic_list) + 1) / 5 + 1
-        table = gtk.Table(row_num, 5)
+        row_num = (len(pic_list) + 1) / 10 + 1
+        table = gtk.Table(row_num, 10)
         table.set_col_spacings(FRAME_VERTICAL_SPACING)
         table.set_row_spacings(FRAME_HORIZONTAL_SPACING)
         i = 0
@@ -861,14 +860,14 @@ class AccountSetting(object):
             icon_bt.connect("button-release-event", icon_bt_release_cb)
             table.attach(icon_bt, j, j+1, i, i+1, 4, 4)
             j += 1
-            if j > 5:
+            if j >= 10:
                 j = 0
                 i += 1
         more_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
         more_button.connect("button-release-event", choose_picture)
         table.attach(more_button, j, j+1, i, i+1, 4, 4)
-        swin.add_child(self.__make_align(table, yalign=0.0, padding_top=3, padding_left=2, height=-1))
-        swin.set_size_request(382, 259)
+        swin.add_child(self.__make_align(table, yalign=-1.0, padding_top=3, padding_left=2, height=-1))
+        swin.set_size_request(650, 259)
         #table.connect("expose-event", table_expose_cb)
         table.connect("expose-event", self.container_expose_cb)
 
@@ -929,8 +928,9 @@ class AccountSetting(object):
                 else:
                     change_button.set_sensitive(True)
         
-        def change_user_password_thread(new_pswd):
+        def change_user_password_thread(new_pswd, mutex):
             print "in thread"
+            mutex.acquire()
             try:
                 if is_myown:
                     old_pswd = current_pswd_input.entry.get_text()
@@ -963,6 +963,7 @@ class AccountSetting(object):
                 error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), error_msg))
                 table2.set_sensitive(True)
                 gtk.gdk.threads_leave()
+            mutex.release()
             
         def change_user_password(button):
             table2.set_sensitive(False)
@@ -990,7 +991,8 @@ class AccountSetting(object):
                 error_label.set_text("<span foreground='red'>%s</span>" % _("两次输入的密码不一致"))
                 table2.set_sensitive(True)
                 return
-            t = threading.Thread(target=change_user_password_thread, args=(new_pswd, ))
+            mutex = threading.Lock()
+            t = threading.Thread(target=change_user_password_thread, args=(new_pswd, mutex))
             t.setDaemon(True)
             t.start()
         
@@ -1030,9 +1032,9 @@ class AccountSetting(object):
                 icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
                     icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
             except:
-                icon_pixbuf = self.image_widgets["default_icon"]
+                icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         else:
-            icon_pixbuf = self.image_widgets["default_icon"]
+            icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         icon = gtk.Image()
         icon.set_from_pixbuf(icon_pixbuf)
         tips_label = Label(_("Changing password for"), enable_select=False)
@@ -1118,7 +1120,6 @@ class AccountSetting(object):
         @param string: a markup string
         @return: a escaped string
         '''
-        #return string.replace('&', '&#38;').replace('<', '&#60;').replace('>', '&#62;')    
         return markup_escape_text(string)
     
     def change_crumb(self, crumb_index):

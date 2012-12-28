@@ -83,7 +83,7 @@ class TouchpadSetting(object):
         self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("%s/pointer.png" % MODULE_NAME))
         self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("%s/double-click.png" % MODULE_NAME))
         self.image_widgets["drag"] = ImageBox(app_theme.get_pixbuf("%s/drag.png" % MODULE_NAME))
-        self.image_widgets["double_test"] = app_theme.get_pixbuf("%s/double-test.png" % MODULE_NAME).get_pixbuf()
+        self.image_widgets["double_test"] = app_theme.get_pixbuf("%s/double-test.png" % MODULE_NAME)
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
         self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)
@@ -316,7 +316,8 @@ class TouchpadSetting(object):
         self.container_widgets["double_click_table"].attach(
             self.__make_align(self.button_widgets["double_test"], height=-1), 3, 4, 0, 2, 0, 0, 0)
         self.button_widgets["double_test"].set_size_request(
-            self.image_widgets["double_test"].get_width(), self.image_widgets["double_test"].get_height())
+            self.image_widgets["double_test"].get_pixbuf().get_width(),
+            self.image_widgets["double_test"].get_pixbuf().get_height())
 
         # drag threshold
         self.alignment_widgets["drag_threshold_label"].add(self.container_widgets["drag_threshold_label_hbox"])
@@ -481,7 +482,7 @@ class TouchpadSetting(object):
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
         cr.rectangle(*widget.allocation)                                                 
         cr.paint()
-        cr.set_source_pixbuf(self.image_widgets["double_test"], 0, 0)
+        cr.set_source_pixbuf(self.image_widgets["double_test"].get_pixbuf(), 0, 0)
         cr.paint()
         propagate_expose(widget, event)
         return True
