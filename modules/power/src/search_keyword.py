@@ -28,4 +28,12 @@ TODO: keywords list
 '''
 keywords = [("power_1", _("Power Button Configuration")), 
             ("power_2", _("Press Power Button")), 
+            ("power_3", _("Close Notebook Cover")), 
+            ("power_4", _("Press Hibernate Button")), 
+            ("power_5", _("Saving Power Configuration")), 
+            ("power_6", _("Being Hibernate")), 
+            ("power_7", _("Close Harddisk")), 
+            ("power_8", _("Close Monitor")), 
+            ("power_9", _("Password Protection Wakeup")), 
+            ("power_10", _("Show Battery Status In The Tray"))
            ]
