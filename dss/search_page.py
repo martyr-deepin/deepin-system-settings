@@ -65,7 +65,7 @@ class KeywordSearch:
 
         self.__xappy = xappy.IndexerConnection(SEARCH_DB_DIR)
 
-        self.__xappy.add_field_action("module_id", 
+        self.__xappy.add_field_action("module_uid", 
                                       xappy.FieldActions.STORE_CONTENT)
 
         self.__xappy.add_field_action("keyword_term", 
@@ -76,7 +76,7 @@ class KeywordSearch:
             for keyword in module_keyword[2]:
                 module_doc = xappy.UnprocessedDocument()
                 
-                module_doc.fields.append(xappy.Field("module_id", keyword[0]))
+                module_doc.fields.append(xappy.Field("module_uid", keyword[0]))
                 
                 terms = list(split_word(keyword[1]))
                 module_doc.fields.append(xappy.Field("keyword_term", ' '.join(terms)))
@@ -95,7 +95,7 @@ class KeywordSearch:
         q = sconn.query_parse(search, default_op=sconn.OP_AND)
         results = sconn.search(q, 0, sconn.get_doccount())
         
-        return map(lambda result: result.data["module_id"][0], results) 
+        return map(lambda result: result.data["module_uid"][0], results) 
 
 class SearchPage(gtk.VBox):
     '''

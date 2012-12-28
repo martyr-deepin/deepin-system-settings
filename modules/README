@@ -15,7 +15,8 @@ src.search_keyword的目的是让dss自动from power.src.search_keyword import k
 
 *创建search_keyword.py文件
 
-search_keyword.py文件的内容 keywords = [("模块ID", "关键词"),]
+search_keyword.py文件的内容 keywords = [("模块UID", "关键词"),]
 
-TODO LIST
-*向模块发送搜索结果module_id, 模块根据module_id进行界面上的定位
+*goto的消息内容messange_content变换成(module_id, module_uid)
+
+其中module_uid就是模块开发者用来TabWindow抬起那个Tab的模块UID标识
