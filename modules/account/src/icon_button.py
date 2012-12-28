@@ -65,7 +65,8 @@ class IconButton(gtk.EventBox):
         '''
         self.pixbuf = pixbuf
         if pixbuf:
-            self.set_size_request(pixbuf.get_width()+2*self.padding_x, pixbuf.get_height()+2*self.padding_y)
+            self.set_size_request(pixbuf.get_width()+2*self.padding_x,
+                                  pixbuf.get_height()+2*self.padding_y)
             self.queue_draw()
 
     def get_image_path(self):

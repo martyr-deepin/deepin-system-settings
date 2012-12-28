@@ -118,8 +118,8 @@ class MyTreeItem(TreeItem):
     def __init__(self, icon, content, obj_path=None):
         '''
         initialization.
-        @param icon: a gtk.gdk.Pixbuf type
-        @param content: a string type
+        @param icon: a DynamicPixbuf object
+        @param content: a string object
         '''
         super(MyTreeItem, self).__init__()
         self.treeview = None
@@ -174,7 +174,7 @@ class MyTreeItem(TreeItem):
             cr.set_source_rgb(*color_hex_to_cairo(bg_color))
             cr.rectangle(rect.x, rect.y, rect.width, rect.height)
             cr.paint()
-        cr.set_source_pixbuf(self.icon, rect.x+self.padding_x, rect.y)
+        cr.set_source_pixbuf(self.icon.get_pixbuf(), rect.x+self.padding_x, rect.y)
         cr.paint()
     
 gobject.type_register(MyTreeItem)
