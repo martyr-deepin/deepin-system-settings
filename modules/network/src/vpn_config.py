@@ -4,13 +4,14 @@
 from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button, RadioButton, CheckButton
+from dtk.ui.button import Button,  CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
+from dtk.ui.new_treeview import TreeView
 #from dtk.ui.droplist import Droplist
 #from widgets import SettingButton
-from settings_widget import SettingItem, EntryTreeView
+from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 # NM lib import 
 from nm_modules import nm_module
 from nmlib.nmcache import cache
@@ -21,48 +22,54 @@ from container import Contain
 from shared_widget import IPV4Conf
 
 import gtk
+from nls import _
+import style
+from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE
+from container import MyRadioButton as RadioButton
 
 slider = nm_module.slider
-class VPNSetting(gtk.HBox):
+class VPNSetting(gtk.Alignment):
 
     def __init__(self, slide_back_cb=None, change_crumb_cb=None, module_frame=None):
 
-        gtk.HBox.__init__(self)
+        gtk.Alignment.__init__(self)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
         self.module_frame = module_frame
         
+        # Add UI Align
+        style.set_main_window(self)
+        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        self.add(hbox)
         self.pptp = None
         self.ipv4 = None
 
         self.tab_window = TabBox()
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
-        self.items = [("PPTP", NoSetting()),
-                      ("IPv4 Setting", NoSetting())]
+        self.items = [(_("PPTP"), NoSetting()),
+                      (_("IPv4 Setting"), NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
         # Build ui
-        self.pack_start(self.sidebar, False , False)
+        hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.expose_event)
+        #vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
-        self.pack_start(vbox, True, True)
-        #hbox = gtk.HBox()
+        hbox.pack_start(vbox, True, True)
         self.save_button = Button("Save")
-        #apply_button = Button("Connect")
-        #apply_button.set_sensitive(False)
         button_box = gtk.HBox()
         button_box.add(self.save_button)
-        #button_box.add(apply_button)
-        #apply_button.connect("clicked", self.apply_changes)
         self.save_button.connect("clicked", self.save_changes)
 
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
         buttons_aligns.add(button_box)
         vbox.pack_start(buttons_aligns, False , False)
-        #hbox.connect("expose-event", self.expose_event)
+
+        self.connect("expose-event", self.expose_event)
+        vbox.connect("expose-event", self.expose_outline, ["top"])
+        self.sidebar.connect("expose-event", self.expose_outline, [])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -70,6 +77,12 @@ class VPNSetting(gtk.HBox):
         cr.rectangle(0, 0, rect.width, rect.height - 1)
         cr.fill()
         
+    def expose_outline(self, widget, event, exclude):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        style.draw_out_line(cr, rect, exclude)
+
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
@@ -221,18 +234,17 @@ class VPNSetting(gtk.HBox):
 
 class SideBar(gtk.VBox):
     def __init__(self, connections , main_init_cb, check_click_cb):
-        gtk.VBox.__init__(self, False, 5)
+        gtk.VBox.__init__(self, False)
         self.connections = connections
         self.main_init_cb = main_init_cb
         self.check_click_cb = check_click_cb
 
         # Build ui
-        self.buttonbox = gtk.VBox(False, 6)
+        self.buttonbox = gtk.VBox(False)
         self.pack_start(self.buttonbox, False, False)
-        add_button = Button("Add setting")
-        add_button.connect("clicked", self.add_new_connection)
-        self.pack_start(add_button, False, False, 6)
-        self.set_size_request(160, -1)
+        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
+        self.pack_start(TreeView([add_button]), False, False)
+        self.set_size_request(180, -1)
 
         self.new_connection_list = []
     
@@ -259,7 +271,7 @@ class SideBar(gtk.VBox):
 
         self.connection_tree.show_all()
 
-        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
+        self.buttonbox.pack_start(self.connection_tree, False, False)
 
         try:
             index = self.connections.index(active)
@@ -296,7 +308,7 @@ class SideBar(gtk.VBox):
         for item in items:
             item.set_active(False)
     
-    def add_new_connection(self, widget):
+    def add_new_connection(self):
         new_connection = nm_module.nm_remote_settings.new_vpn_pptp_connection()
         self.new_connection_list.append(new_connection)
         self.main_init_cb(self.new_connection_list)
@@ -331,15 +343,15 @@ class PPTPConf(gtk.VBox):
         password_label = Label("Password:")
         nt_domain_label = Label("NT Domain:")
         # Radio Button
-        self.pptp_radio = RadioButton("PPTP")
-        self.l2tp_radio = RadioButton("L2TP")
+        self.pptp_radio = RadioButton(None, "PPTP")
+        self.l2tp_radio = RadioButton(self.pptp_radio, "L2TP")
         #pack labels
-        pptp_table.attach(self.pptp_radio, 0, 2, 0, 1)
-        pptp_table.attach(self.l2tp_radio, 2, 4, 0, 1)
-        pptp_table.attach(gateway_label, 0, 2 , 1, 2)
-        pptp_table.attach(user_label, 0, 2, 2, 3)
-        pptp_table.attach(password_label, 0, 2, 3, 4)
-        pptp_table.attach(nt_domain_label, 0, 1, 5, 6)
+        pptp_table.attach(style.wrap_with_align(self.pptp_radio), 0, 2, 0, 1)
+        pptp_table.attach(style.wrap_with_align(self.l2tp_radio), 2, 4, 0, 1)
+        pptp_table.attach(style.wrap_with_align(gateway_label), 0, 2 , 1, 2)
+        pptp_table.attach(style.wrap_with_align(user_label), 0, 2, 2, 3)
+        pptp_table.attach(style.wrap_with_align(password_label), 0, 2, 3, 4)
+        pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 1, 5, 6)
 
         # entries
         self.gateway_entry = InputEntry()
@@ -357,16 +369,16 @@ class PPTPConf(gtk.VBox):
         self.nt_domain_entry.set_size(200,25 )
 
         #pack entries
-        pptp_table.attach(self.gateway_entry, 2, 4, 1, 2)
-        pptp_table.attach(self.user_entry, 2, 4, 2, 3)
-        pptp_table.attach(self.password_entry, 2, 4, 3, 4)
-        pptp_table.attach(self.password_show, 2, 4, 4, 5)
-        pptp_table.attach(self.nt_domain_entry, 2, 4, 5, 6)
+        pptp_table.attach(style.wrap_with_align(self.gateway_entry), 2, 4, 1, 2)
+        pptp_table.attach(style.wrap_with_align(self.user_entry), 2, 4, 2, 3)
+        pptp_table.attach(style.wrap_with_align(self.password_entry), 2, 4, 3, 4)
+        pptp_table.attach(style.wrap_with_align(self.password_show), 2, 4, 4, 5)
+        pptp_table.attach(style.wrap_with_align(self.nt_domain_entry), 2, 4, 5, 6)
         # Advance setting button
         advanced_button = Button("Advanced Setting")
         advanced_button.connect("clicked", self.advanced_button_click)
 
-        pptp_table.attach(advanced_button, 3, 4, 6, 7)
+        pptp_table.attach(style.wrap_with_align(advanced_button), 3, 4, 6, 7)
         self.service_type = self.vpn_setting.service_type.split(".")[-1]
         if self.service_type == "l2tp":
             self.l2tp_radio.set_active(True)
@@ -376,8 +388,8 @@ class PPTPConf(gtk.VBox):
         self.l2tp_radio.connect("toggled",self.radio_toggled, "l2tp")
         # set signals
 
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.add(pptp_table)
+        align = style.set_box_with_align(pptp_table, "text")
+        style.set_table_items(pptp_table, "entry")
         self.add(align)
         self.show_all()
         self.refresh()

@@ -4,7 +4,7 @@
 
 from dss import app_theme
 from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
+from dtk.ui.button import Button,CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
@@ -37,7 +37,7 @@ def check_settings(connection, fn):
 
 class DSLSetting(gtk.Alignment):
 
-    def __init__(self, slide_back_cb = None, change_crumb_cb = None):
+    def __init__(self, slide_back_cb=None, change_crumb_cb=None):
         gtk.Alignment.__init__(self)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
@@ -52,7 +52,7 @@ class DSLSetting(gtk.Alignment):
         self.dsl = None
         self.ppp = None
 
-        self.tab_window = TabBox(dockfill = False)
+        self.tab_window = TabBox()
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [("DSL", NoSetting()),
@@ -96,8 +96,7 @@ class DSLSetting(gtk.Alignment):
         cr = widget.window.cairo_create()
         rect = widget.allocation
 
-        from style import draw_out_line
-        draw_out_line(cr, rect, exclude)
+        style.draw_out_line(cr, rect, exclude)
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()

@@ -40,6 +40,7 @@ wired_device = []
 
 from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, WIDGET_HEIGHT, CONTAINNER_HEIGHT
 import style
+from nls import _
 
 class WiredSetting(gtk.Alignment):
 
@@ -312,21 +313,21 @@ class Wired(gtk.VBox):
         self.set_button = set_button_callback
         table = gtk.Table(3, 2, False)
         
-        mac_address = Label("设备mac地址:", text_size=CONTENT_FONT_SIZE)
-        table.attach(mac_address, 0, 1, 0, 1)
+        mac_address = Label(_("设备mac地址:"), text_size=CONTENT_FONT_SIZE)
+        table.attach(style.wrap_with_align(mac_address), 0, 1, 0, 1)
 
         self.mac_entry = InputEntry()
-        table.attach(self.mac_entry, 1, 2, 0, 1)
+        table.attach(style.wrap_with_align(self.mac_entry), 1, 2, 0, 1)
 
-        clone_addr = Label("克隆mac地址:", text_size=CONTENT_FONT_SIZE)
-        table.attach(clone_addr, 0, 1, 1, 2)
+        clone_addr = Label(_("克隆mac地址:"), text_size=CONTENT_FONT_SIZE)
+        table.attach(style.wrap_with_align(clone_addr), 0, 1, 1, 2)
         self.clone_entry = InputEntry()
-        table.attach(self.clone_entry, 1,2, 1, 2)
+        table.attach(style.wrap_with_align(self.clone_entry), 1,2, 1, 2)
 
-        mtu = Label("MTU:")
-        table.attach(mtu, 0,1,2,3)
+        mtu = Label(_("MTU:"))
+        table.attach(style.wrap_with_align(mtu), 0,1,2,3)
         self.mtu_spin = SpinBox(0,0, 1500, 1, 55)
-        table.attach(self.mtu_spin, 1,2,2,3)
+        table.attach(style.wrap_with_align(self.mtu_spin), 1,2,2,3)
         
         # TODO UI change
         style.set_table(table)

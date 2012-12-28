@@ -39,9 +39,11 @@ class Contain(gtk.Alignment):
         self.hbox.pack_start(self.label, False, True, TEXT_PADDING)
 
         self.switch = OffButton()
+        from style import wrap_with_align
+        align = wrap_with_align(self.switch)
 
         self.switch.connect("toggled", self.active_cb)
-        self.hbox.pack_start(self.switch, False , True, BUTTON_PADDING)
+        self.hbox.pack_start(align, False , True, BUTTON_PADDING)
         self.hbox.connect("expose-event", self.expose_callback)
     
     def expose_callback(self, widget, event):
@@ -64,16 +66,10 @@ class MyToggleButton(OffButton):
 
     def __init__(self):
         OffButton.__init__(self)
-        #ToggleButton.__init__(self, 
-                              #app_theme.get_pixbuf("/inactive_normal.png"), 
-                              #app_theme.get_pixbuf("/active_normal.png"),
-                              #inactive_disable_dpixbuf = app_theme.get_pixbuf("/inactive_normal.png"),
-                              #active_disable_dpixbuf = app_theme.get_pixbuf("/inactive_normal.png")
-
 
 class MyRadioButton(RadioButton):
     '''docstring for MyRadioButton'''
-    def __init__(self, main_button, label_text=None, padding_x=0, font_size=12):
+    def __init__(self, main_button, label_text=None, padding_x=0, font_size=CONTENT_FONT_SIZE):
         super(MyRadioButton, self).__init__(label_text, padding_x, font_size)
         self.main_button = main_button
         self.switch_lock = False

@@ -10,16 +10,22 @@ from nm_modules import nm_module
 import gtk
 import pango
 
+import style
+from constants import FRAME_VERTICAL_SPACING
+
 
 def render_background( cr, rect):
     background_color = [(0,["#ffffff", 1.0]),
                         (1,["#ffffff", 1.0])]
     draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height, background_color)
 
-class Region(gtk.HBox):
+class Region(gtk.Alignment):
     def __init__(self, connection=None):
-        gtk.HBox.__init__(self, False, spacing=10)
-        self.set_size_request(680,300)
+        gtk.Alignment.__init__(self)
+
+        style.set_main_window(self, True)
+        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        self.add(hbox)
 
         self.prop_dict = {}
         
@@ -27,7 +33,7 @@ class Region(gtk.HBox):
         self.country_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
                                      enable_hover=False)
-        self.country_tree.set_size_request(380, 400)
+        #self.country_tree.set_size_request(378, 400)
         self.country_tree.connect("button-press-item", self.country_selected)
 
         left_box = gtk.VBox()
@@ -37,20 +43,20 @@ class Region(gtk.HBox):
         self.provider_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
                                      enable_hover=False)
-        self.provider_tree.set_size_request(380, 400)
+        #self.provider_tree.set_size_request(378, -1)
         self.provider_tree.connect("button-press-item", self.provider_selected)
         right_box = gtk.VBox()
         right_box.pack_start(provider_label, False, False)
         right_box.pack_start(self.provider_tree, False, False)
         
-        self.pack_start(left_box, False, False)
-        self.pack_end(right_box, False, False)
+        hbox.pack_start(left_box, True, True)
+        hbox.pack_end(right_box, True, True)
 
-        next_button = Button("Next")
+        next_button = Button("Next", )
         next_button.connect("clicked", self.next_button_clicked)
-        align = gtk.Alignment(0.5, 1, 0, 0)
+        align = gtk.Alignment(0.5, 1, 1, 0)
         align.add(next_button)
-        self.pack_start(align)
+        #hbox.pack_start(align)
 
         self.show_all()
         self.init()
