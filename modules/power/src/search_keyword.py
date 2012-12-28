@@ -24,7 +24,7 @@ from nls import _
 
 '''
 TODO: keywords list
-      item (module_id, search_keyword)
+      item (module_uid, search_keyword)
 '''
 keywords = [("power_1", _("Power Button Configuration")), 
             ("power_2", _("Press Power Button")), 
