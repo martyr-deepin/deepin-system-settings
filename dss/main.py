@@ -169,6 +169,10 @@ def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info):
         else:
             call_module_by_name(module_id, module_dict, slider, content_page_info, "left")        
 
+def search_cb(action_bar, slider):
+    search_page.query(action_bar.search_entry.get_text())
+    slider.slide_to_page(search_page, "left")
+
 def send_message(module_id, message_type, message_content):
     bus = dbus.SessionBus()
     module_dbus_name = "com.deepin.%s_settings" % (module_id)
@@ -279,11 +283,12 @@ if __name__ == "__main__":
                            lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page),
                            lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info), 
                            lambda : titlebar_backward_cb(module_dict, action_bar, slider, content_page_info), 
-                           lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info))
+                           lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info), 
+                           lambda : search_cb(action_bar, slider))
     
     # Init slider.
     slider = HSlider()
-    
+
     # Init search page.
     search_page = SearchPage(module_infos)
     

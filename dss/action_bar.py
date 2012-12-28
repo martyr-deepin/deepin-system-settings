@@ -22,6 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
+from dtk.ui.keymap import get_keyevent_name
 from dtk.ui.cache_pixbuf import CachePixbuf
 from dtk.ui.draw import draw_pixbuf
 from dtk.ui.new_entry import InputEntry
@@ -42,7 +43,8 @@ class ActionBar(gtk.Alignment):
                  switch_page, 
                  click_module_item, 
                  backward_cb=None, 
-                 forward_cb=None):
+                 forward_cb=None, 
+                 search_cb=None):
         '''
         init docs
         '''
@@ -102,8 +104,10 @@ class ActionBar(gtk.Alignment):
             app_theme.get_pixbuf("entry/search_hover.png"),
             app_theme.get_pixbuf("entry/search_press.png"),
             )
+        self.search_cb = search_cb
         self.search_entry = InputEntry(action_button=self.search_button)
         self.search_entry.set_size(150, 24)
+        self.search_entry.connect("key-press-event", self.__search_key_press)
         self.search_align = gtk.Alignment()
         self.search_align.set(0.5, 0.5, 0, 0)
         self.search_align.set_padding(5, 0, 5, 5)
@@ -122,6 +126,11 @@ class ActionBar(gtk.Alignment):
         # Connect signals.
         self.connect("expose-event", self.expose_action_bar)
     
+    def __search_key_press(self, widget, event):
+        if get_keyevent_name(event) == "Return":
+            if self.search_cb:
+                self.search_cb()
+
     def __backward_clicked(self, widget):
         if self.backward_cb:
             self.backward_cb()
