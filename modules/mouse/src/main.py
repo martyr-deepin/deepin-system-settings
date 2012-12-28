@@ -422,7 +422,7 @@ class MouseSetting(object):
     
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
-        self.module_frame.send_message("goto", action)
+        self.module_frame.send_message("goto", (action, ""))
     
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=1.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,

@@ -570,7 +570,7 @@ class KeySetting(object):
     
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
-        self.module_frame.send_message("goto", action)
+        self.module_frame.send_message("goto", (action, ""))
 
     ######################################
     # layout widget callback
