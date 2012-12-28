@@ -2,36 +2,45 @@
 
 *统计所有模块的关键词
 
-**在每个模块下面约定了一个search_keyword.py文件, 例如"电源"模块
+**在每个模块下面约定了一个search_keyword.py
+
+例如"电源"模块
 
 modules/
-modules/power/
-modules/power/src/
+modules/power/__init__.py
+modules/power/src/__init__.py
 modules/power/src/search_keyword.py
 
-**search_keyword.py文件中约定了一个keywords变量, 例如"电源"模块的
+search_keyword.py可以更改文件名, 只要修改modules/power/config.ini的main里面的
+search_keyword = src.你更改的文件名(不要加.py)
+
+**search_keyword.py文件中约定了一个keywords变量
+
+例如"电源"模块的
 
 keywords = [("power_1", _("Power Button Configuration"), 
-            ("MODULE UID", "MODULE KEYWORD")
+            ("模块 UID", "模块 KEYWORD")
            ]
 
-用C语言的结构体的伪代码来定义keyword如下, 下同
+用结构体来定义keyword如下, 下同
 
 typedef struct {
-    module_uid, 
-    module_keyword
+    const char* module_uid, 
+    const char* module_keyword
 } keyword_t;
 
-**遍历module_infos = get_module_infos(), 动态__import__每个模块的search_keyword
+**遍历module_infos
+module_infos = get_module_infos(), 动态__import__所有模块的search_keyword
 里的keywords, 创建一个list(module_info.id, module_info.name, module.keywords)
 
 typedef struct {
-    module_id, 
-    module_name, 
+    const char* module_id, 
+    const char* module_name, 
     keyword_t keyword
-} keywords_t;
+} keyword_iter_t;
 
-**建立索引, 考虑到该操作是个重操作(取决于keywords的数目), 将其放入一个后台
+*建立索引
+考虑到该操作是个重操作(取决于keywords的数目), 将其放入一个后台
 BuildIndexThread线程
 
 由于dss还在开发状态, search_db默认是每次重新创建的, 当dss变成产品状态时, 
@@ -39,10 +48,11 @@ remove_old将设为False
 
 xappy的使用, 完全照搬的dsc, 可以直接阅读dsc的/data_manager/apt/search_db.py
 
-**搜索search_query也是照搬的dsc, 其中keywords是个list, 在实际使用中InputEntry
+*搜索search_query
+也是照搬的dsc, 其中keywords是个list, 在实际使用中InputEntry
 输入的内容get_text()需要用jieba进行中文分词, 也是直接使用dsc的split_word
 
-**当用户在InputEntry中输入了搜索关键词, 按下回车, 就在SearchPage上画Label, 如下
+当用户在InputEntry中输入了搜索关键词, 按下回车, 就在SearchPage上画Label, 如下
 
 MODULE_NAME
     MODULE_KEYWORD1
@@ -50,8 +60,22 @@ MODULE_NAME
     ...
     MODULE_KEYWORD_N
 
-让画的Label可以点击set_clickable_cursor, 点击后直接发送goto消息, 消息内容为
-(module_id, module_uid), 其中module_uid就是用来告诉每个模块的开发者, 
+画的Label通过set_clickable_cursor表示可以点击, 点击后直接发送goto消息, 
+消息内容为(module_id, module_uid), 其中module_uid就是用来告诉每个模块的开发者, 
 哪些TabWindow的Tab需要抬起, 哪些ScrolledWindow需要scrolled to到相应的坐标位置
 
-初步设计出来的搜索, 肯定存在不足, 请大家分享good idea
+*模块开发者如何获得module_uid
+
+**模块首次运行
+
+dss通过fork的方式创建了模块的子进程, 搜索模块会加上module_uid参数, 在模块的
+__main__入口里, 通过getopt获得module_uid参数的值
+
+**模块已经运行, 发送show_again消息
+
+message_content即是module_uid
+
+初步设计出来的搜索, 肯定存在不足, 请大家分享good idea :)
+
+*参考
+**UID, GUID, UUID http://en.wikipedia.org/wiki/Globally_unique_identifier 点击中文
