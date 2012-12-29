@@ -28,7 +28,7 @@ import gobject
 import gtk
 from constant import *
     
-class FootBox(gtk.VBox):
+class FootBox(gtk.HBox):
     '''
     class docs
     '''
@@ -37,28 +37,27 @@ class FootBox(gtk.VBox):
         '''
         init docs
         '''
-        gtk.VBox.__init__(self)
+        gtk.HBox.__init__(self)
 
         self.__is_init_ui = False
         
 
     def __init_ui(self):
-        self.align = self.__setup_align()
-        self.box = gtk.HBox()
         self.status_label = self.__setup_label("")
-        self.buttons_align = self.__setup_align(padding_top = 0, 
-                                                padding_bottom = 0, 
+        self.buttons_align = self.__setup_align(padding_top = 7, 
                                                 padding_left = 80, 
                                                 padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING)
         self.buttons_box = gtk.HBox()
         self.default_button = Button("恢复默认")
+        '''
+        TODO: it need to consider about other module pack_start button into buttons_box
+        '''
         self.buttons_box.pack_start(self.default_button)
         self.buttons_align.add(self.buttons_box)
-        self.box.pack_start(self.status_label, False, False)
-        self.box.pack_start(self.buttons_align, False, False)
-        self.align.add(self.box)
-        self.pack_start(self.align)
-        self.set_size_request(-1, STATUS_HEIGHT + 4)
+        self.pack_start(self.status_label)
+        self.pack_start(self.buttons_align)
+        self.set_size_request(-1, STATUS_HEIGHT)
+        self.connect("expose-event", self.__expose)
 
         self.__is_init_ui = True
 
@@ -87,17 +86,16 @@ class FootBox(gtk.VBox):
                       yalign=0, 
                       xscale=0, 
                       yscale=0, 
-                      padding_top=14, 
-                      padding_bottom=5, 
+                      padding_top=0, 
+                      padding_bottom=0, 
                       padding_left=FRAME_LEFT_PADDING,
-                      padding_right=5):
+                      padding_right=0):
         align = gtk.Alignment()
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, 
                           padding_bottom, 
                           padding_left, 
                           padding_right)
-        align.connect("expose-event", self.__expose)
         return align
 
     def __setup_label(self, 
