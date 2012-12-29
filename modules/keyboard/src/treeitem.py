@@ -150,7 +150,10 @@ class LayoutItem(BaseItem):
         @param variants: the variants name, a string type.
         '''
         super(LayoutItem, self).__init__()
-        self.name = markup_escape_text(name)
+        try:
+            self.name = markup_escape_text(name)
+        except:
+            self.name = " "
         self.layout = layout
         self.variants = variants
         self.height = 35
@@ -271,7 +274,10 @@ class ShortcutItem(BaseItem):
     '''a shortcut item in TreeView'''
     def __init__(self, description, keyname, name): 
         super(ShortcutItem, self).__init__()
-        self.description = markup_escape_text(description)
+        try:
+            self.description = markup_escape_text(description)
+        except:
+            self.description = " "
         self.keyname = keyname
         self.name = name
         self.height = 24

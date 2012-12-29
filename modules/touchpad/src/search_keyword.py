@@ -22,12 +22,13 @@
 
 from nls import _
 
-keywords = [("__account_id1", _("Automatic Login")), 
-            ("__account_id2", _("Deepin Account")), 
-            ("__account_id3", _("Account Name")), 
-            ("__account_id4", _("Create Account")), 
-            ("__account_id5", _("Delete Account")), 
-            ("__account_id6", _("Change Password")), 
-            ("__account_id7", _("Set Icon")), 
-            ("__account_id8", _("Account")), 
+keywords = [("__touchpad_id1", _("Touchpad")), 
+            ("__touchpad_id2", _("Pointer speed")), 
+            ("__touchpad_id3", _("Acceleration")), 
+            ("__touchpad_id4", _("Sensitivity")), 
+            ("__touchpad_id5", _("Double-click")), 
+            ("__touchpad_id6", _("Frequency")), 
+            ("__touchpad_id7", _("Right-handed")), 
+            ("__touchpad_id8", _("Left-handed")), 
+            ("__touchpad_id9", _("Drag threshold")), 
            ]

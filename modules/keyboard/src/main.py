@@ -395,6 +395,8 @@ class KeySetting(object):
         current_variants = self.xkb.get_current_variants_description()
         name_list = []
         for name in current_variants:
+            if not name:
+                continue
             name_list.append(LayoutItem(*name))
         self.view_widgets["layout_selected"].add_items(name_list)
 
@@ -995,9 +997,13 @@ if __name__ == '__main__':
     
     module_frame.add(key_settings.alignment_widgets["notebook"])
     
+    if len(sys.argv) > 1:
+        print "module_uid:", sys.argv[1]
+    
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
+            print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
             key_settings.container_widgets["tab_box"].switch_content(0)
 

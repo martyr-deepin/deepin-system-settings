@@ -241,7 +241,8 @@ class AccountSetting(object):
         self.button_widgets["account_type"].set_size_request(-1, WIDGET_HEIGHT)
         #self.image_widgets["account_icon"].set_size_request(48, 48)
         self.button_widgets["lock"].set_size_request(16, 16)
-        self.alignment_widgets["account_info_hbox"].set(0.5, 0.5, 0, 0)
+        self.alignment_widgets["account_info_hbox"].set(0.0, 0.5, 0, 0)
+        self.alignment_widgets["account_info_hbox"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["account_info_hbox"].add(self.container_widgets["account_info_hbox"])
         self.container_widgets["account_info_hbox"].pack_start(self.label_widgets["account_name"], False, False)
         self.container_widgets["account_info_hbox"].pack_start(self.alignment_widgets["lock_button"], False, False)
@@ -618,10 +619,10 @@ class AccountSetting(object):
         #text = pango.parse_markup(widget.get_text())[1]
         text = self.current_select_user.get_real_name()
         align = gtk.Alignment()
-        align.set(0.5, 0.5, 1, 1)
-        align.set_padding(12, 0, 0, 0)
+        align.set(0.0, 0.5, 0, 0)
+        align.set_padding(8, 0, 2, 48)
         input_entry = InputEntry(text)
-        input_entry.set_size(180, 25)
+        input_entry.set_size(180, WIDGET_HEIGHT)
         input_entry.connect("expose-event", lambda w, e: input_entry.entry.grab_focus())
         input_entry.entry.connect("press-return", change_account_name)
         input_entry.entry.connect("focus-out-event", change_account_name)
@@ -1120,6 +1121,8 @@ class AccountSetting(object):
         @param string: a markup string
         @return: a escaped string
         '''
+        if not string:
+            return " "
         return markup_escape_text(string)
     
     def change_crumb(self, crumb_index):
@@ -1134,6 +1137,8 @@ if __name__ == '__main__':
     module_frame.add(account_settings.container_widgets["slider"])
     module_frame.connect("realize", lambda w: account_settings.container_widgets["slider"].set_to_page(
         account_settings.alignment_widgets["main_hbox"]))
+    if len(sys.argv) > 1:
+        print "module_uid:", sys.argv[1]
     
     def message_handler(*message):
         (message_type, message_content) = message
@@ -1143,6 +1148,7 @@ if __name__ == '__main__':
                 account_settings.container_widgets["slider"].slide_to_page(
                     account_settings.alignment_widgets["main_hbox"], "left")
         elif message_type == "show_again":
+            print "DEBUG show_again module_uid", message_content
             account_settings.container_widgets["slider"].set_to_page(
                 account_settings.alignment_widgets["main_hbox"])
             module_frame.send_module_info()

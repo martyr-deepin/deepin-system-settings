@@ -22,12 +22,11 @@
 
 from nls import _
 
-keywords = [("__account_id1", _("Automatic Login")), 
-            ("__account_id2", _("Deepin Account")), 
-            ("__account_id3", _("Account Name")), 
-            ("__account_id4", _("Create Account")), 
-            ("__account_id5", _("Delete Account")), 
-            ("__account_id6", _("Change Password")), 
-            ("__account_id7", _("Set Icon")), 
-            ("__account_id8", _("Account")), 
+keywords = [("__keyboard_id1", _("Keyboard")), 
+            ("__keyboard_id2", _("Shortcuts")), 
+            ("__keyboard_id3", _("Typing")), 
+            ("__keyboard_id4", _("Layout")), 
+            ("__keyboard_id5", _("Repeat")), 
+            ("__keyboard_id6", _("Repeat Delay")), 
+            ("__keyboard_id7", _("Repeat Interval")), 
            ]

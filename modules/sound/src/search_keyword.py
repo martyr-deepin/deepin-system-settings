@@ -22,12 +22,11 @@
 
 from nls import _
 
-keywords = [("__account_id1", _("Automatic Login")), 
-            ("__account_id2", _("Deepin Account")), 
-            ("__account_id3", _("Account Name")), 
-            ("__account_id4", _("Create Account")), 
-            ("__account_id5", _("Delete Account")), 
-            ("__account_id6", _("Change Password")), 
-            ("__account_id7", _("Set Icon")), 
-            ("__account_id8", _("Account")), 
+keywords = [("__sound_id1", _("Sound")), 
+            ("__sound_id2", _("Balance")), 
+            ("__sound_id3", _("Speaker")), 
+            ("__sound_id4", _("Microphone")), 
+            ("__sound_id5", _("Output")), 
+            ("__sound_id6", _("Input")), 
+            ("__sound_id7", _("Hardware")), 
            ]
