@@ -27,7 +27,6 @@ from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
 from dtk.ui.breadcrumb import Crumb
 from dtk.ui.utils import is_dbus_name_exists
-from dtk.ui.unique_service import is_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo
 from action_bar import ActionBar
@@ -106,8 +105,12 @@ class DBusService(dbus.service.Object):
         dbus.service.Object.__init__(self, bus_name, APP_OBJECT_NAME)
 
         # Define DBus method.
-        def unique(self):
+        def unique(self, module_name):
             if application:
+                if module_name != "":
+                    action_bar.bread.remove_node_after_index(0)
+                    call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
+                
                 application.raise_to_top()
         
         def message_receiver(self, *message):
@@ -262,15 +265,35 @@ def start_module_process(slider, content_page_info, module_path, module_config, 
         else:
             send_message(module_id, "show_again", "")
 
+def is_exists(app_dbus_name, app_object_name, module_name):                                  
+    """                                                                         
+    Check the program or service is already started by its app_dbus_name and app_object_name.
+                                                                                
+    @param app_dbus_name: the public service name of the service.               
+    @param app_object_name: the public service path of the service.             
+    @return: If the service is already on, True is returned. Otherwise return False.
+    """                                                                         
+    DBusGMainLoop(set_as_default=True) # WARING: only use once in one process   
+                                                                                
+    # Init dbus.                                                                
+    bus = dbus.SessionBus()                                                     
+    if bus.request_name(app_dbus_name) != dbus.bus.REQUEST_NAME_REPLY_PRIMARY_OWNER:
+        method = bus.get_object(app_dbus_name, app_object_name).get_dbus_method("unique")
+        method(module_name) 
+                                                                                
+        return True                                                             
+    else:                                                                       
+        return False       
+
 if __name__ == "__main__":
     ops, args = getopt.getopt(sys.argv[1:], '')
-    module_name = None
+    module_name = ""
 
     if len(args):
         module_name = args[0]
 
     # Check unique.                                                              
-    if is_exists(APP_DBUS_NAME, APP_OBJECT_NAME):                                
+    if is_exists(APP_DBUS_NAME, APP_OBJECT_NAME, module_name):                                
         sys.exit()
 
     # WARING: only use once in one process
@@ -358,6 +381,14 @@ if __name__ == "__main__":
     # Start dbus service.
     DBusService(action_bar, content_page_info, application, module_dict, slider, foot_box)
 
-    call_module_by_name(module_name, module_dict, slider, content_page_info)
+    if module_name != "":
+        if is_dbus_name_exists(APP_DBUS_NAME):
+            bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
+            method = bus_object.get_dbus_method("message_receiver") 
+            method("goto", 
+                    (module_name, ""), 
+                    reply_handler=handle_dbus_reply, 
+                    error_handler=handle_dbus_error
+                  )
 
     application.run()
