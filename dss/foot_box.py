@@ -23,6 +23,7 @@
 from dtk.ui.constant import ALIGN_MIDDLE
 from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.label import Label
+from dtk.ui.button import Button
 import gobject
 import gtk
 from constant import *
@@ -45,10 +46,19 @@ class FootBox(gtk.VBox):
         self.align = self.__setup_align()
         self.box = gtk.HBox()
         self.status_label = self.__setup_label("")
+        self.buttons_align = self.__setup_align(padding_top = 0, 
+                                                padding_bottom = 0, 
+                                                padding_left = 80, 
+                                                padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+        self.buttons_box = gtk.HBox()
+        self.default_button = Button("恢复默认")
+        self.buttons_box.pack_start(self.default_button)
+        self.buttons_align.add(self.buttons_box)
         self.box.pack_start(self.status_label, False, False)
+        self.box.pack_start(self.buttons_align, False, False)
         self.align.add(self.box)
         self.pack_start(self.align)
-        self.set_size_request(-1, STATUS_HEIGHT)
+        self.set_size_request(-1, STATUS_HEIGHT + 4)
 
         self.__is_init_ui = True
 
@@ -63,7 +73,6 @@ class FootBox(gtk.VBox):
     
     def set_status(self, status):
         self.status_label.set_text(status)
-        #self.queue_draw()
     
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       
@@ -74,12 +83,16 @@ class FootBox(gtk.VBox):
         cr.fill()
     
     def __setup_align(self, 
+                      xalign=0, 
+                      yalign=0, 
+                      xscale=0, 
+                      yscale=0, 
                       padding_top=14, 
                       padding_bottom=5, 
                       padding_left=FRAME_LEFT_PADDING,
                       padding_right=5):
         align = gtk.Alignment()
-        align.set(0, 0, 0, 0)
+        align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, 
                           padding_bottom, 
                           padding_left, 
