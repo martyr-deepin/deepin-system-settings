@@ -229,6 +229,10 @@ class SearchPage(gtk.VBox):
                                                  keyword[0])
                     module_keyword_align.add(module_keyword_label)
                     self.result_box.pack_start(module_keyword_align, False, False)
+                    '''
+                    TODO: if remove widgets from self, it is better to show_all
+                    '''
+                    self.show_all()
 
     def build_index(self):
         self.__keyword_search.build_index()
