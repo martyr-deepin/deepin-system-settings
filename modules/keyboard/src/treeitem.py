@@ -22,21 +22,21 @@
 
 #from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
-from dtk.ui.draw import draw_text
-from dtk.ui.utils import color_hex_to_cairo 
+from dtk.ui.draw import draw_text, draw_line
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
 from gtk import gdk
 from gtk import accelerator_name, accelerator_parse, accelerator_get_label
 from nls import _
 from glib import markup_escape_text
 import gobject
+from constant import *
 
 
 class MyTreeView(TreeView):
     ''' my TreeView'''
     __gsignals__ = {
         "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, int)),
-        "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        "clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, int))}
+        "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
 
     def __init__(self,
                  items=[],
@@ -80,6 +80,11 @@ class MyTreeView(TreeView):
                 print self.visible_items[select_row]
                 self.emit("select", self.visible_items[select_row], select_row)
     
+    def draw_mask(self, cr, x, y, w, h):
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BG_COLOR))
+        cr.rectangle(x, y, w, h)
+        cr.fill()
+    
 gobject.type_register(MyTreeView)
 
 class BaseItem(TreeItem):
@@ -88,6 +93,14 @@ class BaseItem(TreeItem):
     def __init__(self):
         super(BaseItem, self).__init__()
         self.treeview = None
+        self.height = 30
+    
+    def get_height(self):
+        '''
+        get height
+        @return: the item height, a int type
+        '''
+        return self.height
     
     def get_treeview(self):
         '''
@@ -115,11 +128,7 @@ class SelectItem(BaseItem):
     def __init__(self, text):
         super(SelectItem, self).__init__()
         self.text = text
-        self.height = 24
         self.padding_x = 5
-    
-    def get_height(self):
-        return self.height
     
     def get_column_widths(self):
         return [-1]
@@ -131,12 +140,20 @@ class SelectItem(BaseItem):
         if self.is_select:
             text_color = "#FFFFFF"
             bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-            cr.paint()
         else:
             text_color = "#000000"
+            bg_color = MODULE_BG_COLOR
+        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.paint()
         draw_text(cr, self.text, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+        # draw line
+        with cairo_disable_antialias(cr):    
+            cr.set_line_width(1)
+            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            cr.move_to(rect.x, rect.y-1+rect.height)
+            cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
+            cr.stroke()
 
 gobject.type_register(SelectItem)
 
@@ -156,7 +173,6 @@ class LayoutItem(BaseItem):
             self.name = " "
         self.layout = layout
         self.variants = variants
-        self.height = 35
         self.padding_x = 5
     
     def get_layout(self):
@@ -165,13 +181,6 @@ class LayoutItem(BaseItem):
         @return: the layout name, a string type
         '''
         return self.layout
-    
-    def get_height(self):
-        '''
-        get height
-        @return: the item height, a int type
-        '''
-        return self.height
     
     def get_column_widths(self):
         '''
@@ -186,12 +195,20 @@ class LayoutItem(BaseItem):
         if self.is_select:
             text_color = "#FFFFFF"
             bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-            cr.paint()
         else:
             text_color = "#000000"
+            bg_color = MODULE_BG_COLOR
+        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.paint()
         draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+        # draw line
+        with cairo_disable_antialias(cr):    
+            cr.set_line_width(1)
+            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            cr.move_to(rect.x, rect.y-1+rect.height)
+            cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
+            cr.stroke()
 
 gobject.type_register(LayoutItem)
 
@@ -280,13 +297,9 @@ class ShortcutItem(BaseItem):
             self.description = " "
         self.keyname = keyname
         self.name = name
-        self.height = 24
         self.padding_x = 5
         self.accel_buffer = AccelBuffer()
         self.COLUMN_ACCEL = 1
-    
-    def get_height(self):
-        return self.height
     
     def get_column_widths(self):
         return [380, -1]
@@ -298,23 +311,29 @@ class ShortcutItem(BaseItem):
         if self.is_select:
             text_color = "#FFFFFF"
             bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-            cr.paint()
         else:
             text_color = "#000000"
+            bg_color = MODULE_BG_COLOR
+        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.paint()
         draw_text(cr, self.description, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+        draw_line(cr, rect.x, rect.y-1+rect.height, rect.x+rect.width, rect.y-1+rect.height)
     
     def render_keyname(self, cr, rect):
         if self.is_select:
             text_color = "#FFFFFF"
             bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-            cr.paint()
         else:
             text_color = "#000000"
+            bg_color = MODULE_BG_COLOR
+        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.paint()
         draw_text(cr, self.keyname, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+        draw_line(cr, rect.x, rect.y-1+rect.height, rect.x+rect.width, rect.y-1+rect.height)
     
     def set_accel_buffer_from_event(self, event):
         '''

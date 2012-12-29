@@ -79,11 +79,12 @@ class TouchpadSetting(object):
         title_item_font_size = TITLE_FONT_SIZE
         option_item_font_szie = CONTENT_FONT_SIZE
         # image init
-        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("%s/custom.png" % MODULE_NAME))
+        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME))
         self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("%s/pointer.png" % MODULE_NAME))
         self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("%s/double-click.png" % MODULE_NAME))
         self.image_widgets["drag"] = ImageBox(app_theme.get_pixbuf("%s/drag.png" % MODULE_NAME))
-        self.image_widgets["double_test"] = app_theme.get_pixbuf("%s/double-test.png" % MODULE_NAME)
+        self.image_widgets["double_test_1"] = app_theme.get_pixbuf("%s/fold_close.png" % MODULE_NAME)
+        self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/fold_open.png" % MODULE_NAME)
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
         self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)
@@ -227,9 +228,15 @@ class TouchpadSetting(object):
         if is_left == "mouse":
             if settings.mouse_get_left_handed():
                 self.button_widgets["left_hand_radio"].set_active(True)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
             else:
                 self.button_widgets["right_hand_radio"].set_active(True)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
         else:
+            if is_left == "left":
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
+            else:
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
             self.button_widgets["%s_hand_radio" % is_left].set_active(True)
         self.container_widgets["custom_button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["custom_button_hbox"].pack_start(
@@ -316,8 +323,8 @@ class TouchpadSetting(object):
         self.container_widgets["double_click_table"].attach(
             self.__make_align(self.button_widgets["double_test"], height=-1), 3, 4, 0, 2, 0, 0, 0)
         self.button_widgets["double_test"].set_size_request(
-            self.image_widgets["double_test"].get_pixbuf().get_width(),
-            self.image_widgets["double_test"].get_pixbuf().get_height())
+            self.image_widgets["double_test_1"].get_pixbuf().get_width(),
+            self.image_widgets["double_test_1"].get_pixbuf().get_height())
 
         # drag threshold
         self.alignment_widgets["drag_threshold_label"].add(self.container_widgets["drag_threshold_label_hbox"])
@@ -443,12 +450,19 @@ class TouchpadSetting(object):
             if settings.mouse_get_left_handed():
                 self.button_widgets["left_hand_radio"].set_active(True)
                 self.button_widgets["left_hand_radio"].set_data("changed-by-other-app", True)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
             else:
                 self.button_widgets["right_hand_radio"].set_active(True)
                 self.button_widgets["right_hand_radio"].set_data("changed-by-other-app", True)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
         else:
+            if is_left == "left":
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
+            else:
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
             self.button_widgets["%s_hand_radio" % is_left].set_active(True)
             self.button_widgets["%s_hand_radio" % is_left].set_data("changed-by-other-app", True)
+        self.image_widgets["custom"].queue_draw()
     
     def adjustment_value_changed(self, widget, event, key):
         '''adjustment value changed, and settings set the value'''
@@ -472,8 +486,8 @@ class TouchpadSetting(object):
     def double_click_test(self, widget, event):
         '''double clicked callback, to test the double-click time'''
         if event.type == gtk.gdk._2BUTTON_PRESS:
-            print "double-clicked:" 
-            print "-"*20
+            widget.set_data("has_double_clicked", not widget.get_data("has_double_clicked"))
+            widget.queue_draw()
     
     def double_click_test_expose(self, widget, event):
         '''double_test button expsoe'''
@@ -482,7 +496,10 @@ class TouchpadSetting(object):
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
         cr.rectangle(*widget.allocation)                                                 
         cr.paint()
-        cr.set_source_pixbuf(self.image_widgets["double_test"].get_pixbuf(), 0, 0)
+        if widget.get_data("has_double_clicked"):
+            cr.set_source_pixbuf(self.image_widgets["double_test_2"].get_pixbuf(), 0, 0)
+        else:
+            cr.set_source_pixbuf(self.image_widgets["double_test_1"].get_pixbuf(), 0, 0)
         cr.paint()
         propagate_expose(widget, event)
         return True

@@ -23,9 +23,11 @@
 #from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
-from dtk.ui.utils import color_hex_to_cairo, get_content_size
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
 from nls import _
 import gobject
+import gtk
+from constant import *
 
 
 class MyTreeView(TreeView):
@@ -66,6 +68,16 @@ class MyTreeView(TreeView):
             for select_row in self.select_rows:
                 self.emit("select", self.visible_items[select_row], select_row)
     
+    def draw_mask(self, cr, x, y, w, h):
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BG_COLOR))
+        cr.rectangle(x, y, w, h)
+        cr.fill()
+        with cairo_disable_antialias(cr):    
+            cr.set_line_width(1)
+            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            cr.rectangle(x+1, y+1, w-1, h-1)
+            cr.stroke()
+    
 gobject.type_register(MyTreeView)
         
 
@@ -103,7 +115,7 @@ class MyTreeItem(TreeItem):
         return self.height + 2 * self.title_height
     
     def get_column_widths(self):
-        return [75, -1]
+        return [-1]
     
     def unselect(self):
         if not self.is_select:
@@ -118,18 +130,42 @@ class MyTreeItem(TreeItem):
             self.redraw_request_callback(self)
 
     def get_column_renders(self):
-        return [self.render_icon, self.render_content]
+        return [self.render_item]
     
-    def render_content(self, cr, rect):
-        # draw user name and account type
+    def render_item(self, cr, rect):
+        rect.x += 1
+        rect.width -=2
+        rect.height -= 2
         if self.is_select:
             text_color = "#FFFFFF"
             bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y+self.title_height, rect.width, rect.height-2*self.title_height)
-            cr.fill()
         else:
             text_color = "#000000"
+            bg_color = MODULE_BG_COLOR
+        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+        cr.rectangle(rect.x, rect.y+self.title_height, rect.width, rect.height-2*self.title_height-1)
+        cr.fill()
+        # draw account type text
+        if self.is_myowner:
+            text_color = "#000000"
+            x1 = rect.x
+            y1 = rect.y
+            draw_text(cr, _("My Account"), x1+self.padding_x, y1, self.title_width, self.title_height, text_color=text_color)
+            x2 = rect.x
+            y2 = rect.y + self.height + self.title_height
+            draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color)
+        self.render_icon(cr, gtk.gdk.Rectangle(rect.x, rect.y, 75, rect.height))
+        self.render_content(cr, gtk.gdk.Rectangle(rect.x+75, rect.y, rect.width-75, rect.height), text_color)
+        # draw line
+        with cairo_disable_antialias(cr):    
+            cr.set_line_width(1)
+            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            cr.move_to(rect.x, rect.y-1+rect.height-self.title_height)
+            cr.line_to(rect.x+rect.width, rect.y-1+rect.height-self.title_height)
+            cr.stroke()
+    
+    def render_content(self, cr, rect, text_color):
+        # draw user name and account type
         x = rect.x+self.padding_x
         user_name_y = rect.y+self.title_height+self.padding_y
         if self.is_unique:
@@ -149,34 +185,8 @@ class MyTreeItem(TreeItem):
                   rect.width-self.padding_x,
                   self.user_name_height,
                   text_color=text_color)
-        # draw account type text
-        if self.is_myowner:
-            if get_content_size(_("My Account")) > self.get_column_widths()[0]:
-                text_color = "#000000"
-                x1 = rect.x - self.get_column_widths()[0]
-                y1 = rect.y
-                draw_text(cr, _("My Account"), x1+self.padding_x, y1, self.title_width, self.title_height, text_color=text_color)
-            if get_content_size(_("Other Accounts")) > self.get_column_widths()[1]:
-                x2 = rect.x - self.get_column_widths()[0]
-                y2 = rect.y + self.height + self.title_height
-                draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color)
     
     def render_icon(self, cr, rect):
-        # draw account type text
-        if self.is_myowner:
-            text_color = "#000000"
-            x1 = rect.x
-            y1 = rect.y
-            draw_text(cr, _("My Account"), x1+self.padding_x, y1, self.title_width, self.title_height, text_color=text_color)
-            x2 = rect.x
-            y2 = rect.y + self.height + self.title_height
-            draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color)
-        # draw user icon
-        if self.is_select:
-            bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y+self.title_height, rect.width, rect.height-2*self.title_height)
-            cr.fill()
         if self.icon:
             cr.set_source_pixbuf(self.icon, rect.x+self.padding_x, rect.y+self.title_height+self.padding_y)
             cr.paint()

@@ -23,16 +23,17 @@
 #from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
-from dtk.ui.utils import (color_hex_to_cairo, is_left_button)
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
 import gobject
+import gtk
+from constant import *
 
 
 class MyTreeView(TreeView):
     ''' my TreeView'''
     __gsignals__ = {
-        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT, int)),
-        "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        "clicked" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_OBJECT, int))}
+        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, int)),
+        "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
 
     def __init__(self,
                  items=[],
@@ -69,46 +70,17 @@ class MyTreeView(TreeView):
             for item in items:
                 item.treeview = self
         
-    #def click_item(self, event):
-        #cell = self.get_cell_with_event(event)
-        #if cell != None:
-            #(click_row, click_column, offset_x, offset_y) = cell
-            
-            #if self.left_button_press:
-                #if click_row == None:
-                    #self.unselect_all()
-                #else:
-                    #if self.enable_drag_drop and click_row in self.select_rows:
-                        #self.start_drag = True
-                        ## Record press_in_select_rows, disable select rows if mouse not move after release button.
-                        #self.press_in_select_rows = click_row
-                    #else:
-                        #self.start_drag = False
-                        #self.start_select_row = click_row
-                        #self.set_select_rows([click_row])
-                        
-                        #self.visible_items[click_row].button_press(click_column, offset_x, offset_y)
-                            
-                #if is_double_click(event):
-                    #self.double_click_row = copy.deepcopy(click_row)
-                #elif is_single_click(event):
-                    #self.single_click_row = copy.deepcopy(click_row)                
-    
     def set_select_rows(self, rows):
         super(MyTreeView, self).set_select_rows(rows)
         if rows:
             for select_row in self.select_rows:
                 self.emit("select", self.visible_items[select_row], select_row)
     
-    #def release_item(self, event):
-        #super(MyTreeView, self).release_item(event)
-        #if is_left_button(event):
-            #cell = self.get_cell_with_event(event)
-            #if cell is not None:
-                #(release_row, release_column, offset_x, offset_y) = cell
-                #if release_row is not None:
-                    #if self.single_click_row == release_row:
-                        #self.emit("clicked", self.visible_items[release_row], release_column)
+    def draw_mask(self, cr, x, y, w, h):
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BG_COLOR))
+        cr.rectangle(x, y, w, h)
+        cr.fill()
+    
 gobject.type_register(MyTreeView)
         
 
@@ -133,7 +105,7 @@ class MyTreeItem(TreeItem):
         return self.height
     
     def get_column_widths(self):
-        return [30, -1]
+        return [-1]
     
     def get_treeview(self):
         '''
@@ -155,25 +127,34 @@ class MyTreeItem(TreeItem):
             self.redraw_request_callback(self)
 
     def get_column_renders(self):
-        return [self.render_icon, self.render_content]
-    
-    def render_content(self, cr, rect):
+        return [self.render_item]
+
+    def render_item(self, cr, rect):
         if self.is_select:
             text_color = "#FFFFFF"
             bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-            cr.paint()
         else:
             text_color = "#000000"
-        draw_text(cr, self.content, rect.x+self.padding_x, rect.y, rect.width-self.padding_x, rect.height, text_color=text_color)
+            bg_color = MODULE_BG_COLOR
+        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.paint()
+        self.render_icon(cr, rect)
+        width = self.icon.get_pixbuf().get_width()
+        self.render_content(cr, gtk.gdk.Rectangle(rect.x+width+self.padding_x, rect.y, rect.width-width-self.padding_x, rect.height), text_color)
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+        # draw line
+        with cairo_disable_antialias(cr):    
+            cr.set_line_width(1)
+            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            cr.move_to(rect.x, rect.y-1+rect.height)
+            cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
+            cr.stroke()
+    
+    def render_content(self, cr, rect, text_color):
+        draw_text(cr, self.content, rect.x+self.padding_x, rect.y, rect.width-self.padding_x, rect.height-1, text_color=text_color)
     
     def render_icon(self, cr, rect):
-        if self.is_select:
-            bg_color = "#3399FF"
-            cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-            cr.paint()
         cr.set_source_pixbuf(self.icon.get_pixbuf(), rect.x+self.padding_x, rect.y)
         cr.paint()
     
