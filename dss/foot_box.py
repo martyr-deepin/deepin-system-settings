@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from dtk.ui.constant import ALIGN_MIDDLE
 from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.label import Label
 import gobject
@@ -43,10 +44,11 @@ class FootBox(gtk.VBox):
     def __init_ui(self):
         self.align = self.__setup_align()
         self.box = gtk.HBox()
-        self.notice_label = self.__setup_label("DEBUG")
-        self.box.pack_start(self.notice_label, False, False)
+        self.status_label = self.__setup_label("")
+        self.box.pack_start(self.status_label, False, False)
         self.align.add(self.box)
         self.pack_start(self.align)
+        self.set_size_request(-1, STATUS_HEIGHT)
 
         self.__is_init_ui = True
 
@@ -59,6 +61,10 @@ class FootBox(gtk.VBox):
         
         self.show_all()
     
+    def set_status(self, status):
+        self.status_label.set_text(status)
+        self.queue_draw()
+    
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       
         rect = widget.allocation                                                
@@ -68,9 +74,9 @@ class FootBox(gtk.VBox):
         cr.fill()
     
     def __setup_align(self, 
-                      padding_top=5, 
+                      padding_top=14, 
                       padding_bottom=5, 
-                      padding_left=5,
+                      padding_left=FRAME_LEFT_PADDING,
                       padding_right=5):
         align = gtk.Alignment()
         align.set(0, 0, 0, 0)
@@ -84,12 +90,11 @@ class FootBox(gtk.VBox):
     def __setup_label(self, 
                       text="", 
                       text_size=CONTENT_FONT_SIZE, 
-                      label_width=600, 
-                      wrap_width=None):
+                      label_width=600):
         label = Label(text = text, 
                       text_size = text_size, 
-                      label_width = label_width, 
-                      wrap_width = wrap_width)
+                      text_x_align = ALIGN_MIDDLE, 
+                      label_width = label_width)
         return label
 
 gobject.type_register(FootBox)

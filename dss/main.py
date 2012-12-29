@@ -145,6 +145,9 @@ class DBusService(dbus.service.Object):
 
                 if foot_box:
                     foot_box.show()
+            elif message_type == "status":
+                if foot_box:
+                    foot_box.set_status(message_content)
             else:
                 print message
                     

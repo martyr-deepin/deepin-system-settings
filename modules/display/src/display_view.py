@@ -396,6 +396,8 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.main_box)
         self.pack_start(self.scrolled_window)
 
+        self.__send_message("status", _("Welcome to use Deepin System Settings Display Module"))
+
     def __handle_dbus_replay(self, *reply):
         pass
 
