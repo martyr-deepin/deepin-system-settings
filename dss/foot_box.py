@@ -63,7 +63,7 @@ class FootBox(gtk.VBox):
     
     def set_status(self, status):
         self.status_label.set_text(status)
-        self.queue_draw()
+        #self.queue_draw()
     
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       
