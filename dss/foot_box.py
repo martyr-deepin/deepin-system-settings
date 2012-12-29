@@ -36,7 +36,11 @@ class FootBox(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
+
+        self.__is_init_ui = False
         
+
+    def __init_ui(self):
         self.align = self.__setup_align()
         self.box = gtk.HBox()
         self.notice_label = self.__setup_label("DEBUG")
@@ -44,11 +48,16 @@ class FootBox(gtk.VBox):
         self.align.add(self.box)
         self.pack_start(self.align)
 
+        self.__is_init_ui = True
+
     def hide(self):
-        print "DEBUG hide"
+        self.hide_all()
 
     def show(self):
-        print "DEBUG show"
+        if not self.__is_init_ui:
+            self.__init_ui()
+        
+        self.show_all()
     
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       
