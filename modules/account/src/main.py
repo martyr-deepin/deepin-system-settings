@@ -844,7 +844,10 @@ class AccountSetting(object):
         error_label = Label("", wrap_width=560, enable_select=False)
         swin = ScrolledWindow()
         face_dir = '/usr/share/pixmaps/faces'
-        pic_list = os.listdir(face_dir)
+        if os.path.exists(face_dir):
+            pic_list = os.listdir(face_dir)
+        else:
+            pic_list = []
         row_num = (len(pic_list) + 1) / 10 + 1
         table = gtk.Table(row_num, 10)
         table.set_col_spacings(FRAME_VERTICAL_SPACING)

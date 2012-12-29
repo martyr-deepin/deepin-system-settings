@@ -438,7 +438,9 @@ class SoundSetting(object):
         ''' widget signals connect'''
         # redraw container background white
         self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
-        self.alignment_widgets["advance_set_tab_box"].connect("expose-event", self.container_expose_cb)
+        #self.alignment_widgets["advance_set_tab_box"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["advance_output_box"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["advance_input_box"].connect("expose-event", self.container_expose_cb)
         
         self.button_widgets["balance"].connect("toggled", self.toggle_button_toggled, "balance")
         self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")

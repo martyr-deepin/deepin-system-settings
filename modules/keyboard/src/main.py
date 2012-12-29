@@ -446,6 +446,9 @@ class KeySetting(object):
         ##################################
         # redraw container background white
         self.alignment_widgets["notebook"].connect("expose-event", self.container_expose_cb)
+        self.container_widgets["type_main_hbox"].connect("expose-event", self.container_expose_cb)
+        self.container_widgets["layout_main_hbox"].connect("expose-event", self.container_expose_cb)
+        self.container_widgets["shortcuts_main_hbox"].connect("expose-event", self.container_expose_cb)
         # typing widget signal
         # repeat delay
         self.settings.connect("changed", self.keyboard_setting_changed_cb)
