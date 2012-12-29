@@ -1,37 +1,83 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-# 框架类别-上下间距
-FRAME_HORIZONTAL_SPACING = 4
-# 框架类别-左右间距
-FRAME_VERTICAL_SPACING = 4
+import sys
+import os
+from dtk.ui.utils import get_parent_dir, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.draw import draw_line
+sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
+from constants import *
+import gtk
 
-# 框架类别-窗口左空白
-FRAME_LEFT_PADDING = 20
-# 框架类别-窗口上空白
-FRAME_TOP_PADDING = 15
+# Setting UI styles
+def set_frame_box_align(box):
+    #box.set_spacing(BETWEEN_SPACING)
+    align = gtk.Alignment(0, 0, 0, 0)
+    align.set_padding(FRAME_TOP_PADDING, STATUS_HEIGHT, FRAME_LEFT_PADDING, 0)
+    align.add(box)
 
-# 文字控件类别-窗口左空白
-TEXT_WINDOW_LEFT_PADDING = 50
-TEXT_WINDOW_TOP_PADDING = 35
-# 文字控件类别-右对齐间距
-TEXT_WINDOW_RIGHT_WIDGET_PADDING = 10
-# 文字控件类别-提示信息宽
-TIP_BOX_WIDTH = 180
+    return align
 
-# 默认文字大小
-DEFAULT_FONT_SIZE = 12
-# 标题文字大小
-TITLE_FONT_SIZE = 14
-# 垂直间隔
-BETWEEN_SPACING = 15
-# 容器高度
-CONTAINNER_HEIGHT = 30
-# 容器内左右间距
-WIDGET_SPACING = 10
+def set_box_with_align(box, types):
+    if types is "text":
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        align.add(box)
+        return align
+    else:
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(FRAME_TOP_PADDING, STATUS_HEIGHT, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
+        align.add(box)
+        return align
 
-# 提示信息
-# STATUS_HEIGHT = 35
+def set_align_text_box(align):
+    align.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
 
-WINDOW_HEIGHT = 535
-WINDOW_WIDTH = 800
+def set_main_window(align, has_right=False):
+    align.set_padding(FRAME_TOP_PADDING, STATUS_HEIGHT, FRAME_LEFT_PADDING, [0, FRAME_LEFT_PADDING][has_right is True])
+
+def set_table(table):
+    #table.set_row_spacings(8)
+    table.set_col_spacings(BETWEEN_SPACING)
+
+def wrap_with_align(widget):
+    if type(widget.parent) == gtk.Alignment:
+        return widget.parent
+    else:
+        align = gtk.Alignment(0, 0.5, 1, 0)
+        align.set_size_request(-1, CONTAINNER_HEIGHT)
+        align.add(widget)
+        return align
+
+
+def set_table_items(table, item_name):
+    children = table.get_children()
+    for child in children:
+        if item_name is "entry":
+            from dtk.ui.new_entry import InputEntry, PasswordEntry
+            if type(child) is gtk.Alignment:
+                c = child.get_children()[0]
+                if type(c).__name__ == type(InputEntry()).__name__ or \
+                    type(c).__name__ == type(PasswordEntry()).__name__:
+                    c.set_size(222, WIDGET_HEIGHT)
+
+
+def draw_out_line(cr, rect, exclude=[]):
+    with cairo_disable_antialias(cr):
+        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
+        cr.set_source_rgb(*BORDER_COLOR)
+        cr.set_line_width(1)
+        
+        # Top
+        if "top" not in exclude:
+            draw_line(cr, rect.x, rect.y, rect.x + rect.width + 1, rect.y)
+        # bottom
+        if "bot" not in exclude:
+            draw_line(cr, rect.x, rect.y + rect.height + 1, rect.x + rect.width +1, rect.y + rect.height +1)
+        # left
+        if "left" not in exclude:
+            draw_line(cr, rect.x , rect.y , rect.x, rect.y + rect.height)
+        # right
+        if "right" not in exclude:
+            draw_line(cr, rect.x + rect.width + 1, rect.y + 29, rect.x + rect.width , rect.y + rect.height)
+

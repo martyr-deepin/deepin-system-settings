@@ -5,6 +5,7 @@ from dtk.ui.combo import ComboBox
 import gtk
 
 from app import AppManager
+import style
 
 class AppView(gtk.VBox):
     def __init__(self):
@@ -46,33 +47,39 @@ class AppView(gtk.VBox):
 
         table = gtk.Table(7, 2, False)
         
-        table.attach(info_label, 0, 2, 0, 1)
-        table.attach(web_label, 0, 1, 1, 2)
-        table.attach(mail_label, 0, 1, 2, 3)
-        table.attach(editor_label, 0, 1, 3, 4)
-        table.attach(music_label, 0, 1, 4, 5)
-        table.attach(movie_label, 0, 1, 5, 6)
-        table.attach(pic_label, 0, 1, 6, 7)
+        table.attach(style.wrap_with_align(info_label), 0, 2, 0, 1)
+        table.attach(style.wrap_with_align(web_label), 0, 1, 1, 2)
+        table.attach(style.wrap_with_align(mail_label), 0, 1, 2, 3)
+        table.attach(style.wrap_with_align(editor_label), 0, 1, 3, 4)
+        table.attach(style.wrap_with_align(music_label), 0, 1, 4, 5)
+        table.attach(style.wrap_with_align(movie_label), 0, 1, 5, 6)
+        table.attach(style.wrap_with_align(pic_label), 0, 1, 6, 7)
 
-        table.attach(self.web, 1, 2, 1, 2, 0)
-        table.attach(self.mail,1, 2, 2, 3, 0)
-        table.attach(self.editor, 1, 2, 3, 4, 0)
-        table.attach(self.music, 1, 2, 4, 5, 0)
-        table.attach(self.movie, 1, 2, 5, 6, 0)
-        table.attach(self.pic, 1, 2, 6, 7, 0)
+        table.attach(style.wrap_with_align(self.web), 1, 2, 1, 2, 0)
+        table.attach(style.wrap_with_align(self.mail),1, 2, 2, 3, 0)
+        table.attach(style.wrap_with_align(self.editor), 1, 2, 3, 4, 0)
+        table.attach(style.wrap_with_align(self.music), 1, 2, 4, 5, 0)
+        table.attach(style.wrap_with_align(self.movie), 1, 2, 5, 6, 0)
+        table.attach(style.wrap_with_align(self.pic), 1, 2, 6, 7, 0)
 
-        table.set_size_request(455, 230)
-        table.set_row_spacings(20)
-        table_align = gtk.Alignment(0.5, 0.5, 0, 0)
-        table_align.set_padding(25, 0, 0, 0)
-        table_align.add(table)
+        #table.set_size_request(455, 230)
+        #table.set_row_spacings(20)
+        #table_align = gtk.Alignment(0.5, 0.5, 0, 0)
+        #table_align.set_padding(25, 0, 0, 0)
+        #table_align.add(table)
+        align = style.set_box_with_align(table, "text")
+        style.set_table(table)
 
-        self.pack_start(table_align, False, False)
+        self.pack_start(align, False, False)
+
+        #combo_list = [self.web, self.mail, self.editor, self.music, self.movie, self.pic]
+        #for combo in combo_list:
+            #combo.set_size_request(222, 22)
 
         all_app_dict = self.get_all_app()
         apps = [self.web, self.mail, self.editor, self.music, self.movie, self.pic]
         for app in apps:
-            app.set_size_request(408, 25)
+            app.set_size_request(408, 22)
         for key in all_app_dict.iterkeys():
             apps[key].set_items(all_app_dict[key], max_width=408)
 

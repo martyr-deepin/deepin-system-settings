@@ -20,18 +20,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.init_skin import init_skin
-from dtk.ui.utils import get_parent_dir
-import os
+#from dtk.ui.init_skin import init_skin
+#from dtk.ui.utils import get_parent_dir
+#import os
 
-app_theme = init_skin(
-    "deepin-application-associate-settings", 
-    "1.0",
-    "01",
-    os.path.join(get_parent_dir(__file__, 2), "skin"),
-    os.path.join(get_parent_dir(__file__, 2), "theme"),
-    )
-
+#app_theme = init_skin(
+    #"deepin-application-associate-settings", 
+    #"1.0",
+    #"01",
+    #os.path.join(get_parent_dir(__file__, 2), "skin"),
+    #os.path.join(get_parent_dir(__file__, 2), "theme"),
+    #)
+import dss
 from dtk.ui.tab_window import TabBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
@@ -42,14 +42,25 @@ import gtk
 from app_view import AppView
 from media_view import MediaView
 from session_view import SessionView
-from style import FRAME_LEFT_PADDING, FRAME_TOP_PADDING
+
+import style
+from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE
 
 class AppMain(gtk.Alignment):
 
     def __init__(self):
-        gtk.Alignment.__init__(self, 0.5, 0.5, 1, 1)
-        self.set_padding(FRAME_TOP_PADDING, 0, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
+        gtk.Alignment.__init__(self, 0, 0, 0, 0)
+        style.set_main_window(self, True)
         self.add(AppAssoView())
+
+        self.connect("expose-event", self.expose_event)
+
+    def expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        cr.set_source_rgb( 1, 1, 1) 
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
 
 class AppAssoView(TabBox):
     '''
@@ -61,6 +72,7 @@ class AppAssoView(TabBox):
         init docs
         '''
         TabBox.__init__(self)
+        self.set_size_request(800, 600)
         self.draw_title_background = self.draw_tab_title_background
         #self.set_size_request(722, 356)
         
@@ -71,6 +83,14 @@ class AppAssoView(TabBox):
         self.add_items([("应用程序", self.app_box), 
                         ("自动运行", self.autorun_box), 
                         ("启动项", self.boot_box)])
+
+        self.connect("expose-event", self.expose_outline, ["top"])
+
+    def expose_outline(self, widget, event, exclude):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        style.draw_out_line(cr, rect, exclude)
 
 
     def draw_tab_title_background(self, cr, widget):
