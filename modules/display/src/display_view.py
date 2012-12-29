@@ -192,7 +192,7 @@ class DisplayView(gtk.VBox):
         '''
         scrolled_window
         '''
-        self.scrolled_window = ScrolledWindow(bar_background_color = SCROLLED_BAR_BG_COLOR)
+        self.scrolled_window = ScrolledWindow()
         self.scrolled_window.set_size_request(800, 425)
         self.scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.main_box = gtk.VBox()

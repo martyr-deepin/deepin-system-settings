@@ -78,11 +78,6 @@ WINDOW_HEIGHT = 535
 WINDOW_WIDTH = 800
 
 '''
-ScrolledWindow bar background color
-'''
-SCROLLED_BAR_BG_COLOR = "#31ABEE"
-
-'''
 Border color and backgroud color for treeview
 '''
 TREEVIEW_BORDER_COLOR = "#d2d2d2"
