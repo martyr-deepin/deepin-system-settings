@@ -8,6 +8,7 @@ from dtk.ui.button import CheckButton, Button
 from media import MediaAutorun
 from app import AppManager
 import gtk
+import style
 
 class MediaView(gtk.VBox):
 
@@ -43,14 +44,14 @@ class MediaView(gtk.VBox):
         self.more_option = Button("更多选项")
         self.more_option.set_size_request(78, 24)
 
-        table.attach(info_label, 0, 3, 0, 1)
-        table.attach(cd_label, 0, 1, 2, 3)
-        table.attach(dvd_label, 0, 1, 3, 4)
-        table.attach(player_label, 0, 1, 4, 5)
-        table.attach(photo_label, 0, 1, 5, 6)
-        table.attach(software_label, 0, 1, 6, 7)
+        table.attach(style.wrap_with_align(info_label), 0, 3, 0, 1)
+        table.attach(style.wrap_with_align(cd_label), 0, 1, 2, 3)
+        table.attach(style.wrap_with_align(dvd_label), 0, 1, 3, 4)
+        table.attach(style.wrap_with_align(player_label), 0, 1, 4, 5)
+        table.attach(style.wrap_with_align(photo_label), 0, 1, 5, 6)
+        table.attach(style.wrap_with_align(software_label), 0, 1, 6, 7)
         
-        table.attach(self.auto_check, 0, 3, 1, 2)
+        table.attach(style.wrap_with_align(self.auto_check), 0, 3, 1, 2)
         table.attach(self.cd, 1, 3, 2, 3, gtk.SHRINK)
         table.attach(self.dvd, 1, 3, 3, 4, gtk.SHRINK)
         table.attach(self.player, 1, 3, 4, 5, gtk.SHRINK)
@@ -59,13 +60,15 @@ class MediaView(gtk.VBox):
         table.attach(self.more_option, 2, 3, 7, 8, gtk.SHRINK)
 
         # UI style
-        table.set_size_request(447, 290)
-        table.set_row_spacings(20)
-        table_align = gtk.Alignment(0.5, 0.5, 0, 0)
-        table_align.set_padding(25, 19, 0, 0)
-        table_align.add(table)
+        table_align = style.set_box_with_align(table, "text")
+        style.set_table(table)
 
         self.pack_start(table_align, False, False)
+
+        combo_list = [self.cd, self.dvd, self.player, self.photo, self.software]
+        for combo in combo_list:
+            combo.set_size_request(323, 22)
+
 
         self.refresh_app_list(default_list)
         if self.media_handle.autorun_never:
