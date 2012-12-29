@@ -107,7 +107,8 @@ class ActionBar(gtk.Alignment):
         self.search_cb = search_cb
         self.search_entry = InputEntry(action_button=self.search_button)
         self.search_entry.set_size(150, 24)
-        self.search_entry.connect("key-press-event", self.__search_key_press)
+        self.search_entry.entry.connect("changed", self.__search_changed)
+        self.search_entry.entry.connect("press-return", self.__search_press_enter)
         self.search_align = gtk.Alignment()
         self.search_align.set(0.5, 0.5, 0, 0)
         self.search_align.set_padding(5, 0, 5, 5)
@@ -125,11 +126,14 @@ class ActionBar(gtk.Alignment):
         
         # Connect signals.
         self.connect("expose-event", self.expose_action_bar)
-    
-    def __search_key_press(self, widget, event):
-        if get_keyevent_name(event) == "Return":
-            if self.search_cb:
-                self.search_cb()
+   
+    def __search_changed(self, widget, event):
+        if self.search_cb:
+            self.search_cb()
+
+    def __search_press_enter(self, widget):
+        if self.search_cb:
+            self.search_cb()
 
     def __backward_clicked(self, widget):
         if self.backward_cb:
