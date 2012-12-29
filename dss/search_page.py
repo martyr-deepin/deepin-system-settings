@@ -78,7 +78,7 @@ class KeywordSearch:
                 
                 module_doc.fields.append(xappy.Field("module_uid", keyword[0]))
                 
-                terms = list(split_word(keyword[1]))
+                terms = list(split_word(keyword[1], True))
                 module_doc.fields.append(xappy.Field("keyword_term", ' '.join(terms)))
                 
                 self.__xappy.add(module_doc)
@@ -86,7 +86,7 @@ class KeywordSearch:
         self.__xappy.close()
 
     def query(self, keyword):
-        return self.search_query(list(split_word(keyword)))
+        return self.search_query(list(split_word(keyword, True)))
     
     def search_query(self, keywords):
         sconn = xappy.SearchConnection(SEARCH_DB_DIR)
@@ -204,7 +204,7 @@ class SearchPage(gtk.VBox):
         '''
         for widget in self.result_box.get_children():
             self.result_box.remove(widget)
-
+        
         for module_keyword in self.__keywords:
             is_drawn_module_name = False
             for keyword in module_keyword[2]:
