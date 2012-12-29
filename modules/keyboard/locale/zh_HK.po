@@ -19,7 +19,7 @@ msgstr ""
 #: ../src/main.py:61 ../src/main.py:541 ../src/main.py:1024
 #: ../src/main.py:1025 ../src/main.py:1055 ../src/main.py:1059
 msgid "Custom Shortcuts"
-msgstr "快捷鍵"
+msgstr "自定義快捷鍵"
 
 #: ../src/main.py:109
 msgid "Repeat"

@@ -22,12 +22,12 @@
 
 from nls import _
 
-keywords = [("__account_id1", _("Automatic Login")), 
-            ("__account_id2", _("Deepin Account")), 
-            ("__account_id3", _("Account Name")), 
-            ("__account_id4", _("Create Account")), 
-            ("__account_id5", _("Delete Account")), 
-            ("__account_id6", _("Change Password")), 
-            ("__account_id7", _("Set Icon")), 
-            ("__account_id8", _("Account")), 
+keywords = [("__mouse_id1", _("Mouse")), 
+            ("__mouse_id2", _("Pointer speed")), 
+            ("__mouse_id3", _("Acceleration")), 
+            ("__mouse_id4", _("Sensitivity")), 
+            ("__mouse_id5", _("Double-click")), 
+            ("__mouse_id6", _("Frequency")), 
+            ("__mouse_id7", _("Right-handed")), 
+            ("__mouse_id8", _("Left-handed")), 
            ]

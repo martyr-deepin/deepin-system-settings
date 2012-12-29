@@ -999,9 +999,12 @@ if __name__ == '__main__':
     module_frame.connect("realize", 
         lambda w: mouse_settings.container_widgets["slider"].set_to_page(
         mouse_settings.alignment_widgets["main_hbox"]))
+    if len(sys.argv) > 1:
+        print "module_uid:", sys.argv[1]
     
     def message_handler(*message):
         (message_type, message_content) = message
+        print "message:", message_type, message_content
         if message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
             if crumb_index == 1:
@@ -1010,6 +1013,7 @@ if __name__ == '__main__':
                 #mouse_settings.container_widgets["slider"].slide_to_page(
                     #mouse_settings.container_widgets["main_hbox"], "left")
         elif message_type == "show_again":
+            print "DEBUG show_again module_uid", message_content
             mouse_settings.container_widgets["slider"].set_to_page(
                 mouse_settings.alignment_widgets["main_hbox"])
             module_frame.send_module_info()
