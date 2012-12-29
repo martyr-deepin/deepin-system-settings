@@ -27,7 +27,7 @@ from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import ALIGN_START, ALIGN_END
+from dtk.ui.constant import ALIGN_START
 from dtk.ui.utils import (color_hex_to_cairo, set_clickable_cursor, 
                           is_dbus_name_exists)
 from dtk.ui.draw import cairo_state, draw_text
@@ -192,7 +192,7 @@ class DisplayView(gtk.VBox):
         '''
         scrolled_window
         '''
-        self.scrolled_window = ScrolledWindow()
+        self.scrolled_window = ScrolledWindow(bar_background_color = SCROLLED_BAR_BG_COLOR)
         self.scrolled_window.set_size_request(800, 425)
         self.scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.main_box = gtk.VBox()

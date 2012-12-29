@@ -32,6 +32,7 @@ from search_page import SearchPage
 from content_page import ContentPageInfo
 from action_bar import ActionBar
 from navigate_page import NavigatePage
+from foot_box import FootBox
 import gtk
 import subprocess
 import os
@@ -97,7 +98,8 @@ class DBusService(dbus.service.Object):
                  content_page_info, 
                  application=None,
                  module_dict=None,
-                 slider=None
+                 slider=None, 
+                 foot_box=None
                  ):
         # Init dbus object.
         bus_name = dbus.service.BusName(APP_DBUS_NAME, bus=dbus.SessionBus())
@@ -119,11 +121,17 @@ class DBusService(dbus.service.Object):
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
                 record_module_history(module_id)
+
+                if foot_box:
+                    foot_box.show()
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
                 record_module_history(module_id)
+
+                if foot_box:
+                    foot_box.show()
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
@@ -134,6 +142,9 @@ class DBusService(dbus.service.Object):
                 call_module_by_name(module_id, module_dict, slider, content_page_info, "right", module_uid)
                 
                 record_module_history(module_id)
+
+                if foot_box:
+                    foot_box.show()
             else:
                 print message
                     
@@ -152,27 +163,37 @@ def handle_dbus_reply(*reply):
 def handle_dbus_error(*error):
     print "com.deepin.system_settings (error): %s" % (str(error))
 
-def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info):
+def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot_box):
     module_id = get_backward_module()
     if module_id:
         action_bar.bread.remove_node_after_index(0)
         if module_id == MAIN_MODULE:
             slider.slide_to_page(navigate_page, "right")
-        else:
-            call_module_by_name(module_id, module_dict, slider, content_page_info, "right")        
 
-def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info):
+            foot_box.hide()
+        else:
+            call_module_by_name(module_id, module_dict, slider, content_page_info, "right")
+
+            foot_box.show()
+
+def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box):
     module_id = get_forward_module()
     if module_id:
         action_bar.bread.remove_node_after_index(0)
         if module_id == MAIN_MODULE:
             slider.slide_to_page(navigate_page, "left")
-        else:
-            call_module_by_name(module_id, module_dict, slider, content_page_info, "left")        
 
-def search_cb(action_bar, slider):
+            foot_box.hide()
+        else:
+            call_module_by_name(module_id, module_dict, slider, content_page_info, "left")
+
+            foot_box.show()
+
+def search_cb(action_bar, slider, foot_box):
     search_page.query(action_bar.search_entry.get_text())
     slider.slide_to_page(search_page, "left")
+
+    foot_box.hide()
 
 def send_message(module_id, message_type, message_content):
     bus = dbus.SessionBus()
@@ -187,14 +208,18 @@ def send_message(module_id, message_type, message_content):
                error_handler=handle_dbus_error
                )
         
-def switch_page(bread, content_page_info, index, label, slider, navigate_page):
+def switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box):
     if index == 0:
         if label == "系统设置":
             slider.slide_to_page(navigate_page, "left")
+
+            foot_box.hide()
     else:
         send_message(content_page_info.get_active_module_id(),
                      "click_crumb",
                      (index, label))
+
+        foot_box.show()
         
 def click_module_menu_item(slider, content_page_info, action_bar, module_info):
     if module_info.id != content_page_info.get_active_module_id():
@@ -278,6 +303,7 @@ if __name__ == "__main__":
     main_align.set_padding(0, 2, 2, 2)
     main_box = gtk.VBox()
     body_box = gtk.VBox()
+    foot_box = FootBox()
     
     # Init module infos.
     module_infos = get_module_infos()
@@ -288,11 +314,11 @@ if __name__ == "__main__":
     
     # Init action bar.
     action_bar = ActionBar(module_infos, 
-                           lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page),
+                           lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box),
                            lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info), 
-                           lambda : titlebar_backward_cb(module_dict, action_bar, slider, content_page_info), 
-                           lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info), 
-                           lambda : search_cb(action_bar, slider))
+                           lambda : titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
+                           lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
+                           lambda : search_cb(action_bar, slider, foot_box))
     
     # Init slider.
     slider = HSlider()
@@ -307,6 +333,8 @@ if __name__ == "__main__":
     slider.append_page(search_page)
     slider.append_page(navigate_page)
     application.window.connect("realize", lambda w: slider.set_to_page(navigate_page))
+
+    foot_box.hide()
     
     # Init content page info.
     content_page_info = ContentPageInfo(slider)
@@ -319,11 +347,12 @@ if __name__ == "__main__":
     body_box.pack_start(slider, True, True)
     main_box.pack_start(action_bar, False, False)
     main_box.pack_start(body_box, True, True)
+    main_box.pack_start(foot_box, False, False)
     main_align.add(main_box)
     application.main_box.pack_start(main_align)
     
     # Start dbus service.
-    DBusService(action_bar, content_page_info, application, module_dict, slider)
+    DBusService(action_bar, content_page_info, application, module_dict, slider, foot_box)
 
     call_module_by_name(module_name, module_dict, slider, content_page_info)
 
