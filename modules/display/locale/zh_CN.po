@@ -1,0 +1,110 @@
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
+# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-12-29 14:28+0800\n"
+"PO-Revision-Date: 2012-12-29 11:25+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/search_keyword.py:29 ../src/display_view.py:228
+msgid "Monitor Display"
+msgstr "屏幕显示"
+
+#: ../src/search_keyword.py:30 ../src/display_view.py:237
+msgid "Monitor"
+msgstr "显示器"
+
+#: ../src/search_keyword.py:31 ../src/display_view.py:268
+msgid "Resolution"
+msgstr "分辨率"
+
+#: ../src/search_keyword.py:32 ../src/display_view.py:273
+msgid "Rotation"
+msgstr "方向"
+
+#: ../src/search_keyword.py:33 ../src/display_view.py:289
+msgid "Monitor Brightness"
+msgstr "屏幕亮度"
+
+#: ../src/search_keyword.py:34 ../src/display_view.py:301
+msgid "Brightness"
+msgstr "亮度"
+
+#: ../src/search_keyword.py:35 ../src/display_view.py:319
+msgid "Auto Adjust Monitor Brightness"
+msgstr "自动调节屏幕亮度"
+
+#: ../src/search_keyword.py:36 ../src/display_view.py:325
+msgid "Close Monitor"
+msgstr "关闭屏幕"
+
+#: ../src/search_keyword.py:37 ../src/display_view.py:350
+msgid "Auto Lock User Monitor Screen"
+msgstr "自动锁定用户屏幕"
+
+#: ../src/search_keyword.py:38 ../src/display_view.py:356
+msgid "Lock Screen"
+msgstr "锁定屏幕"
+
+#: ../src/display_view.py:180
+msgid "Normal"
+msgstr "正常"
+
+#: ../src/display_view.py:181
+msgid "Right"
+msgstr "顺时针"
+
+#: ../src/display_view.py:182
+msgid "Left"
+msgstr "逆时针"
+
+#: ../src/display_view.py:183
+msgid "Inverted"
+msgstr "-180度"
+
+#: ../src/display_view.py:184
+msgid "Minute"
+msgstr "分钟"
+
+#: ../src/display_view.py:185 ../src/display_view.py:186
+#: ../src/display_view.py:187 ../src/display_view.py:188
+#: ../src/display_view.py:189
+msgid "Minutes"
+msgstr "分钟"
+
+#: ../src/display_view.py:190
+msgid "Hour"
+msgstr "小时"
+
+#: ../src/display_view.py:191
+msgid "Never"
+msgstr "从不"
+
+#: ../src/display_view.py:250
+msgid ""
+"If need to configure desktop background and system theme, please click <span "
+"foreground=\"blue\" underline=\"single\">Individuation</span>"
+msgstr "如需要设置桌面壁纸和系统主题，请点击 <span foreground=\"blue\" "
+"underline=\"single\">个性化设置</span>"
+
+#: ../src/display_view.py:255
+msgid ""
+"Power related configuration please click <span foreground=\"blue\" underline="
+"\"single\">Power</span>"
+msgstr "电源相关设置请点击 <span foreground=\"blue\" underline=\"single\">"
+"电源设置</span>"
+
+#: ../src/display_view.py:341
+msgid "Monitor Screen Lock"
+msgstr "锁定屏幕"
