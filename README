@@ -52,7 +52,7 @@ sudo apt-get install python-gtop
 Python network
 sudo apt-get install modemmanager, glib-networking, python-gudev,python-keyring ,network-manager, network-manager-pptp 
 network-manager-l2tp 安装参考https://launchpad.net/~seriy-pr/+archive/network-manager-l2tp
-sudo easy_install pytz
+sudo apt-get install python-tz
 
 
 == bluetooth module ==
