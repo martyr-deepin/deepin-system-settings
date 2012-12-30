@@ -24,7 +24,7 @@ from theme import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.timezone import TimeZone
 from dtk.ui.datetime import DateTime
-from dtk.ui.spin import SpinBox, TimeSpinBox
+from dtk.ui.spin import TimeSpinBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
@@ -77,14 +77,14 @@ class DatetimeView(gtk.VBox):
         self.datetime_widget = DateTime()
         self.datetime_widget_align.add(self.datetime_widget)
         self.set_time_align = self.__setup_align(padding_top = 20, padding_left = 130)
-        self.set_time_spin = SpinBox()
+        self.set_time_spin = TimeSpinBox()
         self.set_time_spin.set_size_request(100, -1)
         self.set_time_align.add(self.set_time_spin)
         self.auto_time_align = self.__setup_align(padding_top = 20, padding_left = 0)
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
         self.auto_time_label = self.__setup_label(_("Auto Set Time"))
         self.auto_time_toggle = self.__setup_toggle()
-        self.time_display_label = self.__setup_label(_("24 Hour Display"))
+        self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
         self.time_display_toggle = self.__setup_toggle()
         self.__widget_pack_start(self.auto_time_box, 
                                  [self.auto_time_label, 
