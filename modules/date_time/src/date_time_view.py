@@ -24,10 +24,11 @@ from theme import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.timezone import TimeZone
 from dtk.ui.datetime import DateTime
+from dtk.ui.spin import SpinBox, TimeSpinBox
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import DEFAULT_FONT_SIZE, ALIGN_START, ALIGN_END
+from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo
 import gobject
 import gtk
@@ -66,13 +67,31 @@ class DatetimeView(TabBox):
         self.datetime_align = self.__setup_align()
         self.set_datetime_box = gtk.HBox()
         self.calendar = gtk.Calendar()
-        self.calendar.set_size_request(400, 300)
+        self.calendar.set_size_request(360, 200)
         self.datetime_widget_box = gtk.VBox()
-        self.datetime_widget_align = self.__setup_align(padding_top = 0, padding_left = 80)
+        self.datetime_widget_align = self.__setup_align(padding_top = 0, padding_left = 70)
         self.datetime_widget = DateTime()
         self.datetime_widget_align.add(self.datetime_widget)
+        self.set_time_align = self.__setup_align(padding_top = 20, padding_left = 110)
+        self.set_time_spin = SpinBox()
+        self.set_time_spin.set_size_request(100, -1)
+        self.set_time_align.add(self.set_time_spin)
+        self.auto_time_align = self.__setup_align(padding_top = 20, padding_left = 0)
+        self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
+        self.auto_time_label = self.__setup_label(_("Auto Set Time"))
+        self.auto_time_toggle = self.__setup_toggle()
+        self.time_display_label = self.__setup_label(_("24 Hour Display"))
+        self.time_display_toggle = self.__setup_toggle()
+        self.__widget_pack_start(self.auto_time_box, 
+                                 [self.auto_time_label, 
+                                  self.auto_time_toggle, 
+                                  self.time_display_label, 
+                                  self.time_display_toggle])
+        self.auto_time_align.add(self.auto_time_box)
         self.__widget_pack_start(self.datetime_widget_box, 
-                                 [self.datetime_widget_align])
+                                 [self.datetime_widget_align, 
+                                  self.set_time_align, 
+                                  self.auto_time_align])
         self.__widget_pack_start(self.set_datetime_box, 
                                  [self.calendar, self.datetime_widget_box])
         self.datetime_align.add(self.set_datetime_box)
@@ -84,13 +103,14 @@ class DatetimeView(TabBox):
         self.timezone_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING, 
                                                  padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.timezone = TimeZone(self.current_tz_gmtoff,                        
-                                 380,                                           
-                                 230,                                           
+                                 680,                                           
+                                 300,                                           
                                  TEXT_WINDOW_TOP_PADDING,                       
                                  TEXT_WINDOW_LEFT_PADDING)                      
         self.timezone.connect("changed", self.__timezone_changed)
         self.timezone_align.add(self.timezone)
-        self.set_timezone_align = self.__setup_align(padding_left = TEXT_WINDOW_LEFT_PADDING)
+        self.set_timezone_align = self.__setup_align(padding_top = 10, 
+                                                     padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.set_timezone_box = gtk.HBox(spacing=WIDGET_SPACING)                         
         self.timezone_label = self.__setup_label(text = "时区", width = 30, align = ALIGN_START)
         self.timezone_combo = ComboBox(self.timezone_items, max_width = 340)    
@@ -120,8 +140,8 @@ class DatetimeView(TabBox):
         self.timezone.set_timezone(item_value - 11)
         self.deepin_dt.set_timezone_by_gmtoff(item_value - 11)
 
-    def __setup_label(self, text="", width=50, align=ALIGN_END):
-        label = Label(text, None, DEFAULT_FONT_SIZE, align, width)
+    def __setup_label(self, text="", width=100, align=ALIGN_END):
+        label = Label(text, None, CONTENT_FONT_SIZE, align, width)
         return label
 
     def __setup_toggle(self):
