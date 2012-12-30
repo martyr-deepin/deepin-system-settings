@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-29 14:28+0800\n"
+"POT-Creation-Date: 2012-12-30 17:00+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -25,35 +25,35 @@ msgstr "屏幕显示"
 msgid "Monitor"
 msgstr "显示器"
 
-#: ../src/search_keyword.py:31 ../src/display_view.py:268
+#: ../src/search_keyword.py:31 ../src/display_view.py:272
 msgid "Resolution"
 msgstr "分辨率"
 
-#: ../src/search_keyword.py:32 ../src/display_view.py:273
+#: ../src/search_keyword.py:32 ../src/display_view.py:277
 msgid "Rotation"
 msgstr "方向"
 
-#: ../src/search_keyword.py:33 ../src/display_view.py:289
+#: ../src/search_keyword.py:33 ../src/display_view.py:293
 msgid "Monitor Brightness"
 msgstr "屏幕亮度"
 
-#: ../src/search_keyword.py:34 ../src/display_view.py:301
+#: ../src/search_keyword.py:34 ../src/display_view.py:305
 msgid "Brightness"
 msgstr "亮度"
 
-#: ../src/search_keyword.py:35 ../src/display_view.py:319
+#: ../src/search_keyword.py:35 ../src/display_view.py:323
 msgid "Auto Adjust Monitor Brightness"
 msgstr "自动调节屏幕亮度"
 
-#: ../src/search_keyword.py:36 ../src/display_view.py:325
+#: ../src/search_keyword.py:36 ../src/display_view.py:329
 msgid "Close Monitor"
 msgstr "关闭屏幕"
 
-#: ../src/search_keyword.py:37 ../src/display_view.py:350
+#: ../src/search_keyword.py:37 ../src/display_view.py:354
 msgid "Auto Lock User Monitor Screen"
 msgstr "自动锁定用户屏幕"
 
-#: ../src/search_keyword.py:38 ../src/display_view.py:356
+#: ../src/search_keyword.py:38 ../src/display_view.py:360
 msgid "Lock Screen"
 msgstr "锁定屏幕"
 
@@ -92,19 +92,17 @@ msgid "Never"
 msgstr "从不"
 
 #: ../src/display_view.py:250
-msgid ""
-"If need to configure desktop background and system theme, please click <span "
-"foreground=\"blue\" underline=\"single\">Individuation</span>"
-msgstr "如需要设置桌面壁纸和系统主题，请点击 <span foreground=\"blue\" "
-"underline=\"single\">个性化设置</span>"
+msgid "Relative Settings"
+msgstr "相关设置"
 
-#: ../src/display_view.py:255
-msgid ""
-"Power related configuration please click <span foreground=\"blue\" underline="
-"\"single\">Power</span>"
-msgstr "电源相关设置请点击 <span foreground=\"blue\" underline=\"single\">"
-"电源设置</span>"
+#: ../src/display_view.py:251
+msgid "<span foreground=\"blue\" underline=\"single\">Individuation</span>"
+msgstr "<span foreground=\"blue\" underline=\"single\">个性化</span>"
 
-#: ../src/display_view.py:341
+#: ../src/display_view.py:256
+msgid "<span foreground=\"blue\" underline=\"single\">Power</span>"
+msgstr "<span foreground=\"blue\" underline=\"single\">电源</span>"
+
+#: ../src/display_view.py:345
 msgid "Monitor Screen Lock"
 msgstr "锁定屏幕"

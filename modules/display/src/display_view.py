@@ -247,18 +247,22 @@ class DisplayView(gtk.VBox):
         '''
         self.goto_align = self.__setup_align()
         self.goto_box = gtk.VBox(spacing = WIDGET_SPACING)
-        self.goto_individuation_label = self.__setup_label(text = _("If need to configure desktop background and system theme, please click <span foreground=\"blue\" underline=\"single\">Individuation</span>"), wrap_width = 180)
+        self.goto_label = self.__setup_label(_("Relative Settings"))
+        self.goto_individuation_label = self.__setup_label(text = _("<span foreground=\"blue\" underline=\"single\">Individuation</span>"), width = 180)
         self.goto_individuation_label.connect("button-press-event", 
                                               self.__button_press, 
                                               "individuation")
         set_clickable_cursor(self.goto_individuation_label)
-        self.goto_power_label = self.__setup_label(text = _("Power related configuration please click <span foreground=\"blue\" underline=\"single\">Power</span>"), wrap_width = 180)
+        self.goto_power_label = self.__setup_label(text = _("<span foreground=\"blue\" underline=\"single\">Power</span>"), width = 180)
         self.goto_power_label.connect("button-press-event", 
                                       self.__button_press, 
                                       "power")
         set_clickable_cursor(self.goto_power_label)
         self.__widget_pack_start(self.goto_box, 
-            [self.goto_individuation_label, self.goto_power_label])
+                                 [self.goto_label, 
+                                  self.goto_individuation_label, 
+                                  self.goto_power_label
+                                 ])
         self.goto_align.add(self.goto_box)
         '''
         sizes && rotation
@@ -396,7 +400,7 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.main_box)
         self.pack_start(self.scrolled_window)
 
-        self.__send_message("status", _("Welcome to use Deepin System Settings Display Module"))
+        self.__send_message("status", "")
 
     def __handle_dbus_replay(self, *reply):
         pass

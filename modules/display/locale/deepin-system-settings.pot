@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-29 14:28+0800\n"
+"POT-Creation-Date: 2012-12-30 17:03+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,35 +25,35 @@ msgstr ""
 msgid "Monitor"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/display_view.py:268
+#: ../src/search_keyword.py:31 ../src/display_view.py:272
 msgid "Resolution"
 msgstr ""
 
-#: ../src/search_keyword.py:32 ../src/display_view.py:273
+#: ../src/search_keyword.py:32 ../src/display_view.py:277
 msgid "Rotation"
 msgstr ""
 
-#: ../src/search_keyword.py:33 ../src/display_view.py:289
+#: ../src/search_keyword.py:33 ../src/display_view.py:293
 msgid "Monitor Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:34 ../src/display_view.py:301
+#: ../src/search_keyword.py:34 ../src/display_view.py:305
 msgid "Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:35 ../src/display_view.py:319
+#: ../src/search_keyword.py:35 ../src/display_view.py:323
 msgid "Auto Adjust Monitor Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:36 ../src/display_view.py:325
+#: ../src/search_keyword.py:36 ../src/display_view.py:329
 msgid "Close Monitor"
 msgstr ""
 
-#: ../src/search_keyword.py:37 ../src/display_view.py:350
+#: ../src/search_keyword.py:37 ../src/display_view.py:354
 msgid "Auto Lock User Monitor Screen"
 msgstr ""
 
-#: ../src/search_keyword.py:38 ../src/display_view.py:356
+#: ../src/search_keyword.py:38 ../src/display_view.py:360
 msgid "Lock Screen"
 msgstr ""
 
@@ -92,17 +92,17 @@ msgid "Never"
 msgstr ""
 
 #: ../src/display_view.py:250
-msgid ""
-"If need to configure desktop background and system theme, please click <span "
-"foreground=\"blue\" underline=\"single\">Individuation</span>"
+msgid "Relative Settings"
 msgstr ""
 
-#: ../src/display_view.py:255
-msgid ""
-"Power related configuration please click <span foreground=\"blue\" underline="
-"\"single\">Power</span>"
+#: ../src/display_view.py:251
+msgid "<span foreground=\"blue\" underline=\"single\">Individuation</span>"
 msgstr ""
 
-#: ../src/display_view.py:341
+#: ../src/display_view.py:256
+msgid "<span foreground=\"blue\" underline=\"single\">Power</span>"
+msgstr ""
+
+#: ../src/display_view.py:345
 msgid "Monitor Screen Lock"
 msgstr ""
