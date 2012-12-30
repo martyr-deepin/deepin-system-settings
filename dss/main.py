@@ -147,10 +147,10 @@ class DBusService(dbus.service.Object):
                 record_module_history(module_id)
 
                 if foot_box:
-                    foot_box.show()
+                    foot_box.show(module_id)
             elif message_type == "status":
                 if foot_box:
-                    foot_box.show()
+                    foot_box.show(module_id)
                     foot_box.set_status(message_content)
             else:
                 print message
@@ -181,7 +181,7 @@ def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot
         else:
             call_module_by_name(module_id, module_dict, slider, content_page_info, "right")
 
-            foot_box.show()
+            foot_box.show(module_id)
 
 def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box):
     module_id = get_forward_module()
@@ -194,7 +194,7 @@ def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foo
         else:
             call_module_by_name(module_id, module_dict, slider, content_page_info, "left")
 
-            foot_box.show()
+            foot_box.show(module_id)
 
 def search_cb(action_bar, slider, foot_box):
     search_page.query(action_bar.search_entry.get_text())
@@ -226,7 +226,7 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
                      "click_crumb",
                      (index, label))
 
-        foot_box.show()
+        foot_box.show(content_page_info.get_active_module_id())
         
 def click_module_menu_item(slider, content_page_info, action_bar, module_info):
     if module_info.id != content_page_info.get_active_module_id():
