@@ -36,7 +36,7 @@ from constant import *
 from nls import _
 from datetime import DeepinDateTime
 
-class DatetimeView(TabBox):
+class DatetimeView(gtk.VBox):
     '''
     class docs
     '''
@@ -45,8 +45,7 @@ class DatetimeView(TabBox):
         '''
         init docs
         '''
-        TabBox.__init__(self)
-        self.draw_title_background = self.__expose
+        gtk.VBox.__init__(self)
 
         self.deepin_dt = DeepinDateTime()
         self.current_tz_gmtoff = self.deepin_dt.get_gmtoff()
@@ -60,19 +59,24 @@ class DatetimeView(TabBox):
             i += 1
             j += 1
 
+        self.tab_align = self.__setup_align(padding_top = FRAME_TOP_PADDING, padding_left = 0)
+        self.tab_box = TabBox()
+        self.tab_box.set_size_request(800, -1)
+        self.tab_box.draw_title_background = self.__draw_title_background
         '''
         datetime box
         '''
         self.datetime_box = gtk.VBox()
+        self.datetime_box.connect("expose-event", self.__expose)
         self.datetime_align = self.__setup_align()
         self.set_datetime_box = gtk.HBox()
         self.calendar = gtk.Calendar()
         self.calendar.set_size_request(360, 200)
         self.datetime_widget_box = gtk.VBox()
-        self.datetime_widget_align = self.__setup_align(padding_top = 0, padding_left = 70)
+        self.datetime_widget_align = self.__setup_align(padding_top = 0, padding_left = 90)
         self.datetime_widget = DateTime()
         self.datetime_widget_align.add(self.datetime_widget)
-        self.set_time_align = self.__setup_align(padding_top = 20, padding_left = 110)
+        self.set_time_align = self.__setup_align(padding_top = 20, padding_left = 130)
         self.set_time_spin = SpinBox()
         self.set_time_spin.set_size_request(100, -1)
         self.set_time_align.add(self.set_time_spin)
@@ -100,19 +104,20 @@ class DatetimeView(TabBox):
         timezone box
         '''
         self.timezone_box = gtk.VBox()
+        self.timezone_box.connect("expose-event", self.__expose)
         self.timezone_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING, 
                                                  padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.timezone = TimeZone(self.current_tz_gmtoff,                        
                                  680,                                           
                                  300,                                           
-                                 TEXT_WINDOW_TOP_PADDING,                       
+                                 TEXT_WINDOW_TOP_PADDING + FRAME_TOP_PADDING,                       
                                  TEXT_WINDOW_LEFT_PADDING)                      
         self.timezone.connect("changed", self.__timezone_changed)
         self.timezone_align.add(self.timezone)
         self.set_timezone_align = self.__setup_align(padding_top = 10, 
                                                      padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.set_timezone_box = gtk.HBox(spacing=WIDGET_SPACING)                         
-        self.timezone_label = self.__setup_label(text = "时区", width = 30, align = ALIGN_START)
+        self.timezone_label = self.__setup_label(text = _("TimeZone"), width = 60, align = ALIGN_START)
         self.timezone_combo = ComboBox(self.timezone_items, max_width = 340)    
         self.timezone_combo.set_select_index(self.current_tz_gmtoff + 11)       
         self.timezone_combo.connect("item-selected", self.__combo_item_selected)
@@ -122,18 +127,32 @@ class DatetimeView(TabBox):
         '''
         TabBox add_items
         '''
-        self.add_items([(_("DateTime"), self.datetime_box), 
-                        (_("TimeZone"), self.timezone_box)])
+        self.tab_box.add_items([(_("DateTime"), self.datetime_box), 
+                                (_("TimeZone"), self.timezone_box)])
+        self.tab_align.add(self.tab_box)
+        self.pack_start(self.tab_align)
+        self.connect("expose-event", self.__expose)
         
     def __timezone_changed(self, widget, timezone):
         self.timezone_combo.set_select_index(timezone + 11)
         self.deepin_dt.set_timezone_by_gmtoff(timezone)
 
-    def __expose(self, cr, widget):                                           
+    def __expose(self, widget, event):
+        cr = widget.window.cairo_create()                                       
+        rect = widget.allocation                                                
+                                                                                
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                     
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                       
+        cr.fill()        
+
+    def __draw_title_background(self, cr, widget):                                           
         rect = widget.allocation                                    
         
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                        
+        cr.rectangle(rect.x, 
+                     rect.y - FRAME_TOP_PADDING, 
+                     rect.width, 
+                     rect.height - 1)                        
         cr.fill()
     
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None):
@@ -157,7 +176,7 @@ class DatetimeView(TabBox):
                       padding_top=TEXT_WINDOW_TOP_PADDING, 
                       padding_bottom=0, 
                       padding_left=TEXT_WINDOW_LEFT_PADDING, 
-                      padding_right=20):
+                      padding_right=0):
         align = gtk.Alignment()
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
