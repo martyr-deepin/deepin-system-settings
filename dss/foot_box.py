@@ -21,11 +21,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.constant import ALIGN_MIDDLE
-from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.utils import color_hex_to_cairo, is_dbus_name_exists
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 import gobject
 import gtk
+import dbus
 from constant import *
     
 class FootBox(gtk.HBox):
@@ -39,6 +40,8 @@ class FootBox(gtk.HBox):
         '''
         gtk.HBox.__init__(self)
 
+        self.module_id = None
+
         self.__is_init_ui = False
         
 
@@ -48,11 +51,12 @@ class FootBox(gtk.HBox):
                                                 padding_left = 80, 
                                                 padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING)
         self.buttons_box = gtk.HBox()
-        self.default_button = Button("恢复默认")
+        self.reset_button = Button("恢复默认")
+        self.reset_button.connect("clicked", self.__reset_button_clicked)
         '''
         TODO: it need to consider about other module pack_start button into buttons_box
         '''
-        self.buttons_box.pack_start(self.default_button)
+        self.buttons_box.pack_start(self.reset_button)
         self.buttons_align.add(self.buttons_box)
         self.pack_start(self.status_label)
         self.pack_start(self.buttons_align)
@@ -61,10 +65,31 @@ class FootBox(gtk.HBox):
 
         self.__is_init_ui = True
 
+    def __handle_dbus_reply(*reply):                                                  
+        pass
+
+    def __handle_dbus_error(*error):                                                  
+        pass
+
+    def __reset_button_clicked(self, widget):
+        bus = dbus.SessionBus()                                                     
+        module_dbus_name = "com.deepin.%s_settings" % (self.module_id)                   
+        module_object_name = "/com/deepin/%s_settings" % (self.module_id)                
+        if is_dbus_name_exists(module_dbus_name):                                   
+            bus_object = bus.get_object(module_dbus_name, module_object_name)          
+            method = bus_object.get_dbus_method("message_receiver")                 
+            method("reset",                                                    
+                   "",                      
+                   reply_handler=self.__handle_dbus_reply,                                 
+                   error_handler=self.__handle_dbus_error                  
+                  )         
+    
     def hide(self):
         self.hide_all()
 
-    def show(self):
+    def show(self, module_id):
+        self.module_id = module_id
+
         if not self.__is_init_ui:
             self.__init_ui()
         

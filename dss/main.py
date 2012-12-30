@@ -126,7 +126,7 @@ class DBusService(dbus.service.Object):
                 record_module_history(module_id)
 
                 if foot_box:
-                    foot_box.show()
+                    foot_box.show(module_id)
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
@@ -134,7 +134,7 @@ class DBusService(dbus.service.Object):
                 record_module_history(module_id)
 
                 if foot_box:
-                    foot_box.show()
+                    foot_box.show(module_id)
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)

@@ -194,6 +194,9 @@ class PowerView(gtk.VBox):
 
         self.connect("expose-event", self.__expose)
 
+    def reset(self):
+        print "DEBUG reset to default value"
+    
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
