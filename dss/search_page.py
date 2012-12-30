@@ -135,8 +135,12 @@ class SearchPage(gtk.VBox):
         for module_info_list in self.__module_infos:
             for module_info in module_info_list:
                 if module_info.search_keyword != "None":
-                    module = __import__("%s.%s" % (module_info.id, module_info.search_keyword), fromlist=["keywords"])
-                    self.__keywords.append((module_info.id, module_info.name, module.keywords))
+                    try:
+                        module = __import__("%s.%s" % (module_info.id, module_info.search_keyword), fromlist=["keywords"])
+                        self.__keywords.append((module_info.id, module_info.name, module.keywords))
+                    except Exception, e:
+                        print "Error %s" % e
+                        continue
 
         self.__keyword_search = KeywordSearch(self.__keywords)
         '''
