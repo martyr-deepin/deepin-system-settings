@@ -400,7 +400,7 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.main_box)
         self.pack_start(self.scrolled_window)
 
-        self.__send_message("status", "")
+        self.__send_message("status", ("display", ""))
 
     def __handle_dbus_replay(self, *reply):
         pass
@@ -449,7 +449,7 @@ class DisplayView(gtk.VBox):
 
         self.display_manager.init_xml()
         self.__setup_monitor_items()
-        self.monitor_combo.set_items(items = self.monitor_items, max_width = 350)
+        self.monitor_combo.set_items(items = self.monitor_items, max_width = 370)
 
     def __set_brightness(self, widget, event):
         self.display_manager.set_screen_brightness(self.__current_output_name, 
@@ -490,6 +490,7 @@ class DisplayView(gtk.VBox):
             return
 
         if object == "sizes_combo":
+            self.__send_message("status", ("display", _("Changed Resolution")))
             self.display_manager.set_screen_size(self.__current_output_name, self.sizes_items[item_value][0])
             return
         
