@@ -25,8 +25,8 @@ import dbus
 import gobject
 import re
 import traceback
-import datetime
 import time
+import datetime
 import deepin_tz
 
 from dbus.mainloop.glib import DBusGMainLoop
@@ -148,14 +148,16 @@ class DeepinDateTime(BusBase):
     def set_time(self, seconds_since_epoch):
         return self.call_async("SetTime", seconds_since_epoch)
 
-    def set_time_by_str(self, str):
-        '''
-        print "DEBUG", str
-        time_str = time.strptime(str,'%Y-%m-%d %H:%M:%S')
-        seconds_since_epoch = time.mktime(time_str)
-        print "DEBUG", seconds_since_epoch
+    def set_time_by_hms(self, hour, min, sec):
+        datetime_str = "%d-%d-%d %02d:%02d:%02d" % (time.localtime().tm_year, 
+                                                    time.localtime().tm_mon, 
+                                                    time.localtime().tm_mday, 
+                                                    hour, 
+                                                    min, 
+                                                    sec)
+        d = datetime.datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
+        seconds_since_epoch = time.mktime(d.timetuple())
         return self.call_async("SetTime", seconds_since_epoch)
-        '''
 
     def set_timezone_by_gmtoff(self, gmtoff):
         tz = "Asia/Shanghai"
@@ -218,10 +220,10 @@ class DeepinDateTime(BusBase):
         return self.call_async("SetUsingNtp", is_using_ntp)
 
 if __name__ == "__main__":
-    datetime = DeepinDateTime()
+    deepin_dt = DeepinDateTime()
     print "get timezone:"
 
-    print datetime.get_timezone(), datetime.get_gmtoff()
-    #datetime.set_timezone("Asia/Shanghai")
+    print deepin_dt.get_timezone(), deepin_dt.get_gmtoff()
+    #deepin_dt.set_timezone("Asia/Shanghai")
 
     #gobject.MainLoop().run()

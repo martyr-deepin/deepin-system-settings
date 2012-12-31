@@ -34,7 +34,7 @@ import gobject
 import gtk
 from constant import *
 from nls import _
-from datetime import DeepinDateTime
+from deepin_dt import DeepinDateTime
 
 class DatetimeView(gtk.VBox):
     '''
@@ -47,8 +47,8 @@ class DatetimeView(gtk.VBox):
         '''
         gtk.VBox.__init__(self)
 
-        self.deepin_dt = DeepinDateTime()
-        self.current_tz_gmtoff = self.deepin_dt.get_gmtoff()
+        self.__deepin_dt = DeepinDateTime()
+        self.current_tz_gmtoff = self.__deepin_dt.get_gmtoff()
 
         self.timezone_items = []
         i = -11
@@ -135,12 +135,11 @@ class DatetimeView(gtk.VBox):
         self.connect("expose-event", self.__expose)
     
     def __time_changed(self, widget, hour, min, sec):
-        (year, month, day) = self.calendar.get_date()
-        self.deepin_dt.set_time_by_str("%d-%02d-%02d %02d:%02d:%02d" % (year, month + 1, day, hour, min, sec))
+        self.__deepin_dt.set_time_by_hms(hour, min, sec)
 
     def __timezone_changed(self, widget, timezone):
         self.timezone_combo.set_select_index(timezone + 11)
-        self.deepin_dt.set_timezone_by_gmtoff(timezone)
+        self.__deepin_dt.set_timezone_by_gmtoff(timezone)
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       
@@ -162,7 +161,7 @@ class DatetimeView(gtk.VBox):
     
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None):
         self.timezone.set_timezone(item_value - 11)
-        self.deepin_dt.set_timezone_by_gmtoff(item_value - 11)
+        self.__deepin_dt.set_timezone_by_gmtoff(item_value - 11)
 
     def __setup_label(self, text="", width=100, align=ALIGN_END):
         label = Label(text, None, CONTENT_FONT_SIZE, align, width)
