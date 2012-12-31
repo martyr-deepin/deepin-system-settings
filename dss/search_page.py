@@ -24,6 +24,7 @@
 from dtk.ui.utils import (get_parent_dir, remove_directory, color_hex_to_cairo, 
                           set_clickable_cursor, is_dbus_name_exists)
 from dtk.ui.scrolled_window import ScrolledWindow
+from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 import sys
 import os
@@ -137,7 +138,7 @@ class SearchPage(gtk.VBox):
                 if module_info.search_keyword != "None":
                     try:
                         module = __import__("%s.%s" % (module_info.id, module_info.search_keyword), fromlist=["keywords"])
-                        self.__keywords.append((module_info.id, module_info.name, module.keywords))
+                        self.__keywords.append((module_info.id, module_info.name, module.keywords, module_info.menu_icon_pixbuf))
                     except Exception, e:
                         print "Error %s" % e
                         continue
@@ -215,16 +216,21 @@ class SearchPage(gtk.VBox):
                 if keyword[0] in results:
                     if not is_drawn_module_name:
                         module_name_align = self.__setup_align()
+                        module_name_box = gtk.HBox(spacing = WIDGET_SPACING)
+                        module_image = gtk.Image()
+                        module_image.set_from_pixbuf(module_keyword[3])
                         module_name_label = self.__setup_label("<span foreground=\"blue\" underline=\"single\">%s</span>" % module_keyword[1], TITLE_FONT_SIZE)
                         set_clickable_cursor(module_name_label)
                         module_name_label.connect("button-press-event", 
                                                   self.__button_press, 
                                                   module_keyword[0])
-                        module_name_align.add(module_name_label)
+                        module_name_box.pack_start(module_image, False, False)
+                        module_name_box.pack_start(module_name_label, False, False)
+                        module_name_align.add(module_name_box)
                         self.result_box.pack_start(module_name_align, False, False)
                         is_drawn_module_name = True
                     
-                    module_keyword_align = self.__setup_align(padding_left = 15)
+                    module_keyword_align = self.__setup_align(padding_left = 30)
                     module_keyword_label = self.__setup_label("<span foreground=\"blue\" underline=\"single\">%s</span>" % keyword[1])
                     set_clickable_cursor(module_keyword_label)
                     module_keyword_label.connect("button-press-event", 
