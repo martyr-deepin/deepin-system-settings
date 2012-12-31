@@ -149,9 +149,10 @@ class DBusService(dbus.service.Object):
                 if foot_box:
                     foot_box.show(module_id)
             elif message_type == "status":
+                (module_id, status) = message_content
                 if foot_box:
                     foot_box.show(module_id)
-                    foot_box.set_status(message_content)
+                    foot_box.set_status(status)
             else:
                 print message
                     
