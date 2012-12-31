@@ -25,6 +25,7 @@ import dbus
 import gobject
 import re
 import traceback
+import datetime
 import time
 import deepin_tz
 
@@ -146,6 +147,15 @@ class DeepinDateTime(BusBase):
 
     def set_time(self, seconds_since_epoch):
         return self.call_async("SetTime", seconds_since_epoch)
+
+    def set_time_by_str(self, str):
+        '''
+        print "DEBUG", str
+        time_str = time.strptime(str,'%Y-%m-%d %H:%M:%S')
+        seconds_since_epoch = time.mktime(time_str)
+        print "DEBUG", seconds_since_epoch
+        return self.call_async("SetTime", seconds_since_epoch)
+        '''
 
     def set_timezone_by_gmtoff(self, gmtoff):
         tz = "Asia/Shanghai"

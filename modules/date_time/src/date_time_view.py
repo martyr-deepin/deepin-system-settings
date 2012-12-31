@@ -79,6 +79,7 @@ class DatetimeView(gtk.VBox):
         self.set_time_align = self.__setup_align(padding_top = 20, padding_left = 130)
         self.set_time_spin = TimeSpinBox()
         self.set_time_spin.set_size_request(100, -1)
+        self.set_time_spin.connect("value-changed", self.__time_changed)
         self.set_time_align.add(self.set_time_spin)
         self.auto_time_align = self.__setup_align(padding_top = 20, padding_left = 0)
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
@@ -132,7 +133,11 @@ class DatetimeView(gtk.VBox):
         self.tab_align.add(self.tab_box)
         self.pack_start(self.tab_align)
         self.connect("expose-event", self.__expose)
-        
+    
+    def __time_changed(self, widget, hour, min, sec):
+        (year, month, day) = self.calendar.get_date()
+        self.deepin_dt.set_time_by_str("%d-%02d-%02d %02d:%02d:%02d" % (year, month + 1, day, hour, min, sec))
+
     def __timezone_changed(self, widget, timezone):
         self.timezone_combo.set_select_index(timezone + 11)
         self.deepin_dt.set_timezone_by_gmtoff(timezone)
