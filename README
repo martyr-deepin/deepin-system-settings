@@ -79,6 +79,6 @@ sudo apt-get install python-xappy, jieba
 
 注意
 
-根据deepin-desktop的要求，将com.deepin.dde.background.gschema.xml归入deepin-desktop/schemas/
-sudo cp deepin-desktop/schemas/com.deepin.dde.background.gschema.xml /usr/share/glib-2.0/schemas/ 
+根据deepin-desktop的要求，将com.deepin.dde.XXX.gschema.xml归入deepin-desktop/schemas/
+sudo cp deepin-desktop/schemas/*.xml /usr/share/glib-2.0/schemas/ 
 sudo glib-compile-schemas /usr/share/glib-2.0/schemas/

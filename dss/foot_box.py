@@ -48,7 +48,7 @@ class FootBox(gtk.HBox):
     def __init_ui(self):
         self.status_label = self.__setup_label("")
         self.buttons_align = self.__setup_align(padding_top = 7, 
-                                                padding_left = 80, 
+                                                padding_left = 100, 
                                                 padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING)
         self.buttons_box = gtk.HBox()
         self.reset_button = Button("恢复默认")
