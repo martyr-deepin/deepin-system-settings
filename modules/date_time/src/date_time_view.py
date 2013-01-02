@@ -33,10 +33,32 @@ from dtk.ui.utils import color_hex_to_cairo
 import os
 import gobject
 import gtk
-import deepin_lunar
+try:
+    import deepin_lunar
+except ImportError:
+    print "===Please Install Deepin Lunar Python Binding==="
+    print "git clone git@github.com:xiangzhai/liblunar.git"
+    print "==============================================="
+try:                                                                            
+    import deepin_gsettings                                                     
+except ImportError:                                                             
+    print "----------Please Install Deepin GSettings Python Binding----------"  
+    print "git clone git@github.com:linuxdeepin/deepin-gsettings.git"           
+    print "------------------------------------------------------------------"  
+
 from constant import *
 from nls import _
 from deepin_dt import DeepinDateTime
+import threading as td
+
+class AutoSetTimeThread(td.Thread):
+    def __init__(self, ThisPtr):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.ThisPtr = ThisPtr
+
+    def run(self):
+        self.ThisPtr.auto_set_time()
 
 class DatetimeView(gtk.VBox):
     '''
@@ -48,6 +70,8 @@ class DatetimeView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
+
+        self.datetime_settings = deepin_gsettings.new("com.deepin.dde.datetime")
 
         self.__deepin_dt = DeepinDateTime()
         self.current_tz_gmtoff = self.__deepin_dt.get_gmtoff()
@@ -90,6 +114,11 @@ class DatetimeView(gtk.VBox):
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
         self.auto_time_label = self.__setup_label(_("Auto Set Time"))
         self.auto_time_toggle = self.__setup_toggle()
+        is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
+        if is_auto_set_time == True:
+            AutoSetTimeThread(self).start()
+        self.auto_time_toggle.set_active(is_auto_set_time)
+        #self.auto_time_toggle.connect("toggled", self.__toggled, "auto_time_toggle")
         self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
         self.time_display_toggle = self.__setup_toggle()
         self.__widget_pack_start(self.auto_time_box, 
@@ -139,6 +168,9 @@ class DatetimeView(gtk.VBox):
         self.pack_start(self.tab_align)
         self.connect("expose-event", self.__expose)
     
+    def auto_set_time(self):
+        self.__deepin_dt.set_using_ntp(True)
+
     def __time_changed(self, widget, hour, min, sec):
         self.__deepin_dt.set_time_by_hms(hour, min, sec)
 
