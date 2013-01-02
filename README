@@ -31,6 +31,9 @@ Python Deepin TimeZone bindings
 cd modules/date_time/src/deepin_tz/
 sudo python setup.py install
 
+Python Deepin Lunar bindings
+git clone git@github.com:xiangzhai/liblunar.git
+
 
 == Keyboard module ==
 Python binding for libxklavier

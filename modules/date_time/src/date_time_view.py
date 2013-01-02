@@ -30,8 +30,10 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo
+import os
 import gobject
 import gtk
+import deepin_lunar
 from constant import *
 from nls import _
 from deepin_dt import DeepinDateTime
@@ -70,8 +72,11 @@ class DatetimeView(gtk.VBox):
         self.datetime_box.connect("expose-event", self.__expose)
         self.datetime_align = self.__setup_align()
         self.set_datetime_box = gtk.HBox()
-        self.calendar = gtk.Calendar()
-        self.calendar.set_size_request(360, 200)
+        if os.environ['LANGUAGE'].find("zh_") == 0:
+            self.calendar = deepin_lunar.new()
+        else:
+            self.calendar = gtk.Calendar()
+        self.calendar.set_size_request(360, 280)
         self.datetime_widget_box = gtk.VBox()
         self.datetime_widget_align = self.__setup_align(padding_top = 0, padding_left = 90)
         self.datetime_widget = DateTime()
