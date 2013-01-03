@@ -25,6 +25,7 @@ import gtk
 import glib
 import locale
 import threading
+import hashlib
 
 
 from urllib2 import urlopen
@@ -194,3 +195,6 @@ class ThreadFetch(threading.Thread):
             if self.fail_funcs:
                 self.fail_funcs[0](*self.fail_funcs[1])
 
+                
+def get_md5(string):                
+    return hashlib.md5(string).hexdigest()

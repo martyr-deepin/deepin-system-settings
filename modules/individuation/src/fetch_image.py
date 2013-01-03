@@ -32,10 +32,10 @@ class ImageObject(object):
         self.big_url = big_url
         
     def get_small_basename(self):    
-        return self.small_url.split("/")[-1]        
+        return common.get_md5(self.small_url)
         
     def get_big_basename(self):    
-        return self.big_url.split("/")[-1]
+        return common.get_md5(self.big_url)
         
     def __repr__(self):    
         return "<ImageObject %s>" % self.small_url
