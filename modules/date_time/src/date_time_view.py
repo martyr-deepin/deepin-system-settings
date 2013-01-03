@@ -106,7 +106,8 @@ class DatetimeView(gtk.VBox):
         self.datetime_widget = DateTime()
         self.datetime_widget_align.add(self.datetime_widget)
         self.set_time_align = self.__setup_align(padding_top = 20, padding_left = 130)
-        self.set_time_spin = TimeSpinBox()
+        is_24hour = self.datetime_settings.get_boolean("is-24hour")
+        self.set_time_spin = TimeSpinBox(is_24hour = is_24hour)
         self.set_time_spin.set_size_request(100, -1)
         self.set_time_spin.connect("value-changed", self.__time_changed)
         self.set_time_align.add(self.set_time_spin)
@@ -118,9 +119,11 @@ class DatetimeView(gtk.VBox):
         if is_auto_set_time == True:
             AutoSetTimeThread(self).start()
         self.auto_time_toggle.set_active(is_auto_set_time)
-        #self.auto_time_toggle.connect("toggled", self.__toggled, "auto_time_toggle")
+        self.auto_time_toggle.connect("toggled", self.__toggled, "auto_time_toggle")
         self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
         self.time_display_toggle = self.__setup_toggle()
+        self.time_display_toggle.set_active(is_24hour)
+        self.time_display_toggle.connect("toggled", self.__toggled, "time_display_toggle")
         self.__widget_pack_start(self.auto_time_box, 
                                  [self.auto_time_label, 
                                   self.auto_time_toggle, 
@@ -168,6 +171,19 @@ class DatetimeView(gtk.VBox):
         self.pack_start(self.tab_align)
         self.connect("expose-event", self.__expose)
     
+    def __toggled(self, widget, argv):
+        if argv == "auto_time_toggle":
+            is_auto_set_time = widget.get_active()
+            self.datetime_settings.set_boolean("is-auto-set", is_auto_set_time)
+            if is_auto_set_time:
+                AutoSetTimeThread(self).start()
+            return
+
+        if argv == "time_display_toggle":
+            is_24hour = widget.get_active()
+            self.datetime_settings.set_boolean("is-24hour", is_24hour)
+            self.set_time_spin.set_24hour(is_24hour)
+
     def auto_set_time(self):
         self.__deepin_dt.set_using_ntp(True)
 
