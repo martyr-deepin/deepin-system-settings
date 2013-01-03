@@ -707,5 +707,8 @@ class CacheItem(gobject.GObject, MissionThread):
         When this function return True, IconView will call function gc.collect() to release object to release memory.
         '''
         # Return True to tell IconView call gc.collect() to release memory resource.
+        if self.pixbuf:
+            del self.pixbuf
+        self.pixbuf = None    
         return True
     

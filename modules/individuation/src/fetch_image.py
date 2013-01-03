@@ -44,6 +44,7 @@ class BaseFetch(object):
     
     def __init__(self):
         self.__images = {}
+        self.screen_width, self.screen_height = common.get_screen_size()        
         
     def get_images(self):  
         return self.__images.values()

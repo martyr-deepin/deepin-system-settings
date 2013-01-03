@@ -28,6 +28,8 @@ from add_item import ExpandItem
 from cache_page import CachePage
 from ui_utils import switch_box, draw_line
 from aibizhi import Aibizhi
+from bizhi360 import Bizhi360
+
 
 
 class AddPage(gtk.HBox):
@@ -35,8 +37,11 @@ class AddPage(gtk.HBox):
     def __init__(self):
         gtk.HBox.__init__(self)
         
-        self.cache_page = CachePage(Aibizhi())
-        self.cache_page.cache_view.try_to_fetch()
+        self.aibizhi_cache_page = CachePage(Aibizhi())
+        self.bizhi360_cache_page = CachePage(Bizhi360())
+        
+        self.aibizhi_cache_page.cache_view.try_to_fetch()
+        self.bizhi360_cache_page.cache_view.try_to_fetch()
         
         self.__init_navigatebar()
         
@@ -61,7 +66,8 @@ class AddPage(gtk.HBox):
         download_expand_item.add_childs([("正在下载", None),
                                          ("下载历史", None)], 
                                         expand=True)
-        network_expand_item.add_childs([("爱壁纸", self.cache_page)], expand=True)        
+        network_expand_item.add_childs([("爱壁纸", self.aibizhi_cache_page),
+                                        ("360壁纸", self.bizhi360_cache_page)], expand=True)        
         
     def on_addpage_expose_event(self, widget, event):    
         cr = widget.window.cairo_create()

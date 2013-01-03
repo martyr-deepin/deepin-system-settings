@@ -22,18 +22,38 @@
 
 from fetch_image import BaseFetch
 
-class Aibizhi(BaseFetch):
-    url = "http://partner.lovebizhi.com/deepinlinux.php"
+
+class Bizhi360(BaseFetch):
+    url = "http://cdn.apc.360.cn/index.php"
     
     def __init__(self):
         BaseFetch.__init__(self)
+
+        self.start = 0
+        self.count = 20
         
     def fetch_images(self):    
-        results = self.api_request(self.url, width=self.screen_width,
-                                   height=self.screen_height, limit=20)
+        params = {
+            "c" : "WallPaper",
+            "a" : "getAppsByCategory",
+            "from" : "360desktop",
+            "cid" : 6,
+            }
+        
+        results = self.api_request(self.url, extra_data=params, start=self.start, count=self.count)
+                
         if results:
-            for item in results:
-                self.add_image(item["s"], item["b"])
+            for item in results["data"]:
+                try:
+                    small_url = item["url_mid"]
+                    big_url = item["url"]
+                except Exception, e:    
+                    print e
+                    continue
+                else:
+                    self.add_image(small_url, big_url)
+                    
+        if self.get_images():            
+            self.start  += self.count            
             return True    
         return False
-        
