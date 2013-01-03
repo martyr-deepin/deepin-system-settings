@@ -31,8 +31,10 @@ from dtk.ui.constant import COLOR_NAME_DICT, DEFAULT_FONT_SIZE
 from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_window_frame, draw_pixbuf, draw_text
 from dtk.ui.utils import (alpha_color_hex_to_cairo, get_optimum_pixbuf_from_file,
-                          cairo_disable_antialias, color_hex_to_cairo, cairo_state)
+                          cairo_disable_antialias, color_hex_to_cairo, cairo_state,
+                          is_in_rect)
 
+from theme import app_theme
 
 class ThemeItem(gobject.GObject):
     '''
@@ -43,10 +45,10 @@ class ThemeItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    ITEM_WIDTH = 220
-    ITEM_HEIGHT = 200
+    ITEM_WIDTH = 180
+    ITEM_HEIGHT = 185
     
-    def __init__(self, theme, switch_setting_view):
+    def __init__(self, theme):
         '''
         Initialize ItemIcon class.
         
@@ -54,23 +56,31 @@ class ThemeItem(gobject.GObject):
         '''
         gobject.GObject.__init__(self)
         self.theme = theme
-        self.switch_setting_view = switch_setting_view
         self.hover_flag = False
         self.highlight_flag = False
         self.pixbufs = []
-        self.wallpaper_offset_x = 60
+        self.wallpaper_offset_x = 55
         self.wallpaper_offset_y = 20
-        self.wallpaper_width = 120
+        self.wallpaper_width = 100
         self.wallpaper_height = 75
         self.wallpaper_render_offset = 15
         self.wallpaper_frame_size = 4
         self.window_frame_padding_x = 40
-        self.window_frame_padding_y = 120
+        self.window_frame_padding_y = 100
         self.window_frame_width = 48
         self.window_frame_height = 48
         self.reflection_height = 23
         self.title_padding_y = 10
         self.title_size = DEFAULT_FONT_SIZE
+        
+        self.hover_offset = 5
+        self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
+        self.hover_fill_dcolor = app_theme.get_color("globalHoverFill")
+        self.hover_response_rect = gtk.gdk.Rectangle(
+            self.hover_offset, self.hover_offset, 
+            self.ITEM_WIDTH - self.hover_offset * 2, 
+            self.ITEM_HEIGHT - self.hover_offset * 2) 
+        
         
     def emit_redraw_request(self):
         '''
@@ -101,7 +111,21 @@ class ThemeItem(gobject.GObject):
         Render item.
         
         This is IconView interface, you should implement it.
+        
         '''
+        
+        # Draw background.
+        if self.hover_flag:
+            with cairo_disable_antialias(cr):
+                cr.set_source_rgb(*color_hex_to_cairo(self.hover_fill_dcolor.get_color()))
+                cr.rectangle(rect.x + self.hover_offset, 
+                             rect.y + self.hover_offset, 
+                             rect.width - self.hover_offset * 2, 
+                             rect.height - self.hover_offset * 2)
+                cr.fill_preserve()
+                cr.set_line_width(1)
+                cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
+                cr.stroke()
         # Draw wallpapers.
         if self.pixbufs == []:
             for wallpaper_file in self.theme.get_wallpaper_paths()[:3]:
@@ -111,14 +135,19 @@ class ThemeItem(gobject.GObject):
         theme_surface_cr = gtk.gdk.CairoContext(cairo.Context(theme_surface))
         
         with cairo_state(theme_surface_cr):
-            reflection_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.wallpaper_width + self.wallpaper_frame_size * 2 + 2, self.reflection_height)
+            reflection_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 
+                                                    self.wallpaper_width + self.wallpaper_frame_size * 2 + 2, 
+                                                    self.reflection_height)
+            
             reflection_surface_cr = gtk.gdk.CairoContext(cairo.Context(reflection_surface))
             wallpaper_x = self.wallpaper_offset_x
             wallpaper_y = self.wallpaper_offset_y
         
             for (index, pixbuf) in enumerate(self.pixbufs):
-                wallpaper_draw_x = wallpaper_x - 3 * self.wallpaper_render_offset + (len(self.pixbufs) - index) * self.wallpaper_render_offset
-                wallpaper_draw_y = wallpaper_y + 3 * self.wallpaper_render_offset - (len(self.pixbufs) - index) * self.wallpaper_render_offset
+                wallpaper_draw_x = wallpaper_x - 3 * self.wallpaper_render_offset + \
+                    (len(self.pixbufs) - index) * self.wallpaper_render_offset
+                wallpaper_draw_y = wallpaper_y + 3 * self.wallpaper_render_offset - \
+                    (len(self.pixbufs) - index) * self.wallpaper_render_offset
                 
                 self.render_wallpaper(theme_surface_cr, pixbuf, wallpaper_draw_x, wallpaper_draw_y)
                 
@@ -164,7 +193,7 @@ class ThemeItem(gobject.GObject):
         cr.paint()
         
         # Draw window frame.
-        cr.set_source_rgba(*alpha_color_hex_to_cairo((COLOR_NAME_DICT[self.theme.color], 0.5)))
+        cr.set_source_rgba(*alpha_color_hex_to_cairo((COLOR_NAME_DICT[self.theme.get_color()], 0.5)))
         cr.rectangle(window_frame_x + 1, window_frame_y, self.window_frame_width - 2, 1)
         cr.rectangle(window_frame_x, window_frame_y + 1, self.window_frame_width, self.window_frame_height - 2)
         cr.rectangle(window_frame_x + 1, window_frame_y + self.window_frame_height - 1, self.window_frame_width - 2, 1) 
@@ -179,7 +208,7 @@ class ThemeItem(gobject.GObject):
                           )
         
         draw_text(cr, 
-                  self.theme.title, 
+                  self.theme.get_name(), 
                   rect.x, 
                   rect.y + self.window_frame_padding_y + self.window_frame_height + self.title_padding_y, 
                   rect.width,
@@ -225,7 +254,13 @@ class ThemeItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        self.hover_flag = True
+        if is_in_rect((x, y), (self.hover_response_rect.x,
+                               self.hover_response_rect.y,
+                               self.hover_response_rect.width,
+                               self.hover_response_rect.height)):
+            self.hover_flag = True
+        else:    
+            self.hover_flag = False
         
         self.emit_redraw_request()
         
@@ -289,7 +324,7 @@ class ThemeItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        self.switch_setting_view(self.theme)
+        pass
     
     def icon_item_release_resource(self):
         '''

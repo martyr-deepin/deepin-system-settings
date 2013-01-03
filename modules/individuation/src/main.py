@@ -24,53 +24,61 @@ import sys
 import os
 from dtk.ui.utils import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-from theme import app_theme
 
 from dtk.ui.new_slider import HSlider
-from theme_setting_view import ThemeSettingView
-from theme_view import ThemeView
+from detail_page import DetailPage
+from theme_page import ThemePage
 from module_frame import ModuleFrame
 from constant import PAGE_WIDTH, PAGE_HEIGHT
+from helper import event_manager
 
-if __name__ == "__main__":
-    module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
+class DeepinIndividuation(object):
     
-    # Init slider.
-    slider = HSlider()
+    config_file = os.path.join(get_parent_dir(__file__, 2), "config.ini")
     
-    # Init theme setting view.
-    theme_setting_view = ThemeSettingView()
-    
-    def switch_setting_view(slider, theme_setting_view, theme):
-        slider.slide_to_page(theme_setting_view, "right")
-        theme_setting_view.set_theme(theme)
+    def __init__(self):
         
-        module_frame.send_submodule_crumb(2, "主题设置")
-    
-    # Init theme view.
-    theme_view = ThemeView(lambda theme: switch_setting_view(slider, theme_setting_view, theme))
-    
-    # Add widgets in slider.
-    slider.append_page(theme_view)
-    slider.append_page(theme_setting_view)
-    theme_view.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
-    theme_setting_view.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
+        self.module_frame = ModuleFrame(self.config_file)
         
-    # Connect widgets.
-    module_frame.add(slider)
+        # Init slider.
+        self.slider = HSlider()
     
-    module_frame.connect("realize", lambda w: slider.set_to_page(theme_view))
+        # Init theme setting view.
+        self.detail_page = DetailPage()
+        
+        # Init theme view.
+        self.theme_page = ThemePage()
     
-    def message_handler(*message):
+        # Add widgets in slider.
+        self.slider.append_page(self.theme_page)
+        self.slider.append_page(self.detail_page)
+        self.theme_page.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
+        self.detail_page.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
+        
+        # Connect events.
+        event_manager.add_callback("theme-detail", self.switch_setting_view)        
+        
+        # Connect widgets.
+        self.module_frame.add(self.slider)
+        self.module_frame.connect("realize", lambda w: self.slider.set_to_page(self.theme_page))
+        self.module_frame.module_message_handler = self.message_handler        
+        self.module_frame.run()        
+
+    
+    def message_handler(self, *message):
         (message_type, message_content) = message
         if message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
             if crumb_index == 1:
-                slider.slide_to_page(theme_view, "left")
+                self.slider.slide_to_page(self.theme_page, "left")
         elif message_type == "show_again":
-            slider.set_to_page(theme_view)
-            module_frame.send_module_info()
-
-    module_frame.module_message_handler = message_handler        
+            self.slider.set_to_page(self.theme_page)
+            self.module_frame.send_module_info()
     
-    module_frame.run()
+    def switch_setting_view(self, name, obj, theme):
+        self.slider.slide_to_page(self.detail_page, "right")
+        self.detail_page.set_theme(theme)
+        self.module_frame.send_submodule_crumb(2, "主题设置")
+
+if __name__ == "__main__":
+    DeepinIndividuation()

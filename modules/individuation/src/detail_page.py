@@ -44,7 +44,7 @@ from dtk.ui.constant import ALIGN_END
 ITEM_PADDING_X = 19
 ITEM_PADDING_Y = 15
 
-class ThemeSettingView(TabBox):
+class DetailPage(TabBox):
     '''
     class docs
     '''
@@ -206,7 +206,7 @@ class ThemeSettingView(TabBox):
         cr.rectangle(x, y, w, h)
         cr.fill()
         
-gobject.type_register(ThemeSettingView)        
+gobject.type_register(DetailPage)        
 
 class WallpaperItem(gobject.GObject):
     '''
@@ -228,7 +228,7 @@ class WallpaperItem(gobject.GObject):
         self.pixbuf = None
         self.hover_flag = False
         self.highlight_flag = False
-        self.wallpaper_width = 160
+        self.wallpaper_width = 140
         self.wallpaper_height = 100
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
