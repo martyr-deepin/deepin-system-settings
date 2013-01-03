@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -36,12 +36,13 @@ import gobject
 import gtk
 import pango
 from constant import *
+from nls import _
 from bt.manager import Manager
 from bt.adapter import Adapter
 from bt.device import Device
 from bt.utils import bluetooth_class_to_type
-import threading as td
 import time
+import threading as td
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -267,7 +268,7 @@ class BlueToothView(gtk.VBox):
             self.adapter = Adapter(self.manager.get_default_adapter())
             self.adapter.connect("device-found", self.__device_found)
 
-        self.timeout_items = [("10分钟", 1)]
+        self.timeout_items = [("10 %s" % _("Minutes"), 1)]
 
         '''
         enable open
@@ -275,7 +276,7 @@ class BlueToothView(gtk.VBox):
         self.enable_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.enable_open_image = ImageBox(app_theme.get_pixbuf("bluetooth/enable_open.png"))
-        self.enable_open_label = self.__setup_label("蓝牙是否开启")
+        self.enable_open_label = self.__setup_label(_("Bluetooth Get Powered"))
         self.enable_open_toggle = self.__setup_toggle()
         if self.adapter:
             self.enable_open_toggle.set_active(self.adapter.get_powered())
@@ -291,7 +292,7 @@ class BlueToothView(gtk.VBox):
         self.display_align = self.__setup_align()
         self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.display_device_image = ImageBox(app_theme.get_pixbuf("bluetooth/display_device.png"))
-        self.display_device_label = self.__setup_label("显示设备名称")
+        self.display_device_label = self.__setup_label(_("Device Shown Name"))
         self.display_device_entry = InputEntry()
         if self.adapter:
             self.display_device_entry.set_text(self.adapter.get_name())
@@ -305,7 +306,7 @@ class BlueToothView(gtk.VBox):
         self.search_align = self.__setup_align()
         self.search_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.search_image = ImageBox(app_theme.get_pixbuf("bluetooth/search.png"))
-        self.search_label = self.__setup_label("是否可被发现")
+        self.search_label = self.__setup_label(_("Be Searchedable"))
         self.search_toggle = self.__setup_toggle()
         if self.adapter:
             self.search_toggle.set_active(self.adapter.get_discoverable())
@@ -319,7 +320,7 @@ class BlueToothView(gtk.VBox):
         self.timeout_align = self.__setup_align()
         self.timeout_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.timeout_image = ImageBox(app_theme.get_pixbuf("bluetooth/timeout.png"))
-        self.timeout_label = self.__setup_label("可检测到设备的时间超时")
+        self.timeout_label = self.__setup_label(_("Searching Device Timeout"))
         self.timeout_combo = ComboBox(self.timeout_items, max_width = 150)
         self.__widget_pack_start(self.timeout_box, 
                                  [self.timeout_image, self.timeout_label, self.timeout_combo])
@@ -329,7 +330,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.device_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.device_iconview = DeviceIconView()
-        self.device_iconview.set_size_request(690, 240)
+        self.device_iconview.set_size_request(690, 220)
         self.device_align.add(self.device_iconview)
         '''
         this->gtk.VBox pack_start
