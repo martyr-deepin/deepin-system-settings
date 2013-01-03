@@ -20,9 +20,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import gtk
 import glib
 import locale
 
+try:
+    import simplejson as json
+except ImportError:    
+    import json
 
 
 def _glib_wait_inner(timeout, glib_timeout_func):
@@ -87,3 +92,19 @@ class VersionError(Exception):
 def get_system_lang():    
     (lang, encode) = locale.getdefaultlocale()
     return lang
+
+def parser_json(raw):
+    try:
+        data = json.loads(raw)
+    except:    
+        try:
+            data = eval(raw, type("Dummy", (dict,), dict(__getitem__=lambda s,n: n))())
+        except:    
+            data = {}
+    return data    
+
+def get_screen_size():
+    root_window = gtk.gdk.get_default_root_window()
+    return root_window.get_size()
+
+
