@@ -28,6 +28,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from dtk.ui.new_slider import HSlider
 from detail_page import DetailPage
 from theme_page import ThemePage
+from add_page import AddPage
 from module_frame import ModuleFrame
 from constant import PAGE_WIDTH, PAGE_HEIGHT
 from helper import event_manager
@@ -52,15 +53,21 @@ class DeepinIndividuation(object):
         
         # Init theme view.
         self.theme_page = ThemePage()
+        
+        # Init add page.
+        self.add_page = AddPage()
     
         # Add widgets in slider.
         self.slider.append_page(self.theme_page)
         self.slider.append_page(self.detail_page)
+        self.slider.append_page(self.add_page)
         self.theme_page.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
         self.detail_page.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
+        self.add_page.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
         
         # Connect events.
-        event_manager.add_callback("theme-detail", self.switch_setting_view)        
+        event_manager.add_callback("theme-detail", self.switch_detail_page)        
+        event_manager.add_callback("add-wallpapers", self.switch_add_page)
         
         # Connect widgets.
         self.module_frame.add(self.slider)
@@ -79,14 +86,21 @@ class DeepinIndividuation(object):
             (crumb_index, crumb_label) = message_content
             if crumb_index == 1:
                 self.slider.slide_to_page(self.theme_page, "left")
+            elif crumb_index == 2:    
+                self.slider.slide_to_page(self.detail_page, "left")
+                
         elif message_type == "show_again":
             self.slider.set_to_page(self.theme_page)
             self.module_frame.send_module_info()
     
-    def switch_setting_view(self, name, obj, theme):
+    def switch_detail_page(self, name, obj, theme):
         self.slider.slide_to_page(self.detail_page, "right")
         self.detail_page.set_theme(theme)
         self.module_frame.send_submodule_crumb(2, "主题设置")
+        
+    def switch_add_page(self, name, obj, theme):    
+        self.slider.slide_to_page(self.add_page, "right")
+        self.module_frame.send_submodule_crumb(3, "添加壁纸")
 
 if __name__ == "__main__":
     DeepinIndividuation()

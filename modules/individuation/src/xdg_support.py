@@ -110,8 +110,17 @@ def get_user_theme_dir():
 def get_system_theme_dir():
     return os.path.join(program_dir, "theme")
 
+def get_image_path(name):
+    return os.path.join(program_dir, "data", "images", name)
+
 def get_system_wallpaper_dirs():
     return ["/usr/share/backgrounds", os.path.join(program_dir, "backgrounds")]
+
+def get_specify_cache_dir(*subpath):
+    path = os.path.join(get_cache_dir(), *subpath)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path    
 
 def _make_missing_dirs():
     if not os.path.exists(data_home):

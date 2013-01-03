@@ -32,7 +32,11 @@ class Aibizhi(BaseFetch):
         self._screen_width, self._screen_height = common.get_screen_size()
         
     def fetch_images(self):    
-        results = self.api_request(self.url, width=self._screen_width, height=self._screen_height, limit=20)
+        results = self.api_request(self.url, width=self._screen_width,
+                                   height=self._screen_height, limit=20)
         if results:
             for item in results:
                 self.add_image(item["s"], item["b"])
+            return True    
+        return False
+        

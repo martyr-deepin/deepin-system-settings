@@ -16,6 +16,9 @@
  "buttonFont" : "#000000",
  "globalHoverStroke" : "#7DA2CE",
  "globalHoverFill" : "#EBF4FD",
+ "globalItemHover" : "#dcdcdc",
+ "globalItemSelect" : "#bcbcbc",
+ "globalItemHighlight" : "#8e8e8e",
  },	
  "alpha_colors" : {
      "frame" : ("#000000", 0.5),
