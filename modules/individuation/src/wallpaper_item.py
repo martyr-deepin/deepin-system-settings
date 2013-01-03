@@ -24,7 +24,8 @@ import gtk
 import random
 import gobject
 
-from dtk.ui.utils import get_optimum_pixbuf_from_file, cairo_disable_antialias, run_command
+from dtk.ui.utils import (get_optimum_pixbuf_from_file, cairo_disable_antialias,
+                          run_command, is_in_rect, color_hex_to_cairo)
 from dtk.ui.draw import draw_pixbuf, draw_shadow
 from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
@@ -61,6 +62,13 @@ class WallpaperItem(gobject.GObject):
         self.wallpaper_height = SMALL_SIZE["y"]
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
+        
+        self.is_hover = False
+        self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
+        self.hover_response_rect = gtk.gdk.Rectangle(
+            ITEM_PADDING_X, ITEM_PADDING_Y ,
+            self.wallpaper_width, self.wallpaper_height
+            ) 
         
     def emit_redraw_request(self):
         '''
@@ -138,6 +146,11 @@ class WallpaperItem(gobject.GObject):
             cr.set_source_rgba(1, 1, 1, 1)
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.stroke()
+            
+        if self.is_hover:    
+            cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
+            cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
+            cr.stroke()
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -145,7 +158,17 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        if is_in_rect((x, y), (self.hover_response_rect.x,
+                               self.hover_response_rect.y,
+                               self.hover_response_rect.width,
+                               self.hover_response_rect.height)):
+            self.is_hover = True
+            
+        else:    
+            self.is_hover = False
+            
+        self.emit_redraw_request()    
+            
         
     def icon_item_lost_focus(self):
         '''
@@ -153,7 +176,9 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        
+        self.is_hover = False
+        self.emit_redraw_request()
         
     def icon_item_highlight(self):
         '''
@@ -252,6 +277,13 @@ class AddItem(gobject.GObject):
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
         
+        self.is_hover = False
+        self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
+        self.hover_response_rect = gtk.gdk.Rectangle(
+            ITEM_PADDING_X, ITEM_PADDING_Y ,
+            self.wallpaper_width, self.wallpaper_height
+            ) 
+        
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
@@ -337,6 +369,11 @@ class AddItem(gobject.GObject):
             cr.set_source_rgba(1, 1, 1, 1)
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.stroke()
+            
+        if self.is_hover:    
+            cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
+            cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
+            cr.stroke()
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -344,7 +381,17 @@ class AddItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        if is_in_rect((x, y), (self.hover_response_rect.x,
+                               self.hover_response_rect.y,
+                               self.hover_response_rect.width,
+                               self.hover_response_rect.height)):
+            self.is_hover = True
+            
+        else:    
+            self.is_hover = False
+            
+        self.emit_redraw_request()    
+
         
     def icon_item_lost_focus(self):
         '''
@@ -352,7 +399,10 @@ class AddItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        
+        self.is_hover = False
+        self.emit_redraw_request()
+
         
     def icon_item_highlight(self):
         '''
@@ -447,10 +497,18 @@ class CacheItem(gobject.GObject, MissionThread):
         self.highlight_flag = False
         self.wallpaper_width = SMALL_SIZE["x"]
         self.wallpaper_height = SMALL_SIZE["y"]
-        self.width = self.wallpaper_width + 8 * 2
+        self.padding_x = 8
+        self.width = self.wallpaper_width + self.padding_x * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
         self.image_object = image_object
         self.create_cache_pixbuf()
+        
+        self.is_hover = False
+        self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
+        self.hover_response_rect = gtk.gdk.Rectangle(
+            self.padding_x, ITEM_PADDING_Y ,
+            self.wallpaper_width, self.wallpaper_height
+            ) 
         
     def create_cache_pixbuf(self):    
         self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
@@ -545,6 +603,12 @@ class CacheItem(gobject.GObject, MissionThread):
             cr.set_source_rgba(1, 1, 1, 1)
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.stroke()
+            
+        if self.is_hover:    
+            cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
+            cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
+            cr.stroke()
+            
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -552,7 +616,17 @@ class CacheItem(gobject.GObject, MissionThread):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        
+        if is_in_rect((x, y), (self.hover_response_rect.x,
+                               self.hover_response_rect.y,
+                               self.hover_response_rect.width,
+                               self.hover_response_rect.height)):
+            self.is_hover = True
+            
+        else:    
+            self.is_hover = False
+            
+        self.emit_redraw_request()    
         
     def icon_item_lost_focus(self):
         '''
@@ -560,7 +634,10 @@ class CacheItem(gobject.GObject, MissionThread):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        
+        self.is_hover = False
+        self.emit_redraw_request()
+
         
     def icon_item_highlight(self):
         '''
