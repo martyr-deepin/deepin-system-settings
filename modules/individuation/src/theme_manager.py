@@ -23,7 +23,8 @@
 import os
 from ConfigParser import (RawConfigParser, NoSectionError, NoOptionError)
 import common
-from xdg_support import get_user_theme_dir, get_system_theme_dir, get_system_wallpaper_dirs
+from xdg_support import (get_user_theme_dir, get_system_theme_dir, 
+                         get_system_wallpaper_dirs, get_config_path)
 
 THEME_TYPE_SYSTEM = 1
 THEME_TYPE_USER = 2
@@ -33,11 +34,13 @@ class ThemeFile(RawConfigParser):
     def __init__(self, location, default_location=None):
         RawConfigParser.__init__(self)
         
-        if default_location is not None:
-            try:
-                self.read(default_location)
-            except:    
-                pass
+        if default_location is None:
+            default_location = get_config_path("default_theme.ini")
+            
+        try:
+            self.read(default_location)
+        except:    
+            pass
         
         try:
             self.read(location)
@@ -86,23 +89,31 @@ class ThemeFile(RawConfigParser):
         with open(self.location, 'w') as f:
             self.write(f)
         
-    def get_type(self):    
-        return self.get_option("theme", "type")
+    def get_editable(self):    
+        return self.get_option("theme", "editable")
     
-    def set_type(self, theme_type):
-        self.set_option("theme", "type", theme_type)
+    def set_editable(self, value):
+        self.set_option("theme", "editable", value)
         
+    @property    
+    def isdefault(self):    
+        value =  self.get_option("theme", "default", "False")
+        if value != "True": return False
+        return True
+    
     def get_name(self):    
-        locale_name = "name[%s]" % common.get_system_lang()
-        if self.has_option("theme", locale_name):
-            return self.get_option("theme", locale_name)
+        lang = common.get_system_lang()
+        if self.has_option("name", lang):
+            return self.get_option("name", lang)
         else:
-            return self.get_option("theme", "name")
+            return self.get_option("name", "default", "")
         
-    def set_name(self, theme_name):    
-        locale_name = "name[%s]" % common.get_system_lang()
-        self.set_option("theme", locale_name, theme_name)
-        self.set_option("theme", "name", theme_name)
+    def set_default_name(self, theme_name):    
+        self.set_option("name", "default", theme_name)
+        
+    def set_locale_name(self, theme_name):    
+        lang = common.get_system_lang()
+        self.set_option("name", lang, theme_name)
         
     def get_color(self):    
         return self.get_option("window", "color")
@@ -119,49 +130,115 @@ class ThemeFile(RawConfigParser):
                 if os.path.exists(full_path):
                     wallpapers.append(full_path)
         return wallpapers            
+    
+    def copy_theme(self, theme):
+        """
+            Copies one all of the settings contained
+            in this instance to another
+
+            :param settings: the settings object to copy to
+            :type settings: :class:`xl.settings.SettingsManager`
+        """
+        
+        self.clear()
+        for section in theme.sections():
+            for (option, value) in theme.items(section):
+                self._set_direct(section, option, value)
+                
+    def clear(self):            
+        for section in self.sections():
+            self.remove_section(section)
+                
+    def _set_direct(self, section, option, value):
+        """
+            Sets the option directly to the value,
+            only for use in copying settings.
+
+            :param option: the option path
+            :type option: string
+            :param value: the value to set
+            :type value: any
+        """
+        try:
+            self.set(section, option, value)
+        except NoSectionError:
+            self.add_section(section)
+            self.set(section, option, value)
+    
         
     def get_user_wallpapers(self):
         return self.get_section_options("user_wallpaper")
     
     def add_user_wallpaper(self, path):
         self.set_option("user_wallpaper", path, "")
-        
-    def is_readonly(self):    
-        return self.get_type() == "system"
     
     def get_wallpaper_paths(self):
         return self.get_system_wallpapers() + self.get_user_wallpapers()
     
     def __repr__(self):
-        return "<ThemeFile %s>" % self.location
+        return "<ThemeFile %s>" % self.get_name()
     
+    def __hash__(self):
+        return hash(self.location)
+    
+    def __cmp__(self, other):
+        if not other: return -1
+        try:
+            return cmp(self.get_name(), other.get_name())
+        except AttributeError: return -1
+        
+    def __eq__(self, other):    
+        try:
+           return self.location == other.location
+        except: return False
     
 class ThemeManager(object):    
     
     def __init__(self):
-        self.system_themes = []
-        self.user_themes = []
-        
-        self.load_themes()
+        self.system_themes = {}
+        self.user_themes = {}
 
-    def load_themes(self):    
+    def load(self):    
         # load user theme.
-            
         for theme_file in os.listdir(get_user_theme_dir()):
             full_theme_file = os.path.join(get_user_theme_dir(), theme_file)
             if full_theme_file.endswith(".ini") and os.path.isfile(full_theme_file):
-                self.user_themes.append(ThemeFile(full_theme_file))
+                theme_file_object = ThemeFile(full_theme_file)
+                self.user_themes[theme_file_object.location] = theme_file_object
+
                 
         # load system themes.        
         for theme_file in os.listdir(get_system_theme_dir()):        
             full_theme_file = os.path.join(get_system_theme_dir(), theme_file)
             if full_theme_file.endswith(".ini") and os.path.isfile(full_theme_file):
-                self.system_themes.append(ThemeFile(full_theme_file))
-    
+                theme_file_object = ThemeFile(full_theme_file)
+                self.system_themes[theme_file_object.location] = theme_file_object
+                
     def get_system_themes(self):
-        return self.system_themes
+        return self.system_themes.values()
     
     def get_user_themes(self):
-        return self.user_themes
+        themes = self.user_themes.values()
+        if not themes:
+            return [self.untitled_theme(self.get_default_theme())]
+        return themes
+        
+    def get_default_theme(self):    
+        for theme in self.system_themes.values():
+            if theme.isdefault:
+                return theme
+    
+    def get_theme(self, location):
+        pass
+    
+    def untitled_theme(self, copy_theme=None):
+        untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
+        untitled_theme = ThemeFile(untitled_path)
+        if copy_theme:
+            untitled_theme.copy_theme(copy_theme)
+        untitled_theme.set_default_name("untitled")    
+        untitled_theme.set_locale_name("未命名")
+        untitled_theme.save()    
+        return untitled_theme
         
 theme_manager = ThemeManager()

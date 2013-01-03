@@ -26,4 +26,6 @@ event_manager = EventManager(use_logger=True)
 
 '''
 theme-detail   :  theme detail information.
+apply-theme    :  apply current theme.
+
 '''

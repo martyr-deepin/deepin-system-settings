@@ -41,8 +41,8 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.constant import ALIGN_END
 
-ITEM_PADDING_X = 19
-ITEM_PADDING_Y = 15
+ITEM_PADDING_X = 20
+ITEM_PADDING_Y = 10
 
 class DetailPage(TabBox):
     '''
@@ -61,7 +61,7 @@ class DetailPage(TabBox):
         
         self.wallpaper_box = gtk.VBox()
         self.window_theme_box = gtk.VBox()
-        self.theme_icon_view = IconView(ITEM_PADDING_X, ITEM_PADDING_Y)
+        self.theme_icon_view = IconView(padding_x=30, padding_y=ITEM_PADDING_Y)
         self.theme_icon_view.draw_mask = self.draw_mask
         self.theme_scrolledwindow = ScrolledWindow()
         
@@ -263,6 +263,11 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
+        
+        # cr.rectangle(*rect)
+        # cr.set_source_rgb(0, 0, 0)
+        # cr.stroke()
+        
         # Init.
         if self.pixbuf == None:
             self.pixbuf = get_optimum_pixbuf_from_file(self.path, self.wallpaper_width, self.wallpaper_height)
@@ -415,7 +420,7 @@ class AddItem(gobject.GObject):
         gobject.GObject.__init__(self)
         self.hover_flag = False
         self.highlight_flag = False
-        self.wallpaper_width = 160
+        self.wallpaper_width = 140
         self.wallpaper_height = 100
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
