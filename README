@@ -28,7 +28,7 @@ sudo python setup.py install
 
 == DateTime module ==
 Python Deepin TimeZone bindings
-cd modules/date_time/src/deepin_tz/
+cd modules/date_time/src/
 sudo python setup.py install
 
 Python Deepin Lunar bindings
