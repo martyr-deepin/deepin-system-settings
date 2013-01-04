@@ -20,11 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.new_events import EventManager
-event_manager = EventManager(use_logger=True)
+from deepin_storm import FetchServiceThread, FetchFiles, join_glib_loop
 
-'''
-theme-detail   :  theme detail information.
-apply-theme    :  apply current theme.
+download_service_thread = FetchServiceThread(5)
 
-'''
+

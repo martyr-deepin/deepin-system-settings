@@ -20,15 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
 import gtk
 import glib
 import locale
 import threading
 import hashlib
 
-
-from urllib2 import urlopen
 
 try:
     import simplejson as json
@@ -114,68 +111,6 @@ def get_screen_size():
     root_window = gtk.gdk.get_default_root_window()
     return root_window.get_size()
 
-def download_iterator(remote_url, local_url, buffer_len=4096, timeout=DEFAULT_TIMEOUT):
-    try:
-        handle_read = urlopen(remote_url, timeout=timeout)
-        handle_write = open(local_url, "w")
-        info = handle_read.info()
-        try:
-            total_size = int(info.getheader("content-length"))
-        except:    
-            total_size = 20000000
-            
-        current_size = 0    
-        data = handle_read.read(buffer_len)
-        handle_write.write(data)
-        current_size += len(data)
-        
-        while data:
-            data = handle_read.read(buffer_len)
-            current_size += len(data)
-            handle_write.write(data)
-            percent = current_size * 100 / total_size
-            yield (total_size, current_size, percent)
-            
-        handle_read.close()    
-        handle_write.close()
-    except GeneratorExit:    
-        try:
-            os.unlink(local_url)
-        except:    
-            pass
-    except:    
-        try:
-            os.unlink(local_url)
-            
-        except:
-            pass
-        raise IOError
-    
-    
-def download(remote_url, local_url, buffer_len=4096, timeout=DEFAULT_TIMEOUT):
-    try:
-        handle_read = urlopen(remote_url, timeout=timeout)
-        handle_write = open(local_url, "w")
-        
-        data = handle_read.read(buffer_len)
-        handle_write.write(data)
-        
-        while data:
-            data = handle_read.read(buffer_len)
-            handle_write.write(data)
-            
-        handle_read.close()    
-        handle_write.close()
-    except Exception:
-        try:
-            os.unlink(local_url)
-        except:    
-            pass
-        return False
-    
-    if not os.path.exists(local_url):
-        return False
-    return True
 
 class ThreadFetch(threading.Thread):            
     

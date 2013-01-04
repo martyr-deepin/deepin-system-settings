@@ -26,10 +26,10 @@ from dtk.ui.new_treeview import TreeView
 
 from add_item import ExpandItem
 from cache_page import CachePage
+from download_page import DownloadPage
 from ui_utils import switch_box, draw_line
 from aibizhi import Aibizhi
 from bizhi360 import Bizhi360
-
 
 
 class AddPage(gtk.HBox):
@@ -42,6 +42,8 @@ class AddPage(gtk.HBox):
         
         self.aibizhi_cache_page.cache_view.try_to_fetch()
         self.bizhi360_cache_page.cache_view.try_to_fetch()
+        
+        self.download_page = DownloadPage()
         
         self.__init_navigatebar()
         
@@ -63,7 +65,7 @@ class AddPage(gtk.HBox):
         self.navigatebar.add_items([local_expand_item, download_expand_item, network_expand_item])
         
         local_expand_item.add_childs([(name, None) for name in ["主文件夹", "桌面", "视频", "图片", "音乐", "文件系统"]], expand=True)
-        download_expand_item.add_childs([("正在下载", None),
+        download_expand_item.add_childs([("正在下载", self.download_page),
                                          ("下载历史", None)], 
                                         expand=True)
         network_expand_item.add_childs([("爱壁纸", self.aibizhi_cache_page),
@@ -92,7 +94,6 @@ class AddPage(gtk.HBox):
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
-        
         
 
     def on_navigatebar_single_click(self, widget, item, column, x, y):

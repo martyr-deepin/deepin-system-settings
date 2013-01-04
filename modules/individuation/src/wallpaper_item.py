@@ -665,7 +665,7 @@ class CacheItem(gobject.GObject, MissionThread):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        event_manager.emit("download-image", self.image_object)
     
     def icon_item_button_release(self, x, y):
         '''

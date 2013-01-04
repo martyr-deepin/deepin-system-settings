@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import pycurl
 import StringIO
 
@@ -93,6 +94,69 @@ class MyCurl(object):
             
         crl.close()
         return crl.fp.getvalue()
+    
+    def download(self, remote_url, local_url, buffer_len=4096,
+                 header=None, proxy_host=None, proxy_port=None, cookie_file=None):
+        '''
+        open url width get method
+        @param url: the url to visit
+        @param header: the http header
+        @param proxy_host: the proxy host name
+        @param proxy_port: the proxy port
+        '''
+        crl = pycurl.Curl()
+        #crl.setopt(pycurl.VERBOSE,1)
+        crl.setopt(pycurl.NOSIGNAL, 1)
+
+        # set proxy
+        # crl.setopt(pycurl.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)         
+        
+        rel_proxy_host = proxy_host or self.proxy_host
+        if rel_proxy_host:
+            crl.setopt(pycurl.PROXY, rel_proxy_host)
+            
+        rel_proxy_port = proxy_port or self.proxy_port
+        if rel_proxy_port:
+            crl.setopt(pycurl.PROXYPORT, rel_proxy_port)
+            
+            
+        # set cookie    
+        rel_cookie_file = cookie_file or self.cookie_file
+        if rel_cookie_file:
+            crl.setopt(pycurl.COOKIEFILE, rel_cookie_file)            
+            crl.setopt(pycurl.COOKIEJAR, rel_cookie_file)            
+            
+        # set ssl
+        crl.setopt(pycurl.SSL_VERIFYPEER, 0)
+        crl.setopt(pycurl.SSL_VERIFYHOST, 0)
+        crl.setopt(pycurl.SSLVERSION, 3)
+         
+        crl.setopt(pycurl.CONNECTTIMEOUT, 10)
+        crl.setopt(pycurl.TIMEOUT, 300)
+        crl.setopt(pycurl.HTTPPROXYTUNNEL,1)
+
+        rel_header = header or self.header
+        if rel_header:
+            crl.setopt(pycurl.HTTPHEADER, rel_header)
+
+        handle_write = open(local_url, "wb")
+        crl.setopt(pycurl.URL, remote_url)
+        crl.setopt(crl.WRITEFUNCTION, handle_write.write)
+        try:
+            crl.perform()
+        except:
+            try:
+                os.unlink(local_url)
+            except:    
+                pass
+            return False
+        
+        handle_write.close()
+        crl.close()
+        
+        if not os.path.exists(local_url):
+            return False
+        return True
     
     def post(self, url, data, header=None, proxy_host=None, proxy_port=None, cookie_file=None):
         '''

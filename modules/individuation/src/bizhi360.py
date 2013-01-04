@@ -25,6 +25,7 @@ from fetch_image import BaseFetch
 
 class Bizhi360(BaseFetch):
     url = "http://cdn.apc.360.cn/index.php"
+    name = "360壁纸"
     
     def __init__(self):
         BaseFetch.__init__(self)

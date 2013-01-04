@@ -24,6 +24,7 @@ from fetch_image import BaseFetch
 
 class Aibizhi(BaseFetch):
     url = "http://partner.lovebizhi.com/deepinlinux.php"
+    name = "爱壁纸"
     
     def __init__(self):
         BaseFetch.__init__(self)
