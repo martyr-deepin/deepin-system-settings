@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 import sys
 import os
 from dtk.ui.utils import get_parent_dir
@@ -32,6 +33,8 @@ from add_page import AddPage
 from module_frame import ModuleFrame
 from constant import PAGE_WIDTH, PAGE_HEIGHT
 from helper import event_manager
+
+
 
 class DeepinIndividuation(object):
     

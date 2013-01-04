@@ -27,12 +27,16 @@ from mycurl import public_curl, CurlException
 
 class ImageObject(object):
     
-    def __init__(self, small_url, big_url):
+    def __init__(self, small_url, big_url, name):
         self.small_url = small_url
         self.big_url = big_url
+        self.name = name
         
     def get_small_basename(self):    
         return common.get_md5(self.small_url)
+    
+    def get_display_name(self):
+        return "%s_%s" % (self.name, self.small_url.split("/")[-1])
         
     def get_big_basename(self):    
         return common.get_md5(self.big_url)
@@ -41,6 +45,7 @@ class ImageObject(object):
         return "<ImageObject %s>" % self.small_url
         
 class BaseFetch(object):        
+    name = "base"
     
     def __init__(self):
         self.__images = {}
@@ -50,7 +55,7 @@ class BaseFetch(object):
         return self.__images.values()
     
     def add_image(self, small_url, big_url):
-        self.__images[small_url] = ImageObject(small_url, big_url)
+        self.__images[small_url] = ImageObject(small_url, big_url, name=self.name)
     
     def get_image(self, small_url):
         return self.__images.get(small_url, None)

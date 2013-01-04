@@ -29,9 +29,11 @@ from dtk.ui.thread_pool import MissionThreadPool
 
 import common
 from xdg_support import get_specify_cache_dir, get_image_path
+from mycurl import public_curl
 
 
 SMALL_SIZE = {"x" : 140, "y" : 90 }
+ICON_SIZE = {"x" : 38, "y" : 38}
 
 class CacheManager(object):
     
@@ -52,6 +54,15 @@ class CacheManager(object):
             is_loaded = False
             
         return gtk.gdk.pixbuf_new_from_file(image_path), is_loaded
+    
+    def get_small_pixbuf(self, image_object, x=None, y=None):
+        x = (x or ICON_SIZE["x"])
+        y = (y or ICON_SIZE["y"])
+        image_path = self.get_image(image_object, False)
+        if not image_path:
+            image_path = self.default_image_path
+        return get_optimum_pixbuf_from_file(image_path, x, y)
+        
         
     def get_image(self, image_object, try_web=True):
         image_path = self.get_image_path(image_object.get_small_basename())
@@ -71,7 +82,7 @@ class CacheManager(object):
         if try_web and is_network_connected():
             small_image_url = image_object.small_url
             if small_image_url:
-                ret = common.download(small_image_url, temp_path)
+                ret = public_curl.download(small_image_url, temp_path)
                 if ret and self.cleanup_small(temp_path, image_path):
                     return image_path
                 
