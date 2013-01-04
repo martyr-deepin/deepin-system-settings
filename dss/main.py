@@ -220,7 +220,7 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
     if index == 0:
         if label == "系统设置":
             slider.slide_to_page(navigate_page, "left")
-
+            content_page_info.set_active_module_id("main")
             foot_box.hide()
     else:
         send_message(content_page_info.get_active_module_id(),
