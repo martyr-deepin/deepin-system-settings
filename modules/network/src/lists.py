@@ -129,7 +129,7 @@ class WirelessItem(TreeItem):
             signal_icon = app_theme.get_pixbuf("network/Wifi_3.png").get_pixbuf()
         elif self.strength > 60:
             signal_icon = app_theme.get_pixbuf("network/Wifi_2.png").get_pixbuf()
-        elif self.strength > 60:
+        elif self.strength > 30:
             signal_icon = app_theme.get_pixbuf("network/Wifi_1.png").get_pixbuf()
         else:
             signal_icon = app_theme.get_pixbuf("network/Wifi_0.png").get_pixbuf()

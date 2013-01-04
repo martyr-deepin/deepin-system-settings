@@ -365,4 +365,3 @@ class Wired(gtk.VBox):
             setattr(self.ethernet, types, value)
             if self.connection.check_setting_finish():
                 self.set_button("save", True)
-

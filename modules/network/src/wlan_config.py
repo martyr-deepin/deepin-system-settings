@@ -22,6 +22,7 @@ from theme import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -29,12 +30,15 @@ from dtk.ui.combo import ComboBox
 from nm_modules import nm_module
 from nmlib.nmcache import cache
 #from widgets import SettingButton
-from settings_widget import EntryTreeView, SettingItem, ShowOthers
+from settings_widget import EntryTreeView, SettingItem, ShowOthers, AddSettingItem
 import gtk
 
 #from nmlib.nm_utils import TypeConvert
 from shared_widget import IPV4Conf, IPV6Conf
 from nmlib.nm_remote_connection import NMRemoteConnection
+import style
+from constants import FRAME_VERTICAL_SPACING
+from nls import _
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -44,13 +48,18 @@ def check_settings(connection, fn):
         fn("save", False)
         print "not pass"
 
-class WirelessSetting(gtk.HBox):
+class WirelessSetting(gtk.Alignment):
 
     def __init__(self, slide_back_cb, change_crumb_cb):
 
-        gtk.HBox.__init__(self)
+        gtk.Alignment.__init__(self, 0, 0, 0, 0)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
+
+        # Add UI Align
+        style.set_main_window(self)
+        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        self.add(hbox)
 
         self.wireless = None
         self.ipv4 = None
@@ -61,19 +70,18 @@ class WirelessSetting(gtk.HBox):
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [("Wireless", NoSetting()),
+                      ("Security", NoSetting()),
                       ("IPV4", NoSetting()),
-                      ("IPv6", NoSetting()),
-                      ("Security", NoSetting())]
+                      ("IPv6", NoSetting())]
         self.tab_window.add_items(self.items)
 
         self.sidebar = SideBar( None,self.init, self.check_click, self.set_button)
 
         # Build ui
-        self.pack_start(self.sidebar, False , False)
+        hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
-        self.pack_start(vbox, True, True)
+        hbox.pack_start(vbox, True, True)
         self.save_button = Button("Apply")
         self.save_button.connect("clicked", self.save_changes)
         #hbox.pack_start(apply_button, False, False, 0)
@@ -81,6 +89,16 @@ class WirelessSetting(gtk.HBox):
         buttons_aligns.add(self.save_button)
         vbox.pack_start(buttons_aligns, False , False)
         #hbox.connect("expose-event", self.hbox_expose_event)
+
+        self.connect("expose-event", self.expose_event)
+        vbox.connect("expose-event", self.expose_outline, ["top"])
+        self.sidebar.connect("expose-event", self.expose_outline, [])
+
+    def expose_outline(self, widget, event, exclude):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        style.draw_out_line(cr, rect, exclude)
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -139,9 +157,9 @@ class WirelessSetting(gtk.HBox):
 
     def init_tab_box(self):
         self.tab_window.tab_items[0] = ("Wireless", self.wireless)
-        self.tab_window.tab_items[1] = ("IPV4",self.ipv4)
-        self.tab_window.tab_items[2] = ("IPV6",self.ipv6)
-        self.tab_window.tab_items[3] = ("Security", self.security)
+        self.tab_window.tab_items[2] = ("IPV4",self.ipv4)
+        self.tab_window.tab_items[3] = ("IPV6",self.ipv6)
+        self.tab_window.tab_items[1] = ("Security", self.security)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -206,7 +224,7 @@ class WirelessSetting(gtk.HBox):
 class SideBar(gtk.VBox):
 
     def __init__(self, connections, main_init_cb, check_click_cb, set_button_cb):
-        gtk.VBox.__init__(self, False, 5)
+        gtk.VBox.__init__(self, False)
         self.connections = connections
         self.main_init_cb = main_init_cb
         self.check_click_cb = check_click_cb
@@ -214,12 +232,11 @@ class SideBar(gtk.VBox):
         self.all_adhoc = False
 
         # Build ui
-        self.buttonbox = gtk.VBox(False, 6)
+        self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
         
-        add_button = Button("Add setting")
-        add_button.connect("clicked", self.add_new_connection)
-        self.pack_start(add_button, False, False, 6)
+        add_button = AddSettingItem(_("New Setting"),self.add_new_connection)
+        self.pack_start(TreeView([add_button]), False, False)
         self.set_size_request(160, -1)
         self.new_connection_list = []
 
@@ -264,7 +281,7 @@ class SideBar(gtk.VBox):
 
         self.connection_tree.show_all()
 
-        self.buttonbox.pack_start(self.connection_tree, False, False, 6)
+        self.buttonbox.pack_start(self.connection_tree, False, False)
 
         try:
             index = self.connections.index(active)
@@ -305,7 +322,7 @@ class SideBar(gtk.VBox):
         for item in items:
             item.set_active(False)
 
-    def add_new_connection(self, widget):
+    def add_new_connection(self):
         if self.all_adhoc:
             connection = nm_module.nm_remote_settings.new_adhoc_connection("")
         else:
@@ -356,34 +373,41 @@ class Security(gtk.VBox):
 
         ## Create table
         self.table = gtk.Table(5, 4, True)
+        #TODO UI change
+        label_list = ["security_label", "key_label", "wep_index_label", "auth_label", "password_label", "password_entry", "show_key_check", "key_entry", "wep_index_spin", "auth_combo", "security_combo"]
+        for label in label_list:
+            l = getattr(self, label)
+            align = style.wrap_with_align(l)
+            setattr(self, label+"_align", align)
+
         self.reset()
         self.security_combo.connect("item-selected", self.change_encry_type)
         self.key_entry.entry.connect("changed", self.save_wep_pwd)
         self.password_entry.entry.connect("changed", self.save_wpa_pwd)
         self.wep_index_spin.connect("value-changed", self.wep_index_spin_cb)
         self.auth_combo.connect("item-selected", self.save_auth_cb)
-        #self.security_combo.emit("item-selected", None, 0, 0)
-            
-        #self.reset(True)
 
-        #table_wpa = gtk.Table(3, 4, True)
-        #table_wpa.attach(security_label, 0, 1, 0, 1)
-        #table_wpa.attach(self.security_combo, 1 ,4, 0 ,1)
-        #TODO UI change
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(35, 0, 120, 0)
-        align.add(self.table)
-        self.table.set_size_request(340, -1)
-        self.key_entry.set_size(222, 22)
-        self.password_entry.set_size(222, 22)
+            #print getattr(self, label+"_align")
+
+        #align = gtk.Alignment(0, 0, 0, 0)
+        #align.set_padding(35, 0, 120, 0)
+        #align.add(self.table)
+        #self.table.set_size_request(340, -1)
+        align = style.set_box_with_align(self.table, "text")
+        width, height = 222, 22
+        self.key_entry.set_size(width, height)
+        self.password_entry.set_size(width, height)
+        self.wep_index_spin.set_size_request(width, height)
+        self.auth_combo.set_size_request(width, height)
+        self.security_combo.set_size_request(width, height)
 
         self.add(align)
 
     def reset(self):
         ## Add security
         container_remove_all(self.table)
-        self.table.attach(self.security_label, 0, 1, 0, 1)
-        self.table.attach(self.security_combo, 1, 4, 0, 1)
+        self.table.attach(self.security_label_align, 0, 1, 0, 1)
+        self.table.attach(self.security_combo_align, 1, 4, 0, 1)
         
         keys = [None, "none", "none","wpa-psk"]
         
@@ -409,24 +433,24 @@ class Security(gtk.VBox):
                 secret = ""
 
         if self.security_combo.get_current_item()[1] == "wpa-psk":
-            self.table.attach(self.password_label, 0, 1, 1, 2)
-            self.table.attach(self.password_entry, 1, 4, 1, 2)
-            self.table.attach(self.show_key_check, 1, 4, 2, 3)
+            self.table.attach(self.password_label_align, 0, 1, 1, 2)
+            self.table.attach(self.password_entry_align, 1, 4, 1, 2)
+            self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
             
             self.password_entry.entry.set_text(secret)
             self.setting.psk = secret
 
         elif self.security_combo.get_current_item()[1] == "none":
             # Add Key
-            self.table.attach(self.key_label, 0, 1, 1, 2)
-            self.table.attach(self.key_entry, 1, 4, 1, 2)
-            self.table.attach(self.show_key_check, 1, 3, 2, 3)
+            self.table.attach(self.key_label_align, 0, 1, 1, 2)
+            self.table.attach(self.key_entry_align, 1, 4, 1, 2)
+            self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
             # Add wep index
-            self.table.attach(self.wep_index_label, 0, 1, 3, 4)
-            self.table.attach(self.wep_index_spin, 1, 4, 3, 4)
+            self.table.attach(self.wep_index_label_align, 0, 1, 3, 4)
+            self.table.attach(self.wep_index_spin_align, 1, 4, 3, 4)
             # Add Auth
-            self.table.attach(self.auth_label, 0, 1, 4, 5)
-            self.table.attach(self.auth_combo, 1, 4, 4, 5)
+            self.table.attach(self.auth_label_align, 0, 1, 4, 5)
+            self.table.attach(self.auth_combo_align, 1, 4, 4, 5)
 
             # Retrieve wep properties
             try:
@@ -568,18 +592,27 @@ class Wireless(gtk.VBox):
         self.clone_entry = InputEntry()
         self.mtu = Label("MTU:")
         self.mtu_spin = SpinBox(0, 0, 1500, 1, 55)
-        #self.mode_combo.connect("item-selected", self.mode_combo_select)
-        #self.init_table(self.mode_combo.get_current_item()[1]) 
 
-        self.table = gtk.Table(8, 2, True)
-        # SSID
+        self.table = gtk.Table(8, 2, False)
+
+        """
+        wrap with alignment
+        """
+        widget_list = ["ssid_label", "ssid_entry", "mode_label", "mode_combo",
+                       "band_label", "band_combo", "channel_label", "channel_spin",
+                       "bssid_label", "bssid_entry", "mac_address", "mac_entry",
+                       "clone_addr", "clone_entry", "mtu", "mtu_spin"]
+
+        for widget in widget_list:
+            item = getattr(self, widget)
+            align = style.wrap_with_align(item)
+            setattr(self, widget + "_align", align)
 
         #TODO UI change
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(35, 0, 120, 0)
-        align.add(self.table)
+        align = style.set_box_with_align(self.table, 'text')
+        style.set_table(self.table)
         self.add(align)
-        self.table.set_size_request(340, 227)
+        #self.table.set_size_request(340, 227)
 
         self.ssid_entry.set_size(222, 22)
         self.bssid_entry.set_size(222, 22)
@@ -624,30 +657,30 @@ class Wireless(gtk.VBox):
         container_remove_all(self.table)
         mode = self.mode_combo.get_current_item()[1]
 
-        self.table.attach(self.ssid_label, 0, 1, 0, 1)
-        self.table.attach(self.ssid_entry, 1, 2, 0, 1)
+        self.table.attach(self.ssid_label_align, 0, 1, 0, 1)
+        self.table.attach(self.ssid_entry_align, 1, 2, 0, 1)
         # Mode
-        self.table.attach(self.mode_label, 0, 1, 1, 2)
-        self.table.attach(self.mode_combo, 1, 2, 1, 2)
+        self.table.attach(self.mode_label_align, 0, 1, 1, 2)
+        self.table.attach(self.mode_combo_align, 1, 2, 1, 2)
         if mode == "adhoc":
-            self.table.attach(self.band_label, 0, 1, 2, 3)
-            self.table.attach(self.band_combo, 1, 2, 2, 3)
-            self.table.attach(self.channel_label, 0, 1, 3, 4)
-            self.table.attach(self.channel_spin, 1, 2, 3, 4)
+            self.table.attach(self.band_label_align, 0, 1, 2, 3)
+            self.table.attach(self.band_combo_align, 1, 2, 2, 3)
+            self.table.attach(self.channel_label_align, 0, 1, 3, 4)
+            self.table.attach(self.channel_spin_align, 1, 2, 3, 4)
 
         # Bssid
-        self.table.attach(self.bssid_label, 0, 1, 4, 5)
-        self.table.attach(self.bssid_entry, 1, 2, 4, 5)
+        self.table.attach(self.bssid_label_align, 0, 1, 4, 5)
+        self.table.attach(self.bssid_entry_align, 1, 2, 4, 5)
 
         # MAC
-        self.table.attach(self.mac_address, 0, 1, 5, 6)
-        self.table.attach(self.mac_entry, 1, 2, 5, 6)
+        self.table.attach(self.mac_address_align, 0, 1, 5, 6)
+        self.table.attach(self.mac_entry_align, 1, 2, 5, 6)
         # MAC_CLONE
-        self.table.attach(self.clone_addr, 0, 1, 6, 7)
-        self.table.attach(self.clone_entry, 1,2, 6, 7)
+        self.table.attach(self.clone_addr_align, 0, 1, 6, 7)
+        self.table.attach(self.clone_entry_align, 1,2, 6, 7)
         # MTU
-        self.table.attach(self.mtu_spin, 1, 2, 7, 8)
-        self.table.attach(self.mtu, 0, 1, 7, 8)
+        self.table.attach(self.mtu_spin_align, 1, 2, 7, 8)
+        self.table.attach(self.mtu_align, 0, 1, 7, 8)
 
     def reset(self):
         wireless = self.wireless

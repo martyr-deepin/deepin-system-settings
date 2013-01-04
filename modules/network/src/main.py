@@ -313,7 +313,8 @@ class HotSpot(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0, 0.0, 1, 1)
             self.align.set_padding(0, 0, PADDING,0)
-            label = Label(_("Hotspot Configuration"), ui_theme.get_color("link_text"))
+            self.label_name = _("Hotspot Configuration")
+            label = Label(self.label_name, ui_theme.get_color("link_text"))
             label.connect("button-release-event", self.slide_to_event)
             self.align.connect("expose-event", self.expose_event)
             self.align.add(label)
@@ -332,7 +333,7 @@ class HotSpot(gtk.VBox):
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.child.allocation
-        width, height = get_content_size(_("Hotspot Configuration"))
+        width, height = get_content_size(self.label_name)
         cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
         draw_line(cr, rect.x, rect.y + rect.height, rect.x + width, rect.y + rect.height)
 

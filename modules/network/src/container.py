@@ -10,11 +10,12 @@ import gtk
 import sys,os
 from dtk.ui.utils import get_parent_dir
 from dtk.ui.label import Label
+from dtk.ui.box import ImageBox
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
 
 ICON_PADDING = 5
-TEXT_PADDING = 30
+TEXT_PADDING = 5
 BUTTON_PADDING = 0
 class Contain(gtk.Alignment):
 
@@ -28,22 +29,22 @@ class Contain(gtk.Alignment):
         self.show()
         self.active_cb = switch_callback
         self.hbox = gtk.HBox()
-        self.add(self.hbox)
 
-        self.image = gtk.Image()
+        self.image = ImageBox(icon) 
         #self.height = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_height()
         #self.width = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_width()
-        self.image.set_from_pixbuf(icon.get_pixbuf())
-        self.hbox.pack_start(self.image, False, True, ICON_PADDING)
+        #self.image.set_from_pixbuf(icon.get_pixbuf())
+        self.hbox.pack_start(self.image, False, False, ICON_PADDING)
         self.label = Label(text, text_size=TITLE_FONT_SIZE, label_width=100)
-        self.hbox.pack_start(self.label, False, True, TEXT_PADDING)
+        self.hbox.pack_start(self.label, False, False, TEXT_PADDING)
 
         self.switch = OffButton()
-        from style import wrap_with_align
-        align = wrap_with_align(self.switch)
+        #from style import wrap_with_align
+        #align = wrap_with_align(self.switch)
+        self.hbox.pack_start(self.switch, False , False, BUTTON_PADDING)
+        self.add(self.hbox)
 
         self.switch.connect("toggled", self.active_cb)
-        self.hbox.pack_start(align, False , True, BUTTON_PADDING)
         self.hbox.connect("expose-event", self.expose_callback)
     
     def expose_callback(self, widget, event):

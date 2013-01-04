@@ -223,16 +223,27 @@ class ShowOthers(TreeItem):
         draw_text(cr, "show all", rect.x, rect.y, rect.width, rect.height,
                 alignment=pango.ALIGN_CENTER)
 
+    def render_right(self, cr, rect):
+        render_background(cr, rect)
+
+        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            cr.rectangle(rect.x , rect.y , rect.width , rect.height + 1)
+            cr.stroke()
+
+
     def get_column_renders(self):
         return [lambda cr, rect: render_background( cr, rect),
                 self.render_content,
-                lambda cr, rect: render_background( cr, rect)]
+                self.render_right]
 
     def get_column_widths(self):
-        return [-1,92,-1]
+        return [37,-1,37]
 
     def get_height(self):
-        return 26
+        return 30
 
     def single_click(self, column, offset_x, offset_y):
         if self.is_expand:

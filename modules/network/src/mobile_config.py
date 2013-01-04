@@ -288,7 +288,7 @@ class Broadband(gtk.VBox):
         # Init widgets
         self.table = gtk.Table(12, 4, False)
         
-        self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE )
+        self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE + 0.5 )
         self.label_number = Label(_("Code:"), text_size=CONTENT_FONT_SIZE)
         self.label_username = Label(_("Username:"), text_size=CONTENT_FONT_SIZE)
         self.label_password = Label(_("password:"), text_size=CONTENT_FONT_SIZE)
@@ -301,7 +301,7 @@ class Broadband(gtk.VBox):
 
 
         #self.table = gtk.Table(6, 4, False)
-        self.label_advanced = Label(_("Advanced"), text_size=TITLE_FONT_SIZE)
+        self.label_advanced = Label(_("Advanced"), text_size=TITLE_FONT_SIZE + 0.5)
         self.label_apn = Label(_("APN:"), text_size=CONTENT_FONT_SIZE)
         self.label_network = Label(_("Network ID:"), text_size=CONTENT_FONT_SIZE)
         self.label_type = Label(_("Type:"), text_size=CONTENT_FONT_SIZE)
@@ -371,7 +371,7 @@ class Broadband(gtk.VBox):
 
             if network_type == "gsm":
                 self.button_to_region.connect("clicked", to_region)
-                self.table.attach(style.wrap_with_align(self.button_to_region), 1,2,5,6)
+                self.table.attach(style.wrap_with_align(self.button_to_region), 1,2,5,6, 3)
                 self.table.attach(style.wrap_with_align(self.label_advanced), 0, 1, 6, 7)
                 self.table.attach(style.wrap_with_align(self.label_apn), 0, 1 , 7, 8)
                 self.table.attach(style.wrap_with_align(self.label_network), 0, 1, 8, 9)
