@@ -149,7 +149,7 @@ class DeepinDateTime(BusBase):
         return self.call_async("SetTime", seconds_since_epoch)
 
     def set_time_by_hms(self, hour, min, sec):
-        datetime_str = "%d-%d-%d %02d:%02d:%02d" % (time.localtime().tm_year, 
+        datetime_str = "%04d-%02d-%02d %02d:%02d:%02d" % (time.localtime().tm_year, 
                                                     time.localtime().tm_mon, 
                                                     time.localtime().tm_mday, 
                                                     hour, 
