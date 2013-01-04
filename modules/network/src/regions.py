@@ -43,7 +43,6 @@ class Region(gtk.Alignment):
         country_label = Label(_("Country or Region:"), text_size=TITLE_FONT_SIZE)
         self.country_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
-                                     mask_bound_height=0,
                                      enable_hover=False)
 
         self.country_tree.set_size_request(370, 345)
