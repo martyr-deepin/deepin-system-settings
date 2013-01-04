@@ -49,7 +49,7 @@ class FootBox(gtk.HBox):
         self.status_label = self.__setup_label("")
         self.buttons_align = self.__setup_align(padding_top = 7, 
                                                 padding_left = 100, 
-                                                padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+                                                padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING / 5)
         self.buttons_box = gtk.HBox()
         self.reset_button = Button("恢复默认")
         self.reset_button.connect("clicked", self.__reset_button_clicked)

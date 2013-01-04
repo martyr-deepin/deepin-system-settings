@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -24,6 +24,7 @@ from theme import app_theme
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.box import ResizableBox, ImageBox
 from dtk.ui.label import Label
+from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.button import ToggleButton
@@ -223,11 +224,16 @@ class DisplayView(gtk.VBox):
         monitor display
         '''
         self.monitor_display_align = self.__setup_align(padding_left = 0)
-        self.monitor_display_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.monitor_display_box = gtk.VBox(spacing = WIDGET_SPACING)
+        self.monitor_display_title_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.monitor_display_image = ImageBox(app_theme.get_pixbuf("display/monitor_display.png"))
-        self.monitor_display_label = self.__setup_label(_("Monitor Display"), TITLE_FONT_SIZE, 180)
+        self.monitor_display_label = self.__setup_title_label(_("Monitor Display"))
+        self.monitor_display_separator = self.__setup_separator()
+        self.__widget_pack_start(self.monitor_display_title_box, 
+                                 [self.monitor_display_image, 
+                                  self.monitor_display_label])
         self.__widget_pack_start(self.monitor_display_box, 
-                                 [self.monitor_display_image, self.monitor_display_label])
+                                 [self.monitor_display_title_box, self.monitor_display_separator])
         self.monitor_display_align.add(self.monitor_display_box)
         '''
         monitor
@@ -509,6 +515,23 @@ class DisplayView(gtk.VBox):
     def __resize_box(self, widget, height):
         self.monitor_resize_box.set_size_request(self.resize_width, height - FRAME_TOP_PADDING)
 
+    def __setup_separator(self):
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(380, 10)
+        return hseparator
+    
+    def __setup_title_label(self, 
+                            text="", 
+                            text_color=app_theme.get_color("globalTitleForeground"), 
+                            text_size=TITLE_FONT_SIZE, 
+                            text_x_align=ALIGN_START, 
+                            label_width=180):
+        return Label(text = text, 
+                     text_color = text_color, 
+                     text_size = text_size, 
+                     text_x_align = text_x_align, 
+                     label_width = label_width)
+    
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, width=80, align=ALIGN_START, wrap_width=None):
         label = Label(text = text, 
                       text_color = None, 

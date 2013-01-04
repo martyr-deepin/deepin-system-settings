@@ -19,6 +19,7 @@
  "globalItemHover" : "#d3e9fc",
  "globalItemSelect" : "#a4c9ef",
  "globalItemHighlight" : "#7faee4",
+ "globalTitleForeground" : "#003399",
  },	
  "alpha_colors" : {
      "frame" : ("#000000", 0.5),
