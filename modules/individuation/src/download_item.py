@@ -28,6 +28,9 @@ from dtk.ui.draw import draw_text, draw_pixbuf, draw_shadow
 from dtk.ui.button import CheckButtonBuffer
 from dtk.ui.progressbar import ProgressBuffer
 
+from download_manager import fetch_service, TaskObject
+
+from pyaxel.report import parse_bytes
 
 from ui_utils import (draw_single_mask)
 from theme import app_theme
@@ -81,8 +84,14 @@ class DownloadItem(TreeItem):
         
         self.stop_pixbuf = app_theme.get_pixbuf("individuation/stop.png").get_pixbuf()
         self.stop_pixbuf_padding_x = 5
-        
         self.block_width = 50
+        self.download_task = TaskObject(image_object.big_url, image_object.get_save_path())
+        # self.download_task = TaskObject("http://packages.linuxdeepin.com/deepin/pool/main/d/deepin-emacs/deepin-emacs_1.1-1_all.deb")
+        self.download_task.signal.add_callback("update", self.download_update)
+        self.download_task.signal.add_callback("finish", self.download_finish)
+        
+    def start_download(self):    
+        fetch_service.add_missions([self.download_task])
         
     def render_check_button(self, cr, rect):
         if self.is_hover:
@@ -227,7 +236,6 @@ class DownloadItem(TreeItem):
     def download_wait(self):
         self.status = self.STATUS_WAIT_DOWNLOAD
         self.status_text = "等待下载"
-
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
     
@@ -238,18 +246,16 @@ class DownloadItem(TreeItem):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
             
-    def download_update(self, percent, speed):
-        self.status = self.STATUS_IN_DOWNLOAD
-        self.progress_buffer.progress = percent
-        self.status_text = "%s/s" % (format_file_size(speed))
-        
+    def download_update(self, name, obj, data):
+        self.progress_buffer.progress = data.progress
+        self.status_text = parse_bytes(data.speed)
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
 
-    def download_finish(self):
-        self.status = self.STATUS_WAIT_UPGRADE
-        self.progress_buffer.progress = 0
-        self.status_text = "等待升级"
+    def download_finish(self, name, obj, data):
+        print "finish"
+        self.progress_buffer.progress = 100
+        self.status_text = "下载完成"
     
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
