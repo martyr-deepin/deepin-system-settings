@@ -55,7 +55,7 @@ class SysInfo(object):
     def __create_widget(self):
         # label widget
         self.label_widgets["version"] = Label(" ", text_size=13, enable_select=False)
-        self.label_widgets["copyright"] = Label(_("版权所有© 2009  深之度科技有限公司。保留所有权利。"), enable_select=False)
+        self.label_widgets["copyright"] = Label(_("Copyright © 2011 - 2013 深之度公司 版权所有"), enable_select=False)
         self.label_widgets["cpu"] = Label(_("Processor"))
         self.label_widgets["mem"] = Label(_("Memory"))
         self.label_widgets["arch"] = Label(_("OS Type"))
