@@ -39,7 +39,6 @@ for i in ["http://packages.linuxdeepin.com/deepin/pool/main/d/deepin-emacs/deepi
     
 fetch_service.add_missions(task_list)    
 
-
 main_loop = glib.MainLoop()
 main_loop.run()
 

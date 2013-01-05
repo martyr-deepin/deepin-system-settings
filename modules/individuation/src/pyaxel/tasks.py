@@ -222,26 +222,3 @@ class TaskObject(Logger):
             print e
             self.logdebug("File: %s at dowloading error %s", self.output_file, e)
             self.stop_all_task()
-
-            
-if __name__ == "__main__":            
-    import gobject
-    import glib
-    import time
-    gobject.threads_init()
-    
-    def update_state(name, obj, data):
-        print data
-    
-    task = TaskObject("http://cdimage.linuxdeepin.com/releases/12.06/final/desktop/deepin_12.06_zh-hans_amd64.iso", verbose=True)
-    # task.signal.add_callback("update", update_state)    
-    task.start()
-    time.sleep(10)
-    task.pause()
-    print "\nstop"
-    time.sleep(5)
-    task.resume()
-    print "\nresume"
-    main_loop = glib.MainLoop()
-    main_loop.run()
-
