@@ -148,10 +148,14 @@ def keyboard_get_disable_touchpad_while_typing():
 
 def keyboard_set_to_default():
     '''set all value to default'''
-    keyboard_set_repeat_delay(KEYBOARD_DEFAULT_SETTINGS["delay"])
-    keyboard_set_repeat_interval(KEYBOARD_DEFAULT_SETTINGS["repeat-interval"])
-    keyboard_set_cursor_blink_time(KEYBOARD_DEFAULT_SETTINGS["cursor-blink-time"])
-    keyboard_set_disable_touchpad_while_typing(KEYBOARD_DEFAULT_SETTINGS["disable-while-typing"])
+    #keyboard_set_repeat_delay(KEYBOARD_DEFAULT_SETTINGS["delay"])
+    #keyboard_set_repeat_interval(KEYBOARD_DEFAULT_SETTINGS["repeat-interval"])
+    #keyboard_set_cursor_blink_time(KEYBOARD_DEFAULT_SETTINGS["cursor-blink-time"])
+    #keyboard_set_disable_touchpad_while_typing(KEYBOARD_DEFAULT_SETTINGS["disable-while-typing"])
+    KEYBOARD_SETTINGS.reset("delay")
+    KEYBOARD_SETTINGS.reset("repeat-interval")
+    DESKTOP_SETTINGS.reset("cursor-blink-time")
+    TOUCHPAD_SETTINGS.reset("disable-while-typing")
 
 
 def keyboard_get_default_settings():
