@@ -31,6 +31,8 @@ module background color
 '''
 MODULE_BG_COLOR = "#FFFFFF"
 
+HSCALEBAR_WIDTH = 200
+
 # 框架类别-上下间距
 FRAME_HORIZONTAL_SPACING = 4
 # 框架类别-左右间距
