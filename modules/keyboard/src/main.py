@@ -38,7 +38,7 @@ from dtk.ui.tab_window import TabBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
-from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor, container_remove_all
 from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
 from treeitem import MyTreeView as TreeView
@@ -48,6 +48,8 @@ from glib import markup_escape_text
 import xkb
 import gtk
 import shortcuts
+import keybind_list
+import keybinds
 import pangocairo
 import pango
 from module_frame import ModuleFrame
@@ -69,6 +71,11 @@ class KeySetting(object):
         for shortcut in media_shortcuts:
             self.__shortcuts_items[shortcut] = media_shortcuts[shortcut]
         self.__shortcuts_items[_('Custom Shortcuts')] = shortcuts.get_shortcuts_custom_shortcut_item(settings.GCONF_CLIENT)
+
+        self.__shortcuts_entries = keybinds.get_shortcuts_wm_shortcut_entry(settings.WM_SHORTCUTS_SETTINGS)
+        self.__shortcuts_entries.update(keybinds.get_shortcuts_media_shortcut_entry(settings.SHORTCUTS_SETTINGS))
+        self.__shortcuts_entries[_('Custom Shortcuts')] = keybinds.get_shortcuts_custom_shortcut_entry(settings.GCONF_CLIENT)
+        self.__shortcuts_entries_page_widgets = {}
         self.scale_set= {
             "delay"               : settings.keyboard_set_repeat_delay,
             "repeat-interval"     : settings.keyboard_set_repeat_interval,
@@ -213,6 +220,8 @@ class KeySetting(object):
         # container init
         self.container_widgets["shortcuts_table"] = gtk.Table(2, 3, False)
         self.container_widgets["shortcuts_toolbar_hbox"] = gtk.HBox(False)
+        #self.container_widgets["shortcuts_swin"] = ScrolledWindow()
+        self.container_widgets["shortcuts_swin"] = gtk.VBox(False)
         # alignment init
         self.alignment_widgets["shortcuts_table"] = gtk.Alignment()
      
@@ -295,8 +304,10 @@ class KeySetting(object):
         self.scale_widgets["repeat_delay"].set_value(value)
         self.scale_widgets["repeat_delay"].add_mark(
             self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Long"))
+        #self.scale_widgets["repeat_delay"].add_mark(
+            #self.adjust_widgets["repeat_delay"].get_upper()-self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Short"))
         self.scale_widgets["repeat_delay"].add_mark(
-            self.adjust_widgets["repeat_delay"].get_upper()-self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Short"))
+            self.scale_widgets["repeat_delay"].value_max, gtk.POS_BOTTOM, _("Short"))
         self.scale_widgets["repeat_delay"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["repeat_table"].set_col_spacings(WIDGET_SPACING)
@@ -310,8 +321,10 @@ class KeySetting(object):
         self.scale_widgets["repeat_interval"].set_value(value)
         self.scale_widgets["repeat_interval"].add_mark(
             self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
+        #self.scale_widgets["repeat_interval"].add_mark(
+            #self.adjust_widgets["repeat_interval"].get_upper()-self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["repeat_interval"].add_mark(
-            self.adjust_widgets["repeat_interval"].get_upper()-self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Fast"))
+            self.scale_widgets["repeat_interval"].value_max, gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["repeat_interval"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["repeat_table"].attach(
@@ -348,8 +361,10 @@ class KeySetting(object):
         self.scale_widgets["blink_cursor"].set_value(value)
         self.scale_widgets["blink_cursor"].add_mark(
             self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
+        #self.scale_widgets["blink_cursor"].add_mark(
+            #self.adjust_widgets["blink_cursor"].get_upper()-self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["blink_cursor"].add_mark(
-            self.adjust_widgets["blink_cursor"].get_upper()-self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Fast"))
+            self.scale_widgets["blink_cursor"].value_max, gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["blink_cursor"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["blink_table"].set_col_spacings(WIDGET_SPACING)
@@ -457,10 +472,11 @@ class KeySetting(object):
             self.alignment_widgets["shortcuts_table"])
         self.alignment_widgets["shortcuts_table"].add(
             self.container_widgets["shortcuts_table"])
-        self.view_widgets["shortcuts_selected"].set_size_request(150, -1)
-        self.view_widgets["shortcuts_shortcut"].set_size_request(600, -1)
+        self.view_widgets["shortcuts_selected"].set_size_request(200, -1)
+        self.view_widgets["shortcuts_shortcut"].set_size_request(570, -1)
+        self.container_widgets["shortcuts_swin"].set_size_request(600, -1)
         self.alignment_widgets["shortcuts_table"].set(0.0, 0.0, 1, 1)
-        self.alignment_widgets["shortcuts_table"].set_padding(10, 10, 10, 10)
+        self.alignment_widgets["shortcuts_table"].set_padding(10, 10, 0, 10)
         # shortcut toolbar
         self.container_widgets["shortcuts_toolbar_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_add"])
@@ -469,9 +485,12 @@ class KeySetting(object):
         # table attach
         self.container_widgets["shortcuts_table"].attach(
             self.__make_align(self.view_widgets["shortcuts_selected"], yalign=1.0, yscale=1.0,
-            padding_top=2, padding_bottom=2, padding_left=2, padding_right=2), 0, 1, 0, 2)
+            padding_top=2, padding_bottom=2, padding_right=2), 0, 1, 0, 2)
+        #self.container_widgets["shortcuts_table"].attach(
+            #self.__make_align(self.view_widgets["shortcuts_shortcut"], yalign=0.0, yscale=1.0,
+            #padding_top=2, padding_bottom=2, padding_left=2, padding_right=7), 1, 2, 0, 1, xpadding=4)
         self.container_widgets["shortcuts_table"].attach(
-            self.__make_align(self.view_widgets["shortcuts_shortcut"], yalign=0.0, yscale=1.0,
+            self.__make_align(self.container_widgets["shortcuts_swin"], yalign=0.0, yscale=1.0,
             padding_top=2, padding_bottom=2, padding_left=2, padding_right=7), 1, 2, 0, 1, xpadding=4)
         self.container_widgets["shortcuts_table"].attach(
             self.__make_align(self.container_widgets["shortcuts_toolbar_hbox"], xalign=1.0, xscale=0.0,
@@ -482,16 +501,17 @@ class KeySetting(object):
         self.container_widgets["layout_table"].set_row_spacing(0, 10)
         # init shortcuts selected treeview
         self.view_widgets["shortcuts_selected"].add_items(
-            shortcuts.get_wm_shortcuts_select_item())
+            keybind_list.get_wm_shortcuts_select_item())
         self.view_widgets["shortcuts_selected"].add_items(
-            shortcuts.get_media_shortcuts_select_item())
+            keybind_list.get_media_shortcuts_select_item())
         self.view_widgets["shortcuts_selected"].add_items(
             [SelectItem(_('Custom Shortcuts'))])
         self.view_widgets["shortcuts_shortcut"].add_items(
             self.__shortcuts_items[self.view_widgets["shortcuts_selected"].visible_items[0].text])
         self.view_widgets["shortcuts_selected"].set_data("is_custom", False)
-        self.view_widgets["shortcuts_selected"].set_select_rows([0])
+        #self.view_widgets["shortcuts_selected"].set_select_rows([0])
         self.button_widgets["shortcuts_remove"].set_sensitive(False)
+        self.__make_accel_page()
 
     def __signals_connect(self):
         ''' widget signals connect'''
@@ -549,6 +569,7 @@ class KeySetting(object):
         # shortcuts widget signal
         self.container_widgets["shortcuts_table"].connect("expose-event", self.shortcuts_table_expose)
         self.view_widgets["shortcuts_selected"].connect("select", self.shortcuts_treeview_selecte)
+        self.view_widgets["shortcuts_selected"].set_select_rows([0])
         self.view_widgets["shortcuts_shortcut"].connect("select", self.shortcuts_selecte)
         self.view_widgets["shortcuts_shortcut"].add_events(gtk.gdk.ALL_EVENTS_MASK)
         self.view_widgets["shortcuts_shortcut"].connect("single-click-item", self.shortcuts_clicked)
@@ -818,17 +839,25 @@ class KeySetting(object):
     def shortcuts_treeview_selecte(self, tree_view, item, row_index):
         #print "select:", item.text, row_index
         self.button_widgets["shortcuts_remove"].set_sensitive(False)
-        self.view_widgets["shortcuts_shortcut"].set_select_rows([])
-        self.view_widgets["shortcuts_shortcut"].add_items(
-            self.__shortcuts_items[item.text], clear_first=True)
+        #self.view_widgets["shortcuts_shortcut"].set_select_rows([])
+        #self.view_widgets["shortcuts_shortcut"].add_items(
+            #self.__shortcuts_items[item.text], clear_first=True)
+        container_remove_all(self.container_widgets["shortcuts_swin"])
+        #old_parent = self.__shortcuts_entries_page_widgets[item.text].get_parent()
+        #if old_parent:
+            #container_remove_all(old_parent)
+            #old_parent.remove(self.__shortcuts_entries_page_widgets[item.text])
+            #old_parent.destroy()
+        self.container_widgets["shortcuts_swin"].add(self.__shortcuts_entries_page_widgets[item.text])
         if row_index == len(tree_view.visible_items)-1:
             tree_view.set_data('is_custom', True)
         else:
             tree_view.set_data('is_custom', False)
-        vadjust = self.view_widgets["shortcuts_shortcut"].scrolled_window.get_vadjustment()
-        vadjust.set_value(vadjust.get_lower())
-        vadjust.value_changed()
-        self.view_widgets["shortcuts_shortcut"].queue_draw()
+        #vadjust = self.view_widgets["shortcuts_shortcut"].scrolled_window.get_vadjustment()
+        #vadjust.set_value(vadjust.get_lower())
+        #vadjust.value_changed()
+        #self.view_widgets["shortcuts_shortcut"].queue_draw()
+        self.container_widgets["shortcuts_swin"].show_all()
     
     def shortcuts_selecte(self, tree_view, item, row_index):
         #print "shortcuts select:", item.description, item.keyname, item.name, row_index
@@ -1095,6 +1124,33 @@ class KeySetting(object):
     
     def __setup_separator(self):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, height=10)
+    
+    def __make_accel_page(self):
+        def draw_background(widget, event):
+            x, y, w, h = widget.allocation
+            cr = widget.window.cairo_create()
+            cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
+            cr.rectangle(x+1, y+1, w-2, h-2)                                                 
+            cr.fill()
+        for category in self.__shortcuts_entries:
+            vbox = gtk.VBox(False)
+            #vbox.set_spacing(10)
+            self.__shortcuts_entries_page_widgets[category] = ScrolledWindow()
+            self.__shortcuts_entries_page_widgets[category].add_child(vbox)
+            vbox.set_size_request(600, -1)
+            vbox.connect("expose-event", draw_background)
+            for entry in self.__shortcuts_entries[category]:
+                hbox = gtk.HBox(False)
+                hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+                description_label = Label(entry.settings_description)
+                label_align = self.__make_align(description_label)
+                label_align.set_size_request(290, CONTAINNER_HEIGHT)
+                hbox.pack_start(label_align, False, False)
+                hbox.pack_start(self.__make_align(entry), False, False)
+                hbox.pack_start(self.__make_align())
+                vbox.pack_start(hbox, False, False)
+    def get_accel_page(self):
+        return self.__shortcuts_entries_page_widgets
     
     def set_to_default(self):
         '''set to the default'''
