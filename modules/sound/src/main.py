@@ -103,7 +103,7 @@ class SoundSetting(object):
         #####################################
         # image init
         self.image_widgets["balance"] = ImageBox(app_theme.get_pixbuf("%s/balance.png" % MODULE_NAME))
-        self.image_widgets["speaker"] = ImageBox(app_theme.get_pixbuf("%s/speaker.png" % MODULE_NAME))
+        self.image_widgets["speaker"] = ImageBox(app_theme.get_pixbuf("%s/speaker-3.png" % MODULE_NAME))
         self.image_widgets["microphone"] = ImageBox(app_theme.get_pixbuf("%s/microphone.png" % MODULE_NAME))
         self.image_widgets["device"] = app_theme.get_pixbuf("%s/device.png" % MODULE_NAME)
         # button init
