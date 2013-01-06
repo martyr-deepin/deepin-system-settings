@@ -20,8 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from pyaxel.services import FetchService
-from pyaxel.tasks import TaskObject
+from pystorm.services import FetchService
+from pystorm.tasks import TaskObject
 
 fetch_service = FetchService(5)
 fetch_service.start()

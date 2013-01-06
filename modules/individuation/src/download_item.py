@@ -23,6 +23,7 @@
 import gtk
 import pango
 from dtk.ui.new_treeview import TreeItem
+from dtk.ui.threads import post_gui
 from dtk.ui.utils import is_in_rect, format_file_size, get_content_size
 from dtk.ui.draw import draw_text, draw_pixbuf, draw_shadow
 from dtk.ui.button import CheckButtonBuffer
@@ -30,7 +31,7 @@ from dtk.ui.progressbar import ProgressBuffer
 
 from download_manager import fetch_service, TaskObject
 
-from pyaxel.report import parse_bytes
+from pystorm.report import parse_bytes, parse_time
 
 from ui_utils import (draw_single_mask)
 from theme import app_theme
@@ -75,7 +76,7 @@ class DownloadItem(TreeItem):
         
         # Init status.
         self.status = self.STATUS_WAIT_DOWNLOAD
-        self.status_text = "等等下载啊"
+        self.status_text = "等待下载"
         
         # Init buffers. 
         self.progress_buffer = ProgressBuffer()
@@ -89,6 +90,8 @@ class DownloadItem(TreeItem):
         # self.download_task = TaskObject("http://packages.linuxdeepin.com/deepin/pool/main/d/deepin-emacs/deepin-emacs_1.1-1_all.deb")
         self.download_task.signal.add_callback("update", self.download_update)
         self.download_task.signal.add_callback("finish", self.download_finish)
+        self.download_task.signal.add_callback("error",  self.download_failed)
+        self.download_task.signal.add_callback("start",  self.download_start)
         
     def start_download(self):    
         fetch_service.add_missions([self.download_task])
@@ -233,67 +236,36 @@ class DownloadItem(TreeItem):
     def double_click(self, column, offset_x, offset_y):
         pass        
     
-    def download_wait(self):
-        self.status = self.STATUS_WAIT_DOWNLOAD
-        self.status_text = "等待下载"
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-    
-    def download_start(self):
-        self.status = self.STATUS_IN_DOWNLOAD
-        self.status_text = "下载中"
-    
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-            
+    @post_gui        
     def download_update(self, name, obj, data):
         self.progress_buffer.progress = data.progress
-        self.status_text = parse_bytes(data.speed)
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        speed = parse_bytes(data.speed)
+        remaining = parse_time(data.remaining)
+        filesize = parse_bytes(data.filesize)
+        downloaded = parse_bytes(data.downloaded)
+        self.status_text = "%s/s - %s, 共%s,  还有 %s " % (speed, downloaded, filesize, remaining)
+        self.emit_request_redraw()
 
+    @post_gui        
     def download_finish(self, name, obj, data):
-        print "finish"
         self.progress_buffer.progress = 100
         self.status_text = "下载完成"
     
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        self.emit_request_redraw()
+            
+    @post_gui        
+    def download_failed(self, name, obj, data):
+        self.status_text = data
+        self.emit_request_redraw()
+        
+    @post_gui    
+    def download_start(self, name, obj, data):
+        self.status_text = "开始下载"
+        self.emit_request_redraw()
 
     def download_stop(self):
         pass
             
-    def download_parse_failed(self):
-        self.status = self.STATUS_PARSE_DOWNLOAD_FAILED
-        self.status_text = "分析依赖失败"
-    
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-            
-        # global_event.emit("request-clear-failed-action", self.pkg_name, ACTION_UPGRADE)    
-            
-    def action_start(self):
-        self.status = self.STATUS_IN_UPGRADE
-        self.status_text = "升级中"
-    
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-                
-    def action_update(self, percent):
-        self.status = self.STATUS_IN_UPGRADE
-        self.status_text = "升级中"
-        self.progress_buffer.progress = percent
-        
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-            
-    def action_finish(self):
-        self.status = self.STATUS_UPGRADE_FINISH
-        self.progress_buffer.progress = 100
-        self.status_text = "升级完成"
-        
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
             
     def release_resource(self):
         '''
