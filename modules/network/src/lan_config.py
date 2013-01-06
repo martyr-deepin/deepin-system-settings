@@ -18,15 +18,16 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#from theme import app_theme
+from dss import app_theme
 from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,ToggleButton, RadioButton, CheckButton
 from dtk.ui.new_entry import InputEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
-from dtk.ui.draw import color_hex_to_cairo, draw_window_rectangle
+from dtk.ui.draw import color_hex_to_cairo, draw_window_rectangle, draw_line
 from dtk.ui.new_treeview import TreeView
+from dtk.ui.line import VSeparator, HSeparator
 #from dtk.ui.droplist import Droplist
 from nm_modules import nm_module
 #from widgets import SettingButton
@@ -42,6 +43,13 @@ from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, WIDGET_HEIGHT, 
 import style
 from nls import _
 
+def expose_background(widget, event):
+    cr = widget.window.cairo_create()
+    rect = widget.allocation
+    cr.set_source_rgb( 1, 1, 1) 
+    cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+    cr.fill()
+
 class WiredSetting(gtk.Alignment):
 
     def __init__(self, slide_back_cb, change_crumb_cb):
@@ -51,8 +59,9 @@ class WiredSetting(gtk.Alignment):
         self.change_crumb = change_crumb_cb
         
         # Add UI Align
-        style.set_main_window(self)
-        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        style.set_main_window(self, True)
+        #hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        hbox = gtk.HBox()
         self.add(hbox)
 
         self.wired = None
@@ -62,9 +71,9 @@ class WiredSetting(gtk.Alignment):
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
-        self.items = [("有线", NoSetting()),
-                      ("IPv4设置", NoSetting()),
-                      ("IPv6设置", NoSetting())]
+        self.items = [(_("Wired"), NoSetting()),
+                      (_("IPv4 Settings"), NoSetting()),
+                      (_("IPv6 Settings"), NoSetting())]
         self.tab_window.add_items(self.items)
         #self.tab_window.connect("expose-event", self.expose_outline)
         self.sidebar = SideBar( None, self.init, self.check_click, self.set_button)
@@ -72,6 +81,7 @@ class WiredSetting(gtk.Alignment):
         hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
         vbox.pack_start(self.tab_window ,True, True)
+        #hbox.pack_start(VSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0), False, False)
         hbox.pack_start(vbox, True, True)
         #hbox = gtk.HBox()
 
@@ -86,34 +96,20 @@ class WiredSetting(gtk.Alignment):
         vbox.pack_start(buttons_aligns, False , False)
         #hbox.connect("expose-event", self.expose_event)
 
-        self.connect("expose-event", self.expose_event)
-        vbox.connect("expose-event", self.expose_outline, ["top"])
-        self.sidebar.connect("expose-event", self.expose_outline, [])
+        style.draw_background_color(self)
+        style.draw_separator(self.sidebar, 3)
 
-
+        
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
         cr.set_source_rgb(1, 1, 1)    
         cr.rectangle(0, 0, rect.width, rect.height - 1)
         cr.fill()
         
-    def expose_outline(self, widget, event, exclude):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-
-        style.draw_out_line(cr, rect, exclude)
-
-
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
 
     def init(self, device=None, new_connection=None, init_connection=False):
+        print "Wired start init"
         # Get all connections
-        #print "*in lan_config* ", nm_module.nmclient
         if device is not None:
             wired_device = device
             global wired_device
@@ -125,7 +121,6 @@ class WiredSetting(gtk.Alignment):
         # Check connections
         if self.connections == []:
             self.connections = [].append(nm_module.nm_remote_settings.new_wired_connection())
-            #connections = nm_module.nm_remote_settings.get_wired_connections()
 
         if new_connection:
             self.connections += new_connection
@@ -145,9 +140,9 @@ class WiredSetting(gtk.Alignment):
         self.init_tab_box()
 
     def init_tab_box(self):
-        self.tab_window.tab_items[0] = ("有线", self.wired)
-        self.tab_window.tab_items[1] = ("IPV4设置",self.ipv4)
-        self.tab_window.tab_items[2] = ("IPV6设置",self.ipv6)
+        self.tab_window.tab_items[0] = (_("Wired"), self.wired)
+        self.tab_window.tab_items[1] = (_("IPV4 Settings") ,self.ipv4)
+        self.tab_window.tab_items[2] = (_("IPV6 Settings"),self.ipv6)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -211,14 +206,11 @@ class SideBar(gtk.VBox):
         self.check_click_cb = check_click_cb
         self.set_button = set_button_cb
 
-        # determin the active one
         self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
-        #add_button = Button("创建新连接")
-        #add_button.set_size_request(-1, CONTAINNER_HEIGHT)
-        #add_button.connect("clicked", self.add_new_setting)
-        #self.pack_start(add_button, False, False)
-        add_button = AddSettingItem("创建新连接",self.add_new_setting)
+        style.add_separator(self) 
+
+        add_button = AddSettingItem(_("New Connection"),self.add_new_setting)
         self.pack_start(TreeView([add_button]), False, False)
         self.new_connection_list =[]
         
@@ -304,6 +296,7 @@ class NoSetting(gtk.VBox):
 
 
 class Wired(gtk.VBox):
+    ENTRY_WIDTH = 222
 
     def __init__(self, connection, set_button_callback=None):
         gtk.VBox.__init__(self)
@@ -313,28 +306,30 @@ class Wired(gtk.VBox):
         self.set_button = set_button_callback
         table = gtk.Table(3, 2, False)
         
-        mac_address = Label(_("设备mac地址:"), text_size=CONTENT_FONT_SIZE)
+        mac_address = Label(_("Device Mac Address:"), text_size=CONTENT_FONT_SIZE)
         table.attach(style.wrap_with_align(mac_address), 0, 1, 0, 1)
 
         self.mac_entry = InputEntry()
         table.attach(style.wrap_with_align(self.mac_entry), 1, 2, 0, 1)
 
-        clone_addr = Label(_("克隆mac地址:"), text_size=CONTENT_FONT_SIZE)
+        clone_addr = Label(_("Cloned Mac Address:"), text_size=CONTENT_FONT_SIZE)
         table.attach(style.wrap_with_align(clone_addr), 0, 1, 1, 2)
         self.clone_entry = InputEntry()
         table.attach(style.wrap_with_align(self.clone_entry), 1,2, 1, 2)
 
         mtu = Label(_("MTU:"))
         table.attach(style.wrap_with_align(mtu), 0,1,2,3)
-        self.mtu_spin = SpinBox(0,0, 1500, 1, 55)
+        self.mtu_spin = SpinBox(0,0, 1500, 1, self.ENTRY_WIDTH)
         table.attach(style.wrap_with_align(self.mtu_spin), 1,2,2,3)
         
         # TODO UI change
+        #self.connect("expose-event", expose_background)
+        style.draw_background_color(self)
         style.set_table(table)
         align = style.set_box_with_align(table, "text")
         self.add(align)
-        self.mac_entry.set_size(222, WIDGET_HEIGHT)
-        self.clone_entry.set_size(222, WIDGET_HEIGHT)
+        self.mac_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
+        self.clone_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
     
         self.mac_entry.entry.connect("changed", self.save_settings, "mac_address")
         self.clone_entry.entry.connect("changed", self.save_settings, "cloned_mac_address")

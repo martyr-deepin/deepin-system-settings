@@ -217,6 +217,15 @@ class WirelessSection(gtk.VBox):
 
             self.pack_start(self.align, False, False, 0)
 
+            # Add signals
+            for device in self.wireless_devices:
+                device.connect("state-changed", self.state_changed_callback)
+
+    def state_changed_callback(self, widget, new_state, old_state, reason):
+        if new_state == 20:
+            print "device is not available"
+            self.wireless.set_active(False)
+        
     def ap_added(self):
         self.show_ap_list()
     

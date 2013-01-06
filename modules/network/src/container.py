@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
-from theme import app_theme
-from dtk.ui.button import OffButton, ToggleButton, RadioButton
 #from dtk.ui.draw import draw_pixbuf, draw_text
 #from dtk.ui.constant import DEFAULT_FONT_SIZE
 import gtk
 
+from dss import app_theme
 import sys,os
 from dtk.ui.utils import get_parent_dir
 from dtk.ui.label import Label
 from dtk.ui.box import ImageBox
+from dtk.ui.button import RadioButton, OffButton
+from dtk.ui.line import HSeparator
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
+import style
 
 ICON_PADDING = 5
 TEXT_PADDING = 5
@@ -63,8 +65,35 @@ class Contain(gtk.Alignment):
         #self.switch.set_inconsistent(state)
         self.switch.set_sensitive(state)
 
-class MyToggleButton(OffButton):
+class TitleBar(gtk.VBox):
+    def __init__(self, 
+                 pixbuf, 
+                 title,
+                 text_size=TITLE_FONT_SIZE,
+                 text_color=app_theme.get_color("globalTitleForeground"), 
+                 width=222,
+                 spacing=10):
+        gtk.VBox.__init__(self)
+        self.set_size_request(width, -1)
+        
+        hbox = gtk.HBox(spacing=spacing)
+        image_box = ImageBox(pixbuf)
+        label = Label(title, text_color, text_size)
 
+        self.__box_pack_start(hbox, [image_box, label])
+
+        align = style.wrap_with_align(hbox, align="left")
+
+        separator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        separator.set_size_request(100, 10)
+        self.__box_pack_start(self, [align, separator])
+
+    def __box_pack_start(self, container, items, expand=False, fill=False):
+        for item in items:
+            container.pack_start(item, expand, fill)
+        
+
+class MyToggleButton(OffButton):
     def __init__(self):
         OffButton.__init__(self)
 

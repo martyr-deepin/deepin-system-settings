@@ -29,6 +29,8 @@ import gobject
 import gtk
 import pango
 
+from constants import FRAME_LEFT_PADDING
+
 class EntryTreeView(TreeView):
     __gsignals__ = {
         "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int)),
@@ -208,7 +210,7 @@ def render_background( cr, rect):
     draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
 
 class ShowOthers(TreeItem):
-    CHECK_LEFT_PADDING = 10
+    CHECK_LEFT_PADDING = FRAME_LEFT_PADDING
     CHECK_RIGHT_PADIING = 10
 
     def __init__(self, child_list, resize_tree_cb):
@@ -277,7 +279,7 @@ class ShowOthers(TreeItem):
         self.delete_items_callback(self.child_items)
 
 class AddSettingItem(TreeItem):
-    CHECK_LEFT_PADDING = 10
+    CHECK_LEFT_PADDING = FRAME_LEFT_PADDING
     CHECK_RIGHT_PADIING = 10
 
     def __init__(self, name, add_setting_callback):
@@ -287,7 +289,7 @@ class AddSettingItem(TreeItem):
 
 
     def get_height(self):
-        return 30
+        return 30 
     
     def get_column_widths(self):
         return [37, -1, 37]
@@ -301,23 +303,23 @@ class AddSettingItem(TreeItem):
         check_icon = app_theme.get_pixbuf("network/add.png").get_pixbuf()
         draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
         #draw outline
-        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            cr.rectangle(rect.x , rect.y , rect.width + 1, rect.height)
-            cr.stroke()
+        #BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*BORDER_COLOR)
+            #cr.set_line_width(1)
+            #cr.rectangle(rect.x , rect.y , rect.width + 1, rect.height)
+            #cr.stroke()
 
     def render_content(self, cr, rect):
         self.render_background(cr, rect)
-        draw_text(cr, self.name, rect.x, rect.y, rect.width, rect.height,
+        draw_text(cr, self.name, rect.x + self.CHECK_RIGHT_PADIING, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
-        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y )
-            draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
+        #BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*BORDER_COLOR)
+            #cr.set_line_width(1)
+            #draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y )
+            #draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
 
 
     def render_delete(self, cr, rect):
@@ -328,18 +330,35 @@ class AddSettingItem(TreeItem):
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
-            cr.rectangle(rect.x , rect.y , rect.width , rect.height)
-            cr.stroke()
+            draw_line(cr, rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height)
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*BORDER_COLOR)
+            #cr.set_line_width(1)
+            #cr.rectangle(rect.x , rect.y , rect.width , rect.height)
+            #cr.stroke()
 
     def render_background(self,  cr, rect):
-        if self.is_hover:
-            background_color = [(0,["#cce3ef", 1.0]),
-                            (1,["#cce3ef", 1.0])]
+        if self.is_select:
+            background_color = app_theme.get_color("globalItemSelect")
+            cr.set_source_rgb(*color_hex_to_cairo(background_color.get_color()))
         else:
-            background_color = [(0,["#f6f6f6", 1.0]),
-                                (1,["#f6f6f6", 1.0])]
+            if  self.is_hover:
+                background_color = app_theme.get_color("globalItemHover")
+                cr.set_source_rgb(*color_hex_to_cairo(background_color.get_color()))
+            else:
+                background_color = "#ffffff"
+                cr.set_source_rgb(*color_hex_to_cairo(background_color))
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
+    #def render_background(self,  cr, rect):
+        #if self.is_hover:
+            #background_color = [(0,["#cce3ef", 1.0]),
+                            #(1,["#cce3ef", 1.0])]
+        #else:
+            #background_color = [(0,["#f6f6f6", 1.0]),
+                                #(1,["#f6f6f6", 1.0])]
 
-        draw_hlinear(cr, rect.x  , rect.y, rect.width , rect.height, background_color)
+        #draw_hlinear(cr, rect.x  , rect.y, rect.width , rect.height, background_color)
 
 
     def hover(self, column, offset_x, offset_y):
@@ -365,6 +384,8 @@ class AddSettingItem(TreeItem):
 
     def single_click(self, column, offset_x, offset_y):
         self.add_setting()
+        self.unhover(0,0,0)
+        self.unselect()
 
         
         
@@ -372,7 +393,7 @@ class AddSettingItem(TreeItem):
 
 
 class SettingItem(TreeItem):
-    CHECK_LEFT_PADDING = 10
+    CHECK_LEFT_PADDING = FRAME_LEFT_PADDING
     CHECK_RIGHT_PADIING = 10
     def __init__(self, connection, setting, click_cb, delete_cb, set_button_cb=None):
         TreeItem.__init__(self)
@@ -406,7 +427,7 @@ class SettingItem(TreeItem):
         return self.height
     
     def get_column_widths(self):
-        return [37, -1, 37]
+        return [47, -1, 37]
     
     def get_column_renders(self):
         return [self.render_check, self.render_content, self.render_delete]
@@ -421,26 +442,12 @@ class SettingItem(TreeItem):
 
         if check_icon:
             draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
-        #draw outline
-        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            cr.rectangle(rect.x , rect.y , rect.width + 1, rect.height)
-            cr.stroke()
 
     def render_content(self, cr, rect):
         self.render_background(cr,rect)
-        BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            draw_line(cr, rect.x, rect.y, rect.x + rect.width, rect.y )
-            draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
-            #cr.stroke()
         if self.is_select:
             bg_color = "#3399FF"
-            text_color = "#3399FF"
+            text_color = "#ffffff"
 
             if not self.is_double_click:
                 pass
@@ -472,18 +479,23 @@ class SettingItem(TreeItem):
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
-            cr.rectangle(rect.x , rect.y , rect.width , rect.height)
-            cr.stroke()
+            draw_line(cr, rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height)
 
     def render_background(self,  cr, rect):
-        if self.connection_active:
-            background_color = [(0,["#cce3ef", 1.0]),
-                            (1,["#cce3ef", 1.0])]
+        if self.is_select:
+            background_color = app_theme.get_color("globalItemSelect")
+            cr.set_source_rgb(*color_hex_to_cairo(background_color.get_color()))
         else:
-            background_color = [(0,["#f6f6f6", 1.0]),
-                                (1,["#f6f6f6", 1.0])]
+            if  self.is_hover:
+                background_color = app_theme.get_color("globalItemHover")
+                cr.set_source_rgb(*color_hex_to_cairo(background_color.get_color()))
+            else:
+                background_color = "#ffffff"
+                cr.set_source_rgb(*color_hex_to_cairo(background_color))
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
 
-        draw_hlinear(cr, rect.x  , rect.y, rect.width , rect.height, background_color)
+        #draw_hlinear(cr, rect.x - 20, rect.y, rect.width +20, rect.height, background_color)
 
     def set_active(self, active):
         self.connection_active = active

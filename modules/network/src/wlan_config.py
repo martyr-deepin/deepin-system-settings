@@ -58,7 +58,7 @@ class WirelessSetting(gtk.Alignment):
 
         # Add UI Align
         style.set_main_window(self)
-        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        hbox = gtk.HBox()
         self.add(hbox)
 
         self.wireless = None
@@ -69,10 +69,10 @@ class WirelessSetting(gtk.Alignment):
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
-        self.items = [("Wireless", NoSetting()),
-                      ("Security", NoSetting()),
-                      ("IPV4", NoSetting()),
-                      ("IPv6", NoSetting())]
+        self.items = [(_("Wireless"), NoSetting()),
+                      (_("Security"), NoSetting()),
+                      (_("IPV4"), NoSetting()),
+                      (_("IPv6"), NoSetting())]
         self.tab_window.add_items(self.items)
 
         self.sidebar = SideBar( None,self.init, self.check_click, self.set_button)
@@ -84,15 +84,12 @@ class WirelessSetting(gtk.Alignment):
         hbox.pack_start(vbox, True, True)
         self.save_button = Button("Apply")
         self.save_button.connect("clicked", self.save_changes)
-        #hbox.pack_start(apply_button, False, False, 0)
         buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
         buttons_aligns.add(self.save_button)
         vbox.pack_start(buttons_aligns, False , False)
-        #hbox.connect("expose-event", self.hbox_expose_event)
 
         self.connect("expose-event", self.expose_event)
-        vbox.connect("expose-event", self.expose_outline, ["top"])
-        self.sidebar.connect("expose-event", self.expose_outline, [])
+        style.draw_separator(self.sidebar, 3)
 
     def expose_outline(self, widget, event, exclude):
         cr = widget.window.cairo_create()
@@ -156,10 +153,10 @@ class WirelessSetting(gtk.Alignment):
         self.init_tab_box()
 
     def init_tab_box(self):
-        self.tab_window.tab_items[0] = ("Wireless", self.wireless)
-        self.tab_window.tab_items[2] = ("IPV4",self.ipv4)
-        self.tab_window.tab_items[3] = ("IPV6",self.ipv6)
-        self.tab_window.tab_items[1] = ("Security", self.security)
+        self.tab_window.tab_items[0] = (_("Wireless"), self.wireless)
+        self.tab_window.tab_items[2] = (_("IPV4"),self.ipv4)
+        self.tab_window.tab_items[3] = (_("IPV6"),self.ipv6)
+        self.tab_window.tab_items[1] = (_("Security"), self.security)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -234,8 +231,9 @@ class SideBar(gtk.VBox):
         # Build ui
         self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
+        style.add_separator(self)
         
-        add_button = AddSettingItem(_("New Setting"),self.add_new_connection)
+        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
         self.pack_start(TreeView([add_button]), False, False)
         self.set_size_request(160, -1)
         self.new_connection_list = []
@@ -274,7 +272,7 @@ class SideBar(gtk.VBox):
                 self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
                 
-            cons.append(ShowOthers(other_connections, resize_tree_cb))
+            #cons.append(ShowOthers(other_connections, resize_tree_cb))
 
         self.connection_tree.add_items(cons)
 
@@ -342,6 +340,7 @@ class NoSetting(gtk.VBox):
         self.add(label_align)
 
 class Security(gtk.VBox):
+    ENTRY_WIDTH = 222
 
     def __init__(self, connection, set_button_cb):
         gtk.VBox.__init__(self)
@@ -349,36 +348,38 @@ class Security(gtk.VBox):
         self.set_button = set_button_cb
 
         self.setting = self.connection.get_setting("802-11-wireless-security")
-        self.security_label = Label("Security:")
-        self.key_label = Label("Key:")
-        self.wep_index_label = Label("Wep index:")
-        self.auth_label = Label("Authentication:")
-        self.password_label = Label("Password:")
+        self.security_label = Label(_("Security:"))
+        self.key_label = Label(_("Key:"))
+        self.wep_index_label = Label(_("Wep index:"))
+        self.auth_label = Label(_("Authentication:"))
+        self.password_label = Label(_("Password:"))
 
-        self.encry_list = [("None", None),
-                      ("WEP (Hex or ASCII)", "none"),
-                      ("WEP 104/128-bit Passphrase", "none"),
-                      ("WPA WPA2 Personal", "wpa-psk")]
+        self.encry_list = [(_("None"), None),
+                      (_("WEP (Hex or ASCII)"), "none"),
+                      (_("WEP 104/128-bit Passphrase"), "none"),
+                      (_("WPA WPA2 Personal"), "wpa-psk")]
         #entry_item = map(lambda l: (l[1],l[0]), enumerate(self.encry_list))
-        self.security_combo = ComboBox(self.encry_list, max_width=222)
-        self.security_combo.set_size_request(222, 22)
+        self.security_combo = ComboBox(self.encry_list, max_width=self.ENTRY_WIDTH)
+        self.security_combo.set_size_request(self.ENTRY_WIDTH, 22)
 
         self.key_entry = PasswordEntry()
         self.password_entry = PasswordEntry()
-        self.show_key_check = CheckButton("Show key")
+        self.show_key_check = CheckButton(_("Show key"), padding_x=0)
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
-        self.wep_index_spin = SpinBox(0, 0, 3, 1, 55)
-        self.auth_combo = ComboBox([("Open System", "open"),
-                                    ("Shared Key", "shared")], max_width=222)
+        self.wep_index_spin = SpinBox(0, 0, 3, 1, self.ENTRY_WIDTH)
+        self.auth_combo = ComboBox([(_("Open System"), "open"),
+                                    (_("Shared Key"), "shared")], max_width=self.ENTRY_WIDTH)
 
         ## Create table
         self.table = gtk.Table(5, 4, True)
         #TODO UI change
-        label_list = ["security_label", "key_label", "wep_index_label", "auth_label", "password_label", "password_entry", "show_key_check", "key_entry", "wep_index_spin", "auth_combo", "security_combo"]
+        label_list = ["security_label", "key_label", "wep_index_label", "auth_label", "password_label", "password_entry", "key_entry", "wep_index_spin", "auth_combo", "security_combo"]
         for label in label_list:
             l = getattr(self, label)
             align = style.wrap_with_align(l)
             setattr(self, label+"_align", align)
+
+        self.show_key_check_align = style.wrap_with_align(self.show_key_check, align="left")
 
         self.reset()
         self.security_combo.connect("item-selected", self.change_encry_type)
@@ -386,15 +387,11 @@ class Security(gtk.VBox):
         self.password_entry.entry.connect("changed", self.save_wpa_pwd)
         self.wep_index_spin.connect("value-changed", self.wep_index_spin_cb)
         self.auth_combo.connect("item-selected", self.save_auth_cb)
-
-            #print getattr(self, label+"_align")
-
-        #align = gtk.Alignment(0, 0, 0, 0)
-        #align.set_padding(35, 0, 120, 0)
-        #align.add(self.table)
-        #self.table.set_size_request(340, -1)
+        
+        style.set_table(self.table)
+        style.draw_background_color(self)
         align = style.set_box_with_align(self.table, "text")
-        width, height = 222, 22
+        width, height = self.ENTRY_WIDTH, 22
         self.key_entry.set_size(width, height)
         self.password_entry.set_size(width, height)
         self.wep_index_spin.set_size_request(width, height)
@@ -406,15 +403,16 @@ class Security(gtk.VBox):
     def reset(self):
         ## Add security
         container_remove_all(self.table)
+
         self.table.attach(self.security_label_align, 0, 1, 0, 1)
         self.table.attach(self.security_combo_align, 1, 4, 0, 1)
         
         keys = [None, "none", "none","wpa-psk"]
         
         if self.connection.get_setting("802-11-wireless").mode == "adhoc":
-            self.security_combo.set_items([("None", None),
-                      ("WEP (Hex or ASCII)", "none"),
-                      ("WEP 104/128-bit Passphrase", "none")])
+            self.security_combo.set_items([(_("None"), None),
+                      (_("WEP (Hex or ASCII)"), "none"),
+                      (_("WEP 104/128-bit Passphrase"), "none")])
         
         self.key_mgmt = self.setting.key_mgmt
         if self.key_mgmt == "none":
@@ -468,8 +466,8 @@ class Security(gtk.VBox):
             self.setting.set_wep_key(index, secret)
             self.wep_index_spin.set_value(index)
             self.auth_combo.set_select_index(["open", "shared"].index(auth))
-
         self.table.show_all()
+
     def change_encry_type(self, widget, content, value, index):
         self.setting.key_mgmt = value
         # FIXME Maybe needed
@@ -563,6 +561,7 @@ class Security(gtk.VBox):
                                    ap.object_path)
 
 class Wireless(gtk.VBox):
+    ENTRY_WIDTH = 222
 
     def __init__(self, connection, set_button_cb):
         gtk.VBox.__init__(self)
@@ -570,28 +569,29 @@ class Wireless(gtk.VBox):
         self.set_button = set_button_cb
         self.wireless = self.connection.get_setting("802-11-wireless")
         ### UI
-        self.ssid_label = Label("SSID:")
+        self.ssid_label = Label(_("SSID:"))
         self.ssid_entry = InputEntry()
 
-        self.mode_label = Label("Mode:")
-        self.mode_combo = ComboBox([("Infrastructure","infrastructure"),( "Ad-hoc", "adhoc")], max_width=170)
+        self.mode_label = Label(_("Mode:"))
+        self.mode_combo = ComboBox([(_("Infrastructure"),"infrastructure"),(_("Ad-hoc"), "adhoc")], max_width=self.ENTRY_WIDTH)
         
         # TODO need to put this section to personal wifi
-        self.band_label = Label("Band:")
-        self.band_combo = ComboBox([("Automatic", None),
+        self.band_label = Label(_("Band:"))
+        self.band_combo = ComboBox([(_("Automatic"), None),
                                     ("a (5 GHZ)", "a"),
-                                    ("b/g (2.4)", "bg")])
-        self.channel_label = Label("Channel:")
-        self.channel_spin = SpinBox(0, 0, 1500, 1, 55)
+                                    ("b/g (2.4)", "bg")],
+                                    max_width=self.ENTRY_WIDTH)
+        self.channel_label = Label(_("Channel:"))
+        self.channel_spin = SpinBox(0, 0, 1500, 1, self.ENTRY_WIDTH)
         # BSSID
-        self.bssid_label = Label("BSSID:")
+        self.bssid_label = Label(_("BSSID:"))
         self.bssid_entry = InputEntry()
-        self.mac_address = Label("Device Mac address:")
+        self.mac_address = Label(_("Device Mac Address:"))
         self.mac_entry = InputEntry()
-        self.clone_addr = Label("Cloned Mac Adrress:")
+        self.clone_addr = Label(_("Cloned Mac Address:"))
         self.clone_entry = InputEntry()
-        self.mtu = Label("MTU:")
-        self.mtu_spin = SpinBox(0, 0, 1500, 1, 55)
+        self.mtu = Label(_("MTU:"))
+        self.mtu_spin = SpinBox(0, 0, 1500, 1, self.ENTRY_WIDTH)
 
         self.table = gtk.Table(8, 2, False)
 
@@ -609,15 +609,16 @@ class Wireless(gtk.VBox):
             setattr(self, widget + "_align", align)
 
         #TODO UI change
+        style.draw_background_color(self)
         align = style.set_box_with_align(self.table, 'text')
         style.set_table(self.table)
         self.add(align)
         #self.table.set_size_request(340, 227)
 
-        self.ssid_entry.set_size(222, 22)
-        self.bssid_entry.set_size(222, 22)
-        self.mac_entry.set_size(222, 22)
-        self.clone_entry.set_size(222, 22)
+        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.bssid_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.mac_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.clone_entry.set_size(self.ENTRY_WIDTH, 22)
 
         self.reset()
         self.mode_combo.connect("item-selected", self.mode_combo_selected)
