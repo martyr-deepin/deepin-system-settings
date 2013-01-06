@@ -29,7 +29,6 @@ from dtk.ui.thread_pool import MissionThreadPool
 
 import common
 from xdg_support import get_specify_cache_dir, get_image_path
-from mycurl import public_curl
 
 
 SMALL_SIZE = {"x" : 140, "y" : 90 }
@@ -82,7 +81,7 @@ class CacheManager(object):
         if try_web and is_network_connected():
             small_image_url = image_object.small_url
             if small_image_url:
-                ret = public_curl.download(small_image_url, temp_path)
+                ret = common.download(small_image_url, temp_path)
                 if ret and self.cleanup_small(temp_path, image_path):
                     return image_path
                 

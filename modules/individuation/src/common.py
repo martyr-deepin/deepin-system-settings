@@ -20,11 +20,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
 import glib
 import locale
 import threading
 import hashlib
+import urllib2
 
 
 try:
@@ -33,6 +35,31 @@ except ImportError:
     import json
 
 DEFAULT_TIMEOUT = 5    
+
+def download(remote_uri, local_uri, buffer_len=4096, timeout=DEFAULT_TIMEOUT):
+    try:
+        handle_read = urllib2.urlopen(remote_uri, timeout=timeout)
+        handle_write = file(local_uri, "w")
+        
+        data = handle_read.read(buffer_len)
+        handle_write.write(data)
+        
+        while data:
+            data = handle_read.read(buffer_len)
+            handle_write.write(data)
+            
+        handle_read.close()    
+        handle_write.close()
+    except Exception:
+        try:
+            os.unlink(local_uri)
+        except:    
+            pass
+        return False
+    
+    if not os.path.exists(local_uri):
+        return False
+    return True
 
 def _glib_wait_inner(timeout, glib_timeout_func):
     id = [None] # Have to hold the value in a mutable structure because
