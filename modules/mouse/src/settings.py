@@ -104,10 +104,14 @@ def mouse_get_double_click():
 
 def mouse_set_to_default():
     '''set all value to default'''
-    mouse_set_left_handed(MOUSE_DEFAULT_SETTINGS["left_handed"])
-    mouse_set_motion_acceleration(MOUSE_DEFAULT_SETTINGS["motion_acceleration"])
-    mouse_set_motion_threshold(MOUSE_DEFAULT_SETTINGS["motion_threshold"])
-    mouse_set_double_click(MOUSE_DEFAULT_SETTINGS["double_click"])
+    #mouse_set_left_handed(MOUSE_DEFAULT_SETTINGS["left_handed"])
+    #mouse_set_motion_acceleration(MOUSE_DEFAULT_SETTINGS["motion_acceleration"])
+    #mouse_set_motion_threshold(MOUSE_DEFAULT_SETTINGS["motion_threshold"])
+    #mouse_set_double_click(MOUSE_DEFAULT_SETTINGS["double_click"])
+    MOUSE_SETTINGS.reset("left-handed")
+    MOUSE_SETTINGS.reset("motion-acceleration")
+    MOUSE_SETTINGS.reset("motion-threshold")
+    MOUSE_SETTINGS.reset("double-click")
 
 
 def mouse_get_default_settings():

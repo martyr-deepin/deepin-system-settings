@@ -75,8 +75,8 @@ class MouseSetting(object):
         self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("%s/mouse_l.png" % MODULE_NAME))
         self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("%s/pointer.png" % MODULE_NAME))
         self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("%s/double-click.png" % MODULE_NAME))
-        self.image_widgets["double_test_1"] = app_theme.get_pixbuf("%s/fold_close.png" % MODULE_NAME)
-        self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/fold_open.png" % MODULE_NAME)
+        self.image_widgets["double_test_1"] = app_theme.get_pixbuf("%s/smiley00.png" % MODULE_NAME)
+        self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/smiley01.png" % MODULE_NAME)
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
         self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)
@@ -465,6 +465,8 @@ if __name__ == '__main__':
         if message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
+        if message_type == "reset":
+            mouse_settings.set_to_default()
 
     module_frame.module_message_handler = message_handler        
     

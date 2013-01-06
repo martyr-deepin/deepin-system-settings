@@ -21,9 +21,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import urllib
+import os
 
 import common
 from mycurl import public_curl, CurlException
+from xdg_support import get_specify_cache_dir
 
 class ImageObject(object):
     
@@ -40,6 +42,9 @@ class ImageObject(object):
         
     def get_big_basename(self):    
         return common.get_md5(self.big_url)
+    
+    def get_save_path(self):
+        return os.path.join(get_specify_cache_dir("big"), self.get_big_basename())
         
     def __repr__(self):    
         return "<ImageObject %s>" % self.small_url

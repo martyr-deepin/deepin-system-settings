@@ -178,6 +178,10 @@ class DisplayView(gtk.VBox):
         self.sizes_items = []
         self.monitor_combo = None
         self.__setup_sizes_items()
+        self.multi_monitors_items = [(_("Copy Display"), 1), 
+                                     (_("Extend Display"), 2), 
+                                     (_("Only Monitor 1 shown"), 3), 
+                                     (_("Only Monitor 2 shown"), 4)]
         self.rotation_items = [(_("Normal"), 1), 
                                (_("Right"), 2), 
                                (_("Left"), 3), 
@@ -295,6 +299,21 @@ class DisplayView(gtk.VBox):
              self.rotation_combo])
         self.rotation_align.add(self.rotation_box)
         '''
+        multi-monitors
+        '''
+        self.multi_monitors_align = self.__setup_align()
+        self.multi_monitors_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.multi_monitors_label = self.__setup_label(_("Multi-Monitors"))
+        self.multi_monitors_combo = self.__setup_combo(self.multi_monitors_items)
+        self.multi_monitors_combo.set_select_index(self.display_manager.get_multi_monitor_index())
+        self.multi_monitors_combo.connect("item-selected", self.__combo_item_selected, "multi_monitors_combo")
+        self.__widget_pack_start(self.multi_monitors_box, 
+            [self.multi_monitors_label, self.multi_monitors_combo])
+        self.multi_monitors_align.add(self.multi_monitors_box)
+        if self.display_manager.get_output_count() < 2:
+            self.multi_monitors_align.set_size_request(-1, 0)
+            self.multi_monitors_align.set_child_visible(False)
+        '''
         monitor brightness
         '''
         self.monitor_bright_align = self.__setup_title_align(
@@ -389,6 +408,7 @@ class DisplayView(gtk.VBox):
              self.monitor_align, 
              self.sizes_align, 
              self.rotation_align, 
+             self.multi_monitors_align, 
              self.monitor_bright_align, 
              self.brightness_align, 
              self.auto_adjust_align, 
@@ -453,7 +473,7 @@ class DisplayView(gtk.VBox):
 
         self.__setup_sizes_items()
         if len(self.sizes_items):
-            self.sizes_combo.set_items(items = self.sizes_items, max_width = 150)
+            self.sizes_combo.set_items(items = self.sizes_items, fixed_width = HSCALEBAR_WIDTH)
         self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(
             self.__current_output_name, self.sizes_items))
     
@@ -466,7 +486,9 @@ class DisplayView(gtk.VBox):
 
         self.display_manager.init_xml()
         self.__setup_monitor_items()
-        self.monitor_combo.set_items(items = self.monitor_items, max_width = 370)
+        self.monitor_combo.set_items(items = self.monitor_items, fixed_width = HSCALEBAR_WIDTH)
+        self.multi_monitors_align.set_size_request(-1, 30)
+        self.multi_monitors_align.set_child_visible(True)
 
     def __set_brightness(self, widget, event):
         self.display_manager.set_screen_brightness(self.__current_output_name, 
@@ -515,6 +537,10 @@ class DisplayView(gtk.VBox):
             self.display_manager.set_screen_rotation(self.__current_output_name, item_value)
             return
 
+        if object == "multi_monitors_combo":
+            self.display_manager.set_multi_monitor(item_value)
+            return
+        
         if object == "close_monitor_combo":
             self.display_manager.set_close_monitor(item_value)
             return
@@ -553,7 +579,7 @@ class DisplayView(gtk.VBox):
         return label
 
     def __setup_combo(self, items=[], width=HSCALEBAR_WIDTH):
-        combo = ComboBox(items, None, 0, width)
+        combo = ComboBox(items, None, 0, width, width)
         combo.set_size_request(width, WIDGET_HEIGHT)
         return combo
 

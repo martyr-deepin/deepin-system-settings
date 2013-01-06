@@ -39,7 +39,9 @@ class DownloadPage(gtk.VBox):
         event_manager.add_callback("download-image", self.on_download_iamge)
         
     def on_download_iamge(self, name, obj, data):    
-        self.download_view.add_items([DownloadItem(data)])
+        download_item = DownloadItem(data)
+        self.download_view.add_items([download_item])
+        download_item.start_download()
         
     def draw_mask(self, cr, x, y, w, h):
         '''

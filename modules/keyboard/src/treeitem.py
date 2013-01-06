@@ -20,14 +20,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#from theme import app_theme
+from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_line
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
-from gtk import gdk
-from gtk import accelerator_name, accelerator_parse, accelerator_get_label
+from accel_entry import AccelBuffer
 from nls import _
 from glib import markup_escape_text
+from gtk import gdk
 import gobject
 from constant import *
 
@@ -81,7 +81,7 @@ class MyTreeView(TreeView):
                 self.emit("select", self.visible_items[select_row], select_row)
     
     def draw_mask(self, cr, x, y, w, h):
-        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BG_COLOR))
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
         cr.rectangle(x, y, w, h)
         cr.fill()
     
@@ -120,6 +120,18 @@ class BaseItem(TreeItem):
         self.is_select = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+        
+    def unhover(self, column, offset_x, offset_y):
+        if not self.is_hover:
+            return
+        self.is_hover = False
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+        
+    def hover(self, column, offset_x, offset_y):
+        self.is_hover = True
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
 
 gobject.type_register(BaseItem)
 
@@ -137,23 +149,26 @@ class SelectItem(BaseItem):
         return [self.render_text]
         
     def render_text(self, cr, rect):
-        if self.is_select:
+        if self.is_hover and not self.is_select:
+            text_color = "#000000"
+            bg_color = app_theme.get_color("globalItemHover").get_color()
+        elif self.is_select:
             text_color = "#FFFFFF"
-            bg_color = "#3399FF"
+            bg_color = app_theme.get_color("globalItemSelect").get_color()
         else:
             text_color = "#000000"
             bg_color = MODULE_BG_COLOR
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.rectangle(rect.x+1, rect.y, rect.width-2, rect.height-1)
         cr.paint()
         draw_text(cr, self.text, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
-        # draw line
-        with cairo_disable_antialias(cr):    
-            cr.set_line_width(1)
-            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.move_to(rect.x, rect.y-1+rect.height)
-            cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
-            cr.stroke()
+        ## draw line
+        #with cairo_disable_antialias(cr):    
+            #cr.set_line_width(1)
+            #cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            #cr.move_to(rect.x, rect.y-1+rect.height)
+            #cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
+            #cr.stroke()
 
 gobject.type_register(SelectItem)
 
@@ -199,93 +214,19 @@ class LayoutItem(BaseItem):
             text_color = "#000000"
             bg_color = MODULE_BG_COLOR
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.rectangle(rect.x+1, rect.y, rect.width-2, rect.height-1)
         cr.paint()
         draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
-        # draw line
-        with cairo_disable_antialias(cr):    
-            cr.set_line_width(1)
-            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.move_to(rect.x, rect.y-1+rect.height)
-            cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
-            cr.stroke()
+        ## draw line
+        #with cairo_disable_antialias(cr):    
+            #cr.set_line_width(1)
+            #cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+            #cr.move_to(rect.x, rect.y-1+rect.height)
+            #cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
+            #cr.stroke()
 
 gobject.type_register(LayoutItem)
 
-class AccelBuffer(object):
-    '''a buffer which store accelerator'''
-    def __init__(self):
-        super(AccelBuffer, self).__init__()
-        self.state = None
-        self.keyval = None
-    
-    def set_state(self, state):
-        '''
-        set state
-        @param state: the state of the modifier keys, a GdkModifierType
-        '''
-        self.state = state & (~gdk.MOD2_MASK)
-    
-    def get_state(self):
-        '''
-        get state
-        @return: the state of the modifier keys, a GdkModifierType or None
-        '''
-        return self.state
-    
-    def set_keyval(self, keyval):
-        '''
-        set keyval
-        @param keyval: a keyval, an int type
-        '''
-        self.keyval = keyval
-    
-    def get_keyval(self):
-        '''
-        get keyval
-        @return: a keyval, an int type or None
-        '''
-        return self.keyval
-    
-    def get_accel_name(self):
-        '''
-        converts the accelerator keyval and modifier mask into a string
-        @return: a acceleratot string
-        '''
-        if self.state is None or self.keyval is None:
-            return ''
-        return accelerator_name(self.keyval, self.state)
-    
-    def get_accel_label(self):
-        '''
-        converts the accelerator keyval and modifier mask into a string
-        @return: a accelerator string
-        '''
-        if self.state is None or self.keyval is None:
-            return ''
-        return accelerator_get_label(self.keyval, self.state)
-    
-    def set_from_accel(self, accelerator):
-        '''
-        parses the accelerator string and update keyval and state
-        @parse accelerator: a accelerator string
-        '''
-        (self.keyval, self.state) = accelerator_parse(accelerator)
-    
-    def is_equal(self, accel_buffer):
-        '''
-        check an other AccelBuffer object is equal
-        @param accel_buffer: a AccelBuffer object
-        @return: True if their values are equal, otherwise False'''
-        if self.get_state() == accel_buffer.get_state()\
-                and self.get_keyval() == accel_buffer.get_keyval():
-                return True
-        else:
-            return False
-
-    def __eq__(self, accel_buffer):
-        ''' '''
-        return self.is_equal(accel_buffer)
 
 class ShortcutItem(BaseItem):
     '''a shortcut item in TreeView'''
@@ -318,8 +259,8 @@ class ShortcutItem(BaseItem):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
         cr.paint()
         draw_text(cr, self.description, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
-        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-        draw_line(cr, rect.x, rect.y-1+rect.height, rect.x+rect.width, rect.y-1+rect.height)
+        #cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+        #draw_line(cr, rect.x, rect.y-1+rect.height, rect.x+rect.width, rect.y-1+rect.height)
     
     def render_keyname(self, cr, rect):
         if self.is_select:
@@ -332,8 +273,8 @@ class ShortcutItem(BaseItem):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
         cr.paint()
         draw_text(cr, self.keyname, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
-        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-        draw_line(cr, rect.x, rect.y-1+rect.height, rect.x+rect.width, rect.y-1+rect.height)
+        #cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+        #draw_line(cr, rect.x, rect.y-1+rect.height, rect.x+rect.width, rect.y-1+rect.height)
     
     def set_accel_buffer_from_event(self, event):
         '''

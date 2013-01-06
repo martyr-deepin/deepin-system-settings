@@ -20,8 +20,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from deepin_storm import FetchServiceThread, FetchFiles, join_glib_loop
+from pyaxel.services import FetchService
+from pyaxel.tasks import TaskObject
 
-download_service_thread = FetchServiceThread(5)
-
+fetch_service = FetchService(5)
+fetch_service.start()
 

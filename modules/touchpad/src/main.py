@@ -83,8 +83,8 @@ class TouchpadSetting(object):
         self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("%s/pointer.png" % MODULE_NAME))
         self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("%s/double-click.png" % MODULE_NAME))
         self.image_widgets["drag"] = ImageBox(app_theme.get_pixbuf("%s/drag.png" % MODULE_NAME))
-        self.image_widgets["double_test_1"] = app_theme.get_pixbuf("%s/fold_close.png" % MODULE_NAME)
-        self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/fold_open.png" % MODULE_NAME)
+        self.image_widgets["double_test_1"] = app_theme.get_pixbuf("%s/smiley00.png" % MODULE_NAME)
+        self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/smiley01.png" % MODULE_NAME)
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
         self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)
