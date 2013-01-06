@@ -24,10 +24,10 @@ from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_line
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
-from gtk import gdk
-from gtk import accelerator_name, accelerator_parse, accelerator_get_label
+from accel import AccelBuffer
 from nls import _
 from glib import markup_escape_text
+from gtk import gdk
 import gobject
 from constant import *
 
@@ -227,80 +227,6 @@ class LayoutItem(BaseItem):
 
 gobject.type_register(LayoutItem)
 
-class AccelBuffer(object):
-    '''a buffer which store accelerator'''
-    def __init__(self):
-        super(AccelBuffer, self).__init__()
-        self.state = None
-        self.keyval = None
-    
-    def set_state(self, state):
-        '''
-        set state
-        @param state: the state of the modifier keys, a GdkModifierType
-        '''
-        self.state = state & (~gdk.MOD2_MASK)
-    
-    def get_state(self):
-        '''
-        get state
-        @return: the state of the modifier keys, a GdkModifierType or None
-        '''
-        return self.state
-    
-    def set_keyval(self, keyval):
-        '''
-        set keyval
-        @param keyval: a keyval, an int type
-        '''
-        self.keyval = keyval
-    
-    def get_keyval(self):
-        '''
-        get keyval
-        @return: a keyval, an int type or None
-        '''
-        return self.keyval
-    
-    def get_accel_name(self):
-        '''
-        converts the accelerator keyval and modifier mask into a string
-        @return: a acceleratot string
-        '''
-        if self.state is None or self.keyval is None:
-            return ''
-        return accelerator_name(self.keyval, self.state)
-    
-    def get_accel_label(self):
-        '''
-        converts the accelerator keyval and modifier mask into a string
-        @return: a accelerator string
-        '''
-        if self.state is None or self.keyval is None:
-            return ''
-        return accelerator_get_label(self.keyval, self.state)
-    
-    def set_from_accel(self, accelerator):
-        '''
-        parses the accelerator string and update keyval and state
-        @parse accelerator: a accelerator string
-        '''
-        (self.keyval, self.state) = accelerator_parse(accelerator)
-    
-    def is_equal(self, accel_buffer):
-        '''
-        check an other AccelBuffer object is equal
-        @param accel_buffer: a AccelBuffer object
-        @return: True if their values are equal, otherwise False'''
-        if self.get_state() == accel_buffer.get_state()\
-                and self.get_keyval() == accel_buffer.get_keyval():
-                return True
-        else:
-            return False
-
-    def __eq__(self, accel_buffer):
-        ''' '''
-        return self.is_equal(accel_buffer)
 
 class ShortcutItem(BaseItem):
     '''a shortcut item in TreeView'''

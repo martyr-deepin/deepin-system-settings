@@ -42,6 +42,7 @@ from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clicka
 from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
 from treeitem import MyTreeView as TreeView
+from accel_entry import AccelEntry
 from nls import _
 from glib import markup_escape_text
 import xkb
@@ -423,6 +424,9 @@ class KeySetting(object):
         self.alignment_widgets["layout_button_hbox"].add(self.container_widgets["layout_button_hbox"])
         self.container_widgets["layout_button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_add"])
+        accel_entry = AccelEntry("<Ctrl>a")
+        accel_entry.set_size(120, 22)
+        self.container_widgets["layout_button_hbox"].pack_start(accel_entry)
         #self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_remove"])
         ## table attach
         #self.container_widgets["layout_table"].attach(
