@@ -75,7 +75,7 @@ def resolve_accel_entry_conflict(origin_entry, conflict_entry, tmp_accel_buf):
     button_reassign = Button(_("Reassign"))
     button_cancel = Button(_("Cancel"))
     button_cancel.connect("clicked", lambda b: origin_entry.reassign_cancel(dialog))
-    button_reassign.connect("clicked", lambda b: origin_entryreassign_shortcuts(dialog, tmp_accel_buf, conflict_entry))
+    button_reassign.connect("clicked", lambda b: origin_entry.reassign(tmp_accel_buf, conflict_entry, dialog))
     dialog.right_button_box.set_buttons([button_cancel, button_reassign])
     dialog.show_all()
 
@@ -259,7 +259,7 @@ class AccelEntry(ShortcutKeyEntry):
             widget.destroy()
         self.accel_label.set_text(self.accel_str)
     
-    def reassign(self, widget=None, accel_buf, conflict_entry):
+    def reassign(self, accel_buf, conflict_entry, widget=None):
         if widget:
             widget.destroy()
         self.set_keyval_and_state(accel_buf.get_keyval(), accel_buf.get_state())
