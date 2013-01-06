@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 @ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -24,9 +24,10 @@ from theme import app_theme
 from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
+from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import ALIGN_START
+from dtk.ui.constant import ALIGN_START, ALIGN_END
 from constant import *
 from nls import _
 from power_manager import PowerManager
@@ -59,14 +60,11 @@ class PowerView(gtk.VBox):
         '''
         button power config
         '''
-        self.button_power_config_align = self.__setup_align(
-            padding_top = TEXT_WINDOW_TOP_PADDING, padding_left = TEXT_WINDOW_LEFT_PADDING)
-        self.button_power_config_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.button_power_config_image = ImageBox(app_theme.get_pixbuf("power/button_power.png"))
-        self.button_power_config_label = self.__setup_label(_("Power Button Configuration"), TITLE_FONT_SIZE)
-        self.__widget_pack_start(self.button_power_config_box, 
-                                 [self.button_power_config_image, self.button_power_config_label])
-        self.button_power_config_align.add(self.button_power_config_box)
+        self.button_power_config_align = self.__setup_title_align(
+            app_theme.get_pixbuf("power/button_power.png"), 
+            _("Power Button Configuration"), 
+            TEXT_WINDOW_TOP_PADDING, 
+            TEXT_WINDOW_LEFT_PADDING)
         '''
         press button power
         '''
@@ -106,13 +104,9 @@ class PowerView(gtk.VBox):
         '''
         power save config
         '''
-        self.power_save_config_align = self.__setup_align(padding_top = BETWEEN_SPACING, padding_left = TEXT_WINDOW_LEFT_PADDING)
-        self.power_save_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.power_save_image = ImageBox(app_theme.get_pixbuf("power/power_save.png"))
-        self.power_save_config_label = self.__setup_label(_("Saving Power Configuration"), TITLE_FONT_SIZE)
-        self.__widget_pack_start(self.power_save_box, 
-                                 [self.power_save_image, self.power_save_config_label])
-        self.power_save_config_align.add(self.power_save_box)
+        self.power_save_config_align = self.__setup_title_align(
+            app_theme.get_pixbuf("power/power_save.png"), 
+            _("Saving Power Configuration")) 
         '''
         hibernate status
         '''
@@ -156,12 +150,19 @@ class PowerView(gtk.VBox):
                                                         padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.wakeup_password_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.wakeup_password_image = ImageBox(app_theme.get_pixbuf("power/wakeup_password.png"))
-        self.wakeup_password_label = self.__setup_label(_("Password Protection Wakeup"), TITLE_FONT_SIZE)
+        self.wakeup_password_label = self.__setup_label(_("Password Protection Wakeup"), 
+                                                        TITLE_FONT_SIZE, 
+                                                        ALIGN_START)
+        self.wakeup_password_toggle_align = self.__setup_align(padding_top = 2,
+                                                               padding_left = 80)
         self.wakeup_password_toggle = self.__setup_toggle()
         self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle.connect("toggled", self.__toggled, "wakeup_password")
+        self.wakeup_password_toggle_align.add(self.wakeup_password_toggle)
         self.__widget_pack_start(self.wakeup_password_box, 
-            [self.wakeup_password_image, self.wakeup_password_label, self.wakeup_password_toggle])
+            [self.wakeup_password_image, 
+             self.wakeup_password_label, 
+             self.wakeup_password_toggle_align])
         self.wakeup_password_align.add(self.wakeup_password_box)
         '''
         tray battery status
@@ -170,12 +171,19 @@ class PowerView(gtk.VBox):
                                                             padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.tray_battery_status_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.tray_battery_image = ImageBox(app_theme.get_pixbuf("power/tray_battery.png"))
-        self.tray_battery_status_label = self.__setup_label(_("Show Battery Status In The Tray"), TITLE_FONT_SIZE)
+        self.tray_battery_status_label = self.__setup_label(_("Show Battery Status In The Tray"), 
+                                                            TITLE_FONT_SIZE, 
+                                                            ALIGN_START)
+        self.tray_battery_status_toggle_align = self.__setup_align(padding_top = 2, 
+                                                                   padding_left = 80)
         self.tray_battery_status_toggle = self.__setup_toggle()
         self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle.connect("toggled", self.__toggled, "tray_battery_status")
+        self.tray_battery_status_toggle_align.add(self.tray_battery_status_toggle)
         self.__widget_pack_start(self.tray_battery_status_box, 
-            [self.tray_battery_image, self.tray_battery_status_label, self.tray_battery_status_toggle])
+            [self.tray_battery_image, 
+             self.tray_battery_status_label, 
+             self.tray_battery_status_toggle_align])
         self.tray_battery_status_align.add(self.tray_battery_status_box)
         '''
         this->gtk.VBox pack_start
@@ -194,6 +202,39 @@ class PowerView(gtk.VBox):
 
         self.connect("expose-event", self.__expose)
 
+    def __setup_separator(self):                                                
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(500, 10)                                    
+        return hseparator                                                       
+                                                                                
+    def __setup_title_label(self,                                               
+                            text="",                                            
+                            text_color=app_theme.get_color("globalTitleForeground"),
+                            text_size=TITLE_FONT_SIZE,                          
+                            text_x_align=ALIGN_START,                           
+                            label_width=180):                                   
+        return Label(text = text,                                               
+                     text_color = text_color,                                   
+                     text_size = text_size,                                     
+                     text_x_align = text_x_align,                               
+                     label_width = label_width)     
+
+    def __setup_title_align(self, 
+                            pixbuf, 
+                            text, 
+                            padding_top=FRAME_TOP_PADDING, 
+                            padding_left=TEXT_WINDOW_LEFT_PADDING):
+        align = self.__setup_align(padding_top = padding_top, padding_left = padding_left)              
+        align_box = gtk.VBox(spacing = WIDGET_SPACING)                             
+        title_box = gtk.HBox(spacing = WIDGET_SPACING)                             
+        image = ImageBox(pixbuf)                                                   
+        label = self.__setup_title_label(text)                                     
+        separator = self.__setup_separator()                                       
+        self.__widget_pack_start(title_box, [image, label])                        
+        self.__widget_pack_start(align_box, [title_box, separator])                
+        align.add(align_box)                                                       
+        return align        
+
     def reset(self):
         print "DEBUG reset to default value"
     
@@ -205,7 +246,7 @@ class PowerView(gtk.VBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)                                                 
         cr.fill()
 
-    def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_START):
+    def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
         label = Label(text, None, text_size, align, 220)
         return label
 

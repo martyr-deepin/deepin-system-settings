@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-31 13:46+0800\n"
+"POT-Creation-Date: 2013-01-05 15:54+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,96 +17,116 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/display_view.py:228
+#: ../src/search_keyword.py:29 ../src/display_view.py:232
 msgid "Monitor Display"
 msgstr "屏幕显示"
 
-#: ../src/search_keyword.py:30 ../src/display_view.py:237
+#: ../src/search_keyword.py:30 ../src/display_view.py:239
 msgid "Monitor"
 msgstr "显示器"
 
-#: ../src/search_keyword.py:31 ../src/display_view.py:272
+#: ../src/search_keyword.py:31 ../src/display_view.py:280
 msgid "Resolution"
 msgstr "分辨率"
 
-#: ../src/search_keyword.py:32 ../src/display_view.py:277
+#: ../src/search_keyword.py:32 ../src/display_view.py:293
 msgid "Rotation"
 msgstr "方向"
 
-#: ../src/search_keyword.py:33 ../src/display_view.py:293
+#: ../src/search_keyword.py:33 ../src/display_view.py:317
 msgid "Monitor Brightness"
 msgstr "屏幕亮度"
 
-#: ../src/search_keyword.py:34 ../src/display_view.py:305
+#: ../src/search_keyword.py:34 ../src/display_view.py:326
 msgid "Brightness"
 msgstr "亮度"
 
-#: ../src/search_keyword.py:35 ../src/display_view.py:323
+#: ../src/search_keyword.py:35 ../src/display_view.py:344
 msgid "Auto Adjust Monitor Brightness"
 msgstr "自动调节屏幕亮度"
 
-#: ../src/search_keyword.py:36 ../src/display_view.py:329
+#: ../src/search_keyword.py:36 ../src/display_view.py:358
 msgid "Close Monitor"
 msgstr "关闭屏幕"
 
-#: ../src/search_keyword.py:37 ../src/display_view.py:354
+#: ../src/search_keyword.py:37 ../src/display_view.py:377
 msgid "Auto Lock User Monitor Screen"
 msgstr "自动锁定用户屏幕"
 
-#: ../src/search_keyword.py:38 ../src/display_view.py:360
+#: ../src/search_keyword.py:38 ../src/display_view.py:391
 msgid "Lock Screen"
 msgstr "锁定屏幕"
 
-#: ../src/display_view.py:180
+#: ../src/display_view.py:181
+msgid "Copy Display"
+msgstr "复制这些显示"
+
+#: ../src/display_view.py:182
+msgid "Extend Display"
+msgstr "扩展这些显示"
+
+#: ../src/display_view.py:183
+msgid "Only Monitor 1 shown"
+msgstr "只在1上显示"
+
+#: ../src/display_view.py:184
+msgid "Only Monitor 2 shown"
+msgstr "只在2上显示"
+
+#: ../src/display_view.py:185
 msgid "Normal"
 msgstr "正常"
 
-#: ../src/display_view.py:181
+#: ../src/display_view.py:186
 msgid "Right"
 msgstr "顺时针"
 
-#: ../src/display_view.py:182
+#: ../src/display_view.py:187
 msgid "Left"
 msgstr "逆时针"
 
-#: ../src/display_view.py:183
+#: ../src/display_view.py:188
 msgid "Inverted"
 msgstr "-180度"
 
-#: ../src/display_view.py:184
+#: ../src/display_view.py:189
 msgid "Minute"
 msgstr "分钟"
 
-#: ../src/display_view.py:185 ../src/display_view.py:186
-#: ../src/display_view.py:187 ../src/display_view.py:188
-#: ../src/display_view.py:189
+#: ../src/display_view.py:190 ../src/display_view.py:191
+#: ../src/display_view.py:192 ../src/display_view.py:193
+#: ../src/display_view.py:194
 msgid "Minutes"
 msgstr "分钟"
 
-#: ../src/display_view.py:190
+#: ../src/display_view.py:195
 msgid "Hour"
 msgstr "小时"
 
-#: ../src/display_view.py:191
+#: ../src/display_view.py:196
 msgid "Never"
 msgstr "从不"
 
-#: ../src/display_view.py:250
+#: ../src/display_view.py:252
 msgid "Relative Settings"
 msgstr "相关设置"
 
-#: ../src/display_view.py:251
+#: ../src/display_view.py:254
 msgid "<span foreground=\"blue\" underline=\"single\">Individuation</span>"
 msgstr "<span foreground=\"blue\" underline=\"single\">个性化</span>"
 
-#: ../src/display_view.py:256
+#: ../src/display_view.py:262
 msgid "<span foreground=\"blue\" underline=\"single\">Power</span>"
 msgstr "<span foreground=\"blue\" underline=\"single\">电源</span>"
 
-#: ../src/display_view.py:345
+#: ../src/display_view.py:306
+msgid "Multi-Monitors"
+msgstr "多显示器"
+
+#: ../src/display_view.py:371
 msgid "Monitor Screen Lock"
 msgstr "锁定屏幕"
 
-#: ../src/display_view.py:493
+#: ../src/display_view.py:526
 msgid "Changed Resolution"
 msgstr "修改了分辨率"

@@ -48,6 +48,8 @@ class DisplayManager:
         self.__power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.__session_settings = deepin_gsettings.new("org.gnome.desktop.session")
         
+        self.__output_count = 0
+
         self.__monitors_xml_filename = "%s/.config/monitors.xml" % os.path.expanduser('~')
         if not os.path.exists(self.__monitors_xml_filename):
             self.__create_monitors_xml()
@@ -127,6 +129,10 @@ class DisplayManager:
                     self.__output_info_by_xml.insert(0, output_item)
                 else:
                     self.__output_info_by_xml.append(output_item)
+                '''
+                TODO: outputs total count
+                '''
+                self.__output_count += 1
     
             '''
             TODO: gnome-settings-daemon generated monitors.xml
@@ -134,7 +140,10 @@ class DisplayManager:
             '''
             if self.__primary_output_name == None:
                 self.__primary_output_name = self.__output_info_by_xml[0][0]
-    
+   
+    def get_output_count(self):
+        return self.__output_count
+
     def get_output_info(self):
         return self.__output_info_by_xml
     
@@ -334,6 +343,23 @@ class DisplayManager:
         
         return 0
     
+    def get_multi_monitor_index(self):
+        only_monitor_shown = self.__xrandr_settings.get_int("only-monitor-shown")
+        
+        if self.__xrandr_settings.get_boolean("copy-multi-monitors"):
+            return 0
+
+        if self.__xrandr_settings.get_boolean("extend-multi-monitors"):
+            return 1
+
+        if only_monitor_shown:
+            return only_monitor_shown + 1
+        
+        return 0
+
+    def set_multi_monitor(self, value):
+        print "DEBUG", value
+
     def set_screen_rotation(self, output_name_value, rotation):
         rotation_str = "normal"
 
