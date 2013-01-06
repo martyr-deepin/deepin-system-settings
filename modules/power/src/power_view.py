@@ -149,7 +149,7 @@ class PowerView(gtk.VBox):
         self.wakeup_password_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
                                                         padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.wakeup_password_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.wakeup_password_image = ImageBox(app_theme.get_pixbuf("power/wakeup_password.png"))
+        self.wakeup_password_image = ImageBox(app_theme.get_pixbuf("lock/lock.png"))
         self.wakeup_password_label = self.__setup_label(_("Password Protection Wakeup"), 
                                                         TITLE_FONT_SIZE, 
                                                         ALIGN_START)
