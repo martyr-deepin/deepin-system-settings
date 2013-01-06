@@ -425,7 +425,6 @@ class KeySetting(object):
         self.container_widgets["layout_button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_add"])
         accel_entry = AccelEntry("<Ctrl>a")
-        accel_entry.set_size(120, 22)
         self.container_widgets["layout_button_hbox"].pack_start(accel_entry)
         #self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_remove"])
         ## table attach

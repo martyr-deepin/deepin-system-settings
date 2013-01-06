@@ -24,7 +24,7 @@ from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_line
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
-from accel import AccelBuffer
+from accel_entry import AccelBuffer
 from nls import _
 from glib import markup_escape_text
 from gtk import gdk
