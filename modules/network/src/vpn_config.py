@@ -39,7 +39,7 @@ class VPNSetting(gtk.Alignment):
         
         # Add UI Align
         style.set_main_window(self)
-        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        hbox = gtk.HBox()
         self.add(hbox)
         self.pptp = None
         self.ipv4 = None
@@ -67,9 +67,11 @@ class VPNSetting(gtk.Alignment):
         buttons_aligns.add(button_box)
         vbox.pack_start(buttons_aligns, False , False)
 
-        self.connect("expose-event", self.expose_event)
-        vbox.connect("expose-event", self.expose_outline, ["top"])
-        self.sidebar.connect("expose-event", self.expose_outline, [])
+        style.draw_background_color(hbox)
+        style.draw_separator(self.sidebar, 3)
+        #self.connect("expose-event", self.expose_event)
+        #vbox.connect("expose-event", self.expose_outline, ["top"])
+        #self.sidebar.connect("expose-event", self.expose_outline, [])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -121,8 +123,8 @@ class VPNSetting(gtk.Alignment):
         self.init_tab_box()
 
     def init_tab_box(self):
-        self.tab_window.tab_items[1] = ("IPV4 setting",self.ipv4)
-        self.tab_window.tab_items[0] = ("PPTP", self.pptp)
+        self.tab_window.tab_items[1] = (_("IPv4 Setting"),self.ipv4)
+        self.tab_window.tab_items[0] = (_("PPTP"), self.pptp)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -242,6 +244,7 @@ class SideBar(gtk.VBox):
         # Build ui
         self.buttonbox = gtk.VBox(False)
         self.pack_start(self.buttonbox, False, False)
+        style.add_separator(self)
         add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
         self.pack_start(TreeView([add_button]), False, False)
         self.set_size_request(180, -1)
@@ -324,7 +327,7 @@ class NoSetting(gtk.VBox):
         self.add(label_align)
 
 class PPTPConf(gtk.VBox):
-
+    ENTRY_WIDTH = 222
     def __init__(self, connection, module_frame, set_button_callback=None):
         gtk.VBox.__init__(self)
         self.connection = connection
@@ -338,44 +341,46 @@ class PPTPConf(gtk.VBox):
 
         # UI
         pptp_table = gtk.Table(7, 4, False)
-        gateway_label = Label("Gateway:")
-        user_label = Label("User:")
-        password_label = Label("Password:")
-        nt_domain_label = Label("NT Domain:")
+        gateway_label = Label(_("Gateway:"))
+        user_label = Label(_("Username:"))
+        password_label = Label(_("Password:"))
+        nt_domain_label = Label(_("NT Domain:"))
         # Radio Button
-        self.pptp_radio = RadioButton(None, "PPTP")
-        self.l2tp_radio = RadioButton(self.pptp_radio, "L2TP")
+        self.pptp_radio = RadioButton(None, _("PPTP"))
+        self.l2tp_radio = RadioButton(self.pptp_radio, _("L2TP"))
+        radio_box = gtk.HBox(spacing=30)
+        radio_box.pack_start(self.pptp_radio, False, False)
+        radio_box.pack_start(self.l2tp_radio, False, False)
         #pack labels
-        pptp_table.attach(style.wrap_with_align(self.pptp_radio), 0, 2, 0, 1)
-        pptp_table.attach(style.wrap_with_align(self.l2tp_radio), 2, 4, 0, 1)
+        pptp_table.attach(style.wrap_with_align(radio_box, align="left"), 2,4, 0, 1)
         pptp_table.attach(style.wrap_with_align(gateway_label), 0, 2 , 1, 2)
         pptp_table.attach(style.wrap_with_align(user_label), 0, 2, 2, 3)
         pptp_table.attach(style.wrap_with_align(password_label), 0, 2, 3, 4)
-        pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 1, 5, 6)
+        pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 2, 5, 6)
 
         # entries
         self.gateway_entry = InputEntry()
-        self.gateway_entry.set_size(200,25 )
+        self.gateway_entry.set_size(self.ENTRY_WIDTH,22)
         self.user_entry = InputEntry()
-        self.user_entry.set_size(200,25)
+        self.user_entry.set_size(self.ENTRY_WIDTH, 22)
         # FIXME should change to new_entry PasswordEntry
         self.password_entry = PasswordEntry()
         #self.password_entry.set_visibility(False)
-        self.password_entry.set_size(200, 25)
-        self.password_show = CheckButton("Show Password")
+        self.password_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.password_show = CheckButton(_("Show Password"), padding_x=0)
         self.password_show.set_active(False)
         self.password_show.connect("toggled", self.show_password)
         self.nt_domain_entry = InputEntry()
-        self.nt_domain_entry.set_size(200,25 )
+        self.nt_domain_entry.set_size(self.ENTRY_WIDTH, 22)
 
         #pack entries
         pptp_table.attach(style.wrap_with_align(self.gateway_entry), 2, 4, 1, 2)
         pptp_table.attach(style.wrap_with_align(self.user_entry), 2, 4, 2, 3)
         pptp_table.attach(style.wrap_with_align(self.password_entry), 2, 4, 3, 4)
-        pptp_table.attach(style.wrap_with_align(self.password_show), 2, 4, 4, 5)
+        pptp_table.attach(style.wrap_with_align(self.password_show, align="left"), 2, 4, 4, 5)
         pptp_table.attach(style.wrap_with_align(self.nt_domain_entry), 2, 4, 5, 6)
         # Advance setting button
-        advanced_button = Button("Advanced Setting")
+        advanced_button = Button(_("Advanced Setting"))
         advanced_button.connect("clicked", self.advanced_button_click)
 
         pptp_table.attach(style.wrap_with_align(advanced_button), 3, 4, 6, 7)
@@ -389,7 +394,9 @@ class PPTPConf(gtk.VBox):
         # set signals
 
         align = style.set_box_with_align(pptp_table, "text")
-        style.set_table_items(pptp_table, "entry")
+        #style.set_table_items(pptp_table, "entry")
+        style.draw_background_color(self)
+        style.set_table(pptp_table)
         self.add(align)
         self.show_all()
         self.refresh()

@@ -29,7 +29,7 @@ import gobject
 import gtk
 import pango
 
-from constants import FRAME_LEFT_PADDING
+from constants import FRAME_LEFT_PADDING, IMG_WIDTH
 
 class EntryTreeView(TreeView):
     __gsignals__ = {
@@ -286,6 +286,11 @@ class AddSettingItem(TreeItem):
         TreeItem.__init__(self)
         self.name = name
         self.add_setting = add_setting_callback
+        '''
+        Pixbuf
+        '''
+        self.add_pixbuf_out = app_theme.get_pixbuf("network/add-1.png")
+        self.add_pixbuf_active = app_theme.get_pixbuf("network/add.png")
 
 
     def get_height(self):
@@ -295,13 +300,15 @@ class AddSettingItem(TreeItem):
         return [37, -1, 37]
     
     def get_column_renders(self):
-        return [self.render_check, self.render_content, self.render_delete]
+        return [self.render_add, self.render_content, self.render_delete]
     
             
-    def render_check(self, cr, rect):
+    def render_add(self, cr, rect):
         self.render_background(cr,rect)
-        check_icon = app_theme.get_pixbuf("network/add.png").get_pixbuf()
-        draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+
+        add_icon = self.add_pixbuf_active
+
+        draw_pixbuf(cr, add_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
         #draw outline
         #BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
         #with cairo_disable_antialias(cr):
@@ -418,6 +425,19 @@ class SettingItem(TreeItem):
         self.is_hover = False
         self.delete_hover = False
         self.connection_active = False
+
+        '''
+        Pixbuf
+        '''
+        self.check_pixbuf_hover = app_theme.get_pixbuf("network/check_box-1.png")
+        self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box-2.png")
+        self.check_pixbuf_out = app_theme.get_pixbuf("network/check_box_out.png")
+        self.check_pixbuf_prelight = app_theme.get_pixbuf("network/check_box.png")
+        self.delete_pixbuf_out = app_theme.get_pixbuf("network/delete-3.png")
+        self.delete_pixbuf_prelight = app_theme.get_pixbuf("network/delete.png")
+        self.delete_pixbuf_active = app_theme.get_pixbuf("network/delete-1.png")
+        
+
     
     def entry_buffer_changed(self, bf):
         if self.redraw_request_callback:
@@ -436,12 +456,17 @@ class SettingItem(TreeItem):
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
         if self.is_select:
-            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
+            if self.is_hover:
+                check_icon = self.check_pixbuf_prelight
+            else:
+                check_icon = self.check_pixbuf_active
         else:
-            check_icon = None
+            if self.is_hover:
+                check_icon = self.check_pixbuf_hover
+            else:
+                check_icon = self.check_pixbuf_out
 
-        if check_icon:
-            draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+        draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
     def render_content(self, cr, rect):
         self.render_background(cr,rect)
@@ -473,8 +498,11 @@ class SettingItem(TreeItem):
          
         self.render_background(cr, rect)
         if self.delete_hover:
-            delete_icon = app_theme.get_pixbuf("network/delete.png").get_pixbuf()
-            draw_pixbuf(cr, delete_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - delete_icon.get_height())/2)
+            delete_icon = self.delete_pixbuf_prelight
+            draw_pixbuf(cr, delete_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING/2, rect.y + (rect.height - IMG_WIDTH)/2)
+        else:
+            delete_icon = self.delete_pixbuf_out
+
         BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)

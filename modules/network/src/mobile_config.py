@@ -15,6 +15,7 @@ from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 from nm_modules import nm_module
 #from container import ContainhButton
 from container import MyToggleButton as SwitchButton
+from container import TitleBar
 from shared_widget import IPV4Conf
 
 import gtk
@@ -43,7 +44,7 @@ class MobileSetting(gtk.Alignment):
         
         # Add UI Align
         style.set_main_window(self)
-        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        hbox = gtk.HBox()
         self.add(hbox)
 
         self.region = None
@@ -54,9 +55,9 @@ class MobileSetting(gtk.Alignment):
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
-        self.items = [("移动宽带", NoSetting()),
-                      ("PPP", NoSetting()),
-                      ("IPv4 设置", NoSetting())]
+        self.items = [(_("Broadband"), NoSetting()),
+                      (_("PPP"), NoSetting()),
+                      (_("IPv4 Setting"), NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
@@ -72,9 +73,11 @@ class MobileSetting(gtk.Alignment):
         vbox.pack_start(buttons_aligns, False , False)
         
         self.show_all()
-        self.connect("expose-event", self.expose_event)
-        vbox.connect("expose-event", self.expose_outline, ["top"])
-        self.sidebar.connect("expose-event", self.expose_outline, [])
+        style.draw_background_color(self)
+        style.draw_separator(self.sidebar, 3)
+        #self.connect("expose-event", self.expose_event)
+        #vbox.connect("expose-event", self.expose_outline, ["top"])
+        #self.sidebar.connect("expose-event", self.expose_outline, [])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -132,9 +135,9 @@ class MobileSetting(gtk.Alignment):
 
     def init_tab_box(self):
         #self.tab_window.tab_items[0] = ("Region", self.region)
-        self.tab_window.tab_items[0] = ("宽带",self.broadband)
-        self.tab_window.tab_items[1] = ("IPV4设置",self.ipv4)
-        self.tab_window.tab_items[2] = ("PPP", self.ppp)
+        self.tab_window.tab_items[0] = (_("Broadband"),self.broadband)
+        self.tab_window.tab_items[1] = (_("IPv4 Setting"),self.ipv4)
+        self.tab_window.tab_items[2] = (_("PPP"), self.ppp)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -210,7 +213,8 @@ class SideBar(gtk.VBox):
         # Build ui
         self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
-        add_button = AddSettingItem("创建新连接",self.add_new_connection)
+        style.add_separator(self)
+        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
         self.pack_start(TreeView([add_button]), False, False)
         self.set_size_request(160, -1)
         self.new_connection_list = {'cdma':[], "gsm":[]}
@@ -281,6 +285,7 @@ class NoSetting(gtk.VBox):
         self.add(label_align)
 
 class Broadband(gtk.VBox):
+    ENTRY_WIDTH = 222
     def __init__(self, connection, set_button_callback):
         gtk.VBox.__init__(self)
         self.connection = connection        
@@ -288,7 +293,8 @@ class Broadband(gtk.VBox):
         # Init widgets
         self.table = gtk.Table(12, 4, False)
         
-        self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE + 0.5 )
+        #self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE)
+        self.label_basic = TitleBar(None, _("Basic"))
         self.label_number = Label(_("Code:"), text_size=CONTENT_FONT_SIZE)
         self.label_username = Label(_("Username:"), text_size=CONTENT_FONT_SIZE)
         self.label_password = Label(_("password:"), text_size=CONTENT_FONT_SIZE)
@@ -301,7 +307,7 @@ class Broadband(gtk.VBox):
 
 
         #self.table = gtk.Table(6, 4, False)
-        self.label_advanced = Label(_("Advanced"), text_size=TITLE_FONT_SIZE + 0.5)
+        self.label_advanced = TitleBar(None,_("Advanced"))
         self.label_apn = Label(_("APN:"), text_size=CONTENT_FONT_SIZE)
         self.label_network = Label(_("Network ID:"), text_size=CONTENT_FONT_SIZE)
         self.label_type = Label(_("Type:"), text_size=CONTENT_FONT_SIZE)
@@ -314,8 +320,8 @@ class Broadband(gtk.VBox):
                                       ("2G", 1),
                                       ("Prefer 3G", 2),
                                       ("Prefer 2G", 3)],
-                                      max_width=300)
-        self.roam_check = CheckButton(_("Allow roaming if home network is not available"))
+                                      max_width=self.ENTRY_WIDTH)
+        self.roam_check = CheckButton(_("Allow roaming if home network is not available"), padding_x=0)
         self.pin = InputEntry()
         
         
@@ -353,7 +359,7 @@ class Broadband(gtk.VBox):
         if self.table.get_children() != []:
             pass
         else:
-            self.table.attach(style.wrap_with_align(self.label_basic), 0,1 ,0, 1)
+            self.table.attach(self.label_basic, 0,2 ,0, 1)
             self.table.attach(style.wrap_with_align(self.label_number), 0, 1, 1, 2)
             self.table.attach(style.wrap_with_align(self.label_username), 0, 1, 2, 3)
             self.table.attach(style.wrap_with_align(self.label_password), 0, 1, 3, 4)
@@ -361,7 +367,7 @@ class Broadband(gtk.VBox):
             self.table.attach(style.wrap_with_align(self.number), 1, 2, 1, 2)
             self.table.attach(style.wrap_with_align(self.username), 1, 2, 2, 3)
             self.table.attach(style.wrap_with_align(self.password), 1, 2, 3, 4)
-            self.table.attach(style.wrap_with_align(self.password_show), 1, 2, 4, 5)
+            self.table.attach(style.wrap_with_align(self.password_show, align="left"), 1, 2, 4, 5)
 
             def to_region(widget):
                 region = slider.get_page_by_name("region")
@@ -371,8 +377,8 @@ class Broadband(gtk.VBox):
 
             if network_type == "gsm":
                 self.button_to_region.connect("clicked", to_region)
-                self.table.attach(style.wrap_with_align(self.button_to_region), 1,2,5,6, 3)
-                self.table.attach(style.wrap_with_align(self.label_advanced), 0, 1, 6, 7)
+                self.table.attach(style.wrap_with_align(self.button_to_region), 1,2,5,6)
+                self.table.attach(self.label_advanced, 0, 2, 6, 7)
                 self.table.attach(style.wrap_with_align(self.label_apn), 0, 1 , 7, 8)
                 self.table.attach(style.wrap_with_align(self.label_network), 0, 1, 8, 9)
                 self.table.attach(style.wrap_with_align(self.label_type), 0, 1, 9, 10)
@@ -381,10 +387,16 @@ class Broadband(gtk.VBox):
                 self.table.attach(style.wrap_with_align(self.apn), 1, 2, 7, 8)
                 self.table.attach(style.wrap_with_align(self.network_id), 1, 2, 8, 9)
                 self.table.attach(style.wrap_with_align(self.network_type), 1, 2, 9, 10)
-                self.table.attach(style.wrap_with_align(self.roam_check), 1, 2, 10, 11)
+                self.table.attach(style.wrap_with_align(self.roam_check, align="left"), 1, 2, 10, 11)
                 self.table.attach(style.wrap_with_align(self.pin), 1, 2, 11, 12)
             #TODO ui change
-            style.set_table_items(self.table, 'entry')
+            #style.set_table_items(self.table, 'entry')
+            entry_list = ["number", "username", "password",
+                          "apn", "network_id", "pin"]
+            for entry in entry_list:
+                widget = getattr(self, entry)
+                widget.entry.set_size_request(self.ENTRY_WIDTH, 22)
+
             style.set_table(self.table)
         self.table.show_all()
 
@@ -466,6 +478,7 @@ class Broadband(gtk.VBox):
         cr.fill()
 
 class PPPConf(ScrolledWindow):
+    TABLE_WIDTH = 300
     def __init__(self, connection, set_button_callback):
         ScrolledWindow.__init__(self)
 
@@ -476,19 +489,26 @@ class PPPConf(ScrolledWindow):
         self.ppp_setting = self.connection.get_setting("ppp")
 
         # invisable settings
-        method_image = gtk.Image()
-        method_image.set_from_pixbuf(app_theme.get_pixbuf("network/validation.png").get_pixbuf())
-        compress_image = gtk.Image()
-        compress_image.set_from_pixbuf(app_theme.get_pixbuf("network/zip.png").get_pixbuf())
-        echo_image = gtk.Image()
-        echo_image.set_from_pixbuf(app_theme.get_pixbuf("network/echo.png").get_pixbuf())
+        #method_image = gtk.Image()
+        #method_image.set_from_pixbuf(app_theme.get_pixbuf("network/validation.png").get_pixbuf())
+        #compress_image = gtk.Image()
+        #compress_image.set_from_pixbuf(app_theme.get_pixbuf("network/zip.png").get_pixbuf())
+        #echo_image = gtk.Image()
+        #echo_image.set_from_pixbuf(app_theme.get_pixbuf("network/echo.png").get_pixbuf())
 
-        self.method_label = Label("Configure Method", text_size=TITLE_FONT_SIZE)
-        self.refuse_eap_label = Label("EAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_pap_label = Label("PAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_chap_label = Label("CHAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschap_label = Label("MSCHAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschapv2_label = Label("MSCHAP v2", text_size=CONTENT_FONT_SIZE)
+        #self.method_label = Label("Configure Method", text_size=TITLE_FONT_SIZE)
+        self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
+                                     _("Configure Method"), width=self.TABLE_WIDTH)
+        self.compression_title = TitleBar(app_theme.get_pixbuf("network/zip.png"),
+                                          _("Compression"), width=self.TABLE_WIDTH)
+        self.echo_title = TitleBar(app_theme.get_pixbuf("network/echo.png"),
+                                          _("Echo"), width=self.TABLE_WIDTH)
+
+        self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE)
         self.refuse_eap = SwitchButton()
         self.refuse_pap = SwitchButton()
         self.refuse_chap = SwitchButton()
@@ -498,33 +518,33 @@ class PPPConf(ScrolledWindow):
         self.method_table = gtk.Table(16, 3, False)
 
 
-        self.method_table.attach(style.wrap_with_align(method_image), 0, 1, 9, 10)
-        self.method_table.attach(style.wrap_with_align(self.method_label), 1, 2, 9, 10)
+        self.method_table.attach(self.method_title, 0, 3, 9, 10)
+        #self.method_table.attach(style.wrap_with_align(self.method_label), 1, 2, 9, 10)
         self.method_table.attach(style.wrap_with_align(self.refuse_eap_label), 1, 2, 10, 11, xpadding=10)
         self.method_table.attach(style.wrap_with_align(self.refuse_pap_label), 1, 2, 11, 12, xpadding=10)
         self.method_table.attach(style.wrap_with_align(self.refuse_chap_label), 1, 2, 12, 13, xpadding=10)
         self.method_table.attach(style.wrap_with_align(self.refuse_mschap_label), 1, 2, 13, 14, xpadding=10)
         self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2_label), 1, 2, 14, 15, xpadding=10)
 
-        self.method_table.attach(style.wrap_with_align(self.refuse_eap), 2, 3, 10, 11, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_pap), 2, 3, 11, 12, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_chap), 2, 3, 12, 13, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_mschap), 2, 3, 13, 14, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2), 2, 3, 14, 15, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.refuse_eap), 2, 3, 10, 11)
+        self.method_table.attach(style.wrap_with_align(self.refuse_pap), 2, 3, 11, 12)
+        self.method_table.attach(style.wrap_with_align(self.refuse_chap), 2, 3, 12, 13)
+        self.method_table.attach(style.wrap_with_align(self.refuse_mschap), 2, 3, 13, 14)
+        self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2), 2, 3, 14, 15)
 
         #style.set_table(self.method_table, row_spacing=)
 
 
         # visible settings
-        compression = Label("Compression", text_size=TITLE_FONT_SIZE)
-        self.require_mppe_label = Label("Use point-to-point encryption(mppe)", text_size=CONTENT_FONT_SIZE)
-        self.require_mppe_128_label = Label("Require 128-bit encryption", text_size=CONTENT_FONT_SIZE)
-        self.mppe_stateful_label = Label("Use stataful MPPE", text_size=CONTENT_FONT_SIZE)
-        self.nobsdcomp_label = Label("Allow BSD data Compression", text_size=CONTENT_FONT_SIZE)
-        self.nodeflate_label = Label("Allow Deflate date compression", text_size=CONTENT_FONT_SIZE)
-        self.no_vj_comp_label = Label("Use TCP header compression", text_size=CONTENT_FONT_SIZE)
-        echo = Label("Echo", text_size=TITLE_FONT_SIZE)
-        self.ppp_echo_label = Label("Send PPP echo packets", text_size=CONTENT_FONT_SIZE)
+        #compression = Label("Compression", text_size=TITLE_FONT_SIZE)
+        self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE)
+        self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE)
+        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE)
+        self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE)
+        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE)
+        self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE)
+        #echo = Label("Echo", text_size=TITLE_FONT_SIZE)
+        self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE)
 
         self.require_mppe = SwitchButton()
         self.require_mppe_128 = SwitchButton()
@@ -535,26 +555,26 @@ class PPPConf(ScrolledWindow):
         self.no_vj_comp = SwitchButton()
         self.ppp_echo = SwitchButton()
 
-        self.method_table.attach(style.wrap_with_align(compress_image), 0, 1, 0 ,1)
-        self.method_table.attach(style.wrap_with_align(compression), 1, 2, 0 ,1)
+        self.method_table.attach(self.compression_title, 0, 3, 0 ,1)
+        #self.method_table.attach(style.wrap_with_align(compression), 1, 2, 0 ,1)
         self.method_table.attach(style.wrap_with_align(self.require_mppe_label), 1, 2, 1, 2, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.require_mppe_128_label), 1, 2, 2, 3, xpadding=30)
-        self.method_table.attach(style.wrap_with_align(self.mppe_stateful_label), 1, 2, 3, 4, xpadding=30)
+        self.method_table.attach(style.wrap_with_align(self.require_mppe_128_label), 1, 2, 2, 3, xpadding=10)
+        self.method_table.attach(style.wrap_with_align(self.mppe_stateful_label), 1, 2, 3, 4, xpadding=10)
         self.method_table.attach(style.wrap_with_align(self.nobsdcomp_label), 1, 2, 4, 5, xpadding=10)
         self.method_table.attach(style.wrap_with_align(self.nodeflate_label), 1, 2, 5, 6, xpadding=10)
         self.method_table.attach(style.wrap_with_align(self.no_vj_comp_label), 1, 2, 6, 7, xpadding=10)
 
-        self.method_table.attach(style.wrap_with_align(echo_image), 0, 1, 7, 8)
-        self.method_table.attach(style.wrap_with_align(echo), 1, 2, 7, 8)
+        #self.method_table.attach(style.wrap_with_align(echo_image), 0, 1, 7, 8)
+        self.method_table.attach(self.echo_title, 0, 3, 7, 8)
         self.method_table.attach(style.wrap_with_align(self.ppp_echo_label), 1, 2, 8, 9, xpadding=10)
 
-        self.method_table.attach(style.wrap_with_align(self.require_mppe), 2, 3, 1, 2, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.require_mppe_128), 2, 3, 2, 3)
-        self.method_table.attach(style.wrap_with_align(self.mppe_stateful), 2, 3, 3, 4)
-        self.method_table.attach(style.wrap_with_align(self.nobsdcomp), 2, 3, 4, 5, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.nodeflate), 2, 3, 5, 6, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.no_vj_comp), 2, 3, 6, 7, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.ppp_echo), 2, 3, 8, 9, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.require_mppe), 2, 3, 1, 2)
+        self.method_table.attach(style.wrap_with_align(self.require_mppe_128), 2, 3, 2, 3, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.mppe_stateful), 2, 3, 3, 4, xpadding=15)
+        self.method_table.attach(style.wrap_with_align(self.nobsdcomp), 2, 3, 4, 5)
+        self.method_table.attach(style.wrap_with_align(self.nodeflate), 2, 3, 5, 6)
+        self.method_table.attach(style.wrap_with_align(self.no_vj_comp), 2, 3, 6, 7)
+        self.method_table.attach(style.wrap_with_align(self.ppp_echo), 2, 3, 8, 9)
 
         vbox = gtk.VBox()
         #vbox.pack_start(method, False, False)

@@ -204,18 +204,22 @@ class WirelessSection(gtk.VBox):
             self.tree = TreeView([], enable_multiple_select=False)
             self.settings = None
             self.hotspot = HotSpot(send_to_crumb_cb)
-            self.vbox = gtk.VBox(False, False)
-            self.vbox.pack_start(self.tree)
-            self.vbox.pack_start(self.hotspot)
+            self.vbox = gtk.VBox(False, spacing=15)
+            #self.vbox.pack_start(self.tree)
+            #self.vbox.pack_start(self.hotspot)
             self.vbox.set_no_show_all(True)
             self.vbox.hide()
             self.align = gtk.Alignment()
             self.align.show()
             self.align.set(0,0,1,1)
             self.align.set_padding(0,0,PADDING,11 + 11)
-            self.align.add(self.vbox)
+            self.align.add(self.tree)
+            self.vbox.pack_start(self.align, False, False)
+            self.vbox.pack_start(self.hotspot, False, False)
 
-            self.pack_start(self.align, False, False, 0)
+
+            self.pack_start(self.vbox, False, False, 0)
+            #self.pack_start(self.hotspot, False, False, 0)
 
             # Add signals
             for device in self.wireless_devices:

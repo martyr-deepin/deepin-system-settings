@@ -47,7 +47,7 @@ def set_align_text_box(align):
     align.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
 
 def set_main_window(align, has_right=False):
-    align.set_padding(FRAME_TOP_PADDING, 1, 0, [0, FRAME_LEFT_PADDING][has_right is True])
+    align.set_padding(FRAME_TOP_PADDING, 1, [0, FRAME_LEFT_PADDING][has_right is True], [0, FRAME_LEFT_PADDING][has_right is True])
 
 def set_table(table):
     #table.set_row_spacings(8)

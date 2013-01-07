@@ -15,113 +15,107 @@ import pango
 
 import style
 from constants import FRAME_VERTICAL_SPACING, TITLE_FONT_SIZE, BETWEEN_SPACING, TREEVIEW_BG_COLOR
+from container import TitleBar
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 from nls import _
 
 
-def render_background( cr, rect):
-    background_color = [(0,["#ffffff", 1.0]),
-                        (1,["#ffffff", 1.0])]
-    draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height, background_color)
+def render_background(self, cr, rect):
+    if self.is_select:
+        background_color = app_theme.get_color("globalItemSelect")
+        cr.set_source_rgb(*color_hex_to_cairo(background_color.get_color()))
+    else:
+        if  self.is_hover:
+            background_color = app_theme.get_color("globalItemHover")
+            cr.set_source_rgb(*color_hex_to_cairo(background_color.get_color()))
+        else:
+            background_color = "#ffffff"
+            cr.set_source_rgb(*color_hex_to_cairo(background_color))
+    cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+    cr.fill()
 
 class Region(gtk.Alignment):
     def __init__(self, connection=None):
         gtk.Alignment.__init__(self)
 
         style.set_main_window(self, True)
-        #hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
-        #self.add(hbox)
         self.connect('expose-event', self.expose_event)
         self.prop_dict = {}
 
         main_table = gtk.Table(2, 2, False)
-        main_table.set_row_spacings(4)
-        main_table.set_col_spacings(8)
+        main_table.set_row_spacings(10)
+        main_table.set_col_spacings(4)
         self.add(main_table)
         
-        country_label = Label(_("Country or Region:"), text_size=TITLE_FONT_SIZE)
         self.country_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
-                                     enable_hover=False)
+                                     #enable_hover=False,
+                                     mask_bound_height=0)
 
         self.country_tree.set_size_request(370, 345)
         self.country_tree.draw_mask = self.draw_mask
         self.country_tree.connect("button-press-item", self.country_selected)
         left_box_align = gtk.Alignment(0, 0, 0, 0)
-        left_box_align.set_padding(1,1,0,0)
+        left_box_align.set_padding(1,1,1,1)
         left_box_align.add(self.country_tree)
-        left_box_align.connect("expose-event", self.expose_outline, [])
         left_box_align.show_all()
 
         left_box = gtk.VBox()
         # wrap title
-        title_hbox = gtk.HBox(spacing=10)
-        country_icon = ImageBox(app_theme.get_pixbuf("network/globe-green.png"))
-        title_hbox.pack_start(country_icon, False, False)
-        title_hbox.pack_start(country_label, False, False)
-        left_box.pack_start(style.wrap_with_align(title_hbox), False, False)
+        country_title = TitleBar(app_theme.get_pixbuf("network/globe-green.png"),
+                                 _("Country or Region:"),
+                                 has_separator=False)
+        left_box.pack_start(country_title, False, False)
         left_box.pack_start(left_box_align, False, False)
 
-        provider_label = Label(_("Provider:"), text_size=TITLE_FONT_SIZE)
         self.provider_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
-                                     enable_hover=False)
+                                     #enable_hover=False,
+                                     mask_bound_height=0)
         self.provider_tree.set_size_request(370, 345)
         self.provider_tree.draw_mask = self.draw_mask
         self.provider_tree.connect("button-press-item", self.provider_selected)
         right_box_align = gtk.Alignment(0, 0, 0, 0)
-        right_box_align.set_padding(1,1,0,0)
+        right_box_align.set_padding(1,1,1,1)
         right_box_align.add(self.provider_tree)
-        right_box_align.connect("expose-event", self.expose_outline, [])
         right_box = gtk.VBox()
-        #right_box.set_size_request(436, 400)
         # wrap title
-        title_rbox = gtk.HBox(spacing=10)
-        provider_icon = ImageBox(app_theme.get_pixbuf("network/building.png"))
-        title_rbox.pack_start(provider_icon, False, False)
-        title_rbox.pack_start(provider_label, False, False)
-        right_box.pack_start(style.wrap_with_align(title_rbox), False, False)
+        provider_title = TitleBar(app_theme.get_pixbuf("network/building.png"),
+                                  _("Provider:"),
+                                  has_separator=False)
+        right_box.pack_start(provider_title, False, False)
         right_box.pack_start(right_box_align, False, False)
         
         main_table.attach(left_box, 0, 1, 0, 1)
         main_table.attach(right_box, 1, 2, 0, 1)
-        #hbox.pack_start(left_box, False, False)
-        #hbox.pack_start(right_box, False, False)
 
-        hint_box = gtk.HBox()
-        hint_box.set_size_request(-1, 36)
-
-        hints = "This assistant helps you easily set up a mobile broadband connection to a cellular network."
+        hints = _("Tips:This assistant helps you easily set up a mobile broadband connection to a cellular network.")
         label = Label(hints)
-        hint_align = style.wrap_with_align(label)
-        hint_align.connect("expose-event", self.expose_hint_background)
-
-        #hint_box.pack_start(hint_align, False, False)
+        hint_align = style.wrap_with_align(label, align="left")
 
         main_table.attach(hint_align, 0,2, 1, 2)
 
         next_button = Button("Next")
         next_button.connect("clicked", self.next_button_clicked)
-        #left_box_align.connect("expose-event", self.expose_outline, [])
-        #right_box_align.connect("expose-event", self.expose_outline, [])
+        left_box_align.connect("expose-event", self.expose_outline)
+        right_box_align.connect("expose-event", self.expose_outline)
         self.show_all()
         #self.init()
 
-    def expose_outline(self, widget, event, exclude):
+    def expose_outline(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
-        style.draw_out_line(cr, rect, exclude)
+        with cairo_disable_antialias(cr):
+            cr.set_line_width(1)
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.rectangle(rect.x, rect.y, rect.width , rect.height )
+            cr.stroke()
 
     def draw_mask(self, cr, x, y, w, h):
-        bg_color = color_hex_to_cairo(TREEVIEW_BG_COLOR)
-
-        cr.set_source_rgb(*bg_color)
+        cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
-        cr.set_source_rgb(*BORDER_COLOR)
-        cr.rectangle(x -1, y, w + 1, h + 1)
-        cr.stroke()
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -196,7 +190,6 @@ class Region(gtk.Alignment):
         self.country_tree.delete_all_items()
         self.country_tree.add_items([CountryItem(_(country)) for country in self.country_list])
         # add a bottom line for last item
-        #self.country_tree.get_items()[-1].is_last = True
 
         code = self.__sp.get_country_from_timezone()
 
@@ -247,30 +240,25 @@ class Item(TreeItem):
         self.arrow_width = self.arrow_down.get_pixbuf().get_width()
 
         self.show_arrow = self.add_apns_name(code, content)
+        self.is_hover = False
         
     def render_content(self, cr, rect):
         (text_width, text_height) = get_content_size(self.html_escape(self.content))
+        render_background(self, cr, rect)
+        
         if self.is_select:
-            draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height,
-                         ui_theme.get_shadow_color("listview_select").get_color_info())
+            text_color = "#ffffff"
         else:
-            render_background(cr, rect)
+            text_color = "#000000"
 
         draw_text(cr, self.html_escape(self.content), rect.x + 5, rect.y, rect.width, rect.height,
-                alignment=pango.ALIGN_LEFT)
+                alignment=pango.ALIGN_LEFT,
+                text_color=text_color)
         if self.show_arrow:
             if self.is_expand:
                 draw_pixbuf(cr, self.arrow_down.get_pixbuf(), rect.x + text_width + 10 , rect.y + (rect.height- self.arrow_height)/2)
             else:
                 draw_pixbuf(cr, self.arrow_right.get_pixbuf(), rect.x +text_width + 10, rect.y + (rect.height- self.arrow_height)/2)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            #if self.is_last:            
-                #cr.rectangle(rect.x +1, rect.y + rect.height, rect.width, 1)
-            #else:
-            cr.rectangle(rect.x , rect.y -1, rect.width ,rect.height + 1)
-            cr.stroke()
 
     def get_column_widths(self):
         return [-1]
@@ -279,7 +267,6 @@ class Item(TreeItem):
         return [self.render_content]
     
     def get_height(self):
-        #(text_width, text_height) = get_content_size(self.content)
         return 30
         
     def select(self):
@@ -292,9 +279,20 @@ class Item(TreeItem):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
 
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+
+    def hover(self, column, offset_x, offset_y):
+        self.is_hover = True
+        self.redraw()
+
+    def unhover(self, column, offset_x, offset_y):
+        self.is_hover = False
+        self.redraw()
+
     def expand(self):
-        #if self.content in self.gsm_providers:
-            #print "is gsm:", self.content, self.gsm_providers
         if self.show_arrow:
             self.is_expand = True  
             self.add_child_item()
@@ -343,25 +341,14 @@ class CountryItem(TreeItem):
     def __init__(self, content):
         TreeItem.__init__(self)
         self.content = content
+        self.is_hover = False
 
     def render_flag(self, cr, rect):
-        if self.is_select:
-            draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height,
-                         ui_theme.get_shadow_color("listview_select").get_color_info())
-        else:
-            render_background(cr, rect)
+        render_background(self, cr, rect)
 
         flag_icon = self.find_match_flag(self.content)
         if flag_icon:
             draw_pixbuf(cr, flag_icon.get_pixbuf(), rect.x + BETWEEN_SPACING/2 , rect.y) 
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            #if self.is_last:            
-                #cr.rectangle(rect.x +1, rect.y + rect.height, rect.width, 1)
-            #else:
-            cr.rectangle(rect.x , rect.y -1, rect.width + 1,rect.height + 1)
-            cr.stroke()
 
     def find_match_flag(self, country):
         formated_string = country.lower().replace(" ", "_").replace(",",'')
@@ -371,18 +358,13 @@ class CountryItem(TreeItem):
             return None
 
     def render_content(self, cr, rect):
+        render_background(self, cr, rect)
         if self.is_select:
-            draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height,
-                         ui_theme.get_shadow_color("listview_select").get_color_info())
+            text_color = "#ffffff"
         else:
-            render_background(cr, rect)
+            text_color = "#000000"
         draw_text(cr, self.content, rect.x , rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_LEFT)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            cr.rectangle(rect.x , rect.y -1 , rect.width ,rect.height +1)
-            cr.stroke()
+                alignment = pango.ALIGN_LEFT, text_color=text_color)
 
     def get_column_widths(self):
         return [30 + BETWEEN_SPACING , -1]
@@ -391,7 +373,6 @@ class CountryItem(TreeItem):
         return [self.render_flag, self.render_content]
     
     def get_height(self):
-        #(text_width, text_height) = get_content_size(self.content)
         return 30
         
     def select(self):
@@ -410,30 +391,35 @@ class CountryItem(TreeItem):
     def unexpand(self):
         pass
 
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+
+    def hover(self, column, offset_x, offset_y):
+        self.is_hover = True
+        self.redraw()
+
+    def unhover(self, column, offset_x, offset_y):
+        self.is_hover = False
+        self.redraw()
+
 class SubItem(TreeItem):
     def __init__(self, content):
         TreeItem.__init__(self)
         self.content = content
-        #self.escape_content = self.html_escape(content)
+        self.is_hover = False
         
     def render_content(self, cr, rect):
-        #(text_width, text_height) = get_content_size(self.content)
+        render_background(self, cr, rect)
         if self.is_select:
-            draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height,
-                         ui_theme.get_shadow_color("listview_select").get_color_info())
+            text_color = "#ffffff"
         else:
-            render_background(cr, rect)
+            text_color = "#000000"
         draw_text(cr, self.content, rect.x + 50, rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_LEFT)
+                alignment = pango.ALIGN_LEFT,
+                text_color=text_color)
 
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            #if self.is_last:            
-                #cr.rectangle(rect.x +1, rect.y + rect.height, rect.width, 1)
-            #else:
-            cr.rectangle(rect.x , rect.y -1, rect.width ,rect.height + 1)
-            cr.stroke()
     def get_column_widths(self):
         return [-1]
 
@@ -441,7 +427,6 @@ class SubItem(TreeItem):
         return [self.render_content]
     
     def get_height(self):
-        #(text_width, text_height) = get_content_size(self.content)
         return 30
         
     def select(self):
@@ -460,3 +445,15 @@ class SubItem(TreeItem):
     def unexpand(self):
         pass
 
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+
+    def hover(self, column, offset_x, offset_y):
+        self.is_hover = True
+        self.redraw()
+
+    def unhover(self, column, offset_x, offset_y):
+        self.is_hover = False
+        self.redraw()
