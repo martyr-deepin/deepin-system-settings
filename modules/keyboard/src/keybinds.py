@@ -81,11 +81,15 @@ def get_shortcuts_custom_shortcut_entry(client):
     item_list = []
     global ACCEL_ENTRY_LIST
     for dirs in dir_list:
-        #action = client.get("%s/action" %(dirs)).get_string()
-        binding = client.get("%s/binding" %(dirs)).get_string()
-        #if not binding:
-            #binding = _("disable")
-        name = client.get("%s/name" %(dirs)).get_string()
+        name = client.get("%s/name" %(dirs))
+        if not name:
+            continue
+        name = name.get_string()
+        binding = client.get("%s/binding" %(dirs))
+        if binding:
+            binding = binding.get_string()
+        else:
+            binding = ""
         item = AccelEntry(binding, check_shortcut_conflict)
         item.settings_description = name
         item.settings_key = dirs
