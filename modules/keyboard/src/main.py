@@ -439,8 +439,8 @@ class KeySetting(object):
         self.alignment_widgets["layout_button_hbox"].add(self.container_widgets["layout_button_hbox"])
         self.container_widgets["layout_button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_add"])
-        accel_entry = AccelEntry("<Ctrl>a")
-        self.container_widgets["layout_button_hbox"].pack_start(accel_entry)
+        #accel_entry = AccelEntry("<Ctrl>a")
+        #self.container_widgets["layout_button_hbox"].pack_start(accel_entry)
         #self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_remove"])
         ## table attach
         #self.container_widgets["layout_table"].attach(
@@ -472,11 +472,11 @@ class KeySetting(object):
             self.alignment_widgets["shortcuts_table"])
         self.alignment_widgets["shortcuts_table"].add(
             self.container_widgets["shortcuts_table"])
-        self.view_widgets["shortcuts_selected"].set_size_request(200, -1)
-        self.view_widgets["shortcuts_shortcut"].set_size_request(570, -1)
+        self.view_widgets["shortcuts_selected"].set_size_request(190, -1)
+        self.view_widgets["shortcuts_shortcut"].set_size_request(550, -1)
         self.container_widgets["shortcuts_swin"].set_size_request(600, -1)
         self.alignment_widgets["shortcuts_table"].set(0.0, 0.0, 1, 1)
-        self.alignment_widgets["shortcuts_table"].set_padding(10, 10, 0, 10)
+        self.alignment_widgets["shortcuts_table"].set_padding(10, 10, 0, 0)
         # shortcut toolbar
         self.container_widgets["shortcuts_toolbar_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_add"])
@@ -580,7 +580,21 @@ class KeySetting(object):
     def container_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
-        cr.rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)                                                 
+        cr.rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
+        cr.fill()
+        
+    def draw_dialog_background(self, widget, event):
+        x, y, w, h = widget.allocation
+        cr = widget.window.cairo_create()
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
+        cr.rectangle(x+1, y+1, w-2, h-2)                                                 
+        cr.fill()
+    
+    def draw_background(self, widget, event):
+        x, y, w, h = widget.allocation
+        cr = widget.window.cairo_create()
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
+        cr.rectangle(x, y, w, h)                                                 
         cr.fill()
     
     def keyboard_setting_changed_cb(self, key):
@@ -784,7 +798,7 @@ class KeySetting(object):
         dialog_heigth = 380
         dialog = DialogBox(_("Select an input source to add"), dialog_width, dialog_heigth)
         dialog.connect("destroy", lambda w: self.container_widgets["layout_button_hbox"].set_sensitive(True))
-        dialog.window_frame.connect("expose-event", draw_background)
+        dialog.window_frame.connect("expose-event", self.draw_dialog_background)
         dialog.set_keep_above(True)
         dialog.set_modal(True)
         #dialog.set_transient_for(parent)
@@ -1066,18 +1080,19 @@ class KeySetting(object):
                 i += 1
             print "add:", name, action, key_dir
             settings.shortcuts_custom_set(key_dir, (action, '', name))
-            item = ShortcutItem(name, _('disable'), action)
-            item.set_data('gconf-dir', '%s/%s' % (base_dir, key_dir))
-            item.set_data('setting-type', 'gconf')
-            item.set_data('settings', settings.GCONF_CLIENT)
-            self.__shortcuts_items[_('Custom Shortcuts')].append(item)
-            self.view_widgets["shortcuts_shortcut"].add_items([item])
-            self.view_widgets["shortcuts_shortcut"].queue_draw()
+            AccelEntry("", keybinds.check_shortcut_conflict)
+            #item = ShortcutItem(name, _('disable'), action)
+            #item.set_data('gconf-dir', '%s/%s' % (base_dir, key_dir))
+            #item.set_data('setting-type', 'gconf')
+            #item.set_data('settings', settings.GCONF_CLIENT)
+            #self.__shortcuts_items[_('Custom Shortcuts')].append(item)
+            #self.view_widgets["shortcuts_shortcut"].add_items([item])
+            #self.view_widgets["shortcuts_shortcut"].queue_draw()
             dialog.destroy()
         self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(False)
         dialog = DialogBox(_("Custom Shortcuts"), 250, 150)
         dialog.connect("destroy", lambda w:self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(True))
-        dialog.window_frame.connect("expose-event", draw_background)
+        dialog.window_frame.connect("expose-event", self.draw_dialog_background)
         dialog.set_keep_above(True)
         dialog.set_modal(True)
         #dialog.set_transient_for(self.container_widgets["window"])
@@ -1126,19 +1141,13 @@ class KeySetting(object):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, height=10)
     
     def __make_accel_page(self):
-        def draw_background(widget, event):
-            x, y, w, h = widget.allocation
-            cr = widget.window.cairo_create()
-            cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
-            cr.rectangle(x+1, y+1, w-2, h-2)                                                 
-            cr.fill()
         for category in self.__shortcuts_entries:
             vbox = gtk.VBox(False)
             #vbox.set_spacing(10)
             self.__shortcuts_entries_page_widgets[category] = ScrolledWindow()
             self.__shortcuts_entries_page_widgets[category].add_child(vbox)
-            vbox.set_size_request(600, -1)
-            vbox.connect("expose-event", draw_background)
+            vbox.set_size_request(570, -1)
+            vbox.connect("expose-event", self.draw_background)
             for entry in self.__shortcuts_entries[category]:
                 hbox = gtk.HBox(False)
                 hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)

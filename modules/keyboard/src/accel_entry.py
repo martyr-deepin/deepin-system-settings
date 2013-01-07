@@ -31,13 +31,6 @@ import gobject
 from glib import markup_escape_text
 from constant import *
 
-def check_conflict_item(accel_buf):
-    for category in self.__shortcuts_items:
-        for items in self.__shortcuts_items[category]:
-            if items != item and items.accel_buffer == accel_buf:
-                return items
-    return None
-
 def draw_widget_background(widget, event):
     x, y, w, h = widget.allocation
     cr = widget.window.cairo_create()
@@ -252,7 +245,7 @@ class AccelEntry(ShortcutKeyEntry):
             self.process_unmodifier_func(tmp_accel_buf)
             return
         if self.check_conflict_func and self.resolve_conflict_func:
-            conflict_entry = self.check_conflict_func(self)
+            conflict_entry = self.check_conflict_func(self, tmp_accel_buf)
             if conflict_entry:
                 self.resolve_conflict_func(self, conflict_entry, tmp_accel_buf)
                 return
@@ -323,6 +316,19 @@ class AccelEntry(ShortcutKeyEntry):
     def __on_accel_key_change_cb(self, widget, accel_name):
         if not self.settings_obj:
             return
-        set_gsettings_or_gconf_value(self.settings_obj, self.settings_key, accel_name)
+        if self.settings_type == self.TYPE_GSETTINGS:
+            if self.settings_value_type == self.TYPE_STRV:
+                if accel_name:
+                    self.settings_obj.set_strv(self.settings_key, [accel_name])
+                else:
+                    self.settings_obj.set_strv(self.settings_key, [])
+            elif self.settings_value_type == self.TYPE_STRING:
+                self.settings_obj.set_string(self.settings_key, accel_name)
+        elif self.settings_type == self.TYPE_GCONF:
+            value = self.settings_obj.get("%s/binding" % (self.settings_key))
+            value.set_string(accel_name)
+            self.settings_obj.set("%s/binding" % (self.settings_key), value)
+        print "set key", accel_name, self.settings_obj, self.settings_key, self.settings_type, self.settings_value_type
+        #set_gsettings_or_gconf_value(self.settings_obj, self.settings_key, accel_name)
         
 gobject.type_register(AccelEntry)

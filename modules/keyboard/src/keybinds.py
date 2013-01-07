@@ -26,10 +26,10 @@ from accel_entry import AccelEntry
 
 ACCEL_ENTRY_LIST = []
 
-def check_shortcut_conflict(origin_entry):
+def check_shortcut_conflict(origin_entry, tmp_accel_buf):
     global ACCEL_ENTRY_LIST
     for accel in ACCEL_ENTRY_LIST:
-        if origin_entry.accel_buffer == accel.accel_buffer:
+        if accel != origin_entry and tmp_accel_buf == accel.accel_buffer:
             return accel
     return None
 
@@ -49,10 +49,12 @@ def get_shortcuts_shortcut_entry(gsettings, group_dict, value_type):
                     key_name = gsettings.get_strv(key['name'])
                     if key_name:
                         key_name = key_name[0]
+                    else:
+                        key_name = ""
                 else:
                     key_name = gsettings.get_string(key['name'])
-                if not key_name:
-                    key_name = _('disable')
+                #if not key_name:
+                    #key_name = _('disable')
                 item = AccelEntry(key_name, check_shortcut_conflict)
                 item.settings_description = key['description']
                 item.settings_key = key['name']
@@ -81,8 +83,8 @@ def get_shortcuts_custom_shortcut_entry(client):
     for dirs in dir_list:
         #action = client.get("%s/action" %(dirs)).get_string()
         binding = client.get("%s/binding" %(dirs)).get_string()
-        if not binding:
-            binding = _("disable")
+        #if not binding:
+            #binding = _("disable")
         name = client.get("%s/name" %(dirs)).get_string()
         item = AccelEntry(binding, check_shortcut_conflict)
         item.settings_description = name
