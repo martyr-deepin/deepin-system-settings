@@ -39,8 +39,8 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.constant import ALIGN_END
 
-from ui.wallpaper_item import ITEM_PADDING_Y, WallpaperItem, AddItem
-
+from ui.wallpaper_item import ITEM_PADDING_Y
+from ui.wallpaper_view import WallpaperView
 
 class DetailPage(TabBox):
     '''
@@ -59,9 +59,8 @@ class DetailPage(TabBox):
         
         self.wallpaper_box = gtk.VBox()
         self.window_theme_box = gtk.VBox()
-        self.theme_icon_view = IconView(padding_x=30, padding_y=ITEM_PADDING_Y)
-        self.theme_icon_view.draw_mask = self.draw_mask
-        self.theme_scrolledwindow = ScrolledWindow()
+        self.wallpaper_view = WallpaperView(padding_x=30, padding_y=ITEM_PADDING_Y)
+        self.wallpaper_view_sw = ScrolledWindow()
         
         self.action_bar = gtk.HBox()
         self.position_label = Label("图片位置")
@@ -105,7 +104,7 @@ class DetailPage(TabBox):
         self.add_items([("桌面壁纸", self.wallpaper_box),
                         ("窗口设置", self.window_theme_box)])
         
-        self.theme_scrolledwindow.add_child(self.theme_icon_view)
+        self.wallpaper_view_sw.add_child(self.wallpaper_view)
         self.delete_align.add(self.delete_button)
         self.action_bar.pack_start(self.position_label, False, False, 4)
         self.action_bar.pack_start(self.position_combobox, False, False, 4)
@@ -114,7 +113,7 @@ class DetailPage(TabBox):
         self.action_bar.pack_start(self.unorder_play, False, False, 4)
         self.action_bar.pack_start(self.unselect_all, False, False, 4)
         self.action_bar.pack_start(self.select_all, False, False, 4)
-        self.wallpaper_box.pack_start(self.theme_scrolledwindow, True, True)
+        self.wallpaper_box.pack_start(self.wallpaper_view_sw, True, True)
         self.wallpaper_box.pack_start(self.action_bar, False, False)
         self.wallpaper_box.pack_start(self.delete_align, False, False)
 
@@ -163,7 +162,7 @@ class DetailPage(TabBox):
         picture_uris = ""
         i = 0
 
-        for item in self.theme_icon_view.items:
+        for item in self.wallpaper_view.items:
             if not hasattr(item, "path"):
                 continue
             if not i == 0:
@@ -181,14 +180,7 @@ class DetailPage(TabBox):
         '''
         TODO: self.theme.name
         '''
-        self.theme_icon_view.clear()
-        
-        items = []
-        for wallpaper_path in self.theme.get_wallpaper_paths():
-            items.append(WallpaperItem(wallpaper_path))
-            
-        items.append(AddItem())    
-        self.theme_icon_view.add_items(items)
+        self.wallpaper_view.set_theme(theme)
         
     def draw_mask(self, cr, x, y, w, h):
         '''

@@ -25,7 +25,7 @@ import os
 
 import common
 from mycurl import public_curl, CurlException
-from xdg_support import get_specify_cache_dir
+from xdg_support import get_download_wallpaper_dir
 
 class ImageObject(object):
     
@@ -39,15 +39,28 @@ class ImageObject(object):
     
     def get_display_name(self):
         return "%s_%s" % (self.name, self.small_url.split("/")[-1])
-        
-    def get_big_basename(self):    
-        return common.get_md5(self.big_url)
     
     def get_save_path(self):
-        return os.path.join(get_specify_cache_dir("big"), self.get_big_basename())
+        return os.path.join(get_download_wallpaper_dir(), self.get_small_basename())
         
     def __repr__(self):    
         return "<ImageObject %s>" % self.small_url
+    
+    def __hash__(self):
+        return hash(self.small_url)
+    
+    def __cmp__(self, other):
+        if not other: return -1
+        try:
+            return cmp(self.small_url, other.small_url)
+        except AttributeError: return -1
+        
+    def __eq__(self, other):    
+        try:
+            return self.small_url == other.small_url
+        except:
+            return False
+        
         
 class BaseFetch(object):        
     name = "base"

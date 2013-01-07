@@ -26,8 +26,12 @@ from dtk.ui.new_treeview import TreeView
 
 from ui.add_item import ExpandItem
 from ui.cache_page import CachePage
-from ui.download_page import DownloadPage
+from ui.download_page import TaskPage
+from ui.select_page import UserPage, SystemPage
 from ui.utils import switch_box, draw_line
+
+from helper import event_manager
+from xdg_support import get_system_wallpaper_dirs, get_download_wallpaper_dir
 
 from aibizhi import Aibizhi
 from bizhi360 import Bizhi360
@@ -43,8 +47,9 @@ class AddPage(gtk.HBox):
         
         self.aibizhi_cache_page.cache_view.try_to_fetch()
         self.bizhi360_cache_page.cache_view.try_to_fetch()
+        self.system_wallpapers_page = SystemPage(get_system_wallpaper_dirs()[0])
         
-        self.download_page = DownloadPage()
+        self.task_page = TaskPage()
         
         self.__init_navigatebar()
         
@@ -52,7 +57,12 @@ class AddPage(gtk.HBox):
         self.pack_start(self.navigatebar, False, True)
         self.pack_start(self.switch_page, True, True)
         
+        self.switch_page.add(self.system_wallpapers_page)
+        event_manager.add_callback("downloading-tasks-number", self.on_download_item_changed)
         self.connect("expose-event", self.on_addpage_expose_event)
+        
+    def on_download_item_changed(self, name, obj, data):    
+        self.downloading_item.set_title("正在下载(%d)" % data)
         
     def __init_navigatebar(self):    
         self.navigatebar = TreeView(enable_drag_drop=False, enable_multiple_select=False)
@@ -60,17 +70,19 @@ class AddPage(gtk.HBox):
         self.navigatebar.set_size_request(132, -1)
         self.navigatebar.draw_mask = self.on_navigatebar_draw_mask
         
-        local_expand_item = ExpandItem("计算机")
+        local_expand_item = ExpandItem("壁纸库")
         download_expand_item = ExpandItem("下载管理")
         network_expand_item = ExpandItem("网络壁纸")
-        self.navigatebar.add_items([local_expand_item, download_expand_item, network_expand_item])
+        self.navigatebar.add_items([local_expand_item, network_expand_item, download_expand_item])
+        local_expand_item.add_childs([("系统壁纸", self.system_wallpapers_page),
+                                      ("下载壁纸", UserPage(get_download_wallpaper_dir(), True))], expand=True)
+        self.downloading_item = download_expand_item.add_childs(
+            [("正在下载(0)", self.task_page)], expand=True)[0]
         
-        local_expand_item.add_childs([(name, None) for name in ["主文件夹", "桌面", "视频", "图片", "音乐", "文件系统"]], expand=True)
-        download_expand_item.add_childs([("正在下载", self.download_page),
-                                         ("下载历史", None)], 
-                                        expand=True)
         network_expand_item.add_childs([("爱壁纸", self.aibizhi_cache_page),
                                         ("360壁纸", self.bizhi360_cache_page)], expand=True)        
+        
+        self.navigatebar.select_items([self.navigatebar.get_items()[1]])
         
     def on_addpage_expose_event(self, widget, event):    
         cr = widget.window.cairo_create()

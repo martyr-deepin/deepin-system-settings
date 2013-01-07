@@ -70,7 +70,8 @@ class DeepinIndividuation(object):
         
         # Connect events.
         event_manager.add_callback("theme-detail", self.switch_detail_page)        
-        event_manager.add_callback("add-wallpapers", self.switch_add_page)
+        event_manager.add_callback("switch-to-addpage", self.switch_add_page)
+        # event_manager.add_callback("add-wallpapers")
         
         # Connect widgets.
         self.module_frame.add(self.slider)

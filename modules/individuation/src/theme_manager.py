@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from ConfigParser import (RawConfigParser, NoSectionError, NoOptionError)
+from config_parser import (RawConfigParser, NoSectionError, NoOptionError)
 import common
 from xdg_support import (get_user_theme_dir, get_system_theme_dir, 
                          get_system_wallpaper_dirs, get_config_path)
@@ -34,6 +34,20 @@ class ThemeFile(RawConfigParser):
     def __init__(self, location, default_location=None):
         RawConfigParser.__init__(self)
         
+        if default_location is None:
+            default_location = get_config_path("default_theme.ini")
+            
+        try:
+            self.read(default_location)
+        except:    
+            pass
+        
+        try:
+            self.read(location)
+        except:    
+            pass
+        
+        self.location = location    
         if default_location is None:
             default_location = get_config_path("default_theme.ini")
             
@@ -169,8 +183,10 @@ class ThemeFile(RawConfigParser):
     def get_user_wallpapers(self):
         return self.get_section_options("user_wallpaper")
     
-    def add_user_wallpaper(self, path):
-        self.set_option("user_wallpaper", path, "")
+    def add_user_wallpapers(self, paths):
+        for path in paths:
+            self.set_option("user_wallpaper", path, "")
+        self.save()    
     
     def get_wallpaper_paths(self):
         return self.get_system_wallpapers() + self.get_user_wallpapers()

@@ -30,6 +30,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 
 from ui.wallpaper_item import CacheItem
 from cache_manager import cache_thread_pool
+from helper import event_manager
 
 import common
 
@@ -61,6 +62,12 @@ class CacheView(IconView):
     
     def fetch_failed(self):
         pass
+    
+    def emit_download(self):
+        download_items = filter(lambda item : item.is_tick, self.items)
+        if download_items:
+            image_items = map(lambda item: item.image_object, download_items)
+            event_manager.emit("download-images", image_items)
     
     def fetch_successed(self):
         pass
@@ -106,16 +113,27 @@ class CachePage(gtk.VBox):
         self.cache_view = CacheView(network_interface)
         self.cache_view_sw = self.cache_view.get_scrolled_window()
         
-        self.try_button = Button("再试一次")
-        self.try_button.connect("clicked", self.on_try_button_clicked)
-        try_button_align = gtk.Alignment()
-        try_button_align.set(1.0, 0.5, 0, 0)
-        try_button_align.set_padding(0, 5, 0, 10)
-        try_button_align.add(self.try_button)
+        try_button = Button("再试一次")
+        try_button.connect("clicked", self.on_try_button_clicked)
+        download_button = Button("下载")
+        download_button.connect("clicked", self.on_download_button_clicked)
+        
+        
+        control_box = gtk.HBox(10)
+        control_box.pack_start(download_button, False, False)
+        control_box.pack_start(try_button, False, False)
+        
+        control_align = gtk.Alignment()
+        control_align.set(1.0, 0.5, 0, 0)
+        control_align.set_padding(0, 5, 0, 10)
+        control_align.add(control_box)
         
         self.pack_start(self.cache_view_sw, True, True)
-        self.pack_start(try_button_align, False, True)
+        self.pack_start(control_align, False, True)
         
     def on_try_button_clicked(self, widget):    
         self.cache_view.try_to_fetch()
+        
+    def on_download_button_clicked(self, widget):    
+        self.cache_view.emit_download()
         

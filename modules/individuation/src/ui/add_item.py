@@ -120,7 +120,7 @@ class ExpandItem(TreeItem):
     def try_to_expand(self):    
         if not self.is_expand:
             self.expand()
-        
+            
     def add_childs(self, child_items, pos=None, expand=False):    
         items = []
         for child_item in child_items:
@@ -138,6 +138,8 @@ class ExpandItem(TreeItem):
             
         if expand:    
             self.expand()
+            
+        return items    
             
     def __repr__(self):        
         return "<ExpandItem %s>" % self.title
@@ -213,7 +215,13 @@ class NormalItem(TreeItem):
     
     def single_click(self, column, offset_x, offset_y):
         pass
+    
+    def set_title(self, title):
+        self.title = title
+        self.emit_redraw_request()
 
     def __repr__(self):        
         return "<NormalItem %s>" % self.title
+    
+    
     
