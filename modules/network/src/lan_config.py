@@ -59,7 +59,7 @@ class WiredSetting(gtk.Alignment):
         self.change_crumb = change_crumb_cb
         
         # Add UI Align
-        style.set_main_window(self, True)
+        style.set_main_window(self)
         #hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
         hbox = gtk.HBox()
         self.add(hbox)

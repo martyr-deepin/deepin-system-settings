@@ -22,7 +22,8 @@ from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text, draw_line
-from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, get_parent_dir
+from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo
+from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 
 from lan_config import WiredSetting, NoSetting
@@ -75,6 +76,20 @@ class WirelessItem(TreeItem):
         
         self.network_state = self.NETWORK_DISCONNECT
 
+        '''
+        Pixbufs
+        '''
+        self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
+        self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
+
+        self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
+        self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
+        self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
+        self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
+        self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
+
+        self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
+
     def render_check(self, cr, rect):
         render_background(cr,rect)
         #print self.is_select, self.check_select_flag
@@ -82,12 +97,12 @@ class WirelessItem(TreeItem):
             #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
             check_icon = None
         elif self.network_state == self.NETWORK_LOADING:
-            check_icon = app_theme.get_pixbuf("network/loading.png").get_pixbuf()
+            check_icon = self.loading_pixbuf
         else:
-            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
+            check_icon = self.check_pixbuf
         
         if check_icon:
-            draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+            draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
         #draw outline
         with cairo_disable_antialias(cr):
@@ -122,19 +137,19 @@ class WirelessItem(TreeItem):
 
         # FIXME need to detect encry or not
         if self.security:
-            lock_icon = app_theme.get_pixbuf("lock/lock.png").get_pixbuf()
-            draw_pixbuf(cr, lock_icon, rect.x , rect.y + self.VERTICAL_PADDING)
+            lock_icon = self.lock_pixbuf
+            draw_pixbuf(cr, lock_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
 
         if self.strength > 80:
-            signal_icon = app_theme.get_pixbuf("network/Wifi_3.png").get_pixbuf()
+            signal_icon = self.strength_3
         elif self.strength > 60:
-            signal_icon = app_theme.get_pixbuf("network/Wifi_2.png").get_pixbuf()
+            signal_icon = self.strength_2
         elif self.strength > 30:
-            signal_icon = app_theme.get_pixbuf("network/Wifi_1.png").get_pixbuf()
+            signal_icon = self.strength_1
         else:
-            signal_icon = app_theme.get_pixbuf("network/Wifi_0.png").get_pixbuf()
+            signal_icon = self.strength_0
         
-        draw_pixbuf(cr, signal_icon, rect.x + 16 , rect.y + self.VERTICAL_PADDING)
+        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH , rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -147,8 +162,8 @@ class WirelessItem(TreeItem):
         render_background(cr,rect)
         if self.is_select:
             pass
-        jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
-        draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
+        jumpto_icon = self.jumpto_pixbuf
+        draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height-IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -159,17 +174,16 @@ class WirelessItem(TreeItem):
             cr.fill()
 
     def get_check_width(self):
-        check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
-        return check_icon.get_width()+ self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
+        return IMG_WIDTH + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
 
     def get_essid_width(self, essid):
         return get_content_size(essid)[0]
     
     def get_signal_width(self):
-        return app_theme.get_pixbuf("network/Wifi_0.png").get_pixbuf().get_width() + self.SIGNAL_RIGHT_PADDING
+        return IMG_WIDTH + self.SIGNAL_RIGHT_PADDING
 
     def get_jumpto_width(self):
-        return app_theme.get_pixbuf("network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+        return IMG_WIDTH + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
         return [self.check_width, -1, self.signal_width, self.jumpto_width]
@@ -178,11 +192,9 @@ class WirelessItem(TreeItem):
         return [self.render_check, self.render_essid, self.render_signal, self.render_jumpto]
 
     def get_height(self):
-        #return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height()+ self.VERTICAL_PADDING*2
         return CONTAINNER_HEIGHT
         
     def select(self):
-        #print "select"
         self.is_select = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
@@ -211,14 +223,9 @@ class WirelessItem(TreeItem):
 
     def single_click(self, column, x, y):
         if column == 3:
-            #if not nm_remote_settings.get_ssid_associate_connections(self.connection.get_ssid()):
-                #nm_remote_settings.new_wireless_connection(ssid = self.connection.get_ssid())
-
             self.setting_object.init(self.connection.get_ssid(), init_connections=True)
             self.send_to_crumb()
             self.slide_to_setting() 
-        #if self.redraw_request_callback:
-            #self.redraw_request_callback(self)
 
 def render_background( cr, rect):
     background_color = [(0,["#f6f6f6", 1.0]),

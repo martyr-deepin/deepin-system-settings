@@ -7,7 +7,7 @@ import gtk
 
 from dss import app_theme
 import sys,os
-from dtk.ui.utils import get_parent_dir
+from deepin_utils.file import get_parent_dir
 from dtk.ui.label import Label
 from dtk.ui.box import ImageBox
 from dtk.ui.button import RadioButton, OffButton
@@ -69,6 +69,7 @@ class TitleBar(gtk.VBox):
     def __init__(self, 
                  pixbuf, 
                  title,
+                 has_separator=True,
                  text_size=TITLE_FONT_SIZE,
                  text_color=app_theme.get_color("globalTitleForeground"), 
                  width=222,
@@ -77,16 +78,21 @@ class TitleBar(gtk.VBox):
         self.set_size_request(width, -1)
         
         hbox = gtk.HBox(spacing=spacing)
-        image_box = ImageBox(pixbuf)
         label = Label(title, text_color, text_size)
 
-        self.__box_pack_start(hbox, [image_box, label])
+        if pixbuf == None:
+            self.__box_pack_start(hbox, [label])
+        else:
+            image_box = ImageBox(pixbuf)
+            self.__box_pack_start(hbox, [image_box,label])
 
         align = style.wrap_with_align(hbox, align="left")
 
-        separator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        separator.set_size_request(100, 10)
-        self.__box_pack_start(self, [align, separator])
+        self.__box_pack_start(self, [align])
+        if has_separator:
+            separator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+            separator.set_size_request(100, 10)
+            self.__box_pack_start(self, [separator])
 
     def __box_pack_start(self, container, items, expand=False, fill=False):
         for item in items:

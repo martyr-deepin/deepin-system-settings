@@ -3,7 +3,8 @@
 
 import sys
 import os
-from dtk.ui.utils import get_parent_dir, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import  cairo_disable_antialias, color_hex_to_cairo
+from deepin_utils.file import get_parent_dir
 from dtk.ui.draw import draw_line
 from dtk.ui.line import HSeparator
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
@@ -47,7 +48,7 @@ def set_align_text_box(align):
     align.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
 
 def set_main_window(align, has_right=False):
-    align.set_padding(FRAME_TOP_PADDING, 1, 0, [0, FRAME_LEFT_PADDING][has_right is True])
+    align.set_padding(FRAME_TOP_PADDING, 1, [0, FRAME_LEFT_PADDING][has_right is True], [0, FRAME_LEFT_PADDING][has_right is True])
 
 def set_table(table):
     #table.set_row_spacings(8)

@@ -15,6 +15,7 @@ from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 from nm_modules import nm_module
 #from container import ContainhButton
 from container import MyToggleButton as SwitchButton
+from container import TitleBar
 from shared_widget import IPV4Conf
 
 import gtk
@@ -43,7 +44,7 @@ class MobileSetting(gtk.Alignment):
         
         # Add UI Align
         style.set_main_window(self)
-        hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+        hbox = gtk.HBox()
         self.add(hbox)
 
         self.region = None
@@ -54,9 +55,9 @@ class MobileSetting(gtk.Alignment):
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
-        self.items = [("移动宽带", NoSetting()),
-                      ("PPP", NoSetting()),
-                      ("IPv4 设置", NoSetting())]
+        self.items = [(_("Broadband"), NoSetting()),
+                      (_("PPP"), NoSetting()),
+                      (_("IPv4 Setting"), NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
@@ -72,9 +73,11 @@ class MobileSetting(gtk.Alignment):
         vbox.pack_start(buttons_aligns, False , False)
         
         self.show_all()
-        self.connect("expose-event", self.expose_event)
-        vbox.connect("expose-event", self.expose_outline, ["top"])
-        self.sidebar.connect("expose-event", self.expose_outline, [])
+        style.draw_background_color(self)
+        style.draw_separator(self.sidebar, 3)
+        #self.connect("expose-event", self.expose_event)
+        #vbox.connect("expose-event", self.expose_outline, ["top"])
+        #self.sidebar.connect("expose-event", self.expose_outline, [])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -132,9 +135,9 @@ class MobileSetting(gtk.Alignment):
 
     def init_tab_box(self):
         #self.tab_window.tab_items[0] = ("Region", self.region)
-        self.tab_window.tab_items[0] = ("宽带",self.broadband)
-        self.tab_window.tab_items[1] = ("IPV4设置",self.ipv4)
-        self.tab_window.tab_items[2] = ("PPP", self.ppp)
+        self.tab_window.tab_items[0] = (_("Broadband"),self.broadband)
+        self.tab_window.tab_items[1] = (_("IPv4 Setting"),self.ipv4)
+        self.tab_window.tab_items[2] = (_("PPP"), self.ppp)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
@@ -210,7 +213,8 @@ class SideBar(gtk.VBox):
         # Build ui
         self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
-        add_button = AddSettingItem("创建新连接",self.add_new_connection)
+        style.add_separator(self)
+        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
         self.pack_start(TreeView([add_button]), False, False)
         self.set_size_request(160, -1)
         self.new_connection_list = {'cdma':[], "gsm":[]}
@@ -281,6 +285,7 @@ class NoSetting(gtk.VBox):
         self.add(label_align)
 
 class Broadband(gtk.VBox):
+    ENTRY_WIDTH = 222
     def __init__(self, connection, set_button_callback):
         gtk.VBox.__init__(self)
         self.connection = connection        
@@ -288,7 +293,8 @@ class Broadband(gtk.VBox):
         # Init widgets
         self.table = gtk.Table(12, 4, False)
         
-        self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE + 0.5 )
+        #self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE)
+        self.label_basic = TitleBar(None, _("Basic"))
         self.label_number = Label(_("Code:"), text_size=CONTENT_FONT_SIZE)
         self.label_username = Label(_("Username:"), text_size=CONTENT_FONT_SIZE)
         self.label_password = Label(_("password:"), text_size=CONTENT_FONT_SIZE)
@@ -301,7 +307,7 @@ class Broadband(gtk.VBox):
 
 
         #self.table = gtk.Table(6, 4, False)
-        self.label_advanced = Label(_("Advanced"), text_size=TITLE_FONT_SIZE + 0.5)
+        self.label_advanced = TitleBar(None,_("Advanced"))
         self.label_apn = Label(_("APN:"), text_size=CONTENT_FONT_SIZE)
         self.label_network = Label(_("Network ID:"), text_size=CONTENT_FONT_SIZE)
         self.label_type = Label(_("Type:"), text_size=CONTENT_FONT_SIZE)
@@ -314,8 +320,8 @@ class Broadband(gtk.VBox):
                                       ("2G", 1),
                                       ("Prefer 3G", 2),
                                       ("Prefer 2G", 3)],
-                                      max_width=300)
-        self.roam_check = CheckButton(_("Allow roaming if home network is not available"))
+                                      max_width=self.ENTRY_WIDTH)
+        self.roam_check = CheckButton(_("Allow roaming if home network is not available"), padding_x=0)
         self.pin = InputEntry()
         
         
@@ -353,7 +359,7 @@ class Broadband(gtk.VBox):
         if self.table.get_children() != []:
             pass
         else:
-            self.table.attach(style.wrap_with_align(self.label_basic), 0,1 ,0, 1)
+            self.table.attach(self.label_basic, 0,2 ,0, 1)
             self.table.attach(style.wrap_with_align(self.label_number), 0, 1, 1, 2)
             self.table.attach(style.wrap_with_align(self.label_username), 0, 1, 2, 3)
             self.table.attach(style.wrap_with_align(self.label_password), 0, 1, 3, 4)
@@ -361,7 +367,7 @@ class Broadband(gtk.VBox):
             self.table.attach(style.wrap_with_align(self.number), 1, 2, 1, 2)
             self.table.attach(style.wrap_with_align(self.username), 1, 2, 2, 3)
             self.table.attach(style.wrap_with_align(self.password), 1, 2, 3, 4)
-            self.table.attach(style.wrap_with_align(self.password_show), 1, 2, 4, 5)
+            self.table.attach(style.wrap_with_align(self.password_show, align="left"), 1, 2, 4, 5)
 
             def to_region(widget):
                 region = slider.get_page_by_name("region")
@@ -371,8 +377,8 @@ class Broadband(gtk.VBox):
 
             if network_type == "gsm":
                 self.button_to_region.connect("clicked", to_region)
-                self.table.attach(style.wrap_with_align(self.button_to_region), 1,2,5,6, 3)
-                self.table.attach(style.wrap_with_align(self.label_advanced), 0, 1, 6, 7)
+                self.table.attach(style.wrap_with_align(self.button_to_region), 1,2,5,6)
+                self.table.attach(self.label_advanced, 0, 2, 6, 7)
                 self.table.attach(style.wrap_with_align(self.label_apn), 0, 1 , 7, 8)
                 self.table.attach(style.wrap_with_align(self.label_network), 0, 1, 8, 9)
                 self.table.attach(style.wrap_with_align(self.label_type), 0, 1, 9, 10)
@@ -381,10 +387,16 @@ class Broadband(gtk.VBox):
                 self.table.attach(style.wrap_with_align(self.apn), 1, 2, 7, 8)
                 self.table.attach(style.wrap_with_align(self.network_id), 1, 2, 8, 9)
                 self.table.attach(style.wrap_with_align(self.network_type), 1, 2, 9, 10)
-                self.table.attach(style.wrap_with_align(self.roam_check), 1, 2, 10, 11)
+                self.table.attach(style.wrap_with_align(self.roam_check, align="left"), 1, 2, 10, 11)
                 self.table.attach(style.wrap_with_align(self.pin), 1, 2, 11, 12)
             #TODO ui change
-            style.set_table_items(self.table, 'entry')
+            #style.set_table_items(self.table, 'entry')
+            entry_list = ["number", "username", "password",
+                          "apn", "network_id", "pin"]
+            for entry in entry_list:
+                widget = getattr(self, entry)
+                widget.entry.set_size_request(self.ENTRY_WIDTH, 22)
+
             style.set_table(self.table)
         self.table.show_all()
 
@@ -465,7 +477,242 @@ class Broadband(gtk.VBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
+#class PPPConf(ScrolledWindow):
+    #TABLE_WIDTH = 300
+    #def __init__(self, connection, set_button_callback):
+        #ScrolledWindow.__init__(self)
+
+        #self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+
+        #self.connection = connection
+        #self.set_button = set_button_callback
+        #self.ppp_setting = self.connection.get_setting("ppp")
+
+        ## invisable settings
+        ##method_image = gtk.Image()
+        ##method_image.set_from_pixbuf(app_theme.get_pixbuf("network/validation.png").get_pixbuf())
+        ##compress_image = gtk.Image()
+        ##compress_image.set_from_pixbuf(app_theme.get_pixbuf("network/zip.png").get_pixbuf())
+        ##echo_image = gtk.Image()
+        ##echo_image.set_from_pixbuf(app_theme.get_pixbuf("network/echo.png").get_pixbuf())
+
+        ##self.method_label = Label("Configure Method", text_size=TITLE_FONT_SIZE)
+        #self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
+                                     #_("Configure Method"), width=self.TABLE_WIDTH)
+        #self.compression_title = TitleBar(app_theme.get_pixbuf("network/zip.png"),
+                                          #_("Compression"), width=self.TABLE_WIDTH)
+        #self.echo_title = TitleBar(app_theme.get_pixbuf("network/echo.png"),
+                                          #_("Echo"), width=self.TABLE_WIDTH)
+
+        #self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE)
+        #self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE)
+        #self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE)
+        #self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE)
+        #self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE)
+        #self.refuse_eap = SwitchButton()
+        #self.refuse_pap = SwitchButton()
+        #self.refuse_chap = SwitchButton()
+        #self.refuse_mschap = SwitchButton()
+        #self.refuse_mschapv2 = SwitchButton()
+        
+        #self.method_table = gtk.Table(16, 3, False)
+
+
+        #self.method_table.attach(self.method_title, 0, 3, 9, 10)
+        ##self.method_table.attach(style.wrap_with_align(self.method_label), 1, 2, 9, 10)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_eap_label), 1, 2, 10, 11, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_pap_label), 1, 2, 11, 12, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_chap_label), 1, 2, 12, 13, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_mschap_label), 1, 2, 13, 14, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2_label), 1, 2, 14, 15, xpadding=10)
+
+        #self.method_table.attach(style.wrap_with_align(self.refuse_eap), 2, 3, 10, 11)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_pap), 2, 3, 11, 12)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_chap), 2, 3, 12, 13)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_mschap), 2, 3, 13, 14)
+        #self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2), 2, 3, 14, 15)
+
+        ##style.set_table(self.method_table, row_spacing=)
+
+
+        ## visible settings
+        ##compression = Label("Compression", text_size=TITLE_FONT_SIZE)
+        #self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE)
+        #self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE)
+        #self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE)
+        #self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE)
+        #self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE)
+        #self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE)
+        ##echo = Label("Echo", text_size=TITLE_FONT_SIZE)
+        #self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE)
+
+        #self.require_mppe = SwitchButton()
+        #self.require_mppe_128 = SwitchButton()
+        #self.mppe_stateful = SwitchButton()
+        
+        #self.nobsdcomp = SwitchButton()
+        #self.nodeflate = SwitchButton()
+        #self.no_vj_comp = SwitchButton()
+        #self.ppp_echo = SwitchButton()
+
+        #self.method_table.attach(self.compression_title, 0, 3, 0 ,1)
+        ##self.method_table.attach(style.wrap_with_align(compression), 1, 2, 0 ,1)
+        #self.method_table.attach(style.wrap_with_align(self.require_mppe_label), 1, 2, 1, 2, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.require_mppe_128_label), 1, 2, 2, 3, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.mppe_stateful_label), 1, 2, 3, 4, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.nobsdcomp_label), 1, 2, 4, 5, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.nodeflate_label), 1, 2, 5, 6, xpadding=10)
+        #self.method_table.attach(style.wrap_with_align(self.no_vj_comp_label), 1, 2, 6, 7, xpadding=10)
+
+        ##self.method_table.attach(style.wrap_with_align(echo_image), 0, 1, 7, 8)
+        #self.method_table.attach(self.echo_title, 0, 3, 7, 8)
+        #self.method_table.attach(style.wrap_with_align(self.ppp_echo_label), 1, 2, 8, 9, xpadding=10)
+
+        #self.method_table.attach(style.wrap_with_align(self.require_mppe), 2, 3, 1, 2)
+        #self.method_table.attach(style.wrap_with_align(self.require_mppe_128), 2, 3, 2, 3, xpadding=15)
+        #self.method_table.attach(style.wrap_with_align(self.mppe_stateful), 2, 3, 3, 4, xpadding=15)
+        #self.method_table.attach(style.wrap_with_align(self.nobsdcomp), 2, 3, 4, 5)
+        #self.method_table.attach(style.wrap_with_align(self.nodeflate), 2, 3, 5, 6)
+        #self.method_table.attach(style.wrap_with_align(self.no_vj_comp), 2, 3, 6, 7)
+        #self.method_table.attach(style.wrap_with_align(self.ppp_echo), 2, 3, 8, 9)
+
+        #vbox = gtk.VBox()
+        ##vbox.pack_start(method, False, False)
+        ##vbox.pack_start(table, False, False)
+        #vbox.pack_start(self.method_table, False, False)
+        #self.method_table.set_col_spacing(0, 10)
+        #self.method_table.set_row_spacing(6, 15)
+        #self.method_table.set_row_spacing(8, 15)
+        #align = style.set_box_with_align(vbox, "text")
+        #self.add_with_viewport(align)
+        #align.connect("expose-event", self.expose_bg)
+
+        #self.refresh()
+
+        #self.refuse_eap.connect("toggled", self.check_button_cb, "refuse_eap")
+        #self.refuse_pap.connect("toggled", self.check_button_cb, "refuse_pap")
+        #self.refuse_chap.connect("toggled", self.check_button_cb, "refuse_chap")
+        #self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse_mschap")
+        #self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse_mschapv2")
+        #self.require_mppe.connect("toggled", self.check_button_cb, "require_mppe")
+        #self.require_mppe_128.connect("toggled", self.check_button_cb, "require_mppe_128")
+        #self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe_stateful")
+        #self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
+        #self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
+        #self.no_vj_comp.connect("toggled", self.check_button_cb, "no_vj_comp")
+        #self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
+
+    #def refresh(self):
+        ##=========================
+        ## retreieve settings
+        #refuse_eap = self.ppp_setting.refuse_eap
+        #refuse_pap = self.ppp_setting.refuse_pap
+        #refuse_chap = self.ppp_setting.refuse_chap
+        #refuse_mschap = self.ppp_setting.refuse_mschap
+        #refuse_mschapv2 = self.ppp_setting.refuse_mschapv2
+
+        #require_mppe = self.ppp_setting.require_mppe
+        #require_mppe_128 = self.ppp_setting.require_mppe_128
+        #mppe_stateful = self.ppp_setting.mppe_stateful
+
+        #nobsdcomp = self.ppp_setting.nobsdcomp
+        #nodeflate = self.ppp_setting.nodeflate
+        #no_vj_comp = self.ppp_setting.no_vj_comp
+
+        #lcp_echo_failure = self.ppp_setting.lcp_echo_failure
+        #lcp_echo_interval = self.ppp_setting.lcp_echo_interval
+
+        #if require_mppe:
+            #self.require_mppe_128_label.set_sensitive(True)
+            #self.mppe_stateful_label.set_sensitive(True)
+            #self.require_mppe_128.set_sensitive(True)
+            #self.mppe_stateful.set_sensitive(True)
+        #else:
+            #self.require_mppe_128_label.set_sensitive(False)
+            #self.mppe_stateful_label.set_sensitive(False)
+            #self.require_mppe_128.set_active(False)
+            #self.mppe_stateful.set_active(False)
+            #self.require_mppe_128.set_sensitive(False)
+            #self.mppe_stateful.set_sensitive(False)
+
+
+        #self.refuse_eap.set_active( not refuse_eap)
+        #self.refuse_pap.set_active(not refuse_pap)
+        #self.refuse_chap.set_active(not refuse_chap)
+        #self.refuse_mschap.set_active(not refuse_mschap)
+        #self.refuse_mschapv2.set_active(not refuse_mschapv2)
+
+        #self.require_mppe.set_active(require_mppe)
+        #self.require_mppe_128.set_active(require_mppe_128)
+        ## FIXME umcomment it when backend ready
+        #self.mppe_stateful.set_active(mppe_stateful)
+        #self.nobsdcomp.set_active(not nobsdcomp)
+        #self.nodeflate.set_active(not nodeflate)
+        #self.no_vj_comp.set_active(not no_vj_comp)
+
+        #if lcp_echo_failure == None and lcp_echo_interval == None:
+            #self.ppp_echo.set_active(False)
+        #else:
+            #self.ppp_echo.set_active(True)
+        ##==================================
+
+    #def check_button_cb(self, widget, key):
+        #active = widget.get_active()
+        #if key.startswith("refuse"):
+            #if active:
+                #setattr(self.ppp_setting, key, False)
+            #else:
+                #setattr(self.ppp_setting, key, True)
+        #elif key.startswith("no"):
+            #if active:
+                #setattr(self.ppp_setting, key, False)
+            #else:
+                #setattr(self.ppp_setting, key, True)
+        #elif key is "echo":
+            #if active:
+                #setattr(self.ppp_setting, "lcp_echo_failure", 5)
+                #setattr(self.ppp_setting, "lcp_echo_interval", 30)
+            #else:
+                #setattr(self.ppp_setting, "lcp_echo_failure", 0)
+                #setattr(self.ppp_setting, "lcp_echo_interval", 0)
+        #else:
+            #if active:
+                #setattr(self.ppp_setting, key, True)
+            #else:
+                #setattr(self.ppp_setting, key, False)
+        #check_settings(self.connection, self.set_button)
+
+        #if key is "require_mppe":
+            #if active:
+                #self.require_mppe_128_label.set_sensitive(True)
+                #self.mppe_stateful_label.set_sensitive(True)
+                #self.require_mppe_128.set_sensitive(True)
+                #self.mppe_stateful.set_sensitive(True)
+            #else:
+                #self.require_mppe_128.set_active(False)
+                #self.mppe_stateful.set_active(False)
+                #self.require_mppe_128_label.set_sensitive(False)
+                #self.mppe_stateful_label.set_sensitive(False)
+                #self.require_mppe_128.set_sensitive(False)
+                #self.mppe_stateful.set_sensitive(False)
+
+    #def toggle_cb(self, widget):
+        #if widget.get_active():
+            #self.method_table.set_no_show_all(False)
+            #self.show_all()
+        #else:
+            #self.method_table.set_no_show_all(True)
+            #self.method_table.hide()
+
+    #def expose_bg(self, widget, event):
+        #cr = widget.window.cairo_create()
+        #rect = widget.allocation
+        #cr.set_source_rgb( 1, 1, 1) 
+        #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        #cr.fill()
+
 class PPPConf(ScrolledWindow):
+    TABLE_WIDTH = 300
     def __init__(self, connection, set_button_callback):
         ScrolledWindow.__init__(self)
 
@@ -475,20 +722,15 @@ class PPPConf(ScrolledWindow):
         self.set_button = set_button_callback
         self.ppp_setting = self.connection.get_setting("ppp")
 
-        # invisable settings
-        method_image = gtk.Image()
-        method_image.set_from_pixbuf(app_theme.get_pixbuf("network/validation.png").get_pixbuf())
-        compress_image = gtk.Image()
-        compress_image.set_from_pixbuf(app_theme.get_pixbuf("network/zip.png").get_pixbuf())
-        echo_image = gtk.Image()
-        echo_image.set_from_pixbuf(app_theme.get_pixbuf("network/echo.png").get_pixbuf())
 
-        self.method_label = Label("Configure Method", text_size=TITLE_FONT_SIZE)
-        self.refuse_eap_label = Label("EAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_pap_label = Label("PAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_chap_label = Label("CHAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschap_label = Label("MSCHAP", text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschapv2_label = Label("MSCHAP v2", text_size=CONTENT_FONT_SIZE)
+        self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
+                                     _("Configure Method"), width=self.TABLE_WIDTH)
+
+        self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE)
         self.refuse_eap = SwitchButton()
         self.refuse_pap = SwitchButton()
         self.refuse_chap = SwitchButton()
@@ -497,34 +739,23 @@ class PPPConf(ScrolledWindow):
         
         self.method_table = gtk.Table(16, 3, False)
 
-
-        self.method_table.attach(style.wrap_with_align(method_image), 0, 1, 9, 10)
-        self.method_table.attach(style.wrap_with_align(self.method_label), 1, 2, 9, 10)
-        self.method_table.attach(style.wrap_with_align(self.refuse_eap_label), 1, 2, 10, 11, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.refuse_pap_label), 1, 2, 11, 12, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.refuse_chap_label), 1, 2, 12, 13, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.refuse_mschap_label), 1, 2, 13, 14, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2_label), 1, 2, 14, 15, xpadding=10)
-
-        self.method_table.attach(style.wrap_with_align(self.refuse_eap), 2, 3, 10, 11, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_pap), 2, 3, 11, 12, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_chap), 2, 3, 12, 13, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_mschap), 2, 3, 13, 14, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.refuse_mschapv2), 2, 3, 14, 15, xpadding=15)
-
-        #style.set_table(self.method_table, row_spacing=)
-
-
         # visible settings
-        compression = Label("Compression", text_size=TITLE_FONT_SIZE)
-        self.require_mppe_label = Label("Use point-to-point encryption(mppe)", text_size=CONTENT_FONT_SIZE)
-        self.require_mppe_128_label = Label("Require 128-bit encryption", text_size=CONTENT_FONT_SIZE)
-        self.mppe_stateful_label = Label("Use stataful MPPE", text_size=CONTENT_FONT_SIZE)
-        self.nobsdcomp_label = Label("Allow BSD data Compression", text_size=CONTENT_FONT_SIZE)
-        self.nodeflate_label = Label("Allow Deflate date compression", text_size=CONTENT_FONT_SIZE)
-        self.no_vj_comp_label = Label("Use TCP header compression", text_size=CONTENT_FONT_SIZE)
-        echo = Label("Echo", text_size=TITLE_FONT_SIZE)
-        self.ppp_echo_label = Label("Send PPP echo packets", text_size=CONTENT_FONT_SIZE)
+
+        self.compression_title = TitleBar(app_theme.get_pixbuf("network/zip.png"),
+                                          _("Compression"), width=self.TABLE_WIDTH)
+        self.echo_title = TitleBar(app_theme.get_pixbuf("network/echo.png"),
+                                          _("Echo"), width=self.TABLE_WIDTH)
+
+
+        #compressio))n = Label(_("Compression"), text_size=TITLE_FONT_SIZE)
+        self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE)
+        self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE)
+        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE)
+        self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE)
+        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE)
+        self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE)
+        #echo = Label("Echo", text_size=TITLE_FONT_SIZE)
+        self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE)
 
         self.require_mppe = SwitchButton()
         self.require_mppe_128 = SwitchButton()
@@ -535,37 +766,33 @@ class PPPConf(ScrolledWindow):
         self.no_vj_comp = SwitchButton()
         self.ppp_echo = SwitchButton()
 
-        self.method_table.attach(style.wrap_with_align(compress_image), 0, 1, 0 ,1)
-        self.method_table.attach(style.wrap_with_align(compression), 1, 2, 0 ,1)
-        self.method_table.attach(style.wrap_with_align(self.require_mppe_label), 1, 2, 1, 2, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.require_mppe_128_label), 1, 2, 2, 3, xpadding=30)
-        self.method_table.attach(style.wrap_with_align(self.mppe_stateful_label), 1, 2, 3, 4, xpadding=30)
-        self.method_table.attach(style.wrap_with_align(self.nobsdcomp_label), 1, 2, 4, 5, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.nodeflate_label), 1, 2, 5, 6, xpadding=10)
-        self.method_table.attach(style.wrap_with_align(self.no_vj_comp_label), 1, 2, 6, 7, xpadding=10)
+        compression_list = ["require_mppe_label", "require_mppe",
+                            "require_mppe_128_label", "require_mppe_128",
+                            "mppe_stateful_label", "mppe_stateful",
+                            "nobsdcomp_label", "nobsdcomp",
+                            "nodeflate_label", "nodeflate",
+                            "no_vj_comp_label", "no_vj_comp"]
 
-        self.method_table.attach(style.wrap_with_align(echo_image), 0, 1, 7, 8)
-        self.method_table.attach(style.wrap_with_align(echo), 1, 2, 7, 8)
-        self.method_table.attach(style.wrap_with_align(self.ppp_echo_label), 1, 2, 8, 9, xpadding=10)
+        echo_list = ["ppp_echo_label","ppp_echo"]
+        methods_list = ["refuse_eap", "refuse_eap_label",
+                        "refuse_pap", "refuse_pap_label",
+                        "refuse_chap", "refuse_chap_label",
+                        "refuse_mschap", "refuse_mschap_label",
+                        "refuse_mschapv2", "refuse_mschapv2_label"]
 
-        self.method_table.attach(style.wrap_with_align(self.require_mppe), 2, 3, 1, 2, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.require_mppe_128), 2, 3, 2, 3)
-        self.method_table.attach(style.wrap_with_align(self.mppe_stateful), 2, 3, 3, 4)
-        self.method_table.attach(style.wrap_with_align(self.nobsdcomp), 2, 3, 4, 5, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.nodeflate), 2, 3, 5, 6, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.no_vj_comp), 2, 3, 6, 7, xpadding=15)
-        self.method_table.attach(style.wrap_with_align(self.ppp_echo), 2, 3, 8, 9, xpadding=15)
+        for name in (compression_list+echo_list+methods_list):
+            widget = getattr(self, name)
+            align = style.wrap_with_align(widget)
+            setattr(self, name + "_align", align)
 
         vbox = gtk.VBox()
-        #vbox.pack_start(method, False, False)
-        #vbox.pack_start(table, False, False)
         vbox.pack_start(self.method_table, False, False)
         self.method_table.set_col_spacing(0, 10)
-        self.method_table.set_row_spacing(6, 15)
-        self.method_table.set_row_spacing(8, 15)
+        self.method_table.set_row_spacing(6, 20)
+        self.method_table.set_row_spacing(8, 20)
         align = style.set_box_with_align(vbox, "text")
         self.add_with_viewport(align)
-        align.connect("expose-event", self.expose_bg)
+        style.draw_background_color(align)
 
         self.refresh()
 
@@ -581,6 +808,48 @@ class PPPConf(ScrolledWindow):
         self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
         self.no_vj_comp.connect("toggled", self.check_button_cb, "no_vj_comp")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
+
+
+    def refresh_table(self, require_mppe):
+        container_remove_all(self.method_table)
+        self.method_table.attach(self.compression_title, 0, 3, 0 ,1)
+        self.method_table.attach(self.require_mppe_label_align, 0, 2, 1, 2, xpadding=10)
+        if require_mppe:
+            self.method_table.attach(self.require_mppe_128_label_align, 0, 2, 2, 3, xpadding=10)
+            self.method_table.attach(self.mppe_stateful_label_align, 0, 2, 3, 4, xpadding=10)
+            self.method_table.attach(self.require_mppe_128_align, 2, 3, 2, 3)
+            self.method_table.attach(self.mppe_stateful_align, 2, 3, 3, 4) 
+        else:
+            self.require_mppe_128.set_active(False)
+            self.mppe_stateful.set_active(False)
+
+        self.method_table.attach(self.nobsdcomp_label_align, 0, 2, 4, 5, xpadding=10)
+        self.method_table.attach(self.nodeflate_label_align, 0, 2, 5, 6, xpadding=10)
+        self.method_table.attach(self.no_vj_comp_label_align, 0, 2, 6, 7, xpadding=10)
+
+        self.method_table.attach(self.echo_title, 0, 3, 7, 8)
+        #self.method_table.attach(style.wrap_with_align(echo), 1, 2, 7, 8)
+        self.method_table.attach(self.ppp_echo_label_align, 1, 2, 8, 9, xpadding=10)
+
+        self.method_table.attach(self.require_mppe_align, 2, 3, 1, 2)
+        self.method_table.attach(self.nobsdcomp_align, 2, 3, 4, 5)
+        self.method_table.attach(self.nodeflate_align, 2, 3, 5, 6)
+        self.method_table.attach(self.no_vj_comp_align, 2, 3, 6, 7)
+        self.method_table.attach(self.ppp_echo_align, 2, 3, 8, 9)
+        self.method_table.attach(self.method_title, 0, 3, 9, 10)
+        #self.method_table.attach(style.wrap_with_align(self.method_label), 1, 2, 9, 10)
+        self.method_table.attach(self.refuse_eap_label_align, 1, 2, 10, 11, xpadding=10)
+        self.method_table.attach(self.refuse_pap_label_align, 1, 2, 11, 12, xpadding=10)
+        self.method_table.attach(self.refuse_chap_label_align, 1, 2, 12, 13, xpadding=10)
+        self.method_table.attach(self.refuse_mschap_label_align, 1, 2, 13, 14, xpadding=10)
+        self.method_table.attach(self.refuse_mschapv2_label_align, 1, 2, 14, 15, xpadding=10)
+
+        self.method_table.attach(self.refuse_eap_align, 2, 3, 10, 11, )
+        self.method_table.attach(self.refuse_pap_align, 2, 3, 11, 12, )
+        self.method_table.attach(self.refuse_chap_align, 2, 3, 12, 13, )
+        self.method_table.attach(self.refuse_mschap_align, 2, 3, 13, 14, )
+        self.method_table.attach(self.refuse_mschapv2_align, 2, 3, 14, 15, )
+
 
     def refresh(self):
         #=========================
@@ -602,20 +871,6 @@ class PPPConf(ScrolledWindow):
         lcp_echo_failure = self.ppp_setting.lcp_echo_failure
         lcp_echo_interval = self.ppp_setting.lcp_echo_interval
 
-        if require_mppe:
-            self.require_mppe_128_label.set_sensitive(True)
-            self.mppe_stateful_label.set_sensitive(True)
-            self.require_mppe_128.set_sensitive(True)
-            self.mppe_stateful.set_sensitive(True)
-        else:
-            self.require_mppe_128_label.set_sensitive(False)
-            self.mppe_stateful_label.set_sensitive(False)
-            self.require_mppe_128.set_active(False)
-            self.mppe_stateful.set_active(False)
-            self.require_mppe_128.set_sensitive(False)
-            self.mppe_stateful.set_sensitive(False)
-
-
         self.refuse_eap.set_active( not refuse_eap)
         self.refuse_pap.set_active(not refuse_pap)
         self.refuse_chap.set_active(not refuse_chap)
@@ -634,6 +889,8 @@ class PPPConf(ScrolledWindow):
             self.ppp_echo.set_active(False)
         else:
             self.ppp_echo.set_active(True)
+
+        self.refresh_table(require_mppe)
         #==================================
 
     def check_button_cb(self, widget, key):
@@ -664,203 +921,8 @@ class PPPConf(ScrolledWindow):
 
         if key is "require_mppe":
             if active:
-                self.require_mppe_128_label.set_sensitive(True)
-                self.mppe_stateful_label.set_sensitive(True)
-                self.require_mppe_128.set_sensitive(True)
-                self.mppe_stateful.set_sensitive(True)
+                self.refresh_table(1)
             else:
-                self.require_mppe_128.set_active(False)
-                self.mppe_stateful.set_active(False)
-                self.require_mppe_128_label.set_sensitive(False)
-                self.mppe_stateful_label.set_sensitive(False)
-                self.require_mppe_128.set_sensitive(False)
-                self.mppe_stateful.set_sensitive(False)
-
-    def toggle_cb(self, widget):
-        if widget.get_active():
-            self.method_table.set_no_show_all(False)
-            self.show_all()
-        else:
-            self.method_table.set_no_show_all(True)
-            self.method_table.hide()
-
-    def expose_bg(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
+                self.refresh_table(None)
 
 
-
-class PPPConfBak(gtk.VBox):
-
-    def __init__(self, connection):
-        gtk.VBox.__init__(self)
-
-        self.connection = connection
-        self.ppp_setting = self.connection.get_setting("ppp")
-
-        method = Contain(app_theme.get_pixbuf("network/misc.png"), "Configure Method", self.toggle_cb)
-        # invisable settings
-        self.refuse_eap = CheckButton("EAP")
-        self.refuse_pap = CheckButton("PAP")
-        self.refuse_chap = CheckButton("CHAP")
-        self.refuse_mschap = CheckButton("MSCHAP")
-        self.refuse_mschapv2 = CheckButton("MSCHAP v2")
-        
-        self.method_table = gtk.Table(5, 8, False)
-        self.method_table.set_no_show_all(True)
-        self.method_table.hide()
-        self.method_table.attach(self.refuse_eap, 0, 8, 0, 1)
-        self.method_table.attach(self.refuse_pap, 0, 8, 1, 2)
-        self.method_table.attach(self.refuse_chap, 0, 8, 2, 3)
-        self.method_table.attach(self.refuse_mschap, 0, 8, 3, 4)
-        self.method_table.attach(self.refuse_mschapv2, 0, 8, 4, 5)
-
-        # visible settings
-        table = gtk.Table(9, 8, False)
-        compression = Label("Compression")
-        table.attach(compression, 0, 5, 0 ,1)
-
-        self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
-        self.require_mppe.connect("toggled", self.mppe_toggled)
-        self.require_mppe_128 = CheckButton("Require 128-bit encryption")
-        self.mppe_stateful = CheckButton("Use stataful MPPE")
-        
-        self.nobsdcomp = CheckButton("Allow BSD data Compression")
-        self.nodeflate = CheckButton("Allow Deflate date compression")
-        self.no_vj_comp = CheckButton("Use TCP header compression")
-
-        echo = Label("Echo")
-        self.ppp_echo = CheckButton("Send PPP echo packets")
-        #self.mppe.set_size_request(100, 10)
-        table.attach(self.require_mppe, 0, 10, 1, 2)
-        table.attach(self.require_mppe_128, 1, 10, 2, 3)
-        table.attach(self.mppe_stateful, 1, 10, 3, 4)
-        table.attach(self.nobsdcomp, 0, 10, 4, 5)
-        table.attach(self.nodeflate, 0, 10, 5, 6)
-        table.attach(self.no_vj_comp, 0, 10, 6, 7)
-        table.attach(echo, 0, 5, 7, 8)
-        table.attach(self.ppp_echo, 0, 10, 8, 9)
-
-        vbox = gtk.VBox()
-        vbox.pack_start(method, False, False)
-        vbox.pack_start(self.method_table, False, False)
-        vbox.pack_start(table, False, False)
-        
-        # TODO ui change
-        align = style.set_box_with_align(vbox, "text")
-        self.add(align)
-
-        self.require_mppe_128.set_sensitive(False)
-        self.mppe_stateful.set_sensitive(False)
-        self.refresh()
-
-    def refresh(self):
-        #=========================
-        # retreieve settings
-        refuse_eap = self.ppp_setting.refuse_eap
-        refuse_pap = self.ppp_setting.refuse_pap
-        refuse_chap = self.ppp_setting.refuse_chap
-        refuse_mschap = self.ppp_setting.refuse_mschap
-        refuse_mschapv2 = self.ppp_setting.refuse_mschapv2
-
-        require_mppe = self.ppp_setting.require_mppe
-        require_mppe_128 = self.ppp_setting.require_mppe_128
-        mppe_stateful = self.ppp_setting.mppe_stateful
-
-        nobsdcomp = self.ppp_setting.nobsdcomp
-        nodeflate = self.ppp_setting.nodeflate
-        no_vj_comp = self.ppp_setting.no_vj_comp
-
-        lcp_echo_failure = self.ppp_setting.lcp_echo_failure
-        lcp_echo_interval = self.ppp_setting.lcp_echo_interval
-
-        # entering ui
-        #if widget.get_active():
-            #self.require_mppe_128.set_sensitive(True)
-            #self.mppe_stateful.set_sensitive(True)
-        #else:
-            #self.require_mppe_128.set_active(False)
-            #self.mppe_stateful.set_active(False)
-            #self.require_mppe_128.set_sensitive(False)
-            #self.mppe_stateful.set_sensitive(False)
-
-        self.refuse_eap.set_active( not refuse_eap)
-        self.refuse_pap.set_active(not refuse_pap)
-        self.refuse_chap.set_active(not refuse_chap)
-        self.refuse_mschap.set_active(not refuse_mschap)
-        self.refuse_mschapv2.set_active(not refuse_mschapv2)
-
-        self.require_mppe.set_active(require_mppe)
-        self.require_mppe_128.set_active(require_mppe_128)
-        # FIXME umcomment it when backend ready
-        self.mppe_stateful.set_active(mppe_stateful)
-        self.nobsdcomp.set_active(not nobsdcomp)
-        self.nodeflate.set_active(not nodeflate)
-        self.no_vj_comp.set_active(not no_vj_comp)
-
-        if lcp_echo_failure == None and lcp_echo_interval == None:
-            self.ppp_echo.set_active(False)
-        else:
-            self.ppp_echo.set_active(True)
-        #==================================
-
-    def save_setting(self):
-        refuse_eap = not self.refuse_eap.get_active()
-        refuse_pap = not self.refuse_pap.get_active()
-        refuse_chap = not self.refuse_chap.get_active()
-        refuse_mschap = not self.refuse_mschap.get_active()
-        refuse_mschapv2 = not self.refuse_mschapv2.get_active()
-
-        require_mppe = self.require_mppe.get_active()
-        require_mppe_128 = self.require_mppe_128.get_active()
-        mppe_stateful = self.mppe_stateful.get_active()
-
-        nobsdcomp = not self.nobsdcomp.get_active()
-        nodeflate = not self.nodeflate.get_active()
-        no_vj_comp = not  self.no_vj_comp.get_active()
-
-        echo = self.ppp_echo.get_active()
-
-        self.ppp_setting.refuse_eap = refuse_eap
-        self.ppp_setting.refuse_pap = refuse_pap
-        self.ppp_setting.refuse_chap = refuse_chap
-        self.ppp_setting.refuse_mschap = refuse_mschap 
-        self.ppp_setting.refuse_mschapv2 = refuse_mschapv2
-        self.ppp_setting.require_mppe = require_mppe
-        self.ppp_setting.require_mppe_128 = require_mppe_128
-        self.ppp_setting.mppe_stateful = mppe_stateful
-
-        self.ppp_setting.nobsdcomp = nobsdcomp
-        self.ppp_setting.nodeflate = nodeflate
-        self.ppp_setting.no_vj_comp = no_vj_comp
-
-        if echo:
-            lcp_echo_failure = 5
-            lcp_echo_interval = 30
-        else:
-            lcp_echo_failure = 0
-            lcp_echo_interval = 0
-
-        #print self.ppp_setting.prop_dict
-
-    def mppe_toggled(self, widget):
-        #print "toggled"
-        if widget.get_active():
-            self.require_mppe_128.set_sensitive(True)
-            self.mppe_stateful.set_sensitive(True)
-        else:
-            self.require_mppe_128.set_active(False)
-            self.mppe_stateful.set_active(False)
-            self.require_mppe_128.set_sensitive(False)
-            self.mppe_stateful.set_sensitive(False)
-
-    def toggle_cb(self, widget):
-        if widget.get_active():
-            self.method_table.set_no_show_all(False)
-            self.show_all()
-        else:
-            self.method_table.set_no_show_all(True)
-            self.method_table.hide()
