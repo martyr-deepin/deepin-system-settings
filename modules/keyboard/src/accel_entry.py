@@ -31,13 +31,6 @@ import gobject
 from glib import markup_escape_text
 from constant import *
 
-def check_conflict_item(accel_buf):
-    for category in self.__shortcuts_items:
-        for items in self.__shortcuts_items[category]:
-            if items != item and items.accel_buffer == accel_buf:
-                return items
-    return None
-
 def draw_widget_background(widget, event):
     x, y, w, h = widget.allocation
     cr = widget.window.cairo_create()
@@ -160,14 +153,17 @@ class AccelBuffer(object):
 
 class AccelEntry(ShortcutKeyEntry):
     ''' '''
-    TYPE_GSETTINGS = 0
-    TYPE_GCONF = 1
+    TYPE_GSETTINGS = 1
+    TYPE_GCONF = 2
+    TYPE_STRING = 3
+    TYPE_STRV = 4
     __gsignals__ = {
         "accel-key-change" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
     }
+    
     def __init__(self, content="",
                  check_conflict_func=None,
-                 resolve_conflict_func=None,
+                 resolve_conflict_func=resolve_accel_entry_conflict,
                  process_unmodifier_func=process_unmodifier_key):
         '''
         @param content: a string container accelerator
@@ -197,7 +193,7 @@ class AccelEntry(ShortcutKeyEntry):
         self.grab_area.connect("key-press-event", self.__on_grab_area_key_press_cb)
         self.accel_label.connect("button-press-event", self.__on_label_button_press_cb)
         self.accel_label.keymap = {}
-        self.set_size(180, 24)
+        self.set_size(200, 24)
 
         self.check_conflict_func = check_conflict_func
         self.resolve_conflict_func = resolve_conflict_func
@@ -206,6 +202,8 @@ class AccelEntry(ShortcutKeyEntry):
         self.settings_description = ""
         self.settings_key = ""
         self.settings_obj = None
+        self.settings_type = None
+        self.settings_value_type = None
         self.connect("accel-key-change", self.__on_accel_key_change_cb)
 
     def __on_label_button_press_cb(self, widget, event):
@@ -246,9 +244,9 @@ class AccelEntry(ShortcutKeyEntry):
             self.accel_label.set_text(self.accel_str)
             self.process_unmodifier_func(tmp_accel_buf)
             return
-        if self.check_conflict_func:
-            conflict_entry = self.check_conflict_func(self)
-            if conflict_entry and self.resolve_conflict_func:
+        if self.check_conflict_func and self.resolve_conflict_func:
+            conflict_entry = self.check_conflict_func(self, tmp_accel_buf)
+            if conflict_entry:
                 self.resolve_conflict_func(self, conflict_entry, tmp_accel_buf)
                 return
         self.set_keyval_and_state(keyval, state)
@@ -318,6 +316,19 @@ class AccelEntry(ShortcutKeyEntry):
     def __on_accel_key_change_cb(self, widget, accel_name):
         if not self.settings_obj:
             return
-        set_gsettings_or_gconf_value(self.settings_obj, self.settings_key, accel_name)
+        if self.settings_type == self.TYPE_GSETTINGS:
+            if self.settings_value_type == self.TYPE_STRV:
+                if accel_name:
+                    self.settings_obj.set_strv(self.settings_key, [accel_name])
+                else:
+                    self.settings_obj.set_strv(self.settings_key, [])
+            elif self.settings_value_type == self.TYPE_STRING:
+                self.settings_obj.set_string(self.settings_key, accel_name)
+        elif self.settings_type == self.TYPE_GCONF:
+            value = self.settings_obj.get("%s/binding" % (self.settings_key))
+            value.set_string(accel_name)
+            self.settings_obj.set("%s/binding" % (self.settings_key), value)
+        print "set key", accel_name, self.settings_obj, self.settings_key, self.settings_type, self.settings_value_type
+        #set_gsettings_or_gconf_value(self.settings_obj, self.settings_key, accel_name)
         
 gobject.type_register(AccelEntry)

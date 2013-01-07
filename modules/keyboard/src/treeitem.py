@@ -77,7 +77,7 @@ class MyTreeView(TreeView):
         super(MyTreeView, self).set_select_rows(rows)
         if rows:
             for select_row in self.select_rows:
-                print self.visible_items[select_row]
+                #print self.visible_items[select_row]
                 self.emit("select", self.visible_items[select_row], select_row)
     
     def draw_mask(self, cr, x, y, w, h):
@@ -161,7 +161,7 @@ class SelectItem(BaseItem):
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
         cr.rectangle(rect.x+1, rect.y, rect.width-2, rect.height-1)
         cr.paint()
-        draw_text(cr, self.text, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+        draw_text(cr, self.text, rect.x+50+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
         ## draw line
         #with cairo_disable_antialias(cr):    
             #cr.set_line_width(1)
