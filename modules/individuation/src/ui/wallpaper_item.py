@@ -31,8 +31,8 @@ from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
 
 from theme import app_theme
-from helper import event_manager
 from cache_manager import SMALL_SIZE, cache_manager
+from helper import event_manager
 
 
 ITEM_PADDING_X = 20
@@ -510,6 +510,10 @@ class CacheItem(gobject.GObject, MissionThread):
             self.wallpaper_width, self.wallpaper_height
             ) 
         
+        self.tick_normal_dpixbuf = app_theme.get_pixbuf("individuation/tick_normal.png")
+        self.tick_gray_dpixbuf = app_theme.get_pixbuf("individuation/tick_gray.png")
+        self.is_tick = False
+        
     def create_cache_pixbuf(self):    
         self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
         
@@ -609,6 +613,14 @@ class CacheItem(gobject.GObject, MissionThread):
             cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
             cr.stroke()
             
+        if self.is_tick:    
+            tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
+        else:    
+            tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
+            
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
+        draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -665,7 +677,8 @@ class CacheItem(gobject.GObject, MissionThread):
         
         This is IconView interface, you should implement it.
         '''
-        event_manager.emit("download-image", self.image_object)
+        self.is_tick = not self.is_tick
+        self.emit_redraw_request()
     
     def icon_item_button_release(self, x, y):
         '''

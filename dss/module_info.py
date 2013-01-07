@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.config import Config
-from dtk.ui.utils import get_parent_dir
+from deepin_utils.file import get_parent_dir
 import gtk
 import os
 

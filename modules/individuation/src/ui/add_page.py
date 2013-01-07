@@ -24,10 +24,11 @@ import gtk
 
 from dtk.ui.new_treeview import TreeView
 
-from add_item import ExpandItem
-from cache_page import CachePage
-from download_page import DownloadPage
-from ui_utils import switch_box, draw_line
+from ui.add_item import ExpandItem
+from ui.cache_page import CachePage
+from ui.download_page import DownloadPage
+from ui.utils import switch_box, draw_line
+
 from aibizhi import Aibizhi
 from bizhi360 import Bizhi360
 

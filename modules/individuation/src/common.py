@@ -23,10 +23,17 @@
 import os
 import gtk
 import glib
+import re
+import gio
 import locale
 import threading
 import hashlib
 import urllib2
+from collections import deque
+
+from dtk.ui.logger import new_logger
+
+logger = new_logger("common")
 
 
 try:
@@ -160,3 +167,125 @@ class ThreadFetch(threading.Thread):
                 
 def get_md5(string):                
     return hashlib.md5(string).hexdigest()
+
+
+def walk(root):
+    """
+        Walk through a Gio directory, yielding each file
+
+        Files are enumerated in the following order: first the
+        directory, then the files in that directory. Once one
+        directory's files have all been listed, it moves on to
+        the next directory. Order of files within a directory
+        and order of directory traversal is not specified.
+
+        :param root: a :class:`gio.File` representing the
+            directory to walk through
+        :returns: a generator object
+        :rtype: :class:`gio.File`
+    """
+    queue = deque()
+    queue.append(root)
+
+    while len(queue) > 0:
+        dir = queue.pop()
+        yield dir
+        try:
+            for fileinfo in dir.enumerate_children("standard::type,"
+                    "standard::is-symlink,standard::name,"
+                    "standard::symlink-target,time::modified"):
+                fil = dir.get_child(fileinfo.get_name())
+                # FIXME: recursive symlinks could cause an infinite loop
+                if fileinfo.get_is_symlink():
+                    target = fileinfo.get_symlink_target()
+                    if not "://" in target and not os.path.isabs(target):
+                        fil2 = dir.get_child(target)
+                    else:
+                        fil2 = gio.File(target)
+                    # already in the collection, we'll get it anyway
+                    if fil2.has_prefix(root):
+                        continue
+                type = fileinfo.get_file_type()
+                if type == gio.FILE_TYPE_DIRECTORY:
+                    queue.append(fil)
+                elif type == gio.FILE_TYPE_REGULAR:
+                    yield fil
+        except gio.Error, e: # why doesnt gio offer more-specific errors?
+            logger.log_exception("Unhandled exception while walking on %s.", dir)
+
+def walk_images(root, filter_type=["png", "jpeg"]):
+    """
+        Walk through a Gio directory, yielding each file
+
+        Files are enumerated in the following order: first the
+        directory, then the files in that directory. Once one
+        directory's files have all been listed, it moves on to
+        the next directory. Order of files within a directory
+        and order of directory traversal is not specified.
+
+        :param root: a :class:`gio.File` representing the
+            directory to walk through
+        :returns: a generator object
+        :rtype: :class:`gio.File`
+    """
+    queue = deque()
+    queue.append(root)
+
+    while len(queue) > 0:
+        dir = queue.pop()
+        try:
+            for fileinfo in dir.enumerate_children("standard::type,"
+                    "standard::is-symlink,standard::name,"
+                    "standard::symlink-target,time::modified,standard::content-type"):
+                fil = dir.get_child(fileinfo.get_name())
+                # FIXME: recursive symlinks could cause an infinite loop
+                if fileinfo.get_is_symlink():
+                    target = fileinfo.get_symlink_target()
+                    if not "://" in target and not os.path.isabs(target):
+                        fil2 = dir.get_child(target)
+                    else:
+                        fil2 = gio.File(target)
+                    # already in the collection, we'll get it anyway
+                    if fil2.has_prefix(root):
+                        continue
+                type = fileinfo.get_file_type()
+                if type == gio.FILE_TYPE_DIRECTORY:
+                    queue.append(fil)
+                elif type == gio.FILE_TYPE_REGULAR:
+                    content_type = fileinfo.get_attribute_as_string("standard::content-type")
+                    split_content = content_type.split("/")
+                    if len(split_content) == 2:
+                        if split_content[0] == "image" and split_content[1] in filter_type:
+                            yield fil
+        except gio.Error, e: # why doesnt gio offer more-specific errors?
+            print e
+            logger.log_exception("Unhandled exception while walking on %s.", dir)
+            
+def walk_directories(root):
+    """
+        Walk through a Gio directory, yielding each subdirectory
+
+        :param root: a :class:`gio.File` representing the
+            directory to walk through
+        :returns: a generator object
+        :rtype: :class:`gio.File`
+    """
+    yield root
+    directory = None
+    subdirectory = None
+
+    try:
+        for fileinfo in root.enumerate_children(
+                'standard::name,standard::type'):
+            if fileinfo.get_file_type() == gio.FILE_TYPE_DIRECTORY:
+                directory = root.get_child(fileinfo.get_name())
+
+                for subdirectory in walk_directories(directory):
+                    yield subdirectory
+    except gio.Error, e:
+        logger.log_exception("Unhandled exception while walking dirs on %s, %s, %s", root, directory, subdirectory)
+                
+if __name__ == "__main__":        
+    a = walk_images(gio.File("/home/evilbeast/Pictures"))
+    for f in a:
+        print f.get_path()

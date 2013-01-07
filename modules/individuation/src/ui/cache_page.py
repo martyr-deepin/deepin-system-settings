@@ -27,7 +27,8 @@ from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
 from dtk.ui.threads import post_gui
 from dtk.ui.scrolled_window import ScrolledWindow
-from wallpaper_item import CacheItem
+
+from ui.wallpaper_item import CacheItem
 from cache_manager import cache_thread_pool
 
 import common
