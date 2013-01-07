@@ -32,6 +32,7 @@ from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton
 from dtk.ui.hscalebar import HScalebar
+from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
 from dtk.ui.utils import propagate_expose, color_hex_to_cairo, set_clickable_cursor
 import gtk
@@ -164,7 +165,7 @@ class MouseSetting(object):
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["main_hbox"].set_padding(
-            TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+            TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
@@ -198,12 +199,14 @@ class MouseSetting(object):
         self.alignment_widgets["custom_button"].add(self.container_widgets["custom_button_hbox"])
         # alignment set
         self.alignment_widgets["custom_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["custom_button"].set(1.0, 0.5, 0.0, 0.0)
+        self.alignment_widgets["custom_button"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["custom_button"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.alignment_widgets["custom_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["custom_button"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.container_widgets["custom_main_vbox"].pack_start(
             self.alignment_widgets["custom_label"])
+        self.container_widgets["custom_main_vbox"].pack_start(
+            self.__setup_separator())
         self.container_widgets["custom_main_vbox"].pack_start(
             self.alignment_widgets["custom_button"])
         # tips label
@@ -220,13 +223,16 @@ class MouseSetting(object):
             self.button_widgets["right_hand_radio"].set_active(True)
             self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/mouse_l.png" % MODULE_NAME)
         self.container_widgets["custom_button_hbox"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["custom_button_hbox"].set_size_request(
-            HSCALEBAR_WIDTH+WIDGET_SPACING+label_width, -1)
-        self.container_widgets["custom_button_hbox"].pack_start(
+        self.container_widgets["custom_button_hbox0"] = gtk.HBox(False)
+        self.container_widgets["custom_button_hbox0"].set_spacing(WIDGET_SPACING)
+        self.container_widgets["custom_button_hbox0"].pack_start(
             self.button_widgets["right_hand_radio"], False, False)
-        self.container_widgets["custom_button_hbox"].pack_start(
+        self.container_widgets["custom_button_hbox0"].pack_start(
             self.button_widgets["left_hand_radio"], False, False)
-        #self.container_widgets["custom_button_hbox"].pack_start(self.__make_align())
+        button_align = self.__make_align(self.container_widgets["custom_button_hbox0"], xalign=1.0)
+        button_align.set_size_request(HSCALEBAR_WIDTH+WIDGET_SPACING+label_width, CONTAINNER_HEIGHT)
+        self.container_widgets["custom_button_hbox"].pack_start(button_align, False, False)
+        self.container_widgets["custom_button_hbox"].pack_start(self.__make_align())
 
         # pointer speed
         self.alignment_widgets["pointer_speed_label"].add(self.container_widgets["pointer_speed_label_hbox"])
@@ -239,6 +245,8 @@ class MouseSetting(object):
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
             self.alignment_widgets["pointer_speed_label"])
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
+            self.__setup_separator())
+        self.container_widgets["pointer_speed_main_vbox"].pack_start(
             self.alignment_widgets["pointer_speed_table"])
         # tips lable
         self.container_widgets["pointer_speed_label_hbox"].set_spacing(WIDGET_SPACING)
@@ -247,7 +255,8 @@ class MouseSetting(object):
         self.container_widgets["pointer_speed_label_hbox"].pack_start(
             self.label_widgets["pointer_speed"], False, False)
         # motion acceleration
-        self.scale_widgets["pointer_speed_accel"].set_value(settings.mouse_get_motion_acceleration())
+        self.scale_widgets["pointer_speed_accel"].set_value(
+            settings.mouse_get_motion_acceleration()+self.scale_widgets["pointer_speed_accel"].value_min)
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["pointer_speed_accel"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -260,7 +269,8 @@ class MouseSetting(object):
         self.container_widgets["pointer_speed_table"].attach(
             self.__make_align(self.scale_widgets["pointer_speed_accel"], yalign=0.0, yscale=1.0, height=43), 1, 3, 0, 1, 4)
         # motion threshold
-        self.scale_widgets["pointer_speed_sensitiv"].set_value(settings.mouse_get_motion_threshold())
+        self.scale_widgets["pointer_speed_sensitiv"].set_value(
+            settings.mouse_get_motion_threshold()+self.scale_widgets["pointer_speed_sensitiv"].value_min)
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_lower(), gtk.POS_BOTTOM, _("Low"))
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_upper(), gtk.POS_BOTTOM, _("High"))
         self.scale_widgets["pointer_speed_sensitiv"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -280,6 +290,8 @@ class MouseSetting(object):
         self.container_widgets["double_click_main_vbox"].pack_start(
             self.alignment_widgets["double_click_label"])
         self.container_widgets["double_click_main_vbox"].pack_start(
+            self.__setup_separator())
+        self.container_widgets["double_click_main_vbox"].pack_start(
             self.alignment_widgets["double_click_table"])
         # tips lable
         self.container_widgets["double_click_label_hbox"].set_spacing(WIDGET_SPACING)
@@ -288,7 +300,8 @@ class MouseSetting(object):
         self.container_widgets["double_click_label_hbox"].pack_start(
             self.label_widgets["double_click"], False, False)
         # double click rate
-        self.scale_widgets["double_click_rate"].set_value(settings.mouse_get_double_click())
+        self.scale_widgets["double_click_rate"].set_value(
+            settings.mouse_get_double_click()+self.scale_widgets["double_click_rate"].value_min)
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["double_click_rate"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -410,7 +423,7 @@ class MouseSetting(object):
     
     def scalebar_value_changed(self, widget, event, key):
         '''adjustment value changed, and settings set the value'''
-        value = widget.value
+        value = widget.value + widget.value_min
         if key == "motion-threshold":   # motion-threshold is an int type
             new_value = value
             old_value = self.settings.get_int(key)
@@ -424,7 +437,7 @@ class MouseSetting(object):
     
     def settings_value_changed(self, settings, key, adjustment):
         '''settings value changed, and adjustment set the value'''
-        adjustment.set_value(self.scale_get[key]())
+        adjustment.set_value(self.scale_get[key]()+adjustment.value_min)
         adjustment.set_data("changed-by-other-app", True)
 
     def double_click_test(self, widget, event):
@@ -462,6 +475,14 @@ class MouseSetting(object):
             align.add(widget)
         return align
 
+    def __make_separator(self):
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(350, 10)
+        return hseparator
+    
+    def __setup_separator(self):
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, height=10)
+    
     def set_to_default(self):
         '''set to the default'''
         settings.mouse_set_to_default()
