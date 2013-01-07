@@ -507,8 +507,6 @@ class PPPConf(ScrolledWindow):
             align = style.wrap_with_align(widget)
             setattr(self, name + "_align", align)
 
-
-
         vbox = gtk.VBox()
         vbox.pack_start(self.method_table, False, False)
         self.method_table.set_col_spacing(0, 10)
