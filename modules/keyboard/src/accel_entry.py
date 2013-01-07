@@ -225,6 +225,8 @@ class AccelEntry(ShortcutKeyEntry):
     def __on_grab_area_key_press_cb(self, widget, event):
         if event.is_modifier:
             return False
+        if not gtk.gdk.pointer_is_grabbed():
+            return False
         gtk.gdk.keyboard_ungrab(0)
         gtk.gdk.pointer_ungrab(0)
         keyval = event.keyval
@@ -325,9 +327,7 @@ class AccelEntry(ShortcutKeyEntry):
             elif self.settings_value_type == self.TYPE_STRING:
                 self.settings_obj.set_string(self.settings_key, accel_name)
         elif self.settings_type == self.TYPE_GCONF:
-            value = self.settings_obj.get("%s/binding" % (self.settings_key))
-            value.set_string(accel_name)
-            self.settings_obj.set("%s/binding" % (self.settings_key), value)
+            self.settings_obj.set_string("%s/binding" % (self.settings_key), accel_name)
         print "set key", accel_name, self.settings_obj, self.settings_key, self.settings_type, self.settings_value_type
         #set_gsettings_or_gconf_value(self.settings_obj, self.settings_key, accel_name)
         

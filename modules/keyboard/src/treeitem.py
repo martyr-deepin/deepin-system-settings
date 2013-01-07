@@ -162,13 +162,6 @@ class SelectItem(BaseItem):
         cr.rectangle(rect.x+1, rect.y, rect.width-2, rect.height-1)
         cr.paint()
         draw_text(cr, self.text, rect.x+50+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
-        ## draw line
-        #with cairo_disable_antialias(cr):    
-            #cr.set_line_width(1)
-            #cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            #cr.move_to(rect.x, rect.y-1+rect.height)
-            #cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
-            #cr.stroke()
 
 gobject.type_register(SelectItem)
 
@@ -217,13 +210,6 @@ class LayoutItem(BaseItem):
         cr.rectangle(rect.x+1, rect.y, rect.width-2, rect.height-1)
         cr.paint()
         draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
-        ## draw line
-        #with cairo_disable_antialias(cr):    
-            #cr.set_line_width(1)
-            #cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            #cr.move_to(rect.x, rect.y-1+rect.height)
-            #cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
-            #cr.stroke()
 
 gobject.type_register(LayoutItem)
 
@@ -313,9 +299,7 @@ class ShortcutItem(BaseItem):
                     settings.set_strv(self.name, [])
         else:
             gconf_dir = self.get_data("gconf-dir")
-            value = settings.get("%s/binding" % (gconf_dir))
-            value.set_string(accel_data)
-            settings.set("%s/binding" % (gconf_dir), value)
+            settings.set_string("%s/binding" % (gconf_dir), accel_data)
         self.keyname = self.accel_buffer.get_accel_label()
         if self.keyname == '':
             self.keyname = _('disable')
