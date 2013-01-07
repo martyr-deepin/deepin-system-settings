@@ -22,7 +22,8 @@ from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text, draw_line
-from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, get_parent_dir
+from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo
+from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 
 from lan_config import WiredSetting, NoSetting
