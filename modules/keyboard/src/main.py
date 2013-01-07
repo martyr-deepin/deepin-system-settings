@@ -22,7 +22,7 @@
 
 import sys
 import os
-from dtk.ui.utils import get_parent_dir
+from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
@@ -282,9 +282,9 @@ class KeySetting(object):
         value = self.adjust_widgets["repeat_delay"].get_upper() + self.adjust_widgets["repeat_delay"].get_lower() - settings.keyboard_get_repeat_delay()
         self.scale_widgets["repeat_delay"].set_value(value)
         self.scale_widgets["repeat_delay"].add_mark(
-            self.scale_widgets["repeat_delay"].value_min, gtk.POS_BOTTOM, _("Long"))
+            self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Long"))
         self.scale_widgets["repeat_delay"].add_mark(
-            self.scale_widgets["repeat_delay"].value_max, gtk.POS_BOTTOM, _("Short"))
+            self.adjust_widgets["repeat_delay"].get_upper(), gtk.POS_BOTTOM, _("Short"))
         self.scale_widgets["repeat_delay"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["repeat_table"].set_col_spacings(WIDGET_SPACING)
@@ -297,9 +297,9 @@ class KeySetting(object):
         value = self.adjust_widgets["repeat_interval"].get_upper() + self.adjust_widgets["repeat_interval"].get_lower() - settings.keyboard_get_repeat_interval()
         self.scale_widgets["repeat_interval"].set_value(value)
         self.scale_widgets["repeat_interval"].add_mark(
-            self.scale_widgets["repeat_interval"].value_min, gtk.POS_BOTTOM, _("Slow"))
+            self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["repeat_interval"].add_mark(
-            self.scale_widgets["repeat_interval"].value_max, gtk.POS_BOTTOM, _("Fast"))
+            self.adjust_widgets["repeat_interval"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["repeat_interval"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["repeat_table"].attach(
@@ -335,9 +335,9 @@ class KeySetting(object):
         value = self.adjust_widgets["blink_cursor"].get_upper() + self.adjust_widgets["blink_cursor"].get_lower() - settings.keyboard_get_cursor_blink_time()
         self.scale_widgets["blink_cursor"].set_value(value)
         self.scale_widgets["blink_cursor"].add_mark(
-            self.scale_widgets["blink_cursor"].value_min, gtk.POS_BOTTOM, _("Slow"))
+            self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["blink_cursor"].add_mark(
-            self.scale_widgets["blink_cursor"].value_max, gtk.POS_BOTTOM, _("Fast"))
+            self.adjust_widgets["blink_cursor"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["blink_cursor"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["blink_table"].set_col_spacings(WIDGET_SPACING)
