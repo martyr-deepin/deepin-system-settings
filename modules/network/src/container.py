@@ -7,7 +7,7 @@ import gtk
 
 from dss import app_theme
 import sys,os
-from dtk.ui.utils import get_parent_dir
+from deepin_utils.file import get_parent_dir
 from dtk.ui.label import Label
 from dtk.ui.box import ImageBox
 from dtk.ui.button import RadioButton, OffButton

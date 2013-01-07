@@ -10,7 +10,9 @@ from dss import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeView
 from dtk.ui.draw import  draw_line
-from dtk.ui.utils import color_hex_to_cairo, get_parent_dir, is_dbus_name_exists, container_remove_all, get_content_size
+from dtk.ui.utils import color_hex_to_cairo, container_remove_all, get_content_size
+from deepin_utils.file import  get_parent_dir
+from deepin_utils.ipc import is_dbus_name_exists
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
