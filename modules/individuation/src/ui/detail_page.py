@@ -39,7 +39,7 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.constant import ALIGN_END
 
-from wallpaper_item import ITEM_PADDING_Y, WallpaperItem, AddItem
+from ui.wallpaper_item import ITEM_PADDING_Y, WallpaperItem, AddItem
 
 
 class DetailPage(TabBox):

@@ -23,18 +23,18 @@
 
 import sys
 import os
-from dtk.ui.utils import get_parent_dir
+
+from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from dtk.ui.new_slider import HSlider
-from detail_page import DetailPage
-from theme_page import ThemePage
-from add_page import AddPage
+
+from ui.detail_page import DetailPage
+from ui.theme_page import ThemePage
+from ui.add_page import AddPage
 from module_frame import ModuleFrame
 from constant import PAGE_WIDTH, PAGE_HEIGHT
 from helper import event_manager
-
-
 
 class DeepinIndividuation(object):
     

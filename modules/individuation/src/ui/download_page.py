@@ -20,38 +20,40 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import gtk
+from dtk.ui.new_treeview import TreeView
 
-from dtk.ui.iconview import IconView
-from dtk.ui.scrolled_window import ScrolledWindow
-from theme_item import ThemeItem
+from ui.download_item import DownloadItem
+
 from helper import event_manager
 
-class ThemeView(IconView):
+class DownloadPage(gtk.VBox):
     
-    def __init__(self, padding_x=20, padding_y=0):
-        IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
+    def __init__(self):
+        gtk.VBox.__init__(self)
         
-        self.connect("double-click-item", self.__on_double_click_item)
-        self.connect("single-click-item", self.__on_single_click_item)
+        self.download_view = TreeView(enable_drag_drop=False, enable_multiple_select=False)
+        self.download_view.draw_mask = self.draw_mask
+        self.download_view.set_size_request(650, 450)
+        self.add(self.download_view)
+        event_manager.add_callback("download-image", self.on_download_iamge)
         
-    def get_scrolled_window(self):    
-        scrolled_window = ScrolledWindow()
-        scrolled_window.add_child(self)
-        return scrolled_window
-    
+    def on_download_iamge(self, name, obj, data):    
+        download_item = DownloadItem(data)
+        self.download_view.add_items([download_item])
+        download_item.start_download()
+        
     def draw_mask(self, cr, x, y, w, h):
+        '''
+        Draw mask interface.
+        
+        @param cr: Cairo context.
+        @param x: X coordiante of draw area.
+        @param y: Y coordiante of draw area.
+        @param w: Width of draw area.
+        @param h: Height of draw area.
+        '''
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
-        
-    def __on_double_click_item(self, widget, item, x, y):
-        event_manager.emit("theme-detail", item.theme)
-    
-    
-    def __on_single_click_item(self, widget, item, x, y):
-        event_manager.emit("apply-theme", item.theme)
-    
-    def add_themes(self, themes):
-        theme_items = [ThemeItem(theme_file) for theme_file in themes ]
-        self.add_items(theme_items)
         

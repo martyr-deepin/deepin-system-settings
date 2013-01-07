@@ -33,7 +33,7 @@ from download_manager import fetch_service, TaskObject
 
 from pystorm.report import parse_bytes, parse_time
 
-from ui_utils import (draw_single_mask)
+from ui.utils import (draw_single_mask)
 from theme import app_theme
 
 from cache_manager import cache_manager
@@ -69,8 +69,6 @@ class DownloadItem(TreeItem):
         self.info_padding_x = 5
 
         self.icon_pixbuf = None
-        self.icon_side_pixbuf = None
-        self.icon_side_dpixbuf = app_theme.get_pixbuf("individuation/small_side.png")
         self.image_object = image_object        
         self.button_status = BUTTON_NORMAL
         
@@ -83,11 +81,12 @@ class DownloadItem(TreeItem):
         self.check_button_buffer = CheckButtonBuffer(True)
         self.check_button_width = self.check_button_buffer.render_width  + self.check_button_padding_x * 2
         
+        
         self.stop_pixbuf = app_theme.get_pixbuf("individuation/stop.png").get_pixbuf()
         self.stop_pixbuf_padding_x = 5
         self.block_width = 50
         self.download_task = TaskObject(image_object.big_url, image_object.get_save_path())
-        # self.download_task = TaskObject("http://packages.linuxdeepin.com/deepin/pool/main/d/deepin-emacs/deepin-emacs_1.1-1_all.deb")
+        
         self.download_task.signal.add_callback("update", self.download_update)
         self.download_task.signal.add_callback("finish", self.download_finish)
         self.download_task.signal.add_callback("error",  self.download_failed)
@@ -144,6 +143,7 @@ class DownloadItem(TreeItem):
             )
         
         # Draw wallpaper.
+
         draw_pixbuf(cr, self.icon_pixbuf, icon_x, icon_y)
         
             
@@ -151,7 +151,7 @@ class DownloadItem(TreeItem):
         rect.width -= self.info_padding_x * 2 - self.icon_pixbuf.get_width()
         _width, _height = get_content_size(self.image_object.get_display_name())
         draw_text(cr, "<b>%s</b>" % self.image_object.get_display_name(), rect.x, icon_y, rect.width, _height,
-                  text_size=10)    
+                  text_size=10)                   
         
         rect.y = icon_y + icon_width - _height
         _width, _height = get_content_size(self.status_text)
@@ -231,7 +231,7 @@ class DownloadItem(TreeItem):
             self.emit_request_redraw()
                     
     def single_click(self, column, offset_x, offset_y):
-        pass        
+        pass
 
     def double_click(self, column, offset_x, offset_y):
         pass        

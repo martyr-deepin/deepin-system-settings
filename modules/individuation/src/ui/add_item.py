@@ -25,8 +25,7 @@ from dtk.ui.new_treeview import TreeItem
 from dtk.ui.draw import draw_text
 
 
-from ui_utils import (draw_single_mask)
-
+from ui.utils import (draw_single_mask)
 
 
 class ExpandItem(TreeItem):

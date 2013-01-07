@@ -25,7 +25,8 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 import gtk
 
-from theme_view import ThemeView
+from ui.theme_view import ThemeView
+
 from theme_manager import theme_manager
 
 

@@ -85,11 +85,19 @@ def get_shortcuts_custom_shortcut_item(client):
     dir_list = client.all_dirs(base_dir)
     item_list = []
     for dirs in dir_list:
-        action = client.get("%s/action" %(dirs)).get_string()
-        binding = client.get("%s/binding" %(dirs)).get_string()
+        name = client.get("%s/name" %(dirs))
+        if not name:
+            continue
+        name = name.get_string()
+        action = client.get("%s/action" %(dirs))
+        if not action:
+            continue
+        action = action.get_string()
+        binding = client.get("%s/binding" %(dirs))
+        if binding:
+            binding = binding.get_string()
         if not binding:
             binding = _("disable")
-        name = client.get("%s/name" %(dirs)).get_string()
         item = ShortcutItem(name, binding, action)
         item.set_accel_buffer_from_accel(binding)
         accel_label = item.accel_buffer.get_accel_label()

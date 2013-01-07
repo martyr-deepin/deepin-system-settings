@@ -25,7 +25,7 @@ import gobject
 import glib
 from constant import APP_DBUS_NAME, APP_OBJECT_NAME
 from dtk.ui.config import Config
-from dtk.ui.utils import is_dbus_name_exists
+from deepin_utils.ipc import is_dbus_name_exists
 from dbus.mainloop.glib import DBusGMainLoop
 import dbus
 import dbus.service

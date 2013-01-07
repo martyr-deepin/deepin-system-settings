@@ -234,10 +234,9 @@ def xkb_set_options(value):
 
 def xkb_set_to_default():
     '''set all value to default'''
-    xkb_set_default_group(XKB_KEYBOARD_DEFAULT_SETTINGS['default-group'])
-    xkb_set_group_per_window(XKB_KEYBOARD_DEFAULT_SETTINGS['group-per-window'])
-    xkb_set_layouts(XKB_KEYBOARD_DEFAULT_SETTINGS['layouts'])
-    xkb_set_options(XKB_KEYBOARD_DEFAULT_SETTINGS['options'])
+    XKB_KEYBOARS_SETTINGS.reset("layouts")
+    #XKB_KEYBOARS_SETTINGS.reset("model")
+    #XKB_KEYBOARS_SETTINGS.reset("options")
 
 
 def xkb_get_default_settings():

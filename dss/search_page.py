@@ -21,8 +21,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.utils import (get_parent_dir, remove_directory, color_hex_to_cairo, 
-                          set_clickable_cursor, is_dbus_name_exists)
+from dtk.ui.utils import (color_hex_to_cairo, set_clickable_cursor)
+from deepin_utils.ipc import is_dbus_name_exists
+from deepin_utils.file import get_parent_dir, remove_directory
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
