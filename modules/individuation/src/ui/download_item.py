@@ -42,7 +42,7 @@ BUTTON_NORMAL = 1
 BUTTON_HOVER = 2
 BUTTON_PRESS = 3
 
-class DownloadItem(TreeItem):
+class TaskItem(TreeItem):
     '''
     class docs
     '''
@@ -52,7 +52,7 @@ class DownloadItem(TreeItem):
     STATUS_STOP = 4
     STATUS_FINISH = 5
     
-    def __init__(self, image_object):
+    def __init__(self, image_object, finish_callback):
         '''
         init docs
         '''
@@ -91,6 +91,10 @@ class DownloadItem(TreeItem):
         self.download_task.signal.add_callback("finish", self.download_finish)
         self.download_task.signal.add_callback("error",  self.download_failed)
         self.download_task.signal.add_callback("start",  self.download_start)
+        
+        self.finish_callback = finish_callback
+        
+        self.start_download()
         
     def start_download(self):    
         fetch_service.add_missions([self.download_task])
@@ -250,8 +254,10 @@ class DownloadItem(TreeItem):
     def download_finish(self, name, obj, data):
         self.progress_buffer.progress = 100
         self.status_text = "下载完成"
-    
         self.emit_request_redraw()
+        
+        if self.finish_callback:
+            self.finish_callback(self)
             
     @post_gui        
     def download_failed(self, name, obj, data):

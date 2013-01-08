@@ -148,6 +148,11 @@ class DBusService(dbus.service.Object):
 
                 if foot_box:
                     foot_box.show(module_id)
+                    
+            elif message_type == "back":
+                index = message_content
+                action_bar.bread.remove_node_after_index(index)
+                
             elif message_type == "status":
                 (module_id, status) = message_content
                 if foot_box:

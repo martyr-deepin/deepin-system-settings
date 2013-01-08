@@ -116,6 +116,15 @@ def get_image_path(name):
 def get_system_wallpaper_dirs():
     return ["/usr/share/backgrounds", os.path.join(program_dir, "backgrounds")]
 
+def get_download_wallpaper_dir():
+    wallpaper_dir = os.path.join(get_images_dir(), "deepin-wallpapers")
+    if not os.path.exists(wallpaper_dir):
+        os.makedirs(wallpaper_dir)
+    return wallpaper_dir    
+
+def get_images_dir():
+    return glib.get_user_special_dir(glib.USER_DIRECTORY_PICTURES)
+
 def get_specify_cache_dir(*subpath):
     path = os.path.join(get_cache_dir(), *subpath)
     if not os.path.exists(path):

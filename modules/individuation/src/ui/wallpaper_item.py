@@ -54,7 +54,7 @@ class WallpaperItem(gobject.GObject):
         @param pixbuf: Icon pixbuf.
         '''
         gobject.GObject.__init__(self)
-        self.path = path
+        self.image_path = path
         self.pixbuf = None
         self.hover_flag = False
         self.highlight_flag = False
@@ -107,7 +107,7 @@ class WallpaperItem(gobject.GObject):
         
         # Init.
         if self.pixbuf == None:
-            self.pixbuf = get_optimum_pixbuf_from_file(self.path, self.wallpaper_width, self.wallpaper_height)
+            self.pixbuf = get_optimum_pixbuf_from_file(self.image_path, self.wallpaper_width, self.wallpaper_height)
             
         wallpaper_x = rect.x + (rect.width - self.wallpaper_width) / 2
         wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2
@@ -206,7 +206,8 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        run_command("gsettings set com.deepin.dde.background picture-uris 'file://%s'" % self.path)
+        pass
+
     
     def icon_item_button_release(self, x, y):
         '''
@@ -272,6 +273,7 @@ class AddItem(gobject.GObject):
         gobject.GObject.__init__(self)
         self.hover_flag = False
         self.highlight_flag = False
+        self.image_path = "invalid"
         self.wallpaper_width = SMALL_SIZE["x"]
         self.wallpaper_height = SMALL_SIZE["y"]
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
@@ -430,7 +432,7 @@ class AddItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        event_manager.emit("add-wallpapers", None)
+        event_manager.emit("switch-to-addpage", None)
     
     def icon_item_button_release(self, x, y):
         '''
@@ -536,6 +538,236 @@ class CacheItem(gobject.GObject, MissionThread):
             self.emit_redraw_request()
             
         return False
+        
+    def emit_redraw_request(self):
+        '''
+        Emit `redraw-request` signal.
+        
+        This is IconView interface, you should implement it.
+        '''
+        self.emit("redraw-request")
+        
+    def get_width(self):
+        '''
+        Get item width.
+        
+        This is IconView interface, you should implement it.
+        '''
+        return self.width
+        
+    def get_height(self):
+        '''
+        Get item height.
+        
+        This is IconView interface, you should implement it.
+        '''
+        return self.height
+    
+    def render(self, cr, rect):
+        '''
+        Render item.
+        
+        This is IconView interface, you should implement it.
+        '''
+        if self.pixbuf == None:
+            self.create_cache_pixbuf()
+            
+        wallpaper_x = rect.x + (rect.width - self.wallpaper_width) / 2
+        wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2
+        
+        # Draw shadow.
+        drop_shadow_padding = 7
+        drop_shadow_radious = 7
+        draw_shadow(
+            cr,
+            wallpaper_x,
+            wallpaper_y,
+            self.wallpaper_width + drop_shadow_padding,
+            self.wallpaper_height + drop_shadow_padding,
+            drop_shadow_radious,
+            app_theme.get_shadow_color("window_shadow")
+            )
+
+        outside_shadow_padding = 4
+        outside_shadow_radious = 5
+        draw_shadow(
+            cr,
+            wallpaper_x - outside_shadow_padding,
+            wallpaper_y - outside_shadow_padding,
+            self.wallpaper_width + outside_shadow_padding * 2,
+            self.wallpaper_height + outside_shadow_padding * 2,
+            outside_shadow_radious,
+            app_theme.get_shadow_color("window_shadow")
+            )
+        
+        # Draw wallpaper.
+        draw_pixbuf(cr, self.pixbuf, wallpaper_x, wallpaper_y)    
+        
+        # Draw wallpaper frame.
+        with cairo_disable_antialias(cr):
+            cr.set_line_width(2)
+            cr.set_source_rgba(1, 1, 1, 1)
+            cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
+            cr.stroke()
+            
+        if self.is_hover:    
+            cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
+            cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
+            cr.stroke()
+            
+        if self.is_tick:    
+            tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
+        else:    
+            tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
+            
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
+        draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+        
+    def icon_item_motion_notify(self, x, y):
+        '''
+        Handle `motion-notify-event` signal.
+        
+        This is IconView interface, you should implement it.
+        '''
+        
+        if is_in_rect((x, y), (self.hover_response_rect.x,
+                               self.hover_response_rect.y,
+                               self.hover_response_rect.width,
+                               self.hover_response_rect.height)):
+            self.is_hover = True
+            
+        else:    
+            self.is_hover = False
+            
+        self.emit_redraw_request()    
+        
+    def icon_item_lost_focus(self):
+        '''
+        Lost focus.
+        
+        This is IconView interface, you should implement it.
+        '''
+        
+        self.is_hover = False
+        self.emit_redraw_request()
+
+        
+    def icon_item_highlight(self):
+        '''
+        Highlight item.
+        
+        This is IconView interface, you should implement it.
+        '''
+        self.highlight_flag = True
+
+        self.emit_redraw_request()
+        
+    def icon_item_normal(self):
+        '''
+        Set item with normal status.
+        
+        This is IconView interface, you should implement it.
+        '''
+        self.highlight_flag = False
+        
+        self.emit_redraw_request()
+    
+    def icon_item_button_press(self, x, y):
+        '''
+        Handle button-press event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        self.is_tick = not self.is_tick
+        self.emit_redraw_request()
+    
+    def icon_item_button_release(self, x, y):
+        '''
+        Handle button-release event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        pass
+    
+    def icon_item_single_click(self, x, y):
+        '''
+        Handle single click event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        pass
+
+    def icon_item_double_click(self, x, y):
+        '''
+        Handle double click event.
+        
+        This is IconView interface, you should implement it.
+        '''
+        pass
+    
+    def icon_item_release_resource(self):
+        '''
+        Release item resource.
+
+        If you have pixbuf in item, you should release memory resource like below code:
+
+        >>> del self.pixbuf
+        >>> self.pixbuf = None
+
+        This is IconView interface, you should implement it.
+        
+        @return: Return True if do release work, otherwise return False.
+        
+        When this function return True, IconView will call function gc.collect() to release object to release memory.
+        '''
+        # Return True to tell IconView call gc.collect() to release memory resource.
+        if self.pixbuf:
+            del self.pixbuf
+        self.pixbuf = None    
+        return True
+    
+    
+class SelectItem(gobject.GObject):
+    '''
+    Icon item.
+    '''
+	
+    __gsignals__ = {
+        "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }
+    
+    def __init__(self, image_path):
+        '''
+        Initialize ItemIcon class.
+        
+        @param pixbuf: Icon pixbuf.
+        '''
+        gobject.GObject.__init__(self)
+        
+        self.hover_flag = False
+        self.highlight_flag = False
+        self.wallpaper_width = SMALL_SIZE["x"]
+        self.wallpaper_height = SMALL_SIZE["y"]
+        self.padding_x = 8
+        self.width = self.wallpaper_width + self.padding_x * 2
+        self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
+        self.image_path = image_path
+        self.create_cache_pixbuf()
+        
+        self.is_hover = False
+        self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
+        self.hover_response_rect = gtk.gdk.Rectangle(
+            self.padding_x, ITEM_PADDING_Y ,
+            self.wallpaper_width, self.wallpaper_height
+            ) 
+        
+        self.tick_normal_dpixbuf = app_theme.get_pixbuf("individuation/tick_normal.png")
+        self.tick_gray_dpixbuf = app_theme.get_pixbuf("individuation/tick_gray.png")
+        self.is_tick = False
+        
+    def create_cache_pixbuf(self):    
+        self.pixbuf = get_optimum_pixbuf_from_file(self.image_path, self.wallpaper_width, self.wallpaper_height)
         
     def emit_redraw_request(self):
         '''

@@ -96,10 +96,7 @@ class ExpandItem(TreeItem):
         pass
 
     def double_click(self, column, offset_x, offset_y):
-        if self.is_expand:
-            self.unexpand()
-        else:
-            self.expand()
+        pass
     
     def add_child_item(self):        
         self.add_items_callback(self.child_items, self.row_index + 1)
@@ -120,7 +117,7 @@ class ExpandItem(TreeItem):
     def try_to_expand(self):    
         if not self.is_expand:
             self.expand()
-        
+            
     def add_childs(self, child_items, pos=None, expand=False):    
         items = []
         for child_item in child_items:
@@ -138,6 +135,8 @@ class ExpandItem(TreeItem):
             
         if expand:    
             self.expand()
+            
+        return items    
             
     def __repr__(self):        
         return "<ExpandItem %s>" % self.title
@@ -157,6 +156,7 @@ class NormalItem(TreeItem):
         self.title_padding_x = 12
         self.column_offset = 15
         self.widget = widget
+        self.is_highlight = False
         
     def get_height(self):    
         return self.item_height
@@ -182,12 +182,12 @@ class NormalItem(TreeItem):
     def render_title(self, cr, rect):        
         # Draw select background.
             
-        if self.is_select:    
+        if self.is_highlight:    
             draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemHighlight")
         elif self.is_hover:
             draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemHover")
         
-        if self.is_select:
+        if self.is_highlight:
             text_color = "#FFFFFF"
         else:    
             text_color = "#000000"
@@ -213,7 +213,18 @@ class NormalItem(TreeItem):
     
     def single_click(self, column, offset_x, offset_y):
         pass
+    
+    def set_title(self, title):
+        self.title = title
+        self.emit_redraw_request()
 
     def __repr__(self):        
         return "<NormalItem %s>" % self.title
     
+    def highlight(self):    
+        self.is_highlight = True
+        self.emit_redraw_request()
+        
+    def unhighlight(self):    
+        self.is_highlight = False
+        self.emit_redraw_request()

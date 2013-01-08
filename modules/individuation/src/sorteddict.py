@@ -31,7 +31,7 @@ class SortedDict(object):
     def __getattr__(self, key): 
         try: 
             return self.__getitem__(key)
-        except KeyError, k: 
+        except KeyError: 
             return None
         
     def __setitem__(self, key, value):

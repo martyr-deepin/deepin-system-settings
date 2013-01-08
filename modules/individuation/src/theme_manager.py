@@ -48,6 +48,23 @@ class ThemeFile(RawConfigParser):
             pass
         
         self.location = location    
+        if default_location is None:
+            default_location = get_config_path("default_theme.ini")
+            
+        try:
+            self.read(default_location)
+        except:    
+            pass
+        
+        try:
+            self.read(location)
+        except:    
+            pass
+        
+        self.location = location    
+        
+    def optionxform(self, optionstr):
+        return optionstr
             
     def set_option(self, section, option, value):
         try:
@@ -167,10 +184,28 @@ class ThemeFile(RawConfigParser):
     
         
     def get_user_wallpapers(self):
-        return self.get_section_options("user_wallpaper")
+        save_wallpapers = self.get_section_options("user_wallpaper")
+        user_wallpapers = []
+        is_changed = False
+        
+        for image in save_wallpapers:
+            if os.path.exists(image):
+                user_wallpapers.append(image)
+            else:    
+                self.is_changed = True
+                try:
+                    self.remove_option("user_wallpaper", image)
+                except:    
+                    pass
+                
+        if is_changed:        
+            self.save()
+        return user_wallpapers
     
-    def add_user_wallpaper(self, path):
-        self.set_option("user_wallpaper", path, "")
+    def add_user_wallpapers(self, paths):
+        for path in paths:
+            self.set_option("user_wallpaper", path, "")
+        self.save()    
     
     def get_wallpaper_paths(self):
         return self.get_system_wallpapers() + self.get_user_wallpapers()

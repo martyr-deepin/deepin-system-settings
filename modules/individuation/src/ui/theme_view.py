@@ -48,7 +48,6 @@ class ThemeView(IconView):
     def __on_double_click_item(self, widget, item, x, y):
         event_manager.emit("theme-detail", item.theme)
     
-    
     def __on_single_click_item(self, widget, item, x, y):
         event_manager.emit("apply-theme", item.theme)
     

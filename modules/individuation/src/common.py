@@ -213,7 +213,7 @@ def walk(root):
         except gio.Error, e: # why doesnt gio offer more-specific errors?
             logger.log_exception("Unhandled exception while walking on %s.", dir)
 
-def walk_images(root, filter_type=["png", "jpeg"]):
+def walk_images(root_dir, filter_type=["png", "jpeg"]):
     """
         Walk through a Gio directory, yielding each file
 
@@ -228,6 +228,7 @@ def walk_images(root, filter_type=["png", "jpeg"]):
         :returns: a generator object
         :rtype: :class:`gio.File`
     """
+    root = gio.File(root_dir)
     queue = deque()
     queue.append(root)
 
@@ -256,7 +257,9 @@ def walk_images(root, filter_type=["png", "jpeg"]):
                     split_content = content_type.split("/")
                     if len(split_content) == 2:
                         if split_content[0] == "image" and split_content[1] in filter_type:
-                            yield fil
+                            file_path = fil.get_path()
+                            if not file_path.endswith(".part"):
+                                yield file_path
         except gio.Error, e: # why doesnt gio offer more-specific errors?
             print e
             logger.log_exception("Unhandled exception while walking on %s.", dir)
@@ -284,8 +287,23 @@ def walk_directories(root):
                     yield subdirectory
     except gio.Error, e:
         logger.log_exception("Unhandled exception while walking dirs on %s, %s, %s", root, directory, subdirectory)
-                
-if __name__ == "__main__":        
-    a = walk_images(gio.File("/home/evilbeast/Pictures"))
-    for f in a:
-        print f.get_path()
+        
+        
+def gfile_is_image(gfile, filter_type=["png", "jpeg"]):
+    try:
+        fileinfo = gfile.query_info('standard::type,standard::content-type')            
+        file_type = fileinfo.get_file_type()
+        if file_type == gio.FILE_TYPE_REGULAR:
+            content_type = fileinfo.get_attribute_as_string("standard::content-type")
+            split_content = content_type.split("/")
+            if len(split_content) == 2:
+                if split_content[0] == "image" and split_content[1] in filter_type:
+                    file_path = gfile.get_path()
+                    if not file_path.endswith(".part"):
+                        return True
+        return False        
+    except:
+        return False
+    
+            
+            

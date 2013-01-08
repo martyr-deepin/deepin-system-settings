@@ -20,40 +20,58 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
 from dtk.ui.new_treeview import TreeView
 
-from ui.download_item import DownloadItem
+from ui.download_item import TaskItem
 
 from helper import event_manager
 
-class DownloadPage(gtk.VBox):
+class TaskView(TreeView):
     
     def __init__(self):
-        gtk.VBox.__init__(self)
+        TreeView.__init__(self, enable_drag_drop=False, enable_multiple_select=False)
+        event_manager.add_callback("download-images", self.on_download_images)        
         
-        self.download_view = TreeView(enable_drag_drop=False, enable_multiple_select=False)
-        self.download_view.draw_mask = self.draw_mask
-        self.download_view.set_size_request(650, 450)
-        self.add(self.download_view)
-        event_manager.add_callback("download-image", self.on_download_iamge)
+    def get_images(self):    
+        return map(lambda item: item.image_object, self.get_items())
+    
+    def has_image(self, image):
+        return image in self.get_images() or os.path.exists(image.get_save_path())
+    
+    def on_download_images(self, name, obj, data):
+        self.add_images(data)
         
-    def on_download_iamge(self, name, obj, data):    
-        download_item = DownloadItem(data)
-        self.download_view.add_items([download_item])
-        download_item.start_download()
+    def emit_task_number(self):    
+        event_manager.emit("downloading-tasks-number", len(self.get_items()))
+        
+    def add_images(self, images):    
+        filter_images = filter(lambda image: not self.has_image(image), images)
+        if filter_images:
+            items = []
+            for image in filter_images:
+                items.append(TaskItem(image, self.on_download_finish))
+            self.add_items(items)
+            self.emit_task_number()
+            
+            
+    def on_download_finish(self, item):        
+        self.delete_items([item])
+        self.emit_task_number()
+        event_manager.emit("download-image-finish", item.image_object.get_save_path())
         
     def draw_mask(self, cr, x, y, w, h):
-        '''
-        Draw mask interface.
-        
-        @param cr: Cairo context.
-        @param x: X coordiante of draw area.
-        @param y: Y coordiante of draw area.
-        @param w: Width of draw area.
-        @param h: Height of draw area.
-        '''
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
         
+
+class TaskPage(gtk.VBox):
+    
+    def __init__(self):
+        gtk.VBox.__init__(self)
+        
+        self.task_view = TaskView()
+        self.task_view.set_size_request(650, 450)
+        self.add(self.task_view)
