@@ -75,14 +75,14 @@ class AddPage(gtk.HBox):
         network_expand_item = ExpandItem("网络壁纸")
         self.navigatebar.add_items([local_expand_item, network_expand_item, download_expand_item])
         local_expand_item.add_childs([("系统壁纸", self.system_wallpapers_page),
-                                      ("下载壁纸", UserPage(get_download_wallpaper_dir(), True))], expand=True)
+                                      ("下载壁纸", UserPage(get_download_wallpaper_dir()))], expand=True)
         self.downloading_item = download_expand_item.add_childs(
             [("正在下载(0)", self.task_page)], expand=True)[0]
         
         network_expand_item.add_childs([("爱壁纸", self.aibizhi_cache_page),
                                         ("360壁纸", self.bizhi360_cache_page)], expand=True)        
         
-        self.navigatebar.select_items([self.navigatebar.get_items()[1]])
+        self.navigatebar.set_highlight_item(self.navigatebar.get_items()[1])
         
     def on_addpage_expose_event(self, widget, event):    
         cr = widget.window.cairo_create()
@@ -111,5 +111,6 @@ class AddPage(gtk.HBox):
 
     def on_navigatebar_single_click(self, widget, item, column, x, y):
         if item.widget:
+            widget.set_highlight_item(item)
             switch_box(self.switch_page, item.widget)
     
