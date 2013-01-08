@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from config_parser import (RawConfigParser, NoSectionError, NoOptionError)
+from ConfigParser import (RawConfigParser, NoSectionError, NoOptionError)
 import common
 from xdg_support import (get_user_theme_dir, get_system_theme_dir, 
                          get_system_wallpaper_dirs, get_config_path)
@@ -62,6 +62,9 @@ class ThemeFile(RawConfigParser):
             pass
         
         self.location = location    
+        
+    def optionxform(self, optionstr):
+        return optionstr
             
     def set_option(self, section, option, value):
         try:

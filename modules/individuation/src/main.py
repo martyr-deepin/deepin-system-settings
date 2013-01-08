@@ -71,7 +71,7 @@ class DeepinIndividuation(object):
         # Connect events.
         event_manager.add_callback("theme-detail", self.switch_detail_page)        
         event_manager.add_callback("switch-to-addpage", self.switch_add_page)
-        # event_manager.add_callback("add-wallpapers")
+        event_manager.add_callback("add-wallpapers", self.back_to_addpage)
         
         # Connect widgets.
         self.module_frame.add(self.slider)
@@ -96,6 +96,11 @@ class DeepinIndividuation(object):
         elif message_type == "show_again":
             self.slider.set_to_page(self.theme_page)
             self.module_frame.send_module_info()
+
+            
+    def back_to_addpage(self, name, obj, data):        
+        self.module_frame.send_message("back", 2)
+        self.slider.slide_to_page(self.detail_page, "left")        
     
     def switch_detail_page(self, name, obj, theme):
         self.slider.slide_to_page(self.detail_page, "right")
