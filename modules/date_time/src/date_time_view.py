@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -21,6 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
+from dtk.ui.button import Button
 from dtk.ui.datetime import DateTimeHTCStyle
 from dtk.ui.spin import TimeSpinBox
 from dtk.ui.box import ImageBox
@@ -110,11 +111,17 @@ class DatetimeView(gtk.HBox):
             self.calendar = gtk.Calendar()
         self.calendar.set_size_request(300, 280)
         self.calendar_align.add(self.calendar)
+        self.change_date_align = self.__setup_align(padding_top = 20, padding_left = 200)
+        self.change_date_button = Button(_("Change Date"))
+        self.change_date_button.set_size_request(100, WIDGET_HEIGHT)
+        self.change_date_align.add(self.change_date_button)
         '''
         left box && align
         '''
         self.__widget_pack_start(self.left_box, 
-            [self.calendar_title_align, self.calendar_align])
+            [self.calendar_title_align, 
+             self.calendar_align, 
+             self.change_date_align])
         self.left_align.add(self.left_box)
         '''
         right align
@@ -142,7 +149,7 @@ class DatetimeView(gtk.HBox):
         '''
         auto time get && set
         '''
-        self.auto_time_align = self.__setup_align(padding_top = BETWEEN_SPACING)
+        self.auto_time_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
         self.auto_time_label = self.__setup_label(_("Auto Set Time"))
         self.auto_time_toggle = self.__setup_toggle()
@@ -193,13 +200,18 @@ class DatetimeView(gtk.HBox):
             app_theme.get_pixbuf("datetime/globe-green.png"), 
             _("TimeZone"), 
             TEXT_WINDOW_TOP_PADDING)
+        self.timezone_combo_align = self.__setup_align()
+        self.timezone_combo = ComboBox(self.timezone_items, max_width = 325)
+        self.timezone_combo.set_select_index(self.__deepin_dt.get_gmtoff() + 11)
+        self.timezone_combo_align.add(self.timezone_combo)
 
         self.__widget_pack_start(self.right_box, 
                                  [self.time_title_align, 
                                   self.datetime_widget_align, 
                                   self.auto_time_align, 
                                   self.time_display_align, 
-                                  self.timezone_title_align])
+                                  self.timezone_title_align, 
+                                  self.timezone_combo_align])
         self.right_align.add(self.right_box)
        
         self.__widget_pack_start(self, [self.left_align, self.right_align])
