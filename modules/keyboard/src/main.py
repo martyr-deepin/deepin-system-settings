@@ -279,7 +279,7 @@ class KeySetting(object):
         self.container_widgets["repeat_label_hbox"].pack_start(
             self.label_widgets["repeat"], False, False)
         # repeat delay
-        value = self.adjust_widgets["repeat_delay"].get_upper() + self.adjust_widgets["repeat_delay"].get_lower() - settings.keyboard_get_repeat_delay()
+        value = self.adjust_widgets["repeat_delay"].get_upper() + self.adjust_widgets["repeat_delay"].get_lower() - settings.keyboard_get_repeat_delay() - self.scale_widgets["repeat_delay"].value_min
         self.scale_widgets["repeat_delay"].set_value(value)
         self.scale_widgets["repeat_delay"].add_mark(
             self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Long"))
@@ -294,7 +294,7 @@ class KeySetting(object):
         self.container_widgets["repeat_table"].attach(
             self.__make_align(self.scale_widgets["repeat_delay"], yalign=0.0, yscale=1.0, height=43), 1, 2, 0, 1, 4)
         # repeat interval
-        value = self.adjust_widgets["repeat_interval"].get_upper() + self.adjust_widgets["repeat_interval"].get_lower() - settings.keyboard_get_repeat_interval()
+        value = self.adjust_widgets["repeat_interval"].get_upper() + self.adjust_widgets["repeat_interval"].get_lower() - settings.keyboard_get_repeat_interval() - self.scale_widgets["repeat_interval"].value_min
         self.scale_widgets["repeat_interval"].set_value(value)
         self.scale_widgets["repeat_interval"].add_mark(
             self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
@@ -332,7 +332,7 @@ class KeySetting(object):
             self.label_widgets["blink"], False, False)
         # blink time
 
-        value = self.adjust_widgets["blink_cursor"].get_upper() + self.adjust_widgets["blink_cursor"].get_lower() - settings.keyboard_get_cursor_blink_time()
+        value = self.adjust_widgets["blink_cursor"].get_upper() + self.adjust_widgets["blink_cursor"].get_lower() - settings.keyboard_get_cursor_blink_time() - self.scale_widgets["blink_cursor"].value_min
         self.scale_widgets["blink_cursor"].set_value(value)
         self.scale_widgets["blink_cursor"].add_mark(
             self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
@@ -482,13 +482,13 @@ class KeySetting(object):
         # adjustment widget
         self.adjust_widgets["repeat_delay"].connect("value-changed",
             lambda w: self.scale_widgets["repeat_delay"].set_value(
-                self.adjust_widgets["repeat_delay"].get_value()))
+                self.adjust_widgets["repeat_delay"].get_value()-self.scale_widgets["repeat_delay"].value_min))
         self.adjust_widgets["repeat_interval"].connect("value-changed",
             lambda w: self.scale_widgets["repeat_interval"].set_value(
-                self.adjust_widgets["repeat_interval"].get_value()))
+                self.adjust_widgets["repeat_interval"].get_value()-self.scale_widgets["repeat_interval"].value_min))
         self.adjust_widgets["blink_cursor"].connect("value-changed",
             lambda w: self.scale_widgets["blink_cursor"].set_value(
-                self.adjust_widgets["blink_cursor"].get_value()))
+                self.adjust_widgets["blink_cursor"].get_value()-self.scale_widgets["blink_cursor"].value_min))
         
         # relevant setting
         self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")

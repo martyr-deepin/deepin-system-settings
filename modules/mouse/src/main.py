@@ -94,7 +94,8 @@ class MouseSetting(object):
             text_size=option_item_font_szie)
         self.label_widgets["click_fast"] = Label(_("Fast"))
         self.label_widgets["click_slow"] = Label(_("Slow"))
-        self.label_widgets["double_test"] = Label(_("Double-click on the folder to test your settings."), enable_select=False)
+        self.label_widgets["double_test"] = Label(_("Double-click on the folder to test your settings."),
+            label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False)
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
         # button init
         self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=0)
@@ -191,9 +192,9 @@ class MouseSetting(object):
         label_width = max(label_widgets["acceleration"].size_request()[0],
                           label_widgets["sensitivity"].size_request()[0],
                           label_widgets["click_rate"].size_request()[0]) + 2
-        label_widgets["acceleration"].set_size_request(label_width, WIDGET_HEIGHT)
-        label_widgets["sensitivity"].set_size_request(label_width, WIDGET_HEIGHT)
-        label_widgets["click_rate"].set_size_request(label_width, WIDGET_HEIGHT)
+        #label_widgets["acceleration"].set_size_request(label_width, WIDGET_HEIGHT)
+        #label_widgets["sensitivity"].set_size_request(label_width, WIDGET_HEIGHT)
+        #label_widgets["click_rate"].set_size_request(label_width, WIDGET_HEIGHT)
         # custom
         self.alignment_widgets["custom_label"].add(self.container_widgets["custom_label_hbox"])
         self.alignment_widgets["custom_button"].add(self.container_widgets["custom_button_hbox"])
@@ -256,7 +257,7 @@ class MouseSetting(object):
             self.label_widgets["pointer_speed"], False, False)
         # motion acceleration
         self.scale_widgets["pointer_speed_accel"].set_value(
-            settings.mouse_get_motion_acceleration()+self.scale_widgets["pointer_speed_accel"].value_min)
+            settings.mouse_get_motion_acceleration()-self.scale_widgets["pointer_speed_accel"].value_min)
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["pointer_speed_accel"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -264,19 +265,23 @@ class MouseSetting(object):
         self.container_widgets["pointer_speed_table"].set_size_request(MAIN_AREA_WIDTH, -1)
         self.container_widgets["pointer_speed_table"].set_col_spacings(WIDGET_SPACING)
         #self.container_widgets["pointer_speed_table"].set_row_spacing(0, TABLE_ROW_SPACING)
+        acceleration_align = self.__make_align(self.label_widgets["acceleration"], xalign=1.0)
+        acceleration_align.set_size_request(label_width, CONTAINNER_HEIGHT)
         self.container_widgets["pointer_speed_table"].attach(
-            self.__make_align(self.label_widgets["acceleration"], yalign=0.5), 0, 1, 0, 1, 4)
+            acceleration_align, 0, 1, 0, 1, 4)
         self.container_widgets["pointer_speed_table"].attach(
             self.__make_align(self.scale_widgets["pointer_speed_accel"], yalign=0.0, yscale=1.0, height=43), 1, 3, 0, 1, 4)
         # motion threshold
         self.scale_widgets["pointer_speed_sensitiv"].set_value(
-            settings.mouse_get_motion_threshold()+self.scale_widgets["pointer_speed_sensitiv"].value_min)
+            settings.mouse_get_motion_threshold()-self.scale_widgets["pointer_speed_sensitiv"].value_min)
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_lower(), gtk.POS_BOTTOM, _("Low"))
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_upper(), gtk.POS_BOTTOM, _("High"))
         self.scale_widgets["pointer_speed_sensitiv"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
+        sensitivity_align = self.__make_align(self.label_widgets["sensitivity"], xalign=1.0)
+        sensitivity_align.set_size_request(label_width, CONTAINNER_HEIGHT)
         self.container_widgets["pointer_speed_table"].attach(
-            self.__make_align(self.label_widgets["sensitivity"], yalign=0.5), 0, 1, 1, 2, 4)
+            sensitivity_align, 0, 1, 1, 2, 4)
         self.container_widgets["pointer_speed_table"].attach(
             self.__make_align(self.scale_widgets["pointer_speed_sensitiv"], yalign=0.0, yscale=1.0, height=43), 1, 3, 1, 2, 4)
 
@@ -301,23 +306,23 @@ class MouseSetting(object):
             self.label_widgets["double_click"], False, False)
         # double click rate
         self.scale_widgets["double_click_rate"].set_value(
-            settings.mouse_get_double_click()+self.scale_widgets["double_click_rate"].value_min)
+            settings.mouse_get_double_click()-self.scale_widgets["double_click_rate"].value_min)
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["double_click_rate"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["double_click_table"].set_size_request(MAIN_AREA_WIDTH, -1)
         self.container_widgets["double_click_table"].set_col_spacings(WIDGET_SPACING)
+        click_rate_align = self.__make_align(self.label_widgets["click_rate"], xalign=1.0)
+        click_rate_align.set_size_request(label_width, CONTAINNER_HEIGHT)
         self.container_widgets["double_click_table"].attach(
-            self.__make_align(self.label_widgets["click_rate"], yalign=0.5), 0, 1, 0, 1, 4)
+            click_rate_align, 0, 1, 0, 1, 4)
         self.container_widgets["double_click_table"].attach(
             self.__make_align(self.scale_widgets["double_click_rate"], xalign=0.0, yalign=0.0, yscale=1.0, height=43), 1, 3, 0, 1, 4)
         self.container_widgets["double_click_table"].attach(
             self.__make_align(self.label_widgets["double_test"], xalign=0.0), 1, 3, 1, 2, 4)
         self.container_widgets["double_click_table"].attach(
             self.__make_align(self.button_widgets["double_test"], xalign=0.0, xscale=1.0, height=-1), 3, 4, 0, 2)
-        self.label_widgets["double_test"].wrap_width = HSCALEBAR_WIDTH
-        self.label_widgets["double_test"].set_size_request(HSCALEBAR_WIDTH, self.label_widgets["double_test"].get_size_request()[1])
         self.button_widgets["double_test"].set_size_request(
             self.image_widgets["double_test_1"].get_pixbuf().get_width(),
             self.image_widgets["double_test_1"].get_pixbuf().get_height())
@@ -357,13 +362,13 @@ class MouseSetting(object):
         # adjustment widget
         self.adjust_widgets["pointer_speed_accel"].connect("value-changed",
             lambda w: self.scale_widgets["pointer_speed_accel"].set_value(
-                self.adjust_widgets["pointer_speed_accel"].get_value()))
+                self.adjust_widgets["pointer_speed_accel"].get_value() - self.scale_widgets["pointer_speed_accel"].value_min))
         self.adjust_widgets["pointer_speed_sensitiv"].connect("value-changed",
             lambda w: self.scale_widgets["pointer_speed_sensitiv"].set_value(
-                self.adjust_widgets["pointer_speed_sensitiv"].get_value()))
+                self.adjust_widgets["pointer_speed_sensitiv"].get_value() - self.scale_widgets["pointer_speed_sensitiv"].value_min))
         self.adjust_widgets["double_click_rate"].connect("value-changed",
             lambda w: self.scale_widgets["double_click_rate"].set_value(
-                self.adjust_widgets["double_click_rate"].get_value()))
+                self.adjust_widgets["double_click_rate"].get_value() - self.scale_widgets["double_click_rate"].value_min))
         self.button_widgets["double_test"].set_data("has_double_clicked", False)
         self.button_widgets["double_test"].connect("button-press-event", self.double_click_test)
         self.button_widgets["double_test"].connect("expose-event", self.double_click_test_expose)
@@ -437,7 +442,7 @@ class MouseSetting(object):
     
     def settings_value_changed(self, settings, key, adjustment):
         '''settings value changed, and adjustment set the value'''
-        adjustment.set_value(self.scale_get[key]()+adjustment.value_min)
+        adjustment.set_value(self.scale_get[key]()-adjustment.value_min)
         adjustment.set_data("changed-by-other-app", True)
 
     def double_click_test(self, widget, event):
