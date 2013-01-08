@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-30 23:22+0800\n"
+"POT-Creation-Date: 2013-01-08 16:20+0800\n"
 "PO-Revision-Date: 2012-12-30 23:05+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,19 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/date_time_view.py:85 ../src/search_keyword.py:31
+#: ../src/date_time_view.py:102
+msgid "Calendar"
+msgstr "日期"
+
+#: ../src/date_time_view.py:132
+msgid "Time"
+msgstr "时间"
+
+#: ../src/date_time_view.py:147 ../src/search_keyword.py:31
 msgid "Auto Set Time"
 msgstr "自动设置时间"
 
-#: ../src/date_time_view.py:87 ../src/search_keyword.py:32
-msgid "Hour Display"
-msgstr "小时置显示"
+#: ../src/date_time_view.py:156
+msgid "Manual Set"
+msgstr "手动设置"
 
-#: ../src/date_time_view.py:120 ../src/date_time_view.py:131
+#: ../src/date_time_view.py:171 ../src/search_keyword.py:32
+msgid "Hour Display"
+msgstr "小时制显示"
+
+#: ../src/search_keyword.py:29
+msgid "DateTime"
+msgstr "日期"
+
 #: ../src/search_keyword.py:30
 msgid "TimeZone"
 msgstr "时区"
-
-#: ../src/date_time_view.py:130 ../src/search_keyword.py:29
-msgid "DateTime"
-msgstr "日期"

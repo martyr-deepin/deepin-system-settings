@@ -21,11 +21,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.tab_window import TabBox
-from dtk.ui.timezone import TimeZone
-from dtk.ui.datetime import DateTime
+from dtk.ui.datetime import DateTimeHTCStyle
 from dtk.ui.spin import TimeSpinBox
+from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
+from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
@@ -60,7 +60,7 @@ class AutoSetTimeThread(td.Thread):
     def run(self):
         self.ThisPtr.auto_set_time()
 
-class DatetimeView(gtk.VBox):
+class DatetimeView(gtk.HBox):
     '''
     class docs
     '''
@@ -69,7 +69,7 @@ class DatetimeView(gtk.VBox):
         '''
         init docs
         '''
-        gtk.VBox.__init__(self)
+        gtk.HBox.__init__(self)
 
         self.datetime_settings = deepin_gsettings.new("com.deepin.dde.datetime")
 
@@ -84,99 +84,170 @@ class DatetimeView(gtk.VBox):
             
             i += 1
             j += 1
-
-        self.tab_align = self.__setup_align(padding_top = FRAME_TOP_PADDING, padding_left = 0)
-        self.tab_box = TabBox()
-        self.tab_box.set_size_request(800, -1)
-        self.tab_box.draw_title_background = self.__draw_title_background
+        
         '''
-        datetime box
+        left align
         '''
-        self.datetime_box = gtk.VBox()
-        self.datetime_box.connect("expose-event", self.__expose)
-        self.datetime_align = self.__setup_align()
-        self.set_datetime_box = gtk.HBox()
+        self.left_align = self.__setup_align(
+            padding_top = TEXT_WINDOW_TOP_PADDING, 
+            padding_left = TEXT_WINDOW_LEFT_PADDING)
+        '''
+        left box
+        '''
+        self.left_box = gtk.VBox()
+        '''
+        calendar title
+        '''
+        self.calendar_title_align = self.__setup_title_align(
+            app_theme.get_pixbuf("datetime/calendar.png"), _("Calendar"))
+        '''
+        calendar widget
+        '''
+        self.calendar_align = self.__setup_align()
         if os.environ['LANGUAGE'].find("zh_") == 0:
             self.calendar = deepin_lunar.new()
         else:
             self.calendar = gtk.Calendar()
-        self.calendar.set_size_request(360, 280)
-        self.datetime_widget_box = gtk.VBox()
-        self.datetime_widget_align = self.__setup_align(padding_top = 0, padding_left = 90)
-        self.datetime_widget = DateTime()
+        self.calendar.set_size_request(300, 280)
+        self.calendar_align.add(self.calendar)
+        '''
+        left box && align
+        '''
+        self.__widget_pack_start(self.left_box, 
+            [self.calendar_title_align, self.calendar_align])
+        self.left_align.add(self.left_box)
+        '''
+        right align
+        '''
+        self.right_align = self.__setup_align(
+            padding_top = TEXT_WINDOW_TOP_PADDING, padding_left = TEXT_WINDOW_LEFT_PADDING)
+        '''
+        right box
+        '''
+        self.right_box = gtk.VBox()
+        '''
+        time title
+        '''
+        self.time_title_align = self.__setup_title_align(
+            app_theme.get_pixbuf("datetime/time.png"), _("Time"))
+        '''
+        DateTime widget
+        '''
+        self.datetime_widget_align = self.__setup_align()
+        self.datetime_widget = DateTimeHTCStyle()
+        self.datetime_widget.set_size_request(-1, 120)
         self.datetime_widget_align.add(self.datetime_widget)
-        self.set_time_align = self.__setup_align(padding_top = 20, padding_left = 130)
+        self.set_time_align = self.__setup_align()
         is_24hour = self.datetime_settings.get_boolean("is-24hour")
-        self.set_time_spin = TimeSpinBox(is_24hour = is_24hour)
-        self.set_time_spin.set_size_request(100, -1)
-        self.set_time_spin.connect("value-changed", self.__time_changed)
-        self.set_time_align.add(self.set_time_spin)
-        self.auto_time_align = self.__setup_align(padding_top = 20, padding_left = 0)
+        '''
+        auto time get && set
+        '''
+        self.auto_time_align = self.__setup_align(padding_top = BETWEEN_SPACING)
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
         self.auto_time_label = self.__setup_label(_("Auto Set Time"))
         self.auto_time_toggle = self.__setup_toggle()
         is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
-        if is_auto_set_time == True:
+        if is_auto_set_time:
             AutoSetTimeThread(self).start()
+        self.auto_time_toggle_align = self.__setup_align(padding_top = 4)
         self.auto_time_toggle.set_active(is_auto_set_time)
         self.auto_time_toggle.connect("toggled", self.__toggled, "auto_time_toggle")
-        self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
-        self.time_display_toggle = self.__setup_toggle()
-        self.time_display_toggle.set_active(is_24hour)
-        self.time_display_toggle.connect("toggled", self.__toggled, "time_display_toggle")
+        self.auto_time_toggle_align.add(self.auto_time_toggle)
+        '''
+        set time
+        '''
+        self.set_time_spin_align = self.__setup_align(padding_left = 10)
+        self.set_time_box = gtk.HBox()
+        self.set_time_label = self.__setup_label(_("Manual Set"), 70)
+        self.set_time_spin = TimeSpinBox(is_24hour = is_24hour)                 
+        self.set_time_spin.set_size_request(85, -1)                               
+        self.set_time_spin.connect("value-changed", self.__time_changed)
+        self.__widget_pack_start(self.set_time_box, 
+            [self.set_time_label, self.set_time_spin])
+        self.set_time_spin_align.add(self.set_time_box)
         self.__widget_pack_start(self.auto_time_box, 
                                  [self.auto_time_label, 
-                                  self.auto_time_toggle, 
-                                  self.time_display_label, 
-                                  self.time_display_toggle])
+                                  self.auto_time_toggle_align, 
+                                  self.set_time_spin_align]) 
+        if is_auto_set_time:
+            self.set_time_spin_align.set_child_visible(False)
         self.auto_time_align.add(self.auto_time_box)
-        self.__widget_pack_start(self.datetime_widget_box, 
-                                 [self.datetime_widget_align, 
-                                  self.set_time_align, 
-                                  self.auto_time_align])
-        self.__widget_pack_start(self.set_datetime_box, 
-                                 [self.calendar, self.datetime_widget_box])
-        self.datetime_align.add(self.set_datetime_box)
-        self.__widget_pack_start(self.datetime_box, [self.datetime_align])
         '''
-        timezone box
+        24hour display
         '''
-        self.timezone_box = gtk.VBox()
-        self.timezone_box.connect("expose-event", self.__expose)
-        self.timezone_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING, 
-                                                 padding_left = TEXT_WINDOW_LEFT_PADDING)
-        self.timezone = TimeZone(self.current_tz_gmtoff,                        
-                                 680,                                           
-                                 300,                                           
-                                 TEXT_WINDOW_TOP_PADDING + FRAME_TOP_PADDING,                       
-                                 TEXT_WINDOW_LEFT_PADDING)                      
-        self.timezone.connect("changed", self.__timezone_changed)
-        self.timezone_align.add(self.timezone)
-        self.set_timezone_align = self.__setup_align(padding_top = 10, 
-                                                     padding_left = TEXT_WINDOW_LEFT_PADDING)
-        self.set_timezone_box = gtk.HBox(spacing=WIDGET_SPACING)                         
-        self.timezone_label = self.__setup_label(text = _("TimeZone"), width = 60, align = ALIGN_START)
-        self.timezone_combo = ComboBox(self.timezone_items, max_width = 340)    
-        self.timezone_combo.set_select_index(self.current_tz_gmtoff + 11)       
-        self.timezone_combo.connect("item-selected", self.__combo_item_selected)
-        self.__widget_pack_start(self.set_timezone_box, [self.timezone_label, self.timezone_combo])
-        self.set_timezone_align.add(self.set_timezone_box)
-        self.__widget_pack_start(self.timezone_box, [self.timezone_align, self.set_timezone_align])
+        self.time_display_align = self.__setup_align(padding_top = BETWEEN_SPACING)
+        self.time_display_box = gtk.HBox(spacing = BETWEEN_SPACING)
+        self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
+        self.time_display_toggle_align = self.__setup_align()
+        self.time_display_toggle = self.__setup_toggle()                        
+        self.time_display_toggle.set_active(is_24hour)                          
+        self.time_display_toggle.connect("toggled", self.__toggled, "time_display_toggle")
+        self.time_display_toggle_align.add(self.time_display_toggle)
+        self.__widget_pack_start(self.time_display_box, 
+            [self.time_display_label, self.time_display_toggle_align])
+        self.time_display_align.add(self.time_display_box)
         '''
-        TabBox add_items
+        timezone
         '''
-        self.tab_box.add_items([(_("DateTime"), self.datetime_box), 
-                                (_("TimeZone"), self.timezone_box)])
-        self.tab_align.add(self.tab_box)
-        self.pack_start(self.tab_align)
+        self.timezone_title_align = self.__setup_title_align(
+            app_theme.get_pixbuf("datetime/globe-green.png"), 
+            _("TimeZone"), 
+            TEXT_WINDOW_TOP_PADDING)
+
+        self.__widget_pack_start(self.right_box, 
+                                 [self.time_title_align, 
+                                  self.datetime_widget_align, 
+                                  self.auto_time_align, 
+                                  self.time_display_align, 
+                                  self.timezone_title_align])
+        self.right_align.add(self.right_box)
+       
+        self.__widget_pack_start(self, [self.left_align, self.right_align])
+
         self.connect("expose-event", self.__expose)
+    
+    def __setup_separator(self):                                                
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(300, 10)                                    
+        return hseparator                                                       
+                                                                                
+    def __setup_title_label(self,                                               
+                            text="",                                            
+                            text_color=app_theme.get_color("globalTitleForeground"),
+                            text_size=TITLE_FONT_SIZE,                          
+                            text_x_align=ALIGN_START,                           
+                            label_width=180):                                   
+        return Label(text = text,                                               
+                     text_color = text_color,                                   
+                     text_size = text_size,                                     
+                     text_x_align = text_x_align,                               
+                     label_width = label_width)     
+    
+    def __setup_title_align(self,                                                  
+                            pixbuf,                                                
+                            text,                                                  
+                            padding_top=0,                         
+                            padding_left=0):                
+        align = self.__setup_align(padding_top = padding_top, padding_left = padding_left)            
+        align_box = gtk.VBox(spacing = WIDGET_SPACING)                             
+        title_box = gtk.HBox(spacing = WIDGET_SPACING)                             
+        image = ImageBox(pixbuf)                                                   
+        label = self.__setup_title_label(text)                                     
+        separator = self.__setup_separator()                                       
+        self.__widget_pack_start(title_box, [image, label])                        
+        self.__widget_pack_start(align_box, [title_box, separator])                
+        align.add(align_box)                                                    
+        return align    
     
     def __toggled(self, widget, argv):
         if argv == "auto_time_toggle":
             is_auto_set_time = widget.get_active()
             self.datetime_settings.set_boolean("is-auto-set", is_auto_set_time)
             if is_auto_set_time:
+                self.set_time_spin_align.set_child_visible(False)
                 AutoSetTimeThread(self).start()
+            else:
+                self.set_time_spin_align.set_child_visible(True)
             return
 
         if argv == "time_display_toggle":
@@ -216,7 +287,7 @@ class DatetimeView(gtk.VBox):
         self.timezone.set_timezone(item_value - 11)
         self.__deepin_dt.set_timezone_by_gmtoff(item_value - 11)
 
-    def __setup_label(self, text="", width=100, align=ALIGN_END):
+    def __setup_label(self, text="", width=90, align=ALIGN_START):
         label = Label(text, None, CONTENT_FONT_SIZE, align, width)
         return label
 
@@ -230,9 +301,9 @@ class DatetimeView(gtk.VBox):
                       yalign=0, 
                       xscale=0, 
                       yscale=0, 
-                      padding_top=TEXT_WINDOW_TOP_PADDING, 
+                      padding_top=0, 
                       padding_bottom=0, 
-                      padding_left=TEXT_WINDOW_LEFT_PADDING, 
+                      padding_left=0, 
                       padding_right=0):
         align = gtk.Alignment()
         align.set(xalign, yalign, xscale, yscale)
