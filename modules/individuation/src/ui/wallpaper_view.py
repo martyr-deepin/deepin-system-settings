@@ -47,13 +47,21 @@ class WallpaperView(IconView):
         self.add_items([self.add_item])
         self.add_images(self.theme.get_wallpaper_paths())
         
+    def is_exists(self, image):    
+        if image in self.theme.get_user_wallpapers():
+            return True
+        return False
+        
     def add_images(self, images):        
         items = map(lambda image: WallpaperItem(image), images)
         self.add_items(items, insert_pos=-1)
         
     def on_add_wallpapers(self, name, obj, image_paths):    
-        self.add_images(image_paths)
-        self.theme.add_user_wallpapers(image_paths)
+        filter_images = filter(lambda image: not self.is_exists(image), image_paths)        
+        if filter_images:
+            self.add_images(image_paths)
+            self.theme.add_user_wallpapers(image_paths)
+            
         
     def get_scrolled_window(self):    
         scrolled_window = ScrolledWindow()
