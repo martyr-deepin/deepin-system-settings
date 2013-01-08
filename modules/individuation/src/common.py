@@ -285,8 +285,21 @@ def walk_directories(root):
                     yield subdirectory
     except gio.Error, e:
         logger.log_exception("Unhandled exception while walking dirs on %s, %s, %s", root, directory, subdirectory)
-                
-if __name__ == "__main__":        
-    a = walk_images(gio.File("/home/evilbeast/Pictures"))
-    for f in a:
-        print f.get_path()
+        
+        
+def gfile_is_image(gfile, filter_type=["png", "jpeg"]):
+    try:
+        fileinfo = gfile.query_info('standard::type,standard::content-type')            
+        file_type = fileinfo.get_file_type()
+        if file_type == gio.FILE_TYPE_REGULAR:
+            content_type = fileinfo.get_attribute_as_string("standard::content-type")
+            split_content = content_type.split("/")
+            if len(split_content) == 2:
+                if split_content[0] == "image" and split_content[1] in filter_type:
+                    return True
+        return False        
+    except:
+        return False
+    
+            
+            

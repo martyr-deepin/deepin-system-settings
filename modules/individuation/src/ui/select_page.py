@@ -25,13 +25,11 @@ import copy
 
 from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
-from dtk.ui.threads import post_gui
 from dtk.ui.scrolled_window import ScrolledWindow
 
 from ui.wallpaper_item import SelectItem
-from cache_manager import cache_thread_pool
 from helper import event_manager
-
+from monitor import LibraryMonitor
 import common
 
 class SelectView(IconView):
@@ -43,7 +41,41 @@ class SelectView(IconView):
         # self.connect("single-click-item", self.__on_single_click_item)
         
         self.monitor_dir = monitor_dir
+        self.library_monitor = LibraryMonitor(monitor_dir)
+        self.library_monitor.set_property("monitored", True)
+        self.library_monitor.connect("file-added", self.on_library_file_added)
+        self.library_monitor.connect("folder-added", self.on_library_folder_added)
+        self.library_monitor.connect("location-removed", self.on_library_location_removed)
         self.__init_monitor_images()
+        
+    def on_library_file_added(self, obj, gfile):    
+        is_image_type = common.gfile_is_image(gfile)
+        if is_image_type:
+            image_path = gfile.get_path()
+            if not self.is_exists(image_path):
+                self.add_items([SelectItem(image_path)])
+                
+    def on_library_folder_added(self, obj, gfile):            
+        items = []
+        for image_path in common.walk_images(gfile.get_path()):
+            if not self.is_exists(image_path):
+                items.append(SelectItem(image_path))
+        if items:        
+            self.add_items(items)
+            
+    def on_library_location_removed(self, obj, gfile):        
+        file_path = gfile.get_path()
+        items = filter(lambda item: item.image_path.startswith(file_path), self.items)
+        if items:
+            event_manager.emit("wallpapers-deleted", map(lambda item: item.image_path, items))            
+            self.delete_items(items)
+            
+    def is_exists(self, image_path):        
+        for item in self.items:
+            if image_path == item.image_path:
+                return True
+        return False    
+    
         
     def __init_monitor_images(self):    
         items = []
@@ -101,7 +133,7 @@ class SystemPage(gtk.VBox):
         
 class UserPage(gtk.VBox):        
     
-    def __init__(self, monitor_dir, listen_download_signal=False):
+    def __init__(self, monitor_dir):
         
         gtk.VBox.__init__(self)
         self.set_spacing(10)
@@ -124,12 +156,6 @@ class UserPage(gtk.VBox):
         
         self.pack_start(self.select_view_sw, True, True)
         self.pack_start(control_align, False, True)
-        
-        if listen_download_signal:
-            event_manager.add_callback("download-image-finish", self.on_download_image_finish)
-            
-    def on_download_image_finish(self, name, obj, data):        
-        self.select_view.add_images([data])
         
     def on_add_wallpapers(self, widget):    
         self.select_view.emit_add_wallpapers()

@@ -273,6 +273,7 @@ class AddItem(gobject.GObject):
         gobject.GObject.__init__(self)
         self.hover_flag = False
         self.highlight_flag = False
+        self.image_path = "invalid"
         self.wallpaper_width = SMALL_SIZE["x"]
         self.wallpaper_height = SMALL_SIZE["y"]
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2

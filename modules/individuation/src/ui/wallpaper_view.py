@@ -20,12 +20,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
+
 from deepin_utils.process import run_command
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 
 from helper import event_manager
-
 from ui.wallpaper_item import AddItem, WallpaperItem
 
 
@@ -40,6 +41,7 @@ class WallpaperView(IconView):
         self.connect("single-click-item", self.__on_single_click_item)
         
         event_manager.add_callback("add-wallpapers", self.on_add_wallpapers)
+        event_manager.add_callback("wallpapers-deleted", self.on_wallpapers_deleted)
         
     def set_theme(self, theme):    
         self.theme = theme
@@ -62,6 +64,10 @@ class WallpaperView(IconView):
             self.add_images(image_paths)
             self.theme.add_user_wallpapers(image_paths)
             
+    def on_wallpapers_deleted(self, name, obj, image_paths):        
+        items = filter(lambda item: item.image_path in image_paths, self.items)
+        if items:        
+            self.delete_items(items)
         
     def get_scrolled_window(self):    
         scrolled_window = ScrolledWindow()
@@ -74,5 +80,5 @@ class WallpaperView(IconView):
         cr.fill()
         
     def __on_single_click_item(self, widget, item, x, y):    
-        if hasattr(item, "image_path"):
+        if hasattr(item, "image_path") and os.path.exists(item.image_path):
             run_command("gsettings set com.deepin.dde.background picture-uris 'file://%s'" % item.image_path)        
