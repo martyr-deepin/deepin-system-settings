@@ -133,11 +133,16 @@ def touchpad_get_drag_threshold():
 
 def touchpad_set_to_default():
     '''set all value to default'''
-    touchpad_set_left_handed(TOUCHPAD_DEFAULT_SETTINGS["left_handed"])
-    touchpad_set_motion_acceleration(TOUCHPAD_DEFAULT_SETTINGS["motion_acceleration"])
-    touchpad_set_motion_threshold(TOUCHPAD_DEFAULT_SETTINGS["motion_threshold"])
-    touchpad_set_double_click(TOUCHPAD_DEFAULT_SETTINGS["double_click"])
-    touchpad_set_drag_threshold(TOUCHPAD_DEFAULT_SETTINGS["drag_threshold"])
+    #touchpad_set_left_handed(TOUCHPAD_DEFAULT_SETTINGS["left_handed"])
+    #touchpad_set_motion_acceleration(TOUCHPAD_DEFAULT_SETTINGS["motion_acceleration"])
+    #touchpad_set_motion_threshold(TOUCHPAD_DEFAULT_SETTINGS["motion_threshold"])
+    #touchpad_set_double_click(TOUCHPAD_DEFAULT_SETTINGS["double_click"])
+    #touchpad_set_drag_threshold(TOUCHPAD_DEFAULT_SETTINGS["drag_threshold"])
+    TOUCHPAD_SETTINGS.reset("left-handed")
+    TOUCHPAD_SETTINGS.reset("motion-acceleration")
+    TOUCHPAD_SETTINGS.reset("motion-threshold")
+    MOUSE_SETTINGS.reset("double-click")
+    MOUSE_SETTINGS.reset("drag-threshold")
 
 def touchpad_get_default_settings():
     '''
@@ -145,5 +150,3 @@ def touchpad_get_default_settings():
     @return: the default settings, a dict type
     '''
     return TOUCHPAD_DEFAULT_SETTINGS
-
-# TODO 增加鼠标滚轮设置
