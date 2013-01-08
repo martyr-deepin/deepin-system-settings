@@ -541,6 +541,7 @@ class PPPConf(ScrolledWindow):
             self.method_table.attach(self.mppe_stateful_label_align, 0, 2, 3, 4, xpadding=10)
             self.method_table.attach(self.require_mppe_128_align, 2, 3, 2, 3)
             self.method_table.attach(self.mppe_stateful_align, 2, 3, 3, 4) 
+
         else:
             self.require_mppe_128.set_active(False)
             self.mppe_stateful.set_active(False)
@@ -571,6 +572,8 @@ class PPPConf(ScrolledWindow):
         self.method_table.attach(self.refuse_chap_align, 2, 3, 12, 13, )
         self.method_table.attach(self.refuse_mschap_align, 2, 3, 13, 14, )
         self.method_table.attach(self.refuse_mschapv2_align, 2, 3, 14, 15, )
+        self.method_table.show_all()
+
 
 
     def refresh(self):

@@ -55,7 +55,6 @@ class VPNSetting(gtk.Alignment):
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        #vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         hbox.pack_start(vbox, True, True)
         self.save_button = Button("Save")
@@ -69,9 +68,6 @@ class VPNSetting(gtk.Alignment):
 
         style.draw_background_color(hbox)
         style.draw_separator(self.sidebar, 3)
-        #self.connect("expose-event", self.expose_event)
-        #vbox.connect("expose-event", self.expose_outline, ["top"])
-        #self.sidebar.connect("expose-event", self.expose_outline, [])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -472,7 +468,7 @@ class PPTPConf(gtk.VBox):
 
     def advanced_button_click(self, widget):
         self.ppp.refresh()
-        self.module_frame.send_submodule_crumb(3, "高级设置")
+        self.module_frame.send_submodule_crumb(3, _("高级设置"))
         nm_module.slider._slide_to_page("PPP", "right")
         #pass
 
