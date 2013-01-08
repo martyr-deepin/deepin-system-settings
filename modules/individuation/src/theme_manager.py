@@ -184,7 +184,23 @@ class ThemeFile(RawConfigParser):
     
         
     def get_user_wallpapers(self):
-        return self.get_section_options("user_wallpaper")
+        save_wallpapers = self.get_section_options("user_wallpaper")
+        user_wallpapers = []
+        is_changed = False
+        
+        for image in save_wallpapers:
+            if os.path.exists(image):
+                user_wallpapers.append(image)
+            else:    
+                self.is_changed = True
+                try:
+                    self.remove_option("user_wallpaper", image)
+                except:    
+                    pass
+                
+        if is_changed:        
+            self.save()
+        return user_wallpapers
     
     def add_user_wallpapers(self, paths):
         for path in paths:
