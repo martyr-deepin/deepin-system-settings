@@ -77,7 +77,7 @@ class MyTreeView(TreeView):
                 self.emit("select", self.visible_items[select_row], select_row)
     
     def draw_mask(self, cr, x, y, w, h):
-        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BG_COLOR))
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
         cr.rectangle(x, y, w, h)
         cr.fill()
     
@@ -137,19 +137,11 @@ class MyTreeItem(TreeItem):
             text_color = "#000000"
             bg_color = MODULE_BG_COLOR
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height-1)
+        cr.rectangle(rect.x, rect.y, rect.width-1, rect.height-1)
         cr.paint()
         self.render_icon(cr, rect)
         width = self.icon.get_pixbuf().get_width()
         self.render_content(cr, gtk.gdk.Rectangle(rect.x+width+self.padding_x, rect.y, rect.width-width-self.padding_x, rect.height), text_color)
-        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-        # draw line
-        with cairo_disable_antialias(cr):    
-            cr.set_line_width(1)
-            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.move_to(rect.x, rect.y-1+rect.height)
-            cr.line_to(rect.x+rect.width, rect.y-1+rect.height)
-            cr.stroke()
     
     def render_content(self, cr, rect, text_color):
         draw_text(cr, self.content, rect.x+self.padding_x, rect.y, rect.width-self.padding_x, rect.height-1, text_color=text_color)
