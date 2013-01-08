@@ -33,7 +33,6 @@ import gtk
 import pango
 
 import sys,os
-from dtk.ui.utils import get_parent_dir
 from dtk.ui.label import Label
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *

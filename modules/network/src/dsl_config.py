@@ -575,7 +575,6 @@ class PPPConf(ScrolledWindow):
         self.method_table.show_all()
 
 
-
     def refresh(self):
         #=========================
         # retreieve settings
