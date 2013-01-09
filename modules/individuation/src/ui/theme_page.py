@@ -25,10 +25,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 import gtk
 
-from ui.theme_view import ThemeView
-
-from theme_manager import theme_manager
-
+from ui.theme_view import UserThemeView, SystemThemeView
 
 
 class ThemePage(ScrolledWindow):
@@ -50,14 +47,14 @@ class ThemePage(ScrolledWindow):
         self.user_theme_align = gtk.Alignment()
         self.user_theme_align.set(0.0, 0.5, 0, 0)
         self.user_theme_align.set_padding(self.label_padding_y, self.label_padding_y, self.label_padding_x, 0)
-        self.user_theme_view = ThemeView()
+        self.user_theme_view = UserThemeView()
         self.user_theme_scrolledwindow = self.user_theme_view.get_scrolled_window()
         
         self.system_theme_label = Label("系统主题")
         self.system_theme_align = gtk.Alignment()
         self.system_theme_align.set(0.0, 0.5, 0, 0)
         self.system_theme_align.set_padding(self.label_padding_y, self.label_padding_y, self.label_padding_x, 0)
-        self.system_theme_view = ThemeView()
+        self.system_theme_view = SystemThemeView()
         self.system_theme_scrolledwindow = self.system_theme_view.get_scrolled_window()
         
         self.user_theme_align.add(self.user_theme_label)
@@ -70,13 +67,6 @@ class ThemePage(ScrolledWindow):
         
         self.user_theme_align.connect("expose-event", self.expose_label_align)
         self.system_theme_align.connect("expose-event", self.expose_label_align)
-        self.init_theme_view()
-        
-    def init_theme_view(self):
-        user_themes = theme_manager.get_user_themes()
-        system_themes = theme_manager.get_system_themes()
-        self.user_theme_view.add_themes(user_themes)
-        self.system_theme_view.add_themes(system_themes)
         
     def expose_label_align(self, widget, event):
         cr = widget.window.cairo_create()

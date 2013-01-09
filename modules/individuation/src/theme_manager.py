@@ -26,6 +26,8 @@ import common
 from xdg_support import (get_user_theme_dir, get_system_theme_dir, 
                          get_system_wallpaper_dirs, get_config_path)
 
+import deepin_gsettings
+
 THEME_TYPE_SYSTEM = 1
 THEME_TYPE_USER = 2
 
@@ -204,8 +206,31 @@ class ThemeFile(RawConfigParser):
     
     def add_user_wallpapers(self, paths):
         for path in paths:
-            self.set_option("user_wallpaper", path, "")
+            self.set_option("user_wallpaper", path, "False")
         self.save()    
+        
+    def get_user_wallpaper_status(self, path):    
+        if self.has_option("user_wallpaper", path):
+            value = self.get_option("user_wallpaper", path)
+            if value != "True": return False
+            return True
+        return False
+    
+    def set_user_wallpaper_status(self, path, value):
+        self.set_option("user_wallpaper", path, str(value))
+        
+    def set_system_wallpaper_status(self, path, value):    
+        path = path.split("/")[-1]
+        self.set_option("system_wallpaper", path, str(value))
+        
+    def get_system_wallpaper_status(self, path):    
+        path = path.split("/")[-1]
+        if self.has_option("system_wallpaper", path):
+            value = self.get_option("system_wallpaper", path)
+            if value != "True": return False
+            return True
+        else:
+            return False
     
     def get_wallpaper_paths(self):
         return self.get_system_wallpapers() + self.get_user_wallpapers()
@@ -266,8 +291,24 @@ class ThemeManager(object):
     def get_theme(self, location):
         pass
     
+    def create_new_theme(self, name, copy_theme=None):
+        new_theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
+        new_theme = ThemeFile(new_theme_path)
+        if copy_theme:
+            new_theme.copy_theme(copy_theme)
+        new_theme.set_default_name(name)    
+        new_theme.set_locale_name(name)
+        new_theme.save()    
+        return new_theme
+    
     def untitled_theme(self, copy_theme=None):
         untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
+        if os.path.exists(untitled_path):
+            try:
+                os.unlink(untitled_path)
+            except:    
+                pass
+            
         untitled_theme = ThemeFile(untitled_path)
         if copy_theme:
             untitled_theme.copy_theme(copy_theme)
@@ -277,3 +318,4 @@ class ThemeManager(object):
         return untitled_theme
         
 theme_manager = ThemeManager()
+background_gsettings = background_gsettings = deepin_gsettings.new("com.deepin.dde.background")
