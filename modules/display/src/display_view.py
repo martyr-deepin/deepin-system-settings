@@ -29,8 +29,8 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
-from dtk.ui.utils import (color_hex_to_cairo, set_clickable_cursor, 
-                          is_dbus_name_exists)
+from dtk.ui.utils import color_hex_to_cairo, set_clickable_cursor
+from deepin_utils.ipc import is_dbus_name_exists
 from dtk.ui.draw import cairo_state, draw_text
 import gobject
 import gtk
@@ -331,7 +331,7 @@ class DisplayView(gtk.VBox):
         self.brightness_label_align.add(self.brightness_label)
         
         self.brightness_scale = HScalebar(point_dpixbuf = app_theme.get_pixbuf("scalebar/point.png"), 
-                                          value_min = 5, 
+                                          value_min = 10, 
                                           value_max = 100)
         self.brightness_scale.set_size_request(HSCALEBAR_WIDTH, 33)
         self.brightness_scale.set_value(self.display_manager.get_screen_brightness())

@@ -23,7 +23,7 @@
 
 import sys
 import os
-from dtk.ui.utils import get_parent_dir 
+from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
@@ -31,9 +31,11 @@ from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton 
 from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
+from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.box import ImageBox
-from dtk.ui.scalebar import HScalebar
+from dtk.ui.hscalebar import HScalebar
+from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
@@ -100,6 +102,8 @@ class SoundSetting(object):
         self.label_widgets["microphone"] = Label(_("Microphone"), text_size=title_item_font_size)
         self.label_widgets["left"] = Label(_("Left"))
         self.label_widgets["right"] = Label(_("Right"))
+        self.label_widgets["speaker_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
+        self.label_widgets["microphone_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
         #####################################
         # image init
         self.image_widgets["balance"] = ImageBox(app_theme.get_pixbuf("%s/balance.png" % MODULE_NAME))
@@ -111,10 +115,11 @@ class SoundSetting(object):
         self.button_widgets["speaker"] = OffButton()
         self.button_widgets["microphone"] = OffButton()
         self.button_widgets["advanced"] = Button(_("Advanced"))
-        self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=420)
-        self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=420)
+        self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=HSCALEBAR_WIDTH)
+        self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=HSCALEBAR_WIDTH)
         # container init
         self.container_widgets["slider"] = HSlider()
+        self.container_widgets["swin"] = ScrolledWindow()
         self.container_widgets["advance_set_tab_box"] = TabBox()
         self.container_widgets["advance_set_tab_box"].draw_title_background = self.draw_tab_title_background
         self.container_widgets["main_hbox"] = gtk.HBox(False)
@@ -123,11 +128,10 @@ class SoundSetting(object):
         self.container_widgets["balance_hbox"] = gtk.HBox(False)
         self.container_widgets["speaker_main_vbox"] = gtk.VBox(False)     # speaker
         self.container_widgets["speaker_label_hbox"] = gtk.HBox(False)
-        self.container_widgets["speaker_table"] = gtk.Table(3, 2)
+        self.container_widgets["speaker_table"] = gtk.Table(4, 2)
         self.container_widgets["microphone_main_vbox"] = gtk.VBox(False)     # microphone
         self.container_widgets["microphone_label_hbox"] = gtk.HBox(False)
-        self.container_widgets["microphone_table"] = gtk.Table(3, 2)
-        self.container_widgets["advanced_hbox"] = gtk.HBox(False)
+        self.container_widgets["microphone_table"] = gtk.Table(4, 2)
         # alignment init
         self.alignment_widgets["slider"] = gtk.Alignment()
         self.alignment_widgets["main_hbox"] = gtk.Alignment()
@@ -138,28 +142,14 @@ class SoundSetting(object):
         self.alignment_widgets["speaker_set"] = gtk.Alignment()
         self.alignment_widgets["microphone_label"] = gtk.Alignment()      # microphone
         self.alignment_widgets["microphone_set"] = gtk.Alignment()
-        self.alignment_widgets["advanced"] = gtk.Alignment()
         # adjust init
         self.adjust_widgets["balance"] = gtk.Adjustment(0, -1.0, 1.0, 0.1, 0.2)
         self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 150, 1, 5)
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150, 1, 5)
         # scale init
-        self.scale_widgets["balance"] = HScalebar(
-            None, None, None, None, None, None,
-            app_theme.get_pixbuf("scalebar/point.png"))
-        self.scale_widgets["balance"].set_adjustment(self.adjust_widgets["balance"])
-        self.scale_widgets["speaker"] = HScalebar(
-            None, None, None, None, None, None,
-            app_theme.get_pixbuf("scalebar/point.png"),
-            True,
-            '%')
-        self.scale_widgets["speaker"].set_adjustment(self.adjust_widgets["speaker"])
-        self.scale_widgets["microphone"] = HScalebar(
-            None, None, None, None, None, None,
-            app_theme.get_pixbuf("scalebar/point.png"),
-            True,
-            '%')
-        self.scale_widgets["microphone"].set_adjustment(self.adjust_widgets["microphone"])
+        self.scale_widgets["balance"] = HScalebar(value_min=-1, value_max=1)
+        self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
+        self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
         ###################################
         # advance set
         self.container_widgets["advance_input_box"] = gtk.VBox(False)
@@ -198,6 +188,8 @@ class SoundSetting(object):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["advance_set_tab_box"])
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
+        #self.alignment_widgets["main_hbox"].add(self.container_widgets["swin"])
+        #self.container_widgets["swin"].add_child(self.container_widgets["main_hbox"])
         self.alignment_widgets["advance_set_tab_box"].add(self.container_widgets["advance_set_tab_box"])
         self.container_widgets["advance_set_tab_box"].set_size_request(WINDOW_WIDTH, -1)
         self.alignment_widgets["main_hbox"].set_padding(
@@ -218,10 +210,9 @@ class SoundSetting(object):
         self.container_widgets["right_vbox"].set_size_request(RIGHT_BOX_WIDTH, -1)
         # set left padding
         self.alignment_widgets["left"].set(0.0, 0.0, 1.0, 1.0)
-        #self.alignment_widgets["left"].set_padding(15, 0, 20, 0)
         # set right padding
         self.alignment_widgets["right"].set(0.0, 0.0, 1.0, 1.0)
-        self.alignment_widgets["right"].set_padding(0, 0, 0, 20)
+        self.alignment_widgets["right"].set_padding(0, 0, 0, 60)
         
         self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["left_vbox"].pack_start(
@@ -235,10 +226,12 @@ class SoundSetting(object):
         #
         self.alignment_widgets["speaker_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["speaker_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["speaker_set"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["speaker_set"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["speaker_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["speaker_main_vbox"].pack_start(
             self.alignment_widgets["speaker_label"])
+        self.container_widgets["speaker_main_vbox"].pack_start(
+            self.__setup_separator())
         self.container_widgets["speaker_main_vbox"].pack_start(
             self.alignment_widgets["speaker_set"])
         # tips lable
@@ -251,32 +244,36 @@ class SoundSetting(object):
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_lower(), gtk.POS_BOTTOM, _("Left"))
         self.scale_widgets["balance"].add_mark(self.adjust_widgets["balance"].get_upper(), gtk.POS_BOTTOM, _("Right"))
         self.scale_widgets["balance"].add_mark(0, gtk.POS_BOTTOM, "0")
+        self.scale_widgets["speaker"].add_mark(self.adjust_widgets["speaker"].get_lower(), gtk.POS_BOTTOM, "-")
+        self.scale_widgets["speaker"].add_mark(self.adjust_widgets["speaker"].get_upper(), gtk.POS_BOTTOM, "+")
+        #self.scale_widgets["speaker"].add_mark(100, gtk.POS_BOTTOM, "100%")
         # 
-        self.container_widgets["speaker_table"].set_size_request(MAIN_AREA_WIDTH, -1)
-        self.container_widgets["speaker_table"].set_col_spacings(WIDGET_SPACING)
+        self.container_widgets["speaker_table"].set_size_request(HSCALEBAR_WIDTH, -1)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.button_widgets["speaker_combo"]), 0, 1, 0, 1, 4)
+            self.__make_align(self.button_widgets["speaker_combo"]), 0, 2, 0, 1, 4)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.scale_widgets["speaker"], padding_top=1, height=37), 0, 1, 1, 2, 4)
+            self.__make_align(self.label_widgets["speaker_mute"]), 0, 1, 1, 2, 4)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.button_widgets["speaker"], padding_top=18), 1, 2, 1, 2, 0)
+            self.__make_align(self.button_widgets["speaker"]), 1, 2, 1, 2, 4)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.scale_widgets["balance"], height=43), 0, 1, 2, 3, 4)
-        self.container_widgets["speaker_table"].set_row_spacing(1, 15)
-        button_width = self.button_widgets["speaker"].get_size_request()[0]
-        self.button_widgets["speaker_combo"].set_size_request(-1, WIDGET_HEIGHT)
-        self.scale_widgets["speaker"].set_size_request(MAIN_AREA_WIDTH-button_width, -1)
-        self.scale_widgets["balance"].set_size_request(MAIN_AREA_WIDTH-button_width, -1)
+            self.__make_align(self.scale_widgets["speaker"], yalign=0.0, yscale=1.0, height=43), 0, 2, 2, 3, 4)
+        self.container_widgets["speaker_table"].attach(
+            self.__make_align(self.scale_widgets["balance"], yalign=0.0, yscale=1.0, height=43), 0, 2, 3, 4, 4)
+        self.button_widgets["speaker_combo"].set_size_request(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
+        self.scale_widgets["speaker"].set_size_request(HSCALEBAR_WIDTH, -1)
+        self.scale_widgets["balance"].set_size_request(HSCALEBAR_WIDTH, -1)
         
         # microphone
         self.alignment_widgets["microphone_label"].add(self.container_widgets["microphone_label_hbox"])
         self.alignment_widgets["microphone_set"].add(self.container_widgets["microphone_table"])
         self.alignment_widgets["microphone_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["microphone_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["microphone_set"].set(0.0, 0.5, 1.0, 1.0)
+        self.alignment_widgets["microphone_set"].set(0.0, 0.0, 0.0, 0.0)
         self.alignment_widgets["microphone_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["microphone_main_vbox"].pack_start(
             self.alignment_widgets["microphone_label"])
+        self.container_widgets["microphone_main_vbox"].pack_start(
+            self.__setup_separator())
         self.container_widgets["microphone_main_vbox"].pack_start(
             self.alignment_widgets["microphone_set"])
         # tips lable
@@ -286,22 +283,23 @@ class SoundSetting(object):
         self.container_widgets["microphone_label_hbox"].pack_start(
             self.label_widgets["microphone"], False, False)
         #
-        self.container_widgets["microphone_table"].set_size_request(MAIN_AREA_WIDTH, -1)
-        self.container_widgets["microphone_table"].set_col_spacings(WIDGET_SPACING)
-        self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.button_widgets["microphone_combo"]), 0, 1, 0, 1, 4)
-        self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.scale_widgets["microphone"], height=37), 0, 1, 1, 2, 4)
-        self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.button_widgets["microphone"], padding_top=18), 1, 2, 1, 2, 0)
-        self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.container_widgets["advanced_hbox"]), 0, 2, 2, 3, ypadding=15)
-        button_width = self.button_widgets["microphone"].get_size_request()[0]
-        self.button_widgets["microphone_combo"].set_size_request(-1, WIDGET_HEIGHT)
-        self.scale_widgets["microphone"].set_size_request(MAIN_AREA_WIDTH-button_width, -1)
+        self.scale_widgets["microphone"].add_mark(self.adjust_widgets["microphone"].get_lower(), gtk.POS_BOTTOM, "-")
+        self.scale_widgets["microphone"].add_mark(self.adjust_widgets["microphone"].get_upper(), gtk.POS_BOTTOM, "+")
+        #self.scale_widgets["microphone"].add_mark(100, gtk.POS_BOTTOM, "100%")
 
-        self.container_widgets["advanced_hbox"].pack_start(self.alignment_widgets["advanced"])
-        self.container_widgets["advanced_hbox"].pack_start(self.button_widgets["advanced"], False, False)
+        self.container_widgets["microphone_table"].set_size_request(HSCALEBAR_WIDTH, -1)
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.button_widgets["microphone_combo"]), 0, 2, 0, 1, 4)
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.label_widgets["microphone_mute"]), 0, 1, 1, 2, 4)
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.button_widgets["microphone"]), 1, 2, 1, 2, 4)
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.scale_widgets["microphone"], yalign=0.0, yscale=1.0, height=43), 0, 2, 2, 3, 4)
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.button_widgets["advanced"]), 0, 2, 3, 4, 4, ypadding=15)
+        self.button_widgets["microphone_combo"].set_size_request(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
+        self.scale_widgets["microphone"].set_size_request(HSCALEBAR_WIDTH, -1)
 
         # advanced
         self.alignment_widgets["advance_input_box"].add(self.container_widgets["advance_input_box"])
@@ -324,6 +322,7 @@ class SoundSetting(object):
 
         self.container_widgets["advance_hardware_box"].pack_start(self.label_widgets["ad_hardware"], False, False, 10)
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
+        ##########################################
         # if PulseAudio connect error, set the widget insensitive
         if settings.PA_CORE is None or not settings.PA_CARDS:
             self.container_widgets["main_hbox"].set_sensitive(False)
@@ -343,6 +342,7 @@ class SoundSetting(object):
             # if is Mono, set it insensitive
             if settings.PA_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
                 self.scale_widgets["balance"].set_sensitive(False)
+                self.scale_widgets["balance"].set_value(0-self.scale_widgets["balance"].value_min)
             else:
                 volumes = settings.get_volumes(settings.CURRENT_SINK)
                 if volumes[0] == volumes[1]:
@@ -351,9 +351,11 @@ class SoundSetting(object):
                     value = float(volumes[1]) / volumes[0] - 1
                 else:
                     value = 1 - float(volumes[0]) / volumes[1]
-                self.adjust_widgets["balance"].set_value(value)
+                self.scale_widgets["balance"].set_value(value-self.scale_widgets["balance"].value_min)
             self.button_widgets["balance"].set_active(True)
-            self.button_widgets["speaker"].set_active(not settings.get_mute(settings.CURRENT_SINK))
+            is_mute = settings.get_mute(settings.CURRENT_SINK)
+            self.button_widgets["speaker"].set_active(not is_mute)
+            self.scale_widgets["speaker"].set_enable(not is_mute)
             self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
             if self.speaker_ports:
                 items = []
@@ -362,13 +364,15 @@ class SoundSetting(object):
                 for port in self.speaker_ports[0]:
                     items.append((port.get_description(), i))
                     i += 1
-                self.button_widgets["speaker_combo"].set_items(items, select_index, 420)
-            self.adjust_widgets["speaker"].set_value(
+                self.button_widgets["speaker_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
+            self.scale_widgets["speaker"].set_value(
                 settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
         # set input volume
         self.microphone_ports = None
         if settings.CURRENT_SOURCE:
-            self.button_widgets["microphone"].set_active(not settings.get_mute(settings.CURRENT_SOURCE))
+            is_mute = settings.get_mute(settings.CURRENT_SOURCE)
+            self.button_widgets["microphone"].set_active(not is_mute)
+            self.scale_widgets["microphone"].set_enable(not is_mute)
             self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
             if self.microphone_ports:
                 items = []
@@ -377,8 +381,8 @@ class SoundSetting(object):
                 for port in self.microphone_ports[0]:
                     items.append((port.get_description(), i))
                     i += 1
-                self.button_widgets["microphone_combo"].set_items(items, select_index, 420)
-            self.adjust_widgets["microphone"].set_value(
+                self.button_widgets["microphone_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
+            self.scale_widgets["microphone"].set_value(
                 settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
         card_list = []
         output_list = []
@@ -438,7 +442,6 @@ class SoundSetting(object):
         ''' widget signals connect'''
         # redraw container background white
         self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
-        #self.alignment_widgets["advance_set_tab_box"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["advance_output_box"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["advance_input_box"].connect("expose-event", self.container_expose_cb)
         
@@ -447,14 +450,21 @@ class SoundSetting(object):
         self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
 
         self.scale_widgets["balance"].connect("button-release-event", self.balance_scale_value_changed)
-        self.scale_widgets["balance"].connect("button-press-event", lambda w, e: self.scale_widgets["balance"].set_data("has_pressed", True))
-        self.scale_widgets["balance"].connect("move-slider", self.balance_scale_move_slider_cb)
         self.scale_widgets["speaker"].connect("button-release-event", self.speaker_scale_value_changed)
-        self.scale_widgets["speaker"].connect("button-press-event", lambda w, e: self.scale_widgets["speaker"].set_data("has_pressed", True))
-        self.scale_widgets["speaker"].connect("move-slider", self.speaker_scale_move_slider_cb)
         self.scale_widgets["microphone"].connect("button-release-event", self.microphone_scale_value_changed)
+        self.scale_widgets["balance"].connect("button-press-event", lambda w, e: self.scale_widgets["balance"].set_data("has_pressed", True))
+        self.scale_widgets["speaker"].connect("button-press-event", lambda w, e: self.scale_widgets["speaker"].set_data("has_pressed", True))
         self.scale_widgets["microphone"].connect("button-press-event", lambda w, e: self.scale_widgets["microphone"].set_data("has_pressed", True))
-        self.scale_widgets["microphone"].connect("move-slider", self.microphone_scale_move_slider_cb)
+
+        self.adjust_widgets["balance"].connect("value-changed",
+            lambda w: self.scale_widgets["balance"].set_value(
+                self.adjust_widgets["balance"].get_value() - self.scale_widgets["balance"].value_min))
+        self.adjust_widgets["speaker"].connect("value-changed",
+            lambda w: self.scale_widgets["speaker"].set_value(
+                self.adjust_widgets["speaker"].get_value() - self.scale_widgets["speaker"].value_min))
+        self.adjust_widgets["microphone"].connect("value-changed",
+            lambda w: self.scale_widgets["microphone"].set_value(
+                self.adjust_widgets["microphone"].get_value() - self.scale_widgets["microphone"].value_min))
 
         self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
         self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
@@ -509,9 +519,9 @@ class SoundSetting(object):
         cr.fill()
     
     def toggle_button_toggled(self, button, tp):
-        if button.get_data("changed-by-other-app"):
-            button.set_data("changed-by-other-app", False)
-            return
+        #if button.get_data("changed-by-other-app"):
+            #button.set_data("changed-by-other-app", False)
+            #return
         if tp == "balance":
             callback = self.balance_toggled
         elif tp == "speaker":
@@ -536,14 +546,17 @@ class SoundSetting(object):
     def speaker_toggled(self, active):
         if settings.CURRENT_SINK:
             settings.set_mute(settings.CURRENT_SINK, not active)
+        self.scale_widgets["speaker"].set_enable(active)
     
     def microphone_toggled(self, active):
         if settings.CURRENT_SOURCE:
             settings.set_mute(settings.CURRENT_SOURCE, not active)
+        self.scale_widgets["microphone"].set_enable(active)
     
     def balance_value_changed_thread(self):
         ''' balance value changed callback thread'''
-        value = self.adjust_widgets["balance"].get_value()
+        value = self.scale_widgets["balance"].get_value() + self.scale_widgets["balance"].value_min
+        print "balance cahnged:", value
         sink = settings.CURRENT_SINK
         if value < 0:       # is left, and reduce right volume
             volume = settings.get_volume(sink)
@@ -567,19 +580,12 @@ class SoundSetting(object):
             traceback.print_exc()
             pass
     
-    def balance_scale_move_slider_cb(self, widget, scrolltype):
-        try:
-            SettingVolumeThread(self, self.balance_value_changed_thread).start()
-        except:
-            traceback.print_exc()
-            pass
-    
     def speaker_value_changed_thread(self):
         ''' speaker hscale value changed callback thread '''
-        balance = self.adjust_widgets["balance"].get_value()
+        balance = self.scale_widgets["balance"].get_value() + self.scale_widgets["balance"].value_min
         sink = settings.CURRENT_SINK
         volume_list = []
-        volume = self.adjust_widgets["speaker"].get_value() / 100 * settings.FULL_VOLUME_VALUE
+        volume = (self.scale_widgets["speaker"].get_value() + self.scale_widgets["speaker"].value_min) / 100 * settings.FULL_VOLUME_VALUE
         if balance < 0:
             volume_list.append(volume)
             volume_list.append(volume * (1 + balance))
@@ -601,16 +607,9 @@ class SoundSetting(object):
             traceback.print_exc()
             pass
     
-    def speaker_scale_move_slider_cb(self, widget, scrolltype):
-        try:
-            SettingVolumeThread(self, self.speaker_value_changed_thread).start()
-        except:
-            traceback.print_exc()
-            pass
-
     def microphone_value_changed_thread(self):
         ''' microphone value changed callback thread'''
-        value = self.adjust_widgets["microphone"].get_value()
+        value = self.scale_widgets["microphone"].get_value() + self.scale_widgets["microphone"].value_min
         volume = value / 100 * settings.FULL_VOLUME_VALUE
         source = settings.CURRENT_SOURCE
         settings.set_volume(source, volume)
@@ -622,13 +621,6 @@ class SoundSetting(object):
         if not widget.get_data("has_pressed"):
             return
         widget.set_data("has_pressed", False)
-        try:
-            SettingVolumeThread(self, self.microphone_value_changed_thread).start()
-        except:
-            traceback.print_exc()
-            pass
-    
-    def microphone_scale_move_slider_cb(self, widget, scrolltype):
         try:
             SettingVolumeThread(self, self.microphone_value_changed_thread).start()
         except:
@@ -913,7 +905,7 @@ class SoundSetting(object):
             for port in self.speaker_ports[0]:
                 items.append((port.get_description(), i))
                 i += 1
-            self.button_widgets["speaker_combo"].set_items(items, select_index, 460)
+            self.button_widgets["speaker_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
         self.adjust_widgets["speaker"].set_value(
             settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
         for item in self.view_widgets["ad_output"].visible_items:
@@ -951,7 +943,7 @@ class SoundSetting(object):
             for port in self.microphone_ports[0]:
                 items.append((port.get_description(), i))
                 i += 1
-            self.button_widgets["microphone_combo"].set_items(items, select_index, 460)
+            self.button_widgets["microphone_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
         self.adjust_widgets["microphone"].set_value(
             settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
         for item in self.view_widgets["ad_input"].visible_items:
@@ -969,7 +961,7 @@ class SoundSetting(object):
     
     # signals callback end
     ######################################
-    def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=1.0,
+    def __make_align(self, widget=None, xalign=1.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
                      padding_right=0, height=CONTAINNER_HEIGHT):
         align = gtk.Alignment()
@@ -979,6 +971,14 @@ class SoundSetting(object):
         if widget:
             align.add(widget)
         return align
+
+    def __make_separator(self):
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(350, 10)
+        return hseparator
+    
+    def __setup_separator(self):
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, height=10)
     
     def slider_to_advanced(self, button):
         self.container_widgets["slider"].slide_to_page(

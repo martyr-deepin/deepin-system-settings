@@ -23,7 +23,7 @@
 import sys
 import os
 import getopt
-from dtk.ui.utils import get_parent_dir
+from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from power_view import PowerView

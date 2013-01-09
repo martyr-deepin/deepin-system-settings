@@ -4,13 +4,14 @@
 from theme import app_theme
 
 from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button,  CheckButton
+from dtk.ui.button import Button,  CheckButton, RadioButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
 from dtk.ui.new_treeview import TreeView
 #from dtk.ui.droplist import Droplist
 #from widgets import SettingButton
+from dtk.ui.scrolled_window import ScrolledWindow
 from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 # NM lib import 
 from nm_modules import nm_module
@@ -18,14 +19,15 @@ from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
 #from nmlib.nmclient import nmclient
 #from nmlib.nm_remote_settings import nm_remote_settings
-from container import Contain
+from container import MyToggleButton as SwitchButton
+from container import TitleBar
 from shared_widget import IPV4Conf
 
 import gtk
 from nls import _
 import style
 from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE
-from container import MyRadioButton as RadioButton
+#from container import MyRadioButton as RadioButton
 
 slider = nm_module.slider
 class VPNSetting(gtk.Alignment):
@@ -55,7 +57,6 @@ class VPNSetting(gtk.Alignment):
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
         vbox = gtk.VBox()
-        #vbox.connect("expose-event", self.expose_event)
         vbox.pack_start(self.tab_window ,True, True)
         hbox.pack_start(vbox, True, True)
         self.save_button = Button("Save")
@@ -67,11 +68,8 @@ class VPNSetting(gtk.Alignment):
         buttons_aligns.add(button_box)
         vbox.pack_start(buttons_aligns, False , False)
 
-        style.draw_background_color(hbox)
+        style.draw_background_color(self)
         style.draw_separator(self.sidebar, 3)
-        #self.connect("expose-event", self.expose_event)
-        #vbox.connect("expose-event", self.expose_outline, ["top"])
-        #self.sidebar.connect("expose-event", self.expose_outline, [])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -334,10 +332,6 @@ class PPTPConf(gtk.VBox):
         self.module_frame = module_frame
         self.set_button = set_button_callback
         self.vpn_setting = self.connection.get_setting("vpn")
-        self.ppp = PPPConf(self.connection, module_frame)
-        nm_module.slider._append_page(self.ppp, "PPP")
-        slider._append_page(self.ppp, "ppp")
-        self.ppp.show_all()
 
         # UI
         pptp_table = gtk.Table(7, 4, False)
@@ -346,8 +340,8 @@ class PPTPConf(gtk.VBox):
         password_label = Label(_("Password:"))
         nt_domain_label = Label(_("NT Domain:"))
         # Radio Button
-        self.pptp_radio = RadioButton(None, _("PPTP"))
-        self.l2tp_radio = RadioButton(self.pptp_radio, _("L2TP"))
+        self.pptp_radio = RadioButton(_("PPTP"))
+        self.l2tp_radio = RadioButton(_("L2TP"))
         radio_box = gtk.HBox(spacing=30)
         radio_box.pack_start(self.pptp_radio, False, False)
         radio_box.pack_start(self.l2tp_radio, False, False)
@@ -365,7 +359,6 @@ class PPTPConf(gtk.VBox):
         self.user_entry.set_size(self.ENTRY_WIDTH, 22)
         # FIXME should change to new_entry PasswordEntry
         self.password_entry = PasswordEntry()
-        #self.password_entry.set_visibility(False)
         self.password_entry.set_size(self.ENTRY_WIDTH, 22)
         self.password_show = CheckButton(_("Show Password"), padding_x=0)
         self.password_show.set_active(False)
@@ -471,102 +464,144 @@ class PPTPConf(gtk.VBox):
             self.refresh()
 
     def advanced_button_click(self, widget):
-        self.ppp.refresh()
-        self.module_frame.send_submodule_crumb(3, "高级设置")
-        nm_module.slider._slide_to_page("PPP", "right")
+        ppp = PPPConf(self.module_frame, self.set_button)
+        ppp.refresh(self.connection)
+        self.module_frame.send_submodule_crumb(3, _("高级设置"))
+        nm_module.slider.slide_to_page(ppp, "right")
         #pass
 
-class PPPConf(gtk.VBox):
+class PPPConf(ScrolledWindow):
+    ENTRY = 0
+    OFFBUTTON = 1
 
-    def __init__(self, connection, module_frame):
-        gtk.VBox.__init__(self)
+    TABLE_WIDTH = 150
+    def __init__(self, module_frame, set_button_callback):
+        ScrolledWindow.__init__(self)
         
+        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.set_button = set_button_callback
         self.module_frame = module_frame
-        self.connection = connection
-        self.vpn_setting = self.connection.get_setting("vpn")
         
+        self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
+                                     _("Configure Method"), width=self.TABLE_WIDTH)
 
-        method = Contain(app_theme.get_pixbuf("network/misc.png"), "Configure Method", self.toggle_cb)
-        # invisable settings
-        self.refuse_eap = CheckButton("EAP")
-        self.refuse_pap = CheckButton("PAP")
-        self.refuse_chap = CheckButton("CHAP")
-        self.refuse_mschap = CheckButton("MSCHAP")
-        self.refuse_mschapv2 = CheckButton("MSCHAP v2")
+        self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_eap = SwitchButton()
+        self.refuse_pap = SwitchButton()
+        self.refuse_chap = SwitchButton()
+        self.refuse_mschap = SwitchButton()
+        self.refuse_mschapv2 = SwitchButton()
         
-        self.method_table = gtk.Table(5, 8, False)
-        self.method_table.set_no_show_all(True)
-        self.method_table.hide()
-        self.method_table.attach(self.refuse_eap, 0, 8, 0, 1)
-        self.method_table.attach(self.refuse_pap, 0, 8, 1, 2)
-        self.method_table.attach(self.refuse_chap, 0, 8, 2, 3)
-        self.method_table.attach(self.refuse_mschap, 0, 8, 3, 4)
-        self.method_table.attach(self.refuse_mschapv2, 0, 8, 4, 5)
+        self.method_table = gtk.Table(23, 3, False)
 
         # visible settings
-        self.compression = Label("Security and Compression")
 
-        self.require_mppe = CheckButton("Use point-to-point encryption(mppe)")
-        self.require_mppe_128 = CheckButton("Require 128-bit encryption")
-        self.mppe_stateful = CheckButton("Use stataful MPPE")
+        self.compression_title = TitleBar(app_theme.get_pixbuf("network/zip.png"),
+                                          _("Compression"), width=self.TABLE_WIDTH)
+        self.echo_title = TitleBar(app_theme.get_pixbuf("network/echo.png"),
+                                          _("Echo"), width=self.TABLE_WIDTH)
+
+
+        #compressio))n = Label(_("Compression"), text_size=TITLE_FONT_SIZE)
+        self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE)
+        self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE)
+        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE)
+        self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE)
+        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE)
+        self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE)
+        #echo = Label("Echo", text_size=TITLE_FONT_SIZE)
+        self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE)
+        self.nopcomp_label = Label(_("Use protocal field compression negotiation"), text_size=CONTENT_FONT_SIZE)
+        self.noaccomp_label = Label(_("Use Address/Control compression"), text_size=CONTENT_FONT_SIZE)
+
+        self.require_mppe = SwitchButton()
+        self.require_mppe_128 = SwitchButton()
+        self.mppe_stateful = SwitchButton()
         
-        self.nobsdcomp = CheckButton("Allow BSD data Compression")
-        self.nodeflate = CheckButton("Allow Deflate date compression")
-        self.no_vj_comp = CheckButton("Use TCP header compression")
-        self.nopcomp = CheckButton("Use protocal field compression negotiation")
-        self.noaccomp = CheckButton("Use Address/Control compression")
-        
+        self.nobsdcomp = SwitchButton()
+        self.nodeflate = SwitchButton()
+        self.no_vj_comp = SwitchButton()
+        self.nopcomp = SwitchButton()
+        self.noaccomp = SwitchButton() 
+        self.ppp_echo = SwitchButton()
+        self.ip_sec_enable = SwitchButton()
+
         ## Settings for IPSec
-        self.ip_sec_enable = CheckButton("Enable IPSec tunnel to l2tp host")
-        self.group_name_label = Label("Group Name:")
-        self.gateway_id_label = Label("Gateway ID:")
-        self.pre_shared_key_label = Label("Pre_Shared_key")
-        self.group_name = InputEntry()
-        self.group_name.set_size(200, 25)
-        self.gateway_id = InputEntry()
-        self.gateway_id.set_size(200, 25)
-        self.pre_shared_key = InputEntry()
-        self.pre_shared_key.set_size(200, 25)
+        self.ipsec_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
+                                     _("IPSec Setting"), width=self.TABLE_WIDTH)
 
-        self.echo = Label("Echo")
-        self.ppp_echo = CheckButton("Send PPP echo packets")
+        self.ip_sec_enable_label = Label(_("Enable IPSec tunnel to l2tp host"), text_size=CONTENT_FONT_SIZE)
+        self.group_name_label = Label(_("Group Name:"), text_size=CONTENT_FONT_SIZE)
+        self.gateway_id_label = Label(_("Gateway ID:"), text_size=CONTENT_FONT_SIZE)
+        self.pre_shared_key_label = Label(_("Pre_Shared_key"), text_size=CONTENT_FONT_SIZE)
+        self.group_name = InputEntry()
+        self.group_name.set_size(self.TABLE_WIDTH, 22)
+        self.gateway_id = InputEntry()
+        self.gateway_id.set_size(self.TABLE_WIDTH, 22)
+        self.pre_shared_key = InputEntry()
+        self.pre_shared_key.set_size(self.TABLE_WIDTH, 22)
         
-        self.table = gtk.Table(11, 10, False)
-        self.ip_sec_table = gtk.Table(4, 3, False)
-        self.ip_sec_table.set_size_request(100, 20)
-        self.init_ui()
-        #self.mppe.set_size_request(100, 10)
+        methods_list = ["refuse_eap", "refuse_eap_label",
+                        "refuse_pap", "refuse_pap_label",
+                        "refuse_chap", "refuse_chap_label",
+                        "refuse_mschap", "refuse_mschap_label",
+                        "refuse_mschapv2", "refuse_mschapv2_label"]
+        compression_list = ["require_mppe_label", "require_mppe",
+                            "require_mppe_128_label", "require_mppe_128",
+                            "mppe_stateful_label", "mppe_stateful",
+                            "nobsdcomp_label", "nobsdcomp",
+                            "nodeflate_label", "nodeflate",
+                            "no_vj_comp_label", "no_vj_comp",
+                            "nopcomp_label", "nopcomp",
+                            "noaccomp_label", "noaccomp"]
+
+        echo_list = ["ppp_echo_label","ppp_echo"]
+
+        ip_sec_list = ["ip_sec_enable_label", "ip_sec_enable",
+                       "group_name_label", "group_name",
+                       "gateway_id_label", "gateway_id",
+                       "pre_shared_key_label", "pre_shared_key"]
+
+        for name in (compression_list+echo_list+methods_list + ip_sec_list):
+            widget = getattr(self, name)
+            if not name.endswith("label"):
+                align = style.wrap_with_align(widget, width=self.TABLE_WIDTH)
+            else:
+                align = style.wrap_with_align(widget)
+
+            setattr(self, name + "_align", align)
 
         vbox = gtk.VBox()
-        vbox.pack_start(method, False, False)
         vbox.pack_start(self.method_table, False, False)
-        vbox.pack_start(self.table, False, False)
-        hbox = gtk.HBox()
-        hbox.pack_start(vbox, False, False)
-        ip_sec_vbox = gtk.VBox()
-        ip_sec_vbox.pack_start(self.ip_sec_table, False, False)
-        hbox.pack_start(ip_sec_vbox, False, False)
-        align = gtk.Alignment(0.5, 0.5, 0.5, 0)
-        align.add(hbox)
-        self.add(align)
+        self.method_table.set_row_spacing(5, 20)
+        self.method_table.set_row_spacing(15, 20)
+        self.method_table.set_row_spacing(18, 20)
+        align = style.set_box_with_align(vbox, "text")
+        self.add_with_viewport(align)
+        style.draw_background_color(align)
 
-        confirm_button = Button("Confirm")
-        confirm_button.connect("clicked", self.confirm_button_cb)
-        button_aligns = gtk.Alignment(0.5 , 1, 0, 0)
 
-        button_aligns.add(confirm_button)
-        self.add(button_aligns)
+        #confirm_button = Button("Confirm")
+        #confirm_button.connect("clicked", self.confirm_button_cb)
+        #button_aligns = gtk.Alignment(0.5 , 1, 0, 0)
+        #button_aligns.add(confirm_button)
+        #self.add(button_aligns)
 
-        self.require_mppe_128.set_sensitive(False)
-        self.mppe_stateful.set_sensitive(False)
-        #self.refresh()
-
+        #self.require_mppe_128.set_sensitive(False)
+        #self.mppe_stateful.set_sensitive(False)
+        ##self.refresh()
+    
+    def init_signal(self):
         self.refuse_eap.connect("toggled", self.check_button_cb, "refuse-eap")
         self.refuse_pap.connect("toggled", self.check_button_cb, "refuse-pap")
         self.refuse_chap.connect("toggled", self.check_button_cb, "refuse-chap")
         self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse-mschap")
         self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse-mschapv2")
-        self.require_mppe.connect("toggled", self.check_button_cb, "require-mppe")
+        self.require_mppe.connect("toggled", self.click_mppe_callback, "require-mppe")
         self.require_mppe_128.connect("toggled", self.check_button_cb, "require-mppe-128")
         self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe-stateful")
         self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
@@ -584,44 +619,56 @@ class PPPConf(gtk.VBox):
         self.gateway_id.entry.connect("changed", self.entry_changed_cb, "ipsec-gateway-id")
         self.pre_shared_key.entry.connect("changed", self.entry_changed_cb, "ipsec-psk")
 
-        method.set_active(True)
-
     def init_ui(self):
+
         self.service_type = self.vpn_setting.service_type.split(".")[-1]
+        def table_attach(widget_name, row, padding=0):
+            label = getattr(self, widget_name + "_label_align")
+            widget = getattr(self, widget_name + "_align")
+            self.method_table.attach(label, 0, 2, row, row + 1, xpadding=10)
+            self.method_table.attach(widget, 2, 3, row, row + 1, xpadding=padding)
         #print self.service_type
-        container_remove_all(self.table)
-        container_remove_all(self.ip_sec_table)
-        self.table.attach(self.compression, 0, 5, 0 ,1)
-        self.table.attach(self.require_mppe, 0, 10, 1, 2)
-        self.table.attach(self.require_mppe_128, 1, 10, 2, 3)
-        self.table.attach(self.mppe_stateful, 1, 10, 3, 4)
-        self.table.attach(self.nobsdcomp, 0, 10, 4, 5)
-        self.table.attach(self.nodeflate, 0, 10, 5, 6)
-        self.table.attach(self.no_vj_comp, 0, 10, 6, 7)
-        self.table.attach(self.echo, 0, 5, 9, 10)
-        self.table.attach(self.ppp_echo, 0, 10, 10, 11)
+        container_remove_all(self.method_table)
+        self.method_table.attach(self.method_title, 0, 3, 0, 1)
+        table_attach( "refuse_eap", 1)
+        table_attach( "refuse_pap", 2 )
+        table_attach( "refuse_chap", 3)
+        table_attach( "refuse_mschap", 4 )
+        table_attach( "refuse_mschapv2", 5)
+        self.method_table.attach( self.compression_title, 0, 3, 6 ,7)
+        table_attach("require_mppe", 8)
+        if self.require_mppe.get_active():
+            table_attach("require_mppe_128", 9)
+            table_attach("mppe_stateful", 10)
+        table_attach("nobsdcomp", 11)
+        table_attach("nodeflate", 12)
+        table_attach("no_vj_comp", 13)
+        self.method_table.attach(self.echo_title, 0, 3, 16, 17)
+        table_attach("ppp_echo", 18)
 
         if self.service_type == "l2tp":
-            self.table.attach(self.nopcomp, 0, 10, 7, 8)
-            self.table.attach(self.noaccomp, 0, 10 , 8, 9)
+            print "this is l2tp"
+            table_attach("nopcomp", 14)
+            table_attach("noaccomp", 15)
+            
+            self.method_table.attach(self.ipsec_title, 0, 3, 19, 20)
+            table_attach("ip_sec_enable", 20)
+            if self.ip_sec_enable.get_active():
+                table_attach("group_name", 21)
+                table_attach("gateway_id", 22)
+                table_attach("pre_shared_key", 23)
 
-            self.ip_sec_table.attach(self.ip_sec_enable, 0, 3, 0, 1)
-            self.ip_sec_table.attach(self.group_name_label, 0, 1, 1, 2)
-            self.ip_sec_table.attach(self.group_name, 1, 3, 1, 2)
-            self.ip_sec_table.attach(self.gateway_id_label, 0, 1, 2, 3)
-            self.ip_sec_table.attach(self.gateway_id, 1, 3, 2, 3)
-            self.ip_sec_table.attach(self.pre_shared_key_label, 0, 1, 3, 4)
-            self.ip_sec_table.attach(self.pre_shared_key, 1, 3, 3, 4)
-            self.ip_sec_table.show_all()
-        self.table.show_all()
+        self.method_table.show_all()
 
-    def refresh(self):
+    def refresh(self, connection):
+        self.connection = connection
+        print self.connection.object_path
+        self.vpn_setting = self.connection.get_setting("vpn")
         #=========================
         # retreieve settings
-        self.init_ui()
+        self.service_type = self.vpn_setting.service_type.split(".")[-1]
+        print ">>",self.vpn_setting.data
         refuse_eap = self.vpn_setting.get_data_item("refuse-eap")
-        #print ">>",self.vpn_setting.data
-        
         refuse_pap = self.vpn_setting.get_data_item("refuse-pap")
         refuse_chap = self.vpn_setting.get_data_item("refuse-chap")
         refuse_mschap = self.vpn_setting.get_data_item("refuse-mschap")
@@ -639,27 +686,27 @@ class PPPConf(gtk.VBox):
         lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
         lcp_echo_interval = self.vpn_setting.get_data_item("lcp-echo-interval")
         
+        self.refuse_mschap.set_active(refuse_mschap == None)
+        self.refuse_mschapv2.set_active(refuse_mschapv2 == None)
         self.require_mppe.set_active(require_mppe != None)
-        self.refuse_eap.set_active(refuse_eap is None)
-        self.refuse_pap.set_active(refuse_pap is None)
-        self.refuse_chap.set_active(refuse_chap is None)
-        self.refuse_mschap.set_active(refuse_mschap is None)
-        self.refuse_mschapv2.set_active(refuse_mschapv2 is None)
+        
+        self.refuse_eap.set_active(refuse_eap == None)
+        self.refuse_pap.set_active(refuse_pap == None)
+        self.refuse_chap.set_active(refuse_chap == None)
 
         self.require_mppe_128.set_active(require_mppe_128 != None)
         self.mppe_stateful.set_active(mppe_stateful != None)
-        self.nobsdcomp.set_active(nobsdcomp is None)
-        self.nodeflate.set_active(nodeflate is None)
-        self.no_vj_comp.set_active(no_vj_comp is None)
+        self.nobsdcomp.set_active(nobsdcomp == None)
+        self.nodeflate.set_active(nodeflate == None)
+        self.no_vj_comp.set_active(no_vj_comp == None)
 
         if self.service_type == "l2tp":
-            #no_vj_comp = self.vpn_setting.get_data_item("no_vj_comp")
             nopcomp = self.vpn_setting.get_data_item("nopcomp")
             noaccomp = self.vpn_setting.get_data_item("noaccomp")
             ipsec_enabled = self.vpn_setting.get_data_item("ipsec-enabled")
 
-            self.nopcomp.set_active(nopcomp is None)
-            self.noaccomp.set_active(noaccomp is None)
+            self.nopcomp.set_active(nopcomp == None)
+            self.noaccomp.set_active(noaccomp == None)
             
             if ipsec_enabled:
                 self.ip_sec_enable.set_active(True)
@@ -672,6 +719,9 @@ class PPPConf(gtk.VBox):
         else:
             self.ppp_echo.set_active(True)
 
+        self.init_signal()
+        self.require_mppe.emit("toggled")
+        self.init_ui()
         #==================================
         # Connect signal
     def enable_ipsec_cb(self, widget):
@@ -689,6 +739,7 @@ class PPPConf(gtk.VBox):
             self.group_name.set_text(ipsec_group_name)
             self.gateway_id.set_text(ipsec_gateway_id)
             self.pre_shared_key.set_text(ipsec_psk)
+            self.init_ui()
         else:
             self.vpn_setting.delete_data_item("ipsec-enabled")
             self.group_name.set_text("")
@@ -698,6 +749,7 @@ class PPPConf(gtk.VBox):
             self.group_name.set_sensitive(False)
             self.gateway_id.set_sensitive(False)
             self.pre_shared_key.set_sensitive(False)
+            self.init_ui()
 
     def entry_focus_out_cb(self, widget, event, key):
         text = widget.get_text()
@@ -711,6 +763,7 @@ class PPPConf(gtk.VBox):
             self.vpn_setting.delete_data_item(key)
 
     def check_button_cb(self, widget, key):
+        auth_lock = self.auth_lock()
         active = widget.get_active()
         if key.startswith("refuse"):
             if active:
@@ -718,16 +771,19 @@ class PPPConf(gtk.VBox):
             else:
                 self.vpn_setting.set_data_item(key, "yes")
 
-            if self.auth_lock():
-                self.require_mppe.set_sensitive(True)
-            else:
+            if auth_lock:
+                self.require_mppe_label.set_sensitive(False)
                 self.require_mppe.set_sensitive(False)
                 self.require_mppe.set_active(False)
-                # FIXME auth_lock false, still can change others bug
-                #self.set_group_sensitive(True)
-                #self.set_group_active(True)
-                #if self.refuse_eap.get_active():
-                    #print key
+
+                self.set_group_active(True)
+                self.set_group_sensitive(False)
+
+            else:
+                self.require_mppe_label.set_sensitive(True)
+                self.require_mppe.set_sensitive(True)
+                self.set_group_sensitive(True)
+
         elif key.startswith("no"):
             if active:
                 self.vpn_setting.delete_data_item(key)
@@ -742,38 +798,47 @@ class PPPConf(gtk.VBox):
                 self.vpn_setting.delete_data_item("lcp_echo_failure")
                 self.vpn_setting.delete_data_item("lcp_echo_interval")
         else:
-            if key == "require-mppe":
-                if active:
-                    self.vpn_setting.set_data_item(key, "yes")
-                    self.set_group_active(False)
-                    self.set_group_sensitive(False)
-
-                    self.require_mppe_128.set_sensitive(True)
-                    self.mppe_stateful.set_sensitive(True)
-                else:
-                    self.vpn_setting.delete_data_item(key)
-                    self.set_group_active(True)
-                    self.set_group_sensitive(True)
-                    self.require_mppe_128.set_sensitive(False)
-                    self.mppe_stateful.set_sensitive(False)
-                    self.require_mppe_128.set_active(False)
-                    self.mppe_stateful.set_active(False)
+            if active:
+                self.vpn_setting.set_data_item(key, "yes")
             else:
-                if active:
-                    self.vpn_setting.set_data_item(key, "yes")
-                else:
-                    self.vpn_setting.delete_data_item(key)
+                self.vpn_setting.delete_data_item(key)
+    
+    def click_mppe_callback(self, widget, key):
+        active = widget.get_active()
+        if active:
+            self.vpn_setting.set_data_item(key, "yes")
+            self.set_group_active(False)
+            self.set_group_sensitive(False)
+
+            self.mppe_group_set_sensitive(True)
+            self.init_ui()
+        else:
+            self.set_group_active(True)
+            self.set_group_sensitive(True)
+            self.vpn_setting.delete_data_item(key)
+            self.mppe_group_set_sensitive(False)
+            self.mppe_group_set_active(False)
+            self.init_ui()
+
+    def mppe_group_set_sensitive(self, boolean):
+        self.require_mppe_128_label.set_sensitive(boolean)
+        self.mppe_stateful_label.set_sensitive(boolean)
+        self.require_mppe_128.set_sensitive(boolean)
+        self.mppe_stateful.set_sensitive(boolean)
+
+    def mppe_group_set_active(self, boolean):
+        self.require_mppe_128.set_active(boolean)
+        self.mppe_stateful.set_active(boolean)
 
     def confirm_button_cb(self, widget):
         self.module_frame.send_message("change_crumb", 2)
         nm_module,slider._slide_to_page("vpn", "left")
         
-
     def auth_lock(self):
         if self.refuse_mschap.get_active() or self.refuse_mschapv2.get_active():
-            return True
-        else:
             return False
+        else:
+            return True
 
     def set_group_active(self, boolean):
         self.refuse_eap.set_active(boolean)
@@ -784,15 +849,6 @@ class PPPConf(gtk.VBox):
         self.refuse_eap.set_sensitive(boolean)
         self.refuse_pap.set_sensitive(boolean)
         self.refuse_chap.set_sensitive(boolean)
-
-
-    def save_setting(self):
-        pass
-
-    def toggle_cb(self, widget):
-        if widget.get_active():
-            self.method_table.set_no_show_all(False)
-            self.show_all()
-        else:
-            self.method_table.set_no_show_all(True)
-            self.method_table.hide()
+        self.refuse_eap_label.set_sensitive(boolean)
+        self.refuse_pap_label.set_sensitive(boolean)
+        self.refuse_chap_label.set_sensitive(boolean)

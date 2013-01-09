@@ -182,9 +182,11 @@ class IPV4Conf(gtk.VBox):
         names = ["ip4", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
+            print "ip4 valid"
             setattr(self, names[index] + "_flag", True)
             #print "valid"+ names[index]
         else:
+            print "ip4 invalid"
             setattr(self, names[index] + "_flag", False)
 
         if self.check_valid("gw"):
@@ -274,7 +276,7 @@ class IPV4Conf(gtk.VBox):
         
     
 class IPV6Conf(gtk.VBox):
-    ENTRY_WIDTH = 222
+    ENTRY_WIDTH = 300
     def __init__(self, connection=None, set_button_callback=None):
         
         gtk.VBox.__init__(self)
@@ -282,57 +284,53 @@ class IPV6Conf(gtk.VBox):
         self.set_button = set_button_callback
         self.table = gtk.Table(9, 2, False)
         # Ip configuration
-        self.auto_ip = RadioButton(None, _("Automatic get IP address"), padding_x=0, font_size = TITLE_FONT_SIZE)
-        self.manual_ip = RadioButton(self.auto_ip, _("Manually get IP address"), padding_x=0, font_size=TITLE_FONT_SIZE)
-        self.table.attach(style.wrap_with_align(self.auto_ip), 0,1,0,1)
-        self.table.attach(style.wrap_with_align(self.manual_ip), 0,1,1,2)
+        self.ip_label = Label(_("Automatic get IP address"), text_size=CONTENT_FONT_SIZE)
+        self.auto_ip = OffButton()
 
         self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE)
-        self.table.attach(style.wrap_with_align(self.addr_label), 0,1,2,3)
         self.addr_entry = InputEntry()
         self.addr_entry.set_sensitive(False)
-        self.table.attach(style.wrap_with_align(self.addr_entry), 1,2,2,3)
 
         self.mask_label = Label(_("Prefix:"), text_size=CONTENT_FONT_SIZE)
-        self.table.attach(style.wrap_with_align(self.mask_label), 0,1,3,4)
         self.mask_entry = InputEntry()
-        self.table.attach(style.wrap_with_align(self.mask_entry), 1,2,3,4)
         
         self.gate_label = Label(_("Gateway:"), text_size=CONTENT_FONT_SIZE)
-        self.table.attach(style.wrap_with_align(self.gate_label), 0,1,4,5)
         self.gate_entry = InputEntry()
-        self.table.attach(style.wrap_with_align(self.gate_entry), 1,2,4,5)
         
         #DNS configuration
-        self.auto_dns = RadioButton(None, _("Automatic get DNS server"), padding_x=0, font_size=TITLE_FONT_SIZE)
-        self.manual_dns = RadioButton(self.auto_dns,_("Use following DNS server"), padding_x=0, font_size=TITLE_FONT_SIZE)
-        self.table.attach(style.wrap_with_align(self.auto_dns), 0, 1, 5, 6) 
-        self.table.attach(style.wrap_with_align(self.manual_dns), 0, 1, 6, 7)
+        self.dns_label = Label( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE)
+        self.auto_dns = OffButton()
 
         self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE)
         self.slave_dns = Label(_("Slave DNS server address:"), text_size=CONTENT_FONT_SIZE)
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
         
-        self.table.attach(style.wrap_with_align(self.master_dns), 0, 1, 7, 8)
-        self.table.attach(style.wrap_with_align(self.master_entry), 1, 2, 7, 8)
-        self.table.attach(style.wrap_with_align(self.slave_dns), 0, 1, 8, 9)
-        self.table.attach(style.wrap_with_align(self.slave_entry), 1, 2, 8, 9)
+        __widget_list = ["ip_label", "addr_label", "addr_entry",
+                         "mask_label", "mask_entry", "gate_label", "gate_entry",
+                         "dns_label", "master_entry", "slave_entry",
+                         "slave_dns", "master_dns"]
 
-        # TODO UI change 
-        #table.set_size_request(340, 227)
+        wrap_with_align(self, __widget_list)
 
+        self.auto_ip_align = style.wrap_with_align(self.auto_ip, align="left")
+        self.auto_dns_align = style.wrap_with_align(self.auto_dns, align="left")
+
+        # TODO UI change
         style.draw_background_color(self)
         style.set_table(self.table)
         align = style.set_box_with_align(self.table, 'text')
         self.add(align)
+        self.addr_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
+        self.gate_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
+        self.mask_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
+        self.master_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
+        self.slave_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
+
+        #self.auto_ip_align.set_size_request(self.ENTRY_WIDTH, 30)
+        #self.auto_dns_align.set_size_request(self.ENTRY_WIDTH, 30)
         
-        self.addr_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.gate_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.mask_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.master_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.slave_entry.set_size(self.ENTRY_WIDTH, 22)
-        
+        self.show_all()
         self.ip = ["", "", ""]
         self.dns = ["", ""]
         self.setting =None
@@ -343,9 +341,38 @@ class IPV6Conf(gtk.VBox):
         self.master_entry.entry.connect("changed", self.set_dns_address, 0)
         self.slave_entry.entry.connect("changed", self.set_dns_address, 1)
 
-        #self.manual_ip.connect("toggled", self.manual_ip_entry)
-        #self.auto_ip.connect("toggled", self.auto_get_ip_addr)
-        #self.auto_dns.connect("toggled", self.auto_dns_set)
+        self.auto_ip.connect("toggled", self.get_ip_addr)
+        self.auto_dns.connect("toggled", self.dns_set)
+
+        if type(self.connection) is NMRemoteConnection:
+            self.set_button("apply", True)
+        else:
+            self.set_button("save", True)
+
+    def reset_table(self):
+        container_remove_all(self.table)
+        self.table.attach(self.ip_label_align, 0,1,0,1)
+        self.table.attach(self.auto_ip_align, 1, 2, 0, 1)
+        if not self.auto_ip.get_active():
+            self.table.attach(self.addr_label_align, 0,1,2,3)
+            self.table.attach(self.addr_entry_align, 1,2,2,3)
+            self.table.attach(self.mask_label_align, 0,1,3,4)
+            self.table.attach(self.mask_entry_align, 1,2,3,4)
+            self.table.attach(self.gate_label_align, 0,1,4,5)
+            self.table.attach(self.gate_entry_align, 1,2,4,5)
+        
+        hbox = gtk.HBox()
+        hbox.set_size_request(-1, 20)
+        self.table.attach(hbox, 0, 1, 5, 6) 
+        self.table.attach(self.dns_label_align, 0, 1, 6, 7) 
+        self.table.attach(self.auto_dns_align, 1, 2, 6, 7)
+        if not self.auto_dns.get_active():
+            self.table.attach(self.master_dns_align, 0, 1, 7, 8)
+            self.table.attach(self.master_entry_align, 1, 2, 7, 8)
+            self.table.attach(self.slave_dns_align, 0, 1, 8, 9)
+            self.table.attach(self.slave_entry_align, 1, 2, 8, 9)
+
+        self.table.show_all()
 
     def reset(self, connection):
         self.setting = connection.get_setting("ipv6")       
@@ -355,7 +382,7 @@ class IPV6Conf(gtk.VBox):
             self.set_group_sensitive("ip", False)
             
         else:
-            self.manual_ip.set_active(True)
+            #self.manual_ip.set_active(True)
             self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
                 self.addr_entry.set_text(self.setting.addresses[0][0])
@@ -367,13 +394,15 @@ class IPV6Conf(gtk.VBox):
             self.auto_dns.set_active(True)
             self.set_group_sensitive("dns", False)
         else:
-            self.manual_dns.set_active(True)
+            #self.manual_dns.set_active(True)
             self.set_group_sensitive("dns", True)
             self.master_entry.set_text(self.setting.dns[0])
             self.dns = self.setting_dns +[""]
             if len(self.setting.dns) > 1:
                 self.slave_entry.set_text(self.setting.dns[1])
                 self.dns = self.setting.dns
+
+        self.reset_table()
 
     def set_group_sensitive(self, group_name, sensitive):
         if group_name is "ip":
@@ -400,9 +429,11 @@ class IPV6Conf(gtk.VBox):
         names = ["ip6", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
+            print "is valid "+names[index]
             setattr(self, names[index] + "_flag", True)
             #print "valid"+ names[index]
         else:
+            print "is invalid "+names[index]
             setattr(self, names[index] + "_flag", False)
 
         if self.check_valid("gw"):
@@ -452,17 +483,32 @@ class IPV6Conf(gtk.VBox):
             self.setting.clear_dns()
             self.dns = ["",""]
             self.set_group_sensitive("dns", False)
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
+            else:
+                self.set_button("save", False)
         else:
             self.set_group_sensitive("dns", True)
+            self.set_button("save", False)
+        self.reset_table()
 
-    def auto_get_ip_addr(self, widget):
+    def get_ip_addr(self, widget):
         if widget.get_active():
             self.setting.clear_addresses()
             self.ip = ["","",""]
             self.setting.method = 'auto'
             self.set_group_sensitive("ip", False)
-
-    def manual_ip_entry(self,widget):
-        if widget.get_active():
+            if self.connection.check_setting_finish():
+                print "settings complete"
+                self.set_button("save", True)
+            else:
+                print "settings incomplete"
+                self.set_button("save", False)
+        else:
             self.setting.method = 'manual'
             self.set_group_sensitive("ip", True)
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
+            else:
+                self.set_button("save", False)
+        self.reset_table()

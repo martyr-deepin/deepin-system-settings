@@ -27,6 +27,11 @@ PAGE_WIDTH = 834
 PAGE_HEIGHT = 474
 
 '''
+基准线
+'''
+STANDARD_LINE = 260
+
+'''
 module background color
 '''
 MODULE_BG_COLOR = "#FFFFFF"

@@ -125,3 +125,17 @@ def draw_background_color(widget):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
     widget.connect("expose-event", expose_background)
+
+# Table UI utils
+
+#def creat_row_widgets(label_content, widget_name, widget_type):
+    #row = []
+    #row.append(Label(_(label_content), text_size=CONTENT_FONT_SIZE))
+
+    #for widget in widget_type:
+        #if widget is "entry":
+            #row.append(InputEntry())
+        #elif widget is "offbutton":
+            #row.append(OffButton())
+        #elif widget is "spin":
+            #row.append()

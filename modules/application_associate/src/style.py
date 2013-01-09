@@ -3,7 +3,8 @@
 
 import sys
 import os
-from dtk.ui.utils import get_parent_dir, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
+from deepin_utils.file import get_parent_dir
 from dtk.ui.draw import draw_line
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constants import *

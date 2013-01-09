@@ -348,10 +348,12 @@ class Wired(gtk.VBox):
     def save_settings(self, widget, value, types):
         if type(value) is str:
             if TypeConvert.is_valid_mac_address(value):
+                print "valid mac"
                 setattr(self.ethernet, types, value)
                 if self.connection.check_setting_finish():
                     self.set_button("save", True)
             else:
+                print "invalid mac"
                 self.set_button("save", False)
                 if value is "":
                     #delattr(self.ethernet, types)

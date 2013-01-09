@@ -13,7 +13,6 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 from nm_modules import nm_module
-#from container import ContainhButton
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
 from shared_widget import IPV4Conf
@@ -56,8 +55,8 @@ class MobileSetting(gtk.Alignment):
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 408)
         self.items = [(_("Broadband"), NoSetting()),
-                      (_("PPP"), NoSetting()),
-                      (_("IPv4 Setting"), NoSetting())]
+                      (_("IPv4 Setting"), NoSetting()),
+                      (_("PPP"), NoSetting())]
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
@@ -75,9 +74,6 @@ class MobileSetting(gtk.Alignment):
         self.show_all()
         style.draw_background_color(self)
         style.draw_separator(self.sidebar, 3)
-        #self.connect("expose-event", self.expose_event)
-        #vbox.connect("expose-event", self.expose_outline, ["top"])
-        #self.sidebar.connect("expose-event", self.expose_outline, [])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -187,10 +183,6 @@ class MobileSetting(gtk.Alignment):
 
             if active_connection != None:
                 print ">>",active_connection
-                #active_vpn = cache.get_spec_object(active_object.object_path)
-                #active_vpn.connect("vpn-connected", self.vpn_connected)
-                #active_vpn.connect("vpn-connecting", self.vpn_connecting)
-                #active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
         else:
             print "no active device"
         self.change_crumb()
@@ -722,7 +714,6 @@ class PPPConf(ScrolledWindow):
         self.set_button = set_button_callback
         self.ppp_setting = self.connection.get_setting("ppp")
 
-
         self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
                                      _("Configure Method"), width=self.TABLE_WIDTH)
 
@@ -747,14 +738,12 @@ class PPPConf(ScrolledWindow):
                                           _("Echo"), width=self.TABLE_WIDTH)
 
 
-        #compressio))n = Label(_("Compression"), text_size=TITLE_FONT_SIZE)
         self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE)
         self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE)
         self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE)
         self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE)
         self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE)
         self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE)
-        #echo = Label("Echo", text_size=TITLE_FONT_SIZE)
         self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE)
 
         self.require_mppe = SwitchButton()
@@ -849,6 +838,7 @@ class PPPConf(ScrolledWindow):
         self.method_table.attach(self.refuse_chap_align, 2, 3, 12, 13, )
         self.method_table.attach(self.refuse_mschap_align, 2, 3, 13, 14, )
         self.method_table.attach(self.refuse_mschapv2_align, 2, 3, 14, 15, )
+        self.method_table.show_all()
 
 
     def refresh(self):
@@ -889,7 +879,6 @@ class PPPConf(ScrolledWindow):
             self.ppp_echo.set_active(False)
         else:
             self.ppp_echo.set_active(True)
-
         self.refresh_table(require_mppe)
         #==================================
 
@@ -921,8 +910,6 @@ class PPPConf(ScrolledWindow):
 
         if key is "require_mppe":
             if active:
-                self.refresh_table(1)
+                self.refresh_table(True)
             else:
-                self.refresh_table(None)
-
-
+                self.refresh_table(False)

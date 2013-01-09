@@ -198,7 +198,10 @@ class TypeConvert(object):
     def is_valid_mac_address(self, mac_string):
         if len(mac_string.split(':')) == 6:
             try:
-                return all(map(lambda x: -1<x<256, map(lambda x:int(x,16), mac_string.split(':'))))
+                if all(map(lambda x: len(x) == 2, mac_string.split(":"))):
+                    return all(map(lambda x: -1<x<256, map(lambda x:int(x,16), mac_string.split(':'))))
+                else:
+                    return False
             except:
                 return False
         else:
@@ -273,13 +276,23 @@ class TypeConvert(object):
             return False
 
     def is_valid_ip6(self, ip_string):
-        if len(ip_string.split('::')) > 3:
+        if len(ip_string.split('::')) > 2:
             return False
 
-        for item in self.complete_ip6_address(ip_string):
-            return all(map(lambda x:-1 < x < 16, map(int, list(item))))
+        if not ip_string.find(':'):
+            return False
 
-        return False
+        for item in ip_string.split(':'):
+            if len(item) > 4:
+                return False
+            for i in item:
+                if i not in "0123456789abcdefABCDEF":
+                    return False
+
+        if len(self.complete_ip6_address(ip_string)) != 16:
+            return False
+
+        return True
 
     def ip4address_net2native(self, ip4address):
         if not isinstance(ip4address, list) or len(ip4address) !=3:
@@ -402,22 +415,26 @@ class TypeConvert(object):
         return abbr_str    
             
     def complete_ip6_address(self, ip_string):
-        '''complete_ip6_address, return list of 0x?? of length 16'''
+        '''complete_ip6_address, return list of 0x?? of length 16
+       eg:      1111:2222:3333:4444:5555::192.168.1.1 ->
+                ['11', '11', '22', '22', '33', '33', '44', '44', '55', '55', '00', '00', 'c0', 'a8', '01', '01']
+        '''
         ###convert ip4 compatiable addr to ipv6 standard
         if ip_string.find('.') != -1 and len(ip_string.split('.')) == 4:
             ip4_string = ip_string.split(':')[-1]
-            tmp = map(lambda x:hex(x)[2:], ip4_string.split('.'))    
-            ip4_replace = str(tmp[0]) + str(tmp[1]) + ":" + str(tmp[2]) + str(tmp[3])
-            ip_string.replace(ip4_string, ip4_replace)    
+            tmp = map(lambda x:hex(int(x))[2:], ip4_string.split('.'))    
+            #contact by 2 byte merge
+            ip4_replace = str(tmp[0]).zfill(2) + str(tmp[1]).zfill(2) + ":" + str(tmp[2]).zfill(2) + str(tmp[3]).zfill(2)
+            ip_string = ip_string.replace(ip4_string, ip4_replace)    
 
         ###complete the ip6 address    
         if len(ip_string.split(':')) < 8:
             if ip_string.startswith('::'):
-                ip_string.replace("::", "00:"*(10 - len(ip_string.split(':'))))
+                ip_string = ip_string.replace("::", "00:"*(10 - len(ip_string.split(':'))))
             elif ip_string.endswith('::'):
-                ip_string.replace("::", ":00"*(10 - len(ip_string.split(':'))))
+                ip_string = ip_string.replace("::", ":00"*(10 - len(ip_string.split(':'))))
             else:    
-                ip_string.replace("::", "00".join(':'*(10 - len(ip_string.split(':')))))
+                ip_string = ip_string.replace("::", "00".join(':'*(10 - len(ip_string.split(':')))))
 
         ip6_list = []        
         for item in map(lambda x: x.zfill(4), ip_string.split(':')):
