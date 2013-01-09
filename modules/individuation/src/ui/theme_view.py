@@ -40,7 +40,6 @@ class UserThemeView(IconView):
         
         event_manager.add_callback("create-new-theme", self.on_create_new_theme)
         event_manager.add_callback("clear-userview-highlight", self.clear_highlight_status)
-        
         self.__init_themes()
         
         
@@ -48,6 +47,12 @@ class UserThemeView(IconView):
         user_themes = theme_manager.get_user_themes()
         if user_themes:
             self.add_themes(user_themes)
+            
+        for item in self.items:    
+            if theme_manager.is_current_theme(item.theme):
+                self.set_highlight(item)
+                break
+            
             
     def clear_highlight_status(self, name, obj, data):        
         self.clear_highlight()
@@ -68,6 +73,7 @@ class UserThemeView(IconView):
     def __on_single_click_item(self, widget, item, x, y):
         self.set_highlight(item)
         event_manager.emit("clear-systemview-highlight", item.theme)        
+        theme_manager.apply_theme(item.theme)
         
     def on_create_new_theme(self, name, obj, new_theme):    
         self.add_themes([new_theme])
@@ -104,6 +110,11 @@ class SystemThemeView(IconView):
         if system_themes:
             self.add_themes(system_themes)
             
+        for item in self.items:    
+            if theme_manager.is_current_theme(item.theme):
+                self.set_highlight(item)
+                break
+            
     def clear_highlight_status(self, name, obj, data):        
         self.clear_highlight()
         
@@ -121,9 +132,10 @@ class SystemThemeView(IconView):
         event_manager.emit("theme-detail", item.theme)
     
     def __on_single_click_item(self, widget, item, x, y):
-        event_manager.emit("apply-theme", item.theme)
         event_manager.emit("clear-userview-highlight", None)        
         self.set_highlight(item)
+        theme_manager.apply_theme(item.theme)
+        
         
     def create_new_theme(self, name, item):    
         new_theme = theme_manager.create_new_theme(name, item.theme)
@@ -140,3 +152,4 @@ class SystemThemeView(IconView):
     def add_themes(self, themes):
         theme_items = [ThemeItem(theme_file) for theme_file in themes ]
         self.add_items(theme_items)
+        

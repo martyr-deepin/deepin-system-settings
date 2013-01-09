@@ -103,8 +103,8 @@ class TouchpadSetting(object):
             text_size=option_item_font_szie)
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
         # button init
-        self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=0)
-        self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=0)
+        self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=10)
+        self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=10)
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
         self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
@@ -201,7 +201,7 @@ class TouchpadSetting(object):
         # alignment set
         self.alignment_widgets["custom_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["custom_button"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["custom_button"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
+        self.alignment_widgets["custom_button"].set_padding(0, 0, OPTION_LEFT_PADDING-10, 0)
         self.alignment_widgets["custom_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["custom_button"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.container_widgets["custom_main_vbox"].pack_start(
@@ -238,7 +238,7 @@ class TouchpadSetting(object):
             self.button_widgets["right_hand_radio"], False, False)
         self.container_widgets["custom_button_hbox0"].pack_start(
             self.button_widgets["left_hand_radio"], False, False)
-        button_align = self.__make_align(self.container_widgets["custom_button_hbox0"], xalign=1.0)
+        button_align = self.__make_align(self.container_widgets["custom_button_hbox0"], xalign=0.0)
         button_align.set_size_request(HSCALEBAR_WIDTH+WIDGET_SPACING+label_width, CONTAINNER_HEIGHT)
         self.container_widgets["custom_button_hbox"].pack_start(button_align, False, False)
         self.container_widgets["custom_button_hbox"].pack_start(self.__make_align())
@@ -265,7 +265,7 @@ class TouchpadSetting(object):
             self.label_widgets["pointer_speed"], False, False)
         # motion acceleration
         # set original value
-        self.scale_widgets["pointer_speed_accel"].set_value(settings.touchpad_get_motion_acceleration() - self.scale_widgets["pointer_speed_accel"].value_min)
+        self.scale_widgets["pointer_speed_accel"].set_value(settings.touchpad_get_motion_acceleration())
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["pointer_speed_accel"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -281,7 +281,7 @@ class TouchpadSetting(object):
             self.__make_align(self.scale_widgets["pointer_speed_accel"], yalign=0.0, yscale=1.0, padding_top=1, height=43), 1, 3, 0, 1, 4)
         # motion threshold
         # set original value
-        self.scale_widgets["pointer_speed_sensitiv"].set_value(settings.touchpad_get_motion_threshold() - self.scale_widgets["pointer_speed_sensitiv"].value_min)
+        self.scale_widgets["pointer_speed_sensitiv"].set_value(settings.touchpad_get_motion_threshold())
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_lower(), gtk.POS_BOTTOM, _("Low"))
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_upper(), gtk.POS_BOTTOM, _("High"))
         self.scale_widgets["pointer_speed_sensitiv"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -314,7 +314,7 @@ class TouchpadSetting(object):
             self.label_widgets["double_click"], False, False)
         # double click rate
         # set original value
-        self.scale_widgets["double_click_rate"].set_value(settings.touchpad_get_double_click() - self.scale_widgets["double_click_rate"].value_min)
+        self.scale_widgets["double_click_rate"].set_value(settings.touchpad_get_double_click())
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["double_click_rate"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -356,7 +356,7 @@ class TouchpadSetting(object):
             self.label_widgets["drag_drop"], False, False)
         # drag threshold time
         # set original value
-        self.scale_widgets["drag_threshold_time"].set_value(settings.touchpad_get_drag_threshold() - self.scale_widgets["drag_threshold_time"].value_min)
+        self.scale_widgets["drag_threshold_time"].set_value(settings.touchpad_get_drag_threshold())
         self.scale_widgets["drag_threshold_time"].add_mark(self.adjust_widgets["drag_threshold_time"].get_lower(), gtk.POS_BOTTOM, _("Short"))
         self.scale_widgets["drag_threshold_time"].add_mark(self.adjust_widgets["drag_threshold_time"].get_upper(), gtk.POS_BOTTOM, _("Long"))
         self.scale_widgets["drag_threshold_time"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -494,7 +494,7 @@ class TouchpadSetting(object):
     
     def settings_value_changed(self, key, adjustment):
         '''settings value changed, and adjustment set the value'''
-        adjustment.set_value(self.scale_get[key]()-adjustment.value_min)
+        adjustment.set_value(self.scale_get[key]())
         adjustment.set_data("changed-by-other-app", True)
 
     def double_click_test(self, widget, event):
