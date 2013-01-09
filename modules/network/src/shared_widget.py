@@ -182,9 +182,11 @@ class IPV4Conf(gtk.VBox):
         names = ["ip4", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
+            print "ip4 valid"
             setattr(self, names[index] + "_flag", True)
             #print "valid"+ names[index]
         else:
+            print "ip4 invalid"
             setattr(self, names[index] + "_flag", False)
 
         if self.check_valid("gw"):
@@ -380,7 +382,7 @@ class IPV6Conf(gtk.VBox):
             self.set_group_sensitive("ip", False)
             
         else:
-            self.manual_ip.set_active(True)
+            #self.manual_ip.set_active(True)
             self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
                 self.addr_entry.set_text(self.setting.addresses[0][0])
@@ -392,7 +394,7 @@ class IPV6Conf(gtk.VBox):
             self.auto_dns.set_active(True)
             self.set_group_sensitive("dns", False)
         else:
-            self.manual_dns.set_active(True)
+            #self.manual_dns.set_active(True)
             self.set_group_sensitive("dns", True)
             self.master_entry.set_text(self.setting.dns[0])
             self.dns = self.setting_dns +[""]
