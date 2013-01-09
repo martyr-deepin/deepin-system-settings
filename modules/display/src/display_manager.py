@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -37,7 +37,7 @@ except ImportError:
 import re
 import os
 from xml.dom import minidom
-from dtk.ui.utils import run_command
+from deepin_utils.process import run_command
 
 class DisplayManager:
     BIG_NUM = 2147483647
@@ -382,7 +382,7 @@ class DisplayManager:
     def set_screen_brightness(self, output_name, value):
         i = 0
         
-        if value <= 0.0 or value > 1.0:
+        if value <= 0.1 or value > 1.0:
             return
 
         self.__xrandr_settings.set_double("brightness", value)

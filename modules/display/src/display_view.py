@@ -331,7 +331,7 @@ class DisplayView(gtk.VBox):
         self.brightness_label_align.add(self.brightness_label)
         
         self.brightness_scale = HScalebar(point_dpixbuf = app_theme.get_pixbuf("scalebar/point.png"), 
-                                          value_min = 5, 
+                                          value_min = 10, 
                                           value_max = 100)
         self.brightness_scale.set_size_request(HSCALEBAR_WIDTH, 33)
         self.brightness_scale.set_value(self.display_manager.get_screen_brightness())
