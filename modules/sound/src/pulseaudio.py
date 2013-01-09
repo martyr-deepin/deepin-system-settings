@@ -154,7 +154,16 @@ class BusBase(gobject.GObject):
 
 if __name__ == "__main__":
 
-    core = connect_bus().get_object(object_path="/org/pulseaudio/core1")
-    source_paths = core.Get("org.PulseAudio.Core1", "Sources", dbus_interface="org.freedesktop.DBus.Properties")
-    print source_paths
-    gobject.MainLoop().run()
+    def run():
+        core = connect_bus().get_object(object_path="/org/pulseaudio/core1")
+        source_paths = core.Get("org.PulseAudio.Core1", "Sources", dbus_interface="org.freedesktop.DBus.Properties")
+        mainloop = gobject.MainLoop()
+        print source_paths
+    
+        gobject.timeout_add(1000, lambda : mainloop.quit())
+    
+        mainloop.run()
+    
+    for i in range(10000):
+        run()
+        
