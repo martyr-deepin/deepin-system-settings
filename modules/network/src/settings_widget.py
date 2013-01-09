@@ -429,10 +429,11 @@ class SettingItem(TreeItem):
         '''
         Pixbuf
         '''
-        self.check_pixbuf_hover = app_theme.get_pixbuf("network/check_box-1.png")
-        self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box-2.png")
-        self.check_pixbuf_out = app_theme.get_pixbuf("network/check_box_out.png")
-        self.check_pixbuf_prelight = app_theme.get_pixbuf("network/check_box.png")
+        self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box-1.png")
+        #self.check_pixbuf_hover = app_theme.get_pixbuf("network/check_box-1.png")
+        #self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box.png")
+        #self.check_pixbuf_out = app_theme.get_pixbuf("network/check_box-3.png")
+        #self.check_pixbuf_prelight = app_theme.get_pixbuf("network/check_box.png")
         self.delete_pixbuf_out = app_theme.get_pixbuf("network/delete-3.png")
         self.delete_pixbuf_prelight = app_theme.get_pixbuf("network/delete.png")
         self.delete_pixbuf_active = app_theme.get_pixbuf("network/delete-1.png")
@@ -452,21 +453,20 @@ class SettingItem(TreeItem):
     def get_column_renders(self):
         return [self.render_check, self.render_content, self.render_delete]
     
-            
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
         if self.is_select:
-            if self.is_hover:
-                check_icon = self.check_pixbuf_prelight
-            else:
-                check_icon = self.check_pixbuf_active
-        else:
-            if self.is_hover:
-                check_icon = self.check_pixbuf_hover
-            else:
-                check_icon = self.check_pixbuf_out
+            #if self.is_hover:
+                #check_icon = self.check_pixbuf_out
+            #else:
+            check_icon = self.check_pixbuf_active
+        #else:
+            #if self.is_hover:
+                #check_icon = self.check_pixbuf_hover
+            #else:
+                #check_icon = self.check_pixbuf_out
 
-        draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+            draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
     def render_content(self, cr, rect):
         self.render_background(cr,rect)
@@ -498,7 +498,7 @@ class SettingItem(TreeItem):
          
         self.render_background(cr, rect)
         if self.delete_hover:
-            delete_icon = self.delete_pixbuf_prelight
+            delete_icon = self.delete_pixbuf_out
             draw_pixbuf(cr, delete_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING/2, rect.y + (rect.height - IMG_WIDTH)/2)
         else:
             delete_icon = self.delete_pixbuf_out

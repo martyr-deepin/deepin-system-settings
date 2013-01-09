@@ -26,7 +26,7 @@ from shared_widget import IPV4Conf
 import gtk
 from nls import _
 import style
-from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE
+from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE, STANDARD_LINE
 #from container import MyRadioButton as RadioButton
 
 slider = nm_module.slider
@@ -571,7 +571,7 @@ class PPPConf(ScrolledWindow):
             if not name.endswith("label"):
                 align = style.wrap_with_align(widget, width=self.TABLE_WIDTH)
             else:
-                align = style.wrap_with_align(widget)
+                align = style.wrap_with_align(widget, width=(STANDARD_LINE - 50))
 
             setattr(self, name + "_align", align)
 
@@ -625,7 +625,7 @@ class PPPConf(ScrolledWindow):
         def table_attach(widget_name, row, padding=0):
             label = getattr(self, widget_name + "_label_align")
             widget = getattr(self, widget_name + "_align")
-            self.method_table.attach(label, 0, 2, row, row + 1, xpadding=10)
+            self.method_table.attach(label, 0, 2, row, row + 1)
             self.method_table.attach(widget, 2, 3, row, row + 1, xpadding=padding)
         #print self.service_type
         container_remove_all(self.method_table)
