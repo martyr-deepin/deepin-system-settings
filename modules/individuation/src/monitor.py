@@ -104,7 +104,7 @@ class LibraryMonitor(gobject.GObject):
                     monitor.connect('changed', self.on_location_changed)
                     self.__monitors[directory] = monitor
             else:
-
+ 
                 for directory, monitor in self.__monitors.iteritems():
                     monitor.cancel()
 

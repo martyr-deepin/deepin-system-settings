@@ -26,6 +26,9 @@ import common
 from xdg_support import (get_user_theme_dir, get_system_theme_dir, 
                          get_system_wallpaper_dirs, get_config_path)
 
+import deepin_gsettings
+from settings import global_settings
+
 THEME_TYPE_SYSTEM = 1
 THEME_TYPE_USER = 2
 
@@ -118,6 +121,10 @@ class ThemeFile(RawConfigParser):
         if value != "True": return False
         return True
     
+    def get_background_duration(self):
+        value = self.get_option("background", "duration", 10)
+        return int(value)
+    
     def get_name(self):    
         lang = common.get_system_lang()
         if self.has_option("name", lang):
@@ -181,7 +188,6 @@ class ThemeFile(RawConfigParser):
         except NoSectionError:
             self.add_section(section)
             self.set(section, option, value)
-    
         
     def get_user_wallpapers(self):
         save_wallpapers = self.get_section_options("user_wallpaper")
@@ -204,11 +210,39 @@ class ThemeFile(RawConfigParser):
     
     def add_user_wallpapers(self, paths):
         for path in paths:
-            self.set_option("user_wallpaper", path, "")
+            self.set_option("user_wallpaper", path, "False")
         self.save()    
+        
+    def get_user_wallpaper_status(self, path):    
+        if self.has_option("user_wallpaper", path):
+            value = self.get_option("user_wallpaper", path)
+            if value != "True": return False
+            return True
+        return False
+    
+    def set_user_wallpaper_status(self, path, value):
+        self.set_option("user_wallpaper", path, str(value))
+        
+    def set_system_wallpaper_status(self, path, value):    
+        path = path.split("/")[-1]
+        self.set_option("system_wallpaper", path, str(value))
+        
+    def get_system_wallpaper_status(self, path):    
+        path = path.split("/")[-1]
+        if self.has_option("system_wallpaper", path):
+            value = self.get_option("system_wallpaper", path)
+            if value != "True": return False
+            return True
+        else:
+            return False
     
     def get_wallpaper_paths(self):
         return self.get_system_wallpapers() + self.get_user_wallpapers()
+    
+    def get_enable_wallpaper_paths(self):
+        system_wallpapers = filter(self.get_system_wallpaper_status, self.get_system_wallpapers())
+        user_wallpapers = filter(self.get_user_wallpaper_status, self.get_user_wallpapers())
+        return system_wallpapers + user_wallpapers
     
     def __repr__(self):
         return "<ThemeFile %s>" % self.get_name()
@@ -266,8 +300,24 @@ class ThemeManager(object):
     def get_theme(self, location):
         pass
     
+    def create_new_theme(self, name, copy_theme=None):
+        new_theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
+        new_theme = ThemeFile(new_theme_path)
+        if copy_theme:
+            new_theme.copy_theme(copy_theme)
+        new_theme.set_default_name(name)    
+        new_theme.set_locale_name(name)
+        new_theme.save()    
+        return new_theme
+    
     def untitled_theme(self, copy_theme=None):
         untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
+        if os.path.exists(untitled_path):
+            try:
+                os.unlink(untitled_path)
+            except:    
+                pass
+            
         untitled_theme = ThemeFile(untitled_path)
         if copy_theme:
             untitled_theme.copy_theme(copy_theme)
@@ -275,5 +325,21 @@ class ThemeManager(object):
         untitled_theme.set_locale_name("未命名")
         untitled_theme.save()    
         return untitled_theme
+    
+    def is_current_theme(self, theme):
+        return theme.location == global_settings.get_option("settings/theme", "")
+    
+    
+    def apply_theme(self, theme):
+        duration = theme.get_background_duration()
+        image_paths = theme.get_enable_wallpaper_paths()
+        if image_paths:
+            image_uris = ";".join(["file://%s" % path for path in image_paths])
+            background_gsettings.set_string("picture-uris", image_uris)
+        background_gsettings.set_int("background-duration", duration)
+        global_settings.set_option("settings/theme", theme.location)
+        global_settings.save()
+        
         
 theme_manager = ThemeManager()
+background_gsettings = background_gsettings = deepin_gsettings.new("com.deepin.dde.background")

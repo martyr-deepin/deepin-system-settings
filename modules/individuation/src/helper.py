@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.new_events import EventManager
+from events import EventManager
 event_manager = EventManager(use_logger=True)
 
 '''

@@ -10,16 +10,20 @@ from dtk.ui.utils import container_remove_all
 import gtk
 
 import style
-from constants import FRAME_VERTICAL_SPACING, TEXT_WINDOW_TOP_PADDING, TEXT_WINDOW_LEFT_PADDING
+from constants import FRAME_VERTICAL_SPACING, TEXT_WINDOW_TOP_PADDING, TEXT_WINDOW_LEFT_PADDING, STANDARD_LINE
+from nls import _
 
-def wrap_all_with_align(obj, attr_list):
+def wrap_all_with_align(obj, attr_list, w=None):
     for attr in attr_list:
-        if attr is not "add_mnemonic_label" and attr is not "remove_mnemonic_label":
-            target = getattr(obj, attr)
+        target = getattr(obj, attr)
+        if w:
+            align = style.wrap_with_align(target, width= w)
+        else:
             align = style.wrap_with_align(target)
-            setattr(obj, attr +"_align", align)
+        setattr(obj, attr +"_align", align)
 
 class ProxyConfig(gtk.Alignment):
+    ENTRY_WIDTH = 222
 
     def __init__(self, slide_back_cb=None, change_crumb_cb=None):
 
@@ -30,31 +34,28 @@ class ProxyConfig(gtk.Alignment):
         self.change_crumb = change_crumb_cb
 
         self.table = gtk.Table(5, 4, False)
-        #self.table.set_row_spacings(17)
-        #self.table.set_col_spacing(0, 30)
-        #self.table.set_size_request(340, -1)
 
         # Add UI Align
         vbox = gtk.VBox()
         self.add(vbox)
         vbox.pack_start(self.table, False, False)
 
-        self.method_label = Label("Method")
-        self.http_label = Label("Http Proxy")
-        self.https_label = Label("Https Proxy")
-        self.ftp_label = Label("FTP Proxy")
-        self.socks_label = Label("Socks Proxy")
-        self.conf_label = Label("Configuration url")
+        self.method_label = Label(_("Method"))
+        self.http_label = Label(_("Http Proxy"))
+        self.https_label = Label(_("Https Proxy"))
+        self.ftp_label = Label(_("FTP Proxy"))
+        self.socks_label = Label(_("Socks Proxy"))
+        self.conf_label = Label(_("Configuration url"))
 
-        self.methods = ComboBox([("None", 0),
-                                 ("Manual", 1),
-                                 ("Automatic", 2)],
-                                 max_width=222)
+        self.methods = ComboBox([(_("None"), 0),
+                                 (_("Manual"), 1),
+                                 (_("Automatic"), 2)],
+                                 max_width=self.ENTRY_WIDTH)
 
-        self.methods.set_size_request(222,22)
+        self.methods.set_size_request(self.ENTRY_WIDTH,22)
         self.methods.connect("item-selected", self.method_changed)
 
-        width ,height = 222 ,22
+        width ,height = self.ENTRY_WIDTH ,22
         self.http_entry = InputEntry()
         self.http_entry.set_size(width, height)
         self.http_spin = SpinBox(8080, 0, 49151, 1, 60)
@@ -70,14 +71,19 @@ class ProxyConfig(gtk.Alignment):
         self.conf_entry = InputEntry()
         self.conf_entry.set_size(width, height)
         #self.init(True)
-        #label_list = ["method_label", "http_label", "https_label", "ftp_label", "socks_label", "conf_label"] 
-        l =  filter(lambda l: l.endswith("label") or l.endswith("entry") or l.endswith("spin"), dir(self))
-        wrap_all_with_align(self, l)
+        label_list = ["method_label", "http_label", "https_label", "ftp_label", "socks_label", "conf_label"] 
+        entry_list = ["http_entry", "https_entry", "ftp_entry", "socks_entry", "conf_entry"]
+        spin_list = ["http_spin", "https_spin", "ftp_spin", "socks_spin"]
+
+        wrap_all_with_align(self, label_list, STANDARD_LINE - TEXT_WINDOW_LEFT_PADDING)
+        wrap_all_with_align(self, entry_list)
+        wrap_all_with_align(self, spin_list)
+
         self.methods_align = style.wrap_with_align(self.methods)
 
 
         #hbox.pack_start(table_align, False, False)
-        apply_button = Button("Apply")
+        apply_button = Button(_("Apply"))
         apply_button.connect("clicked", self.save_changes)
         buttons_aligns = gtk.Alignment(1, 1, 0, 0)
         buttons_aligns.add(apply_button)

@@ -55,12 +55,8 @@ TYPE_MAPPING = {
     'U': unicode
 }
 
-MANAGER = None
 
 class SettingsManager(RawConfigParser):
-    """
-        Manages Exaile's settings
-    """
     settings = None
     __version__ = 1
 
@@ -317,10 +313,7 @@ class SettingsManager(RawConfigParser):
         self._dirty = False
         
 location = get_config_dir()
-MANAGER = SettingsManager(
+global_settings = SettingsManager(
     os.path.join(location, "settings.ini"),
     get_config_path("settings.ini")
 )
-
-get_option = MANAGER.get_option
-set_option = MANAGER.set_option
