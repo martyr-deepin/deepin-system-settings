@@ -41,14 +41,15 @@ def set_table(table):
     #table.set_row_spacings(8)
     table.set_col_spacings(BETWEEN_SPACING)
 
-def wrap_with_align(widget):
-    if type(widget.parent) == gtk.Alignment:
-        return widget.parent
-    else:
+def wrap_with_align(widget, align="right", width=-1):
+    if align is "left":
         align = gtk.Alignment(0, 0.5, 1, 0)
-        align.set_size_request(-1, CONTAINNER_HEIGHT)
-        align.add(widget)
-        return align
+    elif align is "right":
+        align = gtk.Alignment(1, 0.5, 0, 0)
+        align.set_padding(0,0, 1, 0)
+    align.set_size_request(width, CONTAINNER_HEIGHT)
+    align.add(widget)
+    return align
 
 
 def set_table_items(table, item_name):
@@ -82,3 +83,11 @@ def draw_out_line(cr, rect, exclude=[]):
         if "right" not in exclude:
             draw_line(cr, rect.x + rect.width + 1, rect.y + 29, rect.x + rect.width , rect.y + rect.height)
 
+def draw_background_color(widget):
+    def expose_background(w, event):
+        cr = w.window.cairo_create()
+        rect = w.allocation
+        cr.set_source_rgb( 1, 1, 1) 
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
+    widget.connect("expose-event", expose_background)
