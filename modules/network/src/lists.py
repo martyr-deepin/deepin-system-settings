@@ -42,8 +42,9 @@ class WirelessItem(TreeItem):
 
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10
-    SIGNAL_LEFT_PADDING = 0
-    SIGNAL_RIGHT_PADDING = 27
+    SECURITY_RIGHT_PADDING = 5
+    SIGNAL_LEFT_PADDING = 5
+    SIGNAL_RIGHT_PADDING = 20
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
 
@@ -148,7 +149,7 @@ class WirelessItem(TreeItem):
         else:
             signal_icon = self.strength_0
         
-        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH , rect.y + (rect.height - IMG_WIDTH)/2)
+        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH + self.SECURITY_RIGHT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -179,7 +180,7 @@ class WirelessItem(TreeItem):
         return get_content_size(essid)[0]
     
     def get_signal_width(self):
-        return IMG_WIDTH + self.SIGNAL_RIGHT_PADDING
+        return IMG_WIDTH*2 + self.SECURITY_RIGHT_PADDING + self.SIGNAL_RIGHT_PADDING
 
     def get_jumpto_width(self):
         return IMG_WIDTH + self.JUMPTO_RIGHT_PADDING
