@@ -496,7 +496,7 @@ class PPPConf(ScrolledWindow):
         self.refuse_mschap = SwitchButton()
         self.refuse_mschapv2 = SwitchButton()
         
-        self.method_table = gtk.Table(22, 3, False)
+        self.method_table = gtk.Table(23, 3, False)
 
         # visible settings
 
@@ -531,6 +531,9 @@ class PPPConf(ScrolledWindow):
         self.ip_sec_enable = SwitchButton()
 
         ## Settings for IPSec
+        self.ipsec_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
+                                     _("IPSec Setting"), width=self.TABLE_WIDTH)
+
         self.ip_sec_enable_label = Label(_("Enable IPSec tunnel to l2tp host"), text_size=CONTENT_FONT_SIZE)
         self.group_name_label = Label(_("Group Name:"), text_size=CONTENT_FONT_SIZE)
         self.gateway_id_label = Label(_("Gateway ID:"), text_size=CONTENT_FONT_SIZE)
@@ -574,9 +577,9 @@ class PPPConf(ScrolledWindow):
 
         vbox = gtk.VBox()
         vbox.pack_start(self.method_table, False, False)
-        #self.method_table.set_col_spacing(0, 10)
-        #self.method_table.set_row_spacing(6, 20)
-        #self.method_table.set_row_spacing(8, 20)
+        self.method_table.set_row_spacing(5, 20)
+        self.method_table.set_row_spacing(15, 20)
+        self.method_table.set_row_spacing(18, 20)
         align = style.set_box_with_align(vbox, "text")
         self.add_with_viewport(align)
         style.draw_background_color(align)
@@ -647,12 +650,13 @@ class PPPConf(ScrolledWindow):
             print "this is l2tp"
             table_attach("nopcomp", 14)
             table_attach("noaccomp", 15)
-
-            table_attach("ip_sec_enable", 19)
+            
+            self.method_table.attach(self.ipsec_title, 0, 3, 19, 20)
+            table_attach("ip_sec_enable", 20)
             if self.ip_sec_enable.get_active():
-                table_attach("group_name", 20)
-                table_attach("gateway_id", 21)
-                table_attach("pre_shared_key", 22)
+                table_attach("group_name", 21)
+                table_attach("gateway_id", 22)
+                table_attach("pre_shared_key", 23)
 
         self.method_table.show_all()
 

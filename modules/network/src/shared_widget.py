@@ -400,9 +400,11 @@ class IPV6Conf(gtk.VBox):
         names = ["ip6", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
+            print "is valid "+names[index]
             setattr(self, names[index] + "_flag", True)
             #print "valid"+ names[index]
         else:
+            print "is invalid "+names[index]
             setattr(self, names[index] + "_flag", False)
 
         if self.check_valid("gw"):
