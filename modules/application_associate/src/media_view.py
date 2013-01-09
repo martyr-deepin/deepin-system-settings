@@ -9,11 +9,15 @@ from media import MediaAutorun
 from app import AppManager
 import gtk
 import style
+from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING
 
 class MediaView(gtk.VBox):
+    ENTRY_WIDTH = 200
+    LEFT_WIDTH = STANDARD_LINE - TEXT_WINDOW_LEFT_PADDING
 
     def __init__(self):
         gtk.VBox.__init__(self)
+        style.draw_background_color(self)
         self.media_handle = MediaAutorun()
         self.app_manager = AppManager()
         self.init_table()
@@ -35,29 +39,29 @@ class MediaView(gtk.VBox):
                         ("不处理", "do_nothing"),
                         ("打开文件夹","open_folder")]
         self.auto_check = CheckButton("为所有媒体和设备使用自动播放")
-        self.cd = ComboBox(default_list, max_width=323)
-        self.dvd = ComboBox(default_list, max_width=323)
-        self.player= ComboBox(default_list, max_width=323)
-        self.photo = ComboBox(default_list, max_width=323)
-        self.software = ComboBox(default_list, max_width=323)
+        self.cd = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
+        self.dvd = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
+        self.player= ComboBox(default_list, max_width=self.ENTRY_WIDTH)
+        self.photo = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
+        self.software = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
 
         self.more_option = Button("更多选项")
-        self.more_option.set_size_request(78, 24)
+        #self.more_option.set_size_request( 30, 22)
 
-        table.attach(style.wrap_with_align(info_label), 0, 3, 0, 1)
-        table.attach(style.wrap_with_align(cd_label), 0, 1, 2, 3)
-        table.attach(style.wrap_with_align(dvd_label), 0, 1, 3, 4)
-        table.attach(style.wrap_with_align(player_label), 0, 1, 4, 5)
-        table.attach(style.wrap_with_align(photo_label), 0, 1, 5, 6)
-        table.attach(style.wrap_with_align(software_label), 0, 1, 6, 7)
+        #table.attach(style.wrap_with_align(info_label, width=self.LEFT_WIDTH), 0, 3, 0, 1)
+        table.attach(style.wrap_with_align(cd_label, width=self.LEFT_WIDTH), 0, 1, 2, 3)
+        table.attach(style.wrap_with_align(dvd_label, width=self.LEFT_WIDTH), 0, 1, 3, 4)
+        table.attach(style.wrap_with_align(player_label, width=self.LEFT_WIDTH), 0, 1, 4, 5)
+        table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 5, 6)
+        table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
         
         table.attach(style.wrap_with_align(self.auto_check), 0, 3, 1, 2)
-        table.attach(self.cd, 1, 3, 2, 3, gtk.SHRINK)
-        table.attach(self.dvd, 1, 3, 3, 4, gtk.SHRINK)
-        table.attach(self.player, 1, 3, 4, 5, gtk.SHRINK)
-        table.attach(self.photo, 1, 3, 5, 6, gtk.SHRINK)
-        table.attach(self.software, 1, 3, 6, 7, gtk.SHRINK)
-        table.attach(self.more_option, 2, 3, 7, 8, gtk.SHRINK)
+        table.attach(style.wrap_with_align(self.cd), 1, 3, 2, 3)
+        table.attach(style.wrap_with_align(self.dvd), 1, 3, 3, 4)
+        table.attach(style.wrap_with_align(self.player), 1, 3, 4, 5)
+        table.attach(style.wrap_with_align(self.photo), 1, 3, 5, 6)
+        table.attach(style.wrap_with_align(self.software), 1, 3, 6, 7)
+        table.attach(style.wrap_with_align(self.more_option), 2, 3, 7, 8)
 
         # UI style
         table_align = style.set_box_with_align(table, "text")
@@ -67,7 +71,7 @@ class MediaView(gtk.VBox):
 
         combo_list = [self.cd, self.dvd, self.player, self.photo, self.software]
         for combo in combo_list:
-            combo.set_size_request(323, 22)
+            combo.set_size_request(self.ENTRY_WIDTH, 22)
 
 
         self.refresh_app_list(default_list)
@@ -101,7 +105,7 @@ class MediaView(gtk.VBox):
             else:
                 default_value = len(app_info_list) + ["ask", "do_nothing","open_folder"].index(state) + 1
 
-            key.set_items(map(lambda info:(info.get_name(), info), app_info_list) + default_list, max_width=323, select_index=default_value)
+            key.set_items(map(lambda info:(info.get_name(), info), app_info_list) + default_list, max_width=self.ENTRY_WIDTH, select_index=default_value)
 
     def connect_signal_to_combos(self):
         for combo in self.all_app_dict:

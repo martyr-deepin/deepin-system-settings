@@ -44,23 +44,26 @@ from media_view import MediaView
 from session_view import SessionView
 
 import style
-from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE
+from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, FRAME_TOP_PADDING
 
 class AppMain(gtk.Alignment):
 
     def __init__(self):
         gtk.Alignment.__init__(self, 0, 0, 0, 0)
-        style.set_main_window(self, True)
+        self.set_padding(FRAME_TOP_PADDING, 0, 0, 0)
+        #style.set_main_window(self, True)
         self.add(AppAssoView())
 
-        self.connect("expose-event", self.expose_event)
+        style.draw_background_color(self)
 
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
+        #self.connect("expose-event", self.expose_event)
+
+    #def expose_event(self, widget, event):
+        #cr = widget.window.cairo_create()
+        #rect = widget.allocation
+        #cr.set_source_rgb( 1, 1, 1) 
+        #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        #cr.fill()
 
 class AppAssoView(TabBox):
     '''
@@ -84,7 +87,7 @@ class AppAssoView(TabBox):
                         ("自动运行", self.autorun_box), 
                         ("启动项", self.boot_box)])
 
-        self.connect("expose-event", self.expose_outline, ["top"])
+        #self.connect("expose-event", self.expose_outline, ["top"])
 
     def expose_outline(self, widget, event, exclude):
         cr = widget.window.cairo_create()
