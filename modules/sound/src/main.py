@@ -102,7 +102,12 @@ class SoundSetting(object):
         self.label_widgets["microphone"] = Label(_("Microphone"), text_size=title_item_font_size)
         self.label_widgets["left"] = Label(_("Left"))
         self.label_widgets["right"] = Label(_("Right"))
+        self.label_widgets["speaker_port"] = Label(_("Port"), text_size=option_item_font_szie)
+        self.label_widgets["speaker_volume"] = Label(_("Volume"), text_size=option_item_font_szie)
         self.label_widgets["speaker_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
+        self.label_widgets["speaker_balance"] = Label(_("均衡器"), text_size=option_item_font_szie)
+        self.label_widgets["microphone_port"] = Label(_("Port"), text_size=option_item_font_szie)
+        self.label_widgets["microphone_volume"] = Label(_("Volume"), text_size=option_item_font_szie)
         self.label_widgets["microphone_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
         #####################################
         # image init
@@ -227,7 +232,7 @@ class SoundSetting(object):
         self.alignment_widgets["speaker_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["speaker_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["speaker_set"].set(0.0, 0.5, 0.0, 0.0)
-        self.alignment_widgets["speaker_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
+        #self.alignment_widgets["speaker_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["speaker_main_vbox"].pack_start(
             self.alignment_widgets["speaker_label"])
         self.container_widgets["speaker_main_vbox"].pack_start(
@@ -249,8 +254,13 @@ class SoundSetting(object):
         #self.scale_widgets["speaker"].add_mark(100, gtk.POS_BOTTOM, "100%")
         # 
         self.container_widgets["speaker_table"].set_size_request(HSCALEBAR_WIDTH, -1)
+        self.container_widgets["speaker_table"].set_col_spacings(WIDGET_SPACING)
+        speaker_port_align = self.__make_align(self.label_widgets["speaker_port"])
+        speaker_port_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.button_widgets["speaker_combo"]), 0, 2, 0, 1, 4)
+            speaker_port_align, 0, 1, 0, 1, 4)
+        self.container_widgets["speaker_table"].attach(
+            self.__make_align(self.button_widgets["speaker_combo"]), 1, 2, 0, 1, 4)
         self.container_widgets["speaker_table"].attach(
             self.__make_align(self.label_widgets["speaker_mute"]), 0, 1, 1, 2, 4)
         self.container_widgets["speaker_table"].attach(
@@ -342,7 +352,7 @@ class SoundSetting(object):
             # if is Mono, set it insensitive
             if settings.PA_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
                 self.scale_widgets["balance"].set_sensitive(False)
-                self.scale_widgets["balance"].set_value(0-self.scale_widgets["balance"].value_min)
+                self.scale_widgets["balance"].set_value(0)
             else:
                 volumes = settings.get_volumes(settings.CURRENT_SINK)
                 if volumes[0] == volumes[1]:
@@ -351,7 +361,7 @@ class SoundSetting(object):
                     value = float(volumes[1]) / volumes[0] - 1
                 else:
                     value = 1 - float(volumes[0]) / volumes[1]
-                self.scale_widgets["balance"].set_value(value-self.scale_widgets["balance"].value_min)
+                self.scale_widgets["balance"].set_value(value)
             self.button_widgets["balance"].set_active(True)
             is_mute = settings.get_mute(settings.CURRENT_SINK)
             self.button_widgets["speaker"].set_active(not is_mute)
@@ -457,14 +467,11 @@ class SoundSetting(object):
         self.scale_widgets["microphone"].connect("button-press-event", lambda w, e: self.scale_widgets["microphone"].set_data("has_pressed", True))
 
         self.adjust_widgets["balance"].connect("value-changed",
-            lambda w: self.scale_widgets["balance"].set_value(
-                self.adjust_widgets["balance"].get_value() - self.scale_widgets["balance"].value_min))
+            lambda w: self.scale_widgets["balance"].set_value(self.adjust_widgets["balance"].get_value()))
         self.adjust_widgets["speaker"].connect("value-changed",
-            lambda w: self.scale_widgets["speaker"].set_value(
-                self.adjust_widgets["speaker"].get_value() - self.scale_widgets["speaker"].value_min))
+            lambda w: self.scale_widgets["speaker"].set_value(self.adjust_widgets["speaker"].get_value()))
         self.adjust_widgets["microphone"].connect("value-changed",
-            lambda w: self.scale_widgets["microphone"].set_value(
-                self.adjust_widgets["microphone"].get_value() - self.scale_widgets["microphone"].value_min))
+            lambda w: self.scale_widgets["microphone"].set_value(self.adjust_widgets["microphone"].get_value()))
 
         self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
         self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
@@ -555,8 +562,7 @@ class SoundSetting(object):
     
     def balance_value_changed_thread(self):
         ''' balance value changed callback thread'''
-        value = self.scale_widgets["balance"].get_value() + self.scale_widgets["balance"].value_min
-        print "balance cahnged:", value
+        value = self.scale_widgets["balance"].get_value()
         sink = settings.CURRENT_SINK
         if value < 0:       # is left, and reduce right volume
             volume = settings.get_volume(sink)
@@ -582,10 +588,10 @@ class SoundSetting(object):
     
     def speaker_value_changed_thread(self):
         ''' speaker hscale value changed callback thread '''
-        balance = self.scale_widgets["balance"].get_value() + self.scale_widgets["balance"].value_min
+        balance = self.scale_widgets["balance"].get_value()
         sink = settings.CURRENT_SINK
         volume_list = []
-        volume = (self.scale_widgets["speaker"].get_value() + self.scale_widgets["speaker"].value_min) / 100 * settings.FULL_VOLUME_VALUE
+        volume = (self.scale_widgets["speaker"].get_value()) / 100.0 * settings.FULL_VOLUME_VALUE
         if balance < 0:
             volume_list.append(volume)
             volume_list.append(volume * (1 + balance))
@@ -609,8 +615,8 @@ class SoundSetting(object):
     
     def microphone_value_changed_thread(self):
         ''' microphone value changed callback thread'''
-        value = self.scale_widgets["microphone"].get_value() + self.scale_widgets["microphone"].value_min
-        volume = value / 100 * settings.FULL_VOLUME_VALUE
+        value = self.scale_widgets["microphone"].get_value()
+        volume = value / 100.0 * settings.FULL_VOLUME_VALUE
         source = settings.CURRENT_SOURCE
         settings.set_volume(source, volume)
         if not self.button_widgets["microphone"].get_active():
