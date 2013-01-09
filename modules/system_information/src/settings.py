@@ -31,7 +31,7 @@ def get_os_version():
     @return: a string for the os info
     '''
     dist = platform.linux_distribution()
-    return "%s %s %s" % (dist[0], dist[1], dist[2])
+    return "%s %s" % (dist[1], dist[2])
 
 def get_cpu_info():
     '''

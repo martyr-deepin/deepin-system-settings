@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#from theme import app_theme
+from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
@@ -60,6 +60,7 @@ class MyTreeView(TreeView):
         self.keymap["Ctrl + Down"] = self.keymap["Down"]
         del self.keymap["Ctrl + a"]
         del self.keymap["Delete"]
+        self.keymap.clear()
     
     def add_items(self, items, insert_pos=None, clear_first=False):
         '''
@@ -140,14 +141,23 @@ class MyTreeItem(TreeItem):
         cr.rectangle(rect.x, rect.y, rect.width-1, rect.height-1)
         cr.paint()
         self.render_icon(cr, rect)
-        width = self.icon.get_pixbuf().get_width()
+        pixbuf = app_theme.get_pixbuf("sound/check_box-3.png")
+        width = self.icon.get_pixbuf().get_width()+pixbuf.get_pixbuf().get_width()
         self.render_content(cr, gtk.gdk.Rectangle(rect.x+width+self.padding_x, rect.y, rect.width-width-self.padding_x, rect.height), text_color)
     
     def render_content(self, cr, rect, text_color):
         draw_text(cr, self.content, rect.x+self.padding_x, rect.y, rect.width-self.padding_x, rect.height-1, text_color=text_color)
     
     def render_icon(self, cr, rect):
-        cr.set_source_pixbuf(self.icon.get_pixbuf(), rect.x+self.padding_x, rect.y)
+        pixbuf = app_theme.get_pixbuf("sound/check_box-3.png")
+        if self.is_select:
+            cr.set_source_pixbuf(pixbuf.get_pixbuf(),
+                                 rect.x+self.padding_x,
+                                 rect.y+(self.get_height()-pixbuf.get_pixbuf().get_height())/2)
+            cr.paint()
+        cr.set_source_pixbuf(self.icon.get_pixbuf(),
+                             rect.x+self.padding_x+pixbuf.get_pixbuf().get_width(),
+                             rect.y)
         cr.paint()
     
 gobject.type_register(MyTreeItem)

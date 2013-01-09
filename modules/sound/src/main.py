@@ -102,12 +102,12 @@ class SoundSetting(object):
         self.label_widgets["microphone"] = Label(_("Microphone"), text_size=title_item_font_size)
         self.label_widgets["left"] = Label(_("Left"))
         self.label_widgets["right"] = Label(_("Right"))
-        self.label_widgets["speaker_port"] = Label(_("Port"), text_size=option_item_font_szie)
-        self.label_widgets["speaker_volume"] = Label(_("Volume"), text_size=option_item_font_szie)
+        self.label_widgets["speaker_port"] = Label(_("Output Port"), text_size=option_item_font_szie)
+        self.label_widgets["speaker_volume"] = Label(_("Output Volume"), text_size=option_item_font_szie)
         self.label_widgets["speaker_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
-        self.label_widgets["speaker_balance"] = Label(_("均衡器"), text_size=option_item_font_szie)
-        self.label_widgets["microphone_port"] = Label(_("Port"), text_size=option_item_font_szie)
-        self.label_widgets["microphone_volume"] = Label(_("Volume"), text_size=option_item_font_szie)
+        self.label_widgets["speaker_balance"] = Label(_("均衡"), text_size=option_item_font_szie)
+        self.label_widgets["microphone_port"] = Label(_("Input Port"), text_size=option_item_font_szie)
+        self.label_widgets["microphone_volume"] = Label(_("Input Volume"), text_size=option_item_font_szie)
         self.label_widgets["microphone_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
         #####################################
         # image init
@@ -198,7 +198,7 @@ class SoundSetting(object):
         self.alignment_widgets["advance_set_tab_box"].add(self.container_widgets["advance_set_tab_box"])
         self.container_widgets["advance_set_tab_box"].set_size_request(WINDOW_WIDTH, -1)
         self.alignment_widgets["main_hbox"].set_padding(
-            TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+            TEXT_WINDOW_TOP_PADDING, 0, 0, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
         self.alignment_widgets["advance_set_tab_box"].set_padding(
             FRAME_TOP_PADDING, 0, 0, 0)
         
@@ -229,9 +229,10 @@ class SoundSetting(object):
         self.alignment_widgets["speaker_label"].add(self.container_widgets["speaker_label_hbox"])
         self.alignment_widgets["speaker_set"].add(self.container_widgets["speaker_table"])
         #
-        self.alignment_widgets["speaker_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["speaker_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["speaker_set"].set(0.0, 0.5, 0.0, 0.0)
+        self.alignment_widgets["speaker_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["speaker_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        #self.alignment_widgets["speaker_set"].set(0.0, 0.0, 0.0, 0.0)
         #self.alignment_widgets["speaker_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["speaker_main_vbox"].pack_start(
             self.alignment_widgets["speaker_label"])
@@ -253,7 +254,7 @@ class SoundSetting(object):
         self.scale_widgets["speaker"].add_mark(self.adjust_widgets["speaker"].get_upper(), gtk.POS_BOTTOM, "+")
         #self.scale_widgets["speaker"].add_mark(100, gtk.POS_BOTTOM, "100%")
         # 
-        self.container_widgets["speaker_table"].set_size_request(HSCALEBAR_WIDTH, -1)
+        #self.container_widgets["speaker_table"].set_size_request(HSCALEBAR_WIDTH, -1)
         self.container_widgets["speaker_table"].set_col_spacings(WIDGET_SPACING)
         speaker_port_align = self.__make_align(self.label_widgets["speaker_port"])
         speaker_port_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
@@ -261,14 +262,22 @@ class SoundSetting(object):
             speaker_port_align, 0, 1, 0, 1, 4)
         self.container_widgets["speaker_table"].attach(
             self.__make_align(self.button_widgets["speaker_combo"]), 1, 2, 0, 1, 4)
+        speaker_mute_align = self.__make_align(self.label_widgets["speaker_mute"])
+        speaker_mute_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.label_widgets["speaker_mute"]), 0, 1, 1, 2, 4)
+            speaker_mute_align, 0, 1, 1, 2, 4)
         self.container_widgets["speaker_table"].attach(
             self.__make_align(self.button_widgets["speaker"]), 1, 2, 1, 2, 4)
+        speaker_volume_align = self.__make_align(self.label_widgets["speaker_volume"])
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.scale_widgets["speaker"], yalign=0.0, yscale=1.0, height=43), 0, 2, 2, 3, 4)
+            speaker_volume_align, 0, 1, 2, 3, 4)
         self.container_widgets["speaker_table"].attach(
-            self.__make_align(self.scale_widgets["balance"], yalign=0.0, yscale=1.0, height=43), 0, 2, 3, 4, 4)
+            self.__make_align(self.scale_widgets["speaker"], yalign=0.0, yscale=1.0, height=43), 1, 2, 2, 3, 4)
+        speaker_balance_align = self.__make_align(self.label_widgets["speaker_balance"])
+        self.container_widgets["speaker_table"].attach(
+            speaker_balance_align, 0, 1, 3, 4, 4)
+        self.container_widgets["speaker_table"].attach(
+            self.__make_align(self.scale_widgets["balance"], yalign=0.0, yscale=1.0, height=43), 1, 2, 3, 4, 4)
         self.button_widgets["speaker_combo"].set_size_request(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
         self.scale_widgets["speaker"].set_size_request(HSCALEBAR_WIDTH, -1)
         self.scale_widgets["balance"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -276,10 +285,11 @@ class SoundSetting(object):
         # microphone
         self.alignment_widgets["microphone_label"].add(self.container_widgets["microphone_label_hbox"])
         self.alignment_widgets["microphone_set"].add(self.container_widgets["microphone_table"])
-        self.alignment_widgets["microphone_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["microphone_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["microphone_set"].set(0.0, 0.0, 0.0, 0.0)
-        self.alignment_widgets["microphone_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
+        self.alignment_widgets["microphone_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["microphone_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        #self.alignment_widgets["microphone_set"].set(0.0, 0.0, 0.0, 0.0)
+        #self.alignment_widgets["microphone_set"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["microphone_main_vbox"].pack_start(
             self.alignment_widgets["microphone_label"])
         self.container_widgets["microphone_main_vbox"].pack_start(
@@ -297,15 +307,26 @@ class SoundSetting(object):
         self.scale_widgets["microphone"].add_mark(self.adjust_widgets["microphone"].get_upper(), gtk.POS_BOTTOM, "+")
         #self.scale_widgets["microphone"].add_mark(100, gtk.POS_BOTTOM, "100%")
 
-        self.container_widgets["microphone_table"].set_size_request(HSCALEBAR_WIDTH, -1)
+        #self.container_widgets["microphone_table"].set_size_request(HSCALEBAR_WIDTH, -1)
+        self.container_widgets["microphone_table"].set_col_spacings(WIDGET_SPACING)
+        microphone_port_align = self.__make_align(self.label_widgets["microphone_port"])
+        microphone_port_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.button_widgets["microphone_combo"]), 0, 2, 0, 1, 4)
+            microphone_port_align, 0, 1, 0, 1, 4)
         self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.label_widgets["microphone_mute"]), 0, 1, 1, 2, 4)
+            self.__make_align(self.button_widgets["microphone_combo"]), 1, 2, 0, 1, 4)
+        microphone_mute_align = self.__make_align(self.label_widgets["microphone_mute"])
+        microphone_mute_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
+        self.container_widgets["microphone_table"].attach(
+            microphone_mute_align, 0, 1, 1, 2, 4)
         self.container_widgets["microphone_table"].attach(
             self.__make_align(self.button_widgets["microphone"]), 1, 2, 1, 2, 4)
+        microphone_volume_align = self.__make_align(self.label_widgets["microphone_volume"])
+        microphone_volume_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.scale_widgets["microphone"], yalign=0.0, yscale=1.0, height=43), 0, 2, 2, 3, 4)
+            microphone_volume_align, 0, 1, 2, 3, 4)
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.scale_widgets["microphone"], yalign=0.0, yscale=1.0, height=43), 1, 2, 2, 3, 4)
         self.container_widgets["microphone_table"].attach(
             self.__make_align(self.button_widgets["advanced"]), 0, 2, 3, 4, 4, ypadding=15)
         self.button_widgets["microphone_combo"].set_size_request(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
@@ -980,11 +1001,11 @@ class SoundSetting(object):
 
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(350, 10)
+        hseparator.set_size_request(450, 10)
         return hseparator
     
     def __setup_separator(self):
-        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, height=10)
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=14)
     
     def slider_to_advanced(self, button):
         self.container_widgets["slider"].slide_to_page(
