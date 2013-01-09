@@ -47,7 +47,7 @@ class WallpaperItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    def __init__(self, path):
+    def __init__(self, path, readonly, theme):
         '''
         Initialize ItemIcon class.
         
@@ -55,6 +55,8 @@ class WallpaperItem(gobject.GObject):
         '''
         gobject.GObject.__init__(self)
         self.image_path = path
+        self.readonly = readonly
+        self.theme = theme
         self.pixbuf = None
         self.hover_flag = False
         self.highlight_flag = False
@@ -69,6 +71,16 @@ class WallpaperItem(gobject.GObject):
             ITEM_PADDING_X, ITEM_PADDING_Y ,
             self.wallpaper_width, self.wallpaper_height
             ) 
+        
+        self.tick_normal_dpixbuf = app_theme.get_pixbuf("individuation/tick_normal.png")
+        self.tick_gray_dpixbuf = app_theme.get_pixbuf("individuation/tick_gray.png")
+        
+        if readonly:
+            self.is_tick = self.theme.get_system_wallpaper_status(path)
+        else:    
+            self.is_tick = self.theme.get_user_wallpaper_status(path)
+            
+        self.tick_area = None
         
     def emit_redraw_request(self):
         '''
@@ -151,6 +163,48 @@ class WallpaperItem(gobject.GObject):
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
             cr.stroke()
+            
+            
+        if self.is_tick:    
+            tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
+        else:    
+            tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
+            
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
+        if self.tick_area is None:
+            self.tick_area = gtk.gdk.Rectangle(
+                tick_x - rect.x,
+                tick_y - rect.y,
+                tick_pixbuf.get_width(),
+                tick_pixbuf.get_height())
+            
+        if self.is_tick:    
+            draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
+        else:    
+            if self.is_hover:    
+                draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+                
+    def tick(self):            
+        self.is_tick = True
+        self.set_theme_tick(self.is_tick)
+        self.emit_redraw_request()
+        
+    def untick(self):    
+        self.is_tick = False
+        self.set_theme_tick(self.is_tick)
+        self.emit_redraw_request()
+        
+    def toggle_tick(self):    
+        self.is_tick = not self.is_tick
+        self.set_theme_tick(self.is_tick)
+        self.emit_redraw_request()
+        
+    def set_theme_tick(self, value):    
+        if self.readonly:
+            self.theme.set_system_wallpaper_status(self.image_path, value)
+        else:    
+            self.theme.set_user_wallpaper_status(self.image_path, value)
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -206,8 +260,18 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
-
+        if is_in_rect((x, y), (
+                self.tick_area.x,
+                self.tick_area.y,
+                self.tick_area.width,
+                self.tick_area.height,
+                )):
+            
+            self.toggle_tick()
+            event_manager.emit("select-wallpaper", self)
+        else:    
+            self.tick()
+            event_manager.emit("apply-wallpaper", self)
     
     def icon_item_button_release(self, x, y):
         '''
@@ -274,12 +338,14 @@ class AddItem(gobject.GObject):
         self.hover_flag = False
         self.highlight_flag = False
         self.image_path = "invalid"
+        self.is_add = True
         self.wallpaper_width = SMALL_SIZE["x"]
         self.wallpaper_height = SMALL_SIZE["y"]
         self.width = self.wallpaper_width + ITEM_PADDING_X * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
         
         self.is_hover = False
+        self.is_tick = False
         self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
         self.hover_response_rect = gtk.gdk.Rectangle(
             ITEM_PADDING_X, ITEM_PADDING_Y ,
@@ -309,6 +375,15 @@ class AddItem(gobject.GObject):
         This is IconView interface, you should implement it.
         '''
         return self.height
+    
+    def untick(self):
+        pass
+    
+    def tick(self):
+        pass
+    
+    def toggle_tick(self):
+        pass
     
     def render(self, cr, rect):
         '''
@@ -623,6 +698,16 @@ class CacheItem(gobject.GObject, MissionThread):
         tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
         draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+        
+        if self.is_tick:    
+            tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
+        else:    
+            tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
+            
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
+        draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+        
         
     def icon_item_motion_notify(self, x, y):
         '''

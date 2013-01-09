@@ -76,6 +76,8 @@ class ThemeItem(gobject.GObject):
         self.hover_offset = 5
         self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
         self.hover_fill_dcolor = app_theme.get_color("globalHoverFill")
+        self.highlight_fill_color = "#7db7f2"
+        self.highlight_stroke_color = "#396497"
         self.hover_response_rect = gtk.gdk.Rectangle(
             self.hover_offset, self.hover_offset, 
             self.ITEM_WIDTH - self.hover_offset * 2, 
@@ -115,7 +117,19 @@ class ThemeItem(gobject.GObject):
         '''
         
         # Draw background.
-        if self.hover_flag:
+        if self.highlight_flag:                
+            with cairo_disable_antialias(cr):
+                cr.set_source_rgb(*color_hex_to_cairo(self.highlight_fill_color))
+                cr.rectangle(rect.x + self.hover_offset, 
+                             rect.y + self.hover_offset, 
+                             rect.width - self.hover_offset * 2, 
+                             rect.height - self.hover_offset * 2)
+                cr.fill_preserve()
+                cr.set_line_width(1)
+                cr.set_source_rgb(*color_hex_to_cairo(self.highlight_stroke_color))
+                cr.stroke()
+        
+        elif self.hover_flag:
             with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*color_hex_to_cairo(self.hover_fill_dcolor.get_color()))
                 cr.rectangle(rect.x + self.hover_offset, 
@@ -126,6 +140,9 @@ class ThemeItem(gobject.GObject):
                 cr.set_line_width(1)
                 cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
                 cr.stroke()
+                
+
+                
         # Draw wallpapers.
         if self.pixbufs == []:
             for wallpaper_file in self.theme.get_wallpaper_paths()[:3]:

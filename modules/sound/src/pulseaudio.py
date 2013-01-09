@@ -35,6 +35,8 @@ TODO: open the thread-safe switch
 gobject.threads_init()
 dbus.mainloop.glib.threads_init()
 
+client_bus = None
+
 def connect_bus():
     if 'PULSE_DBUS_SERVER' in os.environ:
         address = os.environ['PULSE_DBUS_SERVER']
@@ -44,37 +46,35 @@ def connect_bus():
         monitor_object = bus.get_object("org.freedesktop.DBus", "/org/freedesktop/DBus")
         monitor_interface = dbus.Interface(monitor_object, "org.freedesktop.DBus")
 
-        if "org.PulseAudio1" not in monitor_interface.ListNames():
-            # if "org.pulseaudio.Service" not in monitor_interface.ListNames():
-            try:
-                while int(os.popen("ps -ef |grep pulseaudio | wc -l").read().strip()) > 1:
-                    command = "pulseaudio --kill"
+        i = 0
+        while i < 5:
+            if "org.PulseAudio1" not in monitor_interface.ListNames():
+                i = i + 1
+                try:
+                    while int(os.popen("ps -ef |grep pulseaudio | wc -l").read().strip()) > 1:
+                        command = "pulseaudio --kill"
+                        subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
+    
+                    command = "pulseaudio --start"
                     subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
-
-                command = "pulseaudio --start"
-                subprocess.Popen("nohup %s > /dev/null 2>&1" % command, shell=True)
-            except:
-                print "StartServiceByName:org.PulseAudio1 Failed"
-
+                except:
+                    print "StartServiceByName:org.PulseAudio1 Failed"
+                    continue
+            else:
+                print "time tried to connect pulseaudio dbus:%s" % i
+                break
+    
         server_lookup = bus.get_object("org.PulseAudio1", "/org/pulseaudio/server_lookup1")
         prop_interface = dbus.Interface(server_lookup, "org.freedesktop.DBus.Properties")
         address = prop_interface.Get("org.PulseAudio.ServerLookup1", "Address")
-    try:    
-        return dbus.connection.Connection(address)
-    except:
-        print "return pulseaudio client bus failed"
-try:
-    client_bus = connect_bus()
-    if not client_bus:
-        raise dbus.exceptions.DBusException
-except dbus.exceptions.DBusException:
-    try:
-        client_bus = connect_bus()
-        if not client_bus:
-            raise dbus.exceptions.DBusException
-    except:    
-        client_bus = None
-        print "connect to dbus server error."
+        try:    
+            global client_bus
+            client_bus = dbus.connection.Connection(address)
+        except:
+            client_bus = None
+            print "return pulseaudio client bus failed"
+
+connect_bus()
 
 class BusBase(gobject.GObject):
     
