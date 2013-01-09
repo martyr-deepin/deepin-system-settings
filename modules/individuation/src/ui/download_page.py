@@ -55,7 +55,6 @@ class TaskView(TreeView):
             self.add_items(items)
             self.emit_task_number()
             
-            
     def on_download_finish(self, item):        
         self.delete_items([item])
         self.emit_task_number()
