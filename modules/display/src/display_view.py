@@ -361,8 +361,8 @@ class DisplayView(gtk.VBox):
         self.brightness_label_align.add(self.brightness_label)
         
         self.brightness_scale = HScalebar(point_dpixbuf = app_theme.get_pixbuf("scalebar/point.png"), 
-                                          value_min = 10, 
-                                          value_max = 100)
+                                          value_min = 0.1, 
+                                          value_max = 1.0)
         self.brightness_scale.set_size_request(HSCALEBAR_WIDTH, 33)
         self.brightness_scale.set_value(self.display_manager.get_screen_brightness())
         self.brightness_scale.connect("button-release-event", self.__set_brightness)
@@ -522,7 +522,7 @@ class DisplayView(gtk.VBox):
 
     def __set_brightness(self, widget, event):
         self.display_manager.set_screen_brightness(self.__current_output_name, 
-                                                   self.brightness_scale.value / 100.0)
+                                                   self.brightness_scale.get_value())
     
     def __setup_monitor_items(self):
         self.__output_names = self.display_manager.get_output_names()
