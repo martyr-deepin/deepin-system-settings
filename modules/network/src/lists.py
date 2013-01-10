@@ -493,18 +493,25 @@ class GeneralItem(TreeItem):
         self.network_state = check_state
         self.is_last = True
 
+        '''
+        Pixbufs
+        '''
+        self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
+        self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
+        self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
+
     def render_check(self, cr, rect):
         render_background(cr, rect)
 
         if self.network_state == 0:
             check_icon = None
         elif self.network_state == 1:
-            check_icon = app_theme.get_pixbuf("network/loading.png").get_pixbuf()
+            check_icon = self.loading_pixbuf
         else:
-            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
+            check_icon = self.check_pixbuf
         
         if check_icon:
-            draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+            draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -516,7 +523,7 @@ class GeneralItem(TreeItem):
 
     def render_name(self, cr, rect):
         render_background(cr, rect)
-        (text_width, text_height) = get_content_size(self.name)
+        #(text_width, text_height) = get_content_size(self.name)
         if self.is_select:
             text_color = None
         draw_text(cr, self.name, rect.x, rect.y, rect.width, rect.height,
@@ -534,8 +541,8 @@ class GeneralItem(TreeItem):
         render_background(cr, rect)
         if self.is_select:
             pass
-        jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
-        draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
+        jumpto_icon = self.jumpto_pixbuf
+        draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -557,16 +564,15 @@ class GeneralItem(TreeItem):
 
 
     def get_check_width(self):
-        check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
-        return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
+        return IMG_WIDTH + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
     def get_essid_width(self, essid):
         return get_content_size(essid)[0]
     
     def get_jumpto_width(self):
-        return app_theme.get_pixbuf("network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
+        return IMG_WIDTH + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
-        return [self.check_width, -1,-1, self.jumpto_width]
+        return [self.check_width, -1,20, self.jumpto_width]
 
     def get_column_renders(self):
         return [self.render_check,
@@ -595,19 +601,27 @@ class GeneralItem(TreeItem):
         pass
 
     def single_click(self, column, x, y):
-        if column == 2:
-            self.setting.init()
-            self.slide_to_setting()
-            self.send_to_crumb()
+        #if column == 2:
+            #self.setting.init()
+            #self.slide_to_setting()
+            #self.send_to_crumb()
         if column == 3:
             self.setting.init("", init_connections=True)
             self.slide_to_setting()
             self.send_to_crumb()
 
+        self.redraw()
 
 
+    def redraw(self):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+
+
+    def change_state(self, state):
+        self.network_state = state
+        self.redraw()
+
 
 
         

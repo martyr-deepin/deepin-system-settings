@@ -38,6 +38,7 @@ class VPNSetting(gtk.Alignment):
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
         self.module_frame = module_frame
+        self.state_change_cb = None
         
         # Add UI Align
         style.set_main_window(self)
@@ -90,11 +91,11 @@ class VPNSetting(gtk.Alignment):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self, new_connection=None, init_connection=False):
+    def init(self, new_connection=None, init_connections=False):
         # Get all connections  
         connections = nm_module.nm_remote_settings.get_vpn_connections()
         
-        if init_connection:
+        if init_connections:
             for connection in connections:
                 connection.init_settings_prop_dict()
         # Check connections
@@ -137,10 +138,10 @@ class VPNSetting(gtk.Alignment):
 
     def set_button(self, name, state):
         if name == "save":
-            self.save_button.set_label(name)
+            self.save_button.set_label(_("save"))
             self.save_button.set_sensitive(state)
         else:
-            self.save_button.set_label("connect")
+            self.save_button.set_label(_("connect"))
             self.save_button.set_sensitive(state)
         
     def save_changes(self, widget):
@@ -183,20 +184,8 @@ class VPNSetting(gtk.Alignment):
                 if wireless_devices:
                     self.try_to_connect_wireless_device(wireless_devices[0], connection)
 
-    def vpn_state_changed(self, widget, state, reason):
-        print "changed",state
-
-    def vpn_connected(self, widget):
-        print "vpn connected"
-        self.sidebar.set_active()
-
-    def vpn_connecting(self, widget):
-        print "vpn connecting"
-
-    def vpn_disconnected(self, widget):
-        print "vpn disconnected"
-        cache.del_spec_object(widget.object_path)
-        #self.sidebar.clear_active()
+        self.change_crumb()
+        self.slide_back()
 
 
     def try_to_connect_wired_device(self, device, connection):
@@ -208,10 +197,9 @@ class VPNSetting(gtk.Alignment):
                                                device_path,
                                                specific_path)
             if active_object != None:
+                print "in wired device"
                 active_vpn = cache.get_spec_object(active_object.object_path)
-                active_vpn.connect("vpn-connected", self.vpn_connected)
-                active_vpn.connect("vpn-connecting", self.vpn_connecting)
-                active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
+                self.state_change_cb(active_vpn, self.ipv4.connection.get_setting("connection").id)
             else:
                 raise Exception
         else:
@@ -226,10 +214,9 @@ class VPNSetting(gtk.Alignment):
                                                device_path,
                                                specific_path)
             if active_object != None:
+                print "in wireless device"
                 active_vpn = cache.get_spec_object(active_object.object_path)
-                active_vpn.connect("vpn-connected", self.vpn_connected)
-                active_vpn.connect("vpn-connecting", self.vpn_connecting)
-                active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
+                self.state_change_cb(active_vpn, self.ipv4.connection.get_setting("connection").id)
 
 
 class SideBar(gtk.VBox):
@@ -350,7 +337,7 @@ class PPTPConf(gtk.VBox):
         pptp_table.attach(style.wrap_with_align(gateway_label), 0, 2 , 1, 2)
         pptp_table.attach(style.wrap_with_align(user_label), 0, 2, 2, 3)
         pptp_table.attach(style.wrap_with_align(password_label), 0, 2, 3, 4)
-        pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 2, 5, 6)
+        #pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 2, 5, 6)
 
         # entries
         self.gateway_entry = InputEntry()
@@ -371,7 +358,7 @@ class PPTPConf(gtk.VBox):
         pptp_table.attach(style.wrap_with_align(self.user_entry), 2, 4, 2, 3)
         pptp_table.attach(style.wrap_with_align(self.password_entry), 2, 4, 3, 4)
         pptp_table.attach(style.wrap_with_align(self.password_show, align="left"), 2, 4, 4, 5)
-        pptp_table.attach(style.wrap_with_align(self.nt_domain_entry), 2, 4, 5, 6)
+        #pptp_table.attach(style.wrap_with_align(self.nt_domain_entry), 2, 4, 5, 6)
         # Advance setting button
         advanced_button = Button(_("Advanced Setting"))
         advanced_button.connect("clicked", self.advanced_button_click)

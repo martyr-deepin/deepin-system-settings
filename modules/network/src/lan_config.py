@@ -85,7 +85,7 @@ class WiredSetting(gtk.Alignment):
         hbox.pack_start(vbox, True, True)
         #hbox = gtk.HBox()
 
-        self.save_button = Button("Save")
+        self.save_button = Button()
         button_box = gtk.HBox()
         button_box.add(self.save_button)
         self.save_button.connect("clicked", self.save_changes)
@@ -158,16 +158,16 @@ class WiredSetting(gtk.Alignment):
 
     def set_button(self, name, state):
         if name == "save":
-            self.save_button.set_label(name)
+            self.save_button.set_label(_("save"))
             self.save_button.set_sensitive(state)
         else:
-            self.save_button.set_label("connect")
+            self.save_button.set_label(_("connect"))
             self.save_button.set_sensitive(state)
 
     
     def save_changes(self, widget):
         connection = self.ipv4.connection
-        if widget.label == "save":
+        if widget.label == _("save"):
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
                 if isinstance(connection, NMRemoteConnection):

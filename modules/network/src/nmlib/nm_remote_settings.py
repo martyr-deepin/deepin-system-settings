@@ -260,8 +260,8 @@ class NMRemoteSettings(NMObject):
         s_ip4config.clear_routes()
         s_ip4config.clear_dns()
         
-        s_pppoe.username = "yilang"
-        s_pppoe.password = "yilang"
+        s_pppoe.username = ""
+        s_pppoe.password = ""
 
         settings_dict = {"802-3-ethernet":s_wired.prop_dict,
                          "connection":s_connection.prop_dict,

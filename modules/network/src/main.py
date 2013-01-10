@@ -1,11 +1,28 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Zeng Zhi
+# 
+# Author:     Zeng Zhi <zengzhilg@gmail.com>
+# Maintainer: Zeng Zhi <zengzhilg@gmail.com>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import dss
 from proxy_config import ProxyConfig
 import sys
 import os
-#sys.path.append("../")
 from dss import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeView
@@ -39,6 +56,10 @@ from nls import _
 from constants import *
 
 slider = nm_module.slider
+
+def pack_start(parent, child_list, expand=False, fill=False):
+    for child in child_list:
+        parent.pack_start(child, expand, fill)
 
 class WiredDevice(object):
     def __init__(self, device, treeview, index):
@@ -91,7 +112,6 @@ class WiredSection(gtk.VBox):
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            print "toggle active"
             item_list = self.retrieve_list()
             self.tree.add_items(item_list, 0, True)
             self.tree.visible_items[-1].is_last = True
@@ -173,7 +193,7 @@ class WirelessDevice(object):
                 index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
                 self.index = index
                 self.tree.visible_items[index].network_state = 2
-                self.tree.queue_draw()
+                self.tree.visible_items[index]
             except IndexError:
                 pass
 
@@ -278,7 +298,6 @@ class WirelessSection(gtk.VBox):
             self.show_ap_list()
         else:
             self.tree.delete_all_items()
-            #self.tree.add_items([],0,True)
             self.vbox.set_no_show_all(True)
             self.vbox.hide()
             for wireless_device in self.wireless_devices:
@@ -359,7 +378,6 @@ class DSL(gtk.VBox):
         self.setting_page = None
         self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), self.toggle_cb)
         self.pack_start(self.dsl, False, False)
-        #pppoe_connections =  nm_module.nm_remote_settings.get_pppoe_connections()
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -394,42 +412,92 @@ class VpnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
         self.slide_to_subcrumb = slide_to_subcrumb_cb
-        vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.toggle_cb)
-        self.add(vpn)
+        self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.toggle_cb)
+        self.connection_tree = TreeView([])
+        self.label = Label("<u>"+_("VPN Setting")+"</u>", ui_theme.get_color("link_text"))
+        self.label.connect("button-release-event", self.slide_to_event)
 
-        ## detect vpn active_connection
+        self.vbox = gtk.VBox(False, spacing=15)
+        self.align = gtk.Alignment()
+        self.align.show()
+        self.align.set(0,0,1,0)
+        self.align.set_padding(0,0,PADDING,11 + 11)
+        self.align.add(self.vbox)
+        self.pack_start(self.vpn, False, False)
+        self.pack_start(self.align, False, False)
+
+        
 
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            self.align = gtk.Alignment(0,0,0,0)
-            self.align.set_padding(0,0,PADDING,11)
-            label = Label(_("Add Vpn"), ui_theme.get_color("link_text"))
-            label.connect("button-release-event", self.slide_to_event)
+            vpn_active = nm_module.nmclient.get_vpn_active_connection()
+            if vpn_active:
+                connection = vpn_active[0].get_connection()
+                connection_name = connection.get_setting("connection").id
+                #self.vbox.pack_start(self.connection_tree, False, False)
+                self.add_item(connection_name, state=2)
+                #self.vbox.pack_end(self.label, False, False)
+            else:
+                self.vbox.pack_end(self.label, False, False)
 
-            self.align.add(label)
-            self.align.connect("expose-event", self.expose_event)
-            self.add(self.align)
             self.show_all()
         else:
-            self.align.destroy()
+            container_remove_all(self.vbox)
             vpn_active = nm_module.nmclient.get_vpn_active_connection()
             if vpn_active:
                 nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
 
+    def add_item(self, connection_name , state):
+        #self.vbox.remove(self.connection_tree) 
+        container_remove_all(self.vbox)
+        self.connection_tree.delete_all_items()
+        self.item = GeneralItem(connection_name,
+                            self.setting,
+                            lambda :slider.slide_to_page(self.setting, "right"),
+                            self.slide_to_subcrumb,
+                            check_state=state)
+        self.connection_tree.add_items([self.item]) 
+        #self.connection_tree.set_size_request(, -1)
+        self.vbox.pack_start(self.connection_tree, False, False)
+        
+    
+    def connect_vpn_signals(self, active_vpn, connection_name):
+        active_vpn.connect("vpn-connected", self.vpn_connected, connection_name)
+        active_vpn.connect("vpn-connecting", self.vpn_connecting, connection_name)
+        active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
+
+    #def vpn_state_changed(self, widget, state, reason):
+        #print "changed",state
+
+    def vpn_connected(self, widget, connection_name):
+        print "vpn connected"
+        self.item.change_state(2)
+        #self.sidebar.set_active()
+
+    def vpn_connecting(self, widget, connection_name):
+        self.add_item(connection_name, state=1)
+        #self.vbox.pack_start(self.connection_tree, False, False)
+        print "vpn connecting"
+
+    def vpn_disconnected(self, widget):
+        print "vpn disconnected"
+        container_remove_all(self.vbox)
+        if self.vpn.switch.get_active():
+            self.vbox.pack_start(self.label, False, False)
+        cache.del_spec_object(widget.object_path)
+
     def slide_to_event(self, widget, event):
-        self.setting.init(init_connection=True)
+        self.setting.init(init_connections=True)
         self.slide_to_subcrumb()
         slider.slide_to_page(self.setting, "right")
 
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.child.allocation
-        cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
-        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
-
     def add_setting_page(self, setting_page):
         self.setting = setting_page
+        self.setting.state_change_cb = self.connect_vpn_signals
+        vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        if vpn_active:
+            self.vpn.switch.set_active(True)
 
 class Mobile(gtk.VBox):
     def __init__(self,
@@ -541,7 +609,6 @@ class Proxy(gtk.VBox):
 
 
 class Network(object):
-
     def __init__(self, module_frame):
         
         self.module_frame = module_frame
@@ -596,10 +663,11 @@ class Network(object):
         cr.fill()
 
     def activate_succeed(self, widget, connection_path):
-        print connection_path
+        print "active_succeed with", connection_path
+        #print connection_path
 
     def activate_failed(self, widget, connection_path):
-        pass
+        print "active failed"
 
     def init_sections(self, module_frame):
         #slider._set_to_page("main")
