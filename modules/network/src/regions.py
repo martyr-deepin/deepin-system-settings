@@ -51,7 +51,7 @@ class Region(gtk.Alignment):
         self.country_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
                                      #enable_hover=False,
-                                     mask_bound_height=0)
+                                     )
 
         self.country_tree.set_size_request(370, 345)
         self.country_tree.draw_mask = self.draw_mask
@@ -72,7 +72,7 @@ class Region(gtk.Alignment):
         self.provider_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
                                      #enable_hover=False,
-                                     mask_bound_height=0)
+                                      )
         self.provider_tree.set_size_request(370, 345)
         self.provider_tree.draw_mask = self.draw_mask
         self.provider_tree.connect("button-press-item", self.provider_selected)

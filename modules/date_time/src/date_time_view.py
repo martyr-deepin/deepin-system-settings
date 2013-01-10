@@ -142,7 +142,6 @@ class DatetimeView(gtk.HBox):
         '''
         self.datetime_widget_align = self.__setup_align()
         self.datetime_widget = DateTimeHTCStyle()
-        self.datetime_widget.set_size_request(-1, 120)
         self.datetime_widget_align.add(self.datetime_widget)
         self.set_time_align = self.__setup_align()
         is_24hour = self.datetime_settings.get_boolean("is-24hour")

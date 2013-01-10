@@ -21,10 +21,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-import pango
 from dtk.ui.new_treeview import TreeItem
 from dtk.ui.threads import post_gui
-from dtk.ui.utils import is_in_rect, format_file_size, get_content_size
+from dtk.ui.utils import get_content_size
+
 from dtk.ui.draw import draw_text, draw_pixbuf, draw_shadow
 from dtk.ui.button import CheckButtonBuffer
 from dtk.ui.progressbar import ProgressBuffer
@@ -85,7 +85,7 @@ class TaskItem(TreeItem):
         self.stop_pixbuf = app_theme.get_pixbuf("individuation/stop.png").get_pixbuf()
         self.stop_pixbuf_padding_x = 5
         self.block_width = 50
-        self.download_task = TaskObject(image_object.big_url, image_object.get_save_path())
+        self.download_task = TaskObject(image_object.big_url, image_object.get_save_path(), output_temp=True)
         
         self.download_task.signal.add_callback("update", self.download_update)
         self.download_task.signal.add_callback("finish", self.download_finish)

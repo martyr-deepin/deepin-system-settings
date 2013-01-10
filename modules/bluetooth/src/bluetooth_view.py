@@ -28,10 +28,11 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
+from dtk.ui.line import HSeparator
 from dtk.ui.entry import InputEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import ALIGN_START
+from dtk.ui.constant import ALIGN_START, ALIGN_END
 import gobject
 import gtk
 import pango
@@ -273,76 +274,113 @@ class BlueToothView(gtk.VBox):
         '''
         enable open
         '''
-        self.enable_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
+        self.title_align = self.__setup_title_align(
+            app_theme.get_pixbuf("bluetooth/enable_open.png"), _("Bluetooth"))
+        self.enable_align = self.__setup_align()
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.enable_open_image = ImageBox(app_theme.get_pixbuf("bluetooth/enable_open.png"))
         self.enable_open_label = self.__setup_label(_("Bluetooth Get Powered"))
+        self.enable_open_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.enable_open_toggle = self.__setup_toggle()
         if self.adapter:
             self.enable_open_toggle.set_active(self.adapter.get_powered())
             if self.adapter.get_powered():
                 DiscoveryDeviceThread(self).start()
         self.enable_open_toggle.connect("toggled", self.__toggled, "enable_open")
+        self.enable_open_toggle_align.add(self.enable_open_toggle)
         self.__widget_pack_start(self.enable_box, 
-                                 [self.enable_open_image, self.enable_open_label, self.enable_open_toggle])
+                                 [self.enable_open_label, 
+                                  self.enable_open_toggle_align])
         self.enable_align.add(self.enable_box)
         '''
         display
         '''
         self.display_align = self.__setup_align()
         self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.display_device_image = ImageBox(app_theme.get_pixbuf("bluetooth/display_device.png"))
         self.display_device_label = self.__setup_label(_("Device Shown Name"))
         self.display_device_entry = InputEntry()
         if self.adapter:
             self.display_device_entry.set_text(self.adapter.get_name())
-        self.display_device_entry.set_size(150, 24)
+        self.display_device_entry.set_size(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
         self.__widget_pack_start(self.display_box, 
-                                 [self.display_device_image, self.display_device_label, self.display_device_entry])
+                                 [self.display_device_label, self.display_device_entry])
         self.display_align.add(self.display_box)
         '''
         enable searchable
         '''
         self.search_align = self.__setup_align()
         self.search_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.search_image = ImageBox(app_theme.get_pixbuf("bluetooth/search.png"))
         self.search_label = self.__setup_label(_("Be Searchedable"))
+        self.search_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.search_toggle = self.__setup_toggle()
         if self.adapter:
             self.search_toggle.set_active(self.adapter.get_discoverable())
         self.search_toggle.connect("toggled", self.__toggled, "search")
+        self.search_toggle_align.add(self.search_toggle)
         self.__widget_pack_start(self.search_box, 
-                                 [self.search_image, self.search_label, self.search_toggle])
+                                 [self.search_label, self.search_toggle_align])
         self.search_align.add(self.search_box)
         '''
         device timeout
         '''
         self.timeout_align = self.__setup_align()
         self.timeout_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.timeout_image = ImageBox(app_theme.get_pixbuf("bluetooth/timeout.png"))
         self.timeout_label = self.__setup_label(_("Searching Device Timeout"))
-        self.timeout_combo = ComboBox(self.timeout_items, max_width = 150)
+        self.timeout_combo = self.__setup_combo(self.timeout_items)
         self.__widget_pack_start(self.timeout_box, 
-                                 [self.timeout_image, self.timeout_label, self.timeout_combo])
+                                 [self.timeout_label, self.timeout_combo])
         self.timeout_align.add(self.timeout_box)
         '''
         device iconview
         '''
-        self.device_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
+        self.device_align = self.__setup_align()
         self.device_iconview = DeviceIconView()
-        self.device_iconview.set_size_request(690, 220)
+        self.device_iconview.set_size_request(690, 196)
         self.device_align.add(self.device_iconview)
         '''
         this->gtk.VBox pack_start
         '''
         self.__widget_pack_start(self, 
-                                 [self.enable_align, 
+                                 [self.title_align, 
+                                  self.enable_align, 
                                   self.display_align, 
                                   self.search_align, 
                                   self.timeout_align, 
                                   self.device_align])
 
         self.connect("expose-event", self.__expose)
+
+    def __setup_separator(self):                                                
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(500, 10)                                    
+        return hseparator                                                       
+                                                                                
+    def __setup_title_label(self,                                               
+                            text="",                                            
+                            text_color=app_theme.get_color("globalTitleForeground"),
+                            text_size=TITLE_FONT_SIZE,                          
+                            text_x_align=ALIGN_START,                           
+                            label_width=180):                                   
+        return Label(text = text,                                               
+                     text_color = text_color,                                   
+                     text_size = text_size,                                     
+                     text_x_align = text_x_align,                               
+                     label_width = label_width)     
+
+    def __setup_title_align(self,                                               
+                            pixbuf,                                             
+                            text,                                               
+                            padding_top=TEXT_WINDOW_TOP_PADDING,                      
+                            padding_left=TEXT_WINDOW_LEFT_PADDING):             
+        align = self.__setup_align(padding_top = padding_top, padding_left = padding_left)    
+        align_box = gtk.VBox(spacing = WIDGET_SPACING)                          
+        title_box = gtk.HBox(spacing = WIDGET_SPACING)                          
+        image = ImageBox(pixbuf)                                                
+        label = self.__setup_title_label(text)                                  
+        separator = self.__setup_separator()                                    
+        self.__widget_pack_start(title_box, [image, label])                     
+        self.__widget_pack_start(align_box, [title_box, separator])             
+        align.add(align_box)                                                    
+        return align      
 
     def __device_found(self, adapter, address, values):
         if address not in adapter.get_address_records():
@@ -386,12 +424,12 @@ class BlueToothView(gtk.VBox):
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         pass
 
-    def __setup_label(self, text="", width=180, align=ALIGN_START):
+    def __setup_label(self, text="", width=180, align=ALIGN_END):
         label = Label(text, None, TITLE_FONT_SIZE, align, width)
         return label
 
-    def __setup_combo(self, items=[], width=120):
-        combo = ComboBox(items, None, 0, width)
+    def __setup_combo(self, items=[], width=HSCALEBAR_WIDTH):
+        combo = ComboBox(items, None, 0, width, width)
         combo.set_size_request(width, WIDGET_HEIGHT)
         return combo
 

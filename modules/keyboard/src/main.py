@@ -105,6 +105,7 @@ class KeySetting(object):
         self.image_widgets["repeat"] = ImageBox(app_theme.get_pixbuf("%s/repeat.png" % MODULE_NAME))
         self.image_widgets["blink"] = ImageBox(app_theme.get_pixbuf("%s/blink.png" % MODULE_NAME))
         self.image_widgets["touchpad"] = ImageBox(app_theme.get_pixbuf("%s/typing.png" % MODULE_NAME))
+        self.image_widgets["layout"] = ImageBox(app_theme.get_pixbuf("%s/layout.png" % MODULE_NAME))
         # label init
         self.label_widgets["repeat"] = Label(_("Repeat"),
             app_theme.get_color("globalTitleForeground"),
@@ -123,6 +124,9 @@ class KeySetting(object):
         self.label_widgets["touchpad"] = Label(_("Disable touchpad while typing"),
             app_theme.get_color("globalTitleForeground"),
             text_size=title_item_font_size)
+        self.label_widgets["layout"] = Label(_("Keyboard Layout"),
+            app_theme.get_color("globalTitleForeground"),
+            text_size=title_item_font_size)
 
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_szie)
         # button init
@@ -137,6 +141,7 @@ class KeySetting(object):
         # container init
         self.container_widgets["tab_box"] = TabBox()
         self.container_widgets["tab_box"].draw_title_background = self.draw_tab_title_background
+        self.container_widgets["type_swindow"] = ScrolledWindow()
         self.container_widgets["type_main_hbox"] = gtk.HBox(False)
         self.container_widgets["layout_main_hbox"] = gtk.HBox(False)
         self.container_widgets["shortcuts_main_hbox"] = gtk.HBox(False)
@@ -182,12 +187,15 @@ class KeySetting(object):
         # view init
         self.view_widgets["layout_selected"] = TreeView(enable_hover=False)
         # container init
-        self.container_widgets["layout_swindow"] = ScrolledWindow()
         self.container_widgets["layout_vbox"] = gtk.VBox(False)
         self.container_widgets["layout_button_hbox"] = gtk.HBox(False)
+        self.container_widgets["layout_label_hbox"] = gtk.HBox(False)
+        self.container_widgets["layout_table"] = gtk.Table(1, 2)
         # alignment init
         self.alignment_widgets["layout_vbox"] = gtk.Alignment()
         self.alignment_widgets["layout_button_hbox"] = gtk.Alignment()
+        self.alignment_widgets["layout_label"] = gtk.Alignment()
+        self.alignment_widgets["layout_table"] = gtk.Alignment()
         #####################################
         # Shortcuts widgets create
         # label init
@@ -225,12 +233,13 @@ class KeySetting(object):
         self.alignment_widgets["notebook"].set_padding(FRAME_TOP_PADDING, 0, 0, 0)
         self.alignment_widgets["notebook"].add(self.container_widgets["tab_box"])
         tab_box_item = [
-            (_("Typing"), self.container_widgets["type_main_hbox"]),
-            (_("Shortcuts"), self.container_widgets["shortcuts_main_hbox"]),
-            (_("Layout"), self.container_widgets["layout_main_hbox"])]
+            (_("Typing"), self.container_widgets["type_swindow"]),
+            (_("Shortcuts"), self.container_widgets["shortcuts_main_hbox"])]
+            #(_("Layout"), self.container_widgets["layout_main_hbox"])]
         self.container_widgets["tab_box"].add_items(tab_box_item)
         ###########################
         # typing set
+        self.container_widgets["type_swindow"].add_child(self.container_widgets["type_main_hbox"])
         self.container_widgets["type_main_hbox"].set_spacing(MID_SPACING)
         self.container_widgets["type_main_hbox"].pack_start(self.alignment_widgets["left"])
         self.container_widgets["type_main_hbox"].pack_start(self.alignment_widgets["right"], False, False)
@@ -239,10 +248,10 @@ class KeySetting(object):
         self.container_widgets["right_vbox"].set_size_request(RIGHT_BOX_WIDTH, -1)
         # set left padding
         self.alignment_widgets["left"].set(0.0, 0.0, 1.0, 1.0)
-        self.alignment_widgets["left"].set_padding(35, 0, 50, 0)
+        self.alignment_widgets["left"].set_padding(TEXT_WINDOW_TOP_PADDING, 20, 0, 0)
         # set right padding
         self.alignment_widgets["right"].set(0.0, 0.0, 0.0, 0.0)
-        self.alignment_widgets["right"].set_padding(35, 0, 0, 60)
+        self.alignment_widgets["right"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, 0, 60)
         
         self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["left_vbox"].pack_start(
@@ -251,6 +260,8 @@ class KeySetting(object):
             self.container_widgets["blink_main_vbox"], False, False)
         self.container_widgets["left_vbox"].pack_start(
             self.container_widgets["touchpad_main_vbox"], False, False)
+        self.container_widgets["left_vbox"].pack_start(
+            self.container_widgets["layout_vbox"], False, False)
         # set option label width
         label_widgets = self.label_widgets
         label_width = max(
@@ -262,10 +273,11 @@ class KeySetting(object):
         self.alignment_widgets["type_label"].add(self.container_widgets["repeat_label_hbox"])
         self.alignment_widgets["type_table"].add(self.container_widgets["repeat_table"])
         # alignment set
-        self.alignment_widgets["type_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["type_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["type_label"].set(0.0, 0.0, 1.0, 1.0)
+        self.alignment_widgets["type_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["type_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["type_table"].set(0.0, 0.5, 0.0, 1.0)
-        self.alignment_widgets["type_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
+        #self.alignment_widgets["type_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["repeat_main_vbox"].pack_start(
             self.alignment_widgets["type_label"])
         self.container_widgets["repeat_main_vbox"].pack_start(
@@ -275,11 +287,11 @@ class KeySetting(object):
         # tips lable
         self.container_widgets["repeat_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["repeat_label_hbox"].pack_start(
-            self.__make_align(self.image_widgets["repeat"]), False, False)
+            self.__make_align(self.image_widgets["repeat"], xalign=0.0, height=-1), False, False)
         self.container_widgets["repeat_label_hbox"].pack_start(
             self.label_widgets["repeat"], False, False)
         # repeat delay
-        value = self.adjust_widgets["repeat_delay"].get_upper() + self.adjust_widgets["repeat_delay"].get_lower() - settings.keyboard_get_repeat_delay() - self.scale_widgets["repeat_delay"].value_min
+        value = self.adjust_widgets["repeat_delay"].get_upper() + self.adjust_widgets["repeat_delay"].get_lower() - settings.keyboard_get_repeat_delay()
         self.scale_widgets["repeat_delay"].set_value(value)
         self.scale_widgets["repeat_delay"].add_mark(
             self.adjust_widgets["repeat_delay"].get_lower(), gtk.POS_BOTTOM, _("Long"))
@@ -290,11 +302,11 @@ class KeySetting(object):
         self.container_widgets["repeat_table"].set_col_spacings(WIDGET_SPACING)
         #self.container_widgets["repeat_table"].set_row_spacing(0, TABLE_ROW_SPACING)
         self.container_widgets["repeat_table"].attach(
-            self.__make_align(self.label_widgets["repeat_delay"], yalign=0.5, yscale=0.0), 0, 1, 0, 1, 4)
+            self.__make_align(self.label_widgets["repeat_delay"], yalign=0.5, yscale=0.0, width=STANDARD_LINE), 0, 1, 0, 1, 4)
         self.container_widgets["repeat_table"].attach(
             self.__make_align(self.scale_widgets["repeat_delay"], yalign=0.0, yscale=1.0, height=43), 1, 2, 0, 1, 4)
         # repeat interval
-        value = self.adjust_widgets["repeat_interval"].get_upper() + self.adjust_widgets["repeat_interval"].get_lower() - settings.keyboard_get_repeat_interval() - self.scale_widgets["repeat_interval"].value_min
+        value = self.adjust_widgets["repeat_interval"].get_upper() + self.adjust_widgets["repeat_interval"].get_lower() - settings.keyboard_get_repeat_interval()
         self.scale_widgets["repeat_interval"].set_value(value)
         self.scale_widgets["repeat_interval"].add_mark(
             self.adjust_widgets["repeat_interval"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
@@ -303,7 +315,7 @@ class KeySetting(object):
         self.scale_widgets["repeat_interval"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         self.container_widgets["repeat_table"].attach(
-            self.__make_align(self.label_widgets["repeat_interval"], yalign=0.5, yscale=0.0), 0, 1, 1, 2, 4)
+            self.__make_align(self.label_widgets["repeat_interval"], yalign=0.5, yscale=0.0, width=STANDARD_LINE), 0, 1, 1, 2, 4)
         self.container_widgets["repeat_table"].attach(
             self.__make_align(self.scale_widgets["repeat_interval"], yalign=0.0, yscale=1.0, height=43), 1, 2, 1, 2, 4)
         self.container_widgets["repeat_table"].attach(
@@ -315,9 +327,10 @@ class KeySetting(object):
         self.alignment_widgets["blink_label"].add(self.container_widgets["blink_label_hbox"])
         self.alignment_widgets["blink_table"].add(self.container_widgets["blink_table"])
         self.alignment_widgets["blink_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["blink_label"].set_size_request(-1, CONTAINNER_HEIGHT)
-        self.alignment_widgets["blink_table"].set(0.0, 0.5, 1.0, 1.0)
-        self.alignment_widgets["blink_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
+        self.alignment_widgets["blink_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["blink_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["blink_table"].set(0.0, 0.5, 0.0, 1.0)
+        #self.alignment_widgets["blink_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["blink_main_vbox"].pack_start(
             self.alignment_widgets["blink_label"])
         self.container_widgets["blink_main_vbox"].pack_start(
@@ -332,7 +345,7 @@ class KeySetting(object):
             self.label_widgets["blink"], False, False)
         # blink time
 
-        value = self.adjust_widgets["blink_cursor"].get_upper() + self.adjust_widgets["blink_cursor"].get_lower() - settings.keyboard_get_cursor_blink_time() - self.scale_widgets["blink_cursor"].value_min
+        value = self.adjust_widgets["blink_cursor"].get_upper() + self.adjust_widgets["blink_cursor"].get_lower() - settings.keyboard_get_cursor_blink_time()
         self.scale_widgets["blink_cursor"].set_value(value)
         self.scale_widgets["blink_cursor"].add_mark(
             self.adjust_widgets["blink_cursor"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
@@ -342,7 +355,7 @@ class KeySetting(object):
         # table attach
         self.container_widgets["blink_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["blink_table"].attach(
-            self.__make_align(self.button_widgets["blink_test_entry"], yalign=0.5, yscale=0.0), 0, 1, 0, 1, 4)
+            self.__make_align(self.button_widgets["blink_test_entry"], yalign=0.5, yscale=0.0, width=STANDARD_LINE), 0, 1, 0, 1, 4)
         self.container_widgets["blink_table"].attach(
             self.__make_align(self.scale_widgets["blink_cursor"], yalign=0.0, yscale=1.0, height=43), 1, 2, 0, 1, 4)
         self.container_widgets["blink_table"].set_size_request(MAIN_AREA_WIDTH, -1)
@@ -350,16 +363,20 @@ class KeySetting(object):
         # touchpad
         self.container_widgets["touchpad_label_hbox0"] = gtk.HBox(False)
         self.alignment_widgets["touchpad_label"].add(self.container_widgets["touchpad_label_hbox0"])
-        self.alignment_widgets["touchpad_label"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["touchpad_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["touchpad_label"].set(0.0, 0.5, 0.0, 0.0)
+        self.alignment_widgets["touchpad_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["touchpad_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["touchpad_label"].set_size_request(
+            STANDARD_LINE+WIDGET_SPACING+HSCALEBAR_WIDTH-TEXT_WINDOW_LEFT_PADDING, -1)
         self.container_widgets["touchpad_main_vbox"].pack_start(
             self.alignment_widgets["touchpad_label"])
         # tips lable
         tmp_align = self.__make_align()
+        tmp_align.set(0.0, 0.0, 1.0, 0.0)
         self.container_widgets["touchpad_label_hbox0"].pack_start(self.container_widgets["touchpad_label_hbox"], False, False)
         self.container_widgets["touchpad_label_hbox0"].pack_start(tmp_align)
         self.container_widgets["touchpad_label_hbox"].set_size_request(
-            HSCALEBAR_WIDTH+WIDGET_SPACING+OPTION_LEFT_PADDING+label_width, -1)
+            STANDARD_LINE+WIDGET_SPACING+HSCALEBAR_WIDTH-TEXT_WINDOW_LEFT_PADDING, -1)
         self.container_widgets["touchpad_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["touchpad_label_hbox"].pack_start(
             self.__make_align(self.image_widgets["touchpad"]), False, False)
@@ -372,7 +389,7 @@ class KeySetting(object):
         
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], xalign=0.0))
+            self.__make_align(self.label_widgets["relevant"], xalign=0.0, height=-1))
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["mouse_setting"])
         # TODO 判断是否有触摸板
@@ -389,25 +406,34 @@ class KeySetting(object):
 
         ###################################
         # layout set
-        self.container_widgets["layout_main_hbox"].pack_start(
-            self.alignment_widgets["layout_vbox"])
-        self.alignment_widgets["layout_vbox"].add(
-            self.container_widgets["layout_vbox"])
         self.container_widgets["layout_vbox"].pack_start(
-            self.label_widgets["layout_current_layout"], False, False)
+            self.alignment_widgets["layout_label"])
         self.container_widgets["layout_vbox"].pack_start(
-            self.alignment_widgets["layout_button_hbox"])
-        self.alignment_widgets["layout_vbox"].set(0.0, 0.0, 1, 1)
-        self.alignment_widgets["layout_vbox"].set_padding(10, 10, 10, 10)
+            self.__setup_separator())
+        self.container_widgets["layout_vbox"].pack_start(
+            self.alignment_widgets["layout_table"])
+
+        self.alignment_widgets["layout_label"].add(self.container_widgets["layout_label_hbox"])
+        self.alignment_widgets["layout_table"].add(self.container_widgets["layout_table"])
+        self.alignment_widgets["layout_label"].set(0.0, 0.5, 1.0, 0.0)
+        self.alignment_widgets["layout_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["layout_table"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING+OPTION_LEFT_PADDING, 0)
+
+        self.container_widgets["layout_label_hbox"].set_spacing(WIDGET_SPACING)
+        self.container_widgets["layout_label_hbox"].pack_start(
+            self.image_widgets["layout"], False, False)
+        self.container_widgets["layout_label_hbox"].pack_start(
+            self.label_widgets["layout"], False, False)
+        # table attach
+        #self.container_widgets["layout_table"].set_size_request(STANDARD_LINE+HSCALEBAR_WIDTH-TEXT_WINDOW_LEFT_PADDING-OPTION_LEFT_PADDING, -1)
+        self.container_widgets["layout_table"].set_col_spacings(WIDGET_SPACING)
+        layout_align = self.__make_align(self.label_widgets["layout_current_layout"],
+            width=STANDARD_LINE+HSCALEBAR_WIDTH-self.button_widgets["layout_add"].get_size_request()[0])
+        self.container_widgets["layout_table"].attach(
+            layout_align, 0, 1, 0, 1, 4)
+        self.container_widgets["layout_table"].attach(
+            self.__make_align(self.button_widgets["layout_add"]), 1, 2, 0, 1, 4)
         # layout toolbar
-        self.alignment_widgets["layout_button_hbox"].set(1.0, 1.0, 0, 0)
-        self.alignment_widgets["layout_button_hbox"].set_padding(5, 5, 0, 10)
-        self.alignment_widgets["layout_button_hbox"].add(self.container_widgets["layout_button_hbox"])
-        self.container_widgets["layout_button_hbox"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_add"])
-        #accel_entry = AccelEntry("<Ctrl>a")
-        #self.container_widgets["layout_button_hbox"].pack_start(accel_entry)
-        #self.container_widgets["layout_button_hbox"].pack_start(self.button_widgets["layout_remove"])
         # init layout selected treeview
         current_variants = self.xkb.get_current_variants_description()
         for name in current_variants:
@@ -416,7 +442,7 @@ class KeySetting(object):
                     layout_name = markup_escape_text(name[0])
                 except:
                     layout_name = " "
-                self.label_widgets['layout_current_layout'].set_text(_("Current Keyborad Layout is %s") % layout_name)
+                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % layout_name)
                 break
 
         #############################
@@ -473,6 +499,7 @@ class KeySetting(object):
         # repeat interval
         self.scale_widgets["repeat_interval"].connect(
             "button-release-event", self.scalebar_value_changed, "repeat-interval")
+        #self.button_widgets["repeat_test_entry"].get_parent().connect("expose-event", self.repeat_entry_expose)
         self.button_widgets["repeat_test_entry"].connect("expose-event", self.repeat_entry_expose)
         # blink
         self.scale_widgets["blink_cursor"].connect(
@@ -482,13 +509,13 @@ class KeySetting(object):
         # adjustment widget
         self.adjust_widgets["repeat_delay"].connect("value-changed",
             lambda w: self.scale_widgets["repeat_delay"].set_value(
-                self.adjust_widgets["repeat_delay"].get_value()-self.scale_widgets["repeat_delay"].value_min))
+                self.adjust_widgets["repeat_delay"].get_value()))
         self.adjust_widgets["repeat_interval"].connect("value-changed",
             lambda w: self.scale_widgets["repeat_interval"].set_value(
-                self.adjust_widgets["repeat_interval"].get_value()-self.scale_widgets["repeat_interval"].value_min))
+                self.adjust_widgets["repeat_interval"].get_value()))
         self.adjust_widgets["blink_cursor"].connect("value-changed",
             lambda w: self.scale_widgets["blink_cursor"].set_value(
-                self.adjust_widgets["blink_cursor"].get_value()-self.scale_widgets["blink_cursor"].value_min))
+                self.adjust_widgets["blink_cursor"].get_value()))
         
         # relevant setting
         self.button_widgets["mouse_setting"].connect("button-press-event", self.relevant_press, "mouse")
@@ -500,6 +527,7 @@ class KeySetting(object):
         # toolbutton
         self.button_widgets["layout_add"].connect("clicked",
             lambda b: self.__create_add_layout_dialog())
+        settings.XKB_KEYBOARS_SETTINGS.connect("changed", self.xkb_keyboard_setting_changed_cd)
         ########################
         # shortcuts widget signal
         self.container_widgets["shortcuts_table"].connect("expose-event", self.shortcuts_table_expose)
@@ -583,26 +611,11 @@ class KeySetting(object):
 
     def repeat_entry_expose(self, widget, event):
         text = widget.get_text()
+        layout = widget.get_layout()
         if text == "" and not widget.is_focus():
-            x, y, w, h = widget.allocation
-            win = widget.get_text_window()
-            cr = win.cairo_create()
-            cr.move_to(2, 2)
-            context = pangocairo.CairoContext(cr)
-            layout = context.create_layout()
-            layout.set_font_description(pango.FontDescription("Snas 9"))
-            layout.set_alignment(pango.ALIGN_LEFT)
-            #layout.set_text(_("Click here and hold a key to test repeat rate"))
             layout.set_text(_("test repeat rate"))
-            cr.set_source_rgb(0.66, 0.66, 0.66)
-            context.update_layout(layout)
-            context.show_layout(layout)
-            with cairo_disable_antialias(cr):
-                cr.set_line_width(1)
-                cr.set_source_rgb(0.66, 0.66, 0.66)
-                cr.rectangle(1, 1, w-9, h-9)
-                cr.stroke()
-            return True
+        elif layout.get_text() != text:
+            layout.set_text("")
     
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
@@ -658,8 +671,6 @@ class KeySetting(object):
             layout_list = []
             layout_list.append(l_str)
             settings.xkb_set_layouts(layout_list)
-            self.xkb.update_current_config()
-            self.label_widgets['layout_current_layout'].set_text(_("Current Keyborad Layout is %s") % item.name)
             dialog.destroy()
         self.container_widgets["layout_button_hbox"].set_sensitive(False)
         dialog_width = 400
@@ -690,6 +701,22 @@ class KeySetting(object):
         add_button.connect("clicked", lambda w: add_layout(layout_add_treeview, dialog))
         #layout_add_treeview.connect("select", treeview_select, add_button)
         dialog.show_all()
+    
+    def xkb_keyboard_setting_changed_cd(self, key):
+        if key == 'layouts':
+            print "layouts changed---------------"
+            self.xkb.update_current_config()
+            current_variants = self.xkb.get_current_variants_description()
+            print current_variants
+            for name in current_variants:
+                if name and name[0]:
+                    try:
+                        layout_name = markup_escape_text(name[0])
+                    except:
+                        layout_name = " "
+                    print layout_name
+                    self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % layout_name)
+                    break
     
     ######################################
     # shortcuts widget callback
@@ -817,9 +844,9 @@ class KeySetting(object):
     
     def __make_align(self, widget=None, xalign=1.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
-                     padding_right=0, height=CONTAINNER_HEIGHT):
+                     padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
         align = gtk.Alignment()
-        align.set_size_request(-1, height)
+        align.set_size_request(width, height)
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
         if widget:
@@ -828,11 +855,11 @@ class KeySetting(object):
     
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(350, 10)
+        hseparator.set_size_request(450, 10)
         return hseparator
     
     def __setup_separator(self):
-        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, height=10)
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=10)
     
     def __make_accel_page(self):
         for category in self.__shortcuts_entries:
@@ -859,20 +886,9 @@ class KeySetting(object):
         '''set to the default'''
         if self.container_widgets["tab_box"].tab_index == 0:
             settings.keyboard_set_to_default()
+            settings.xkb_set_to_default()
         elif self.container_widgets["tab_box"].tab_index == 1:
             pass
-        elif self.container_widgets["tab_box"].tab_index == 2:
-            settings.xkb_set_to_default()
-            self.xkb.update_current_config()
-            current_variants = self.xkb.get_current_variants_description()
-            for name in current_variants:
-                if name and name[0]:
-                    try:
-                        layout_name = markup_escape_text(name[0])
-                    except:
-                        layout_name = " "
-                    self.label_widgets['layout_current_layout'].set_text(_("Current Keyborad Layout is %s") % layout_name)
-                    break
     
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))

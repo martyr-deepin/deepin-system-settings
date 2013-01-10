@@ -98,8 +98,8 @@ class MouseSetting(object):
             label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False)
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
         # button init
-        self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=0)
-        self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=0)
+        self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=10)
+        self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=10)
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
         self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
@@ -166,7 +166,7 @@ class MouseSetting(object):
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["main_hbox"].set_padding(
-            TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+            TEXT_WINDOW_TOP_PADDING, 0, 0, 0)
         
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
@@ -201,8 +201,9 @@ class MouseSetting(object):
         # alignment set
         self.alignment_widgets["custom_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["custom_button"].set(0.0, 0.5, 0.0, 0.0)
-        self.alignment_widgets["custom_button"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
-        self.alignment_widgets["custom_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["custom_button"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING+OPTION_LEFT_PADDING-10, 0)
+        self.alignment_widgets["custom_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["custom_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["custom_button"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.container_widgets["custom_main_vbox"].pack_start(
             self.alignment_widgets["custom_label"])
@@ -230,7 +231,7 @@ class MouseSetting(object):
             self.button_widgets["right_hand_radio"], False, False)
         self.container_widgets["custom_button_hbox0"].pack_start(
             self.button_widgets["left_hand_radio"], False, False)
-        button_align = self.__make_align(self.container_widgets["custom_button_hbox0"], xalign=1.0)
+        button_align = self.__make_align(self.container_widgets["custom_button_hbox0"], xalign=0.0)
         button_align.set_size_request(HSCALEBAR_WIDTH+WIDGET_SPACING+label_width, CONTAINNER_HEIGHT)
         self.container_widgets["custom_button_hbox"].pack_start(button_align, False, False)
         self.container_widgets["custom_button_hbox"].pack_start(self.__make_align())
@@ -241,8 +242,9 @@ class MouseSetting(object):
         # alignment set
         self.alignment_widgets["pointer_speed_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["pointer_speed_table"].set(0.0, 0.5, 1.0, 1.0)
-        self.alignment_widgets["pointer_speed_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
-        self.alignment_widgets["pointer_speed_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        #self.alignment_widgets["pointer_speed_table"].set_padding(0, 0, OPTION_LEFT_PADDING+TEXT_WINDOW_LEFT_PADDING, 0)
+        #self.alignment_widgets["pointer_speed_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["pointer_speed_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
             self.alignment_widgets["pointer_speed_label"])
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
@@ -256,8 +258,7 @@ class MouseSetting(object):
         self.container_widgets["pointer_speed_label_hbox"].pack_start(
             self.label_widgets["pointer_speed"], False, False)
         # motion acceleration
-        self.scale_widgets["pointer_speed_accel"].set_value(
-            settings.mouse_get_motion_acceleration()-self.scale_widgets["pointer_speed_accel"].value_min)
+        self.scale_widgets["pointer_speed_accel"].set_value(settings.mouse_get_motion_acceleration())
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["pointer_speed_accel"].add_mark(self.adjust_widgets["pointer_speed_accel"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["pointer_speed_accel"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -266,20 +267,19 @@ class MouseSetting(object):
         self.container_widgets["pointer_speed_table"].set_col_spacings(WIDGET_SPACING)
         #self.container_widgets["pointer_speed_table"].set_row_spacing(0, TABLE_ROW_SPACING)
         acceleration_align = self.__make_align(self.label_widgets["acceleration"], xalign=1.0)
-        acceleration_align.set_size_request(label_width, CONTAINNER_HEIGHT)
+        acceleration_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["pointer_speed_table"].attach(
             acceleration_align, 0, 1, 0, 1, 4)
         self.container_widgets["pointer_speed_table"].attach(
             self.__make_align(self.scale_widgets["pointer_speed_accel"], yalign=0.0, yscale=1.0, height=43), 1, 3, 0, 1, 4)
         # motion threshold
-        self.scale_widgets["pointer_speed_sensitiv"].set_value(
-            settings.mouse_get_motion_threshold()-self.scale_widgets["pointer_speed_sensitiv"].value_min)
+        self.scale_widgets["pointer_speed_sensitiv"].set_value(settings.mouse_get_motion_threshold())
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_lower(), gtk.POS_BOTTOM, _("Low"))
         self.scale_widgets["pointer_speed_sensitiv"].add_mark(self.adjust_widgets["pointer_speed_sensitiv"].get_upper(), gtk.POS_BOTTOM, _("High"))
         self.scale_widgets["pointer_speed_sensitiv"].set_size_request(HSCALEBAR_WIDTH, -1)
         # table attach
         sensitivity_align = self.__make_align(self.label_widgets["sensitivity"], xalign=1.0)
-        sensitivity_align.set_size_request(label_width, CONTAINNER_HEIGHT)
+        sensitivity_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["pointer_speed_table"].attach(
             sensitivity_align, 0, 1, 1, 2, 4)
         self.container_widgets["pointer_speed_table"].attach(
@@ -290,8 +290,8 @@ class MouseSetting(object):
         self.alignment_widgets["double_click_table"].add(self.container_widgets["double_click_table"])
         self.alignment_widgets["double_click_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["double_click_table"].set(0.0, 0.5, 1.0, 1.0)
-        self.alignment_widgets["double_click_label"].set_size_request(-1, CONTAINNER_HEIGHT)
-        self.alignment_widgets["double_click_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
+        #self.alignment_widgets["double_click_label"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["double_click_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["double_click_main_vbox"].pack_start(
             self.alignment_widgets["double_click_label"])
         self.container_widgets["double_click_main_vbox"].pack_start(
@@ -305,8 +305,7 @@ class MouseSetting(object):
         self.container_widgets["double_click_label_hbox"].pack_start(
             self.label_widgets["double_click"], False, False)
         # double click rate
-        self.scale_widgets["double_click_rate"].set_value(
-            settings.mouse_get_double_click()-self.scale_widgets["double_click_rate"].value_min)
+        self.scale_widgets["double_click_rate"].set_value(settings.mouse_get_double_click())
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_lower(), gtk.POS_BOTTOM, _("Slow"))
         self.scale_widgets["double_click_rate"].add_mark(self.adjust_widgets["double_click_rate"].get_upper(), gtk.POS_BOTTOM, _("Fast"))
         self.scale_widgets["double_click_rate"].set_size_request(HSCALEBAR_WIDTH, -1)
@@ -314,7 +313,7 @@ class MouseSetting(object):
         self.container_widgets["double_click_table"].set_size_request(MAIN_AREA_WIDTH, -1)
         self.container_widgets["double_click_table"].set_col_spacings(WIDGET_SPACING)
         click_rate_align = self.__make_align(self.label_widgets["click_rate"], xalign=1.0)
-        click_rate_align.set_size_request(label_width, CONTAINNER_HEIGHT)
+        click_rate_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["double_click_table"].attach(
             click_rate_align, 0, 1, 0, 1, 4)
         self.container_widgets["double_click_table"].attach(
@@ -329,7 +328,7 @@ class MouseSetting(object):
 
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"]), False, False)
+            self.__make_align(self.label_widgets["relevant"], height=-1), False, False)
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["keyboard_setting"], False, False)
         self.container_widgets["right_vbox"].pack_start(
@@ -362,13 +361,13 @@ class MouseSetting(object):
         # adjustment widget
         self.adjust_widgets["pointer_speed_accel"].connect("value-changed",
             lambda w: self.scale_widgets["pointer_speed_accel"].set_value(
-                self.adjust_widgets["pointer_speed_accel"].get_value() - self.scale_widgets["pointer_speed_accel"].value_min))
+                self.adjust_widgets["pointer_speed_accel"].get_value()))
         self.adjust_widgets["pointer_speed_sensitiv"].connect("value-changed",
             lambda w: self.scale_widgets["pointer_speed_sensitiv"].set_value(
-                self.adjust_widgets["pointer_speed_sensitiv"].get_value() - self.scale_widgets["pointer_speed_sensitiv"].value_min))
+                self.adjust_widgets["pointer_speed_sensitiv"].get_value()))
         self.adjust_widgets["double_click_rate"].connect("value-changed",
             lambda w: self.scale_widgets["double_click_rate"].set_value(
-                self.adjust_widgets["double_click_rate"].get_value() - self.scale_widgets["double_click_rate"].value_min))
+                self.adjust_widgets["double_click_rate"].get_value()))
         self.button_widgets["double_test"].set_data("has_double_clicked", False)
         self.button_widgets["double_test"].connect("button-press-event", self.double_click_test)
         self.button_widgets["double_test"].connect("expose-event", self.double_click_test_expose)
@@ -442,12 +441,12 @@ class MouseSetting(object):
     
     def settings_value_changed(self, settings, key, adjustment):
         '''settings value changed, and adjustment set the value'''
-        adjustment.set_value(self.scale_get[key]()-adjustment.value_min)
+        adjustment.set_value(self.scale_get[key]())
         adjustment.set_data("changed-by-other-app", True)
 
     def double_click_test(self, widget, event):
         '''double clicked callback, to test the double-click time'''
-        if event.type == gtk.gdk._2BUTTON_PRESS:
+        if event.type == gtk.gdk._2BUTTON_PRESS or event.type == gtk.gdk._3BUTTON_PRESS:
             widget.set_data("has_double_clicked", not widget.get_data("has_double_clicked"))
             widget.queue_draw()
     
@@ -482,11 +481,11 @@ class MouseSetting(object):
 
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(350, 10)
+        hseparator.set_size_request(450, 10)
         return hseparator
     
     def __setup_separator(self):
-        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, height=10)
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=10)
     
     def set_to_default(self):
         '''set to the default'''
