@@ -494,6 +494,8 @@ class SoundSetting(object):
         self.scale_widgets["balance"].connect("button-press-event", lambda w, e: self.scale_widgets["balance"].set_data("has_pressed", True))
         self.scale_widgets["speaker"].connect("button-press-event", lambda w, e: self.scale_widgets["speaker"].set_data("has_pressed", True))
         self.scale_widgets["microphone"].connect("button-press-event", lambda w, e: self.scale_widgets["microphone"].set_data("has_pressed", True))
+        self.scale_widgets["speaker"].connect("value-changed", self.volume_scale_value_changed, self.button_widgets["speaker"])
+        self.scale_widgets["microphone"].connect("value-changed", self.volume_scale_value_changed, self.button_widgets["microphone"])
 
         self.adjust_widgets["balance"].connect("value-changed",
             lambda w: self.scale_widgets["balance"].set_value(self.adjust_widgets["balance"].get_value()))
@@ -670,6 +672,10 @@ class SoundSetting(object):
             traceback.print_exc()
             pass
     
+    def volume_scale_value_changed(self, widget, value, button):
+        if not button.get_active():
+            button.set_active(True)
+
     def speaker_port_changed_thread(self, port, dev):
         ''' set active port thread '''
         dev.set_active_port(port.object_path)
