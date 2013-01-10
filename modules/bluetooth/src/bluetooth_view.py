@@ -334,7 +334,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.device_align = self.__setup_align()
         self.device_iconview = DeviceIconView()
-        self.device_iconview.set_size_request(690, 190)
+        self.device_iconview.set_size_request(690, 196)
         self.device_align.add(self.device_iconview)
         '''
         this->gtk.VBox pack_start
