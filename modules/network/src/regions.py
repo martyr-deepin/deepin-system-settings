@@ -14,7 +14,7 @@ import gtk
 import pango
 
 import style
-from constants import FRAME_VERTICAL_SPACING, TITLE_FONT_SIZE, BETWEEN_SPACING, TREEVIEW_BG_COLOR
+from constants import FRAME_VERTICAL_SPACING, TITLE_FONT_SIZE, BETWEEN_SPACING, TREEVIEW_BG_COLOR, IMG_WIDTH
 from container import TitleBar
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
@@ -245,20 +245,21 @@ class Item(TreeItem):
     def render_content(self, cr, rect):
         (text_width, text_height) = get_content_size(self.html_escape(self.content))
         render_background(self, cr, rect)
+
+        if self.show_arrow:
+            if self.is_expand:
+                draw_pixbuf(cr, self.arrow_down.get_pixbuf(), rect.x + 5, rect.y + (rect.height- self.arrow_height)/2)
+            else:
+                draw_pixbuf(cr, self.arrow_right.get_pixbuf(), rect.x + 5, rect.y + (rect.height- self.arrow_height)/2)
         
         if self.is_select:
             text_color = "#ffffff"
         else:
             text_color = "#000000"
 
-        draw_text(cr, self.html_escape(self.content), rect.x + 5, rect.y, rect.width, rect.height,
+        draw_text(cr, self.html_escape(self.content), rect.x + IMG_WIDTH + 10, rect.y, rect.width, rect.height,
                 alignment=pango.ALIGN_LEFT,
                 text_color=text_color)
-        if self.show_arrow:
-            if self.is_expand:
-                draw_pixbuf(cr, self.arrow_down.get_pixbuf(), rect.x + text_width + 10 , rect.y + (rect.height- self.arrow_height)/2)
-            else:
-                draw_pixbuf(cr, self.arrow_right.get_pixbuf(), rect.x +text_width + 10, rect.y + (rect.height- self.arrow_height)/2)
 
     def get_column_widths(self):
         return [-1]
