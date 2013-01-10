@@ -49,6 +49,7 @@ import threading as td
 import traceback
 
 MODULE_NAME = "sound"
+MUTE_TEXT_COLOR = "#DCDCDC"
 
 class SettingVolumeThread(td.Thread):
     def __init__(self, obj, func, *args):
@@ -97,7 +98,6 @@ class SoundSetting(object):
         title_item_font_size = TITLE_FONT_SIZE
         option_item_font_szie = CONTENT_FONT_SIZE
 
-        self.label_widgets["balance"] = Label(_("Balance"), text_size=title_item_font_size)
         self.label_widgets["speaker"] = Label(_("Speaker"), text_size=title_item_font_size)
         self.label_widgets["microphone"] = Label(_("Microphone"), text_size=title_item_font_size)
         self.label_widgets["left"] = Label(_("Left"))
@@ -387,6 +387,10 @@ class SoundSetting(object):
             is_mute = settings.get_mute(settings.CURRENT_SINK)
             self.button_widgets["speaker"].set_active(not is_mute)
             self.scale_widgets["speaker"].set_enable(not is_mute)
+            if is_mute:
+                self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
+            else:
+                self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
             self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
             if self.speaker_ports:
                 items = []
@@ -404,6 +408,10 @@ class SoundSetting(object):
             is_mute = settings.get_mute(settings.CURRENT_SOURCE)
             self.button_widgets["microphone"].set_active(not is_mute)
             self.scale_widgets["microphone"].set_enable(not is_mute)
+            if is_mute:
+                self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
+            else:
+                self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
             self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
             if self.microphone_ports:
                 items = []
@@ -575,11 +583,19 @@ class SoundSetting(object):
         if settings.CURRENT_SINK:
             settings.set_mute(settings.CURRENT_SINK, not active)
         self.scale_widgets["speaker"].set_enable(active)
+        if not active:
+            self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
+        else:
+            self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
     
     def microphone_toggled(self, active):
         if settings.CURRENT_SOURCE:
             settings.set_mute(settings.CURRENT_SOURCE, not active)
         self.scale_widgets["microphone"].set_enable(active)
+        if not active:
+            self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
+        else:
+            self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
     
     def balance_value_changed_thread(self):
         ''' balance value changed callback thread'''

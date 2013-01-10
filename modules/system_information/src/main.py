@@ -54,12 +54,13 @@ class SysInfo(object):
 
     def __create_widget(self):
         # label widget
-        self.label_widgets["version"] = Label(" ", text_size=13, enable_select=False)
         self.label_widgets["copyright"] = Label(_("Copyright © 2011 - 2013 深之度公司 版权所有"), enable_select=False)
-        self.label_widgets["cpu"] = Label(_("Processor"))
+        self.label_widgets["version"] = Label(_("Version"))
+        self.label_widgets["cpu"] = Label(_("CPU"))
         self.label_widgets["mem"] = Label(_("Memory"))
         self.label_widgets["arch"] = Label(_("OS Type"))
         self.label_widgets["disk"] = Label(_("Disk"))
+        self.label_widgets["version_info"] = Label("")
         self.label_widgets["cpu_info"] = Label("")
         self.label_widgets["mem_info"] = Label("")
         self.label_widgets["arch_info"] = Label("")
@@ -104,12 +105,13 @@ class SysInfo(object):
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["info_table"], False, False)
         self.container_widgets["right_vbox"].pack_start(gtk.Alignment(0, 0, 1, 1))
         #
-        self.container_widgets["info_vbox"].pack_start(
-            self.__make_align(self.label_widgets["version"]), False, False)
+        #self.container_widgets["info_vbox"].pack_start(
+            #self.__make_align(self.label_widgets["version"]), False, False)
         self.container_widgets["info_vbox"].pack_start(
             self.__make_align(self.label_widgets["copyright"]), False, False)
         label_widgets = self.label_widgets
         label_width = max(label_widgets["cpu"].size_request()[0],
+                          label_widgets["version"].size_request()[0],
                           label_widgets["mem"].size_request()[0],
                           label_widgets["arch"].size_request()[0],
                           label_widgets["disk"].size_request()[0]) + 2
@@ -119,6 +121,8 @@ class SysInfo(object):
         #label_widgets["disk"].set_size_request(label_width, WIDGET_HEIGHT)
         # table attach
         self.container_widgets["info_table"].attach(
+            self.__make_align(self.label_widgets['version'], width=label_width), 0, 1, 0, 1, 4)
+        self.container_widgets["info_table"].attach(
             self.__make_align(self.label_widgets['cpu'], width=label_width), 0, 1, 1, 2, 4)
         self.container_widgets["info_table"].attach(
             self.__make_align(self.label_widgets['mem'], width=label_width), 0, 1, 2, 3, 4)
@@ -127,6 +131,8 @@ class SysInfo(object):
         self.container_widgets["info_table"].attach(
             self.__make_align(self.label_widgets['disk'], width=label_width), 0, 1, 4, 5, 4)
         
+        self.container_widgets["info_table"].attach(
+            self.__make_align(self.label_widgets['version_info']), 1, 2, 0, 1, 5)
         self.container_widgets["info_table"].attach(
             self.__make_align(self.label_widgets['cpu_info']), 1, 2, 1, 2, 5)
         self.container_widgets["info_table"].attach(
@@ -139,7 +145,7 @@ class SysInfo(object):
         self.container_widgets["info_table"].set_col_spacings(WIDGET_SPACING)
 
         # show sysinfo
-        self.label_widgets["version"].set_text("<b>%s</b>" % settings.get_os_version())
+        self.label_widgets["version_info"].set_text("%s" % settings.get_os_version())
         self.label_widgets["cpu_info"].set_text("%s" % settings.get_cpu_info())
         self.label_widgets["mem_info"].set_text("%.1fGB" % settings.get_mem_info())
         self.label_widgets["arch_info"].set_text("%s" % settings.get_os_arch())
