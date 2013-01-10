@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#from theme import app_theme
+from theme import app_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
@@ -39,7 +39,7 @@ class MyTreeView(TreeView):
     def __init__(self,
                  items=[],
                  drag_data=None,
-                 enable_hover=False,
+                 enable_hover=True,
                  enable_highlight=False,
                  enable_multiple_select=False,
                  enable_drag_drop=False,
@@ -69,13 +69,14 @@ class MyTreeView(TreeView):
                 self.emit("select", self.visible_items[select_row], select_row)
     
     def draw_mask(self, cr, x, y, w, h):
-        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BG_COLOR))
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
         cr.rectangle(x, y, w, h)
         cr.fill()
-        with cairo_disable_antialias(cr):    
-            cr.set_line_width(1)
+        with cairo_disable_antialias(cr):
             cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.rectangle(x+1, y+1, w-1, h-1)
+            cr.set_line_width(1)
+            cr.move_to(x+w-2, y)
+            cr.line_to(x+w-2, y+h)
             cr.stroke()
     
 gobject.type_register(MyTreeView)
@@ -129,21 +130,36 @@ class MyTreeItem(TreeItem):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
 
+    def unhover(self, column, offset_x, offset_y):
+        if not self.is_hover:
+            return
+        self.is_hover = False
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+        
+    def hover(self, column, offset_x, offset_y):
+        self.is_hover = True
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
     def get_column_renders(self):
         return [self.render_item]
     
     def render_item(self, cr, rect):
-        rect.x += 1
-        rect.width -=2
-        rect.height -= 2
-        if self.is_select:
+        #rect.x += 1
+        #rect.width -=2
+        #rect.height -= 2
+        if self.is_hover and not self.is_select:
+            text_color = "#000000"
+            bg_color = app_theme.get_color("globalItemHover").get_color()
+        elif self.is_select:
             text_color = "#FFFFFF"
-            bg_color = "#3399FF"
+            bg_color = app_theme.get_color("globalItemSelect").get_color()
         else:
             text_color = "#000000"
             bg_color = MODULE_BG_COLOR
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-        cr.rectangle(rect.x, rect.y+self.title_height, rect.width, rect.height-2*self.title_height-1)
+        cr.rectangle(rect.x, rect.y+self.title_height, rect.width-4, rect.height-2*self.title_height-1)
         cr.fill()
         # draw account type text
         if self.is_myowner:
@@ -154,15 +170,8 @@ class MyTreeItem(TreeItem):
             x2 = rect.x
             y2 = rect.y + self.height + self.title_height
             draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color)
-        self.render_icon(cr, gtk.gdk.Rectangle(rect.x, rect.y, 75, rect.height))
-        self.render_content(cr, gtk.gdk.Rectangle(rect.x+75, rect.y, rect.width-75, rect.height), text_color)
-        # draw line
-        with cairo_disable_antialias(cr):    
-            cr.set_line_width(1)
-            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.move_to(rect.x, rect.y-1+rect.height-self.title_height)
-            cr.line_to(rect.x+rect.width, rect.y-1+rect.height-self.title_height)
-            cr.stroke()
+        self.render_icon(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING, rect.y, 55, rect.height))
+        self.render_content(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING+55, rect.y, rect.width-55, rect.height), text_color)
     
     def render_content(self, cr, rect, text_color):
         # draw user name and account type

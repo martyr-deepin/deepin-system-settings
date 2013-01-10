@@ -186,16 +186,16 @@ class AccountSetting(object):
         self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 20)
 
         self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
-        self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
+        self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"], False, False)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right_vbox"])
         self.alignment_widgets["left_vbox"].add(self.container_widgets["left_vbox"])
         self.alignment_widgets["left_vbox"].set(0, 0, 1, 1)
-        self.alignment_widgets["left_vbox"].set_padding(1, 1, 1, 1)
+        #self.alignment_widgets["left_vbox"].set_padding(1, 1, 1, 1)
         self.alignment_widgets["right_vbox"].add(self.container_widgets["right_vbox"])
-        self.container_widgets["left_vbox"].set_size_request(325, -1)
+        self.container_widgets["left_vbox"].set_size_request(275, -1)
         #self.view_widgets["account"].set_size_request(325, 370)
         ##############################
         # accounts list page
@@ -215,7 +215,7 @@ class AccountSetting(object):
         self.alignment_widgets["right_vbox"].set(0, 0, 1, 1)
         #self.alignment_widgets["right_vbox"].set_padding(0, 0, 20, 20)
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
+        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
 
         self.container_widgets["account_info_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["account_info_table"].attach(
@@ -233,10 +233,10 @@ class AccountSetting(object):
             self.__make_align(self.label_widgets["auto_login"]), 0, 1, 3, 4, 4)
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.button_widgets["auto_login"]), 1, 2, 3, 4, 4)
-        self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 4, 5, 4)
-        self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["deepin_account"]), 1, 2, 4, 5, 4)
+        #self.container_widgets["account_info_table"].attach(
+            #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 4, 5, 4)
+        #self.container_widgets["account_info_table"].attach(
+            #self.__make_align(self.label_widgets["deepin_account"]), 1, 2, 4, 5, 4)
         # TODO 绑定深度帐号
         self.button_widgets["account_type"].set_size_request(-1, WIDGET_HEIGHT)
         #self.image_widgets["account_icon"].set_size_request(48, 48)
@@ -278,10 +278,10 @@ class AccountSetting(object):
             self.__make_align(self.label_widgets["account_type_new"]), 0, 1, 1, 2, 4)
         self.container_widgets["account_info_table_new"].attach(
             self.__make_align(self.button_widgets["account_type_new"]), 1, 2, 1, 2, 4)
-        self.container_widgets["account_info_table_new"].attach(
-            self.__make_align(self.label_widgets["deepin_account_tips_new"]), 0, 1, 2, 3, 4)
-        self.container_widgets["account_info_table_new"].attach(
-            self.__make_align(self.label_widgets["deepin_account_new"]), 1, 2, 2, 3, 4)
+        #self.container_widgets["account_info_table_new"].attach(
+            #self.__make_align(self.label_widgets["deepin_account_tips_new"]), 0, 1, 2, 3, 4)
+        #self.container_widgets["account_info_table_new"].attach(
+            #self.__make_align(self.label_widgets["deepin_account_new"]), 1, 2, 2, 3, 4)
 
         self.button_widgets["account_name"].set_size(125, WIDGET_HEIGHT)
         self.button_widgets["account_type_new"].set_size_request(-1, WIDGET_HEIGHT)
@@ -399,16 +399,15 @@ class AccountSetting(object):
     def on_left_vbox_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
         x, y, w, h = widget.allocation
-        x2, y2, w2, h2 = self.alignment_widgets["button_hbox"].allocation
-        print "x y w h:", x, y, w, h
-        print "widget:", widget.get_size_request()
-        print "main hbox", self.alignment_widgets["main_hbox"].allocation
+        left_rect = self.view_widgets["account"].allocation
+        print "geometry:", widget.window.get_geometry()
+        print "wiget:", x, y, w, h
+        print "treeview:", left_rect
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
             cr.set_line_width(1)
-            cr.rectangle(x-1, y-1, w+3, h+2)
-            cr.move_to(x, y+h+2-h2)
-            cr.line_to(x+w+3, y+h+2-h2)
+            cr.move_to(x+w, y)
+            cr.line_to(x+w, y+h)
             cr.stroke()
     
     def auto_login_toggled(self, button):
@@ -422,7 +421,7 @@ class AccountSetting(object):
     def add_account_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table_new"], False, False)
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table_new"], False, False)
+        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table_new"], False, False)
         self.container_widgets["right_vbox"].pack_start(self.__make_align(), False, False)
         self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_create_error"], False, False, BETWEEN_SPACING)
         self.container_widgets["right_vbox"].pack_start(self.__make_align())
@@ -438,7 +437,7 @@ class AccountSetting(object):
     def del_cancel_delete_cb(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
+        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
         self.container_widgets["right_vbox"].show_all()
         
     def del_delete_user_file_cd(self, button, del_file):
@@ -471,7 +470,7 @@ class AccountSetting(object):
     def account_cancle_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
+        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
         self.container_widgets["right_vbox"].show_all()
         self.button_widgets["add_account"].set_sensitive(True)
 
@@ -489,7 +488,8 @@ class AccountSetting(object):
     def account_treeview_select(self, tv, item, row):
         self.current_select_user = dbus_obj = item.dbus_obj
         self.current_select_item = item
-        print "treeview current select:", self.current_select_user.get_user_name()
+        print "treeview current select:'%s', '%s'" % ( self.current_select_user.get_user_name(), self.current_select_user.get_real_name())
+        print "treeitrem:'%s', '%s'" % (item.real_name, item.user_name)
         self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
         if item.real_name:
             self.label_widgets["account_name"].set_text("<b>%s</b>" % item.real_name)
@@ -596,6 +596,9 @@ class AccountSetting(object):
         if not self.current_select_user:
             return
         
+        def check_account_name(name):
+            return len(name) <= 20
+        
         def change_account_name(widget, *args):
             #print "current select:", self.current_select_user.get_user_name()
             if self.label_widgets["account_name"].get_parent():
@@ -620,9 +623,10 @@ class AccountSetting(object):
         text = self.current_select_user.get_real_name()
         align = gtk.Alignment()
         align.set(0.0, 0.5, 0, 0)
-        align.set_padding(8, 0, 2, 48)
+        align.set_padding(8, 0, 2, 63)
         input_entry = InputEntry(text)
-        input_entry.set_size(180, WIDGET_HEIGHT)
+        input_entry.entry.check_text = check_account_name
+        input_entry.set_size(165, WIDGET_HEIGHT)
         input_entry.connect("expose-event", lambda w, e: input_entry.entry.grab_focus())
         input_entry.entry.connect("press-return", change_account_name)
         input_entry.entry.connect("focus-out-event", change_account_name)
@@ -1125,7 +1129,7 @@ class AccountSetting(object):
         @return: a escaped string
         '''
         if not string:
-            return " "
+            return ""
         return markup_escape_text(string)
     
     def change_crumb(self, crumb_index):
