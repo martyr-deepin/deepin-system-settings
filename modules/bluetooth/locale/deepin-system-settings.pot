@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-03 13:39+0800\n"
+"POT-Creation-Date: 2013-01-10 10:24+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:279
+#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:281
 msgid "Bluetooth Get Powered"
 msgstr ""
 
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:295
+#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:299
 msgid "Device Shown Name"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:309
+#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:312
 msgid "Be Searchedable"
 msgstr ""
 
-#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:323
+#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:327
 msgid "Searching Device Timeout"
 msgstr ""
 
-#: ../src/bluetooth_view.py:271
+#: ../src/bluetooth_view.py:272
 msgid "Minutes"
+msgstr ""
+
+#: ../src/bluetooth_view.py:278
+msgid "Bluetooth"
 msgstr ""

@@ -31,7 +31,8 @@ from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo, set_clickable_cursor
 from deepin_utils.ipc import is_dbus_name_exists
-from dtk.ui.draw import cairo_state, draw_text
+from dtk.ui.draw import (cairo_state, cairo_disable_antialias, draw_text, 
+                         draw_pixbuf)
 import gobject
 import gtk
 import pango
@@ -55,7 +56,11 @@ class MonitorResizableBox(ResizableBox):
         self.output_height = 120
         self.output_padding = 3
         self.output_small_size = 20
+        self.line_width = 1.0
         self.text_size = 10
+
+        self.primary_pixbuf = app_theme.get_pixbuf("display/n01.png")
+        self.other_pixbuf = app_theme.get_pixbuf("display/n00.png")
 
         self.__eventx = 0
         self.__eventy = 0
@@ -85,19 +90,26 @@ class MonitorResizableBox(ResizableBox):
         y += 10
         
         output_infos = self.__display_manager.get_output_info()
+        output_count = len(output_infos)
+        if output_count < 2:
+            self.set_resizeable(False)
         i = 0
 
-        with cairo_state(cr):
-            while i < len(output_infos):
+        with cairo_disable_antialias(cr):
+            while i < output_count:
                 output_x = x + i * (self.output_width + self.output_padding)
+                if output_count > 1:
+                    output_x -= self.output_width / 3.0
                 output_width = self.output_width - i * self.output_small_size
                 output_height = self.output_height - i * self.output_small_size
                 output_name = output_infos[i][0]
+                is_primary = output_infos[i][5]
                 output_display_name = self.__display_manager.get_output_display_name(output_name)
                 '''
                 background
                 '''
                 cr.set_source_rgb(*color_hex_to_cairo("#DFDFDF"))
+                cr.set_line_width(self.line_width)
                 cr.rectangle(output_x, 
                              y, 
                              output_width, 
@@ -114,18 +126,34 @@ class MonitorResizableBox(ResizableBox):
                           h = self.text_size,
                           text_size = self.text_size, 
                           alignment = pango.ALIGN_CENTER)
-                draw_text(cr = cr, 
-                          markup = str(i + 1), 
-                          x = output_x + output_width - self.text_size, 
-                          y = y + output_height - self.text_size * 2, 
-                          w = self.text_size, 
-                          h = self.text_size, 
-                          text_size = self.text_size, 
-                          alignment = pango.ALIGN_LEFT)
+                if output_count > 1:
+                    if is_primary == "yes":
+                        draw_pixbuf(cr, 
+                                    self.primary_pixbuf.get_pixbuf(), 
+                                    output_x + output_width - self.primary_pixbuf.get_pixbuf().get_width(), 
+                                    y + output_height - self.primary_pixbuf.get_pixbuf().get_height())
+                    elif is_primary == "no":
+                        draw_pixbuf(cr,                                         
+                                    self.other_pixbuf.get_pixbuf(),              
+                                    output_x + output_width - self.other_pixbuf.get_pixbuf().get_width(), 
+                                    y + output_height - self.other_pixbuf.get_pixbuf().get_height())
+                    else:
+                        pass
+                    
+                    draw_text(cr = cr, 
+                              markup = str(i + 1), 
+                              x = output_x + output_width - self.text_size - 5, 
+                              y = y + output_height - self.text_size * 2, 
+                              w = self.text_size, 
+                              h = self.text_size, 
+                              text_size = self.text_size, 
+                              text_color = "#FFFFFF", 
+                              alignment = pango.ALIGN_LEFT)
                 '''
                 stroke
                 '''
                 cr.set_source_rgb(*color_hex_to_cairo("#797979"))
+                cr.set_line_width(self.line_width)
                 cr.rectangle(output_x, 
                              y, 
                              output_width, 
@@ -136,6 +164,7 @@ class MonitorResizableBox(ResizableBox):
                 '''
                 if self.select_output_name == output_name:
                     cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
+                    cr.set_line_width(self.line_width)
                     cr.rectangle(output_x, y, output_width, output_height)
                     cr.stroke()
                 
@@ -146,6 +175,7 @@ class MonitorResizableBox(ResizableBox):
                 selected stroke && emit
                 '''
                 cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
+                cr.set_line_width(self.line_width)
                 cr.rectangle(output_x, y, output_width, output_height)
                 cr.stroke()
                 self.emit("select-output", output_name)
