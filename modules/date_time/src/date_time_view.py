@@ -34,6 +34,7 @@ from dtk.ui.utils import color_hex_to_cairo
 import os
 import gobject
 import gtk
+import time
 try:
     import deepin_lunar
 except ImportError:
@@ -109,8 +110,13 @@ class DatetimeView(gtk.HBox):
             self.calendar = deepin_lunar.new()
         else:
             self.calendar = gtk.Calendar()
-        self.calendar.set_size_request(300, 280)
-        self.calendar_align.add(self.calendar)
+        self.calendar.mark_day(time.localtime().tm_mday)
+        if os.environ['LANGUAGE'].find("zh_") == 0:
+            self.calendar.get_handle().set_size_request(300, 280)
+            self.calendar_align.add(self.calendar.get_handle())
+        else:
+            self.calendar.set_size_request(300, 280)
+            self.calendar_align.add(self.calendar) 
         self.change_date_align = self.__setup_align(padding_top = 20, padding_left = 200)
         self.change_date_button = Button(_("Change Date"))
         self.change_date_button.set_size_request(100, WIDGET_HEIGHT)
