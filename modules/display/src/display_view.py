@@ -91,11 +91,15 @@ class MonitorResizableBox(ResizableBox):
         
         output_infos = self.__display_manager.get_output_info()
         output_count = len(output_infos)
+        
+        ''' 
+        FIXME: ResizableBox logic issue
         if output_count < 2:
             self.set_resizeable(False)
-        i = 0
+        '''
 
-        with cairo_disable_antialias(cr):
+        i = 0
+        with cairo_state(cr):
             while i < output_count:
                 output_x = x + i * (self.output_width + self.output_padding)
                 if output_count > 1:
@@ -126,6 +130,7 @@ class MonitorResizableBox(ResizableBox):
                           h = self.text_size,
                           text_size = self.text_size, 
                           alignment = pango.ALIGN_CENTER)
+                
                 if output_count > 1:
                     if is_primary:
                         draw_pixbuf(cr, 
@@ -147,6 +152,7 @@ class MonitorResizableBox(ResizableBox):
                               text_size = self.text_size, 
                               text_color = "#FFFFFF", 
                               alignment = pango.ALIGN_LEFT)
+
                 '''
                 stroke
                 '''
