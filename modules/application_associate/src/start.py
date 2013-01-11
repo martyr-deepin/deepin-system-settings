@@ -28,7 +28,8 @@ import ConfigParser
 class AppManager(gobject.GObject):
     """app manager""""
     def __init__(self):
-        pass
+        self.user_config_dir = ""
+        self.system_config_dirs = []
 
     def get_apps(self):
         """docstring for get_apps"""
@@ -40,6 +41,14 @@ class AppManager(gobject.GObject):
 
     def add_app(self):
         """docstring for add_app"""
+        pass
+    
+    def get_user_config_dir(self):
+        """docstring for get_user_config_dir"""
+        pass
+
+    def get_system_config_dirs(self):
+        """docstring for get_system_config_dirs"""
         pass
 
     def get_dir(self):
