@@ -385,7 +385,7 @@ if __name__ == "__main__":
     body_box.pack_start(slider, True, True)
     main_box.pack_start(action_bar, False, False)
     main_box.pack_start(body_box, True, True)
-    main_box.pack_start(foot_box, False, False)
+    #main_box.pack_start(foot_box, False, False)
     main_align.add(main_box)
     application.main_box.pack_start(main_align)
     
