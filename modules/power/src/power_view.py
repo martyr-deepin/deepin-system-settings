@@ -247,7 +247,7 @@ class PowerView(gtk.VBox):
         cr.fill()
 
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
-        label = Label(text, None, text_size, align, 220)
+        label = Label(text, None, text_size, align, 200)
         return label
 
     def __setup_combo(self, items=[]):
