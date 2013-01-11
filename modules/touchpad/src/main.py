@@ -420,8 +420,9 @@ class TouchpadSetting(object):
     ############################
     def container_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
-        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
-        cr.rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)                                                 
+        x, y, w, h = widget.allocation
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
+        cr.rectangle(x, y, w, h)
         cr.fill()
     
     def touchpad_setting_changed_cb(self, key):

@@ -545,10 +545,10 @@ class KeySetting(object):
         cr.fill()
     
     def draw_background(self, widget, event):
-        x, y, w, h = widget.allocation
         cr = widget.window.cairo_create()
+        x, y, w, h = widget.allocation
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
-        cr.rectangle(x, y, w, h)                                                 
+        cr.rectangle(x, y, w, h)
         cr.fill()
     
     def keyboard_setting_changed_cb(self, key):

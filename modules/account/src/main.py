@@ -48,6 +48,7 @@ from pexpect import TIMEOUT, EOF
 from glib import markup_escape_text
 
 MODULE_NAME = "account"
+COMBO_WIDTH = 165
 
 class AccountSetting(object):
     '''account setting'''
@@ -79,7 +80,7 @@ class AccountSetting(object):
         self.label_widgets["account_name"] = Label("", label_width=230, enable_select=False)
         self.label_widgets["account"] = Label(_("Account type"))
         self.label_widgets["passwd"] = Label(_("Password"))
-        self.label_widgets["passwd_char"] = Label("****", label_width=140, enable_select=False)
+        self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH, enable_select=False)
         self.label_widgets["auto_login"] = Label(_("Automatic Login"))
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"))
         self.label_widgets["deepin_account"] = Label(_("Unbound"))
@@ -96,7 +97,7 @@ class AccountSetting(object):
         # button
         self.button_widgets["account_name"] = InputEntry()
         self.button_widgets["lock"] = gtk.Button()
-        self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=165)
+        self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=COMBO_WIDTH)
         #self.button_widgets["auto_login"] = gtk.ToggleButton()
         self.button_widgets["auto_login"] = OffButton()
         self.button_widgets["passwd"] = InputEntry()
@@ -221,18 +222,19 @@ class AccountSetting(object):
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.image_widgets["account_icon"], height=58), 0, 1, 0, 1, 4)
         self.container_widgets["account_info_table"].attach(self.alignment_widgets["account_info_hbox"], 1, 2, 0, 1, 4)
+
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["account"]), 0, 1, 1, 2, 4)
+            self.__make_align(self.label_widgets["account"], xalign=1.0), 0, 1, 1, 2, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["account_type"]), 1, 2, 1, 2, 4)
+            self.__make_align(self.button_widgets["account_type"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 1, 2, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["passwd"]), 0, 1, 2, 3, 4)
+            self.__make_align(self.label_widgets["passwd"], xalign=1.0), 0, 1, 2, 3, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["passwd_char"]), 1, 2, 2, 3, 4)
+            self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["auto_login"]), 0, 1, 3, 4, 4)
+            self.__make_align(self.label_widgets["auto_login"], xalign=1.0), 0, 1, 3, 4, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["auto_login"]), 1, 2, 3, 4, 4)
+            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
         #self.container_widgets["account_info_table"].attach(
             #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 4, 5, 4)
         #self.container_widgets["account_info_table"].attach(
@@ -578,7 +580,13 @@ class AccountSetting(object):
             else:
                 widget.set_text("<u><b>%s</b></u>" % "--")
         else:
-            widget.set_text("<u>%s</u>" % pango.parse_markup(widget.get_text())[1])
+            cr = widget.window.cairo_create()
+            with cairo_disable_antialias(cr):
+                cr.set_line_width(1)
+                cr.set_source_rgb(*color_hex_to_cairo("#000000"))                                               
+                x, y, w, h = widget.allocation
+                cr.rectangle(x+1, y+1, w-2, h-2)                                                 
+                cr.stroke()
     
     def label_leave_notify_cb(self, widget, event, is_realname=False):
         if not self.current_select_user:
@@ -1113,9 +1121,9 @@ class AccountSetting(object):
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
-                     padding_right=0, height=CONTAINNER_HEIGHT):
+                     padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
         align = gtk.Alignment()
-        align.set_size_request(-1, height)
+        align.set_size_request(width, height)
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
         if widget:
