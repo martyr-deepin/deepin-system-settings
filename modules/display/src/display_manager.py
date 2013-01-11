@@ -97,7 +97,7 @@ class DisplayManager:
                 y = output.getElementsByTagName("y")
                 rotation = output.getElementsByTagName("rotation")
                 primary = output.getElementsByTagName("primary")
-                is_primary = "no"
+                is_primary = False
             
                 if len(width) == 0 or len(height) == 0 or len(x) ==0 or len(y) == 0 or len(rotation) == 0 or len(primary) == 0:
                     continue
@@ -117,14 +117,15 @@ class DisplayManager:
                           is_primary
                       }
                 '''
-                is_primary = self.__getText(primary[0].childNodes)
+                if self.__getText(primary[0].childNodes) == "yes":
+                    is_primary = True
                 output_item = (output_name, 
                                "%sx%s" % (self.__getText(width[0].childNodes), self.__getText(height[0].childNodes)), 
                                self.__getText(x[0].childNodes), 
                                self.__getText(y[0].childNodes), 
                                self.__getText(rotation[0].childNodes), 
                                is_primary)
-                if is_primary == "yes":
+                if is_primary:
                     self.__primary_output_name = output_name
                     self.__output_info_by_xml.insert(0, output_item)
                 else:
@@ -386,11 +387,6 @@ class DisplayManager:
             return
 
         self.__xrandr_settings.set_double("brightness", value)
-        while i < len(self.__output_names):
-            (output_display_name, output_name) = self.get_output_name(self.__output_names[i])
-            run_command("xrandr --output %s --brightness %f" % (output_name, value))
-
-            i += 1
 
     def is_enable_close_monitor(self):
         if self.__power_settings.get_int("sleep-display-battery") < self.BIG_NUM:

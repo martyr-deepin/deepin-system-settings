@@ -127,18 +127,16 @@ class MonitorResizableBox(ResizableBox):
                           text_size = self.text_size, 
                           alignment = pango.ALIGN_CENTER)
                 if output_count > 1:
-                    if is_primary == "yes":
+                    if is_primary:
                         draw_pixbuf(cr, 
                                     self.primary_pixbuf.get_pixbuf(), 
                                     output_x + output_width - self.primary_pixbuf.get_pixbuf().get_width(), 
                                     y + output_height - self.primary_pixbuf.get_pixbuf().get_height())
-                    elif is_primary == "no":
+                    else:
                         draw_pixbuf(cr,                                         
                                     self.other_pixbuf.get_pixbuf(),              
                                     output_x + output_width - self.other_pixbuf.get_pixbuf().get_width(), 
                                     y + output_height - self.other_pixbuf.get_pixbuf().get_height())
-                    else:
-                        pass
                     
                     draw_text(cr = cr, 
                               markup = str(i + 1), 
