@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
@@ -158,6 +158,11 @@ class DBusService(dbus.service.Object):
                 if foot_box:
                     foot_box.show(module_id)
                     foot_box.set_status(status)
+            elif message_type == "add_button":
+                (module_id, add_button) = message_content
+                if foot_box:
+                    foot_box.show(module_id)
+                    foot_box.add_button(add_button)
             else:
                 print message
                     

@@ -46,10 +46,11 @@ if __name__ == "__main__":
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
-            print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
         elif message_type == "reset":
             power_view.reset()
+        elif message_type == "add_button_cb":
+            print "DEBUG add_button_cb", message_content
 
     module_frame.module_message_handler = message_handler        
     

@@ -21,6 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
+from deepin_utils.ipc import is_dbus_name_exists
 from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
@@ -33,6 +34,7 @@ from nls import _
 from power_manager import PowerManager
 import gobject
 import gtk
+import dbus
 
 class PowerView(gtk.VBox):
     '''
@@ -201,6 +203,23 @@ class PowerView(gtk.VBox):
              self.tray_battery_status_align])
 
         self.connect("expose-event", self.__expose)
+
+        self.__send_message("add_button", ("power", "POWER_XXX"))
+
+    def __handle_dbus_replay(self, *reply):                                     
+        pass                                                                    
+                                                                                
+    def __handle_dbus_error(self, *error):                                      
+        pass                                                                    
+                                                                                
+    def __send_message(self, message_type, message_content):                    
+        if is_dbus_name_exists(APP_DBUS_NAME):                                  
+            bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
+            method = bus_object.get_dbus_method("message_receiver")             
+            method(message_type,                                                
+                   message_content,                                             
+                   reply_handler=self.__handle_dbus_replay,                     
+                   error_handler=self.__handle_dbus_error)       
 
     def __setup_separator(self):                                                
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
