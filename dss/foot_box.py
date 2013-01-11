@@ -131,13 +131,15 @@ class FootBox(gtk.HBox):
     FIXME: guys, please fix the ugly thinking style :)
     '''
     def add_button(self, add_button):
-        for widget in self.right_box.get_children():                           
-            self.right_box.remove(widget)  
+        #for widget in self.right_box.get_children():                           
+            #self.right_box.remove(widget)  
+        container_remove_all(self.buttons_align.get_children()[0])
 
         self.__setup_reset_button()
         button = Button(add_button)
         button.set_size_request(self.button_width, WIDGET_HEIGHT)
         button.connect("clicked", self.__add_button_clicked, add_button)
+        self.buttons_list = []
         self.buttons_list.append(button)
         self.buttons_list.append(self.reset_button)
         self.buttons_align = self.__setup_buttons_align(self.buttons_list)        
