@@ -103,6 +103,8 @@ class NMConnection(gobject.GObject):
         else:
             if not getattr(self, self.settings_info[setting_name][3]):
                 setattr(self, self.settings_info[setting_name][3], apply(self.settings_info[setting_name][0]))
+                self.settings_dict[setting_name] = getattr(self, self.settings_info[setting_name][3])
+
             return getattr(self, self.settings_info[setting_name][3])    
 
     def del_setting(self, setting_name):
