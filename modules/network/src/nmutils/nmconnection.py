@@ -103,7 +103,6 @@ class NMConnection(gobject.GObject):
         else:
             if not getattr(self, self.settings_info[setting_name][3]):
                 setattr(self, self.settings_info[setting_name][3], apply(self.settings_info[setting_name][0]))
-                self.settings_dict[setting_name] = getattr(self, self.settings_info[setting_name][3])
 
             return getattr(self, self.settings_info[setting_name][3])    
 
@@ -114,7 +113,17 @@ class NMConnection(gobject.GObject):
             pass
         else:
             del self.settings_dict[setting_name]
-        
+
+    def reinit_setting(self, setting_name):
+        if setting_name not in self.settings_info.iterkeys():
+            return "unknown setting_name"
+        else:
+            if not getattr(self, self.settings_info[setting_name][3]):
+                setattr(self, self.settings_info[setting_name][3], apply(self.settings_info[setting_name][0]))
+                self.settings_dict[setting_name] = getattr(self, self.settings_info[setting_name][3]).prop_dict
+            else:
+                getattr(self, self.settings_info[setting_name][3]).prop_dict = self.settings_dict[setting_name]
+
     def check_setting_finish(self):
         ###check if user complete his setting, avoid the missing property exception
         info_dict = TypeConvert.dbus2py(self.settings_dict)
