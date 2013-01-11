@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.constant import ALIGN_MIDDLE
-from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.utils import color_hex_to_cairo, container_remove_all
 from deepin_utils.ipc import is_dbus_name_exists
 from dtk.ui.label import Label
 from dtk.ui.button import Button
@@ -41,29 +41,47 @@ class FootBox(gtk.HBox):
         '''
         gtk.HBox.__init__(self)
 
+        self.button_width = 100
+
         self.module_id = None
 
+        self.buttons_list = []
+        self.__setup_reset_button()
+        self.buttons_list.append(self.reset_button)
+
         self.__is_init_ui = False
-        
+   
+    def __setup_reset_button(self):
+        self.reset_button = Button("恢复默认")
+        self.reset_button.set_size_request(self.button_width, WIDGET_HEIGHT)
+        self.reset_button.connect("clicked", self.__reset_button_clicked)
+
+    def __setup_buttons_align(self, list):
+        buttons_align = self.__setup_align(padding_top = 7,                   
+            padding_left = 100 - (len(list) - 1) * 10,                
+            padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING / 5)
+        buttons_box = gtk.HBox(spacing = 5)                  
+        i = 0
+        while i < len(list):
+            buttons_box.pack_start(list[i]) 
+            i += 1
+
+        buttons_align.add(buttons_box)
+
+        return buttons_align
 
     def __init_ui(self):
         self.status_label = self.__setup_label("")
-        self.buttons_align = self.__setup_align(padding_top = 7, 
-                                                padding_left = 100, 
-                                                padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING / 5)
-        self.buttons_box = gtk.HBox()
-        self.reset_button = Button("恢复默认")
-        self.reset_button.connect("clicked", self.__reset_button_clicked)
-        '''
-        TODO: it need to consider about other module pack_start button into buttons_box
-        '''
-        self.buttons_box.pack_start(self.reset_button)
-        self.buttons_align.add(self.buttons_box)
+        self.right_box = gtk.VBox()
+        self.buttons_align = self.__setup_buttons_align(self.buttons_list)
+        self.right_box.pack_start(self.buttons_align)
+        
         self.pack_start(self.status_label)
-        self.pack_start(self.buttons_align)
+        self.pack_start(self.right_box)
         self.set_size_request(-1, STATUS_HEIGHT)
+        
         self.connect("expose-event", self.__expose)
-
+        
         self.__is_init_ui = True
 
     def __handle_dbus_reply(*reply):                                                  
@@ -71,6 +89,19 @@ class FootBox(gtk.HBox):
 
     def __handle_dbus_error(*error):                                                  
         pass
+
+    def __add_button_clicked(self, widget, argv):                                      
+        bus = dbus.SessionBus()                                                              
+        module_dbus_name = "com.deepin.%s_settings" % (self.module_id)                  
+        module_object_name = "/com/deepin/%s_settings" % (self.module_id)                  
+        if is_dbus_name_exists(module_dbus_name):                                       
+            bus_object = bus.get_object(module_dbus_name, module_object_name)       
+            method = bus_object.get_dbus_method("message_receiver")                 
+            method("add_button_cb",                                                        
+                   argv,                                                             
+                   reply_handler=self.__handle_dbus_reply,                          
+                   error_handler=self.__handle_dbus_error                          
+                  )                    
 
     def __reset_button_clicked(self, widget):
         bus = dbus.SessionBus()                                                     
@@ -95,7 +126,23 @@ class FootBox(gtk.HBox):
             self.__init_ui()
         
         self.show_all()
-    
+
+    '''
+    FIXME: guys, please fix the ugly thinking style :)
+    '''
+    def add_button(self, add_button):
+        for widget in self.right_box.get_children():                           
+            self.right_box.remove(widget)  
+
+        self.__setup_reset_button()
+        button = Button(add_button)
+        button.set_size_request(self.button_width, WIDGET_HEIGHT)
+        button.connect("clicked", self.__add_button_clicked, add_button)
+        self.buttons_list.append(button)
+        self.buttons_list.append(self.reset_button)
+        self.buttons_align = self.__setup_buttons_align(self.buttons_list)        
+        self.right_box.pack_start(self.buttons_align)
+
     def set_status(self, status):
         self.status_label.set_text(status)
     
