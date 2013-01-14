@@ -79,7 +79,7 @@ class AddPage(gtk.HBox):
         self.downloading_item = download_expand_item.add_childs(
             [("正在下载(0)", self.task_page)], expand=True)[0]
         
-        network_expand_item.add_childs([("爱壁纸", self.aibizhi_cache_page),
+        network_expand_item.add_childs([("爱壁纸HD", self.aibizhi_cache_page),
                                         ("360壁纸", self.bizhi360_cache_page)], expand=True)        
         
         self.navigatebar.set_highlight_item(self.navigatebar.get_items()[1])
