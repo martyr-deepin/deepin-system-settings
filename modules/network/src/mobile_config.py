@@ -263,6 +263,8 @@ class SideBar(gtk.VBox):
             self.new_connection_list.pop(index)
         if self.connection_tree.visible_items:
             self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        else:
+            container_remove_all(self.buttonbox)
 
     def get_active(self):
         return self.connection_tree.select_rows[0]

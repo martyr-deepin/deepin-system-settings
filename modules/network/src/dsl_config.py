@@ -118,15 +118,16 @@ class DSLSetting(gtk.Alignment):
         if init_connections:
             for con in connections:
                 con.init_settings_prop_dict()
-            self.sidebar.new_connection_list = []
         # Check connections
+        if new_connection:
+            connections += new_connection
+        else:
+            self.sidebar.new_connection_list = []
+
         if connections == []:
             # Create a new connection
             connections = [nm_module.nm_remote_settings.new_pppoe_connection()]
             self.sidebar.new_connection_list.extend(connections)
-
-        if new_connection:
-            connections += new_connection
         
         self.connections = connections
 
@@ -167,7 +168,7 @@ class DSLSetting(gtk.Alignment):
         
     def save_changes(self, widget):
         connection = self.dsl.connection
-        if widget.label is "save":
+        if widget.label == _("save"):
             print "saving"
             if connection.check_setting_finish():
 
@@ -257,7 +258,11 @@ class SideBar(gtk.VBox):
         else:
             index = self.new_connection_list.index(connection)
             self.new_connection_list.pop(index)
-        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        
+        if len(self.connection_tree.visible_items) == 0:
+            container_remove_all(self.buttonbox)
+        else:
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]

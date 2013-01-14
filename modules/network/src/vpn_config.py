@@ -106,15 +106,19 @@ class VPNSetting(gtk.Alignment):
             for connection in connections:
                 connection.init_settings_prop_dict()
         # Check connections
-        if connections == []:
-            # Create a new connection
-            connect = nm_module.nm_remote_settings.new_vpn_pptp_connection()
-            connections.append(connect)
 
         if new_connection:
             connections += new_connection
         else:
             self.sidebar.new_connection_list = []
+
+        if connections == []:
+            # Create a new connection
+            connect = nm_module.nm_remote_settings.new_vpn_pptp_connection()
+            connections.append(connect)
+            self.sidebar.new_connection_list = [connect]
+
+        print "DEBUG", connections
 
         self.ipv4_setting = [IPV4Conf(con, self.set_button, dns_only=True) for con in connections]
         self.pptp_setting = [PPTPConf(con, self.module_frame, self.set_button) for con in connections]
@@ -288,7 +292,11 @@ class SideBar(gtk.VBox):
         else:
             index = self.new_connection_list.index(connection)
             self.new_connection_list.pop(index)
-        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+
+        if len(self.connection_tree.visible_items) == 1:
+            container_remove_all(self.buttonbox)
+        else:
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         return self.connection_tree.select_rows[0]

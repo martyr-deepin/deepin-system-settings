@@ -40,7 +40,7 @@ class Region(gtk.Alignment):
     def __init__(self, connection=None):
         gtk.Alignment.__init__(self)
 
-        style.set_main_window(self, True)
+        #style.set_main_window(self, True)
         self.connect('expose-event', self.expose_event)
         self.prop_dict = {}
 
@@ -51,7 +51,6 @@ class Region(gtk.Alignment):
         
         self.country_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
-                                     #enable_hover=False,
                                      )
 
         self.country_tree.set_size_request(370, 385)
@@ -88,15 +87,18 @@ class Region(gtk.Alignment):
         right_box.pack_start(provider_title, False, False)
         right_box.pack_start(right_box_align, False, False)
         
-        main_table.attach(left_box, 0, 1, 0, 1)
-        main_table.attach(right_box, 1, 2, 0, 1)
+        
+        main_left_align = gtk.Alignment(0, 0, 0, 0)
+        main_left_align.set_padding(15, 0, 20, 0)
+        main_left_align.add(left_box)
+        main_table.attach(main_left_align, 0, 1, 0, 1)
+        main_right_align = gtk.Alignment(0, 0, 0, 0)
+        main_right_align.set_padding(15, 0, 0, 20)
+        main_right_align.add(right_box)
+        main_table.attach(main_right_align, 1, 2, 0, 1)
 
         hints = _("Tips:This assistant helps you easily set up a mobile broadband connection to a cellular network.")
-        #label = Label(hints)
-        #hint_align = style.wrap_with_align(label, align="left")
-
-        #main_table.attach(hint_align, 0,2, 1, 2)
-
+            
         left_box_align.connect("expose-event", self.expose_outline)
         right_box_align.connect("expose-event", self.expose_outline)
 
