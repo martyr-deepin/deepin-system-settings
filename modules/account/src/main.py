@@ -42,10 +42,10 @@ from utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUs
 import gtk
 import pango
 import threading
+import tools
 from module_frame import ModuleFrame
 from constant import *
 from pexpect import TIMEOUT, EOF
-from glib import markup_escape_text
 
 MODULE_NAME = "account"
 COMBO_WIDTH = 190
@@ -88,7 +88,7 @@ class AccountSetting(object):
         #####################################
         # account list page
         # label
-        self.label_widgets["account_name"] = Label("", label_width=230, enable_select=False)
+        self.label_widgets["account_name"] = Label("", label_width=255, enable_select=False)
         self.label_widgets["account"] = Label(_("Account type"))
         self.label_widgets["passwd"] = Label(_("Password"))
         self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH, enable_select=False)
@@ -210,7 +210,7 @@ class AccountSetting(object):
         self.alignment_widgets["left_vbox"].set_size_request(275, -1)
         self.container_widgets["left_vbox"].set_size_request(275, -1)
         self.alignment_widgets["right_vbox"].set_size_request(500, -1)
-        #self.view_widgets["account"].set_size_request(325, 370)
+        self.view_widgets["account"].set_size_request(275, 460)
         ##############################
         # accounts list page
         self.container_widgets["left_vbox"].pack_start(self.view_widgets["account"])
@@ -301,8 +301,9 @@ class AccountSetting(object):
         #self.container_widgets["account_info_table_new"].attach(
             #self.__make_align(self.label_widgets["deepin_account_new"]), 1, 2, 2, 3, 4)
 
-        self.button_widgets["account_name"].set_size(125, WIDGET_HEIGHT)
-        self.button_widgets["account_type_new"].set_size_request(-1, WIDGET_HEIGHT)
+        self.button_widgets["account_name"].entry.check_text = tools.entry_check_account_name
+        self.button_widgets["account_name"].set_size(COMBO_WIDTH, WIDGET_HEIGHT)
+        self.button_widgets["account_type_new"].set_size_request(COMBO_WIDTH, WIDGET_HEIGHT)
 
         self.container_widgets["backup_check_group_hbox_new"].pack_start(self.alignment_widgets["backup_check_group_new"], False, False)
         self.container_widgets["backup_check_group_hbox_new"].pack_start(self.container_widgets["backup_check_group_vbox_new"], False, False)
@@ -482,6 +483,14 @@ class AccountSetting(object):
                 self.label_widgets["account_create_error"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
             return
         self.account_cancle_button_clicked(None)
+
+    def account_name_input_changed(self, entry, value, button):
+        if entry.get_text():
+            if not button.get_sensitive():
+                button.set_sensitive(True)
+        else:
+            if button.get_sensitive():
+                button.set_sensitive(False)
     ## << add account cb ##
 
     ## del account cb >> ##
@@ -512,7 +521,7 @@ class AccountSetting(object):
             show_name = self.current_select_user.get_user_name()
         self.label_widgets["del_account_tips"].set_text(
             "<b>%s</b>" % _("Do you want to keep <u>%s</u>'s files?") %
-            self.escape_markup_string(show_name))
+            tools.escape_markup_string(show_name))
         self.label_widgets["del_account_error_label"].set_text("")
         self.container_widgets["del_account_button_hbox"].set_sensitive(True)
         self.container_widgets["right_vbox"].show_all()
@@ -640,9 +649,6 @@ class AccountSetting(object):
         if not self.current_select_user:
             return
 
-        def check_account_name(name):
-            return len(name) <= 20
-
         def change_account_name(widget, *args):
             #print "current select:", self.current_select_user.get_user_name()
             if self.label_widgets["account_name"].get_parent():
@@ -653,7 +659,7 @@ class AccountSetting(object):
             self.container_widgets["account_info_hbox"].reorder_child(
                 self.label_widgets["account_name"], 0)
             if text != self.current_select_user.get_real_name():
-                #self.label_widgets["account_name"].set_text("<b>%s</b>" % self.escape_markup_string(text))
+                #self.label_widgets["account_name"].set_text("<b>%s</b>" % tools.escape_markup_string(text))
                 try:
                     self.current_select_user.set_real_name(text)
                 except:
@@ -669,7 +675,7 @@ class AccountSetting(object):
         align.set(0.0, 0.5, 0, 0)
         align.set_padding(8, 0, 2, 63)
         input_entry = InputEntry(text)
-        input_entry.entry.check_text = check_account_name
+        input_entry.entry.check_text = tools.entry_check_account_name
         input_entry.set_size(COMBO_WIDTH, WIDGET_HEIGHT)
         input_entry.connect("expose-event", lambda w, e: input_entry.entry.grab_focus())
         input_entry.entry.connect("press-return", change_account_name)
@@ -899,14 +905,6 @@ class AccountSetting(object):
             account_settings.alignment_widgets["set_iconfile"], "right")
         self.module_frame.send_submodule_crumb(2, _("Set Icon"))
 
-    def account_name_input_changed(self, entry, value, button):
-        if entry.get_text():
-            if not button.get_sensitive():
-                button.set_sensitive(True)
-        else:
-            if button.get_sensitive():
-                button.set_sensitive(False)
-
     # dbus signals
     def user_info_changed_cb(self, user, item):
         icon_file = user.get_icon_file()
@@ -919,8 +917,8 @@ class AccountSetting(object):
         else:
             icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         item.icon = icon_pixbuf
-        item.user_name = self.escape_markup_string(user.get_user_name())
-        item.real_name = self.escape_markup_string(user.get_real_name())
+        item.user_name = tools.escape_markup_string(user.get_user_name())
+        item.real_name = tools.escape_markup_string(user.get_real_name())
         item.user_type = user.get_account_type()
         if item.redraw_request_callback:
             item.redraw_request_callback(item)
@@ -955,8 +953,8 @@ class AccountSetting(object):
                 icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         else:
             icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
-        user_item = TreeItem(icon_pixbuf, self.escape_markup_string(user_info[2]),
-                             self.escape_markup_string(user_info[3]),
+        user_item = TreeItem(icon_pixbuf, tools.escape_markup_string(user_info[2]),
+                             tools.escape_markup_string(user_info[3]),
                              user_info[4], user_info[0])
         self.view_widgets["account"].add_items([user_item])
 
@@ -996,13 +994,13 @@ class AccountSetting(object):
             else:
                 icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
             if settings.check_is_myown(user.get_uid()):
-                item = TreeItem(icon_pixbuf, self.escape_markup_string(user.get_real_name()),
-                                self.escape_markup_string(user.get_user_name()),
+                item = TreeItem(icon_pixbuf, tools.escape_markup_string(user.get_real_name()),
+                                tools.escape_markup_string(user.get_user_name()),
                                 user.get_account_type(), user, True)
                 user_items.insert(0, item)
             else:
-                item = TreeItem(icon_pixbuf, self.escape_markup_string(user.get_real_name()),
-                                self.escape_markup_string(user.get_user_name()),
+                item = TreeItem(icon_pixbuf, tools.escape_markup_string(user.get_real_name()),
+                                tools.escape_markup_string(user.get_user_name()),
                                 user.get_account_type(), user)
                 user_items.append(item)
             user.connect("changed", self.user_info_changed_cb, item)
@@ -1032,7 +1030,8 @@ class AccountSetting(object):
         '''
         @return: True if current process has been authorized, else False
         '''
-        return self.permission.get_allowed()
+        #return self.permission.get_allowed()
+        return True
 
     def __init_set_icon_page(self, current_set_user):
         def cancel_set_icon(button):
@@ -1091,7 +1090,7 @@ class AccountSetting(object):
         else:
             show_name = current_set_user.get_user_name()
         tips_label = Label("<b>%s</b>" % _("Set <u>%s</u>'s icon") %
-                           self.escape_markup_string(show_name),
+                           tools.escape_markup_string(show_name),
                            text_size=13, wrap_width=460, enable_select=False)
         error_label = Label("", wrap_width=560, enable_select=False)
         swin = ScrolledWindow()
@@ -1145,240 +1144,12 @@ class AccountSetting(object):
         self.container_widgets["set_iconfile_main_vbox"].pack_start(button_hbox, False, False)
         self.container_widgets["set_iconfile_main_vbox"].show_all()
 
-    def __init_change_pswd_page(self, current_set_user):
-        def show_input_password(button):
-            new_pswd_input.show_password(button.get_active())
-            confirm_pswd_input.show_password(button.get_active())
-
-        def password_input_changed(entry, text, variety, atleast=0):
-            if not text or len(text)<atleast:
-                is_input_empty[variety] = True
-            else:
-                is_input_empty[variety] = False
-            if (is_myown and is_input_empty[CURRENT_PSWD]) or\
-                    is_input_empty[NEW_PSWD] or\
-                    is_input_empty[CONFIRM_PSWD] or\
-                    new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
-                change_button.set_sensitive(False)
-            else:
-                change_button.set_sensitive(True)
-
-        def action_combo_selected(combo_box, item_content, item_value, item_index):
-            if item_value != ACTION_SET_PSWD:
-                current_pswd_input.set_sensitive(False)
-                new_pswd_input.set_sensitive(False)
-                confirm_pswd_input.set_sensitive(False)
-                show_pswd_check.set_sensitive(False)
-                if not change_button.get_sensitive():
-                    change_button.set_sensitive(True)
-            else:
-                current_pswd_input.set_sensitive(True)
-                new_pswd_input.set_sensitive(True)
-                confirm_pswd_input.set_sensitive(True)
-                show_pswd_check.set_sensitive(True)
-                if (is_myown and is_input_empty[CURRENT_PSWD]) or\
-                        is_input_empty[NEW_PSWD] or\
-                        is_input_empty[CONFIRM_PSWD] or\
-                        new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
-                    change_button.set_sensitive(False)
-                else:
-                    change_button.set_sensitive(True)
-
-        def change_user_password_thread(new_pswd, mutex):
-            print "in thread"
-            mutex.acquire()
-            try:
-                if is_myown:
-                    old_pswd = current_pswd_input.entry.get_text()
-                else:
-                    old_pswd = " "
-                b = self.account_dbus.modify_user_passwd(new_pswd, current_set_user.get_user_name(), old_pswd)
-                print "changed status:", b
-                if b != 0:
-                    error_msg = _("password unchanged")
-                    if b == 10:
-                        error_msg = _("Authentication token manipulation error")
-                    if b == -2:
-                        error_msg = _("new and old password are too similar")
-                    gtk.gdk.threads_enter()
-                    error_label.set_text("<span foreground='red'>%s%s</span>" % (
-                        _("Error:"), error_msg))
-                    table2.set_sensitive(True)
-                    gtk.gdk.threads_leave()
-                else:
-                    gtk.gdk.threads_enter()
-                    self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
-                    self.change_crumb(1)
-                    gtk.gdk.threads_leave()
-            except Exception, e:
-                if not isinstance(e, (TIMEOUT, EOF)):
-                    error_msg = e.message
-                else:
-                    error_msg = _("password unchanged")
-                gtk.gdk.threads_enter()
-                error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), error_msg))
-                table2.set_sensitive(True)
-                gtk.gdk.threads_leave()
-            mutex.release()
-
-        def change_user_password(button):
-            table2.set_sensitive(False)
-            if is_authorized:
-                do_action = action_combo.get_current_item()[1]
-                try:
-                    if do_action == ACTION_ENABLE:
-                        current_set_user.set_locked(False)
-                    elif do_action == ACTION_DISABLE:
-                        current_set_user.set_locked(True)
-                    elif do_action == ACTION_NO_PSWD:
-                        current_set_user.set_password_mode(2)
-                except Exception, e:
-                    if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                        error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
-                        return
-                # action is not setting password, then return
-                if do_action != ACTION_SET_PSWD:
-                    self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
-                    self.change_crumb(1)
-                    return
-            new_pswd = new_pswd_input.entry.get_text()
-            confirm_pswd = confirm_pswd_input.entry.get_text()
-            if new_pswd != confirm_pswd:
-                error_label.set_text("<span foreground='red'>%s</span>" % _("两次输入的密码不一致"))
-                table2.set_sensitive(True)
-                return
-            mutex = threading.Lock()
-            t = threading.Thread(target=change_user_password_thread, args=(new_pswd, mutex))
-            t.setDaemon(True)
-            t.start()
-
-        def cancel_change_password(button):
-            self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
-            self.change_crumb(1)
-        CURRENT_PSWD = 0
-        NEW_PSWD = 1
-        CONFIRM_PSWD = 2
-
-        ACTION_SET_PSWD = 0
-        ACTION_NO_PSWD = 1
-        ACTION_ENABLE = 2
-        ACTION_DISABLE = 3
-        is_input_empty = {
-            CURRENT_PSWD: True,
-            NEW_PSWD: True,
-            CONFIRM_PSWD: True}
-        is_authorized = self.get_authorized()
-        is_myown = settings.check_is_myown(current_set_user.get_uid())
-
-        self.container_widgets["change_pswd_main_vbox"].destroy()
-        self.container_widgets["change_pswd_main_vbox"] = gtk.VBox(False)
-        self.alignment_widgets["change_pswd"].add(self.container_widgets["change_pswd_main_vbox"])
-
-        table1 = gtk.Table(2, 2)
-        table2 = gtk.Table(7, 2)
-        button_hbox = gtk.HBox(False)
-
-        if current_set_user.get_real_name():
-            show_name = current_set_user.get_real_name()
-        else:
-            show_name = current_set_user.get_user_name()
-        icon_file = current_set_user.get_icon_file()
-        if os.path.exists(icon_file):
-            try:
-                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-                    icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
-            except:
-                icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
-        else:
-            icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
-        icon = gtk.Image()
-        icon.set_from_pixbuf(icon_pixbuf)
-        tips_label = Label(_("Changing password for"), enable_select=False)
-        username_label = Label(self.escape_markup_string(show_name), enable_select=False)
-        table1.set_col_spacings(WIDGET_SPACING)
-        table1.attach(self.__make_align(icon, height=48), 0, 1, 0, 2, 4)
-        table1.attach(self.__make_align(tips_label), 1, 2, 0, 1)
-        table1.attach(self.__make_align(username_label), 1, 2, 1, 2)
-
-        label1 = Label(_("Action"))
-        label2 = Label(_("Current password"))
-        label3 = Label(_("New password"))
-        label4 = Label(_("Confirm password"))
-        table2.set_col_spacings(WIDGET_SPACING)
-        table2.attach(self.__make_align(label3), 0, 1, 2, 3, 4)
-        table2.attach(self.__make_align(label4), 0, 1, 3, 4, 4)
-
-        action_items = [(_("Set a password now"), ACTION_SET_PSWD),
-                        (_("Log in without a password"), ACTION_NO_PSWD)]
-        if current_set_user.get_locked():
-            action_items.append((_("Enable this account"), ACTION_ENABLE))
-        else:
-            action_items.append((_("Disable this account"), ACTION_DISABLE))
-        action_combo = ComboBox(action_items, max_width=180)
-        action_combo.set_size_request(-1, WIDGET_HEIGHT)
-        current_pswd_input = PasswordEntry()
-        new_pswd_input = PasswordEntry()
-        confirm_pswd_input = PasswordEntry()
-        current_pswd_input.set_size(180, WIDGET_HEIGHT)
-        new_pswd_input.set_size(180, WIDGET_HEIGHT)
-        confirm_pswd_input.set_size(180, WIDGET_HEIGHT)
-        show_pswd_check = CheckButton(_("Show password"), padding_x=0)
-        if is_authorized:
-            table2.attach(self.__make_align(label1), 0, 1, 0, 1, 4)
-            table2.attach(self.__make_align(action_combo), 1, 2, 0, 1, 4)
-        if is_myown:
-            table2.attach(self.__make_align(label2), 0, 1, 1, 2, 4)
-            table2.attach(self.__make_align(current_pswd_input), 1, 2, 1, 2, 4)
-        table2.attach(self.__make_align(new_pswd_input), 1, 2, 2, 3, 4)
-        table2.attach(self.__make_align(confirm_pswd_input), 1, 2, 3, 4, 4)
-        table2.attach(self.__make_align(show_pswd_check), 1, 2, 4, 5, 4)
-        table2.attach(self.__make_align(button_hbox, xalign=1.0), 1, 2, 6, 7, 4)
-
-        cancel_button = Button(_("Cancel"))
-        change_button = Button(_("Change"))
-        change_button.set_sensitive(False)
-        button_hbox.set_spacing(WIDGET_SPACING)
-        button_hbox.pack_start(cancel_button, False, False)
-        button_hbox.pack_start(change_button, False, False)
-
-        error_label = Label("")
-        #table2.attach(error_label, 0, 2, 5, 6, 4, 0)
-
-        self.container_widgets["change_pswd_main_vbox"].set_spacing(BETWEEN_SPACING)
-        self.container_widgets["change_pswd_main_vbox"].pack_start(table1, False, False)
-        self.container_widgets["change_pswd_main_vbox"].pack_start(table2, False, False)
-        self.container_widgets["change_pswd_main_vbox"].pack_start(error_label, False, False)
-        self.container_widgets["change_pswd_main_vbox"].pack_start(gtk.Alignment(0, 0, 1, 1))
-        self.container_widgets["change_pswd_main_vbox"].show_all()
-
-        action_combo.connect("item-selected", action_combo_selected)
-        current_pswd_input.entry.connect("changed", password_input_changed, CURRENT_PSWD)
-        new_pswd_input.entry.connect("changed", password_input_changed, NEW_PSWD, 6)
-        confirm_pswd_input.entry.connect("changed", password_input_changed, CONFIRM_PSWD, 6)
-        show_pswd_check.connect("toggled", show_input_password)
-        cancel_button.connect("clicked", cancel_change_password)
-        change_button.connect("clicked", change_user_password)
-
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
                      padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
-        align = gtk.Alignment()
-        align.set_size_request(width, height)
-        align.set(xalign, yalign, xscale, yscale)
-        align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
-        if widget:
-            align.add(widget)
-        return align
-
-    def escape_markup_string(self, string):
-        '''
-        escape markup string
-        @param string: a markup string
-        @return: a escaped string
-        '''
-        if not string:
-            return ""
-        return markup_escape_text(string)
+        return tools.make_align(widget, xalign, yalign, xscale,
+                                yscale, padding_top, padding_bottom, padding_left,
+                                padding_right, width, height)
 
     def change_crumb(self, crumb_index):
         self.module_frame.send_message("change_crumb", crumb_index)
