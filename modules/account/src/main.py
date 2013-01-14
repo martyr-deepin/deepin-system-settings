@@ -22,7 +22,7 @@
 
 import sys
 import os
-from dtk.ui.utils import get_parent_dir
+from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
@@ -49,9 +49,19 @@ from glib import markup_escape_text
 
 MODULE_NAME = "account"
 COMBO_WIDTH = 165
+LABEL_WIDTH = 150
 
 class AccountSetting(object):
     '''account setting'''
+    CH_PASSWD_CURRENT_PSWD = 0
+    CH_PASSWD_NEW_PSWD = 1
+    CH_PASSWD_CONFIRM_PSWD = 2
+
+    CH_PASSWD_ACTION_SET_PSWD = 0
+    CH_PASSWD_ACTION_NO_PSWD = 1
+    CH_PASSWD_ACTION_ENABLE = 2
+    CH_PASSWD_ACTION_DISABLE = 3
+
     def __init__(self, module_frame):
         super(AccountSetting, self).__init__()
         self.module_frame = module_frame
@@ -67,6 +77,7 @@ class AccountSetting(object):
         self.dialog_widget = {}
         
         self.current_select_user = None
+        self.current_passwd_user = None
         self.current_select_item = None
 
         self.__create_widget()
@@ -137,6 +148,7 @@ class AccountSetting(object):
         self.container_widgets["button_hbox"] = gtk.HBox(False)
         self.container_widgets["right_vbox"] = gtk.VBox(False)
         self.container_widgets["account_info_hbox"] = gtk.HBox(False)
+        self.container_widgets["account_info_vbox"] = gtk.VBox(False)
         self.container_widgets["account_add_vbox"] = gtk.VBox(False)
         self.container_widgets["account_info_table"] = gtk.Table(5, 2)
         self.container_widgets["check_button_table"] = gtk.Table(4, 2)
@@ -152,6 +164,7 @@ class AccountSetting(object):
         self.alignment_widgets["right_vbox"] = gtk.Alignment()
         self.alignment_widgets["account_info_hbox"] = gtk.Alignment()
         self.alignment_widgets["lock_button"] = gtk.Alignment()
+        self.alignment_widgets["account_info_vbox"] = gtk.Alignment()
         self.alignment_widgets["account_add_vbox"] = gtk.Alignment()
         self.alignment_widgets["button_hbox_new"] = gtk.Alignment()
         #####################################
@@ -178,25 +191,25 @@ class AccountSetting(object):
     
     def __adjust_widget(self):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
-        self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["set_iconfile"])
+        #self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
         #self.container_widgets["slider"].append_page(self.alignment_widgets["delete_account"])
         
         self.alignment_widgets["change_pswd"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
         #self.alignment_widgets["delete_account"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
         self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 20)
 
-        self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
+        #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"], False, False)
+        self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right_vbox"])
         self.alignment_widgets["left_vbox"].add(self.container_widgets["left_vbox"])
-        self.alignment_widgets["left_vbox"].set(0, 0, 1, 1)
-        #self.alignment_widgets["left_vbox"].set_padding(1, 1, 1, 1)
         self.alignment_widgets["right_vbox"].add(self.container_widgets["right_vbox"])
+        self.alignment_widgets["left_vbox"].set_size_request(275, -1)
         self.container_widgets["left_vbox"].set_size_request(275, -1)
+        self.alignment_widgets["right_vbox"].set_size_request(500, -1)
         #self.view_widgets["account"].set_size_request(325, 370)
         ##############################
         # accounts list page
@@ -205,7 +218,7 @@ class AccountSetting(object):
         self.alignment_widgets["button_hbox"].add(self.container_widgets["button_hbox"])
         self.alignment_widgets["button_hbox"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["button_hbox"].set(1.0, 0.5, 0, 0)
-        #self.alignment_widgets["button_hbox"].set_padding(0, 0, 0, 10)
+        self.alignment_widgets["button_hbox"].set_padding(0, 0, 0, 10)
         self.container_widgets["button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["button_hbox"].pack_start(self.button_widgets["add_account"], False, False)
         self.container_widgets["button_hbox"].pack_start(self.button_widgets["del_account"], False, False)
@@ -215,8 +228,11 @@ class AccountSetting(object):
         # accounts info
         self.alignment_widgets["right_vbox"].set(0, 0, 1, 1)
         #self.alignment_widgets["right_vbox"].set_padding(0, 0, 20, 20)
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
+        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
         #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_info_vbox"], False, False)
+        self.alignment_widgets["account_info_vbox"].add(self.container_widgets["account_info_vbox"])
+        self.container_widgets["account_info_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
 
         self.container_widgets["account_info_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["account_info_table"].attach(
@@ -224,23 +240,23 @@ class AccountSetting(object):
         self.container_widgets["account_info_table"].attach(self.alignment_widgets["account_info_hbox"], 1, 2, 0, 1, 4)
 
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["account"], xalign=1.0), 0, 1, 1, 2, 4)
+            self.__make_align(self.label_widgets["account"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 1, 2, 4)
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.button_widgets["account_type"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 1, 2, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["passwd"], xalign=1.0), 0, 1, 2, 3, 4)
+            self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["auto_login"], xalign=1.0), 0, 1, 3, 4, 4)
+            self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 4, 5, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
+            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 4, 5, 4)
         #self.container_widgets["account_info_table"].attach(
-            #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 4, 5, 4)
+            #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 5, 6, 4)
         #self.container_widgets["account_info_table"].attach(
-            #self.__make_align(self.label_widgets["deepin_account"]), 1, 2, 4, 5, 4)
-        # TODO 绑定深度帐号
-        self.button_widgets["account_type"].set_size_request(-1, WIDGET_HEIGHT)
+            #self.__make_align(self.label_widgets["deepin_account"]), 1, 2, 5, 6, 4)
+
+        self.button_widgets["account_type"].set_size_request(COMBO_WIDTH, WIDGET_HEIGHT)
         #self.image_widgets["account_icon"].set_size_request(48, 48)
         self.button_widgets["lock"].set_size_request(16, 16)
         self.alignment_widgets["account_info_hbox"].set(0.0, 0.5, 0, 0)
@@ -307,13 +323,21 @@ class AccountSetting(object):
             self.__make_align(self.container_widgets["backup_check_group_hbox_new"]), 0, 2, 2, 3)
 
         self.alignment_widgets["account_create_error"] = self.__make_align(self.label_widgets["account_create_error"])
-        self.alignment_widgets["button_hbox_new"].set(0, 0, 1, 0)
+        self.alignment_widgets["button_hbox_new"].set(1, 0, 0, 0)
         self.alignment_widgets["button_hbox_new"].set_padding(BETWEEN_SPACING, 0, 0, 0)
         self.alignment_widgets["button_hbox_new"].add(self.container_widgets["button_hbox_new"])
         self.container_widgets["button_hbox_new"].pack_start(self.__make_align(height=-1))
         self.container_widgets["button_hbox_new"].set_spacing(WIDGET_SPACING)
         self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_cancle"], False, False)
         self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_create"], False, False)
+        self.alignment_widgets["account_add_vbox"].add(self.container_widgets["account_add_vbox"])
+        self.alignment_widgets["account_add_vbox"].set(0, 0, 1, 1)
+        self.container_widgets["account_add_vbox"].set_size_request(500, -1)
+        self.container_widgets["account_add_vbox"].pack_start(self.container_widgets["account_info_table_new"], False, False)
+        self.container_widgets["account_add_vbox"].pack_start(self.__make_align(), False, False)
+        self.container_widgets["account_add_vbox"].pack_start(self.alignment_widgets["account_create_error"], False, False, BETWEEN_SPACING)
+        self.container_widgets["account_add_vbox"].pack_start(self.__make_align(height=-1))
+        self.container_widgets["account_add_vbox"].pack_start(self.alignment_widgets["button_hbox_new"], False, False)
         #############################
         # del account
         self.container_widgets["del_main_vbox"].set_spacing(BETWEEN_SPACING)
@@ -328,9 +352,11 @@ class AccountSetting(object):
         self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["keep_button"], False, False)
         self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["cancel_button"], False, False)
         self.container_widgets["del_main_vbox"].pack_start(self.container_widgets["del_account_button_hbox"], False, False)
+        ############################
         # set widget state
         if not self.permission.get_can_acquire() and not self.permission.get_can_release():
-            self.button_widgets["lock"].set_sensitive(False)
+            #self.button_widgets["lock"].set_sensitive(False)
+            self.button_widgets["lock"].set_no_show_all(True)
         self.set_widget_state_with_author()
         ###########################
         # change account password page
@@ -344,7 +370,7 @@ class AccountSetting(object):
     def __signals_connect(self):
         self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["change_pswd"].connect("expose-event", self.container_expose_cb)
-        self.alignment_widgets["delete_account"].connect("expose-event", self.container_expose_cb)
+        #self.alignment_widgets["delete_account"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["set_iconfile"].connect("expose-event", self.container_expose_cb)
         
         #self.container_widgets["left_vbox"].connect("expose-event", self.on_left_vbox_expose_cb)
@@ -397,6 +423,8 @@ class AccountSetting(object):
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
         cr.rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)                                                 
         cr.fill()
+        #print self.container_widgets["right_vbox"].allocation
+        #print self.button_widgets["account_type"].allocation
     
     def on_left_vbox_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
@@ -420,26 +448,40 @@ class AccountSetting(object):
             return
         self.current_select_user.set_automatic_login(button.get_active())
     
+    ## add account cb >> ##
     def add_account_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table_new"], False, False)
-        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table_new"], False, False)
-        self.container_widgets["right_vbox"].pack_start(self.__make_align(), False, False)
-        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_create_error"], False, False, BETWEEN_SPACING)
-        self.container_widgets["right_vbox"].pack_start(self.__make_align())
-        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["button_hbox_new"], False, False)
-        # TODO 绑定深度
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_add_vbox"])
+
         self.button_widgets["account_name"].set_text("")
-        self.button_widgets["account_type"].set_select_index(0)
+        self.button_widgets["account_type_new"].set_select_index(0)
         self.label_widgets["account_create_error"].set_text("")
         self.button_widgets["account_create"].set_sensitive(False)
         self.container_widgets["right_vbox"].show_all()
         button.set_sensitive(False)
     
+    def account_cancle_button_clicked(self, button):
+        container_remove_all(self.container_widgets["right_vbox"])
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_info_vbox"], False, False)
+        self.container_widgets["right_vbox"].show_all()
+        self.button_widgets["add_account"].set_sensitive(True)
+
+    def account_create_button_clicked(self, button):
+        username = self.button_widgets["account_name"].get_text()
+        account_type = self.button_widgets["account_type_new"].get_current_item()[1]
+        try:
+            self.account_dbus.create_user(username, username, account_type)
+        except Exception, e:
+            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                self.label_widgets["account_create_error"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+            return
+        self.account_cancle_button_clicked(None)
+    ## << add account cb ##
+    
+    ## del account cb >> ##
     def del_cancel_delete_cb(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
-        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_info_vbox"], False, False)
         self.container_widgets["right_vbox"].show_all()
         
     def del_delete_user_file_cd(self, button, del_file):
@@ -468,26 +510,11 @@ class AccountSetting(object):
         self.label_widgets["del_account_error_label"].set_text("")
         self.container_widgets["del_account_button_hbox"].set_sensitive(True)
         self.container_widgets["right_vbox"].show_all()
-    
-    def account_cancle_button_clicked(self, button):
-        container_remove_all(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
-        #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
-        self.container_widgets["right_vbox"].show_all()
-        self.button_widgets["add_account"].set_sensitive(True)
-
-    def account_create_button_clicked(self, button):
-        username = self.button_widgets["account_name"].get_text()
-        account_type = self.button_widgets["account_type_new"].get_current_item()[1]
-        try:
-            self.account_dbus.create_user(username, username, account_type)
-        except Exception, e:
-            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                self.label_widgets["account_create_error"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
-            return
-        self.account_cancle_button_clicked(None)
+    ## << del account cb ##
     
     def account_treeview_select(self, tv, item, row):
+        if self.current_passwd_user:
+            self.button_widgets["cancel_change_pswd"].clicked()
         self.current_select_user = dbus_obj = item.dbus_obj
         self.current_select_item = item
         print "treeview current select:'%s', '%s'" % ( self.current_select_user.get_user_name(), self.current_select_user.get_real_name())
@@ -567,8 +594,8 @@ class AccountSetting(object):
             return
         try:
             self.current_select_user.set_account_type(item_value)
-        except:
-            pass
+        except Exception, e:
+            print e
     
     def label_enter_notify_cb(self, widget, event, is_realname=False):
         if not self.current_select_item:
@@ -643,13 +670,215 @@ class AccountSetting(object):
         self.container_widgets["account_info_hbox"].pack_start(align)
         self.container_widgets["account_info_hbox"].reorder_child(align, 0)
     
+    ## change password >> ##
     def password_change_press_cb(self, widget, event):
         if not self.current_select_user:
             return
-        self.__init_change_pswd_page(self.current_select_user)
-        self.container_widgets["slider"].slide_to_page(
-            account_settings.alignment_widgets["change_pswd"], "right")
-        self.module_frame.send_submodule_crumb(2, _("Change Password"))
+        self.current_passwd_user = self.current_select_user
+        passwd_align = self.label_widgets["passwd"].get_parent()
+        passwd_char_align = self.label_widgets["passwd_char"].get_parent()
+        self.container_widgets["account_info_table"].remove(passwd_align)
+        self.container_widgets["account_info_table"].remove(passwd_char_align)
+        left_vbox = gtk.VBox(False)
+        right_vbox = gtk.VBox(False)
+        button_vbox = gtk.VBox(False)
+        button_hbox = gtk.HBox(False)
+        self.container_widgets["account_info_table"].attach(left_vbox, 0, 1, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(right_vbox, 1, 2, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(button_vbox, 0, 2, 3, 4, 4)
+
+        is_input_empty = {
+            self.CH_PASSWD_CURRENT_PSWD: True,
+            self.CH_PASSWD_NEW_PSWD: True,
+            self.CH_PASSWD_CONFIRM_PSWD: True}
+        is_authorized = self.get_authorized()
+        is_myown = settings.check_is_myown(self.current_passwd_user.get_uid())
+
+        label1 = Label(_("Action"))
+        label2 = Label(_("Current password"))
+        label3 = Label(_("New password"))
+        label4 = Label(_("Confirm password"))
+
+        action_items = [(_("Set a password now"), self.CH_PASSWD_ACTION_SET_PSWD),
+                        (_("Log in without a password"), self.CH_PASSWD_ACTION_NO_PSWD)]
+        if self.current_passwd_user.get_locked():
+            action_items.append((_("Enable this account"), self.CH_PASSWD_ACTION_ENABLE))
+        else:
+            action_items.append((_("Disable this account"), self.CH_PASSWD_ACTION_DISABLE))
+        action_combo = ComboBox(action_items, max_width=180)
+        action_combo.set_size_request(-1, WIDGET_HEIGHT)
+
+        current_pswd_input = PasswordEntry()
+        new_pswd_input = PasswordEntry()
+        confirm_pswd_input = PasswordEntry()
+        current_pswd_input.set_size(COMBO_WIDTH, WIDGET_HEIGHT)
+        new_pswd_input.set_size(COMBO_WIDTH, WIDGET_HEIGHT)
+        confirm_pswd_input.set_size(COMBO_WIDTH, WIDGET_HEIGHT)
+        show_pswd_check = CheckButton(_("Show password"), padding_x=0)
+
+        if is_authorized:
+            left_vbox.pack_start(self.__make_align(label1, xalign=1.0, width=LABEL_WIDTH), False, False)
+            right_vbox.pack_start(self.__make_align(action_combo), False, False)
+        if is_myown:
+            left_vbox.pack_start(self.__make_align(label2, xalign=1.0, width=LABEL_WIDTH), False, False)
+            right_vbox.pack_start(self.__make_align(current_pswd_input), False, False)
+
+        left_vbox.pack_start(self.__make_align(label3, xalign=1.0, width=LABEL_WIDTH), False, False)
+        left_vbox.pack_start(self.__make_align(label4, xalign=1.0, width=LABEL_WIDTH), False, False)
+
+        right_vbox.pack_start(self.__make_align(new_pswd_input), False, False)
+        right_vbox.pack_start(self.__make_align(confirm_pswd_input), False, False)
+        right_vbox.pack_start(self.__make_align(show_pswd_check), False, False)
+
+        self.button_widgets["cancel_change_pswd"] = cancel_button = Button(_("Cancel"))
+        change_button = Button(_("Change"))
+        change_button.set_sensitive(False)
+        button_hbox.set_spacing(WIDGET_SPACING)
+        button_hbox.pack_start(cancel_button, False, False)
+        button_hbox.pack_start(change_button, False, False)
+
+        error_label = Label(" ")
+
+        button_vbox.pack_start(error_label, False, False)
+        button_vbox.pack_start(self.__make_align(button_hbox, xalign=1.0, width=LABEL_WIDTH+COMBO_WIDTH+WIDGET_SPACING), False, False)
+
+        all_widgets = (current_pswd_input, new_pswd_input, confirm_pswd_input,
+                       show_pswd_check, cancel_button, change_button, error_label,
+                       is_myown, is_authorized, is_input_empty)
+        action_combo.connect("item-selected", self.action_combo_selected, all_widgets)
+        show_pswd_check.connect("toggled", self.show_input_password, new_pswd_input, confirm_pswd_input)
+        cancel_button.connect("clicked", self.cancel_change_password,
+                              left_vbox, right_vbox, button_vbox, passwd_align, passwd_char_align)
+        change_button.connect("clicked", self.change_user_password, all_widgets)
+        current_pswd_input.entry.connect("changed", self.password_input_changed, all_widgets, self.CH_PASSWD_CURRENT_PSWD)
+        new_pswd_input.entry.connect("changed", self.password_input_changed, all_widgets, self.CH_PASSWD_NEW_PSWD, 6)
+        confirm_pswd_input.entry.connect("changed", self.password_input_changed, all_widgets, self.CH_PASSWD_CONFIRM_PSWD, 6)
+
+        self.container_widgets["account_info_table"].show_all()
+
+    def show_input_password(self, button, new_pswd_input, confirm_pswd_input):
+        new_pswd_input.show_password(button.get_active())
+        confirm_pswd_input.show_password(button.get_active())
+    
+    def password_input_changed(self, entry, text, all_widgets, variety, atleast=0):
+        (current_pswd_input, new_pswd_input, confirm_pswd_input,
+         show_pswd_check, cancel_button, change_button, error_label,
+         is_myown, is_authorized, is_input_empty) = all_widgets
+        if not text or len(text)<atleast:
+            is_input_empty[variety] = True
+        else:
+            is_input_empty[variety] = False
+        if (is_myown and is_input_empty[self.CH_PASSWD_CURRENT_PSWD]) or\
+                is_input_empty[self.CH_PASSWD_NEW_PSWD] or\
+                is_input_empty[self.CH_PASSWD_CONFIRM_PSWD] or\
+                new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
+            change_button.set_sensitive(False)
+        else:
+            change_button.set_sensitive(True)
+
+    def action_combo_selected(self, combo_box, item_content, item_value, item_index, all_widgets):
+        (current_pswd_input, new_pswd_input, confirm_pswd_input, show_pswd_check,
+         change_button, error_label, is_myown, is_authorized, is_input_empty) = all_widgets
+        if item_value != self.CH_PASSWD_ACTION_SET_PSWD:
+            current_pswd_input.set_sensitive(False)
+            new_pswd_input.set_sensitive(False)
+            confirm_pswd_input.set_sensitive(False)
+            show_pswd_check.set_sensitive(False)
+            if not change_button.get_sensitive():
+                change_button.set_sensitive(True)
+        else:
+            current_pswd_input.set_sensitive(True)
+            new_pswd_input.set_sensitive(True)
+            confirm_pswd_input.set_sensitive(True)
+            show_pswd_check.set_sensitive(True)
+            if (is_myown and is_input_empty[self.CH_PASSWD_CURRENT_PSWD]) or\
+                    is_input_empty[self.CH_PASSWD_NEW_PSWD] or\
+                    is_input_empty[self.CH_PASSWD_CONFIRM_PSWD] or\
+                    new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
+                change_button.set_sensitive(False)
+            else:
+                change_button.set_sensitive(True)
+        
+    def change_user_password_thread(self, new_pswd, mutex, current_pswd_input, cancel_button, error_label, is_myown):
+        print "in thread"
+        mutex.acquire()
+        try:
+            if is_myown:
+                old_pswd = current_pswd_input.entry.get_text()
+            else:
+                old_pswd = " "
+            b = self.account_dbus.modify_user_passwd(new_pswd, self.current_passwd_user.get_user_name(), old_pswd)
+            print "changed status:", b
+            if b != 0:
+                error_msg = _("password unchanged")
+                if b == 10:
+                    error_msg = _("Authentication token manipulation error")
+                if b == -2:
+                    error_msg = _("new and old password are too similar")
+                gtk.gdk.threads_enter()
+                error_label.set_text("<span foreground='red'>%s%s</span>" % (
+                    _("Error:"), error_msg))
+                self.container_widgets["main_hbox"].set_sensitive(True)
+                gtk.gdk.threads_leave()
+            else:
+                gtk.gdk.threads_enter()
+                cancel_button.clicked()
+                gtk.gdk.threads_leave()
+        except Exception, e:
+            if not isinstance(e, (TIMEOUT, EOF)):
+                error_msg = e.message
+            else:
+                error_msg = _("password unchanged")
+            gtk.gdk.threads_enter()
+            error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), error_msg))
+            self.container_widgets["main_hbox"].set_sensitive(True)
+            gtk.gdk.threads_leave()
+        mutex.release()
+        
+    def change_user_password(self, button, all_widgets):
+        (current_pswd_input, new_pswd_input, confirm_pswd_input,
+         show_pswd_check, cancel_button, change_button, error_label,
+         is_myown, is_authorized, is_input_empty) = all_widgets
+        self.container_widgets["main_hbox"].set_sensitive(False)
+        if is_authorized:
+            do_action = action_combo.get_current_item()[1]
+            try:
+                if do_action == self.CH_PASSWD_ACTION_ENABLE:
+                    self.current_passwd_user.set_locked(False)
+                elif do_action == self.CH_PASSWD_ACTION_DISABLE:
+                    self.current_passwd_user.set_locked(True)
+                elif do_action == self.CH_PASSWD_ACTION_NO_PSWD:
+                    self.current_passwd_user.set_password_mode(2)
+            except Exception, e:
+                if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                    return
+            # action is not setting password, then return
+            if do_action != self.CH_PASSWD_ACTION_SET_PSWD:
+                cancel_button.clicked()
+                return
+        new_pswd = new_pswd_input.entry.get_text()
+        confirm_pswd = confirm_pswd_input.entry.get_text()
+        if new_pswd != confirm_pswd:
+            error_label.set_text("<span foreground='red'>%s</span>" % _("两次输入的密码不一致"))
+            self.container_widgets["main_hbox"].set_sensitive(True)
+            return
+        mutex = threading.Lock()
+        t = threading.Thread(target=self.change_user_password_thread,
+                             args=(new_pswd, mutex, current_pswd_input, cancel_button, error_label, is_myown))
+        t.setDaemon(True)
+        t.start()
+
+    def cancel_change_password(self, button, lvbox, rvbox, bvbox, passwd_align, passwd_char_align):
+        lvbox.destroy()
+        rvbox.destroy()
+        bvbox.destroy()
+        self.container_widgets["account_info_table"].attach(passwd_align, 0, 1, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(passwd_char_align, 1, 2, 2, 3, 4)
+        self.container_widgets["account_info_table"].show_all()
+        self.container_widgets["main_hbox"].set_sensitive(True)
+        self.current_passwd_user = None
+    ## << change passowrd ##
     
     def icon_file_press_cb(self, widget, event):
         if not self.current_select_user:

@@ -52,6 +52,8 @@ import keybind_list
 import keybinds
 import pangocairo
 import pango
+import threading
+from time import sleep
 from module_frame import ModuleFrame
 from constant import *
 
@@ -489,6 +491,8 @@ class KeySetting(object):
         self.container_widgets["type_main_hbox"].connect("expose-event", self.draw_background)
         self.container_widgets["layout_main_hbox"].connect("expose-event", self.draw_background)
         self.container_widgets["shortcuts_main_hbox"].connect("expose-event", self.draw_background)
+        from pprint import pprint
+        self.container_widgets["tab_box"].connect("switch-tab", lambda w, i: pprint(("switch tab:", i)))
         # typing widget signal
         # repeat delay
         self.settings.connect("changed", self.keyboard_setting_changed_cb)
@@ -705,18 +709,36 @@ class KeySetting(object):
     def xkb_keyboard_setting_changed_cd(self, key):
         if key == 'layouts':
             print "layouts changed---------------"
-            self.xkb.update_current_config()
-            current_variants = self.xkb.get_current_variants_description()
-            print current_variants
-            for name in current_variants:
-                if name and name[0]:
-                    try:
-                        layout_name = markup_escape_text(name[0])
-                    except:
-                        layout_name = " "
-                    print layout_name
-                    self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % layout_name)
-                    break
+            layouts = settings.xkb_get_layouts()
+            if layouts:
+                variants = layouts[0].split('\t')
+                if len(variants) > 1:
+                    descript = self.xkb.get_variants_description(variants[1], variants[0])
+                else:
+                    descript = self.xkb.get_variants_description('', variants[0])
+                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % markup_escape_text(descript))
+            else:
+                mutex = threading.Lock()
+                t = threading.Thread(target=self.xkb_keyboard_setting_changed_thread, args=(mutex,))
+                t.setDaemon(True)
+                t.start()
+
+    def xkb_keyboard_setting_changed_thread(self, mutex):
+        mutex.acquire()
+        sleep(1.5)
+        self.xkb.update_current_config()
+        current_variants = self.xkb.get_current_variants_description()
+        for name in current_variants:
+            if name and name[0]:
+                try:
+                    layout_name = markup_escape_text(name[0])
+                except:
+                    layout_name = " "
+                gtk.gdk.threads_enter()
+                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % layout_name)
+                gtk.gdk.threads_leave()
+                break
+        mutex.release()
     
     ######################################
     # shortcuts widget callback
@@ -891,6 +913,7 @@ class KeySetting(object):
             pass
     
 if __name__ == '__main__':
+    gtk.gdk.threads_init()
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
     key_settings = KeySetting(module_frame)

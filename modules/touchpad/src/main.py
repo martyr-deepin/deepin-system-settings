@@ -96,7 +96,7 @@ class TouchpadSetting(object):
         self.label_widgets["double_click"] = Label(_("Double-click"), text_size=title_item_font_size)
         self.label_widgets["click_rate"] = Label(_("Frequency"),
             text_size=option_item_font_szie)
-        self.label_widgets["double_test"] = Label(_("Double-click on the folder to test your settings."),
+        self.label_widgets["double_test"] = Label(_("双击笑脸测试您的点击频率。"),
             label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False)
         self.label_widgets["drag_drop"] = Label(_("Drag and Drop"), text_size=title_item_font_size)
         self.label_widgets["drag_threshold"] = Label(_("Drag threshold"),

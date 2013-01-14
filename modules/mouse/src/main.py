@@ -94,7 +94,7 @@ class MouseSetting(object):
             text_size=option_item_font_szie)
         self.label_widgets["click_fast"] = Label(_("Fast"))
         self.label_widgets["click_slow"] = Label(_("Slow"))
-        self.label_widgets["double_test"] = Label(_("Double-click on the folder to test your settings."),
+        self.label_widgets["double_test"] = Label(_("双击笑脸测试您的点击频率。"),
             label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False)
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
         # button init
