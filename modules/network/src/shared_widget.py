@@ -155,7 +155,8 @@ class IPV4Conf(gtk.VBox):
             self.table.attach(self.slave_dns_align, 0, 1, 8, 9)
             self.table.attach(self.slave_entry_align, 1, 2, 8, 9)
 
-        self.table.show_all()
+        #self.table.show_all()
+        self.queue_draw()
 
     def set_group_sensitive(self, group_name, sensitive):
         if group_name is "ip":
@@ -372,7 +373,8 @@ class IPV6Conf(gtk.VBox):
             self.table.attach(self.slave_dns_align, 0, 1, 8, 9)
             self.table.attach(self.slave_entry_align, 1, 2, 8, 9)
 
-        self.table.show_all()
+        #self.table.show_all()
+        self.queue_draw()
 
     def reset(self, connection):
         self.setting = connection.get_setting("ipv6")       

@@ -162,6 +162,11 @@ class NMSettingWireless (NMSetting):
     def security(self, new_security):
         self.prop_dict["security"] = TypeConvert.py2_dbus_string(new_security)
 
+    @security.deleter
+    def security(self):
+        if "security" in self.prop_dict.iterkeys():
+            del self.prop_dict["security"]
+
     @property
     def ssid(self):
         if "ssid" in self.prop_dict.iterkeys():

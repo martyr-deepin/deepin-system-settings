@@ -16,6 +16,7 @@ from nm_modules import nm_module
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
 from shared_widget import IPV4Conf
+from foot_box import FootBox
 
 import gtk
 
@@ -43,8 +44,15 @@ class MobileSetting(gtk.Alignment):
         
         # Add UI Align
         style.set_main_window(self)
+        main_vbox = gtk.VBox()
+        self.foot_box = FootBox()
         hbox = gtk.HBox()
-        self.add(hbox)
+        hbox.connect("expose-event",self.expose_line)
+
+        main_vbox.pack_start(hbox, False, False)
+        main_vbox.pack_start(self.foot_box, False, False)
+
+        self.add(main_vbox)
 
         self.region = None
         self.ipv4 = None
@@ -53,7 +61,7 @@ class MobileSetting(gtk.Alignment):
 
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 408)
+        self.tab_window.set_size_request(674, 415)
         self.items = [(_("Broadband"), NoSetting()),
                       (_("IPv4 Setting"), NoSetting()),
                       (_("PPP"), NoSetting())]
@@ -62,18 +70,20 @@ class MobileSetting(gtk.Alignment):
 
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
-        vbox = gtk.VBox()
-        vbox.pack_start(self.tab_window ,True, True)
-        hbox.pack_start(vbox, True, True)
+        hbox.pack_start(self.tab_window ,True, True)
         self.save_button = Button("save")
         self.save_button.connect("clicked", self.save_changes)
-        buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(self.save_button)
-        vbox.pack_start(buttons_aligns, False , False)
+        self.foot_box.set_buttons([self.save_button])
+        self.foot_box.set_tip("Tip:sfdsfdsfadsf")
         
         self.show_all()
         style.draw_background_color(self)
         style.draw_separator(self.sidebar, 3)
+
+    def expose_line(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation

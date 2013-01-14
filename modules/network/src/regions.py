@@ -16,6 +16,7 @@ import pango
 import style
 from constants import FRAME_VERTICAL_SPACING, TITLE_FONT_SIZE, BETWEEN_SPACING, TREEVIEW_BG_COLOR, IMG_WIDTH
 from container import TitleBar
+from foot_box import FootBox
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 from nls import _
@@ -44,7 +45,7 @@ class Region(gtk.Alignment):
         self.prop_dict = {}
 
         main_table = gtk.Table(2, 2, False)
-        main_table.set_row_spacings(10)
+        main_table.set_row_spacing(1, 10)
         main_table.set_col_spacings(4)
         self.add(main_table)
         
@@ -53,7 +54,7 @@ class Region(gtk.Alignment):
                                      #enable_hover=False,
                                      )
 
-        self.country_tree.set_size_request(370, 345)
+        self.country_tree.set_size_request(370, 385)
         self.country_tree.draw_mask = self.draw_mask
         self.country_tree.connect("button-press-item", self.country_selected)
         left_box_align = gtk.Alignment(0, 0, 0, 0)
@@ -73,7 +74,7 @@ class Region(gtk.Alignment):
                                      enable_drag_drop=False,
                                      #enable_hover=False,
                                       )
-        self.provider_tree.set_size_request(370, 345)
+        self.provider_tree.set_size_request(370, 385)
         self.provider_tree.draw_mask = self.draw_mask
         self.provider_tree.connect("button-press-item", self.provider_selected)
         right_box_align = gtk.Alignment(0, 0, 0, 0)
@@ -91,15 +92,22 @@ class Region(gtk.Alignment):
         main_table.attach(right_box, 1, 2, 0, 1)
 
         hints = _("Tips:This assistant helps you easily set up a mobile broadband connection to a cellular network.")
-        label = Label(hints)
-        hint_align = style.wrap_with_align(label, align="left")
+        #label = Label(hints)
+        #hint_align = style.wrap_with_align(label, align="left")
 
-        main_table.attach(hint_align, 0,2, 1, 2)
+        #main_table.attach(hint_align, 0,2, 1, 2)
+
+        left_box_align.connect("expose-event", self.expose_outline)
+        right_box_align.connect("expose-event", self.expose_outline)
 
         next_button = Button("Next")
         next_button.connect("clicked", self.next_button_clicked)
-        left_box_align.connect("expose-event", self.expose_outline)
-        right_box_align.connect("expose-event", self.expose_outline)
+        
+        self.foot_box = FootBox()
+        self.foot_box.set_buttons([next_button])
+        self.foot_box.set_tip(hints)
+        main_table.attach(self.foot_box, 0, 2, 1, 2)
+
         self.show_all()
         #self.init()
 

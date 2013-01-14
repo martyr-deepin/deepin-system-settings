@@ -29,6 +29,7 @@ from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox
 from nm_modules import nm_module
 from nmlib.nmcache import cache
+from foot_box import FootBox
 #from widgets import SettingButton
 from settings_widget import EntryTreeView, SettingItem, ShowOthers, AddSettingItem
 import gtk
@@ -58,8 +59,13 @@ class WirelessSetting(gtk.Alignment):
 
         # Add UI Align
         style.set_main_window(self)
+        main_vbox = gtk.VBox()
+        self.foot_box = FootBox()
         hbox = gtk.HBox()
-        self.add(hbox)
+        hbox.connect("expose-event",self.expose_line)
+        main_vbox.pack_start(hbox, False, False)
+        main_vbox.pack_start(self.foot_box, False, False)
+        self.add(main_vbox)
 
         self.wireless = None
         self.ipv4 = None
@@ -68,7 +74,7 @@ class WirelessSetting(gtk.Alignment):
 
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 408)
+        self.tab_window.set_size_request(674, 415)
         self.items = [(_("Wireless"), NoSetting()),
                       (_("Security"), NoSetting()),
                       (_("IPV4"), NoSetting()),
@@ -79,23 +85,18 @@ class WirelessSetting(gtk.Alignment):
 
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
-        vbox = gtk.VBox()
-        vbox.pack_start(self.tab_window ,True, True)
-        hbox.pack_start(vbox, True, True)
+        hbox.pack_start(self.tab_window ,True, True)
         self.save_button = Button("Apply")
         self.save_button.connect("clicked", self.save_changes)
-        buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(self.save_button)
-        vbox.pack_start(buttons_aligns, False , False)
+        self.foot_box.set_buttons([self.save_button])
 
         self.connect("expose-event", self.expose_event)
         style.draw_separator(self.sidebar, 3)
 
-    def expose_outline(self, widget, event, exclude):
+    def expose_line(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
-
-        style.draw_out_line(cr, rect, exclude)
+        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -175,6 +176,7 @@ class WirelessSetting(gtk.Alignment):
         connection = self.ipv4.connection
         if widget.label == "save":
             if connection.check_setting_finish():
+                print "DEBUF:",connection.settings_dict
                 this_index = self.connections.index(connection)
                 if isinstance(connection, NMRemoteConnection):
                     connection.update()
@@ -301,7 +303,10 @@ class SideBar(gtk.VBox):
         else:
             index = self.new_connection_list.index(connection)
             self.new_connection_list.pop(index)
-        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        if self.new_connection_list == []:
+            container_remove_all(self.buttonbox)
+        else:
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
 
     def get_active(self):
         row = self.connection_tree.select_rows[0]
@@ -348,6 +353,7 @@ class Security(gtk.VBox):
         self.set_button = set_button_cb
 
         self.setting = self.connection.get_setting("802-11-wireless-security")
+        print self.setting
         self.security_label = Label(_("Security:"))
         self.key_label = Label(_("Key:"))
         self.wep_index_label = Label(_("Wep index:"))
@@ -400,19 +406,21 @@ class Security(gtk.VBox):
 
         self.add(align)
 
-    def reset(self):
+    def reset(self, security=True):
         ## Add security
         container_remove_all(self.table)
 
         self.table.attach(self.security_label_align, 0, 1, 0, 1)
         self.table.attach(self.security_combo_align, 1, 4, 0, 1)
+
+        if not security:
+            return 
         
         keys = [None, "none", "none","wpa-psk"]
-        
-        if self.connection.get_setting("802-11-wireless").mode == "adhoc":
-            self.security_combo.set_items([(_("None"), None),
-                      (_("WEP (Hex or ASCII)"), "none"),
-                      (_("WEP 104/128-bit Passphrase"), "none")])
+        #if self.connection.get_setting("802-11-wireless").mode == "adhoc":
+            #self.security_combo.set_items([(_("None"), None),
+                      #(_("WEP (Hex or ASCII)"), "none"),
+                      #(_("WEP 104/128-bit Passphrase"), "none")])
         
         self.key_mgmt = self.setting.key_mgmt
         if self.key_mgmt == "none":
@@ -430,55 +438,65 @@ class Security(gtk.VBox):
             except:
                 secret = ""
 
-        if self.security_combo.get_current_item()[1] == "wpa-psk":
-            self.table.attach(self.password_label_align, 0, 1, 1, 2)
-            self.table.attach(self.password_entry_align, 1, 4, 1, 2)
-            self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
-            
-            self.password_entry.entry.set_text(secret)
-            self.setting.psk = secret
+            if self.security_combo.get_current_item()[1] == "wpa-psk":
+                self.table.attach(self.password_label_align, 0, 1, 1, 2)
+                self.table.attach(self.password_entry_align, 1, 4, 1, 2)
+                self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
+                
+                self.password_entry.entry.set_text(secret)
+                self.setting.psk = secret
 
-        elif self.security_combo.get_current_item()[1] == "none":
-            # Add Key
-            self.table.attach(self.key_label_align, 0, 1, 1, 2)
-            self.table.attach(self.key_entry_align, 1, 4, 1, 2)
-            self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
-            # Add wep index
-            self.table.attach(self.wep_index_label_align, 0, 1, 3, 4)
-            self.table.attach(self.wep_index_spin_align, 1, 4, 3, 4)
-            # Add Auth
-            self.table.attach(self.auth_label_align, 0, 1, 4, 5)
-            self.table.attach(self.auth_combo_align, 1, 4, 4, 5)
+            elif self.security_combo.get_current_item()[1] == "none":
+                # Add Key
+                self.table.attach(self.key_label_align, 0, 1, 1, 2)
+                self.table.attach(self.key_entry_align, 1, 4, 1, 2)
+                self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
+                # Add wep index
+                self.table.attach(self.wep_index_label_align, 0, 1, 3, 4)
+                self.table.attach(self.wep_index_spin_align, 1, 4, 3, 4)
+                # Add Auth
+                self.table.attach(self.auth_label_align, 0, 1, 4, 5)
+                self.table.attach(self.auth_combo_align, 1, 4, 4, 5)
 
-            # Retrieve wep properties
-            try:
-                key = secret
-                index = self.setting.wep_tx_keyidx
-                auth = self.setting.auth_alg
+                # Retrieve wep properties
+                try:
+                    key = secret
+                    index = self.setting.wep_tx_keyidx
+                    auth = self.setting.auth_alg
+                    self.auth_combo.set_select_index(["open", "shared"].index(auth))
+                except:
+                    key = ""
+                    index = 0
+                    auth = "open"
+                # must convert long int to int 
+                index = int(index)
+                self.key_entry.entry.set_text(key)
+                self.setting.set_wep_key(index, secret)
+                self.wep_index_spin.set_value(index)
                 self.auth_combo.set_select_index(["open", "shared"].index(auth))
-            except:
-                key = ""
-                index = 0
-                auth = "open"
-            # must convert long int to int 
-            index = int(index)
-            self.key_entry.entry.set_text(key)
-            self.setting.set_wep_key(index, secret)
-            self.wep_index_spin.set_value(index)
-            self.auth_combo.set_select_index(["open", "shared"].index(auth))
-        self.table.show_all()
+        self.queue_draw()
 
     def change_encry_type(self, widget, content, value, index):
-        self.setting.key_mgmt = value
-        # FIXME Maybe needed
-        self.setting.adapt_wireless_security_commit()
-        if value == "none":
-            self.setting.wep_key_type = index
-        self.set_button("save", False)
-        self.reset()
+        if value == None:
+            self.connection.del_setting("802-11-wireless-security")
+            del self.connection.get_setting("802-11-wireless").security
+            self.reset(security=False)
+            self.set_button("save", True)
+        else:
+            self.connection.get_setting("802-11-wireless").security = "802-11-wireless-security"
+            self.connection.reinit_setting("802-11-wireless-security")
+            self.setting = self.connection.get_setting("802-11-wireless-security")
+            print "change encry type", self.setting
+            self.setting.key_mgmt = value
+            if value == "none":
+                self.setting.wep_key_type = index
+            self.set_button("save", False)
+            self.reset()
+
     def save_wpa_pwd(self, widget, content):
         if self.setting.verify_wpa_psk(content):
             self.setting.psk = content
+            print "DEBUG:",self.setting.prop_dict
             check_settings(self.connection, self.set_button)
         else:
             self.set_button("save", False)

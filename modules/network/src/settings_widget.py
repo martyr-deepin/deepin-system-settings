@@ -456,16 +456,7 @@ class SettingItem(TreeItem):
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
         if self.is_select:
-            #if self.is_hover:
-                #check_icon = self.check_pixbuf_out
-            #else:
             check_icon = self.check_pixbuf_active
-        #else:
-            #if self.is_hover:
-                #check_icon = self.check_pixbuf_hover
-            #else:
-                #check_icon = self.check_pixbuf_out
-
             draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
     def render_content(self, cr, rect):

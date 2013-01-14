@@ -25,6 +25,7 @@ from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text, draw_line
 from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo
 from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
+from dtk.ui.new_entry import EntryBuffer, Entry
 
 from lan_config import WiredSetting, NoSetting
 from wlan_config import WirelessSetting
@@ -36,6 +37,7 @@ import sys,os
 from dtk.ui.label import Label
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
+from nls import _
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 class WirelessItem(TreeItem):
@@ -213,6 +215,10 @@ class WirelessItem(TreeItem):
         self.is_select = False
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+    
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
         
     def hover(self, column, offset_x, offset_y):
         pass
@@ -354,7 +360,114 @@ class WiredItem(TreeItem):
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
         
+class HotspotItem(TreeItem):
+
+    def __init__(self, font_size=DEFAULT_FONT_SIZE):
+        TreeItem.__init__(self)
+        self.entry = None
+        self.height = self.get_height()
+        self.ssid_buffer = EntryBuffer("")
+        self.ssid_buffer.set_property('cursor-visible', False)
+
+        self.ENTRY_COLUMN = 0
+        #self.ssid_buffer.connect("changed", self.entry_buffer_changed)
+        #self.ssid_buffer.connect("insert-pos-changed", self.entry_buffer_changed)
+        #self.entry_buffer.connect("selection-pos-changed", self.entry_buffer_changed)
+
+    def render_ssid(self, cr ,rect):
+        render_background(cr, rect)
+        
+        draw_text(cr, _("SSID:"), rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+
+        if self.is_select:
+            text_color = "#ffffff"
+        else:
+            text_color = "#000000"
+            self.ssid_buffer.move_to_start()
+
+        self.ssid_buffer.set_text_color(text_color)
+        height = self.ssid_buffer.get_pixel_size()[1]
+        offset = (self.height - height)/2
+        if offset < 0 :
+            offset = 0
+        rect.y += offset  
+        if self.entry and self.entry.allocation.width == self.get_column_widths()[1]-4:
+            self.entry.calculate()
+            rect.x += 2
+            rect.width -= 4
+            self.ssid_buffer.set_text_color("#000000")
+            self.ssid_buffer.render(cr, rect, self.entry.im, self.entry.offset_x)
+        else:
+            self.ssid_buffer.render(cr, rect)
+
+    def render_pwd(self, cr, rect):
+        pass
+
+
+    def expand(self):
+        pass
+    
+    def unexpand(self):
+        pass
+    
+    def get_height(self):
+        return CONTAINNER_HEIGHT
+    
+    def get_column_widths(self):
+        return [270]
+
+    def get_column_renders(self):
+        return [self.render_ssid]
+    
+    def unselect(self):
+        pass
+    
+    def select(self):
+        pass
+    
+    def unhover(self, column, offset_x, offset_y):
+        pass
+    
+    def hover(self, column, offset_x, offset_y):
+        pass
+    
+    def motion_notify(self, column, offset_x, offset_y):
+        pass
+    
+    def button_press(self, column, offset_x, offset_y):
+        pass        
+    
+    def button_release(self, column, offset_x, offset_y):
+        pass        
+    
+    def single_click(self, column, offset_x, offset_y):
+        pass        
+
+    def double_click(self, column, offset_x, offset_y):
+        pass        
+    
+    def draw_drag_line(self, drag_line, drag_line_at_bottom=False):
+        pass
+
+    def highlight(self):
+        pass
+    
+    def unhighlight(self):
+        pass
+    
+    def release_resource(self):
+        return False
+    
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+         
 
 class DSLItem(TreeItem):
     CHECK_LEFT_PADDING = 10
@@ -449,6 +562,10 @@ class DSLItem(TreeItem):
         
     def hover(self, column, offset_x, offset_y):
         pass
+
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
 
     def unhover(self, column, offset_x, offset_y):
         #print column, offset_x, offset_y

@@ -36,6 +36,7 @@ from nmlib.nm_utils import TypeConvert
 from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
 from shared_widget import IPV4Conf, IPV6Conf
+from foot_box import FootBox
 import gtk
 wired_device = []
 
@@ -53,16 +54,21 @@ def expose_background(widget, event):
 class WiredSetting(gtk.Alignment):
 
     def __init__(self, slide_back_cb, change_crumb_cb):
-        #gtk.HBox.__init__(self, spacing=FRAME_VERTICAL_SPACING)
         gtk.Alignment.__init__(self, 0, 0, 0, 0)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
         
-        # Add UI Align
         style.set_main_window(self)
-        #hbox = gtk.HBox(spacing=FRAME_VERTICAL_SPACING)
+
+        main_vbox = gtk.VBox()
+        self.foot_box = FootBox()
         hbox = gtk.HBox()
-        self.add(hbox)
+        hbox.connect("expose-event",self.expose_line)
+
+        main_vbox.pack_start(hbox, False, False)
+        main_vbox.pack_start(self.foot_box, False, False)
+
+        self.add(main_vbox)
 
         self.wired = None
         self.ipv4 = None
@@ -70,7 +76,7 @@ class WiredSetting(gtk.Alignment):
 
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 408)
+        self.tab_window.set_size_request(674, 415)
         self.items = [(_("Wired"), NoSetting()),
                       (_("IPv4 Settings"), NoSetting()),
                       (_("IPv6 Settings"), NoSetting())]
@@ -79,21 +85,20 @@ class WiredSetting(gtk.Alignment):
         self.sidebar = SideBar( None, self.init, self.check_click, self.set_button)
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
-        vbox = gtk.VBox()
-        vbox.pack_start(self.tab_window ,True, True)
-        #hbox.pack_start(VSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0), False, False)
-        hbox.pack_start(vbox, True, True)
-        #hbox = gtk.HBox()
+        hbox.pack_start(self.tab_window ,True, True)
 
         self.save_button = Button()
-        button_box = gtk.HBox()
-        button_box.add(self.save_button)
+        #button_box = gtk.HBox()
+        #button_box.add(self.save_button)
         self.save_button.connect("clicked", self.save_changes)
         self.set_button("save", False)
+        
 
-        buttons_aligns = gtk.Alignment(0.5 , 1, 0, 0)
-        buttons_aligns.add(button_box)
-        vbox.pack_start(buttons_aligns, False , False)
+        #buttons_aligns = gtk.Alignment(0.5 , 0.5, 0, 0)
+        #buttons_aligns.set_padding(0,0, 0, 10)
+        #buttons_aligns.add(button_box)
+        #vbox.pack_start(buttons_aligns, False , False)
+        self.foot_box.set_buttons([self.save_button])
         #hbox.connect("expose-event", self.expose_event)
 
         style.draw_background_color(self)
@@ -105,7 +110,11 @@ class WiredSetting(gtk.Alignment):
         cr.set_source_rgb(1, 1, 1)    
         cr.rectangle(0, 0, rect.width, rect.height - 1)
         cr.fill()
-        
+         
+    def expose_line(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
 
     def init(self, device=None, new_connection=None, init_connection=False):
         print "Wired start init"
@@ -115,17 +124,20 @@ class WiredSetting(gtk.Alignment):
             global wired_device
 
         self.connections = nm_module.nm_remote_settings.get_wired_connections()
+
         if init_connection:
             for connection in self.connections:
                 connection.init_settings_prop_dict()
         # Check connections
-        if self.connections == []:
-            self.connections = [].append(nm_module.nm_remote_settings.new_wired_connection())
-
         if new_connection:
             self.connections += new_connection
         else:
             self.sidebar.new_connection_list = []
+
+        if self.connections == []:
+            self.connections = [nm_module.nm_remote_settings.new_wired_connection()]
+            self.sidebar.new_connection_list = [self.connections[0]]
+
             
         self.wired_setting = [Wired(con, self.set_button) for con in self.connections]
         self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in self.connections]
@@ -164,7 +176,6 @@ class WiredSetting(gtk.Alignment):
             self.save_button.set_label(_("connect"))
             self.save_button.set_sensitive(state)
 
-    
     def save_changes(self, widget):
         connection = self.ipv4.connection
         if widget.label == _("save"):
@@ -264,7 +275,11 @@ class SideBar(gtk.VBox):
         else:
             index = self.new_connection_list.index(connection)
             self.new_connection_list.pop(index)
-        self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+
+        if not self.connection_tree.visible_items == []:
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        else:
+            container_remove_all(self.buttonbox)
 
     def get_active(self):
         return self.connection_tree.select_rows[0]

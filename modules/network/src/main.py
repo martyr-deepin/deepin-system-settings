@@ -35,7 +35,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
 from container import Contain
-from lists import WiredItem, WirelessItem, GeneralItem
+from lists import WiredItem, WirelessItem, GeneralItem, HotspotItem
 
 from lan_config import WiredSetting
 from wlan_config import WirelessSetting
@@ -43,6 +43,7 @@ from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
 from regions import Region
+from settings_widget import EntryTreeView
 
 from nmlib.nmcache import cache
 from nm_modules import nm_module
@@ -193,7 +194,7 @@ class WirelessDevice(object):
                 index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
                 self.index = index
                 self.tree.visible_items[index].network_state = 2
-                self.tree.visible_items[index]
+                self.tree.visible_items[index].redraw()
             except IndexError:
                 pass
 
@@ -206,7 +207,7 @@ class WirelessDevice(object):
             try:
                 if self.tree.visible_items != []:
                     self.tree.visible_items[self.index].network_state = 0
-                    self.tree.queue_draw()
+                    self.tree.visible_items[self.index].redraw()
             except:
                 pass
 
@@ -347,11 +348,13 @@ class HotSpot(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0, 0.0, 1, 1)
             self.align.set_padding(0, 0, PADDING,0)
-            self.label_name = _("Hotspot Configuration")
-            label = Label(self.label_name, ui_theme.get_color("link_text"))
-            label.connect("button-release-event", self.slide_to_event)
-            self.align.connect("expose-event", self.expose_event)
-            self.align.add(label)
+            #self.label_name = _("Hotspot Configuration")
+            setting_item = HotspotItem()
+            setting_tree = EntryTreeView([setting_item])
+            #label = Label(self.label_name, ui_theme.get_color("link_text"))
+            #label.connect("button-release-event", self.slide_to_event)
+            #self.align.connect("expose-event", self.expose_event)
+            self.align.add(setting_tree)
             self.align.show_all()
             self.add(self.align)
         else:

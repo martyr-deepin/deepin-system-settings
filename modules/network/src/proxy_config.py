@@ -159,7 +159,7 @@ class ProxyConfig(gtk.Alignment):
                 conf_url = self.proxysetting.get_proxy_authconfig_url()
                 self.conf_entry.set_text(conf_url)
             style.set_table(self.table)
-            self.show_all()
+            self.queue_draw()
 
     def method_changed(self, widget, content, value, index):
         self.init()
