@@ -39,7 +39,7 @@ try:
     import deepin_lunar
 except ImportError:
     print "===Please Install Deepin Lunar Python Binding==="
-    print "git clone git@github.com:xiangzhai/liblunar.git"
+    print "git clone git@github.com:linuxdeepin/liblunar.git"
     print "==============================================="
 try:                                                                            
     import deepin_gsettings                                                     
@@ -52,6 +52,18 @@ from constant import *
 from nls import _
 from deepin_dt import DeepinDateTime
 import threading as td
+
+class SetDateThread(td.Thread):
+    def __init__(self, dt, day, month, year):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.__deepin_dt = dt
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def run(self):
+        self.__deepin_dt.set_date(self.day, self.month, self.year)
 
 class AutoSetTimeThread(td.Thread):
     def __init__(self, ThisPtr):
@@ -115,7 +127,8 @@ class DatetimeView(gtk.HBox):
         '''
         calendar widget
         '''
-        self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING)
+        self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
+            padding_bottom = 10)
         if os.environ['LANGUAGE'].find("zh_") == 0:
             self.calendar = deepin_lunar.new()
         else:
@@ -123,14 +136,31 @@ class DatetimeView(gtk.HBox):
         self.calendar.mark_day(time.localtime().tm_mday)
         if os.environ['LANGUAGE'].find("zh_") == 0:
             self.calendar.get_handle().set_size_request(300, 280)
+            self.calendar.get_handle().connect("day-selected", self.__on_day_selected, self.calendar)
             self.calendar_align.add(self.calendar.get_handle())
         else:
             self.calendar.set_size_request(300, 280)
             self.calendar_align.add(self.calendar) 
-        self.change_date_align = self.__setup_align(padding_top = 10, padding_left = 200)
+        self.change_date_box = gtk.HBox(spacing = 5)
+        self.change_date_align = self.__setup_align()
         self.change_date_button = Button(_("Change Date"))
-        self.change_date_button.set_size_request(100, WIDGET_HEIGHT)
+        self.change_date_button.set_size_request(80, WIDGET_HEIGHT)
+        self.change_date_button.connect("button-press-event", self.__on_change_date)
         self.change_date_align.add(self.change_date_button)
+        self.edit_date_align = self.__setup_align(padding_left = 110)
+        self.edit_date_box = gtk.HBox(spacing = 5)
+        self.cancel_date_button = Button(_("Cancel"))
+        self.cancel_date_button.set_size_request(50, WIDGET_HEIGHT)
+        self.cancel_date_button.connect("button-press-event", self.__on_cancel_change_date)
+        self.confirm_date_button = Button(_("Confirm"))
+        self.confirm_date_button.set_size_request(50, WIDGET_HEIGHT)
+        self.confirm_date_button.connect("button-press-event", self.__on_confirm_change_date)
+        self.__widget_pack_start(self.edit_date_box, 
+            [self.cancel_date_button, self.confirm_date_button])
+        self.edit_date_align.add(self.edit_date_box)
+        self.__widget_pack_start(self.change_date_box, 
+            [self.edit_date_align, self.change_date_align])
+        self.edit_date_align.set_child_visible(False)
         '''
         left box && align
         '''
@@ -138,7 +168,7 @@ class DatetimeView(gtk.HBox):
             [self.calendar_title_align, 
              self.cur_date_align, 
              self.calendar_align, 
-             self.change_date_align])
+             self.change_date_box])
         self.left_align.add(self.left_box)
         '''
         right align
@@ -233,7 +263,33 @@ class DatetimeView(gtk.HBox):
         self.__widget_pack_start(self, [self.left_align, self.right_align])
 
         self.connect("expose-event", self.__expose)
-    
+  
+    def __on_day_selected(self, object, widget):
+        pass
+
+    def __on_change_date(self, widget, event):
+        self.edit_date_align.set_padding(0, 0 , 195, 0)
+        self.change_date_align.set_padding(0, 0, -100, 0)
+        self.edit_date_align.set_child_visible(True)
+        self.change_date_align.set_child_visible(False)
+        self.calendar.clear_marks()
+
+    def __hide_edit_date(self):
+        self.edit_date_align.set_padding(0, 0, 110, 0)                          
+        self.change_date_align.set_padding(0, 0, 0, 0)                          
+        self.edit_date_align.set_child_visible(False)                           
+        self.change_date_align.set_child_visible(True) 
+
+    def __on_cancel_change_date(self, widget, event):
+        self.__hide_edit_date()
+
+    def __on_confirm_change_date(self, widget, event):
+        self.__hide_edit_date()
+        year, month, day = self.calendar.get_date()
+        self.cur_date_label.set_text(_("Current Date: %d-%d-%d") % (year, month, day))
+        self.calendar.mark_day(day)
+        SetDateThread(self.__deepin_dt, day, month, year).start()
+
     def __setup_separator(self):                                                
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(300, 10)                                    

@@ -140,7 +140,7 @@ class DeepinDateTime(BusBase):
         return self.dbus_method("GetUsingNtp")
 
     def set_date(self, day, month, year):
-        return self.call_async("SetDate")
+        return self.call_async("SetDate", day, month, year)
 
     def set_hardware_clock_using_utc(self, is_using_utc):
         return self.call_async("SetHardwareClockUsingUTC")
