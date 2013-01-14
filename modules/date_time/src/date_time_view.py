@@ -65,6 +65,17 @@ class SetDateThread(td.Thread):
     def run(self):
         self.__deepin_dt.set_date(self.day, self.month, self.year)
 
+class SecondThread(td.Thread):
+    def __init__(self, ThisPtr):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.ThisPtr = ThisPtr
+
+    def run(self):
+        while True:
+            self.ThisPtr.set_cur_time_label()
+            time.sleep(1)
+
 class AutoSetTimeThread(td.Thread):
     def __init__(self, ThisPtr):
         td.Thread.__init__(self)
@@ -98,7 +109,8 @@ class DatetimeView(gtk.HBox):
             
             i += 1
             j += 1
-        
+       
+        self.is_24hour = self.datetime_settings.get_boolean("is-24hour")
         '''
         left align
         '''
@@ -185,13 +197,36 @@ class DatetimeView(gtk.HBox):
         self.time_title_align = self.__setup_title_align(
             app_theme.get_pixbuf("datetime/time.png"), _("Time"))
         '''
+        current time
+        '''
+        self.cur_time_align = self.__setup_align()
+        if self.is_24hour:
+            self.cur_time_label = self.__setup_label(
+                _("Current Time: %s %02d:%02d:%02d (%d Hour)") % 
+                  (time.strftime('%p'), 
+                   time.localtime().tm_hour, 
+                   time.localtime().tm_min, 
+                   time.localtime().tm_sec, 
+                   24), 
+                260)
+        else:
+            self.cur_time_label = self.__setup_label(                           
+                _("Current Time: %s %02d:%02d:%02d (%d Hour)") %                
+                  (time.strftime('%p'),                                         
+                   time.localtime().tm_hour,                                    
+                   time.localtime().tm_min,                                     
+                   time.localtime().tm_sec,                                     
+                   12),                                                         
+                260)     
+
+        self.cur_time_align.add(self.cur_time_label)
+        '''
         DateTime widget
         '''
-        self.datetime_widget_align = self.__setup_align()
-        self.datetime_widget = DateTimeHTCStyle()
+        self.datetime_widget_align = self.__setup_align(padding_top = BETWEEN_SPACING)
+        self.datetime_widget = DateTimeHTCStyle(is_24hour = self.is_24hour)
         self.datetime_widget_align.add(self.datetime_widget)
         self.set_time_align = self.__setup_align()
-        is_24hour = self.datetime_settings.get_boolean("is-24hour")
         '''
         auto time get && set
         '''
@@ -212,7 +247,7 @@ class DatetimeView(gtk.HBox):
         self.set_time_spin_align = self.__setup_align(padding_left = 10)
         self.set_time_box = gtk.HBox()
         self.set_time_label = self.__setup_label(_("Manual Set"), 70)
-        self.set_time_spin = TimeSpinBox(is_24hour = is_24hour)                 
+        self.set_time_spin = TimeSpinBox(is_24hour = self.is_24hour)                 
         self.set_time_spin.set_size_request(85, -1)                               
         self.set_time_spin.connect("value-changed", self.__time_changed)
         self.__widget_pack_start(self.set_time_box, 
@@ -233,7 +268,7 @@ class DatetimeView(gtk.HBox):
         self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
         self.time_display_toggle_align = self.__setup_align()
         self.time_display_toggle = self.__setup_toggle()                        
-        self.time_display_toggle.set_active(is_24hour)                          
+        self.time_display_toggle.set_active(self.is_24hour)                          
         self.time_display_toggle.connect("toggled", self.__toggled, "time_display_toggle")
         self.time_display_toggle_align.add(self.time_display_toggle)
         self.__widget_pack_start(self.time_display_box, 
@@ -246,13 +281,14 @@ class DatetimeView(gtk.HBox):
             app_theme.get_pixbuf("datetime/globe-green.png"), 
             _("TimeZone"), 
             TEXT_WINDOW_TOP_PADDING)
-        self.timezone_combo_align = self.__setup_align()
+        self.timezone_combo_align = self.__setup_align(padding_top = 6)
         self.timezone_combo = ComboBox(self.timezone_items, max_width = 325)
         self.timezone_combo.set_select_index(self.__deepin_dt.get_gmtoff() + 11)
         self.timezone_combo_align.add(self.timezone_combo)
 
         self.__widget_pack_start(self.right_box, 
                                  [self.time_title_align, 
+                                  self.cur_time_align, 
                                   self.datetime_widget_align, 
                                   self.auto_time_align, 
                                   self.time_display_align, 
@@ -263,6 +299,25 @@ class DatetimeView(gtk.HBox):
         self.__widget_pack_start(self, [self.left_align, self.right_align])
 
         self.connect("expose-event", self.__expose)
+
+        SecondThread(self).start()
+
+    def set_cur_time_label(self):
+        is_24hour = 24
+        hour_value = time.localtime().tm_hour
+
+        if not self.is_24hour: 
+            is_24hour = 12
+            if hour_value > 12:
+                hour_value -= 12
+        
+        self.cur_time_label.set_text(                           
+             _("Current Time: %s %02d:%02d:%02d (%d Hour)") %                
+               (time.strftime('%p'),                                         
+                hour_value,                                    
+                time.localtime().tm_min,                                     
+                time.localtime().tm_sec,                                     
+                is_24hour))     
   
     def __on_day_selected(self, object, widget):
         pass
@@ -335,9 +390,10 @@ class DatetimeView(gtk.HBox):
             return
 
         if argv == "time_display_toggle":
-            is_24hour = widget.get_active()
-            self.datetime_settings.set_boolean("is-24hour", is_24hour)
-            self.set_time_spin.set_24hour(is_24hour)
+            self.is_24hour = widget.get_active()
+            self.datetime_settings.set_boolean("is-24hour", self.is_24hour)
+            self.datetime_widget.set_is_24hour(self.is_24hour)
+            self.set_time_spin.set_24hour(self.is_24hour)
 
     def auto_set_time(self):
         self.__deepin_dt.set_using_ntp(True)
