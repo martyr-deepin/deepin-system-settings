@@ -3,26 +3,27 @@
 
 # Copyright (C) 2011 ~ 2012 Deepin, Inc.
 #               2011 ~ 2012 Long Changjin
-# 
+#
 # Author:     Long Changjin <admin@longchangjin.cn>
 # Maintainer: Long Changjin <admin@longchangjin.cn>
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import platform
 import gtop
 import gio
+import dbus
 from socket import gethostname
 
 def get_os_version():
@@ -69,8 +70,35 @@ def get_os_arch():
     return platform.architecture()[0]
 
 def get_disk_size():
+    return get_total_disk_size()
+
+def get_total_disk_size():
+    BUS_NAME = "org.freedesktop.UDisks"
+    OBJ_NAME = "/org/freedesktop/UDisks"
+    try:
+        bus = dbus.SystemBus()
+        udisks = bus.get_object(BUS_NAME, OBJ_NAME)
+
+        devices = udisks.EnumerateDevices()
+        internal_dev = {}
+        for device in devices:
+            dev = bus.get_object(BUS_NAME, device)
+            if dev.Get("org.freedesktop.DBus.Properties", 'DeviceIsPartition'):
+                slave = dev.Get("org.freedesktop.DBus.Properties", 'PartitionSlave')
+                d = bus.get_object(BUS_NAME, slave)
+                if not d.Get("org.freedesktop.DBus.Properties", 'DeviceIsRemovable'):
+                    internal_dev[slave] = d
+        total_size = 0
+        for d in internal_dev:
+            dev = internal_dev[d]
+            total_size += dev.Get("org.freedesktop.DBus.Properties", 'DeviceSize')
+        return round(total_size / 1024.0 / 1024 / 1024, 3)
+    except:
+        return None
+
+def get_root_partition_size():
     '''
-    get the system disk's size
+    get the root partition's size
     @return: a float num
     '''
     f = gio.File('/')
