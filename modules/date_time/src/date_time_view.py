@@ -103,9 +103,19 @@ class DatetimeView(gtk.HBox):
         self.calendar_title_align = self.__setup_title_align(
             app_theme.get_pixbuf("datetime/calendar.png"), _("Calendar"))
         '''
+        current date
+        '''
+        self.cur_date_align = self.__setup_align()
+        self.cur_date_label = self.__setup_label(
+            _("Current Date: %d-%d-%d") % (time.localtime().tm_year, 
+                                           time.localtime().tm_mon, 
+                                           time.localtime().tm_mday), 
+            150)
+        self.cur_date_align.add(self.cur_date_label)
+        '''
         calendar widget
         '''
-        self.calendar_align = self.__setup_align()
+        self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING)
         if os.environ['LANGUAGE'].find("zh_") == 0:
             self.calendar = deepin_lunar.new()
         else:
@@ -117,7 +127,7 @@ class DatetimeView(gtk.HBox):
         else:
             self.calendar.set_size_request(300, 280)
             self.calendar_align.add(self.calendar) 
-        self.change_date_align = self.__setup_align(padding_top = 20, padding_left = 200)
+        self.change_date_align = self.__setup_align(padding_top = 10, padding_left = 200)
         self.change_date_button = Button(_("Change Date"))
         self.change_date_button.set_size_request(100, WIDGET_HEIGHT)
         self.change_date_align.add(self.change_date_button)
@@ -126,6 +136,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.__widget_pack_start(self.left_box, 
             [self.calendar_title_align, 
+             self.cur_date_align, 
              self.calendar_align, 
              self.change_date_align])
         self.left_align.add(self.left_box)
