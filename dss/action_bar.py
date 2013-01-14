@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
@@ -111,7 +111,7 @@ class ActionBar(gtk.Alignment):
         self.search_entry.entry.connect("press-return", self.__search_press_enter)
         self.search_align = gtk.Alignment()
         self.search_align.set(0.5, 0.5, 0, 0)
-        self.search_align.set_padding(5, 0, 5, 5)
+        self.search_align.set_padding(5, 0, 5, 10)
         
         # Connect widgets.
         self.action_align.add(self.action_box)
