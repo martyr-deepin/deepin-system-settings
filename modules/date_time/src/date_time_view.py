@@ -39,7 +39,7 @@ try:
     import deepin_lunar
 except ImportError:
     print "===Please Install Deepin Lunar Python Binding==="
-    print "git clone git@github.com:xiangzhai/liblunar.git"
+    print "git clone git@github.com:linuxdeepin/liblunar.git"
     print "==============================================="
 try:                                                                            
     import deepin_gsettings                                                     
@@ -52,6 +52,29 @@ from constant import *
 from nls import _
 from deepin_dt import DeepinDateTime
 import threading as td
+
+class SetDateThread(td.Thread):
+    def __init__(self, dt, day, month, year):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.__deepin_dt = dt
+        self.year = year
+        self.month = month
+        self.day = day
+
+    def run(self):
+        self.__deepin_dt.set_date(self.day, self.month, self.year)
+
+class SecondThread(td.Thread):
+    def __init__(self, ThisPtr):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.ThisPtr = ThisPtr
+
+    def run(self):
+        while True:
+            self.ThisPtr.set_cur_time_label()
+            time.sleep(1)
 
 class AutoSetTimeThread(td.Thread):
     def __init__(self, ThisPtr):
@@ -86,7 +109,8 @@ class DatetimeView(gtk.HBox):
             
             i += 1
             j += 1
-        
+       
+        self.is_24hour = self.datetime_settings.get_boolean("is-24hour")
         '''
         left align
         '''
@@ -115,7 +139,8 @@ class DatetimeView(gtk.HBox):
         '''
         calendar widget
         '''
-        self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING)
+        self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
+            padding_bottom = 10)
         if os.environ['LANGUAGE'].find("zh_") == 0:
             self.calendar = deepin_lunar.new()
         else:
@@ -123,14 +148,31 @@ class DatetimeView(gtk.HBox):
         self.calendar.mark_day(time.localtime().tm_mday)
         if os.environ['LANGUAGE'].find("zh_") == 0:
             self.calendar.get_handle().set_size_request(300, 280)
+            self.calendar.get_handle().connect("day-selected", self.__on_day_selected, self.calendar)
             self.calendar_align.add(self.calendar.get_handle())
         else:
             self.calendar.set_size_request(300, 280)
             self.calendar_align.add(self.calendar) 
-        self.change_date_align = self.__setup_align(padding_top = 10, padding_left = 200)
+        self.change_date_box = gtk.HBox(spacing = 5)
+        self.change_date_align = self.__setup_align()
         self.change_date_button = Button(_("Change Date"))
-        self.change_date_button.set_size_request(100, WIDGET_HEIGHT)
+        self.change_date_button.set_size_request(80, WIDGET_HEIGHT)
+        self.change_date_button.connect("button-press-event", self.__on_change_date)
         self.change_date_align.add(self.change_date_button)
+        self.edit_date_align = self.__setup_align(padding_left = 110)
+        self.edit_date_box = gtk.HBox(spacing = 5)
+        self.cancel_date_button = Button(_("Cancel"))
+        self.cancel_date_button.set_size_request(50, WIDGET_HEIGHT)
+        self.cancel_date_button.connect("button-press-event", self.__on_cancel_change_date)
+        self.confirm_date_button = Button(_("Confirm"))
+        self.confirm_date_button.set_size_request(50, WIDGET_HEIGHT)
+        self.confirm_date_button.connect("button-press-event", self.__on_confirm_change_date)
+        self.__widget_pack_start(self.edit_date_box, 
+            [self.cancel_date_button, self.confirm_date_button])
+        self.edit_date_align.add(self.edit_date_box)
+        self.__widget_pack_start(self.change_date_box, 
+            [self.edit_date_align, self.change_date_align])
+        self.edit_date_align.set_child_visible(False)
         '''
         left box && align
         '''
@@ -138,7 +180,7 @@ class DatetimeView(gtk.HBox):
             [self.calendar_title_align, 
              self.cur_date_align, 
              self.calendar_align, 
-             self.change_date_align])
+             self.change_date_box])
         self.left_align.add(self.left_box)
         '''
         right align
@@ -155,13 +197,36 @@ class DatetimeView(gtk.HBox):
         self.time_title_align = self.__setup_title_align(
             app_theme.get_pixbuf("datetime/time.png"), _("Time"))
         '''
+        current time
+        '''
+        self.cur_time_align = self.__setup_align()
+        if self.is_24hour:
+            self.cur_time_label = self.__setup_label(
+                _("Current Time: %s %02d:%02d:%02d (%d Hour)") % 
+                  (time.strftime('%p'), 
+                   time.localtime().tm_hour, 
+                   time.localtime().tm_min, 
+                   time.localtime().tm_sec, 
+                   24), 
+                260)
+        else:
+            self.cur_time_label = self.__setup_label(                           
+                _("Current Time: %s %02d:%02d:%02d (%d Hour)") %                
+                  (time.strftime('%p'),                                         
+                   time.localtime().tm_hour,                                    
+                   time.localtime().tm_min,                                     
+                   time.localtime().tm_sec,                                     
+                   12),                                                         
+                260)     
+
+        self.cur_time_align.add(self.cur_time_label)
+        '''
         DateTime widget
         '''
-        self.datetime_widget_align = self.__setup_align()
-        self.datetime_widget = DateTimeHTCStyle()
+        self.datetime_widget_align = self.__setup_align(padding_top = BETWEEN_SPACING)
+        self.datetime_widget = DateTimeHTCStyle(is_24hour = self.is_24hour)
         self.datetime_widget_align.add(self.datetime_widget)
         self.set_time_align = self.__setup_align()
-        is_24hour = self.datetime_settings.get_boolean("is-24hour")
         '''
         auto time get && set
         '''
@@ -182,7 +247,7 @@ class DatetimeView(gtk.HBox):
         self.set_time_spin_align = self.__setup_align(padding_left = 10)
         self.set_time_box = gtk.HBox()
         self.set_time_label = self.__setup_label(_("Manual Set"), 70)
-        self.set_time_spin = TimeSpinBox(is_24hour = is_24hour)                 
+        self.set_time_spin = TimeSpinBox(is_24hour = self.is_24hour)                 
         self.set_time_spin.set_size_request(85, -1)                               
         self.set_time_spin.connect("value-changed", self.__time_changed)
         self.__widget_pack_start(self.set_time_box, 
@@ -203,7 +268,7 @@ class DatetimeView(gtk.HBox):
         self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
         self.time_display_toggle_align = self.__setup_align()
         self.time_display_toggle = self.__setup_toggle()                        
-        self.time_display_toggle.set_active(is_24hour)                          
+        self.time_display_toggle.set_active(self.is_24hour)                          
         self.time_display_toggle.connect("toggled", self.__toggled, "time_display_toggle")
         self.time_display_toggle_align.add(self.time_display_toggle)
         self.__widget_pack_start(self.time_display_box, 
@@ -216,13 +281,14 @@ class DatetimeView(gtk.HBox):
             app_theme.get_pixbuf("datetime/globe-green.png"), 
             _("TimeZone"), 
             TEXT_WINDOW_TOP_PADDING)
-        self.timezone_combo_align = self.__setup_align()
+        self.timezone_combo_align = self.__setup_align(padding_top = 6)
         self.timezone_combo = ComboBox(self.timezone_items, max_width = 325)
         self.timezone_combo.set_select_index(self.__deepin_dt.get_gmtoff() + 11)
         self.timezone_combo_align.add(self.timezone_combo)
 
         self.__widget_pack_start(self.right_box, 
                                  [self.time_title_align, 
+                                  self.cur_time_align, 
                                   self.datetime_widget_align, 
                                   self.auto_time_align, 
                                   self.time_display_align, 
@@ -233,7 +299,52 @@ class DatetimeView(gtk.HBox):
         self.__widget_pack_start(self, [self.left_align, self.right_align])
 
         self.connect("expose-event", self.__expose)
-    
+
+        SecondThread(self).start()
+
+    def set_cur_time_label(self):
+        is_24hour = 24
+        hour_value = time.localtime().tm_hour
+
+        if not self.is_24hour: 
+            is_24hour = 12
+            if hour_value > 12:
+                hour_value -= 12
+        
+        self.cur_time_label.set_text(                           
+             _("Current Time: %s %02d:%02d:%02d (%d Hour)") %                
+               (time.strftime('%p'),                                         
+                hour_value,                                    
+                time.localtime().tm_min,                                     
+                time.localtime().tm_sec,                                     
+                is_24hour))     
+  
+    def __on_day_selected(self, object, widget):
+        pass
+
+    def __on_change_date(self, widget, event):
+        self.edit_date_align.set_padding(0, 0 , 195, 0)
+        self.change_date_align.set_padding(0, 0, -100, 0)
+        self.edit_date_align.set_child_visible(True)
+        self.change_date_align.set_child_visible(False)
+        self.calendar.clear_marks()
+
+    def __hide_edit_date(self):
+        self.edit_date_align.set_padding(0, 0, 110, 0)                          
+        self.change_date_align.set_padding(0, 0, 0, 0)                          
+        self.edit_date_align.set_child_visible(False)                           
+        self.change_date_align.set_child_visible(True) 
+
+    def __on_cancel_change_date(self, widget, event):
+        self.__hide_edit_date()
+
+    def __on_confirm_change_date(self, widget, event):
+        self.__hide_edit_date()
+        year, month, day = self.calendar.get_date()
+        self.cur_date_label.set_text(_("Current Date: %d-%d-%d") % (year, month, day))
+        self.calendar.mark_day(day)
+        SetDateThread(self.__deepin_dt, day, month, year).start()
+
     def __setup_separator(self):                                                
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(300, 10)                                    
@@ -279,9 +390,10 @@ class DatetimeView(gtk.HBox):
             return
 
         if argv == "time_display_toggle":
-            is_24hour = widget.get_active()
-            self.datetime_settings.set_boolean("is-24hour", is_24hour)
-            self.set_time_spin.set_24hour(is_24hour)
+            self.is_24hour = widget.get_active()
+            self.datetime_settings.set_boolean("is-24hour", self.is_24hour)
+            self.datetime_widget.set_is_24hour(self.is_24hour)
+            self.set_time_spin.set_24hour(self.is_24hour)
 
     def auto_set_time(self):
         self.__deepin_dt.set_using_ntp(True)

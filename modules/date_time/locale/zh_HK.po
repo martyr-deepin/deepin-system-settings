@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-14 08:44+0800\n"
+"POT-Creation-Date: 2013-01-14 16:40+0800\n"
 "PO-Revision-Date: 2012-12-30 23:05+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,36 +16,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/date_time_view.py:104
+#: ../src/date_time_view.py:128
 msgid "Calendar"
 msgstr ""
 
-#: ../src/date_time_view.py:110
+#: ../src/date_time_view.py:134 ../src/date_time_view.py:344
 #, python-format
 msgid "Current Date: %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:131
+#: ../src/date_time_view.py:158
 msgid "Change Date"
 msgstr ""
 
-#: ../src/date_time_view.py:156
+#: ../src/date_time_view.py:164
+msgid "Cancel"
+msgstr ""
+
+#: ../src/date_time_view.py:167
+msgid "Confirm"
+msgstr ""
+
+#: ../src/date_time_view.py:198
 msgid "Time"
 msgstr ""
 
-#: ../src/date_time_view.py:170 ../src/search_keyword.py:31
+#: ../src/date_time_view.py:205 ../src/date_time_view.py:214
+#: ../src/date_time_view.py:315
+#, python-format
+msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
+msgstr ""
+
+#: ../src/date_time_view.py:235 ../src/search_keyword.py:31
 msgid "Auto Set Time"
 msgstr ""
 
-#: ../src/date_time_view.py:184
+#: ../src/date_time_view.py:249
 msgid "Manual Set"
 msgstr ""
 
-#: ../src/date_time_view.py:203 ../src/search_keyword.py:32
+#: ../src/date_time_view.py:268 ../src/search_keyword.py:32
 msgid "Hour Display"
 msgstr ""
 
-#: ../src/date_time_view.py:217 ../src/search_keyword.py:30
+#: ../src/date_time_view.py:282 ../src/search_keyword.py:30
 msgid "TimeZone"
 msgstr ""
 
