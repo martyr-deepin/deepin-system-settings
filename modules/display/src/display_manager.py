@@ -155,7 +155,6 @@ class DisplayManager:
                      x_value=None, 
                      y_value=None, 
                      rotation_value=None):
-        print "DEBUG", output_name, width_value, height_value
         outputs = self.__xmldoc.getElementsByTagName("output")
 
         for output in outputs:
@@ -398,7 +397,7 @@ class DisplayManager:
 
         self.__update_xml(output_name = output_name_value, rotation_value = rotation_str)
 
-        run_command("xrandr -o %s" % rotation_str)
+        self.__xrandr_settings.set_string("rotation", rotation_str)
 
     def get_screen_brightness(self):
         return self.__xrandr_settings.get_double("brightness") * 100.0
