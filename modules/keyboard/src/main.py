@@ -43,6 +43,7 @@ from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
 from treeitem import MyTreeView as TreeView
 from accel_entry import AccelEntry
+from statusbar import StatusBar
 from nls import _
 from glib import markup_escape_text
 import xkb
@@ -140,7 +141,10 @@ class KeySetting(object):
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
+        self.button_widgets["set_to_default"] = Button(_("恢复默认"))
         # container init
+        self.container_widgets["main_vbox"] = gtk.VBox(False)
+        self.container_widgets["statusbar"] = StatusBar()
         self.container_widgets["tab_box"] = TabBox()
         self.container_widgets["tab_box"].draw_title_background = self.draw_tab_title_background
         self.container_widgets["type_swindow"] = ScrolledWindow()
@@ -230,6 +234,9 @@ class KeySetting(object):
         LABEL_WIDTH = 180
         OPTION_LEFT_PADDING = WIDGET_SPACING + 16
         TABLE_ROW_SPACING = 15
+        self.container_widgets["main_vbox"].pack_start(self.alignment_widgets["notebook"])
+        self.container_widgets["main_vbox"].pack_start(self.container_widgets["statusbar"], False, False)
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["set_to_default"]])
         self.alignment_widgets["notebook"].set(0.0, 0.0, 1, 1)
         #self.alignment_widgets["notebook"].set_padding(FRAME_TOP_PADDING, 0, FRAME_LEFT_PADDING, FRAME_LEFT_PADDING)
         self.alignment_widgets["notebook"].set_padding(FRAME_TOP_PADDING, 0, 0, 0)
@@ -459,8 +466,8 @@ class KeySetting(object):
         self.alignment_widgets["shortcuts_table"].set_padding(10, 10, 0, 0)
         # shortcut toolbar
         self.container_widgets["shortcuts_toolbar_hbox"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_add"])
-        self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_remove"])
+        #self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_add"])
+        #self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_remove"])
 
         # table attach
         self.container_widgets["shortcuts_table"].attach(
@@ -468,10 +475,10 @@ class KeySetting(object):
             padding_top=2, padding_bottom=2, padding_right=2), 0, 1, 0, 2)
         self.container_widgets["shortcuts_table"].attach(
             self.__make_align(self.container_widgets["shortcuts_swin"], yalign=0.0, yscale=1.0,
-            padding_top=2, padding_bottom=2, padding_left=2, padding_right=7), 1, 2, 0, 1, xpadding=4)
-        self.container_widgets["shortcuts_table"].attach(
-            self.__make_align(self.container_widgets["shortcuts_toolbar_hbox"], xalign=1.0, xscale=0.0,
-            padding_right=15), 1, 2, 1, 2, 5, 0)
+            padding_top=2, padding_bottom=2, padding_left=2, padding_right=7), 1, 2, 0, 2, xpadding=4)
+        #self.container_widgets["shortcuts_table"].attach(
+            #self.__make_align(self.container_widgets["shortcuts_toolbar_hbox"], xalign=1.0, xscale=0.0,
+            #padding_right=15), 1, 2, 1, 2, 5, 0)
         # init shortcuts selected treeview
         self.view_widgets["shortcuts_selected"].add_items(
             keybind_list.get_wm_shortcuts_select_item())
@@ -491,8 +498,7 @@ class KeySetting(object):
         self.container_widgets["type_main_hbox"].connect("expose-event", self.draw_background)
         self.container_widgets["layout_main_hbox"].connect("expose-event", self.draw_background)
         self.container_widgets["shortcuts_main_hbox"].connect("expose-event", self.draw_background)
-        from pprint import pprint
-        self.container_widgets["tab_box"].connect("switch-tab", lambda w, i: pprint(("switch tab:", i)))
+        self.container_widgets["tab_box"].connect("switch-tab", self.on_tab_box_switch_tab_cb)
         # typing widget signal
         # repeat delay
         self.settings.connect("changed", self.keyboard_setting_changed_cb)
@@ -539,6 +545,8 @@ class KeySetting(object):
         self.view_widgets["shortcuts_selected"].set_select_rows([0])
         self.button_widgets["shortcuts_remove"].connect("clicked", self.__remove_shortcuts_item)
         self.button_widgets["shortcuts_add"].connect("clicked", lambda b: self.__add_shortcuts_item())
+
+        self.button_widgets["set_to_default"].connect("clicked", self.set_to_default)
     
     ######################################
     def draw_dialog_background(self, widget, event):
@@ -555,6 +563,14 @@ class KeySetting(object):
         cr.rectangle(x, y, w, h)
         cr.fill()
     
+    def on_tab_box_switch_tab_cb(self, widget, index):
+        if index == 0:
+            self.container_widgets["statusbar"].set_buttons([self.button_widgets["set_to_default"]])
+        elif index == 1:
+            self.container_widgets["statusbar"].set_buttons(
+                [self.button_widgets["shortcuts_add"],
+                 self.button_widgets["shortcuts_remove"]])
+
     def keyboard_setting_changed_cb(self, key):
         args = [self.settings, key]
         if key == 'delay':
@@ -904,7 +920,7 @@ class KeySetting(object):
     def get_accel_page(self):
         return self.__shortcuts_entries_page_widgets
     
-    def set_to_default(self):
+    def set_to_default(self, button):
         '''set to the default'''
         if self.container_widgets["tab_box"].tab_index == 0:
             settings.keyboard_set_to_default()
@@ -918,7 +934,8 @@ if __name__ == '__main__':
 
     key_settings = KeySetting(module_frame)
     
-    module_frame.add(key_settings.alignment_widgets["notebook"])
+    #module_frame.add(key_settings.alignment_widgets["notebook"])
+    module_frame.add(key_settings.container_widgets["main_vbox"])
     
     if len(sys.argv) > 1:
         print "module_uid:", sys.argv[1]
@@ -930,8 +947,6 @@ if __name__ == '__main__':
             print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
             key_settings.container_widgets["tab_box"].switch_content(0)
-        if message_type == "reset":
-            key_settings.set_to_default()
 
     module_frame.module_message_handler = message_handler        
     

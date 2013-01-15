@@ -3,21 +3,21 @@
 
 # Copyright (C) 2011 ~ 2012 Deepin, Inc.
 #               2011 ~ 2012 Long Changjin
-# 
+#
 # Author:     Long Changjin <admin@longchangjin.cn>
 # Maintainer: Long Changjin <admin@longchangjin.cn>
 #             Zhai Xiang <zhaixiang@linuxdeepin.com>
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -28,7 +28,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
 from dtk.ui.label import Label
-from dtk.ui.button import Button, OffButton 
+from dtk.ui.button import Button, OffButton
 from dtk.ui.tab_window import TabBox
 from dtk.ui.new_slider import HSlider
 from dtk.ui.line import HSeparator
@@ -39,6 +39,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
+from statusbar import StatusBar
 from nls import _
 import gtk
 import settings
@@ -79,7 +80,7 @@ class SoundSetting(object):
     '''sound setting class'''
     def __init__(self, module_frame):
         self.module_frame = module_frame
-        
+
         self.image_widgets = {}
         self.label_widgets = {}
         self.button_widgets = {}
@@ -123,6 +124,8 @@ class SoundSetting(object):
         self.button_widgets["speaker_combo"] = ComboBox([(' ', 0)], max_width=HSCALEBAR_WIDTH)
         self.button_widgets["microphone_combo"] = ComboBox([(' ', 0)], max_width=HSCALEBAR_WIDTH)
         # container init
+        self.container_widgets["main_vbox"] = gtk.VBox(False)
+        self.container_widgets["statusbar"] = StatusBar()
         self.container_widgets["slider"] = HSlider()
         self.container_widgets["swin"] = ScrolledWindow()
         self.container_widgets["advance_set_tab_box"] = TabBox()
@@ -175,19 +178,21 @@ class SoundSetting(object):
         self.view_widgets["ad_output"] = TreeView()
         self.view_widgets["ad_input"] = TreeView()
         self.view_widgets["ad_hardware"] = TreeView()
-     
+
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
-        cr.set_source_rgb(1, 1, 1)    
+        cr.set_source_rgb(1, 1, 1)
         cr.rectangle(0, 0, rect.width, rect.height - 1)
         cr.fill()
-        
+
     def __adjust_widget(self):
         ''' adjust widget '''
         MID_SPACING = 10
         RIGHT_BOX_WIDTH = TIP_BOX_WIDTH - 20
         MAIN_AREA_WIDTH = 440
         OPTION_LEFT_PADDING = WIDGET_SPACING + 16
+        self.container_widgets["main_vbox"].pack_start(self.alignment_widgets["slider"])
+        self.container_widgets["main_vbox"].pack_start(self.container_widgets["statusbar"], False, False)
         self.alignment_widgets["slider"].add(self.container_widgets["slider"])
         self.alignment_widgets["slider"].set(0, 0, 1, 1)
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
@@ -201,7 +206,7 @@ class SoundSetting(object):
             TEXT_WINDOW_TOP_PADDING, 0, 0, TEXT_WINDOW_RIGHT_WIDGET_PADDING)
         self.alignment_widgets["advance_set_tab_box"].set_padding(
             FRAME_TOP_PADDING, 0, 0, 0)
-        
+
         self.container_widgets["advance_set_tab_box"].add_items(
             [(_("Output"), self.alignment_widgets["advance_output_box"]),
              (_("Input"), self.alignment_widgets["advance_input_box"])])
@@ -218,7 +223,7 @@ class SoundSetting(object):
         # set right padding
         self.alignment_widgets["right"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["right"].set_padding(0, 0, 0, 60)
-        
+
         self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["left_vbox"].pack_start(
             self.container_widgets["speaker_main_vbox"], False, False)
@@ -253,7 +258,7 @@ class SoundSetting(object):
         self.scale_widgets["speaker"].add_mark(self.adjust_widgets["speaker"].get_lower(), gtk.POS_BOTTOM, "-")
         self.scale_widgets["speaker"].add_mark(self.adjust_widgets["speaker"].get_upper(), gtk.POS_BOTTOM, "+")
         #self.scale_widgets["speaker"].add_mark(100, gtk.POS_BOTTOM, "100%")
-        # 
+        #
         #self.container_widgets["speaker_table"].set_size_request(HSCALEBAR_WIDTH, -1)
         self.container_widgets["speaker_table"].set_col_spacings(WIDGET_SPACING)
         speaker_port_align = self.__make_align(self.label_widgets["speaker_port"])
@@ -281,7 +286,7 @@ class SoundSetting(object):
         self.button_widgets["speaker_combo"].set_size_request(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
         self.scale_widgets["speaker"].set_size_request(HSCALEBAR_WIDTH, -1)
         self.scale_widgets["balance"].set_size_request(HSCALEBAR_WIDTH, -1)
-        
+
         # microphone
         self.alignment_widgets["microphone_label"].add(self.container_widgets["microphone_label_hbox"])
         self.alignment_widgets["microphone_set"].add(self.container_widgets["microphone_table"])
@@ -340,11 +345,11 @@ class SoundSetting(object):
         self.alignment_widgets["advance_input_box"].set_padding(0, 0, 20, 10)
         self.alignment_widgets["advance_output_box"].set_padding(0, 0, 20, 10)
         self.alignment_widgets["advance_hardware_box"].set_padding(0, 0, 20, 10)
-        
+
         self.container_widgets["advance_input_box"].set_size_request(750, 380)
         self.container_widgets["advance_output_box"].set_size_request(750, 380)
         self.container_widgets["advance_hardware_box"].set_size_request(750, 380)
-        
+
         self.container_widgets["advance_input_box"].pack_start(self.label_widgets["ad_input"], False, False, 10)
         self.container_widgets["advance_input_box"].pack_start(self.view_widgets["ad_input"])
 
@@ -365,7 +370,7 @@ class SoundSetting(object):
         # if sources list is empty, then can't set input volume
         if settings.CURRENT_SOURCE is None:
             self.container_widgets["microphone_main_vbox"].set_sensitive(False)
-        
+
         # set output volume
         self.speaker_ports = None
         if settings.CURRENT_SINK:
@@ -476,14 +481,14 @@ class SoundSetting(object):
             self.view_widgets["ad_input"].set_select_rows([input_selected_row])
         if card_list:
             self.view_widgets["ad_hardware"].set_select_rows([0])
-        
+
     def __signals_connect(self):
         ''' widget signals connect'''
         # redraw container background white
         self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["advance_output_box"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["advance_input_box"].connect("expose-event", self.container_expose_cb)
-        
+
         self.button_widgets["balance"].connect("toggled", self.toggle_button_toggled, "balance")
         self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")
         self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
@@ -506,7 +511,7 @@ class SoundSetting(object):
 
         self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
         self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
-        
+
         self.button_widgets["advanced"].connect("clicked", self.slider_to_advanced)
         self.view_widgets["ad_output"].connect("single-click-item", self.output_treeview_clicked)
         self.view_widgets["ad_input"].connect("single-click-item", self.input_treeview_clicked)
@@ -546,7 +551,7 @@ class SoundSetting(object):
             if not cards:
                 continue
             settings.PA_CARDS[cards]['obj'].connect("active-profile-updated", self.card_active_profile_update)
-    
+
     ######################################
     # signals callback begin
     # widget signals
@@ -556,7 +561,7 @@ class SoundSetting(object):
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
         cr.rectangle(x, y, w, h)
         cr.fill()
-    
+
     def toggle_button_toggled(self, button, tp):
         #if button.get_data("changed-by-other-app"):
             #button.set_data("changed-by-other-app", False)
@@ -575,13 +580,13 @@ class SoundSetting(object):
         except:
             traceback.print_exc()
             pass
-    
+
     def balance_toggled(self, active):
         if not active:
             self.adjust_widgets["balance"].set_value(0)
             self.balance_scale_value_changed(self.scale_widgets["balance"], None)
         self.scale_widgets["balance"].set_sensitive(active)
-    
+
     def speaker_toggled(self, active):
         if settings.CURRENT_SINK:
             settings.set_mute(settings.CURRENT_SINK, not active)
@@ -590,7 +595,7 @@ class SoundSetting(object):
             self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
         else:
             self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
-    
+
     def microphone_toggled(self, active):
         if settings.CURRENT_SOURCE:
             settings.set_mute(settings.CURRENT_SOURCE, not active)
@@ -599,7 +604,7 @@ class SoundSetting(object):
             self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
         else:
             self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
-    
+
     def balance_value_changed_thread(self):
         ''' balance value changed callback thread'''
         value = self.scale_widgets["balance"].get_value()
@@ -614,7 +619,7 @@ class SoundSetting(object):
             settings.set_volumes(sink, [volume2, volume])
         else:               # is balance
             settings.set_volume(sink, settings.get_volume(sink))
-    
+
     def balance_scale_value_changed(self, widget, event):
         ''' set balance value'''
         if not widget.get_data("has_pressed"):
@@ -625,7 +630,7 @@ class SoundSetting(object):
         except:
             traceback.print_exc()
             pass
-    
+
     def speaker_value_changed_thread(self):
         ''' speaker hscale value changed callback thread '''
         balance = self.scale_widgets["balance"].get_value()
@@ -652,7 +657,7 @@ class SoundSetting(object):
         except:
             traceback.print_exc()
             pass
-    
+
     def microphone_value_changed_thread(self):
         ''' microphone value changed callback thread'''
         value = self.scale_widgets["microphone"].get_value()
@@ -661,7 +666,7 @@ class SoundSetting(object):
         settings.set_volume(source, volume)
         if not self.button_widgets["microphone"].get_active():
             self.button_widgets["microphone"].set_active(True)
-        
+
     def microphone_scale_value_changed(self, widget, event):
         ''' set input volume'''
         if not widget.get_data("has_pressed"):
@@ -672,7 +677,7 @@ class SoundSetting(object):
         except:
             traceback.print_exc()
             pass
-    
+
     def volume_scale_value_changed(self, widget, value, button):
         if not button.get_active():
             button.set_active(True)
@@ -680,7 +685,7 @@ class SoundSetting(object):
     def speaker_port_changed_thread(self, port, dev):
         ''' set active port thread '''
         dev.set_active_port(port.object_path)
-        
+
     def speaker_port_changed(self, combo, content, value, index):
         ''' set active port'''
         if not self.speaker_ports:
@@ -692,11 +697,11 @@ class SoundSetting(object):
         except:
             traceback.print_exc()
             pass
-    
+
     def microphone_port_changed_thread(self, port, dev):
         ''' set active port thread '''
         dev.set_active_port(port.object_path)
-    
+
     def microphone_port_changed(self, combo, content, value, index):
         if not self.microphone_ports:
             return
@@ -707,7 +712,7 @@ class SoundSetting(object):
         except:
             traceback.print_exc()
             pass
-    
+
     def treeview_container_expose_cb(self, widget, event, treeview):
         rect = treeview.allocation
         cr = widget.window.cairo_create()
@@ -716,30 +721,30 @@ class SoundSetting(object):
             cr.set_line_width(1)
             cr.rectangle(rect.x, rect.y, rect.width+1, rect.height+1)
             cr.stroke()
-    
+
     def output_treeview_clicked(self, tree_view, item, row, *args):
         if item.obj_path == settings.CURRENT_SINK:
             return
         if settings.PA_CORE:
             settings.PA_CORE.set_fallback_sink(item.obj_path)
-        
+
     def input_treeview_clicked(self, tree_view, item, row, *args):
         if item.obj_path == settings.CURRENT_SOURCE:
             return
         if settings.PA_CORE:
             settings.PA_CORE.set_fallback_source(item.obj_path)
-        
+
     def card_treeview_clicked(self, tree_view, item, row, *args):
         print "treeview clicked", item.obj_path, item.content, row
-    
+
     #########################
-    # dbus signals 
+    # dbus signals
     def pulse_mute_updated(self, dev, is_mute, button):
         #print "mute updated:", dev.get_active_port(), "is_mute:", is_mute, "button:", not button.get_active()
         if button.get_active() == is_mute:
             button.set_data("changed-by-other-app", True)
             button.set_active(not is_mute)
-    
+
     def speaker_volume_updated(self, sink, volume):
         # set output volume
         self.adjust_widgets["speaker"].set_data("changed-by-other-app", True)
@@ -770,7 +775,7 @@ class SoundSetting(object):
         # set output volume
         self.adjust_widgets["microphone"].set_data("changed-by-other-app", True)
         self.adjust_widgets["microphone"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
-    
+
     def pulse_active_port_updated(self, dev, port, combo, port_list):
         if not port_list:
             return
@@ -781,7 +786,7 @@ class SoundSetting(object):
                 combo.set_select_index(i)
                 return
             i += 1
-    
+
     # add / remove device
     def new_card_cb(self, core, card):
         ''' new card '''
@@ -823,7 +828,7 @@ class SoundSetting(object):
         self.view_widgets["ad_hardware"].add_items(card_list, clear_first=True)
         if card_list:
             self.view_widgets["ad_hardware"].set_select_rows([0])
-        
+
     def card_active_profile_update(self, cards, active_profile):
         ''' Card ActiveProfileUpdted '''
         for item in self.view_widgets["ad_hardware"].visible_items:
@@ -844,16 +849,16 @@ class SoundSetting(object):
                     if item.redraw_request_callback:
                         item.redraw_request_callback(item)
                 break
-    
+
     def new_source_cb(self, core, source):
         ''' new source'''
         print "new source", core, source
         self.refresh_input_treeview()
-        
+
     def source_removed_cb(self, core, source):
         print 'removed source:', source
         self.refresh_input_treeview()
-    
+
     def refresh_input_treeview(self):
         ''' when add/remove source refresh input-treeview '''
         settings.refresh_info()
@@ -875,18 +880,18 @@ class SoundSetting(object):
         self.view_widgets["ad_input"].add_items(input_list, clear_first=True)
         if not (input_selected_row < 0):
             self.view_widgets["ad_input"].set_select_rows([input_selected_row])
-        
+
     def new_sink_cb(self, core, sink):
         ''' new sink '''
         print "new sink", core, sink
         self.refresh_output_treeview()
-        
+
     def sink_removed_cb(self, core, sink):
         print 'removed sink:', sink
         self.refresh_output_treeview()
-    
+
     def refresh_output_treeview(self):
-        ''' when add/remove sink refresh output-treeview ''' 
+        ''' when add/remove sink refresh output-treeview '''
         settings.refresh_info()
         if settings.CURRENT_SOURCE is None:
             self.container_widgets["microphone_main_vbox"].set_sensitive(False)
@@ -909,7 +914,7 @@ class SoundSetting(object):
         self.view_widgets["ad_output"].add_items(output_list, clear_first=True)
         if not (output_selected_row < 0):
             self.view_widgets["ad_output"].set_select_rows([output_selected_row])
-    
+
     # default device changed
     def fallback_sink_updated_cb(self, core, sink):
         print 'fallback sink updated', sink
@@ -962,7 +967,7 @@ class SoundSetting(object):
             if item.obj_path == sink.object_path:
                 self.view_widgets["ad_output"].select_items([item])
                 break
-        
+
     def fallback_source_udpated_cb(self, core, source):
         print 'fallback source updated', source
         if not self.container_widgets["microphone_main_vbox"].get_sensitive():
@@ -1000,15 +1005,15 @@ class SoundSetting(object):
             if item.obj_path == source.object_path:
                 self.view_widgets["ad_input"].select_items([item])
                 break
-        
+
     def fallback_sink_unset_cb(self, core):
         print 'fallback sink unset'
         self.container_widgets["speaker_main_vbox"].set_sensitive(False)
-        
+
     def fallback_source_unset_cb(self, core):
         print 'fallback source unset'
         self.container_widgets["microphone_main_vbox"].set_sensitive(False)
-    
+
     # signals callback end
     ######################################
     def __make_align(self, widget=None, xalign=1.0, yalign=0.5, xscale=0.0,
@@ -1026,34 +1031,35 @@ class SoundSetting(object):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(450, 10)
         return hseparator
-    
+
     def __setup_separator(self):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=14)
-    
+
     def slider_to_advanced(self, button):
         self.container_widgets["slider"].slide_to_page(
             self.alignment_widgets["advance_set_tab_box"], "right")
         #self.container_widgets["slider"].slide_to_page(
             #self.container_widgets["advance_set_tab_box"], "right")
         self.module_frame.send_submodule_crumb(2, _("Advanced"))
-    
+
     def set_to_default(self):
         '''set to the default'''
         pass
-    
+
 if __name__ == '__main__':
     gtk.gdk.threads_init()
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
     mouse_settings = SoundSetting(module_frame)
-    
-    module_frame.add(mouse_settings.alignment_widgets["slider"])
-    module_frame.connect("realize", 
+
+    #module_frame.add(mouse_settings.alignment_widgets["slider"])
+    module_frame.add(mouse_settings.container_widgets["main_vbox"])
+    module_frame.connect("realize",
         lambda w: mouse_settings.container_widgets["slider"].set_to_page(
         mouse_settings.alignment_widgets["main_hbox"]))
     if len(sys.argv) > 1:
         print "module_uid:", sys.argv[1]
-    
+
     def message_handler(*message):
         (message_type, message_content) = message
         print "message:", message_type, message_content
@@ -1070,6 +1076,6 @@ if __name__ == '__main__':
                 mouse_settings.alignment_widgets["main_hbox"])
             module_frame.send_module_info()
 
-    module_frame.module_message_handler = message_handler        
-    
+    module_frame.module_message_handler = message_handler
+
     module_frame.run()

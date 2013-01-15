@@ -47,6 +47,7 @@ from module_frame import ModuleFrame
 from constant import *
 from pexpect import TIMEOUT, EOF
 from set_icon_page import IconSetPage
+from statusbar import StatusBar
 
 MODULE_NAME = "account"
 COMBO_WIDTH = 190
@@ -144,6 +145,8 @@ class AccountSetting(object):
 
         self.button_widgets["binding_new"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False)
         # container
+        self.container_widgets["main_vbox"] = gtk.VBox(False)
+        self.container_widgets["statusbar"] = StatusBar()
         self.container_widgets["slider"] = HSlider()
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
@@ -192,6 +195,8 @@ class AccountSetting(object):
         self.container_widgets["set_iconfile_main_vbox"] = gtk.VBox(False)
 
     def __adjust_widget(self):
+        self.container_widgets["main_vbox"].pack_start(self.container_widgets["slider"])
+        self.container_widgets["main_vbox"].pack_start(self.container_widgets["statusbar"], False, False)
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["set_iconfile"])
         #self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
@@ -204,7 +209,7 @@ class AccountSetting(object):
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
-        #self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
+        self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right_vbox"])
         self.alignment_widgets["left_vbox"].add(self.container_widgets["left_vbox"])
@@ -1167,7 +1172,7 @@ if __name__ == '__main__':
 
     account_settings = AccountSetting(module_frame)
 
-    module_frame.add(account_settings.container_widgets["slider"])
+    module_frame.add(account_settings.container_widgets["main_vbox"])
     module_frame.connect("realize", lambda w: account_settings.container_widgets["slider"].set_to_page(
         account_settings.alignment_widgets["main_hbox"]))
     if len(sys.argv) > 1:
