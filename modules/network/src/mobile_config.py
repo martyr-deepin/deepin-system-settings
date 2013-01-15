@@ -167,8 +167,9 @@ class MobileSetting(gtk.Alignment):
                     connection.update()
                 else:
                     nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                    index = self.sidebar.new_connection_list.index(connection)
-                    self.sidebar.new_connection_list.pop(index)
+                    mobile_type = connection.get_setting("connection").type
+                    index = self.sidebar.new_connection_list[mobile_type].index(connection)
+                    self.sidebar.new_connection_list[mobile_type].pop(index)
                     self.init(self.sidebar.new_connection_list)
 
                     # reset index
@@ -259,8 +260,9 @@ class SideBar(gtk.VBox):
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
         else:
-            index = self.new_connection_list.index(connection)
-            self.new_connection_list.pop(index)
+            mobile_type = self.connection.get_setting("connection").type
+            index = self.new_connection_list[mobile_type].index(connection)
+            self.new_connection_list[mobile_type].pop(index)
         if self.connection_tree.visible_items:
             self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
         else:
