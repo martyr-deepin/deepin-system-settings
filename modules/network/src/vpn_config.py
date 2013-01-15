@@ -118,8 +118,6 @@ class VPNSetting(gtk.Alignment):
             connections.append(connect)
             self.sidebar.new_connection_list = [connect]
 
-        print "DEBUG", connections
-
         self.ipv4_setting = [IPV4Conf(con, self.set_button, dns_only=True) for con in connections]
         self.pptp_setting = [PPTPConf(con, self.module_frame, self.set_button) for con in connections]
 

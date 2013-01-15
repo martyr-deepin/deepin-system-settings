@@ -43,7 +43,7 @@ from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
 from regions import Region
-from settings_widget import EntryTreeView
+from settings_widget import EntryTreeView, HotspotBox
 
 from nmlib.nmcache import cache
 from nm_modules import nm_module
@@ -347,10 +347,11 @@ class HotSpot(gtk.VBox):
         active = widget.get_active()
         if active:
             self.align = gtk.Alignment(0, 0.0, 1, 1)
-            self.align.set_padding(0, 0, PADDING,0)
+            self.align.set_padding(0, 0, PADDING, 22)
             #self.label_name = _("Hotspot Configuration")
-            setting_item = HotspotItem()
-            setting_tree = EntryTreeView([setting_item])
+            #setting_item = HotspotItem()
+            #setting_tree = EntryTreeView([setting_item])
+            setting_tree = HotspotBox()
             #label = Label(self.label_name, ui_theme.get_color("link_text"))
             #label.connect("button-release-event", self.slide_to_event)
             #self.align.connect("expose-event", self.expose_event)

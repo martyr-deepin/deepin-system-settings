@@ -22,7 +22,7 @@ from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text, draw_line
-from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, cairo_state
 from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 from dtk.ui.new_entry import EntryBuffer, Entry
@@ -38,7 +38,34 @@ from dtk.ui.label import Label
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
 from nls import _
+import threading as td
+import time
+from math import radians
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
+class LoadingThread(td.Thread):
+    def __init__(self, tree_item, speed=0):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.tree_item = tree_item
+    
+        self.position = [0, 1, 2, 3, 4, 5]
+
+    def rotate(self):
+        self.position.insert(0, self.position.pop())
+
+    def run(self):
+        try:
+            while True:
+                if self.tree_item.network_state == self.tree_item.NETWORK_LOADING:
+                    self.tree_item.position = self.position[0]
+                    print self.position[0]
+                    self.tree_item.redraw()
+                    time.sleep(1)
+                    self.rotate()
+                else:
+                    break
+        except Exception, e:
+            print "class LoadingThread got error %s" % e
 
 class WirelessItem(TreeItem):
 
@@ -77,6 +104,8 @@ class WirelessItem(TreeItem):
         self.jumpto_width = self.get_jumpto_width()
         
         self.network_state = self.NETWORK_DISCONNECT
+        self.position = 0
+        self.init_thread = False
 
         '''
         Pixbufs
@@ -97,14 +126,19 @@ class WirelessItem(TreeItem):
         #print self.is_select, self.check_select_flag
         if self.network_state == self.NETWORK_DISCONNECT:
             #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
-            check_icon = None
+            self.init_thread = False
+            self.check_icon = None
         elif self.network_state == self.NETWORK_LOADING:
-            check_icon = self.loading_pixbuf
+            self.check_icon = self.loading_pixbuf
         else:
-            check_icon = self.check_pixbuf
+            self.check_icon = self.check_pixbuf
+            self.init_thread = False
         
-        if check_icon:
-            draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        if self.check_icon:
+            #if self.network_state == self.NETWORK_LOADING:
+                #self.draw_loading(cr, rect)
+            #else:
+            draw_pixbuf(cr, self.check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
         #draw outline
         with cairo_disable_antialias(cr):
@@ -115,6 +149,18 @@ class WirelessItem(TreeItem):
             cr.rectangle(rect.x, rect.y, rect.width, 1)
             cr.rectangle(rect.x, rect.y, 1, rect.height)
             cr.fill()
+
+    def draw_loading(self, cr, rect):
+        if self.init_thread == False:
+            LoadingThread(self).start()
+            self.init_thread = True
+
+        with cairo_state(cr):
+            print "Debug", self.position
+            cr.translate(8, 8)
+            cr.rotate(radians(60*2))
+            cr.translate(-8, -8)
+            draw_pixbuf(cr, self.check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
     def render_essid(self, cr, rect):
         render_background(cr,rect)
@@ -219,7 +265,7 @@ class WirelessItem(TreeItem):
     def redraw(self):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
-        
+
     def hover(self, column, offset_x, offset_y):
         pass
 
@@ -232,6 +278,9 @@ class WirelessItem(TreeItem):
             self.setting_object.init(self.connection.get_ssid(), init_connections=True)
             self.send_to_crumb()
             self.slide_to_setting() 
+
+         
+
 
 def render_background( cr, rect):
     background_color = [(0,["#f6f6f6", 1.0]),
@@ -367,17 +416,40 @@ class WiredItem(TreeItem):
         
 class HotspotItem(TreeItem):
 
+
     def __init__(self, font_size=DEFAULT_FONT_SIZE):
         TreeItem.__init__(self)
         self.entry = None
         self.height = self.get_height()
         self.ssid_buffer = EntryBuffer("")
         self.ssid_buffer.set_property('cursor-visible', False)
+        self.password_buffer = EntryBuffer("")
+        self.password_buffer.set_property('cursor-visible', False)
 
-        self.ENTRY_COLUMN = 0
-        #self.ssid_buffer.connect("changed", self.entry_buffer_changed)
-        #self.ssid_buffer.connect("insert-pos-changed", self.entry_buffer_changed)
-        #self.entry_buffer.connect("selection-pos-changed", self.entry_buffer_changed)
+        self.ssid_buffer.connect("changed", self.entry_buffer_changed)
+        self.ssid_buffer.connect("insert-pos-changed", self.entry_buffer_changed)
+        self.ssid_buffer.connect("selection-pos-changed", self.entry_buffer_changed)
+        self.password_buffer.connect("changed", self.entry_buffer_changed)
+        self.password_buffer.connect("insert-pos-changed", self.entry_buffer_changed)
+        self.password_buffer.connect("selection-pos-changed", self.entry_buffer_changed)
+
+        self.ENTRY_COLUMN = [2, 4]
+        self.entry_buffer = None
+        self.is_active = False
+        self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
+        self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
+
+    def entry_buffer_changed(self, bf):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+    
+    def render_check(self, cr, rect):
+        render_background(cr, rect)
+
+        gap = (rect.height - IMG_WIDTH)/2
+        
+        if self.is_active:
+            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + 10, rect.y + gap)   
 
     def render_ssid(self, cr ,rect):
         render_background(cr, rect)
@@ -385,6 +457,13 @@ class HotspotItem(TreeItem):
         draw_text(cr, _("SSID:"), rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
 
+    def render_ssid_entry(self, cr, rect):
+        render_background(cr, rect)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(0, 0, 0)
+            cr.set_line_width(1)
+            cr.rectangle(rect.x, rect.y + 4, rect.width, 22)
+            cr.stroke()
         if self.is_select:
             text_color = "#ffffff"
         else:
@@ -407,8 +486,57 @@ class HotspotItem(TreeItem):
             self.ssid_buffer.render(cr, rect)
 
     def render_pwd(self, cr, rect):
-        pass
+        render_background(cr, rect)
 
+        draw_text(cr, _("password:"), rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+
+    def render_pwd_entry(self, cr, rect):
+        render_background(cr, rect)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(0, 0, 0)
+            cr.set_line_width(1)
+            cr.rectangle(rect.x, rect.y + 4, rect.width, 22)
+            cr.stroke()
+        if self.is_select:
+            text_color = "#ffffff"
+        else:
+            text_color = "#000000"
+            self.password_buffer.move_to_start()
+
+        self.password_buffer.set_text_color(text_color)
+        height = self.password_buffer.get_pixel_size()[1]
+        offset = (self.height - height)/2
+        if offset < 0 :
+            offset = 0
+        rect.y += offset  
+        if self.entry and self.entry.allocation.width == self.get_column_widths()[1]-4:
+            self.entry.calculate()
+            rect.x += 2
+            rect.width -= 4
+            self.password_buffer.set_text_color("#000000")
+            self.password_buffer.render(cr, rect, self.entry.im, self.entry.offset_x)
+        else:
+            self.password_buffer.render(cr, rect)
+
+    def render_active(self, cr, rect):
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(0, 0, 0)
+            cr.set_line_width(1)
+            cr.rectangle(rect.x, rect.y + 4, rect.width, 22)
+            cr.stroke()
+
+        draw_text(cr, _("active"), rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+    
+    def render_jump(self, cr, rect):
+        render_background(cr, rect)
+        gap = (rect.height - IMG_WIDTH)/2
+        draw_pixbuf(cr, self.jumpto_pixbuf.get_pixbuf(), rect.x + 10, rect.y + gap)   
+
+
+    def set_connection_name(self, sdf):
+        pass
 
     def expand(self):
         pass
@@ -416,14 +544,21 @@ class HotspotItem(TreeItem):
     def unexpand(self):
         pass
     
+    def get_buffer(self, column):
+        buffers = [0, 0, self.ssid_buffer, 0, self.password_buffer, 0]
+        self.entry_buffer = buffers[column]
+        return self.entry_buffer
+    
     def get_height(self):
         return CONTAINNER_HEIGHT
     
     def get_column_widths(self):
-        return [270]
+        return [20, 30, 200, 20, 200, 30, 20]
 
     def get_column_renders(self):
-        return [self.render_ssid]
+        return [self.render_check, self.render_ssid, self.render_ssid_entry,
+                self.render_pwd, self.render_pwd_entry, self.render_active,
+                self.render_jump]
     
     def unselect(self):
         pass

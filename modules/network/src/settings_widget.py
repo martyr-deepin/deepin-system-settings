@@ -22,14 +22,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from dss import app_theme
 from dtk.ui.new_treeview import TreeView, TreeItem
+from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear,draw_vlinear, draw_line
-from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size
-from dtk.ui.new_entry import EntryBuffer, Entry
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size, propagate_expose, alpha_color_hex_to_cairo
+from dtk.ui.new_entry import EntryBuffer, Entry, InputEntry
+from dtk.ui.box import ImageBox
+from dtk.ui.button import Button
+from dtk.ui.label import Label
 import gobject
 import gtk
 import pango
+from nls import _
 
-from constants import FRAME_LEFT_PADDING, IMG_WIDTH
+from constants import FRAME_LEFT_PADDING, IMG_WIDTH, TREEVIEW_BORDER_COLOR, TREEVIEW_BG_COLOR
+BORDER_COLOR = color_hex_to_cairo(TREEVIEW_BORDER_COLOR)
+BG_COLOR = color_hex_to_cairo(TREEVIEW_BG_COLOR)
 
 class EntryTreeView(TreeView):
     __gsignals__ = {
@@ -72,7 +79,7 @@ class EntryTreeView(TreeView):
             entry.get_parent().destroy()
             return
         (row, column, offset_x, offset_y) = cell
-        if self.visible_items[row] != item or column != item.ENTRY_COLUMN:
+        if self.visible_items[row] != item or column not in item.ENTRY_COLUMN:
             entry.get_parent().destroy()
             return
         # right button the show menu
@@ -134,11 +141,12 @@ class EntryTreeView(TreeView):
         send_event.free()
 
     def double_click(self, widget, item, column):
-        if not column == item.ENTRY_COLUMN:
+        if not column in item.ENTRY_COLUMN:
             return
         if item.entry:
             item.entry.grab_focus()
             return
+        item.get_buffer(column)
         item.entry_buffer.set_property('cursor-visible', True)
         hbox = gtk.HBox(False)
         align = gtk.Alignment(0, 0, 1, 1)
@@ -146,7 +154,10 @@ class EntryTreeView(TreeView):
         entry.set_data("item", item)
         entry.set_data("button_press", False)
         entry.set_buffer(item.entry_buffer)
-        entry.set_size_request(item.get_column_widths()[column]-4, 0)
+        width = item.get_column_widths()[column]
+        if width >= 0:
+            entry.set_size_request(item.get_column_widths()[column]-4, 0)
+
         entry.connect("press-return", lambda w: hbox.destroy())
         entry.connect("destroy", self.edit_done, hbox, item)
         entry.connect_after("focus-in-event", self.entry_focus_changed, item)
@@ -418,7 +429,7 @@ class SettingItem(TreeItem):
         self.entry_buffer.connect("selection-pos-changed", self.entry_buffer_changed)
         self.child_items = []
         self.height = 30
-        self.ENTRY_COLUMN = 1
+        self.ENTRY_COLUMN = [1]
         self.is_double_click = False
 
         self.check_select = False
@@ -449,6 +460,11 @@ class SettingItem(TreeItem):
     
     def get_column_widths(self):
         return [47, -1, 37]
+
+    def get_buffer(self, column):
+        buffers = [0, self.entry_buffer, 0]
+        self.entry_buffer = buffers[column]
+        return self.entry_buffer
     
     def get_column_renders(self):
         return [self.render_check, self.render_content, self.render_delete]
@@ -584,3 +600,75 @@ class SettingItem(TreeItem):
         pass
 gobject.type_register(SettingItem)
 
+class HotspotBox(gtk.HBox):
+    '''docstring for HotspotBox'''
+    def __init__(self):
+        super(HotspotBox, self).__init__()
+        self.set_size_request(645, 30)
+        self.connect("expose-event", self.expose_background)
+
+        self.__init_ui()
+    
+    def __init_ui(self):
+        self.check_bar = ImageBox(app_theme.get_pixbuf("network/check_box-2.png"))
+        self.ssid_label = Label(_("ssid:"))
+        self.ssid_entry = InputEntry("Deepin.org")
+        self.ssid_entry.entry.set_size_request(200 ,22)
+
+        self.password_label = Label(_("password:"))
+        self.password_entry = InputEntry("")
+        self.password_entry.entry.set_size_request(200 ,22)
+
+        self.active_btn = Button("Active")
+        self.jump_bar = ImageBox(app_theme.get_pixbuf("network/jump_to.png"))
+
+        check_bar_align = self.wrap_align(self.check_bar, (0, 0, 10, 10))
+        ssid_label_align = self.wrap_align(self.ssid_label, (0, 0, 0, 10))
+        ssid_entry_align = self.wrap_align(self.ssid_entry)
+        password_label_align = self.wrap_align(self.password_label, (0, 0, 20, 10))
+        password_entry_align = self.wrap_align(self.password_entry)
+        
+        self.active_align = gtk.Alignment(1, 0.5, 0, 0)
+        self.active_align.set_padding(0, 0, 0, 10)
+        self.active_align.add(self.active_btn)
+
+        self.pack_begin(self, [check_bar_align, ssid_label_align, 
+                               ssid_entry_align, password_label_align,
+                               password_entry_align,
+                               ])
+
+        self.pack_end(self.active_align, False, True)
+        self.ssid_entry.expose_input_entry = self.expose_input_entry
+        self.show_all()
+
+        self.sensitive = False
+        #self.password_entry.expose_input_entry = self.expose_input_entry
+
+    def expose_background(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*BG_COLOR)
+            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+            cr.fill()
+
+            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_line_width(1)
+            cr.rectangle(rect.x, rect.y , rect.width, rect.height)
+            cr.stroke()
+
+    def set_sensitive(self, state):
+        widgets = [self.ssid_label, self.ssid_entry, self.password_label, self.password_entry]
+        for w in widgets:
+            w.set_sensitive(state)
+
+    def pack_begin(self, parent, widget_list, expand=False, fill=False):
+        for w in widget_list:
+            parent.pack_start(w, expand, fill)
+
+    def wrap_align(self, widget, padding=(0, 0, 0, 0)):
+        align = gtk.Alignment(0, 0.5, 0, 0)
+        align.set_padding(*padding)
+        align.add(widget)
+        return align
+    
