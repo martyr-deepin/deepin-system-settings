@@ -155,6 +155,7 @@ class DisplayManager:
                      x_value=None, 
                      y_value=None, 
                      rotation_value=None):
+        print "DEBUG", output_name, width_value, height_value
         outputs = self.__xmldoc.getElementsByTagName("output")
 
         for output in outputs:
@@ -359,7 +360,29 @@ class DisplayManager:
         return 0
 
     def set_multi_monitor(self, value):
-        print "DEBUG", value
+        if value == 1:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", True)
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", False)
+            self.__xrandr_settings.set_int("only-monitor-shown", 0)
+            return
+
+        if value == 2:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", False)        
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", True)  
+            self.__xrandr_settings.set_int("only-monitor-shown", 0)  
+            return
+
+        if value == 3:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", False)        
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", False)  
+            self.__xrandr_settings.set_int("only-monitor-shown", 1)  
+            return
+
+        if value == 4:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", False)        
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", False)  
+            self.__xrandr_settings.set_int("only-monitor-shown", 2)  
+            return
 
     def set_screen_rotation(self, output_name_value, rotation):
         rotation_str = "normal"
