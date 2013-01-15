@@ -359,7 +359,29 @@ class DisplayManager:
         return 0
 
     def set_multi_monitor(self, value):
-        print "DEBUG", value
+        if value == 1:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", True)
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", False)
+            self.__xrandr_settings.set_int("only-monitor-shown", 0)
+            return
+
+        if value == 2:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", False)        
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", True)  
+            self.__xrandr_settings.set_int("only-monitor-shown", 0)  
+            return
+
+        if value == 3:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", False)        
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", False)  
+            self.__xrandr_settings.set_int("only-monitor-shown", 1)  
+            return
+
+        if value == 4:
+            self.__xrandr_settings.set_boolean("copy-multi-monitors", False)        
+            self.__xrandr_settings.set_boolean("extend-multi-monitors", False)  
+            self.__xrandr_settings.set_int("only-monitor-shown", 2)  
+            return
 
     def set_screen_rotation(self, output_name_value, rotation):
         rotation_str = "normal"
@@ -374,8 +396,6 @@ class DisplayManager:
             rotation_str = "inverted"
 
         self.__update_xml(output_name = output_name_value, rotation_value = rotation_str)
-
-        run_command("xrandr -o %s" % rotation_str)
 
     def get_screen_brightness(self):
         return self.__xrandr_settings.get_double("brightness") * 100.0
