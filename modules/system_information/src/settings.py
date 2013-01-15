@@ -77,15 +77,15 @@ def get_total_disk_size():
     OBJ_NAME = "/org/freedesktop/UDisks"
     try:
         bus = dbus.SystemBus()
-        udisks = bus.get_object(BUS_NAME, OBJ_NAME)
+        udisks = dbus.Interface(bus.get_object(BUS_NAME, OBJ_NAME), "org.freedesktop.UDisks")
 
         devices = udisks.EnumerateDevices()
         internal_dev = {}
         for device in devices:
-            dev = bus.get_object(BUS_NAME, device)
+            dev = dbus.Interface(bus.get_object(BUS_NAME, device), "org.freedesktop.DBus.Properties")
             if dev.Get("org.freedesktop.DBus.Properties", 'DeviceIsPartition'):
                 slave = dev.Get("org.freedesktop.DBus.Properties", 'PartitionSlave')
-                d = bus.get_object(BUS_NAME, slave)
+                d = dbus.Interface(bus.get_object(BUS_NAME, slave), "org.freedesktop.DBus.Properties") 
                 if not d.Get("org.freedesktop.DBus.Properties", 'DeviceIsRemovable'):
                     internal_dev[slave] = d
         total_size = 0
@@ -93,7 +93,8 @@ def get_total_disk_size():
             dev = internal_dev[d]
             total_size += dev.Get("org.freedesktop.DBus.Properties", 'DeviceSize')
         return round(total_size / 1024.0 / 1024 / 1024, 3)
-    except:
+    except Exception, e:
+        print e
         return None
 
 def get_root_partition_size():
