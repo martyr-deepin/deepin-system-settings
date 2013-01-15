@@ -328,7 +328,7 @@ class KeySetting(object):
         # blink
         self.alignment_widgets["blink_label"].add(self.container_widgets["blink_label_hbox"])
         self.alignment_widgets["blink_table"].add(self.container_widgets["blink_table"])
-        self.alignment_widgets["blink_label"].set(0.0, 0.5, 1.0, 0.0)
+        self.alignment_widgets["blink_label"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["blink_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         #self.alignment_widgets["blink_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["blink_table"].set(0.0, 0.5, 0.0, 1.0)

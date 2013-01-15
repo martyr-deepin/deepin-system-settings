@@ -46,6 +46,7 @@ import tools
 from module_frame import ModuleFrame
 from constant import *
 from pexpect import TIMEOUT, EOF
+from set_icon_page import IconSetPage
 
 MODULE_NAME = "account"
 COMBO_WIDTH = 190
@@ -78,6 +79,7 @@ class AccountSetting(object):
 
         self.current_select_user = None
         self.current_passwd_user = None
+        self.current_set_user = None
         self.current_select_item = None
 
         self.__create_widget()
@@ -197,7 +199,7 @@ class AccountSetting(object):
 
         self.alignment_widgets["change_pswd"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
         #self.alignment_widgets["delete_account"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
-        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 20)
+        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
@@ -367,6 +369,8 @@ class AccountSetting(object):
         self.alignment_widgets["delete_account"].set(0.5, 0.0, 1, 1)
         # set icon file
         self.alignment_widgets["set_iconfile"].set(0.5, 0.5, 1, 1)
+        self.container_widgets["icon_set_page"] = IconSetPage(self)
+        self.alignment_widgets["set_iconfile"].add(self.container_widgets["icon_set_page"])
 
     def __signals_connect(self):
         self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
@@ -504,8 +508,9 @@ class AccountSetting(object):
             self.container_widgets["del_account_button_hbox"].set_sensitive(False)
             self.account_dbus.delete_user(self.current_del_user.get_uid(), del_file)
         except Exception, e:
-            if isinstance(e, (AccountsPermissionDenied)):
-                error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                self.label_widgets["del_account_error_label"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+            self.container_widgets["del_account_button_hbox"].set_sensitive(True)
             return
         self.del_cancel_delete_cb(button)
 
@@ -752,7 +757,7 @@ class AccountSetting(object):
         button_hbox.pack_start(cancel_button, False, False)
         button_hbox.pack_start(change_button, False, False)
 
-        error_label = Label("")
+        error_label = Label("", enable_select=False)
 
         button_vbox.pack_start(error_label, False, False)
         button_vbox.pack_start(self.__make_align(button_hbox, xalign=1.0, width=LABEL_WIDTH+COMBO_WIDTH+WIDGET_SPACING), False, False)
@@ -900,9 +905,11 @@ class AccountSetting(object):
     def icon_file_press_cb(self, widget, event):
         if not self.current_select_user:
             return
-        self.__init_set_icon_page(self.current_select_user)
+        self.current_set_user = self.current_select_user
+        self.container_widgets["icon_set_page"].refresh()
+        self.alignment_widgets["set_iconfile"].show_all()
         self.container_widgets["slider"].slide_to_page(
-            account_settings.alignment_widgets["set_iconfile"], "right")
+            self.alignment_widgets["set_iconfile"], "right")
         self.module_frame.send_submodule_crumb(2, _("Set Icon"))
 
     # dbus signals
