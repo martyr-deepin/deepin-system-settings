@@ -87,7 +87,7 @@ class WiredDevice(object):
 
     def try_activate_begin(self, widget):
         if self.tree.visible_items != []:
-            self.tree.visible_items[self.index].network_state = 1
+            self.tree.visible_items[self.index].set_net_state(1)
             self.tree.queue_draw()
 
 class WiredSection(gtk.VBox):
@@ -146,12 +146,16 @@ class WiredSection(gtk.VBox):
 
     def try_active(self):
         for index, device in enumerate(self.wired_devices):
-            if not device.is_active():
-                device_ethernet = cache.get_spec_object(device.object_path)
-                device_ethernet.auto_connect()
-                device_ethernet.emit("try-activate-begin")
+            if int(device.get_state()) == 20:
+                self.tree.visible_items[index].network_state = 0
+                return
             else:
-                self.tree.visible_items[index].network_state = 2
+                if not device.is_active():
+                    device_ethernet = cache.get_spec_object(device.object_path)
+                    device_ethernet.auto_connect()
+                    device_ethernet.emit("try-activate-begin")
+                else:
+                    self.tree.visible_items[index].network_state = 2
 
     def add_setting_page(self, setting_page):
         self.settings = setting_page
@@ -181,8 +185,7 @@ class WirelessDevice(object):
         #print ssid
         ap_list  = [ap.get_ssid() for ap in self.ap_list]
         index = ap_list.index(ssid)
-        self.tree.visible_items[index].network_state = 1
-        self.tree.queue_draw()
+        self.tree.visible_items[index].set_net_state(1)
     
     def device_is_active(self, widget, reason):
         print "wireless active"
@@ -193,7 +196,7 @@ class WirelessDevice(object):
             try:
                 index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
                 self.index = index
-                self.tree.visible_items[index].network_state = 2
+                self.tree.visible_items[index].set_net_state(2)
                 self.tree.visible_items[index].redraw()
             except IndexError:
                 pass
@@ -206,7 +209,7 @@ class WirelessDevice(object):
         if not reason == 0:
             try:
                 if self.tree.visible_items != []:
-                    self.tree.visible_items[self.index].network_state = 0
+                    self.tree.visible_items[self.index].set_net_state(0)
                     self.tree.visible_items[self.index].redraw()
             except:
                 pass
@@ -215,7 +218,6 @@ class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
-        #print "==WirelessSection get_device"
         if not nm_module.nmclient.wireless_get_enabled():
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
@@ -346,20 +348,24 @@ class HotSpot(gtk.VBox):
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            self.align = gtk.Alignment(0, 0.0, 1, 1)
+            self.align = gtk.Alignment(0, 0, 1, 1)
             self.align.set_padding(0, 0, PADDING, 22)
-            #self.label_name = _("Hotspot Configuration")
-            #setting_item = HotspotItem()
-            #setting_tree = EntryTreeView([setting_item])
-            setting_tree = HotspotBox()
-            #label = Label(self.label_name, ui_theme.get_color("link_text"))
-            #label.connect("button-release-event", self.slide_to_event)
-            #self.align.connect("expose-event", self.expose_event)
-            self.align.add(setting_tree)
+            self.hotspot_box = HotspotBox(self.active_connection)
+            self.align.add(self.hotspot_box)
             self.align.show_all()
             self.add(self.align)
         else:
             self.remove(self.align)
+
+
+
+    def active_connection(self):
+        ssid = self.hotspot_box.get_ssid()
+        pwd = self.hotspot_box.get_pwd()
+
+        print "try active"
+        
+
     def slide_to_event(self, widget, event):
         self.settings.init("",init_connections=True, all_adhoc=True)
         self.send_to_crumb_cb()

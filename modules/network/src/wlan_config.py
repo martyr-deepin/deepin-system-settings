@@ -333,7 +333,6 @@ class SideBar(gtk.VBox):
         self.new_connection_list.append(connection)
         self.main_init_cb(self.ssid, self.new_connection_list)
 
-        
 class NoSetting(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)

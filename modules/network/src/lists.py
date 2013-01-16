@@ -38,34 +38,10 @@ from dtk.ui.label import Label
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
 from nls import _
-import threading as td
-import time
 from math import radians
+
+from settings_widget import LoadingThread
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
-class LoadingThread(td.Thread):
-    def __init__(self, tree_item, speed=0):
-        td.Thread.__init__(self)
-        self.setDaemon(True)
-        self.tree_item = tree_item
-    
-        self.position = [0, 1, 2, 3, 4, 5]
-
-    def rotate(self):
-        self.position.insert(0, self.position.pop())
-
-    def run(self):
-        try:
-            while True:
-                if self.tree_item.network_state == self.tree_item.NETWORK_LOADING:
-                    self.tree_item.position = self.position[0]
-                    print self.position[0]
-                    self.tree_item.redraw()
-                    time.sleep(1)
-                    self.rotate()
-                else:
-                    break
-        except Exception, e:
-            print "class LoadingThread got error %s" % e
 
 class WirelessItem(TreeItem):
 
@@ -105,13 +81,13 @@ class WirelessItem(TreeItem):
         
         self.network_state = self.NETWORK_DISCONNECT
         self.position = 0
-        self.init_thread = False
 
         '''
         Pixbufs
         '''
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
+        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
 
         self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
         self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
@@ -123,22 +99,10 @@ class WirelessItem(TreeItem):
 
     def render_check(self, cr, rect):
         render_background(cr,rect)
-        #print self.is_select, self.check_select_flag
-        if self.network_state == self.NETWORK_DISCONNECT:
-            #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
-            self.init_thread = False
-            self.check_icon = None
-        elif self.network_state == self.NETWORK_LOADING:
-            self.check_icon = self.loading_pixbuf
-        else:
-            self.check_icon = self.check_pixbuf
-            self.init_thread = False
-        
-        if self.check_icon:
-            #if self.network_state == self.NETWORK_LOADING:
-                #self.draw_loading(cr, rect)
-            #else:
-            draw_pixbuf(cr, self.check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        if self.network_state == self.NETWORK_LOADING:
+            self.draw_loading(cr, rect)
+        elif self.network_state == self.NETWORK_CONNECTED:
+            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
         #draw outline
         with cairo_disable_antialias(cr):
@@ -151,16 +115,11 @@ class WirelessItem(TreeItem):
             cr.fill()
 
     def draw_loading(self, cr, rect):
-        if self.init_thread == False:
-            LoadingThread(self).start()
-            self.init_thread = True
-
         with cairo_state(cr):
-            print "Debug", self.position
-            cr.translate(8, 8)
-            cr.rotate(radians(60*2))
-            cr.translate(-8, -8)
-            draw_pixbuf(cr, self.check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+            cr.translate(rect.x + 18 , rect.y + 15)
+            cr.rotate(radians(60*self.position))
+            cr.translate(-18, -15)
+            draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
 
     def render_essid(self, cr, rect):
         render_background(cr,rect)
@@ -277,9 +236,20 @@ class WirelessItem(TreeItem):
         if column == 3:
             self.setting_object.init(self.connection.get_ssid(), init_connections=True)
             self.send_to_crumb()
-            self.slide_to_setting() 
+            self.slide_to_setting()
 
-         
+    def set_net_state(self, state):
+        self.network_state = state
+        if state == self.NETWORK_LOADING:
+            LoadingThread(self).start()
+    
+    def get_net_state(self):
+        return self.network_state
+    
+    def refresh_loading(self, position):
+        self.position = position
+        self.redraw()
+        
 
 
 def render_background( cr, rect):
@@ -311,24 +281,18 @@ class WiredItem(TreeItem):
         self.jumpto_width = self.get_jumpto_width()
         self.network_state = 0
 
+        self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
+        self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
+        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
+
     def render_check(self, cr, rect):
         render_background(cr, rect)
 
-        #if self.is_select:
-            #check_icon = app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf()
-        #else:
-            #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
+        if self.network_state == 1:
+            self.draw_loading(cr, rect)
+        elif self.network_state == 2:
+            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
 
-        if self.network_state == 0:
-            #check_icon = app_theme.get_pixbuf("/Network/check_box_out.png").get_pixbuf()
-            check_icon = None
-        elif self.network_state == 1:
-            check_icon = app_theme.get_pixbuf("network/loading.png").get_pixbuf()
-        else:
-            check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
-
-        if check_icon:
-            draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
@@ -338,6 +302,12 @@ class WiredItem(TreeItem):
             cr.rectangle(rect.x , rect.y, 1, rect.height)
             cr.fill()
 
+    def draw_loading(self, cr, rect):
+        with cairo_state(cr):
+            cr.translate(rect.x + 18 , rect.y + 15)
+            cr.rotate(radians(60*self.position))
+            cr.translate(-18, -15)
+            draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
 
     def render_essid(self, cr, rect):
         render_background(cr, rect)
@@ -400,8 +370,6 @@ class WiredItem(TreeItem):
         pass
 
     def single_click(self, column, x, y):
-        #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
-            #self.is_select = not self.is_select
         if column == 2:
             self.setting.init(self.device, init_connection=True)
             self.slide_to_setting()
@@ -413,6 +381,18 @@ class WiredItem(TreeItem):
     def redraw(self):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+
+    def set_net_state(self, state):
+        self.network_state = state
+        if state == self.NETWORK_LOADING:
+            LoadingThread(self).start()
+    
+    def get_net_state(self):
+        return self.network_state
+    
+    def refresh_loading(self, position):
+        self.position = position
+        self.redraw()
         
 class HotspotItem(TreeItem):
 

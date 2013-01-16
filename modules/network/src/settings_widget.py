@@ -24,10 +24,10 @@ from dss import app_theme
 from dtk.ui.new_treeview import TreeView, TreeItem
 from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear,draw_vlinear, draw_line
-from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size, propagate_expose, alpha_color_hex_to_cairo
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size, propagate_expose, alpha_color_hex_to_cairo, container_remove_all, cairo_state
 from dtk.ui.new_entry import EntryBuffer, Entry, InputEntry
 from dtk.ui.box import ImageBox
-from dtk.ui.button import Button
+from dtk.ui.button import Button, ImageButton
 from dtk.ui.label import Label
 import gobject
 import gtk
@@ -38,6 +38,9 @@ from constants import FRAME_LEFT_PADDING, IMG_WIDTH, TREEVIEW_BORDER_COLOR, TREE
 BORDER_COLOR = color_hex_to_cairo(TREEVIEW_BORDER_COLOR)
 BG_COLOR = color_hex_to_cairo(TREEVIEW_BG_COLOR)
 
+import threading as td
+import time
+from math import radians
 class EntryTreeView(TreeView):
     __gsignals__ = {
         "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int)),
@@ -602,15 +605,19 @@ gobject.type_register(SettingItem)
 
 class HotspotBox(gtk.HBox):
     '''docstring for HotspotBox'''
-    def __init__(self):
+    DISCONNECT = 0
+    CONNECTING = 1
+    ACTIVE = 2
+    def __init__(self, action_btn_click_cb):
         super(HotspotBox, self).__init__()
+        self.action_btn_click = action_btn_click_cb
         self.set_size_request(645, 30)
         self.connect("expose-event", self.expose_background)
 
         self.__init_ui()
     
     def __init_ui(self):
-        self.check_bar = ImageBox(app_theme.get_pixbuf("network/check_box-2.png"))
+        #self.check_bar = Imag\cceBox(app_theme.get_pixbuf("network/check_box-2.png"))
         self.ssid_label = Label(_("ssid:"))
         self.ssid_entry = InputEntry("Deepin.org")
         self.ssid_entry.entry.set_size_request(200 ,22)
@@ -620,29 +627,62 @@ class HotspotBox(gtk.HBox):
         self.password_entry.entry.set_size_request(200 ,22)
 
         self.active_btn = Button("Active")
-        self.jump_bar = ImageBox(app_theme.get_pixbuf("network/jump_to.png"))
-
-        check_bar_align = self.wrap_align(self.check_bar, (0, 0, 10, 10))
-        ssid_label_align = self.wrap_align(self.ssid_label, (0, 0, 0, 10))
-        ssid_entry_align = self.wrap_align(self.ssid_entry)
-        password_label_align = self.wrap_align(self.password_label, (0, 0, 20, 10))
-        password_entry_align = self.wrap_align(self.password_entry)
+        self.jump_bar = ImageButton(app_theme.get_pixbuf("network/jump_to.png"),
+                app_theme.get_pixbuf("network/jump_to.png"),
+                app_theme.get_pixbuf("network/jump_to.png"))
+                                    
+        self.check_bar_align = gtk.Alignment(0, 0, 0, 0)
+        self.check_bar_align.set_size_request(36, 30)
+        self.check_bar_align.connect("expose-event", self.expose_state)
+        #check_bar_align = self.__wrap_align(self.check_bar, (0, 0, 10, 10))
+        ssid_label_align = self.__wrap_align(self.ssid_label, (0, 0, 0, 10))
+        self.ssid_entry_align = self.__wrap_align(self.ssid_entry)
+        password_label_align = self.__wrap_align(self.password_label, (0, 0, 20, 10))
+        self.password_entry_align = self.__wrap_align(self.password_entry)
         
         self.active_align = gtk.Alignment(1, 0.5, 0, 0)
         self.active_align.set_padding(0, 0, 0, 10)
         self.active_align.add(self.active_btn)
 
-        self.pack_begin(self, [check_bar_align, ssid_label_align, 
-                               ssid_entry_align, password_label_align,
-                               password_entry_align,
+        self.__pack_begin(self, [self.check_bar_align, ssid_label_align, 
+                               self.ssid_entry_align, password_label_align,
+                               self.password_entry_align
                                ])
-
+        self.ssid_entry_align.set_size_request(200, 30)
+        self.password_entry_align.set_size_request(200, 30)
         self.pack_end(self.active_align, False, True)
-        self.ssid_entry.expose_input_entry = self.expose_input_entry
         self.show_all()
 
-        self.sensitive = False
+        self.active_btn.connect("clicked", self.active_btn_callback)
         #self.password_entry.expose_input_entry = self.expose_input_entry
+        self.check_out_pixbuf = app_theme.get_pixbuf('network/check_box_out.png')
+        self.loading_pixbuf = app_theme.get_pixbuf('network/loading.png')
+        self.check_pixbuf = app_theme.get_pixbuf('network/check_box-2.png')
+        #self.check_bar = ImageBox(app_theme.get_pixbuf("network/"+pixbufs[state]))
+
+        self.position = 1
+        self.net_state = 0
+
+    def active_btn_callback(self, widget):
+        self.__active_action(False)
+    
+    def expose_state(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        #draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), rect.x + 10, rect.y + 7)
+        if self.net_state == 1:
+            self.draw_loading(cr, rect)
+        else:
+            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + 10, rect.y + 7)
+
+
+    def draw_loading(self, cr, rect):
+        with cairo_state(cr):
+            cr.translate(rect.x + rect.width*0.5 , rect.y + rect.height * 0.5)
+            cr.rotate(radians(60*self.position))
+            cr.translate(-rect.width* 0.5, -rect.height * 0.5)
+            draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10, 7)
 
     def expose_background(self, widget, event):
         cr = widget.window.cairo_create()
@@ -657,18 +697,84 @@ class HotspotBox(gtk.HBox):
             cr.rectangle(rect.x, rect.y , rect.width, rect.height)
             cr.stroke()
 
-    def set_sensitive(self, state):
-        widgets = [self.ssid_label, self.ssid_entry, self.password_label, self.password_entry]
-        for w in widgets:
-            w.set_sensitive(state)
-
-    def pack_begin(self, parent, widget_list, expand=False, fill=False):
+    def __pack_begin(self, parent, widget_list, expand=False, fill=False):
         for w in widget_list:
             parent.pack_start(w, expand, fill)
 
-    def wrap_align(self, widget, padding=(0, 0, 0, 0)):
+    def __wrap_align(self, widget, padding=(0, 0, 0, 0)):
         align = gtk.Alignment(0, 0.5, 0, 0)
         align.set_padding(*padding)
         align.add(widget)
         return align
+
+    def __active_action(self, state):
+        print "esafdsfsdf"
+        container_remove_all(self.ssid_entry_align)
+        container_remove_all(self.password_entry_align)
+        container_remove_all(self.active_align)
+        if state == False:
+            self.set_net_state(1)
+            self.action_btn_click()
+            label1 = Label(self.ssid_entry.get_text())
+            label2 = Label(self.password_entry.get_text())
+            label1.connect("button-press-event", lambda w, e: self.__active_action(True))
+            label2.connect("button-press-event", lambda w, e: self.__active_action(True))
+
+            self.ssid_entry_align.add(label1)
+            self.password_entry_align.add(label2)
+            self.show_all()
+        else:
+            self.set_net_state(2)
+            print "clicked"
+            self.ssid_entry_align.add(self.ssid_entry)
+            self.password_entry_align.add(self.password_entry)
+            self.active_align.add(self.active_btn)
+
+    def get_ssid(self):
+        return self.ssid_entry.get_text()
+
+    def get_pwd(self):
+        return self.password_entry.get_text()
+
+    def set_ssid(self, text):
+        self.ssid_entry.set_text(text)
+
+    def set_pwd(self, text):
+        self.password_entry.set_text(text)
     
+    def set_net_state(self, state):
+        self.net_state = state
+        if self.net_state == 1:
+            self.position = 0
+            LoadingThread(self).start()
+        self.check_bar_align.queue_draw()
+
+    def get_net_state(self):
+        return self.net_state
+
+    def refresh_loading(self, position):
+        self.position = position
+        self.check_bar_align.queue_draw()
+
+class LoadingThread(td.Thread):
+    def __init__(self, widget):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.widget = widget
+    
+    def run(self):
+        try:
+            position = 0
+            while True:
+                if self.widget.get_net_state() == 1:
+                    if position == 5:
+                        position = 0
+                    else:
+                        position += 1
+                    self.widget.refresh_loading(position)
+                    time.sleep(0.1)
+                else:
+                    break
+        except Exception, e:
+            print "class LoadingThread got error %s" % e
+
