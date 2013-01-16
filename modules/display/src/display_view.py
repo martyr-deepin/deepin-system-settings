@@ -99,7 +99,7 @@ class MonitorResizableBox(ResizableBox):
         '''
 
         i = 0
-        with cairo_state(cr):
+        with cairo_disable_antialias(cr):
             while i < output_count:
                 output_x = x + i * (self.output_width + self.output_padding)
                 if output_count > 1:
@@ -316,11 +316,12 @@ class DisplayView(gtk.VBox):
         self.sizes_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.sizes_label = self.__setup_label(_("Resolution"))
         self.sizes_combo = self.__setup_combo(self.sizes_items)
-        self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.__current_output_name, 
+        if self.sizes_combo:
+            self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.__current_output_name, 
                                                                                      self.sizes_items))
-        self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
-        self.__widget_pack_start(self.sizes_box, 
-                                 [self.sizes_label, self.sizes_combo])
+            self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
+            self.__widget_pack_start(self.sizes_box, 
+                                     [self.sizes_label, self.sizes_combo])
         self.sizes_align.add(self.sizes_box)
         '''
         rotation
@@ -635,7 +636,10 @@ class DisplayView(gtk.VBox):
         return label
 
     def __setup_combo(self, items=[], width=HSCALEBAR_WIDTH):
-        combo = ComboBox(items, None, 0, width, width)
+        if len(items) == 0:
+            return None
+
+        combo = ComboBox(items = items, select_index = 0, max_width = width, fixed_width = width)
         combo.set_size_request(width, WIDGET_HEIGHT)
         return combo
 
