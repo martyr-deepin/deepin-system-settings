@@ -265,6 +265,10 @@ class WiredItem(TreeItem):
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
 
+    NETWORK_DISCONNECT = 0
+    NETWORK_LOADING = 1
+    NETWORK_CONNECTED = 2
+
     def __init__(self, device, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
         
         TreeItem.__init__(self)
@@ -280,6 +284,7 @@ class WiredItem(TreeItem):
         self.essid_width = self.get_essid_width(self.essid)
         self.jumpto_width = self.get_jumpto_width()
         self.network_state = 0
+        self.position = 0
 
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
@@ -291,7 +296,7 @@ class WiredItem(TreeItem):
         if self.network_state == 1:
             self.draw_loading(cr, rect)
         elif self.network_state == 2:
-            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - check_icon.get_height())/2)
+            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + 7)
 
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
