@@ -741,7 +741,7 @@ class KeySetting(object):
 
     def xkb_keyboard_setting_changed_thread(self, mutex):
         mutex.acquire()
-        sleep(1.5)
+        sleep(2)
         self.xkb.update_current_config()
         current_variants = self.xkb.get_current_variants_description()
         for name in current_variants:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-10 14:55+0800\n"
+"POT-Creation-Date: 2013-01-16 20:38+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Sound"
 msgstr ""
 
-#: ../src/search_keyword.py:26 ../src/main.py:101
+#: ../src/search_keyword.py:26
 msgid "Balance"
 msgstr ""
 
@@ -33,11 +33,11 @@ msgstr ""
 msgid "Microphone"
 msgstr ""
 
-#: ../src/search_keyword.py:29 ../src/main.py:207
+#: ../src/search_keyword.py:29 ../src/main.py:211
 msgid "Output"
 msgstr ""
 
-#: ../src/search_keyword.py:30 ../src/main.py:208
+#: ../src/search_keyword.py:30 ../src/main.py:212
 msgid "Input"
 msgstr ""
 
@@ -45,11 +45,11 @@ msgstr ""
 msgid "Hardware"
 msgstr ""
 
-#: ../src/main.py:104 ../src/main.py:251
+#: ../src/main.py:104 ../src/main.py:255
 msgid "Left"
 msgstr ""
 
-#: ../src/main.py:105 ../src/main.py:252
+#: ../src/main.py:105 ../src/main.py:256
 msgid "Right"
 msgstr ""
 
@@ -57,8 +57,8 @@ msgstr ""
 msgid "Output Port"
 msgstr ""
 
-#: ../src/main.py:107 ../src/main.py:392 ../src/main.py:394 ../src/main.py:588
-#: ../src/main.py:590
+#: ../src/main.py:107 ../src/main.py:396 ../src/main.py:398 ../src/main.py:595
+#: ../src/main.py:597
 msgid "Output Volume"
 msgstr ""
 
@@ -74,43 +74,43 @@ msgstr ""
 msgid "Input Port"
 msgstr ""
 
-#: ../src/main.py:111 ../src/main.py:413 ../src/main.py:415 ../src/main.py:597
-#: ../src/main.py:599
+#: ../src/main.py:111 ../src/main.py:417 ../src/main.py:419 ../src/main.py:604
+#: ../src/main.py:606
 msgid "Input Volume"
 msgstr ""
 
-#: ../src/main.py:123 ../src/main.py:1032
+#: ../src/main.py:123 ../src/main.py:1043
 msgid "Advanced"
 msgstr ""
 
-#: ../src/main.py:168
+#: ../src/main.py:170
 msgid "Choose a device for sound output:"
 msgstr ""
 
-#: ../src/main.py:169
+#: ../src/main.py:171
 msgid "Choose a device for sound input:"
 msgstr ""
 
-#: ../src/main.py:170
+#: ../src/main.py:172
 msgid "Choose a device to configure:"
 msgstr ""
 
-#: ../src/main.py:460 ../src/main.py:806 ../src/main.py:829
+#: ../src/main.py:464 ../src/main.py:817 ../src/main.py:840
 #, python-format
 msgid "%d Outputs"
 msgstr ""
 
-#: ../src/main.py:462 ../src/main.py:808 ../src/main.py:831
+#: ../src/main.py:466 ../src/main.py:819 ../src/main.py:842
 #, python-format
 msgid "%d Output"
 msgstr ""
 
-#: ../src/main.py:464 ../src/main.py:810 ../src/main.py:833
+#: ../src/main.py:468 ../src/main.py:821 ../src/main.py:844
 #, python-format
 msgid "%d Inputs"
 msgstr ""
 
-#: ../src/main.py:466 ../src/main.py:812 ../src/main.py:835
+#: ../src/main.py:470 ../src/main.py:823 ../src/main.py:846
 #, python-format
 msgid "%d Input"
 msgstr ""

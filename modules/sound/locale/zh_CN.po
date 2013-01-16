@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-10 14:55+0800\n"
+"POT-Creation-Date: 2013-01-16 20:38+0800\n"
 "PO-Revision-Date: 2012-11-21 15:41+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -19,11 +19,7 @@ msgstr ""
 
 #: ../src/search_keyword.py:25
 msgid "Sound"
-msgstr ""
-
-#: ../src/search_keyword.py:26 ../src/main.py:101
-msgid "Balance"
-msgstr "均衡器"
+msgstr "声音"
 
 #: ../src/search_keyword.py:27 ../src/main.py:102
 msgid "Speaker"
@@ -33,11 +29,11 @@ msgstr "扬声器"
 msgid "Microphone"
 msgstr "麦克风"
 
-#: ../src/search_keyword.py:29 ../src/main.py:207
+#: ../src/search_keyword.py:29 ../src/main.py:211
 msgid "Output"
 msgstr "输出"
 
-#: ../src/search_keyword.py:30 ../src/main.py:208
+#: ../src/search_keyword.py:30 ../src/main.py:212
 msgid "Input"
 msgstr "输入"
 
@@ -45,11 +41,11 @@ msgstr "输入"
 msgid "Hardware"
 msgstr "硬件"
 
-#: ../src/main.py:104 ../src/main.py:251
+#: ../src/main.py:104 ../src/main.py:255
 msgid "Left"
 msgstr "左"
 
-#: ../src/main.py:105 ../src/main.py:252
+#: ../src/main.py:105 ../src/main.py:256
 msgid "Right"
 msgstr "右"
 
@@ -57,8 +53,8 @@ msgstr "右"
 msgid "Output Port"
 msgstr "输出端口"
 
-#: ../src/main.py:107 ../src/main.py:392 ../src/main.py:394 ../src/main.py:588
-#: ../src/main.py:590
+#: ../src/main.py:107 ../src/main.py:396 ../src/main.py:398 ../src/main.py:595
+#: ../src/main.py:597
 msgid "Output Volume"
 msgstr "输出音量"
 
@@ -71,47 +67,46 @@ msgid "均衡"
 msgstr ""
 
 #: ../src/main.py:110
-#, fuzzy
 msgid "Input Port"
 msgstr "输入端口"
 
-#: ../src/main.py:111 ../src/main.py:413 ../src/main.py:415 ../src/main.py:597
-#: ../src/main.py:599
+#: ../src/main.py:111 ../src/main.py:417 ../src/main.py:419 ../src/main.py:604
+#: ../src/main.py:606
 msgid "Input Volume"
 msgstr "输入音量"
 
-#: ../src/main.py:123 ../src/main.py:1032
+#: ../src/main.py:123 ../src/main.py:1043
 msgid "Advanced"
 msgstr "高级设置"
 
-#: ../src/main.py:168
+#: ../src/main.py:170
 msgid "Choose a device for sound output:"
 msgstr "选择音频输出设备"
 
-#: ../src/main.py:169
+#: ../src/main.py:171
 msgid "Choose a device for sound input:"
 msgstr "选择音频输入设备"
 
-#: ../src/main.py:170
+#: ../src/main.py:172
 msgid "Choose a device to configure:"
 msgstr "选择要配置的设备"
 
-#: ../src/main.py:460 ../src/main.py:806 ../src/main.py:829
+#: ../src/main.py:464 ../src/main.py:817 ../src/main.py:840
 #, python-format
 msgid "%d Outputs"
 msgstr "%d 路输出"
 
-#: ../src/main.py:462 ../src/main.py:808 ../src/main.py:831
+#: ../src/main.py:466 ../src/main.py:819 ../src/main.py:842
 #, python-format
 msgid "%d Output"
 msgstr "%d 路输出"
 
-#: ../src/main.py:464 ../src/main.py:810 ../src/main.py:833
+#: ../src/main.py:468 ../src/main.py:821 ../src/main.py:844
 #, python-format
 msgid "%d Inputs"
 msgstr "%d 路输入"
 
-#: ../src/main.py:466 ../src/main.py:812 ../src/main.py:835
+#: ../src/main.py:470 ../src/main.py:823 ../src/main.py:846
 #, python-format
 msgid "%d Input"
 msgstr "%d 路输入"

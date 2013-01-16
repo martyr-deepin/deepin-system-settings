@@ -207,7 +207,7 @@ class AccelEntry(ShortcutKeyEntry):
         self.connect("accel-key-change", self.__on_accel_key_change_cb)
 
     def __on_label_button_press_cb(self, widget, event):
-        self.accel_label.set_text(("Please input new shortcuts"))
+        self.accel_label.set_text(_("Please input new shortcuts"))
         if gtk.gdk.keyboard_grab(self.grab_area.window, False, 0) != gtk.gdk.GRAB_SUCCESS:
             self.accel_label.set_text(self.accel_str)
             return None
