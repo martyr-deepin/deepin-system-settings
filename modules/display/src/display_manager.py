@@ -298,6 +298,23 @@ class DisplayManager:
 
         return ""
 
+    def get_same_sizes(self, primary_sizes, other_sizes):
+        i = 0
+        j = 0
+        same_sizes = []
+
+        while i < len(primary_sizes):
+            j = 0
+            while j < len(other_sizes):
+                if (primary_sizes[i] == other_sizes[j]):
+                    same_sizes.append(primary_sizes[i])
+
+                j += 1
+
+            i += 1
+
+        return same_sizes
+
     def get_screen_size_index(self, output_name, items):
         screen_size = self.get_screen_size(output_name)
         i = 0
@@ -343,7 +360,10 @@ class DisplayManager:
             return 3
         
         return 0
-    
+   
+    def is_copy_monitors(self):
+        return self.__xrandr_settings.get_boolean("copy-multi-monitors")
+
     def get_multi_monitor_index(self):
         only_monitor_shown = self.__xrandr_settings.get_int("only-monitor-shown")
         
