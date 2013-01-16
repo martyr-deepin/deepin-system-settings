@@ -230,7 +230,7 @@ class DisplayView(gtk.VBox):
                                ("10 %s" % _("Minutes"), 10), 
                                ("30 %s" % _("Minutes"), 30), 
                                ("1 %s" % _("Hour"), 60), 
-                               (_("Never"), -1)]
+                               (_("Never"), DisplayManager.BIG_NUM / 60)]
         '''
         scrolled_window
         '''
@@ -419,7 +419,8 @@ class DisplayView(gtk.VBox):
         self.auto_lock_label = self.__setup_label(_("Auto Lock User Monitor Screen"))
         self.auto_lock_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.auto_lock_toggle = self.__setup_toggle()
-        self.auto_lock_toggle.set_active(self.display_manager.is_enable_lock_display())
+        is_enable_lock_display = self.display_manager.is_enable_lock_display()
+        self.auto_lock_toggle.set_active(is_enable_lock_display)
         self.auto_lock_toggle.connect("toggled", self.__toggled, "auto_lock_toggle")
         self.auto_lock_toggle_align.add(self.auto_lock_toggle)
         self.__widget_pack_start(self.auto_lock_box, 
@@ -438,6 +439,9 @@ class DisplayView(gtk.VBox):
             [self.lock_display_label, 
              self.lock_display_combo])
         self.lock_display_align.add(self.lock_display_box)
+        if is_enable_lock_display:
+            self.lock_display_label.set_sensitive(False)
+            self.lock_display_combo.set_sensitive(False)
         '''
         left_align pack_start
         '''
@@ -577,7 +581,12 @@ class DisplayView(gtk.VBox):
 
         if object == "auto_lock_toggle":
             if not widget.get_active():
+                self.lock_display_label.set_sensitive(True)                     
+                self.lock_display_combo.set_sensitive(True)
                 self.display_manager.set_lock_display(DisplayManager.BIG_NUM / 60)
+            else:
+                self.lock_display_label.set_sensitive(False)                        
+                self.lock_display_combo.set_sensitive(False)
             return
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
