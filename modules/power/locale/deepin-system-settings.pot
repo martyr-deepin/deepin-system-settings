@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-28 17:43+0800\n"
+"POT-Creation-Date: 2013-01-16 17:38+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,31 +17,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/power_view.py:48 ../src/power_view.py:49 ../src/power_view.py:50
+#: ../src/power_view.py:51 ../src/power_view.py:52 ../src/power_view.py:53
 msgid "Minutes"
 msgstr ""
 
-#: ../src/power_view.py:51
+#: ../src/power_view.py:54
 msgid "Hour"
 msgstr ""
 
-#: ../src/power_view.py:52
+#: ../src/power_view.py:55
 msgid "Never"
 msgstr ""
 
-#: ../src/power_view.py:55
+#: ../src/power_view.py:58
 msgid "Nothing"
 msgstr ""
 
-#: ../src/power_view.py:56
-msgid "Hibernate"
+#: ../src/power_view.py:59
+msgid "Suspend"
 msgstr ""
 
-#: ../src/power_view.py:57
+#: ../src/power_view.py:60
 msgid "Shutdown"
 msgstr ""
 
-#: ../src/power_view.py:66 ../src/search_keyword.py:29
+#: ../src/power_view.py:67 ../src/search_keyword.py:29
 msgid "Power Button Configuration"
 msgstr ""
 
@@ -57,26 +57,26 @@ msgstr ""
 msgid "Press Hibernate Button"
 msgstr ""
 
-#: ../src/power_view.py:112 ../src/search_keyword.py:33
+#: ../src/power_view.py:111 ../src/search_keyword.py:33
 msgid "Saving Power Configuration"
 msgstr ""
 
-#: ../src/power_view.py:121 ../src/search_keyword.py:34
+#: ../src/power_view.py:117 ../src/search_keyword.py:34
 msgid "Being Hibernate"
 msgstr ""
 
-#: ../src/power_view.py:133 ../src/search_keyword.py:35
+#: ../src/power_view.py:129 ../src/search_keyword.py:35
 msgid "Close Harddisk"
 msgstr ""
 
-#: ../src/power_view.py:145 ../src/search_keyword.py:36
+#: ../src/power_view.py:141 ../src/search_keyword.py:36
 msgid "Close Monitor"
 msgstr ""
 
-#: ../src/power_view.py:159 ../src/search_keyword.py:37
+#: ../src/power_view.py:155 ../src/search_keyword.py:37
 msgid "Password Protection Wakeup"
 msgstr ""
 
-#: ../src/power_view.py:173 ../src/search_keyword.py:38
+#: ../src/power_view.py:176 ../src/search_keyword.py:38
 msgid "Show Battery Status In The Tray"
 msgstr ""

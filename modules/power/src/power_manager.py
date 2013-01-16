@@ -34,6 +34,7 @@ class PowerManager:
     nothing     = 0
     hibernate   = 1
     shutdown    = 2
+    suspend     = 3
 
     BIG_NUM = 2147483647
 
@@ -52,6 +53,8 @@ class PowerManager:
                 return value
             if ori_value == "shutdown" and value == PowerManager.shutdown:
                 return value
+            if ori_value == "suspend" and value == PowerManager.suspend:      
+                return value  
 
         return 0
     
@@ -62,6 +65,8 @@ class PowerManager:
             self.power_settings.set_string(key, "hibernate")
         elif value == 2:
             self.power_settings.set_string(key, "shutdown")
+        elif value == 3:
+            self.power_settings.set_string(key, "suspend")
     
     def get_press_button_power(self, items):
         return self.__get_item_value(items, self.power_settings.get_string("button-power"))

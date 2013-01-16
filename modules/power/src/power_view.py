@@ -56,7 +56,7 @@ class PowerView(gtk.VBox):
                                    ]
         self.power_manager = PowerManager()
         self.power_manage_items = [(_("Nothing"), self.power_manager.nothing), 
-                                   (_("Hibernate"), self.power_manager.hibernate), 
+                                   (_("Suspend"), self.power_manager.suspend), 
                                    (_("Shutdown"), self.power_manager.shutdown)
                                   ]
         '''
@@ -203,8 +203,6 @@ class PowerView(gtk.VBox):
              self.tray_battery_status_align])
 
         self.connect("expose-event", self.__expose)
-
-        self.__send_message("add_button", ("power", "POWER_XXX"))
 
     def __handle_dbus_replay(self, *reply):                                     
         pass                                                                    
