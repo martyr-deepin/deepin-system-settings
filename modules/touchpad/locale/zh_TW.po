@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-12 15:22+0800\n"
+"POT-Creation-Date: 2013-01-16 17:49+0800\n"
 "PO-Revision-Date: 2012-10-10 17:53+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,82 +16,93 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:81
-msgid "Custom"
-msgstr "使用習慣"
+#: ../src/search_keyword.py:25
+msgid "Touchpad"
+msgstr ""
 
-#: ../src/main.py:82
+#: ../src/search_keyword.py:26 ../src/main.py:92
 msgid "Pointer speed"
 msgstr "指針速度"
 
-#: ../src/main.py:83
+#: ../src/search_keyword.py:27 ../src/main.py:93
 msgid "Acceleration"
 msgstr "移動速度"
 
-#: ../src/main.py:85 ../src/main.py:94
-msgid "Fast"
-msgstr "快"
-
-#: ../src/main.py:86 ../src/main.py:95
-msgid "Slow"
-msgstr "慢"
-
-#: ../src/main.py:87
+#: ../src/search_keyword.py:28 ../src/main.py:95
 msgid "Sensitivity"
 msgstr "精確度"
 
-#: ../src/main.py:89
-msgid "Low"
-msgstr "低"
-
-#: ../src/main.py:90
-msgid "High"
-msgstr "高"
-
-#: ../src/main.py:91
+#: ../src/search_keyword.py:29 ../src/main.py:97
 msgid "Double-click"
 msgstr "雙擊速度"
 
-#: ../src/main.py:92
+#: ../src/search_keyword.py:30 ../src/main.py:98
 msgid "Frequency"
 msgstr "點擊頻率"
 
-#: ../src/main.py:96
-msgid "Double-click on the folder to test your settings."
-msgstr "雙擊文件夾測試您的設置。"
-
-#: ../src/main.py:97
-msgid "Drag and Drop"
-msgstr "拖放物件"
-
-#: ../src/main.py:98
-msgid "Drag threshold"
-msgstr "解除延時"
-
-#: ../src/main.py:100
-msgid "Short"
-msgstr "短"
-
-#: ../src/main.py:101
-msgid "Long"
-msgstr "長"
-
-#: ../src/main.py:102
-msgid "Relevant Settings"
-msgstr "相關設置"
-
-#: ../src/main.py:104
+#: ../src/search_keyword.py:31 ../src/main.py:107
 msgid "Right-handed"
 msgstr "慣用右手"
 
-#: ../src/main.py:105
+#: ../src/search_keyword.py:32 ../src/main.py:108
 msgid "Left-handed"
 msgstr "慣用左手"
 
-#: ../src/main.py:108
+#: ../src/search_keyword.py:33 ../src/main.py:103
+msgid "Drag threshold"
+msgstr "解除延時"
+
+#: ../src/main.py:91
+msgid "Custom"
+msgstr "使用習慣"
+
+#: ../src/main.py:100
+msgid "双击笑脸测试您的点击频率。"
+msgstr ""
+
+#: ../src/main.py:102
+msgid "Drag and Drop"
+msgstr "拖放物件"
+
+#: ../src/main.py:105
+msgid "Relevant Settings"
+msgstr "相關設置"
+
+#: ../src/main.py:111
 msgid "Keyboard Setting"
 msgstr "鍵盤設置"
 
-#: ../src/main.py:109
+#: ../src/main.py:113
 msgid "Mouse Setting"
 msgstr "鼠標設置"
+
+#: ../src/main.py:115
+msgid "恢复默认"
+msgstr ""
+
+#: ../src/main.py:278 ../src/main.py:328
+msgid "Slow"
+msgstr "慢"
+
+#: ../src/main.py:279 ../src/main.py:329
+msgid "Fast"
+msgstr "快"
+
+#: ../src/main.py:294
+msgid "Low"
+msgstr "低"
+
+#: ../src/main.py:295
+msgid "High"
+msgstr "高"
+
+#: ../src/main.py:371
+msgid "Short"
+msgstr "短"
+
+#: ../src/main.py:372
+msgid "Long"
+msgstr "長"
+
+#~ msgid "Double-click on the folder to test your settings."
+#~ msgstr "雙擊文件夾測試您的設置。"

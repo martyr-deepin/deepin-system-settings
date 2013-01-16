@@ -46,7 +46,7 @@ import tools
 from module_frame import ModuleFrame
 from constant import *
 from pexpect import TIMEOUT, EOF
-from set_icon_page import IconSetPage
+from set_icon_page import IconSetPage, IconEditPage
 from statusbar import StatusBar
 
 MODULE_NAME = "account"
@@ -173,12 +173,7 @@ class AccountSetting(object):
         self.alignment_widgets["account_add_vbox"] = gtk.Alignment()
         self.alignment_widgets["button_hbox_new"] = gtk.Alignment()
         #####################################
-        # change password page
-        self.alignment_widgets["change_pswd"] = gtk.Alignment()
-        self.container_widgets["change_pswd_main_vbox"] = gtk.VBox(False)
-        #####################################
         # delete account page
-        self.alignment_widgets["delete_account"] = gtk.Alignment()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
         self.label_widgets["del_account_tips"] = Label("", wrap_width=400, enable_select=False)
         self.label_widgets["del_account_tips2"] = Label(
@@ -192,19 +187,26 @@ class AccountSetting(object):
         #####################################
         # set icon page
         self.alignment_widgets["set_iconfile"] = gtk.Alignment()
-        self.container_widgets["set_iconfile_main_vbox"] = gtk.VBox(False)
+        self.alignment_widgets["edit_iconfile"] = gtk.Alignment()
+        self.button_widgets["cancel_set_icon"] = Button(_("Cancel"))
+        self.button_widgets["save_edit_icon"] = Button(_("Save"))
 
     def __adjust_widget(self):
         self.container_widgets["main_vbox"].pack_start(self.container_widgets["slider"])
         self.container_widgets["main_vbox"].pack_start(self.container_widgets["statusbar"], False, False)
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["set_iconfile"])
-        #self.container_widgets["slider"].append_page(self.alignment_widgets["change_pswd"])
-        #self.container_widgets["slider"].append_page(self.alignment_widgets["delete_account"])
+        self.container_widgets["slider"].append_page(self.alignment_widgets["edit_iconfile"])
+        self.alignment_widgets["main_hbox"].set_name("main_hbox")
+        self.alignment_widgets["set_iconfile"].set_name("set_iconfile")
+        self.alignment_widgets["edit_iconfile"].set_name("edit_iconfile")
+        self.statusbar_buttons = {
+            "main_hbox": [],
+            "set_iconfile": [self.button_widgets["cancel_set_icon"]],
+            "edit_iconfile": [self.button_widgets["cancel_set_icon"], self.button_widgets["save_edit_icon"]]}
 
-        self.alignment_widgets["change_pswd"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
-        #self.alignment_widgets["delete_account"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, TIP_BOX_WIDTH)
         self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
+        self.alignment_widgets["edit_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
@@ -336,8 +338,8 @@ class AccountSetting(object):
         self.alignment_widgets["button_hbox_new"].add(self.container_widgets["button_hbox_new"])
         self.container_widgets["button_hbox_new"].pack_start(self.__make_align(height=-1))
         self.container_widgets["button_hbox_new"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_cancle"], False, False)
-        self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_create"], False, False)
+        #self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_cancle"], False, False)
+        #self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_create"], False, False)
         self.alignment_widgets["account_add_vbox"].add(self.container_widgets["account_add_vbox"])
         self.alignment_widgets["account_add_vbox"].set(0, 0, 1, 1)
         self.container_widgets["account_add_vbox"].set_size_request(500, -1)
@@ -367,21 +369,20 @@ class AccountSetting(object):
             self.button_widgets["lock"].set_no_show_all(True)
         self.set_widget_state_with_author()
         ###########################
-        # change account password page
-        self.alignment_widgets["change_pswd"].set(0.5, 0.5, 1, 1)
-        ###########################
         # delete account page
-        self.alignment_widgets["delete_account"].set(0.5, 0.0, 1, 1)
         # set icon file
         self.alignment_widgets["set_iconfile"].set(0.5, 0.5, 1, 1)
         self.container_widgets["icon_set_page"] = IconSetPage(self)
         self.alignment_widgets["set_iconfile"].add(self.container_widgets["icon_set_page"])
 
+        self.alignment_widgets["edit_iconfile"].set(0.5, 0.5, 1, 1)
+        self.container_widgets["icon_edit_page"] = IconEditPage(self)
+        self.alignment_widgets["edit_iconfile"].add(self.container_widgets["icon_edit_page"])
+
     def __signals_connect(self):
         self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
-        #self.container_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
-        #self.alignment_widgets["change_pswd"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["set_iconfile"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["edit_iconfile"].connect("expose-event", self.container_expose_cb)
 
         #self.container_widgets["left_vbox"].connect("expose-event", self.on_left_vbox_expose_cb)
 
@@ -403,6 +404,7 @@ class AccountSetting(object):
         self.button_widgets["lock"].connect("clicked", self.lock_button_clicked)
 
         self.image_widgets["account_icon"].connect("button-press-event", self.icon_file_press_cb)
+        self.button_widgets["cancel_set_icon"].connect("clicked", self.cancel_set_icon)
         self.label_widgets["account_name"].connect("enter-notify-event", self.label_enter_notify_cb, True)
         self.label_widgets["account_name"].connect("leave-notify-event", self.label_leave_notify_cb, True)
         self.label_widgets["account_name"].connect("button-press-event", self.realname_change_press_cb)
@@ -474,13 +476,17 @@ class AccountSetting(object):
         self.label_widgets["account_create_error"].set_text("")
         self.button_widgets["account_create"].set_sensitive(False)
         self.container_widgets["right_vbox"].show_all()
-        button.set_sensitive(False)
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["account_cancle"], self.button_widgets["account_create"]])
+        #button.set_sensitive(False)
+        self.container_widgets["button_hbox"].set_sensitive(False)
 
     def account_cancle_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_info_vbox"], False, False)
         self.container_widgets["right_vbox"].show_all()
-        self.button_widgets["add_account"].set_sensitive(True)
+        #self.button_widgets["add_account"].set_sensitive(True)
+        self.container_widgets["button_hbox"].set_sensitive(True)
+        self.container_widgets["statusbar"].clear_button()
 
     def account_create_button_clicked(self, button):
         username = self.button_widgets["account_name"].get_text()
@@ -907,15 +913,27 @@ class AccountSetting(object):
         self.current_passwd_user = None
     ## << change passowrd ##
 
+    ## set icon >> ##
     def icon_file_press_cb(self, widget, event):
         if not self.current_select_user:
             return
-        self.current_set_user = self.current_select_user
-        self.container_widgets["icon_set_page"].refresh()
-        self.alignment_widgets["set_iconfile"].show_all()
-        self.container_widgets["slider"].slide_to_page(
-            self.alignment_widgets["set_iconfile"], "right")
-        self.module_frame.send_submodule_crumb(2, _("Set Icon"))
+        #self.current_set_user = self.current_select_user
+        #self.container_widgets["icon_set_page"].refresh()
+        #self.alignment_widgets["set_iconfile"].show_all()
+        #self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
+        #self.module_frame.send_submodule_crumb(2, _("Set Icon"))
+
+        #icon_pixbuf = gtk.gdk.pixbuf_new_from_file("/home/longchang/图片/DeepinScreenshot20130116151538.png")
+        icon_pixbuf = gtk.gdk.pixbuf_new_from_file("/usr/share/pixmaps/faces/baseball.png")
+        self.container_widgets["icon_edit_page"].set_pixbuf(icon_pixbuf)
+        self.alignment_widgets["edit_iconfile"].show_all()
+        self.set_to_page(self.alignment_widgets["edit_iconfile"], "right")
+        self.module_frame.send_submodule_crumb(2, _("Edit Icon"))
+
+    def cancel_set_icon(self, button):
+        self.set_to_page(self.alignment_widgets["main_hbox"], "left")
+        self.change_crumb(1)
+    ## << set icon ##
 
     # dbus signals
     def user_info_changed_cb(self, user, item):
@@ -1045,117 +1063,6 @@ class AccountSetting(object):
         #return self.permission.get_allowed()
         return True
 
-    def __init_set_icon_page(self, current_set_user):
-        def cancel_set_icon(button):
-            self.container_widgets["slider"].slide_to_page(self.alignment_widgets["main_hbox"], "left")
-            self.change_crumb(1)
-
-        def choose_picture(button, event):
-            file_filter = gtk.FileFilter()
-            file_filter.add_pixbuf_formats()
-            f = gtk.FileChooserDialog(buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OPEN, gtk.RESPONSE_ACCEPT))
-            f.set_filter(file_filter)
-            response = f.run()
-            filename = f.get_filename()
-            f.destroy()
-            if response != gtk.RESPONSE_ACCEPT:
-                return
-            try:
-                current_set_user.set_icon_file(filename)
-            except Exception, e:
-                if isinstance(e, (AccountsPermissionDenied)):
-                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
-                return
-            self.container_widgets["slider"].slide_to_page(
-                self.alignment_widgets["main_hbox"], "left")
-            self.change_crumb(1)
-
-        def table_expose_cb(widget, event):
-            x, y, w, h = widget.allocation
-            print x, y, w, h
-            cr = widget.window.cairo_create()
-            cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
-            cr.rectangle(x, y, 370, 257)
-            cr.paint()
-            with cairo_disable_antialias(cr):
-                cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-                cr.rectangle(0, 0, 372, 259)
-                cr.stroke()
-
-        def icon_bt_release_cb(widget, event):
-            try:
-                file_path = widget.get_image_path()
-                current_set_user.set_icon_file(file_path)
-            except Exception, e:
-                if isinstance(e, (AccountsPermissionDenied)):
-                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
-                return
-            self.container_widgets["slider"].slide_to_page(
-                self.alignment_widgets["main_hbox"], "left")
-            self.change_crumb(1)
-        self.container_widgets["set_iconfile_main_vbox"].destroy()
-        self.container_widgets["set_iconfile_main_vbox"] = gtk.VBox(False)
-        self.alignment_widgets["set_iconfile"].add(self.container_widgets["set_iconfile_main_vbox"])
-
-        if current_set_user.get_real_name():
-            show_name = current_set_user.get_real_name()
-        else:
-            show_name = current_set_user.get_user_name()
-        tips_label = Label("<b>%s</b>" % _("Set <u>%s</u>'s icon") %
-                           tools.escape_markup_string(show_name),
-                           text_size=13, wrap_width=460, enable_select=False)
-        error_label = Label("", wrap_width=560, enable_select=False)
-        swin = ScrolledWindow()
-        face_dir = '/usr/share/pixmaps/faces'
-        if os.path.exists(face_dir):
-            pic_list = os.listdir(face_dir)
-        else:
-            pic_list = []
-        row_num = (len(pic_list) + 1) / 10 + 1
-        table = gtk.Table(row_num, 10)
-        table.set_col_spacings(FRAME_VERTICAL_SPACING)
-        table.set_row_spacings(FRAME_HORIZONTAL_SPACING)
-        i = 0
-        j = 0
-        for pic in pic_list:
-            try:
-                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-                    "%s/%s" %(face_dir, pic)).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
-            except:
-                continue
-            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(face_dir, pic))
-            icon_bt.connect("button-release-event", icon_bt_release_cb)
-            table.attach(icon_bt, j, j+1, i, i+1, 4, 4)
-            j += 1
-            if j >= 10:
-                j = 0
-                i += 1
-        more_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
-        more_button.connect("button-release-event", choose_picture)
-        table.attach(more_button, j, j+1, i, i+1, 4, 4)
-        swin.add_child(self.__make_align(table, yalign=-1.0, padding_top=3, padding_left=2, height=-1))
-        swin.set_size_request(650, 259)
-        #table.connect("expose-event", table_expose_cb)
-        table.connect("expose-event", self.container_expose_cb)
-
-        button_hbox = gtk.HBox(False)
-        button_hbox.set_spacing(WIDGET_SPACING)
-        #more_button = Button(_("More"))
-        cancel_button = Button(_("Cancel"))
-        #button_hbox.pack_start(self.__make_align(height=-1))
-        #button_hbox.pack_start(more_button, False, False)
-        button_hbox.pack_start(cancel_button, False, False)
-
-        cancel_button.connect("clicked", cancel_set_icon)
-        #more_button.connect("clicked", choose_picture)
-
-        self.container_widgets["set_iconfile_main_vbox"].set_spacing(BETWEEN_SPACING)
-        self.container_widgets["set_iconfile_main_vbox"].pack_start(tips_label, False, False)
-        self.container_widgets["set_iconfile_main_vbox"].pack_start(self.__make_align(swin, yalign=0.0, height=-1))
-        self.container_widgets["set_iconfile_main_vbox"].pack_start(error_label, False, False)
-        self.container_widgets["set_iconfile_main_vbox"].pack_start(button_hbox, False, False)
-        self.container_widgets["set_iconfile_main_vbox"].show_all()
-
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
                      padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
@@ -1165,6 +1072,23 @@ class AccountSetting(object):
 
     def change_crumb(self, crumb_index):
         self.module_frame.send_message("change_crumb", crumb_index)
+
+    def crumb_clicked(self, index, text):
+        crumb_list = [self.alignment_widgets["main_hbox"],
+                      self.alignment_widgets["set_iconfile"],
+                      self.alignment_widgets["edit_iconfile"]]
+        self.set_to_page(crumb_list[index-1], "left")
+
+    def set_to_page(self, widget, direction):
+        pre_widget = self.container_widgets["slider"].active_widget
+        self.statusbar_buttons[pre_widget.get_name()] = self.container_widgets["statusbar"].get_buttons()
+        self.container_widgets["slider"].slide_to_page(widget, direction)
+
+        if widget.get_name() in self.statusbar_buttons:
+            button_list = self.statusbar_buttons[widget.get_name()]
+        else:
+            button_list = []
+        self.container_widgets["statusbar"].set_buttons(button_list)
 
 if __name__ == '__main__':
     gtk.gdk.threads_init()
@@ -1182,9 +1106,9 @@ if __name__ == '__main__':
         (message_type, message_content) = message
         if message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
-            if crumb_index == 1:
-                account_settings.container_widgets["slider"].slide_to_page(
-                    account_settings.alignment_widgets["main_hbox"], "left")
+            account_settings.crumb_clicked(crumb_index, crumb_label)
+            #if crumb_index == 1:
+                #account_settings.set_to_page(account_settings.alignment_widgets["main_hbox"], "left")
         elif message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
             account_settings.container_widgets["slider"].set_to_page(

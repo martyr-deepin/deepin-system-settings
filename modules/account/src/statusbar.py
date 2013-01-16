@@ -64,6 +64,9 @@ class StatusBar(gtk.HBox):
             self.button_hbox.pack_start(bt, False, False)
         self.show_all()
 
+    def get_buttons(self):
+        return self.button_hbox.get_children()
+
     def clear_button(self):
         self.button_hbox.foreach(self.button_hbox.remove)
         
