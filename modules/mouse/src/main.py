@@ -30,12 +30,13 @@ import settings
 
 from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
-from dtk.ui.button import RadioButton
+from dtk.ui.button import RadioButton, Button
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
 from dtk.ui.utils import propagate_expose, color_hex_to_cairo, set_clickable_cursor
 import gtk
+from statusbar import StatusBar
 from nls import _
 from module_frame import ModuleFrame
 from constant import *
@@ -106,7 +107,10 @@ class MouseSetting(object):
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
+        self.button_widgets["set_to_default"] = Button(_("恢复默认"))
         # container init
+        self.container_widgets["main_vbox"] = gtk.VBox(False)
+        self.container_widgets["statusbar"] = StatusBar()
         self.container_widgets["main_hbox"] = gtk.HBox(False)
         self.container_widgets["left_vbox"] = gtk.VBox(False)
         self.container_widgets["right_vbox"] = gtk.VBox(False)
@@ -163,6 +167,9 @@ class MouseSetting(object):
         LABEL_WIDTH = 180
         OPTION_LEFT_PADDING = WIDGET_SPACING + 16
         TABLE_ROW_SPACING = 15
+        self.container_widgets["main_vbox"].pack_start(self.alignment_widgets["main_hbox"])
+        self.container_widgets["main_vbox"].pack_start(self.container_widgets["statusbar"], False, False)
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["set_to_default"]])
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["main_hbox"].set_padding(
@@ -377,6 +384,8 @@ class MouseSetting(object):
         self.button_widgets["touchpad_setting"].connect("button-press-event", self.relevant_press, "touchpad")
         set_clickable_cursor(self.button_widgets["keyboard_setting"])
         set_clickable_cursor(self.button_widgets["touchpad_setting"])
+
+        self.button_widgets["set_to_default"].connect("clicked", self.set_to_default)
     
     #############################
     def container_expose_cb(self, widget, event):
@@ -488,7 +497,7 @@ class MouseSetting(object):
     def __setup_separator(self):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=10)
     
-    def set_to_default(self):
+    def set_to_default(self, button):
         '''set to the default'''
         settings.mouse_set_to_default()
     
@@ -498,7 +507,7 @@ if __name__ == '__main__':
 
     mouse_settings = MouseSetting(module_frame)
     
-    module_frame.add(mouse_settings.alignment_widgets["main_hbox"])
+    module_frame.add(mouse_settings.container_widgets["main_vbox"])
     
     if len(sys.argv) > 1:
         print "module_uid:", sys.argv[1]
@@ -508,8 +517,6 @@ if __name__ == '__main__':
         if message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
-        if message_type == "reset":
-            mouse_settings.set_to_default()
 
     module_frame.module_message_handler = message_handler        
     

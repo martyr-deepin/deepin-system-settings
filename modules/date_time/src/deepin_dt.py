@@ -140,13 +140,40 @@ class DeepinDateTime(BusBase):
         return self.dbus_method("GetUsingNtp")
 
     def set_date(self, day, month, year):
-        return self.call_async("SetDate", day, month, year)
+        return self.call_async("SetDate", day, month, year,
+                                reply_handler = self.set_date_reply, error_handler = self.set_date_error)
+
+    def set_date_reply(self, result):
+        print "set date reply"
+        print result
+
+    def set_date_error(self, error):
+        print "set date error"
+        print error
 
     def set_hardware_clock_using_utc(self, is_using_utc):
-        return self.call_async("SetHardwareClockUsingUTC")
+        return self.call_async("SetHardwareClockUsingUTC", is_using_utc, 
+                                reply_handler = self.set_using_utc_reply, error_handler = self.set_using_utc_error)
+
+    def set_using_utc_reply(self, result):
+        print "set using utc reply"
+        print result
+
+    def set_using_utc_error(self, error):
+        print "set using utc error"
+        print result
 
     def set_time(self, seconds_since_epoch):
-        return self.call_async("SetTime", seconds_since_epoch)
+        return self.call_async("SetTime", seconds_since_epoch,
+                                reply_handler = self.set_time_reply, error_handler = self.set_time_error)
+
+    def set_time_reply(self, result):
+        print "set time reply"
+        print result
+
+    def set_time_error(self, error):
+        print "set time error"
+        print error
 
     def set_time_by_hms(self, hour, min, sec):
         datetime_str = "%04d-%02d-%02d %02d:%02d:%02d" % (time.localtime().tm_year, 
@@ -157,7 +184,7 @@ class DeepinDateTime(BusBase):
                                                     sec)
         d = datetime.datetime.strptime(datetime_str, "%Y-%m-%d %H:%M:%S")
         seconds_since_epoch = time.mktime(d.timetuple())
-        return self.call_async("SetTime", seconds_since_epoch)
+        return self.set_time(seconds_since_epoch)
 
     def set_timezone_by_gmtoff(self, gmtoff):
         tz = "Asia/Shanghai"
@@ -214,10 +241,28 @@ class DeepinDateTime(BusBase):
         self.set_timezone(tz)
     
     def set_timezone(self, tz):
-        return self.call_async("SetTimezone", tz)
+        return self.call_async("SetTimezone", tz,
+                                reply_handler = self.set_timezone_reply, error_handler = self.set_timezone_error)
+
+    def set_timezone_reply(self, result):
+        print "set timezone reply"
+        print result
+
+    def set_timezone_error(self, error):
+        print "set timezone error"
+        print error
 
     def set_using_ntp(self, is_using_ntp):
-        return self.call_async("SetUsingNtp", is_using_ntp)
+        return self.call_async("SetUsingNtp", is_using_ntp,
+                                reply_handler = self.set_using_ntp_reply, error_handler = self.set_using_ntp_error)
+
+    def set_using_ntp_reply(self, result):
+        print "set using ntp reply"
+        print result
+
+    def set_using_ntp_error(self, error):
+        print "set using ntp error"
+        print error
 
 if __name__ == "__main__":
     deepin_dt = DeepinDateTime()

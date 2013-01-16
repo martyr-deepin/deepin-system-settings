@@ -211,7 +211,10 @@ class DisplayView(gtk.VBox):
         self.__setup_monitor_items()
         self.sizes_items = []
         self.monitor_combo = None
-        self.__setup_sizes_items()
+        if len(self.monitor_items) > 1 and self.display_manager.is_copy_monitors():
+            self.__set_same_sizes()
+        else:
+            self.__setup_sizes_items()
         self.multi_monitors_items = [(_("Copy Display"), 1), 
                                      (_("Extend Display"), 2), 
                                      (_("Only Monitor 1 shown"), 3), 
@@ -505,7 +508,8 @@ class DisplayView(gtk.VBox):
         if not from_monitor_combo:
             self.monitor_combo.set_select_index(self.display_manager.get_output_name_index(output_name, self.monitor_items))
 
-        self.__setup_sizes_items()
+        if not self.display_manager.is_copy_monitors():
+            self.__setup_sizes_items()
         if len(self.sizes_items):
             self.sizes_combo.set_items(items = self.sizes_items, fixed_width = HSCALEBAR_WIDTH)
         self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(
@@ -514,6 +518,18 @@ class DisplayView(gtk.VBox):
     def __select_output(self, widget, output_name):
         self.__change_current_output(output_name, False)
     
+    def __set_same_sizes(self):
+        same_sizes = self.display_manager.get_same_sizes(                      
+            self.display_manager.get_screen_sizes(self.monitor_items[0][1]), 
+            self.display_manager.get_screen_sizes(self.monitor_items[1][1]))
+        i = 0
+        
+        del self.sizes_items[:]                                             
+        while i < len(same_sizes):                                          
+            self.sizes_items.append((same_sizes[i], i))                     
+                                                                                
+            i += 1                                                          
+    
     def __xrandr_changed(self, key):
         if key != "output-names":
             return
@@ -521,8 +537,14 @@ class DisplayView(gtk.VBox):
         self.display_manager.init_xml()
         self.__setup_monitor_items()
         self.monitor_combo.set_items(items = self.monitor_items, fixed_width = HSCALEBAR_WIDTH)
-        self.multi_monitors_align.set_size_request(-1, 30)
-        self.multi_monitors_align.set_child_visible(True)
+        if len(self.monitor_items) > 1:
+            if self.display_manager.is_copy_monitors():
+                self.__set_same_sizes()
+                self.sizes_combo.set_items(items = self.sizes_items,                    
+                                           fixed_width = HSCALEBAR_WIDTH) 
+
+            self.multi_monitors_align.set_size_request(-1, 30)
+            self.multi_monitors_align.set_child_visible(True)
 
     def __set_brightness(self, widget, event):
         self.display_manager.set_screen_brightness(self.__current_output_name, 

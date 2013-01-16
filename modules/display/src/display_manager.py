@@ -156,7 +156,7 @@ class DisplayManager:
                      y_value=None, 
                      rotation_value=None):
         outputs = self.__xmldoc.getElementsByTagName("output")
-
+        
         for output in outputs:
             if output_name != output.attributes["name"].value:
                 continue
@@ -298,6 +298,23 @@ class DisplayManager:
 
         return ""
 
+    def get_same_sizes(self, primary_sizes, other_sizes):
+        i = 0
+        j = 0
+        same_sizes = []
+
+        while i < len(primary_sizes):
+            j = 0
+            while j < len(other_sizes):
+                if (primary_sizes[i] == other_sizes[j]):
+                    same_sizes.append(primary_sizes[i])
+
+                j += 1
+
+            i += 1
+
+        return same_sizes
+
     def get_screen_size_index(self, output_name, items):
         screen_size = self.get_screen_size(output_name)
         i = 0
@@ -343,7 +360,10 @@ class DisplayManager:
             return 3
         
         return 0
-    
+   
+    def is_copy_monitors(self):
+        return self.__xrandr_settings.get_boolean("copy-multi-monitors")
+
     def get_multi_monitor_index(self):
         only_monitor_shown = self.__xrandr_settings.get_int("only-monitor-shown")
         
@@ -385,6 +405,7 @@ class DisplayManager:
 
     def set_screen_rotation(self, output_name_value, rotation):
         rotation_str = "normal"
+        i = 0
 
         if rotation == 1:
             rotation_str = "normal"
@@ -394,8 +415,13 @@ class DisplayManager:
             rotation_str = "left"
         elif rotation == 4:
             rotation_str = "inverted"
+        
+        while i < len(self.__output_names):
+            (output_display_name, output_name) = self.get_output_name(self.__output_names[i])
+            self.__update_xml(output_name = output_name, 
+                              rotation_value = rotation_str)
 
-        self.__update_xml(output_name = output_name_value, rotation_value = rotation_str)
+            i += 1
 
     def get_screen_brightness(self):
         return self.__xrandr_settings.get_double("brightness") * 100.0
