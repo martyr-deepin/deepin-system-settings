@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 14:00+0800\n"
+"POT-Creation-Date: 2013-01-17 14:23+0800\n"
 "PO-Revision-Date: 2012-12-30 23:05+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -112,7 +112,7 @@ msgstr ""
 msgid "Calendar"
 msgstr ""
 
-#: ../src/date_time_view.py:160 ../src/date_time_view.py:384
+#: ../src/date_time_view.py:160 ../src/date_time_view.py:405
 #, python-format
 msgid "Current Date: %d-%d-%d"
 msgstr ""
@@ -134,7 +134,7 @@ msgid "Time"
 msgstr ""
 
 #: ../src/date_time_view.py:226 ../src/date_time_view.py:235
-#: ../src/date_time_view.py:354
+#: ../src/date_time_view.py:375
 #, python-format
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr ""
@@ -155,33 +155,37 @@ msgstr ""
 msgid "TimeZone"
 msgstr ""
 
-#: ../src/date_time_view.py:382
+#: ../src/date_time_view.py:330
+msgid "Reset to default value"
+msgstr ""
+
+#: ../src/date_time_view.py:403
 #, python-format
 msgid "Changed date to %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:426
+#: ../src/date_time_view.py:447
 msgid "Changed to automatic set time"
 msgstr ""
 
-#: ../src/date_time_view.py:430
+#: ../src/date_time_view.py:451
 msgid "Changed to manual set time"
 msgstr ""
 
-#: ../src/date_time_view.py:437
+#: ../src/date_time_view.py:458
 msgid "Changed to 24 Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:439
+#: ../src/date_time_view.py:460
 msgid "Changed to 12 Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:448
+#: ../src/date_time_view.py:469
 #, python-format
 msgid "Changed time to %02d:%02d:%02d"
 msgstr ""
 
-#: ../src/date_time_view.py:470
+#: ../src/date_time_view.py:491
 #, python-format
 msgid "Changed timezone to %s"
 msgstr ""

@@ -326,6 +326,25 @@ class DatetimeView(gtk.HBox):
 
         SecondThread(self).start()
 
+    def reset(self):
+        self.__send_message("status", ("date_time", _("Reset to default value")))
+        
+        self.datetime_settings.reset("is-24hour")
+        self.datetime_settings.reset("is-auto-set")
+        
+        self.is_24hour = self.datetime_settings.get_boolean("is-24hour")
+        self.time_display_toggle.set_active(self.is_24hour)
+        self.datetime_widget.set_is_24hour(self.is_24hour)                  
+        self.set_time_spin.set_24hour(self.is_24hour)
+        
+        is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
+        self.auto_time_toggle.set_active(is_auto_set_time)
+        if is_auto_set_time:
+            self.set_time_spin_align.set_child_visible(False)               
+            AutoSetTimeThread(self).start()   
+        else:
+            self.set_time_spin_align.set_child_visible(True)
+
     def __handle_dbus_replay(self, *reply):                                     
         pass                                                                    
                                                                                 
@@ -344,15 +363,17 @@ class DatetimeView(gtk.HBox):
     def set_cur_time_label(self):
         is_24hour = 24
         hour_value = time.localtime().tm_hour
+        am_pm = ""
 
         if not self.is_24hour: 
+            am_pm = time.strftime('%p')
             is_24hour = 12
             if hour_value > 12:
                 hour_value -= 12
         
         self.cur_time_label.set_text(                           
              _("Current Time: %s %02d:%02d:%02d (%d Hour)") %                
-               (time.strftime('%p'),                                         
+               (am_pm,                                         
                 hour_value,                                    
                 time.localtime().tm_min,                                     
                 time.localtime().tm_sec,                                     
