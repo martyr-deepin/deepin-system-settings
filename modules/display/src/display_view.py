@@ -440,9 +440,6 @@ class DisplayView(gtk.VBox):
             [self.lock_display_label, 
              self.lock_display_combo])
         self.lock_display_align.add(self.lock_display_box)
-        if is_enable_lock_display:
-            self.lock_display_label.set_sensitive(False)
-            self.lock_display_combo.set_sensitive(False)
         '''
         left_align pack_start
         '''
@@ -594,13 +591,8 @@ class DisplayView(gtk.VBox):
         if object == "auto_lock_toggle":
             if not widget.get_active():
                 self.__send_message("status", ("display", _("Changed to manual lock")))
-                self.lock_display_label.set_sensitive(True)                     
-                self.lock_display_combo.set_sensitive(True)
-                self.display_manager.set_lock_display(DisplayManager.BIG_NUM / 60)
             else:
                 self.__send_message("status", ("display", _("Changed to automatic lock")))
-                self.lock_display_label.set_sensitive(False)                        
-                self.lock_display_combo.set_sensitive(False)
             return
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
@@ -632,6 +624,10 @@ class DisplayView(gtk.VBox):
 
         if object == "lock_display_combo":
             self.__send_message("status", ("display", _("Changed lock display duration to %s") % item_text))
+            if item_value == DisplayManager.BIG_NUM / 60:
+                self.auto_lock_toggle.set_active(False)
+            else:
+                self.auto_lock_toggle.set_active(True)
             self.display_manager.set_lock_display(item_value)
             return
 

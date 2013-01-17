@@ -473,7 +473,7 @@ class DisplayManager:
         self.__power_settings.set_int("sleep-display-ac", value * 60)
 
     def is_enable_lock_display(self):
-        if self.__session_settings.get_uint("idle-delay") < self.BIG_NUM:
+        if self.__session_settings.get_uint("idle-delay") < self.BIG_NUM / 60:
             return True
 
         return False
