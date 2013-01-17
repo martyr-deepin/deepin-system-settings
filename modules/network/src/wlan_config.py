@@ -31,15 +31,14 @@ from nm_modules import nm_module
 from nmlib.nmcache import cache
 from foot_box import FootBox
 #from widgets import SettingButton
-from settings_widget import EntryTreeView, SettingItem, ShowOthers, AddSettingItem
+from settings_widget import EntryTreeView, SettingItem,  AddSettingItem
 import gtk
 
 #from nmlib.nm_utils import TypeConvert
-from nmlib.nm_utils import TypeConvert
 from shared_widget import IPV4Conf, IPV6Conf
 from nmlib.nm_remote_connection import NMRemoteConnection
 import style
-from constants import FRAME_VERTICAL_SPACING
+#from constants import FRAME_VERTICAL_SPACING
 from nls import _
 
 def check_settings(connection, fn):
@@ -431,6 +430,8 @@ class Security(gtk.VBox):
                 self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
                 
                 self.password_entry.entry.set_text(secret)
+                if secret:
+                    self.set_button("save", True)
                 self.setting.psk = secret
 
             elif self.security_combo.get_current_item()[1] == "none":
