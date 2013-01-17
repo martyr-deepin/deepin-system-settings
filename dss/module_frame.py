@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
+#             Xia Bin <xiabin@linuxdeepin.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,6 +31,7 @@ from deepin_utils.ipc import is_dbus_name_exists
 from dbus.mainloop.glib import DBusGMainLoop
 import dbus
 import dbus.service
+import os
 
 class ModuleService(dbus.service.Object):
     def __init__(self, 
@@ -138,10 +141,14 @@ class ModuleFrame(gtk.Plug):
     
         
     def send_module_info(self):
+        name = self.module_config.get("name", "zh_CN")
+        if os.environ['LANGUAGE'].find("zh_") != 0:
+            name = self.module_config.get("name", "default")
+
         self.send_message("send_module_info", 
                           (1, 
                            (self.module_config.get("main", "id"), 
-                            self.module_config.get("name", "zh_CN"))
+                            name)
                            ))
         self.send_message("send_plug_id", (self.module_id, self.get_id()))
         
