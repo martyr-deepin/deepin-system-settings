@@ -35,12 +35,21 @@ import os
 import gobject
 import gtk
 import time
+
 try:
     import deepin_lunar
 except ImportError:
     print "===Please Install Deepin Lunar Python Binding==="
     print "git clone git@github.com:linuxdeepin/liblunar.git"
     print "==============================================="
+
+try:                                                                            
+    import dltk_calendar                                           
+except ImportError:                                                             
+    print "===Please Install DLtk Calendar Python Binding==="                    
+    print "git clone git@github.com:linuxdeepin/dltk.git"                   
+    print "==============================================="                 
+
 try:                                                                            
     import deepin_gsettings                                                     
 except ImportError:                                                             
@@ -141,18 +150,13 @@ class DatetimeView(gtk.HBox):
         '''
         self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
             padding_bottom = 10)
-        if os.environ['LANGUAGE'].find("zh_") == 0:
-            self.calendar = deepin_lunar.new()
-        else:
-            self.calendar = gtk.Calendar()
+        self.calendar = deepin_lunar.new()
+        if os.environ['LANGUAGE'].find("zh_") != 0:
+            self.calendar = dltk_calendar.new()
         self.calendar.mark_day(time.localtime().tm_mday)
-        if os.environ['LANGUAGE'].find("zh_") == 0:
-            self.calendar.get_handle().set_size_request(300, 280)
-            self.calendar.get_handle().connect("day-selected", self.__on_day_selected, self.calendar)
-            self.calendar_align.add(self.calendar.get_handle())
-        else:
-            self.calendar.set_size_request(300, 280)
-            self.calendar_align.add(self.calendar) 
+        self.calendar.get_handle().set_size_request(300, 280)
+        self.calendar.get_handle().connect("day-selected", self.__on_day_selected, self.calendar)
+        self.calendar_align.add(self.calendar.get_handle())
         self.change_date_box = gtk.HBox(spacing = 5)
         self.change_date_align = self.__setup_align()
         self.change_date_button = Button(_("Change Date"))
