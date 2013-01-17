@@ -31,10 +31,12 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo
+from deepin_utils.ipc import is_dbus_name_exists
 import os
 import gobject
 import gtk
 import time
+import dbus
 
 try:
     import deepin_lunar
@@ -304,7 +306,24 @@ class DatetimeView(gtk.HBox):
 
         self.connect("expose-event", self.__expose)
 
+        self.__send_message("status", ("date_time", ""))
+
         SecondThread(self).start()
+
+    def __handle_dbus_replay(self, *reply):                                     
+        pass                                                                    
+                                                                                
+    def __handle_dbus_error(self, *error):                                      
+        pass                                                                    
+                                                                                
+    def __send_message(self, message_type, message_content):                    
+        if is_dbus_name_exists(APP_DBUS_NAME):                                  
+            bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
+            method = bus_object.get_dbus_method("message_receiver")             
+            method(message_type,                                                
+                   message_content,                                             
+                   reply_handler=self.__handle_dbus_replay,                     
+                   error_handler=self.__handle_dbus_error)      
 
     def set_cur_time_label(self):
         is_24hour = 24
