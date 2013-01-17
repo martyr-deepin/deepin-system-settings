@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.utils import run_command
+from deepin_utils.process import run_command
 
 if __name__ == "__main__":
     run_command("system-config-printer")

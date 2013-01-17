@@ -217,6 +217,7 @@ class SearchPage(gtk.VBox):
             no_result_image = ImageBox(app_theme.get_pixbuf("search/noresult.png"))
             no_result_align.add(no_result_image)
             self.result_box.pack_start(no_result_align, False, False)   
+            self.show_all()
             return 
         
         for module_keyword in self.__keywords:

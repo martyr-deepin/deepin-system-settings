@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-16 17:38+0800\n"
+"POT-Creation-Date: 2013-01-17 14:48+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -78,4 +78,54 @@ msgstr ""
 
 #: ../src/power_view.py:176 ../src/search_keyword.py:38
 msgid "Show Battery Status In The Tray"
+msgstr ""
+
+#: ../src/power_view.py:258
+msgid "Reset to default value"
+msgstr ""
+
+#: ../src/power_view.py:300
+#, python-format
+msgid "Changed Press Power Button to %s"
+msgstr ""
+
+#: ../src/power_view.py:305
+#, python-format
+msgid "Changed Close Notebook Cover to %s"
+msgstr ""
+
+#: ../src/power_view.py:310
+#, python-format
+msgid "Changed Press Hibernate Button to %s"
+msgstr ""
+
+#: ../src/power_view.py:315
+#, python-format
+msgid "Changed Hibernate Status to %s"
+msgstr ""
+
+#: ../src/power_view.py:320
+#, python-format
+msgid "Changed Close Harddisk to %s"
+msgstr ""
+
+#: ../src/power_view.py:325
+#, python-format
+msgid "Changed Close Monitor to %s"
+msgstr ""
+
+#: ../src/power_view.py:332
+msgid "Changed to Password Protection Wakeup"
+msgstr ""
+
+#: ../src/power_view.py:334
+msgid "Changed to NO Password Protection Wakeup"
+msgstr ""
+
+#: ../src/power_view.py:340
+msgid "Changed to Show Battery Status In The Tray"
+msgstr ""
+
+#: ../src/power_view.py:342
+msgid "Changed to Hide Battery Status In The Tray"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 11:34+0800\n"
+"POT-Creation-Date: 2013-01-17 14:37+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -73,19 +73,19 @@ msgstr "只在1上显示"
 msgid "Only Monitor 2 shown"
 msgstr "只在2上显示"
 
-#: ../src/display_view.py:222 ../src/display_view.py:618
+#: ../src/display_view.py:222
 msgid "Normal"
 msgstr "正常"
 
-#: ../src/display_view.py:223 ../src/display_view.py:620
+#: ../src/display_view.py:223
 msgid "Right"
 msgstr "顺时针"
 
-#: ../src/display_view.py:224 ../src/display_view.py:622
+#: ../src/display_view.py:224
 msgid "Left"
 msgstr "逆时针"
 
-#: ../src/display_view.py:225 ../src/display_view.py:624
+#: ../src/display_view.py:225
 msgid "Inverted"
 msgstr "180度"
 
@@ -131,53 +131,51 @@ msgstr "锁定屏幕"
 msgid "Reset to default value"
 msgstr "恢复默认值"
 
-#: ../src/display_view.py:562
+#: ../src/display_view.py:563
 #, python-format
 msgid "Changed brightness to %f"
 msgstr "亮度修改为%f"
 
-#: ../src/display_view.py:587
+#: ../src/display_view.py:588
 msgid "Changed to manual adjustment"
 msgstr "修改为手动调节"
 
-#: ../src/display_view.py:590
+#: ../src/display_view.py:591
 msgid "Changed to automatic adjustment"
 msgstr "修改为自动调节"
 
-#: ../src/display_view.py:595
+#: ../src/display_view.py:596
 msgid "Changed to manual lock"
 msgstr "修改为手动锁定"
 
-#: ../src/display_view.py:600
+#: ../src/display_view.py:601
 msgid "Changed to automatic lock"
 msgstr "修改为自动锁定"
 
-#: ../src/display_view.py:607
+#: ../src/display_view.py:608
 #, python-format
 msgid "Changed current output to %s"
 msgstr "当前输出修改为%s"
 
-#: ../src/display_view.py:613
+#: ../src/display_view.py:614
 #, python-format
 msgid "Changed resolution to %s"
 msgstr "分辨率修改为%s"
 
-#: ../src/display_view.py:625
+#: ../src/display_view.py:619
 #, python-format
 msgid "Changed rotation to %s"
 msgstr "旋转修改为%s"
 
-#: ../src/display_view.py:630
+#: ../src/display_view.py:624
 #, python-format
 msgid "Changed multiply monitors mode to %s"
 msgstr "多显示器模式修改为%s"
 
-#: ../src/display_view.py:635
-#, python-format
-msgid "Changed close monitor duration to %s minutes"
-msgstr "关闭显示器时间修改为%s分钟"
+#: ../src/display_view.py:629
+msgid "Changed close monitor duration to %s"
+msgstr "关闭显示器时间修改为%s"
 
-#: ../src/display_view.py:640
-#, python-format
-msgid "Changed lock display duration to %s minutes"
-msgstr "锁屏时间修改为%s分钟"
+#: ../src/display_view.py:634
+msgid "Changed lock display duration to %s"
+msgstr "锁屏时间修改为%s"

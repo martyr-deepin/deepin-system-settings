@@ -616,14 +616,7 @@ class DisplayView(gtk.VBox):
             return
         
         if object == "rotation_combo":
-            rotation = _("Normal")
-            if item_value == 2:
-                rotation = _("Right")
-            elif item_value == 3:
-                rotation = _("Left")
-            elif item_value == 4:
-                rotation = _("Inverted")
-            self.__send_message("status", ("display", _("Changed rotation to %s") % rotation))
+            self.__send_message("status", ("display", _("Changed rotation to %s") % item_text))
             self.display_manager.set_screen_rotation(self.__current_output_name, item_value)
             return
 
@@ -633,12 +626,12 @@ class DisplayView(gtk.VBox):
             return
         
         if object == "close_monitor_combo":
-            self.__send_message("status", ("display", _("Changed close monitor duration to %s minutes") % item_value))
+            self.__send_message("status", ("display", _("Changed close monitor duration to %s") % item_text))
             self.display_manager.set_close_monitor(item_value)
             return
 
         if object == "lock_display_combo":
-            self.__send_message("status", ("display", _("Changed lock display duration to %s minutes") % item_value))
+            self.__send_message("status", ("display", _("Changed lock display duration to %s") % item_text))
             self.display_manager.set_lock_display(item_value)
             return
 
