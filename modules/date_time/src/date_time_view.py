@@ -113,14 +113,29 @@ class DatetimeView(gtk.HBox):
         self.current_tz_gmtoff = self.__deepin_dt.get_gmtoff()
 
         self.timezone_items = []
-        i = -11
-        j = 0
-        while i < 12:
-            self.timezone_items.append(("%d时区" % i, j))
-            
-            i += 1
-            j += 1
-       
+        self.timezone_items.append((_("(UTC-11:00)Samoa"), -11))
+        self.timezone_items.append((_("(UTC-10:00)Hawaii"), -10))
+        self.timezone_items.append((_("(UTC-09:00)Alaska"), -9))
+        self.timezone_items.append((_("(UTC-08:00)Lower California"), -8))
+        self.timezone_items.append((_("(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"), -7))
+        self.timezone_items.append((_("(UTC-06:00)Saskatchewan, Mexico City, Monterrey"), -6))
+        self.timezone_items.append((_("(UTC-05:00)Indiana, Bogota, Lima, Quito"), -5))
+        self.timezone_items.append((_("(UTC-04:00)San Diego, Georgetown, San Juan"), -4))
+        self.timezone_items.append((_("(UTC-03:00)Greenland, Brasilia, Fortaleza"), -3))
+        self.timezone_items.append((_("(UTC-02:00)Mid-Atlantic"), -2))
+        self.timezone_items.append((_("(UTC-01:00)Cape Verde Islands, Azores"), -1))
+        self.timezone_items.append((_("(UTC)London, Dublin, Edinburgh, Lisbon, Casablanca"), 0))
+        self.timezone_items.append((_("(UTC+01:00)Paris, Amsterdam, Berlin, Rome, Vienna"), 1))
+        self.timezone_items.append((_("(UTC+02:00)Cairo, Athens, Istanbul, Jerusalem"), 2))
+        self.timezone_items.append((_("(UTC+03:00)Moscow, St. Petersburg, Baghdad"), 3))
+        self.timezone_items.append((_("(UTC+04:00)Port Louis, Abu Dhabi, Muscat, Yerevan"), 4))
+        self.timezone_items.append((_("(UTC+05:00)Islamabad, Karachi, Tashkent"), 5))
+        self.timezone_items.append((_("(UTC+06:00)Dhaka, Novosibirsk"), 6))
+        self.timezone_items.append((_("(UTC+07:00)Bangkok, Hanoi, Jakarta"), 7))
+        self.timezone_items.append((_("(UTC+08:00)Beijing, Chongqing, HongKong, Urumqi"), 8))
+        self.timezone_items.append((_("(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"), 9))
+        self.timezone_items.append((_("(UTC+10:00)Guam, Canberra, Melbourne, Sydney"), 10))
+        self.timezone_items.append((_("(UTC+11:00)Magadan, Solomon Islands"), 11))
         self.is_24hour = self.datetime_settings.get_boolean("is-24hour")
         '''
         left align
