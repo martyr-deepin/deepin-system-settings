@@ -269,6 +269,6 @@ if __name__ == "__main__":
     print "get timezone:"
 
     print deepin_dt.get_timezone(), deepin_dt.get_gmtoff()
-    #deepin_dt.set_timezone("Asia/Shanghai")
+    deepin_dt.set_timezone("Asia/Shanghai")
 
     #gobject.MainLoop().run()
