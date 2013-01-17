@@ -17,25 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/main.py:57
-msgid "Copyright © 2011 - 2013 深之度公司 版权所有"
-msgstr ""
+msgid "Copyright © 2011 - 2013 Wuhan Deepin Technology Co.Ltd, All rights reserved"
+msgstr "Copyright © 2011 - 2013 深之度公司 版權所有"
 
 #: ../src/main.py:58
 msgid "Version"
-msgstr ""
+msgstr "版本"
 
 #: ../src/main.py:59
 msgid "CPU"
-msgstr ""
+msgstr "處理器"
 
 #: ../src/main.py:60
 msgid "Memory"
-msgstr ""
+msgstr "內存"
 
 #: ../src/main.py:61
 msgid "OS Type"
-msgstr ""
+msgstr "操作系統類型"
 
 #: ../src/main.py:62
 msgid "Disk"
-msgstr ""
+msgstr "磁盤"

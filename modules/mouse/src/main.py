@@ -81,7 +81,7 @@ class MouseSetting(object):
         self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/smiley01.png" % MODULE_NAME)
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
-        self.label_widgets["pointer_speed"] = Label(_("Pointer speed"), text_size=title_item_font_size)
+        self.label_widgets["pointer_speed"] = Label(_("Pointer Speed"), text_size=title_item_font_size)
         self.label_widgets["acceleration"] = Label(_("Acceleration"),
             text_size=option_item_font_szie)
         self.label_widgets["accel_fast"] = Label(_("Fast"))
@@ -95,7 +95,7 @@ class MouseSetting(object):
             text_size=option_item_font_szie)
         self.label_widgets["click_fast"] = Label(_("Fast"))
         self.label_widgets["click_slow"] = Label(_("Slow"))
-        self.label_widgets["double_test"] = Label(_("双击笑脸测试您的点击频率。"),
+        self.label_widgets["double_test"] = Label(_("Double-click on the smiley face to test your settings."),
             label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False)
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
         # button init
@@ -103,11 +103,11 @@ class MouseSetting(object):
         self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=10)
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
-        self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Setting"),
+        self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Settings"),
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
-        self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
+        self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
-        self.button_widgets["set_to_default"] = Button(_("恢复默认"))
+        self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()

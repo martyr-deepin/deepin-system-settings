@@ -54,7 +54,7 @@ class SysInfo(object):
 
     def __create_widget(self):
         # label widget
-        self.label_widgets["copyright"] = Label(_("Copyright © 2011 - 2013 深之度公司 版权所有"), enable_select=False)
+        self.label_widgets["copyright"] = Label(_("Copyright © 2011 - 2013 Wuhan Deepin Technology Co.Ltd, All rights reserved"), enable_select=False)
         self.label_widgets["version"] = Label(_("Version"))
         self.label_widgets["cpu"] = Label(_("CPU"))
         self.label_widgets["mem"] = Label(_("Memory"))

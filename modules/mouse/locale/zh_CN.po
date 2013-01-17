@@ -18,12 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/search_keyword.py:25
-#, fuzzy
 msgid "Mouse"
 msgstr "鼠标"
 
 #: ../src/search_keyword.py:26 ../src/main.py:84
-msgid "Pointer speed"
+msgid "Pointer Speed"
 msgstr "指针速度"
 
 #: ../src/search_keyword.py:27 ../src/main.py:85
@@ -71,42 +70,21 @@ msgid "High"
 msgstr "高"
 
 #: ../src/main.py:98
-msgid "双击笑脸测试您的点击频率。"
-msgstr ""
+msgid "Double-click on the smiley face to test your settings."
+msgstr "双击笑脸测试您的点击频率。"
 
 #: ../src/main.py:100
 msgid "Relevant Settings"
 msgstr "相关设置"
 
 #: ../src/main.py:106
-msgid "Keyboard Setting"
+msgid "Keyboard Settings"
 msgstr "键盘设置"
 
 #: ../src/main.py:108
-msgid "TouchPad Setting"
+msgid "TouchPad Settings"
 msgstr "触摸板设置"
 
 #: ../src/main.py:110
-msgid "恢复默认"
-msgstr ""
-
-#~ msgid "Double-click on the folder to test your settings."
-#~ msgstr "双击文件夹测试您的设置。"
-
-#~ msgid "Vertical Scrolling:"
-#~ msgstr "垂直滚动"
-
-#~ msgid "Horizontal Scrolling:"
-#~ msgstr "水平滚动"
-
-#~ msgid "A rolling"
-#~ msgstr "一次滚动"
-
-#~ msgid "lines"
-#~ msgstr "行"
-
-#~ msgid "Characters"
-#~ msgstr "字符"
-
-#~ msgid "A rolling a screen "
-#~ msgstr "一次滚动一个屏幕"
+msgid "Reset to Defaults"
+msgstr "恢复默认"

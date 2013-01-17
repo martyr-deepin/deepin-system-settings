@@ -23,7 +23,7 @@
 from nls import _
 
 keywords = [("__mouse_id1", _("Mouse")), 
-            ("__mouse_id2", _("Pointer speed")), 
+            ("__mouse_id2", _("Pointer Speed")), 
             ("__mouse_id3", _("Acceleration")), 
             ("__mouse_id4", _("Sensitivity")), 
             ("__mouse_id5", _("Double-click")), 

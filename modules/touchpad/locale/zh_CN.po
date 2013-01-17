@@ -22,7 +22,7 @@ msgid "Touchpad"
 msgstr "触摸板"
 
 #: ../src/search_keyword.py:26 ../src/main.py:92
-msgid "Pointer speed"
+msgid "Pointer Speed"
 msgstr "指针速度"
 
 #: ../src/search_keyword.py:27 ../src/main.py:93
@@ -58,28 +58,28 @@ msgid "Custom"
 msgstr "使用习惯"
 
 #: ../src/main.py:100
-msgid "双击笑脸测试您的点击频率。"
-msgstr ""
+msgid "Double-click on the smiley face to test your settings."
+msgstr "双击笑脸测试您的点击频率。"
 
 #: ../src/main.py:102
 msgid "Drag and Drop"
-msgstr "拖放物件"
+msgstr "拖放速度"
 
 #: ../src/main.py:105
 msgid "Relevant Settings"
 msgstr "相关设置"
 
 #: ../src/main.py:111
-msgid "Keyboard Setting"
+msgid "Keyboard Settings"
 msgstr "键盘设置"
 
 #: ../src/main.py:113
-msgid "Mouse Setting"
+msgid "Mouse Settings"
 msgstr "鼠标设置"
 
 #: ../src/main.py:115
-msgid "恢复默认"
-msgstr ""
+msgid "Reset to Defaults"
+msgstr "恢复默认"
 
 #: ../src/main.py:278 ../src/main.py:328
 msgid "Slow"
@@ -104,6 +104,3 @@ msgstr "短"
 #: ../src/main.py:372
 msgid "Long"
 msgstr "长"
-
-#~ msgid "Double-click on the folder to test your settings."
-#~ msgstr "双击文件夹测试您的设置。"

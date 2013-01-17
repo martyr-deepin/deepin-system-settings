@@ -23,7 +23,7 @@
 from nls import _
 
 keywords = [("__touchpad_id1", _("Touchpad")), 
-            ("__touchpad_id2", _("Pointer speed")), 
+            ("__touchpad_id2", _("Pointer Speed")), 
             ("__touchpad_id3", _("Acceleration")), 
             ("__touchpad_id4", _("Sensitivity")), 
             ("__touchpad_id5", _("Double-click")), 
