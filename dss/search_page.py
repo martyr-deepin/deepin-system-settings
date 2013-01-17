@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
@@ -33,6 +33,7 @@ import gobject
 import gtk
 import dbus
 from split_word import init_jieba, split_word
+from theme import app_theme
 from constant import *
 import xappy
 import threading as td
@@ -204,12 +205,19 @@ class SearchPage(gtk.VBox):
     def query(self, keyword):
         results = self.__keyword_search.query(keyword)
         is_drawn_module_name = False
-       
+ 
         '''
         TODO: clear preview widgets
         '''
         for widget in self.result_box.get_children():
             self.result_box.remove(widget)
+
+        if len(results) == 0:                  
+            no_result_align = self.__setup_align(padding_top = 45, padding_left = 180)
+            no_result_image = ImageBox(app_theme.get_pixbuf("search/noresult.png"))
+            no_result_align.add(no_result_image)
+            self.result_box.pack_start(no_result_align, False, False)   
+            return 
         
         for module_keyword in self.__keywords:
             is_drawn_module_name = False
