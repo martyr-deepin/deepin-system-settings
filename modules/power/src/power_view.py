@@ -204,6 +204,8 @@ class PowerView(gtk.VBox):
 
         self.connect("expose-event", self.__expose)
 
+        self.__send_message("status", ("power", ""))
+
     def __handle_dbus_replay(self, *reply):                                     
         pass                                                                    
                                                                                 

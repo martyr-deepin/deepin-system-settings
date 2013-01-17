@@ -48,6 +48,10 @@ class ModuleInfo(object):
         self.default_name = self.config.get("name", "default")
         self.name = self.config.get("name", "zh_CN")
         self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "icon")))
+        '''
+        self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+            gtk.icon_theme_get_default().lookup_icon("preferences-%s" % self.id, 48, gtk.ICON_LOOKUP_NO_SVG))
+        '''
         self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "menu_icon")))
         self.search_keyword = self.config.get("main", "search_keyword")
         

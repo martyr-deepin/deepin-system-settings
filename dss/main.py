@@ -21,6 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from nls import _
 from constant import APP_DBUS_NAME, APP_OBJECT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT
 from theme import app_theme
 from dtk.ui.application import Application
@@ -124,17 +125,11 @@ class DBusService(dbus.service.Object):
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
                 record_module_history(module_id)
-
-                if foot_box:
-                    foot_box.show(module_id)
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
                 record_module_history(module_id)
-
-                if foot_box:
-                    foot_box.show(module_id)
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
@@ -145,10 +140,6 @@ class DBusService(dbus.service.Object):
                 call_module_by_name(module_id, module_dict, slider, content_page_info, "right", module_uid)
                 
                 record_module_history(module_id)
-
-                if foot_box:
-                    foot_box.show(module_id)
-                    
             elif message_type == "back":
                 index = message_content
                 action_bar.bread.remove_node_after_index(index)
@@ -192,8 +183,6 @@ def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot
         else:
             call_module_by_name(module_id, module_dict, slider, content_page_info, "right")
 
-            foot_box.show(module_id)
-
 def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box):
     module_id = get_forward_module()
     if module_id:
@@ -204,8 +193,6 @@ def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foo
             foot_box.hide()
         else:
             call_module_by_name(module_id, module_dict, slider, content_page_info, "left")
-
-            foot_box.show(module_id)
 
 def search_cb(action_bar, slider, foot_box):
     search_page.query(action_bar.search_entry.get_text())
@@ -228,7 +215,7 @@ def send_message(module_id, message_type, message_content):
         
 def switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box):
     if index == 0:
-        if label == "系统设置":
+        if label == _("System Settings"):
             slider.slide_to_page(navigate_page, "left")
             content_page_info.set_active_module_id("main")
             foot_box.hide()
@@ -236,8 +223,6 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
         send_message(content_page_info.get_active_module_id(),
                      "click_crumb",
                      (index, label))
-
-        foot_box.show(content_page_info.get_active_module_id())
         
 def click_module_menu_item(slider, content_page_info, action_bar, module_info):
     if module_info.id != content_page_info.get_active_module_id():
@@ -330,7 +315,7 @@ if __name__ == "__main__":
     application.add_titlebar(
         ["min", "close"], 
         app_theme.get_pixbuf("logo.png"), 
-        "系统设置",
+        _("Deepin System Settings"),
         enable_gaussian=False,
         titlebar_bg_pixbuf=app_theme.get_pixbuf("titlebar/titlebar_bg.png")
 	)
@@ -385,7 +370,7 @@ if __name__ == "__main__":
     body_box.pack_start(slider, True, True)
     main_box.pack_start(action_bar, False, False)
     main_box.pack_start(body_box, True, True)
-    #main_box.pack_start(foot_box, False, False)
+    main_box.pack_start(foot_box, False, False)
     main_align.add(main_box)
     application.main_box.pack_start(main_align)
     

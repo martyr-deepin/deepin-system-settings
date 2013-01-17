@@ -23,11 +23,13 @@
 from dtk.ui.constant import ALIGN_MIDDLE
 from dtk.ui.utils import color_hex_to_cairo, container_remove_all
 from deepin_utils.ipc import is_dbus_name_exists
+from dtk.ui.draw import cairo_state, draw_line
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 import gobject
 import gtk
 import dbus
+from nls import _
 from constant import *
     
 class FootBox(gtk.HBox):
@@ -41,7 +43,7 @@ class FootBox(gtk.HBox):
         '''
         gtk.HBox.__init__(self)
 
-        self.button_width = 100
+        self.button_width = 80
 
         self.module_id = None
 
@@ -52,7 +54,7 @@ class FootBox(gtk.HBox):
         self.__is_init_ui = False
    
     def __setup_reset_button(self):
-        self.reset_button = Button("恢复默认")
+        self.reset_button = Button(_("Reset"))
         self.reset_button.set_size_request(self.button_width, WIDGET_HEIGHT)
         self.reset_button.connect("clicked", self.__reset_button_clicked)
 
@@ -127,12 +129,7 @@ class FootBox(gtk.HBox):
         
         self.show_all()
 
-    '''
-    FIXME: guys, please fix the ugly thinking style :)
-    '''
     def add_button(self, add_button):
-        #for widget in self.right_box.get_children():                           
-            #self.right_box.remove(widget)  
         container_remove_all(self.buttons_align.get_children()[0])
 
         self.__setup_reset_button()
@@ -155,6 +152,9 @@ class FootBox(gtk.HBox):
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                     
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)                       
         cr.fill()
+
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+        draw_line(cr, rect.x, rect.y + 1, rect.x + rect.width, rect.y + 1)
     
     def __setup_align(self, 
                       xalign=0, 

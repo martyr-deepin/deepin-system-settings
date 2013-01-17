@@ -21,6 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from nls import _
 from theme import app_theme
 from dtk.ui.keymap import get_keyevent_name
 from dtk.ui.cache_pixbuf import CachePixbuf
@@ -32,6 +33,7 @@ from dtk.ui.poplist import IconTextItem
 import itertools
 import gtk
 import gobject
+import os
 
 class ActionBar(gtk.Alignment):
     '''
@@ -91,7 +93,7 @@ class ActionBar(gtk.Alignment):
         
         # Init navigate bar.
         self.navigate_bar = gtk.HBox()
-        self.bread = Bread(crumb = [("系统设置", 
+        self.bread = Bread(crumb = [(_("System Settings"), 
                              map(lambda module_info: ModuleMenuItem(module_info, click_module_item),
                                  list(itertools.chain(*module_infos)))),
                             ], 
@@ -161,13 +163,17 @@ class ModuleMenuItem(IconTextItem):
         '''
         init docs
         '''
+        name = module_info.name
+        if os.environ['LANGUAGE'].find("zh_") != 0:
+            name = module_info.default_name
+
         IconTextItem.__init__(
             self, 
             (module_info.menu_icon_pixbuf,
              module_info.menu_icon_pixbuf,
              module_info.menu_icon_pixbuf,
              ),
-            module_info.name
+            name
             )
         self.module_info = module_info
         self.click_callback = click_callback
