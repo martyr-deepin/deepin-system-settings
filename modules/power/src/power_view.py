@@ -255,8 +255,16 @@ class PowerView(gtk.VBox):
         return align        
 
     def reset(self):
-        print "DEBUG reset to default value"
-    
+        self.__send_message("status", ("power", _("Reset to default value")))
+        self.power_manager.reset()
+        self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
+        self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(self.power_manage_items))
+        self.press_button_hibernate_combo.set_select_index(self.power_manager.get_press_button_hibernate(self.power_manage_items))
+        self.hibernate_status_combo.set_select_index(self.power_manager.get_hibernate_status(self.wait_duration_items))
+        self.close_monitor_combo.set_select_index(self.power_manager.get_close_monitor(self.wait_duration_items))
+        self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
+        self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
+
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
@@ -297,35 +305,49 @@ class PowerView(gtk.VBox):
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "press_button_power":
+            self.__send_message("status", ("power", _("Changed Press Power Button to %s") % item_text))
             self.power_manager.set_press_button_power(item_value)
             return
 
         if object == "close_notebook_cover":
+            self.__send_message("status", ("power", _("Changed Close Notebook Cover to %s") % item_text))
             self.power_manager.set_close_notebook_cover(item_value)
             return
 
         if object == "press_button_hibernate":
+            self.__send_message("status", ("power", _("Changed Press Hibernate Button to %s") % item_text))
             self.power_manager.set_press_button_hibernate(item_value)
             return
 
         if object == "hibernate_status":
+            self.__send_message("status", ("power", _("Changed Hibernate Status to %s") % item_text))
             self.power_manager.set_hibernate_status(item_value)
             return
 
         if object == "close_harddisk":
+            self.__send_message("status", ("power", _("Changed Close Harddisk to %s") % item_text))
             self.power_manager.set_close_harddisk(item_value)
             return
 
         if object == "close_monitor":
+            self.__send_message("status", ("power", _("Changed Close Monitor to %s") % item_text))
             self.power_manager.set_close_monitor(item_value)
             return
 
     def __toggled(self, widget, object=None):
         if object == "wakeup_password":
+            if widget.get_active():
+                self.__send_message("status", ("power", _("Changed to Password Protection Wakeup")))
+            else:
+                self.__send_message("status", ("power", _("Changed to NO Password Protection Wakeup")))
             self.power_manager.set_wakeup_password(widget.get_active())
             return
 
         if object == "tray_battery_status":
+            if widget.get_active():
+                self.__send_message("status", ("power", _("Changed to Show Battery Status In The Tray")))
+            else:
+                self.__send_message("status", ("power", _("Changed to Hide Battery Status In The Tray")))
             self.power_manager.set_tray_battery_status(widget.get_active())
             return
 

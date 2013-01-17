@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 11:34+0800\n"
+"POT-Creation-Date: 2013-01-17 14:37+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -72,19 +72,19 @@ msgstr ""
 msgid "Only Monitor 2 shown"
 msgstr ""
 
-#: ../src/display_view.py:222 ../src/display_view.py:618
+#: ../src/display_view.py:222
 msgid "Normal"
 msgstr ""
 
-#: ../src/display_view.py:223 ../src/display_view.py:620
+#: ../src/display_view.py:223
 msgid "Right"
 msgstr ""
 
-#: ../src/display_view.py:224 ../src/display_view.py:622
+#: ../src/display_view.py:224
 msgid "Left"
 msgstr ""
 
-#: ../src/display_view.py:225 ../src/display_view.py:624
+#: ../src/display_view.py:225
 msgid "Inverted"
 msgstr ""
 
@@ -130,53 +130,53 @@ msgstr ""
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/display_view.py:562
+#: ../src/display_view.py:563
 #, python-format
 msgid "Changed brightness to %f"
 msgstr ""
 
-#: ../src/display_view.py:587
+#: ../src/display_view.py:588
 msgid "Changed to manual adjustment"
 msgstr ""
 
-#: ../src/display_view.py:590
+#: ../src/display_view.py:591
 msgid "Changed to automatic adjustment"
 msgstr ""
 
-#: ../src/display_view.py:595
+#: ../src/display_view.py:596
 msgid "Changed to manual lock"
 msgstr ""
 
-#: ../src/display_view.py:600
+#: ../src/display_view.py:601
 msgid "Changed to automatic lock"
 msgstr ""
 
-#: ../src/display_view.py:607
+#: ../src/display_view.py:608
 #, python-format
 msgid "Changed current output to %s"
 msgstr ""
 
-#: ../src/display_view.py:613
+#: ../src/display_view.py:614
 #, python-format
 msgid "Changed resolution to %s"
 msgstr ""
 
-#: ../src/display_view.py:625
+#: ../src/display_view.py:619
 #, python-format
 msgid "Changed rotation to %s"
 msgstr ""
 
-#: ../src/display_view.py:630
+#: ../src/display_view.py:624
 #, python-format
 msgid "Changed multiply monitors mode to %s"
 msgstr ""
 
-#: ../src/display_view.py:635
+#: ../src/display_view.py:629
 #, python-format
-msgid "Changed close monitor duration to %s minutes"
+msgid "Changed close monitor duration to %s"
 msgstr ""
 
-#: ../src/display_view.py:640
+#: ../src/display_view.py:634
 #, python-format
-msgid "Changed lock display duration to %s minutes"
+msgid "Changed lock display duration to %s"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-16 17:38+0800\n"
+"POT-Creation-Date: 2013-01-17 14:48+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -80,3 +80,47 @@ msgstr "唤醒时的密码保护"
 #: ../src/power_view.py:176 ../src/search_keyword.py:38
 msgid "Show Battery Status In The Tray"
 msgstr "在系统托盘显示电池状态"
+
+#: ../src/power_view.py:258
+msgid "Reset to default value"
+msgstr "恢复默认值"
+
+#: ../src/power_view.py:300
+msgid "Changed Press Power Button to %s"
+msgstr "修改按电源按钮为%s"
+
+#: ../src/power_view.py:305
+msgid "Changed Close Notebook Cover to %s"
+msgstr "修改合上笔记本盖子为%s"
+
+#: ../src/power_view.py:310
+msgid "Changed Press Hibernate Button to %s"
+msgstr "修改按休眠按钮为%s"
+
+#: ../src/power_view.py:315
+msgid "Changed Hibernate Status to %s"
+msgstr "修改休眠状态为%s"
+
+#: ../src/power_view.py:320
+msgid "Changed Close Harddisk to %s"
+msgstr "修改关闭硬盘为%s"
+
+#: ../src/power_view.py:325
+msgid "Changed Close Monitor to %s"
+msgstr "修改关闭显示器为%s"
+
+#: ../src/power_view.py:332
+msgid "Changed to Password Protection Wakeup"
+msgstr "修改为唤醒时有密码保护"
+
+#: ../src/power_view.py:334
+msgid "Changed to NO Password Protection Wakeup"
+msgstr "修改为唤醒时无密码保护"
+
+#: ../src/power_view.py:340
+msgid "Changed to Show Battery Status In The Tray"
+msgstr "修改为在系统托盘显示电池状态"
+
+#: ../src/power_view.py:342
+msgid "Changed to Hide Battery Status In The Tray"
+msgstr "修改为在系统托盘隐藏电池状态"

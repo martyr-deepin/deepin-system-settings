@@ -67,7 +67,17 @@ class PowerManager:
             self.power_settings.set_string(key, "shutdown")
         elif value == 3:
             self.power_settings.set_string(key, "suspend")
-    
+   
+    def reset(self):
+        self.power_settings.reset("button-power")
+        self.power_settings.reset("lid-close-battery-action")
+        self.power_settings.reset("button-hibernate")
+        self.power_settings.reset("sleep-inactive-battery-timeout")       
+        self.power_settings.reset("sleep-inactive-ac-timeout")
+        self.power_settings.reset("sleep-display-battery")             
+        self.power_settings.reset("sleep-display-ac") 
+        self.lockdown_settings.reset("disable-lock-screen")  
+
     def get_press_button_power(self, items):
         return self.__get_item_value(items, self.power_settings.get_string("button-power"))
     
