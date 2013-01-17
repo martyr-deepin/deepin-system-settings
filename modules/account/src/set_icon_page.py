@@ -257,7 +257,12 @@ class IconEditArea(gtk.HBox):
 
     AREA_WIDTH = 300
     AREA_HEIGHT = 300
-    DRAG_WIDTH = 5
+    DRAG_WIDTH = 10
+    MIN_SIZE = 144
+
+    POS_OUT = 0
+    POS_IN_MOVE = 1
+    POS_IN_DRAG = 2
 
     def __init__(self):
         super(IconEditArea, self).__init__(False)
@@ -300,27 +305,42 @@ class IconEditArea(gtk.HBox):
         self.set_size_request(self.AREA_WIDTH + 50, self.AREA_HEIGHT)
         self.connect("expose-event", self.draw_frame_border)
 
-        self.edit_area.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self.edit_area.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
-        self.edit_area.add_events(gtk.gdk.BUTTON_MOTION_MASK)
-        self.edit_area.add_events(gtk.gdk.ENTER_NOTIFY_MASK)
-        self.edit_area.add_events(gtk.gdk.LEAVE_NOTIFY_MASK)
+        self.edit_area.set_can_focus(True)
+        self.edit_area.add_events(gtk.gdk.ALL_EVENTS_MASK)        
         self.edit_area.connect("button-press-event", self.__on_button_press_cb)
         self.edit_area.connect("button-release-event", self.__on_button_release_cb)
         self.edit_area.connect("motion-notify-event", self.__on_motion_notify_cb)
         self.edit_area.connect("expose-event", self.__expose_edit)
+        #self.edit_area.connect("focus-in-event", self.__on_focus_in_cb)
+        #self.edit_area.connect("focus-out-event", self.__on_focus_out_cb)
+        #self.edit_area.connect("enter-notify-event", self.__on_enter_notify_cb)
+        #self.edit_area.connect("leave-notify-event", self.__on_leave_notify_cb)
 
         self.origin_pixbuf = None
         self.cache_pixbuf = CachePixbuf()
         self.border_color = "#000000"
+
+        self.cursor = {
+            self.POS_IN_DRAG : gtk.gdk.Cursor(gtk.gdk.BOTTOM_RIGHT_CORNER),
+            self.POS_IN_MOVE : gtk.gdk.Cursor(gtk.gdk.FLEUR),
+            self.POS_OUT : None}
+        self.cursor_current = None
+
+        self.press_point_coord = (0, 0)
+        self.position = self.POS_OUT
+        self.drag_flag = False
+        self.move_flag = False
 
         # the select box coord
         self.edit_coord_x = 0
         self.edit_coord_y = 0
         self.edit_coord_w = self.AREA_WIDTH
         self.edit_coord_h = self.AREA_HEIGHT
-        self.drag_point_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
-        self.drag_point_y = self.edit_coord_y + self.edit_coord_h - self.DRAG_WIDTH
+        self.edit_coord_backup_x = 0
+        self.edit_coord_backup_y = 0
+        self.edit_coord_backup_w = self.AREA_WIDTH
+        self.edit_coord_backup_h = self.AREA_HEIGHT
+        self.__update_drag_point_coord()
 
     def draw_frame_border(self, widget, event):
         cr = widget.window.cairo_create()
@@ -424,30 +444,93 @@ class IconEditArea(gtk.HBox):
 
     def emit_changed(self):
         self.emit("pixbuf-changed", self.cache_pixbuf.get_cache().subpixbuf(
-            self.edit_coord_x-self.offset_x, self.edit_coord_y-self.offset_y,
-            self.edit_coord_w, self.edit_coord_h))
+            int(self.edit_coord_x-self.offset_x), int(self.edit_coord_y-self.offset_y),
+            int(self.edit_coord_w), int(self.edit_coord_h)))
 
     def get_pixbuf(self):
         return self.cache_pixbuf.get_cache()
 
-    def set_cursor_drag(self):
-        self.set_cursor(gtk.gdk.Cursor(gtk.gdk.BOTTOM_RIGHT_CORNER))
-
-    def set_cursor_move(self):
-        self.set_cursor(gtk.gdk.Cursor(gtk.gdk.FLEUR))
-
-    def set_cursor(self, cursor):
-        if self.edit_area.window:
-            self.edit_area.window.set_cursor(cursor)
+    def set_cursor(self):
+        if not self.edit_area.window:
+            return
+        if self.cursor_current != self.cursor[self.position]:
+            self.cursor_current = self.cursor[self.position]
+            self.edit_area.window.set_cursor(self.cursor_current)
 
     def __on_button_press_cb(self, widget, event):
-        pass
+        self.__update_position(event.x, event.y)
+        if self.position == self.POS_IN_DRAG:
+            self.drag_flag = True
+        elif self.position == self.POS_IN_MOVE:
+            self.move_flag = True
+        self.press_point_coord = (event.x, event.y)
+        self.edit_coord_backup_x = self.edit_coord_x
+        self.edit_coord_backup_y = self.edit_coord_y
+        self.edit_coord_backup_w = self.edit_coord_w
+        self.edit_coord_backup_h = self.edit_coord_h
 
     def __on_button_release_cb(self, widget, event):
-        pass
+        self.drag_flag = False
+        self.move_flag = False
 
     def __on_motion_notify_cb(self, widget, event):
-        print "motion:", event.x, event.y
+        if not self.drag_flag and not self.move_flag:
+            self.__update_position(event.x, event.y)
+            self.set_cursor()
+        if self.move_flag:
+            self.edit_coord_x = self.edit_coord_backup_x + event.x - self.press_point_coord[0]
+            self.edit_coord_y = self.edit_coord_backup_y + event.y - self.press_point_coord[1]
+
+            if self.edit_coord_x < 0:
+                self.edit_coord_x = 0
+            if self.edit_coord_y < 0:
+                self.edit_coord_y = 0
+            if self.edit_coord_x + self.edit_coord_w > self.AREA_WIDTH:
+                self.edit_coord_x = self.AREA_WIDTH - self.edit_coord_w
+            if self.edit_coord_y + self.edit_coord_h > self.AREA_HEIGHT:
+                self.edit_coord_y = self.AREA_HEIGHT - self.edit_coord_h
+            self.__update_drag_point_coord()
+            self.emit_changed()
+        elif self.drag_flag:
+            drag_offset = max(event.x - self.press_point_coord[0],
+                              event.y - self.press_point_coord[1])
+            self.edit_coord_h = self.edit_coord_w = self.edit_coord_backup_w + drag_offset
+            if self.edit_coord_h < self.MIN_SIZE or self.edit_coord_w < self.MIN_SIZE:
+                self.edit_coord_h = self.edit_coord_w = self.MIN_SIZE
+            if self.edit_coord_x + self.edit_coord_w > self.AREA_WIDTH:
+                self.edit_coord_w = self.edit_coord_h = self.AREA_WIDTH - self.edit_coord_x
+            if self.edit_coord_y + self.edit_coord_h > self.AREA_HEIGHT:
+                self.edit_coord_w = self.edit_coord_h = self.AREA_HEIGHT - self.edit_coord_y
+            self.__update_drag_point_coord()
+            self.emit_changed()
+
+    def __update_drag_point_coord(self):
+        self.drag_point_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
+        self.drag_point_y = self.edit_coord_y + self.edit_coord_h - self.DRAG_WIDTH
+        self.edit_area.queue_draw()
+
+    def __update_position(self, x, y):
+        if self.drag_point_x <= x <= self.drag_point_x + self.DRAG_WIDTH and\
+                self.drag_point_y <= y <= self.drag_point_y + self.DRAG_WIDTH:
+            self.position = self.POS_IN_DRAG
+        elif self.edit_coord_x <= x <= self.edit_coord_x + self.edit_coord_w and\
+                self.edit_coord_y <= y <= self.edit_coord_y + self.edit_coord_h:
+            self.position = self.POS_IN_MOVE
+        else:
+            self.position = self.POS_OUT
+
+    def __on_focus_in_cb(self, widget, event):
+        print "focus in"
+
+    def __on_focus_out_cb(self, widget, event):
+        print "focus out"
+
+    def __on_enter_notify_cb(self, widget, event):
+        print "enter"
+        widget.window.set_cursor(self.cursor_move)
+
+    def __on_leave_notify_cb(self, widget, event):
+        print "leave"
 gobject.type_register(IconEditArea)
 
 

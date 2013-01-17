@@ -680,16 +680,15 @@ class AccountSetting(object):
                     self.current_select_user.set_real_name(text)
                 except:
                     pass
-            self.label_widgets["account_name"].queue_draw()
-            #print "account name changed:", self.label_widgets["account_name"].get_text()
             align.destroy()
+            self.container_widgets["right_vbox"].queue_draw()
 
         self.container_widgets["account_info_hbox"].remove(self.label_widgets["account_name"])
         #text = pango.parse_markup(widget.get_text())[1]
         text = self.current_select_user.get_real_name()
         align = gtk.Alignment()
         align.set(0.0, 0.5, 0, 0)
-        align.set_padding(8, 0, 2, 63)
+        align.set_padding(8, 0, 0, 65)
         input_entry = InputEntry(text)
         input_entry.entry.check_text = tools.entry_check_account_name
         input_entry.set_size(COMBO_WIDTH, WIDGET_HEIGHT)
@@ -700,6 +699,7 @@ class AccountSetting(object):
         align.show_all()
         self.container_widgets["account_info_hbox"].pack_start(align)
         self.container_widgets["account_info_hbox"].reorder_child(align, 0)
+        self.container_widgets["right_vbox"].queue_draw()
 
     ## change password >> ##
     def password_change_press_cb(self, widget, event):
@@ -786,6 +786,7 @@ class AccountSetting(object):
         confirm_pswd_input.entry.connect("changed", self.password_input_changed, all_widgets, self.CH_PASSWD_CONFIRM_PSWD, 6)
 
         self.container_widgets["account_info_table"].show_all()
+        self.container_widgets["right_vbox"].queue_draw()
 
     def show_input_password(self, button, new_pswd_input, confirm_pswd_input):
         new_pswd_input.show_password(button.get_active())
