@@ -29,7 +29,7 @@ import gtk
 from nls import _
 # UI
 import style
-from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE
+from constants import CONTENT_FONT_SIZE
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -73,7 +73,7 @@ class DSLSetting(gtk.Alignment):
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
         hbox.pack_start(self.tab_window ,True, True)
-        self.save_button = Button("Connect")
+        self.save_button = Button()
         self.save_button.connect("clicked", self.save_changes)
         self.foot_box.set_buttons([self.save_button])
 
@@ -93,10 +93,10 @@ class DSLSetting(gtk.Alignment):
         
     def set_button(self, name, state):
         if name == "save":
-            self.save_button.set_label(_("保存"))
+            self.save_button.set_label(_("save"))
             self.save_button.set_sensitive(state)
         else:
-            self.save_button.set_label(_("连接"))
+            self.save_button.set_label(_("connect"))
             self.save_button.set_sensitive(state)
 
     def expose_outline(self, widget, event, exclude):

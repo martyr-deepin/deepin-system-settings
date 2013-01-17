@@ -662,7 +662,6 @@ class PPPConf(ScrolledWindow):
 
     def refresh(self, connection):
         self.connection = connection
-        print self.connection.object_path
         self.vpn_setting = self.connection.get_setting("vpn")
         #=========================
         # retreieve settings

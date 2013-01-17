@@ -361,7 +361,6 @@ class WiredItem(TreeItem):
         return [self.render_check, self.render_essid, self.render_jumpto]
 
     def get_height(self):
-        #return  app_theme.get_pixbuf("/Network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
         return CONTAINNER_HEIGHT
         
     def unselect(self):
@@ -822,9 +821,7 @@ class GeneralItem(TreeItem):
                      ui_theme.get_shadow_color("listview_select").get_color_info())
 
 
-
     def get_height(self):
-        #return  app_theme.get_pixbuf("/network/check_box.png").get_pixbuf().get_height() + self.VERTICAL_PADDING *2 
         return CONTAINNER_HEIGHT
         
     def unselect(self):
@@ -855,11 +852,9 @@ class GeneralItem(TreeItem):
             self.redraw_request_callback(self)
 
 
-    def change_state(self, state):
+    def set_net_state(self, state):
         self.network_state = state
         self.redraw()
-
-
 
         
 if __name__=="__main__":

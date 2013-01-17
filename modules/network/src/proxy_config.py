@@ -10,25 +10,26 @@ from dtk.ui.utils import container_remove_all
 import gtk
 
 import style
-from constants import FRAME_VERTICAL_SPACING, TEXT_WINDOW_TOP_PADDING, TEXT_WINDOW_LEFT_PADDING, STANDARD_LINE
+from constants import TEXT_WINDOW_TOP_PADDING, TEXT_WINDOW_LEFT_PADDING, STANDARD_LINE
+from foot_box import FootBox
 from nls import _
 
 def wrap_all_with_align(obj, attr_list, w=None):
     for attr in attr_list:
         target = getattr(obj, attr)
         if w:
-            align = style.wrap_with_align(target, width= w)
+            align = style.wrap_with_align(target, width=w)
         else:
             align = style.wrap_with_align(target)
         setattr(obj, attr +"_align", align)
 
-class ProxyConfig(gtk.Alignment):
+class ProxyConfig(gtk.VBox):
     ENTRY_WIDTH = 222
 
     def __init__(self, slide_back_cb=None, change_crumb_cb=None):
 
-        gtk.Alignment.__init__(self)
-        self.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_LEFT_PADDING)
+        gtk.VBox.__init__(self)
+        #self.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_LEFT_PADDING)
         self.proxysetting = ProxySettings()
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
@@ -36,9 +37,12 @@ class ProxyConfig(gtk.Alignment):
         self.table = gtk.Table(5, 4, False)
 
         # Add UI Align
-        vbox = gtk.VBox()
-        self.add(vbox)
-        vbox.pack_start(self.table, False, False)
+        #table_align = gtk.Alignment()
+        table_align = gtk.Alignment(0, 0, 0, 0)
+        table_align.connect("expose-event", self.expose_line)
+        table_align.set_padding(30, 0, 0, 0)
+        table_align.add(self.table)
+        self.pack_start(table_align, True, True)
 
         self.method_label = Label(_("Method"))
         self.http_label = Label(_("Http Proxy"))
@@ -55,7 +59,7 @@ class ProxyConfig(gtk.Alignment):
         self.methods.set_size_request(self.ENTRY_WIDTH,22)
         self.methods.connect("item-selected", self.method_changed)
 
-        width ,height = self.ENTRY_WIDTH ,22
+        width , height = self.ENTRY_WIDTH , 22
         self.http_entry = InputEntry()
         self.http_entry.set_size(width, height)
         self.http_spin = SpinBox(8080, 0, 49151, 1, 60)
@@ -75,7 +79,7 @@ class ProxyConfig(gtk.Alignment):
         entry_list = ["http_entry", "https_entry", "ftp_entry", "socks_entry", "conf_entry"]
         spin_list = ["http_spin", "https_spin", "ftp_spin", "socks_spin"]
 
-        wrap_all_with_align(self, label_list, STANDARD_LINE - TEXT_WINDOW_LEFT_PADDING)
+        wrap_all_with_align(self, label_list, STANDARD_LINE )
         wrap_all_with_align(self, entry_list)
         wrap_all_with_align(self, spin_list)
 
@@ -85,9 +89,11 @@ class ProxyConfig(gtk.Alignment):
         #hbox.pack_start(table_align, False, False)
         apply_button = Button(_("Apply"))
         apply_button.connect("clicked", self.save_changes)
-        buttons_aligns = gtk.Alignment(1, 1, 0, 0)
-        buttons_aligns.add(apply_button)
-        vbox.pack_end(buttons_aligns, False, False)
+        #buttons_aligns = gtk.Alignment(1, 1, 0, 0)
+        #buttons_aligns.add(apply_button)
+        foot_box = FootBox()
+        foot_box.set_buttons([apply_button])
+        self.pack_end(foot_box, False, False)
         self.connect("expose-event", self.expose_event)
 
     def expose_event(self, widget, event):
@@ -96,6 +102,11 @@ class ProxyConfig(gtk.Alignment):
         cr.set_source_rgb( 1, 1, 1) 
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
+
+    def expose_line(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
 
         # Build ui
     def init(self, first_start = False):
@@ -106,7 +117,6 @@ class ProxyConfig(gtk.Alignment):
             self.methods.set_select_index(index)
             # Just emit signal
             self.methods.emit("item-selected", None, 0, 0)
-            #self.proxysetting.set_http_enabled(True)
         else:
             container_remove_all(self.table)
             mode = self.methods.get_current_item()[1]

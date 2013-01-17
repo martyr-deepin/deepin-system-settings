@@ -664,16 +664,17 @@ class HotspotBox(gtk.HBox):
         self.net_state = 0
 
     def active_btn_callback(self, widget):
-        self.__active_action(False)
-    
+        if self.action_btn_click():
+            self.__active_action(False)
+            self.set_net_state(1)
+
     def expose_state(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
 
-        #draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), rect.x + 10, rect.y + 7)
         if self.net_state == 1:
             self.draw_loading(cr, rect)
-        else:
+        elif self.net_state == 2:
             draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + 10, rect.y + 7)
 
 
@@ -708,13 +709,10 @@ class HotspotBox(gtk.HBox):
         return align
 
     def __active_action(self, state):
-        print "esafdsfsdf"
         container_remove_all(self.ssid_entry_align)
         container_remove_all(self.password_entry_align)
         container_remove_all(self.active_align)
         if state == False:
-            self.set_net_state(1)
-            self.action_btn_click()
             label1 = Label(self.ssid_entry.get_text())
             label2 = Label(self.password_entry.get_text())
             label1.connect("button-press-event", lambda w, e: self.__active_action(True))
@@ -724,11 +722,12 @@ class HotspotBox(gtk.HBox):
             self.password_entry_align.add(label2)
             self.show_all()
         else:
-            self.set_net_state(2)
-            print "clicked"
             self.ssid_entry_align.add(self.ssid_entry)
             self.password_entry_align.add(self.password_entry)
             self.active_align.add(self.active_btn)
+
+    def set_active(self, state):
+        self.__active_action(state)
 
     def get_ssid(self):
         return self.ssid_entry.get_text()
@@ -738,9 +737,11 @@ class HotspotBox(gtk.HBox):
 
     def set_ssid(self, text):
         self.ssid_entry.set_text(text)
+        self.ssid_entry.queue_draw()
 
     def set_pwd(self, text):
         self.password_entry.set_text(text)
+        self.password_entry.queue_draw()
     
     def set_net_state(self, state):
         self.net_state = state
@@ -777,4 +778,3 @@ class LoadingThread(td.Thread):
                     break
         except Exception, e:
             print "class LoadingThread got error %s" % e
-

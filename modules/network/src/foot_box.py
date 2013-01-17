@@ -28,19 +28,12 @@ class FootBox(gtk.HBox):
     def __init__(self):
         gtk.HBox.__init__(self)
         self.set_size_request(-1, 35)
-        #self.connect("expose-event", self.expose_line)
         self.init_ui()
-        
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         style.draw_out_line(cr, rect)
-        #cr.set_source_rgb( 1, 1, 1) 
-        #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        #cr.fill()
-
-
 
     def init_ui(self):
         self.tip_align = gtk.Alignment(0, 0.5, 0, 1)
@@ -48,15 +41,13 @@ class FootBox(gtk.HBox):
         self.tip_align.set_padding(5, 5, 20, 0)
         self.tip_align.add(self.tip)
 
-        #self.tip_box.set_size_request(, 35)
         self.button_box = gtk.HBox()
-        self.buttons_align = gtk.Alignment(0.5 ,0.5 , 0, 0)
-        self.buttons_align.set_padding(0,0, 0, 10)
+        self.buttons_align = gtk.Alignment(1, 0.5, 0, 0)
+        self.buttons_align.set_padding(0, 0, 0, 10)
         self.buttons_align.add(self.button_box)
         
-        self.pack(self, [self.tip_align], True , True)
+        self.pack(self, [self.tip_align], True, True)
         self.pack_end(self.buttons_align, False, False)
-        #self.show_all()
     
     def pack(self, parent, widgets, expand=False, fill=False):
         for widget in widgets:

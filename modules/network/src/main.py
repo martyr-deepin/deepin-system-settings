@@ -184,21 +184,25 @@ class WirelessDevice(object):
         print "try_to_connect"
         #print ssid
         ap_list  = [ap.get_ssid() for ap in self.ap_list]
-        index = ap_list.index(ssid)
-        self.tree.visible_items[index].set_net_state(1)
+        try:
+            index = ap_list.index(ssid)
+            self.tree.visible_items[index].set_net_state(1)
+        except:
+            pass
     
     def device_is_active(self, widget, reason):
         print "wireless active"
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
         if widget.is_active():
-            #print "widget is active"
+            for item in self.tree.visible_items:
+                item.set_net_state(0)
             try:
                 index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
                 self.index = index
                 self.tree.visible_items[index].set_net_state(2)
                 self.tree.visible_items[index].redraw()
-            except IndexError:
+            except:
                 pass
 
     def ap_added(self, ap_object):
@@ -344,26 +348,109 @@ class HotSpot(gtk.VBox):
         self.pack_start(cont, False, False)
         self.settings = None
         self.send_to_crumb_cb = send_to_crumb_cb
+        self.align = gtk.Alignment(0, 0, 1, 1)
+        self.align.set_padding(0, 0, PADDING, 22)
+        self.hotspot_box = HotspotBox(self.active_connection)
+        self.align.add(self.hotspot_box)
+
+        if self.is_adhoc_active():
+            cont.set_active(True)
+            self.hotspot_box.set_net_state(2)
+
 
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            self.align = gtk.Alignment(0, 0, 1, 1)
-            self.align.set_padding(0, 0, PADDING, 22)
-            self.hotspot_box = HotspotBox(self.active_connection)
-            self.align.add(self.hotspot_box)
-            self.align.show_all()
             self.add(self.align)
+            self.show_all()
+
+            # Handle data
+            self.fill_entries()
+            if self.hotspot_box.get_net_state() == 2:
+                self.hotspot_box.set_active(False)
+            else:
+                self.hotspot_box.set_active(True)
         else:
+            from nmlib.nm_remote_connection import NMRemoteConnection
+            if isinstance(self.connection, NMRemoteConnection):
+                self.connection.delete()
+            self.hotspot_box.set_net_state(0)
+            self.hotspot_box.set_active(False)
             self.remove(self.align)
 
+    def fill_entries(self):
+        self.connection = self.get_adhoc_connection()
+        security_setting = self.connection.get_setting("802-11-wireless-security")
+        security_setting.wep_key_type = 2
+        if self.connection:
+            (ssid, pwd) = self.get_settings(self.connection)
+            self.hotspot_box.set_ssid(ssid)
+            self.hotspot_box.set_pwd(pwd)
 
+    def get_settings(self, connection):
+        ssid = connection.get_setting("802-11-wireless").ssid
+        pwd = self.__get_pwd(connection)
+        return (ssid, pwd)
 
+    def __get_pwd(self, connection):
+        try:
+            (setting_name, method) = connection.guess_secret_info() 
+            secret = nm_module.secret_agent.agent_get_secrets(connection.object_path,
+                                                    setting_name,
+                                                    method)
+        except:
+            secret = ""
+
+        return secret
+            
+
+    def get_adhoc_connection(self):
+        connections = filter(lambda c: c.get_setting("802-11-wireless").mode == "adhoc",
+                             nm_module.nm_remote_settings.get_wireless_connections())
+        if connections:
+            return connections[0]
+        else:
+           return nm_module.nm_remote_settings.new_adhoc_connection("")
+
+    def is_adhoc_active(self):
+        # TODO just for one device
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        active = wireless_device.get_active_connection()
+        if active:
+            if active.get_connection().get_setting("802-11-wireless").mode == "adhoc":
+                return True
+            else:
+                return False
+        else:
+            return False
+    def is_valid(self):
+        security_setting = self.connection.get_setting("802-11-wireless-security")
+        active = security_setting.wep_tx_keyidx 
+        return security_setting.verify_wep_key(self.hotspot_box.get_ssid(), 2)
+        
     def active_connection(self):
         ssid = self.hotspot_box.get_ssid()
         pwd = self.hotspot_box.get_pwd()
+        if self.is_valid():
+            from nmlib.nm_remote_connection import NMRemoteConnection
+            self.connection.get_setting("802-11-wireless").ssid = ssid
+            self.connection.get_setting("802-11-wireless-security").set_wep_key(0, pwd)
+            
+            if not isinstance(self.connection, NMRemoteConnection):
+                self.connection = nm_module.nm_remote_settings.new_connection_finish(self.connection.settings_dict, 'lan')
 
-        print "try active"
+            if isinstance(self.connection, NMRemoteConnection):
+                wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+                wireless_device.nm_device_disconnect()
+
+                nm_module.nmclient.activate_connection_async(self.connection.object_path,
+                                               wireless_device.object_path,
+                                               "/")
+            return True
+        else:
+            print "pwd not valid"
+            return False
+
         
 
     def slide_to_event(self, widget, event):

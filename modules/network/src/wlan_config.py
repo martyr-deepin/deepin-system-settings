@@ -59,6 +59,7 @@ class WirelessSetting(gtk.Alignment):
 
         # Add UI Align
         style.set_main_window(self)
+
         main_vbox = gtk.VBox()
         self.foot_box = FootBox()
         hbox = gtk.HBox()
@@ -86,7 +87,8 @@ class WirelessSetting(gtk.Alignment):
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
         hbox.pack_start(self.tab_window ,True, True)
-        self.save_button = Button("Apply")
+
+        self.save_button = Button()
         self.save_button.connect("clicked", self.save_changes)
         self.foot_box.set_buttons([self.save_button])
 
@@ -117,22 +119,16 @@ class WirelessSetting(gtk.Alignment):
             self.sidebar.new_connection_list = []
         # Get all connections  
         connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.ssid)
-        connect_not_assocaite = nm_module.nm_remote_settings.get_ssid_not_associate_connections(self.ssid)
         # Check connections
         if connection_associate == []:
-            if all_adhoc:
-                self.sidebar.all_adhoc = True
-                connection = nm_module.nm_remote_settings.new_adhoc_connection("")
-            else:
-                self.sidebar.all_adhoc = False
-                connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
+            connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
             connection_associate.append(connection)
             self.sidebar.new_connection_list.append(connection)
-            connections = connection_associate + connect_not_assocaite
+            connections = connection_associate
 
         if new_connection_list:
             connection_associate += new_connection_list
-        connections = connection_associate + connect_not_assocaite
+        connections = connection_associate
 
         self.connections = connections
 
@@ -176,7 +172,6 @@ class WirelessSetting(gtk.Alignment):
         connection = self.ipv4.connection
         if widget.label == "save":
             if connection.check_setting_finish():
-                print "DEBUF:",connection.settings_dict
                 this_index = self.connections.index(connection)
                 if isinstance(connection, NMRemoteConnection):
                     connection.update()
@@ -214,10 +209,10 @@ class WirelessSetting(gtk.Alignment):
         
     def set_button(self, name, state):
         if name == "save":
-            self.save_button.set_label(name)
+            self.save_button.set_label(_("save"))
             self.save_button.set_sensitive(state)
         else:
-            self.save_button.set_label("connect")
+            self.save_button.set_label(_("connect"))
             self.save_button.set_sensitive(state)
 
 class SideBar(gtk.VBox):
@@ -256,19 +251,12 @@ class SideBar(gtk.VBox):
         container_remove_all(self.buttonbox)
         cons = []
         self.connection_tree = EntryTreeView(cons)
-        for index, connection in enumerate(self.connections[:self.split]):
+        for index, connection in enumerate(self.connections):
             cons.append(SettingItem(connection,
                                     self.setting[index],
                                     self.check_click_cb, 
                                     self.delete_item_cb,
                                     self.set_button))
-        if self.split is not len(self.connections):
-            other_connections = map(lambda c: SettingItem(c[1],
-                                self.setting[c[0]],
-                                self.check_click_cb,
-                                self.delete_item_cb,
-                                self.set_button),
-                                enumerate(self.connections[self.split:]))
 
             def resize_tree_cb():
                 self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
@@ -352,7 +340,6 @@ class Security(gtk.VBox):
         self.set_button = set_button_cb
 
         self.setting = self.connection.get_setting("802-11-wireless-security")
-        print self.setting
         self.security_label = Label(_("Security:"))
         self.key_label = Label(_("Key:"))
         self.wep_index_label = Label(_("Wep index:"))
@@ -416,10 +403,6 @@ class Security(gtk.VBox):
             return 
         
         keys = [None, "none", "none","wpa-psk"]
-        #if self.connection.get_setting("802-11-wireless").mode == "adhoc":
-            #self.security_combo.set_items([(_("None"), None),
-                      #(_("WEP (Hex or ASCII)"), "none"),
-                      #(_("WEP 104/128-bit Passphrase"), "none")])
         
         self.key_mgmt = self.setting.key_mgmt
         if self.key_mgmt == "none":
@@ -495,7 +478,6 @@ class Security(gtk.VBox):
     def save_wpa_pwd(self, widget, content):
         if self.setting.verify_wpa_psk(content):
             self.setting.psk = content
-            print "DEBUG:",self.setting.prop_dict
             check_settings(self.connection, self.set_button)
         else:
             self.set_button("save", False)
@@ -503,7 +485,8 @@ class Security(gtk.VBox):
 
     def save_wep_pwd(self, widget, content):
         active = self.setting.wep_tx_keyidx
-        if self.setting.verify_wep_key(content, active):
+        wep_type = self.setting.wep_key_type
+        if self.setting.verify_wep_key(content, wep_type):
             self.setting.set_wep_key(active, content)
             check_settings(self.connection, self.set_button)
 
@@ -638,7 +621,7 @@ class Wireless(gtk.VBox):
         self.clone_entry.set_size(self.ENTRY_WIDTH, 22)
 
         self.reset()
-        self.mode_combo.connect("item-selected", self.mode_combo_selected)
+        #self.mode_combo.connect("item-selected", self.mode_combo_selected)
         self.band_combo.connect("item-selected", self.band_combo_selected)
         self.mtu_spin.connect("value-changed", self.spin_value_changed, "mtu")
         self.channel_spin.connect("value-changed", self.spin_value_changed, "channel")
@@ -742,7 +725,4 @@ class Wireless(gtk.VBox):
 
         self.wireless.mtu = self.mtu_spin.get_value()
         self.wireless.adapt_wireless_commit()
-        # TODO add update functions
-        #connection.adapt_ip4config_commit()
-        #self.connection.update()
 
