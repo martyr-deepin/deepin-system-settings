@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 11:08+0800\n"
+"POT-Creation-Date: 2013-01-17 11:34+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -29,31 +29,31 @@ msgstr "显示器"
 msgid "Resolution"
 msgstr "分辨率"
 
-#: ../src/search_keyword.py:32 ../src/display_view.py:331
+#: ../src/search_keyword.py:32 ../src/display_view.py:332
 msgid "Rotation"
 msgstr "旋转"
 
-#: ../src/search_keyword.py:33 ../src/display_view.py:359
+#: ../src/search_keyword.py:33 ../src/display_view.py:360
 msgid "Monitor Brightness"
 msgstr "屏幕亮度"
 
-#: ../src/search_keyword.py:34 ../src/display_view.py:368
+#: ../src/search_keyword.py:34 ../src/display_view.py:369
 msgid "Brightness"
 msgstr "亮度"
 
-#: ../src/search_keyword.py:35 ../src/display_view.py:386
+#: ../src/search_keyword.py:35 ../src/display_view.py:387
 msgid "Auto Adjust Monitor Brightness"
 msgstr "自动调节屏幕亮度"
 
-#: ../src/search_keyword.py:36 ../src/display_view.py:400
+#: ../src/search_keyword.py:36 ../src/display_view.py:401
 msgid "Close Monitor"
 msgstr "关闭屏幕"
 
-#: ../src/search_keyword.py:37 ../src/display_view.py:419
+#: ../src/search_keyword.py:37 ../src/display_view.py:420
 msgid "Auto Lock User Monitor Screen"
 msgstr "自动锁定用户屏幕"
 
-#: ../src/search_keyword.py:38 ../src/display_view.py:434
+#: ../src/search_keyword.py:38 ../src/display_view.py:435
 msgid "Lock Screen"
 msgstr "锁定屏幕"
 
@@ -73,19 +73,19 @@ msgstr "只在1上显示"
 msgid "Only Monitor 2 shown"
 msgstr "只在2上显示"
 
-#: ../src/display_view.py:222 ../src/display_view.py:612
+#: ../src/display_view.py:222 ../src/display_view.py:618
 msgid "Normal"
 msgstr "正常"
 
-#: ../src/display_view.py:223 ../src/display_view.py:614
+#: ../src/display_view.py:223 ../src/display_view.py:620
 msgid "Right"
 msgstr "顺时针"
 
-#: ../src/display_view.py:224 ../src/display_view.py:616
+#: ../src/display_view.py:224 ../src/display_view.py:622
 msgid "Left"
 msgstr "逆时针"
 
-#: ../src/display_view.py:225 ../src/display_view.py:618
+#: ../src/display_view.py:225 ../src/display_view.py:624
 msgid "Inverted"
 msgstr "180度"
 
@@ -119,60 +119,65 @@ msgstr "<span foreground=\"blue\" underline=\"single\">个性化</span>"
 msgid "<span foreground=\"blue\" underline=\"single\">Power</span>"
 msgstr "<span foreground=\"blue\" underline=\"single\">电源</span>"
 
-#: ../src/display_view.py:344
+#: ../src/display_view.py:345
 msgid "Multi-Monitors"
 msgstr "多显示器"
 
-#: ../src/display_view.py:413
+#: ../src/display_view.py:414
 msgid "Monitor Screen Lock"
 msgstr "锁定屏幕"
 
-#: ../src/display_view.py:556
+#: ../src/display_view.py:486
+msgid "Reset to default value"
+msgstr "恢复默认值"
+
+#: ../src/display_view.py:562
+#, python-format
 msgid "Changed brightness to %f"
 msgstr "亮度修改为%f"
 
-#: ../src/display_view.py:581
+#: ../src/display_view.py:587
 msgid "Changed to manual adjustment"
 msgstr "修改为手动调节"
 
-#: ../src/display_view.py:584
+#: ../src/display_view.py:590
 msgid "Changed to automatic adjustment"
 msgstr "修改为自动调节"
 
-#: ../src/display_view.py:589
+#: ../src/display_view.py:595
 msgid "Changed to manual lock"
 msgstr "修改为手动锁定"
 
-#: ../src/display_view.py:594
+#: ../src/display_view.py:600
 msgid "Changed to automatic lock"
 msgstr "修改为自动锁定"
 
-#: ../src/display_view.py:601
+#: ../src/display_view.py:607
 #, python-format
 msgid "Changed current output to %s"
 msgstr "当前输出修改为%s"
 
-#: ../src/display_view.py:607
+#: ../src/display_view.py:613
 #, python-format
 msgid "Changed resolution to %s"
 msgstr "分辨率修改为%s"
 
-#: ../src/display_view.py:619
+#: ../src/display_view.py:625
 #, python-format
 msgid "Changed rotation to %s"
 msgstr "旋转修改为%s"
 
-#: ../src/display_view.py:624
+#: ../src/display_view.py:630
 #, python-format
 msgid "Changed multiply monitors mode to %s"
 msgstr "多显示器模式修改为%s"
 
-#: ../src/display_view.py:629
+#: ../src/display_view.py:635
 #, python-format
 msgid "Changed close monitor duration to %s minutes"
 msgstr "关闭显示器时间修改为%s分钟"
 
-#: ../src/display_view.py:634
+#: ../src/display_view.py:640
 #, python-format
 msgid "Changed lock display duration to %s minutes"
 msgstr "锁屏时间修改为%s分钟"

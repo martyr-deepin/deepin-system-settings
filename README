@@ -32,7 +32,10 @@ cd modules/date_time/src/
 sudo python setup.py install
 
 Python Deepin Lunar bindings
-git clone git@github.com:xiangzhai/liblunar.git
+git clone git@github.com:linuxdeepin/liblunar.git
+
+Python DLtk bindings
+git clone git@github.com:linuxdeepin/dltk.git
 
 
 == Keyboard module ==

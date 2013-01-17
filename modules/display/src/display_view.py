@@ -317,8 +317,9 @@ class DisplayView(gtk.VBox):
         self.sizes_label = self.__setup_label(_("Resolution"))
         self.sizes_combo = self.__setup_combo(self.sizes_items)
         if self.sizes_combo:
-            self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(self.__current_output_name, 
-                                                                                     self.sizes_items))
+            self.sizes_combo.set_select_index(
+                self.display_manager.get_screen_size_index(self.__current_output_name, 
+                                                           self.sizes_items))
             self.sizes_combo.connect("item-selected", self.__combo_item_selected, "sizes_combo")
             self.__widget_pack_start(self.sizes_box, 
                                      [self.sizes_label, self.sizes_combo])
@@ -480,6 +481,12 @@ class DisplayView(gtk.VBox):
         self.pack_start(self.scrolled_window)
 
         self.__send_message("status", ("display", ""))
+
+    def reset(self):
+        self.__send_message("status", ("display", _("Reset to default value")))
+        self.display_manager.reset()
+        self.close_monitor_combo.set_select_index(self.display_manager.get_close_monitor_index(self.duration_items))
+        self.lock_display_combo.set_select_index(self.display_manager.get_lock_display_index(self.duration_items))
 
     def __handle_dbus_replay(self, *reply):
         pass

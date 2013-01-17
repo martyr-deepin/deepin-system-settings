@@ -31,16 +31,27 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo
+from deepin_utils.ipc import is_dbus_name_exists
 import os
 import gobject
 import gtk
 import time
+import dbus
+
 try:
     import deepin_lunar
 except ImportError:
     print "===Please Install Deepin Lunar Python Binding==="
     print "git clone git@github.com:linuxdeepin/liblunar.git"
     print "==============================================="
+
+try:                                                                            
+    import dltk_calendar                                           
+except ImportError:                                                             
+    print "===Please Install DLtk Calendar Python Binding==="                    
+    print "git clone git@github.com:linuxdeepin/dltk.git"                   
+    print "==============================================="                 
+
 try:                                                                            
     import deepin_gsettings                                                     
 except ImportError:                                                             
@@ -102,14 +113,29 @@ class DatetimeView(gtk.HBox):
         self.current_tz_gmtoff = self.__deepin_dt.get_gmtoff()
 
         self.timezone_items = []
-        i = -11
-        j = 0
-        while i < 12:
-            self.timezone_items.append(("%d时区" % i, j))
-            
-            i += 1
-            j += 1
-       
+        self.timezone_items.append((_("(UTC-11:00)Samoa"), -11))
+        self.timezone_items.append((_("(UTC-10:00)Hawaii"), -10))
+        self.timezone_items.append((_("(UTC-09:00)Alaska"), -9))
+        self.timezone_items.append((_("(UTC-08:00)Lower California"), -8))
+        self.timezone_items.append((_("(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"), -7))
+        self.timezone_items.append((_("(UTC-06:00)Saskatchewan, Mexico City, Monterrey"), -6))
+        self.timezone_items.append((_("(UTC-05:00)Indiana, Bogota, Lima, Quito"), -5))
+        self.timezone_items.append((_("(UTC-04:00)San Diego, Georgetown, San Juan"), -4))
+        self.timezone_items.append((_("(UTC-03:00)Greenland, Brasilia, Fortaleza"), -3))
+        self.timezone_items.append((_("(UTC-02:00)Mid-Atlantic"), -2))
+        self.timezone_items.append((_("(UTC-01:00)Cape Verde Islands, Azores"), -1))
+        self.timezone_items.append((_("(UTC)London, Dublin, Edinburgh, Lisbon, Casablanca"), 0))
+        self.timezone_items.append((_("(UTC+01:00)Paris, Amsterdam, Berlin, Rome, Vienna"), 1))
+        self.timezone_items.append((_("(UTC+02:00)Cairo, Athens, Istanbul, Jerusalem"), 2))
+        self.timezone_items.append((_("(UTC+03:00)Moscow, St. Petersburg, Baghdad"), 3))
+        self.timezone_items.append((_("(UTC+04:00)Port Louis, Abu Dhabi, Muscat, Yerevan"), 4))
+        self.timezone_items.append((_("(UTC+05:00)Islamabad, Karachi, Tashkent"), 5))
+        self.timezone_items.append((_("(UTC+06:00)Dhaka, Novosibirsk"), 6))
+        self.timezone_items.append((_("(UTC+07:00)Bangkok, Hanoi, Jakarta"), 7))
+        self.timezone_items.append((_("(UTC+08:00)Beijing, Chongqing, HongKong, Urumqi"), 8))
+        self.timezone_items.append((_("(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"), 9))
+        self.timezone_items.append((_("(UTC+10:00)Guam, Canberra, Melbourne, Sydney"), 10))
+        self.timezone_items.append((_("(UTC+11:00)Magadan, Solomon Islands"), 11))
         self.is_24hour = self.datetime_settings.get_boolean("is-24hour")
         '''
         left align
@@ -141,18 +167,13 @@ class DatetimeView(gtk.HBox):
         '''
         self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
             padding_bottom = 10)
-        if os.environ['LANGUAGE'].find("zh_") == 0:
-            self.calendar = deepin_lunar.new()
-        else:
-            self.calendar = gtk.Calendar()
+        self.calendar = deepin_lunar.new()
+        if os.environ['LANGUAGE'].find("zh_") != 0:
+            self.calendar = dltk_calendar.new()
         self.calendar.mark_day(time.localtime().tm_mday)
-        if os.environ['LANGUAGE'].find("zh_") == 0:
-            self.calendar.get_handle().set_size_request(300, 280)
-            self.calendar.get_handle().connect("day-selected", self.__on_day_selected, self.calendar)
-            self.calendar_align.add(self.calendar.get_handle())
-        else:
-            self.calendar.set_size_request(300, 280)
-            self.calendar_align.add(self.calendar) 
+        self.calendar.get_handle().set_size_request(300, 280)
+        self.calendar.get_handle().connect("day-selected", self.__on_day_selected, self.calendar)
+        self.calendar_align.add(self.calendar.get_handle())
         self.change_date_box = gtk.HBox(spacing = 5)
         self.change_date_align = self.__setup_align()
         self.change_date_button = Button(_("Change Date"))
@@ -284,6 +305,7 @@ class DatetimeView(gtk.HBox):
         self.timezone_combo_align = self.__setup_align(padding_top = 6)
         self.timezone_combo = ComboBox(self.timezone_items, max_width = 325)
         self.timezone_combo.set_select_index(self.__deepin_dt.get_gmtoff() + 11)
+        self.timezone_combo.connect("item-selected", self.__combo_item_selected)
         self.timezone_combo_align.add(self.timezone_combo)
 
         self.__widget_pack_start(self.right_box, 
@@ -300,20 +322,58 @@ class DatetimeView(gtk.HBox):
 
         self.connect("expose-event", self.__expose)
 
+        self.__send_message("status", ("date_time", ""))
+
         SecondThread(self).start()
+
+    def reset(self):
+        self.__send_message("status", ("date_time", _("Reset to default value")))
+        
+        self.datetime_settings.reset("is-24hour")
+        self.datetime_settings.reset("is-auto-set")
+        
+        self.is_24hour = self.datetime_settings.get_boolean("is-24hour")
+        self.time_display_toggle.set_active(self.is_24hour)
+        self.datetime_widget.set_is_24hour(self.is_24hour)                  
+        self.set_time_spin.set_24hour(self.is_24hour)
+        
+        is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
+        self.auto_time_toggle.set_active(is_auto_set_time)
+        if is_auto_set_time:
+            self.set_time_spin_align.set_child_visible(False)               
+            AutoSetTimeThread(self).start()   
+        else:
+            self.set_time_spin_align.set_child_visible(True)
+
+    def __handle_dbus_replay(self, *reply):                                     
+        pass                                                                    
+                                                                                
+    def __handle_dbus_error(self, *error):                                      
+        pass                                                                    
+                                                                                
+    def __send_message(self, message_type, message_content):                    
+        if is_dbus_name_exists(APP_DBUS_NAME):                                  
+            bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
+            method = bus_object.get_dbus_method("message_receiver")             
+            method(message_type,                                                
+                   message_content,                                             
+                   reply_handler=self.__handle_dbus_replay,                     
+                   error_handler=self.__handle_dbus_error)      
 
     def set_cur_time_label(self):
         is_24hour = 24
         hour_value = time.localtime().tm_hour
+        am_pm = ""
 
         if not self.is_24hour: 
+            am_pm = time.strftime('%p')
             is_24hour = 12
             if hour_value > 12:
                 hour_value -= 12
         
         self.cur_time_label.set_text(                           
              _("Current Time: %s %02d:%02d:%02d (%d Hour)") %                
-               (time.strftime('%p'),                                         
+               (am_pm,                                         
                 hour_value,                                    
                 time.localtime().tm_min,                                     
                 time.localtime().tm_sec,                                     
@@ -339,8 +399,9 @@ class DatetimeView(gtk.HBox):
         self.__hide_edit_date()
 
     def __on_confirm_change_date(self, widget, event):
-        self.__hide_edit_date()
         year, month, day = self.calendar.get_date()
+        self.__send_message("status", ("date_time", _("Changed date to %d-%d-%d") % (year, month, day)))
+        self.__hide_edit_date()
         self.cur_date_label.set_text(_("Current Date: %d-%d-%d") % (year, month, day))
         self.calendar.mark_day(day)
         SetDateThread(self.__deepin_dt, day, month, year).start()
@@ -383,14 +444,20 @@ class DatetimeView(gtk.HBox):
             is_auto_set_time = widget.get_active()
             self.datetime_settings.set_boolean("is-auto-set", is_auto_set_time)
             if is_auto_set_time:
+                self.__send_message("status", ("date_time", _("Changed to automatic set time")))
                 self.set_time_spin_align.set_child_visible(False)
                 AutoSetTimeThread(self).start()
             else:
+                self.__send_message("status", ("date_time", _("Changed to manual set time")))
                 self.set_time_spin_align.set_child_visible(True)
             return
 
         if argv == "time_display_toggle":
             self.is_24hour = widget.get_active()
+            if self.is_24hour:
+                self.__send_message("status", ("date_time", _("Changed to 24 Hour")))
+            else:
+                self.__send_message("status", ("date_time", _("Changed to 12 Hour")))
             self.datetime_settings.set_boolean("is-24hour", self.is_24hour)
             self.datetime_widget.set_is_24hour(self.is_24hour)
             self.set_time_spin.set_24hour(self.is_24hour)
@@ -399,11 +466,8 @@ class DatetimeView(gtk.HBox):
         self.__deepin_dt.set_using_ntp(True)
 
     def __time_changed(self, widget, hour, min, sec):
+        self.__send_message("status", ("date_time", _("Changed time to %02d:%02d:%02d") % (hour, min, sec)))
         self.__deepin_dt.set_time_by_hms(hour, min, sec)
-
-    def __timezone_changed(self, widget, timezone):
-        self.timezone_combo.set_select_index(timezone + 11)
-        self.__deepin_dt.set_timezone_by_gmtoff(timezone)
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       
@@ -424,7 +488,7 @@ class DatetimeView(gtk.HBox):
         cr.fill()
     
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None):
-        self.timezone.set_timezone(item_value - 11)
+        self.__send_message("status", ("date_time", _("Changed timezone to %s") % item_text))
         self.__deepin_dt.set_timezone_by_gmtoff(item_value - 11)
 
     def __setup_label(self, text="", width=90, align=ALIGN_START):

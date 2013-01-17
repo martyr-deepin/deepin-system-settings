@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -39,6 +39,8 @@ if __name__ == "__main__":
         (message_type, message_content) = message
         if message_type == "show_again":
             module_frame.send_module_info()
+        elif message_type == "reset":
+            date_time_view.reset()
 
     module_frame.module_message_handler = message_handler 
     
