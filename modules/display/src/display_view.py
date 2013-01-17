@@ -552,8 +552,10 @@ class DisplayView(gtk.VBox):
             self.multi_monitors_align.set_child_visible(True)
 
     def __set_brightness(self, widget, event):
+        value = self.brightness_scale.get_value()
+        self.__send_message("status", ("display", _("Changed brightness to %f" % value)))
         self.display_manager.set_screen_brightness(self.__current_output_name, 
-                                                   self.brightness_scale.get_value())
+                                                   value)
     
     def __setup_monitor_items(self):
         self.__output_names = self.display_manager.get_output_names()
@@ -576,42 +578,60 @@ class DisplayView(gtk.VBox):
     def __toggled(self, widget, object=None):
         if object == "auto_adjust_toggle":
             if not widget.get_active():
+                self.__send_message("status", ("display", _("Changed to manual adjustment")))
                 self.display_manager.set_close_monitor(DisplayManager.BIG_NUM / 60)
+            else:
+                self.__send_message("status", ("display", _("Changed to automatic adjustment")))
             return
 
         if object == "auto_lock_toggle":
             if not widget.get_active():
+                self.__send_message("status", ("display", _("Changed to manual lock")))
                 self.lock_display_label.set_sensitive(True)                     
                 self.lock_display_combo.set_sensitive(True)
                 self.display_manager.set_lock_display(DisplayManager.BIG_NUM / 60)
             else:
+                self.__send_message("status", ("display", _("Changed to automatic lock")))
                 self.lock_display_label.set_sensitive(False)                        
                 self.lock_display_combo.set_sensitive(False)
             return
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "monitor_combo":
+            self.__send_message("status", ("display", _("Changed current output to %s") % item_value))
             self.__change_current_output(item_value)
             return
 
         if object == "sizes_combo":
-            self.__send_message("status", ("display", _("Changed Resolution")))
-            self.display_manager.set_screen_size(self.__current_output_name, self.sizes_items[item_value][0])
+            size = self.sizes_items[item_value][0]
+            self.__send_message("status", ("display", _("Changed resolution to %s") % size))
+            self.display_manager.set_screen_size(self.__current_output_name, size)
             return
         
         if object == "rotation_combo":
+            rotation = _("Normal")
+            if item_value == 2:
+                rotation = _("Right")
+            elif item_value == 3:
+                rotation = _("Left")
+            elif item_value == 4:
+                rotation = _("Inverted")
+            self.__send_message("status", ("display", _("Changed rotation to %s") % rotation))
             self.display_manager.set_screen_rotation(self.__current_output_name, item_value)
             return
 
         if object == "multi_monitors_combo":
+            self.__send_message("status", ("display", _("Changed multiply monitors mode to %s") % item_value))
             self.display_manager.set_multi_monitor(item_value)
             return
         
         if object == "close_monitor_combo":
+            self.__send_message("status", ("display", _("Changed close monitor duration to %s minutes") % item_value))
             self.display_manager.set_close_monitor(item_value)
             return
 
         if object == "lock_display_combo":
+            self.__send_message("status", ("display", _("Changed lock display duration to %s minutes") % item_value))
             self.display_manager.set_lock_display(item_value)
             return
 
