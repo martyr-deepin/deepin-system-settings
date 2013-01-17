@@ -196,7 +196,12 @@ class IconItem(gobject.GObject):
             rect.y + self.icon_padding_y)
         
         # Draw icon name.
-        draw_text(cr, self.module_info.name, 
+        # TODO: lihongwu req to support i18n
+        if os.environ['LANGUAGE'].find("zh_") == 0:
+            name = self.module_info.name
+        else:
+            name = self.module_info.default_name
+        draw_text(cr, name, 
                   rect.x, 
                   rect.y + self.icon_padding_y + icon_height + self.name_padding_y,
                   rect.width, 

@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,6 +44,8 @@ class ModuleInfo(object):
         self.config = Config(os.path.join(self.path, "config.ini"))
         self.config.load()
         self.id = self.config.get("main", "id")
+        # TODO: lihongwu req to support i18n
+        self.default_name = self.config.get("name", "default")
         self.name = self.config.get("name", "zh_CN")
         self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "icon")))
         self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(self.path, self.config.get("main", "menu_icon")))
