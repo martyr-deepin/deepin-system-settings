@@ -71,6 +71,11 @@ class DisplayManager:
         self.__session_settings.delete()
         self.__session_settings = None
 
+    def reset(self):
+        self.__power_settings.reset("sleep-display-battery")
+        self.__power_settings.reset("sleep-display-ac")
+        self.__session_settings.reset("idle-delay")
+
     def __create_monitors_xml(self):
         pass
     

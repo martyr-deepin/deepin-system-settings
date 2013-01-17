@@ -39,6 +39,8 @@ if __name__ == "__main__":
         (message_type, message_content) = message
         if message_type == "show_again":
             module_frame.send_module_info()
+        elif message_type == "reset":
+            display_view.reset()
 
     module_frame.module_message_handler = message_handler 
     
