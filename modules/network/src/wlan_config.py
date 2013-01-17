@@ -35,6 +35,7 @@ from settings_widget import EntryTreeView, SettingItem, ShowOthers, AddSettingIt
 import gtk
 
 #from nmlib.nm_utils import TypeConvert
+from nmlib.nm_utils import TypeConvert
 from shared_widget import IPV4Conf, IPV6Conf
 from nmlib.nm_remote_connection import NMRemoteConnection
 import style
@@ -170,7 +171,7 @@ class WirelessSetting(gtk.Alignment):
 
     def save_changes(self, widget):
         connection = self.ipv4.connection
-        if widget.label == "save":
+        if widget.label == _("save"):
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
                 if isinstance(connection, NMRemoteConnection):
@@ -338,8 +339,12 @@ class Security(gtk.VBox):
         gtk.VBox.__init__(self)
         self.connection = connection
         self.set_button = set_button_cb
-
-        self.setting = self.connection.get_setting("802-11-wireless-security")
+        
+        if self.connection.get_setting("802-11-wireless").security == "802-11-wireless-security":
+            self.has_security = True
+            self.setting = self.connection.get_setting("802-11-wireless-security")
+        else:
+            self.has_security = False
         self.security_label = Label(_("Security:"))
         self.key_label = Label(_("Key:"))
         self.wep_index_label = Label(_("Wep index:"))
@@ -373,7 +378,7 @@ class Security(gtk.VBox):
 
         self.show_key_check_align = style.wrap_with_align(self.show_key_check, align="left")
 
-        self.reset()
+        self.reset(self.has_security)
         self.security_combo.connect("item-selected", self.change_encry_type)
         self.key_entry.entry.connect("changed", self.save_wep_pwd)
         self.password_entry.entry.connect("changed", self.save_wpa_pwd)
@@ -462,13 +467,15 @@ class Security(gtk.VBox):
         if value == None:
             self.connection.del_setting("802-11-wireless-security")
             del self.connection.get_setting("802-11-wireless").security
-            self.reset(security=False)
+            self.has_security = False
+            self.reset(self.has_security)
             self.set_button("save", True)
         else:
-            self.connection.get_setting("802-11-wireless").security = "802-11-wireless-security"
-            self.connection.reinit_setting("802-11-wireless-security")
-            self.setting = self.connection.get_setting("802-11-wireless-security")
-            print "change encry type", self.setting
+            if self.has_security == False:
+                self.connection.get_setting("802-11-wireless").security = "802-11-wireless-security"
+                self.connection.reinit_setting("802-11-wireless-security")
+                self.setting = self.connection.get_setting("802-11-wireless-security")
+            self.has_security = True
             self.setting.key_mgmt = value
             if value == "none":
                 self.setting.wep_key_type = index
