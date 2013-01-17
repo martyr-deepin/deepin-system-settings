@@ -405,6 +405,8 @@ class AccountSetting(object):
 
         self.image_widgets["account_icon"].connect("button-press-event", self.icon_file_press_cb)
         self.button_widgets["cancel_set_icon"].connect("clicked", self.cancel_set_icon)
+        self.button_widgets["save_edit_icon"].connect("clicked",
+            lambda w: self.container_widgets["icon_edit_page"].save_edit_icon())
         self.label_widgets["account_name"].connect("enter-notify-event", self.label_enter_notify_cb, True)
         self.label_widgets["account_name"].connect("leave-notify-event", self.label_leave_notify_cb, True)
         self.label_widgets["account_name"].connect("button-press-event", self.realname_change_press_cb)

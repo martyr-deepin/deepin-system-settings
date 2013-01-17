@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-16 20:35+0800\n"
+"POT-Creation-Date: 2013-01-17 20:17+0800\n"
 "PO-Revision-Date: 2012-10-14 21:55+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -23,30 +23,28 @@ msgid "disable"
 msgstr "禁用"
 
 #: ../src/accel_entry.py:47
-#, python-format
 msgid ""
 "The shortcut \"%s\" cannot be used because it will become impossible to type "
 "using this key."
-msgstr "“%s”不能用作快捷键，因为使用此键将无法正常输入。"
+msgstr "\"%s\"不能用作快捷键，因为使用此键将无法正常输入。"
 
 #: ../src/accel_entry.py:48
 msgid "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr "请组合 Ctrl、Alt 或 Shift 键再试一次"
 
-#: ../src/accel_entry.py:51 ../src/accel_entry.py:69 ../src/main.py:716
+#: ../src/accel_entry.py:51 ../src/accel_entry.py:69 ../src/main.py:715
 msgid "Cancel"
 msgstr "取消"
 
 #: ../src/accel_entry.py:62
-#, python-format
 msgid "The shortcut \"%s\" is already used for\"%s\""
-msgstr "快捷键“%s”已被用于“%s”"
+msgstr "快捷键\"%s\"已被用于\"%s\""
 
 #: ../src/accel_entry.py:64
 #, python-format
 msgid ""
 "If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
-msgstr "如果你重新分配快捷键 %s，则快捷键 %s 将被禁用"
+msgstr "如果你重新分配快捷键\"%s\"，则快捷键\"%s\"将被禁用"
 
 #: ../src/accel_entry.py:68
 msgid "Reassign"
@@ -60,11 +58,11 @@ msgstr "请输入新的快捷键"
 msgid "Keyboard"
 msgstr "键盘"
 
-#: ../src/search_keyword.py:26 ../src/main.py:246
+#: ../src/search_keyword.py:26 ../src/main.py:245
 msgid "Shortcuts"
 msgstr "快捷键"
 
-#: ../src/search_keyword.py:27 ../src/main.py:245
+#: ../src/search_keyword.py:27 ../src/main.py:244
 msgid "Typing"
 msgstr "打字"
 
@@ -84,24 +82,24 @@ msgstr "重复延迟"
 msgid "Repeat Interval"
 msgstr "重复速度"
 
-#: ../src/main.py:75 ../src/main.py:488 ../src/main.py:797 ../src/main.py:798
-#: ../src/main.py:852
+#: ../src/main.py:75 ../src/main.py:487 ../src/main.py:796 ../src/main.py:797
+#: ../src/main.py:851
 msgid "Custom Shortcuts"
 msgstr "自定义快捷键"
 
-#: ../src/main.py:118 ../src/main.py:125 ../src/main.py:323 ../src/main.py:362
+#: ../src/main.py:118 ../src/main.py:125 ../src/main.py:322 ../src/main.py:361
 msgid "Fast"
 msgstr "快"
 
-#: ../src/main.py:119 ../src/main.py:126 ../src/main.py:321 ../src/main.py:360
+#: ../src/main.py:119 ../src/main.py:126 ../src/main.py:320 ../src/main.py:359
 msgid "Slow"
 msgstr "慢"
 
-#: ../src/main.py:120 ../src/main.py:306
+#: ../src/main.py:120 ../src/main.py:305
 msgid "Long"
 msgstr "长"
 
-#: ../src/main.py:121 ../src/main.py:308
+#: ../src/main.py:121 ../src/main.py:307
 msgid "Short"
 msgstr "短"
 
@@ -122,58 +120,50 @@ msgid "Relevant Settings"
 msgstr "相关设置"
 
 #: ../src/main.py:140
-msgid "Mouse Setting"
+msgid "Mouse Settings"
 msgstr "鼠标设置"
 
 #: ../src/main.py:142
-msgid "TouchPad Setting"
+msgid "TouchPad Settings"
 msgstr "触摸板设置"
 
 #: ../src/main.py:144
-msgid "恢复默认"
-msgstr ""
+msgid "Reset to Defaults"
+msgstr "恢复默认"
 
-#: ../src/main.py:191 ../src/main.py:714
+#: ../src/main.py:191 ../src/main.py:713
 msgid "Replace"
 msgstr "替换"
 
-#: ../src/main.py:192 ../src/main.py:211
+#: ../src/main.py:192 ../src/main.py:210
 msgid "Remove"
 msgstr "删除"
 
-#: ../src/main.py:208
-msgid ""
-"To edit a shortcut, click the row and hold down the new keys or press "
-"Backspace to clear."
-msgstr ""
-"要编辑快捷键，请单击相应的行，然后输入新按键组合，或按 Backspace 清除。"
-
-#: ../src/main.py:210
+#: ../src/main.py:209
 msgid "Add"
 msgstr "添加"
 
-#: ../src/main.py:454 ../src/main.py:735 ../src/main.py:754
-#, python-format
+#: ../src/main.py:453 ../src/main.py:734 ../src/main.py:753
 msgid "Current Layout: %s"
 msgstr "当前布局： %s"
 
-#: ../src/main.py:636
-msgid "test repeat rate"
+#: ../src/main.py:635
+msgid "测试重复速度"
 msgstr ""
 
-#: ../src/main.py:698
+#: ../src/main.py:697
 msgid "Select an input source to add"
 msgstr "选择一个要添加的输入源"
 
-#: ../src/main.py:861
+#: ../src/main.py:860
 msgid "name"
 msgstr "名称"
 
-#: ../src/main.py:863
+#: ../src/main.py:862
 msgid "action"
 msgstr "命令"
 
-#: ../src/main.py:876
+#: ../src/main.py:875
 msgid "Ok"
 msgstr "确定"
 

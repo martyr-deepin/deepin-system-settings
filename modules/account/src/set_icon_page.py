@@ -35,6 +35,7 @@ import gtk
 import gobject
 import tools
 import os
+from tempfile import mkstemp
 from stat import S_IRWXU, S_IRWXG, S_IRWXO
 
 MODULE_NAME = "account"
@@ -218,15 +219,6 @@ class IconSetPage(gtk.VBox):
         self.account_setting.alignment_widgets["edit_iconfile"].show_all()
         self.account_setting.set_to_page(self.account_setting.alignment_widgets["edit_iconfile"], "right")
         self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Icon"))
-        #self.account_setting.current_set_user.set_icon_file(filename)
-        #except Exception, e:
-            #print e
-            #if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                #self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
-            #return
-        #self.account_setting.container_widgets["slider"].slide_to_page(
-            #self.account_setting.alignment_widgets["main_hbox"], "left")
-        #self.account_setting.change_crumb(1)
 
     def choose_from_screenshot(self):
         pass
@@ -415,6 +407,11 @@ class IconEditArea(gtk.HBox):
             cr.fill()
 
     def set_pixbuf(self, pixbuf):
+        if not pixbuf:
+            self.cache_pixbuf.cache_pixbuf = None
+            self.edit_area.queue_draw()
+            self.emit_changed()
+            return
         self.origin_pixbuf = pixbuf
         w = pixbuf.get_width()
         h = pixbuf.get_height()
@@ -443,9 +440,13 @@ class IconEditArea(gtk.HBox):
         self.emit_changed()
 
     def emit_changed(self):
-        self.emit("pixbuf-changed", self.cache_pixbuf.get_cache().subpixbuf(
-            int(self.edit_coord_x-self.offset_x), int(self.edit_coord_y-self.offset_y),
-            int(self.edit_coord_w), int(self.edit_coord_h)))
+        pix = self.cache_pixbuf.get_cache()
+        if pix:
+            pix = pix.subpixbuf(int(self.edit_coord_x-self.offset_x),
+                                int(self.edit_coord_y-self.offset_y),
+                                int(self.edit_coord_w),
+                                int(self.edit_coord_h))
+        self.emit("pixbuf-changed", pix)
 
     def get_pixbuf(self):
         return self.cache_pixbuf.get_cache()
@@ -538,6 +539,7 @@ class IconEditPage(gtk.HBox):
     def __init__(self, account_setting):
         super(IconEditPage, self).__init__(False)
         self.account_setting = account_setting
+        self.error_label = Label("", label_width=350, enable_select=False)
 
         left_align = gtk.Alignment()
         right_align = gtk.Alignment()
@@ -567,6 +569,7 @@ class IconEditPage(gtk.HBox):
         right_vbox.pack_start(tools.make_align(self.thumbnail_large), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_mid), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_small), False, False)
+        right_vbox.pack_start(tools.make_align(self.error_label), False, False)
 
         self.pack_start(left_align)
         self.pack_start(right_align)
@@ -593,9 +596,50 @@ class IconEditPage(gtk.HBox):
     def set_pixbuf(self, pixbuf):
         self.draw_area.set_pixbuf(pixbuf)
     
+    def refresh(self):
+        self.set_pixbuf(None)
+        self.error_label.set_text("")
+
+    def save_edit_icon(self):
+        pixbuf = self.thumbnail_large.get_pixbuf()
+        if not pixbuf:
+            self.error_label.set_text("<span foreground='red'>%s%s</span>" % (
+                _("Error:"), _("头像为空")))
+            return
+        tmp = mkstemp(".tmp", "account-settings")
+        os.close(tmp[0])
+        filename = tmp[1]
+        pixbuf.save(filename, "png")
+        try:
+            self.account_setting.current_set_user.set_icon_file(filename)
+            histroy_icon = self.account_setting.container_widgets["icon_set_page"].histroy_icon
+            if not filename in histroy_icon.histroy:
+                path = "/var/lib/AccountsService/icons/" + self.account_setting.current_set_user.get_user_name()
+                histroy_icon.histroy.append(path)
+                histroy_icon.set_histroy(self.histroy_icon.histroy)
+        except Exception, e:
+            print e
+            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+            return
+        # TODO 更新histroy
+        self.account_setting.container_widgets["slider"].slide_to_page(
+            self.account_setting.alignment_widgets["main_hbox"], "left")
+        self.account_setting.change_crumb(1)
+
     def __on_pixbuf_changed_cb(self, widget, pixbuf):
-        self.thumbnail_large.set_from_pixbuf(pixbuf.scale_simple(144, 144, gtk.gdk.INTERP_BILINEAR))
-        self.thumbnail_mid.set_from_pixbuf(pixbuf.scale_simple(48, 48, gtk.gdk.INTERP_BILINEAR))
-        self.thumbnail_small.set_from_pixbuf(pixbuf.scale_simple(24, 24, gtk.gdk.INTERP_BILINEAR))
+        if pixbuf:
+            self.thumbnail_large.set_from_pixbuf(pixbuf.scale_simple(
+                144, 144, gtk.gdk.INTERP_BILINEAR))
+            self.thumbnail_mid.set_from_pixbuf(pixbuf.scale_simple(
+                48, 48, gtk.gdk.INTERP_BILINEAR))
+            self.thumbnail_small.set_from_pixbuf(pixbuf.scale_simple(
+                24, 24, gtk.gdk.INTERP_BILINEAR))
+        else:
+            self.thumbnail_large.set_from_pixbuf(None)
+            self.thumbnail_mid.set_from_pixbuf(None)
+            self.thumbnail_small.set_from_pixbuf(None)
+        if not self.account_setting.button_widgets["save_edit_icon"].get_sensitive():
+            self.account_setting.button_widgets["save_edit_icon"].set_sensitive(True)
 
 gobject.type_register(IconEditPage)
