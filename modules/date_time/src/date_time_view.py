@@ -489,7 +489,7 @@ class DatetimeView(gtk.HBox):
     
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None):
         self.__send_message("status", ("date_time", _("Changed timezone to %s") % item_text))
-        self.__deepin_dt.set_timezone_by_gmtoff(item_value - 11)
+        self.__deepin_dt.set_timezone_by_gmtoff(item_value)
 
     def __setup_label(self, text="", width=90, align=ALIGN_START):
         label = Label(text, None, CONTENT_FONT_SIZE, align, width)

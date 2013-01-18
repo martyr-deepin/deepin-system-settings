@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-16 20:35+0800\n"
+"POT-Creation-Date: 2013-01-17 20:17+0800\n"
 "PO-Revision-Date: 2012-10-29 13:27+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -19,33 +19,31 @@ msgstr ""
 #: ../src/shortcuts.py:40 ../src/shortcuts.py:67 ../src/shortcuts.py:100
 #: ../src/accel_entry.py:179 ../src/accel_entry.py:309 ../src/treeitem.py:305
 msgid "disable"
-msgstr "已停用"
+msgstr "禁用"
 
 #: ../src/accel_entry.py:47
-#, fuzzy, python-format
 msgid ""
 "The shortcut \"%s\" cannot be used because it will become impossible to type "
 "using this key."
-msgstr "“”不能用作快捷鍵，因為使用此鍵將無法正常輸入。"
+msgstr "\"%s\"不能用作快捷鍵，因為使用此鍵將無法正常輸入。"
 
 #: ../src/accel_entry.py:48
 msgid "Please try with a key such as Control, Alt or Shift at the same time."
-msgstr "請組郃 Ctrl、Alt 或 Shift 鍵再試一次"
+msgstr "請組合 Ctrl、Alt 或 Shift 鍵再試一次"
 
-#: ../src/accel_entry.py:51 ../src/accel_entry.py:69 ../src/main.py:716
+#: ../src/accel_entry.py:51 ../src/accel_entry.py:69 ../src/main.py:715
 msgid "Cancel"
 msgstr "取消"
 
 #: ../src/accel_entry.py:62
-#, fuzzy, python-format
 msgid "The shortcut \"%s\" is already used for\"%s\""
-msgstr "快捷鍵“”已被用於“”"
+msgstr "快捷鍵\"%s\"已被用於\"%s\""
 
 #: ../src/accel_entry.py:64
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
-msgstr "如果你重新分配快捷鍵 ，則快捷鍵  將被禁用"
+msgstr "如果你重新分配快捷鍵\"%s\"，則快捷鍵\"%s\"將被禁用"
 
 #: ../src/accel_entry.py:68
 msgid "Reassign"
@@ -53,54 +51,54 @@ msgstr "重新分配"
 
 #: ../src/accel_entry.py:210
 msgid "Please input new shortcuts"
-msgstr ""
+msgstr "請輸入新的快捷鍵"
 
 #: ../src/search_keyword.py:25
 msgid "Keyboard"
-msgstr ""
+msgstr "鍵槃"
 
-#: ../src/search_keyword.py:26 ../src/main.py:246
+#: ../src/search_keyword.py:26 ../src/main.py:245
 msgid "Shortcuts"
 msgstr "快捷鍵"
 
-#: ../src/search_keyword.py:27 ../src/main.py:245
+#: ../src/search_keyword.py:27 ../src/main.py:244
 msgid "Typing"
 msgstr "打字"
 
 #: ../src/search_keyword.py:28
 msgid "Layout"
-msgstr "佈侷"
+msgstr "布局"
 
 #: ../src/search_keyword.py:29 ../src/main.py:113
 msgid "Repeat"
-msgstr "字符重複"
+msgstr "字符重復"
 
 #: ../src/search_keyword.py:30 ../src/main.py:116
 msgid "Repeat Delay"
-msgstr "重複延遲"
+msgstr "重復延遲"
 
 #: ../src/search_keyword.py:31 ../src/main.py:117
 msgid "Repeat Interval"
-msgstr "重複速度"
+msgstr "重復速度"
 
-#: ../src/main.py:75 ../src/main.py:488 ../src/main.py:797 ../src/main.py:798
-#: ../src/main.py:852
+#: ../src/main.py:75 ../src/main.py:487 ../src/main.py:796 ../src/main.py:797
+#: ../src/main.py:851
 msgid "Custom Shortcuts"
 msgstr "自定義快捷鍵"
 
-#: ../src/main.py:118 ../src/main.py:125 ../src/main.py:323 ../src/main.py:362
+#: ../src/main.py:118 ../src/main.py:125 ../src/main.py:322 ../src/main.py:361
 msgid "Fast"
 msgstr "快"
 
-#: ../src/main.py:119 ../src/main.py:126 ../src/main.py:321 ../src/main.py:360
+#: ../src/main.py:119 ../src/main.py:126 ../src/main.py:320 ../src/main.py:359
 msgid "Slow"
 msgstr "慢"
 
-#: ../src/main.py:120 ../src/main.py:306
+#: ../src/main.py:120 ../src/main.py:305
 msgid "Long"
 msgstr "長"
 
-#: ../src/main.py:121 ../src/main.py:308
+#: ../src/main.py:121 ../src/main.py:307
 msgid "Short"
 msgstr "短"
 
@@ -110,79 +108,71 @@ msgstr "光標閃爍"
 
 #: ../src/main.py:127
 msgid "Disable touchpad while typing"
-msgstr "打字時禁用觸摸闆"
+msgstr "打字時禁用觸摸板"
 
 #: ../src/main.py:130
 msgid "Keyboard Layout"
-msgstr ""
+msgstr "鍵槃布局"
 
 #: ../src/main.py:134
 msgid "Relevant Settings"
 msgstr "相關設置"
 
 #: ../src/main.py:140
-msgid "Mouse Setting"
+msgid "Mouse Settings"
 msgstr "鼠標設置"
 
 #: ../src/main.py:142
-msgid "TouchPad Setting"
-msgstr "觸摸闆設置"
+msgid "TouchPad Settings"
+msgstr "觸摸板設置"
 
 #: ../src/main.py:144
-msgid "恢复默认"
-msgstr ""
+msgid "Reset to Defaults"
+msgstr "恢復默認"
 
-#: ../src/main.py:191 ../src/main.py:714
+#: ../src/main.py:191 ../src/main.py:713
 msgid "Replace"
-msgstr ""
+msgstr "替換"
 
-#: ../src/main.py:192 ../src/main.py:211
+#: ../src/main.py:192 ../src/main.py:210
 msgid "Remove"
 msgstr "刪除"
 
-#: ../src/main.py:208
-msgid ""
-"To edit a shortcut, click the row and hold down the new keys or press "
-"Backspace to clear."
-msgstr ""
-"要編輯快捷鍵，請單擊相應的行，然後輸入新按鍵組郃，或按 Backspace 清除。"
-
-#: ../src/main.py:210
+#: ../src/main.py:209
 msgid "Add"
 msgstr "添加"
 
-#: ../src/main.py:454 ../src/main.py:735 ../src/main.py:754
-#, python-format
+#: ../src/main.py:453 ../src/main.py:734 ../src/main.py:753
 msgid "Current Layout: %s"
+msgstr "當前布局： %s"
+
+#: ../src/main.py:635
+msgid "測試重復速度"
 msgstr ""
 
-#: ../src/main.py:636
-msgid "test repeat rate"
-msgstr ""
-
-#: ../src/main.py:698
+#: ../src/main.py:697
 msgid "Select an input source to add"
 msgstr "選擇一個要添加的輸入源"
 
-#: ../src/main.py:861
+#: ../src/main.py:860
 msgid "name"
 msgstr "名稱"
 
-#: ../src/main.py:863
+#: ../src/main.py:862
 msgid "action"
 msgstr "命令"
 
-#: ../src/main.py:876
+#: ../src/main.py:875
 msgid "Ok"
 msgstr "確定"
 
 #: ../src/keybind_list.py:27
 msgid "System"
-msgstr "係統"
+msgstr "系統"
 
 #: ../src/keybind_list.py:28
 msgid "Log out"
-msgstr "註銷"
+msgstr "注銷"
 
 #: ../src/keybind_list.py:29
 msgid "Lock screen"
@@ -194,7 +184,7 @@ msgstr "啟動器"
 
 #: ../src/keybind_list.py:31
 msgid "Launch help browser"
-msgstr "啟動帮助瀏覽器"
+msgstr "啟動幫助瀏覽器"
 
 #: ../src/keybind_list.py:32
 msgid "Launch calculator"
@@ -202,7 +192,7 @@ msgstr "啟動計算器"
 
 #: ../src/keybind_list.py:33
 msgid "Launch email client"
-msgstr "啟動郵件客戶耑"
+msgstr "啟動郵件客戶端"
 
 #: ../src/keybind_list.py:34
 msgid "Launch web browser"
@@ -210,7 +200,7 @@ msgstr "啟動網頁瀏覽器"
 
 #: ../src/keybind_list.py:35
 msgid "Search"
-msgstr "蒐索"
+msgstr "搜索"
 
 #: ../src/keybind_list.py:36
 msgid "Sound and Media"
@@ -254,7 +244,7 @@ msgstr "下一音軌"
 
 #: ../src/keybind_list.py:46
 msgid "Eject"
-msgstr "彈齣"
+msgstr "彈出"
 
 #: ../src/keybind_list.py:47
 msgid "Screenshots"
@@ -274,15 +264,15 @@ msgstr "對選區截圖"
 
 #: ../src/keybind_list.py:51
 msgid "Copy a screenshot to clipboard"
-msgstr "複製截圖到剪貼闆"
+msgstr "復制截圖到剪貼板"
 
 #: ../src/keybind_list.py:52
 msgid "Copy a screenshot of a window to clipboard"
-msgstr "複製窗口截圖到剪貼闆"
+msgstr "復制窗口截圖到剪貼板"
 
 #: ../src/keybind_list.py:53
 msgid "Copy a screenshot of an area to clipboard"
-msgstr "複製選區截圖到剪貼闆"
+msgstr "復制選區截圖到剪貼板"
 
 #: ../src/keybind_list.py:54
 msgid "Universal Access"
@@ -306,7 +296,7 @@ msgstr "開關屏幕閱讀器"
 
 #: ../src/keybind_list.py:59
 msgid "Turn on-screen keyboard on or off"
-msgstr "開關屏幕鍵盤"
+msgstr "開關屏幕鍵槃"
 
 #: ../src/keybind_list.py:60
 msgid "Increase text size"
@@ -394,15 +384,15 @@ msgstr "切換應用程序"
 
 #: ../src/keybind_list.py:87
 msgid "Reverse switch applications"
-msgstr "反嚮切換應用程序"
+msgstr "反向切換應用程序"
 
 #: ../src/keybind_list.py:88
 msgid "Switch system controls"
-msgstr "切換係統控製"
+msgstr "切換系統控制"
 
 #: ../src/keybind_list.py:89
 msgid "Reverse switch system controls"
-msgstr "反嚮切換係統控製"
+msgstr "反向切換系統控制"
 
 #: ../src/keybind_list.py:90
 msgid "Switch windows of an app directly"
@@ -410,7 +400,7 @@ msgstr "直接在應用程序的窗口之間切換窗口"
 
 #: ../src/keybind_list.py:91
 msgid "Reverse switch windows of an app directly"
-msgstr "直接在應用程序的窗口之間反嚮切換窗口"
+msgstr "直接在應用程序的窗口之間反向切換窗口"
 
 #: ../src/keybind_list.py:92
 msgid "Switch windows directly"
@@ -418,15 +408,15 @@ msgstr "直接切換窗口"
 
 #: ../src/keybind_list.py:93
 msgid "Reverse switch windows directly"
-msgstr "反嚮直接切換窗口"
+msgstr "反向直接切換窗口"
 
 #: ../src/keybind_list.py:94
 msgid "Switch system controls directly"
-msgstr "直接切換係統控製"
+msgstr "直接切換系統控制"
 
 #: ../src/keybind_list.py:95
 msgid "Reverse switch system controls directly"
-msgstr "反嚮直接切換係統控製"
+msgstr "反向直接切換系統控制"
 
 #: ../src/keybind_list.py:97
 msgid "Switch to workspace 1"
@@ -498,7 +488,7 @@ msgstr "窗口"
 
 #: ../src/keybind_list.py:115
 msgid "Show desktop"
-msgstr "顯示桌麵"
+msgstr "顯示桌面"
 
 #: ../src/keybind_list.py:116
 msgid "Show the activities overview"
@@ -514,7 +504,7 @@ msgstr "激活窗口菜單"
 
 #: ../src/keybind_list.py:119
 msgid "Toggle fullscreen mode"
-msgstr "切換全屏糢式"
+msgstr "切換全屏模式"
 
 #: ../src/keybind_list.py:120
 msgid "Toggle maximization state"
@@ -522,7 +512,7 @@ msgstr "切換最大化狀態"
 
 #: ../src/keybind_list.py:121
 msgid "Toggle window always appearing on top"
-msgstr "窗口常居頂耑切換"
+msgstr "窗口常居頂端切換"
 
 #: ../src/keybind_list.py:122
 msgid "Maximize window"
@@ -530,11 +520,11 @@ msgstr "最大化窗口"
 
 #: ../src/keybind_list.py:123
 msgid "Restore window"
-msgstr "恢複窗口"
+msgstr "恢復窗口"
 
 #: ../src/keybind_list.py:124
 msgid "Toggle shaded state"
-msgstr "切換捲起狀態"
+msgstr "切換卷起狀態"
 
 #: ../src/keybind_list.py:125
 msgid "Minimize window"
@@ -558,11 +548,11 @@ msgstr "在位於所有或僅有一個工作區的窗口間切換"
 
 #: ../src/keybind_list.py:130
 msgid "Raise window if covered, otherwise lower it"
-msgstr "如果窗口被其他窗口遮蓋，則提昇它，否則降低它"
+msgstr "如果窗口被其他窗口遮蓋，則提升它，否則降低它"
 
 #: ../src/keybind_list.py:131
 msgid "Raise window above other windows"
-msgstr "將窗口提昇到其它窗口之上"
+msgstr "將窗口提升到其它窗口之上"
 
 #: ../src/keybind_list.py:132
 msgid "Lower window below other windows"
@@ -594,11 +584,11 @@ msgstr "移到窗口到右下角"
 
 #: ../src/keybind_list.py:140
 msgid "Move window to top edge of screen"
-msgstr "移到窗口到屏幕頂耑"
+msgstr "移到窗口到屏幕頂端"
 
 #: ../src/keybind_list.py:141
 msgid "Move window to bottom edge of screen"
-msgstr "移動窗口到屏幕底耑"
+msgstr "移動窗口到屏幕底端"
 
 #: ../src/keybind_list.py:142
 msgid "Move window to right side of screen"
@@ -611,15 +601,3 @@ msgstr "移動窗口到屏幕左邊"
 #: ../src/keybind_list.py:144
 msgid "Move window to center of screen"
 msgstr "移到窗口到屏幕中間"
-
-#~ msgid "Click here and hold a key to test repeat rate"
-#~ msgstr "單擊此處並按住一個鍵以便測試重複速度"
-
-#~ msgid "New accelerator.."
-#~ msgstr "新建加速鍵"
-
-#~ msgid "Switch windows of an application"
-#~ msgstr "在應用程序的窗口之間切換窗口"
-
-#~ msgid "Reverse switch windows of an application"
-#~ msgstr "在應用程序的窗口之間反嚮切換窗口"

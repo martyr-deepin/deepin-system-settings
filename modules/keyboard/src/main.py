@@ -137,11 +137,11 @@ class KeySetting(object):
         self.button_widgets["blink_test_entry"] = gtk.Entry()
         self.button_widgets["touchpad_disable"] = OffButton()
         # relevant settings button
-        self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Setting"),
+        self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Settings"),
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
-        self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Setting"),
+        self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
             text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
-        self.button_widgets["set_to_default"] = Button(_("恢复默认"))
+        self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()
@@ -205,7 +205,6 @@ class KeySetting(object):
         #####################################
         # Shortcuts widgets create
         # label init
-        self.label_widgets["shortcuts_tips"] = Label(_("To edit a shortcut, click the row and hold down the new keys or press Backspace to clear."))
         # button init
         self.button_widgets["shortcuts_add"] = Button(_("Add"))
         self.button_widgets["shortcuts_remove"] = Button(_("Remove"))
@@ -633,7 +632,8 @@ class KeySetting(object):
         text = widget.get_text()
         layout = widget.get_layout()
         if text == "" and not widget.is_focus():
-            layout.set_text(_("test repeat rate"))
+            # TODO
+            layout.set_text(_("测试重复速度"))
         elif layout.get_text() != text:
             layout.set_text("")
     

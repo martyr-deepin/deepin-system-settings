@@ -150,7 +150,7 @@ class ActionBar(gtk.Alignment):
         rect = widget.allocation
         
         self.cache_bg_pixbuf.scale(self.bg_pixbuf.get_pixbuf(), rect.width, rect.height)
-        draw_pixbuf(cr, self.cache_bg_pixbuf.get_cache(), rect.x, rect.y)
+        #draw_pixbuf(cr, self.cache_bg_pixbuf.get_cache(), rect.x, rect.y)
 
 gobject.type_register(ActionBar)
 

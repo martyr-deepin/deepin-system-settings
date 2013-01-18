@@ -106,7 +106,7 @@ class SoundSetting(object):
         self.label_widgets["speaker_port"] = Label(_("Output Port"), text_size=option_item_font_szie)
         self.label_widgets["speaker_volume"] = Label(_("Output Volume"), text_size=option_item_font_szie)
         self.label_widgets["speaker_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
-        self.label_widgets["speaker_balance"] = Label(_("均衡"), text_size=option_item_font_szie)
+        self.label_widgets["speaker_balance"] = Label(_("Balance"), text_size=option_item_font_szie)
         self.label_widgets["microphone_port"] = Label(_("Input Port"), text_size=option_item_font_szie)
         self.label_widgets["microphone_volume"] = Label(_("Input Volume"), text_size=option_item_font_szie)
         self.label_widgets["microphone_mute"] = Label(_("Mute"), text_size=option_item_font_szie)

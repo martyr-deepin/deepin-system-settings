@@ -405,6 +405,8 @@ class AccountSetting(object):
 
         self.image_widgets["account_icon"].connect("button-press-event", self.icon_file_press_cb)
         self.button_widgets["cancel_set_icon"].connect("clicked", self.cancel_set_icon)
+        self.button_widgets["save_edit_icon"].connect("clicked",
+            lambda w: self.container_widgets["icon_edit_page"].save_edit_icon())
         self.label_widgets["account_name"].connect("enter-notify-event", self.label_enter_notify_cb, True)
         self.label_widgets["account_name"].connect("leave-notify-event", self.label_leave_notify_cb, True)
         self.label_widgets["account_name"].connect("button-press-event", self.realname_change_press_cb)
@@ -680,16 +682,15 @@ class AccountSetting(object):
                     self.current_select_user.set_real_name(text)
                 except:
                     pass
-            self.label_widgets["account_name"].queue_draw()
-            #print "account name changed:", self.label_widgets["account_name"].get_text()
             align.destroy()
+            self.container_widgets["right_vbox"].queue_draw()
 
         self.container_widgets["account_info_hbox"].remove(self.label_widgets["account_name"])
         #text = pango.parse_markup(widget.get_text())[1]
         text = self.current_select_user.get_real_name()
         align = gtk.Alignment()
         align.set(0.0, 0.5, 0, 0)
-        align.set_padding(8, 0, 2, 63)
+        align.set_padding(8, 0, 0, 65)
         input_entry = InputEntry(text)
         input_entry.entry.check_text = tools.entry_check_account_name
         input_entry.set_size(COMBO_WIDTH, WIDGET_HEIGHT)
@@ -700,6 +701,7 @@ class AccountSetting(object):
         align.show_all()
         self.container_widgets["account_info_hbox"].pack_start(align)
         self.container_widgets["account_info_hbox"].reorder_child(align, 0)
+        self.container_widgets["right_vbox"].queue_draw()
 
     ## change password >> ##
     def password_change_press_cb(self, widget, event):
@@ -786,6 +788,7 @@ class AccountSetting(object):
         confirm_pswd_input.entry.connect("changed", self.password_input_changed, all_widgets, self.CH_PASSWD_CONFIRM_PSWD, 6)
 
         self.container_widgets["account_info_table"].show_all()
+        self.container_widgets["right_vbox"].queue_draw()
 
     def show_input_password(self, button, new_pswd_input, confirm_pswd_input):
         new_pswd_input.show_password(button.get_active())
@@ -917,18 +920,11 @@ class AccountSetting(object):
     def icon_file_press_cb(self, widget, event):
         if not self.current_select_user:
             return
-        #self.current_set_user = self.current_select_user
-        #self.container_widgets["icon_set_page"].refresh()
-        #self.alignment_widgets["set_iconfile"].show_all()
-        #self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
-        #self.module_frame.send_submodule_crumb(2, _("Set Icon"))
-
-        #icon_pixbuf = gtk.gdk.pixbuf_new_from_file("/home/longchang/图片/DeepinScreenshot20130116151538.png")
-        icon_pixbuf = gtk.gdk.pixbuf_new_from_file("/usr/share/pixmaps/faces/baseball.png")
-        self.container_widgets["icon_edit_page"].set_pixbuf(icon_pixbuf)
-        self.alignment_widgets["edit_iconfile"].show_all()
-        self.set_to_page(self.alignment_widgets["edit_iconfile"], "right")
-        self.module_frame.send_submodule_crumb(2, _("Edit Icon"))
+        self.current_set_user = self.current_select_user
+        self.container_widgets["icon_set_page"].refresh()
+        self.alignment_widgets["set_iconfile"].show_all()
+        self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
+        self.module_frame.send_submodule_crumb(2, _("Set Icon"))
 
     def cancel_set_icon(self, button):
         self.set_to_page(self.alignment_widgets["main_hbox"], "left")

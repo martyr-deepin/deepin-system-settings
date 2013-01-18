@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
@@ -33,6 +33,8 @@ class ContentPage(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
+        rc_str = "style 'my_style' {\n  bg[NORMAL] = \"%s\"\n }\nwidget '*' style 'my_style'" % "#FFFFFF"
+        gtk.rc_parse_string(rc_str)          
         self.module_id = module_id
         self.socket = None
         self.connect("realize", self._add_socket)

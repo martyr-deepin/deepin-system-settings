@@ -73,7 +73,9 @@ class ModuleFrame(gtk.Plug):
         
         # Init threads.
         gtk.gdk.threads_init()
-    
+        rc_str = "style 'my_style' {\n  bg[NORMAL] = \"%s\"\n }\nwidget '*' style 'my_style'" % "#FFFFFF"
+        gtk.rc_parse_string(rc_str)
+
         # Init dbus.
         self.bus = dbus.SessionBus()
         self.module_dbus_name = "com.deepin.%s_settings" % (self.module_id)
