@@ -286,6 +286,12 @@ class IconEditArea(gtk.HBox):
             app_theme.get_pixbuf("account/undo.png"),
             app_theme.get_pixbuf("account/undo.png"))
 
+        self.button_zoom_in.connect("clicked", self.on_zoom_in_clicked_cb)
+        self.button_zoom_out.connect("clicked", self.on_zoom_out_clicked_cb)
+        self.button_camera.connect("clicked", self.on_button_clicked_cb)
+        self.button_cut.connect("clicked", self.on_button_clicked_cb)
+        self.button_undo.connect("clicked", self.on_button_clicked_cb)
+
         self.button_vbox.pack_start(tools.make_align(self.button_zoom_in, xalign=0.5))
         self.button_vbox.pack_start(tools.make_align(self.button_zoom_out, xalign=0.5))
         self.button_vbox.pack_start(tools.make_align(self.button_camera, xalign=0.5))
@@ -303,15 +309,14 @@ class IconEditArea(gtk.HBox):
         self.edit_area.connect("button-release-event", self.__on_button_release_cb)
         self.edit_area.connect("motion-notify-event", self.__on_motion_notify_cb)
         self.edit_area.connect("expose-event", self.__expose_edit)
-        #self.edit_area.connect("focus-in-event", self.__on_focus_in_cb)
-        #self.edit_area.connect("focus-out-event", self.__on_focus_out_cb)
-        #self.edit_area.connect("enter-notify-event", self.__on_enter_notify_cb)
-        #self.edit_area.connect("leave-notify-event", self.__on_leave_notify_cb)
 
         self.origin_pixbuf = None
+        self.origin_pixbuf_width = 0
+        self.origin_pixbuf_height = 0
         self.cache_pixbuf = CachePixbuf()
         self.border_color = "#000000"
 
+        # cursor
         self.cursor = {
             self.POS_IN_DRAG : gtk.gdk.Cursor(gtk.gdk.BOTTOM_RIGHT_CORNER),
             self.POS_IN_MOVE : gtk.gdk.Cursor(gtk.gdk.FLEUR),
@@ -323,7 +328,16 @@ class IconEditArea(gtk.HBox):
         self.drag_flag = False
         self.move_flag = False
 
-        # the select box coord
+        # the pixbuf shown area
+        self.pixbuf_offset_x = 0
+        self.pixbuf_offset_y = 0
+        self.pixbuf_offset_cmp_x = 0
+        self.pixbuf_offset_cmp_y = 0
+        self.pixbuf_x = 0
+        self.pixbuf_y = 0
+        self.pixbuf_w = self.AREA_WIDTH
+        self.pixbuf_h = self.AREA_HEIGHT
+        # the select box area
         self.edit_coord_x = 0
         self.edit_coord_y = 0
         self.edit_coord_w = self.AREA_WIDTH
@@ -332,6 +346,9 @@ class IconEditArea(gtk.HBox):
         self.edit_coord_backup_y = 0
         self.edit_coord_backup_w = self.AREA_WIDTH
         self.edit_coord_backup_h = self.AREA_HEIGHT
+
+        self.drag_point_x = 0
+        self.drag_point_y = 0
         self.__update_drag_point_coord()
 
     def draw_frame_border(self, widget, event):
@@ -343,12 +360,84 @@ class IconEditArea(gtk.HBox):
             cr.rectangle(x, y, w, h)
             cr.stroke()
 
+    def on_button_clicked_cb(self, widget):
+        print "clicked---------------------"
+
+    def on_zoom_in_clicked_cb(self, button):
+        if self.pixbuf_w >= self.origin_pixbuf_width or self.pixbuf_h >= self.origin_pixbuf_height:
+            print "has max size"
+            return
+        width = int(self.pixbuf_w * 1.1)
+        height = int(self.pixbuf_h * 1.1)
+        if width >= self.origin_pixbuf_width:
+            width = self.origin_pixbuf_width
+        if height >= self.origin_pixbuf_height:
+            height = self.origin_pixbuf_height
+        self.cache_pixbuf.scale(self.origin_pixbuf, width, height)
+        # count show area
+        self.pixbuf_w = width
+        self.pixbuf_h = height
+        self.pixbuf_x = (self.AREA_WIDTH - width) / 2
+        self.pixbuf_y = (self.AREA_HEIGHT - height) / 2
+        if self.pixbuf_x < 0:
+            self.pixbuf_offset_x -= self.pixbuf_x
+            if self.pixbuf_offset_x + self.AREA_WIDTH > self.pixbuf_w:
+                self.pixbuf_offset_x = self.pixbuf_w - self.AREA_WIDTH
+            self.pixbuf_x = 0
+        if self.pixbuf_y < 0:
+            self.pixbuf_offset_y -= self.pixbuf_y
+            if self.pixbuf_offset_y + self.AREA_HEIGHT > self.pixbuf_h:
+                self.pixbuf_offset_y = self.pixbuf_h - self.AREA_HEIGHT
+            self.pixbuf_y = 0
+        self.__update_drag_point_coord()
+
+    def on_zoom_out_clicked_cb(self, button):
+        if self.pixbuf_w <= self.MIN_SIZE or self.pixbuf_h <= self.MIN_SIZE:
+            print "has min size"
+            return
+        width = int(self.pixbuf_w * 0.9)
+        height = int(self.pixbuf_h * 0.9)
+        if height >= width and width <= self.MIN_SIZE:
+            height = int(float(height) / width * self.MIN_SIZE)
+            width = self.MIN_SIZE
+        elif height < self.MIN_SIZE:
+            width = int(float(width) / height * self.MIN_SIZE)
+            height = self.MIN_SIZE
+        self.cache_pixbuf.scale(self.origin_pixbuf, width, height)
+        # count show area
+        self.pixbuf_w = width
+        self.pixbuf_h = height
+        self.pixbuf_x = (self.AREA_WIDTH - width) / 2
+        self.pixbuf_y = (self.AREA_HEIGHT - height) / 2
+        if self.pixbuf_x < 0:
+            self.pixbuf_offset_x -= self.pixbuf_x
+            if self.pixbuf_offset_x + self.AREA_WIDTH > self.pixbuf_w:
+                self.pixbuf_offset_x = self.pixbuf_w - self.AREA_WIDTH
+            self.pixbuf_x = 0
+        if self.pixbuf_y < 0:
+            self.pixbuf_offset_y -= self.pixbuf_y
+            if self.pixbuf_offset_y + self.AREA_HEIGHT > self.pixbuf_h:
+                self.pixbuf_offset_y = self.pixbuf_h - self.AREA_HEIGHT
+            self.pixbuf_y = 0
+        # count edit area
+        if self.edit_coord_x < self.pixbuf_x:
+            self.edit_coord_x = self.pixbuf_x
+        if self.edit_coord_y < self.pixbuf_y:
+            self.edit_coord_y = self.pixbuf_y
+        right_pos = min(self.pixbuf_x+self.pixbuf_w, self.AREA_WIDTH)
+        bottom_pos = min(self.pixbuf_y+self.pixbuf_h, self.AREA_HEIGHT)
+        if self.edit_coord_x + self.edit_coord_w > right_pos:
+            self.edit_coord_w = self.edit_coord_h = right_pos - self.edit_coord_x
+        if self.edit_coord_y + self.edit_coord_h > bottom_pos:
+            self.edit_coord_w = self.edit_coord_h = bottom_pos - self.edit_coord_y
+        self.__update_drag_point_coord()
+
     def __expose_edit(self, widget, event):
         pixbuf = self.cache_pixbuf.get_cache()
         if not pixbuf:
             return
         cr = widget.window.cairo_create()
-        cr.set_source_pixbuf(pixbuf, self.offset_x, self.offset_y)
+        cr.set_source_pixbuf(pixbuf, self.pixbuf_x-self.pixbuf_offset_x, self.pixbuf_y-self.pixbuf_offset_y)
         cr.paint()
         self.__draw_mask(cr, widget.allocation)
         self.__draw_frame(cr, widget.allocation)
@@ -413,26 +502,36 @@ class IconEditArea(gtk.HBox):
             self.emit_changed()
             return
         self.origin_pixbuf = pixbuf
-        w = pixbuf.get_width()
-        h = pixbuf.get_height()
+        self.origin_pixbuf_width = w = pixbuf.get_width()
+        self.origin_pixbuf_height = h = pixbuf.get_height()
         if h >= w:
             w = int(float(w) / h * self.AREA_HEIGHT)
             h = self.AREA_HEIGHT
+            if w < self.MIN_SIZE:
+                h = int(float(h) / w * self.MIN_SIZE)
+                w = self.MIN_SIZE
             self.edit_coord_w = self.edit_coord_h = w
         else:
             h = int(float(h) / w * self.AREA_WIDTH)
             w = self.AREA_WIDTH
+            if h < self.MIN_SIZE:
+                w = int(float(w) / h * self.MIN_SIZE)
+                h = self.MIN_SIZE
             self.edit_coord_w = self.edit_coord_h = h
         # count the offset coord
-        self.offset_x = 0
-        self.offset_y = 0
+        self.pixbuf_offset_x = 0
+        self.pixbuf_offset_y = 0
+        self.pixbuf_x = 0
+        self.pixbuf_y = 0
+        self.pixbuf_w = w
+        self.pixbuf_h = h
         if w < self.AREA_WIDTH:
-            self.offset_x = (self.AREA_WIDTH - w) / 2
+            self.pixbuf_x = (self.AREA_WIDTH - w) / 2
         if h < self.AREA_HEIGHT :
-            self.offset_y = (self.AREA_HEIGHT - h) / 2
+            self.pixbuf_y = (self.AREA_HEIGHT - h) / 2
         # update select box coord
-        self.edit_coord_x = self.offset_x
-        self.edit_coord_y = self.offset_y
+        self.edit_coord_x = self.pixbuf_x
+        self.edit_coord_y = self.pixbuf_y
         self.cache_pixbuf.scale(pixbuf, w, h)
         self.drag_point_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
         self.drag_point_y = self.edit_coord_y + self.edit_coord_h - self.DRAG_WIDTH
@@ -442,8 +541,8 @@ class IconEditArea(gtk.HBox):
     def emit_changed(self):
         pix = self.cache_pixbuf.get_cache()
         if pix:
-            pix = pix.subpixbuf(int(self.edit_coord_x-self.offset_x),
-                                int(self.edit_coord_y-self.offset_y),
+            pix = pix.subpixbuf(int(self.edit_coord_x-self.pixbuf_x+self.pixbuf_offset_x),
+                                int(self.edit_coord_y-self.pixbuf_y+self.pixbuf_offset_y),
                                 int(self.edit_coord_w),
                                 int(self.edit_coord_h))
         self.emit("pixbuf-changed", pix)
@@ -475,39 +574,78 @@ class IconEditArea(gtk.HBox):
         self.move_flag = False
 
     def __on_motion_notify_cb(self, widget, event):
+        pixbuf = self.cache_pixbuf.get_cache()
+        if not pixbuf:
+            return
         if not self.drag_flag and not self.move_flag:
             self.__update_position(event.x, event.y)
             self.set_cursor()
+        right_pos = min(self.pixbuf_x+self.pixbuf_w, self.AREA_WIDTH)
+        bottom_pos = min(self.pixbuf_y+self.pixbuf_h, self.AREA_HEIGHT)
         if self.move_flag:
             self.edit_coord_x = self.edit_coord_backup_x + event.x - self.press_point_coord[0]
             self.edit_coord_y = self.edit_coord_backup_y + event.y - self.press_point_coord[1]
 
-            if self.edit_coord_x < 0:
-                self.edit_coord_x = 0
-            if self.edit_coord_y < 0:
-                self.edit_coord_y = 0
-            if self.edit_coord_x + self.edit_coord_w > self.AREA_WIDTH:
-                self.edit_coord_x = self.AREA_WIDTH - self.edit_coord_w
-            if self.edit_coord_y + self.edit_coord_h > self.AREA_HEIGHT:
-                self.edit_coord_y = self.AREA_HEIGHT - self.edit_coord_h
-            self.__update_drag_point_coord()
-            self.emit_changed()
+            # check left
+            if self.edit_coord_x < self.pixbuf_x:
+                # move the pixbuf into canvas
+                if self.pixbuf_w > self.AREA_WIDTH:
+                    if self.pixbuf_offset_x > 0:
+                        self.pixbuf_offset_x -= self.pixbuf_x - self.edit_coord_x
+                    if self.pixbuf_offset_x < 0:
+                        self.pixbuf_offset_x = 0
+                self.edit_coord_x = self.pixbuf_x
+            # check top
+            if self.edit_coord_y < self.pixbuf_y:
+                # move the pixbuf into canvas
+                if self.pixbuf_h > self.AREA_HEIGHT:
+                    if self.pixbuf_offset_y > 0:
+                        self.pixbuf_offset_y -= self.pixbuf_y - self.edit_coord_y
+                    if self.pixbuf_offset_y < 0:
+                        self.pixbuf_offset_y = 0
+                self.edit_coord_y = self.pixbuf_y
+            # check right
+            if self.edit_coord_x + self.edit_coord_w > right_pos:
+                # move the pixbuf into canvas
+                if self.pixbuf_w > self.AREA_WIDTH:
+                    if self.pixbuf_offset_x + self.AREA_WIDTH < self.pixbuf_w:
+                        self.pixbuf_offset_x += (self.edit_coord_x + self.edit_coord_w) - self.AREA_WIDTH
+                    if self.pixbuf_offset_x + self.AREA_WIDTH > self.pixbuf_w:
+                        self.pixbuf_offset_x = self.pixbuf_w - self.AREA_WIDTH
+                self.edit_coord_x = right_pos - self.edit_coord_w
+            # check bottom
+            if self.edit_coord_y + self.edit_coord_h > bottom_pos:
+                # move the pixbuf into canvas
+                if self.pixbuf_h > self.AREA_HEIGHT:
+                    if self.pixbuf_offset_y + self.AREA_HEIGHT < self.pixbuf_h:
+                        self.pixbuf_offset_y += (self.edit_coord_y + self.edit_coord_h) - self.AREA_HEIGHT
+                    if self.pixbuf_offset_y + self.AREA_HEIGHT > self.pixbuf_h:
+                        self.pixbuf_offset_y = self.pixbuf_h - self.AREA_HEIGHT
+                self.edit_coord_y = bottom_pos - self.edit_coord_h
         elif self.drag_flag:
             drag_offset = max(event.x - self.press_point_coord[0],
                               event.y - self.press_point_coord[1])
             self.edit_coord_h = self.edit_coord_w = self.edit_coord_backup_w + drag_offset
             if self.edit_coord_h < self.MIN_SIZE or self.edit_coord_w < self.MIN_SIZE:
                 self.edit_coord_h = self.edit_coord_w = self.MIN_SIZE
-            if self.edit_coord_x + self.edit_coord_w > self.AREA_WIDTH:
-                self.edit_coord_w = self.edit_coord_h = self.AREA_WIDTH - self.edit_coord_x
-            if self.edit_coord_y + self.edit_coord_h > self.AREA_HEIGHT:
-                self.edit_coord_w = self.edit_coord_h = self.AREA_HEIGHT - self.edit_coord_y
-            self.__update_drag_point_coord()
-            self.emit_changed()
+
+            if self.edit_coord_x + self.edit_coord_w > right_pos:
+                self.edit_coord_h = self.edit_coord_w = right_pos - self.edit_coord_x
+            if self.edit_coord_y + self.edit_coord_h > bottom_pos:
+                self.edit_coord_h = self.edit_coord_w = bottom_pos - self.edit_coord_y
+        self.__update_drag_point_coord()
 
     def __update_drag_point_coord(self):
-        self.drag_point_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
-        self.drag_point_y = self.edit_coord_y + self.edit_coord_h - self.DRAG_WIDTH
+        new_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
+        new_y = self.edit_coord_y + self.edit_coord_h - self.DRAG_WIDTH
+        if self.drag_point_x != new_x or self.drag_point_y != new_y or\
+                self.pixbuf_offset_cmp_x != self.pixbuf_offset_x or\
+                self.pixbuf_offset_cmp_y != self.pixbuf_offset_y:
+            self.drag_point_x = new_x
+            self.drag_point_y = new_y
+            self.pixbuf_offset_cmp_x = self.pixbuf_offset_x
+            self.pixbuf_offset_cmp_y = self.pixbuf_offset_y
+            self.emit_changed()
         self.edit_area.queue_draw()
 
     def __update_position(self, x, y):
@@ -519,19 +657,6 @@ class IconEditArea(gtk.HBox):
             self.position = self.POS_IN_MOVE
         else:
             self.position = self.POS_OUT
-
-    def __on_focus_in_cb(self, widget, event):
-        print "focus in"
-
-    def __on_focus_out_cb(self, widget, event):
-        print "focus out"
-
-    def __on_enter_notify_cb(self, widget, event):
-        print "enter"
-        widget.window.set_cursor(self.cursor_move)
-
-    def __on_leave_notify_cb(self, widget, event):
-        print "leave"
 gobject.type_register(IconEditArea)
 
 
@@ -544,7 +669,7 @@ class IconEditPage(gtk.HBox):
         left_align = gtk.Alignment()
         right_align = gtk.Alignment()
         left_align.set_padding(0, 0, 0, 60)
-        right_align.set_padding(0, 0, 0, 60)
+        #right_align.set_padding(0, 0, 0, 60)
 
         left_vbox = gtk.VBox(False)
         right_vbox = gtk.VBox(False)
@@ -556,7 +681,7 @@ class IconEditPage(gtk.HBox):
 
         self.draw_area = IconEditArea()
         left_vbox.pack_start(tools.make_align(Label(_("截取头像"))), False, False)
-        left_vbox.pack_start(tools.make_align(self.draw_area))
+        left_vbox.pack_start(tools.make_align(self.draw_area, yalign=0.0, width=350, height=300))
 
         self.thumbnail_large = gtk.Image()
         self.thumbnail_mid = gtk.Image()
@@ -569,32 +694,33 @@ class IconEditPage(gtk.HBox):
         right_vbox.pack_start(tools.make_align(self.thumbnail_large), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_mid), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_small), False, False)
-        right_vbox.pack_start(tools.make_align(self.error_label), False, False)
+        right_vbox.pack_start(tools.make_align(self.error_label, yalign=0.0))
 
-        self.pack_start(left_align)
-        self.pack_start(right_align)
-        self.connect("expose-event", self.draw_frame_border)
+        self.pack_start(left_align, False, False)
+        self.pack_start(right_align, False, False)
+        self.connect("expose-event", self.draw_frame_border, left_align, right_align)
         self.draw_area.connect("pixbuf-changed", self.__on_pixbuf_changed_cb)
 
-    def draw_frame_border(self, widget, event):
+    def draw_frame_border(self, widget, event, la, ra):
         cr = widget.window.cairo_create()
         with cairo_disable_antialias(cr):
             cr.set_line_width(1)
             x, y, w, h = self.thumbnail_large.allocation
             cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.rectangle(x, y, w, h)
+            cr.rectangle(x-1, y-1, w+2, h+2)
             cr.stroke()
             x, y, w, h = self.thumbnail_mid.allocation
             cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.rectangle(x, y, w, h)
+            cr.rectangle(x-1, y-1, w+2, h+2)
             cr.stroke()
             x, y, w, h = self.thumbnail_small.allocation
             cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.rectangle(x, y, w, h)
+            cr.rectangle(x-1, y-1, w+2, h+2)
             cr.stroke()
 
     def set_pixbuf(self, pixbuf):
         self.draw_area.set_pixbuf(pixbuf)
+        self.error_label.set_text("")
     
     def refresh(self):
         self.set_pixbuf(None)
@@ -616,13 +742,14 @@ class IconEditPage(gtk.HBox):
             if not filename in histroy_icon.histroy:
                 path = "/var/lib/AccountsService/icons/" + self.account_setting.current_set_user.get_user_name()
                 histroy_icon.histroy.append(path)
-                histroy_icon.set_histroy(self.histroy_icon.histroy)
+                histroy_icon.set_histroy(histroy_icon.histroy)
         except Exception, e:
+            from traceback import print_exc
+            print_exc()
             print e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
-            return
-        # TODO 更新histroy
+                return
         self.account_setting.container_widgets["slider"].slide_to_page(
             self.account_setting.alignment_widgets["main_hbox"], "left")
         self.account_setting.change_crumb(1)
