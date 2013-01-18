@@ -53,8 +53,8 @@ class SessionItem(TreeItem):
 
 
     def set_autorun_state(self, run):
-        #self.item.set_option("X-GNOME-Autostart-enabled", str(run).lower())
-        #self.item.save(self.item.get_file())
+        self.item.set_option("X-GNOME-Autostart-enabled", str(run).lower())
+        self.item.save(self.item.get_file())
         self.autorun = run
         self.redraw()
 

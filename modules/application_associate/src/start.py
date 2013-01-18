@@ -26,7 +26,6 @@ import os
 import ConfigParser
 
 class AppManager(gobject.GObject):
-    """app manager""""
     def __init__(self):
         self.user_config_dir = ""
         self.system_config_dirs = []

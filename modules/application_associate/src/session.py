@@ -10,10 +10,17 @@ import ConfigParser
 import psutil
 
 def get_user_config_dir():
-    return os.path.join(glib.get_user_config_dir(), "autostart")
+    dirs = os.path.join(glib.get_user_config_dir(), "autostart")
+    if not os.path.exists(dirs):
+        os.mkdir(dirs)
+    return dirs
+
 
 def get_system_config_dir():
-    return os.path.join(glib.get_system_config_dirs()[-1], "autostart")
+    dirs = os.path.join(glib.get_system_config_dirs()[-1], "autostart")
+    #if os.path.exists(dirs):
+        #os.mkdir(dirs)
+    return dirs
 
 class AutoStart(object):
     SECTION = "Desktop Entry"
@@ -21,6 +28,7 @@ class AutoStart(object):
     def __init__(self, file_path=None):
         self.dir = get_user_config_dir()
         self.conf = ConfigParser.RawConfigParser()
+        self.conf.optionxform = str
         if file_path != None and os.path.exists(file_path):
             self.file_name = os.path.basename(file_path).split(".")[0]
             self.conf.read(file_path)
@@ -40,7 +48,7 @@ class AutoStart(object):
         return self.conf.options(self.SECTION)
     
     def name(self):
-        name = self.get_option("name")
+        name = self.get_option("Name")
         if name:
             return name
         else:
