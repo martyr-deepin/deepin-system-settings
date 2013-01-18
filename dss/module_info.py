@@ -25,6 +25,7 @@ from dtk.ui.config import Config
 from deepin_utils.file import get_parent_dir
 import gtk
 import os
+from theme import app_theme
 
 MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        
 FIRST_MODULE_NAMES = ["display", "sound", "individuation", "date_time", "power"]
@@ -50,10 +51,23 @@ class ModuleInfo(object):
         '''
         TODO: snyh give standard way to get pixbuf
         '''
-        self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
-            gtk.icon_theme_get_default().lookup_icon("preferences-%s" % self.id, 48, gtk.ICON_LOOKUP_NO_SVG).get_filename())
-        self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(                           
-            gtk.icon_theme_get_default().lookup_icon("preferences-%s" % self.id, 16, gtk.ICON_LOOKUP_NO_SVG).get_filename())
+        icon_theme = gtk.IconTheme()
+        icon_theme.set_custom_theme("Deepin")
+        icon_infos = []
+        if icon_theme:
+            icon_infos = [icon_theme.lookup_icon("preferences-%s" % self.id, 48, gtk.ICON_LOOKUP_NO_SVG), 
+                          icon_theme.lookup_icon("preferences-%s" % self.id, 16, gtk.ICON_LOOKUP_NO_SVG)
+                         ]
+        
+        self.icon_pixbuf = None
+        self.menu_icon_pixbuf = None
+        if icon_infos[0] and icon_infos[1]:
+            self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[0].get_filename())
+            self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[1].get_filename())
+        else:
+            self.icon_pixbuf = app_theme.get_pixbuf("navigate/none-big.png").get_pixbuf()
+            self.menu_icon_pixbuf = app_theme.get_pixbuf("navigate/none-small.png").get_pixbuf()
+            
         self.search_keyword = self.config.get("main", "search_keyword")
         
 def get_module_infos():
