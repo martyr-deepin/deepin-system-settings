@@ -35,6 +35,9 @@ import gtk
 import gobject
 import tools
 import os
+import dbus
+from time import sleep
+from subprocess import Popen
 from tempfile import mkstemp
 from stat import S_IRWXU, S_IRWXG, S_IRWXO
 
@@ -221,7 +224,34 @@ class IconSetPage(gtk.VBox):
         self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Icon"))
 
     def choose_from_screenshot(self):
-        pass
+        cmd = ("/usr/bin/deepin-screenshot", "-d 1")
+        Popen(cmd)
+        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        bus = dbus.SessionBus()
+        DBUS_NAME = "com.deepin.screenshot"
+        OBJECT_PATH = "/com/deepin/screenshot"
+        i = 0
+        while i < 5:
+            try:
+                obj = bus.get_object(DBUS_NAME, OBJECT_PATH)
+                obj.connect_to_signal("finish", self.screenshot_finish, dbus_interface=DBUS_NAME)
+                break
+            except dbus.DBusException, e:
+                print e, i
+                sleep(0.5)
+                i += 1
+
+    def screenshot_finish(self, save_type, file_name):
+        print "finish:", save_type, file_name
+        if save_type == 1:
+            pixbuf = gtk.gdk.pixbuf_new_from_file(file_name)
+        else:
+            clip = gtk.Clipboard()
+            pixbuf = clip.wait_for_image()
+        self.account_setting.container_widgets["icon_edit_page"].set_pixbuf(pixbuf)
+        self.account_setting.alignment_widgets["edit_iconfile"].show_all()
+        self.account_setting.set_to_page(self.account_setting.alignment_widgets["edit_iconfile"], "right")
+        self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Icon"))
 
     def draw_white_background(self, widget, event):
         x, y, w, h = widget.allocation
@@ -409,6 +439,7 @@ class IconEditArea(gtk.HBox):
         self.pixbuf_h = height
         self.pixbuf_x = (self.AREA_WIDTH - width) / 2
         self.pixbuf_y = (self.AREA_HEIGHT - height) / 2
+        # count pixbuf offset
         if self.pixbuf_x < 0:
             self.pixbuf_offset_x -= self.pixbuf_x
             if self.pixbuf_offset_x + self.AREA_WIDTH > self.pixbuf_w:
@@ -419,6 +450,10 @@ class IconEditArea(gtk.HBox):
             if self.pixbuf_offset_y + self.AREA_HEIGHT > self.pixbuf_h:
                 self.pixbuf_offset_y = self.pixbuf_h - self.AREA_HEIGHT
             self.pixbuf_y = 0
+        if self.pixbuf_x + self.pixbuf_w < self.AREA_WIDTH:
+            self.pixbuf_offset_x = 0
+        if self.pixbuf_y + self.pixbuf_h < self.AREA_HEIGHT:
+            self.pixbuf_offset_y = 0
         # count edit area
         if self.edit_coord_x < self.pixbuf_x:
             self.edit_coord_x = self.pixbuf_x
@@ -430,6 +465,8 @@ class IconEditArea(gtk.HBox):
             self.edit_coord_w = self.edit_coord_h = right_pos - self.edit_coord_x
         if self.edit_coord_y + self.edit_coord_h > bottom_pos:
             self.edit_coord_w = self.edit_coord_h = bottom_pos - self.edit_coord_y
+        print "after zoomout:", self.edit_coord_x, self.edit_coord_y, self.edit_coord_w, self.edit_coord_h
+        print "---", self.pixbuf_x, self.pixbuf_y, self.pixbuf_w, self.pixbuf_h, self.pixbuf_offset_x, self.pixbuf_offset_y
         self.__update_drag_point_coord()
 
     def __expose_edit(self, widget, event):
