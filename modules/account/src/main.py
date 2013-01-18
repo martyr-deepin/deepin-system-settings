@@ -920,18 +920,11 @@ class AccountSetting(object):
     def icon_file_press_cb(self, widget, event):
         if not self.current_select_user:
             return
-        #self.current_set_user = self.current_select_user
-        #self.container_widgets["icon_set_page"].refresh()
-        #self.alignment_widgets["set_iconfile"].show_all()
-        #self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
-        #self.module_frame.send_submodule_crumb(2, _("Set Icon"))
-
-        #icon_pixbuf = gtk.gdk.pixbuf_new_from_file("/home/longchang/图片/DeepinScreenshot20130116151538.png")
-        icon_pixbuf = gtk.gdk.pixbuf_new_from_file("/usr/share/pixmaps/faces/baseball.png")
-        self.container_widgets["icon_edit_page"].set_pixbuf(icon_pixbuf)
-        self.alignment_widgets["edit_iconfile"].show_all()
-        self.set_to_page(self.alignment_widgets["edit_iconfile"], "right")
-        self.module_frame.send_submodule_crumb(2, _("Edit Icon"))
+        self.current_set_user = self.current_select_user
+        self.container_widgets["icon_set_page"].refresh()
+        self.alignment_widgets["set_iconfile"].show_all()
+        self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
+        self.module_frame.send_submodule_crumb(2, _("Set Icon"))
 
     def cancel_set_icon(self, button):
         self.set_to_page(self.alignment_widgets["main_hbox"], "left")

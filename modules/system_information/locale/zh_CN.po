@@ -18,8 +18,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/main.py:57
-msgid "Copyright © 2011 - 2013 Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr "Copyright © 2011 - 2013 深之度公司 版权所有"
+msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
+msgstr "深之度公司 版权所有"
 
 #: ../src/main.py:58
 msgid "Version"
