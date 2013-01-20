@@ -632,8 +632,7 @@ class KeySetting(object):
         text = widget.get_text()
         layout = widget.get_layout()
         if text == "" and not widget.is_focus():
-            # TODO
-            layout.set_text(_("测试重复速度"))
+            layout.set_text(_("Test Repeat Interval"))
         elif layout.get_text() != text:
             layout.set_text("")
     
