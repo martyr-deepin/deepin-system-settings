@@ -41,6 +41,7 @@ from deepin_utils.process import run_command
 
 class DisplayManager:
     BIG_NUM = 2147483647
+    SESSION_NAME = "neko"
     
     def __init__(self):
         self.__deepin_xrandr = deepin_xrandr.new()
@@ -473,6 +474,7 @@ class DisplayManager:
         self.__power_settings.set_int("sleep-display-ac", value * 60)
 
     def is_enable_lock_display(self):
+        self.__session_settings.set_string("session-name", self.SESSION_NAME)
         if self.__session_settings.get_uint("idle-delay") < self.BIG_NUM / 60:
             return True
 

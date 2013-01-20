@@ -78,6 +78,8 @@ sudo apt-get install python-dbus
 == Bluetooth module ==
 sudo apt-get install libopenobex1 bluez 
 
+== App-associate module ==
+sudo apt-get install python-psutil
 
 == search page ==
 sudo apt-get install python-xappy, jieba

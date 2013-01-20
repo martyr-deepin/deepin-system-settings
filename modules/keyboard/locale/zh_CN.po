@@ -148,8 +148,8 @@ msgid "Current Layout: %s"
 msgstr "当前布局： %s"
 
 #: ../src/main.py:635
-msgid "测试重复速度"
-msgstr ""
+msgid "Test Repeat Interval"
+msgstr "测试重复速度"
 
 #: ../src/main.py:697
 msgid "Select an input source to add"
