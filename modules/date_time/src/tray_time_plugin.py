@@ -53,6 +53,9 @@ class TrayTimePlugin(object):
     def run(self):
         return True
     
+    def insert(self):
+        return 0
+        
     def id(self):
         return "tray-time-plugin-hailongqiu"
 
