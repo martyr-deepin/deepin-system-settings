@@ -354,8 +354,9 @@ if __name__ == "__main__":
     
     # Append widgets to slider.
     slider.append_page(search_page)
-    slider.append_page(navigate_page)
-    application.window.connect("realize", lambda w: slider.set_to_page(navigate_page))
+    if module_name == "":
+        slider.append_page(navigate_page)
+        application.window.connect("realize", lambda w: slider.set_to_page(navigate_page))
 
     foot_box.hide()
     
@@ -386,5 +387,5 @@ if __name__ == "__main__":
                     reply_handler=handle_dbus_reply, 
                     error_handler=handle_dbus_error
                   )
-
+    
     application.run()
