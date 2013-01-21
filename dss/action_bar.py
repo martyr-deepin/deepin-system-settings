@@ -33,7 +33,7 @@ from dtk.ui.poplist import IconTextItem
 import itertools
 import gtk
 import gobject
-import os
+import locale
 
 class ActionBar(gtk.Alignment):
     '''
@@ -164,7 +164,7 @@ class ModuleMenuItem(IconTextItem):
         init docs
         '''
         name = module_info.name
-        if os.environ['LANGUAGE'].find("zh_") != 0:
+        if locale.getdefaultlocale(['LANG'])[0].find("zh_") != 0:
             name = module_info.default_name
 
         IconTextItem.__init__(

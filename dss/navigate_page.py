@@ -29,6 +29,7 @@ import pango
 import gtk
 import gobject
 import os
+import locale
 
 from theme import app_theme
 
@@ -198,7 +199,7 @@ class IconItem(gobject.GObject):
         # Draw icon name.
         # TODO: lihongwu req to support i18n
         name = self.module_info.name
-        if os.environ['LANGUAGE'].find("zh_") != 0:
+        if locale.getdefaultlocale(['LANG'])[0].find("zh_") != 0:
             name = self.module_info.default_name
         
         draw_text(cr, name, 
