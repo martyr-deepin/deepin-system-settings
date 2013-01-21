@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-18 15:51+0800\n"
+"POT-Creation-Date: 2013-01-21 09:54+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,8 +130,8 @@ msgid "Save"
 msgstr ""
 
 #: ../src/main.py:500 ../src/main.py:525 ../src/main.py:855 ../src/main.py:868
-#: ../src/main.py:889 ../src/set_icon_page.py:192 ../src/set_icon_page.py:216
-#: ../src/set_icon_page.py:733 ../src/set_icon_page.py:751
+#: ../src/main.py:889 ../src/set_icon_page.py:198 ../src/set_icon_page.py:222
+#: ../src/set_icon_page.py:864 ../src/set_icon_page.py:882
 msgid "Error:"
 msgstr ""
 
@@ -140,15 +140,15 @@ msgstr ""
 msgid "Do you want to keep <u>%s</u>'s files?"
 msgstr ""
 
-#: ../src/main.py:567 ../src/main.py:959
+#: ../src/main.py:567 ../src/main.py:960
 msgid "Account disabled"
 msgstr ""
 
-#: ../src/main.py:569 ../src/main.py:961
+#: ../src/main.py:569 ../src/main.py:962
 msgid "To be set at next login"
 msgstr ""
 
-#: ../src/main.py:571 ../src/main.py:963
+#: ../src/main.py:571 ../src/main.py:964
 msgid "None"
 msgstr ""
 
@@ -208,40 +208,45 @@ msgstr ""
 msgid "两次输入的密码不一致"
 msgstr ""
 
-#: ../src/set_icon_page.py:90
+#: ../src/set_icon_page.py:94
 msgid "从本地文件"
 msgstr ""
 
-#: ../src/set_icon_page.py:90
+#: ../src/set_icon_page.py:95
 msgid "使用深度截图"
 msgstr ""
 
-#: ../src/set_icon_page.py:109
+#: ../src/set_icon_page.py:96
+msgid "使用摄像头"
+msgstr ""
+
+#: ../src/set_icon_page.py:115
 msgid "选择用户头像"
 msgstr ""
 
-#: ../src/set_icon_page.py:113
+#: ../src/set_icon_page.py:119
 msgid "历史使用头像"
 msgstr ""
 
-#: ../src/set_icon_page.py:147
+#: ../src/set_icon_page.py:153
 #, python-format
 msgid "Set <u>%s</u>'s icon"
 msgstr ""
 
-#: ../src/set_icon_page.py:221
+#: ../src/set_icon_page.py:227 ../src/set_icon_page.py:257
+#: ../src/set_icon_page.py:263
 msgid "Edit Icon"
 msgstr ""
 
-#: ../src/set_icon_page.py:683
+#: ../src/set_icon_page.py:807
 msgid "截取头像"
 msgstr ""
 
-#: ../src/set_icon_page.py:693
+#: ../src/set_icon_page.py:817
 msgid "头像预览"
 msgstr ""
 
-#: ../src/set_icon_page.py:733
+#: ../src/set_icon_page.py:864
 msgid "头像为空"
 msgstr ""
 

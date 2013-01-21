@@ -927,6 +927,7 @@ class AccountSetting(object):
         self.module_frame.send_submodule_crumb(2, _("Set Icon"))
 
     def cancel_set_icon(self, button):
+        self.container_widgets["icon_edit_page"].stop_camera()
         self.set_to_page(self.alignment_widgets["main_hbox"], "left")
         self.change_crumb(1)
     ## << set icon ##

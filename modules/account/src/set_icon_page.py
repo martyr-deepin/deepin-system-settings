@@ -303,6 +303,7 @@ class IconEditArea(gtk.HBox):
 
         self.edit_area = gtk.EventBox()
         self.camera_area = Webcam()
+        self.camera_area_init_flag = False
         self.button_vbox = gtk.VBox(False)
 
         self.edit_area.set_size_request(self.AREA_WIDTH, self.AREA_HEIGHT)
@@ -423,6 +424,8 @@ class IconEditArea(gtk.HBox):
         self.set_edit_mode(pixbuf)
 
     def on_zoom_in_clicked_cb(self, button):
+        if self.current_mode != self.MODE_EDIT:
+            return
         if self.pixbuf_w >= self.origin_pixbuf_width or self.pixbuf_h >= self.origin_pixbuf_height:
             print "has max size"
             return
@@ -451,6 +454,8 @@ class IconEditArea(gtk.HBox):
         self.__update_drag_point_coord()
 
     def on_zoom_out_clicked_cb(self, button):
+        if self.current_mode != self.MODE_EDIT:
+            return
         if self.pixbuf_w <= self.MIN_SIZE or self.pixbuf_h <= self.MIN_SIZE:
             print "has min size"
             return
@@ -738,12 +743,14 @@ class IconEditArea(gtk.HBox):
         #self.button_camera.set_sensitive(True)
         #self.button_cut.set_sensitive(True)
         #self.button_undo.set_sensitive(True)
-        self.camera_area.create_video_pipeline()
-        try:
-            self.camera_area.set_playing()
-        except Exception, e:
-            print e
-            pass
+        if not self.camera_area_init_flag:
+            self.camera_area_init_flag = True
+            try:
+                self.camera_area.create_video_pipeline()
+            except Exception, e:
+                print e
+        else:
+            self.camera_start()
 
     def set_edit_mode(self, pixbuf):
         self.current_mode = self.MODE_EDIT
@@ -759,6 +766,16 @@ class IconEditArea(gtk.HBox):
         #self.button_camera.set_sensitive(False)
         #self.button_cut.set_sensitive(False)
         #self.button_undo.set_sensitive(True)
+        self.camera_pause()
+
+    def camera_start(self):
+        try:
+            self.camera_area.set_playing()
+        except Exception, e:
+            print e
+            pass
+
+    def camera_pause(self):
         try:
             self.camera_area.set_paused()
         except Exception, e:
@@ -837,6 +854,9 @@ class IconEditPage(gtk.HBox):
         self.error_label.set_text("")
         self.draw_area.set_camera_mode()
 
+    def stop_camera(self):
+        self.draw_area.camera_pause()
+
     def save_edit_icon(self):
         pixbuf = self.thumbnail_large.get_pixbuf()
         if not pixbuf:
@@ -861,6 +881,7 @@ class IconEditPage(gtk.HBox):
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
                 return
+        self.stop_camera()
         self.account_setting.container_widgets["slider"].slide_to_page(
             self.account_setting.alignment_widgets["main_hbox"], "left")
         self.account_setting.change_crumb(1)
@@ -877,7 +898,9 @@ class IconEditPage(gtk.HBox):
             self.thumbnail_large.set_from_pixbuf(None)
             self.thumbnail_mid.set_from_pixbuf(None)
             self.thumbnail_small.set_from_pixbuf(None)
-        if not self.account_setting.button_widgets["save_edit_icon"].get_sensitive():
+        if pixbuf:
             self.account_setting.button_widgets["save_edit_icon"].set_sensitive(True)
+        else:
+            self.account_setting.button_widgets["save_edit_icon"].set_sensitive(False)
 
 gobject.type_register(IconEditPage)
