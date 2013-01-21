@@ -164,7 +164,10 @@ class ModuleMenuItem(IconTextItem):
         init docs
         '''
         name = module_info.name
-        if locale.getdefaultlocale(['LANG'])[0].find("zh_") != 0:
+        if len(locale.getdefaultlocale()):
+            if locale.getdefaultlocale()[0].find("zh_") != 0:
+                name = module_info.default_name
+        else:
             name = module_info.default_name
 
         IconTextItem.__init__(

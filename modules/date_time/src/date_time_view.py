@@ -169,7 +169,10 @@ class DatetimeView(gtk.HBox):
         self.calendar_align = self.__setup_align(padding_top = BETWEEN_SPACING, 
             padding_bottom = 10)
         self.calendar = deepin_lunar.new()
-        if locale.getdefaultlocale(['LANG'])[0].find("zh_") != 0:
+        if len(locale.getdefaultlocale()):
+            if locale.getdefaultlocale()[0].find("zh_") != 0:
+                self.calendar = dltk_calendar.new()
+        else:
             self.calendar = dltk_calendar.new()
         self.calendar.mark_day(time.localtime().tm_mday)
         self.calendar.get_handle().set_size_request(300, 280)
