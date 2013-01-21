@@ -23,7 +23,12 @@
 
 from tray_time import TrayTime, TRAY_TIME_12_HOUR, TRAY_TIME_24_HOUR
 from tray_time import TRAY_TIME_CN_TYPE, TRAY_TIME_EN_TYPE
-
+from dtk.ui.utils import set_clickable_cursor
+from deepin_utils.process import run_command
+from dtk.ui.label import Label
+from nls import _
+import deepin_lunar
+import gtk
 
 class TrayTimePlugin(object):
     def __init__(self):
@@ -45,7 +50,7 @@ class TrayTimePlugin(object):
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
-        self.this.set_size_request(300, 300)
+        self.this.set_size_request(300, 324)
         self.tray_icon = self.this_list[1]
         self.tray_icon.set_icon_theme("tray_time_icon")
         self.tray_icon.set_text("12:12:12")
@@ -59,9 +64,40 @@ class TrayTimePlugin(object):
     def id(self):
         return "tray-time-plugin-hailongqiu"
 
+    def __setup_align(self,                                                        
+                      xalign=0,                                                    
+                      yalign=0,                                                    
+                      xscale=0,                                                    
+                      yscale=0,                                                    
+                      padding_top=0,                                               
+                      padding_bottom=0,                                            
+                      padding_left=0,                                              
+                      padding_right=0):                                            
+        align = gtk.Alignment()                                                    
+        align.set(xalign, yalign, xscale, yscale)                                  
+        align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
+        return align   
+
+    def __on_label_press(self, widget, event):
+        self.this.hide_menu()
+        run_command("deepin-system-settings date_time")
+
     def plugin_widget(self):
-        import deepin_lunar 
-        return deepin_lunar.new().get_handle()
+        align = self.__setup_align()
+        box = gtk.VBox(spacing = 5)
+        calendar_align = self.__setup_align()
+        calendar = deepin_lunar.new()
+        calendar.get_handle().set_size_request(300, 270)
+        calendar_align.add(calendar.get_handle())
+        label_align = self.__setup_align()
+        label = Label(_("Change DateTime settings"))
+        set_clickable_cursor(label)
+        label_align.add(label)
+        label.connect("button-press-event", self.__on_label_press)
+        box.pack_start(calendar_align, False, False)
+        box.pack_start(label_align, False, False)
+        align.add(box)
+        return align
 
     def show_menu(self):
         print "menu show...."
