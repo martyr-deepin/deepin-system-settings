@@ -29,7 +29,7 @@ class SoundTray(object):
         super(SoundTray, self).__init__()
         self.widget = TrayGui()
         self.WIN_WIDTH = 240
-        self.WIN_HEIGHT = 200
+        self.WIN_HEIGHT = 150
 
     def init_values(self, value_list):
         self.this_list = value_list
