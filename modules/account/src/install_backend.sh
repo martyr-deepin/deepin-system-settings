@@ -8,5 +8,5 @@ echo "Copy .policy file to /usr/share/polkit-1/actions/"
 cp com.deepin.passwdservice.conf /etc/dbus-1/system.d/
 echo "Copy .conf file to /etc/dbus-1/system.d/"
 
-cp passwdservice.py /usr/lib/passwdservice.py
+cp passwdservice.py /usr/lib/
 echo "cp passwdservice.py"

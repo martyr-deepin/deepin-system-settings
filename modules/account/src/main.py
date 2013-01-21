@@ -367,6 +367,7 @@ class AccountSetting(object):
         if not self.permission.get_can_acquire() and not self.permission.get_can_release():
             #self.button_widgets["lock"].set_sensitive(False)
             self.button_widgets["lock"].set_no_show_all(True)
+        self.button_widgets["lock"].set_no_show_all(True)
         self.set_widget_state_with_author()
         ###########################
         # delete account page
@@ -398,7 +399,7 @@ class AccountSetting(object):
         self.button_widgets["keep_button"].connect("clicked", self.del_delete_user_file_cd, False)
         self.button_widgets["cancel_button"].connect("clicked", self.del_cancel_delete_cb)
 
-        self.button_widgets["account_type"].connect("item-selected", self.account_type_item_selected)
+        self.button_widgets["account_type"].connect_after("item-selected", self.account_type_item_selected)
 
         self.button_widgets["lock"].connect("expose-event", self.lock_button_expose)
         self.button_widgets["lock"].connect("clicked", self.lock_button_clicked)
