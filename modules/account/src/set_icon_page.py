@@ -743,14 +743,10 @@ class IconEditArea(gtk.HBox):
         #self.button_camera.set_sensitive(True)
         #self.button_cut.set_sensitive(True)
         #self.button_undo.set_sensitive(True)
-        if not self.camera_area_init_flag:
-            self.camera_area_init_flag = True
-            try:
-                self.camera_area.create_video_pipeline()
-            except Exception, e:
-                print e
-        else:
-            self.camera_start()
+        try:
+            self.camera_area.create_video_pipeline()
+        except Exception, e:
+            print e
 
     def set_edit_mode(self, pixbuf):
         self.current_mode = self.MODE_EDIT

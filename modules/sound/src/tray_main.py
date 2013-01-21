@@ -20,25 +20,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
-from dtk.ui.utils import get_parent_dir 
-sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-from theme import app_theme
-
-from dtk.ui.line import HSeparator
-from dtk.ui.button import OffButton
-from dtk.ui.trayicon import TrayIcon
-from dtk.ui.label import Label
-from dtk.ui.box import ImageBox
-from dtk.ui.mask import draw_mask
-from dtk.ui.scrolled_window  import ScrolledWindow
+from tray_sound_gui import TrayGui
 import gtk
-import subprocess
 
-class SoundTray(TrayIcon):
-    ''' '''
-    def __init__(self, witdh=230):
-        super(SoundTray, self).__init__()
-        self.set_size_request(width, -1)        
-        
+if __name__ == '__main__':
+    win = gtk.Window()
+    win.set_size_request(210, 200)
+    win.connect("destroy", gtk.main_quit)
+    tray = TrayGui()
+
+    win.add(tray)
+    win.show_all()
+    gtk.main()

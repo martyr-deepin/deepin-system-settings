@@ -31,7 +31,7 @@ from deepin_utils.ipc import is_dbus_name_exists
 from dbus.mainloop.glib import DBusGMainLoop
 import dbus
 import dbus.service
-import os
+import locale
 
 class ModuleService(dbus.service.Object):
     def __init__(self, 
@@ -144,7 +144,10 @@ class ModuleFrame(gtk.Plug):
         
     def send_module_info(self):
         name = self.module_config.get("name", "zh_CN")
-        if os.environ['LANGUAGE'].find("zh_") != 0:
+        if len(locale.getdefaultlocale()):
+            if locale.getdefaultlocale()[0].find("zh_") != 0:
+                name = self.module_config.get("name", "default")
+        else:
             name = self.module_config.get("name", "default")
 
         self.send_message("send_module_info", 
