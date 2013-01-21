@@ -29,6 +29,8 @@ from ui.theme_item import ThemeItem
 from helper import event_manager
 from theme_manager import theme_manager
 
+from common import threaded
+
 class UserThemeView(IconView):
     
     def __init__(self, padding_x=20, padding_y=0):
@@ -43,6 +45,7 @@ class UserThemeView(IconView):
         self.__init_themes()
         
         
+    @threaded
     def __init_themes(self):    
         user_themes = theme_manager.get_user_themes()
         if user_themes:
