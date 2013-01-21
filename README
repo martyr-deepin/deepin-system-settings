@@ -11,6 +11,9 @@ sudo apt-get install libpolkit-gobject-1-dev
 cd modules/account/src/
 sudo python setup.py install
 
+cd modules/account/src/
+sudo install_backend.sh
+
 python-pexpect
 sudo apt-get install python-pexpect
 

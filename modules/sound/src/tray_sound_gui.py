@@ -35,6 +35,7 @@ from nls import _
 from constant import *
 
 import gtk
+import gobject
 
 class TrayGui(gtk.VBox):
     '''sound tray gui'''
@@ -43,38 +44,43 @@ class TrayGui(gtk.VBox):
 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
-        hseparator = HSeparator([(0, ("#FFFFFF", 1.0), (1, ("#FFFFFF", 1.0)))], 0, 0)
-        hseparator.set_size_request(150, 10)
+        separator_color = [(0, ("#777777", 0.8)), (0.5, ("#777777", 0.8)), (1, ("#777777", 0.8))]
+        hseparator = HSeparator(separator_color, 0, 0)
+        #hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(150, 3)
         hbox.pack_start(self.__make_align(Label(_("Device"))), False, False)
-        hbox.pack_start(self.__make_align(hseparator), False, False)
+        hbox.pack_start(self.__make_align(hseparator), True, True)
         self.pack_start(hbox, False, False)
 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/speaker-3.png"))
-        speaker_scale = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
+        speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
+        speaker_scale.set_size_request(150, 10)
         speaker_mute_button = OffButton()
         hbox.pack_start(self.__make_align(speaker_img), False, False)
-        hbox.pack_start(self.__make_align(speaker_scale))
+        hbox.pack_start(self.__make_align(speaker_scale, yalign=0.5, yscale=0.0, height=30))
         hbox.pack_start(self.__make_align(speaker_mute_button), False, False)
         self.pack_start(hbox, False, False)
 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/microphone.png"))
-        microphone_scale = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
+        microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
+        microphone_scale.set_size_request(150, 10)
         microphone_mute_button = OffButton()
         hbox.pack_start(self.__make_align(microphone_img), False, False)
-        hbox.pack_start(self.__make_align(microphone_scale))
+        hbox.pack_start(self.__make_align(microphone_scale, yalign=0.5, yscale=0.0, height=30))
         hbox.pack_start(self.__make_align(microphone_mute_button), False, False)
         self.pack_start(hbox, False, False)
 
-        self.pack_start(self.__make_align(HSeparator([(0, ("#FFFFFF", 1.0), (1, ("#FFFFFF", 1.0)))], 0, 0)), False, False)
-        self.pack_start(self.__make_align(Label(_("更多高级选项..."))), False, False)
+        hseparator = HSeparator(separator_color, 0, 0)
+        hseparator.set_size_request(150, 3)
+        self.pack_start(hseparator, False, False)
+        button_more = Label(_("更多高级选项..."))
+        self.pack_start(self.__make_align(button_more), False, False)
 
-        self.set_size_request(240, 150)
-        
-    def __make_align(self, widget=None, xalign=1.0, yalign=0.5, xscale=0.0,
+    def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
                      padding_right=0, height=CONTAINNER_HEIGHT):
         align = gtk.Alignment()
@@ -84,3 +90,4 @@ class TrayGui(gtk.VBox):
         if widget:
             align.add(widget)
         return align
+gobject.type_register(TrayGui)
