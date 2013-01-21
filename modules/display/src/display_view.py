@@ -590,8 +590,10 @@ class DisplayView(gtk.VBox):
 
         if object == "auto_lock_toggle":
             if not widget.get_active():
+                self.lock_display_combo.set_sensitive(False)
                 self.__send_message("status", ("display", _("Changed to manual lock")))
             else:
+                self.lock_display_combo.set_sensitive(True)
                 self.__send_message("status", ("display", _("Changed to automatic lock")))
             return
 

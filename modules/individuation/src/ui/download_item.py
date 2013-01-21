@@ -87,10 +87,10 @@ class TaskItem(TreeItem):
         self.block_width = 50
         self.download_task = TaskObject(image_object.big_url, image_object.get_save_path(), output_temp=True)
         
-        self.download_task.signal.add_callback("update", self.download_update)
-        self.download_task.signal.add_callback("finish", self.download_finish)
-        self.download_task.signal.add_callback("error",  self.download_failed)
-        self.download_task.signal.add_callback("start",  self.download_start)
+        self.download_task.connect("update", self.download_update)
+        self.download_task.connect("finish", self.download_finish)
+        self.download_task.connect("error",  self.download_failed)
+        self.download_task.connect("start",  self.download_start)
         
         self.finish_callback = finish_callback
         
@@ -241,7 +241,7 @@ class TaskItem(TreeItem):
         pass        
     
     @post_gui        
-    def download_update(self, name, obj, data):
+    def download_update(self, obj, data):
         self.progress_buffer.progress = data.progress
         speed = parse_bytes(data.speed)
         remaining = parse_time(data.remaining)
@@ -251,7 +251,7 @@ class TaskItem(TreeItem):
         self.emit_request_redraw()
 
     @post_gui        
-    def download_finish(self, name, obj, data):
+    def download_finish(self, obj, data):
         self.progress_buffer.progress = 100
         self.status_text = "下载完成"
         self.emit_request_redraw()
@@ -260,12 +260,12 @@ class TaskItem(TreeItem):
             self.finish_callback(self)
             
     @post_gui        
-    def download_failed(self, name, obj, data):
+    def download_failed(self, obj, data):
         self.status_text = data
         self.emit_request_redraw()
         
     @post_gui    
-    def download_start(self, name, obj, data):
+    def download_start(self, obj, data):
         self.status_text = "开始下载"
         self.emit_request_redraw()
 
