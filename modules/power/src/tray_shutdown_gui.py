@@ -21,7 +21,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import pango
+
 from tray_shutdown_dbus import CmdDbus
+from vtk.button import SelectButton
 
 class Gui(gtk.VBox):
     def __init__(self):
@@ -38,65 +41,21 @@ class Gui(gtk.VBox):
         self.suspend_btn = SelectButton("挂起")
         self.logout_btn = SelectButton("注销")
         #
-        self.pack_start(self.stop_btn, False, False)
-        self.pack_start(self.restart_btn, False, False)
-        self.pack_start(self.suspend_btn, False, False)
-        self.pack_start(self.logout_btn, False, False)
-
-# call trayicon vtk api.
-from vtk.draw import draw_text
-from vtk.utils import get_text_size
-from vtk.color import color_hex_to_cairo
-
-class SelectButton(gtk.Button):        
-    def __init__(self, 
-                 text="", 
-                 bg_color="#ebf4fd",
-                 line_color="#7da2ce"):
-        gtk.Button.__init__(self)
-        # init values.
-        self.text = text
-        self.bg_color = bg_color
-        self.line_color = line_color
-        self.draw_check = False
-        width, height = get_text_size(self.text)
-        print "size", width, height
-        self.set_size_request(width + 8, height + 8)        
-        # init events.
-        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
-        self.connect("button-press-event", self.select_button_button_press_event)
-        self.connect("button-release-event", self.select_button_button_release_event)
-        self.connect("expose-event", self.select_button_expose_event)        
-
-    def select_button_button_press_event(self, widget, event):
-        widget.grab_add()
-
-    def select_button_button_release_event(self, widget, event):
-        widget.grab_remove()
-        
-    def select_button_expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        # 
-        if widget.state == gtk.STATE_PRELIGHT:
-            print "select_button_expose_event........"
-            # draw rectangle.
-            cr.set_source_rgb(*color_hex_to_cairo(self.bg_color))
-            cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-            cr.fill()
-            cr.set_line_width(1)
-            cr.set_source_rgb(*color_hex_to_cairo(self.line_color))
-            cr.rectangle(rect.x + 2,
-                         rect.y + 2, 
-                         rect.width - 4, 
-                         rect.height - 4)
-            cr.stroke()            
-        # draw text.
-        draw_text(cr, self.text,
-                  rect.x + 5,
-                  rect.y + rect.height/2 - get_text_size(self.text)[1]/2,
-                  text_size=8, 
-                  text_color="#000000")        
-        return True
+        self.stop_btn.set_size_request(120, 25)
+        self.restart_btn.set_size_request(120, 25)
+        self.suspend_btn.set_size_request(120, 25)
+        self.logout_btn.set_size_request(120, 25)
+        #
+        self.pack_start(self.stop_btn, True, True)
+        self.pack_start(self.restart_btn, True, True)
+        self.pack_start(self.suspend_btn, True, True)
+        self.pack_start(self.logout_btn, True, True)
 
 
+
+
+if __name__ == "__main__":
+    win = gtk.Window(gtk.TOPLEVEL_WINDOW)
+    win.add(SelectButton("策划"))
+    win.show_all()
+    gtk.main()
