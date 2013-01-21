@@ -26,7 +26,11 @@ from dtk.ui.label import Label
 import gtk
 
 from ui.theme_view import UserThemeView, SystemThemeView
+from ui.utils import get_separator
 
+from constant import TITLE_FONT_SIZE
+
+from theme import app_theme
 
 class ThemePage(ScrolledWindow):
     '''
@@ -43,30 +47,33 @@ class ThemePage(ScrolledWindow):
         self.label_padding_y = 10
         
         self.theme_box = gtk.VBox()
-        self.user_theme_label = Label("我的主题")
-        self.user_theme_align = gtk.Alignment()
-        self.user_theme_align.set(0.0, 0.5, 0, 0)
-        self.user_theme_align.set_padding(self.label_padding_y, self.label_padding_y, self.label_padding_x, 0)
+        self.user_theme_label = Label("我的主题", text_size=TITLE_FONT_SIZE, 
+                                      text_color=app_theme.get_color("globalTitleForeground"))
         self.user_theme_view = UserThemeView()
         self.user_theme_scrolledwindow = self.user_theme_view.get_scrolled_window()
         
-        self.system_theme_label = Label("系统主题")
-        self.system_theme_align = gtk.Alignment()
-        self.system_theme_align.set(0.0, 0.5, 0, 0)
-        self.system_theme_align.set_padding(self.label_padding_y, self.label_padding_y, self.label_padding_x, 0)
+        self.system_theme_label = Label("系统主题", text_size=TITLE_FONT_SIZE, 
+                                      text_color=app_theme.get_color("globalTitleForeground"))
         self.system_theme_view = SystemThemeView()
         self.system_theme_scrolledwindow = self.system_theme_view.get_scrolled_window()
         
-        self.user_theme_align.add(self.user_theme_label)
-        self.theme_box.pack_start(self.user_theme_align, False, False)
+        self.theme_box.pack_start(self.user_theme_label, False, False)
+        self.theme_box.pack_start(get_separator(), False, False)
         self.theme_box.pack_start(self.user_theme_scrolledwindow, False, False)
-        self.system_theme_align.add(self.system_theme_label)
-        self.theme_box.pack_start(self.system_theme_align, False, False)
-        self.theme_box.pack_start(self.system_theme_scrolledwindow, True, True)
-        self.add_child(self.theme_box)
         
-        self.user_theme_align.connect("expose-event", self.expose_label_align)
-        self.system_theme_align.connect("expose-event", self.expose_label_align)
+        self.theme_box.pack_start(self.system_theme_label, False, False)
+        self.theme_box.pack_start(get_separator(), False, False)
+        self.theme_box.pack_start(self.system_theme_scrolledwindow, True, True)
+        
+        main_align = gtk.Alignment()
+        main_align.set_padding(15, 0, 20, 20)
+        main_align.set(1, 1, 1, 1)
+        main_align.add(self.theme_box)
+        
+        self.add_child(main_align)
+        
+        # self.user_theme_align.connect("expose-event", self.expose_label_align)
+        # self.system_theme_align.connect("expose-event", self.expose_label_align)
         
     def expose_label_align(self, widget, event):
         cr = widget.window.cairo_create()

@@ -24,16 +24,17 @@ from theme import app_theme
 import gtk
 import gobject
 
-from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.tab_window import TabBox
 from dtk.ui.label import Label
 from dtk.ui.button import Button, CheckButton
-from dtk.ui.combo import ComboBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.constant import ALIGN_END
 
 from ui.wallpaper_item import ITEM_PADDING_Y
 from ui.wallpaper_view import WallpaperView
+from ui.utils import get_toggle_group, get_combo_group
+
+from constant import STATUS_HEIGHT
 
 TIME_COMBO_ITEM =  [
     ("10秒", 10), ("30秒", 30), 
@@ -65,41 +66,34 @@ class DetailPage(TabBox):
         self.wallpaper_box = gtk.VBox()
         self.window_theme_box = gtk.VBox()
         self.wallpaper_view = WallpaperView(padding_x=30, padding_y=ITEM_PADDING_Y)
-        self.wallpaper_view_sw = ScrolledWindow()
+        self.wallpaper_view_sw = self.wallpaper_view.get_scrolled_window()
+
+        position_group, self.position_combobox = get_combo_group("图片位置",
+                                                                      DRAW_COMBO_ITEM,
+                                                                      self.on_position_combox_selected)
+        time_group, self.time_combobox = get_combo_group("图片时间间隔", 
+                                                              TIME_COMBO_ITEM,
+                                                              self.on_time_combox_selected)
         
-        self.action_bar = gtk.HBox()
-        self.position_label = Label("图片位置")
-        self.position_combobox = ComboBox(DRAW_COMBO_ITEM)
-        self.position_combobox.connect("item-selected", self.on_position_combox_selected)
-        
-        self.time_label = Label("图片时间间隔")
-        self.time_combobox = ComboBox(TIME_COMBO_ITEM)
-        self.time_combobox.connect("item-selected", self.on_time_combox_selected)
-        
-        self.unorder_play = CheckButton("随机播放")
-        self.unselect_all = Button("全不选")
-        self.select_all = Button("全选")
-        self.select_all.connect("clicked", self.__select_all_clicked)
-        
+        self.unorder_play = get_toggle_group("随机播放")
         self.delete_button = Button("删除")
-        self.delete_align = gtk.Alignment()
-        self.delete_align.set(1.0, 0.5, 0, 0)
                 
         self.add_items([("桌面壁纸", self.wallpaper_box),
                         ("窗口设置", self.window_theme_box)])
         
-        self.wallpaper_view_sw.add_child(self.wallpaper_view)
-        self.delete_align.add(self.delete_button)
-        self.action_bar.pack_start(self.position_label, False, False, 4)
-        self.action_bar.pack_start(self.position_combobox, False, False, 4)
-        self.action_bar.pack_start(self.time_label, False, False, 4)
-        self.action_bar.pack_start(self.time_combobox, False, False, 4)
-        self.action_bar.pack_start(self.unorder_play, False, False, 4)
-        self.action_bar.pack_start(self.unselect_all, False, False, 4)
-        self.action_bar.pack_start(self.select_all, False, False, 4)
+
+        self.action_bar = gtk.HBox(5)        
+        self.action_bar.pack_start(position_group, False, False)
+        self.action_bar.pack_start(time_group, False, False)
+        self.action_bar.pack_start(self.unorder_play, False, False)
+        self.action_bar.pack_end(self.delete_button, False, False)
+        action_bar_align = gtk.Alignment()
+        action_bar_align.set_size_request(-1, STATUS_HEIGHT)
+        action_bar_align.set_padding(5, 5, 15, 50)
+        action_bar_align.add(self.action_bar)
+        
         self.wallpaper_box.pack_start(self.wallpaper_view_sw, True, True)
-        self.wallpaper_box.pack_start(self.action_bar, False, False)
-        self.wallpaper_box.pack_start(self.delete_align, False, False)
+        self.wallpaper_box.pack_start(action_bar_align, False, False)
 
         '''
         Window Effect
@@ -133,6 +127,8 @@ class DetailPage(TabBox):
         self.window_theme_box.pack_start(self.window_effect_align, False, False)
         self.window_theme_box.pack_start(self.color_deepth_align, False, False)
         
+        
+        
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
         cr.set_source_rgb(1, 1, 1)    
@@ -147,24 +143,6 @@ class DetailPage(TabBox):
         self.theme.set_background_duration(data)
         self.theme.save()
         
-    '''
-    TODO: It might need to add select all UE
-    '''
-    def __select_all_clicked(self, widget):
-        picture_uris = ""
-        i = 0
-
-        for item in self.wallpaper_view.items:
-            if not hasattr(item, "path"):
-                continue
-            if not i == 0:
-                picture_uris += ";"
-            picture_uris += "file://" + item.path
-            i += 1
-
-        if picture_uris == "":
-            return
-
 
     def set_theme(self, theme):
         self.theme = theme
