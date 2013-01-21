@@ -155,7 +155,7 @@ class VPNSetting(gtk.Alignment):
         
     def save_changes(self, widget):
         print "saving"
-        if widget.label == "save":
+        if widget.label == _("save"):
             connection = self.ipv4.connection
             if isinstance(connection, NMRemoteConnection):
                 connection.update()
@@ -461,6 +461,11 @@ class PPTPConf(gtk.VBox):
         if widget.get_active():
             self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
             self.service_type = service_type
+
+        if self.connection.check_setting_finish():
+            self.set_button("save", True)
+        else:
+            self.set_button("save", False)
             self.refresh()
 
     def advanced_button_click(self, widget):
@@ -612,9 +617,9 @@ class PPPConf(ScrolledWindow):
         self.noaccomp.connect("toggled", self.check_button_cb, "noaccomp")
 
         self.ip_sec_enable.connect("toggled", self.enable_ipsec_cb)
-        self.group_name.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-group-name")
-        self.gateway_id.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-gataway-id")
-        self.pre_shared_key.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-psk")
+        #self.group_name.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-group-name")
+        #self.gateway_id.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-gataway-id")
+        #self.pre_shared_key.entry.connect("focus-out-event", self.entry_focus_out_cb, "ipsec-psk")
         self.group_name.entry.connect("changed", self.entry_changed_cb, "ipsec-group-name")
         self.gateway_id.entry.connect("changed", self.entry_changed_cb, "ipsec-gateway-id")
         self.pre_shared_key.entry.connect("changed", self.entry_changed_cb, "ipsec-psk")
@@ -710,6 +715,13 @@ class PPPConf(ScrolledWindow):
             if ipsec_enabled:
                 self.ip_sec_enable.set_active(True)
 
+                ipsec_group_name = self.vpn_setting.get_data_item("ipsec-group-name")
+                ipsec_gateway_id = self.vpn_setting.get_data_item("ipsec-gateway-id")
+                ipsec_psk = self.vpn_setting.get_data_item("ipsec-psk")
+                self.group_name.set_text(ipsec_group_name)
+                self.gateway_id.set_text(ipsec_gateway_id)
+                self.pre_shared_key.set_text(ipsec_psk)
+
             else:
                 self.ip_sec_enable.set_active(False)
 
@@ -734,7 +746,8 @@ class PPPConf(ScrolledWindow):
             ipsec_group_name = self.vpn_setting.get_data_item("ipsec-group-name")
             ipsec_gateway_id = self.vpn_setting.get_data_item("ipsec-gateway-id")
             ipsec_psk = self.vpn_setting.get_data_item("ipsec-psk")
-
+            
+            print ipsec_group_name
             self.group_name.set_text(ipsec_group_name)
             self.gateway_id.set_text(ipsec_gateway_id)
             self.pre_shared_key.set_text(ipsec_psk)
@@ -760,6 +773,8 @@ class PPPConf(ScrolledWindow):
         if string == "":
             print key,"entry is empty"
             self.vpn_setting.delete_data_item(key)
+        else:
+            self.vpn_setting.set_data_item(key, string)
 
     def check_button_cb(self, widget, key):
         auth_lock = self.auth_lock()

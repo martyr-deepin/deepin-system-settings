@@ -569,7 +569,7 @@ class VpnSection(gtk.VBox):
 
     def vpn_connected(self, widget, connection_name):
         print "vpn connected"
-        self.item.change_state(2)
+        self.item.set_net_state(2)
         #self.sidebar.set_active()
 
     def vpn_connecting(self, widget, connection_name):
