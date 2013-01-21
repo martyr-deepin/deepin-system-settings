@@ -36,6 +36,9 @@ class SoundTray(object):
     def id(self):
         return "sound-tray"
 
+    def insert(self):
+        return 3
+
     def plugin_widget(self):
         return self.widget
 

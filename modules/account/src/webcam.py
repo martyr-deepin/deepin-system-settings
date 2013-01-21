@@ -34,17 +34,19 @@ class Webcam(gtk.DrawingArea):
         self.video_player = gst.parse_launch(self.pipestr)
         self.video_player.set_state(gst.STATE_PLAYING)
         
-        bus = self.video_player.get_bus()
-        bus.add_signal_watch()
-        bus.enable_sync_message_emission()
-        bus.connect("message", self.__on_bus_message)
-        bus.connect("sync-message::element", self.__on_bus_sync_message)        
+        self.__video_bus = self.video_player.get_bus()
+        self.__video_bus.add_signal_watch()
+        self.__video_bus.enable_sync_message_emission()
+        self.__video_bus.connect("message", self.__on_bus_message)
+        self.__video_bus.connect("sync-message::element", self.__on_bus_sync_message)        
 
     def set_playing(self):
         self.video_player.set_state(gst.STATE_PLAYING)
+        self.__video_bus.add_signal_watch()
 
     def set_paused(self):
-        self.video_player.set_state(gst.STATE_PAUSED)
+        self.video_player.set_state(gst.STATE_NULL)
+        self.__video_bus.remove_signal_watch()
         
     def __on_bus_message(self, bus, message):    
         t = message.type
