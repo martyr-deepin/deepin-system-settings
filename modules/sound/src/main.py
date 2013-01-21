@@ -40,6 +40,7 @@ from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
 from statusbar import StatusBar
+from scalebar import MyHScalebar
 from nls import _
 import gtk
 import settings
@@ -155,7 +156,7 @@ class SoundSetting(object):
         self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 150, 1, 5)
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150, 1, 5)
         # scale init
-        self.scale_widgets["balance"] = HScalebar(value_min=-1, value_max=1)
+        self.scale_widgets["balance"] = MyHScalebar(value_min=-1, value_max=1)
         self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
         self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
         ###################################

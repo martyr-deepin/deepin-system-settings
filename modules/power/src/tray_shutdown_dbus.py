@@ -24,6 +24,10 @@ import dbus
 
 
 
+DBUS_GNOME_SESSION = "org.gnome.SessionManager"
+DBUS_GNOME_SESSION_MANAGER = "/org/gnome/SessionManager"
+DBUS_GNOME_SESSION_POINT   = "org.gnome.SessionManager"
+
 DBUS_CONSOLEKIT = 'org.freedesktop.ConsoleKit'
 DBUS_CONSOLEKIT_MANAGER = '/org/freedesktop/ConsoleKit/Manager'
 DBUS_POINT_MANAGER = 'org.freedesktop.ConsoleKit.Manager'
@@ -36,23 +40,38 @@ DBUS_POINT_UPOWER = "org.freedesktop.UPower"
 class CmdDbus(object):
     def __init__(self):
         self.__session_bus = dbus.SystemBus()
+        '''
         # restart stop.
         oper_obj = self.__create_obj(DBUS_CONSOLEKIT, DBUS_CONSOLEKIT_MANAGER)
         self.restart = self.__get_method(oper_obj, "Restart", DBUS_POINT_MANAGER)
         self.stop    = self.__get_method(oper_obj, "Stop", DBUS_POINT_MANAGER)
+        '''
         # suspend.
         oper_obj = self.__create_obj(DBUS_UPOWER, DBUS_UPOWER_U)
         self.suspend = self.__get_method(oper_obj, "Suspend", DBUS_UPOWER)
+        #
+        self.__session_bus = dbus.SessionBus()
+        oper_obj = self.__create_obj(DBUS_GNOME_SESSION, DBUS_GNOME_SESSION_MANAGER)
+        self.interface = dbus.Interface(oper_obj, dbus_interface=DBUS_GNOME_SESSION_POINT)
 
-    def __create_obj(self, dbus_, dbus__):
-        return self.__session_bus.get_object(dbus_, dbus__)
+    def stop(self):
+        self.interface.Shutdown()
+
+    def restart(self):
+        self.interface.RequestReboot()
+
+    def logout(self, id):
+        self.interface.Logout(id)
+        
+
+    def __create_obj(self, dbus_section, dbus_name):
+        return self.__session_bus.get_object(dbus_section, dbus_name)
 
     def __get_method(self, obj, name, dbus__):
         return obj.get_dbus_method(name, dbus__)
 
 if __name__ == "__main__":
     cmd_dbus = CmdDbus()
-    print cmd_dbus.suspend
-    print cmd_dbus.stop
-    print cmd_dbus.restart()
+    cmd_dbus.stop()
+    #cmd_dbus.restart()
     
