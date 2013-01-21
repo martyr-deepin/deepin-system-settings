@@ -2,46 +2,86 @@
 #-*- coding:utf-8 -*-
 from dtk.ui.new_treeview import TreeView
 from dtk.ui.button import Button
+from dtk.ui.label import Label
+from dtk.ui.new_entry import InputEntry
 from treeview import SessionItem
 
 import gtk
 import style
 from session import SessionManager
+from widget import NewSessionDialog
 from foot_box import FootBox
+from nls import _
 sessions = SessionManager()
 
 class SessionView(gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
+        self.new_session = None
         
         # UI style
         style.draw_background_color(self)
         self.tree = TreeView([],enable_drag_drop=False,
                              enable_hover=True)
 
-        self.tree.set_column_titles(("App", "State", "Des"), self.sort_method)
+        self.tree.set_column_titles((_("Application"), _("State"), _("Description")), self.sort_method)
 
-        self.tree.set_size_request(727, 337)
+        self.tree.set_size_request(800, -1)
 
         self.tree.draw_mask = self.draw_mask
         self.tree.add_items(self.get_list())
-        align = gtk.Alignment(0.5, 0.5, 0, 0)
-        align.set_padding(15, 0 , 20, 20)
+        align = gtk.Alignment(0, 0, 0, 1)
+        align.set_padding(15, 0, 20, 20)
         align.add(self.tree)
         align.connect("expose-event", self.expose_line)
 
 
-        #hbox = gtk.HBox(spacing=5)
-        add_button = Button("添加")
-        delete_button = Button("删除")
+        add_button = Button(_("New"))
+        delete_button = Button(_("Delete"))
         add_button.connect("clicked", self.add_autostart)
+        delete_button.connect("clicked", self.delete_autostart)
         
         foot_box = FootBox(adjustment=15)
         foot_box.set_buttons([add_button, delete_button])
         self.pack_start(align, True, True)
+        
+        #self.new_box = self.add_new_box()
+
         self.pack_end(foot_box, False, False)
+        #self.pack_end(self.new_box, False, False)
+
         self.show_all()
+
+    def add_new_box(self):
+        hbox = gtk.HBox()
+        hbox.set_size_request(-1, 30)
+        name_label = Label("Name:")
+        exec_label = Label("Exec:")
+        desc_label = Label("Description:")
+        
+        name_entry = InputEntry()
+        exec_entry = InputEntry()
+        desc_entry = InputEntry()
+        name_entry.set_size(200, 22)
+        exec_entry.set_size(200, 22)
+        desc_entry.set_size(200, 22)
+        name_entry.entry.connect("changed", self.entry_changed, "Name")
+        exec_entry.entry.connect("changed", self.entry_changed, "Exec")
+        desc_entry.entry.connect("changed", self.entry_changed, "Comment" + sessions.locale())
+
+        
+        #entry_list = [name_entry, exec_entry, desc_entry]
+        #for entry in entry_list:
+            #entry.set_size(200, 22)
+            #entry.connect("changed", )
+
+        name_align = style.wrap_with_align(name_entry)
+        exec_align = style.wrap_with_align(exec_entry)
+        desc_align = style.wrap_with_align(desc_entry)
+
+        self.pack(hbox, [name_label, name_align, exec_label, exec_align, desc_label, desc_align])
+        return hbox
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()
@@ -52,7 +92,26 @@ class SessionView(gtk.VBox):
         pass
 
     def add_autostart(self, widget):
-        pass
+        self.new_session = sessions.add("","","")
+        NewSessionDialog(self.new_session, confirm_callback= self.confirm_callback, cancel_callback = self.cancel_callback).show_all()
+
+    def delete_autostart(self, widget):
+        items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
+        item = items[0].item
+        item.delete()
+        self.tree.delete_select_items()
+
+
+    def entry_changed(self, widget, content, option):
+        self.new_session.set_option(option, content)
+
+    def confirm_callback(self, session):
+        session.save(session.get_option("Name"))
+        self.tree.add_items([SessionItem(session)]) 
+        self.new_session = None
+
+    def cancel_callback(self):
+        self.new_session = None
 
     def pack(self, parent, widget_list, expand=False, fill=False):
         for w in widget_list:

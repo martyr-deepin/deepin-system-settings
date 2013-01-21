@@ -47,7 +47,7 @@ class SessionItem(TreeItem):
         self.item = item
         self.app_name = item.name()
         self.state = item.is_active()
-        self.description = item.get_option("comment")
+        self.description = item.get_option("Comment")
         self.is_double_click = False
         self.autorun = item.has_gnome_auto()
 
