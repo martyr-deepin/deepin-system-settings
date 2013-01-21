@@ -67,12 +67,12 @@ def connect_bus():
         server_lookup = bus.get_object("org.PulseAudio1", "/org/pulseaudio/server_lookup1")
         prop_interface = dbus.Interface(server_lookup, "org.freedesktop.DBus.Properties")
         address = prop_interface.Get("org.PulseAudio.ServerLookup1", "Address")
-        try:    
-            global client_bus
-            client_bus = dbus.connection.Connection(address)
-        except:
-            client_bus = None
-            print "return pulseaudio client bus failed"
+    try:    
+        global client_bus
+        client_bus = dbus.connection.Connection(address)
+    except:
+        client_bus = None
+        print "return pulseaudio client bus failed"
 
 connect_bus()
 

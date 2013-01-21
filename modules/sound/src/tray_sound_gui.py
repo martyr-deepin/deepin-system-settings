@@ -33,6 +33,7 @@ from dtk.ui.hscalebar import HScalebar
 from dtk.ui.box import ImageBox
 from nls import _
 from constant import *
+from vtk.button import SelectButton
 
 import settings
 import threading as td
@@ -104,8 +105,8 @@ class TrayGui(gtk.VBox):
         hseparator = HSeparator(separator_color, 0, 0)
         hseparator.set_size_request(150, 3)
         self.pack_start(hseparator, False, False)
-        button_more = Label(_("更多高级选项..."))
-        self.pack_start(self.__make_align(button_more), False, False)
+        button_more = SelectButton(_("更多高级选项..."))
+        self.pack_start((button_more), False, False)
         ##########################################
         # if PulseAudio connect error, set the widget insensitive
         if settings.PA_CORE is None or not settings.PA_CARDS:
