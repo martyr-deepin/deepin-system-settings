@@ -430,7 +430,7 @@ class DisplayView(gtk.VBox):
         '''
         lock display
         '''
-        self.lock_display_align = self.__setup_align()
+        self.lock_display_align = self.__setup_align(padding_bottom = 20)
         self.lock_display_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.lock_display_label = self.__setup_label(_("Lock Screen")) 
         self.lock_display_combo = self.__setup_combo(self.duration_items)
