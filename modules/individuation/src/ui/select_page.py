@@ -76,7 +76,7 @@ class SelectView(IconView):
                 return True
         return False    
     
-        
+    @common.threaded
     def __init_monitor_images(self):    
         items = []
         for image_path in common.walk_images(self.monitor_dir):

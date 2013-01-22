@@ -21,7 +21,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import pango
+
 from tray_shutdown_dbus import CmdDbus
+from vtk.button import SelectButton
 
 class Gui(gtk.VBox):
     def __init__(self):
@@ -33,24 +36,26 @@ class Gui(gtk.VBox):
         self.cmd_dbus = CmdDbus()
 
     def init_widgets(self):
-        self.stop_btn = gtk.Button("关机")
-        self.restart_btn= gtk.Button("重启")
-        self.suspend_btn = gtk.Button("休眠")
+        self.stop_btn = SelectButton("关机")
+        self.restart_btn= SelectButton("重启")
+        self.suspend_btn = SelectButton("挂起")
+        self.logout_btn = SelectButton("注销")
         #
-        self.stop_btn.connect("clicked", self.stop_btn_clicked)
-        self.restart_btn.connect("clicked", self.restart_btn_clicked)
-        self.suspend_btn.connect("clicked", self.suspend_btn_clicked)
+        self.stop_btn.set_size_request(120, 25)
+        self.restart_btn.set_size_request(120, 25)
+        self.suspend_btn.set_size_request(120, 25)
+        self.logout_btn.set_size_request(120, 25)
         #
-        self.pack_start(self.stop_btn, False, False)
-        self.pack_start(self.restart_btn, False, False)
-        self.pack_start(self.suspend_btn, False, False)
+        self.pack_start(self.stop_btn, True, True)
+        self.pack_start(self.restart_btn, True, True)
+        self.pack_start(self.suspend_btn, True, True)
+        self.pack_start(self.logout_btn, True, True)
 
-    def stop_btn_clicked(self, widget):
-        print self.cmd_dbus.stop()
 
-    def restart_btn_clicked(self, widget):
-        print self.cmd_dbus.restart()
 
-    def suspend_btn_clicked(self, widget):
-        print self.cmd_dbus.suspend()
 
+if __name__ == "__main__":
+    win = gtk.Window(gtk.TOPLEVEL_WINDOW)
+    win.add(SelectButton("策划"))
+    win.show_all()
+    gtk.main()

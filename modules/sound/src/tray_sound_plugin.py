@@ -22,13 +22,21 @@
 
 from tray_sound_gui import TrayGui
 
+import gtk
+
 class SoundTray(object):
     def __init__(self):
         super(SoundTray, self).__init__()
-        self.widget = TrayGui
+        self.widget = TrayGui()
+        self.WIN_WIDTH = 240
+        self.WIN_HEIGHT = 150
 
     def init_values(self, value_list):
-        self.value_list = value_list
+        self.this_list = value_list
+        self.this = self.this_list[0]
+        self.this.set_size_request(self.WIN_WIDTH, self.WIN_HEIGHT)
+        self.tray_icon = self.this_list[1]
+        self.tray_icon.set_icon_theme("tray_sound_icon")
 
     def run(self):
         return True
@@ -37,12 +45,13 @@ class SoundTray(object):
         return "sound-tray"
 
     def insert(self):
-        return 3
+        return 1
 
     def plugin_widget(self):
         return self.widget
 
     def show_menu(self):
+        self.this.set_size_request(self.WIN_WIDTH, self.WIN_HEIGHT)
         print "show......."
 
     def hide_menu(self):

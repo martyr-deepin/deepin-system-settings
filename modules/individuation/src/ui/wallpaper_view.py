@@ -31,6 +31,8 @@ from helper import event_manager
 from ui.wallpaper_item import AddItem, WallpaperItem
 from theme_manager import background_gsettings
 
+import common
+
 
 
 class WallpaperView(IconView):
@@ -45,7 +47,7 @@ class WallpaperView(IconView):
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
         self.theme = None
-        
+
     def set_theme(self, theme):    
         self.theme = theme
         self.clear()

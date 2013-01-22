@@ -572,7 +572,6 @@ class SettingItem(TreeItem):
 
     def unhover(self, column, offset_x, offset_y):
         self.is_hover = False
-        # FIXME once delete an item , trigger unhover but hover_row doesnt exist 
         if hasattr(self, "timer"):
             gobject.source_remove(self.timer)
         self.delete_hover = False
@@ -582,7 +581,6 @@ class SettingItem(TreeItem):
     def single_click(self, column, offset_x, offset_y):
         self.is_double_click = False
 
-        #self.click(self.connection)
         if column == 0:
             self.check_select = not self.check_select
             print "check clicked"

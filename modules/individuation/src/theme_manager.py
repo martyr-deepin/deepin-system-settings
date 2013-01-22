@@ -121,10 +121,41 @@ class ThemeFile(RawConfigParser):
         if value != "True": return False
         return True
     
+    def set_background_duration(self, duration):
+        self.set_option("background", "duration", str(duration))
+        background_gsettings.set_int("background-duration", duration)        
+    
     def get_background_duration(self):
         value = self.get_option("background", "duration", 10)
         return int(value)
     
+    def get_background_draw_mode(self):
+        return self.get_option("background", "draw_mode", "Scaing")
+    
+    def set_background_draw_mode(self, value):
+        self.set_option("background", "draw_mode", value)
+        background_gsettings.set_string("draw-mode", value)
+        
+    def get_background_random_mode(self, ret_string=False):    
+        value = self.get_option("background", "random_mode", "false")        
+        if value != "True": 
+            result = False
+        else:    
+            result = True
+            
+        if ret_string:    
+            return "Random" if result else "Sequential"
+        else:
+            return result
+            
+    
+    def set_background_random_mode(self, value):
+        self.set_option("background", "random_mode", str(value))
+        if value:
+            background_gsettings.set_string("cross-fade-auto-mode", "Random")
+        else:    
+            background_gsettings.set_string("cross-fade-auto-mode", "Sequential")
+        
     def get_name(self):    
         lang = common.get_system_lang()
         if self.has_option("name", lang):
@@ -332,11 +363,15 @@ class ThemeManager(object):
     
     def apply_theme(self, theme):
         duration = theme.get_background_duration()
+        draw_mode = theme.get_background_draw_mode()
+        random_mode = theme.get_background_random_mode(True)
         image_paths = theme.get_enable_wallpaper_paths()
         if image_paths:
             image_uris = ";".join(["file://%s" % path for path in image_paths])
             background_gsettings.set_string("picture-uris", image_uris)
         background_gsettings.set_int("background-duration", duration)
+        # background_gsettings.set_string("draw-mode", draw_mode)
+        # background_gsettings.set_string("cross-fade-auto-mode", random_mode)
         global_settings.set_option("settings/theme", theme.location)
         global_settings.save()
         

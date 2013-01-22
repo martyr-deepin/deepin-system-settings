@@ -25,29 +25,49 @@ from tray_shutdown_gui import Gui
 
 class TrayShutdownPlugin(object):
     def __init__(self):
-        pass
+        self.gui = Gui()
+        self.gui.stop_btn.connect("clicked", self.stop_btn_clicked)
+        self.gui.restart_btn.connect("clicked", self.restart_btn_clicked)
+        self.gui.suspend_btn.connect("clicked", self.suspend_btn_clicked)
+        self.gui.logout_btn.connect("clicked", self.logout_btn_clicked)
+
+    def stop_btn_clicked(self, widget):
+        self.this.hide_menu()
+        self.gui.cmd_dbus.stop()
+
+    def restart_btn_clicked(self, widget):
+        self.this.hide_menu()
+        self.gui.cmd_dbus.restart()
+
+    def suspend_btn_clicked(self, widget):
+        self.this.hide_menu()
+        self.gui.cmd_dbus.suspend()
+
+    def logout_btn_clicked(self, widget):
+        self.this.hide_menu()
+        self.gui.cmd_dbus.logout(0)
+
         
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
         self.tray_icon.set_icon_theme("tray_user_icon")
-        self.tray_icon.set_text("long")
 
     def run(self):
         return True
 
     def insert(self):
-        return 1
+        return 0
         
     def id(self):
         return "tray-shutdown-plugin-hailongqiu"
 
     def plugin_widget(self):
-        return Gui() 
+        return self.gui 
 
     def show_menu(self):
-        self.this.set_size_request(100, -1)
+        self.this.set_size_request(110, -1)
         print "shutdown show menu..."
 
     def hide_menu(self):

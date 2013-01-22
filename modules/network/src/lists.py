@@ -707,6 +707,9 @@ class GeneralItem(TreeItem):
     CHECK_RIGHT_PADIING = 10
     JUMPTO_RIGHT_PADDING = 10
     VERTICAL_PADDING = 5
+    NETWORK_DISCONNECT = 0
+    NETWORK_LOADING = 1
+    NETWORK_CONNECTED = 2
 
     def __init__(self,
                  name,
@@ -727,7 +730,9 @@ class GeneralItem(TreeItem):
         self.essid_width = self.get_essid_width(self.name)
         self.jumpto_width = self.get_jumpto_width()
         self.network_state = check_state
+
         self.is_last = True
+        self.position = 0
 
         '''
         Pixbufs
@@ -739,23 +744,44 @@ class GeneralItem(TreeItem):
     def render_check(self, cr, rect):
         render_background(cr, rect)
 
-        if self.network_state == 0:
-            check_icon = None
-        elif self.network_state == 1:
-            check_icon = self.loading_pixbuf
-        else:
-            check_icon = self.check_pixbuf
-        
-        if check_icon:
-            draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        if self.network_state == self.NETWORK_LOADING:
+            self.draw_loading(cr, rect)
+        elif self.network_state == self.NETWORK_CONNECTED:
+            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+
+        #draw outline
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
             cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x , rect.y, 1, rect.height)
+            cr.rectangle(rect.x, rect.y, 1, rect.height)
             cr.fill()
+        #if self.network_state == 0:
+            #check_icon = None
+        #elif self.network_state == 1:
+            #check_icon = self.loading_pixbuf
+        #else:
+            #check_icon = self.check_pixbuf
+        
+        #if check_icon:
+            #draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*BORDER_COLOR)
+            #cr.set_line_width(1)
+            #if self.is_last:
+                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, rect.width, 1)
+            #cr.rectangle(rect.x , rect.y, 1, rect.height)
+            #cr.fill()
+
+    def draw_loading(self, cr, rect):
+        with cairo_state(cr):
+            cr.translate(rect.x + 18 , rect.y + 15)
+            cr.rotate(radians(60*self.position))
+            cr.translate(-18, -15)
+            draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
 
     def render_name(self, cr, rect):
         render_background(cr, rect)
@@ -854,6 +880,14 @@ class GeneralItem(TreeItem):
 
     def set_net_state(self, state):
         self.network_state = state
+        if state == self.NETWORK_LOADING:
+            LoadingThread(self).start()
+
+    def get_net_state(self):
+        return self.network_state
+    
+    def refresh_loading(self, position):
+        self.position = position
         self.redraw()
 
         

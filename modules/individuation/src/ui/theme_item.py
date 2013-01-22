@@ -35,6 +35,7 @@ from dtk.ui.utils import (alpha_color_hex_to_cairo, get_optimum_pixbuf_from_file
                           is_in_rect)
 
 from theme import app_theme
+from constant import CONTENT_FONT_SIZE
 
 class ThemeItem(gobject.GObject):
     '''
@@ -71,7 +72,7 @@ class ThemeItem(gobject.GObject):
         self.window_frame_height = 48
         self.reflection_height = 23
         self.title_padding_y = 10
-        self.title_size = DEFAULT_FONT_SIZE
+        self.title_size = CONTENT_FONT_SIZE
         
         self.hover_offset = 5
         self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")

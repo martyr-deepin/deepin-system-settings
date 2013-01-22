@@ -20,8 +20,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import gtk
 from dtk.ui.utils import (color_hex_to_cairo, container_remove_all,
                           cairo_disable_antialias, )
+from dtk.ui.button import ToggleButton
+from dtk.ui.line import HSeparator
+from dtk.ui.label import Label
+from dtk.ui.combo import ComboBox
 from theme import app_theme
 
 def draw_single_mask(cr, x, y, width, height, color_name):
@@ -54,3 +59,42 @@ def draw_line(cr, start, end, color_name):
         cr.rel_line_to(*end)
         cr.stroke()
     
+
+def get_separator():
+    hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+    # hseparator.set_size_request(500, 10)
+    align = gtk.Alignment()
+    align.set_padding(10, 10, 0, 0)
+    align.set(0, 0, 1, 1)
+    align.add(hseparator)
+    return align
+        
+def get_togglebutton():
+    toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+                          app_theme.get_pixbuf("toggle_button/active_normal.png"))
+    return toggle
+
+def get_toggle_group(name, callback=None):    
+    box = gtk.HBox(2)
+    title = Label(name)
+    toggle_button = get_togglebutton()
+    toggle_button_align = gtk.Alignment()
+    toggle_button_align.set(0.5, 0.5, 0, 0)
+    toggle_button_align.add(toggle_button)
+    box.pack_start(title, False, False)
+    box.pack_start(toggle_button_align, False, False)
+    if callback:
+        toggle_button.connect("toggled", callback)
+    return box    
+
+def get_combo_group(name, items, callback=None):
+    box = gtk.HBox(2)
+    label = Label(name)
+    combo_box = ComboBox(items)
+    box.pack_start(label, False, False)
+    box.pack_start(combo_box)
+    
+    if callback:
+        combo_box.connect("item-selected", callback)
+    return box, combo_box
+

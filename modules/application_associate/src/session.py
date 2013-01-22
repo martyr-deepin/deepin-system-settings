@@ -72,10 +72,18 @@ class AutoStart(object):
         with open(path, "wb") as configfile:
             self.conf.write(configfile)
 
+        self.file_name = file_name
+
     def remove_option(self, option):
 
         self.conf.remove_option(self.SECTION, option)
 
+    def delete(self):
+        if self.file_name:
+            path = os.path.join(self.dir , self.file_name + ".desktop")
+            os.remove(path)
+            print "autostart removed"
+            
     def new(self):
         self.conf.add_section(self.SECTION)
         new_autostart = [("Type", "Application"),
@@ -109,10 +117,13 @@ class SessionManager(object):
     def list_sys_auto_starts(self):
         return map(lambda w: AutoStart(os.path.join(self.__sys_dir, w)), os.listdir(self.__sys_dir))
 
+    def locale(self):
+        lang = os.environ["LANG"].split(".")[0]
+        return "[%s]"%lang
+
     def add(self, app_name, exec_path, comment):
         auto_file = AutoStart()
         auto_file.set_option("Name", app_name)
         auto_file.set_option("Exec", exec_path)
-        auto_file.set_option("Comment", comment)
+        auto_file.set_option("Comment" + self.locale(), comment)
         return auto_file
-
