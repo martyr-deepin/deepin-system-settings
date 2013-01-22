@@ -53,7 +53,7 @@ class Gui(gtk.VBox):
         self.suspend_btn.set_size_request(120, 25)
         self.logout_btn.set_size_request(120, 25)
         #
-        self.pack_start(self.label, True, True)
+        #self.pack_start(self.label, True, True)
         self.pack_start(self.h_separator_top, True, True)
         self.pack_start(self.stop_btn, True, True)
         self.pack_start(self.restart_btn, True, True)
