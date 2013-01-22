@@ -27,7 +27,7 @@ from dtk.ui.utils import set_clickable_cursor
 from deepin_utils.process import run_command
 from dtk.ui.label import Label
 from nls import _
-import deepin_lunar
+import dltk_calendar
 import gtk
 
 class TrayTimePlugin(object):
@@ -44,7 +44,7 @@ class TrayTimePlugin(object):
         show_str = "%s %s:%s" % (time_p, hour, min)
         if language_type == TRAY_TIME_EN_TYPE:
             show_str = "%s:%s %s" % (hour, min, time_p)
-
+        
         self.tray_icon.set_text(show_str)
 
     def init_values(self, this_list):
@@ -85,8 +85,8 @@ class TrayTimePlugin(object):
         align = self.__setup_align()
         box = gtk.VBox(spacing = 5)
         calendar_align = self.__setup_align()
-        calendar = deepin_lunar.new()
-        calendar.get_handle().set_size_request(300, 270)
+        calendar = dltk_calendar.new()
+        calendar.get_handle().set_size_request(300, 230)
         calendar_align.add(calendar.get_handle())
         label_align = self.__setup_align()
         label = Label(_("Change DateTime settings"))
@@ -99,7 +99,7 @@ class TrayTimePlugin(object):
         return align
 
     def show_menu(self):
-        self.this.set_size_request(300, 324)
+        self.this.set_size_request(300, 285)
         print "menu show...."
 
     def hide_menu(self):

@@ -47,7 +47,6 @@ class TrayShutdownPlugin(object):
         self.this.hide_menu()
         self.gui.cmd_dbus.logout(0)
 
-        
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
@@ -67,7 +66,7 @@ class TrayShutdownPlugin(object):
         return self.gui 
 
     def show_menu(self):
-        self.this.set_size_request(110, -1)
+        self.this.set_size_request(160, -1)
         print "shutdown show menu..."
 
     def hide_menu(self):

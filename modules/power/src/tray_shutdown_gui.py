@@ -22,9 +22,14 @@
 
 import gtk
 import pango
-
+from nls import _
 from tray_shutdown_dbus import CmdDbus
 from vtk.button import SelectButton
+from dtk.ui.line import HSeparator
+import os
+import sys
+sys.path.append("/usr/share/deepin-system-settings/dss")
+from theme import app_theme
 
 class Gui(gtk.VBox):
     def __init__(self):
@@ -36,23 +41,24 @@ class Gui(gtk.VBox):
         self.cmd_dbus = CmdDbus()
 
     def init_widgets(self):
-        self.stop_btn = SelectButton("关机")
-        self.restart_btn= SelectButton("重启")
-        self.suspend_btn = SelectButton("挂起")
-        self.logout_btn = SelectButton("注销")
+        self.h_separator_top = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        self.label = gtk.Label("long")
+        self.stop_btn = SelectButton(_("shutdown"), font_size=10)
+        self.restart_btn= SelectButton(_("restart"), font_size=10)
+        self.suspend_btn = SelectButton(_("suspend"), font_size=10)
+        self.logout_btn = SelectButton(_("logout"))
         #
         self.stop_btn.set_size_request(120, 25)
         self.restart_btn.set_size_request(120, 25)
         self.suspend_btn.set_size_request(120, 25)
         self.logout_btn.set_size_request(120, 25)
         #
+        self.pack_start(self.label, True, True)
+        self.pack_start(self.h_separator_top, True, True)
         self.pack_start(self.stop_btn, True, True)
         self.pack_start(self.restart_btn, True, True)
         self.pack_start(self.suspend_btn, True, True)
         self.pack_start(self.logout_btn, True, True)
-
-
-
 
 if __name__ == "__main__":
     win = gtk.Window(gtk.TOPLEVEL_WINDOW)
