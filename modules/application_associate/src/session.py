@@ -26,6 +26,7 @@ class AutoStart(object):
     SECTION = "Desktop Entry"
 
     def __init__(self, file_path=None):
+        self.file_name = None
         self.dir = get_user_config_dir()
         self.conf = ConfigParser.RawConfigParser()
         self.conf.optionxform = str
