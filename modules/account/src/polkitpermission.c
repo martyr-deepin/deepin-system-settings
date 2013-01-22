@@ -1,6 +1,6 @@
 /* 
- * Copyright (C) 2012 Deepin, Inc.
- *               2012 Long Wei
+ * Copyright (C) 2012 ~ 2013 Deepin, Inc.
+ *               2012 ~ 2013 Long Wei
  *
  * Author:     Long Wei <yilang2007lw@gmail.com>
  * Maintainer: Long Wei <yilang2007lw@gmail.com>
@@ -25,242 +25,182 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-/* Safe XDECREF for object states that handles nested deallocations */
-#define ZAP(v) do {                             \
-        PyObject *tmp = (PyObject *)(v);        \
-        (v) = NULL;                             \
-        Py_XDECREF(tmp);                        \
-    } while (0)
-
 typedef struct{
     PyObject_HEAD
-    PyObject *dict;
-    PolkitPermission *handle;
+    PolkitPermission *permission;
+    PyObject *action_id;
 
 }PolkitPermissionObject;
 
-static PyObject *m_polkit_permission_object_constants = NULL;
-static PyTypeObject *m_PolkitPermission_Type = NULL;
+static void pypolkit_permission_dealloc(PolkitPermissionObject *);
+static int  pypolkit_permission_traverse(PolkitPermissionObject *self, visitproc visit, void *arg);
+static int  pypolkit_permission_clear(PolkitPermissionObject *);
+static int  pypolkit_permission_init(PolkitPermissionObject *, PyObject *, PyObject *);
+static PyObject *pypolkit_permission_new(PyTypeObject *type, PyObject *args, PyObject *kwds);
 
-static PolkitPermissionObject *m_init_polkit_permission_object();
-static PolkitPermissionObject *m_new(PyObject *self, PyObject *args);
+static PyObject *polkitpermission_get_action_id(PolkitPermissionObject *self);
+static PyObject *polkitpermission_get_allowed(PolkitPermissionObject *self);
+static PyObject *polkitpermission_get_can_acquire(PolkitPermissionObject *self);
+static PyObject *polkitpermission_get_can_release(PolkitPermissionObject *self);
+static PyObject *polkitpermission_acquire(PolkitPermissionObject *self);
+static PyObject *polkitpermission_release(PolkitPermissionObject *self);
 
-static PyMethodDef polkit_permission_methods[] = 
+static PyMethodDef polkitpermission_object_methods[] =
 {
-    {"new", m_new, METH_VARARGS, "Polkit Permission Object Construct"},
+    {"get_action_id", (PyCFunction) polkitpermission_get_action_id, METH_NOARGS, "get action id"},
+    {"get_allowed", (PyCFunction) polkitpermission_get_allowed, METH_NOARGS, "get allowed"},
+    {"get_can_acquire", (PyCFunction) polkitpermission_get_can_acquire, METH_NOARGS, "get can acquire"},
+    {"get_can_release", (PyCFunction) polkitpermission_get_can_release, METH_NOARGS, "get can release"},
+    {"acquire", (PyCFunction) polkitpermission_acquire, METH_NOARGS, "acquire"},
+    {"release", (PyCFunction) polkitpermission_release, METH_NOARGS, "release"},
     {NULL, NULL, 0, NULL}
 };
 
-static PyObject *m_delete(PolkitPermissionObject *self);
-static PyObject *get_action_id(PolkitPermissionObject *self);
-static PyObject *get_subject(PolkitPermissionObject *self);
-static PyObject *get_allowed(PolkitPermissionObject *self);
-static PyObject *get_can_acquire(PolkitPermissionObject *self);
-static PyObject *get_can_release(PolkitPermissionObject *self);
-static PyObject *acquire(PolkitPermissionObject *self);
-static PyObject *release(PolkitPermissionObject *self);
-
-static PyMethodDef polkit_permission_object_methods[] = 
-{
-    {"delete", (PyCFunction) m_delete, METH_VARARGS, "PolkitPermissionObject destruction"},
-    {"get_action_id", (PyCFunction) get_action_id, METH_VARARGS, "get action id"},
-    {"get_subject", (PyCFunction) get_subject, METH_VARARGS, "get subject"},
-    {"get_allowed", (PyCFunction) get_allowed, METH_VARARGS, "get allowed"},
-    {"get_can_acquire", (PyCFunction) get_can_acquire, METH_VARARGS, "get can acquire"},
-    {"get_can_release", (PyCFunction) get_can_release, METH_VARARGS, "get can release"},
-    {"acquire", (PyCFunction) acquire, METH_VARARGS, "acquire"},
-    {"release", (PyCFunction) release, METH_VARARGS, "release"},
-    {NULL, NULL, 0, NULL}
+static PyTypeObject pypolkit_permission_Type_obj = {
+    PyObject_HEAD_INIT(&PyType_Type)
+    .tp_name = "polkitpermission",
+    .tp_basicsize = sizeof(PolkitPermissionObject),
+    /* .tp_itemsize = XXX */
+    .tp_dealloc = (destructor) pypolkit_permission_dealloc,
+    /* .tp_getattr = XXX */
+    /* .tp_setattr = XXX */
+    /* .tp_compare = (cmpfunc) _pypolkit_PolkitPermission_compare, */
+    /* .tp_repr = XXX */
+    /* .tp_as_number = XXX */
+    /* .tp_as_sequence = XXX */
+    /* .tp_as_mapping = XXX */
+    .tp_hash = PyObject_HashNotImplemented,
+    .tp_call = NULL,
+    /* .tp_str = (reprfunc) _pypolkit_PolkitPermission_str, */
+    .tp_getattro = PyObject_GenericGetAttr,
+    .tp_setattro = PyObject_GenericSetAttr,
+    /* .tp_as_buffer = XXX */
+    .tp_flags = Py_TPFLAGS_HAVE_CLASS | Py_TPFLAGS_CHECKTYPES |
+    Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_BASETYPE,
+    /* .tp_doc = "polkit PolkitPermission doc", */
+    .tp_traverse = (traverseproc) pypolkit_permission_traverse,
+    .tp_clear = (inquiry) pypolkit_permission_clear,
+    /* .tp_richcompare = (richcmpfunc) _pypolkit_PolkitPermission_richcompare, */
+    /* .tp_weaklistoffset = XXX */
+    /* .tp_iter = XXX */
+    /* .tp_iternext = XXX */
+    .tp_methods = polkitpermission_object_methods,
+    /* .tp_members = XXX */
+    /* .tp_getset = XXX */
+    .tp_base = NULL,
+    .tp_dict = NULL,
+    /* .tp_descr_get = XXX */
+    /* .tp_descr_set = XXX */
+    /* .tp_dictoffset = XXX */
+    .tp_init = (initproc) pypolkit_permission_init,
+    .tp_alloc = PyType_GenericAlloc,
+    .tp_new = pypolkit_permission_new,
+    /* .tp_free = XXX */
+    /* .tp_is_gc = XXX */
+    .tp_bases = NULL,
+    /* .tp_del = XXX */
 };
 
-static void m_polkit_permission_dealloc(PolkitPermissionObject *self)
-{
-    PyObject_GC_UnTrack(self);
-    Py_TRASHCAN_SAFE_BEGIN(self)
+static void pypolkit_permission_dealloc(PolkitPermissionObject *self){
 
-    ZAP(self->dict);
-    m_delete(self);
-
-    PyObject_GC_Del(self);
-    Py_TRASHCAN_SAFE_END(self)
-
+    pypolkit_permission_clear(self);
+    self->ob_type->tp_free((PyObject *)self);
 }
 
-static PyObject *m_getattr(PyObject *co, 
-                           char *name, 
-                           PyObject *dict1, 
-                           PyObject *dict2, 
-                           PyMethodDef *m)
-{
-    PyObject *v = NULL;
-    if (v == NULL && dict1 != NULL)
-        v = PyDict_GetItemString(dict1, name);
-    if (v == NULL && dict2 != NULL)
-        v = PyDict_GetItemString(dict2, name);
-    if (v != NULL) {
-        Py_INCREF(v);
-        return v;
+static int pypolkit_permission_traverse(PolkitPermissionObject *self, visitproc visit, void *arg){
+
+    Py_VISIT(self->action_id);
+    return 0;
+}
+
+static int pypolkit_permission_clear(PolkitPermissionObject *self){
+
+    Py_CLEAR(self->action_id);
+    return 0;
+}
+
+static int pypolkit_permission_init(PolkitPermissionObject *self, PyObject *args, PyObject *kwds){
+
+    PyObject *tmp, *action_id;
+    const gchar *action;
+
+    if(!PyArg_ParseTuple(args, "s", &action)){
+        return -1;
     }
-    return Py_FindMethod(m, co, name);
-}
 
-static int m_setattr(PyObject **dict, char *name, PyObject *v)
-{
-    if (v == NULL) {
-        int rv = -1;
-        if (*dict != NULL)
-            rv = PyDict_DelItemString(*dict, name);
-        if (rv < 0) {
-            PyErr_SetString(PyExc_AttributeError, 
-                            "delete non-existing attribute");
-            return rv;
+    if(action){
+        action_id = Py_BuildValue("s", action);
+        
+        tmp = self->action_id;
+        Py_INCREF(action_id);
+        self->action_id = action_id;
+        Py_XDECREF(tmp);
+
+        if(self->permission){
+            self->permission = NULL;
+            g_object_unref(self->permission);
         }
+
+        self->permission = (PolkitPermission *) polkit_permission_new_sync(action, NULL, NULL, NULL);
     }
-    if (*dict == NULL) {
-        *dict = PyDict_New();
-        if (*dict == NULL)
-            return -1;
-    }
-    return PyDict_SetItemString(*dict, name, v);
-}
-
-
-static PyObject *m_polkit_permission_getattr(PolkitPermissionObject *ppo,
-                                            char *name) 
-{
-    return m_getattr((PyObject *)ppo, 
-                     name, 
-                     ppo->dict, 
-                     m_polkit_permission_object_constants, 
-                     polkit_permission_object_methods);
-}
-
-static PyObject *m_polkit_permission_setattr(PolkitPermissionObject *ppo, 
-                                            char *name, 
-                                            PyObject *v) 
-{
-    return m_setattr(&ppo->dict, name, v);
-}
-
-static PyObject *m_polkit_permission_traverse(PolkitPermissionObject *self, 
-                                             visitproc visit, 
-                                             void *args) 
-{
-    int err;
-#undef VISIT
-#define VISIT(v)    if ((v) != NULL && ((err = visit(v, args)) != 0)) return err
-
-    VISIT(self->dict);
-
-    return 0;
-#undef VISIT
-}
-
-static PyObject *m_polkit_permission_clear(PolkitPermissionObject *self) 
-{
-    ZAP(self->dict);
     return 0;
 }
 
-static PyTypeObject PolkitPermission_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0, 
-    "polkit_permission.new", 
-    sizeof(PolkitPermissionObject), 
-    0, 
-    (destructor)m_polkit_permission_dealloc,
-    0, 
-    (getattrfunc)m_polkit_permission_getattr, 
-    (setattrfunc)m_polkit_permission_setattr, 
-    0, 
-    0, 
-    0,  
-    0,  
-    0,  
-    0,  
-    0,  
-    0,  
-    0,  
-    0,  
-    Py_TPFLAGS_HAVE_GC,
-    0,  
-    (traverseproc)m_polkit_permission_traverse, 
-    (inquiry)m_polkit_permission_clear
+static PyObject* pypolkit_permission_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+    PolkitPermissionObject *self;
+
+    self = (PolkitPermissionObject *)type->tp_alloc(type, 0);
+    if(self != NULL){
+        self->action_id = PyString_FromString("");
+        if(self->action_id == NULL){
+            Py_DECREF(self);
+            return NULL;
+        }
+
+        self->permission = NULL;
+    }
+    return (PyObject *)self;
+}
+
+static PyMethodDef polkitpermission_module_methods[] = 
+{
+    {NULL, NULL, 0, NULL}
 };
 
 #ifndef PyMODINIT_FUNC
 #define PyMODINIT_FUNC void
 #endif
 
-PyMODINIT_FUNC initpolkit_permission()
-{
+PyMODINIT_FUNC 
+initpolkitpermission(void){
     PyObject *m = NULL;
-             
-    m_PolkitPermission_Type = &PolkitPermission_Type;
-    PolkitPermission_Type.ob_type = &PyType_Type;
+    m = Py_InitModule3("polkitpermission", polkitpermission_module_methods, "python binding for polkit permission");
 
-    m = Py_InitModule("polkit_permission", polkit_permission_methods);
-    if (!m)
-        return;
-
-    m_polkit_permission_object_constants = PyDict_New();
-}
-
-static PolkitPermissionObject *m_init_polkit_permission_object() 
-{
-    PolkitPermissionObject *self = NULL;
-
-    self = (PolkitPermissionObject *) PyObject_GC_New(PolkitPermissionObject,
-                                                     m_PolkitPermission_Type);
-    if (!self)
-        return NULL;
-    PyObject_GC_Track(self);
-
-    self->dict = NULL;
-    self->handle = NULL;
-
-    return self;
-}
-
-static PolkitPermissionObject *m_new(PyObject *dummy, PyObject *args) 
-{
-    PolkitPermissionObject *self = NULL;
-    const gchar *action_id = NULL;
-    
-    self = m_init_polkit_permission_object();
-    if (!self)
-        return NULL;
-
-    if (!PyArg_ParseTuple(args, "s", &action_id))
-        return NULL;
-
-    g_type_init ();
-    
-    self->handle = polkit_permission_new_sync(action_id, NULL, NULL, NULL);
-
-    return self;
-}
-
-static PyObject *m_delete(PolkitPermissionObject *self) 
-{
-    if (self->handle) {
-        g_object_unref(self->handle);
-        self->handle = NULL;
+    if(!m){
+        return ;
     }
 
-    Py_INCREF(Py_None);
-    return Py_None;
+    g_type_init();
+
+    if(PyType_Ready(&pypolkit_permission_Type_obj) < 0){
+        return ;
+    }
+
+    Py_INCREF(&pypolkit_permission_Type_obj);
+    
+    PyModule_AddObject(m, "PolkitPermissionObject", (PyObject *)&pypolkit_permission_Type_obj); 
 }
 
-static PyObject* get_action_id(PolkitPermissionObject *self)
+static PyObject* polkitpermission_get_action_id(PolkitPermissionObject *self)
 {
     const gchar *action_id;
 
-    if(!self->handle){
+    if(!self->permission){
         return NULL;
     }
-    
-    action_id = polkit_permission_get_action_id(self->handle);
+
+    action_id = polkit_permission_get_action_id(self->permission);
 
     if(!action_id){
         return NULL;
@@ -269,106 +209,98 @@ static PyObject* get_action_id(PolkitPermissionObject *self)
     return Py_BuildValue("s", action_id);
 }
 
-static PyObject* get_subject(PolkitPermissionObject *self)
-{
-    PolkitSubject *subject;
-
-    if(!self->handle){
-        return NULL;
-    }
-
-    subject = polkit_permission_get_subject(self->handle);
-
-    if(!subject){
-        return NULL;
-    }
-
-    return Py_BuildValue("o", subject);
-}
-
-static PyObject* get_allowed(PolkitPermissionObject *self)
+static PyObject* polkitpermission_get_allowed(PolkitPermissionObject *self)
 {
     gboolean allowed = 0;
 
-    if(!self->handle){
+    if(!self->permission){
         return NULL;
     }
 
-    allowed = g_permission_get_allowed((GPermission *)self->handle);
+    allowed = g_permission_get_allowed((GPermission *)self->permission);
 
     if(allowed){
+        Py_INCREF(Py_True);
         return Py_True;
     }else{
+        Py_INCREF(Py_False);
         return Py_False;
     }
-    
 }
 
-static PyObject* get_can_acquire(PolkitPermissionObject *self)
+static PyObject* polkitpermission_get_can_acquire(PolkitPermissionObject *self)
 {
     gboolean acquire = 0;
 
-    if(!self->handle){
+    if(!self->permission){
         return NULL;
     }
 
-    acquire = g_permission_get_can_acquire((GPermission *)self->handle);
+    acquire = g_permission_get_can_acquire((GPermission *)self->permission);
 
     if(acquire){
+        Py_INCREF(Py_True);
         return Py_True;
     } else{
+        Py_INCREF(Py_False);
         return Py_False;
     }
 }
 
-static PyObject* get_can_release(PolkitPermissionObject *self)
+static PyObject* polkitpermission_get_can_release(PolkitPermissionObject *self)
 {
     gboolean release = 0;
 
-    if(!self->handle){
+    if(!self->permission){
         return NULL;
     }
 
-    release = g_permission_get_can_release((GPermission *)self->handle);
+    release = g_permission_get_can_release((GPermission *)self->permission);
 
     if(release){
+        Py_INCREF(Py_True);
         return Py_True;
     }else{
+        Py_INCREF(Py_False);
         return Py_False;
     }
 }
 
-static PyObject* acquire(PolkitPermissionObject *self)
+static PyObject* polkitpermission_acquire(PolkitPermissionObject *self)
 {
     gboolean acquire = 0;
 
-    if(!self->handle){
+    if(!self->permission){
         return NULL;
     }
 
-    acquire = g_permission_acquire((GPermission *)self->handle, NULL, NULL);
+    acquire = g_permission_acquire((GPermission *)self->permission, NULL, NULL);
 
     if(acquire){
-        return Py_True;          
+        Py_INCREF(Py_True);
+        return Py_True;
     }else{
+        Py_INCREF(Py_False);
         return Py_False;
     }
 
 }
 
-static PyObject* release(PolkitPermissionObject *self)
+static PyObject* polkitpermission_release(PolkitPermissionObject *self)
 {
     gboolean release = 0;
 
-    if(!self->handle){
+    if(!self->permission){
         return NULL;
     }
 
-    release = g_permission_release((GPermission *)self->handle, NULL, NULL);
+    release = g_permission_release((GPermission *)self->permission, NULL, NULL);
 
     if(release){
+        Py_INCREF(Py_True);
         return Py_True;
     }else{
+        Py_INCREF(Py_False);
         return Py_False;
     }
 }

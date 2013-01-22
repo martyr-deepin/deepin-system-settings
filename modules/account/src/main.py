@@ -364,10 +364,9 @@ class AccountSetting(object):
         self.container_widgets["del_main_vbox"].pack_start(self.container_widgets["del_account_button_hbox"], False, False)
         ############################
         # set widget state
-        if not self.permission.get_can_acquire() and not self.permission.get_can_release():
+        #if not self.permission.get_can_acquire() and not self.permission.get_can_release():
             #self.button_widgets["lock"].set_sensitive(False)
-            self.button_widgets["lock"].set_no_show_all(True)
-        self.button_widgets["lock"].set_no_show_all(True)
+           # self.button_widgets["lock"].set_no_show_all(True)
         self.set_widget_state_with_author()
         ###########################
         # delete account page
@@ -1058,8 +1057,7 @@ class AccountSetting(object):
         '''
         @return: True if current process has been authorized, else False
         '''
-        #return self.permission.get_allowed()
-        return True
+        return self.permission.get_allowed()
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
