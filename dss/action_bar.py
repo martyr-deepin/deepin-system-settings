@@ -55,7 +55,7 @@ class ActionBar(gtk.Alignment):
         self.module_infos = module_infos
         self.set(0.5, 0.5, 1, 1)
         self.set_padding(0, 0, 0, 0)
-        self.set_size_request(-1, 36)
+        self.set_size_request(-1, 32)
 
         # Init action box.
         self.main_box = gtk.HBox()
@@ -66,7 +66,7 @@ class ActionBar(gtk.Alignment):
         # Init action button.
         self.backward_align = gtk.Alignment()
         self.backward_align.set(0, 0, 0, 0)
-        self.backward_align.set_padding(10, 5, 10, 0)
+        self.backward_align.set_padding(8, 5, 10, 0)
         self.backward_button = ImageButton(
             app_theme.get_pixbuf("action_button/backward_normal.png"),
             app_theme.get_pixbuf("action_button/backward_hover.png"),
@@ -77,7 +77,7 @@ class ActionBar(gtk.Alignment):
         self.backward_align.add(self.backward_button)
         self.forward_align = gtk.Alignment()
         self.forward_align.set(0, 0, 0, 0)
-        self.forward_align.set_padding(10, 5, 10, 0)
+        self.forward_align.set_padding(8, 5, 10, 0)
         self.forward_button = ImageButton(
             app_theme.get_pixbuf("action_button/forward_normal.png"),
             app_theme.get_pixbuf("action_button/forward_hover.png"),
