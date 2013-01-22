@@ -254,9 +254,8 @@ class DeepinDateTime(BusBase):
         return self.call_async("SetUsingNtp", is_using_ntp,
                                 reply_handler = self.set_using_ntp_reply, error_handler = self.set_using_ntp_error)
 
-    def set_using_ntp_reply(self, result):
+    def set_using_ntp_reply(self):
         print "set using ntp reply"
-        print result
 
     def set_using_ntp_error(self, error):
         print "set using ntp error"
