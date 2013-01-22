@@ -36,7 +36,7 @@ class TrayTimePlugin(object):
         self.tray_time.connect("send-time", self.tray_time_send)
 
     def tray_time_send(self, traytime, text, type, language_type):
-        time_p = None
+        time_p = ""
         if type == TRAY_TIME_12_HOUR:
             time_p = text[0]
         hour = text[0 + type]

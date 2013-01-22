@@ -205,7 +205,7 @@ class AccountSetting(object):
             "set_iconfile": [self.button_widgets["cancel_set_icon"]],
             "edit_iconfile": [self.button_widgets["cancel_set_icon"], self.button_widgets["save_edit_icon"]]}
 
-        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
+        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 10)
         self.alignment_widgets["edit_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
