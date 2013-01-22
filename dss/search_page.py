@@ -62,7 +62,7 @@ class KeywordSearch:
 
         init_jieba()
 
-    def build_index(self, remove_old=True):
+    def build_index(self, remove_old=False):
         if remove_old:
             remove_directory(SEARCH_DB_DIR)
 
