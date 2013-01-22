@@ -51,6 +51,8 @@ class TrayShutdownPlugin(object):
         self.this_list = this_list
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
+        user_pixbuf = self.tray_icon.load_icon("user")
+        self.gui.user_icon.set_from_pixbuf(user_pixbuf)
         self.tray_icon.set_icon_theme("tray_user_icon")
 
     def run(self):
