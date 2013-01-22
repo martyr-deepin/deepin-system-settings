@@ -182,7 +182,7 @@ class AccelEntry(ShortcutKeyEntry):
         self.accel_align.set(0.0, 0.5, 0.0, 0.0)
         self.accel_align.add(self.accel_label)
         self.grab_area = gtk.EventBox()
-        self.grab_area.set_size_request(1, -1)
+        #self.grab_area.set_size_request(1, -1)
         self.grab_area.set_can_focus(True)
         self.grab_area.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.grab_area.add_events(gtk.gdk.KEY_PRESS_MASK)
