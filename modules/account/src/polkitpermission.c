@@ -32,6 +32,7 @@ typedef struct{
 
 }PolkitPermissionObject;
 
+static PyObject *PolkitPermissionError;
 static void pypolkit_permission_dealloc(PolkitPermissionObject *);
 static int  pypolkit_permission_traverse(PolkitPermissionObject *self, visitproc visit, void *arg);
 static int  pypolkit_permission_clear(PolkitPermissionObject *);
@@ -188,8 +189,10 @@ initpolkitpermission(void){
     }
 
     Py_INCREF(&pypolkit_permission_Type_obj);
-    
-    PyModule_AddObject(m, "PolkitPermissionObject", (PyObject *)&pypolkit_permission_Type_obj); 
+    PyModule_AddObject(m, "new_with_action", (PyObject *)&pypolkit_permission_Type_obj); 
+
+    PolkitPermissionError = PyErr_NewException("polkitpermission.error", NULL, NULL);
+    PyModule_AddObject(m, "error", PolkitPermissionError);
 }
 
 static PyObject* polkitpermission_get_action_id(PolkitPermissionObject *self)
@@ -197,12 +200,14 @@ static PyObject* polkitpermission_get_action_id(PolkitPermissionObject *self)
     const gchar *action_id;
 
     if(!self->permission){
+        PyErr_SetString(PolkitPermissionError, "assert permission failed in get action id");
         return NULL;
     }
 
     action_id = polkit_permission_get_action_id(self->permission);
 
     if(!action_id){
+        PyErr_SetString(PolkitPermissionError, "get action id failed");
         return NULL;
     }
 
@@ -214,6 +219,7 @@ static PyObject* polkitpermission_get_allowed(PolkitPermissionObject *self)
     gboolean allowed = 0;
 
     if(!self->permission){
+        PyErr_SetString(PolkitPermissionError, "assert permission failed in get allowed");
         return NULL;
     }
 
@@ -233,6 +239,7 @@ static PyObject* polkitpermission_get_can_acquire(PolkitPermissionObject *self)
     gboolean acquire = 0;
 
     if(!self->permission){
+        PyErr_SetString(PolkitPermissionError, "assert permission failed in get can acquire");
         return NULL;
     }
 
@@ -252,6 +259,7 @@ static PyObject* polkitpermission_get_can_release(PolkitPermissionObject *self)
     gboolean release = 0;
 
     if(!self->permission){
+        PyErr_SetString(PolkitPermissionError, "assert permission failed in get can release");
         return NULL;
     }
 
@@ -271,6 +279,7 @@ static PyObject* polkitpermission_acquire(PolkitPermissionObject *self)
     gboolean acquire = 0;
 
     if(!self->permission){
+        PyErr_SetString(PolkitPermissionError, "assert permission failed in acquire");
         return NULL;
     }
 
@@ -291,6 +300,7 @@ static PyObject* polkitpermission_release(PolkitPermissionObject *self)
     gboolean release = 0;
 
     if(!self->permission){
+        PyErr_SetString(PolkitPermissionError, "assert permission failed in release");
         return NULL;
     }
 
