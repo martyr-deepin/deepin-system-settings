@@ -50,7 +50,6 @@ class TrayTimePlugin(object):
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
-        self.this.set_size_request(300, 324)
         self.tray_icon = self.this_list[1]
         self.tray_icon.set_icon_theme("tray_time_icon")
         self.tray_icon.set_text("12:12:12")
@@ -100,6 +99,7 @@ class TrayTimePlugin(object):
         return align
 
     def show_menu(self):
+        self.this.set_size_request(300, 324)
         print "menu show...."
 
     def hide_menu(self):
