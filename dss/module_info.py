@@ -21,6 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from dtk.ui.utils import get_system_icon_info
 from dtk.ui.config import Config
 from deepin_utils.file import get_parent_dir
 import gtk
@@ -51,13 +52,9 @@ class ModuleInfo(object):
         '''
         TODO: snyh give standard way to get pixbuf
         '''
-        icon_theme = gtk.IconTheme()
-        icon_theme.set_custom_theme("Deepin")
-        icon_infos = []
-        if icon_theme:
-            icon_infos = [icon_theme.lookup_icon("preferences-%s" % self.id, 48, gtk.ICON_LOOKUP_NO_SVG), 
-                          icon_theme.lookup_icon("preferences-%s" % self.id, 16, gtk.ICON_LOOKUP_NO_SVG)
-                         ]
+        icon_infos = [get_system_icon_info("Deepin", "preferences-%s" % self.id), 
+                      get_system_icon_info("Deepin", "preferences-%s" % self.id, 16)
+                     ]
         
         self.icon_pixbuf = None
         self.menu_icon_pixbuf = None

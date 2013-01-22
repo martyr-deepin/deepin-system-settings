@@ -161,7 +161,7 @@ class DatetimeView(gtk.HBox):
             _("Current Date: %d-%d-%d") % (time.localtime().tm_year, 
                                            time.localtime().tm_mon, 
                                            time.localtime().tm_mday), 
-            150)
+            190)
         self.cur_date_align.add(self.cur_date_label)
         '''
         calendar widget
