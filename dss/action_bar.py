@@ -90,6 +90,9 @@ class ActionBar(gtk.Alignment):
         self.action_align = gtk.Alignment()
         self.action_align.set(0.5, 0, 0, 0)
         self.action_align.set_padding(0, 0, 5, 5)
+        self.bread_align = gtk.Alignment()
+        self.bread_align.set(0, 0.5, 1, 0)
+        self.bread_align.set_padding(0, 0, 4, 4)
         
         # Init navigate bar.
         self.navigate_bar = gtk.HBox()
@@ -98,6 +101,7 @@ class ActionBar(gtk.Alignment):
                                  list(itertools.chain(*module_infos)))),
                             ], 
                            show_left_right_box = False)
+        #self.bread.set_size(-1, 24)
         self.bread.connect("item_clicked", switch_page)
         
         # Init search entry.
@@ -117,10 +121,11 @@ class ActionBar(gtk.Alignment):
         
         # Connect widgets.
         self.action_align.add(self.action_box)
+        self.bread_align.add(self.bread)
         self.search_align.add(self.search_entry)
         self.action_box.pack_start(self.backward_align)
         self.action_box.pack_start(self.forward_align)
-        self.navigate_bar.pack_start(self.bread, True, True)
+        self.navigate_bar.pack_start(self.bread_align, True, True)
         self.main_box.pack_start(self.action_align, False, False)
         self.main_box.pack_start(self.navigate_bar, True, True)
         self.main_box.pack_start(self.search_align, False, False)
