@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Long Wei
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Long Wei
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
@@ -167,13 +167,11 @@ class DeepinDateTime(BusBase):
         return self.call_async("SetTime", seconds_since_epoch,
                                 reply_handler = self.set_time_reply, error_handler = self.set_time_error)
 
-    def set_time_reply(self, result):
+    def set_time_reply(self):
         print "set time reply"
-        print result
 
-    def set_time_error(self, error):
+    def set_time_error(self):
         print "set time error"
-        print error
 
     def set_time_by_hms(self, hour, min, sec):
         datetime_str = "%04d-%02d-%02d %02d:%02d:%02d" % (time.localtime().tm_year, 

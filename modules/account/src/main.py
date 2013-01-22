@@ -95,7 +95,7 @@ class AccountSetting(object):
         self.label_widgets["account"] = Label(_("Account type"))
         self.label_widgets["passwd"] = Label(_("Password"))
         self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH, enable_select=False)
-        self.label_widgets["auto_login"] = Label(_("Automatic Login"))
+        self.label_widgets["auto_login"] = Label(_("Automatic login"))
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"))
         self.label_widgets["deepin_account"] = Label(_("Unbound"))
         self.label_widgets["account_name_new"] = Label(_("Account Name"))
@@ -205,7 +205,7 @@ class AccountSetting(object):
             "set_iconfile": [self.button_widgets["cancel_set_icon"]],
             "edit_iconfile": [self.button_widgets["cancel_set_icon"], self.button_widgets["save_edit_icon"]]}
 
-        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
+        self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 10)
         self.alignment_widgets["edit_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
@@ -730,7 +730,7 @@ class AccountSetting(object):
         label1 = Label(_("Action"))
         label2 = Label(_("Current password"))
         label3 = Label(_("New password"))
-        label4 = Label(_("Confirm password"))
+        label4 = Label(_("Confirm new password"))
 
         action_items = [(_("Set a password now"), self.CH_PASSWD_ACTION_SET_PSWD),
                         (_("Log in without a password"), self.CH_PASSWD_ACTION_NO_PSWD)]
@@ -847,7 +847,7 @@ class AccountSetting(object):
             if b != 0:
                 error_msg = _("password unchanged")
                 if b == 10:
-                    error_msg = _("Authentication token manipulation error")
+                    error_msg = _("authentication token manipulation error")
                 if b == -2:
                     error_msg = _("new and old password are too similar")
                 gtk.gdk.threads_enter()
@@ -896,7 +896,7 @@ class AccountSetting(object):
         new_pswd = new_pswd_input.entry.get_text()
         confirm_pswd = confirm_pswd_input.entry.get_text()
         if new_pswd != confirm_pswd:
-            error_label.set_text("<span foreground='red'>%s</span>" % _("两次输入的密码不一致"))
+            error_label.set_text("<span foreground='red'>%s</span>" % _("Passwords do not match"))
             self.container_widgets["main_hbox"].set_sensitive(True)
             return
         mutex = threading.Lock()
@@ -924,7 +924,7 @@ class AccountSetting(object):
         self.container_widgets["icon_set_page"].refresh()
         self.alignment_widgets["set_iconfile"].show_all()
         self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
-        self.module_frame.send_submodule_crumb(2, _("Set Icon"))
+        self.module_frame.send_submodule_crumb(2, _("Set Picture"))
 
     def cancel_set_icon(self, button):
         self.container_widgets["icon_edit_page"].stop_camera()

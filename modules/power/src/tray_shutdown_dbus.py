@@ -36,6 +36,10 @@ DBUS_UPOWER = "org.freedesktop.UPower"
 DBUS_UPOWER_U = "/org/freedesktop/UPower"
 DBUS_POINT_UPOWER = "org.freedesktop.UPower"
 
+DBUS_ACCOUNTS = "org.freedesktop.Accounts"
+DBUS_ACCOUNTS_USER_1000 = "/org/freedesktop/Accounts/User1000"
+DBUS_ACCOUNTS_PROPERTIES = "org.freedesktop.DBus.Properties"
+DBUS_ACCOUNTS_USER = "org.freedesktop.Accounts.User"
 
 class CmdDbus(object):
     def __init__(self):
@@ -53,6 +57,16 @@ class CmdDbus(object):
         self.__session_bus = dbus.SessionBus()
         oper_obj = self.__create_obj(DBUS_GNOME_SESSION, DBUS_GNOME_SESSION_MANAGER)
         self.interface = dbus.Interface(oper_obj, dbus_interface=DBUS_GNOME_SESSION_POINT)
+        #
+        user_bus = dbus.SystemBus()
+        user_oper_obj = user_bus.get_object(DBUS_ACCOUNTS, DBUS_ACCOUNTS_USER_1000)
+        self.__user_interface = dbus.Interface(user_oper_obj, dbus_interface=DBUS_ACCOUNTS_PROPERTIES)
+
+    def get_user_name(self):
+        return self.__user_interface.Get(DBUS_ACCOUNTS_USER, "UserName")
+
+    def get_user_image_path(self):
+        return self.__user_interface.Get(DBUS_ACCOUNTS_USER, "IconFile")
 
     def stop(self):
         self.interface.Shutdown()
@@ -63,15 +77,13 @@ class CmdDbus(object):
     def logout(self, id):
         self.interface.Logout(id)
         
+    def __create_obj(self, bus_name, bus_path):
+        return self.__session_bus.get_object(bus_name, bus_path)
 
-    def __create_obj(self, dbus_section, dbus_name):
-        return self.__session_bus.get_object(dbus_section, dbus_name)
-
-    def __get_method(self, obj, name, dbus__):
-        return obj.get_dbus_method(name, dbus__)
+    def __get_method(self, obj, member, dbus_interface):
+        return obj.get_dbus_method(member, dbus_interface)
 
 if __name__ == "__main__":
     cmd_dbus = CmdDbus()
     cmd_dbus.stop()
-    #cmd_dbus.restart()
     

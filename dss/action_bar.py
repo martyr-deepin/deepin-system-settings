@@ -55,7 +55,7 @@ class ActionBar(gtk.Alignment):
         self.module_infos = module_infos
         self.set(0.5, 0.5, 1, 1)
         self.set_padding(0, 0, 0, 0)
-        self.set_size_request(-1, 36)
+        self.set_size_request(-1, 32)
 
         # Init action box.
         self.main_box = gtk.HBox()
@@ -66,7 +66,7 @@ class ActionBar(gtk.Alignment):
         # Init action button.
         self.backward_align = gtk.Alignment()
         self.backward_align.set(0, 0, 0, 0)
-        self.backward_align.set_padding(10, 5, 10, 0)
+        self.backward_align.set_padding(8, 5, 10, 0)
         self.backward_button = ImageButton(
             app_theme.get_pixbuf("action_button/backward_normal.png"),
             app_theme.get_pixbuf("action_button/backward_hover.png"),
@@ -77,7 +77,7 @@ class ActionBar(gtk.Alignment):
         self.backward_align.add(self.backward_button)
         self.forward_align = gtk.Alignment()
         self.forward_align.set(0, 0, 0, 0)
-        self.forward_align.set_padding(10, 5, 10, 0)
+        self.forward_align.set_padding(8, 5, 10, 0)
         self.forward_button = ImageButton(
             app_theme.get_pixbuf("action_button/forward_normal.png"),
             app_theme.get_pixbuf("action_button/forward_hover.png"),
@@ -90,6 +90,9 @@ class ActionBar(gtk.Alignment):
         self.action_align = gtk.Alignment()
         self.action_align.set(0.5, 0, 0, 0)
         self.action_align.set_padding(0, 0, 5, 5)
+        self.bread_align = gtk.Alignment()
+        self.bread_align.set(0, 0.5, 1, 0)
+        self.bread_align.set_padding(0, 0, 4, 4)
         
         # Init navigate bar.
         self.navigate_bar = gtk.HBox()
@@ -98,6 +101,7 @@ class ActionBar(gtk.Alignment):
                                  list(itertools.chain(*module_infos)))),
                             ], 
                            show_left_right_box = False)
+        #self.bread.set_size(-1, 24)
         self.bread.connect("item_clicked", switch_page)
         
         # Init search entry.
@@ -117,10 +121,11 @@ class ActionBar(gtk.Alignment):
         
         # Connect widgets.
         self.action_align.add(self.action_box)
+        self.bread_align.add(self.bread)
         self.search_align.add(self.search_entry)
         self.action_box.pack_start(self.backward_align)
         self.action_box.pack_start(self.forward_align)
-        self.navigate_bar.pack_start(self.bread, True, True)
+        self.navigate_bar.pack_start(self.bread_align, True, True)
         self.main_box.pack_start(self.action_align, False, False)
         self.main_box.pack_start(self.navigate_bar, True, True)
         self.main_box.pack_start(self.search_align, False, False)
