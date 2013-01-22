@@ -187,6 +187,9 @@ class PowerView(gtk.VBox):
              self.tray_battery_status_label, 
              self.tray_battery_status_toggle_align])
         self.tray_battery_status_align.add(self.tray_battery_status_box)
+        if not self.power_manager.is_laptop():
+            self.tray_battery_status_align.set_visible(False)
+        
         '''
         this->gtk.VBox pack_start
         '''
