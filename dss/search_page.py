@@ -62,7 +62,9 @@ class KeywordSearch:
 
         init_jieba()
 
-    def build_index(self, remove_old=False):
+    def build_index(self, remove_old=True):
+        return
+
         if remove_old:
             remove_directory(SEARCH_DB_DIR)
 
@@ -149,7 +151,7 @@ class SearchPage(gtk.VBox):
         '''
         TODO: build index might be a heavey operation depend on keywords count
         '''
-        BuildIndexThread(self).start()
+        #BuildIndexThread(self).start()
 
         self.scrolled_window.add_child(self.result_align)
         self.pack_start(self.scrolled_window)

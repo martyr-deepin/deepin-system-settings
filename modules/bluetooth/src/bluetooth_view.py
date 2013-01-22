@@ -347,6 +347,12 @@ class BlueToothView(gtk.VBox):
                                   self.timeout_align, 
                                   self.device_align])
 
+        '''
+        FIXME: Deepin UI ToggleButton need inactive_disable_dpixbuf
+        if self.adapter == None:
+            self.set_sensitive(False)
+        '''
+
         self.connect("expose-event", self.__expose)
 
     def __setup_separator(self):                                                
