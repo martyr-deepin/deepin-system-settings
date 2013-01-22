@@ -41,12 +41,23 @@ class Gui(gtk.VBox):
         self.cmd_dbus = CmdDbus()
 
     def init_widgets(self):
+        icon_width = icon_height = 30
+        #
         self.user_hbox = gtk.HBox()
         self.user_icon = gtk.Image()
-        user_name = os.getlogin()
+        self.user_icon.set_from_file(self.cmd_dbus.get_user_image_path())
+        #
+        user_pixbuf = self.user_icon.get_pixbuf()
+        new_user_pixbuf = user_pixbuf.scale_simple(icon_width, icon_height, gtk.gdk.INTERP_BILINEAR)
+        self.user_icon.set_from_pixbuf(new_user_pixbuf)
+        #
+        user_name = self.cmd_dbus.get_user_name()
+        self.user_label_ali = gtk.Alignment(0, 0, 1, 1)
+        self.user_label_ali.set_padding(0, 0, 5, 0)
         self.user_label = gtk.Label(user_name)
+        self.user_label_ali.add(self.user_label)
         self.user_hbox.pack_start(self.user_icon, False, False)
-        self.user_hbox.pack_start(self.user_label, False, False)
+        self.user_hbox.pack_start(self.user_label_ali, False, False)
         #
         self.h_separator_top_ali = gtk.Alignment(0, 0, 1, 1)
         self.h_separator_top_ali.set_padding(5, 5, 0, 0)
