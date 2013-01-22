@@ -45,9 +45,6 @@ class SessionItem(TreeItem):
 
         TreeItem.__init__(self)
         self.item = item
-        self.app_name = item.name()
-        self.state = item.is_active()
-        self.description = item.get_option("Comment")
         self.is_double_click = False
         self.autorun = item.has_gnome_auto()
 
@@ -59,6 +56,7 @@ class SessionItem(TreeItem):
         self.redraw()
 
     def render_app(self, cr, rect):
+        self.app_name = self.item.name()
         self.render_background(cr, rect)
         CHECK_LEFT_PADDING = 5
         CHECK_RIGHT_PADDING = 5
@@ -77,7 +75,7 @@ class SessionItem(TreeItem):
                 alignment = pango.ALIGN_LEFT)
 
     def render_description(self, cr, rect):
-
+        self.description = self.item.get_option("Comment")
         self.render_background(cr, rect)
         if self.description:
             (text_width, text_height) = get_content_size(self.description)
@@ -91,6 +89,7 @@ class SessionItem(TreeItem):
 
         
     def render_state(self, cr, rect):
+        self.state = self.item.is_active()
         self.render_background(cr, rect)
         if self.state:
             state = _("active")
@@ -122,7 +121,8 @@ class SessionItem(TreeItem):
             self.redraw_request_callback(self)
     
     def single_click(self, column, offset_x, offset_y):
-        print "1 click"
+        self.is_select = True
+        self.redraw()
 
     def double_click(self, column, offset_x, offset_y):
         self.is_double_click = True

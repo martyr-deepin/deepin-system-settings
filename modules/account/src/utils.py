@@ -20,8 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import polkit_permission as polkitpermission
-
+import polkitpermission
 import dbus
 import gobject
 import re
@@ -159,14 +158,11 @@ class BusBase(gobject.GObject):
 
 class PolkitPermission:
     
-    def __init__(self, action, subject = "subject"):
-        self.permission =  polkitpermission.new(action)
+    def __init__(self, action):
+        self.permission =  polkitpermission.PolkitPermissionObject(action)
     
     def get_action_id(self):
         return self.permission.get_action_id()
-
-    # def get_subject(self):
-    #     return self.permission.get_subject()
 
     def get_allowed(self):
         return self.permission.get_allowed()
@@ -201,3 +197,6 @@ if __name__ == "__main__":
     print permission.get_can_release()
 
     permission.acquire()
+    # def get_subject(self)
+    #     return self.permission.get_subject()
+

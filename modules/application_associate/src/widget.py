@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from dtk.ui.dialog import DialogBox
+from dss import app_theme
+from dtk.ui.dialog import DialogBox, OpenFileDialog
 from dtk.ui.button import Button
 from dtk.ui.new_entry import InputEntry
 from dtk.ui.label import Label
+from dtk.ui.button import ImageButton
+from dtk.ui.theme import DynamicPixbuf
 
 import gtk
 import style
@@ -43,7 +46,7 @@ class NewSessionDialog(DialogBox):
         self.cancel_callback = cancel_callback
         
         self.new_session = new_session
-        self.app_name = self.new_session.name
+        self.app_name = self.new_session.name()
         self.command = self.new_session.get_option("Exec")
         self.desc = self.new_session.get_option("Comment")
         
@@ -52,12 +55,26 @@ class NewSessionDialog(DialogBox):
         
         self.confirm_button.connect("clicked", lambda w: self.click_confirm_button())
         self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
+        # get system pixbuf
+        icon_theme = gtk.IconTheme()
+        icon_theme.set_custom_theme("Deepin")
+        icon_info = None
+        if icon_theme:
+            icon_info = icon_theme.lookup_icon("folder-open", 16, gtk.ICON_LOOKUP_NO_SVG)
+        
+        
+        self.icon_pixbuf = None
+        if icon_info:
+            self.icon_pixbuf = DynamicPixbuf(icon_info.get_filename())
+        else:
+            self.icon_pixbuf = app_theme.get_pixbuf("navigate/none-small.png")
         
         table = self.add_new_box() 
         self.pack(self.body_box, [table])
         self.right_button_box.set_buttons([self.confirm_button, self.cancel_button])
         
         self.connect("show", self.focus_input)
+
 
     def pack(self, container, widgets, expand=False, fill=False):
         for widget in widgets:
@@ -73,6 +90,9 @@ class NewSessionDialog(DialogBox):
         self.name_entry = InputEntry()
         self.exec_entry = InputEntry()
         self.desc_entry = InputEntry()
+        self.name_entry.set_text(self.app_name)
+        self.exec_entry.set_text(self.command)
+        self.desc_entry.set_text(self.desc)
         self.name_entry.set_size(200, 22)
         self.exec_entry.set_size(200, 22)
         self.desc_entry.set_size(200, 22)
@@ -96,6 +116,10 @@ class NewSessionDialog(DialogBox):
         table = gtk.Table(3, 4)
         self.table_add(table, [name_label_align, exec_label_align, desc_label_align], 0)
         self.table_add(table, [name_align, exec_align, desc_align], 1)
+
+        open_folder = ImageButton(self.icon_pixbuf, self.icon_pixbuf, self.icon_pixbuf)
+        open_folder.connect("clicked", lambda w: OpenFileDialog("Choose file", self, ok_callback=self.ok_callback))
+        table.attach(style.wrap_with_align(open_folder), 2, 3, 1, 2)
         
         align = gtk.Alignment(0.5, 0, 0, 0)
         style.set_table(table)
@@ -108,6 +132,9 @@ class NewSessionDialog(DialogBox):
     def table_add(self, table,  widget, column):
         for index, w in enumerate(widget):
             table.attach(w, column, column + 1, index, index + 1)
+
+    def ok_callback(self, file_name):
+        self.exec_entry.set_text(file_name)
 
         
     def focus_input(self, widget):

@@ -19,15 +19,19 @@ class SessionView(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         self.new_session = None
+        self.open_dialog = False
         
         # UI style
         style.draw_background_color(self)
         self.tree = TreeView([],enable_drag_drop=False,
-                             enable_hover=True)
+                             enable_hover=True,
+                             enable_multiple_select=False,
+                             )
 
         self.tree.set_column_titles((_("Application"), _("State"), _("Description")), self.sort_method)
 
         self.tree.set_size_request(800, -1)
+        self.tree.connect("right-press-items", self.right_press_item)
 
         self.tree.draw_mask = self.draw_mask
         self.tree.add_items(self.get_list())
@@ -82,6 +86,16 @@ class SessionView(gtk.VBox):
 
         self.pack(hbox, [name_label, name_align, exec_label, exec_align, desc_label, desc_align])
         return hbox
+    
+    def right_press_item(self, widget,  x_root, y_root, current_item, select_items):
+        for item in select_items:
+            item.unselect()
+        if current_item != None:
+            session = current_item.item
+            #self.tree.unselect_all()
+            current_item.select()
+            #self.open_dialog = True
+            NewSessionDialog(session, confirm_callback= self.edit_done, cancel_callback = self.cancel_callback).show_all()
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()
@@ -94,6 +108,7 @@ class SessionView(gtk.VBox):
     def add_autostart(self, widget):
         self.new_session = sessions.add("","","")
         NewSessionDialog(self.new_session, confirm_callback= self.confirm_callback, cancel_callback = self.cancel_callback).show_all()
+        #self.open_dialog = True
 
     def delete_autostart(self, widget):
         items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
@@ -105,13 +120,23 @@ class SessionView(gtk.VBox):
     def entry_changed(self, widget, content, option):
         self.new_session.set_option(option, content)
 
+    def edit_done(self, session):
+        session.save(session.file_name)
+        self.new_session = None
+        items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
+        self.tree.redraw_request(items, True)
+        self.open_dialog = False
+
+
     def confirm_callback(self, session):
         session.save(session.get_option("Name"))
         self.tree.add_items([SessionItem(session)]) 
         self.new_session = None
+        #self.open_dialog = False
 
     def cancel_callback(self):
         self.new_session = None
+        #self.open_dialog = False
 
     def pack(self, parent, widget_list, expand=False, fill=False):
         for w in widget_list:

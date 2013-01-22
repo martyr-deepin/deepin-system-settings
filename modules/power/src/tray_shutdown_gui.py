@@ -30,6 +30,10 @@ import os
 import sys
 sys.path.append("/usr/share/deepin-system-settings/dss")
 from theme import app_theme
+from vtk.utils import get_text_size
+
+
+WIDTH = 120
 
 class Gui(gtk.VBox):
     def __init__(self):
@@ -52,6 +56,10 @@ class Gui(gtk.VBox):
         self.user_icon.set_from_pixbuf(new_user_pixbuf)
         #
         user_name = self.cmd_dbus.get_user_name()
+        user_name_width = get_text_size(user_name)[0]
+        if user_name_width > WIDTH: 
+            de_user_name = user_name.decode("utf-8")
+            user_name = de_user_name[0:10] + "..."
         self.user_label_ali = gtk.Alignment(0, 0, 1, 1)
         self.user_label_ali.set_padding(0, 0, 5, 0)
         self.user_label = gtk.Label(user_name)
@@ -72,10 +80,10 @@ class Gui(gtk.VBox):
         self.suspend_btn = SelectButton(_("suspend"), font_size=10)
         self.logout_btn = SelectButton(_("logout"), font_size=10)
         #
-        self.stop_btn.set_size_request(120, 25)
-        self.restart_btn.set_size_request(120, 25)
-        self.suspend_btn.set_size_request(120, 25)
-        self.logout_btn.set_size_request(120, 25)
+        self.stop_btn.set_size_request(WIDTH, 25)
+        self.restart_btn.set_size_request(WIDTH, 25)
+        self.suspend_btn.set_size_request(WIDTH, 25)
+        self.logout_btn.set_size_request(WIDTH, 25)
         #
         self.pack_start(self.user_hbox, True, True)
         self.pack_start(self.h_separator_top_ali, True, True)
