@@ -49,7 +49,7 @@ class HistroyIcon(object):
         super(HistroyIcon, self).__init__()
         self.account_setting = account_setting
         self.cfg_dir = os.path.join(self.account_setting.get_home_directory(), ".config/deepin-system-settings")
-        self.cfg_file = os.path.join(self.cfg_dir, "icon_histroy")
+        self.cfg_file = os.path.join(self.cfg_dir, "account_icon_histroy")
         if not os.path.exists(self.cfg_dir):
             try:
                 os.makedirs(self.cfg_dir)
@@ -91,42 +91,57 @@ class IconSetPage(gtk.VBox):
         #self.set_spacing(BETWEEN_SPACING)
         self.account_setting = account_setting
 
-        self.choose_menu = Menu([(None, _("从本地文件"), self.choose_from_picture),
-                                (None, _("使用深度截图"), self.choose_from_screenshot),
-                                (None, _("使用摄像头"), self.choose_from_camera)], True)
+        self.choose_menu_without_camera = Menu(
+            [(None, _("从本地文件"), self.choose_from_picture), (None, _("使用深度截图"), self.choose_from_screenshot),], True)
+        self.choose_menu_with_camera = Menu(
+            [(None, _("从本地文件"), self.choose_from_picture),
+             (None, _("使用深度截图"), self.choose_from_screenshot),
+             (None, _("使用摄像头"), self.choose_from_camera)], True)
         self.tips_label = Label("Set icon", text_size=13, label_width=460, enable_select=False)
         self.error_label = Label("", wrap_width=560, enable_select=False)
-        self.pack_start(tools.make_align(self.tips_label), False, False)
-        self.pack_start(tools.make_align(height=20), False, False)
 
-        icon_list_sw = ScrolledWindow()
-        icon_list_sw.set_size_request(600, 70)
-        self.icon_list_hbox = gtk.HBox(False)
-        icon_list_sw.add_child(tools.make_align(self.icon_list_hbox, yalign=0.0, height=-1))
-        self.icon_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
+        set_page_sw = ScrolledWindow()
+        self.pack_start(set_page_sw)
+        main_vbox = gtk.VBox(False)
+        set_page_sw.add_child(main_vbox)
+        self.icon_list_tabel = gtk.Table()
+        main_vbox.pack_start(tools.make_align(self.tips_label), False, False)
+        main_vbox.pack_start(tools.make_align(height=20), False, False)
 
-        histroy_list_sw = ScrolledWindow()
-        icon_list_sw.set_size_request(600, 70)
+        #icon_list_sw = ScrolledWindow()
+        #icon_list_sw.set_size_request(600, 70)
+        #self.icon_list_hbox = gtk.HBox(False)
+        #icon_list_sw.add_child(tools.make_align(self.icon_list_hbox, yalign=0.0, height=-1))
+        #self.icon_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
+
+        #histroy_list_sw = ScrolledWindow()
+        #icon_list_sw.set_size_request(600, 70)
         self.histroy_list_hbox = gtk.HBox(False)
         self.histroy_list_hbox.set_size_request(-1, 70)
-        histroy_list_sw.add_child(tools.make_align(self.histroy_list_hbox, yalign=0.0, height=-1))
-        self.histroy_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
+        #histroy_list_sw.add_child(tools.make_align(self.histroy_list_hbox, yalign=0.0, height=-1))
+        #self.histroy_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
 
-        self.pack_start(tools.make_align(Label(_("选择用户头像")), height=CONTAINNER_HEIGHT), False, False)
-        self.pack_start((icon_list_sw), False, False)
-        self.pack_start(tools.make_align(height=20), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("选择用户头像")), height=CONTAINNER_HEIGHT), False, False)
+        #self.pack_start((icon_list_sw), False, False)
+        main_vbox.pack_start(tools.make_align(self.icon_list_tabel), False, False)
+        main_vbox.pack_start(tools.make_align(height=20), False, False)
 
-        self.pack_start(tools.make_align(Label(_("历史使用头像")), height=CONTAINNER_HEIGHT), False, False)
-        self.pack_start((histroy_list_sw), False, False)
-        self.pack_start(tools.make_align(height=20), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("历史使用头像")), height=CONTAINNER_HEIGHT), False, False)
+        #self.pack_start((histroy_list_sw), False, False)
+        main_vbox.pack_start(tools.make_align(self.histroy_list_hbox), False, False)
+        main_vbox.pack_start(tools.make_align(height=20), False, False)
 
-        self.pack_start(tools.make_align(self.error_label), False, False)
+        main_vbox.pack_start(tools.make_align(self.error_label), False, False)
 
         face_dir = '/usr/share/pixmaps/faces'
         if os.path.exists(face_dir):
             pic_list = os.listdir(face_dir)
         else:
             pic_list = []
+        total_pic = len(pic_list)
+        rows = (total_pic + 1) / 10 + 1
+        self.icon_list_tabel.resize(rows, 10)
+        i = j = 0
         for pic in pic_list:
             try:
                 icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
@@ -135,12 +150,18 @@ class IconSetPage(gtk.VBox):
                 continue
             icon_bt = IconButton(icon_pixbuf, "%s/%s" %(face_dir, pic))
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
-            self.icon_list_hbox.pack_start(icon_bt, False, False)
+            #self.icon_list_hbox.pack_start(icon_bt, False, False)
+            self.icon_list_tabel.attach(icon_bt, i, i+1, j, j+1, 4)
+            i += 1
+            if i >= 10:
+                i = 0
+                j += 1
         more_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
         more_button.connect("button-press-event", self.choose_more_picture)
-        self.icon_list_hbox.pack_start(more_button, False, False)
+        #self.icon_list_hbox.pack_start(more_button, False, False)
+        self.icon_list_tabel.attach(more_button, i, i+1, j, j+1, 4)
 
-        self.connect("expose-event", self.draw_frame_border, icon_list_sw, histroy_list_sw)
+        #self.connect("expose-event", self.draw_frame_border, icon_list_sw, histroy_list_sw)
 
     def refresh(self):
         self.error_label.set_text("")
@@ -154,7 +175,9 @@ class IconSetPage(gtk.VBox):
         self.histroy_icon = HistroyIcon(self.account_setting.current_set_user)
         self.histroy_icon.get_histroy()
         self.histroy_list_hbox.foreach(lambda w: w.destroy())
-        icon_button_list = self.icon_list_hbox.get_children()
+        #icon_button_list = self.icon_list_hbox.get_children()
+        icon_button_list = self.icon_list_tabel.get_children()
+        i = 0
         for pic in self.histroy_icon.histroy:
             if not os.path.exists(pic):
                 continue
@@ -169,6 +192,9 @@ class IconSetPage(gtk.VBox):
                 except Exception, e:
                     print e
                     continue
+            if i >= 10:
+                break
+            i += 1
             icon_bt = IconButton(icon_pixbuf, pic, can_del=True)
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
             icon_bt.connect("del-pressed", self.on_icon_bt_del_pressed_cb)
@@ -190,7 +216,7 @@ class IconSetPage(gtk.VBox):
             file_path = widget.get_image_path()
             self.account_setting.current_set_user.set_icon_file(file_path)
             if not file_path in self.histroy_icon.histroy:
-                self.histroy_icon.histroy.append(file_path)
+                self.histroy_icon.histroy.insert(0, file_path)
                 self.histroy_icon.set_histroy(self.histroy_icon.histroy)
         except Exception, e:
             print e
@@ -204,7 +230,10 @@ class IconSetPage(gtk.VBox):
     def choose_more_picture(self, widget, event):
         x = int(event.x_root - event.x)
         y = int(event.y_root - event.y + widget.allocation.height)
-        self.choose_menu.show((x, y))
+        if self.is_has_camera():
+            self.choose_menu_with_camera.show((x, y))
+        else:
+            self.choose_menu_without_camera.show((x, y))
 
     def choose_from_picture(self):
         file_filter = gtk.FileFilter()
@@ -279,6 +308,10 @@ class IconSetPage(gtk.VBox):
         cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
         cr.rectangle(x, y, w, h)
         cr.stroke()
+
+    # TODO 判断是否有摄像头
+    def is_has_camera(self):
+        return True
 gobject.type_register(IconSetPage)
 
         
@@ -868,7 +901,7 @@ class IconEditPage(gtk.HBox):
             histroy_icon = self.account_setting.container_widgets["icon_set_page"].histroy_icon
             if not filename in histroy_icon.histroy:
                 path = "/var/lib/AccountsService/icons/" + self.account_setting.current_set_user.get_user_name()
-                histroy_icon.histroy.append(path)
+                histroy_icon.histroy.insert(0, path)
                 histroy_icon.set_histroy(histroy_icon.histroy)
         except Exception, e:
             from traceback import print_exc
