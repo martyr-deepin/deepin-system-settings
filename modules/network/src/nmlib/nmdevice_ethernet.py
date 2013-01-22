@@ -81,6 +81,7 @@ class NMDeviceEthernet(NMDevice):
         else:        
             try:
                 conn = nm_remote_settings.new_wired_connection()
+                conn = nm_remote_settings.new_connection_finish(conn.settings_dict, 'lan')
                 nmclient.activate_connection(conn.object_path, self.object_path, "/")
                 if cache.getobject(self.object_path).is_active():
                     return True

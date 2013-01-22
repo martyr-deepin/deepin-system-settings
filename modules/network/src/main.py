@@ -163,6 +163,7 @@ class WiredSection(gtk.VBox):
             for device in self.wired_devices:
                 if device.is_active():
                     self.wire.set_active(True)
+                    return
                 else:
                     self.wire.set_active(False)
 

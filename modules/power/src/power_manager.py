@@ -78,6 +78,9 @@ class PowerManager:
         self.power_settings.reset("sleep-display-ac") 
         self.lockdown_settings.reset("disable-lock-screen")  
 
+    def is_laptop(self):
+        return self.power_settings.get_boolean("is-laptop")
+    
     def get_press_button_power(self, items):
         return self.__get_item_value(items, self.power_settings.get_string("button-power"))
     
