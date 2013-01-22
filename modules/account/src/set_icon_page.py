@@ -92,11 +92,11 @@ class IconSetPage(gtk.VBox):
         self.account_setting = account_setting
 
         self.choose_menu_without_camera = Menu(
-            [(None, _("从本地文件"), self.choose_from_picture), (None, _("使用深度截图"), self.choose_from_screenshot),], True)
+            [(None, _("Local picture"), self.choose_from_picture), (None, _("Take a screeshot"), self.choose_from_screenshot),], True)
         self.choose_menu_with_camera = Menu(
-            [(None, _("从本地文件"), self.choose_from_picture),
-             (None, _("使用深度截图"), self.choose_from_screenshot),
-             (None, _("使用摄像头"), self.choose_from_camera)], True)
+            [(None, _("Local picture"), self.choose_from_picture),
+             (None, _("Take a screeshot"), self.choose_from_screenshot),
+             (None, _("From camera"), self.choose_from_camera)], True)
         self.tips_label = Label("Set icon", text_size=13, label_width=460, enable_select=False)
         self.error_label = Label("", wrap_width=560, enable_select=False)
 
@@ -121,12 +121,12 @@ class IconSetPage(gtk.VBox):
         #histroy_list_sw.add_child(tools.make_align(self.histroy_list_hbox, yalign=0.0, height=-1))
         #self.histroy_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
 
-        main_vbox.pack_start(tools.make_align(Label(_("选择用户头像")), height=CONTAINNER_HEIGHT), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("Choose a new picture for your account")), height=CONTAINNER_HEIGHT), False, False)
         #self.pack_start((icon_list_sw), False, False)
         main_vbox.pack_start(tools.make_align(self.icon_list_tabel), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 
-        main_vbox.pack_start(tools.make_align(Label(_("历史使用头像")), height=CONTAINNER_HEIGHT), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("Previously used pictures")), height=CONTAINNER_HEIGHT), False, False)
         #self.pack_start((histroy_list_sw), False, False)
         main_vbox.pack_start(tools.make_align(self.histroy_list_hbox), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
@@ -171,7 +171,7 @@ class IconSetPage(gtk.VBox):
             show_name = self.account_setting.current_set_user.get_real_name()
         else:
             show_name = self.account_setting.current_set_user.get_user_name()
-        self.tips_label.set_text("<b>%s</b>" % _("Set <u>%s</u>'s icon") % tools.escape_markup_string(show_name))
+        self.tips_label.set_text("<b>%s</b>" % _("Set <u>%s</u>'s picture") % tools.escape_markup_string(show_name))
         self.histroy_icon = HistroyIcon(self.account_setting.current_set_user)
         self.histroy_icon.get_histroy()
         self.histroy_list_hbox.foreach(lambda w: w.destroy())
@@ -253,7 +253,7 @@ class IconSetPage(gtk.VBox):
         self.account_setting.container_widgets["icon_edit_page"].set_pixbuf(icon_pixbuf)
         self.account_setting.alignment_widgets["edit_iconfile"].show_all()
         self.account_setting.set_to_page(self.account_setting.alignment_widgets["edit_iconfile"], "right")
-        self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Icon"))
+        self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Picture"))
 
     def choose_from_screenshot(self):
         cmd = ("/usr/bin/deepin-screenshot", "-d 1", "--sub")
@@ -283,13 +283,13 @@ class IconSetPage(gtk.VBox):
         self.account_setting.container_widgets["icon_edit_page"].set_pixbuf(pixbuf)
         self.account_setting.alignment_widgets["edit_iconfile"].show_all()
         self.account_setting.set_to_page(self.account_setting.alignment_widgets["edit_iconfile"], "right")
-        self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Icon"))
+        self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Picture"))
 
     def choose_from_camera(self):
         self.account_setting.container_widgets["icon_edit_page"].set_camera_mode()
         self.account_setting.alignment_widgets["edit_iconfile"].show_all()
         self.account_setting.set_to_page(self.account_setting.alignment_widgets["edit_iconfile"], "right")
-        self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Icon"))
+        self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Picture"))
 
     def draw_white_background(self, widget, event):
         x, y, w, h = widget.allocation
@@ -833,7 +833,7 @@ class IconEditPage(gtk.HBox):
         right_align.add(right_vbox)
 
         self.draw_area = IconEditArea()
-        left_vbox.pack_start(tools.make_align(Label(_("截取头像"))), False, False)
+        left_vbox.pack_start(tools.make_align(Label(_("Clip"))), False, False)
         left_vbox.pack_start(tools.make_align(self.draw_area, yalign=0.0, width=350, height=300))
 
         self.thumbnail_large = gtk.Image()
@@ -843,7 +843,7 @@ class IconEditPage(gtk.HBox):
         self.thumbnail_mid.set_size_request(48, 48)
         self.thumbnail_small.set_size_request(24, 24)
 
-        right_vbox.pack_start(tools.make_align(Label(_("头像预览"))), False, False)
+        right_vbox.pack_start(tools.make_align(Label(_("Preview"))), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_large), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_mid), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_small), False, False)
@@ -890,7 +890,7 @@ class IconEditPage(gtk.HBox):
         pixbuf = self.thumbnail_large.get_pixbuf()
         if not pixbuf:
             self.error_label.set_text("<span foreground='red'>%s%s</span>" % (
-                _("Error:"), _("头像为空")))
+                _("Error:"), _("no picture")))
             return
         tmp = mkstemp(".tmp", "account-settings")
         os.close(tmp[0])

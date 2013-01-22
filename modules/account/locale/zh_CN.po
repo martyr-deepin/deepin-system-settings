@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/search_keyword.py:25 ../src/main.py:98
-msgid "Automatic Login"
+msgid "Automatic login"
 msgstr "自动登陆"
 
 #: ../src/search_keyword.py:26 ../src/main.py:99 ../src/main.py:103
@@ -42,7 +42,7 @@ msgid "Change Password"
 msgstr "修改密码"
 
 #: ../src/search_keyword.py:31 ../src/main.py:927
-msgid "Set Icon"
+msgid "Set Picture"
 msgstr "设置头像"
 
 #: ../src/search_keyword.py:32
@@ -105,7 +105,7 @@ msgstr "保存"
 #: ../src/main.py:889 ../src/set_icon_page.py:198 ../src/set_icon_page.py:222
 #: ../src/set_icon_page.py:864 ../src/set_icon_page.py:882
 msgid "Error:"
-msgstr "错误"
+msgstr "错误："
 
 #: ../src/main.py:541
 msgid "Do you want to keep <u>%s</u>'s files?"
@@ -136,7 +136,7 @@ msgid "New password"
 msgstr "新密码"
 
 #: ../src/main.py:733
-msgid "Confirm password"
+msgid "Confirm new password"
 msgstr "确认密码"
 
 #: ../src/main.py:735
@@ -168,57 +168,56 @@ msgid "password unchanged"
 msgstr "密码未被修改"
 
 #: ../src/main.py:850
-msgid "Authentication token manipulation error"
+msgid "authentication token manipulation error"
 msgstr "认证令牌操作错误"
 
 #: ../src/main.py:852
 msgid "new and old password are too similar"
-msgstr "新密码与旧密码太相似"
+msgstr "新密码与旧密码过于相近"
 
 #: ../src/main.py:899
-msgid ""
+msgid "Passwords do not match"
 msgstr "两次输入的密码不一致"
 
 #: ../src/set_icon_page.py:94
-msgid ""
+msgid "Local picture"
 msgstr "从本地文件"
 
 #: ../src/set_icon_page.py:95
-msgid ""
+msgid "Take a screeshot"
 msgstr "使用深度截图"
 
 #: ../src/set_icon_page.py:96
-msgid ""
+msgid "From camera"
 msgstr "使用摄像头"
 
 #: ../src/set_icon_page.py:115
-msgid ""
+msgid "Choose a new picture for your account"
 msgstr "选择用户头像"
 
 #: ../src/set_icon_page.py:119
-msgid ""
+msgid "Previously used pictures"
 msgstr "历史使用头像"
 
 #: ../src/set_icon_page.py:153
-#, python-format
-msgid "Set <u>%s</u>'s icon"
+msgid "Set <u>%s</u>'s picture"
 msgstr "设置<u>%s</u>的头像"
 
 #: ../src/set_icon_page.py:227 ../src/set_icon_page.py:257
 #: ../src/set_icon_page.py:263
-msgid "Edit Icon"
+msgid "Edit Picture"
 msgstr "编辑头像"
 
 #: ../src/set_icon_page.py:807
-msgid ""
+msgid "Clip"
 msgstr "截取头像"
 
 #: ../src/set_icon_page.py:817
-msgid ""
+msgid "Preview"
 msgstr "头像预览"
 
 #: ../src/set_icon_page.py:864
-msgid ""
+msgid "no picture"
 msgstr "头像为空"
 
 #: ../src/treeitem.py:169
