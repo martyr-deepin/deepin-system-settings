@@ -41,20 +41,33 @@ class Gui(gtk.VBox):
         self.cmd_dbus = CmdDbus()
 
     def init_widgets(self):
-        self.h_separator_top = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        self.label = gtk.Label("long")
+        self.user_hbox = gtk.HBox()
+        self.user_icon = gtk.Image()
+        user_name = os.getlogin()
+        self.user_label = gtk.Label(user_name)
+        self.user_hbox.pack_start(self.user_icon, False, False)
+        self.user_hbox.pack_start(self.user_label, False, False)
+        #
+        self.h_separator_top_ali = gtk.Alignment(0, 0, 1, 1)
+        self.h_separator_top_ali.set_padding(5, 5, 0, 0)
+        self.h_separator_top = HSeparator(
+                app_theme.get_shadow_color("hSeparator").get_color_info(), 
+                0, 
+                0)
+        self.h_separator_top_ali.add(self.h_separator_top)
+        #
         self.stop_btn = SelectButton(_("shutdown"), font_size=10)
-        self.restart_btn= SelectButton(_("restart"), font_size=10)
+        self.restart_btn = SelectButton(_("restart"), font_size=10)
         self.suspend_btn = SelectButton(_("suspend"), font_size=10)
-        self.logout_btn = SelectButton(_("logout"))
+        self.logout_btn = SelectButton(_("logout"), font_size=10)
         #
         self.stop_btn.set_size_request(120, 25)
         self.restart_btn.set_size_request(120, 25)
         self.suspend_btn.set_size_request(120, 25)
         self.logout_btn.set_size_request(120, 25)
         #
-        #self.pack_start(self.label, True, True)
-        self.pack_start(self.h_separator_top, True, True)
+        self.pack_start(self.user_hbox, True, True)
+        self.pack_start(self.h_separator_top_ali, True, True)
         self.pack_start(self.stop_btn, True, True)
         self.pack_start(self.restart_btn, True, True)
         self.pack_start(self.suspend_btn, True, True)
