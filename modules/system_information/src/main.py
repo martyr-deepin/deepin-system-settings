@@ -54,17 +54,17 @@ class SysInfo(object):
 
     def __create_widget(self):
         # label widget
-        self.label_widgets["copyright"] = Label("%s%s" % ("Copyright © 2011 - 2013 ", _("Wuhan Deepin Technology Co.Ltd, All rights reserved")), enable_select=False)
-        self.label_widgets["version"] = Label(_("Version"))
-        self.label_widgets["cpu"] = Label(_("CPU"))
-        self.label_widgets["mem"] = Label(_("Memory"))
-        self.label_widgets["arch"] = Label(_("OS Type"))
-        self.label_widgets["disk"] = Label(_("Disk"))
-        self.label_widgets["version_info"] = Label("")
-        self.label_widgets["cpu_info"] = Label("")
-        self.label_widgets["mem_info"] = Label("")
-        self.label_widgets["arch_info"] = Label("")
-        self.label_widgets["disk_info"] = Label("")
+        self.label_widgets["copyright"] = Label("%s%s" % ("Copyright © 2011 - 2013 ", _("Wuhan Deepin Technology Co.Ltd, All rights reserved")), enable_select=False, enable_double_click=False)
+        self.label_widgets["version"] = Label(_("Version"), enable_select=False, enable_double_click=False)
+        self.label_widgets["cpu"] = Label(_("CPU"), enable_select=False, enable_double_click=False)
+        self.label_widgets["mem"] = Label(_("Memory"), enable_select=False, enable_double_click=False)
+        self.label_widgets["arch"] = Label(_("OS Type"), enable_select=False, enable_double_click=False)
+        self.label_widgets["disk"] = Label(_("Disk"), enable_select=False, enable_double_click=False)
+        self.label_widgets["version_info"] = Label("", enable_select=False, enable_double_click=False)
+        self.label_widgets["cpu_info"] = Label("", enable_select=False, enable_double_click=False)
+        self.label_widgets["mem_info"] = Label("", enable_select=False, enable_double_click=False)
+        self.label_widgets["arch_info"] = Label("", enable_select=False, enable_double_click=False)
+        self.label_widgets["disk_info"] = Label("", enable_select=False, enable_double_click=False)
 
         # image widget
         self.image_widgets["logo"] = ImageBox(app_theme.get_pixbuf('%s/logo.png' % MODULE_NAME))
