@@ -210,7 +210,8 @@ class AccountSetting(object):
         self.alignment_widgets["edit_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
-        self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
+        #self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
+        self.alignment_widgets["main_hbox"].set_padding(0, 10, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"])
@@ -218,8 +219,10 @@ class AccountSetting(object):
         self.alignment_widgets["left_vbox"].add(self.container_widgets["left_vbox"])
         self.alignment_widgets["right_vbox"].add(self.container_widgets["right_vbox"])
         self.alignment_widgets["left_vbox"].set_size_request(275, -1)
+        self.alignment_widgets["left_vbox"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["left_vbox"].set_size_request(275, -1)
         self.alignment_widgets["right_vbox"].set_size_request(500, -1)
+        self.alignment_widgets["right_vbox"].set_padding(FRAME_TOP_PADDING, 0, 0, 0)
         self.view_widgets["account"].set_size_request(275, 460)
         ##############################
         # accounts list page
@@ -1040,6 +1043,9 @@ class AccountSetting(object):
                 if user.get_real_name() == compare_user.get_real_name():
                     item.is_unique = False
                     break
+        # TODO 顶部留35px
+        if user_items:
+            user_items[0].is_head = True
         return user_items
 
     def set_widget_state_with_author(self):

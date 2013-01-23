@@ -78,8 +78,6 @@ class TaskItem(TreeItem):
         
         # Init buffers. 
         self.progress_buffer = ProgressBuffer()
-        self.check_button_buffer = CheckButtonBuffer(True)
-        self.check_button_width = self.check_button_buffer.render_width  + self.check_button_padding_x * 2
         
         
         self.stop_pixbuf = app_theme.get_pixbuf("individuation/stop.png").get_pixbuf()
@@ -99,14 +97,6 @@ class TaskItem(TreeItem):
     def start_download(self):    
         fetch_service.add_missions([self.download_task])
         
-    def render_check_button(self, cr, rect):
-        if self.is_hover:
-            draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemHover")
-
-        self.check_button_buffer.render(cr, 
-                                        gtk.gdk.Rectangle(rect.x + (rect.width - self.check_button_buffer.render_width) / 2,
-                                                          rect.y + (rect.height - self.check_button_buffer.render_height)/ 2,
-                                                          rect.width, rect.height))
         
     def render_info(self, cr, rect):
         if self.is_hover:
@@ -181,9 +171,10 @@ class TaskItem(TreeItem):
     def render_block(self, cr, rect):    
         if self.is_hover:
             draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemHover")
-    
+            
     def get_column_widths(self):
-        return [self.check_button_width, self.info_width, 
+        return [ 10,
+                self.info_width, 
                 self.progressbar_width + self.progressbar_padding_x * 2,
                 self.stop_pixbuf.get_width() + self.stop_pixbuf_padding_x * 2,
                 self.block_width
@@ -192,7 +183,7 @@ class TaskItem(TreeItem):
     
     def get_column_renders(self):
         return [
-            self.render_check_button,
+            self.render_block,
             self.render_info,
             self.render_progressbar,
             self.render_stop, 
