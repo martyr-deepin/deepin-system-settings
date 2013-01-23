@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-23 14:35+0800\n"
+"POT-Creation-Date: 2013-01-23 15:56+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,7 +135,7 @@ msgstr ""
 
 #: ../src/display_view.py:563
 #, python-format
-msgid "Changed brightness to %f"
+msgid "Changed brightness to %0.2f"
 msgstr ""
 
 #: ../src/display_view.py:588

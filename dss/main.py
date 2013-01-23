@@ -308,7 +308,7 @@ if __name__ == "__main__":
         )
 
     # Set application icon.
-    application.set_icon(app_theme.get_pixbuf("icon.ico"))
+    application.set_icon(app_theme.get_pixbuf("icon.png"))
     
     # Set application preview pixbuf.
     application.set_skin_preview(app_theme.get_pixbuf("frame.png"))
