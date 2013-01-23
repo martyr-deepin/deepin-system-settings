@@ -31,7 +31,7 @@ class IconButton(gtk.EventBox):
         "del-pressed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         "pressed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
 
-    def __init__(self, pixbuf=None, image_path='', padding_x=2, padding_y=2, can_del=False):
+    def __init__(self, pixbuf=None, image_path='', padding_x=3, padding_y=3, can_del=False):
         super(IconButton, self).__init__()
         self.connect("expose-event", self.__expose_cb)
         self.padding_x = padding_x
@@ -61,9 +61,7 @@ class IconButton(gtk.EventBox):
         cr = widget.window.cairo_create()
         x, y, w, h = widget.allocation
         if widget.get_state() == gtk.STATE_PRELIGHT:
-            #cr.set_source_rgb(*color_hex_to_cairo(app_theme.get_color("globalHoverFill").get_color()))
             cr.set_source_rgb(*color_hex_to_cairo("#ddf3ff"))
-            print "enter notify"
             cr.rectangle(*widget.allocation)
         else:
             cr.set_source_rgb(1, 1, 1)
@@ -73,7 +71,7 @@ class IconButton(gtk.EventBox):
         if self.pixbuf:
             cr.set_source_pixbuf(self.pixbuf, self.padding_x, self.padding_y)
             cr.paint()
-        if self.can_del:
+        if self.can_del and widget.get_state() == gtk.STATE_PRELIGHT:
             bg_pixbuf = self.del_bg_pixbuf.get_pixbuf()
             fg_pixbuf = self.del_fg_pixbuf.get_pixbuf()
             cr.set_source_pixbuf(bg_pixbuf, self.bg_offset_x, self.bg_offset_y)
