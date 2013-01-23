@@ -26,7 +26,7 @@ from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.menu import Menu
 from dtk.ui.button import ImageButton
-from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, container_remove_all
 from dtk.ui.cache_pixbuf import CachePixbuf
 from icon_button import IconButton
 from webcam import Webcam
@@ -37,7 +37,7 @@ import gobject
 import tools
 import os
 import dbus
-from time import sleep
+from time import sleep, time
 from subprocess import Popen
 from tempfile import mkstemp
 from stat import S_IRWXU, S_IRWXG, S_IRWXO
@@ -48,12 +48,19 @@ class HistroyIcon(object):
     def __init__(self, account_setting):
         super(HistroyIcon, self).__init__()
         self.account_setting = account_setting
-        self.cfg_dir = os.path.join(self.account_setting.get_home_directory(), ".config/deepin-system-settings")
-        self.cfg_file = os.path.join(self.cfg_dir, "account_icon_histroy")
+        self.cfg_dir = os.path.join(self.account_setting.get_home_directory(), ".config/deepin-system-settings/account")
+        self.icons_dir = self.cfg_dir+"/icons"
+        self.cfg_file = os.path.join(self.cfg_dir, "account_icon_history")
         if not os.path.exists(self.cfg_dir):
             try:
                 os.makedirs(self.cfg_dir)
             except:
+                pass
+        if not os.path.exists(self.icons_dir):
+            try:
+                os.makedirs(self.icons_dir)
+            except Exception, e:
+                print e
                 pass
         if not os.path.exists(self.cfg_file):
             try:
@@ -62,26 +69,26 @@ class HistroyIcon(object):
             except:
                 pass
 
-    def get_histroy(self):
-        self.histroy = []
+    def get_history(self):
+        self.history = []
         try:
             f = open(self.cfg_file, 'r')
         except:
-            return self.histroy
+            return self.history
         lines = f.readlines()
         f.close()
         for l in lines:
             line = l.strip(os.linesep)
-            if os.path.exists(line) and not line in self.histroy:
-                self.histroy.append(line)
-        return self.histroy
+            if os.path.exists(line) and not line in self.history:
+                self.history.append(line)
+        return self.history
 
-    def set_histroy(self, histroy):
+    def set_history(self, history):
         try:
             f = open(self.cfg_file, 'w')
         except:
             return
-        for line in histroy:
+        for line in history:
             f.write("%s%s" % (line, os.linesep))
         f.close()
 
@@ -108,40 +115,27 @@ class IconSetPage(gtk.VBox):
         main_vbox.pack_start(tools.make_align(self.tips_label), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 
-        #icon_list_sw = ScrolledWindow()
-        #icon_list_sw.set_size_request(600, 70)
-        #self.icon_list_hbox = gtk.HBox(False)
-        #icon_list_sw.add_child(tools.make_align(self.icon_list_hbox, yalign=0.0, height=-1))
-        #self.icon_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
-
-        #histroy_list_sw = ScrolledWindow()
-        #icon_list_sw.set_size_request(600, 70)
-        self.histroy_list_hbox = gtk.HBox(False)
-        self.histroy_list_hbox.set_size_request(-1, 70)
-        #histroy_list_sw.add_child(tools.make_align(self.histroy_list_hbox, yalign=0.0, height=-1))
-        #self.histroy_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
+        self.history_list_hbox = gtk.HBox(False)
+        self.history_list_hbox.set_size_request(-1, 54)
 
         main_vbox.pack_start(tools.make_align(Label(_("Choose a new picture for your account"), enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
-        #self.pack_start((icon_list_sw), False, False)
         main_vbox.pack_start(tools.make_align(self.icon_list_tabel), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 
         main_vbox.pack_start(tools.make_align(Label(_("Previously used pictures"), enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
-        #self.pack_start((histroy_list_sw), False, False)
-        main_vbox.pack_start(tools.make_align(self.histroy_list_hbox), False, False)
+        main_vbox.pack_start(tools.make_align(self.history_list_hbox), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 
         main_vbox.pack_start(tools.make_align(self.error_label), False, False)
 
+        # public picture list
         face_dir = '/usr/share/pixmaps/faces'
         if os.path.exists(face_dir):
             pic_list = os.listdir(face_dir)
         else:
             pic_list = []
-        total_pic = len(pic_list)
-        rows = (total_pic + 1) / 10 + 1
-        self.icon_list_tabel.resize(rows, 10)
-        i = j = 0
+        self.public_icon_list = []
+
         for pic in pic_list:
             try:
                 icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
@@ -150,18 +144,10 @@ class IconSetPage(gtk.VBox):
                 continue
             icon_bt = IconButton(icon_pixbuf, "%s/%s" %(face_dir, pic))
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
-            #self.icon_list_hbox.pack_start(icon_bt, False, False)
-            self.icon_list_tabel.attach(icon_bt, i, i+1, j, j+1, 4)
-            i += 1
-            if i >= 10:
-                i = 0
-                j += 1
-        more_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
-        more_button.connect("button-press-event", self.choose_more_picture)
-        #self.icon_list_hbox.pack_start(more_button, False, False)
-        self.icon_list_tabel.attach(more_button, i, i+1, j, j+1, 4)
+            self.public_icon_list.append(icon_bt)
 
-        #self.connect("expose-event", self.draw_frame_border, icon_list_sw, histroy_list_sw)
+        self.more_icon_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
+        self.more_icon_button.connect("button-press-event", self.choose_more_picture)
 
     def refresh(self):
         self.error_label.set_text("")
@@ -172,13 +158,45 @@ class IconSetPage(gtk.VBox):
         else:
             show_name = self.account_setting.current_set_user.get_user_name()
         self.tips_label.set_text("<b>%s</b>" % _("Set <u>%s</u>'s picture") % tools.escape_markup_string(show_name))
-        self.histroy_icon = HistroyIcon(self.account_setting.current_set_user)
-        self.histroy_icon.get_histroy()
-        self.histroy_list_hbox.foreach(lambda w: w.destroy())
-        #icon_button_list = self.icon_list_hbox.get_children()
-        icon_button_list = self.icon_list_tabel.get_children()
+        self.history_icon = HistroyIcon(self.account_setting.current_set_user)
+        self.history_icon.get_history()
+        self.history_list_hbox.foreach(lambda w: w.destroy())
+
+        # the private history icon files
+        history_dir = os.path.join(self.account_setting.current_set_user.get_home_directory(), ".config/deepin-system-settings/account/icons")
+        if os.path.exists(history_dir):
+            pic_list = os.listdir(history_dir)
+        else:
+            pic_list = []
+        private_icon_list = []
+        for pic in pic_list:
+            try:
+                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                    "%s/%s" %(history_dir, pic)).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+            except:
+                continue
+            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(history_dir, pic))
+            icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
+            private_icon_list.append(icon_bt)
+        container_remove_all(self.icon_list_tabel)
+
+        pic_list = self.public_icon_list + private_icon_list
+        total_pic = len(pic_list)
+        rows = (total_pic + 1) / 10 + 1
+        self.icon_list_tabel.resize(rows, 10)
+        i = j = 0
+        for pic in pic_list:
+            self.icon_list_tabel.attach(pic, i, i+1, j, j+1, 4)
+            i += 1
+            if i >= 10:
+                i = 0
+                j += 1
+        self.icon_list_tabel.attach(self.more_icon_button, i, i+1, j, j+1, 4)
+
+        # history pic IconButton
+        icon_button_list = pic_list
         i = 0
-        for pic in self.histroy_icon.histroy:
+        for pic in self.history_icon.history:
             if not os.path.exists(pic):
                 continue
             icon_pixbuf = None
@@ -198,16 +216,19 @@ class IconSetPage(gtk.VBox):
             icon_bt = IconButton(icon_pixbuf, pic, can_del=True)
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
             icon_bt.connect("del-pressed", self.on_icon_bt_del_pressed_cb)
-            self.histroy_list_hbox.pack_start(icon_bt, False, False)
-        self.histroy_list_hbox.show_all()
+            self.history_list_hbox.pack_start(icon_bt, False, False)
+        self.history_list_hbox.show_all()
 
     def on_icon_bt_del_pressed_cb(self, widget):
         try:
             file_path = widget.get_image_path()
-            if file_path in self.histroy_icon.histroy:
-                self.histroy_icon.histroy.remove(file_path)
-                self.histroy_icon.set_histroy(self.histroy_icon.histroy)
             widget.destroy()
+            if file_path in self.history_icon.history:
+                self.history_icon.history.remove(file_path)
+                self.history_icon.set_history(self.history_icon.history)
+            # TODO
+            #if os.path.dirname(file_path) == self.history_icon.icons_dir:
+                #os.remove(file_path)
         except Exception, e:
             print e
         
@@ -215,9 +236,9 @@ class IconSetPage(gtk.VBox):
         try:
             file_path = widget.get_image_path()
             self.account_setting.current_set_user.set_icon_file(file_path)
-            if not file_path in self.histroy_icon.histroy:
-                self.histroy_icon.histroy.insert(0, file_path)
-                self.histroy_icon.set_histroy(self.histroy_icon.histroy)
+            if not file_path in self.history_icon.history:
+                self.history_icon.history.insert(0, file_path)
+                self.history_icon.set_history(self.history_icon.history)
         except Exception, e:
             print e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
@@ -898,11 +919,18 @@ class IconEditPage(gtk.HBox):
         pixbuf.save(filename, "png")
         try:
             self.account_setting.current_set_user.set_icon_file(filename)
-            histroy_icon = self.account_setting.container_widgets["icon_set_page"].histroy_icon
-            if not filename in histroy_icon.histroy:
+            history_icon = self.account_setting.container_widgets["icon_set_page"].history_icon
+            if not filename in history_icon.history:
+                # backup picture to user home
                 path = "/var/lib/AccountsService/icons/" + self.account_setting.current_set_user.get_user_name()
-                histroy_icon.histroy.insert(0, path)
-                histroy_icon.set_histroy(histroy_icon.histroy)
+                backup_path = "%s/%s" % (history_icon.icons_dir, str(int(time())))
+                fp1 = open(path, 'r')
+                fp2 = open(backup_path, 'w')
+                fp2.write(fp1.read())
+                fp1.close()
+                fp2.close()
+                history_icon.history.insert(0, backup_path)
+                history_icon.set_history(history_icon.history)
         except Exception, e:
             from traceback import print_exc
             print_exc()
