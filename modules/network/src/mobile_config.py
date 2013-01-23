@@ -263,7 +263,8 @@ class SideBar(gtk.VBox):
             mobile_type = self.connection.get_setting("connection").type
             index = self.new_connection_list[mobile_type].index(connection)
             self.new_connection_list[mobile_type].pop(index)
-        if self.connection_tree.visible_items:
+
+        if self.connection_tree.visible_items == []:
             self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
         else:
             container_remove_all(self.buttonbox)
