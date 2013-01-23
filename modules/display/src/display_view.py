@@ -286,7 +286,9 @@ class DisplayView(gtk.VBox):
         '''
         self.goto_align = self.__setup_align()
         self.goto_box = gtk.VBox(spacing = WIDGET_SPACING)
-        self.goto_label = self.__setup_label(_("Relative Settings"), align = ALIGN_START)
+        self.goto_label = self.__setup_label(_("Relative Settings"), 
+                                             width = None, 
+                                             align = ALIGN_START)
         goto_color = app_theme.get_color("globalTitleForeground").get_color()
         self.goto_individuation_label = self.__setup_label(
             text = _("<span foreground=\"%s\" underline=\"single\">Individuation</span>") % goto_color, 
