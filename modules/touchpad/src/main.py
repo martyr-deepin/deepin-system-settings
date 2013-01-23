@@ -386,7 +386,7 @@ class TouchpadSetting(object):
         
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], height=-1), False, False)
+            self.__make_align(self.label_widgets["relevant"], height=CONTAINNER_HEIGHT), False, False)
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["keyboard_setting"], False, False)
         self.container_widgets["right_vbox"].pack_start(
@@ -397,6 +397,9 @@ class TouchpadSetting(object):
         self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["keyboard_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["mouse_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
+
+        if not settings.is_has_touchpad():
+            self.alignment_widgets["left"].set_sensitive(False)
 
     def __signals_connect(self):
         ''' widget signals connect'''

@@ -400,10 +400,9 @@ class KeySetting(object):
         
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], xalign=0.0, height=-1))
+            self.__make_align(self.label_widgets["relevant"], xalign=0.0, height=CONTAINNER_HEIGHT))
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["mouse_setting"])
-        # TODO 判断是否有触摸板
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["touchpad_setting"])
         self.alignment_widgets["mouse_setting"].add(self.button_widgets["mouse_setting"])
