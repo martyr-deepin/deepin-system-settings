@@ -79,7 +79,8 @@ class DetailPage(TabBox):
         self.delete_button = Button("删除")
                 
         self.add_items([("桌面壁纸", self.wallpaper_box),
-                        ("窗口设置", self.window_theme_box)])
+                        # ("窗口设置", self.window_theme_box)
+                        ])
         
 
         self.action_bar = gtk.HBox(5)        
