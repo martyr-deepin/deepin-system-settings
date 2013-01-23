@@ -20,8 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import polkit_permission as polkitpermission
-
+import polkitpermission
 import dbus
 import gobject
 import re
@@ -61,6 +60,14 @@ class InvalidObjectPath(Exception):
 
     def __str__(self):
         return repr("InvalidObjectPath:" + self.path)
+
+class InvalidActionId(Exception):
+    
+    def __init__(self, action):
+        self.action = action
+
+    def __str__(self):
+        return repr("InvalidActionID:" + self.action)
 
 class AccountsPermissionDenied(Exception):
     
@@ -159,38 +166,83 @@ class BusBase(gobject.GObject):
 
 class PolkitPermission:
     
-    def __init__(self, action, subject = "subject"):
-        self.permission =  polkitpermission.new(action)
+    def __init__(self, action):
+        if self.is_valid_action_id(action):
+            self.permission =  polkitpermission.new_with_action(action)
+        else:
+            print "invalid action id"
+            #raise InvalidActionId(action)
     
-    def get_action_id(self):
-        return self.permission.get_action_id()
+    def is_valid_action_id(self, action):
+        import locale
+        if locale.getdefaultlocale():
+            loc = locale.getdefaultlocale()[0]
+        else:
+            loc = "en.UTF-8"
 
-    # def get_subject(self):
-    #     return self.permission.get_subject()
+        try:
+            authority_object = system_bus.get_object("org.freedesktop.PolicyKit1", "/org/freedesktop/PolicyKit1/Authority")
+            authority_interface = dbus.Interface(authority_object, "org.freedesktop.PolicyKit1.Authority")
+        except:
+            traceback.print_exc()
+            return False
+
+        for action_description in authority_interface.EnumerateActions(loc):
+            if action in action_description[0]:
+                return True
+            else:
+                continue
+        else:
+            return False
+
+    def get_action_id(self):
+        try:
+            return self.permission.get_action_id()
+        except:
+            traceback.print_exc()
 
     def get_allowed(self):
-        return self.permission.get_allowed()
+        try:
+            return self.permission.get_allowed()
+        except:
+            traceback.print_exc()
+            return 0
 
     def get_can_acquire(self):
-        return self.permission.get_can_acquire()
+        try:
+            return self.permission.get_can_acquire()
+        except:
+            traceback.print_exc()
+            return 0
 
     def get_can_release(self):
-        return self.permission.get_can_release()
+        try:
+            return self.permission.get_can_release()
+        except:
+            traceback.print_exc()
+            return 0
     
     def acquire(self):
         if self.get_can_acquire():
-            return self.permission.acquire()
+            try:
+                return self.permission.acquire()
+            except:
+                traceback.print_exc()
         else:
             pass
 
     def release(self):
         if self.get_can_release():
-            return self.permission.release()
+            try:
+                return self.permission.release()
+            except:
+                traceback.print_exc()
         else:
             pass
 
 if __name__ == "__main__":
     permission = PolkitPermission("org.freedesktop.accounts.user-administration")
+    #permission = PolkitPermission("org.freedesktop.hostname1.set-hostname")
     print "action_id:"
     print permission.get_action_id()
     print "allowed:"
@@ -201,3 +253,6 @@ if __name__ == "__main__":
     print permission.get_can_release()
 
     permission.acquire()
+    # def get_subject(self)
+    #     return self.permission.get_subject()
+

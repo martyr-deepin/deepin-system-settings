@@ -51,7 +51,6 @@ class TrayTimePlugin(object):
         self.this_list = this_list
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
-        self.tray_icon.set_icon_theme("tray_time_icon")
         self.tray_icon.set_text("12:12:12")
 
     def run(self):

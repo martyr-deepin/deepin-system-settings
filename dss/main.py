@@ -195,8 +195,10 @@ def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foo
             call_module_by_name(module_id, module_dict, slider, content_page_info, "left")
 
 def search_cb(action_bar, slider, foot_box):
-    search_page.query(action_bar.search_entry.get_text())
-    slider.slide_to_page(search_page, "left")
+    keyword = action_bar.search_entry.get_text()
+    if keyword.strip() != "":
+        search_page.query(keyword)
+        slider.slide_to_page(search_page, "left")
 
     foot_box.hide()
 
