@@ -72,6 +72,8 @@ class ThemePage(ScrolledWindow):
         
         self.add_child(main_align)
         
+        main_align.connect("expose-event", self.expose_label_align)
+        
         # self.user_theme_align.connect("expose-event", self.expose_label_align)
         # self.system_theme_align.connect("expose-event", self.expose_label_align)
         
