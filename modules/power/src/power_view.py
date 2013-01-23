@@ -203,7 +203,8 @@ class PowerView(gtk.VBox):
              self.close_harddisk_align, 
              self.close_monitor_align, 
              self.wakeup_password_align, 
-             self.tray_battery_status_align])
+             #self.tray_battery_status_align, 
+            ])
 
         self.connect("expose-event", self.__expose)
 
