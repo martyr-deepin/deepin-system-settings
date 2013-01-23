@@ -400,6 +400,19 @@ class TouchpadSetting(object):
 
         if not settings.is_has_touchpad():
             self.alignment_widgets["left"].set_sensitive(False)
+            self.label_widgets["acceleration"].set_sensitive(False)
+            self.label_widgets["sensitivity"].set_sensitive(False)
+            self.label_widgets["click_rate"].set_sensitive(False)
+            self.label_widgets["drag_threshold"].set_sensitive(False)
+            self.label_widgets["custom"].set_sensitive(False)
+            self.label_widgets["pointer_speed"].set_sensitive(False)
+            self.label_widgets["double_click"].set_sensitive(False)
+            self.label_widgets["drag_drop"].set_sensitive(False)
+            self.label_widgets["double_test"].set_sensitive(False)
+            self.scale_widgets["pointer_speed_accel"].set_enable(False)
+            self.scale_widgets["pointer_speed_sensitiv"].set_enable(False)
+            self.scale_widgets["double_click_rate"].set_enable(False)
+            self.scale_widgets["drag_threshold_time"].set_enable(False)
 
     def __signals_connect(self):
         ''' widget signals connect'''
