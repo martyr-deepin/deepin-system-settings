@@ -30,7 +30,7 @@ class StatusBar(gtk.HBox):
     '''docstring for StatusBar'''
     def __init__(self):
         super(StatusBar, self).__init__(False)
-        self.text_label = Label("")
+        self.text_label = Label("", enable_select=False, enable_double_click=False)
         text_align = gtk.Alignment()
         text_align.set(0.0, 0.5, 0.0, 0.0)
         text_align.add(self.text_label)

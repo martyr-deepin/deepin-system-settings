@@ -97,8 +97,8 @@ class IconSetPage(gtk.VBox):
             [(None, _("Local picture"), self.choose_from_picture),
              (None, _("Take a screeshot"), self.choose_from_screenshot),
              (None, _("From camera"), self.choose_from_camera)], True)
-        self.tips_label = Label("Set icon", text_size=13, label_width=460, enable_select=False)
-        self.error_label = Label("", wrap_width=560, enable_select=False)
+        self.tips_label = Label("Set icon", text_size=13, label_width=460, enable_select=False, enable_double_click=False)
+        self.error_label = Label("", wrap_width=560, enable_select=False, enable_double_click=False)
 
         set_page_sw = ScrolledWindow()
         self.pack_start(set_page_sw)
@@ -121,12 +121,12 @@ class IconSetPage(gtk.VBox):
         #histroy_list_sw.add_child(tools.make_align(self.histroy_list_hbox, yalign=0.0, height=-1))
         #self.histroy_list_hbox.get_parent().connect("expose-event", self.draw_white_background)
 
-        main_vbox.pack_start(tools.make_align(Label(_("Choose a new picture for your account")), height=CONTAINNER_HEIGHT), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("Choose a new picture for your account"), enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
         #self.pack_start((icon_list_sw), False, False)
         main_vbox.pack_start(tools.make_align(self.icon_list_tabel), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 
-        main_vbox.pack_start(tools.make_align(Label(_("Previously used pictures")), height=CONTAINNER_HEIGHT), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("Previously used pictures"), enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
         #self.pack_start((histroy_list_sw), False, False)
         main_vbox.pack_start(tools.make_align(self.histroy_list_hbox), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
@@ -817,7 +817,7 @@ class IconEditPage(gtk.HBox):
     def __init__(self, account_setting):
         super(IconEditPage, self).__init__(False)
         self.account_setting = account_setting
-        self.error_label = Label("", label_width=350, enable_select=False)
+        self.error_label = Label("", label_width=350, enable_select=False, enable_double_click=False)
 
         left_align = gtk.Alignment()
         right_align = gtk.Alignment()
@@ -833,7 +833,7 @@ class IconEditPage(gtk.HBox):
         right_align.add(right_vbox)
 
         self.draw_area = IconEditArea()
-        left_vbox.pack_start(tools.make_align(Label(_("Clip"))), False, False)
+        left_vbox.pack_start(tools.make_align(Label(_("Clip"), enable_select=False, enable_double_click=False)), False, False)
         left_vbox.pack_start(tools.make_align(self.draw_area, yalign=0.0, width=350, height=300))
 
         self.thumbnail_large = gtk.Image()
@@ -843,7 +843,7 @@ class IconEditPage(gtk.HBox):
         self.thumbnail_mid.set_size_request(48, 48)
         self.thumbnail_small.set_size_request(24, 24)
 
-        right_vbox.pack_start(tools.make_align(Label(_("Preview"))), False, False)
+        right_vbox.pack_start(tools.make_align(Label(_("Preview"), enable_select=False, enable_double_click=False)), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_large), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_mid), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_small), False, False)

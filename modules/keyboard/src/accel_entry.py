@@ -44,8 +44,8 @@ def process_unmodifier_key(tmp_accel_buf):
     dialog.set_keep_above(True)
     dialog.set_modal(True)
     dialog.body_align.set_padding(15, 10, 10, 10)
-    label1 = Label(_("The shortcut \"%s\" cannot be used because it will become impossible to type using this key.")% tmp_accel_buf.get_accel_label())
-    label2 = Label(_("Please try with a key such as Control, Alt or Shift at the same time."))
+    label1 = Label(_("The shortcut \"%s\" cannot be used because it will become impossible to type using this key.")% tmp_accel_buf.get_accel_label(), enable_select=False, enable_double_click=False)
+    label2 = Label(_("Please try with a key such as Control, Alt or Shift at the same time."), enable_select=False, enable_double_click=False)
     dialog.body_box.pack_start(label1)
     dialog.body_box.pack_start(label2)
     button = Button(_("Cancel"))
@@ -60,9 +60,9 @@ def resolve_accel_entry_conflict(origin_entry, conflict_entry, tmp_accel_buf):
     dialog.set_modal(True)
     dialog.body_align.set_padding(15, 10, 10, 10)
     label1 = Label(_("The shortcut \"%s\" is already used for\"%s\"")%
-                   (tmp_accel_buf.get_accel_label(), conflict_entry.settings_description))
+                   (tmp_accel_buf.get_accel_label(), conflict_entry.settings_description), enable_select=False, enable_double_click=False)
     label2 = Label(_("If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled.")%
-                   (origin_entry.settings_description, conflict_entry.settings_description))
+                   (origin_entry.settings_description, conflict_entry.settings_description), enable_select=False, enable_double_click=False)
     dialog.body_box.pack_start(label1)
     dialog.body_box.pack_start(label2)
     button_reassign = Button(_("Reassign"))
@@ -177,7 +177,7 @@ class AccelEntry(ShortcutKeyEntry):
         self.accel_str = self.accel_buffer.get_accel_label()
         if not self.accel_str:
             self.accel_str = _('disable')
-        self.accel_label = Label(self.accel_str, enable_select=False)
+        self.accel_label = Label(self.accel_str, enable_select=False, enable_double_click=False)
         self.accel_align = gtk.Alignment()
         self.accel_align.set(0.0, 0.5, 0.0, 0.0)
         self.accel_align.add(self.accel_label)

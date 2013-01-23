@@ -100,7 +100,7 @@ class KeySetting(object):
     def __create_widget(self):
         '''create gtk widget'''
         title_item_font_size = TITLE_FONT_SIZE
-        option_item_font_szie = CONTENT_FONT_SIZE
+        option_item_font_size = CONTENT_FONT_SIZE
 
         #####################################
         # Typing widgets create
@@ -112,35 +112,37 @@ class KeySetting(object):
         # label init
         self.label_widgets["repeat"] = Label(_("Repeat"),
             app_theme.get_color("globalTitleForeground"),
-            text_size=title_item_font_size)
-        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_szie)
-        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"), text_size=option_item_font_szie)
-        self.label_widgets["repeat_fast"] = Label(_("Fast"))
-        self.label_widgets["repeat_slow"] = Label(_("Slow"))
-        self.label_widgets["repeat_long"] = Label(_("Long"))
-        self.label_widgets["repeat_short"] = Label(_("Short"))
+            text_size=title_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_fast"] = Label(_("Fast"), enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_slow"] = Label(_("Slow"), enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_long"] = Label(_("Long"), enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_short"] = Label(_("Short"), enable_select=False, enable_double_click=False)
         self.label_widgets["blink"] = Label(_("Cursor Blink"),
             app_theme.get_color("globalTitleForeground"),
-            text_size=title_item_font_size)
-        self.label_widgets["blink_fast"] = Label(_("Fast"))
-        self.label_widgets["blink_slow"] = Label(_("Slow"))
+            text_size=title_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["blink_fast"] = Label(_("Fast"), enable_select=False, enable_double_click=False)
+        self.label_widgets["blink_slow"] = Label(_("Slow"), enable_select=False, enable_double_click=False)
         self.label_widgets["touchpad"] = Label(_("Disable touchpad while typing"),
             app_theme.get_color("globalTitleForeground"),
-            text_size=title_item_font_size)
+            text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         self.label_widgets["layout"] = Label(_("Keyboard Layout"),
             app_theme.get_color("globalTitleForeground"),
-            text_size=title_item_font_size)
+            text_size=title_item_font_size, enable_select=False, enable_double_click=False)
 
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_szie)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["repeat_test_entry"] = gtk.Entry()
         self.button_widgets["blink_test_entry"] = gtk.Entry()
         self.button_widgets["touchpad_disable"] = OffButton()
         # relevant settings button
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Settings"),
-            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
+            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_size,
+            enable_select=False, enable_double_click=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
-            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
+            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_size,
+            enable_select=False, enable_double_click=False)
         self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
@@ -186,7 +188,7 @@ class KeySetting(object):
         #####################################
         # Layout widgets create
         # label
-        self.label_widgets["layout_current_layout"] = Label("")
+        self.label_widgets["layout_current_layout"] = Label("", enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["layout_add"] = Button(_("Replace"))
         self.button_widgets["layout_remove"] = Button(_("Remove"))
@@ -831,7 +833,7 @@ class KeySetting(object):
             shortcut_vbox = self.container_widgets["shortcuts_swin"].get_children()[0].get_children()[0].get_children()[0]
             hbox = gtk.HBox(False)
             hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
-            description_label = Label(entry.settings_description)
+            description_label = Label(entry.settings_description, enable_select=False, enable_double_click=False)
             label_align = self.__make_align(description_label)
             label_align.set_size_request(290, CONTAINNER_HEIGHT)
             hbox.pack_start(label_align, False, False)
@@ -857,9 +859,9 @@ class KeySetting(object):
         dialog.body_align.set_padding(15, 10, 10, 10)
         
         table = gtk.Table(2, 2, False)
-        name_lable = Label(_("name"))
+        name_lable = Label(_("name"), enable_select=False, enable_double_click=False)
         name_lable.set_can_focus(False)
-        action_lable = Label(_("action"))
+        action_lable = Label(_("action"), enable_select=False, enable_double_click=False)
         action_lable.set_can_focus(False)
         name_entry = InputEntry()
         action_entry = InputEntry()
@@ -908,7 +910,7 @@ class KeySetting(object):
             for entry in self.__shortcuts_entries[category]:
                 hbox = gtk.HBox(False)
                 hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
-                description_label = Label(entry.settings_description)
+                description_label = Label(entry.settings_description, enable_select=False, enable_double_click=False)
                 label_align = self.__make_align(description_label)
                 label_align.set_size_request(290, CONTAINNER_HEIGHT)
                 hbox.pack_start(label_align, False, False)
