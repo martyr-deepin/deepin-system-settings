@@ -85,8 +85,7 @@ class AppAssoView(TabBox):
 
         self.add_items([("应用程序", self.app_box), 
                         ("自动运行", self.autorun_box), 
-                        # ("启动项", self.boot_box)
-                        ])
+                        ("启动项", self.boot_box)])
 
         #self.connect("expose-event", self.expose_outline, ["top"])
 
