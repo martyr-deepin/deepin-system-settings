@@ -100,17 +100,17 @@ class SoundSetting(object):
         title_item_font_size = TITLE_FONT_SIZE
         option_item_font_szie = CONTENT_FONT_SIZE
 
-        self.label_widgets["speaker"] = Label(_("Speaker"), text_size=title_item_font_size)
-        self.label_widgets["microphone"] = Label(_("Microphone"), text_size=title_item_font_size)
-        self.label_widgets["left"] = Label(_("Left"))
-        self.label_widgets["right"] = Label(_("Right"))
-        self.label_widgets["speaker_port"] = Label(_("Output Port"), text_size=option_item_font_szie)
-        self.label_widgets["speaker_volume"] = Label(_("Output Volume"), text_size=option_item_font_szie)
-        self.label_widgets["speaker_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
-        self.label_widgets["speaker_balance"] = Label(_("Balance"), text_size=option_item_font_szie)
-        self.label_widgets["microphone_port"] = Label(_("Input Port"), text_size=option_item_font_szie)
-        self.label_widgets["microphone_volume"] = Label(_("Input Volume"), text_size=option_item_font_szie)
-        self.label_widgets["microphone_mute"] = Label(_("Mute"), text_size=option_item_font_szie)
+        self.label_widgets["speaker"] = Label(_("Speaker"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["microphone"] = Label(_("Microphone"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["left"] = Label(_("Left"), enable_select=False, enable_double_click=False)
+        self.label_widgets["right"] = Label(_("Right"), enable_select=False, enable_double_click=False)
+        self.label_widgets["speaker_port"] = Label(_("Output Port"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["speaker_volume"] = Label(_("Output Volume"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["speaker_mute"] = Label(_("Mute"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["speaker_balance"] = Label(_("Balance"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["microphone_port"] = Label(_("Input Port"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["microphone_volume"] = Label(_("Input Volume"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["microphone_mute"] = Label(_("Mute"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
         #####################################
         # image init
         self.image_widgets["balance"] = ImageBox(app_theme.get_pixbuf("%s/balance.png" % MODULE_NAME))
@@ -168,9 +168,9 @@ class SoundSetting(object):
         self.alignment_widgets["advance_output_box"] = gtk.Alignment()
         self.alignment_widgets["advance_hardware_box"] = gtk.Alignment()
         #
-        self.label_widgets["ad_output"] = Label(_("Choose a device for sound output:"))
-        self.label_widgets["ad_input"] = Label(_("Choose a device for sound input:"))
-        self.label_widgets["ad_hardware"] = Label(_("Choose a device to configure:"))
+        self.label_widgets["ad_output"] = Label(_("Choose a device for sound output:"), enable_select=False, enable_double_click=False)
+        self.label_widgets["ad_input"] = Label(_("Choose a device for sound input:"), enable_select=False, enable_double_click=False)
+        self.label_widgets["ad_hardware"] = Label(_("Choose a device to configure:"), enable_select=False, enable_double_click=False)
         #
         self.container_widgets["ad_output"] = gtk.VBox(False)
         self.container_widgets["ad_input"] = gtk.VBox(False)

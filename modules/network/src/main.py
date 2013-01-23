@@ -35,7 +35,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
 from container import Contain
-from lists import WiredItem, WirelessItem, GeneralItem, HotspotItem
+from lists import WiredItem, WirelessItem, GeneralItem, HidenItem
 
 from lan_config import WiredSetting
 from wlan_config import WirelessSetting
@@ -43,7 +43,7 @@ from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
 from regions import Region
-from settings_widget import EntryTreeView, HotspotBox
+from settings_widget import HotspotBox
 
 from nmlib.nmcache import cache
 from nm_modules import nm_module
@@ -168,11 +168,12 @@ class WiredSection(gtk.VBox):
                     self.wire.set_active(False)
 
 class WirelessDevice(object):
-    def __init__(self, device, treeview, ap_list, refresh_list):
+    def __init__(self, device, treeview, ap_list, refresh_list, hotspot):
         self.wireless_device = device
         self.ap_list = ap_list
         self.tree = treeview
         self.refresh_list = refresh_list
+        self.hotspot = hotspot
         self.device_wifi = cache.get_spec_object(self.wireless_device.object_path)
         self.wireless_device.connect("device-active", self.device_is_active)
         self.wireless_device.connect("device-deactive", self.device_is_deactive)
@@ -183,31 +184,39 @@ class WirelessDevice(object):
 
     def try_to_connect(self, widget, ssid):
         print "try_to_connect"
-        #print ssid
         ap_list  = [ap.get_ssid() for ap in self.ap_list]
         try:
             index = ap_list.index(ssid)
             self.tree.visible_items[index].set_net_state(1)
         except:
-            pass
+            self.hotspot.set_net_state(1)
     
     def device_is_active(self, widget, reason):
         print "wireless active"
         active = self.wireless_device.get_active_connection()
         # FIXME little wierd
-        if widget.is_active():
-            for item in self.tree.visible_items:
-                item.set_net_state(0)
-            try:
-                index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-                self.index = index
-                self.tree.visible_items[index].set_net_state(2)
-                self.tree.visible_items[index].redraw()
-            except:
-                pass
+        for item in self.tree.visible_items:
+            item.set_net_state(0)
+ 
+        try:
+            index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+            self.index = index
+            self.tree.visible_items[index].set_net_state(2)
+            self.tree.visible_items[index].redraw()
+        except ValueError:
+            if self.check_connection_mode(active.get_connection()):
+                self.hotspot.set_net_state(2)
 
     def ap_added(self, ap_object):
         print "ad_added"
+
+    def check_connection_mode(self, connection):
+        mode = connection.get_setting("802-11-wireless").mode
+        print mode
+        if mode == "adhoc":
+            return True
+        else:
+            return False
 
     def device_is_deactive(self, widget, reason):
         print "wireless deactive"
@@ -217,7 +226,9 @@ class WirelessDevice(object):
                     self.tree.visible_items[self.index].set_net_state(0)
                     self.tree.visible_items[self.index].redraw()
             except:
-                pass
+                if self.hotspot.get_net_state() == 1:
+                    self.hotspot.set_net_state(0)
+
 
 class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
@@ -235,8 +246,6 @@ class WirelessSection(gtk.VBox):
             self.settings = None
             self.hotspot = HotSpot(send_to_crumb_cb)
             self.vbox = gtk.VBox(False, spacing=15)
-            #self.vbox.pack_start(self.tree)
-            #self.vbox.pack_start(self.hotspot)
             self.vbox.set_no_show_all(True)
             self.vbox.hide()
             self.align = gtk.Alignment()
@@ -286,12 +295,23 @@ class WirelessSection(gtk.VBox):
         self.show_all()
 
         for wireless_device in self.wireless_devices:
-            WirelessDevice(wireless_device, self.tree, self.ap_list,self.show_ap_list)
+            WirelessDevice(wireless_device, self.tree, self.ap_list,self.show_ap_list, self.hotspot)
 
         index = self.get_actives(self.ap_list)
         if index:
-            for i in index:
-                self.tree.visible_items[i].network_state = 2
+            if index == [-1]:
+                pass
+            elif index[0] == -2:
+                # add hiden network
+                self.tree.add_items([HidenItem(index[1],
+                                     self.settings,
+                                     lambda :slider.slide_to_page(self.settings, "right"),
+                                     self.send_to_crumb_cb,
+                                     check_state=2)
+                                     ])
+            else:
+                for i in index:
+                    self.tree.visible_items[i].network_state = 2
         else:
             for wireless_device in self.wireless_devices:
                 device_wifi = cache.get_spec_object(wireless_device.object_path)
@@ -337,9 +357,21 @@ class WirelessSection(gtk.VBox):
         for wireless_device in self.wireless_devices:
             active_connection = wireless_device.get_active_connection()
             if active_connection:
-                index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
-
+                try:
+                    index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
+                except ValueError:
+                    if check_connection_mode(active_connection.get_connection()):
+                        return [-1]
+                    else:
+                        return [-2, active_connection.get_connection()]
         return index
+
+    def check_connection_mode(self, connection):
+        mode = connection.get_setting("802-11-wireless").mode
+        if mode == "adhoc":
+            return True
+        else:
+            return False
                 
 class HotSpot(gtk.VBox):
 
@@ -358,6 +390,12 @@ class HotSpot(gtk.VBox):
             cont.set_active(True)
             self.hotspot_box.set_net_state(2)
 
+
+    def set_net_state(self, state):
+        self.hotspot_box.set_net_state(state)
+
+    def get_net_state(self):
+        self.hotspot_box.get_net_state()
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -482,11 +520,14 @@ class DSL(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
-            label = Label(_("DSL Configuration"), ui_theme.get_color("link_text"))
+            label = Label(_("DSL Configuration"), 
+                          ui_theme.get_color("link_text"),
+                          underline=True,
+                          enable_select=False,
+                          enable_double_click=False)
             label.connect("button-release-event", self.slide_to_event)
 
             self.align.add(label)
-            self.align.connect("expose-event", self.expose_event)
             self.add(self.align)
             self.show_all()
         else:
@@ -500,19 +541,17 @@ class DSL(gtk.VBox):
         self.slide_to_setting()
         slider.slide_to_page(self.setting_page, "right")
 
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.child.allocation
-        cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
-        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
-
 class VpnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
         self.slide_to_subcrumb = slide_to_subcrumb_cb
         self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.toggle_cb)
         self.connection_tree = TreeView([])
-        self.label = Label("<u>"+_("VPN Setting")+"</u>", ui_theme.get_color("link_text"))
+        self.label = Label(_("VPN Setting"), 
+                           ui_theme.get_color("link_text"),
+                           underline=True,
+                           enable_select=False,
+                           enable_double_click=False)
         self.label.connect("button-release-event", self.slide_to_event)
 
         self.vbox = gtk.VBox(False, spacing=15)
@@ -627,10 +666,13 @@ class Mobile(gtk.VBox):
 
     def show_link(self):
         container_remove_all(self.align)
-        label = Label(_("Mobile Configuration"), ui_theme.get_color("link_text"))
+        label = Label(_("Mobile Configuration"),
+                      ui_theme.get_color("link_text"),
+                      underline=True,
+                      enable_select=False,
+                      enable_double_click=False)
         label.connect("button-release-event", self.slide_to_event)
         self.align.add(label)
-        self.align.connect("expose-event", self.expose_event)
 
     def show_device(self, device_path):
         from mm.mmdevice import MMDevice
@@ -662,13 +704,6 @@ class Mobile(gtk.VBox):
     def add_setting_page(self, setting_page):
         self.settings = setting_page
 
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.child.allocation
-        cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
-        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
-
-
 class Proxy(gtk.VBox):
     def __init__(self, slide_to_setting_cb):
         gtk.VBox.__init__(self)
@@ -682,11 +717,14 @@ class Proxy(gtk.VBox):
         if active:
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
-            label = Label(_("Proxy Configuration"), ui_theme.get_color("link_text"))
+            label = Label(_("Proxy Configuration"),
+                          ui_theme.get_color("link_text"),
+                          underline=True,
+                          enable_select=False,
+                          enable_double_click=False)
             label.connect("button-release-event", self.slide_to_event)
 
             self.align.add(label)
-            self.align.connect("expose-event", self.expose_event)
             self.add(self.align)
             self.show_all()
         else:
@@ -696,13 +734,6 @@ class Proxy(gtk.VBox):
         self.settings.init(True)
         self.slide_to_setting()
         slider.slide_to_page(self.settings, "right")
-
-
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.child.allocation
-        cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("link_text").get_color()))
-        draw_line(cr, rect.x, rect.y + rect.height, rect.x + rect.width, rect.y + rect.height)
 
     def add_setting_page(self, setting_page):
         self.settings = setting_page
@@ -771,11 +802,11 @@ class Network(object):
 
     def init_sections(self, module_frame):
         #slider._set_to_page("main")
-        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, "有线设置"))
-        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, "无线设置"))
-        self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, "DSL"))
-        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, "Proxy"))
-        self.vpn = VpnSection(lambda : module_frame.send_submodule_crumb(2, "VPN"))
+        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, _("Wired Setting")))
+        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, _("Wireless Setting")))
+        self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, _("DSL")))
+        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, _("Proxy")))
+        self.vpn = VpnSection(lambda : module_frame.send_submodule_crumb(2, _("VPN")))
 
         self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
@@ -797,7 +828,7 @@ class Network(object):
                                module_frame)
         self.vpn.add_setting_page(self.vpn_setting_page)
 
-        self.mobile = Mobile(lambda : module_frame.send_submodule_crumb(2, "移动网络"))
+        self.mobile = Mobile(lambda : module_frame.send_submodule_crumb(2, _("Mobile Network")))
         self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.mobile.add_setting_page(self.mobile_setting_page)
@@ -853,7 +884,7 @@ if __name__ == '__main__':
                 (crumb_index, crumb_label) = message_content
                 if crumb_index == 1:
                     slider._slide_to_page("main", "left")
-                if crumb_label == "VPN":
+                if crumb_label == _("VPN"):
                     slider._slide_to_page("vpn", "left")
 
         module_frame.module_message_handler = message_handler

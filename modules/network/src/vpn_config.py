@@ -335,10 +335,18 @@ class PPTPConf(gtk.VBox):
 
         # UI
         pptp_table = gtk.Table(7, 4, False)
-        gateway_label = Label(_("Gateway:"))
-        user_label = Label(_("Username:"))
-        password_label = Label(_("Password:"))
-        nt_domain_label = Label(_("NT Domain:"))
+        gateway_label = Label(_("Gateway:"),
+                               enable_select=False,
+                               enable_double_click=False)
+        user_label = Label(_("Username:"),
+                               enable_select=False,
+                               enable_double_click=False)
+        password_label = Label(_("Password:"),
+                               enable_select=False,
+                               enable_double_click=False)
+        nt_domain_label = Label(_("NT Domain:"),
+                               enable_select=False,
+                               enable_double_click=False)
         # Radio Button
         self.pptp_radio = RadioButton(_("PPTP"))
         self.l2tp_radio = RadioButton(_("L2TP"))
@@ -490,11 +498,21 @@ class PPPConf(ScrolledWindow):
         self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
                                      _("Configure Method"), width=self.TABLE_WIDTH)
 
-        self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.refuse_eap = SwitchButton()
         self.refuse_pap = SwitchButton()
         self.refuse_chap = SwitchButton()
@@ -512,16 +530,34 @@ class PPPConf(ScrolledWindow):
 
 
         #compressio))n = Label(_("Compression"), text_size=TITLE_FONT_SIZE)
-        self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE)
-        self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE)
-        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE)
-        self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE)
-        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE)
-        self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE)
+        self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         #echo = Label("Echo", text_size=TITLE_FONT_SIZE)
-        self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE)
-        self.nopcomp_label = Label(_("Use protocal field compression negotiation"), text_size=CONTENT_FONT_SIZE)
-        self.noaccomp_label = Label(_("Use Address/Control compression"), text_size=CONTENT_FONT_SIZE)
+        self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.nopcomp_label = Label(_("Use protocal field compression negotiation"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.noaccomp_label = Label(_("Use Address/Control compression"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
 
         self.require_mppe = SwitchButton()
         self.require_mppe_128 = SwitchButton()
@@ -539,10 +575,18 @@ class PPPConf(ScrolledWindow):
         self.ipsec_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
                                      _("IPSec Setting"), width=self.TABLE_WIDTH)
 
-        self.ip_sec_enable_label = Label(_("Enable IPSec tunnel to l2tp host"), text_size=CONTENT_FONT_SIZE)
-        self.group_name_label = Label(_("Group Name:"), text_size=CONTENT_FONT_SIZE)
-        self.gateway_id_label = Label(_("Gateway ID:"), text_size=CONTENT_FONT_SIZE)
-        self.pre_shared_key_label = Label(_("Pre_Shared_key"), text_size=CONTENT_FONT_SIZE)
+        self.ip_sec_enable_label = Label(_("Enable IPSec tunnel to l2tp host"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.group_name_label = Label(_("Group Name:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.gateway_id_label = Label(_("Gateway ID:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.pre_shared_key_label = Label(_("Pre_Shared_key"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.group_name = InputEntry()
         self.group_name.set_size(self.TABLE_WIDTH, 22)
         self.gateway_id = InputEntry()

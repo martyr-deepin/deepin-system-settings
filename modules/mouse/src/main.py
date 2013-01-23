@@ -29,6 +29,7 @@ from theme import app_theme
 import settings
 
 from dtk.ui.theme import ui_theme
+from dtk.ui.theme import DynamicColor
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton, Button
 from dtk.ui.hscalebar import HScalebar
@@ -72,7 +73,7 @@ class MouseSetting(object):
     def __create_widget(self):
         '''create gtk widget'''
         title_item_font_size = TITLE_FONT_SIZE
-        option_item_font_szie = CONTENT_FONT_SIZE
+        option_item_font_size = CONTENT_FONT_SIZE
         # image init
         self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("%s/mouse_l.png" % MODULE_NAME))
         self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("%s/pointer.png" % MODULE_NAME))
@@ -80,33 +81,35 @@ class MouseSetting(object):
         self.image_widgets["double_test_1"] = app_theme.get_pixbuf("%s/smiley00.png" % MODULE_NAME)
         self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/smiley01.png" % MODULE_NAME)
         # label init
-        self.label_widgets["custom"] = Label(_("Custom"), text_size=title_item_font_size)
-        self.label_widgets["pointer_speed"] = Label(_("Pointer Speed"), text_size=title_item_font_size)
+        self.label_widgets["custom"] = Label(_("Custom"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["pointer_speed"] = Label(_("Pointer Speed"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         self.label_widgets["acceleration"] = Label(_("Acceleration"),
-            text_size=option_item_font_szie)
-        self.label_widgets["accel_fast"] = Label(_("Fast"))
-        self.label_widgets["accel_slow"] = Label(_("Slow"))
+            text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["accel_fast"] = Label(_("Fast"), enable_select=False, enable_double_click=False)
+        self.label_widgets["accel_slow"] = Label(_("Slow"), enable_select=False, enable_double_click=False)
         self.label_widgets["sensitivity"] = Label(_("Sensitivity"),
-            text_size=option_item_font_szie)
-        self.label_widgets["sensitiv_low"] = Label(_("Low"))
-        self.label_widgets["sensitiv_high"] = Label(_("High"))
-        self.label_widgets["double_click"] = Label(_("Double-click"), text_size=title_item_font_size)
+            text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["sensitiv_low"] = Label(_("Low"), enable_select=False, enable_double_click=False)
+        self.label_widgets["sensitiv_high"] = Label(_("High"), enable_select=False, enable_double_click=False)
+        self.label_widgets["double_click"] = Label(_("Double-click"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         self.label_widgets["click_rate"] = Label(_("Frequency"),
-            text_size=option_item_font_szie)
-        self.label_widgets["click_fast"] = Label(_("Fast"))
-        self.label_widgets["click_slow"] = Label(_("Slow"))
+            text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["click_fast"] = Label(_("Fast"), enable_select=False, enable_double_click=False)
+        self.label_widgets["click_slow"] = Label(_("Slow"), enable_select=False, enable_double_click=False)
         self.label_widgets["double_test"] = Label(_("Double-click on the smiley face to test your settings."),
-            label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False)
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size)
+            label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False, enable_double_click=False)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=10)
         self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=10)
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
         self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Settings"),
-            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
+            DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
+            enable_select=False, enable_double_click=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
-            text_size=option_item_font_szie, text_color=ui_theme.get_color("link_text"), enable_select=False)
+            DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
+            enable_select=False, enable_double_click=False)
         self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)

@@ -43,6 +43,7 @@ import gtk
 import pango
 import threading
 import tools
+from random import randint
 from module_frame import ModuleFrame
 from constant import *
 from pexpect import TIMEOUT, EOF
@@ -91,18 +92,18 @@ class AccountSetting(object):
         #####################################
         # account list page
         # label
-        self.label_widgets["account_name"] = Label("", label_width=255, enable_select=False)
-        self.label_widgets["account"] = Label(_("Account type"))
-        self.label_widgets["passwd"] = Label(_("Password"))
-        self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH, enable_select=False)
-        self.label_widgets["auto_login"] = Label(_("Automatic login"))
-        self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"))
-        self.label_widgets["deepin_account"] = Label(_("Unbound"))
-        self.label_widgets["account_name_new"] = Label(_("Account Name"))
-        self.label_widgets["account_type_new"] = Label(_("Account type"))
-        self.label_widgets["deepin_account_tips_new"] = Label(_("Deepin Account"))
-        self.label_widgets["deepin_account_new"] = Label(_("Unbound"))
-        self.label_widgets["account_create_error"] = Label("", wrap_width=360, enable_select=False)
+        self.label_widgets["account_name"] = Label("", label_width=255, enable_select=False, enable_double_click=False)
+        self.label_widgets["account"] = Label(_("Account type"), enable_select=False, enable_double_click=False)
+        self.label_widgets["passwd"] = Label(_("Password"), enable_select=False, enable_double_click=False)
+        self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH, enable_select=False, enable_double_click=False)
+        self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
+        self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"), enable_select=False, enable_double_click=False)
+        self.label_widgets["deepin_account"] = Label(_("Unbound"), enable_select=False, enable_double_click=False)
+        self.label_widgets["account_name_new"] = Label(_("Account Name"), enable_select=False, enable_double_click=False)
+        self.label_widgets["account_type_new"] = Label(_("Account type"), enable_select=False, enable_double_click=False)
+        self.label_widgets["deepin_account_tips_new"] = Label(_("Deepin Account"), enable_select=False, enable_double_click=False)
+        self.label_widgets["deepin_account_new"] = Label(_("Unbound"), enable_select=False, enable_double_click=False)
+        self.label_widgets["account_create_error"] = Label("", wrap_width=360, enable_select=False, enable_double_click=False)
         # image
         self.image_widgets["lock_pixbuf"] = app_theme.get_pixbuf("lock/lock.png")
         self.image_widgets["unlock_pixbuf"] = app_theme.get_pixbuf("lock/unlock.png")
@@ -121,12 +122,12 @@ class AccountSetting(object):
         self.button_widgets["disk_readwrite_check"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
 
         self.button_widgets["backup_check_group"] = CheckButton("", padding_x=0)
-        self.label_widgets["backup_check_group"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False)
+        self.label_widgets["backup_check_group"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False, enable_double_click=False)
         self.alignment_widgets["backup_check_group"] = gtk.Alignment()
         self.container_widgets["backup_check_group_hbox"] = gtk.HBox(False)
         self.container_widgets["backup_check_group_vbox"] = gtk.VBox(False)
 
-        self.button_widgets["binding"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False)
+        self.button_widgets["binding"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False, enable_double_click=False)
         self.button_widgets["add_account"] = Button(_("Add"))
         self.button_widgets["del_account"] = Button(_("Delete"))
         self.button_widgets["account_create"] = Button(_("Create"))
@@ -138,12 +139,12 @@ class AccountSetting(object):
         self.button_widgets["disk_readwrite_check_new"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
 
         self.button_widgets["backup_check_group_new"] = CheckButton("", padding_x=0)
-        self.label_widgets["backup_check_group_new"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False)
+        self.label_widgets["backup_check_group_new"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False, enable_double_click=False)
         self.alignment_widgets["backup_check_group_new"] = gtk.Alignment()
         self.container_widgets["backup_check_group_hbox_new"] = gtk.HBox(False)
         self.container_widgets["backup_check_group_vbox_new"] = gtk.VBox(False)
 
-        self.button_widgets["binding_new"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False)
+        self.button_widgets["binding_new"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False, enable_double_click=False)
         # container
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()
@@ -175,11 +176,11 @@ class AccountSetting(object):
         #####################################
         # delete account page
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
-        self.label_widgets["del_account_tips"] = Label("", wrap_width=400, enable_select=False)
+        self.label_widgets["del_account_tips"] = Label("", wrap_width=400, enable_select=False, enable_double_click=False)
         self.label_widgets["del_account_tips2"] = Label(
             _("It is possible to keep the home directory when deleting a user account."),
-            wrap_width=400, enable_select=False)
-        self.label_widgets["del_account_error_label"] = Label("", wrap_width=390, enable_select=False)
+            wrap_width=400, enable_select=False, enable_double_click=False)
+        self.label_widgets["del_account_error_label"] = Label("", wrap_width=390, enable_select=False, enable_double_click=False)
         self.button_widgets["del_button"] = Button(_("Delete Files"))
         self.button_widgets["keep_button"] = Button(_("Keep Files"))
         self.button_widgets["cancel_button"] = Button(_("Cancel"))
@@ -384,8 +385,6 @@ class AccountSetting(object):
         self.alignment_widgets["set_iconfile"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["edit_iconfile"].connect("expose-event", self.container_expose_cb)
 
-        #self.container_widgets["left_vbox"].connect("expose-event", self.on_left_vbox_expose_cb)
-
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
         self.button_widgets["add_account"].connect("clicked", self.add_account_button_clicked)
@@ -433,32 +432,11 @@ class AccountSetting(object):
     # signals callback begin
     # widget signals
     def container_expose_cb(self, widget, event):
-        #if self.container_widgets["right_vbox"].allocation.x < 0:
-            #return True
         x, y, w, h, d = widget.window.get_geometry()
         cr = widget.window.cairo_create()
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
-        #cr.rectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT)
         cr.rectangle(x, y, w, h)
-        #cr.rectangle(*widget.allocation)
         cr.fill()
-        #print "expose:", widget.allocation, widget.window.get_geometry()
-        #print self.container_widgets["right_vbox"].allocation,
-        #print self.button_widgets["account_type"].allocation
-
-    def on_left_vbox_expose_cb(self, widget, event):
-        cr = widget.window.cairo_create()
-        x, y, w, h = widget.allocation
-        left_rect = self.view_widgets["account"].allocation
-        print "geometry:", widget.window.get_geometry()
-        print "wiget:", x, y, w, h
-        print "treeview:", left_rect
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
-            cr.set_line_width(1)
-            cr.move_to(x+w, y)
-            cr.line_to(x+w, y+h)
-            cr.stroke()
 
     def auto_login_toggled(self, button):
         if not self.current_select_user:
@@ -553,8 +531,8 @@ class AccountSetting(object):
                 pass
         self.current_select_user = dbus_obj = item.dbus_obj
         self.current_select_item = item
-        print "treeview current select:'%s', '%s'" % ( self.current_select_user.get_user_name(), self.current_select_user.get_real_name())
-        print "treeitrem:'%s', '%s'" % (item.real_name, item.user_name)
+        #print "treeview current select:'%s', '%s', '%d'" % ( self.current_select_user.get_user_name(), self.current_select_user.get_real_name(), self.current_select_user.get_uid())
+        #print "treeitrem:'%s', '%s'" % (item.real_name, item.user_name)
         self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
         if item.real_name:
             self.label_widgets["account_name"].set_text("<b>%s</b>" % item.real_name)
@@ -727,10 +705,10 @@ class AccountSetting(object):
         is_authorized = self.get_authorized()
         is_myown = settings.check_is_myown(self.current_passwd_user.get_uid())
 
-        label1 = Label(_("Action"))
-        label2 = Label(_("Current password"))
-        label3 = Label(_("New password"))
-        label4 = Label(_("Confirm new password"))
+        label1 = Label(_("Action"), enable_select=False, enable_double_click=False)
+        label2 = Label(_("Current password"), enable_select=False, enable_double_click=False)
+        label3 = Label(_("New password"), enable_select=False, enable_double_click=False)
+        label4 = Label(_("Confirm new password"), enable_select=False, enable_double_click=False)
 
         action_items = [(_("Set a password now"), self.CH_PASSWD_ACTION_SET_PSWD),
                         (_("Log in without a password"), self.CH_PASSWD_ACTION_NO_PSWD)]
@@ -770,7 +748,7 @@ class AccountSetting(object):
         button_hbox.pack_start(cancel_button, False, False)
         button_hbox.pack_start(change_button, False, False)
 
-        error_label = Label("", enable_select=False)
+        error_label = Label("", enable_select=False, enable_double_click=False)
 
         button_vbox.pack_start(error_label, False, False)
         button_vbox.pack_start(self.__make_align(button_hbox, xalign=1.0, width=LABEL_WIDTH+COMBO_WIDTH+WIDGET_SPACING), False, False)
@@ -968,8 +946,31 @@ class AccountSetting(object):
                 self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
                 self.button_widgets["auto_login"].set_active(user.get_automatic_login())
 
+    def account_user_set_random_icon(self, user_obj):
+        if self.get_authorized():
+            try:
+                face_dir = '/usr/share/pixmaps/faces'
+                if not os.path.exists(face_dir):
+                    return False
+                pic_list = os.listdir(face_dir)
+                if not pic_list:
+                    return False
+                total_pic = len(pic_list)
+                rand_pic = randint(0, total_pic-1)
+                filename = "%s/%s" % (face_dir, pic_list[rand_pic])
+                icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
+                    filename).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
+                user_obj.set_icon_file(filename)
+                return icon_pixbuf
+            except Exception, e:
+                print "random:", e
+                pass
+        return False
+
     def account_user_added_cb(self, account_obj, user_path):
         print "%s added" % user_path
+        if not user_path in self.account_dbus.list_cached_users():
+            return
         user_info = settings.get_user_info(user_path)
         icon_file = user_info[1]
         if os.path.exists(icon_file):
@@ -978,8 +979,10 @@ class AccountSetting(object):
                     icon_file).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
             except:
                 icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
-        else:
-            icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
+        else:       # if this user has not icon, then set a random icon
+            icon_pixbuf = self.account_user_set_random_icon(user_info[0])
+            if not icon_pixbuf:
+                icon_pixbuf = self.image_widgets["default_icon"].get_pixbuf()
         user_item = TreeItem(icon_pixbuf, tools.escape_markup_string(user_info[2]),
                              tools.escape_markup_string(user_info[3]),
                              user_info[4], user_info[0])

@@ -289,7 +289,7 @@ class DisplayView(gtk.VBox):
         self.goto_label = self.__setup_label(_("Relative Settings"), 
                                              width = None, 
                                              align = ALIGN_START)
-        goto_color = app_theme.get_color("globalTitleForeground").get_color()
+        goto_color = GOTO_FG_COLOR
         self.goto_individuation_label = self.__setup_label(
             text = _("<span foreground=\"%s\" underline=\"single\">Individuation</span>") % goto_color, 
             width = None, 
@@ -560,7 +560,7 @@ class DisplayView(gtk.VBox):
 
     def __set_brightness(self, widget, event):
         value = self.brightness_scale.get_value()
-        self.__send_message("status", ("display", _("Changed brightness to %f" % value)))
+        self.__send_message("status", ("display", _("Changed brightness to %f") % value))
         self.display_manager.set_screen_brightness(self.__current_output_name, 
                                                    value)
     

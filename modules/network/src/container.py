@@ -37,7 +37,9 @@ class Contain(gtk.Alignment):
         #self.width = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_width()
         #self.image.set_from_pixbuf(icon.get_pixbuf())
         self.hbox.pack_start(self.image, False, False, ICON_PADDING)
-        self.label = Label(text, text_size=TITLE_FONT_SIZE, label_width=100)
+        self.label = Label(text, text_size=TITLE_FONT_SIZE, label_width=100,
+                               enable_select=False,
+                               enable_double_click=False)
         self.hbox.pack_start(self.label, False, False, TEXT_PADDING)
 
         self.switch = OffButton()
@@ -78,7 +80,11 @@ class TitleBar(gtk.VBox):
         self.set_size_request(width, -1)
         
         hbox = gtk.HBox(spacing=spacing)
-        label = Label(title, text_color, text_size)
+        label = Label(title, 
+                      text_color,
+                      text_size,
+                      enable_select=False,
+                      enable_double_click=False)
 
         if pixbuf == None:
             self.__box_pack_start(hbox, [label])
