@@ -28,5 +28,10 @@ TODO: keywords list
 '''
 keywords = [("wired", _("Wired")), 
             ("wireless", _("Wireless")), 
+            ("dsl", _("DSL")),
+            ("VPN", _("VPN")),
+            ("Mobile", _("Mobile Network")),
+            ("proxy", _("Proxy")),
+            ("network", _("Network"))
            ]
 
