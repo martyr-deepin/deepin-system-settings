@@ -148,6 +148,7 @@ class IconSetPage(gtk.VBox):
 
         self.more_icon_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
         self.more_icon_button.connect("button-press-event", self.choose_more_picture)
+        main_vbox.connect("expose-event", self.draw_white_background)
 
     def refresh(self):
         self.error_label.set_text("")
@@ -226,9 +227,6 @@ class IconSetPage(gtk.VBox):
             if file_path in self.history_icon.history:
                 self.history_icon.history.remove(file_path)
                 self.history_icon.set_history(self.history_icon.history)
-            # TODO
-            #if os.path.dirname(file_path) == self.history_icon.icons_dir:
-                #os.remove(file_path)
         except Exception, e:
             print e
         
