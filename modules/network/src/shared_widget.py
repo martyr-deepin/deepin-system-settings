@@ -30,25 +30,39 @@ class IPV4Conf(gtk.VBox):
         self.dns_only = dns_only
         self.table = gtk.Table(9, 2, False)
         # Ip configuration
-        self.ip_label = Label(_("Automatic get IP address"), text_size=CONTENT_FONT_SIZE)
+        self.ip_label = Label(_("Automatic get IP address"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.auto_ip = OffButton()
 
-        self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE)
+        self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.addr_entry = InputEntry()
         self.addr_entry.set_sensitive(False)
 
-        self.mask_label = Label(_("Mask:"), text_size=CONTENT_FONT_SIZE)
+        self.mask_label = Label(_("Mask:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.mask_entry = InputEntry()
         
-        self.gate_label = Label(_("Gateway:"), text_size=CONTENT_FONT_SIZE)
+        self.gate_label = Label(_("Gateway:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.gate_entry = InputEntry()
         
         #DNS configuration
-        self.dns_label = Label( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE)
+        self.dns_label = Label( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.auto_dns = OffButton()
 
-        self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE)
-        self.slave_dns = Label(_("Slave DNS server address:"), text_size=CONTENT_FONT_SIZE)
+        self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.slave_dns = Label(_("Slave DNS server address:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
         
@@ -285,25 +299,39 @@ class IPV6Conf(gtk.VBox):
         self.set_button = set_button_callback
         self.table = gtk.Table(9, 2, False)
         # Ip configuration
-        self.ip_label = Label(_("Automatic get IP address"), text_size=CONTENT_FONT_SIZE)
+        self.ip_label = Label(_("Automatic get IP address"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.auto_ip = OffButton()
 
-        self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE)
+        self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.addr_entry = InputEntry()
         self.addr_entry.set_sensitive(False)
 
-        self.mask_label = Label(_("Prefix:"), text_size=CONTENT_FONT_SIZE)
+        self.mask_label = Label(_("Prefix:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.mask_entry = InputEntry()
         
-        self.gate_label = Label(_("Gateway:"), text_size=CONTENT_FONT_SIZE)
+        self.gate_label = Label(_("Gateway:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.gate_entry = InputEntry()
         
         #DNS configuration
-        self.dns_label = Label( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE)
+        self.dns_label = Label( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.auto_dns = OffButton()
 
-        self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE)
-        self.slave_dns = Label(_("Slave DNS server address:"), text_size=CONTENT_FONT_SIZE)
+        self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.slave_dns = Label(_("Slave DNS server address:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.master_entry = InputEntry()
         self.slave_entry = InputEntry()
         

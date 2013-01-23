@@ -301,9 +301,15 @@ class Broadband(gtk.VBox):
         
         #self.label_basic = Label(_("Basic"), text_size = TITLE_FONT_SIZE)
         self.label_basic = TitleBar(None, _("Basic"))
-        self.label_number = Label(_("Code:"), text_size=CONTENT_FONT_SIZE)
-        self.label_username = Label(_("Username:"), text_size=CONTENT_FONT_SIZE)
-        self.label_password = Label(_("password:"), text_size=CONTENT_FONT_SIZE)
+        self.label_number = Label(_("Code:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.label_username = Label(_("Username:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.label_password = Label(_("password:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
 
         self.number = InputEntry()
         self.username = InputEntry()
@@ -314,10 +320,18 @@ class Broadband(gtk.VBox):
 
         #self.table = gtk.Table(6, 4, False)
         self.label_advanced = TitleBar(None,_("Advanced"))
-        self.label_apn = Label(_("APN:"), text_size=CONTENT_FONT_SIZE)
-        self.label_network = Label(_("Network ID:"), text_size=CONTENT_FONT_SIZE)
-        self.label_type = Label(_("Type:"), text_size=CONTENT_FONT_SIZE)
-        self.label_pin = Label(_("PIN:"), text_size=CONTENT_FONT_SIZE)
+        self.label_apn = Label(_("APN:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.label_network = Label(_("Network ID:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.label_type = Label(_("Type:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.label_pin = Label(_("PIN:"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
 
         self.apn = InputEntry()
         self.network_id = InputEntry()
@@ -731,11 +745,21 @@ class PPPConf(ScrolledWindow):
         self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
                                      _("Configure Method"), width=self.TABLE_WIDTH)
 
-        self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE)
-        self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE)
+        self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_pap_label = Label(_("PAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_chap_label = Label(_("CHAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_mschap_label = Label(_("MSCHAP"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.refuse_mschapv2_label = Label(_("MSCHAP v2"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
         self.refuse_eap = SwitchButton()
         self.refuse_pap = SwitchButton()
         self.refuse_chap = SwitchButton()
@@ -752,13 +776,27 @@ class PPPConf(ScrolledWindow):
                                           _("Echo"), width=self.TABLE_WIDTH)
 
 
-        self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE)
-        self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE)
-        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE)
-        self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE)
-        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE)
-        self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE)
-        self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE)
+        self.require_mppe_label = Label(_("Use point-to-point encryption(mppe)"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        self.ppp_echo_label = Label(_("Send PPP echo packets"), text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
 
         self.require_mppe = SwitchButton()
         self.require_mppe_128 = SwitchButton()

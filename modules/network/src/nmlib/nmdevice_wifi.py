@@ -171,7 +171,8 @@ class NMDeviceWifi(NMDevice):
         try:
             ssids = self.__get_ssid_record()
             if ssids:
-                return map(lambda ssid:self.get_ap_by_ssid(ssid), ssids)
+                aps = map(lambda ssid:self.get_ap_by_ssid(ssid), ssids)
+                return filter(lambda ap: ap.get_mode() != 1, aps)
         except:    
             return []
 
