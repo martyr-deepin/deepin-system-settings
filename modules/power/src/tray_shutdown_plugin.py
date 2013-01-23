@@ -68,7 +68,7 @@ class TrayShutdownPlugin(object):
         return self.gui 
 
     def show_menu(self):
-        self.this.set_size_request(160, -1)
+        self.this.set_size_request(160, 180)
         print "shutdown show menu..."
 
     def hide_menu(self):
