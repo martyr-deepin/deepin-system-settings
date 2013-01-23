@@ -110,6 +110,20 @@ class WiredSection(gtk.VBox):
             self.align.add(self.tree)
             self.pack_start(self.align, False, False, 0)
 
+    def refresh_device(self):
+        if self.wire.get_active():
+            self.wired_devices = nm_module.nmclient.get_wired_devices()
+            item_list = self.retrieve_list()
+            self.tree.add_items(item_list, 0, True)
+            self.tree.visible_items[-1].is_last = True
+            self.tree.set_no_show_all(False)
+            self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+            for index, wired_device in enumerate(self.wired_devices):
+                WiredDevice(wired_device,self.tree, index)
+
+            #self.try_active()
+            self.show_all()
+
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
@@ -772,7 +786,8 @@ class Network(object):
         ui_align.connect("expose-event", self.expose_callback)
         nm_module.nmclient.connect("activate-succeed", self.activate_succeed) 
         nm_module.nmclient.connect("activate-failed", self.activate_failed) 
-
+        nm_module.nmclient.connect("device-added", self.device_added)
+        nm_module.nmclient.connect("device-removed", self.device_removed)
 
         slider._append_page(self.eventbox, "main")
         slider._append_page(self.wired_setting_page, "wired")
@@ -799,6 +814,15 @@ class Network(object):
 
     def activate_failed(self, widget, connection_path):
         print "active failed"
+
+    def device_added(self, widget, connection_path):
+        print "device add:", connection_path
+        self.wired.refresh_device()
+
+    def device_removed(self, widget, connection_path):
+        print "device remove:", connection_path
+        self.wired.refresh_device()
+
 
     def init_sections(self, module_frame):
         #slider._set_to_page("main")
