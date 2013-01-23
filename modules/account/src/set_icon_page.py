@@ -104,7 +104,7 @@ class IconSetPage(gtk.VBox):
             [(None, _("Local picture"), self.choose_from_picture),
              (None, _("Take a screeshot"), self.choose_from_screenshot),
              (None, _("From camera"), self.choose_from_camera)], True)
-        self.tips_label = Label("Set icon", text_size=13, label_width=460, enable_select=False, enable_double_click=False)
+        self.tips_label = Label("Set icon", label_width=460, enable_select=False, enable_double_click=False)
         self.error_label = Label("", wrap_width=560, enable_select=False, enable_double_click=False)
 
         set_page_sw = ScrolledWindow()
