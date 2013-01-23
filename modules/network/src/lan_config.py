@@ -321,18 +321,26 @@ class Wired(gtk.VBox):
         self.set_button = set_button_callback
         table = gtk.Table(3, 2, False)
         
-        mac_address = Label(_("Device Mac Address:"), text_size=CONTENT_FONT_SIZE)
+        mac_address = Label(_("Device Mac Address:"),
+                            text_size=CONTENT_FONT_SIZE,
+                            enable_select=False,
+                            enable_double_click=False)
         table.attach(style.wrap_with_align(mac_address), 0, 1, 0, 1)
 
         self.mac_entry = InputEntry()
         table.attach(style.wrap_with_align(self.mac_entry), 1, 2, 0, 1)
 
-        clone_addr = Label(_("Cloned Mac Address:"), text_size=CONTENT_FONT_SIZE)
+        clone_addr = Label(_("Cloned Mac Address:"),
+                           text_size=CONTENT_FONT_SIZE,
+                           enable_select=False,
+                           enable_double_click=False)
         table.attach(style.wrap_with_align(clone_addr), 0, 1, 1, 2)
         self.clone_entry = InputEntry()
         table.attach(style.wrap_with_align(self.clone_entry), 1,2, 1, 2)
 
-        mtu = Label(_("MTU:"))
+        mtu = Label(_("MTU:"),
+                    enable_select=False,
+                    enable_double_click=False)
         table.attach(style.wrap_with_align(mtu), 0,1,2,3)
         self.mtu_spin = SpinBox(0,0, 1500, 1, self.ENTRY_WIDTH)
         table.attach(style.wrap_with_align(self.mtu_spin), 1,2,2,3)

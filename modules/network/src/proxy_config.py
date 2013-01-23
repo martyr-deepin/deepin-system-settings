@@ -44,12 +44,24 @@ class ProxyConfig(gtk.VBox):
         table_align.add(self.table)
         self.pack_start(table_align, True, True)
 
-        self.method_label = Label(_("Method"))
-        self.http_label = Label(_("Http Proxy"))
-        self.https_label = Label(_("Https Proxy"))
-        self.ftp_label = Label(_("FTP Proxy"))
-        self.socks_label = Label(_("Socks Proxy"))
-        self.conf_label = Label(_("Configuration url"))
+        self.method_label = Label(_("Method"),
+                               enable_select=False,
+                               enable_double_click=False)
+        self.http_label = Label(_("Http Proxy"),
+                               enable_select=False,
+                               enable_double_click=False)
+        self.https_label = Label(_("Https Proxy"),
+                               enable_select=False,
+                               enable_double_click=False)
+        self.ftp_label = Label(_("FTP Proxy"),
+                               enable_select=False,
+                               enable_double_click=False)
+        self.socks_label = Label(_("Socks Proxy"),
+                               enable_select=False,
+                               enable_double_click=False)
+        self.conf_label = Label(_("Configuration url"),
+                               enable_select=False,
+                               enable_double_click=False)
 
         self.methods = ComboBox([(_("None"), 0),
                                  (_("Manual"), 1),

@@ -125,6 +125,7 @@ class DeepinDateTime(BusBase):
         return self.dbus_method("CanSetTimezone")
 
     def can_set_using_ntp(self):
+        print "can set using ntp"
         return self.dbus_method("CanSetUsingNtp")
 
     def get_hardware_clock_using_utc(self):
@@ -154,11 +155,10 @@ class DeepinDateTime(BusBase):
         return self.call_async("SetHardwareClockUsingUTC", is_using_utc, 
                                 reply_handler = self.set_using_utc_reply, error_handler = self.set_using_utc_error)
 
-    def set_using_utc_reply(self, result):
+    def set_using_utc_reply(self):
         print "set using utc reply"
-        print result
 
-    def set_using_utc_error(self, error):
+    def set_using_utc_error(self, error = None):
         print "set using utc error"
         print result
 
@@ -259,12 +259,11 @@ class DeepinDateTime(BusBase):
     def set_using_ntp(self, is_using_ntp):
         try:
             if self.can_set_using_ntp():
-                return self.call_async("SetUsingNtp", is_using_ntp,
-                                reply_handler = self.set_using_ntp_reply, error_handler = self.set_using_ntp_error)
-            else:
-                self.set_using_ntp_error()
+                print "set using ntp"
+                return self.dbus_interface.SetUsingNtp(is_using_ntp, reply_handler = None, error_handler = None)
         except:
-            self.set_using_ntp_error()
+            print "set using ntp error"
+            traceback.print_exc()
 
     def set_using_ntp_reply(self):
         print "set using ntp reply"

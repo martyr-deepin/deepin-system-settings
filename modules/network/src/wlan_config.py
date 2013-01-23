@@ -113,12 +113,20 @@ class WirelessSetting(gtk.Alignment):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def init(self, access_point, new_connection_list=None, init_connections=False, all_adhoc=False):
-        self.ssid = access_point
+    def init(self, access_points, new_connection_list=None, init_connections=False, all_adhoc=False):
+        self.ssid = access_points
         if init_connections:
             self.sidebar.new_connection_list = []
         # Get all connections  
-        connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.ssid)
+        if type(self.ssid) is list:
+            connection_associate = []
+            for ssid in self.ssid:
+                connection_associate.extent(nm_module.nm_remote_settings.get_ssid_associate_connections(ssid))
+            
+            self.ssid = ""
+        else:
+            connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.ssid)
+
         # Check connections
         if connection_associate == []:
             connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
@@ -344,11 +352,22 @@ class Security(gtk.VBox):
             self.setting = self.connection.get_setting("802-11-wireless-security")
         else:
             self.has_security = False
-        self.security_label = Label(_("Security:"))
-        self.key_label = Label(_("Key:"))
-        self.wep_index_label = Label(_("Wep index:"))
-        self.auth_label = Label(_("Authentication:"))
-        self.password_label = Label(_("Password:"))
+        self.security_label = Label(_("Security:"),
+                                    enable_select=False,
+                                    enable_double_click=False)
+        self.key_label = Label(_("Key:"),
+                               enable_select=False,
+                               enable_double_click=False)
+        self.wep_index_label = Label(_("Wep index:"),
+                                     enable_select=False,
+                                     enable_double_click=False)
+
+        self.auth_label = Label(_("Authentication:"),
+                                enable_select=False,
+                                enable_double_click=False)
+        self.password_label = Label(_("Password:"),
+                                    enable_select=False,
+                                    enable_double_click=False)
 
         self.encry_list = [(_("None"), None),
                       (_("WEP (Hex or ASCII)"), "none"),
@@ -577,28 +596,46 @@ class Wireless(gtk.VBox):
         self.set_button = set_button_cb
         self.wireless = self.connection.get_setting("802-11-wireless")
         ### UI
-        self.ssid_label = Label(_("SSID:"))
+        self.ssid_label = Label(_("SSID:"),
+                                enable_select=False,
+                                enable_double_click=False)
         self.ssid_entry = InputEntry()
 
-        self.mode_label = Label(_("Mode:"))
+        self.mode_label = Label(_("Mode:"),
+                               enable_select=False,
+                               enable_double_click=False)
         self.mode_combo = ComboBox([(_("Infrastructure"),"infrastructure"),(_("Ad-hoc"), "adhoc")], max_width=self.ENTRY_WIDTH)
         
         # TODO need to put this section to personal wifi
-        self.band_label = Label(_("Band:"))
+        self.band_label = Label(_("Band:"),
+                               enable_select=False,
+                               enable_double_click=False)
+                                
         self.band_combo = ComboBox([(_("Automatic"), None),
                                     ("a (5 GHZ)", "a"),
                                     ("b/g (2.4)", "bg")],
                                     max_width=self.ENTRY_WIDTH)
-        self.channel_label = Label(_("Channel:"))
+        self.channel_label = Label(_("Channel:"),
+                                   enable_select=False,
+                                   enable_double_click=False)
         self.channel_spin = SpinBox(0, 0, 1500, 1, self.ENTRY_WIDTH)
         # BSSID
-        self.bssid_label = Label(_("BSSID:"))
+        self.bssid_label = Label(_("BSSID:"),
+                                 enable_select=False,
+                                 enable_double_click=False)
         self.bssid_entry = InputEntry()
-        self.mac_address = Label(_("Device Mac Address:"))
+        self.mac_address = Label(_("Device Mac Address:"),
+                                 enable_select=False,
+                                 enable_double_click=False)
         self.mac_entry = InputEntry()
-        self.clone_addr = Label(_("Cloned Mac Address:"))
+        self.clone_addr = Label(_("Cloned Mac Address:"),
+                                 enable_select=False,
+                                 enable_double_click=False)
         self.clone_entry = InputEntry()
-        self.mtu = Label(_("MTU:"))
+
+        self.mtu = Label(_("MTU:"),
+                           enable_select=False,
+                           enable_double_click=False)
         self.mtu_spin = SpinBox(0, 0, 1500, 1, self.ENTRY_WIDTH)
 
         self.table = gtk.Table(8, 2, False)

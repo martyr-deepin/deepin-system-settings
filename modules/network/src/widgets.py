@@ -48,7 +48,9 @@ class AskPasswordDialog(DialogBox):
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
         self.hint_align.set_padding(0, 0, 8, 8)
-        self.hint_text = Label("Please input password for %s :"%ssid)
+        self.hint_text = Label("Please input password for %s :"%ssid,
+                               enable_select=False,
+                               enable_double_click=False)
         self.hint_align.add(self.hint_text)
 
         self.entry_align = gtk.Alignment()
