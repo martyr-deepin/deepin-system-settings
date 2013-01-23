@@ -100,7 +100,7 @@ class KeySetting(object):
     def __create_widget(self):
         '''create gtk widget'''
         title_item_font_size = TITLE_FONT_SIZE
-        option_item_font_szie = CONTENT_FONT_SIZE
+        option_item_font_size = CONTENT_FONT_SIZE
 
         #####################################
         # Typing widgets create
@@ -113,8 +113,8 @@ class KeySetting(object):
         self.label_widgets["repeat"] = Label(_("Repeat"),
             app_theme.get_color("globalTitleForeground"),
             text_size=title_item_font_size, enable_select=False, enable_double_click=False)
-        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
-        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
         self.label_widgets["repeat_fast"] = Label(_("Fast"), enable_select=False, enable_double_click=False)
         self.label_widgets["repeat_slow"] = Label(_("Slow"), enable_select=False, enable_double_click=False)
         self.label_widgets["repeat_long"] = Label(_("Long"), enable_select=False, enable_double_click=False)
@@ -131,17 +131,17 @@ class KeySetting(object):
             app_theme.get_color("globalTitleForeground"),
             text_size=title_item_font_size, enable_select=False, enable_double_click=False)
 
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["repeat_test_entry"] = gtk.Entry()
         self.button_widgets["blink_test_entry"] = gtk.Entry()
         self.button_widgets["touchpad_disable"] = OffButton()
         # relevant settings button
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Settings"),
-            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_szie,
+            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_size,
             enable_select=False, enable_double_click=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
-            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_szie,
+            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_size,
             enable_select=False, enable_double_click=False)
         self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
         # container init
