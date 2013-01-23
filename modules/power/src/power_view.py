@@ -91,6 +91,9 @@ class PowerView(gtk.VBox):
         self.__widget_pack_start(self.close_notebook_cover_box, 
             [self.close_notebook_cover_label, self.close_notebook_cover_combo])
         self.close_notebook_cover_align.add(self.close_notebook_cover_box)
+        if not self.power_manager.is_laptop():
+            self.close_notebook_cover_align.set_visible(False)
+
         '''
         press button hibernate
         '''
@@ -197,7 +200,7 @@ class PowerView(gtk.VBox):
             [self.button_power_config_align, 
              self.press_button_power_align, 
              self.close_notebook_cover_align, 
-             self.press_button_hibernate_align, 
+             #self.press_button_hibernate_align, 
              self.power_save_config_align, 
              self.hibernate_status_align, 
              self.close_harddisk_align, 

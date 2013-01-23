@@ -76,7 +76,7 @@ class TrayGui(gtk.VBox):
         hseparator = HSeparator(separator_color, 0, 0)
         #hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(150, 3)
-        hbox.pack_start(self.__make_align(Label(_("Device"))), False, False, enable_select=False, enable_double_click=False)
+        hbox.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False)), False, False)
         hbox.pack_start(self.__make_align(hseparator), True, True)
         self.pack_start(hbox, False, False)
 
