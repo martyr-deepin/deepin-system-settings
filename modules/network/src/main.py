@@ -277,6 +277,9 @@ class WirelessSection(gtk.VBox):
             # Add signals
             for device in self.wireless_devices:
                 device.connect("state-changed", self.state_changed_callback)
+        else:
+            parent = self.get_parent()
+            parent.remove(self)
 
     def state_changed_callback(self, widget, new_state, old_state, reason):
         if new_state == 20:
@@ -759,8 +762,10 @@ class Network(object):
         self.module_frame = module_frame
         self.init_sections(self.module_frame)
         vbox = gtk.VBox(False, BETWEEN_SPACING)
-        vbox.pack_start(self.wired, False, True,0)
-        vbox.pack_start(self.wireless, False, True, 0)
+        if hasattr(self.wired, "wire"):
+            vbox.pack_start(self.wired, False, True,0)
+        if hasattr(self.wireless, "wireless"):
+            vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
         vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
