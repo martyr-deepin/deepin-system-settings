@@ -367,7 +367,9 @@ class BlueToothView(gtk.VBox):
                      text_color = text_color,                                   
                      text_size = text_size,                                     
                      text_x_align = text_x_align,                               
-                     label_width = label_width)     
+                     label_width = label_width, 
+                     enable_select = False, 
+                     enable_double_click = False)     
 
     def __setup_title_align(self,                                               
                             pixbuf,                                             
@@ -428,7 +430,7 @@ class BlueToothView(gtk.VBox):
         pass
 
     def __setup_label(self, text="", width=180, align=ALIGN_END):
-        label = Label(text, None, TITLE_FONT_SIZE, align, width)
+        label = Label(text, None, TITLE_FONT_SIZE, align, width, False, False, False)
         return label
 
     def __setup_combo(self, items=[], width=HSCALEBAR_WIDTH):

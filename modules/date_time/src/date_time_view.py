@@ -425,7 +425,9 @@ class DatetimeView(gtk.HBox):
                      text_color = text_color,                                   
                      text_size = text_size,                                     
                      text_x_align = text_x_align,                               
-                     label_width = label_width)     
+                     label_width = label_width, 
+                     enable_select = False, 
+                     enable_double_click = False)     
     
     def __setup_title_align(self,                                                  
                             pixbuf,                                                
@@ -496,7 +498,7 @@ class DatetimeView(gtk.HBox):
         self.__deepin_dt.set_timezone_by_gmtoff(item_value)
 
     def __setup_label(self, text="", width=90, align=ALIGN_START):
-        label = Label(text, None, CONTENT_FONT_SIZE, align, width)
+        label = Label(text, None, CONTENT_FONT_SIZE, align, width, False, False, False)
         return label
 
     def __setup_toggle(self):

@@ -289,7 +289,7 @@ class DisplayView(gtk.VBox):
         self.goto_label = self.__setup_label(_("Relative Settings"), align = ALIGN_START)
         self.goto_individuation_label = self.__setup_label(
             text = _("<span foreground=\"blue\" underline=\"single\">Individuation</span>"), 
-            width = 180, 
+            width = None, 
             align = ALIGN_START)
         self.goto_individuation_label.connect("button-press-event", 
                                               self.__button_press, 
@@ -297,7 +297,7 @@ class DisplayView(gtk.VBox):
         set_clickable_cursor(self.goto_individuation_label)
         self.goto_power_label = self.__setup_label(
             text = _("<span foreground=\"blue\" underline=\"single\">Power</span>"), 
-            width = 180, 
+            width = None, 
             align = ALIGN_START)
         self.goto_power_label.connect("button-press-event", 
                                       self.__button_press, 

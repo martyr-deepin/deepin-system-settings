@@ -239,7 +239,9 @@ class PowerView(gtk.VBox):
                      text_color = text_color,                                   
                      text_size = text_size,                                     
                      text_x_align = text_x_align,                               
-                     label_width = label_width)     
+                     label_width = label_width, 
+                     enable_select = False, 
+                     enable_double_click = False)     
 
     def __setup_title_align(self, 
                             pixbuf, 
@@ -277,7 +279,7 @@ class PowerView(gtk.VBox):
         cr.fill()
 
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
-        label = Label(text, None, text_size, align, 200)
+        label = Label(text, None, text_size, align, 200, False, False, False)
         return label
 
     def __setup_combo(self, items=[]):
