@@ -651,7 +651,9 @@ class DisplayView(gtk.VBox):
                      text_color = text_color, 
                      text_size = text_size, 
                      text_x_align = text_x_align, 
-                     label_width = label_width)
+                     label_width = label_width, 
+                     enable_select = False, 
+                     enable_double_click = False)
     
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, width=180, align=ALIGN_END, wrap_width=None):
         label = Label(text = text, 
@@ -659,7 +661,9 @@ class DisplayView(gtk.VBox):
                       text_size = text_size, 
                       text_x_align = align, 
                       label_width = width, 
-                      wrap_width = wrap_width)
+                      wrap_width = wrap_width, 
+                      enable_select = False, 
+                      enable_double_click = False)
         return label
 
     def __setup_combo(self, items=[], width=HSCALEBAR_WIDTH):

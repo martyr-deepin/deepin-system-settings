@@ -435,7 +435,7 @@ class DisplayManager:
     def set_screen_brightness(self, output_name, value):
         i = 0
         
-        if value <= 0.1 or value > 1.0:
+        if value < 0.1 or value > 1.0:
             return
 
         self.__xrandr_settings.set_double("brightness", value)

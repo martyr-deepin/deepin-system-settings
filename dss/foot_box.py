@@ -180,7 +180,9 @@ class FootBox(gtk.HBox):
         label = Label(text = text, 
                       text_size = text_size, 
                       text_x_align = ALIGN_MIDDLE, 
-                      label_width = label_width)
+                      label_width = label_width, 
+                      enable_select = False, 
+                      )
         return label
 
 gobject.type_register(FootBox)
