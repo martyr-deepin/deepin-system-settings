@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 09:25+0800\n"
+"POT-Creation-Date: 2013-01-23 15:18+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,22 +16,110 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/treeview.py:87
+#: ../src/widget.py:53
+msgid "OK"
+msgstr "确认"
+
+#: ../src/widget.py:54
+msgid "Cancel"
+msgstr "取消"
+
+#: ../src/treeview.py:85
 msgid "No description"
-msgstr ""
+msgstr "没有相关描述"
 
-#: ../src/treeview.py:96
+#: ../src/treeview.py:95
 msgid "active"
-msgstr ""
+msgstr "运行"
 
-#: ../src/treeview.py:98
+#: ../src/treeview.py:97
 msgid "not running"
-msgstr ""
+msgstr "未运行"
 
-#: ../src/session_view.py:37
+#: ../src/app_view.py:40
+msgid "web"
+msgstr "网络"
+
+#: ../src/app_view.py:41
+msgid "mail"
+msgstr "邮件"
+
+#: ../src/app_view.py:42
+msgid "editor"
+msgstr "文件"
+
+#: ../src/app_view.py:43
+msgid "music"
+msgstr "音乐"
+
+#: ../src/app_view.py:44
+msgid "video"
+msgstr "视频"
+
+#: ../src/app_view.py:45
+msgid "photo"
+msgstr "图片"
+
+#: ../src/session_view.py:31
+msgid "Application"
+msgstr "应用程序"
+
+#: ../src/session_view.py:31
+msgid "State"
+msgstr "状态"
+
+#: ../src/session_view.py:31
+msgid "Description"
+msgstr "描述"
+
+#: ../src/session_view.py:44
 msgid "New"
-msgstr ""
+msgstr "新建"
 
-#: ../src/session_view.py:38
+#: ../src/session_view.py:45
 msgid "Delete"
-msgstr ""
+msgstr "删除"
+
+#: ../src/media_view.py:32
+msgid "CD"
+msgstr "CD音频"
+
+#: ../src/media_view.py:33
+msgid "DVD"
+msgstr "DVD视频"
+
+#: ../src/media_view.py:34
+msgid "music player"
+msgstr "音乐播放器"
+
+#: ../src/media_view.py:35
+msgid "camera"
+msgstr "图片"
+
+#: ../src/media_view.py:36
+msgid "software"
+msgstr "软件"
+
+#: ../src/media_view.py:38
+msgid "other applications"
+msgstr "其他应用程序"
+
+#: ../src/media_view.py:39
+msgid "ask"
+msgstr "询问"
+
+#: ../src/media_view.py:40
+msgid "do nothing"
+msgstr "无操作"
+
+#: ../src/media_view.py:41
+msgid "open folder"
+msgstr "打开文件夹"
+
+#: ../src/media_view.py:42
+msgid "apply auto play for all media and devices"
+msgstr "为所有媒体和设备使用自动播放"
+
+#: ../src/media_view.py:49
+msgid "more option"
+msgstr "更多选项"

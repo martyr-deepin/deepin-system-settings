@@ -53,7 +53,12 @@ class Gui(gtk.VBox):
         #
         user_pixbuf = self.user_icon.get_pixbuf()
         new_user_pixbuf = user_pixbuf.scale_simple(icon_width, icon_height, gtk.gdk.INTERP_BILINEAR)
-        self.user_icon.set_from_pixbuf(new_user_pixbuf)
+        if new_user_pixbuf:
+            try:
+                self.user_icon.set_from_pixbuf(new_user_pixbuf)
+            except Exception, e:
+                print "set user icon[error]:", e
+
         #
         user_name = self.cmd_dbus.get_user_name()
         user_name_width = get_text_size(user_name)[0]
