@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-23 14:35+0800\n"
+"POT-Creation-Date: 2013-01-23 15:56+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -134,8 +134,8 @@ msgid "Reset to default value"
 msgstr "恢复默认值"
 
 #: ../src/display_view.py:563
-msgid "Changed brightness to %f"
-msgstr "亮度修改为%f"
+msgid "Changed brightness to %0.2f"
+msgstr "亮度修改为%0.2f"
 
 #: ../src/display_view.py:588
 msgid "Changed to manual adjustment"
