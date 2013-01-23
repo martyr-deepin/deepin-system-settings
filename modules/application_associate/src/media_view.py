@@ -10,6 +10,7 @@ from app import AppManager
 import gtk
 import style
 from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING
+from nls import _
 
 class MediaView(gtk.VBox):
     ENTRY_WIDTH = 200
@@ -26,26 +27,26 @@ class MediaView(gtk.VBox):
 
         table = gtk.Table(8, 3, False)
 
-        info_label = Label("您可以选择插入每种媒体或设备时的后续操作")
+        #info_label = Label("您可以选择插入每种媒体或设备时的后续操作")
 
-        cd_label = Label("CD音频")
-        dvd_label = Label("DVD视频")
-        player_label = Label("音乐播放器")
-        photo_label = Label("图片")
-        software_label = Label("软件")
+        cd_label = Label(_("CD"))
+        dvd_label = Label(_("DVD"))
+        player_label = Label(_("music player"))
+        photo_label = Label(_("camera"))
+        software_label = Label(_("software"))
         
-        default_list = [("其他应用程序", "other_app"),
-                        ("询问如何处理", "ask"),
-                        ("不处理", "do_nothing"),
-                        ("打开文件夹","open_folder")]
-        self.auto_check = CheckButton("为所有媒体和设备使用自动播放")
+        default_list = [(_("other applications"), "other_app"),
+                        (_("ask"), "ask"),
+                        (_("do nothing"), "do_nothing"),
+                        (_("open folder"),"open_folder")]
+        self.auto_check = CheckButton(_("apply auto play for all media and devices"))
         self.cd = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
         self.dvd = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
         self.player= ComboBox(default_list, max_width=self.ENTRY_WIDTH)
         self.photo = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
         self.software = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
 
-        self.more_option = Button("更多选项")
+        self.more_option = Button(_("more option"))
         #self.more_option.set_size_request( 30, 22)
 
         #table.attach(style.wrap_with_align(info_label, width=self.LEFT_WIDTH), 0, 3, 0, 1)
@@ -61,7 +62,7 @@ class MediaView(gtk.VBox):
         table.attach(style.wrap_with_align(self.player), 1, 3, 4, 5)
         table.attach(style.wrap_with_align(self.photo), 1, 3, 5, 6)
         table.attach(style.wrap_with_align(self.software), 1, 3, 6, 7)
-        table.attach(style.wrap_with_align(self.more_option), 2, 3, 7, 8)
+        #table.attach(style.wrap_with_align(self.more_option), 2, 3, 7, 8)
 
         # UI style
         table_align = style.set_box_with_align(table, "text")
@@ -72,7 +73,6 @@ class MediaView(gtk.VBox):
         combo_list = [self.cd, self.dvd, self.player, self.photo, self.software]
         for combo in combo_list:
             combo.set_size_request(self.ENTRY_WIDTH, 22)
-
 
         self.refresh_app_list(default_list)
         if self.media_handle.autorun_never:

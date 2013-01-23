@@ -8,6 +8,8 @@ from app import AppManager
 from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING, FRAME_LEFT_PADDING
 import style
 
+from nls import _
+
 class AppView(gtk.VBox):
     ENTRY_WIDTH = 200
     LEFT_WIDTH = STANDARD_LINE - TEXT_WINDOW_LEFT_PADDING
@@ -34,13 +36,13 @@ class AppView(gtk.VBox):
 
     def app_table(self):
         # Labels 
-        info_label = Label("您可以根据自己需要对深度系统在默认情况下使用的程序进行设置")
-        web_label = Label("网络")
-        mail_label = Label("邮件")
-        editor_label = Label("文本")
-        music_label = Label("音乐")
-        movie_label = Label("视频")
-        pic_label = Label("图片")
+        #info_label = Label("您可以根据自己需要对深度系统在默认情况下使用的程序进行设置")
+        web_label = Label(_("web"))
+        mail_label = Label(_("mail"))
+        editor_label = Label(_("editor"))
+        music_label = Label(_("music"))
+        movie_label = Label(_("video"))
+        pic_label = Label(_("photo"))
 
         self.web = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)
         self.mail = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)

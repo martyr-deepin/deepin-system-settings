@@ -389,10 +389,10 @@ class KeySetting(object):
         self.container_widgets["touchpad_label_hbox"].set_size_request(
             STANDARD_LINE+WIDGET_SPACING+HSCALEBAR_WIDTH-TEXT_WINDOW_LEFT_PADDING, -1)
         self.container_widgets["touchpad_label_hbox"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["touchpad_label_hbox"].pack_start(
-            self.__make_align(self.image_widgets["touchpad"]), False, False)
-        self.container_widgets["touchpad_label_hbox"].pack_start(
-            self.label_widgets["touchpad"], False, False)
+        # self.container_widgets["touchpad_label_hbox"].pack_start(
+        #     self.__make_align(self.image_widgets["touchpad"]), False, False)
+        # self.container_widgets["touchpad_label_hbox"].pack_start(
+        #     self.label_widgets["touchpad"], False, False)
         self.container_widgets["touchpad_label_hbox"].pack_start(
             self.__make_align(self.button_widgets["touchpad_disable"], xalign=1.0, xscale=0.0), True, True)
         self.button_widgets["touchpad_disable"].set_active(
