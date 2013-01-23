@@ -38,6 +38,33 @@ class SessionMain(gtk.VBox):
         cr.stroke()
 
 
+class NothingItem(TreeItem):
+
+    def __init__(self):
+        TreeItem.__init__(self)
+
+    def render_nothing(self, cr, rect):
+
+        self.render_background(cr, rect)
+        #draw_text(cr, _("no autostart"), rect.x , rect.y, rect.width, rect.height,
+                #alignment = pango.ALIGN_CENTER)
+
+    def get_column_renders(self):
+        return [lambda w,r: self.render_background(w, r),
+                self.render_nothing,
+                lambda w,r: self.render_background(w, r)]
+
+    def get_column_widths(self):
+        '''docstring for get_column_widths'''
+        return [200, 100, -1]
+    
+    def get_height(self):
+        return 30
+
+    def render_background(self,  cr, rect):
+        cr.set_source_rgb(1, 1, 1)
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
 
 class SessionItem(TreeItem):
 
