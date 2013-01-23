@@ -143,11 +143,10 @@ class DeepinDateTime(BusBase):
         return self.call_async("SetDate", day, month, year,
                                 reply_handler = self.set_date_reply, error_handler = self.set_date_error)
 
-    def set_date_reply(self, result):
+    def set_date_reply(self):
         print "set date reply"
-        print result
 
-    def set_date_error(self, error):
+    def set_date_error(self, error = None):
         print "set date error"
         print error
 
@@ -164,14 +163,19 @@ class DeepinDateTime(BusBase):
         print result
 
     def set_time(self, seconds_since_epoch):
-        return self.call_async("SetTime", seconds_since_epoch,
+        if self.can_set_time():
+            return self.call_async("SetTime", seconds_since_epoch,
                                 reply_handler = self.set_time_reply, error_handler = self.set_time_error)
+
+        else:
+            self.set_time_error()
 
     def set_time_reply(self):
         print "set time reply"
 
-    def set_time_error(self):
+    def set_time_error(self, error = None):
         print "set time error"
+        print error
 
     def set_time_by_hms(self, hour, min, sec):
         datetime_str = "%04d-%02d-%02d %02d:%02d:%02d" % (time.localtime().tm_year, 
@@ -239,25 +243,33 @@ class DeepinDateTime(BusBase):
         self.set_timezone(tz)
     
     def set_timezone(self, tz):
-        return self.call_async("SetTimezone", tz,
+        if self.can_set_timezone():
+            return self.call_async("SetTimezone", tz,
                                 reply_handler = self.set_timezone_reply, error_handler = self.set_timezone_error)
+        else:
+            self.set_timezone_error()
 
-    def set_timezone_reply(self, result):
+    def set_timezone_reply(self):
         print "set timezone reply"
-        print result
 
-    def set_timezone_error(self, error):
+    def set_timezone_error(self, error = None):
         print "set timezone error"
         print error
 
     def set_using_ntp(self, is_using_ntp):
-        return self.call_async("SetUsingNtp", is_using_ntp,
+        try:
+            if self.can_set_using_ntp():
+                return self.call_async("SetUsingNtp", is_using_ntp,
                                 reply_handler = self.set_using_ntp_reply, error_handler = self.set_using_ntp_error)
+            else:
+                self.set_using_ntp_error()
+        except:
+            self.set_using_ntp_error()
 
     def set_using_ntp_reply(self):
         print "set using ntp reply"
 
-    def set_using_ntp_error(self, error):
+    def set_using_ntp_error(self, error = None):
         print "set using ntp error"
         print error
 
