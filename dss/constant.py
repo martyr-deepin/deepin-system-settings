@@ -39,6 +39,8 @@ module background color
 '''
 MODULE_BG_COLOR = "#FFFFFF"
 
+GOTO_FG_COLOR = "#666666"
+
 HSCALEBAR_WIDTH = 200
 
 # 框架类别-上下间距
