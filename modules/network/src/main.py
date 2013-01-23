@@ -277,9 +277,6 @@ class WirelessSection(gtk.VBox):
             # Add signals
             for device in self.wireless_devices:
                 device.connect("state-changed", self.state_changed_callback)
-        else:
-            parent = self.get_parent()
-            parent.remove(self)
 
     def state_changed_callback(self, widget, new_state, old_state, reason):
         if new_state == 20:
