@@ -37,7 +37,7 @@ class TrayShutdownPlugin(object):
 
     def restart_btn_clicked(self, widget):
         self.this.hide_menu()
-        self.gui.cmd_dbus.restart()
+        self.gui.cmd_dbus.stop()
 
     def suspend_btn_clicked(self, widget):
         self.this.hide_menu()
