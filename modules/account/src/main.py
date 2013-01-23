@@ -531,7 +531,7 @@ class AccountSetting(object):
                 pass
         self.current_select_user = dbus_obj = item.dbus_obj
         self.current_select_item = item
-        #print "treeview current select:'%s', '%s'" % ( self.current_select_user.get_user_name(), self.current_select_user.get_real_name())
+        #print "treeview current select:'%s', '%s', '%d'" % ( self.current_select_user.get_user_name(), self.current_select_user.get_real_name(), self.current_select_user.get_uid())
         #print "treeitrem:'%s', '%s'" % (item.real_name, item.user_name)
         self.image_widgets["account_icon"].set_from_pixbuf(item.icon)
         if item.real_name:
@@ -969,6 +969,8 @@ class AccountSetting(object):
 
     def account_user_added_cb(self, account_obj, user_path):
         print "%s added" % user_path
+        if not user_path in self.account_dbus.list_cached_users():
+            return
         user_info = settings.get_user_info(user_path)
         icon_file = user_info[1]
         if os.path.exists(icon_file):
