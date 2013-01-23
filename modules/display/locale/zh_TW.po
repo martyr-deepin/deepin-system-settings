@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 14:37+0800\n"
+"POT-Creation-Date: 2013-01-23 11:04+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -24,35 +24,35 @@ msgstr ""
 msgid "Monitor"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/display_view.py:317
+#: ../src/search_keyword.py:31 ../src/display_view.py:318
 msgid "Resolution"
 msgstr ""
 
-#: ../src/search_keyword.py:32 ../src/display_view.py:332
+#: ../src/search_keyword.py:32 ../src/display_view.py:333
 msgid "Rotation"
 msgstr ""
 
-#: ../src/search_keyword.py:33 ../src/display_view.py:360
+#: ../src/search_keyword.py:33 ../src/display_view.py:361
 msgid "Monitor Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:34 ../src/display_view.py:369
+#: ../src/search_keyword.py:34 ../src/display_view.py:370
 msgid "Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:35 ../src/display_view.py:387
+#: ../src/search_keyword.py:35 ../src/display_view.py:388
 msgid "Auto Adjust Monitor Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:36 ../src/display_view.py:401
+#: ../src/search_keyword.py:36 ../src/display_view.py:402
 msgid "Close Monitor"
 msgstr ""
 
-#: ../src/search_keyword.py:37 ../src/display_view.py:420
+#: ../src/search_keyword.py:37 ../src/display_view.py:421
 msgid "Auto Lock User Monitor Screen"
 msgstr ""
 
-#: ../src/search_keyword.py:38 ../src/display_view.py:435
+#: ../src/search_keyword.py:38 ../src/display_view.py:436
 msgid "Lock Screen"
 msgstr ""
 
@@ -110,73 +110,75 @@ msgstr ""
 msgid "Relative Settings"
 msgstr ""
 
-#: ../src/display_view.py:291
-msgid "<span foreground=\"blue\" underline=\"single\">Individuation</span>"
+#: ../src/display_view.py:292
+#, python-format
+msgid "<span foreground=\"%s\" underline=\"single\">Individuation</span>"
 msgstr ""
 
-#: ../src/display_view.py:299
-msgid "<span foreground=\"blue\" underline=\"single\">Power</span>"
+#: ../src/display_view.py:300
+#, python-format
+msgid "<span foreground=\"%s\" underline=\"single\">Power</span>"
 msgstr ""
 
-#: ../src/display_view.py:345
+#: ../src/display_view.py:346
 msgid "Multi-Monitors"
 msgstr ""
 
-#: ../src/display_view.py:414
+#: ../src/display_view.py:415
 msgid "Monitor Screen Lock"
 msgstr ""
 
-#: ../src/display_view.py:486
+#: ../src/display_view.py:484
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/display_view.py:563
+#: ../src/display_view.py:561
 #, python-format
 msgid "Changed brightness to %f"
 msgstr ""
 
-#: ../src/display_view.py:588
+#: ../src/display_view.py:586
 msgid "Changed to manual adjustment"
 msgstr ""
 
-#: ../src/display_view.py:591
+#: ../src/display_view.py:589
 msgid "Changed to automatic adjustment"
 msgstr ""
 
-#: ../src/display_view.py:596
+#: ../src/display_view.py:595
 msgid "Changed to manual lock"
 msgstr ""
 
-#: ../src/display_view.py:601
+#: ../src/display_view.py:598
 msgid "Changed to automatic lock"
 msgstr ""
 
-#: ../src/display_view.py:608
+#: ../src/display_view.py:603
 #, python-format
 msgid "Changed current output to %s"
 msgstr ""
 
-#: ../src/display_view.py:614
+#: ../src/display_view.py:609
 #, python-format
 msgid "Changed resolution to %s"
 msgstr ""
 
-#: ../src/display_view.py:619
+#: ../src/display_view.py:614
 #, python-format
 msgid "Changed rotation to %s"
 msgstr ""
 
-#: ../src/display_view.py:624
+#: ../src/display_view.py:619
 #, python-format
 msgid "Changed multiply monitors mode to %s"
 msgstr ""
 
-#: ../src/display_view.py:629
+#: ../src/display_view.py:624
 #, python-format
 msgid "Changed close monitor duration to %s"
 msgstr ""
 
-#: ../src/display_view.py:634
+#: ../src/display_view.py:629
 #, python-format
 msgid "Changed lock display duration to %s"
 msgstr ""

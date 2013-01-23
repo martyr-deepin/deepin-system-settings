@@ -286,9 +286,12 @@ class DisplayView(gtk.VBox):
         '''
         self.goto_align = self.__setup_align()
         self.goto_box = gtk.VBox(spacing = WIDGET_SPACING)
-        self.goto_label = self.__setup_label(_("Relative Settings"), align = ALIGN_START)
+        self.goto_label = self.__setup_label(_("Relative Settings"), 
+                                             width = None, 
+                                             align = ALIGN_START)
+        goto_color = app_theme.get_color("globalTitleForeground").get_color()
         self.goto_individuation_label = self.__setup_label(
-            text = _("<span foreground=\"blue\" underline=\"single\">Individuation</span>"), 
+            text = _("<span foreground=\"%s\" underline=\"single\">Individuation</span>") % goto_color, 
             width = None, 
             align = ALIGN_START)
         self.goto_individuation_label.connect("button-press-event", 
@@ -296,7 +299,7 @@ class DisplayView(gtk.VBox):
                                               "individuation")
         set_clickable_cursor(self.goto_individuation_label)
         self.goto_power_label = self.__setup_label(
-            text = _("<span foreground=\"blue\" underline=\"single\">Power</span>"), 
+            text = _("<span foreground=\"%s\" underline=\"single\">Power</span>") % goto_color, 
             width = None, 
             align = ALIGN_START)
         self.goto_power_label.connect("button-press-event", 
