@@ -29,6 +29,7 @@ from theme import app_theme
 import settings
 
 from dtk.ui.theme import ui_theme
+from dtk.ui.theme import DynamicColor
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton, Button
 from dtk.ui.hscalebar import HScalebar
@@ -104,10 +105,10 @@ class MouseSetting(object):
         self.button_widgets["double_test"] = gtk.EventBox()
         # relevant settings button
         self.button_widgets["keyboard_setting"] = Label("<u>%s</u>" % _("Keyboard Settings"),
-            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_size,
+            DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
             enable_select=False, enable_double_click=False)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
-            app_theme.get_color("globalTitleForeground"), text_size=option_item_font_size,
+            DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
             enable_select=False, enable_double_click=False)
         self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
         # container init
