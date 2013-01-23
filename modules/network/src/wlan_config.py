@@ -76,8 +76,9 @@ class WirelessSetting(gtk.Alignment):
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 415)
-        self.items = [(_("Wireless"), NoSetting()),
+        self.items = [
                       (_("Security"), NoSetting()),
+                      (_("Wireless"), NoSetting()),
                       (_("IPV4"), NoSetting()),
                       (_("IPv6"), NoSetting())]
         self.tab_window.add_items(self.items)
@@ -158,10 +159,10 @@ class WirelessSetting(gtk.Alignment):
         self.init_tab_box()
 
     def init_tab_box(self):
-        self.tab_window.tab_items[0] = (_("Wireless"), self.wireless)
+        self.tab_window.tab_items[1] = (_("Wireless"), self.wireless)
         self.tab_window.tab_items[2] = (_("IPV4"),self.ipv4)
         self.tab_window.tab_items[3] = (_("IPV6"),self.ipv6)
-        self.tab_window.tab_items[1] = (_("Security"), self.security)
+        self.tab_window.tab_items[0] = (_("Security"), self.security)
         tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
