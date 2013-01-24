@@ -134,11 +134,16 @@ class NMConnection(gobject.GObject):
             if info_dict["connection"]["type"] == "802-3-ethernet":
                 if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
                     return False
+                if info_dict["ipv6"]["method"] == "manual" and not info_dict["ipv6"]["addresses"]:
+                    return False
 
                 return True
             ###wireless
             elif info_dict["connection"]["type"] == "802-11-wireless":
                 if info_dict["ipv4"]["method"] == "manual" and not info_dict["ipv4"]["addresses"]:
+                    return False
+
+                if info_dict["ipv6"]["method"] == "manual" and not info_dict["ipv6"]["addresses"]:
                     return False
 
                 if len(info_dict["802-11-wireless"]["ssid"]) == 0:
