@@ -17,6 +17,8 @@ sudo install_backend.sh
 python-pexpect
 sudo apt-get install python-pexpect
 
+sudo apt-get install gstreamer0.10-x
+
 
 == display module ==
 Deepin XRandR Python Bindings

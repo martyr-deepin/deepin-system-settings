@@ -22,14 +22,16 @@
 
 from tray_sound_gui import TrayGui
 
+from subprocess import Popen
 import gtk
 
 class SoundTray(object):
     def __init__(self):
         super(SoundTray, self).__init__()
-        self.widget = TrayGui()
         self.WIN_WIDTH = 240
         self.WIN_HEIGHT = 150
+        self.widget = TrayGui()
+        self.widget.button_more.connect("clicked", self.on_more_button_clicked_cb)
 
     def init_values(self, value_list):
         self.this_list = value_list
@@ -45,7 +47,7 @@ class SoundTray(object):
         return "sound-tray"
 
     def insert(self):
-        return 1
+        return 2
 
     def plugin_widget(self):
         return self.widget
@@ -56,6 +58,14 @@ class SoundTray(object):
 
     def hide_menu(self):
         print "hide..........."
+
+    def on_more_button_clicked_cb(self, button):
+        try:
+            self.this.hide_menu()
+            Popen(("deepin-system-settings", "sound"))
+        except Exception, e:
+            print e
+            pass
         
 def return_plugin():
     return SoundTray
