@@ -59,7 +59,7 @@ class TrayShutdownPlugin(object):
         return True
 
     def insert(self):
-        return 0
+        return 1
         
     def id(self):
         return "tray-shutdown-plugin-hailongqiu"
