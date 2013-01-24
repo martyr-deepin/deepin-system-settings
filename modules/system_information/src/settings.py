@@ -67,7 +67,13 @@ def get_os_arch():
     get the os's architecture
     @return: a string of the architecture
     '''
-    return platform.architecture()[0]
+    arch = platform.architecture()[0]
+    i = 0
+    for c in arch:
+        if not c.isdigit():
+            break
+        i += 1
+    return arch[0:i]
 
 def get_disk_size():
     return get_total_disk_size()
