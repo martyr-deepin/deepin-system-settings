@@ -386,7 +386,7 @@ class TouchpadSetting(object):
         
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], height=-1), False, False)
+            self.__make_align(self.label_widgets["relevant"], height=CONTAINNER_HEIGHT), False, False)
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["keyboard_setting"], False, False)
         self.container_widgets["right_vbox"].pack_start(
@@ -397,6 +397,22 @@ class TouchpadSetting(object):
         self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["keyboard_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["mouse_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
+
+        if not settings.is_has_touchpad():
+            self.alignment_widgets["left"].set_sensitive(False)
+            self.label_widgets["acceleration"].set_sensitive(False)
+            self.label_widgets["sensitivity"].set_sensitive(False)
+            self.label_widgets["click_rate"].set_sensitive(False)
+            self.label_widgets["drag_threshold"].set_sensitive(False)
+            self.label_widgets["custom"].set_sensitive(False)
+            self.label_widgets["pointer_speed"].set_sensitive(False)
+            self.label_widgets["double_click"].set_sensitive(False)
+            self.label_widgets["drag_drop"].set_sensitive(False)
+            self.label_widgets["double_test"].set_sensitive(False)
+            self.scale_widgets["pointer_speed_accel"].set_enable(False)
+            self.scale_widgets["pointer_speed_sensitiv"].set_enable(False)
+            self.scale_widgets["double_click_rate"].set_enable(False)
+            self.scale_widgets["drag_threshold_time"].set_enable(False)
 
     def __signals_connect(self):
         ''' widget signals connect'''

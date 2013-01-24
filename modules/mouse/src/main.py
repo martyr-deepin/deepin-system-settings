@@ -338,7 +338,7 @@ class MouseSetting(object):
 
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], height=-1), False, False)
+            self.__make_align(self.label_widgets["relevant"], height=CONTAINNER_HEIGHT), False, False)
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["keyboard_setting"], False, False)
         self.container_widgets["right_vbox"].pack_start(

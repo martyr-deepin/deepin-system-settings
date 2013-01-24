@@ -379,8 +379,9 @@ class KeySetting(object):
         #self.alignment_widgets["touchpad_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["touchpad_label"].set_size_request(
             STANDARD_LINE+WIDGET_SPACING+HSCALEBAR_WIDTH-TEXT_WINDOW_LEFT_PADDING, -1)
-        self.container_widgets["touchpad_main_vbox"].pack_start(
-            self.alignment_widgets["touchpad_label"])
+        if settings.is_has_touchpad():
+            self.container_widgets["touchpad_main_vbox"].pack_start(
+                self.alignment_widgets["touchpad_label"])
         # tips lable
         tmp_align = self.__make_align()
         tmp_align.set(0.0, 0.0, 1.0, 0.0)
@@ -389,10 +390,10 @@ class KeySetting(object):
         self.container_widgets["touchpad_label_hbox"].set_size_request(
             STANDARD_LINE+WIDGET_SPACING+HSCALEBAR_WIDTH-TEXT_WINDOW_LEFT_PADDING, -1)
         self.container_widgets["touchpad_label_hbox"].set_spacing(WIDGET_SPACING)
-        # self.container_widgets["touchpad_label_hbox"].pack_start(
-        #     self.__make_align(self.image_widgets["touchpad"]), False, False)
-        # self.container_widgets["touchpad_label_hbox"].pack_start(
-        #     self.label_widgets["touchpad"], False, False)
+        self.container_widgets["touchpad_label_hbox"].pack_start(
+            self.__make_align(self.image_widgets["touchpad"]), False, False)
+        self.container_widgets["touchpad_label_hbox"].pack_start(
+            self.label_widgets["touchpad"], False, False)
         self.container_widgets["touchpad_label_hbox"].pack_start(
             self.__make_align(self.button_widgets["touchpad_disable"], xalign=1.0, xscale=0.0), True, True)
         self.button_widgets["touchpad_disable"].set_active(
@@ -400,10 +401,9 @@ class KeySetting(object):
         
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], xalign=0.0, height=-1))
+            self.__make_align(self.label_widgets["relevant"], xalign=0.0, height=CONTAINNER_HEIGHT))
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["mouse_setting"])
-        # TODO 判断是否有触摸板
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["touchpad_setting"])
         self.alignment_widgets["mouse_setting"].add(self.button_widgets["mouse_setting"])

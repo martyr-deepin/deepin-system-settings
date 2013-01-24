@@ -26,6 +26,7 @@ except ImportError:
     print "----------Please Install Deepin GSettings Python Binding----------"   
     print "git clone git@github.com:linuxdeepin/deepin-gsettings.git"            
     print "------------------------------------------------------------------"   
+from gtk import gdk
 
 MOUSE_SETTINGS_CONF = "org.gnome.settings-daemon.peripherals.mouse"
 TOUCHPAD_SETTINGS_CONF = "org.gnome.settings-daemon.peripherals.touchpad"
@@ -150,3 +151,10 @@ def touchpad_get_default_settings():
     @return: the default settings, a dict type
     '''
     return TOUCHPAD_DEFAULT_SETTINGS
+
+def is_has_touchpad():
+    devices = gdk.devices_list()
+    for d in devices:
+        if "touchpad" in d.get_name().lower():
+            return True
+    return False
