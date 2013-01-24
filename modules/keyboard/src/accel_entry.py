@@ -153,6 +153,7 @@ class AccelBuffer(object):
 
 class AccelEntry(ShortcutKeyEntry):
     ''' '''
+    TYPE_DP_GSETTINGS = 0
     TYPE_GSETTINGS = 1
     TYPE_GCONF = 2
     TYPE_STRING = 3
@@ -326,6 +327,8 @@ class AccelEntry(ShortcutKeyEntry):
                     self.settings_obj.set_strv(self.settings_key, [])
             elif self.settings_value_type == self.TYPE_STRING:
                 self.settings_obj.set_string(self.settings_key, accel_name)
+        elif self.settings_type == self.TYPE_DP_GSETTINGS:
+            self.settings_obj.set_string(self.settings_key, "%s;%s" %(self.settings_value_type, accel_name))
         elif self.settings_type == self.TYPE_GCONF:
             self.settings_obj.set_string("%s/binding" % (self.settings_key), accel_name)
         print "set key", accel_name, self.settings_obj, self.settings_key, self.settings_type, self.settings_value_type

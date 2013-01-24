@@ -29,7 +29,7 @@ class SoundTray(object):
     def __init__(self):
         super(SoundTray, self).__init__()
         self.WIN_WIDTH = 240
-        self.WIN_HEIGHT = 150
+        self.WIN_HEIGHT = 170
         self.widget = TrayGui()
         self.widget.button_more.connect("clicked", self.on_more_button_clicked_cb)
 

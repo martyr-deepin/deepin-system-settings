@@ -40,6 +40,7 @@ XKB_KEYBOARD_SETTINGS_CONF = "org.gnome.libgnomekbd.keyboard"
 # shortcuts setting
 WM_SHORTCUTS_SETTINGS_CONF = "org.gnome.desktop.wm.keybindings"
 SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.media-keys"
+DP_SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.keybindings"
 
 # typing setting
 KEYBOARD_SETTINGS = deepin_gsettings.new(KEYBOARD_SETTINGS_CONF)
@@ -51,6 +52,7 @@ XKB_KEYBOARS_SETTINGS = deepin_gsettings.new(XKB_KEYBOARD_SETTINGS_CONF)
 # shortcuts setting
 WM_SHORTCUTS_SETTINGS = deepin_gsettings.new(WM_SHORTCUTS_SETTINGS_CONF)
 SHORTCUTS_SETTINGS = deepin_gsettings.new(SHORTCUTS_SETTINGS_CONF)
+DP_SHORTCUTS_SETTINGS = deepin_gsettings.new(DP_SHORTCUTS_SETTINGS_CONF)
 GCONF_CLIENT = gconf.client_get_default()
 
 KEYBOARD_DEFAULT_SETTINGS = {
@@ -68,10 +70,6 @@ XKB_KEYBOARD_DEFAULT_SETTINGS = {
     "group-per-window"     : False,
     "layouts"              : '[]',
     "options"              : '[]'}
-
-SHORTCUTS_DEFAULT_SETTINGS = {
-    # WM keybindings
-    "activate-window-menu" : ['<Alt>space']}
 
 #####################
 # typing set

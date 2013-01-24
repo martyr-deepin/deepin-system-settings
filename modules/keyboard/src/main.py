@@ -74,6 +74,7 @@ class KeySetting(object):
         self.__shortcuts_entries = keybinds.get_shortcuts_wm_shortcut_entry(settings.WM_SHORTCUTS_SETTINGS)
         self.__shortcuts_entries.update(keybinds.get_shortcuts_media_shortcut_entry(settings.SHORTCUTS_SETTINGS))
         self.__shortcuts_entries[_('Custom Shortcuts')] = keybinds.get_shortcuts_custom_shortcut_entry(settings.GCONF_CLIENT)
+        keybinds.get_shortcuts_dp_shortcut_entry(settings.DP_SHORTCUTS_SETTINGS, self.__shortcuts_entries[_('System')])
         self.__shortcuts_entries_page_widgets = {}
         self.scale_set= {
             "delay"               : settings.keyboard_set_repeat_delay,

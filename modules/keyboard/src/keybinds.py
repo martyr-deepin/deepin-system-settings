@@ -71,6 +71,48 @@ def get_shortcuts_wm_shortcut_entry(gsettings):
 def get_shortcuts_media_shortcut_entry(gsettings):
     return get_shortcuts_shortcut_entry(gsettings, media_shortcuts_group_dict, AccelEntry.TYPE_STRING)
 
+def parse_dp_shortcut_string(accel_name):
+    '''
+    @param accel_name: a accel and command str
+    @return: a 2-tuple container command name and Accel
+    '''
+    key_name = accel_name.split(';', 1)
+    if len(key_name) >=2:
+        command_name = key_name[0]
+        accelname = key_name[1]
+    else:
+        command_name = ""
+        accelname = ""
+    return (command_name, accelname)
+
+def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
+    '''
+    get org.gnome.settings-daemon.plugins.keybindings keybindings 
+    @param accel_entry_list: a AccelEntry list that add this item
+    '''
+    keys_list = gsettings.list_keys()
+    if "key1" in keys_list:
+        key1_name = parse_dp_shortcut_string(gsettings.get_string("key1"))
+        item = AccelEntry(key1_name[1], check_shortcut_conflict)
+        item.settings_description = _("launcher")
+        item.settings_key = "key1"
+        item.settings_obj = gsettings
+        item.settings_type = item.TYPE_DP_GSETTINGS
+        #item.settings_value_type = key1_name[0]
+        item.settings_value_type = "launcher"
+        accel_entry_list.append(item)
+    if "key2" in keys_list:
+        key2_name = parse_dp_shortcut_string(gsettings.get_string("key2"))
+        item = AccelEntry(key2_name[1], check_shortcut_conflict)
+        item.settings_description = _("Terminal")
+        item.settings_key = "key2"
+        item.settings_obj = gsettings
+        item.settings_type = item.TYPE_DP_GSETTINGS
+        #item.settings_value_type = key2_name[0]
+        item.settings_value_type = "gnome-terminal"
+        accel_entry_list.append(item)
+
+
 def get_shortcuts_custom_shortcut_entry(client):
     '''
     @param client: a GConf Client type
