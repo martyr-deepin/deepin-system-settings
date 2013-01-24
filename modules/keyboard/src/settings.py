@@ -316,6 +316,7 @@ def shortcuts_custom_set(key, key_binding):
 def is_has_touchpad():
     devices = gdk.devices_list()
     for d in devices:
-        if "touchpad" in d.get_name().lower():
+        name = d.get_name().lower()
+        if "touchpad" in name or "synaptics" in name:
             return True
     return False

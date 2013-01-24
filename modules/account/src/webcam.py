@@ -33,8 +33,8 @@ class Webcam(gtk.DrawingArea):
         gtk.DrawingArea.__init__(self)
 
         self.video_player = None
-        if self.has_device():
-            self.create_video_pipeline()
+        #if self.has_device():
+            #self.create_video_pipeline()
         
     @classmethod    
     def has_device(cls):

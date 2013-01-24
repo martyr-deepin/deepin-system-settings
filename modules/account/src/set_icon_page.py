@@ -791,7 +791,10 @@ class IconEditArea(gtk.HBox):
         self.button_cut.set_sensitive(False)
         self.button_undo.set_sensitive(False)
         try:
-            self.camera_area.create_video_pipeline()
+            if not self.camera_area.video_player:
+                self.camera_area.create_video_pipeline()
+            else:
+                self.camera_start()
         except Exception, e:
             print e
 
@@ -815,18 +818,18 @@ class IconEditArea(gtk.HBox):
             self.button_undo.set_sensitive(True)
         else:
             self.button_undo.set_sensitive(False)
-        self.camera_pause()
+        self.camera_stop()
 
     def camera_start(self):
         try:
-            self.camera_area.set_playing()
+            self.camera_area.play()
         except Exception, e:
             print e
             pass
 
-    def camera_pause(self):
+    def camera_stop(self):
         try:
-            self.camera_area.set_paused()
+            self.camera_area.stop()
         except Exception, e:
             print e
             pass
@@ -904,7 +907,7 @@ class IconEditPage(gtk.HBox):
         self.draw_area.set_camera_mode()
 
     def stop_camera(self):
-        self.draw_area.camera_pause()
+        self.draw_area.camera_stop()
 
     def save_edit_icon(self):
         pixbuf = self.thumbnail_large.get_pixbuf()
