@@ -48,7 +48,6 @@ from settings_widget import HotspotBox
 from nmlib.nmcache import cache
 from nm_modules import nm_module
 
-PADDING = 32
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
 from nmlib.servicemanager import servicemanager
@@ -57,6 +56,9 @@ from nls import _
 from constants import *
 
 slider = nm_module.slider
+PADDING = 32
+from dtk.ui.theme import DynamicColor
+LABEL_COLOR = DynamicColor("#666666")
 
 def pack_start(parent, child_list, expand=False, fill=False):
     for child in child_list:
@@ -544,7 +546,7 @@ class DSL(gtk.VBox):
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
             label = Label(_("DSL Configuration"), 
-                          ui_theme.get_color("link_text"),
+                          LABEL_COLOR,
                           underline=True,
                           enable_select=False,
                           enable_double_click=False)
@@ -571,7 +573,7 @@ class VpnSection(gtk.VBox):
         self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.toggle_cb)
         self.connection_tree = TreeView([])
         self.label = Label(_("VPN Setting"), 
-                           ui_theme.get_color("link_text"),
+                           LABEL_COLOR,
                            underline=True,
                            enable_select=False,
                            enable_double_click=False)
@@ -690,7 +692,7 @@ class Mobile(gtk.VBox):
     def show_link(self):
         container_remove_all(self.align)
         label = Label(_("Mobile Configuration"),
-                      ui_theme.get_color("link_text"),
+                      LABEL_COLOR,
                       underline=True,
                       enable_select=False,
                       enable_double_click=False)
@@ -741,7 +743,7 @@ class Proxy(gtk.VBox):
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
             label = Label(_("Proxy Configuration"),
-                          ui_theme.get_color("link_text"),
+                          LABEL_COLOR,
                           underline=True,
                           enable_select=False,
                           enable_double_click=False)

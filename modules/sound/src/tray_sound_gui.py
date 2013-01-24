@@ -72,41 +72,55 @@ class TrayGui(gtk.VBox):
 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
-        separator_color = [(0, ("#777777", 0.8)), (0.5, ("#777777", 0.8)), (1, ("#777777", 0.8))]
-        hseparator = HSeparator(separator_color, 0, 0)
-        #hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        #separator_color = [(0, ("#000000", 0.3)), (0.5, ("#000000", 0.2)), (1, ("#777777", 0.0))]
+        #hseparator = HSeparator(separator_color, 0, 0)
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(150, 3)
         hbox.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False)), False, False)
         hbox.pack_start(self.__make_align(hseparator), True, True)
         self.pack_start(hbox, False, False)
 
-        speaker_hbox = gtk.HBox(False)
-        speaker_hbox.set_spacing(WIDGET_SPACING)
-        speaker_img = ImageBox(app_theme.get_pixbuf("sound/speaker-3.png"))
+        table = gtk.Table(2, 3)
+        #speaker_hbox = gtk.HBox(False)
+        #speaker_hbox.set_spacing(WIDGET_SPACING)
+        speaker_img = ImageBox(app_theme.get_pixbuf("sound/tray_speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
         self.speaker_scale.set_size_request(150, 10)
         self.speaker_mute_button = OffButton()
-        speaker_hbox.pack_start(self.__make_align(speaker_img), False, False)
-        speaker_hbox.pack_start(self.__make_align(self.speaker_scale, yalign=0.5, yscale=0.0, height=30))
-        speaker_hbox.pack_start(self.__make_align(self.speaker_mute_button), False, False)
-        self.pack_start(speaker_hbox, False, False)
+        #speaker_hbox.pack_start(self.__make_align(speaker_img), False, False)
+        #speaker_hbox.pack_start(self.__make_align(self.speaker_scale, yalign=0.5, yscale=0.0, height=30))
+        #speaker_hbox.pack_start(self.__make_align(self.speaker_mute_button), False, False)
+        #self.pack_start(speaker_hbox, False, False)
+        table.attach(self.__make_align(speaker_img), 0, 1, 0, 1, 4)
+        table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=30), 1, 2, 0, 1, 4)
+        table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
-        microphone_hbox = gtk.HBox(False)
-        microphone_hbox.set_spacing(WIDGET_SPACING)
-        microphone_img = ImageBox(app_theme.get_pixbuf("sound/microphone.png"))
+        #microphone_hbox = gtk.HBox(False)
+        #microphone_hbox.set_spacing(WIDGET_SPACING)
+        microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
         self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
         self.microphone_scale.set_size_request(150, 10)
         self.microphone_mute_button = OffButton()
-        microphone_hbox.pack_start(self.__make_align(microphone_img), False, False)
-        microphone_hbox.pack_start(self.__make_align(self.microphone_scale, yalign=0.5, yscale=0.0, height=30))
-        microphone_hbox.pack_start(self.__make_align(self.microphone_mute_button), False, False)
-        self.pack_start(microphone_hbox, False, False)
+        #microphone_hbox.pack_start(self.__make_align(microphone_img), False, False)
+        #microphone_hbox.pack_start(self.__make_align(self.microphone_scale, yalign=0.5, yscale=0.0, height=30))
+        #microphone_hbox.pack_start(self.__make_align(self.microphone_mute_button), False, False)
+        #self.pack_start(microphone_hbox, False, False)
+        table.attach(self.__make_align(microphone_img), 0, 1, 1, 2, 4)
+        table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, height=30), 1, 2, 1, 2, 4)
+        table.attach(self.__make_align(self.microphone_mute_button), 2, 3, 1, 2, 4)
 
+        self.pack_start(table, False, False)
+
+        separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
         hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(150, 3)
-        self.pack_start(hseparator, False, False)
-        button_more = SelectButton(_("更多高级选项..."))
-        self.pack_start((button_more), False, False)
+        hseparator.set_size_request(190, 3)
+        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=14), False, False)
+        self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
+        button_hbox = gtk.HBox(False)
+        button_hbox.set_spacing(WIDGET_SPACING)
+        #button_hbox.pack_start(self.__make_align(height=-1))
+        button_hbox.pack_start(self.button_more)
+        self.pack_start((button_hbox), False, False)
         ##########################################
         # if PulseAudio connect error, set the widget insensitive
         if settings.PA_CORE is None or not settings.PA_CARDS:
@@ -150,16 +164,16 @@ class TrayGui(gtk.VBox):
             source.connect("mute-updated", self.pulse_mute_updated, self.microphone_mute_button)
         if settings.PA_CORE:
             core = settings.PA_CORE
-            core.connect("fallback-sink-updated", self.fallback_sink_updated_cb, speaker_hbox)
-            core.connect("fallback-sink-unset", self.fallback_sink_unset_cb, speaker_hbox)
-            core.connect("fallback-source-updated", self.fallback_source_udpated_cb, microphone_hbox)
-            core.connect("fallback-source-unset", self.fallback_source_unset_cb, microphone_hbox)
+            core.connect("fallback-sink-updated", self.fallback_sink_updated_cb)
+            core.connect("fallback-sink-unset", self.fallback_sink_unset_cb)
+            core.connect("fallback-source-updated", self.fallback_source_udpated_cb)
+            core.connect("fallback-source-unset", self.fallback_source_unset_cb)
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
-                     padding_right=0, height=CONTAINNER_HEIGHT):
+                     padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
         align = gtk.Alignment()
-        align.set_size_request(-1, height)
+        align.set_size_request(width, height)
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
         if widget:
@@ -228,12 +242,10 @@ class TrayGui(gtk.VBox):
             button.set_data("changed-by-other-app", True)
             button.set_active(not is_mute)
 
-    def fallback_sink_updated_cb(self, core, sink, box):
+    def fallback_sink_updated_cb(self, core, sink):
         print 'fallback sink updated', sink
         if not self.speaker_scale.get_sensitive():
             self.speaker_scale.set_sensitive(True)
-        if not box.get_sensitive():
-            box.set_sensitive(True)
         settings.CURRENT_SINK = sink
         # disconnect old object signals
         if self.current_sink:
@@ -251,12 +263,10 @@ class TrayGui(gtk.VBox):
         self.speaker_mute_button.set_active(not settings.get_mute(settings.CURRENT_SINK))
         self.speaker_scale.set_value(settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
 
-    def fallback_source_udpated_cb(self, core, source, box):
+    def fallback_source_udpated_cb(self, core, source):
         print 'fallback source updated', source
         if not self.microphone_scale.get_sensitive():
             self.microphone_scale.set_sensitive(True)
-        if not box.get_sensitive():
-            box.set_sensitive(True)
         settings.CURRENT_SOURCE = source
         # disconnect old object signals
         if self.current_source:
@@ -274,11 +284,11 @@ class TrayGui(gtk.VBox):
         self.microphone_mute_button.set_active(not settings.get_mute(settings.CURRENT_SOURCE))
         self.microphone_scale.set_value(settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
 
-    def fallback_sink_unset_cb(self, core, box):
+    def fallback_sink_unset_cb(self, core):
         print 'fallback sink unset'
         box.set_sensitive(False)
 
-    def fallback_source_unset_cb(self, core, box):
+    def fallback_source_unset_cb(self, core):
         print 'fallback source unset'
         box.set_sensitive(False)
 gobject.type_register(TrayGui)

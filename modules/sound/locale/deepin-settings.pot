@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 20:30+0800\n"
+"POT-Creation-Date: 2013-01-24 15:51+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,14 +22,14 @@ msgid "Sound"
 msgstr ""
 
 #: ../src/search_keyword.py:26 ../src/main.py:110
-msgid "均衡"
+msgid "Balance"
 msgstr ""
 
-#: ../src/search_keyword.py:27 ../src/main.py:102
+#: ../src/search_keyword.py:27 ../src/main.py:103
 msgid "Speaker"
 msgstr ""
 
-#: ../src/search_keyword.py:28 ../src/main.py:103
+#: ../src/search_keyword.py:28 ../src/main.py:104
 msgid "Microphone"
 msgstr ""
 
@@ -45,24 +45,32 @@ msgstr ""
 msgid "Hardware"
 msgstr ""
 
-#: ../src/main.py:104 ../src/main.py:256
+#: ../src/tray_sound_gui.py:79
+msgid "Device"
+msgstr ""
+
+#: ../src/tray_sound_gui.py:118
+msgid "更多高级选项..."
+msgstr ""
+
+#: ../src/main.py:105 ../src/main.py:256
 msgid "Left"
 msgstr ""
 
-#: ../src/main.py:105 ../src/main.py:257
+#: ../src/main.py:106 ../src/main.py:257
 msgid "Right"
 msgstr ""
 
-#: ../src/main.py:106
+#: ../src/main.py:107
 msgid "Output Port"
 msgstr ""
 
-#: ../src/main.py:107 ../src/main.py:397 ../src/main.py:399 ../src/main.py:596
+#: ../src/main.py:108 ../src/main.py:397 ../src/main.py:399 ../src/main.py:596
 #: ../src/main.py:598
 msgid "Output Volume"
 msgstr ""
 
-#: ../src/main.py:108 ../src/main.py:113
+#: ../src/main.py:109 ../src/main.py:113
 msgid "Mute"
 msgstr ""
 

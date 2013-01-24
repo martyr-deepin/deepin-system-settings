@@ -570,8 +570,8 @@ class KeySetting(object):
             self.container_widgets["statusbar"].set_buttons([self.button_widgets["set_to_default"]])
         elif index == 1:
             self.container_widgets["statusbar"].set_buttons(
-                [self.button_widgets["shortcuts_add"],
-                 self.button_widgets["shortcuts_remove"]])
+                [self.button_widgets["shortcuts_add"]])
+                 #self.button_widgets["shortcuts_remove"]])
 
     def keyboard_setting_changed_cb(self, key):
         args = [self.settings, key]

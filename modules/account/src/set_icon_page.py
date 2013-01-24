@@ -25,7 +25,8 @@ from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.menu import Menu
-from dtk.ui.button import ImageButton
+#from dtk.ui.button import ImageButton
+from image_button import ImageButton
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, container_remove_all
 from dtk.ui.cache_pixbuf import CachePixbuf
 from icon_button import IconButton
@@ -134,6 +135,7 @@ class IconSetPage(gtk.VBox):
             pic_list = os.listdir(face_dir)
         else:
             pic_list = []
+        pic_list.sort()
         self.public_icon_list = []
 
         for pic in pic_list:
@@ -169,6 +171,7 @@ class IconSetPage(gtk.VBox):
             pic_list = os.listdir(history_dir)
         else:
             pic_list = []
+        pic_list.sort()
         private_icon_list = []
         for pic in pic_list:
             try:
@@ -282,7 +285,7 @@ class IconSetPage(gtk.VBox):
         DBUS_NAME = "com.deepin.screenshot"
         OBJECT_PATH = "/com/deepin/screenshot"
         i = 0
-        while i < 5:
+        while i < 6:
             try:
                 obj = bus.get_object(DBUS_NAME, OBJECT_PATH)
                 obj.connect_to_signal("finish", self.screenshot_finish, dbus_interface=DBUS_NAME)
@@ -328,9 +331,8 @@ class IconSetPage(gtk.VBox):
         cr.rectangle(x, y, w, h)
         cr.stroke()
 
-    # TODO 判断是否有摄像头
     def is_has_camera(self):
-        return True
+        return Webcam.has_device()
 gobject.type_register(IconSetPage)
 
         
@@ -462,22 +464,16 @@ class IconEditArea(gtk.HBox):
         print "clicked---------------------"
 
     def on_undo_clicked_cb(self, button):
-        if self.current_mode != self.MODE_EDIT:
-            return
         self.set_camera_mode()
 
     def on_camera_clicked_cb(self, button):
-        if self.current_mode != self.MODE_CAMERA:
-            return
         drawable = self.camera_area.window
         colormap = drawable.get_colormap()
         pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, *drawable.get_size())
         pixbuf = pixbuf.get_from_drawable(drawable, colormap, 0, 0, 0, 0, *drawable.get_size()) 
-        self.set_edit_mode(pixbuf)
+        self.__edit_picture(pixbuf)
 
     def on_zoom_in_clicked_cb(self, button):
-        if self.current_mode != self.MODE_EDIT:
-            return
         if self.pixbuf_w >= self.origin_pixbuf_width or self.pixbuf_h >= self.origin_pixbuf_height:
             print "has max size"
             return
@@ -506,8 +502,6 @@ class IconEditArea(gtk.HBox):
         self.__update_drag_point_coord()
 
     def on_zoom_out_clicked_cb(self, button):
-        if self.current_mode != self.MODE_EDIT:
-            return
         if self.pixbuf_w <= self.MIN_SIZE or self.pixbuf_h <= self.MIN_SIZE:
             print "has min size"
             return
@@ -551,8 +545,6 @@ class IconEditArea(gtk.HBox):
             self.edit_coord_w = self.edit_coord_h = right_pos - self.edit_coord_x
         if self.edit_coord_y + self.edit_coord_h > bottom_pos:
             self.edit_coord_w = self.edit_coord_h = bottom_pos - self.edit_coord_y
-        print "after zoomout:", self.edit_coord_x, self.edit_coord_y, self.edit_coord_w, self.edit_coord_h
-        print "---", self.pixbuf_x, self.pixbuf_y, self.pixbuf_w, self.pixbuf_h, self.pixbuf_offset_x, self.pixbuf_offset_y
         self.__update_drag_point_coord()
 
     def __expose_edit(self, widget, event):
@@ -783,6 +775,9 @@ class IconEditArea(gtk.HBox):
 
     def set_camera_mode(self):
         self.current_mode = self.MODE_CAMERA
+        self.__camera_picture()
+
+    def __camera_picture(self):
         self.set_pixbuf(None)
         if self.edit_area in self.get_children():
             self.remove(self.edit_area)
@@ -790,11 +785,11 @@ class IconEditArea(gtk.HBox):
             self.pack_start(self.camera_area, False, False)
             self.reorder_child(self.camera_area, 0)
         self.show_all()
-        #self.button_zoom_in.set_sensitive(False)
-        #self.button_zoom_out.set_sensitive(False)
-        #self.button_camera.set_sensitive(True)
-        #self.button_cut.set_sensitive(True)
-        #self.button_undo.set_sensitive(True)
+        self.button_zoom_in.set_sensitive(False)
+        self.button_zoom_out.set_sensitive(False)
+        self.button_camera.set_sensitive(True)
+        self.button_cut.set_sensitive(False)
+        self.button_undo.set_sensitive(False)
         try:
             self.camera_area.create_video_pipeline()
         except Exception, e:
@@ -802,6 +797,9 @@ class IconEditArea(gtk.HBox):
 
     def set_edit_mode(self, pixbuf):
         self.current_mode = self.MODE_EDIT
+        self.__edit_picture(pixbuf)
+
+    def __edit_picture(self, pixbuf):
         self.set_pixbuf(pixbuf)
         if self.camera_area in self.get_children():
             self.remove(self.camera_area)
@@ -809,11 +807,14 @@ class IconEditArea(gtk.HBox):
             self.pack_start(self.edit_area, False, False)
             self.reorder_child(self.edit_area, 0)
         self.show_all()
-        #self.button_zoom_in.set_sensitive(True)
-        #self.button_zoom_out.set_sensitive(True)
-        #self.button_camera.set_sensitive(False)
-        #self.button_cut.set_sensitive(False)
-        #self.button_undo.set_sensitive(True)
+        self.button_zoom_in.set_sensitive(True)
+        self.button_zoom_out.set_sensitive(True)
+        self.button_camera.set_sensitive(False)
+        self.button_cut.set_sensitive(False)
+        if self.current_mode == self.MODE_CAMERA:
+            self.button_undo.set_sensitive(True)
+        else:
+            self.button_undo.set_sensitive(False)
         self.camera_pause()
 
     def camera_start(self):

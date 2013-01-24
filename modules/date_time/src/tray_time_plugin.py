@@ -25,6 +25,7 @@ from tray_time import TrayTime, TRAY_TIME_12_HOUR, TRAY_TIME_24_HOUR
 from tray_time import TRAY_TIME_CN_TYPE, TRAY_TIME_EN_TYPE
 from dtk.ui.utils import set_clickable_cursor
 from deepin_utils.process import run_command
+from dtk.ui.constant import ALIGN_END
 from dtk.ui.label import Label
 from nls import _
 import dltk_calendar
@@ -80,25 +81,31 @@ class TrayTimePlugin(object):
         self.this.hide_menu()
         run_command("deepin-system-settings date_time")
 
+    def __on_day_selected(self, widget):
+        self.this.hide_menu()                                                   
+        run_command("deepin-system-settings date_time")        
+
     def plugin_widget(self):
         align = self.__setup_align()
         box = gtk.VBox(spacing = 5)
         calendar_align = self.__setup_align()
         calendar = dltk_calendar.new()
-        calendar.get_handle().set_size_request(300, 230)
+        calendar.set_day_padding(0)
+        calendar.get_handle().set_size_request(200, 172)
+        calendar.get_handle().connect("day-selected", self.__on_day_selected)
         calendar_align.add(calendar.get_handle())
         label_align = self.__setup_align()
-        label = Label(_("Change DateTime settings"))
+        label = Label(_("Change DateTime settings"), text_x_align=ALIGN_END, label_width = 200)
         set_clickable_cursor(label)
         label_align.add(label)
         label.connect("button-press-event", self.__on_label_press)
         box.pack_start(calendar_align, False, False)
-        box.pack_start(label_align, False, False)
+        #box.pack_start(label_align, False, False)
         align.add(box)
         return align
 
     def show_menu(self):
-        self.this.set_size_request(300, 285)
+        self.this.set_size_request(200, 210)
         print "menu show...."
 
     def hide_menu(self):
