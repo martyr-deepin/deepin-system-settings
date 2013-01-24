@@ -919,6 +919,7 @@ class GeneralItem(TreeItem):
 
     def __init__(self,
                  name,
+                 ap_list,
                  setting_page,
                  slide_to_setting_page_cb,
                  send_to_crumb,
@@ -928,6 +929,7 @@ class GeneralItem(TreeItem):
         TreeItem.__init__(self)
 
         self.name = name
+        self.ap_list = ap_list
         self.setting = setting_page
         self.slide_to_setting = slide_to_setting_page_cb
         self.send_to_crumb = send_to_crumb

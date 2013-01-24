@@ -358,13 +358,22 @@ class WirelessSection(gtk.VBox):
                               self.settings,
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
-
-        items.append(GeneralItem(_("connect to hidden network"),
-                                 self.settings,
-                                 lambda :slider.slide_to_page(self.settings, "right"),
-                                 self.send_to_crumb_cb,
-                                 check_state=0))
+        # Comment for modify
+        #items.append(GeneralItem(_("connect to hidden network"),
+                                 #self.ap_list,
+                                 #self.settings,
+                                 #lambda :slider.slide_to_page(self.settings, "right"),
+                                 #self.send_to_crumb_cb,
+                                 #check_state=0))
         return items
+
+    def get_hiden_list(self):
+        ssid_list = []
+        if self.ap_list:
+            for wireless_device in self.wireless_devices:
+                for con in wireless_device.get_wireless_connections():
+
+                    pass
 
     def get_actives(self, ap_list):
         index = []
