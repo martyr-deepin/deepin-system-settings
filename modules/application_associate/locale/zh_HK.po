@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-23 15:18+0800\n"
+"POT-Creation-Date: 2013-01-24 09:15+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -24,15 +24,15 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../src/treeview.py:85
+#: ../src/treeview.py:112
 msgid "No description"
 msgstr ""
 
-#: ../src/treeview.py:95
+#: ../src/treeview.py:122
 msgid "active"
 msgstr ""
 
-#: ../src/treeview.py:97
+#: ../src/treeview.py:124
 msgid "not running"
 msgstr ""
 
@@ -60,8 +60,16 @@ msgstr ""
 msgid "photo"
 msgstr ""
 
-#: ../src/session_view.py:31
+#: ../src/app_asso_view.py:87 ../src/session_view.py:31
 msgid "Application"
+msgstr ""
+
+#: ../src/app_asso_view.py:88
+msgid "Media"
+msgstr ""
+
+#: ../src/app_asso_view.py:89
+msgid "Autostart"
 msgstr ""
 
 #: ../src/session_view.py:31

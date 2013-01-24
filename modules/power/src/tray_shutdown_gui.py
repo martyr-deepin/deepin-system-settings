@@ -48,6 +48,7 @@ class Gui(gtk.VBox):
         icon_width = icon_height = 30
         #
         self.user_hbox = gtk.HBox()
+        '''
         self.user_icon = gtk.Image()
         self.user_icon.set_from_file(self.cmd_dbus.get_user_image_path())
         #
@@ -59,6 +60,7 @@ class Gui(gtk.VBox):
             except Exception, e:
                 print "set user icon[error]:", e
 
+        '''
         #
         user_name = self.cmd_dbus.get_user_name()
         user_name_width = get_text_size(user_name)[0]
@@ -69,7 +71,7 @@ class Gui(gtk.VBox):
         self.user_label_ali.set_padding(0, 0, 5, 0)
         self.user_label = gtk.Label(user_name)
         self.user_label_ali.add(self.user_label)
-        self.user_hbox.pack_start(self.user_icon, False, False)
+        #self.user_hbox.pack_start(self.user_icon, False, False)
         self.user_hbox.pack_start(self.user_label_ali, False, False)
         #
         self.h_separator_top_ali = gtk.Alignment(0, 0, 1, 1)

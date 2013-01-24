@@ -21,6 +21,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# " gstreamer0.10-x"
+
+import os
 import gtk
 import gst
 
@@ -28,26 +31,38 @@ class Webcam(gtk.DrawingArea):
     
     def __init__(self):
         gtk.DrawingArea.__init__(self)
-        self.pipestr = "v4l2src !  xvimagesink"
-        #self.create_video_pipeline()
+
+        self.video_player = None
+        if self.has_device():
+            self.create_video_pipeline()
+        
+    @classmethod    
+    def has_device(cls):
+        if os.path.exists("/dev/video0"):
+            return True
+        return False
         
     def create_video_pipeline(self):    
+        self.pipestr = "v4l2src ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! xvimagesink"        
         self.video_player = gst.parse_launch(self.pipestr)
         self.video_player.set_state(gst.STATE_PLAYING)
-        
         self.__video_bus = self.video_player.get_bus()
         self.__video_bus.add_signal_watch()
         self.__video_bus.enable_sync_message_emission()
         self.__video_bus.connect("message", self.__on_bus_message)
         self.__video_bus.connect("sync-message::element", self.__on_bus_sync_message)        
 
-    def set_playing(self):
-        self.video_player.set_state(gst.STATE_PLAYING)
-        self.__video_bus.add_signal_watch()
+    def play(self):
+        if self.video_player:
+            self.video_player.set_state(gst.STATE_PLAYING)
 
-    def set_paused(self):
-        self.video_player.set_state(gst.STATE_NULL)
-        self.__video_bus.remove_signal_watch()
+    def pause(self):
+        if self.video_player:
+            self.video_player.set_state(gst.STATE_PAUSED)
+        
+    def stop(self):
+        if self.video_player:
+            self.video_player.set_state(gst.STATE_NULL)
         
     def __on_bus_message(self, bus, message):    
         t = message.type
@@ -74,3 +89,31 @@ class Webcam(gtk.DrawingArea):
         pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, *drawable.get_size())
         pixbuf = pixbuf.get_from_drawable(drawable, colormap, 0, 0, 0, 0, *drawable.get_size()) 
         return pixbuf
+    
+if __name__ == "__main__":    
+    window = gtk.Window()
+    window.set_size_request(400, 400)
+    
+    webcam = Webcam()    
+    main_box = gtk.VBox()
+    button_box = gtk.HBox()
+    play_button = gtk.Button("play")
+    play_button.connect("clicked", lambda w: webcam.play())
+    pause_button = gtk.Button("pause",)
+    pause_button.connect("clicked",  lambda w: webcam.pause())
+    stop_button = gtk.Button("stop",)
+    stop_button.connect("clicked",  lambda w: webcam.stop())
+    button_box.pack_start(play_button, False, False)
+    button_box.pack_start(pause_button, False, False)
+    button_box.pack_start(stop_button, False, False)
+    
+    def stop_webcam():
+        webcam.stop()
+        gtk.main_quit()
+    
+    main_box.pack_start(webcam, True, True)    
+    main_box.pack_start(button_box, False, False)
+    window.connect("destroy", lambda w: stop_webcam())
+    window.add(main_box)
+    window.show_all()
+    gtk.main()
