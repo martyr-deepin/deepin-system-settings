@@ -22,6 +22,7 @@
 
 
 from tray_shutdown_gui import Gui
+import gtk
 
 class TrayShutdownPlugin(object):
     def __init__(self):
@@ -51,9 +52,28 @@ class TrayShutdownPlugin(object):
         self.this_list = this_list
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
-        #user_pixbuf = self.tray_icon.load_icon("user")
-        #self.gui.user_icon.set_from_pixbuf(user_pixbuf)
         self.tray_icon.set_icon_theme("tray_user_icon")
+        try:
+            # set user icon.
+            print self.gui.cmd_dbus.get_user_image_path() 
+            self.gui.user_icon.set_from_file(self.gui.cmd_dbus.get_user_image_path())
+            #
+            user_pixbuf = self.gui.user_icon.get_pixbuf()
+            new_user_pixbuf = user_pixbuf.scale_simple(self.gui.icon_width, 
+                                                       self.gui.icon_height, 
+                                                       gtk.gdk.INTERP_BILINEAR)
+        except Exception, e:
+            try:
+                user_pixbuf = self.gui.gui_theme.get_pixbuf("account/icon.png").get_pixbuf()
+                new_user_pixbuf = user_pixbuf.scale_simple(self.gui.icon_width, 
+                                                           self.gui.icon_height, 
+                                                           gtk.gdk.INTERP_BILINEAR)
+                print "set user icon [error]:", e
+            except:
+                new_user_pixbuf = self.tray_icon.load_icon("user")
+
+        self.gui.user_icon.set_from_pixbuf(new_user_pixbuf)
+
 
     def run(self):
         return True

@@ -32,7 +32,6 @@ sys.path.append("/usr/share/deepin-system-settings/dss")
 from theme import app_theme
 from vtk.utils import get_text_size
 
-
 WIDTH = 120
 
 class Gui(gtk.VBox):
@@ -43,24 +42,13 @@ class Gui(gtk.VBox):
 
     def init_values(self):
         self.cmd_dbus = CmdDbus()
+        self.gui_theme = app_theme
 
     def init_widgets(self):
-        icon_width = icon_height = 30
+        self.icon_width = self.icon_height = 30
         #
         self.user_hbox = gtk.HBox()
-        '''
         self.user_icon = gtk.Image()
-        self.user_icon.set_from_file(self.cmd_dbus.get_user_image_path())
-        #
-        user_pixbuf = self.user_icon.get_pixbuf()
-        new_user_pixbuf = user_pixbuf.scale_simple(icon_width, icon_height, gtk.gdk.INTERP_BILINEAR)
-        if new_user_pixbuf:
-            try:
-                self.user_icon.set_from_pixbuf(new_user_pixbuf)
-            except Exception, e:
-                print "set user icon[error]:", e
-
-        '''
         #
         user_name = self.cmd_dbus.get_user_name()
         user_name_width = get_text_size(user_name)[0]
@@ -71,21 +59,25 @@ class Gui(gtk.VBox):
         self.user_label_ali.set_padding(0, 0, 5, 0)
         self.user_label = gtk.Label(user_name)
         self.user_label_ali.add(self.user_label)
-        #self.user_hbox.pack_start(self.user_icon, False, False)
+        #
+        self.user_hbox.pack_start(self.user_icon, False, False)
         self.user_hbox.pack_start(self.user_label_ali, False, False)
         #
-        self.h_separator_top_ali = gtk.Alignment(0, 0, 1, 1)
+        self.h_separator_top_ali = gtk.Alignment(1, 1, 1, 1)
         self.h_separator_top_ali.set_padding(5, 5, 0, 0)
+        hseparator_color = [(0, ("#777777", 0.0)),
+                            (0.5, ("#000000", 0.3)), 
+                            (1, ("#777777", 0.0))]
         self.h_separator_top = HSeparator(
-                app_theme.get_shadow_color("hSeparator").get_color_info(), 
+                hseparator_color,
                 0, 
                 0)
         self.h_separator_top_ali.add(self.h_separator_top)
         #
-        self.stop_btn = SelectButton(_("shutdown"), font_size=10)
-        self.restart_btn = SelectButton(_("restart"), font_size=10)
-        self.suspend_btn = SelectButton(_("suspend"), font_size=10)
-        self.logout_btn = SelectButton(_("logout"), font_size=10)
+        self.stop_btn = SelectButton(_("shutdown"), font_size=10, ali_padding=100)
+        self.restart_btn = SelectButton(_("restart"), font_size=10, ali_padding=100)
+        self.suspend_btn = SelectButton(_("suspend"), font_size=10, ali_padding=100)
+        self.logout_btn = SelectButton(_("logout"), font_size=10, ali_padding=100)
         #
         self.stop_btn.set_size_request(WIDTH, 25)
         self.restart_btn.set_size_request(WIDTH, 25)
