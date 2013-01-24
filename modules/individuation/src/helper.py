@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from events import EventManager
-event_manager = EventManager(use_logger=True)
+event_manager = EventManager(use_logger=False)
 
 '''
 theme-detail   :  theme detail information.

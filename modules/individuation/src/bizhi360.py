@@ -38,7 +38,7 @@ class Bizhi360(BaseFetch):
             "c" : "WallPaper",
             "a" : "getAppsByCategory",
             "from" : "360desktop",
-            "cid" : 6,
+            "cid" : 15, # 10, 6
             }
         
         results = self.api_request(self.url, extra_data=params, start=self.start, count=self.count)
