@@ -47,8 +47,8 @@ media_shortcuts_group_dict = {
     _('Screenshots') : [
         {'name': "screenshot", 'description': _("Take a screenshot")},
         {'name': "window-screenshot", 'description': _("Take a screenshot of a window")},
-        {'name': "area-screenshot", 'description': _("Take a screenshot of an area")},
-        {'name': "screenshot-clip", 'description': _("Copy a screenshot to clipboard")},
+        #{'name': "area-screenshot", 'description': _("Take a screenshot of an area")},
+        #{'name': "screenshot-clip", 'description': _("Copy a screenshot to clipboard")},
         #{'name': "window-screenshot-clip", 'description': _("Copy a screenshot of a window to clipboard")},
         #{'name': "area-screenshot-clip", 'description': _("Copy a screenshot of an area to clipboard")}
         ],
@@ -129,10 +129,10 @@ wm_shortcuts_group_dict = {
     {'name': "begin-resize", 'description': _("Resize window")},
     #{'name': "toggle-on-all-workspaces", 'description': _("Toggle window on all workspaces or one")},
     #{'name': "raise-or-lower", 'description': _("Raise window if covered, otherwise lower it")},
-    {'name': "raise", 'description': _("Raise window above other windows")},
-    {'name': "lower", 'description': _("Lower window below other windows")},
-    {'name': "maximize-vertically", 'description': _("Maximize window vertically")},
-    {'name': "maximize-horizontally", 'description': _("Maximize window horizontally")},
+    #{'name': "raise", 'description': _("Raise window above other windows")},
+    #{'name': "lower", 'description': _("Lower window below other windows")},
+    #{'name': "maximize-vertically", 'description': _("Maximize window vertically")},
+    #{'name': "maximize-horizontally", 'description': _("Maximize window horizontally")},
     #
     {'name': "move-to-corner-nw", 'description': _("Move window to top left corner")},
     {'name': "move-to-corner-ne", 'description': _("Move window to top right corner")},
