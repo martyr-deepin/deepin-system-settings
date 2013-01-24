@@ -113,8 +113,8 @@ wm_shortcuts_group_dict = {
     ],
     _('Windows') : [
     {'name': "show-desktop", 'description': _("Show desktop")},
-    {'name': "panel-main-menu", 'description': _("Show the activities overview")},
-    {'name': "panel-run-dialog", 'description': _("Show the run command prompt")},
+    #{'name': "panel-main-menu", 'description': _("Show the activities overview")},
+    #{'name': "panel-run-dialog", 'description': _("Show the run command prompt")},
     {'name': "activate-window-menu", 'description': _("Activate the window menu")},
     {'name': "toggle-fullscreen", 'description': _("Toggle fullscreen mode")},
     {'name': "toggle-maximized", 'description': _("Toggle maximization state")},

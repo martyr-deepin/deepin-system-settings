@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-16 17:45+0800\n"
+"POT-Creation-Date: 2013-01-24 11:34+0800\n"
 "PO-Revision-Date: 2013-01-16 17:45+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -40,3 +40,7 @@ msgstr "操作系统类型"
 #: ../src/main.py:62
 msgid "Disk"
 msgstr "磁盘"
+
+#: ../src/main.py:151
+msgid "bit"
+msgstr "位"

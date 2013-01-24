@@ -148,7 +148,7 @@ class SysInfo(object):
         self.label_widgets["version_info"].set_text("%s" % settings.get_os_version())
         self.label_widgets["cpu_info"].set_text("%s" % settings.get_cpu_info())
         self.label_widgets["mem_info"].set_text("%.1fGB" % settings.get_mem_info())
-        self.label_widgets["arch_info"].set_text("%s" % settings.get_os_arch())
+        self.label_widgets["arch_info"].set_text("%s%s" % (settings.get_os_arch(), _("bit")))
         disk_size = settings.get_disk_size()
         if disk_size:
             self.label_widgets["disk_info"].set_text("%.2fGB" % disk_size)
