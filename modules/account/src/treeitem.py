@@ -86,7 +86,7 @@ class MyTreeItem(TreeItem):
     '''TreeItem class'''
 
     ACCOUNT_TYPE = ["Standard", "Administrator"]
-    def __init__(self, icon, real_name, user_name, user_type, dbus_obj, is_myowner=False):
+    def __init__(self, icon, real_name, user_name, user_type, dbus_obj, is_myowner=False, is_head=False):
         '''
         initialization.
         @param icon: a gtk.gdk.Pixbuf type
@@ -96,9 +96,11 @@ class MyTreeItem(TreeItem):
         '''
         super(MyTreeItem, self).__init__()
         self.height = 55
+        self.head_height = 35
         self.user_name_height = 25
         self.title_width = 250
         self.is_myowner = is_myowner
+        self.is_head = is_head
         if is_myowner:
             self.title_height = 18
         else:
@@ -113,7 +115,10 @@ class MyTreeItem(TreeItem):
         self.is_unique = True
     
     def get_height(self):
-        return self.height + 2 * self.title_height
+        if self.is_head:
+            return self.height + 2 * self.title_height + self.head_height
+        else:
+            return self.height + 2 * self.title_height
     
     def get_column_widths(self):
         return [-1]
@@ -149,6 +154,9 @@ class MyTreeItem(TreeItem):
         #rect.x += 1
         #rect.width -=2
         #rect.height -= 2
+        if self.is_head:
+            rect.y += self.head_height
+            rect.height -= self.head_height
         if self.is_hover and not self.is_select:
             text_color = "#000000"
             bg_color = app_theme.get_color("globalItemHover").get_color()

@@ -45,6 +45,7 @@ from session_view import SessionView
 
 import style
 from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, FRAME_TOP_PADDING
+from nls import _
 
 class AppMain(gtk.Alignment):
 
@@ -83,9 +84,9 @@ class AppAssoView(TabBox):
         self.autorun_box = MediaView()
         self.boot_box = SessionView()
 
-        self.add_items([("应用程序", self.app_box), 
-                        ("自动运行", self.autorun_box), 
-                        ("启动项", self.boot_box)])
+        self.add_items([(_("Application"), self.app_box), 
+                        (_("Media"), self.autorun_box), 
+                        (_("Autostart"), self.boot_box)])
 
         #self.connect("expose-event", self.expose_outline, ["top"])
 

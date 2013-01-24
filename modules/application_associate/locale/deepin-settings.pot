@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 09:25+0800\n"
+"POT-Creation-Date: 2013-01-24 09:16+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,118 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/treeview.py:87
+#: ../src/widget.py:53
+msgid "OK"
+msgstr ""
+
+#: ../src/widget.py:54
+msgid "Cancel"
+msgstr ""
+
+#: ../src/treeview.py:112
 msgid "No description"
 msgstr ""
 
-#: ../src/treeview.py:96
+#: ../src/treeview.py:122
 msgid "active"
 msgstr ""
 
-#: ../src/treeview.py:98
+#: ../src/treeview.py:124
 msgid "not running"
 msgstr ""
 
-#: ../src/session_view.py:37
+#: ../src/app_view.py:40
+msgid "web"
+msgstr ""
+
+#: ../src/app_view.py:41
+msgid "mail"
+msgstr ""
+
+#: ../src/app_view.py:42
+msgid "editor"
+msgstr ""
+
+#: ../src/app_view.py:43
+msgid "music"
+msgstr ""
+
+#: ../src/app_view.py:44
+msgid "video"
+msgstr ""
+
+#: ../src/app_view.py:45
+msgid "photo"
+msgstr ""
+
+#: ../src/app_asso_view.py:87 ../src/session_view.py:31
+msgid "Application"
+msgstr ""
+
+#: ../src/app_asso_view.py:88
+msgid "Media"
+msgstr ""
+
+#: ../src/app_asso_view.py:89
+msgid "Autostart"
+msgstr ""
+
+#: ../src/session_view.py:31
+msgid "State"
+msgstr ""
+
+#: ../src/session_view.py:31
+msgid "Description"
+msgstr ""
+
+#: ../src/session_view.py:44
 msgid "New"
 msgstr ""
 
-#: ../src/session_view.py:38
+#: ../src/session_view.py:45
 msgid "Delete"
+msgstr ""
+
+#: ../src/media_view.py:32
+msgid "CD"
+msgstr ""
+
+#: ../src/media_view.py:33
+msgid "DVD"
+msgstr ""
+
+#: ../src/media_view.py:34
+msgid "music player"
+msgstr ""
+
+#: ../src/media_view.py:35
+msgid "camera"
+msgstr ""
+
+#: ../src/media_view.py:36
+msgid "software"
+msgstr ""
+
+#: ../src/media_view.py:38
+msgid "other applications"
+msgstr ""
+
+#: ../src/media_view.py:39
+msgid "ask"
+msgstr ""
+
+#: ../src/media_view.py:40
+msgid "do nothing"
+msgstr ""
+
+#: ../src/media_view.py:41
+msgid "open folder"
+msgstr ""
+
+#: ../src/media_view.py:42
+msgid "apply auto play for all media and devices"
+msgstr ""
+
+#: ../src/media_view.py:49
+msgid "more option"
 msgstr ""

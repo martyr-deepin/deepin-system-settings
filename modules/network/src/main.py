@@ -110,6 +110,20 @@ class WiredSection(gtk.VBox):
             self.align.add(self.tree)
             self.pack_start(self.align, False, False, 0)
 
+    def refresh_device(self):
+        if self.wire.get_active():
+            self.wired_devices = nm_module.nmclient.get_wired_devices()
+            item_list = self.retrieve_list()
+            self.tree.add_items(item_list, 0, True)
+            self.tree.visible_items[-1].is_last = True
+            self.tree.set_no_show_all(False)
+            self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+            for index, wired_device in enumerate(self.wired_devices):
+                WiredDevice(wired_device,self.tree, index)
+
+            #self.try_active()
+            self.show_all()
+
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
@@ -344,13 +358,22 @@ class WirelessSection(gtk.VBox):
                               self.settings,
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
-
-        items.append(GeneralItem(_("connect to hidden network"),
-                                 self.settings,
-                                 lambda :slider.slide_to_page(self.settings, "right"),
-                                 self.send_to_crumb_cb,
-                                 check_state=0))
+        # Comment for modify
+        #items.append(GeneralItem(_("connect to hidden network"),
+                                 #self.ap_list,
+                                 #self.settings,
+                                 #lambda :slider.slide_to_page(self.settings, "right"),
+                                 #self.send_to_crumb_cb,
+                                 #check_state=0))
         return items
+
+    def get_hiden_list(self):
+        ssid_list = []
+        if self.ap_list:
+            for wireless_device in self.wireless_devices:
+                for con in wireless_device.get_wireless_connections():
+
+                    pass
 
     def get_actives(self, ap_list):
         index = []
@@ -745,8 +768,10 @@ class Network(object):
         self.module_frame = module_frame
         self.init_sections(self.module_frame)
         vbox = gtk.VBox(False, BETWEEN_SPACING)
-        vbox.pack_start(self.wired, False, True,0)
-        vbox.pack_start(self.wireless, False, True, 0)
+        if hasattr(self.wired, "wire"):
+            vbox.pack_start(self.wired, False, True,0)
+        if hasattr(self.wireless, "wireless"):
+            vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
         vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
@@ -772,7 +797,8 @@ class Network(object):
         ui_align.connect("expose-event", self.expose_callback)
         nm_module.nmclient.connect("activate-succeed", self.activate_succeed) 
         nm_module.nmclient.connect("activate-failed", self.activate_failed) 
-
+        nm_module.nmclient.connect("device-added", self.device_added)
+        nm_module.nmclient.connect("device-removed", self.device_removed)
 
         slider._append_page(self.eventbox, "main")
         slider._append_page(self.wired_setting_page, "wired")
@@ -799,6 +825,15 @@ class Network(object):
 
     def activate_failed(self, widget, connection_path):
         print "active failed"
+
+    def device_added(self, widget, connection_path):
+        print "device add:", connection_path
+        self.wired.refresh_device()
+
+    def device_removed(self, widget, connection_path):
+        print "device remove:", connection_path
+        self.wired.refresh_device()
+
 
     def init_sections(self, module_frame):
         #slider._set_to_page("main")

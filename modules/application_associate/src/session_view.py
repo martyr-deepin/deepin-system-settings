@@ -4,7 +4,7 @@ from dtk.ui.new_treeview import TreeView
 from dtk.ui.button import Button
 from dtk.ui.label import Label
 from dtk.ui.new_entry import InputEntry
-from treeview import SessionItem
+from treeview import SessionItem, NothingItem
 
 import gtk
 import style
@@ -115,6 +115,8 @@ class SessionView(gtk.VBox):
         item = items[0].item
         item.delete()
         self.tree.delete_select_items()
+        if self.tree.visible_items == []:
+            self.tree.add_items([NothingItem()])
 
 
     def entry_changed(self, widget, content, option):
@@ -127,9 +129,11 @@ class SessionView(gtk.VBox):
         self.tree.redraw_request(items, True)
         self.open_dialog = False
 
-
     def confirm_callback(self, session):
         session.save(session.get_option("Name"))
+        items = self.tree.visible_items
+        if len(items) == 1 and type(items[0]) is NothingItem:
+            self.tree.delete_all_items()
         self.tree.add_items([SessionItem(session)]) 
         self.new_session = None
         #self.open_dialog = False
@@ -149,4 +153,7 @@ class SessionView(gtk.VBox):
 
     def get_list(self):
         usr_list = sessions.list_user_auto_starts()
-        return map(lambda w: SessionItem(w), usr_list)
+        if usr_list:
+            return map(lambda w: SessionItem(w), usr_list)
+        else:
+            return [NothingItem()]

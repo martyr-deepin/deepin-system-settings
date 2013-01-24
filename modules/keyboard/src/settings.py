@@ -28,6 +28,7 @@ except ImportError:
     print "------------------------------------------------------------------"   
 
 import gconf
+from gtk import gdk
 
 # typing setting
 KEYBOARD_SETTINGS_CONF = "org.gnome.settings-daemon.peripherals.keyboard"
@@ -313,3 +314,10 @@ def shortcuts_custom_set(key, key_binding):
     client.set("%s/%s/binding" % (base_dir, key), v)
     v.set_string(key_binding[2])
     client.set("%s/%s/name" % (base_dir, key), v)
+
+def is_has_touchpad():
+    devices = gdk.devices_list()
+    for d in devices:
+        if "touchpad" in d.get_name().lower():
+            return True
+    return False

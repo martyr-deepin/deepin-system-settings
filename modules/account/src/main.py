@@ -201,8 +201,10 @@ class AccountSetting(object):
         self.alignment_widgets["main_hbox"].set_name("main_hbox")
         self.alignment_widgets["set_iconfile"].set_name("set_iconfile")
         self.alignment_widgets["edit_iconfile"].set_name("edit_iconfile")
+
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["add_account"], self.button_widgets["del_account"]])
         self.statusbar_buttons = {
-            "main_hbox": [],
+            "main_hbox": [self.button_widgets["add_account"], self.button_widgets["del_account"]],
             "set_iconfile": [self.button_widgets["cancel_set_icon"]],
             "edit_iconfile": [self.button_widgets["cancel_set_icon"], self.button_widgets["save_edit_icon"]]}
 
@@ -210,7 +212,8 @@ class AccountSetting(object):
         self.alignment_widgets["edit_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 10, TEXT_WINDOW_LEFT_PADDING, 100)
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
-        self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
+        #self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
+        self.alignment_widgets["main_hbox"].set_padding(0, 10, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"])
@@ -218,20 +221,22 @@ class AccountSetting(object):
         self.alignment_widgets["left_vbox"].add(self.container_widgets["left_vbox"])
         self.alignment_widgets["right_vbox"].add(self.container_widgets["right_vbox"])
         self.alignment_widgets["left_vbox"].set_size_request(275, -1)
+        self.alignment_widgets["left_vbox"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["left_vbox"].set_size_request(275, -1)
         self.alignment_widgets["right_vbox"].set_size_request(500, -1)
+        self.alignment_widgets["right_vbox"].set_padding(FRAME_TOP_PADDING, 0, 0, 0)
         self.view_widgets["account"].set_size_request(275, 460)
         ##############################
         # accounts list page
         self.container_widgets["left_vbox"].pack_start(self.view_widgets["account"])
-        self.container_widgets["left_vbox"].pack_start(self.alignment_widgets["button_hbox"], False, False)
+        #self.container_widgets["left_vbox"].pack_start(self.alignment_widgets["button_hbox"], False, False)
         self.alignment_widgets["button_hbox"].add(self.container_widgets["button_hbox"])
         self.alignment_widgets["button_hbox"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["button_hbox"].set(1.0, 0.5, 0, 0)
         self.alignment_widgets["button_hbox"].set_padding(0, 0, 0, 10)
         self.container_widgets["button_hbox"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["button_hbox"].pack_start(self.button_widgets["add_account"], False, False)
-        self.container_widgets["button_hbox"].pack_start(self.button_widgets["del_account"], False, False)
+        #self.container_widgets["button_hbox"].pack_start(self.button_widgets["add_account"], False, False)
+        #self.container_widgets["button_hbox"].pack_start(self.button_widgets["del_account"], False, False)
         # init treeview item
         self.view_widgets["account"].add_items(self.get_user_list_treeitem(), clear_first=True)
         ###############
@@ -299,11 +304,11 @@ class AccountSetting(object):
         # create new account
         self.container_widgets["account_info_table_new"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["account_info_table_new"].attach(
-            self.__make_align(self.label_widgets["account_name_new"]), 0, 1, 0, 1, 4)
+            self.__make_align(self.label_widgets["account_name_new"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 0, 1, 4)
         self.container_widgets["account_info_table_new"].attach(
             self.__make_align(self.button_widgets["account_name"]), 1, 2, 0, 1, 4)
         self.container_widgets["account_info_table_new"].attach(
-            self.__make_align(self.label_widgets["account_type_new"]), 0, 1, 1, 2, 4)
+            self.__make_align(self.label_widgets["account_type_new"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 1, 2, 4)
         self.container_widgets["account_info_table_new"].attach(
             self.__make_align(self.button_widgets["account_type_new"]), 1, 2, 1, 2, 4)
         #self.container_widgets["account_info_table_new"].attach(
@@ -359,9 +364,9 @@ class AccountSetting(object):
         button_align.set(1, 0.5, 1, 1)
         self.container_widgets["del_account_button_hbox"].pack_start(button_align)
         self.container_widgets["del_account_button_hbox"].set_spacing(WIDGET_SPACING)
-        self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["del_button"], False, False)
-        self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["keep_button"], False, False)
-        self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["cancel_button"], False, False)
+        #self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["del_button"], False, False)
+        #self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["keep_button"], False, False)
+        #self.container_widgets["del_account_button_hbox"].pack_start(self.button_widgets["cancel_button"], False, False)
         self.container_widgets["del_main_vbox"].pack_start(self.container_widgets["del_account_button_hbox"], False, False)
         ############################
         # set widget state
@@ -466,7 +471,7 @@ class AccountSetting(object):
         self.container_widgets["right_vbox"].show_all()
         #self.button_widgets["add_account"].set_sensitive(True)
         self.container_widgets["button_hbox"].set_sensitive(True)
-        self.container_widgets["statusbar"].clear_button()
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["add_account"], self.button_widgets["del_account"]])
 
     def account_create_button_clicked(self, button):
         username = self.button_widgets["account_name"].get_text()
@@ -493,6 +498,7 @@ class AccountSetting(object):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_info_vbox"], False, False)
         self.container_widgets["right_vbox"].show_all()
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["add_account"], self.button_widgets["del_account"]])
 
     def del_delete_user_file_cd(self, button, del_file):
         try:
@@ -521,6 +527,7 @@ class AccountSetting(object):
         self.label_widgets["del_account_error_label"].set_text("")
         self.container_widgets["del_account_button_hbox"].set_sensitive(True)
         self.container_widgets["right_vbox"].show_all()
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["del_button"], self.button_widgets["keep_button"], self.button_widgets["cancel_button"]])
     ## << del account cb ##
 
     def account_treeview_select(self, tv, item, row):
@@ -1040,13 +1047,17 @@ class AccountSetting(object):
                 if user.get_real_name() == compare_user.get_real_name():
                     item.is_unique = False
                     break
+        # TODO 顶部留35px
+        if user_items:
+            user_items[0].is_head = True
         return user_items
 
     def set_widget_state_with_author(self):
         ''' set widgets sensitive if it has authorized, else insensitive '''
         authorized = self.get_authorized()
         self.button_widgets["lock"].set_data("unlocked", authorized)
-        self.container_widgets["button_hbox"].set_sensitive(authorized)
+        #self.container_widgets["button_hbox"].set_sensitive(authorized)
+        self.button_widgets["add_account"].set_sensitive(authorized)
         self.button_widgets["account_type"].set_sensitive(authorized)
         self.button_widgets["auto_login"].set_sensitive(authorized)
         self.container_widgets["check_button_table"].set_sensitive(authorized)
