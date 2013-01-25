@@ -159,7 +159,7 @@ class MobileSetting(gtk.Alignment):
         
     def save_changes(self, widget):
         connection = self.ipv4.connection
-        if widget.label is "save":
+        if widget.label == _("save"):
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
                 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -200,10 +200,10 @@ class MobileSetting(gtk.Alignment):
         self.slide_back() 
     def set_button(self, name, state):
         if name == "save":
-            self.save_button.set_label(name)
+            self.save_button.set_label(_("save"))
             self.save_button.set_sensitive(state)
         else:
-            self.save_button.set_label("connect")
+            self.save_button.set_label(_("connect"))
             self.save_button.set_sensitive(state)
 
 class SideBar(gtk.VBox):

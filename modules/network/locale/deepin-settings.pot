@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-25 10:07+0800\n"
+"POT-Creation-Date: 2013-01-25 15:42+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Hotspot"
 msgstr ""
 
-#: ../src/main.py:540 ../src/main.py:844 ../src/dsl_config.py:66
+#: ../src/main.py:540 ../src/main.py:847 ../src/dsl_config.py:66
 #: ../src/dsl_config.py:151 ../src/search_keyword.py:31
 msgid "DSL"
 msgstr ""
@@ -89,31 +89,31 @@ msgstr ""
 msgid "VPN Setting"
 msgstr ""
 
-#: ../src/main.py:671 ../src/main.py:868 ../src/search_keyword.py:33
+#: ../src/main.py:672 ../src/main.py:871 ../src/search_keyword.py:33
 msgid "Mobile Network"
 msgstr ""
 
-#: ../src/main.py:694
+#: ../src/main.py:696
 msgid "Mobile Configuration"
 msgstr ""
 
-#: ../src/main.py:736 ../src/main.py:845 ../src/search_keyword.py:34
+#: ../src/main.py:739 ../src/main.py:848 ../src/search_keyword.py:34
 msgid "Proxy"
 msgstr ""
 
-#: ../src/main.py:745
+#: ../src/main.py:748
 msgid "Proxy Configuration"
 msgstr ""
 
-#: ../src/main.py:842
+#: ../src/main.py:845
 msgid "Wired Setting"
 msgstr ""
 
-#: ../src/main.py:843
+#: ../src/main.py:846
 msgid "Wireless Setting"
 msgstr ""
 
-#: ../src/main.py:846 ../src/main.py:924 ../src/search_keyword.py:32
+#: ../src/main.py:849 ../src/main.py:927 ../src/search_keyword.py:32
 msgid "VPN"
 msgstr ""
 
@@ -136,11 +136,12 @@ msgstr ""
 #: ../src/wlan_config.py:182 ../src/wlan_config.py:221
 #: ../src/vpn_config.py:150 ../src/vpn_config.py:158 ../src/dsl_config.py:96
 #: ../src/dsl_config.py:171 ../src/lan_config.py:173 ../src/lan_config.py:181
+#: ../src/mobile_config.py:162 ../src/mobile_config.py:203
 msgid "save"
 msgstr ""
 
 #: ../src/wlan_config.py:224 ../src/vpn_config.py:153 ../src/dsl_config.py:99
-#: ../src/lan_config.py:176
+#: ../src/lan_config.py:176 ../src/mobile_config.py:206
 msgid "connect"
 msgstr ""
 

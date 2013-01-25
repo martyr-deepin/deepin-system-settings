@@ -615,6 +615,7 @@ class VpnSection(gtk.VBox):
         container_remove_all(self.vbox)
         self.connection_tree.delete_all_items()
         self.item = GeneralItem(connection_name,
+                            None,
                             self.setting,
                             lambda :slider.slide_to_page(self.setting, "right"),
                             self.slide_to_subcrumb,
@@ -672,6 +673,7 @@ class Mobile(gtk.VBox):
         self.add(mobile)
         self.settings = None
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
+        nm_module.nmclient.connect("device-removed", lambda w,p: mobile.set_active(False))
 
     def toggle_cb(self, widget):
         active = widget.get_active()
@@ -707,6 +709,7 @@ class Mobile(gtk.VBox):
         model = device.get_model()
         info = model + " " + manufacturer
         item = GeneralItem(info,
+                           None,
                            self.settings,
                            lambda :slider.slide_to_page(self.settings, "right"),
                            self.send_to_crumb_cb)
