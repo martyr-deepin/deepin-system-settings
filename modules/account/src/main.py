@@ -1123,6 +1123,7 @@ if __name__ == '__main__':
             print "DEBUG show_again module_uid", message_content
             account_settings.container_widgets["slider"].set_to_page(
                 account_settings.alignment_widgets["main_hbox"])
+            account_settings.alignment_widgets["main_hbox"].queue_draw()
             module_frame.send_module_info()
 
     module_frame.module_message_handler = message_handler
