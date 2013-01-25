@@ -87,7 +87,7 @@ class AccelBuffer(object):
         set state
         @param state: the state of the modifier keys, a GdkModifierType
         '''
-        self.state = state & (~gtk.gdk.MOD2_MASK)
+        self.state = state & (~gtk.gdk.MOD2_MASK) & (~gtk.gdk.MOD4_MASK)
     
     def get_state(self):
         '''
