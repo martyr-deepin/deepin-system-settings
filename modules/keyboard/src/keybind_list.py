@@ -26,7 +26,8 @@ from treeitem import SelectItem
 media_shortcuts_group_dict = {
     _('System') : [
         {'name': "logout", 'description': _("Log out")},
-        {'name': "screensaver", 'description': _("Lock screen")}],
+        #{'name': "screensaver", 'description': _("Lock screen")}
+        ],
     _('Launchers') : [
         {'name': "help", 'description': _("Launch help browser")},
         {'name': "calculator", 'description': _("Launch calculator")},

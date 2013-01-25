@@ -804,6 +804,7 @@ class KeySetting(object):
     def __add_shortcuts_item(self):
         last_row = len(self.view_widgets["shortcuts_selected"].visible_items) - 1
         self.view_widgets["shortcuts_selected"].set_select_rows([last_row])
+        self.button_widgets["shortcuts_add"].set_sensitive(False)
         self.__edit_cutsom_shortcuts_dilaog()
     
     def __edit_cutsom_shortcuts_dilaog(self, is_edit=False):
@@ -853,7 +854,7 @@ class KeySetting(object):
             dialog.destroy()
         self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(False)
         dialog = DialogBox(_("Custom Shortcuts"), 250, 150)
-        dialog.connect("destroy", lambda w:self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(True))
+        dialog.connect("destroy", lambda w: self.button_widgets["shortcuts_add"].set_sensitive(True))
         dialog.window_frame.connect("expose-event", self.draw_dialog_background)
         dialog.set_keep_above(True)
         dialog.set_modal(True)
@@ -923,7 +924,7 @@ class KeySetting(object):
                 hbox.pack_start(self.__make_align())
                 vbox.pack_start(hbox, False, False)
         for label_align in label_align_list:
-            label_align.set_size_request(max_label_width, CONTAINNER_HEIGHT)
+            label_align.set_size_request(max_label_width+30, CONTAINNER_HEIGHT)
 
     def get_accel_page(self):
         return self.__shortcuts_entries_page_widgets

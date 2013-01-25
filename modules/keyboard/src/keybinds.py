@@ -111,6 +111,15 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         #item.settings_value_type = key2_name[0]
         item.settings_value_type = "gnome-terminal"
         accel_entry_list.append(item)
+    if "key3" in keys_list:
+        key3_name = parse_dp_shortcut_string(gsettings.get_string("key3"))
+        item = AccelEntry(key3_name[1], check_shortcut_conflict)
+        item.settings_description = _("Lock screen")
+        item.settings_key = "key3"
+        item.settings_obj = gsettings
+        item.settings_type = item.TYPE_DP_GSETTINGS
+        item.settings_value_type = "lock"
+        accel_entry_list.append(item)
 
 
 def get_shortcuts_custom_shortcut_entry(client):
