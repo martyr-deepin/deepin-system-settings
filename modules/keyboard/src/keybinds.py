@@ -91,7 +91,6 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
     @param accel_entry_list: a AccelEntry list that add this item
     '''
     keys_list = gsettings.list_keys()
-    print keys_list
     if "key1" in keys_list:
         key1_name = parse_dp_shortcut_string(gsettings.get_string("key1"))
         item = AccelEntry(key1_name[1], check_shortcut_conflict)
