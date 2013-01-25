@@ -203,7 +203,7 @@ class PowerView(gtk.VBox):
              #self.press_button_hibernate_align, 
              self.power_save_config_align, 
              self.hibernate_status_align, 
-             self.close_harddisk_align, 
+             #self.close_harddisk_align, 
              self.close_monitor_align, 
              self.wakeup_password_align, 
              #self.tray_battery_status_align, 

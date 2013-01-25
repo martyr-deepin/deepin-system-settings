@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -32,9 +32,9 @@ class PowerManager:
     enum
     '''
     nothing     = 0
-    hibernate   = 1
+    hibernate   = 3
     shutdown    = 2
-    suspend     = 3
+    suspend     = 1
 
     BIG_NUM = 2147483647
 
@@ -50,6 +50,8 @@ class PowerManager:
             if ori_value == "nothing" and value == PowerManager.nothing:
                 return value
             if ori_value == "hibernate" and value == PowerManager.hibernate:
+                return value
+            if ori_value == "interactive" and value == PowerManager.shutdown:
                 return value
             if ori_value == "shutdown" and value == PowerManager.shutdown:
                 return value
