@@ -8,18 +8,341 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 20:17+0800\n"
+"POT-Creation-Date: 2013-01-25 14:40+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/shortcuts.py:40 ../src/shortcuts.py:67 ../src/shortcuts.py:100
-#: ../src/accel_entry.py:179 ../src/accel_entry.py:309 ../src/treeitem.py:305
-msgid "disable"
+#: ../src/keybinds.py:97
+msgid "Launcher"
+msgstr ""
+
+#: ../src/keybinds.py:107
+msgid "Terminal"
+msgstr ""
+
+#: ../src/keybinds.py:117
+msgid "Lock screen"
+msgstr ""
+
+#: ../src/search_keyword.py:25
+msgid "Keyboard"
+msgstr ""
+
+#: ../src/search_keyword.py:26 ../src/main.py:249
+msgid "Shortcuts"
+msgstr ""
+
+#: ../src/search_keyword.py:27 ../src/main.py:248
+msgid "Typing"
+msgstr ""
+
+#: ../src/search_keyword.py:28
+msgid "Layout"
+msgstr ""
+
+#: ../src/search_keyword.py:29 ../src/main.py:115
+msgid "Repeat"
+msgstr ""
+
+#: ../src/search_keyword.py:30 ../src/main.py:118
+msgid "Repeat Delay"
+msgstr ""
+
+#: ../src/search_keyword.py:31 ../src/main.py:119
+msgid "Repeat Interval"
+msgstr ""
+
+#: ../src/keybind_list.py:27 ../src/main.py:77
+msgid "System"
+msgstr ""
+
+#: ../src/keybind_list.py:28
+msgid "Log out"
+msgstr ""
+
+#: ../src/keybind_list.py:31
+msgid "Launchers"
+msgstr ""
+
+#: ../src/keybind_list.py:32
+msgid "Launch help browser"
+msgstr ""
+
+#: ../src/keybind_list.py:33
+msgid "Launch calculator"
+msgstr ""
+
+#: ../src/keybind_list.py:34
+msgid "Launch email client"
+msgstr ""
+
+#: ../src/keybind_list.py:35
+msgid "Launch web browser"
+msgstr ""
+
+#: ../src/keybind_list.py:36
+msgid "Search"
+msgstr ""
+
+#: ../src/keybind_list.py:37
+msgid "Sound and Media"
+msgstr ""
+
+#: ../src/keybind_list.py:38
+msgid "Volume mute"
+msgstr ""
+
+#: ../src/keybind_list.py:39
+msgid "Volume down"
+msgstr ""
+
+#: ../src/keybind_list.py:40
+msgid "Volume up"
+msgstr ""
+
+#: ../src/keybind_list.py:41
+msgid "Launch media player"
+msgstr ""
+
+#: ../src/keybind_list.py:42
+msgid "Play (or play/pause)"
+msgstr ""
+
+#: ../src/keybind_list.py:43
+msgid "Pause playback"
+msgstr ""
+
+#: ../src/keybind_list.py:44
+msgid "Stop playback"
+msgstr ""
+
+#: ../src/keybind_list.py:45
+msgid "Previous track"
+msgstr ""
+
+#: ../src/keybind_list.py:46
+msgid "Next track"
+msgstr ""
+
+#: ../src/keybind_list.py:47
+msgid "Eject"
+msgstr ""
+
+#: ../src/keybind_list.py:48
+msgid "Screenshots"
+msgstr ""
+
+#: ../src/keybind_list.py:49
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../src/keybind_list.py:50
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../src/keybind_list.py:56
+msgid "Universal Access"
+msgstr ""
+
+#: ../src/keybind_list.py:57
+msgid "Turn zoom on or off"
+msgstr ""
+
+#: ../src/keybind_list.py:58
+msgid "Zoom in"
+msgstr ""
+
+#: ../src/keybind_list.py:59
+msgid "Zoom out"
+msgstr ""
+
+#: ../src/keybind_list.py:60
+msgid "Turn screen reader on or off"
+msgstr ""
+
+#: ../src/keybind_list.py:61
+msgid "Turn on-screen keyboard on or off"
+msgstr ""
+
+#: ../src/keybind_list.py:62
+msgid "Increase text size"
+msgstr ""
+
+#: ../src/keybind_list.py:63
+msgid "Decrease text size"
+msgstr ""
+
+#: ../src/keybind_list.py:64
+msgid "High contrast on or off"
+msgstr ""
+
+#: ../src/keybind_list.py:68
+msgid "Navigation"
+msgstr ""
+
+#: ../src/keybind_list.py:69
+msgid "Move window to workspace 1"
+msgstr ""
+
+#: ../src/keybind_list.py:70
+msgid "Move window to workspace 2"
+msgstr ""
+
+#: ../src/keybind_list.py:71
+msgid "Move window to workspace 3"
+msgstr ""
+
+#: ../src/keybind_list.py:72
+msgid "Move window to workspace 4"
+msgstr ""
+
+#: ../src/keybind_list.py:81
+msgid "Move window one workspace to the left"
+msgstr ""
+
+#: ../src/keybind_list.py:82
+msgid "Move window one workspace to the right"
+msgstr ""
+
+#: ../src/keybind_list.py:83
+msgid "Move window one workspace up"
+msgstr ""
+
+#: ../src/keybind_list.py:84
+msgid "Move window one workspace down"
+msgstr ""
+
+#: ../src/keybind_list.py:88
+msgid "Switch applications"
+msgstr ""
+
+#: ../src/keybind_list.py:89
+msgid "Reverse switch applications"
+msgstr ""
+
+#: ../src/keybind_list.py:99
+msgid "Switch to workspace 1"
+msgstr ""
+
+#: ../src/keybind_list.py:100
+msgid "Switch to workspace 2"
+msgstr ""
+
+#: ../src/keybind_list.py:101
+msgid "Switch to workspace 3"
+msgstr ""
+
+#: ../src/keybind_list.py:102
+msgid "Switch to workspace 4"
+msgstr ""
+
+#: ../src/keybind_list.py:111
+msgid "Switch to workspace left"
+msgstr ""
+
+#: ../src/keybind_list.py:112
+msgid "Switch to workspace right"
+msgstr ""
+
+#: ../src/keybind_list.py:113
+msgid "Switch to workspace above"
+msgstr ""
+
+#: ../src/keybind_list.py:114
+msgid "Switch to workspace below"
+msgstr ""
+
+#: ../src/keybind_list.py:116
+msgid "Windows"
+msgstr ""
+
+#: ../src/keybind_list.py:117
+msgid "Show desktop"
+msgstr ""
+
+#: ../src/keybind_list.py:120
+msgid "Activate the window menu"
+msgstr ""
+
+#: ../src/keybind_list.py:121
+msgid "Toggle fullscreen mode"
+msgstr ""
+
+#: ../src/keybind_list.py:122
+msgid "Toggle maximization state"
+msgstr ""
+
+#: ../src/keybind_list.py:123
+msgid "Toggle window always appearing on top"
+msgstr ""
+
+#: ../src/keybind_list.py:124
+msgid "Maximize window"
+msgstr ""
+
+#: ../src/keybind_list.py:125
+msgid "Restore window"
+msgstr ""
+
+#: ../src/keybind_list.py:126
+msgid "Toggle shaded state"
+msgstr ""
+
+#: ../src/keybind_list.py:127
+msgid "Minimize window"
+msgstr ""
+
+#: ../src/keybind_list.py:128
+msgid "Close window"
+msgstr ""
+
+#: ../src/keybind_list.py:129
+msgid "Move window"
+msgstr ""
+
+#: ../src/keybind_list.py:130
+msgid "Resize window"
+msgstr ""
+
+#: ../src/keybind_list.py:138
+msgid "Move window to top left corner"
+msgstr ""
+
+#: ../src/keybind_list.py:139
+msgid "Move window to top right corner"
+msgstr ""
+
+#: ../src/keybind_list.py:140
+msgid "Move window to bottom left corner"
+msgstr ""
+
+#: ../src/keybind_list.py:141
+msgid "Move window to bottom right corner"
+msgstr ""
+
+#: ../src/keybind_list.py:142
+msgid "Move window to top edge of screen"
+msgstr ""
+
+#: ../src/keybind_list.py:143
+msgid "Move window to bottom edge of screen"
+msgstr ""
+
+#: ../src/keybind_list.py:144
+msgid "Move window to right side of screen"
+msgstr ""
+
+#: ../src/keybind_list.py:145
+msgid "Move window to left side of screen"
+msgstr ""
+
+#: ../src/keybind_list.py:146
+msgid "Move window to center of screen"
 msgstr ""
 
 #: ../src/accel_entry.py:47
@@ -33,7 +356,7 @@ msgstr ""
 msgid "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
 
-#: ../src/accel_entry.py:51 ../src/accel_entry.py:69 ../src/main.py:715
+#: ../src/accel_entry.py:51 ../src/accel_entry.py:69 ../src/main.py:719
 msgid "Cancel"
 msgstr ""
 
@@ -52,556 +375,97 @@ msgstr ""
 msgid "Reassign"
 msgstr ""
 
-#: ../src/accel_entry.py:210
+#: ../src/accel_entry.py:180 ../src/accel_entry.py:310 ../src/shortcuts.py:40
+#: ../src/shortcuts.py:67 ../src/shortcuts.py:100 ../src/treeitem.py:305
+msgid "disable"
+msgstr ""
+
+#: ../src/accel_entry.py:211
 msgid "Please input new shortcuts"
 msgstr ""
 
-#: ../src/search_keyword.py:25
-msgid "Keyboard"
-msgstr ""
-
-#: ../src/search_keyword.py:26 ../src/main.py:245
-msgid "Shortcuts"
-msgstr ""
-
-#: ../src/search_keyword.py:27 ../src/main.py:244
-msgid "Typing"
-msgstr ""
-
-#: ../src/search_keyword.py:28
-msgid "Layout"
-msgstr ""
-
-#: ../src/search_keyword.py:29 ../src/main.py:113
-msgid "Repeat"
-msgstr ""
-
-#: ../src/search_keyword.py:30 ../src/main.py:116
-msgid "Repeat Delay"
-msgstr ""
-
-#: ../src/search_keyword.py:31 ../src/main.py:117
-msgid "Repeat Interval"
-msgstr ""
-
-#: ../src/main.py:75 ../src/main.py:487 ../src/main.py:796 ../src/main.py:797
-#: ../src/main.py:851
+#: ../src/main.py:76 ../src/main.py:491 ../src/main.py:800 ../src/main.py:801
+#: ../src/main.py:856
 msgid "Custom Shortcuts"
 msgstr ""
 
-#: ../src/main.py:118 ../src/main.py:125 ../src/main.py:322 ../src/main.py:361
+#: ../src/main.py:120 ../src/main.py:127 ../src/main.py:326 ../src/main.py:365
 msgid "Fast"
 msgstr ""
 
-#: ../src/main.py:119 ../src/main.py:126 ../src/main.py:320 ../src/main.py:359
+#: ../src/main.py:121 ../src/main.py:128 ../src/main.py:324 ../src/main.py:363
 msgid "Slow"
 msgstr ""
 
-#: ../src/main.py:120 ../src/main.py:305
+#: ../src/main.py:122 ../src/main.py:309
 msgid "Long"
 msgstr ""
 
-#: ../src/main.py:121 ../src/main.py:307
+#: ../src/main.py:123 ../src/main.py:311
 msgid "Short"
 msgstr ""
 
-#: ../src/main.py:122
+#: ../src/main.py:124
 msgid "Cursor Blink"
 msgstr ""
 
-#: ../src/main.py:127
+#: ../src/main.py:129
 msgid "Disable touchpad while typing"
 msgstr ""
 
-#: ../src/main.py:130
+#: ../src/main.py:132
 msgid "Keyboard Layout"
 msgstr ""
 
-#: ../src/main.py:134
+#: ../src/main.py:136
 msgid "Relevant Settings"
 msgstr ""
 
-#: ../src/main.py:140
+#: ../src/main.py:142
 msgid "Mouse Settings"
 msgstr ""
 
-#: ../src/main.py:142
+#: ../src/main.py:145
 msgid "TouchPad Settings"
 msgstr ""
 
-#: ../src/main.py:144
+#: ../src/main.py:148
 msgid "Reset to Defaults"
 msgstr ""
 
-#: ../src/main.py:191 ../src/main.py:713
+#: ../src/main.py:195 ../src/main.py:717
 msgid "Replace"
 msgstr ""
 
-#: ../src/main.py:192 ../src/main.py:210
+#: ../src/main.py:196 ../src/main.py:214
 msgid "Remove"
 msgstr ""
 
-#: ../src/main.py:209
+#: ../src/main.py:213
 msgid "Add"
 msgstr ""
 
-#: ../src/main.py:453 ../src/main.py:734 ../src/main.py:753
+#: ../src/main.py:457 ../src/main.py:738 ../src/main.py:757
 #, python-format
 msgid "Current Layout: %s"
 msgstr ""
 
-#: ../src/main.py:635
-msgid "测试重复速度"
+#: ../src/main.py:639
+msgid "Test Repeat Interval"
 msgstr ""
 
-#: ../src/main.py:697
+#: ../src/main.py:701
 msgid "Select an input source to add"
 msgstr ""
 
-#: ../src/main.py:860
+#: ../src/main.py:865
 msgid "name"
 msgstr ""
 
-#: ../src/main.py:862
+#: ../src/main.py:867
 msgid "action"
 msgstr ""
 
-#: ../src/main.py:875
+#: ../src/main.py:880
 msgid "Ok"
-msgstr ""
-
-#: ../src/keybind_list.py:27
-msgid "System"
-msgstr ""
-
-#: ../src/keybind_list.py:28
-msgid "Log out"
-msgstr ""
-
-#: ../src/keybind_list.py:29
-msgid "Lock screen"
-msgstr ""
-
-#: ../src/keybind_list.py:30
-msgid "Launchers"
-msgstr ""
-
-#: ../src/keybind_list.py:31
-msgid "Launch help browser"
-msgstr ""
-
-#: ../src/keybind_list.py:32
-msgid "Launch calculator"
-msgstr ""
-
-#: ../src/keybind_list.py:33
-msgid "Launch email client"
-msgstr ""
-
-#: ../src/keybind_list.py:34
-msgid "Launch web browser"
-msgstr ""
-
-#: ../src/keybind_list.py:35
-msgid "Search"
-msgstr ""
-
-#: ../src/keybind_list.py:36
-msgid "Sound and Media"
-msgstr ""
-
-#: ../src/keybind_list.py:37
-msgid "Volume mute"
-msgstr ""
-
-#: ../src/keybind_list.py:38
-msgid "Volume down"
-msgstr ""
-
-#: ../src/keybind_list.py:39
-msgid "Volume up"
-msgstr ""
-
-#: ../src/keybind_list.py:40
-msgid "Launch media player"
-msgstr ""
-
-#: ../src/keybind_list.py:41
-msgid "Play (or play/pause)"
-msgstr ""
-
-#: ../src/keybind_list.py:42
-msgid "Pause playback"
-msgstr ""
-
-#: ../src/keybind_list.py:43
-msgid "Stop playback"
-msgstr ""
-
-#: ../src/keybind_list.py:44
-msgid "Previous track"
-msgstr ""
-
-#: ../src/keybind_list.py:45
-msgid "Next track"
-msgstr ""
-
-#: ../src/keybind_list.py:46
-msgid "Eject"
-msgstr ""
-
-#: ../src/keybind_list.py:47
-msgid "Screenshots"
-msgstr ""
-
-#: ../src/keybind_list.py:48
-msgid "Take a screenshot"
-msgstr ""
-
-#: ../src/keybind_list.py:49
-msgid "Take a screenshot of a window"
-msgstr ""
-
-#: ../src/keybind_list.py:50
-msgid "Take a screenshot of an area"
-msgstr ""
-
-#: ../src/keybind_list.py:51
-msgid "Copy a screenshot to clipboard"
-msgstr ""
-
-#: ../src/keybind_list.py:52
-msgid "Copy a screenshot of a window to clipboard"
-msgstr ""
-
-#: ../src/keybind_list.py:53
-msgid "Copy a screenshot of an area to clipboard"
-msgstr ""
-
-#: ../src/keybind_list.py:54
-msgid "Universal Access"
-msgstr ""
-
-#: ../src/keybind_list.py:55
-msgid "Turn zoom on or off"
-msgstr ""
-
-#: ../src/keybind_list.py:56
-msgid "Zoom in"
-msgstr ""
-
-#: ../src/keybind_list.py:57
-msgid "Zoom out"
-msgstr ""
-
-#: ../src/keybind_list.py:58
-msgid "Turn screen reader on or off"
-msgstr ""
-
-#: ../src/keybind_list.py:59
-msgid "Turn on-screen keyboard on or off"
-msgstr ""
-
-#: ../src/keybind_list.py:60
-msgid "Increase text size"
-msgstr ""
-
-#: ../src/keybind_list.py:61
-msgid "Decrease text size"
-msgstr ""
-
-#: ../src/keybind_list.py:62
-msgid "High contrast on or off"
-msgstr ""
-
-#: ../src/keybind_list.py:66
-msgid "Navigation"
-msgstr ""
-
-#: ../src/keybind_list.py:67
-msgid "Move window to workspace 1"
-msgstr ""
-
-#: ../src/keybind_list.py:68
-msgid "Move window to workspace 2"
-msgstr ""
-
-#: ../src/keybind_list.py:69
-msgid "Move window to workspace 3"
-msgstr ""
-
-#: ../src/keybind_list.py:70
-msgid "Move window to workspace 4"
-msgstr ""
-
-#: ../src/keybind_list.py:71
-msgid "Move window to workspace 5"
-msgstr ""
-
-#: ../src/keybind_list.py:72
-msgid "Move window to workspace 6"
-msgstr ""
-
-#: ../src/keybind_list.py:73
-msgid "Move window to workspace 7"
-msgstr ""
-
-#: ../src/keybind_list.py:74
-msgid "Move window to workspace 8"
-msgstr ""
-
-#: ../src/keybind_list.py:75
-msgid "Move window to workspace 9"
-msgstr ""
-
-#: ../src/keybind_list.py:76
-msgid "Move window to workspace 10"
-msgstr ""
-
-#: ../src/keybind_list.py:77
-msgid "Move window to workspace 11"
-msgstr ""
-
-#: ../src/keybind_list.py:78
-msgid "Move window to workspace 12"
-msgstr ""
-
-#: ../src/keybind_list.py:79
-msgid "Move window one workspace to the left"
-msgstr ""
-
-#: ../src/keybind_list.py:80
-msgid "Move window one workspace to the right"
-msgstr ""
-
-#: ../src/keybind_list.py:81
-msgid "Move window one workspace up"
-msgstr ""
-
-#: ../src/keybind_list.py:82
-msgid "Move window one workspace down"
-msgstr ""
-
-#: ../src/keybind_list.py:86
-msgid "Switch applications"
-msgstr ""
-
-#: ../src/keybind_list.py:87
-msgid "Reverse switch applications"
-msgstr ""
-
-#: ../src/keybind_list.py:88
-msgid "Switch system controls"
-msgstr ""
-
-#: ../src/keybind_list.py:89
-msgid "Reverse switch system controls"
-msgstr ""
-
-#: ../src/keybind_list.py:90
-msgid "Switch windows of an app directly"
-msgstr ""
-
-#: ../src/keybind_list.py:91
-msgid "Reverse switch windows of an app directly"
-msgstr ""
-
-#: ../src/keybind_list.py:92
-msgid "Switch windows directly"
-msgstr ""
-
-#: ../src/keybind_list.py:93
-msgid "Reverse switch windows directly"
-msgstr ""
-
-#: ../src/keybind_list.py:94
-msgid "Switch system controls directly"
-msgstr ""
-
-#: ../src/keybind_list.py:95
-msgid "Reverse switch system controls directly"
-msgstr ""
-
-#: ../src/keybind_list.py:97
-msgid "Switch to workspace 1"
-msgstr ""
-
-#: ../src/keybind_list.py:98
-msgid "Switch to workspace 2"
-msgstr ""
-
-#: ../src/keybind_list.py:99
-msgid "Switch to workspace 3"
-msgstr ""
-
-#: ../src/keybind_list.py:100
-msgid "Switch to workspace 4"
-msgstr ""
-
-#: ../src/keybind_list.py:101
-msgid "Switch to workspace 5"
-msgstr ""
-
-#: ../src/keybind_list.py:102
-msgid "Switch to workspace 6"
-msgstr ""
-
-#: ../src/keybind_list.py:103
-msgid "Switch to workspace 7"
-msgstr ""
-
-#: ../src/keybind_list.py:104
-msgid "Switch to workspace 8"
-msgstr ""
-
-#: ../src/keybind_list.py:105
-msgid "Switch to workspace 9"
-msgstr ""
-
-#: ../src/keybind_list.py:106
-msgid "Switch to workspace 10"
-msgstr ""
-
-#: ../src/keybind_list.py:107
-msgid "Switch to workspace 11"
-msgstr ""
-
-#: ../src/keybind_list.py:108
-msgid "Switch to workspace 12"
-msgstr ""
-
-#: ../src/keybind_list.py:109
-msgid "Switch to workspace left"
-msgstr ""
-
-#: ../src/keybind_list.py:110
-msgid "Switch to workspace right"
-msgstr ""
-
-#: ../src/keybind_list.py:111
-msgid "Switch to workspace above"
-msgstr ""
-
-#: ../src/keybind_list.py:112
-msgid "Switch to workspace below"
-msgstr ""
-
-#: ../src/keybind_list.py:114
-msgid "Windows"
-msgstr ""
-
-#: ../src/keybind_list.py:115
-msgid "Show desktop"
-msgstr ""
-
-#: ../src/keybind_list.py:116
-msgid "Show the activities overview"
-msgstr ""
-
-#: ../src/keybind_list.py:117
-msgid "Show the run command prompt"
-msgstr ""
-
-#: ../src/keybind_list.py:118
-msgid "Activate the window menu"
-msgstr ""
-
-#: ../src/keybind_list.py:119
-msgid "Toggle fullscreen mode"
-msgstr ""
-
-#: ../src/keybind_list.py:120
-msgid "Toggle maximization state"
-msgstr ""
-
-#: ../src/keybind_list.py:121
-msgid "Toggle window always appearing on top"
-msgstr ""
-
-#: ../src/keybind_list.py:122
-msgid "Maximize window"
-msgstr ""
-
-#: ../src/keybind_list.py:123
-msgid "Restore window"
-msgstr ""
-
-#: ../src/keybind_list.py:124
-msgid "Toggle shaded state"
-msgstr ""
-
-#: ../src/keybind_list.py:125
-msgid "Minimize window"
-msgstr ""
-
-#: ../src/keybind_list.py:126
-msgid "Close window"
-msgstr ""
-
-#: ../src/keybind_list.py:127
-msgid "Move window"
-msgstr ""
-
-#: ../src/keybind_list.py:128
-msgid "Resize window"
-msgstr ""
-
-#: ../src/keybind_list.py:129
-msgid "Toggle window on all workspaces or one"
-msgstr ""
-
-#: ../src/keybind_list.py:130
-msgid "Raise window if covered, otherwise lower it"
-msgstr ""
-
-#: ../src/keybind_list.py:131
-msgid "Raise window above other windows"
-msgstr ""
-
-#: ../src/keybind_list.py:132
-msgid "Lower window below other windows"
-msgstr ""
-
-#: ../src/keybind_list.py:133
-msgid "Maximize window vertically"
-msgstr ""
-
-#: ../src/keybind_list.py:134
-msgid "Maximize window horizontally"
-msgstr ""
-
-#: ../src/keybind_list.py:136
-msgid "Move window to top left corner"
-msgstr ""
-
-#: ../src/keybind_list.py:137
-msgid "Move window to top right corner"
-msgstr ""
-
-#: ../src/keybind_list.py:138
-msgid "Move window to bottom left corner"
-msgstr ""
-
-#: ../src/keybind_list.py:139
-msgid "Move window to bottom right corner"
-msgstr ""
-
-#: ../src/keybind_list.py:140
-msgid "Move window to top edge of screen"
-msgstr ""
-
-#: ../src/keybind_list.py:141
-msgid "Move window to bottom edge of screen"
-msgstr ""
-
-#: ../src/keybind_list.py:142
-msgid "Move window to right side of screen"
-msgstr ""
-
-#: ../src/keybind_list.py:143
-msgid "Move window to left side of screen"
-msgstr ""
-
-#: ../src/keybind_list.py:144
-msgid "Move window to center of screen"
 msgstr ""
