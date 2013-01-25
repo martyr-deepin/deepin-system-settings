@@ -40,7 +40,7 @@ XKB_KEYBOARD_SETTINGS_CONF = "org.gnome.libgnomekbd.keyboard"
 # shortcuts setting
 WM_SHORTCUTS_SETTINGS_CONF = "org.gnome.desktop.wm.keybindings"
 SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.media-keys"
-DP_SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.keybindings"
+DP_SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.key-bindings"
 
 # typing setting
 KEYBOARD_SETTINGS = deepin_gsettings.new(KEYBOARD_SETTINGS_CONF)

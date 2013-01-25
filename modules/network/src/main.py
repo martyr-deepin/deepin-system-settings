@@ -678,7 +678,6 @@ class Mobile(gtk.VBox):
         self.add(mobile)
         self.settings = None
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
-        nm_module.mmclient.connect("device-removed", lambda w,p: mobile.set_active(False))
 
     def toggle_cb(self, widget):
         active = widget.get_active()
