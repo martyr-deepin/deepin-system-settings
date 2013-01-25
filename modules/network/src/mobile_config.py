@@ -54,27 +54,22 @@ class MobileSetting(gtk.Alignment):
 
         self.add(main_vbox)
 
-        self.region = None
-        self.ipv4 = None
-        self.broadband = None
-        self.ppp = None
-
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 415)
-        self.items = [(_("Broadband"), NoSetting()),
-                      (_("IPv4 Setting"), NoSetting()),
-                      (_("PPP"), NoSetting())]
+
+        self.setting_group = Settings(self.set_button)
+        self.items = self.setting_group.setting_list
         self.tab_window.add_items(self.items)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
         hbox.pack_start(self.tab_window ,True, True)
-        self.save_button = Button("save")
+        self.save_button = Button()
         self.save_button.connect("clicked", self.save_changes)
         self.foot_box.set_buttons([self.save_button])
-        self.foot_box.set_tip("Tip:sfdsfdsfadsf")
+        #self.foot_box.set_tip("Tip:sfdsfdsfadsf")
         
         self.show_all()
         style.draw_background_color(self)
@@ -124,42 +119,29 @@ class MobileSetting(gtk.Alignment):
             slider._slide_to_page("region", "right")
         else:
             self.connections = connections
-            self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in connections]
-            self.broadband_setting = [Broadband(con, self.set_button) for con in connections]
-            self.ppp_setting = [PPPConf(con, self.set_button) for con in connections]
 
-            self.sidebar.init(connections, self.ipv4_setting)
+            self.sidebar.init(connections, self.setting_group)
             index = self.sidebar.get_active()
-            #self.region = self.region_setting[index]
-            self.ipv4 = self.ipv4_setting[index]
-            self.broadband = self.broadband_setting[index]
-            self.ppp = self.ppp_setting[index]
-            #self.dsl = NoSetting()
-            #self.ppp = NoSetting()
+            self.set_tab_content(self.connections[index], init_connections)
 
-            self.init_tab_box()
-
-    def init_tab_box(self):
-        #self.tab_window.tab_items[0] = ("Region", self.region)
-        self.tab_window.tab_items[0] = (_("Broadband"),self.broadband)
-        self.tab_window.tab_items[1] = (_("IPv4 Setting"),self.ipv4)
-        self.tab_window.tab_items[2] = (_("PPP"), self.ppp)
-        tab_index = self.tab_window.tab_index
+    def set_tab_content(self, connection, init_connection=False):
+        self.tab_window.tab_items = self.setting_group.init_settings(connection)
+        if init_connection:
+            tab_index = 0
+        else:
+            tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
         self.queue_draw()
 
     def check_click(self, connection):
-        index = self.sidebar.get_active()
-        self.ipv4 = self.ipv4_setting[index]
-        self.broadband = self.broadband_setting[index]
-        self.ppp = self.ppp_setting[index]
-
-        self.init_tab_box()
+        self.set_tab_content(connection)
+        (label, state) = self.setting_group.get_button_state(connection)
+        self.set_button(label, state)
         
     def save_changes(self, widget):
-        connection = self.ipv4.connection
-        if widget.label is "save":
+        connection = self.setting_group.connection
+        if widget.label == _("save"):
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
                 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -181,7 +163,7 @@ class MobileSetting(gtk.Alignment):
 
         ##FIXME need to change device path into variables
     def apply_change(self):
-        connection = self.ipv4.connection
+        connection = self.setting_group.connection
         cdma_device = nm_module.mmclient.get_cdma_device()
         gsm_device = nm_module.mmclient.get_gsm_device()
         device = cdma_device + gsm_device
@@ -238,7 +220,7 @@ class SideBar(gtk.VBox):
         self.cons = []
         self.connection_tree = EntryTreeView(self.cons)
         for index, connection in enumerate(self.connections):
-            self.cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+            self.cons.append(SettingItem(connection, self.setting, self.check_click_cb, self.delete_item_cb))
         self.connection_tree.add_items(self.cons)
 
         self.connection_tree.show_all()
@@ -290,6 +272,42 @@ class NoSetting(gtk.VBox):
         label = Label("No active connection")
         label_align.add(label)
         self.add(label_align)
+
+class Settings(object):
+
+    def __init__(self, set_button_callback):
+        self.setting_list = [(_("Broadband"), NoSetting()),
+                             (_("IPv4 Setting"), NoSetting()),
+                             (_("PPP"), NoSetting())]
+        self.set_button_callback = set_button_callback
+        
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_broadband(self):
+        return self.settings[self.connection][0][1]
+    
+    def init_settings(self, connection):
+        self.connection = connection 
+        if connection not in self.settings:
+            setting_list = [(_("Broadband"), Broadband(connection, self.set_button)),
+                                 (_("IPv4 Setting"), IPV4Conf(connection, self.set_button)),
+                                 (_("PPP"), PPPConf(connection, self.set_button))]
+
+            self.settings[connection] = setting_list
+        return self.settings[connection]
+
+    def set_button(self, name, state):
+        self.set_button_callback(name, state)
+        self.setting_state[self.connection] = (name, state)
+
+    def clear(self):
+        print "clear settings"
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_button_state(self, connection):
+        return self.setting_state[self.connection]
 
 class Broadband(gtk.VBox):
     ENTRY_WIDTH = 222
