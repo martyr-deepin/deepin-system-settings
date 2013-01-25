@@ -98,8 +98,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         item.settings_key = "key1"
         item.settings_obj = gsettings
         item.settings_type = item.TYPE_DP_GSETTINGS
-        #item.settings_value_type = key1_name[0]
-        item.settings_value_type = "launcher"
+        item.settings_value_type = "/usr/bin/launcher"
         accel_entry_list.append(item)
     if "key2" in keys_list:
         key2_name = parse_dp_shortcut_string(gsettings.get_string("key2"))
@@ -109,7 +108,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         item.settings_obj = gsettings
         item.settings_type = item.TYPE_DP_GSETTINGS
         #item.settings_value_type = key2_name[0]
-        item.settings_value_type = "gnome-terminal"
+        item.settings_value_type = "/usr/bin/gnome-terminal"
         accel_entry_list.append(item)
     if "key3" in keys_list:
         key3_name = parse_dp_shortcut_string(gsettings.get_string("key3"))
@@ -118,7 +117,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         item.settings_key = "key3"
         item.settings_obj = gsettings
         item.settings_type = item.TYPE_DP_GSETTINGS
-        item.settings_value_type = "lock"
+        item.settings_value_type = "/usr/bin/lock"
         accel_entry_list.append(item)
 
 
