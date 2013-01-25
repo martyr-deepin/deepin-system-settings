@@ -74,7 +74,7 @@ class MobileSetting(gtk.Alignment):
         self.save_button = Button("save")
         self.save_button.connect("clicked", self.save_changes)
         self.foot_box.set_buttons([self.save_button])
-        self.foot_box.set_tip("Tip:sfdsfdsfadsf")
+        #self.foot_box.set_tip("Tip:sfdsfdsfadsf")
         
         self.show_all()
         style.draw_background_color(self)
