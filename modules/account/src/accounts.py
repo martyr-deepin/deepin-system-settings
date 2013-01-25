@@ -26,6 +26,7 @@ import gobject
 import commands
 import pexpect
 import time
+import os
 import dbus
 import getpass
 from consolekit import ck
@@ -199,7 +200,14 @@ class User(BusBase):
         return str(self.properties["HomeDirectory"])
     
     def get_icon_file(self):
-        return str(self.properties["IconFile"])
+        if self.properties["IconFile"] and os.path.exists(self.properties["IconFile"]):
+            return str(self.properties["IconFile"])
+        else:
+            bus = dbus.SystemBus()
+            dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+            dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
+
+            return dbus_interface.get_user_fake_icon(self.get_user_name())
 
     def get_language(self):
         return str(self.properties["Language"])
