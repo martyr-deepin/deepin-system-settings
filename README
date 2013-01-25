@@ -13,7 +13,6 @@ sudo python setup.py install
 
 cd modules/account/src/
 sudo install_backend.sh
-sudo cp -r faces /usr/share/pixmaps/
 
 python-pexpect
 sudo apt-get install python-pexpect
