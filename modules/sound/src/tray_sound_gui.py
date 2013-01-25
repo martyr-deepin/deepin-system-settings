@@ -121,6 +121,7 @@ class TrayGui(gtk.VBox):
         #button_hbox.pack_start(self.__make_align(height=-1))
         button_hbox.pack_start(self.button_more)
         self.pack_start((button_hbox), False, False)
+        self.pack_start(self.__make_align(height=15))
         ##########################################
         # if PulseAudio connect error, set the widget insensitive
         if settings.PA_CORE is None or not settings.PA_CARDS:

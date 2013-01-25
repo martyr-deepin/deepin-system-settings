@@ -74,6 +74,7 @@ class KeySetting(object):
         self.__shortcuts_entries = keybinds.get_shortcuts_wm_shortcut_entry(settings.WM_SHORTCUTS_SETTINGS)
         self.__shortcuts_entries.update(keybinds.get_shortcuts_media_shortcut_entry(settings.SHORTCUTS_SETTINGS))
         self.__shortcuts_entries[_('Custom Shortcuts')] = keybinds.get_shortcuts_custom_shortcut_entry(settings.GCONF_CLIENT)
+        keybinds.get_shortcuts_dp_shortcut_entry(settings.DP_SHORTCUTS_SETTINGS, self.__shortcuts_entries[_('System')])
         self.__shortcuts_entries_page_widgets = {}
         self.scale_set= {
             "delay"               : settings.keyboard_set_repeat_delay,
@@ -902,6 +903,8 @@ class KeySetting(object):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=10)
     
     def __make_accel_page(self):
+        max_label_width = 0
+        label_align_list = []
         for category in self.__shortcuts_entries:
             vbox = gtk.VBox(False)
             self.__shortcuts_entries_page_widgets[category] = ScrolledWindow()
@@ -912,12 +915,15 @@ class KeySetting(object):
                 hbox = gtk.HBox(False)
                 hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
                 description_label = Label(entry.settings_description, enable_select=False, enable_double_click=False)
+                max_label_width = max(max_label_width, description_label.get_size_request()[0])
                 label_align = self.__make_align(description_label)
-                label_align.set_size_request(290, CONTAINNER_HEIGHT)
+                label_align_list.append(label_align)
                 hbox.pack_start(label_align, False, False)
                 hbox.pack_start(self.__make_align(entry), False, False)
                 hbox.pack_start(self.__make_align())
                 vbox.pack_start(hbox, False, False)
+        for label_align in label_align_list:
+            label_align.set_size_request(max_label_width, CONTAINNER_HEIGHT)
 
     def get_accel_page(self):
         return self.__shortcuts_entries_page_widgets

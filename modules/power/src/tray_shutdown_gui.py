@@ -74,10 +74,11 @@ class Gui(gtk.VBox):
                 0)
         self.h_separator_top_ali.add(self.h_separator_top)
         #
-        self.stop_btn = SelectButton(_("shutdown"), font_size=10, ali_padding=100)
-        self.restart_btn = SelectButton(_("restart"), font_size=10, ali_padding=100)
-        self.suspend_btn = SelectButton(_("suspend"), font_size=10, ali_padding=100)
-        self.logout_btn = SelectButton(_("logout"), font_size=10, ali_padding=100)
+        ali_padding = 100  
+        self.stop_btn = SelectButton(_("shutdown"), font_size=10, ali_padding=ali_padding)
+        self.restart_btn = SelectButton(_("restart"), font_size=10, ali_padding=ali_padding)
+        self.suspend_btn = SelectButton(_("suspend"), font_size=10, ali_padding=ali_padding)
+        self.logout_btn = SelectButton(_("logout"), font_size=10, ali_padding=ali_padding)
         #
         self.stop_btn.set_size_request(WIDTH, 25)
         self.restart_btn.set_size_request(WIDTH, 25)
