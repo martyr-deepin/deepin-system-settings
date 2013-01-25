@@ -10,3 +10,6 @@ echo "Copy .conf file to /etc/dbus-1/system.d/"
 
 cp passwdservice.py /usr/lib/
 echo "cp passwdservice.py"
+
+cp ../faces/* /var/lib/AccountsService/icons/
+echo "cp random faces"
