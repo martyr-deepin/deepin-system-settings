@@ -156,6 +156,6 @@ def is_has_touchpad():
     devices = gdk.devices_list()
     for d in devices:
         name = d.get_name().lower()
-        if "touchpad" in name or "synaptics" in name:
+        if "touchpad" in name:
             return True
     return False
