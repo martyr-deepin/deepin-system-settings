@@ -94,8 +94,9 @@ class SessionView(gtk.VBox):
             session = current_item.item
             #self.tree.unselect_all()
             current_item.select()
-            #self.open_dialog = True
-            NewSessionDialog(session, confirm_callback= self.edit_done, cancel_callback = self.cancel_callback).show_all()
+            if self.open_dialog == False:
+                NewSessionDialog(session, confirm_callback= self.edit_done, cancel_callback = self.cancel_callback).show_all()
+                self.open_dialog = True
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()
@@ -107,8 +108,9 @@ class SessionView(gtk.VBox):
 
     def add_autostart(self, widget):
         self.new_session = sessions.add("","","")
-        NewSessionDialog(self.new_session, confirm_callback= self.confirm_callback, cancel_callback = self.cancel_callback).show_all()
-        #self.open_dialog = True
+        if self.open_dialog == False:
+            NewSessionDialog(self.new_session, confirm_callback= self.confirm_callback, cancel_callback = self.cancel_callback).show_all()
+            self.open_dialog = True
 
     def delete_autostart(self, widget):
         items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
@@ -136,11 +138,11 @@ class SessionView(gtk.VBox):
             self.tree.delete_all_items()
         self.tree.add_items([SessionItem(session)]) 
         self.new_session = None
-        #self.open_dialog = False
+        self.open_dialog = False
 
     def cancel_callback(self):
         self.new_session = None
-        #self.open_dialog = False
+        self.open_dialog = False
 
     def pack(self, parent, widget_list, expand=False, fill=False):
         for w in widget_list:

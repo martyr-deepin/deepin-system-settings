@@ -41,7 +41,7 @@ class NewSessionDialog(DialogBox):
         @param cancel_callback: Callback when user click cancel button, this callback not need argument.
         '''
         # Init.
-        DialogBox.__init__(self, "Add a autostart app", default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        DialogBox.__init__(self, _("Autostart app"), default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
         
@@ -55,6 +55,7 @@ class NewSessionDialog(DialogBox):
         
         self.confirm_button.connect("clicked", lambda w: self.click_confirm_button())
         self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
+        self.connect("destroy", self.close_callback)
         # get system pixbuf
         icon_theme = gtk.IconTheme()
         icon_theme.set_custom_theme("Deepin")
@@ -83,9 +84,9 @@ class NewSessionDialog(DialogBox):
     def add_new_box(self):
         table = gtk.Table()
         #hbox.set_size_request(-1, 30)
-        name_label = Label("Name:")
-        exec_label = Label("Exec:")
-        desc_label = Label("Description:")
+        name_label = Label(_("Name:"))
+        exec_label = Label(_("Exec:"))
+        desc_label = Label(_("Description:"))
         
         self.name_entry = InputEntry()
         self.exec_entry = InputEntry()
@@ -135,6 +136,10 @@ class NewSessionDialog(DialogBox):
 
     def ok_callback(self, file_name):
         self.exec_entry.set_text(file_name)
+
+    def close_callback(self, widget):
+        self.cancel_callback()
+        self.destroy()
 
         
     def focus_input(self, widget):

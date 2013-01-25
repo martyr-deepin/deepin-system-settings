@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-24 09:16+0800\n"
+"POT-Creation-Date: 2013-01-25 14:42+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../src/widget.py:44
+msgid "Autostart app"
+msgstr "启动项设置"
+
 #: ../src/widget.py:53
 msgid "OK"
 msgstr "确认"
@@ -23,6 +27,18 @@ msgstr "确认"
 #: ../src/widget.py:54
 msgid "Cancel"
 msgstr "取消"
+
+#: ../src/widget.py:87
+msgid "Name:"
+msgstr "名称:"
+
+#: ../src/widget.py:88
+msgid "Exec:"
+msgstr "命令:"
+
+#: ../src/widget.py:89
+msgid "Description:"
+msgstr "描述:"
 
 #: ../src/treeview.py:112
 msgid "No description"

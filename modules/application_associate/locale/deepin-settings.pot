@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-24 09:16+0800\n"
+"POT-Creation-Date: 2013-01-25 14:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,28 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../src/widget.py:44
+msgid "Autostart app"
+msgstr ""
+
 #: ../src/widget.py:53
 msgid "OK"
 msgstr ""
 
 #: ../src/widget.py:54
 msgid "Cancel"
+msgstr ""
+
+#: ../src/widget.py:87
+msgid "Name:"
+msgstr ""
+
+#: ../src/widget.py:88
+msgid "Exec:"
+msgstr ""
+
+#: ../src/widget.py:89
+msgid "Description:"
 msgstr ""
 
 #: ../src/treeview.py:112
