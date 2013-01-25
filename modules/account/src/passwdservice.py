@@ -174,7 +174,7 @@ class PasswdService(dbus.service.Object):
                 self.cf.set("UserImage", username, selected_image)
 
             self.cf.write(open(self.config_file, "w"))
-            return selected_image
+            return os.path.join(self.icon_dir, selected_image)
 
         else:
             print "invalid username %s"  % username
