@@ -80,7 +80,8 @@ class PasswdService(dbus.service.Object):
         try:
             sys_bus = dbus.SystemBus()
             account_obj = sys_bus.get_object("org.freedesktop.Accounts", "/org/freedesktop/Accounts")
-            for user_path in account_obj.ListCachedUsers():
+            account_interface = dbus.Interface(account_obj, "org.freedesktop.Accounts")
+            for user_path in account_interface.ListCachedUsers():
                 user_obj = sys_bus.get_object("org.freedesktop.Accounts", user_path)
                 user_interface = dbus.Interface(user_obj, "org.freedesktop.DBus.Properties")
                 name = user_interface.Get("org.freedesktop.Accounts.User", "UserName")
