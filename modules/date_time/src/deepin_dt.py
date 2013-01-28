@@ -76,7 +76,9 @@ class BusBase(gobject.GObject):
         self.object_interface = interface
         self.service = service
         self.bus = bus
+        self.init_dbus_service()
 
+    def init_dbus_service(self):
         try:
             self.dbus_proxy = self.bus.get_object(self.service, self.object_path)
             self.dbus_interface = dbus.Interface(self.dbus_proxy, self.object_interface)
@@ -100,15 +102,23 @@ class BusBase(gobject.GObject):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException:
-            print "call dbus method failed:%s\n" % method_name
-            traceback.print_exc()
+            self.init_dbus_service()
+            try:
+                return apply(getattr(self.dbus_interface, method_name), args, kwargs)
+            except dbus.exceptions.DBusException:
+                print "call dbus method failed:%s\n" % method_name
+                traceback.print_exc()
 
     def call_async(self, method_name, *args, **kwargs):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except dbus.exceptions.DBusException:
-            print "call dbus method failed:%s\n" % method_name
-            traceback.print_exc()
+            self.init_dbus_service()
+            try:
+                return apply(getattr(self.dbus_interface, method_name), args, kwargs)
+            except dbus.exceptions.DBusException:
+                print "call dbus method failed:%s\n" % method_name
+                traceback.print_exc()
 
 class DeepinDateTime(BusBase):
     
@@ -125,8 +135,10 @@ class DeepinDateTime(BusBase):
         return self.dbus_method("CanSetTimezone")
 
     def can_set_using_ntp(self):
-        print "can set using ntp"
-        return self.dbus_method("CanSetUsingNtp")
+        if self.dbus_method("CanSetUsingNtp") == 2:
+            return True
+        else:
+            return False
 
     def get_hardware_clock_using_utc(self):
         return self.dbus_method("GetHardwareClockUsingUtc")
@@ -138,7 +150,10 @@ class DeepinDateTime(BusBase):
         return deepin_tz.gmtoff()
 
     def get_using_ntp(self):
-        return self.dbus_method("GetUsingNtp")
+        if self.dbus_method("GetUsingNtp"):
+            return self.dbus_method("GetUsingNtp")[1]
+        else:
+            return False
 
     def set_date(self, day, month, year):
         return self.call_async("SetDate", day, month, year,
@@ -259,10 +274,12 @@ class DeepinDateTime(BusBase):
     def set_using_ntp(self, is_using_ntp):
         try:
             if self.can_set_using_ntp():
-                print "set using ntp"
-                return self.dbus_interface.SetUsingNtp(is_using_ntp, reply_handler = None, error_handler = None)
+                return self.call_async("SetUsingNtp", is_using_ntp, 
+                        reply_handler = self.set_using_ntp_reply, 
+                        error_handler = self.set_using_ntp_error)
+                        
         except:
-            print "set using ntp error"
+            print "set using ntp failed"
             traceback.print_exc()
 
     def set_using_ntp_reply(self):
@@ -278,5 +295,14 @@ if __name__ == "__main__":
 
     print deepin_dt.get_timezone(), deepin_dt.get_gmtoff()
     deepin_dt.set_timezone("Asia/Shanghai")
+
+    for i in range(1000):
+        #print deepin_dt.get_timezone(), deepin_dt.get_gmtoff()
+        #deepin_dt.set_timezone("Asia/Shanghai")
+        deepin_dt.set_using_ntp(True)
+        print "using", deepin_dt.get_using_ntp()
+        deepin_dt.set_using_ntp(False)
+        print "using", deepin_dt.get_using_ntp()
+    
 
     #gobject.MainLoop().run()
