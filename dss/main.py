@@ -109,8 +109,10 @@ class DBusService(dbus.service.Object):
         def unique(self, module_name):
             if application:
                 if module_name != "":
-                    action_bar.bread.remove_node_after_index(0)
-                    call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
+                    module_dbus_name = "com.deepin.%s_settings" % (module_name)                   
+                    if not is_dbus_name_exists(module_dbus_name):
+                        action_bar.bread.remove_node_after_index(0)
+                        call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
                 
                 application.raise_to_top()
         

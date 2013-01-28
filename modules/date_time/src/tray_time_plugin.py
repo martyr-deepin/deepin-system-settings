@@ -93,7 +93,7 @@ class TrayTimePlugin(object):
         select_align = self.__setup_align()
         select_button = SelectButton(_("Change DateTime settings"), 
                                      font_size = 10, 
-                                     ali_padding = 100)
+                                     ali_padding = 5)
         select_button.set_size_request(200, 25)
         select_align.add(select_button)
         select_button.connect("button-press-event", self.__on_day_selected)

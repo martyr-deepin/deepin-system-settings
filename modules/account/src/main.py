@@ -956,7 +956,7 @@ class AccountSetting(object):
     def account_user_set_random_icon(self, user_obj):
         if self.get_authorized():
             try:
-                face_dir = '/usr/share/pixmaps/faces'
+                face_dir = '/var/lib/AccountsService/icons'
                 if not os.path.exists(face_dir):
                     return False
                 pic_list = os.listdir(face_dir)
