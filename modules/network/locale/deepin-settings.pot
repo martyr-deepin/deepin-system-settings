@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-25 15:42+0800\n"
+"POT-Creation-Date: 2013-01-28 10:33+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,7 +146,7 @@ msgid "connect"
 msgstr ""
 
 #: ../src/wlan_config.py:242 ../src/vpn_config.py:242 ../src/dsl_config.py:212
-#: ../src/lan_config.py:224 ../src/mobile_config.py:220
+#: ../src/lan_config.py:225 ../src/mobile_config.py:220
 msgid "New Connection"
 msgstr ""
 
@@ -222,15 +222,15 @@ msgstr ""
 msgid "BSSID:"
 msgstr ""
 
-#: ../src/wlan_config.py:629 ../src/dsl_config.py:305 ../src/lan_config.py:324
+#: ../src/wlan_config.py:629 ../src/dsl_config.py:305 ../src/lan_config.py:325
 msgid "Device Mac Address:"
 msgstr ""
 
-#: ../src/wlan_config.py:633 ../src/dsl_config.py:312 ../src/lan_config.py:333
+#: ../src/wlan_config.py:633 ../src/dsl_config.py:312 ../src/lan_config.py:334
 msgid "Cloned Mac Address:"
 msgstr ""
 
-#: ../src/wlan_config.py:638 ../src/lan_config.py:341
+#: ../src/wlan_config.py:638 ../src/lan_config.py:342
 msgid "MTU:"
 msgstr ""
 
@@ -433,6 +433,10 @@ msgstr ""
 
 #: ../src/settings_widget.py:619
 msgid "ssid:"
+msgstr ""
+
+#: ../src/settings_widget.py:627
+msgid "Active"
 msgstr ""
 
 #: ../src/regions.py:67
