@@ -58,9 +58,7 @@ class MobileSetting(gtk.Alignment):
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 415)
 
-        self.setting_group = Settings(self.set_button)
-        self.items = self.setting_group.setting_list
-        self.tab_window.add_items(self.items)
+        self.setting_group = Settings([Broadband, IPV4Conf, PPPConf], self.set_button)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
         # Build ui
@@ -125,7 +123,10 @@ class MobileSetting(gtk.Alignment):
             self.set_tab_content(self.connections[index], init_connections)
 
     def set_tab_content(self, connection, init_connection=False):
-        self.tab_window.tab_items = self.setting_group.init_settings(connection)
+        if self.tab_window.tab_items ==  []:
+            self.tab_window.add_items(self.setting_group.init_settings(connection))
+        else:
+            self.tab_window.tab_items = self.setting_group.init_settings(connection)
         if init_connection:
             tab_index = 0
         else:
@@ -274,11 +275,10 @@ class NoSetting(gtk.VBox):
 
 class Settings(object):
 
-    def __init__(self, set_button_callback):
-        self.setting_list = [(_("Broadband"), NoSetting()),
-                             (_("IPv4 Setting"), NoSetting()),
-                             (_("PPP"), NoSetting())]
+    def __init__(self, setting_list, set_button_callback):
         self.set_button_callback = set_button_callback
+
+        self.setting_list = setting_list
         
         self.setting_state = {}
         self.settings = {}
@@ -289,9 +289,10 @@ class Settings(object):
     def init_settings(self, connection):
         self.connection = connection 
         if connection not in self.settings:
-            setting_list = [(_("Broadband"), Broadband(connection, self.set_button)),
-                                 (_("IPv4 Setting"), IPV4Conf(connection, self.set_button)),
-                                 (_("PPP"), PPPConf(connection, self.set_button))]
+            setting_list = []
+            for setting in self.setting_list:
+                s = setting(connection, self.set_button)
+                setting_list.append((s.tab_name, s))
 
             self.settings[connection] = setting_list
         return self.settings[connection]
@@ -312,6 +313,7 @@ class Broadband(gtk.VBox):
     ENTRY_WIDTH = 222
     def __init__(self, connection, set_button_callback):
         gtk.VBox.__init__(self)
+        self.tab_name = _("Broadband")
         self.connection = connection        
         self.set_button = set_button_callback
         # Init widgets
@@ -753,7 +755,7 @@ class PPPConf(ScrolledWindow):
     TABLE_WIDTH = 300
     def __init__(self, connection, set_button_callback):
         ScrolledWindow.__init__(self)
-
+        self.tab_name = _("PPP")
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
         self.connection = connection

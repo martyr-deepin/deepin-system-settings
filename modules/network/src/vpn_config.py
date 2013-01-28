@@ -58,9 +58,10 @@ class VPNSetting(gtk.Alignment):
         self.tab_window = TabBox()
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 415)
-        self.items = [(_("PPTP"), NoSetting()),
-                      (_("IPv4 Setting"), NoSetting())]
-        self.tab_window.add_items(self.items)
+        self.setting_group = Settings([PPTPConf,
+                                       IPV4Conf],
+                                       self.module_frame,
+                                       self.set_button)
         self.sidebar = SideBar( None, self.init, self.check_click)
 
         # Build ui
@@ -118,32 +119,28 @@ class VPNSetting(gtk.Alignment):
             connections.append(connect)
             self.sidebar.new_connection_list = [connect]
 
-        self.ipv4_setting = [IPV4Conf(con, self.set_button, dns_only=True) for con in connections]
-        self.pptp_setting = [PPTPConf(con, self.module_frame, self.set_button) for con in connections]
 
-        self.sidebar.init(connections, self.ipv4_setting)
+        self.sidebar.init(connections, self.setting_group)
         index = self.sidebar.get_active()
-        self.ipv4 = self.ipv4_setting[index]
-        self.pptp = self.pptp_setting[index]
-        #self.dsl = NoSetting()
-        #self.ppp = NoSetting()
+        self.set_tab_content(connections[index], init_connections)
 
-        self.init_tab_box()
-
-    def init_tab_box(self):
-        self.tab_window.tab_items[1] = (_("IPv4 Setting"),self.ipv4)
-        self.tab_window.tab_items[0] = (_("PPTP"), self.pptp)
-        tab_index = self.tab_window.tab_index
+    def set_tab_content(self, connection, init_connection=False):
+        if self.tab_window.tab_items ==  []:
+            self.tab_window.add_items(self.setting_group.init_settings(connection))
+        else:
+            self.tab_window.tab_items = self.setting_group.init_settings(connection)
+        if init_connection:
+            tab_index = 0
+        else:
+            tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
         self.queue_draw()
 
     def check_click(self, connection):
-        index = self.sidebar.get_active()
-        self.ipv4 = self.ipv4_setting[index]
-        self.pptp = self.pptp_setting[index]
-
-        self.init_tab_box()
+        self.set_tab_content(connection)
+        (label, state) = self.setting_group.get_button_state(connection)
+        self.set_button(label, state)
 
     def set_button(self, name, state):
         if name == "save":
@@ -156,7 +153,7 @@ class VPNSetting(gtk.Alignment):
     def save_changes(self, widget):
         print "saving"
         if widget.label == _("save"):
-            connection = self.ipv4.connection
+            connection = self.setting_group.connection
             if isinstance(connection, NMRemoteConnection):
                 connection.update()
             else:
@@ -169,7 +166,7 @@ class VPNSetting(gtk.Alignment):
             self.apply_changes()
 
     def apply_changes(self):
-        connection = self.ipv4.connection
+        connection = self.setting_group.connection
         # FIXME Now just support one device
 
         #active_connections = nm_module.nmclient.get_active_connections()
@@ -208,7 +205,7 @@ class VPNSetting(gtk.Alignment):
             if active_object != None:
                 print "in wired device"
                 active_vpn = cache.get_spec_object(active_object.object_path)
-                self.state_change_cb(active_vpn, self.ipv4.connection.get_setting("connection").id)
+                self.state_change_cb(active_vpn, connection.get_setting("connection").id)
             else:
                 raise Exception
         else:
@@ -225,7 +222,7 @@ class VPNSetting(gtk.Alignment):
             if active_object != None:
                 print "in wireless device"
                 active_vpn = cache.get_spec_object(active_object.object_path)
-                self.state_change_cb(active_vpn, self.ipv4.connection.get_setting("connection").id)
+                self.state_change_cb(active_vpn, connection.get_setting("connection").id)
 
 
 class SideBar(gtk.VBox):
@@ -263,7 +260,7 @@ class SideBar(gtk.VBox):
         cons = []
         self.connection_tree = EntryTreeView(cons)
         for index, connection in enumerate(self.connections):
-            cons.append(SettingItem(connection, self.setting[index], self.check_click_cb, self.delete_item_cb))
+            cons.append(SettingItem(connection, self.check_click_cb, self.delete_item_cb))
         self.connection_tree.add_items(cons)
 
         self.connection_tree.show_all()
@@ -324,11 +321,51 @@ class NoSetting(gtk.VBox):
         label_align.add(label)
         self.add(label_align)
 
+class Settings(object):
+
+    def __init__(self, setting_list, module_frame, set_button_callback):
+        self.set_button_callback = set_button_callback
+        self.module_frame = module_frame
+        self.setting_list = setting_list
+        
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_broadband(self):
+        return self.settings[self.connection][0][1]
+    
+    def init_settings(self, connection):
+        self.connection = connection 
+        if connection not in self.settings:
+            setting_list = []
+            for setting in self.setting_list:
+                if setting is PPTPConf:
+                    s = setting(connection, self.module_frame, self.set_button)
+                else:
+                    s = setting(connection, self.set_button)
+                setting_list.append((s.tab_name, s))
+
+            self.settings[connection] = setting_list
+        return self.settings[connection]
+
+    def set_button(self, name, state):
+        self.set_button_callback(name, state)
+        self.setting_state[self.connection] = (name, state)
+
+    def clear(self):
+        print "clear settings"
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_button_state(self, connection):
+        return self.setting_state[self.connection]
+
 class PPTPConf(gtk.VBox):
     ENTRY_WIDTH = 222
     def __init__(self, connection, module_frame, set_button_callback=None):
         gtk.VBox.__init__(self)
         self.connection = connection
+        self.tab_name = _("PPTP")
         self.module_frame = module_frame
         self.set_button = set_button_callback
         self.vpn_setting = self.connection.get_setting("vpn")
@@ -479,7 +516,7 @@ class PPTPConf(gtk.VBox):
     def advanced_button_click(self, widget):
         ppp = PPPConf(self.module_frame, self.set_button)
         ppp.refresh(self.connection)
-        self.module_frame.send_submodule_crumb(3, _("高级设置"))
+        self.module_frame.send_submodule_crumb(3, _("Advanced"))
         nm_module.slider.slide_to_page(ppp, "right")
         #pass
 

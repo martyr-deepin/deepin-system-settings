@@ -200,12 +200,12 @@ class WirelessDevice(object):
 
     def try_to_connect(self, widget, ssid):
         print "try_to_connect"
+        #self.ap_list = self.refresh_list()
         ap_list  = [ap.get_ssid() for ap in self.ap_list]
         #if self.device_wifi not in ap_list:
             #self.refresh_list()
         #else:
             #self.tree.visible_items[index].set_net_state(1)
-
         try:
             index = ap_list.index(ssid)
             self.tree.visible_items[index].set_net_state(1)
@@ -291,7 +291,9 @@ class WirelessSection(gtk.VBox):
             self.wireless.set_active(False)
         
     def ap_added(self):
-        self.show_ap_list()
+        self.tree.set_items(self.retrieve_list())
+        self.show_all()
+        return self.ap_list
     
     def add_setting_page(self, page):
         self.settings = page
@@ -316,7 +318,7 @@ class WirelessSection(gtk.VBox):
         self.show_all()
 
         for wireless_device in self.wireless_devices:
-            WirelessDevice(wireless_device, self.tree, self.ap_list,self.show_ap_list, self.hotspot)
+            WirelessDevice(wireless_device, self.tree, self.ap_list,self.ap_added, self.hotspot)
 
         index = self.get_actives(self.ap_list)
         if index:

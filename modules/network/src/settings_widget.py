@@ -416,11 +416,10 @@ class AddSettingItem(TreeItem):
 class SettingItem(TreeItem):
     CHECK_LEFT_PADDING = FRAME_LEFT_PADDING
     CHECK_RIGHT_PADIING = 10
-    def __init__(self, connection, setting, click_cb, delete_cb, set_button_cb=None):
+    def __init__(self, connection, click_cb, delete_cb, set_button_cb=None):
         TreeItem.__init__(self)
         #self.title = title
         self.connection = connection
-        self.setting = setting
         self.click = click_cb
         self.delete_connection = delete_cb
         self.set_button = set_button_cb
