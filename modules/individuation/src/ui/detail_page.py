@@ -37,7 +37,7 @@ from ui.utils import get_toggle_group, get_combo_group
 from constant import STATUS_HEIGHT
 
 TIME_COMBO_ITEM =  [
-    ("10秒", 10), ("30秒", 30), 
+    # ("10秒", 10), ("30秒", 30), 
     ("1分钟", 60), ("3分钟", 180),
     ("5分钟", 300), ("10分钟", 600), 
     ("15分钟", 900),("20分钟", 1200), 
