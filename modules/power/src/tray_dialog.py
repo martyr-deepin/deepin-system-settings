@@ -51,19 +51,41 @@ class TrayDialog(Window):
         self.ok_text = ok_text
         # init time.
         self.timer = Timer(1000)
+        self.second = 60
         self.timer.Enabled = True
         self.timer.connect("Tick", self.timer_tick_evnet)
-        self.second = 60
         #
         self.run_exec = None
         #
         self.__init_widgets()
         self.__init_settings()
-
+        
     def show_dialog_window(self, widget):
         for alpha in range(0, 11):
             self.set_opacity(alpha * 0.1)
-
+        
+    def show_dialog(self,
+                    show_pixbuf_name="deepin_shutdown",
+                    show_top_text="现在关闭此系统吗？",
+                    show_bottom_text="系统即将在%s秒后自动关闭。",
+                    cancel_text="取消",
+                    ok_text="确认"):
+        self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
+        self.show_top_text = show_top_text
+        self.show_bottom_text = show_bottom_text
+        self.cancel_text = cancel_text
+        self.ok_text = ok_text
+        self.second = 60
+        #
+        self.top_text_btn.set_label(self.show_top_text)
+        self.bottom_text_btn.set_label(self.show_bottom_text)
+        if self.show_pixbuf:
+            self.show_image.set_from_pixbuf(self.show_pixbuf)
+        self.bottom_text_btn.set_label(self.show_bottom_text % (self.second))	
+        self.bottom_text_btn.queue_draw()
+        self.timer.Enabled = True
+        self.show_all()
+            
     def __init_settings(self):
         self.set_bg_pixbuf(vtk_theme.get_pixbuf("deepin_on_off_bg", 372))
         self.set_size_request(APP_WIDTH, APP_HEIGHT)
@@ -72,7 +94,6 @@ class TrayDialog(Window):
         self.set_skip_taskbar_hint(True)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.connect("show", self.show_dialog_window)
-        self.show_all()
 
     def __init_widgets(self):
         self.main_vbox = gtk.VBox()
@@ -150,10 +171,10 @@ class TrayDialog(Window):
         self.bottom_text_btn.set_label(self.show_bottom_text % (self.second))
         self.bottom_text_btn.queue_draw()
         if self.second == 0:
-            if self.run_exec:
-                self.run_exec()
             timer.Enabled = False
             self.quit_dialog_window(self)
+            if self.run_exec:
+                gtk.timeout_add(1, self.run_exec_timeout)
         self.second -= 1
 
     def top_text_btn_expose_event(self, widget, event, font_color):
@@ -184,9 +205,12 @@ class TrayDialog(Window):
         self.ok_btn.connect("expose-event", self.label_expose_event)
 
     def ok_btn_clicked(self, widget):
+        self.quit_dialog_window(widget)
         if self.run_exec:
-            self.run_exec()
-            self.quit_dialog_window(self)
+            gtk.timeout_add(1, self.run_exec_timeout)
+
+    def run_exec_timeout(self):
+        self.run_exec()
 
     def label_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -209,9 +233,9 @@ class TrayDialog(Window):
     def quit_dialog_window(self, widget):
         for alpha in range(10, -1, -1):
             self.set_opacity(alpha * 0.1)
-        gtk.main_quit()
-
-
+        self.hide_all()
+        self.timer.Enabled = False
+        
 
 '''
 #@ show_pixbuf_name="deepin_restart"

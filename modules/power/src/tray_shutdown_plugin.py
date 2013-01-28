@@ -22,27 +22,40 @@
 
 
 from tray_shutdown_gui import Gui
+from tray_dialog import TrayDialog
 import gtk
+
 
 class TrayShutdownPlugin(object):
     def __init__(self):
         self.gui = Gui()
+        self.dialog = TrayDialog()
         self.gui.stop_btn.connect("clicked", self.stop_btn_clicked)
         self.gui.restart_btn.connect("clicked", self.restart_btn_clicked)
         self.gui.suspend_btn.connect("clicked", self.suspend_btn_clicked)
         self.gui.logout_btn.connect("clicked", self.logout_btn_clicked)
 
     def stop_btn_clicked(self, widget):
+        self.dialog.show_dialog("deepin_shutdown")
+        self.dialog.run_exec = self.gui.cmd_dbus.new_stop
         self.this.hide_menu()
-        self.gui.cmd_dbus.stop()
+        #self.gui.cmd_dbus.stop()
 
     def restart_btn_clicked(self, widget):
+        self.dialog.show_dialog("deepin_restart",
+                                "现在重启此系统吗？",
+                                "系统即将在%s秒后自动重启。")
+        self.dialog.run_exec = self.gui.cmd_dbus.new_restart
         self.this.hide_menu()
-        self.gui.cmd_dbus.stop()
+        #self.gui.cmd_dbus.stop()
 
-    def suspend_btn_clicked(self, widget):
+    def suspend_btn_clicked(self, widget): 
+        self.dialog.show_dialog("deepin_suspend",
+                                "现在挂起此系统吗？",
+                                "系统即将在%s秒后自动挂起。")
+        self.dialog.run_exec = self.gui.cmd_dbus.suspend
         self.this.hide_menu()
-        self.gui.cmd_dbus.suspend()
+        #self.gui.cmd_dbus.suspend()
 
     def logout_btn_clicked(self, widget):
         self.this.hide_menu()
