@@ -188,12 +188,13 @@ class WiredSetting(gtk.Alignment):
             self.apply_changes()
 
     def apply_changes(self):
-        connection = self.setting_group.connection
-        nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           wired_device.object_path,
-                                           "/")
-        self.device_ethernet = cache.get_spec_object(wired_device.object_path)
-        self.device_ethernet.emit("try-activate-begin")
+        if wired_device.get_state() != 20:
+            connection = self.ipv4.connection
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                               wired_device.object_path,
+                                               "/")
+            self.device_ethernet = cache.get_spec_object(wired_device.object_path)
+            self.device_ethernet.emit("try-activate-begin")
         self.change_crumb()
         self.slide_back()
         

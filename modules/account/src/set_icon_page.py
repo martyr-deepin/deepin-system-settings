@@ -130,7 +130,8 @@ class IconSetPage(gtk.VBox):
         main_vbox.pack_start(tools.make_align(self.error_label), False, False)
 
         # public picture list
-        face_dir = '/usr/share/pixmaps/faces'
+        #face_dir = '/usr/share/pixmaps/faces'
+        face_dir = '/var/lib/AccountsService/icons'
         if os.path.exists(face_dir):
             pic_list = os.listdir(face_dir)
         else:
