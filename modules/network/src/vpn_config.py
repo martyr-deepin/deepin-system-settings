@@ -349,6 +349,7 @@ class Settings(object):
         return self.settings[connection]
 
     def set_button(self, name, state):
+        print name, state
         self.set_button_callback(name, state)
         self.setting_state[self.connection] = (name, state)
 
@@ -442,6 +443,11 @@ class PPTPConf(gtk.VBox):
         self.user_entry.entry.connect("changed", self.entry_changed, "user")
         self.password_entry.entry.connect("changed", self.entry_changed, "password")
         self.nt_domain_entry.entry.connect("changed", self.entry_changed, "domain")
+
+        if self.connection.check_setting_finish():
+            self.set_button("save", True)
+        else:
+            self.set_button("save", False)
 
     def refresh(self):
         #print ">>>",self.vpn_setting.data

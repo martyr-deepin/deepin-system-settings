@@ -141,6 +141,7 @@ class MobileSetting(gtk.Alignment):
         self.set_button(label, state)
         
     def save_changes(self, widget):
+        connection = self.setting_group.connection
         if widget.label == _("save"):
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
@@ -220,7 +221,7 @@ class SideBar(gtk.VBox):
         self.cons = []
         self.connection_tree = EntryTreeView(self.cons)
         for index, connection in enumerate(self.connections):
-            self.cons.append(SettingItem(connection, self.setting, self.check_click_cb, self.delete_item_cb))
+            self.cons.append(SettingItem(connection, self.check_click_cb, self.delete_item_cb))
         self.connection_tree.add_items(self.cons)
 
         self.connection_tree.show_all()
