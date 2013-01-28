@@ -77,14 +77,14 @@ class WiredDevice(object):
     def device_activate(self, widget ,reason):
         print "wired is active"
         if self.tree.visible_items != []:
-            self.tree.visible_items[self.index].network_state = 2
+            self.tree.visible_items[self.index].set_net_state(2)
             self.tree.queue_draw()
 
     def device_deactive(self, widget, reason):
         print "wired is deactive"
         if not reason == 0:
             if self.tree.visible_items != []:
-                self.tree.visible_items[self.index].network_state = 0
+                self.tree.visible_items[self.index].set_net_state(0)
                 self.tree.queue_draw()
 
     def try_activate_begin(self, widget):
@@ -200,7 +200,12 @@ class WirelessDevice(object):
 
     def try_to_connect(self, widget, ssid):
         print "try_to_connect"
+        #self.ap_list = self.refresh_list()
         ap_list  = [ap.get_ssid() for ap in self.ap_list]
+        #if self.device_wifi not in ap_list:
+            #self.refresh_list()
+        #else:
+            #self.tree.visible_items[index].set_net_state(1)
         try:
             index = ap_list.index(ssid)
             self.tree.visible_items[index].set_net_state(1)
@@ -286,7 +291,9 @@ class WirelessSection(gtk.VBox):
             self.wireless.set_active(False)
         
     def ap_added(self):
-        self.show_ap_list()
+        self.tree.set_items(self.retrieve_list())
+        self.show_all()
+        return self.ap_list
     
     def add_setting_page(self, page):
         self.settings = page
@@ -311,7 +318,7 @@ class WirelessSection(gtk.VBox):
         self.show_all()
 
         for wireless_device in self.wireless_devices:
-            WirelessDevice(wireless_device, self.tree, self.ap_list,self.show_ap_list, self.hotspot)
+            WirelessDevice(wireless_device, self.tree, self.ap_list,self.ap_added, self.hotspot)
 
         index = self.get_actives(self.ap_list)
         if index:
@@ -361,12 +368,12 @@ class WirelessSection(gtk.VBox):
                               lambda : slider.slide_to_page(self.settings, "right"),
                               self.send_to_crumb_cb) for i in self.ap_list]
         # Comment for modify
-        #items.append(GeneralItem(_("connect to hidden network"),
-                                 #self.ap_list,
-                                 #self.settings,
-                                 #lambda :slider.slide_to_page(self.settings, "right"),
-                                 #self.send_to_crumb_cb,
-                                 #check_state=0))
+        items.append(GeneralItem(_("connect to hidden network"),
+                                 self.ap_list,
+                                 self.settings,
+                                 lambda :slider.slide_to_page(self.settings, "right"),
+                                 self.send_to_crumb_cb,
+                                 check_state=0))
         return items
 
     def get_hiden_list(self):
@@ -673,7 +680,6 @@ class Mobile(gtk.VBox):
         self.add(mobile)
         self.settings = None
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
-        nm_module.nmclient.connect("device-removed", lambda w,p: mobile.set_active(False))
 
     def toggle_cb(self, widget):
         active = widget.get_active()

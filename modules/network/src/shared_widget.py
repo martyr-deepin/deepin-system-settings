@@ -25,6 +25,7 @@ class IPV4Conf(gtk.VBox):
     def __init__(self, connection=None, set_button_callback=None, dns_only=False):
         
         gtk.VBox.__init__(self)
+        self.tab_name = _("IPv4 Setting")
         self.connection = connection 
         self.set_button = set_button_callback
         self.dns_only = dns_only
@@ -296,6 +297,7 @@ class IPV6Conf(gtk.VBox):
         
         gtk.VBox.__init__(self)
         self.connection = connection 
+        self.tab_name = _("IPv6 Settings")
         self.set_button = set_button_callback
         self.table = gtk.Table(9, 2, False)
         # Ip configuration

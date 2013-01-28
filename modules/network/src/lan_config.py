@@ -70,18 +70,14 @@ class WiredSetting(gtk.Alignment):
 
         self.add(main_vbox)
 
-        self.wired = None
-        self.ipv4 = None
-        self.ipv6 = None
-
         self.tab_window = TabBox(dockfill = False)
         self.tab_window.draw_title_background = self.draw_tab_title_background
         self.tab_window.set_size_request(674, 415)
-        self.items = [(_("Wired"), NoSetting()),
-                      (_("IPv4 Settings"), NoSetting()),
-                      (_("IPv6 Settings"), NoSetting())]
-        self.tab_window.add_items(self.items)
-        #self.tab_window.connect("expose-event", self.expose_outline)
+        self.setting_group = Settings([Wired,
+                                       IPV4Conf,
+                                       IPV6Conf],
+                                       self.set_button)
+
         self.sidebar = SideBar( None, self.init, self.check_click, self.set_button)
         # Build ui
         hbox.pack_start(self.sidebar, False , False)
@@ -138,35 +134,27 @@ class WiredSetting(gtk.Alignment):
             self.connections = [nm_module.nm_remote_settings.new_wired_connection()]
             self.sidebar.new_connection_list = [self.connections[0]]
 
-            
-        self.wired_setting = [Wired(con, self.set_button) for con in self.connections]
-        self.ipv4_setting = [IPV4Conf(con, self.set_button) for con in self.connections]
-        self.ipv6_setting = [IPV6Conf(con, self.set_button) for con in self.connections]
-
-        self.sidebar.init(self.connections, self.ipv4_setting)
+        self.sidebar.init(self.connections, self.setting_group)
         index = self.sidebar.get_active()
-        self.wired = self.wired_setting[index]
-        self.ipv4 = self.ipv4_setting[index]
-        self.ipv6 = self.ipv6_setting[index]
+        self.set_tab_content(self.connections[index], init_connection)
 
-        self.init_tab_box()
-
-    def init_tab_box(self):
-        self.tab_window.tab_items[0] = (_("Wired"), self.wired)
-        self.tab_window.tab_items[1] = (_("IPV4 Settings") ,self.ipv4)
-        self.tab_window.tab_items[2] = (_("IPV6 Settings"),self.ipv6)
-        tab_index = self.tab_window.tab_index
+    def set_tab_content(self, connection, init_connection=False):
+        if self.tab_window.tab_items ==  []:
+            self.tab_window.add_items(self.setting_group.init_settings(connection))
+        else:
+            self.tab_window.tab_items = self.setting_group.init_settings(connection)
+        if init_connection:
+            tab_index = 0
+        else:
+            tab_index = self.tab_window.tab_index
         self.tab_window.tab_index = -1
         self.tab_window.switch_content(tab_index)
         self.queue_draw()
 
     def check_click(self, connection):
-        index = self.sidebar.get_active()
-        self.wired = self.wired_setting[index]
-        self.ipv4 = self.ipv4_setting[index]
-        self.ipv6 = self.ipv6_setting[index]
-
-        self.init_tab_box()
+        self.set_tab_content(connection)
+        (label, state) = self.setting_group.get_button_state(connection)
+        self.set_button(label, state)
 
     def set_button(self, name, state):
         if name == "save":
@@ -177,7 +165,7 @@ class WiredSetting(gtk.Alignment):
             self.save_button.set_sensitive(state)
 
     def save_changes(self, widget):
-        connection = self.ipv4.connection
+        connection = self.setting_group.connection
         if widget.label == _("save"):
             if connection.check_setting_finish():
                 this_index = self.connections.index(connection)
@@ -246,7 +234,6 @@ class SideBar(gtk.VBox):
         self.connection_tree = EntryTreeView(cons)
         for index, connection in enumerate(self.connections):
             cons.append(SettingItem(connection,
-                                    self.setting[index],
                                     self.check_click_cb, 
                                     self.delete_item_cb,
                                     self.set_button))
@@ -310,12 +297,48 @@ class NoSetting(gtk.VBox):
         label_align.add(label)
         self.add(label_align)
 
+class Settings(object):
+
+    def __init__(self, setting_list, set_button_callback):
+        self.set_button_callback = set_button_callback
+
+        self.setting_list = setting_list
+        
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_broadband(self):
+        return self.settings[self.connection][0][1]
+    
+    def init_settings(self, connection):
+        self.connection = connection 
+        if connection not in self.settings:
+            setting_list = []
+            for setting in self.setting_list:
+                s = setting(connection, self.set_button)
+                setting_list.append((s.tab_name, s))
+
+            self.settings[connection] = setting_list
+        return self.settings[connection]
+
+    def set_button(self, name, state):
+        self.set_button_callback(name, state)
+        self.setting_state[self.connection] = (name, state)
+
+    def clear(self):
+        print "clear settings"
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_button_state(self, connection):
+        return self.setting_state[self.connection]
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
 
     def __init__(self, connection, set_button_callback=None):
         gtk.VBox.__init__(self)
+        self.tab_name = _("Wired")
         
         self.ethernet = connection.get_setting("802-3-ethernet")
         self.connection = connection
