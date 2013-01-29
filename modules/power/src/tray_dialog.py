@@ -66,6 +66,7 @@ class TrayDialog(Window):
         self.timer.connect("Tick", self.timer_tick_evnet)
         #
         self.run_exec = None
+        self.argv = None
         #
         self.__init_widgets()
         self.__init_settings()
@@ -86,6 +87,8 @@ class TrayDialog(Window):
         self.cancel_text = cancel_text
         self.ok_text = ok_text
         self.second = 60
+        self.argv = None
+        self.run_exec = None
         #
         self.top_text_btn.set_label(self.show_top_text)
         self.bottom_text_btn.set_label(self.show_bottom_text)
@@ -227,7 +230,10 @@ class TrayDialog(Window):
             gtk.timeout_add(1, self.run_exec_timeout)
 
     def run_exec_timeout(self):
-        self.run_exec()
+        if not self.argv:
+            self.run_exec()
+        else:
+            self.run_exec(self.argv)
 
     def label_expose_event(self, widget, event, width):
         cr = widget.window.cairo_create()
