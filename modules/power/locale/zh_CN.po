@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-30 01:16+0800\n"
+"POT-Creation-Date: 2013-01-30 01:20+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -78,6 +78,7 @@ msgid "Restart your computer now?"
 msgstr "现在重启此系统吗？"
 
 #: ../src/tray_shutdown_plugin.py:38
+#, python-format
 msgid ""
 "The system will restart in \n"
 "%s secs."
@@ -88,6 +89,7 @@ msgid "Suspend your computer now?"
 msgstr "现在挂起此系统吗？"
 
 #: ../src/tray_shutdown_plugin.py:42
+#, python-format
 msgid ""
 "The system will suspend in \n"
 "%s secs."
@@ -98,6 +100,7 @@ msgid "Logout your computer now?"
 msgstr "现在注销此系统吗？"
 
 #: ../src/tray_shutdown_plugin.py:44
+#, python-format
 msgid ""
 "The system will Logout in \n"
 "%s secs."
@@ -132,26 +135,32 @@ msgid "Reset to default value"
 msgstr "恢复默认值"
 
 #: ../src/power_view.py:317
+#, python-format
 msgid "Changed Press Power Button to %s"
 msgstr "修改按电源按钮为%s"
 
 #: ../src/power_view.py:322
+#, python-format
 msgid "Changed Close Notebook Cover to %s"
 msgstr "修改合上笔记本盖子为%s"
 
 #: ../src/power_view.py:327
+#, python-format
 msgid "Changed Press Hibernate Button to %s"
 msgstr "修改按休眠按钮为%s"
 
 #: ../src/power_view.py:332
+#, python-format
 msgid "Changed Hibernate Status to %s"
 msgstr "修改休眠状态为%s"
 
 #: ../src/power_view.py:337
+#, python-format
 msgid "Changed Close Harddisk to %s"
 msgstr "修改关闭硬盘为%s"
 
 #: ../src/power_view.py:342
+#, python-format
 msgid "Changed Close Monitor to %s"
 msgstr "修改关闭显示器为%s"
 
@@ -184,6 +193,7 @@ msgid "Turn of your computer now?"
 msgstr "现在关闭此系统吗？"
 
 #: ../src/tray_dialog.py:39
+#, python-format
 msgid ""
 "The system will shutdown in \n"
 "%s secs."
