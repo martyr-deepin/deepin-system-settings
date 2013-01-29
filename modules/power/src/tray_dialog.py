@@ -22,7 +22,7 @@
 
 import gtk
 from vtk.window import Window
-from vtk.utils import cn_check, get_text_size 
+from vtk.utils import cn_check, get_text_size, in_window_check 
 from vtk.draw import draw_text
 from vtk.theme import vtk_theme
 from vtk.timer import Timer
@@ -37,7 +37,7 @@ class TrayDialog(Window):
                  show_bottom_text="系统即将在%s秒后自动关闭。",
                  cancel_text="取消",
                  ok_text="确认"):
-        Window.__init__(self)
+        Window.__init__(self,type=gtk.WINDOW_POPUP)
         # init values.
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
         self.show_top_text = show_top_text
@@ -85,15 +85,37 @@ class TrayDialog(Window):
         self.bottom_text_btn.queue_draw()
         self.timer.Enabled = True
         self.show_all()
+        self.trayicon_show_event()
             
+    def trayicon_show_event(self):
+        gtk.gdk.pointer_grab(
+            self.window,
+            True,
+            gtk.gdk.POINTER_MOTION_MASK
+            | gtk.gdk.BUTTON_PRESS_MASK
+            | gtk.gdk.BUTTON_RELEASE_MASK
+            | gtk.gdk.ENTER_NOTIFY_MASK
+            | gtk.gdk.LEAVE_NOTIFY_MASK,
+            None,
+            None,
+            gtk.gdk.CURRENT_TIME)
+        self.grab_add()        
+
+    def button_press_window(self, widget, event):
+        if in_window_check(widget, event):
+            self.quit_dialog_window(widget)
+
+
     def __init_settings(self):
         self.set_bg_pixbuf(vtk_theme.get_pixbuf("deepin_on_off_bg", 372))
         self.set_size_request(APP_WIDTH, APP_HEIGHT)
         self.set_position(gtk.WIN_POS_CENTER)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
+        self.set_keep_above(True)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.connect("show", self.show_dialog_window)
+        self.connect("button-press-event", self.button_press_window) 
 
     def __init_widgets(self):
         self.main_vbox = gtk.VBox()
@@ -235,6 +257,7 @@ class TrayDialog(Window):
             self.set_opacity(alpha * 0.1)
         self.hide_all()
         self.timer.Enabled = False
+        self.grab_remove()
         
 
 '''
