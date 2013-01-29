@@ -21,11 +21,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+from nls import _
 from vtk.window import Window
 from vtk.utils import cn_check, get_text_size, in_window_check 
 from vtk.draw import draw_text
 from vtk.theme import vtk_theme
 from vtk.timer import Timer
+
 
 APP_WIDTH = 375
 APP_HEIGHT = 169
@@ -33,11 +35,11 @@ APP_HEIGHT = 169
 class TrayDialog(Window):
     def __init__(self,
                  show_pixbuf_name="deepin_shutdown",
-                 show_top_text="现在关闭此系统吗？",
-                 show_bottom_text="系统即将在%s秒后自动关闭。",
-                 cancel_text="取消",
-                 ok_text="确认"):
-        Window.__init__(self,type=gtk.WINDOW_POPUP)
+                 show_top_text=_("现在关闭此系统吗？"),
+                 show_bottom_text=_("系统即将在%s秒后自动关闭。"),
+                 cancel_text=_("取消"),
+                 ok_text=_("确认")):
+        Window.__init__(self)
         # init values.
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
         self.show_top_text = show_top_text
@@ -45,7 +47,7 @@ class TrayDialog(Window):
         self.top_text_color = "#FFFFFF"
         self.bottom_text_color = "#b9b9b9"
         self.cancel_text = cancel_text
-        self.cancel_size = 14
+        self.cancel_size = 12
         self.cancel_color = "#FFFFFF"
         self.cancel_font = "文泉驿微米黑 Bold"
         self.ok_text = ok_text
@@ -85,26 +87,9 @@ class TrayDialog(Window):
         self.bottom_text_btn.queue_draw()
         self.timer.Enabled = True
         self.show_all()
-        self.trayicon_show_event()
-            
-    def trayicon_show_event(self):
-        gtk.gdk.pointer_grab(
-            self.window,
-            True,
-            gtk.gdk.POINTER_MOTION_MASK
-            | gtk.gdk.BUTTON_PRESS_MASK
-            | gtk.gdk.BUTTON_RELEASE_MASK
-            | gtk.gdk.ENTER_NOTIFY_MASK
-            | gtk.gdk.LEAVE_NOTIFY_MASK,
-            None,
-            None,
-            gtk.gdk.CURRENT_TIME)
-        self.grab_add()        
 
-    def button_press_window(self, widget, event):
-        if in_window_check(widget, event):
-            self.quit_dialog_window(widget)
-
+    def focus_out_window(self, widget, event):
+        self.quit_dialog_window(widget)
 
     def __init_settings(self):
         self.set_bg_pixbuf(vtk_theme.get_pixbuf("deepin_on_off_bg", 372))
@@ -115,7 +100,7 @@ class TrayDialog(Window):
         self.set_keep_above(True)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.connect("show", self.show_dialog_window)
-        self.connect("button-press-event", self.button_press_window) 
+        self.connect("focus-out-event", self.focus_out_window)
 
     def __init_widgets(self):
         self.main_vbox = gtk.VBox()
@@ -165,9 +150,10 @@ class TrayDialog(Window):
 
     def init_show_image(self):
         size = 20
-        padding = (size, size, size, size)
+        left_padding = 10
+        padding = (size, size, size + left_padding, size)
         #
-        self.show_image_ali = gtk.Alignment(0, 0, 1, 1)
+        self.show_image_ali = gtk.Alignment(0, 0, 0, 0)
         self.show_image_ali.set_padding(*padding)
         self.show_image = gtk.Image()
         self.show_image_ali.add(self.show_image)
@@ -176,8 +162,9 @@ class TrayDialog(Window):
             self.show_image.set_from_pixbuf(self.show_pixbuf)
 
     def init_show_text(self):
+        top_padding = 25
         self.top_text_btn_ali = gtk.Alignment()
-        self.top_text_btn_ali.set_padding(20, 0, 0, 0)
+        self.top_text_btn_ali.set_padding(top_padding, 0, 0, 0)
         self.top_text_btn = gtk.Button(self.show_top_text)
         self.top_text_btn_ali.add(self.top_text_btn)
         self.bottom_text_btn_ali = gtk.Alignment()
@@ -203,9 +190,9 @@ class TrayDialog(Window):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
-        font_size = 12
+        font_size = 10
         if cn_check():
-            font_size = 14
+            font_size = 12
         size = get_text_size(widget.get_label(), font_size)
         #
         draw_text(cr, 
@@ -222,9 +209,9 @@ class TrayDialog(Window):
         self.ok_btn = gtk.Button(self.ok_text)
         #
         self.cancel_btn.connect("clicked", self.quit_dialog_window)
-        self.cancel_btn.connect("expose-event", self.label_expose_event)
+        self.cancel_btn.connect("expose-event", self.label_expose_event, 30)
         self.ok_btn.connect("clicked", self.ok_btn_clicked)
-        self.ok_btn.connect("expose-event", self.label_expose_event)
+        self.ok_btn.connect("expose-event", self.label_expose_event, 0)
 
     def ok_btn_clicked(self, widget):
         self.quit_dialog_window(widget)
@@ -234,7 +221,7 @@ class TrayDialog(Window):
     def run_exec_timeout(self):
         self.run_exec()
 
-    def label_expose_event(self, widget, event):
+    def label_expose_event(self, widget, event, width):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
@@ -248,7 +235,7 @@ class TrayDialog(Window):
                   self.cancel_size, 
                   self.cancel_color, 
                   self.cancel_font)  
-        widget.set_size_request(size[0] + 10, size[1] + 10)
+        widget.set_size_request(size[0] + width, size[1] + 10)
         #
         return True
 
