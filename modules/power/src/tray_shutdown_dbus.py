@@ -44,12 +44,10 @@ DBUS_ACCOUNTS_USER = "org.freedesktop.Accounts.User"
 class CmdDbus(object):
     def __init__(self):
         self.__session_bus = dbus.SystemBus()
-        '''
         # restart stop.
         oper_obj = self.__create_obj(DBUS_CONSOLEKIT, DBUS_CONSOLEKIT_MANAGER)
-        self.restart = self.__get_method(oper_obj, "Restart", DBUS_POINT_MANAGER)
-        self.stop    = self.__get_method(oper_obj, "Stop", DBUS_POINT_MANAGER)
-        '''
+        self.new_restart = self.__get_method(oper_obj, "Restart", DBUS_POINT_MANAGER)
+        self.new_stop    = self.__get_method(oper_obj, "Stop", DBUS_POINT_MANAGER)
         # suspend.
         oper_obj = self.__create_obj(DBUS_UPOWER, DBUS_UPOWER_U)
         self.suspend = self.__get_method(oper_obj, "Suspend", DBUS_UPOWER)
