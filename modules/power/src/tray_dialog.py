@@ -49,7 +49,7 @@ class TrayDialog(Window):
         self.cancel_text = cancel_text
         self.cancel_size = 12
         self.cancel_color = "#FFFFFF"
-        self.cancel_font = "文泉驿微米黑 Bold"
+        self.cancel_font = _("文泉驿微米黑 Bold")
         self.ok_text = ok_text
         # init time.
         self.timer = Timer(1000)
@@ -68,10 +68,10 @@ class TrayDialog(Window):
         
     def show_dialog(self,
                     show_pixbuf_name="deepin_shutdown",
-                    show_top_text="现在关闭此系统吗？",
-                    show_bottom_text="系统即将在%s秒后自动关闭。",
-                    cancel_text="取消",
-                    ok_text="确认"):
+                    show_top_text=_("现在关闭此系统吗？"),
+                    show_bottom_text=_("系统即将在%s秒后自动关闭。"),
+                    cancel_text=_("取消"),
+                    ok_text=_("确认")):
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
         self.show_top_text = show_top_text
         self.show_bottom_text = show_bottom_text
