@@ -78,7 +78,7 @@ class TrayShutdownPlugin(object):
 
     def logout_btn_clicked(self, widget):
         self.this.hide_menu()
-        self.gui.cmd_dbus.logout(0)
+        self.gui.cmd_dbus.logout(1)
 
     def init_values(self, this_list):
         self.this_list = this_list
