@@ -135,49 +135,47 @@ class MyTreeItem(TreeItem):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
 
-    def unhover(self, column, offset_x, offset_y):
-        if not self.is_hover:
-            return
-        self.is_hover = False
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+    #def unhover(self, column, offset_x, offset_y):
+        #if not self.is_hover:
+            #return
+        #self.is_hover = False
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
         
-    def hover(self, column, offset_x, offset_y):
-        self.is_hover = True
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+    #def hover(self, column, offset_x, offset_y):
+        #self.is_hover = True
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
 
     def get_column_renders(self):
         return [self.render_item]
     
     def render_item(self, cr, rect):
-        #rect.x += 1
-        #rect.width -=2
-        #rect.height -= 2
         if self.is_head:
             rect.y += self.head_height
             rect.height -= self.head_height
-        if self.is_hover and not self.is_select:
+        if self.is_hover:
             text_color = "#000000"
             bg_color = app_theme.get_color("globalItemHover").get_color()
-        elif self.is_select:
-            text_color = "#FFFFFF"
+        if self.is_select:
+            #text_color = "#FFFFFF"
+            text_color = app_theme.get_color("globalTitleForeground").get_color()
             bg_color = app_theme.get_color("globalItemSelect").get_color()
-        else:
+        if not self.is_hover and not self.is_select:
             text_color = "#000000"
             bg_color = MODULE_BG_COLOR
-        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-        cr.rectangle(rect.x, rect.y+self.title_height, rect.width-4, rect.height-2*self.title_height-1)
-        cr.fill()
+        #cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+        #cr.rectangle(rect.x, rect.y+self.title_height, rect.width-4, rect.height-2*self.title_height-1)
+        #cr.fill()
         # draw account type text
         if self.is_myowner:
-            text_color = "#000000"
+            text_color2 = "#000000"
             x1 = rect.x
             y1 = rect.y
-            draw_text(cr, _("My Account"), x1+self.padding_x, y1, self.title_width, self.title_height, text_color=text_color)
+            draw_text(cr, _("My Account"), x1+self.padding_x, y1, self.title_width, self.title_height, text_color=text_color2)
             x2 = rect.x
             y2 = rect.y + self.height + self.title_height
-            draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color)
+            draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color2)
         self.render_icon(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING, rect.y, 55, rect.height))
         self.render_content(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING+55, rect.y, rect.width-55, rect.height), text_color)
     
@@ -201,7 +199,7 @@ class MyTreeItem(TreeItem):
                   x, user_name_y+self.user_name_height,
                   rect.width-self.padding_x,
                   self.user_name_height,
-                  text_color=text_color)
+                  text_color="#000000")
     
     def render_icon(self, cr, rect):
         if self.icon:
