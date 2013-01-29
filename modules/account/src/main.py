@@ -156,7 +156,7 @@ class AccountSetting(object):
         self.container_widgets["account_info_hbox"] = gtk.HBox(False)
         self.container_widgets["account_info_vbox"] = gtk.VBox(False)
         self.container_widgets["account_add_vbox"] = gtk.VBox(False)
-        self.container_widgets["account_info_table"] = gtk.Table(5, 2)
+        self.container_widgets["account_info_table"] = gtk.Table(6, 2)
         self.container_widgets["check_button_table"] = gtk.Table(4, 2)
         self.container_widgets["account_info_table_new"] = gtk.Table(4, 2)
         self.container_widgets["check_button_table_new"] = gtk.Table(4, 2)
@@ -263,9 +263,9 @@ class AccountSetting(object):
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 4, 5, 4)
+            self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 4, 5, 4)
+            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
         #self.container_widgets["account_info_table"].attach(
             #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 5, 6, 4)
         #self.container_widgets["account_info_table"].attach(
@@ -701,9 +701,9 @@ class AccountSetting(object):
         right_vbox = gtk.VBox(False)
         button_vbox = gtk.VBox(False)
         button_hbox = gtk.HBox(False)
-        self.container_widgets["account_info_table"].attach(left_vbox, 0, 1, 2, 3, 4)
-        self.container_widgets["account_info_table"].attach(right_vbox, 1, 2, 2, 3, 4)
-        self.container_widgets["account_info_table"].attach(button_vbox, 0, 2, 3, 4, 4)
+        self.container_widgets["account_info_table"].attach(left_vbox, 0, 1, 4, 5, 4)
+        self.container_widgets["account_info_table"].attach(right_vbox, 1, 2, 4, 5, 4)
+        self.container_widgets["account_info_table"].attach(button_vbox, 0, 2, 5, 6, 4)
 
         is_input_empty = {
             self.CH_PASSWD_CURRENT_PSWD: True,

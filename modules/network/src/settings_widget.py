@@ -623,7 +623,7 @@ class HotspotBox(gtk.HBox):
         self.password_entry = InputEntry("")
         self.password_entry.entry.set_size_request(200 ,22)
 
-        self.active_btn = Button("Active")
+        self.active_btn = Button(_("Active"))
         self.jump_bar = ImageButton(app_theme.get_pixbuf("network/jump_to.png"),
                 app_theme.get_pixbuf("network/jump_to.png"),
                 app_theme.get_pixbuf("network/jump_to.png"))

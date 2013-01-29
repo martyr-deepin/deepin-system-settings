@@ -271,7 +271,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.set_time_spin_align = self.__setup_align(padding_left = 10)
         self.set_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
-        self.set_time_label = self.__setup_label(_("Manual Set"), 77, align = ALIGN_END)
+        self.set_time_label = self.__setup_label(_("Manual Set"), 60)
         self.set_time_spin = TimeSpinBox(is_24hour = self.is_24hour)                 
         self.set_time_spin.set_size_request(85, -1)                               
         self.set_time_spin.connect("value-changed", self.__time_changed)
@@ -280,8 +280,8 @@ class DatetimeView(gtk.HBox):
         self.set_time_spin_align.add(self.set_time_box)
         self.__widget_pack_start(self.auto_time_box, 
                                  [
-                                  #self.auto_time_label, 
-                                  #self.auto_time_toggle_align, 
+                                  self.auto_time_label, 
+                                  self.auto_time_toggle_align, 
                                   self.set_time_spin_align]) 
         if is_auto_set_time:
             self.set_time_spin_align.set_child_visible(False)
@@ -289,10 +289,10 @@ class DatetimeView(gtk.HBox):
         '''
         24hour display
         '''
-        self.time_display_align = self.__setup_align(padding_top = BETWEEN_SPACING, padding_left = 10)
+        self.time_display_align = self.__setup_align(padding_top = BETWEEN_SPACING)
         self.time_display_box = gtk.HBox(spacing = BETWEEN_SPACING)
         self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
-        self.time_display_toggle_align = self.__setup_align(padding_left = 40)
+        self.time_display_toggle_align = self.__setup_align()
         self.time_display_toggle = self.__setup_toggle()                        
         self.time_display_toggle.set_active(self.is_24hour)                          
         self.time_display_toggle.connect("toggled", self.__toggled, "time_display_toggle")

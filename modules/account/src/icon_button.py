@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 import gtk
 import gobject
 
@@ -31,12 +31,13 @@ class IconButton(gtk.EventBox):
         "del-pressed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         "pressed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
 
-    def __init__(self, pixbuf=None, image_path='', padding_x=3, padding_y=3, can_del=False):
+    def __init__(self, pixbuf=None, image_path='', padding_x=4, padding_y=4, has_frame=False, can_del=False):
         super(IconButton, self).__init__()
         self.connect("expose-event", self.__expose_cb)
         self.padding_x = padding_x
         self.padding_y = padding_y
         self.image_path = image_path
+        self.has_frame = has_frame
         self.can_del = can_del
 
         self.add_events(gtk.gdk.ENTER_NOTIFY_MASK)
@@ -62,12 +63,31 @@ class IconButton(gtk.EventBox):
         x, y, w, h = widget.allocation
         if widget.get_state() == gtk.STATE_PRELIGHT:
             cr.set_source_rgb(*color_hex_to_cairo("#ddf3ff"))
-            cr.rectangle(*widget.allocation)
+            cr.rectangle(0, 0, w, self.padding_y)
+            cr.fill()
+            cr.rectangle(0, h-self.padding_y, w, self.padding_y)
+            cr.fill()
+            cr.rectangle(0, self.padding_y, self.padding_x, h-2*self.padding_y)
+            cr.fill()
+            cr.rectangle(w-self.padding_x, self.padding_y, self.padding_x, h-2*self.padding_y)
+            cr.fill()
         else:
             cr.set_source_rgb(1, 1, 1)
-            cr.rectangle(*widget.allocation)
-        cr.fill()
-        cr.paint()
+            cr.rectangle(0, 0, w, self.padding_y)
+            cr.fill()
+            cr.rectangle(0, h-self.padding_y, w, self.padding_y)
+            cr.fill()
+            cr.rectangle(0, self.padding_y, self.padding_x, h-2*self.padding_y)
+            cr.fill()
+            cr.rectangle(w-self.padding_x, self.padding_y, self.padding_x, h-2*self.padding_y)
+            cr.fill()
+        if self.has_frame:
+            with cairo_disable_antialias(cr):
+                border_color = "#CCCCCC"
+                cr.set_source_rgb(*color_hex_to_cairo(border_color))
+                cr.set_line_width(1)
+                cr.rectangle(self.padding_x-1, self.padding_y-1, w-2*self.padding_x+2, h-2*self.padding_y+2)
+                cr.stroke()
         if self.pixbuf:
             cr.set_source_pixbuf(self.pixbuf, self.padding_x, self.padding_y)
             cr.paint()
