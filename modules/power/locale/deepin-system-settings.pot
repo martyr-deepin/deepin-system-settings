@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-23 10:30+0800\n"
+"POT-Creation-Date: 2013-01-29 14:07+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/tray_shutdown_gui.py:78
@@ -31,6 +31,27 @@ msgstr ""
 
 #: ../src/tray_shutdown_gui.py:81
 msgid "logout"
+msgstr ""
+
+#: ../src/tray_dialog.py:38 ../src/tray_dialog.py:71
+msgid "现在关闭此系统吗？"
+msgstr ""
+
+#: ../src/tray_dialog.py:39 ../src/tray_dialog.py:72
+#, python-format
+msgid "系统即将在%s秒后自动关闭。"
+msgstr ""
+
+#: ../src/tray_dialog.py:40 ../src/tray_dialog.py:73
+msgid "取消"
+msgstr ""
+
+#: ../src/tray_dialog.py:41 ../src/tray_dialog.py:74
+msgid "确认"
+msgstr ""
+
+#: ../src/tray_dialog.py:52
+msgid "文泉驿微米黑 Bold"
 msgstr ""
 
 #: ../src/power_view.py:51 ../src/power_view.py:52 ../src/power_view.py:53
@@ -69,80 +90,80 @@ msgstr ""
 msgid "Close Notebook Cover"
 msgstr ""
 
-#: ../src/power_view.py:99 ../src/search_keyword.py:32
+#: ../src/power_view.py:102 ../src/search_keyword.py:32
 msgid "Press Hibernate Button"
 msgstr ""
 
-#: ../src/power_view.py:111 ../src/search_keyword.py:33
+#: ../src/power_view.py:114 ../src/search_keyword.py:33
 msgid "Saving Power Configuration"
 msgstr ""
 
-#: ../src/power_view.py:117 ../src/search_keyword.py:34
+#: ../src/power_view.py:120 ../src/search_keyword.py:34
 msgid "Being Hibernate"
 msgstr ""
 
-#: ../src/power_view.py:129 ../src/search_keyword.py:35
+#: ../src/power_view.py:132 ../src/search_keyword.py:35
 msgid "Close Harddisk"
 msgstr ""
 
-#: ../src/power_view.py:141 ../src/search_keyword.py:36
+#: ../src/power_view.py:144 ../src/search_keyword.py:36
 msgid "Close Monitor"
 msgstr ""
 
-#: ../src/power_view.py:155 ../src/search_keyword.py:37
+#: ../src/power_view.py:158 ../src/search_keyword.py:37
 msgid "Password Protection Wakeup"
 msgstr ""
 
-#: ../src/power_view.py:176 ../src/search_keyword.py:38
+#: ../src/power_view.py:179 ../src/search_keyword.py:38
 msgid "Show Battery Status In The Tray"
 msgstr ""
 
-#: ../src/power_view.py:263
+#: ../src/power_view.py:267
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/power_view.py:313
+#: ../src/power_view.py:317
 #, python-format
 msgid "Changed Press Power Button to %s"
 msgstr ""
 
-#: ../src/power_view.py:318
+#: ../src/power_view.py:322
 #, python-format
 msgid "Changed Close Notebook Cover to %s"
 msgstr ""
 
-#: ../src/power_view.py:323
+#: ../src/power_view.py:327
 #, python-format
 msgid "Changed Press Hibernate Button to %s"
 msgstr ""
 
-#: ../src/power_view.py:328
+#: ../src/power_view.py:332
 #, python-format
 msgid "Changed Hibernate Status to %s"
 msgstr ""
 
-#: ../src/power_view.py:333
+#: ../src/power_view.py:337
 #, python-format
 msgid "Changed Close Harddisk to %s"
 msgstr ""
 
-#: ../src/power_view.py:338
+#: ../src/power_view.py:342
 #, python-format
 msgid "Changed Close Monitor to %s"
 msgstr ""
 
-#: ../src/power_view.py:345
+#: ../src/power_view.py:349
 msgid "Changed to Password Protection Wakeup"
 msgstr ""
 
-#: ../src/power_view.py:347
+#: ../src/power_view.py:351
 msgid "Changed to NO Password Protection Wakeup"
 msgstr ""
 
-#: ../src/power_view.py:353
+#: ../src/power_view.py:357
 msgid "Changed to Show Battery Status In The Tray"
 msgstr ""
 
-#: ../src/power_view.py:355
+#: ../src/power_view.py:359
 msgid "Changed to Hide Battery Status In The Tray"
 msgstr ""
