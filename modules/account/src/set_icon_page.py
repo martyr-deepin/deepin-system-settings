@@ -113,11 +113,14 @@ class IconSetPage(gtk.VBox):
         main_vbox = gtk.VBox(False)
         set_page_sw.add_child(main_vbox)
         self.icon_list_tabel = gtk.Table()
+        self.icon_list_tabel.set_row_spacings(4)
+        self.icon_list_tabel.set_col_spacings(4)
         main_vbox.pack_start(tools.make_align(self.tips_label), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 
         self.history_list_hbox = gtk.HBox(False)
-        self.history_list_hbox.set_size_request(-1, 54)
+        self.history_list_hbox.set_size_request(-1, 56)
+        self.history_list_hbox.set_spacing(4)
 
         main_vbox.pack_start(tools.make_align(Label(_("Choose a new picture for your account"), enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
         main_vbox.pack_start(tools.make_align(self.icon_list_tabel), False, False)
@@ -145,11 +148,11 @@ class IconSetPage(gtk.VBox):
                     "%s/%s" %(face_dir, pic)).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
             except:
                 continue
-            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(face_dir, pic))
+            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(face_dir, pic), has_frame=True)
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
             self.public_icon_list.append(icon_bt)
 
-        self.more_icon_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf())
+        self.more_icon_button = IconButton(app_theme.get_pixbuf("%s/more.png" % MODULE_NAME).get_pixbuf(), has_frame=True)
         self.more_icon_button.connect("button-press-event", self.choose_more_picture)
         main_vbox.connect("expose-event", self.draw_white_background)
 
@@ -180,7 +183,7 @@ class IconSetPage(gtk.VBox):
                     "%s/%s" %(history_dir, pic)).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
             except:
                 continue
-            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(history_dir, pic))
+            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(history_dir, pic), has_frame=True)
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
             private_icon_list.append(icon_bt)
         container_remove_all(self.icon_list_tabel)
@@ -218,7 +221,7 @@ class IconSetPage(gtk.VBox):
             if i >= 10:
                 break
             i += 1
-            icon_bt = IconButton(icon_pixbuf, pic, can_del=True)
+            icon_bt = IconButton(icon_pixbuf, pic, has_frame=True, can_del=True)
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
             icon_bt.connect("del-pressed", self.on_icon_bt_del_pressed_cb)
             self.history_list_hbox.pack_start(icon_bt, False, False)
