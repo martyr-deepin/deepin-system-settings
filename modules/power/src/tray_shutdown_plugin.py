@@ -23,6 +23,7 @@
 
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
+from nls import _
 import gtk
 import os
 import sys
@@ -32,13 +33,13 @@ from accounts import User
 DBUS_USER_STR = "/org/freedesktop/Accounts/User%s" % (os.getuid())
 
 #RESTART_TOP_TEXT = "现在重启此系统吗？"
-RESTART_TOP_TEXT = "Restart your computer now?"
+RESTART_TOP_TEXT = _("Restart your computer now?")
 #RESTART_BOTTOM_TEXT = "系统即将在%s秒后自动重启。"
-RESTART_BOTTOM_TEXT = "The system will restart in \n%s secs."
+RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.")
 #SUSPEND_TOP_TEXT = "现在挂起此系统吗？"
-SUSPEND_TOP_TEXT = "Suspend your computer now?"
+SUSPEND_TOP_TEXT = _("Suspend your computer now?")
 #SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
-SUSPEND_BOTTOM_TEXT = "The system will suspend in \n%s secs."
+SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.")
 
 
 
