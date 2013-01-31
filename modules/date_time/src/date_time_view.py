@@ -261,7 +261,10 @@ class DatetimeView(gtk.HBox):
         self.auto_time_toggle = self.__setup_toggle()
         is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
         if is_auto_set_time:
-            AutoSetTimeThread(self).start()
+            #AutoSetTimeThread(self).start()
+            self.__deepin_dt.set_using_ntp(True)
+        else:
+            self.__deepin_dt.set_using_ntp(False)
         self.auto_time_toggle_align = self.__setup_align(padding_top = 4)
         self.auto_time_toggle.set_active(is_auto_set_time)
         self.auto_time_toggle.connect("toggled", self.__toggled, "auto_time_toggle")
@@ -346,9 +349,11 @@ class DatetimeView(gtk.HBox):
         self.auto_time_toggle.set_active(is_auto_set_time)
         if is_auto_set_time:
             self.set_time_spin_align.set_child_visible(False)               
-            AutoSetTimeThread(self).start()   
+            #AutoSetTimeThread(self).start()
+            self.__deepin_dt.set_using_ntp(True)
         else:
             self.set_time_spin_align.set_child_visible(True)
+            self.__deepin_dt.set_using_ntp(False)
 
     def __handle_dbus_replay(self, *reply):                                     
         pass                                                                    
@@ -453,10 +458,12 @@ class DatetimeView(gtk.HBox):
             if is_auto_set_time:
                 self.__send_message("status", ("date_time", _("Changed to automatic set time")))
                 self.set_time_spin_align.set_child_visible(False)
-                AutoSetTimeThread(self).start()
+                #AutoSetTimeThread(self).start()
+                self.__deepin_dt.set_using_ntp(True)
             else:
                 self.__send_message("status", ("date_time", _("Changed to manual set time")))
                 self.set_time_spin_align.set_child_visible(True)
+                self.__deepin_dt.set_using_ntp(False)
             return
 
         if argv == "time_display_toggle":
