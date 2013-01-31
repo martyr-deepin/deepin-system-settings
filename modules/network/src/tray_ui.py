@@ -31,6 +31,7 @@ import pango
 from nls import _
 from constants import CONTENT_FONT_SIZE, IMG_WIDTH
 import style
+from helper import Dispatcher
 WIDGET_HEIGHT = 22
 bg_color="#ebf4fd"
 line_color="#7da2ce"
@@ -41,24 +42,33 @@ BG_COLOR = color_hex_to_cairo(bg_color)
 #net_manager = NetManager()
 class TrayUI(gtk.VBox):
 
-    def __init__(self, wired_toggle_cb, wireless_toggle_cb):
+    def __init__(self, wired_toggle_cb, wireless_toggle_cb, mobile_toggle_cb):
         gtk.VBox.__init__(self)
         self.wired_toggle = wired_toggle_cb
         self.wireless_toggle = wireless_toggle_cb
+        self.mobile_toggle = mobile_toggle_cb
         self.init_ui()
         self.active_ap_index = []
 
     def init_ui(self):
         self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("wired"), self.wired_toggle)
         self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("wireless"), self.wireless_toggle)
+        self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
         self.pack_start(self.wire, False, False)
         self.pack_start(self.wireless, False, False)
         
         self.ssid_list = []
         self.tree_box = gtk.VBox()
         self.pack_start(self.tree_box, False, False)
+        self.pack_start(self.mobile, False, False)
         self.ap_tree = TreeView()
         self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
+
+    def remove_net(self, net_type):
+        if net_type == "wired":
+            self.remove(self.wire)
+        elif net_type == "wireless":
+            self.remove(self.wireless)
 
     def set_wired_state(self, widget, new_state, reason):
         if new_state is 20:
@@ -72,16 +82,19 @@ class TrayUI(gtk.VBox):
         self.ap_tree.delete_all_items()
         if len(ap_list) <= 5:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list))
+            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*len(ap_list))
         else:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list[:5]))
             self.more_button.set_ap_list(ap_list[5:])
+            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
             #self.ap_tree.add_items([MoreItem(more_ap, self.resize_tree)])
         self.tree_box.pack_start(self.ap_tree, True, True)
-        self.pack_start(self.more_button, False, False)
+        self.tree_box.pack_start(self.more_button, False, False)
         self.show_all()
 
 
     def set_active_ap(self, index, state):
+        print index
         if state and index:
             self.set_active_ap(self.active_ap_index, False)
             self.active_ap_index = index
@@ -149,8 +162,6 @@ class Section(gtk.HBox):
 
     def set_padding(self, child, padding):
         self.set_child_packing(child, False, False, padding, gtk.PACK_START)
-
-
 
 class SsidItem(TreeItem):
     NETWORK_DISCONNECT = 0
@@ -253,13 +264,15 @@ class SsidItem(TreeItem):
     
     def double_click(self, column, offset_x, offset_y):
         self.is_double_click = True
-        print "double click"
 
     def single_click(self, column, offset_x, offset_y):
-        self.is_double_click = False
-        print "single click"
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        if self.is_double_click:
+            print "double click"
+            Dispatcher.connect_by_ssid(self.ssid)
+            self.is_double_click = False
+            
+
+        self.redraw()
     
     def redraw(self):
         if self.redraw_request_callback:
@@ -351,6 +364,7 @@ class MoreButton(Button):
         self.refresh = refresh_cb
         self.show_all = False
         self.connect("clicked", self.show_more)
+        self.connect("expose-event", self.expose_button)
 
     def set_ap_list(self, ap_list):
         self.ap_list = ap_list
@@ -359,5 +373,24 @@ class MoreButton(Button):
         if self.show_all is False:
             self.tree.add_items(map(lambda ap: SsidItem(ap), self.ap_list))
             self.refresh()
-            
+    
+    def expose_button(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        
+        if widget.state == gtk.STATE_NORMAL:
+            bg_color = "#ffffff"
+        else:
+            bg_color = "#ebf4fd"
 
+        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
+
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
+        # draw text
+        label = "more wireless"
+        (text_width, text_height) = get_content_size(label)
+        offset_y = (rect.height - text_height)/2
+        draw_text(cr, label, rect.x, rect.y + offset_y, text_width, text_height,
+                alignment = pango.ALIGN_LEFT)
+        return True
