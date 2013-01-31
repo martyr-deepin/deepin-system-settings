@@ -40,6 +40,8 @@ RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.")
 SUSPEND_TOP_TEXT = _("Suspend your computer now?")
 #SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
 SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.")
+LOGOUT_TOP_TEXT = _("Logout your computer now?")
+LOGOUT_BOTTOM_TEXT = _("The system will Logout in \n%s secs.")
 
 
 
@@ -77,14 +79,21 @@ class TrayShutdownPlugin(object):
         #self.gui.cmd_dbus.suspend()
 
     def logout_btn_clicked(self, widget):
+        self.dialog.show_dialog("deepin_hibernate",
+                                LOGOUT_TOP_TEXT,
+                                LOGOUT_BOTTOM_TEXT)
+        self.dialog.run_exec = self.gui.cmd_dbus.logout
+        self.dialog.argv = 1
         self.this.hide_menu()
-        self.gui.cmd_dbus.logout(0)
 
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
         self.tray_icon.set_icon_theme("tray_user_icon")
+        #self.set_user_icon()
+
+    def set_user_icon(self):
         try:
             # set user icon.
             print self.gui.cmd_dbus.get_user_image_path() 
@@ -121,6 +130,7 @@ class TrayShutdownPlugin(object):
         return self.gui 
 
     def show_menu(self):
+        self.set_user_icon()
         self.this.set_size_request(160, 180)
         print "shutdown show menu..."
 
