@@ -445,8 +445,10 @@ class PPTPConf(gtk.VBox):
         self.nt_domain_entry.entry.connect("changed", self.entry_changed, "domain")
 
         if self.connection.check_setting_finish():
+            print "in vpn"
             self.set_button("save", True)
         else:
+            print "in vpn"
             self.set_button("save", False)
 
     def refresh(self):
@@ -499,7 +501,7 @@ class PPTPConf(gtk.VBox):
             
         else:
             if item == "password":
-                self.vpn_setting.delete_secret_item(item)
+                self.vpn_setting.set_secret_item(item, "")
             else:
                 self.vpn_setting.delete_data_item(item)
 

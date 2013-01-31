@@ -111,8 +111,10 @@ class IPV4Conf(gtk.VBox):
             self.set_button("apply", True)
         else:
             if self.connection.check_setting_finish():
+                print "in ipv"
                 self.set_button("save", True)
             else:
+                print "in ipv"
                 self.set_button("save", False)
 
 
