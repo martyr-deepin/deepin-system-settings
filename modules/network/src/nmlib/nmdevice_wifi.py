@@ -121,6 +121,28 @@ class NMDeviceWifi(NMDevice):
     # def get_ap_error(self, error):
     #     print "get access points failed!\n"
     #     print error
+    def get_ssid_connection(self, ssid):
+        ssid_ascii = TypeConvert.ssid_string2ascii(ssid)
+
+        if nm_remote_settings.get_wireless_connections():
+            wireless_connections = filter(lambda x: x.settings_dict["802-11-wireless"]["ssid"] == ssid_ascii,
+                    nm_remote_settings.get_wireless_connections())
+
+        for conn in  wireless_connections:
+            try:
+                specific = self.get_ap_by_ssid(ssid)
+                self.emit("try-ssid-begin", ssid)
+                nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
+                if cache.getobject(self.object_path).is_active():
+                    self.emit("try-ssid-end", ssid)
+                    break
+                else:
+                    self.emit("try-ssid-end", "@"+ssid)
+                    continue
+            except:
+                pass
+        else:
+            return nm_remote_settings.new_wireless_connection(ssid, None) 
 
     def auto_connect(self):
         if cache.getobject(self.object_path).is_active():

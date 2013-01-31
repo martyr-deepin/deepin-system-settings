@@ -1,6 +1,0 @@
-[D-BUS Service]
-Name=org.freedesktop.NetworkManager.l2tp-ppp
-Exec=/usr/lib/NetworkManager/nm-l2tp-service       
-
-User=root
-

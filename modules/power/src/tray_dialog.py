@@ -31,14 +31,22 @@ from vtk.timer import Timer
 
 APP_WIDTH = 375
 APP_HEIGHT = 169
+CANCEL_TEXT = _("Cancel")
+OK_TEXT = _("OK")
+#SHUTDOWN_TOP_TEXT = _("现在关闭此系统吗？")
+SHUTDOWN_TOP_TEXT = _("Turn of your computer now?")
+#SHUTDOWN_BOTTOM_TEXT = _("系统即将在%s秒后自动关闭。")
+SHUTDOWN_BOTTOM_TEXT = _("The system will shutdown in \n%s secs.")
+#FONT_TYPE = _("文泉驿微米黑 Bold")
+FONT_TYPE = _("WenQuanYi Micro Hei Bold")
 
 class TrayDialog(Window):
     def __init__(self,
                  show_pixbuf_name="deepin_shutdown",
-                 show_top_text=_("现在关闭此系统吗？"),
-                 show_bottom_text=_("系统即将在%s秒后自动关闭。"),
-                 cancel_text=_("取消"),
-                 ok_text=_("确认")):
+                 show_top_text=SHUTDOWN_TOP_TEXT,
+                 show_bottom_text=SHUTDOWN_BOTTOM_TEXT,
+                 cancel_text=CANCEL_TEXT,
+                 ok_text=OK_TEXT):
         Window.__init__(self)
         # init values.
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
@@ -49,7 +57,7 @@ class TrayDialog(Window):
         self.cancel_text = cancel_text
         self.cancel_size = 12
         self.cancel_color = "#FFFFFF"
-        self.cancel_font = _("文泉驿微米黑 Bold")
+        self.cancel_font = FONT_TYPE
         self.ok_text = ok_text
         # init time.
         self.timer = Timer(1000)
@@ -58,6 +66,7 @@ class TrayDialog(Window):
         self.timer.connect("Tick", self.timer_tick_evnet)
         #
         self.run_exec = None
+        self.argv = None
         #
         self.__init_widgets()
         self.__init_settings()
@@ -65,19 +74,21 @@ class TrayDialog(Window):
     def show_dialog_window(self, widget):
         for alpha in range(0, 11):
             self.set_opacity(alpha * 0.1)
-        
+
     def show_dialog(self,
                     show_pixbuf_name="deepin_shutdown",
-                    show_top_text=_("现在关闭此系统吗？"),
-                    show_bottom_text=_("系统即将在%s秒后自动关闭。"),
-                    cancel_text=_("取消"),
-                    ok_text=_("确认")):
+                    show_top_text=SHUTDOWN_TOP_TEXT,
+                    show_bottom_text=SHUTDOWN_BOTTOM_TEXT,
+                    cancel_text=CANCEL_TEXT,
+                    ok_text=OK_TEXT):
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
         self.show_top_text = show_top_text
         self.show_bottom_text = show_bottom_text
         self.cancel_text = cancel_text
         self.ok_text = ok_text
         self.second = 60
+        self.argv = None
+        self.run_exec = None
         #
         self.top_text_btn.set_label(self.show_top_text)
         self.bottom_text_btn.set_label(self.show_bottom_text)
@@ -219,7 +230,10 @@ class TrayDialog(Window):
             gtk.timeout_add(1, self.run_exec_timeout)
 
     def run_exec_timeout(self):
-        self.run_exec()
+        if not self.argv:
+            self.run_exec()
+        else:
+            self.run_exec(self.argv)
 
     def label_expose_event(self, widget, event, width):
         cr = widget.window.cairo_create()

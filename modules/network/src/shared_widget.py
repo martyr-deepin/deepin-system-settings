@@ -25,6 +25,7 @@ class IPV4Conf(gtk.VBox):
     def __init__(self, connection=None, set_button_callback=None, dns_only=False):
         
         gtk.VBox.__init__(self)
+        self.tab_name = _("IPv4 Setting")
         self.connection = connection 
         self.set_button = set_button_callback
         self.dns_only = dns_only
@@ -109,7 +110,13 @@ class IPV4Conf(gtk.VBox):
         if type(self.connection) is NMRemoteConnection:
             self.set_button("apply", True)
         else:
-            self.set_button("save", True)
+            if self.connection.check_setting_finish():
+                print "in ipv"
+                self.set_button("save", True)
+            else:
+                print "in ipv"
+                self.set_button("save", False)
+
 
     def reset(self, connection):
         self.setting = connection.get_setting("ipv4")       
@@ -296,6 +303,7 @@ class IPV6Conf(gtk.VBox):
         
         gtk.VBox.__init__(self)
         self.connection = connection 
+        self.tab_name = _("IPv6 Settings")
         self.set_button = set_button_callback
         self.table = gtk.Table(9, 2, False)
         # Ip configuration
@@ -376,7 +384,10 @@ class IPV6Conf(gtk.VBox):
         if type(self.connection) is NMRemoteConnection:
             self.set_button("apply", True)
         else:
-            self.set_button("save", True)
+            if self.connection.check_setting_finish():
+                self.set_button("save", True)
+            else:
+                self.set_button("save", False)
 
     def reset_table(self):
         container_remove_all(self.table)

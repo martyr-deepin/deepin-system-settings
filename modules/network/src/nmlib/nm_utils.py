@@ -254,7 +254,7 @@ class TypeConvert(object):
     def is_valid_netmask(self, mask_str):
         if not self.is_valid_ip4(mask_str):
             return False
-        prefix = map(lambda x :bin(int(x)), mask_str.split('.'))
+        prefix = map(lambda x :bin(int(x))[2:], mask_str.split('.'))
         prefix_str = "".join([str(x) for x in prefix])
         if not prefix_str.index("0"):
             return True
@@ -572,3 +572,6 @@ def authWithPolicyKit(sender, connection, priv, interactive=1):
                                                           cancel_id)
     #print "ok: ", ok
     return ok
+
+if __name__ == "__main__":
+    print TypeConvert.is_valid_netmask("202.114.88.10")
