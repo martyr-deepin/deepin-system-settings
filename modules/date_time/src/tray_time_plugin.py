@@ -30,6 +30,7 @@ from vtk.button import SelectButton
 from dtk.ui.label import Label
 from nls import _
 import locale
+import time
 import deepin_lunar
 import dltk_calendar
 import gtk
@@ -95,6 +96,7 @@ class TrayTimePlugin(object):
                 self.calendar = dltk_calendar.new()                             
         else:                                                                   
             self.calendar = dltk_calendar.new()
+        calendar.mark_day(time.localtime().tm_mday)
         calendar.set_day_padding(0)
         calendar.get_handle().set_property("show-details", False)
         calendar.get_handle().set_size_request(200, 172)
