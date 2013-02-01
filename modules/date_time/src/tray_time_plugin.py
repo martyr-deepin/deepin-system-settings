@@ -29,6 +29,9 @@ from dtk.ui.constant import ALIGN_END
 from vtk.button import SelectButton
 from dtk.ui.label import Label
 from nls import _
+import locale
+import time
+import deepin_lunar
 import dltk_calendar
 import gtk
 
@@ -86,8 +89,16 @@ class TrayTimePlugin(object):
         align = self.__setup_align()
         box = gtk.VBox(spacing = 5)
         calendar_align = self.__setup_align()
-        calendar = dltk_calendar.new()
+        calendar = deepin_lunar.new()
+        self.calendar = deepin_lunar.new()                                      
+        if len(locale.getdefaultlocale()):                                      
+            if locale.getdefaultlocale()[0].find("zh_") != 0:                   
+                self.calendar = dltk_calendar.new()                             
+        else:                                                                   
+            self.calendar = dltk_calendar.new()
+        calendar.mark_day(time.localtime().tm_mday)
         calendar.set_day_padding(0)
+        calendar.get_handle().set_property("show-details", False)
         calendar.get_handle().set_size_request(200, 172)
         calendar_align.add(calendar.get_handle())
         select_align = self.__setup_align()

@@ -175,7 +175,6 @@ class DeepinDateTime(BusBase):
 
     def set_using_utc_error(self, error = None):
         print "set using utc error"
-        print result
 
     def set_time(self, seconds_since_epoch):
         if self.can_set_time():
@@ -274,7 +273,10 @@ class DeepinDateTime(BusBase):
     def set_using_ntp(self, is_using_ntp):
         try:
             if self.can_set_using_ntp():
-                return self.call_async("SetUsingNtp", is_using_ntp, 
+                if bool(self.get_using_ntp()) == bool(is_using_ntp):
+                    pass
+                else:
+                    return self.call_async("SetUsingNtp", is_using_ntp, 
                         reply_handler = self.set_using_ntp_reply, 
                         error_handler = self.set_using_ntp_error)
                         

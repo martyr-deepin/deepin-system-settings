@@ -295,10 +295,6 @@ class NMCache(object):
 
 cache = NMCache()
 
-def refresh_nm_cache():
-    cache = NMCache()
-    return cache
-
 if __name__ == "__main__":
     ap = []
     for i in range(10):

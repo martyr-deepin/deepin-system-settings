@@ -25,8 +25,7 @@ import traceback
 from nmdevice import NMDevice
 from nmcache import cache
 from nm_utils import TypeConvert
-# from nmclient import nmclient
-# from nm_remote_settings import nm_remote_settings
+
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
@@ -237,12 +236,16 @@ class NMDeviceWifi(NMDevice):
         # self.origin_ap_list = self.get_access_points()
         # self.update_ap_list()
         # self.emit("access-point-added", cache.getobject(ap_object_path))
+        cache.clearcache()
+        cache.clear_spec_cache()
         pass
 
     def access_point_removed_cb(self, ap_object_path):
         # self.origin_ap_list = self.get_access_points()
         # self.update_ap_list()
         # self.emit("access-point-removed", cache.getobject(ap_object_path))
+        cache.clearcache()
+        cache.clear_spec_cache()
         pass
 
     def properties_changed_cb(self, prop_dict):

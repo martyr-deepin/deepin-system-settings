@@ -430,7 +430,7 @@ class DisplayManager:
             i += 1
 
     def get_screen_brightness(self):
-        return self.__xrandr_settings.get_double("brightness") * 100.0
+        return self.__xrandr_settings.get_double("brightness")
     
     def set_screen_brightness(self, output_name, value):
         i = 0
