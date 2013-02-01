@@ -217,8 +217,10 @@ class IPV4Conf(gtk.VBox):
             self.setting.add_address(self.ip)
 
             if self.connection.check_setting_finish():
+                print "sfsdf"
                 self.set_button("save", True)
             else:
+                print "xxxxxxxxxx"
                 self.set_button("save", False)
         else:
             self.setting.clear_addresses()
