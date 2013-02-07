@@ -41,7 +41,7 @@ from deepin_utils.process import run_command
 
 class DisplayManager:
     BIG_NUM = 2147483647
-    SESSION_NAME = "neko"
+    SESSION_NAME = "deepin"
     
     def __init__(self):
         self.__deepin_xrandr = deepin_xrandr.new()
