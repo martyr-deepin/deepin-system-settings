@@ -21,6 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import pango
 from nls import _
 from vtk.window import Window
 from vtk.utils import cn_check, get_text_size, in_window_check 
@@ -56,9 +57,10 @@ class TrayDialog(Window):
         self.bottom_text_color = "#b9b9b9"
         self.cancel_text = cancel_text
         self.cancel_size = 12
-        self.cancel_color = "#FFFFFF"
+        self.cancel_color = "#b9b9b9"
         self.cancel_font = FONT_TYPE
         self.ok_text = ok_text
+        self.draw_rectangle_bool = False
         # init time.
         self.timer = Timer(1000)
         self.second = 60
@@ -174,6 +176,9 @@ class TrayDialog(Window):
 
     def init_show_text(self):
         top_padding = 25
+        r, g, b = (65535, 0, 0)
+        self.pango_list = pango.AttrList()
+        self.pango_list.insert(pango.AttrForeground(r, g, b, 8, 12))
         self.top_text_btn_ali = gtk.Alignment()
         self.top_text_btn_ali.set_padding(top_padding, 0, 0, 0)
         self.top_text_btn = gtk.Button(self.show_top_text)
@@ -183,9 +188,9 @@ class TrayDialog(Window):
         self.bottom_text_btn_ali.add(self.bottom_text_btn)
         #
         self.top_text_btn.connect("expose-event", 
-                     self.top_text_btn_expose_event, self.top_text_color)
+                     self.top_text_btn_expose_event, self.top_text_color, self.pango_list)
         self.bottom_text_btn.connect("expose-event", 
-                     self.top_text_btn_expose_event, self.bottom_text_color)
+                     self.top_text_btn_expose_event, self.bottom_text_color, None)
 
     def timer_tick_evnet(self, timer):
         self.bottom_text_btn.set_label(self.show_bottom_text % (self.second))
@@ -197,7 +202,7 @@ class TrayDialog(Window):
                 gtk.timeout_add(1, self.run_exec_timeout)
         self.second -= 1
 
-    def top_text_btn_expose_event(self, widget, event, font_color):
+    def top_text_btn_expose_event(self, widget, event, font_color, pango_list):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
@@ -211,7 +216,8 @@ class TrayDialog(Window):
                   rect.x,
                   rect.y + rect.height/2 - size[1]/2,
                   font_size,
-                  font_color)
+                  font_color,
+                  pango_list=pango_list)
         widget.set_size_request(size[0] + 10, size[1] + 4)
         return True
 
@@ -236,6 +242,9 @@ class TrayDialog(Window):
             self.run_exec(self.argv)
 
     def label_expose_event(self, widget, event, width):
+        color = self.cancel_color
+        if widget.state == gtk.STATE_PRELIGHT:
+            color = "#FFFFFF"
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
@@ -247,7 +256,7 @@ class TrayDialog(Window):
                   rect.x + rect.width/2 - size[0]/2, 
                   rect.y + rect.height/2 - size[1]/2, 
                   self.cancel_size, 
-                  self.cancel_color, 
+                  color, 
                   self.cancel_font)  
         widget.set_size_request(size[0] + width, size[1] + 10)
         #
