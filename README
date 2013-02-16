@@ -81,7 +81,7 @@ sudo apt-get install python-dbus
 前的注释去掉。
 
 == Bluetooth module ==
-sudo apt-get install libopenobex1 bluez 
+sudo apt-get install obexd-server libopenobex1 bluez 
 
 == App-associate module ==
 sudo apt-get install python-psutil
