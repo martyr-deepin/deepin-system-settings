@@ -494,6 +494,7 @@ class Security(gtk.VBox):
                 self.table.attach(self.auth_combo_align, 1, 4, 4, 5)
 
                 # Retrieve wep properties
+                print "debug", self.security_combo.get_current_item()[0]
                 try:
                     key = secret
                     index = self.setting.wep_tx_keyidx
@@ -512,6 +513,7 @@ class Security(gtk.VBox):
         self.queue_draw()
 
     def change_encry_type(self, widget, content, value, index):
+        print content, value, index
         if value == None:
             self.connection.del_setting("802-11-wireless-security")
             del self.connection.get_setting("802-11-wireless").security
@@ -544,6 +546,10 @@ class Security(gtk.VBox):
         if self.setting.verify_wep_key(content, wep_type):
             self.setting.set_wep_key(active, content)
             check_settings(self.connection, self.set_button)
+            print self.connection.settings_dict
+            (setting_name, method) = self.connection.guess_secret_info() 
+            print "agent dbug",cache.getobject(self.connection.object_path).settings_dict[setting_name]
+            #self.setting.psk = content
 
             print "wep_valid"
         else:
@@ -599,6 +605,7 @@ class Security(gtk.VBox):
                 self.setting.auth_alg = "open"
             else:
                 self.setting.auth_alg = "shared"
+            del self.setting.psk
 
         # Update
         self.setting.adapt_wireless_security_commit()
