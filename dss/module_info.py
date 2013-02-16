@@ -22,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.utils import get_system_icon_info
-from dtk.ui.config import Config
+from deepin_utils.config import Config
 from deepin_utils.file import get_parent_dir
 import gtk
 import os

@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.utils import color_hex_to_cairo, get_content_size
 from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_pixbuf, draw_text, draw_vlinear
 from dtk.ui.scrolled_window import ScrolledWindow
@@ -31,8 +31,9 @@ from dtk.ui.label import Label
 from dtk.ui.line import HSeparator
 from dtk.ui.entry import InputEntry
 from dtk.ui.combo import ComboBox
-from dtk.ui.button import ToggleButton
-from dtk.ui.constant import ALIGN_START, ALIGN_END
+from dtk.ui.button import ToggleButton, Button
+from dtk.ui.dialog import OpenFileDialog
+from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
 import gobject
 import gtk
 import pango
@@ -44,6 +45,8 @@ from bt.device import Device
 from bt.utils import bluetooth_class_to_type
 import time
 import threading as td
+import uuid
+import re
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -82,30 +85,49 @@ class DeviceItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),     
     }
     
-    def __init__(self, name, pixbuf):
+    def __init__(self, name, pixbuf, device, adapter, send_button = None):
         gobject.GObject.__init__(self)
 
         self.name = name
         self.pixbuf = pixbuf
+        self.device = device
+        self.adapter = adapter
+        self.send_button = send_button
 
+        self.pair_pixbuf = app_theme.get_pixbuf("bluetooth/pair.png")
         self.icon_size = 48
         self.is_button_press = False
+        self.is_paired = False
 
         self.__const_padding_y = 10
 
     def render(self, cr, rect):
         # Draw select background.
+        content_width, content_height = get_content_size(self.name)
         if self.is_button_press == True:
-            draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, 
+            draw_vlinear(cr, 
+                         rect.x + (rect.width - content_width) / 2 - 2, 
+                         rect.y + rect.height - CONTENT_FONT_SIZE * 2 - 2, 
+                         content_width + 4, 
+                         CONTENT_FONT_SIZE * 2, 
                          ui_theme.get_shadow_color("listview_select").get_color_info())
-
+        
         # Draw device icon.
         draw_pixbuf(cr, self.pixbuf, 
                     rect.x + self.icon_size / 2,
                     rect.y + (rect.height - self.icon_size) / 2,
                     )
+
+        if self.is_paired:
+            draw_pixbuf(cr, 
+                        self.pair_pixbuf.get_pixbuf(), 
+                        rect.x + self.icon_size + self.pair_pixbuf.get_pixbuf().get_width() / 2, 
+                        rect.y + self.icon_size + self.pair_pixbuf.get_pixbuf().get_height() / 2)
         
         # Draw device name.
+        text_color="#000000"
+        if self.is_button_press == True:
+            text_color="#FFFFFF"
         draw_text(cr, 
                   self.name, 
                   rect.x,
@@ -113,6 +135,7 @@ class DeviceItem(gobject.GObject):
                   rect.width, 
                   CONTENT_FONT_SIZE, 
                   CONTENT_FONT_SIZE, 
+                  text_color, 
                   alignment=pango.ALIGN_CENTER)
         
     def emit_redraw_request(self):
@@ -204,11 +227,43 @@ class DeviceItem(gobject.GObject):
         '''
         pass
 
+    def __send_file(self, filename):
+        print "DEBUG", filename
+
+    def __send_button_pressed(self, widget, event):
+        dlg = OpenFileDialog(_("Select File"), None, self.__send_file)
+        dlg.show_all()
+
+    def __reply_handler_cb(self, device):
+        self.is_paired = True
+        self.emit_redraw_request()
+        self.send_button.set_child_visible(True)
+        self.send_button.connect("button-press-event", self.__send_button_pressed)
+
+    def __error_handler_cb(self, error):
+        self.is_paired = False
+        self.emit_redraw_request()
+
     def icon_item_double_click(self, x, y):
         '''
         Handle double click event.
         '''
-        pass
+        from bt.agent import Agent                                                 
+        # TODO: wired... it need to use uuid to identify bluez device path
+        path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
+        agent = Agent(path, 
+                      True, 
+                      _("Please confirm %s pin match as below") % self.name, 
+                      _("Yes"), 
+                      _("No"))                                                     
+        agent.set_exit_on_release(False)                                        
+        self.device.set_trusted(True)
+        if not self.device.get_paired():                                             
+            self.adapter.create_paired_device(self.device.get_address(), 
+                                              path, 
+                                              "DisplayYesNo", 
+                                              self.__reply_handler_cb, 
+                                              self.__error_handler_cb)
     
     def icon_item_release_resource(self):
         '''
@@ -248,7 +303,7 @@ class DiscoveryDeviceThread(td.Thread):
             self.ThisPtr.adapter.start_discovery()
 
             while True:
-                time.sleep(0.1)
+                time.sleep(1)
         except Exception, e:
             print "class DiscoveryDeviceThread got error: %s" % e
 
@@ -263,14 +318,14 @@ class BlueToothView(gtk.VBox):
         '''
         gtk.VBox.__init__(self)
 
+        self.send_button = Button(_("Send File"))
         self.manager = Manager()
         self.adapter = None
         if self.manager.get_default_adapter() != "None":
             self.adapter = Adapter(self.manager.get_default_adapter())
             self.adapter.connect("device-found", self.__device_found)
 
-        self.timeout_items = [("10 %s" % _("Minutes"), 1)]
-
+        self.timeout_items = [("2 %s" % _("Minutes"), 1)]
         '''
         enable open
         '''
@@ -301,6 +356,7 @@ class BlueToothView(gtk.VBox):
         if self.adapter:
             self.display_device_entry.set_text(self.adapter.get_name())
         self.display_device_entry.set_size(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
+        self.display_device_entry.entry.connect("changed", self.__display_device_changed)
         self.__widget_pack_start(self.display_box, 
                                  [self.display_device_label, self.display_device_entry])
         self.display_align.add(self.display_box)
@@ -337,6 +393,17 @@ class BlueToothView(gtk.VBox):
         self.device_iconview.set_size_request(690, 196)
         self.device_align.add(self.device_iconview)
         '''
+        operation
+        '''
+        self.oper_align = self.__setup_align()
+        self.oper_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.notice_label = Label("", text_x_align = ALIGN_MIDDLE, label_width = 516)
+        self.send_button.set_child_visible(False)
+        self.cancel_button = Button(_("Cancel"))
+        self.__widget_pack_start(self.oper_box, 
+                [self.notice_label, self.send_button, self.cancel_button])
+        self.oper_align.add(self.oper_box)
+        '''
         this->gtk.VBox pack_start
         '''
         self.__widget_pack_start(self, 
@@ -345,12 +412,16 @@ class BlueToothView(gtk.VBox):
                                   self.display_align, 
                                   self.search_align, 
                                   self.timeout_align, 
-                                  self.device_align])
+                                  self.device_align, 
+                                  self.oper_align])
 
         if self.adapter == None:
             self.set_sensitive(False)
 
         self.connect("expose-event", self.__expose)
+
+    def __display_device_changed(self, widget, event):
+        self.adapter.set_name(widget.get_text())
 
     def __setup_separator(self):                                                
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
@@ -399,7 +470,7 @@ class BlueToothView(gtk.VBox):
                 return
 
             items.append(DeviceItem(values['Name'], 
-                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf()))
+                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter, self.send_button))
             self.device_iconview.add_items(items)
         else:
             if adapter.get_discovering():

@@ -495,23 +495,30 @@ class Security(gtk.VBox):
 
                 # Retrieve wep properties
                 try:
-                    key = secret
                     index = self.setting.wep_tx_keyidx
                     auth = self.setting.auth_alg
                     self.auth_combo.set_select_index(["open", "shared"].index(auth))
                 except:
-                    key = ""
                     index = 0
                     auth = "open"
                 # must convert long int to int 
                 index = int(index)
-                self.key_entry.entry.set_text(key)
+                
+                #init_key = True
+                #if isinstance(self.connection, NMRemoteConnection):
+                    #init_setting = self.connection.get_setting("802-11-wireless-security")
+                    #if init_setting.wep_key_type != self.setting.wep_key_type:
+                        #init_key = False
+
+                #if init_key:
+                self.key_entry.entry.set_text(secret)
                 self.setting.set_wep_key(index, secret)
                 self.wep_index_spin.set_value(index)
                 self.auth_combo.set_select_index(["open", "shared"].index(auth))
         self.queue_draw()
 
     def change_encry_type(self, widget, content, value, index):
+        print content, value, index
         if value == None:
             self.connection.del_setting("802-11-wireless-security")
             del self.connection.get_setting("802-11-wireless").security
@@ -526,7 +533,10 @@ class Security(gtk.VBox):
             self.has_security = True
             self.setting.key_mgmt = value
             if value == "none":
+                del self.setting.psk
                 self.setting.wep_key_type = index
+                for key in range(0, 4):
+                    delattr(self.setting, "wep_key%d"%key)
             self.set_button("save", False)
             self.reset()
 
@@ -544,7 +554,6 @@ class Security(gtk.VBox):
         if self.setting.verify_wep_key(content, wep_type):
             self.setting.set_wep_key(active, content)
             check_settings(self.connection, self.set_button)
-
             print "wep_valid"
         else:
             self.set_button("save", False)
@@ -564,11 +573,14 @@ class Security(gtk.VBox):
         self.reset()
 
     def wep_index_spin_cb(self, widget, value):
-        key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
-                                                   "802-11-wireless-security",
-                                                   "wep-key%d"%value)
+        if isinstance(self.connection, NMRemoteConnection):
+            key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                       "802-11-wireless-security",
+                                                       "wep-key%d"%value)
+        else:
+            key = self.setting.get_wep_key(value)
 
-        if key == None:
+        if not key:
             key = ''
         self.key_entry.entry.set_text(key)
         self.setting.wep_tx_keyidx = value
@@ -599,6 +611,7 @@ class Security(gtk.VBox):
                 self.setting.auth_alg = "open"
             else:
                 self.setting.auth_alg = "shared"
+            del self.setting.psk
 
         # Update
         self.setting.adapt_wireless_security_commit()

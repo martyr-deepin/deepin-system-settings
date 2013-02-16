@@ -19,6 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from dtk.ui.utils import container_remove_all
 from tray_ui import TrayUI
 from shared_methods import NetManager
 from helper import Dispatcher
@@ -81,7 +82,7 @@ class TrayNetworkPlugin(object):
             self.change_status_icon("tray_goc_icon")
 
     def connect_by_ssid(self, widget, ssid):
-        print self.net_manager.connect_wireless_by_ssid(ssid)
+        connection =  self.net_manager.connect_wireless_by_ssid(ssid)
 
     def active_wired(self):
         """
@@ -118,19 +119,11 @@ class TrayNetworkPlugin(object):
             else:
                 self.activate_wireless()
         else:
-            self.gui.tree_box.remove(self.gui.ap_tree)
-            self.gui.tree_box.remove(self.gui.more_button)
+            container_remove_all(self.gui.tree_box)
             self.gui.more_button.set_ap_list([])
 
             def device_disactive():
                 pass
-                #if self.net_manager.get_wireless_state()[0]:
-                    #print "fsdfsdaf"
-                    #self.gui.wireless.set_active((True, False))
-                    #if self.gui.wire.get_active():
-                        #self.change_status_icon("tray_lan_icon")
-                    #else:
-                        #self.change_status_icon("tray_usb_icon")
 
             self.net_manager.disactive_wireless_device(device_disactive)
 
@@ -142,13 +135,14 @@ class TrayNetworkPlugin(object):
         if new_state is 20:
             self.gui.wireless.set_active((False, False))
         elif new_state is 30:
+            print "==================="
             self.gui.wireless.set_sensitive(True)
             self.change_status_icon("tray_usb_icon")
             if reason == 39:
                 index = self.gui.get_active_ap()
                 self.gui.set_active_ap(index, False)
-            else:
-                self.gui.wireless.set_active((True,False))
+            #elif reason:
+                #self.gui.wireless.set_active((True,False))
         elif new_state is 40:
             self.gui.wireless.set_active((True, True))
             self.change_status_icon("tray_goc_icon")
@@ -161,7 +155,6 @@ class TrayNetworkPlugin(object):
     def set_active_ap(self):
         index = self.net_manager.get_active_connection(self.ap_list)
         self.gui.set_active_ap(index, True)
-
 
     def activate_wireless(self):
         """

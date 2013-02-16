@@ -21,6 +21,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import gobject
 
+int = gobject.TYPE_INT
+obj = gobject.TYPE_PYOBJECT
+str = gobject.TYPE_STRING
+
+def _(*arg):
+    return (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (arg))
+
 class EventDispatcher(gobject.GObject):
     SIGNAL = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,gobject.TYPE_PYOBJECT))
     SIGNAL_SIMPLE = (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))
@@ -32,15 +39,24 @@ class EventDispatcher(gobject.GObject):
 
     __gsignals__= {
 
-            "connection-change" : SIGNAL_SIMPLE,
-            "connection-delete" : SIGNAL_SIMPLE,
-            "button-change" : SIGNAL,
-            "set-tip" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            #"connection-change" : SIGNAL_SIMPLE,
+            #"connection-delete" : SIGNAL_SIMPLE,
+            #"button-change" : SIGNAL,
+            #"set-tip" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+            #"wired_change" : SIGNAL_TUPLE,
+            #"wireless_change" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,)),
+            #"connect_by_ssid" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
 
-            "wired_change" : SIGNAL_TUPLE,
-            "wireless_change" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,)),
-            "connect_by_ssid" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
-
+            #"select-connection" : SIGNAL_SIMPLE,
+            "connection-change" : _(obj),
+            "connection-delete" : _(obj),
+            "button-change" : _(obj, obj),
+            "set-tip" :       _(int),
+            "wired_change" : _(int, int),
+            "wireless_change" : _(int, int, int),
+            "connect_by_ssid" : _(str),
+            "select-connection" : _(obj),
+            "slide-to" : _(obj, str)
             }
 
     def __init__(self):
@@ -63,12 +79,17 @@ class EventDispatcher(gobject.GObject):
     def wired_change(self, new_state, reason):
         self.emit("wired_change",new_state, reason)
 
+    def add_slider(self, slider):
+        self.__slider = slider
+
+    def slide_to(self, page, direction):
+        self.emit(page, str)
+
     def wireless_change(self, new_state, old_state, reason):
         self.emit("wireless_change", new_state, old_state, reason)
 
     def connect_by_ssid(self, ssid):
         self.emit("connect_by_ssid", ssid)
-
 
 Dispatcher = EventDispatcher()
 
