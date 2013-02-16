@@ -106,12 +106,15 @@ class TrayUI(gtk.VBox):
         return self.active_ap_index
 
     def resize_tree(self):
-        self.remove(self.more_button)
+        self.tree_box.remove(self.more_button)
         length = len(self.ap_tree.visible_items)
         if length <=10:
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*length)
         else:
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*10)
+            for item in self.ap_tree.visible_items:
+                item.set_padding(10)
+
          
 class Section(gtk.HBox):
     TOGGLE_INSENSITIVE = 0
@@ -194,6 +197,7 @@ class SsidItem(TreeItem):
         self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
         self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
+        self.right_padding = 0
 
     def render_essid(self, cr, rect):
         self.render_background(cr,rect)
@@ -244,7 +248,7 @@ class SsidItem(TreeItem):
                 cr.stroke()
 
     def get_column_widths(self):
-        return [-1, IMG_WIDTH * 2]
+        return [-1, IMG_WIDTH * 2 + self.right_padding]
 
     def get_column_renders(self):
         return [self.render_essid, self.render_signal]
@@ -289,6 +293,10 @@ class SsidItem(TreeItem):
             cr.set_source_rgb(1, 1, 1 )
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
+
+    def set_padding(self, padding):
+        self.right_padding = padding
+        self.redraw()
 
 class MoreItem(TreeItem):
 
