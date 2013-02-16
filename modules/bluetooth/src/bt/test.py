@@ -269,7 +269,7 @@ def test_phone():
 
 if __name__ == "__main__":
     # test_adapter_prop()
-    # test_found_pair()
+    test_found_pair()
     # test_service()
-    test_phone()
+    #test_phone()
     pass

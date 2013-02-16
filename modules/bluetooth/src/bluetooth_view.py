@@ -44,6 +44,8 @@ from bt.device import Device
 from bt.utils import bluetooth_class_to_type
 import time
 import threading as td
+import uuid
+import re
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -82,14 +84,18 @@ class DeviceItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),     
     }
     
-    def __init__(self, name, pixbuf):
+    def __init__(self, name, pixbuf, device, adapter):
         gobject.GObject.__init__(self)
 
         self.name = name
         self.pixbuf = pixbuf
+        self.device = device
+        self.adapter = adapter
+        self.pair_pixbuf = app_theme.get_pixbuf("bluetooth/pair.png")
 
         self.icon_size = 48
         self.is_button_press = False
+        self.is_paired = False
 
         self.__const_padding_y = 10
 
@@ -104,6 +110,12 @@ class DeviceItem(gobject.GObject):
                     rect.x + self.icon_size / 2,
                     rect.y + (rect.height - self.icon_size) / 2,
                     )
+
+        if self.is_paired:
+            draw_pixbuf(cr, 
+                        self.pair_pixbuf.get_pixbuf(), 
+                        rect.x + self.icon_size + self.pair_pixbuf.get_pixbuf().get_width() / 2, 
+                        rect.y + self.icon_size + self.pair_pixbuf.get_pixbuf().get_height() / 2)
         
         # Draw device name.
         draw_text(cr, 
@@ -204,11 +216,36 @@ class DeviceItem(gobject.GObject):
         '''
         pass
 
+    def __reply_handler_cb(self, device):
+        self.is_paired = True
+        self.emit_redraw_request()
+        print "paired then redraw"
+
+    def __error_handler_cb(self):
+        print "fail to paired"
+        self.is_paired = False
+        self.emit_redraw_request()
+
     def icon_item_double_click(self, x, y):
         '''
         Handle double click event.
         '''
-        pass
+        from bt.agent import Agent                                                 
+        path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
+        agent = Agent(path, 
+                      True, 
+                      _("Please confirm %s pin match as below") % self.name, 
+                      _("Yes"), 
+                      _("No"))                                                     
+        agent.set_exit_on_release(False)                                        
+        self.device.set_trusted(True)
+        if not self.device.get_paired():                                             
+            print "create paired device"                                        
+            self.adapter.create_paired_device(self.device.get_address(), 
+                                              path, 
+                                              "DisplayYesNo", 
+                                              self.__reply_handler_cb, 
+                                              self.__error_handler_cb)
     
     def icon_item_release_resource(self):
         '''
@@ -301,6 +338,7 @@ class BlueToothView(gtk.VBox):
         if self.adapter:
             self.display_device_entry.set_text(self.adapter.get_name())
         self.display_device_entry.set_size(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
+        self.display_device_entry.entry.connect("changed", self.__display_device_changed)
         self.__widget_pack_start(self.display_box, 
                                  [self.display_device_label, self.display_device_entry])
         self.display_align.add(self.display_box)
@@ -352,6 +390,9 @@ class BlueToothView(gtk.VBox):
 
         self.connect("expose-event", self.__expose)
 
+    def __display_device_changed(self, widget, event):
+        self.adapter.set_name(widget.get_text())
+
     def __setup_separator(self):                                                
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(500, 10)                                    
@@ -399,7 +440,7 @@ class BlueToothView(gtk.VBox):
                 return
 
             items.append(DeviceItem(values['Name'], 
-                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf()))
+                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter))
             self.device_iconview.add_items(items)
         else:
             if adapter.get_discovering():

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-10 10:24+0800\n"
+"POT-Creation-Date: 2013-02-16 15:36+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,26 +16,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:281
+#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:318
 msgid "Bluetooth Get Powered"
 msgstr ""
 
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:299
+#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:336
 msgid "Device Shown Name"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:312
+#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:350
 msgid "Be Searchedable"
 msgstr ""
 
-#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:327
+#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:365
 msgid "Searching Device Timeout"
 msgstr ""
 
-#: ../src/bluetooth_view.py:272
+#: ../src/bluetooth_view.py:237
+#, python-format
+msgid "Please confirm %s pin match as below"
+msgstr ""
+
+#: ../src/bluetooth_view.py:238
+msgid "Yes"
+msgstr ""
+
+#: ../src/bluetooth_view.py:239
+msgid "No"
+msgstr ""
+
+#: ../src/bluetooth_view.py:309
 msgid "Minutes"
 msgstr ""
 
-#: ../src/bluetooth_view.py:278
+#: ../src/bluetooth_view.py:315
 msgid "Bluetooth"
 msgstr ""
