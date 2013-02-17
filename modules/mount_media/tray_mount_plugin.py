@@ -1,9 +1,11 @@
 
 
 import gtk
+from tray_mount_gui import EjecterApp
 
 class MountMedia(object):
     def __init__(self):
+        self.ejecter_app = EjecterApp()
         pass
 
     def init_values(self, this_list):
@@ -22,7 +24,7 @@ class MountMedia(object):
         pass
 
     def plugin_widget(self):
-        return gtk.TextView()
+        return self.ejecter_app.hbox
 
     def show_menu(self):
         self.this.set_size_request(160, 180)
