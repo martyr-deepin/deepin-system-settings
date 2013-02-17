@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from utils import BusBase
+from account_utils import BusBase
 import gobject
 
 class ConsoleKit(BusBase):

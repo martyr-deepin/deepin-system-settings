@@ -38,7 +38,7 @@ from dtk.ui.new_slider import HSlider
 from dtk.ui.utils import container_remove_all, color_hex_to_cairo, cairo_disable_antialias
 from treeitem import MyTreeView as TreeView
 from treeitem import MyTreeItem as TreeItem
-from utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
+from account_utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
 import gtk
 import pango
 import threading

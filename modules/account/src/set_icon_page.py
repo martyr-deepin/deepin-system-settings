@@ -32,7 +32,7 @@ from dtk.ui.cache_pixbuf import CachePixbuf
 from icon_button import IconButton
 from webcam import Webcam
 from constant import *
-from utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
+from account_utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
 import gtk
 import gobject
 import tools
