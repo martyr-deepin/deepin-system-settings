@@ -180,7 +180,7 @@ msgid "OK"
 msgstr "确认"
 
 #: ../src/tray_dialog.py:37
-msgid "Turn of your computer now?"
+msgid "Turn off your computer now?"
 msgstr "现在关闭此系统吗？"
 
 #: ../src/tray_dialog.py:39

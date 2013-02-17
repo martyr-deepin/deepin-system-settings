@@ -188,7 +188,7 @@ msgid "OK"
 msgstr ""
 
 #: ../src/tray_dialog.py:37
-msgid "Turn of your computer now?"
+msgid "Turn off your computer now?"
 msgstr ""
 
 #: ../src/tray_dialog.py:39
