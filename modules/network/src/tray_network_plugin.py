@@ -42,6 +42,7 @@ class TrayNetworkPlugin(object):
 
     def init_widgets(self):
         wired_state = self.net_manager.get_wired_state()
+        print wired_state
         if wired_state:
             self.gui.wire.set_active(wired_state)
             if wired_state[0] and wired_state[1]:
@@ -57,8 +58,8 @@ class TrayNetworkPlugin(object):
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
                 self.change_status_icon("tray_links_icon")
-            else:
-                self.change_status_icon("tray_wifi_icon")
+            #else:
+                #self.change_status_icon("tray_wifi_icon")
 
             Dispatcher.connect("wireless-change", self.set_wireless_state)
             Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
@@ -71,15 +72,23 @@ class TrayNetworkPlugin(object):
         else:
             self.net_manager.disactive_wired_device(self.disactive_wired)
 
-    def set_wired_state(self, widget, new_state, reason):
+    def set_wired_state(self, widget, device, new_state, reason):
         '''
         wired-change callback
         '''
+        print new_state, reason
         if new_state is 20:
             self.gui.wire.set_active((False, False))
         elif new_state is 30:
             self.gui.wire.set_sensitive(True)
+            self.change_status_icon("tray_usb_icon")
+            if reason is 40:
+                self.gui.wire.set_active((True, False))
+        elif new_state is 40:
             self.change_status_icon("tray_goc_icon")
+        elif new_state is 100:
+            self.active_wired()
+
 
     def connect_by_ssid(self, widget, ssid):
         connection =  self.net_manager.connect_wireless_by_ssid(ssid)
@@ -127,7 +136,7 @@ class TrayNetworkPlugin(object):
 
             self.net_manager.disactive_wireless_device(device_disactive)
 
-    def set_wireless_state(self, widget, new_state, old_state, reason):
+    def set_wireless_state(self, widget, device, new_state, old_state, reason):
         """
         "wireless-change" signal callback
         """
@@ -190,6 +199,8 @@ class TrayNetworkPlugin(object):
 
     def show_menu(self):
         self.this.set_size_request(160, 300)
+        if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
+            self.gui.set_ap(self.ap_list)
         print "shutdown show menu..."
 
     def hide_menu(self):

@@ -25,7 +25,7 @@ from dtk.ui.label import Label
 from dtk.ui.button import OffButton, Button
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_pixbuf
-from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, container_remove_all
 import gtk
 import pango
 from nls import _
@@ -88,6 +88,7 @@ class TrayUI(gtk.VBox):
             self.more_button.set_ap_list(ap_list[5:])
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
             #self.ap_tree.add_items([MoreItem(more_ap, self.resize_tree)])
+        container_remove_all(self.tree_box)
         self.tree_box.pack_start(self.ap_tree, True, True)
         self.tree_box.pack_start(self.more_button, False, False)
         self.show_all()

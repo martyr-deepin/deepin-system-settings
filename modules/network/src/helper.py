@@ -52,8 +52,8 @@ class EventDispatcher(gobject.GObject):
             "connection-delete" : _(obj),
             "button-change" : _(obj, obj),
             "set-tip" :       _(int),
-            "wired_change" : _(int, int),
-            "wireless_change" : _(int, int, int),
+            "wired_change" : _(obj, int, int),
+            "wireless_change" : _(obj, int, int, int),
             "connect_by_ssid" : _(str),
             "select-connection" : _(obj),
             "slide-to" : _(obj, str)
@@ -76,8 +76,8 @@ class EventDispatcher(gobject.GObject):
     def set_tip(self, content):
         self.emit("set-tip", content)
 
-    def wired_change(self, new_state, reason):
-        self.emit("wired_change",new_state, reason)
+    def wired_change(self, device, new_state, reason):
+        self.emit("wired_change", device, new_state, reason)
 
     def add_slider(self, slider):
         self.__slider = slider
@@ -85,8 +85,19 @@ class EventDispatcher(gobject.GObject):
     def slide_to(self, page, direction):
         self.emit(page, str)
 
-    def wireless_change(self, new_state, old_state, reason):
-        self.emit("wireless_change", new_state, old_state, reason)
+    def wireless_change(self, device, new_state, old_state, reason):
+        '''
+        #20: unavailable      0
+        #30,..,39: reconfig   1
+        #30: disconnect       2
+        #40: try connect      3
+        #60,50,..: need auth  4
+        #100: connected       5
+        #'''
+        #if new_state is 20:
+            #action = 0
+        #elif new_state is 30:
+        self.emit("wireless_change", device, new_state, old_state, reason)
 
     def connect_by_ssid(self, ssid):
         self.emit("connect_by_ssid", ssid)
