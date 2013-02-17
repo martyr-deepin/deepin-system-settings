@@ -29,8 +29,9 @@ class Rejected(dbus.DBusException):
     _dbus_error_name = "org.bluez.Error.Rejected"
 
 class Agent(dbus.service.Object):
-	
-    def __init__(self, path = "/org/bluez/agent", bus = None):
+    def __init__(self, 
+                 path = "/org/bluez/agent", 
+                 bus = None):
         if bus is None:
 	    bus = dbus.SystemBus()    
     
@@ -40,7 +41,7 @@ class Agent(dbus.service.Object):
     
     def set_exit_on_release(self, exit_on_release):
         self.exit_on_release = exit_on_release
-    
+
     @dbus.service.method("org.bluez.Agent", in_signature="", out_signature="")
     def Release(self):
         if self.exit_on_release:
@@ -88,7 +89,6 @@ class Agent(dbus.service.Object):
     @dbus.service.method("org.bluez.Agent", in_signature="", out_signature="")
     def Cancel(self):
     	print "Cancel"
-
 
 if __name__ == '__main__':
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)

@@ -377,7 +377,7 @@ class DisplayView(gtk.VBox):
                                           value_max = 1.0)
         self.brightness_scale.set_size_request(HSCALEBAR_WIDTH, 33)
         self.brightness_scale.set_value(self.display_manager.get_screen_brightness())
-        self.brightness_scale.connect("button-release-event", self.__set_brightness)
+        self.brightness_scale.connect("value-changed", self.__set_brightness)
         self.__widget_pack_start(self.brightness_box, 
             [self.brightness_label_align, 
              self.brightness_scale])
@@ -618,7 +618,7 @@ class DisplayView(gtk.VBox):
             return
 
         if object == "multi_monitors_combo":
-            self.__send_message("status", ("display", _("Changed multiply monitors mode to %s") % item_value))
+            self.__send_message("status", ("display", _("Changed multiply monitors mode to %s") % item_text))
             self.display_manager.set_multi_monitor(item_value)
             return
         

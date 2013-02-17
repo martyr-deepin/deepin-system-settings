@@ -6,6 +6,7 @@
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,7 +62,13 @@ class Adapter(BusBase):
     def cancel_device_creation(self, address):
         return self.dbus_method("CancelDeviceCreation", address)
     
-    def create_paired_device(self, address, agent_path, capability):
+    def create_paired_device(self, address, agent_path, capability, 
+                             reply_handler_cb = None, error_handler_cb = None):
+        if reply_handler_cb and error_handler_cb:
+            return self.dbus_method("CreatePairedDevice", address, agent_path, capability, 
+                                    reply_handler = reply_handler_cb, 
+                                    error_handler = error_handler_cb)
+        
         return self.dbus_method("CreatePairedDevice", address, agent_path, capability, 
                                 reply_handler = self.create_paired_reply,
                                 error_handler = self.create_paired_error)

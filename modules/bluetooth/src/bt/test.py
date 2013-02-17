@@ -88,10 +88,15 @@ def test_found_pair():
         device.set_trusted(True)
         if not device.get_paired():
             print "create paired device"
-            adapter.create_paired_device(device.get_address(), path, "DisplayYesNo")
+            adapter.create_paired_device(device.get_address(), 
+                                         path, 
+                                         "DisplayYesNo", 
+                                         create_paired_reply, 
+                                         create_paired_error)
 
     def create_paired_reply(device):
         print "succeed paired device (%s)" % (device)
+
 
     def create_paired_error(error):
         print "paired device failed: %s" % (error)
@@ -261,7 +266,8 @@ def test_phone():
     else:
         print "after paired, should exists devices"
 
-    connect_phone_audio(device)    
+    send_file(device, ["/home/zhaixiang/debug"])
+    #connect_phone_audio(device)    
     # connect_phone_network(adapter, device)    
 
     mainloop = gobject.MainLoop()
@@ -269,7 +275,7 @@ def test_phone():
 
 if __name__ == "__main__":
     # test_adapter_prop()
-    # test_found_pair()
+    test_found_pair()
     # test_service()
     test_phone()
     pass
