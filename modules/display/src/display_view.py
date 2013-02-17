@@ -618,7 +618,7 @@ class DisplayView(gtk.VBox):
             return
 
         if object == "multi_monitors_combo":
-            self.__send_message("status", ("display", _("Changed multiply monitors mode to %s") % item_value))
+            self.__send_message("status", ("display", _("Changed multiply monitors mode to %s") % item_text))
             self.display_manager.set_multi_monitor(item_value)
             return
         
