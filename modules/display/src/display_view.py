@@ -377,7 +377,7 @@ class DisplayView(gtk.VBox):
                                           value_max = 1.0)
         self.brightness_scale.set_size_request(HSCALEBAR_WIDTH, 33)
         self.brightness_scale.set_value(self.display_manager.get_screen_brightness())
-        self.brightness_scale.connect("button-release-event", self.__set_brightness)
+        self.brightness_scale.connect("value-changed", self.__set_brightness)
         self.__widget_pack_start(self.brightness_box, 
             [self.brightness_label_align, 
              self.brightness_scale])
