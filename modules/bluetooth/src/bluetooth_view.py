@@ -248,14 +248,13 @@ class DeviceItem(gobject.GObject):
         '''
         Handle double click event.
         '''
-        from bt.agent import Agent                                                 
+        from bt.gui_agent import GuiAgent                                                 
         # TODO: wired... it need to use uuid to identify bluez device path
         path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
-        agent = Agent(path, 
-                      True, 
-                      _("Please confirm %s pin match as below") % self.name, 
-                      _("Yes"), 
-                      _("No"))                                                     
+        agent = GuiAgent(path, 
+                         _("Please confirm %s pin match as below") % self.name, 
+                         _("Yes"), 
+                         _("No"))                                                     
         agent.set_exit_on_release(False)                                        
         self.device.set_trusted(True)
         if not self.device.get_paired():                                             
