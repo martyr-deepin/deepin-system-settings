@@ -43,7 +43,7 @@ class PowerManager:
     '''
     def __init__(self):
         self.power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
-        self.lockdown_settings = deepin_gsettings.new("org.gnome.desktop.lockdown")
+        self.lockdown_settings = deepin_gsettings.new("org.gnome.desktop.screensaver")
 
     def __get_item_value(self, items, ori_value):
         for item, value in items:
@@ -63,11 +63,11 @@ class PowerManager:
     def __set_item_value(self, key, value):
         if value == 0:
             self.power_settings.set_string(key, "nothing")
-        elif value == 1:
+        elif value == 3:
             self.power_settings.set_string(key, "hibernate")
         elif value == 2:
             self.power_settings.set_string(key, "shutdown")
-        elif value == 3:
+        elif value == 1:
             self.power_settings.set_string(key, "suspend")
    
     def reset(self):
@@ -78,7 +78,7 @@ class PowerManager:
         self.power_settings.reset("sleep-inactive-ac-timeout")
         self.power_settings.reset("sleep-display-battery")             
         self.power_settings.reset("sleep-display-ac") 
-        self.lockdown_settings.reset("disable-lock-screen")  
+        self.lockdown_settings.reset("lock-enabled")  
 
     def is_laptop(self):
         return self.power_settings.get_boolean("is-laptop")
@@ -150,10 +150,10 @@ class PowerManager:
         self.power_settings.set_int("sleep-display-ac", value)
 
     def get_wakeup_password(self):
-        return self.lockdown_settings.get_boolean("disable-lock-screen")
+        return self.lockdown_settings.get_boolean("lock-enabled")
 
     def set_wakeup_password(self, value):
-        self.lockdown_settings.set_boolean("disable-lock-screen", value)
+        self.lockdown_settings.set_boolean("lock-enabled", value)
 
     def get_tray_battery_status(self):
         return True
