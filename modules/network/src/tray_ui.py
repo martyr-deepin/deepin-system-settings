@@ -71,7 +71,7 @@ class TrayUI(gtk.VBox):
             height += 20
         if self.wireless in widgets:
             height +=20
-            if self.ap_tree.visible_items:
+            if self.ap_tree.visible_items and self.wireless.get_active():
                 height += len(self.ap_tree.visible_items) * 20
             if self.more_button in self.tree_box.get_children():
                 height +=20
