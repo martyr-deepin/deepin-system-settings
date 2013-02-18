@@ -5,21 +5,97 @@ import gio
 import glib
 
 
+ICON_SIZE = 16
+
 class Device(gtk.Button):
     def __init__(self, drive, device):
         gtk.Button.__init__(self)
         self.drive  = drive
         self.device = device
 
+        self.was_removed = False
+        self.icon_updated = False
         self.d_name = ""
         self.description = ""
         self.volumes = []
         self.mounts  = []
         self.volume_count = 0;
         self.mount_count  = 0;
+        self.icon = gtk.image_new_from_gicon(self.drive.get_icon(), ICON_SIZE)
+        #
+        self.connect("clicked", self.clicked_eject)
+        self.drive.connect("disconnected", self.handle_removed_drive)
+        #
+        self.set_label("")
+        self.set_image(self.icon)
+        self.show_all()
+
+    def clicked_eject(self, widget):
+        print "clicked_eject..."
+        op = gtk.MountOperation()
+        print op.get_password()
+        if self.drive.can_eject():
+            try:
+                self.emit("unmounted")
+            except Exception,e:
+                print "error:", e
+        else:
+            for v in self.drive.get_volumes():
+                try:
+                    m = v.get_mount()
+                    if True:
+                        self.emit("unmounted")
+                    else:
+                        pass
+                except Exception, e:
+                    print "error:", e
+
+    def handle_unmounted(self, mount):
+        self.mounts.remove(mount)
+        self.mount_count = self.mount_count - 1;
+        self.update_label()
+
+        if self.mount_count <= 0:
+            self.set_mounted(False)
+            self.emit("unmounted")
+
+    def handle_removed_drive(self, drive):
+        self.emit("remove")
+
+    def handle_removed_volume(self, volume):
+        self.volumes.remove(volume)
+        self.volume_count = self.volume_count - 1;
+        self.update_label()
+
+        if self.volume_count == 0:
+            self.emit("remove")
+
+    def handle_removed_drive(self, removed_drive):
+        print "handle_removed_drive..."
+
+    def add_volume(self, volume):
+        self.volumes.insert(0, volume)
+        self.volume_count = self.volume_count + 1
+        self.connect("removed", self.handle_removed_volume)
+
+        if not self.icon_updated:
+            self.icon = gtk.image_new_from_gicon(volume.get_icon(), ICON_SIZE)
+            self.icon_updated = True
 
         self.update_label()
 
+    def add_mount(self, mount):
+        volume = mount.get_volume()
+        # add volume.
+        if not (volume in self.volumes):
+            self.add_volume(volume)
+
+        self.mounts.remove(mount)
+        self.mounts.insert(0, mount)
+        self.mount_count = self.mount_count + 1
+        self.set_mounted(True)
+        self.connect("unmounted", self.handle_unmounted)
+        self.update_label()
 
     def update_label(self):
         if self.volume_count == 0:
@@ -40,13 +116,21 @@ class Device(gtk.Button):
                 else:
                     volumes = volumes + ", " + v.get_name()
 
-                self.d_name = self.drive.get_name()
-                self.description = volumes
+            self.d_name = self.drive.get_name()
+            self.description = volumes
             
         # set show label.
         self.set_label(self.d_name + " (" + self.description + ")")
-        
 
+    def d_remove(self):
+        if self.was_removed:
+            return False;
+        self.meit("removed")
+        self.was_removed = True
+
+    def set_mounted(self, mounted):
+        #
+        self.set_sensitive(mounted)
 
 
 class Conf(object):
@@ -77,37 +161,29 @@ class EjecterApp(object):
             d = v.get_drive()
             
             self.monitor_manage_drive(d)
+            '''
             self.monitor_manage_volume(v)
 
             m = v.get_mount()
             if m != None:
+                print "fjdkf i love .."
                 self.monitor_manage_mount(m)
+            '''
 
     def monitor_manage_drive(self, drive):
         # gio.Drive 
-        '''
         print "monitor_manage_drive..."
         if drive == None:
             return False
         
         id = drive.get_identifier(self.conf.device_identifier)
-        print "id", id, drive.get_name()
+        print "id:", id, drive.get_name()
 
-        self.hbox.pack_start(Device(drive, id), False, False) 
+        d = Device(drive, 0)
+        print d.get_image()
+        self.hbox.pack_start(d, False, False) 
         self.hbox.show_all()
-
-        #if
-        #self.invalid_devices.append(id)
-        '''
-        pass
-
         
-    def d_removed(self, volume):
-        print "d_removed..."
-
-    def d_unmounted(self, volume):
-        print "d_unmounted..."
-
     def monitor_manage_volume(self, v):
         # gio.Volume
         '''
@@ -125,11 +201,6 @@ class EjecterApp(object):
         print "monitor_manage_mount..."
         drive = m.get_drive()
         print m.get_name(), drive.get_name()
-        de_test = Device(drive, id)
-        de_test.connect("clicked", self.de_test_clicked, m)
-        de_test.set_label(m.get_name() + " (" + drive.get_name() + ")")
-        self.hbox.pack_start(de_test, False, False) 
-        self.hbox.show_all()
 
 
     def unmount_end(self, mount, result):
@@ -138,15 +209,12 @@ class EjecterApp(object):
 
     def de_test_clicked(self, widget, m):
         m.unmount(self.unmount_end)
-    
-
 
     def monitor_volume_added(self, volume_monitor, drive):
         print "monitor_volume_added..."
 
     def monitor_mount_added(self, volume_monitor, mount):
         print "monitor_mount_added..."
-
 
 if __name__ == "__main__":
     EjecterApp()
