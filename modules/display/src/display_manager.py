@@ -471,6 +471,7 @@ class DisplayManager:
         return self.__get_duration_index(self.get_close_monitor() / 60, items)
 
     def set_close_monitor(self, value):
+        self.__power_settings.set_int("idle-dim-time", value * 60)
         self.__power_settings.set_int("sleep-display-battery", value * 60)
         self.__power_settings.set_int("sleep-display-ac", value * 60)
 
