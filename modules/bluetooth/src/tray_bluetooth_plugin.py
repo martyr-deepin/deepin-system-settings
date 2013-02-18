@@ -24,13 +24,12 @@ import gtk
 
 class TrayBluetoothPlugin(object):
     def __init__(self):
-        print "DEBUG xxxxxxxxxxxxxxxxxxxxxxx"
         pass
 
     def init_values(self, this_list):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
-        self.tray_icon.set_icon_theme("sound")
+        self.tray_icon.set_icon_theme("enable")
 
     def id(slef):
         return "deepin-bluetooth-plugin-hailongqiu"
