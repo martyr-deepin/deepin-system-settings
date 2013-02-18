@@ -63,6 +63,21 @@ class TrayUI(gtk.VBox):
         self.pack_start(self.mobile, False, False)
         self.ap_tree = TreeView()
         self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
+    
+    def get_widget_height(self):
+        height = 0
+        widgets = self.get_children()
+        if self.wire in widgets:
+            height += 20
+        if self.wireless in widgets:
+            height +=20
+            if self.ap_tree.visible_items:
+                height += len(self.ap_tree.visible_items) * 20
+            if self.more_button in self.tree_box.get_children():
+                height +=20
+
+        height += 20
+        return height
 
     def remove_net(self, net_type):
         if net_type == "wired":
@@ -95,7 +110,7 @@ class TrayUI(gtk.VBox):
 
 
     def set_active_ap(self, index, state):
-        print index
+        print "in set active ap",index
         if state and index:
             self.set_active_ap(self.active_ap_index, False)
             self.active_ap_index = index
@@ -115,6 +130,8 @@ class TrayUI(gtk.VBox):
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*10)
             for item in self.ap_tree.visible_items:
                 item.set_padding(10)
+
+        Dispatcher.tray_show_more()
 
          
 class Section(gtk.HBox):

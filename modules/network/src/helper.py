@@ -56,7 +56,10 @@ class EventDispatcher(gobject.GObject):
             "wireless_change" : _(obj, int, int, int),
             "connect_by_ssid" : _(str),
             "select-connection" : _(obj),
-            "slide-to" : _(obj, str)
+            "slide-to" : _(obj, str),
+            "change-crumb" : _(str),
+
+            "tray-show-more": _(),
             }
 
     def __init__(self):
@@ -85,6 +88,9 @@ class EventDispatcher(gobject.GObject):
     def slide_to(self, page, direction):
         self.emit(page, str)
 
+    def change_crumb(self, name):
+        self.emit("change-crumb", name)
+
     def wireless_change(self, device, new_state, old_state, reason):
         '''
         #20: unavailable      0
@@ -101,6 +107,9 @@ class EventDispatcher(gobject.GObject):
 
     def connect_by_ssid(self, ssid):
         self.emit("connect_by_ssid", ssid)
+
+    def tray_show_more(self):
+        self.emit("tray-show-more")
 
 Dispatcher = EventDispatcher()
 

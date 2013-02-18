@@ -45,7 +45,6 @@ class NetManager(object):
                 if not connections:
                     connection = nm_module.nm_remote_settings.new_wired_connection()
                     nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-
                 device_ethernet = cache.get_spec_object(device.object_path)
                 device_ethernet.auto_connect()
 
