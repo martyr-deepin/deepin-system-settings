@@ -14,9 +14,11 @@ class NetManager(object):
 
     def __init__(self):
         self.wired_devices = device_manager.get_wired_devices()
-        self.wired_device = self.wired_devices[0]
+        if self.wired_devices:
+            self.wired_device = self.wired_devices[0]
         self.wireless_devices = device_manager.get_wireless_devices()
-        self.wireless_device = self.wireless_devices[0]
+        if self.wireless_devices:
+            self.wireless_device = self.wireless_devices[0]
 
     def get_wired_state(self):
         if self.wired_devices is []:

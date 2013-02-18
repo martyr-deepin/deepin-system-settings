@@ -31,6 +31,7 @@ class TrayNetworkPlugin(object):
     def __init__(self):
         self.gui = TrayUI(self.toggle_wired, self.toggle_wireless, self.mobile_toggle)
         self.net_manager = NetManager()
+        self.init_notifier()
 
     def init_values(self, this_list):
         self.this_list = this_list
@@ -44,7 +45,9 @@ class TrayNetworkPlugin(object):
     
     def init_notifier(self):
         pynotify.init("Deepin network")
-        #lan_connect = pynotify.Notification("tt", "lan connect", icon="notification")
+
+    #def notify_send(self, title, message, icon, time_out=):
+        #n = pynotify.get
 
     def init_widgets(self):
         wired_state = self.net_manager.get_wired_state()
@@ -63,6 +66,7 @@ class TrayNetworkPlugin(object):
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
                 self.change_status_icon("links")
+
             #else:
                 #self.change_status_icon("tray_wifi_icon")
 
@@ -87,6 +91,10 @@ class TrayNetworkPlugin(object):
         if new_state is 20:
             self.gui.wire.set_active((False, False))
         elif new_state is 30:
+            #n1 = pynotify.Notification("Network", "lan disconnect")
+            #n1.set_timeout(2)
+            #n1.show()
+            
             self.gui.wire.set_sensitive(True)
             if self.gui.wireless.get_active():
                 self.change_status_icon("links")
@@ -95,9 +103,11 @@ class TrayNetworkPlugin(object):
             if reason is not 0:
                 self.gui.wire.set_active((True, False))
         elif new_state is 40:
+            #pynotify.Notification("Network", "lan connecting").show()
             self.gui.wire.set_active((True, True))
             self.change_status_icon("loading")
         elif new_state is 100:
+            #pynotify.Notification("Network", "lan connect").show()
             self.active_wired()
 
     def connect_by_ssid(self, widget, ssid):
@@ -137,6 +147,7 @@ class TrayNetworkPlugin(object):
                 self.gui.set_active_ap(index, True)
             else:
                 self.activate_wireless()
+            Dispatcher.tray_show_more()
         else:
             container_remove_all(self.gui.tree_box)
             self.gui.more_button.set_ap_list([])
@@ -145,6 +156,7 @@ class TrayNetworkPlugin(object):
                 pass
 
             self.net_manager.disactive_wireless_device(device_disactive)
+            Dispatcher.tray_show_more()
 
     def set_wireless_state(self, widget, device, new_state, old_state, reason):
         """
@@ -201,8 +213,6 @@ class TrayNetworkPlugin(object):
     def start_loading(self):
         pass
 
-
-
     def draw_loading(self, cr, rect):
         with cairo_state(cr):
             cr.translate(rect.x + 18 , rect.y + 15)
@@ -213,7 +223,7 @@ class TrayNetworkPlugin(object):
         return True
 
     def insert(self):
-        return 0
+        return 1
         
     def id(self):
         return "tray-network_plugin"
@@ -222,6 +232,7 @@ class TrayNetworkPlugin(object):
         return self.gui 
     
     def tray_show_more(self, widget):
+        print "tray show more"
         height = self.gui.get_widget_height()
         self.this.set_size_request(160, height + 50)
 

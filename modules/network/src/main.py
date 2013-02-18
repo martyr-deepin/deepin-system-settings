@@ -334,7 +334,7 @@ class WirelessSection(gtk.VBox):
         
 
     def state_changed_callback(self, widget, device, new_state, old_state, reason):
-        print new_state
+        print "main::wireless",new_state, reason
 
         if new_state is 20:
             self.wireless.set_active(False)
@@ -493,7 +493,8 @@ class WirelessSection(gtk.VBox):
 
 
     def device_is_deactive(self, reason):
-        print "wireless deactive"
+        print "wireless deactive", self.index
+        
         if not reason == 0:
             try:
                 if self.tree.visible_items != []:
