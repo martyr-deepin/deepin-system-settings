@@ -11,8 +11,7 @@ class MountMedia(object):
     def init_values(self, this_list):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
-        self.tray_icon.set_icon_theme("tray_user_icon")
-        
+        self.tray_icon.set_icon_theme("usb")
 
     def id(slef):
         return "deepin-mount-media-hailongqiu"
