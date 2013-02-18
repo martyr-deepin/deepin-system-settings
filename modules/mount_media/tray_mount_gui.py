@@ -161,14 +161,12 @@ class EjecterApp(object):
             d = v.get_drive()
             
             self.monitor_manage_drive(d)
-            '''
             self.monitor_manage_volume(v)
 
             m = v.get_mount()
             if m != None:
-                print "fjdkf i love .."
                 self.monitor_manage_mount(m)
-            '''
+        #self.check_icon()
 
     def monitor_manage_drive(self, drive):
         # gio.Drive 
@@ -180,36 +178,30 @@ class EjecterApp(object):
         print "id:", id, drive.get_name()
 
         d = Device(drive, 0)
-        print d.get_image()
+        self.devices[id] = d
+
         self.hbox.pack_start(d, False, False) 
         self.hbox.show_all()
         
     def monitor_manage_volume(self, v):
         # gio.Volume
-        '''
         print "monitor_manage_volume..."
-        print v.get_name(), v.get_icon()
         drive = v.get_drive()
         id = drive.get_identifier(self.conf.device_identifier)
-
-        print "id:", id
-        '''
-        pass
+        if id == None: 
+            return False
 
     def monitor_manage_mount(self, m):
         # gio.Mount
         print "monitor_manage_mount..."
         drive = m.get_drive()
         print m.get_name(), drive.get_name()
+        id = drive.get_identifier(self.conf.device_identifier) 
+        if id == None:
+            return False
 
 
-    def unmount_end(self, mount, result):
-        #mount.unmout_finish(result)
-        pass
-
-    def de_test_clicked(self, widget, m):
-        m.unmount(self.unmount_end)
-
+        
     def monitor_volume_added(self, volume_monitor, drive):
         print "monitor_volume_added..."
 

@@ -21,7 +21,7 @@ class MountMedia(object):
         return True
 
     def insert(self):
-        pass
+        return 4
 
     def plugin_widget(self):
         return self.ejecter_app.hbox
