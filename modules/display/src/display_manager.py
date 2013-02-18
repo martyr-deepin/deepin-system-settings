@@ -48,7 +48,8 @@ class DisplayManager:
         self.__xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
         self.__power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.__session_settings = deepin_gsettings.new("org.gnome.desktop.session")
-        
+        self.__screensaver_settings = deepin_gsettings.new("org.gnome.desktop.screensaver")
+
         self.__output_count = 0
 
         self.__monitors_xml_filename = "%s/.config/monitors.xml" % os.path.expanduser('~')
@@ -470,6 +471,7 @@ class DisplayManager:
         return self.__get_duration_index(self.get_close_monitor() / 60, items)
 
     def set_close_monitor(self, value):
+        self.__power_settings.set_int("idle-dim-time", value * 60)
         self.__power_settings.set_int("sleep-display-battery", value * 60)
         self.__power_settings.set_int("sleep-display-ac", value * 60)
 
@@ -490,4 +492,9 @@ class DisplayManager:
         return self.__get_duration_index(self.get_lock_display() / 60, items)
 
     def set_lock_display(self, value):
+        if value * 60 < BIG_NUM:
+            self.__screensaver_settings.set_boolean("lock-enabled", true)
+        else:
+            self.__screensaver_settings.set_boolean("lock-enabled", false)
+
         self.__session_settings.set_uint("idle-delay", value * 60)

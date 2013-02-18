@@ -179,7 +179,7 @@ def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot
     if module_id:
         action_bar.bread.remove_node_after_index(0)
         if module_id == MAIN_MODULE:
-            slider.slide_to_page(navigate_page, "right")
+            slider.slide_to_page(navigate_page, None)
 
             foot_box.hide()
         else:
@@ -190,7 +190,7 @@ def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foo
     if module_id:
         action_bar.bread.remove_node_after_index(0)
         if module_id == MAIN_MODULE:
-            slider.slide_to_page(navigate_page, "left")
+            slider.slide_to_page(navigate_page, None)
 
             foot_box.hide()
         else:
@@ -200,7 +200,7 @@ def search_cb(action_bar, slider, foot_box):
     keyword = action_bar.search_entry.get_text()
     if keyword.strip() != "":
         search_page.query(keyword)
-        slider.slide_to_page(search_page, "left")
+        slider.slide_to_page(search_page, None)
 
     foot_box.hide()
 
@@ -220,7 +220,7 @@ def send_message(module_id, message_type, message_content):
 def switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box):
     if index == 0:
         if label == _("System Settings"):
-            slider.slide_to_page(navigate_page, "left")
+            slider.slide_to_page(navigate_page, None)
             content_page_info.set_active_module_id("main")
             foot_box.hide()
     else:
@@ -251,7 +251,7 @@ def start_module_process(slider, content_page_info, module_path, module_config, 
         if force_direction:
             slider.slide_to_page(content_page, force_direction)
         else:
-            slider.slide_to_page(content_page, "right")
+            slider.slide_to_page(content_page, None)
     
     module_dbus_name = "com.deepin.%s_settings" % (module_id)
     if not is_dbus_name_exists(module_dbus_name):

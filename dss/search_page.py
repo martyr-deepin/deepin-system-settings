@@ -152,7 +152,6 @@ class SearchPage(gtk.VBox):
                         module = __import__("%s.%s" % (module_info.id, module_info.search_keyword), fromlist=["keywords"])
                         self.__keywords.append((module_info.id, module_info.name, module.keywords, module_info.menu_icon_pixbuf))
                     except Exception, e:
-                        print "Error %s" % e
                         continue
 
         self.__keyword_search = KeywordSearch(self.__keywords)
