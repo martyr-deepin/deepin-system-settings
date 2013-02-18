@@ -32,6 +32,7 @@ from dtk.ui.label import Label
 import gobject
 import gtk
 import pango
+from helper import Dispatcher
 from nls import _
 
 from constants import FRAME_LEFT_PADDING, IMG_WIDTH, TREEVIEW_BORDER_COLOR, TREEVIEW_BG_COLOR
@@ -305,8 +306,6 @@ class AddSettingItem(TreeItem):
         '''
         self.add_pixbuf_out = app_theme.get_pixbuf("network/add-1.png")
         self.add_pixbuf_active = app_theme.get_pixbuf("network/add.png")
-
-
     def get_height(self):
         return 30 
     
@@ -551,6 +550,7 @@ class SettingItem(TreeItem):
     
     def select(self):
         #print self.get_highlight()
+        #Dispatcher.select_connection(self.connection)
         self.is_select = True
         if self.is_hover:
             self.hover(0,0,0)

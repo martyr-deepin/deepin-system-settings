@@ -116,8 +116,8 @@ class WiredSetting(gtk.Alignment):
         print "Wired start init"
         # Get all connections
         if device is not None:
-            wired_device = device
             global wired_device
+            wired_device = device
 
         self.connections = nm_module.nm_remote_settings.get_wired_connections()
 
@@ -189,7 +189,7 @@ class WiredSetting(gtk.Alignment):
 
     def apply_changes(self):
         if wired_device.get_state() != 20:
-            connection = self.ipv4.connection
+            connection = self.setting_group.connection
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                                wired_device.object_path,
                                                "/")

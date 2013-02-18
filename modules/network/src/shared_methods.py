@@ -3,6 +3,7 @@
 from nm_modules import nm_module
 from nmlib.nmcache import cache
 from helper import Dispatcher
+from device_manager import device_manager
 
 DEVICE_UNAVAILABLE = 0
 DEVICE_AVAILABLE = 1
@@ -12,60 +13,52 @@ DEVICE_ACTIVE = 2
 class NetManager(object):
 
     def __init__(self):
-        self.wired_devices = nm_module.nmclient.get_wired_devices()
-        self.wireless_devices = nm_module.nmclient.get_wireless_devices()
-        self.init_signals()
-
-    def init_signals(self):
+        self.wired_devices = device_manager.get_wired_devices()
         if self.wired_devices:
             self.wired_device = self.wired_devices[0]
-            self.wired_device.connect("state-changed", self.__wired_state_change)
+        self.wireless_devices = device_manager.get_wireless_devices()
         if self.wireless_devices:
             self.wireless_device = self.wireless_devices[0]
-            self.wireless_device.connect("state-changed", self.__wireless_state_change)
-
-    def __wired_state_change(self, widget, new_state, old_state, reason):
-        Dispatcher.wired_change(new_state, reason)
-
-    def __wireless_state_change(self, widget, new_state, old_state, reason):
-        Dispatcher.wireless_change(new_state, old_state, reason)
 
     def get_wired_state(self):
         if self.wired_devices is []:
             # 没有有限设备
             return None
         else:
-            if self.wired_device.get_state() == 20:
+            state_list = []
+            for device in self.wired_devices:
+                state_list.append(device.get_state() == 20)
+            
+            if True in state_list:
                 return (False, False)
             else:
-                return (True, self.wired_device.is_active())
+                return (True, self.wired_devices[state_list.index(False)].is_active())
 
-    def active_wired_device(self, actived_cb):
-        wired_devices = nm_module.nmclient.get_wired_devices()
-        device = wired_devices[0]
+    def active_wired_device(self,  actived_cb):
+        #wired_devices = nm_module.nmclient.get_wired_devices()
+        #device = wired_devices[0]
 
-        def device_is_active( widget, reason):
-            actived_cb()
-        device.connect("device-active", device_is_active)
-
-        if not device.is_active():
-            connections = nm_module.nm_remote_settings.get_wired_connections()
-            if not connections:
-                connection = nm_module.nm_remote_settings.new_wired_connection()
-                nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-
-            device_ethernet = cache.get_spec_object(device.object_path)
-            device_ethernet.auto_connect()
+        #def device_is_active( widget, reason):
+            #actived_cb()
+        #device.connect("device-active", device_is_active)
+        for device in self.wired_devices:
+            if not device.is_active():
+                connections = nm_module.nm_remote_settings.get_wired_connections()
+                if not connections:
+                    connection = nm_module.nm_remote_settings.new_wired_connection()
+                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                device_ethernet = cache.get_spec_object(device.object_path)
+                device_ethernet.auto_connect()
 
     def disactive_wired_device(self, disactived_cb):
-        wired_devices = nm_module.nmclient.get_wired_devices()
-        device = wired_devices[0]
+        #wired_devices = nm_module.nmclient.get_wired_devices()
+        #device = wired_devices[0]
 
-        def device_is_disactive( widget, reason):
-            disactived_cb()
-        device.connect("device-deactive", device_is_disactive)
-        device.nm_device_disconnect()
-
+        #def device_is_disactive( widget, reason):
+            #disactived_cb()
+        #device.connect("device-deactive", device_is_disactive)
+        for device in self.wired_devices:
+            device.nm_device_disconnect()
 
     # Wireless
     def get_wireless_state(self):

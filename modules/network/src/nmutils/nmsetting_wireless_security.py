@@ -114,6 +114,11 @@ class NMSettingWirelessSecurity (NMSetting):
     def psk(self, new_psk):
         self.prop_dict["psk"] = TypeConvert.py2_dbus_string(new_psk)
 
+    @psk.deleter
+    def psk(self):
+        if "psk" in self.prop_dict.iterkeys():
+            del self.prop_dict["psk"]
+
     @property
     def psk_flags(self):
         if "psk-flags" in self.prop_dict.iterkeys():
@@ -159,14 +164,24 @@ class NMSettingWirelessSecurity (NMSetting):
     def wep_key0(self, new_wep_key0):
         self.prop_dict["wep-key0"] = TypeConvert.py2_dbus_string(new_wep_key0)
 
+    @wep_key0.deleter
+    def wep_key0(self):
+        if "wep_key0" in self.prop_dict.iterkeys():
+            del self.prop_dict["wep-key0"]
+
     @property
     def wep_key1(self):
         if "wep-key1" in self.prop_dict.iterkeys():
             return TypeConvert.dbus2py(self.prop_dict["wep-key1"])
     
-    @wep_key0.setter
+    @wep_key1.setter
     def wep_key1(self, new_wep_key1):
         self.prop_dict["wep-key1"] = TypeConvert.py2_dbus_string(new_wep_key1)
+
+    @wep_key0.deleter
+    def wep_key1(self):
+        if "wep_key1" in self.prop_dict.iterkeys():
+            del self.prop_dict["wep-key1"]
 
     @property
     def wep_key2(self):
@@ -177,6 +192,11 @@ class NMSettingWirelessSecurity (NMSetting):
     def wep_key2(self, new_wep_key2):
         self.prop_dict["wep-key2"] = TypeConvert.py2_dbus_string(new_wep_key2)
 
+    @wep_key2.deleter
+    def wep_key2(self):
+        if "wep_key2" in self.prop_dict.iterkeys():
+            del self.prop_dict["wep-key2"]
+
     @property
     def wep_key3(self):
         if "wep-key3" in self.prop_dict.iterkeys():
@@ -185,6 +205,11 @@ class NMSettingWirelessSecurity (NMSetting):
     @wep_key3.setter
     def wep_key3(self, new_wep_key3):
         self.prop_dict["wep-key3"] = TypeConvert.py2_dbus_string(new_wep_key3)
+
+    @wep_key3.deleter
+    def wep_key3(self):
+        if "wep_key3" in self.prop_dict.iterkeys():
+            del self.prop_dict["wep-key3"]
 
     def get_wep_key(self, idx):
         if idx == 0:
@@ -248,6 +273,11 @@ class NMSettingWirelessSecurity (NMSetting):
     @wep_key_type.setter
     def wep_key_type(self, new_wep_key_type):
         self.prop_dict["wep-key-type"] = TypeConvert.py2_dbus_uint32(new_wep_key_type)
+
+    #@wep_key_type.deleter
+    #def wep_key_type(self):
+        #if "wep-key-type" in self.prop_dict.iterkeys():
+            #del self.prop_dict["wep-key-type"]
 
     def verify_wep_key(self, key, wep_type):
         if not key:

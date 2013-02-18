@@ -25,7 +25,7 @@ from dtk.ui.label import Label
 from dtk.ui.button import OffButton, Button
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_pixbuf
-from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, container_remove_all
 import gtk
 import pango
 from nls import _
@@ -63,6 +63,21 @@ class TrayUI(gtk.VBox):
         self.pack_start(self.mobile, False, False)
         self.ap_tree = TreeView()
         self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
+    
+    def get_widget_height(self):
+        height = 0
+        widgets = self.get_children()
+        if self.wire in widgets:
+            height += 20
+        if self.wireless in widgets:
+            height +=20
+            if self.ap_tree.visible_items and self.wireless.get_active():
+                height += len(self.ap_tree.visible_items) * 20
+            if self.more_button in self.tree_box.get_children():
+                height +=20
+
+        height += 20
+        return height
 
     def remove_net(self, net_type):
         if net_type == "wired":
@@ -88,13 +103,14 @@ class TrayUI(gtk.VBox):
             self.more_button.set_ap_list(ap_list[5:])
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
             #self.ap_tree.add_items([MoreItem(more_ap, self.resize_tree)])
+        container_remove_all(self.tree_box)
         self.tree_box.pack_start(self.ap_tree, True, True)
         self.tree_box.pack_start(self.more_button, False, False)
         self.show_all()
 
 
     def set_active_ap(self, index, state):
-        print index
+        print "in set active ap",index
         if state and index:
             self.set_active_ap(self.active_ap_index, False)
             self.active_ap_index = index
@@ -114,6 +130,8 @@ class TrayUI(gtk.VBox):
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*10)
             for item in self.ap_tree.visible_items:
                 item.set_padding(10)
+
+        Dispatcher.tray_show_more()
 
          
 class Section(gtk.HBox):

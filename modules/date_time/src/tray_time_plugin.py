@@ -37,6 +37,7 @@ import gtk
 
 class TrayTimePlugin(object):
     def __init__(self):
+        self.width = 200
         self.tray_time = TrayTime()
         self.tray_time.connect("send-time", self.tray_time_send)
 
@@ -99,13 +100,18 @@ class TrayTimePlugin(object):
         calendar.mark_day(time.localtime().tm_mday)
         calendar.set_day_padding(0)
         calendar.get_handle().set_property("show-details", False)
-        calendar.get_handle().set_size_request(200, 172)
+        if len(locale.getdefaultlocale()):                                      
+            if locale.getdefaultlocale()[0].find("zh_") != 0:
+                self.width = 230
+        else:
+            self.width = 230
+        calendar.get_handle().set_size_request(self.width, 172)
         calendar_align.add(calendar.get_handle())
         select_align = self.__setup_align()
         select_button = SelectButton(_("Change DateTime settings"), 
                                      font_size = 10, 
                                      ali_padding = 5)
-        select_button.set_size_request(200, 25)
+        select_button.set_size_request(self.width, 25)
         select_align.add(select_button)
         select_button.connect("button-press-event", self.__on_day_selected)
         box.pack_start(calendar_align, False, False)
@@ -114,15 +120,11 @@ class TrayTimePlugin(object):
         return align
 
     def show_menu(self):
-        self.this.set_size_request(200, 233)
+        self.this.set_size_request(self.width, 233)
         print "menu show...."
 
     def hide_menu(self):
         print "menu hide....."
 
-
-
 def return_plugin():
     return TrayTimePlugin
-
-

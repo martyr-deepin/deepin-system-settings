@@ -47,6 +47,8 @@ from settings_widget import HotspotBox
 
 from nmlib.nmcache import cache
 from nm_modules import nm_module
+from helper import Dispatcher
+from device_manager import device_manager
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
@@ -64,39 +66,38 @@ def pack_start(parent, child_list, expand=False, fill=False):
     for child in child_list:
         parent.pack_start(child, expand, fill)
 
-class WiredDevice(object):
-    def __init__(self, device, treeview, index):
-        self.wired_device = device
-        self.tree = treeview
-        self.index = index
-        device_ethernet = cache.get_spec_object(self.wired_device.object_path)
-        self.wired_device.connect("device-active", self.device_activate)
-        self.wired_device.connect("device-deactive", self.device_deactive)
-        device_ethernet.connect("try-activate-begin", self.try_activate_begin)
+#class WiredDevice(object):
+    #def __init__(self, device, treeview, index):
+        #self.wired_device = device
+        #self.tree = treeview
+        #self.index = index
+        #device_ethernet = cache.get_spec_object(self.wired_device.object_path)
+        #self.wired_device.connect("device-active", self.device_activate)
+        #self.wired_device.connect("device-deactive", self.device_deactive)
+        #device_ethernet.connect("try-activate-begin", self.try_activate_begin)
 
-    def device_activate(self, widget ,reason):
-        print "wired is active"
-        if self.tree.visible_items != []:
-            self.tree.visible_items[self.index].set_net_state(2)
-            self.tree.queue_draw()
+    #def device_activate(self, widget ,reason):
+        ##print "wired is active"
+        #if self.tree.visible_items != []:
+            #self.tree.visible_items[self.index].set_net_state(2)
+            #self.tree.queue_draw()
 
-    def device_deactive(self, widget, reason):
-        print "wired is deactive"
-        if not reason == 0:
-            if self.tree.visible_items != []:
-                self.tree.visible_items[self.index].set_net_state(0)
-                self.tree.queue_draw()
+    #def device_deactive(self, widget, reason):
+        ##print "wired is deactive"
+        #if not reason == 0:
+            #if self.tree.visible_items != []:
+                #self.tree.visible_items[self.index].set_net_state(0)
+                #self.tree.queue_draw()
 
-    def try_activate_begin(self, widget):
-        if self.tree.visible_items != []:
-            self.tree.visible_items[self.index].set_net_state(1)
-            self.tree.queue_draw()
+    #def try_activate_begin(self, widget):
+        #if self.tree.visible_items != []:
+            #self.tree.visible_items[self.index].set_net_state(1)
+            #self.tree.queue_draw()
 
 class WiredSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
-
-        self.wired_devices = nm_module.nmclient.get_wired_devices()
+        self.wired_devices = device_manager.get_wired_devices()
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.toggle_cb)
             self.send_to_crumb_cb = send_to_crumb_cb
@@ -111,17 +112,23 @@ class WiredSection(gtk.VBox):
             self.align.set_padding(0,0,PADDING,11*2)
             self.align.add(self.tree)
             self.pack_start(self.align, False, False, 0)
+            
+            self.init_signals()
+        
+    def init_signals(self):
+        Dispatcher.connect("wired_change", self.wired_changed_cb)
 
     def refresh_device(self):
         if self.wire.get_active():
-            self.wired_devices = nm_module.nmclient.get_wired_devices()
+            device_manager.reinit_cache()
+            self.wired_devices = device_manager.get_wired_devices()
             item_list = self.retrieve_list()
             self.tree.add_items(item_list, 0, True)
             self.tree.visible_items[-1].is_last = True
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-            for index, wired_device in enumerate(self.wired_devices):
-                WiredDevice(wired_device,self.tree, index)
+            #for index, wired_device in enumerate(self.wired_devices):
+                #WiredDevice(wired_device,self.tree, index)
 
             #self.try_active()
             self.show_all()
@@ -134,9 +141,8 @@ class WiredSection(gtk.VBox):
             self.tree.visible_items[-1].is_last = True
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-            for index, wired_device in enumerate(self.wired_devices):
-                WiredDevice(wired_device,self.tree, index)
-
+            #for index, wired_device in enumerate(self.wired_devices):
+                #WiredDevice(wired_device,self.tree, index)
             self.try_active()
             self.show_all()
         else:
@@ -158,7 +164,6 @@ class WiredSection(gtk.VBox):
                                          lambda : slider.slide_to_page(self.settings, "right"),
                                          self.send_to_crumb_cb))
         return wired_items
-
 
     def try_active(self):
         for index, device in enumerate(self.wired_devices):
@@ -182,79 +187,111 @@ class WiredSection(gtk.VBox):
                     return
                 else:
                     self.wire.set_active(False)
-
-class WirelessDevice(object):
-    def __init__(self, device, treeview, ap_list, refresh_list, hotspot):
-        self.wireless_device = device
-        self.ap_list = ap_list
-        self.tree = treeview
-        self.refresh_list = refresh_list
-        self.hotspot = hotspot
-        self.device_wifi = cache.get_spec_object(self.wireless_device.object_path)
-        self.wireless_device.connect("device-active", self.device_is_active)
-        self.wireless_device.connect("device-deactive", self.device_is_deactive)
-        self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
-        self.device_wifi.connect("access-point-added", self.ap_added)
-
-        #self.device_wifi.connect_after("try-ssid-end", self.try_ssid_end)
-
-    def try_to_connect(self, widget, ssid):
-        print "try_to_connect"
-        #self.ap_list = self.refresh_list()
-        ap_list  = [ap.get_ssid() for ap in self.ap_list]
-        #if self.device_wifi not in ap_list:
-            #self.refresh_list()
-        #else:
-            #self.tree.visible_items[index].set_net_state(1)
-        try:
-            index = ap_list.index(ssid)
-            self.tree.visible_items[index].set_net_state(1)
-        except:
-            self.hotspot.set_net_state(1)
     
-    def device_is_active(self, widget, reason):
-        print "wireless active"
-        active = self.wireless_device.get_active_connection()
-        # FIXME little wierd
-        for item in self.tree.visible_items:
-            item.set_net_state(0)
- 
-        try:
-            index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-            self.index = index
+    def wired_changed_cb(self, widget, device, new_state, reason):
+        index = self.wired_devices.index(device)
+
+        if new_state == 20:
+            self.wire.set_active(False)
+        if new_state == 30:
+            self.device_deactive(index, reason)
+        elif new_state == 40:
+            self.try_activate_begin(index)
+        elif new_state == 100:
+            self.device_activate(index)
+
+    def device_activate(self, index):
+        #print "wired is active"
+        self.wire.set_active(True)
+        if self.tree.visible_items != []:
             self.tree.visible_items[index].set_net_state(2)
-            self.tree.visible_items[index].redraw()
-        except ValueError:
-            if self.check_connection_mode(active.get_connection()):
-                self.hotspot.set_net_state(2)
+            self.tree.queue_draw()
 
-    def ap_added(self, ap_object):
-        print "ad_added"
-
-    def check_connection_mode(self, connection):
-        mode = connection.get_setting("802-11-wireless").mode
-        print mode
-        if mode == "adhoc":
-            return True
-        else:
-            return False
-
-    def device_is_deactive(self, widget, reason):
-        print "wireless deactive"
+    def device_deactive(self, index, reason):
+        #print "wired is deactive"
         if not reason == 0:
-            try:
-                if self.tree.visible_items != []:
-                    self.tree.visible_items[self.index].set_net_state(0)
-                    self.tree.visible_items[self.index].redraw()
-            except:
-                if self.hotspot.get_net_state() == 1:
-                    self.hotspot.set_net_state(0)
+            if self.tree.visible_items != []:
+                self.tree.visible_items[index].set_net_state(0)
+                self.tree.queue_draw()
+
+    def try_activate_begin(self, index):
+        #self.wire.set_active(True)
+        if self.tree.visible_items != []:
+            self.tree.visible_items[index].set_net_state(1)
+            self.tree.queue_draw()
+
+#class WirelessDevice(object):
+    #def __init__(self, device, treeview, ap_list, refresh_list, hotspot):
+        #self.wireless_device = device
+        #self.ap_list = ap_list
+        #self.tree = treeview
+        #self.refresh_list = refresh_list
+        #self.hotspot = hotspot
+        #self.device_wifi = cache.get_spec_object(self.wireless_device.object_path)
+        #self.wireless_device.connect("device-active", self.device_is_active)
+        #self.wireless_device.connect("device-deactive", self.device_is_deactive)
+        #self.device_wifi.connect("try-ssid-begin", self.try_to_connect)
+        #self.device_wifi.connect("access-point-added", self.ap_added)
+
+        ##self.device_wifi.connect_after("try-ssid-end", self.try_ssid_end)
+
+    #def try_to_connect(self, widget, ssid):
+        #print "try_to_connect"
+        ##self.ap_list = self.refresh_list()
+        #ap_list  = [ap.get_ssid() for ap in self.ap_list]
+        ##if self.device_wifi not in ap_list:
+            ##self.refresh_list()
+        ##else:
+            ##self.tree.visible_items[index].set_net_state(1)
+        #try:
+            #index = ap_list.index(ssid)
+            #self.tree.visible_items[index].set_net_state(1)
+        #except:
+            #self.hotspot.set_net_state(1)
+    
+    #def device_is_active(self, widget, reason):
+        #print "wireless active"
+        #active = self.wireless_device.get_active_connection()
+        ## FIXME little wierd
+        #for item in self.tree.visible_items:
+            #item.set_net_state(0)
+ 
+        #try:
+            #index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+            #self.index = index
+            #self.tree.visible_items[index].set_net_state(2)
+            #self.tree.visible_items[index].redraw()
+        #except ValueError:
+            #if self.check_connection_mode(active.get_connection()):
+                #self.hotspot.set_net_state(2)
+
+    #def ap_added(self, ap_object):
+        #print "ad_added"
+
+    #def check_connection_mode(self, connection):
+        #mode = connection.get_setting("802-11-wireless").mode
+        #print mode
+        #if mode == "adhoc":
+            #return True
+        #else:
+            #return False
+
+    #def device_is_deactive(self, widget, reason):
+        #print "wireless deactive"
+        #if not reason == 0:
+            #try:
+                #if self.tree.visible_items != []:
+                    #self.tree.visible_items[self.index].set_net_state(0)
+                    #self.tree.visible_items[self.index].redraw()
+            #except:
+                #if self.hotspot.get_net_state() == 1:
+                    #self.hotspot.set_net_state(0)
 
 
 class WirelessSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
-        self.wireless_devices = nm_module.nmclient.get_wireless_devices()
+        self.wireless_devices = device_manager.get_wireless_devices()
         if not nm_module.nmclient.wireless_get_enabled():
             nm_module.nmclient.wireless_set_enabled(True)
         if self.wireless_devices:
@@ -279,16 +316,40 @@ class WirelessSection(gtk.VBox):
 
 
             self.pack_start(self.vbox, False, False, 0)
+
+            Dispatcher.connect("wireless-change", self.state_changed_callback)
             #self.pack_start(self.hotspot, False, False, 0)
 
             # Add signals
-            for device in self.wireless_devices:
-                device.connect("state-changed", self.state_changed_callback)
+            #for device in self.wireless_devices:
+                #device.connect("state-changed", self.state_changed_callback)
 
-    def state_changed_callback(self, widget, new_state, old_state, reason):
-        if new_state == 20:
-            print "device is not available"
+    def _get_active_ssid(self, device):
+        active_conn = device.get_real_active_connection()
+        if active_conn:
+            return active_conn.get_setting("802-11-wireless").ssid
+        else:
+            return False
+
+        
+
+    def state_changed_callback(self, widget, device, new_state, old_state, reason):
+        print "main::wireless",new_state, reason
+
+        if new_state is 20:
             self.wireless.set_active(False)
+        elif new_state is 30:
+            self.device_is_deactive(reason)
+            if reason == 39:
+                pass
+        elif new_state is 40:
+            ssid = self._get_active_ssid(device)
+            if ssid:
+                self.try_to_connect(ssid)
+        elif new_state is 60 and old_state == 50:
+            print "need auth"
+        elif new_state is 100:
+            self.device_is_active(device)
         
     def ap_added(self):
         self.tree.set_items(self.retrieve_list())
@@ -317,8 +378,8 @@ class WirelessSection(gtk.VBox):
         self.queue_draw()
         self.show_all()
 
-        for wireless_device in self.wireless_devices:
-            WirelessDevice(wireless_device, self.tree, self.ap_list,self.ap_added, self.hotspot)
+        #for wireless_device in self.wireless_devices:
+            #WirelessDevice(wireless_device, self.tree, self.ap_list,self.ap_added, self.hotspot)
 
         index = self.get_actives(self.ap_list)
         if index:
@@ -404,6 +465,44 @@ class WirelessSection(gtk.VBox):
             return True
         else:
             return False
+
+    def try_to_connect(self, ssid):
+        print "try_to_connect"
+        ap_list  = [ap.get_ssid() for ap in self.ap_list]
+        try:
+            self.index = ap_list.index(ssid)
+            self.tree.visible_items[self.index].set_net_state(1)
+        except:
+            self.hotspot.set_net_state(1)
+    
+    def device_is_active(self, device):
+        print "wireless active"
+        active = device.get_active_connection()
+        # FIXME little wierd
+        for item in self.tree.visible_items:
+            item.set_net_state(0)
+ 
+        try:
+            index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+            self.index = index
+            self.tree.visible_items[index].set_net_state(2)
+            self.tree.visible_items[index].redraw()
+        except ValueError:
+            if self.check_connection_mode(active.get_connection()):
+                self.hotspot.set_net_state(2)
+
+
+    def device_is_deactive(self, reason):
+        print "wireless deactive", self.index
+        
+        if not reason == 0:
+            try:
+                if self.tree.visible_items != []:
+                    self.tree.visible_items[self.index].set_net_state(0)
+                    self.tree.visible_items[self.index].redraw()
+            except:
+                if self.hotspot.get_net_state() == 1:
+                    self.hotspot.set_net_state(0)
                 
 class HotSpot(gtk.VBox):
 
@@ -832,7 +931,7 @@ class Network(object):
 
     def activate_succeed(self, widget, connection_path):
         print "active_succeed with", connection_path
-        #print connection_path
+        print connection_path
 
     def activate_failed(self, widget, connection_path):
         print "active failed"
@@ -844,7 +943,6 @@ class Network(object):
     def device_removed(self, widget, connection_path):
         print "device remove:", connection_path
         self.wired.refresh_device()
-
 
     def init_sections(self, module_frame):
         #slider._set_to_page("main")
@@ -932,6 +1030,5 @@ if __name__ == '__main__':
                     slider._slide_to_page("main", "left")
                 if crumb_label == _("VPN"):
                     slider._slide_to_page("vpn", "left")
-
         module_frame.module_message_handler = message_handler
         module_frame.run()
