@@ -26,7 +26,7 @@ class MountMedia(object):
         return self.ejecter_app.hbox
 
     def show_menu(self):
-        self.this.set_size_request(160, 180)
+        self.this.set_size_request(250, 180)
 
     def hide_menu(self):
         pass
