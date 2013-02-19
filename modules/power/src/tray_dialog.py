@@ -41,6 +41,11 @@ SHUTDOWN_BOTTOM_TEXT = _("The system will shutdown in \n%s secs.")
 #FONT_TYPE = _("文泉驿微米黑 Bold")
 FONT_TYPE = _("WenQuanYi Micro Hei Bold")
 
+EN_RED_TEXT = {"Turn off your computer now?":(0, 8), 
+               "Restart your computer now?":(0, 7), 
+               "Suspend your computer now?":(0, 7), 
+               "Logout your computer now?":(0, 5)} 
+
 class TrayDialog(Window):
     def __init__(self,
                  show_pixbuf_name="deepin_shutdown",
@@ -69,6 +74,7 @@ class TrayDialog(Window):
         #
         self.run_exec = None
         self.argv = None
+        self.set_pango_list()
         #
         self.__init_widgets()
         self.__init_settings()
@@ -92,6 +98,8 @@ class TrayDialog(Window):
         self.argv = None
         self.run_exec = None
         #
+        self.set_pango_list()
+        #
         self.top_text_btn.set_label(self.show_top_text)
         self.bottom_text_btn.set_label(self.show_bottom_text)
         if self.show_pixbuf:
@@ -100,6 +108,16 @@ class TrayDialog(Window):
         self.bottom_text_btn.queue_draw()
         self.timer.Enabled = True
         self.show_all()
+
+    def set_pango_list(self):
+        r, g, b = (65535, 0, 0)
+        self.pango_list = pango.AttrList()
+        if cn_check():
+            start_index, end_index = 8, 12
+        else:
+            start_index, end_index = EN_RED_TEXT[self.show_top_text] 
+            
+        self.pango_list.insert(pango.AttrForeground(r, g, b, start_index, end_index - 1))
 
     def focus_out_window(self, widget, event):
         self.quit_dialog_window(widget)
@@ -176,9 +194,6 @@ class TrayDialog(Window):
 
     def init_show_text(self):
         top_padding = 25
-        r, g, b = (65535, 0, 0)
-        self.pango_list = pango.AttrList()
-        self.pango_list.insert(pango.AttrForeground(r, g, b, 8, 12))
         self.top_text_btn_ali = gtk.Alignment()
         self.top_text_btn_ali.set_padding(top_padding, 0, 0, 0)
         self.top_text_btn = gtk.Button(self.show_top_text)
