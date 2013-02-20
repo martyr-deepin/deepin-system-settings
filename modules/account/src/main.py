@@ -258,14 +258,16 @@ class AccountSetting(object):
             self.__make_align(self.label_widgets["account"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 1, 2, 4)
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.button_widgets["account_type"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 1, 2, 4)
+
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
+            self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
+            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
+
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
+            self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
+            self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
         #self.container_widgets["account_info_table"].attach(
             #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 5, 6, 4)
         #self.container_widgets["account_info_table"].attach(
@@ -894,8 +896,8 @@ class AccountSetting(object):
         lvbox.destroy()
         rvbox.destroy()
         bvbox.destroy()
-        self.container_widgets["account_info_table"].attach(passwd_align, 0, 1, 2, 3, 4)
-        self.container_widgets["account_info_table"].attach(passwd_char_align, 1, 2, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(passwd_align, 0, 1, 3, 4, 4)
+        self.container_widgets["account_info_table"].attach(passwd_char_align, 1, 2, 3, 4, 4)
         self.container_widgets["account_info_table"].show_all()
         self.container_widgets["main_hbox"].set_sensitive(True)
         self.current_passwd_user = None
