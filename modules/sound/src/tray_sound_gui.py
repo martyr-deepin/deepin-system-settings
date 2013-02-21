@@ -84,7 +84,7 @@ class TrayGui(gtk.VBox):
         self.pack_start(hbox, False, False)
 
         table = gtk.Table(2, 3)
-        #speaker_hbox = gtk.HBox(False)
+        speaker_hbox = gtk.HBox(False)
         #speaker_hbox.set_spacing(WIDGET_SPACING)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/tray_speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
@@ -98,7 +98,7 @@ class TrayGui(gtk.VBox):
         table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=30), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
-        #microphone_hbox = gtk.HBox(False)
+        microphone_hbox = gtk.HBox(False)
         #microphone_hbox.set_spacing(WIDGET_SPACING)
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
         self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
@@ -126,10 +126,6 @@ class TrayGui(gtk.VBox):
         self.pack_start((button_hbox), False, False)
         self.pack_start(self.__make_align(height=15))
         ##########################################
-        # if PulseAudio connect error, set the widget insensitive
-        if not pypulse.PULSE.get_cards():
-            self.set_sensitive(False)
-            return
         # if sinks list is empty, then can't set output volume
         current_sink = pypulse.get_fallback_sink_index()
         sinks = pypulse.PULSE.get_output_devices()
@@ -169,6 +165,7 @@ class TrayGui(gtk.VBox):
         self.speaker_scale.connect("value-changed", self.speaker_scale_value_changed)
         self.microphone_scale.connect("value-changed", self.microphone_scale_value_changed)
         # pulseaudio signals
+        pypulse.PULSE.connect("get-cards", self.get_cards_cb)
         pypulse.PULSE.connect("sink-changed", self.sink_changed_cb)
         pypulse.PULSE.connect("source-changed", self.source_changed_cb)
         pypulse.PULSE.connect("server-changed", self.server_changed_cb)
@@ -251,6 +248,12 @@ class TrayGui(gtk.VBox):
         #gtk.gdk.threads_leave()
         if current_source is not None:
             pypulse.PULSE.set_input_mute(current_source, not active)
+
+    def get_cards_cb(self, index):
+        # if PulseAudio connect error, set the widget insensitive               
+        if not pypulse.PULSE.get_cards():                                       
+            self.set_sensitive(False)                                           
+            return
 
     # pulseaudio signals callback
     def sink_changed_cb(self, index):
