@@ -33,12 +33,15 @@ from dtk.ui.hscalebar import HScalebar
 from dtk.ui.box import ImageBox
 from nls import _
 from constant import *
-from vtk.button import SelectButton
+#from vtk.button import SelectButton
 
-import settings
 import threading as td
 import gtk
 import gobject
+import pypulse
+import traceback
+
+gtk.gdk.threads_init()
 
 class SettingVolumeThread(td.Thread):
     def __init__(self, obj, func, *args):
@@ -81,7 +84,7 @@ class TrayGui(gtk.VBox):
         self.pack_start(hbox, False, False)
 
         table = gtk.Table(2, 3)
-        #speaker_hbox = gtk.HBox(False)
+        speaker_hbox = gtk.HBox(False)
         #speaker_hbox.set_spacing(WIDGET_SPACING)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/tray_speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
@@ -95,7 +98,7 @@ class TrayGui(gtk.VBox):
         table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=30), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
-        #microphone_hbox = gtk.HBox(False)
+        microphone_hbox = gtk.HBox(False)
         #microphone_hbox.set_spacing(WIDGET_SPACING)
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
         self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
@@ -115,60 +118,60 @@ class TrayGui(gtk.VBox):
         hseparator = HSeparator(separator_color, 0, 0)
         hseparator.set_size_request(190, 3)
         self.pack_start(self.__make_align(hseparator, xalign=0.5, height=14), False, False)
-        self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
+        #self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
         button_hbox = gtk.HBox(False)
         button_hbox.set_spacing(WIDGET_SPACING)
         #button_hbox.pack_start(self.__make_align(height=-1))
-        button_hbox.pack_start(self.button_more)
+        #button_hbox.pack_start(self.button_more)
         self.pack_start((button_hbox), False, False)
         self.pack_start(self.__make_align(height=15))
         ##########################################
-        # if PulseAudio connect error, set the widget insensitive
-        if settings.PA_CORE is None or not settings.PA_CARDS:
-            self.set_sensitive(False)
-            return
         # if sinks list is empty, then can't set output volume
-        if settings.CURRENT_SINK is None:
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
+        if current_sink is None:
             speaker_hbox.set_sensitive(False)
-        # if sources list is empty, then can't set input volume
-        if settings.CURRENT_SOURCE is None:
-            microphone_hbox.set_sensitive(False)
         # set output volume
-        if settings.CURRENT_SINK:
-            is_mute = settings.get_mute(settings.CURRENT_SINK)
+        elif current_sink in sinks:
+            is_mute = sinks[current_sink]['mute']
             self.speaker_mute_button.set_active(not is_mute)
             self.speaker_scale.set_enable(not is_mute)
-            self.speaker_scale.set_value(settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
+            sink_volume = pypulse.PULSE.get_output_volume()
+            if current_sink in sink_volume:
+                volume = max(sink_volume[current_sink])
+            else:
+                volume = 0
+            self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+        # if sources list is empty, then can't set input volume
+        current_source = pypulse.get_fallback_source_index()
+        sources = pypulse.PULSE.get_input_devices()
+        if current_source is None:
+            microphone_hbox.set_sensitive(False)
         # set input volume
-        self.microphone_ports = None
-        if settings.CURRENT_SOURCE:
-            is_mute = settings.get_mute(settings.CURRENT_SOURCE)
+        elif current_source in sources:
+            is_mute = sources[current_source]['mute']
             self.microphone_mute_button.set_active(not is_mute)
             self.microphone_scale.set_enable(not is_mute)
-            self.microphone_scale.set_value(settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
+            source_volume = pypulse.PULSE.get_input_volume()
+            if current_source in source_volume:
+                volume = max(source_volume[current_source])
+            else:
+                volume = 0
+            self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
         # widget signals
         self.speaker_mute_button.connect("toggled", self.speaker_toggled)
         self.microphone_mute_button.connect("toggled", self.microphone_toggled)
         self.speaker_scale.connect("value-changed", self.speaker_scale_value_changed)
         self.microphone_scale.connect("value-changed", self.microphone_scale_value_changed)
-        # dbus signals
-        self.current_sink = None
-        if settings.CURRENT_SINK:
-            self.current_sink = sink = settings.PA_DEVICE[settings.CURRENT_SINK]
-            sink.connect("volume-updated", self.speaker_volume_updated)
-            sink.connect("mute-updated", self.pulse_mute_updated, self.speaker_mute_button)
-        self.current_source = None
-        if settings.CURRENT_SOURCE:
-            self.current_source = source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-            source.connect("volume-updated", self.microphone_volume_updated)
-            source.connect("mute-updated", self.pulse_mute_updated, self.microphone_mute_button)
-        if settings.PA_CORE:
-            core = settings.PA_CORE
-            core.connect("fallback-sink-updated", self.fallback_sink_updated_cb)
-            core.connect("fallback-sink-unset", self.fallback_sink_unset_cb)
-            core.connect("fallback-source-updated", self.fallback_source_udpated_cb)
-            core.connect("fallback-source-unset", self.fallback_source_unset_cb)
+        # pulseaudio signals
+        pypulse.PULSE.connect("get-cards", self.get_cards_cb)
+        pypulse.PULSE.connect("sink-changed", self.sink_changed_cb)
+        pypulse.PULSE.connect("source-changed", self.source_changed_cb)
+        pypulse.PULSE.connect("server-changed", self.server_changed_cb)
+        pypulse.PULSE.connect("sink-input-new", self.sink_input_new_cb)
+        pypulse.PULSE.connect("sink-input-changed", self.sink_input_changed_cb)
+        pypulse.PULSE.connect("sink-input-removed", self.sink_input_removed_cb)
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
@@ -185,9 +188,17 @@ class TrayGui(gtk.VBox):
     # widget signals
     def speaker_value_changed_thread(self):
         ''' speaker hscale value changed callback thread '''
-        sink = settings.CURRENT_SINK
-        volume = (self.speaker_scale.get_value()) / 100.0 * settings.FULL_VOLUME_VALUE
-        settings.set_volume(sink, volume)
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is None:
+            return
+        volume_list = pypulse.PULSE.get_output_volume_by_index(current_sink)
+        channel_list = pypulse.PULSE.get_output_channels_by_index(current_sink)
+        if not volume_list or not channel_list:
+            return
+        balance = pypulse.get_volume_balance(channel_list['channels'], volume_list, channel_list['map'])
+        volume = int((self.speaker_scale.get_value()) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
+        print "speaker volumel set:", balance, volume
+        pypulse.PULSE.set_output_volume_with_balance(current_sink, volume, balance)
         if not self.speaker_mute_button.get_active():
             self.speaker_mute_button.set_active(True)
 
@@ -200,10 +211,16 @@ class TrayGui(gtk.VBox):
 
     def microphone_value_changed_thread(self):
         ''' microphone value changed callback thread'''
-        value = self.microphone_scale.get_value()
-        volume = value / 100.0 * settings.FULL_VOLUME_VALUE
-        source = settings.CURRENT_SOURCE
-        settings.set_volume(source, volume)
+        current_source = pypulse.get_fallback_source_index()
+        if current_source is None:
+            return
+        volume_list = pypulse.PULSE.get_input_volume_by_index(current_source)
+        channel_list = pypulse.PULSE.get_input_channels_by_index(current_source)
+        if not volume_list or not channel_list:
+            return
+
+        volume = int((self.microphone_scale.get_value()) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
+        pypulse.PULSE.set_input_volume(current_source, [volume] * channel_list['channels'])
         if not self.microphone_mute_button.get_active():
             self.microphone_mute_button.set_active(True)
 
@@ -216,80 +233,83 @@ class TrayGui(gtk.VBox):
 
     def speaker_toggled(self, button):
         active = button.get_active()
-        if settings.CURRENT_SINK:
-            settings.set_mute(settings.CURRENT_SINK, not active)
+        current_sink = pypulse.get_fallback_sink_index()
+        #gtk.gdk.threads_enter()
         self.speaker_scale.set_enable(active)
+        #gtk.gdk.threads_leave()
+        if current_sink is not None:
+            pypulse.PULSE.set_output_mute(current_sink, not active)
 
     def microphone_toggled(self, button):
         active = button.get_active()
-        if settings.CURRENT_SOURCE:
-            settings.set_mute(settings.CURRENT_SOURCE, not active)
+        current_source = pypulse.get_fallback_source_index()
+        #gtk.gdk.threads_enter()
         self.microphone_scale.set_enable(active)
+        #gtk.gdk.threads_leave()
+        if current_source is not None:
+            pypulse.PULSE.set_input_mute(current_source, not active)
 
-    #####################################################
-    # dbus signals
-    def speaker_volume_updated(self, sink, volume):
-        # set output volume
-        self.speaker_scale.set_data("changed-by-other-app", True)
-        self.speaker_scale.set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
+    def get_cards_cb(self, index):
+        # if PulseAudio connect error, set the widget insensitive               
+        if not pypulse.PULSE.get_cards():                                       
+            self.set_sensitive(False)                                           
+            return
 
-    def microphone_volume_updated(self, source, volume):
-        # set output volume
-        self.microphone_scale.set_data("changed-by-other-app", True)
-        self.microphone_scale.set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
+    # pulseaudio signals callback
+    def sink_changed_cb(self, index):
+        current_sink = pypulse.get_fallback_sink_index()
+        print "sink_changed:", index, current_sink
+        if current_sink is None or current_sink != index:
+            return
+        sinks = pypulse.PULSE.get_output_devices()
+        if index in sinks:
+            is_mute = sinks[index]['mute']
+            self.speaker_mute_button.set_active(not is_mute)
+            self.speaker_scale.set_enable(not is_mute)
+            sink_volume = pypulse.PULSE.get_output_volume()
+            if index in sink_volume:
+                volume = max(sink_volume[index])
+            else:
+                volume = 0
+            self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
-    def pulse_mute_updated(self, dev, is_mute, button):
-        if button.get_active() == is_mute:
-            button.set_data("changed-by-other-app", True)
-            button.set_active(not is_mute)
+    def source_changed_cb(self, index):
+        current_source = pypulse.get_fallback_source_index()
+        print "source_changed:", index, current_source
+        if current_source is None or current_source != index:
+            return
+        sources = pypulse.PULSE.get_input_devices()
+        if index in sources:
+            is_mute = sources[index]['mute']
+            self.microphone_mute_button.set_active(not is_mute)
+            self.microphone_scale.set_enable(not is_mute)
+            source_volume = pypulse.PULSE.get_input_volume()
+            if index in source_volume:
+                volume = max(source_volume[index])
+            else:
+                volume = 0
+            self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
-    def fallback_sink_updated_cb(self, core, sink):
-        print 'fallback sink updated', sink
-        if not self.speaker_scale.get_sensitive():
-            self.speaker_scale.set_sensitive(True)
-        settings.CURRENT_SINK = sink
-        # disconnect old object signals
-        if self.current_sink:
-            try:
-                self.current_sink.disconnect_by_func(self.speaker_volume_updated)
-                self.current_sink.disconnect_by_func(self.pulse_mute_updated)
-            except:
-                pass
-        # connect new object signals
-        self.speaker_ports = None
-        if settings.CURRENT_SINK:
-            self.current_sink = sink = settings.PA_DEVICE[settings.CURRENT_SINK]
-            sink.connect("volume-updated", self.speaker_volume_updated)
-            sink.connect("mute-updated", self.pulse_mute_updated, self.speaker_mute_button)
-        self.speaker_mute_button.set_active(not settings.get_mute(settings.CURRENT_SINK))
-        self.speaker_scale.set_value(settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
+    def server_changed_cb(self):
+        current_sink = pypulse.get_fallback_sink_index()
+        current_source = pypulse.get_fallback_source_index()
+        if current_sink is None:
+            speaker_hbox.set_sensitive(False)
+        elif not speaker_hbox.get_sensitive():
+            speaker_hbox.set_sensitive(True)
+        if current_source is None:
+            microphone_hbox.set_sensitive(False)
+        elif not microphone_hbox.get_sensitive():
+            microphone_hbox.set_sensitive(True)
+        print "server changed:", current_sink, current_source
 
-    def fallback_source_udpated_cb(self, core, source):
-        print 'fallback source updated', source
-        if not self.microphone_scale.get_sensitive():
-            self.microphone_scale.set_sensitive(True)
-        settings.CURRENT_SOURCE = source
-        # disconnect old object signals
-        if self.current_source:
-            try:
-                self.current_source.disconnect_by_func(self.microphone_volume_updated)
-                self.current_source.disconnect_by_func(self.pulse_mute_updated)
-            except:
-                pass
-        # connect new object signals
-        self.microphone_ports = None
-        if settings.CURRENT_SOURCE:
-            self.current_source = source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-            source.connect("volume-updated", self.microphone_volume_updated)
-            source.connect("mute-updated", self.pulse_mute_updated, self.microphone_mute_button)
-        self.microphone_mute_button.set_active(not settings.get_mute(settings.CURRENT_SOURCE))
-        self.microphone_scale.set_value(settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
+    def sink_input_new_cb(self, index):
+        print "sink_input new:", index
 
-    def fallback_sink_unset_cb(self, core):
-        print 'fallback sink unset'
-        box.set_sensitive(False)
+    def sink_input_changed_cb(self, index):
+        print "sink_input changed:", index
 
-    def fallback_source_unset_cb(self, core):
-        print 'fallback source unset'
-        box.set_sensitive(False)
+    def sink_input_removed_cb(self, index):
+        print "sink_input removed:", index
+
 gobject.type_register(TrayGui)

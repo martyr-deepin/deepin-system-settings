@@ -34,8 +34,8 @@ import gtk
 import dbus
 '''
 TODO: production level do not need split word any more
-from split_word import init_jieba, split_word
 '''
+from split_word import init_jieba, split_word
 from theme import app_theme
 from constant import *
 import xappy
@@ -65,10 +65,11 @@ class KeywordSearch:
 
         '''
         TODO: production level do not need to init jieba any more
-        init_jieba()
         '''
+        init_jieba()
     '''
     TODO: production level no need to build index any more
+    '''
     def build_index(self, remove_old=True):
         if remove_old:
             remove_directory(SEARCH_DB_DIR)
@@ -94,13 +95,14 @@ class KeywordSearch:
                 self.__xappy.add(module_doc)
 
         self.__xappy.close()
-    '''
+    
     def query(self, keyword):
-        return self.search_query([x for x in keyword.split(' ') if x.strip()])
+        #return self.search_query([x for x in keyword.split(' ') if x.strip()])
         '''
         TODO: production level do not need to split word any more
-        return self.search_query(list(split_word(keyword, True)))
         '''
+        return self.search_query(list(split_word(keyword, True)))
+
     def search_query(self, keywords):
         sconn = xappy.SearchConnection(SEARCH_DB_DIR)
 
@@ -152,14 +154,16 @@ class SearchPage(gtk.VBox):
                         module = __import__("%s.%s" % (module_info.id, module_info.search_keyword), fromlist=["keywords"])
                         self.__keywords.append((module_info.id, module_info.name, module.keywords, module_info.menu_icon_pixbuf))
                     except Exception, e:
+                        print "Error %s %s" % (module_info.id, e)
                         continue
 
         self.__keyword_search = KeywordSearch(self.__keywords)
         '''
         TODO: build index might be a heavey operation depend on keywords count
               production level do not need to build index any more
-        BuildIndexThread(self).start()
         '''
+        BuildIndexThread(self).start()
+
         self.scrolled_window.add_child(self.result_align)
         self.pack_start(self.scrolled_window)
 

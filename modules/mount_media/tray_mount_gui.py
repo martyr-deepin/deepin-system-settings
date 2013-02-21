@@ -76,7 +76,7 @@ class Device(gtk.Button):
     def add_volume(self, volume):
         self.volumes.insert(0, volume)
         self.volume_count = self.volume_count + 1
-        self.connect("removed", self.handle_removed_volume)
+        volume.connect("removed", self.handle_removed_volume)
 
         if not self.icon_updated:
             self.icon = gtk.image_new_from_gicon(volume.get_icon(), ICON_SIZE)
@@ -90,11 +90,15 @@ class Device(gtk.Button):
         if not (volume in self.volumes):
             self.add_volume(volume)
 
-        self.mounts.remove(mount)
+        try:
+            self.mounts.remove(mount)
+        except:
+            pass
         self.mounts.insert(0, mount)
+
         self.mount_count = self.mount_count + 1
         self.set_mounted(True)
-        self.connect("unmounted", self.handle_unmounted)
+        mount.connect("unmounted", self.handle_unmounted)
         self.update_label()
 
     def update_label(self):
@@ -102,7 +106,7 @@ class Device(gtk.Button):
             self.d_name = self.drive.get_name()
             self.description = ""
         elif self.volume_count == 1:
-            v = self.volumes
+            v = self.volumes[0]
             self.d_name = v.get_name()
             self.description = self.drive.get_name()
         else:
@@ -153,8 +157,17 @@ class EjecterApp(object):
 
     def __init_ejecter_settings(self):
         self.load_devices()
-        self.monitor.connect("volume-added", self.monitor_volume_added)
-        self.monitor.connect("mount-added", self.monitor_mount_added)
+        self.monitor.connect("volume-added", self.volume_added)
+        self.monitor.connect("mount-added", self.mount_added)
+
+    def volume_added(self, monitor, volume):
+        print "volume_added..."
+        self.monitor_manage_volume(volume)
+
+    def mount_added(self, monitor, mount):
+        print "mount_added..."
+        self.monitor_manage_mount(mount)
+
 
     def load_devices(self):
         for v in self.monitor.get_volumes():
@@ -191,6 +204,17 @@ class EjecterApp(object):
         if id == None: 
             return False
 
+        try: 
+            dev = self.devices[id]
+            if dev == None:
+                return False
+        except:
+            print "create dev..."
+            self.monitor_manage_drive(drive)
+            dev = self.devices[id]
+
+        dev.add_volume(v)
+
     def monitor_manage_mount(self, m):
         # gio.Mount
         print "monitor_manage_mount..."
@@ -200,13 +224,16 @@ class EjecterApp(object):
         if id == None:
             return False
 
+        try:
+            dev = self.devices[id]
+            if dev == None:
+                return False
+        except:
+            return False
+            #dev = self.monitor_manage_drive(drive)
 
-        
-    def monitor_volume_added(self, volume_monitor, drive):
-        print "monitor_volume_added..."
+        dev.add_mount(m)
 
-    def monitor_mount_added(self, volume_monitor, mount):
-        print "monitor_mount_added..."
 
 if __name__ == "__main__":
     EjecterApp()
