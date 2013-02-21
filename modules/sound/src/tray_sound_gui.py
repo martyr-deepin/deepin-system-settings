@@ -253,9 +253,9 @@ class TrayGui(gtk.VBox):
             pypulse.PULSE.set_input_mute(current_source, not active)
 
     # pulseaudio signals callback
-    def sink_changed_cb(self, pa, index):
+    def sink_changed_cb(self, index):
         current_sink = pypulse.get_fallback_sink_index()
-        print "sink_changed:", pa, index, current_sink
+        print "sink_changed:", index, current_sink
         if current_sink is None or current_sink != index:
             return
         sinks = pypulse.PULSE.get_output_devices()
@@ -270,9 +270,9 @@ class TrayGui(gtk.VBox):
                 volume = 0
             self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
-    def source_changed_cb(self, pa, index):
+    def source_changed_cb(self, index):
         current_source = pypulse.get_fallback_source_index()
-        print "source_changed:", pa, index, current_source
+        print "source_changed:", index, current_source
         if current_source is None or current_source != index:
             return
         sources = pypulse.PULSE.get_input_devices()
@@ -287,7 +287,7 @@ class TrayGui(gtk.VBox):
                 volume = 0
             self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
-    def server_changed_cb(self, pa):
+    def server_changed_cb(self):
         current_sink = pypulse.get_fallback_sink_index()
         current_source = pypulse.get_fallback_source_index()
         if current_sink is None:
@@ -300,19 +300,13 @@ class TrayGui(gtk.VBox):
             microphone_hbox.set_sensitive(True)
         print "server changed:", current_sink, current_source
 
-    def sink_input_new_cb(self, pa, index):
-        print "sink_input new:", pa, index
-        playback = pa.get_playback_streams()
-        if index in playback:
-            print playback[index]
+    def sink_input_new_cb(self, index):
+        print "sink_input new:", index
 
-    def sink_input_changed_cb(self, pa, index):
-        print "sink_input changed:", pa, index
-        playback = pa.get_playback_streams()
-        if index in playback:
-            print playback[index]
+    def sink_input_changed_cb(self, index):
+        print "sink_input changed:", index
 
-    def sink_input_removed_cb(self, pa, index):
-        print "sink_input removed:", pa, index
+    def sink_input_removed_cb(self, index):
+        print "sink_input removed:", index
 
 gobject.type_register(TrayGui)
