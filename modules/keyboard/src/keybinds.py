@@ -121,7 +121,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         accel_entry_list.append(item)
 
 
-def get_shortcuts_custom_shortcut_entry(client):
+def get_shortcuts_custom_shortcut_entry(client, del_callback=None):
     '''
     @param client: a GConf Client type
     @return: a list contain ShortcutItem
@@ -140,7 +140,9 @@ def get_shortcuts_custom_shortcut_entry(client):
             binding = binding.get_string()
         else:
             binding = ""
-        item = AccelEntry(binding, check_shortcut_conflict)
+        item = AccelEntry(binding, check_shortcut_conflict, can_del=True)
+        if del_callback:
+            item.connect("accel-del", del_callback)
         item.settings_description = name
         item.settings_key = dirs
         item.settings_obj = client

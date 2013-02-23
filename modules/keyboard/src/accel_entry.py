@@ -20,10 +20,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from theme import app_theme
+
+
 from dtk.ui.new_entry import ShortcutKeyEntry
 from dtk.ui.label import Label
 from dtk.ui.dialog import DialogBox
-from dtk.ui.button import Button
+from dtk.ui.button import Button, ImageButton
 from dtk.ui.utils import color_hex_to_cairo
 from nls import _
 import gtk
@@ -160,12 +163,14 @@ class AccelEntry(ShortcutKeyEntry):
     TYPE_STRV = 4
     __gsignals__ = {
         "accel-key-change" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
+        "accel-del" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
     def __init__(self, content="",
                  check_conflict_func=None,
                  resolve_conflict_func=resolve_accel_entry_conflict,
-                 process_unmodifier_func=process_unmodifier_key):
+                 process_unmodifier_func=process_unmodifier_key,
+                 can_del=False):
         '''
         @param content: a string container accelerator
         @param check_conflict_func: a function return a AccelEntry object, if their AccelBuffer is equal
@@ -187,18 +192,28 @@ class AccelEntry(ShortcutKeyEntry):
         self.grab_area.set_can_focus(True)
         self.grab_area.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.grab_area.add_events(gtk.gdk.KEY_PRESS_MASK)
+        self.del_button = ImageButton(app_theme.get_pixbuf("account/X_fg.png"),
+                                      app_theme.get_pixbuf("account/X_fg.png"),
+                                      app_theme.get_pixbuf("account/X_fg.png"))
+        self.del_button.set_no_show_all(True)
         self.h_box.remove(self.entry)
         self.h_box.pack_start(self.accel_align)
         self.h_box.pack_start(self.grab_area, False, False)
+        #self.h_box.pack_start(self.del_button, False, False)
         self.grab_area.connect("button-press-event", self.__on_grab_area_button_press_cb)
         self.grab_area.connect("key-press-event", self.__on_grab_area_key_press_cb)
         self.accel_label.connect("button-press-event", self.__on_label_button_press_cb)
+        self.accel_label.connect("enter-notify-event", self.__on_label_enter_cb)
+        self.accel_label.connect("leave-notify-event", self.__on_label_leave_cb)
+        self.del_button.connect("leave-notify-event", self.__on_del_button_leave_cb)
+        self.del_button.connect("clicked", lambda w:self.emit("accel-del"))
         self.accel_label.keymap = {}
         self.set_size(200, 24)
 
         self.check_conflict_func = check_conflict_func
         self.resolve_conflict_func = resolve_conflict_func
         self.process_unmodifier_func = process_unmodifier_func
+        self.can_del = can_del
 
         self.settings_description = ""
         self.settings_key = ""
@@ -333,5 +348,43 @@ class AccelEntry(ShortcutKeyEntry):
             self.settings_obj.set_string("%s/binding" % (self.settings_key), accel_name)
         print "set key", accel_name, self.settings_obj, self.settings_key, self.settings_type, self.settings_value_type
         #set_gsettings_or_gconf_value(self.settings_obj, self.settings_key, accel_name)
+
+    def __on_label_enter_cb(self, widget, event):
+        if self.can_del:
+            if self.del_button not in self.h_box.get_children():
+                self.h_box.pack_start(self.del_button, False, False)
+                self.del_button.show()
+
+    def __on_label_leave_cb(self, widget, event):
+        x, y, w, h = widget.allocation
+        if not (0 < event.y < h) or event.x <= 0:
+            if self.del_button in self.h_box.get_children():
+                self.h_box.remove(self.del_button)
+                self.del_button.hide()
+
+    def __on_del_button_leave_cb(self, widget, event):
+        x, y, w, h = widget.allocation
+        if not (0 < event.y < h) or event.x >= w and self.del_button.get_visible():
+            if widget in self.h_box.get_children():
+                widget.hide()
+                self.h_box.remove(self.del_button)
         
 gobject.type_register(AccelEntry)
+
+
+if __name__ == '__main__':
+    from pprint import pprint
+    win = gtk.Window()
+    win.set_position(gtk.WIN_POS_CENTER)
+    win.connect("destroy", gtk.main_quit)
+
+    vbox = gtk.VBox(False)
+    entry = AccelEntry("<Alt>A", can_del=True)
+    entry.connect("accel-del", lambda w:pprint("del......."))
+    vbox.pack_start(gtk.Label("----------------"), False, False)
+    vbox.pack_start(entry, False, False)
+    vbox.pack_start(gtk.Label("----------------"), False, False)
+    win.add(vbox)
+    win.show_all()
+
+    gtk.main()
