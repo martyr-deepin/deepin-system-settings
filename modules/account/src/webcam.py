@@ -38,8 +38,10 @@ class Webcam(gtk.DrawingArea):
         
     @classmethod    
     def has_device(cls):
-        if os.path.exists("/dev/video0"):
-            return True
+        devices = os.listdir('/dev')
+        for d in devices:
+            if d.startswith('video'):
+                return True
         return False
         
     def create_video_pipeline(self):    
