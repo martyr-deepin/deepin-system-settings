@@ -144,6 +144,7 @@ class TrayNetworkPlugin(object):
             self.init_tree()
             index = self.net_manager.get_active_connection(self.ap_list)
             if index:
+                print "Debug", index
                 self.gui.set_active_ap(index, True)
             else:
                 self.activate_wireless()
@@ -181,6 +182,7 @@ class TrayNetworkPlugin(object):
         elif new_state is 40:
             self.gui.wireless.set_active((True, True))
             self.change_status_icon("loading")
+            self.let_rotate(True)
         elif new_state is 60 and old_state == 50:
             print "need auth"
         elif new_state is 100:
@@ -208,7 +210,12 @@ class TrayNetworkPlugin(object):
         """
         change status icon state
         """
+        self.let_rotate(False)
         self.tray_icon.set_icon_theme(icon_name)
+
+    def let_rotate(self, rotate_check, interval=100):
+        self.tray_icon.set_rotate(rotate_check, interval)
+
 
     def start_loading(self):
         pass
@@ -223,7 +230,7 @@ class TrayNetworkPlugin(object):
         return True
 
     def insert(self):
-        return 1
+        return 3
         
     def id(self):
         return "tray-network_plugin"
@@ -240,7 +247,7 @@ class TrayNetworkPlugin(object):
         if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
             self.gui.set_ap(self.ap_list)
         height = self.gui.get_widget_height()
-        self.this.set_size_request(160, height + 50)
+        self.this.set_size_request(185, height + 50)
         print "shutdown show menu..."
 
     def hide_menu(self):

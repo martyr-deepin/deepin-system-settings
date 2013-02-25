@@ -33,6 +33,8 @@ from constants import CONTENT_FONT_SIZE, IMG_WIDTH
 import style
 from helper import Dispatcher
 WIDGET_HEIGHT = 22
+
+ALIGN_SPACING = 28
 bg_color="#ebf4fd"
 line_color="#7da2ce"
 BORDER_COLOR = color_hex_to_cairo(line_color)
@@ -51,14 +53,17 @@ class TrayUI(gtk.VBox):
         self.active_ap_index = []
 
     def init_ui(self):
-        self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("wired"), self.wired_toggle)
-        self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("wireless"), self.wireless_toggle)
+        self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.wired_toggle)
+        self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), self.wireless_toggle)
         self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
         self.pack_start(self.wire, False, False)
         self.pack_start(self.wireless, False, False)
         
         self.ssid_list = []
+        #align = gtk.Alignment(0,0, 1, 1)
+        #align.set_padding(0,0,28, 0)
         self.tree_box = gtk.VBox()
+        #align.add(self.tree_box)
         self.pack_start(self.tree_box, False, False)
         self.pack_start(self.mobile, False, False)
         self.ap_tree = TreeView()
@@ -94,6 +99,7 @@ class TrayUI(gtk.VBox):
     def set_ap(self, ap_list):
         if not ap_list:
             return 
+        self.__set_ap_list(ap_list)
         self.ap_tree.delete_all_items()
         if len(ap_list) <= 5:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list))
@@ -108,16 +114,43 @@ class TrayUI(gtk.VBox):
         self.tree_box.pack_start(self.more_button, False, False)
         self.show_all()
 
+    def __set_ap_list(self, ap_list):
+        self.__ap_list = ap_list
+
+
+    def move_active(self, index):
+        if index != [] and self.__ap_list:
+            if index <= len(self.ap_tree.visible_items):
+                print index
+                self.ap_tree.delete_item_by_index(index)
+                self.ap_tree.add_items([SsidItem(self.__ap_list[index])],
+                                        insert_pos=0)
+            else:
+                self.ap_tree.delete_item_by_index(-1)
+                self.ap_tree.add_items([SsidItem(self.__ap_list[index])],
+                                        insert_pos=0)
+
+
 
     def set_active_ap(self, index, state):
-        print "in set active ap",index
-        if state and index:
-            self.set_active_ap(self.active_ap_index, False)
+        #print "in set active ap",index
+        #if state and index:
+            #self.set_active_ap(self.active_ap_index, False)
+            #self.active_ap_index = index
+        #if index:
+            #for i in index:
+                #self.move_active(i)
+                #self.ap_tree.visible_items[0].set_active(state)
+        if self.active_ap_index:
+            for i in self.active_ap_index:
+                self.ap_tree.visible_items[i].set_active(False)
             self.active_ap_index = index
+
         if index:
             for i in index:
-                self.ap_tree.visible_items[i].set_active(state)
-
+                self.move_active(i)
+                self.ap_tree.visible_items[0].set_active(state)
+        
     def get_active_ap(self):
         return self.active_ap_index
 
@@ -189,6 +222,8 @@ class SsidItem(TreeItem):
     NETWORK_LOADING = 1
     NETWORK_CONNECTED = 2
 
+    SPACING = 5
+
     def __init__(self,
                  ap,
                  setting_object = None, 
@@ -224,7 +259,7 @@ class SsidItem(TreeItem):
             text_color = "#3da1f7"
         else:
             text_color = "#000000"
-        draw_text(cr, self.ssid, rect.x, rect.y, rect.width, rect.height,
+        draw_text(cr, self.ssid, rect.x + ALIGN_SPACING , rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT, text_color = text_color)
 
 
@@ -255,7 +290,7 @@ class SsidItem(TreeItem):
         else:
             signal_icon = self.strength_0
         
-        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH, rect.y + (rect.height - IMG_WIDTH)/2)
+        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH + self.SPACING, rect.y + (rect.height - IMG_WIDTH)/2)
         if self.is_select:
             with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*BORDER_COLOR)
@@ -266,7 +301,7 @@ class SsidItem(TreeItem):
                 cr.stroke()
 
     def get_column_widths(self):
-        return [-1, IMG_WIDTH * 2 + self.right_padding]
+        return [-1, IMG_WIDTH * 2 + self.right_padding+ self.SPACING]
 
     def get_column_renders(self):
         return [self.render_essid, self.render_signal]
@@ -411,12 +446,12 @@ class MoreButton(Button):
 
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.rectangle(rect.x , rect.y, rect.width, rect.height)
         cr.fill()
         # draw text
-        label = "more wireless"
+        label = _("more wireless...")
         (text_width, text_height) = get_content_size(label)
         offset_y = (rect.height - text_height)/2
-        draw_text(cr, label, rect.x, rect.y + offset_y, text_width, text_height,
+        draw_text(cr, label, rect.x + ALIGN_SPACING, rect.y + offset_y, text_width, text_height,
                 alignment = pango.ALIGN_LEFT)
         return True

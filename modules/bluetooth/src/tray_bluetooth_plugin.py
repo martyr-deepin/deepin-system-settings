@@ -38,7 +38,7 @@ class TrayBluetoothPlugin(object):
         return True
 
     def insert(self):
-        pass
+        return 2
 
     def plugin_widget(self):
         return gtk.Button("BLUEZ")

@@ -167,7 +167,7 @@ class WiredSection(gtk.VBox):
 
     def try_active(self):
         for index, device in enumerate(self.wired_devices):
-            if int(device.get_state()) == 20:
+            if device.get_state() == 20:
                 self.tree.visible_items[index].network_state = 0
                 return
             else:
@@ -189,8 +189,10 @@ class WiredSection(gtk.VBox):
                     self.wire.set_active(False)
     
     def wired_changed_cb(self, widget, device, new_state, reason):
+        print "Wired::state", new_state, reason
         index = self.wired_devices.index(device)
-
+        if new_state == 10:
+            return 
         if new_state == 20:
             self.wire.set_active(False)
         if new_state == 30:
@@ -335,7 +337,8 @@ class WirelessSection(gtk.VBox):
 
     def state_changed_callback(self, widget, device, new_state, old_state, reason):
         print "main::wireless",new_state, reason
-
+        if new_state == 10:
+            return 
         if new_state is 20:
             self.wireless.set_active(False)
         elif new_state is 30:
@@ -477,19 +480,20 @@ class WirelessSection(gtk.VBox):
     
     def device_is_active(self, device):
         print "wireless active"
+        print device
         active = device.get_active_connection()
         # FIXME little wierd
         for item in self.tree.visible_items:
             item.set_net_state(0)
- 
-        try:
-            index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
-            self.index = index
-            self.tree.visible_items[index].set_net_state(2)
-            self.tree.visible_items[index].redraw()
-        except ValueError:
-            if self.check_connection_mode(active.get_connection()):
-                self.hotspot.set_net_state(2)
+        if active: 
+            try:
+                index = [ap.object_path for ap in self.ap_list].index(active.get_specific_object())
+                self.index = index
+                self.tree.visible_items[index].set_net_state(2)
+                self.tree.visible_items[index].redraw()
+            except ValueError:
+                if self.check_connection_mode(active.get_connection()):
+                    self.hotspot.set_net_state(2)
 
 
     def device_is_deactive(self, reason):
@@ -978,12 +982,13 @@ class Network(object):
         self.mobile.add_setting_page(self.mobile_setting_page)
 
     def refresh(self):
-        from nmlib.nm_secret_agent import NMSecretAgent
-        from mm.mmclient import MMClient
-        nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
-        nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
-        nm_module.secret_agent = NMSecretAgent()
-        nm_module.mmclient = MMClient
+        #from nmlib.nm_secret_agent import NMSecretAgent
+        #from mm.mmclient import MMClient
+        #nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+        #nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+        #nm_module.secret_agent = NMSecretAgent()
+        #nm_module.mmclient = MMClient()
+        nm_module.init_objects()
         self.init_sections(self.module_frame)
         self.eventbox.set_above_child(False)
         self.eventbox.queue_draw()
@@ -1011,6 +1016,7 @@ if __name__ == '__main__':
             cache.clear_spec_cache()
 
         def service_start_cb(widget, s):
+            print "#service start#"
             network.refresh()
 
         servicemanager.connect("service-start", service_start_cb)

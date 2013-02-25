@@ -306,6 +306,10 @@ class AddSettingItem(TreeItem):
         '''
         self.add_pixbuf_out = app_theme.get_pixbuf("network/add-1.png")
         self.add_pixbuf_active = app_theme.get_pixbuf("network/add.png")
+
+    def change_add_setting(self, add_setting_callback):
+        self.add_setting = add_setting_callback
+
     def get_height(self):
         return 30 
     
@@ -415,11 +419,11 @@ class AddSettingItem(TreeItem):
 class SettingItem(TreeItem):
     CHECK_LEFT_PADDING = FRAME_LEFT_PADDING
     CHECK_RIGHT_PADIING = 10
-    def __init__(self, connection, click_cb, delete_cb, set_button_cb=None):
+    def __init__(self, connection, delete_cb, set_button_cb=None):
         TreeItem.__init__(self)
         #self.title = title
         self.connection = connection
-        self.click = click_cb
+        #self.click = click_cb
         self.delete_connection = delete_cb
         self.set_button = set_button_cb
         self.entry = None
@@ -554,7 +558,7 @@ class SettingItem(TreeItem):
         self.is_select = True
         if self.is_hover:
             self.hover(0,0,0)
-        self.click(self.connection)
+        Dispatcher.change_setting(self.connection)
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
     

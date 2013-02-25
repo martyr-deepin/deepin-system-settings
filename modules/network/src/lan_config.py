@@ -112,10 +112,10 @@ class WiredSetting(gtk.Alignment):
         rect = widget.allocation
         style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
 
-    def init(self, device=None, new_connection=None, init_connection=False):
-        print "Wired start init"
-        # Get all connections
-        if device is not None:
+    def init(self, device=none, new_connection=none, init_connection=false):
+        print "wired start init"
+        # get all connections
+        if device is not none:
             global wired_device
             wired_device = device
 
@@ -124,7 +124,7 @@ class WiredSetting(gtk.Alignment):
         if init_connection:
             for connection in self.connections:
                 connection.init_settings_prop_dict()
-        # Check connections
+        # check connections
         if new_connection:
             self.connections += new_connection
         else:

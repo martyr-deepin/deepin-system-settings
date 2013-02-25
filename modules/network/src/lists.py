@@ -766,7 +766,7 @@ class HotspotItem(TreeItem):
         pass
     
     def button_press(self, column, offset_x, offset_y):
-        pass        
+    300pass        
     
     def button_release(self, column, offset_x, offset_y):
         pass        

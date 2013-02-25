@@ -20,8 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from nmlib.nmclient import NMClient
-from nmlib.nm_remote_settings import NMRemoteSettings
-from nmlib.nmcache import NMCache, cache
+#from nmlib.nm_remote_settings import NMRemoteSettings
+from nmlib.nmcache import  cache
 from nmlib.nm_secret_agent import NMSecretAgent
 from mm.mmclient import MMClient
 from dtk.ui.new_slider import HSlider
@@ -61,10 +61,15 @@ class MySlider(HSlider):
 class NModule(object):
 
     def __init__(self):
+        self.init_objects()
+
+    def init_objects(self):
+        print "reinit object"
         self.client = cache.getobject("/org/freedesktop/NetworkManager")
         self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+        print self.setting, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         self.agent = NMSecretAgent()
-        self.mclient = MMClient()
+        self.mclient = NMClient()
         self.hslider = MySlider()
 
     @property

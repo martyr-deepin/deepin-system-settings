@@ -60,6 +60,14 @@ class EventDispatcher(gobject.GObject):
             "change-crumb" : _(str),
 
             "tray-show-more": _(),
+
+            "nm-start": _(),
+            "nm-stop": _(),
+
+            "wired-device-add": _(obj),
+            "wired-device-remove": _(obj),
+            "wireless-device-add": _(obj),
+            "wireless-device-remove": _(obj),
             }
 
     def __init__(self):
@@ -110,6 +118,16 @@ class EventDispatcher(gobject.GObject):
 
     def tray_show_more(self):
         self.emit("tray-show-more")
+
+    def nm_start(self):
+        self.emit('nm-start')
+    
+    def nm_stop(self):
+        self.emit('nm-stop')
+
+    def device_add(self, device):
+        pass
+
 
 Dispatcher = EventDispatcher()
 
