@@ -1,13 +1,19 @@
 
 
+from vtk.utils import is_usb_device
 import gtk
 import gio
 import glib
+import gobject
 
 
 ICON_SIZE = 16
 
 class Device(gtk.Button):
+    __gsignals__ = {
+    "unmounted-event" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    "removed-event" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }
     def __init__(self, drive, device):
         gtk.Button.__init__(self)
         self.drive  = drive
@@ -36,7 +42,7 @@ class Device(gtk.Button):
         print op.get_password()
         if self.drive.can_eject():
             try:
-                self.emit("unmounted")
+                self.emit("unmounted-event")
             except Exception,e:
                 print "error:", e
         else:
@@ -44,7 +50,7 @@ class Device(gtk.Button):
                 try:
                     m = v.get_mount()
                     if True:
-                        self.emit("unmounted")
+                        self.emit("unmounted-event")
                     else:
                         pass
                 except Exception, e:
@@ -57,10 +63,10 @@ class Device(gtk.Button):
 
         if self.mount_count <= 0:
             self.set_mounted(False)
-            self.emit("unmounted")
+            self.emit("unmounted-event")
 
     def handle_removed_drive(self, drive):
-        self.emit("remove")
+        self.emit("removed-event")
 
     def handle_removed_volume(self, volume):
         self.volumes.remove(volume)
@@ -68,7 +74,7 @@ class Device(gtk.Button):
         self.update_label()
 
         if self.volume_count == 0:
-            self.emit("remove")
+            self.emit("removed-event")
 
     def handle_removed_drive(self, removed_drive):
         print "handle_removed_drive..."
@@ -136,6 +142,7 @@ class Device(gtk.Button):
         #
         self.set_sensitive(mounted)
 
+gobject.type_register(Device)
 
 class Conf(object):
     def __init__(self):
@@ -152,7 +159,7 @@ class EjecterApp(object):
         
         self.conf = Conf()
         self.devices = {}
-        self.invalid_devices = []
+        self.invalid_devices = [] 
         self.monitor = gio.VolumeMonitor()
 
     def __init_ejecter_settings(self):
@@ -189,12 +196,22 @@ class EjecterApp(object):
         
         id = drive.get_identifier(self.conf.device_identifier)
         print "id:", id, drive.get_name()
-
+	
         d = Device(drive, 0)
-        self.devices[id] = d
+	self.devices[id] = d
+	if is_usb_device(id):
 
-        self.hbox.pack_start(d, False, False) 
-        self.hbox.show_all()
+	   self.hbox.pack_start(d, False, False) 
+	   self.hbox.show_all()
+
+	   d.connect('unmounted-event', self.d_unmounted_event)
+	   d.connect('removed-event', self.d_removed_event)
+
+    def d_unmounted_event(self, device):
+        print "d_unmounted_event..."
+
+    def d_removed_event(self, device):
+        print "d_removed_event..."
         
     def monitor_manage_volume(self, v):
         # gio.Volume
