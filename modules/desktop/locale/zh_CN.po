@@ -1,0 +1,98 @@
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
+# Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-25 17:40+0800\n"
+"PO-Revision-Date: 2013-02-25 16:44+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/desktop_view.py:49 ../src/desktop_view.py:54
+msgid "Default"
+msgstr "默认"
+
+#: ../src/desktop_view.py:50
+msgid "Auto Hide"
+msgstr "自动隐藏"
+
+#: ../src/desktop_view.py:51
+msgid "Invisible"
+msgstr "一直隐藏"
+
+#: ../src/desktop_view.py:52
+msgid "Buttom"
+msgstr "底部"
+
+#: ../src/desktop_view.py:53
+msgid "Top"
+msgstr "顶部"
+
+#: ../src/desktop_view.py:55
+msgid "Small"
+msgstr "小图标"
+
+#: ../src/desktop_view.py:61 ../src/search_keyword.py:29
+msgid "Desktop Icon"
+msgstr "桌面图标"
+
+#: ../src/desktop_view.py:69
+msgid "Computer"
+msgstr "计算机"
+
+#: ../src/desktop_view.py:70
+msgid "Home"
+msgstr "主文件夹"
+
+#: ../src/desktop_view.py:71
+msgid "Trash"
+msgstr "回收站"
+
+#: ../src/desktop_view.py:72
+msgid "Software Center"
+msgstr "软件中心"
+
+#: ../src/desktop_view.py:84
+msgid "Dock"
+msgstr "Dock栏"
+
+#: ../src/desktop_view.py:90
+msgid "Display Style"
+msgstr "显示方式"
+
+#: ../src/desktop_view.py:102
+msgid "Place Style"
+msgstr "摆放方式"
+
+#: ../src/desktop_view.py:114
+msgid "Icon Size"
+msgstr "图标大小"
+
+#: ../src/desktop_view.py:126
+msgid "Login &amp;&amp; Lock"
+msgstr "登录锁屏画面"
+
+#: ../src/desktop_view.py:134
+msgid "Login Page"
+msgstr "登录画面"
+
+#: ../src/desktop_view.py:139 ../src/desktop_view.py:155
+msgid "Select"
+msgstr "选择"
+
+#: ../src/desktop_view.py:150
+msgid "Lock Page"
+msgstr "锁屏画面"
+
+#: ../src/desktop_view.py:230
+msgid "Reset to default value"
+msgstr "恢复默认值"

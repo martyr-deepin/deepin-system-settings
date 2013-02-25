@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Copyright (C) 2011 ~ 2012 Deepin, Inc.
 #               2011 ~ 2012 Long Changjin
@@ -20,15 +20,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from tray_sound_gui import TrayGui
-import gtk
+import gettext
+import os
 
-if __name__ == '__main__':
-    win = gtk.Window()
-    win.set_size_request(220, 200)
-    win.connect("destroy", gtk.main_quit)
-    tray = TrayGui()
+def get_parent_dir(filepath, level=1):
+    '''Get parent dir.'''
+    parent_dir = os.path.realpath(filepath)
+    
+    while(level > 0):
+        parent_dir = os.path.dirname(parent_dir)
+        level -= 1
+    
+    return parent_dir
 
-    win.add(tray)
-    win.show_all()
-    gtk.main()
+LOCALE_DIR=os.path.join(get_parent_dir(__file__, 2), "locale")
+if not os.path.exists(LOCALE_DIR):
+    LOCALE_DIR="/usr/share/locale"
+    
+_ = None    
+try:
+    _ = gettext.translation("deepin-system-settings", LOCALE_DIR).gettext
+except Exception, e:
+    _ = lambda i : i

@@ -29,7 +29,7 @@ import os
 from theme import app_theme
 
 MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        
-FIRST_MODULE_NAMES = ["display", "sound", "individuation", "date_time", "power"]
+FIRST_MODULE_NAMES = ["display", "desktop", "individuation", "sound", "date_time", "power"]
 SECOND_MODULE_NAMES = ["keyboard", "mouse", "touchpad", "printer", "network", "bluetooth", "driver"]
 THIRD_MODULE_NAMES = ["account", "application_associate", "system_information"]
 

@@ -23,7 +23,7 @@ class MountMedia(object):
         return 4
 
     def plugin_widget(self):
-        return self.ejecter_app.hbox
+        return self.ejecter_app.vbox
 
     def show_menu(self):
         self.this.set_size_request(250, 180)

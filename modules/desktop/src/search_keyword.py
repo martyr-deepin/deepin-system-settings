@@ -1,11 +1,11 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Long Changjin
+# Copyright (C) 2013 Deepin, Inc.
+#               2013 Zhai Xiang
 # 
-# Author:     Long Changjin <admin@longchangjin.cn>
-# Maintainer: Long Changjin <admin@longchangjin.cn>
+# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
+# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,15 +20,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from tray_sound_gui import TrayGui
-import gtk
+from nls import _ 
 
-if __name__ == '__main__':
-    win = gtk.Window()
-    win.set_size_request(220, 200)
-    win.connect("destroy", gtk.main_quit)
-    tray = TrayGui()
-
-    win.add(tray)
-    win.show_all()
-    gtk.main()
+'''
+TODO: keywords list
+      item (module_uid, search_keyword)
+'''
+keywords = [("desktop_1", _("Desktop Icon")), 
+           ]

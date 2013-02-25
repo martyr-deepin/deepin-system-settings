@@ -12,12 +12,13 @@ ICON_SIZE = 16
 class Device(gtk.Button):
     __gsignals__ = {
     "unmounted-event" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-    "removed-event" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    "removed-event" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
     }
     def __init__(self, drive, device):
         gtk.Button.__init__(self)
         self.drive  = drive
         self.device = device
+        self.conf = Conf()
 
         self.was_removed = False
         self.icon_updated = False
@@ -66,7 +67,8 @@ class Device(gtk.Button):
             self.emit("unmounted-event")
 
     def handle_removed_drive(self, drive):
-        self.emit("removed-event")
+        id = drive.get_identifier(self.conf.device_identifier)
+        self.emit("removed-event", id)
 
     def handle_removed_volume(self, volume):
         self.volumes.remove(volume)
@@ -74,10 +76,8 @@ class Device(gtk.Button):
         self.update_label()
 
         if self.volume_count == 0:
-            self.emit("removed-event")
-
-    def handle_removed_drive(self, removed_drive):
-        print "handle_removed_drive..."
+            id = self.drive.get_identifier(self.conf.device_identifier)
+            self.emit("removed-event", id)
 
     def add_volume(self, volume):
         self.volumes.insert(0, volume)
@@ -155,7 +155,7 @@ class EjecterApp(object):
         self.__init_ejecter_settings()
 
     def __init_values(self):
-        self.hbox = gtk.VBox()
+        self.vbox = gtk.VBox()
         
         self.conf = Conf()
         self.devices = {}
@@ -168,11 +168,11 @@ class EjecterApp(object):
         self.monitor.connect("mount-added", self.mount_added)
 
     def volume_added(self, monitor, volume):
-        print "volume_added..."
+        #print "volume_added..."
         self.monitor_manage_volume(volume)
 
     def mount_added(self, monitor, mount):
-        print "mount_added..."
+        #print "mount_added..."
         self.monitor_manage_mount(mount)
 
 
@@ -190,32 +190,36 @@ class EjecterApp(object):
 
     def monitor_manage_drive(self, drive):
         # gio.Drive 
-        print "monitor_manage_drive..."
+        #print "monitor_manage_drive..."
         if drive == None:
             return False
         
         id = drive.get_identifier(self.conf.device_identifier)
-        print "id:", id, drive.get_name()
+        #print "id:", id, drive.get_name()
 	
-        d = Device(drive, 0)
-	self.devices[id] = d
-	if is_usb_device(id):
+        if is_usb_device(id):
+            d = Device(drive, 0)
+            self.devices[id] = d
 
-	   self.hbox.pack_start(d, False, False) 
-	   self.hbox.show_all()
+            self.vbox.pack_start(d, False, False) 
+            self.vbox.show_all()
 
-	   d.connect('unmounted-event', self.d_unmounted_event)
-	   d.connect('removed-event', self.d_removed_event)
+            d.connect('unmounted-event', self.d_unmounted_event)
+            d.connect('removed-event', self.d_removed_event)
 
     def d_unmounted_event(self, device):
         print "d_unmounted_event..."
 
-    def d_removed_event(self, device):
-        print "d_removed_event..."
+    def d_removed_event(self, device, id):
+        if self.devices.has_key(id):
+            print "d_removed_event...", id, self.devices[id]
+            self.vbox.remove(self.devices[id])
+            del self.devices[id]
+            self.vbox.show_all()
         
     def monitor_manage_volume(self, v):
         # gio.Volume
-        print "monitor_manage_volume..."
+        #print "monitor_manage_volume..."
         drive = v.get_drive()
         id = drive.get_identifier(self.conf.device_identifier)
         if id == None: 
@@ -225,18 +229,18 @@ class EjecterApp(object):
             dev = self.devices[id]
             if dev == None:
                 return False
+            dev.add_volume(v)
         except:
-            print "create dev..."
+            #print "create dev..."
             self.monitor_manage_drive(drive)
-            dev = self.devices[id]
+            #dev = self.devices[id]
 
-        dev.add_volume(v)
 
     def monitor_manage_mount(self, m):
         # gio.Mount
-        print "monitor_manage_mount..."
+        #print "monitor_manage_mount..."
         drive = m.get_drive()
-        print m.get_name(), drive.get_name()
+        #print m.get_name(), drive.get_name()
         id = drive.get_identifier(self.conf.device_identifier) 
         if id == None:
             return False
@@ -247,7 +251,6 @@ class EjecterApp(object):
                 return False
         except:
             return False
-            #dev = self.monitor_manage_drive(drive)
 
         dev.add_mount(m)
 
