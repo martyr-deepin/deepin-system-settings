@@ -46,8 +46,6 @@ class PowerView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
-        self.label_padding_x = 10
-        self.label_padding_y = 10
         self.wait_duration_items = [("5 %s" % _("Minutes"), 300), 
                                     ("10 %s" % _("Minutes"), 600), 
                                     ("30 %s" % _("Minutes"), 1800), 

@@ -35,7 +35,6 @@ if __name__ == "__main__":
 
     if len(args):
         module_uid = args[0]
-        print "DEBUG getopt module_uid", module_uid
     
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
@@ -49,8 +48,6 @@ if __name__ == "__main__":
             module_frame.send_module_info()
         elif message_type == "reset":
             power_view.reset()
-        elif message_type == "add_button_cb":
-            print "DEBUG add_button_cb", message_content
 
     module_frame.module_message_handler = message_handler        
     
