@@ -25,7 +25,7 @@ import gtk
 
 if __name__ == '__main__':
     win = gtk.Window()
-    win.set_size_request(210, 200)
+    win.set_size_request(220, 200)
     win.connect("destroy", gtk.main_quit)
     tray = TrayGui()
 

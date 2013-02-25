@@ -75,41 +75,33 @@ class TrayGui(gtk.VBox):
 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
-        #separator_color = [(0, ("#000000", 0.3)), (0.5, ("#000000", 0.2)), (1, ("#777777", 0.0))]
-        #hseparator = HSeparator(separator_color, 0, 0)
+        separator_color = [(0, ("#000000", 0.3)), (0.5, ("#000000", 0.2)), (1, ("#777777", 0.0))]
+        hseparator = HSeparator(separator_color, 0, 0)
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(150, 3)
         hbox.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False)), False, False)
         hbox.pack_start(self.__make_align(hseparator), True, True)
         self.pack_start(hbox, False, False)
 
+        volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
+
         table = gtk.Table(2, 3)
         speaker_hbox = gtk.HBox(False)
-        #speaker_hbox.set_spacing(WIDGET_SPACING)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/tray_speaker-3.png"))
-        self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
+        self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.speaker_scale.set_size_request(150, 10)
         self.speaker_mute_button = OffButton()
-        #speaker_hbox.pack_start(self.__make_align(speaker_img), False, False)
-        #speaker_hbox.pack_start(self.__make_align(self.speaker_scale, yalign=0.5, yscale=0.0, height=30))
-        #speaker_hbox.pack_start(self.__make_align(self.speaker_mute_button), False, False)
-        #self.pack_start(speaker_hbox, False, False)
         table.attach(self.__make_align(speaker_img), 0, 1, 0, 1, 4)
-        table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=30), 1, 2, 0, 1, 4)
+        table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
         microphone_hbox = gtk.HBox(False)
-        #microphone_hbox.set_spacing(WIDGET_SPACING)
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
-        self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=150)
+        self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.microphone_scale.set_size_request(150, 10)
         self.microphone_mute_button = OffButton()
-        #microphone_hbox.pack_start(self.__make_align(microphone_img), False, False)
-        #microphone_hbox.pack_start(self.__make_align(self.microphone_scale, yalign=0.5, yscale=0.0, height=30))
-        #microphone_hbox.pack_start(self.__make_align(self.microphone_mute_button), False, False)
-        #self.pack_start(microphone_hbox, False, False)
         table.attach(self.__make_align(microphone_img), 0, 1, 1, 2, 4)
-        table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, height=30), 1, 2, 1, 2, 4)
+        table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30), 1, 2, 1, 2, 4)
         table.attach(self.__make_align(self.microphone_mute_button), 2, 3, 1, 2, 4)
 
         self.pack_start(table, False, False)
@@ -119,12 +111,13 @@ class TrayGui(gtk.VBox):
         hseparator.set_size_request(190, 3)
         self.pack_start(self.__make_align(hseparator, xalign=0.5, height=14), False, False)
         #self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
-        button_hbox = gtk.HBox(False)
-        button_hbox.set_spacing(WIDGET_SPACING)
+        #button_hbox = gtk.HBox(False)
+        #button_hbox.set_spacing(WIDGET_SPACING)
         #button_hbox.pack_start(self.__make_align(height=-1))
         #button_hbox.pack_start(self.button_more)
-        self.pack_start((button_hbox), False, False)
-        self.pack_start(self.__make_align(height=15))
+        #self.pack_start((button_hbox), False, False)
+        #self.pack_start(self.button_more)
+        #self.pack_start(self.__make_align(height=15))
         ##########################################
         # if sinks list is empty, then can't set output volume
         current_sink = pypulse.get_fallback_sink_index()
@@ -165,13 +158,12 @@ class TrayGui(gtk.VBox):
         self.speaker_scale.connect("value-changed", self.speaker_scale_value_changed)
         self.microphone_scale.connect("value-changed", self.microphone_scale_value_changed)
         # pulseaudio signals
-        pypulse.PULSE.connect("get-cards", self.get_cards_cb)
         pypulse.PULSE.connect("sink-changed", self.sink_changed_cb)
         pypulse.PULSE.connect("source-changed", self.source_changed_cb)
-        pypulse.PULSE.connect("server-changed", self.server_changed_cb)
-        pypulse.PULSE.connect("sink-input-new", self.sink_input_new_cb)
-        pypulse.PULSE.connect("sink-input-changed", self.sink_input_changed_cb)
-        pypulse.PULSE.connect("sink-input-removed", self.sink_input_removed_cb)
+        #pypulse.PULSE.connect("server-changed", self.server_changed_cb)
+        #pypulse.PULSE.connect("sink-input-new", self.sink_input_new_cb)
+        #pypulse.PULSE.connect("sink-input-changed", self.sink_input_changed_cb)
+        #pypulse.PULSE.connect("sink-input-removed", self.sink_input_removed_cb)
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
@@ -187,7 +179,7 @@ class TrayGui(gtk.VBox):
     ####################################################
     # widget signals
     def speaker_value_changed_thread(self):
-        ''' speaker hscale value changed callback thread '''
+        ''' speaker hscale value changed callback thread'''
         current_sink = pypulse.get_fallback_sink_index()
         if current_sink is None:
             return
@@ -197,17 +189,17 @@ class TrayGui(gtk.VBox):
             return
         balance = pypulse.get_volume_balance(channel_list['channels'], volume_list, channel_list['map'])
         volume = int((self.speaker_scale.get_value()) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
-        print "speaker volumel set:", balance, volume
         pypulse.PULSE.set_output_volume_with_balance(current_sink, volume, balance)
         if not self.speaker_mute_button.get_active():
             self.speaker_mute_button.set_active(True)
 
     def speaker_scale_value_changed(self, widget, value):
         '''set output volume'''
-        try:
-            SettingVolumeThread(self, self.speaker_value_changed_thread).start()
-        except:
-            pass
+        #try:
+            #SettingVolumeThread(self, self.speaker_value_changed_thread).start()
+        #except:
+            #pass
+        self.speaker_value_changed_thread()
 
     def microphone_value_changed_thread(self):
         ''' microphone value changed callback thread'''
@@ -226,26 +218,23 @@ class TrayGui(gtk.VBox):
 
     def microphone_scale_value_changed(self, widget, value):
         ''' set input volume'''
-        try:
-            SettingVolumeThread(self, self.microphone_value_changed_thread).start()
-        except:
-            pass
+        #try:
+            #SettingVolumeThread(self, self.microphone_value_changed_thread).start()
+        #except:
+            #pass
+        self.microphone_value_changed_thread()
 
     def speaker_toggled(self, button):
         active = button.get_active()
         current_sink = pypulse.get_fallback_sink_index()
-        #gtk.gdk.threads_enter()
         self.speaker_scale.set_enable(active)
-        #gtk.gdk.threads_leave()
         if current_sink is not None:
             pypulse.PULSE.set_output_mute(current_sink, not active)
 
     def microphone_toggled(self, button):
         active = button.get_active()
         current_source = pypulse.get_fallback_source_index()
-        #gtk.gdk.threads_enter()
         self.microphone_scale.set_enable(active)
-        #gtk.gdk.threads_leave()
         if current_source is not None:
             pypulse.PULSE.set_input_mute(current_source, not active)
 
@@ -256,39 +245,41 @@ class TrayGui(gtk.VBox):
             return
 
     # pulseaudio signals callback
-    def sink_changed_cb(self, index):
-        current_sink = pypulse.get_fallback_sink_index()
-        print "sink_changed:", index, current_sink
-        if current_sink is None or current_sink != index:
-            return
-        sinks = pypulse.PULSE.get_output_devices()
-        if index in sinks:
-            is_mute = sinks[index]['mute']
-            self.speaker_mute_button.set_active(not is_mute)
-            self.speaker_scale.set_enable(not is_mute)
-            sink_volume = pypulse.PULSE.get_output_volume()
-            if index in sink_volume:
-                volume = max(sink_volume[index])
-            else:
-                volume = 0
-            self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+    def sink_changed_cb(self, obj, index):
+        print "sink_changed:", obj, index
+        #current_sink = pypulse.get_fallback_sink_index()
+        #print "sink_changed:", index, current_sink
+        #if current_sink is None or current_sink != index:
+            #return
+        #sinks = pypulse.PULSE.get_output_devices()
+        #if index in sinks:
+            #is_mute = sinks[index]['mute']
+            #self.speaker_mute_button.set_active(not is_mute)
+            #self.speaker_scale.set_enable(not is_mute)
+            #sink_volume = pypulse.PULSE.get_output_volume()
+            #if index in sink_volume:
+                #volume = max(sink_volume[index])
+            #else:
+                #volume = 0
+            #self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
-    def source_changed_cb(self, index):
-        current_source = pypulse.get_fallback_source_index()
-        print "source_changed:", index, current_source
-        if current_source is None or current_source != index:
-            return
-        sources = pypulse.PULSE.get_input_devices()
-        if index in sources:
-            is_mute = sources[index]['mute']
-            self.microphone_mute_button.set_active(not is_mute)
-            self.microphone_scale.set_enable(not is_mute)
-            source_volume = pypulse.PULSE.get_input_volume()
-            if index in source_volume:
-                volume = max(source_volume[index])
-            else:
-                volume = 0
-            self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+    def source_changed_cb(self, obj, index):
+        print "source_changed:", obj, index
+        #current_source = pypulse.get_fallback_source_index()
+        #print "source_changed:", index, current_source
+        #if current_source is None or current_source != index:
+            #return
+        #sources = pypulse.PULSE.get_input_devices()
+        #if index in sources:
+            #is_mute = sources[index]['mute']
+            #self.microphone_mute_button.set_active(not is_mute)
+            #self.microphone_scale.set_enable(not is_mute)
+            #source_volume = pypulse.PULSE.get_input_volume()
+            #if index in source_volume:
+                #volume = max(source_volume[index])
+            #else:
+                #volume = 0
+            #self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
     def server_changed_cb(self):
         current_sink = pypulse.get_fallback_sink_index()
@@ -306,8 +297,8 @@ class TrayGui(gtk.VBox):
     def sink_input_new_cb(self, index):
         print "sink_input new:", index
 
-    def sink_input_changed_cb(self, index):
-        print "sink_input changed:", index
+    def sink_input_changed_cb(self, obj, index):
+        print "sink_input changed:", obj, index
 
     def sink_input_removed_cb(self, index):
         print "sink_input removed:", index
