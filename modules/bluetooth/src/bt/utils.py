@@ -102,7 +102,7 @@ def bluetooth_class_to_type(klass):
         
 def uuid16_custom_to_string (uuid16):
     if uuid16 == 0x2:
-	return "SyncMLClient"
+	    return "SyncMLClient"
     elif uuid16 == 0x5601:
         return "Nokia SyncML Server";
     else:
@@ -111,58 +111,58 @@ def uuid16_custom_to_string (uuid16):
 def uuid16_to_string(uuid16):
 
     if uuid16 == 0x1101:
-	return "SerialPort"
+	    return "SerialPort"
     elif uuid16 == 0x1103:
-	return "DialupNetworking"
+	    return "DialupNetworking"
     elif uuid16 == 0x1104:
-	return "IrMCSync"
+	    return "IrMCSync"
     elif uuid16 == 0x1105:
-	return "OBEXObjectPush"
+	    return "OBEXObjectPush"
     elif uuid16 == 0x1106:
-	return "OBEXFileTransfer"
+	    return "OBEXFileTransfer"
     elif uuid16 == 0x1108:
-	return "HSP"
+	    return "HSP"
     elif uuid16 == 0x110A:
-	return "AudioSource"
+	    return "AudioSource"
     elif uuid16 == 0x110B:
-	return "AudioSink"
+	    return "AudioSink"
     elif uuid16 == 0x110c:
-	return "A/V_RemoteControlTarget"
+	    return "A/V_RemoteControlTarget"
     elif uuid16 == 0x110e:
-	return "A/V_RemoteControl"
+	    return "A/V_RemoteControl"
     elif uuid16 == 0x1112:
-	return "Headset_-_AG"
+	    return "Headset_-_AG"
     elif uuid16 == 0x1115:
-	return "PANU"
+	    return "PANU"
     elif uuid16 == 0x1116:
-	return "NAP"
+	    return "NAP"
     elif uuid16 == 0x1117:
-	return "GN"
+	    return "GN"
     elif uuid16 == 0x111e:
-	return "Handsfree";
+	    return "Handsfree";
     elif uuid16 == 0x111F:
-	return "HandsfreeAudioGateway"
+	    return "HandsfreeAudioGateway"
     elif uuid16 == 0x1124:
-	return "HumanInterfaceDeviceService"
+	    return "HumanInterfaceDeviceService"
     elif uuid16 == 0x112d:
-	return "SIM_Access"
+	    return "SIM_Access"
     elif uuid16 == 0x112F:
-	return "Phonebook_Access_-_PSE"
+	    return "Phonebook_Access_-_PSE"
     elif uuid16 == 0x1203:
-	return "GenericAudio";
+	    return "GenericAudio";
     elif uuid16 in [0x1000, 0x1200]:
         # /* ServiceDiscoveryServerServiceClassID */
         # /* PnPInformation */
 	# /* Those are ignored */
         pass
     elif uuid16 == 0x1201:
-	return "GenericNetworking";
+	    return "GenericNetworking";
     elif uuid16 == 0x1303:
-	return "VideoSource";
+	    return "VideoSource";
     elif uuid16 in [0x8e771303, 0x8e771301]:
-	return "SEMC HLA";
+	    return "SEMC HLA";
     elif uuid16 == 0x8e771401:
-	return "SEMC Watch Phone";
+	    return "SEMC Watch Phone";
     else:
         return None
 
@@ -197,6 +197,17 @@ def bluetooth_browse_address(address):
     commands = "xdg-open %s" % address_uri
     subprocess.call(commands, shell = True)
 
+def bluetooth_browse_files(address):
+    import dbus
+    nautilus_bus = dbus.SessionBus()
+    nautilus_proxy = nautilus_bus.get_object("org.gnome.Nautilus", "/org/freedesktop/FileManager1")
+    nautilus_interface = dbus.Interface(nautilus_proxy, "org.freedesktop.FileManager1")
+
+    address_uri = "obex://[%s]/" % address
+
+    return nautilus_interface.ShowFolders([address_uri], address)
+
 if __name__ == "__main__":
-    # bluetooth_browse_address("C4:6A:B7:1C:36:99")
+    #bluetooth_browse_address("C4:6A:B7:1C:36:99")
+    bluetooth_browse_files("C4:6A:B7:1C:36:99")
     pass
