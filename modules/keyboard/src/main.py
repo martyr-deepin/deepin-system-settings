@@ -828,7 +828,8 @@ class KeySetting(object):
                     break
                 i += 1
             settings.shortcuts_custom_set(key_dir, (action, '', name))
-            entry = AccelEntry("", keybinds.check_shortcut_conflict)
+            entry = AccelEntry("", keybinds.check_shortcut_conflict, can_del=True)
+            entry.connect("accel-del", self.__remove_shortcuts_item)
             entry.settings_description = name
             entry.settings_key = '%s/%s' % (base_dir, key_dir)
             entry.settings_obj = settings.GCONF_CLIENT
@@ -840,19 +841,12 @@ class KeySetting(object):
             hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
             description_label = Label(entry.settings_description, enable_select=False, enable_double_click=False)
             label_align = self.__make_align(description_label)
-            label_align.set_size_request(self.max_label_width, CONTAINNER_HEIGHT)
+            label_align.set_size_request(self.max_label_width+30, CONTAINNER_HEIGHT)
             hbox.pack_start(label_align, False, False)
             hbox.pack_start(self.__make_align(entry), False, False)
             hbox.pack_start(self.__make_align())
             shortcut_vbox.pack_start(hbox, False, False)
             shortcut_vbox.show_all()
-            #item = ShortcutItem(name, _('disable'), action)
-            #item.set_data('gconf-dir', '%s/%s' % (base_dir, key_dir))
-            #item.set_data('setting-type', 'gconf')
-            #item.set_data('settings', settings.GCONF_CLIENT)
-            #self.__shortcuts_items[_('Custom Shortcuts')].append(item)
-            #self.view_widgets["shortcuts_shortcut"].add_items([item])
-            #self.view_widgets["shortcuts_shortcut"].queue_draw()
             dialog.destroy()
         self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(False)
         dialog = DialogBox(_("Custom Shortcuts"), 250, 150)

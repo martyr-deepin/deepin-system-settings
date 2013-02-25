@@ -232,6 +232,9 @@ class AccelEntry(ShortcutKeyEntry):
             self.accel_label.set_text(self.accel_str)
             return None
         self.grab_area.grab_focus()
+        if self.can_del and self.del_button in self.h_box.get_children():
+            self.del_button.hide()
+            self.h_box.remove(self.del_button)
         
     def __on_grab_area_button_press_cb(self, widget, event):
         gtk.gdk.keyboard_ungrab(0)
