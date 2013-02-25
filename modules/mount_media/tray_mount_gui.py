@@ -20,6 +20,14 @@ class Device(gtk.Button):
         self.device = device
         self.conf = Conf()
 
+        self.eject_check = False
+        try:
+            get_m = drive.get_volumes()[0].get_mount()
+            if get_m == None:
+                self.set_mounted(False)
+        except Exception, e:
+            print "Device[error]:", e
+
         self.was_removed = False
         self.icon_updated = False
         self.d_name = ""
@@ -38,9 +46,7 @@ class Device(gtk.Button):
         self.show_all()
 
     def clicked_eject(self, widget):
-        print "clicked_eject..."
         op = gtk.MountOperation()
-        print op.get_password()
         if self.drive.can_eject():
             try:
                 self.emit("unmounted-event")
@@ -49,13 +55,17 @@ class Device(gtk.Button):
         else:
             for v in self.drive.get_volumes():
                 try:
-                    m = v.get_mount()
-                    if True:
+                    if v.get_mount():
+                        v.eject(self.cancallable_operation,
+                                gio.MOUNT_OPERATION_HANDLED)
                         self.emit("unmounted-event")
                     else:
-                        pass
+                        v.mount(op, self.cancallable_operation)
                 except Exception, e:
                     print "error:", e
+
+    def cancallable_operation(self, obj, res):
+        pass
 
     def handle_unmounted(self, mount):
         self.mounts.remove(mount)
@@ -139,8 +149,7 @@ class Device(gtk.Button):
         self.was_removed = True
 
     def set_mounted(self, mounted):
-        #
-        self.set_sensitive(mounted)
+        self.eject_check = mounted
 
 gobject.type_register(Device)
 
