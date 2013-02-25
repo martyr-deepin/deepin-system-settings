@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 ~ 2013 Deepin, Inc.
-#               2012 ~ 2013 Zhai Xiang
+# Copyright (C) 2013 Deepin, Inc.
+#               2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -26,7 +26,7 @@ import getopt
 from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
-from power_view import PowerView
+from desktop_view import DesktopView
 from module_frame import ModuleFrame
 
 if __name__ == "__main__":
@@ -38,16 +38,16 @@ if __name__ == "__main__":
     
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
-    power_view = PowerView()
+    desktop_view = DesktopView()
     
-    module_frame.add(power_view)
+    module_frame.add(desktop_view)
     
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
             module_frame.send_module_info()
         elif message_type == "reset":
-            power_view.reset()
+            desktop_view.reset()
 
     module_frame.module_message_handler = message_handler        
     
