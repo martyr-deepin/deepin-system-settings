@@ -1,7 +1,27 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
+# Copyright (C) 2013 Deepin, Inc.
+#               2013 Hailong Qiu
+#
+# Author:     Hailong Qiu <356752238@qq.com>
+# Maintainer: Hailong Qiu <356752238@qq.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from vtk.utils import is_usb_device
-from vtk.draw import draw_pixbuf
+from vtk.utils import is_usb_device, get_text_size
+from vtk.draw import draw_pixbuf, draw_text
 import gtk
 import gio
 import glib
@@ -53,12 +73,18 @@ class Device(gtk.Button):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
+        end_index = 12
+        text = widget.get_label().decode("utf-8")
+        text_w_padding = get_text_size(text[0:end_index] + "...")[0] + 5
         if self.eject_check:
             simple_pixbuf = self.on_pixbuf
+            text_color_value = "#000000"
         else:
             simple_pixbuf = self.off_pixbuf
-        draw_pixbuf(cr, simple_pixbuf, rect.x, rect.y)
+            text_color_value = "#9d9d9d"
 
+        draw_text(cr, text[0:end_index] + "...", rect.x, rect.y, text_color=text_color_value)
+        draw_pixbuf(cr, simple_pixbuf, rect.x + rect.width - simple_pixbuf.get_width(), rect.y)
         return True
 
     def clicked_eject(self, widget):
