@@ -1,6 +1,7 @@
 
 
 from vtk.utils import is_usb_device
+from vtk.draw import draw_pixbuf
 import gtk
 import gio
 import glib
@@ -37,18 +38,35 @@ class Device(gtk.Button):
         self.volume_count = 0;
         self.mount_count  = 0;
         self.icon = gtk.image_new_from_gicon(self.drive.get_icon(), ICON_SIZE)
+        self.off_pixbuf = gtk.gdk.pixbuf_new_from_file("image/offbutton/off.png")
+        self.on_pixbuf = gtk.gdk.pixbuf_new_from_file("image/offbutton/on.png")
         #
         self.connect("clicked", self.clicked_eject)
         self.drive.connect("disconnected", self.handle_removed_drive)
         #
         self.set_label("")
         self.set_image(self.icon)
+        self.connect("expose-event", self.device_expose_event)
         self.show_all()
+
+    def device_expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        #
+        if self.eject_check:
+            simple_pixbuf = self.on_pixbuf
+        else:
+            simple_pixbuf = self.off_pixbuf
+        draw_pixbuf(cr, simple_pixbuf, rect.x, rect.y)
+
+        return True
 
     def clicked_eject(self, widget):
         op = gtk.MountOperation()
         if self.drive.can_eject():
             try:
+                self.drive.eject(self.cancallable_operation,
+                                gio.MOUNT_OPERATION_HANDLED)
                 self.emit("unmounted-event")
             except Exception,e:
                 print "error:", e
