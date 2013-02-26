@@ -25,8 +25,9 @@ from tray_mount_gui import EjecterApp
 
 class MountMedia(object):
     def __init__(self):
-        self.height = 40
+        self.height = 60
         self.h_padding = 25
+        self.size_check = False
         self.ejecter_app = EjecterApp()
         self.ejecter_app.connect("update-usb", self.ejecter_app_update_usb)
         self.ejecter_app.connect("remove-usb", self.ejecter_app_remove_usb)
@@ -37,19 +38,21 @@ class MountMedia(object):
 
     def ejecter_app_update_usb(self, ejecter_app):
         self.height += self.h_padding
-        self.this.set_size_request(180, self.height)
+        if self.size_check:
+            self.this.set_size_request(180, self.height)
         self.show_mount_tray()
 
     def ejecter_app_remove_usb(self, ejecter_app): 
         self.height -= self.h_padding
-        self.this.resize(1, 1)
-        self.this.set_size_request(180, self.height)
+        if self.size_check:
+            self.this.resize(1, 1)
+            self.this.set_size_request(180, self.height)
         self.hide_mount_tray()
 
     def show_mount_tray(self):
         if self.ejecter_app.devices != {}:
             self.tray_icon.set_visible(True)
-            self.this.hide_menu()
+            #self.this.hide_menu()
             
     def hide_mount_tray(self):
         if self.ejecter_app.devices == {}:
@@ -78,10 +81,12 @@ class MountMedia(object):
         return self.ejecter_app.vbox
 
     def show_menu(self):
-        print self.height
+        self.size_check = True
+        #print self.height
         self.this.set_size_request(180, self.height)
 
     def hide_menu(self):
+        self.size_check = False
         pass
 
 
