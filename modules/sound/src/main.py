@@ -43,7 +43,8 @@ from statusbar import StatusBar
 from scalebar import MyHScalebar
 from nls import _
 import gtk
-import settings
+#import settings
+import pypulse
 
 from module_frame import ModuleFrame
 from constant import *
@@ -156,9 +157,10 @@ class SoundSetting(object):
         self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 150, 1, 5)
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150, 1, 5)
         # scale init
+        volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
         self.scale_widgets["balance"] = MyHScalebar(value_min=-1, value_max=1)
-        self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
-        self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=150)
+        self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
+        self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
         ###################################
         # advance set
         self.container_widgets["advance_input_box"] = gtk.VBox(False)
@@ -210,8 +212,8 @@ class SoundSetting(object):
 
         self.container_widgets["advance_set_tab_box"].add_items(
             [(_("Output"), self.alignment_widgets["advance_output_box"]),
-             (_("Input"), self.alignment_widgets["advance_input_box"])])
-             #(_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
+             (_("Input"), self.alignment_widgets["advance_input_box"]),
+             (_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
         ###########################
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)    # the spacing between left and right
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
@@ -360,128 +362,19 @@ class SoundSetting(object):
         self.container_widgets["advance_hardware_box"].pack_start(self.label_widgets["ad_hardware"], False, False, 10)
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
         ##########################################
-        # if PulseAudio connect error, set the widget insensitive
-        if settings.PA_CORE is None or not settings.PA_CARDS:
-            self.container_widgets["main_hbox"].set_sensitive(False)
-            return
-        # if sinks list is empty, then can't set output volume
-        if settings.CURRENT_SINK is None:
-            self.scale_widgets["balance"].set_sensitive(False)
-            self.container_widgets["speaker_main_vbox"].set_sensitive(False)
-        # if sources list is empty, then can't set input volume
-        if settings.CURRENT_SOURCE is None:
-            self.container_widgets["microphone_main_vbox"].set_sensitive(False)
+        self.__set_output_status()
+        self.__set_input_status()
 
+        self.__set_output_port_status()
+        self.__set_input_port_status()
+
+        self.__set_card_treeview_status()
+        self.__set_output_treeview_status()
+        self.__set_input_treeview_status()
         # set output volume
         self.speaker_ports = None
-        if settings.CURRENT_SINK:
-            # set balance
-            # if is Mono, set it insensitive
-            if settings.PA_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
-                self.scale_widgets["balance"].set_sensitive(False)
-                self.scale_widgets["balance"].set_value(0)
-            else:
-                volumes = settings.get_volumes(settings.CURRENT_SINK)
-                if volumes[0] == volumes[1]:
-                    value = 0
-                elif volumes[0] > volumes[1]:     # if left
-                    value = float(volumes[1]) / volumes[0] - 1
-                else:
-                    value = 1 - float(volumes[0]) / volumes[1]
-                self.scale_widgets["balance"].set_value(value)
-            self.button_widgets["balance"].set_active(True)
-            is_mute = settings.get_mute(settings.CURRENT_SINK)
-            self.button_widgets["speaker"].set_active(not is_mute)
-            self.scale_widgets["speaker"].set_enable(not is_mute)
-            if is_mute:
-                self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
-            else:
-                self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
-            self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
-            if self.speaker_ports:
-                items = []
-                i = 0
-                select_index = self.speaker_ports[1]
-                for port in self.speaker_ports[0]:
-                    items.append((port.get_description(), i))
-                    i += 1
-                self.button_widgets["speaker_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
-            self.scale_widgets["speaker"].set_value(
-                settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
         # set input volume
         self.microphone_ports = None
-        if settings.CURRENT_SOURCE:
-            is_mute = settings.get_mute(settings.CURRENT_SOURCE)
-            self.button_widgets["microphone"].set_active(not is_mute)
-            self.scale_widgets["microphone"].set_enable(not is_mute)
-            if is_mute:
-                self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
-            else:
-                self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
-            self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
-            if self.microphone_ports:
-                items = []
-                select_index = self.microphone_ports[1]
-                i = 0
-                for port in self.microphone_ports[0]:
-                    items.append((port.get_description(), i))
-                    i += 1
-                self.button_widgets["microphone_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
-            self.scale_widgets["microphone"].set_value(
-                settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
-        card_list = []
-        output_list = []
-        input_list = []
-        output_selected_row = -1
-        input_selected_row = -1
-        out_index = 0
-        in_index = 0
-        for cards in settings.PA_CARDS:
-            # output list
-            for sink in settings.PA_CARDS[cards]["sink"]:
-                if sink.object_path == settings.CURRENT_SINK:
-                    output_selected_row = out_index
-                prop = settings.get_object_property_list(sink)
-                if prop:
-                    output_list.append(TreeItem(self.image_widgets["device"], prop["device.description"], sink.object_path))
-                    out_index += 1
-            # input list
-            for source in settings.PA_CARDS[cards]["source"]:
-                if source.object_path == settings.CURRENT_SOURCE:
-                    input_selected_row = in_index
-                prop = settings.get_object_property_list(source)
-                if prop:
-                    input_list.append(TreeItem(self.image_widgets["device"], prop["device.description"], source.object_path))
-                    in_index += 1
-            # hardware list
-            if not cards:
-                continue
-            prop = settings.get_object_property_list(settings.PA_CARDS[cards]['obj'])
-            if prop:
-                active_profile = settings.PA_CARDS[cards]['obj'].get_active_profile()
-                if active_profile:
-                    profile = settings.get_card_profile_property(active_profile)
-                    if profile['sinks'] > 1:
-                        io_num = _("%d Outputs") % profile['sinks']
-                    else:
-                        io_num = _("%d Output") % profile['sinks']
-                    if profile['sources'] > 1:
-                        io_num += " / " + _("%d Inputs") % profile['sources']
-                    else:
-                        io_num += " / " + _("%d Input") % profile['sources']
-                    card_info = "%s(%s)[%s]" % (prop['device.description'].strip('\x00'), io_num, profile['description'])
-                else:
-                    card_info = prop["device.description"]
-                card_list.append(TreeItem(self.image_widgets["device"], card_info, cards))
-        self.view_widgets["ad_output"].add_items(output_list)
-        self.view_widgets["ad_input"].add_items(input_list)
-        self.view_widgets["ad_hardware"].add_items(card_list)
-        if not (output_selected_row < 0):
-            self.view_widgets["ad_output"].set_select_rows([output_selected_row])
-        if not (input_selected_row < 0):
-            self.view_widgets["ad_input"].set_select_rows([input_selected_row])
-        if card_list:
-            self.view_widgets["ad_hardware"].set_select_rows([0])
 
     def __signals_connect(self):
         ''' widget signals connect'''
@@ -490,25 +383,12 @@ class SoundSetting(object):
         self.alignment_widgets["advance_output_box"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["advance_input_box"].connect("expose-event", self.container_expose_cb)
 
-        self.button_widgets["balance"].connect("toggled", self.toggle_button_toggled, "balance")
-        self.button_widgets["speaker"].connect("toggled", self.toggle_button_toggled, "speaker")
-        self.button_widgets["microphone"].connect("toggled", self.toggle_button_toggled, "microphone")
+        self.button_widgets["speaker"].connect("toggled", self.speaker_toggled_cb)
+        self.button_widgets["microphone"].connect("toggled", self.microphone_toggled_cb)
 
-        self.scale_widgets["balance"].connect("button-release-event", self.balance_scale_value_changed)
-        self.scale_widgets["speaker"].connect("button-release-event", self.speaker_scale_value_changed)
-        self.scale_widgets["microphone"].connect("button-release-event", self.microphone_scale_value_changed)
-        self.scale_widgets["balance"].connect("button-press-event", lambda w, e: self.scale_widgets["balance"].set_data("has_pressed", True))
-        self.scale_widgets["speaker"].connect("button-press-event", lambda w, e: self.scale_widgets["speaker"].set_data("has_pressed", True))
-        self.scale_widgets["microphone"].connect("button-press-event", lambda w, e: self.scale_widgets["microphone"].set_data("has_pressed", True))
-        self.scale_widgets["speaker"].connect("value-changed", self.volume_scale_value_changed, self.button_widgets["speaker"])
-        self.scale_widgets["microphone"].connect("value-changed", self.volume_scale_value_changed, self.button_widgets["microphone"])
-
-        self.adjust_widgets["balance"].connect("value-changed",
-            lambda w: self.scale_widgets["balance"].set_value(self.adjust_widgets["balance"].get_value()))
-        self.adjust_widgets["speaker"].connect("value-changed",
-            lambda w: self.scale_widgets["speaker"].set_value(self.adjust_widgets["speaker"].get_value()))
-        self.adjust_widgets["microphone"].connect("value-changed",
-            lambda w: self.scale_widgets["microphone"].set_value(self.adjust_widgets["microphone"].get_value()))
+        self.scale_widgets["balance"].connect("value-changed", self.speaker_value_changed_cb)
+        self.scale_widgets["speaker"].connect("value-changed", self.speaker_value_changed_cb)
+        self.scale_widgets["microphone"].connect("value-changed", self.microphone_value_changed_cb)
 
         self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
         self.button_widgets["microphone_combo"].connect("item-selected", self.microphone_port_changed)
@@ -520,38 +400,21 @@ class SoundSetting(object):
         self.container_widgets["advance_input_box"].connect("expose-event", self.treeview_container_expose_cb, self.view_widgets["ad_input"])
         self.container_widgets["advance_output_box"].connect("expose-event", self.treeview_container_expose_cb, self.view_widgets["ad_output"])
         self.container_widgets["advance_hardware_box"].connect("expose-event", self.treeview_container_expose_cb, self.view_widgets["ad_hardware"])
-        # dbus signals
-        self.current_sink = None
-        if settings.CURRENT_SINK:
-            self.current_sink = sink = settings.PA_DEVICE[settings.CURRENT_SINK]
-            sink.connect("volume-updated", self.speaker_volume_updated)
-            sink.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["speaker"])
-            sink.connect("active-port-updated", self.pulse_active_port_updated,
-                         self.button_widgets["speaker_combo"], self.speaker_ports)
-            #sink.connect("property-list-updated", self.speaker_volume_updated)
-        self.current_source = None
-        if settings.CURRENT_SOURCE:
-            self.current_source = source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-            source.connect("volume-updated", self.microphone_volume_updated)
-            source.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["microphone"])
-            source.connect("active-port-updated", self.pulse_active_port_updated,
-                           self.button_widgets["microphone_combo"], self.microphone_ports)
-        if settings.PA_CORE:
-            core = settings.PA_CORE
-            core.connect("new-card", self.new_card_cb)
-            core.connect("new-sink", self.new_sink_cb)
-            core.connect("new-source", self.new_source_cb)
-            core.connect("card-removed", self.card_removed_cb)
-            core.connect("sink-removed", self.sink_removed_cb)
-            core.connect("source-removed", self.source_removed_cb)
-            core.connect("fallback-sink-updated", self.fallback_sink_updated_cb)
-            core.connect("fallback-sink-unset", self.fallback_sink_unset_cb)
-            core.connect("fallback-source-updated", self.fallback_source_udpated_cb)
-            core.connect("fallback-source-unset", self.fallback_source_unset_cb)
-        for cards in settings.PA_CARDS:
-            if not cards:
-                continue
-            settings.PA_CARDS[cards]['obj'].connect("active-profile-updated", self.card_active_profile_update)
+        #######################
+        # pulseaudio signals
+        pypulse.PULSE.connect("sink-new", self.pa_sink_new_cb)
+        pypulse.PULSE.connect("sink-changed", self.pa_sink_changed_cb)
+        pypulse.PULSE.connect("sink-removed", self.pa_sink_removed_cb)
+
+        pypulse.PULSE.connect("source-new", self.pa_source_new_cb)
+        pypulse.PULSE.connect("source-changed", self.pa_source_changed_cb)
+        pypulse.PULSE.connect("source-removed", self.pa_source_removed_cb)
+
+        pypulse.PULSE.connect("card-new", self.pa_card_new_cb)
+        pypulse.PULSE.connect("card-changed", self.pa_card_changed_cb)
+        pypulse.PULSE.connect("card-removed", self.pa_card_removed_cb)
+
+        pypulse.PULSE.connect("server-changed", self.pa_server_changed_cb)
 
     ######################################
     # signals callback begin
@@ -563,156 +426,66 @@ class SoundSetting(object):
         cr.rectangle(x, y, w, h)
         cr.fill()
 
-    def toggle_button_toggled(self, button, tp):
-        #if button.get_data("changed-by-other-app"):
-            #button.set_data("changed-by-other-app", False)
-            #return
-        if tp == "balance":
-            callback = self.balance_toggled
-        elif tp == "speaker":
-            callback = self.speaker_toggled
-        elif tp == "microphone":
-            callback = self.microphone_toggled
-        else:
-            return
-        try:
-            SettingVolumeThread(self, callback, button.get_active()).start()
-            #callback(button.get_active())
-        except:
-            traceback.print_exc()
-            pass
-
-    def balance_toggled(self, active):
-        if not active:
-            self.adjust_widgets["balance"].set_value(0)
-            self.balance_scale_value_changed(self.scale_widgets["balance"], None)
-        self.scale_widgets["balance"].set_sensitive(active)
-
-    def speaker_toggled(self, active):
-        if settings.CURRENT_SINK:
-            settings.set_mute(settings.CURRENT_SINK, not active)
+    def speaker_toggled_cb(self, button):
+        active = button.get_active()
+        current_sink = pypulse.get_fallback_sink_index()
         self.scale_widgets["speaker"].set_enable(active)
+        if current_sink is not None:
+            pypulse.PULSE.set_output_mute(current_sink, not active)
         if not active:
             self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
         else:
             self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
 
-    def microphone_toggled(self, active):
-        if settings.CURRENT_SOURCE:
-            settings.set_mute(settings.CURRENT_SOURCE, not active)
+    def microphone_toggled_cb(self, button):
+        active = button.get_active()
+        current_source = pypulse.get_fallback_source_index()
         self.scale_widgets["microphone"].set_enable(active)
+        if current_source is not None:
+            pypulse.PULSE.set_input_mute(current_source, not active)
         if not active:
             self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
         else:
             self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
 
-    def balance_value_changed_thread(self):
-        ''' balance value changed callback thread'''
-        value = self.scale_widgets["balance"].get_value()
-        sink = settings.CURRENT_SINK
-        if value < 0:       # is left, and reduce right volume
-            volume = settings.get_volume(sink)
-            volume2 = volume * (1 + value)
-            settings.set_volumes(sink, [volume, volume2])
-        elif value > 0:     # is right, and reduce left volume
-            volume = settings.get_volume(sink)
-            volume2 = volume * (1 - value)
-            settings.set_volumes(sink, [volume2, volume])
-        else:               # is balance
-            settings.set_volume(sink, settings.get_volume(sink))
-
-    def balance_scale_value_changed(self, widget, event):
-        ''' set balance value'''
-        if not widget.get_data("has_pressed"):
-            return
-        widget.set_data("has_pressed", False)
-        try:
-            SettingVolumeThread(self, self.balance_value_changed_thread).start()
-        except:
-            traceback.print_exc()
-            pass
-
-    def speaker_value_changed_thread(self):
-        ''' speaker hscale value changed callback thread '''
-        balance = self.scale_widgets["balance"].get_value()
-        sink = settings.CURRENT_SINK
-        volume_list = []
-        volume = (self.scale_widgets["speaker"].get_value()) / 100.0 * settings.FULL_VOLUME_VALUE
-        if balance < 0:
-            volume_list.append(volume)
-            volume_list.append(volume * (1 + balance))
-        else:
-            volume_list.append(volume * (1 - balance))
-            volume_list.append(volume)
-        settings.set_volumes(sink, volume_list)
+    def speaker_value_changed_cb(self, widget, value):
+        ''' speaker hscale value changed callback thread'''
         if not self.button_widgets["speaker"].get_active():
             self.button_widgets["speaker"].set_active(True)
-
-    def speaker_scale_value_changed(self, widget, event):
-        '''set output volume'''
-        if not widget.get_data("has_pressed"):
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is None:
             return
-        widget.set_data("has_pressed", False)
-        try:
-            SettingVolumeThread(self, self.speaker_value_changed_thread).start()
-        except:
-            traceback.print_exc()
-            pass
+        balance = self.scale_widgets["balance"].get_value()
+        volume = int((self.scale_widgets["speaker"].get_value()) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
+        pypulse.PULSE.set_output_volume_with_balance(current_sink, volume, balance)
 
-    def microphone_value_changed_thread(self):
-        ''' microphone value changed callback thread'''
-        value = self.scale_widgets["microphone"].get_value()
-        volume = value / 100.0 * settings.FULL_VOLUME_VALUE
-        source = settings.CURRENT_SOURCE
-        settings.set_volume(source, volume)
+    def microphone_value_changed_cb(self, widget, value):
         if not self.button_widgets["microphone"].get_active():
             self.button_widgets["microphone"].set_active(True)
-
-    def microphone_scale_value_changed(self, widget, event):
-        ''' set input volume'''
-        if not widget.get_data("has_pressed"):
+        current_source = pypulse.get_fallback_source_index()
+        if current_source is None:
             return
-        widget.set_data("has_pressed", False)
-        try:
-            SettingVolumeThread(self, self.microphone_value_changed_thread).start()
-        except:
-            traceback.print_exc()
-            pass
-
-    def volume_scale_value_changed(self, widget, value, button):
-        if not button.get_active():
-            button.set_active(True)
-
-    def speaker_port_changed_thread(self, port, dev):
-        ''' set active port thread '''
-        dev.set_active_port(port.object_path)
+        channel_list = pypulse.PULSE.get_input_channels_by_index(current_source)
+        if not channel_list:
+            return
+        volume = int((value) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
+        pypulse.PULSE.set_input_volume(current_source, [volume] * channel_list['channels'])
 
     def speaker_port_changed(self, combo, content, value, index):
-        ''' set active port'''
-        if not self.speaker_ports:
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is None:
             return
-        port = self.speaker_ports[0][index]
-        dev = settings.PA_DEVICE[settings.CURRENT_SINK]
-        try:
-            SettingVolumeThread(self, self.speaker_port_changed_thread, port, dev).start()
-        except:
-            traceback.print_exc()
-            pass
-
-    def microphone_port_changed_thread(self, port, dev):
-        ''' set active port thread '''
-        dev.set_active_port(port.object_path)
+        if value in self.__current_sink_ports:
+            port = self.__current_sink_ports[value][0]
+            pypulse.PULSE.set_output_active_port(current_sink, port)
 
     def microphone_port_changed(self, combo, content, value, index):
-        if not self.microphone_ports:
+        current_source = pypulse.get_fallback_source_index()
+        if current_source is None:
             return
-        port = self.microphone_ports[0][index]
-        dev = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-        try:
-            SettingVolumeThread(self, self.microphone_port_changed_thread, port, dev).start()
-        except:
-            traceback.print_exc()
-            pass
+        if value in self.__current_source_ports:
+            port = self.__current_source_ports[value][0]
+            pypulse.PULSE.set_input_active_port(current_source, port)
 
     def treeview_container_expose_cb(self, widget, event, treeview):
         rect = treeview.allocation
@@ -724,296 +497,82 @@ class SoundSetting(object):
             cr.stroke()
 
     def output_treeview_clicked(self, tree_view, item, row, *args):
-        if item.obj_path == settings.CURRENT_SINK:
+        if item.device_index == pypulse.get_fallback_sink_index():
             return
-        if settings.PA_CORE:
-            settings.PA_CORE.set_fallback_sink(item.obj_path)
+        pypulse.PULSE.set_fallback_sink(item.device_name)
 
     def input_treeview_clicked(self, tree_view, item, row, *args):
-        if item.obj_path == settings.CURRENT_SOURCE:
+        if item.device_index == pypulse.get_fallback_source_index():
             return
-        if settings.PA_CORE:
-            settings.PA_CORE.set_fallback_source(item.obj_path)
+        pypulse.PULSE.set_fallback_source(item.device_name)
 
     def card_treeview_clicked(self, tree_view, item, row, *args):
-        print "treeview clicked", item.obj_path, item.content, row
+        print "treeview clicked", item.device_name, item.device_index, item.content, row
 
     #########################
-    # dbus signals
-    def pulse_mute_updated(self, dev, is_mute, button):
-        #print "mute updated:", dev.get_active_port(), "is_mute:", is_mute, "button:", not button.get_active()
-        if button.get_active() == is_mute:
-            button.set_data("changed-by-other-app", True)
-            button.set_active(not is_mute)
+    # pulseaudio signals
+    def pa_sink_new_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_output_treeview_status()
 
-    def speaker_volume_updated(self, sink, volume):
-        # set output volume
-        self.adjust_widgets["speaker"].set_data("changed-by-other-app", True)
-        self.adjust_widgets["speaker"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
-        ## set balance
-        dev = sink.object_path
-        left_volumes = []
-        right_volumes = []
-        for channel in settings.PA_CHANNELS[dev]['left']:
-            left_volumes.append(volume[channel])
-        for channel in settings.PA_CHANNELS[dev]['right']:
-            right_volumes.append(volume[channel])
-        if not left_volumes:
-            left_volumes.append(0)
-        if not right_volumes:
-            right_volumes.append(0)
-        (left_volume, right_volume) = [max(left_volumes), max(right_volumes)]
-        if left_volume == right_volume:
-            value = 0
-        elif left_volume > right_volume:
-            value = float(right_volume) / left_volume - 1
-        else:
-            value = 1 - float(left_volume) / right_volume
-        self.adjust_widgets["balance"].set_data("changed-by-other-app", True)
-        self.adjust_widgets["balance"].set_value(value)
-
-    def microphone_volume_updated(self, source, volume):
-        # set output volume
-        self.adjust_widgets["microphone"].set_data("changed-by-other-app", True)
-        self.adjust_widgets["microphone"].set_value(max(volume) * 100.0 / settings.FULL_VOLUME_VALUE)
-
-    def pulse_active_port_updated(self, dev, port, combo, port_list):
-        if not port_list:
+    def pa_sink_changed_cb(self, obj, index):
+        obj.get_devices()
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is None or current_sink != index:
             return
-        length = len(port_list[0])
-        i = 0
-        while i < length:
-            if port == port_list[0][i].object_path:
-                combo.set_select_index(i)
-                return
-            i += 1
+        self.__set_output_status()
+        self.__set_output_port_status()
 
-    # add / remove device
-    def new_card_cb(self, core, card):
-        ''' new card '''
-        print "new card", core, card
-        self.refresh_hardware_treeview()
+    def pa_sink_removed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_output_treeview_status()
 
-    def card_removed_cb(self, core, card):
-        print 'removed card:', card
-        self.refresh_hardware_treeview()
+    def pa_source_new_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_input_treeview_status()
 
-    def refresh_hardware_treeview(self):
-        ''' when add/remove card refresh hardware-treeview '''
-        settings.refresh_info()
-        if settings.PA_CORE is None or not settings.PA_CARDS:
-            self.container_widgets["main_hbox"].set_sensitive(False)
-        elif not self.container_widgets["main_hbox"].get_sensitive():
-            self.container_widgets["main_hbox"].set_sensitive(True)
-        card_list = []
-        for cards in settings.PA_CARDS:
-            if not cards:
-                continue
-            prop = settings.get_object_property_list(settings.PA_CARDS[cards]['obj'])
-            if prop:
-                active_profile = settings.PA_CARDS[cards]['obj'].get_active_profile()
-                if active_profile:
-                    profile = settings.get_card_profile_property(active_profile)
-                    if profile['sinks'] > 1:
-                        io_num = _("%d Outputs") % profile['sinks']
-                    else:
-                        io_num = _("%d Output") % profile['sinks']
-                    if profile['sources'] > 1:
-                        io_num += " / " + _("%d Inputs") % profile['sources']
-                    else:
-                        io_num += " / " + _("%d Input") % profile['sources']
-                    card_info = "%s (%s) [%s]" % (prop["device.description"].strip('\x00'), io_num, profile['description'])
-                else:
-                    card_info = prop["device.description"]
-                card_list.append(TreeItem(self.image_widgets['device'], card_info, cards))
-        self.view_widgets["ad_hardware"].add_items(card_list, clear_first=True)
-        if card_list:
-            self.view_widgets["ad_hardware"].set_select_rows([0])
+    def pa_source_changed_cb(self, obj, index):
+        obj.get_devices()
+        current_source = pypulse.get_fallback_source_index()
+        if current_source is None or current_source != index:
+            return
+        self.__set_input_status()
+        self.__set_input_port_status()
 
-    def card_active_profile_update(self, cards, active_profile):
-        ''' Card ActiveProfileUpdted '''
-        for item in self.view_widgets["ad_hardware"].visible_items:
-            if item.obj_path == cards.object_path:
-                prop = settings.get_object_property_list(cards)
-                if prop:
-                    profile = settings.get_card_profile_property(active_profile)
-                    if profile['sinks'] > 1:
-                        io_num = _("%d Outputs") % profile['sinks']
-                    else:
-                        io_num = _("%d Output") % profile['sinks']
-                    if profile['sources'] > 1:
-                        io_num += " / " + _("%d Inputs") % profile['sources']
-                    else:
-                        io_num += " / " + _("%d Input") % profile['sources']
-                    card_info = "%s (%s) [%s]" % (prop["device.description"].strip('\x00'), io_num, profile['description'])
-                    item.content = card_info
-                    if item.redraw_request_callback:
-                        item.redraw_request_callback(item)
-                break
+    def pa_source_removed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_input_treeview_status()
 
-    def new_source_cb(self, core, source):
-        ''' new source'''
-        print "new source", core, source
-        self.refresh_input_treeview()
+    def pa_card_new_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_card_treeview_status()
 
-    def source_removed_cb(self, core, source):
-        print 'removed source:', source
-        self.refresh_input_treeview()
+    def pa_card_changed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_card_treeview_status()
 
-    def refresh_input_treeview(self):
-        ''' when add/remove source refresh input-treeview '''
-        settings.refresh_info()
-        if settings.CURRENT_SOURCE is None:
-            self.container_widgets["microphone_main_vbox"].set_sensitive(False)
-        elif not self.container_widgets["microphone_main_vbox"].get_sensitive():
-            self.container_widgets["microphone_main_vbox"].set_sensitive(True)
-        input_list = []
-        input_selected_row = -1
-        in_index = 0
-        for cards in settings.PA_CARDS:
-            for source in settings.PA_CARDS[cards]["source"]:
-                if source.object_path == settings.CURRENT_SOURCE:
-                    input_selected_row = in_index
-                prop = settings.get_object_property_list(source)
-                if prop:
-                    input_list.append(TreeItem(self.image_widgets["device"], prop["device.description"], source.object_path))
-                    in_index += 1
-        self.view_widgets["ad_input"].add_items(input_list, clear_first=True)
-        if not (input_selected_row < 0):
-            self.view_widgets["ad_input"].set_select_rows([input_selected_row])
+    def pa_card_removed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_card_treeview_status()
 
-    def new_sink_cb(self, core, sink):
-        ''' new sink '''
-        print "new sink", core, sink
-        self.refresh_output_treeview()
-
-    def sink_removed_cb(self, core, sink):
-        print 'removed sink:', sink
-        self.refresh_output_treeview()
-
-    def refresh_output_treeview(self):
-        ''' when add/remove sink refresh output-treeview '''
-        settings.refresh_info()
-        if settings.CURRENT_SOURCE is None:
-            self.container_widgets["microphone_main_vbox"].set_sensitive(False)
-        else:
-            if not self.scale_widgets["balance"].get_sensitive():
-                self.scale_widgets["balance"].set_sensitive(True)
-            if not self.container_widgets["speaker_main_vbox"].get_sensitive():
-                self.container_widgets["speaker_main_vbox"].set_sensitive(True)
-        output_list = []
-        output_selected_row = -1
-        out_index = 0
-        for cards in settings.PA_CARDS:
-            for sink in settings.PA_CARDS[cards]["sink"]:
-                if sink.object_path == settings.CURRENT_SINK:
-                    output_selected_row = out_index
-                prop = settings.get_object_property_list(sink)
-                if prop:
-                    output_list.append(TreeItem(self.image_widgets["device"], prop["device.description"], sink.object_path))
-                    out_index + 1
-        self.view_widgets["ad_output"].add_items(output_list, clear_first=True)
-        if not (output_selected_row < 0):
-            self.view_widgets["ad_output"].set_select_rows([output_selected_row])
-
-    # default device changed
-    def fallback_sink_updated_cb(self, core, sink):
-        print 'fallback sink updated', sink
-        if not self.scale_widgets["balance"].get_sensitive():
-            self.scale_widgets["balance"].set_sensitive(True)
-        if not self.container_widgets["speaker_main_vbox"].get_sensitive():
-            self.container_widgets["speaker_main_vbox"].set_sensitive(True)
-        settings.CURRENT_SINK = sink
-        # disconnect old object signals
-        if self.current_sink:
-            try:
-                self.current_sink.disconnect_by_func(self.speaker_volume_updated)
-                self.current_sink.disconnect_by_func(self.pulse_mute_updated)
-                self.current_sink.disconnect_by_func(self.pulse_active_port_updated)
-            except:
-                traceback.print_exc()
-        # connect new object signals
-        self.speaker_ports = None
-        if settings.CURRENT_SINK:
-            self.speaker_ports = settings.get_port_list(settings.CURRENT_SINK)
-            self.current_sink = sink = settings.PA_DEVICE[settings.CURRENT_SINK]
-            sink.connect("volume-updated", self.speaker_volume_updated)
-            sink.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["speaker"])
-            sink.connect("active-port-updated", self.pulse_active_port_updated,
-                         self.button_widgets["speaker_combo"], self.speaker_ports)
-        if settings.PA_CHANNELS[settings.CURRENT_SINK]['channel_num'] == 1:
-            self.scale_widgets["balance"].set_sensitive(False)
-        else:
-            volumes = settings.get_volumes(settings.CURRENT_SINK)
-            if volumes[0] == volumes[1]:
-                value = 0
-            elif volumes[0] > volumes[1]:     # if left
-                value = float(volumes[1]) / volumes[0] - 1
-            else:
-                value = 1 - float(volumes[0]) / volumes[1]
-            self.adjust_widgets["balance"].set_value(value)
-        self.button_widgets["balance"].set_active(True)
-        self.button_widgets["speaker"].set_active(not settings.get_mute(settings.CURRENT_SINK))
-        if self.speaker_ports:
-            items = []
-            i = 0
-            select_index = self.speaker_ports[1]
-            for port in self.speaker_ports[0]:
-                items.append((port.get_description(), i))
-                i += 1
-            self.button_widgets["speaker_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
-        self.adjust_widgets["speaker"].set_value(
-            settings.get_volume(settings.CURRENT_SINK) * 100.0 / settings.FULL_VOLUME_VALUE)
-        for item in self.view_widgets["ad_output"].visible_items:
-            if item.obj_path == sink.object_path:
-                self.view_widgets["ad_output"].select_items([item])
-                break
-
-    def fallback_source_udpated_cb(self, core, source):
-        print 'fallback source updated', source
-        if not self.container_widgets["microphone_main_vbox"].get_sensitive():
-            self.container_widgets["microphone_main_vbox"].set_sensitive(True)
-        settings.CURRENT_SOURCE = source
-        # disconnect old object signals
-        if self.current_source:
-            try:
-                self.current_source.disconnect_by_func(self.microphone_volume_updated)
-                self.current_source.disconnect_by_func(self.pulse_mute_updated)
-                self.current_source.disconnect_by_func(self.pulse_active_port_updated)
-            except:
-                traceback.print_exc()
-        # connect new object signals
-        self.microphone_ports = None
-        if settings.CURRENT_SOURCE:
-            self.microphone_ports = settings.get_port_list(settings.CURRENT_SOURCE)
-            self.current_source = source = settings.PA_DEVICE[settings.CURRENT_SOURCE]
-            source.connect("volume-updated", self.microphone_volume_updated)
-            source.connect("mute-updated", self.pulse_mute_updated, self.button_widgets["microphone"])
-            source.connect("active-port-updated", self.pulse_active_port_updated,
-                           self.button_widgets["microphone_combo"], self.microphone_ports)
-        self.button_widgets["microphone"].set_active(not settings.get_mute(settings.CURRENT_SOURCE))
-        if self.microphone_ports:
-            items = []
-            select_index = self.microphone_ports[1]
-            i = 0
-            for port in self.microphone_ports[0]:
-                items.append((port.get_description(), i))
-                i += 1
-            self.button_widgets["microphone_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
-        self.adjust_widgets["microphone"].set_value(
-            settings.get_volume(settings.CURRENT_SOURCE) * 100.0 / settings.FULL_VOLUME_VALUE)
-        for item in self.view_widgets["ad_input"].visible_items:
-            if item.obj_path == source.object_path:
-                self.view_widgets["ad_input"].select_items([item])
-                break
-
-    def fallback_sink_unset_cb(self, core):
-        print 'fallback sink unset'
-        self.container_widgets["speaker_main_vbox"].set_sensitive(False)
-
-    def fallback_source_unset_cb(self, core):
-        print 'fallback source unset'
-        self.container_widgets["microphone_main_vbox"].set_sensitive(False)
+    def pa_server_changed_cb(self, obj):
+        obj.get_devices()
+        self.__set_output_status()
+        self.__set_output_port_status()
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is not None:
+            for item in self.view_widgets["ad_output"].get_items():
+                if item.device_index == current_sink:
+                    self.view_widgets["ad_output"].select_items([item])
+                    break
+        self.__set_input_status()
+        self.__set_input_port_status()
+        current_source = pypulse.get_fallback_source_index()
+        if current_source is not None:
+            for item in self.view_widgets["ad_input"].get_items():
+                if item.device_index == current_source:
+                    self.view_widgets["ad_input"].select_items([item])
+                    break
 
     # signals callback end
     ######################################
@@ -1042,6 +601,206 @@ class SoundSetting(object):
         #self.container_widgets["slider"].slide_to_page(
             #self.container_widgets["advance_set_tab_box"], "right")
         self.module_frame.send_submodule_crumb(2, _("Advanced"))
+
+    def __set_output_status(self):
+        # if sinks list is empty, then can't set output volume
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
+        if current_sink is None:
+            self.label_widgets["speaker_port"].set_sensitive(False)
+            self.label_widgets["speaker_mute"].set_sensitive(False)
+            self.label_widgets["speaker_volume"].set_sensitive(False)
+            self.label_widgets["speaker_balance"].set_sensitive(False)
+
+            self.button_widgets["speaker_combo"].set_sensitive(False)
+            self.button_widgets["speaker"].set_sensitive(False)
+            self.scale_widgets["speaker"].set_sensitive(False)
+            self.scale_widgets["balance"].set_sensitive(False)
+
+            self.button_widgets["speaker"].set_active(False)
+            self.scale_widgets["speaker"].set_enable(False)
+            self.scale_widgets["balance"].set_enable(False)
+        # set output volume
+        elif current_sink in sinks:
+            self.label_widgets["speaker_port"].set_sensitive(True)
+            self.label_widgets["speaker_mute"].set_sensitive(True)
+            self.label_widgets["speaker_volume"].set_sensitive(True)
+            self.label_widgets["speaker_balance"].set_sensitive(True)
+
+            self.button_widgets["speaker_combo"].set_sensitive(True)
+            self.button_widgets["speaker"].set_sensitive(True)
+            self.scale_widgets["speaker"].set_sensitive(True)
+            self.scale_widgets["balance"].set_sensitive(True)
+
+            is_mute = sinks[current_sink]['mute']
+            self.button_widgets["speaker"].set_active(not is_mute)
+            self.scale_widgets["speaker"].set_enable(not is_mute)
+            self.scale_widgets["balance"].set_enable(not is_mute)
+
+            sink_volume = pypulse.PULSE.get_output_volume()
+            sink_channel = pypulse.PULSE.get_output_channels_by_index(current_sink)
+            balance = None
+            if current_sink in sink_volume:
+                volume = max(sink_volume[current_sink])
+                if sink_channel and sink_channel['can_balance']:
+                    balance = pypulse.get_volume_balance(sink_channel['channels'],
+                                                         sink_volume[current_sink],
+                                                         sink_channel['map'])
+                if balance is None:
+                    balance = 0
+            else:
+                volume = 0
+                balance = 0
+            self.scale_widgets["speaker"].set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+            self.scale_widgets["balance"].set_value(balance)
+
+    def __set_input_status(self):
+        # if sources list is empty, then can't set input volume
+        current_source = pypulse.get_fallback_source_index()
+        sources = pypulse.PULSE.get_input_devices()
+        if current_source is None:
+            self.label_widgets["microphone_port"].set_sensitive(False)
+            self.label_widgets["microphone_mute"].set_sensitive(False)
+            self.label_widgets["microphone_volume"].set_sensitive(False)
+
+            self.button_widgets["microphone_combo"].set_sensitive(False)
+            self.button_widgets["microphone"].set_sensitive(False)
+            self.scale_widgets["microphone"].set_sensitive(False)
+
+            self.button_widgets["microphone"].set_active(False)
+            self.scale_widgets["microphone"].set_enable(False)
+        # set input volume
+        elif current_source in sources:
+            self.label_widgets["microphone_port"].set_sensitive(True)
+            self.label_widgets["microphone_mute"].set_sensitive(True)
+            self.label_widgets["microphone_volume"].set_sensitive(True)
+
+            self.button_widgets["microphone_combo"].set_sensitive(True)
+            self.button_widgets["microphone"].set_sensitive(True)
+            self.scale_widgets["microphone"].set_sensitive(True)
+
+            is_mute = sources[current_source]['mute']
+            self.button_widgets["microphone"].set_active(not is_mute)
+            self.scale_widgets["microphone"].set_enable(not is_mute)
+            source_volume = pypulse.PULSE.get_input_volume()
+            if current_source in source_volume:
+                volume = max(source_volume[current_source])
+            else:
+                volume = 0
+            self.scale_widgets["microphone"].set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+
+    def __set_output_port_status(self):
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
+        self.__current_sink_ports= {}
+        if current_sink is None:
+            return
+        elif current_sink in sinks:
+            ports = sinks[current_sink]['ports']
+            active_port = pypulse.PULSE.get_output_active_ports_by_index(current_sink)
+            if active_port is None:
+                select_index = 0
+            i = 0
+            items = []
+            for p in ports:
+                self.__current_sink_ports[i] = (p[0], p[1])
+                items.append((p[1], i))
+                if active_port and active_port[0] == p[0]:
+                    select_index = i
+                i += 1
+            if not items:
+                items.append((" ", 0))
+            self.button_widgets["speaker_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
+
+    def __set_input_port_status(self):
+        current_source = pypulse.get_fallback_source_index()
+        sources = pypulse.PULSE.get_input_devices()
+        self.__current_source_ports= {}
+        if current_source is None:
+            return
+        elif current_source in sources:
+            ports = sources[current_source]['ports']
+            active_port = pypulse.PULSE.get_input_active_ports_by_index(current_source)
+            if active_port is None:
+                select_index = 0
+            i = 0
+            items = []
+            for p in ports:
+                self.__current_source_ports[i] = (p[0], p[1])
+                items.append((p[1], i))
+                if active_port and active_port[0] == p[0]:
+                    select_index = i
+                i += 1
+            if not items:
+                items.append((" ", 0))
+            self.button_widgets["microphone_combo"].set_items(items, select_index, HSCALEBAR_WIDTH)
+        
+    def __set_card_treeview_status(self):
+        card_list = []
+        cards = pypulse.PULSE.get_cards()
+        for idx in cards:
+            active_profile = cards[idx]['active_profile']
+            if active_profile:
+                if active_profile['n_sinks'] > 1:
+                    io_num = _("%d Outputs") % active_profile['n_sinks']
+                else:
+                    io_num = _("%d Output") % active_profile['n_sinks']
+                if active_profile['n_sources'] > 1:
+                    io_num += " / " + _("%d Inputs") % active_profile['n_sources']
+                else:
+                    io_num += " / " + _("%d Input") % active_profile['n_sources']
+                if 'device.description' in cards[idx]['proplist']:
+                    description = cards[idx]['proplist']['device.description'].strip('\x00')
+                else:
+                    description = ""
+                card_info = "%s(%s)[%s]" % (description, io_num, active_profile['description'])
+            else:
+                if 'device.description' in cards[idx]['proplist']:
+                    card_info = cards[idx]['proplist']['device.description']
+                else:
+                    card_info = " "
+            card_list.append(TreeItem(self.image_widgets["device"], card_info, cards[idx]['name'], idx))
+        self.view_widgets["ad_hardware"].add_items(card_list, clear_first=True)
+        if card_list:
+            self.view_widgets["ad_hardware"].set_select_rows([0])
+
+    def __set_output_treeview_status(self):
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
+        output_list = []
+        i = 0
+        selected_row = -1
+        for idx in sinks:
+            if current_sink is not None and current_sink == idx:
+                selected_row = i
+            if 'device.description' in sinks[idx]['proplist']:
+                description = sinks[idx]['proplist']['device.description'].strip('\x00')
+            else:
+                description = ""
+            output_list.append(TreeItem(self.image_widgets["device"], description, sinks[idx]['name'], idx))
+            i += 1
+        self.view_widgets["ad_output"].add_items(output_list, clear_first=True)
+        if not (selected_row < 0):
+            self.view_widgets["ad_output"].set_select_rows([selected_row])
+
+    def __set_input_treeview_status(self):
+        current_source = pypulse.get_fallback_source_index()
+        sources = pypulse.PULSE.get_input_devices()
+        input_list = []
+        i = 0
+        selected_row = -1
+        for idx in sources:
+            if current_source is not None and current_source == idx:
+                selected_row = i
+            if 'device.description' in sources[idx]['proplist']:
+                description = sources[idx]['proplist']['device.description'].strip('\x00')
+            else:
+                description = ""
+            input_list.append(TreeItem(self.image_widgets["device"], description, sources[idx]['name'], idx))
+            i += 1
+        self.view_widgets["ad_input"].add_items(input_list, clear_first=True)
+        if not (selected_row < 0):
+            self.view_widgets["ad_input"].set_select_rows([selected_row])
 
     def set_to_default(self):
         '''set to the default'''
