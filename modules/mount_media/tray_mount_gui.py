@@ -233,22 +233,20 @@ class EjecterApp(gobject.GObject):
                             (0.5, ("#000000", 0.3)),
                             (1,   ("#777777", 0.0))
                            ]
-        self.hbox_ali = gtk.Alignment(1, 1, 1, 1)
-        self.hbox = gtk.HBox()
-        self.hbox_ali.add(self.hbox)
-        self.hbox_ali.set_padding(5, 10, 0, 0)
-
         self.title_label = gtk.Label("USB设备")
-        self.h_separator_ali = gtk.Alignment(1, 1, 1, 1)
-        self.h_separator_ali.set_padding(8, 0, 0, 0)
+        self.title_label_ali = gtk.Alignment(0, 0, 0, 0)
+        self.title_label_ali.set_padding(5, 0, 0, 0)
+        self.title_label_ali.add(self.title_label)
+
         self.h_separator_top = HSeparator(hseparator_color, 0, 0)
+        self.h_separator_ali = gtk.Alignment(1, 1, 1, 1)
+        self.h_separator_ali.set_padding(5, 10, 0, 0)
         self.h_separator_ali.add(self.h_separator_top)
 
-        self.hbox.pack_start(self.title_label, False, False)
-        self.hbox.pack_start(self.h_separator_ali, True, True)
-
         self.vbox = gtk.VBox()
-        self.vbox.pack_start(self.hbox_ali, False, False) 
+        self.vbox.pack_start(self.title_label_ali, False, False)
+        self.vbox.pack_start(self.h_separator_ali, True, True)
+
         self.conf = Conf()
         self.devices = {}
         self.invalid_devices = [] 
