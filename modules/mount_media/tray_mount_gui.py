@@ -75,7 +75,7 @@ class Device(gtk.Button):
         rect = widget.allocation
         #
         text = widget.get_label().decode("utf-8")
-        text_width = get_text_size("abcdefghijk")[0]
+        text_width = get_text_size("ABCDEFABCDEFH")[0]
         ch_width = get_text_size("a")[0]
         dec_width = get_text_size(text)[0] - text_width
         if dec_width > 0:
@@ -183,7 +183,7 @@ class Device(gtk.Button):
             self.description = self.drive.get_name()
         else:
             volumes = ""
-            first = true
+            first = True
 
             for v in self.volumes:
                 if first:
@@ -282,7 +282,7 @@ class EjecterApp(gobject.GObject):
             d = Device(drive, 0)
             self.devices[id] = d
 
-            self.vbox.pack_start(d, False, False) 
+            self.vbox.pack_start(d, True, True) 
             self.vbox.show_all()
             self.emit("update-usb")
 

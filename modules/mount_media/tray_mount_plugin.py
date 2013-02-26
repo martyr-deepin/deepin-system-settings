@@ -25,6 +25,8 @@ from tray_mount_gui import EjecterApp
 
 class MountMedia(object):
     def __init__(self):
+        self.height = 40
+        self.h_padding = 25
         self.ejecter_app = EjecterApp()
         self.ejecter_app.connect("update-usb", self.ejecter_app_update_usb)
         self.ejecter_app.connect("remove-usb", self.ejecter_app_remove_usb)
@@ -34,9 +36,14 @@ class MountMedia(object):
         self.hide_mount_tray()
 
     def ejecter_app_update_usb(self, ejecter_app):
+        self.height += self.h_padding
+        self.this.set_size_request(180, self.height)
         self.show_mount_tray()
 
     def ejecter_app_remove_usb(self, ejecter_app): 
+        self.height -= self.h_padding
+        self.this.resize(1, 1)
+        self.this.set_size_request(180, self.height)
         self.hide_mount_tray()
 
     def show_mount_tray(self):
@@ -54,6 +61,9 @@ class MountMedia(object):
         self.tray_icon.set_icon_theme("usb")
         self.hide_mount_tray()
 
+        for value in self.ejecter_app.devices.values():
+            self.height += self.h_padding
+
     def id(slef):
         return "deepin-mount-media-hailongqiu"
 
@@ -67,7 +77,8 @@ class MountMedia(object):
         return self.ejecter_app.vbox
 
     def show_menu(self):
-        self.this.set_size_request(180, 270)
+        print self.height
+        self.this.set_size_request(180, self.height)
 
     def hide_menu(self):
         pass
