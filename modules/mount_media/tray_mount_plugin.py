@@ -25,7 +25,7 @@ from tray_mount_gui import EjecterApp
 
 class MountMedia(object):
     def __init__(self):
-        self.height = 70
+        self.height = 60
         self.h_padding = 25
         self.size_check = False
         self.ejecter_app = EjecterApp()
