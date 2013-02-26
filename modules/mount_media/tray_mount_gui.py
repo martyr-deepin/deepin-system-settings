@@ -22,6 +22,7 @@
 
 from vtk.utils import is_usb_device, get_text_size
 from vtk.draw import draw_pixbuf, draw_text
+from dtk.ui.line import HSeparator
 import gtk
 import gio
 import glib
@@ -73,9 +74,13 @@ class Device(gtk.Button):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
-        end_index = 12
         text = widget.get_label().decode("utf-8")
-        text_w_padding = get_text_size(text[0:end_index] + "...")[0] + 5
+        text_width = get_text_size("abcdefghijk")[0]
+        ch_width = get_text_size("a")[0]
+        dec_width = get_text_size(text)[0] - text_width
+        if dec_width > 0:
+            index = dec_width/ch_width
+            text = text[0:len(text)-index] + "..."
         if self.eject_check:
             simple_pixbuf = self.on_pixbuf
             text_color_value = "#000000"
@@ -83,8 +88,15 @@ class Device(gtk.Button):
             simple_pixbuf = self.off_pixbuf
             text_color_value = "#9d9d9d"
 
-        draw_text(cr, text[0:end_index] + "...", rect.x, rect.y, text_color=text_color_value)
-        draw_pixbuf(cr, simple_pixbuf, rect.x + rect.width - simple_pixbuf.get_width(), rect.y)
+        draw_text(cr, 
+                  text, 
+                  rect.x, 
+                  rect.y, 
+                  text_color=text_color_value)
+        draw_pixbuf(cr, 
+                    simple_pixbuf, 
+                    rect.x + rect.width - simple_pixbuf.get_width(), 
+                    rect.y)
         return True
 
     def clicked_eject(self, widget):
@@ -184,7 +196,10 @@ class Device(gtk.Button):
             self.description = volumes
             
         # set show label.
-        self.set_label(self.d_name + " (" + self.description + ")")
+        #print "name:", self.d_name
+        #print "description:", self.description
+        #self.set_label(self.d_name + " (" + self.description + ")")
+        self.set_label(self.d_name)
 
     def d_remove(self):
         if self.was_removed:
@@ -202,14 +217,28 @@ class Conf(object):
         self.device_identifier = "unix-device"
         self.show_internal = False
 
-class EjecterApp(object):
+class EjecterApp(gobject.GObject):
+    __gsignals__ = {
+    "update-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    "remove-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    "empty-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+    }
     def __init__(self):
+        gobject.GObject.__init__(self)
         self.__init_values()
         self.__init_ejecter_settings()
 
     def __init_values(self):
+        hseparator_color = [(0, ("#777777", 0.0)),
+                            (0.5, ("#000000", 0.3)),
+                            (1, ("#777777", 0.0))]
+        self.h_separator_ali = gtk.Alignment(1, 1, 1, 1)
+        self.h_separator_ali.set_padding(5, 10, 0, 0)
+        self.h_separator_top = HSeparator(hseparator_color, 0, 0)
+        self.h_separator_ali.add(self.h_separator_top)
+
         self.vbox = gtk.VBox()
-        
+        self.vbox.pack_start(self.h_separator_ali, False, False) 
         self.conf = Conf()
         self.devices = {}
         self.invalid_devices = [] 
@@ -249,26 +278,30 @@ class EjecterApp(object):
         
         id = drive.get_identifier(self.conf.device_identifier)
         #print "id:", id, drive.get_name()
-	
         if is_usb_device(id):
             d = Device(drive, 0)
             self.devices[id] = d
 
             self.vbox.pack_start(d, False, False) 
             self.vbox.show_all()
+            self.emit("update-usb")
 
             d.connect('unmounted-event', self.d_unmounted_event)
             d.connect('removed-event', self.d_removed_event)
 
     def d_unmounted_event(self, device):
-        print "d_unmounted_event..."
+        #print "d_unmounted_event..."
+        pass
 
     def d_removed_event(self, device, id):
         if self.devices.has_key(id):
-            print "d_removed_event...", id, self.devices[id]
+            #print "d_removed_event...", id, self.devices[id]
             self.vbox.remove(self.devices[id])
             del self.devices[id]
             self.vbox.show_all()
+            self.emit("remove-usb")
+            if self.devices == {}:
+                self.emit("empty-usb")
         
     def monitor_manage_volume(self, v):
         # gio.Volume
