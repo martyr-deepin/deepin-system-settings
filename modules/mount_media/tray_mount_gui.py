@@ -1,6 +1,27 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 
+# Copyright (C) 2013 Deepin, Inc.
+#               2013 Hailong Qiu
+#
+# Author:     Hailong Qiu <356752238@qq.com>
+# Maintainer: Hailong Qiu <356752238@qq.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from vtk.utils import is_usb_device
+from vtk.utils import is_usb_device, get_text_size
+from vtk.draw import draw_pixbuf, draw_text
 import gtk
 import gio
 import glib
@@ -20,6 +41,14 @@ class Device(gtk.Button):
         self.device = device
         self.conf = Conf()
 
+        self.eject_check = False
+        try:
+            get_m = drive.get_volumes()[0].get_mount()
+            if get_m == None:
+                self.set_mounted(False)
+        except Exception, e:
+            print "Device[error]:", e
+
         self.was_removed = False
         self.icon_updated = False
         self.d_name = ""
@@ -29,33 +58,58 @@ class Device(gtk.Button):
         self.volume_count = 0;
         self.mount_count  = 0;
         self.icon = gtk.image_new_from_gicon(self.drive.get_icon(), ICON_SIZE)
+        self.off_pixbuf = gtk.gdk.pixbuf_new_from_file("image/offbutton/off.png")
+        self.on_pixbuf = gtk.gdk.pixbuf_new_from_file("image/offbutton/on.png")
         #
         self.connect("clicked", self.clicked_eject)
         self.drive.connect("disconnected", self.handle_removed_drive)
         #
         self.set_label("")
         self.set_image(self.icon)
+        self.connect("expose-event", self.device_expose_event)
         self.show_all()
 
+    def device_expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        #
+        end_index = 12
+        text = widget.get_label().decode("utf-8")
+        text_w_padding = get_text_size(text[0:end_index] + "...")[0] + 5
+        if self.eject_check:
+            simple_pixbuf = self.on_pixbuf
+            text_color_value = "#000000"
+        else:
+            simple_pixbuf = self.off_pixbuf
+            text_color_value = "#9d9d9d"
+
+        draw_text(cr, text[0:end_index] + "...", rect.x, rect.y, text_color=text_color_value)
+        draw_pixbuf(cr, simple_pixbuf, rect.x + rect.width - simple_pixbuf.get_width(), rect.y)
+        return True
+
     def clicked_eject(self, widget):
-        print "clicked_eject..."
         op = gtk.MountOperation()
-        print op.get_password()
         if self.drive.can_eject():
             try:
+                self.drive.eject(self.cancallable_operation,
+                                gio.MOUNT_OPERATION_HANDLED)
                 self.emit("unmounted-event")
             except Exception,e:
                 print "error:", e
         else:
             for v in self.drive.get_volumes():
                 try:
-                    m = v.get_mount()
-                    if True:
+                    if v.get_mount():
+                        v.eject(self.cancallable_operation,
+                                gio.MOUNT_OPERATION_HANDLED)
                         self.emit("unmounted-event")
                     else:
-                        pass
+                        v.mount(op, self.cancallable_operation)
                 except Exception, e:
                     print "error:", e
+
+    def cancallable_operation(self, obj, res):
+        pass
 
     def handle_unmounted(self, mount):
         self.mounts.remove(mount)
@@ -139,8 +193,7 @@ class Device(gtk.Button):
         self.was_removed = True
 
     def set_mounted(self, mounted):
-        #
-        self.set_sensitive(mounted)
+        self.eject_check = mounted
 
 gobject.type_register(Device)
 
