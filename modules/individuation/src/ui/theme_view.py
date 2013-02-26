@@ -89,8 +89,12 @@ class UserThemeView(IconView):
         input_dialog = InputDialog("主题另存为", "", 300, 100, lambda name: self.create_new_theme(name, item))
         input_dialog.show_all()
 
+    def on_theme_delete(self, item):
+        pass
+
     def __on_right_click_item(self, widget, item, x, y):
-        menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item))]
+        menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item)), 
+                      (None, "删除", lambda : self.on_theme_delete(item))]
         Menu(menu_items, True).show((int(x), int(y)))
 
     def add_themes(self, themes):

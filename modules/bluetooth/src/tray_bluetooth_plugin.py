@@ -1,8 +1,8 @@
 #! /usr/bin/env python                                                          
 # -*- coding: utf-8 -*-                                                         
                                                                                 
-# Copyright (C) 2012 ~ 2013 Deepin, Inc.                                        
-#               2012 ~ 2013 Zhai Xiang                                          
+# Copyright (C) 2013 Deepin, Inc.                                        
+#               2013 Zhai Xiang                                          
 #                                                                               
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>                            
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>                            

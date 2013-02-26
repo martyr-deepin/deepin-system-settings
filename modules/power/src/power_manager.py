@@ -105,21 +105,21 @@ class PowerManager:
     '''
     TODO: sleep-inactive-ac-timeout unit is second
     '''
-    def get_hibernate_status(self, items):
-        hibernate_status_value = self.power_settings.get_int("sleep-inactive-battery-timeout")
+    def get_suspend_status(self, items):
+        suspend_status_value = self.power_settings.get_int("sleep-inactive-battery-timeout")
         i = 0
 
         for item, value in items:
-            if value == hibernate_status_value:
+            if value == suspend_status_value:
                 return i
             i += 1
 
         return 0
 
-    def set_hibernate_status(self, value):
-        self.power_settings.set_string("sleep-inactive-battery-type", "hibernate")
+    def set_suspend_status(self, value):
+        self.power_settings.set_string("sleep-inactive-battery-type", "suspend")
         self.power_settings.set_int("sleep-inactive-battery-timeout", value)
-        self.power_settings.set_string("sleep-inactive-ac-type", "hibernate")
+        self.power_settings.set_string("sleep-inactive-ac-type", "suspend")
         self.power_settings.set_int("sleep-inactive-ac-timeout", value)
 
     def get_close_harddisk(self, items):
@@ -153,7 +153,7 @@ class PowerManager:
         self.lockdown_settings.set_boolean("lock-enabled", value)
 
     def get_tray_battery_status(self):
-        return True
+        return self.power_settings.get_boolean("show-tray")
 
     def set_tray_battery_status(self, value):
-        pass
+        self.power_settings.set_boolean("show-tray", value)

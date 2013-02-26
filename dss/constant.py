@@ -23,6 +23,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+try:                                                                            
+    import deepin_gsettings                                                     
+except ImportError:                                                             
+    print "----------Please Install Deepin GSettings Python Binding----------"  
+    print "git clone git@github.com:linuxdeepin/deepin-gsettings.git"           
+    print "------------------------------------------------------------------"
+
 APP_DBUS_NAME = "com.deepin.system_settings"
 APP_OBJECT_NAME = "/com/deepin/system_settings"
 
@@ -94,3 +101,7 @@ Border color and backgroud color for treeview
 '''
 TREEVIEW_BORDER_COLOR = "#d2d2d2"
 TREEVIEW_BG_COLOR = "#f6f6f6"
+
+def is_laptop():
+    xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
+    return xrandr_settings.get_boolean("is-laptop")
