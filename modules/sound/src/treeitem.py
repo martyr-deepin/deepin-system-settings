@@ -88,7 +88,7 @@ gobject.type_register(MyTreeView)
 class MyTreeItem(TreeItem):
     '''TreeItem class'''
 
-    def __init__(self, icon, content, obj_path=None):
+    def __init__(self, icon, content, device_name="", device_index=None):
         '''
         initialization.
         @param icon: a DynamicPixbuf object
@@ -100,7 +100,8 @@ class MyTreeItem(TreeItem):
         self.padding_x = 5
         self.icon = icon
         self.content = content
-        self.obj_path = obj_path
+        self.device_name = device_name
+        self.device_index = device_index
     
     def get_height(self):
         return self.height
