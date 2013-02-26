@@ -500,8 +500,7 @@ class BlueToothView(gtk.VBox):
         pass
 
     def __setup_label(self, text="", width=180, align=ALIGN_END):
-        label = Label(text, None, TITLE_FONT_SIZE, align, width, False, False, False)
-        return label
+        return Label(text, None, TITLE_FONT_SIZE, align, width, False, False, False)
 
     def __setup_combo(self, items=[], width=HSCALEBAR_WIDTH):
         combo = ComboBox(items, None, 0, width, width)
