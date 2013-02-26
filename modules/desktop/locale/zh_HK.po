@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-25 17:40+0800\n"
+"POT-Creation-Date: 2013-02-26 16:17+0800\n"
 "PO-Revision-Date: 2013-02-25 16:44+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,82 +16,106 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/desktop_view.py:49 ../src/desktop_view.py:54
+#: ../src/desktop_view.py:53 ../src/desktop_view.py:58
 msgid "Default"
 msgstr ""
 
-#: ../src/desktop_view.py:50
+#: ../src/desktop_view.py:54
 msgid "Auto Hide"
 msgstr ""
 
-#: ../src/desktop_view.py:51
+#: ../src/desktop_view.py:55
 msgid "Invisible"
 msgstr ""
 
-#: ../src/desktop_view.py:52
+#: ../src/desktop_view.py:56
 msgid "Buttom"
 msgstr ""
 
-#: ../src/desktop_view.py:53
+#: ../src/desktop_view.py:57
 msgid "Top"
 msgstr ""
 
-#: ../src/desktop_view.py:55
+#: ../src/desktop_view.py:59
 msgid "Small"
 msgstr ""
 
-#: ../src/desktop_view.py:61 ../src/search_keyword.py:29
+#: ../src/desktop_view.py:65 ../src/search_keyword.py:29
 msgid "Desktop Icon"
 msgstr ""
 
-#: ../src/desktop_view.py:69
+#: ../src/desktop_view.py:73
 msgid "Computer"
 msgstr ""
 
-#: ../src/desktop_view.py:70
+#: ../src/desktop_view.py:76
 msgid "Home"
 msgstr ""
 
-#: ../src/desktop_view.py:71
+#: ../src/desktop_view.py:79
 msgid "Trash"
 msgstr ""
 
-#: ../src/desktop_view.py:72
+#: ../src/desktop_view.py:82
 msgid "Software Center"
 msgstr ""
 
-#: ../src/desktop_view.py:84
+#: ../src/desktop_view.py:95
 msgid "Dock"
 msgstr ""
 
-#: ../src/desktop_view.py:90
+#: ../src/desktop_view.py:101
 msgid "Display Style"
 msgstr ""
 
-#: ../src/desktop_view.py:102
+#: ../src/desktop_view.py:113
 msgid "Place Style"
 msgstr ""
 
-#: ../src/desktop_view.py:114
+#: ../src/desktop_view.py:125
 msgid "Icon Size"
 msgstr ""
 
-#: ../src/desktop_view.py:126
+#: ../src/desktop_view.py:137
 msgid "Login &amp;&amp; Lock"
 msgstr ""
 
-#: ../src/desktop_view.py:134
+#: ../src/desktop_view.py:145
 msgid "Login Page"
 msgstr ""
 
-#: ../src/desktop_view.py:139 ../src/desktop_view.py:155
+#: ../src/desktop_view.py:150 ../src/desktop_view.py:166
 msgid "Select"
 msgstr ""
 
-#: ../src/desktop_view.py:150
+#: ../src/desktop_view.py:161
 msgid "Lock Page"
 msgstr ""
 
-#: ../src/desktop_view.py:230
+#: ../src/desktop_view.py:195
+msgid "Show computer icon"
+msgstr ""
+
+#: ../src/desktop_view.py:197
+msgid "Hide computer icon"
+msgstr ""
+
+#: ../src/desktop_view.py:203
+msgid "Show home icon"
+msgstr ""
+
+#: ../src/desktop_view.py:205
+msgid "Hide home icon"
+msgstr ""
+
+#: ../src/desktop_view.py:211
+msgid "Show trash icon"
+msgstr ""
+
+#: ../src/desktop_view.py:213
+msgid "Hide trash icon"
+msgstr ""
+
+#: ../src/desktop_view.py:268
 msgid "Reset to default value"
 msgstr ""

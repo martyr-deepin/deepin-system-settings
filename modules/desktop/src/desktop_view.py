@@ -35,6 +35,7 @@ from nls import _
 import gobject
 import gtk
 import dbus
+import deepin_gsettings
 
 class DesktopView(gtk.VBox):
     '''
@@ -46,6 +47,9 @@ class DesktopView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
+
+        self.desktop_settings = deepin_gsettings.new("com.deepin.dde.desktop")
+
         self.display_style_items = [(_("Default"), 0), 
                                     (_("Auto Hide"), 1), 
                                     (_("Invisible"), 2)]
@@ -67,14 +71,21 @@ class DesktopView(gtk.VBox):
         self.icon_align = self.__setup_align(padding_left = 225)
         self.icon_box = gtk.HBox(spacing = WIDGET_SPACING * 3)
         self.computer_checkbutton = self.__setup_checkbutton(_("Computer"))
+        self.computer_checkbutton.set_active(self.desktop_settings.get_boolean("show-computer-icon"))
+        self.computer_checkbutton.connect("toggled", self.__toggled, "computer");
         self.home_checkbutton = self.__setup_checkbutton(_("Home"))
+        self.home_checkbutton.set_active(self.desktop_settings.get_boolean("show-home-icon"))
+        self.home_checkbutton.connect("toggled", self.__toggled, "home")
         self.trash_checkbutton = self.__setup_checkbutton(_("Trash"))
+        self.trash_checkbutton.set_active(self.desktop_settings.get_boolean("show-trash-icon"))
+        self.trash_checkbutton.connect("toggled", self.__toggled, "trash")
         self.dsc_checkbutton = self.__setup_checkbutton(_("Software Center"))
         self.__widget_pack_start(self.icon_box, 
                                  [self.computer_checkbutton, 
                                   self.home_checkbutton, 
                                   self.trash_checkbutton, 
-                                  self.dsc_checkbutton])
+                                  #self.dsc_checkbutton, 
+                                 ])
         self.icon_align.add(self.icon_box)
         '''
         dock title
@@ -176,6 +187,33 @@ class DesktopView(gtk.VBox):
 
         self.__send_message("status", ("desktop", ""))
 
+    def __toggled(self, widget, obj):
+        is_toggled = widget.get_active()
+
+        if obj == "computer":
+            if is_toggled:
+                self.__send_message("status", ("desktop", _("Show computer icon")))
+            else:
+                self.__send_message("status", ("desktop", _("Hide computer icon")))
+            self.desktop_settings.set_boolean("show-computer-icon", is_toggled)
+            return
+
+        if obj == "home":
+            if is_toggled:
+                self.__send_message("status", ("desktop", _("Show home icon")))
+            else:
+                self.__send_message("status", ("desktop", _("Hide home icon")))
+            self.desktop_settings.set_boolean("show-home-icon", is_toggled)
+            return
+
+        if obj == "trash":
+            if is_toggled:
+                self.__send_message("status", ("desktop", _("Show trash icon")))
+            else:
+                self.__send_message("status", ("desktop", _("Hide trash icon")))
+            self.desktop_settings.set_boolean("show-trash-icon", is_toggled)
+            return
+
     def __handle_dbus_replay(self, *reply):                                     
         pass                                                                    
                                                                                 
@@ -228,6 +266,9 @@ class DesktopView(gtk.VBox):
 
     def reset(self):
         self.__send_message("status", ("desktop", _("Reset to default value")))
+        self.desktop_settings.reset("show-computer-icon")
+        self.desktop_settings.reset("show-home-icon")
+        self.desktop_settings.reset("show-trash-icon")
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()
