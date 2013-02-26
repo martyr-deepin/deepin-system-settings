@@ -25,9 +25,9 @@ import gtk
 
 if __name__ == '__main__':
     win = gtk.Window()
-    win.set_size_request(220, 200)
     win.connect("destroy", gtk.main_quit)
     tray = TrayGui()
+    tray.connect("stream-changed", lambda w: win.set_size_request(220, tray.get_widget_height()))
 
     win.add(tray)
     win.show_all()
