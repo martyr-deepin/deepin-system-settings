@@ -57,7 +57,7 @@ class DesktopView(gtk.VBox):
         icon title
         '''
         self.icon_title_align = self.__setup_title_align(
-            app_theme.get_pixbuf("power/button_power.png"), 
+            app_theme.get_pixbuf("desktop/icon.png"), 
             _("Desktop Icon"), 
             TEXT_WINDOW_TOP_PADDING, 
             TEXT_WINDOW_LEFT_PADDING)
@@ -80,7 +80,7 @@ class DesktopView(gtk.VBox):
         dock title
         '''
         self.dock_title_align = self.__setup_title_align(
-            app_theme.get_pixbuf("power/power_save.png"), 
+            app_theme.get_pixbuf("desktop/dock.png"), 
             _("Dock")) 
         '''
         display style
@@ -122,7 +122,7 @@ class DesktopView(gtk.VBox):
         greeter
         '''
         self.greeter_title_align = self.__setup_title_align(                       
-            app_theme.get_pixbuf("power/button_power.png"),                     
+            app_theme.get_pixbuf("desktop/lock.png"),                     
             _("Login &amp;&amp; Lock"),                                                  
             TEXT_WINDOW_TOP_PADDING,                                            
             TEXT_WINDOW_LEFT_PADDING)

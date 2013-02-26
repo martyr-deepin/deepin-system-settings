@@ -33,7 +33,7 @@ from dtk.ui.hscalebar import HScalebar
 from dtk.ui.box import ImageBox
 from nls import _
 from constant import *
-#from vtk.button import SelectButton
+from vtk.button import SelectButton
 
 import threading as td
 import gtk
@@ -86,7 +86,6 @@ class TrayGui(gtk.VBox):
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
 
         table = gtk.Table(2, 3)
-        speaker_hbox = gtk.HBox(False)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/tray_speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.speaker_scale.set_size_request(150, 10)
@@ -95,7 +94,6 @@ class TrayGui(gtk.VBox):
         table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
-        microphone_hbox = gtk.HBox(False)
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
         self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.microphone_scale.set_size_request(150, 10)
@@ -110,47 +108,17 @@ class TrayGui(gtk.VBox):
         hseparator = HSeparator(separator_color, 0, 0)
         hseparator.set_size_request(190, 3)
         self.pack_start(self.__make_align(hseparator, xalign=0.5, height=14), False, False)
-        #self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
-        #button_hbox = gtk.HBox(False)
-        #button_hbox.set_spacing(WIDGET_SPACING)
-        #button_hbox.pack_start(self.__make_align(height=-1))
-        #button_hbox.pack_start(self.button_more)
-        #self.pack_start((button_hbox), False, False)
-        #self.pack_start(self.button_more)
-        #self.pack_start(self.__make_align(height=15))
+        self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
+        button_hbox = gtk.HBox(False)
+        button_hbox.set_spacing(WIDGET_SPACING)
+        button_hbox.pack_start(self.__make_align(height=-1))
+        button_hbox.pack_start(self.button_more)
+        self.pack_start((button_hbox), False, False)
+        self.pack_start(self.button_more)
+        self.pack_start(self.__make_align(height=15))
         ##########################################
-        # if sinks list is empty, then can't set output volume
-        current_sink = pypulse.get_fallback_sink_index()
-        sinks = pypulse.PULSE.get_output_devices()
-        if current_sink is None:
-            speaker_hbox.set_sensitive(False)
-        # set output volume
-        elif current_sink in sinks:
-            is_mute = sinks[current_sink]['mute']
-            self.speaker_mute_button.set_active(not is_mute)
-            self.speaker_scale.set_enable(not is_mute)
-            sink_volume = pypulse.PULSE.get_output_volume()
-            if current_sink in sink_volume:
-                volume = max(sink_volume[current_sink])
-            else:
-                volume = 0
-            self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
-        # if sources list is empty, then can't set input volume
-        current_source = pypulse.get_fallback_source_index()
-        sources = pypulse.PULSE.get_input_devices()
-        if current_source is None:
-            microphone_hbox.set_sensitive(False)
-        # set input volume
-        elif current_source in sources:
-            is_mute = sources[current_source]['mute']
-            self.microphone_mute_button.set_active(not is_mute)
-            self.microphone_scale.set_enable(not is_mute)
-            source_volume = pypulse.PULSE.get_input_volume()
-            if current_source in source_volume:
-                volume = max(source_volume[current_source])
-            else:
-                volume = 0
-            self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+        self.__set_output_status()
+        self.__set_input_status()
 
         # widget signals
         self.speaker_mute_button.connect("toggled", self.speaker_toggled)
@@ -160,10 +128,26 @@ class TrayGui(gtk.VBox):
         # pulseaudio signals
         pypulse.PULSE.connect("sink-changed", self.sink_changed_cb)
         pypulse.PULSE.connect("source-changed", self.source_changed_cb)
-        #pypulse.PULSE.connect("server-changed", self.server_changed_cb)
-        #pypulse.PULSE.connect("sink-input-new", self.sink_input_new_cb)
-        #pypulse.PULSE.connect("sink-input-changed", self.sink_input_changed_cb)
-        #pypulse.PULSE.connect("sink-input-removed", self.sink_input_removed_cb)
+        pypulse.PULSE.connect("server-changed", self.server_changed_cb)
+        pypulse.PULSE.connect("sink-input-new", self.sink_input_new_cb)
+        pypulse.PULSE.connect("sink-input-changed", self.sink_input_changed_cb)
+        pypulse.PULSE.connect("sink-input-removed", self.sink_input_removed_cb)
+        playback_streams = pypulse.PULSE.get_playback_streams()
+        for stream in playback_streams:
+            print "channel:", playback_streams[stream]['channel']
+            print "client:", playback_streams[stream]['client']
+            print "has_volume:", playback_streams[stream]['has_volume']
+            print "mute:", playback_streams[stream]['mute']
+            print "sink:", playback_streams[stream]['sink']
+            print "resample_method:", playback_streams[stream]['resample_method']
+            print "volume:", playback_streams[stream]['volume']
+            print "voluem_writable:", playback_streams[stream]['volume_writable']
+            proplist = playback_streams[stream]['proplist']
+            if 'application.icon_name' in proplist:
+                print 'application.icon_name:', proplist['application.icon_name']
+            if 'application.name' in proplist:
+                print 'application.name:', proplist['application.name']
+            print "-"*20
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
@@ -218,10 +202,6 @@ class TrayGui(gtk.VBox):
 
     def microphone_scale_value_changed(self, widget, value):
         ''' set input volume'''
-        #try:
-            #SettingVolumeThread(self, self.microphone_value_changed_thread).start()
-        #except:
-            #pass
         self.microphone_value_changed_thread()
 
     def speaker_toggled(self, button):
@@ -238,69 +218,81 @@ class TrayGui(gtk.VBox):
         if current_source is not None:
             pypulse.PULSE.set_input_mute(current_source, not active)
 
-    def get_cards_cb(self, index):
-        # if PulseAudio connect error, set the widget insensitive               
-        if not pypulse.PULSE.get_cards():                                       
-            self.set_sensitive(False)                                           
-            return
-
     # pulseaudio signals callback
     def sink_changed_cb(self, obj, index):
-        print "sink_changed:", obj, index
-        #current_sink = pypulse.get_fallback_sink_index()
-        #print "sink_changed:", index, current_sink
-        #if current_sink is None or current_sink != index:
-            #return
-        #sinks = pypulse.PULSE.get_output_devices()
-        #if index in sinks:
-            #is_mute = sinks[index]['mute']
-            #self.speaker_mute_button.set_active(not is_mute)
-            #self.speaker_scale.set_enable(not is_mute)
-            #sink_volume = pypulse.PULSE.get_output_volume()
-            #if index in sink_volume:
-                #volume = max(sink_volume[index])
-            #else:
-                #volume = 0
-            #self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+        obj.get_devices()
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is None or current_sink != index:
+            return
+        self.__set_output_status()
 
     def source_changed_cb(self, obj, index):
-        print "source_changed:", obj, index
-        #current_source = pypulse.get_fallback_source_index()
-        #print "source_changed:", index, current_source
-        #if current_source is None or current_source != index:
-            #return
-        #sources = pypulse.PULSE.get_input_devices()
-        #if index in sources:
-            #is_mute = sources[index]['mute']
-            #self.microphone_mute_button.set_active(not is_mute)
-            #self.microphone_scale.set_enable(not is_mute)
-            #source_volume = pypulse.PULSE.get_input_volume()
-            #if index in source_volume:
-                #volume = max(source_volume[index])
-            #else:
-                #volume = 0
-            #self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
-
-    def server_changed_cb(self):
-        current_sink = pypulse.get_fallback_sink_index()
+        obj.get_devices()
         current_source = pypulse.get_fallback_source_index()
-        if current_sink is None:
-            speaker_hbox.set_sensitive(False)
-        elif not speaker_hbox.get_sensitive():
-            speaker_hbox.set_sensitive(True)
-        if current_source is None:
-            microphone_hbox.set_sensitive(False)
-        elif not microphone_hbox.get_sensitive():
-            microphone_hbox.set_sensitive(True)
-        print "server changed:", current_sink, current_source
+        if current_source is None or current_source != index:
+            return
+        self.__set_input_status()
 
-    def sink_input_new_cb(self, index):
+    def server_changed_cb(self, obj):
+        obj.get_devices()
+        self.__set_output_status()
+        self.__set_input_status()
+
+    def sink_input_new_cb(self, obj, index):
         print "sink_input new:", index
+        obj.get_devices()
+        playback = obj.get_playback_streams()
 
     def sink_input_changed_cb(self, obj, index):
         print "sink_input changed:", obj, index
 
-    def sink_input_removed_cb(self, index):
+    def sink_input_removed_cb(self, obj, index):
         print "sink_input removed:", index
+
+    def __set_output_status(self):
+        # if sinks list is empty, then can't set output volume
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
+        if current_sink is None:
+            self.speaker_scale.set_sensitive(False)
+            self.speaker_mute_button.set_sensitive(False)
+            self.speaker_scale.set_enable(False)
+            self.speaker_mute_button.set_active(False)
+        # set output volume
+        elif current_sink in sinks:
+            self.speaker_scale.set_sensitive(True)
+            self.speaker_mute_button.set_sensitive(True)
+            is_mute = sinks[current_sink]['mute']
+            self.speaker_mute_button.set_active(not is_mute)
+            self.speaker_scale.set_enable(not is_mute)
+            sink_volume = pypulse.PULSE.get_output_volume()
+            if current_sink in sink_volume:
+                volume = max(sink_volume[current_sink])
+            else:
+                volume = 0
+            self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+
+    def __set_input_status(self):
+        # if sources list is empty, then can't set input volume
+        current_source = pypulse.get_fallback_source_index()
+        sources = pypulse.PULSE.get_input_devices()
+        if current_source is None:
+            self.microphone_scale.set_sensitive(False)
+            self.microphone_mute_button.set_sensitive(False)
+            self.microphone_scale.set_enable(False)
+            self.microphone_mute_button.set_active(False)
+        # set input volume
+        elif current_source in sources:
+            self.microphone_scale.set_sensitive(True)
+            self.microphone_mute_button.set_sensitive(True)
+            is_mute = sources[current_source]['mute']
+            self.microphone_mute_button.set_active(not is_mute)
+            self.microphone_scale.set_enable(not is_mute)
+            source_volume = pypulse.PULSE.get_input_volume()
+            if current_source in source_volume:
+                volume = max(source_volume[current_source])
+            else:
+                volume = 0
+            self.microphone_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
 gobject.type_register(TrayGui)
