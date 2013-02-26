@@ -49,6 +49,7 @@ class MountMedia(object):
     def show_mount_tray(self):
         if self.ejecter_app.devices != {}:
             self.tray_icon.set_visible(True)
+            self.this.hide_menu()
             
     def hide_mount_tray(self):
         if self.ejecter_app.devices == {}:
