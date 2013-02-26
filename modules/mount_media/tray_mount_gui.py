@@ -75,7 +75,7 @@ class Device(gtk.Button):
         rect = widget.allocation
         #
         text = widget.get_label().decode("utf-8")
-        text_width = get_text_size("abcdefghijk")[0]
+        text_width = get_text_size("ABCDEFABCDEFH")[0]
         ch_width = get_text_size("a")[0]
         dec_width = get_text_size(text)[0] - text_width
         if dec_width > 0:
@@ -92,7 +92,8 @@ class Device(gtk.Button):
                   text, 
                   rect.x, 
                   rect.y, 
-                  text_color=text_color_value)
+                  text_color=text_color_value,
+                  text_size=9)
         draw_pixbuf(cr, 
                     simple_pixbuf, 
                     rect.x + rect.width - simple_pixbuf.get_width(), 
@@ -183,7 +184,7 @@ class Device(gtk.Button):
             self.description = self.drive.get_name()
         else:
             volumes = ""
-            first = true
+            first = True
 
             for v in self.volumes:
                 if first:
@@ -229,20 +230,47 @@ class EjecterApp(gobject.GObject):
         self.__init_ejecter_settings()
 
     def __init_values(self):
-        hseparator_color = [(0, ("#777777", 0.0)),
+        hseparator_color = [(0,   ("#777777", 0.0)),
                             (0.5, ("#000000", 0.3)),
-                            (1, ("#777777", 0.0))]
+                            (1,   ("#777777", 0.0))
+                           ]
+        self.hbox = gtk.HBox()
+        self.title_image = gtk.image_new_from_file("image/usb/usb_label.png")
+        self.title_label = gtk.Label("USB设备")
+        self.title_label.connect("expose-event", self.title_label_expose_event)
+        self.title_label_ali = gtk.Alignment(0, 0, 0, 0)
+        self.title_label_ali.set_padding(0, 0, 0, 0)
+        self.title_label_ali.add(self.title_label)
+
+        self.hbox.pack_start(self.title_image, False, False)
+        self.hbox.pack_start(self.title_label_ali, True, True)
+
+        self.h_separator_top = HSeparator(hseparator_color, 0, 0)
         self.h_separator_ali = gtk.Alignment(1, 1, 1, 1)
         self.h_separator_ali.set_padding(5, 10, 0, 0)
-        self.h_separator_top = HSeparator(hseparator_color, 0, 0)
         self.h_separator_ali.add(self.h_separator_top)
 
         self.vbox = gtk.VBox()
-        self.vbox.pack_start(self.h_separator_ali, False, False) 
+        self.vbox.pack_start(self.hbox, False, False)
+        self.vbox.pack_start(self.h_separator_ali, True, True)
+
         self.conf = Conf()
         self.devices = {}
         self.invalid_devices = [] 
         self.monitor = gio.VolumeMonitor()
+
+    def title_label_expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        text = widget.get_label()
+        size = get_text_size(text)
+        draw_text(cr, 
+                  text, 
+                  rect.x + 5, 
+                  rect.y + rect.height - size[1] + 1,
+                  text_color="#000000",
+                  text_size=9)
+        return True
 
     def __init_ejecter_settings(self):
         self.load_devices()
@@ -282,7 +310,7 @@ class EjecterApp(gobject.GObject):
             d = Device(drive, 0)
             self.devices[id] = d
 
-            self.vbox.pack_start(d, False, False) 
+            self.vbox.pack_start(d, True, True) 
             self.vbox.show_all()
             self.emit("update-usb")
 

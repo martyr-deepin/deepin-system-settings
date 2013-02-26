@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-16 15:36+0800\n"
+"POT-Creation-Date: 2013-02-26 15:06+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,39 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:318
+#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:335
 msgid "Bluetooth Get Powered"
 msgstr "蓝牙是否开启"
 
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:336
+#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:353
 msgid "Device Shown Name"
 msgstr "显示设备名称"
 
-#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:350
+#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:367
 msgid "Be Searchedable"
 msgstr "是否可被发现"
 
-#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:365
+#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:382
 msgid "Searching Device Timeout"
 msgstr "可检测到设备的时间超时"
 
-#: ../src/bluetooth_view.py:237
-#, python-format
+#: ../src/tray_bluetooth_plugin.py:76
+msgid "Adapter"
+msgstr "适配器"
+
+#: ../src/tray_bluetooth_plugin.py:82
+msgid "More devices"
+msgstr "更多设备"
+
+#: ../src/bluetooth_view.py:234
+msgid "Select File"
+msgstr "选择文件"
+
+#: ../src/bluetooth_view.py:255
 msgid "Please confirm %s pin match as below"
 msgstr "请确认显示于%s上面的pin于此匹配"
 
-#: ../src/bluetooth_view.py:238
+#: ../src/bluetooth_view.py:256
 msgid "Yes"
 msgstr "匹配"
 
-#: ../src/bluetooth_view.py:239
+#: ../src/bluetooth_view.py:257
 msgid "No"
 msgstr "不匹配"
 
-#: ../src/bluetooth_view.py:309
+#: ../src/bluetooth_view.py:320
+msgid "Send File"
+msgstr "发送文件"
+
+#: ../src/bluetooth_view.py:327
 msgid "Minutes"
 msgstr "分钟"
 
-#: ../src/bluetooth_view.py:315
+#: ../src/bluetooth_view.py:332
 msgid "Bluetooth"
 msgstr "蓝牙"
+
+#: ../src/bluetooth_view.py:401
+msgid "Cancel"
+msgstr "取消"
