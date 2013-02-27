@@ -25,6 +25,8 @@ import pango
 from nls import _
 from tray_shutdown_dbus import CmdDbus
 from vtk.button import SelectButton
+from vtk.utils import cairo_disable_antialias
+from vtk.color import color_hex_to_cairo
 from dtk.ui.line import HSeparator
 import os
 import sys
@@ -33,6 +35,7 @@ from theme import app_theme
 from vtk.utils import get_text_size
 
 WIDTH = 120
+HEIGHT = 25
 
 class Gui(gtk.VBox):
     def __init__(self):
@@ -45,11 +48,11 @@ class Gui(gtk.VBox):
         self.gui_theme = app_theme
 
     def init_widgets(self):
-        self.icon_width = self.icon_height = 30
+        self.icon_width = self.icon_height = HEIGHT
         #
         self.user_hbox = gtk.HBox()
         self.user_icon = gtk.Image()
-        self.user_icon.set_size_request(20, 20)
+        self.user_icon.set_size_request(HEIGHT, HEIGHT)
         #
         user_name = self.cmd_dbus.get_user_name()
         user_name_width = get_text_size(user_name)[0]
@@ -62,6 +65,7 @@ class Gui(gtk.VBox):
         self.user_label = gtk.Label(user_name)
         self.user_label_event.add(self.user_label)
         self.user_label_ali.add(self.user_label_event)
+        self.user_icon.connect_after("expose-event", self.user_label_event_expose_event)
         #
         self.user_hbox.pack_start(self.user_icon, False, False)
         self.user_hbox.pack_start(self.user_label_ali, False, False)
@@ -83,10 +87,10 @@ class Gui(gtk.VBox):
         self.suspend_btn = SelectButton(_("suspend"), font_size=10, ali_padding=ali_padding)
         self.logout_btn = SelectButton(_("logout"), font_size=10, ali_padding=ali_padding)
         #
-        self.stop_btn.set_size_request(WIDTH, 25)
-        self.restart_btn.set_size_request(WIDTH, 25)
-        self.suspend_btn.set_size_request(WIDTH, 25)
-        self.logout_btn.set_size_request(WIDTH, 25)
+        self.stop_btn.set_size_request(WIDTH, HEIGHT)
+        self.restart_btn.set_size_request(WIDTH, HEIGHT)
+        self.suspend_btn.set_size_request(WIDTH, HEIGHT)
+        self.logout_btn.set_size_request(WIDTH, HEIGHT)
         #
         self.pack_start(self.user_hbox, True, True)
         self.pack_start(self.h_separator_top_ali, True, True)
@@ -94,6 +98,17 @@ class Gui(gtk.VBox):
         self.pack_start(self.restart_btn, True, True)
         self.pack_start(self.suspend_btn, True, True)
         self.pack_start(self.logout_btn, True, True)
+
+    def user_label_event_expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        size = HEIGHT
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo("#d2d2d2"))
+            cr.set_line_width(1)
+            cr.rectangle(rect.x, rect.y, size, size)
+            cr.stroke()
+        return True
 
 if __name__ == "__main__":
     win = gtk.Window(gtk.TOPLEVEL_WINDOW)
