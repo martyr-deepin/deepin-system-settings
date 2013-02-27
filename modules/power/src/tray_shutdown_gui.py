@@ -49,6 +49,7 @@ class Gui(gtk.VBox):
         #
         self.user_hbox = gtk.HBox()
         self.user_icon = gtk.Image()
+        self.user_icon.set_size_request(20, 20)
         #
         user_name = self.cmd_dbus.get_user_name()
         user_name_width = get_text_size(user_name)[0]
@@ -57,8 +58,10 @@ class Gui(gtk.VBox):
             user_name = de_user_name[0:10] + "..."
         self.user_label_ali = gtk.Alignment(0, 0, 1, 1)
         self.user_label_ali.set_padding(0, 0, 5, 0)
+        self.user_label_event = gtk.EventBox()
         self.user_label = gtk.Label(user_name)
-        self.user_label_ali.add(self.user_label)
+        self.user_label_event.add(self.user_label)
+        self.user_label_ali.add(self.user_label_event)
         #
         self.user_hbox.pack_start(self.user_icon, False, False)
         self.user_hbox.pack_start(self.user_label_ali, False, False)
