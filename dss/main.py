@@ -151,7 +151,12 @@ class DBusService(dbus.service.Object):
                 (module_id, status) = message_content
                 if foot_box:
                     foot_box.show(module_id)
-                    foot_box.set_status(status)
+                    if status == "hide_reset":
+                        foot_box.hide_reset()
+                    elif status == "show_reset":
+                        foot_box.show_reset()
+                    else:
+                        foot_box.set_status(status)
             elif message_type == "add_button":
                 (module_id, add_button) = message_content
                 if foot_box:

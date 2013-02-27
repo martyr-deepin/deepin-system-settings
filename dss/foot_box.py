@@ -126,8 +126,14 @@ class FootBox(gtk.HBox):
 
         if not self.__is_init_ui:
             self.__init_ui()
-        
+       
         self.show_all()
+
+    def hide_reset(self):
+        self.reset_button.set_child_visible(False)
+   
+    def show_reset(self):
+        self.reset_button.set_child_visible(True)
 
     def add_button(self, add_button):
         container_remove_all(self.buttons_align.get_children()[0])
