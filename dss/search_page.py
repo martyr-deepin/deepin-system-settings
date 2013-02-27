@@ -35,10 +35,10 @@ import dbus
 '''
 TODO: production level do not need split word any more
 '''
-from split_word import init_jieba, split_word
+#from split_word import init_jieba, split_word
 from theme import app_theme
 from constant import *
-import xappy
+#import xappy
 import threading as td
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 2), "modules"))
@@ -66,7 +66,7 @@ class KeywordSearch:
         '''
         TODO: production level do not need to init jieba any more
         '''
-        init_jieba()
+        #init_jieba()
     '''
     TODO: production level no need to build index any more
     '''
@@ -162,7 +162,7 @@ class SearchPage(gtk.VBox):
         TODO: build index might be a heavey operation depend on keywords count
               production level do not need to build index any more
         '''
-        BuildIndexThread(self).start()
+        #BuildIndexThread(self).start()
 
         self.scrolled_window.add_child(self.result_align)
         self.pack_start(self.scrolled_window)
