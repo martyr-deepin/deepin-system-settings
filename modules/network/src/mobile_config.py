@@ -19,7 +19,7 @@ from shared_widget import IPV4Conf
 from foot_box import FootBox
 
 import gtk
-
+from shared_methods import Settings
 from constants import TITLE_FONT_SIZE, FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE
 import style
 from nls import _
@@ -34,112 +34,32 @@ def check_settings(connection, fn):
         fn("save", False)
         print "not pass"
 
-class MobileSetting(gtk.Alignment):
+class MobileSetting(Settings):
 
-    def __init__(self, slide_back_cb = None, change_crumb_cb = None):
+    def __init__(self, device):
+        Settings.__init__(self, [Broadband, IPV4Conf, PPPConf])
+        self.crumb_name = _("Mobile Network")
+        self.device = device
 
-        gtk.Alignment.__init__(self, 0, 0, 0, 0)
-        self.slide_back = slide_back_cb
-        self.change_crumb = change_crumb_cb
-        
-        # Add UI Align
-        style.set_main_window(self)
-        main_vbox = gtk.VBox()
-        self.foot_box = FootBox()
-        hbox = gtk.HBox()
-        hbox.connect("expose-event",self.expose_line)
+    def get_broadband(self):
+        return self.settings[self.connection][0][1]
 
-        main_vbox.pack_start(hbox, False, False)
-        main_vbox.pack_start(self.foot_box, False, False)
-
-        self.add(main_vbox)
-
-        self.tab_window = TabBox(dockfill = False)
-        self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 415)
-
-        self.setting_group = Settings([Broadband, IPV4Conf, PPPConf], self.set_button)
-        self.sidebar = SideBar( None, self.init, self.check_click)
-
-        # Build ui
-        hbox.pack_start(self.sidebar, False , False)
-        hbox.pack_start(self.tab_window ,True, True)
-        self.save_button = Button()
-        self.save_button.connect("clicked", self.save_changes)
-        self.foot_box.set_buttons([self.save_button])
-        #self.foot_box.set_tip("Tip:sfdsfdsfadsf")
-        
-        self.show_all()
-        style.draw_background_color(self)
-        style.draw_separator(self.sidebar, 3)
-
-    def expose_line(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
-
-    def draw_tab_title_background(self, cr, widget):
-        rect = widget.allocation
-        cr.set_source_rgb(1, 1, 1)    
-        cr.rectangle(0, 0, rect.width, rect.height - 1)
-        cr.fill()
-        
-    def expose_outline(self, widget, event, exclude):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-
-        style.draw_out_line(cr, rect, exclude)
-
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
-
-    def init(self, new_connection=None, init_connections=False):
+    def get_connections(self):
         # Get all connections  
-        if init_connections:
-            self.sidebar.new_connection_list ={"cdma":[],"gsm":[]}
-
         def get_mobile_connections():
             cdma = nm_module.nm_remote_settings.get_cdma_connections()
             gsm = nm_module.nm_remote_settings.get_gsm_connections()
-            if new_connection:
-                cdma +=new_connection["cdma"]
-                gsm += new_connection["gsm"]
             return cdma + gsm
+
         connections = get_mobile_connections()
         
         if connections == []:
             region = slider.get_page_by_name("region")
             region.init()
             slider._slide_to_page("region", "right")
-        else:
-            self.connections = connections
 
-            self.sidebar.init(connections, self.setting_group)
-            index = self.sidebar.get_active()
-            self.set_tab_content(self.connections[index], init_connections)
-
-    def set_tab_content(self, connection, init_connection=False):
-        if self.tab_window.tab_items ==  []:
-            self.tab_window.add_items(self.setting_group.init_settings(connection))
-        else:
-            self.tab_window.tab_items = self.setting_group.init_settings(connection)
-        if init_connection:
-            tab_index = 0
-        else:
-            tab_index = self.tab_window.tab_index
-        self.tab_window.tab_index = -1
-        self.tab_window.switch_content(tab_index)
-        self.queue_draw()
-
-    def check_click(self, connection):
-        self.set_tab_content(connection)
-        (label, state) = self.setting_group.get_button_state(connection)
-        self.set_button(label, state)
-        
+        return connections
+    
     def save_changes(self, widget):
         connection = self.setting_group.connection
         if widget.label == _("save"):
@@ -181,76 +101,54 @@ class MobileSetting(gtk.Alignment):
             print "no active device"
         self.change_crumb()
         self.slide_back() 
-    def set_button(self, name, state):
-        if name == "save":
-            self.save_button.set_label(_("save"))
-            self.save_button.set_sensitive(state)
-        else:
-            self.save_button.set_label(_("connect"))
-            self.save_button.set_sensitive(state)
 
-class SideBar(gtk.VBox):
-    def __init__(self, connections , main_init_cb, check_click_cb):
-        gtk.VBox.__init__(self, False)
-        self.connections = connections
-        self.main_init_cb = main_init_cb
-        self.check_click_cb = check_click_cb
-
-        # Build ui
-        self.buttonbox = gtk.VBox()
-        self.pack_start(self.buttonbox, False, False)
-        style.add_separator(self)
-        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
-        self.pack_start(TreeView([add_button]), False, False)
-        self.set_size_request(160, -1)
-        self.new_connection_list = {'cdma':[], "gsm":[]}
     
-    def init(self, connection_list, ip4setting):
-        # FIXME 
-        active_connection = nm_module.nmclient.get_mobile_active_connection()
-        if active_connection:
-            active = active_connection[0].get_connection()
-        else:
-            active = None
+    #def init(self, connection_list, ip4setting):
+        ## FIXME 
+        #active_connection = nm_module.nmclient.get_mobile_active_connection()
+        #if active_connection:
+            #active = active_connection[0].get_connection()
+        #else:
+            #active = None
 
-        self.connections = connection_list
-        self.setting = ip4setting
+        #self.connections = connection_list
+        #self.setting = ip4setting
         
-        # Add connection buttons
-        container_remove_all(self.buttonbox)
-        self.cons = []
-        self.connection_tree = EntryTreeView(self.cons)
-        for index, connection in enumerate(self.connections):
-            self.cons.append(SettingItem(connection, self.check_click_cb, self.delete_item_cb))
-        self.connection_tree.add_items(self.cons)
+        ## Add connection buttons
+        #container_remove_all(self.buttonbox)
+        #self.cons = []
+        #self.connection_tree = EntryTreeView(self.cons)
+        #for index, connection in enumerate(self.connections):
+            #self.cons.append(SettingItem(connection, self.check_click_cb, self.delete_item_cb))
+        #self.connection_tree.add_items(self.cons)
 
-        self.connection_tree.show_all()
+        #self.connection_tree.show_all()
 
-        self.buttonbox.pack_start(self.connection_tree, False, False)
+        #self.buttonbox.pack_start(self.connection_tree, False, False)
 
-        try:
-            index = self.connections.index(active)
-            this_connection = self.connection_tree.visible_items[index]
-            this_connection.set_active(True)
-            self.connection_tree.select_items([this_connection])
-        except ValueError:
-            self.connection_tree.select_first_item()
+        #try:
+            #index = self.connections.index(active)
+            #this_connection = self.connection_tree.visible_items[index]
+            #this_connection.set_active(True)
+            #self.connection_tree.select_items([this_connection])
+        #except ValueError:
+            #self.connection_tree.select_first_item()
 
-    def delete_item_cb(self, connection):
-        '''docstring for delete_item_cb'''
-        from nmlib.nm_remote_connection import NMRemoteConnection
-        self.connection_tree.delete_select_items()
-        if isinstance(connection, NMRemoteConnection):
-            connection.delete()
-        else:
-            mobile_type = self.connection.get_setting("connection").type
-            index = self.new_connection_list[mobile_type].index(connection)
-            self.new_connection_list[mobile_type].pop(index)
+    #def delete_item_cb(self, connection):
+        #'''docstring for delete_item_cb'''
+        #from nmlib.nm_remote_connection import NMRemoteConnection
+        #self.connection_tree.delete_select_items()
+        #if isinstance(connection, NMRemoteConnection):
+            #connection.delete()
+        #else:
+            #mobile_type = self.connection.get_setting("connection").type
+            #index = self.new_connection_list[mobile_type].index(connection)
+            #self.new_connection_list[mobile_type].pop(index)
 
-        if self.connection_tree.visible_items == []:
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
-        else:
-            container_remove_all(self.buttonbox)
+        #if self.connection_tree.visible_items == []:
+            #self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+        #else:
+            #container_remove_all(self.buttonbox)
 
     def get_active(self):
         return self.connection_tree.select_rows[0]
@@ -264,51 +162,41 @@ class SideBar(gtk.VBox):
         region.init()
         slider._slide_to_page("region", "left")
 
-class NoSetting(gtk.VBox):
-    def __init__(self):
-        gtk.VBox.__init__(self)
+#class Settings(object):
 
-        label_align = gtk.Alignment(0.5,0.5,0,0)
+    #def __init__(self, setting_list, set_button_callback):
+        #self.set_button_callback = set_button_callback
 
-        label = Label("No active connection")
-        label_align.add(label)
-        self.add(label_align)
-
-class Settings(object):
-
-    def __init__(self, setting_list, set_button_callback):
-        self.set_button_callback = set_button_callback
-
-        self.setting_list = setting_list
+        #self.setting_list = setting_list
         
-        self.setting_state = {}
-        self.settings = {}
+        #self.setting_state = {}
+        #self.settings = {}
 
-    def get_broadband(self):
-        return self.settings[self.connection][0][1]
+    #def get_broadband(self):
+        #return self.settings[self.connection][0][1]
     
-    def init_settings(self, connection):
-        self.connection = connection 
-        if connection not in self.settings:
-            setting_list = []
-            for setting in self.setting_list:
-                s = setting(connection, self.set_button)
-                setting_list.append((s.tab_name, s))
+    #def init_settings(self, connection):
+        #self.connection = connection 
+        #if connection not in self.settings:
+            #setting_list = []
+            #for setting in self.setting_list:
+                #s = setting(connection, self.set_button)
+                #setting_list.append((s.tab_name, s))
 
-            self.settings[connection] = setting_list
-        return self.settings[connection]
+            #self.settings[connection] = setting_list
+        #return self.settings[connection]
 
-    def set_button(self, name, state):
-        self.set_button_callback(name, state)
-        self.setting_state[self.connection] = (name, state)
+    #def set_button(self, name, state):
+        #self.set_button_callback(name, state)
+        #self.setting_state[self.connection] = (name, state)
 
-    def clear(self):
-        print "clear settings"
-        self.setting_state = {}
-        self.settings = {}
+    #def clear(self):
+        #print "clear settings"
+        #self.setting_state = {}
+        #self.settings = {}
 
-    def get_button_state(self, connection):
-        return self.setting_state[self.connection]
+    #def get_button_state(self, connection):
+        #return self.setting_state[self.connection]
 
 class Broadband(gtk.VBox):
     ENTRY_WIDTH = 222

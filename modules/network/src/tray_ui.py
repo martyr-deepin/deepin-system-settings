@@ -73,15 +73,15 @@ class TrayUI(gtk.VBox):
         height = 0
         widgets = self.get_children()
         if self.wire in widgets:
-            height += 20
+            height += 30
         if self.wireless in widgets:
-            height +=20
+            height +=30
             if self.ap_tree.visible_items and self.wireless.get_active():
-                height += len(self.ap_tree.visible_items) * 20
+                height += len(self.ap_tree.visible_items) * 30
             if self.more_button in self.tree_box.get_children():
-                height +=20
+                height +=30
 
-        height += 20
+        height += 30
         return height
 
     def remove_net(self, net_type):
@@ -101,18 +101,19 @@ class TrayUI(gtk.VBox):
             return 
         self.__set_ap_list(ap_list)
         self.ap_tree.delete_all_items()
+        container_remove_all(self.tree_box)
         if len(ap_list) <= 5:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list))
-            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*len(ap_list))
+            #self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*len(ap_list))
         else:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list[:5]))
             self.more_button.set_ap_list(ap_list[5:])
+
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
             #self.ap_tree.add_items([MoreItem(more_ap, self.resize_tree)])
-        container_remove_all(self.tree_box)
         self.tree_box.pack_start(self.ap_tree, True, True)
         self.tree_box.pack_start(self.more_button, False, False)
-        self.show_all()
+        #self.show_all()
 
     def __set_ap_list(self, ap_list):
         self.__ap_list = ap_list
@@ -155,6 +156,7 @@ class TrayUI(gtk.VBox):
         return self.active_ap_index
 
     def resize_tree(self):
+        Dispatcher.tray_show_more()
         self.tree_box.remove(self.more_button)
         length = len(self.ap_tree.visible_items)
         if length <=10:
@@ -164,7 +166,6 @@ class TrayUI(gtk.VBox):
             for item in self.ap_tree.visible_items:
                 item.set_padding(10)
 
-        Dispatcher.tray_show_more()
 
          
 class Section(gtk.HBox):
@@ -244,11 +245,18 @@ class SsidItem(TreeItem):
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
 
-        self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
-        self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
-        self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
-        self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
-        self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
+        #self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
+        if self.security:
+            self.strength_0 = app_theme.get_pixbuf("network/secured-0.png")
+            self.strength_1 = app_theme.get_pixbuf("network/secured-1.png")
+            self.strength_2 = app_theme.get_pixbuf("network/secured-2.png")
+            self.strength_3 = app_theme.get_pixbuf("network/secured-3.png")
+        else:
+        
+            self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
+            self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
+            self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
+            self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
         self.right_padding = 0
 
@@ -277,9 +285,9 @@ class SsidItem(TreeItem):
         if self.is_select:
             pass
 
-        if self.security:
-            lock_icon = self.lock_pixbuf
-            draw_pixbuf(cr, lock_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
+        #if self.security:
+            #lock_icon = self.lock_pixbuf
+            #draw_pixbuf(cr, lock_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
 
         if self.strength > 80:
             signal_icon = self.strength_3
@@ -290,7 +298,7 @@ class SsidItem(TreeItem):
         else:
             signal_icon = self.strength_0
         
-        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH + self.SPACING, rect.y + (rect.height - IMG_WIDTH)/2)
+        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x, rect.y + (rect.height - IMG_WIDTH)/2)
         if self.is_select:
             with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*BORDER_COLOR)
@@ -301,7 +309,7 @@ class SsidItem(TreeItem):
                 cr.stroke()
 
     def get_column_widths(self):
-        return [-1, IMG_WIDTH * 2 + self.right_padding+ self.SPACING]
+        return [-1, IMG_WIDTH + self.right_padding+ self.SPACING]
 
     def get_column_renders(self):
         return [self.render_essid, self.render_signal]

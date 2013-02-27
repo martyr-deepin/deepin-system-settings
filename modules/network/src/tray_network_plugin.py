@@ -23,6 +23,8 @@ from dtk.ui.utils import container_remove_all
 from tray_ui import TrayUI
 from shared_methods import NetManager
 from helper import Dispatcher
+from nm_modules import nm_module
+from nmlib.nm_remote_connection import NMRemoteConnection
 import pynotify
 import gtk
 
@@ -112,6 +114,15 @@ class TrayNetworkPlugin(object):
 
     def connect_by_ssid(self, widget, ssid):
         connection =  self.net_manager.connect_wireless_by_ssid(ssid)
+        if not isinstance(connection, NMRemoteConnection):
+            connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+            ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                      self.net_manager.wireless_devices[0].object_path,
+                                       ap[0].object_path)
+        
+
+
 
     def active_wired(self):
         """

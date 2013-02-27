@@ -7,9 +7,6 @@ import style
 from foot_box_ui import FootBox
 from sidebar_ui import SideBar
 
-from nm_modules import nm_module
-from lan_config import Wired
-from shared_widget import IPV4Conf, IPV6Conf
 #from shared_widget import Settings
 
 from helper import Dispatcher
@@ -23,44 +20,68 @@ class SettingUI(gtk.Alignment):
 
         main_vbox = gtk.VBox()
         self.foot_box = FootBox()
-        hbox = gtk.HBox()
-        hbox.connect("expose-event",self.expose_line)
+        self.hbox = gtk.HBox()
+        self.hbox.connect("expose-event",self.expose_line)
 
-        main_vbox.pack_start(hbox, False, False)
+        main_vbox.pack_start(self.hbox, False, False)
         main_vbox.pack_start(self.foot_box, False, False)
 
         self.add(main_vbox)
 
-        self.tab_window = TabBox(dockfill = False)
-        self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 415)
+        #self.tab_window = TabBox(dockfill = False)
+        #self.tab_window.draw_title_background = self.draw_tab_title_background
+        #self.tab_window.set_size_request(674, 420)
 
         self.sidebar = SideBar( None)
         # Build ui
-        hbox.pack_start(self.sidebar, False , False)
-        hbox.pack_start(self.tab_window ,True, True)
+        self.hbox.pack_start(self.sidebar, False , False)
 
         style.draw_background_color(self)
         style.draw_separator(self.sidebar, 3)
 
         self.__init_signals()
 
+    def __init_tab_box(self):
+        if hasattr(self, "tab_window"):
+            self.hbox.remove(self.tab_window)
+        self.tab_window = TabBox(dockfill = False)
+        self.tab_window.draw_title_background = self.draw_tab_title_background
+        self.tab_window.set_size_request(674, 420)
+        self.hbox.pack_start(self.tab_window ,True, True)
+
+
     def __init_signals(self):
         Dispatcher.connect("connection-change", self.switch_tab)
+        Dispatcher.connect("setting-saved", self.save_connection_setting)
+        Dispatcher.connect("setting-appled", self.apply_connection_setting)
 
     def load_module(self, module_obj):
-        self.sidebar.load_list(module_obj)
+        #self.__init_tab()
+        self.__init_tab_box()
         self.setting_group = module_obj
-        #self.sidebar.add_new_connection = module_obj.setting_add
+        self.sidebar.load_list(module_obj)
+        self.apply_method = module_obj.apply_changes
+        self.save_method = module_obj.save_changes
+        crumb_name = module_obj.crumb_name
+        Dispatcher.send_submodule_crumb(2, crumb_name)
+
+    def __init_tab(self):
+        tabs = self.tab_window.tab_items
+        if tabs:
+            self.tab_window.delete_items(tabs)
 
     def switch_tab(self, widget, connection):
+        print "switch tabs"
         self.set_tab_content(connection)
+        self.focus_connection = connection
         
     def set_tab_content(self, connection, init_connection=False):
         if self.tab_window.tab_items ==  []:
-            self.tab_window.add_items(self.setting_group.init_settings(connection))
+            self.tab_window.add_items(self.setting_group.init_items(connection))
         else:
-            self.tab_window.tab_items = self.setting_group.init_settings(connection)
+            #self.__init_tab()
+            #self.tab_window.add_items(self.setting_group.init_items(connection))
+            self.tab_window.tab_items = self.setting_group.init_items(connection)
         if init_connection:
             tab_index = 0
         else:
@@ -80,60 +101,12 @@ class SettingUI(gtk.Alignment):
         cr.rectangle(0, 0, rect.width, rect.height - 1)
         cr.fill()
 
-class Settings(object):
-    def __init__(self, setting_list):
-        self.setting_list = setting_list 
-        
-        self.setting_state = {}
-        self.settings = {}
+    def save_connection_setting(self, widget):
+        self.save_method(self.focus_connection)
 
-    def init_settings(self, connection):
-        self.connection = connection 
-        if connection not in self.settings:
-            setting_list = []
-            for setting in self.setting_list:
-                s = setting(connection, self.set_button)
-                setting_list.append((s.tab_name, s))
-
-            self.settings[connection] = setting_list
-        return self.settings[connection]
-
-    def set_button(self, name, state):
-        pass
-        #self.set_button_callback(name, state)
-        #self.setting_state[self.connection] = (name, state)
-
-    def clear(self):
-        print "clear settings"
-        self.setting_state = {}
-        self.settings = {}
-
-    def get_button_state(self, connection):
-        return self.setting_state[self.connection]
-    
-class LanSetting(Settings):
-    def __init__(self):
-        Settings.__init__(self,[Wired, IPV4Conf, IPV6Conf])
-
-    def get_connections(self, device=None, new_connection=None, init_connection=False):
-        self.connections = nm_module.nm_remote_settings.get_wired_connections()
-
-        if init_connection:
-            for connection in self.connections:
-                connection.init_settings_prop_dict()
-        # check connections
-        if new_connection:
-            self.connections += new_connection
-        #else:
-            #self.sidebar.new_connection_list = []
-
-        if self.connections == []:
-            self.connections = [nm_module.nm_remote_settings.new_wired_connection()]
-            #self.sidebar.new_connection_list = [self.connections[0]]
-        return self.connections
-    
-    def add_new_connection(self):
-        print "add setting"
+    def apply_connection_setting(self, widget):
+        print type(self.focus_connection)
+        self.apply_method(self.focus_connection)
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)
@@ -143,7 +116,7 @@ if __name__=="__main__":
     win.connect("destroy", lambda w: gtk.main_quit())
     
     setting_page = SettingUI(None, None)
-    setting_page.load_module(LanSetting())
+    setting_page.load_module(LanSetting(None))
 
     #vbox = gtk.VBox(False)
     #vbox.pack_start(con)

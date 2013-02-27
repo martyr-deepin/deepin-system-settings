@@ -411,11 +411,6 @@ class AddSettingItem(TreeItem):
         self.unhover(0,0,0)
         self.unselect()
 
-        
-        
-
-
-
 class SettingItem(TreeItem):
     CHECK_LEFT_PADDING = FRAME_LEFT_PADDING
     CHECK_RIGHT_PADIING = 10
@@ -446,7 +441,7 @@ class SettingItem(TreeItem):
         Pixbuf
         '''
         self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box-1.png")
-        #self.check_pixbuf_hover = app_theme.get_pixbuf("network/check_box-1.png")
+        #selfhcheck_pixbuf_hover = app_theme.get_pixbuf("network/check_box-1.png")
         #self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box.png")
         #self.check_pixbuf_out = app_theme.get_pixbuf("network/check_box-3.png")
         #self.check_pixbuf_prelight = app_theme.get_pixbuf("network/check_box.png")
@@ -589,7 +584,8 @@ class SettingItem(TreeItem):
             print "check clicked"
         elif column == 2 and self.delete_hover:
             if self.is_hover:
-                self.delete_connection(self.connection)
+                #self.delete_connection(self.connection)
+                Dispatcher.delete_setting(self.connection)
             
         if self.redraw_request_callback:
             self.redraw_request_callback(self)

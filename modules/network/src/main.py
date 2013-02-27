@@ -66,34 +66,6 @@ def pack_start(parent, child_list, expand=False, fill=False):
     for child in child_list:
         parent.pack_start(child, expand, fill)
 
-#class WiredDevice(object):
-    #def __init__(self, device, treeview, index):
-        #self.wired_device = device
-        #self.tree = treeview
-        #self.index = index
-        #device_ethernet = cache.get_spec_object(self.wired_device.object_path)
-        #self.wired_device.connect("device-active", self.device_activate)
-        #self.wired_device.connect("device-deactive", self.device_deactive)
-        #device_ethernet.connect("try-activate-begin", self.try_activate_begin)
-
-    #def device_activate(self, widget ,reason):
-        ##print "wired is active"
-        #if self.tree.visible_items != []:
-            #self.tree.visible_items[self.index].set_net_state(2)
-            #self.tree.queue_draw()
-
-    #def device_deactive(self, widget, reason):
-        ##print "wired is deactive"
-        #if not reason == 0:
-            #if self.tree.visible_items != []:
-                #self.tree.visible_items[self.index].set_net_state(0)
-                #self.tree.queue_draw()
-
-    #def try_activate_begin(self, widget):
-        #if self.tree.visible_items != []:
-            #self.tree.visible_items[self.index].set_net_state(1)
-            #self.tree.queue_draw()
-
 class WiredSection(gtk.VBox):
     def __init__(self, send_to_crumb_cb):
         gtk.VBox.__init__(self)
@@ -114,6 +86,8 @@ class WiredSection(gtk.VBox):
             self.pack_start(self.align, False, False, 0)
             
             self.init_signals()
+
+            self.__init_state()
         
     def init_signals(self):
         Dispatcher.connect("wired_change", self.wired_changed_cb)
@@ -127,10 +101,7 @@ class WiredSection(gtk.VBox):
             self.tree.visible_items[-1].is_last = True
             self.tree.set_no_show_all(False)
             self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-            #for index, wired_device in enumerate(self.wired_devices):
-                #WiredDevice(wired_device,self.tree, index)
 
-            #self.try_active()
             self.show_all()
 
     def toggle_cb(self, widget):
@@ -178,8 +149,7 @@ class WiredSection(gtk.VBox):
                 else:
                     self.tree.visible_items[index].network_state = 2
 
-    def add_setting_page(self, setting_page):
-        self.settings = setting_page
+    def __init_state(self):
         if self.wired_devices:
             for device in self.wired_devices:
                 if device.is_active():
@@ -320,6 +290,8 @@ class WirelessSection(gtk.VBox):
             self.pack_start(self.vbox, False, False, 0)
 
             Dispatcher.connect("wireless-change", self.state_changed_callback)
+
+            self.__init_state()
             #self.pack_start(self.hotspot, False, False, 0)
 
             # Add signals
@@ -359,10 +331,9 @@ class WirelessSection(gtk.VBox):
         self.show_all()
         return self.ap_list
     
-    def add_setting_page(self, page):
-        self.settings = page
+    def __init_state(self):
         if self.wireless_devices:
-            self.hotspot.add_setting_page(page)
+            #self.hotspot.add_setting_page(page)
             for wireless_device in self.wireless_devices:
                 if wireless_device.is_active():
                     self.wireless.set_active(True)
@@ -525,6 +496,8 @@ class HotSpot(gtk.VBox):
             cont.set_active(True)
             self.hotspot_box.set_net_state(2)
 
+        self.__init_state()
+
 
     def set_net_state(self, state):
         self.hotspot_box.set_net_state(state)
@@ -632,8 +605,8 @@ class HotSpot(gtk.VBox):
         self.send_to_crumb_cb()
         slider.slide_to_page(self.settings, "right")
 
-    def add_setting_page(self, setting_page):
-        self.settings = setting_page
+    def __init_state(self):
+        pass
 
     def expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -672,9 +645,11 @@ class DSL(gtk.VBox):
         self.setting_page = setting_page
 
     def slide_to_event(self, widget, event):
-        self.setting_page.init(init_connections=True)
-        self.slide_to_setting()
-        slider.slide_to_page(self.setting_page, "right")
+        #from dsl_config import DSLSetting
+        Dispatcher.to_setting_page(DSLSetting())
+        #self.setting_page.init(init_connections=True)
+        #self.slide_to_setting()
+        #slider.slide_to_page(self.setting_page, "right")
 
 class VpnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
@@ -697,6 +672,8 @@ class VpnSection(gtk.VBox):
         self.align.add(self.vbox)
         self.pack_start(self.vpn, False, False)
         self.pack_start(self.align, False, False)
+
+        self.__init_state()
 
         
 
@@ -763,13 +740,14 @@ class VpnSection(gtk.VBox):
         cache.del_spec_object(widget.object_path)
 
     def slide_to_event(self, widget, event):
-        self.setting.init(init_connections=True)
-        self.slide_to_subcrumb()
-        slider.slide_to_page(self.setting, "right")
+        Dispatcher.to_setting_page(VPNSetting())
+        #self.setting.init(init_connections=True)
+        #self.slide_to_subcrumb()
+        #slider.slide_to_page(self.setting, "right")
 
-    def add_setting_page(self, setting_page):
-        self.setting = setting_page
-        self.setting.state_change_cb = self.connect_vpn_signals
+    def __init_state(self):
+        #self.setting = setting_page
+        #self.setting.state_change_cb = self.connect_vpn_signals
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
             self.vpn.switch.set_active(True)
@@ -835,9 +813,11 @@ class Mobile(gtk.VBox):
         print a, "deactive"
 
     def slide_to_event(self, widget, event):
-        self.settings.init(init_connections=True)
-        self.send_to_crumb_cb()
-        slider.slide_to_page(self.settings, "right")
+        Dispatcher.to_setting_page(MobileSetting(None))
+        #self.settings.init(init_connections=True)
+        #self.send_to_crumb_cb()
+        #slider.slide_to_page(self.settings, "right")
+
     def add_setting_page(self, setting_page):
         self.settings = setting_page
 
@@ -875,12 +855,29 @@ class Proxy(gtk.VBox):
     def add_setting_page(self, setting_page):
         self.settings = setting_page
 
-
 class Network(object):
-    def __init__(self, module_frame):
-        
+    def __init__(self, module_frame):        
         self.module_frame = module_frame
         self.init_sections(self.module_frame)
+        self.__init_ui()
+
+        slider._append_page(self.eventbox, "main")
+        #slider._append_page(self.wired_setting_page, "wired")
+        #slider._append_page(self.dsl_setting_page, "dsl")
+        #slider._append_page(self.wireless_setting_page, "wireless")
+        #slider._append_page(self.proxy_setting_page, "proxy")
+        #slider._append_page(self.vpn_setting_page, "vpn")
+        from setting_page_ui import SettingUI
+        self.setting_page_ui = SettingUI(None, None)
+        slider._append_page(self.setting_page_ui, "setting")
+        slider._append_page(Region(), "region")
+        #slider._append_page(self.mobile_setting_page, "mobile")
+        #pdb.set_trace()
+        slider.show_all()
+        slider._set_to_page("main")
+        Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
+
+    def __init_ui(self):
         vbox = gtk.VBox(False, BETWEEN_SPACING)
         if hasattr(self.wired, "wire"):
             vbox.pack_start(self.wired, False, True,0)
@@ -909,22 +906,10 @@ class Network(object):
         self.eventbox.add(scroll_win)
         vbox.connect("expose-event", self.expose_callback)
         ui_align.connect("expose-event", self.expose_callback)
-        nm_module.nmclient.connect("activate-succeed", self.activate_succeed) 
-        nm_module.nmclient.connect("activate-failed", self.activate_failed) 
-        nm_module.nmclient.connect("device-added", self.device_added)
-        nm_module.nmclient.connect("device-removed", self.device_removed)
-
-        slider._append_page(self.eventbox, "main")
-        slider._append_page(self.wired_setting_page, "wired")
-        slider._append_page(self.dsl_setting_page, "dsl")
-        slider._append_page(self.wireless_setting_page, "wireless")
-        slider._append_page(self.proxy_setting_page, "proxy")
-        slider._append_page(self.vpn_setting_page, "vpn")
-        slider._append_page(Region(), "region")
-        slider._append_page(self.mobile_setting_page, "mobile")
-        #pdb.set_trace()
-        slider.show_all()
-        slider._set_to_page("main")
+    
+    def __pack_start(self, parent, child_list, expand=False, fill=False):
+        for child in child_list:
+            parent.pack_start(child, expand, fill)
 
     def expose_callback(self, widget, event):
         cr = widget.window.cairo_create()
@@ -932,6 +917,10 @@ class Network(object):
         cr.set_source_rgb( 1, 1, 1) 
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
+
+    def slide_to_setting_page(self, widget, setting_module):
+        slider.slide_to_page(self.setting_page_ui, "right")
+        self.setting_page_ui.load_module(setting_module)
 
     def activate_succeed(self, widget, connection_path):
         print "active_succeed with", connection_path
@@ -948,6 +937,14 @@ class Network(object):
         print "device remove:", connection_path
         self.wired.refresh_device()
 
+    #def init_sections(self, module_frame):
+        #module_list = [WiredSection(),
+                       #WirelessSection(), 
+                       #DSL(),
+                       #Mobile(),
+                       #VpnSection(),
+                       #Proxy(),]
+
     def init_sections(self, module_frame):
         #slider._set_to_page("main")
         self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, _("Wired Setting")))
@@ -956,45 +953,23 @@ class Network(object):
         self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, _("Proxy")))
         self.vpn = VpnSection(lambda : module_frame.send_submodule_crumb(2, _("VPN")))
 
-        self.wired_setting_page = WiredSetting(lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        self.wired.add_setting_page(self.wired_setting_page)
-
-        self.wireless_setting_page = WirelessSetting(lambda :slider.slide_to_page(self.eventbox, "left"),
-                                                lambda : module_frame.send_message("change_crumb", 1))
-        self.wireless.add_setting_page(self.wireless_setting_page)
-
-        self.dsl_setting_page = DSLSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        self.dsl.add_setting_page(self.dsl_setting_page)
 
         self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.proxy.add_setting_page(self.proxy_setting_page)
-        self.vpn_setting_page = VPNSetting( lambda : slider.slide_to_page(self.eventbox, "left"),
-                               lambda : module_frame.send_message("change_crumb", 1),
-                               module_frame)
-        self.vpn.add_setting_page(self.vpn_setting_page)
 
         self.mobile = Mobile(lambda : module_frame.send_submodule_crumb(2, _("Mobile Network")))
-        self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        self.mobile.add_setting_page(self.mobile_setting_page)
+        #self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
+                                          #lambda  : module_frame.send_message("change_crumb", 1))
+        #self.mobile.add_setting_page(self.mobile_setting_page)
 
     def refresh(self):
-        #from nmlib.nm_secret_agent import NMSecretAgent
-        #from mm.mmclient import MMClient
-        #nm_module.nmclient = cache.getobject("/org/freedesktop/NetworkManager")
-        #nm_module.nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
-        #nm_module.secret_agent = NMSecretAgent()
-        #nm_module.mmclient = MMClient()
         nm_module.init_objects()
         self.init_sections(self.module_frame)
         self.eventbox.set_above_child(False)
         self.eventbox.queue_draw()
 
     def stop(self):
-        
         self.eventbox.set_above_child(True)
         self.wired_setting_page = None
         self.wireless_setting_page = None
@@ -1006,7 +981,8 @@ class Network(object):
 if __name__ == '__main__':
     if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
         module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-        
+        Dispatcher.load_module_frame(module_frame)
+        Dispatcher.load_slider(slider)
         network = Network(module_frame)
 
         def service_stop_cb(widget, s):

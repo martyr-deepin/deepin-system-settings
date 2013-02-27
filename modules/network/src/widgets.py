@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from theme import app_theme
+from dss import app_theme
 from dtk.ui.button import ImageButton, ToggleButton, Button
 from dtk.ui.dialog import DialogBox
 from dtk.ui.entry import Entry, InputEntry
@@ -58,6 +58,11 @@ class AskPasswordDialog(DialogBox):
         self.entry_align.set_padding(0, 0, 8, 8)
         self.entry = InputEntry(init_text)
         self.entry.set_size(default_width - 20, 25)
+        
+        self.encry_list = [(_("None"), None),
+                      (_("WEP (Hex or ASCII)"), "none"),
+                      (_("WEP 104/128-bit Passphrase"), "none"),
+                      (_("WPA WPA2 Personal"), "wpa-psk")]
         
         self.confirm_button = Button(_("OK"))
         self.cancel_button = Button(_("Cancel"))

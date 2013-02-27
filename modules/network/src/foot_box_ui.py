@@ -22,6 +22,7 @@
 
 import gtk
 from dtk.ui.label import Label
+from dtk.ui.button import Button
 import style
 from helper import Dispatcher
 '''
@@ -31,6 +32,8 @@ class FootBox(gtk.HBox):
     def __init__(self):
         gtk.HBox.__init__(self)
         self.set_size_request(-1, 35)
+
+        self.apply_method = None
         self.init_ui()
 
         Dispatcher.connect("button-change", self.set_button)
@@ -47,7 +50,8 @@ class FootBox(gtk.HBox):
         self.tip_align.set_padding(5, 5, 20, 0)
         self.tip_align.add(self.tip)
 
-        self.button_box = gtk.HBox()
+        self.button_box = Button("Connect")
+        self.button_box.connect("clicked", self.button_click)
         self.buttons_align = gtk.Alignment(1, 0.5, 0, 0)
         self.buttons_align.set_padding(0, 0, 0, 10)
         self.buttons_align.add(self.button_box)
@@ -58,8 +62,16 @@ class FootBox(gtk.HBox):
         for widget in widgets:
             parent.pack_start(widget, expand, fill)
 
-    def set_button(self, widget, content):
-        pass
+    def set_button(self, widget, content, state):
+        self.button_box.set_label(content)
+        self.button_box.set_sensitive(state)
+
+    def button_click(self, widget):
+        if self.button_box.label == "save":
+            Dispatcher.emit("setting-saved")
+        elif self.button_box.label == "apply":
+            Dispatcher.emit("setting-appled")
+
 
     def set_buttons(self, buttons_list):
         width = 0

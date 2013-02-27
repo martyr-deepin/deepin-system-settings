@@ -41,4 +41,12 @@ class DeviceManager(object):
         self.__init_device()
         self.init_signals()
 
+    def get_device_by_mac(self, mac_address):
+        devices = self.wired_devices + self.wireless_devices
+        
+        spec_devices = map(lambda d: cache.get_spec_object(d.object_path), devices)
+        for index, device in enumerate(spec_devices):
+            if device.get_hw_address == mac_address:
+                return (devices[index], spec_devices[index])
+
 device_manager = DeviceManager()

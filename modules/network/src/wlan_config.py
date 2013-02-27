@@ -19,27 +19,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from theme import app_theme
-from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button,CheckButton
+from dtk.ui.button import CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
-from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox
 from nm_modules import nm_module
 from nmlib.nmcache import cache
-from foot_box import FootBox
-#from widgets import SettingButton
-from settings_widget import EntryTreeView, SettingItem,  AddSettingItem
 import gtk
 
 #from nmlib.nm_utils import TypeConvert
 from shared_widget import IPV4Conf, IPV6Conf
 from nmlib.nm_remote_connection import NMRemoteConnection
 import style
-#from constants import FRAME_VERTICAL_SPACING
 from nls import _
+from shared_methods import Settings
+from helper import Dispatcher
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -49,276 +45,61 @@ def check_settings(connection, fn):
         fn("save", False)
         print "not pass"
 
-class WirelessSetting(gtk.Alignment):
+class WirelessSetting(Settings):
 
-    def __init__(self, slide_back_cb, change_crumb_cb):
+    def __init__(self, ap):
+        Settings.__init__(self,[Security,
+                                Wireless,
+                                IPV4Conf,
+                                IPV6Conf],)
 
-        gtk.Alignment.__init__(self, 0, 0, 0, 0)
-        self.slide_back = slide_back_cb
-        self.change_crumb = change_crumb_cb
+        self.crumb_name = _("Wireless Setting")
+        self.ap = ap
 
-        # Add UI Align
-        style.set_main_window(self)
+    def get_ssid(self):
+        return self.connections.get_setting("802-11-wireless").ssid
 
-        main_vbox = gtk.VBox()
-        self.foot_box = FootBox()
-        hbox = gtk.HBox()
-        hbox.connect("expose-event",self.expose_line)
-        main_vbox.pack_start(hbox, False, False)
-        main_vbox.pack_start(self.foot_box, False, False)
-        self.add(main_vbox)
+    def get_connections(self):
+        self.connections = nm_module.nm_remote_settings.get_ssid_associate_connections(self.ap.get_ssid())
+        if self.connections == []:
+            self.connections = [nm_module.nm_remote_settings.new_wireless_connection(self.ap.get_ssid())]
 
-        self.wireless = None
-        self.ipv4 = None
-        self.ipv6 = None
-        self.security = None
-
-        self.tab_window = TabBox(dockfill = False)
-        self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 415)
-        self.setting_group = Settings([Security,
-                                       Wireless,
-                                       IPV4Conf,
-                                       IPV6Conf],
-                                       self.set_button)
-
-        self.sidebar = SideBar( None,self.init, self.check_click, self.set_button)
-
-        # Build ui
-        hbox.pack_start(self.sidebar, False , False)
-        hbox.pack_start(self.tab_window ,True, True)
-
-        self.save_button = Button()
-        self.save_button.connect("clicked", self.save_changes)
-        self.foot_box.set_buttons([self.save_button])
-
-        self.connect("expose-event", self.expose_event)
-        style.draw_separator(self.sidebar, 3)
-
-    def expose_line(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
-
-    def draw_tab_title_background(self, cr, widget):
-        rect = widget.allocation
-        cr.set_source_rgb(1, 1, 1)    
-        cr.rectangle(0, 0, rect.width, rect.height - 1)
-        cr.fill()
-        
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
-
-    def init(self, access_points, new_connection_list=None, init_connections=False, all_adhoc=False):
-        self.ssid = access_points
-        if init_connections:
-            self.sidebar.new_connection_list = []
-        # Get all connections  
-        if type(self.ssid) is list:
-            connection_associate = []
-            for ssid in self.ssid:
-                connection_associate.extent(nm_module.nm_remote_settings.get_ssid_associate_connections(ssid))
-            
-            self.ssid = ""
-        else:
-            connection_associate = nm_module.nm_remote_settings.get_ssid_associate_connections(self.ssid)
-
-        # Check connections
-        if connection_associate == []:
-            connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
-            connection_associate.append(connection)
-            self.sidebar.new_connection_list.append(connection)
-            connections = connection_associate
-
-        if new_connection_list:
-            connection_associate += new_connection_list
-        connections = connection_associate
-
-        self.connections = connections
-
-        self.sidebar.init(connections,
-                          self.setting_group,
-                          len(connection_associate),
-                          self.ssid)
-        index = self.sidebar.get_active()
-        self.set_tab_content(self.connections[index], init_connections)
-
-    def set_tab_content(self, connection, init_connection=False):
-        if self.tab_window.tab_items ==  []:
-            self.tab_window.add_items(self.setting_group.init_settings(connection))
-        else:
-            self.tab_window.tab_items = self.setting_group.init_settings(connection)
-        if init_connection:
-            tab_index = 0
-        else:
-            tab_index = self.tab_window.tab_index
-        self.tab_window.tab_index = -1
-        self.tab_window.switch_content(tab_index)
-        self.queue_draw()
-
-    def check_click(self, connection):
-        self.set_tab_content(connection)
-        (label, state) = self.setting_group.get_button_state(connection)
-        self.set_button(label, state)
-
-    def save_changes(self, widget):
-        connection = self.setting_group.connection
-        ssid = self.setting_group.get_ssid()
-        if widget.label == _("save"):
-            if connection.check_setting_finish():
-                this_index = self.connections.index(connection)
-                if isinstance(connection, NMRemoteConnection):
-                    connection.update()
-                else:
-                    index = self.sidebar.new_connection_list.index(connection)
-                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                    self.sidebar.new_connection_list.pop(index)
-                    self.init(ssid, self.sidebar.new_connection_list)
-
-                    # reset index
-                    con = self.sidebar.connection_tree.visible_items[this_index]
-                    self.sidebar.connection_tree.select_items([con])
-                self.set_button("apply", True)
-            else:
-                print "not complete"
-
-        else:
-            wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-            device_wifi = cache.get_spec_object(wireless_device.object_path)
-            ap = device_wifi.get_ap_by_ssid(ssid)
-
-            if ap == None:
-                device_wifi.emit("try-ssid-begin", self.setting_group.get_ssid())
-                nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           wireless_device.object_path,
-                                           "/")
-
-            else:
-                device_wifi.emit("try-ssid-begin", self.ssid)
-                # Activate
-                nm_module.nmclient.activate_connection_async(connection.object_path,
-                                           wireless_device.object_path,
-                                           ap.object_path)
-            self.change_crumb()
-            self.slide_back() 
-        
-    def set_button(self, name, state):
-        if name == "save":
-            self.save_button.set_label(_("save"))
-            self.save_button.set_sensitive(state)
-        else:
-            self.save_button.set_label(_("connect"))
-            self.save_button.set_sensitive(state)
-
-class SideBar(gtk.VBox):
-
-    def __init__(self, connections, main_init_cb, check_click_cb, set_button_cb):
-        gtk.VBox.__init__(self, False)
-        self.connections = connections
-        self.main_init_cb = main_init_cb
-        self.check_click_cb = check_click_cb
-        self.set_button = set_button_cb
-        self.all_adhoc = False
-
-        # Build ui
-        self.buttonbox = gtk.VBox()
-        self.pack_start(self.buttonbox, False, False)
-        style.add_separator(self)
-        
-        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
-        self.pack_start(TreeView([add_button]), False, False)
-        self.set_size_request(160, -1)
-        self.new_connection_list = []
-
-    def init(self, connection_list, ipv4setting, associate_len, access_point):
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-        active_connection = wireless_device.get_active_connection()
-        if active_connection:
-            active = active_connection.get_connection()
-        else: 
-            active =None
-
-        self.connections = connection_list
-        self.setting = ipv4setting
-        self.split = associate_len
-        self.ssid = access_point
-
-        container_remove_all(self.buttonbox)
-        cons = []
-        self.connection_tree = EntryTreeView(cons)
-        for index, connection in enumerate(self.connections):
-            cons.append(SettingItem(connection,
-                                    self.check_click_cb, 
-                                    self.delete_item_cb,
-                                    self.set_button))
-
-            def resize_tree_cb():
-                self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
-
-                
-            #cons.append(ShowOthers(other_connections, resize_tree_cb))
-
-        self.connection_tree.add_items(cons)
-
-
-        self.connection_tree.show_all()
-
-        self.buttonbox.pack_start(self.connection_tree, False, False)
-
-        try:
-            index = self.connections.index(active)
-            this_connection = self.connection_tree.visible_items[index]
-            this_connection.set_active(True)
-            self.connection_tree.select_items([this_connection])
-        except:
-            self.connection_tree.select_first_item()
-        
-        if self.new_connection_list:
-            connect = self.connection_tree.visible_items[self.split -1]
-            self.connection_tree.select_items([connect])
-
-    def delete_item_cb(self, connection):
-        from nmlib.nm_remote_connection import NMRemoteConnection
-        self.connection_tree.delete_select_items()
-        if isinstance(connection, NMRemoteConnection):
-            connection.delete()
-        else:
-            index = self.new_connection_list.index(connection)
-            self.new_connection_list.pop(index)
-
-        if self.connection_tree.visible_items == []:
-            container_remove_all(self.buttonbox)
-        else:
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
-
-    def get_active(self):
-        row = self.connection_tree.select_rows[0]
-        if row < self.split:
-            return row
-        else:
-            return row -1
-
-    def set_active(self):
-        index = self.get_active()
-        this_connection = self.connection_tree.visible_items[index]
-        this_connection.set_active(True)
-
-    def clear_active(self):
-        items = self.connection_tree.visible_items
-        for item in items:
-            item.set_active(False)
-
+        return self.connections
+    
     def add_new_connection(self):
-        if self.all_adhoc:
-            connection = nm_module.nm_remote_settings.new_adhoc_connection("")
+        return (nm_module.nm_remote_settings.new_wireless_connection(self.ap.get_ssid()), -1)
+
+    def save_changes(self, connection):
+        if connection.check_setting_finish():
+            if isinstance(connection, NMRemoteConnection):
+                connection.update()
+            else:
+                connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                Dispatcher.emit("connection-replace", connection)
+                # reset index
+            Dispatcher.set_button("apply", True)
         else:
-            connection = nm_module.nm_remote_settings.new_wireless_connection(self.ssid)
-        self.new_connection_list.append(connection)
-        self.main_init_cb(self.ssid, self.new_connection_list)
+            print "not complete"
+
+    def apply_changes(self, connection):
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        ssid = connection.get_setting("802-11-wireless").ssid
+        ap = device_wifi.get_ap_by_ssid(ssid)
+
+        if ap == None:
+            device_wifi.emit("try-ssid-begin", ssid)
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                       wireless_device.object_path,
+                                       "/")
+
+        else:
+            device_wifi.emit("try-ssid-begin", ssid)
+            # Activate
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                       wireless_device.object_path,
+                                       ap.object_path)
+        Dispatcher.to_main_page()
 
 class NoSetting(gtk.VBox):
     def __init__(self):
@@ -330,41 +111,6 @@ class NoSetting(gtk.VBox):
         label_align.add(label)
         self.add(label_align)
 
-class Settings(object):
-
-    def __init__(self, setting_list, set_button_callback):
-        self.set_button_callback = set_button_callback
-
-        self.setting_list = setting_list
-        
-        self.setting_state = {}
-        self.settings = {}
-
-    def get_ssid(self):
-        return self.connection.get_setting("802-11-wireless").ssid
-    
-    def init_settings(self, connection):
-        self.connection = connection 
-        if connection not in self.settings:
-            setting_list = []
-            for setting in self.setting_list:
-                s = setting(connection, self.set_button)
-                setting_list.append((s.tab_name, s))
-
-            self.settings[connection] = setting_list
-        return self.settings[connection]
-
-    def set_button(self, name, state):
-        self.set_button_callback(name, state)
-        self.setting_state[self.connection] = (name, state)
-
-    def clear(self):
-        print "clear settings"
-        self.setting_state = {}
-        self.settings = {}
-
-    def get_button_state(self, connection):
-        return self.setting_state[self.connection]
 
 class Security(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -478,7 +224,7 @@ class Security(gtk.VBox):
                 
                 self.password_entry.entry.set_text(secret)
                 if secret:
-                    self.set_button("save", True)
+                    Dispatcher.set_button("save", True)
                 self.setting.psk = secret
 
             elif self.security_combo.get_current_item()[1] == "none":
@@ -524,7 +270,7 @@ class Security(gtk.VBox):
             del self.connection.get_setting("802-11-wireless").security
             self.has_security = False
             self.reset(self.has_security)
-            self.set_button("save", True)
+            Dispatcher.set_button("save", True)
         else:
             if self.has_security == False:
                 self.connection.get_setting("802-11-wireless").security = "802-11-wireless-security"
@@ -537,7 +283,7 @@ class Security(gtk.VBox):
                 self.setting.wep_key_type = index
                 for key in range(0, 4):
                     delattr(self.setting, "wep_key%d"%key)
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
             self.reset()
 
     def save_wpa_pwd(self, widget, content):
@@ -545,7 +291,7 @@ class Security(gtk.VBox):
             self.setting.psk = content
             check_settings(self.connection, self.set_button)
         else:
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
             print "invalid"
 
     def save_wep_pwd(self, widget, content):
@@ -556,7 +302,7 @@ class Security(gtk.VBox):
             check_settings(self.connection, self.set_button)
             print "wep_valid"
         else:
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
             print "invalid"
 
     
@@ -730,7 +476,7 @@ class Wireless(gtk.VBox):
                 setattr(self.ethernet, types, content)
                 check_settings(self.connection, self.set_button)
             else:
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
 
     def band_combo_selected(self, widget, content, value, index):
         self.wirless.band = value

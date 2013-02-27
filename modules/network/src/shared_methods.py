@@ -136,3 +136,34 @@ class NetManager(object):
         wireless_device.connect("device-deactive", device_is_disactive)
         wireless_device.nm_device_disconnect()
 
+class Settings(object):
+    def __init__(self, setting_list):
+        self.setting_list = setting_list 
+        self.setting_state = {}
+        self.settings = {}
+
+    def init_items(self, connection):
+        self.connection = connection 
+        if connection not in self.settings:
+            setting_list = []
+
+            for setting in self.setting_list:
+                s = setting(connection, self.set_button)
+                setting_list.append((s.tab_name, s))
+            self.settings[connection] = setting_list
+        return self.settings[connection]
+
+    def set_button(self, name, state):
+        Dispatcher.set_button(name, state)
+        self.setting_state[self.connection] = (name, state)
+
+    def clear(self):
+        print "clear settings"
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_button_state(self, connection):
+        return self.setting_state[self.connection]
+
+    def apply_changes(self):
+        pass

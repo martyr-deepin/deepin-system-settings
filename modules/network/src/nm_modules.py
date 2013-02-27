@@ -54,10 +54,6 @@ class MySlider(HSlider):
         except :
             print self.__slider_dict
 
-
-
-
-
 class NModule(object):
 
     def __init__(self):
@@ -69,7 +65,7 @@ class NModule(object):
         self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         print self.setting, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         self.agent = NMSecretAgent()
-        self.mclient = NMClient()
+        self.mclient = MMClient()
         self.hslider = MySlider()
 
     @property

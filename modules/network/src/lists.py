@@ -27,8 +27,8 @@ from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 from dtk.ui.new_entry import EntryBuffer, Entry
 
-from lan_config import WiredSetting, NoSetting
-from wlan_config import WirelessSetting
+#from lan_config import WiredSetting, NoSetting
+#from wlan_config import WirelessSetting
 #from wired import *
 import gtk
 import pango
@@ -39,6 +39,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
 from nls import _
 from math import radians
+from helper import Dispatcher
 
 from settings_widget import LoadingThread
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
@@ -234,9 +235,11 @@ class WirelessItem(TreeItem):
 
     def single_click(self, column, x, y):
         if column == 3:
-            self.setting_object.init(self.connection.get_ssid(), init_connections=True)
-            self.send_to_crumb()
-            self.slide_to_setting()
+            from wlan_config import WirelessSetting
+            Dispatcher.to_setting_page(WirelessSetting(self.connection))
+            #self.setting_object.init(self.connection.get_ssid(), init_connections=True)
+            #self.send_to_crumb()
+            #self.slide_to_setting()
 
     def set_net_state(self, state):
         self.network_state = state
@@ -581,9 +584,8 @@ class WiredItem(TreeItem):
 
     def single_click(self, column, x, y):
         if column == 2:
-            self.setting.init(self.device, init_connection=True)
-            self.slide_to_setting()
-            self.send_to_crumb()
+            from lan_config import WiredSetting
+            Dispatcher.to_setting_page(WiredSetting(self.device))
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
@@ -605,7 +607,6 @@ class WiredItem(TreeItem):
         self.redraw()
         
 class HotspotItem(TreeItem):
-
 
     def __init__(self, font_size=DEFAULT_FONT_SIZE):
         TreeItem.__init__(self)
@@ -766,7 +767,7 @@ class HotspotItem(TreeItem):
         pass
     
     def button_press(self, column, offset_x, offset_y):
-    300pass        
+        pass        
     
     def button_release(self, column, offset_x, offset_y):
         pass        
