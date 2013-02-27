@@ -466,7 +466,7 @@ class KeySetting(object):
         self.view_widgets["shortcuts_selected"].set_size_request(190, -1)
         self.container_widgets["shortcuts_swin"].set_size_request(590, -1)
         self.alignment_widgets["shortcuts_table"].set(0.0, 0.0, 1, 1)
-        self.alignment_widgets["shortcuts_table"].set_padding(10, 10, 0, 0)
+        self.alignment_widgets["shortcuts_table"].set_padding(10, 0, 0, 0)
         # shortcut toolbar
         self.container_widgets["shortcuts_toolbar_hbox"].set_spacing(WIDGET_SPACING)
         #self.container_widgets["shortcuts_toolbar_hbox"].pack_start(self.button_widgets["shortcuts_add"])
@@ -572,7 +572,6 @@ class KeySetting(object):
         elif index == 1:
             self.container_widgets["statusbar"].set_buttons(
                 [self.button_widgets["shortcuts_add"]])
-                 #self.button_widgets["shortcuts_remove"]])
 
     def keyboard_setting_changed_cb(self, key):
         args = [self.settings, key]
@@ -787,19 +786,10 @@ class KeySetting(object):
         self.container_widgets["shortcuts_swin"].show_all()
     
     def __remove_shortcuts_item(self, button):
-        #if not self.view_widgets["shortcuts_shortcut"].select_rows:
-            #return
-        #row = self.view_widgets["shortcuts_shortcut"].select_rows[0]
-        #item = self.view_widgets["shortcuts_shortcut"].visible_items[row]
-        #button.set_sensitive(False)
-        #gconf_dir = item.get_data('gconf-dir')
         gconf_dir = button.settings_key
         settings.GCONF_CLIENT.unset('%s/action' % gconf_dir)
         settings.GCONF_CLIENT.unset('%s/binding' % gconf_dir)
         settings.GCONF_CLIENT.unset('%s/name' % gconf_dir)
-        #self.view_widgets["shortcuts_shortcut"].delete_select_items()
-        #if item in self.__shortcuts_items[_('Custom Shortcuts')]:
-            #self.__shortcuts_items[_('Custom Shortcuts')].remove(item)
         button.get_parent().get_parent().destroy()
         print "remove:", gconf_dir, button.settings_description
     
@@ -925,6 +915,10 @@ class KeySetting(object):
     def get_accel_page(self):
         return self.__shortcuts_entries_page_widgets
     
+    def show_again(self):
+        self.container_widgets["tab_box"].switch_content(0)
+        self.on_tab_box_switch_tab_cb(self.container_widgets["tab_box"], 0)
+
     def set_to_default(self, button):
         '''set to the default'''
         if self.container_widgets["tab_box"].tab_index == 0:
@@ -951,7 +945,7 @@ if __name__ == '__main__':
         if message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
-            key_settings.container_widgets["tab_box"].switch_content(0)
+            key_settings.show_again()
 
     module_frame.module_message_handler = message_handler        
     
