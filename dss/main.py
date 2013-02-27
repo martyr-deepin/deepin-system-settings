@@ -50,6 +50,8 @@ MAIN_MODULE = "main"
 module_history = [MAIN_MODULE]
 module_history_index = 0
 
+preview_module_id = None
+
 def record_module_history(module_name):
     global module_history
     global module_history_index
@@ -107,12 +109,12 @@ class DBusService(dbus.service.Object):
 
         # Define DBus method.
         def unique(self, module_name):
+            global preview_module_id
+            
             if application:
-                if module_name != "":
-                    module_dbus_name = "com.deepin.%s_settings" % (module_name)                   
-                    if not is_dbus_name_exists(module_dbus_name):
-                        action_bar.bread.remove_node_after_index(0)
-                        call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
+                if module_name != "" and preview_module_id != module_name:
+                    action_bar.bread.remove_node_after_index(0)
+                    call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
                 
                 application.raise_to_top()
         
@@ -137,7 +139,6 @@ class DBusService(dbus.service.Object):
                 action_bar.bread.remove_node_after_index(crumb_index)
             elif message_type == "goto":
                 (module_id, module_uid) = message_content
-                
                 action_bar.bread.remove_node_after_index(0)
                 call_module_by_name(module_id, module_dict, slider, content_page_info, "right", module_uid)
                 
@@ -238,6 +239,8 @@ def add_crumb(index, label):
 
 def start_module_process(slider, content_page_info, module_path, module_config, force_direction=None, 
                          module_uid=None):
+    global preview_module_id
+    
     module_id = module_config.get("main", "id")
     module_slide_to_page = True
     if module_config.has_option("main", "slide_to_page"):
@@ -264,6 +267,8 @@ def start_module_process(slider, content_page_info, module_path, module_config, 
             send_message(module_id, "show_again", module_uid)
         else:
             send_message(module_id, "show_again", "")
+
+    preview_module_id = module_id
 
 def is_exists(app_dbus_name, app_object_name, module_name):                                  
     """                                                                         
