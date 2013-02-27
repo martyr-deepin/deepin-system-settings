@@ -92,6 +92,8 @@ class SoundSetting(object):
         self.container_widgets = {}
         self.view_widgets = {}
 
+        self.__is_first_show = True
+
         self.__create_widget()
         self.__adjust_widget()
         self.__signals_connect()
@@ -201,8 +203,6 @@ class SoundSetting(object):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["advance_set_tab_box"])
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
-        #self.alignment_widgets["main_hbox"].add(self.container_widgets["swin"])
-        #self.container_widgets["swin"].add_child(self.container_widgets["main_hbox"])
         self.alignment_widgets["advance_set_tab_box"].add(self.container_widgets["advance_set_tab_box"])
         self.container_widgets["advance_set_tab_box"].set_size_request(WINDOW_WIDTH, -1)
         self.alignment_widgets["main_hbox"].set_padding(
@@ -421,7 +421,8 @@ class SoundSetting(object):
     # signals callback begin
     # widget signals
     def slider_completed_slide_cb(self, widget):
-        if widget.active_widget == self.alignment_widgets["main_hbox"]:
+        if self.__is_first_show and widget.active_widget == self.alignment_widgets["main_hbox"]:
+            self.__is_first_show = False
             widget.active_widget.queue_draw()
 
     def container_expose_cb(self, widget, event):
@@ -439,8 +440,10 @@ class SoundSetting(object):
             pypulse.PULSE.set_output_mute(current_sink, not active)
         if not active:
             self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
+            self.label_widgets["speaker_balance"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Balance")))
         else:
             self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
+            self.label_widgets["speaker_balance"].set_text("%s" % _("Balance"))
 
     def microphone_toggled_cb(self, button):
         active = button.get_active()
