@@ -23,11 +23,12 @@
 from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
-from dtk.ui.dialog import InputDialog
+from dtk.ui.dialog import InputDialog, ConfirmDialog
 
 from ui.theme_item import ThemeItem
 from helper import event_manager
 from theme_manager import theme_manager
+from nls import _
 
 from common import threaded
 
@@ -55,7 +56,6 @@ class UserThemeView(IconView):
             if theme_manager.is_current_theme(item.theme):
                 self.set_highlight(item)
                 break
-
 
     def clear_highlight_status(self, name, obj, data):
         self.clear_highlight()
@@ -85,16 +85,34 @@ class UserThemeView(IconView):
         new_theme = theme_manager.create_new_theme(name, item.theme)
         self.add_themes([new_theme])
 
+    def delete_theme(self, item):
+        theme = theme_manager.delete_theme(item.theme.get_name())
+        self.items.remove(item)
+        self.queue_draw()
+
     def on_theme_sava_as(self, item):
         input_dialog = InputDialog("主题另存为", "", 300, 100, lambda name: self.create_new_theme(name, item))
         input_dialog.show_all()
 
     def on_theme_delete(self, item):
-        pass
+        # FIXME: ConfirmDialog can not waitting for user response
+        '''
+        dlg = ConfirmDialog(_("Delete theme"), 
+                            _("Are you sure delete %s theme" % item.theme.get_name()), 
+                            300, 
+                            100, 
+                            self.delete_theme(item))
+        dlg.show_all()
+        '''
+        self.delete_theme(item)
 
     def __on_right_click_item(self, widget, item, x, y):
-        menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item)), 
-                      (None, "删除", lambda : self.on_theme_delete(item))]
+        menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item))]
+        # TODO: the first item do not show delete
+        if self.items.index(item) != 0:
+            menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item)), 
+                          None, 
+                          (None, "删除主题", lambda : self.on_theme_delete(item))]
         Menu(menu_items, True).show((int(x), int(y)))
 
     def add_themes(self, themes):
