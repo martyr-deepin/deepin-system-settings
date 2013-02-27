@@ -80,7 +80,7 @@ class UserThemeView(IconView):
         self.set_highlight(item)
         event_manager.emit("clear-systemview-highlight", item.theme)
         theme_manager.apply_theme(item.theme)
-        self.__messager.send_message("status", ("individuation", _("Change user theme to %s") % item.theme.get_name()))
+        self.__messager.send_message("status", ("individuation", _("Changed system theme to \"%s\"") % item.theme.get_name()))
 
     def on_create_new_theme(self, name, obj, new_theme):
         self.add_themes([new_theme])
