@@ -30,9 +30,11 @@ from bt.adapter import Adapter
 from bt.device import Device
 from theme import app_theme
 from dtk.ui.draw import draw_text
+from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
 from dtk.ui.button import ToggleButton
+from dtk.ui.line import HSeparator
 from dtk.ui.new_treeview import TreeItem, TreeView
 from vtk.button import SelectButton
 from deepin_utils.process import run_command
@@ -63,13 +65,17 @@ class DiscoveryDeviceThread(td.Thread):
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 15
-    NAME_WIDTH = 100
+    NAME_WIDTH = 160
     
     def __init__(self, name):
         TreeItem.__init__(self)
         self.name = name
 
     def __render_name(self, cr, rect):                                           
+        cr.set_source_rgb(1, 1, 1 )                                             
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                   
+        cr.fill()
+
         draw_text(cr, 
                   self.name, 
                   rect.x, 
@@ -92,17 +98,28 @@ class TrayBluetoothPlugin(object):
     def __init__(self):
         self.manager = Manager()
         self.adapter = None
-        self.width = 130
-        self.height = 80
+        self.width = 160
+        self.height = 95
+        self.device_treeview = TreeView()                                   
+        self.device_treeview.set_child_visible(False)                           
+        self.device_separator_align = self.__setup_align()
+        self.device_separator = self.__setup_separator()
+        self.device_separator_align.add(self.device_separator)
+        self.device_separator_align.set_child_visible(False)
 
     def init_values(self, this_list):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
         self.tray_icon.set_icon_theme("enable")
+        
         if self.manager.get_default_adapter() != "None":
             self.adapter = Adapter(self.manager.get_default_adapter())
-        else:
-            self.tray_icon.set_visible(False)
+            self.adapter.connect("device-found", self.__device_found)               
+                                                                                
+            if self.adapter.get_powered():                                          
+                DiscoveryDeviceThread(self).start()
+            else:
+                self.tray_icon.set_visible(False)
 
     def id(slef):
         return "deepin-bluetooth-plugin-hailongqiu"
@@ -136,12 +153,18 @@ class TrayBluetoothPlugin(object):
             if not values.has_key("Name"):                                      
                 return                                                          
             items.append(DeviceItem(values['Name']))
-            self.device_treeview.add_items(items)
-            self.device_treeview.set_size_request(-1, len(items) * DeviceItem.ITEM_HEIGHT)
+            self.device_treeview.delete_all_items()
             if len(items):
+                self.device_treeview.add_items(items)
+                self.device_treeview.set_size_request(-1, len(items) * DeviceItem.ITEM_HEIGHT)
+                self.device_treeview.set_child_visible(True)
+                self.device_separator_align.set_child_visible(True)
                 self.height = self.height + len(items) * DeviceItem.ITEM_HEIGHT
             else:
-                self.height = 80
+                self.device_treeview.set_size_request(-1, 0)
+                self.device_treeview.set_child_visible(False)
+                self.device_separator_align.set_child_visible(False)
+                self.height = 95
             self.this.set_size_request(self.width, self.height)
         else:                                                                   
             if adapter.get_discovering():                                       
@@ -149,31 +172,31 @@ class TrayBluetoothPlugin(object):
                 pass
 
     def plugin_widget(self):
-        self.device_treeview = TreeView()
-        self.adapter.connect("device-found", self.__device_found)
-
-        if self.adapter.get_powered():                                      
-            DiscoveryDeviceThread(self).start()
-
         plugin_box = gtk.VBox()
-        adapter_box = gtk.HBox(spacing = 10)
-        adapter_image = ImageBox(pixbuf)
+        adapter_box = gtk.HBox(spacing = 5)
+        adapter_image = ImageBox(app_theme.get_pixbuf("bluetooth/enable_open.png"))
         adapter_label = self.__setup_label(_("Adapter"))
         adapter_toggle = self.__setup_toggle()
         if self.adapter:
             adapter_toggle.set_active(self.adapter.get_powered())
         adapter_toggle.connect("toggled", self.__adapter_toggled)
-        select_button_align = self.__setup_align(padding_top = 5)
-        select_button = SelectButton(_("More devices"),             
+        separator_align = self.__setup_align()
+        separator = self.__setup_separator()
+        separator_align.add(separator)
+        select_button_align = self.__setup_align()
+        select_button = SelectButton(_("Advanced option..."),             
                                      font_size = 10,                            
                                      ali_padding = 5)                           
         select_button.set_size_request(self.width, 25)                          
         select_button.connect("button-press-event", self.__bluetooth_selected)
         select_button_align.add(select_button)
+        adapter_box.pack_start(adapter_image, False, False)
         adapter_box.pack_start(adapter_label, False, False)
         adapter_box.pack_start(adapter_toggle, False, False)
         plugin_box.pack_start(adapter_box, False, False)
+        plugin_box.pack_start(separator_align, False, False)
         plugin_box.pack_start(self.device_treeview, False, False)
+        plugin_box.pack_start(self.device_separator_align, False, False)
         plugin_box.pack_start(select_button_align, False, False)
         return plugin_box
 
@@ -188,7 +211,7 @@ class TrayBluetoothPlugin(object):
                       yalign=0, 
                       xscale=0, 
                       yscale=0,                
-                      padding_top=0,                                 
+                      padding_top=5,                                 
                       padding_bottom=0,                                            
                       padding_left=0,                       
                       padding_right=0):                                           
@@ -204,6 +227,11 @@ class TrayBluetoothPlugin(object):
         return ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
             app_theme.get_pixbuf("toggle_button/active_normal.png"),               
             inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+
+    def __setup_separator(self):                                                   
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(100, 3)                                       
+        return hseparator
 
 def return_plugin():
     return TrayBluetoothPlugin
