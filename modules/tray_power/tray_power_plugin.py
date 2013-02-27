@@ -21,29 +21,50 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+from deepin_utils.process import run_command
+from vtk.timer import Timer
 try:
     import deepin_gsettings
 except ImportError:
     print "Please install deepin GSettings Python Binding!!"
 
 
+POWER_SETTING_GSET = "org.gnome.settings-daemon.plugins.power"
+XRANDR_SETTINGS_GSET = "org.gnome.settings-daemon.plugins.xrandr"
+RUN_COMMAND = "deepin-system-settings power"
 
 class TrayPower(object):
     def __init__(self):
-        self.power_set = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
+        self.timer = Timer(100)
+        self.timer.connect("Tick", self.timer_double_tick_event)
+        self.double_check = False
+        self.timer_check = False
+        self.old_power = 100
+        self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.power_set.connect("changed", self.power_set_changed)
 
     def power_set_changed(self, key):
-        print "power_set_changed", key
-        if key != "percentage":
-            return False
-        self.update_power_icon(self.power_settings.get_int("percentage"))
+        if key != "percentage": 
+            return 
+        #
+        value = self.power_set.get_double("percentage")
+        self.update_power_icon(int(value))
+        self.modify_battery_icon(value)
+
+    def modify_battery_icon(self, value):
+        # modify battery icon.
+        #print "modify_battery_icon..", "value:", value, "old_power:", self.old_power
+        if float(value) >= float(self.old_power):
+            self.tray_icon.set_tooltip_markup("电源正在充电...")
+            self.tray_icon.set_icon_theme("tray_battery")
+        # set old_power.
+        self.old_power = value
 
     def update_power_icon(self, percentage):
-        self.tray_icon.set_tooltip_markup("电源还剩%s" % (percentage))
-        if percentage >= 51 and percentage <= 100:
+        self.tray_icon.set_tooltip_markup("电源还剩%s" % (int(percentage)))
+        if percentage >= 99 and percentage <= 100:
             self.tray_icon.set_icon_theme("battery100")
-        elif percentage >= 21 and percentage <= 50:
+        elif percentage >= 21 and percentage <= 98:
             self.tray_icon.set_icon_theme("battery50")
         elif percentage >= 0 and percentage <= 20:
             self.tray_icon.set_icon_theme("battery20")
@@ -52,23 +73,32 @@ class TrayPower(object):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
         # visible icon pixbuf.
-        xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
-        self.tray_icon.set_visible(xrandr_settings.get_boolean("is-laptop"))
-        percentage = self.power_set.get_int("percentage")
-        print "percentage......:", percentage
-        self.update_power_icon(percentage)
-        self.tray_icon.connect("enter-notify-event", self.tray_icon_enter_notify_event)
-        self.tray_icon.connect("leave-notify-event", self.tray_icon_leave_notify_event)
-        self.tray_icon.connect("button-press-event", self.tray_icon_button_press_event)
-
-    def tray_icon_enter_notify_event(self, widget, event):
-        print "tray_icon_enter_notify_event..."
-
-    def tray_icon_leave_notify_event(self, widget, event):
-        print "tray_icon_leave_notify_event..."
+        xrandr_settings = deepin_gsettings.new(XRANDR_SETTINGS_GSET)
+        visible_check = xrandr_settings.get_boolean("is-laptop")
+        self.tray_icon.set_visible(visible_check)
+        if visible_check:
+            # get power value.
+            percentage = self.power_set.get_double("percentage")
+            self.old_power = percentage
+            self.update_power_icon(percentage)
+            # init tray_icon events.
+            self.tray_icon.connect("button-press-event", self.tray_icon_button_press_event)
 
     def tray_icon_button_press_event(self, widget, event):
-        print "tray_icon_button_press_event..."
+        if event.button == 1:
+            if not self.timer_check:
+                self.timer_check = True
+            # run command.
+            if self.double_check and self.timer.Enabled and self.timer_check:
+                run_command(RUN_COMMAND)
+            #
+            self.double_check = True
+            self.timer.Enabled = True
+
+    def timer_double_tick_event(self, tick):
+        self.double_check = False
+        self.timer_check = False
+        tick.Enabled = False
 
     def id(slef):
         return "deepin-tray-power-hailongqiu"
