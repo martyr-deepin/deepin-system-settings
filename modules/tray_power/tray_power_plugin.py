@@ -21,7 +21,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-from vtk.window import Window
 try:
     import deepin_gsettings
 except ImportError:
@@ -31,9 +30,6 @@ except ImportError:
 
 class TrayPower(object):
     def __init__(self):
-        self.tooltip_win = Window()
-        self.tooltip_win.set_size_request(300, 300)
-        self.tooltip_win.move(500, 500)
         self.power_set = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.power_set.connect("changed", self.power_set_changed)
 
@@ -51,11 +47,13 @@ class TrayPower(object):
             self.tray_icon.set_icon_theme("battery50")
         elif percentage >= 0 and percentage <= 20:
             self.tray_icon.set_icon_theme("battery20")
-        #self.tray_icon.set_tooltip_markup("电源还剩%s" % (percentage))
 
     def init_values(self, this_list):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
+        # visible icon pixbuf.
+        xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
+        self.tray_icon.set_visible(xrandr_settings.get_boolean("is-laptop"))
         percentage = self.power_set.get_int("percentage")
         print "percentage......:", percentage
         self.update_power_icon(percentage)
@@ -65,11 +63,9 @@ class TrayPower(object):
 
     def tray_icon_enter_notify_event(self, widget, event):
         print "tray_icon_enter_notify_event..."
-        self.tooltip_win.show_all()
 
     def tray_icon_leave_notify_event(self, widget, event):
         print "tray_icon_leave_notify_event..."
-        self.tooltip_win.hide_all()
 
     def tray_icon_button_press_event(self, widget, event):
         print "tray_icon_button_press_event..."
@@ -90,9 +86,7 @@ class TrayPower(object):
         pass
 
     def hide_menu(self):
-        self.tooltip_win.hide_all()
         pass
-
 
 def return_plugin():
     return TrayPower
