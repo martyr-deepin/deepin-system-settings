@@ -49,20 +49,21 @@ class TrayPower(object):
         #
         value = self.power_set.get_double("percentage")
         self.update_power_icon(int(value))
-        self.modify_battery_icon(value)
+        #self.modify_battery_icon(value)
 
     def modify_battery_icon(self, value):
         # modify battery icon.
         #print "modify_battery_icon..", "value:", value, "old_power:", self.old_power
-        if float(value) >= float(self.old_power):
-            self.tray_icon.set_tooltip_markup("电源正在充电...")
-            self.tray_icon.set_icon_theme("tray_battery")
+        if value <= 99:
+            if float(value) >= float(self.old_power):
+                self.tray_icon.set_tooltip_markup("电源正在充电...")
+                self.tray_icon.set_icon_theme("tray_battery")
         # set old_power.
         self.old_power = value
 
     def update_power_icon(self, percentage):
-        self.tray_icon.set_tooltip_markup("电源还剩%s" % (int(percentage)))
-        if percentage >= 99 and percentage <= 100:
+        #self.tray_icon.set_tooltip_markup("电源还剩%s" % (int(percentage)))
+        if percentage >= 90 and percentage <= 100:
             self.tray_icon.set_icon_theme("battery100")
         elif percentage >= 21 and percentage <= 98:
             self.tray_icon.set_icon_theme("battery50")
