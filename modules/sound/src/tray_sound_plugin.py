@@ -33,10 +33,10 @@ class SoundTray(object):
         self.widget = TrayGui()
         self.widget.connect("stream-changed", self.stream_changed_cb)
         self.widget.button_more.connect("clicked", self.on_more_button_clicked_cb)
+        self.__this_visible = False
 
     def init_values(self, value_list):
         self.this_list = value_list
-        print "value_list:", value_list
         self.this = self.this_list[0]
         self.this.set_default_size(self.WIN_WIDTH, self.widget.get_widget_height())
         self.tray_icon = self.this_list[1]
@@ -56,9 +56,11 @@ class SoundTray(object):
 
     def show_menu(self):
         self.this.set_size_request(self.WIN_WIDTH, self.widget.get_widget_height())
+        self.__this_visible = True
         print "show......."
 
     def hide_menu(self):
+        self.__this_visible = False
         print "hide..........."
 
     def on_more_button_clicked_cb(self, button):
@@ -70,7 +72,7 @@ class SoundTray(object):
             pass
 
     def stream_changed_cb(self, widget):
-        if self.this.get_visible():
+        if self.__this_visible:
             self.this.set_size_request(self.WIN_WIDTH, self.widget.get_widget_height())
             self.this.reshow_with_initial_size()
         
