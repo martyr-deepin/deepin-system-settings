@@ -482,6 +482,8 @@ class BlueToothView(gtk.VBox):
 
         if object == "enable_open":
             self.adapter.set_powered(widget.get_active())
+            if self.adapter.get_powered():
+                DiscoveryDeviceThread(self).start()
             return
 
         if object == "search":

@@ -27,20 +27,64 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from bt.manager import Manager
 from bt.adapter import Adapter
+from bt.device import Device
 from theme import app_theme
+from dtk.ui.draw import draw_text
 from dtk.ui.label import Label
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
 from dtk.ui.button import ToggleButton
 from dtk.ui.new_treeview import TreeItem, TreeView
 from vtk.button import SelectButton
 from deepin_utils.process import run_command
-import gtk
 import gobject
+import gtk
+import pango
+import time
+import threading as td
 from nls import _
 
+class DiscoveryDeviceThread(td.Thread):                                         
+    def __init__(self, ThisPtr):                                                
+        td.Thread.__init__(self)                                                
+        self.setDaemon(True)                                                    
+        self.ThisPtr = ThisPtr                                                  
+                                                                                
+    def run(self):                                                              
+        try:                                                                    
+            for dev in self.ThisPtr.adapter.get_devices():                      
+                self.ThisPtr.adapter.remove_device(dev)                         
+                                                                                
+            self.ThisPtr.adapter.start_discovery()                              
+                                                                                
+            while True:                                                         
+                time.sleep(1)                                                   
+        except Exception, e:                                                    
+            print "class DiscoveryDeviceThread got error: %s" % e
+
 class DeviceItem(TreeItem):
-    def __init__(self):
-        pass
+    ITEM_HEIGHT = 15
+    NAME_WIDTH = 100
+    
+    def __init__(self, name):
+        TreeItem.__init__(self)
+        self.name = name
+
+    def __render_name(self, cr, rect):                                           
+        draw_text(cr, 
+                  self.name, 
+                  rect.x, 
+                  rect.y, 
+                  rect.width, 
+                  rect.height)
+
+    def get_height(self):
+        return self.ITEM_HEIGHT
+
+    def get_column_widths(self):
+        return [self.NAME_WIDTH]
+
+    def get_column_renders(self):
+        return [self.__render_name]
 
 gobject.type_register(DeviceItem)
 
@@ -49,6 +93,7 @@ class TrayBluetoothPlugin(object):
         self.manager = Manager()
         self.adapter = None
         self.width = 130
+        self.height = 80
 
     def init_values(self, this_list):
         self.this = this_list[0]
@@ -73,12 +118,43 @@ class TrayBluetoothPlugin(object):
             return
 
         self.adapter.set_powered(widget.get_active())
+        if self.adapter.get_powered():
+            DiscoveryDeviceThread(self).start()
 
     def __bluetooth_selected(self, widget, event):                                 
         self.this.hide_menu()                         
         run_command("deepin-system-settings bluetooth")
 
+    def __device_found(self, adapter, address, values):                         
+        if address not in adapter.get_address_records():                        
+            device = Device(adapter.create_device(address))                     
+            items = []                                                          
+                                                                                
+            '''                                                                 
+            FIXME: why there is no Name key sometime?                           
+            '''                                                                 
+            if not values.has_key("Name"):                                      
+                return                                                          
+            items.append(DeviceItem(values['Name']))
+            self.device_treeview.add_items(items)
+            self.device_treeview.set_size_request(-1, len(items) * DeviceItem.ITEM_HEIGHT)
+            if len(items):
+                self.height = self.height + len(items) * DeviceItem.ITEM_HEIGHT
+            else:
+                self.height = 80
+            self.this.set_size_request(self.width, self.height)
+        else:                                                                   
+            if adapter.get_discovering():                                       
+                adapter.stop_discovery()                                        
+                pass
+
     def plugin_widget(self):
+        self.device_treeview = TreeView()
+        self.adapter.connect("device-found", self.__device_found)
+
+        if self.adapter.get_powered():                                      
+            DiscoveryDeviceThread(self).start()
+
         plugin_box = gtk.VBox()
         adapter_box = gtk.HBox(spacing = 10)
         adapter_label = self.__setup_label(_("Adapter"))
@@ -96,11 +172,12 @@ class TrayBluetoothPlugin(object):
         adapter_box.pack_start(adapter_label, False, False)
         adapter_box.pack_start(adapter_toggle, False, False)
         plugin_box.pack_start(adapter_box, False, False)
+        plugin_box.pack_start(self.device_treeview, False, False)
         plugin_box.pack_start(select_button_align, False, False)
         return plugin_box
 
     def show_menu(self):
-        self.this.set_size_request(self.width, 80)
+        self.this.set_size_request(self.width, self.height)
 
     def hide_menu(self):
         pass

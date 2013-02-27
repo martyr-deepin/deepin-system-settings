@@ -23,6 +23,8 @@ from container import MyToggleButton as SwitchButton
 from container import TitleBar
 from shared_widget import IPV4Conf
 from foot_box import FootBox
+from shared_methods import Settings
+from helper import Dispatcher
 
 import gtk
 from nls import _
@@ -31,142 +33,39 @@ from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE
 #from container import MyRadioButton as RadioButton
 
 slider = nm_module.slider
-class VPNSetting(gtk.Alignment):
+class VPNSetting(Settings):
 
-    def __init__(self, slide_back_cb=None, change_crumb_cb=None, module_frame=None):
+    def __init__(self):
+        Settings.__init__(self, [PPTPConf,
+                                 IPV4Conf])
+        self.crumb_name = _("VPN")
 
-        gtk.Alignment.__init__(self)
-        self.slide_back = slide_back_cb
-        self.change_crumb = change_crumb_cb
-        self.module_frame = module_frame
-        self.state_change_cb = None
-        
-        # Add UI Align
-        style.set_main_window(self)
-        main_vbox = gtk.VBox()
-        self.foot_box = FootBox()
-        hbox = gtk.HBox()
-        hbox.connect("expose-event",self.expose_line)
-
-        main_vbox.pack_start(hbox, False, False)
-        main_vbox.pack_start(self.foot_box, False, False)
-
-        self.add(main_vbox)
-        self.pptp = None
-        self.ipv4 = None
-
-        self.tab_window = TabBox()
-        self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 415)
-        self.setting_group = Settings([PPTPConf,
-                                       IPV4Conf],
-                                       self.module_frame,
-                                       self.set_button)
-        self.sidebar = SideBar( None, self.init, self.check_click)
-
-        # Build ui
-        hbox.pack_start(self.sidebar, False , False)
-        hbox.pack_start(self.tab_window ,True, True)
-        self.save_button = Button("Save")
-        self.save_button.connect("clicked", self.save_changes)
-        
-        self.foot_box.set_buttons([self.save_button])
-
-        style.draw_background_color(self)
-        style.draw_separator(self.sidebar, 3)
-
-    def draw_tab_title_background(self, cr, widget):
-        rect = widget.allocation
-        cr.set_source_rgb(1, 1, 1)    
-        cr.rectangle(0, 0, rect.width, rect.height - 1)
-        cr.fill()
-        
-    def expose_outline(self, widget, event, exclude):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-
-        style.draw_out_line(cr, rect, exclude)
-
-    def expose_line(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
-
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
-
-    def init(self, new_connection=None, init_connections=False):
+    def get_connections(self):
         # Get all connections  
         connections = nm_module.nm_remote_settings.get_vpn_connections()
         
-        if init_connections:
-            for connection in connections:
-                connection.init_settings_prop_dict()
+        #if init_connections:
+            #for connection in connections:
+                #connection.init_settings_prop_dict()
         # Check connections
-
-        if new_connection:
-            connections += new_connection
-        else:
-            self.sidebar.new_connection_list = []
 
         if connections == []:
             # Create a new connection
             connect = nm_module.nm_remote_settings.new_vpn_pptp_connection()
             connections.append(connect)
-            self.sidebar.new_connection_list = [connect]
-
-
-        self.sidebar.init(connections, self.setting_group)
-        index = self.sidebar.get_active()
-        self.set_tab_content(connections[index], init_connections)
-
-    def set_tab_content(self, connection, init_connection=False):
-        if self.tab_window.tab_items ==  []:
-            self.tab_window.add_items(self.setting_group.init_settings(connection))
-        else:
-            self.tab_window.tab_items = self.setting_group.init_settings(connection)
-        if init_connection:
-            tab_index = 0
-        else:
-            tab_index = self.tab_window.tab_index
-        self.tab_window.tab_index = -1
-        self.tab_window.switch_content(tab_index)
-        self.queue_draw()
-
-    def check_click(self, connection):
-        self.set_tab_content(connection)
-        (label, state) = self.setting_group.get_button_state(connection)
-        self.set_button(label, state)
-
-    def set_button(self, name, state):
-        if name == "save":
-            self.save_button.set_label(_("save"))
-            self.save_button.set_sensitive(state)
-        else:
-            self.save_button.set_label(_("connect"))
-            self.save_button.set_sensitive(state)
+        self.connections = connections
+        return connections
         
-    def save_changes(self, widget):
+    def save_changes(self, connection):
         print "saving"
-        if widget.label == _("save"):
-            connection = self.setting_group.connection
-            if isinstance(connection, NMRemoteConnection):
-                connection.update()
-            else:
-                nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
-                index = self.sidebar.new_connection_list.index(connection)
-                self.sidebar.new_connection_list.pop(index)
-                self.init(self.sidebar.new_connection_list)
-            self.set_button("apply", True)
+        if isinstance(connection, NMRemoteConnection):
+            connection.update()
         else:
-            self.apply_changes()
+            connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
+            Dispatcher.emit("connection-replace", connection)
+        Dispatcher.set_button("apply", True)
 
-    def apply_changes(self):
-        connection = self.setting_group.connection
+    def apply_changes(self, connection):
         # FIXME Now just support one device
 
         #active_connections = nm_module.nmclient.get_active_connections()
@@ -190,8 +89,7 @@ class VPNSetting(gtk.Alignment):
                 if wireless_devices:
                     self.try_to_connect_wireless_device(wireless_devices[0], connection)
 
-        self.change_crumb()
-        self.slide_back()
+        Dispatcher.to_main_page()
 
 
     def try_to_connect_wired_device(self, device, connection):
@@ -224,142 +122,9 @@ class VPNSetting(gtk.Alignment):
                 active_vpn = cache.get_spec_object(active_object.object_path)
                 self.state_change_cb(active_vpn, connection.get_setting("connection").id)
 
-
-class SideBar(gtk.VBox):
-    def __init__(self, connections , main_init_cb, check_click_cb):
-        gtk.VBox.__init__(self, False)
-        self.connections = connections
-        self.main_init_cb = main_init_cb
-        self.check_click_cb = check_click_cb
-
-        # Build ui
-        self.buttonbox = gtk.VBox(False)
-        self.pack_start(self.buttonbox, False, False)
-        style.add_separator(self)
-        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
-        self.pack_start(TreeView([add_button]), False, False)
-        self.set_size_request(180, -1)
-
-        self.new_connection_list = []
-    
-    def init(self, connection_list, ip4setting):
-        # check active
-        active_connection = nm_module.nmclient.get_vpn_active_connection()
-        #print ">>>>>>", active_connection
-        #active_connection = None
-        if active_connection:
-            active = active_connection[0].get_connection()
-        else:
-            active = None
-
-        self.connections = connection_list
-        self.setting = ip4setting
-        
-        # Add connection buttons
-        container_remove_all(self.buttonbox)
-        cons = []
-        self.connection_tree = EntryTreeView(cons)
-        for index, connection in enumerate(self.connections):
-            cons.append(SettingItem(connection, self.check_click_cb, self.delete_item_cb))
-        self.connection_tree.add_items(cons)
-
-        self.connection_tree.show_all()
-
-        self.buttonbox.pack_start(self.connection_tree, False, False)
-
-        try:
-            index = self.connections.index(active)
-            this_connection = self.connection_tree.visible_items[index]
-            this_connection.set_active(True)
-            self.connection_tree.select_items([this_connection])
-        except ValueError:
-            self.connection_tree.select_first_item()
-        if self.new_connection_list:
-            connect = self.connection_tree.visible_items[-1]
-            self.connection_tree.select_items([connect])
-
-    def delete_item_cb(self, connection):
-
-        from nmlib.nm_remote_connection import NMRemoteConnection
-        self.connection_tree.delete_select_items()
-        if isinstance(connection, NMRemoteConnection):
-            connection.delete()
-        else:
-            index = self.new_connection_list.index(connection)
-            self.new_connection_list.pop(index)
-
-        if len(self.connection_tree.visible_items) == 0:
-            container_remove_all(self.buttonbox)
-        else:
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
-
-    def get_active(self):
-        return self.connection_tree.select_rows[0]
-
-    def set_active(self):
-        index = self.get_active()
-        this_connection = self.connection_tree.visible_items[index]
-        this_connection.set_active(True)
-
-    def clear_active(self):
-        items = self.connection_tree.visible_items
-        for item in items:
-            item.set_active(False)
-    
     def add_new_connection(self):
         new_connection = nm_module.nm_remote_settings.new_vpn_pptp_connection()
-        self.new_connection_list.append(new_connection)
-        self.main_init_cb(self.new_connection_list)
-
-class NoSetting(gtk.VBox):
-    def __init__(self):
-        gtk.VBox.__init__(self)
-
-        label_align = gtk.Alignment(0.5,0.5,0,0)
-
-        label = Label("No connection available")
-        label_align.add(label)
-        self.add(label_align)
-
-class Settings(object):
-
-    def __init__(self, setting_list, module_frame, set_button_callback):
-        self.set_button_callback = set_button_callback
-        self.module_frame = module_frame
-        self.setting_list = setting_list
-        
-        self.setting_state = {}
-        self.settings = {}
-
-    def get_broadband(self):
-        return self.settings[self.connection][0][1]
-    
-    def init_settings(self, connection):
-        self.connection = connection 
-        if connection not in self.settings:
-            setting_list = []
-            for setting in self.setting_list:
-                if setting is PPTPConf:
-                    s = setting(connection, self.module_frame, self.set_button)
-                else:
-                    s = setting(connection, self.set_button)
-                setting_list.append((s.tab_name, s))
-
-            self.settings[connection] = setting_list
-        return self.settings[connection]
-
-    def set_button(self, name, state):
-        print name, state
-        self.set_button_callback(name, state)
-        self.setting_state[self.connection] = (name, state)
-
-    def clear(self):
-        print "clear settings"
-        self.setting_state = {}
-        self.settings = {}
-
-    def get_button_state(self, connection):
-        return self.setting_state[self.connection]
+        return (new_connection, -1)
 
 class PPTPConf(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -446,10 +211,10 @@ class PPTPConf(gtk.VBox):
 
         if self.connection.check_setting_finish():
             print "in vpn"
-            self.set_button("save", True)
+            Dispatcher.set_button("save", True)
         else:
             print "in vpn"
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
 
     def refresh(self):
         #print ">>>",self.vpn_setting.data
@@ -506,9 +271,9 @@ class PPTPConf(gtk.VBox):
                 self.vpn_setting.delete_data_item(item)
 
         if self.connection.check_setting_finish():
-            self.set_button("save", True)
+            Dispatcher.set_button("save", True)
         else:
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
     
     def radio_toggled(self, widget, service_type):
         if widget.get_active():
@@ -516,15 +281,15 @@ class PPTPConf(gtk.VBox):
             self.service_type = service_type
 
         if self.connection.check_setting_finish():
-            self.set_button("save", True)
+            Dispatcher.set_button("save", True)
         else:
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
             self.refresh()
 
     def advanced_button_click(self, widget):
-        ppp = PPPConf(self.module_frame, self.set_button)
+        ppp = PPPConf(self.module_frame, Dispatcher.set_button)
         ppp.refresh(self.connection)
-        self.module_frame.send_submodule_crumb(3, _("Advanced"))
+        Dispatcher.send_submodule_crumb(3, _("Advanced"))
         nm_module.slider.slide_to_page(ppp, "right")
         #pass
 
@@ -537,7 +302,7 @@ class PPPConf(ScrolledWindow):
         ScrolledWindow.__init__(self)
         
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.set_button = set_button_callback
+        Dispatcher.set_button = set_button_callback
         self.module_frame = module_frame
         
         self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),

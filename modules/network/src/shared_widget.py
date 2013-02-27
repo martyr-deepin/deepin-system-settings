@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from dtk.ui.label import Label
-from dtk.ui.entry import InputEntry
+from dtk.ui.new_entry import InputEntry
 from nmlib.nm_utils import TypeConvert
 from dtk.ui.button import OffButton
 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -13,6 +13,7 @@ import style
 from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, WIDGET_HEIGHT
 from nls import _
 from container import MyRadioButton as RadioButton
+from helper import Dispatcher
 
 def wrap_with_align(self, widget_list):
     for widget in widget_list:

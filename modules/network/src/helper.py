@@ -39,15 +39,6 @@ class EventDispatcher(gobject.GObject):
 
     __gsignals__= {
 
-            #"connection-change" : SIGNAL_SIMPLE,
-            #"connection-delete" : SIGNAL_SIMPLE,
-            #"button-change" : SIGNAL,
-            #"set-tip" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
-            #"wired_change" : SIGNAL_TUPLE,
-            #"wireless_change" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,)),
-            #"connect_by_ssid" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
-
-            #"select-connection" : SIGNAL_SIMPLE,
             "connection-change" : _(obj),
             "connection-delete" : _(obj),
             "button-change" : _(obj, obj),
@@ -58,8 +49,24 @@ class EventDispatcher(gobject.GObject):
             "select-connection" : _(obj),
             "slide-to" : _(obj, str),
             "change-crumb" : _(str),
-
             "tray-show-more": _(),
+
+            "nm-start": _(),
+            "nm-stop": _(),
+
+            "wired-device-add": _(obj),
+            "wired-device-remove": _(obj),
+            "wireless-device-add": _(obj),
+            "wireless-device-remove": _(obj),
+
+            "to-setting-page": _(obj),
+            "to-region-page":_(),
+            "new-connection-created": _(obj),
+
+            "setting-saved": _(),
+            "setting-appled": _(),
+            "connection-replace": _(obj),
+
             }
 
     def __init__(self):
@@ -69,7 +76,7 @@ class EventDispatcher(gobject.GObject):
     def change_setting(self, connection):
         self.emit("connection-change", connection)
 
-    def delete_setting(self, old_connection, new_connection):
+    def delete_setting(self, old_connection):
         self.emit("connection-delete", old_connection)
         #self.emit("connection-change", new_connection)
 
@@ -87,9 +94,6 @@ class EventDispatcher(gobject.GObject):
 
     def slide_to(self, page, direction):
         self.emit(page, str)
-
-    def change_crumb(self, name):
-        self.emit("change-crumb", name)
 
     def wireless_change(self, device, new_state, old_state, reason):
         '''
@@ -111,5 +115,29 @@ class EventDispatcher(gobject.GObject):
     def tray_show_more(self):
         self.emit("tray-show-more")
 
-Dispatcher = EventDispatcher()
+    def nm_start(self):
+        self.emit('nm-start')
+    
+    def nm_stop(self):
+        self.emit('nm-stop')
 
+    def device_add(self, device):
+        pass
+
+    def to_setting_page(self, module):
+        self.emit('to-setting-page', module)
+
+    def load_module_frame(self, module_frame):
+        self.__module_frame = module_frame
+
+    def load_slider(self, slider):
+        self.__slider = slider
+
+    def to_main_page(self):
+        self.__module_frame.send_message("change_crumb", 1)
+        self.__slider.slide_to_page(self.__slider.get_page_by_name("main"), "left")
+
+    def send_submodule_crumb(self, index, name):
+        self.__module_frame.send_submodule_crumb(index, name)
+
+Dispatcher = EventDispatcher()

@@ -4,6 +4,7 @@ from nm_modules import nm_module
 from nmlib.nmcache import cache
 from helper import Dispatcher
 from device_manager import device_manager
+from nmlib.servicemanager import servicemanager
 
 DEVICE_UNAVAILABLE = 0
 DEVICE_AVAILABLE = 1
@@ -13,6 +14,25 @@ DEVICE_ACTIVE = 2
 class NetManager(object):
 
     def __init__(self):
+        self.init_devices()
+        servicemanager.connect("service-start", self.__on_service_start_do)
+        servicemanager.connect("service-stop", self.__on_service_stop_do)
+
+    def __on_service_start_do(self, widget, s):
+        print "Debug::service_start", s
+        nm_module.init_objects()
+        device_manager.reinit_cache()
+        self.init_devices()
+        #print servicemanager.get_name_owner(s)
+
+    def __on_service_stop_do(self, widget, s):
+        print "Debug::service_stop", s
+        global cache
+        cache.clearcache()
+        cache.clear_spec_cache()
+        #print servicemanager.get_name_owner(s)
+
+    def init_devices(self):
         self.wired_devices = device_manager.get_wired_devices()
         if self.wired_devices:
             self.wired_device = self.wired_devices[0]
@@ -43,6 +63,7 @@ class NetManager(object):
         #device.connect("device-active", device_is_active)
         for device in self.wired_devices:
             if not device.is_active():
+                print "=============>", nm_module.nm_remote_settings
                 connections = nm_module.nm_remote_settings.get_wired_connections()
                 if not connections:
                     connection = nm_module.nm_remote_settings.new_wired_connection()
@@ -81,10 +102,11 @@ class NetManager(object):
         return ap_list
 
     def get_active_connection(self, ap_list):
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         index = []
-        active_connection = wireless_device.get_active_connection()
+        active_connection = self.wireless_device.get_active_connection()
         if active_connection:
+            print active_connection.get_specific_object()
             index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
             return index
         else:
@@ -114,3 +136,34 @@ class NetManager(object):
         wireless_device.connect("device-deactive", device_is_disactive)
         wireless_device.nm_device_disconnect()
 
+class Settings(object):
+    def __init__(self, setting_list):
+        self.setting_list = setting_list 
+        self.setting_state = {}
+        self.settings = {}
+
+    def init_items(self, connection):
+        self.connection = connection 
+        if connection not in self.settings:
+            setting_list = []
+
+            for setting in self.setting_list:
+                s = setting(connection, self.set_button)
+                setting_list.append((s.tab_name, s))
+            self.settings[connection] = setting_list
+        return self.settings[connection]
+
+    def set_button(self, name, state):
+        Dispatcher.set_button(name, state)
+        self.setting_state[self.connection] = (name, state)
+
+    def clear(self):
+        print "clear settings"
+        self.setting_state = {}
+        self.settings = {}
+
+    def get_button_state(self, connection):
+        return self.setting_state[self.connection]
+
+    def apply_changes(self):
+        pass
