@@ -157,6 +157,7 @@ class TrayBluetoothPlugin(object):
 
         plugin_box = gtk.VBox()
         adapter_box = gtk.HBox(spacing = 10)
+        adapter_image = ImageBox(pixbuf)
         adapter_label = self.__setup_label(_("Adapter"))
         adapter_toggle = self.__setup_toggle()
         if self.adapter:
