@@ -180,7 +180,7 @@ def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot
     if module_id:
         action_bar.bread.remove_node_after_index(0)
         if module_id == MAIN_MODULE:
-            slider.slide_to_page(navigate_page, "right")
+            slider.slide_to_page(navigate_page, "none")
 
             foot_box.hide()
         else:
