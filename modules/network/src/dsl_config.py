@@ -3,26 +3,21 @@
 #from theme import app_theme
 
 from dss import app_theme
-from dtk.ui.tab_window import TabBox
-from dtk.ui.button import Button,CheckButton
+from dtk.ui.button import CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
-from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 from dtk.ui.scrolled_window import ScrolledWindow
-#from dtk.ui.droplist import Droplist
-#from widgets import SettingButton
-from settings_widget import SettingItem, EntryTreeView, AddSettingItem
-# NM lib import 
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
-#from nmlib.nmclient import nmclient
-#from nmlib.nm_remote_settings import nm_remote_settings
+
 from container import MyToggleButton as SwitchButton
-from foot_box import FootBox
 from container import TitleBar
 from shared_widget import IPV4Conf
+
+from shared_methods import Settings
+from helper import Dispatcher
 
 import gtk
 
@@ -37,280 +32,59 @@ def check_settings(connection, fn):
     else:
         fn("save", False)
 
-class DSLSetting(gtk.Alignment):
+class DSLSetting(Settings):
 
-    def __init__(self, slide_back_cb=None, change_crumb_cb=None):
-        gtk.Alignment.__init__(self)
-        self.slide_back = slide_back_cb
-        self.change_crumb = change_crumb_cb
-        
-        # Add UI Align
-        style.set_main_window(self)
-        main_vbox = gtk.VBox()
-        self.foot_box = FootBox()
-        hbox = gtk.HBox()
-        hbox.connect("expose-event",self.expose_line)
-        main_vbox.pack_start(hbox, False, False)
-        main_vbox.pack_start(self.foot_box, False, False)
+    def __init__(self):
+        Settings.__init__(self, [DSLConf,
+                        Wired,
+                        IPV4Conf,
+                        PPPConf])
+        self.crumb_name = _("DSL")
 
-        self.add(main_vbox)
-
-        self.tab_window = TabBox()
-        self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 415)
-        self.setting_group = Settings([DSLConf,
-                                       Wired,
-                                       IPV4Conf,
-                                       PPPConf],
-                                       self.set_button)
-
-        self.sidebar = SideBar( None, self.init, self.check_click)
-
-        # Build ui
-        hbox.pack_start(self.sidebar, False , False)
-        hbox.pack_start(self.tab_window ,True, True)
-        self.save_button = Button()
-        self.save_button.connect("clicked", self.save_changes)
-        self.foot_box.set_buttons([self.save_button])
-
-        style.draw_background_color(self)
-        style.draw_separator(self.sidebar, 3)
-
-    def expose_line(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
-        
-    def draw_tab_title_background(self, cr, widget):
-        rect = widget.allocation
-        cr.set_source_rgb(1, 1, 1)    
-        cr.rectangle(0, 0, rect.width, rect.height - 1)
-        cr.fill()
-        
-    def set_button(self, name, state):
-        if name == "save":
-            self.save_button.set_label(_("save"))
-            self.save_button.set_sensitive(state)
-        else:
-            self.save_button.set_label(_("connect"))
-            self.save_button.set_sensitive(state)
-
-    def expose_outline(self, widget, event, exclude):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-
-        style.draw_out_line(cr, rect, exclude)
-
-    def expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        cr.set_source_rgb( 1, 1, 1) 
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
-
-    def init(self, new_connection=None, init_connections=False):
+    def get_connections(self):
         # Get all connections  
         connections = nm_module.nm_remote_settings.get_pppoe_connections()
-        if init_connections:
-            for con in connections:
-                con.init_settings_prop_dict()
         # Check connections
-        if new_connection:
-            connections += new_connection
-        else:
-            self.sidebar.new_connection_list = []
 
         if connections == []:
             # Create a new connection
             connections = [nm_module.nm_remote_settings.new_pppoe_connection()]
-            self.sidebar.new_connection_list.extend(connections)
         
         self.connections = connections
 
-        self.sidebar.init(connections, self.setting_group)
-        index = self.sidebar.get_active()
-        self.set_tab_content(self.connections[index], init_connections)
+        return self.connections
 
-    def set_tab_content(self, connection, init_connection=False):
-        if self.tab_window.tab_items ==  []:
-            self.tab_window.add_items(self.setting_group.init_settings(connection))
-        else:
-            self.tab_window.tab_items = self.setting_group.init_settings(connection)
-        if init_connection:
-            tab_index = 0
-        else:
-            tab_index = self.tab_window.tab_index
-        self.tab_window.tab_index = -1
-        self.tab_window.switch_content(tab_index)
-        self.queue_draw()
+    def save_changes(self, connection):
+        if connection.check_setting_finish():
 
-    def check_click(self, connection):
-        self.set_tab_content(connection)
-        (label, state) = self.setting_group.get_button_state(connection)
-        self.set_button(label, state)
+            from nmlib.nm_remote_connection import NMRemoteConnection
+            if isinstance(connection, NMRemoteConnection):
+                print "before update", TypeConvert.dbus2py(connection.settings_dict)
+                connection.update()
+                print "after update", TypeConvert.dbus2py(connection.settings_dict)
+            else:
+                connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                Dispatcher.emit("connection-replace", connection)
 
-    def save_changes(self, widget):
-        connection = self.setting_group.connection
-        if widget.label == _("save"):
-            print "saving"
-            if connection.check_setting_finish():
+        Dispatcher.set_button("apply", True)
 
-                this_index = self.connections.index(connection)
-                from nmlib.nm_remote_connection import NMRemoteConnection
-                if isinstance(connection, NMRemoteConnection):
-                    print "before update", TypeConvert.dbus2py(connection.settings_dict)
-                    connection.update()
-                    print "after update", TypeConvert.dbus2py(connection.settings_dict)
-                else:
-                    print self.sidebar.new_connection_list
-                    index = self.sidebar.new_connection_list.index(connection)
-                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                    self.sidebar.new_connection_list.pop(index)
-                    self.init(self.sidebar.new_connection_list)
-                    # reset index
-                    con = self.sidebar.connection_tree.visible_items[this_index]
-                    self.sidebar.connection_tree.select_items([con])
-            self.set_button("apply", True)
-        else:
+    def apply_changes(self, connection):
             device_path = nm_module.nmclient.get_wired_devices()[0].object_path
         #FIXME need to change device path into variables
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                            device_path,
                                            "/")
-            self.change_crumb()
-            self.slide_back() 
+            Dispatcher.to_setting_page()
 
+    def apply_changes(self):
+        pass
 
-class SideBar(gtk.VBox):
-    def __init__(self, connections , main_init_cb, check_click_cb):
-        gtk.VBox.__init__(self, False)
-        self.connections = connections
-        self.main_init_cb = main_init_cb
-        self.check_click_cb = check_click_cb
-
-        # Build ui
-        self.buttonbox = gtk.VBox()
-        self.pack_start(self.buttonbox, False, False)
-        style.add_separator(self)
-        add_button = AddSettingItem(_("New Connection"),self.add_new_connection)
-        self.pack_start(TreeView([add_button]), False, False)
-
-        self.set_size_request(160, -1)
-
-        self.new_connection_list = []
-    
-    def init(self, connection_list, ip4setting):
-        # check active
-        wired_device = nm_module.nmclient.get_wired_devices()[0]
-        active_connection = wired_device.get_active_connection()
-        if active_connection:
-            active = active_connection.get_connection()
-        else:
-            active = None
-
-        self.connections = connection_list
-        self.setting = ip4setting
-        
-        container_remove_all(self.buttonbox)
-        cons = []
-        self.connection_tree = EntryTreeView(cons)
-        for index, connection in enumerate(self.connections):
-            cons.append(SettingItem(connection, self.check_click_cb, self.delete_item_cb))
-        self.connection_tree.add_items(cons)
-
-        self.connection_tree.show_all()
-
-        self.buttonbox.pack_start(self.connection_tree, False, False)
-
-        try:
-            index = self.connections.index(active)
-            this_connection = self.connection_tree.visible_items[index]
-            this_connection.set_active(True)
-            self.connection_tree.select_items([this_connection])
-        except ValueError:
-            self.connection_tree.select_first_item()
-        if self.new_connection_list:
-            connect = self.connection_tree.visible_items[-1]
-            self.connection_tree.select_items([connect])
-
-    def delete_item_cb(self, connection):
-        from nmlib.nm_remote_connection import NMRemoteConnection
-        self.connection_tree.delete_select_items()
-        if isinstance(connection, NMRemoteConnection):
-            connection.delete()
-        else:
-            index = self.new_connection_list.index(connection)
-            self.new_connection_list.pop(index)
-        
-        if len(self.connection_tree.visible_items) == 0:
-            container_remove_all(self.buttonbox)
-        else:
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
-
-    def get_active(self):
-        return self.connection_tree.select_rows[0]
-
-    def set_active(self):
-        index = self.get_active()
-        this_connection = self.connection_tree.visible_items[index]
-        this_connection.set_active(True)
-
-    def clear_active(self):
-        items = self.connection_tree.visible_items
-        for item in items:
-            item.set_active(False)
-    
     def add_new_connection(self):
         connection = nm_module.nm_remote_settings.new_pppoe_connection()
-        self.new_connection_list.append(connection)
-        self.main_init_cb(new_connection=self.new_connection_list)
-
-
-class NoSetting(gtk.VBox):
-    def __init__(self):
-        gtk.VBox.__init__(self)
-
-        label_align = gtk.Alignment(0.5,0.5,0,0)
-
-        label = Label("No active connection")
-        label_align.add(label)
-        self.add(label_align)
-
-class Settings(object):
-
-    def __init__(self, setting_list, set_button_callback):
-        self.set_button_callback = set_button_callback
-
-        self.setting_list = setting_list
-        
-        self.setting_state = {}
-        self.settings = {}
+        return (connection, -1)
 
     def get_broadband(self):
         return self.settings[self.connection][0][1]
-    
-    def init_settings(self, connection):
-        self.connection = connection 
-        if connection not in self.settings:
-            setting_list = []
-            for setting in self.setting_list:
-                s = setting(connection, self.set_button)
-                setting_list.append((s.tab_name, s))
-
-            self.settings[connection] = setting_list
-        return self.settings[connection]
-
-    def set_button(self, name, state):
-        self.set_button_callback(name, state)
-        self.setting_state[self.connection] = (name, state)
-
-    def clear(self):
-        print "clear settings"
-        self.setting_state = {}
-        self.settings = {}
-
-    def get_button_state(self, connection):
-        return self.setting_state[self.connection]
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -379,16 +153,16 @@ class Wired(gtk.VBox):
             if TypeConvert.is_valid_mac_address(value):
                 setattr(self.ethernet, types, value)
                 if self.connection.check_setting_finish():
-                    self.set_button("save", True)
+                    Dispatcher.set_button("save", True)
             else:
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
                 if value is "":
                     #delattr(self.ethernet, types)
-                    self.set_button("save", True)
+                    Dispatcher.set_button("save", True)
         else:
             setattr(self.ethernet, types, value)
             if self.connection.check_setting_finish():
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
 
 class DSLConf(gtk.VBox):
 

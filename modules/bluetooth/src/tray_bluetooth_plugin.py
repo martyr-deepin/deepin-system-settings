@@ -66,7 +66,7 @@ class TrayBluetoothPlugin(object):
         return True
 
     def insert(self):
-        pass
+        return 2
 
     def __adapter_toggled(self, widget):
         if self.adapter == None:
