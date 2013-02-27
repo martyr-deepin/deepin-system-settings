@@ -106,7 +106,7 @@ class TrayShutdownPlugin(object):
     def set_user_icon(self):
         try:
             # set user icon.
-            print self.gui.cmd_dbus.get_user_image_path() 
+            #print self.gui.cmd_dbus.get_user_image_path() 
             #self.gui.user_icon.set_from_file(self.gui.cmd_dbus.get_user_image_path())
             self.gui.user_icon.set_from_file(self.dbus_user.get_icon_file())
             #
@@ -142,10 +142,11 @@ class TrayShutdownPlugin(object):
     def show_menu(self):
         self.set_user_icon()
         self.this.set_size_request(160, 180)
-        print "shutdown show menu..."
+        #print "shutdown show menu..."
 
     def hide_menu(self):
-        print "shutdown hide menu..."
+        #print "shutdown hide menu..."
+        pass
 
 def return_plugin():
     return TrayShutdownPlugin 
