@@ -154,7 +154,7 @@ class PowerView(gtk.VBox):
         self.percentage_label = self.__setup_label(_("Current Battery"))
         self.percentage_progressbar_align = self.__setup_align(padding_left = 0, padding_top = 0)
         self.percentage_progressbar = self.__setup_progressbar(
-            self.power_manager.power_settings.get_int("percentage"))
+            self.power_manager.power_settings.get_double("percentage"))
         self.percentage_progressbar_align.add(self.percentage_progressbar)
         self.__widget_pack_start(self.percentage_box, 
                                  [self.percentage_label, self.percentage_progressbar_align])
@@ -230,7 +230,7 @@ class PowerView(gtk.VBox):
         if key != "percentage":
             return
         
-        self.percentage_progressbar.progress_buffer.progress = self.power_manager.power_settings.get_int("percentage")
+        self.percentage_progressbar.progress_buffer.progress = self.power_manager.power_settings.get_double("percentage")
 
     def __handle_dbus_replay(self, *reply):                                     
         pass                                                                    

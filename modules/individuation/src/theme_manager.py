@@ -162,7 +162,10 @@ class ThemeFile(RawConfigParser):
             return self.get_option("name", lang)
         else:
             return self.get_option("name", "default", "")
-        
+ 
+    def get_default_name(self):
+        return self.get_option("name", "default", "")
+
     def set_default_name(self, theme_name):    
         self.set_option("name", "default", theme_name)
         
@@ -300,13 +303,13 @@ class ThemeManager(object):
 
     def load(self):    
         # load user theme.
+
         for theme_file in os.listdir(get_user_theme_dir()):
             full_theme_file = os.path.join(get_user_theme_dir(), theme_file)
             if full_theme_file.endswith(".ini") and os.path.isfile(full_theme_file):
                 theme_file_object = ThemeFile(full_theme_file)
                 self.user_themes[theme_file_object.location] = theme_file_object
 
-                
         # load system themes.        
         for theme_file in os.listdir(get_system_theme_dir()):        
             full_theme_file = os.path.join(get_system_theme_dir(), theme_file)
@@ -318,7 +321,15 @@ class ThemeManager(object):
         return self.system_themes.values()
     
     def get_user_themes(self):
-        themes = self.user_themes.values()
+        themes = []
+        untitled_theme = ThemeFile(os.path.join(get_user_theme_dir(), "untitled.ini"))
+        themes.append(untitled_theme)
+        
+        for item in self.user_themes.values():
+            if item.get_default_name() == "untitled":
+                continue
+            themes.append(item)
+
         if not themes:
             return [self.untitled_theme(self.get_default_theme())]
         return themes
@@ -340,7 +351,11 @@ class ThemeManager(object):
         new_theme.set_locale_name(name)
         new_theme.save()    
         return new_theme
-    
+   
+    def delete_theme(self, name):
+        theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
+        os.remove(theme_path)
+
     def untitled_theme(self, copy_theme=None):
         untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
         if os.path.exists(untitled_path):
