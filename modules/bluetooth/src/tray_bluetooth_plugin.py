@@ -31,10 +31,18 @@ from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
 from dtk.ui.button import ToggleButton
+from dtk.ui.new_treeview import TreeItem, TreeView
 from vtk.button import SelectButton
 from deepin_utils.process import run_command
 import gtk
+import gobject
 from nls import _
+
+class DeviceItem(TreeItem):
+    def __init__(self):
+        pass
+
+gobject.type_register(DeviceItem)
 
 class TrayBluetoothPlugin(object):
     def __init__(self):

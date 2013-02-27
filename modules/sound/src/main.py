@@ -212,8 +212,8 @@ class SoundSetting(object):
 
         self.container_widgets["advance_set_tab_box"].add_items(
             [(_("Output"), self.alignment_widgets["advance_output_box"]),
-             (_("Input"), self.alignment_widgets["advance_input_box"]),
-             (_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
+             (_("Input"), self.alignment_widgets["advance_input_box"])])
+             #(_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
         ###########################
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)    # the spacing between left and right
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
@@ -379,6 +379,7 @@ class SoundSetting(object):
     def __signals_connect(self):
         ''' widget signals connect'''
         # redraw container background white
+        self.container_widgets["slider"].connect("completed_slide", self.slider_completed_slide_cb)
         self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["advance_output_box"].connect("expose-event", self.container_expose_cb)
         self.alignment_widgets["advance_input_box"].connect("expose-event", self.container_expose_cb)
@@ -419,6 +420,10 @@ class SoundSetting(object):
     ######################################
     # signals callback begin
     # widget signals
+    def slider_completed_slide_cb(self, widget):
+        if widget.active_widget == self.alignment_widgets["main_hbox"]:
+            widget.active_widget.queue_draw()
+
     def container_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
         x, y, w, h, d = widget.window.get_geometry()
