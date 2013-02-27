@@ -73,7 +73,13 @@ class SettingUI(gtk.Alignment):
     def switch_tab(self, widget, connection):
         print "switch tabs"
         self.set_tab_content(connection)
+        self.set_foot_bar_button(connection)
+    
         self.focus_connection = connection
+
+    def set_foot_bar_button(self, connection):
+        content, state = self.setting_group.get_button_state(connection)
+        Dispatcher.set_button(content, state)
         
     def set_tab_content(self, connection, init_connection=False):
         if self.tab_window.tab_items ==  []:
