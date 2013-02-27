@@ -70,7 +70,7 @@ class SettingVolumeThread(td.Thread):
 
 class TrayGui(gtk.VBox):
     '''sound tray gui'''
-    BASE_HEIGHT = 205
+    BASE_HEIGHT = 170
 
     __gsignals__ = {
         "stream-changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
@@ -116,25 +116,22 @@ class TrayGui(gtk.VBox):
 
         self.pack_start(table, False, False)
 
-        self.pack_start(self.__make_align(Label(_("Applications"), enable_select=False, enable_double_click=False)), False, False)
+        self.__app_vbox = gtk.VBox(False)
         separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
         hseparator = HSeparator(separator_color, 0, 0)
         hseparator.set_size_request(190, 3)
-        self.__app_vbox = gtk.VBox(False)
-        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=7), False, False)
+        self.__app_vbox.pack_start(self.__make_align(Label(_("Applications"), enable_select=False, enable_double_click=False)), False, False)
+        self.__app_vbox.pack_start(self.__make_align(hseparator, xalign=0.5, height=7), False, False)
         self.pack_start(self.__app_vbox)
 
         hseparator = HSeparator(separator_color, 0, 0)
         hseparator.set_size_request(190, 3)
         self.pack_start(self.__make_align(hseparator, xalign=0.5, height=10), False, False)
-        self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
-        #button_hbox = gtk.HBox(False)
-        #button_hbox.set_spacing(WIDGET_SPACING)
-        #button_hbox.pack_start(self.__make_align(height=-1))
-        #button_hbox.pack_start(self.button_more)
-        #self.pack_start((button_hbox), False, False)
+
+        self.button_more = SelectButton(_("Advanced..."), font_size=10, ali_padding=5)
+        self.button_more.set_size_request(-1, 30)
         self.pack_start(self.button_more)
-        self.pack_start(self.__make_align(height=15))
+        self.pack_start(self.__make_align(height=10))
         ##########################################
         self.__set_output_status()
         self.__set_input_status()
@@ -153,6 +150,8 @@ class TrayGui(gtk.VBox):
         pypulse.PULSE.connect("sink-input-removed", self.sink_input_removed_cb)
         playback_streams = pypulse.PULSE.get_playback_streams()
         self.stream_num = len(playback_streams.keys())
+        if self.stream_num == 0:
+            self.__app_vbox.set_no_show_all(True)
         for stream in playback_streams:
             self.__make_playback_box(playback_streams[stream], stream)
 
@@ -173,6 +172,10 @@ class TrayGui(gtk.VBox):
         icon_name = None
         if 'application.icon_name' in stream['proplist']:
             icon_name = stream['proplist']['application.icon_name']
+        if 'application.name' in stream['proplist']:
+            if stream['proplist']['application.name'] == 'deepin-music-player' and \
+                    os.path.exists("/usr/share/deepin-music-player/app_theme/blue/image/skin/logo1.png"):
+                icon_name = "/usr/share/deepin-music-player/app_theme/blue/image/skin/logo1.png"
         if icon_name:
             if icon_name[0] == '/' and os.path.exists(icon_name):
                 try:
@@ -295,6 +298,9 @@ class TrayGui(gtk.VBox):
         if index in playback:
             self.__make_playback_box(playback[index], index)
             self.stream_num = len(playback.keys())
+            if self.stream_num > 0:
+                self.__app_vbox.set_no_show_all(False)
+                self.__app_vbox.show_all()
             self.adjust_size()
             self.emit("stream-changed")
 
@@ -312,6 +318,9 @@ class TrayGui(gtk.VBox):
         if index in self.stream_list:
             self.stream_list[index]['container'].destroy()
             self.stream_num -= 1
+            if self.stream_num == 0:
+                self.__app_vbox.hide_all()
+                self.__app_vbox.set_no_show_all(True)
             self.adjust_size()
             self.emit("stream-changed")
 
@@ -379,7 +388,10 @@ class TrayGui(gtk.VBox):
 
     ######################
     def get_widget_height(self):
-        return self.BASE_HEIGHT + 30 * self.stream_num
+        if self.stream_num > 0:
+            return self.BASE_HEIGHT + 40 + 30 * self.stream_num
+        else:
+            return self.BASE_HEIGHT + 30 * self.stream_num
 
     def adjust_size(self):
         self.set_size_request(220, self.get_widget_height())
