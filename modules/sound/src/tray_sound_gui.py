@@ -33,7 +33,7 @@ from dtk.ui.hscalebar import HScalebar
 from dtk.ui.box import ImageBox
 from nls import _
 from constant import *
-#from vtk.button import SelectButton
+from vtk.button import SelectButton
 
 import threading as td
 import gtk
@@ -70,7 +70,7 @@ class SettingVolumeThread(td.Thread):
 
 class TrayGui(gtk.VBox):
     '''sound tray gui'''
-    BASE_HEIGHT = 140
+    BASE_HEIGHT = 205
 
     __gsignals__ = {
         "stream-changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
@@ -120,15 +120,21 @@ class TrayGui(gtk.VBox):
         separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
         hseparator = HSeparator(separator_color, 0, 0)
         hseparator.set_size_request(190, 3)
+        self.__app_vbox = gtk.VBox(False)
         self.pack_start(self.__make_align(hseparator, xalign=0.5, height=7), False, False)
-        #self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
-        ##button_hbox = gtk.HBox(False)
-        ##button_hbox.set_spacing(WIDGET_SPACING)
-        ##button_hbox.pack_start(self.__make_align(height=-1))
-        ##button_hbox.pack_start(self.button_more)
-        ##self.pack_start((button_hbox), False, False)
-        #self.pack_start(self.button_more)
-        #self.pack_start(self.__make_align(height=15))
+        self.pack_start(self.__app_vbox)
+
+        hseparator = HSeparator(separator_color, 0, 0)
+        hseparator.set_size_request(190, 3)
+        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=10), False, False)
+        self.button_more = SelectButton(_("Advanced..."), ali_padding=5)
+        #button_hbox = gtk.HBox(False)
+        #button_hbox.set_spacing(WIDGET_SPACING)
+        #button_hbox.pack_start(self.__make_align(height=-1))
+        #button_hbox.pack_start(self.button_more)
+        #self.pack_start((button_hbox), False, False)
+        self.pack_start(self.button_more)
+        self.pack_start(self.__make_align(height=15))
         ##########################################
         self.__set_output_status()
         self.__set_input_status()
@@ -149,20 +155,6 @@ class TrayGui(gtk.VBox):
         self.stream_num = len(playback_streams.keys())
         for stream in playback_streams:
             self.__make_playback_box(playback_streams[stream], stream)
-            print "channel:", playback_streams[stream]['channel']
-            print "client:", playback_streams[stream]['client']
-            print "has_volume:", playback_streams[stream]['has_volume']
-            print "mute:", playback_streams[stream]['mute']
-            print "sink:", playback_streams[stream]['sink']
-            print "resample_method:", playback_streams[stream]['resample_method']
-            print "volume:", playback_streams[stream]['volume']
-            print "voluem_writable:", playback_streams[stream]['volume_writable']
-            proplist = playback_streams[stream]['proplist']
-            if 'application.icon_name' in proplist:
-                print 'application.icon_name:', proplist['application.icon_name']
-            if 'application.name' in proplist:
-                print 'application.name:', proplist['application.name']
-            print "-"*20
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
@@ -181,13 +173,15 @@ class TrayGui(gtk.VBox):
         icon_name = None
         if 'application.icon_name' in stream['proplist']:
             icon_name = stream['proplist']['application.icon_name']
-        if icon_name and os.path.exists(icon_name):
-            try:
-                img = gtk.image_new_from_pixbuf(gtk.gdk.pixbuf_new_from_file(
-                    icon_name).scale_simple(16, 16, gtk.gdk.INTERP_TILES))
-            except:
-                img = gtk.image_new_from_pixbuf(self.stream_icon)
-            #img = gtk.image_new_from_icon_name("chromium-browser", gtk.ICON_SIZE_MENU)
+        if icon_name:
+            if icon_name[0] == '/' and os.path.exists(icon_name):
+                try:
+                    img = gtk.image_new_from_pixbuf(gtk.gdk.pixbuf_new_from_file(
+                        icon_name).scale_simple(16, 16, gtk.gdk.INTERP_TILES))
+                except:
+                    img = gtk.image_new_from_pixbuf(self.stream_icon)
+            else:
+                img = gtk.image_new_from_icon_name(icon_name, gtk.ICON_SIZE_MENU)
         else:
             img = gtk.image_new_from_pixbuf(self.stream_icon)
         scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
@@ -205,7 +199,7 @@ class TrayGui(gtk.VBox):
             scale.connect("value-changed", self.playback_stream_scale_changed_cb, index, mute_button)
             mute_button.connect("toggled", self.playback_stream_toggled_cb, index, scale)
         hbox.show_all()
-        self.pack_start(hbox, False, False)
+        self.__app_vbox.pack_start(hbox, False, False)
 
     ####################################################
     # widget signals
@@ -268,16 +262,12 @@ class TrayGui(gtk.VBox):
         if not button.get_active():
             button.set_active(True)
         volume = int((widget.get_value()) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
-        # pa_context_set_sink_input_volume 	
-        #pypulse.PULSE.set_input_volume(index, [volume] * widget.volume_channels)
-        print "sink input volume", volume
+        pypulse.PULSE.set_sink_input_volume(index, [volume] * widget.volume_channels)
 
     def playback_stream_toggled_cb(self, button, index, scale):
         active = button.get_active()
         scale.set_enable(active)
-        # pa_context_set_sink_input_mute 	
-        #pypulse.PULSE.set_sink_input_mute(index, not active)
-        print "sink input toggled"
+        pypulse.PULSE.set_sink_input_mute(index, not active)
 
     # pulseaudio signals callback
     def sink_changed_cb(self, obj, index):
@@ -300,12 +290,12 @@ class TrayGui(gtk.VBox):
         self.__set_input_status()
 
     def sink_input_new_cb(self, obj, index):
-        print "sink_input new:", index
         obj.get_devices()
         playback = obj.get_playback_streams()
         if index in playback:
             self.__make_playback_box(playback[index], index)
             self.stream_num = len(playback.keys())
+            self.adjust_size()
             self.emit("stream-changed")
 
     def sink_input_changed_cb(self, obj, index):
@@ -319,10 +309,10 @@ class TrayGui(gtk.VBox):
                                        self.stream_list[index]['button'])
 
     def sink_input_removed_cb(self, obj, index):
-        print "sink_input removed:", index
         if index in self.stream_list:
             self.stream_list[index]['container'].destroy()
             self.stream_num -= 1
+            self.adjust_size()
             self.emit("stream-changed")
 
     def __set_output_status(self):

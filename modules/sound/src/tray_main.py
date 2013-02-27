@@ -23,11 +23,22 @@
 from tray_sound_gui import TrayGui
 import gtk
 
+def stream_changed_cb(widget, win):
+    #print "height:", widget.get_widget_height()
+    #win.set_allocation((0, 0, 220, widget.get_widget_height()))
+    win.set_size_request(220, widget.get_widget_height())
+    win.reshow_with_initial_size()
+    print win.get_allocation(), widget.stream_num
+    print "-------------------"
+
 if __name__ == '__main__':
     win = gtk.Window()
     win.connect("destroy", gtk.main_quit)
+    #win.set_size_request(220, 170)
+    win.set_default_size(220, 170)
     tray = TrayGui()
-    tray.connect("stream-changed", lambda w: win.set_size_request(220, tray.get_widget_height()))
+    #tray.connect("stream-changed", lambda w: win.set_size_request(220, tray.get_widget_height()))
+    tray.connect("stream-changed", stream_changed_cb, win)
 
     win.add(tray)
     win.show_all()
