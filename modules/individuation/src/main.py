@@ -45,7 +45,6 @@ class DeepinIndividuation(object):
         # Init theme datas.
         self.__init_data()
         
-        
         self.module_frame = ModuleFrame(self.config_file)
         
         # Init slider.
@@ -82,7 +81,6 @@ class DeepinIndividuation(object):
     def __init_data(self):
         from theme_manager import theme_manager
         theme_manager.load()
-        
     
     def message_handler(self, *message):
         (message_type, message_content) = message

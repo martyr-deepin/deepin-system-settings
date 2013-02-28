@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -60,6 +61,7 @@ class DetailPage(TabBox):
         init docs
         '''
         TabBox.__init__(self)
+
         self.draw_title_background = self.draw_tab_title_background
         self.theme = None
         
@@ -147,6 +149,7 @@ class DetailPage(TabBox):
 
     def set_theme(self, theme):
         self.theme = theme
+        
         '''
         TODO: self.theme.name
         '''

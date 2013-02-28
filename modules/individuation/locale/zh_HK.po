@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 17:23+0800\n"
+"POT-Creation-Date: 2013-02-28 11:42+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,7 +16,33 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/ui/theme_view.py:83
+#: ../src/ui/theme_page.py:59
+msgid "My Theme"
+msgstr ""
+
+#: ../src/ui/theme_page.py:64
+msgid "System Theme"
+msgstr ""
+
+#: ../src/ui/theme_view.py:81
 #, python-format
-msgid "Changed system theme to \"%s\""
+msgid "Changed User Theme to %s"
+msgstr ""
+
+#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:174
+msgid "Theme Save As"
+msgstr ""
+
+#: ../src/ui/theme_view.py:112 ../src/ui/theme_view.py:115
+#: ../src/ui/theme_view.py:178
+msgid "Save As"
+msgstr ""
+
+#: ../src/ui/theme_view.py:117
+msgid "Delete Theme"
+msgstr ""
+
+#: ../src/ui/theme_view.py:167
+#, python-format
+msgid "Changed System Theme to %s"
 msgstr ""
