@@ -75,29 +75,51 @@ class Gui(gtk.VBox):
         hseparator_color = [(0, ("#777777", 0.0)),
                             (0.5, ("#000000", 0.3)), 
                             (1, ("#777777", 0.0))]
-        self.h_separator_top = HSeparator(
-                hseparator_color,
-                0, 
-                0)
+        self.h_separator_top = HSeparator(hseparator_color, 0, 0)
         self.h_separator_top_ali.add(self.h_separator_top)
+
+        self.switch_separator_bottom = HSeparator(hseparator_color, 0, 0)
+        self.switch_separator_bottom_ali = gtk.Alignment(1, 1, 1, 1)
+        self.switch_separator_bottom_ali.set_padding(5, 5, 0, 0)
+        self.switch_separator_bottom_ali.add(self.switch_separator_bottom)
         #
         ali_padding = 100  
-        self.stop_btn = SelectButton(_("shutdown"), font_size=10, ali_padding=ali_padding)
-        self.restart_btn = SelectButton(_("restart"), font_size=10, ali_padding=ali_padding)
-        self.suspend_btn = SelectButton(_("suspend"), font_size=10, ali_padding=ali_padding)
-        self.logout_btn = SelectButton(_("logout"), font_size=10, ali_padding=ali_padding)
+        font_size = 10
+        self.switch_btn = SelectButton(_("切换用户"), 
+                                       font_size=font_size, 
+                                       ali_padding=ali_padding)
+        self.stop_btn = SelectButton(_("shutdown"), 
+                                     font_size=font_size, 
+                                     ali_padding=ali_padding)
+        self.restart_btn = SelectButton(_("restart"), 
+                                        font_size=font_size, 
+                                        ali_padding=ali_padding)
+        self.suspend_btn = SelectButton(_("suspend"), 
+                                        font_size=font_size, 
+                                        ali_padding=ali_padding)
+        self.logout_btn = SelectButton(_("logout"), 
+                                       font_size=font_size, 
+                                       ali_padding=ali_padding)
+        self.lock_btn = SelectButton(_("锁屏"), 
+                                     font_size=font_size, 
+                                     ali_padding=ali_padding)
         #
+        self.switch_btn.set_size_request(WIDTH, HEIGHT)
         self.stop_btn.set_size_request(WIDTH, HEIGHT)
         self.restart_btn.set_size_request(WIDTH, HEIGHT)
         self.suspend_btn.set_size_request(WIDTH, HEIGHT)
         self.logout_btn.set_size_request(WIDTH, HEIGHT)
+        self.lock_btn.set_size_request(WIDTH, HEIGHT)
         #
         self.pack_start(self.user_hbox, True, True)
         self.pack_start(self.h_separator_top_ali, True, True)
+        self.pack_start(self.switch_btn, True, True)
+        self.pack_start(self.switch_separator_bottom_ali, True, True)
         self.pack_start(self.stop_btn, True, True)
         self.pack_start(self.restart_btn, True, True)
         self.pack_start(self.suspend_btn, True, True)
         self.pack_start(self.logout_btn, True, True)
+        self.pack_start(self.lock_btn, True, True)
 
     def user_label_event_expose_event(self, widget, event):
         cr = widget.window.cairo_create()

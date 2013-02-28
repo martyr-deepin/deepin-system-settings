@@ -213,7 +213,7 @@ class AccountSetting(object):
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
         #self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
-        self.alignment_widgets["main_hbox"].set_padding(0, 10, 0, FRAME_LEFT_PADDING)
+        self.alignment_widgets["main_hbox"].set_padding(0, 0, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"])
@@ -224,7 +224,7 @@ class AccountSetting(object):
         self.alignment_widgets["left_vbox"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["left_vbox"].set_size_request(275, -1)
         self.alignment_widgets["right_vbox"].set_size_request(500, -1)
-        self.alignment_widgets["right_vbox"].set_padding(FRAME_TOP_PADDING, 0, 0, 0)
+        self.alignment_widgets["right_vbox"].set_padding(TEXT_WINDOW_TOP_PADDING + 16, 0, 0, 0)
         self.view_widgets["account"].set_size_request(275, 460)
         ##############################
         # accounts list page
@@ -251,7 +251,7 @@ class AccountSetting(object):
 
         self.container_widgets["account_info_table"].set_col_spacings(WIDGET_SPACING)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.image_widgets["account_icon"], height=58), 0, 1, 0, 1, 4)
+            self.__make_align(self.image_widgets["account_icon"], xalign=1.0, height=58), 0, 1, 0, 1, 4)
         self.container_widgets["account_info_table"].attach(self.alignment_widgets["account_info_hbox"], 1, 2, 0, 1, 4)
 
         self.container_widgets["account_info_table"].attach(
@@ -280,7 +280,7 @@ class AccountSetting(object):
         self.alignment_widgets["account_info_hbox"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["account_info_hbox"].add(self.container_widgets["account_info_hbox"])
         self.container_widgets["account_info_hbox"].pack_start(self.label_widgets["account_name"], False, False)
-        self.container_widgets["account_info_hbox"].pack_start(self.alignment_widgets["lock_button"], False, False)
+        #self.container_widgets["account_info_hbox"].pack_start(self.alignment_widgets["lock_button"], False, False)
         self.alignment_widgets["lock_button"].add(self.button_widgets["lock"])
         self.alignment_widgets["lock_button"].set(1.0, 0.5, 0, 0)
 
@@ -602,14 +602,9 @@ class AccountSetting(object):
         if self.get_authorized():
             if self.permission.release():
                 button.set_data("unlocked", False)
-            #print "get_allowed:", self.permission.get_allowed()
         else:
             if self.permission.acquire():
                 button.set_data("unlocked", True)
-            #print "get_allowed:", self.permission.get_allowed()
-        print "get_allowed:", self.permission.get_allowed(),
-        print "get_can_acquire:", self.permission.get_can_acquire(),
-        print "get_can_release:", self.permission.get_can_release()
         self.set_widget_state_with_author()
 
     def account_type_item_selected(self, combo_box, item_content, item_value, item_index):
@@ -1049,7 +1044,6 @@ class AccountSetting(object):
                 if user.get_real_name() == compare_user.get_real_name():
                     item.is_unique = False
                     break
-        # TODO 顶部留35px
         if user_items:
             user_items[0].is_head = True
         return user_items
@@ -1073,7 +1067,8 @@ class AccountSetting(object):
         '''
         @return: True if current process has been authorized, else False
         '''
-        return self.permission.get_allowed()
+        #return self.permission.get_allowed()
+        return True
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,

@@ -23,6 +23,8 @@ from dss import app_theme
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import OffButton, Button
+from dtk.ui.line import HSeparator
+from vtk.button import SelectButton
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_pixbuf
 from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, container_remove_all
@@ -58,7 +60,12 @@ class TrayUI(gtk.VBox):
         self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
         self.pack_start(self.wire, False, False)
         self.pack_start(self.wireless, False, False)
-        
+
+
+        separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
+        hseparator = HSeparator(separator_color, 0, 0)
+        hseparator.set_size_request(-1, 5)
+
         self.ssid_list = []
         #align = gtk.Alignment(0,0, 1, 1)
         #align.set_padding(0,0,28, 0)
@@ -66,9 +73,13 @@ class TrayUI(gtk.VBox):
         #align.add(self.tree_box)
         self.pack_start(self.tree_box, False, False)
         self.pack_start(self.mobile, False, False)
+        self.pack_start(hseparator, False, False)
+        self.button_more = SelectButton(_("Advanced..."), font_size=9, ali_padding=5)
+        self.button_more.set_size_request(-1, 25)
+        self.pack_start(self.button_more, False, False)
         self.ap_tree = TreeView()
         self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
-    
+
     def get_widget_height(self):
         height = 0
         widgets = self.get_children()
@@ -77,12 +88,28 @@ class TrayUI(gtk.VBox):
         if self.wireless in widgets:
             height +=30
             if self.ap_tree.visible_items and self.wireless.get_active():
-                height += len(self.ap_tree.visible_items) * 30
+                if len(self.ap_tree.visible_items) >=10:
+                    height += 10 * WIDGET_HEIGHT
+                else:
+                    height += len(self.ap_tree.visible_items) * WIDGET_HEIGHT
             if self.more_button in self.tree_box.get_children():
-                height +=30
-
+                height += WIDGET_HEIGHT
+        height += 30
         height += 30
         return height
+    
+    #def get_height(self):
+        #height = 0
+        #widgets = self.get_children()
+        #if self.wire in widgets:
+            #height += 30
+        #if self.wireless in widgets:
+            #height +=30
+            #if self.wireless.get_active():
+                #height += len(self.visible_aps) * WIDGET_HEIGHT + (not self.show_all)*WIDGET_HEIGHT
+        #height += 30
+        #height += 30
+        #return height
 
     def remove_net(self, net_type):
         if net_type == "wired":
@@ -95,29 +122,70 @@ class TrayUI(gtk.VBox):
             self.wire.set_active(0)
         else:
             print new_state, reason
+
+    def set_visible_aps(self, show_all=False):
+        if not self.__ap_list:
+            self.visible_aps = []
+            return
+
+        print len(self.__ap_list)
+
+        if show_all:
+            if len(self.__ap_list) <= 10:
+                self.visible_aps = self.__ap_list[:]
+            else:
+                self.visible_aps = self.__ap_list[:10]
+            self.more_button.set_ap_list([])
+            self.show_all = True
+
+
+        else:
+            if len(self.__ap_list) <= 5:
+                print "aaaaaaaaaa"
+                self.visible_aps = self.__ap_list[:]
+                self.show_all = True
+            else:
+                print "bbbbbbbbb"
+                self.visible_aps = self.__ap_list[:5]
+                self.more_button.set_ap_list(self.__ap_list[5:])
+                self.show_all = False
     
     def set_ap(self, ap_list):
         if not ap_list:
             return 
         self.__set_ap_list(ap_list)
+        #print "DEBUG", len(self.visible_aps), self.show_all
         self.ap_tree.delete_all_items()
         container_remove_all(self.tree_box)
+
+        #self.ap_tree.add_items(map(lambda ap: SsidItem(ap), self.visible_aps))
+
+        #if self.show_all:
+            #self.tree_box.pack_start(self.ap_tree, True, True)
+        #else:
+            #self.tree_box.pack_start(self.ap_tree, True, True)
+            #self.tree_box.pack_start(self.more_button, False, False)
+
         if len(ap_list) <= 5:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list))
+            self.tree_box.pack_start(self.ap_tree, True, True)
             #self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*len(ap_list))
         else:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list[:5]))
             self.more_button.set_ap_list(ap_list[5:])
-
+            self.tree_box.pack_start(self.ap_tree, True, True)
+            self.tree_box.pack_start(self.more_button, False, False)
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
             #self.ap_tree.add_items([MoreItem(more_ap, self.resize_tree)])
-        self.tree_box.pack_start(self.ap_tree, True, True)
-        self.tree_box.pack_start(self.more_button, False, False)
-        #self.show_all()
+        self.show_all()
+
+        Dispatcher.request_resize()
 
     def __set_ap_list(self, ap_list):
         self.__ap_list = ap_list
-
+        #self.set_visible_aps()
+        #height = self.get_height()
+        #Dispatcher.request_resize(height)
 
     def move_active(self, index):
         if index != [] and self.__ap_list:
@@ -132,16 +200,7 @@ class TrayUI(gtk.VBox):
                                         insert_pos=0)
 
 
-
     def set_active_ap(self, index, state):
-        #print "in set active ap",index
-        #if state and index:
-            #self.set_active_ap(self.active_ap_index, False)
-            #self.active_ap_index = index
-        #if index:
-            #for i in index:
-                #self.move_active(i)
-                #self.ap_tree.visible_items[0].set_active(state)
         if self.active_ap_index:
             for i in self.active_ap_index:
                 self.ap_tree.visible_items[i].set_active(False)
@@ -156,8 +215,17 @@ class TrayUI(gtk.VBox):
         return self.active_ap_index
 
     def resize_tree(self):
-        Dispatcher.tray_show_more()
         self.tree_box.remove(self.more_button)
+        #self.set_visible_aps(True)
+        #height = self.get_height()
+        #Dispatcher.request_resize(height)
+
+        self.ap_tree.delete_all_items()
+        container_remove_all(self.tree_box)
+
+        self.ap_tree.add_items(map(lambda ap: SsidItem(ap), self.__ap_list))
+        #self.tree_box.pack_start(self.ap_tree, True, True)
+
         length = len(self.ap_tree.visible_items)
         if length <=10:
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*length)
@@ -165,6 +233,9 @@ class TrayUI(gtk.VBox):
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*10)
             for item in self.ap_tree.visible_items:
                 item.set_padding(10)
+        self.tree_box.pack_start(self.ap_tree, True, True)
+        
+        Dispatcher.request_resize()
 
 
          
@@ -434,6 +505,7 @@ class MoreButton(Button):
         self.show_all = False
         self.connect("clicked", self.show_more)
         self.connect("expose-event", self.expose_button)
+        self.set_size_request(-1, WIDGET_HEIGHT)
 
     def set_ap_list(self, ap_list):
         self.ap_list = ap_list

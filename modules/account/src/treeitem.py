@@ -116,7 +116,7 @@ class MyTreeItem(TreeItem):
     
     def get_height(self):
         if self.is_head:
-            return self.height + 2 * self.title_height + self.head_height
+            return self.height + 2 * self.title_height + self.head_height + BETWEEN_SPACING
         else:
             return self.height + 2 * self.title_height
     
@@ -174,7 +174,7 @@ class MyTreeItem(TreeItem):
             y1 = rect.y
             draw_text(cr, _("My Account"), x1+self.padding_x, y1, self.title_width, self.title_height, text_color=text_color2)
             x2 = rect.x
-            y2 = rect.y + self.height + self.title_height
+            y2 = rect.y + self.height + self.title_height + BETWEEN_SPACING
             draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color2)
         self.render_icon(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING, rect.y, 55, rect.height))
         self.render_content(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING+55, rect.y, rect.width-55, rect.height), text_color)
@@ -205,5 +205,11 @@ class MyTreeItem(TreeItem):
         if self.icon:
             cr.set_source_pixbuf(self.icon, rect.x+self.padding_x, rect.y+self.title_height+self.padding_y)
             cr.paint()
+            with cairo_disable_antialias(cr):
+                border_color = "#CCCCCC"
+                cr.set_source_rgb(*color_hex_to_cairo(border_color))
+                cr.set_line_width(1)
+                cr.rectangle(rect.x+self.padding_x, rect.y+self.title_height+self.padding_y, 48, 48)
+                cr.stroke()
     
 gobject.type_register(MyTreeItem)

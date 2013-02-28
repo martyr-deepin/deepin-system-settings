@@ -21,6 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import dbus
 from deepin_utils.process import run_command
 from vtk.timer import Timer
 try:
@@ -33,36 +34,45 @@ POWER_SETTING_GSET = "org.gnome.settings-daemon.plugins.power"
 XRANDR_SETTINGS_GSET = "org.gnome.settings-daemon.plugins.xrandr"
 RUN_COMMAND = "deepin-system-settings power"
 
+# dbus string values.
+ORG_UPOWER_NAME = "org.freedesktop.UPower"
+ORG_UPOWER_PATH = "/org/freedesktop/UPower"
+ORG_UPOWER_INTERFACES = "org.freedesktop.UPower"
+ORG_DBUS_PROPER = "org.freedesktop.DBus.Properties"
+ORG_UPOWER_DEVICE = "org.freedesktop.Upower.Device"
+
 class TrayPower(object):
     def __init__(self):
+        self.__init_dbus_inter()
         self.timer = Timer(100)
         self.timer.connect("Tick", self.timer_double_tick_event)
         self.double_check = False
         self.timer_check = False
-        self.old_power = 100
         self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.power_set.connect("changed", self.power_set_changed)
 
+    def __init_dbus_inter(self):
+        session_bus = dbus.SystemBus()
+        power_obj = session_bus.get_object(ORG_UPOWER_NAME, ORG_UPOWER_PATH)
+        power_inter = dbus.Interface(power_obj, dbus_interface=ORG_UPOWER_INTERFACES)
+        acpi_path = power_inter.EnumerateDevices()
+        acpi_obj = session_bus.get_object(ORG_UPOWER_NAME, acpi_path[0])
+        self.acpi_inter = dbus.Interface(acpi_obj, dbus_interface=ORG_DBUS_PROPER)
+
     def power_set_changed(self, key):
+        self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
         if key != "percentage": 
             return 
         #
         value = self.power_set.get_double("percentage")
         self.update_power_icon(int(value))
-        #self.modify_battery_icon(value)
+        self.modify_battery_icon(self.online_value, value)
 
-    def modify_battery_icon(self, value):
-        # modify battery icon.
-        #print "modify_battery_icon..", "value:", value, "old_power:", self.old_power
-        if value <= 99:
-            if float(value) >= float(self.old_power):
-                self.tray_icon.set_tooltip_markup("电源正在充电...")
-                self.tray_icon.set_icon_theme("tray_battery")
-        # set old_power.
-        self.old_power = value
+    def modify_battery_icon(self, online_value, value):
+        if online_value and value != 100:
+            self.tray_icon.set_icon_theme("tray_battery")
 
     def update_power_icon(self, percentage):
-        #self.tray_icon.set_tooltip_markup("电源还剩%s" % (int(percentage)))
         if percentage >= 90 and percentage <= 100:
             self.tray_icon.set_icon_theme("battery100")
         elif percentage >= 21 and percentage <= 98:
@@ -80,8 +90,9 @@ class TrayPower(object):
         if visible_check:
             # get power value.
             percentage = self.power_set.get_double("percentage")
-            self.old_power = percentage
             self.update_power_icon(percentage)
+            self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
+            self.modify_battery_icon(self.online_value, percentage)
             # init tray_icon events.
             self.tray_icon.connect("button-press-event", self.tray_icon_button_press_event)
 
