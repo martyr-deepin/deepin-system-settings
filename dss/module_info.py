@@ -69,9 +69,12 @@ class ModuleInfo(object):
         
 def get_module_infos():
     all_module_names = filter(lambda module_name: os.path.isdir(os.path.join(MODULE_DIR, module_name)), os.listdir(MODULE_DIR))        
-    all_module_names.remove('a11y')
-    all_module_names.remove('mount_media')
-    all_module_names.remove('tray_power')
+    try:
+        all_module_names.remove('a11y')
+        all_module_names.remove('mount_media')
+        all_module_names.remove('tray_power')
+    except Exception, e:
+        print "DEBUG", e
     extend_module_names = list(set(all_module_names) - set(FIRST_MODULE_NAMES) - set(SECOND_MODULE_NAMES) - set(THIRD_MODULE_NAMES))
     
     return map(lambda names: 
