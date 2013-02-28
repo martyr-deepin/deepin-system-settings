@@ -31,7 +31,7 @@ class IconButton(gtk.EventBox):
         "del-pressed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
         "pressed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
 
-    def __init__(self, pixbuf=None, image_path='', padding_x=4, padding_y=4, has_frame=False, can_del=False):
+    def __init__(self, pixbuf=None, image_path='', padding_x=4, padding_y=4, has_frame=True, can_del=False):
         super(IconButton, self).__init__()
         self.connect("expose-event", self.__expose_cb)
         self.padding_x = padding_x
@@ -86,7 +86,7 @@ class IconButton(gtk.EventBox):
                 border_color = "#CCCCCC"
                 cr.set_source_rgb(*color_hex_to_cairo(border_color))
                 cr.set_line_width(1)
-                cr.rectangle(self.padding_x-1, self.padding_y-1, w-2*self.padding_x+2, h-2*self.padding_y+2)
+                cr.rectangle(self.padding_x, self.padding_y, w-2*self.padding_x+1, h-2*self.padding_y+1)
                 cr.stroke()
         if self.pixbuf:
             cr.set_source_pixbuf(self.pixbuf, self.padding_x, self.padding_y)
