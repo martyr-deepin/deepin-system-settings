@@ -97,16 +97,12 @@ class UserThemeView(IconView):
         input_dialog.show_all()
 
     def on_theme_delete(self, item):
-        # FIXME: ConfirmDialog can not waitting for user response
-        '''
         dlg = ConfirmDialog(_("Delete theme"), 
-                            _("Are you sure delete %s theme" % item.theme.get_name()), 
+                            _("Are you sure delete %s theme") % item.theme.get_name(), 
                             300, 
                             100, 
-                            self.delete_theme(item))
+                            lambda : self.delete_theme(item))
         dlg.show_all()
-        '''
-        self.delete_theme(item)
 
     def __on_right_click_item(self, widget, item, x, y):
         menu_items = [(None, _("Save As"), lambda : self.on_theme_sava_as(item))]

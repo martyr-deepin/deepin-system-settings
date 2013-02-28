@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang83@gmail.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,16 +45,18 @@ class WallpaperItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    def __init__(self, path, readonly, theme):
+    def __init__(self, path, readonly, theme, is_delete=False):
         '''
         Initialize ItemIcon class.
         
         @param pixbuf: Icon pixbuf.
         '''
         gobject.GObject.__init__(self)
+
         self.image_path = path
         self.readonly = readonly
         self.theme = theme
+        self.is_delete = is_delete
         self.pixbuf = None
         self.hover_flag = False
         self.highlight_flag = False
@@ -71,6 +74,9 @@ class WallpaperItem(gobject.GObject):
         
         self.tick_normal_dpixbuf = app_theme.get_pixbuf("individuation/tick_normal.png")
         self.tick_gray_dpixbuf = app_theme.get_pixbuf("individuation/tick_gray.png")
+
+        self.cross_normal_dpixbuf = app_theme.get_pixbuf("individuation/cross_normal.png")
+        self.cross_gray_dpixbuf = app_theme.get_pixbuf("individuation/cross_gray.png")
         
         if readonly:
             self.is_tick = self.theme.get_system_wallpaper_status(path)
@@ -109,11 +115,6 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        
-        # cr.rectangle(*rect)
-        # cr.set_source_rgb(0, 0, 0)
-        # cr.stroke()
-        
         # Init.
         if self.pixbuf == None:
             self.pixbuf = get_optimum_pixbuf_from_file(self.image_path, self.wallpaper_width, self.wallpaper_height)
@@ -161,11 +162,16 @@ class WallpaperItem(gobject.GObject):
             cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
             cr.stroke()
             
-            
-        if self.is_tick:    
-            tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
-        else:    
-            tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
+        if self.is_delete:
+            if self.is_tick:
+                tick_pixbuf = self.cross_gray_dpixbuf.get_pixbuf()
+            else:
+                tick_pixbuf = self.cross_normal_dpixbuf.get_pixbuf()
+        else:
+            if self.is_tick:    
+                tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
+            else:    
+                tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
             
         tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
@@ -178,9 +184,12 @@ class WallpaperItem(gobject.GObject):
             
         if self.is_tick:    
             draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
-        else:    
-            if self.is_hover:    
-                draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+        else:
+            if self.is_delete:
+                draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
+            else:
+                if self.is_hover:    
+                    draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
                 
     def tick(self):            
         self.is_tick = True
@@ -265,10 +274,12 @@ class WallpaperItem(gobject.GObject):
                 )):
             
             self.toggle_tick()
-            event_manager.emit("select-wallpaper", self)
+            if not self.is_delete:
+                event_manager.emit("select-wallpaper", self)
         else:    
             self.tick()
-            event_manager.emit("apply-wallpaper", self)
+            if not self.is_delete:
+                event_manager.emit("apply-wallpaper", self)
     
     def icon_item_button_release(self, x, y):
         '''
@@ -696,7 +707,7 @@ class CacheItem(gobject.GObject, MissionThread):
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
         draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
         
-        if self.is_tick:    
+        if self.is_tick:
             tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
         else:    
             tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
@@ -704,7 +715,6 @@ class CacheItem(gobject.GObject, MissionThread):
         tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
         draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
-        
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -926,7 +936,7 @@ class SelectItem(gobject.GObject):
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
             cr.stroke()
-            
+        
         if self.is_tick:    
             tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
         else:    
@@ -1038,4 +1048,3 @@ class SelectItem(gobject.GObject):
             del self.pixbuf
         self.pixbuf = None    
         return True
-    

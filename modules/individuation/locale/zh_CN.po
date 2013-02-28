@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-28 14:52+0800\n"
+"POT-Creation-Date: 2013-02-28 17:40+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,12 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/main.py:104
+msgid "Delete Wallpaper"
+msgstr "删除壁纸"
+
+#: ../src/main.py:117
 msgid "Theme Setting"
 msgstr "主题设置"
 
-#: ../src/main.py:108
+#: ../src/main.py:121
 msgid "Add Wallpaper"
-msgstr "添加桌面壁纸"
+msgstr "添加壁纸"
+
+#: ../src/ui/delete_page.py:58
+msgid "Back"
+msgstr "返回"
+
+#: ../src/ui/delete_page.py:61 ../src/ui/detail_page.py:104
+msgid "Select All"
+msgstr "全选"
+
+#: ../src/ui/delete_page.py:64 ../src/ui/detail_page.py:107
+msgid "Delete"
+msgstr "删除"
 
 #: ../src/ui/theme_page.py:59
 msgid "My Theme"
@@ -38,70 +54,71 @@ msgstr "系统主题"
 msgid "Changed User Theme to %s"
 msgstr "当前系统主题已设置为“%s”"
 
-#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:174
+#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:171
 msgid "Theme Save As"
 msgstr "主题另存为"
 
-#: ../src/ui/theme_view.py:112 ../src/ui/theme_view.py:115
-#: ../src/ui/theme_view.py:178
+#: ../src/ui/theme_view.py:101
+msgid "Delete theme"
+msgstr "删除主题"
+
+#: ../src/ui/theme_view.py:102
+#, python-format
+msgid "Are you sure delete %s theme"
+msgstr "你确定要删除%s主题？此操作不可恢复。"
+
+#: ../src/ui/theme_view.py:109 ../src/ui/theme_view.py:112
+#: ../src/ui/theme_view.py:175
 msgid "Save As"
 msgstr "主题另存为"
 
-#: ../src/ui/theme_view.py:117
+#: ../src/ui/theme_view.py:114
 msgid "Delete Theme"
 msgstr "删除主题"
 
-#: ../src/ui/theme_view.py:167
+#: ../src/ui/theme_view.py:164
 #, python-format
 msgid "Changed System Theme to %s"
 msgstr "当前系统主题已设置为“%s”"
 
-#: ../src/ui/detail_page.py:41
+#: ../src/ui/detail_page.py:42
 msgid "Seconds"
 msgstr "秒"
 
-#: ../src/ui/detail_page.py:42
+#: ../src/ui/detail_page.py:43
 msgid "Minute"
 msgstr "分钟"
 
-#: ../src/ui/detail_page.py:42 ../src/ui/detail_page.py:43
-#: ../src/ui/detail_page.py:44 ../src/ui/detail_page.py:45
+#: ../src/ui/detail_page.py:43 ../src/ui/detail_page.py:44
+#: ../src/ui/detail_page.py:45 ../src/ui/detail_page.py:46
 msgid "Minutes"
 msgstr "分钟"
 
-#: ../src/ui/detail_page.py:45
+#: ../src/ui/detail_page.py:46
 msgid "Hour"
 msgstr "小时"
 
-#: ../src/ui/detail_page.py:46 ../src/ui/detail_page.py:47
-#: ../src/ui/detail_page.py:48
+#: ../src/ui/detail_page.py:47 ../src/ui/detail_page.py:48
+#: ../src/ui/detail_page.py:49
 msgid "Hours"
 msgstr "小时"
 
-#: ../src/ui/detail_page.py:51
+#: ../src/ui/detail_page.py:52
 msgid "Scaling"
 msgstr "拉伸"
 
-#: ../src/ui/detail_page.py:51
+#: ../src/ui/detail_page.py:52
 msgid "Tiling"
 msgstr "平铺"
 
-#: ../src/ui/detail_page.py:86
+#: ../src/ui/detail_page.py:87
 msgid "Position"
 msgstr "图片位置"
 
-#: ../src/ui/detail_page.py:89
+#: ../src/ui/detail_page.py:90
 msgid "Duration"
 msgstr "图片时间间隔"
 
-#: ../src/ui/detail_page.py:97
+#: ../src/ui/detail_page.py:98
 msgid "Random"
 msgstr "随机播放"
-
-#: ../src/ui/detail_page.py:103
-msgid "Select All"
-msgstr "全选"
-
-#: ../src/ui/detail_page.py:106
-msgid "Delete"
-msgstr "删除"
