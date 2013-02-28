@@ -53,6 +53,7 @@ class TrayUI(gtk.VBox):
         self.mobile_toggle = mobile_toggle_cb
         self.init_ui()
         self.active_ap_index = []
+        self.all_showed = False
 
     def init_ui(self):
         self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.wired_toggle)
@@ -229,7 +230,6 @@ class TrayUI(gtk.VBox):
         if self.active_ap_index:
             self.move_active(self.active_ap_index)
         #self.tree_box.pack_start(self.ap_tree, True, True)
-
         length = len(self.ap_tree.visible_items)
         if length <=10:
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*length)
@@ -238,6 +238,7 @@ class TrayUI(gtk.VBox):
             for item in self.ap_tree.visible_items:
                 item.set_padding(10)
         self.tree_box.pack_start(self.ap_tree, True, True)
+        self.show_all()
         self.all_showed = True
         
         Dispatcher.request_resize()
