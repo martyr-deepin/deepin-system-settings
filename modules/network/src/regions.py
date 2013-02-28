@@ -17,6 +17,7 @@ import style
 from constants import FRAME_VERTICAL_SPACING, TITLE_FONT_SIZE, BETWEEN_SPACING, TREEVIEW_BG_COLOR, IMG_WIDTH
 from container import TitleBar
 from foot_box import FootBox
+from helper import Dispatcher
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 from nls import _
@@ -178,22 +179,32 @@ class Region(gtk.Alignment):
                      "network_type": network_type}})
             provider_type = "gsm"
 
-        setting_page = nm_module.slider.get_page_by_name("mobile")
-        broadband = setting_page.setting_group.get_broadband()
-        if self.need_new_connection:
+        #setting_page = nm_module.slider.get_page_by_name("setting")
+        #broadband = setting_page.setting_group.get_broadband()
+        if self.connection_type == None:
             new_connection = getattr(nm_module.nm_remote_settings, "new_%s_connection"%provider_type)()
-            setting_page.sidebar.new_connection_list[provider_type].append(new_connection)
-            setting_page.init(setting_page.sidebar.new_connection_list)
-            setting_page.sidebar.set_active(new_connection)
-            broadband.set_new_values(self.prop_dict, provider_type)
+            Dispatcher.emit("region_back", new_connection, self.prop_dict, provider_type)
+
+            #setting_page.sidebar.new_connection_list[provider_type].append(new_connection)
+            #setting_page.init(setting_page.sidebar.new_connection_list)
+            #setting_page.sidebar.set_active(new_connection)
+            #broadband.set_new_values(self.prop_dict, provider_type)
         else:
-            broadband.set_new_values(self.prop_dict, provider_type)
+            Dispatcher.emit("region_back", self.connection, self.prop_dict, provider_type)
 
-        nm_module.slider._slide_to_page("mobile", "right")
+            #broadband.set_new_values(self.prop_dict, provider_type)
 
-    def init(self, connection_type=None):
-        self.need_new_connection = True
-        self.connection_type = connection_type
+        nm_module.slider._slide_to_page("setting", "right")
+
+    def init(self, connection):
+        if connection == None:
+            self.connection_type = None
+        else:
+            self.connection = connection
+            mobile_type = connection.get_setting("connection").type
+            broadband_setting = self.connection.get_setting(mobile_type)
+            self.connection_type = broadband_setting.network_type
+
         from mm.provider import ServiceProviders
         self.__sp = ServiceProviders()
         self.country_list = self.__sp.get_country_name_list()

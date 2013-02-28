@@ -62,8 +62,6 @@ class SettingUI(gtk.Alignment):
         self.sidebar.load_list(module_obj)
         self.apply_method = module_obj.apply_changes
         self.save_method = module_obj.save_changes
-        crumb_name = module_obj.crumb_name
-        Dispatcher.send_submodule_crumb(2, crumb_name)
 
     def __init_tab(self):
         tabs = self.tab_window.tab_items

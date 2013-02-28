@@ -37,8 +37,6 @@ import gtk
 from container import Contain
 from lists import WiredItem, WirelessItem, GeneralItem, HidenItem
 
-from lan_config import WiredSetting
-from wlan_config import WirelessSetting
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
@@ -919,7 +917,6 @@ class Network(object):
         cr.fill()
 
     def slide_to_setting_page(self, widget, setting_module):
-        slider.slide_to_page(self.setting_page_ui, "right")
         self.setting_page_ui.load_module(setting_module)
 
     def activate_succeed(self, widget, connection_path):
@@ -952,7 +949,6 @@ class Network(object):
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, _("DSL")))
         self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, _("Proxy")))
         self.vpn = VpnSection(lambda : module_frame.send_submodule_crumb(2, _("VPN")))
-
 
         self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           lambda  : module_frame.send_message("change_crumb", 1))

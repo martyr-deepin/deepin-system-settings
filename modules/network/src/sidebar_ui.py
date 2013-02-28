@@ -23,6 +23,7 @@
 from dtk.ui.new_treeview import TreeView
 from dtk.ui.utils import container_remove_all
 from settings_widget import SettingItem, AddSettingItem, EntryTreeView
+from nmlib.nm_remote_connection import NMRemoteConnection
 from helper import Dispatcher
 import style
 
@@ -53,6 +54,9 @@ class SideBar(gtk.VBox):
         Dispatcher.connect("connection-delete", self.delete_item_cb)
         Dispatcher.connect("connection-replace", self.replace_connection)
 
+        # This one just for mobile setting
+        Dispatcher.connect("region_back", self.append_new_connection)
+
     def load_list(self, network_object):
         '''
         will add hasattr part for network_object
@@ -60,7 +64,8 @@ class SideBar(gtk.VBox):
         self.network_object = network_object
         self.connections = self.network_object.get_connections()
         for connection in self.connections:
-            connection.init_settings_prop_dict()
+            if isinstance(connection, NMRemoteConnection):
+                connection.init_settings_prop_dict()
         self.connection_tree = EntryTreeView()
         self.__init_tree(self.connections)
 
@@ -70,6 +75,10 @@ class SideBar(gtk.VBox):
         if hasattr(self.network_object, "delete_item"):
             pass
         self.init_select()
+        if self.connections !=[]:
+            crumb_name = network_object.crumb_name
+            Dispatcher.send_submodule_crumb(2, crumb_name)
+            Dispatcher.slide_to_page("setting", "right")
 
     def __init_tree(self, items_list, insert_pos=None):
         if items_list:
@@ -79,7 +88,6 @@ class SideBar(gtk.VBox):
 
     def delete_item_cb(self, widget, connection):
         '''docstring for delete_item_cb'''
-        from nmlib.nm_remote_connection import NMRemoteConnection
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
@@ -107,15 +115,32 @@ class SideBar(gtk.VBox):
     def add_new_connection(self):
         "new connection format (connection, index)"
         new_connection, index = self.new_connection()
+        if new_connection == None:
+            return
+
         if index is -1:
             self.connections.append(new_connection)
             self.__init_tree([new_connection])
         else:
-            self.connecttions.insert(index, new_connection)
+            self.connections.insert(index, new_connection)
             self.__init_tree([new_connection], index)
 
         connect = self.connection_tree.visible_items[index]
         self.connection_tree.select_items([connect])
+
+    def append_new_connection(self, widget, connection, prop_dict, type):
+        if isinstance(connection, NMRemoteConnection):
+            index = self.connections.index(connection)
+            conn = self.connection_tree.visible_items[index]
+            self.connection_tree.select_items([conn])
+        else:
+            self.__init_tree([connection])
+            self.connections.append(connection)
+            conn = self.connection_tree.visible_items[-1]
+            self.connection_tree.select_items([conn])
+
+        broadband = self.network_object.get_broadband(connection)
+        broadband.set_new_values(prop_dict, type)
     
     def init_select(self):
         try:
