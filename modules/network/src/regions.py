@@ -205,6 +205,8 @@ class Region(gtk.Alignment):
             broadband_setting = self.connection.get_setting(mobile_type)
             self.connection_type = broadband_setting.network_type
 
+        Dispatcher.send_submodule_crumb(_("Region"), 2)
+
         from mm.provider import ServiceProviders
         self.__sp = ServiceProviders()
         self.country_list = self.__sp.get_country_name_list()

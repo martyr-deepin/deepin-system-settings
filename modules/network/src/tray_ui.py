@@ -404,7 +404,7 @@ class SsidItem(TreeItem):
     def single_click(self, column, offset_x, offset_y):
         if self.is_double_click:
             print "double click"
-            Dispatcher.connect_by_ssid(self.ssid)
+            Dispatcher.connect_by_ssid(self.ssid, self.ap)
             self.is_double_click = False
             
 
@@ -535,3 +535,30 @@ class MoreButton(Button):
         draw_text(cr, label, rect.x + ALIGN_SPACING, rect.y + offset_y, text_width, text_height,
                 alignment = pango.ALIGN_LEFT)
         return True
+
+class APButton(gtk.Button):        
+    def __init__(self, 
+                 ap,
+                 ali_padding=0,
+                 font_size=10,
+                 bg_color="#ebf4fd",
+                 line_color="#7da2ce"):
+        gtk.Button.__init__(self)
+        self.ap = ap
+        self.font_size = font_size
+        self.bg_color = bg_color
+
+        self.__init_values()
+
+    def __init_values(self):
+        self.ssid = self.ap.get_ssid()
+        self.security = self.ap.get_flags()
+        self.strength = self.ap.get_strength()
+        self.active = False
+
+        # init values.
+        # init events.
+        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        self.connect("button-press-event", self.select_button_button_press_event)
+        self.connect("button-release-event", self.select_button_button_release_event)
+        self.connect("expose-event", self.select_button_expose_event)        

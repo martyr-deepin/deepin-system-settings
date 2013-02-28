@@ -27,9 +27,9 @@ from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 import pynotify
 from subprocess import Popen
-import gtk
 
 from widgets import AskPasswordDialog
+from vtk.timer import Timer
 
 class TrayNetworkPlugin(object):
 
@@ -41,6 +41,10 @@ class TrayNetworkPlugin(object):
         self.gui.button_more.connect("clicked", self.more_setting)
 
         self.need_auth_flag = False
+
+        self.timer = Timer(10000)
+        self.timer.Enabled = False
+        self.timer.connect("Tick", self.timer_count_down_finish)
 
     def init_values(self, this_list):
         self.this_list = this_list
@@ -86,7 +90,7 @@ class TrayNetworkPlugin(object):
         else:
             self.gui.remove_net("wireless")
 
-        Dispatcher.connect("tray-show-more", self.tray_show_more)
+        #Dispatcher.connect("tray-show-more", self.tray_show_more)
 
     def toggle_wired(self, widget):
         if widget.get_active():
@@ -102,9 +106,6 @@ class TrayNetworkPlugin(object):
         if new_state is 20:
             self.gui.wire.set_active((False, False))
         elif new_state is 30:
-            #n1 = pynotify.Notification("Network", "lan disconnect")
-            #n1.set_timeout(2)
-            #n1.show()
             
             self.gui.wire.set_sensitive(True)
             if self.gui.wireless.get_active():
@@ -114,23 +115,23 @@ class TrayNetworkPlugin(object):
             if reason is not 0:
                 self.gui.wire.set_active((True, False))
         elif new_state is 40:
-            #pynotify.Notification("Network", "lan connecting").show()
             self.gui.wire.set_active((True, True))
             self.change_status_icon("loading")
             self.let_rotate(True)
         elif new_state is 100:
-            #pynotify.Notification("Network", "lan connect").show()
             self.active_wired()
 
 
-    def connect_by_ssid(self, widget, ssid):
+    def connect_by_ssid(self, widget, ssid, ap):
         connection =  self.net_manager.connect_wireless_by_ssid(ssid)
+        self.ap = ap
         if not isinstance(connection, NMRemoteConnection):
-            connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-            ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
-            nm_module.nmclient.activate_connection_async(connection.object_path,
-                                      self.net_manager.wireless_devices[0].object_path,
-                                       ap[0].object_path)
+            self.toggle_dialog(connection)
+            #connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+            #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
+            #nm_module.nmclient.activate_connection_async(connection.object_path,
+                                      #self.net_manager.wireless_devices[0].object_path,
+                                       #ap[0].object_path)
         
     def active_wired(self):
         """
@@ -206,10 +207,10 @@ class TrayNetworkPlugin(object):
                 self.need_auth_flag = False
             if old_state == 120:
                 if self.need_auth_flag:
-                    active_connection = nm_module.nmclient.get_active_connections()[0]
-                    connection = active_connection.get_connection()
-                    print connection
-                    AskPasswordDialog(connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
+                    self.toggle_dialog(self.this_connection)
+                    device.nm_device_disconnect()
+                    
+                    #AskPasswordDialog(self.this_connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
             #elif reason:
                 #self.gui.wireless.set_active((True,False))
         elif new_state is 40:
@@ -230,14 +231,22 @@ class TrayNetworkPlugin(object):
             self.need_auth_flag = False
         elif new_state is 120 and reason is 7:
             self.need_auth_flag = True
+            active_connection = nm_module.nmclient.get_active_connections()[1]
+            self.this_connection = active_connection.get_connection()
+
+    def toggle_dialog(self, connection):
+        AskPasswordDialog(connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
+
 
     def cancel_ask_pwd(self):
         pass
 
-    def pwd_changed(self, pwd):
-        print pwd
-            
+    def pwd_changed(self, pwd, connection):
+        if not isinstance(connection, NMRemoteConnection):
+            connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
 
+        self.net_manager.save_and_connect(pwd, connection, self.ap)
+            
     def set_active_ap(self):
         index = self.net_manager.get_active_connection(self.ap_list)
         self.gui.set_active_ap(index, True)

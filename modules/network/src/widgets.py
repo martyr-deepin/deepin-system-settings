@@ -3,9 +3,9 @@
 from dss import app_theme
 from dtk.ui.button import ImageButton, ToggleButton, Button
 from dtk.ui.dialog import DialogBox
-from dtk.ui.entry import Entry, InputEntry
-from dtk.ui.theme import ui_theme
-from dtk.ui.utils import color_hex_to_cairo, alpha_color_hex_to_cairo, cairo_disable_antialias, container_remove_all, is_single_click, is_double_click
+from dtk.ui.new_entry import InputEntry, PasswordEntry
+from nm_modules import nm_module
+from nmlib.nm_remote_connection import NMRemoteConnection
 
 from dtk.ui.locales import _
 from dtk.ui.label import Label
@@ -22,10 +22,10 @@ class AskPasswordDialog(DialogBox):
     @undocumented: click_cancel_button
     '''
 	
-    def __init__(self, 
-                 title, 
-                 ssid,
-                 init_text, 
+    def __init__(self,
+                 connection,
+                 #title, 
+                 #init_text, 
                  default_width=330,
                  default_height=145,
                  confirm_callback=None, 
@@ -41,9 +41,13 @@ class AskPasswordDialog(DialogBox):
         @param cancel_callback: Callback when user click cancel button, this callback not need argument.
         '''
         # Init.
-        DialogBox.__init__(self, title, default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        DialogBox.__init__(self, "Set password", default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
+
+        self.connection = connection
+        ssid = self.connection.get_setting("802-11-wireless").ssid
+        print ssid
         
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
@@ -56,7 +60,15 @@ class AskPasswordDialog(DialogBox):
         self.entry_align = gtk.Alignment()
         self.entry_align.set(0.5, 0.5, 0, 0)
         self.entry_align.set_padding(0, 0, 8, 8)
-        self.entry = InputEntry(init_text)
+        if self.connection and isinstance(self.connection, NMRemoteConnection):
+            (setting_name, method) = self.connection.guess_secret_info() 
+            init_text = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                    setting_name,
+                                                    method)
+        else:
+            init_text = ''
+        self.entry = PasswordEntry(init_text)
+
         self.entry.set_size(default_width - 20, 25)
         
         self.encry_list = [(_("None"), None),
@@ -91,8 +103,7 @@ class AskPasswordDialog(DialogBox):
         Inernal fucntion to handle click confirm button.
         '''
         if self.confirm_callback != None:
-            self.confirm_callback(self.entry.get_text())        
-        
+            self.confirm_callback(self.entry.get_text(), self.connection)        
         self.destroy()
         
     def click_cancel_button(self):
@@ -301,7 +312,9 @@ if __name__ == "__main__":
 
     #my_button = SettingButton("another setting")
     my_button = gtk.Button("click")
-    my_button.connect("clicked", lambda w: AskPasswordDialog("test","DeepinWork" ,"").show_all())
+    
+    mm = nm_module.nm_remote_settings.get_wireless_connections()[1]
+    my_button.connect("clicked", lambda w: AskPasswordDialog(mm).show_all())
     my_button.set_size_request(200, 200)
     align.add(my_button)
     win.add(align)

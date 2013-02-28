@@ -45,7 +45,7 @@ class EventDispatcher(gobject.GObject):
             "set-tip" :       _(int),
             "wired_change" : _(obj, int, int),
             "wireless_change" : _(obj, int, int, int),
-            "connect_by_ssid" : _(str),
+            "connect_by_ssid" : _(str, obj),
             "select-connection" : _(obj),
             "slide-to" : _(obj, str),
             "change-crumb" : _(str),
@@ -69,8 +69,7 @@ class EventDispatcher(gobject.GObject):
             "setting-appled": _(),
             "connection-replace": _(obj),
 
-            "request_resize": _(int),
-
+            "request_resize": _(),
             }
 
     def __init__(self):
@@ -113,8 +112,8 @@ class EventDispatcher(gobject.GObject):
         #elif new_state is 30:
         self.emit("wireless_change", device, new_state, old_state, reason)
 
-    def connect_by_ssid(self, ssid):
-        self.emit("connect_by_ssid", ssid)
+    def connect_by_ssid(self, ssid, ap):
+        self.emit("connect_by_ssid", ssid, ap)
 
     def tray_show_more(self):
         self.emit("tray-show-more")
@@ -147,7 +146,7 @@ class EventDispatcher(gobject.GObject):
     def send_submodule_crumb(self, index, name):
         self.__module_frame.send_submodule_crumb(index, name)
 
-    def request_resize(self, height):
-        self.emit("request_resize", height)
+    def request_resize(self):
+        self.emit("request_resize")
 
 Dispatcher = EventDispatcher()

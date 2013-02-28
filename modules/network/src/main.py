@@ -440,12 +440,13 @@ class WirelessSection(gtk.VBox):
 
     def try_to_connect(self, ssid):
         print "try_to_connect"
-        ap_list  = [ap.get_ssid() for ap in self.ap_list]
-        try:
-            self.index = ap_list.index(ssid)
-            self.tree.visible_items[self.index].set_net_state(1)
-        except:
-            self.hotspot.set_net_state(1)
+        if hasattr(self, "ap_list"):
+            ap_list  = [ap.get_ssid() for ap in self.ap_list]
+            try:
+                self.index = ap_list.index(ssid)
+                self.tree.visible_items[self.index].set_net_state(1)
+            except:
+                self.hotspot.set_net_state(1)
     
     def device_is_active(self, device):
         print "wireless active"
