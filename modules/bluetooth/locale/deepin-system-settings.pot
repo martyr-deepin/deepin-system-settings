@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-26 15:06+0800\n"
+"POT-Creation-Date: 2013-02-27 15:18+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,12 +33,12 @@ msgstr ""
 msgid "Searching Device Timeout"
 msgstr ""
 
-#: ../src/tray_bluetooth_plugin.py:76
+#: ../src/tray_bluetooth_plugin.py:167
 msgid "Adapter"
 msgstr ""
 
-#: ../src/tray_bluetooth_plugin.py:82
-msgid "More devices"
+#: ../src/tray_bluetooth_plugin.py:173
+msgid "Advanced option..."
 msgstr ""
 
 #: ../src/bluetooth_view.py:234

@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Wang Yong
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,6 +32,7 @@ from ui.utils import get_separator
 from constant import TITLE_FONT_SIZE
 
 from theme import app_theme
+from messager import Messager
 
 class ThemePage(ScrolledWindow):
     '''
@@ -43,6 +45,9 @@ class ThemePage(ScrolledWindow):
         '''
         ScrolledWindow.__init__(self, 0, 0)
         self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+
+        self.__messager = Messager()
+
         self.label_padding_x = 10
         self.label_padding_y = 10
         
@@ -76,6 +81,8 @@ class ThemePage(ScrolledWindow):
         
         # self.user_theme_align.connect("expose-event", self.expose_label_align)
         # self.system_theme_align.connect("expose-event", self.expose_label_align)
+
+        self.__messager.send_message("status", ("individuation", "hide_reset"))
         
     def expose_label_align(self, widget, event):
         cr = widget.window.cairo_create()

@@ -23,6 +23,7 @@
 
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
+from deepin_utils.process import run_command
 from nls import _
 import gtk
 import os
@@ -43,6 +44,8 @@ SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.")
 LOGOUT_TOP_TEXT = _("Logout your computer now?")
 LOGOUT_BOTTOM_TEXT = _("The system will Logout in \n%s secs.")
 
+RUN_DSS_COMMAND = "deepin-system-settings account"
+
 
 
 class TrayShutdownPlugin(object):
@@ -54,6 +57,7 @@ class TrayShutdownPlugin(object):
         self.gui.restart_btn.connect("clicked", self.restart_btn_clicked)
         self.gui.suspend_btn.connect("clicked", self.suspend_btn_clicked)
         self.gui.logout_btn.connect("clicked", self.logout_btn_clicked)
+        self.gui.user_label_event.connect("button-press-event", self.user_label_clicked)
 
     def stop_btn_clicked(self, widget):
         self.dialog.show_dialog("deepin_shutdown")
@@ -86,6 +90,12 @@ class TrayShutdownPlugin(object):
         self.dialog.argv = 1
         self.this.hide_menu()
 
+    def user_label_clicked(self, widget, event):
+        # run dss command.
+        if event.button == 1:
+            run_command(RUN_DSS_COMMAND)
+            self.this.hide_menu()
+
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
@@ -96,7 +106,7 @@ class TrayShutdownPlugin(object):
     def set_user_icon(self):
         try:
             # set user icon.
-            print self.gui.cmd_dbus.get_user_image_path() 
+            #print self.gui.cmd_dbus.get_user_image_path() 
             #self.gui.user_icon.set_from_file(self.gui.cmd_dbus.get_user_image_path())
             self.gui.user_icon.set_from_file(self.dbus_user.get_icon_file())
             #
@@ -132,10 +142,11 @@ class TrayShutdownPlugin(object):
     def show_menu(self):
         self.set_user_icon()
         self.this.set_size_request(160, 180)
-        print "shutdown show menu..."
+        #print "shutdown show menu..."
 
     def hide_menu(self):
-        print "shutdown hide menu..."
+        #print "shutdown hide menu..."
+        pass
 
 def return_plugin():
     return TrayShutdownPlugin 

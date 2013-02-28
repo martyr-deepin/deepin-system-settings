@@ -41,7 +41,7 @@ SHUTDOWN_BOTTOM_TEXT = _("The system will shutdown in \n%s secs.")
 #FONT_TYPE = _("文泉驿微米黑 Bold")
 FONT_TYPE = _("WenQuanYi Micro Hei Bold")
 
-EN_RED_TEXT = {"Turn off your computer now?":(0, 8), 
+EN_RED_TEXT = {"Turn off your computer now?":(0, 9), 
                "Restart your computer now?":(0, 7), 
                "Suspend your computer now?":(0, 7), 
                "Logout your computer now?":(0, 5)} 

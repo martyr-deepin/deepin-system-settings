@@ -399,6 +399,7 @@ class TouchpadSetting(object):
         self.alignment_widgets["mouse_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
 
         if not settings.is_has_touchpad():
+            self.container_widgets["statusbar"].set_sensitive(False)
             self.alignment_widgets["left"].set_sensitive(False)
             self.label_widgets["acceleration"].set_sensitive(False)
             self.label_widgets["sensitivity"].set_sensitive(False)

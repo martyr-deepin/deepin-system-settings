@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 #
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ from dtk.ui.dialog import InputDialog, ConfirmDialog
 from ui.theme_item import ThemeItem
 from helper import event_manager
 from theme_manager import theme_manager
+from messager import Messager
 from nls import _
 
 from common import threaded
@@ -37,6 +39,8 @@ class UserThemeView(IconView):
     def __init__(self, padding_x=0, padding_y=0):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
 
+        self.__messager = Messager()
+
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
         self.connect("right-click-item", self.__on_right_click_item)
@@ -44,7 +48,6 @@ class UserThemeView(IconView):
         event_manager.add_callback("create-new-theme", self.on_create_new_theme)
         event_manager.add_callback("clear-userview-highlight", self.clear_highlight_status)
         self.__init_themes()
-
 
     @threaded
     def __init_themes(self):
@@ -77,6 +80,7 @@ class UserThemeView(IconView):
         self.set_highlight(item)
         event_manager.emit("clear-systemview-highlight", item.theme)
         theme_manager.apply_theme(item.theme)
+        self.__messager.send_message("status", ("individuation", _("Changed system theme to \"%s\"") % item.theme.get_name()))
 
     def on_create_new_theme(self, name, obj, new_theme):
         self.add_themes([new_theme])
