@@ -45,6 +45,7 @@ LOGOUT_TOP_TEXT = _("Logout your computer now?")
 LOGOUT_BOTTOM_TEXT = _("The system will Logout in \n%s secs.")
 
 RUN_DSS_COMMAND = "deepin-system-settings account"
+RUN_LOCK_COMMAND = "dlock"
 
 
 
@@ -57,6 +58,7 @@ class TrayShutdownPlugin(object):
         self.gui.restart_btn.connect("clicked", self.restart_btn_clicked)
         self.gui.suspend_btn.connect("clicked", self.suspend_btn_clicked)
         self.gui.logout_btn.connect("clicked", self.logout_btn_clicked)
+        self.gui.switch_btn.connect("clicked", self.switch_btn_clicked)
         self.gui.user_label_event.connect("button-press-event", self.user_label_clicked)
 
     def stop_btn_clicked(self, widget):
@@ -95,6 +97,9 @@ class TrayShutdownPlugin(object):
         if event.button == 1:
             run_command(RUN_DSS_COMMAND)
             self.this.hide_menu()
+
+    def switch_btn_clicked(self, widget):
+        run_command(RUN_LOCK_COMMAND)
 
     def init_values(self, this_list):
         self.this_list = this_list
@@ -141,7 +146,7 @@ class TrayShutdownPlugin(object):
 
     def show_menu(self):
         self.set_user_icon()
-        self.this.set_size_request(160, 180)
+        self.this.set_size_request(160, 210)
         #print "shutdown show menu..."
 
     def hide_menu(self):
