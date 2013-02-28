@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-28 11:42+0800\n"
+"POT-Creation-Date: 2013-02-28 14:52+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.py:104
+msgid "Theme Setting"
+msgstr "主题设置"
+
+#: ../src/main.py:108
+msgid "Add Wallpaper"
+msgstr "添加桌面壁纸"
 
 #: ../src/ui/theme_page.py:59
 msgid "My Theme"
@@ -26,6 +34,7 @@ msgid "System Theme"
 msgstr "系统主题"
 
 #: ../src/ui/theme_view.py:81
+#, python-format
 msgid "Changed User Theme to %s"
 msgstr "当前系统主题已设置为“%s”"
 
@@ -43,5 +52,56 @@ msgid "Delete Theme"
 msgstr "删除主题"
 
 #: ../src/ui/theme_view.py:167
+#, python-format
 msgid "Changed System Theme to %s"
 msgstr "当前系统主题已设置为“%s”"
+
+#: ../src/ui/detail_page.py:41
+msgid "Seconds"
+msgstr "秒"
+
+#: ../src/ui/detail_page.py:42
+msgid "Minute"
+msgstr "分钟"
+
+#: ../src/ui/detail_page.py:42 ../src/ui/detail_page.py:43
+#: ../src/ui/detail_page.py:44 ../src/ui/detail_page.py:45
+msgid "Minutes"
+msgstr "分钟"
+
+#: ../src/ui/detail_page.py:45
+msgid "Hour"
+msgstr "小时"
+
+#: ../src/ui/detail_page.py:46 ../src/ui/detail_page.py:47
+#: ../src/ui/detail_page.py:48
+msgid "Hours"
+msgstr "小时"
+
+#: ../src/ui/detail_page.py:51
+msgid "Scaling"
+msgstr "拉伸"
+
+#: ../src/ui/detail_page.py:51
+msgid "Tiling"
+msgstr "平铺"
+
+#: ../src/ui/detail_page.py:86
+msgid "Position"
+msgstr "图片位置"
+
+#: ../src/ui/detail_page.py:89
+msgid "Duration"
+msgstr "图片时间间隔"
+
+#: ../src/ui/detail_page.py:97
+msgid "Random"
+msgstr "随机播放"
+
+#: ../src/ui/detail_page.py:103
+msgid "Select All"
+msgstr "全选"
+
+#: ../src/ui/detail_page.py:106
+msgid "Delete"
+msgstr "删除"

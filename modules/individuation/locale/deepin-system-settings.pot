@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-28 11:42+0800\n"
+"POT-Creation-Date: 2013-02-28 14:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/main.py:104
+msgid "Theme Setting"
+msgstr ""
+
+#: ../src/main.py:108
+msgid "Add Wallpaper"
+msgstr ""
 
 #: ../src/ui/theme_page.py:59
 msgid "My Theme"
@@ -46,4 +54,54 @@ msgstr ""
 #: ../src/ui/theme_view.py:167
 #, python-format
 msgid "Changed System Theme to %s"
+msgstr ""
+
+#: ../src/ui/detail_page.py:41
+msgid "Seconds"
+msgstr ""
+
+#: ../src/ui/detail_page.py:42
+msgid "Minute"
+msgstr ""
+
+#: ../src/ui/detail_page.py:42 ../src/ui/detail_page.py:43
+#: ../src/ui/detail_page.py:44 ../src/ui/detail_page.py:45
+msgid "Minutes"
+msgstr ""
+
+#: ../src/ui/detail_page.py:45
+msgid "Hour"
+msgstr ""
+
+#: ../src/ui/detail_page.py:46 ../src/ui/detail_page.py:47
+#: ../src/ui/detail_page.py:48
+msgid "Hours"
+msgstr ""
+
+#: ../src/ui/detail_page.py:51
+msgid "Scaling"
+msgstr ""
+
+#: ../src/ui/detail_page.py:51
+msgid "Tiling"
+msgstr ""
+
+#: ../src/ui/detail_page.py:86
+msgid "Position"
+msgstr ""
+
+#: ../src/ui/detail_page.py:89
+msgid "Duration"
+msgstr ""
+
+#: ../src/ui/detail_page.py:97
+msgid "Random"
+msgstr ""
+
+#: ../src/ui/detail_page.py:103
+msgid "Select All"
+msgstr ""
+
+#: ../src/ui/detail_page.py:106
+msgid "Delete"
 msgstr ""
