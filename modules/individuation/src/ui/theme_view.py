@@ -25,21 +25,19 @@ from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.dialog import InputDialog, ConfirmDialog
-
+from ui.status_box import StatusBox
 from ui.theme_item import ThemeItem
 from helper import event_manager
 from theme_manager import theme_manager
-from messager import Messager
 from nls import _
-
 from common import threaded
 
 class UserThemeView(IconView):
 
-    def __init__(self, padding_x=0, padding_y=0):
+    def __init__(self, padding_x=0, padding_y=0, status_box=None):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
 
-        self.__messager = Messager()
+        self.status_box = status_box
 
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
@@ -80,7 +78,7 @@ class UserThemeView(IconView):
         self.set_highlight(item)
         event_manager.emit("clear-systemview-highlight", item.theme)
         theme_manager.apply_theme(item.theme)
-        self.__messager.send_message("status", ("individuation", _("Changed system theme to \"%s\"") % item.theme.get_name()))
+        self.status_box.set_status(_("Changed User Theme to %s") % item.theme.get_name())
 
     def on_create_new_theme(self, name, obj, new_theme):
         self.add_themes([new_theme])
@@ -95,7 +93,7 @@ class UserThemeView(IconView):
         self.queue_draw()
 
     def on_theme_sava_as(self, item):
-        input_dialog = InputDialog("主题另存为", "", 300, 100, lambda name: self.create_new_theme(name, item))
+        input_dialog = InputDialog(_("Theme Save As"), "", 300, 100, lambda name: self.create_new_theme(name, item), None, True)
         input_dialog.show_all()
 
     def on_theme_delete(self, item):
@@ -111,12 +109,12 @@ class UserThemeView(IconView):
         self.delete_theme(item)
 
     def __on_right_click_item(self, widget, item, x, y):
-        menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item))]
+        menu_items = [(None, _("Save As"), lambda : self.on_theme_sava_as(item))]
         # TODO: the first item do not show delete
         if self.items.index(item) != 0:
-            menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item)), 
+            menu_items = [(None, _("Save As"), lambda : self.on_theme_sava_as(item)), 
                           None, 
-                          (None, "删除主题", lambda : self.on_theme_delete(item))]
+                          (None, _("Delete Theme"), lambda : self.on_theme_delete(item))]
         Menu(menu_items, True).show((int(x), int(y)))
 
     def add_themes(self, themes):
@@ -125,8 +123,10 @@ class UserThemeView(IconView):
 
 class SystemThemeView(IconView):
 
-    def __init__(self, padding_x=0, padding_y=0):
+    def __init__(self, padding_x=0, padding_y=0, status_box=None):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
+
+        self.status_box = status_box
 
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
@@ -164,18 +164,18 @@ class SystemThemeView(IconView):
         event_manager.emit("clear-userview-highlight", None)
         self.set_highlight(item)
         theme_manager.apply_theme(item.theme)
-
+        self.status_box.set_status(_("Changed System Theme to %s") % item.theme.get_name())
 
     def create_new_theme(self, name, item):
         new_theme = theme_manager.create_new_theme(name, item.theme)
         event_manager.emit("create-new-theme", new_theme)
 
     def on_theme_sava_as(self, item):
-        input_dialog = InputDialog("主题另存为", "", 300, 100, lambda name: self.create_new_theme(name, item))
+        input_dialog = InputDialog(_("Theme Save As"), "", 300, 100, lambda name: self.create_new_theme(name, item))
         input_dialog.show_all()
 
     def __on_right_click_item(self, widget, item, x, y):
-        menu_items = [(None, "另存为", lambda : self.on_theme_sava_as(item))]
+        menu_items = [(None, _("Save As"), lambda : self.on_theme_sava_as(item))]
         Menu(menu_items, True).show((int(x), int(y)))
 
     def add_themes(self, themes):

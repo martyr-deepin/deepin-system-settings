@@ -492,9 +492,9 @@ class DisplayManager:
         return self.__get_duration_index(self.get_lock_display() / 60, items)
 
     def set_lock_display(self, value):
-        if value * 60 < BIG_NUM:
-            self.__screensaver_settings.set_boolean("lock-enabled", true)
+        if value * 60 < self.BIG_NUM:
+            self.__screensaver_settings.set_boolean("lock-enabled", True)
         else:
-            self.__screensaver_settings.set_boolean("lock-enabled", false)
+            self.__screensaver_settings.set_boolean("lock-enabled", False)
 
         self.__session_settings.set_uint("idle-delay", value * 60)

@@ -23,17 +23,14 @@
 import gtk
 import random
 import gobject
-
 from dtk.ui.utils import (get_optimum_pixbuf_from_file, cairo_disable_antialias,
                           run_command, is_in_rect, color_hex_to_cairo)
 from dtk.ui.draw import draw_pixbuf, draw_shadow
 from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
-
 from theme import app_theme
 from cache_manager import SMALL_SIZE, cache_manager
 from helper import event_manager
-
 
 ITEM_PADDING_X = 20
 ITEM_PADDING_Y = 10
