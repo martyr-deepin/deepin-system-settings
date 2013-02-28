@@ -103,7 +103,7 @@ class AskPasswordDialog(DialogBox):
         Inernal fucntion to handle click confirm button.
         '''
         if self.confirm_callback != None:
-            self.confirm_callback(self.entry.get_text(), self.connection)        
+            self.confirm_callback(self.entry.entry.get_text(), self.connection)        
         self.destroy()
         
     def click_cancel_button(self):

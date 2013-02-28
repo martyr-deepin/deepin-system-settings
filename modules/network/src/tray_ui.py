@@ -189,27 +189,30 @@ class TrayUI(gtk.VBox):
 
     def move_active(self, index):
         if index != [] and self.__ap_list:
-            if index <= len(self.ap_tree.visible_items):
-                print index
-                self.ap_tree.delete_item_by_index(index)
-                self.ap_tree.add_items([SsidItem(self.__ap_list[index])],
-                                        insert_pos=0)
-            else:
-                self.ap_tree.delete_item_by_index(-1)
-                self.ap_tree.add_items([SsidItem(self.__ap_list[index])],
-                                        insert_pos=0)
+            for i in index:
+                if i <= len(self.ap_tree.visible_items):
+                    self.ap_tree.delete_item_by_index(i)
+                    self.ap_tree.add_items([SsidItem(self.__ap_list[i])],
+                                            insert_pos=0)
+                else:
+                    self.ap_tree.delete_item_by_index(-1)
+                    self.ap_tree.add_items([SsidItem(self.__ap_list[i])],
+                                            insert_pos=0)
+                self.ap_tree.visible_items[0].set_active(True)
 
 
     def set_active_ap(self, index, state):
-        if self.active_ap_index:
-            for i in self.active_ap_index:
-                self.ap_tree.visible_items[i].set_active(False)
-            self.active_ap_index = index
+        #if self.active_ap_index:
+            #if index == self.active_ap_index:
+                #print "same"
+                #return
+            #self.ap_tree.visible_items[self.active_ap_index].set_active(False)
+            #self.active_ap_index = index
+        self.active_ap_index = index
+        self.set_ap(self.__ap_list)
 
         if index:
-            for i in index:
-                self.move_active(i)
-                self.ap_tree.visible_items[0].set_active(state)
+            self.move_active(index)
         
     def get_active_ap(self):
         return self.active_ap_index
@@ -219,11 +222,12 @@ class TrayUI(gtk.VBox):
         #self.set_visible_aps(True)
         #height = self.get_height()
         #Dispatcher.request_resize(height)
-
         self.ap_tree.delete_all_items()
         container_remove_all(self.tree_box)
 
         self.ap_tree.add_items(map(lambda ap: SsidItem(ap), self.__ap_list))
+        if self.active_ap_index:
+            self.move_active(self.active_ap_index)
         #self.tree_box.pack_start(self.ap_tree, True, True)
 
         length = len(self.ap_tree.visible_items)
@@ -234,11 +238,20 @@ class TrayUI(gtk.VBox):
             for item in self.ap_tree.visible_items:
                 item.set_padding(10)
         self.tree_box.pack_start(self.ap_tree, True, True)
+        self.all_showed = True
         
         Dispatcher.request_resize()
 
-
-         
+    def reset_tree(self):
+        if len(self.ap_tree.visible_items) >= 5 and self.all_showed:
+            #container_remove_all(self.tree_box)
+            remove_items = self.ap_tree.visible_items[5:]
+            self.ap_tree.delete_items(remove_items)
+            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
+            #self.tree_box.pack_start(self.ap_tree, True, True)
+            self.tree_box.pack_start(self.more_button, False, False)
+            self.all_showed = False
+            
 class Section(gtk.HBox):
     TOGGLE_INSENSITIVE = 0
     TOGGLE_INACTIVE = 1

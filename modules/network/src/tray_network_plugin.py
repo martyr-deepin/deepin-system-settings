@@ -31,6 +31,8 @@ from subprocess import Popen
 from widgets import AskPasswordDialog
 from vtk.timer import Timer
 
+WAIT_TIME = 15000
+
 class TrayNetworkPlugin(object):
 
     def __init__(self):
@@ -42,7 +44,7 @@ class TrayNetworkPlugin(object):
 
         self.need_auth_flag = False
 
-        self.timer = Timer(10000)
+        self.timer = Timer(WAIT_TIME)
         self.timer.Enabled = False
         self.timer.connect("Tick", self.timer_count_down_finish)
 
@@ -63,6 +65,15 @@ class TrayNetworkPlugin(object):
         n = pynotify.Notification(title, message, icon)
         n.set_timeout(time_out)
         n.show()
+
+    def timer_count_down_finish(self, widget):
+        connections = nm_module.nmclient.get_active_connections()
+        active_connection = connections[-1]
+        
+        self.this_connection = active_connection.get_connection()
+        self.this_device.nm_device_disconnect()
+        self.toggle_dialog(self.this_connection)
+        widget.Enabled = False
 
     def init_widgets(self):
         wired_state = self.net_manager.get_wired_state()
@@ -205,11 +216,12 @@ class TrayNetworkPlugin(object):
                 index = self.gui.get_active_ap()
                 self.gui.set_active_ap(index, False)
                 self.need_auth_flag = False
+            '''
             if old_state == 120:
                 if self.need_auth_flag:
                     self.toggle_dialog(self.this_connection)
                     device.nm_device_disconnect()
-                    
+               '''     
                     #AskPasswordDialog(self.this_connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
             #elif reason:
                 #self.gui.wireless.set_active((True,False))
@@ -219,9 +231,13 @@ class TrayNetworkPlugin(object):
             self.change_status_icon("loading")
 
             self.let_rotate(True)
+        elif new_state is 50:
+            self.this_device = device
+            self.timer.Enabled = True
+            self.timer.Interval = WAIT_TIME
                 
-        elif new_state is 60 and old_state == 50:
-            active_connection = nm_module.nmclient.get_active_connections()
+        #elif new_state is 60 and old_state == 50:
+            #active_connection = nm_module.nmclient.get_active_connections()
             #print map(lambda a: a.get_connection(), active_connection)
             #print "need auth"
         elif new_state is 100:
@@ -229,23 +245,32 @@ class TrayNetworkPlugin(object):
             self.change_status_icon("links")
             self.set_active_ap()
             self.need_auth_flag = False
+        '''
         elif new_state is 120 and reason is 7:
             self.need_auth_flag = True
             active_connection = nm_module.nmclient.get_active_connections()[1]
             self.this_connection = active_connection.get_connection()
+        '''
 
     def toggle_dialog(self, connection):
         AskPasswordDialog(connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
 
 
     def cancel_ask_pwd(self):
-        pass
+        self.timer.Enabled = False
+        self.timer.Interval = WAIT_TIME
 
     def pwd_changed(self, pwd, connection):
         if not isinstance(connection, NMRemoteConnection):
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-
-        self.net_manager.save_and_connect(pwd, connection, self.ap)
+        
+        if hasattr(self, "ap"):
+            if self.ap:
+                self.net_manager.save_and_connect(pwd, connection, self.ap)
+            else:
+                self.net_manager.save_and_connect(pwd, connection, None)
+        else:
+            self.net_manager.save_and_connect(pwd, connection, None)
             
     def set_active_ap(self):
         index = self.net_manager.get_active_connection(self.ap_list)
@@ -263,6 +288,8 @@ class TrayNetworkPlugin(object):
         """
         change status icon state
         """
+        self.timer.Enabled = False
+        self.timer.Interval = WAIT_TIME
         self.let_rotate(False)
         self.tray_icon.set_icon_theme(icon_name)
 
@@ -307,6 +334,10 @@ class TrayNetworkPlugin(object):
     def hide_menu(self):
         #print "shutdown hide menu..."
         self.menu_showed = False
+        if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
+            self.gui.reset_tree()
+        # TODO reset menu if all showed
+            #self.gui.set_ap(self.ap_list)
 
     def request_resize(self, widget):
         """

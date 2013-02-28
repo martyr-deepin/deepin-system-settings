@@ -119,9 +119,14 @@ class NetManager(object):
         #nm_module.secret_agent.agent_save_secrets(connection.object_path, setting_name, method)
         
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-        nm_module.nmclient.activate_connection_async(connection.object_path,
-                                   wireless_device.object_path,
-                                   ap.object_path)
+        if ap:
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                       wireless_device.object_path,
+                                       ap.object_path)
+        else:
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                       wireless_device.object_path,
+                                       "/")
         
 
     def connect_wireless_by_ssid(self, ssid):
