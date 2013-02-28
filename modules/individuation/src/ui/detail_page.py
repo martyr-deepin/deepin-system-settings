@@ -34,6 +34,7 @@ from ui.wallpaper_item import ITEM_PADDING_Y
 from ui.wallpaper_view import WallpaperView
 from ui.utils import get_toggle_group, get_combo_group
 from constant import STATUS_HEIGHT, WIDGET_HEIGHT
+from helper import event_manager
 from nls import _
 import threading as td
 
@@ -159,7 +160,7 @@ class DetailPage(TabBox):
         SelectAllThread(self).start()
 
     def __on_delete(self, widget):
-        pass
+        event_manager.emit("switch-to-deletepage", self.theme)
 
     def __on_random_toggled(self, widget):
         is_random = widget.get_active()

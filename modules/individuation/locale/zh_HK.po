@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-28 14:52+0800\n"
+"POT-Creation-Date: 2013-02-28 17:40+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,11 +17,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/main.py:104
+msgid "Delete Wallpaper"
+msgstr ""
+
+#: ../src/main.py:117
 msgid "Theme Setting"
 msgstr ""
 
-#: ../src/main.py:108
+#: ../src/main.py:121
 msgid "Add Wallpaper"
+msgstr ""
+
+#: ../src/ui/delete_page.py:58
+msgid "Back"
+msgstr ""
+
+#: ../src/ui/delete_page.py:61 ../src/ui/detail_page.py:104
+msgid "Select All"
+msgstr ""
+
+#: ../src/ui/delete_page.py:64 ../src/ui/detail_page.py:107
+msgid "Delete"
 msgstr ""
 
 #: ../src/ui/theme_page.py:59
@@ -37,70 +53,71 @@ msgstr ""
 msgid "Changed User Theme to %s"
 msgstr ""
 
-#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:174
+#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:171
 msgid "Theme Save As"
 msgstr ""
 
-#: ../src/ui/theme_view.py:112 ../src/ui/theme_view.py:115
-#: ../src/ui/theme_view.py:178
+#: ../src/ui/theme_view.py:101
+msgid "Delete theme"
+msgstr ""
+
+#: ../src/ui/theme_view.py:102
+#, python-format
+msgid "Are you sure delete %s theme"
+msgstr ""
+
+#: ../src/ui/theme_view.py:109 ../src/ui/theme_view.py:112
+#: ../src/ui/theme_view.py:175
 msgid "Save As"
 msgstr ""
 
-#: ../src/ui/theme_view.py:117
+#: ../src/ui/theme_view.py:114
 msgid "Delete Theme"
 msgstr ""
 
-#: ../src/ui/theme_view.py:167
+#: ../src/ui/theme_view.py:164
 #, python-format
 msgid "Changed System Theme to %s"
 msgstr ""
 
-#: ../src/ui/detail_page.py:41
+#: ../src/ui/detail_page.py:42
 msgid "Seconds"
 msgstr ""
 
-#: ../src/ui/detail_page.py:42
+#: ../src/ui/detail_page.py:43
 msgid "Minute"
 msgstr ""
 
-#: ../src/ui/detail_page.py:42 ../src/ui/detail_page.py:43
-#: ../src/ui/detail_page.py:44 ../src/ui/detail_page.py:45
+#: ../src/ui/detail_page.py:43 ../src/ui/detail_page.py:44
+#: ../src/ui/detail_page.py:45 ../src/ui/detail_page.py:46
 msgid "Minutes"
 msgstr ""
 
-#: ../src/ui/detail_page.py:45
+#: ../src/ui/detail_page.py:46
 msgid "Hour"
 msgstr ""
 
-#: ../src/ui/detail_page.py:46 ../src/ui/detail_page.py:47
-#: ../src/ui/detail_page.py:48
+#: ../src/ui/detail_page.py:47 ../src/ui/detail_page.py:48
+#: ../src/ui/detail_page.py:49
 msgid "Hours"
 msgstr ""
 
-#: ../src/ui/detail_page.py:51
+#: ../src/ui/detail_page.py:52
 msgid "Scaling"
 msgstr ""
 
-#: ../src/ui/detail_page.py:51
+#: ../src/ui/detail_page.py:52
 msgid "Tiling"
 msgstr ""
 
-#: ../src/ui/detail_page.py:86
+#: ../src/ui/detail_page.py:87
 msgid "Position"
 msgstr ""
 
-#: ../src/ui/detail_page.py:89
+#: ../src/ui/detail_page.py:90
 msgid "Duration"
 msgstr ""
 
-#: ../src/ui/detail_page.py:97
+#: ../src/ui/detail_page.py:98
 msgid "Random"
-msgstr ""
-
-#: ../src/ui/detail_page.py:103
-msgid "Select All"
-msgstr ""
-
-#: ../src/ui/detail_page.py:106
-msgid "Delete"
 msgstr ""

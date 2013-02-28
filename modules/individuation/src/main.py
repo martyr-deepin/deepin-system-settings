@@ -27,6 +27,7 @@ from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from dtk.ui.new_slider import HSlider
 from ui.detail_page import DetailPage
+from ui.delete_page import DeletePage
 from ui.theme_page import ThemePage
 from ui.add_page import AddPage
 from module_frame import ModuleFrame
@@ -50,6 +51,8 @@ class DeepinIndividuation(object):
     
         # Init theme setting view.
         self.detail_page = DetailPage()
+
+        self.delete_page = DeletePage()
         
         # Init theme view.
         self.theme_page = ThemePage()
@@ -66,7 +69,9 @@ class DeepinIndividuation(object):
         self.add_page.set_size_request(PAGE_WIDTH, PAGE_HEIGHT)
         
         # Connect events.
-        event_manager.add_callback("theme-detail", self.switch_detail_page)        
+        event_manager.add_callback("theme-detail", self.switch_detail_page)
+        event_manager.add_callback("switch-to-deletepage", self.switch_delete_page)
+        event_manager.add_callback("back-to-detailpage", self.back_to_detailpage)
         event_manager.add_callback("switch-to-addpage", self.switch_add_page)
         event_manager.add_callback("add-wallpapers", self.back_to_addpage)
         
@@ -93,10 +98,19 @@ class DeepinIndividuation(object):
             self.slider.set_to_page(self.theme_page)
             self.module_frame.send_module_info()
 
+    def switch_delete_page(self, name, obj, theme):
+        self.slider.slide_to_page(self.delete_page, "right")
+        self.delete_page.set_theme(theme)
+        self.module_frame.send_submodule_crumb(3, _("Delete Wallpaper"))
             
     def back_to_addpage(self, name, obj, data):        
         self.module_frame.send_message("back", 2)
         self.slider.slide_to_page(self.detail_page, "left")        
+    
+    def back_to_detailpage(self, name, obj, theme):
+        self.module_frame.send_message("back", 2)
+        self.slider.slide_to_page(self.detail_page, "left")
+        self.detail_page.set_theme(theme)
     
     def switch_detail_page(self, name, obj, theme):
         self.slider.slide_to_page(self.detail_page, "right")
