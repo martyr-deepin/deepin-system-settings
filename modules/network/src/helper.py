@@ -60,12 +60,16 @@ class EventDispatcher(gobject.GObject):
             "wireless-device-remove": _(obj),
 
             "to-setting-page": _(obj),
-            "to-region-page":_(),
+            "to-region-page":_(obj),
+            "region-back": _(obj, obj, str),
+
             "new-connection-created": _(obj),
 
             "setting-saved": _(),
             "setting-appled": _(),
             "connection-replace": _(obj),
+
+            "request_resize": _(int),
 
             }
 
@@ -133,11 +137,17 @@ class EventDispatcher(gobject.GObject):
     def load_slider(self, slider):
         self.__slider = slider
 
+    def slide_to_page(self, name, direction):
+        self.__slider.slide_to_page(self.__slider.get_page_by_name(name), direction)
+
     def to_main_page(self):
         self.__module_frame.send_message("change_crumb", 1)
-        self.__slider.slide_to_page(self.__slider.get_page_by_name("main"), "left")
+        self.slide_to_page('main', "left")
 
     def send_submodule_crumb(self, index, name):
         self.__module_frame.send_submodule_crumb(index, name)
+
+    def request_resize(self, height):
+        self.emit("request_resize", height)
 
 Dispatcher = EventDispatcher()

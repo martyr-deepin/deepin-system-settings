@@ -3,26 +3,23 @@
 #from theme import app_theme, ui_theme
 
 from dss import app_theme
-from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,CheckButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
-from dtk.ui.new_treeview import TreeView
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox
 from dtk.ui.scrolled_window import ScrolledWindow
-from settings_widget import SettingItem, EntryTreeView, AddSettingItem
 from nm_modules import nm_module
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
 from shared_widget import IPV4Conf
-from foot_box import FootBox
 
 import gtk
 from shared_methods import Settings
 from constants import TITLE_FONT_SIZE, FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE
 import style
 from nls import _
+from helper import Dispatcher
 
 slider = nm_module.slider
 
@@ -41,8 +38,8 @@ class MobileSetting(Settings):
         self.crumb_name = _("Mobile Network")
         self.device = device
 
-    def get_broadband(self):
-        return self.settings[self.connection][0][1]
+    def get_broadband(self, connection):
+        return self.settings[connection][0][1]
 
     def get_connections(self):
         # Get all connections  
@@ -55,32 +52,30 @@ class MobileSetting(Settings):
         
         if connections == []:
             region = slider.get_page_by_name("region")
-            region.init()
+            region.init(None)
             slider._slide_to_page("region", "right")
+            return [None, -1]
 
         return connections
     
-    def save_changes(self, widget):
-        connection = self.setting_group.connection
-        if widget.label == _("save"):
-            if connection.check_setting_finish():
-                this_index = self.connections.index(connection)
-                from nmlib.nm_remote_connection import NMRemoteConnection
-                if isinstance(connection, NMRemoteConnection):
-                    connection.update()
-                else:
-                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                    mobile_type = connection.get_setting("connection").type
-                    index = self.sidebar.new_connection_list[mobile_type].index(connection)
-                    self.sidebar.new_connection_list[mobile_type].pop(index)
-                    self.init(self.sidebar.new_connection_list)
+    def save_changes(self, connection):
+        if connection.check_setting_finish():
+            #this_index = self.connections.index(connection)
+            from nmlib.nm_remote_connection import NMRemoteConnection
+            if isinstance(connection, NMRemoteConnection):
+                connection.update()
+            else:
+                connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                mobile_type = connection.get_setting("connection").type
+                Dispatcher.emit("connection-replace", connection)
+                #index = self.sidebar.new_connection_list[mobile_type].index(connection)
+                #self.sidebar.new_connection_list[mobile_type].pop(index)
+                #self.init(self.sidebar.new_connection_list)
 
-                    # reset index
-                    con = self.sidebar.connection_tree.visible_items[this_index]
-                    self.sidebar.connection_tree.select_items([con])
-            self.set_button("apply", True)
-        else:
-            self.apply_change()
+                # reset index
+                #con = self.sidebar.connection_tree.visible_items[this_index]
+                #self.sidebar.connection_tree.select_items([con])
+        self.set_button("apply", True)
 
         ##FIXME need to change device path into variables
     def apply_change(self):
@@ -159,8 +154,21 @@ class MobileSetting(Settings):
     
     def add_new_connection(self):
         region = slider.get_page_by_name("region")
+        region.init(None)
+        slider._slide_to_page("region", "left")
+        return [None, -1]
+
+    def add_connection(self):
+        pass
+
+    def region_page_back(self, connection, prop_dict):
+        pass
+
+    def slide_to_region(self):
+        region = slider.get_page_by_name("region")
         region.init()
         slider._slide_to_page("region", "left")
+        return (None, -1)
 
 #class Settings(object):
 
@@ -300,8 +308,8 @@ class Broadband(gtk.VBox):
 
             def to_region(widget):
                 region = slider.get_page_by_name("region")
-                region.init(network_type)
-                region.need_new_connection =False
+                region.init(self.connection)
+                #region.need_new_connection =False
                 slider._slide_to_page("region", "left")
 
             if network_type == "gsm":
