@@ -157,11 +157,6 @@ class DBusService(dbus.service.Object):
                         foot_box.show_reset()
                     else:
                         foot_box.set_status(status)
-            elif message_type == "add_button":
-                (module_id, add_button) = message_content
-                if foot_box:
-                    foot_box.show(module_id)
-                    foot_box.add_button(add_button)
             else:
                 print message
                     
