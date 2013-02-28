@@ -213,9 +213,10 @@ class TrayNetworkPlugin(object):
             else:
                 self.change_status_icon("wifi_disconnect")
             if reason == 39:
-                index = self.gui.get_active_ap()
-                self.gui.set_active_ap(index, False)
-                self.need_auth_flag = False
+                if self.gui.wireless.get_active():
+                    index = self.gui.get_active_ap()
+                    self.gui.set_active_ap(index, False)
+                    self.need_auth_flag = False
             '''
             if old_state == 120:
                 if self.need_auth_flag:
@@ -343,9 +344,7 @@ class TrayNetworkPlugin(object):
         """
         resize this first
         """
-        print "resize"
         height = self.gui.get_widget_height()
-        print height
         self.this.resize(1,1)
         self.this.set_size_request(185, height + 10)
 
