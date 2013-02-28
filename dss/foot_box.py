@@ -148,8 +148,12 @@ class FootBox(gtk.HBox):
         self.buttons_align = self.__setup_buttons_align(self.buttons_list)        
         self.right_box.pack_start(self.buttons_align)
 
+    def hide_status(self):
+        self.status_label.set_text("")
+
     def set_status(self, status):
         self.status_label.set_text(status)
+        gobject.timeout_add(3000, self.hide_status)
     
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       
