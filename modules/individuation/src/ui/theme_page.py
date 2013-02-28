@@ -21,20 +21,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+from dtk.ui.draw import draw_line
+from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
+from dtk.ui.constant import ALIGN_MIDDLE
 import gtk
-
+import gobject
+from ui.status_box import StatusBox
 from ui.theme_view import UserThemeView, SystemThemeView
 from ui.utils import get_separator
-
-from constant import TITLE_FONT_SIZE
-
+from constant import TITLE_FONT_SIZE, CONTENT_FONT_SIZE, TREEVIEW_BORDER_COLOR
 from theme import app_theme
-from messager import Messager
+from nls import _
 
-class ThemePage(ScrolledWindow):
+class ThemePage(gtk.VBox):
     '''
     class docs
     '''
@@ -43,23 +44,26 @@ class ThemePage(ScrolledWindow):
         '''
         init docs
         '''
-        ScrolledWindow.__init__(self, 0, 0)
-        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        gtk.VBox.__init__(self)
 
-        self.__messager = Messager()
+        self.status_box = StatusBox()
+
+        self.scroll = ScrolledWindow()
+        self.scroll.set_size_request(800, 432)
+        self.scroll.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
         self.label_padding_x = 10
         self.label_padding_y = 10
         
         self.theme_box = gtk.VBox()
-        self.user_theme_label = Label("我的主题", text_size=TITLE_FONT_SIZE, 
+        self.user_theme_label = Label(_("My Theme"), text_size=TITLE_FONT_SIZE, 
                                       text_color=app_theme.get_color("globalTitleForeground"))
-        self.user_theme_view = UserThemeView()
+        self.user_theme_view = UserThemeView(status_box = self.status_box)
         self.user_theme_scrolledwindow = self.user_theme_view.get_scrolled_window()
         
-        self.system_theme_label = Label("系统主题", text_size=TITLE_FONT_SIZE, 
+        self.system_theme_label = Label(_("System Theme"), text_size=TITLE_FONT_SIZE, 
                                       text_color=app_theme.get_color("globalTitleForeground"))
-        self.system_theme_view = SystemThemeView()
+        self.system_theme_view = SystemThemeView(status_box = self.status_box)
         self.system_theme_scrolledwindow = self.system_theme_view.get_scrolled_window()
         
         self.theme_box.pack_start(self.user_theme_label, False, False)
@@ -75,14 +79,12 @@ class ThemePage(ScrolledWindow):
         main_align.set(1, 1, 1, 1)
         main_align.add(self.theme_box)
         
-        self.add_child(main_align)
+        self.scroll.add_child(main_align)
         
         main_align.connect("expose-event", self.expose_label_align)
-        
-        # self.user_theme_align.connect("expose-event", self.expose_label_align)
-        # self.system_theme_align.connect("expose-event", self.expose_label_align)
 
-        self.__messager.send_message("status", ("individuation", "hide_reset"))
+        self.pack_start(self.scroll, False, False)
+        self.pack_start(self.status_box)
         
     def expose_label_align(self, widget, event):
         cr = widget.window.cairo_create()

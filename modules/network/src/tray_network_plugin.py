@@ -26,7 +26,10 @@ from helper import Dispatcher
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 import pynotify
+from subprocess import Popen
 import gtk
+
+from widgets import AskPasswordDialog
 
 class TrayNetworkPlugin(object):
 
@@ -34,12 +37,16 @@ class TrayNetworkPlugin(object):
         self.gui = TrayUI(self.toggle_wired, self.toggle_wireless, self.mobile_toggle)
         self.net_manager = NetManager()
         self.init_notifier()
+        Dispatcher.connect("request_resize", self.request_resize)
+        self.gui.button_more.connect("clicked", self.more_setting)
+
+        self.need_auth_flag = False
 
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
-        self.loading_pixbuf = self.tray_icon.load_icon("loading")
+        #self.loading_pixbuf = self.tray_icon.load_icon("loading")
         self.init_widgets()
 
     def mobile_toggle(self, widget):
@@ -48,8 +55,10 @@ class TrayNetworkPlugin(object):
     def init_notifier(self):
         pynotify.init("Deepin network")
 
-    #def notify_send(self, title, message, icon, time_out=):
-        #n = pynotify.get
+    def notify_send(self, title, message, icon, time_out=10):
+        n = pynotify.Notification(title, message, icon)
+        n.set_timeout(time_out)
+        n.show()
 
     def init_widgets(self):
         wired_state = self.net_manager.get_wired_state()
@@ -108,9 +117,11 @@ class TrayNetworkPlugin(object):
             #pynotify.Notification("Network", "lan connecting").show()
             self.gui.wire.set_active((True, True))
             self.change_status_icon("loading")
+            self.let_rotate(True)
         elif new_state is 100:
             #pynotify.Notification("Network", "lan connect").show()
             self.active_wired()
+
 
     def connect_by_ssid(self, widget, ssid):
         connection =  self.net_manager.connect_wireless_by_ssid(ssid)
@@ -121,15 +132,15 @@ class TrayNetworkPlugin(object):
                                       self.net_manager.wireless_devices[0].object_path,
                                        ap[0].object_path)
         
-
-
-
     def active_wired(self):
         """
         after active
         """
         self.gui.wire.set_active((True, True))
         self.change_status_icon("cable")
+    
+    def tray_resize(self, widget, height):
+        pass
 
     def disactive_wired(self):
         """
@@ -159,16 +170,19 @@ class TrayNetworkPlugin(object):
                 self.gui.set_active_ap(index, True)
             else:
                 self.activate_wireless()
-            Dispatcher.tray_show_more()
+            #Dispatcher.tray_show_more()
+            Dispatcher.request_resize()
         else:
             container_remove_all(self.gui.tree_box)
             self.gui.more_button.set_ap_list([])
+            Dispatcher.request_resize()
+            
+            #Dispatcher.tray_show_more()
 
             def device_disactive():
                 pass
 
             self.net_manager.disactive_wireless_device(device_disactive)
-            Dispatcher.tray_show_more()
 
     def set_wireless_state(self, widget, device, new_state, old_state, reason):
         """
@@ -179,6 +193,7 @@ class TrayNetworkPlugin(object):
             self.gui.wireless.set_active((False, False))
         elif new_state is 30:
             print "==================="
+            #self.notify_send("a", "disconnected", "")
             self.gui.wireless.set_sensitive(True)
 
             if self.gui.wire.get_active():
@@ -188,17 +203,40 @@ class TrayNetworkPlugin(object):
             if reason == 39:
                 index = self.gui.get_active_ap()
                 self.gui.set_active_ap(index, False)
+                self.need_auth_flag = False
+            if old_state == 120:
+                if self.need_auth_flag:
+                    active_connection = nm_module.nmclient.get_active_connections()[0]
+                    connection = active_connection.get_connection()
+                    print connection
+                    AskPasswordDialog(connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
             #elif reason:
                 #self.gui.wireless.set_active((True,False))
         elif new_state is 40:
+            #self.notify_send("a", "connecting", "")
             self.gui.wireless.set_active((True, True))
             self.change_status_icon("loading")
+
             self.let_rotate(True)
+                
         elif new_state is 60 and old_state == 50:
-            print "need auth"
+            active_connection = nm_module.nmclient.get_active_connections()
+            #print map(lambda a: a.get_connection(), active_connection)
+            #print "need auth"
         elif new_state is 100:
+            #self.notify_send("a", "connected", "")
             self.change_status_icon("links")
             self.set_active_ap()
+            self.need_auth_flag = False
+        elif new_state is 120 and reason is 7:
+            self.need_auth_flag = True
+
+    def cancel_ask_pwd(self):
+        pass
+
+    def pwd_changed(self, pwd):
+        print pwd
+            
 
     def set_active_ap(self):
         index = self.net_manager.get_active_connection(self.ap_list)
@@ -209,11 +247,6 @@ class TrayNetworkPlugin(object):
         try to auto active wireless
         """
         def device_actived():
-            #self.gui.wireless.set_active((True, True))
-            #index = self.net_manager.get_active_connection(self.ap_list)
-            #self.gui.set_active_ap(index, True)
-            #self.change_status_icon("tray_links_icon")
-
             pass
         self.net_manager.active_wireless_device(device_actived)
     
@@ -227,21 +260,19 @@ class TrayNetworkPlugin(object):
     def let_rotate(self, rotate_check, interval=100):
         self.tray_icon.set_rotate(rotate_check, interval)
 
-
-    def start_loading(self):
-        pass
-
-    def draw_loading(self, cr, rect):
-        with cairo_state(cr):
-            cr.translate(rect.x + 18 , rect.y + 15)
-            cr.rotate(radians(60*self.position))
-            cr.translate(-18, -15)
-     ###############################
     def run(self):
         return True
 
     def insert(self):
         return 3
+
+    def more_setting(self, button):
+        try:
+            self.this.hide_menu()
+            Popen(("deepin-system-settings", "network"))
+        except Exception, e:
+            print e
+            pass
         
     def id(self):
         return "tray-network_plugin"
@@ -251,40 +282,32 @@ class TrayNetworkPlugin(object):
     
     def tray_show_more(self, widget):
         print "tray show more"
-        height = self.gui.get_widget_height()
-        self.this.set_size_request(160, height + 50)
+        #height = self.gui.get_widget_height()
+        #self.this.set_size_request(185, height + 10)
 
     def show_menu(self):
-        if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
-            self.gui.set_ap(self.ap_list)
-        height = self.gui.get_widget_height()
-        self.this.set_size_request(185, height + 50)
-        print "shutdown show menu..."
+        self.menu_showed = True
+        #if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
+            #self.gui.set_ap(self.ap_list)
+        #self.gui.queue_resize()
+        #print "DEBUG::size", self.gui.get_size_request()
+        #self.this.set_size_request(185, height + 10)
+        #print "shutdown show menu..."
+        Dispatcher.request_resize()
 
     def hide_menu(self):
-        print "shutdown hide menu..."
+        #print "shutdown hide menu..."
+        self.menu_showed = False
+
+    def request_resize(self, widget):
+        """
+        resize this first
+        """
+        print "resize"
+        height = self.gui.get_widget_height()
+        print height
+        self.this.resize(1,1)
+        self.this.set_size_request(185, height + 10)
 
 def return_plugin():
     return TrayNetworkPlugin
-
-#class LoadingThread(td.Thread):
-    #def __init__(self, widget):
-        #td.Thread.__init__(self)
-        #self.setDaemon(True)
-        #self.widget = widget
-    
-    #def run(self):
-        #try:
-            #position = 0
-            #while True:
-                #if self.widget.loading:
-                    #if position == 5:
-                        #position = 0
-                    #else:
-                        #position += 1
-                    #self.widget.refresh_loading(position)
-                    #time.sleep(0.1)
-                #else:
-                    #break
-        #except Exception, e:
-            #print "class LoadingThread got error %s" % e

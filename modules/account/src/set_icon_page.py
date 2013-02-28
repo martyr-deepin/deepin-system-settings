@@ -41,9 +41,22 @@ import dbus
 from time import sleep, time
 from subprocess import Popen
 from tempfile import mkstemp
-from stat import S_IRWXU, S_IRWXG, S_IRWXO
+from stat import S_IRWXU, S_IRWXG, S_IRWXO, S_IWUSR, S_IWGRP, S_IWOTH
 
 MODULE_NAME = "account"
+
+def check_file_writable(file_path):
+    if not os.path.exists(file_path):
+        return False
+    file_st = os.stat(file_path)
+    st_mode = file_st.st_mode
+    if file_st.st_uid == os.getuid() and st_mode & S_IWUSR:
+        return True
+    if file_st.st_gid in os.getgroups() and st_mode & S_IWGRP:
+        return True
+    if st_mode & S_IWOTH:
+        return True
+    return False
 
 class HistroyIcon(object):
     def __init__(self, account_setting):
@@ -141,8 +154,14 @@ class IconSetPage(gtk.VBox):
             pic_list = []
         pic_list.sort()
         self.public_icon_list = []
+        inital_list = ['0001.jpg', '0002.jpg', '0003.jpg', '0004.jpg', '0005.jpg',
+                       '0006.jpg', '0007.jpg', '0008.jpg', '0009.jpg', '0010.jpg',
+                       '0011.jpg', '0012.jpg', '0013.jpg', '0014.jpg', '0015.jpg',
+                       '0016.jpg', '0017.jpg', '0018.jpg', '0019.jpg', '0020.jpg']
 
         for pic in pic_list:
+            if pic not in inital_list:
+                continue
             try:
                 icon_pixbuf = gtk.gdk.pixbuf_new_from_file(
                     "%s/%s" %(face_dir, pic)).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
@@ -183,7 +202,9 @@ class IconSetPage(gtk.VBox):
                     "%s/%s" %(history_dir, pic)).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
             except:
                 continue
-            icon_bt = IconButton(icon_pixbuf, "%s/%s" %(history_dir, pic), has_frame=True)
+            pic_file_path = "%s/%s" %(history_dir, pic)
+            icon_bt = IconButton(icon_pixbuf, pic_file_path,
+                                 has_frame=True, can_del=check_file_writable(pic_file_path))
             icon_bt.connect("pressed", self.on_icon_bt_pressed_cb)
             private_icon_list.append(icon_bt)
         container_remove_all(self.icon_list_tabel)
@@ -195,6 +216,8 @@ class IconSetPage(gtk.VBox):
         i = j = 0
         for pic in pic_list:
             self.icon_list_tabel.attach(pic, i, i+1, j, j+1, 4)
+            if pic.can_del:
+                pic.connect("del-pressed", self.on_icon_bt_del_icon_file_cb, i, j)
             i += 1
             if i >= 10:
                 i = 0
@@ -237,6 +260,21 @@ class IconSetPage(gtk.VBox):
         except Exception, e:
             print e
         
+    def on_icon_bt_del_icon_file_cb(self, widget, row, col):
+        #try:
+            #file_path = widget.get_image_path()
+            #os.remove(file_path)
+        #except Exception, e:
+            #print e
+        bt_num = len(self.icon_list_tabel.get_children())
+        print row, col, bt_num
+        for i in self.icon_list_tabel.get_children():
+            print "'%s'" % i.image_path
+        self.on_icon_bt_del_pressed_cb(widget)
+        # widget has destroied
+        if not widget.get_visible():
+            pass
+
     def on_icon_bt_pressed_cb(self, widget):
         try:
             file_path = widget.get_image_path()
@@ -866,7 +904,7 @@ class IconEditPage(gtk.HBox):
         self.thumbnail_large = gtk.Image()
         self.thumbnail_mid = gtk.Image()
         self.thumbnail_small = gtk.Image()
-        self.thumbnail_large.set_size_request(144, 144)
+        self.thumbnail_large.set_size_request(150, 150)
         self.thumbnail_mid.set_size_request(48, 48)
         self.thumbnail_small.set_size_request(24, 24)
 
@@ -935,11 +973,10 @@ class IconEditPage(gtk.HBox):
                 fp2.write(fp1.read())
                 fp1.close()
                 fp2.close()
+                os.chmod(backup_path, S_IRWXU|S_IRWXG|S_IRWXO)
                 history_icon.history.insert(0, backup_path)
                 history_icon.set_history(history_icon.history)
         except Exception, e:
-            from traceback import print_exc
-            print_exc()
             print e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
@@ -952,7 +989,7 @@ class IconEditPage(gtk.HBox):
     def __on_pixbuf_changed_cb(self, widget, pixbuf):
         if pixbuf:
             self.thumbnail_large.set_from_pixbuf(pixbuf.scale_simple(
-                144, 144, gtk.gdk.INTERP_BILINEAR))
+                150, 150, gtk.gdk.INTERP_BILINEAR))
             self.thumbnail_mid.set_from_pixbuf(pixbuf.scale_simple(
                 48, 48, gtk.gdk.INTERP_BILINEAR))
             self.thumbnail_small.set_from_pixbuf(pixbuf.scale_simple(

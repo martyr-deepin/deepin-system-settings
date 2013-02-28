@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 17:23+0800\n"
+"POT-Creation-Date: 2013-02-28 14:52+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,7 +16,91 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/ui/theme_view.py:83
+#: ../src/main.py:104
+msgid "Theme Setting"
+msgstr ""
+
+#: ../src/main.py:108
+msgid "Add Wallpaper"
+msgstr ""
+
+#: ../src/ui/theme_page.py:59
+msgid "My Theme"
+msgstr ""
+
+#: ../src/ui/theme_page.py:64
+msgid "System Theme"
+msgstr ""
+
+#: ../src/ui/theme_view.py:81
 #, python-format
-msgid "Changed system theme to \"%s\""
+msgid "Changed User Theme to %s"
+msgstr ""
+
+#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:174
+msgid "Theme Save As"
+msgstr ""
+
+#: ../src/ui/theme_view.py:112 ../src/ui/theme_view.py:115
+#: ../src/ui/theme_view.py:178
+msgid "Save As"
+msgstr ""
+
+#: ../src/ui/theme_view.py:117
+msgid "Delete Theme"
+msgstr ""
+
+#: ../src/ui/theme_view.py:167
+#, python-format
+msgid "Changed System Theme to %s"
+msgstr ""
+
+#: ../src/ui/detail_page.py:41
+msgid "Seconds"
+msgstr ""
+
+#: ../src/ui/detail_page.py:42
+msgid "Minute"
+msgstr ""
+
+#: ../src/ui/detail_page.py:42 ../src/ui/detail_page.py:43
+#: ../src/ui/detail_page.py:44 ../src/ui/detail_page.py:45
+msgid "Minutes"
+msgstr ""
+
+#: ../src/ui/detail_page.py:45
+msgid "Hour"
+msgstr ""
+
+#: ../src/ui/detail_page.py:46 ../src/ui/detail_page.py:47
+#: ../src/ui/detail_page.py:48
+msgid "Hours"
+msgstr ""
+
+#: ../src/ui/detail_page.py:51
+msgid "Scaling"
+msgstr ""
+
+#: ../src/ui/detail_page.py:51
+msgid "Tiling"
+msgstr ""
+
+#: ../src/ui/detail_page.py:86
+msgid "Position"
+msgstr ""
+
+#: ../src/ui/detail_page.py:89
+msgid "Duration"
+msgstr ""
+
+#: ../src/ui/detail_page.py:97
+msgid "Random"
+msgstr ""
+
+#: ../src/ui/detail_page.py:103
+msgid "Select All"
+msgstr ""
+
+#: ../src/ui/detail_page.py:106
+msgid "Delete"
 msgstr ""

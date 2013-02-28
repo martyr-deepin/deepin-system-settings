@@ -22,18 +22,12 @@
 
 import os
 import deepin_gsettings
-
-from deepin_utils.process import run_command
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
-
 from helper import event_manager
 from ui.wallpaper_item import AddItem, WallpaperItem
 from theme_manager import background_gsettings
-
 import common
-
-
 
 class WallpaperView(IconView):
     
@@ -79,6 +73,12 @@ class WallpaperView(IconView):
             image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
             self.apply_wallpapers(image_uris)
     
+    def select_all(self):
+        for item in self.items:
+            item.tick()
+            image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
+            self.apply_wallpapers(image_uris)
+
     def on_wallpaper_apply(self, name, obj, apply_item):
         [ item.untick() for item in self.items if item != apply_item]
         image_uris = ["file://%s" % apply_item.image_path]

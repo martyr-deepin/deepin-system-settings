@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,7 +46,6 @@ def switch_box(parent, widget):
     parent.add(widget)
     parent.show_all()
     
-    
 def draw_line(cr, start, end, color_name):
     if color_name.startswith("#"):
         color = color_name
@@ -58,7 +58,6 @@ def draw_line(cr, start, end, color_name):
         cr.move_to(*start)
         cr.rel_line_to(*end)
         cr.stroke()
-    
 
 def get_separator():
     hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
@@ -74,10 +73,11 @@ def get_togglebutton():
                           app_theme.get_pixbuf("toggle_button/active_normal.png"))
     return toggle
 
-def get_toggle_group(name, callback=None):    
+def get_toggle_group(name, callback=None, active=True):    
     box = gtk.HBox(2)
     title = Label(name)
     toggle_button = get_togglebutton()
+    toggle_button.set_active(active)
     toggle_button_align = gtk.Alignment()
     toggle_button_align.set(0.5, 0.5, 0, 0)
     toggle_button_align.add(toggle_button)
@@ -97,4 +97,3 @@ def get_combo_group(name, items, callback=None):
     if callback:
         combo_box.connect("item-selected", callback)
     return box, combo_box
-
