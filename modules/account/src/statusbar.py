@@ -22,6 +22,7 @@
 
 from dtk.ui.label import Label
 from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.draw import draw_line
 from constant import *
 import gtk
 import gobject
@@ -54,6 +55,9 @@ class StatusBar(gtk.HBox):
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
         cr.rectangle(x, y+1, w, h-1)
         cr.fill()
+
+        cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
+        draw_line(cr, x, y + 1, x + w, y + 1)
 
     def set_text(self, text):
         self.text_label.set_text(text)

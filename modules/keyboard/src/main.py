@@ -916,8 +916,9 @@ class KeySetting(object):
         return self.__shortcuts_entries_page_widgets
     
     def show_again(self):
-        self.container_widgets["tab_box"].switch_content(0)
-        self.on_tab_box_switch_tab_cb(self.container_widgets["tab_box"], 0)
+        if self.container_widgets["tab_box"].tab_index != 0:
+            self.container_widgets["tab_box"].switch_content(0)
+            self.on_tab_box_switch_tab_cb(self.container_widgets["tab_box"], 0)
 
     def set_to_default(self, button):
         '''set to the default'''
