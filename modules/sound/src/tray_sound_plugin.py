@@ -30,17 +30,33 @@ class SoundTray(object):
         super(SoundTray, self).__init__()
         self.WIN_WIDTH = 250
         self.WIN_HEIGHT = 170
-        self.widget = TrayGui()
+        self.__this_visible = False
+        self.__volume_level = None
+        self.__mute = None
+        self.tray_obj = None
+
+        self.widget = TrayGui(self)
         self.widget.connect("stream-changed", self.stream_changed_cb)
         self.widget.button_more.connect("clicked", self.on_more_button_clicked_cb)
-        self.__this_visible = False
 
     def init_values(self, value_list):
         self.this_list = value_list
         self.this = self.this_list[0]
+        self.tray_obj = self.this_list[1]
+        #self.tray_obj.set_icon_theme("tray_sound_icon")
         self.this.set_default_size(self.WIN_WIDTH, self.widget.get_widget_height())
-        self.tray_icon = self.this_list[1]
-        self.tray_icon.set_icon_theme("tray_sound_icon")
+        self.widget.update_tray_icon()
+
+    def set_tray_icon(self, volume_level, mute):
+        if not self.tray_obj or volume_level == self.__volume_level and mute == self.__mute:
+            return
+        self.__volume_level = volume_level
+        self.__mute = mute
+        if mute:
+            self.tray_obj.set_icon_theme("tray_sound_mute")
+        else:
+            icon_list = ["tray_sound_icon0", "tray_sound_icon1", "tray_sound_icon2", "tray_sound_icon"]
+            self.tray_obj.set_icon_theme(icon_list[volume_level])
 
     def run(self):
         return True

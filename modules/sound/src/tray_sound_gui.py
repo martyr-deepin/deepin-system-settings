@@ -75,8 +75,9 @@ class TrayGui(gtk.VBox):
     __gsignals__ = {
         "stream-changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
 
-    def __init__(self):
+    def __init__(self, tray_obj=None):
         super(TrayGui, self).__init__(False)
+        self.tray_obj = tray_obj
 
         self.stream_icon = app_theme.get_pixbuf("sound/device.png").get_pixbuf().scale_simple(16, 16, gtk.gdk.INTERP_TILES)
         self.stream_num = 0
@@ -280,6 +281,25 @@ class TrayGui(gtk.VBox):
             return
         self.__set_output_status()
 
+    # update tray_icon
+    def update_tray_icon(self):
+        if self.tray_obj:
+            current_sink = pypulse.get_fallback_sink_index()
+            sinks = pypulse.PULSE.get_output_devices()
+            sink_volume = pypulse.PULSE.get_output_volume()
+            if current_sink in sinks and current_sink in sink_volume:
+                is_mute = sinks[current_sink]['mute']
+                volume = max(sink_volume[current_sink]) * 100.0 / pypulse.NORMAL_VOLUME_VALUE
+                if volume == 0:
+                    volume_level = 0
+                elif 0 < volume <= 40:
+                    volume_level = 1
+                elif 40 < volume <= 80:
+                    volume_level = 2
+                else:
+                    volume_level = 3
+                self.tray_obj.set_tray_icon(volume_level, is_mute)
+
     def source_changed_cb(self, obj, index):
         obj.get_devices()
         current_source = pypulse.get_fallback_source_index()
@@ -346,6 +366,7 @@ class TrayGui(gtk.VBox):
             else:
                 volume = 0
             self.speaker_scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
+        self.update_tray_icon()
 
     def __set_input_status(self):
         # if sources list is empty, then can't set input volume
