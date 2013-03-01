@@ -283,11 +283,11 @@ class IconSetPage(gtk.VBox):
                 self.history_icon.history.insert(0, file_path)
                 self.history_icon.set_history(self.history_icon.history)
         except Exception, e:
-            print e
+            print "set_icon 286:", e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
             return
-        self.account_setting.container_widgets["slider"].slide_to_page(
+        self.account_setting.set_to_page(
             self.account_setting.alignment_widgets["main_hbox"], "left")
         self.account_setting.change_crumb(1)
 
@@ -977,12 +977,12 @@ class IconEditPage(gtk.HBox):
                 history_icon.history.insert(0, backup_path)
                 history_icon.set_history(history_icon.history)
         except Exception, e:
-            print e
+            print "set_icon 980:", e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
                 return
         self.stop_camera()
-        self.account_setting.container_widgets["slider"].slide_to_page(
+        self.account_setting.set_to_page(
             self.account_setting.alignment_widgets["main_hbox"], "left")
         self.account_setting.change_crumb(1)
 
