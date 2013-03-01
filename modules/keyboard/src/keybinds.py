@@ -117,7 +117,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         item.settings_key = "key3"
         item.settings_obj = gsettings
         item.settings_type = item.TYPE_DP_GSETTINGS
-        item.settings_value_type = "/usr/bin/lock"
+        item.settings_value_type = "/usr/bin/dlock"
         accel_entry_list.append(item)
 
 

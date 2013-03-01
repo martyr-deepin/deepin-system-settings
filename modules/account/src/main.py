@@ -457,12 +457,16 @@ class AccountSetting(object):
         try:
             self.current_select_user.set_automatic_login(button.get_active())
             self.set_account_info_error_text("")
+            if button.get_active():
+                self.__set_status_text(_("允许%s自动登陆") % settings.get_user_show_name(self.current_select_user))
+            else:
+                self.__set_status_text(_("禁止%s自动登陆") % settings.get_user_show_name(self.current_select_user))
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
 
                 button.set_data("changed_by_other_app", True)
                 button.set_active(not button.get_active())
-                #self.set_account_info_error_text(e.msg)
+                self.set_account_info_error_text(e.msg)
 
     ## add account cb >> ##
     def add_account_button_clicked(self, button):
@@ -491,7 +495,8 @@ class AccountSetting(object):
         username = self.button_widgets["account_name"].get_text()
         account_type = self.button_widgets["account_type_new"].get_current_item()[1]
         try:
-            self.account_dbus.create_user(username, username, account_type)
+            if self.account_dbus.create_user(username, username, account_type):
+                self.__set_status_text(_("%s has been created") % username)
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.label_widgets["account_create_error"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
@@ -518,7 +523,9 @@ class AccountSetting(object):
     def del_delete_user_file_cd(self, button, del_file):
         try:
             self.container_widgets["del_account_button_hbox"].set_sensitive(False)
+            name = settings.get_user_show_name(self.current_del_user)
             self.account_dbus.delete_user(self.current_del_user.get_uid(), del_file)
+            self.__set_status_text(_("%s has been deleted") % name)
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.label_widgets["del_account_error_label"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
@@ -532,10 +539,7 @@ class AccountSetting(object):
         self.current_del_user = self.current_select_user
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.container_widgets["del_main_vbox"])
-        if self.current_select_user.get_real_name():
-            show_name = self.current_select_user.get_real_name()
-        else:
-            show_name = self.current_select_user.get_user_name()
+        show_name = settings.get_user_show_name(self.current_select_user)
         self.label_widgets["del_account_tips"].set_text(
             "<b>%s</b>" % _("Do you want to keep <u>%s</u>'s files?") %
             tools.escape_markup_string(show_name))
@@ -627,8 +631,11 @@ class AccountSetting(object):
         try:
             self.current_select_user.set_account_type(item_value)
             self.set_account_info_error_text("")
+            self.__set_status_text(_("%s's account type has been set as %s") %( settings.get_user_show_name(self.current_select_user), item_content))
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                if self.current_select_item:
+                    self.button_widgets["account_type"].set_select_index(self.current_select_item.user_type)
                 self.set_account_info_error_text(e.msg)
 
     def label_enter_notify_cb(self, widget, event, is_realname=False):
@@ -869,6 +876,7 @@ class AccountSetting(object):
                 button.set_sensitive(True)
                 cancel_button.set_sensitive(True)
                 cancel_button.clicked()
+                self.__set_status_text(_("%s's password has been changed") % settings.get_user_show_name(self.current_select_user))
                 gtk.gdk.threads_leave()
         except Exception, e:
             if not isinstance(e, (TIMEOUT, EOF)):
@@ -1129,6 +1137,9 @@ class AccountSetting(object):
                 "<span foreground='red'>%s%s</span>" % (_("Error:"), text))
         else:
             self.label_widgets["account_info_error"].set_text("")
+
+    def __set_status_text(self, text):
+        self.container_widgets["statusbar"].set_text(text)
 
     def change_crumb(self, crumb_index):
         self.module_frame.send_message("change_crumb", crumb_index)

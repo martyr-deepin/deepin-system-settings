@@ -53,3 +53,10 @@ def get_user_info(user_path):
     return (u, u.get_icon_file(), u.get_real_name(),
             u.get_user_name(), u.get_account_type(),
             check_is_myown(u.get_uid()))
+
+def get_user_show_name(user_obj):
+    if user_obj.get_real_name():
+        show_name = user_obj.get_real_name()
+    else:
+        show_name = user_obj.get_user_name()
+    return show_name

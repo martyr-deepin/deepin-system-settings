@@ -217,7 +217,9 @@ class IconSetPage(gtk.VBox):
         for pic in pic_list:
             self.icon_list_tabel.attach(pic, i, i+1, j, j+1, 4)
             if pic.can_del:
-                pic.connect("del-pressed", self.on_icon_bt_del_icon_file_cb, i, j)
+                pic.row = j
+                pic.col = i
+                pic.connect("del-pressed", self.on_icon_bt_del_icon_file_cb)
             i += 1
             if i >= 10:
                 i = 0
@@ -260,20 +262,30 @@ class IconSetPage(gtk.VBox):
         except Exception, e:
             print e
         
-    def on_icon_bt_del_icon_file_cb(self, widget, row, col):
-        #try:
-            #file_path = widget.get_image_path()
-            #os.remove(file_path)
-        #except Exception, e:
-            #print e
-        bt_num = len(self.icon_list_tabel.get_children())
-        print row, col, bt_num
-        for i in self.icon_list_tabel.get_children():
-            print "'%s'" % i.image_path
+    def on_icon_bt_del_icon_file_cb(self, widget):
+        try:
+            file_path = widget.get_image_path()
+            os.remove(file_path)
+        except Exception, e:
+            print e
+        row = widget.row
+        col = widget.col
+        children = self.icon_list_tabel.get_children()
+        children.reverse()
         self.on_icon_bt_del_pressed_cb(widget)
         # widget has destroied
         if not widget.get_visible():
-            pass
+            i = col
+            j = row
+            for w in children[row*10+col+1:]:
+                self.icon_list_tabel.remove(w)
+                self.icon_list_tabel.attach(w, i, i+1, j, j+1, 4)
+                w.row = j
+                w.col = i
+                i += 1
+                if i >= 10:
+                    i = 0
+                    j += 1
 
     def on_icon_bt_pressed_cb(self, widget):
         try:
