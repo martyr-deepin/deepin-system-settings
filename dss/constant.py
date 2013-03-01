@@ -36,6 +36,8 @@ APP_OBJECT_NAME = "/com/deepin/system_settings"
 PAGE_WIDTH = 834
 PAGE_HEIGHT = 474
 
+HSEPARATOR_HEIGHT = 10
+
 '''
 基准线
 '''
