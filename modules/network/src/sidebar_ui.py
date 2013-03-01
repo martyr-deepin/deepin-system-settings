@@ -154,6 +154,7 @@ class SideBar(gtk.VBox):
         '''
         print "replace connections"
         index = self.get_active()
+
         self.connections[index] = connection
         self.connection_tree.delete_item_by_index(index)
         self.__init_tree([connection], index)

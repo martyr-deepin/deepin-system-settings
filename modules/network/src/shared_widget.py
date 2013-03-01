@@ -41,7 +41,7 @@ class IPV4Conf(gtk.VBox):
                                enable_select=False,
                                enable_double_click=False)
         self.addr_entry = InputEntry()
-        self.addr_entry.set_sensitive(False)
+        #self.addr_entry.set_sensitive(False)
 
         self.mask_label = Label(_("Mask:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -109,14 +109,14 @@ class IPV4Conf(gtk.VBox):
         self.auto_dns.connect("toggled", self.dns_set)
 
         if type(self.connection) is NMRemoteConnection:
-            self.set_button("apply", True)
+            Dispatcher.set_button("apply", True)
         else:
             if self.connection.check_setting_finish():
                 print "in ipv"
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
                 print "in ipv"
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
 
 
     def reset(self, connection):
@@ -209,7 +209,8 @@ class IPV4Conf(gtk.VBox):
             setattr(self, names[index] + "_flag", True)
             #print "valid"+ names[index]
         else:
-            print "ip4 invalid"
+            Dispatcher.set_tip("ipv4 invalid")
+            #print "ip4 invalid"
             setattr(self, names[index] + "_flag", False)
 
         if self.check_valid("gw"):
@@ -219,10 +220,10 @@ class IPV4Conf(gtk.VBox):
 
             if self.connection.check_setting_finish():
                 print "sfsdf"
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
                 print "xxxxxxxxxx"
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
         else:
             self.setting.clear_addresses()
 
@@ -232,7 +233,7 @@ class IPV4Conf(gtk.VBox):
 
         dns = self.check_complete_dns()
         if dns:
-            self.set_button("save", True)
+            Dispatcher.set_button("save", True)
             self.setting.clear_dns()
             for d in dns:
                 self.setting.add_dns(d)
@@ -244,7 +245,7 @@ class IPV4Conf(gtk.VBox):
             print "valid"+ names[index]
         else:
             if content is not "":
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
             setattr(self, names[index] + "_flag", False)
 
     def check_complete_dns(self):
@@ -270,12 +271,12 @@ class IPV4Conf(gtk.VBox):
             self.dns = ["",""]
             self.set_group_sensitive("dns", False)
             if self.connection.check_setting_finish():
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
         else:
             self.set_group_sensitive("dns", True)
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
         self.reset_table()
 
     def get_ip_addr(self, widget):
@@ -286,17 +287,17 @@ class IPV4Conf(gtk.VBox):
             self.set_group_sensitive("ip", False)
             if self.connection.check_setting_finish():
                 print "settings complete"
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
                 print "settings incomplete"
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
         else:
             self.setting.method = 'manual'
             self.set_group_sensitive("ip", True)
             if self.connection.check_setting_finish():
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
         self.reset_table()
         
     
@@ -319,7 +320,7 @@ class IPV6Conf(gtk.VBox):
                                enable_select=False,
                                enable_double_click=False)
         self.addr_entry = InputEntry()
-        self.addr_entry.set_sensitive(False)
+        #self.addr_entry.set_sensitive(False)
 
         self.mask_label = Label(_("Prefix:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -385,12 +386,12 @@ class IPV6Conf(gtk.VBox):
         self.auto_dns.connect("toggled", self.dns_set)
 
         if type(self.connection) is NMRemoteConnection:
-            self.set_button("apply", True)
+            Dispatcher.set_button("apply", True)
         else:
             if self.connection.check_setting_finish():
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
 
     def reset_table(self):
         container_remove_all(self.table)
@@ -528,12 +529,12 @@ class IPV6Conf(gtk.VBox):
             self.dns = ["",""]
             self.set_group_sensitive("dns", False)
             if self.connection.check_setting_finish():
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
         else:
             self.set_group_sensitive("dns", True)
-            self.set_button("save", False)
+            Dispatcher.set_button("save", False)
         self.reset_table()
 
     def get_ip_addr(self, widget):
@@ -544,15 +545,15 @@ class IPV6Conf(gtk.VBox):
             self.set_group_sensitive("ip", False)
             if self.connection.check_setting_finish():
                 print "settings complete"
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
                 print "settings incomplete"
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
         else:
             self.setting.method = 'manual'
             self.set_group_sensitive("ip", True)
             if self.connection.check_setting_finish():
-                self.set_button("save", True)
+                Dispatcher.set_button("save", True)
             else:
-                self.set_button("save", False)
+                Dispatcher.set_button("save", False)
         self.reset_table()

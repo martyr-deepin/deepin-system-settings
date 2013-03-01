@@ -53,8 +53,8 @@ class WirelessSetting(Settings):
                                 IPV4Conf,
                                 IPV6Conf],)
 
-        self.crumb_name = _("Wireless Setting")
         self.ap = ap
+        self.crumb_name = self.ap.get_ssid()
 
     def get_ssid(self):
         return self.connections.get_setting("802-11-wireless").ssid

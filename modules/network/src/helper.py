@@ -42,7 +42,7 @@ class EventDispatcher(gobject.GObject):
             "connection-change" : _(obj),
             "connection-delete" : _(obj),
             "button-change" : _(obj, obj),
-            "set-tip" :       _(int),
+            "set-tip" :       _(str),
             "wired_change" : _(obj, int, int),
             "wireless_change" : _(obj, int, int, int),
             "connect_by_ssid" : _(str, obj),

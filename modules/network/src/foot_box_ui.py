@@ -25,6 +25,7 @@ from dtk.ui.label import Label
 from dtk.ui.button import Button
 import style
 from helper import Dispatcher
+from nls import _
 '''
 signals set-button, set-tip
 '''
@@ -63,15 +64,18 @@ class FootBox(gtk.HBox):
             parent.pack_start(widget, expand, fill)
 
     def set_button(self, widget, content, state):
+        self.__setting_module.set_button(content, state)
         self.button_box.set_label(content)
         self.button_box.set_sensitive(state)
+
+    def set_setting(self, module):
+        self.__setting_module = module
 
     def button_click(self, widget):
         if self.button_box.label == "save":
             Dispatcher.emit("setting-saved")
         elif self.button_box.label == "apply":
             Dispatcher.emit("setting-appled")
-
 
     def set_buttons(self, buttons_list):
         width = 0
@@ -83,4 +87,4 @@ class FootBox(gtk.HBox):
         self.queue_draw()
 
     def set_tip(self, widget, new_tip):
-        self.tip.set_text(new_tip)
+        self.tip.set_text(_("Tip:") + new_tip)

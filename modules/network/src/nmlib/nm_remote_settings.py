@@ -167,9 +167,6 @@ class NMRemoteSettings(NMObject):
         s_wireless.mode = "infrastructure"
         s_wireless.ssid = ssid
 
-        if key_mgmt:
-            s_wireless.security = "802-11-wireless-security"
-            s_wireless_security.key_mgmt = key_mgmt
 
         s_ip4config.method = "auto"
         s_ip4config.clear_addresses()
@@ -180,14 +177,17 @@ class NMRemoteSettings(NMObject):
         s_ip6config.routes = []
         s_ip6config.dns = []
         s_ip6config.addresses = []
-
+        
         settings_dict = {"802-11-wireless":s_wireless.prop_dict,
-                         "802-11-wireless-security":s_wireless_security.prop_dict,
                          "connection":s_connection.prop_dict,
                          "ipv4":s_ip4config.prop_dict
                          ,"ipv6":s_ip6config.prop_dict
                          }
-        settings_dict["802-11-wireless-security"]["psk"] = "Password"
+        if key_mgmt:
+            s_wireless.security = "802-11-wireless-security"
+            s_wireless_security.key_mgmt = key_mgmt
+            settings_dict["802-11-wireless-security"] = s_wireless_security.prop_dict
+            settings_dict["802-11-wireless-security"]["psk"] = "Password"
 
         from nmutils.nmconnection import NMConnection
         new_connection = NMConnection()

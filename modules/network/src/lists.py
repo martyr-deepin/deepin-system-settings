@@ -478,16 +478,14 @@ class WiredItem(TreeItem):
     NETWORK_LOADING = 1
     NETWORK_CONNECTED = 2
 
-    def __init__(self, device, setting, slide_to_setting_cb = None,send_to_crumb= False, font_size = DEFAULT_FONT_SIZE):
+    def __init__(self, device, setting,font_size = DEFAULT_FONT_SIZE):
         
         TreeItem.__init__(self)
-        self.slide_to_setting = slide_to_setting_cb
         self.device = device
         self.essid = self.device.get_device_desc()
         self.items = None
         self.setting = setting
         self.is_last = False
-        self.send_to_crumb = send_to_crumb
         self.font_size = font_size
         self.check_width = self.get_check_width()
         self.essid_width = self.get_essid_width(self.essid)

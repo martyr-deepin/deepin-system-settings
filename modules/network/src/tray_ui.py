@@ -23,7 +23,6 @@ from dss import app_theme
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import OffButton, Button
-from dtk.ui.line import HSeparator
 from vtk.button import SelectButton
 from dtk.ui.new_treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_pixbuf
@@ -62,19 +61,13 @@ class TrayUI(gtk.VBox):
         self.pack_start(self.wire, False, False)
         self.pack_start(self.wireless, False, False)
 
-
-        separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
-        hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(-1, 5)
-
         self.ssid_list = []
-        #align = gtk.Alignment(0,0, 1, 1)
-        #align.set_padding(0,0,28, 0)
         self.tree_box = gtk.VBox()
         #align.add(self.tree_box)
         self.pack_start(self.tree_box, False, False)
         self.pack_start(self.mobile, False, False)
-        self.pack_start(hseparator, False, False)
+        style.add_separator(self)
+        #self.pack_start(hseparator, False, False)
         self.button_more = SelectButton(_("Advanced..."), font_size=9, ali_padding=5)
         self.button_more.set_size_request(-1, 25)
         self.pack_start(self.button_more, False, False)
@@ -98,19 +91,6 @@ class TrayUI(gtk.VBox):
         height += 30
         height += 30
         return height
-    
-    #def get_height(self):
-        #height = 0
-        #widgets = self.get_children()
-        #if self.wire in widgets:
-            #height += 30
-        #if self.wireless in widgets:
-            #height +=30
-            #if self.wireless.get_active():
-                #height += len(self.visible_aps) * WIDGET_HEIGHT + (not self.show_all)*WIDGET_HEIGHT
-        #height += 30
-        #height += 30
-        #return height
 
     def remove_net(self, net_type):
         if net_type == "wired":
@@ -158,14 +138,6 @@ class TrayUI(gtk.VBox):
         #print "DEBUG", len(self.visible_aps), self.show_all
         self.ap_tree.delete_all_items()
         container_remove_all(self.tree_box)
-
-        #self.ap_tree.add_items(map(lambda ap: SsidItem(ap), self.visible_aps))
-
-        #if self.show_all:
-            #self.tree_box.pack_start(self.ap_tree, True, True)
-        #else:
-            #self.tree_box.pack_start(self.ap_tree, True, True)
-            #self.tree_box.pack_start(self.more_button, False, False)
 
         if len(ap_list) <= 5:
             self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list))
@@ -223,8 +195,8 @@ class TrayUI(gtk.VBox):
         #self.set_visible_aps(True)
         #height = self.get_height()
         #Dispatcher.request_resize(height)
-        self.ap_tree.delete_all_items()
         container_remove_all(self.tree_box)
+        self.ap_tree.delete_all_items()
 
         self.ap_tree.add_items(map(lambda ap: SsidItem(ap), self.__ap_list))
         if self.active_ap_index:

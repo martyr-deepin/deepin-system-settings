@@ -5,6 +5,7 @@ from nmlib.nmcache import cache
 from helper import Dispatcher
 from device_manager import device_manager
 from nmlib.servicemanager import servicemanager
+from nmlib.nm_remote_connection import NMRemoteConnection
 
 DEVICE_UNAVAILABLE = 0
 DEVICE_AVAILABLE = 1
@@ -63,7 +64,6 @@ class NetManager(object):
         #device.connect("device-active", device_is_active)
         for device in self.wired_devices:
             if not device.is_active():
-                print "=============>", nm_module.nm_remote_settings
                 connections = nm_module.nm_remote_settings.get_wired_connections()
                 if not connections:
                     connection = nm_module.nm_remote_settings.new_wired_connection()
@@ -153,6 +153,36 @@ class NetManager(object):
         wireless_device.connect("device-deactive", device_is_disactive)
         wireless_device.nm_device_disconnect()
 
+
+    def get_security_by_ap(self, ap_object):
+        NM_802_11_AP_FLAGS_NONE = 0x0
+        NM_802_11_AP_FLAGS_PRIVACY = 0x1
+        NM_802_11_AP_SEC_NONE = 0x0
+        NM_802_11_AP_SEC_PAIR_WEP40 = 0x1
+        NM_802_11_AP_SEC_PAIR_WEP104 = 0x2
+        NM_802_11_AP_SEC_PAIR_TKIP = 0x4
+        NM_802_11_AP_SEC_PAIR_CCMP = 0x8
+        NM_802_11_AP_SEC_GROUP_WEP40 = 0x10
+        NM_802_11_AP_SEC_GROUP_WEP104 = 0x20
+        NM_802_11_AP_SEC_GROUP_TKIP = 0x40
+        NM_802_11_AP_SEC_GROUP_CCMP = 0x80
+        NM_802_11_AP_SEC_KEY_MGMT_PSK = 0x100
+        NM_802_11_AP_SEC_KEY_MGMT_802_1X = 0x200
+
+        ap = ap_object
+
+        wpa_flags = ap.get_wpa_flags()
+        rsn_flags = ap.get_rsn_flags()
+        flags = ap.get_flags()
+
+        if flags & NM_802_11_AP_FLAGS_PRIVACY:
+            if wpa_flags == NM_802_11_AP_SEC_NONE and rsn_flags == NM_802_11_AP_SEC_NONE :
+                return "wep"
+            if not wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X and not rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X :
+                return "wpa"
+        else:
+            return None
+
 class Settings(object):
     def __init__(self, setting_list):
         self.setting_list = setting_list 
@@ -162,8 +192,8 @@ class Settings(object):
     def init_items(self, connection):
         self.connection = connection 
         if connection not in self.settings:
+            #self.init_button_state(connection)
             setting_list = []
-
             for setting in self.setting_list:
                 s = setting(connection, self.set_button)
                 setting_list.append((s.tab_name, s))
@@ -171,7 +201,7 @@ class Settings(object):
         return self.settings[connection]
 
     def set_button(self, name, state):
-        Dispatcher.set_button(name, state)
+        #Dispatcher.set_button(name, state)
         self.setting_state[self.connection] = (name, state)
 
     def clear(self):
@@ -179,8 +209,15 @@ class Settings(object):
         self.setting_state = {}
         self.settings = {}
 
+    def init_button_state(self, connection):
+        if isinstance(connection, NMRemoteConnection):
+            self.set_button("apply", True)
+        else:
+            self.set_button("save", False)
+
     def get_button_state(self, connection):
-        return self.setting_state[self.connection]
+        if connection in self.setting_state.iterkeys():
+            return self.setting_state[connection]
 
     def apply_changes(self):
         pass
