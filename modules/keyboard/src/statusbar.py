@@ -23,6 +23,7 @@
 from dtk.ui.label import Label
 from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.draw import draw_line
+from dtk.ui.constant import ALIGN_MIDDLE
 from constant import *
 import gtk
 import gobject
@@ -31,7 +32,10 @@ class StatusBar(gtk.HBox):
     '''docstring for StatusBar'''
     def __init__(self):
         super(StatusBar, self).__init__(False)
-        self.text_label = Label("", enable_select=False, enable_double_click=False)
+        self.text_label = Label("", text_x_align=ALIGN_MIDDLE,
+                                label_width=500,
+                                enable_select=False,
+                                enable_double_click=False)
         text_align = gtk.Alignment()
         text_align.set(0.0, 0.5, 0.0, 0.0)
         text_align.add(self.text_label)
@@ -53,7 +57,7 @@ class StatusBar(gtk.HBox):
         cr = widget.window.cairo_create()
         x, y, w, h = widget.allocation
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
-        cr.rectangle(x, y, w, h)
+        cr.rectangle(x, y+1, w, h-1)
         cr.fill()
 
         cr.set_source_rgb(*color_hex_to_cairo(TREEVIEW_BORDER_COLOR))
@@ -61,12 +65,19 @@ class StatusBar(gtk.HBox):
 
     def set_text(self, text):
         self.text_label.set_text(text)
+        gobject.timeout_add(3000, self.hide_text)
+
+    def hide_text(self):
+        self.text_label.set_text("")
 
     def set_buttons(self, buttons):
         self.clear_button()
         for bt in buttons:
             self.button_hbox.pack_start(bt, False, False)
         self.show_all()
+
+    def get_buttons(self):
+        return self.button_hbox.get_children()
 
     def clear_button(self):
         self.button_hbox.foreach(self.button_hbox.remove)

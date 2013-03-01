@@ -135,8 +135,10 @@ class KeySetting(object):
 
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
         # button init
-        self.button_widgets["repeat_test_entry"] = gtk.Entry()
-        self.button_widgets["blink_test_entry"] = gtk.Entry()
+        self.button_widgets["repeat_test_entry"] = InputEntry(_("Test Repeat Interval"))
+        self.button_widgets["blink_test_entry"] = InputEntry()
+        #self.button_widgets["repeat_test_entry"] = gtk.Entry()
+        #self.button_widgets["blink_test_entry"] = gtk.Entry()
         self.button_widgets["touchpad_disable"] = OffButton()
         # relevant settings button
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Settings"),
@@ -279,7 +281,7 @@ class KeySetting(object):
         label_width = max(
             label_widgets["repeat_delay"].size_request()[0],
             label_widgets["repeat_interval"].size_request()[0]) + 2
-        self.button_widgets["blink_test_entry"].set_size_request(label_width, WIDGET_HEIGHT)
+        self.button_widgets["blink_test_entry"].set_size(label_width, WIDGET_HEIGHT)
 
         # repeat
         self.alignment_widgets["type_label"].add(self.container_widgets["repeat_label_hbox"])
@@ -333,7 +335,7 @@ class KeySetting(object):
         self.container_widgets["repeat_table"].attach(
             self.__make_align(self.button_widgets["repeat_test_entry"], xscale=1.0), 1, 2, 2, 3, 4)
         self.container_widgets["repeat_table"].set_size_request(MAIN_AREA_WIDTH, -1)
-        self.button_widgets["repeat_test_entry"].set_size_request(-1, 25)
+        self.button_widgets["repeat_test_entry"].set_size(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
 
         # blink
         self.alignment_widgets["blink_label"].add(self.container_widgets["blink_label_hbox"])
@@ -513,7 +515,7 @@ class KeySetting(object):
         self.scale_widgets["repeat_interval"].connect(
             "button-release-event", self.scalebar_value_changed, "repeat-interval")
         #self.button_widgets["repeat_test_entry"].get_parent().connect("expose-event", self.repeat_entry_expose)
-        self.button_widgets["repeat_test_entry"].connect("expose-event", self.repeat_entry_expose)
+        #self.button_widgets["repeat_test_entry"].connect("expose-event", self.repeat_entry_expose)
         # blink
         self.scale_widgets["blink_cursor"].connect(
             "button-release-event", self.scalebar_value_changed, "cursor-blink-time")
