@@ -59,6 +59,7 @@ class TrayShutdownPlugin(object):
         self.gui.suspend_btn.connect("clicked", self.suspend_btn_clicked)
         self.gui.logout_btn.connect("clicked", self.logout_btn_clicked)
         self.gui.switch_btn.connect("clicked", self.switch_btn_clicked)
+        self.gui.lock_btn.connect("clicked", self.lock_btn_clicked)
         self.gui.user_label_event.connect("button-press-event", self.user_label_clicked)
 
     def stop_btn_clicked(self, widget):
@@ -99,6 +100,11 @@ class TrayShutdownPlugin(object):
             self.this.hide_menu()
 
     def switch_btn_clicked(self, widget):
+        self.this.hide_menu()
+        run_command(RUN_LOCK_COMMAND)
+
+    def lock_btn_clicked(self, widget):
+        self.this.hide_menu()
         run_command(RUN_LOCK_COMMAND)
 
     def init_values(self, this_list):
@@ -106,7 +112,6 @@ class TrayShutdownPlugin(object):
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
         self.tray_icon.set_icon_theme("user")
-        #self.set_user_icon()
 
     def set_user_icon(self):
         try:
