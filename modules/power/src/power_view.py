@@ -28,7 +28,7 @@ from dtk.ui.label import Label
 from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.progressbar import ProgressBar
+from power_progressbar import PowerProgressBar
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from constant import *
 from nls import _
@@ -303,7 +303,7 @@ class PowerView(gtk.VBox):
         cr.fill()
 
     def __setup_progressbar(self, progress):
-        progressbar = ProgressBar()
+        progressbar = PowerProgressBar()
         progressbar.progress_buffer.progress = progress
         progressbar.set_size_request(121, WIDGET_HEIGHT)
         return progressbar
