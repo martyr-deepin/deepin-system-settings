@@ -65,12 +65,11 @@ def pack_start(parent, child_list, expand=False, fill=False):
         parent.pack_start(child, expand, fill)
 
 class WiredSection(gtk.VBox):
-    def __init__(self, send_to_crumb_cb):
+    def __init__(self):
         gtk.VBox.__init__(self)
         self.wired_devices = device_manager.get_wired_devices()
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.toggle_cb)
-            self.send_to_crumb_cb = send_to_crumb_cb
             self.pack_start(self.wire, False, False, 0)
             self.settings = None
             self.tree = TreeView([])
@@ -129,9 +128,7 @@ class WiredSection(gtk.VBox):
         wired_items = []
         for wired_device in self.wired_devices:
             wired_items.append(WiredItem(wired_device,
-                                         self.settings, 
-                                         lambda : slider.slide_to_page(self.settings, "right"),
-                                         self.send_to_crumb_cb))
+                                         self.settings))
         return wired_items
 
     def try_active(self):
@@ -787,9 +784,8 @@ class Proxy(gtk.VBox):
         self.settings = setting_page
 
 class Network(object):
-    def __init__(self, module_frame):        
-        self.module_frame = module_frame
-        self.init_sections(self.module_frame)
+    def __init__(self):        
+        self.init_sections()
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
@@ -875,9 +871,9 @@ class Network(object):
                        #VpnSection(),
                        #Proxy(),]
 
-    def init_sections(self, module_frame):
+    def init_sections(self):
         #slider._set_to_page("main")
-        self.wired = WiredSection(lambda : module_frame.send_submodule_crumb(2, _("Wired Setting")))
+        self.wired = WiredSection()
         self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, _("Wireless Setting")))
         self.dsl = DSL(lambda : module_frame.send_submodule_crumb(2, _("DSL")))
         self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, _("Proxy")))
@@ -894,7 +890,7 @@ class Network(object):
 
     def refresh(self):
         nm_module.init_objects()
-        self.init_sections(self.module_frame)
+        self.init_sections()
         self.eventbox.set_above_child(False)
         self.eventbox.queue_draw()
 
@@ -912,7 +908,7 @@ if __name__ == '__main__':
         module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
         Dispatcher.load_module_frame(module_frame)
         Dispatcher.load_slider(slider)
-        network = Network(module_frame)
+        network = Network()
 
         def service_stop_cb(widget, s):
             network.stop()
