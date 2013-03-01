@@ -59,7 +59,11 @@ class SelectAllThread(td.Thread):
                                                                                 
     def run(self):                                                              
         try:                                                                    
-            self.ThisPtr.wallpaper_view.select_all()                                       
+            self.ThisPtr.wallpaper_view.select_all()
+            if self.ThisPtr.wallpaper_view.is_select_all():                                 
+                self.ThisPtr.select_all_button.set_label(_("UnSelect All"))                 
+            else:                                                                   
+                self.ThisPtr.select_all_button.set_label(_("Select All"))   
         except Exception, e:                                                    
             print "class SecondThread got error %s" % e
 
@@ -158,11 +162,6 @@ class DetailPage(TabBox):
 
     def __on_select_all(self, widget):
         SelectAllThread(self).start()
-
-        if self.wallpaper_view.is_select_all():
-            self.select_all_button.set_label(_("UnSelect All"))
-        else:
-            self.select_all_button.set_label(_("Select All"))
 
     def __on_delete(self, widget):
         event_manager.emit("switch-to-deletepage", self.theme)

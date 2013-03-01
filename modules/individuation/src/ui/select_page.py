@@ -79,10 +79,12 @@ class SelectView(IconView):
     @common.threaded
     def __init_monitor_images(self):    
         items = []
+        self.set_loading(True)
         for image_path in common.walk_images(self.monitor_dir):
             items.append(SelectItem(image_path))
         if items:    
             self.add_items(items)
+        self.set_loading(False)
             
     def add_images(self, images):        
         items = map(lambda image: SelectItem(image), images)
@@ -92,7 +94,7 @@ class SelectView(IconView):
         scrolled_window = ScrolledWindow()
         scrolled_window.add_child(self)
         return scrolled_window
-    
+
     def draw_mask(self, cr, x, y, w, h):
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
@@ -104,9 +106,7 @@ class SelectView(IconView):
             image_paths = map(lambda item: item.image_path, tick_items)
             event_manager.emit("add-wallpapers", image_paths)
         
-        
 class SystemPage(gtk.VBox):        
-    
     def __init__(self, monitor_dir):
         
         gtk.VBox.__init__(self)
@@ -129,6 +129,31 @@ class SystemPage(gtk.VBox):
         self.pack_start(control_align, False, True)
         
     def on_add_wallpapers(self, widget):    
+        self.select_view.emit_add_wallpapers()
+
+class PicturePage(gtk.VBox):                                                     
+    def __init__(self, monitor_dir):                                            
+                                                                                
+        gtk.VBox.__init__(self)                                                 
+        self.set_spacing(10)                                                    
+                                                                                
+        self.select_view = SelectView(monitor_dir)                              
+        self.select_view_sw = self.select_view.get_scrolled_window()               
+                                                                                   
+        add_button = Button(_("Add"))                                              
+        add_button.connect("clicked", self.on_add_wallpapers)                      
+                                                                                   
+        control_box = gtk.HBox(10)                                                 
+        control_box.pack_start(add_button, False, False)                           
+                                                                                
+        control_align = gtk.Alignment()                                         
+        control_align.set(1.0, 0.5, 0, 0)                                       
+        control_align.set_padding(0, 5, 0, 10)                                  
+        control_align.add(control_box)                                          
+        self.pack_start(self.select_view_sw, True, True)                        
+        self.pack_start(control_align, False, True)                             
+                                                                                
+    def on_add_wallpapers(self, widget):                                        
         self.select_view.emit_add_wallpapers()
         
 class UserPage(gtk.VBox):        

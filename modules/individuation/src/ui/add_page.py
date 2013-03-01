@@ -26,10 +26,10 @@ from dtk.ui.new_treeview import TreeView
 from ui.add_item import ExpandItem
 from ui.cache_page import CachePage
 from ui.download_page import TaskPage
-from ui.select_page import UserPage, SystemPage
+from ui.select_page import UserPage, SystemPage, PicturePage
 from ui.utils import switch_box, draw_line
 from helper import event_manager
-from xdg_support import get_system_wallpaper_dirs, get_download_wallpaper_dir
+from xdg_support import get_system_wallpaper_dirs, get_download_wallpaper_dir, get_images_dir
 from aibizhi import Aibizhi
 from bizhi360 import Bizhi360
 from nls import _
@@ -45,7 +45,8 @@ class AddPage(gtk.HBox):
         self.aibizhi_cache_page.cache_view.try_to_fetch()
         self.bizhi360_cache_page.cache_view.try_to_fetch()
         self.system_wallpapers_page = SystemPage(get_system_wallpaper_dirs()[0])
-        
+        self.picture_wallpapers_page = PicturePage(get_images_dir())
+
         self.task_page = TaskPage()
         
         self.__init_navigatebar()
@@ -76,6 +77,7 @@ class AddPage(gtk.HBox):
                                     #download_expand_item
                                    ])
         local_expand_item.add_childs([(_("System"), self.system_wallpapers_page),
+                                      (_("Picture"), self.picture_wallpapers_page), 
                                       (_("Downloaded"), UserPage(get_download_wallpaper_dir()))], expand=True)
         '''
         self.downloading_item = download_expand_item.add_childs(
