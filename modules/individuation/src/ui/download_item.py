@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,19 +25,15 @@ import gtk
 from dtk.ui.new_treeview import TreeItem
 from dtk.ui.threads import post_gui
 from dtk.ui.utils import get_content_size
-
 from dtk.ui.draw import draw_text, draw_pixbuf, draw_shadow
 from dtk.ui.button import CheckButtonBuffer
 from dtk.ui.progressbar import ProgressBuffer
-
 from download_manager import fetch_service, TaskObject
-
 from pystorm.report import parse_bytes, parse_time
-
 from ui.utils import (draw_single_mask)
 from theme import app_theme
-
 from cache_manager import cache_manager
+from helper import event_manager
 
 BUTTON_NORMAL = 1
 BUTTON_HOVER = 2
@@ -243,6 +240,7 @@ class TaskItem(TreeItem):
 
     @post_gui        
     def download_finish(self, obj, data):
+        event_manager.emit("download-finish", obj)
         self.progress_buffer.progress = 100
         self.status_text = "下载完成"
         self.emit_request_redraw()
@@ -257,6 +255,7 @@ class TaskItem(TreeItem):
         
     @post_gui    
     def download_start(self, obj, data):
+        event_manager.emit("download-start", obj)
         self.status_text = "开始下载"
         self.emit_request_redraw()
 

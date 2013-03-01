@@ -59,8 +59,9 @@ class AddPage(gtk.HBox):
         self.connect("expose-event", self.on_addpage_expose_event)
         
     def on_download_item_changed(self, name, obj, data):    
-        self.downloading_item.set_title("正在下载(%d)" % data)
-        
+        #self.downloading_item.set_title("正在下载(%d)" % data)
+        pass
+
     def __init_navigatebar(self):    
         self.navigatebar = TreeView(enable_drag_drop=False, enable_multiple_select=False)
         self.navigatebar.connect("single-click-item", self.on_navigatebar_single_click)
