@@ -71,7 +71,7 @@ class TrayPower(object):
 
     def modify_battery_icon(self, online_value, value):
         if online_value and value != 100:
-            self.tray_icon.set_tooltip_text(_("battery charging"))
+            self.tray_icon.set_tooltip_text(_("charging"))
             self.tray_icon.set_icon_theme("tray_battery")
 
     def update_power_icon(self, percentage):
@@ -82,7 +82,7 @@ class TrayPower(object):
         elif percentage >= 0 and percentage <= 20:
             self.tray_icon.set_icon_theme("battery20")
         #
-        self.tray_icon.set_tooltip_text(_("Power supply surplus") + str(int(percentage)))
+        self.tray_icon.set_tooltip_text(str(int(percentage)) + "%" +  _("remaining"))
 
     def init_values(self, this_list):
         self.this = this_list[0]
