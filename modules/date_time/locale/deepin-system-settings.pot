@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 09:55+0800\n"
+"POT-Creation-Date: 2013-03-01 14:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -145,11 +145,11 @@ msgid "Auto Set Time"
 msgstr ""
 
 #: ../src/date_time_view.py:277
-msgid "Manual Set"
+msgid "Manual"
 msgstr ""
 
-#: ../src/date_time_view.py:297 ../src/search_keyword.py:32
-msgid "Hour Display"
+#: ../src/date_time_view.py:297
+msgid "Hour"
 msgstr ""
 
 #: ../src/date_time_view.py:311 ../src/search_keyword.py:30
@@ -225,4 +225,8 @@ msgstr ""
 
 #: ../src/search_keyword.py:29
 msgid "DateTime"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Hour Display"
 msgstr ""

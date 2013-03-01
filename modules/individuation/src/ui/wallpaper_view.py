@@ -80,6 +80,13 @@ class WallpaperView(IconView):
             image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
             self.apply_wallpapers(image_uris)
 
+    def is_deletable(self):
+        for item in self.items:
+            if not item.is_tick:
+                return True
+
+        return False
+
     def delete_wallpaper(self):
         for item in self.items:
             if not item.is_tick:

@@ -97,8 +97,8 @@ class UserThemeView(IconView):
         input_dialog.show_all()
 
     def on_theme_delete(self, item):
-        dlg = ConfirmDialog(_("Delete theme"), 
-                            _("Are you sure delete %s theme") % item.theme.get_name(), 
+        dlg = ConfirmDialog(_("Delete Theme"), 
+                            _("Are you sure delete %s theme?") % item.theme.get_name(), 
                             300, 
                             100, 
                             lambda : self.delete_theme(item), 

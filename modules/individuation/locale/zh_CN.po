@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-28 17:40+0800\n"
+"POT-Creation-Date: 2013-03-01 13:57+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,29 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:104
+#: ../src/theme_manager.py:373
+msgid "Untitled"
+msgstr "未命名"
+
+#: ../src/main.py:104 ../src/ui/delete_page.py:84
 msgid "Delete Wallpaper"
 msgstr "删除壁纸"
 
-#: ../src/main.py:117
+#: ../src/main.py:118
 msgid "Theme Setting"
 msgstr "主题设置"
 
-#: ../src/main.py:121
+#: ../src/main.py:122
 msgid "Add Wallpaper"
 msgstr "添加壁纸"
 
-#: ../src/ui/delete_page.py:58
+#: ../src/ui/delete_page.py:59
 msgid "Back"
 msgstr "返回"
 
-#: ../src/ui/delete_page.py:61 ../src/ui/detail_page.py:104
+#: ../src/ui/delete_page.py:62 ../src/ui/detail_page.py:104
 msgid "Select All"
 msgstr "全选"
 
-#: ../src/ui/delete_page.py:64 ../src/ui/detail_page.py:107
+#: ../src/ui/delete_page.py:65 ../src/ui/select_page.py:144
+#: ../src/ui/detail_page.py:107
 msgid "Delete"
 msgstr "删除"
+
+#: ../src/ui/delete_page.py:85
+msgid "Are you sure delete wallpaper?"
+msgstr "你确定要删除壁纸？此操作仅删除壁纸链接。"
 
 #: ../src/ui/theme_page.py:59
 msgid "My Theme"
@@ -54,32 +63,56 @@ msgstr "系统主题"
 msgid "Changed User Theme to %s"
 msgstr "当前系统主题已设置为“%s”"
 
-#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:171
+#: ../src/ui/theme_view.py:96 ../src/ui/theme_view.py:172
 msgid "Theme Save As"
 msgstr "主题另存为"
 
-#: ../src/ui/theme_view.py:101
-msgid "Delete theme"
-msgstr "删除主题"
-
-#: ../src/ui/theme_view.py:102
-#, python-format
-msgid "Are you sure delete %s theme"
-msgstr "你确定要删除%s主题？此操作不可恢复。"
-
-#: ../src/ui/theme_view.py:109 ../src/ui/theme_view.py:112
-#: ../src/ui/theme_view.py:175
-msgid "Save As"
-msgstr "主题另存为"
-
-#: ../src/ui/theme_view.py:114
+#: ../src/ui/theme_view.py:100 ../src/ui/theme_view.py:115
 msgid "Delete Theme"
 msgstr "删除主题"
 
-#: ../src/ui/theme_view.py:164
+#: ../src/ui/theme_view.py:101
+#, python-format
+msgid "Are you sure delete %s theme?"
+msgstr "你确定要删除%s主题？此操作不可恢复。"
+
+#: ../src/ui/theme_view.py:110 ../src/ui/theme_view.py:113
+#: ../src/ui/theme_view.py:176
+msgid "Save As"
+msgstr "主题另存为"
+
+#: ../src/ui/theme_view.py:165
 #, python-format
 msgid "Changed System Theme to %s"
 msgstr "当前系统主题已设置为“%s”"
+
+#: ../src/ui/select_page.py:118 ../src/ui/select_page.py:145
+msgid "Add"
+msgstr "添加"
+
+#: ../src/ui/add_page.py:70
+msgid "Library"
+msgstr "壁纸库"
+
+#: ../src/ui/add_page.py:72
+msgid "From Internet"
+msgstr "网络壁纸"
+
+#: ../src/ui/add_page.py:77
+msgid "System"
+msgstr "系统壁纸"
+
+#: ../src/ui/add_page.py:78
+msgid "Downloaded"
+msgstr "下载壁纸"
+
+#: ../src/ui/add_page.py:83
+msgid "LoveBiZhi HD"
+msgstr "爱壁纸HD"
+
+#: ../src/ui/add_page.py:84
+msgid "360BiZhi"
+msgstr "360壁纸"
 
 #: ../src/ui/detail_page.py:42
 msgid "Seconds"
@@ -122,3 +155,11 @@ msgstr "图片时间间隔"
 #: ../src/ui/detail_page.py:98
 msgid "Random"
 msgstr "随机播放"
+
+#: ../src/ui/cache_page.py:114
+msgid "More"
+msgstr "更多"
+
+#: ../src/ui/cache_page.py:116
+msgid "Download"
+msgstr "下载"

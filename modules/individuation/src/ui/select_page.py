@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,15 +23,14 @@
 
 import gtk
 import copy
-
 from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
-
 from ui.wallpaper_item import SelectItem
 from helper import event_manager
 from monitor import LibraryMonitor
 import common
+from nls import _
 
 class SelectView(IconView):
     
@@ -115,7 +115,7 @@ class SystemPage(gtk.VBox):
         self.select_view = SelectView(monitor_dir)
         self.select_view_sw = self.select_view.get_scrolled_window()
         
-        add_button = Button("添加")
+        add_button = Button(_("Add"))
         add_button.connect("clicked", self.on_add_wallpapers)
         
         control_box = gtk.HBox(10)
@@ -141,11 +141,11 @@ class UserPage(gtk.VBox):
         self.select_view = SelectView(monitor_dir)
         self.select_view_sw = self.select_view.get_scrolled_window()
         
-        delete_button = Button("删除选中")
-        add_button = Button("添加")
+        delete_button = Button(_("Delete"))
+        add_button = Button(_("Add"))
         add_button.connect("clicked", self.on_add_wallpapers)
         
-        control_box = gtk.HBox(10)
+        control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(delete_button, False, False)
         control_box.pack_start(add_button, False, False)
         
