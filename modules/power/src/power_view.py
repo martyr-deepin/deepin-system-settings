@@ -189,7 +189,7 @@ class PowerView(gtk.VBox):
                                                             padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.tray_battery_status_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.tray_battery_image = ImageBox(app_theme.get_pixbuf("power/tray_battery.png"))
-        self.tray_battery_status_label = self.__setup_label(_("Show Battery Status In The Tray"), 
+        self.tray_battery_status_label = self.__setup_label(_("Show Battery Status In Tray"), 
                                                             TITLE_FONT_SIZE, 
                                                             ALIGN_START)
         self.tray_battery_status_label.set_sensitive(self.power_manager.get_tray_battery_status())
@@ -381,9 +381,9 @@ class PowerView(gtk.VBox):
 
         if object == "tray_battery_status":
             if widget.get_active():
-                self.__send_message("status", ("power", _("Changed to Show Battery Status In The Tray")))
+                self.__send_message("status", ("power", _("Changed to Show Battery Status In Tray")))
             else:
-                self.__send_message("status", ("power", _("Changed to Hide Battery Status In The Tray")))
+                self.__send_message("status", ("power", _("Changed to Hide Battery Status In Tray")))
             self.power_manager.set_tray_battery_status(widget.get_active())
             return
 

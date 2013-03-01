@@ -23,6 +23,7 @@
 from theme import app_theme
 import gtk
 import gobject
+from dtk.ui.dialog import ConfirmDialog
 from dtk.ui.tab_window import TabBox
 from dtk.ui.label import Label
 from dtk.ui.button import Button, CheckButton
@@ -79,7 +80,15 @@ class DeletePage(TabBox):
         self.wallpaper_view.select_all(True)
 
     def __on_delete(self, widget):
-        self.wallpaper_view.delete_wallpaper()
+        if self.wallpaper_view.is_deletable():
+            dlg = ConfirmDialog(_("Delete Wallpaper"),                                  
+                                _("Are you sure delete wallpaper?"), 
+                                300,                                                
+                                100,                                                
+                                lambda : self.wallpaper_view.delete_wallpaper(),                   
+                                None,                                               
+                                True)                                               
+            dlg.show_all()
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation

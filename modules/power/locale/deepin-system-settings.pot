@@ -8,29 +8,37 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-26 13:44+0800\n"
+"POT-Creation-Date: 2013-03-01 14:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_shutdown_gui.py:78
+#: ../src/tray_shutdown_gui.py:88
+msgid "切换用户"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:91
 msgid "shutdown"
 msgstr ""
 
-#: ../src/tray_shutdown_gui.py:79
+#: ../src/tray_shutdown_gui.py:94
 msgid "restart"
 msgstr ""
 
-#: ../src/tray_shutdown_gui.py:80
+#: ../src/tray_shutdown_gui.py:97
 msgid "suspend"
 msgstr ""
 
-#: ../src/tray_shutdown_gui.py:81
+#: ../src/tray_shutdown_gui.py:100
 msgid "logout"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:103
+msgid "锁屏"
 msgstr ""
 
 #: ../src/tray_dialog.py:35
@@ -120,91 +128,95 @@ msgstr ""
 msgid "Password Protection Wakeup"
 msgstr ""
 
-#: ../src/power_view.py:191 ../src/search_keyword.py:38
-msgid "Show Battery Status In The Tray"
+#: ../src/power_view.py:192
+msgid "Show Battery Status In Tray"
 msgstr ""
 
-#: ../src/power_view.py:284
+#: ../src/power_view.py:287
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/power_view.py:340
+#: ../src/power_view.py:343
 #, python-format
 msgid "Changed Press Power Button to %s"
 msgstr ""
 
-#: ../src/power_view.py:345
+#: ../src/power_view.py:348
 #, python-format
 msgid "Changed Close Notebook Cover to %s"
 msgstr ""
 
-#: ../src/power_view.py:350
+#: ../src/power_view.py:353
 #, python-format
 msgid "Changed Press Hibernate Button to %s"
 msgstr ""
 
-#: ../src/power_view.py:355
+#: ../src/power_view.py:358
 #, python-format
 msgid "Changed Suspend Status to %s"
 msgstr ""
 
-#: ../src/power_view.py:360
+#: ../src/power_view.py:363
 #, python-format
 msgid "Changed Close Harddisk to %s"
 msgstr ""
 
-#: ../src/power_view.py:365
+#: ../src/power_view.py:368
 #, python-format
 msgid "Changed Close Monitor to %s"
 msgstr ""
 
-#: ../src/power_view.py:372
+#: ../src/power_view.py:375
 msgid "Changed to Password Protection Wakeup"
 msgstr ""
 
-#: ../src/power_view.py:374
+#: ../src/power_view.py:377
 msgid "Changed to NO Password Protection Wakeup"
 msgstr ""
 
-#: ../src/power_view.py:380
-msgid "Changed to Show Battery Status In The Tray"
+#: ../src/power_view.py:384
+msgid "Changed to Show Battery Status In Tray"
 msgstr ""
 
-#: ../src/power_view.py:382
-msgid "Changed to Hide Battery Status In The Tray"
+#: ../src/power_view.py:386
+msgid "Changed to Hide Battery Status In Tray"
 msgstr ""
 
 #: ../src/search_keyword.py:34
 msgid "Being Hibernate"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:36
+#: ../src/search_keyword.py:38
+msgid "Show Battery Status In The Tray"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:37
 msgid "Restart your computer now?"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:38
+#: ../src/tray_shutdown_plugin.py:39
 #, python-format
 msgid ""
 "The system will restart in \n"
 "%s secs."
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:40
+#: ../src/tray_shutdown_plugin.py:41
 msgid "Suspend your computer now?"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:42
+#: ../src/tray_shutdown_plugin.py:43
 #, python-format
 msgid ""
 "The system will suspend in \n"
 "%s secs."
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:43
+#: ../src/tray_shutdown_plugin.py:44
 msgid "Logout your computer now?"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:44
+#: ../src/tray_shutdown_plugin.py:45
 #, python-format
 msgid ""
 "The system will Logout in \n"

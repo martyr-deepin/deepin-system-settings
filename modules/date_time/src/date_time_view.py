@@ -274,7 +274,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.set_time_spin_align = self.__setup_align(padding_left = 10)
         self.set_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
-        self.set_time_label = self.__setup_label(_("Manual Set"), 60)
+        self.set_time_label = self.__setup_label(_("Manual"), 60)
         self.set_time_spin = TimeSpinBox(is_24hour = self.is_24hour)                 
         self.set_time_spin.set_size_request(85, -1)                               
         self.set_time_spin.connect("value-changed", self.__time_changed)
@@ -294,7 +294,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.time_display_align = self.__setup_align(padding_top = BETWEEN_SPACING)
         self.time_display_box = gtk.HBox(spacing = BETWEEN_SPACING)
-        self.time_display_label = self.__setup_label("24 %s" % _("Hour Display"))
+        self.time_display_label = self.__setup_label("24 %s" % _("Hour"))
         self.time_display_toggle_align = self.__setup_align()
         self.time_display_toggle = self.__setup_toggle()                        
         self.time_display_toggle.set_active(self.is_24hour)                          

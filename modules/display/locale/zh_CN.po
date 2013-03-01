@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-23 15:56+0800\n"
+"POT-Creation-Date: 2013-03-01 14:11+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -41,7 +41,7 @@ msgstr "屏幕亮度"
 msgid "Brightness"
 msgstr "亮度"
 
-#: ../src/search_keyword.py:35 ../src/display_view.py:390
+#: ../src/search_keyword.py:35
 msgid "Auto Adjust Monitor Brightness"
 msgstr "自动调节屏幕亮度"
 
@@ -49,7 +49,7 @@ msgstr "自动调节屏幕亮度"
 msgid "Close Monitor"
 msgstr "关闭屏幕"
 
-#: ../src/search_keyword.py:37 ../src/display_view.py:423
+#: ../src/search_keyword.py:37
 msgid "Auto Lock User Monitor Screen"
 msgstr "自动锁定用户屏幕"
 
@@ -125,15 +125,24 @@ msgstr "<span foreground=\"%s\" underline=\"single\">电源</span>"
 msgid "Multi-Monitors"
 msgstr "多显示器"
 
+#: ../src/display_view.py:390
+msgid "Auto Adjust Brightness"
+msgstr "自动调节屏幕亮度"
+
 #: ../src/display_view.py:417
 msgid "Monitor Screen Lock"
 msgstr "锁定屏幕"
+
+#: ../src/display_view.py:423
+msgid "Auto Lock User Screen"
+msgstr "自动锁定用户屏幕"
 
 #: ../src/display_view.py:486
 msgid "Reset to default value"
 msgstr "恢复默认值"
 
 #: ../src/display_view.py:563
+#, python-format
 msgid "Changed brightness to %0.2f"
 msgstr "亮度修改为%0.2f"
 

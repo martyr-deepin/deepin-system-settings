@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-23 15:56+0800\n"
+"POT-Creation-Date: 2013-03-01 14:11+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:35 ../src/display_view.py:390
+#: ../src/search_keyword.py:35
 msgid "Auto Adjust Monitor Brightness"
 msgstr ""
 
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Close Monitor"
 msgstr ""
 
-#: ../src/search_keyword.py:37 ../src/display_view.py:423
+#: ../src/search_keyword.py:37
 msgid "Auto Lock User Monitor Screen"
 msgstr ""
 
@@ -125,8 +125,16 @@ msgstr ""
 msgid "Multi-Monitors"
 msgstr ""
 
+#: ../src/display_view.py:390
+msgid "Auto Adjust Brightness"
+msgstr ""
+
 #: ../src/display_view.py:417
 msgid "Monitor Screen Lock"
+msgstr ""
+
+#: ../src/display_view.py:423
+msgid "Auto Lock User Screen"
 msgstr ""
 
 #: ../src/display_view.py:486

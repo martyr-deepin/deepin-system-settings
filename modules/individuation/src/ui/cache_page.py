@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,17 +23,15 @@
 
 import gtk
 import copy
-
 from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
 from dtk.ui.threads import post_gui
 from dtk.ui.scrolled_window import ScrolledWindow
-
 from ui.wallpaper_item import CacheItem
 from cache_manager import cache_thread_pool
 from helper import event_manager
-
 import common
+from nls import _
 
 class CacheView(IconView):
     
@@ -73,7 +72,7 @@ class CacheView(IconView):
         pass
         
     def try_to_fetch(self):    
-        self.clear()
+        #self.clear()
         self.network_interface.clear()
         self.__fetch_thread_id += 1
         fetch_thread_id = copy.deepcopy(self.__fetch_thread_id)
@@ -104,22 +103,20 @@ class CacheView(IconView):
         self.fetch_successed()
         
 class CachePage(gtk.VBox):        
-    
     def __init__(self, network_interface):
-        
         gtk.VBox.__init__(self)
+        
         self.set_spacing(10)
         
         self.cache_view = CacheView(network_interface)
         self.cache_view_sw = self.cache_view.get_scrolled_window()
         
-        try_button = Button("再试一次")
+        try_button = Button(_("More"))
         try_button.connect("clicked", self.on_try_button_clicked)
-        download_button = Button("下载")
+        download_button = Button(_("Download"))
         download_button.connect("clicked", self.on_download_button_clicked)
         
-        
-        control_box = gtk.HBox(10)
+        control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(download_button, False, False)
         control_box.pack_start(try_button, False, False)
         

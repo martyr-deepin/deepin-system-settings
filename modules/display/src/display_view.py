@@ -387,7 +387,7 @@ class DisplayView(gtk.VBox):
         '''
         self.auto_adjust_align = self.__setup_align()
         self.auto_adjust_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.auto_adjust_label = self.__setup_label(_("Auto Adjust Monitor Brightness"))
+        self.auto_adjust_label = self.__setup_label(_("Auto Adjust Brightness"))
         self.auto_adjust_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.auto_adjust_toggle = self.__setup_toggle()
         self.auto_adjust_toggle.set_active(self.display_manager.is_enable_close_monitor())
@@ -420,7 +420,7 @@ class DisplayView(gtk.VBox):
         '''
         self.auto_lock_align = self.__setup_align()
         self.auto_lock_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.auto_lock_label = self.__setup_label(_("Auto Lock User Monitor Screen"))
+        self.auto_lock_label = self.__setup_label(_("Auto Lock User Screen"))
         self.auto_lock_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.auto_lock_toggle = self.__setup_toggle()
         is_enable_lock_display = self.display_manager.is_enable_lock_display()

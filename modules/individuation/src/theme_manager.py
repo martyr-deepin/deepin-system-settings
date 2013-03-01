@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@ from xdg_support import (get_user_theme_dir, get_system_theme_dir,
 
 import deepin_gsettings
 from settings import global_settings
+from nls import _
 
 THEME_TYPE_SYSTEM = 1
 THEME_TYPE_USER = 2
@@ -368,7 +370,7 @@ class ThemeManager(object):
         if copy_theme:
             untitled_theme.copy_theme(copy_theme)
         untitled_theme.set_default_name("untitled")    
-        untitled_theme.set_locale_name("未命名")
+        untitled_theme.set_locale_name(_("Untitled"))
         untitled_theme.save()    
         return untitled_theme
     

@@ -1,11 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2011 ~ 2012 Hou Shaohui
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,21 +22,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-
 from dtk.ui.new_treeview import TreeView
-
 from ui.add_item import ExpandItem
 from ui.cache_page import CachePage
 from ui.download_page import TaskPage
 from ui.select_page import UserPage, SystemPage
 from ui.utils import switch_box, draw_line
-
 from helper import event_manager
 from xdg_support import get_system_wallpaper_dirs, get_download_wallpaper_dir
-
 from aibizhi import Aibizhi
 from bizhi360 import Bizhi360
-
+from nls import _
 
 class AddPage(gtk.HBox):
     
@@ -70,17 +67,21 @@ class AddPage(gtk.HBox):
         self.navigatebar.set_size_request(132, -1)
         self.navigatebar.draw_mask = self.on_navigatebar_draw_mask
         
-        local_expand_item = ExpandItem("壁纸库")
-        download_expand_item = ExpandItem("下载管理")
-        network_expand_item = ExpandItem("网络壁纸")
-        self.navigatebar.add_items([local_expand_item, network_expand_item, download_expand_item])
-        local_expand_item.add_childs([("系统壁纸", self.system_wallpapers_page),
-                                      ("下载壁纸", UserPage(get_download_wallpaper_dir()))], expand=True)
+        local_expand_item = ExpandItem(_("Library"))
+        #download_expand_item = ExpandItem(_("Download"))
+        network_expand_item = ExpandItem(_("From Internet"))
+        self.navigatebar.add_items([local_expand_item, 
+                                    network_expand_item, 
+                                    #download_expand_item
+                                   ])
+        local_expand_item.add_childs([(_("System"), self.system_wallpapers_page),
+                                      (_("Downloaded"), UserPage(get_download_wallpaper_dir()))], expand=True)
+        '''
         self.downloading_item = download_expand_item.add_childs(
-            [("正在下载(0)", self.task_page)], expand=True)[0]
-        
-        network_expand_item.add_childs([("爱壁纸HD", self.aibizhi_cache_page),
-                                        ("360壁纸", self.bizhi360_cache_page)], expand=True)        
+            [(_("Downloading (0)"), self.task_page)], expand=True)[0]
+        '''
+        network_expand_item.add_childs([(_("LoveBiZhi HD"), self.aibizhi_cache_page),
+                                        (_("360BiZhi"), self.bizhi360_cache_page)], expand=True)        
         
         self.navigatebar.set_highlight_item(self.navigatebar.get_items()[1])
         
