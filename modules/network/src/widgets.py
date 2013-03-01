@@ -24,6 +24,7 @@ class AskPasswordDialog(DialogBox):
 	
     def __init__(self,
                  connection,
+                 key_mgmt=None,
                  #title, 
                  #init_text, 
                  default_width=330,
@@ -44,11 +45,10 @@ class AskPasswordDialog(DialogBox):
         DialogBox.__init__(self, "Set password", default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
-
+    
         self.connection = connection
         ssid = self.connection.get_setting("802-11-wireless").ssid
-        print ssid
-        
+
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
         self.hint_align.set_padding(0, 0, 8, 8)
@@ -66,6 +66,8 @@ class AskPasswordDialog(DialogBox):
                                                     setting_name,
                                                     method)
         else:
+            if key_mgmt:
+                self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, key_mgmt)
             init_text = ''
         self.entry = PasswordEntry(init_text)
 

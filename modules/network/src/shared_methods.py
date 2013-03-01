@@ -177,9 +177,9 @@ class NetManager(object):
 
         if flags & NM_802_11_AP_FLAGS_PRIVACY:
             if wpa_flags == NM_802_11_AP_SEC_NONE and rsn_flags == NM_802_11_AP_SEC_NONE :
-                return "wep"
+                return "none" # WEP
             if not wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X and not rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X :
-                return "wpa"
+                return "wpa" # wpa
         else:
             return None
 
