@@ -81,7 +81,10 @@ class WallpaperItem(gobject.GObject):
         if readonly:
             self.is_tick = self.theme.get_system_wallpaper_status(path)
         else:    
-            self.is_tick = self.theme.get_user_wallpaper_status(path)
+            if self.theme == None:
+                self.is_tick = False
+            else:
+                self.is_tick = self.theme.get_user_wallpaper_status(path)
             
         self.tick_area = None
         
@@ -210,6 +213,9 @@ class WallpaperItem(gobject.GObject):
         if self.readonly:
             self.theme.set_system_wallpaper_status(self.image_path, value)
         else:    
+            if self.theme == None:
+                return
+
             self.theme.set_user_wallpaper_status(self.image_path, value)
         
     def icon_item_motion_notify(self, x, y):
@@ -1020,6 +1026,10 @@ class SelectItem(gobject.GObject):
         
         self.emit_redraw_request()
     
+    def tick(self):
+        self.is_tick = not self.is_tick
+        self.emit_redraw_request()
+
     def icon_item_button_press(self, x, y):
         '''
         Handle button-press event.

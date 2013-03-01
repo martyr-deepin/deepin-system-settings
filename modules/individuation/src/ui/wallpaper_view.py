@@ -57,6 +57,9 @@ class WallpaperView(IconView):
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
         
     def is_exists(self, image):    
+        if self.theme == None:
+            return False
+
         if image in self.theme.get_user_wallpapers():
             return True
         return False
@@ -64,6 +67,9 @@ class WallpaperView(IconView):
     def add_user_wallpapers(self, image_paths, save=False):
         self.add_images(image_paths, readonly=False)
         if save:
+            if self.theme == None:
+                return
+            
             self.theme.add_user_wallpapers(image_paths)        
     
     def add_system_wallpapers(self, image_paths):
