@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 13:57+0800\n"
+"POT-Creation-Date: 2013-03-01 17:05+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,27 +90,27 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: ../src/ui/add_page.py:70
+#: ../src/ui/add_page.py:71
 msgid "Library"
 msgstr ""
 
-#: ../src/ui/add_page.py:72
+#: ../src/ui/add_page.py:73
 msgid "From Internet"
 msgstr ""
 
-#: ../src/ui/add_page.py:77
+#: ../src/ui/add_page.py:78
 msgid "System"
 msgstr ""
 
-#: ../src/ui/add_page.py:78
+#: ../src/ui/add_page.py:79
 msgid "Downloaded"
 msgstr ""
 
-#: ../src/ui/add_page.py:83
+#: ../src/ui/add_page.py:84
 msgid "LoveBiZhi HD"
 msgstr ""
 
-#: ../src/ui/add_page.py:84
+#: ../src/ui/add_page.py:85
 msgid "360BiZhi"
 msgstr ""
 
@@ -156,10 +156,14 @@ msgstr ""
 msgid "Random"
 msgstr ""
 
-#: ../src/ui/cache_page.py:114
+#: ../src/ui/detail_page.py:218
+msgid "UnSelect All"
+msgstr ""
+
+#: ../src/ui/cache_page.py:121
 msgid "More"
 msgstr ""
 
-#: ../src/ui/cache_page.py:116
+#: ../src/ui/cache_page.py:123
 msgid "Download"
 msgstr ""

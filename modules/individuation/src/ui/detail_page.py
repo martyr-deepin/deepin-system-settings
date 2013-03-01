@@ -159,6 +159,11 @@ class DetailPage(TabBox):
     def __on_select_all(self, widget):
         SelectAllThread(self).start()
 
+        if self.wallpaper_view.is_select_all():
+            self.select_all_button.set_label(_("UnSelect All"))
+        else:
+            self.select_all_button.set_label(_("Select All"))
+
     def __on_delete(self, widget):
         event_manager.emit("switch-to-deletepage", self.theme)
 
@@ -214,6 +219,8 @@ class DetailPage(TabBox):
                 
         self.time_combobox.set_select_index(item_index)        
         self.wallpaper_view.set_theme(theme)
+        if self.wallpaper_view.is_select_all():
+            self.select_all_button.set_label(_("UnSelect All"))
         
     def draw_mask(self, cr, x, y, w, h):
         '''

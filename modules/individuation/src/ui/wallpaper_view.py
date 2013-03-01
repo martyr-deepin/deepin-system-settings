@@ -95,12 +95,27 @@ class WallpaperView(IconView):
         self.theme.save()
         self.set_theme(self.theme, True)
 
+    def is_select_all(self):
+        for item in self.items:
+            if item.__class__.__name__ == "AddItem":
+                continue
+
+            if not item.is_tick:
+                return False
+
+        return True
+
     def select_all(self, unselect=False):
+        is_select_all = self.is_select_all()
+
         for item in self.items:
             if unselect:
                 item.untick()
             else:
-                item.tick()
+                if is_select_all:
+                    item.untick()
+                else:
+                    item.tick()
             if not self.is_delete:
                 image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
                 self.apply_wallpapers(image_uris)
