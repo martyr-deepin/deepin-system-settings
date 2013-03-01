@@ -142,9 +142,10 @@ class TrayNetworkPlugin(object):
     def connect_by_ssid(self, widget, ssid, ap):
         connection =  self.net_manager.connect_wireless_by_ssid(ssid)
         self.ap = ap
-        if not isinstance(connection, NMRemoteConnection):
-            if self.net_manager.get_security_by_ap(self.ap):
-                self.toggle_dialog(connection)
+        if connection and not isinstance(connection, NMRemoteConnection):
+            security = self.net_manager.get_security_by_ap(self.ap)
+            if security:
+                self.toggle_dialog(connection, security)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
@@ -259,8 +260,11 @@ class TrayNetworkPlugin(object):
             self.this_connection = active_connection.get_connection()
         '''
 
-    def toggle_dialog(self, connection):
-        AskPasswordDialog(connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
+    def toggle_dialog(self, connection, security=None):
+            AskPasswordDialog(connection,
+                              key_mgmt=security,
+                              cancel_callback=self.cancel_ask_pwd,
+                              confirm_callback=self.pwd_changed).show_all()
 
 
     def cancel_ask_pwd(self):
