@@ -49,13 +49,14 @@ class DesktopView(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.desktop_settings = deepin_gsettings.new("com.deepin.dde.desktop")
+        self.dock_settings = deepin_gsettings.new("com.deepin.dde.dock")
 
-        self.display_style_items = [(_("Default"), 0), 
+        self.display_style_items = [(_("Default Style"), 0), 
                                     (_("Auto Hide"), 1), 
                                     (_("Invisible"), 2)]
         self.place_style_items = [(_("Buttom"), 0), 
                                   (_("Top"), 1)]
-        self.icon_size_items = [(_("Default"), 0), 
+        self.icon_size_items = [(_("Default Icon"), 0), 
                                 (_("Small"), 1)]
         '''
         icon title
@@ -80,11 +81,13 @@ class DesktopView(gtk.VBox):
         self.trash_checkbutton.set_active(self.desktop_settings.get_boolean("show-trash-icon"))
         self.trash_checkbutton.connect("toggled", self.__toggled, "trash")
         self.dsc_checkbutton = self.__setup_checkbutton(_("Software Center"))
+        self.dsc_checkbutton.set_active(self.desktop_settings.get_boolean("show-dsc-icon"))
+        self.dsc_checkbutton.connect("toggled", self.__toggled, "dsc")
         self.__widget_pack_start(self.icon_box, 
                                  [self.computer_checkbutton, 
                                   self.home_checkbutton, 
                                   self.trash_checkbutton, 
-                                  #self.dsc_checkbutton, 
+                                  self.dsc_checkbutton, 
                                  ])
         self.icon_align.add(self.icon_box)
         '''
@@ -125,6 +128,8 @@ class DesktopView(gtk.VBox):
         self.icon_size_label = self.__setup_label(_("Icon Size"))
         self.icon_size_combo = self.__setup_combo(self.icon_size_items)
         self.icon_size_combo.set_select_index(0)
+        if self.dock_settings.get_boolean("mini-model"):
+            self.icon_size_combo.set_select_index(1)
         self.icon_size_combo.connect("item-selected", self.__combo_item_selected, "icon_size")
         self.__widget_pack_start(self.icon_size_box, 
             [self.icon_size_label, self.icon_size_combo])
@@ -177,7 +182,7 @@ class DesktopView(gtk.VBox):
                                   self.icon_align, 
                                   self.dock_title_align, 
                                   self.display_style_align, 
-                                  self.place_style_align, 
+                                  #self.place_style_align, 
                                   self.icon_size_align, 
                                   self.greeter_title_align, 
                                   self.greeter_align, 
@@ -212,6 +217,14 @@ class DesktopView(gtk.VBox):
             else:
                 self.__send_message("status", ("desktop", _("Hide trash icon")))
             self.desktop_settings.set_boolean("show-trash-icon", is_toggled)
+            return
+        
+        if obj == "dsc":                                                      
+            if is_toggled:                                                      
+                self.__send_message("status", ("desktop", _("Show deepin software center icon")))
+            else:                                                               
+                self.__send_message("status", ("desktop", _("Hide deepin software conter icon")))
+            self.desktop_settings.set_boolean("show-dsc-icon", is_toggled)       
             return
 
     def __handle_dbus_replay(self, *reply):                                     
@@ -314,6 +327,10 @@ class DesktopView(gtk.VBox):
             parent_widget.pack_start(item, False, False)
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
-        return
+        if object == "icon_size":
+            if item_value == 0:
+                self.dock_settings.set_boolean("mini-model", False)
+            else:
+                self.dock_settings.set_boolean("mini-model", True)
 
 gobject.type_register(DesktopView)        

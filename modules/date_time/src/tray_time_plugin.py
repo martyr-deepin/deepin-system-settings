@@ -36,6 +36,9 @@ import dltk_calendar
 import gtk
 
 class TrayTimePlugin(object):
+    WEEK = [_("Monday"), _("Tuesday"), _("Wednesday"), _("Thursday"), 
+             _("Friday"), _("Saturday"), _("Sunday")]
+    
     def __init__(self):
         self.width = 200
         self.tray_time = TrayTime()
@@ -58,6 +61,8 @@ class TrayTimePlugin(object):
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
         self.tray_icon.set_text("12:12:12")
+        self.tray_icon.set_tooltip_text("%s %s" % (time.strftime("%Y-%m-%d"), 
+                                                   self.WEEK[int(time.strftime("%w")) - 1]))
 
     def run(self):
         return True
