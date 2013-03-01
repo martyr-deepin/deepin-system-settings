@@ -75,12 +75,22 @@ class TrayPower(object):
             self.tray_icon.set_icon_theme("tray_battery")
 
     def update_power_icon(self, percentage):
-        if percentage >= 90 and percentage <= 100:
-            self.tray_icon.set_icon_theme("battery100")
-        elif percentage >= 21 and percentage <= 98:
-            self.tray_icon.set_icon_theme("battery50")
+        if percentage >= 91 and percentage <= 100:
+            self.tray_icon.set_icon_theme("battery91-100")
+        elif percentage >= 81 and percentage <= 90:
+            self.tray_icon.set_icon_theme("battery81-90")
+        elif percentage >= 71 and percentage <= 80:
+            self.tray_icon.set_icon_theme("battery71-80")
+        elif percentage >= 61 and percentage <= 70:
+            self.tray_icon.set_icon_theme("battery61-70")
+        elif percentage >= 51 and percentage <= 60:
+            self.tray_icon.set_icon_theme("battery51-60")
+        elif percentage >= 31 and percentage <= 50:
+            self.tray_icon.set_icon_theme("battery31-50")
+        elif percentage >= 21 and percentage <= 30:
+            self.tray_icon.set_icon_theme("battery21-30")
         elif percentage >= 0 and percentage <= 20:
-            self.tray_icon.set_icon_theme("battery20")
+            self.tray_icon.set_icon_theme("battery0-10-20")
         #
         self.tray_icon.set_tooltip_text(str(int(percentage)) + "%" +  _("remaining"))
 
