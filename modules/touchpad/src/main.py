@@ -211,7 +211,7 @@ class TouchpadSetting(object):
         # alignment set
         self.alignment_widgets["custom_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["custom_button"].set(0.0, 0.5, 1.0, 0.0)
-        self.alignment_widgets["custom_button"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING+OPTION_LEFT_PADDING-10, 0)
+        #self.alignment_widgets["custom_button"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING+OPTION_LEFT_PADDING-10, 0)
         self.alignment_widgets["custom_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         #self.alignment_widgets["custom_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["custom_button"].set_size_request(-1, CONTAINNER_HEIGHT)
@@ -242,7 +242,7 @@ class TouchpadSetting(object):
             else:
                 self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
             self.button_widgets["%s_hand_radio" % is_left].set_active(True)
-        self.container_widgets["custom_button_hbox"].set_spacing(WIDGET_SPACING)
+        #self.container_widgets["custom_button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["custom_button_hbox0"] = gtk.HBox(False)
         self.container_widgets["custom_button_hbox0"].set_spacing(WIDGET_SPACING)
         self.container_widgets["custom_button_hbox0"].pack_start(
@@ -250,9 +250,9 @@ class TouchpadSetting(object):
         self.container_widgets["custom_button_hbox0"].pack_start(
             self.button_widgets["left_hand_radio"], False, False)
         button_align = self.__make_align(self.container_widgets["custom_button_hbox0"], xalign=0.0)
-        button_align.set_size_request(HSCALEBAR_WIDTH+WIDGET_SPACING+label_width, CONTAINNER_HEIGHT)
-        self.container_widgets["custom_button_hbox"].pack_start(button_align, False, False)
-        self.container_widgets["custom_button_hbox"].pack_start(self.__make_align())
+        #button_align.set_size_request(HSCALEBAR_WIDTH+WIDGET_SPACING+label_width, CONTAINNER_HEIGHT)
+        self.container_widgets["custom_button_hbox"].pack_start(self.__make_align(width=STANDARD_LINE-5), False, False)
+        self.container_widgets["custom_button_hbox"].pack_start(button_align)
 
         # pointer speed
         self.alignment_widgets["pointer_speed_label"].add(self.container_widgets["pointer_speed_label_hbox"])
@@ -559,9 +559,9 @@ class TouchpadSetting(object):
     
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
-                     padding_right=0, height=CONTAINNER_HEIGHT):
+                     padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
         align = gtk.Alignment()
-        align.set_size_request(-1, height)
+        align.set_size_request(width, height)
         align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
         if widget:
