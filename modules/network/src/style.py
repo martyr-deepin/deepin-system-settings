@@ -19,7 +19,7 @@ MYHSEPARATOR_COLOR = [
 
 def add_separator(container):
         h_separator = HSeparator(MYHSEPARATOR_COLOR, 0, 0)
-        h_separator.set_size_request(-1, 10)
+        h_separator.set_size_request(-1, HSEPARATOR_HEIGHT)
         h_separator.set(0, 0.5, 1, 0)
         container.pack_start(h_separator, False, False)
 

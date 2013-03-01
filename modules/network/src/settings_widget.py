@@ -22,11 +22,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from dss import app_theme
 from dtk.ui.new_treeview import TreeView, TreeItem
-from dtk.ui.theme import ui_theme
-from dtk.ui.draw import draw_text, draw_pixbuf, draw_hlinear,draw_vlinear, draw_line
-from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size, propagate_expose, alpha_color_hex_to_cairo, container_remove_all, cairo_state
+from dtk.ui.draw import draw_text, draw_pixbuf,draw_vlinear, draw_line
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size, container_remove_all, cairo_state
 from dtk.ui.new_entry import EntryBuffer, Entry, InputEntry
-from dtk.ui.box import ImageBox
 from dtk.ui.button import Button, ImageButton
 from dtk.ui.label import Label
 import gobject
@@ -145,6 +143,11 @@ class EntryTreeView(TreeView):
         send_event.free()
 
     def double_click(self, widget, item, column):
+        if not item.is_select:
+            return
+        if not item.clicked:
+            return
+
         if not column in item.ENTRY_COLUMN:
             return
         if item.entry:
@@ -200,9 +203,10 @@ class EntryTreeView(TreeView):
                 if release_row is not None:
                     if self.double_click_row == release_row:
                         self.visible_items[release_row].double_click(release_column, offset_x, offset_y)
-                        self.emit("double-click", self.visible_items[release_row], release_column)
+                        #self.emit("double-click", self.visible_items[release_row], release_column)
                     elif self.single_click_row == release_row:
                         self.visible_items[release_row].single_click(release_column, offset_x, offset_y)
+                        self.emit("double-click", self.visible_items[release_row], release_column)
                 
                 if self.start_drag and self.is_in_visible_area(event):
                     self.drag_select_items_at_cursor()
@@ -236,7 +240,6 @@ class ShowOthers(TreeItem):
     def render_content(self, cr, rect):
         render_background(cr, rect)
         (text_width, text_height) = get_content_size("show all")
-        import pango
         draw_text(cr, "show all", rect.x, rect.y, rect.width, rect.height,
                 alignment=pango.ALIGN_CENTER)
 
@@ -441,10 +444,6 @@ class SettingItem(TreeItem):
         Pixbuf
         '''
         self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box-1.png")
-        #selfhcheck_pixbuf_hover = app_theme.get_pixbuf("network/check_box-1.png")
-        #self.check_pixbuf_active = app_theme.get_pixbuf("network/check_box.png")
-        #self.check_pixbuf_out = app_theme.get_pixbuf("network/check_box-3.png")
-        #self.check_pixbuf_prelight = app_theme.get_pixbuf("network/check_box.png")
         self.delete_pixbuf_out = app_theme.get_pixbuf("network/delete-3.png")
         self.delete_pixbuf_prelight = app_theme.get_pixbuf("network/delete.png")
         self.delete_pixbuf_active = app_theme.get_pixbuf("network/delete-1.png")

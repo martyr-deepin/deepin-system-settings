@@ -58,10 +58,13 @@ class SettingUI(gtk.Alignment):
     def load_module(self, module_obj):
         #self.__init_tab()
         self.__init_tab_box()
+        # need this for corect button set
+        self.foot_box.set_setting(module_obj)
         self.setting_group = module_obj
         self.sidebar.load_list(module_obj)
         self.apply_method = module_obj.apply_changes
         self.save_method = module_obj.save_changes
+        
 
     def __init_tab(self):
         tabs = self.tab_window.tab_items
@@ -69,13 +72,13 @@ class SettingUI(gtk.Alignment):
             self.tab_window.delete_items(tabs)
 
     def switch_tab(self, widget, connection):
-        print "switch tabs"
         self.set_tab_content(connection)
         self.set_foot_bar_button(connection)
     
         self.focus_connection = connection
 
     def set_foot_bar_button(self, connection):
+        #self.setting_group.set_button(connection)
         content, state = self.setting_group.get_button_state(connection)
         Dispatcher.set_button(content, state)
         

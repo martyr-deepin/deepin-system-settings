@@ -116,6 +116,10 @@ class TrayNetworkPlugin(object):
         print new_state, reason
         if new_state is 20:
             self.gui.wire.set_active((False, False))
+            if self.gui.wireless.get_active():
+                self.change_status_icon("links")
+            else:
+                self.change_status_icon("cable_disconnect")
         elif new_state is 30:
             
             self.gui.wire.set_sensitive(True)
@@ -126,7 +130,9 @@ class TrayNetworkPlugin(object):
             if reason is not 0:
                 self.gui.wire.set_active((True, False))
         elif new_state is 40:
-            self.gui.wire.set_active((True, True))
+            print "rotate"
+            if not self.gui.wire.get_active():
+                self.gui.wire.set_active((True, True))
             self.change_status_icon("loading")
             self.let_rotate(True)
         elif new_state is 100:
@@ -136,8 +142,9 @@ class TrayNetworkPlugin(object):
     def connect_by_ssid(self, widget, ssid, ap):
         connection =  self.net_manager.connect_wireless_by_ssid(ssid)
         self.ap = ap
-        if not isinstance(connection, NMRemoteConnection):
+        if not isinstance(connection, NMRemoteConnection) and self.net_manager.get_security_by_ap(self.ap):
             self.toggle_dialog(connection)
+        
             #connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
             #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
             #nm_module.nmclient.activate_connection_async(connection.object_path,
@@ -223,9 +230,7 @@ class TrayNetworkPlugin(object):
                     self.toggle_dialog(self.this_connection)
                     device.nm_device_disconnect()
                '''     
-                    #AskPasswordDialog(self.this_connection, cancel_callback=self.cancel_ask_pwd, confirm_callback=self.pwd_changed).show_all()
-            #elif reason:
-                #self.gui.wireless.set_active((True,False))
+
         elif new_state is 40:
             #self.notify_send("a", "connecting", "")
             self.gui.wireless.set_active((True, True))
@@ -319,26 +324,15 @@ class TrayNetworkPlugin(object):
     
     def tray_show_more(self, widget):
         print "tray show more"
-        #height = self.gui.get_widget_height()
-        #self.this.set_size_request(185, height + 10)
 
     def show_menu(self):
         self.menu_showed = True
-        #if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
-            #self.gui.set_ap(self.ap_list)
-        #self.gui.queue_resize()
-        #print "DEBUG::size", self.gui.get_size_request()
-        #self.this.set_size_request(185, height + 10)
-        #print "shutdown show menu..."
         Dispatcher.request_resize()
 
     def hide_menu(self):
-        #print "shutdown hide menu..."
         self.menu_showed = False
         if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
             self.gui.reset_tree()
-        # TODO reset menu if all showed
-            #self.gui.set_ap(self.ap_list)
 
     def request_resize(self, widget):
         """
