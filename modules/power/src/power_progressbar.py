@@ -68,10 +68,12 @@ class PowerProgressBuffer(gobject.GObject):
             draw_vlinear(cr, x + 1, y + 1, w - 2, h - 2,
                          ui_theme.get_shadow_color("progressbar_background").get_color_info(), 
                          )
-            if self.progress > 0 and self.progress <= 100:
+            if self.progress > 0 and self.progress < 100:
                 draw_pixbuf(cr, 
                             self.percentage_dpixbuf[int(self.progress / 10)].get_pixbuf(), 
                             x, y)
+            if self.progress == 100:
+                draw_pixbuf(cr, self.percentage_dpixbuf[9].get_pixbuf(), x, y)
         
         # Draw light.
         with cairo_disable_antialias(cr):
