@@ -53,6 +53,7 @@ from statusbar import StatusBar
 MODULE_NAME = "account"
 COMBO_WIDTH = 190
 LABEL_WIDTH = 150
+INSENSITIVE_TEXT_COLOR = "#DCDCDC"
 
 class AccountSetting(object):
     '''account setting'''
@@ -789,7 +790,8 @@ class AccountSetting(object):
 
         all_widgets = (current_pswd_input, new_pswd_input, confirm_pswd_input,
                        action_combo, show_pswd_check, cancel_button, change_button,
-                       error_label, is_myown, is_authorized, is_input_empty)
+                       error_label, is_myown, is_authorized, is_input_empty,
+                       label2, label3, label4)
         action_combo.connect("item-selected", self.action_combo_selected, all_widgets)
         show_pswd_check.connect("toggled", self.show_input_password, new_pswd_input, confirm_pswd_input)
         cancel_button.connect("clicked", self.cancel_change_password,
@@ -811,7 +813,8 @@ class AccountSetting(object):
     def password_input_changed(self, entry, text, all_widgets, variety, atleast=0):
         (current_pswd_input, new_pswd_input, confirm_pswd_input,
          action_combo, show_pswd_check, cancel_button, change_button,
-         error_label, is_myown, is_authorized, is_input_empty) = all_widgets
+         error_label, is_myown, is_authorized, is_input_empty,
+         label2, label3, label4) = all_widgets
         if not text or len(text)<atleast or len(text)>16:
             is_input_empty[variety] = True
         else:
@@ -827,7 +830,8 @@ class AccountSetting(object):
     def action_combo_selected(self, combo_box, item_content, item_value, item_index, all_widgets):
         (current_pswd_input, new_pswd_input, confirm_pswd_input,
          action_combo, show_pswd_check, cancel_button, change_button,
-         error_label, is_myown, is_authorized, is_input_empty) = all_widgets
+         error_label, is_myown, is_authorized, is_input_empty,
+         label2, label3, label4) = all_widgets
         if item_value != self.CH_PASSWD_ACTION_SET_PSWD:
             current_pswd_input.set_sensitive(False)
             new_pswd_input.set_sensitive(False)
@@ -835,11 +839,20 @@ class AccountSetting(object):
             show_pswd_check.set_sensitive(False)
             if not change_button.get_sensitive():
                 change_button.set_sensitive(True)
+            label2.set_text("<span foreground=\"%s\">%s</span>" % (
+                INSENSITIVE_TEXT_COLOR, _("Current password")))
+            label3.set_text("<span foreground=\"%s\">%s</span>" % (
+                INSENSITIVE_TEXT_COLOR, _("New password")))
+            label4.set_text("<span foreground=\"%s\">%s</span>" % (
+                INSENSITIVE_TEXT_COLOR, _("Confirm new password")))
         else:
             current_pswd_input.set_sensitive(True)
             new_pswd_input.set_sensitive(True)
             confirm_pswd_input.set_sensitive(True)
             show_pswd_check.set_sensitive(True)
+            label2.set_text(_("Current password"))
+            label3.set_text(_("New password"))
+            label4.set_text(_("Confirm new password"))
             if (is_myown and is_input_empty[self.CH_PASSWD_CURRENT_PSWD]) or\
                     is_input_empty[self.CH_PASSWD_NEW_PSWD] or\
                     is_input_empty[self.CH_PASSWD_CONFIRM_PSWD] or\
@@ -894,7 +907,8 @@ class AccountSetting(object):
     def change_user_password(self, button, all_widgets):
         (current_pswd_input, new_pswd_input, confirm_pswd_input,
          action_combo, show_pswd_check, cancel_button, change_button,
-         error_label, is_myown, is_authorized, is_input_empty) = all_widgets
+         error_label, is_myown, is_authorized, is_input_empty,
+         label2, label3, label4) = all_widgets
         self.container_widgets["main_hbox"].set_sensitive(False)
         button.set_sensitive(False)
         cancel_button.set_sensitive(False)

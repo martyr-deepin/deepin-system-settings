@@ -441,9 +441,11 @@ class SoundSetting(object):
         if not active:
             self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
             self.label_widgets["speaker_balance"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Balance")))
+            self.set_status_text(_("输出设为静音"))
         else:
             self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
             self.label_widgets["speaker_balance"].set_text("%s" % _("Balance"))
+            self.set_status_text(_("取消输出静音"))
 
     def microphone_toggled_cb(self, button):
         active = button.get_active()
@@ -453,8 +455,10 @@ class SoundSetting(object):
             pypulse.PULSE.set_input_mute(current_source, not active)
         if not active:
             self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
+            self.set_status_text(_("输入设为静音"))
         else:
             self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
+            self.set_status_text(_("取消输入静音"))
 
     def speaker_value_changed_cb(self, widget, value):
         ''' speaker hscale value changed callback thread'''
@@ -486,6 +490,7 @@ class SoundSetting(object):
         if value in self.__current_sink_ports:
             port = self.__current_sink_ports[value][0]
             pypulse.PULSE.set_output_active_port(current_sink, port)
+            self.set_status_text(_("输出端口设为%s") % content)
 
     def microphone_port_changed(self, combo, content, value, index):
         current_source = pypulse.get_fallback_source_index()
@@ -494,6 +499,7 @@ class SoundSetting(object):
         if value in self.__current_source_ports:
             port = self.__current_source_ports[value][0]
             pypulse.PULSE.set_input_active_port(current_source, port)
+            self.set_status_text(_("输入端口设为%s") % content)
 
     def treeview_container_expose_cb(self, widget, event, treeview):
         rect = treeview.allocation
@@ -809,6 +815,9 @@ class SoundSetting(object):
         self.view_widgets["ad_input"].add_items(input_list, clear_first=True)
         if not (selected_row < 0):
             self.view_widgets["ad_input"].set_select_rows([selected_row])
+
+    def set_status_text(self, text):
+        self.container_widgets["statusbar"].set_text(text)
 
     def set_to_default(self):
         '''set to the default'''
