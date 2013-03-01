@@ -101,7 +101,9 @@ class UserThemeView(IconView):
                             _("Are you sure delete %s theme") % item.theme.get_name(), 
                             300, 
                             100, 
-                            lambda : self.delete_theme(item))
+                            lambda : self.delete_theme(item), 
+                            None, 
+                            True)
         dlg.show_all()
 
     def __on_right_click_item(self, widget, item, x, y):
