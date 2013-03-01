@@ -173,7 +173,7 @@ class WallpaperItem(gobject.GObject):
             else:    
                 tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
             
-        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width() / 2 
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
         if self.tick_area is None:
             self.tick_area = gtk.gdk.Rectangle(
@@ -598,7 +598,27 @@ class CacheItem(gobject.GObject, MissionThread):
         self.tick_normal_dpixbuf = app_theme.get_pixbuf("individuation/tick_normal.png")
         self.tick_gray_dpixbuf = app_theme.get_pixbuf("individuation/tick_gray.png")
         self.is_tick = False
-        
+
+        self.loop_dpixbuf = app_theme.get_pixbuf("individuation/loop.png")
+        self.is_loop = False
+
+        event_manager.add_callback("download-start", self.__on_download_start)
+        event_manager.add_callback("download-finish", self.__on_download_finish)
+
+    def __on_download_start(self, name, obj, data):
+        if self.image_object.big_url != data.url:
+            return
+
+        self.is_loop = True
+        self.emit_redraw_request()
+
+    def __on_download_finish(self, name, obj, data):                                
+        if self.image_object.big_url != data.url:                               
+            return                                                              
+                                                                                
+        self.is_loop = False                                                     
+        self.emit_redraw_request()
+
     def create_cache_pixbuf(self):    
         self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
         
@@ -703,7 +723,7 @@ class CacheItem(gobject.GObject, MissionThread):
         else:    
             tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
             
-        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width() / 2 
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
         draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
         
@@ -712,9 +732,15 @@ class CacheItem(gobject.GObject, MissionThread):
         else:    
             tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
             
-        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width() / 2
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
-        draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+        draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
+
+        if self.is_loop:
+            loop_pixbuf = self.loop_dpixbuf.get_pixbuf()
+            loop_x = wallpaper_x + (self.wallpaper_width - loop_pixbuf.get_width()) / 2
+            loop_y = wallpaper_y + (self.wallpaper_height - loop_pixbuf.get_height()) / 2
+            draw_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -818,8 +844,7 @@ class CacheItem(gobject.GObject, MissionThread):
             del self.pixbuf
         self.pixbuf = None    
         return True
-    
-    
+
 class SelectItem(gobject.GObject):
     '''
     Icon item.
@@ -942,7 +967,7 @@ class SelectItem(gobject.GObject):
         else:    
             tick_pixbuf = self.tick_gray_dpixbuf.get_pixbuf()
             
-        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width()    
+        tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width() / 2 
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
         draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
         

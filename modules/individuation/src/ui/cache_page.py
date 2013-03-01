@@ -45,6 +45,7 @@ class CacheView(IconView):
         
     def get_scrolled_window(self):    
         scrolled_window = ScrolledWindow()
+        scrolled_window.connect("vscrollbar-state-changed", self.__on_vscrollbar_state_changed)
         scrolled_window.add_child(self)
         return scrolled_window
     
@@ -52,7 +53,13 @@ class CacheView(IconView):
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
-        
+    
+    def __on_vscrollbar_state_changed(self, widget, argv):
+        if argv != "bottom":
+            return
+
+        self.try_to_fetch()
+
     def __on_double_click_item(self, widget, item, x, y):
         pass
         
@@ -118,7 +125,7 @@ class CachePage(gtk.VBox):
         
         control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(download_button, False, False)
-        control_box.pack_start(try_button, False, False)
+        #control_box.pack_start(try_button, False, False)
         
         control_align = gtk.Alignment()
         control_align.set(1.0, 0.5, 0, 0)
