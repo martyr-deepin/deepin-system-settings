@@ -22,6 +22,7 @@
 
 import gtk
 import dbus
+from nls import _
 from deepin_utils.process import run_command
 from vtk.timer import Timer
 try:
@@ -70,6 +71,7 @@ class TrayPower(object):
 
     def modify_battery_icon(self, online_value, value):
         if online_value and value != 100:
+            self.tray_icon.set_tooltip_text(_("正在充电"))
             self.tray_icon.set_icon_theme("tray_battery")
 
     def update_power_icon(self, percentage):
@@ -79,6 +81,8 @@ class TrayPower(object):
             self.tray_icon.set_icon_theme("battery50")
         elif percentage >= 0 and percentage <= 20:
             self.tray_icon.set_icon_theme("battery20")
+        #
+        self.tray_icon.set_tooltip_text(_("电源剩余") + str(int(percentage)))
 
     def init_values(self, this_list):
         self.this = this_list[0]
