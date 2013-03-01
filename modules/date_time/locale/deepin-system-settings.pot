@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-21 09:35+0800\n"
+"POT-Creation-Date: 2013-03-01 09:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,181 +17,209 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/date_time_view.py:116
+#: ../src/date_time_view.py:117
 msgid "(UTC-11:00)Samoa"
 msgstr ""
 
-#: ../src/date_time_view.py:117
+#: ../src/date_time_view.py:118
 msgid "(UTC-10:00)Hawaii"
 msgstr ""
 
-#: ../src/date_time_view.py:118
+#: ../src/date_time_view.py:119
 msgid "(UTC-09:00)Alaska"
 msgstr ""
 
-#: ../src/date_time_view.py:119
+#: ../src/date_time_view.py:120
 msgid "(UTC-08:00)Lower California"
 msgstr ""
 
-#: ../src/date_time_view.py:120
+#: ../src/date_time_view.py:121
 msgid "(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"
 msgstr ""
 
-#: ../src/date_time_view.py:121
+#: ../src/date_time_view.py:122
 msgid "(UTC-06:00)Saskatchewan, Mexico City, Monterrey"
 msgstr ""
 
-#: ../src/date_time_view.py:122
+#: ../src/date_time_view.py:123
 msgid "(UTC-05:00)Indiana, Bogota, Lima, Quito"
 msgstr ""
 
-#: ../src/date_time_view.py:123
+#: ../src/date_time_view.py:124
 msgid "(UTC-04:00)San Diego, Georgetown, San Juan"
 msgstr ""
 
-#: ../src/date_time_view.py:124
+#: ../src/date_time_view.py:125
 msgid "(UTC-03:00)Greenland, Brasilia, Fortaleza"
 msgstr ""
 
-#: ../src/date_time_view.py:125
+#: ../src/date_time_view.py:126
 msgid "(UTC-02:00)Mid-Atlantic"
 msgstr ""
 
-#: ../src/date_time_view.py:126
+#: ../src/date_time_view.py:127
 msgid "(UTC-01:00)Cape Verde Islands, Azores"
 msgstr ""
 
-#: ../src/date_time_view.py:127
+#: ../src/date_time_view.py:128
 msgid "(UTC)London, Dublin, Edinburgh, Lisbon, Casablanca"
 msgstr ""
 
-#: ../src/date_time_view.py:128
+#: ../src/date_time_view.py:129
 msgid "(UTC+01:00)Paris, Amsterdam, Berlin, Rome, Vienna"
 msgstr ""
 
-#: ../src/date_time_view.py:129
+#: ../src/date_time_view.py:130
 msgid "(UTC+02:00)Cairo, Athens, Istanbul, Jerusalem"
 msgstr ""
 
-#: ../src/date_time_view.py:130
+#: ../src/date_time_view.py:131
 msgid "(UTC+03:00)Moscow, St. Petersburg, Baghdad"
 msgstr ""
 
-#: ../src/date_time_view.py:131
+#: ../src/date_time_view.py:132
 msgid "(UTC+04:00)Port Louis, Abu Dhabi, Muscat, Yerevan"
 msgstr ""
 
-#: ../src/date_time_view.py:132
+#: ../src/date_time_view.py:133
 msgid "(UTC+05:00)Islamabad, Karachi, Tashkent"
 msgstr ""
 
-#: ../src/date_time_view.py:133
+#: ../src/date_time_view.py:134
 msgid "(UTC+06:00)Dhaka, Novosibirsk"
 msgstr ""
 
-#: ../src/date_time_view.py:134
+#: ../src/date_time_view.py:135
 msgid "(UTC+07:00)Bangkok, Hanoi, Jakarta"
 msgstr ""
 
-#: ../src/date_time_view.py:135
+#: ../src/date_time_view.py:136
 msgid "(UTC+08:00)Beijing, Chongqing, HongKong, Urumqi"
 msgstr ""
 
-#: ../src/date_time_view.py:136
+#: ../src/date_time_view.py:137
 msgid "(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"
 msgstr ""
 
-#: ../src/date_time_view.py:137
+#: ../src/date_time_view.py:138
 msgid "(UTC+10:00)Guam, Canberra, Melbourne, Sydney"
 msgstr ""
 
-#: ../src/date_time_view.py:138
+#: ../src/date_time_view.py:139
 msgid "(UTC+11:00)Magadan, Solomon Islands"
 msgstr ""
 
-#: ../src/date_time_view.py:154
+#: ../src/date_time_view.py:155
 msgid "Calendar"
 msgstr ""
 
-#: ../src/date_time_view.py:160 ../src/date_time_view.py:405
+#: ../src/date_time_view.py:161 ../src/date_time_view.py:415
 #, python-format
 msgid "Current Date: %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:179
+#: ../src/date_time_view.py:183
 msgid "Change Date"
 msgstr ""
 
-#: ../src/date_time_view.py:185
+#: ../src/date_time_view.py:189
 msgid "Cancel"
 msgstr ""
 
-#: ../src/date_time_view.py:188
+#: ../src/date_time_view.py:192
 msgid "Confirm"
 msgstr ""
 
-#: ../src/date_time_view.py:219
+#: ../src/date_time_view.py:223
 msgid "Time"
 msgstr ""
 
-#: ../src/date_time_view.py:226 ../src/date_time_view.py:235
-#: ../src/date_time_view.py:375
+#: ../src/date_time_view.py:230 ../src/date_time_view.py:239
+#: ../src/date_time_view.py:385
 #, python-format
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr ""
 
-#: ../src/date_time_view.py:256 ../src/search_keyword.py:31
+#: ../src/date_time_view.py:260 ../src/search_keyword.py:31
 msgid "Auto Set Time"
 msgstr ""
 
-#: ../src/date_time_view.py:270
+#: ../src/date_time_view.py:277
 msgid "Manual Set"
 msgstr ""
 
-#: ../src/date_time_view.py:289 ../src/search_keyword.py:32
+#: ../src/date_time_view.py:297 ../src/search_keyword.py:32
 msgid "Hour Display"
 msgstr ""
 
-#: ../src/date_time_view.py:303 ../src/search_keyword.py:30
+#: ../src/date_time_view.py:311 ../src/search_keyword.py:30
 msgid "TimeZone"
 msgstr ""
 
-#: ../src/date_time_view.py:330
+#: ../src/date_time_view.py:338
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/date_time_view.py:403
+#: ../src/date_time_view.py:413
 #, python-format
 msgid "Changed date to %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:447
+#: ../src/date_time_view.py:459
 msgid "Changed to automatic set time"
 msgstr ""
 
-#: ../src/date_time_view.py:451
+#: ../src/date_time_view.py:464
 msgid "Changed to manual set time"
 msgstr ""
 
-#: ../src/date_time_view.py:458
+#: ../src/date_time_view.py:472
 msgid "Changed to 24 Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:460
+#: ../src/date_time_view.py:474
 msgid "Changed to 12 Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:469
+#: ../src/date_time_view.py:483
 #, python-format
 msgid "Changed time to %02d:%02d:%02d"
 msgstr ""
 
-#: ../src/date_time_view.py:491
+#: ../src/date_time_view.py:505
 #, python-format
 msgid "Changed timezone to %s"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:73
+#: ../src/tray_time_plugin.py:39
+msgid "Monday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:39
+msgid "Tuesday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:39
+msgid "Wednesday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:39
+msgid "Thursday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:40
+msgid "Friday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:40
+msgid "Saturday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:40
+msgid "Sunday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:116
 msgid "Change DateTime settings"
 msgstr ""
 
