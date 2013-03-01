@@ -244,7 +244,7 @@ class DesktopView(gtk.VBox):
 
     def __setup_separator(self):                                                
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(500, 10)                                    
+        hseparator.set_size_request(500, HSEPARATOR_HEIGHT)                                    
         return hseparator                                                       
                                                                                 
     def __setup_title_label(self,                                               

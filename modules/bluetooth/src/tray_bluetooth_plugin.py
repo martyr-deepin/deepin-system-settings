@@ -120,6 +120,8 @@ class TrayBluetoothPlugin(object):
                 DiscoveryDeviceThread(self).start()
             else:
                 self.tray_icon.set_visible(False)
+        else:
+            self.tray_icon.set_visible(False)
 
     def id(slef):
         return "deepin-bluetooth-plugin-hailongqiu"
