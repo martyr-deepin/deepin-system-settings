@@ -154,10 +154,10 @@ class IconSetPage(gtk.VBox):
             pic_list = []
         pic_list.sort()
         self.public_icon_list = []
-        inital_list = ['0001.jpg', '0002.jpg', '0003.jpg', '0004.jpg', '0005.jpg',
-                       '0006.jpg', '0007.jpg', '0008.jpg', '0009.jpg', '0010.jpg',
-                       '0011.jpg', '0012.jpg', '0013.jpg', '0014.jpg', '0015.jpg',
-                       '0016.jpg', '0017.jpg', '0018.jpg', '0019.jpg', '0020.jpg']
+        inital_list = ['001.jpg', '002.jpg', '003.jpg', '004.jpg', '005.jpg',
+                       '006.jpg', '007.jpg', '008.jpg', '009.jpg', '010.jpg',
+                       '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg',
+                       '016.jpg', '017.jpg', '018.jpg', '019.jpg', '020.jpg']
 
         for pic in pic_list:
             if pic not in inital_list:
