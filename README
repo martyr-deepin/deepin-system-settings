@@ -73,12 +73,11 @@ sudo apt-get install bluez
 == Sound module ==
 Python binding for DBus
 sudo apt-get install python-dbus
-同时还需要修改/etc/pulse/default.pa文件，将137行的内容：
-### Load DBus protocol
-#.ifexists module-dbus-protocol.so
-#load-module module-dbus-protocol
-#.endif
-前的注释去掉。
+
+PulseAudio python binding
+git@github.com:linuxdeepin/pypulseaudio.git
+cd pypulseaudio
+sudo python setup.py install
 
 == Bluetooth module ==
 sudo apt-get install obex-data-server obexd-client libopenobex1 bluez 

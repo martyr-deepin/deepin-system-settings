@@ -112,6 +112,23 @@ class NetManager(object):
         else:
             return []
 
+    def save_and_connect(self, serect, connection, ap):
+        (setting_name, method) = connection.guess_secret_info() 
+        connection.settings_dict[setting_name][method] = serect
+        connection.update()
+        #nm_module.secret_agent.agent_save_secrets(connection.object_path, setting_name, method)
+        
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        if ap:
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                       wireless_device.object_path,
+                                       ap.object_path)
+        else:
+            nm_module.nmclient.activate_connection_async(connection.object_path,
+                                       wireless_device.object_path,
+                                       "/")
+        
+
     def connect_wireless_by_ssid(self, ssid):
         device_wifi = cache.get_spec_object(self.wireless_device.object_path)
         return device_wifi.get_ssid_connection(ssid)
