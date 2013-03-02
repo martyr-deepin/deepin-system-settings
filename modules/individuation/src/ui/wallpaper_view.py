@@ -134,7 +134,8 @@ class WallpaperView(IconView):
     def apply_wallpapers(self, image_paths):
         image_path_string = ";".join(image_paths)
         background_gsettings.set_string("picture-uris", image_path_string)        
-        self.theme.save()        
+        if self.theme:
+            self.theme.save()        
                 
     def on_add_wallpapers(self, name, obj, image_paths):    
         filter_images = filter(lambda image: not self.is_exists(image), image_paths)        

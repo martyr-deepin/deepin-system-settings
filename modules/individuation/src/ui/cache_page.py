@@ -34,7 +34,6 @@ import common
 from nls import _
 
 class CacheView(IconView):
-    
     def __init__(self, network_interface, padding_x=8, padding_y=10):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
         
@@ -118,14 +117,11 @@ class CachePage(gtk.VBox):
         self.cache_view = CacheView(network_interface)
         self.cache_view_sw = self.cache_view.get_scrolled_window()
         
-        try_button = Button(_("More"))
-        try_button.connect("clicked", self.on_try_button_clicked)
         download_button = Button(_("Download"))
         download_button.connect("clicked", self.on_download_button_clicked)
         
         control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(download_button, False, False)
-        #control_box.pack_start(try_button, False, False)
         
         control_align = gtk.Alignment()
         control_align.set(1.0, 0.5, 0, 0)
@@ -135,9 +131,5 @@ class CachePage(gtk.VBox):
         self.pack_start(self.cache_view_sw, True, True)
         self.pack_start(control_align, False, True)
         
-    def on_try_button_clicked(self, widget):    
-        self.cache_view.try_to_fetch()
-        
     def on_download_button_clicked(self, widget):    
         self.cache_view.emit_download()
-        

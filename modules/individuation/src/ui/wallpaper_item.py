@@ -622,8 +622,9 @@ class CacheItem(gobject.GObject, MissionThread):
         if self.image_object.big_url != data.url:                               
             return                                                              
                                                                                 
-        self.is_loop = False                                                     
+        self.is_loop = False
         self.emit_redraw_request()
+        event_manager.emit("add-wallpapers", [cache_manager.get_image(self.image_object, try_web=True)])
 
     def create_cache_pixbuf(self):    
         self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
@@ -731,7 +732,7 @@ class CacheItem(gobject.GObject, MissionThread):
             
         tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width() / 2 
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
-        draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+        #draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
         
         if self.is_tick:
             tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()
@@ -740,7 +741,7 @@ class CacheItem(gobject.GObject, MissionThread):
             
         tick_x = wallpaper_x + self.wallpaper_width - tick_pixbuf.get_width() / 2
         tick_y = wallpaper_y - tick_pixbuf.get_height() / 2
-        draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
+        #draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
 
         if self.is_loop:
             loop_pixbuf = self.loop_dpixbuf.get_pixbuf()
@@ -803,8 +804,9 @@ class CacheItem(gobject.GObject, MissionThread):
         
         This is IconView interface, you should implement it.
         '''
-        self.is_tick = not self.is_tick
+        #self.is_tick = not self.is_tick
         self.emit_redraw_request()
+        event_manager.emit("download-images", [self.image_object])
     
     def icon_item_button_release(self, x, y):
         '''
