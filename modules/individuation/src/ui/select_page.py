@@ -31,7 +31,9 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from ui.wallpaper_item import SelectItem
 from helper import event_manager
 from monitor import LibraryMonitor
+from xdg_support import get_images_dir
 import common
+import deepin_io
 from nls import _
 
 class SelectView(IconView):
@@ -58,7 +60,7 @@ class SelectView(IconView):
                 
     def on_library_folder_added(self, obj, gfile):            
         items = []
-        for image_path in common.walk_images(gfile.get_path()):
+        for image_path in common.walk_images(gfile.get_path(), ["png", "jpg"]):
             if not self.is_exists(image_path):
                 items.append(SelectItem(image_path))
         if items:        
@@ -81,7 +83,9 @@ class SelectView(IconView):
     def __init_monitor_images(self):    
         items = []
         self.set_loading(True)
-        for image_path in common.walk_images(self.monitor_dir):
+        for image_path in deepin_io.walk_images(self.monitor_dir, 
+                                                ["png", "jpg"], 
+                                                [get_images_dir() + "/deepin-wallpapers"]):
             items.append(SelectItem(image_path))
         if items:    
             self.add_items(items)
