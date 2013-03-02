@@ -90,8 +90,10 @@ static void m_walk_dir(char *root_dir, PyObject *image_paths, PyObject *filter_d
         if (S_ISLNK(st.st_mode))                                                
             continue;                                                           
                                                                                 
-        if (S_ISDIR(st.st_mode))                                                
+        if (S_ISDIR(st.st_mode)) {                              
             m_walk_dir(fn, image_paths, filter_dir);
+            continue;
+        }
 
         PyList_Append(image_paths, STRING(fn));
     }                                                                           
