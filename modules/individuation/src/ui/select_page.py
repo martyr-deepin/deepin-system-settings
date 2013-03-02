@@ -60,7 +60,7 @@ class SelectView(IconView):
                 
     def on_library_folder_added(self, obj, gfile):            
         items = []
-        for image_path in common.walk_images(gfile.get_path(), ["png", "jpg"]):
+        for image_path in deepin_io.walk_images(gfile.get_path(), ["png", "jpg"]):
             if not self.is_exists(image_path):
                 items.append(SelectItem(image_path))
         if items:        
