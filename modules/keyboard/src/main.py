@@ -44,6 +44,7 @@ from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
 from treeitem import MyTreeView as TreeView
 from accel_entry import AccelEntry
+from blink import BlinkButton
 from statusbar import StatusBar
 from nls import _
 from glib import markup_escape_text
@@ -136,7 +137,7 @@ class KeySetting(object):
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["repeat_test_entry"] = InputEntry(_("Test Repeat Interval"))
-        self.button_widgets["blink_test_entry"] = InputEntry()
+        self.button_widgets["blink_test_entry"] = BlinkButton()
         #self.button_widgets["repeat_test_entry"] = gtk.Entry()
         #self.button_widgets["blink_test_entry"] = gtk.Entry()
         self.button_widgets["touchpad_disable"] = OffButton()
@@ -590,6 +591,7 @@ class KeySetting(object):
     def desktop_setting_changed_cb(self, key):
         args = [self.settings1, key]
         if key == 'cursor-blink-time':
+            self.button_widgets["blink_test_entry"].update_time(self.scale_get[key]())
             callback = self.settings_value_changed
             args.append(self.adjust_widgets["blink_cursor"])
         else:
