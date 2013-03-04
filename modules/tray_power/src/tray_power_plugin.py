@@ -62,12 +62,17 @@ class TrayPower(object):
 
     def power_set_changed(self, key):
         self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
-        if key != "percentage": 
+        if key not in  ["percentage", "show-tray"]: 
             return 
         #
         value = self.power_set.get_double("percentage")
         self.update_power_icon(int(value))
+        self.visible_power_tray()
         self.modify_battery_icon(self.online_value, value)
+
+    def visible_power_tray(self):
+        show_value = self.power_set.get_boolean("show-tray")
+        self.tray_icon.set_visible(show_value)
 
     def modify_battery_icon(self, online_value, value):
         if online_value and value != 100:
@@ -105,6 +110,7 @@ class TrayPower(object):
             # get power value.
             percentage = self.power_set.get_double("percentage")
             self.update_power_icon(percentage)
+            self.visible_power_tray()
             self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
             self.modify_battery_icon(self.online_value, percentage)
             # init tray_icon events.

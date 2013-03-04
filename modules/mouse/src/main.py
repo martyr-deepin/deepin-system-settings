@@ -426,6 +426,10 @@ class MouseSetting(object):
             return
         if button.get_active():
             settings.mouse_set_left_handed(active)
+            if active:
+                self.set_status_text(_("设为惯用左手"))
+            else:
+                self.set_status_text(_("设为惯用右手"))
     
     def left_or_right_setting_changed(self, setting, key):
         ''' set left or right radio button active '''
@@ -503,9 +507,13 @@ class MouseSetting(object):
                                  padding_top=10,# padding_bottom=10,
                                  padding_left=TEXT_WINDOW_LEFT_PADDING, height=24)
     
+    def set_status_text(self, text):
+        self.container_widgets["statusbar"].set_text(text)
+
     def set_to_default(self, button):
         '''set to the default'''
         settings.mouse_set_to_default()
+        self.set_status_text(_("恢复默认值"))
     
 if __name__ == '__main__':
     gtk.gdk.threads_init()
