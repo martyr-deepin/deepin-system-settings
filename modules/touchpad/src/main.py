@@ -216,9 +216,9 @@ class TouchpadSetting(object):
         #self.alignment_widgets["custom_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["custom_button"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.container_widgets["custom_main_vbox"].pack_start(
-            self.alignment_widgets["custom_label"])
+            self.alignment_widgets["custom_label"], False, False)
         self.container_widgets["custom_main_vbox"].pack_start(
-            self.__setup_separator())
+            self.__setup_separator(), False, False)
         self.container_widgets["custom_main_vbox"].pack_start(
             self.alignment_widgets["custom_button"])
         # tips label
@@ -264,9 +264,9 @@ class TouchpadSetting(object):
         #self.alignment_widgets["pointer_speed_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["pointer_speed_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
-            self.alignment_widgets["pointer_speed_label"])
+            self.alignment_widgets["pointer_speed_label"], False, False)
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
-            self.__setup_separator())
+            self.__setup_separator(), False, False)
         self.container_widgets["pointer_speed_main_vbox"].pack_start(
             self.alignment_widgets["pointer_speed_table"])
         # tips lable
@@ -314,9 +314,9 @@ class TouchpadSetting(object):
         #self.alignment_widgets["double_click_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.alignment_widgets["double_click_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["double_click_main_vbox"].pack_start(
-            self.alignment_widgets["double_click_label"])
+            self.alignment_widgets["double_click_label"], False, False)
         self.container_widgets["double_click_main_vbox"].pack_start(
-            self.__setup_separator())
+            self.__setup_separator(), False, False)
         self.container_widgets["double_click_main_vbox"].pack_start(
             self.alignment_widgets["double_click_table"])
         # tips lable
@@ -357,9 +357,9 @@ class TouchpadSetting(object):
         #self.alignment_widgets["drag_threshold_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.alignment_widgets["drag_threshold_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         self.container_widgets["drag_threshold_main_vbox"].pack_start(
-            self.alignment_widgets["drag_threshold_label"])
+            self.alignment_widgets["drag_threshold_label"], False, False)
         self.container_widgets["drag_threshold_main_vbox"].pack_start(
-            self.__setup_separator())
+            self.__setup_separator(), False, False)
         self.container_widgets["drag_threshold_main_vbox"].pack_start(
             self.alignment_widgets["drag_threshold_table"])
         # tips lable
@@ -575,13 +575,13 @@ class TouchpadSetting(object):
 
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(450, 4)
+        hseparator.set_size_request(450, 10)
         return hseparator
     
     def __setup_separator(self):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0,
                                  padding_top=10,# padding_bottom=10,
-                                 padding_left=TEXT_WINDOW_LEFT_PADDING, height=24)
+                                 padding_left=TEXT_WINDOW_LEFT_PADDING, height=-1)
 
     def set_status_text(self, text):
         self.container_widgets["statusbar"].set_text(text)
