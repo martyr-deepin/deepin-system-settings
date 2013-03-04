@@ -214,7 +214,7 @@ def walk(root):
         except gio.Error, e: # why doesnt gio offer more-specific errors?
             logger.log_exception("Unhandled exception while walking on %s.", dir)
 
-def walk_images(root_dir, filter_type=["png", "jpeg"]):
+def walk_images(root_dir, filter_type=["png", "jpeg"], filter_dir=None):
     """
         Walk through a Gio directory, yielding each file
 
@@ -252,6 +252,9 @@ def walk_images(root_dir, filter_type=["png", "jpeg"]):
                         continue
                 type = fileinfo.get_file_type()
                 if type == gio.FILE_TYPE_DIRECTORY:
+                    if filter_dir:
+                        if fileinfo.get_name() in filter_dir:
+                            continue
                     queue.append(fil)
                 elif type == gio.FILE_TYPE_REGULAR:
                     content_type = fileinfo.get_attribute_as_string("standard::content-type")

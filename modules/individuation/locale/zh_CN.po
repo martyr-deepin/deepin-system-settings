@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 20:02+0800\n"
+"POT-Creation-Date: 2013-03-04 09:36+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -37,12 +37,15 @@ msgstr "添加壁纸"
 msgid "Back"
 msgstr "返回"
 
-#: ../src/ui/delete_page.py:62 ../src/ui/detail_page.py:66
+#: ../src/ui/delete_page.py:62 ../src/ui/select_page.py:139
+#: ../src/ui/select_page.py:161 ../src/ui/select_page.py:176
+#: ../src/ui/select_page.py:203 ../src/ui/select_page.py:219
+#: ../src/ui/select_page.py:250 ../src/ui/detail_page.py:66
 #: ../src/ui/detail_page.py:108
 msgid "Select All"
 msgstr "全选"
 
-#: ../src/ui/delete_page.py:65 ../src/ui/select_page.py:169
+#: ../src/ui/delete_page.py:65 ../src/ui/select_page.py:222
 #: ../src/ui/detail_page.py:111
 msgid "Delete"
 msgstr "删除"
@@ -87,36 +90,42 @@ msgstr "主题另存为"
 msgid "Changed System Theme to %s"
 msgstr "当前系统主题已设置为“%s”"
 
-#: ../src/ui/select_page.py:118 ../src/ui/select_page.py:143
-#: ../src/ui/select_page.py:170
+#: ../src/ui/select_page.py:141 ../src/ui/select_page.py:179
+#: ../src/ui/select_page.py:224
 msgid "Add"
 msgstr "添加"
+
+#: ../src/ui/select_page.py:159 ../src/ui/select_page.py:201
+#: ../src/ui/select_page.py:248 ../src/ui/detail_page.py:64
+#: ../src/ui/detail_page.py:222
+msgid "UnSelect All"
+msgstr "取消全选"
 
 #: ../src/ui/add_page.py:72
 msgid "Library"
 msgstr "壁纸库"
 
-#: ../src/ui/add_page.py:74
+#: ../src/ui/add_page.py:73
 msgid "From Internet"
 msgstr "网络壁纸"
 
-#: ../src/ui/add_page.py:79
+#: ../src/ui/add_page.py:77
 msgid "System"
 msgstr "系统壁纸"
 
-#: ../src/ui/add_page.py:80
+#: ../src/ui/add_page.py:78
 msgid "Picture"
 msgstr "图片"
 
-#: ../src/ui/add_page.py:81
+#: ../src/ui/add_page.py:79
 msgid "Downloaded"
 msgstr "下载壁纸"
 
-#: ../src/ui/add_page.py:86
+#: ../src/ui/add_page.py:80
 msgid "LoveBiZhi HD"
 msgstr "爱壁纸HD"
 
-#: ../src/ui/add_page.py:87
+#: ../src/ui/add_page.py:81
 msgid "360BiZhi"
 msgstr "360壁纸"
 
@@ -150,10 +159,6 @@ msgstr "拉伸"
 msgid "Tiling"
 msgstr "平铺"
 
-#: ../src/ui/detail_page.py:64 ../src/ui/detail_page.py:222
-msgid "UnSelect All"
-msgstr "取消全选"
-
 #: ../src/ui/detail_page.py:91
 msgid "Position"
 msgstr "图片位置"
@@ -166,10 +171,6 @@ msgstr "图片时间间隔"
 msgid "Random"
 msgstr "随机播放"
 
-#: ../src/ui/cache_page.py:121
-msgid "More"
-msgstr "更多"
-
-#: ../src/ui/cache_page.py:123
-msgid "Download"
-msgstr "下载"
+#: ../src/ui/cache_page.py:119
+msgid "Download All"
+msgstr "全部下载"

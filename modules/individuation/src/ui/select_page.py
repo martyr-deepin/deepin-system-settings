@@ -33,17 +33,17 @@ from helper import event_manager
 from monitor import LibraryMonitor
 from xdg_support import get_images_dir
 import common
-import deepin_io
 from nls import _
 
 class SelectView(IconView):
     __gsignals__ = {                                                            
         "loaded" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),}
 
-    def __init__(self, monitor_dir, padding_x=8, padding_y=10):
+    def __init__(self, monitor_dir, padding_x=8, padding_y=10, filter_dir=None):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
         
         self.monitor_dir = monitor_dir
+        self.filter_dir = filter_dir
         self.library_monitor = LibraryMonitor(monitor_dir)
         self.library_monitor.set_property("monitored", True)
         self.library_monitor.connect("file-added", self.on_library_file_added)
@@ -60,7 +60,7 @@ class SelectView(IconView):
                 
     def on_library_folder_added(self, obj, gfile):            
         items = []
-        for image_path in deepin_io.walk_images(gfile.get_path(), ["png", "jpg"]):
+        for image_path in common.walk_images(gfile.get_path(), ["png", "jpeg"], self.filter_dir):
             if not self.is_exists(image_path):
                 items.append(SelectItem(image_path))
         if items:        
@@ -83,9 +83,7 @@ class SelectView(IconView):
     def __init_monitor_images(self):    
         items = []
         self.set_loading(True)
-        for image_path in deepin_io.walk_images(self.monitor_dir, 
-                                                ["png", "jpg"], 
-                                                [get_images_dir() + "/deepin-wallpapers"]):
+        for image_path in common.walk_images(self.monitor_dir, ["png", "jpeg"], self.filter_dir):
             items.append(SelectItem(image_path))
         if items:    
             self.add_items(items)
@@ -171,7 +169,7 @@ class PicturePage(gtk.VBox):
         gtk.VBox.__init__(self)                                                 
         self.set_spacing(10)                                                    
                                                                                 
-        self.select_view = SelectView(monitor_dir)
+        self.select_view = SelectView(monitor_dir, filter_dir=["deepin-wallpapers"])
         self.select_view.connect("loaded", self.__on_loaded)
         self.select_view_sw = self.select_view.get_scrolled_window()               
  

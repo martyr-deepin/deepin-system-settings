@@ -924,9 +924,10 @@ class SelectItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
+        return
         if self.pixbuf == None:
             self.create_cache_pixbuf()
-            
+        
         wallpaper_x = rect.x + (rect.width - self.wallpaper_width) / 2
         wallpaper_y = rect.y + (rect.height - self.wallpaper_height) / 2
         
