@@ -76,7 +76,7 @@ if __name__ == '__main__':
         print "Usage: %s <device> <file> [file*]" % (sys.argv[0])
         sys.exit(1)
 
-    path = "/test/agent"
+    path = "/org/bluez/agent/sendto"
     agent = ObexAgent(bus, path)
 
     mainloop = gobject.MainLoop()
