@@ -130,6 +130,7 @@ class WallpaperView(IconView):
     def on_download_wallpaper_apply(self, name, obj, image_path):
         image_uris = ["file://%s" % image_path]
         self.apply_wallpapers(image_uris)
+        self.items[-2].tick()
     
     def on_wallpaper_apply(self, name, obj, apply_item):
         [ item.untick() for item in self.items if item != apply_item]

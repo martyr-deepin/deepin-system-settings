@@ -28,6 +28,7 @@ import copy
 from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
+from dtk.ui.dialog import ConfirmDialog
 from ui.wallpaper_item import SelectItem
 from helper import event_manager
 from monitor import LibraryMonitor
@@ -243,12 +244,10 @@ class UserPage(gtk.VBox):
         self.set_spacing(10)
         
         self.select_view = SelectView(monitor_dir)
-        self.select_view.connect("loaded", self.__on_loaded)
         self.select_view_sw = self.select_view.get_scrolled_window()
         
         self.select_all_button = Button(_("Select All"))                        
         self.select_all_button.connect("clicked", self.on_select_all)           
-        self.select_all_button.set_sensitive(False)
         delete_button = Button(_("Delete"))
         delete_button.connect("clicked", self.__on_delete)
         add_button = Button(_("Add"))
@@ -267,10 +266,6 @@ class UserPage(gtk.VBox):
         self.pack_start(self.select_view_sw, True, True)
         self.pack_start(control_align, False, True)
     
-    def __on_loaded(self, widget):                                              
-        if len(self.select_view.items):
-            self.select_all_button.set_sensitive(True)                              
-                                                                                
     def on_select_all(self, widget):                                            
         self.select_view.select_all()                                           
                                                                                 
@@ -280,7 +275,14 @@ class UserPage(gtk.VBox):
             self.select_all_button.set_label(_("Select All"))
    
     def __on_delete(self, widget):
-        self.select_view.delete()
+        dlg = ConfirmDialog(_("Delete Wallpaper"),                                  
+                            _("Are you sure delete wallpaper?"), 
+                            300,                                                
+                            100,                                                
+                            lambda : self.select_view.delete(),                   
+                            None,                                               
+                            True)                                               
+        dlg.show_all()
 
     def on_add_wallpapers(self, widget):    
         self.select_view.emit_add_wallpapers()

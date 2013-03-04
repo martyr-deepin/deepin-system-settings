@@ -113,6 +113,7 @@ class DeletePage(TabBox):
         
         self.wallpaper_view.set_theme(theme, True)
         self.wallpaper_view.select_all(False)
+        self.select_all_button.set_label(_("Select All"))
         
     def draw_mask(self, cr, x, y, w, h):
         '''
