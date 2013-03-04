@@ -39,10 +39,8 @@ import gtk
 import pango
 from constant import *
 from nls import _
-from bt.manager import Manager
-from bt.adapter import Adapter
-from bt.device import Device
 from bt.utils import bluetooth_class_to_type
+from my_bluetooth import MyBluetooth
 import time
 import threading as td
 import uuid
@@ -85,7 +83,7 @@ class DeviceItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),     
     }
     
-    def __init__(self, name, pixbuf, device, adapter, send_button = None):
+    def __init__(self, name, pixbuf, device, adapter, send_button = None, is_paired=False):
         gobject.GObject.__init__(self)
 
         self.name = name
@@ -93,11 +91,12 @@ class DeviceItem(gobject.GObject):
         self.device = device
         self.adapter = adapter
         self.send_button = send_button
+        self.send_button.connect("button-press-event", self.__send_button_pressed)
+        self.is_paired = is_paired
 
         self.pair_pixbuf = app_theme.get_pixbuf("bluetooth/pair.png")
         self.icon_size = 48
         self.is_button_press = False
-        self.is_paired = False
 
         self.__const_padding_y = 10
 
@@ -225,14 +224,14 @@ class DeviceItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        if self.is_paired:
+            self.send_button.set_child_visible(True)
 
     def __send_file(self, filename):
         print "DEBUG", filename
 
     def __send_button_pressed(self, widget, event):
-        dlg = OpenFileDialog(_("Select File"), None, self.__send_file)
-        dlg.show_all()
+        OpenFileDialog(_("Select File"), None, lambda name : self.__send_file(name), None)
 
     def __reply_handler_cb(self, device):
         self.is_paired = True
@@ -248,6 +247,9 @@ class DeviceItem(gobject.GObject):
         '''
         Handle double click event.
         '''
+        if self.is_paired:
+            return
+
         from bt.gui_agent import GuiAgent                                                 
         # TODO: wired... it need to use uuid to identify bluez device path
         path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
@@ -293,16 +295,17 @@ class DiscoveryDeviceThread(td.Thread):
         td.Thread.__init__(self)
         self.setDaemon(True)
         self.ThisPtr = ThisPtr
+        self.tick = self.ThisPtr.timeout
 
     def run(self):
         try:
-            for dev in self.ThisPtr.adapter.get_devices():
-                self.ThisPtr.adapter.remove_device(dev)
+            self.ThisPtr.my_bluetooth.adapter.start_discovery()
 
-            self.ThisPtr.adapter.start_discovery()
-
-            while True:
+            while self.tick:
+                self.tick -= 1
                 time.sleep(1)
+
+            self.ThisPtr.my_bluetooth.adapter.stop_discovery()
         except Exception, e:
             print "class DiscoveryDeviceThread got error: %s" % e
 
@@ -318,13 +321,11 @@ class BlueToothView(gtk.VBox):
         gtk.VBox.__init__(self)
 
         self.send_button = Button(_("Send File"))
-        self.manager = Manager()
-        self.adapter = None
-        if self.manager.get_default_adapter() != "None":
-            self.adapter = Adapter(self.manager.get_default_adapter())
-            self.adapter.connect("device-found", self.__device_found)
+        
+        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, self.__on_default_adapter_changed)
 
-        self.timeout_items = [("2 %s" % _("Minutes"), 1)]
+        self.timeout = 120
+        self.timeout_items = [("2 %s" % _("Minutes"), self.timeout)]
         '''
         enable open
         '''
@@ -335,10 +336,8 @@ class BlueToothView(gtk.VBox):
         self.enable_open_label = self.__setup_label(_("Bluetooth Get Powered"))
         self.enable_open_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.enable_open_toggle = self.__setup_toggle()
-        if self.adapter:
-            self.enable_open_toggle.set_active(self.adapter.get_powered())
-            if self.adapter.get_powered():
-                DiscoveryDeviceThread(self).start()
+        if self.my_bluetooth.adapter:
+            self.enable_open_toggle.set_active(self.my_bluetooth.adapter.get_powered())
         self.enable_open_toggle.connect("toggled", self.__toggled, "enable_open")
         self.enable_open_toggle_align.add(self.enable_open_toggle)
         self.__widget_pack_start(self.enable_box, 
@@ -352,8 +351,8 @@ class BlueToothView(gtk.VBox):
         self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.display_device_label = self.__setup_label(_("Device Shown Name"))
         self.display_device_entry = InputEntry()
-        if self.adapter:
-            self.display_device_entry.set_text(self.adapter.get_name())
+        if self.my_bluetooth.adapter:
+            self.display_device_entry.set_text(self.my_bluetooth.adapter.get_name())
         self.display_device_entry.set_size(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
         self.display_device_entry.entry.connect("changed", self.__display_device_changed)
         self.__widget_pack_start(self.display_box, 
@@ -367,8 +366,8 @@ class BlueToothView(gtk.VBox):
         self.search_label = self.__setup_label(_("Be Searchedable"))
         self.search_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.search_toggle = self.__setup_toggle()
-        if self.adapter:
-            self.search_toggle.set_active(self.adapter.get_discoverable())
+        if self.my_bluetooth.adapter:
+            self.search_toggle.set_active(self.my_bluetooth.adapter.get_discoverable())
         self.search_toggle.connect("toggled", self.__toggled, "search")
         self.search_toggle_align.add(self.search_toggle)
         self.__widget_pack_start(self.search_box, 
@@ -396,11 +395,13 @@ class BlueToothView(gtk.VBox):
         '''
         self.oper_align = self.__setup_align()
         self.oper_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.notice_label = Label("", text_x_align = ALIGN_MIDDLE, label_width = 516)
+        self.notice_label = Label("", text_x_align = ALIGN_MIDDLE, label_width = 410)
         self.send_button.set_child_visible(False)
+        self.search_button = Button(_("Search"))                                
+        self.search_button.connect("clicked", self.__on_search)
         self.cancel_button = Button(_("Cancel"))
         self.__widget_pack_start(self.oper_box, 
-                [self.notice_label, self.send_button, self.cancel_button])
+                [self.notice_label, self.send_button, self.search_button, self.cancel_button])
         self.oper_align.add(self.oper_box)
         '''
         this->gtk.VBox pack_start
@@ -414,10 +415,18 @@ class BlueToothView(gtk.VBox):
                                   self.device_align, 
                                   self.oper_align])
 
-        if self.adapter == None:
+        if self.my_bluetooth.adapter == None:
             self.set_sensitive(False)
 
         self.connect("expose-event", self.__expose)
+
+        self.__get_devices()
+
+    def __on_adapter_removed(self):                                            
+        self.set_sensitive(False)
+                                                                                
+    def __on_default_adapter_changed(self):                                     
+        self.set_sensitive(True)
 
     def __display_device_changed(self, widget, event):
         self.adapter.set_name(widget.get_text())
@@ -455,16 +464,32 @@ class BlueToothView(gtk.VBox):
         self.__widget_pack_start(title_box, [image, label])                     
         self.__widget_pack_start(align_box, [title_box, separator])             
         align.add(align_box)                                                    
-        return align      
+        return align
+
+    def __get_devices(self):
+        devices = self.my_bluetooth.get_devices()
+        items = []
+        i = 0
+
+        while i < len(devices):
+            items.append(DeviceItem(devices[i].get_name(),                                
+                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(devices[i].get_class())).get_pixbuf(), 
+                         devices[i], 
+                         devices[i].get_adapter(), 
+                         self.send_button, 
+                         True))
+            i += 1
+
+        self.device_iconview.add_items(items)
+
+    def __on_search(self, widget):
+        DiscoveryDeviceThread(self).start()
 
     def __device_found(self, adapter, address, values):
         if address not in adapter.get_address_records():
             device = Device(adapter.create_device(address))
             items = []
             
-            '''
-            FIXME: why there is no Name key sometime?
-            '''
             if not values.has_key("Name"):
                 return
 
@@ -474,7 +499,6 @@ class BlueToothView(gtk.VBox):
         else:
             if adapter.get_discovering():
                 adapter.stop_discovery()
-                pass
 
     def __toggled(self, widget, object):
         if self.adapter == None:
@@ -482,8 +506,6 @@ class BlueToothView(gtk.VBox):
 
         if object == "enable_open":
             self.adapter.set_powered(widget.get_active())
-            if self.adapter.get_powered():
-                DiscoveryDeviceThread(self).start()
             return
 
         if object == "search":
@@ -499,7 +521,7 @@ class BlueToothView(gtk.VBox):
         cr.fill()  
     
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
-        pass
+        self.timeout = item_value
 
     def __setup_label(self, text="", width=180, align=ALIGN_END):
         return Label(text, None, TITLE_FONT_SIZE, align, width, False, False, False)
@@ -510,10 +532,11 @@ class BlueToothView(gtk.VBox):
         return combo
 
     def __setup_toggle(self):
-        toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
-            app_theme.get_pixbuf("toggle_button/active_normal.png"), 
-            inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
-        return toggle
+        return ToggleButton(
+                app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+                app_theme.get_pixbuf("toggle_button/active_normal.png"), 
+                inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+                active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
 
     def __setup_align(self, xalign=0, yalign=0, xscale=0, yscale=0, 
                       padding_top=BETWEEN_SPACING, 

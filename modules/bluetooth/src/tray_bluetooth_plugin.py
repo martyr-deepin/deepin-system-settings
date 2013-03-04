@@ -25,9 +25,6 @@ import os
 from deepin_utils.file import get_parent_dir                                    
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
-from bt.manager import Manager
-from bt.adapter import Adapter
-from bt.device import Device
 from theme import app_theme
 from dtk.ui.draw import draw_text
 from dtk.ui.box import ImageBox
@@ -43,6 +40,7 @@ import gtk
 import pango
 import time
 import threading as td
+from my_bluetooth import MyBluetooth
 from nls import _
 
 class DiscoveryDeviceThread(td.Thread):                                         
@@ -96,8 +94,7 @@ gobject.type_register(DeviceItem)
 
 class TrayBluetoothPlugin(object):
     def __init__(self):
-        self.manager = Manager()
-        self.adapter = None
+        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, self.__on_default_adapter_changed)
         self.width = 160
         self.height = 95
         self.device_treeview = TreeView()                                   
@@ -107,18 +104,20 @@ class TrayBluetoothPlugin(object):
         self.device_separator_align.add(self.device_separator)
         self.device_separator_align.set_child_visible(False)
 
+    def __on_adapter_removed(self):
+        self.tray_icon.set_visible(False)
+
+    def __on_default_adapter_changed(self):
+        self.tray_icon.set_visible(True)
+
     def init_values(self, this_list):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
         self.tray_icon.set_icon_theme("enable")
         
-        if self.manager.get_default_adapter() != "None":
-            self.adapter = Adapter(self.manager.get_default_adapter())
-            self.adapter.connect("device-found", self.__device_found)               
-                                                                                
-            if self.adapter.get_powered():                                          
-                DiscoveryDeviceThread(self).start()
-            else:
+        
+        if self.my_bluetooth.adapter:
+            if not self.my_bluetooth.adapter.get_powered():                                          
                 self.tray_icon.set_visible(False)
         else:
             self.tray_icon.set_visible(False)
