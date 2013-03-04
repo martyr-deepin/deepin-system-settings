@@ -24,12 +24,15 @@ from vtk.utils import is_usb_device, get_text_size
 from vtk.draw import draw_pixbuf, draw_text
 from dtk.ui.line import HSeparator
 from nls import _
+import os
+import sys
 import gtk
 import gio
 import glib
 import gobject
 
 
+image_path = os.path.dirname(sys.argv[0])
 ICON_SIZE = 16
 
 class Device(gtk.Button):
@@ -60,8 +63,8 @@ class Device(gtk.Button):
         self.volume_count = 0;
         self.mount_count  = 0;
         self.icon = gtk.image_new_from_gicon(self.drive.get_icon(), ICON_SIZE)
-        self.off_pixbuf = gtk.gdk.pixbuf_new_from_file("image/offbutton/off.png")
-        self.on_pixbuf = gtk.gdk.pixbuf_new_from_file("image/offbutton/on.png")
+        self.off_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(image_path, "image/offbutton/off.png"))
+        self.on_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(image_path, "image/offbutton/on.png"))
         #
         self.connect("clicked", self.clicked_eject)
         self.drive.connect("disconnected", self.handle_removed_drive)
@@ -236,7 +239,7 @@ class EjecterApp(gobject.GObject):
                             (1,   ("#777777", 0.0))
                            ]
         self.hbox = gtk.HBox()
-        self.title_image = gtk.image_new_from_file("image/usb/usb_label.png")
+        self.title_image = gtk.image_new_from_file(os.path.join(image_path, "image/usb/usb_label.png"))
         self.title_label = gtk.Label(_("USB Device"))
         self.title_label.connect("expose-event", self.title_label_expose_event)
         self.title_label_ali = gtk.Alignment(0, 0, 0, 0)
