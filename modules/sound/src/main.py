@@ -421,9 +421,9 @@ class SoundSetting(object):
     # signals callback begin
     # widget signals
     def slider_completed_slide_cb(self, widget):
-        if self.__is_first_show and widget.active_widget == self.alignment_widgets["main_hbox"]:
+        if self.__is_first_show:
             self.__is_first_show = False
-            widget.active_widget.queue_draw()
+            widget.set_to_page(self.alignment_widgets["main_hbox"])
 
     def container_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
@@ -833,9 +833,7 @@ if __name__ == '__main__':
 
     #module_frame.add(sound_settings.alignment_widgets["slider"])
     module_frame.add(sound_settings.container_widgets["main_vbox"])
-    module_frame.connect("realize",
-        lambda w: sound_settings.container_widgets["slider"].set_to_page(
-        sound_settings.alignment_widgets["main_hbox"]))
+    module_frame.connect("realize", lambda w: sound_settings.container_widgets["slider"].set_to_page(gtk.VBox()))
     if len(sys.argv) > 1:
         print "module_uid:", sys.argv[1]
 

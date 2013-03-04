@@ -492,6 +492,10 @@ class TouchpadSetting(object):
             return
         if button.get_active():
             settings.touchpad_set_left_handed(active)
+            if active == "left":
+                self.set_status_text(_("设为惯用左手"))
+            else:
+                self.set_status_text(_("设为惯用右手"))
     
     def left_or_right_setting_changed(self, *args):
         ''' set left or right radio button active '''
@@ -579,9 +583,13 @@ class TouchpadSetting(object):
                                  padding_top=10,# padding_bottom=10,
                                  padding_left=TEXT_WINDOW_LEFT_PADDING, height=24)
 
+    def set_status_text(self, text):
+        self.container_widgets["statusbar"].set_text(text)
+
     def set_to_default(self, button):
         '''set to the default'''
         settings.touchpad_set_to_default()
+        self.set_status_text(_("恢复默认值"))
     
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))

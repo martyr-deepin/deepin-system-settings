@@ -32,6 +32,7 @@ class StatusBar(gtk.HBox):
     '''docstring for StatusBar'''
     def __init__(self):
         super(StatusBar, self).__init__(False)
+        self.__count = 0
         self.text_label = Label("", text_x_align=ALIGN_MIDDLE,
                                 label_width=500,
                                 enable_select=False,
@@ -64,11 +65,14 @@ class StatusBar(gtk.HBox):
         draw_line(cr, x, y + 1, x + w, y + 1)
 
     def set_text(self, text):
+        self.__count += 1
         self.text_label.set_text(text)
         gobject.timeout_add(3000, self.hide_text)
 
     def hide_text(self):
-        self.text_label.set_text("")
+        self.__count -= 1
+        if self.__count == 0:
+            self.text_label.set_text("")
 
     def set_buttons(self, buttons):
         self.clear_button()
