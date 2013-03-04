@@ -69,7 +69,7 @@ class CacheView(IconView):
         pass
     
     def emit_download(self):
-        download_items = filter(lambda item : item.is_tick, self.items)
+        download_items = self.items
         if download_items:
             image_items = map(lambda item: item.image_object, download_items)
             event_manager.emit("download-images", image_items)
@@ -78,7 +78,6 @@ class CacheView(IconView):
         pass
         
     def try_to_fetch(self):    
-        #self.clear()
         self.network_interface.clear()
         self.__fetch_thread_id += 1
         fetch_thread_id = copy.deepcopy(self.__fetch_thread_id)
@@ -117,7 +116,7 @@ class CachePage(gtk.VBox):
         self.cache_view = CacheView(network_interface)
         self.cache_view_sw = self.cache_view.get_scrolled_window()
         
-        download_button = Button(_("Download"))
+        download_button = Button(_("Download All"))
         download_button.connect("clicked", self.on_download_button_clicked)
         
         control_box = gtk.HBox(spacing = 10)

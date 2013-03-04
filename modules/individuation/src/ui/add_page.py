@@ -46,6 +46,7 @@ class AddPage(gtk.HBox):
         self.bizhi360_cache_page.cache_view.try_to_fetch()
         self.system_wallpapers_page = SystemPage(get_system_wallpaper_dirs()[0])
         self.picture_wallpapers_page = PicturePage(get_images_dir())
+        self.download_wallpapaers_page = UserPage(get_download_wallpaper_dir())
 
         self.task_page = TaskPage()
         
@@ -60,7 +61,6 @@ class AddPage(gtk.HBox):
         self.connect("expose-event", self.on_addpage_expose_event)
         
     def on_download_item_changed(self, name, obj, data):    
-        #self.downloading_item.set_title("正在下载(%d)" % data)
         pass
 
     def __init_navigatebar(self):    
@@ -70,19 +70,13 @@ class AddPage(gtk.HBox):
         self.navigatebar.draw_mask = self.on_navigatebar_draw_mask
         
         local_expand_item = ExpandItem(_("Library"))
-        #download_expand_item = ExpandItem(_("Download"))
         network_expand_item = ExpandItem(_("From Internet"))
         self.navigatebar.add_items([local_expand_item, 
                                     network_expand_item, 
-                                    #download_expand_item
                                    ])
         local_expand_item.add_childs([(_("System"), self.system_wallpapers_page),
                                       (_("Picture"), self.picture_wallpapers_page), 
-                                      (_("Downloaded"), UserPage(get_download_wallpaper_dir()))], expand=True)
-        '''
-        self.downloading_item = download_expand_item.add_childs(
-            [(_("Downloading (0)"), self.task_page)], expand=True)[0]
-        '''
+                                      (_("Downloaded"), self.download_wallpapaers_page)], expand=True)
         network_expand_item.add_childs([(_("LoveBiZhi HD"), self.aibizhi_cache_page),
                                         (_("360BiZhi"), self.bizhi360_cache_page)], expand=True)        
         
@@ -117,4 +111,3 @@ class AddPage(gtk.HBox):
         if item.widget:
             widget.set_highlight_item(item)
             switch_box(self.switch_page, item.widget)
-    
