@@ -289,15 +289,15 @@ class KeySetting(object):
         self.alignment_widgets["type_label"].add(self.container_widgets["repeat_label_hbox"])
         self.alignment_widgets["type_table"].add(self.container_widgets["repeat_table"])
         # alignment set
-        self.alignment_widgets["type_label"].set(0.0, 0.0, 1.0, 1.0)
+        self.alignment_widgets["type_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["type_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         #self.alignment_widgets["type_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["type_table"].set(0.0, 0.5, 0.0, 1.0)
         #self.alignment_widgets["type_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["repeat_main_vbox"].pack_start(
-            self.alignment_widgets["type_label"])
+            self.alignment_widgets["type_label"], False, False)
         self.container_widgets["repeat_main_vbox"].pack_start(
-            self.__setup_separator())
+            self.__setup_separator(), False, False)
         self.container_widgets["repeat_main_vbox"].pack_start(
             self.alignment_widgets["type_table"])
         # tips lable
@@ -342,21 +342,21 @@ class KeySetting(object):
         # blink
         self.alignment_widgets["blink_label"].add(self.container_widgets["blink_label_hbox"])
         self.alignment_widgets["blink_table"].add(self.container_widgets["blink_table"])
-        self.alignment_widgets["blink_label"].set(0.0, 0.0, 1.0, 1.0)
+        self.alignment_widgets["blink_label"].set(0.0, 0.5, 1.0, 0.0)
         self.alignment_widgets["blink_label"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
         #self.alignment_widgets["blink_label"].set_size_request(-1, CONTAINNER_HEIGHT)
         self.alignment_widgets["blink_table"].set(0.0, 0.5, 0.0, 1.0)
         #self.alignment_widgets["blink_table"].set_padding(0, 0, OPTION_LEFT_PADDING, 0)
         self.container_widgets["blink_main_vbox"].pack_start(
-            self.alignment_widgets["blink_label"])
+            self.alignment_widgets["blink_label"], False, False)
         self.container_widgets["blink_main_vbox"].pack_start(
-            self.__setup_separator())
+            self.__setup_separator(), False, False)
         self.container_widgets["blink_main_vbox"].pack_start(
             self.alignment_widgets["blink_table"])
         # tips lable
         self.container_widgets["blink_label_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["blink_label_hbox"].pack_start(
-            self.__make_align(self.image_widgets["blink"]), False, False)
+            self.__make_align(self.image_widgets["blink"], xalign=0.0, height=-1), False, False)
         self.container_widgets["blink_label_hbox"].pack_start(
             self.label_widgets["blink"], False, False)
         # blink time
@@ -426,9 +426,9 @@ class KeySetting(object):
         ###################################
         # layout set
         self.container_widgets["layout_vbox"].pack_start(
-            self.alignment_widgets["layout_label"])
+            self.alignment_widgets["layout_label"], False, False)
         self.container_widgets["layout_vbox"].pack_start(
-            self.__setup_separator())
+            self.__setup_separator(), False, False)
         self.container_widgets["layout_vbox"].pack_start(
             self.alignment_widgets["layout_table"])
 
@@ -897,13 +897,13 @@ class KeySetting(object):
     
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(450, 4)
+        hseparator.set_size_request(450, 10)
         return hseparator
     
     def __setup_separator(self):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0,
                                  padding_top=10,# padding_bottom=10,
-                                 padding_left=TEXT_WINDOW_LEFT_PADDING, height=24)
+                                 padding_left=TEXT_WINDOW_LEFT_PADDING, height=-1)
     
     def __make_accel_page(self):
         self.max_label_width = 0
