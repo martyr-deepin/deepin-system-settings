@@ -265,7 +265,7 @@ class KeySetting(object):
         self.alignment_widgets["left"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["left"].set_padding(TEXT_WINDOW_TOP_PADDING, 20, 0, 0)
         # set right padding
-        self.alignment_widgets["right"].set(0.0, 0.0, 0.0, 0.0)
+        self.alignment_widgets["right"].set(0.0, 0.0, 0.0, 1.0)
         self.alignment_widgets["right"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, 0, 60)
         
         self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
@@ -282,7 +282,8 @@ class KeySetting(object):
         label_width = max(
             label_widgets["repeat_delay"].size_request()[0],
             label_widgets["repeat_interval"].size_request()[0]) + 2
-        self.button_widgets["blink_test_entry"].set_size(label_width, WIDGET_HEIGHT)
+        #self.button_widgets["blink_test_entry"].set_size(label_width, WIDGET_HEIGHT)
+        self.button_widgets["blink_test_entry"].set_size_request(label_width, 16)
 
         # repeat
         self.alignment_widgets["type_label"].add(self.container_widgets["repeat_label_hbox"])
@@ -405,17 +406,20 @@ class KeySetting(object):
         
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], xalign=0.0, height=CONTAINNER_HEIGHT))
+            self.__make_align(self.label_widgets["relevant"], xalign=0.0, yalign=0.0,
+                              yscale=1.0, height=-1), False, False)
         self.container_widgets["right_vbox"].pack_start(
-            self.alignment_widgets["mouse_setting"])
+            self.alignment_widgets["mouse_setting"], False, False)
         self.container_widgets["right_vbox"].pack_start(
-            self.alignment_widgets["touchpad_setting"])
+            self.alignment_widgets["touchpad_setting"], False, False)
+        self.container_widgets["right_vbox"].pack_start(self.__make_align())
         self.alignment_widgets["mouse_setting"].add(self.button_widgets["mouse_setting"])
         self.alignment_widgets["touchpad_setting"].add(self.button_widgets["touchpad_setting"])
         self.alignment_widgets["mouse_setting"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["touchpad_setting"].set(0.0, 0.5, 0.0, 0.0)
-        self.alignment_widgets["mouse_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
-        self.alignment_widgets["touchpad_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["mouse_setting"].set_padding(15, 15, 0, 0)
+        self.alignment_widgets["mouse_setting"].set_size_request(-1, -1)
+        self.alignment_widgets["touchpad_setting"].set_size_request(-1, -1)
         #self.alignment_widgets["mouse_setting"].set_padding(0, 0, 10, 0)
         #self.alignment_widgets["touchpad_setting"].set_padding(0, 0, 10, 0)
 
@@ -887,11 +891,13 @@ class KeySetting(object):
     
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(450, 10)
+        hseparator.set_size_request(450, 4)
         return hseparator
     
     def __setup_separator(self):
-        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=10)
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0,
+                                 padding_top=10,# padding_bottom=10,
+                                 padding_left=TEXT_WINDOW_LEFT_PADDING, height=24)
     
     def __make_accel_page(self):
         self.max_label_width = 0

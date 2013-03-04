@@ -338,7 +338,7 @@ class MouseSetting(object):
 
         # relevant setting
         self.container_widgets["right_vbox"].pack_start(
-            self.__make_align(self.label_widgets["relevant"], height=CONTAINNER_HEIGHT), False, False)
+            self.__make_align(self.label_widgets["relevant"], height=-1), False, False)
         self.container_widgets["right_vbox"].pack_start(
             self.alignment_widgets["keyboard_setting"], False, False)
         self.container_widgets["right_vbox"].pack_start(
@@ -347,8 +347,9 @@ class MouseSetting(object):
         self.alignment_widgets["touchpad_setting"].add(self.button_widgets["touchpad_setting"])
         self.alignment_widgets["keyboard_setting"].set(0.0, 0.5, 0.0, 0.0)
         self.alignment_widgets["touchpad_setting"].set(0.0, 0.5, 0.0, 0.0)
-        self.alignment_widgets["keyboard_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
-        self.alignment_widgets["touchpad_setting"].set_size_request(-1, CONTAINNER_HEIGHT)
+        self.alignment_widgets["keyboard_setting"].set_padding(15, 15, 0, 0)
+        self.alignment_widgets["keyboard_setting"].set_size_request(-1, -1)
+        self.alignment_widgets["touchpad_setting"].set_size_request(-1, -1)
         #self.alignment_widgets["keyboard_setting"].set_padding(0, 0, 10, 0)
         #self.alignment_widgets["touchpad_setting"].set_padding(0, 0, 10, 0)
 
@@ -494,11 +495,13 @@ class MouseSetting(object):
 
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(450, 10)
+        hseparator.set_size_request(450, 4)
         return hseparator
     
     def __setup_separator(self):
-        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=10)
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0,
+                                 padding_top=10,# padding_bottom=10,
+                                 padding_left=TEXT_WINDOW_LEFT_PADDING, height=24)
     
     def set_to_default(self, button):
         '''set to the default'''

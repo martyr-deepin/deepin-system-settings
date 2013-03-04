@@ -603,11 +603,13 @@ class SoundSetting(object):
 
     def __make_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(450, 10)
+        hseparator.set_size_request(450, 4)
         return hseparator
 
     def __setup_separator(self):
-        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0, padding_left=TEXT_WINDOW_LEFT_PADDING, height=14)
+        return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0,
+                                 padding_top=10, padding_bottom=10,
+                                 padding_left=TEXT_WINDOW_LEFT_PADDING, height=24)
 
     def slider_to_advanced(self, button):
         self.container_widgets["slider"].slide_to_page(

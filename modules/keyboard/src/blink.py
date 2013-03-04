@@ -37,11 +37,11 @@ class BlinkButton(gtk.EventBox):
         cr = widget.window.cairo_create()
         x, y, w, h = widget.allocation
         cr.set_source_rgb(1, 1, 1)
-        cr.rectangle(x, y, w, h)
+        cr.rectangle(0, 0, w, h)
         cr.fill()
         if self.__blink:
             cr.set_source_rgb(0, 0, 0)
-            cr.rectangle(x+w/2-1, y, 1, h)
+            cr.rectangle(0+w/2-1, 0, 1, h)
             cr.fill()
         return True
 
