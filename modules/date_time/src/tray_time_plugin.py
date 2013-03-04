@@ -43,6 +43,7 @@ class TrayTimePlugin(object):
         self.width = 200
         self.tray_time = TrayTime()
         self.tray_time.connect("send-time", self.tray_time_send)
+        self.tray_time.connect("hour-changed", self.tray_time_send)
 
     def tray_time_send(self, traytime, text, type, language_type):
         time_p = ""

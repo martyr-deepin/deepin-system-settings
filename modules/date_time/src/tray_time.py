@@ -40,7 +40,10 @@ TRAY_TIME_CN_TYPE = True
 class TrayTime(gobject.GObject):
     __gsignals__ = {
         "send-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                      (gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_INT)) }        
+                      (gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_INT)),
+        "hour-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
+                      (gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_INT)),
+        }        
     def __init__(self):
         gobject.GObject.__init__(self)
         self.__timer = Timer(1)
@@ -59,7 +62,7 @@ class TrayTime(gobject.GObject):
 
     def set_hour_type(self, hour_type):
         self.__tray_time_hour_type = hour_type
-        self.get_time()
+        self.emit("hour-changed", self.get_time(), self.__tray_time_hour_type, cn_check())
 
     def set_deepin_dde_datetime(self):
         self.set_hour_type(not self.set_date.get_boolean("is-24hour"))
