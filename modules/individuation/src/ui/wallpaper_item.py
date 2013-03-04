@@ -924,7 +924,6 @@ class SelectItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        return
         if self.pixbuf == None:
             self.create_cache_pixbuf()
         

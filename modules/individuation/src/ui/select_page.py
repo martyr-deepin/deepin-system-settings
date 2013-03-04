@@ -36,6 +36,8 @@ import common
 from nls import _
 
 class SelectView(IconView):
+    SHOW_ITEM_COUNT = 16
+    
     __gsignals__ = {                                                            
         "loaded" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),}
 
@@ -49,6 +51,7 @@ class SelectView(IconView):
         self.library_monitor.connect("file-added", self.on_library_file_added)
         self.library_monitor.connect("folder-added", self.on_library_folder_added)
         self.library_monitor.connect("location-removed", self.on_library_location_removed)
+        self.__image_index = 0
         self.__init_monitor_images()
         
     def on_library_file_added(self, obj, gfile):    
@@ -60,7 +63,7 @@ class SelectView(IconView):
                 
     def on_library_folder_added(self, obj, gfile):            
         items = []
-        for image_path in common.walk_images(gfile.get_path(), ["png", "jpeg"], self.filter_dir):
+        for image_path in common.walk_images(gfile.get_path(), filter_dir = self.filter_dir):
             if not self.is_exists(image_path):
                 items.append(SelectItem(image_path))
         if items:        
@@ -79,25 +82,54 @@ class SelectView(IconView):
                 return True
         return False    
     
+    '''
+    divide BIG images count into several small sections
+    '''
     @common.threaded
     def __init_monitor_images(self):    
         items = []
-        self.set_loading(True)
-        for image_path in common.walk_images(self.monitor_dir, ["png", "jpeg"], self.filter_dir):
-            items.append(SelectItem(image_path))
+        image_paths = []
+        i = 0
+        
+        for image_path in common.walk_images(self.monitor_dir, filter_dir = self.filter_dir):
+            image_paths.append(image_path)
+
+        while self.__image_index < len(image_paths) and i < self.SHOW_ITEM_COUNT:
+            items.append(SelectItem(image_paths[self.__image_index]))
+            self.__image_index += 1
+            i += 1
+
         if items:    
             self.add_items(items)
-        self.set_loading(False)
-        self.emit("loaded")
-            
+
+    @common.threaded
+    def __more_monitor_images(self):
+        items = []
+        i = 0
+        
+        while self.__image_index < len(image_paths) and i < self.SHOW_ITEM_COUNT:
+            items.append(SelectItem(image_paths[self.__image_index]))              
+            self.__image_index += 1
+            i += 1
+                                                                                   
+        if items:                                                                  
+            self.add_items(items) 
+
     def add_images(self, images):        
         items = map(lambda image: SelectItem(image), images)
         self.add_items(items)
         
     def get_scrolled_window(self):    
         scrolled_window = ScrolledWindow()
+        scrolled_window.connect("vscrollbar-state-changed", self.__on_vscrollbar_state_changed)
         scrolled_window.add_child(self)
         return scrolled_window
+
+    def __on_vscrollbar_state_changed(self, widget, argv):                      
+        if argv != "bottom":
+            return
+
+        self.__init_monitor_images()
 
     def draw_mask(self, cr, x, y, w, h):
         cr.set_source_rgb(1, 1, 1)
@@ -170,12 +202,10 @@ class PicturePage(gtk.VBox):
         self.set_spacing(10)                                                    
                                                                                 
         self.select_view = SelectView(monitor_dir, filter_dir=["deepin-wallpapers"])
-        self.select_view.connect("loaded", self.__on_loaded)
         self.select_view_sw = self.select_view.get_scrolled_window()               
  
         self.select_all_button = Button(_("Select All"))                        
         self.select_all_button.connect("clicked", self.on_select_all)
-        self.select_all_button.set_sensitive(False)
         add_button = Button(_("Add"))                                              
         add_button.connect("clicked", self.on_add_wallpapers)                      
                                                                                    
@@ -189,10 +219,6 @@ class PicturePage(gtk.VBox):
         control_align.add(control_box)                                          
         self.pack_start(self.select_view_sw, True, True)                        
         self.pack_start(control_align, False, True)
-
-    def __on_loaded(self, widget):
-        if len(self.select_view.items):
-            self.select_all_button.set_sensitive(True)
     
     def on_select_all(self, widget):                                            
         self.select_view.select_all()                                           
