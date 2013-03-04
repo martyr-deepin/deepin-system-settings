@@ -45,6 +45,7 @@ LOGOUT_TOP_TEXT = _("Logout your computer now?")
 LOGOUT_BOTTOM_TEXT = _("The system will Logout in \n%s secs.")
 
 RUN_DSS_COMMAND = "deepin-system-settings account"
+RUN_SWITCH_TOGREETER = "switchtogreeter"
 RUN_LOCK_COMMAND = "dlock"
 
 
@@ -101,7 +102,7 @@ class TrayShutdownPlugin(object):
 
     def switch_btn_clicked(self, widget):
         self.this.hide_menu()
-        run_command(RUN_LOCK_COMMAND)
+        run_command(RUN_SWITCH_TOGREETER)
 
     def lock_btn_clicked(self, widget):
         self.this.hide_menu()
