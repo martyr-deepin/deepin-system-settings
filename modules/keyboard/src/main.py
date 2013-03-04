@@ -618,6 +618,10 @@ class KeySetting(object):
             return
         settings.keyboard_set_disable_touchpad_while_typing(
             button.get_active())
+        if button.get_active():
+            self.set_status_text(_("启用打字时禁用触摸板"))
+        else:
+            self.set_status_text(_("取消打字时禁用触摸板"))
     
     def disable_while_typing_change(self, key):
         ''' set left or right radio button active '''
@@ -702,6 +706,7 @@ class KeySetting(object):
             layout_list.append(l_str)
             settings.xkb_set_layouts(layout_list)
             dialog.destroy()
+            self.set_status_text(_("当前布局设为 %s") % item.name)
         self.container_widgets["layout_button_hbox"].set_sensitive(False)
         dialog_width = 400
         dialog_heigth = 380
@@ -799,7 +804,7 @@ class KeySetting(object):
         settings.GCONF_CLIENT.unset('%s/binding' % gconf_dir)
         settings.GCONF_CLIENT.unset('%s/name' % gconf_dir)
         button.get_parent().get_parent().destroy()
-        print "remove:", gconf_dir, button.settings_description
+        self.set_status_text(_("删除自定义快捷键"))
     
     def __add_shortcuts_item(self):
         last_row = len(self.view_widgets["shortcuts_selected"].visible_items) - 1
@@ -846,6 +851,7 @@ class KeySetting(object):
             shortcut_vbox.pack_start(hbox, False, False)
             shortcut_vbox.show_all()
             dialog.destroy()
+            self.set_status_text(_("添加自定义快捷键"))
         self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(False)
         dialog = DialogBox(_("Custom Shortcuts"), 250, 150)
         dialog.connect("destroy", lambda w: self.button_widgets["shortcuts_add"].set_sensitive(True))
@@ -930,11 +936,15 @@ class KeySetting(object):
             self.container_widgets["tab_box"].switch_content(0)
             self.on_tab_box_switch_tab_cb(self.container_widgets["tab_box"], 0)
 
+    def set_status_text(self, text):
+        self.container_widgets["statusbar"].set_text(text)
+
     def set_to_default(self, button):
         '''set to the default'''
         if self.container_widgets["tab_box"].tab_index == 0:
             settings.keyboard_set_to_default()
             settings.xkb_set_to_default()
+            self.set_status_text(_("恢复默认值"))
         elif self.container_widgets["tab_box"].tab_index == 1:
             pass
     
