@@ -96,6 +96,7 @@ class CacheView(IconView):
         thread_items = []
         images = self.network_interface.get_images()
         
+        self.set_loading(True)
         for image in images:
             cache_item = CacheItem(image)
             if not cache_item.is_loaded:
@@ -104,7 +105,8 @@ class CacheView(IconView):
             
         if thread_items:    
             cache_thread_pool.add_missions(thread_items)
-        self.add_items(cache_items)    
+        self.add_items(cache_items)
+        self.set_loading(False)
         self.fetch_successed()
         
 class CachePage(gtk.VBox):        

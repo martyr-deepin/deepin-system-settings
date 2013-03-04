@@ -91,9 +91,10 @@ class SelectView(IconView):
         image_paths = []
         i = 0
         
+        self.set_loading(True)
         for image_path in common.walk_images(self.monitor_dir, filter_dir = self.filter_dir):
             image_paths.append(image_path)
-
+        
         while self.__image_index < len(image_paths) and i < self.SHOW_ITEM_COUNT:
             items.append(SelectItem(image_paths[self.__image_index]))
             self.__image_index += 1
@@ -101,19 +102,22 @@ class SelectView(IconView):
 
         if items:    
             self.add_items(items)
+        self.set_loading(False)
 
     @common.threaded
     def __more_monitor_images(self):
         items = []
         i = 0
         
+        self.set_loading(True)
         while self.__image_index < len(image_paths) and i < self.SHOW_ITEM_COUNT:
             items.append(SelectItem(image_paths[self.__image_index]))              
             self.__image_index += 1
             i += 1
                                                                                    
         if items:                                                                  
-            self.add_items(items) 
+            self.add_items(items)
+        self.set_loading(False)
 
     def add_images(self, images):        
         items = map(lambda image: SelectItem(image), images)
