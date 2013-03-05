@@ -41,6 +41,8 @@ DBUS_ACCOUNTS_USER_1000 = "/org/freedesktop/Accounts/User1000"
 DBUS_ACCOUNTS_PROPERTIES = "org.freedesktop.DBus.Properties"
 DBUS_ACCOUNTS_USER = "org.freedesktop.Accounts.User"
 
+
+
 class CmdDbus(object):
     def __init__(self):
         self.__session_bus = dbus.SystemBus()
@@ -55,10 +57,16 @@ class CmdDbus(object):
         self.__session_bus = dbus.SessionBus()
         oper_obj = self.__create_obj(DBUS_GNOME_SESSION, DBUS_GNOME_SESSION_MANAGER)
         self.interface = dbus.Interface(oper_obj, dbus_interface=DBUS_GNOME_SESSION_POINT)
-        #
+        # 用户DBUS连接.
+        import getpass
+        current_user = getpass.getuser()
         user_bus = dbus.SystemBus()
-        user_oper_obj = user_bus.get_object(DBUS_ACCOUNTS, DBUS_ACCOUNTS_USER_1000)
+        user_oper_obj = user_bus.get_object("org.freedesktop.Accounts", "/org/freedesktop/Accounts")
+        user_inter = dbus.Interface(user_oper_obj, dbus_interface="org.freedesktop.Accounts")
+        user_oper_obj = user_bus.get_object(DBUS_ACCOUNTS, user_inter.FindUserByName(current_user))
         self.__user_interface = dbus.Interface(user_oper_obj, dbus_interface=DBUS_ACCOUNTS_PROPERTIES)
+        self.real_name = self.__user_interface.Get("org.freedesktop.Accounts.User", "RealName")
+        #
 
     def get_user_name(self):
         return self.__user_interface.Get(DBUS_ACCOUNTS_USER, "UserName")
@@ -83,5 +91,5 @@ class CmdDbus(object):
 
 if __name__ == "__main__":
     cmd_dbus = CmdDbus()
-    cmd_dbus.stop()
+    #cmd_dbus.stop()
     

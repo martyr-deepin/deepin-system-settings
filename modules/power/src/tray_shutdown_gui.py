@@ -119,7 +119,9 @@ class Gui(gtk.VBox):
         self.pack_start(self.restart_btn, True, True)
         self.pack_start(self.suspend_btn, True, True)
         self.pack_start(self.logout_btn, True, True)
-        self.pack_start(self.lock_btn, True, True)
+
+        if self.cmd_dbus.real_name != "Guest":
+            self.pack_start(self.lock_btn, True, True)
 
     def user_label_event_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
