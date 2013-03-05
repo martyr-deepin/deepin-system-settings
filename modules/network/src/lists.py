@@ -69,10 +69,12 @@ class GenItems(TreeItem):
     NETWORK_LOADING = 1
     NETWORK_CONNECTED = 2
 
-    def __init__(self):
+    def __init__(self, jumpto_cb=None, is_last= False):
         TreeItem.__init__(self)
 
         self.network_state = 0
+        self.jumpto_cb = jumpto_cb
+
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
@@ -80,6 +82,7 @@ class GenItems(TreeItem):
 
         self.border_color = border_normal_color
         self.bg_color = bg_normal_color
+        self.is_last = is_last
 
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
@@ -167,6 +170,14 @@ class GenItems(TreeItem):
 
     def get_height(self):
         return CONTAINNER_HEIGHT
+    
+    def single_click(self, column, x, y):
+        if self.jumpto_cb:
+            columns = len(self.get_column_widths()) - 1
+            if column == columns:
+                self.jumpto_cb()
+        self.redraw()
+
 
 class LoadingThread(td.Thread):
     def __init__(self, widget):
@@ -331,8 +342,8 @@ class WirelessItem(GenItems):
             net_manager.save_and_connect(pwd, connection, None)
 
 class InfoItem(GenItems):
-    def __init__(self, content):
-        GenItems.__init__(self)
+    def __init__(self, content, jumpto= None, is_last= False):
+        GenItems.__init__(self, jumpto, is_last)
         self.content = content
 
     def render_content(self, cr, rect):
@@ -358,7 +369,8 @@ class InfoItem(GenItems):
         ,self.render_jumpto]
 
     def get_column_widths(self):
-        return [self.CHECK_WIDTH, -1, -1, self.JUMP_WIDTH]
+        return [self.CHECK_WIDTH, -1, 1, self.JUMP_WIDTH]
+
 
 class HidenItem(GenItems):
 
@@ -1174,7 +1186,7 @@ class GeneralItem(TreeItem):
             #self.slide_to_setting()
             #self.send_to_crumb()
         if column == 3:
-            self.setting.init("", init_connections=True)
+            self.setting.init("", init_connections=true)
             self.slide_to_setting()
             self.send_to_crumb()
 

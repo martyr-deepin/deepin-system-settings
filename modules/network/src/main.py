@@ -752,15 +752,19 @@ class Mobile(gtk.VBox):
         manufacturer = device.get_manufacturer()
         model = device.get_model()
         info = model + " " + manufacturer
-        item = GeneralItem(info,
-                           None,
-                           self.settings,
-                           lambda :slider.slide_to_page(self.settings, "right"),
-                           self.send_to_crumb_cb)
+        item = InfoItem(info, self.jumpto_cb,is_last=True)
+        #item = GeneralItem(info,
+                           #None,
+                           #self.settings,
+                           #lambda :slider.slide_to_page(self.settings, "right"),
+                           #self.send_to_crumb_cb)
         self.tree = TreeView([item])
         self.tree.set_size_request(758, len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
         self.tree.show_all()
         self.align.add(self.tree)
+
+    def jumpto_cb(self):
+        Dispatcher.to_setting_page(MobileSetting(None))
 
     def device_is_active(self, widget, a):
         print a, "active"
@@ -771,9 +775,6 @@ class Mobile(gtk.VBox):
 
     def slide_to_event(self, widget, event):
         Dispatcher.to_setting_page(MobileSetting(None))
-        #self.settings.init(init_connections=True)
-        #self.send_to_crumb_cb()
-        #slider.slide_to_page(self.settings, "right")
 
     def add_setting_page(self, setting_page):
         self.settings = setting_page
