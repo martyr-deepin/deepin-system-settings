@@ -41,9 +41,11 @@ def check_settings(connection, fn):
     if connection.check_setting_finish():
         Dispatcher.set_button('save', True)
         print "pass"
+        print connection.get_setting("802-11-wireless-security").prop_dict
     else:
         Dispatcher.set_button("save", False)
-        print "not pass"
+        print "not pass, ==================>"
+        print connection.get_setting("802-11-wireless-security").prop_dict
 
 class WirelessSetting(Settings):
 
@@ -314,7 +316,6 @@ class Security(gtk.VBox):
         if self.setting.verify_wep_key(content, wep_type):
             self.setting.set_wep_key(active, content)
             check_settings(self.connection, self.set_button)
-            print "wep_valid"
         else:
             Dispatcher.set_button("save", False)
             print "invalid"
@@ -334,9 +335,12 @@ class Security(gtk.VBox):
 
     def wep_index_spin_cb(self, widget, value):
         if isinstance(self.connection, NMRemoteConnection):
-            key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
-                                                       "802-11-wireless-security",
-                                                       "wep-key%d"%value)
+            try:
+                key = self.setting.get_wep_key(value)
+            except:
+                key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                           "802-11-wireless-security",
+                                                           "wep-key%d"%value)
         else:
             key = self.setting.get_wep_key(value)
 
