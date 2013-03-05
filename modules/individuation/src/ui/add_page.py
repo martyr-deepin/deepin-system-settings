@@ -84,8 +84,9 @@ class AddPage(gtk.HBox):
         local_expand_item.add_childs([(_("System"), self.system_wallpapers_page),
                                       (_("Picture"), self.picture_wallpapers_page), 
                                       (_("Downloaded"), self.download_wallpapaers_page)], expand=True)
-        network_expand_item.add_childs([(_("LoveBiZhi HD"), self.aibizhi_cache_page),
-                                        (_("360BiZhi"), self.bizhi360_cache_page)], expand=True)        
+        network_expand_item.add_childs([(_("360BiZhi"), self.bizhi360_cache_page), 
+                                        (_("LoveBiZhi HD"), self.aibizhi_cache_page),
+                                       ], expand=True)        
         
         self.navigatebar.set_highlight_item(self.navigatebar.get_items()[1])
         
