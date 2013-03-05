@@ -1,12 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2013 Deepin, Inc.
+#               2013 Zhai Xiang
 # 
-# Author:     Hou Shaohui <houshao55@gmail.com>
-# Maintainer: Hou Shaohui <houshao55@gmail.com>
-#             Zhai Xiang <zhaixiang@linuxdeepin.com>
+# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
+# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,31 +25,21 @@ import deepin_gsettings
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from helper import event_manager
-from ui.wallpaper_item import AddItem, WallpaperItem
+from ui.wallpaper_item import DeleteItem
 from theme_manager import background_gsettings
 import common
 
-class WallpaperView(IconView):
+class DeleteView(IconView):
     
     def __init__(self, padding_x=8, padding_y=10):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
         
-        self.add_item = AddItem()
-        self.add_items([self.add_item])
-        
-        event_manager.add_callback("add-wallpapers", self.on_add_wallpapers)
         event_manager.add_callback("wallpapers-deleted", self.on_wallpapers_deleted)
-        event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
-        event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
-        event_manager.add_callback("apply-download-wallpaper", self.on_download_wallpaper_apply)
         self.theme = None
 
     def set_theme(self, theme):    
         self.theme = theme
         self.clear()
-        self.add_item.set_theme(self.theme)
-        
-        self.add_items([self.add_item])
         
         self.add_system_wallpapers(self.theme.get_system_wallpapers())        
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
@@ -64,22 +53,17 @@ class WallpaperView(IconView):
         return False
     
     def add_user_wallpapers(self, image_paths, save=False):
-        self.add_images(image_paths, readonly=False)
+        self.add_images(image_paths)
         if save:
             if self.theme == None:
                 return
-            
-            self.theme.add_user_wallpapers(image_paths)        
     
     def add_system_wallpapers(self, image_paths):
-        self.add_images(image_paths, readonly=True)
+        self.add_images(image_paths)
         
-    def add_images(self, images, readonly=False):
-        items = map(lambda image: WallpaperItem(image, readonly, self.theme), images)
+    def add_images(self, images):
+        items = map(lambda image: DeleteItem(image, self.theme), images)
         self.add_items(items, insert_pos=-1)
-        
-    def on_wallpaper_select(self, name, obj, select_item):    
-        pass
 
     def is_deletable(self):
         for item in self.items:
@@ -95,30 +79,16 @@ class WallpaperView(IconView):
 
         self.theme.save()
         self.set_theme(self.theme, True)
-
-    def is_randomable(self):
-        i = 0
-
-        for item in self.items:
-            if item.is_tick:
-                i += 1
-
-        if i < 2:
-            return False
-
-        return True
-
+    
     def is_select_all(self):
         for item in self.items:
-            if item.__class__.__name__ == "AddItem":
-                continue
-
             if not item.is_tick:
                 return False
 
         return True
 
     def select_all(self):
+        print "DEBUG select_all"
         is_select_all = self.is_select_all()
 
         for item in self.items:
@@ -126,30 +96,6 @@ class WallpaperView(IconView):
                 item.untick()
             else:
                 item.tick()
-        
-        image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
-        self.apply_wallpapers(image_uris)
-
-    def on_download_wallpaper_apply(self, name, obj, image_path):
-        image_uris = ["file://%s" % image_path]
-        self.apply_wallpapers(image_uris)
-        self.items[-2].tick()
-    
-    def on_wallpaper_apply(self, name, obj, apply_item):
-        [ item.untick() for item in self.items if item != apply_item]
-        image_uris = ["file://%s" % apply_item.image_path]
-        self.apply_wallpapers(image_uris)
-        
-    def apply_wallpapers(self, image_paths):
-        image_path_string = ";".join(image_paths)
-        background_gsettings.set_string("picture-uris", image_path_string)        
-        if self.theme:
-            self.theme.save()        
-                
-    def on_add_wallpapers(self, name, obj, image_paths):    
-        filter_images = filter(lambda image: not self.is_exists(image), image_paths)        
-        if filter_images:
-            self.add_user_wallpapers(filter_images, save=True)
             
     def on_wallpapers_deleted(self, name, obj, image_paths):        
         items = filter(lambda item: item.image_path in image_paths, self.items)

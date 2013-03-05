@@ -115,10 +115,11 @@ class DeepinIndividuation(object):
     def switch_detail_page(self, name, obj, theme):
         self.slider.slide_to_page(self.detail_page, "right")
         self.detail_page.set_theme(theme)
-        self.module_frame.send_submodule_crumb(2, _("Theme Setting"))
+        self.module_frame.send_submodule_crumb(2, _("%s Theme Setting") % theme.get_name())
         
     def switch_add_page(self, name, obj, theme):    
         self.slider.slide_to_page(self.add_page, "right")
+        self.add_page.set_theme(theme)
         self.module_frame.send_submodule_crumb(3, _("Add Wallpaper"))
 
 if __name__ == "__main__":

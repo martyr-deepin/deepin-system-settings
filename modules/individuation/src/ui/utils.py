@@ -70,7 +70,9 @@ def get_separator():
         
 def get_togglebutton():
     toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
-                          app_theme.get_pixbuf("toggle_button/active_normal.png"))
+                          app_theme.get_pixbuf("toggle_button/active_normal.png"), 
+                          inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+                          active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
     return toggle
 
 def get_toggle_group(name, callback=None, active=True):    
@@ -85,7 +87,7 @@ def get_toggle_group(name, callback=None, active=True):
     box.pack_start(toggle_button_align, False, False)
     if callback:
         toggle_button.connect("toggled", callback)
-    return box    
+    return (box, toggle_button) 
 
 def get_combo_group(name, items, callback=None):
     box = gtk.HBox(2)

@@ -113,15 +113,20 @@ class CachePage(gtk.VBox):
     def __init__(self, network_interface):
         gtk.VBox.__init__(self)
         
+        self.theme = None
+
         self.set_spacing(10)
         
         self.cache_view = CacheView(network_interface)
         self.cache_view_sw = self.cache_view.get_scrolled_window()
         
+        self.back_button = Button(_("Back"))                                    
+        self.back_button.connect("clicked", self.__on_back)
         download_button = Button(_("Download All"))
         download_button.connect("clicked", self.on_download_button_clicked)
         
         control_box = gtk.HBox(spacing = 10)
+        control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(download_button, False, False)
         
         control_align = gtk.Alignment()
@@ -131,6 +136,12 @@ class CachePage(gtk.VBox):
         
         self.pack_start(self.cache_view_sw, True, True)
         self.pack_start(control_align, False, True)
-        
+    
+    def set_theme(self, theme):
+        self.theme = theme
+
+    def __on_back(self, widget):
+        event_manager.emit("back-to-detailpage", self.theme)
+
     def on_download_button_clicked(self, widget):    
         self.cache_view.emit_download()

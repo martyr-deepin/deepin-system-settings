@@ -39,7 +39,7 @@ from nls import _
 import threading as td
 
 TIME_COMBO_ITEM =  [
-    ("10 %s" % _("Seconds"), 10), ("30 %s" % _("Seconds"), 30), 
+    (_("Never"), 0), ("10 %s" % _("Seconds"), 10), ("30 %s" % _("Seconds"), 30), 
     ("1 %s" % _("Minute"), 60), ("3 %s" % _("Minutes"), 180),
     ("5 %s" % _("Minutes"), 300), ("10 %s" % _("Minutes"), 600), 
     ("15 %s" % _("Minutes"), 900),("20 %s" % _("Minutes"), 1200), 
@@ -99,7 +99,7 @@ class DetailPage(TabBox):
         if self.__background_settings.get_int("background-duration") == 0:
             self.time_combobox.set_sensitive(False)
             self.__is_random = False
-        self.unorder_play = get_toggle_group(_("Random"), 
+        self.unorder_play, self.random_toggle = get_toggle_group(_("Random"), 
                                              self.__on_random_toggled, 
                                              self.__is_random)
         self.button_align = gtk.Alignment()
@@ -128,37 +128,13 @@ class DetailPage(TabBox):
         self.wallpaper_box.pack_start(self.wallpaper_view_sw, True, True)
         self.wallpaper_box.pack_start(action_bar_align, False, False)
 
-        '''
-        Window Effect
-        '''
-        self.window_effect_align = gtk.Alignment()
-        self.window_effect_align.set(0.0, 0.5, 0, 0)
-        self.window_effect_align.set_padding(10, 10, 10, 0)
-        self.window_effect_box = gtk.HBox()
-        self.window_effect_button = CheckButton("开启毛玻璃效果")
-        self.window_effect_box.pack_start(self.window_effect_button, False, False, 4)
-        self.window_effect_align.add(self.window_effect_box)
-        '''
-        Color Deepth
-        '''
-        self.color_deepth_align = gtk.Alignment()
-        self.color_deepth_align.set(0.0, 0.5, 0, 0)
-        self.color_deepth_align.set_padding(10, 10, 10, 0)
-        self.color_deepth_box = gtk.HBox(spacing=10)
-        self.color_deepth_label = Label("颜色浓度", text_x_align=ALIGN_END, label_width=60)
-        self.color_deepth_scalbar = HScalebar(                                                      
-            None, None, None, None, None, None,
-            app_theme.get_pixbuf("scalebar/point.png"), 
-            True, 
-            "%")
-        self.color_deepth_adjust = gtk.Adjustment(0, 0, 100)
-        self.color_deepth_scalbar.set_adjustment(self.color_deepth_adjust)
-        self.color_deepth_scalbar.set_size_request(355, 40)
-        self.color_deepth_box.pack_start(self.color_deepth_label)
-        self.color_deepth_box.pack_start(self.color_deepth_scalbar)
-        self.color_deepth_align.add(self.color_deepth_box)
-        self.window_theme_box.pack_start(self.window_effect_align, False, False)
-        self.window_theme_box.pack_start(self.color_deepth_align, False, False)
+        event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
+
+    def on_wallpaper_select(self, name, obj, select_item):
+        if self.wallpaper_view.is_randomable():
+            self.random_toggle.set_sensitive(True)
+        else:
+            self.random_toggle.set_sensitive(False)
 
     def __on_select_all(self, widget):
         SelectAllThread(self).start()
@@ -169,14 +145,9 @@ class DetailPage(TabBox):
     def __on_random_toggled(self, widget):
         is_random = widget.get_active()
         if is_random:
-            self.time_combobox.set_sensitive(True)
-            item = self.time_combobox.get_current_item()
-            if item == None:
-                return
-            self.__background_settings.set_int("background-duration", item[1])
+            self.__background_settings.set_string("cross-fade-auto-mode", "Random")
         else:
-            self.time_combobox.set_sensitive(False)
-            self.__background_settings.set_int("background-duration", 0)
+            self.__background_settings.set_string("cross-fade-auto-mode", "Sequential")
         
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -218,6 +189,12 @@ class DetailPage(TabBox):
                 
         self.time_combobox.set_select_index(item_index)        
         self.wallpaper_view.set_theme(theme)
+       
+        if self.wallpaper_view.is_randomable():
+            self.random_toggle.set_sensitive(True)
+        else:
+            self.random_toggle.set_sensitive(False)
+
         if self.wallpaper_view.is_select_all():
             self.select_all_button.set_label(_("UnSelect All"))
         
