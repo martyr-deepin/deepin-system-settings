@@ -287,8 +287,11 @@ class TrayGui(gtk.VBox):
             current_sink = pypulse.get_fallback_sink_index()
             sinks = pypulse.PULSE.get_output_devices()
             sink_volume = pypulse.PULSE.get_output_volume()
+            tip_text = _("Volume %d%%") % (self.speaker_scale.get_value())
             if current_sink in sinks and current_sink in sink_volume:
                 is_mute = sinks[current_sink]['mute']
+                if is_mute:
+                    tip_text = _("Mute")
                 volume = max(sink_volume[current_sink]) * 100.0 / pypulse.NORMAL_VOLUME_VALUE
                 if volume == 0:
                     volume_level = 0
@@ -299,6 +302,8 @@ class TrayGui(gtk.VBox):
                 else:
                     volume_level = 3
                 self.tray_obj.set_tray_icon(volume_level, is_mute)
+            if self.tray_obj.tray_obj:
+                self.tray_obj.tray_obj.set_tooltip_text(tip_text)
 
     def source_changed_cb(self, obj, index):
         obj.get_devices()
