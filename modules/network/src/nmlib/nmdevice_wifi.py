@@ -125,6 +125,9 @@ class NMDeviceWifi(NMDevice):
             wireless_connections = filter(lambda x: x.settings_dict["802-11-wireless"]["ssid"] == ssid_ascii,
                     nm_remote_settings.get_wireless_connections())
 
+        if not wireless_connections:
+            return nm_remote_settings.new_wireless_connection(ssid, None) 
+
         for conn in  wireless_connections:
             try:
                 specific = self.get_ap_by_ssid(ssid)
@@ -135,7 +138,8 @@ class NMDeviceWifi(NMDevice):
                     continue
             except:
                 pass
-        else:
+
+        if not cache.getobject(self.object_path).is_active():
             return nm_remote_settings.new_wireless_connection(ssid, None) 
 
     def auto_connect(self):
@@ -149,8 +153,7 @@ class NMDeviceWifi(NMDevice):
         if nm_remote_settings.get_wireless_connections():
             wireless_connections = sorted(nm_remote_settings.get_wireless_connections(),
                                       key = lambda x:secret_agent.get_conn_priority(x.object_path))
-        else:
-            return False
+
         if len(wireless_connections) != 0:
             for conn in wireless_connections:
                 ssid = conn.get_setting("802-11-wireless").ssid

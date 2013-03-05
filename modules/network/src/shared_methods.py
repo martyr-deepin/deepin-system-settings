@@ -188,10 +188,12 @@ class Settings(object):
         self.setting_list = setting_list 
         self.setting_state = {}
         self.settings = {}
+        self.setting_lock = {}
 
     def init_items(self, connection):
         self.connection = connection 
         if connection not in self.settings:
+            self.setting_lock[connection] = True
             #self.init_button_state(connection)
             setting_list = []
             for setting in self.setting_list:
@@ -203,6 +205,12 @@ class Settings(object):
     def set_button(self, name, state):
         #Dispatcher.set_button(name, state)
         self.setting_state[self.connection] = (name, state)
+    
+    def set_lock(self, lock):
+        self.setting_lock[self.connection] = lock
+
+    def get_lock(self):
+        return self.setting_lock[self.connection]
 
     def clear(self):
         print "clear settings"
@@ -215,9 +223,9 @@ class Settings(object):
         else:
             self.set_button("save", False)
 
-    def get_button_state(self, connection):
-        if connection in self.setting_state.iterkeys():
-            return self.setting_state[connection]
+    def get_button_state(self):
+        #if connection in self.setting_state.iterkeys():
+            return self.setting_state[self.connection]
 
     def apply_changes(self):
         pass
