@@ -78,7 +78,10 @@ class NMClient(NMObject):
             return []
 
     def get_wired_device(self):
-        return self.get_wired_devices()[0]
+        try:
+            return self.get_wired_devices()[0]
+        except:
+            return None
 
     def get_wireless_devices(self):
         self.devices = self.get_devices()
@@ -88,7 +91,10 @@ class NMClient(NMObject):
             return []
 
     def get_wireless_device(self):
-        return self.get_wireless_devices()[0]
+        try:
+            return self.get_wireless_devices()[0]
+        except:
+            return None
 
     def get_modem_devices(self):
         self.devices = self.get_devices()
@@ -98,7 +104,10 @@ class NMClient(NMObject):
             return []
 
     def get_modem_device(self):
-        return self.get_modem_devices()[0]
+        try:
+            return self.get_modem_devices()[0]
+        except:
+            return None
 
     def get_device_by_iface(self, iface):
         device = self.dbus_method("GetDeviceByIpIface", iface)
