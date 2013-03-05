@@ -30,7 +30,7 @@ from dtk.ui.button import Button, CheckButton
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.constant import ALIGN_END
 from ui.wallpaper_item import ITEM_PADDING_Y
-from ui.wallpaper_view import WallpaperView
+from ui.delete_view import DeleteView
 from constant import STATUS_HEIGHT, WIDGET_HEIGHT
 from helper import event_manager
 from nls import _
@@ -50,8 +50,8 @@ class DeletePage(TabBox):
         self.theme = None
         
         self.wallpaper_box = gtk.VBox()
-        self.wallpaper_view = WallpaperView(padding_x=30, padding_y=ITEM_PADDING_Y)
-        self.wallpaper_view_sw = self.wallpaper_view.get_scrolled_window()
+        self.delete_view = DeleteView(padding_x=30, padding_y=ITEM_PADDING_Y)
+        self.delete_view_sw = self.delete_view.get_scrolled_window()
         
         self.action_align = gtk.Alignment()
         self.action_align.set_padding(5, 5, 500, 5)
@@ -70,27 +70,26 @@ class DeletePage(TabBox):
         self.action_box.pack_start(self.delete_button, False, False)
         self.action_align.add(self.action_box)
         
-        self.wallpaper_box.pack_start(self.wallpaper_view_sw, True, True)
+        self.wallpaper_box.pack_start(self.delete_view_sw, True, True)
         self.wallpaper_box.pack_start(self.action_align, False, False)
 
     def __on_back(self, widget):
         event_manager.emit("back-to-detailpage", self.theme)
 
     def __on_select_all(self, widget):
-        if self.wallpaper_view.is_select_all():
-            self.wallpaper_view.select_all(True)
+        self.delete_view.select_all()
+        if self.delete_view.is_select_all():
             self.select_all_button.set_label(_("UnSelect All"))
         else:
-            self.wallpaper_view.select_all(False)
             self.select_all_button.set_label(_("Select All"))
 
     def __on_delete(self, widget):
-        if self.wallpaper_view.is_deletable():
+        if self.delete_view.is_deletable():
             dlg = ConfirmDialog(_("Delete Wallpaper"),                                  
                                 _("Are you sure delete wallpaper?"), 
                                 300,                                                
                                 100,                                                
-                                lambda : self.wallpaper_view.delete_wallpaper(),                   
+                                lambda : self.delete_view.delete_wallpaper(),                   
                                 None,                                               
                                 True)                                               
             dlg.show_all()
@@ -111,8 +110,7 @@ class DeletePage(TabBox):
         self.add_items([(self.theme.get_name(), self.wallpaper_box),                   
                        ])
         
-        self.wallpaper_view.set_theme(theme, True)
-        self.wallpaper_view.select_all(False)
+        self.delete_view.set_theme(theme)
         self.select_all_button.set_label(_("Select All"))
         
     def draw_mask(self, cr, x, y, w, h):
