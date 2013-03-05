@@ -29,6 +29,7 @@ from theme import app_theme
 import settings
 from nls import _
 from icon_button import IconButton
+from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.button import CheckButton, Button, OffButton
@@ -52,7 +53,7 @@ from statusbar import StatusBar
 
 MODULE_NAME = "account"
 COMBO_WIDTH = 190
-LABEL_WIDTH = 150
+LABEL_WIDTH = 180
 INSENSITIVE_TEXT_COLOR = "#DCDCDC"
 
 class AccountSetting(object):
@@ -96,7 +97,7 @@ class AccountSetting(object):
         self.label_widgets["account_name"] = Label("", label_width=255, enable_select=False, enable_double_click=False)
         self.label_widgets["account"] = Label(_("Account type"), enable_select=False, enable_double_click=False)
         self.label_widgets["passwd"] = Label(_("Password"), enable_select=False, enable_double_click=False)
-        self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH, enable_select=False, enable_double_click=False)
+        self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH-1, enable_select=False, enable_double_click=False)
         self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"), enable_select=False, enable_double_click=False)
         self.label_widgets["deepin_account"] = Label(_("Unbound"), enable_select=False, enable_double_click=False)
@@ -177,6 +178,7 @@ class AccountSetting(object):
         self.alignment_widgets["button_hbox_new"] = gtk.Alignment()
         #####################################
         # delete account page
+        self.alignment_widgets["del_main_vbox"] = gtk.Alignment()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
         self.label_widgets["del_account_tips"] = Label("", wrap_width=400, enable_select=False, enable_double_click=False)
         self.label_widgets["del_account_tips2"] = Label(
@@ -200,6 +202,7 @@ class AccountSetting(object):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["set_iconfile"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["edit_iconfile"])
+        self.container_widgets["slider"].set_size_request(800, 450)
         self.alignment_widgets["main_hbox"].set_name("main_hbox")
         self.alignment_widgets["set_iconfile"].set_name("set_iconfile")
         self.alignment_widgets["edit_iconfile"].set_name("edit_iconfile")
@@ -218,17 +221,17 @@ class AccountSetting(object):
         #self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].set_padding(0, 0, 0, FRAME_LEFT_PADDING)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
-        self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
+        #self.container_widgets["main_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left_vbox"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right_vbox"])
         self.alignment_widgets["left_vbox"].add(self.container_widgets["left_vbox"])
         self.alignment_widgets["right_vbox"].add(self.container_widgets["right_vbox"])
-        self.alignment_widgets["left_vbox"].set_size_request(275, -1)
-        self.alignment_widgets["left_vbox"].set_padding(0, 0, TEXT_WINDOW_LEFT_PADDING, 0)
-        self.container_widgets["left_vbox"].set_size_request(275, -1)
-        self.alignment_widgets["right_vbox"].set_size_request(500, -1)
-        self.alignment_widgets["right_vbox"].set_padding(TEXT_WINDOW_TOP_PADDING + 16, 0, 0, 0)
-        self.view_widgets["account"].set_size_request(275, 460)
+        self.alignment_widgets["left_vbox"].set_size_request(215, -1)
+        self.alignment_widgets["left_vbox"].set_padding(0, 0, 40, 0)
+        self.container_widgets["left_vbox"].set_size_request(210, -1)
+        self.alignment_widgets["right_vbox"].set_size_request(560, -1)
+        self.alignment_widgets["right_vbox"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, 0, 0)
+        self.view_widgets["account"].set_size_request(210, 460)
         ##############################
         # accounts list page
         self.container_widgets["left_vbox"].pack_start(self.view_widgets["account"])
@@ -249,6 +252,7 @@ class AccountSetting(object):
         #self.container_widgets["right_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
         #self.container_widgets["right_vbox"].pack_start(self.container_widgets["check_button_table"], False, False)
         self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_info_vbox"], False, False)
+        self.alignment_widgets["account_info_vbox"].set_padding(18, 0, 0, 0)
         self.alignment_widgets["account_info_vbox"].add(self.container_widgets["account_info_vbox"])
         self.container_widgets["account_info_vbox"].pack_start(self.container_widgets["account_info_table"], False, False)
         self.container_widgets["account_info_vbox"].pack_start(self.label_widgets["account_info_error"], False, False)
@@ -277,6 +281,7 @@ class AccountSetting(object):
         #self.container_widgets["account_info_table"].attach(
             #self.__make_align(self.label_widgets["deepin_account"]), 1, 2, 5, 6, 4)
 
+        self.label_widgets["passwd_char"].set_size_request(COMBO_WIDTH, WIDGET_HEIGHT)
         self.button_widgets["account_type"].set_size_request(COMBO_WIDTH, WIDGET_HEIGHT)
         #self.image_widgets["account_icon"].set_size_request(48, 48)
         self.button_widgets["lock"].set_size_request(16, 16)
@@ -354,6 +359,7 @@ class AccountSetting(object):
         #self.container_widgets["button_hbox_new"].pack_start(self.button_widgets["account_create"], False, False)
         self.alignment_widgets["account_add_vbox"].add(self.container_widgets["account_add_vbox"])
         self.alignment_widgets["account_add_vbox"].set(0, 0, 1, 1)
+        self.alignment_widgets["account_add_vbox"].set_padding(18, 0, 0, 0)
         self.container_widgets["account_add_vbox"].set_size_request(500, -1)
         self.container_widgets["account_add_vbox"].pack_start(self.container_widgets["account_info_table_new"], False, False)
         self.container_widgets["account_add_vbox"].pack_start(self.__make_align(), False, False)
@@ -362,6 +368,8 @@ class AccountSetting(object):
         self.container_widgets["account_add_vbox"].pack_start(self.alignment_widgets["button_hbox_new"], False, False)
         #############################
         # del account
+        self.alignment_widgets["del_main_vbox"].set_padding(0, 0, 40, 0)
+        self.alignment_widgets["del_main_vbox"].add(self.container_widgets["del_main_vbox"])
         self.container_widgets["del_main_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["del_main_vbox"].pack_start(self.label_widgets["del_account_tips"], False, False)
         self.container_widgets["del_main_vbox"].pack_start(self.label_widgets["del_account_tips2"], False, False)
@@ -392,9 +400,7 @@ class AccountSetting(object):
         self.alignment_widgets["edit_iconfile"].add(self.container_widgets["icon_edit_page"])
 
     def __signals_connect(self):
-        self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
-        self.alignment_widgets["set_iconfile"].connect("expose-event", self.container_expose_cb)
-        self.alignment_widgets["edit_iconfile"].connect("expose-event", self.container_expose_cb)
+        self.container_widgets["slider"].connect("expose-event", self.container_expose_cb)
 
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
@@ -539,7 +545,7 @@ class AccountSetting(object):
             return
         self.current_del_user = self.current_select_user
         container_remove_all(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["del_main_vbox"])
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["del_main_vbox"])
         show_name = settings.get_user_show_name(self.current_select_user)
         self.label_widgets["del_account_tips"].set_text(
             "<b>%s</b>" % _("Do you want to keep <u>%s</u>'s files?") %
@@ -649,12 +655,18 @@ class AccountSetting(object):
             else:
                 widget.set_text("<u><b>%s</b></u>" % "--")
         else:
-            cr = widget.window.cairo_create()
+            if widget.window:
+                widget.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+            widget.set_text("  %s" % widget.get_text())
+            p_rect = widget.get_parent().allocation
+            rect = widget.allocation
+            cr = widget.get_parent().window.cairo_create()
+            y = p_rect.y + (p_rect.height - WIDGET_HEIGHT) / 2
             with cairo_disable_antialias(cr):
                 cr.set_line_width(1)
-                cr.set_source_rgb(*color_hex_to_cairo("#000000"))
-                x, y, w, h = widget.allocation
-                cr.rectangle(x+1, y+1, w-2, h-2)
+                frame_color = ui_theme.get_color("combo_entry_frame")
+                cr.set_source_rgb(*color_hex_to_cairo(frame_color.get_color()))
+                cr.rectangle(rect.x, y, COMBO_WIDTH, WIDGET_HEIGHT)
                 cr.stroke()
 
     def label_leave_notify_cb(self, widget, event, is_realname=False):
@@ -667,7 +679,10 @@ class AccountSetting(object):
             else:
                 widget.set_text("<b>%s</b>" % "--")
         else:
-            widget.set_text("%s" % pango.parse_markup(widget.get_text())[1])
+            if widget.window:
+                widget.window.set_cursor(None)
+            self.container_widgets["account_info_table"].queue_draw()
+            widget.set_text("%s" % pango.parse_markup(widget.get_text().strip())[1])
 
     def realname_change_press_cb(self, widget, event):
         if not self.current_select_user:
@@ -716,6 +731,9 @@ class AccountSetting(object):
     def password_change_press_cb(self, widget, event):
         if not self.current_select_user:
             return
+        if widget.window:
+            widget.window.set_cursor(None)
+        widget.set_text("%s" % pango.parse_markup(widget.get_text().strip())[1])
         self.current_passwd_user = self.current_select_user
         passwd_align = self.label_widgets["passwd"].get_parent()
         passwd_char_align = self.label_widgets["passwd_char"].get_parent()
@@ -801,10 +819,23 @@ class AccountSetting(object):
         new_pswd_input.entry.connect("changed", self.password_input_changed, all_widgets, self.CH_PASSWD_NEW_PSWD, 6)
         confirm_pswd_input.entry.connect("changed", self.password_input_changed, all_widgets, self.CH_PASSWD_CONFIRM_PSWD, 6)
 
+        right_vbox.connect("expose-event", self.__change_pswd_expose_cb, all_widgets)
         self.container_widgets["account_info_table"].show_all()
         self.container_widgets["right_vbox"].queue_draw()
         self.statusbar_buttons_bak = self.container_widgets["statusbar"].get_buttons()
         self.container_widgets["statusbar"].set_buttons([cancel_button, change_button])
+
+    def __change_pswd_expose_cb(self, widget, event, all_widgets):
+        (current_pswd_input, new_pswd_input, confirm_pswd_input,
+         action_combo, show_pswd_check, cancel_button, change_button,
+         error_label, is_myown, is_authorized, is_input_empty,
+         label2, label3, label4) = all_widgets
+        print "action_combo:\t\t", action_combo.allocation
+        print "current_pswd_input:\t", current_pswd_input.allocation
+        print "new_pswd_input:\t\t", new_pswd_input.allocation
+        print "confirm_pswd_input:\t", confirm_pswd_input.allocation
+        print "show_pswd_check:\t", show_pswd_check.allocation
+        print "-"*20
 
     def show_input_password(self, button, new_pswd_input, confirm_pswd_input):
         new_pswd_input.show_password(button.get_active())
@@ -1196,9 +1227,7 @@ if __name__ == '__main__':
                 #account_settings.set_to_page(account_settings.alignment_widgets["main_hbox"], "left")
         elif message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
-            account_settings.container_widgets["slider"].set_to_page(
-                account_settings.alignment_widgets["main_hbox"])
-            account_settings.alignment_widgets["main_hbox"].queue_draw()
+            account_settings.set_to_page(account_settings.alignment_widgets["main_hbox"], None)
             module_frame.send_module_info()
 
     module_frame.module_message_handler = message_handler

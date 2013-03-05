@@ -28,7 +28,7 @@ import gtk
 class SoundTray(object):
     def __init__(self):
         super(SoundTray, self).__init__()
-        self.WIN_WIDTH = 250
+        self.WIN_WIDTH = 200
         self.WIN_HEIGHT = 170
         self.__this_visible = False
         self.__volume_level = None
