@@ -25,6 +25,16 @@ class DeviceManager(object):
             for device in self.wireless_devices:
                 device.connect("state-changed", self.__wireless_state_change)
 
+    def load_wired_listener(self, module):
+        if self.wired_devices:
+            for device in self.wired_devices:
+                pass
+    
+    def __connect(self, sender, signal):
+        sender.connect(signal)
+
+        
+
     def __wired_state_change(self, widget, new_state, old_state, reason):
         Dispatcher.wired_change(widget, new_state, reason)
 
