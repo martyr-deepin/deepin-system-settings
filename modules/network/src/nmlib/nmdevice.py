@@ -34,10 +34,12 @@ class NMDevice(NMObject):
 
     __gsignals__  = {
             "state-changed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
-            "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,)),
-            "device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT,))
+            "device-active":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "device-deactive":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "device-available":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "device-unavailable":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "activate-start":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT)),
+            "activate-failed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT, gobject.TYPE_UINT))
             }
 
     def __init__(self, device_object_path, device_interface = "org.freedesktop.NetworkManager.Device"):
@@ -196,14 +198,26 @@ class NMDevice(NMObject):
         self.init_nmobject_with_properties()
 
         if old_state != 100 and new_state == 100:
-            self.emit("device-active", reason)
+            print "device-active"
+            self.emit("device-active", new_state, old_state, reason)
         elif old_state == 100 and new_state != 100:
-            self.emit("device-deactive", reason)
+            print "device-deactive"
+            self.emit("device-deactive", new_state, old_state, reason)
 
-        if old_state < 30 and new_state >= 30:
-            self.emit("device-available", new_state)
-        elif old_state >=30 and new_state < 30:
-            self.emit("device-unavailable", new_state)
+        if new_state < 30:
+            if old_state >= 30:
+                print "device-unavailable"
+                self.emit("device-unavailable", new_state, old_state, reason)
+        elif old_state < 40:
+            if old_state < 30:
+                print "device-available"
+                self.emit("device-available", new_state, old_state, reason)
+            if new_state >= 40:
+                print "activate-start"
+                self.emit("activate-start", new_state, old_state, reason)
+        elif old_state < 100 and new_state > 100:
+            print "activate-failed"
+            self.emit("activate-failed", new_state, old_state, reason)
 
 if __name__ == "__main__":
     nmdevice = NMDevice("/org/freedesktop/NetworkManager/Devices/1")

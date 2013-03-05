@@ -21,22 +21,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from nmdevice import NMDevice
-from nm_utils import TypeConvert
-# from nm_remote_settings import nm_remote_settings
-# from nmclient import nmclient
 from nmcache import cache
-import gobject
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 
 class NMDeviceEthernet(NMDevice):
     '''NMDeviceEthernet'''
-
-    __gsignals__  = {
-            "try-activate-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ()),
-            "try-activate-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
-            }
-
     def __init__(self, ethernet_device_object_path):
         NMDevice.__init__(self, ethernet_device_object_path, "org.freedesktop.NetworkManager.Device.Wired")
         self.prop_list = ["Carrier", "HwAddress", "PermHwAddress", "Speed"]
@@ -68,13 +58,10 @@ class NMDeviceEthernet(NMDevice):
         if len(wired_connections) != 0:
             for conn in wired_connections:
                 try:
-                    self.emit("try-activate-begin")
                     nmclient.activate_connection(conn.object_path, self.object_path, "/")
                     if cache.getobject(self.object_path).is_active():
-                        self.emit("try-activate-end")
                         return True
                     else:
-                        self.emit("try-activate-end")
                         continue
                 except:
                     continue
