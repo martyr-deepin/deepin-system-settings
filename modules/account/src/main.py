@@ -178,6 +178,7 @@ class AccountSetting(object):
         self.alignment_widgets["button_hbox_new"] = gtk.Alignment()
         #####################################
         # delete account page
+        self.alignment_widgets["del_main_vbox"] = gtk.Alignment()
         self.container_widgets["del_main_vbox"] = gtk.VBox(False)
         self.label_widgets["del_account_tips"] = Label("", wrap_width=400, enable_select=False, enable_double_click=False)
         self.label_widgets["del_account_tips2"] = Label(
@@ -367,6 +368,8 @@ class AccountSetting(object):
         self.container_widgets["account_add_vbox"].pack_start(self.alignment_widgets["button_hbox_new"], False, False)
         #############################
         # del account
+        self.alignment_widgets["del_main_vbox"].set_padding(0, 0, 40, 0)
+        self.alignment_widgets["del_main_vbox"].add(self.container_widgets["del_main_vbox"])
         self.container_widgets["del_main_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["del_main_vbox"].pack_start(self.label_widgets["del_account_tips"], False, False)
         self.container_widgets["del_main_vbox"].pack_start(self.label_widgets["del_account_tips2"], False, False)
@@ -542,7 +545,7 @@ class AccountSetting(object):
             return
         self.current_del_user = self.current_select_user
         container_remove_all(self.container_widgets["right_vbox"])
-        self.container_widgets["right_vbox"].pack_start(self.container_widgets["del_main_vbox"])
+        self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["del_main_vbox"])
         show_name = settings.get_user_show_name(self.current_select_user)
         self.label_widgets["del_account_tips"].set_text(
             "<b>%s</b>" % _("Do you want to keep <u>%s</u>'s files?") %
@@ -827,11 +830,11 @@ class AccountSetting(object):
          action_combo, show_pswd_check, cancel_button, change_button,
          error_label, is_myown, is_authorized, is_input_empty,
          label2, label3, label4) = all_widgets
-        print "action_combo:", action_combo.allocation
-        print "current_pswd_input:", current_pswd_input.allocation
-        print "new_pswd_input:", new_pswd_input.allocation
-        print "confirm_pswd_input:", confirm_pswd_input.allocation
-        print "show_pswd_check:", show_pswd_check.allocation
+        print "action_combo:\t\t", action_combo.allocation
+        print "current_pswd_input:\t", current_pswd_input.allocation
+        print "new_pswd_input:\t\t", new_pswd_input.allocation
+        print "confirm_pswd_input:\t", confirm_pswd_input.allocation
+        print "show_pswd_check:\t", show_pswd_check.allocation
         print "-"*20
 
     def show_input_password(self, button, new_pswd_input, confirm_pswd_input):
