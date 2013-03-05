@@ -454,7 +454,7 @@ class DisplayView(gtk.VBox):
              self.multi_monitors_align, 
              self.monitor_bright_align, 
              self.brightness_align, 
-             self.auto_adjust_align, 
+             #self.auto_adjust_align, 
              self.close_monitor_align, 
              self.monitor_lock_align, 
              self.auto_lock_align, 

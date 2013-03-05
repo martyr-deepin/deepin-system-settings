@@ -24,7 +24,6 @@ from theme import app_theme
 from dtk.ui.utils import color_hex_to_cairo, get_content_size
 from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_pixbuf, draw_text, draw_vlinear
-from dtk.ui.progressbar import ProgressBar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
 from dtk.ui.box import ImageBox
@@ -41,44 +40,13 @@ import pango
 from constant import *
 from nls import _
 from bt.utils import bluetooth_class_to_type
+from bt.gui_obex_agent import send_file
 from my_bluetooth import MyBluetooth
 import time
 import threading as td
 import uuid
 import re
-
-class ProgressDialog(DialogBox):
-    DIALOG_MASK_SINGLE_PAGE = 0
-
-    def __init__(self, title, default_width=300, default_height=130, cancel_cb=None):
-        DialogBox.__init__(self, title, default_width, default_height, self.DIALOG_MASK_SINGLE_PAGE)
-
-        self.cancel_cb = cancel_cb
-
-        self.progress_align = gtk.Alignment()
-        self.progress_align.set(0, 0, 0, 0)
-        self.progress_align.set_padding(10, 10, 10, 10)
-        self.progress_bar = ProgressBar()
-        self.progress_bar.set_size_request(default_width, -1)
-        self.progress_align.add(self.progress_bar)
-        self.percentage_align = gtk.Alignment()
-        self.percentage_align.set(0, 0, 0, 0)
-        self.percentage_align.set_padding(0, 10, 0, 0)
-        self.percentage_label = Label("0%", text_x_align=ALIGN_MIDDLE)
-        self.percentage_label.set_size_request(default_width, -1)
-        self.percentage_align.add(self.percentage_label)
-        self.cancel_align = gtk.Alignment()
-        self.cancel_align.set(0, 0, 0, 0)
-        self.cancel_align.set_padding(20, 0, 200, 0)
-        self.cancel_button = Button(_("Cancel"))
-        self.cancel_button.set_size_request(70, WIDGET_HEIGHT)
-        self.cancel_align.add(self.cancel_button)
-
-        self.body_box.pack_start(self.progress_align, False, False)
-        self.body_box.pack_start(self.percentage_align, False, False)
-        self.body_box.pack_start(self.cancel_align)
-
-gobject.type_register(ProgressDialog)
+import common
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -261,10 +229,10 @@ class DeviceItem(gobject.GObject):
         if self.is_paired:
             self.send_button.set_child_visible(True)
 
+    @common.threaded
     def __send_file(self, filename):
-        print "DEBUG", filename
-        dlg = ProgressDialog(_("Send File"))
-        dlg.show_all()
+        print "DEBUG send_file", self.device.get_address(), filename
+        send_file(self.device.get_address(), filename)
 
     def __send_button_pressed(self, widget, event):
         OpenFileDialog(_("Select File"), None, lambda name : self.__send_file(name), None)
