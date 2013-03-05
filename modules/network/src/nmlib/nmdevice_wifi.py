@@ -35,8 +35,6 @@ class NMDeviceWifi(NMDevice):
     __gsignals__  = {
             "access-point-added":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
             "access-point-removed":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,)),
-            "try-ssid-begin":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
-            "try-ssid-end":(gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str,)),
             }
 
     def __init__(self, wifi_device_object_path):
@@ -127,20 +125,21 @@ class NMDeviceWifi(NMDevice):
             wireless_connections = filter(lambda x: x.settings_dict["802-11-wireless"]["ssid"] == ssid_ascii,
                     nm_remote_settings.get_wireless_connections())
 
+        if not wireless_connections:
+            return nm_remote_settings.new_wireless_connection(ssid, None) 
+
         for conn in  wireless_connections:
             try:
                 specific = self.get_ap_by_ssid(ssid)
-                self.emit("try-ssid-begin", ssid)
                 nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
                 if cache.getobject(self.object_path).is_active():
-                    self.emit("try-ssid-end", ssid)
                     break
                 else:
-                    self.emit("try-ssid-end", "@"+ssid)
                     continue
             except:
                 pass
-        else:
+
+        if not cache.getobject(self.object_path).is_active():
             return nm_remote_settings.new_wireless_connection(ssid, None) 
 
     def auto_connect(self):
@@ -154,8 +153,7 @@ class NMDeviceWifi(NMDevice):
         if nm_remote_settings.get_wireless_connections():
             wireless_connections = sorted(nm_remote_settings.get_wireless_connections(),
                                       key = lambda x:secret_agent.get_conn_priority(x.object_path))
-        else:
-            return False
+
         if len(wireless_connections) != 0:
             for conn in wireless_connections:
                 ssid = conn.get_setting("802-11-wireless").ssid
@@ -164,13 +162,10 @@ class NMDeviceWifi(NMDevice):
                 else:
                     try:
                         specific = self.get_ap_by_ssid(ssid)
-                        self.emit("try-ssid-begin", ssid)
                         nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
                         if cache.getobject(self.object_path).is_active():
-                            self.emit("try-ssid-end", ssid)
                             return True
                         else:
-                            self.emit("try-ssid-end", "@"+ssid)
                             continue
                     except:
                         continue

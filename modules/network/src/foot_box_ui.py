@@ -63,10 +63,42 @@ class FootBox(gtk.HBox):
         for widget in widgets:
             parent.pack_start(widget, expand, fill)
 
+    def set_lock(self, state):
+        self.__setting_module.set_lock(state)
+
+    def get_lock(self):
+        return self.__setting_module.get_lock()
+
     def set_button(self, widget, content, state):
+        #print "DEBUG:set button", content, state, self.get_lock()
+
         self.__setting_module.set_button(content, state)
-        self.button_box.set_label(content)
-        self.button_box.set_sensitive(state)
+
+        if self.get_lock():
+            self.button_box.set_label("save")
+            self.button_box.set_sensitive(False)
+        else:
+            if content == "apply":
+                self.button_box.set_label("save")
+                self.button_box.set_sensitive(False)
+            else:
+                
+                self.button_box.set_label("save")
+                self.button_box.set_sensitive(state)
+            
+
+        #if content == "save":
+            #if state and not self.get_lock():
+                #Dispatcher.emit("setting-saved")
+            #else:
+                #self.button_box.set_label(_("connect"))
+                #self.button_box.set_sensitive(False)
+        #else:
+            #self.button_box.set_label(_("connect"))
+            #self.button_box.set_sensitive(True)
+
+    def get_button(self):
+        return self.__setting_module.get_button_state()
 
     def set_setting(self, module):
         self.__setting_module = module
@@ -74,8 +106,9 @@ class FootBox(gtk.HBox):
     def button_click(self, widget):
         if self.button_box.label == "save":
             Dispatcher.emit("setting-saved")
-        elif self.button_box.label == "apply":
-            Dispatcher.emit("setting-appled")
+        #elif self.button_box.label == _("connect"):
+            #Dispatcher.set_tip("setting saved")
+            #Dispatcher.emit("setting-appled")
 
     def set_buttons(self, buttons_list):
         width = 0

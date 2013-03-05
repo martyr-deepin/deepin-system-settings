@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 17:23+0800\n"
+"POT-Creation-Date: 2013-03-05 14:33+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,11 +34,11 @@ msgstr ""
 msgid "Microphone"
 msgstr ""
 
-#: ../src/search_keyword.py:29 ../src/main.py:214
+#: ../src/search_keyword.py:29 ../src/main.py:215
 msgid "Output"
 msgstr ""
 
-#: ../src/search_keyword.py:30 ../src/main.py:215
+#: ../src/search_keyword.py:30 ../src/main.py:214
 msgid "Input"
 msgstr ""
 
@@ -86,7 +86,7 @@ msgstr ""
 msgid "Input Volume"
 msgstr ""
 
-#: ../src/main.py:127 ../src/main.py:617
+#: ../src/main.py:127 ../src/main.py:621
 msgid "Advanced"
 msgstr ""
 
@@ -128,22 +128,32 @@ msgstr ""
 msgid "输入端口设为%s"
 msgstr ""
 
-#: ../src/main.py:759
+#: ../src/main.py:517
 #, python-format
-msgid "%d Outputs"
+msgid "选择输出设备：%s"
 msgstr ""
 
-#: ../src/main.py:761
+#: ../src/main.py:523
 #, python-format
-msgid "%d Output"
+msgid "选择输入设备：%s"
 msgstr ""
 
 #: ../src/main.py:763
 #, python-format
-msgid "%d Inputs"
+msgid "%d Outputs"
 msgstr ""
 
 #: ../src/main.py:765
+#, python-format
+msgid "%d Output"
+msgstr ""
+
+#: ../src/main.py:767
+#, python-format
+msgid "%d Inputs"
+msgstr ""
+
+#: ../src/main.py:769
 #, python-format
 msgid "%d Input"
 msgstr ""

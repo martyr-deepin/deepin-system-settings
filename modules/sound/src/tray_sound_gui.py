@@ -90,7 +90,7 @@ class TrayGui(gtk.VBox):
         #hseparator.set_size_request(150, 3)
         separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
         hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(190, 3)
+        hseparator.set_size_request(140, 3)
         #hbox.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False)), False, False)
         #hbox.pack_start(self.__make_align(hseparator), True, True)
         self.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False)), False, False)
@@ -101,7 +101,7 @@ class TrayGui(gtk.VBox):
         table = gtk.Table(2, 3)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/tray_speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
-        self.speaker_scale.set_size_request(150, 10)
+        self.speaker_scale.set_size_request(100, 10)
         self.speaker_mute_button = OffButton()
         table.attach(self.__make_align(speaker_img), 0, 1, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30), 1, 2, 0, 1, 4)
@@ -109,7 +109,7 @@ class TrayGui(gtk.VBox):
 
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
         self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
-        self.microphone_scale.set_size_request(150, 10)
+        self.microphone_scale.set_size_request(100, 10)
         self.microphone_mute_button = OffButton()
         table.attach(self.__make_align(microphone_img), 0, 1, 1, 2, 4)
         table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30), 1, 2, 1, 2, 4)
@@ -120,13 +120,13 @@ class TrayGui(gtk.VBox):
         self.__app_vbox = gtk.VBox(False)
         separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
         hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(190, 3)
+        hseparator.set_size_request(140, 3)
         self.__app_vbox.pack_start(self.__make_align(Label(_("Applications"), enable_select=False, enable_double_click=False)), False, False)
         self.__app_vbox.pack_start(self.__make_align(hseparator, xalign=0.5, height=7), False, False)
         self.pack_start(self.__app_vbox)
 
         hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(190, 3)
+        hseparator.set_size_request(140, 3)
         self.pack_start(self.__make_align(hseparator, xalign=0.5, height=10), False, False)
 
         self.button_more = SelectButton(_("Advanced..."), font_size=10, ali_padding=5)
@@ -189,7 +189,7 @@ class TrayGui(gtk.VBox):
         else:
             img = gtk.image_new_from_pixbuf(self.stream_icon)
         scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
-        scale.set_size_request(150, 10)
+        scale.set_size_request(100, 10)
         mute_button = OffButton()
         hbox = gtk.HBox()
         hbox.pack_start(self.__make_align(img), False, False)
@@ -415,6 +415,6 @@ class TrayGui(gtk.VBox):
             return self.BASE_HEIGHT + 30 * self.stream_num
 
     def adjust_size(self):
-        self.set_size_request(220, self.get_widget_height())
+        self.set_size_request(200, self.get_widget_height())
 
 gobject.type_register(TrayGui)

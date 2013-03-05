@@ -155,11 +155,11 @@ class SoundSetting(object):
         self.alignment_widgets["microphone_label"] = gtk.Alignment()      # microphone
         self.alignment_widgets["microphone_set"] = gtk.Alignment()
         # adjust init
-        self.adjust_widgets["balance"] = gtk.Adjustment(0, -1.0, 1.0, 0.1, 0.2)
-        self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, 150, 1, 5)
-        self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, 150, 1, 5)
-        # scale init
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
+        self.adjust_widgets["balance"] = gtk.Adjustment(0, -1.0, 1.0, 0.1, 0.2)
+        self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, volume_max_percent, 1, 5)
+        self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, volume_max_percent, 1, 5)
+        # scale init
         self.scale_widgets["balance"] = MyHScalebar(value_min=-1, value_max=1)
         self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
         self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
@@ -211,8 +211,8 @@ class SoundSetting(object):
             FRAME_TOP_PADDING, 0, 0, 0)
 
         self.container_widgets["advance_set_tab_box"].add_items(
-            [(_("Output"), self.alignment_widgets["advance_output_box"]),
-             (_("Input"), self.alignment_widgets["advance_input_box"])])
+            [(_("Input"), self.alignment_widgets["advance_input_box"]),
+             (_("Output"), self.alignment_widgets["advance_output_box"])])
              #(_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
         ###########################
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)    # the spacing between left and right
@@ -514,11 +514,13 @@ class SoundSetting(object):
         if item.device_index == pypulse.get_fallback_sink_index():
             return
         pypulse.PULSE.set_fallback_sink(item.device_name)
+        self.set_status_text(_("选择输出设备：%s") % item.content)
 
     def input_treeview_clicked(self, tree_view, item, row, *args):
         if item.device_index == pypulse.get_fallback_source_index():
             return
         pypulse.PULSE.set_fallback_source(item.device_name)
+        self.set_status_text(_("选择输入设备：%s") % item.content)
 
     def card_treeview_clicked(self, tree_view, item, row, *args):
         print "treeview clicked", item.device_name, item.device_index, item.content, row

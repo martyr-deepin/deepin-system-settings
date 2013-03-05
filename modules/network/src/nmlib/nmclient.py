@@ -78,7 +78,10 @@ class NMClient(NMObject):
             return []
 
     def get_wired_device(self):
-        return self.get_wired_devices()[0]
+        try:
+            return self.get_wired_devices()[0]
+        except:
+            return None
 
     def get_wireless_devices(self):
         self.devices = self.get_devices()
@@ -88,7 +91,10 @@ class NMClient(NMObject):
             return []
 
     def get_wireless_device(self):
-        return self.get_wireless_devices()[0]
+        try:
+            return self.get_wireless_devices()[0]
+        except:
+            return None
 
     def get_modem_devices(self):
         self.devices = self.get_devices()
@@ -98,7 +104,10 @@ class NMClient(NMObject):
             return []
 
     def get_modem_device(self):
-        return self.get_modem_devices()[0]
+        try:
+            return self.get_modem_devices()[0]
+        except:
+            return None
 
     def get_device_by_iface(self, iface):
         device = self.dbus_method("GetDeviceByIpIface", iface)
@@ -308,13 +317,11 @@ class NMClient(NMObject):
 
     ###Signals ###
     def device_added_cb(self, device_object_path):
-        # self.devices = self.get_devices()
         cache.clearcache()
         cache.clear_spec_cache()
         self.emit("device-added", device_object_path)
 
     def device_removed_cb(self, device_object_path):
-        # self.devices = self.get_devices()
         cache.clearcache()
         cache.clear_spec_cache()
         self.emit("device-removed", device_object_path)
@@ -327,9 +334,6 @@ class NMClient(NMObject):
     
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
-
-# nmclient = NMClient()
-
 
 if __name__ == "__main__":
     from nmobject import dbus_loop

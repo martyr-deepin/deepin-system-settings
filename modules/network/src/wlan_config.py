@@ -39,11 +39,13 @@ from helper import Dispatcher
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
-        fn('save', True)
+        Dispatcher.set_button('save', True)
         print "pass"
+        print connection.get_setting("802-11-wireless-security").prop_dict
     else:
-        fn("save", False)
-        print "not pass"
+        Dispatcher.set_button("save", False)
+        print "not pass, ==================>"
+        print connection.get_setting("802-11-wireless-security").prop_dict
 
 class WirelessSetting(Settings):
 
@@ -68,20 +70,34 @@ class WirelessSetting(Settings):
     
     def add_new_connection(self):
         return (nm_module.nm_remote_settings.new_wireless_connection(self.ap.get_ssid()), -1)
+    
+    #def save_changes(self, connection):
+        #Dispatcher.set_button("apply", True)
 
     def save_changes(self, connection):
+        print "save changes"
         if connection.check_setting_finish():
             if isinstance(connection, NMRemoteConnection):
+                #print "in update this setting ", connection.settings_dict
                 connection.update()
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 Dispatcher.emit("connection-replace", connection)
                 # reset index
-            Dispatcher.set_button("apply", True)
+            #Dispatcher.set_button("apply", True)
+            Dispatcher.to_main_page()
         else:
             print "not complete"
-
+        #self.setting_group.set_button(connection)
     def apply_changes(self, connection):
+        #self._save_changes(connection)
+        #if connection.check_setting_finish():
+            #if isinstance(connection, NMRemoteConnection):
+                #connection.update()
+            #else:
+                #connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                #Dispatcher.emit("connection-replace", connection)
+
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         ssid = connection.get_setting("802-11-wireless").ssid
@@ -99,7 +115,6 @@ class WirelessSetting(Settings):
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                        wireless_device.object_path,
                                        ap.object_path)
-        Dispatcher.to_main_page()
 
 class NoSetting(gtk.VBox):
     def __init__(self):
@@ -289,6 +304,7 @@ class Security(gtk.VBox):
     def save_wpa_pwd(self, widget, content):
         if self.setting.verify_wpa_psk(content):
             self.setting.psk = content
+            print "in save wpa pwd", self.setting.prop_dict
             check_settings(self.connection, self.set_button)
         else:
             Dispatcher.set_button("save", False)
@@ -300,7 +316,6 @@ class Security(gtk.VBox):
         if self.setting.verify_wep_key(content, wep_type):
             self.setting.set_wep_key(active, content)
             check_settings(self.connection, self.set_button)
-            print "wep_valid"
         else:
             Dispatcher.set_button("save", False)
             print "invalid"
@@ -320,9 +335,12 @@ class Security(gtk.VBox):
 
     def wep_index_spin_cb(self, widget, value):
         if isinstance(self.connection, NMRemoteConnection):
-            key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
-                                                       "802-11-wireless-security",
-                                                       "wep-key%d"%value)
+            try:
+                key = self.setting.get_wep_key(value)
+            except:
+                key = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
+                                                           "802-11-wireless-security",
+                                                           "wep-key%d"%value)
         else:
             key = self.setting.get_wep_key(value)
 

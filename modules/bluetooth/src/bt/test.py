@@ -125,6 +125,34 @@ def test_found_pair():
     mainloop = gobject.MainLoop()
     mainloop.run()
 
+def test_passive():
+
+    def on_device_found(adapter, address, values):
+        print "on device found"
+        print "adapter",  adapter
+        print "address", address
+        print "values", values
+
+    def on_device_created(adapter, dev_path):
+        print "on device created"
+        print "adapter" ,adapter
+        print "dev_path", dev_path
+
+    from manager import Manager
+    from adapter import Adapter
+
+    manager = Manager()
+    adapter = Adapter(manager.get_default_adapter())
+    adapter.set_powered(True)
+    adapter.set_discoverable(True)
+    adapter.set_pairable(True)
+    # print "adapter properties:\n %s" % adapter.get_properties()
+    adapter.connect("device-found", on_device_found)
+    adapter.connect("device-created", on_device_created)
+
+    mainloop = gobject.MainLoop()
+    mainloop.run()
+
 def test_service():
     '''should had paired first'''
     def device_discover_services(device):
@@ -275,7 +303,8 @@ def test_phone():
 
 if __name__ == "__main__":
     # test_adapter_prop()
-    test_found_pair()
+    #test_found_pair()
     # test_service()
-    test_phone()
+    #test_phone()
+    test_passive()
     pass
