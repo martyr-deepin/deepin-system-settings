@@ -163,7 +163,8 @@ class TrayUI(gtk.VBox):
     def move_active(self, index):
         if index != [] and self.__ap_list:
             for i in index:
-                if i <= len(self.ap_tree.visible_items):
+                print i
+                if i < len(self.ap_tree.visible_items):
                     self.ap_tree.delete_item_by_index(i)
                     self.ap_tree.add_items([SsidItem(self.__ap_list[i])],
                                             insert_pos=0)
@@ -175,12 +176,6 @@ class TrayUI(gtk.VBox):
 
 
     def set_active_ap(self, index, state):
-        #if self.active_ap_index:
-            #if index == self.active_ap_index:
-                #print "same"
-                #return
-            #self.ap_tree.visible_items[self.active_ap_index].set_active(False)
-            #self.active_ap_index = index
         self.active_ap_index = index
         self.set_ap(self.__ap_list)
 
@@ -328,7 +323,7 @@ class SsidItem(TreeItem):
                 alignment = pango.ALIGN_LEFT, text_color = text_color)
 
 
-        if self.is_select:
+        if self.is_hover:
             with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*BORDER_COLOR)
                 cr.set_line_width(1)
@@ -356,7 +351,7 @@ class SsidItem(TreeItem):
             signal_icon = self.strength_0
         
         draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x, rect.y + (rect.height - IMG_WIDTH)/2)
-        if self.is_select:
+        if self.is_hover:
             with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*BORDER_COLOR)
                 cr.set_line_width(1)
@@ -378,6 +373,15 @@ class SsidItem(TreeItem):
         self.is_select = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+    
+    def hover(self, column, offset_x, offset_y):
+        self.is_hover = True
+
+        self.redraw()
+
+    def unhover(self, column, offset_x, offset_y):
+        self.is_hover = False
+        self.redraw()
 
     def unselect(self):
         self.is_select = False
@@ -388,13 +392,11 @@ class SsidItem(TreeItem):
         self.is_double_click = True
 
     def single_click(self, column, offset_x, offset_y):
-        if self.is_double_click:
-            print "double click"
-            Dispatcher.connect_by_ssid(self.ssid, self.ap)
-            self.is_double_click = False
-            
-
-        self.redraw()
+        #if self.is_double_click:
+            #print "double click"
+        Dispatcher.connect_by_ssid(self.ssid, self.ap)
+            #self.is_double_click = False
+        #self.redraw()
     
     def redraw(self):
         if self.redraw_request_callback:
@@ -405,7 +407,7 @@ class SsidItem(TreeItem):
         self.redraw()
 
     def render_background(self, cr, rect):
-        if self.is_select:
+        if self.is_hover:
             cr.set_source_rgb(*BG_COLOR)
         else:
             cr.set_source_rgb(1, 1, 1 )

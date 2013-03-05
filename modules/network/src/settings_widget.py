@@ -145,8 +145,8 @@ class EntryTreeView(TreeView):
     def double_click(self, widget, item, column):
         if not item.is_select:
             return
-        if not item.clicked:
-            return
+        #if not item.clicked:
+            #return
 
         if not column in item.ENTRY_COLUMN:
             return
@@ -203,10 +203,10 @@ class EntryTreeView(TreeView):
                 if release_row is not None:
                     if self.double_click_row == release_row:
                         self.visible_items[release_row].double_click(release_column, offset_x, offset_y)
-                        #self.emit("double-click", self.visible_items[release_row], release_column)
+                        self.emit("double-click", self.visible_items[release_row], release_column)
                     elif self.single_click_row == release_row:
                         self.visible_items[release_row].single_click(release_column, offset_x, offset_y)
-                        self.emit("double-click", self.visible_items[release_row], release_column)
+                        #self.emit("double-click", self.visible_items[release_row], release_column)
                 
                 if self.start_drag and self.is_in_visible_area(event):
                     self.drag_select_items_at_cursor()
@@ -358,11 +358,6 @@ class AddSettingItem(TreeItem):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
             draw_line(cr, rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height)
-        #with cairo_disable_antialias(cr):
-            #cr.set_source_rgb(*BORDER_COLOR)
-            #cr.set_line_width(1)
-            #cr.rectangle(rect.x , rect.y , rect.width , rect.height)
-            #cr.stroke()
 
     def render_background(self,  cr, rect):
         if self.is_select:
@@ -377,16 +372,6 @@ class AddSettingItem(TreeItem):
                 cr.set_source_rgb(*color_hex_to_cairo(background_color))
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
-    #def render_background(self,  cr, rect):
-        #if self.is_hover:
-            #background_color = [(0,["#cce3ef", 1.0]),
-                            #(1,["#cce3ef", 1.0])]
-        #else:
-            #background_color = [(0,["#f6f6f6", 1.0]),
-                                #(1,["#f6f6f6", 1.0])]
-
-        #draw_hlinear(cr, rect.x  , rect.y, rect.width , rect.height, background_color)
-
 
     def hover(self, column, offset_x, offset_y):
         self.is_hover = True
