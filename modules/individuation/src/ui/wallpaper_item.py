@@ -624,7 +624,8 @@ class CacheItem(gobject.GObject, MissionThread):
                                                                                 
         self.is_loop = False
         self.emit_redraw_request()
-        event_manager.emit("add-wallpapers", [cache_manager.get_image(self.image_object, try_web=True)])
+        event_manager.emit("add-wallpapers", [self.image_object.get_save_path()])
+        event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
     def create_cache_pixbuf(self):    
         self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)

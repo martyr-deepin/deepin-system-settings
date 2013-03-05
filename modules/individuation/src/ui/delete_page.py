@@ -77,7 +77,12 @@ class DeletePage(TabBox):
         event_manager.emit("back-to-detailpage", self.theme)
 
     def __on_select_all(self, widget):
-        self.wallpaper_view.select_all(True)
+        if self.wallpaper_view.is_select_all():
+            self.wallpaper_view.select_all(True)
+            self.select_all_button.set_label(_("UnSelect All"))
+        else:
+            self.wallpaper_view.select_all(False)
+            self.select_all_button.set_label(_("Select All"))
 
     def __on_delete(self, widget):
         if self.wallpaper_view.is_deletable():
@@ -108,6 +113,7 @@ class DeletePage(TabBox):
         
         self.wallpaper_view.set_theme(theme, True)
         self.wallpaper_view.select_all(False)
+        self.select_all_button.set_label(_("Select All"))
         
     def draw_mask(self, cr, x, y, w, h):
         '''

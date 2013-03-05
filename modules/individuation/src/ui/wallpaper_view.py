@@ -44,6 +44,7 @@ class WallpaperView(IconView):
         event_manager.add_callback("wallpapers-deleted", self.on_wallpapers_deleted)
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
+        event_manager.add_callback("apply-download-wallpaper", self.on_download_wallpaper_apply)
         self.theme = None
 
     def set_theme(self, theme, is_delete=False):    
@@ -126,6 +127,11 @@ class WallpaperView(IconView):
                 image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
                 self.apply_wallpapers(image_uris)
 
+    def on_download_wallpaper_apply(self, name, obj, image_path):
+        image_uris = ["file://%s" % image_path]
+        self.apply_wallpapers(image_uris)
+        self.items[-2].tick()
+    
     def on_wallpaper_apply(self, name, obj, apply_item):
         [ item.untick() for item in self.items if item != apply_item]
         image_uris = ["file://%s" % apply_item.image_path]
