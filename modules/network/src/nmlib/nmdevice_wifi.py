@@ -125,6 +125,9 @@ class NMDeviceWifi(NMDevice):
             wireless_connections = filter(lambda x: x.settings_dict["802-11-wireless"]["ssid"] == ssid_ascii,
                     nm_remote_settings.get_wireless_connections())
 
+        if not wireless_connections:
+            return nm_remote_settings.new_wireless_connection(ssid, None) 
+
         for conn in  wireless_connections:
             try:
                 specific = self.get_ap_by_ssid(ssid)
