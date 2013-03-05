@@ -401,4 +401,8 @@ if __name__ == "__main__":
     for ap in wifi.get_access_points():
         if ap.get_ssid() == "daydayup" or ap.get_ssid() == "DeepinWork":
             print ap.get_ssid()
+            print ap.object_path
             print "security", ap.get_security_method()
+
+    from nmdevice import NMDevice
+    print NMDevice(wifi.object_path).get_active_connection().get_specific_object()

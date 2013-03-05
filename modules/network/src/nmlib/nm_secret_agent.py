@@ -149,9 +149,15 @@ class NMSecretAgent(NMObject):
         service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
                                              setting_name, method)
         username = getpass.getuser()
+        print "agent_save_secrets"
         if setting_name == "vpn":
             password = cache.getobject(conn_path).settings_dict[setting_name]["secrets"][method]
         else:    
+            print conn_path
+            print setting_name
+            print method
+            print "\n\n\n"
+            print cache.getobject(conn_path).settings_dict
             password = cache.getobject(conn_path).settings_dict[setting_name][method]
         try:
             keyring.set_password(service, username, password)
@@ -169,11 +175,6 @@ class NMSecretAgent(NMObject):
             traceback.print_exc()
 
 secret_agent = NMSecretAgent()
-
-# def refresh_nm_secret_agent():
-#     global secret_agent
-#     secret_agent = NMSecretAgent()
-#     return secret_agent
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)  

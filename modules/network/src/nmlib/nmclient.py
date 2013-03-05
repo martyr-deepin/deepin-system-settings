@@ -317,13 +317,11 @@ class NMClient(NMObject):
 
     ###Signals ###
     def device_added_cb(self, device_object_path):
-        # self.devices = self.get_devices()
         cache.clearcache()
         cache.clear_spec_cache()
         self.emit("device-added", device_object_path)
 
     def device_removed_cb(self, device_object_path):
-        # self.devices = self.get_devices()
         cache.clearcache()
         cache.clear_spec_cache()
         self.emit("device-removed", device_object_path)
@@ -336,9 +334,6 @@ class NMClient(NMObject):
     
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
-
-# nmclient = NMClient()
-
 
 if __name__ == "__main__":
     from nmobject import dbus_loop
