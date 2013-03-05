@@ -23,6 +23,7 @@
 import gtk
 import dbus
 from nls import _
+from tray_power_gui import PowerGui
 from deepin_utils.process import run_command
 from vtk.timer import Timer
 try:
@@ -44,13 +45,16 @@ ORG_UPOWER_DEVICE = "org.freedesktop.Upower.Device"
 
 class TrayPower(object):
     def __init__(self):
+        self.gui = PowerGui()
+        self.gui.click_btn.connect("clicked", self.click_btn_clicked_event)
+        #
         self.__init_dbus_inter()
-        self.timer = Timer(100)
-        self.timer.connect("Tick", self.timer_double_tick_event)
-        self.double_check = False
-        self.timer_check = False
         self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.power_set.connect("changed", self.power_set_changed)
+
+    def click_btn_clicked_event(self, widget):
+        self.this.hide_menu()
+        run_command(RUN_COMMAND) 
 
     def __init_dbus_inter(self):
         session_bus = dbus.SystemBus()
@@ -105,32 +109,17 @@ class TrayPower(object):
         # visible icon pixbuf.
         xrandr_settings = deepin_gsettings.new(XRANDR_SETTINGS_GSET)
         visible_check = xrandr_settings.get_boolean("is-laptop")
-        self.tray_icon.set_visible(visible_check)
+        #self.tray_icon.set_visible(visible_check)
+        self.visible_power_tray()
         if visible_check:
             # get power value.
             percentage = self.power_set.get_double("percentage")
             self.update_power_icon(percentage)
-            self.visible_power_tray()
             self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
             self.modify_battery_icon(self.online_value, percentage)
             # init tray_icon events.
-            self.tray_icon.connect("button-press-event", self.tray_icon_button_press_event)
-
-    def tray_icon_button_press_event(self, widget, event):
-        if event.button == 1:
-            if not self.timer_check:
-                self.timer_check = True
-            # run command.
-            if self.double_check and self.timer.Enabled and self.timer_check:
-                run_command(RUN_COMMAND)
-            #
-            self.double_check = True
-            self.timer.Enabled = True
-
-    def timer_double_tick_event(self, tick):
-        self.double_check = False
-        self.timer_check = False
-        tick.Enabled = False
+        else:
+            self.tray_icon.set_icon_theme("computer_d")
 
     def id(slef):
         return "deepin-tray-power-hailongqiu"
@@ -142,13 +131,14 @@ class TrayPower(object):
         return 3
 
     def plugin_widget(self):
-        return None
+        return self.gui
 
     def show_menu(self):
-        pass
+        self.this.set_size_request(175, 172)
 
     def hide_menu(self):
         pass
 
 def return_plugin():
     return TrayPower
+
