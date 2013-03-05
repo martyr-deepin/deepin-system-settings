@@ -31,6 +31,7 @@ from helper import event_manager
 from theme_manager import theme_manager
 from nls import _
 from common import threaded
+from constant import CONTENT_FONT_SIZE
 
 class UserThemeView(IconView):
 
@@ -103,7 +104,8 @@ class UserThemeView(IconView):
                             100, 
                             lambda : self.delete_theme(item), 
                             None, 
-                            True)
+                            True, 
+                            CONTENT_FONT_SIZE)
         dlg.show_all()
 
     def __on_right_click_item(self, widget, item, x, y):

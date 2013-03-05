@@ -35,6 +35,7 @@ from monitor import LibraryMonitor
 from xdg_support import get_images_dir
 import common
 from nls import _
+from constant import CONTENT_FONT_SIZE
 
 class SelectView(IconView):
     SHOW_ITEM_COUNT = 16
@@ -311,7 +312,8 @@ class UserPage(gtk.VBox):
                             100,                                                
                             lambda : self.select_view.delete(),                   
                             None,                                               
-                            True)                                               
+                            True, 
+                            CONTENT_FONT_SIZE)                                               
         dlg.show_all()
 
     def on_add_wallpapers(self, widget):    
