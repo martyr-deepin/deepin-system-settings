@@ -31,7 +31,7 @@ from shared_methods import NetManager
 from widgets import AskPasswordDialog
 from nmlib.nm_remote_connection import NMRemoteConnection
 
-from nm_modules import cache
+from nm_modules import nm_module, cache
 
 #from lan_config import WiredSetting, NoSetting
 #from wlan_config import WirelessSetting
