@@ -35,7 +35,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
 from container import Contain
-from lists import WiredItem, WirelessItem, GeneralItem, HidenItem
+from lists import WiredItem, WirelessItem, GeneralItem, HidenItem, InfoItem
 
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
@@ -354,12 +354,13 @@ class WirelessSection(gtk.VBox):
 
         items = [WirelessItem(i) for i in self.ap_list]
         # Comment for modify
-        items.append(GeneralItem(_("connect to hidden network"),
-                                 self.ap_list,
-                                 self.settings,
-                                 lambda :slider.slide_to_page(self.settings, "right"),
-                                 self.send_to_crumb_cb,
-                                 check_state=0))
+        items.append(InfoItem(_("connect to hidden network")))
+        #items.append(GeneralItem(_("connect to hidden network"),
+                                 #self.ap_list,
+                                 #self.settings,
+                                 #lambda :slider.slide_to_page(self.settings, "right"),
+                                 #self.send_to_crumb_cb,
+                                 #check_state=0))
         return items
 
     def get_hiden_list(self):

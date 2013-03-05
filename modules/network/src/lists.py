@@ -31,6 +31,8 @@ from shared_methods import NetManager
 from widgets import AskPasswordDialog
 from nmlib.nm_remote_connection import NMRemoteConnection
 
+from nm_modules import cache
+
 #from lan_config import WiredSetting, NoSetting
 #from wlan_config import WirelessSetting
 #from wired import *
@@ -60,6 +62,8 @@ net_manager = NetManager()
 class GenItems(TreeItem):
     H_PADDING = 10
     V_PADDING = 5
+    CHECK_WIDTH = IMG_WIDTH + 20
+    JUMP_WIDTH = IMG_WIDTH + 10
 
     NETWORK_DISCONNECT = 0
     NETWORK_LOADING = 1
@@ -72,6 +76,7 @@ class GenItems(TreeItem):
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
+        self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
 
         self.border_color = border_normal_color
         self.bg_color = bg_normal_color
@@ -95,11 +100,33 @@ class GenItems(TreeItem):
             cr.rectangle(rect.x, rect.y, 1, rect.height)
             cr.fill()
 
+    def render_jumpto(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.jumpto_pixbuf.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
+            cr.fill()
+
     def render_background(self, cr, rect):
         x, y, w, h = rect
         cr.set_source_rgb(*color_hex_to_cairo(self.bg_color))
         cr.rectangle(x, y, w, h)
         cr.fill()
+
+    def render_blank(self, cr, rect):
+        self.render_background(cr, rect)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
 
     def hover(self, column, offset_x, offset_y):
         #self.is_hover = True
@@ -179,26 +206,22 @@ class WiredItem(GenItems):
             cr.rectangle(rect.x, rect.y, rect.width, 1)
             cr.fill()
 
-    def render_jumpto(self, cr, rect):
-        self.render_background(cr, rect)
-        draw_pixbuf(cr, self.jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
-            cr.fill()
-
     def get_column_widths(self):
         return [IMG_WIDTH + 20, -1, IMG_WIDTH + 10]
 
     def get_column_renders(self):
         return [self.render_check, self.render_device, self.render_jumpto]
+    
+    def single_click(self, column, x, y):
+        if column == 2:
+            from lan_config import WiredSetting
+            Dispatcher.to_setting_page(WiredSetting(self.device))
+        else:
+            device_ethernet = cache.get_spec_object(self.device.object_path)
+            device_ethernet.auto_connect()
+        self.redraw()
 
 class WirelessItem(GenItems):
-
     def  __init__(self,
                   ap,
                   font_size = DEFAULT_FONT_SIZE):
@@ -213,16 +236,11 @@ class WirelessItem(GenItems):
         '''
         Pixbufs
         '''
-        self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
-        self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
-        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
-
         self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
         self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
         self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
         self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
         self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
-        self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
 
     def render_ssid(self, cr, rect):
         self.render_background(cr,rect)
@@ -262,21 +280,6 @@ class WirelessItem(GenItems):
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
             cr.rectangle(rect.x, rect.y, rect.width, 1)
             cr.fill()
-    
-    def render_jumpto(self, cr, rect):
-        self.render_background(cr,rect)
-        if self.is_select:
-            pass
-        jumpto_icon = self.jumpto_pixbuf
-        draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height-IMG_WIDTH)/2)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
-            cr.fill()
 
     def get_column_widths(self):
         return [IMG_WIDTH + 20, -1, IMG_WIDTH*2 + 5 + 20, IMG_WIDTH + 10]
@@ -314,8 +317,6 @@ class WirelessItem(GenItems):
 
     def cancel_ask_pwd(self):
         pass
-        #self.timer.Enabled = False
-        #self.timer.Interval = WAIT_TIME
 
     def pwd_changed(self, pwd, connection):
         if not isinstance(connection, NMRemoteConnection):
@@ -329,42 +330,40 @@ class WirelessItem(GenItems):
         else:
             net_manager.save_and_connect(pwd, connection, None)
 
+class InfoItem(GenItems):
+    def __init__(self, content):
+        GenItems.__init__(self)
+        self.content = content
 
-"""
-class WirelessItem(TreeItem):
+    def render_content(self, cr, rect):
+        self.render_background(cr, rect)
+        if self.network_state == self.NETWORK_CONNECTED:
+            text_color = "#3da1f7"
+        else:
+            text_color = "#000000"
+        (text_width, text_height) = get_content_size(self.content)
+        draw_text(cr, self.content, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT, text_color = text_color)
 
-    CHECK_LEFT_PADDING = 10
-    CHECK_RIGHT_PADIING = 10
-    SECURITY_RIGHT_PADDING = 5
-    SIGNAL_LEFT_PADDING = 5
-    SIGNAL_RIGHT_PADDING = 20
-    JUMPTO_RIGHT_PADDING = 10
-    VERTICAL_PADDING = 5
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
 
-    NETWORK_DISCONNECT = 0
-    NETWORK_LOADING = 1
-    NETWORK_CONNECTED = 2
+    def get_column_renders(self):
+        return [self.render_check, self.render_content, self.render_blank
+        ,self.render_jumpto]
 
-"""
-class HidenItem(TreeItem):
+    def get_column_widths(self):
+        return [self.CHECK_WIDTH, -1, -1, self.JUMP_WIDTH]
 
-    CHECK_LEFT_PADDING = 10
-    CHECK_RIGHT_PADIING = 10
-    SECURITY_RIGHT_PADDING = 5
-    SIGNAL_LEFT_PADDING = 5
-    SIGNAL_RIGHT_PADDING = 20
-    JUMPTO_RIGHT_PADDING = 10
-    VERTICAL_PADDING = 5
-
-    NETWORK_DISCONNECT = 0
-    NETWORK_LOADING = 1
-    NETWORK_CONNECTED = 2
+class HidenItem(GenItems):
 
     def __init__(self,
                  connection,
-                 setting_object = None, 
-                 slide_to_setting_cb = None, 
-                 send_to_crumb = None,
                  font_size = DEFAULT_FONT_SIZE):
 
         TreeItem.__init__(self)
@@ -372,9 +371,7 @@ class HidenItem(TreeItem):
         self.connection = connection
         self.slide_to_setting = slide_to_setting_cb
         self.essid = connection.get_setting("802-11-wireless").ssid
-        self.send_to_crumb = send_to_crumb
-        #self.strength = connection.get_strength()
-        #self.security = int(connection.get_flags())
+
         self.font_size = font_size
         self.is_last = False
         self.check_width = self.get_check_width()
@@ -444,24 +441,6 @@ class HidenItem(TreeItem):
 
     def render_signal(self, cr, rect):
         render_background(cr,rect)
-        #if self.is_select:
-            #pass
-
-        ## FIXME need to detect encry or not
-        #if self.security:
-            #lock_icon = self.lock_pixbuf
-            #draw_pixbuf(cr, lock_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
-
-        #if self.strength > 80:
-            #signal_icon = self.strength_3
-        #elif self.strength > 60:
-            #signal_icon = self.strength_2
-        #elif self.strength > 30:
-            #signal_icon = self.strength_1
-        #else:
-            #signal_icon = self.strength_0
-        
-        #draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH + self.SECURITY_RIGHT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)

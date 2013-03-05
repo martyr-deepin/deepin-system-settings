@@ -322,7 +322,6 @@ class SsidItem(TreeItem):
         draw_text(cr, self.ssid, rect.x + ALIGN_SPACING , rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT, text_color = text_color)
 
-
         if self.is_hover:
             with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*BORDER_COLOR)
