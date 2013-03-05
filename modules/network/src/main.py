@@ -313,12 +313,10 @@ class WirelessSection(gtk.VBox):
                 pass
             elif index[0] == -2:
                 # add hiden network
-                self.tree.add_items([HidenItem(index[1],
-                                     self.settings,
-                                     lambda :slider.slide_to_page(self.settings, "right"),
-                                     self.send_to_crumb_cb,
-                                     check_state=2)
-                                     ])
+                pass
+                #self.tree.add_items([HidenItem(index[1],
+                                     #check_state=2)
+                                     #])
             else:
                 for i in index:
                     self.tree.visible_items[i].network_state = 2

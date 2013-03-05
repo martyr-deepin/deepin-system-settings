@@ -372,16 +372,16 @@ class InfoItem(GenItems):
         return [self.CHECK_WIDTH, -1, 1, self.JUMP_WIDTH]
 
 
-class HidenItem(GenItems):
+class HidenItem(TreeItem):
+
 
     def __init__(self,
                  connection,
-                 font_size = DEFAULT_FONT_SIZE):
+                 font_size = DEFAULT_FONT_SIZE,
+                 check_state = 0):
 
         TreeItem.__init__(self)
-        self.setting_object = setting_object
         self.connection = connection
-        self.slide_to_setting = slide_to_setting_cb
         self.essid = connection.get_setting("802-11-wireless").ssid
 
         self.font_size = font_size
