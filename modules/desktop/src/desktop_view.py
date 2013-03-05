@@ -128,7 +128,7 @@ class DesktopView(gtk.VBox):
         self.icon_size_label = self.__setup_label(_("Icon Size"))
         self.icon_size_combo = self.__setup_combo(self.icon_size_items)
         self.icon_size_combo.set_select_index(0)
-        if self.dock_settings.get_boolean("mini-model"):
+        if self.dock_settings.get_boolean("active-mini-mode"):
             self.icon_size_combo.set_select_index(1)
         self.icon_size_combo.connect("item-selected", self.__combo_item_selected, "icon_size")
         self.__widget_pack_start(self.icon_size_box, 
@@ -329,8 +329,8 @@ class DesktopView(gtk.VBox):
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "icon_size":
             if item_value == 0:
-                self.dock_settings.set_boolean("mini-model", False)
+                self.dock_settings.set_boolean("active-mini-mode", False)
             else:
-                self.dock_settings.set_boolean("mini-model", True)
+                self.dock_settings.set_boolean("active-mini-mode", True)
 
 gobject.type_register(DesktopView)        
