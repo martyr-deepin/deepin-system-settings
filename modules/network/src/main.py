@@ -35,7 +35,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
 from container import Contain
-from lists import WiredItem, WirelessItem, GeneralItem, HidenItem
+from lists import WiredItem, WirelessItem, GeneralItem, HidenItem, InfoItem
 
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
@@ -140,7 +140,7 @@ class WiredSection(gtk.VBox):
                 if not device.is_active():
                     device_ethernet = cache.get_spec_object(device.object_path)
                     device_ethernet.auto_connect()
-                    device_ethernet.emit("try-activate-begin")
+                    #device_ethernet.emit("try-activate-begin")
                 else:
                     self.tree.visible_items[index].network_state = 2
 
@@ -244,6 +244,14 @@ class WirelessSection(gtk.VBox):
             self.device_is_deactive(reason)
             if reason == 39:
                 pass
+
+            if old_state == 120:
+                connections = nm_module.nmclient.get_active_connections()
+                active_connection = connections[-1]
+                self.this_connection = active_connection.get_connection()
+                self.this_device.nm_device_disconnect()
+                self.toggle_dialog(self.this_connection)
+
         elif new_state is 40:
             ssid = self._get_active_ssid(device)
             if ssid:
@@ -267,7 +275,7 @@ class WirelessSection(gtk.VBox):
                 else:
                     self.wireless.set_active(False)
     
-    def show_ap_list(self):
+    def __show_aps(self):
         item_list = self.retrieve_list()
         if item_list:
             self.tree.add_items(item_list,0,True)
@@ -278,6 +286,23 @@ class WirelessSection(gtk.VBox):
             self.tree.delete_all_items()
         self.queue_draw()
         self.show_all()
+            
+            
+
+    
+    def show_ap_list(self):
+        self.__show_aps()
+        #item_list = self.retrieve_list()
+        #if item_list:
+            #self.tree.add_items(item_list,0,true)
+            #self.tree.visible_items[-1].is_last = true
+            #self.vbox.set_no_show_all(false)
+            #self.tree.set_size_request(-1,len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
+        #else:
+            #self.tree.delete_all_items()
+        #self.queue_draw()
+        #self.show_all()
+        
 
         #for wireless_device in self.wireless_devices:
             #WirelessDevice(wireless_device, self.tree, self.ap_list,self.ap_added, self.hotspot)
@@ -288,16 +313,16 @@ class WirelessSection(gtk.VBox):
                 pass
             elif index[0] == -2:
                 # add hiden network
-                self.tree.add_items([HidenItem(index[1],
-                                     self.settings,
-                                     lambda :slider.slide_to_page(self.settings, "right"),
-                                     self.send_to_crumb_cb,
-                                     check_state=2)
-                                     ])
+                pass
+                #self.tree.add_items([HidenItem(index[1],
+                                     #check_state=2)
+                                     #])
             else:
                 for i in index:
                     self.tree.visible_items[i].network_state = 2
         else:
+            if self.wireless_devices[0].get_state() !=30:
+                return
             for wireless_device in self.wireless_devices:
                 device_wifi = cache.get_spec_object(wireless_device.object_path)
                 device_wifi.auto_connect()
@@ -325,17 +350,15 @@ class WirelessSection(gtk.VBox):
             device_wifi = cache.get_spec_object(wireless_device.object_path)
             self.ap_list += device_wifi.order_ap_list()
 
-        items = [WirelessItem(i,
-                              self.settings,
-                              lambda : slider.slide_to_page(self.settings, "right"),
-                              self.send_to_crumb_cb) for i in self.ap_list]
+        items = [WirelessItem(i) for i in self.ap_list]
         # Comment for modify
-        items.append(GeneralItem(_("connect to hidden network"),
-                                 self.ap_list,
-                                 self.settings,
-                                 lambda :slider.slide_to_page(self.settings, "right"),
-                                 self.send_to_crumb_cb,
-                                 check_state=0))
+        items.append(InfoItem(_("connect to hidden network")))
+        #items.append(GeneralItem(_("connect to hidden network"),
+                                 #self.ap_list,
+                                 #self.settings,
+                                 #lambda :slider.slide_to_page(self.settings, "right"),
+                                 #self.send_to_crumb_cb,
+                                 #check_state=0))
         return items
 
     def get_hiden_list(self):
@@ -354,7 +377,7 @@ class WirelessSection(gtk.VBox):
                 try:
                     index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
                 except ValueError:
-                    if check_connection_mode(active_connection.get_connection()):
+                    if self.check_connection_mode(active_connection.get_connection()):
                         return [-1]
                     else:
                         return [-2, active_connection.get_connection()]
@@ -369,6 +392,7 @@ class WirelessSection(gtk.VBox):
 
     def try_to_connect(self, ssid):
         print "try_to_connect"
+        self.wireless.set_active(True)
         if hasattr(self, "ap_list"):
             ap_list  = [ap.get_ssid() for ap in self.ap_list]
             try:
@@ -397,8 +421,11 @@ class WirelessSection(gtk.VBox):
 
     def device_is_deactive(self, reason):
         print "wireless deactive", self.index
-        
-        if not reason == 0:
+        if not self.wireless.get_active():
+            return 
+        if reason == 39:
+            self.wireless.set_active(False)
+        else:
             try:
                 if self.tree.visible_items != []:
                     self.tree.visible_items[self.index].set_net_state(0)
@@ -723,15 +750,19 @@ class Mobile(gtk.VBox):
         manufacturer = device.get_manufacturer()
         model = device.get_model()
         info = model + " " + manufacturer
-        item = GeneralItem(info,
-                           None,
-                           self.settings,
-                           lambda :slider.slide_to_page(self.settings, "right"),
-                           self.send_to_crumb_cb)
+        item = InfoItem(info, self.jumpto_cb,is_last=True)
+        #item = GeneralItem(info,
+                           #None,
+                           #self.settings,
+                           #lambda :slider.slide_to_page(self.settings, "right"),
+                           #self.send_to_crumb_cb)
         self.tree = TreeView([item])
         self.tree.set_size_request(758, len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
         self.tree.show_all()
         self.align.add(self.tree)
+
+    def jumpto_cb(self):
+        Dispatcher.to_setting_page(MobileSetting(None))
 
     def device_is_active(self, widget, a):
         print a, "active"
@@ -742,9 +773,6 @@ class Mobile(gtk.VBox):
 
     def slide_to_event(self, widget, event):
         Dispatcher.to_setting_page(MobileSetting(None))
-        #self.settings.init(init_connections=True)
-        #self.send_to_crumb_cb()
-        #slider.slide_to_page(self.settings, "right")
 
     def add_setting_page(self, setting_page):
         self.settings = setting_page

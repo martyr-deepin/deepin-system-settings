@@ -95,7 +95,7 @@ class MyTreeItem(TreeItem):
         @param is_myowner: a bool type
         '''
         super(MyTreeItem, self).__init__()
-        self.height = 55
+        self.height = 58
         self.head_height = 35
         self.user_name_height = 25
         self.title_width = 250
@@ -106,7 +106,7 @@ class MyTreeItem(TreeItem):
         else:
             self.title_height = 0
         self.padding_x = 5
-        self.padding_y = 3
+        self.padding_y = 5
         self.icon = icon
         self.real_name = real_name
         self.user_name = user_name
@@ -169,15 +169,17 @@ class MyTreeItem(TreeItem):
         #cr.fill()
         # draw account type text
         if self.is_myowner:
-            text_color2 = "#000000"
+            text_color2 = app_theme.get_color("globalTitleForeground").get_color()
             x1 = rect.x
             y1 = rect.y
-            draw_text(cr, _("My Account"), x1+self.padding_x, y1, self.title_width, self.title_height, text_color=text_color2)
+            draw_text(cr, _("My Account"), x1, y1, self.title_width, self.title_height,
+                      text_size=TITLE_FONT_SIZE, text_color=text_color2)
             x2 = rect.x
-            y2 = rect.y + self.height + self.title_height + BETWEEN_SPACING
-            draw_text(cr, _("Other Accounts"), x2+self.padding_x, y2, self.title_width, self.title_height, text_color=text_color2)
-        self.render_icon(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING, rect.y, 55, rect.height))
-        self.render_content(cr, gtk.gdk.Rectangle(rect.x+FRAME_LEFT_PADDING+55, rect.y, rect.width-55, rect.height), text_color)
+            y2 = rect.y + self.height + self.title_height + BETWEEN_SPACING - self.padding_y
+            draw_text(cr, _("Other Accounts"), x2, y2, self.title_width, self.title_height,
+                      text_size=TITLE_FONT_SIZE, text_color=text_color2)
+        self.render_icon(cr, gtk.gdk.Rectangle(rect.x+1, rect.y, 58, rect.height))
+        self.render_content(cr, gtk.gdk.Rectangle(rect.x+58, rect.y, rect.width-58, rect.height), text_color)
     
     def render_content(self, cr, rect, text_color):
         # draw user name and account type
@@ -199,17 +201,17 @@ class MyTreeItem(TreeItem):
                   x, user_name_y+self.user_name_height,
                   rect.width-self.padding_x,
                   self.user_name_height,
-                  text_color="#000000")
+                  text_color="#737373")
     
     def render_icon(self, cr, rect):
         if self.icon:
-            cr.set_source_pixbuf(self.icon, rect.x+self.padding_x, rect.y+self.title_height+self.padding_y)
+            cr.set_source_pixbuf(self.icon, rect.x, rect.y+self.title_height+self.padding_y)
             cr.paint()
             with cairo_disable_antialias(cr):
                 border_color = "#CCCCCC"
                 cr.set_source_rgb(*color_hex_to_cairo(border_color))
                 cr.set_line_width(1)
-                cr.rectangle(rect.x+self.padding_x, rect.y+self.title_height+self.padding_y, 48, 48)
+                cr.rectangle(rect.x, rect.y+self.title_height+self.padding_y, 48, 48)
                 cr.stroke()
     
 gobject.type_register(MyTreeItem)

@@ -28,10 +28,6 @@ class SettingUI(gtk.Alignment):
 
         self.add(main_vbox)
 
-        #self.tab_window = TabBox(dockfill = False)
-        #self.tab_window.draw_title_background = self.draw_tab_title_background
-        #self.tab_window.set_size_request(674, 420)
-
         self.sidebar = SideBar( None)
         # Build ui
         self.hbox.pack_start(self.sidebar, False , False)
@@ -72,23 +68,26 @@ class SettingUI(gtk.Alignment):
             self.tab_window.delete_items(tabs)
 
     def switch_tab(self, widget, connection):
+        print "switch tab"
         self.set_tab_content(connection)
         self.set_foot_bar_button(connection)
     
         self.focus_connection = connection
 
     def set_foot_bar_button(self, connection):
-        #self.setting_group.set_button(connection)
-        content, state = self.setting_group.get_button_state(connection)
-        Dispatcher.set_button(content, state)
+        states = self.setting_group.get_button_state()
+        Dispatcher.set_button(*states)
         
     def set_tab_content(self, connection, init_connection=False):
+            #self.tab_window.tab_items = []
         if self.tab_window.tab_items ==  []:
             self.tab_window.add_items(self.setting_group.init_items(connection))
+            self.foot_box.set_lock(False)
         else:
             #self.__init_tab()
             #self.tab_window.add_items(self.setting_group.init_items(connection))
             self.tab_window.tab_items = self.setting_group.init_items(connection)
+            self.foot_box.set_lock(False)
         if init_connection:
             tab_index = 0
         else:

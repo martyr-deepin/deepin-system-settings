@@ -154,6 +154,25 @@ class NMAccessPoint(NMObject):
     def get_strength(self):
         return self.properties["Strength"]
 
+    def get_security_method(self):
+        NM_802_11_AP_FLAGS_PRIVACY = 0x1
+        NM_802_11_AP_SEC_NONE = 0x0
+        NM_802_11_AP_SEC_KEY_MGMT_802_1X = 0x200
+
+        wpa_flags = self.get_wpa_flags()
+        rsn_flags = self.get_rsn_flags()
+        flags = self.get_flags()
+
+        if flags & NM_802_11_AP_FLAGS_PRIVACY:
+            if wpa_flags == NM_802_11_AP_SEC_NONE and rsn_flags == NM_802_11_AP_SEC_NONE :
+                return "wep" 
+            elif not (wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X ) and not (rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X) :
+                return "wpa" 
+            else:
+                return "enterprise"
+        else:
+            return "none"
+
     def filter_connections (self, connections):
         return filter(lambda x: self.is_connection_valid(x), connections)
 
@@ -373,5 +392,17 @@ class NMAccessPoint(NMObject):
         pass
 
 if __name__ == "__main__":
-    nm_access_point = NMAccessPoint("/org/freedesktop/NetworkManager/AccessPoint/840")
-    print nm_access_point.properties
+    #nm_access_point = NMAccessPoint("/org/freedesktop/NetworkManager/AccessPoint/840")
+    #print nm_access_point.properties
+    from nmclient import NMClient
+    from nmdevice_wifi import NMDeviceWifi
+    nmclient = NMClient()
+    wifi = NMDeviceWifi(nmclient.get_wireless_device().object_path)
+    for ap in wifi.get_access_points():
+        if ap.get_ssid() == "daydayup" or ap.get_ssid() == "DeepinWork":
+            print ap.get_ssid()
+            print ap.object_path
+            print "security", ap.get_security_method()
+
+    from nmdevice import NMDevice
+    print NMDevice(wifi.object_path).get_active_connection().get_specific_object()

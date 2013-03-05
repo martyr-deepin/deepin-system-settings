@@ -26,6 +26,12 @@ from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to
 from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 from dtk.ui.new_entry import EntryBuffer, Entry
+#from nm_modules import cache
+from shared_methods import NetManager
+from widgets import AskPasswordDialog
+from nmlib.nm_remote_connection import NMRemoteConnection
+
+from nm_modules import cache
 
 #from lan_config import WiredSetting, NoSetting
 #from wlan_config import WirelessSetting
@@ -41,73 +47,55 @@ from nls import _
 from math import radians
 from helper import Dispatcher
 
-from settings_widget import LoadingThread
-BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
+#from settings_widget import LoadingThread
+import threading as td
+import time
 
-class WirelessItem(TreeItem):
+bg_hover_color="#ebf4fd"
+bg_normal_color = "#f6f6f6"
+#bg_normal_color = "#ffffff"
+border_hover_color="#7da2ce"
+border_normal_color = "#d2d2d2"
+#border_normal_color = "#ffffff"
+net_manager = NetManager()
 
-    CHECK_LEFT_PADDING = 10
-    CHECK_RIGHT_PADIING = 10
-    SECURITY_RIGHT_PADDING = 5
-    SIGNAL_LEFT_PADDING = 5
-    SIGNAL_RIGHT_PADDING = 20
-    JUMPTO_RIGHT_PADDING = 10
-    VERTICAL_PADDING = 5
+class GenItems(TreeItem):
+    H_PADDING = 10
+    V_PADDING = 5
+    CHECK_WIDTH = IMG_WIDTH + 20
+    JUMP_WIDTH = IMG_WIDTH + 10
 
     NETWORK_DISCONNECT = 0
     NETWORK_LOADING = 1
     NETWORK_CONNECTED = 2
 
-    def __init__(self,
-                 connection,
-                 setting_object = None, 
-                 slide_to_setting_cb = None, 
-                 send_to_crumb = None,
-                 font_size = DEFAULT_FONT_SIZE):
-
+    def __init__(self, jumpto_cb=None, is_last= False):
         TreeItem.__init__(self)
-        self.setting_object = setting_object
-        self.connection = connection
-        self.slide_to_setting = slide_to_setting_cb
-        self.essid = connection.get_ssid()
-        self.send_to_crumb = send_to_crumb
-        self.strength = connection.get_strength()
-        self.security = int(connection.get_flags())
-        self.font_size = font_size
-        self.is_last = False
-        self.check_width = self.get_check_width()
-        self.essid_width = self.get_essid_width(self.essid)
-        self.signal_width = self.get_signal_width()
-        self.jumpto_width = self.get_jumpto_width()
-        
-        self.network_state = self.NETWORK_DISCONNECT
-        self.position = 0
 
-        '''
-        Pixbufs
-        '''
+        self.network_state = 0
+        self.jumpto_cb = jumpto_cb
+
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
-
-        self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
-        self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
-        self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
-        self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
-        self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
-
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
 
+        self.border_color = border_normal_color
+        self.bg_color = bg_normal_color
+        self.is_last = is_last
+
     def render_check(self, cr, rect):
-        render_background(cr,rect)
+        self.render_background(cr,rect)
+
         if self.network_state == self.NETWORK_LOADING:
             self.draw_loading(cr, rect)
         elif self.network_state == self.NETWORK_CONNECTED:
-            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
         #draw outline
+
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -115,23 +103,164 @@ class WirelessItem(TreeItem):
             cr.rectangle(rect.x, rect.y, 1, rect.height)
             cr.fill()
 
+    def render_jumpto(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.jumpto_pixbuf.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
+            cr.fill()
+
+    def render_background(self, cr, rect):
+        x, y, w, h = rect
+        cr.set_source_rgb(*color_hex_to_cairo(self.bg_color))
+        cr.rectangle(x, y, w, h)
+        cr.fill()
+
+    def render_blank(self, cr, rect):
+        self.render_background(cr, rect)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def hover(self, column, offset_x, offset_y):
+        #self.is_hover = True
+        self.bg_color = bg_hover_color
+        #self.border_color = border_hover_color
+        self.redraw()
+
+    def unhover(self, column, offset_x, offset_y):
+        #self.is_hover = False
+        self.bg_color = bg_normal_color
+        #self.border_color = border_normal_color
+        self.redraw()
+
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+    def set_net_state(self, state):
+        self.network_state = state
+        if state == self.NETWORK_LOADING:
+            LoadingThread(self).start()
+        else:
+            self.redraw()
+
+    def get_net_state(self):
+        return self.network_state
+    
+    def refresh_loading(self, position):
+        self.position = position
+        self.redraw()
+
     def draw_loading(self, cr, rect):
         with cairo_state(cr):
             cr.translate(rect.x + 18 , rect.y + 15)
-            cr.rotate(radians(60*self.position))
+            cr.rotate(radians(self.position))
             cr.translate(-18, -15)
             draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
 
-    def render_essid(self, cr, rect):
-        render_background(cr,rect)
+    def get_height(self):
+        return CONTAINNER_HEIGHT
+    
+    def single_click(self, column, x, y):
+        if self.jumpto_cb:
+            columns = len(self.get_column_widths()) - 1
+            if column == columns:
+                self.jumpto_cb()
+        self.redraw()
+
+
+class LoadingThread(td.Thread):
+    def __init__(self, widget):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.widget = widget
+    
+    def run(self):
+        position = 0
+        try:
+            while self.widget.get_net_state() == 1:
+                self.widget.refresh_loading(position)
+                time.sleep(0.1)
+                position += 60
+        except Exception, e:
+            print "class LoadingThread got error %s" % e
+##################
+class WiredItem(GenItems):
+    def __init__(self, device, setting, font_size=DEFAULT_FONT_SIZE):
+        GenItems.__init__(self)
+        self.device = device
+        self.essid = self.device.get_device_desc()
+        self.font_size = font_size
+
+        self.jumpto_icon = app_theme.get_pixbuf("network/jump_to.png")
+
+    def render_device(self, cr, rect):
+        self.render_background(cr, rect)
         (text_width, text_height) = get_content_size(self.essid)
-        if self.is_select:
-            text_color = None
         draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def get_column_widths(self):
+        return [IMG_WIDTH + 20, -1, IMG_WIDTH + 10]
+
+    def get_column_renders(self):
+        return [self.render_check, self.render_device, self.render_jumpto]
+    
+    def single_click(self, column, x, y):
+        if column == 2:
+            from lan_config import WiredSetting
+            Dispatcher.to_setting_page(WiredSetting(self.device))
+        else:
+            device_ethernet = cache.get_spec_object(self.device.object_path)
+            device_ethernet.auto_connect()
+        self.redraw()
+
+class WirelessItem(GenItems):
+    def  __init__(self,
+                  ap,
+                  font_size = DEFAULT_FONT_SIZE):
+        GenItems.__init__(self)
+        self.ap = ap
+        self.ssid = self.ap.get_ssid()
+        self.strength = ap.get_strength()
+        self.security = int(ap.get_flags())
+        self.font_size = font_size
+        self.is_last = False
+
+        '''
+        Pixbufs
+        '''
+        self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
+        self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
+        self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
+        self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
+        self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
+
+    def render_ssid(self, cr, rect):
+        self.render_background(cr,rect)
+        (text_width, text_height) = get_content_size(self.ssid)
+        draw_text(cr, self.ssid, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
 
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -139,11 +268,8 @@ class WirelessItem(TreeItem):
             cr.fill()
 
     def render_signal(self, cr, rect):
-        render_background(cr,rect)
-        if self.is_select:
-            pass
+        self.render_background(cr,rect)
 
-        # FIXME need to detect encry or not
         if self.security:
             lock_icon = self.lock_pixbuf
             draw_pixbuf(cr, lock_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
@@ -157,132 +283,107 @@ class WirelessItem(TreeItem):
         else:
             signal_icon = self.strength_0
         
-        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH + self.SECURITY_RIGHT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH + 5, rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
             cr.rectangle(rect.x, rect.y, rect.width, 1)
             cr.fill()
-    
-    def render_jumpto(self, cr, rect):
-        render_background(cr,rect)
-        if self.is_select:
-            pass
-        jumpto_icon = self.jumpto_pixbuf
-        draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height-IMG_WIDTH)/2)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
-            cr.fill()
-
-    def get_check_width(self):
-        return IMG_WIDTH + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
-
-    def get_essid_width(self, essid):
-        return get_content_size(essid)[0]
-    
-    def get_signal_width(self):
-        return IMG_WIDTH*2 + self.SECURITY_RIGHT_PADDING + self.SIGNAL_RIGHT_PADDING
-
-    def get_jumpto_width(self):
-        return IMG_WIDTH + self.JUMPTO_RIGHT_PADDING
 
     def get_column_widths(self):
-        return [self.check_width, -1, self.signal_width, self.jumpto_width]
+        return [IMG_WIDTH + 20, -1, IMG_WIDTH*2 + 5 + 20, IMG_WIDTH + 10]
 
     def get_column_renders(self):
-        return [self.render_check, self.render_essid, self.render_signal, self.render_jumpto]
-
-    def get_height(self):
-        return CONTAINNER_HEIGHT
-        
-    def select(self):
-        self.is_select = True
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-
-    def set_active(self, b):
-        if b:
-            self.select()
-        else:
-            self.unselect()
-
-    def get_active(self):
-        return self.is_select
-
-    def unselect(self):
-        #print "unselect"
-        self.is_select = False
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-    
-    def redraw(self):
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-
-    def hover(self, column, offset_x, offset_y):
-        pass
-
-    def unhover(self, column, offset_x, offset_y):
-        #print column, offset_x, offset_y
-        pass
+        return [self.render_check, self.render_ssid, self.render_signal, self.render_jumpto]
 
     def single_click(self, column, x, y):
-        if column == 3:
+        if column ==3:
             from wlan_config import WirelessSetting
-            Dispatcher.to_setting_page(WirelessSetting(self.connection))
-            #self.setting_object.init(self.connection.get_ssid(), init_connections=True)
-            #self.send_to_crumb()
-            #self.slide_to_setting()
+            Dispatcher.to_setting_page(WirelessSetting(self.ap))
+        elif column < 2:
+            self.connect_by_ssid(self.ssid, self.ap)
 
-    def set_net_state(self, state):
-        self.network_state = state
-        if state == self.NETWORK_LOADING:
-            LoadingThread(self).start()
-    
-    def get_net_state(self):
-        return self.network_state
-    
-    def refresh_loading(self, position):
-        self.position = position
-        self.redraw()
+    def connect_by_ssid(self, ssid, ap):
+        connection =  net_manager.connect_wireless_by_ssid(ssid)
+        self.ap = ap
+        if connection and not isinstance(connection, NMRemoteConnection):
+            security = net_manager.get_security_by_ap(self.ap)
+            if security:
+                print "connect by ssid"
+                self.toggle_dialog(connection, security)
+            else:
+                connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
+                nm_module.nmclient.activate_connection_async(connection.object_path,
+                                          net_manager.wireless_devices[0].object_path,
+                                           ap.object_path)
+
+    def toggle_dialog(self, connection, security=None):
+            AskPasswordDialog(connection,
+                              key_mgmt=security,
+                              cancel_callback=self.cancel_ask_pwd,
+                              confirm_callback=self.pwd_changed).show_all()
+
+    def cancel_ask_pwd(self):
+        pass
+
+    def pwd_changed(self, pwd, connection):
+        if not isinstance(connection, NMRemoteConnection):
+            connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
         
+        if hasattr(self, "connection"):
+            if self.connection:
+                net_manager.save_and_connect(pwd, connection, self.connection)
+            else:
+                net_manager.save_and_connect(pwd, connection, None)
+        else:
+            net_manager.save_and_connect(pwd, connection, None)
+
+class InfoItem(GenItems):
+    def __init__(self, content, jumpto= None, is_last= False):
+        GenItems.__init__(self, jumpto, is_last)
+        self.content = content
+
+    def render_content(self, cr, rect):
+        self.render_background(cr, rect)
+        if self.network_state == self.NETWORK_CONNECTED:
+            text_color = "#3da1f7"
+        else:
+            text_color = "#000000"
+        (text_width, text_height) = get_content_size(self.content)
+        draw_text(cr, self.content, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT, text_color = text_color)
+
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def get_column_renders(self):
+        return [self.render_check, self.render_content, self.render_blank
+        ,self.render_jumpto]
+
+    def get_column_widths(self):
+        return [self.CHECK_WIDTH, -1, 1, self.JUMP_WIDTH]
+
 
 class HidenItem(TreeItem):
 
-    CHECK_LEFT_PADDING = 10
-    CHECK_RIGHT_PADIING = 10
-    SECURITY_RIGHT_PADDING = 5
-    SIGNAL_LEFT_PADDING = 5
-    SIGNAL_RIGHT_PADDING = 20
-    JUMPTO_RIGHT_PADDING = 10
-    VERTICAL_PADDING = 5
-
-    NETWORK_DISCONNECT = 0
-    NETWORK_LOADING = 1
-    NETWORK_CONNECTED = 2
 
     def __init__(self,
                  connection,
-                 setting_object = None, 
-                 slide_to_setting_cb = None, 
-                 send_to_crumb = None,
-                 font_size = DEFAULT_FONT_SIZE):
+                 font_size = DEFAULT_FONT_SIZE,
+                 check_state = 0):
 
         TreeItem.__init__(self)
-        self.setting_object = setting_object
         self.connection = connection
-        self.slide_to_setting = slide_to_setting_cb
         self.essid = connection.get_setting("802-11-wireless").ssid
-        self.send_to_crumb = send_to_crumb
-        #self.strength = connection.get_strength()
-        #self.security = int(connection.get_flags())
+
         self.font_size = font_size
         self.is_last = False
         self.check_width = self.get_check_width()
@@ -296,6 +397,8 @@ class HidenItem(TreeItem):
         '''
         Pixbufs
         '''
+        self.border_color = border_normal_color
+        self.bg_color = bg_normal_color
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
@@ -317,7 +420,7 @@ class HidenItem(TreeItem):
 
         #draw outline
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -341,7 +444,7 @@ class HidenItem(TreeItem):
                 alignment = pango.ALIGN_LEFT)
 
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -350,26 +453,8 @@ class HidenItem(TreeItem):
 
     def render_signal(self, cr, rect):
         render_background(cr,rect)
-        #if self.is_select:
-            #pass
-
-        ## FIXME need to detect encry or not
-        #if self.security:
-            #lock_icon = self.lock_pixbuf
-            #draw_pixbuf(cr, lock_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
-
-        #if self.strength > 80:
-            #signal_icon = self.strength_3
-        #elif self.strength > 60:
-            #signal_icon = self.strength_2
-        #elif self.strength > 30:
-            #signal_icon = self.strength_1
-        #else:
-            #signal_icon = self.strength_0
-        
-        #draw_pixbuf(cr, signal_icon.get_pixbuf(), rect.x + IMG_WIDTH + self.SECURITY_RIGHT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -383,7 +468,7 @@ class HidenItem(TreeItem):
         jumpto_icon = self.jumpto_pixbuf
         draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height-IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -437,11 +522,13 @@ class HidenItem(TreeItem):
             self.redraw_request_callback(self)
 
     def hover(self, column, offset_x, offset_y):
-        pass
+        self.border_color = border_hover_color
+        self.redraw()
 
     def unhover(self, column, offset_x, offset_y):
         #print column, offset_x, offset_y
-        pass
+        self.border_color = border_normal_color
+        self.redraw()
 
     def single_click(self, column, x, y):
         if column == 3:
@@ -461,13 +548,13 @@ class HidenItem(TreeItem):
         self.position = position
         self.redraw()
 
-def render_background( cr, rect):
-    background_color = [(0,["#f6f6f6", 1.0]),
-                        (1,["#f6f6f6", 1.0])]
-    draw_vlinear(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
+def render_background( cr, rect, color=bg_normal_color):
+    background_color = [(0,[color, 1.0]),
+                        (1,[color, 1.0])]
+    (cr, rect.x ,rect.y, rect.width, rect.height, background_color)
 
 
-
+'''
 class WiredItem(TreeItem):
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10
@@ -492,7 +579,10 @@ class WiredItem(TreeItem):
         self.jumpto_width = self.get_jumpto_width()
         self.network_state = 0
         self.position = 0
+        self.is_double_click = False
 
+        self.border_color = border_normal_color
+        self.bg_color = bg_normal_color
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
@@ -506,7 +596,7 @@ class WiredItem(TreeItem):
             draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + 7)
 
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -529,7 +619,7 @@ class WiredItem(TreeItem):
         draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -544,7 +634,7 @@ class WiredItem(TreeItem):
         jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
         draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -574,16 +664,28 @@ class WiredItem(TreeItem):
         self.is_select = False
         
     def hover(self, column, offset_x, offset_y):
-        pass
+        self.is_hover = True
+        self.border_color = border_hover_color
 
     def unhover(self, column, offset_x, offset_y):
         #print column, offset_x, offset_y
-        pass
+        self.is_hover = False
+        self.border_color = border_normal_color
+
+    def double_click(self, column, x, y):
+        self.is_double_click = True
 
     def single_click(self, column, x, y):
         if column == 2:
             from lan_config import WiredSetting
             Dispatcher.to_setting_page(WiredSetting(self.device))
+        #else:
+            #if self.is_double_click:
+                #print "sadfds"
+                #device_ethernet = cache.get_spec_object(self.device.object_path)
+                #device_ethernet.auto_connect()
+
+        self.is_double_click = False
 
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
@@ -603,7 +705,7 @@ class WiredItem(TreeItem):
     def refresh_loading(self, position):
         self.position = position
         self.redraw()
-        
+'''        
 class HotspotItem(TreeItem):
 
     def __init__(self, font_size=DEFAULT_FONT_SIZE):
@@ -627,6 +729,8 @@ class HotspotItem(TreeItem):
         self.is_active = False
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
+        self.border_color = border_normal_color
+        self.bg_color = bg_normal_color
 
     def entry_buffer_changed(self, bf):
         if self.redraw_request_callback:
@@ -755,11 +859,14 @@ class HotspotItem(TreeItem):
     def select(self):
         pass
     
-    def unhover(self, column, offset_x, offset_y):
-        pass
-    
     def hover(self, column, offset_x, offset_y):
-        pass
+        self.is_hover = True
+        self.border_color = border_hover_color
+
+    def unhover(self, column, offset_x, offset_y):
+        #print column, offset_x, offset_y
+        self.is_hover = False
+        self.border_color = border_normal_color
     
     def motion_notify(self, column, offset_x, offset_y):
         pass
@@ -812,6 +919,8 @@ class DSLItem(TreeItem):
         self.check_width = self.get_check_width()
         self.essid_width = self.get_essid_width(essid)
         self.jumpto_width = self.get_jumpto_width()
+        self.border_color = border_normal_color
+        self.bg_color = bg_normal_color
 
     def render_check(self, cr, rect):
         render_background(cr, rect)
@@ -823,7 +932,7 @@ class DSLItem(TreeItem):
 
         draw_pixbuf(cr, check_icon, rect.x + self.CHECK_LEFT_PADDING, rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -840,7 +949,7 @@ class DSLItem(TreeItem):
         draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -855,7 +964,7 @@ class DSLItem(TreeItem):
         jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
         draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -885,15 +994,17 @@ class DSLItem(TreeItem):
         self.is_select = False
         
     def hover(self, column, offset_x, offset_y):
-        pass
+        self.is_hover = True
+        self.border_color = border_hover_color
+
+    def unhover(self, column, offset_x, offset_y):
+        #print column, offset_x, offset_y
+        self.is_hover = False
+        self.border_color = border_normal_color
 
     def redraw(self):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
-
-    def unhover(self, column, offset_x, offset_y):
-        #print column, offset_x, offset_y
-        pass
 
     def single_click(self, column, x, y):
         #if column == 0 and x in range(self.CHECK_LEFT_PADDING, self.check_width-self.CHECK_RIGHT_PADIING):
@@ -944,6 +1055,8 @@ class GeneralItem(TreeItem):
         '''
         Pixbufs
         '''
+        self.border_color = border_normal_color
+        self.bg_color = bg_normal_color
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
@@ -958,7 +1071,7 @@ class GeneralItem(TreeItem):
 
         #draw outline
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -998,7 +1111,7 @@ class GeneralItem(TreeItem):
         draw_text(cr, self.name, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -1013,7 +1126,7 @@ class GeneralItem(TreeItem):
         jumpto_icon = self.jumpto_pixbuf
         draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -1024,7 +1137,7 @@ class GeneralItem(TreeItem):
     def render_blank(self, cr, rect):
         render_background(cr, rect)
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*BORDER_COLOR)
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
             if self.is_last:
                 cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
@@ -1073,7 +1186,7 @@ class GeneralItem(TreeItem):
             #self.slide_to_setting()
             #self.send_to_crumb()
         if column == 3:
-            self.setting.init("", init_connections=True)
+            self.setting.init("", init_connections=true)
             self.slide_to_setting()
             self.send_to_crumb()
 
@@ -1096,6 +1209,9 @@ class GeneralItem(TreeItem):
     def refresh_loading(self, position):
         self.position = position
         self.redraw()
+
+
+
 
         
 if __name__=="__main__":

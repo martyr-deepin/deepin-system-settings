@@ -43,6 +43,7 @@ class TrayNetworkPlugin(object):
         self.gui.button_more.connect("clicked", self.more_setting)
 
         self.need_auth_flag = False
+        self.this_device = None
 
         self.timer = Timer(WAIT_TIME)
         self.timer.Enabled = False
@@ -145,6 +146,7 @@ class TrayNetworkPlugin(object):
         if connection and not isinstance(connection, NMRemoteConnection):
             security = self.net_manager.get_security_by_ap(self.ap)
             if security:
+                print "NMCONNECTION"
                 self.toggle_dialog(connection, security)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
@@ -190,7 +192,8 @@ class TrayNetworkPlugin(object):
                 print "Debug", index
                 self.gui.set_active_ap(index, True)
             else:
-                self.activate_wireless()
+                if self.this_device and self.this_device.get_state() != 40: 
+                    self.activate_wireless()
             #Dispatcher.tray_show_more()
             Dispatcher.request_resize()
         else:
@@ -209,6 +212,7 @@ class TrayNetworkPlugin(object):
         """
         "wireless-change" signal callback
         """
+        self.this_device = device
         print new_state, old_state, reason
         if new_state is 20:
             self.gui.wireless.set_active((False, False))
@@ -222,10 +226,11 @@ class TrayNetworkPlugin(object):
             else:
                 self.change_status_icon("wifi_disconnect")
             if reason == 39:
-                if self.gui.wireless.get_active():
-                    index = self.gui.get_active_ap()
-                    self.gui.set_active_ap(index, False)
-                    self.need_auth_flag = False
+                self.gui.wireless.set_active((True, False))
+                #if self.gui.wireless.get_active():
+                    #index = self.gui.get_active_ap()
+                    #self.gui.set_active_ap(index, False)
+                    #self.need_auth_flag = False
             '''
             if old_state == 120:
                 if self.need_auth_flag:
@@ -261,10 +266,10 @@ class TrayNetworkPlugin(object):
         '''
 
     def toggle_dialog(self, connection, security=None):
-            AskPasswordDialog(connection,
-                              key_mgmt=security,
-                              cancel_callback=self.cancel_ask_pwd,
-                              confirm_callback=self.pwd_changed).show_all()
+        AskPasswordDialog(connection,
+                          key_mgmt=security,
+                          cancel_callback=self.cancel_ask_pwd,
+                          confirm_callback=self.pwd_changed).show_all()
 
 
     def cancel_ask_pwd(self):
