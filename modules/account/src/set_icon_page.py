@@ -38,6 +38,7 @@ import gobject
 import tools
 import os
 import dbus
+import md5
 from time import sleep, time
 from subprocess import Popen
 from tempfile import mkstemp
@@ -45,11 +46,25 @@ from stat import S_IRWXU, S_IRWXG, S_IRWXO, S_IWUSR, S_IWGRP, S_IWOTH
 
 MODULE_NAME = "account"
 
+
+def get_file_md5(file_name):
+    fp = open(file_name, 'rb')
+    m = md5.new()
+    while True:
+        d = fp.read(8096)
+        if not d:
+            break
+        m.update(d)
+    fp.close()
+    return m.hexdigest()
+
 def check_file_writable(file_path):
     if not os.path.exists(file_path):
         return False
     file_st = os.stat(file_path)
     st_mode = file_st.st_mode
+    if file_st.st_uid != os.getuid():
+        return False
     if file_st.st_uid == os.getuid() and st_mode & S_IWUSR:
         return True
     if file_st.st_gid in os.getgroups() and st_mode & S_IWGRP:
@@ -264,8 +279,20 @@ class IconSetPage(gtk.VBox):
         
     def on_icon_bt_del_icon_file_cb(self, widget):
         try:
+            icon_file = self.account_setting.current_set_user.get_icon_file()
+            if os.path.exists(icon_file):
+                file1_md5 = get_file_md5(icon_file)
+            else:
+                file1_md5 = ""
             file_path = widget.get_image_path()
+            if os.path.exists(file_path):
+                file2_md5 = get_file_md5(file_path)
+            else:
+                file2_md5 = ""
             os.remove(file_path)
+            if file1_md5 == file2_md5:
+                self.account_setting.account_user_set_random_icon(
+                    self.account_setting.current_set_user)
         except Exception, e:
             print e
         row = widget.row
@@ -297,7 +324,8 @@ class IconSetPage(gtk.VBox):
         except Exception, e:
             print "set_icon 286:", e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                #self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                self.account_setting.set_status_error_text(e.msg)
             return
         self.account_setting.set_to_page(
             self.account_setting.alignment_widgets["main_hbox"], "left")
@@ -324,7 +352,8 @@ class IconSetPage(gtk.VBox):
         try:
             icon_pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
         except Exception, e:
-            self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), str(e)))
+            #self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), str(e)))
+            self.account_setting.set_status_error_text(str(e))
             return
         self.account_setting.container_widgets["icon_edit_page"].set_pixbuf(icon_pixbuf)
         self.account_setting.alignment_widgets["edit_iconfile"].show_all()
@@ -966,8 +995,9 @@ class IconEditPage(gtk.HBox):
     def save_edit_icon(self):
         pixbuf = self.thumbnail_large.get_pixbuf()
         if not pixbuf:
-            self.error_label.set_text("<span foreground='red'>%s%s</span>" % (
-                _("Error:"), _("no picture")))
+            #self.error_label.set_text("<span foreground='red'>%s%s</span>" % (
+                #_("Error:"), _("no picture")))
+            self.account_setting.set_status_error_text(_("no picture"))
             return
         tmp = mkstemp(".tmp", "account-settings")
         os.close(tmp[0])
@@ -991,7 +1021,8 @@ class IconEditPage(gtk.HBox):
         except Exception, e:
             print "set_icon 980:", e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                #self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                self.account_setting.set_status_error_text(e.msg)
                 return
         self.stop_camera()
         self.account_setting.set_to_page(
