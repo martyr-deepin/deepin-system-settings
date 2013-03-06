@@ -194,30 +194,28 @@ class NMDevice(NMObject):
         pass
 
     def state_changed_cb(self, new_state, old_state, reason):
-        self.emit("state-changed", new_state, old_state, reason)
-        self.init_nmobject_with_properties()
+        #self.emit("state-changed", new_state, old_state, reason)
+        #self.init_nmobject_with_properties()
 
-        if old_state != 100 and new_state == 100:
-            print "device-active"
+        if new_state == 100:
+            print "device-active", new_state, old_state, reason
             self.emit("device-active", new_state, old_state, reason)
-        elif old_state == 100 and new_state != 100:
-            print "device-deactive"
-            self.emit("device-deactive", new_state, old_state, reason)
+            return 
 
-        if new_state < 30:
-            if old_state >= 30:
-                print "device-unavailable"
-                self.emit("device-unavailable", new_state, old_state, reason)
-        elif old_state < 40:
-            if old_state < 30:
-                print "device-available"
-                self.emit("device-available", new_state, old_state, reason)
-            if new_state >= 40:
-                print "activate-start"
-                self.emit("activate-start", new_state, old_state, reason)
-        elif old_state < 100 and new_state > 100:
-            print "activate-failed"
+        elif new_state == 120:
+            print "activate-failed", new_state, old_state, reason
             self.emit("activate-failed", new_state, old_state, reason)
+            return 
+
+        elif new_state == 40:
+            print "activate-start", new_state, old_state, reason
+            self.emit("activate-start", new_state, old_state, reason)
+            return 
+
+        elif old_state == 100:
+            print "device-deactive", new_state, old_state, reason
+            self.emit("device-deactive", new_state, old_state, reason)
+            return 
 
 if __name__ == "__main__":
     nmdevice = NMDevice("/org/freedesktop/NetworkManager/Devices/1")
