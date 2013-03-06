@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 10:34+0800\n"
+"POT-Creation-Date: 2013-03-06 20:21+0800\n"
 "PO-Revision-Date: 2013-03-01 10:21+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,10 +17,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_power_plugin.py:74
+#: ../src/tray_power_gui.py:47
+msgid "电源"
+msgstr ""
+
+#: ../src/tray_power_gui.py:56
+msgid "平衡模式"
+msgstr ""
+
+#: ../src/tray_power_gui.py:57
+msgid "节能模式"
+msgstr ""
+
+#: ../src/tray_power_gui.py:58
+msgid "高性能模式"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:89
 msgid "charging"
 msgstr "正在充电"
 
-#: ../src/tray_power_plugin.py:85
-msgid "remaining"
-msgstr "剩余"
+#: ../src/tray_power_plugin.py:110
+msgid "%s remaining"
+msgstr "剩余%s电量"

@@ -107,7 +107,8 @@ class TrayPower(object):
         elif percentage >= 0 and percentage <= 20:
             self.tray_icon.set_icon_theme("battery0-10-20")
         #
-        self.tray_icon.set_tooltip_text(str(int(percentage)) + "%" +  _("remaining"))
+        string = _("%s remaining") % (str(int(percentage)) + '%')
+        self.tray_icon.set_tooltip_text(string)
 
     def init_values(self, this_list):
         self.this = this_list[0]
