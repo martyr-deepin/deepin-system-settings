@@ -25,6 +25,7 @@ import gtk
 import gobject
 import os
 import copy
+from dtk.ui.label import Label
 from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
@@ -235,6 +236,9 @@ class PicturePage(gtk.VBox):
         self.select_view = SelectView(monitor_dir, filter_dir=["deepin-wallpapers"])
         self.select_view_sw = self.select_view.get_scrolled_window()               
 
+        self.notice_label = Label("")
+        self.notice_label.set_size_request(500, -1)
+
         self.back_button = Button(_("Back"))                                    
         self.back_button.connect("clicked", self.__on_back)
         self.select_all_button = Button(_("Select All"))                        
@@ -242,7 +246,8 @@ class PicturePage(gtk.VBox):
         add_button = Button(_("Add"))                                              
         add_button.connect("clicked", self.on_add_wallpapers)                      
                                                                                    
-        control_box = gtk.HBox(spacing = 10)                
+        control_box = gtk.HBox(spacing = 10)
+        control_box.pack_start(self.notice_label, False, False)
         control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(self.select_all_button, False, False)
         control_box.pack_start(add_button, False, False)                           
@@ -267,6 +272,8 @@ class PicturePage(gtk.VBox):
                                                                                 
     def set_theme(self, theme):                                                 
         self.theme = theme
+        if len(self.select_view.items) == 0:                                    
+            self.notice_label.set_text(_("Please copy some pictures under %s") % get_images_dir())
  
     def on_select_all(self, widget):                                            
         self.select_view.select_all()                                           
