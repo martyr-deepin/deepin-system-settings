@@ -333,13 +333,17 @@ class UserPage(gtk.VBox):
             self.select_all_button.set_label(_("UnSelect All"))                 
         else:                                                                   
             self.select_all_button.set_label(_("Select All"))
-   
+  
+    def __delete_confirm(self):
+        self.select_view.delete()
+        self.select_all_button.set_label(_("Select All"))
+
     def __on_delete(self, widget):
         dlg = ConfirmDialog(_("Delete Wallpaper"),                                  
                             _("Are you sure delete wallpaper?"), 
                             300,                                                
                             100,                                                
-                            lambda : self.select_view.delete(),                   
+                            lambda : self.__delete_confirm(),                   
                             None,                                               
                             True, 
                             CONTENT_FONT_SIZE)                                               
