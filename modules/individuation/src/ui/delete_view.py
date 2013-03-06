@@ -41,7 +41,9 @@ class DeleteView(IconView):
         self.theme = theme
         self.clear()
         
-        self.add_system_wallpapers(self.theme.get_system_wallpapers())        
+        if self.theme.get_editable():
+            self.add_system_wallpapers(self.theme.get_system_wallpapers())        
+        
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
         
     def is_exists(self, image):    
