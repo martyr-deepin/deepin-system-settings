@@ -53,10 +53,8 @@ class NMDeviceEthernet(NMDevice):
         if cache.getobject(self.object_path).get_state() < 30:
             return False
 
-        # wired_connections = nm_remote_settings.get_wired_connections()
-        wired_connections = sorted(nm_remote_settings.get_wired_connections(), key = lambda x:x.succeed_flag)
-        if len(wired_connections) != 0:
-            for conn in wired_connections:
+        if nm_remote_settings.get_wired_connections():
+            for conn in sorted(nm_remote_settings.get_wired_connections(), key = lambda x:x.succeed_flag):
                 try:
                     nmclient.activate_connection(conn.object_path, self.object_path, "/")
                     if cache.getobject(self.object_path).is_active():
@@ -65,15 +63,11 @@ class NMDeviceEthernet(NMDevice):
                         continue
                 except:
                     continue
-        else:        
+        else:
             try:
-                conn = nm_remote_settings.new_wired_connection()
-                conn = nm_remote_settings.new_connection_finish(conn.settings_dict, 'lan')
+                nmconn = nm_remote_settings.new_wired_connection()
+                conn = nm_remote_settings.new_connection_finish(nmconn.settings_dict)
                 nmclient.activate_connection(conn.object_path, self.object_path, "/")
-                if cache.getobject(self.object_path).is_active():
-                    return True
-                else:
-                    return False
             except:
                 return False
 

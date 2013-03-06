@@ -39,6 +39,7 @@ class WallpaperView(IconView):
         self.add_items([self.add_item])
         
         event_manager.add_callback("add-wallpapers", self.on_add_wallpapers)
+        event_manager.add_callback("add-download-wallpapers", self.on_add_wallpapers)
         event_manager.add_callback("wallpapers-deleted", self.on_wallpapers_deleted)
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
@@ -79,7 +80,8 @@ class WallpaperView(IconView):
         self.add_items(items, insert_pos=-1)
         
     def on_wallpaper_select(self, name, obj, select_item):    
-        pass
+        image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
+        self.apply_wallpapers(image_uris)
 
     def is_deletable(self):
         for item in self.items:
@@ -102,7 +104,6 @@ class WallpaperView(IconView):
         for item in self.items:
             if item.is_tick:
                 i += 1
-
         if i < 2:
             return False
 
@@ -150,6 +151,7 @@ class WallpaperView(IconView):
         filter_images = filter(lambda image: not self.is_exists(image), image_paths)        
         if filter_images:
             self.add_user_wallpapers(filter_images, save=True)
+        event_manager.emit("update-theme", None)
             
     def on_wallpapers_deleted(self, name, obj, image_paths):        
         items = filter(lambda item: item.image_path in image_paths, self.items)

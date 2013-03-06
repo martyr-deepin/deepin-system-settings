@@ -91,6 +91,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
     @param accel_entry_list: a AccelEntry list that add this item
     '''
     keys_list = gsettings.list_keys()
+    global ACCEL_ENTRY_LIST
     if "key1" in keys_list:
         key1_name = parse_dp_shortcut_string(gsettings.get_string("key1"))
         item = AccelEntry(key1_name[1], check_shortcut_conflict)
@@ -100,6 +101,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         item.settings_type = item.TYPE_DP_GSETTINGS
         item.settings_value_type = "/usr/bin/launcher"
         accel_entry_list.append(item)
+        ACCEL_ENTRY_LIST.append(item)
     if "key2" in keys_list:
         key2_name = parse_dp_shortcut_string(gsettings.get_string("key2"))
         item = AccelEntry(key2_name[1], check_shortcut_conflict)
@@ -110,6 +112,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         #item.settings_value_type = key2_name[0]
         item.settings_value_type = "/usr/bin/gnome-terminal"
         accel_entry_list.append(item)
+        ACCEL_ENTRY_LIST.append(item)
     if "key3" in keys_list:
         key3_name = parse_dp_shortcut_string(gsettings.get_string("key3"))
         item = AccelEntry(key3_name[1], check_shortcut_conflict)
@@ -119,6 +122,7 @@ def get_shortcuts_dp_shortcut_entry(gsettings, accel_entry_list):
         item.settings_type = item.TYPE_DP_GSETTINGS
         item.settings_value_type = "/usr/bin/dlock"
         accel_entry_list.append(item)
+        ACCEL_ENTRY_LIST.append(item)
 
 
 def get_shortcuts_custom_shortcut_entry(client, del_callback=None):

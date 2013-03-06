@@ -24,14 +24,17 @@
 import gtk
 import random
 import gobject
+from math import radians
+import time
 from dtk.ui.utils import (get_optimum_pixbuf_from_file, cairo_disable_antialias,
                           run_command, is_in_rect, color_hex_to_cairo)
-from dtk.ui.draw import draw_pixbuf, draw_shadow
+from dtk.ui.draw import draw_pixbuf, draw_shadow, cairo_state
 from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
 from theme import app_theme
 from cache_manager import SMALL_SIZE, cache_manager
 from helper import event_manager
+import common
 
 ITEM_PADDING_X = 20
 ITEM_PADDING_Y = 10
@@ -181,8 +184,7 @@ class WallpaperItem(gobject.GObject):
         if self.is_tick:    
             draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
         else:
-            if self.is_hover:    
-                draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+            draw_pixbuf(cr, self.tick_gray_dpixbuf.get_pixbuf(), tick_x, tick_y)    
                 
     def tick(self):            
         self.is_tick = True
@@ -536,6 +538,7 @@ class DeleteItem(gobject.GObject):
                 self.tick_area.height,
                 )):
             self.toggle_tick()
+            event_manager.emit("select-delete-wallpaper", self)
         else:    
             self.tick()
     
@@ -880,7 +883,7 @@ class CacheItem(gobject.GObject, MissionThread):
                                                                                 
         self.is_loop = False
         self.emit_redraw_request()
-        #event_manager.emit("add-wallpapers", [self.image_object.get_save_path()])
+        event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
     def create_cache_pixbuf(self):    
@@ -1005,7 +1008,25 @@ class CacheItem(gobject.GObject, MissionThread):
             loop_x = wallpaper_x + (self.wallpaper_width - loop_pixbuf.get_width()) / 2
             loop_y = wallpaper_y + (self.wallpaper_height - loop_pixbuf.get_height()) / 2
             draw_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
-        
+            #self.draw_loop_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
+    
+    @common.threaded
+    def draw_loop_pixbuf(self, cr, loop_pixbuf, loop_x, loop_y):
+        width = loop_pixbuf.get_width()
+        height = loop_pixbuf.get_height()
+        ox = loop_x + width * 0.5
+        oy = loop_y + height * 0.5 
+        degree = 0
+
+        while self.is_loop:
+            with cairo_state(cr):
+                cr.translate(ox, oy)                                                
+                cr.rotate(radians(degree))                      
+                cr.translate(-width * 0.5, -height * 0.5)
+                draw_pixbuf(cr, loop_pixbuf, 0, 0)
+                degree += 10
+                time.sleep(0.1)
+
     def icon_item_motion_notify(self, x, y):
         '''
         Handle `motion-notify-event` signal.
@@ -1286,7 +1307,11 @@ class SelectItem(gobject.GObject):
         self.emit_redraw_request()
     
     def tick(self):
-        self.is_tick = not self.is_tick
+        self.is_tick = True
+        self.emit_redraw_request()
+
+    def untick(self):
+        self.is_tick = False
         self.emit_redraw_request()
 
     def icon_item_button_press(self, x, y):
@@ -1296,6 +1321,7 @@ class SelectItem(gobject.GObject):
         This is IconView interface, you should implement it.
         '''
         self.is_tick = not self.is_tick
+        event_manager.emit("select-select-wallpaper", self)
         self.emit_redraw_request()
     
     def icon_item_button_release(self, x, y):

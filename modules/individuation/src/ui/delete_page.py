@@ -74,8 +74,16 @@ class DeletePage(TabBox):
         self.wallpaper_box.pack_start(self.delete_view_sw, True, True)
         self.wallpaper_box.pack_start(self.action_align, False, False)
 
+        event_manager.add_callback("select-delete-wallpaper", self.__on_select_delete_wallpaper)
+
     def __on_back(self, widget):
         event_manager.emit("back-to-detailpage", self.theme)
+
+    def __on_select_delete_wallpaper(self, name, obj, select_item):
+        if self.delete_view.is_select_all():                                    
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
 
     def __on_select_all(self, widget):
         self.delete_view.select_all()
@@ -84,13 +92,17 @@ class DeletePage(TabBox):
         else:
             self.select_all_button.set_label(_("Select All"))
 
+    def __delete_confirm(self):
+        self.delete_view.delete_wallpaper()
+        event_manager.emit("update-theme", None)
+
     def __on_delete(self, widget):
         if self.delete_view.is_deletable():
             dlg = ConfirmDialog(_("Delete Wallpaper"),                                  
                                 _("Are you sure delete wallpaper?"), 
                                 300,                                                
                                 100,                                                
-                                lambda : self.delete_view.delete_wallpaper(),                   
+                                lambda : self.__delete_confirm(),                   
                                 None,                                               
                                 True, 
                                 CONTENT_FONT_SIZE)                                               
