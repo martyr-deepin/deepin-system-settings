@@ -99,6 +99,9 @@ class ThemeFile(RawConfigParser):
         return RawConfigParser.has_option(self, section, option)
 
     def remove_option(self, section, option):
+        if not self.has_option(section, option):
+            return
+
         RawConfigParser.remove_option(self, section, option)
 
     def save(self):
