@@ -26,6 +26,7 @@ from nmobject import NMObject
 from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
 from nm_secret_agent import secret_agent
+from nmcache import cache
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''
@@ -58,6 +59,7 @@ class NMRemoteConnection(NMObject, NMConnection):
     def delete(self):
         try:
             self.dbus_interface.Delete(reply_handler = self.delete_finish, error_handler = self.delete_error)
+            cache.delobject(self.object_path)
         except:
             traceback.print_exc()
             
