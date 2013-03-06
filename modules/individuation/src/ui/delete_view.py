@@ -41,7 +41,9 @@ class DeleteView(IconView):
         self.theme = theme
         self.clear()
         
-        self.add_system_wallpapers(self.theme.get_system_wallpapers())        
+        if self.theme.get_editable():
+            self.add_system_wallpapers(self.theme.get_system_wallpapers())        
+        
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
         
     def is_exists(self, image):    
@@ -74,11 +76,12 @@ class DeleteView(IconView):
 
     def delete_wallpaper(self):
         for item in self.items:
-            if not item.is_tick:
+            if item.is_tick:
+                self.theme.remove_option("system_wallpaper", item.image_path.split("/")[-1])
                 self.theme.remove_option("user_wallpaper", item.image_path)
 
         self.theme.save()
-        self.set_theme(self.theme, True)
+        self.set_theme(self.theme)
     
     def is_select_all(self):
         for item in self.items:

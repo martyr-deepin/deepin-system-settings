@@ -377,7 +377,6 @@ class ThemeManager(object):
     def is_current_theme(self, theme):
         return theme.location == global_settings.get_option("settings/theme", "")
     
-    
     def apply_theme(self, theme):
         duration = theme.get_background_duration()
         draw_mode = theme.get_background_draw_mode()

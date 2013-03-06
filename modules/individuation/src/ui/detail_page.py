@@ -171,7 +171,7 @@ class DetailPage(TabBox):
 
     def set_theme(self, theme):
         self.theme = theme
-        
+       
         '''
         TODO: self.theme.name
         '''

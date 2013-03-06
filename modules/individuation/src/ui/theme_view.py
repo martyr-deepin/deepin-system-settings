@@ -168,6 +168,7 @@ class SystemThemeView(IconView):
 
     def create_new_theme(self, name, item):
         new_theme = theme_manager.create_new_theme(name, item.theme)
+        new_theme.set_editable(True)
         event_manager.emit("create-new-theme", new_theme)
 
     def on_theme_sava_as(self, item):
