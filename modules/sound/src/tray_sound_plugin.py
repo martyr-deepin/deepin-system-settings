@@ -28,16 +28,20 @@ import gtk
 class SoundTray(object):
     def __init__(self):
         super(SoundTray, self).__init__()
-        self.WIN_WIDTH = 200
-        self.WIN_HEIGHT = 170
+        self.WIN_WIDTH = 188
+        self.WIN_HEIGHT = 130
         self.__this_visible = False
         self.__volume_level = None
         self.__mute = None
         self.tray_obj = None
 
+        self.widget_align = gtk.Alignment()
+        #self.widget_align.set(0.5, 0.0, 0, 0)
+        #self.widget_align.set_padding(10, 10, 10, 10)
         self.widget = TrayGui(self)
         self.widget.connect("stream-changed", self.stream_changed_cb)
         self.widget.button_more.connect("clicked", self.on_more_button_clicked_cb)
+        self.widget_align.add(self.widget)
 
     def init_values(self, value_list):
         self.this_list = value_list
@@ -68,7 +72,7 @@ class SoundTray(object):
         return 2
 
     def plugin_widget(self):
-        return self.widget
+        return self.widget_align
 
     def show_menu(self):
         self.this.set_size_request(self.WIN_WIDTH, self.widget.get_widget_height())
