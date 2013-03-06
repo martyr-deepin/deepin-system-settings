@@ -34,6 +34,7 @@ from ui.delete_view import DeleteView
 from constant import STATUS_HEIGHT, WIDGET_HEIGHT
 from helper import event_manager
 from nls import _
+from constant import CONTENT_FONT_SIZE
 
 class DeletePage(TabBox):
     '''
@@ -91,7 +92,8 @@ class DeletePage(TabBox):
                                 100,                                                
                                 lambda : self.delete_view.delete_wallpaper(),                   
                                 None,                                               
-                                True)                                               
+                                True, 
+                                CONTENT_FONT_SIZE)                                               
             dlg.show_all()
 
     def draw_tab_title_background(self, cr, widget):

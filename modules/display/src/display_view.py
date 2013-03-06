@@ -287,6 +287,7 @@ class DisplayView(gtk.VBox):
         self.goto_align = self.__setup_align()
         self.goto_box = gtk.VBox(spacing = WIDGET_SPACING)
         self.goto_label = self.__setup_label(_("Relative Settings"), 
+                                             text_size = TITLE_FONT_SIZE, 
                                              width = None, 
                                              align = ALIGN_START)
         goto_color = GOTO_FG_COLOR
