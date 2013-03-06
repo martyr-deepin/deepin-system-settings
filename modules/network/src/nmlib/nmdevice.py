@@ -197,24 +197,29 @@ class NMDevice(NMObject):
         #self.emit("state-changed", new_state, old_state, reason)
         #self.init_nmobject_with_properties()
 
+        if old_state == 100:
+            print "device-deactive", new_state, old_state, reason
+            self.emit("device-deactive", new_state, old_state, reason)
+            return 
+
+        if new_state == 40:
+            print "activate-start", new_state, old_state, reason
+            self.emit("activate-start", new_state, old_state, reason)
+            return 
+
         if new_state == 100:
             print "device-active", new_state, old_state, reason
             self.emit("device-active", new_state, old_state, reason)
             return 
 
-        elif new_state == 120:
+        if new_state == 120:
             print "activate-failed", new_state, old_state, reason
             self.emit("activate-failed", new_state, old_state, reason)
             return 
 
-        elif new_state == 40:
-            print "activate-start", new_state, old_state, reason
-            self.emit("activate-start", new_state, old_state, reason)
-            return 
-
-        elif old_state == 100:
-            print "device-deactive", new_state, old_state, reason
-            self.emit("device-deactive", new_state, old_state, reason)
+        if new_state == 10 or new_state == 20:
+            print "device-unavailable", new_state, old_state, reason
+            self.emit("device-unavailable", new_state, old_state, reason)
             return 
 
 if __name__ == "__main__":

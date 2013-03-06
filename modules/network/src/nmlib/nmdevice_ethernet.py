@@ -48,15 +48,13 @@ class NMDeviceEthernet(NMDevice):
         return self.properties["Speed"]
 
     def auto_connect(self):
-        if cache.getobject(self.object_path).is_active():
-            return True
-        if cache.getobject(self.object_path).get_state() < 30:
-            return False
+        #if cache.getobject(self.object_path).is_active():
+        #    return True
+        #if cache.getobject(self.object_path).get_state() < 30:
+        #    return False
 
-        # wired_connections = nm_remote_settings.get_wired_connections()
-        wired_connections = sorted(nm_remote_settings.get_wired_connections(), key = lambda x:x.succeed_flag)
-        if len(wired_connections) != 0:
-            for conn in wired_connections:
+        if len(nm_remote_settings.get_wired_connections()) != 0:
+            for conn in sorted(nm_remote_settings.get_wired_connections(), key = lambda x:x.succeed_flag):
                 try:
                     nmclient.activate_connection(conn.object_path, self.object_path, "/")
                     if cache.getobject(self.object_path).is_active():
