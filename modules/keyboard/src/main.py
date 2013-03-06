@@ -134,7 +134,7 @@ class KeySetting(object):
             app_theme.get_color("globalTitleForeground"),
             text_size=title_item_font_size, enable_select=False, enable_double_click=False)
 
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["repeat_test_entry"] = InputEntry(_("Test Repeat Interval"))
         self.button_widgets["blink_test_entry"] = BlinkButton()
