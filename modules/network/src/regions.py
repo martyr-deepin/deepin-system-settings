@@ -202,9 +202,7 @@ class Region(gtk.Alignment):
         else:
             self.connection = connection
             mobile_type = connection.get_setting("connection").type
-            broadband_setting = self.connection.get_setting(mobile_type)
-            self.connection_type = broadband_setting.network_type
-
+            self.connection_type = mobile_type
         Dispatcher.send_submodule_crumb(_("Region"), 2)
 
         from mm.provider import ServiceProviders
