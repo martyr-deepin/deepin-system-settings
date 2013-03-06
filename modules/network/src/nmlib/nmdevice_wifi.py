@@ -106,19 +106,28 @@ class NMDeviceWifi(NMDevice):
         else:
             return []
 
-    def get_ssid_connection(self, ssid):
+    def active_ssid_connection(self, ssid):
+        '''try only one connection now'''
+        if cache.getobject(self.object_path).is_active():
+            conn = cache.getobject(self.object_path).get_active_connection().get_connection()
+            if conn.settings_dict["802-11-wireless"]["ssid"] == ssid:
+                return None
+        else:
+            pass
+
         connections = nm_remote_settings.get_ssid_associate_connections(ssid)
         if connections:
-            for conn in connections:
-                try:
-                    specific = self.get_ap_by_ssid(ssid)
-                    nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
-                    if cache.getobject(self.object_path).is_active():
-                        return True
-                    else:
-                        continue
-                except:
-                    pass
+            from nm_secret_agent import secret_agent
+            conn = sorted(connections, key = lambda x:secret_agent.get_conn_priority(x.object_path))[0]
+            try:
+                specific = self.get_ap_by_ssid(ssid)
+                nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
+                if cache.getobject(self.object_path).is_active():
+                    return None
+                else:
+                    return conn
+            except:
+                return conn
         else:
             return nm_remote_settings.new_wireless_connection(ssid, None)
 
