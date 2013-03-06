@@ -137,20 +137,20 @@ class NetManager(object):
     def active_wireless_device(self, actived_cb):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
 
-        def device_is_active(widget, reason):
-            print "active"
-            actived_cb()
-        wireless_device.connect("device-active", device_is_active)
+        #def device_is_active(widget, reason):
+            #print "active"
+            #actived_cb()
+        #wireless_device.connect("device-active", device_is_active)
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         device_wifi.auto_connect()
 
     def disactive_wireless_device(self, disactived_cb):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         
-        def device_is_disactive( widget, reason):
-            active = wireless_device.get_active_connection()
-            disactived_cb()
-        wireless_device.connect("device-deactive", device_is_disactive)
+        #def device_is_disactive( widget, reason):
+            #active = wireless_device.get_active_connection()
+            #disactived_cb()
+        #wireless_device.connect("device-deactive", device_is_disactive)
         wireless_device.nm_device_disconnect()
 
 

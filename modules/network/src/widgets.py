@@ -67,6 +67,7 @@ class AskPasswordDialog(DialogBox):
                                                     method)
         else:
             if key_mgmt:
+                print key_mgmt
                 self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, key_mgmt)
             init_text = ''
         self.entry = PasswordEntry(init_text)

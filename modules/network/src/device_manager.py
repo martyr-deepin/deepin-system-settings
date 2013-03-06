@@ -15,7 +15,6 @@ class DeviceManager(object):
         self.__signal_list = ["device_active",
                               "device_deactive",
                               "device_unavailable",
-                              "device_available",
                               "activate_start",
                               "activate_failed"]
 
@@ -23,28 +22,19 @@ class DeviceManager(object):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
 
-    #def init_signals(self):
-        #if self.wired_devices:
-            #for device in self.wired_devices:
-                #device.connect("state-changed", self.__wired_state_change)
-
-        #if self.wireless_devices:
-            #for device in self.wireless_devices:
-                #device.connect("state-changed", self.__wireless_state_change)
-
     def load_wired_listener(self, module):
         if self.wired_devices:
             for device in self.wired_devices:
-                map(lambda s: self.__connect(device, s, module), self.__signal_list)
+                map(lambda s: self.__connect(device, s, module, "wired"), self.__signal_list)
 
     def load_wireless_listener(self, module):
         if self.wireless_devices:
             for device in self.wireless_devices:
-                map(lambda s: self.__connect(device, s, module), self.__signal_list)
+                map(lambda s: self.__connect(device, s, module, "wireless"), self.__signal_list)
                 
     
-    def __connect(self, sender, signal, module):
-        sender.connect(signal, getattr(module, signal))
+    def __connect(self, sender, signal, module, type):
+        sender.connect(signal, getattr(module, type + "_" + signal))
 
     def __wired_state_change(self, widget, new_state, old_state, reason):
         Dispatcher.wired_change(widget, new_state, reason)

@@ -46,7 +46,7 @@ BG_COLOR = color_hex_to_cairo(bg_color)
 class TrayUI(gtk.VBox):
 
     def __init__(self, wired_toggle_cb, wireless_toggle_cb, mobile_toggle_cb):
-        gtk.VBox.__init__(self)
+        gtk.VBox.__init__(self, spacing=0)
         self.wired_toggle = wired_toggle_cb
         self.wireless_toggle = wireless_toggle_cb
         self.mobile_toggle = mobile_toggle_cb
@@ -58,45 +58,57 @@ class TrayUI(gtk.VBox):
         self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.wired_toggle)
         self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), self.wireless_toggle)
         self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
-        self.pack_start(self.wire, False, False)
-        self.pack_start(self.wireless, False, False)
 
         self.ssid_list = []
-        self.tree_box = gtk.VBox()
-        #align.add(self.tree_box)
-        self.pack_start(self.tree_box, False, False)
-        self.pack_start(self.mobile, False, False)
-        style.add_separator(self)
-        #self.pack_start(hseparator, False, False)
-        self.button_more = SelectButton(_("Advanced..."), font_size=9, ali_padding=5)
+        self.tree_box = gtk.VBox(spacing=0)
+        self.button_more = SelectButton(_("Advanced..."), font_size=10, ali_padding=5)
         self.button_more.set_size_request(-1, 25)
-        self.pack_start(self.button_more, False, False)
+        #self.pack_start(self.button_more, False, False)
         self.ap_tree = TreeView()
-        self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
+        #self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
+
+        self.wire_box = self.section_box([self.wire])
+        self.wireless_box = self.section_box([self.wireless, self.tree_box])
+        self.mobile_box = self.section_box([self.mobile])
+
+        self.pack_start(self.wire_box, False, False)
+        self.pack_start(self.wireless_box, False, False)
+        self.pack_start(self.mobile_box, False, False)
+        self.pack_start(self.button_more, False, False)
 
     def get_widget_height(self):
         height = 0
         widgets = self.get_children()
-        if self.wire in widgets:
+        if self.wire_box in widgets:
             height += 30
-        if self.wireless in widgets:
-            height +=30
+        if self.wireless_box in widgets:
+            height += 30
             if self.ap_tree.visible_items and self.wireless.get_active():
-                if len(self.ap_tree.visible_items) >=10:
-                    height += 10 * WIDGET_HEIGHT
-                else:
-                    height += len(self.ap_tree.visible_items) * WIDGET_HEIGHT
-            if self.more_button in self.tree_box.get_children():
-                height += WIDGET_HEIGHT
-        height += 30
-        height += 30
+                height += self.ap_tree.get_size_request()[1]
+                #if len(self.ap_tree.visible_items) >=10:
+                    #height += 10 * WIDGET_HEIGHT
+                #else:
+                    #height += len(self.ap_tree.visible_items) * WIDGET_HEIGHT
+            #if self.more_button in self.tree_box.get_children():
+                #height += WIDGET_HEIGHT
+
+        if self.mobile_box in widgets:
+            height += 30
+        height += 25
         return height
+
+    def section_box(self, widgets):
+        box = gtk.VBox(spacing=0)
+        for w in widgets:
+            box.pack_start(w, False, False)
+        style.add_separator(box, 5)
+        return box
 
     def remove_net(self, net_type):
         if net_type == "wired":
-            self.remove(self.wire)
+            self.remove(self.wire_box)
         elif net_type == "wireless":
-            self.remove(self.wireless)
+            self.remove(self.wireless_box)
 
     def set_wired_state(self, widget, new_state, reason):
         if new_state is 20:
@@ -139,26 +151,22 @@ class TrayUI(gtk.VBox):
         self.ap_tree.delete_all_items()
         container_remove_all(self.tree_box)
 
-        if len(ap_list) <= 5:
-            self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list))
-            self.tree_box.pack_start(self.ap_tree, True, True)
-            #self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*len(ap_list))
+        self.ap_tree.add_items(map(lambda ap: SsidItem(ap), self.__ap_list))
+        length = len(self.ap_tree.visible_items)
+        if length <=10:
+            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*length)
         else:
-            self.ap_tree.add_items(map(lambda ap: SsidItem(ap), ap_list[:5]))
-            self.more_button.set_ap_list(ap_list[5:])
-            self.tree_box.pack_start(self.ap_tree, True, True)
-            self.tree_box.pack_start(self.more_button, False, False)
-            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
-            #self.ap_tree.add_items([MoreItem(more_ap, self.resize_tree)])
+            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*10)
+            for item in self.ap_tree.visible_items:
+                item.set_padding(10)
+
+        self.tree_box.pack_start(self.ap_tree, False, False)
         self.show_all()
 
         Dispatcher.request_resize()
 
     def __set_ap_list(self, ap_list):
         self.__ap_list = ap_list
-        #self.set_visible_aps()
-        #height = self.get_height()
-        #Dispatcher.request_resize(height)
 
     def move_active(self, index):
         if index != [] and self.__ap_list:
@@ -187,9 +195,6 @@ class TrayUI(gtk.VBox):
 
     def resize_tree(self):
         self.tree_box.remove(self.more_button)
-        #self.set_visible_aps(True)
-        #height = self.get_height()
-        #Dispatcher.request_resize(height)
         container_remove_all(self.tree_box)
         self.ap_tree.delete_all_items()
 
@@ -225,13 +230,14 @@ class Section(gtk.HBox):
     TOGGLE_INACTIVE = 1
     TOGGLE_ACTIVE = 2
 
-    def __init__(self, icon, text, toggle_callback):
+    def __init__(self, icon, text, toggle_callback, has_separater=True):
         gtk.HBox.__init__(self)
         self.icon = icon
         self.text = text
         self.toggle_callback = toggle_callback
-        self.height = WIDGET_HEIGHT
+        self.height = 30
         self.set_size_request(-1, self.height)
+        self.has_separater = has_separater
 
         self.__init_ui()
 
@@ -240,10 +246,21 @@ class Section(gtk.HBox):
         self.label = Label(self.text)
         self.offbutton = OffButton()
         self.offbutton.connect("toggled", self.toggle_callback)
-        self.pack_start(style.wrap_with_align(icon), False, False)
-        self.pack_start(style.wrap_with_align(self.label, align="left"), False, False, padding=10)
-        self.pack_end(style.wrap_with_align(self.offbutton), False, False)
+        self.pack_start(self.__wrap_with_align(icon), False, False)
+        self.pack_start(self.__wrap_with_align(self.label, align="left"), False, False, padding=10)
+        self.pack_end(self.__wrap_with_align(self.offbutton), False, False)
         self.show_all()
+
+
+    def __wrap_with_align(self, widget, align="right",h=25):
+        if align is "left":
+            align = gtk.Alignment(0, 0.5, 1, 0)
+        elif align is "right":
+            align = gtk.Alignment(1, 0.5, 0, 0)
+            align.set_padding(0,0, 1, 0)
+        align.set_size_request( -1, h)
+        align.add(widget)
+        return align
 
     def get_active(self):
         return self.offbutton.get_active()

@@ -89,33 +89,37 @@ class WiredSection(gtk.VBox):
         
     def init_signals(self):
         device_manager.load_wired_listener(self)
-
-    def device_active(self, widget, new_state, old_state, reason):
+    
+    ## TODO
+    def wired_device_active(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
         self.wire.set_active(True)
         if self.tree.visible_items != []:
             self.tree.visible_items[index].set_net_state(2)
             self.tree.queue_draw()
 
-    def device_deactive(self, widget, new_state, old_state, reason):
+    def wired_device_deactive(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
         if not reason == 0:
             if self.tree.visible_items != []:
                 self.tree.visible_items[index].set_net_state(0)
                 self.tree.queue_draw()
 
-    def device_unavailable(self,  widget, new_state, old_state, reason):
+    def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         pass
+        #index = self.wired_devices.index(widget)
+        #if self.tree.visible_items != []:
+            #self.tree.visible_items[index].set_net_state(0)
+            #self.tree.queue_draw()
+        #self.wire.set_active(False)
 
-    def device_available(self, widget, new_state, old_state, reason):
+    def wired_activate_start(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
         if self.tree.visible_items != []:
             self.tree.visible_items[index].set_net_state(1)
             self.tree.queue_draw()
 
-    def activate_start(self, widget, new_state, old_state, reason):
-        pass
-    def activate_failed(self, widget, new_state, old_state, reason):
+    def wired_activate_failed(self, widget, new_state, old_state, reason):
         pass
         #Dispatcher.connect("wired_change", self.wired_changed_cb)
 
@@ -259,31 +263,39 @@ class WirelessSection(gtk.VBox):
     def __init_signals(self):
         device_manager.load_wireless_listener(self)
     
-        ###signals 
-    def device_active(self,  widget, new_state, old_state, reason):
+        #TODO signals 
+    def wireless_device_active(self,  widget, new_state, old_state, reason):
         self.device_is_active(widget)
 
-    def device_deactive(self, widget, new_state, old_state, reason):
+    def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        if not self.wireless.get_active():
+            return 
+        if reason == 39:
+            self.wireless.set_active(False)
+        else:
+            try:
+                if self.tree.visible_items != []:
+                    self.tree.visible_items[self.index].set_net_state(0)
+                    self.tree.visible_items[self.index].redraw()
+            except:
+                if self.hotspot.get_net_state() == 1:
+                    self.hotspot.set_net_state(0)
+
+    def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         pass
 
-    def device_unavailable(self, widget, new_state, old_state, reason):
-        self.wireless.set_active(False)
-
-    def device_available(self, widget, new_state, old_state, reason):
-        self.wireless.set_active(True)
-
-    def activate_start(self, widget, new_state, old_state, reason):
+    def wireless_activate_start(self, widget, new_state, old_state, reason):
         ssid = self._get_active_ssid(widget)
         if ssid:
             self.try_to_connect(ssid)
 
-    def activate_failed(self, widget, new_state, old_state, reason):
+    def wireless_activate_failed(self, widget, new_state, old_state, reason):
         connections = nm_module.nmclient.get_active_connections()
         active_connection = connections[-1]
         self.this_connection = active_connection.get_connection()
         self.this_device.nm_device_disconnect()
         self.toggle_dialog(self.this_connection)
-
+    ######
 
     def _get_active_ssid(self, device):
         active_conn = device.get_real_active_connection()
@@ -291,8 +303,6 @@ class WirelessSection(gtk.VBox):
             return active_conn.get_setting("802-11-wireless").ssid
         else:
             return False
-
-        
 
     def state_changed_callback(self, widget, device, new_state, old_state, reason):
         print "main::wireless",new_state, reason

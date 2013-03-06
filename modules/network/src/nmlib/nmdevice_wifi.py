@@ -139,8 +139,8 @@ class NMDeviceWifi(NMDevice):
             except:
                 pass
 
-        if not cache.getobject(self.object_path).is_active():
-            return nm_remote_settings.new_wireless_connection(ssid, None) 
+        #if not cache.getobject(self.object_path).is_active():
+            #return nm_remote_settings.new_wireless_connection(ssid, None) 
 
     def auto_connect(self):
         if cache.getobject(self.object_path).is_active():
