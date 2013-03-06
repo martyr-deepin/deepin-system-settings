@@ -103,7 +103,15 @@ class DesktopView(gtk.VBox):
         self.display_style_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.display_style_label = self.__setup_label(_("Display Style"))
         self.display_style_combo = self.__setup_combo(self.display_style_items)
-        self.display_style_combo.set_select_index(0)
+        hide_mode = self.dock_settings.get_string("hide-mode")
+        hide_mode_index = 0
+        if hide_mode == "default":
+            hide_mode_index = 0
+        elif hide_mode == "autohide":
+            hide_mode_index = 1
+        else:
+            hide_mode_index = 2
+        self.display_style_combo.set_select_index(hide_mode_index)
         self.display_style_combo.connect("item-selected", self.__combo_item_selected, "display_style")
         self.__widget_pack_start(self.display_style_box, 
             [self.display_style_label, self.display_style_combo])
@@ -128,7 +136,7 @@ class DesktopView(gtk.VBox):
         self.icon_size_label = self.__setup_label(_("Icon Size"))
         self.icon_size_combo = self.__setup_combo(self.icon_size_items)
         self.icon_size_combo.set_select_index(0)
-        if self.dock_settings.get_boolean("mini-model"):
+        if self.dock_settings.get_boolean("active-mini-mode"):
             self.icon_size_combo.set_select_index(1)
         self.icon_size_combo.connect("item-selected", self.__combo_item_selected, "icon_size")
         self.__widget_pack_start(self.icon_size_box, 
@@ -327,10 +335,20 @@ class DesktopView(gtk.VBox):
             parent_widget.pack_start(item, False, False)
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
+        if object == "display_style":
+            if item_value == 0:
+                self.dock_settings.set_string("hide-mode", "default")
+            elif item_value == 1:
+                self.dock_settings.set_string("hide-mode", "autohide")
+            elif item_value == 2:
+                self.dock_settings.set_string("hide-mode", "keephidden")
+            return
+
         if object == "icon_size":
             if item_value == 0:
-                self.dock_settings.set_boolean("mini-model", False)
+                self.dock_settings.set_boolean("active-mini-mode", False)
             else:
-                self.dock_settings.set_boolean("mini-model", True)
+                self.dock_settings.set_boolean("active-mini-mode", True)
+            return
 
 gobject.type_register(DesktopView)        

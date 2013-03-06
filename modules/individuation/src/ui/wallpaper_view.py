@@ -35,26 +35,25 @@ class WallpaperView(IconView):
     def __init__(self, padding_x=8, padding_y=10):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
         
-        self.is_delete = False
-        
         self.add_item = AddItem()
         self.add_items([self.add_item])
         
         event_manager.add_callback("add-wallpapers", self.on_add_wallpapers)
+        event_manager.add_callback("add-download-wallpapers", self.on_add_wallpapers)
         event_manager.add_callback("wallpapers-deleted", self.on_wallpapers_deleted)
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
         event_manager.add_callback("apply-download-wallpaper", self.on_download_wallpaper_apply)
         self.theme = None
 
-    def set_theme(self, theme, is_delete=False):    
+    def set_theme(self, theme):    
         self.theme = theme
-        self.is_delete = is_delete
         self.clear()
-        if not is_delete:
-            self.add_items([self.add_item])
-        if not is_delete:
-            self.add_system_wallpapers(self.theme.get_system_wallpapers())        
+        self.add_item.set_theme(self.theme)
+        
+        self.add_items([self.add_item])
+        
+        self.add_system_wallpapers(self.theme.get_system_wallpapers())        
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
         
     def is_exists(self, image):    
@@ -77,15 +76,12 @@ class WallpaperView(IconView):
         self.add_images(image_paths, readonly=True)
         
     def add_images(self, images, readonly=False):
-        items = map(lambda image: WallpaperItem(image, readonly, self.theme, self.is_delete), images)
+        items = map(lambda image: WallpaperItem(image, readonly, self.theme), images)
         self.add_items(items, insert_pos=-1)
         
     def on_wallpaper_select(self, name, obj, select_item):    
-        if len([item for item in self.items if item.is_tick]) == 0:
-            select_item.tick()
-        else:    
-            image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
-            self.apply_wallpapers(image_uris)
+        image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
+        self.apply_wallpapers(image_uris)
 
     def is_deletable(self):
         for item in self.items:
@@ -102,6 +98,17 @@ class WallpaperView(IconView):
         self.theme.save()
         self.set_theme(self.theme, True)
 
+    def is_randomable(self):
+        i = 0
+
+        for item in self.items:
+            if item.is_tick:
+                i += 1
+        if i < 2:
+            return False
+
+        return True
+
     def is_select_all(self):
         for item in self.items:
             if item.__class__.__name__ == "AddItem":
@@ -112,20 +119,17 @@ class WallpaperView(IconView):
 
         return True
 
-    def select_all(self, unselect=False):
+    def select_all(self):
         is_select_all = self.is_select_all()
 
         for item in self.items:
-            if unselect:
+            if is_select_all:
                 item.untick()
             else:
-                if is_select_all:
-                    item.untick()
-                else:
-                    item.tick()
-            if not self.is_delete:
-                image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
-                self.apply_wallpapers(image_uris)
+                item.tick()
+        
+        image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
+        self.apply_wallpapers(image_uris)
 
     def on_download_wallpaper_apply(self, name, obj, image_path):
         image_uris = ["file://%s" % image_path]
@@ -147,6 +151,7 @@ class WallpaperView(IconView):
         filter_images = filter(lambda image: not self.is_exists(image), image_paths)        
         if filter_images:
             self.add_user_wallpapers(filter_images, save=True)
+        event_manager.emit("update-theme", None)
             
     def on_wallpapers_deleted(self, name, obj, image_paths):        
         items = filter(lambda item: item.image_path in image_paths, self.items)

@@ -68,14 +68,16 @@ class MobileSetting(Settings):
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 mobile_type = connection.get_setting("connection").type
                 Dispatcher.emit("connection-replace", connection)
+
                 #index = self.sidebar.new_connection_list[mobile_type].index(connection)
                 #self.sidebar.new_connection_list[mobile_type].pop(index)
                 #self.init(self.sidebar.new_connection_list)
 
+            Dispatcher.to_main_page()
                 # reset index
                 #con = self.sidebar.connection_tree.visible_items[this_index]
                 #self.sidebar.connection_tree.select_items([con])
-        self.set_button("apply", True)
+        #self.set_button("apply", True)
 
         ##FIXME need to change device path into variables
     def apply_change(self):

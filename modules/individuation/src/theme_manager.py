@@ -99,6 +99,9 @@ class ThemeFile(RawConfigParser):
         return RawConfigParser.has_option(self, section, option)
 
     def remove_option(self, section, option):
+        if not self.has_option(section, option):
+            return
+
         RawConfigParser.remove_option(self, section, option)
 
     def save(self):
@@ -376,7 +379,6 @@ class ThemeManager(object):
     
     def is_current_theme(self, theme):
         return theme.location == global_settings.get_option("settings/theme", "")
-    
     
     def apply_theme(self, theme):
         duration = theme.get_background_duration()

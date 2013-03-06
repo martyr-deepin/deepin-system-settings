@@ -67,16 +67,13 @@ class AskPasswordDialog(DialogBox):
                                                     method)
         else:
             if key_mgmt:
+                print key_mgmt
                 self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, key_mgmt)
             init_text = ''
         self.entry = PasswordEntry(init_text)
 
         self.entry.set_size(default_width - 20, 25)
         
-        self.encry_list = [(_("None"), None),
-                      (_("WEP (Hex or ASCII)"), "none"),
-                      (_("WEP 104/128-bit Passphrase"), "none"),
-                      (_("WPA WPA2 Personal"), "wpa-psk")]
         
         self.confirm_button = Button(_("OK"))
         self.cancel_button = Button(_("Cancel"))
@@ -91,7 +88,26 @@ class AskPasswordDialog(DialogBox):
         self.right_button_box.set_buttons([self.confirm_button, self.cancel_button])
         
         self.connect("show", self.focus_input)
-        
+
+    def __init_ui(self):
+        table = gtk.Table()
+
+    def __init_widget(self):
+        self.encry_list = [(_("None"), None),
+                      (_("WEP (Hex or ASCII)"), "none"),
+                      (_("WEP 104/128-bit Passphrase"), "none"),
+                      (_("WPA WPA2 Personal"), "wpa-psk")]
+
+        self.security_label = self.__set_label(_("Security:"))
+        self.key_label = self.__set_label(_("Key:"))
+        self.wep_index_label = self.__set_label(_("Wep index:"))
+        self.auth_label = self.__set_label(_("Authentication:"))
+        self.password_label = self.__set_label(_("Password:"))
+    
+    def __set_label(self, name):
+        return Label(name, enable_select=False, enable_double_click=False)
+
+
     def focus_input(self, widget):
         '''
         Grab focus on input entry.
@@ -99,6 +115,7 @@ class AskPasswordDialog(DialogBox):
         @param widget: InputDialog widget.
         '''
         self.entry.entry.grab_focus()        
+
         
     def click_confirm_button(self):
         '''

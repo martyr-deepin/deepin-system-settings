@@ -70,7 +70,7 @@ class SettingVolumeThread(td.Thread):
 
 class TrayGui(gtk.VBox):
     '''sound tray gui'''
-    BASE_HEIGHT = 170
+    BASE_HEIGHT = 128
 
     __gsignals__ = {
         "stream-changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
@@ -90,11 +90,11 @@ class TrayGui(gtk.VBox):
         #hseparator.set_size_request(150, 3)
         separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
         hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(140, 3)
+        hseparator.set_size_request(140, 5)
         #hbox.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False)), False, False)
         #hbox.pack_start(self.__make_align(hseparator), True, True)
-        self.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False)), False, False)
-        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=7), False, False)
+        self.pack_start(self.__make_align(Label(_("Device"), enable_select=False, enable_double_click=False), height=-1), False, False)
+        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=5), False, False)
 
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
 
@@ -104,7 +104,7 @@ class TrayGui(gtk.VBox):
         self.speaker_scale.set_size_request(100, 10)
         self.speaker_mute_button = OffButton()
         table.attach(self.__make_align(speaker_img), 0, 1, 0, 1, 4)
-        table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30), 1, 2, 0, 1, 4)
+        table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=25), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
@@ -112,7 +112,7 @@ class TrayGui(gtk.VBox):
         self.microphone_scale.set_size_request(100, 10)
         self.microphone_mute_button = OffButton()
         table.attach(self.__make_align(microphone_img), 0, 1, 1, 2, 4)
-        table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30), 1, 2, 1, 2, 4)
+        table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, height=25), 1, 2, 1, 2, 4)
         table.attach(self.__make_align(self.microphone_mute_button), 2, 3, 1, 2, 4)
 
         self.pack_start(table, False, False)
@@ -120,19 +120,19 @@ class TrayGui(gtk.VBox):
         self.__app_vbox = gtk.VBox(False)
         separator_color = [(0, ("#777777", 0.0)), (0.5, ("#000000", 0.3)), (1, ("#777777", 0.0))]
         hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(140, 3)
+        hseparator.set_size_request(140, 5)
         self.__app_vbox.pack_start(self.__make_align(Label(_("Applications"), enable_select=False, enable_double_click=False)), False, False)
-        self.__app_vbox.pack_start(self.__make_align(hseparator, xalign=0.5, height=7), False, False)
+        self.__app_vbox.pack_start(self.__make_align(hseparator, xalign=0.5, height=5), False, False)
         self.pack_start(self.__app_vbox)
 
         hseparator = HSeparator(separator_color, 0, 0)
         hseparator.set_size_request(140, 3)
-        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=10), False, False)
+        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=5), False, False)
 
         self.button_more = SelectButton(_("Advanced..."), font_size=10, ali_padding=5)
-        self.button_more.set_size_request(-1, 30)
-        self.pack_start(self.button_more)
-        self.pack_start(self.__make_align(height=10))
+        self.button_more.set_size_request(-1, 25)
+        self.pack_start(self.button_more, False, False)
+        #self.pack_start(self.__make_align(height=10))
         ##########################################
         self.__set_output_status()
         self.__set_input_status()
@@ -158,7 +158,7 @@ class TrayGui(gtk.VBox):
 
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
-                     padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
+                     padding_right=0, width=-1, height=25):
         align = gtk.Alignment()
         align.set_size_request(width, height)
         align.set(xalign, yalign, xscale, yscale)
@@ -193,7 +193,7 @@ class TrayGui(gtk.VBox):
         mute_button = OffButton()
         hbox = gtk.HBox()
         hbox.pack_start(self.__make_align(img), False, False)
-        hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=30))
+        hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, height=25), False, False)
         hbox.pack_start(self.__make_align(mute_button), False, False)
         self.stream_list[index]['scale'] = scale
         self.stream_list[index]['button'] = mute_button
@@ -287,8 +287,11 @@ class TrayGui(gtk.VBox):
             current_sink = pypulse.get_fallback_sink_index()
             sinks = pypulse.PULSE.get_output_devices()
             sink_volume = pypulse.PULSE.get_output_volume()
+            tip_text = "%s %d%%" % (_("Volume"), self.speaker_scale.get_value())
             if current_sink in sinks and current_sink in sink_volume:
                 is_mute = sinks[current_sink]['mute']
+                if is_mute:
+                    tip_text = _("Mute")
                 volume = max(sink_volume[current_sink]) * 100.0 / pypulse.NORMAL_VOLUME_VALUE
                 if volume == 0:
                     volume_level = 0
@@ -299,6 +302,8 @@ class TrayGui(gtk.VBox):
                 else:
                     volume_level = 3
                 self.tray_obj.set_tray_icon(volume_level, is_mute)
+            if self.tray_obj.tray_obj:
+                self.tray_obj.tray_obj.set_tooltip_text(tip_text)
 
     def source_changed_cb(self, obj, index):
         obj.get_devices()
@@ -410,11 +415,12 @@ class TrayGui(gtk.VBox):
     ######################
     def get_widget_height(self):
         if self.stream_num > 0:
-            return self.BASE_HEIGHT + 40 + 30 * self.stream_num
+            return self.BASE_HEIGHT + 30 + 25 * self.stream_num + 5
         else:
-            return self.BASE_HEIGHT + 30 * self.stream_num
+            return self.BASE_HEIGHT + 5
 
     def adjust_size(self):
-        self.set_size_request(200, self.get_widget_height())
+        #self.set_size_request(152, self.get_widget_height())
+        self.set_size_request(-1, -1)
 
 gobject.type_register(TrayGui)

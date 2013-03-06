@@ -38,7 +38,7 @@ class AddPage(gtk.HBox):
     
     def __init__(self):
         gtk.HBox.__init__(self)
-        
+
         self.aibizhi_cache_page = CachePage(Aibizhi())
         self.bizhi360_cache_page = CachePage(Bizhi360())
         
@@ -60,6 +60,13 @@ class AddPage(gtk.HBox):
         event_manager.add_callback("downloading-tasks-number", self.on_download_item_changed)
         self.connect("expose-event", self.on_addpage_expose_event)
         
+    def set_theme(self, theme):
+        self.system_wallpapers_page.set_theme(theme)
+        self.picture_wallpapers_page.set_theme(theme)
+        self.download_wallpapaers_page.set_theme(theme)
+        self.aibizhi_cache_page.set_theme(theme)
+        self.bizhi360_cache_page.set_theme(theme)
+
     def on_download_item_changed(self, name, obj, data):    
         pass
 
@@ -77,8 +84,9 @@ class AddPage(gtk.HBox):
         local_expand_item.add_childs([(_("System"), self.system_wallpapers_page),
                                       (_("Picture"), self.picture_wallpapers_page), 
                                       (_("Downloaded"), self.download_wallpapaers_page)], expand=True)
-        network_expand_item.add_childs([(_("LoveBiZhi HD"), self.aibizhi_cache_page),
-                                        (_("360BiZhi"), self.bizhi360_cache_page)], expand=True)        
+        network_expand_item.add_childs([(_("360BiZhi"), self.bizhi360_cache_page), 
+                                        (_("LoveBiZhi HD"), self.aibizhi_cache_page),
+                                       ], expand=True)        
         
         self.navigatebar.set_highlight_item(self.navigatebar.get_items()[1])
         

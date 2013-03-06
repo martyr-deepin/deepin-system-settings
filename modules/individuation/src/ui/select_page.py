@@ -35,6 +35,7 @@ from monitor import LibraryMonitor
 from xdg_support import get_images_dir
 import common
 from nls import _
+from constant import CONTENT_FONT_SIZE
 
 class SelectView(IconView):
     SHOW_ITEM_COUNT = 16
@@ -54,7 +55,7 @@ class SelectView(IconView):
         self.library_monitor.connect("location-removed", self.on_library_location_removed)
         self.__image_index = 0
         self.__init_monitor_images()
-        
+
     def on_library_file_added(self, obj, gfile):    
         is_image_type = common.gfile_is_image(gfile)
         if is_image_type:
@@ -155,9 +156,14 @@ class SelectView(IconView):
         return True
 
     def select_all(self):
-        for item in self.items:
-            item.tick()
-        
+        is_select_all = self.is_select_all()                                    
+                                                                                
+        for item in self.items:                                                 
+            if is_select_all:
+                item.untick()
+            else:
+                item.tick()
+
     def emit_add_wallpapers(self):    
         tick_items = filter(lambda item : item.is_tick, self.items)
         if tick_items:
@@ -168,17 +174,23 @@ class SystemPage(gtk.VBox):
     def __init__(self, monitor_dir):
         
         gtk.VBox.__init__(self)
+
+        self.theme = None
+
         self.set_spacing(10)
         
         self.select_view = SelectView(monitor_dir)
         self.select_view_sw = self.select_view.get_scrolled_window()
         
+        self.back_button = Button(_("Back"))                                    
+        self.back_button.connect("clicked", self.__on_back)
         self.select_all_button = Button(_("Select All"))
         self.select_all_button.connect("clicked", self.on_select_all)
         add_button = Button(_("Add"))
         add_button.connect("clicked", self.on_add_wallpapers)
         
         control_box = gtk.HBox(spacing = 10)
+        control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(self.select_all_button, False, False)
         control_box.pack_start(add_button, False, False)
         
@@ -188,7 +200,21 @@ class SystemPage(gtk.VBox):
         control_align.add(control_box)
         self.pack_start(self.select_view_sw, True, True)
         self.pack_start(control_align, False, True)
-    
+
+        event_manager.add_callback("select-select-wallpaper", self.__on_select_select_wallpaper)
+  
+    def __on_back(self, widget):
+        event_manager.emit("back-to-detailpage", self.theme)
+
+    def set_theme(self, theme):
+        self.theme = theme
+
+    def __on_select_select_wallpaper(self, name, obj, select_item):
+        if self.select_view.is_select_all():                                    
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
+
     def on_select_all(self, widget):
         self.select_view.select_all()
 
@@ -208,13 +234,16 @@ class PicturePage(gtk.VBox):
                                                                                 
         self.select_view = SelectView(monitor_dir, filter_dir=["deepin-wallpapers"])
         self.select_view_sw = self.select_view.get_scrolled_window()               
- 
+
+        self.back_button = Button(_("Back"))                                    
+        self.back_button.connect("clicked", self.__on_back)
         self.select_all_button = Button(_("Select All"))                        
         self.select_all_button.connect("clicked", self.on_select_all)
         add_button = Button(_("Add"))                                              
         add_button.connect("clicked", self.on_add_wallpapers)                      
                                                                                    
-        control_box = gtk.HBox(spacing = 10)                                                 
+        control_box = gtk.HBox(spacing = 10)                
+        control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(self.select_all_button, False, False)
         control_box.pack_start(add_button, False, False)                           
                                                                                 
@@ -224,7 +253,21 @@ class PicturePage(gtk.VBox):
         control_align.add(control_box)                                          
         self.pack_start(self.select_view_sw, True, True)                        
         self.pack_start(control_align, False, True)
-    
+  
+        event_manager.add_callback("select-select-wallpaper", self.__on_select_select_wallpaper)
+
+    def __on_select_select_wallpaper(self, name, obj, select_item):             
+        if self.select_view.is_select_all():                                    
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
+
+    def __on_back(self, widget):                                                
+        event_manager.emit("back-to-detailpage", self.theme)                           
+                                                                                
+    def set_theme(self, theme):                                                 
+        self.theme = theme
+ 
     def on_select_all(self, widget):                                            
         self.select_view.select_all()                                           
                                                                                 
@@ -246,6 +289,8 @@ class UserPage(gtk.VBox):
         self.select_view = SelectView(monitor_dir)
         self.select_view_sw = self.select_view.get_scrolled_window()
         
+        self.back_button = Button(_("Back"))                                    
+        self.back_button.connect("clicked", self.__on_back)
         self.select_all_button = Button(_("Select All"))                        
         self.select_all_button.connect("clicked", self.on_select_all)           
         delete_button = Button(_("Delete"))
@@ -254,6 +299,7 @@ class UserPage(gtk.VBox):
         add_button.connect("clicked", self.on_add_wallpapers)
         
         control_box = gtk.HBox(spacing = 10)
+        control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(self.select_all_button, False, False)
         control_box.pack_start(delete_button, False, False)
         control_box.pack_start(add_button, False, False)
@@ -265,7 +311,21 @@ class UserPage(gtk.VBox):
         
         self.pack_start(self.select_view_sw, True, True)
         self.pack_start(control_align, False, True)
-    
+ 
+        event_manager.add_callback("select-select-wallpaper", self.__on_select_select_wallpaper)
+ 
+    def __on_select_select_wallpaper(self, name, obj, select_item):             
+        if self.select_view.is_select_all():                                    
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
+ 
+    def __on_back(self, widget):                                                
+        event_manager.emit("back-to-detailpage", self.theme)                           
+                                                                                
+    def set_theme(self, theme):                                                 
+        self.theme = theme
+ 
     def on_select_all(self, widget):                                            
         self.select_view.select_all()                                           
                                                                                 
@@ -273,15 +333,20 @@ class UserPage(gtk.VBox):
             self.select_all_button.set_label(_("UnSelect All"))                 
         else:                                                                   
             self.select_all_button.set_label(_("Select All"))
-   
+  
+    def __delete_confirm(self):
+        self.select_view.delete()
+        self.select_all_button.set_label(_("Select All"))
+
     def __on_delete(self, widget):
         dlg = ConfirmDialog(_("Delete Wallpaper"),                                  
                             _("Are you sure delete wallpaper?"), 
                             300,                                                
                             100,                                                
-                            lambda : self.select_view.delete(),                   
+                            lambda : self.__delete_confirm(),                   
                             None,                                               
-                            True)                                               
+                            True, 
+                            CONTENT_FONT_SIZE)                                               
         dlg.show_all()
 
     def on_add_wallpapers(self, widget):    

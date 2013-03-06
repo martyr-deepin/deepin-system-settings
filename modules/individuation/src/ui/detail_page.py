@@ -39,7 +39,7 @@ from nls import _
 import threading as td
 
 TIME_COMBO_ITEM =  [
-    ("10 %s" % _("Seconds"), 10), ("30 %s" % _("Seconds"), 30), 
+    (_("Never"), 0), ("10 %s" % _("Seconds"), 10), ("30 %s" % _("Seconds"), 30), 
     ("1 %s" % _("Minute"), 60), ("3 %s" % _("Minutes"), 180),
     ("5 %s" % _("Minutes"), 300), ("10 %s" % _("Minutes"), 600), 
     ("15 %s" % _("Minutes"), 900),("20 %s" % _("Minutes"), 1200), 
@@ -50,22 +50,6 @@ TIME_COMBO_ITEM =  [
     ]
 
 DRAW_COMBO_ITEM = [(_("Scaling"), "Scaling"), (_("Tiling"), "Tiling")]
-                                                                                
-class SelectAllThread(td.Thread):                                                  
-    def __init__(self, ThisPtr):                                                
-        td.Thread.__init__(self)                                                
-        self.setDaemon(True)                                                    
-        self.ThisPtr = ThisPtr                                                  
-                                                                                
-    def run(self):                                                              
-        try:                                                                    
-            self.ThisPtr.wallpaper_view.select_all()
-            if self.ThisPtr.wallpaper_view.is_select_all():                                 
-                self.ThisPtr.select_all_button.set_label(_("UnSelect All"))                 
-            else:                                                                   
-                self.ThisPtr.select_all_button.set_label(_("Select All"))   
-        except Exception, e:                                                    
-            print "class SecondThread got error %s" % e
 
 class DetailPage(TabBox):
     '''
@@ -97,9 +81,8 @@ class DetailPage(TabBox):
         
         self.__is_random = True
         if self.__background_settings.get_int("background-duration") == 0:
-            self.time_combobox.set_sensitive(False)
             self.__is_random = False
-        self.unorder_play = get_toggle_group(_("Random"), 
+        self.unorder_play, self.random_toggle = get_toggle_group(_("Random"), 
                                              self.__on_random_toggled, 
                                              self.__is_random)
         self.button_align = gtk.Alignment()
@@ -128,40 +111,40 @@ class DetailPage(TabBox):
         self.wallpaper_box.pack_start(self.wallpaper_view_sw, True, True)
         self.wallpaper_box.pack_start(action_bar_align, False, False)
 
-        '''
-        Window Effect
-        '''
-        self.window_effect_align = gtk.Alignment()
-        self.window_effect_align.set(0.0, 0.5, 0, 0)
-        self.window_effect_align.set_padding(10, 10, 10, 0)
-        self.window_effect_box = gtk.HBox()
-        self.window_effect_button = CheckButton("开启毛玻璃效果")
-        self.window_effect_box.pack_start(self.window_effect_button, False, False, 4)
-        self.window_effect_align.add(self.window_effect_box)
-        '''
-        Color Deepth
-        '''
-        self.color_deepth_align = gtk.Alignment()
-        self.color_deepth_align.set(0.0, 0.5, 0, 0)
-        self.color_deepth_align.set_padding(10, 10, 10, 0)
-        self.color_deepth_box = gtk.HBox(spacing=10)
-        self.color_deepth_label = Label("颜色浓度", text_x_align=ALIGN_END, label_width=60)
-        self.color_deepth_scalbar = HScalebar(                                                      
-            None, None, None, None, None, None,
-            app_theme.get_pixbuf("scalebar/point.png"), 
-            True, 
-            "%")
-        self.color_deepth_adjust = gtk.Adjustment(0, 0, 100)
-        self.color_deepth_scalbar.set_adjustment(self.color_deepth_adjust)
-        self.color_deepth_scalbar.set_size_request(355, 40)
-        self.color_deepth_box.pack_start(self.color_deepth_label)
-        self.color_deepth_box.pack_start(self.color_deepth_scalbar)
-        self.color_deepth_align.add(self.color_deepth_box)
-        self.window_theme_box.pack_start(self.window_effect_align, False, False)
-        self.window_theme_box.pack_start(self.color_deepth_align, False, False)
+        event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
+        event_manager.add_callback("apply-wallpaper", self.__on_wallpaper_apply)
+        event_manager.add_callback("add-wallpapers", self.__on_add_wallpapers)
+
+    def on_wallpaper_select(self, name, obj, select_item):
+        if self.wallpaper_view.is_randomable():
+            self.random_toggle.set_active(True)
+        else:
+            self.random_toggle.set_active(False)
+
+        if self.wallpaper_view.is_select_all():                                 
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
+
+    def __on_wallpaper_apply(self, name, obj, select_item):
+        self.random_toggle.set_active(False)
+
+        if self.wallpaper_view.is_select_all():                                 
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
 
     def __on_select_all(self, widget):
-        SelectAllThread(self).start()
+        self.wallpaper_view.select_all()                            
+        if self.wallpaper_view.is_select_all():                         
+            self.select_all_button.set_label(_("UnSelect All"))         
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
+
+        if self.wallpaper_view.is_randomable():                                 
+            self.random_toggle.set_active(True)                                 
+        else:                                                                   
+            self.random_toggle.set_active(False)
 
     def __on_delete(self, widget):
         event_manager.emit("switch-to-deletepage", self.theme)
@@ -169,14 +152,9 @@ class DetailPage(TabBox):
     def __on_random_toggled(self, widget):
         is_random = widget.get_active()
         if is_random:
-            self.time_combobox.set_sensitive(True)
-            item = self.time_combobox.get_current_item()
-            if item == None:
-                return
-            self.__background_settings.set_int("background-duration", item[1])
+            self.__background_settings.set_string("cross-fade-auto-mode", "Random")
         else:
-            self.time_combobox.set_sensitive(False)
-            self.__background_settings.set_int("background-duration", 0)
+            self.__background_settings.set_string("cross-fade-auto-mode", "Sequential")
         
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -192,9 +170,16 @@ class DetailPage(TabBox):
         self.theme.set_background_duration(data)
         self.theme.save()
 
+    def __on_add_wallpapers(self, name, obj, image_paths):
+        if len(self.wallpaper_view.items) < 2:                                  
+            self.select_all_button.set_child_visible(False)                     
+        else:                                                                   
+            self.select_all_button.set_child_visible(True)
+            self.select_all_button.set_label(_("Select All"))
+
     def set_theme(self, theme):
         self.theme = theme
-        
+       
         '''
         TODO: self.theme.name
         '''
@@ -218,6 +203,17 @@ class DetailPage(TabBox):
                 
         self.time_combobox.set_select_index(item_index)        
         self.wallpaper_view.set_theme(theme)
+       
+        if self.wallpaper_view.is_randomable():
+            self.random_toggle.set_active(True)
+        else:
+            self.random_toggle.set_active(False)
+
+        if len(self.wallpaper_view.items) < 2:
+            self.select_all_button.set_child_visible(False)
+        else:
+            self.select_all_button.set_child_visible(True)
+
         if self.wallpaper_view.is_select_all():
             self.select_all_button.set_label(_("UnSelect All"))
         

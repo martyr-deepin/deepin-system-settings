@@ -85,9 +85,43 @@ class WiredSection(gtk.VBox):
             self.init_signals()
 
             self.__init_state()
+
         
     def init_signals(self):
-        Dispatcher.connect("wired_change", self.wired_changed_cb)
+        device_manager.load_wired_listener(self)
+    
+    ## TODO
+    def wired_device_active(self, widget, new_state, old_state, reason):
+        index = self.wired_devices.index(widget)
+        self.wire.set_active(True)
+        if self.tree.visible_items != []:
+            self.tree.visible_items[index].set_net_state(2)
+            self.tree.queue_draw()
+
+    def wired_device_deactive(self, widget, new_state, old_state, reason):
+        index = self.wired_devices.index(widget)
+        if not reason == 0:
+            if self.tree.visible_items != []:
+                self.tree.visible_items[index].set_net_state(0)
+                self.tree.queue_draw()
+
+    def wired_device_unavailable(self,  widget, new_state, old_state, reason):
+        pass
+        #index = self.wired_devices.index(widget)
+        #if self.tree.visible_items != []:
+            #self.tree.visible_items[index].set_net_state(0)
+            #self.tree.queue_draw()
+        #self.wire.set_active(False)
+
+    def wired_activate_start(self, widget, new_state, old_state, reason):
+        index = self.wired_devices.index(widget)
+        if self.tree.visible_items != []:
+            self.tree.visible_items[index].set_net_state(1)
+            self.tree.queue_draw()
+
+    def wired_activate_failed(self, widget, new_state, old_state, reason):
+        pass
+        #Dispatcher.connect("wired_change", self.wired_changed_cb)
 
     def refresh_device(self):
         if self.wire.get_active():
@@ -130,6 +164,7 @@ class WiredSection(gtk.VBox):
             wired_items.append(WiredItem(wired_device,
                                          self.settings))
         return wired_items
+
 
     def try_active(self):
         for index, device in enumerate(self.wired_devices):
@@ -174,12 +209,12 @@ class WiredSection(gtk.VBox):
             self.tree.visible_items[index].set_net_state(2)
             self.tree.queue_draw()
 
-    def device_deactive(self, index, reason):
-        #print "wired is deactive"
-        if not reason == 0:
-            if self.tree.visible_items != []:
-                self.tree.visible_items[index].set_net_state(0)
-                self.tree.queue_draw()
+    #def device_deactive(self, index, reason):
+        ##print "wired is deactive"
+        #if not reason == 0:
+            #if self.tree.visible_items != []:
+                #self.tree.visible_items[index].set_net_state(0)
+                #self.tree.queue_draw()
 
     def try_activate_begin(self, index):
         #self.wire.set_active(True)
@@ -215,8 +250,9 @@ class WirelessSection(gtk.VBox):
 
 
             self.pack_start(self.vbox, False, False, 0)
+            self.__init_signals()
 
-            Dispatcher.connect("wireless-change", self.state_changed_callback)
+            #Dispatcher.connect("wireless-change", self.state_changed_callback)
 
             self.__init_state()
             #self.pack_start(self.hotspot, False, False, 0)
@@ -224,6 +260,42 @@ class WirelessSection(gtk.VBox):
             # Add signals
             #for device in self.wireless_devices:
                 #device.connect("state-changed", self.state_changed_callback)
+    def __init_signals(self):
+        device_manager.load_wireless_listener(self)
+    
+        #TODO signals 
+    def wireless_device_active(self,  widget, new_state, old_state, reason):
+        self.device_is_active(widget)
+
+    def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        if not self.wireless.get_active():
+            return 
+        if reason == 39:
+            self.wireless.set_active(False)
+        else:
+            try:
+                if self.tree.visible_items != []:
+                    self.tree.visible_items[self.index].set_net_state(0)
+                    self.tree.visible_items[self.index].redraw()
+            except:
+                if self.hotspot.get_net_state() == 1:
+                    self.hotspot.set_net_state(0)
+
+    def wireless_device_unavailable(self, widget, new_state, old_state, reason):
+        pass
+
+    def wireless_activate_start(self, widget, new_state, old_state, reason):
+        ssid = self._get_active_ssid(widget)
+        if ssid:
+            self.try_to_connect(ssid)
+
+    def wireless_activate_failed(self, widget, new_state, old_state, reason):
+        connections = nm_module.nmclient.get_active_connections()
+        active_connection = connections[-1]
+        self.this_connection = active_connection.get_connection()
+        self.this_device.nm_device_disconnect()
+        self.toggle_dialog(self.this_connection)
+    ######
 
     def _get_active_ssid(self, device):
         active_conn = device.get_real_active_connection()
@@ -232,8 +304,6 @@ class WirelessSection(gtk.VBox):
         else:
             return False
 
-        
-
     def state_changed_callback(self, widget, device, new_state, old_state, reason):
         print "main::wireless",new_state, reason
         if new_state == 10:
@@ -241,7 +311,7 @@ class WirelessSection(gtk.VBox):
         if new_state is 20:
             self.wireless.set_active(False)
         elif new_state is 30:
-            self.device_is_deactive(reason)
+            #self.device_is_deactive(reason)
             if reason == 39:
                 pass
 
@@ -313,12 +383,10 @@ class WirelessSection(gtk.VBox):
                 pass
             elif index[0] == -2:
                 # add hiden network
-                self.tree.add_items([HidenItem(index[1],
-                                     self.settings,
-                                     lambda :slider.slide_to_page(self.settings, "right"),
-                                     self.send_to_crumb_cb,
-                                     check_state=2)
-                                     ])
+                pass
+                #self.tree.add_items([HidenItem(index[1],
+                                     #check_state=2)
+                                     #])
             else:
                 for i in index:
                     self.tree.visible_items[i].network_state = 2
@@ -752,15 +820,19 @@ class Mobile(gtk.VBox):
         manufacturer = device.get_manufacturer()
         model = device.get_model()
         info = model + " " + manufacturer
-        item = GeneralItem(info,
-                           None,
-                           self.settings,
-                           lambda :slider.slide_to_page(self.settings, "right"),
-                           self.send_to_crumb_cb)
+        item = InfoItem(info, self.jumpto_cb,is_last=True)
+        #item = GeneralItem(info,
+                           #None,
+                           #self.settings,
+                           #lambda :slider.slide_to_page(self.settings, "right"),
+                           #self.send_to_crumb_cb)
         self.tree = TreeView([item])
         self.tree.set_size_request(758, len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
         self.tree.show_all()
         self.align.add(self.tree)
+
+    def jumpto_cb(self):
+        Dispatcher.to_setting_page(MobileSetting(None))
 
     def device_is_active(self, widget, a):
         print a, "active"
@@ -771,9 +843,6 @@ class Mobile(gtk.VBox):
 
     def slide_to_event(self, widget, event):
         Dispatcher.to_setting_page(MobileSetting(None))
-        #self.settings.init(init_connections=True)
-        #self.send_to_crumb_cb()
-        #slider.slide_to_page(self.settings, "right")
 
     def add_setting_page(self, setting_page):
         self.settings = setting_page

@@ -32,7 +32,7 @@ from dtk.ui.line import HSeparator
 from dtk.ui.entry import InputEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton, Button
-from dtk.ui.dialog import OpenFileDialog
+from dtk.ui.dialog import DialogBox, OpenFileDialog
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
 import gobject
 import gtk
@@ -40,11 +40,13 @@ import pango
 from constant import *
 from nls import _
 from bt.utils import bluetooth_class_to_type
+from bt.gui_obex_agent import send_file
 from my_bluetooth import MyBluetooth
 import time
 import threading as td
 import uuid
 import re
+import common
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -227,8 +229,10 @@ class DeviceItem(gobject.GObject):
         if self.is_paired:
             self.send_button.set_child_visible(True)
 
+    @common.threaded
     def __send_file(self, filename):
-        print "DEBUG", filename
+        print "DEBUG send_file", self.device.get_address(), filename
+        send_file(self.device.get_address(), filename)
 
     def __send_button_pressed(self, widget, event):
         OpenFileDialog(_("Select File"), None, lambda name : self.__send_file(name), None)

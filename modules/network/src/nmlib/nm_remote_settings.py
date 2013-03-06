@@ -52,13 +52,14 @@ class NMRemoteSettings(NMObject):
 
     def list_connections(self):
         '''return connections object'''
-        conns = self.dbus_method("ListConnections")
-        if conns:
-            ###order connections by their object path
-            conns = sorted(conns, key = lambda x:int(x.split("/")[-1]))
-            return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(conns))
-        else:
-            return []
+#        conns = self.dbus_method("ListConnections")
+#        if conns:
+#            ###order connections by their object path
+#            conns = sorted(conns, key = lambda x:int(x.split("/")[-1]))
+#            return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(conns))
+#        else:
+#            return []
+        return map(lambda x:cache.getobject(x), filter(lambda x: "Settings" == x.split("/")[-2] ,cache.cache_dict.iterkeys()))
 
     def get_connection_by_uuid(self, uuid):
         return cache.getobject(self.dbus_method("GetConnectionByUuid", uuid))
@@ -457,10 +458,11 @@ class NMRemoteSettings(NMObject):
         return self.properties["Hostname"]
 
     def get_wired_connections(self):
-        if self.list_connections():
-            return filter(lambda x: x.settings_dict["connection"]["type"] == "802-3-ethernet", self.list_connections())
-        else:
-            return []
+#        if self.list_connections():
+#            return filter(lambda x: x.settings_dict["connection"]["type"] == "802-3-ethernet", self.list_connections())
+#        else:
+#            return []
+        return filter(lambda x: x.settings_dict["connection"]["type"] == "802-3-ethernet", self.list_connections())
 
     def get_wired_active_connection(self):
         for conn in self.get_wired_connections():

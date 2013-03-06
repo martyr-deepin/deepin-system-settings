@@ -739,7 +739,6 @@ class KeySetting(object):
     
     def xkb_keyboard_setting_changed_cd(self, key):
         if key == 'layouts':
-            print "layouts changed---------------"
             layouts = settings.xkb_get_layouts()
             if layouts:
                 variants = layouts[0].split('\t')

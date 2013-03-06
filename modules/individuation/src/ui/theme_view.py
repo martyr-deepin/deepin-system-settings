@@ -31,6 +31,7 @@ from helper import event_manager
 from theme_manager import theme_manager
 from nls import _
 from common import threaded
+from constant import CONTENT_FONT_SIZE
 
 class UserThemeView(IconView):
 
@@ -44,6 +45,7 @@ class UserThemeView(IconView):
         self.connect("right-click-item", self.__on_right_click_item)
 
         event_manager.add_callback("create-new-theme", self.on_create_new_theme)
+        event_manager.add_callback("update-theme", self.__on_update_themes)
         event_manager.add_callback("clear-userview-highlight", self.clear_highlight_status)
         self.__init_themes()
 
@@ -103,7 +105,8 @@ class UserThemeView(IconView):
                             100, 
                             lambda : self.delete_theme(item), 
                             None, 
-                            True)
+                            True, 
+                            CONTENT_FONT_SIZE)
         dlg.show_all()
 
     def __on_right_click_item(self, widget, item, x, y):
@@ -115,6 +118,11 @@ class UserThemeView(IconView):
                           (None, _("Delete Theme"), lambda : self.on_theme_delete(item))]
         Menu(menu_items, True).show((int(x), int(y)))
 
+    def __on_update_themes(self, name, obj, new_theme):
+        self.clear()
+        theme_items = [ThemeItem(theme_file) for theme_file in theme_manager.get_user_themes()]
+        self.add_items(theme_items)
+    
     def add_themes(self, themes):
         theme_items = [ThemeItem(theme_file) for theme_file in themes ]
         self.add_items(theme_items)
@@ -166,6 +174,7 @@ class SystemThemeView(IconView):
 
     def create_new_theme(self, name, item):
         new_theme = theme_manager.create_new_theme(name, item.theme)
+        new_theme.set_editable(True)
         event_manager.emit("create-new-theme", new_theme)
 
     def on_theme_sava_as(self, item):
