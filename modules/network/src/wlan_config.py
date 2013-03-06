@@ -71,9 +71,6 @@ class WirelessSetting(Settings):
     def add_new_connection(self):
         return (nm_module.nm_remote_settings.new_wireless_connection(self.ap.get_ssid(), None), -1)
     
-    #def save_changes(self, connection):
-        #Dispatcher.set_button("apply", True)
-
     def save_changes(self, connection):
         print "save changes"
         if connection.check_setting_finish():
@@ -167,8 +164,9 @@ class Security(gtk.VBox):
         self.show_key_check = CheckButton(_("Show key"), padding_x=0)
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
         self.wep_index_spin = SpinBox(0, 0, 3, 1, self.ENTRY_WIDTH)
-        self.auth_combo = ComboBox([(_("Open System"), "open"),
-                                    (_("Shared Key"), "shared")], max_width=self.ENTRY_WIDTH)
+        self.auth_combo = ComboBox([
+                                    (_("Shared Key"), "shared"),
+                                    (_("Open System"), "open")],max_width=self.ENTRY_WIDTH)
 
         ## Create table
         self.table = gtk.Table(5, 4, True)

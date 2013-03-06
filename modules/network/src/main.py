@@ -287,10 +287,15 @@ class WirelessSection(gtk.VBox):
         
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        if reason == 39:
+            # toggle off
+            self.wireless.set_active(False)
 
         if self._get_active_item():
             for item in self._get_active_item():
                 item.set_net_state(0)
+
+        
 
                 #if self._get_active_item():
                     #self._get_active_item().set_net_state(0)
@@ -314,6 +319,7 @@ class WirelessSection(gtk.VBox):
         pass
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
+        self.wireless.set_active(True)
         if self.selected_item:
             self.selected_item.set_net_state(1)
             return
