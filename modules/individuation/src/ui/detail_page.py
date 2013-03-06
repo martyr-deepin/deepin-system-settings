@@ -50,22 +50,6 @@ TIME_COMBO_ITEM =  [
     ]
 
 DRAW_COMBO_ITEM = [(_("Scaling"), "Scaling"), (_("Tiling"), "Tiling")]
-                                                                                
-class SelectAllThread(td.Thread):                                                  
-    def __init__(self, ThisPtr):                                                
-        td.Thread.__init__(self)                                                
-        self.setDaemon(True)                                                    
-        self.ThisPtr = ThisPtr                                                  
-                                                                                
-    def run(self):                                                              
-        try:                                                                    
-            self.ThisPtr.wallpaper_view.select_all()
-            if self.ThisPtr.wallpaper_view.is_select_all():                                 
-                self.ThisPtr.select_all_button.set_label(_("UnSelect All"))                 
-            else:                                                                   
-                self.ThisPtr.select_all_button.set_label(_("Select All"))   
-        except Exception, e:                                                    
-            print "class SecondThread got error %s" % e
 
 class DetailPage(TabBox):
     '''
@@ -97,7 +81,6 @@ class DetailPage(TabBox):
         
         self.__is_random = True
         if self.__background_settings.get_int("background-duration") == 0:
-            self.time_combobox.set_sensitive(False)
             self.__is_random = False
         self.unorder_play, self.random_toggle = get_toggle_group(_("Random"), 
                                              self.__on_random_toggled, 
@@ -129,15 +112,38 @@ class DetailPage(TabBox):
         self.wallpaper_box.pack_start(action_bar_align, False, False)
 
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
+        event_manager.add_callback("apply-wallpaper", self.__on_wallpaper_apply)
 
     def on_wallpaper_select(self, name, obj, select_item):
         if self.wallpaper_view.is_randomable():
-            self.random_toggle.set_sensitive(True)
+            self.random_toggle.set_active(True)
         else:
-            self.random_toggle.set_sensitive(False)
+            self.random_toggle.set_active(False)
+
+        if self.wallpaper_view.is_select_all():                                 
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
+
+    def __on_wallpaper_apply(self, name, obj, select_item):
+        self.random_toggle.set_active(False)
+
+        if self.wallpaper_view.is_select_all():                                 
+            self.select_all_button.set_label(_("UnSelect All"))                 
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
 
     def __on_select_all(self, widget):
-        SelectAllThread(self).start()
+        self.wallpaper_view.select_all()                            
+        if self.wallpaper_view.is_select_all():                         
+            self.select_all_button.set_label(_("UnSelect All"))         
+        else:                                                                   
+            self.select_all_button.set_label(_("Select All"))
+
+        if self.wallpaper_view.is_randomable():                                 
+            self.random_toggle.set_active(True)                                 
+        else:                                                                   
+            self.random_toggle.set_active(False)
 
     def __on_delete(self, widget):
         event_manager.emit("switch-to-deletepage", self.theme)
@@ -191,9 +197,9 @@ class DetailPage(TabBox):
         self.wallpaper_view.set_theme(theme)
        
         if self.wallpaper_view.is_randomable():
-            self.random_toggle.set_sensitive(True)
+            self.random_toggle.set_active(True)
         else:
-            self.random_toggle.set_sensitive(False)
+            self.random_toggle.set_active(False)
 
         if self.wallpaper_view.is_select_all():
             self.select_all_button.set_label(_("UnSelect All"))

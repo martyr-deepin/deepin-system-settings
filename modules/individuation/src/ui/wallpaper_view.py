@@ -102,7 +102,6 @@ class WallpaperView(IconView):
         for item in self.items:
             if item.is_tick:
                 i += 1
-
         if i < 2:
             return False
 

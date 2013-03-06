@@ -67,7 +67,7 @@ class DeleteView(IconView):
 
     def is_deletable(self):
         for item in self.items:
-            if not item.is_tick:
+            if item.is_tick:
                 return True
 
         return False
@@ -88,7 +88,6 @@ class DeleteView(IconView):
         return True
 
     def select_all(self):
-        print "DEBUG select_all"
         is_select_all = self.is_select_all()
 
         for item in self.items:

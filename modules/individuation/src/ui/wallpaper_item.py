@@ -181,8 +181,7 @@ class WallpaperItem(gobject.GObject):
         if self.is_tick:    
             draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)
         else:
-            if self.is_hover:    
-                draw_pixbuf(cr, tick_pixbuf, tick_x, tick_y)    
+            draw_pixbuf(cr, self.tick_gray_dpixbuf.get_pixbuf(), tick_x, tick_y)    
                 
     def tick(self):            
         self.is_tick = True
@@ -536,6 +535,7 @@ class DeleteItem(gobject.GObject):
                 self.tick_area.height,
                 )):
             self.toggle_tick()
+            event_manager.emit("select-delete-wallpaper", self)
         else:    
             self.tick()
     
@@ -1286,7 +1286,11 @@ class SelectItem(gobject.GObject):
         self.emit_redraw_request()
     
     def tick(self):
-        self.is_tick = not self.is_tick
+        self.is_tick = True
+        self.emit_redraw_request()
+
+    def untick(self):
+        self.is_tick = False
         self.emit_redraw_request()
 
     def icon_item_button_press(self, x, y):
@@ -1296,6 +1300,7 @@ class SelectItem(gobject.GObject):
         This is IconView interface, you should implement it.
         '''
         self.is_tick = not self.is_tick
+        event_manager.emit("select-select-wallpaper", self)
         self.emit_redraw_request()
     
     def icon_item_button_release(self, x, y):
