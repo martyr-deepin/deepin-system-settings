@@ -79,7 +79,8 @@ class WallpaperView(IconView):
         self.add_items(items, insert_pos=-1)
         
     def on_wallpaper_select(self, name, obj, select_item):    
-        pass
+        image_uris = [ "file://%s" % item.image_path for item in self.items if item.is_tick]
+        self.apply_wallpapers(image_uris)
 
     def is_deletable(self):
         for item in self.items:
