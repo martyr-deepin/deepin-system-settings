@@ -48,7 +48,12 @@ class TrayPower(object):
         self.gui = PowerGui()
         self.gui.click_btn.connect("clicked", self.click_btn_clicked_event)
         #
-        self.__init_dbus_inter()
+        self.error = False
+        try:
+            self.__init_dbus_inter()
+        except Exception, e:
+            print "traypower[error]:", e
+            self.error = True
         self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.power_set.connect("changed", self.power_set_changed)
 
@@ -65,7 +70,8 @@ class TrayPower(object):
         self.acpi_inter = dbus.Interface(acpi_obj, dbus_interface=ORG_DBUS_PROPER)
 
     def power_set_changed(self, key):
-        self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
+        if not self.error:
+            self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
         if key not in  ["percentage", "show-tray"]: 
             return 
         #
