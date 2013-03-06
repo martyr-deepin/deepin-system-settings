@@ -39,6 +39,7 @@ class WallpaperView(IconView):
         self.add_items([self.add_item])
         
         event_manager.add_callback("add-wallpapers", self.on_add_wallpapers)
+        event_manager.add_callback("add-download-wallpapers", self.on_add_wallpapers)
         event_manager.add_callback("wallpapers-deleted", self.on_wallpapers_deleted)
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)

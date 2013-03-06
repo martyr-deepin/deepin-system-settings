@@ -883,7 +883,7 @@ class CacheItem(gobject.GObject, MissionThread):
                                                                                 
         self.is_loop = False
         self.emit_redraw_request()
-        #event_manager.emit("add-wallpapers", [self.image_object.get_save_path()])
+        event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
     def create_cache_pixbuf(self):    
@@ -1007,7 +1007,8 @@ class CacheItem(gobject.GObject, MissionThread):
             loop_pixbuf = self.loop_dpixbuf.get_pixbuf()
             loop_x = wallpaper_x + (self.wallpaper_width - loop_pixbuf.get_width()) / 2
             loop_y = wallpaper_y + (self.wallpaper_height - loop_pixbuf.get_height()) / 2
-            self.draw_loop_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
+            draw_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
+            #self.draw_loop_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
     
     @common.threaded
     def draw_loop_pixbuf(self, cr, loop_pixbuf, loop_x, loop_y):
