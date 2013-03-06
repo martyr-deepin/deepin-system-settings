@@ -92,13 +92,17 @@ class DeletePage(TabBox):
         else:
             self.select_all_button.set_label(_("Select All"))
 
+    def __delete_confirm(self):
+        self.delete_view.delete_wallpaper()
+        event_manager.emit("update-theme", None)
+
     def __on_delete(self, widget):
         if self.delete_view.is_deletable():
             dlg = ConfirmDialog(_("Delete Wallpaper"),                                  
                                 _("Are you sure delete wallpaper?"), 
                                 300,                                                
                                 100,                                                
-                                lambda : self.delete_view.delete_wallpaper(),                   
+                                lambda : self.__delete_confirm(),                   
                                 None,                                               
                                 True, 
                                 CONTENT_FONT_SIZE)                                               
