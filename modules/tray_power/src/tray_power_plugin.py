@@ -48,10 +48,12 @@ class TrayPower(object):
         self.gui = PowerGui()
         self.gui.click_btn.connect("clicked", self.click_btn_clicked_event)
         #
+        self.error = False
         try:
             self.__init_dbus_inter()
         except Exception, e:
             print "traypower[error]:", e
+            self.error = True
         self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.power_set.connect("changed", self.power_set_changed)
 
