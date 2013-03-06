@@ -131,11 +131,12 @@ class NetManager(object):
 
     def connect_wireless_by_ssid(self, ssid):
         device_wifi = cache.get_spec_object(self.wireless_device.object_path)
-        return device_wifi.get_ssid_connection(ssid)
+        return device_wifi.active_ssid_connection(ssid)
 
 
     def active_wireless_device(self, actived_cb):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        print "fsdf"
 
         #def device_is_active(widget, reason):
             #print "active"

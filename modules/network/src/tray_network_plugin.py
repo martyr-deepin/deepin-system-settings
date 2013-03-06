@@ -221,8 +221,8 @@ class TrayNetworkPlugin(object):
                 print "Debug", index
                 self.gui.set_active_ap(index, True)
             else:
-                if self.this_device and self.this_device.get_state() != 40: 
-                    self.activate_wireless()
+                #if self.this_device and self.this_device.get_state() != 40: 
+                self.activate_wireless()
             #Dispatcher.tray_show_more()
             Dispatcher.request_resize()
         else:
@@ -296,8 +296,14 @@ class TrayNetworkPlugin(object):
 
     def init_wireless_signals(self):
         device_manager.load_wireless_listener(self)
+        self.gui.ap_tree.connect("single-click-item", self.ap_selected)
+        self.selected_item = None
 
         #TODO signals 
+
+    def ap_selected(self, widget, item, column, x, y):
+        self.selected_item = item
+
     def wireless_device_active(self,  widget, new_state, old_state, reason):
         self.change_status_icon("links")
         self.set_active_ap()
@@ -316,6 +322,7 @@ class TrayNetworkPlugin(object):
         self.gui.wireless.set_active((False, False))
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
+        print "sdfsdf"
         self.gui.wireless.set_active((True, True))
         self.change_status_icon("loading")
 
@@ -357,6 +364,7 @@ class TrayNetworkPlugin(object):
             
     def set_active_ap(self):
         index = self.net_manager.get_active_connection(self.ap_list)
+        print "active index", index
         self.gui.set_active_ap(index, True)
 
     def activate_wireless(self):

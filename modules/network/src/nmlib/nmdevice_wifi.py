@@ -110,7 +110,7 @@ class NMDeviceWifi(NMDevice):
         '''try only one connection now'''
         if cache.getobject(self.object_path).is_active():
             conn = cache.getobject(self.object_path).get_active_connection().get_connection()
-            if conn.settings_dict["802-11-wireless"]["ssid"] == ssid:
+            if TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])== ssid:
                 return None
         else:
             pass

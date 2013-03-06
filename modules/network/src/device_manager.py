@@ -21,6 +21,8 @@ class DeviceManager(object):
     def __init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
+        #nm_module.mmclient.connect("device-added", )
+        
 
     def load_wired_listener(self, module):
         if self.wired_devices:
