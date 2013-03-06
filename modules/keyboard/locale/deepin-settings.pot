@@ -8,24 +8,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-25 14:40+0800\n"
+"POT-Creation-Date: 2013-03-06 15:31+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/keybinds.py:97
+#: ../src/keybinds.py:98
 msgid "Launcher"
 msgstr ""
 
-#: ../src/keybinds.py:107
+#: ../src/keybinds.py:108
 msgid "Terminal"
 msgstr ""
 
-#: ../src/keybinds.py:117
+#: ../src/keybinds.py:119
 msgid "Lock screen"
 msgstr ""
 
@@ -33,11 +33,11 @@ msgstr ""
 msgid "Keyboard"
 msgstr ""
 
-#: ../src/search_keyword.py:26 ../src/main.py:249
+#: ../src/search_keyword.py:26 ../src/main.py:252
 msgid "Shortcuts"
 msgstr ""
 
-#: ../src/search_keyword.py:27 ../src/main.py:248
+#: ../src/search_keyword.py:27 ../src/main.py:251
 msgid "Typing"
 msgstr ""
 
@@ -45,19 +45,19 @@ msgstr ""
 msgid "Layout"
 msgstr ""
 
-#: ../src/search_keyword.py:29 ../src/main.py:115
+#: ../src/search_keyword.py:29 ../src/main.py:116
 msgid "Repeat"
 msgstr ""
 
-#: ../src/search_keyword.py:30 ../src/main.py:118
+#: ../src/search_keyword.py:30 ../src/main.py:119
 msgid "Repeat Delay"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/main.py:119
+#: ../src/search_keyword.py:31 ../src/main.py:120
 msgid "Repeat Interval"
 msgstr ""
 
-#: ../src/keybind_list.py:27 ../src/main.py:77
+#: ../src/keybind_list.py:27 ../src/main.py:78
 msgid "System"
 msgstr ""
 
@@ -141,8 +141,8 @@ msgstr ""
 msgid "Take a screenshot"
 msgstr ""
 
-#: ../src/keybind_list.py:50
-msgid "Take a screenshot of a window"
+#: ../src/keybind_list.py:52
+msgid "Take a screenshot delayed"
 msgstr ""
 
 #: ../src/keybind_list.py:56
@@ -345,127 +345,151 @@ msgstr ""
 msgid "Move window to center of screen"
 msgstr ""
 
-#: ../src/accel_entry.py:47
+#: ../src/accel_entry.py:50
 #, python-format
 msgid ""
 "The shortcut \"%s\" cannot be used because it will become impossible to type "
 "using this key."
 msgstr ""
 
-#: ../src/accel_entry.py:48
+#: ../src/accel_entry.py:51
 msgid "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
 
-#: ../src/accel_entry.py:51 ../src/accel_entry.py:69 ../src/main.py:719
+#: ../src/accel_entry.py:54 ../src/accel_entry.py:72 ../src/main.py:731
 msgid "Cancel"
 msgstr ""
 
-#: ../src/accel_entry.py:62
+#: ../src/accel_entry.py:65
 #, python-format
 msgid "The shortcut \"%s\" is already used for\"%s\""
 msgstr ""
 
-#: ../src/accel_entry.py:64
+#: ../src/accel_entry.py:67
 #, python-format
 msgid ""
 "If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
 msgstr ""
 
-#: ../src/accel_entry.py:68
+#: ../src/accel_entry.py:71
 msgid "Reassign"
 msgstr ""
 
-#: ../src/accel_entry.py:180 ../src/accel_entry.py:310 ../src/shortcuts.py:40
+#: ../src/accel_entry.py:185 ../src/accel_entry.py:328 ../src/shortcuts.py:40
 #: ../src/shortcuts.py:67 ../src/shortcuts.py:100 ../src/treeitem.py:305
 msgid "disable"
 msgstr ""
 
-#: ../src/accel_entry.py:211
+#: ../src/accel_entry.py:226
 msgid "Please input new shortcuts"
 msgstr ""
 
-#: ../src/main.py:76 ../src/main.py:491 ../src/main.py:800 ../src/main.py:801
-#: ../src/main.py:856
+#: ../src/main.py:77 ../src/main.py:498 ../src/main.py:855
 msgid "Custom Shortcuts"
 msgstr ""
 
-#: ../src/main.py:120 ../src/main.py:127 ../src/main.py:326 ../src/main.py:365
+#: ../src/main.py:121 ../src/main.py:128 ../src/main.py:330 ../src/main.py:369
 msgid "Fast"
 msgstr ""
 
-#: ../src/main.py:121 ../src/main.py:128 ../src/main.py:324 ../src/main.py:363
+#: ../src/main.py:122 ../src/main.py:129 ../src/main.py:328 ../src/main.py:367
 msgid "Slow"
 msgstr ""
 
-#: ../src/main.py:122 ../src/main.py:309
+#: ../src/main.py:123 ../src/main.py:313
 msgid "Long"
 msgstr ""
 
-#: ../src/main.py:123 ../src/main.py:311
+#: ../src/main.py:124 ../src/main.py:315
 msgid "Short"
 msgstr ""
 
-#: ../src/main.py:124
+#: ../src/main.py:125
 msgid "Cursor Blink"
 msgstr ""
 
-#: ../src/main.py:129
+#: ../src/main.py:130
 msgid "Disable touchpad while typing"
 msgstr ""
 
-#: ../src/main.py:132
+#: ../src/main.py:133
 msgid "Keyboard Layout"
 msgstr ""
 
-#: ../src/main.py:136
+#: ../src/main.py:137
 msgid "Relevant Settings"
 msgstr ""
 
-#: ../src/main.py:142
-msgid "Mouse Settings"
+#: ../src/main.py:139 ../src/main.py:650
+msgid "Test Repeat Interval"
 msgstr ""
 
 #: ../src/main.py:145
-msgid "TouchPad Settings"
+msgid "Mouse Settings"
 msgstr ""
 
 #: ../src/main.py:148
+msgid "TouchPad Settings"
+msgstr ""
+
+#: ../src/main.py:151
 msgid "Reset to Defaults"
 msgstr ""
 
-#: ../src/main.py:195 ../src/main.py:717
+#: ../src/main.py:198 ../src/main.py:729
 msgid "Replace"
 msgstr ""
 
-#: ../src/main.py:196 ../src/main.py:214
+#: ../src/main.py:199 ../src/main.py:217
 msgid "Remove"
 msgstr ""
 
-#: ../src/main.py:213
+#: ../src/main.py:216
 msgid "Add"
 msgstr ""
 
-#: ../src/main.py:457 ../src/main.py:738 ../src/main.py:757
+#: ../src/main.py:464 ../src/main.py:749 ../src/main.py:768
 #, python-format
 msgid "Current Layout: %s"
 msgstr ""
 
-#: ../src/main.py:639
-msgid "Test Repeat Interval"
+#: ../src/main.py:622
+msgid "启用打字时禁用触摸板"
 msgstr ""
 
-#: ../src/main.py:701
+#: ../src/main.py:624
+msgid "取消打字时禁用触摸板"
+msgstr ""
+
+#: ../src/main.py:709
+#, python-format
+msgid "当前布局设为 %s"
+msgstr ""
+
+#: ../src/main.py:713
 msgid "Select an input source to add"
 msgstr ""
 
-#: ../src/main.py:865
+#: ../src/main.py:806
+msgid "删除自定义快捷键"
+msgstr ""
+
+#: ../src/main.py:853
+msgid "添加自定义快捷键"
+msgstr ""
+
+#: ../src/main.py:864
 msgid "name"
 msgstr ""
 
-#: ../src/main.py:867
+#: ../src/main.py:866
 msgid "action"
 msgstr ""
 
-#: ../src/main.py:880
+#: ../src/main.py:879
 msgid "Ok"
+msgstr ""
+
+#: ../src/main.py:946
+msgid "恢复默认值"
 msgstr ""

@@ -47,9 +47,9 @@ media_shortcuts_group_dict = {
         {'name': "eject", 'description': _("Eject")}],
     _('Screenshots') : [
         {'name': "screenshot", 'description': _("Take a screenshot")},
-        {'name': "window-screenshot", 'description': _("Take a screenshot of a window")},
+        #{'name': "window-screenshot", 'description': _("Take a screenshot of a window")},
         #{'name': "area-screenshot", 'description': _("Take a screenshot of an area")},
-        #{'name': "screenshot-clip", 'description': _("Copy a screenshot to clipboard")},
+        {'name': "screenshot-delay", 'description': _("Take a screenshot delayed")},
         #{'name': "window-screenshot-clip", 'description': _("Copy a screenshot of a window to clipboard")},
         #{'name': "area-screenshot-clip", 'description': _("Copy a screenshot of an area to clipboard")}
         ],
