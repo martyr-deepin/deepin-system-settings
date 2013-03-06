@@ -327,6 +327,14 @@ class DesktopView(gtk.VBox):
             parent_widget.pack_start(item, False, False)
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
+        if object == "display_style":
+            if item_value == 0:
+                self.dock_settings.set_string("hide-mode", "default")
+            elif item_value == 1:
+                self.dock_settings.set_string("hide-mode", "autohide")
+            elif item_value == 2:
+                self.dock_settings.set_string("hide-mode", "keephidden")
+        
         if object == "icon_size":
             if item_value == 0:
                 self.dock_settings.set_boolean("active-mini-mode", False)
