@@ -84,26 +84,29 @@ class WirelessSetting(Settings):
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 Dispatcher.emit("connection-replace", connection)
                 # reset index
+            self.apply_changes(connection)
             #Dispatcher.set_button("apply", True)
-            #Dispatcher.to_main_page()
+            Dispatcher.to_main_page()
         else:
             print "not complete"
         #self.setting_group.set_button(connection)
     def apply_changes(self, connection):
-
+        print "apply changes"
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        if wireless_device.get_state() == 100:
+            return
         device_wifi = cache.get_spec_object(wireless_device.object_path)
         ssid = connection.get_setting("802-11-wireless").ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
 
         if ap == None:
-            device_wifi.emit("try-ssid-begin", ssid)
+            #device_wifi.emit("try-ssid-begin", ssid)
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                        wireless_device.object_path,
                                        "/")
 
         else:
-            device_wifi.emit("try-ssid-begin", ssid)
+            #device_wifi.emit("try-ssid-begin", ssid)
             # Activate
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                        wireless_device.object_path,
