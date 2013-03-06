@@ -103,7 +103,7 @@ class TouchpadSetting(object):
         self.label_widgets["drag_drop"] = Label(_("Drag and Drop"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         self.label_widgets["drag_threshold"] = Label(_("Drag threshold"),
             text_size=option_item_font_size, enable_select=False, enable_double_click=False)
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=10)
         self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=10)

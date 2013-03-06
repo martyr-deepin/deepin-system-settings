@@ -252,11 +252,9 @@ def walk_images(root_dir, filter_type=["png", "jpeg"], filter_dir=None):
                         continue
                 type = fileinfo.get_file_type()
                 if type == gio.FILE_TYPE_DIRECTORY:
-                    '''
                     if filter_dir != None:
                         if fileinfo.get_name() in filter_dir:
                             continue
-                    '''
                     queue.append(fil)
                 elif type == gio.FILE_TYPE_REGULAR:
                     content_type = fileinfo.get_attribute_as_string("standard::content-type")
