@@ -137,27 +137,48 @@ class NMDeviceWifi(NMDevice):
         if cache.getobject(self.object_path).get_state() < 30:
             return False
         # wireless_connections = sorted(nm_remote_settings.get_wireless_connections(), key = lambda x:x.succeed_flag)
-        from nm_secret_agent import secret_agent
-        if nm_remote_settings.get_wireless_connections():
-            wireless_connections = sorted(nm_remote_settings.get_wireless_connections(),
-                                      key = lambda x:secret_agent.get_conn_priority(x.object_path))
+        def filter_ssid_connection(ascii_ssid, connections):
+            try:
+                return sorted(filter(lambda x: x.settings_dict["802-11-wireless"]["ssid"] == ascii_ssid, connections),
+                            key = lambda x: secret_agent.get_conn_priority(x.object_path))[0]
+            except:
+                return None
 
-            for conn in wireless_connections:
-                ssid = conn.get_setting("802-11-wireless").ssid
-                if ssid not in self.__get_ssid_record():
-                    continue
-                else:
+        from nm_secret_agent import secret_agent
+        wireless_connections = nm_remote_settings.get_wireless_connections()
+        if wireless_connections:
+            for ssid in self.__get_ssid_record():
+                ssid_conn = filter_ssid_connection(TypeConvert.ssid_string2ascii(ssid), wireless_connections)
+                if ssid_conn:
                     try:
                         specific = self.get_ap_by_ssid(ssid)
-                        nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
+                        nmclient.activate_connection(ssid_conn.object_path, self.object_path, specific.object_path)
                         if cache.getobject(self.object_path).is_active():
                             return True
-                        else:
-                            continue
                     except:
-                        continue
+                        pass
         else:
             return False
+#        if nm_remote_settings.get_wireless_connections():
+#            wireless_connections = sorted(nm_remote_settings.get_wireless_connections(),
+#                                      key = lambda x:secret_agent.get_conn_priority(x.object_path))
+#
+#            for conn in wireless_connections:
+#                ssid = conn.get_setting("802-11-wireless").ssid
+#                if ssid not in self.__get_ssid_record():
+#                    continue
+#                else:
+#                    try:
+#                        specific = self.get_ap_by_ssid(ssid)
+#                        nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
+#                        if cache.getobject(self.object_path).is_active():
+#                            return True
+#                        else:
+#                            continue
+#                    except:
+#                        continue
+#        else:
+#            return False
 
     def update_ap_list(self):
         try:
