@@ -204,6 +204,7 @@ class ThemeItem(gobject.GObject):
         window_frame_y = rect.y + self.window_frame_padding_y
         
         # Paint gaussian area.
+        '''
         gaussian_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.window_frame_width, self.window_frame_height)   
         gaussian_surface_cr = gtk.gdk.CairoContext(cairo.Context(gaussian_surface))
         gaussian_surface_cr.set_source_surface(theme_surface, -self.window_frame_padding_x, -self.window_frame_padding_y)
@@ -211,8 +212,10 @@ class ThemeItem(gobject.GObject):
         dtk_cairo_blur.gaussian_blur(gaussian_surface, 3)
         cr.set_source_surface(gaussian_surface, window_frame_x, window_frame_y)
         cr.paint()
-        
+        '''
+
         # Draw window frame.
+        '''
         cr.set_source_rgba(*alpha_color_hex_to_cairo((COLOR_NAME_DICT[self.theme.get_color()], 0.5)))
         cr.rectangle(window_frame_x + 1, window_frame_y, self.window_frame_width - 2, 1)
         cr.rectangle(window_frame_x, window_frame_y + 1, self.window_frame_width, self.window_frame_height - 2)
@@ -226,7 +229,8 @@ class ThemeItem(gobject.GObject):
                           ui_theme.get_alpha_color("window_frame_inside_1"),
                           ui_theme.get_alpha_color("window_frame_inside_2"),
                           )
-        
+        '''
+
         draw_text(cr, 
                   self.theme.get_name(), 
                   rect.x, 
