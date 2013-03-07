@@ -143,6 +143,14 @@ class DesktopView(gtk.VBox):
             [self.icon_size_label, self.icon_size_combo])
         self.icon_size_align.add(self.icon_size_box)
         '''
+        preview
+        '''
+        self.preview_align = self.__setup_align()
+        self.preview_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.preview_label = self.__setup_label(_("Preview"))
+        self.__widget_pack_start(self.preview_box, [self.preview_label])
+        self.preview_align.add(self.preview_box)
+        '''
         greeter
         '''
         self.greeter_title_align = self.__setup_title_align(                       
@@ -192,6 +200,7 @@ class DesktopView(gtk.VBox):
                                   self.display_style_align, 
                                   #self.place_style_align, 
                                   self.icon_size_align, 
+                                  #self.preview_align, 
                                   self.greeter_title_align, 
                                   self.greeter_align, 
                                   self.lock_align])
