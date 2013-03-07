@@ -279,15 +279,12 @@ class IconSetPage(gtk.VBox):
             icon_file = self.account_setting.current_set_user.get_icon_file()
             account_server_icon_file = "%s/%s" % (face_dir, self.account_setting.current_set_user.get_user_name())
             file_path = widget.get_image_path()
-            if icon_file == account_server_icon_file:
-                if os.path.exists(icon_file):
-                    file1_md5 = get_file_md5(icon_file)
-                else:
-                    file1_md5 = "1"
-                if os.path.exists(file_path):
-                    file2_md5 = get_file_md5(file_path)
-                else:
-                    file2_md5 = "2"
+            if icon_file == account_server_icon_file and \
+                    os.path.exists(icon_file) and \
+                    os.path.exists(file_path) and \
+                    os.stat(icon_file).st_size == os.stat(file_path).st_size:
+                file1_md5 = get_file_md5(icon_file)
+                file2_md5 = get_file_md5(file_path)
                 if file1_md5 == file2_md5:
                     self.account_setting.account_user_set_random_icon(
                         self.account_setting.current_set_user)
