@@ -51,7 +51,7 @@ TIME_COMBO_ITEM =  [
 
 DRAW_COMBO_ITEM = [(_("Scaling"), "Scaling"), (_("Tiling"), "Tiling")]
 
-class DetailPage(TabBox):
+class DetailPage(gtk.VBox):
     '''
     class docs
     '''
@@ -60,7 +60,7 @@ class DetailPage(TabBox):
         '''
         init docs
         '''
-        TabBox.__init__(self)
+        gtk.VBox.__init__(self)
 
         self.__background_settings = deepin_gsettings.new("com.deepin.dde.background")
 
@@ -71,6 +71,7 @@ class DetailPage(TabBox):
         self.window_theme_box = gtk.VBox()
         self.wallpaper_view = WallpaperView(padding_x=30, padding_y=ITEM_PADDING_Y)
         self.wallpaper_view_sw = self.wallpaper_view.get_scrolled_window()
+        self.wallpaper_view_sw.set_size_request(-1, 433)
 
         position_group, self.position_combobox = get_combo_group(_("Position"),
                                                                  DRAW_COMBO_ITEM,
@@ -110,6 +111,8 @@ class DetailPage(TabBox):
         
         self.wallpaper_box.pack_start(self.wallpaper_view_sw, True, True)
         self.wallpaper_box.pack_start(action_bar_align, False, False)
+
+        self.pack_start(self.wallpaper_box, False, False)
 
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.__on_wallpaper_apply)
@@ -179,13 +182,6 @@ class DetailPage(TabBox):
 
     def set_theme(self, theme):
         self.theme = theme
-       
-        '''
-        TODO: self.theme.name
-        '''
-        self.delete_items(self.tab_items)
-        self.add_items([(self.theme.get_name(), self.wallpaper_box),                   
-                       ])
         
         draw_mode = self.theme.get_background_draw_mode()
         item_index = 0
