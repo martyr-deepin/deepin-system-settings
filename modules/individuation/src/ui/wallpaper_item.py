@@ -857,6 +857,7 @@ class CacheItem(gobject.GObject, MissionThread):
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
         self.image_object = image_object
         self.download_dir = download_dir
+        self.pixbuf = None
         self.create_cache_pixbuf()
         
         self.is_hover = False
