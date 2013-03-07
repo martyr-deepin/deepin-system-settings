@@ -90,46 +90,6 @@ class NMSecretAgent(NMObject):
         except:
             traceback.print_exc()
 
-    def generate_conn_priority_name(self, uuid):
-        return str("nm_priority_" + uuid)
-
-    def get_conn_priority(self, conn_path):
-        conn_priority = self.generate_conn_priority_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"])
-        username = getpass.getuser()
-        try:
-            if keyring.get_password(conn_priority, username):
-                return int(keyring.get_password(conn_priority, username))
-            else:
-                self.save_conn_priority(conn_path, 0)
-                return 0
-        except:
-            traceback.print_exc()
-
-    def save_conn_priority(self, conn_path, priority = 0):
-        conn_priority = self.generate_conn_priority_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"])
-        username = getpass.getuser()
-        try:
-            if priority == None:
-                priority = 0
-            keyring.set_password(conn_priority, username, str(priority))
-        except:
-            traceback.print_exc()
-        pass
-
-    def increase_conn_priority(self, conn_path):
-        priority = self.get_conn_priority(conn_path)
-        if priority == None:
-            priority = 0
-        new_prio = int(priority - 2)    
-        self.save_conn_priority(conn_path, new_prio)
-
-    def decrease_conn_priority(self, conn_path):
-        priority = self.get_conn_priority(conn_path)
-        if priority == None:
-            priority = 0
-        new_prio = int(priority + 1)    
-        self.save_conn_priority(conn_path, new_prio)
-
     def generate_service_name(self, uuid, setting_name, method):
         return str("nm_" + uuid +"_" + setting_name + "_" + method)
 

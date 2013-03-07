@@ -22,6 +22,7 @@
 
 from nmdevice import NMDevice
 from nmcache import cache
+import time
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 
@@ -54,10 +55,16 @@ class NMDeviceEthernet(NMDevice):
             return False
 
         if nm_remote_settings.get_wired_connections():
-            for conn in sorted(nm_remote_settings.get_wired_connections(), key = lambda x:x.succeed_flag):
+
+            wired_prio_connections = sorted(nm_remote_settings.get_wired_connections(),
+                                            key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
+                                            reverse = True)
+
+            for conn in wired_prio_connections:
                 try:
-                    nmclient.activate_connection(conn.object_path, self.object_path, "/")
-                    if cache.getobject(self.object_path).is_active():
+                    active_conn = nmclient.activate_connection(conn.object_path, self.object_path, "/")
+                    time.sleep(5)
+                    if active_conn and active_conn.get_state() == 2:
                         return True
                     else:
                         continue

@@ -38,6 +38,9 @@ from nmutils.nmsetting_cdma import NMSettingCdma
 from nmutils.nmsetting_gsm import NMSettingGsm
 from nmutils.nmsetting_serial import NMSettingSerial
 from nmutils.nmsetting_ppp import NMSettingPPP
+import os
+import glib
+import ConfigParser 
 
 class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
@@ -47,8 +50,29 @@ class NMRemoteSettings(NMObject):
 
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
-
         self.init_nmobject_with_properties()
+        self.__init_network_config()
+
+    def __init_network_config(self):
+        if not os.path.exists(glib.get_user_config_dir()):
+            os.mkdir(glib.get_user_config_dir())
+        
+        self.config_file = os.path.join(glib.get_user_config_dir(), "network.conf")
+        if not os.path.exists(self.config_file):
+            open(self.config_file, "w").close()
+
+        self.cf = ConfigParser.RawConfigParser()
+        self.cf.optionxform = str
+        self.cf.read(self.config_file)
+
+        if "conn_priority" not in self.cf.sections():
+            self.cf.add_section("conn_priority")
+
+        for conn_uuid in map(lambda x: x.settings_dict["connection"]["uuid"], self.list_connections()):
+            if conn_uuid not in self.cf.options("conn_priority"):
+                self.cf.set("conn_priority", conn_uuid, 0)
+
+        self.cf.write(open(self.config_file, "w"))
 
     def list_connections(self):
         '''return connections object'''
@@ -74,6 +98,8 @@ class NMRemoteSettings(NMObject):
             nm_connection.settings_dict = settings_dict
             nm_connection.update()
             cache.new_object(conn_path)
+            self.cf.set("conn_priority", nm_connection.settings_dict["connection"]["uuid"], 0)
+            self.cf.write(open(self.config_file, "w"))
             return nm_connection
         else:
             return None

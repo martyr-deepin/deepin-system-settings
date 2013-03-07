@@ -26,6 +26,7 @@ import os
 import traceback
 from nmobject import NMObject
 from nmcache import cache
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 udev_client = gudev.Client("net")
 
@@ -210,7 +211,14 @@ class NMDevice(NMObject):
         if new_state == 100:
             print "device-active", new_state, old_state, reason
             self.emit("device-active", new_state, old_state, reason)
-            return 
+            conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
+            try:
+                priority = int(nm_remote_settings.cf.get("conn_priority", conn_uuid)) + 1
+            except:
+                priority = 1
+
+            nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
+            nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
 
         if new_state == 120:
             print "activate-failed", new_state, old_state, reason

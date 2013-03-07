@@ -60,6 +60,7 @@ class NMRemoteConnection(NMObject, NMConnection):
         try:
             self.dbus_interface.Delete(reply_handler = self.delete_finish, error_handler = self.delete_error)
             cache.delobject(self.object_path)
+            ###nm_remote_settings.remove_option("conn_priority", self.settings_dict["connection"]["uuid"]) 
         except:
             traceback.print_exc()
             
