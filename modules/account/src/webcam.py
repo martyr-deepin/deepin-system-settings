@@ -38,6 +38,7 @@ class Webcam(gtk.DrawingArea):
         
     @classmethod    
     def has_device(cls):
+        return True
         devices = os.listdir('/dev')
         for d in devices:
             if d.startswith('video'):

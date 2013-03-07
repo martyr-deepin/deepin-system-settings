@@ -48,7 +48,8 @@ from random import randint
 from module_frame import ModuleFrame
 from constant import *
 from pexpect import TIMEOUT, EOF
-from set_icon_page import IconSetPage, IconEditPage
+from set_icon_page import IconSetPage
+from edit_icon_page import IconEditPage
 from statusbar import StatusBar
 
 MODULE_NAME = "account"
