@@ -29,7 +29,7 @@ import time
 import os
 from dtk.ui.utils import (get_optimum_pixbuf_from_file, cairo_disable_antialias,
                           run_command, is_in_rect, color_hex_to_cairo, 
-                          get_content_size)
+                          get_content_size, cairo_state)
 from dtk.ui.draw import draw_pixbuf, draw_shadow, draw_text
 from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
@@ -882,7 +882,15 @@ class CacheItem(gobject.GObject, MissionThread):
             return
 
         self.is_loop = True
-        self.emit_redraw_request()
+        self.degree = 0
+        self.refresh_loading()
+
+    @common.threaded
+    def refresh_loading(self):
+        while self.is_loop:
+            self.degree += 10
+            self.emit_redraw_request()
+            time.sleep(0.1)
 
     def __on_download_finish(self, name, obj, data):                                
         if self.image_object.big_url != data.url:                               
@@ -1038,25 +1046,19 @@ class CacheItem(gobject.GObject, MissionThread):
             loop_pixbuf = self.loop_dpixbuf.get_pixbuf()
             loop_x = wallpaper_x + (self.wallpaper_width - loop_pixbuf.get_width()) / 2
             loop_y = wallpaper_y + (self.wallpaper_height - loop_pixbuf.get_height()) / 2
-            draw_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
-            #self.draw_loop_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
+            self.draw_loop_pixbuf(cr, loop_pixbuf, loop_x, loop_y)
     
-    @common.threaded
     def draw_loop_pixbuf(self, cr, loop_pixbuf, loop_x, loop_y):
         width = loop_pixbuf.get_width()
         height = loop_pixbuf.get_height()
         ox = loop_x + width * 0.5
         oy = loop_y + height * 0.5 
-        degree = 0
 
-        while self.is_loop:
-            with cairo_state(cr):
-                cr.translate(ox, oy)                                                
-                cr.rotate(radians(degree))                      
-                cr.translate(-width * 0.5, -height * 0.5)
-                draw_pixbuf(cr, loop_pixbuf, 0, 0)
-                degree += 10
-                time.sleep(0.1)
+        with cairo_state(cr):
+            cr.translate(ox, oy)
+            cr.rotate(radians(self.degree))                      
+            cr.translate(-width * 0.5, -height * 0.5)
+            draw_pixbuf(cr, loop_pixbuf, 0, 0)
 
     def icon_item_motion_notify(self, x, y):
         '''
