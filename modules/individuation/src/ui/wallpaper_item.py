@@ -26,15 +26,18 @@ import random
 import gobject
 from math import radians
 import time
+import os
 from dtk.ui.utils import (get_optimum_pixbuf_from_file, cairo_disable_antialias,
-                          run_command, is_in_rect, color_hex_to_cairo)
-from dtk.ui.draw import draw_pixbuf, draw_shadow, cairo_state
+                          run_command, is_in_rect, color_hex_to_cairo, 
+                          get_content_size)
+from dtk.ui.draw import draw_pixbuf, draw_shadow, draw_text
 from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
 from theme import app_theme
 from cache_manager import SMALL_SIZE, cache_manager
 from helper import event_manager
 import common
+from nls import _
 
 ITEM_PADDING_X = 20
 ITEM_PADDING_Y = 10
@@ -834,7 +837,7 @@ class CacheItem(gobject.GObject, MissionThread):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    def __init__(self, image_object):
+    def __init__(self, image_object, download_dir=None):
         '''
         Initialize ItemIcon class.
         
@@ -842,7 +845,9 @@ class CacheItem(gobject.GObject, MissionThread):
         '''
         gobject.GObject.__init__(self)
         MissionThread.__init__(self)
-        
+       
+        self.is_loaded = False
+        self.is_downloaded = False
         self.hover_flag = False
         self.highlight_flag = False
         self.wallpaper_width = SMALL_SIZE["x"]
@@ -851,6 +856,7 @@ class CacheItem(gobject.GObject, MissionThread):
         self.width = self.wallpaper_width + self.padding_x * 2
         self.height = self.wallpaper_height + ITEM_PADDING_Y * 2
         self.image_object = image_object
+        self.download_dir = download_dir
         self.create_cache_pixbuf()
         
         self.is_hover = False
@@ -882,13 +888,20 @@ class CacheItem(gobject.GObject, MissionThread):
             return                                                              
                                                                                 
         self.is_loop = False
+        self.is_downloaded = True
         self.emit_redraw_request()
         event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
-    def create_cache_pixbuf(self):    
-        self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
+    @common.threaded
+    def create_cache_pixbuf(self):
+        image_path = cache_manager.get_image(self.image_object)
         
+        if image_path != None:
+            self.is_downloaded = os.path.exists(self.download_dir + "/" +  image_path.split("/")[-1])
+        
+        self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
+
     def start_mission(self):    
         image_path = cache_manager.get_image(self.image_object, try_web=True)
         if image_path:
@@ -984,6 +997,23 @@ class CacheItem(gobject.GObject, MissionThread):
             cr.rectangle(wallpaper_x, wallpaper_y, self.wallpaper_width, self.wallpaper_height)
             cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
             cr.stroke()
+
+        if self.is_downloaded:
+            downloaded_str = _("downloaded")
+            downloaded_str_width, downloaded_str_height = get_content_size(downloaded_str)
+            cr.rectangle(wallpaper_x + 1, 
+                         wallpaper_y + self.wallpaper_height - downloaded_str_height, 
+                         self.wallpaper_width - 2, 
+                         downloaded_str_height - 1)
+            cr.set_source_rgba(0, 0, 0, 0.6)
+            cr.fill()
+            draw_text(cr, 
+                      downloaded_str, 
+                      wallpaper_x + (self.wallpaper_width - downloaded_str_width) / 2, 
+                      wallpaper_y + self.wallpaper_height - downloaded_str_height, 
+                      self.wallpaper_width, 
+                      downloaded_str_height, 
+                      text_color = "#FFFFFF")
             
         if self.is_tick:    
             tick_pixbuf = self.tick_normal_dpixbuf.get_pixbuf()

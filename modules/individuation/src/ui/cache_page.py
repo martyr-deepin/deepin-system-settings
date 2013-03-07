@@ -30,13 +30,16 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from ui.wallpaper_item import CacheItem
 from cache_manager import cache_thread_pool
 from helper import event_manager
+from xdg_support import get_download_wallpaper_dir
 import common
 from nls import _
 
 class CacheView(IconView):
-    def __init__(self, network_interface, padding_x=8, padding_y=10):
+    def __init__(self, network_interface, padding_x=8, padding_y=10, download_dir=None):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
         
+        self.download_dir = download_dir
+
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
         self.__fetch_thread_id = 0
@@ -98,7 +101,7 @@ class CacheView(IconView):
         
         self.set_loading(True)
         for image in images:
-            cache_item = CacheItem(image)
+            cache_item = CacheItem(image, self.download_dir)
             if not cache_item.is_loaded:
                 thread_items.append(cache_item)
             cache_items.append(cache_item)    
@@ -117,7 +120,7 @@ class CachePage(gtk.VBox):
 
         self.set_spacing(10)
         
-        self.cache_view = CacheView(network_interface)
+        self.cache_view = CacheView(network_interface, download_dir = get_download_wallpaper_dir())
         self.cache_view_sw = self.cache_view.get_scrolled_window()
         
         self.back_button = Button(_("Back"))                                    
