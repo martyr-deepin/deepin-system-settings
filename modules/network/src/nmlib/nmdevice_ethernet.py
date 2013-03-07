@@ -60,16 +60,23 @@ class NMDeviceEthernet(NMDevice):
                                             key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
                                             reverse = True)
 
-            for conn in wired_prio_connections:
-                try:
-                    active_conn = nmclient.activate_connection(conn.object_path, self.object_path, "/")
-                    time.sleep(5)
-                    if active_conn and active_conn.get_state() == 2:
-                        return True
-                    else:
+            import threading
+            def active_connection():
+                for conn in wired_prio_connections:
+                    try:
+                        active_conn = nmclient.activate_connection(conn.object_path, self.object_path, "/")
+                        while(active_conn.get_statee() == 1):
+                            time.sleep(1)
+                        if active_conn.get_state() == 2:
+                            return True
+                        else:
+                            continue
+                    except:
                         continue
-                except:
-                    continue
+
+            t = threading.Thread(target = active_connection)
+            t.start()
+
         else:
             try:
                 nmconn = nm_remote_settings.new_wired_connection()
