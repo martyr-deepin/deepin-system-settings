@@ -98,7 +98,7 @@ class MouseSetting(object):
         self.label_widgets["click_slow"] = Label(_("Slow"), enable_select=False, enable_double_click=False)
         self.label_widgets["double_test"] = Label(_("Double-click on the smiley face to test your settings."),
             label_width=HSCALEBAR_WIDTH, wrap_width=HSCALEBAR_WIDTH, enable_select=False, enable_double_click=False)
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["right_hand_radio"] = RadioButton( _("Right-handed"), padding_x=10)
         self.button_widgets["left_hand_radio"] = RadioButton(_("Left-handed"), padding_x=10)

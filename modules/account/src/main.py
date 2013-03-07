@@ -505,8 +505,11 @@ class AccountSetting(object):
             if self.account_dbus.create_user(username, username, account_type):
                 self.__set_status_text(_("%s has been created") % username)
         except Exception, e:
-            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                self.label_widgets["account_create_error"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsUserDoesNotExist)):
+                #self.label_widgets["account_create_error"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                self.set_status_error_text(e.msg)
+            elif isinstance(e, (AccountsFailed)):
+                self.set_status_error_text(_("The user name is invalid"))
             return
         self.account_cancle_button_clicked(None)
 
@@ -535,7 +538,8 @@ class AccountSetting(object):
             self.__set_status_text(_("%s has been deleted") % name)
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                self.label_widgets["del_account_error_label"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                #self.label_widgets["del_account_error_label"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                self.set_status_error_text(e.msg)
             self.container_widgets["del_account_button_hbox"].set_sensitive(True)
             return
         self.del_cancel_delete_cb(button)
@@ -893,7 +897,6 @@ class AccountSetting(object):
                 change_button.set_sensitive(True)
 
     def change_user_password_thread(self, new_pswd, mutex, current_pswd_input, button, cancel_button, error_label, is_myown):
-        print "in thread"
         mutex.acquire()
         try:
             if is_myown:
@@ -901,7 +904,6 @@ class AccountSetting(object):
             else:
                 old_pswd = " "
             b = self.account_dbus.modify_user_passwd(new_pswd, self.current_passwd_user.get_user_name(), old_pswd)
-            print "changed status:", b
             if b != 0:
                 error_msg = _("password unchanged")
                 if b == 10:
@@ -909,8 +911,9 @@ class AccountSetting(object):
                 if b == -2:
                     error_msg = _("new and old password are too similar")
                 gtk.gdk.threads_enter()
-                error_label.set_text("<span foreground='red'>%s%s</span>" % (
-                    _("Error:"), error_msg))
+                #error_label.set_text("<span foreground='red'>%s%s</span>" % (
+                    #_("Error:"), error_msg))
+                self.set_status_error_text(error_msg)
                 self.container_widgets["main_hbox"].set_sensitive(True)
                 button.set_sensitive(True)
                 cancel_button.set_sensitive(True)
@@ -928,7 +931,8 @@ class AccountSetting(object):
             else:
                 error_msg = _("password unchanged")
             gtk.gdk.threads_enter()
-            error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), error_msg))
+            #error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), error_msg))
+            self.set_status_error_text(error_msg)
             self.container_widgets["main_hbox"].set_sensitive(True)
             button.set_sensitive(True)
             cancel_button.set_sensitive(True)
@@ -954,7 +958,8 @@ class AccountSetting(object):
                     self.current_passwd_user.set_password_mode(2)
             except Exception, e:
                 if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
-                    error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                    #error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
+                    self.set_status_error_text(e.msg)
                     self.container_widgets["main_hbox"].set_sensitive(True)
                     button.set_sensitive(True)
                     cancel_button.set_sensitive(True)
@@ -1055,7 +1060,14 @@ class AccountSetting(object):
                 face_dir = '/var/lib/AccountsService/icons'
                 if not os.path.exists(face_dir):
                     return False
-                pic_list = os.listdir(face_dir)
+                inital_list = ['001.jpg', '002.jpg', '003.jpg', '004.jpg', '005.jpg',
+                               '006.jpg', '007.jpg', '008.jpg', '009.jpg', '010.jpg',
+                               '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg',
+                               '016.jpg', '017.jpg', '018.jpg', '019.jpg', '020.jpg']
+                pic_list = []
+                for i in inital_list:
+                    if os.path.exists("%s/%s" % (face_dir, i)):
+                        pic_list.append(i)
                 if not pic_list:
                     return False
                 total_pic = len(pic_list)
@@ -1177,11 +1189,19 @@ class AccountSetting(object):
                                 padding_right, width, height)
 
     def set_account_info_error_text(self, text=""):
+        #if text:
+            #self.label_widgets["account_info_error"].set_text(
+                #"<span foreground='red'>%s%s</span>" % (_("Error:"), text))
+        #else:
+            #self.label_widgets["account_info_error"].set_text("")
+        self.set_status_error_text(text)
+
+    def set_status_error_text(self, text=""):
         if text:
-            self.label_widgets["account_info_error"].set_text(
-                "<span foreground='red'>%s%s</span>" % (_("Error:"), text))
+            error_text = "%s%s" % (_("Error:"), text)
         else:
-            self.label_widgets["account_info_error"].set_text("")
+            error_text = text
+        self.__set_status_text(error_text)
 
     def __set_status_text(self, text):
         self.container_widgets["statusbar"].set_text(text)
