@@ -275,7 +275,7 @@ class WirelessSection(gtk.VBox):
     
         #TODO signals 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
-        #self.device_is_active(widget)
+
         if self.selected_item:
             self.selected_item.set_net_state(2)
             return
@@ -283,6 +283,7 @@ class WirelessSection(gtk.VBox):
         index = self.get_actives(self.ap_list)
         if index:
             map(lambda i: self.tree.visible_items[i].set_net_state(2), index)
+
 
         
 
@@ -295,37 +296,19 @@ class WirelessSection(gtk.VBox):
             for item in self._get_active_item():
                 item.set_net_state(0)
 
-        
-
-                #if self._get_active_item():
-                    #self._get_active_item().set_net_state(0)
-        #if not self.wireless.get_active():
-            #return 
-        #if reason == 39:
-            #self.wireless.set_active(False)
-        #else:
-            #try:
-                #if self._get_active_item():
-                    #self._get_active_item().set_net_state(0)
-            ##try:
-                ##if self.tree.visible_items != []:
-                    ##self.tree.visible_items[self.index].set_net_state(0)
-                    ##self.tree.visible_items[self.index].redraw()
-            #except:
-                #if self.hotspot.get_net_state() == 1:
-                    #self.hotspot.set_net_state(0)
-
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         pass
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         self.wireless.set_active(True)
+
+        if self._get_active_item():
+            for item in self._get_active_item():
+                item.set_net_state(0)
+
         if self.selected_item:
             self.selected_item.set_net_state(1)
             return
-        index = self.get_actives(self.ap_list)
-        if index:
-            map(lambda i: self.tree.visible_items[i].set_net_state(1), index)
             
             #self.try_to_connect(ssid)
 
