@@ -23,8 +23,8 @@
 
 from theme import app_theme
 from dtk.ui.cache_pixbuf import CachePixbuf
-from dtk.ui.draw import draw_pixbuf
-from dtk.ui.utils import propagate_expose, color_hex_to_cairo
+from dtk.ui.draw import draw_pixbuf, draw_text
+from dtk.ui.utils import propagate_expose, color_hex_to_cairo, get_content_size
 import gtk
 import gobject
 
@@ -36,7 +36,8 @@ class ImageButton(gtk.Button):
     def __init__(self, 
                  normal_dpixbuf, 
                  hover_dpixbuf, 
-                 press_dpixbuf):
+                 press_dpixbuf,
+                 content=""):
         '''
         Initialize ImageButton class.
         @param normal_dpixbuf: DynamicPixbuf for button normal status.
@@ -45,9 +46,16 @@ class ImageButton(gtk.Button):
         '''
         gtk.Button.__init__(self)
         self.cache_pixbuf = CachePixbuf()
+        self.spacing = 5
+        self.content = content
+        self.text_size = get_content_size(content)
+        if self.text_size[1] > 68:
+            self.text_size[1] = 68
 
-        self.request_width = normal_dpixbuf.get_pixbuf().get_width()
-        self.request_height = normal_dpixbuf.get_pixbuf().get_height()
+        self.image_width = self.request_width = normal_dpixbuf.get_pixbuf().get_width()
+        self.image_height = self.request_height = normal_dpixbuf.get_pixbuf().get_height()
+        if content:
+            self.request_width = self.image_width + self.text_size[0] + self.spacing
         self.set_size_request(self.request_width, self.request_height)
 
         # Expose button.
@@ -67,13 +75,16 @@ class ImageButton(gtk.Button):
         
         # Draw button.
         pixbuf = image
-        image_width = self.request_width
-        image_height = self.request_height
+        image_width = self.image_width
+        image_height = self.image_height
         if pixbuf.get_width() != image_width or pixbuf.get_height() != image_height:
             cache_pixbuf.scale(image, image_width, image_height)
             pixbuf = cache_pixbuf.get_cache()
         cr = widget.window.cairo_create()
         draw_pixbuf(cr, pixbuf, widget.allocation.x, widget.allocation.y)
+        if self.content:
+            draw_text(cr, self.content, widget.allocation.x+image_width+self.spacing,
+                      widget.allocation.y+(self.image_height-self.text_size[1])/2, *self.text_size)
 
         if widget.state == gtk.STATE_INSENSITIVE:
             color = "#A2A2A2"
