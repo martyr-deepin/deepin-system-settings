@@ -156,8 +156,6 @@ class NMDeviceWifi(NMDevice):
                     try:
                         specific = self.get_ap_by_ssid(ssid)
                         active_conn = nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
-                        #while(active_conn.get_state() == 1):
-                        #    print "in activate"
 
                         if active_conn.get_state() == 2:
                             return True
