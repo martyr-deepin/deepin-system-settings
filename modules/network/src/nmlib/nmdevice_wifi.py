@@ -22,6 +22,7 @@
 
 import gobject
 import traceback
+import threading
 import time
 from nmdevice import NMDevice
 from nmcache import cache
@@ -149,22 +150,30 @@ class NMDeviceWifi(NMDevice):
         #######Please update ssid record first#######################
 ########################################################################
 ###########################################################################
-            for conn in wireless_prio_connections:
-                ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
-                print ssid
-                if ssid in self.__get_ssid_record():
-                    try:
-                        specific = self.get_ap_by_ssid(ssid)
-                        active_conn = nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
 
-                        if active_conn.get_state() == 2:
-                            return True
-                        else:
-                            continue
-                    except:
-                        pass
-                else:
-                    continue
+            import threading
+
+            def active_connection():
+                for conn in wireless_prio_connections:
+                    ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
+                    print ssid
+                    if ssid in self.__get_ssid_record():
+                        try:
+                            specific = self.get_ap_by_ssid(ssid)
+                            active_conn = nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
+                            while(active_conn.get_state() == 1):
+                                time.sleep(1)
+                            if active_conn.get_state() == 2:
+                                return True
+                            else:
+                                continue
+                        except:
+                            pass
+                    else:
+                        continue
+            t = threading.Thread(target = active_connection)
+            t.start()
+
         else:
             pass
 
