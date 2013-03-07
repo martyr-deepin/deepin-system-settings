@@ -127,7 +127,7 @@ class CachePage(gtk.VBox):
         
         control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(self.back_button, False, False)
-        control_box.pack_start(download_button, False, False)
+        #control_box.pack_start(download_button, False, False)
         
         control_align = gtk.Alignment()
         control_align.set(1.0, 0.5, 0, 0)
