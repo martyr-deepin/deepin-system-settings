@@ -75,6 +75,7 @@ class NMDeviceEthernet(NMDevice):
                         continue
 
             t = threading.Thread(target = active_connection)
+            t.setDaemon(True)
             t.start()
 
         else:

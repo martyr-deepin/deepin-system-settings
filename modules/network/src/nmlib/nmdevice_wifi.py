@@ -172,6 +172,7 @@ class NMDeviceWifi(NMDevice):
                     else:
                         continue
             t = threading.Thread(target = active_connection)
+            t.setDaemon(True)
             t.start()
 
         else:
