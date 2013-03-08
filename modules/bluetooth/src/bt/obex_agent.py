@@ -26,9 +26,21 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 
-class ObexAgent(dbus.service.Object):
+dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+mainloop = gobject.MainLoop()
+
+class ObexAgent(dbus.service.Object, gobject.GObject):
+
+    __gsignals__  = {
+            "start":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, )),
+            "progress":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, int)),
+            "complete":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str, )),
+            "error":(gobject.SIGNAL_RUN_LAST,gobject.TYPE_NONE, (str, str)),
+            }
+
     def __init__(self, conn=None, obj_path=None):
         dbus.service.Object.__init__(self, conn, obj_path)
+        gobject.GObject.__init__(self)
 
     @dbus.service.method("org.openobex.Agent",
                     in_signature="o", out_signature="s")
@@ -36,6 +48,8 @@ class ObexAgent(dbus.service.Object):
         print "Transfer started"
         transfer = dbus.Interface(bus.get_object("org.openobex.client",
                     path), "org.openobex.Transfer")
+
+        self.emit("start", path)
         properties = transfer.GetProperties()
         for key in properties.keys():
             print "  %s = %s" % (key, properties[key])
@@ -45,29 +59,32 @@ class ObexAgent(dbus.service.Object):
                     in_signature="ot", out_signature="")
     def Progress(self, path, transferred):
         print "Transfer progress (%d bytes)" % (transferred)
+
+        self.emit("progress", path, transferred)
         return
 
     @dbus.service.method("org.openobex.Agent",
                     in_signature="o", out_signature="")
     def Complete(self, path):
         print "Transfer finished"
-        return
+
+        self.emit("complete", path)
+        mainloop.quit()
 
     @dbus.service.method("org.openobex.Agent",
                     in_signature="os", out_signature="")
     def Error(self, path, error):
         print "Transfer finished with an error: %s" % (error)
-        return
+
+        self.emit("error", path, error)
+        mainloop.quit()
 
     @dbus.service.method("org.openobex.Agent",
                     in_signature="", out_signature="")
     def Release(self):
         mainloop.quit()
-        return
 
 if __name__ == '__main__':
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-
     bus = dbus.SessionBus()
     client = dbus.Interface(bus.get_object("org.openobex.client", "/"),
                             "org.openobex.Client")
@@ -78,8 +95,6 @@ if __name__ == '__main__':
 
     path = "/org/bluez/agent/sendto"
     agent = ObexAgent(bus, path)
-
-    mainloop = gobject.MainLoop()
 
     client.SendFiles({ "Destination": sys.argv[1] }, sys.argv[2:], path)
 

@@ -113,6 +113,7 @@ class GuiObexAgent(dbus.service.Object):
         return
 
 def send_file(address, filename):
+    print "send file"
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 
     bus = dbus.SessionBus()
@@ -122,7 +123,9 @@ def send_file(address, filename):
                                  
     path = "/org/bluez/agent/sendto"                                            
     agent = GuiObexAgent(bus, path)                                                
-   
+    print "before mainloop" 
     mainloop = gobject.MainLoop()
+    print "after mainloop"
     client.SendFiles({ "Destination": address }, filename, path)
+    print "gui_obex_agent"
     mainloop.run()
