@@ -27,7 +27,7 @@ class NewSessionDialog(DialogBox):
     def __init__(self,
                  new_session,
                  default_width=330,
-                 default_height=150,
+                 default_height=160,
                  confirm_callback=None, 
                  cancel_callback=None):
         '''
