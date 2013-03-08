@@ -239,7 +239,7 @@ class PicturePage(gtk.VBox):
         self.select_view_sw = self.select_view.get_scrolled_window()               
 
         self.notice_label = Label("")
-        self.notice_label.set_size_request(500, -1)
+        self.notice_label.set_size_request(400, -1)
 
         self.back_button = Button(_("Back"))                                    
         self.back_button.connect("clicked", self.__on_back)
