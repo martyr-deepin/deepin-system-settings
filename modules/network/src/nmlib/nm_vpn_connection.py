@@ -22,6 +22,8 @@
 
 import gobject
 from nm_active_connection import NMActiveConnection
+from nmcache import cache
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 class NMVpnConnection(NMActiveConnection):
     '''NMVpnConnection'''
@@ -58,6 +60,14 @@ class NMVpnConnection(NMActiveConnection):
             self.emit("vpn-connecting")
         elif state == 5:
             self.emit("vpn-connected")
+            conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
+            try:
+                priority = int(nm_remote_settings.cf.get("conn_priority", conn_uuid)) + 1
+            except:
+                priority = 1
+
+            nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
+            nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
         else:
             self.emit("vpn-disconnected")
 
