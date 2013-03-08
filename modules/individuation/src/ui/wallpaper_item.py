@@ -876,6 +876,11 @@ class CacheItem(gobject.GObject, MissionThread):
 
         event_manager.add_callback("download-start", self.__on_download_start)
         event_manager.add_callback("download-finish", self.__on_download_finish)
+        event_manager.add_callback("delete-downloaded-wallpaper", self.__on_delete_downloaded_wallpaper)
+
+    def __on_delete_downloaded_wallpaper(self, name, obj, data):
+        self.create_cache_pixbuf()
+        self.emit_redraw_request()
 
     def __on_download_start(self, name, obj, data):
         if self.image_object.big_url != data.url:

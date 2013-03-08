@@ -145,7 +145,9 @@ class SelectView(IconView):
 
     def delete(self):
         for item in self.items:
-            os.remove(item.image_path)
+            if item.is_tick:
+                os.remove(item.image_path)
+                event_manager.emit("delete-downloaded-wallpaper", item)
 
         self.queue_draw()
 
