@@ -108,24 +108,24 @@ class NMRemoteSettings(NMObject):
 
         if connection_type == "wired":
             conn_list = self.get_wired_connections()
-            conn_start = "有线连接"
+            conn_start = _("Wired config")
         elif connection_type == "wireless":
             conn_list = self.get_wireless_connections()
-            conn_start = "无线连接"
+            conn_start = _("Wireless config")
         elif connection_type == "dsl":
             conn_list = self.get_pppoe_connections()
-            conn_start = "拨号连接"
+            conn_start = _("Dsl config")
         elif connection_type == "vpn":
             conn_list = self.get_vpn_connections()
-            conn_start = "VPN连接"
+            conn_start = _("VPN config")
         elif connection_type == "cdma":
             conn_list = self.get_cdma_connections()
-            conn_start = "CDMA连接"
+            conn_start = _("CDMA config")
         elif connection_type == "gsm":
             conn_list = self.get_gsm_connections()
-            conn_start = "GSM连接"
+            conn_start = _("GSM config")
         else:
-            return "新建连接"
+            return _("Config")
 
         index_list = [0, ]
         if conn_list:

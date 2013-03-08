@@ -25,6 +25,7 @@ import sys
 import dbus
 import dbus.service
 import dbus.mainloop.glib
+import uuid
 
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 mainloop = gobject.MainLoop()
@@ -93,7 +94,7 @@ if __name__ == '__main__':
         print "Usage: %s <device> <file> [file*]" % (sys.argv[0])
         sys.exit(1)
 
-    path = "/org/bluez/agent/sendto"
+    path = "/org/bluez/agent/" + str(uuid.uuid4()).replace("-","")
     agent = ObexAgent(bus, path)
 
     client.SendFiles({ "Destination": sys.argv[1] }, sys.argv[2:], path)
