@@ -39,27 +39,8 @@ import gobject
 import gtk
 import pango
 import time
-import threading as td
 from my_bluetooth import MyBluetooth
 from nls import _
-
-class DiscoveryDeviceThread(td.Thread):                                         
-    def __init__(self, ThisPtr):                                                
-        td.Thread.__init__(self)                                                
-        self.setDaemon(True)                                                    
-        self.ThisPtr = ThisPtr                                                  
-                                                                                
-    def run(self):                                                              
-        try:                                                                    
-            for dev in self.ThisPtr.adapter.get_devices():                      
-                self.ThisPtr.adapter.remove_device(dev)                         
-                                                                                
-            self.ThisPtr.adapter.start_discovery()                              
-                                                                                
-            while True:                                                         
-                time.sleep(1)                                                   
-        except Exception, e:                                                    
-            print "class DiscoveryDeviceThread got error: %s" % e
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 15
@@ -94,15 +75,14 @@ gobject.type_register(DeviceItem)
 
 class TrayBluetoothPlugin(object):
     def __init__(self):
-        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, self.__on_default_adapter_changed)
-        self.width = 160
-        self.height = 95
-        self.device_treeview = TreeView()                                   
-        self.device_treeview.set_child_visible(False)                           
-        self.device_separator_align = self.__setup_align()
-        self.device_separator = self.__setup_separator()
-        self.device_separator_align.add(self.device_separator)
-        self.device_separator_align.set_child_visible(False)
+        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
+                                        self.__on_default_adapter_changed)
+        self.width = DeviceItem.NAME_WIDTH
+        self.ori_height = 95
+        self.height = self.ori_height
+        self.device_items = []
+
+        self.__get_devices()
 
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
@@ -115,9 +95,10 @@ class TrayBluetoothPlugin(object):
         self.tray_icon = this_list[1]
         self.tray_icon.set_icon_theme("enable")
         
-        
         if self.my_bluetooth.adapter:
-            if not self.my_bluetooth.adapter.get_powered():                                          
+            if self.my_bluetooth.adapter.get_powered():
+                self.__get_devices()
+            else:
                 self.tray_icon.set_visible(False)
         else:
             self.tray_icon.set_visible(False)
@@ -132,45 +113,28 @@ class TrayBluetoothPlugin(object):
         pass
 
     def __adapter_toggled(self, widget):
-        if self.adapter == None:
+        if self.my_bluetooth.adapter == None:
             return
 
-        self.adapter.set_powered(widget.get_active())
-        if self.adapter.get_powered():
-            DiscoveryDeviceThread(self).start()
+        self.my_bluetooth.adapter.set_powered(widget.get_active())
 
     def __bluetooth_selected(self, widget, event):                                 
         self.this.hide_menu()                         
         run_command("deepin-system-settings bluetooth")
 
-    def __device_found(self, adapter, address, values):                         
-        if address not in adapter.get_address_records():                        
-            device = Device(adapter.create_device(address))                     
-            items = []                                                          
-                                                                                
-            '''                                                                 
-            FIXME: why there is no Name key sometime?                           
-            '''                                                                 
-            if not values.has_key("Name"):                                      
-                return                                                          
-            items.append(DeviceItem(values['Name']))
-            self.device_treeview.delete_all_items()
-            if len(items):
-                self.device_treeview.add_items(items)
-                self.device_treeview.set_size_request(-1, len(items) * DeviceItem.ITEM_HEIGHT)
-                self.device_treeview.set_child_visible(True)
-                self.device_separator_align.set_child_visible(True)
-                self.height = self.height + len(items) * DeviceItem.ITEM_HEIGHT
-            else:
-                self.device_treeview.set_size_request(-1, 0)
-                self.device_treeview.set_child_visible(False)
-                self.device_separator_align.set_child_visible(False)
-                self.height = 95
-            self.this.set_size_request(self.width, self.height)
-        else:                                                                   
-            if adapter.get_discovering():                                       
-                adapter.stop_discovery()                                        
-                pass
+    def __get_devices(self):
+        devices = self.my_bluetooth.get_devices()                               
+        device_count = len(devices)                                                                        
+        i = 0
+       
+        self.device_items = []
+        while i < device_count:
+            self.device_items.append(DeviceItem(devices[i].get_name()))
+            i += 1
+
+        self.height = self.ori_height
+        if device_count:
+            self.height += device_count * DeviceItem.ITEM_HEIGHT
 
     def plugin_widget(self):
         plugin_box = gtk.VBox()
@@ -178,12 +142,30 @@ class TrayBluetoothPlugin(object):
         adapter_image = ImageBox(app_theme.get_pixbuf("bluetooth/enable_open.png"))
         adapter_label = self.__setup_label(_("Adapter"))
         adapter_toggle = self.__setup_toggle()
-        if self.adapter:
-            adapter_toggle.set_active(self.adapter.get_powered())
+        if self.my_bluetooth.adapter:
+            adapter_toggle.set_active(self.my_bluetooth.adapter.get_powered())
         adapter_toggle.connect("toggled", self.__adapter_toggled)
-        separator_align = self.__setup_align()
+        separator_align = self.__setup_align(padding_bottom = 3)
         separator = self.__setup_separator()
         separator_align.add(separator)
+        '''
+        devices treeview
+        '''
+        device_treeview = TreeView()
+        device_separator_align = self.__setup_align()                           
+        device_separator = self.__setup_separator()                             
+        device_separator_align.add(device_separator)
+        device_count = len(self.device_items)
+        if device_count:
+            device_treeview.delete_all_items()
+            device_treeview.add_items(self.device_items)
+            device_treeview.set_size_request(self.width, device_count * DeviceItem.ITEM_HEIGHT)
+        else:
+            device_treeview.set_child_visible(False)
+            device_separator_align.set_child_visible(False)
+        '''
+        select button
+        '''
         select_button_align = self.__setup_align()
         select_button = SelectButton(_("Advanced option..."),             
                                      font_size = 10,                            
@@ -191,14 +173,17 @@ class TrayBluetoothPlugin(object):
         select_button.set_size_request(self.width, 25)                          
         select_button.connect("button-press-event", self.__bluetooth_selected)
         select_button_align.add(select_button)
+        
         adapter_box.pack_start(adapter_image, False, False)
         adapter_box.pack_start(adapter_label, False, False)
         adapter_box.pack_start(adapter_toggle, False, False)
+        
         plugin_box.pack_start(adapter_box, False, False)
         plugin_box.pack_start(separator_align, False, False)
-        plugin_box.pack_start(self.device_treeview, False, False)
-        plugin_box.pack_start(self.device_separator_align, False, False)
+        plugin_box.pack_start(device_treeview, False, False)
+        plugin_box.pack_start(device_separator_align, False, False)
         plugin_box.pack_start(select_button_align, False, False)
+        
         return plugin_box
 
     def show_menu(self):

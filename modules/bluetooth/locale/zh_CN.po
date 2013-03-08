@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-27 15:18+0800\n"
+"POT-Creation-Date: 2013-03-08 12:21+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,59 +17,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:335
+#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:343
 msgid "Bluetooth Get Powered"
 msgstr "蓝牙是否开启"
 
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:353
+#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:359
 msgid "Device Shown Name"
 msgstr "显示设备名称"
 
-#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:367
+#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:373
 msgid "Be Searchedable"
 msgstr "是否可被发现"
 
-#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:382
+#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:388
 msgid "Searching Device Timeout"
 msgstr "可检测到设备的时间超时"
 
-#: ../src/tray_bluetooth_plugin.py:167
+#: ../src/tray_bluetooth_plugin.py:143
 msgid "Adapter"
 msgstr "适配器"
 
-#: ../src/tray_bluetooth_plugin.py:173
+#: ../src/tray_bluetooth_plugin.py:170
 msgid "Advanced option..."
 msgstr "更多高级选项..."
 
-#: ../src/bluetooth_view.py:234
+#: ../src/bluetooth_view.py:239
 msgid "Select File"
 msgstr "选择文件"
 
-#: ../src/bluetooth_view.py:255
+#: ../src/bluetooth_view.py:262
 #, python-format
 msgid "Please confirm %s pin match as below"
 msgstr "请确认显示于%s上面的pin于此匹配"
 
-#: ../src/bluetooth_view.py:256
+#: ../src/bluetooth_view.py:263
 msgid "Yes"
 msgstr "匹配"
 
-#: ../src/bluetooth_view.py:257
+#: ../src/bluetooth_view.py:264
 msgid "No"
 msgstr "不匹配"
 
-#: ../src/bluetooth_view.py:320
+#: ../src/bluetooth_view.py:328 ../src/bt/gui_obex_agent.py:75
 msgid "Send File"
 msgstr "发送文件"
 
-#: ../src/bluetooth_view.py:327
+#: ../src/bluetooth_view.py:335
 msgid "Minutes"
 msgstr "分钟"
 
-#: ../src/bluetooth_view.py:332
+#: ../src/bluetooth_view.py:340
 msgid "Bluetooth"
 msgstr "蓝牙"
 
-#: ../src/bluetooth_view.py:401
+#: ../src/bluetooth_view.py:407
+msgid "Search"
+msgstr "搜索"
+
+#: ../src/bluetooth_view.py:409 ../src/bt/gui_obex_agent.py:61
 msgid "Cancel"
 msgstr "取消"

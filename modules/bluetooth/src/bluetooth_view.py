@@ -39,6 +39,7 @@ import gtk
 import pango
 from constant import *
 from nls import _
+from bt.device import Device
 from bt.utils import bluetooth_class_to_type
 from bt.gui_obex_agent import send_file
 from my_bluetooth import MyBluetooth
@@ -326,7 +327,9 @@ class BlueToothView(gtk.VBox):
 
         self.send_button = Button(_("Send File"))
         
-        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, self.__on_default_adapter_changed)
+        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
+                                        self.__on_default_adapter_changed, 
+                                        self.__device_found)
 
         self.timeout = 120
         self.timeout_items = [("2 %s" % _("Minutes"), self.timeout)]
