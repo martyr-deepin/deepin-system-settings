@@ -27,6 +27,7 @@ from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 from subprocess import Popen
 
+
 from widgets import AskPasswordDialog
 from vtk.timer import Timer
 
@@ -49,6 +50,7 @@ class TrayNetworkPlugin(object):
 
         self.init_wired_signals()
         self.init_wireless_signals()
+
 
     def init_values(self, this_list):
         self.this_list = this_list
@@ -425,7 +427,7 @@ class TrayNetworkPlugin(object):
         """
         height = self.gui.get_widget_height()
         self.this.resize(1,1)
-        self.this.set_size_request(185, height + 45)
+        self.this.set_size_request(185, height + 46)
 
 def return_plugin():
     return TrayNetworkPlugin

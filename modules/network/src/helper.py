@@ -70,6 +70,9 @@ class EventDispatcher(gobject.GObject):
             "connection-replace": _(obj),
 
             "request_resize": _(),
+
+            #"wired_device_add" : _(),
+            #"wireless_device_add" : _()
             }
 
     def __init__(self):

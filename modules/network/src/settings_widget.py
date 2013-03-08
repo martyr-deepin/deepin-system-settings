@@ -523,8 +523,8 @@ class SettingItem(TreeItem):
     
     def set_connection_name(self, text):
         self.connection.get_setting("connection").id = text
-        if self.set_button:
-            self.set_button("save", True)
+        #if self.set_button:
+        Dispatcher.set_button("save", True)
 
     def unselect(self):
         self.is_select = False

@@ -68,18 +68,6 @@ class VPNSetting(Settings):
     def apply_changes(self, connection):
         # FIXME Now just support one device
 
-        #active_connections = nm_module.nmclient.get_active_connections()
-        #if active_connections:
-            #device_path = active_connections[0].get_devices()[0].object_path
-            #specific_path = active_connections[0].object_path
-            #active_object = nm_module.nmclient.activate_connection(connection.object_path,
-                                           #device_path,
-                                           #specific_path)
-            #print active_object
-            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
-        #else:
-            #print "no active connection available"
-
         wired_devices = nm_module.nmclient.get_wired_devices()
         wireless_devices = nm_module.nmclient.get_wireless_devices() 
         if wired_devices:

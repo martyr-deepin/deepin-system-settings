@@ -63,7 +63,6 @@ class NModule(object):
         print "reinit object"
         self.client = cache.getobject("/org/freedesktop/NetworkManager")
         self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
-        print self.setting, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         self.agent = NMSecretAgent()
         self.mclient = MMClient()
         self.hslider = MySlider()
@@ -98,9 +97,3 @@ class NModule(object):
         return self.hslider
     
 nm_module = NModule()
-#wired_device = nmclient.get_wired_devices()[0]
-#wireless_device = nmclient.get_wireless_devices()[0]
-#if nmclient.get_wireless_devices() != []:
-#else:
-    #wireless_device = []
-##wireless_device = []

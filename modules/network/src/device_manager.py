@@ -5,7 +5,6 @@ from nm_modules import nm_module
 from nmlib.nmcache import cache
 from helper import Dispatcher
 
-
 class DeviceManager(object):
 
     def __init__(self):
@@ -18,11 +17,23 @@ class DeviceManager(object):
                               "activate_start",
                               "activate_failed"]
 
+        nm_module.nmclient.connect("device-added", self.device_added_cb)
+
+
     def __init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
         #nm_module.mmclient.connect("device-added", )
         
+    def device_added_cb(self, widget, path):
+        device =  cache.getobject(path)
+        type = device.get_device_type() 
+        if type == 1:
+            Dispatcher.emit("wired-device-add", device)
+        elif type == 2:
+            Dispatcher.emit("wireless-device-add", device)
+
+        self.__init_device()
 
     def load_wired_listener(self, module):
         if self.wired_devices:

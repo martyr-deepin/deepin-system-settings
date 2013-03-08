@@ -76,9 +76,6 @@ class DSLSetting(Settings):
                                            "/")
             Dispatcher.to_setting_page()
 
-    def apply_changes(self):
-        pass
-
     def add_new_connection(self):
         connection = nm_module.nm_remote_settings.new_pppoe_connection()
         return (connection, -1)

@@ -223,6 +223,7 @@ class Security(gtk.VBox):
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
+                self.setting.psk = secret
             except:
                 secret = ""
 

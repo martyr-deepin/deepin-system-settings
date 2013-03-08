@@ -57,8 +57,10 @@ class Contain(gtk.Alignment):
         cr.set_source_rgb( 1, 1, 1) 
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
-    def set_active(self, state):
+    def set_active(self, state, emit=False):
         self.switch.set_active(state)
+        if emit:
+            self.switch.emit("toggled")
 
     def get_active(self):
         return self.switch.get_active()
