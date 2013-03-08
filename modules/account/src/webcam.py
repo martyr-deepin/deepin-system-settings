@@ -27,10 +27,10 @@ import os
 import gtk
 import gst
 
-class Webcam(gtk.DrawingArea):
+class Webcam(gtk.EventBox):
     
     def __init__(self):
-        gtk.DrawingArea.__init__(self)
+        gtk.EventBox.__init__(self)
 
         self.video_player = None
         #if self.has_device():

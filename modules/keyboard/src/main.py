@@ -137,7 +137,7 @@ class KeySetting(object):
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["repeat_test_entry"] = InputEntry(_("Test Repeat Interval"))
-        self.button_widgets["blink_test_entry"] = BlinkButton()
+        self.button_widgets["blink_test_entry"] = BlinkButton(settings.keyboard_get_cursor_blink_time())
         #self.button_widgets["repeat_test_entry"] = gtk.Entry()
         #self.button_widgets["blink_test_entry"] = gtk.Entry()
         self.button_widgets["touchpad_disable"] = OffButton()
