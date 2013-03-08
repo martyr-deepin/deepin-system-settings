@@ -37,7 +37,7 @@ from time import time
 from tempfile import mkstemp
 from stat import S_IRWXU, S_IRWXG, S_IRWXO, S_IWUSR, S_IWGRP, S_IWOTH
 
-class IconEditArea(gtk.VBox):
+class IconEditArea(gtk.Layout):
     __gsignals__ = {
         "pixbuf-changed": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT,))}
 
@@ -55,16 +55,17 @@ class IconEditArea(gtk.VBox):
     MODE_EDIT = 2
 
     def __init__(self):
-        super(IconEditArea, self).__init__(False)
+        super(IconEditArea, self).__init__()
 
         self.edit_area = gtk.EventBox()
         self.camera_area = Webcam()
         self.camera_area_init_flag = False
         self.button_hbox = gtk.HBox(False)
+        self.button_hbox_height = 50
 
         self.edit_area.set_size_request(self.AREA_WIDTH, self.AREA_HEIGHT)
         self.camera_area.set_size_request(self.AREA_WIDTH, self.AREA_HEIGHT)
-        self.button_hbox.set_size_request(self.AREA_WIDTH, 50)
+        self.button_hbox.set_size_request(self.AREA_WIDTH, self.button_hbox_height)
 
         self.button_zoom_in = ImageButton(
             app_theme.get_pixbuf("account/zoom_in.png"),
@@ -97,18 +98,26 @@ class IconEditArea(gtk.VBox):
         self.button_camera.connect("clicked", self.on_camera_clicked_cb)
         self.button_camera_again.connect("clicked", self.on_camera_again_clicked_cb)
 
-        self.pack_start(self.edit_area, False, False)
-        self.pack_start(self.button_hbox, False, False)
-        self.pack_start(tools.make_align(yalign=0.0, yscale=1.0))
-        self.set_size_request(self.AREA_WIDTH, self.AREA_HEIGHT+50)
+        self.box = gtk.VBox(False)
+        self.box.pack_start(self.edit_area, False, False)
+        #self.box.pack_start(self.button_hbox, False, False)
+        #self.box.pack_start(tools.make_align(yalign=0.0, yscale=1.0))
+        self.set_size(self.AREA_WIDTH, self.AREA_HEIGHT)
+        self.set_size_request(self.AREA_WIDTH, self.AREA_HEIGHT)
         self.connect("expose-event", self.draw_frame_border)
+        self.put(self.box, 0, 0)
+        self.put(self.button_hbox, 0, self.AREA_HEIGHT-self.button_hbox_height)
 
         self.edit_area.set_can_focus(True)
+        self.edit_area.set_visible_window(False)
         self.edit_area.add_events(gtk.gdk.ALL_EVENTS_MASK)        
         self.edit_area.connect("button-press-event", self.__on_button_press_cb)
         self.edit_area.connect("button-release-event", self.__on_button_release_cb)
         self.edit_area.connect("motion-notify-event", self.__on_motion_notify_cb)
         self.edit_area.connect("expose-event", self.__expose_edit)
+
+        self.camera_area.add_events(gtk.gdk.POINTER_MOTION_MASK)
+        self.camera_area.connect("motion-notify-event", self.__on_camera_motion_notify_cb)
 
         self.current_mode = self.MODE_EDIT
         self.origin_pixbuf = None
@@ -128,6 +137,10 @@ class IconEditArea(gtk.VBox):
         self.position = self.POS_OUT
         self.drag_flag = False
         self.move_flag = False
+        #
+        self.__show_button_flag = True
+        self.__button_moving_flag = False
+        self.__refresh_flag = False
 
         # the pixbuf shown area
         self.pixbuf_offset_x = 0
@@ -165,6 +178,10 @@ class IconEditArea(gtk.VBox):
         self.set_camera_mode()
 
     def on_camera_clicked_cb(self, button):
+        self.camera_area.set_visible_window(True)
+        gobject.timeout_add(1, self.__on_camera_clicked_timeout_cb)
+
+    def __on_camera_clicked_timeout_cb(self):
         self.current_mode = self.MODE_CAMERA_EDIT
         drawable = self.camera_area.window
         colormap = drawable.get_colormap()
@@ -407,6 +424,24 @@ class IconEditArea(gtk.VBox):
         self.move_flag = False
 
     def __on_motion_notify_cb(self, widget, event):
+        if not self.drag_flag and not self.move_flag and not self.__button_moving_flag:
+            x, y, w, h = widget.allocation
+            if not self.__show_button_flag and \
+                    y+self.AREA_HEIGHT-self.button_hbox_height<event.y<y+self.AREA_HEIGHT:
+                self.move(self.button_hbox, 0, self.AREA_HEIGHT)
+                self.__button_moving_flag = True
+                gobject.timeout_add(50, self.__slide_button_show)
+                self.position = self.POS_OUT
+                self.set_cursor()
+                return
+            if self.__show_button_flag and \
+                    y<event.y<y+self.AREA_HEIGHT-self.button_hbox_height:
+                self.move(self.button_hbox, 0, self.AREA_HEIGHT-self.button_hbox_height)
+                self.__button_moving_flag = True
+                gobject.timeout_add(50, self.__slide_button_hide)
+                self.position = self.POS_OUT
+                self.set_cursor()
+                return
         pixbuf = self.cache_pixbuf.get_cache()
         if not pixbuf:
             return
@@ -468,6 +503,20 @@ class IconEditArea(gtk.VBox):
                 self.edit_coord_h = self.edit_coord_w = bottom_pos - self.edit_coord_y
         self.__update_drag_point_coord()
 
+    def __on_camera_motion_notify_cb(self, widget, event):
+        if not self.__button_moving_flag:
+            x, y, w, h = widget.allocation
+            if not self.__show_button_flag and \
+                    y+self.AREA_HEIGHT-self.button_hbox_height<event.y<y+self.AREA_HEIGHT:
+                self.move(self.button_hbox, 0, self.AREA_HEIGHT)
+                self.__button_moving_flag = True
+                gobject.timeout_add(50, self.__slide_button_show)
+            if self.__show_button_flag and \
+                    y<event.y<y+self.AREA_HEIGHT-self.button_hbox_height:
+                self.move(self.button_hbox, 0, self.AREA_HEIGHT-self.button_hbox_height)
+                self.__button_moving_flag = True
+                gobject.timeout_add(50, self.__slide_button_hide)
+
     def __update_drag_point_coord(self):
         new_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
         new_y = self.edit_coord_y + self.edit_coord_h - self.DRAG_WIDTH
@@ -493,17 +542,19 @@ class IconEditArea(gtk.VBox):
 
     def set_camera_mode(self):
         self.current_mode = self.MODE_CAMERA
+        self.camera_area.set_visible_window(False)
         self.__camera_picture()
         container_remove_all(self.button_hbox)
         self.button_hbox.pack_start(self.button_camera_align)
+        self.__refresh_button()
 
     def __camera_picture(self):
         self.set_pixbuf(None)
-        if self.edit_area in self.get_children():
-            self.remove(self.edit_area)
-        if not self.camera_area in self.get_children():
-            self.pack_start(self.camera_area, False, False)
-            self.reorder_child(self.camera_area, 0)
+        if self.edit_area in self.box.get_children():
+            self.box.remove(self.edit_area)
+        if not self.camera_area in self.box.get_children():
+            self.box.pack_start(self.camera_area, False, False)
+            self.box.reorder_child(self.camera_area, 0)
         self.show_all()
         try:
             if not self.camera_area.video_player:
@@ -522,13 +573,14 @@ class IconEditArea(gtk.VBox):
 
     def __edit_picture(self, pixbuf):
         self.set_pixbuf(pixbuf)
-        if self.camera_area in self.get_children():
-            self.remove(self.camera_area)
-        if not self.edit_area in self.get_children():
-            self.pack_start(self.edit_area, False, False)
-            self.reorder_child(self.edit_area, 0)
+        if self.camera_area in self.box.get_children():
+            self.box.remove(self.camera_area)
+        if not self.edit_area in self.box.get_children():
+            self.box.pack_start(self.edit_area, False, False)
+            self.box.reorder_child(self.edit_area, 0)
         self.show_all()
         self.camera_stop()
+        self.__refresh_button()
 
     def __update_button_sensitive(self):
         if self.pixbuf_w >= self.origin_pixbuf_width or self.pixbuf_h >= self.origin_pixbuf_height:
@@ -553,6 +605,45 @@ class IconEditArea(gtk.VBox):
         except Exception, e:
             print e
             pass
+
+    def __slide_button_hide(self):
+            if self.__refresh_flag:
+                self.__refresh_flag = False
+                return False
+            step = self.button_hbox_height / 5
+            y0 = self.button_hbox.allocation.y
+            if y0 + step <= self.AREA_HEIGHT:
+                self.move(self.button_hbox, 0, y0+step)
+                return True
+            self.__button_moving_flag = False
+            self.__show_button_flag = False
+            return False
+
+    def __slide_button_show(self):
+            if self.__refresh_flag:
+                self.__refresh_flag = False
+                return False
+            step = self.button_hbox_height / 5
+            y0 = self.button_hbox.allocation.y
+            h = self.button_hbox.allocation.height
+            if y0 + h - step >= self.AREA_HEIGHT:
+                self.move(self.button_hbox, 0, y0-step)
+                return True
+            self.__button_moving_flag = False
+            self.__show_button_flag = True
+            return False
+
+    def __refresh_button(self):
+        self.__show_button_flag = True
+        self.__button_moving_flag = True
+        self.__refresh_flag = True
+        gobject.timeout_add(2000, self.__refresh_hide_button)
+        self.move(self.button_hbox, 0, self.AREA_HEIGHT-self.button_hbox_height)
+            
+    def __refresh_hide_button(self):
+        gobject.timeout_add(50, self.__slide_button_hide)
+        self.__refresh_flag = False
+        return False
 gobject.type_register(IconEditArea)
 
 
@@ -577,7 +668,7 @@ class IconEditPage(gtk.HBox):
 
         self.draw_area = IconEditArea()
         left_vbox.pack_start(tools.make_align(Label(_("Clip"), enable_select=False, enable_double_click=False)), False, False)
-        left_vbox.pack_start(tools.make_align(self.draw_area, yalign=0.0, width=300, height=350))
+        left_vbox.pack_start(tools.make_align(self.draw_area, yalign=0.0, width=300, height=300))
 
         self.thumbnail_large = gtk.Image()
         self.thumbnail_mid = gtk.Image()
