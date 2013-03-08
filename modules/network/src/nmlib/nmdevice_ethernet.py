@@ -65,7 +65,7 @@ class NMDeviceEthernet(NMDevice):
                 for conn in wired_prio_connections:
                     try:
                         active_conn = nmclient.activate_connection(conn.object_path, self.object_path, "/")
-                        while(active_conn.get_statee() == 1):
+                        while(active_conn.get_state() == 1):
                             time.sleep(1)
                         if active_conn.get_state() == 2:
                             return True
@@ -85,6 +85,36 @@ class NMDeviceEthernet(NMDevice):
                 nmclient.activate_connection(conn.object_path, self.object_path, "/")
             except:
                 return False
+
+    def dsl_auto_connect(self):
+        if not cache.getobject(self.object_path).is_active():
+            return False
+
+        elif not nm_remote_settings.get_pppoe_connections():
+            return False
+        else:
+            pppoe_prio_connections = sorted(nm_remote_settings.get_pppoe_connections(),
+                                            key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
+                                            reverse = True)
+
+            import threading
+            def active_connection():
+                for conn in pppoe_prio_connections:
+                    try:
+                        ####################Please confirm dsl specific object path############
+                        active_conn = nmclient.activate_connection(conn.object_path, self.object_path, "/")
+                        while(active_conn.get_state() == 1):
+                            time.sleep(1)
+                        if active_conn.get_state() == 2:
+                            return True
+                        else:
+                            continue
+                    except:
+                        continue
+
+            t = threading.Thread(target = active_connection)
+            t.setDaemon(True)
+            t.start()
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()

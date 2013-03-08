@@ -147,10 +147,7 @@ class NMDeviceWifi(NMDevice):
                                             key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
                                             reverse = True)
 
-        #######Please update ssid record first#######################
-########################################################################
-###########################################################################
-
+        #######Please fix update ssid record, consider the hide ssid connection#######################
             import threading
 
             def active_connection():
@@ -174,7 +171,6 @@ class NMDeviceWifi(NMDevice):
             t = threading.Thread(target = active_connection)
             t.setDaemon(True)
             t.start()
-
         else:
             pass
 

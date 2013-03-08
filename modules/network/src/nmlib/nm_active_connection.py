@@ -22,6 +22,9 @@
 
 from nmobject import NMObject
 from nmcache import cache
+import time
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 
 class NMActiveConnection(NMObject):
     '''NMActiveConnection'''
@@ -64,6 +67,32 @@ class NMActiveConnection(NMObject):
     def get_default6(self):
         return self.properties["Default6"]
 
+    def vpn_auto_connect(self):
+        if self.get_state() != 2:
+            return False
+        else:
+            vpn_prio_connections = sorted(nm_remote_settings.get_vpn_connections(),
+                                            key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
+                                            reverse = True)
+
+            import threading
+            def active_connection():
+                for conn in vpn_prio_connections:
+                    try:
+                        ########################Please fix the device path##################
+                        active_conn = nmclient.activate_connection(conn.object_path, self.properties["Devices"][0],  self.object_path)
+                        while(active_conn.get_state() == 1):
+                            time.sleep(1)
+                        if active_conn.get_state() == 2:
+                            return True
+                        else:
+                            continue
+                    except:
+                        continue
+
+            t = threading.Thread(target = active_connection)
+            t.setDaemon(True)
+            t.start()
     ###Signals###
     def properties_changed_cb(self, prop_dict):
         # print "PropertiesChanged"
