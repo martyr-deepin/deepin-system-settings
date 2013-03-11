@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-08 12:21+0800\n"
+"POT-Creation-Date: 2013-03-11 14:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:343
+#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:498
 msgid "Bluetooth Get Powered"
 msgstr ""
 
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:359
+#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:514
 msgid "Device Shown Name"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:373
+#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:528
 msgid "Be Searchedable"
 msgstr ""
 
-#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:388
+#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:543
 msgid "Searching Device Timeout"
 msgstr ""
 
@@ -41,39 +41,59 @@ msgstr ""
 msgid "Advanced option..."
 msgstr ""
 
-#: ../src/bluetooth_view.py:239
+#: ../src/bluetooth_view.py:82 ../src/bluetooth_view.py:564
+msgid "Cancel"
+msgstr ""
+
+#: ../src/bluetooth_view.py:127
+msgid "Ok"
+msgstr ""
+
+#: ../src/bluetooth_view.py:328
+#, python-format
+msgid ""
+"Failed!\n"
+"error msg: %s"
+msgstr ""
+
+#: ../src/bluetooth_view.py:342
+#, python-format
+msgid "Sending file to %s"
+msgstr ""
+
+#: ../src/bluetooth_view.py:358
+msgid "Succeed!"
+msgstr ""
+
+#: ../src/bluetooth_view.py:394
 msgid "Select File"
 msgstr ""
 
-#: ../src/bluetooth_view.py:262
+#: ../src/bluetooth_view.py:417
 #, python-format
 msgid "Please confirm %s pin match as below"
 msgstr ""
 
-#: ../src/bluetooth_view.py:263
+#: ../src/bluetooth_view.py:418
 msgid "Yes"
 msgstr ""
 
-#: ../src/bluetooth_view.py:264
+#: ../src/bluetooth_view.py:419
 msgid "No"
 msgstr ""
 
-#: ../src/bluetooth_view.py:328 ../src/bt/gui_obex_agent.py:75
+#: ../src/bluetooth_view.py:483
 msgid "Send File"
 msgstr ""
 
-#: ../src/bluetooth_view.py:335
+#: ../src/bluetooth_view.py:490
 msgid "Minutes"
 msgstr ""
 
-#: ../src/bluetooth_view.py:340
+#: ../src/bluetooth_view.py:495
 msgid "Bluetooth"
 msgstr ""
 
-#: ../src/bluetooth_view.py:407
+#: ../src/bluetooth_view.py:562
 msgid "Search"
-msgstr ""
-
-#: ../src/bluetooth_view.py:409 ../src/bt/gui_obex_agent.py:61
-msgid "Cancel"
 msgstr ""

@@ -24,6 +24,7 @@ from theme import app_theme
 from dtk.ui.utils import color_hex_to_cairo, get_content_size
 from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_pixbuf, draw_text, draw_vlinear
+from dtk.ui.progressbar import ProgressBar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
 from dtk.ui.box import ImageBox
@@ -34,6 +35,7 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton, Button
 from dtk.ui.dialog import DialogBox, OpenFileDialog
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
+import os
 import gobject
 import gtk
 import pango
@@ -41,13 +43,96 @@ from constant import *
 from nls import _
 from bt.device import Device
 from bt.utils import bluetooth_class_to_type
-from bt.gui_obex_agent import send_file
 from my_bluetooth import MyBluetooth
+from ods.OdsManager import OdsManager
 import time
 import threading as td
 import uuid
 import re
 import common
+
+class ProgressDialog(DialogBox):                                                
+    DIALOG_MASK_SINGLE_PAGE = 0                                                 
+                                                                                
+    def __init__(self, msg, default_width=300, default_height=160, cancel_cb=None):
+        DialogBox.__init__(self, "", default_width, default_height, self.DIALOG_MASK_SINGLE_PAGE)
+
+        self.cancel_cb = cancel_cb                                              
+        
+        self.msg_align = gtk.Alignment()
+        self.msg_align.set(0, 0, 0, 0)
+        self.msg_align.set_padding(0, 0, 10, 0)
+        self.msg_label = Label(msg)
+        self.msg_align.add(self.msg_label)
+        self.progress_align = gtk.Alignment()                                   
+        self.progress_align.set(0, 0, 0, 0)                                     
+        self.progress_align.set_padding(20, 0, 10, 10)                         
+        self.progress_bar = ProgressBar()                                       
+        self.progress_bar.set_size_request(default_width, -1)                   
+        self.progress_align.add(self.progress_bar)                              
+        self.percentage_align = gtk.Alignment()                                 
+        self.percentage_align.set(0, 0, 0, 0)                                   
+        self.percentage_align.set_padding(10, 0, 140, 0)                          
+        self.percentage_label = Label("0%")          
+        self.percentage_label.set_size_request(default_width, -1)               
+        self.percentage_align.add(self.percentage_label)                        
+        self.cancel_align = gtk.Alignment()                                     
+        self.cancel_align.set(0, 0, 0, 0)                                       
+        self.cancel_align.set_padding(20, 0, 200, 0)                            
+        self.cancel_button = Button(_("Cancel"))                                
+        self.cancel_button.set_size_request(70, WIDGET_HEIGHT)
+        self.cancel_button.connect("clicked", self.__on_cancel_button_clicked)
+        self.cancel_align.add(self.cancel_button)                               
+                                        
+        self.body_box.pack_start(self.msg_align, False, False)
+        self.body_box.pack_start(self.progress_align, False, False)             
+        self.body_box.pack_start(self.percentage_align, False, False)           
+        self.body_box.pack_start(self.cancel_align)
+
+    def set_progress(self, progress):
+        self.progress_bar.progress_buffer.progress = progress
+        self.percentage_label.set_text("%d" % progress + "%")
+
+    def __on_cancel_button_clicked(self, widget):
+        if self.cancel_cb:
+            self.cancel_cb()
+            self.destroy()
+                                                                                
+gobject.type_register(ProgressDialog)
+
+class ReplyDialog(DialogBox):                                                
+    DIALOG_MASK_SINGLE_PAGE = 0                                                 
+                                                                                
+    def __init__(self, msg, default_width=300, default_height=160, is_succeed=True):
+        DialogBox.__init__(self, "", default_width, default_height, self.DIALOG_MASK_SINGLE_PAGE)
+
+        self.hbox = gtk.HBox()
+        self.image_align = gtk.Alignment()
+        self.image_align.set(0, 0, 0, 0)
+        self.image_align.set_padding(0, 0, 20, 0)
+        self.image_box = ImageBox(app_theme.get_pixbuf("bluetooth/succeed.png"))
+        if not is_succeed:
+            self.image_box = ImageBox(app_theme.get_pixbuf("bluetooth/failed.png"))
+        self.image_align.add(self.image_box)
+        self.msg_align = gtk.Alignment()
+        self.msg_align.set(0, 0, 0, 0)
+        self.msg_align.set_padding(0, 0, 10, 0)
+        self.msg_label = Label(msg, wrap_width = 200)
+        self.msg_align.add(self.msg_label)
+        self.hbox.pack_start(self.image_align)
+        self.hbox.pack_start(self.msg_align)
+        self.confirm_align = gtk.Alignment()                                     
+        self.confirm_align.set(0, 0, 0, 0)                                       
+        self.confirm_align.set_padding(20, 0, 200, 0)                            
+        self.confirm_button = Button(_("Ok"))                                
+        self.confirm_button.set_size_request(70, WIDGET_HEIGHT)
+        self.confirm_button.connect("clicked", lambda widget : self.destroy())
+        self.confirm_align.add(self.confirm_button)
+
+        self.body_box.pack_start(self.hbox, False, False)
+        self.body_box.pack_start(self.confirm_align, False, False)
+
+gobject.type_register(ReplyDialog)
 
 class DeviceIconView(ScrolledWindow):
     def __init__(self, items=None):
@@ -230,12 +315,82 @@ class DeviceItem(gobject.GObject):
         if self.is_paired:
             self.send_button.set_child_visible(True)
 
-    @common.threaded
+    def __on_session_connected(self, session):
+        self.__session = session
+        if self.__session and self.__session.Connected:                            
+            self.__session.SendFile(self.filename) 
+ 
+    def __on_session_disconnected(self, session):
+        if self.__session:
+            self.__session.Close()
+
+    def __on_session_error(self, session, name, msg):
+        reply_dlg = ReplyDialog(_("Failed!\nerror msg: %s") % msg, is_succeed = False)
+        reply_dlg.show_all()
+
+    def __on_cancel(self):                                            
+        def reply(*args):                                               
+            self.__session.Disconnect()                               
+                                                                                
+        if self.__session:                                                
+            if self.__session.Connected:                              
+                self.__session.Cancel(reply_handler=reply, error_handler=reply)
+            else:                                                   
+                self.__ods_manager.CancelSessionConnect(self.__session.object_path)
+
+    def __on_transfer_started(self, session, filename, path, size):
+        self.progress_dlg = ProgressDialog(_("Sending file to %s") % self.device.get_name(), 
+                                           cancel_cb = self.__on_cancel)
+        self.progress_dlg.show_all()
+
+    def __on_transfer_progress(self, session, progress):
+        progress_value = int(float(progress) / float(self.total_bytes) * 100.0)
+        if self.progress_dlg:
+            self.progress_dlg.set_progress(progress_value)
+
+    def __on_transfer_completed(self, session):
+        if self.progress_dlg:
+            self.progress_dlg.destroy()
+
+        self.__session.Disconnect()
+        self.__session.Close()
+
+        reply_dlg = ReplyDialog(_("Succeed!"))
+        reply_dlg.show_all()
+
+    def __on_session_created(self, manager, session):
+        self.__session = session
+        session.GHandle("connected", self.__on_session_connected)          
+        session.GHandle("disconnected", self.__on_session_disconnected)    
+        session.GHandle("error-occurred", self.__on_session_error)         
+        session.GHandle("transfer-started", self.__on_transfer_started)    
+        session.GHandle("transfer-progress", self.__on_transfer_progress) 
+        session.GHandle("transfer-completed", self.__on_transfer_completed)
+
+    def __on_session_destroyed(self, manager, path):                          
+        if self.__session.object_path == path:                            
+            self.__session = None
+
+    def __create_session(self):
+        def on_error(msg):
+            print "create session error", msg
+
+        props = self.adapter.get_properties()
+        self.__ods_manager.create_session(self.device.get_address(), props["Address"], error_handler=on_error)
+
     def __send_file(self, filename):
-        print "DEBUG send_file", self.device.get_address(), filename
-        send_file(self.device.get_address(), filename)
+        self.filename = filename
+        self.total_bytes = os.path.getsize(self.filename)
+        self.__ods_manager = OdsManager()
+        self.progress_dlg = None
+        self.__ods_manager.GHandle("session-created", self.__on_session_created)
+        self.__ods_manager.GHandle("session-destroyed", self.__on_session_destroyed)
+        self.__create_session()
 
     def __send_button_pressed(self, widget, event):
+        '''
+        FIXME: only support select singal one file ...
+        '''
         OpenFileDialog(_("Select File"), None, lambda name : self.__send_file(name), None)
 
     def __reply_handler_cb(self, device):
@@ -482,7 +637,7 @@ class BlueToothView(gtk.VBox):
             items.append(DeviceItem(devices[i].get_name(),                                
                          app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(devices[i].get_class())).get_pixbuf(), 
                          devices[i], 
-                         devices[i].get_adapter(), 
+                         self.my_bluetooth.adapter, 
                          self.send_button, 
                          True))
             i += 1
