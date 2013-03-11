@@ -1214,6 +1214,8 @@ class AccountSetting(object):
         crumb_list = [self.alignment_widgets["main_hbox"],
                       self.alignment_widgets["set_iconfile"],
                       self.alignment_widgets["edit_iconfile"]]
+        if index < 3:
+            self.container_widgets["icon_edit_page"].stop_camera()
         self.set_to_page(crumb_list[index-1], "left")
 
     def set_to_page(self, widget, direction):
