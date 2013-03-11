@@ -23,8 +23,36 @@
 from nmdevice import NMDevice
 from nmcache import cache
 import time
+import threading
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+
+class ThreadWiredAuto(threading.Thread):
+
+    def __init__(self, device_path, connections):
+        threading.Thread.__init__(self)
+        self.device = cache.get_spec_object(device_path)
+        self.conns = connections
+        self.run_flag = True
+
+    def run(self):
+        while self.run_flag:
+            for conn in self.conns:
+                try:
+                    active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, "/")
+                    while(active_conn.get_state() == 1):
+                        time.sleep(1)
+ 
+                    if active_conn.get_state() == 2:
+                        self.stop_run()
+                        return True
+                    else:
+                        continue
+                except:
+                    pass
+
+    def stop_run(self):
+        self.run_flag = False
 
 class NMDeviceEthernet(NMDevice):
     '''NMDeviceEthernet'''
@@ -57,24 +85,10 @@ class NMDeviceEthernet(NMDevice):
         if nm_remote_settings.get_wired_connections():
 
             wired_prio_connections = sorted(nm_remote_settings.get_wired_connections(),
-                                            key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
-                                            reverse = True)
+                                    key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
+                                    reverse = True)
 
-            import threading
-            def active_connection():
-                for conn in wired_prio_connections:
-                    try:
-                        active_conn = nmclient.activate_connection(conn.object_path, self.object_path, "/")
-                        while(active_conn.get_state() == 1):
-                            time.sleep(1)
-                        if active_conn.get_state() == 2:
-                            return True
-                        else:
-                            continue
-                    except:
-                        continue
-
-            t = threading.Thread(target = active_connection)
+            t = ThreadWiredAuto(self.object_path, wired_prio_connections)
             t.setDaemon(True)
             t.start()
 
@@ -94,25 +108,10 @@ class NMDeviceEthernet(NMDevice):
             return False
         else:
             pppoe_prio_connections = sorted(nm_remote_settings.get_pppoe_connections(),
-                                            key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
-                                            reverse = True)
+                                    key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
+                                    reverse = True)
 
-            import threading
-            def active_connection():
-                for conn in pppoe_prio_connections:
-                    try:
-                        ####################Please confirm dsl specific object path############
-                        active_conn = nmclient.activate_connection(conn.object_path, self.object_path, "/")
-                        while(active_conn.get_state() == 1):
-                            time.sleep(1)
-                        if active_conn.get_state() == 2:
-                            return True
-                        else:
-                            continue
-                    except:
-                        continue
-
-            t = threading.Thread(target = active_connection)
+            t = ThreadWiredAuto(self.object_path, pppoe_prio_connections)
             t.setDaemon(True)
             t.start()
 

@@ -68,9 +68,17 @@ class NMRemoteSettings(NMObject):
         if "conn_priority" not in self.cf.sections():
             self.cf.add_section("conn_priority")
 
+        max_prio = 0
         for conn_uuid in map(lambda x: x.settings_dict["connection"]["uuid"], self.list_connections()):
             if conn_uuid not in self.cf.options("conn_priority"):
                 self.cf.set("conn_priority", conn_uuid, 0)
+
+            if self.cf.getint("conn_priority", conn_uuid) > max_prio:
+                max_prio = self.cf.getint("conn_priority", conn_uuid)
+        
+        if max_prio >= 1024:
+            for conn_uuid in self.cf.options("conn_priority"):
+                self.cf.set("conn_priority", conn_uuid, int(self.cf.getint("conn_priority", conn_uuid)/2))
 
         self.cf.write(open(self.config_file, "w"))
 
