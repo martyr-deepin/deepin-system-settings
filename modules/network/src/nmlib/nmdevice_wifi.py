@@ -31,6 +31,38 @@ from nm_utils import TypeConvert
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
+class ThreadWifiAuto(threading.Thread):
+
+    def __init__(self, device_path, connections):
+        threading.Thread.__init__(self)
+        self.device = cache.get_spec_object(device_path)
+        self.conns = connections
+        self.run_flag = True
+
+    def run(self):
+        while self.run_flag:
+            for conn in self.conns:
+                ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
+                if ssid in self.device.get_ssid_record():
+                    try:
+                        specific = self.device.get_ap_by_ssid(ssid)
+                        active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, specific.object_path)
+                        while(active_conn.get_state() == 1):
+                            time.sleep(1)
+
+                        if active_conn.get_state() == 2:
+                            self.stop_run()
+                            return True
+                        else:
+                            continue
+                    except:
+                        pass
+                else:
+                    continue
+
+    def stop_run(self):
+        self.run_flag = False
+
 class NMDeviceWifi(NMDevice):
     '''NMDeviceWifi'''
         
@@ -119,7 +151,7 @@ class NMDeviceWifi(NMDevice):
 
         connections = nm_remote_settings.get_ssid_associate_connections(ssid)
         if connections:
-            conn = sorted(connections, key = lambda x:nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]), 
+            conn = sorted(connections, key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])), 
                     reverse = True)[0]
             try:
                 specific = self.get_ap_by_ssid(ssid)
@@ -139,36 +171,13 @@ class NMDeviceWifi(NMDevice):
         if cache.getobject(self.object_path).get_state() < 30:
             return False
 
-        print "wireless auto connect"
-
         wireless_connections = nm_remote_settings.get_wireless_connections()
         if wireless_connections:
             wireless_prio_connections = sorted(nm_remote_settings.get_wireless_connections(),
-                                            key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
-                                            reverse = True)
+                                        key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
+                                        reverse = True)
 
-        #######Please fix update ssid record, consider the hide ssid connection#######################
-            import threading
-
-            def active_connection():
-                for conn in wireless_prio_connections:
-                    ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
-                    print ssid
-                    if ssid in self.__get_ssid_record():
-                        try:
-                            specific = self.get_ap_by_ssid(ssid)
-                            active_conn = nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
-                            while(active_conn.get_state() == 1):
-                                time.sleep(1)
-                            if active_conn.get_state() == 2:
-                                return True
-                            else:
-                                continue
-                        except:
-                            pass
-                    else:
-                        continue
-            t = threading.Thread(target = active_connection)
+            t = ThreadWifiAuto(self.object_path, wireless_prio_connections)
             t.setDaemon(True)
             t.start()
         else:
@@ -176,7 +185,7 @@ class NMDeviceWifi(NMDevice):
 
     def update_ap_list(self):
         try:
-            ssids = self.__get_ssid_record()
+            ssids = self.get_ssid_record()
             if ssids:
                 return map(lambda ssid:self.__get_same_ssid_ap(ssid)[0], ssids)
         except:    
@@ -185,7 +194,7 @@ class NMDeviceWifi(NMDevice):
     def update_opt_ap_list(self):
         '''return the ap list whoes item have the most strength signal with the same ssid'''
         try:
-            ssids = self.__get_ssid_record()
+            ssids = self.get_ssid_record()
             if ssids:
                 aps = map(lambda ssid:self.get_ap_by_ssid(ssid), ssids)
                 return filter(lambda ap: ap.get_mode() != 1, aps)
@@ -210,7 +219,7 @@ class NMDeviceWifi(NMDevice):
         except:    
             return []
 
-    def __get_ssid_record(self):
+    def get_ssid_record(self):
         '''return the uniquee str ssid of access points'''
         try:
             aps = self.origin_ap_list

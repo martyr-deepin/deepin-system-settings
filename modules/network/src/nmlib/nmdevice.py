@@ -213,7 +213,7 @@ class NMDevice(NMObject):
             self.emit("device-active", new_state, old_state, reason)
             conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
             try:
-                priority = int(nm_remote_settings.cf.get("conn_priority", conn_uuid)) + 1
+                priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid) + 1 )
             except:
                 priority = 1
 
