@@ -133,7 +133,7 @@ class IconEditArea(gtk.Layout):
 
         self.panel.connect("enter-notify-event", self.__on_camera_enter_notify_cb)
         self.panel.connect("leave-notify-event", self.__on_camera_leave_notify_cb)
-        self.camera_area.connect("focus-out-event", self.__on_camera_focus_out_cb)
+        self.camera_focus_flag = True
 
         self.__refresh_time_id = None
         self.__button_time_id = None
@@ -529,10 +529,11 @@ class IconEditArea(gtk.Layout):
         self.__update_drag_point_coord()
 
     def __on_camera_motion_notify_cb(self, widget, event):
+        if not self.camera_focus_flag:
+            return
         x, y, w, h = widget.allocation
         if not self.panel.get_visible() and \
                 y+self.AREA_HEIGHT-self.button_hbox_height<event.y<y+self.AREA_HEIGHT:
-            widget.grab_focus()
             if self.__refresh_time_id:
                 gtk.timeout_remove(self.__refresh_time_id)
             if self.__button_time_id:
@@ -570,12 +571,10 @@ class IconEditArea(gtk.Layout):
         x, y, w, h = widget.allocation
         if x < event.x < x+w and y < event.y < y+h:
             return
+        if self.__button_time_id:
+            gtk.timeout_remove(self.__button_time_id)
         self.__button_time_id = gobject.timeout_add(50, self.__slide_camera_button_hide)
         print widget.allocation, event.x, event.y, event.x_root, event.y_root
-
-    def __on_camera_focus_out_cb(self, widget, event):
-        print "camera focus out"
-        widget.hide_all()
 
     def __update_drag_point_coord(self):
         new_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
@@ -698,6 +697,8 @@ class IconEditArea(gtk.Layout):
         self.move(self.button_hbox, 0, self.AREA_HEIGHT-self.button_hbox_height)
             
     def __refresh_hide_button(self):
+        if self.__button_time_id:
+            gtk.timeout_remove(self.__button_time_id)
         self.__button_time_id = gobject.timeout_add(50, self.__slide_button_hide)
         self.__refresh_time_id = None
         return False
@@ -714,6 +715,8 @@ class IconEditArea(gtk.Layout):
         self.panel.show_panel()
 
     def __refresh_hide_camera_button(self):
+        if self.__button_time_id:
+            gtk.timeout_remove(self.__button_time_id)
         self.__button_time_id = gobject.timeout_add(50, self.__slide_camera_button_hide)
         self.__refresh_time_id = None
         return False
