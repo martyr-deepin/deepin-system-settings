@@ -23,8 +23,39 @@
 from nmobject import NMObject
 from nmcache import cache
 import time
+import threading
+
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+
+class ThreadVPNAuto(threading.Thread):
+
+    def __init__(self, active_path, connections):
+        threading.Thread.__init__(self)
+        self.activeconn = cache.getobject(active_path)
+        self.conns = connections
+        self.run_flag = True
+
+    def run(self):
+        while self.run_flag:
+            for conn in self.conns:
+                try:
+                    active_conn = nmclient.activate_connection(conn.object_path, 
+                                                                self.activeconn.propperties["Devices"][0],
+                                                                self.activeconn.object_path)
+                    while(active_conn.get_state() == 1):
+                        time.sleep(1)
+
+                    if active_conn.get_state() == 2:
+                        self.stop_run()
+                        return True
+                    else:
+                        continue
+                except:
+                    pass
+
+    def stop_run(self):
+        self.run_flag = False
 
 class NMActiveConnection(NMObject):
     '''NMActiveConnection'''
@@ -36,6 +67,12 @@ class NMActiveConnection(NMObject):
         self.init_nmobject_with_properties()
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
+
+        self.thread_vpnauto = None
+
+    def device_vpn_disconnect(self):
+        if self.thread_vpnauto:
+            self.thread_vpnauto.stop_run()
 
     def get_vpn(self):
         return self.properties["Vpn"]
@@ -70,33 +107,17 @@ class NMActiveConnection(NMObject):
     def vpn_auto_connect(self):
         if self.get_state() != 2:
             return False
-        else:
+        elif nm_remote_settings.get_vpn_connections():
             vpn_prio_connections = sorted(nm_remote_settings.get_vpn_connections(),
-                                            key = lambda x: nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"]),
-                                            reverse = True)
+                                        key = lambda x:int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
+                                        reverse = True)
 
-            import threading
-            def active_connection():
-                for conn in vpn_prio_connections:
-                    try:
-                        ########################Please fix the device path##################
-                        active_conn = nmclient.activate_connection(conn.object_path, self.properties["Devices"][0],  self.object_path)
-                        while(active_conn.get_state() == 1):
-                            time.sleep(1)
-                        if active_conn.get_state() == 2:
-                            return True
-                        else:
-                            continue
-                    except:
-                        continue
+            self.thread_vpnauto = ThreadVPNAuto(self.object_path, vpn_prio_connections)
+            self.thread_vpnauto.setDaemon(True)
+            self.thread_vpnauto.start()
 
-            t = threading.Thread(target = active_connection)
-            t.setDaemon(True)
-            t.start()
     ###Signals###
     def properties_changed_cb(self, prop_dict):
-        # print "PropertiesChanged"
-        # print TypeConvert.dbus2py(prop_dict)
         pass
 
 if __name__ == "__main__":

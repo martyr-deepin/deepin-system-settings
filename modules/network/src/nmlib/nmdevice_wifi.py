@@ -86,6 +86,12 @@ class NMDeviceWifi(NMDevice):
 
         self.init_nmobject_with_properties()
         self.origin_ap_list = self.get_access_points()
+        self.thread_wifiauto = None
+
+    def device_wifi_disconnect(self):
+        if self.thread_wifiauto:
+            self.thread_wifiauto.stop_run()
+        cache.getobject(self.object_path).nm_device_disconnect()
 
     def get_hw_address(self):
         return self.properties["HwAddress"]
@@ -177,9 +183,9 @@ class NMDeviceWifi(NMDevice):
                                         key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
                                         reverse = True)
 
-            t = ThreadWifiAuto(self.object_path, wireless_prio_connections)
-            t.setDaemon(True)
-            t.start()
+            self.thread_wifiauto = ThreadWifiAuto(self.object_path, wireless_prio_connections)
+            self.thread_wifiauto.setDaemon(True)
+            self.thread_wifiauto.start()
         else:
             pass
 

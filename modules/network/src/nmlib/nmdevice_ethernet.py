@@ -63,7 +63,19 @@ class NMDeviceEthernet(NMDevice):
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
+        self.thread_wiredauto = None
+        self.thread_dslauto = None
+
     ###Methods###
+    def device_wired_disconnect(self):
+        if self.thread_wiredauto:
+            self.thread_wiredauto.stop_run()
+        cache.getobject(self.object_path).nm_device_disconnect()
+
+    def device_dsl_disconnect(self):
+        if self.thread_dslauto:
+            self.thread_dslauto.stop_run()
+
     def get_carrier(self):
         return self.properties["Carrier"]
 
@@ -88,9 +100,9 @@ class NMDeviceEthernet(NMDevice):
                                     key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
                                     reverse = True)
 
-            t = ThreadWiredAuto(self.object_path, wired_prio_connections)
-            t.setDaemon(True)
-            t.start()
+            self.thread_wiredauto = ThreadWiredAuto(self.object_path, wired_prio_connections)
+            self.thread_wiredauto.setDaemon(True)
+            self.thread_wiredauto.start()
 
         else:
             try:
@@ -111,9 +123,9 @@ class NMDeviceEthernet(NMDevice):
                                     key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
                                     reverse = True)
 
-            t = ThreadWiredAuto(self.object_path, pppoe_prio_connections)
-            t.setDaemon(True)
-            t.start()
+            self.thread_dslauto = ThreadWiredAuto(self.object_path, pppoe_prio_connections)
+            self.thread_dslauto.setDaemon(True)
+            self.thread_dslauto.start()
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
