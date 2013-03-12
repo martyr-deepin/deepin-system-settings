@@ -50,6 +50,11 @@ class MyBluetooth():
                 self.adapter.connect("device-found", device_found_cb)
 
     def get_devices(self):
+        ret = []
+        
+        if self.adapter == None:
+            return ret
+
         devices = self.adapter.get_devices()
         i = 0
         ret = []

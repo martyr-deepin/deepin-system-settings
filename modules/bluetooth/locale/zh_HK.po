@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-11 14:58+0800\n"
+"POT-Creation-Date: 2013-03-12 16:02+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,19 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:498
+#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:515
 msgid "Bluetooth Get Powered"
 msgstr ""
 
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:514
+#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:531
 msgid "Device Shown Name"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:528
+#: ../src/search_keyword.py:31 ../src/bluetooth_view.py:545
 msgid "Be Searchedable"
 msgstr ""
 
-#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:543
+#: ../src/search_keyword.py:32 ../src/bluetooth_view.py:560
 msgid "Searching Device Timeout"
 msgstr ""
 
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Advanced option..."
 msgstr ""
 
-#: ../src/bluetooth_view.py:82 ../src/bluetooth_view.py:564
+#: ../src/bluetooth_view.py:82
 msgid "Cancel"
 msgstr ""
 
@@ -48,51 +48,59 @@ msgstr ""
 msgid "Ok"
 msgstr ""
 
-#: ../src/bluetooth_view.py:328
+#: ../src/bluetooth_view.py:158
+msgid "Pair"
+msgstr ""
+
+#: ../src/bluetooth_view.py:161
+msgid "Send File"
+msgstr ""
+
+#: ../src/bluetooth_view.py:163
+msgid "Remove Device"
+msgstr ""
+
+#: ../src/bluetooth_view.py:346
 #, python-format
 msgid ""
 "Failed!\n"
 "error msg: %s"
 msgstr ""
 
-#: ../src/bluetooth_view.py:342
+#: ../src/bluetooth_view.py:360
 #, python-format
 msgid "Sending file to %s"
 msgstr ""
 
-#: ../src/bluetooth_view.py:358
+#: ../src/bluetooth_view.py:376
 msgid "Succeed!"
 msgstr ""
 
-#: ../src/bluetooth_view.py:394
+#: ../src/bluetooth_view.py:409
 msgid "Select File"
 msgstr ""
 
-#: ../src/bluetooth_view.py:417
+#: ../src/bluetooth_view.py:430
 #, python-format
 msgid "Please confirm %s pin match as below"
 msgstr ""
 
-#: ../src/bluetooth_view.py:418
+#: ../src/bluetooth_view.py:431
 msgid "Yes"
 msgstr ""
 
-#: ../src/bluetooth_view.py:419
+#: ../src/bluetooth_view.py:432
 msgid "No"
 msgstr ""
 
-#: ../src/bluetooth_view.py:483
-msgid "Send File"
-msgstr ""
-
-#: ../src/bluetooth_view.py:490
+#: ../src/bluetooth_view.py:507
 msgid "Minutes"
 msgstr ""
 
-#: ../src/bluetooth_view.py:495
+#: ../src/bluetooth_view.py:512
 msgid "Bluetooth"
 msgstr ""
 
-#: ../src/bluetooth_view.py:562
+#: ../src/bluetooth_view.py:578
 msgid "Search"
 msgstr ""

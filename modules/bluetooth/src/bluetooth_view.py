@@ -26,6 +26,7 @@ from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_pixbuf, draw_text
 from dtk.ui.progressbar import ProgressBar
 from dtk.ui.scrolled_window import ScrolledWindow
+from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
@@ -49,7 +50,6 @@ import time
 import threading as td
 import uuid
 import re
-import common
 
 class ProgressDialog(DialogBox):                                                
     DIALOG_MASK_SINGLE_PAGE = 0                                                 
@@ -139,6 +139,7 @@ class DeviceIconView(ScrolledWindow):
         ScrolledWindow.__init__(self, 0, 0)
 
         self.device_iconview = IconView()
+        self.device_iconview.connect("right-click-item", self.__on_right_click_item)
         self.device_iconview.draw_mask = self.draw_mask
 
         if items:
@@ -148,6 +149,19 @@ class DeviceIconView(ScrolledWindow):
         self.device_scrolledwindow.add_child(self.device_iconview)
 
         self.add_child(self.device_scrolledwindow)
+
+    def __do_remove_item(self, item):
+        item.do_remove()
+        self.device_iconview.delete_items([item])
+
+    def __on_right_click_item(self, widget, item, x, y):
+        menu_items = [(None, _("Pair"), lambda : item.do_pair())]
+        # TODO: the first item do not show delete                               
+        if item.is_paired:                                         
+            menu_items = [(None, _("Send File"), lambda : item.do_send_file()), 
+                          None,                                                 
+                          (None, _("Remove Device"), lambda : self.__do_remove_item(item))]
+        Menu(menu_items, True).show((int(x), int(y)))
 
     def draw_mask(self, cr, x, y, w, h):
         cr.set_source_rgb(*color_hex_to_cairo("#FFFFFF"))
@@ -171,15 +185,13 @@ class DeviceItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),     
     }
     
-    def __init__(self, name, pixbuf, device, adapter, send_button = None, is_paired=False):
+    def __init__(self, name, pixbuf, device, adapter, is_paired=False):
         gobject.GObject.__init__(self)
 
         self.name = name
         self.pixbuf = pixbuf
         self.device = device
         self.adapter = adapter
-        self.send_button = send_button
-        self.send_button.connect("button-press-event", self.__send_button_pressed)
         self.is_paired = is_paired
 
         self.pair_pixbuf = app_theme.get_pixbuf("bluetooth/pair.png")
@@ -319,8 +331,7 @@ class DeviceItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        if self.is_paired:
-            self.send_button.set_child_visible(True)
+        pass
 
     def __on_session_connected(self, session):
         self.__session = session
@@ -394,44 +405,45 @@ class DeviceItem(gobject.GObject):
         self.__ods_manager.GHandle("session-destroyed", self.__on_session_destroyed)
         self.__create_session()
 
-    def __send_button_pressed(self, widget, event):
-        '''
-        FIXME: only support select singal one file ...
-        '''
+    def do_send_file(self):
         OpenFileDialog(_("Select File"), None, lambda name : self.__send_file(name), None)
 
     def __reply_handler_cb(self, device):
         self.is_paired = True
         self.emit_redraw_request()
-        self.send_button.set_child_visible(True)
-        self.send_button.connect("button-press-event", self.__send_button_pressed)
 
     def __error_handler_cb(self, error):
         self.is_paired = False
         self.emit_redraw_request()
 
+    def do_remove(self):
+        self.adapter.remove_device(self.device.object_path)
+    
+    def do_pair(self):
+        if self.is_paired:                                                      
+            return                                                              
+                                                                                
+        from bt.gui_agent import GuiAgent                                           
+        # TODO: wired... it need to use uuid to identify bluez device path         
+        path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))    
+        agent = GuiAgent(path,                                                     
+                         _("Please confirm %s pin match as below") % self.name, 
+                         _("Yes"),                                              
+                         _("No"))                                                   
+        agent.set_exit_on_release(False)                                        
+        self.device.set_trusted(True)                                           
+        if not self.device.get_paired():                                            
+            self.adapter.create_paired_device(self.device.get_address(),        
+                                              path,                             
+                                              "DisplayYesNo",                   
+                                              self.__reply_handler_cb,          
+                                              self.__error_handler_cb)
+
     def icon_item_double_click(self, x, y):
         '''
         Handle double click event.
         '''
-        if self.is_paired:
-            return
-
-        from bt.gui_agent import GuiAgent                                                 
-        # TODO: wired... it need to use uuid to identify bluez device path
-        path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
-        agent = GuiAgent(path, 
-                         _("Please confirm %s pin match as below") % self.name, 
-                         _("Yes"), 
-                         _("No"))                                                     
-        agent.set_exit_on_release(False)                                        
-        self.device.set_trusted(True)
-        if not self.device.get_paired():                                             
-            self.adapter.create_paired_device(self.device.get_address(), 
-                                              path, 
-                                              "DisplayYesNo", 
-                                              self.__reply_handler_cb, 
-                                              self.__error_handler_cb)
+        self.do_pair()
     
     def icon_item_release_resource(self):
         '''
@@ -487,8 +499,6 @@ class BlueToothView(gtk.VBox):
         '''
         gtk.VBox.__init__(self)
 
-        self.send_button = Button(_("Send File"))
-        
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
                                         self.__on_default_adapter_changed, 
                                         self.__device_found)
@@ -557,20 +567,20 @@ class BlueToothView(gtk.VBox):
         '''
         self.device_align = self.__setup_align()
         self.device_iconview = DeviceIconView()
-        self.device_iconview.set_size_request(690, 196)
+        self.device_iconview.set_size_request(690, 190)
         self.device_align.add(self.device_iconview)
         '''
         operation
         '''
         self.oper_align = self.__setup_align()
         self.oper_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.notice_label = Label("", text_x_align = ALIGN_MIDDLE, label_width = 410)
-        self.send_button.set_child_visible(False)
+        self.notice_label = Label("", text_x_align = ALIGN_MIDDLE, label_width = 610)
         self.search_button = Button(_("Search"))                                
         self.search_button.connect("clicked", self.__on_search)
-        self.cancel_button = Button(_("Cancel"))
         self.__widget_pack_start(self.oper_box, 
-                [self.notice_label, self.send_button, self.search_button, self.cancel_button])
+                [self.notice_label, 
+                 self.search_button, 
+                ])
         self.oper_align.add(self.oper_box)
         '''
         this->gtk.VBox pack_start
@@ -645,7 +655,6 @@ class BlueToothView(gtk.VBox):
                          app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(devices[i].get_class())).get_pixbuf(), 
                          devices[i], 
                          self.my_bluetooth.adapter, 
-                         self.send_button, 
                          True))
             i += 1
 
@@ -663,7 +672,7 @@ class BlueToothView(gtk.VBox):
                 return
 
             items.append(DeviceItem(values['Name'], 
-                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter, self.send_button))
+                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter))
             self.device_iconview.add_items(items)
         else:
             if adapter.get_discovering():

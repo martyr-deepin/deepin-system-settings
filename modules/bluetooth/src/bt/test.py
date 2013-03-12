@@ -115,6 +115,7 @@ def test_found_pair():
     adapter.connect("device-created", on_device_created)
 
     for dev in  adapter.get_devices():
+        print "DEBUG", dev
         adapter.remove_device(dev)
     else:
         pass
