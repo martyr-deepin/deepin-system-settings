@@ -80,7 +80,7 @@ cd pypulseaudio
 sudo python setup.py install
 
 == Bluetooth module ==
-sudo apt-get install obex-data-server obexd-client libopenobex1 bluez 
+sudo apt-get install obex-data-server bluez 
 
 == App-associate module ==
 sudo apt-get install python-psutil

@@ -21,9 +21,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.utils import color_hex_to_cairo, get_content_size
+from dtk.ui.utils import color_hex_to_cairo, get_content_size, cairo_disable_antialias
 from dtk.ui.theme import ui_theme
-from dtk.ui.draw import draw_pixbuf, draw_text, draw_vlinear
+from dtk.ui.draw import draw_pixbuf, draw_text
 from dtk.ui.progressbar import ProgressBar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.iconview import IconView
@@ -188,16 +188,23 @@ class DeviceItem(gobject.GObject):
 
         self.__const_padding_y = 10
 
+        self.highlight_fill_color = "#7db7f2"                                   
+        self.highlight_stroke_color = "#396497"
+
     def render(self, cr, rect):
         # Draw select background.
         content_width, content_height = get_content_size(self.name)
         if self.is_button_press == True:
-            draw_vlinear(cr, 
-                         rect.x + (rect.width - content_width) / 2 - 2, 
-                         rect.y + rect.height - CONTENT_FONT_SIZE * 2 - 2, 
-                         content_width + 4, 
-                         CONTENT_FONT_SIZE * 2, 
-                         ui_theme.get_shadow_color("listview_select").get_color_info())
+            with cairo_disable_antialias(cr):                                      
+                cr.set_source_rgb(*color_hex_to_cairo(self.highlight_fill_color))
+                cr.rectangle(rect.x + 1,                           
+                             rect.y + 1,                           
+                             rect.width - 1,                   
+                             rect.height - 1)               
+                cr.fill_preserve()                                              
+                cr.set_line_width(1)                                            
+                cr.set_source_rgb(*color_hex_to_cairo(self.highlight_stroke_color))
+                cr.stroke()
         
         # Draw device icon.
         draw_pixbuf(cr, self.pixbuf, 
@@ -219,7 +226,7 @@ class DeviceItem(gobject.GObject):
                   self.name, 
                   rect.x,
                   rect.y + self.icon_size + self.__const_padding_y * 2,
-                  rect.width, 
+                  rect.width - 2, 
                   CONTENT_FONT_SIZE, 
                   CONTENT_FONT_SIZE, 
                   text_color, 
@@ -591,7 +598,7 @@ class BlueToothView(gtk.VBox):
         self.set_sensitive(True)
 
     def __display_device_changed(self, widget, event):
-        self.adapter.set_name(widget.get_text())
+        self.my_bluetooth.adapter.set_name(widget.get_text())
 
     def __setup_separator(self):                                                
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
