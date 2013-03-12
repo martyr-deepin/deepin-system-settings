@@ -1214,6 +1214,8 @@ class AccountSetting(object):
         crumb_list = [self.alignment_widgets["main_hbox"],
                       self.alignment_widgets["set_iconfile"],
                       self.alignment_widgets["edit_iconfile"]]
+        if index < 3:
+            self.container_widgets["icon_edit_page"].stop_camera()
         self.set_to_page(crumb_list[index-1], "left")
 
     def set_to_page(self, widget, direction):
@@ -1226,6 +1228,13 @@ class AccountSetting(object):
         else:
             button_list = []
         self.container_widgets["statusbar"].set_buttons(button_list)
+
+    def app_focus_changed(self, tp):
+        if tp == "o":
+            self.container_widgets["icon_edit_page"].draw_area.panel.hide_panel()
+            self.container_widgets["icon_edit_page"].draw_area.camera_focus_flag = False
+        elif tp == "i":
+            self.container_widgets["icon_edit_page"].draw_area.camera_focus_flag = True
 
 if __name__ == '__main__':
     gtk.gdk.threads_init()
@@ -1250,6 +1259,9 @@ if __name__ == '__main__':
             print "DEBUG show_again module_uid", message_content
             account_settings.set_to_page(account_settings.alignment_widgets["main_hbox"], None)
             module_frame.send_module_info()
+        elif message_type == "focus_changed":
+            print "DEBUG focus_out", message_content
+            account_settings.app_focus_changed(message_content)
 
     module_frame.module_message_handler = message_handler
 

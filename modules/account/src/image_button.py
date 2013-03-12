@@ -82,16 +82,19 @@ class ImageButton(gtk.Button):
             pixbuf = cache_pixbuf.get_cache()
         cr = widget.window.cairo_create()
         draw_pixbuf(cr, pixbuf, widget.allocation.x, widget.allocation.y)
+
+        text_color = '#000000'
+        if widget.state == gtk.STATE_INSENSITIVE:
+            #color = "#A2A2A2"
+            #color = color_hex_to_cairo(color)
+            #cr.set_source_rgba(color[0], color[1], color[2], 0.7)
+            #cr.rectangle(*widget.allocation)
+            #cr.fill()
+            text_color = '#A2A2A2'
         if self.content:
             draw_text(cr, self.content, widget.allocation.x+image_width+self.spacing,
-                      widget.allocation.y+(self.image_height-self.text_size[1])/2, *self.text_size)
-
-        if widget.state == gtk.STATE_INSENSITIVE:
-            color = "#A2A2A2"
-            color = color_hex_to_cairo(color)
-            cr.set_source_rgba(color[0], color[1], color[2], 0.7)
-            cr.rectangle(*widget.allocation)
-            cr.fill()
+                      widget.allocation.y+(self.image_height-self.text_size[1])/2,
+                      *self.text_size, text_color=text_color)
         
         # Propagate expose to children.
         propagate_expose(widget, event)

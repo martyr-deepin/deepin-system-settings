@@ -31,11 +31,10 @@ class Webcam(gtk.EventBox):
     
     def __init__(self):
         gtk.EventBox.__init__(self)
-
+        self.set_can_focus(True)
+        self.add_events(gtk.gdk.POINTER_MOTION_MASK)
         self.video_player = None
-        #if self.has_device():
-            #self.create_video_pipeline()
-        
+
     @classmethod    
     def has_device(cls):
         return True
@@ -98,6 +97,8 @@ if __name__ == "__main__":
     window.set_size_request(400, 400)
     
     webcam = Webcam()    
+    if webcam.has_device():
+        webcam.create_video_pipeline()
     main_box = gtk.VBox()
     button_box = gtk.HBox()
     play_button = gtk.Button("play")

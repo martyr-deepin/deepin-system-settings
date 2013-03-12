@@ -290,6 +290,10 @@ def is_exists(app_dbus_name, app_object_name, module_name):
     else:                                                                       
         return False       
 
+def application_focus_changed_cb(widget, event, tp):
+    if preview_module_id:
+        send_message(preview_module_id, "focus_changed", tp)
+
 if __name__ == "__main__":
     ops, args = getopt.getopt(sys.argv[1:], '')
     module_name = ""
@@ -306,6 +310,8 @@ if __name__ == "__main__":
     
     # Init application.
     application = Application()
+    application.window.connect("focus-out-event", application_focus_changed_cb, "o")
+    application.window.connect("focus-in-event", application_focus_changed_cb, "i")
 
     # Set application default size.
     application.window.set_geometry_hints(
