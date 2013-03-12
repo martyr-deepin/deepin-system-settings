@@ -85,7 +85,7 @@ class TrayTime(gobject.GObject):
     def __update_time(self, timer):
         # modify interval.
         if self.__timer.Interval == 1:
-            self.__timer.Interval = 60000
+            self.__timer.Interval = 1000
         # emit event.
         self.emit("send-time", self.get_time(), self.__tray_time_hour_type, cn_check())
         
