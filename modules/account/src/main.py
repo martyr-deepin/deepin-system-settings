@@ -1232,6 +1232,8 @@ class AccountSetting(object):
     def app_focus_changed(self, tp):
         if tp == "o":
             self.container_widgets["icon_edit_page"].draw_area.panel.hide_panel()
+            if self.container_widgets["icon_edit_page"].draw_area.is_toolbar_show():
+                self.container_widgets["icon_edit_page"].draw_area.slide_button_hide()
             self.container_widgets["icon_edit_page"].draw_area.camera_focus_flag = False
         elif tp == "i":
             self.container_widgets["icon_edit_page"].draw_area.camera_focus_flag = True

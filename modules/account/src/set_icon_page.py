@@ -328,6 +328,9 @@ class IconSetPage(gtk.VBox):
         self.account_setting.change_crumb(1)
 
     def choose_more_picture(self, widget, event):
+        win_x = event.x_root-event.x-widget.allocation.x-TEXT_WINDOW_LEFT_PADDING
+        win_y = event.y_root-event.y-widget.allocation.y-TEXT_WINDOW_TOP_PADDING
+        self.account_setting.container_widgets["icon_edit_page"].set_win_pos(win_x, win_y)
         x = int(event.x_root - event.x)
         y = int(event.y_root - event.y + widget.allocation.height)
         if self.is_has_camera():
