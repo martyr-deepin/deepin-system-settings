@@ -113,6 +113,7 @@ class NMRemoteSettings(NMObject):
             return None
 
     def generate_connection_id(self, connection_type):
+        from nls import _
 
         if connection_type == "wired":
             conn_list = self.get_wired_connections()
