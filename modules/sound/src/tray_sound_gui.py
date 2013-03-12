@@ -126,8 +126,8 @@ class TrayGui(gtk.VBox):
         self.pack_start(self.__app_vbox)
 
         hseparator = HSeparator(separator_color, 0, 0)
-        hseparator.set_size_request(140, 3)
-        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=5), False, False)
+        hseparator.set_size_request(140, 7)
+        self.pack_start(self.__make_align(hseparator, xalign=0.5, height=7), False, False)
 
         self.button_more = SelectButton(_("Advanced..."), font_size=10, ali_padding=5)
         self.button_more.set_size_request(-1, 25)

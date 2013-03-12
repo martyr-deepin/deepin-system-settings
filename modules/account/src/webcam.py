@@ -45,7 +45,9 @@ class Webcam(gtk.EventBox):
         return False
         
     def create_video_pipeline(self):    
-        self.pipestr = "v4l2src ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! xvimagesink"        
+        # size list : ['352:288', '640:480', '800:600', '960:720', '1280:720']
+        #self.pipestr = "v4l2src ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! xvimagesink"
+        self.pipestr = "v4l2src ! video/x-raw-yuv ! ffmpegcolorspace ! xvimagesink"
         self.video_player = gst.parse_launch(self.pipestr)
         self.video_player.set_state(gst.STATE_PLAYING)
         self.__video_bus = self.video_player.get_bus()

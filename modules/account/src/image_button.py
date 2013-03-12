@@ -83,7 +83,7 @@ class ImageButton(gtk.Button):
         cr = widget.window.cairo_create()
         draw_pixbuf(cr, pixbuf, widget.allocation.x, widget.allocation.y)
 
-        text_color = '#000000'
+        text_color = '#FFFFFF'
         if widget.state == gtk.STATE_INSENSITIVE:
             #color = "#A2A2A2"
             #color = color_hex_to_cairo(color)

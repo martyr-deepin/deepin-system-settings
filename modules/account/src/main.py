@@ -82,6 +82,7 @@ class AccountSetting(object):
         self.view_widgets = {}
         self.dialog_widget = {}
 
+        self.__is_first_show = True
         self.current_select_user = None
         self.current_passwd_user = None
         self.current_set_user = None
@@ -402,6 +403,7 @@ class AccountSetting(object):
 
     def __signals_connect(self):
         self.container_widgets["slider"].connect("expose-event", self.container_expose_cb)
+        self.container_widgets["slider"].connect("completed_slide", self.slider_completed_slide_cb)
 
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
@@ -1218,6 +1220,11 @@ class AccountSetting(object):
             self.container_widgets["icon_edit_page"].stop_camera()
         self.set_to_page(crumb_list[index-1], "left")
 
+    def slider_completed_slide_cb(self, widget):
+        if self.__is_first_show:
+            self.__is_first_show = False
+            widget.set_to_page(self.alignment_widgets["main_hbox"])
+
     def set_to_page(self, widget, direction):
         pre_widget = self.container_widgets["slider"].active_widget
         self.statusbar_buttons[pre_widget.get_name()] = self.container_widgets["statusbar"].get_buttons()
@@ -1245,8 +1252,9 @@ if __name__ == '__main__':
     account_settings = AccountSetting(module_frame)
 
     module_frame.add(account_settings.container_widgets["main_vbox"])
-    module_frame.connect("realize", lambda w: account_settings.container_widgets["slider"].set_to_page(
-        account_settings.alignment_widgets["main_hbox"]))
+    module_frame.connect("realize", lambda w: account_settings.container_widgets["slider"].set_to_page(gtk.VBox()))
+    #module_frame.connect("realize", lambda w: account_settings.container_widgets["slider"].set_to_page(
+        #account_settings.alignment_widgets["main_hbox"]))
     if len(sys.argv) > 1:
         print "module_uid:", sys.argv[1]
 
@@ -1255,14 +1263,11 @@ if __name__ == '__main__':
         if message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
             account_settings.crumb_clicked(crumb_index, crumb_label)
-            #if crumb_index == 1:
-                #account_settings.set_to_page(account_settings.alignment_widgets["main_hbox"], "left")
         elif message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
             account_settings.set_to_page(account_settings.alignment_widgets["main_hbox"], None)
             module_frame.send_module_info()
         elif message_type == "focus_changed":
-            print "DEBUG focus_out", message_content
             account_settings.app_focus_changed(message_content)
 
     module_frame.module_message_handler = message_handler

@@ -26,6 +26,7 @@ from dtk.ui.label import Label
 from dtk.ui.cache_pixbuf import CachePixbuf
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, container_remove_all, propagate_expose
 from dtk.ui.panel import Panel
+from dtk.ui.line import HSeparator
 from webcam import Webcam
 from image_button import ImageButton
 from constant import *
@@ -85,9 +86,9 @@ class IconEditArea(gtk.Layout):
             app_theme.get_pixbuf("account/camera.png"),
             _("拍照"))
         self.button_camera_again = ImageButton(
-            app_theme.get_pixbuf("account/camera.png"),
-            app_theme.get_pixbuf("account/camera.png"),
-            app_theme.get_pixbuf("account/camera.png"),
+            app_theme.get_pixbuf("account/camera_again.png"),
+            app_theme.get_pixbuf("account/camera_again.png"),
+            app_theme.get_pixbuf("account/camera_again.png"),
             _("再次拍照"))
 
         self.button_zoom_in_align = tools.make_align(self.button_zoom_in, xalign=0.5, yalign=0.5)
@@ -245,25 +246,28 @@ class IconEditArea(gtk.Layout):
                 self.pixbuf_offset_y = self.pixbuf_h - self.AREA_HEIGHT
             self.pixbuf_y = 0
         self.__update_drag_point_coord()
+        self.emit_changed()
         if self.pixbuf_w >= self.origin_pixbuf_width or self.pixbuf_h >= self.origin_pixbuf_height:
             button.set_sensitive(False)
-        if not (self.pixbuf_w <= self.MIN_SIZE or self.pixbuf_h <= self.MIN_SIZE) \
+        if not (self.pixbuf_w <= self.edit_coord_w or self.pixbuf_h <= self.edit_coord_h) \
                 and not self.button_zoom_out.get_sensitive():
             self.button_zoom_out.set_sensitive(True)
 
     def on_zoom_out_clicked_cb(self, button):
-        if self.pixbuf_w <= self.MIN_SIZE or self.pixbuf_h <= self.MIN_SIZE:
+        if self.edit_coord_w < self.MIN_SIZE or self.edit_coord_h < self.MIN_SIZE:
+            self.edit_coord_w = self.edit_coord_h = self.MIN_SIZE
+        if self.pixbuf_w <= self.edit_coord_w or self.pixbuf_h <= self.edit_coord_h:
             print "has min size"
             button.set_sensitive(False)
             return
         width = int(self.pixbuf_w * 0.9)
         height = int(self.pixbuf_h * 0.9)
-        if height >= width and width <= self.MIN_SIZE:
-            height = int(float(height) / width * self.MIN_SIZE)
-            width = self.MIN_SIZE
-        elif height < self.MIN_SIZE:
-            width = int(float(width) / height * self.MIN_SIZE)
-            height = self.MIN_SIZE
+        if height >= width and width <= self.edit_coord_w:
+            height = int(float(height) / width * self.edit_coord_w)
+            width = int(self.edit_coord_w)
+        elif height < self.edit_coord_h:
+            width = int(float(width) / height * self.edit_coord_h)
+            height = int(self.edit_coord_h)
         self.cache_pixbuf.scale(self.origin_pixbuf, width, height)
         # count show area
         self.pixbuf_w = width
@@ -293,11 +297,12 @@ class IconEditArea(gtk.Layout):
         right_pos = min(self.pixbuf_x+self.pixbuf_w, self.AREA_WIDTH)
         bottom_pos = min(self.pixbuf_y+self.pixbuf_h, self.AREA_HEIGHT)
         if self.edit_coord_x + self.edit_coord_w > right_pos:
-            self.edit_coord_w = self.edit_coord_h = right_pos - self.edit_coord_x
+            self.edit_coord_x = right_pos - self.edit_coord_w
         if self.edit_coord_y + self.edit_coord_h > bottom_pos:
-            self.edit_coord_w = self.edit_coord_h = bottom_pos - self.edit_coord_y
+            self.edit_coord_y = bottom_pos - self.edit_coord_h
         self.__update_drag_point_coord()
-        if self.pixbuf_w <= self.MIN_SIZE or self.pixbuf_h <= self.MIN_SIZE:
+        self.emit_changed()
+        if self.pixbuf_w <= self.edit_coord_w or self.pixbuf_h <= self.edit_coord_h:
             button.set_sensitive(False)
         if not (self.pixbuf_w >= self.origin_pixbuf_width or self.pixbuf_h >= self.origin_pixbuf_height) \
                 and not self.button_zoom_in.get_sensitive():
@@ -317,6 +322,9 @@ class IconEditArea(gtk.Layout):
     def __draw_frame(self, cr, allocation):
         with cairo_disable_antialias(cr):
             cr.set_line_width(1)
+            cr.save()
+            # TODO 画黑白相间虚线
+            cr.set_dash((9, 3))
             cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             x = self.edit_coord_x
             y = self.edit_coord_y
@@ -332,6 +340,13 @@ class IconEditArea(gtk.Layout):
                 h = self.AREA_HEIGHT- y
             cr.rectangle(x, y, w, h)
             cr.stroke()
+
+            cr.set_dash((3, 9))
+            cr.set_source_rgb(1, 1, 1)
+            cr.rectangle(x, y, w, h)
+            cr.stroke()
+            cr.restore()
+
             cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.rectangle(self.drag_point_x, self.drag_point_y, self.DRAG_WIDTH, self.DRAG_WIDTH)
             cr.stroke()
@@ -406,6 +421,10 @@ class IconEditArea(gtk.Layout):
         self.edit_coord_x = self.pixbuf_x
         self.edit_coord_y = self.pixbuf_y
         self.cache_pixbuf.scale(pixbuf, w, h)
+        ######
+        self.edit_coord_w = self.edit_coord_h = self.MIN_SIZE
+        self.edit_coord_x = self.edit_coord_y = (self.AREA_WIDTH - self.MIN_SIZE) / 2
+        ######
         self.drag_point_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
         self.drag_point_y = self.edit_coord_y + self.edit_coord_h - self.DRAG_WIDTH
         self.edit_area.queue_draw()
@@ -448,6 +467,7 @@ class IconEditArea(gtk.Layout):
         self.move_flag = False
 
     def __on_motion_notify_cb(self, widget, event):
+        # if application window has not grab focus, return function
         if not self.camera_focus_flag:
             return
         if not self.drag_flag and not self.move_flag and not self.__button_moving_flag:
@@ -520,6 +540,15 @@ class IconEditArea(gtk.Layout):
                 self.edit_coord_h = self.edit_coord_w = right_pos - self.edit_coord_x
             if self.edit_coord_y + self.edit_coord_h > bottom_pos:
                 self.edit_coord_h = self.edit_coord_w = bottom_pos - self.edit_coord_y
+            # check zoom_out button sensitive
+            # if edit_area's size more than pixbuf size, then disable zoom_out button
+            # else enable zoom_out button
+            if not (self.pixbuf_w <= self.edit_coord_w or self.pixbuf_h <= self.edit_coord_h):
+                if not self.button_zoom_out.get_sensitive():
+                    self.button_zoom_out.set_sensitive(True)
+            else:
+                if self.button_zoom_out.get_sensitive():
+                    self.button_zoom_out.set_sensitive(False)
         self.__update_drag_point_coord()
 
     def __on_camera_motion_notify_cb(self, widget, event):
@@ -539,7 +568,6 @@ class IconEditArea(gtk.Layout):
             x = event.x_root - event.x
             y = event.y_root - event.y + self.AREA_HEIGHT - self.button_hbox_height
             self.panel.move(int(x), int(y))
-            #print "show panel", x, y, self.button_camera_align.allocation
             self.panel.show_panel()
 
     def __draw_panel_background(self, widget, event):
@@ -549,7 +577,7 @@ class IconEditArea(gtk.Layout):
         cr.set_operator(OPERATOR_SOURCE)
         cr.paint()
 
-        cr.set_source_rgba(0, 0, 0, 0.0)
+        cr.set_source_rgba(0, 0, 0, 0.5)
         cr.rectangle(x, y, w, h)
         cr.paint()
         propagate_expose(widget, event)
@@ -722,9 +750,10 @@ class IconEditArea(gtk.Layout):
             gtk.timeout_remove(self.__refresh_time_id)
         self.__refresh_time_id = gobject.timeout_add(2000, self.__refresh_hide_camera_button)
         panel_size = self.button_camera.get_size_request()
-        self.panel_layout.move(self.button_camera_align, (self.AREA_WIDTH-panel_size[0])/2, 0)
+        self.panel_layout.move(self.button_camera_align,
+                               (self.AREA_WIDTH-panel_size[0])/2, 8)
         self.panel.move(self.__win_pos_x+TEXT_WINDOW_LEFT_PADDING,
-                        self.__win_pos_y+TEXT_WINDOW_TOP_PADDING+30+self.AREA_HEIGHT-self.button_hbox_height)
+                        self.__win_pos_y+92+self.AREA_HEIGHT-self.button_hbox_height)
         self.panel.show_panel()
 
     def __refresh_hide_camera_button(self):
@@ -788,7 +817,13 @@ class IconEditPage(gtk.HBox):
         right_align.add(right_vbox)
 
         self.draw_area = IconEditArea()
-        left_vbox.pack_start(tools.make_align(Label(_("Clip"), enable_select=False, enable_double_click=False)), False, False)
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(-1, 10)
+        left_vbox.pack_start(tools.make_align(Label(_("Clip"),
+                             app_theme.get_color("globalTitleForeground"),
+                             text_size=TITLE_FONT_SIZE, enable_select=False,
+                             enable_double_click=False)), False, False)
+        left_vbox.pack_start(hseparator, False, False)
         left_vbox.pack_start(tools.make_align(self.draw_area, yalign=0.0, width=300, height=300))
 
         self.thumbnail_large = gtk.Image()
@@ -798,7 +833,13 @@ class IconEditPage(gtk.HBox):
         self.thumbnail_mid.set_size_request(48, 48)
         self.thumbnail_small.set_size_request(24, 24)
 
-        right_vbox.pack_start(tools.make_align(Label(_("Preview"), enable_select=False, enable_double_click=False)), False, False)
+        hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
+        hseparator.set_size_request(-1, 10)
+        right_vbox.pack_start(tools.make_align(Label(_("Preview"),
+                              app_theme.get_color("globalTitleForeground"),
+                              text_size=TITLE_FONT_SIZE, enable_select=False,
+                              enable_double_click=False)), False, False)
+        right_vbox.pack_start(hseparator, False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_large), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_mid), False, False)
         right_vbox.pack_start(tools.make_align(self.thumbnail_small), False, False)
