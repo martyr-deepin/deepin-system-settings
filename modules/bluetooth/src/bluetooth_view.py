@@ -343,7 +343,8 @@ class DeviceItem(gobject.GObject):
             self.__session.Close()
 
     def __on_session_error(self, session, name, msg):
-        self.progress_dlg.destroy()
+        if self.progress_dlg:
+            self.progress_dlg.destroy()
         reply_dlg = ReplyDialog(_("Failed!\nerror msg: %s") % msg, is_succeed = False)
         reply_dlg.show_all()
 
