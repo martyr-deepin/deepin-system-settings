@@ -82,8 +82,6 @@ class TrayBluetoothPlugin(object):
         self.height = self.ori_height
         self.device_items = []
 
-        self.__get_devices()
-
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
 
@@ -96,9 +94,7 @@ class TrayBluetoothPlugin(object):
         self.tray_icon.set_icon_theme("enable")
         
         if self.my_bluetooth.adapter:
-            if self.my_bluetooth.adapter.get_powered():
-                self.__get_devices()
-            else:
+            if not self.my_bluetooth.adapter.get_powered():
                 self.tray_icon.set_visible(False)
         else:
             self.tray_icon.set_visible(False)
@@ -137,6 +133,7 @@ class TrayBluetoothPlugin(object):
             self.height += device_count * DeviceItem.ITEM_HEIGHT
 
     def plugin_widget(self):
+        self.__get_devices()
         plugin_box = gtk.VBox()
         adapter_box = gtk.HBox(spacing = 5)
         adapter_image = ImageBox(app_theme.get_pixbuf("bluetooth/enable_open.png"))
