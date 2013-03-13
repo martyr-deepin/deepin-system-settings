@@ -89,6 +89,9 @@ class UserThemeView(IconView):
         new_theme = theme_manager.create_new_theme(name, item.theme)
         self.add_themes([new_theme])
 
+    def rename_theme(self, name, item):
+        theme = theme_manager.rename_theme(item.theme.get_default_name(), name)
+
     def delete_theme(self, item):
         theme = theme_manager.delete_theme(item.theme.get_name())
         self.items.remove(item)
@@ -96,6 +99,11 @@ class UserThemeView(IconView):
 
     def on_theme_sava_as(self, item):
         input_dialog = InputDialog(_("Theme Save As"), "", 300, 100, lambda name: self.create_new_theme(name, item), None, True)
+        input_dialog.show_all()
+
+
+    def on_theme_rename(self, item):
+        input_dialog = InputDialog(_("Theme ReName"), "", 300, 100, lambda name: self.rename_theme(name, item), None, True)
         input_dialog.show_all()
 
     def on_theme_delete(self, item):
@@ -113,7 +121,8 @@ class UserThemeView(IconView):
         menu_items = [(None, _("Save As"), lambda : self.on_theme_sava_as(item))]
         # TODO: the first item do not show delete
         if self.items.index(item) != 0:
-            menu_items = [(None, _("Save As"), lambda : self.on_theme_sava_as(item)), 
+            menu_items = [(None, _("ReName"), lambda : self.on_theme_rename(item)), 
+                          (None, _("Save As"), lambda : self.on_theme_sava_as(item)), 
                           None, 
                           (None, _("Delete Theme"), lambda : self.on_theme_delete(item))]
         Menu(menu_items, True).show((int(x), int(y)))

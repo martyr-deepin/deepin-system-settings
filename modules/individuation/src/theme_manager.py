@@ -356,7 +356,14 @@ class ThemeManager(object):
         new_theme.set_locale_name(name)
         new_theme.save()    
         return new_theme
-   
+  
+    def rename_theme(self, name, new_name):
+        theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
+        theme = ThemeFile(theme_path)
+        theme.set_locale_name(new_name)
+        theme.save()
+        return theme
+
     def delete_theme(self, name):
         theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
         os.remove(theme_path)
