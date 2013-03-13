@@ -501,7 +501,7 @@ class BeDiscoveriedThread(td.Thread):
                                                                                 
     def run(self):                                                              
         try:                                                                    
-            while self.tick:                                                    
+            while self.ThisPtr.is_discoverable and self.tick:                                                    
                 self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
                 self.tick -= 1                                                  
                 time.sleep(1)
@@ -526,6 +526,7 @@ class BlueToothView(gtk.VBox):
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
                                         self.__on_default_adapter_changed, 
                                         self.__device_found)
+        self.is_discoverable = False
         '''
         enable open
         '''
@@ -706,10 +707,10 @@ class BlueToothView(gtk.VBox):
             return
 
         if object == "search":
-            is_discoverable = widget.get_active()
-            self.my_bluetooth.adapter.set_discoverable(is_discoverable)
-            self.search_timeout_label.set_child_visible(is_discoverable)
-            if is_discoverable:
+            self.is_discoverable = widget.get_active()
+            self.my_bluetooth.adapter.set_discoverable(self.is_discoverable)
+            self.search_timeout_label.set_child_visible(self.is_discoverable)
+            if self.is_discoverable:
                 BeDiscoveriedThread(self).start()
             return
 
