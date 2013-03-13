@@ -34,7 +34,7 @@ class Webcam(gtk.EventBox):
         self.set_can_focus(True)
         self.add_events(gtk.gdk.POINTER_MOTION_MASK)
         self.video_player = None
-
+        
     @classmethod    
     def has_device(cls):
         devices = os.listdir('/dev')
@@ -45,8 +45,8 @@ class Webcam(gtk.EventBox):
         
     def create_video_pipeline(self):    
         # size list : ['352:288', '640:480', '800:600', '960:720', '1280:720']
-        self.pipestr = "v4l2src ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! xvimagesink"
-        #self.pipestr = "v4l2src ! video/x-raw-yuv ! ffmpegcolorspace ! xvimagesink"
+        #self.pipestr = "v4l2src ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! xvimagesink"
+        self.pipestr = "v4l2src ! video/x-raw-yuv ! ffmpegcolorspace ! videoflip method=horizontal-flip ! xvimagesink"
         self.video_player = gst.parse_launch(self.pipestr)
         self.video_player.set_state(gst.STATE_PLAYING)
         self.__video_bus = self.video_player.get_bus()
