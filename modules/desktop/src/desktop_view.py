@@ -42,7 +42,7 @@ class DesktopView(gtk.VBox):
     class docs
     '''
 
-    SUPER_W_CMD = "superw"
+    SUPER_W_CMD = "superw.py"
     LAUNCHER_CMD = "launcher"
 
     def __init__(self):
@@ -419,7 +419,7 @@ class DesktopView(gtk.VBox):
             elif item_value == 1:
                 self.compiz_integrated_settings.set_string("command-1", self.SUPER_W_CMD)
             elif item_value == 2:
-                print self.compiz_integrated_settings.set_string("command-1", self.LAUNCHER_CMD)
+                self.compiz_integrated_settings.set_string("command-1", self.LAUNCHER_CMD)
             else:
                 pass
             return
