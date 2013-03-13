@@ -39,7 +39,7 @@ from nls import _
 import threading as td
 
 TIME_COMBO_ITEM =  [
-    (_("Never"), 0), 
+    #(_("Never"), 0), 
     ("1 %s" % _("Minute"), 60), ("3 %s" % _("Minutes"), 180),
     ("5 %s" % _("Minutes"), 300), ("10 %s" % _("Minutes"), 600), 
     ("15 %s" % _("Minutes"), 900),("20 %s" % _("Minutes"), 1200), 
@@ -118,11 +118,23 @@ class DetailPage(gtk.VBox):
         event_manager.add_callback("apply-wallpaper", self.__on_wallpaper_apply)
         event_manager.add_callback("add-wallpapers", self.__on_add_wallpapers)
 
+    def __random_enable(self):
+        self.time_combobox.set_sensitive(True)                              
+        self.unorder_play.set_child_visible(True)                           
+        self.random_toggle.set_child_visible(True)                          
+        self.random_toggle.set_active(True)
+
+    def __random_disable(self):
+        self.time_combobox.set_sensitive(False)                             
+        self.unorder_play.set_child_visible(False)                          
+        self.random_toggle.set_child_visible(False)                         
+        self.random_toggle.set_active(False)
+
     def on_wallpaper_select(self, name, obj, select_item):
         if self.wallpaper_view.is_randomable():
-            self.random_toggle.set_active(True)
+            self.__random_enable()
         else:
-            self.random_toggle.set_active(False)
+            self.__random_disable()
 
         if self.wallpaper_view.is_select_all():                                 
             self.select_all_button.set_label(_("UnSelect All"))                 
@@ -130,7 +142,7 @@ class DetailPage(gtk.VBox):
             self.select_all_button.set_label(_("Select All"))
 
     def __on_wallpaper_apply(self, name, obj, select_item):
-        self.random_toggle.set_active(False)
+        self.__random_disable()
 
         if self.wallpaper_view.is_select_all():                                 
             self.select_all_button.set_label(_("UnSelect All"))                 
@@ -144,10 +156,10 @@ class DetailPage(gtk.VBox):
         else:                                                                   
             self.select_all_button.set_label(_("Select All"))
 
-        if self.wallpaper_view.is_randomable():                                 
-            self.random_toggle.set_active(True)                                 
+        if self.wallpaper_view.is_randomable():    
+            self.__random_enable()
         else:                                                                   
-            self.random_toggle.set_active(False)
+            self.__random_disable()
 
     def __on_delete(self, widget):
         event_manager.emit("switch-to-deletepage", self.theme)
@@ -201,9 +213,9 @@ class DetailPage(gtk.VBox):
         self.wallpaper_view.set_theme(theme)
        
         if self.wallpaper_view.is_randomable():
-            self.random_toggle.set_active(True)
+            self.__random_enable()
         else:
-            self.random_toggle.set_active(False)
+            self.__random_disable()
 
         if len(self.wallpaper_view.items) < 2:
             self.select_all_button.set_child_visible(False)
