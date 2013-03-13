@@ -1018,17 +1018,18 @@ class CacheItem(gobject.GObject, MissionThread):
 
         if self.is_downloaded:
             downloaded_str = _("downloaded")
+            downloaded_padding = 4
             downloaded_str_width, downloaded_str_height = get_content_size(downloaded_str)
             cr.rectangle(wallpaper_x + 1, 
-                         wallpaper_y + self.wallpaper_height - downloaded_str_height, 
+                         wallpaper_y + self.wallpaper_height - downloaded_str_height - downloaded_padding, 
                          self.wallpaper_width - 2, 
-                         downloaded_str_height - 1)
-            cr.set_source_rgba(0, 0, 0, 0.6)
+                         downloaded_str_height - 1 + downloaded_padding)
+            cr.set_source_rgba(0, 0, 0, 0.4)
             cr.fill()
             draw_text(cr, 
                       downloaded_str, 
                       wallpaper_x + (self.wallpaper_width - downloaded_str_width) / 2, 
-                      wallpaper_y + self.wallpaper_height - downloaded_str_height, 
+                      wallpaper_y + self.wallpaper_height - downloaded_str_height - downloaded_padding / 1.5, 
                       self.wallpaper_width, 
                       downloaded_str_height, 
                       text_color = "#FFFFFF")
