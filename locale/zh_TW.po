@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 10:29+0800\n"
+"POT-Creation-Date: 2013-03-13 13:01+0800\n"
 "PO-Revision-Date: 2013-01-17 10:16+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,14 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../dss/bluetooth_dialog.py:63
+msgid "Cancel"
+msgstr ""
+
+#: ../dss/bluetooth_dialog.py:111
+msgid "Ok"
+msgstr ""
+
 #: ../dss/foot_box.py:57
 msgid "Reset"
 msgstr ""
 
-#: ../dss/action_bar.py:95 ../dss/main.py:218
+#: ../dss/action_bar.py:99 ../dss/main.py:233
 msgid "System Settings"
 msgstr ""
 
-#: ../dss/main.py:318
+#: ../dss/main.py:343
 msgid "Deepin System Settings"
 msgstr ""

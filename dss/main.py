@@ -27,12 +27,14 @@ from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
 from dtk.ui.breadcrumb import Crumb
+from dtk.ui.dialog import ConfirmDialog
 from deepin_utils.ipc import is_dbus_name_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo
 from action_bar import ActionBar
 from navigate_page import NavigatePage
 from foot_box import FootBox
+from bluetooth_dialog import BluetoothProgressDialog, BluetoothReplyDialog
 import gtk
 import subprocess
 import os
@@ -106,6 +108,7 @@ class DBusService(dbus.service.Object):
         # Init dbus object.
         bus_name = dbus.service.BusName(APP_DBUS_NAME, bus=dbus.SessionBus())
         dbus.service.Object.__init__(self, bus_name, APP_OBJECT_NAME)
+        self.bluetooth_progress_dialog = None
 
         # Define DBus method.
         def unique(self, module_name):
@@ -157,6 +160,25 @@ class DBusService(dbus.service.Object):
                         foot_box.show_reset()
                     else:
                         foot_box.set_status(status)
+            elif message_type == "dialog":
+                (module_id, dialog_type, message, argv) = message_content
+                if module_id == "bluetooth":
+                    if dialog_type == "progress":
+                        if argv == "":
+                            self.bluetooth_progress_dialog = BluetoothProgressDialog(
+                                cancel_cb = self.__on_bluetooth_cancel)
+                            self.bluetooth_progress_dialog.set_message(message)
+                            self.bluetooth_progress_dialog.show_all()
+                        elif argv == "-1":
+                            self.bluetooth_progress_dialog.destroy()
+                        else:
+                            self.bluetooth_progress_dialog.set_progress(int(argv))
+                    elif dialog_type == "reply":
+                        is_succeed = True
+                        if argv == "False":
+                            is_succeed = False
+                        reply_dlg = BluetoothReplyDialog(message, is_succeed = is_succeed)
+                        reply_dlg.show_all()
             else:
                 print message
                     
@@ -168,6 +190,9 @@ class DBusService(dbus.service.Object):
         setattr(DBusService, 
                 'unique', 
                 dbus.service.method(APP_DBUS_NAME)(unique))
+
+    def __on_bluetooth_cancel(self):
+        send_message("bluetooth", "cancel", "progress cancel")
 
 def handle_dbus_reply(*reply):
     print "com.deepin.system_settings (reply): %s" % (str(reply))

@@ -31,7 +31,7 @@ from module_frame import ModuleFrame
 if __name__ == "__main__":
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
-    bluetooth_view = BlueToothView()
+    bluetooth_view = BlueToothView(module_frame)
     
     module_frame.add(bluetooth_view)
     
@@ -39,6 +39,8 @@ if __name__ == "__main__":
         (message_type, message_content) = message
         if message_type == "show_again":
             module_frame.send_module_info()
+        elif message_type == "cancel":
+            bluetooth_view.cancel()
 
     module_frame.module_message_handler = message_handler 
     

@@ -201,8 +201,8 @@ class DesktopView(gtk.VBox):
                                   #self.place_style_align, 
                                   self.icon_size_align, 
                                   #self.preview_align, 
-                                  self.greeter_title_align, 
-                                  self.greeter_align, 
+                                  #self.greeter_title_align, 
+                                  #self.greeter_align, 
                                   self.lock_align])
 
         self.connect("expose-event", self.__expose)
