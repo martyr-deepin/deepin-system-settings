@@ -86,6 +86,7 @@ class NMActiveConnection(NMObject):
     def get_connection(self):
         return cache.getobject(self.properties["Connection"])
 
+
     def get_specific_object(self):
         return self.properties["SpecificObject"]
 

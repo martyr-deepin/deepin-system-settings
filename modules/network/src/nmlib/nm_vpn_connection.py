@@ -55,12 +55,13 @@ class NMVpnConnection(NMActiveConnection):
 
     ###Signals###
     def vpn_state_changed_cb(self, state, reason):
+        print state, reason
         # self.emit("vpn-state-changed", state, reason)
         if state in [1, 2, 3, 4]:
             self.emit("vpn-connecting")
         elif state == 5:
             self.emit("vpn-connected")
-            conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
+            conn_uuid = cache.getobject(self.object_path).get_connection().settings_dict["connection"]["uuid"]
             try:
                 priority = int(nm_remote_settings.cf.get("conn_priority", conn_uuid)) + 1
             except:

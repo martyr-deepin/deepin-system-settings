@@ -58,6 +58,7 @@ class DeviceManager(object):
     def get_wireless_devices(self):
         return self.wireless_devices
 
+
     def get_wired_devices(self):
         return self.wired_devices
     

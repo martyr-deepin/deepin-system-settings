@@ -3,7 +3,7 @@
 #from theme import app_theme
 
 from dss import app_theme
-from dtk.ui.button import CheckButton
+from dtk.ui.button import CheckButton, Button
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
@@ -14,7 +14,8 @@ from nm_modules import nm_module
 
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
-from shared_widget import IPV4Conf
+from ipsettings import IPV4Conf
+from elements import SettingSection
 
 from shared_methods import Settings
 from helper import Dispatcher
@@ -36,7 +37,7 @@ class DSLSetting(Settings):
 
     def __init__(self):
         Settings.__init__(self, [DSLConf,
-                        Wired,
+                        Sections,
                         IPV4Conf,
                         PPPConf])
         self.crumb_name = _("DSL")
@@ -82,6 +83,45 @@ class DSLSetting(Settings):
 
     def get_broadband(self):
         return self.settings[self.connection][0][1]
+
+class Sections(gtk.Alignment):
+
+    def __init__(self, connection, set_button):
+        gtk.Alignment.__init__(self, 0, 0 ,0, 0)
+        self.set_padding(35, 0, 50, 0)
+
+        self.main_box = gtk.VBox()
+        self.tab_name = "sfds"
+        basic = SettingSection(_("Basic"))
+
+        self.button = Button(_("Advanced"))
+        self.button.set_size_request(50, 22)
+        self.button.connect("clicked", self.show_more_options)
+        self.wired = SettingSection(_("Wired"), always_show=False)
+        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=False)
+        self.ppp = SettingSection(_("PPP"), always_show=False)
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(0, 0, 225, 0)
+        align.add(self.button)
+        
+        basic.load([DSLConf(connection, set_button), align])
+        self.wired.load([Wired(connection, set_button)])
+        self.ipv4.load([IPV4Conf(connection, set_button)])
+        self.ppp.load([PPPConf(connection, set_button)])
+
+        self.space = gtk.HBox()
+        self.space.set_size_request(-1 ,30)
+
+        self.main_box.pack_start(basic, False, False)
+
+        self.add(self.main_box)
+
+    def show_more_options(self, widget):
+        widget.destroy()
+        #self.main_box.pack_start(self.space, False, False)
+        self.main_box.pack_start(self.wired, False, False, 15)
+        self.main_box.pack_start(self.ipv4, False, False, 15)
+        self.main_box.pack_start(self.ppp, False, False)
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -188,9 +228,9 @@ class DSLConf(gtk.VBox):
                                enable_double_click=False)
 
         #pack labels
-        dsl_table.attach(style.wrap_with_align(username_label), 0, 1 , 0, 1)
-        dsl_table.attach(style.wrap_with_align(service_label), 0, 1, 1, 2)
-        dsl_table.attach(style.wrap_with_align(password_label), 0, 1, 2, 3)
+        dsl_table.attach(style.wrap_with_align(username_label, width=210), 0, 1 , 0, 1)
+        dsl_table.attach(style.wrap_with_align(service_label, width=210), 0, 1, 1, 2)
+        dsl_table.attach(style.wrap_with_align(password_label, width=210), 0, 1, 2, 3)
 
         # entries
         self.username_entry = InputEntry()
@@ -208,16 +248,17 @@ class DSLConf(gtk.VBox):
         self.show_password.connect("toggled", show_password)
 
         #pack entries
-        dsl_table.attach(style.wrap_with_align(self.username_entry), 1, 3, 0, 1)
-        dsl_table.attach(style.wrap_with_align(self.service_entry), 1, 3, 1, 2)
-        dsl_table.attach(style.wrap_with_align(self.password_entry), 1, 3, 2, 3)
+        dsl_table.attach(style.wrap_with_align(self.username_entry, align="left"), 1, 3, 0, 1)
+        dsl_table.attach(style.wrap_with_align(self.service_entry, align="left"), 1, 3, 1, 2)
+        dsl_table.attach(style.wrap_with_align(self.password_entry, align="left"), 1, 3, 2, 3)
         dsl_table.attach(style.wrap_with_align(self.show_password, align="left"), 1,3,3,4)
 
         # TODO UI change
         style.draw_background_color(self)
-        align = style.set_box_with_align(dsl_table, "text")
+        #align = style.set_box_with_align(dsl_table, "text")
         style.set_table(dsl_table)
-        self.add(align)
+        self.pack_start(dsl_table, False, False)
+        #self.add(align)
         self.show_all()
         self.refresh()
 

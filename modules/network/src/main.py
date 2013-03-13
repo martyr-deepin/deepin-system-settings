@@ -296,7 +296,6 @@ class WirelessDevice(object):
             map(lambda i: i.pwd_changed(pwd, connection), item)
         else:
             print "no active items found"
-
     ######
 
 class WirelessSection(Section, WirelessDevice):
@@ -318,7 +317,10 @@ class WirelessSection(Section, WirelessDevice):
             self.tree.connect("single-click-item", self.set_selected_item)
             self.hotspot = HotSpot(None)
             self.vbox = gtk.VBox(False)
+            self.space = gtk.VBox()
+            self.space.set_size_request(-1, 15)
             self.load(self.wireless, [self.tree])
+            self.vbox.pack_start(self.space, False, False)
             self.vbox.pack_start(self.hotspot, False, False)
             self.pack_start(self.vbox, False, False)
 
@@ -378,7 +380,19 @@ class WirelessSection(Section, WirelessDevice):
             device_wifi = cache.get_spec_object(wireless_device.object_path)
             self.ap_list += device_wifi.order_ap_list()
 
-        return map(lambda i:WirelessItem(i), self.ap_list)
+        aps = map(lambda i:WirelessItem(i), self.ap_list)
+
+        hidden_list = self.get_hidden_connection(self.ap_list)
+        hiddens = map(lambda c: HidenItem(c), hidden_list)
+
+        return aps + hiddens
+
+    def get_hidden_connection(self, ap_list):
+        ssids = map(lambda a: a.get_ssid(), ap_list)
+        hiddens = filter(lambda c: c.get_setting("802-11-wireless").ssid not in ssids, 
+                         nm_module.nm_remote_settings.get_wireless_connections())
+
+        return hiddens
 
         ## need to filter all aps
     def get_state(self, devices):
@@ -859,8 +873,14 @@ class VpnSection(Section):
                            enable_double_click=False)
 
         self.load(self.vpn, [self.tree, self.label])
-
+        self.init_state()
+        
         self.__init_signals()
+    
+    def init_state(self):
+        vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        if vpn_active:
+            self.vpn.set_active(True)
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
@@ -877,10 +897,23 @@ class VpnSection(Section):
         self.tree.add_items(item_list)
 
     def toggle_on_after(self):
-        pass
+        vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        if vpn_active:
+            connection = vpn_active[0].get_connection()
+            try:
+                index = self.connection.index(connection)
+                self.tree.visible_items[index].set_net_state(2)
+                return
+            except Exception, e:
+                print e
+
+        else:
+            print "try to connect"
 
     def toggle_off(self):
-        pass
+        vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        if vpn_active:
+            nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
     
     def get_list(self):
         self.connection = nm_module.nm_remote_settings.get_vpn_connections()
@@ -889,9 +922,6 @@ class VpnSection(Section):
     def jumpto_cb(self):
         Dispatcher.to_setting_page(VPNSetting())
 
-
-
-        
 class VnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)

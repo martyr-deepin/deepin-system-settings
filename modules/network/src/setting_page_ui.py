@@ -5,8 +5,10 @@ from dtk.ui.tab_window import TabBox
 import gtk
 import style
 from foot_box_ui import FootBox
+from dtk.ui.paned import HPaned
 from sidebar_ui import SideBar
-
+from dtk.ui.utils import container_remove_all
+from dtk.ui.scrolled_window import ScrolledWindow
 #from shared_widget import Settings
 
 from helper import Dispatcher
@@ -16,40 +18,47 @@ class SettingUI(gtk.Alignment):
         gtk.Alignment.__init__(self, 0, 0, 0, 0)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
-        style.set_main_window(self)
+        #style.set_main_window(self)
+        
+        self.scroll_win = ScrolledWindow()
+        #style.draw_background_color(align)
 
+        self.scroll_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         main_vbox = gtk.VBox()
         self.foot_box = FootBox()
         self.hbox = gtk.HBox()
         self.hbox.connect("expose-event",self.expose_line)
 
-        main_vbox.pack_start(self.hbox, False, False)
-        main_vbox.pack_start(self.foot_box, False, False)
-
-        self.add(main_vbox)
-
+        #self.add(self.scroll_win)
+        self.scroll_win.add_with_viewport(self.hbox)
+        
+        padding_align = gtk.Alignment(0, 0, 0, 0)
+        padding_align.set_padding(15, 0, 0, 0)
         self.sidebar = SideBar( None)
+        padding_align.add(self.sidebar)
+        self.hpaned = HPaned()
+        self.hpaned.add1(padding_align)
+        self.hpaned.add2(self.scroll_win)
+        main_vbox.pack_start(self.hpaned, True, True)
+        main_vbox.pack_start(self.foot_box, False, False)
+        self.add(main_vbox)
         # Build ui
-        self.hbox.pack_start(self.sidebar, False , False)
-
+        #self.hbox.pack_start(self.hpaned, False , False)
         style.draw_background_color(self)
         style.draw_separator(self.sidebar, 3)
 
         self.__init_signals()
 
-    def __init_tab_box(self):
-        if hasattr(self, "tab_window"):
-            self.hbox.remove(self.tab_window)
-        self.tab_window = TabBox(dockfill = False)
-        self.tab_window.draw_title_background = self.draw_tab_title_background
-        self.tab_window.set_size_request(674, 420)
-        self.hbox.pack_start(self.tab_window ,True, True)
 
+    def __init_tab_box(self):
+        container_remove_all(self.hbox)
+        self.scroll_win.set_size_request(674, 425)
 
     def __init_signals(self):
         Dispatcher.connect("connection-change", self.switch_tab)
         Dispatcher.connect("setting-saved", self.save_connection_setting)
         Dispatcher.connect("setting-appled", self.apply_connection_setting)
+        Dispatcher.connect("request_redraw", lambda w: self.scroll_win.show_all())
 
     def load_module(self, module_obj):
         #self.__init_tab()
@@ -69,6 +78,7 @@ class SettingUI(gtk.Alignment):
 
     def switch_tab(self, widget, connection):
         print "switch tab"
+        container_remove_all(self.hbox)
         self.set_tab_content(connection)
         self.set_foot_bar_button(connection)
     
@@ -79,22 +89,26 @@ class SettingUI(gtk.Alignment):
         Dispatcher.set_button(*states)
         
     def set_tab_content(self, connection, init_connection=False):
+        setting = self.setting_group.init_items(connection)
+        self.hbox.add(setting)
+        self.hbox.queue_draw()
+        self.foot_box.set_lock(False)
             #self.tab_window.tab_items = []
-        if self.tab_window.tab_items ==  []:
-            self.tab_window.add_items(self.setting_group.init_items(connection))
-            self.foot_box.set_lock(False)
-        else:
-            #self.__init_tab()
+        #if self.tab_window.tab_items ==  []:
             #self.tab_window.add_items(self.setting_group.init_items(connection))
-            self.tab_window.tab_items = self.setting_group.init_items(connection)
-            self.foot_box.set_lock(False)
-        if init_connection:
-            tab_index = 0
-        else:
-            tab_index = self.tab_window.tab_index
-        self.tab_window.tab_index = -1
-        self.tab_window.switch_content(tab_index)
-        self.queue_draw()
+            #self.foot_box.set_lock(False)
+        #else:
+            ##self.__init_tab()
+            ##self.tab_window.add_items(self.setting_group.init_items(connection))
+            #self.tab_window.tab_items = self.setting_group.init_items(connection)
+            #self.foot_box.set_lock(False)
+        #if init_connection:
+            #tab_index = 0
+        #else:
+            #tab_index = self.tab_window.tab_index
+        #self.tab_window.tab_index = -1
+        #self.tab_window.switch_content(tab_index)
+        #self.queue_draw()
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()

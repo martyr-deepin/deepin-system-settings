@@ -201,7 +201,7 @@ class Settings(object):
                 s = setting(connection, self.set_button)
                 setting_list.append((s.tab_name, s))
             self.settings[connection] = setting_list
-        return self.settings[connection]
+        return self.settings[connection][1][1]
 
     def set_button(self, name, state):
         #Dispatcher.set_button(name, state)

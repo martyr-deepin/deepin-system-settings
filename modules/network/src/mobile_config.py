@@ -4,6 +4,7 @@
 
 from dss import app_theme
 from dtk.ui.button import Button,CheckButton
+from elements import SettingSection
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
@@ -12,7 +13,7 @@ from dtk.ui.scrolled_window import ScrolledWindow
 from nm_modules import nm_module
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
-from shared_widget import IPV4Conf
+from ipsettings import IPV4Conf
 
 import gtk
 from shared_methods import Settings
@@ -34,7 +35,7 @@ def check_settings(connection, fn):
 class MobileSetting(Settings):
 
     def __init__(self):
-        Settings.__init__(self, [Broadband, IPV4Conf, PPPConf])
+        Settings.__init__(self, [Broadband, Sections, PPPConf])
         self.crumb_name = _("Mobile Network")
 
     def get_broadband(self, connection):
@@ -206,6 +207,42 @@ class MobileSetting(Settings):
 
     #def get_button_state(self, connection):
         #return self.setting_state[self.connection]
+class Sections(gtk.Alignment):
+
+    def __init__(self, connection, set_button):
+        gtk.Alignment.__init__(self, 0, 0 ,0, 0)
+        self.set_padding(35, 0, 50, 0)
+
+        self.main_box = gtk.VBox()
+        self.tab_name = "sfds"
+        basic = SettingSection(_("Basic"))
+
+        self.button = Button(_("Advanced"))
+        self.button.set_size_request(50, 22)
+        self.button.connect("clicked", self.show_more_options)
+        self.broadband = SettingSection(_("Broadband"), always_show=False)
+        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=False)
+        self.ppp = SettingSection(_("PPP"), always_show=False)
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(0, 0, 225, 0)
+        align.add(self.button)
+        
+        basic.load([Broadband(connection, set_button), align])
+        self.ipv4.load([IPV4Conf(connection, set_button)])
+        self.ppp.load([PPPConf(connection, set_button)])
+
+        self.space = gtk.HBox()
+        self.space.set_size_request(-1 ,30)
+
+        self.main_box.pack_start(basic, False, False)
+
+        self.add(self.main_box)
+
+    def show_more_options(self, widget):
+        widget.destroy()
+        #self.main_box.pack_start(self.space, False, False)
+        self.main_box.pack_start(self.ipv4, False, False)
+        self.main_box.pack_start(self.ppp, False, False, 15)
 
 class Broadband(gtk.VBox):
     ENTRY_WIDTH = 222

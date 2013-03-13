@@ -21,7 +21,8 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 #from nmlib.nm_remote_settings import nm_remote_settings
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
-from shared_widget import IPV4Conf
+from ipsettings import IPV4Conf, IPV6Conf
+from elements import SettingSection
 from foot_box import FootBox
 from shared_methods import Settings
 from helper import Dispatcher
@@ -37,7 +38,7 @@ class VPNSetting(Settings):
 
     def __init__(self):
         Settings.__init__(self, [PPTPConf,
-                                 IPV4Conf])
+                                 Sections])
         self.crumb_name = _("VPN")
 
     def get_connections(self):
@@ -68,14 +69,26 @@ class VPNSetting(Settings):
     def apply_changes(self, connection):
         # FIXME Now just support one device
 
-        wired_devices = nm_module.nmclient.get_wired_devices()
-        wireless_devices = nm_module.nmclient.get_wireless_devices() 
-        if wired_devices:
-            try:
-                self.try_to_connect_wired_device(wired_devices[0], connection)
-            except Exception:
-                if wireless_devices:
-                    self.try_to_connect_wireless_device(wireless_devices[0], connection)
+        active_connections = nm_module.nmclient.get_active_connections()
+        if active_connections:
+            device_path = active_connections[0].get_devices()[0].object_path
+            specific_path = active_connections[0].object_path
+            active_object = nm_module.nmclient.activate_connection(connection.object_path,
+                                           device_path,
+                                           specific_path)
+            print active_object
+            active_object.connect("vpn-state-changed", self.vpn_state_changed)
+        else:
+            print "no active connection available"
+
+        #wired_devices = nm_module.nmclient.get_wired_devices()
+        #wireless_devices = nm_module.nmclient.get_wireless_devices() 
+        #if wired_devices:
+            #try:
+                #self.try_to_connect_wired_device(wired_devices[0], connection)
+            #except Exception:
+                #if wireless_devices:
+                    #self.try_to_connect_wireless_device(wireless_devices[0], connection)
 
         Dispatcher.to_main_page()
 
@@ -113,6 +126,40 @@ class VPNSetting(Settings):
     def add_new_connection(self):
         new_connection = nm_module.nm_remote_settings.new_vpn_pptp_connection()
         return (new_connection, -1)
+
+class Sections(gtk.Alignment):
+
+    def __init__(self, connection, set_button):
+        gtk.Alignment.__init__(self, 0, 0 ,0, 0)
+        self.set_padding(35, 0, 50, 0)
+
+        self.main_box = gtk.VBox()
+        self.tab_name = "sfds"
+        basic = SettingSection(_("Basic") +"(IPV4)")
+
+        self.button = Button(_("Advanced"))
+        self.button.set_size_request(50, 22)
+        self.button.connect("clicked", self.show_more_options)
+        self.wired = SettingSection(_("Wired"), always_show=False)
+        self.ipv4 = SettingSection(_("Ipv6 setting"), always_show=False)
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(0, 0, 225, 0)
+        align.add(self.button)
+        
+        basic.load([PPTPConf(connection, set_button), align])
+        self.ipv4.load([IPV4Conf(connection, set_button)])
+
+        self.space = gtk.HBox()
+        self.space.set_size_request(-1 ,30)
+
+        self.main_box.pack_start(basic, False, False)
+
+        self.add(self.main_box)
+
+    def show_more_options(self, widget):
+        widget.destroy()
+        #self.main_box.pack_start(self.space, False, False)
+        self.main_box.pack_start(self.ipv4, False, False)
 
 class PPTPConf(gtk.VBox):
     ENTRY_WIDTH = 222
