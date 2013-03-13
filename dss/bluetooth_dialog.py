@@ -100,7 +100,9 @@ class BluetoothReplyDialog(DialogBox):
         self.image_align.add(self.image_box)
         self.message_align = gtk.Alignment()
         self.message_align.set(0, 0, 0, 0)
-        self.message_align.set_padding(0, 0, 10, 0)
+        self.message_align.set_padding(20, 0, 10, 0)
+        if not is_succeed:
+            self.message_align.set_padding(0, 0, 10, 0)
         self.message_label = Label(message, wrap_width = 200)
         self.message_align.add(self.message_label)
         self.hbox.pack_start(self.image_align)
