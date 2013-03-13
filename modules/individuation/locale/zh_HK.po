@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-07 16:39+0800\n"
+"POT-Creation-Date: 2013-03-13 17:08+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -21,7 +21,7 @@ msgid "Untitled"
 msgstr ""
 
 #: ../src/main.py:104 ../src/ui/delete_page.py:101
-#: ../src/ui/select_page.py:349
+#: ../src/ui/select_page.py:351
 msgid "Delete Wallpaper"
 msgstr ""
 
@@ -34,44 +34,48 @@ msgstr ""
 msgid "Add Wallpaper"
 msgstr ""
 
-#: ../src/ui/wallpaper_item.py:1002
+#: ../src/ui/wallpaper_view.py:54
+msgid "Apply Wallpaper"
+msgstr ""
+
+#: ../src/ui/wallpaper_item.py:1017
 msgid "downloaded"
 msgstr ""
 
-#: ../src/ui/delete_page.py:60 ../src/ui/select_page.py:186
-#: ../src/ui/select_page.py:242 ../src/ui/select_page.py:299
+#: ../src/ui/delete_page.py:60 ../src/ui/select_page.py:188
+#: ../src/ui/select_page.py:244 ../src/ui/select_page.py:301
 #: ../src/ui/cache_page.py:126
 msgid "Back"
 msgstr ""
 
 #: ../src/ui/delete_page.py:63 ../src/ui/delete_page.py:86
 #: ../src/ui/delete_page.py:93 ../src/ui/delete_page.py:128
-#: ../src/ui/select_page.py:188 ../src/ui/select_page.py:217
-#: ../src/ui/select_page.py:225 ../src/ui/select_page.py:244
-#: ../src/ui/select_page.py:268 ../src/ui/select_page.py:284
-#: ../src/ui/select_page.py:301 ../src/ui/select_page.py:328
-#: ../src/ui/select_page.py:342 ../src/ui/select_page.py:346
-#: ../src/ui/detail_page.py:93 ../src/ui/detail_page.py:131
-#: ../src/ui/detail_page.py:139 ../src/ui/detail_page.py:146
-#: ../src/ui/detail_page.py:182
+#: ../src/ui/select_page.py:190 ../src/ui/select_page.py:219
+#: ../src/ui/select_page.py:227 ../src/ui/select_page.py:246
+#: ../src/ui/select_page.py:270 ../src/ui/select_page.py:286
+#: ../src/ui/select_page.py:303 ../src/ui/select_page.py:330
+#: ../src/ui/select_page.py:344 ../src/ui/select_page.py:348
+#: ../src/ui/detail_page.py:92 ../src/ui/detail_page.py:130
+#: ../src/ui/detail_page.py:138 ../src/ui/detail_page.py:145
+#: ../src/ui/detail_page.py:181
 msgid "Select All"
 msgstr ""
 
-#: ../src/ui/delete_page.py:66 ../src/ui/select_page.py:303
-#: ../src/ui/detail_page.py:96
+#: ../src/ui/delete_page.py:66 ../src/ui/select_page.py:305
+#: ../src/ui/detail_page.py:95
 msgid "Delete"
 msgstr ""
 
 #: ../src/ui/delete_page.py:84 ../src/ui/delete_page.py:91
-#: ../src/ui/select_page.py:215 ../src/ui/select_page.py:223
-#: ../src/ui/select_page.py:266 ../src/ui/select_page.py:282
-#: ../src/ui/select_page.py:326 ../src/ui/select_page.py:340
-#: ../src/ui/detail_page.py:129 ../src/ui/detail_page.py:137
-#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:215
+#: ../src/ui/select_page.py:217 ../src/ui/select_page.py:225
+#: ../src/ui/select_page.py:268 ../src/ui/select_page.py:284
+#: ../src/ui/select_page.py:328 ../src/ui/select_page.py:342
+#: ../src/ui/detail_page.py:128 ../src/ui/detail_page.py:136
+#: ../src/ui/detail_page.py:143 ../src/ui/detail_page.py:214
 msgid "UnSelect All"
 msgstr ""
 
-#: ../src/ui/delete_page.py:102 ../src/ui/select_page.py:350
+#: ../src/ui/delete_page.py:102 ../src/ui/select_page.py:352
 msgid "Are you sure delete wallpaper?"
 msgstr ""
 
@@ -111,12 +115,12 @@ msgstr ""
 msgid "Changed System Theme to %s"
 msgstr ""
 
-#: ../src/ui/select_page.py:190 ../src/ui/select_page.py:246
-#: ../src/ui/select_page.py:305
+#: ../src/ui/select_page.py:192 ../src/ui/select_page.py:248
+#: ../src/ui/select_page.py:307
 msgid "Add"
 msgstr ""
 
-#: ../src/ui/select_page.py:276
+#: ../src/ui/select_page.py:278
 #, python-format
 msgid "Please copy some pictures under %s"
 msgstr ""
@@ -153,41 +157,41 @@ msgstr ""
 msgid "Never"
 msgstr ""
 
-#: ../src/ui/detail_page.py:44
+#: ../src/ui/detail_page.py:43
 msgid "Minute"
 msgstr ""
 
-#: ../src/ui/detail_page.py:44 ../src/ui/detail_page.py:45
-#: ../src/ui/detail_page.py:46 ../src/ui/detail_page.py:47
+#: ../src/ui/detail_page.py:43 ../src/ui/detail_page.py:44
+#: ../src/ui/detail_page.py:45 ../src/ui/detail_page.py:46
 msgid "Minutes"
 msgstr ""
 
-#: ../src/ui/detail_page.py:47
+#: ../src/ui/detail_page.py:46
 msgid "Hour"
 msgstr ""
 
-#: ../src/ui/detail_page.py:48 ../src/ui/detail_page.py:49
-#: ../src/ui/detail_page.py:50
+#: ../src/ui/detail_page.py:47 ../src/ui/detail_page.py:48
+#: ../src/ui/detail_page.py:49
 msgid "Hours"
 msgstr ""
 
-#: ../src/ui/detail_page.py:53
+#: ../src/ui/detail_page.py:52
 msgid "Scaling"
 msgstr ""
 
-#: ../src/ui/detail_page.py:53
+#: ../src/ui/detail_page.py:52
 msgid "Tiling"
 msgstr ""
 
-#: ../src/ui/detail_page.py:77
+#: ../src/ui/detail_page.py:76
 msgid "Position"
 msgstr ""
 
-#: ../src/ui/detail_page.py:80
+#: ../src/ui/detail_page.py:79
 msgid "Duration"
 msgstr ""
 
-#: ../src/ui/detail_page.py:87
+#: ../src/ui/detail_page.py:86
 msgid "Random"
 msgstr ""
 

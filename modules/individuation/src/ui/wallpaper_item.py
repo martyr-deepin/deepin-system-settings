@@ -93,6 +93,11 @@ class WallpaperItem(gobject.GObject):
             
         self.tick_area = None
         
+    def do_apply_wallpaper(self):
+        event_manager.emit("apply-wallpaper", self)
+        self.is_tick = True
+        self.emit_redraw_request()
+    
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
@@ -267,17 +272,9 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        if is_in_rect((x, y), (
-                self.tick_area.x,
-                self.tick_area.y,
-                self.tick_area.width,
-                self.tick_area.height,
-                )):
-            self.toggle_tick()
-            event_manager.emit("select-wallpaper", self)
-        else:    
-            self.tick()
-            event_manager.emit("apply-wallpaper", self)
+        self.toggle_tick()
+        event_manager.emit("select-wallpaper", self)
+        #event_manager.emit("apply-wallpaper", self)
     
     def icon_item_button_release(self, x, y):
         '''
@@ -301,7 +298,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        event_manager.emit("apply-wallpaper", self)
     
     def icon_item_release_resource(self):
         '''
@@ -534,16 +531,8 @@ class DeleteItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        if is_in_rect((x, y), (
-                self.tick_area.x,
-                self.tick_area.y,
-                self.tick_area.width,
-                self.tick_area.height,
-                )):
-            self.toggle_tick()
-            event_manager.emit("select-delete-wallpaper", self)
-        else:    
-            self.tick()
+        self.toggle_tick()
+        event_manager.emit("select-delete-wallpaper", self)
     
     def icon_item_button_release(self, x, y):
         '''

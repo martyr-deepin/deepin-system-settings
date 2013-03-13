@@ -40,7 +40,6 @@ import threading as td
 
 TIME_COMBO_ITEM =  [
     (_("Never"), 0), 
-    #("10 %s" % _("Seconds"), 10), ("30 %s" % _("Seconds"), 30), 
     ("1 %s" % _("Minute"), 60), ("3 %s" % _("Minutes"), 180),
     ("5 %s" % _("Minutes"), 300), ("10 %s" % _("Minutes"), 600), 
     ("15 %s" % _("Minutes"), 900),("20 %s" % _("Minutes"), 1200), 
