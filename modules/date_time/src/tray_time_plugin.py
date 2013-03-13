@@ -22,7 +22,6 @@
 
 
 from tray_time import TrayTime, TRAY_TIME_12_HOUR, TRAY_TIME_24_HOUR
-from tray_time import TRAY_TIME_CN_TYPE, TRAY_TIME_EN_TYPE
 from dtk.ui.utils import set_clickable_cursor
 from deepin_utils.process import run_command
 from dtk.ui.constant import ALIGN_END
