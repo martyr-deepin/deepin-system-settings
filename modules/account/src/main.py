@@ -1218,6 +1218,7 @@ class AccountSetting(object):
                       self.alignment_widgets["edit_iconfile"]]
         if index < 3:
             self.container_widgets["icon_edit_page"].stop_camera()
+            self.container_widgets["icon_edit_page"].draw_area.panel.hide_panel()
         self.set_to_page(crumb_list[index-1], "left")
 
     def slider_completed_slide_cb(self, widget):
