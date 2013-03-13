@@ -376,7 +376,7 @@ class DeviceItem(gobject.GObject):
         self.__session.Disconnect()
         self.__session.Close()
 
-        reply_dlg = ReplyDialog(_("Succeed!"))
+        reply_dlg = ReplyDialog(_("Succeed!"), default_height = 140)
         reply_dlg.show_all()
 
     def __on_session_created(self, manager, session):
