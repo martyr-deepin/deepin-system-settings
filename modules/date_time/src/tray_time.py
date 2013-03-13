@@ -23,6 +23,7 @@
 import time
 from timer import Timer
 import gobject
+from nls import _
 try:
     import deepin_gsettings
     deepin_gsettings_bool = 1
@@ -70,7 +71,12 @@ class TrayTime(gobject.GObject):
         if self.__tray_time_hour_type == TRAY_TIME_12_HOUR: 
             time_show_text = time.strftime("%P %I %M", time.localtime()).split(" ")
             if time_show_text[0].startswith(("a", "p")):
-                time_show_text[0] = time_show_text[0].upper()
+                am = _("AM")
+                pm = _("PM")
+                if time_show_text[0].startswith("a"):
+                    time_show_text[0] = am
+                elif time_show_text[0].startswith("p"):
+                    time_show_text[0] = pm
         elif self.__tray_time_hour_type == TRAY_TIME_24_HOUR:
             time_show_text = time.strftime("%H %M", time.localtime()).split(" ")
         #
