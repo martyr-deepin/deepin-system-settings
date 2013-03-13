@@ -204,15 +204,16 @@ class DeviceItem(gobject.GObject):
         self.highlight_stroke_color = "#396497"
 
     def render(self, cr, rect):
+        padding = 10
+
         # Draw select background.
-        content_width, content_height = get_content_size(self.name)
         if self.is_button_press == True:
             with cairo_disable_antialias(cr):                                      
                 cr.set_source_rgb(*color_hex_to_cairo(self.highlight_fill_color))
-                cr.rectangle(rect.x + 1,                           
-                             rect.y + 1,                           
-                             rect.width - 1,                   
-                             rect.height - 1)               
+                cr.rectangle(rect.x + padding,                           
+                             rect.y + padding,                           
+                             rect.width - padding,                   
+                             rect.height - padding)               
                 cr.fill_preserve()                                              
                 cr.set_line_width(1)                                            
                 cr.set_source_rgb(*color_hex_to_cairo(self.highlight_stroke_color))
@@ -220,7 +221,7 @@ class DeviceItem(gobject.GObject):
         
         # Draw device icon.
         draw_pixbuf(cr, self.pixbuf, 
-                    rect.x + self.icon_size / 2,
+                    rect.x + self.icon_size / 2 + 4,
                     rect.y + (rect.height - self.icon_size) / 2,
                     )
 
@@ -236,9 +237,9 @@ class DeviceItem(gobject.GObject):
             text_color="#FFFFFF"
         draw_text(cr, 
                   self.name, 
-                  rect.x,
+                  rect.x + padding,
                   rect.y + self.icon_size + self.__const_padding_y * 2,
-                  rect.width - 2, 
+                  rect.width - padding, 
                   CONTENT_FONT_SIZE, 
                   CONTENT_FONT_SIZE, 
                   text_color, 
@@ -476,7 +477,7 @@ class DiscoveryDeviceThread(td.Thread):
         td.Thread.__init__(self)
         self.setDaemon(True)
         self.ThisPtr = ThisPtr
-        self.tick = self.ThisPtr.timeout
+        self.tick = 60
 
     def run(self):
         try:
@@ -488,6 +489,27 @@ class DiscoveryDeviceThread(td.Thread):
 
             self.ThisPtr.my_bluetooth.adapter.stop_discovery()
         except Exception, e:
+            print "class DiscoveryDeviceThread got error: %s" % e
+
+class BeDiscoveriedThread(td.Thread):
+
+    def __init__(self, ThisPtr):                                                
+        td.Thread.__init__(self)                                                
+        self.setDaemon(True)                                                    
+        self.ThisPtr = ThisPtr                                                  
+        self.tick = 120                                                          
+                                                                                
+    def run(self):                                                              
+        try:                                                                    
+            while self.tick:                                                    
+                self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
+                self.tick -= 1                                                  
+                time.sleep(1)
+
+            self.ThisPtr.my_bluetooth.adapter.set_discoverable(False)
+            self.ThisPtr.search_timeout_label.set_child_visible(False)
+            self.ThisPtr.search_toggle.set_active(False)
+        except Exception, e:                                                    
             print "class DiscoveryDeviceThread got error: %s" % e
 
 class BlueToothView(gtk.VBox):
@@ -504,9 +526,6 @@ class BlueToothView(gtk.VBox):
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
                                         self.__on_default_adapter_changed, 
                                         self.__device_found)
-
-        self.timeout = 120
-        self.timeout_items = [("2 %s" % _("Minutes"), self.timeout)]
         '''
         enable open
         '''
@@ -544,32 +563,28 @@ class BlueToothView(gtk.VBox):
         '''
         self.search_align = self.__setup_align()
         self.search_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.search_label = self.__setup_label(_("Be Searchedable"))
-        self.search_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
+        self.search_label = self.__setup_label(_("Be Discoverable"))
+        self.search_timeout_align = self.__setup_align(padding_top = 0, padding_left = 0)
+        self.search_timeout_label = self.__setup_label("", width = 110, align = ALIGN_START)
+        self.search_timeout_align.add(self.search_timeout_label)
+        self.search_toggle_align = self.__setup_align(padding_top = 4, padding_left = 18)
         self.search_toggle = self.__setup_toggle()
         if self.my_bluetooth.adapter:
             self.search_toggle.set_active(self.my_bluetooth.adapter.get_discoverable())
         self.search_toggle.connect("toggled", self.__toggled, "search")
         self.search_toggle_align.add(self.search_toggle)
         self.__widget_pack_start(self.search_box, 
-                                 [self.search_label, self.search_toggle_align])
+                                 [self.search_label, 
+                                  self.search_timeout_align, 
+                                  self.search_toggle_align
+                                 ])
         self.search_align.add(self.search_box)
-        '''
-        device timeout
-        '''
-        self.timeout_align = self.__setup_align()
-        self.timeout_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.timeout_label = self.__setup_label(_("Searching Device Timeout"))
-        self.timeout_combo = self.__setup_combo(self.timeout_items)
-        self.__widget_pack_start(self.timeout_box, 
-                                 [self.timeout_label, self.timeout_combo])
-        self.timeout_align.add(self.timeout_box)
         '''
         device iconview
         '''
         self.device_align = self.__setup_align()
         self.device_iconview = DeviceIconView()
-        self.device_iconview.set_size_request(690, 190)
+        self.device_iconview.set_size_request(690, 228)
         self.device_align.add(self.device_iconview)
         '''
         operation
@@ -592,7 +607,6 @@ class BlueToothView(gtk.VBox):
                                   self.enable_align, 
                                   self.display_align, 
                                   self.search_align, 
-                                  self.timeout_align, 
                                   self.device_align, 
                                   self.oper_align])
 
@@ -681,15 +695,22 @@ class BlueToothView(gtk.VBox):
                 adapter.stop_discovery()
 
     def __toggled(self, widget, object):
-        if self.adapter == None:
+        if self.my_bluetooth.adapter == None:
             return
 
         if object == "enable_open":
-            self.adapter.set_powered(widget.get_active())
+            self.my_bluetooth.adapter.set_powered(widget.get_active())
+            self.display_align.set_sensitive(widget.get_active())
+            self.search_align.set_sensitive(widget.get_active())
+            self.search_timeout_label.set_child_visible(False)
             return
 
         if object == "search":
-            self.adapter.set_discoverable(widget.get_active())
+            is_discoverable = widget.get_active()
+            self.my_bluetooth.adapter.set_discoverable(is_discoverable)
+            self.search_timeout_label.set_child_visible(is_discoverable)
+            if is_discoverable:
+                BeDiscoveriedThread(self).start()
             return
 
     def __expose(self, widget, event):                                           
@@ -700,9 +721,6 @@ class BlueToothView(gtk.VBox):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)                    
         cr.fill()  
     
-    def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
-        self.timeout = item_value
-
     def __setup_label(self, text="", width=180, align=ALIGN_END):
         return Label(text, None, TITLE_FONT_SIZE, align, width, False, False, False)
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 14:13+0800\n"
+"POT-Creation-Date: 2013-03-13 10:05+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -191,35 +191,35 @@ msgstr ""
 msgid "Changed timezone to %s"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:39
+#: ../src/tray_time_plugin.py:38
 msgid "Monday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:39
+#: ../src/tray_time_plugin.py:38
 msgid "Tuesday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:39
+#: ../src/tray_time_plugin.py:38
 msgid "Wednesday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:39
+#: ../src/tray_time_plugin.py:38
 msgid "Thursday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:40
+#: ../src/tray_time_plugin.py:39
 msgid "Friday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:40
+#: ../src/tray_time_plugin.py:39
 msgid "Saturday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:40
+#: ../src/tray_time_plugin.py:39
 msgid "Sunday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:116
+#: ../src/tray_time_plugin.py:117
 msgid "Change DateTime settings"
 msgstr ""
 
@@ -229,4 +229,12 @@ msgstr ""
 
 #: ../src/search_keyword.py:32
 msgid "Hour Display"
+msgstr ""
+
+#: ../src/tray_time.py:74
+msgid "AM"
+msgstr ""
+
+#: ../src/tray_time.py:75
+msgid "PM"
 msgstr ""

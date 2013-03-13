@@ -44,7 +44,7 @@ class MyBluetooth():
         if self.default_adapter != "None":
             self.adapter = Adapter(self.default_adapter)
             self.adapter.set_powered(True)
-            self.adapter.set_discoverable(True)
+            self.adapter.set_discoverable(False)
             self.adapter.set_pairable(True)
             if device_found_cb:
                 self.adapter.connect("device-found", device_found_cb)
