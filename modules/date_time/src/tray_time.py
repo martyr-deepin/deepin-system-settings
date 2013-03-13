@@ -22,7 +22,6 @@
 
 import time
 from timer import Timer
-from utils import cn_check
 import gobject
 try:
     import deepin_gsettings
@@ -34,15 +33,13 @@ except:
 
 TRAY_TIME_12_HOUR = 1
 TRAY_TIME_24_HOUR = 0
-TRAY_TIME_EN_TYPE = False 
-TRAY_TIME_CN_TYPE = True 
 
 class TrayTime(gobject.GObject):
     __gsignals__ = {
         "send-time" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                      (gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_INT)),
+                      (gobject.TYPE_PYOBJECT, gobject.TYPE_INT)),
         "hour-changed" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                      (gobject.TYPE_PYOBJECT, gobject.TYPE_INT, gobject.TYPE_INT)),
+                      (gobject.TYPE_PYOBJECT, gobject.TYPE_INT)),
         }        
     def __init__(self):
         gobject.GObject.__init__(self)
@@ -62,7 +59,7 @@ class TrayTime(gobject.GObject):
 
     def set_hour_type(self, hour_type):
         self.__tray_time_hour_type = hour_type
-        self.emit("hour-changed", self.get_time(), self.__tray_time_hour_type, cn_check())
+        self.emit("hour-changed", self.get_time(), self.__tray_time_hour_type)
 
     def set_deepin_dde_datetime(self):
         self.set_hour_type(not self.set_date.get_boolean("is-24hour"))
@@ -72,11 +69,8 @@ class TrayTime(gobject.GObject):
         #
         if self.__tray_time_hour_type == TRAY_TIME_12_HOUR: 
             time_show_text = time.strftime("%P %I %M", time.localtime()).split(" ")
-            if cn_check() == TRAY_TIME_EN_TYPE:
-                if time_show_text[0] == "上午":
-                    time_show_text[0] = "AM"
-                else:
-                    time_show_text[0] = "PM"
+            if time_show_text[0].startswith(("a", "p")):
+                time_show_text[0] = time_show_text[0].upper()
         elif self.__tray_time_hour_type == TRAY_TIME_24_HOUR:
             time_show_text = time.strftime("%H %M", time.localtime()).split(" ")
         #
@@ -87,7 +81,7 @@ class TrayTime(gobject.GObject):
         if self.__timer.Interval == 1:
             self.__timer.Interval = 1000
         # emit event.
-        self.emit("send-time", self.get_time(), self.__tray_time_hour_type, cn_check())
+        self.emit("send-time", self.get_time(), self.__tray_time_hour_type)
         
 
 if __name__ == "__main__":

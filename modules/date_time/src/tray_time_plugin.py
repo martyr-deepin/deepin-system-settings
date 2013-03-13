@@ -45,15 +45,16 @@ class TrayTimePlugin(object):
         self.tray_time.connect("send-time", self.tray_time_send)
         self.tray_time.connect("hour-changed", self.tray_time_send)
 
-    def tray_time_send(self, traytime, text, type, language_type):
+    def tray_time_send(self, traytime, text, type):
         time_p = ""
         if type == TRAY_TIME_12_HOUR:
             time_p = text[0]
         hour = text[0 + type]
         min = text[1 + type]
         show_str = "%s %s:%s" % (time_p, hour, min)
-        if language_type == TRAY_TIME_EN_TYPE:
-            show_str = "%s:%s %s" % (hour, min, time_p)
+        if type == TRAY_TIME_12_HOUR:
+            if text[0].startswith(("A", "P")):
+                show_str = "%s:%s %s" % (hour, min, time_p)
         
         self.tray_icon.set_text(show_str)
 
