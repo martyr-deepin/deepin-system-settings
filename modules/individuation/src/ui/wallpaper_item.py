@@ -845,7 +845,8 @@ class CacheItem(gobject.GObject, MissionThread):
         '''
         gobject.GObject.__init__(self)
         MissionThread.__init__(self)
-       
+      
+        self.image_path = None
         self.is_loaded = False
         self.is_downloaded = False
         self.hover_flag = False
@@ -904,6 +905,7 @@ class CacheItem(gobject.GObject, MissionThread):
         self.is_loop = False
         self.is_downloaded = True
         self.emit_redraw_request()
+        self.image_path = self.image_object.get_save_path()
         event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
@@ -913,6 +915,8 @@ class CacheItem(gobject.GObject, MissionThread):
         
         if image_path != None:
             self.is_downloaded = os.path.exists(self.download_dir + "/" +  image_path.split("/")[-1])
+            if self.is_downloaded:
+                self.image_path = self.download_dir + "/" +  image_path.split("/")[-1]
         
         self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
 
@@ -1120,8 +1124,9 @@ class CacheItem(gobject.GObject, MissionThread):
         
         This is IconView interface, you should implement it.
         '''
-        #self.is_tick = not self.is_tick
         self.emit_redraw_request()
+        if self.is_downloaded:
+            event_manager.emit("apply-wallpaper", self)
         event_manager.emit("download-images", [self.image_object])
     
     def icon_item_button_release(self, x, y):
