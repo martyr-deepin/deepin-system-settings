@@ -340,10 +340,13 @@ class TrayNetworkPlugin(object):
         self.toggle_dialog(self.this_connection)
 
     def toggle_dialog(self, connection, security=None):
-        AskPasswordDialog(connection,
-                          key_mgmt=security,
-                          cancel_callback=self.cancel_ask_pwd,
-                          confirm_callback=self.pwd_changed).show_all()
+        ssid = connection.get_setting("802-11-wireless").ssid
+        if ssid != None:
+            AskPasswordDialog(connection,
+                              ssid,
+                              key_mgmt=security,
+                              cancel_callback=self.cancel_ask_pwd,
+                              confirm_callback=self.pwd_changed).show_all()
 
 
     def cancel_ask_pwd(self):

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from dss import app_theme
-from dtk.ui.button import ImageButton, ToggleButton, Button, CheckButton
+from dtk.ui.button import Button, CheckButton
 from dtk.ui.dialog import DialogBox
-from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.new_entry import PasswordEntry
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 
@@ -26,13 +25,15 @@ class AskPasswordDialog(DialogBox):
 	
     def __init__(self,
                  connection,
+                 ssid,
                  key_mgmt=None,
                  #title, 
                  #init_text, 
                  default_width=330,
                  default_height=145,
                  confirm_callback=None, 
-                 cancel_callback=None):
+                 cancel_callback=None,
+                 ):
         '''
         Initialize InputDialog class.
         
@@ -49,8 +50,7 @@ class AskPasswordDialog(DialogBox):
         self.cancel_callback = cancel_callback
     
         self.connection = connection
-        ssid = self.connection.get_setting("802-11-wireless").ssid
-
+        
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
         self.hint_align.set_padding(0, 0, 10, 10)
@@ -145,9 +145,15 @@ if __name__ == "__main__":
     #my_button = SettingButton("another setting")
     my_button = gtk.Button("click")
     
-    mm = nm_module.nm_remote_settings.get_wireless_connections()
-    i = filter(lambda i: i.get_setting("802-11-wireless").ssid == "DeepinWork", mm)
-    my_button.connect("clicked", lambda w: AskPasswordDialog(i[0]).show_all())
+    def show_dialog():
+        mm = nm_module.nm_remote_settings.get_wireless_connections()
+        i = filter(lambda i: i.get_setting("802-11-wireless").ssid == "DeepinWork", mm)
+        connection = i[0]
+        ssid = connection.get_setting("802-11-wireless").ssid
+        if ssid != None:
+            AskPasswordDialog(connection, ssid).show_all()
+        
+    my_button.connect("clicked", lambda w: show_dialog())
     my_button.set_size_request(200, 200)
     align.add(my_button)
     win.add(align)
