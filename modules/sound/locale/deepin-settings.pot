@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-05 14:33+0800\n"
+"POT-Creation-Date: 2013-03-13 16:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,6 +58,14 @@ msgstr ""
 msgid "Advanced..."
 msgstr ""
 
+#: ../src/tray_sound_gui.py:290
+msgid "Volume"
+msgstr ""
+
+#: ../src/tray_sound_gui.py:294 ../src/main.py:112 ../src/main.py:116
+msgid "Mute"
+msgstr ""
+
 #: ../src/main.py:108 ../src/main.py:258
 msgid "Left"
 msgstr ""
@@ -72,10 +80,6 @@ msgstr ""
 
 #: ../src/main.py:111 ../src/main.py:442 ../src/main.py:446
 msgid "Output Volume"
-msgstr ""
-
-#: ../src/main.py:112 ../src/main.py:116
-msgid "Mute"
 msgstr ""
 
 #: ../src/main.py:114

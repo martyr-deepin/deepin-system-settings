@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 16:43+0800\n"
+"POT-Creation-Date: 2013-03-14 10:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:25 ../src/main.py:99
+#: ../src/search_keyword.py:25 ../src/main.py:103
 msgid "Automatic login"
 msgstr ""
 
-#: ../src/search_keyword.py:26 ../src/main.py:100 ../src/main.py:104
+#: ../src/search_keyword.py:26 ../src/main.py:104 ../src/main.py:108
 msgid "Deepin Account"
 msgstr ""
 
-#: ../src/search_keyword.py:27 ../src/main.py:102
+#: ../src/search_keyword.py:27 ../src/main.py:106
 msgid "Account Name"
 msgstr ""
 
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/main.py:963
+#: ../src/search_keyword.py:31 ../src/main.py:1022
 msgid "Set Picture"
 msgstr ""
 
@@ -49,242 +49,267 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: ../src/main.py:96 ../src/main.py:103
+#: ../src/main.py:100 ../src/main.py:107
 msgid "Account type"
 msgstr ""
 
-#: ../src/main.py:97
+#: ../src/main.py:101
 msgid "Password"
 msgstr ""
 
-#: ../src/main.py:101 ../src/main.py:105
+#: ../src/main.py:105 ../src/main.py:109
 msgid "Unbound"
 msgstr ""
 
-#: ../src/main.py:116 ../src/main.py:136
+#: ../src/main.py:120 ../src/main.py:140
 msgid "Standard"
 msgstr ""
 
-#: ../src/main.py:116 ../src/main.py:136
+#: ../src/main.py:120 ../src/main.py:140
 msgid "Administrator"
 msgstr ""
 
-#: ../src/main.py:120 ../src/main.py:137
+#: ../src/main.py:124 ../src/main.py:141
 msgid "网络访问权限"
 msgstr ""
 
-#: ../src/main.py:121 ../src/main.py:138
+#: ../src/main.py:125 ../src/main.py:142
 msgid "磁盘操作权限只读"
 msgstr ""
 
-#: ../src/main.py:122 ../src/main.py:139
+#: ../src/main.py:126 ../src/main.py:143
 msgid "可加载移动设备"
 msgstr ""
 
-#: ../src/main.py:123 ../src/main.py:140
+#: ../src/main.py:127 ../src/main.py:144
 msgid "磁盘操作权限完全"
 msgstr ""
 
-#: ../src/main.py:126 ../src/main.py:143
+#: ../src/main.py:130 ../src/main.py:147
 msgid ""
 "自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不"
 "再需要设置偏好。"
 msgstr ""
 
-#: ../src/main.py:131 ../src/main.py:148
+#: ../src/main.py:135 ../src/main.py:152
 msgid ""
 "提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</"
 "span>。"
 msgstr ""
 
-#: ../src/main.py:132
+#: ../src/main.py:136
 msgid "Add"
 msgstr ""
 
-#: ../src/main.py:133
+#: ../src/main.py:137
 msgid "Delete"
 msgstr ""
 
-#: ../src/main.py:134
+#: ../src/main.py:138
 msgid "Create"
 msgstr ""
 
-#: ../src/main.py:135 ../src/main.py:187 ../src/main.py:193 ../src/main.py:776
+#: ../src/main.py:139 ../src/main.py:192 ../src/main.py:198 ../src/main.py:805
 msgid "Cancel"
 msgstr ""
 
-#: ../src/main.py:182
+#: ../src/main.py:187
 msgid "It is possible to keep the home directory when deleting a user account."
 msgstr ""
 
-#: ../src/main.py:185
+#: ../src/main.py:190
 msgid "Delete Files"
 msgstr ""
 
-#: ../src/main.py:186
+#: ../src/main.py:191
 msgid "Keep Files"
 msgstr ""
 
-#: ../src/main.py:194
+#: ../src/main.py:199
 msgid "Save"
 msgstr ""
 
-#: ../src/main.py:461
+#: ../src/main.py:471
 #, python-format
 msgid "允许%s自动登陆"
 msgstr ""
 
-#: ../src/main.py:463
+#: ../src/main.py:473
 #, python-format
 msgid "禁止%s自动登陆"
 msgstr ""
 
-#: ../src/main.py:499
+#: ../src/main.py:509
 #, python-format
 msgid "%s has been created"
 msgstr ""
 
-#: ../src/main.py:502 ../src/main.py:531 ../src/main.py:869 ../src/main.py:887
-#: ../src/main.py:912 ../src/main.py:1137 ../src/set_icon_page.py:300
-#: ../src/set_icon_page.py:327 ../src/set_icon_page.py:970
-#: ../src/set_icon_page.py:994
-msgid "Error:"
+#: ../src/main.py:515
+msgid "The user name is invalid"
 msgstr ""
 
-#: ../src/main.py:528
+#: ../src/main.py:541
 #, python-format
 msgid "%s has been deleted"
 msgstr ""
 
-#: ../src/main.py:544
+#: ../src/main.py:558
 #, python-format
 msgid "Do you want to keep <u>%s</u>'s files?"
 msgstr ""
 
-#: ../src/main.py:572 ../src/main.py:996
+#: ../src/main.py:586 ../src/main.py:1055
 msgid "Account disabled"
 msgstr ""
 
-#: ../src/main.py:574 ../src/main.py:998
+#: ../src/main.py:588 ../src/main.py:1057
 msgid "To be set at next login"
 msgstr ""
 
-#: ../src/main.py:576 ../src/main.py:1000
+#: ../src/main.py:590 ../src/main.py:1059
 msgid "None"
 msgstr ""
 
-#: ../src/main.py:634
+#: ../src/main.py:648
 #, python-format
 msgid "%s's account type has been set as %s"
 msgstr ""
 
-#: ../src/main.py:738
+#: ../src/main.py:764
 msgid "Action"
 msgstr ""
 
-#: ../src/main.py:739
+#: ../src/main.py:765 ../src/main.py:887 ../src/main.py:897
 msgid "Current password"
 msgstr ""
 
-#: ../src/main.py:740
+#: ../src/main.py:766 ../src/main.py:889 ../src/main.py:898
 msgid "New password"
 msgstr ""
 
-#: ../src/main.py:741
+#: ../src/main.py:767 ../src/main.py:891 ../src/main.py:899
 msgid "Confirm new password"
 msgstr ""
 
-#: ../src/main.py:743
+#: ../src/main.py:769
 msgid "Set a password now"
 msgstr ""
 
-#: ../src/main.py:744
+#: ../src/main.py:770
 msgid "Log in without a password"
 msgstr ""
 
-#: ../src/main.py:746
+#: ../src/main.py:772
 msgid "Enable this account"
 msgstr ""
 
-#: ../src/main.py:748
+#: ../src/main.py:774
 msgid "Disable this account"
 msgstr ""
 
-#: ../src/main.py:760
+#: ../src/main.py:789
 msgid "Show password"
 msgstr ""
 
-#: ../src/main.py:777
+#: ../src/main.py:806
 msgid "Change"
 msgstr ""
 
-#: ../src/main.py:862 ../src/main.py:885
+#: ../src/main.py:857
+msgid "新密码长度必须为6~16位"
+msgstr ""
+
+#: ../src/main.py:863
+msgid "两次密码输入不一致"
+msgstr ""
+
+#: ../src/main.py:917 ../src/main.py:941
 msgid "password unchanged"
 msgstr ""
 
-#: ../src/main.py:864
+#: ../src/main.py:919
 msgid "authentication token manipulation error"
 msgstr ""
 
-#: ../src/main.py:866
+#: ../src/main.py:921
 msgid "new and old password are too similar"
 msgstr ""
 
-#: ../src/main.py:879
+#: ../src/main.py:935
 #, python-format
 msgid "%s's password has been changed"
 msgstr ""
 
-#: ../src/main.py:924
+#: ../src/main.py:983
 msgid "Passwords do not match"
 msgstr ""
 
-#: ../src/set_icon_page.py:116 ../src/set_icon_page.py:118
+#: ../src/main.py:1210
+msgid "Error:"
+msgstr ""
+
+#: ../src/edit_icon_page.py:78
+msgid "zoom in"
+msgstr ""
+
+#: ../src/edit_icon_page.py:83
+msgid "zoom out"
+msgstr ""
+
+#: ../src/edit_icon_page.py:88
+msgid "拍照"
+msgstr ""
+
+#: ../src/edit_icon_page.py:93
+msgid "再次拍照"
+msgstr ""
+
+#: ../src/edit_icon_page.py:816
+msgid "Clip"
+msgstr ""
+
+#: ../src/edit_icon_page.py:832
+msgid "Preview"
+msgstr ""
+
+#: ../src/edit_icon_page.py:884
+msgid "no picture"
+msgstr ""
+
+#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:129
 msgid "Local picture"
 msgstr ""
 
-#: ../src/set_icon_page.py:116 ../src/set_icon_page.py:119
+#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:130
 msgid "Take a screeshot"
 msgstr ""
 
-#: ../src/set_icon_page.py:120
+#: ../src/set_icon_page.py:131
 msgid "From camera"
 msgstr ""
 
-#: ../src/set_icon_page.py:138
+#: ../src/set_icon_page.py:149
 msgid "Choose a new picture for your account"
 msgstr ""
 
-#: ../src/set_icon_page.py:142
+#: ../src/set_icon_page.py:153
 msgid "Previously used pictures"
 msgstr ""
 
-#: ../src/set_icon_page.py:186
+#: ../src/set_icon_page.py:197
 #, python-format
 msgid "Set <u>%s</u>'s picture"
 msgstr ""
 
-#: ../src/set_icon_page.py:332 ../src/set_icon_page.py:362
-#: ../src/set_icon_page.py:368
+#: ../src/set_icon_page.py:360 ../src/set_icon_page.py:389
+#: ../src/set_icon_page.py:395
 msgid "Edit Picture"
-msgstr ""
-
-#: ../src/set_icon_page.py:913
-msgid "Clip"
-msgstr ""
-
-#: ../src/set_icon_page.py:923
-msgid "Preview"
-msgstr ""
-
-#: ../src/set_icon_page.py:970
-msgid "no picture"
 msgstr ""
 
 #: ../src/treeitem.py:175
 msgid "My Account"
 msgstr ""
 
-#: ../src/treeitem.py:178
+#: ../src/treeitem.py:179
 msgid "Other Accounts"
 msgstr ""

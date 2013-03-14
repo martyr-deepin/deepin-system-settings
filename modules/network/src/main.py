@@ -96,7 +96,8 @@ class Section(gtk.VBox):
         is_active = widget.get_active()
         if is_active:
             self.toggle_on()
-            self.align.add(self.content_box)
+            if self.content_box not in self.align.get_children():
+                self.align.add(self.content_box)
             self.show_all()
             self.toggle_on_after()
         
@@ -884,6 +885,7 @@ class VpnSection(Section):
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
+        Dispatcher.connect("vpn-redraw", lambda w:self.vpn.set_active(True, emit=True))
 
     def connect_vpn_signals(self, active_vpn, connection_name):
         active_vpn.connect("vpn-connected", self.vpn_connected, connection_name)
@@ -892,9 +894,11 @@ class VpnSection(Section):
 
     def toggle_on(self):
         item_list = self.get_list()
-        item_list[-1].is_last = True
-        self.tree.delete_all_items()
-        self.tree.add_items(item_list)
+        #item_list=[]
+        if item_list:
+            item_list[-1].is_last = True
+            self.tree.delete_all_items()
+            self.tree.add_items(item_list)
 
     def toggle_on_after(self):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
@@ -908,7 +912,7 @@ class VpnSection(Section):
                 print e
 
         else:
-            print "try to connect"
+            pass
 
     def toggle_off(self):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()

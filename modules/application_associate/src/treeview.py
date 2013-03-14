@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 from theme import app_theme
 from dtk.ui.new_treeview import TreeView, TreeItem
-from dtk.ui.button import Button
+from dtk.ui.button import Button, CheckButtonBuffer
 from dtk.ui.utils import get_content_size, cairo_state, color_hex_to_cairo
 from dtk.ui.draw import (draw_pixbuf, draw_text, 
                          draw_vlinear)
@@ -74,6 +74,8 @@ class SessionItem(TreeItem):
         self.item = item
         self.is_double_click = False
         self.autorun = item.has_gnome_auto()
+        self.check_buffer = CheckButtonBuffer(self.autorun, 2, 3)
+
 
 
     def set_autorun_state(self, run):
@@ -88,12 +90,13 @@ class SessionItem(TreeItem):
         CHECK_LEFT_PADDING = 5
         CHECK_RIGHT_PADDING = 5
         
-        if self.autorun:
-            if self.is_select:
-                check_icon = app_theme.get_pixbuf("network/check_box-3.png")
-            else:
-                check_icon = app_theme.get_pixbuf("network/check_box-2.png")
-            draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + CHECK_LEFT_PADDING, rect.y + (rect.height - 16)/2)
+        #if self.autorun:
+        self.check_buffer.render(cr, rect)
+            #if self.is_select:
+                #check_icon = app_theme.get_pixbuf("network/check_box-3.png")
+            #else:
+                #check_icon = app_theme.get_pixbuf("network/check_box-2.png")
+            #draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + CHECK_LEFT_PADDING, rect.y + (rect.height - 16)/2)
 
         # Draw Text
 
@@ -146,6 +149,15 @@ class SessionItem(TreeItem):
         self.unhighlight()
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+
+    def button_press(self, column, x, y):
+        if column == 0:
+             self.check_buffer.press_button(x, y)
+    def button_release(self, column, x, y):
+        if column == 0:
+            if self.check_buffer.release_button(x,y):
+                state = self.check_buffer.get_active()
+                self.set_autorun_state(state)
     
     def single_click(self, column, offset_x, offset_y):
         self.is_select = True
@@ -155,13 +167,6 @@ class SessionItem(TreeItem):
         self.is_double_click = True
         self.set_autorun_state(not self.autorun)
 
-    #def highlight(self):
-        #self.is_highlight = True
-        #self.redraw()
-
-    #def unhighlight(self):
-        #self.is_highlight = False
-        #self.redraw()
 
     def redraw(self):
         if self.redraw_request_callback:

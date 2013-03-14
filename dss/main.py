@@ -250,6 +250,7 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
             content_page_info.set_active_module_id("main")
             foot_box.hide()
     else:
+        foot_box.hide()
         send_message(content_page_info.get_active_module_id(),
                      "click_crumb",
                      (index, label))
