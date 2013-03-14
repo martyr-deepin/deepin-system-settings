@@ -134,9 +134,9 @@ class Sections(gtk.Alignment):
         self.button = Button(_("Advanced"))
         self.button.set_size_request(50, 22)
         #self.button.connect("clicked", self.show_more_options)
-        self.wireless = SettingSection(_("Wireless"), always_show=False)
-        self.ipv4 = SettingSection(_("IPv4 Setting"), always_show=False)
-        self.ipv6 = SettingSection(_("IPv6 Settings"), always_show=False)
+        self.wireless = SettingSection(_("Wireless"), always_show=True)
+        self.ipv4 = SettingSection(_("IPv4 Setting"), always_show=True)
+        self.ipv6 = SettingSection(_("IPv6 Settings"), always_show=True)
         #align = gtk.Alignment(0, 0, 0, 0)
         #align.set_padding(0, 0, 225, 0)
         #align.add(self.button)
@@ -213,8 +213,8 @@ class Security(gtk.VBox):
                                     (_("Open System"), "open")],max_width=self.ENTRY_WIDTH)
 
         ## advance button
-        self.align = gtk.Alignment(0, 0, 0, 0)
-        self.align.set_padding(0, 0, 225, 0)
+        self.align = gtk.Alignment(0, 1.0, 0, 0)
+        self.align.set_padding(0, 0, 376, 0)
         self.align.set_size_request(-1 ,30)
         self.button = Button(_("Advanced"))
         self.align.add(self.button)
