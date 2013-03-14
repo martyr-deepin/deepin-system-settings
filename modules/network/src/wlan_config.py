@@ -213,8 +213,8 @@ class Security(gtk.VBox):
                                     (_("Open System"), "open")],max_width=self.ENTRY_WIDTH)
 
         ## advance button
-        self.align = gtk.Alignment(0, 0, 0, 0)
-        self.align.set_padding(0, 0, 225, 0)
+        self.align = gtk.Alignment(0, 1.0, 0, 0)
+        self.align.set_padding(0, 0, 376, 0)
         self.align.set_size_request(-1 ,30)
         self.button = Button(_("Advanced"))
         self.align.add(self.button)
