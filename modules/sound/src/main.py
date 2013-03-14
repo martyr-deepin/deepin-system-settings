@@ -441,11 +441,11 @@ class SoundSetting(object):
         if not active:
             self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
             self.label_widgets["speaker_balance"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Balance")))
-            self.set_status_text(_("输出设为静音"))
+            self.set_status_text(_("Muted output"))
         else:
             self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
             self.label_widgets["speaker_balance"].set_text("%s" % _("Balance"))
-            self.set_status_text(_("取消输出静音"))
+            self.set_status_text(_("Unmuted output"))
 
     def microphone_toggled_cb(self, button):
         active = button.get_active()
@@ -455,10 +455,10 @@ class SoundSetting(object):
             pypulse.PULSE.set_input_mute(current_source, not active)
         if not active:
             self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
-            self.set_status_text(_("输入设为静音"))
+            self.set_status_text(_("Muted input"))
         else:
             self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
-            self.set_status_text(_("取消输入静音"))
+            self.set_status_text(_("Unmuted input"))
 
     def speaker_value_changed_cb(self, widget, value):
         ''' speaker hscale value changed callback thread'''
@@ -490,7 +490,7 @@ class SoundSetting(object):
         if value in self.__current_sink_ports:
             port = self.__current_sink_ports[value][0]
             pypulse.PULSE.set_output_active_port(current_sink, port)
-            self.set_status_text(_("输出端口设为%s") % content)
+            self.set_status_text(_("Set output port to %s") % content)
 
     def microphone_port_changed(self, combo, content, value, index):
         current_source = pypulse.get_fallback_source_index()
@@ -499,7 +499,7 @@ class SoundSetting(object):
         if value in self.__current_source_ports:
             port = self.__current_source_ports[value][0]
             pypulse.PULSE.set_input_active_port(current_source, port)
-            self.set_status_text(_("输入端口设为%s") % content)
+            self.set_status_text(_("Set input port to %s") % content)
 
     def treeview_container_expose_cb(self, widget, event, treeview):
         rect = treeview.allocation
@@ -514,13 +514,13 @@ class SoundSetting(object):
         if item.device_index == pypulse.get_fallback_sink_index():
             return
         pypulse.PULSE.set_fallback_sink(item.device_name)
-        self.set_status_text(_("选择输出设备：%s") % item.content)
+        self.set_status_text(_("Output device %s selected") % item.content)
 
     def input_treeview_clicked(self, tree_view, item, row, *args):
         if item.device_index == pypulse.get_fallback_source_index():
             return
         pypulse.PULSE.set_fallback_source(item.device_name)
-        self.set_status_text(_("选择输入设备：%s") % item.content)
+        self.set_status_text(_("Input device %s selected") % item.content)
 
     def card_treeview_clicked(self, tree_view, item, row, *args):
         print "treeview clicked", item.device_name, item.device_index, item.content, row

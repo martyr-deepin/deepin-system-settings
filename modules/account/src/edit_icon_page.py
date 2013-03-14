@@ -85,12 +85,12 @@ class IconEditArea(gtk.Layout):
             app_theme.get_pixbuf("account/camera.png"),
             app_theme.get_pixbuf("account/camera.png"),
             app_theme.get_pixbuf("account/camera.png"),
-            _("拍照"))
+            _("Take a photo"))
         self.button_camera_again = ImageButton(
             app_theme.get_pixbuf("account/camera_again.png"),
             app_theme.get_pixbuf("account/camera_again.png"),
             app_theme.get_pixbuf("account/camera_again.png"),
-            _("再次拍照"))
+            _("Try again"))
 
         self.button_zoom_in_align = tools.make_align(self.button_zoom_in, xalign=0.5, yalign=0.5)
         self.button_zoom_out_align = tools.make_align(self.button_zoom_out, xalign=0.5, yalign=0.5)

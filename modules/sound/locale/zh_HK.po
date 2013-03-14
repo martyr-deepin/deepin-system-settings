@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-05 14:33+0800\n"
+"POT-Creation-Date: 2013-03-13 16:58+0800\n"
 "PO-Revision-Date: 2012-11-21 15:41+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -20,24 +20,30 @@ msgstr ""
 msgid "Sound"
 msgstr "聲音"
 
-#: ../src/search_keyword.py:26 ../src/main.py:113 ../src/main.py:443
+#: ../src/search_keyword.py:26
+#: ../src/main.py:113
+#: ../src/main.py:443
 #: ../src/main.py:447
 msgid "Balance"
 msgstr "均衡"
 
-#: ../src/search_keyword.py:27 ../src/main.py:106
+#: ../src/search_keyword.py:27
+#: ../src/main.py:106
 msgid "Speaker"
 msgstr "揚聲器"
 
-#: ../src/search_keyword.py:28 ../src/main.py:107
+#: ../src/search_keyword.py:28
+#: ../src/main.py:107
 msgid "Microphone"
 msgstr "麥克風"
 
-#: ../src/search_keyword.py:29 ../src/main.py:215
+#: ../src/search_keyword.py:29
+#: ../src/main.py:215
 msgid "Output"
 msgstr "輸出"
 
-#: ../src/search_keyword.py:30 ../src/main.py:214
+#: ../src/search_keyword.py:30
+#: ../src/main.py:214
 msgid "Input"
 msgstr "輸入"
 
@@ -57,11 +63,23 @@ msgstr "應用程序"
 msgid "Advanced..."
 msgstr "更多高級選項..."
 
-#: ../src/main.py:108 ../src/main.py:258
+#: ../src/tray_sound_gui.py:290
+msgid "Volume"
+msgstr "音量"
+
+#: ../src/tray_sound_gui.py:294
+#: ../src/main.py:112
+#: ../src/main.py:116
+msgid "Mute"
+msgstr "靜音"
+
+#: ../src/main.py:108
+#: ../src/main.py:258
 msgid "Left"
 msgstr "左"
 
-#: ../src/main.py:109 ../src/main.py:259
+#: ../src/main.py:109
+#: ../src/main.py:259
 msgid "Right"
 msgstr "右"
 
@@ -69,23 +87,24 @@ msgstr "右"
 msgid "Output Port"
 msgstr "輸出端口"
 
-#: ../src/main.py:111 ../src/main.py:442 ../src/main.py:446
+#: ../src/main.py:111
+#: ../src/main.py:442
+#: ../src/main.py:446
 msgid "Output Volume"
 msgstr "輸出音量"
-
-#: ../src/main.py:112 ../src/main.py:116
-msgid "Mute"
-msgstr "靜音"
 
 #: ../src/main.py:114
 msgid "Input Port"
 msgstr "輸入端口"
 
-#: ../src/main.py:115 ../src/main.py:457 ../src/main.py:460
+#: ../src/main.py:115
+#: ../src/main.py:457
+#: ../src/main.py:460
 msgid "Input Volume"
 msgstr "輸入音量"
 
-#: ../src/main.py:127 ../src/main.py:621
+#: ../src/main.py:127
+#: ../src/main.py:621
 msgid "Advanced"
 msgstr "高級設置"
 
@@ -102,57 +121,49 @@ msgid "Choose a device to configure:"
 msgstr "選擇要配置的設備"
 
 #: ../src/main.py:444
-msgid "输出设为静音"
-msgstr ""
+msgid "Muted output"
+msgstr "輸出設為靜音"
 
 #: ../src/main.py:448
-msgid "取消输出静音"
-msgstr ""
+msgid "Unmuted output"
+msgstr "取消輸出靜音"
 
 #: ../src/main.py:458
-msgid "输入设为静音"
-msgstr ""
+msgid "Muted input"
+msgstr "輸入設為靜音"
 
 #: ../src/main.py:461
-msgid "取消输入静音"
-msgstr ""
+msgid "Unmuted input"
+msgstr "取消輸入靜音"
 
 #: ../src/main.py:493
-#, python-format
-msgid "输出端口设为%s"
-msgstr ""
+msgid "Set output port to %s"
+msgstr "輸出端口設為%s"
 
 #: ../src/main.py:502
-#, python-format
-msgid "输入端口设为%s"
-msgstr ""
+msgid "Set input port to %s"
+msgstr "輸入端口設為%s"
 
 #: ../src/main.py:517
-#, python-format
-msgid "选择输出设备：%s"
-msgstr ""
+msgid "Output device %s selected"
+msgstr "選擇輸出設備：%s"
 
 #: ../src/main.py:523
-#, python-format
-msgid "选择输入设备：%s"
-msgstr ""
+msgid "Input device %s selected"
+msgstr "選擇輸入設備：%s"
 
 #: ../src/main.py:763
-#, python-format
 msgid "%d Outputs"
 msgstr "%d路輸出"
 
 #: ../src/main.py:765
-#, python-format
 msgid "%d Output"
 msgstr "%d路輸出"
 
 #: ../src/main.py:767
-#, python-format
 msgid "%d Inputs"
 msgstr "%d路輸入"
 
 #: ../src/main.py:769
-#, python-format
 msgid "%d Input"
 msgstr "%d路輸入"
