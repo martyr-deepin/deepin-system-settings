@@ -292,15 +292,47 @@ class EjecterApp(gobject.GObject):
 
     def load_devices(self):
         for v in self.monitor.get_volumes():
-            d = v.get_drive()
-            
-            self.monitor_manage_drive(d)
-            self.monitor_manage_volume(v)
+            #self.monitor_manage_drive(d)
+            #self.monitor_manage_volume(v)
+            test_btn = gtk.Button(v.get_name())
+            test_btn.connect("clicked", self.test_btn_clicked, v)
+            self.vbox.pack_start(test_btn, False, False)
 
+            '''
             m = v.get_mount()
             if m != None:
                 self.monitor_manage_mount(m)
+            '''
+        self.vbox.show_all()
         #self.check_icon()
+
+    def test_btn_clicked(self, widget, volume):
+        op = gtk.MountOperation()
+
+        if volume.can_eject() and volume.can_mount():
+            volume.eject(self.cancallable_operation,
+                    gio.MOUNT_OPERATION_HANDLED)
+        else:
+            volume.get_name()
+            mount = volume.get_mount()
+            if mount:
+                mount.unmount(self.cancallable_operation, flags=gio.MOUNT_UNMOUNT_NONE)
+            else:
+                volume.mount(op, self.cancallable_operation)
+
+    def cancallable_operation(self, res, t):
+        '''
+        print "cancallable_operation..."
+        print "res:", res
+        '''
+        pass
+
+    def unmount_mount_callback(self, res):
+        print "res:", res
+         
+
+
+
 
     def monitor_manage_drive(self, drive):
         # gio.Drive 

@@ -51,12 +51,14 @@ class MountMedia(object):
 
     def show_mount_tray(self):
         if self.ejecter_app.devices != {}:
-            self.tray_icon.set_visible(True)
+            #self.tray_icon.set_visible(True)
+            pass
             #self.this.hide_menu()
             
     def hide_mount_tray(self):
         if self.ejecter_app.devices == {}:
-            self.tray_icon.set_visible(False)
+            pass
+            #self.tray_icon.set_visible(False)
             self.this.hide_menu()
 
     def init_values(self, this_list):
@@ -83,7 +85,7 @@ class MountMedia(object):
     def show_menu(self):
         self.size_check = True
         #print self.height
-        self.this.set_size_request(180, self.height)
+        self.this.set_size_request(180, self.height + 120)
 
     def hide_menu(self):
         self.size_check = False
