@@ -64,7 +64,9 @@ class VPNSetting(Settings):
         else:
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
             Dispatcher.emit("connection-replace", connection)
-        Dispatcher.set_button("apply", True)
+
+        Dispatcher.emit("vpn-redraw")
+        #Dispatcher.set_button("apply", True)
 
     def apply_changes(self, connection):
         # FIXME Now just support one device
