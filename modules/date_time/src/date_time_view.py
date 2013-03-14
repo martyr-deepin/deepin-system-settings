@@ -272,11 +272,11 @@ class DatetimeView(gtk.HBox):
         '''
         set time
         '''
-        self.set_time_spin_align = self.__setup_align(padding_left = 10)
+        self.set_time_spin_align = self.__setup_align(padding_left = 10, padding_top = 1)
         self.set_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
         self.set_time_label = self.__setup_label(_("Manual"), 60)
         self.set_time_spin = TimeSpinBox(is_24hour = self.is_24hour)                 
-        self.set_time_spin.set_size_request(85, -1)                               
+        self.set_time_spin.set_size_request(85, WIDGET_HEIGHT)                               
         self.set_time_spin.connect("value-changed", self.__time_changed)
         self.__widget_pack_start(self.set_time_box, 
             [self.set_time_label, self.set_time_spin])
@@ -349,7 +349,6 @@ class DatetimeView(gtk.HBox):
         self.auto_time_toggle.set_active(is_auto_set_time)
         if is_auto_set_time:
             self.set_time_spin_align.set_child_visible(False)               
-            #AutoSetTimeThread(self).start()
             self.__deepin_dt.set_using_ntp(True)
         else:
             self.set_time_spin_align.set_child_visible(True)
@@ -458,7 +457,6 @@ class DatetimeView(gtk.HBox):
             if is_auto_set_time:
                 self.__send_message("status", ("date_time", _("Changed to automatic set time")))
                 self.set_time_spin_align.set_child_visible(False)
-                #AutoSetTimeThread(self).start()
                 self.__deepin_dt.set_using_ntp(True)
             else:
                 self.__send_message("status", ("date_time", _("Changed to manual set time")))
