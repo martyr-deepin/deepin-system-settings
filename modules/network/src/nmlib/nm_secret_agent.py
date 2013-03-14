@@ -113,11 +113,12 @@ class NMSecretAgent(NMObject):
         if setting_name == "vpn":
             password = cache.getobject(conn_path).settings_dict[setting_name]["secrets"][method]
         else:    
+            print "in agent save secrets"
             print conn_path
             print setting_name
             print method
-            print "\n\n\n"
             print cache.getobject(conn_path).settings_dict
+            print "\n\n\n"
             password = cache.getobject(conn_path).settings_dict[setting_name][method]
         try:
             keyring.set_password(service, username, password)

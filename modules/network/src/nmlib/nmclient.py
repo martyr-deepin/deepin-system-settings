@@ -63,16 +63,16 @@ class NMClient(NMObject):
 
     def get_devices(self):
         '''return father device objects'''
-        if self.dbus_method("GetDevices"):
+        try:
             return map(lambda x: cache.getobject(x), TypeConvert.dbus2py(self.dbus_method("GetDevices")))
-        else:
+        except:
             return []
 
     def get_wired_devices(self):
         self.devices = self.get_devices()
-        if self.devices:
+        try:
             return filter(lambda x:x.get_device_type() == 1, self.devices)
-        else:
+        except:
             return []
 
     def get_wired_device(self):
@@ -83,9 +83,9 @@ class NMClient(NMObject):
 
     def get_wireless_devices(self):
         self.devices = self.get_devices()
-        if self.devices:
+        try:
             return filter(lambda x:x.get_device_type() == 2, self.devices)
-        else:
+        except:
             return []
 
     def get_wireless_device(self):
@@ -96,9 +96,9 @@ class NMClient(NMObject):
 
     def get_modem_devices(self):
         self.devices = self.get_devices()
-        if self.devices:
+        try:
             return filter(lambda x:x.get_device_type() == 8, self.devices)
-        else:
+        except:
             return []
 
     def get_modem_device(self):
@@ -248,36 +248,36 @@ class NMClient(NMObject):
 
     def get_active_connections(self):
         '''return active connections objects'''
-        if self.properties["ActiveConnections"]:
+        try:
             return map(lambda x: cache.getobject(x), self.properties["ActiveConnections"])
-        else:
+        except:
             return []
 
     def get_vpn_active_connection(self):
-        if self.get_active_connections():
+        try:
             return filter(lambda x:x.get_vpn() == 1, self.get_active_connections())
-        else:
+        except:
             return []
 
     def get_wired_active_connection(self):
-        if self.get_active_connections():
+        try:
             return filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())
-        else:
+        except:
             return []
 
     def get_wireless_active_connection(self):
-        if self.get_active_connections():
+        try:
             return filter(lambda x:x.get_devices()[0] == self.get_wireless_device(), self.get_active_connections())
-        else:
+        except:
             return []
 
     def get_pppoe_active_connection(self):
         pass
 
     def get_mobile_active_connection(self):
-        if self.get_active_connections():
+        try:
             return filter(lambda x: x.get_devices()[0].get_device_type() == 8, self.get_active_connections())
-        else:
+        except:
             return []
 
     ###Signals ###
