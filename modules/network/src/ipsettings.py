@@ -409,7 +409,7 @@ class IPV6Conf(gtk.VBox):
             self.set_group_sensitive("ip", False)
             
         else:
-            self.manual_ip.set_active(False)
+            self.ip_section.set_active(False)
             self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
                 self.addr_row[1].set_text(self.setting.addresses[0][0])
