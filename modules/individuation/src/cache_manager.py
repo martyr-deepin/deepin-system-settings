@@ -49,10 +49,10 @@ class CacheManager(object):
     def get_image_pixbuf(self, image_object):
         image_path = self.get_image(image_object, False)
         is_loaded = True
-        if not image_path:
+        if not image_path or not os.path.exists(image_path):
             image_path = self.default_image_path
             is_loaded = False
-            
+        
         return gtk.gdk.pixbuf_new_from_file(image_path), is_loaded
     
     def get_small_pixbuf(self, image_object, x=None, y=None):

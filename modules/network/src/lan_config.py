@@ -91,14 +91,11 @@ class Sections(gtk.Alignment):
         self.tab_name = "sfds"
         basic = SettingSection(_("Basic") +"(IPV4)")
 
-        self.button = Button(_("Advanced"))
-        self.button.set_size_request(50, 22)
-        self.button.connect("clicked", self.show_more_options)
-        self.wired = SettingSection(_("Wired"), always_show=False)
-        self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=False)
+        self.wired = SettingSection(_("Wired"), always_show=True)
+        self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
         align = gtk.Alignment(0, 0, 0, 0)
         align.set_padding(0, 0, 225, 0)
-        align.add(self.button)
+        # align.add(self.button)
         
         basic.load([IPV4Conf(connection, set_button), align])
         self.wired.load([Wired(connection, set_button)])
@@ -107,15 +104,11 @@ class Sections(gtk.Alignment):
         self.space = gtk.HBox()
         self.space.set_size_request(-1 ,30)
 
-        self.main_box.pack_start(basic, False, False)
-
-        self.add(self.main_box)
-
-    def show_more_options(self, widget):
-        widget.destroy()
-        #self.main_box.pack_start(self.space, False, False)
         self.main_box.pack_start(self.wired, False, False, 15)
+        self.main_box.pack_start(basic, False, False)
         self.main_box.pack_start(self.ipv6, False, False)
+        
+        self.add(self.main_box)
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222

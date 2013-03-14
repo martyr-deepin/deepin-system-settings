@@ -331,7 +331,10 @@ class WirelessItem(GenItems):
                                            ap.object_path)
 
     def toggle_dialog(self, connection, security=None):
+        ssid = connection.get_setting("802-11-wireless").ssid
+        if ssid != None:
             AskPasswordDialog(connection,
+                              ssid,
                               key_mgmt=security,
                               cancel_callback=self.cancel_ask_pwd,
                               confirm_callback=self.pwd_changed).show_all()

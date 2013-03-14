@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from dss import app_theme
-from dtk.ui.button import ImageButton, ToggleButton, Button, CheckButton
+from dtk.ui.button import Button, CheckButton
 from dtk.ui.dialog import DialogBox
-from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.new_entry import PasswordEntry
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 
 from dtk.ui.locales import _
 from dtk.ui.label import Label
 import gtk
+
 DIALOG_MASK_SINGLE_PAGE = 0
 DIALOG_MASK_GLASS_PAGE = 1
 DIALOG_MASK_MULTIPLE_PAGE = 2
 DIALOG_MASK_TAB_PAGE = 3
+
 class AskPasswordDialog(DialogBox):
     '''
     Simple input dialog.
@@ -24,13 +25,15 @@ class AskPasswordDialog(DialogBox):
 	
     def __init__(self,
                  connection,
+                 ssid,
                  key_mgmt=None,
                  #title, 
                  #init_text, 
                  default_width=330,
                  default_height=145,
                  confirm_callback=None, 
-                 cancel_callback=None):
+                 cancel_callback=None,
+                 ):
         '''
         Initialize InputDialog class.
         
@@ -47,11 +50,10 @@ class AskPasswordDialog(DialogBox):
         self.cancel_callback = cancel_callback
     
         self.connection = connection
-        ssid = self.connection.get_setting("802-11-wireless").ssid
-
+        
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
-        self.hint_align.set_padding(0, 0, 20, 20)
+        self.hint_align.set_padding(0, 0, 10, 10)
         self.hint_text = Label("Please input password for %s :"%ssid,
                                enable_select=False,
                                enable_double_click=False)
@@ -59,7 +61,7 @@ class AskPasswordDialog(DialogBox):
 
         self.entry_align = gtk.Alignment()
         self.entry_align.set(0.5, 0.5, 0, 0)
-        self.entry_align.set_padding(0, 0, 20, 20)
+        self.entry_align.set_padding(10, 0, 10, 10)
         if self.connection and isinstance(self.connection, NMRemoteConnection):
             (setting_name, method) = self.connection.guess_secret_info()  
             if method:
@@ -75,7 +77,7 @@ class AskPasswordDialog(DialogBox):
         self.show_key_check = CheckButton(_("Show key"))
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
 
-        self.entry.set_size(default_width - 80, 25)
+        self.entry.set_size(default_width - 95, 25)
         self.main_box = gtk.VBox()
         self.main_box.pack_start(self.entry, False, False)
         self.main_box.pack_start(self.show_key_check, False, False)
@@ -143,9 +145,15 @@ if __name__ == "__main__":
     #my_button = SettingButton("another setting")
     my_button = gtk.Button("click")
     
-    mm = nm_module.nm_remote_settings.get_wireless_connections()
-    i = filter(lambda i: i.get_setting("802-11-wireless").ssid == "DeepinWork", mm)
-    my_button.connect("clicked", lambda w: AskPasswordDialog(i[0]).show_all())
+    def show_dialog():
+        mm = nm_module.nm_remote_settings.get_wireless_connections()
+        i = filter(lambda i: i.get_setting("802-11-wireless").ssid == "DeepinWork", mm)
+        connection = i[0]
+        ssid = connection.get_setting("802-11-wireless").ssid
+        if ssid != None:
+            AskPasswordDialog(connection, ssid).show_all()
+        
+    my_button.connect("clicked", lambda w: show_dialog())
     my_button.set_size_request(200, 200)
     align.add(my_button)
     win.add(align)

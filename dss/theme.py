@@ -25,7 +25,7 @@ from deepin_utils.file import get_parent_dir
 import os
 
 app_theme = init_skin(
-    "deepin-ui-demo", 
+    "deepin-system-settings", 
     "1.0",
     "01",
     os.path.join(get_parent_dir(__file__, 2), "skin"),
