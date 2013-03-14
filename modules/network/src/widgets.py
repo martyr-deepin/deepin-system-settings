@@ -10,10 +10,12 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 from dtk.ui.locales import _
 from dtk.ui.label import Label
 import gtk
+
 DIALOG_MASK_SINGLE_PAGE = 0
 DIALOG_MASK_GLASS_PAGE = 1
 DIALOG_MASK_MULTIPLE_PAGE = 2
 DIALOG_MASK_TAB_PAGE = 3
+
 class AskPasswordDialog(DialogBox):
     '''
     Simple input dialog.
@@ -51,7 +53,7 @@ class AskPasswordDialog(DialogBox):
 
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
-        self.hint_align.set_padding(0, 0, 20, 20)
+        self.hint_align.set_padding(0, 0, 10, 10)
         self.hint_text = Label("Please input password for %s :"%ssid,
                                enable_select=False,
                                enable_double_click=False)
@@ -59,7 +61,7 @@ class AskPasswordDialog(DialogBox):
 
         self.entry_align = gtk.Alignment()
         self.entry_align.set(0.5, 0.5, 0, 0)
-        self.entry_align.set_padding(0, 0, 20, 20)
+        self.entry_align.set_padding(10, 0, 10, 10)
         if self.connection and isinstance(self.connection, NMRemoteConnection):
             (setting_name, method) = self.connection.guess_secret_info()  
             if method:
@@ -75,7 +77,7 @@ class AskPasswordDialog(DialogBox):
         self.show_key_check = CheckButton(_("Show key"))
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
 
-        self.entry.set_size(default_width - 80, 25)
+        self.entry.set_size(default_width - 95, 25)
         self.main_box = gtk.VBox()
         self.main_box.pack_start(self.entry, False, False)
         self.main_box.pack_start(self.show_key_check, False, False)
