@@ -41,6 +41,7 @@ XKB_KEYBOARD_SETTINGS_CONF = "org.gnome.libgnomekbd.keyboard"
 WM_SHORTCUTS_SETTINGS_CONF = "org.gnome.desktop.wm.keybindings"
 SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.media-keys"
 DP_SHORTCUTS_SETTINGS_CONF = "org.gnome.settings-daemon.plugins.key-bindings"
+COMPIZ_SHORTCUTS_SETTINGS_CONF = "org.compiz"
 
 # typing setting
 KEYBOARD_SETTINGS = deepin_gsettings.new(KEYBOARD_SETTINGS_CONF)
@@ -53,6 +54,7 @@ XKB_KEYBOARS_SETTINGS = deepin_gsettings.new(XKB_KEYBOARD_SETTINGS_CONF)
 WM_SHORTCUTS_SETTINGS = deepin_gsettings.new(WM_SHORTCUTS_SETTINGS_CONF)
 SHORTCUTS_SETTINGS = deepin_gsettings.new(SHORTCUTS_SETTINGS_CONF)
 DP_SHORTCUTS_SETTINGS = deepin_gsettings.new(DP_SHORTCUTS_SETTINGS_CONF)
+COMPIZ_SHORTCUTS_SETTINGS = deepin_gsettings.new(COMPIZ_SHORTCUTS_SETTINGS_CONF)
 GCONF_CLIENT = gconf.client_get_default()
 
 KEYBOARD_DEFAULT_SETTINGS = {
