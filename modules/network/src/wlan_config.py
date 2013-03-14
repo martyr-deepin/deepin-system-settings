@@ -516,7 +516,7 @@ class Wireless(gtk.VBox):
         for widget in widget_list:
             item = getattr(self, widget)
             if widget.endswith("label"):
-                align = style.wrap_with_align(item, width=150)
+                align = style.wrap_with_align(item, width=210)
             else:
                 align = style.wrap_with_align(item, align="left")
             setattr(self, widget + "_align", align)
@@ -525,7 +525,11 @@ class Wireless(gtk.VBox):
         style.draw_background_color(self)
         #align = style.set_box_with_align(self.table, 'text')
         style.set_table(self.table)
-        self.pack_start(self.table, False, False)
+
+        section = SettingSection(_("Defalut Settings"), always_show= False, revert=True, label_right=True, has_seperator=False)
+        section.load([self.table])
+        self.pack_start(section, False, False)
+        #self.pack_start(self.table, False, False)
         #self.table.set_size_request(340, 227)
 
         self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
