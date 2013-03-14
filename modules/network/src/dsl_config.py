@@ -35,12 +35,13 @@ def check_settings(connection, fn):
 
 class DSLSetting(Settings):
 
-    def __init__(self):
+    def __init__(self, spec_connection=None):
         Settings.__init__(self, [DSLConf,
                         Sections,
                         IPV4Conf,
                         PPPConf])
         self.crumb_name = _("DSL")
+        self.spec_connection= spec_connection
 
     def get_connections(self):
         # Get all connections  

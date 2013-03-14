@@ -236,6 +236,10 @@ class TrayNetworkPlugin(object):
             def device_disactive():
                 pass
 
+            if self.gui.wire.get_active():
+                self.change_status_icon("cable")
+            else:
+                self.change_status_icon("wifi_disconnect")
             self.net_manager.disactive_wireless_device(device_disactive)
 
     def set_wireless_state(self, widget, device, new_state, old_state, reason):

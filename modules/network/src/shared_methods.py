@@ -79,6 +79,8 @@ class NetManager(object):
             #disactived_cb()
         #device.connect("device-deactive", device_is_disactive)
         for device in self.wired_devices:
+            wired = cache.get_spec_object(device.object_path)
+            wired.device_wired_disconnect()
             device.nm_device_disconnect()
 
     # Wireless
@@ -152,6 +154,8 @@ class NetManager(object):
             #active = wireless_device.get_active_connection()
             #disactived_cb()
         #wireless_device.connect("device-deactive", device_is_disactive)
+        wifi = cache.get_spec_object(wireless_device.object_path)
+        wifi.device_wifi_disconnect()
         wireless_device.nm_device_disconnect()
 
 

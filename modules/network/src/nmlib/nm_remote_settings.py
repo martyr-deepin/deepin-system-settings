@@ -554,29 +554,37 @@ import threading
 class ThreadVPNSpec(threading.Thread):
     def __init__(self, connection):
         threading.Thread.__init__(self)
+        self.setDaemon(True)
         self.connection = connection
         self.run_flag = True
+        self.succeed = False
 
     def run(self):
         nmclient = cache.getobject("/org/freedesktop/NetworkManager")
         while self.run_flag:
+            print "active_conn", nmclient.get_active_connections()
             for active_conn in nmclient.get_active_connections():
+                print "device", active_conn.get_devices()
                 for device in active_conn.get_devices():
                     try:
                         active = nmclient.activate_connection(self.connection.object_path,
                                                               device.object_path,
                                                               active_conn.object_path)
         
-                        while(active.get_state() == 1):
+                        vpn_connection = cache.get_spec_object(active.object_path)
+                        while(vpn_connection.get_state() <5 ):
                             time.sleep(1)
                         
-                        if active.get_state() == 2:
+                        if vpn_connection.get_state() == 2:
                             self.stop_run()
+                            self.succeed = True
                             return True
                         else:
                             continue
                     except:
                         pass
+            return False
+        return False
     
     def stop_run(self):
         self.run_flag = False

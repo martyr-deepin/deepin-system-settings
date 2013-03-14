@@ -269,8 +269,11 @@ class WirelessDevice(object):
                     self.tree.visible_items[i].set_net_state(1)
             #self.try_to_connect(ssid)
         connections = nm_module.nmclient.get_active_connections()
-        active_connection = connections[-1]
-        self.this_connection = active_connection.get_connection()
+        if connections:
+            active_connection = connections[-1]
+            self.this_connection = active_connection.get_connection()
+        else:
+            self.this_connection = None
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
         if reason == 7:
@@ -819,7 +822,7 @@ class DSLSection(Section):
 
     def get_list(self):
         self.connections =  nm_module.nm_remote_settings.get_pppoe_connections()
-        return map(lambda c: DSLItem(c, self.jumpto_setting), self.connections)
+        return map(lambda c: DSLItem(c, None), self.connections)
 
     def jumpto_setting(self):
         Dispatcher.to_setting_page(DSLSetting())
@@ -910,7 +913,6 @@ class VpnSection(Section):
                 return
             except Exception, e:
                 print e
-
         else:
             pass
 
@@ -921,7 +923,7 @@ class VpnSection(Section):
     
     def get_list(self):
         self.connection = nm_module.nm_remote_settings.get_vpn_connections()
-        return map(lambda c: VPNItem(c, self.jumpto_cb), self.connection)
+        return map(lambda c: VPNItem(c, None), self.connection)
     
     def jumpto_cb(self):
         Dispatcher.to_setting_page(VPNSetting())
@@ -1053,7 +1055,7 @@ class MobileSection(Section):
         self.gsm = nm_module.nm_remote_settings.get_gsm_connections()
         self.connection = self.cdma + self.gsm
 
-        return map(lambda c: MobileItem(c, self.jumpto_cb), self.connection)
+        return map(lambda c: MobileItem(c, None), self.connection)
     
     def jumpto_cb(self):
         Dispatcher.to_setting_page(MobileSetting())

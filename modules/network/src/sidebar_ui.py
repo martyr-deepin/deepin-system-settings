@@ -75,7 +75,7 @@ class SideBar(gtk.VBox):
             #self.add_button.change_add_setting(self.network_object.add_new_connection)
         if hasattr(self.network_object, "delete_item"):
             pass
-        self.init_select()
+        self.init_select(network_object.spec_connection)
         if self.connections !=[]:
             crumb_name = network_object.crumb_name
             Dispatcher.send_submodule_crumb(2, crumb_name)
@@ -94,6 +94,7 @@ class SideBar(gtk.VBox):
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
+            Dispatcher.emit("vpn-redraw")
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
@@ -145,11 +146,14 @@ class SideBar(gtk.VBox):
         broadband = self.network_object.get_broadband(connection)
         broadband.set_new_values(prop_dict, type)
     
-    def init_select(self):
-        try:
-            self.connection_tree.select_first_item()
-        except:
-            print "no connections found"
+    def init_select(self, connection=None):
+        if connection:
+            self.set_active(connection)
+        else:
+            try:
+                self.connection_tree.select_first_item()
+            except:
+                print "no connections found"
 
     def replace_connection(self, widget, connection):
         '''

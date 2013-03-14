@@ -36,10 +36,11 @@ from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE
 slider = nm_module.slider
 class VPNSetting(Settings):
 
-    def __init__(self):
+    def __init__(self, spec_connection=None):
         Settings.__init__(self, [PPTPConf,
                                  Sections])
         self.crumb_name = _("VPN")
+        self.spec_connection = spec_connection
 
     def get_connections(self):
         # Get all connections  

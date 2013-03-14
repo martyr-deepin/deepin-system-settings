@@ -43,10 +43,11 @@ from nls import _
 from device_manager import device_manager
 
 class WiredSetting(Settings):
-    def __init__(self, device):
+    def __init__(self, device, spec_connection=None):
         Settings.__init__(self,[Wired, Sections, IPV6Conf])
         self.crumb_name = _("Wired")
         self.device = device
+        self.spec_connection = spec_connection
 
     def get_connections(self):
         self.connections = nm_module.nm_remote_settings.get_wired_connections()

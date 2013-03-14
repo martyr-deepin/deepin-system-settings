@@ -97,22 +97,6 @@ class SettingUI(gtk.Alignment):
         self.hbox.add(setting)
         self.hbox.queue_draw()
         self.foot_box.set_lock(False)
-            #self.tab_window.tab_items = []
-        #if self.tab_window.tab_items ==  []:
-            #self.tab_window.add_items(self.setting_group.init_items(connection))
-            #self.foot_box.set_lock(False)
-        #else:
-            ##self.__init_tab()
-            ##self.tab_window.add_items(self.setting_group.init_items(connection))
-            #self.tab_window.tab_items = self.setting_group.init_items(connection)
-            #self.foot_box.set_lock(False)
-        #if init_connection:
-            #tab_index = 0
-        #else:
-            #tab_index = self.tab_window.tab_index
-        #self.tab_window.tab_index = -1
-        #self.tab_window.switch_content(tab_index)
-        #self.queue_draw()
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()

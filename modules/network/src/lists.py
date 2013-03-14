@@ -36,6 +36,8 @@ from nm_modules import nm_module, cache
 #from lan_config import WiredSetting, NoSetting
 #from wlan_config import WirelessSetting
 #from wired import *
+import threading
+import time
 import gtk
 import pango
 
@@ -73,7 +75,8 @@ class GenItems(TreeItem):
         TreeItem.__init__(self)
 
         self.network_state = 0
-        self.jumpto_cb = jumpto_cb
+        if jumpto_cb:
+            self.jumpto_cb = jumpto_cb
 
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
@@ -148,6 +151,7 @@ class GenItems(TreeItem):
             self.redraw_request_callback(self)
 
     def set_net_state(self, state):
+        print state, "<==="
         self.network_state = state
         if state == self.NETWORK_LOADING:
             LoadingThread(self).start()
@@ -404,340 +408,6 @@ class HidenItem(GenItems):
     def get_column_renders(self):
         return [self.render_check, self.render_id, self.render_blank, self.render_jumpto]
 
-#class HidenItem(TreeItem):
-
-
-    #def __init__(self,
-                 #connection,
-                 #font_size = DEFAULT_FONT_SIZE,
-                 #check_state = 0):
-
-        #TreeItem.__init__(self)
-        #self.connection = connection
-        #self.essid = connection.get_setting("802-11-wireless").ssid
-
-        #self.font_size = font_size
-        #self.is_last = False
-        #self.check_width = self.get_check_width()
-        #self.essid_width = self.get_essid_width(self.essid)
-        #self.signal_width = self.get_signal_width()
-        #self.jumpto_width = self.get_jumpto_width()
-        
-        #self.network_state = self.NETWORK_DISCONNECT
-        #self.position = 0
-
-        #'''
-        #Pixbufs
-        #'''
-        #self.border_color = border_normal_color
-        #self.bg_color = bg_normal_color
-        #self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
-        #self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
-        #self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
-
-        #self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
-        #self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
-        #self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
-        #self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
-        #self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
-
-        #self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
-
-    #def render_check(self, cr, rect):
-        #render_background(cr,rect)
-        #if self.network_state == self.NETWORK_LOADING:
-            #self.draw_loading(cr, rect)
-        #elif self.network_state == self.NETWORK_CONNECTED:
-            #draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
-
-        ##draw outline
-        #with cairo_disable_antialias(cr):
-            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            #cr.set_line_width(1)
-            #if self.is_last:
-                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, 1, rect.height)
-            #cr.fill()
-
-    #def draw_loading(self, cr, rect):
-        #with cairo_state(cr):
-            #cr.translate(rect.x + 18 , rect.y + 15)
-            #cr.rotate(radians(60*self.position))
-            #cr.translate(-18, -15)
-            #draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
-
-    #def render_essid(self, cr, rect):
-        #render_background(cr,rect)
-        #(text_width, text_height) = get_content_size(self.essid)
-        #if self.is_select:
-            #text_color = None
-        #draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
-                #alignment = pango.ALIGN_LEFT)
-
-        #with cairo_disable_antialias(cr):
-            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            #cr.set_line_width(1)
-            #if self.is_last:
-                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, rect.width, 1)
-            #cr.fill()
-
-    #def render_signal(self, cr, rect):
-        #render_background(cr,rect)
-        #with cairo_disable_antialias(cr):
-            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            #cr.set_line_width(1)
-            #if self.is_last:
-                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, rect.width, 1)
-            #cr.fill()
-    
-    #def render_jumpto(self, cr, rect):
-        #render_background(cr,rect)
-        #if self.is_select:
-            #pass
-        #jumpto_icon = self.jumpto_pixbuf
-        #draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height-IMG_WIDTH)/2)
-        #with cairo_disable_antialias(cr):
-            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            #cr.set_line_width(1)
-            #if self.is_last:
-                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, rect.width, 1)
-            #cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
-            #cr.fill()
-
-    #def get_check_width(self):
-        #return IMG_WIDTH + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
-
-    #def get_essid_width(self, essid):
-        #return get_content_size(essid)[0]
-    
-    #def get_signal_width(self):
-        #return IMG_WIDTH*2 + self.SECURITY_RIGHT_PADDING + self.SIGNAL_RIGHT_PADDING
-
-    #def get_jumpto_width(self):
-        #return IMG_WIDTH + self.JUMPTO_RIGHT_PADDING
-
-    #def get_column_widths(self):
-        #return [self.check_width, -1, self.signal_width, self.jumpto_width]
-
-    #def get_column_renders(self):
-        #return [self.render_check, self.render_essid, self.render_signal, self.render_jumpto]
-
-    #def get_height(self):
-        #return CONTAINNER_HEIGHT
-        
-    #def select(self):
-        #self.is_select = True
-        #if self.redraw_request_callback:
-            #self.redraw_request_callback(self)
-
-    #def set_active(self, b):
-        #if b:
-            #self.select()
-        #else:
-            #self.unselect()
-
-    #def get_active(self):
-        #return self.is_select
-
-    #def unselect(self):
-        ##print "unselect"
-        #self.is_select = False
-        #if self.redraw_request_callback:
-            #self.redraw_request_callback(self)
-    
-    #def redraw(self):
-        #if self.redraw_request_callback:
-            #self.redraw_request_callback(self)
-
-    #def hover(self, column, offset_x, offset_y):
-        #self.border_color = border_hover_color
-        #self.redraw()
-
-    #def unhover(self, column, offset_x, offset_y):
-        ##print column, offset_x, offset_y
-        #self.border_color = border_normal_color
-        #self.redraw()
-
-    #def single_click(self, column, x, y):
-        #if column == 3:
-            #self.setting_object.init(self.essid, init_connections=True)
-            #self.send_to_crumb()
-            #self.slide_to_setting()
-
-    #def set_net_state(self, state):
-        #self.network_state = state
-        #if state == self.NETWORK_LOADING:
-            #LoadingThread(self).start()
-    
-    #def get_net_state(self):
-        #return self.network_state
-    
-    #def refresh_loading(self, position):
-        #self.position = position
-        #self.redraw()
-
-#def render_background( cr, rect, color=bg_normal_color):
-    #background_color = [(0,[color, 1.0]),
-                        #(1,[color, 1.0])]
-    #(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
-
-
-'''
-class WiredItem(TreeItem):
-    CHECK_LEFT_PADDING = 10
-    CHECK_RIGHT_PADIING = 10
-    JUMPTO_RIGHT_PADDING = 10
-    VERTICAL_PADDING = 5
-
-    NETWORK_DISCONNECT = 0
-    NETWORK_LOADING = 1
-    NETWORK_CONNECTED = 2
-
-    def __init__(self, device, setting,font_size = DEFAULT_FONT_SIZE):
-        
-        TreeItem.__init__(self)
-        self.device = device
-        self.essid = self.device.get_device_desc()
-        self.items = None
-        self.setting = setting
-        self.is_last = False
-        self.font_size = font_size
-        self.check_width = self.get_check_width()
-        self.essid_width = self.get_essid_width(self.essid)
-        self.jumpto_width = self.get_jumpto_width()
-        self.network_state = 0
-        self.position = 0
-        self.is_double_click = False
-
-        self.border_color = border_normal_color
-        self.bg_color = bg_normal_color
-        self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
-        self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
-        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
-
-    def render_check(self, cr, rect):
-        render_background(cr, rect)
-
-        if self.network_state == 1:
-            self.draw_loading(cr, rect)
-        elif self.network_state == 2:
-            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + 7)
-
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x , rect.y, 1, rect.height)
-            cr.fill()
-
-    def draw_loading(self, cr, rect):
-        with cairo_state(cr):
-            cr.translate(rect.x + 18 , rect.y + 15)
-            cr.rotate(radians(60*self.position))
-            cr.translate(-18, -15)
-            draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
-
-    def render_essid(self, cr, rect):
-        render_background(cr, rect)
-        (text_width, text_height) = get_content_size(self.essid)
-        if self.is_select:
-            text_color = None
-        draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_LEFT)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.fill()
-
-    def render_jumpto(self, cr, rect):
-
-        render_background(cr, rect)
-        if self.is_select:
-            pass
-        jumpto_icon = app_theme.get_pixbuf("network/jump_to.png").get_pixbuf()
-        draw_pixbuf(cr, jumpto_icon, rect.x , rect.y + self.VERTICAL_PADDING)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
-            cr.fill()
-
-    def get_check_width(self):
-        check_icon = app_theme.get_pixbuf("network/check_box.png").get_pixbuf()
-        return check_icon.get_width() + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
-    def get_essid_width(self, essid):
-        return get_content_size(essid)[0]
-    
-    def get_jumpto_width(self):
-        return app_theme.get_pixbuf("network/jump_to.png").get_pixbuf().get_width() + self.JUMPTO_RIGHT_PADDING
-
-    def get_column_widths(self):
-        return [self.check_width, -1,self.jumpto_width]
-
-    def get_column_renders(self):
-        return [self.render_check, self.render_essid, self.render_jumpto]
-
-    def get_height(self):
-        return CONTAINNER_HEIGHT
-        
-    def unselect(self):
-        self.is_select = False
-        
-    def hover(self, column, offset_x, offset_y):
-        self.is_hover = True
-        self.border_color = border_hover_color
-
-    def unhover(self, column, offset_x, offset_y):
-        #print column, offset_x, offset_y
-        self.is_hover = False
-        self.border_color = border_normal_color
-
-    def double_click(self, column, x, y):
-        self.is_double_click = True
-
-    def single_click(self, column, x, y):
-        if column == 2:
-            from lan_config import WiredSetting
-            Dispatcher.to_setting_page(WiredSetting(self.device))
-        #else:
-            #if self.is_double_click:
-                #print "sadfds"
-                #device_ethernet = cache.get_spec_object(self.device.object_path)
-                #device_ethernet.auto_connect()
-
-        self.is_double_click = False
-
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-
-    def redraw(self):
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-
-    def set_net_state(self, state):
-        self.network_state = state
-        if state == self.NETWORK_LOADING:
-            LoadingThread(self).start()
-    
-    def get_net_state(self):
-        return self.network_state
-    
-    def refresh_loading(self, position):
-        self.position = position
-        self.redraw()
-'''        
 class HotspotItem(TreeItem):
 
     def __init__(self, font_size=DEFAULT_FONT_SIZE):
@@ -958,11 +628,21 @@ class DSLItem(GenItems):
     
     def get_column_renders(self):
         return [self.render_check, self.render_id, self.render_jumpto]
+    
+    def jumpto_cb(self):
+        from dsl_config import DSLSetting
+        Dispatcher.to_setting_page(DSLSetting(self.connection))
+
 
 class MobileItem(DSLItem):
 
     def __init__(self, connection, jumpto):
         DSLItem.__init__(self,connection, jumpto)
+
+    def jumpto_cb(self):
+        from mobile_config import MobileSetting
+        Dispatcher.to_setting_page(MobileSetting(self.connection))
+
 
 class VPNItem(DSLItem):
 
@@ -972,20 +652,70 @@ class VPNItem(DSLItem):
 
     def click_cb(self):
         print "clicked"
-        active_connections = nm_module.nmclient.get_active_connections()
-        if active_connections:
-            device_path = active_connections[0].get_devices()[0].object_path
-            specific_path = active_connections[0].object_path
-            active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
-                                           device_path,
-                                           specific_path)
-            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
-            vpn_connection = cache.get_spec_object(active_object.object_path)
-            vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
-            vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
-            vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))
+        self.set_net_state(1)
+        monitor = Monitor(self.connection,
+                          lambda w: self.set_net_state(0),
+                          lambda w: self.set_net_state(2))
+        monitor.start()
+
+    def jumpto_cb(self):
+        from vpn_config import VPNSetting
+        Dispatcher.to_setting_page(VPNSetting(self.connection))
+        
+class Monitor(threading.Thread):
+    def __init__(self, connection, stop_callback, active_callback):
+        threading.Thread.__init__(self)
+        self.setDaemon(True)
+        self.stop_callback = stop_callback
+        self.active_callback = active_callback
+        from nmlib.nm_remote_settings import ThreadVPNSpec
+        self.td = ThreadVPNSpec(connection)
+        self.td.start()
+
+    def run(self):
+        while self.td.isAlive():
+            print "alive"
+            time.sleep(1)
         else:
-            print "no active connection available"
+            print "stoped"
+            if self.succeed:
+                self.active_callback()
+            else:
+                self.stop_callback()
+        #from nmlib.nm_remote_settings import ThreadVPNSpec
+        #td = ThreadVPNSpec(self.connection, self.vpn_active_cb)
+        #td.start()
+        #if td.active:
+            #self.vpn_active_cb(self, td_active)
+        #active_connections = nm_module.nmclient.get_active_connections()
+        #if active_connections:
+            #device_path = active_connections[0].get_devices()[0].object_path
+            #specific_path = active_connections[0].object_path
+            #active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
+                                           #device_path,
+                                           #specific_path)
+            #self.vpn_active_cb(active_object)
+            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
+        #else:
+            #print "no active connection available"
+    
+    def vpn_active_cb(self, active):
+        vpn_connection = cache.get_spec_object(active.object_path)
+        vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
+        vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
+        vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))
+        #active_connections = nm_module.nmclient.get_active_connections()
+        #if active_connections:
+            #device_path = active_connections[0].get_devices()[0].object_path
+            #specific_path = active_connections[0].object_path
+            #active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
+                                           #device_path,
+                                           #specific_path)
+            ##active_object.connect("vpn-state-changed", self.vpn_state_changed)
+        #else:
+            #print "no active connection available"
+    
+
 
 class GeneralItem(TreeItem):
     CHECK_LEFT_PADDING = 10
