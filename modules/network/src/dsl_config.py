@@ -125,6 +125,7 @@ class Sections(gtk.Alignment):
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
+    LEFT_PADDING = 170
     def __init__(self, connection, set_button):
         gtk.VBox.__init__(self)
         self.tab_name = _("Wired")
@@ -156,18 +157,19 @@ class Wired(gtk.VBox):
         '''
         Park table
         '''
-        table.attach(style.wrap_with_align(mac_address), 0, 1, 0, 1)
+        table.attach(style.wrap_with_align(mac_address, width=self.LEFT_PADDING), 0, 1, 0, 1)
         table.attach(style.wrap_with_align(self.mac_entry), 1, 2, 0, 1)
-        table.attach(style.wrap_with_align(clone_addr), 0, 1, 1, 2)
+        table.attach(style.wrap_with_align(clone_addr, width=self.LEFT_PADDING), 0, 1, 1, 2)
         table.attach(style.wrap_with_align(self.clone_entry), 1,2, 1, 2)
-        table.attach(style.wrap_with_align(mtu), 0,1,2,3)
+        table.attach(style.wrap_with_align(mtu, width=self.LEFT_PADDING), 0,1,2,3)
         table.attach(style.wrap_with_align(self.mtu_spin), 1,2,2,3)
 
         # TODO UI change
         style.draw_background_color(self)
-        align = style.set_box_with_align(table, "text")
-        self.add(align)
+        #align = style.set_box_with_align(table, "text")
+        #self.add(align)
         style.set_table(table)
+        self.pack_start(table, False, False)
 
         self.mac_entry.set_size(222, 22)
         self.clone_entry.set_size(222, 22)

@@ -39,6 +39,7 @@ class SettingUI(gtk.Alignment):
         self.hpaned = HPaned()
         self.hpaned.add1(padding_align)
         self.hpaned.add2(self.scroll_win)
+        self.connect_after("show", self.__init_paned)
         main_vbox.pack_start(self.hpaned, True, True)
         main_vbox.pack_start(self.foot_box, False, False)
         self.add(main_vbox)
@@ -49,6 +50,9 @@ class SettingUI(gtk.Alignment):
 
         self.__init_signals()
 
+    def __init_paned(self, widget):
+        self.hpaned.saved_position = 150
+        self.hpaned.change_position(1)
 
     def __init_tab_box(self):
         container_remove_all(self.hbox)

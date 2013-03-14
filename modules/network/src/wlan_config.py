@@ -132,15 +132,17 @@ class Sections(gtk.Alignment):
 
         self.button = Button(_("Advanced"))
         self.button.set_size_request(50, 22)
-        self.button.connect("clicked", self.show_more_options)
+        #self.button.connect("clicked", self.show_more_options)
         self.wireless = SettingSection(_("Wireless"), always_show=False)
-        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=False)
-        self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=False)
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(0, 0, 225, 0)
-        align.add(self.button)
-        
-        basic.load([Security(connection, set_button), align])
+        self.ipv4 = SettingSection(_("IPv4 Setting"), always_show=False)
+        self.ipv6 = SettingSection(_("IPv6 Settings"), always_show=False)
+        #align = gtk.Alignment(0, 0, 0, 0)
+        #align.set_padding(0, 0, 225, 0)
+        #align.add(self.button)
+        security = Security(connection, set_button)
+        security.button.connect("clicked", self.show_more_options)
+        basic.load([security])
+
         self.wireless.load([Wireless(connection, set_button)])
         self.ipv4.load([IPV4Conf(connection, set_button)])
         self.ipv6.load([IPV6Conf(connection, set_button)])
@@ -153,7 +155,9 @@ class Sections(gtk.Alignment):
         self.add(self.main_box)
 
     def show_more_options(self, widget):
-        widget.destroy()
+        print "sdfsf"
+        widget.parent.destroy()
+        #widget.destroy()
         #self.main_box.pack_start(self.space, False, False)
         self.main_box.pack_start(self.wireless, False, False, 15)
         self.main_box.pack_start(self.ipv4, False, False)
@@ -207,6 +211,13 @@ class Security(gtk.VBox):
                                     (_("Shared Key"), "shared"),
                                     (_("Open System"), "open")],max_width=self.ENTRY_WIDTH)
 
+        ## advance button
+        self.align = gtk.Alignment(0, 0, 0, 0)
+        self.align.set_padding(0, 0, 225, 0)
+        self.align.set_size_request(-1 ,30)
+        self.button = Button(_("Advanced"))
+        self.align.add(self.button)
+
         ## Create table
         self.table = gtk.Table(5, 4, True)
         #TODO UI change
@@ -240,17 +251,23 @@ class Security(gtk.VBox):
         self.auth_combo.set_size_request(width, height)
         self.security_combo.set_size_request(width, height)
         self.pack_start(self.table, False, False)
+        self.pack_start(self.align, False, False, 0)
 
         #self.add(align)
+    def advand_cb(self, widget):
+        pass
 
     def reset(self, security=True):
         ## Add security
         container_remove_all(self.table)
-
+        
+        self.table.resize(1, 4)
         self.table.attach(self.security_label_align, 0, 1, 0, 1)
         self.table.attach(self.security_combo_align, 1, 4, 0, 1)
 
         if not security:
+            #self.pack_start(self.align, False, False)
+            #self.table.attach(style.wrap_with_align(self.button, align="left"), 1, 4, 1, 2)
             return 
         
         keys = [None, "none", "none","wpa-psk"]
@@ -273,6 +290,7 @@ class Security(gtk.VBox):
                 secret = ""
 
             if self.security_combo.get_current_item()[1] == "wpa-psk":
+                self.table.resize(3, 4)
                 self.table.attach(self.password_label_align, 0, 1, 1, 2)
                 self.table.attach(self.password_entry_align, 1, 4, 1, 2)
                 self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
@@ -283,6 +301,7 @@ class Security(gtk.VBox):
                 self.setting.psk = secret
 
             elif self.security_combo.get_current_item()[1] == "none":
+                self.table.resize(5, 4)
                 # Add Key
                 self.table.attach(self.key_label_align, 0, 1, 1, 2)
                 self.table.attach(self.key_entry_align, 1, 4, 1, 2)
@@ -316,6 +335,7 @@ class Security(gtk.VBox):
                 self.setting.set_wep_key(index, secret)
                 self.wep_index_spin.set_value(index)
                 self.auth_combo.set_select_index(["open", "shared"].index(auth))
+
         Dispatcher.request_redraw()
 
     def change_encry_type(self, widget, content, value, index):
@@ -468,16 +488,16 @@ class Wireless(gtk.VBox):
                                  enable_select=False,
                                  enable_double_click=False)
         self.bssid_entry = InputEntry()
-        self.mac_address = Label(_("Device Mac Address:"),
+        self.mac_address_label = Label(_("Device Mac Address:"),
                                  enable_select=False,
                                  enable_double_click=False)
         self.mac_entry = InputEntry()
-        self.clone_addr = Label(_("Cloned Mac Address:"),
+        self.clone_addr_label = Label(_("Cloned Mac Address:"),
                                  enable_select=False,
                                  enable_double_click=False)
         self.clone_entry = InputEntry()
 
-        self.mtu = Label(_("MTU:"),
+        self.mtu_label = Label(_("MTU:"),
                            enable_select=False,
                            enable_double_click=False)
         self.mtu_spin = SpinBox(0, 0, 1500, 1, self.ENTRY_WIDTH)
@@ -489,13 +509,13 @@ class Wireless(gtk.VBox):
         """
         widget_list = ["ssid_label", "ssid_entry", "mode_label", "mode_combo",
                        "band_label", "band_combo", "channel_label", "channel_spin",
-                       "bssid_label", "bssid_entry", "mac_address", "mac_entry",
-                       "clone_addr", "clone_entry", "mtu", "mtu_spin"]
+                       "bssid_label", "bssid_entry", "mac_address_label", "mac_entry",
+                       "clone_addr_label", "clone_entry", "mtu_label", "mtu_spin"]
 
         for widget in widget_list:
             item = getattr(self, widget)
             if widget.endswith("label"):
-                align = style.wrap_with_align(item, width=210)
+                align = style.wrap_with_align(item, width=150)
             else:
                 align = style.wrap_with_align(item, align="left")
             setattr(self, widget + "_align", align)
@@ -566,14 +586,14 @@ class Wireless(gtk.VBox):
         self.table.attach(self.bssid_entry_align, 1, 2, 4, 5)
 
         # MAC
-        self.table.attach(self.mac_address_align, 0, 1, 5, 6)
+        self.table.attach(self.mac_address_label_align, 0, 1, 5, 6)
         self.table.attach(self.mac_entry_align, 1, 2, 5, 6)
         # MAC_CLONE
-        self.table.attach(self.clone_addr_align, 0, 1, 6, 7)
+        self.table.attach(self.clone_addr_label_align, 0, 1, 6, 7)
         self.table.attach(self.clone_entry_align, 1,2, 6, 7)
         # MTU
         self.table.attach(self.mtu_spin_align, 1, 2, 7, 8)
-        self.table.attach(self.mtu_align, 0, 1, 7, 8)
+        self.table.attach(self.mtu_label_align, 0, 1, 7, 8)
 
     def reset(self):
         wireless = self.wireless

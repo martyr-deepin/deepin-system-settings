@@ -971,6 +971,7 @@ class VPNItem(DSLItem):
         self.connection = connection
 
     def click_cb(self):
+        print "clicked"
         active_connections = nm_module.nmclient.get_active_connections()
         if active_connections:
             device_path = active_connections[0].get_devices()[0].object_path
