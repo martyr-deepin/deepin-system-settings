@@ -50,13 +50,14 @@ def check_settings(connection, fn):
 
 class WirelessSetting(Settings):
 
-    def __init__(self, ap):
+    def __init__(self, ap, spec_connection=None):
         Settings.__init__(self,[Security,
                                 Sections,
                                 IPV4Conf,
                                 IPV6Conf],)
 
         self.ap = ap
+        self.spec_connection = spec_connection
         self.crumb_name = self.ap.get_ssid()
 
     def get_ssid(self):
