@@ -19,16 +19,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from dss import app_theme
-from dtk.ui.new_entry import InputEntry
+#from dtk.ui.new_entry import InputEntry
+from elements import MyInputEntry as InputEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
+from dtk.ui.button import Button
 #from dtk.ui.droplist import Droplist
 from nm_modules import nm_module
 #from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
 from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
-from shared_widget import IPV4Conf, IPV6Conf
+from ipsettings import IPV4Conf, IPV6Conf
+from elements import SettingSection
 import gtk
 wired_device = []
 
@@ -41,7 +44,7 @@ from device_manager import device_manager
 
 class WiredSetting(Settings):
     def __init__(self, device):
-        Settings.__init__(self,[Wired, IPV4Conf, IPV6Conf])
+        Settings.__init__(self,[Wired, Sections, IPV6Conf])
         self.crumb_name = _("Wired")
         self.device = device
 
@@ -77,6 +80,42 @@ class WiredSetting(Settings):
             self.device_ethernet.emit("try-activate-begin")
         Dispatcher.to_main_page()
 
+class Sections(gtk.Alignment):
+
+    def __init__(self, connection, set_button):
+        gtk.Alignment.__init__(self, 0, 0 ,0, 0)
+        self.set_padding(35, 0, 50, 0)
+
+        self.main_box = gtk.VBox()
+        self.tab_name = "sfds"
+        basic = SettingSection(_("Basic") +"(IPV4)")
+
+        self.button = Button(_("Advanced"))
+        self.button.set_size_request(50, 22)
+        self.button.connect("clicked", self.show_more_options)
+        self.wired = SettingSection(_("Wired"), always_show=False)
+        self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=False)
+        align = gtk.Alignment(0, 0, 0, 0)
+        align.set_padding(0, 0, 225, 0)
+        align.add(self.button)
+        
+        basic.load([IPV4Conf(connection, set_button), align])
+        self.wired.load([Wired(connection, set_button)])
+        self.ipv6.load([IPV6Conf(connection, set_button)])
+
+        self.space = gtk.HBox()
+        self.space.set_size_request(-1 ,30)
+
+        self.main_box.pack_start(basic, False, False)
+
+        self.add(self.main_box)
+
+    def show_more_options(self, widget):
+        widget.destroy()
+        #self.main_box.pack_start(self.space, False, False)
+        self.main_box.pack_start(self.wired, False, False, 15)
+        self.main_box.pack_start(self.ipv6, False, False)
+
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
 
@@ -93,7 +132,7 @@ class Wired(gtk.VBox):
                             text_size=CONTENT_FONT_SIZE,
                             enable_select=False,
                             enable_double_click=False)
-        table.attach(style.wrap_with_align(mac_address), 0, 1, 0, 1)
+        table.attach(style.wrap_with_align(mac_address, width=210), 0, 1, 0, 1)
 
         self.mac_entry = InputEntry()
         table.attach(style.wrap_with_align(self.mac_entry), 1, 2, 0, 1)
@@ -115,9 +154,12 @@ class Wired(gtk.VBox):
         
         # TODO UI change
         #self.connect("expose-event", expose_background)
-        style.draw_background_color(self)
+        #style.draw_background_color(self)
         style.set_table(table)
-        align = style.set_box_with_align(table, "text")
+        #align = style.set_box_with_align(table, "text")
+        align = gtk.Alignment(0,0,0,0)
+        #align.set_padding(0, 0, 210, 0)
+        align.add(table)
         self.add(align)
         self.mac_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
         self.clone_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
@@ -140,11 +182,15 @@ class Wired(gtk.VBox):
         if type(value) is str:
             if TypeConvert.is_valid_mac_address(value):
                 print "valid mac"
+                widget.ancestor.set_normal()
+                self.queue_draw()
                 setattr(self.ethernet, types, value)
                 if self.connection.check_setting_finish():
                     self.set_button("save", True)
             else:
                 print "invalid mac"
+                widget.ancestor.set_warning()
+                self.queue_draw()
                 self.set_button("save", False)
                 if value is "":
                     #delattr(self.ethernet, types)
@@ -153,3 +199,4 @@ class Wired(gtk.VBox):
             setattr(self.ethernet, types, value)
             if self.connection.check_setting_finish():
                 self.set_button("save", True)
+

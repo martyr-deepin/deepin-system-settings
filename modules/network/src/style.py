@@ -35,7 +35,7 @@ def set_frame_box_align(box):
 def set_box_with_align(box, types):
     if types is "text":
         align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 0)
+        align.set_padding(TEXT_WINDOW_TOP_PADDING, 0, HSCALEBAR_WIDTH , 0)
         align.add(box)
         return align
     else:
@@ -56,14 +56,13 @@ def set_table(table):
 
 def wrap_with_align(widget, align="right", width=-1):
     if align is "left":
-        align = gtk.Alignment(0, 0.5, 1, 0)
+        align = gtk.Alignment(0, 0.5, 0, 0)
     elif align is "right":
         align = gtk.Alignment(1, 0.5, 0, 0)
         align.set_padding(0,0, 1, 0)
     align.set_size_request(width, CONTAINNER_HEIGHT)
     align.add(widget)
     return align
-
 
 def set_table_items(table, item_name):
     children = table.get_children()

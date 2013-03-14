@@ -176,7 +176,12 @@ class GenItems(TreeItem):
             columns = len(self.get_column_widths()) - 1
             if column == columns:
                 self.jumpto_cb()
+            else:
+                self.click_cb()
         self.redraw()
+
+    def click_cb(self):
+        pass
 
 
 class LoadingThread(td.Thread):
@@ -373,78 +378,16 @@ class InfoItem(GenItems):
         return [self.CHECK_WIDTH, -1, 1, self.JUMP_WIDTH]
 
 class HidenItem(GenItems):
-    def __init__(self):
-        pass
-
-class HidenItem(TreeItem):
-
-
-    def __init__(self,
-                 connection,
-                 font_size = DEFAULT_FONT_SIZE,
-                 check_state = 0):
-
-        TreeItem.__init__(self)
-        self.connection = connection
-        self.essid = connection.get_setting("802-11-wireless").ssid
-
-        self.font_size = font_size
-        self.is_last = False
-        self.check_width = self.get_check_width()
-        self.essid_width = self.get_essid_width(self.essid)
-        self.signal_width = self.get_signal_width()
-        self.jumpto_width = self.get_jumpto_width()
+    def __init__(self, connection, jumpto=None, font_size=DEFAULT_FONT_SIZE):
+        GenItems.__init__(self, jumpto)
         
-        self.network_state = self.NETWORK_DISCONNECT
-        self.position = 0
+        self.connection = connection
+        self.id = self.connection.get_setting("802-11-wireless").ssid + "[H]"
 
-        '''
-        Pixbufs
-        '''
-        self.border_color = border_normal_color
-        self.bg_color = bg_normal_color
-        self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
-        self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
-        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
-
-        self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
-        self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
-        self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
-        self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
-        self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
-
-        self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
-
-    def render_check(self, cr, rect):
-        render_background(cr,rect)
-        if self.network_state == self.NETWORK_LOADING:
-            self.draw_loading(cr, rect)
-        elif self.network_state == self.NETWORK_CONNECTED:
-            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
-
-        #draw outline
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, 1, rect.height)
-            cr.fill()
-
-    def draw_loading(self, cr, rect):
-        with cairo_state(cr):
-            cr.translate(rect.x + 18 , rect.y + 15)
-            cr.rotate(radians(60*self.position))
-            cr.translate(-18, -15)
-            draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
-
-    def render_essid(self, cr, rect):
-        render_background(cr,rect)
-        (text_width, text_height) = get_content_size(self.essid)
-        if self.is_select:
-            text_color = None
-        draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
+    def render_id(self, cr, rect):
+        self.render_background(cr, rect)
+        (text_width, text_height) = get_content_size(self.id)
+        draw_text(cr, self.id, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
 
         with cairo_disable_antialias(cr):
@@ -455,107 +398,192 @@ class HidenItem(TreeItem):
             cr.rectangle(rect.x, rect.y, rect.width, 1)
             cr.fill()
 
-    def render_signal(self, cr, rect):
-        render_background(cr,rect)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.fill()
-    
-    def render_jumpto(self, cr, rect):
-        render_background(cr,rect)
-        if self.is_select:
-            pass
-        jumpto_icon = self.jumpto_pixbuf
-        draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height-IMG_WIDTH)/2)
-        with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            cr.set_line_width(1)
-            if self.is_last:
-                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            cr.rectangle(rect.x, rect.y, rect.width, 1)
-            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
-            cr.fill()
-
-    def get_check_width(self):
-        return IMG_WIDTH + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
-
-    def get_essid_width(self, essid):
-        return get_content_size(essid)[0]
-    
-    def get_signal_width(self):
-        return IMG_WIDTH*2 + self.SECURITY_RIGHT_PADDING + self.SIGNAL_RIGHT_PADDING
-
-    def get_jumpto_width(self):
-        return IMG_WIDTH + self.JUMPTO_RIGHT_PADDING
-
     def get_column_widths(self):
-        return [self.check_width, -1, self.signal_width, self.jumpto_width]
-
+        return [self.CHECK_WIDTH, -1, 1, self.JUMP_WIDTH]
+    
     def get_column_renders(self):
-        return [self.render_check, self.render_essid, self.render_signal, self.render_jumpto]
+        return [self.render_check, self.render_id, self.render_blank, self.render_jumpto]
 
-    def get_height(self):
-        return CONTAINNER_HEIGHT
+#class HidenItem(TreeItem):
+
+
+    #def __init__(self,
+                 #connection,
+                 #font_size = DEFAULT_FONT_SIZE,
+                 #check_state = 0):
+
+        #TreeItem.__init__(self)
+        #self.connection = connection
+        #self.essid = connection.get_setting("802-11-wireless").ssid
+
+        #self.font_size = font_size
+        #self.is_last = False
+        #self.check_width = self.get_check_width()
+        #self.essid_width = self.get_essid_width(self.essid)
+        #self.signal_width = self.get_signal_width()
+        #self.jumpto_width = self.get_jumpto_width()
         
-    def select(self):
-        self.is_select = True
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        #self.network_state = self.NETWORK_DISCONNECT
+        #self.position = 0
 
-    def set_active(self, b):
-        if b:
-            self.select()
-        else:
-            self.unselect()
+        #'''
+        #Pixbufs
+        #'''
+        #self.border_color = border_normal_color
+        #self.bg_color = bg_normal_color
+        #self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
+        #self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
+        #self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
 
-    def get_active(self):
-        return self.is_select
+        #self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
+        #self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
+        #self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
+        #self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
+        #self.strength_3 = app_theme.get_pixbuf("network/Wifi_3.png")
 
-    def unselect(self):
-        #print "unselect"
-        self.is_select = False
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+        #self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
+
+    #def render_check(self, cr, rect):
+        #render_background(cr,rect)
+        #if self.network_state == self.NETWORK_LOADING:
+            #self.draw_loading(cr, rect)
+        #elif self.network_state == self.NETWORK_CONNECTED:
+            #draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.CHECK_LEFT_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+
+        ##draw outline
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            #cr.set_line_width(1)
+            #if self.is_last:
+                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, 1, rect.height)
+            #cr.fill()
+
+    #def draw_loading(self, cr, rect):
+        #with cairo_state(cr):
+            #cr.translate(rect.x + 18 , rect.y + 15)
+            #cr.rotate(radians(60*self.position))
+            #cr.translate(-18, -15)
+            #draw_pixbuf(cr, self.loading_pixbuf.get_pixbuf(), 10 , 7)
+
+    #def render_essid(self, cr, rect):
+        #render_background(cr,rect)
+        #(text_width, text_height) = get_content_size(self.essid)
+        #if self.is_select:
+            #text_color = None
+        #draw_text(cr, self.essid, rect.x, rect.y, rect.width, rect.height,
+                #alignment = pango.ALIGN_LEFT)
+
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            #cr.set_line_width(1)
+            #if self.is_last:
+                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, rect.width, 1)
+            #cr.fill()
+
+    #def render_signal(self, cr, rect):
+        #render_background(cr,rect)
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            #cr.set_line_width(1)
+            #if self.is_last:
+                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, rect.width, 1)
+            #cr.fill()
     
-    def redraw(self):
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
+    #def render_jumpto(self, cr, rect):
+        #render_background(cr,rect)
+        #if self.is_select:
+            #pass
+        #jumpto_icon = self.jumpto_pixbuf
+        #draw_pixbuf(cr, jumpto_icon.get_pixbuf(), rect.x , rect.y + (rect.height-IMG_WIDTH)/2)
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            #cr.set_line_width(1)
+            #if self.is_last:
+                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, rect.width, 1)
+            #cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
+            #cr.fill()
 
-    def hover(self, column, offset_x, offset_y):
-        self.border_color = border_hover_color
-        self.redraw()
+    #def get_check_width(self):
+        #return IMG_WIDTH + self.CHECK_LEFT_PADDING + self.CHECK_RIGHT_PADIING
 
-    def unhover(self, column, offset_x, offset_y):
-        #print column, offset_x, offset_y
-        self.border_color = border_normal_color
-        self.redraw()
-
-    def single_click(self, column, x, y):
-        if column == 3:
-            self.setting_object.init(self.essid, init_connections=True)
-            self.send_to_crumb()
-            self.slide_to_setting()
-
-    def set_net_state(self, state):
-        self.network_state = state
-        if state == self.NETWORK_LOADING:
-            LoadingThread(self).start()
+    #def get_essid_width(self, essid):
+        #return get_content_size(essid)[0]
     
-    def get_net_state(self):
-        return self.network_state
-    
-    def refresh_loading(self, position):
-        self.position = position
-        self.redraw()
+    #def get_signal_width(self):
+        #return IMG_WIDTH*2 + self.SECURITY_RIGHT_PADDING + self.SIGNAL_RIGHT_PADDING
 
-def render_background( cr, rect, color=bg_normal_color):
-    background_color = [(0,[color, 1.0]),
-                        (1,[color, 1.0])]
-    (cr, rect.x ,rect.y, rect.width, rect.height, background_color)
+    #def get_jumpto_width(self):
+        #return IMG_WIDTH + self.JUMPTO_RIGHT_PADDING
+
+    #def get_column_widths(self):
+        #return [self.check_width, -1, self.signal_width, self.jumpto_width]
+
+    #def get_column_renders(self):
+        #return [self.render_check, self.render_essid, self.render_signal, self.render_jumpto]
+
+    #def get_height(self):
+        #return CONTAINNER_HEIGHT
+        
+    #def select(self):
+        #self.is_select = True
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
+
+    #def set_active(self, b):
+        #if b:
+            #self.select()
+        #else:
+            #self.unselect()
+
+    #def get_active(self):
+        #return self.is_select
+
+    #def unselect(self):
+        ##print "unselect"
+        #self.is_select = False
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
+    
+    #def redraw(self):
+        #if self.redraw_request_callback:
+            #self.redraw_request_callback(self)
+
+    #def hover(self, column, offset_x, offset_y):
+        #self.border_color = border_hover_color
+        #self.redraw()
+
+    #def unhover(self, column, offset_x, offset_y):
+        ##print column, offset_x, offset_y
+        #self.border_color = border_normal_color
+        #self.redraw()
+
+    #def single_click(self, column, x, y):
+        #if column == 3:
+            #self.setting_object.init(self.essid, init_connections=True)
+            #self.send_to_crumb()
+            #self.slide_to_setting()
+
+    #def set_net_state(self, state):
+        #self.network_state = state
+        #if state == self.NETWORK_LOADING:
+            #LoadingThread(self).start()
+    
+    #def get_net_state(self):
+        #return self.network_state
+    
+    #def refresh_loading(self, position):
+        #self.position = position
+        #self.redraw()
+
+#def render_background( cr, rect, color=bg_normal_color):
+    #background_color = [(0,[color, 1.0]),
+                        #(1,[color, 1.0])]
+    #(cr, rect.x ,rect.y, rect.width, rect.height, background_color)
 
 
 '''
@@ -940,6 +968,24 @@ class VPNItem(DSLItem):
 
     def __init__(self, connection, jumpto):
         DSLItem.__init__(self,connection, jumpto)
+        self.connection = connection
+
+    def click_cb(self):
+        print "clicked"
+        active_connections = nm_module.nmclient.get_active_connections()
+        if active_connections:
+            device_path = active_connections[0].get_devices()[0].object_path
+            specific_path = active_connections[0].object_path
+            active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
+                                           device_path,
+                                           specific_path)
+            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
+            vpn_connection = cache.get_spec_object(active_object.object_path)
+            vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
+            vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
+            vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))
+        else:
+            print "no active connection available"
 
 class GeneralItem(TreeItem):
     CHECK_LEFT_PADDING = 10

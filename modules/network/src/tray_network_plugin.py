@@ -51,7 +51,6 @@ class TrayNetworkPlugin(object):
         self.init_wired_signals()
         self.init_wireless_signals()
 
-
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
@@ -300,7 +299,6 @@ class TrayNetworkPlugin(object):
         device_manager.load_wireless_listener(self)
         self.gui.ap_tree.connect("single-click-item", self.ap_selected)
         self.selected_item = None
-
         #TODO signals 
 
     def ap_selected(self, widget, item, column, x, y):

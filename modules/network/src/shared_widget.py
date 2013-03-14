@@ -81,8 +81,9 @@ class IPV4Conf(gtk.VBox):
         # TODO UI change
         style.draw_background_color(self)
         style.set_table(self.table)
-        align = style.set_box_with_align(self.table, 'text')
-        self.add(align)
+        #align = style.set_box_with_align(self.table, 'text')
+        #self.add(align)
+        self.pack_start(self.table, False, False)
         self.addr_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
         self.gate_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
         self.mask_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
@@ -155,6 +156,7 @@ class IPV4Conf(gtk.VBox):
             #self.manual_ip.set_sensitive(False)
 
     def reset_table(self):
+        self.remove(self.table)
         container_remove_all(self.table)
         self.table.attach(self.ip_label_align, 0,1,0,1)
         self.table.attach(self.auto_ip_align, 1, 2, 0, 1)
@@ -178,6 +180,7 @@ class IPV4Conf(gtk.VBox):
             self.table.attach(self.slave_entry_align, 1, 2, 8, 9)
 
         #self.table.show_all()
+        self.pack_start(self.table)
         self.queue_draw()
 
     def set_group_sensitive(self, group_name, sensitive):
@@ -191,7 +194,7 @@ class IPV4Conf(gtk.VBox):
             if not sensitive:
                 self.addr_entry.set_text("")
                 self.mask_entry.set_text("")
-                self.gate_entry.set_text("")
+                #self.gate_entry.set_text("")
         elif group_name is "dns":
             self.master_dns.set_sensitive(sensitive)
             self.slave_dns.set_sensitive(sensitive)
