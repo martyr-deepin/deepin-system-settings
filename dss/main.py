@@ -334,7 +334,7 @@ if __name__ == "__main__":
     DBusGMainLoop(set_as_default=True) 
     
     # Init application.
-    application = Application()
+    application = Application(resizable=False)
     application.window.connect("focus-out-event", application_focus_changed_cb, "o")
     application.window.connect("focus-in-event", application_focus_changed_cb, "i")
 
