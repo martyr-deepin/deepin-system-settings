@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 10:18+0800\n"
+"POT-Creation-Date: 2013-03-13 14:19+0800\n"
 "PO-Revision-Date: 2013-02-25 16:44+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,118 +17,146 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/desktop_view.py:53
+#: ../src/desktop_view.py:54
 msgid "Default Style"
 msgstr "正常模式"
 
-#: ../src/desktop_view.py:54
+#: ../src/desktop_view.py:55
 msgid "Auto Hide"
 msgstr "自动隐藏"
 
-#: ../src/desktop_view.py:55
+#: ../src/desktop_view.py:56
 msgid "Invisible"
 msgstr "一直隐藏"
 
-#: ../src/desktop_view.py:56
+#: ../src/desktop_view.py:57
 msgid "Buttom"
 msgstr "底部"
 
-#: ../src/desktop_view.py:57
+#: ../src/desktop_view.py:58
 msgid "Top"
 msgstr "顶部"
 
-#: ../src/desktop_view.py:58
+#: ../src/desktop_view.py:59
 msgid "Default Icon"
 msgstr "正常图标"
 
-#: ../src/desktop_view.py:59
+#: ../src/desktop_view.py:60
 msgid "Small"
 msgstr "小图标"
 
-#: ../src/desktop_view.py:65 ../src/search_keyword.py:29
+#: ../src/desktop_view.py:61
+msgid "Nothing"
+msgstr "默认无"
+
+#: ../src/desktop_view.py:62
+msgid "Opening Window"
+msgstr "打开的窗口"
+
+#: ../src/desktop_view.py:63
+msgid "Launcher"
+msgstr "启动器"
+
+#: ../src/desktop_view.py:69 ../src/search_keyword.py:29
 msgid "Desktop Icon"
 msgstr "桌面图标"
 
-#: ../src/desktop_view.py:73
+#: ../src/desktop_view.py:77
 msgid "Computer"
 msgstr "计算机"
 
-#: ../src/desktop_view.py:76
+#: ../src/desktop_view.py:80
 msgid "Home"
 msgstr "主文件夹"
 
-#: ../src/desktop_view.py:79
+#: ../src/desktop_view.py:83
 msgid "Trash"
 msgstr "回收站"
 
-#: ../src/desktop_view.py:82
+#: ../src/desktop_view.py:86
 msgid "Software Center"
 msgstr "软件中心"
 
-#: ../src/desktop_view.py:97
+#: ../src/desktop_view.py:101
 msgid "Dock"
 msgstr "Dock栏"
 
-#: ../src/desktop_view.py:103
+#: ../src/desktop_view.py:107
 msgid "Display Style"
 msgstr "显示方式"
 
-#: ../src/desktop_view.py:115
+#: ../src/desktop_view.py:127
 msgid "Place Style"
 msgstr "摆放方式"
 
-#: ../src/desktop_view.py:127
+#: ../src/desktop_view.py:139
 msgid "Icon Size"
 msgstr "图标大小"
 
-#: ../src/desktop_view.py:139
+#: ../src/desktop_view.py:153
+msgid "Preview"
+msgstr "预览"
+
+#: ../src/desktop_view.py:161
+msgid "Hot Zone"
+msgstr "屏幕热区"
+
+#: ../src/desktop_view.py:164
+msgid "Top Left"
+msgstr "左上角"
+
+#: ../src/desktop_view.py:170
+msgid "Top Right"
+msgstr "右上角"
+
+#: ../src/desktop_view.py:179
 msgid "Login &amp;&amp; Lock"
 msgstr "登录锁屏画面"
 
-#: ../src/desktop_view.py:147
+#: ../src/desktop_view.py:187
 msgid "Login Page"
 msgstr "登录画面"
 
-#: ../src/desktop_view.py:152 ../src/desktop_view.py:168
+#: ../src/desktop_view.py:192 ../src/desktop_view.py:208
 msgid "Select"
 msgstr "选择"
 
-#: ../src/desktop_view.py:163
+#: ../src/desktop_view.py:203
 msgid "Lock Page"
 msgstr "锁屏画面"
 
-#: ../src/desktop_view.py:197
+#: ../src/desktop_view.py:242
 msgid "Show computer icon"
 msgstr "显示计算机图标"
 
-#: ../src/desktop_view.py:199
+#: ../src/desktop_view.py:244
 msgid "Hide computer icon"
 msgstr "隐藏计算机图标"
 
-#: ../src/desktop_view.py:205
+#: ../src/desktop_view.py:250
 msgid "Show home icon"
 msgstr "显示主文件夹图标"
 
-#: ../src/desktop_view.py:207
+#: ../src/desktop_view.py:252
 msgid "Hide home icon"
 msgstr "隐藏主文件夹图标"
 
-#: ../src/desktop_view.py:213
+#: ../src/desktop_view.py:258
 msgid "Show trash icon"
 msgstr "显示回收站图标"
 
-#: ../src/desktop_view.py:215
+#: ../src/desktop_view.py:260
 msgid "Hide trash icon"
 msgstr "隐藏回收站图标"
 
-#: ../src/desktop_view.py:221
+#: ../src/desktop_view.py:266
 msgid "Show deepin software center icon"
 msgstr "显示软件中心图标"
 
-#: ../src/desktop_view.py:223
+#: ../src/desktop_view.py:268
 msgid "Hide deepin software conter icon"
 msgstr "隐藏软件中心图标"
 
-#: ../src/desktop_view.py:278
+#: ../src/desktop_view.py:323
 msgid "Reset to default value"
 msgstr "恢复默认值"

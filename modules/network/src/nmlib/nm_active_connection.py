@@ -57,6 +57,7 @@ class ThreadVPNAuto(threading.Thread):
     def stop_run(self):
         self.run_flag = False
 
+
 class NMActiveConnection(NMObject):
     '''NMActiveConnection'''
 
@@ -90,9 +91,9 @@ class NMActiveConnection(NMObject):
         return self.properties["SpecificObject"]
 
     def get_devices(self):
-        if self.properties["Devices"]:
+        try:
             return map(lambda x:cache.getobject(x), self.properties["Devices"])
-        else:
+        except:
             return []
 
     def get_state(self):

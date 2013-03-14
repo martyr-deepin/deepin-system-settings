@@ -93,6 +93,11 @@ class WallpaperItem(gobject.GObject):
             
         self.tick_area = None
         
+    def do_apply_wallpaper(self):
+        event_manager.emit("apply-wallpaper", self)
+        self.is_tick = True
+        self.emit_redraw_request()
+    
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
@@ -267,17 +272,9 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        if is_in_rect((x, y), (
-                self.tick_area.x,
-                self.tick_area.y,
-                self.tick_area.width,
-                self.tick_area.height,
-                )):
-            self.toggle_tick()
-            event_manager.emit("select-wallpaper", self)
-        else:    
-            self.tick()
-            event_manager.emit("apply-wallpaper", self)
+        self.toggle_tick()
+        event_manager.emit("select-wallpaper", self)
+        #event_manager.emit("apply-wallpaper", self)
     
     def icon_item_button_release(self, x, y):
         '''
@@ -301,7 +298,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        event_manager.emit("apply-wallpaper", self)
     
     def icon_item_release_resource(self):
         '''
@@ -534,16 +531,8 @@ class DeleteItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        if is_in_rect((x, y), (
-                self.tick_area.x,
-                self.tick_area.y,
-                self.tick_area.width,
-                self.tick_area.height,
-                )):
-            self.toggle_tick()
-            event_manager.emit("select-delete-wallpaper", self)
-        else:    
-            self.tick()
+        self.toggle_tick()
+        event_manager.emit("select-delete-wallpaper", self)
     
     def icon_item_button_release(self, x, y):
         '''
@@ -845,7 +834,8 @@ class CacheItem(gobject.GObject, MissionThread):
         '''
         gobject.GObject.__init__(self)
         MissionThread.__init__(self)
-       
+      
+        self.image_path = None
         self.is_loaded = False
         self.is_downloaded = False
         self.hover_flag = False
@@ -904,6 +894,7 @@ class CacheItem(gobject.GObject, MissionThread):
         self.is_loop = False
         self.is_downloaded = True
         self.emit_redraw_request()
+        self.image_path = self.image_object.get_save_path()
         event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
@@ -913,6 +904,8 @@ class CacheItem(gobject.GObject, MissionThread):
         
         if image_path != None:
             self.is_downloaded = os.path.exists(self.download_dir + "/" +  image_path.split("/")[-1])
+            if self.is_downloaded:
+                self.image_path = self.download_dir + "/" +  image_path.split("/")[-1]
         
         self.pixbuf, self.is_loaded = cache_manager.get_image_pixbuf(self.image_object)
 
@@ -1014,17 +1007,18 @@ class CacheItem(gobject.GObject, MissionThread):
 
         if self.is_downloaded:
             downloaded_str = _("downloaded")
+            downloaded_padding = 4
             downloaded_str_width, downloaded_str_height = get_content_size(downloaded_str)
             cr.rectangle(wallpaper_x + 1, 
-                         wallpaper_y + self.wallpaper_height - downloaded_str_height, 
+                         wallpaper_y + self.wallpaper_height - downloaded_str_height - downloaded_padding, 
                          self.wallpaper_width - 2, 
-                         downloaded_str_height - 1)
-            cr.set_source_rgba(0, 0, 0, 0.6)
+                         downloaded_str_height - 1 + downloaded_padding)
+            cr.set_source_rgba(0, 0, 0, 0.4)
             cr.fill()
             draw_text(cr, 
                       downloaded_str, 
                       wallpaper_x + (self.wallpaper_width - downloaded_str_width) / 2, 
-                      wallpaper_y + self.wallpaper_height - downloaded_str_height, 
+                      wallpaper_y + self.wallpaper_height - downloaded_str_height - downloaded_padding / 1.5, 
                       self.wallpaper_width, 
                       downloaded_str_height, 
                       text_color = "#FFFFFF")
@@ -1120,8 +1114,9 @@ class CacheItem(gobject.GObject, MissionThread):
         
         This is IconView interface, you should implement it.
         '''
-        #self.is_tick = not self.is_tick
         self.emit_redraw_request()
+        if self.is_downloaded:
+            event_manager.emit("apply-wallpaper", self)
         event_manager.emit("download-images", [self.image_object])
     
     def icon_item_button_release(self, x, y):

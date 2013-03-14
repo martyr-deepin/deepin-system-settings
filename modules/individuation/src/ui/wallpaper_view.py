@@ -23,12 +23,14 @@
 
 import os
 import deepin_gsettings
+from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from helper import event_manager
 from ui.wallpaper_item import AddItem, WallpaperItem
 from theme_manager import background_gsettings
 import common
+from nls import _
 
 class WallpaperView(IconView):
     
@@ -37,6 +39,8 @@ class WallpaperView(IconView):
         
         self.add_item = AddItem()
         self.add_items([self.add_item])
+
+        self.connect("right-click-item", self.__on_right_click_item)
         
         event_manager.add_callback("add-wallpapers", self.on_add_wallpapers)
         event_manager.add_callback("add-download-wallpapers", self.on_add_wallpapers)
@@ -45,6 +49,10 @@ class WallpaperView(IconView):
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
         event_manager.add_callback("apply-download-wallpaper", self.on_download_wallpaper_apply)
         self.theme = None
+
+    def __on_right_click_item(self, widget, item, x, y):                        
+        menu_items = [(None, _("Apply Wallpaper"), lambda : item.do_apply_wallpaper())]
+        Menu(menu_items, True).show((int(x), int(y)))
 
     def set_theme(self, theme):    
         self.theme = theme

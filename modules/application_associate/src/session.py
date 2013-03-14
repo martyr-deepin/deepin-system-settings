@@ -99,7 +99,10 @@ class AutoStart(object):
             self.set_option(*option)
 
     def is_active(self):
-        this_proc = filter(lambda w: w.name == self.name(), psutil.get_process_list())
+        try:
+            this_proc = filter(lambda w: w.name == self.name(), psutil.get_process_list())
+        except:
+            this_proc = None
         if this_proc:
             return True
         else:

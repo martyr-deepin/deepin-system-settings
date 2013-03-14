@@ -96,7 +96,8 @@ class Section(gtk.VBox):
         is_active = widget.get_active()
         if is_active:
             self.toggle_on()
-            self.align.add(self.content_box)
+            if self.content_box not in self.align.get_children():
+                self.align.add(self.content_box)
             self.show_all()
             self.toggle_on_after()
         
@@ -268,8 +269,11 @@ class WirelessDevice(object):
                     self.tree.visible_items[i].set_net_state(1)
             #self.try_to_connect(ssid)
         connections = nm_module.nmclient.get_active_connections()
-        active_connection = connections[-1]
-        self.this_connection = active_connection.get_connection()
+        if connections:
+            active_connection = connections[-1]
+            self.this_connection = active_connection.get_connection()
+        else:
+            self.this_connection = None
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
         if reason == 7:
@@ -279,7 +283,10 @@ class WirelessDevice(object):
             #self.toggle_dialog(self.this_connection)
 
     def toggle_dialog(self, connection, security=None):
+        ssid = connection.get_setting("802-11-wireless").ssid
+        if ssid != None:
             AskPasswordDialog(connection,
+                              ssid,
                               key_mgmt=security,
                               cancel_callback=self.cancel_ask_pwd,
                               confirm_callback=self.pwd_changed).show_all()
@@ -296,7 +303,6 @@ class WirelessDevice(object):
             map(lambda i: i.pwd_changed(pwd, connection), item)
         else:
             print "no active items found"
-
     ######
 
 class WirelessSection(Section, WirelessDevice):
@@ -318,7 +324,10 @@ class WirelessSection(Section, WirelessDevice):
             self.tree.connect("single-click-item", self.set_selected_item)
             self.hotspot = HotSpot(None)
             self.vbox = gtk.VBox(False)
+            self.space = gtk.VBox()
+            self.space.set_size_request(-1, 15)
             self.load(self.wireless, [self.tree])
+            self.vbox.pack_start(self.space, False, False)
             self.vbox.pack_start(self.hotspot, False, False)
             self.pack_start(self.vbox, False, False)
 
@@ -378,7 +387,19 @@ class WirelessSection(Section, WirelessDevice):
             device_wifi = cache.get_spec_object(wireless_device.object_path)
             self.ap_list += device_wifi.order_ap_list()
 
-        return map(lambda i:WirelessItem(i), self.ap_list)
+        aps = map(lambda i:WirelessItem(i), self.ap_list)
+
+        hidden_list = self.get_hidden_connection(self.ap_list)
+        hiddens = map(lambda c: HidenItem(c), hidden_list)
+
+        return aps + hiddens
+
+    def get_hidden_connection(self, ap_list):
+        ssids = map(lambda a: a.get_ssid(), ap_list)
+        hiddens = filter(lambda c: c.get_setting("802-11-wireless").ssid not in ssids, 
+                         nm_module.nm_remote_settings.get_wireless_connections())
+
+        return hiddens
 
         ## need to filter all aps
     def get_state(self, devices):
@@ -804,7 +825,7 @@ class DSLSection(Section):
 
     def get_list(self):
         self.connections =  nm_module.nm_remote_settings.get_pppoe_connections()
-        return map(lambda c: DSLItem(c, self.jumpto_setting), self.connections)
+        return map(lambda c: DSLItem(c, None), self.connections)
 
     def jumpto_setting(self):
         Dispatcher.to_setting_page(DSLSetting())
@@ -859,11 +880,18 @@ class VpnSection(Section):
                            enable_double_click=False)
 
         self.load(self.vpn, [self.tree, self.label])
-
+        self.init_state()
+        
         self.__init_signals()
+    
+    def init_state(self):
+        vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        if vpn_active:
+            self.vpn.set_active(True)
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
+        Dispatcher.connect("vpn-redraw", lambda w:self.vpn.set_active(True, emit=True))
 
     def connect_vpn_signals(self, active_vpn, connection_name):
         active_vpn.connect("vpn-connected", self.vpn_connected, connection_name)
@@ -872,26 +900,37 @@ class VpnSection(Section):
 
     def toggle_on(self):
         item_list = self.get_list()
-        item_list[-1].is_last = True
-        self.tree.delete_all_items()
-        self.tree.add_items(item_list)
+        #item_list=[]
+        if item_list:
+            item_list[-1].is_last = True
+            self.tree.delete_all_items()
+            self.tree.add_items(item_list)
 
     def toggle_on_after(self):
-        pass
+        vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        if vpn_active:
+            connection = vpn_active[0].get_connection()
+            try:
+                index = self.connection.index(connection)
+                self.tree.visible_items[index].set_net_state(2)
+                return
+            except Exception, e:
+                print e
+        else:
+            pass
 
     def toggle_off(self):
-        pass
+        vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        if vpn_active:
+            nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
     
     def get_list(self):
         self.connection = nm_module.nm_remote_settings.get_vpn_connections()
-        return map(lambda c: VPNItem(c, self.jumpto_cb), self.connection)
+        return map(lambda c: VPNItem(c, None), self.connection)
     
     def jumpto_cb(self):
         Dispatcher.to_setting_page(VPNSetting())
 
-
-
-        
 class VnSection(gtk.VBox):
     def __init__(self, slide_to_subcrumb_cb):
         gtk.VBox.__init__(self)
@@ -1019,7 +1058,7 @@ class MobileSection(Section):
         self.gsm = nm_module.nm_remote_settings.get_gsm_connections()
         self.connection = self.cdma + self.gsm
 
-        return map(lambda c: MobileItem(c, self.jumpto_cb), self.connection)
+        return map(lambda c: MobileItem(c, None), self.connection)
     
     def jumpto_cb(self):
         Dispatcher.to_setting_page(MobileSetting())

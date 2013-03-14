@@ -250,6 +250,7 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
             content_page_info.set_active_module_id("main")
             foot_box.hide()
     else:
+        foot_box.hide()
         send_message(content_page_info.get_active_module_id(),
                      "click_crumb",
                      (index, label))
@@ -334,7 +335,7 @@ if __name__ == "__main__":
     DBusGMainLoop(set_as_default=True) 
     
     # Init application.
-    application = Application()
+    application = Application(resizable=False)
     application.window.connect("focus-out-event", application_focus_changed_cb, "o")
     application.window.connect("focus-in-event", application_focus_changed_cb, "i")
 

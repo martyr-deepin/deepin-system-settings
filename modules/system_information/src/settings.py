@@ -60,7 +60,11 @@ def get_mem_info():
     get the memory info
     @return: a float num for the total memory GB value
     '''
-    return round(gtop.mem().dict()['total'] / 1000.0 / 1000 / 1024, 1)
+    value1 = round(gtop.mem().dict()['total'] / 1000.0 / 1000 / 1024, 1)
+    value2 = round(value1, 0)
+    if abs(value1 - value2) > 0.2:
+        return value1
+    return value2
 
 def get_os_arch():
     '''
@@ -98,7 +102,11 @@ def get_total_disk_size():
         for d in internal_dev:
             dev = internal_dev[d]
             total_size += dev.Get("org.freedesktop.DBus.Properties", 'DeviceSize')
-        return round(total_size / 1000.0 / 1000 / 1000, 1)
+        value1 = round(total_size / 1000.0 / 1000 / 1000, 1)
+        value2 = round(value1, 0)
+        if abs(value1 - value2) > 2.0:
+            return value1
+        return value2
     except Exception, e:
         print e
         return None

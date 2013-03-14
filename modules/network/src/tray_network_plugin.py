@@ -51,7 +51,6 @@ class TrayNetworkPlugin(object):
         self.init_wired_signals()
         self.init_wireless_signals()
 
-
     def init_values(self, this_list):
         self.this_list = this_list
         self.this = self.this_list[0]
@@ -237,6 +236,10 @@ class TrayNetworkPlugin(object):
             def device_disactive():
                 pass
 
+            if self.gui.wire.get_active():
+                self.change_status_icon("cable")
+            else:
+                self.change_status_icon("wifi_disconnect")
             self.net_manager.disactive_wireless_device(device_disactive)
 
     def set_wireless_state(self, widget, device, new_state, old_state, reason):
@@ -300,7 +303,6 @@ class TrayNetworkPlugin(object):
         device_manager.load_wireless_listener(self)
         self.gui.ap_tree.connect("single-click-item", self.ap_selected)
         self.selected_item = None
-
         #TODO signals 
 
     def ap_selected(self, widget, item, column, x, y):
@@ -342,10 +344,13 @@ class TrayNetworkPlugin(object):
         self.toggle_dialog(self.this_connection)
 
     def toggle_dialog(self, connection, security=None):
-        AskPasswordDialog(connection,
-                          key_mgmt=security,
-                          cancel_callback=self.cancel_ask_pwd,
-                          confirm_callback=self.pwd_changed).show_all()
+        ssid = connection.get_setting("802-11-wireless").ssid
+        if ssid != None:
+            AskPasswordDialog(connection,
+                              ssid,
+                              key_mgmt=security,
+                              cancel_callback=self.cancel_ask_pwd,
+                              confirm_callback=self.pwd_changed).show_all()
 
 
     def cancel_ask_pwd(self):

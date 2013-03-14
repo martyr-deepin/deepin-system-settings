@@ -47,6 +47,7 @@ class SideBar(gtk.VBox):
         self.add_button = AddSettingItem(_("New Connection") ,self.add_new_connection)
         self.pack_start(TreeView([self.add_button]), False, False)
         self.set_size_request(160, -1)
+        self.show_all()
 
         self.__init_signals()
 
@@ -74,7 +75,7 @@ class SideBar(gtk.VBox):
             #self.add_button.change_add_setting(self.network_object.add_new_connection)
         if hasattr(self.network_object, "delete_item"):
             pass
-        self.init_select()
+        self.init_select(network_object.spec_connection)
         if self.connections !=[]:
             crumb_name = network_object.crumb_name
             Dispatcher.send_submodule_crumb(2, crumb_name)
@@ -84,13 +85,16 @@ class SideBar(gtk.VBox):
         if items_list:
             container_remove_all(self.buttonbox)
             self.connection_tree.add_items(map(lambda c: SettingItem(c, None), items_list), insert_pos=insert_pos)
-            self.buttonbox.add(self.connection_tree)
+            self.buttonbox.pack_start(self.connection_tree, False, False)
 
     def delete_item_cb(self, widget, connection):
         '''docstring for delete_item_cb'''
+        if len(self.connection_tree.visible_items) == 1:
+            return
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
+            Dispatcher.emit("vpn-redraw")
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
@@ -142,11 +146,14 @@ class SideBar(gtk.VBox):
         broadband = self.network_object.get_broadband(connection)
         broadband.set_new_values(prop_dict, type)
     
-    def init_select(self):
-        try:
-            self.connection_tree.select_first_item()
-        except:
-            print "no connections found"
+    def init_select(self, connection=None):
+        if connection:
+            self.set_active(connection)
+        else:
+            try:
+                self.connection_tree.select_first_item()
+            except:
+                print "no connections found"
 
     def replace_connection(self, widget, connection):
         '''

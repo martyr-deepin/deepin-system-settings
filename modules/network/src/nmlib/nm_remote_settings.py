@@ -484,7 +484,6 @@ class NMRemoteSettings(NMObject):
         return new_connection    
 
     def new_connection_finish(self, settings_dict, connection_type = "802-3-ethernet"):
-
         return self.add_connection(settings_dict)
 
     def get_can_modify(self):
@@ -494,63 +493,101 @@ class NMRemoteSettings(NMObject):
         return self.properties["Hostname"]
 
     def get_wired_connections(self):
-#        if self.list_connections():
-#            return filter(lambda x: x.settings_dict["connection"]["type"] == "802-3-ethernet", self.list_connections())
-#        else:
-#            return []
-        return filter(lambda x: x.settings_dict["connection"]["type"] == "802-3-ethernet", self.list_connections())
+        try:
+            return filter(lambda x: x.settings_dict["connection"]["type"] == "802-3-ethernet", self.list_connections())
+        except:
+            return []
 
     def get_wired_active_connection(self):
-        for conn in self.get_wired_connections():
-            pass
+        pass
 
     def get_wireless_connections(self):
         '''return wireless connections object'''
-        if self.list_connections():
+        try:
             return filter(lambda x: x.settings_dict["connection"]["type"] == "802-11-wireless", self.list_connections())
-        else:
+        except:
             return []
 
     def get_ssid_associate_connections(self, ssid):
         '''return wireless connection objects have the given ssid'''
-        if self.get_wireless_connections():
+        try:
             return filter(lambda x: TypeConvert.ssid_ascii2string(x.settings_dict["802-11-wireless"]["ssid"]) == ssid, 
                       self.get_wireless_connections())
-        else:
+        except:
             return []
 
     def get_ssid_not_associate_connections(self, ssid):
-        if self.get_wireless_connections():
+        try:
             return filter(lambda x: TypeConvert.ssid_ascii2string(x.settings_dict["802-11-wireless"]["ssid"]) != ssid, 
-                      self.get_wireless_connections())
-        else:
+                        self.get_wireless_connections())
+        except:
             return []
+
     def get_pppoe_connections(self):
-        if self.list_connections():
+        try:
             return filter(lambda x: x.settings_dict["connection"]["type"] == "pppoe", self.list_connections())
-        else:
+        except:
             return []
 
     def get_vpn_connections(self):
-        if self.list_connections():
+        try:
             return filter(lambda x: x.settings_dict["connection"]["type"] == "vpn", self.list_connections())
-        else:
+        except:
             return []
 
     def get_gsm_connections(self):
-        if self.list_connections():
+        try:
             return filter(lambda x: x.settings_dict["connection"]["type"] == "gsm", self.list_connections())
-        else:
+        except:
             return []
 
     def get_cdma_connections(self):
-        if self.list_connections():
+        try:
             return filter(lambda x: x.settings_dict["connection"]["type"] == "cdma", self.list_connections())
-        else:
+        except:
             return []
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
+
+import threading
+class ThreadVPNSpec(threading.Thread):
+    def __init__(self, connection):
+        threading.Thread.__init__(self)
+        self.setDaemon(True)
+        self.connection = connection
+        self.run_flag = True
+        self.succeed = False
+
+    def run(self):
+        nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+        while self.run_flag:
+            print "active_conn", nmclient.get_active_connections()
+            for active_conn in nmclient.get_active_connections():
+                print "device", active_conn.get_devices()
+                for device in active_conn.get_devices():
+                    try:
+                        active = nmclient.activate_connection(self.connection.object_path,
+                                                              device.object_path,
+                                                              active_conn.object_path)
+        
+                        vpn_connection = cache.get_spec_object(active.object_path)
+                        while(vpn_connection.get_state() <5 ):
+                            time.sleep(1)
+                        
+                        if vpn_connection.get_state() == 2:
+                            self.stop_run()
+                            self.succeed = True
+                            return True
+                        else:
+                            continue
+                    except:
+                        pass
+            return False
+        return False
+    
+    def stop_run(self):
+        self.run_flag = False
 
 if __name__ == "__main__":
     nm_remote_settings = NMRemoteSettings()

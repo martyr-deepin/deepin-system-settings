@@ -468,9 +468,9 @@ class AccountSetting(object):
             self.current_select_user.set_automatic_login(button.get_active())
             self.set_account_info_error_text("")
             if button.get_active():
-                self.__set_status_text(_("允许%s自动登陆") % settings.get_user_show_name(self.current_select_user))
+                self.__set_status_text(_("Enabled auto-login for %s") % settings.get_user_show_name(self.current_select_user))
             else:
-                self.__set_status_text(_("禁止%s自动登陆") % settings.get_user_show_name(self.current_select_user))
+                self.__set_status_text(_("Disabled auto-login for %s") % settings.get_user_show_name(self.current_select_user))
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
 
@@ -776,8 +776,11 @@ class AccountSetting(object):
         action_combo.set_size_request(COMBO_WIDTH, WIDGET_HEIGHT)
 
         current_pswd_input = PasswordEntry()
+        current_pswd_input.entry.set_name("current")
         new_pswd_input = PasswordEntry()
+        new_pswd_input.entry.set_name("new")
         confirm_pswd_input = PasswordEntry()
+        confirm_pswd_input.entry.set_name("confirm")
         confirm_pswd_input.entry.check_text = self.check_passwd_text
         new_pswd_input.entry.check_text = self.check_passwd_text
         current_pswd_input.set_size(COMBO_WIDTH, WIDGET_HEIGHT)
@@ -837,12 +840,6 @@ class AccountSetting(object):
          action_combo, show_pswd_check, cancel_button, change_button,
          error_label, is_myown, is_authorized, is_input_empty,
          label2, label3, label4) = all_widgets
-        print "action_combo:\t\t", action_combo.allocation
-        print "current_pswd_input:\t", current_pswd_input.allocation
-        print "new_pswd_input:\t\t", new_pswd_input.allocation
-        print "confirm_pswd_input:\t", confirm_pswd_input.allocation
-        print "show_pswd_check:\t", show_pswd_check.allocation
-        print "-"*20
 
     def show_input_password(self, button, new_pswd_input, confirm_pswd_input):
         new_pswd_input.show_password(button.get_active())
@@ -853,17 +850,26 @@ class AccountSetting(object):
          action_combo, show_pswd_check, cancel_button, change_button,
          error_label, is_myown, is_authorized, is_input_empty,
          label2, label3, label4) = all_widgets
+        error_text = ""
         if not text or len(text)<atleast or len(text)>16:
             is_input_empty[variety] = True
+            if entry.get_name() == "new" or entry.get_name() == "confirm":
+                error_text = _("The length of the new password must have 6~16 characters.")
         else:
             is_input_empty[variety] = False
+            new_pswd = new_pswd_input.entry.get_text()
+            confirm_pswd = confirm_pswd_input.entry.get_text()
+            if confirm_pswd and new_pswd != confirm_pswd:
+                error_text = _("Password did not match.")
         if (is_myown and is_input_empty[self.CH_PASSWD_CURRENT_PSWD]) or\
                 is_input_empty[self.CH_PASSWD_NEW_PSWD] or\
                 is_input_empty[self.CH_PASSWD_CONFIRM_PSWD] or\
                 new_pswd_input.entry.get_text() != confirm_pswd_input.entry.get_text():
             change_button.set_sensitive(False)
+            self.set_status_error_text(error_text)
         else:
             change_button.set_sensitive(True)
+            self.set_status_error_text("")
 
     def action_combo_selected(self, combo_box, item_content, item_value, item_index, all_widgets):
         (current_pswd_input, new_pswd_input, confirm_pswd_input,

@@ -38,7 +38,7 @@ TODO: production level do not need split word any more
 #from split_word import init_jieba, split_word
 from theme import app_theme
 from constant import *
-#import xappy
+import xappy
 import threading as td
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 2), "modules"))
@@ -97,11 +97,11 @@ class KeywordSearch:
         self.__xappy.close()
     
     def query(self, keyword):
-        #return self.search_query([x for x in keyword.split(' ') if x.strip()])
+        return self.search_query([x for x in keyword.split(' ') if x.strip()])
         '''
         TODO: production level do not need to split word any more
         '''
-        return self.search_query(list(split_word(keyword, True)))
+        #return self.search_query(list(split_word(keyword, True)))
 
     def search_query(self, keywords):
         sconn = xappy.SearchConnection(SEARCH_DB_DIR)

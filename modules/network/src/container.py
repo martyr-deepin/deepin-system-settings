@@ -21,22 +21,24 @@ TEXT_PADDING = 5
 BUTTON_PADDING = 0
 class Contain(gtk.Alignment):
 
-    def __init__(self, icon, text, switch_callback=None):
+    def __init__(self, icon, text, switch_callback=None, font_size = 10):
 
         gtk.Alignment.__init__(self, 0,0.5,0,0)
         self.set_size_request(-1, CONTAINNER_HEIGHT)
 
-        self.icon = icon
+        #self.icon = icon
         self.text = text
         self.show()
         self.active_cb = switch_callback
         self.hbox = gtk.HBox()
-
-        self.image = ImageBox(icon) 
+        self.font_size = font_size
+        
+        if icon:
+            self.image = ImageBox(icon) 
         #self.height = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_height()
         #self.width = app_theme.get_pixbuf("/inactive_normal.png").get_pixbuf().get_width()
         #self.image.set_from_pixbuf(icon.get_pixbuf())
-        self.hbox.pack_start(self.image, False, False, ICON_PADDING)
+            self.hbox.pack_start(self.image, False, False, ICON_PADDING)
         self.label = Label(text, text_size=TITLE_FONT_SIZE, label_width=100,
                                enable_select=False,
                                enable_double_click=False)
@@ -77,6 +79,7 @@ class TitleBar(gtk.VBox):
                  text_size=TITLE_FONT_SIZE,
                  text_color=app_theme.get_color("globalTitleForeground"), 
                  width=222,
+                 left_padding = 0,
                  spacing=10):
         gtk.VBox.__init__(self)
         self.set_size_request(width, -1)
@@ -99,7 +102,7 @@ class TitleBar(gtk.VBox):
         self.__box_pack_start(self, [align])
         if has_separator:
             separator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-            separator.set_size_request(100, 10)
+            separator.set_size_request(-1, 10)
             self.__box_pack_start(self, [separator])
 
     def __box_pack_start(self, container, items, expand=False, fill=False):

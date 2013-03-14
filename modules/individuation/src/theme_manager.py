@@ -66,7 +66,7 @@ class ThemeFile(RawConfigParser):
         except:    
             pass
         
-        self.location = location    
+        self.location = location
         
     def optionxform(self, optionstr):
         return optionstr
@@ -103,6 +103,9 @@ class ThemeFile(RawConfigParser):
             return
 
         RawConfigParser.remove_option(self, section, option)
+
+    def reload(self):
+        self = self.__init__(self.location)
 
     def save(self):
         """
@@ -161,7 +164,7 @@ class ThemeFile(RawConfigParser):
         else:    
             background_gsettings.set_string("cross-fade-auto-mode", "Sequential")
         
-    def get_name(self):    
+    def get_name(self):
         lang = common.get_system_lang()
         if self.has_option("name", lang):
             return self.get_option("name", lang)
@@ -356,7 +359,13 @@ class ThemeManager(object):
         new_theme.set_locale_name(name)
         new_theme.save()    
         return new_theme
-   
+  
+    def rename_theme(self, name, new_name):
+        theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
+        theme = ThemeFile(theme_path)
+        theme.set_locale_name(new_name)
+        theme.save()
+
     def delete_theme(self, name):
         theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
         os.remove(theme_path)
