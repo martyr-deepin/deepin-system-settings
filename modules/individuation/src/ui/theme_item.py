@@ -6,6 +6,7 @@
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
+#             Zhai Xiang <zhaixiang@linuxdeepin.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -57,6 +58,7 @@ class ThemeItem(gobject.GObject):
         '''
         gobject.GObject.__init__(self)
         self.theme = theme
+        self.name = self.theme.get_name()
         self.hover_flag = False
         self.highlight_flag = False
         self.pixbufs = []
@@ -83,8 +85,12 @@ class ThemeItem(gobject.GObject):
             self.hover_offset, self.hover_offset, 
             self.ITEM_WIDTH - self.hover_offset * 2, 
             self.ITEM_HEIGHT - self.hover_offset * 2) 
-        
-        
+    
+    def rename_theme(self, name):
+        self.name = name
+        self.theme.reload()
+        self.emit_redraw_request()
+
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
@@ -232,7 +238,7 @@ class ThemeItem(gobject.GObject):
         '''
 
         draw_text(cr, 
-                  self.theme.get_name(), 
+                  self.name, 
                   rect.x, 
                   rect.y + self.window_frame_padding_y + self.window_frame_height + self.title_padding_y, 
                   rect.width,

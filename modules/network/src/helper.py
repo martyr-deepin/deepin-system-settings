@@ -73,6 +73,8 @@ class EventDispatcher(gobject.GObject):
 
             "request-redraw":_(),
 
+            "vpn-redraw": _(),
+
             #"wired_device_add" : _(),
             #"wireless_device_add" : _()
             }
