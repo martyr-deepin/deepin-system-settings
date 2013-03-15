@@ -56,6 +56,8 @@ class TrayTimePlugin(object):
                 show_str = "%s:%s %s" % (hour, min, time_p)
         
         self.tray_icon.set_text(show_str)
+        self.tray_icon.set_tooltip_text("%s %s" % (time.strftime("%Y-%m-%d"),   
+                                                   self.WEEK[int(time.strftime("%w")) - 1]))
 
     def init_values(self, this_list):
         self.this_list = this_list
@@ -93,6 +95,9 @@ class TrayTimePlugin(object):
         run_command("deepin-system-settings date_time")        
 
     def plugin_widget(self):
+        self.tray_icon.set_tooltip_text("%s %s" % (time.strftime("%Y-%m-%d"),   
+                                                   self.WEEK[int(time.strftime("%w")) - 1]))
+        print "DEBUG plugin_widget"
         align = self.__setup_align()
         box = gtk.VBox(spacing = 5)
         calendar_align = self.__setup_align()
