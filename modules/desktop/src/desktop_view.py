@@ -165,7 +165,7 @@ class DesktopView(gtk.VBox):
         hot zone
         '''
         self.hot_title_align = self.__setup_title_align(                       
-            app_theme.get_pixbuf("desktop/dock.png"),                           
+            app_theme.get_pixbuf("desktop/hot.png"),                           
             _("Hot Zone")) 
         self.topleft_align = self.__setup_align()
         self.topleft_box = gtk.HBox(spacing = WIDGET_SPACING)
