@@ -80,9 +80,9 @@ class TrayUI(gtk.VBox):
         height = 0
         widgets = self.get_children()
         if self.wire_box in widgets:
-            height += 30
+            height += 35
         if self.wireless_box in widgets:
-            height += 30
+            height += 35
             if self.ap_tree.visible_items and self.wireless.get_active():
                 height += self.ap_tree.get_size_request()[1]
                 #if len(self.ap_tree.visible_items) >=10:
@@ -93,7 +93,7 @@ class TrayUI(gtk.VBox):
                 #height += WIDGET_HEIGHT
 
         if self.mobile_box in widgets:
-            height += 30
+            height += 35
         height += 25
         return height
 
@@ -101,7 +101,7 @@ class TrayUI(gtk.VBox):
         box = gtk.VBox(spacing=0)
         for w in widgets:
             box.pack_start(w, False, False)
-        style.add_separator(box, 5)
+        style.add_separator(box, 10)
         return box
 
     def remove_net(self, net_type):
@@ -109,6 +109,8 @@ class TrayUI(gtk.VBox):
             self.remove(self.wire_box)
         elif net_type == "wireless":
             self.remove(self.wireless_box)
+        elif net_type == "mobile":
+            self.remove(self.mobile_box)
 
     def set_wired_state(self, widget, new_state, reason):
         if new_state is 20:
