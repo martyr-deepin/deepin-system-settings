@@ -122,7 +122,10 @@ class DeviceItem(gobject.GObject):
         self.highlight_fill_color = "#7db7f2"                                   
         self.highlight_stroke_color = "#396497"
 
+        self.__session = None
+
         event_manager.add_callback("device-cancel", self.__on_cancel)
+        event_manager.add_callback("send-file", self.__on_send_file)
 
     def render(self, cr, rect):
         padding = 10
@@ -334,6 +337,10 @@ class DeviceItem(gobject.GObject):
     def do_send_file(self):
         OpenFileDialog(_("Select File"), None, lambda name : self.__send_file(name), None)
 
+    def __on_send_file(self, name, obj, argv):
+        if argv == self.device.get_name():
+            self.do_send_file()
+
     def __reply_handler_cb(self, device):
         self.is_paired = True
         self.emit_redraw_request()
@@ -542,6 +549,9 @@ class BlueToothView(gtk.VBox):
         self.connect("expose-event", self.__expose)
 
         self.__get_devices()
+
+    def sendfile(self, device_name):
+        event_manager.emit("send-file", device_name)
 
     def cancel(self):
         event_manager.emit("device-cancel", None)
