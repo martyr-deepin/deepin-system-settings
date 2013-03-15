@@ -95,7 +95,7 @@ class WallpaperItem(gobject.GObject):
                 self.is_tick = self.theme.get_user_wallpaper_status(path)
             
         self.tick_area = None
-        
+
     def do_apply_wallpaper(self):
         self.background_settings.set_string("picture-uri", "file://" + self.image_path)
 

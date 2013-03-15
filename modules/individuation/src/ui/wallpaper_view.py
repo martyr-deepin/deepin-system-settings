@@ -48,7 +48,13 @@ class WallpaperView(IconView):
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
         event_manager.add_callback("apply-download-wallpaper", self.on_download_wallpaper_apply)
+        event_manager.add_callback("delete-wallpaper-link", self.__on_delete_wallpaper_link)
         self.theme = None
+
+    def __on_delete_wallpaper_link(self, name, obj, data):
+        items = filter(lambda item: item.image_path == data, self.items) 
+        if items:                                                               
+            self.delete_items(items) 
 
     def __on_right_click_item(self, widget, item, x, y):                        
         menu_items = [(None, _("Apply Wallpaper"), lambda : item.do_apply_wallpaper())]
