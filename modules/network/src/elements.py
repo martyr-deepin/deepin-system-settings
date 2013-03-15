@@ -97,6 +97,8 @@ class SettingSection(gtk.VBox):
         self.revert = revert
         self.title = Title(section_name, text_size,  always_show, self.toggle_callback, label_right)
         self.__init_section()
+        if self.revert:
+            self.set_active(True)
 
     def __init_section(self):
         

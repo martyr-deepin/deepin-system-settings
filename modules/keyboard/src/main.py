@@ -51,8 +51,8 @@ from glib import markup_escape_text
 import xkb
 import gtk
 import shortcuts
-import keybind_list
-import keybinds
+#import keybind_list
+import keybind_mk
 import pangocairo
 import pango
 import threading
@@ -72,10 +72,10 @@ class KeySetting(object):
         self.xkb = xkb.XKeyBoard()
         self.__layout_items = self.xkb.get_layout_treeitems()
 
-        self.__shortcuts_entries = keybinds.get_shortcuts_wm_shortcut_entry(settings.WM_SHORTCUTS_SETTINGS)
-        self.__shortcuts_entries.update(keybinds.get_shortcuts_media_shortcut_entry(settings.SHORTCUTS_SETTINGS))
-        self.__shortcuts_entries[_('Custom Shortcuts')] = keybinds.get_shortcuts_custom_shortcut_entry(settings.GCONF_CLIENT, self.__remove_shortcuts_item)
-        keybinds.get_shortcuts_dp_shortcut_entry(settings.DP_SHORTCUTS_SETTINGS, self.__shortcuts_entries[_('System')])
+        self.__shortcuts_entries = keybind_mk.get_all_shortcuts_entry(
+            [settings.WM_SHORTCUTS_SETTINGS, settings.SHORTCUTS_SETTINGS,
+             settings.DP_SHORTCUTS_SETTINGS, settings.COMPIZ_SHORTCUTS_SETTINGS])
+        self.__shortcuts_entries[_('Custom Shortcuts')] = keybind_mk.get_shortcuts_custom_shortcut_entry(settings.GCONF_CLIENT, self.__remove_shortcuts_item)
         self.__shortcuts_entries_page_widgets = {}
         self.scale_set= {
             "delay"               : settings.keyboard_set_repeat_delay,
@@ -490,12 +490,11 @@ class KeySetting(object):
             #self.__make_align(self.container_widgets["shortcuts_toolbar_hbox"], xalign=1.0, xscale=0.0,
             #padding_right=15), 1, 2, 1, 2, 5, 0)
         # init shortcuts selected treeview
-        self.view_widgets["shortcuts_selected"].add_items(
-            keybind_list.get_wm_shortcuts_select_item())
-        self.view_widgets["shortcuts_selected"].add_items(
-            keybind_list.get_media_shortcuts_select_item())
-        self.view_widgets["shortcuts_selected"].add_items(
-            [SelectItem(_('Custom Shortcuts'))])
+        self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('System'))])
+        self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Sound and Media'))])
+        self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Windows'))])
+        self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Workspace'))])
+        self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Custom Shortcuts'))])
         self.view_widgets["shortcuts_selected"].set_data("is_custom", False)
         self.button_widgets["shortcuts_remove"].set_sensitive(False)
         self.__make_accel_page()
@@ -830,14 +829,14 @@ class KeySetting(object):
                     break
                 i += 1
             settings.shortcuts_custom_set(key_dir, (action, '', name))
-            entry = AccelEntry("", keybinds.check_shortcut_conflict, can_del=True)
+            entry = AccelEntry("", keybind_mk.check_shortcut_conflict, can_del=True)
             entry.connect("accel-del", self.__remove_shortcuts_item)
             entry.settings_description = name
             entry.settings_key = '%s/%s' % (base_dir, key_dir)
             entry.settings_obj = settings.GCONF_CLIENT
             entry.settings_type = entry.TYPE_GCONF
             entry.settings_value_type = entry.TYPE_STRING
-            keybinds.ACCEL_ENTRY_LIST.append(entry)
+            keybind_mk.ACCEL_ENTRY_LIST.append(entry)
             shortcut_vbox = self.container_widgets["shortcuts_swin"].get_children()[0].get_children()[0].get_children()[0]
             hbox = gtk.HBox(False)
             hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
@@ -961,7 +960,6 @@ if __name__ == '__main__':
     
     def message_handler(*message):
         (message_type, message_content) = message
-        print "message:", message_type, message_content
         if message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
