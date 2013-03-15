@@ -32,7 +32,7 @@ class SettingUI(gtk.Alignment):
         #self.add(self.scroll_win)
         self.scroll_win.add_with_viewport(self.hbox)
         self.scroll_align = gtk.Alignment()
-        self.scroll_align.set(0, 0.5, 0, 0)
+        self.scroll_align.set(0, 0, 0, 0)
         self.scroll_align.set_padding(0, 0, 30, 0)
         self.scroll_align.add(self.scroll_win)
         
@@ -59,8 +59,8 @@ class SettingUI(gtk.Alignment):
         self.hpaned.change_position(1)
 
     def __init_tab_box(self):
-        container_remove_all(self.hbox)
-        self.scroll_win.set_size_request(-1, 425)
+        #container_remove_all(self.hbox)
+        self.scroll_win.set_size_request(800, 425)
 
     def __init_signals(self):
         Dispatcher.connect("connection-change", self.switch_tab)

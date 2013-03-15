@@ -502,7 +502,7 @@ class AccountSetting(object):
         self.set_account_info_error_text("")
 
     def account_create_button_clicked(self, button):
-        username = self.button_widgets["account_name"].get_text()
+        username = self.button_widgets["account_name"].get_text().lower()
         account_type = self.button_widgets["account_type_new"].get_current_item()[1]
         try:
             if self.account_dbus.create_user(username, username, account_type):

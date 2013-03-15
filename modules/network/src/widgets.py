@@ -64,7 +64,7 @@ class AskPasswordDialog(DialogBox):
         self.entry_align.set_padding(10, 0, 10, 10)
         if self.connection and isinstance(self.connection, NMRemoteConnection):
             (setting_name, method) = self.connection.guess_secret_info()  
-            if method:
+            if setting_name and method:
                 init_text = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
