@@ -37,6 +37,7 @@ from theme import app_theme
 from cache_manager import SMALL_SIZE, cache_manager
 from helper import event_manager
 import common
+import deepin_gsettings
 from nls import _
 
 ITEM_PADDING_X = 20
@@ -58,6 +59,8 @@ class WallpaperItem(gobject.GObject):
         @param pixbuf: Icon pixbuf.
         '''
         gobject.GObject.__init__(self)
+
+        self.background_settings = deepin_gsettings.new("com.deepin.dde.background")
 
         self.image_path = path
         self.readonly = readonly
@@ -94,10 +97,8 @@ class WallpaperItem(gobject.GObject):
         self.tick_area = None
         
     def do_apply_wallpaper(self):
-        event_manager.emit("apply-wallpaper", self)
-        self.is_tick = True
-        self.emit_redraw_request()
-    
+        self.background_settings.set_string("picture-uri", "file://" + self.image_path)
+
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
@@ -272,9 +273,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        self.toggle_tick()
-        event_manager.emit("select-wallpaper", self)
-        #event_manager.emit("apply-wallpaper", self)
+        pass
     
     def icon_item_button_release(self, x, y):
         '''
@@ -290,7 +289,8 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        self.toggle_tick()                                                      
+        event_manager.emit("select-wallpaper", self)
 
     def icon_item_double_click(self, x, y):
         '''
@@ -298,8 +298,10 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        event_manager.emit("apply-wallpaper", self)
-    
+        self.is_tick = True
+        self.emit_redraw_request()
+        self.do_apply_wallpaper()
+
     def icon_item_release_resource(self):
         '''
         Release item resource.
