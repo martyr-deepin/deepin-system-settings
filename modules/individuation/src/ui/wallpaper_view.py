@@ -84,7 +84,7 @@ class WallpaperView(IconView):
         self.add_images(image_paths, readonly=True)
         
     def add_images(self, images, readonly=False):
-        items = map(lambda image: WallpaperItem(image, readonly, self.theme), images)
+        items = map(lambda image: WallpaperItem(image, readonly, self.theme, background_gsettings), images)
         self.add_items(items, insert_pos=-1)
         
     def on_wallpaper_select(self, name, obj, select_item):    

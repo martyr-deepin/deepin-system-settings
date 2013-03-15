@@ -52,7 +52,7 @@ class WallpaperItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    def __init__(self, path, readonly, theme):
+    def __init__(self, path, readonly, theme, background_settings=None):
         '''
         Initialize ItemIcon class.
         
@@ -60,7 +60,7 @@ class WallpaperItem(gobject.GObject):
         '''
         gobject.GObject.__init__(self)
 
-        self.background_settings = deepin_gsettings.new("com.deepin.dde.background")
+        self.background_settings = background_settings
 
         self.image_path = path
         self.readonly = readonly
