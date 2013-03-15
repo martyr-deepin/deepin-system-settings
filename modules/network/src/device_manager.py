@@ -23,8 +23,19 @@ class DeviceManager(object):
     def __init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
-        #nm_module.mmclient.connect("device-added", )
-        
+        nm_module.mmclient.connect("device-added", self.mm_device_added)
+        nm_module.mmclient.connect("device-removed", self.mm_device_removed)
+        self.ap_added(self.wireless_devices)
+
+    def mm_device_added(self, widget, path):
+        device = cache.getobject(path)
+        Dispatcher.emit("mmdevice-added", device)
+
+    def mm_device_removed(self, widget, path):
+        device = cache.getobject(path)
+        Dispatcher.emit("mmdevice-removed", device)
+
+
     def device_added_cb(self, widget, path):
         device =  cache.getobject(path)
         type = device.get_device_type() 
@@ -34,6 +45,12 @@ class DeviceManager(object):
             Dispatcher.emit("wireless-device-add", device)
 
         self.__init_device()
+
+    def ap_added(self, devices):
+        for device in devices:
+            wifi = cache.get_spec_object(device.object_path)
+            wifi.connect("access-point-added", lambda w: Dispatcher.emit("ap-added"))
+            wifi.connect("access-point-removed", lambda w: Dispatcher.emit("ap-added"))
 
     def load_wired_listener(self, module):
         if self.wired_devices:
@@ -57,7 +74,6 @@ class DeviceManager(object):
 
     def get_wireless_devices(self):
         return self.wireless_devices
-
 
     def get_wired_devices(self):
         return self.wired_devices

@@ -88,21 +88,22 @@ class DSLSetting(Settings):
 class Sections(gtk.Alignment):
 
     def __init__(self, connection, set_button):
-        gtk.Alignment.__init__(self, 0, 0 ,0, 0)
-        self.set_padding(35, 0, 50, 0)
+        gtk.Alignment.__init__(self, 0, 0 ,1, 0)
+        self.set_padding(35, 0, 20, 0)
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
         basic = SettingSection(_("Basic"))
 
         self.button = Button(_("Advanced"))
-        self.button.set_size_request(50, 22)
+        #self.button.set_size_request(50, 22)
         self.button.connect("clicked", self.show_more_options)
         self.wired = SettingSection(_("Wired"), always_show=False)
         self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=False)
         self.ppp = SettingSection(_("PPP"), always_show=False)
-        align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(0, 0, 225, 0)
+        align = gtk.Alignment(0, 1.0, 0, 0)
+        align.set_padding(0, 0, 376, 0)
+        align.set_size_request(-1 ,30)
         align.add(self.button)
         
         basic.load([DSLConf(connection, set_button), align])
@@ -126,7 +127,7 @@ class Sections(gtk.Alignment):
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
-    LEFT_PADDING = 170
+    LEFT_PADDING = 210
     def __init__(self, connection, set_button):
         gtk.VBox.__init__(self)
         self.tab_name = _("Wired")
@@ -205,6 +206,7 @@ class Wired(gtk.VBox):
                 Dispatcher.set_button("save", True)
 
 class DSLConf(gtk.VBox):
+    LEFT_PADDING = 180
 
     def __init__(self, connection, set_button_callback=None):
         gtk.VBox.__init__(self)
@@ -231,9 +233,9 @@ class DSLConf(gtk.VBox):
                                enable_double_click=False)
 
         #pack labels
-        dsl_table.attach(style.wrap_with_align(username_label, width=210), 0, 1 , 0, 1)
-        dsl_table.attach(style.wrap_with_align(service_label, width=210), 0, 1, 1, 2)
-        dsl_table.attach(style.wrap_with_align(password_label, width=210), 0, 1, 2, 3)
+        dsl_table.attach(style.wrap_with_align(username_label, width=self.LEFT_PADDING), 0, 1 , 0, 1)
+        dsl_table.attach(style.wrap_with_align(service_label, width=self.LEFT_PADDING), 0, 1, 1, 2)
+        dsl_table.attach(style.wrap_with_align(password_label, width=self.LEFT_PADDING), 0, 1, 2, 3)
 
         # entries
         self.username_entry = InputEntry()
@@ -264,7 +266,6 @@ class DSLConf(gtk.VBox):
         #self.add(align)
         self.show_all()
         self.refresh()
-
 
         self.username_entry.entry.connect("changed", self.save_changes, "username")
         self.service_entry.entry.connect("changed", self.save_changes, "service")

@@ -58,6 +58,11 @@ class EventDispatcher(gobject.GObject):
             "wired-device-remove": _(obj),
             "wireless-device-add": _(obj),
             "wireless-device-remove": _(obj),
+            "mmdevice-added" : _(obj),
+            "mmdevice-removed": _(obj),
+
+            "ap-added": _(),
+            "ap-removed": _(),
 
             "to-setting-page": _(obj),
             "to-region-page":_(obj),

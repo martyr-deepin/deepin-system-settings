@@ -637,10 +637,33 @@ class DSLItem(GenItems):
         Dispatcher.to_setting_page(DSLSetting(self.connection))
 
 
-class MobileItem(DSLItem):
+class MobileItem(GenItems):
 
-    def __init__(self, connection, jumpto):
-        DSLItem.__init__(self,connection, jumpto)
+    def __init__(self, device, jumpto):
+        GenItems.__init__(self)
+        self.device = MMDevice(device)
+        manufacturer = self.device.get_manufacturer()
+        model = self.device.get_model()
+        self.info = model + " " + manufacturer
+
+    def render_info(self, cr ,rect):
+        self.render_background(cr, rect)
+        (text_width, text_height) = get_content_size(self.info)
+        draw_text(cr, self.info, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def get_column_widths(self):
+        return [IMG_WIDTH + 20, -1, IMG_WIDTH + 10]
+
+    def get_column_renders(self):
+        return [self.render_check, self.render_info, self.render_jumpto]
 
     def jumpto_cb(self):
         from mobile_config import MobileSetting
@@ -655,15 +678,32 @@ class VPNItem(DSLItem):
 
     def click_cb(self):
         print "clicked"
+        #active_connections = nm_module.nmclient.get_active_connections()
+        #if active_connections:
+            #device_path = active_connections[0].get_devices()[0].object_path
+            #specific_path = active_connections[0].object_path
+            #active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
+                                           #device_path,
+                                           #specific_path)
+            #self.vpn_active_cb(active_object)
+            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
+        #else:
+            #print "no active connection available"
         self.set_net_state(1)
         monitor = Monitor(self.connection,
-                          lambda w: self.set_net_state(0),
-                          lambda w: self.set_net_state(2))
+                          lambda:self.set_net_state(0),
+                          lambda:self.set_net_state(2))
         monitor.start()
 
     def jumpto_cb(self):
         from vpn_config import VPNSetting
         Dispatcher.to_setting_page(VPNSetting(self.connection))
+
+    def vpn_active_cb(self, active):
+        vpn_connection = cache.get_spec_object(active.object_path)
+        vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
+        vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
+        vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))
         
 class Monitor(threading.Thread):
     def __init__(self, connection, stop_callback, active_callback):
@@ -677,11 +717,10 @@ class Monitor(threading.Thread):
 
     def run(self):
         while self.td.isAlive():
-            print "alive"
             time.sleep(1)
+
         else:
-            print "stoped"
-            if self.succeed:
+            if self.td.succeed:
                 self.active_callback()
             else:
                 self.stop_callback()
@@ -690,23 +729,7 @@ class Monitor(threading.Thread):
         #td.start()
         #if td.active:
             #self.vpn_active_cb(self, td_active)
-        #active_connections = nm_module.nmclient.get_active_connections()
-        #if active_connections:
-            #device_path = active_connections[0].get_devices()[0].object_path
-            #specific_path = active_connections[0].object_path
-            #active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
-                                           #device_path,
-                                           #specific_path)
-            #self.vpn_active_cb(active_object)
-            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
-        #else:
-            #print "no active connection available"
     
-    def vpn_active_cb(self, active):
-        vpn_connection = cache.get_spec_object(active.object_path)
-        vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
-        vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
-        vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))
         #active_connections = nm_module.nmclient.get_active_connections()
         #if active_connections:
             #device_path = active_connections[0].get_devices()[0].object_path

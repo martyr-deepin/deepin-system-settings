@@ -44,7 +44,9 @@ class EntryTreeView(TreeView):
     __gsignals__ = {
         "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int)),
         "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-        "double-click" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int))}
+        "double-click" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int)),
+        "single-click" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int)),
+        }
     
     def __init__(self, 
             items=[],
@@ -65,7 +67,7 @@ class EntryTreeView(TreeView):
             start_drag_offset, mask_bound_height,
             right_space, top_bottom_space)
 
-        self.connect("double-click", self.double_click)
+        self.connect("single-click", self.double_click)
         self.draw_area.connect("button-press-event", self.button_press)
         self.draw_area.connect("button-release-event", self.button_release)
         self.draw_area.connect("motion-notify-event", self.motion_notify)
@@ -205,6 +207,7 @@ class EntryTreeView(TreeView):
                         self.visible_items[release_row].double_click(release_column, offset_x, offset_y)
                         self.emit("double-click", self.visible_items[release_row], release_column)
                     elif self.single_click_row == release_row:
+                        self.emit("single-click", self.visible_items[release_row], release_column)
                         self.visible_items[release_row].single_click(release_column, offset_x, offset_y)
                         #self.emit("double-click", self.visible_items[release_row], release_column)
                 

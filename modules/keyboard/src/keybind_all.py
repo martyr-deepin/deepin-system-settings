@@ -31,6 +31,7 @@ TYPE_STRV = 5
 
 shortcuts_group_dict = {
     _('System') : [
+        {'type': TYPE_MEDIA, 'name': "help", 'description': _("Launch user manual"), 'value-type': TYPE_STRING},
         {'type': TYPE_DP, 'name': "key1", 'description': _("Launcher"), 'value-type': TYPE_STRING, 'command': "/usr/bin/launcher"},              # 启动器
         {'type': TYPE_WM, 'name': "show-desktop", 'description': _("Show desktop"), 'value-type': TYPE_STRV},        # 显示桌面
         {'type': TYPE_MEDIA, 'name': "screensaver", 'description': _("Lock screen"), 'value-type': TYPE_STRING},      # 锁屏
@@ -40,13 +41,12 @@ shortcuts_group_dict = {
         {'type': TYPE_COMPIZ, 'name': "next-key", 'description': _("Switch applications with 3D"), 'value-type': TYPE_STRING},             # 应用程序3D切换
         {'type': TYPE_COMPIZ, 'name': "prev-key", 'description': _("Reverse switch applications with 3D"), 'value-type': TYPE_STRING},     # 应用程序3D反向
         {'type': TYPE_MEDIA, 'name': "screenshot", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING},  # 截图
-        {'type': TYPE_MEDIA, 'name': "full-screenshot", 'description': _("Take a screenshot of full screen"), 'value-type': TYPE_STRING},
+        {'type': TYPE_MEDIA, 'name': "area-screenshot", 'description': _("Take a screenshot of full screen"), 'value-type': TYPE_STRING},
         {'type': TYPE_MEDIA, 'name': "window-screenshot", 'description': _("Take a screenshot of a window"), 'value-type': TYPE_STRING},
         {'type': TYPE_MEDIA, 'name': "screenshot-delay", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING},
         {'type': TYPE_DP, 'name': "key3", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "/usr/bin/gnome-terminal"},
         {'type': TYPE_MEDIA, 'name': "logout", 'description': _("Log out"), 'value-type': TYPE_STRING}],
     _('Sound and Media') : [
-        {'type': TYPE_MEDIA, 'name': "help", 'description': _("Launch help browser"), 'value-type': TYPE_STRING},
         {'type': TYPE_MEDIA, 'name': "calculator", 'description': _("Launch calculator"), 'value-type': TYPE_STRING},
         {'type': TYPE_MEDIA, 'name': "email", 'description': _("Launch email client"), 'value-type': TYPE_STRING},
         {'type': TYPE_MEDIA, 'name': "www", 'description': _("Launch web browser"), 'value-type': TYPE_STRING},

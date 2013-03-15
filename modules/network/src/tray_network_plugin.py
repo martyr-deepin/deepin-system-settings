@@ -92,7 +92,12 @@ class TrayNetworkPlugin(object):
             Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
         else:
             self.gui.remove_net("wireless")
-
+        
+        # Mobile init
+        if self.net_manager.get_mm_devices():
+            pass
+        else:
+            self.gui.remove_net("mobile")
 
     def toggle_wired(self, widget):
         if widget.get_active():

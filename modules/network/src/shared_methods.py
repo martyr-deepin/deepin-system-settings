@@ -158,6 +158,11 @@ class NetManager(object):
         wifi.device_wifi_disconnect()
         wireless_device.nm_device_disconnect()
 
+    def get_mm_devices(self):
+        cdma = nm_module.mmclient.get_cdma_device()
+        gsm = nm_module.mmclient.get_gsm_device()
+        return cdma + gsm
+
 
     def get_security_by_ap(self, ap_object):
         NM_802_11_AP_FLAGS_NONE = 0x0
