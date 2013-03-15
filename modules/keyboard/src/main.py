@@ -720,6 +720,7 @@ class KeySetting(object):
         layout_add_treeview = TreeView(layout_treetimes, enable_hover=False)
         # search input
         entry = InputEntry()
+        entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
         entry.set_size(dialog_width-30, 25)
         
         dialog.body_box.pack_start(layout_add_treeview)
@@ -810,6 +811,14 @@ class KeySetting(object):
         self.button_widgets["shortcuts_add"].set_sensitive(False)
         self.__edit_custom_shortcuts_dilaog()
     
+    def on_accel_entry_changed_cb(self, widget, key_name):
+        accel_str = widget.accel_buffer.get_accel_label()
+        if not accel_str:
+            text = _("禁用%s的快捷键" % widget.settings_description)
+        else:
+            text = _("%s的快捷键设为%s" % (widget.settings_description, accel_str))
+        self.set_status_text(text)
+
     def __edit_custom_shortcuts_dilaog(self, is_edit=False):
         '''
         create a dialog to edit custom shortcuts
@@ -923,6 +932,7 @@ class KeySetting(object):
                 hbox.pack_start(self.__make_align(entry), False, False)
                 hbox.pack_start(self.__make_align())
                 vbox.pack_start(hbox, False, False)
+                entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
         for label_align in label_align_list:
             label_align.set_size_request(self.max_label_width+30, CONTAINNER_HEIGHT)
 

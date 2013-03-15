@@ -22,7 +22,6 @@
 
 from theme import app_theme
 
-
 from dtk.ui.new_entry import ShortcutKeyEntry
 from dtk.ui.label import Label
 from dtk.ui.dialog import DialogBox
@@ -31,6 +30,7 @@ from dtk.ui.utils import color_hex_to_cairo
 from nls import _
 import gtk
 import gobject
+import settings
 from glib import markup_escape_text
 from constant import *
 
@@ -157,10 +157,11 @@ class AccelBuffer(object):
 class AccelEntry(ShortcutKeyEntry):
     ''' '''
     TYPE_DP_GSETTINGS = 0
-    TYPE_GSETTINGS = 1
-    TYPE_GCONF = 2
-    TYPE_STRING = 3
-    TYPE_STRV = 4
+    TYPE_CMP_GSETTINGS = 1
+    TYPE_GSETTINGS = 2
+    TYPE_GCONF = 3
+    TYPE_STRING = 4
+    TYPE_STRV = 5
     __gsignals__ = {
         "accel-key-change" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "accel-del" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
@@ -281,8 +282,8 @@ class AccelEntry(ShortcutKeyEntry):
     def reassign(self, accel_buf, conflict_entry, widget=None):
         if widget:
             widget.destroy()
-        self.set_keyval_and_state(accel_buf.get_keyval(), accel_buf.get_state())
         conflict_entry.set_keyval_and_state(0, 0)
+        self.set_keyval_and_state(accel_buf.get_keyval(), accel_buf.get_state())
     
     def check_unmodified_keys(self, event):
         #Check for unmodified keys
@@ -347,10 +348,10 @@ class AccelEntry(ShortcutKeyEntry):
                 self.settings_obj.set_string(self.settings_key, accel_name)
         elif self.settings_type == self.TYPE_DP_GSETTINGS:
             self.settings_obj.set_string(self.settings_key, "%s;%s" %(self.settings_value_type, accel_name))
+        elif self.settings_type == self.TYPE_CMP_GSETTINGS:
+            settings.shortcuts_compiz_set(self.settings_key, accel_name)
         elif self.settings_type == self.TYPE_GCONF:
             self.settings_obj.set_string("%s/binding" % (self.settings_key), accel_name)
-        print "set key", accel_name, self.settings_obj, self.settings_key, self.settings_type, self.settings_value_type
-        #set_gsettings_or_gconf_value(self.settings_obj, self.settings_key, accel_name)
 
     def __on_label_enter_cb(self, widget, event):
         if self.can_del:

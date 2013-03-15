@@ -285,6 +285,20 @@ def shortcuts_media_set(key, value):
     '''
     return SHORTCUTS_SETTINGS.set_string(key, value)
 
+def shortcuts_compiz_get(key):
+    current_profile = COMPIZ_SHORTCUTS_SETTINGS.get_string("current-profile")
+    if not current_profile:
+        return None
+    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.shift", "/org/compiz/profiles/%s/plugins/shift/" % current_profile)
+    key_name = tmp_gsettings.get_string(key)
+    return key_name
+
+def shortcuts_compiz_set(key, value):
+    current_profile = COMPIZ_SHORTCUTS_SETTINGS.get_string("current-profile")
+    if not current_profile:
+        return
+    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.shift", "/org/compiz/profiles/%s/plugins/shift/" % current_profile)
+    tmp_gsettings.set_string(key, value)
 
 def shortcuts_custom_get(key):
     '''
