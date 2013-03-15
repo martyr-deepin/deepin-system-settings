@@ -88,7 +88,7 @@ class TrayTimePlugin(object):
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
         return align   
 
-    def __on_day_selected(self, widget, event):
+    def __on_day_selected(self, widget):
         self.this.hide_menu()                                                   
         run_command("deepin-system-settings date_time")        
 
@@ -119,7 +119,7 @@ class TrayTimePlugin(object):
                                      ali_padding = 5)
         select_button.set_size_request(self.width, 25)
         select_align.add(select_button)
-        select_button.connect("button-press-event", self.__on_day_selected)
+        select_button.connect("clicked", self.__on_day_selected)
         box.pack_start(calendar_align, False, False)
         box.pack_start(select_align, False, False)
         align.add(box)
