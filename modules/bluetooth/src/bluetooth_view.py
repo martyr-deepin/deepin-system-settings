@@ -45,7 +45,7 @@ from nls import _
 from bt.device import Device
 from bt.utils import bluetooth_class_to_type
 from my_bluetooth import MyBluetooth
-from ods.OdsManager import OdsManager
+from bluetooth_sender import BluetoothSender
 from helper import event_manager
 import time
 import threading as td
@@ -121,11 +121,6 @@ class DeviceItem(gobject.GObject):
 
         self.highlight_fill_color = "#7db7f2"                                   
         self.highlight_stroke_color = "#396497"
-
-        self.__session = None
-
-        event_manager.add_callback("device-cancel", self.__on_cancel)
-        event_manager.add_callback("send-file", self.__on_send_file)
 
     def render(self, cr, rect):
         padding = 10
@@ -258,96 +253,9 @@ class DeviceItem(gobject.GObject):
         '''
         pass
 
-    def __on_session_connected(self, session):
-        self.__session = session
-        if self.__session and self.__session.Connected:                            
-            self.__session.SendFile(self.filename) 
- 
-    def __on_session_disconnected(self, session):
-        if self.__session:
-            self.__session.Close()
-
-    def __on_session_error(self, session, name, msg):
-        send_message("dialog", 
-                     ("bluetooth", "progress", "", str("-1"))
-                    )
-        send_message("dialog", 
-                     ("bluetooth", "reply", _("Failed!\nerror msg: %s") % msg, "False")
-                    )
-
-    def __on_cancel(self, name, obj, argv):                                            
-        def reply(*args):                                               
-            self.__session.Disconnect()                               
-                                                                                
-        if self.__session:                                                
-            if self.__session.Connected:                              
-                self.__session.Cancel(reply_handler=reply, error_handler=reply)
-            else:                                                   
-                self.__ods_manager.CancelSessionConnect(self.__session.object_path)
-
-    def __on_transfer_started(self, session, filename, path, size):
-        send_message("dialog", 
-                     ("bluetooth", "progress", _("Sending file to %s") % self.device.get_name(), "")
-                    )
-
-    def __on_transfer_progress(self, session, progress):
-        progress_value = int(float(progress) / float(self.total_bytes) * 100.0)
-        send_message("dialog", 
-                     ("bluetooth", "progress", "", str(progress_value))
-                    )
-
-    def __on_transfer_completed(self, session):
-        send_message("dialog", 
-                     ("bluetooth", "progress", "", str(-1))
-                    )
-
-        self.__session.Disconnect()
-        self.__session.Close()
-
-        send_message("dialog", ("bluetooth", "reply", _("Succeed!"), ""))
-
-    def __on_session_created(self, manager, session):
-        self.__session = session
-        session.GHandle("connected", self.__on_session_connected)          
-        session.GHandle("disconnected", self.__on_session_disconnected)    
-        session.GHandle("error-occurred", self.__on_session_error)         
-        session.GHandle("transfer-started", self.__on_transfer_started)    
-        session.GHandle("transfer-progress", self.__on_transfer_progress) 
-        session.GHandle("transfer-completed", self.__on_transfer_completed)
-
-    def __on_session_destroyed(self, manager, path):                          
-        if self.__session.object_path == path:                            
-            self.__session = None
-
-    def __create_session(self):
-        def on_error(msg):
-            print "create session error", msg
-
-        props = self.adapter.get_properties()
-        self.__ods_manager.create_session(self.device.get_address(), props["Address"], error_handler=on_error)
-
-    def __send_file(self, filename):
-        self.filename = filename
-        self.total_bytes = os.path.getsize(self.filename)
-        self.__ods_manager = OdsManager()
-        self.__ods_manager.GHandle("session-created", self.__on_session_created)
-        self.__ods_manager.GHandle("session-destroyed", self.__on_session_destroyed)
-        self.__create_session()
-
     def do_send_file(self):
-        OpenFileDialog(_("Select File"), None, lambda name : self.__send_file(name), None)
-
-    def __on_send_file(self, name, obj, argv):
-        if argv == self.device.get_name():
-            self.do_send_file()
-
-    def __reply_handler_cb(self, device):
-        self.is_paired = True
-        self.emit_redraw_request()
-
-    def __error_handler_cb(self, error):
-        self.is_paired = False
-        self.emit_redraw_request()
+        sender = BluetoothSender(self.adapter, self.device)
+        sender.do_send_file()
 
     def do_remove(self):
         self.adapter.remove_device(self.device.object_path)
@@ -554,7 +462,7 @@ class BlueToothView(gtk.VBox):
         event_manager.emit("send-file", device_name)
 
     def cancel(self):
-        event_manager.emit("device-cancel", None)
+        event_manager.emit("cancel", None)
     
     def __on_adapter_removed(self):                                            
         self.set_sensitive(False)

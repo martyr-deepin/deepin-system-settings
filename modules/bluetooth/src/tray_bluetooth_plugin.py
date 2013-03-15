@@ -40,17 +40,20 @@ import gobject
 import gtk
 import pango
 import time
+import common
 from my_bluetooth import MyBluetooth
-from constant import *
+from bluetooth_sender import BluetoothSender
 from nls import _
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 22
     NAME_WIDTH = 160
     
-    def __init__(self, name):
+    def __init__(self, PluginPtr, adapter, device):
         TreeItem.__init__(self)
-        self.name = name
+        self.PluginPtr = PluginPtr
+        self.adapter = adapter
+        self.device = device
         self.is_hover = False
 
     def hover(self, column, offset_x, offset_y):                                
@@ -64,8 +67,12 @@ class DeviceItem(TreeItem):
             self.redraw_request_callback(self)
 
     def single_click(self, column, offset_x, offset_y):
+        self.PluginPtr.hide_menu()
+
+        sender = BluetoothSender(self.adapter, self.device)
+        sender.do_send_file()
+
         run_command("deepin-system-settings bluetooth")
-        gobject.timeout_add(6000, lambda : send_message_to_client("bluetooth", "sendfile", self.name))
 
     def __render_name(self, cr, rect):                                           
         name_width = 130
@@ -85,7 +92,7 @@ class DeviceItem(TreeItem):
                 cr.stroke()
 
         draw_text(cr, 
-                  self.name, 
+                  self.device.get_name(), 
                   rect.x + 5, 
                   rect.y, 
                   name_width - 6, 
@@ -154,7 +161,7 @@ class TrayBluetoothPlugin(object):
        
         self.device_items = []
         while i < device_count:
-            self.device_items.append(DeviceItem(devices[i].get_name()))
+            self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, devices[i]))
             i += 1
 
         self.height = self.ori_height
