@@ -26,6 +26,7 @@ from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from theme import app_theme
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from dtk.ui.draw import draw_text
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
@@ -39,27 +40,62 @@ import gobject
 import gtk
 import pango
 import time
+import common
 from my_bluetooth import MyBluetooth
+from bluetooth_sender import BluetoothSender
 from nls import _
 
 class DeviceItem(TreeItem):
-    ITEM_HEIGHT = 15
+    ITEM_HEIGHT = 22
     NAME_WIDTH = 160
     
-    def __init__(self, name):
+    def __init__(self, PluginPtr, adapter, device):
         TreeItem.__init__(self)
-        self.name = name
+        self.PluginPtr = PluginPtr
+        self.adapter = adapter
+        self.device = device
+        self.is_hover = False
+
+    def hover(self, column, offset_x, offset_y):                                
+        self.is_hover = True
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+                                                                                
+    def unhover(self, column, offset_x, offset_y):                              
+        self.is_hover = False                                                   
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)
+
+    def single_click(self, column, offset_x, offset_y):
+        self.PluginPtr.hide_menu()
+
+        sender = BluetoothSender(self.adapter, self.device)
+        sender.do_send_file()
+
+        run_command("deepin-system-settings bluetooth")
 
     def __render_name(self, cr, rect):                                           
-        cr.set_source_rgb(1, 1, 1 )                                             
+        name_width = 130
+        
+        cr.set_source_rgb(1, 1, 1)                                             
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)                   
         cr.fill()
 
+        if self.is_hover:                                                       
+            with cairo_disable_antialias(cr):                                   
+                cr.set_source_rgb(*color_hex_to_cairo("#EBF4FD"))
+                cr.rectangle(rect.x, rect.y, name_width, rect.height)
+                cr.fill()
+                cr.set_source_rgb(*color_hex_to_cairo("#7DA2CE"))                   
+                cr.set_line_width(1)                                            
+                cr.rectangle(rect.x + 1, rect.y + 1, name_width, rect.height - 1)  
+                cr.stroke()
+
         draw_text(cr, 
-                  self.name, 
-                  rect.x, 
+                  self.device.get_name(), 
+                  rect.x + 5, 
                   rect.y, 
-                  rect.width, 
+                  name_width - 6, 
                   rect.height)
 
     def get_height(self):
@@ -125,7 +161,7 @@ class TrayBluetoothPlugin(object):
        
         self.device_items = []
         while i < device_count:
-            self.device_items.append(DeviceItem(devices[i].get_name()))
+            self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, devices[i]))
             i += 1
 
         self.height = self.ori_height

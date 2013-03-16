@@ -55,23 +55,24 @@ class WirelessSetting(Settings):
                                 Sections,
                                 IPV4Conf,
                                 IPV6Conf],)
-
-        self.ap = ap
+        if ap:
+            self.crumb_name = self.ap.get_ssid()
+        else:
+            self.crumb_name = ""
         self.spec_connection = spec_connection
-        self.crumb_name = self.ap.get_ssid()
 
     def get_ssid(self):
         return self.connections.get_setting("802-11-wireless").ssid
 
     def get_connections(self):
-        self.connections = nm_module.nm_remote_settings.get_ssid_associate_connections(self.ap.get_ssid())
+        self.connections = nm_module.nm_remote_settings.get_ssid_associate_connections(self.crumb_name)
         if self.connections == []:
-            self.connections = [nm_module.nm_remote_settings.new_wireless_connection(self.ap.get_ssid(), None)]
+            self.connections = [nm_module.nm_remote_settings.new_wireless_connection(self.crumb_name, None)]
 
         return self.connections
     
     def add_new_connection(self):
-        return (nm_module.nm_remote_settings.new_wireless_connection(self.ap.get_ssid(), None), -1)
+        return (nm_module.nm_remote_settings.new_wireless_connection(self.crumb_name, None), -1)
     
     def save_changes(self, connection):
         print "save changes"
@@ -125,14 +126,14 @@ class Sections(gtk.Alignment):
 
     def __init__(self, connection, set_button):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
-        self.set_padding(35, 0, 50, 0)
+        self.set_padding(35, 0, 20, 0)
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
         basic = SettingSection(_("Basic"))
 
-        self.button = Button(_("Advanced"))
-        self.button.set_size_request(50, 22)
+        #self.button = Button(_("Advanced"))
+        #self.button.set_size_request(50, 22)
         #self.button.connect("clicked", self.show_more_options)
         self.wireless = SettingSection(_("Wireless"), always_show=True)
         self.ipv4 = SettingSection(_("IPv4 Setting"), always_show=True)
@@ -253,6 +254,18 @@ class Security(gtk.VBox):
         self.security_combo.set_size_request(width, height)
         self.pack_start(self.table, False, False)
         self.pack_start(self.align, False, False, 0)
+
+    def add_ssid_entry(self):
+        self.wireless = self.connection.get_setting("802-11-wireless")
+        self.ssid_label = Label(_("SSID:"),
+                                enable_select=False,
+                                enable_double_click=False)
+        self.ssid_entry = InputEntry()
+        self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
+
+    def entry_changed(self, widget, content, types):
+        if types.endswith("ssid"):
+            setattr(self.wireless, types, content)
 
         #self.add(align)
     def advand_cb(self, widget):

@@ -148,7 +148,7 @@ class KeySetting(object):
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
             DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
             enable_select=False, enable_double_click=False)
-        self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
+        self.button_widgets["set_to_default"] = Button(_("Reset"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()
@@ -612,15 +612,16 @@ class KeySetting(object):
     # typing widget callback
     def disable_while_typing_set(self, button):
         ''' set left-handed '''
-        if button.get_data("changed-by-other-app"):
-            button.set_data("changed-by-other-app", False)
-            return
+        print "disable while typing:", button.get_active(), button.get_data("changed-by-other-app")
+        #if button.get_data("changed-by-other-app"):
+            #button.set_data("changed-by-other-app", False)
+            #return
         settings.keyboard_set_disable_touchpad_while_typing(
             button.get_active())
         if button.get_active():
-            self.set_status_text(_("启用打字时禁用触摸板"))
+            self.set_status_text(_("Disabled touchpad while typing"))
         else:
-            self.set_status_text(_("取消打字时禁用触摸板"))
+            self.set_status_text(_("Enabled touchpad while typing"))
     
     def disable_while_typing_change(self, key):
         ''' set left or right radio button active '''
@@ -705,7 +706,7 @@ class KeySetting(object):
             layout_list.append(l_str)
             settings.xkb_set_layouts(layout_list)
             dialog.destroy()
-            self.set_status_text(_("当前布局设为 %s") % item.name)
+            self.set_status_text(_("Current Layout is: %s") % item.name)
         self.container_widgets["layout_button_hbox"].set_sensitive(False)
         dialog_width = 400
         dialog_heigth = 380
@@ -720,6 +721,7 @@ class KeySetting(object):
         layout_add_treeview = TreeView(layout_treetimes, enable_hover=False)
         # search input
         entry = InputEntry()
+        entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
         entry.set_size(dialog_width-30, 25)
         
         dialog.body_box.pack_start(layout_add_treeview)
@@ -802,7 +804,7 @@ class KeySetting(object):
         settings.GCONF_CLIENT.unset('%s/binding' % gconf_dir)
         settings.GCONF_CLIENT.unset('%s/name' % gconf_dir)
         button.get_parent().get_parent().destroy()
-        self.set_status_text(_("删除自定义快捷键"))
+        self.set_status_text(_("Deleted custom hotkey"))
     
     def __add_shortcuts_item(self):
         last_row = len(self.view_widgets["shortcuts_selected"].visible_items) - 1
@@ -810,6 +812,14 @@ class KeySetting(object):
         self.button_widgets["shortcuts_add"].set_sensitive(False)
         self.__edit_custom_shortcuts_dilaog()
     
+    def on_accel_entry_changed_cb(self, widget, key_name):
+        accel_str = widget.accel_buffer.get_accel_label()
+        if not accel_str:
+            text = _("Disabled hotkey for %s") % widget.settings_description
+        else:
+            text = _("The hotkey for %s is set to %s") % (widget.settings_description, accel_str)
+        self.set_status_text(text)
+
     def __edit_custom_shortcuts_dilaog(self, is_edit=False):
         '''
         create a dialog to edit custom shortcuts
@@ -849,7 +859,7 @@ class KeySetting(object):
             shortcut_vbox.pack_start(hbox, False, False)
             shortcut_vbox.show_all()
             dialog.destroy()
-            self.set_status_text(_("添加自定义快捷键"))
+            self.set_status_text(_("Add custom hotkey"))
         self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(False)
         dialog = DialogBox(_("Custom Shortcuts"), 250, 150)
         dialog.connect("destroy", lambda w: self.button_widgets["shortcuts_add"].set_sensitive(True))
@@ -923,6 +933,7 @@ class KeySetting(object):
                 hbox.pack_start(self.__make_align(entry), False, False)
                 hbox.pack_start(self.__make_align())
                 vbox.pack_start(hbox, False, False)
+                entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
         for label_align in label_align_list:
             label_align.set_size_request(self.max_label_width+30, CONTAINNER_HEIGHT)
 
@@ -942,7 +953,7 @@ class KeySetting(object):
         if self.container_widgets["tab_box"].tab_index == 0:
             settings.keyboard_set_to_default()
             settings.xkb_set_to_default()
-            self.set_status_text(_("恢复默认值"))
+            self.set_status_text(_("Reset to default"))
         elif self.container_widgets["tab_box"].tab_index == 1:
             pass
     

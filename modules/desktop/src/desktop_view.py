@@ -54,10 +54,14 @@ class DesktopView(gtk.VBox):
         self.desktop_settings = deepin_gsettings.new("com.deepin.dde.desktop")
         self.dock_settings = deepin_gsettings.new("com.deepin.dde.dock")
         self.compiz_integrated_settings = deepin_gsettings.new("org.compiz.integrated")
+        self.compiz_core_settings = deepin_gsettings.new_with_path(
+            "org.compiz.core", "/org/compiz/profiles/deepin/plugins/core/")
         self.compiz_run_command_edge_settings = deepin_gsettings.new_with_path(
             "org.compiz.commands", "/org/compiz/profiles/deepin/plugins/commands/")
         self.compiz_run_command_edge_settings.set_string("run-command0-edge", "TopLeft")
         self.compiz_run_command_edge_settings.set_string("run-command1-edge", "TopRight")
+        self.compiz_scale_settings = deepin_gsettings.new_with_path("org.compiz.scale", 
+            "/org/compiz/profiles/deepin/plugins/scale/")
 
         self.display_style_items = [(_("Default Style"), 0), 
                                     (_("Auto Hide"), 1), 
@@ -165,7 +169,7 @@ class DesktopView(gtk.VBox):
         hot zone
         '''
         self.hot_title_align = self.__setup_title_align(                       
-            app_theme.get_pixbuf("desktop/dock.png"),                           
+            app_theme.get_pixbuf("desktop/hot.png"),                           
             _("Hot Zone")) 
         self.topleft_align = self.__setup_align()
         self.topleft_box = gtk.HBox(spacing = WIDGET_SPACING)
@@ -174,12 +178,15 @@ class DesktopView(gtk.VBox):
         command1 = self.compiz_integrated_settings.get_string("command-1")
         if command1 == "":
             self.topleft_combo.set_select_index(0)
-        elif command1 == self.SUPER_W_CMD:
-            self.topleft_combo.set_select_index(1)
         elif command1 == self.LAUNCHER_CMD:
             self.topleft_combo.set_select_index(2)
         else:
             pass
+
+        scale_edge_str = self.compiz_scale_settings.get_string("initiate-edge")
+        if scale_edge_str == "Top Left":
+            self.topleft_combo.set_select_index(1)
+
         self.topleft_combo.connect("item-selected", self.__combo_item_selected, "topleft")
         self.__widget_pack_start(self.topleft_box, [self.topleft_label, self.topleft_combo])
         self.topleft_align.add(self.topleft_box)
@@ -190,12 +197,14 @@ class DesktopView(gtk.VBox):
         command2 = self.compiz_integrated_settings.get_string("command-2")          
         if command2 == "":                                                      
             self.topright_combo.set_select_index(0)                              
-        elif command2 == self.SUPER_W_CMD:                                      
-            self.topright_combo.set_select_index(1)                              
         elif command2 == self.LAUNCHER_CMD:                                     
             self.topright_combo.set_select_index(2)                              
         else:                                                                   
             pass
+        
+        if scale_edge_str == "TopRight":
+            self.topright_combo.set_select_index(1)
+
         self.topright_combo.connect("item-selected", self.__combo_item_selected, "topright")
         self.__widget_pack_start(self.topright_box, [self.topright_label, self.topright_combo])
         self.topright_align.add(self.topright_box)
@@ -261,6 +270,19 @@ class DesktopView(gtk.VBox):
         self.connect("expose-event", self.__expose)
 
         self.__send_message("status", ("desktop", ""))
+
+        self.__check_active_plugins()
+
+    def __check_active_plugins(self):
+        active_plugins = self.compiz_core_settings.get_strv("active-plugins")
+        
+        if "commands" not in active_plugins:
+            active_plugins.append("commands")
+            self.compiz_core_settings.set_strv("active-plugins", active_plugins)
+
+        if "scale" not in active_plugins:
+            active_plugins.append("scale")
+            self.compiz_core_settings.set_strv("active-plugins", active_plugins)
 
     def __toggled(self, widget, obj):
         is_toggled = widget.get_active()
@@ -417,7 +439,7 @@ class DesktopView(gtk.VBox):
             if item_value == 0:
                 self.compiz_integrated_settings.set_string("command-1", "")
             elif item_value == 1:
-                self.compiz_integrated_settings.set_string("command-1", self.SUPER_W_CMD)
+                self.compiz_scale_settings.set_string("initiate-edge", "TopLeft")
             elif item_value == 2:
                 self.compiz_integrated_settings.set_string("command-1", self.LAUNCHER_CMD)
             else:
@@ -428,7 +450,7 @@ class DesktopView(gtk.VBox):
             if item_value == 0:                                                 
                 self.compiz_integrated_settings.set_string("command-2", "")         
             elif item_value == 1:                                               
-                self.compiz_integrated_settings.set_string("command-2", self.SUPER_W_CMD)
+                self.compiz_scale_settings.set_string("initiate-edge", "TopRight")
             elif item_value == 2:                                               
                 self.compiz_integrated_settings.set_string("command-2", self.LAUNCHER_CMD)
             else:                                                               

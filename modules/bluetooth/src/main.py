@@ -41,6 +41,8 @@ if __name__ == "__main__":
             module_frame.send_module_info()
         elif message_type == "cancel":
             bluetooth_view.cancel()
+        else:
+            pass
 
     module_frame.module_message_handler = message_handler 
     

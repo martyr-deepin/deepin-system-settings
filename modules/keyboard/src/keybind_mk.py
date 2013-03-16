@@ -23,7 +23,7 @@
 from nls import _
 from keybind_all import shortcuts_group_dict, TYPE_WM, TYPE_MEDIA, TYPE_COMPIZ, TYPE_DP
 from accel_entry import AccelEntry
-import deepin_gsettings                                                      
+import settings
 
 ACCEL_ENTRY_LIST = []
 
@@ -48,7 +48,7 @@ def get_all_shortcuts_entry(gst_list):
             if key['type'] in keys_list and key['name'] in keys_list[key['type']]:
                 if key['type'] == TYPE_DP:
                     item = get_shortcuts_dp_shortcut_entry(gst_list[TYPE_DP], key)
-                if key['type'] == TYPE_COMPIZ:
+                elif key['type'] == TYPE_COMPIZ:
                     item = get_shortcuts_compiz_shortcut_entry(gst_list[TYPE_COMPIZ], key)
                     if not item:
                         continue
@@ -101,12 +101,12 @@ def get_shortcuts_dp_shortcut_entry(gsettings, key_dict):
     return item
 
 def get_shortcuts_compiz_shortcut_entry(gsettings, key_dict):
-    current_profile = gsettings.get_string("current-profile")
-    if not current_profile:
-        return None
-    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.shift", "/org/compiz/profiles/%s/plugins/shift" % current_profile)
-    tmp_gsettings.get_string(key_dict['name'])
-    item = AccelEntry(key1_name[1], check_shortcut_conflict)
+    key_name = settings.shortcuts_compiz_get(key_dict['name'])
+    item = AccelEntry(key_name, check_shortcut_conflict)
+    item.settings_description = key_dict['description']
+    item.settings_key = key_dict['name']
+    item.settings_obj = gsettings
+    item.settings_type = item.TYPE_CMP_GSETTINGS
     return item
 
 def get_shortcuts_custom_shortcut_entry(client, del_callback=None):

@@ -324,9 +324,14 @@ class WirelessSection(Section, WirelessDevice):
             self.tree.connect("single-click-item", self.set_selected_item)
             self.hotspot = HotSpot(None)
             self.vbox = gtk.VBox(False)
+            self.label =  Label(_("Creat Hidden network"), 
+                              LABEL_COLOR,
+                              underline=True,
+                              enable_select=False,
+                              enable_double_click=False)
             self.space = gtk.VBox()
             self.space.set_size_request(-1, 15)
-            self.load(self.wireless, [self.tree])
+            self.load(self.wireless, [self.tree, self.label])
             self.vbox.pack_start(self.space, False, False)
             self.vbox.pack_start(self.hotspot, False, False)
             self.pack_start(self.vbox, False, False)
@@ -339,6 +344,19 @@ class WirelessSection(Section, WirelessDevice):
 
     def init_signals(self):
         self._init_signals()
+        Dispatcher.connect("ap-added", self.ap_added_callback)
+        Dispatcher.connect("ap-removed", self.ap_removed_callback)
+        self.label.connect("button-release-event", self.create_a_hidden_network)
+
+    def create_a_hidden_network(self, widget, c):
+        from wlan_config import WirelessSetting
+        Dispatcher.to_setting_page(WirelessSetting(None))
+
+    def ap_added_callback(self, widget):
+        print "ap added"
+
+    def ap_removed_callback(self, widget):
+        print "ap removed"
 
     def set_selected_item(self, widget, item, column, x, y):
         self.selected_item = item
@@ -387,7 +405,12 @@ class WirelessSection(Section, WirelessDevice):
             device_wifi = cache.get_spec_object(wireless_device.object_path)
             self.ap_list += device_wifi.order_ap_list()
 
+        ap = filter(lambda a: a.get_ssid() == "daydayup", self.ap_list)
+        print ap 
+        #print ap[0].object_path
+
         aps = map(lambda i:WirelessItem(i), self.ap_list)
+        
 
         hidden_list = self.get_hidden_connection(self.ap_list)
         hiddens = map(lambda c: HidenItem(c), hidden_list)
@@ -407,6 +430,7 @@ class WirelessSection(Section, WirelessDevice):
             if d.get_state() == 100:
                 return True
         return False
+    
 
 #class WirelesSection(gtk.VBox):
     #def __init__(self, send_to_crumb_cb):
@@ -909,7 +933,9 @@ class VpnSection(Section):
     def toggle_on_after(self):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
+            # TODO fix for mutiple
             connection = vpn_active[0].get_connection()
+
             try:
                 index = self.connection.index(connection)
                 self.tree.visible_items[index].set_net_state(2)
@@ -1026,15 +1052,18 @@ class MobileSection(Section):
         Section.__init__(self)
 
         # init values
-        self.mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), lambda w:w)
-        self.tree = TreeView([])
-        self.label = Label(_("Mobile Configuration"),
-                      LABEL_COLOR,
-                      underline=True,
-                      enable_select=False,
-                      enable_double_click=False)
+        if self.get_list():
+            self.mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), lambda w:w)
+            self.tree = TreeView([])
+            self.label = Label(_("Mobile Configuration"),
+                          LABEL_COLOR,
+                          underline=True,
+                          enable_select=False,
+                          enable_double_click=False)
 
-        self.load(self.mobile, [self.tree, self.label])
+            self.load(self.mobile, [self.tree, self.label])
+        else:
+            pass
 
     def __init_signals(self):
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
@@ -1054,11 +1083,14 @@ class MobileSection(Section):
         pass
 
     def get_list(self):
-        self.cdma = nm_module.nm_remote_settings.get_cdma_connections()
-        self.gsm = nm_module.nm_remote_settings.get_gsm_connections()
-        self.connection = self.cdma + self.gsm
+        self.cdma = nm_module.mmclient.get_cdma_device()
+        self.gsm = nm_module.mmclient.get_gsm_device()
 
-        return map(lambda c: MobileItem(c, None), self.connection)
+        #self.cdma = nm_module.nm_remote_settings.get_cdma_connections()
+        #self.gsm = nm_module.nm_remote_settings.get_gsm_connections()
+        
+        self.devices = self.cdma + self.gsm
+        return map(lambda c: MobileItem(c, None), self.devices)
     
     def jumpto_cb(self):
         Dispatcher.to_setting_page(MobileSetting())
@@ -1196,7 +1228,8 @@ class Network(object):
         if hasattr(self.wireless, "wireless"):
             vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
-        vbox.pack_start(self.mobile, False, True, 0)
+        if hasattr(self.mobile, "mobile"):
+            vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
         vbox.pack_start(self.proxy, False, True, 0)
         vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
@@ -1261,7 +1294,6 @@ class Network(object):
                                           lambda  : module_frame.send_message("change_crumb", 1))
         self.proxy.add_setting_page(self.proxy_setting_page)
 
-        #self.mobile = Mobile(lambda : module_frame.send_submodule_crumb(2, _("Mobile Network")))
         self.mobile = MobileSection()
         #self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           #lambda  : module_frame.send_message("change_crumb", 1))

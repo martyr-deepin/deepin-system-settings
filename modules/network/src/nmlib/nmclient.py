@@ -249,7 +249,7 @@ class NMClient(NMObject):
     def get_active_connections(self):
         '''return active connections objects'''
         try:
-            return map(lambda x: cache.getobject(x), self.properties["ActiveConnections"])
+            return filter(lambda x: x.get_state() == 2, map(lambda x: cache.getobject(x), self.properties["ActiveConnections"]))
         except:
             return []
 

@@ -110,17 +110,17 @@ def is_laptop():
     xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
     return xrandr_settings.get_boolean("is-laptop")
 
-def handle_dbus_replay(*reply):                                                 
+def handle_dbus_reply(*reply):                                                 
     pass                                                                    
                                                                                 
 def handle_dbus_error(*error):                                                  
     pass                                                                    
-                                                                                
+
 def send_message(message_type, message_content):                                
     if is_dbus_name_exists(APP_DBUS_NAME):                                      
         bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
         method = bus_object.get_dbus_method("message_receiver")                 
         method(message_type,                                                    
                message_content,                                                 
-               reply_handler=handle_dbus_replay,                         
+               reply_handler=handle_dbus_reply,                         
                error_handler=handle_dbus_error)
