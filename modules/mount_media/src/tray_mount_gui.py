@@ -35,51 +35,93 @@ import gobject
 image_path = os.path.dirname(sys.argv[0])
 ICON_SIZE = 16
 
-class Device(gtk.Button):
+#class Device(gtk.Button):
+class Device(gtk.HBox):
     def __init__(self):
-        gtk.Button.__init__(self)
+        #gtk.Button.__init__(self)
+        gtk.HBox.__init__(self)
+        self.icon_image  = gtk.Image()
+        self.open_btn  = gtk.Button()
+        self.close_btn = gtk.Button()
+        #self.icon_btn.connect("expose-event", self.icon_btn_expose_event)
+        self.open_btn.connect("expose-event", self.open_btn_expose_event)
+        self.close_btn.connect("expose-event", self.close_btn_expose_event)
+        self.pack_start(self.icon_image, False, False, 5)
+        self.pack_start(self.open_btn, True, True, 5)
+        self.pack_start(self.close_btn, False, False)
         self.__init_values()
 
     def __init_values(self):
         self.eject_check = False
+        self.icon_pixbuf = None
         self.off_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(image_path, "image/offbutton/off.png"))
         self.on_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(image_path, "image/offbutton/on.png"))
-        self.connect("expose-event", self.device_expose_event)
+        close_w = self.on_pixbuf.get_width()
+        close_h = self.on_pixbuf.get_height()
+        self.close_btn.set_size_request(close_w, close_h)
         self.show_all()
 
-    def set_eject_check(self, check):
-        self.eject_check = check
-        self.queue_draw()
-
-    def device_expose_event(self, widget, event):
+    def icon_btn_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
+        if self.icon_pixbuf:
+            print self.icon_pixbuf
+            
+            '''
+            draw_pixbuf(cr,
+                        pixbuf,
+                        rect.x,
+                        rect.y)
+            '''
+        '''
+        cr.rectangle(rect.x, rect.y, 16, 16)
+        cr.fill()
+        '''
+        #
+        return True
+
+
+    def open_btn_expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
         text = widget.get_label().decode("utf-8")
-        text_width = get_text_size("ABCDEFABCDEFH")[0]
-        ch_width = get_text_size("a")[0]
-        dec_width = get_text_size(text)[0] - text_width
+        text_width = get_text_size("ABCDEFABCDEFH", text_size=9)[0]
+        ch_width = get_text_size("a", text_size=9)[0]
+        dec_width = get_text_size(text, text_size=9)[0] - text_width
         if dec_width > 0:
             index = dec_width/ch_width
             text = text[0:len(text)-index] + "..."
         if self.eject_check:
-            simple_pixbuf = self.on_pixbuf
             text_color_value = "#000000"
         else:
-            simple_pixbuf = self.off_pixbuf
             text_color_value = "#9d9d9d"
-
         draw_text(cr, 
                   text, 
                   rect.x, 
-                  rect.y, 
+                  rect.y + rect.height/2 - get_text_size(text)[1]/2, 
                   text_color=text_color_value,
                   text_size=9)
+        return True
+
+    def close_btn_expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        if self.eject_check:
+            simple_pixbuf = self.on_pixbuf
+        else:
+            simple_pixbuf = self.off_pixbuf
+
         draw_pixbuf(cr, 
                     simple_pixbuf, 
-                    rect.x + rect.width - simple_pixbuf.get_width(), 
-                    rect.y)
+                    rect.x,
+                    rect.y + rect.height/2 - simple_pixbuf.get_height()/2)
         return True
+
+    def set_eject_check(self, check):
+        self.eject_check = check
+        self.queue_draw()
 
 class EjecterApp(gobject.GObject):
     __gsignals__ = {
@@ -258,11 +300,22 @@ class EjecterApp(gobject.GObject):
         print "name:", name
         print "icon:", icon
         print "uri:", uri
-        self.__set_mount_and_eject_bit(drive, volume, mount)
+        print self.__set_mount_and_eject_bit(drive, volume, mount)
         device_btn = Device()
-        device_btn.set_label(name)
+        #
+        device_btn.icon_image.set_from_gicon(icon, 16)
+        #device_btn.icon_pixbuf = icon
+        device_btn.open_btn.set_label(name)
+        device_btn.open_btn.connect("clicked", self.device_btn_open_btn_clicked, uri)
+        device_btn.close_btn.connect("clicked", self.device_btn_close_btn_clicked)
         self.monitor_vbox.pack_start(device_btn)
         self.monitor_vbox.show_all()
+
+    def device_btn_open_btn_clicked(self, widget, uri):
+        print "device_btn_open_btn_clicked....", uri
+
+    def device_btn_close_btn_clicked(self, widget):
+        print "device_btn_close_btn_clicked..."
 
     def __set_mount_and_eject_bit(self, drive, volume, mount):
         show_unmount = False # 是否存在.
@@ -274,6 +327,7 @@ class EjecterApp(gobject.GObject):
         if mount:
             show_eject = mount.can_eject()
             show_unmount = (mount.can_unmount() and (not show_eject))
+        return show_unmount, show_eject
 
     def __init_monitor_events(self):
         # mount events.
