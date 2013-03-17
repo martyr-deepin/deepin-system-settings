@@ -20,12 +20,50 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
+import gio
 from tray_mount_gui import EjecterApp
 
-class MountMedia(object):
+class MountMedia(EjecterApp):
     def __init__(self):
-        self.ejecter_app = EjecterApp()
+        EjecterApp.__init__(self)
+
+    def device_btn_icon_image_button_press_event(self, widget, event, uri):
+        # 打开文件管理器.
+        if event.button == 1:
+            self.run_open_dir_command(uri)
+
+    def device_btn_open_btn_clicked(self, widget, uri):
+        # 打开文件管理器.
+        if uri:
+            self.run_open_dir_command(uri)
+    
+    def run_open_dir_command(self, uri):
+        # 打开文件管理器的命令.
+        os.popen("xdg-open %s" % (uri))
+        self.this.hide_menu()
+
+    def device_btn_close_btn_clicked(self, widget, drive, volume, mount):
+        # 挂载的开关.
+        print "device_btn_close_btn_clicked...", 
+        print "===:", drive, volume, mount
+        op = gio.MountOperation()
+        if mount:
+            print "卸载掉........."
+            mount.unmount(self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
+        else:
+            print "挂载起来......."
+            if volume:
+                volume.mount(op, self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
+                print "volume..........."
+
+    def cancall_opeartion(self, object, res):
+        pass
+
+    def set_menu_size(self, height):
+        if self.size_check:
+            self.this.set_size_request(self.width, height)
 
     def init_values(self, this_list):
         self.this = this_list[0]
@@ -43,15 +81,15 @@ class MountMedia(object):
         return 4
 
     def plugin_widget(self):
-        return self.ejecter_app.vbox
+        return self.vbox
 
     def show_menu(self):
         self.size_check = True
         #print self.height
-        #self.this.set_size_request(180, self.height + 120)
+        self.this.set_size_request(self.width, self.height)
 
     def hide_menu(self):
-        pass
+        self.size_check = False
 
 
 

@@ -40,15 +40,18 @@ class Device(gtk.HBox):
     def __init__(self):
         #gtk.Button.__init__(self)
         gtk.HBox.__init__(self)
+        self.icon_image_event = gtk.EventBox()
+        self.icon_image_event.add_events(gtk.gdk.ALL_EVENTS_MASK)
         self.icon_image  = gtk.Image()
+        self.icon_image_event.add(self.icon_image)
         self.open_btn  = gtk.Button()
         self.close_btn = gtk.Button()
-        #self.icon_btn.connect("expose-event", self.icon_btn_expose_event)
         self.open_btn.connect("expose-event", self.open_btn_expose_event)
         self.close_btn.connect("expose-event", self.close_btn_expose_event)
-        self.pack_start(self.icon_image, False, False, 5)
+        self.pack_start(self.icon_image_event, False, False, 5)
         self.pack_start(self.open_btn, True, True, 5)
         self.pack_start(self.close_btn, False, False)
+        self.icon_image.set_size_request(20, 20)
         self.__init_values()
 
     def __init_values(self):
@@ -60,27 +63,6 @@ class Device(gtk.HBox):
         close_h = self.on_pixbuf.get_height()
         self.close_btn.set_size_request(close_w, close_h)
         self.show_all()
-
-    def icon_btn_expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        #
-        if self.icon_pixbuf:
-            print self.icon_pixbuf
-            
-            '''
-            draw_pixbuf(cr,
-                        pixbuf,
-                        rect.x,
-                        rect.y)
-            '''
-        '''
-        cr.rectangle(rect.x, rect.y, 16, 16)
-        cr.fill()
-        '''
-        #
-        return True
-
 
     def open_btn_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
@@ -124,11 +106,13 @@ class Device(gtk.HBox):
         self.queue_draw()
 
 class EjecterApp(gobject.GObject):
+    '''
     __gsignals__ = {
     "update-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     "remove-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     "empty-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
+    '''
     def __init__(self):
         gobject.GObject.__init__(self)
         self.__init_values()
@@ -140,6 +124,7 @@ class EjecterApp(gobject.GObject):
                             (0.5, ("#000000", 0.3)),
                             (1,   ("#777777", 0.0))
                            ]
+        self.height = 0
         self.hbox = gtk.HBox()
         self.title_image = gtk.image_new_from_file(os.path.join(image_path, "image/usb/usb_label.png"))
         self.title_label = gtk.Label(_("USB Device"))
@@ -166,6 +151,9 @@ class EjecterApp(gobject.GObject):
 
     def __load_monitor(self):
         # 移除挂载上的控件.
+        self.height = 75
+        self.size_check = False
+        self.width = 210
         for widget in self.monitor_vbox.get_children():
             self.monitor_vbox.remove(widget)
         self.network_mounts_list = []
@@ -292,6 +280,8 @@ class EjecterApp(gobject.GObject):
             self.__add_place(
                     name, icon, mount_uri, 
                     None, None, mount)
+        # 设置高度.
+        self.set_menu_size(self.height)
 
     def __add_place(self, 
                     name, icon, uri, 
@@ -300,22 +290,41 @@ class EjecterApp(gobject.GObject):
         print "name:", name
         print "icon:", icon
         print "uri:", uri
-        print self.__set_mount_and_eject_bit(drive, volume, mount)
+        show_unmount, show_eject = self.__set_mount_and_eject_bit(drive, volume, mount)
         device_btn = Device()
         #
-        device_btn.icon_image.set_from_gicon(icon, 16)
-        #device_btn.icon_pixbuf = icon
+        # 设置图标右边的显示标志位.
+        if mount == None:
+            device_btn.set_eject_check(False)
+        else:
+            device_btn.set_eject_check((show_unmount or show_eject))
+        # 设置图标.
+        device_btn.icon_image.set_from_gicon(icon, 1)
+        # 设置名字.
         device_btn.open_btn.set_label(name)
+        # 连接事件.
+        device_btn.icon_image_event.connect("button-press-event", self.device_btn_icon_image_button_press_event, uri)
         device_btn.open_btn.connect("clicked", self.device_btn_open_btn_clicked, uri)
-        device_btn.close_btn.connect("clicked", self.device_btn_close_btn_clicked)
+        device_btn.close_btn.connect("clicked", self.device_btn_close_btn_clicked, drive, volume, mount)
+        #
         self.monitor_vbox.pack_start(device_btn)
         self.monitor_vbox.show_all()
+        self.height += 25
+
+    def set_menu_size(self, height):
+        pass
+
+    def device_btn_icon_image_button_press_event(self, widget, event, uri):
+        pass
 
     def device_btn_open_btn_clicked(self, widget, uri):
-        print "device_btn_open_btn_clicked....", uri
+        pass
 
-    def device_btn_close_btn_clicked(self, widget):
-        print "device_btn_close_btn_clicked..."
+    def run_open_dir_command(self, uri):
+        pass
+
+    def device_btn_close_btn_clicked(self, widget, drive, volume, mount):
+        pass
 
     def __set_mount_and_eject_bit(self, drive, volume, mount):
         show_unmount = False # 是否存在.
