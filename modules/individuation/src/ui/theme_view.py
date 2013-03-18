@@ -25,13 +25,13 @@ from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.dialog import InputDialog, ConfirmDialog
-from ui.status_box import StatusBox
 from ui.theme_item import ThemeItem
 from helper import event_manager
 from theme_manager import theme_manager
 from nls import _
 from common import threaded
 from constant import CONTENT_FONT_SIZE
+import gobject
 
 class UserThemeView(IconView):
 
@@ -40,6 +40,7 @@ class UserThemeView(IconView):
 
         self.status_box = status_box
 
+        self.__is_double_click = False
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
         self.connect("right-click-item", self.__on_right_click_item)
@@ -74,13 +75,22 @@ class UserThemeView(IconView):
         cr.fill()
 
     def __on_double_click_item(self, widget, item, x, y):
+        self.__is_double_click = True
         event_manager.emit("theme-detail", item.theme)
 
+    def __is_single_click(self, item):
+        if self.__is_double_click:
+            print "switch to detail page"
+        else:
+            self.set_highlight(item)                                                
+            event_manager.emit("clear-systemview-highlight", item.theme)            
+            theme_manager.apply_theme(item.theme)                                      
+            self.status_box.set_status(_("Changed User Theme to %s") % item.theme.get_name())
+        
+        self.__is_double_click = False
+
     def __on_single_click_item(self, widget, item, x, y):
-        self.set_highlight(item)
-        event_manager.emit("clear-systemview-highlight", item.theme)
-        theme_manager.apply_theme(item.theme)
-        self.status_box.set_status(_("Changed User Theme to %s") % item.theme.get_name())
+        gobject.timeout_add(300, self.__is_single_click, item)
 
     def on_create_new_theme(self, name, obj, new_theme):
         self.add_themes([new_theme])
