@@ -256,7 +256,7 @@ class DesktopView(gtk.VBox):
                                   self.dock_title_align, 
                                   self.display_style_align, 
                                   #self.place_style_align, 
-                                  self.icon_size_align, 
+                                  #self.icon_size_align, 
                                   #self.preview_align, 
                                   self.hot_title_align, 
                                   self.topleft_align, 
