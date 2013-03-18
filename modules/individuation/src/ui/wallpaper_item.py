@@ -900,9 +900,8 @@ class CacheItem(gobject.GObject, MissionThread):
         event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
-    @common.threaded
     def create_cache_pixbuf(self):
-        image_path = cache_manager.get_image(self.image_object)
+        image_path = cache_manager.get_image(self.image_object, try_web = False)
         
         if image_path != None:
             self.is_downloaded = os.path.exists(self.download_dir + "/" +  image_path.split("/")[-1])
