@@ -285,19 +285,29 @@ def shortcuts_media_set(key, value):
     '''
     return SHORTCUTS_SETTINGS.set_string(key, value)
 
-def shortcuts_compiz_get(key):
+def shortcuts_compiz_get(plugin, key):
     current_profile = COMPIZ_SHORTCUTS_SETTINGS.get_string("current-profile")
     if not current_profile:
         return None
-    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.shift", "/org/compiz/profiles/%s/plugins/shift/" % current_profile)
+    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.core", "/org/compiz/profiles/%s/plugins/core/" % current_profile)
+    core = tmp_gsettings.get_strv("active-plugins")
+    if plugin not in core:
+        core.append(plugin)
+        tmp_gsettings.set_strv("active-plugins", core)
+    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.%s" % (plugin), "/org/compiz/profiles/%s/plugins/%s/" % (current_profile, plugin))
     key_name = tmp_gsettings.get_string(key)
     return key_name
 
-def shortcuts_compiz_set(key, value):
+def shortcuts_compiz_set(plugin, key, value):
     current_profile = COMPIZ_SHORTCUTS_SETTINGS.get_string("current-profile")
     if not current_profile:
         return
-    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.shift", "/org/compiz/profiles/%s/plugins/shift/" % current_profile)
+    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.core", "/org/compiz/profiles/%s/plugins/core/" % current_profile)
+    core = tmp_gsettings.get_strv("active-plugins")
+    if plugin not in core:
+        core.append(plugin)
+        tmp_gsettings.set_strv("active-plugins", core)
+    tmp_gsettings = deepin_gsettings.new_with_path("org.compiz.%s" % (plugin), "/org/compiz/profiles/%s/plugins/%s/" % (current_profile, plugin))
     tmp_gsettings.set_string(key, value)
 
 def shortcuts_custom_get(key):
