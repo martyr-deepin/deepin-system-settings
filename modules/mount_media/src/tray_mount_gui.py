@@ -48,7 +48,7 @@ class Device(gtk.HBox):
         self.close_btn = gtk.Button()
         self.open_btn.connect("expose-event", self.open_btn_expose_event)
         self.close_btn.connect("expose-event", self.close_btn_expose_event)
-        self.pack_start(self.icon_image_event, False, False, 5)
+        self.pack_start(self.icon_image_event, False, False)
         self.pack_start(self.open_btn, True, True, 5)
         self.pack_start(self.close_btn, False, False)
         self.icon_image.set_size_request(20, 20)
@@ -159,22 +159,17 @@ class EjecterApp(gobject.GObject):
         self.network_mounts_list = []
         self.network_volumes_list = []
         drives = self.monitor.get_connected_drives()
-        #print "drives:", drives
         # 获取大硬盘下的东西.
         for drive in drives:
             volumes = drive.get_volumes() 
-            #print "volumes:", volumes
             if volumes:
                 for volume in volumes:
                     id = volume.get_identifier("unix-device")
-                    #print "id:", id
                     if id.startswith("network"):
-                        print "network..."  
                         self.network_volumes_list.append(volume)
                         continue
                     mount = volume.get_mount()
                     if mount: # moutn != None
-                        #print "mount信息:"
                         icon = mount.get_icon() 
                         root  = mount.get_root()
                         mount_uri = root.get_uri()
@@ -182,85 +177,66 @@ class EjecterApp(gobject.GObject):
                         name = mount.get_name()
                         #
                         self.__add_place(
-                                name, icon, mount_uri,
+                                name, icon, mount_uri, tooltip, 
                                 drive, volume, mount)
                     else:
-                        print "moutn 为None, volume信息;"
                         icon = volume.get_icon() 
                         name = volume.get_name()
                         self.__add_place(
-                                name, icon, None, 
+                                name, icon, None, None,
                                 drive, volume, None)
             else: # volumes.
                 if (drive.is_media_removable() and 
                     not drive.is_media_check_automatic()):
-                    print "drive:==="
                     icon = drive.get_icon()
                     name = drive.get_name()
                     self.__add_place(
-                            name, icon, None,
+                            name, icon, None, None,
                             drive, None, None)
 
-        #print "======================\n\n\n"
         volumes = self.monitor.get_volumes()
         for volume in volumes:
             drive = volume.get_drive()
             if drive:
-                #print "drive:", drive
                 continue
             id = volume.get_identifier("unix-device")
-            #print "id:", id
 
             mount = volume.get_mount()
             if mount:
-                #print "mount:"
                 icon = mount.get_icon()
                 root = mount.get_root()
                 name = mount.get_name()
                 mount_uri  = root.get_uri()
                 tooltip   = root.get_parse_name()
-                #print "icon:", icon
-                #print "uri:", uri
                 self.__add_place(
-                        name, icon, mount_uri,
+                        name, icon, mount_uri, tooltip,
                         None, volume, mount)
             else:
                 icon = volume.get_icon()
                 name = volume.get_name()
-                #print "icon:", icon
-                #print "name:", name
                 self.__add_place(
-                        name, icon, None,
+                        name, icon, None, None,
                         None, volume, None)
 
-        print "========================\n\n\n"
         mounts = self.monitor.get_mounts() 
-        #print "mounts:", mounts
         for mount in mounts:
             if mount.is_shadowed():
-                print
                 continue
             volume = mount.get_volume()
             if volume:
-                #print "volume:===>>>"
                 continue
             root = mount.get_root()
             if not root.is_native():
-                print "network....===>>>"
                 # 保存到网络列表中.
                 self.network_mounts_list.insert(0, mount)
                 continue;
 
-            print "long--long--mount:====>>>"
             icon      = mount.get_icon()
             mount_uri = root.get_uri()
             tooltip   = root.get_parse_name()
             name      = mount.get_name()
-            print "icon:", icon
-            print "mount_uri:", mount_uri
-            print "name:", name
             self.__add_place(
-                    name, icon, mount_uri,
+                    name, icon, mount_uri, tooltip,
                     None, None, mount)
 
         # mounts  网络列表过滤.
@@ -270,26 +246,15 @@ class EjecterApp(gobject.GObject):
             mount_uri = root.get_uri()
             tooltip   = root.get_parse_name()
             name = mount.get_name()
-            print "\n\n\n"
-            print "mounts....====>>>"
-            print "root:", root
-            print "icon:", icon
-            print "name:", name
-            print "uri:", mount_uri
             self.__add_place(
-                    name, icon, mount_uri, 
+                    name, icon, mount_uri, tooltip, 
                     None, None, mount)
-            print "\n\n\n"
         # 设置高度.
         self.set_menu_size(self.height)
 
     def __add_place(self, 
-                    name, icon, uri, 
+                    name, icon, uri, tooltip, 
                     drive, volume, mount):
-        print "__add_place... ==============="
-        print "name:", name
-        print "icon:", icon
-        print "uri:", uri
         show_unmount, show_eject = self.__set_mount_and_eject_bit(drive, volume, mount)
         device_btn = Device()
         #
@@ -302,6 +267,8 @@ class EjecterApp(gobject.GObject):
         device_btn.icon_image.set_from_gicon(icon, 1)
         # 设置名字.
         device_btn.open_btn.set_label(name)
+        if tooltip:
+            device_btn.set_tooltip_text(tooltip)
         # 连接事件.
         device_btn.icon_image_event.connect("button-press-event", self.device_btn_icon_image_button_press_event, uri)
         device_btn.open_btn.connect("clicked", self.device_btn_open_btn_clicked, uri)
@@ -353,48 +320,30 @@ class EjecterApp(gobject.GObject):
         self.monitor.connect("drive-changed", self.drive_changed_callback)
 
     def mount_added_callback(self, volume_monitor, mount):
-        print "mount_added_callback..."
-        print "update_places"
         self.__load_monitor()
 
     def mount_removed_callback(self, volume_monitor, mount):
-        print "mount_removed_callback..."
-        print "update_places"
         self.__load_monitor()
 
     def mount_changed_callback(self, volume_monitor, mount):
-        print "mount_changed_callback..."
-        print "update_places"
         self.__load_monitor()
 
     def volume_added_callback(self, volume_monitor, volume):
-        print "volume_added_callback..."
-        print "update_places"
         self.__load_monitor()
 
     def volume_removed_callback(self, volume_monitor, volume):
-        print "volume_removed_callback...."
-        print "update_places"
         self.__load_monitor()
 
     def volume_changed_callback(self, volume_monitor, volume):
-        print "volume_changed_callback..."
-        print "update_places"
         self.__load_monitor()
 
     def drive_disconnected_callback(self, volume_monitor, drive):
-        print "drive_disconnected_callback..."
-        print "update_places"
         self.__load_monitor()
 
     def drive_connected_callback(self, volume_monitor, drive):
-        print "drive_connected_callback..."
-        print "update_places"
         self.__load_monitor()
 
     def drive_changed_callback(self, volume_monitor, drive):
-        print "drive_changed_callback......"
-        print "update_places"
         self.__load_monitor()
 
 if __name__ == "__main__":

@@ -32,7 +32,8 @@ class MountMedia(EjecterApp):
     def device_btn_icon_image_button_press_event(self, widget, event, uri):
         # 打开文件管理器.
         if event.button == 1:
-            self.run_open_dir_command(uri)
+            if uri:
+                self.run_open_dir_command(uri)
 
     def device_btn_open_btn_clicked(self, widget, uri):
         # 打开文件管理器.
@@ -59,7 +60,12 @@ class MountMedia(EjecterApp):
 
     def set_menu_size(self, height):
         if self.size_check:
-            self.this.set_size_request(self.width, height)
+            print "set_size_request..."
+            if height == 75: # 无移动设备挂载.
+                print "无移动设备挂载了... .."
+                self.this.hide_menu()
+            else:
+                self.this.set_size_request(self.width, height)
 
     def init_values(self, this_list):
         self.this = this_list[0]
