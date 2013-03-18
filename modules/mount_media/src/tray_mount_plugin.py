@@ -64,10 +64,14 @@ class MountMedia(EjecterApp):
             if height == 75: # 无移动设备挂载.
                 print "无移动设备挂载了... .."
                 self.this.hide_menu()
+                self.tray_icon.set_visible(False)
             else:
-                self.this.hide_menu()
-                self.this.set_size_request(self.width, height)
-                self.this.show_menu()
+                old_width, old_height = self.this.get_size_request()
+                if old_height != height:
+                    self.tray_icon.set_visible(True)
+                    self.this.hide_menu()
+                    self.this.set_size_request(self.width, height)
+                    self.this.show_menu()
 
     def init_values(self, this_list):
         self.this = this_list[0]
