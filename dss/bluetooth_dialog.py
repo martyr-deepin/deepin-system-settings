@@ -26,7 +26,6 @@ from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 from dtk.ui.dialog import DialogBox
-from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
 import gobject
 import gtk
 from constant import *
@@ -74,7 +73,7 @@ class BluetoothProgressDialog(DialogBox):
         self.message_label.set_text(message)
 
     def set_progress(self, progress):
-        self.progress_bar.progress_buffer.progress = progress
+        self.progress_bar.set_progress(progress)
         self.percentage_label.set_text("%d" % progress + "%")
 
     def __on_cancel_button_clicked(self, widget):

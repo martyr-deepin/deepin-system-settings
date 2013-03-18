@@ -36,7 +36,7 @@ from helper import event_manager
 from nls import _
 from constant import CONTENT_FONT_SIZE
 
-class DeletePage(TabBox):
+class DeletePage(gtk.VBox):
     '''
     class docs
     '''
@@ -45,12 +45,11 @@ class DeletePage(TabBox):
         '''
         init docs
         '''
-        TabBox.__init__(self)
+        gtk.VBox.__init__(self)
 
         self.draw_title_background = self.draw_tab_title_background
         self.theme = None
         
-        self.wallpaper_box = gtk.VBox()
         self.delete_view = DeleteView(padding_x=30, padding_y=ITEM_PADDING_Y)
         self.delete_view_sw = self.delete_view.get_scrolled_window()
         
@@ -71,8 +70,8 @@ class DeletePage(TabBox):
         self.action_box.pack_start(self.delete_button, False, False)
         self.action_align.add(self.action_box)
         
-        self.wallpaper_box.pack_start(self.delete_view_sw, True, True)
-        self.wallpaper_box.pack_start(self.action_align, False, False)
+        self.pack_start(self.delete_view_sw, True, True)
+        self.pack_start(self.action_align, False, False)
 
         event_manager.add_callback("select-delete-wallpaper", self.__on_select_delete_wallpaper)
 
@@ -116,14 +115,6 @@ class DeletePage(TabBox):
 
     def set_theme(self, theme):
         self.theme = theme
-        
-        '''
-        TODO: self.theme.name
-        '''
-        self.delete_items(self.tab_items)
-        self.add_items([(self.theme.get_name(), self.wallpaper_box),                   
-                       ])
-        
         self.delete_view.set_theme(theme)
         self.select_all_button.set_label(_("Select All"))
         

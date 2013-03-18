@@ -496,6 +496,7 @@ class KeySetting(object):
         self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Workspace'))])
         self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Custom Shortcuts'))])
         self.view_widgets["shortcuts_selected"].set_data("is_custom", False)
+        self.view_widgets["shortcuts_selected"].set_expand_column(0)
         self.button_widgets["shortcuts_remove"].set_sensitive(False)
         self.__make_accel_page()
 

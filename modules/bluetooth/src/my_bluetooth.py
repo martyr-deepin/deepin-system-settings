@@ -23,7 +23,6 @@
 from bt.manager import Manager                                                  
 from bt.adapter import Adapter                                                  
 from bt.device import Device                                                    
-from bt.utils import bluetooth_class_to_type
 
 class MyBluetooth():
     def __init__(self, 

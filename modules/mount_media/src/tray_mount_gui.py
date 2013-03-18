@@ -20,9 +20,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from vtk.utils import is_usb_device, get_text_size
-from vtk.draw import draw_pixbuf, draw_text
 from dtk.ui.line import HSeparator
+from vtk.draw  import draw_text, draw_pixbuf
+from vtk.utils import get_text_size
 from nls import _
 import os
 import sys
@@ -35,213 +35,101 @@ import gobject
 image_path = os.path.dirname(sys.argv[0])
 ICON_SIZE = 16
 
-class Device(gtk.Button):
-    __gsignals__ = {
-    "unmounted-event" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-    "removed-event" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_STRING,)),
-    }
-    def __init__(self, drive, device):
-        gtk.Button.__init__(self)
-        self.drive  = drive
-        self.device = device
-        self.conf = Conf()
+#class Device(gtk.Button):
+class Device(gtk.HBox):
+    def __init__(self):
+        #gtk.Button.__init__(self)
+        gtk.HBox.__init__(self)
+        self.icon_image_event = gtk.EventBox()
+        self.icon_image_event.add_events(gtk.gdk.ALL_EVENTS_MASK)
+        self.icon_image  = gtk.Image()
+        self.icon_image_event.add(self.icon_image)
+        self.open_btn  = gtk.Button()
+        self.close_btn = gtk.Button()
+        self.open_btn.connect("expose-event", self.open_btn_expose_event)
+        self.close_btn.connect("expose-event", self.close_btn_expose_event)
+        self.pack_start(self.icon_image_event, False, False)
+        self.pack_start(self.open_btn, True, True, 5)
+        self.pack_start(self.close_btn, False, False)
+        self.icon_image.set_size_request(20, 20)
+        self.__init_values()
 
+    def __init_values(self):
         self.eject_check = False
-        try:
-            get_m = drive.get_volumes()[0].get_mount()
-            if get_m == None:
-                self.set_mounted(False)
-        except Exception, e:
-            print "Device[error]:", e
-
-        self.was_removed = False
-        self.icon_updated = False
-        self.d_name = ""
-        self.description = ""
-        self.volumes = []
-        self.mounts  = []
-        self.volume_count = 0;
-        self.mount_count  = 0;
-        self.icon = gtk.image_new_from_gicon(self.drive.get_icon(), ICON_SIZE)
+        self.icon_pixbuf = None
         self.off_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(image_path, "image/offbutton/off.png"))
         self.on_pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(image_path, "image/offbutton/on.png"))
-        #
-        self.connect("clicked", self.clicked_eject)
-        self.drive.connect("disconnected", self.handle_removed_drive)
-        #
-        self.set_label("")
-        self.set_image(self.icon)
-        self.connect("expose-event", self.device_expose_event)
+        close_w = self.on_pixbuf.get_width()
+        close_h = self.on_pixbuf.get_height()
+        self.close_btn.set_size_request(close_w, close_h)
         self.show_all()
 
-    def device_expose_event(self, widget, event):
+    def open_btn_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
         rect = widget.allocation
-        #
         text = widget.get_label().decode("utf-8")
-        text_width = get_text_size("ABCDEFABCDEFH")[0]
-        ch_width = get_text_size("a")[0]
-        dec_width = get_text_size(text)[0] - text_width
+        text_width = get_text_size("ABCDEFABCDEFH", text_size=9)[0]
+        ch_width = get_text_size("a", text_size=9)[0]
+        dec_width = get_text_size(text, text_size=9)[0] - text_width
         if dec_width > 0:
-            index = dec_width/ch_width
+            index = (dec_width/ch_width) + 2
             text = text[0:len(text)-index] + "..."
         if self.eject_check:
-            simple_pixbuf = self.on_pixbuf
             text_color_value = "#000000"
         else:
-            simple_pixbuf = self.off_pixbuf
             text_color_value = "#9d9d9d"
-
         draw_text(cr, 
                   text, 
                   rect.x, 
-                  rect.y, 
+                  rect.y + rect.height/2 - get_text_size(text)[1]/2, 
                   text_color=text_color_value,
                   text_size=9)
-        draw_pixbuf(cr, 
-                    simple_pixbuf, 
-                    rect.x + rect.width - simple_pixbuf.get_width(), 
-                    rect.y)
         return True
 
-    def clicked_eject(self, widget):
-        op = gtk.MountOperation()
-        if self.drive.can_eject():
-            try:
-                self.drive.eject(self.cancallable_operation,
-                                gio.MOUNT_OPERATION_HANDLED)
-                self.emit("unmounted-event")
-            except Exception,e:
-                print "error:", e
+    def close_btn_expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+
+        if self.eject_check:
+            simple_pixbuf = self.on_pixbuf
         else:
-            for v in self.drive.get_volumes():
-                try:
-                    if v.get_mount():
-                        v.eject(self.cancallable_operation,
-                                gio.MOUNT_OPERATION_HANDLED)
-                        self.emit("unmounted-event")
-                    else:
-                        v.mount(op, self.cancallable_operation)
-                except Exception, e:
-                    print "error:", e
+            simple_pixbuf = self.off_pixbuf
 
-    def cancallable_operation(self, obj, res):
-        pass
+        draw_pixbuf(cr, 
+                    simple_pixbuf, 
+                    rect.x,
+                    rect.y + rect.height/2 - simple_pixbuf.get_height()/2)
+        return True
 
-    def handle_unmounted(self, mount):
-        self.mounts.remove(mount)
-        self.mount_count = self.mount_count - 1;
-        self.update_label()
-
-        if self.mount_count <= 0:
-            self.set_mounted(False)
-            self.emit("unmounted-event")
-
-    def handle_removed_drive(self, drive):
-        id = drive.get_identifier(self.conf.device_identifier)
-        self.emit("removed-event", id)
-
-    def handle_removed_volume(self, volume):
-        self.volumes.remove(volume)
-        self.volume_count = self.volume_count - 1;
-        self.update_label()
-
-        if self.volume_count == 0:
-            id = self.drive.get_identifier(self.conf.device_identifier)
-            self.emit("removed-event", id)
-
-    def add_volume(self, volume):
-        self.volumes.insert(0, volume)
-        self.volume_count = self.volume_count + 1
-        volume.connect("removed", self.handle_removed_volume)
-
-        if not self.icon_updated:
-            self.icon = gtk.image_new_from_gicon(volume.get_icon(), ICON_SIZE)
-            self.icon_updated = True
-
-        self.update_label()
-
-    def add_mount(self, mount):
-        volume = mount.get_volume()
-        # add volume.
-        if not (volume in self.volumes):
-            self.add_volume(volume)
-
-        try:
-            self.mounts.remove(mount)
-        except:
-            pass
-        self.mounts.insert(0, mount)
-
-        self.mount_count = self.mount_count + 1
-        self.set_mounted(True)
-        mount.connect("unmounted", self.handle_unmounted)
-        self.update_label()
-
-    def update_label(self):
-        if self.volume_count == 0:
-            self.d_name = self.drive.get_name()
-            self.description = ""
-        elif self.volume_count == 1:
-            v = self.volumes[0]
-            self.d_name = v.get_name()
-            self.description = self.drive.get_name()
-        else:
-            volumes = ""
-            first = True
-
-            for v in self.volumes:
-                if first:
-                    volumes = volumes + v.get_name()
-                    first = False
-                else:
-                    volumes = volumes + ", " + v.get_name()
-
-            self.d_name = self.drive.get_name()
-            self.description = volumes
-            
-        # set show label.
-        #print "name:", self.d_name
-        #print "description:", self.description
-        #self.set_label(self.d_name + " (" + self.description + ")")
-        self.set_label(self.d_name)
-
-    def d_remove(self):
-        if self.was_removed:
-            return False;
-        self.meit("removed")
-        self.was_removed = True
-
-    def set_mounted(self, mounted):
-        self.eject_check = mounted
-
-gobject.type_register(Device)
-
-class Conf(object):
-    def __init__(self):
-        self.device_identifier = "unix-device"
-        self.show_internal = False
+    def set_eject_check(self, check):
+        self.eject_check = check
+        self.queue_draw()
 
 class EjecterApp(gobject.GObject):
+    '''
     __gsignals__ = {
     "update-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     "remove-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     "empty-usb" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
+    '''
     def __init__(self):
         gobject.GObject.__init__(self)
         self.__init_values()
-        self.__init_ejecter_settings()
+        self.__load_monitor()
+        self.__init_monitor_events()
 
     def __init_values(self):
         hseparator_color = [(0,   ("#777777", 0.0)),
                             (0.5, ("#000000", 0.3)),
                             (1,   ("#777777", 0.0))
                            ]
+        self.height = 0
+        self.size_check = False
         self.hbox = gtk.HBox()
         self.title_image = gtk.image_new_from_file(os.path.join(image_path, "image/usb/usb_label.png"))
         self.title_label = gtk.Label(_("USB Device"))
-        self.title_label.connect("expose-event", self.title_label_expose_event)
+        #self.title_label.connect("expose-event", self.title_label_expose_event)
         self.title_label_ali = gtk.Alignment(0, 0, 0, 0)
         self.title_label_ali.set_padding(0, 0, 0, 0)
         self.title_label_ali.add(self.title_label)
@@ -254,159 +142,218 @@ class EjecterApp(gobject.GObject):
         self.h_separator_ali.set_padding(5, 10, 0, 0)
         self.h_separator_ali.add(self.h_separator_top)
 
+        self.monitor_vbox = gtk.VBox()
         self.vbox = gtk.VBox()
         self.vbox.pack_start(self.hbox, False, False)
         self.vbox.pack_start(self.h_separator_ali, True, True)
+        self.vbox.pack_start(self.monitor_vbox, False, False)
 
-        self.conf = Conf()
-        self.devices = {}
-        self.invalid_devices = [] 
         self.monitor = gio.VolumeMonitor()
 
-    def title_label_expose_event(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        text = widget.get_label()
-        size = get_text_size(text)
-        draw_text(cr, 
-                  text, 
-                  rect.x + 5, 
-                  rect.y + rect.height - size[1] + 1,
-                  text_color="#000000",
-                  text_size=9)
-        return True
+    def __load_monitor(self):
+        # 移除挂载上的控件.
+        self.height = 75
+        self.width = 210
+        for widget in self.monitor_vbox.get_children():
+            self.monitor_vbox.remove(widget)
+        self.network_mounts_list = []
+        self.network_volumes_list = []
+        drives = self.monitor.get_connected_drives()
+        # 获取大硬盘下的东西.
+        for drive in drives:
+            volumes = drive.get_volumes() 
+            if volumes:
+                for volume in volumes:
+                    id = volume.get_identifier("unix-device")
+                    if id.startswith("network"):
+                        self.network_volumes_list.append(volume)
+                        continue
+                    mount = volume.get_mount()
+                    if mount: # moutn != None
+                        icon = mount.get_icon() 
+                        root  = mount.get_root()
+                        mount_uri = root.get_uri()
+                        tooltip   = root.get_parse_name()
+                        name = mount.get_name()
+                        #
+                        self.__add_place(
+                                name, icon, mount_uri, tooltip, 
+                                drive, volume, mount)
+                    else:
+                        icon = volume.get_icon() 
+                        name = volume.get_name()
+                        self.__add_place(
+                                name, icon, None, None,
+                                drive, volume, None)
+            else: # volumes.
+                if (drive.is_media_removable() and 
+                    not drive.is_media_check_automatic()):
+                    icon = drive.get_icon()
+                    name = drive.get_name()
+                    self.__add_place(
+                            name, icon, None, None,
+                            drive, None, None)
 
-    def __init_ejecter_settings(self):
-        self.load_devices()
-        self.monitor.connect("volume-added", self.volume_added)
-        self.monitor.connect("mount-added", self.mount_added)
+        volumes = self.monitor.get_volumes()
+        for volume in volumes:
+            drive = volume.get_drive()
+            if drive:
+                continue
+            id = volume.get_identifier("unix-device")
 
-    def volume_added(self, monitor, volume):
-        #print "volume_added..."
-        self.monitor_manage_volume(volume)
-
-    def mount_added(self, monitor, mount):
-        #print "mount_added..."
-        self.monitor_manage_mount(mount)
-
-
-    def load_devices(self):
-        for v in self.monitor.get_volumes():
-            #self.monitor_manage_drive(d)
-            #self.monitor_manage_volume(v)
-            test_btn = gtk.Button(v.get_name())
-            test_btn.connect("clicked", self.test_btn_clicked, v)
-            self.vbox.pack_start(test_btn, False, False)
-
-            '''
-            m = v.get_mount()
-            if m != None:
-                self.monitor_manage_mount(m)
-            '''
-        self.vbox.show_all()
-        #self.check_icon()
-
-    def test_btn_clicked(self, widget, volume):
-        op = gtk.MountOperation()
-
-        if volume.can_eject() and volume.can_mount():
-            volume.eject(self.cancallable_operation,
-                    gio.MOUNT_OPERATION_HANDLED)
-        else:
-            volume.get_name()
             mount = volume.get_mount()
             if mount:
-                mount.unmount(self.cancallable_operation, flags=gio.MOUNT_UNMOUNT_NONE)
+                icon = mount.get_icon()
+                root = mount.get_root()
+                name = mount.get_name()
+                mount_uri  = root.get_uri()
+                tooltip   = root.get_parse_name()
+                self.__add_place(
+                        name, icon, mount_uri, tooltip,
+                        None, volume, mount)
             else:
-                volume.mount(op, self.cancallable_operation)
+                icon = volume.get_icon()
+                name = volume.get_name()
+                self.__add_place(
+                        name, icon, None, None,
+                        None, volume, None)
 
-    def cancallable_operation(self, res, t):
-        '''
-        print "cancallable_operation..."
-        print "res:", res
-        '''
+        mounts = self.monitor.get_mounts() 
+        for mount in mounts:
+            if mount.is_shadowed():
+                continue
+            volume = mount.get_volume()
+            if volume:
+                continue
+            root = mount.get_root()
+            if not root.is_native():
+                # 保存到网络列表中.
+                self.network_mounts_list.insert(0, mount)
+                continue;
+
+            icon      = mount.get_icon()
+            mount_uri = root.get_uri()
+            tooltip   = root.get_parse_name()
+            name      = mount.get_name()
+            self.__add_place(
+                    name, icon, mount_uri, tooltip,
+                    None, None, mount)
+
+        # mounts  网络列表过滤.
+        for mount in self.network_mounts_list:
+            root = mount.get_root()
+            icon = mount.get_icon()
+            mount_uri = root.get_uri()
+            tooltip   = root.get_parse_name()
+            name = mount.get_name()
+            self.__add_place(
+                    name, icon, mount_uri, tooltip, 
+                    None, None, mount)
+        # 设置高度.
+        self.set_menu_size(self.height)
+
+    def __add_place(self, 
+                    name, icon, uri, tooltip, 
+                    drive, volume, mount):
+        show_unmount, show_eject = self.__set_mount_and_eject_bit(drive, volume, mount)
+        device_btn = Device()
+        #
+        # 设置图标右边的显示标志位.
+        if mount == None:
+            device_btn.set_eject_check(False)
+        else:
+            device_btn.set_eject_check((show_unmount or show_eject))
+        # 设置图标.
+        device_btn.icon_image.set_from_gicon(icon, 1)
+        # 设置名字.
+        device_btn.open_btn.set_label(name)
+        if tooltip:
+            device_btn.set_tooltip_text(tooltip)
+        # 连接事件.
+        device_btn.icon_image_event.connect("button-press-event", self.device_btn_icon_image_button_press_event, uri)
+        device_btn.open_btn.connect("clicked", self.device_btn_open_btn_clicked, uri)
+        device_btn.close_btn.connect("clicked", self.device_btn_close_btn_clicked, drive, volume, mount)
+        #
+        self.monitor_vbox.pack_start(device_btn)
+        self.monitor_vbox.show_all()
+        self.height += 25
+
+    def set_menu_size(self, height):
         pass
 
-    def unmount_mount_callback(self, res):
-        print "res:", res
-         
-
-
-
-
-    def monitor_manage_drive(self, drive):
-        # gio.Drive 
-        #print "monitor_manage_drive..."
-        if drive == None:
-            return False
-        
-        id = drive.get_identifier(self.conf.device_identifier)
-        #print "id:", id, drive.get_name()
-        if is_usb_device(id):
-            d = Device(drive, 0)
-            self.devices[id] = d
-
-            self.vbox.pack_start(d, True, True) 
-            self.vbox.show_all()
-            self.emit("update-usb")
-
-            d.connect('unmounted-event', self.d_unmounted_event)
-            d.connect('removed-event', self.d_removed_event)
-
-    def d_unmounted_event(self, device):
-        #print "d_unmounted_event..."
+    def device_btn_icon_image_button_press_event(self, widget, event, uri):
         pass
 
-    def d_removed_event(self, device, id):
-        if self.devices.has_key(id):
-            #print "d_removed_event...", id, self.devices[id]
-            self.vbox.remove(self.devices[id])
-            del self.devices[id]
-            self.vbox.show_all()
-            self.emit("remove-usb")
-            if self.devices == {}:
-                self.emit("empty-usb")
-        
-    def monitor_manage_volume(self, v):
-        # gio.Volume
-        #print "monitor_manage_volume..."
-        drive = v.get_drive()
-        id = drive.get_identifier(self.conf.device_identifier)
-        if id == None: 
-            return False
+    def device_btn_open_btn_clicked(self, widget, uri):
+        pass
 
-        try: 
-            dev = self.devices[id]
-            if dev == None:
-                return False
-            dev.add_volume(v)
-        except:
-            #print "create dev..."
-            self.monitor_manage_drive(drive)
-            #dev = self.devices[id]
+    def run_open_dir_command(self, uri):
+        pass
 
+    def device_btn_close_btn_clicked(self, widget, drive, volume, mount):
+        pass
 
-    def monitor_manage_mount(self, m):
-        # gio.Mount
-        #print "monitor_manage_mount..."
-        drive = m.get_drive()
-        #print m.get_name(), drive.get_name()
-        id = drive.get_identifier(self.conf.device_identifier) 
-        if id == None:
-            return False
+    def __set_mount_and_eject_bit(self, drive, volume, mount):
+        show_unmount = False # 是否存在.
+        show_eject   = False # 是否挂载上去了.
+        if drive:
+            show_eject = drive.can_eject()
+        if volume:
+            show_eject = volume.can_eject()
+        if mount:
+            show_eject = mount.can_eject()
+            show_unmount = (mount.can_unmount() and (not show_eject))
+        return show_unmount, show_eject
 
-        try:
-            dev = self.devices[id]
-            if dev == None:
-                return False
-        except:
-            return False
+    def __init_monitor_events(self):
+        # mount events.
+        self.monitor.connect("mount-added", self.mount_added_callback)
+        self.monitor.connect("mount-removed", self.mount_removed_callback)
+        self.monitor.connect("mount-changed", self.mount_changed_callback)
+        # volume events.
+        self.monitor.connect("volume-added", self.volume_added_callback)
+        self.monitor.connect("volume-removed", self.volume_removed_callback)
+        self.monitor.connect("volume-changed", self.volume_changed_callback)
+        # drive events.
+        self.monitor.connect("drive-disconnected", self.drive_disconnected_callback)
+        self.monitor.connect("drive-connected", self.drive_connected_callback)
+        self.monitor.connect("drive-changed", self.drive_changed_callback)
 
-        dev.add_mount(m)
+    def mount_added_callback(self, volume_monitor, mount):
+        self.__load_monitor()
 
+    def mount_removed_callback(self, volume_monitor, mount):
+        self.__load_monitor()
+
+    def mount_changed_callback(self, volume_monitor, mount):
+        self.__load_monitor()
+
+    def volume_added_callback(self, volume_monitor, volume):
+        self.__load_monitor()
+
+    def volume_removed_callback(self, volume_monitor, volume):
+        self.__load_monitor()
+
+    def volume_changed_callback(self, volume_monitor, volume):
+        self.__load_monitor()
+
+    def drive_disconnected_callback(self, volume_monitor, drive):
+        self.__load_monitor()
+
+    def drive_connected_callback(self, volume_monitor, drive):
+        self.__load_monitor()
+
+    def drive_changed_callback(self, volume_monitor, drive):
+        self.__load_monitor()
 
 if __name__ == "__main__":
-    EjecterApp()
+    import gtk
+    win = gtk.Window(gtk.WINDOW_TOPLEVEL)
+    
+    eject = EjecterApp()
+    win.add(eject.vbox)
+    win.show_all()
+    
     gtk.main()
 
 

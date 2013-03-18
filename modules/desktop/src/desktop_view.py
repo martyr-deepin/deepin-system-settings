@@ -42,7 +42,6 @@ class DesktopView(gtk.VBox):
     class docs
     '''
 
-    SUPER_W_CMD = "superw.py"
     LAUNCHER_CMD = "launcher"
 
     def __init__(self):
@@ -257,7 +256,7 @@ class DesktopView(gtk.VBox):
                                   self.dock_title_align, 
                                   self.display_style_align, 
                                   #self.place_style_align, 
-                                  self.icon_size_align, 
+                                  #self.icon_size_align, 
                                   #self.preview_align, 
                                   self.hot_title_align, 
                                   self.topleft_align, 
@@ -439,20 +438,24 @@ class DesktopView(gtk.VBox):
             if item_value == 0:
                 self.compiz_integrated_settings.set_string("command-1", "")
             elif item_value == 1:
+                self.compiz_integrated_settings.set_string("command-1", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "TopLeft")
             elif item_value == 2:
                 self.compiz_integrated_settings.set_string("command-1", self.LAUNCHER_CMD)
+                self.compiz_scale_settings.set_string("initiate-edge", "")
             else:
                 pass
             return
 
         if object == "topright":                                                 
             if item_value == 0:                                                 
-                self.compiz_integrated_settings.set_string("command-2", "")         
-            elif item_value == 1:                                               
+                self.compiz_scale_settings.set_string("initiate-edge", "")         
+            elif item_value == 1:
+                self.compiz_integrated_settings.set_string("command-2", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "TopRight")
             elif item_value == 2:                                               
                 self.compiz_integrated_settings.set_string("command-2", self.LAUNCHER_CMD)
+                self.compiz_scale_settings.set_string("initiate-edge", "")
             else:                                                               
                 pass                                                            
             return

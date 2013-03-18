@@ -21,10 +21,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.utils import color_hex_to_cairo, get_content_size, cairo_disable_antialias
-from dtk.ui.theme import ui_theme
+from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
 from dtk.ui.draw import draw_pixbuf, draw_text
-from dtk.ui.progressbar import ProgressBar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
@@ -34,9 +32,7 @@ from dtk.ui.line import HSeparator
 from dtk.ui.entry import InputEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton, Button
-from dtk.ui.dialog import OpenFileDialog
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
-import os
 import gobject
 import gtk
 import pango

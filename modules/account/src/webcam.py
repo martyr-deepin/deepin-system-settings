@@ -32,7 +32,7 @@ class Webcam(gtk.DrawingArea):
     def __init__(self):
         super(Webcam, self).__init__()
         self.set_can_focus(True)
-        self.add_events(gtk.gdk.POINTER_MOTION_MASK)
+        #self.add_events(gtk.gdk.POINTER_MOTION_MASK)
         self.video_player = None
         
     @classmethod    
