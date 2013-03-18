@@ -205,12 +205,12 @@ class ThemeItem(gobject.GObject):
         cr.set_source_surface(theme_surface, rect.x, rect.y)                
         cr.paint()
         
+        '''
         # Init window coordiante.
         window_frame_x = rect.x + self.window_frame_padding_x
         window_frame_y = rect.y + self.window_frame_padding_y
         
         # Paint gaussian area.
-        '''
         gaussian_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.window_frame_width, self.window_frame_height)   
         gaussian_surface_cr = gtk.gdk.CairoContext(cairo.Context(gaussian_surface))
         gaussian_surface_cr.set_source_surface(theme_surface, -self.window_frame_padding_x, -self.window_frame_padding_y)
@@ -218,10 +218,8 @@ class ThemeItem(gobject.GObject):
         dtk_cairo_blur.gaussian_blur(gaussian_surface, 3)
         cr.set_source_surface(gaussian_surface, window_frame_x, window_frame_y)
         cr.paint()
-        '''
 
         # Draw window frame.
-        '''
         cr.set_source_rgba(*alpha_color_hex_to_cairo((COLOR_NAME_DICT[self.theme.get_color()], 0.5)))
         cr.rectangle(window_frame_x + 1, window_frame_y, self.window_frame_width - 2, 1)
         cr.rectangle(window_frame_x, window_frame_y + 1, self.window_frame_width, self.window_frame_height - 2)
@@ -323,7 +321,15 @@ class ThemeItem(gobject.GObject):
         self.highlight_flag = False
         
         self.emit_redraw_request()
-    
+  
+    def do_single_click(self):
+        self.highlight_flag = True
+        self.emit_redraw_request()
+
+    def do_double_click(self):
+        self.highlight_flag = False
+        self.emit_redraw_request()
+
     def icon_item_button_press(self, x, y):
         '''
         Handle button-press event.

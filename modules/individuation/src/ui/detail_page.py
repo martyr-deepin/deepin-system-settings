@@ -21,22 +21,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from theme import app_theme
 import gtk
 import gobject
 import deepin_gsettings
-from dtk.ui.tab_window import TabBox
-from dtk.ui.label import Label
-from dtk.ui.button import Button, CheckButton
-from dtk.ui.scalebar import HScalebar
-from dtk.ui.constant import ALIGN_END
+from theme import app_theme
+from dtk.ui.button import Button
 from ui.wallpaper_item import ITEM_PADDING_Y
 from ui.wallpaper_view import WallpaperView
 from ui.utils import get_toggle_group, get_combo_group
 from constant import STATUS_HEIGHT, WIDGET_HEIGHT
 from helper import event_manager
 from nls import _
-import threading as td
 
 TIME_COMBO_ITEM =  [
     #(_("Never"), 0), 
@@ -240,4 +235,3 @@ class DetailPage(gtk.VBox):
         cr.fill()
         
 gobject.type_register(DetailPage)        
-

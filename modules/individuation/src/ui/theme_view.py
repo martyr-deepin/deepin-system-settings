@@ -41,6 +41,7 @@ class UserThemeView(IconView):
         self.status_box = status_box
 
         self.__is_double_click = False
+        self.__single_click_item = None
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
         self.connect("right-click-item", self.__on_right_click_item)
@@ -80,9 +81,10 @@ class UserThemeView(IconView):
 
     def __is_single_click(self, item):
         if self.__is_double_click:
-            print "switch to detail page"
+            item.do_double_click()
+            self.set_highlight(self.__single_click_item)
         else:
-            self.set_highlight(item)                                                
+            self.__single_click_item = item
             event_manager.emit("clear-systemview-highlight", item.theme)            
             theme_manager.apply_theme(item.theme)                                      
             self.status_box.set_status(_("Changed User Theme to %s") % item.theme.get_name())
@@ -153,7 +155,9 @@ class SystemThemeView(IconView):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
 
         self.status_box = status_box
-
+        
+        self.__is_double_click = False
+        self.__single_click_item = None
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
         self.connect("right-click-item", self.__on_right_click_item)
@@ -184,13 +188,23 @@ class SystemThemeView(IconView):
         cr.fill()
 
     def __on_double_click_item(self, widget, item, x, y):
+        self.__is_double_click = True
         event_manager.emit("theme-detail", item.theme)
 
+    def __is_single_click(self, item):                                          
+        if self.__is_double_click:                                              
+            item.do_double_click()
+            self.set_highlight(self.__single_click_item)
+        else:                                                                   
+            self.__single_click_item = item                                                
+            event_manager.emit("clear-userview-highlight", item.theme)            
+            theme_manager.apply_theme(item.theme)                                   
+            self.status_box.set_status(_("Changed System Theme to %s") % item.theme.get_name())
+                                                                                
+        self.__is_double_click = False
+
     def __on_single_click_item(self, widget, item, x, y):
-        event_manager.emit("clear-userview-highlight", None)
-        self.set_highlight(item)
-        theme_manager.apply_theme(item.theme)
-        self.status_box.set_status(_("Changed System Theme to %s") % item.theme.get_name())
+        gobject.timeout_add(300, self.__is_single_click, item)
 
     def create_new_theme(self, name, item):
         new_theme = theme_manager.create_new_theme(name, item.theme)

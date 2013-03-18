@@ -24,7 +24,6 @@
 import gtk
 import gobject
 import os
-import copy
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
