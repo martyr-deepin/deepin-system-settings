@@ -35,7 +35,7 @@ from elements import SettingSection
 from nmlib.nm_remote_connection import NMRemoteConnection
 import style
 from nls import _
-from shared_methods import Settings
+from shared_methods import Settings, net_manager
 from helper import Dispatcher
 
 def check_settings(connection, fn):
@@ -48,15 +48,15 @@ def check_settings(connection, fn):
         print "not pass, ==================>"
         print connection.get_setting("802-11-wireless-security").prop_dict
 
-class WirelessSetting(Settings):
 
+class WirelessSetting(Settings):
     def __init__(self, ap, spec_connection=None):
         Settings.__init__(self,[Security,
                                 Sections,
                                 IPV4Conf,
                                 IPV6Conf],)
         if ap:
-            self.crumb_name = self.ap.get_ssid()
+            self.crumb_name = ap.get_ssid()
         else:
             self.crumb_name = ""
         self.spec_connection = spec_connection
@@ -78,13 +78,12 @@ class WirelessSetting(Settings):
         print "save changes"
         if connection.check_setting_finish():
             if isinstance(connection, NMRemoteConnection):
-                #print "in update this setting ", connection.settings_dict
                 connection.update()
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 Dispatcher.emit("connection-replace", connection)
                 # reset index
-            self.apply_changes(connection)
+            #self.apply_changes(connection)
             #Dispatcher.set_button("apply", True)
             Dispatcher.to_main_page()
         else:
@@ -112,6 +111,47 @@ class WirelessSetting(Settings):
                                        wireless_device.object_path,
                                        ap.object_path)
 
+class HiddenSetting(Settings):
+
+    def __init__(self, connection, spec_connection=None):
+        Settings.__init__(self, [Sections])
+        #self.settings_dict = Sections
+        self.connection = connection
+        self.spec_connection = spec_connection
+        self.crumb_name = "Hidden network"
+
+    def init_items(self, connection):
+        self.connection = connection 
+        if connection not in self.settings:
+            self.setting_lock[connection] = True
+            #self.init_button_state(connection)
+            setting_list = []
+            for setting in self.setting_list:
+                s = setting(connection, self.set_button, True)
+                setting_list.append((s.tab_name, s))
+            self.settings[connection] = setting_list
+        return self.settings[connection][0][1]
+
+    def get_connections(self):
+        if self.connection:
+            return [self.connection]
+        else:
+            return [nm_module.nm_remote_settings.new_wireless_connection("", None)]
+
+    def add_new_connection(self):
+        pass
+
+    def save_changes(self, connection):
+        if isinstance(connection, NMRemoteConnection):
+            #print "in update this setting ", connection.settings_dict
+            connection.update()
+        else:
+            connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+            #Dispatcher.emit("connection-replace", connection)
+            net_manager.add_hidden(connection)
+            Dispatcher.to_main_page()
+
+
 class NoSetting(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
@@ -124,7 +164,7 @@ class NoSetting(gtk.VBox):
 
 class Sections(gtk.Alignment):
 
-    def __init__(self, connection, set_button):
+    def __init__(self, connection, set_button, need_ssid=False):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.set_padding(35, 0, 20, 0)
 
@@ -132,25 +172,19 @@ class Sections(gtk.Alignment):
         self.tab_name = "sfds"
         basic = SettingSection(_("Basic"))
 
-        #self.button = Button(_("Advanced"))
-        #self.button.set_size_request(50, 22)
-        #self.button.connect("clicked", self.show_more_options)
         self.wireless = SettingSection(_("Wireless"), always_show=True)
         self.ipv4 = SettingSection(_("IPv4 Setting"), always_show=True)
         self.ipv6 = SettingSection(_("IPv6 Settings"), always_show=True)
-        #align = gtk.Alignment(0, 0, 0, 0)
-        #align.set_padding(0, 0, 225, 0)
-        #align.add(self.button)
-        security = Security(connection, set_button)
+        if need_ssid:
+            security = Security(connection, set_button, need_ssid)
+        else:
+            security = Security(connection, set_button)
         security.button.connect("clicked", self.show_more_options)
         basic.load([security])
 
         self.wireless.load([Wireless(connection, set_button)])
         self.ipv4.load([IPV4Conf(connection, set_button)])
         self.ipv6.load([IPV6Conf(connection, set_button)])
-
-        self.space = gtk.HBox()
-        self.space.set_size_request(-1 ,30)
 
         self.main_box.pack_start(basic, False, False)
 
@@ -159,8 +193,6 @@ class Sections(gtk.Alignment):
     def show_more_options(self, widget):
         print "sdfsf"
         widget.parent.destroy()
-        #widget.destroy()
-        #self.main_box.pack_start(self.space, False, False)
         self.main_box.pack_start(self.wireless, False, False, 15)
         self.main_box.pack_start(self.ipv4, False, False)
         self.main_box.pack_start(self.ipv6, False, False, 15)
@@ -168,11 +200,14 @@ class Sections(gtk.Alignment):
 class Security(gtk.VBox):
     ENTRY_WIDTH = 222
 
-    def __init__(self, connection, set_button_cb):
+    def __init__(self, connection, set_button_cb, need_ssid=False):
         gtk.VBox.__init__(self)
         self.tab_name = _("Security")
         self.connection = connection
         self.set_button = set_button_cb
+        self.need_ssid = need_ssid
+
+        self.add_ssid_entry()
         
         if self.connection.get_setting("802-11-wireless").security == "802-11-wireless-security":
             self.has_security = True
@@ -221,7 +256,7 @@ class Security(gtk.VBox):
         self.align.add(self.button)
 
         ## Create table
-        self.table = gtk.Table(5, 4, True)
+        self.table = gtk.Table(5, 4)
         #TODO UI change
         label_list = ["security_label", "key_label", "wep_index_label", "auth_label", "password_label"]
         widget_list = ["password_entry", "key_entry", "wep_index_spin", "auth_combo", "security_combo"]
@@ -245,6 +280,8 @@ class Security(gtk.VBox):
         self.auth_combo.connect("item-selected", self.save_auth_cb)
         
         style.set_table(self.table)
+        table_align = gtk.Alignment(0, 0, 0, 0)
+        table_align.add(self.table)
         style.draw_background_color(self)
         width, height = self.ENTRY_WIDTH, 22
         self.key_entry.set_size(width, height)
@@ -252,7 +289,7 @@ class Security(gtk.VBox):
         self.wep_index_spin.set_size_request(width, height)
         self.auth_combo.set_size_request(width, height)
         self.security_combo.set_size_request(width, height)
-        self.pack_start(self.table, False, False)
+        self.pack_start(table_align, False, False)
         self.pack_start(self.align, False, False, 0)
 
     def add_ssid_entry(self):
@@ -260,28 +297,34 @@ class Security(gtk.VBox):
         self.ssid_label = Label(_("SSID:"),
                                 enable_select=False,
                                 enable_double_click=False)
+        self.ssid_label_align = style.wrap_with_align(self.ssid_label, width=210)
         self.ssid_entry = InputEntry()
-        self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
-
-    def entry_changed(self, widget, content, types):
-        if types.endswith("ssid"):
-            setattr(self.wireless, types, content)
+        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.ssid_entry_align = style.wrap_with_align(self.ssid_entry, align="left")
+        self.ssid_entry.entry.connect("changed", self.set_ssid)
+        self.ssid_entry.set_text(self.wireless.ssid)
 
         #self.add(align)
+
+    def set_ssid(self, widget, content):
+        self.wireless.ssid = content
+        check_settings(self.connection, None)
+
     def advand_cb(self, widget):
         pass
 
     def reset(self, security=True):
         ## Add security
         container_remove_all(self.table)
+        if self.need_ssid:
+            self.table.attach(self.ssid_label_align, 0, 1, 0, 1)
+            self.table.attach(self.ssid_entry_align, 1, 4, 0, 1)
         
-        self.table.resize(1, 4)
-        self.table.attach(self.security_label_align, 0, 1, 0, 1)
-        self.table.attach(self.security_combo_align, 1, 4, 0, 1)
+        self.table.resize(2, 4)
+        self.table.attach(self.security_label_align, 0, 1, 1, 2)
+        self.table.attach(self.security_combo_align, 1, 4, 1, 2)
 
         if not security:
-            #self.pack_start(self.align, False, False)
-            #self.table.attach(style.wrap_with_align(self.button, align="left"), 1, 4, 1, 2)
             return 
         
         keys = [None, "none", "none","wpa-psk"]
@@ -304,10 +347,10 @@ class Security(gtk.VBox):
                 secret = ""
 
             if self.security_combo.get_current_item()[1] == "wpa-psk":
-                self.table.resize(3, 4)
-                self.table.attach(self.password_label_align, 0, 1, 1, 2)
-                self.table.attach(self.password_entry_align, 1, 4, 1, 2)
-                self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
+                self.table.resize(4, 4)
+                self.table.attach(self.password_label_align, 0, 1, 2, 3)
+                self.table.attach(self.password_entry_align, 1, 4, 2, 3)
+                self.table.attach(self.show_key_check_align, 1, 4, 3, 4)
                 
                 self.password_entry.entry.set_text(secret)
                 if secret:
@@ -315,17 +358,17 @@ class Security(gtk.VBox):
                 self.setting.psk = secret
 
             elif self.security_combo.get_current_item()[1] == "none":
-                self.table.resize(5, 4)
+                self.table.resize(6, 4)
                 # Add Key
-                self.table.attach(self.key_label_align, 0, 1, 1, 2)
-                self.table.attach(self.key_entry_align, 1, 4, 1, 2)
-                self.table.attach(self.show_key_check_align, 1, 4, 2, 3)
+                self.table.attach(self.key_label_align, 0, 1, 2, 3)
+                self.table.attach(self.key_entry_align, 1, 4, 2, 3)
+                self.table.attach(self.show_key_check_align, 1, 4, 3, 4)
                 # Add wep index
-                self.table.attach(self.wep_index_label_align, 0, 1, 3, 4)
-                self.table.attach(self.wep_index_spin_align, 1, 4, 3, 4)
+                self.table.attach(self.wep_index_label_align, 0, 1, 4, 5)
+                self.table.attach(self.wep_index_spin_align, 1, 4, 4, 5)
                 # Add Auth
-                self.table.attach(self.auth_label_align, 0, 1, 4, 5)
-                self.table.attach(self.auth_combo_align, 1, 4, 4, 5)
+                self.table.attach(self.auth_label_align, 0, 1, 5, 6)
+                self.table.attach(self.auth_combo_align, 1, 4, 5, 6)
 
                 # Retrieve wep properties
                 try:
@@ -588,8 +631,8 @@ class Wireless(gtk.VBox):
         container_remove_all(self.table)
         mode = self.mode_combo.get_current_item()[1]
 
-        self.table.attach(self.ssid_label_align, 0, 1, 0, 1)
-        self.table.attach(self.ssid_entry_align, 1, 2, 0, 1)
+        #self.table.attach(self.ssid_label_align, 0, 1, 0, 1)
+        #self.table.attach(self.ssid_entry_align, 1, 2, 0, 1)
         # Mode
         self.table.attach(self.mode_label_align, 0, 1, 1, 2)
         self.table.attach(self.mode_combo_align, 1, 2, 1, 2)

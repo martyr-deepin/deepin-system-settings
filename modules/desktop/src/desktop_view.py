@@ -438,9 +438,11 @@ class DesktopView(gtk.VBox):
             if item_value == 0:
                 self.compiz_integrated_settings.set_string("command-1", "")
             elif item_value == 1:
+                self.compiz_integrated_settings.set_string("command-1", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "TopLeft")
             elif item_value == 2:
                 self.compiz_integrated_settings.set_string("command-1", self.LAUNCHER_CMD)
+                self.compiz_scale_settings.set_string("initiate-edge", "")
             else:
                 pass
             return
@@ -448,10 +450,12 @@ class DesktopView(gtk.VBox):
         if object == "topright":                                                 
             if item_value == 0:                                                 
                 self.compiz_scale_settings.set_string("initiate-edge", "")         
-            elif item_value == 1:                                               
+            elif item_value == 1:
+                self.compiz_integrated_settings.set_string("command-2", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "TopRight")
             elif item_value == 2:                                               
                 self.compiz_integrated_settings.set_string("command-2", self.LAUNCHER_CMD)
+                self.compiz_scale_settings.set_string("initiate-edge", "")
             else:                                                               
                 pass                                                            
             return

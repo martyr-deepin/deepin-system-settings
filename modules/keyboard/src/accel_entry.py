@@ -349,7 +349,7 @@ class AccelEntry(ShortcutKeyEntry):
         elif self.settings_type == self.TYPE_DP_GSETTINGS:
             self.settings_obj.set_string(self.settings_key, "%s;%s" %(self.settings_value_type, accel_name))
         elif self.settings_type == self.TYPE_CMP_GSETTINGS:
-            settings.shortcuts_compiz_set(self.settings_key, accel_name)
+            settings.shortcuts_compiz_set(self.settings_plugin, self.settings_key, accel_name)
         elif self.settings_type == self.TYPE_GCONF:
             self.settings_obj.set_string("%s/binding" % (self.settings_key), accel_name)
 

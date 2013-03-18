@@ -36,6 +36,7 @@ WAIT_TIME = 15000
 class TrayNetworkPlugin(object):
 
     def __init__(self):
+        self.menu_showed = False
         self.gui = TrayUI(self.toggle_wired, self.toggle_wireless, self.mobile_toggle)
         self.net_manager = NetManager()
         Dispatcher.connect("request_resize", self.request_resize)
@@ -424,7 +425,9 @@ class TrayNetworkPlugin(object):
 
     def show_menu(self):
         self.menu_showed = True
-        Dispatcher.request_resize()
+        height = self.gui.get_widget_height()
+        self.this.set_size_request(185, height + 46)
+        #Dispatcher.request_resize()
 
     def hide_menu(self):
         self.menu_showed = False
@@ -437,7 +440,8 @@ class TrayNetworkPlugin(object):
         """
         height = self.gui.get_widget_height()
         self.this.resize(1,1)
-        self.this.set_size_request(185, height + 46)
+        if self.menu_showed:
+            self.this.set_size_request(185, height + 46)
 
 def return_plugin():
     return TrayNetworkPlugin

@@ -7,6 +7,7 @@ from device_manager import device_manager
 from nmlib.servicemanager import servicemanager
 from nmlib.nm_remote_connection import NMRemoteConnection
 
+
 DEVICE_UNAVAILABLE = 0
 DEVICE_AVAILABLE = 1
 DEVICE_DISACTIVE = 1
@@ -18,6 +19,31 @@ class NetManager(object):
         self.init_devices()
         servicemanager.connect("service-start", self.__on_service_start_do)
         servicemanager.connect("service-stop", self.__on_service_stop_do)
+
+        self.cf = nm_module.nm_remote_settings.cf
+        self.config_file = nm_module.nm_remote_settings.config_file
+        if "hidden" not in self.cf.sections():
+            self.cf.add_section("hidden")
+
+    def get_hiddens(self):
+        hiddens = list()
+        connections = nm_module.nm_remote_settings.get_wireless_connections()
+
+        for index, ssid in enumerate(map(lambda x: x.get_setting("802-11-wireless").ssid, connections)):
+            if ssid in self.cf.options("hidden"):
+                hiddens.append(connections[index])
+        return hiddens
+    
+    def add_hidden(self, connection):
+        ssid = connection.get_setting("802-11-wireless").ssid
+
+        if ssid not in self.cf.options("hidden"):
+            self.cf.set("hidden", ssid)
+        try:
+            self.cf.write(open(self.config_file, "w"))
+            print "save succeed"
+        except:
+            print "save failded in addHidden"
 
     def __on_service_start_do(self, widget, s):
         print "Debug::service_start", s
@@ -165,33 +191,38 @@ class NetManager(object):
 
 
     def get_security_by_ap(self, ap_object):
-        NM_802_11_AP_FLAGS_NONE = 0x0
-        NM_802_11_AP_FLAGS_PRIVACY = 0x1
-        NM_802_11_AP_SEC_NONE = 0x0
-        NM_802_11_AP_SEC_PAIR_WEP40 = 0x1
-        NM_802_11_AP_SEC_PAIR_WEP104 = 0x2
-        NM_802_11_AP_SEC_PAIR_TKIP = 0x4
-        NM_802_11_AP_SEC_PAIR_CCMP = 0x8
-        NM_802_11_AP_SEC_GROUP_WEP40 = 0x10
-        NM_802_11_AP_SEC_GROUP_WEP104 = 0x20
-        NM_802_11_AP_SEC_GROUP_TKIP = 0x40
-        NM_802_11_AP_SEC_GROUP_CCMP = 0x80
-        NM_802_11_AP_SEC_KEY_MGMT_PSK = 0x100
-        NM_802_11_AP_SEC_KEY_MGMT_802_1X = 0x200
+        from nmlib.getsec import get_ap_security
+        return get_ap_security("wlan0", ap_object.get_hw_address())
+        
+        #NM_802_11_AP_FLAGS_NONE = 0x0
+        #NM_802_11_AP_FLAGS_PRIVACY = 0x1
+        #NM_802_11_AP_SEC_NONE = 0x0
+        #NM_802_11_AP_SEC_PAIR_WEP40 = 0x1
+        #NM_802_11_AP_SEC_PAIR_WEP104 = 0x2
+        #NM_802_11_AP_SEC_PAIR_TKIP = 0x4
+        #NM_802_11_AP_SEC_PAIR_CCMP = 0x8
+        #NM_802_11_AP_SEC_GROUP_WEP40 = 0x10
+        #NM_802_11_AP_SEC_GROUP_WEP104 = 0x20
+        #NM_802_11_AP_SEC_GROUP_TKIP = 0x40
+        #NM_802_11_AP_SEC_GROUP_CCMP = 0x80
+        #NM_802_11_AP_SEC_KEY_MGMT_PSK = 0x100
+        #NM_802_11_AP_SEC_KEY_MGMT_802_1X = 0x200
 
-        ap = ap_object
+        #ap = ap_object
 
-        wpa_flags = ap.get_wpa_flags()
-        rsn_flags = ap.get_rsn_flags()
-        flags = ap.get_flags()
+        #wpa_flags = ap.get_wpa_flags()
+        #rsn_flags = ap.get_rsn_flags()
+        #flags = ap.get_flags()
 
-        if flags & NM_802_11_AP_FLAGS_PRIVACY:
-            if wpa_flags == NM_802_11_AP_SEC_NONE and rsn_flags == NM_802_11_AP_SEC_NONE :
-                return "none" # WEP
-            if not wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X and not rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X :
-                return "wpa-psk" # wpa
-        else:
-            return None
+        #if flags & NM_802_11_AP_FLAGS_PRIVACY:
+            #if wpa_flags == NM_802_11_AP_SEC_NONE and rsn_flags == NM_802_11_AP_SEC_NONE :
+                #return "none" # WEP
+            #if not wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X and not rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X :
+                #return "wpa-psk" # wpa
+        #else:
+            #return None
+
+net_manager = NetManager()
 
 class Settings(object):
     def __init__(self, setting_list):

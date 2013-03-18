@@ -38,8 +38,9 @@ shortcuts_group_dict = {
         {'type': TYPE_DP, 'name': "key2", 'description': _("File manager"), 'value-type': TYPE_STRING, 'command': "/usr/bin/nautilus"},            # 文件管理器
         {'type': TYPE_WM, 'name': "switch-windows", 'description': _("Switch applications"), 'value-type': TYPE_STRV},                   # 应用程序切换
         {'type': TYPE_WM, 'name': "switch-windows-backward", 'description': _("Reverse switch applications"), 'value-type': TYPE_STRV},  # 应用程序反向切换
-        {'type': TYPE_COMPIZ, 'name': "next-key", 'description': _("Switch applications with 3D effect"), 'value-type': TYPE_STRING},             # 应用程序3D切换
-        {'type': TYPE_COMPIZ, 'name': "prev-key", 'description': _("Reverse switch applications with 3D effect"), 'value-type': TYPE_STRING},     # 应用程序3D反向
+        {'type': TYPE_COMPIZ, 'plugin': "shift", 'name': "next-key", 'description': _("Switch applications with 3D effect"), 'value-type': TYPE_STRING},             # 应用程序3D切换
+        {'type': TYPE_COMPIZ, 'plugin': "shift", 'name': "prev-key", 'description': _("Reverse switch applications with 3D effect"), 'value-type': TYPE_STRING},     # 应用程序3D反向
+        {'type': TYPE_DP, 'name': "key4", 'description': _("Show/Hide the dock"), 'value-type': TYPE_STRING, 'command': "dbus-send --type=method_call --dest=com.deepin.dde.dock /com/deepin/dde/dock com.deepin.dde.dock.ToggleShow"},     # 显示/隐藏Dock
         {'type': TYPE_MEDIA, 'name': "screenshot", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING},  # 截图
         {'type': TYPE_MEDIA, 'name': "area-screenshot", 'description': _("Take a screenshot of full screen"), 'value-type': TYPE_STRING},
         {'type': TYPE_MEDIA, 'name': "window-screenshot", 'description': _("Take a screenshot of a window"), 'value-type': TYPE_STRING},
@@ -78,10 +79,14 @@ shortcuts_group_dict = {
         {'type': TYPE_WM, 'name': "switch-to-workspace-right", 'description': _("Switch to workspace right"), 'value-type': TYPE_STRV},
         {'type': TYPE_WM, 'name': "switch-to-workspace-up", 'description': _("Switch to workspace above"), 'value-type': TYPE_STRV},
         {'type': TYPE_WM, 'name': "switch-to-workspace-down", 'description': _("Switch to workspace below"), 'value-type': TYPE_STRV},
-        {'type': TYPE_WM, 'name': "move-to-workspace-1", 'description': _("Move window to workspace 1"), 'value-type': TYPE_STRV},
-        {'type': TYPE_WM, 'name': "move-to-workspace-2", 'description': _("Move window to workspace 2"), 'value-type': TYPE_STRV},
-        {'type': TYPE_WM, 'name': "move-to-workspace-3", 'description': _("Move window to workspace 3"), 'value-type': TYPE_STRV},
-        {'type': TYPE_WM, 'name': "move-to-workspace-4", 'description': _("Move window to workspace 4"), 'value-type': TYPE_STRV},
+        {'type': TYPE_COMPIZ, 'plugin': 'put', 'name': "put-viewport-1-key", 'description': _("Move window to workspace 1"), 'value-type': TYPE_STRING},
+        {'type': TYPE_COMPIZ, 'plugin': 'put', 'name': "put-viewport-2-key", 'description': _("Move window to workspace 2"), 'value-type': TYPE_STRING},
+        {'type': TYPE_COMPIZ, 'plugin': 'put', 'name': "put-viewport-3-key", 'description': _("Move window to workspace 3"), 'value-type': TYPE_STRING},
+        {'type': TYPE_COMPIZ, 'plugin': 'put', 'name': "put-viewport-4-key", 'description': _("Move window to workspace 4"), 'value-type': TYPE_STRING},
+        #{'type': TYPE_WM, 'name': "move-to-workspace-1", 'description': _("Move window to workspace 1"), 'value-type': TYPE_STRV},
+        #{'type': TYPE_WM, 'name': "move-to-workspace-2", 'description': _("Move window to workspace 2"), 'value-type': TYPE_STRV},
+        #{'type': TYPE_WM, 'name': "move-to-workspace-3", 'description': _("Move window to workspace 3"), 'value-type': TYPE_STRV},
+        #{'type': TYPE_WM, 'name': "move-to-workspace-4", 'description': _("Move window to workspace 4"), 'value-type': TYPE_STRV},
         {'type': TYPE_WM, 'name': "move-to-workspace-left", 'description': _("Move window one workspace to the left"), 'value-type': TYPE_STRV},
         {'type': TYPE_WM, 'name': "move-to-workspace-right", 'description': _("Move window one workspace to the right"), 'value-type': TYPE_STRV},
         {'type': TYPE_WM, 'name': "move-to-workspace-up", 'description': _("Move window one workspace up"), 'value-type': TYPE_STRV},

@@ -55,6 +55,7 @@ def set_table(table):
     table.set_col_spacings(BETWEEN_SPACING)
 
 def wrap_with_align(widget, align="right", width=-1):
+
     if align is "left":
         align = gtk.Alignment(0, 0.5, 0, 0)
     elif align is "right":

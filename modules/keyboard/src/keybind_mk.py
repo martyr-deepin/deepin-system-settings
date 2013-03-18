@@ -41,7 +41,7 @@ def get_all_shortcuts_entry(gst_list):
     keys_list[TYPE_WM] = gst_list[TYPE_WM].list_keys()
     keys_list[TYPE_MEDIA] = gst_list[TYPE_MEDIA].list_keys()
     keys_list[TYPE_DP] = gst_list[TYPE_DP].list_keys()
-    keys_list[TYPE_COMPIZ] = ["next-key", "prev-key"]
+    keys_list[TYPE_COMPIZ] = ["next-key", "prev-key", "put-viewport-1-key", "put-viewport-2-key", "put-viewport-3-key", "put-viewport-4-key"]
     for group in shortcuts_group_dict:
         item_dict[group] = []
         for key in shortcuts_group_dict[group]:
@@ -101,12 +101,13 @@ def get_shortcuts_dp_shortcut_entry(gsettings, key_dict):
     return item
 
 def get_shortcuts_compiz_shortcut_entry(gsettings, key_dict):
-    key_name = settings.shortcuts_compiz_get(key_dict['name'])
+    key_name = settings.shortcuts_compiz_get(key_dict['plugin'], key_dict['name'])
     item = AccelEntry(key_name, check_shortcut_conflict)
     item.settings_description = key_dict['description']
     item.settings_key = key_dict['name']
     item.settings_obj = gsettings
     item.settings_type = item.TYPE_CMP_GSETTINGS
+    item.settings_plugin = key_dict['plugin']
     return item
 
 def get_shortcuts_custom_shortcut_entry(client, del_callback=None):
