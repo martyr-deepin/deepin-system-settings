@@ -457,6 +457,10 @@ msgstr "应用程序3D切换"
 msgid "Reverse switch applications with 3D effect"
 msgstr "应用程序3D反向切换"
 
+#: ../src/keybind_all.py:43
+msgid "Show/Hide the dock"
+msgstr "显示/隐藏Dock"
+
 #: ../src/keybind_all.py:44
 msgid "Take a screenshot of full screen"
 msgstr "屏幕截图"
