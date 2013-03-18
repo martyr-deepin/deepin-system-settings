@@ -42,7 +42,6 @@ class DesktopView(gtk.VBox):
     class docs
     '''
 
-    SUPER_W_CMD = "superw.py"
     LAUNCHER_CMD = "launcher"
 
     def __init__(self):
@@ -448,7 +447,7 @@ class DesktopView(gtk.VBox):
 
         if object == "topright":                                                 
             if item_value == 0:                                                 
-                self.compiz_integrated_settings.set_string("command-2", "")         
+                self.compiz_scale_settings.set_string("initiate-edge", "")         
             elif item_value == 1:                                               
                 self.compiz_scale_settings.set_string("initiate-edge", "TopRight")
             elif item_value == 2:                                               
