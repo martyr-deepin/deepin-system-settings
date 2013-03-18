@@ -125,6 +125,7 @@ class EjecterApp(gobject.GObject):
                             (1,   ("#777777", 0.0))
                            ]
         self.height = 0
+        self.size_check = False
         self.hbox = gtk.HBox()
         self.title_image = gtk.image_new_from_file(os.path.join(image_path, "image/usb/usb_label.png"))
         self.title_label = gtk.Label(_("USB Device"))
@@ -152,7 +153,6 @@ class EjecterApp(gobject.GObject):
     def __load_monitor(self):
         # 移除挂载上的控件.
         self.height = 75
-        self.size_check = False
         self.width = 210
         for widget in self.monitor_vbox.get_children():
             self.monitor_vbox.remove(widget)

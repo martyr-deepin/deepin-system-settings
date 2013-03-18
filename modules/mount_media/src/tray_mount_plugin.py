@@ -47,16 +47,12 @@ class MountMedia(EjecterApp):
     def device_btn_close_btn_clicked(self, widget, drive, volume, mount):
         # 挂载的开关.
         print "device_btn_close_btn_clicked...", 
-        print "===:", drive, volume, mount
         op = gio.MountOperation()
         if mount:
-            print "卸载掉........."
             mount.unmount(self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
         else:
-            print "挂载起来......."
             if volume:
                 volume.mount(op, self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
-                print "volume..........."
 
     def cancall_opeartion(self, object, res):
         pass
