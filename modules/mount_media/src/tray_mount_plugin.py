@@ -66,6 +66,8 @@ class MountMedia(EjecterApp):
                 self.this.hide_menu()
             else:
                 self.this.set_size_request(self.width, height)
+                self.this.hide_menu()
+                self.this.show_menu()
 
     def init_values(self, this_list):
         self.this = this_list[0]
