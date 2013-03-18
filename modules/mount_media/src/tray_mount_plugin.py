@@ -65,8 +65,8 @@ class MountMedia(EjecterApp):
                 print "无移动设备挂载了... .."
                 self.this.hide_menu()
             else:
-                self.this.set_size_request(self.width, height)
                 self.this.hide_menu()
+                self.this.set_size_request(self.width, height)
                 self.this.show_menu()
 
     def init_values(self, this_list):
