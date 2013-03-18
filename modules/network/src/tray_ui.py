@@ -65,6 +65,7 @@ class TrayUI(gtk.VBox):
         self.button_more.set_size_request(-1, 25)
         #self.pack_start(self.button_more, False, False)
         self.ap_tree = TreeView(mask_bound_height=0)
+        self.ap_tree.set_expand_column(0)
         #self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
 
         self.wire_box = self.section_box([self.wire])

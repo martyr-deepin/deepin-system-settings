@@ -31,7 +31,7 @@ from nmlib.nm_utils import TypeConvert
 from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
 from ipsettings import IPV4Conf, IPV6Conf
-from elements import SettingSection
+from elements import SettingSection, TableAsm
 import gtk
 wired_device = []
 
@@ -85,7 +85,7 @@ class Sections(gtk.Alignment):
 
     def __init__(self, connection, set_button):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
-        self.set_padding(35, 0, 50, 0)
+        self.set_padding(35, 0, 20, 0)
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
@@ -100,9 +100,6 @@ class Sections(gtk.Alignment):
         basic.load([IPV4Conf(connection, set_button), align])
         self.wired.load([Wired(connection, set_button)])
         self.ipv6.load([IPV6Conf(connection, set_button)])
-
-        self.space = gtk.HBox()
-        self.space.set_size_request(-1 ,30)
 
         self.main_box.pack_start(self.wired, False, False, 15)
         self.main_box.pack_start(basic, False, False)
@@ -120,57 +117,35 @@ class Wired(gtk.VBox):
         self.ethernet = connection.get_setting("802-3-ethernet")
         self.connection = connection
         self.set_button = set_button_callback
-        table = gtk.Table(3, 2, False)
-        
-        mac_address = Label(_("Device Mac Address:"),
-                            text_size=CONTENT_FONT_SIZE,
-                            enable_select=False,
-                            enable_double_click=False)
-        table.attach(style.wrap_with_align(mac_address, width=210), 0, 1, 0, 1)
 
-        self.mac_entry = InputEntry()
-        table.attach(style.wrap_with_align(self.mac_entry), 1, 2, 0, 1)
+        self.__init_table()
+        self.__init_signals()
 
-        clone_addr = Label(_("Cloned Mac Address:"),
-                           text_size=CONTENT_FONT_SIZE,
-                           enable_select=False,
-                           enable_double_click=False)
-        table.attach(style.wrap_with_align(clone_addr), 0, 1, 1, 2)
-        self.clone_entry = InputEntry()
-        table.attach(style.wrap_with_align(self.clone_entry), 1,2, 1, 2)
-
-        mtu = Label(_("MTU:"),
-                    enable_select=False,
-                    enable_double_click=False)
-        table.attach(style.wrap_with_align(mtu), 0,1,2,3)
-        self.mtu_spin = SpinBox(0,0, 1500, 1, self.ENTRY_WIDTH)
-        table.attach(style.wrap_with_align(self.mtu_spin), 1,2,2,3)
-        
-        # TODO UI change
-        #self.connect("expose-event", expose_background)
-        #style.draw_background_color(self)
-        style.set_table(table)
-        #align = style.set_box_with_align(table, "text")
-        align = gtk.Alignment(0,0,0,0)
-        #align.set_padding(0, 0, 210, 0)
-        align.add(table)
-        self.add(align)
-        self.mac_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
-        self.clone_entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
-    
-        self.mac_entry.entry.connect("changed", self.save_settings, "mac_address")
-        self.clone_entry.entry.connect("changed", self.save_settings, "cloned_mac_address")
-        self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
-
-        ## retrieve wired info
         (mac, clone_mac, mtu) = self.ethernet.mac_address, self.ethernet.cloned_mac_address, self.ethernet.mtu
-        #print mac, clone_mac, mtu
         if mac != None:
             self.mac_entry.set_text(mac)
         if clone_mac !=None:
             self.clone_entry.set_text(clone_mac)
         if mtu != None:
             self.mtu_spin.set_value(int(mtu))
+
+    def __init_table(self):
+        self.table = TableAsm()
+        self.mac_entry = self.table.row_input_entry(_("Device Mac Address:"))
+        self.clone_entry = self.table.row_input_entry(_("Cloned Mac Address:"))
+        self.mtu_spin = self.table.row_spin(_("MTU:"), 0, 1500)
+        self.table.table_build()
+        # TODO UI change
+        align = gtk.Alignment(0,0,0,0)
+        align.add(self.table)
+        self.pack_start(align)
+   
+    def __init_signals(self):
+        self.mac_entry.entry.connect("changed", self.save_settings, "mac_address")
+        self.clone_entry.entry.connect("changed", self.save_settings, "cloned_mac_address")
+        self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
+
+        ## retrieve wired info
 
     def save_settings(self, widget, value, types):
         if type(value) is str:

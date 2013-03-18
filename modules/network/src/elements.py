@@ -1,12 +1,13 @@
 # element widgets to construct complex widgets
 from dss import app_theme
-from dtk.ui.new_entry import InputEntry
-from dtk.ui.button import OffButton
+from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.button import OffButton, CheckButton
 from dtk.ui.label import Label
+from dtk.ui.spin import SpinBox
 #from container import TitleBar, Contain
-from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, alpha_color_hex_to_cairo, propagate_expose
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, alpha_color_hex_to_cairo, propagate_expose, container_remove_all
 from dtk.ui.line import HSeparator
-from constants import TITLE_FONT_SIZE 
+from constants import TITLE_FONT_SIZE, CONTENT_FONT_SIZE, WIDGET_HEIGHT, BETWEEN_SPACING
 import style
 
 import gtk
@@ -165,3 +166,112 @@ class SettingSection(gtk.VBox):
         h_separator.set_size_request(500, height)
         widget.pack_start(h_separator, False, False)
 
+class TableAsm(gtk.Table):
+
+    def __init__(self, left_width=210, right_width=220):
+        gtk.Table.__init__(self, 1, 2, False)
+        self.set_col_spacings(BETWEEN_SPACING)
+        self.left_width = left_width
+        self.right_width = right_width
+        self.shared = list()
+
+    def row_input_entry(self, label_name, table=None):
+        label = Label(label_name,
+                      text_size=CONTENT_FONT_SIZE,
+                      enable_select=False,
+                      enable_double_click=False)
+
+        entry = InputEntry()
+        entry.set_size(self.right_width, WIDGET_HEIGHT)
+        if table == None:
+            self.shared.append((label, entry))
+        else:
+            table.append((label, entry))
+        return entry
+    
+    def row_pwd_entry(self, label_name, table=None):
+        label = Label(label_name,
+                      text_size=CONTENT_FONT_SIZE,
+                      enable_select=False,
+                      enable_double_click=False)
+        entry = PasswordEntry()
+        entry.set_size(self.right_width, WIDGET_HEIGHT)
+        show_key = CheckButton(_("Show key"), padding_x=0)
+        show_key.connect("toggled", lambda w: show_key.show_password(w.get_active()))
+
+        if table == None:
+            self.shared.append((label, entry))
+            self.shared.append((None, show_key))
+        else:
+            table.append((label, entry))
+            table.append((None, show_key))
+        return entry
+
+    def row_spin(self, label_name, low, high, table=None):
+        label = Label(label_name,
+                      text_size=CONTENT_FONT_SIZE,
+                      enable_select=False,
+                      enable_double_click=False)
+        spin = SpinBox(0, low, high, 1, self.right_width)
+
+        if table == None:
+            self.shared.append((label, spin))
+        else:
+            table.append((label, spin))
+        return spin
+
+    def row_toggle(self, label_name, table=None):
+        label = Label(label_name,
+                      text_size=CONTENT_FONT_SIZE,
+                      enable_select=False,
+                      enable_double_click=False)
+
+        toggle = OffButton()
+
+        if table == None:
+            self.shared.append((label, toggle))
+        else:
+            table.append((label, toggle))
+        return toggle
+    
+    def row_combo(self, label_name, combo_items, table):
+        label = Label(label_name,
+                      text_size=CONTENT_FONT_SIZE,
+                      enable_select=False,
+                      enable_double_click=False)
+
+        combo = ComboBox([combo_items],
+                          max_width=self.right_width)
+
+        if table == None:
+            self.shared.append((label, combo))
+        else:
+            table.append((label, combo))
+        return combo
+
+    def table_build(self, table_spec=[], insert=-1):
+        if insert == -1:
+            items = self.shared + table_spec
+        else:
+            items = self.shared[:insert] + table_spec + self.shared[insert:]
+        self._table_attach(self, items)
+    
+    def _wrap_align(self, row_item):
+        left, right = row_item
+        left_align = style.wrap_with_align(left, width = self.left_width)
+        right_align = style.wrap_with_align(right, align="left")
+        return (left_align, right_align)
+
+    def _table_attach(self, table, items):
+        table.resize(len(items), 2)
+        for row, item in enumerate(items):
+            left, right = item
+            if left:
+                align = style.wrap_with_align(left, width = self.left_width)
+                table.attach(align, 0, 1, row, row + 1)
+            if right:
+                align = style.wrap_with_align(right, align="left")
+                table.attach(align, 1, 2, row, row + 1)
+    
+    def table_clear(self):
+        container_remove_all(self)

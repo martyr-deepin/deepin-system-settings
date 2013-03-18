@@ -176,6 +176,7 @@ class WiredSection(Section, WiredDevice):
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w:w)
             self.tree = TreeView([])
+            self.tree.set_expand_column(1)
             self.load(self.wire, [self.tree])
             if self.get_state(self.wired_devices):
                 self.wire.set_active(True)
@@ -193,7 +194,9 @@ class WiredSection(Section, WiredDevice):
         return False
     
     def device_added(self, widget, device):
-        print "wire device added"
+        print "device_added"
+        self.wired_devices = device_manager.get_wired_devices()
+        self.wire.set_active(True, emit=True)
 
     def get_list(self):
         return map(lambda d: WiredItem(d), self.wired_devices)
@@ -204,6 +207,7 @@ class WiredSection(Section, WiredDevice):
         item_list[-1].is_last = True
 
         self.tree.add_items(item_list, 0, True)
+        self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
 
     def toggle_on_after(self):
         for i,d in enumerate(self.wired_devices):
@@ -253,7 +257,6 @@ class WirelessDevice(object):
         self.wireless.set_active(True)
 
         if self._get_active_item():
-            print "sfsf"
             for item in self._get_active_item():
                 item.set_net_state(0)
         if self.pwd_failed:
@@ -321,6 +324,7 @@ class WirelessSection(Section, WirelessDevice):
         if self.wireless_devices:
             self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), lambda w:w)
             self.tree = TreeView([], enable_multiple_select=False)
+            self.tree.set_expand_column(1)
             self.tree.connect("single-click-item", self.set_selected_item)
             self.hotspot = HotSpot(None)
             self.vbox = gtk.VBox(False)
@@ -349,8 +353,8 @@ class WirelessSection(Section, WirelessDevice):
         self.label.connect("button-release-event", self.create_a_hidden_network)
 
     def create_a_hidden_network(self, widget, c):
-        from wlan_config import WirelessSetting
-        Dispatcher.to_setting_page(WirelessSetting(None))
+        from wlan_config import HiddenSetting
+        Dispatcher.to_setting_page(HiddenSetting(None))
 
     def ap_added_callback(self, widget):
         print "ap added"
@@ -406,8 +410,8 @@ class WirelessSection(Section, WirelessDevice):
             self.ap_list += device_wifi.order_ap_list()
 
         ap = filter(lambda a: a.get_ssid() == "daydayup", self.ap_list)
-        print ap 
-        #print ap[0].object_path
+        if ap:
+            print ap[0].object_path
 
         aps = map(lambda i:WirelessItem(i), self.ap_list)
         
@@ -418,11 +422,13 @@ class WirelessSection(Section, WirelessDevice):
         return aps + hiddens
 
     def get_hidden_connection(self, ap_list):
-        ssids = map(lambda a: a.get_ssid(), ap_list)
-        hiddens = filter(lambda c: c.get_setting("802-11-wireless").ssid not in ssids, 
-                         nm_module.nm_remote_settings.get_wireless_connections())
+        from shared_methods import net_manager
 
-        return hiddens
+
+        #ssids = map(lambda a: a.get_ssid(), ap_list)
+        #hiddens = filter(lambda c: c.get_setting("802-11-wireless").ssid not in ssids, 
+                         #nm_module.nm_remote_settings.get_wireless_connections())
+        return net_manager.get_hiddens()
 
         ## need to filter all aps
     def get_state(self, devices):
@@ -431,7 +437,6 @@ class WirelessSection(Section, WirelessDevice):
                 return True
         return False
     
-
 #class WirelesSection(gtk.VBox):
     #def __init__(self, send_to_crumb_cb):
         #gtk.VBox.__init__(self)
@@ -821,6 +826,7 @@ class DSLSection(Section):
         Section.__init__(self)
         self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
         self.tree = TreeView([])
+        self.tree.set_expand_column(1)
         self.label =  Label(_("DSL Configuration"), 
                           LABEL_COLOR,
                           underline=True,
@@ -897,6 +903,7 @@ class VpnSection(Section):
         #init
         self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), lambda w:w)
         self.tree = TreeView([])
+        self.tree.set_expand_column(1)
         self.label = Label(_("VPN Setting"), 
                            LABEL_COLOR,
                            underline=True,
@@ -1055,6 +1062,7 @@ class MobileSection(Section):
         if self.get_list():
             self.mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), lambda w:w)
             self.tree = TreeView([])
+            self.tree.set_expand_column(1)
             self.label = Label(_("Mobile Configuration"),
                           LABEL_COLOR,
                           underline=True,
@@ -1228,8 +1236,8 @@ class Network(object):
         if hasattr(self.wireless, "wireless"):
             vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
-        if hasattr(self.mobile, "mobile"):
-            vbox.pack_start(self.mobile, False, True, 0)
+        #if hasattr(self.mobile, "mobile"):
+        vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
         vbox.pack_start(self.proxy, False, True, 0)
         vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
