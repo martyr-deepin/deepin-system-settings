@@ -362,6 +362,9 @@ class SoundSetting(object):
         self.container_widgets["advance_hardware_box"].pack_start(self.label_widgets["ad_hardware"], False, False, 10)
         self.container_widgets["advance_hardware_box"].pack_start(self.view_widgets["ad_hardware"])
         ##########################################
+        self.view_widgets["ad_input"].set_expand_column(0)
+        self.view_widgets["ad_output"].set_expand_column(0)
+        self.view_widgets["ad_hardware"].set_expand_column(0)
         self.__set_output_status()
         self.__set_input_status()
 
