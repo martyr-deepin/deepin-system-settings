@@ -72,7 +72,7 @@ class Device(gtk.HBox):
         ch_width = get_text_size("a", text_size=9)[0]
         dec_width = get_text_size(text, text_size=9)[0] - text_width
         if dec_width > 0:
-            index = dec_width/ch_width
+            index = (dec_width/ch_width) + 2
             text = text[0:len(text)-index] + "..."
         if self.eject_check:
             text_color_value = "#000000"
@@ -125,6 +125,7 @@ class EjecterApp(gobject.GObject):
                             (1,   ("#777777", 0.0))
                            ]
         self.height = 0
+        self.size_check = False
         self.hbox = gtk.HBox()
         self.title_image = gtk.image_new_from_file(os.path.join(image_path, "image/usb/usb_label.png"))
         self.title_label = gtk.Label(_("USB Device"))
@@ -152,14 +153,12 @@ class EjecterApp(gobject.GObject):
     def __load_monitor(self):
         # 移除挂载上的控件.
         self.height = 75
-        self.size_check = False
         self.width = 210
         for widget in self.monitor_vbox.get_children():
             self.monitor_vbox.remove(widget)
         self.network_mounts_list = []
         self.network_volumes_list = []
         drives = self.monitor.get_connected_drives()
-        volumes = self.monitor.get_volumes()
         #print "drives:", drives
         # 获取大硬盘下的东西.
         for drive in drives:
@@ -203,6 +202,7 @@ class EjecterApp(gobject.GObject):
                             drive, None, None)
 
         #print "======================\n\n\n"
+        volumes = self.monitor.get_volumes()
         for volume in volumes:
             drive = volume.get_drive()
             if drive:
@@ -216,6 +216,7 @@ class EjecterApp(gobject.GObject):
                 #print "mount:"
                 icon = mount.get_icon()
                 root = mount.get_root()
+                name = mount.get_name()
                 mount_uri  = root.get_uri()
                 tooltip   = root.get_parse_name()
                 #print "icon:", icon
@@ -231,6 +232,7 @@ class EjecterApp(gobject.GObject):
                 self.__add_place(
                         name, icon, None,
                         None, volume, None)
+
         print "========================\n\n\n"
         mounts = self.monitor.get_mounts() 
         #print "mounts:", mounts
@@ -244,21 +246,19 @@ class EjecterApp(gobject.GObject):
                 continue
             root = mount.get_root()
             if not root.is_native():
-                #print "network....===>>>"
+                print "network....===>>>"
                 # 保存到网络列表中.
                 self.network_mounts_list.insert(0, mount)
                 continue;
 
-            #print "mount:====>>>"
-            icon = mount.get_icon()
+            print "long--long--mount:====>>>"
+            icon      = mount.get_icon()
             mount_uri = root.get_uri()
             tooltip   = root.get_parse_name()
-            name = mount.get_name()
-            '''
+            name      = mount.get_name()
             print "icon:", icon
             print "mount_uri:", mount_uri
             print "name:", name
-            '''
             self.__add_place(
                     name, icon, mount_uri,
                     None, None, mount)
@@ -270,23 +270,23 @@ class EjecterApp(gobject.GObject):
             mount_uri = root.get_uri()
             tooltip   = root.get_parse_name()
             name = mount.get_name()
-            '''
+            print "\n\n\n"
             print "mounts....====>>>"
             print "root:", root
             print "icon:", icon
             print "name:", name
             print "uri:", mount_uri
-            '''
             self.__add_place(
                     name, icon, mount_uri, 
                     None, None, mount)
+            print "\n\n\n"
         # 设置高度.
         self.set_menu_size(self.height)
 
     def __add_place(self, 
                     name, icon, uri, 
                     drive, volume, mount):
-        print "__add_place..."
+        print "__add_place... ==============="
         print "name:", name
         print "icon:", icon
         print "uri:", uri
