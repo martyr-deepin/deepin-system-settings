@@ -183,10 +183,7 @@ class TableAsm(gtk.Table):
 
         entry = InputEntry()
         entry.set_size(self.right_width, WIDGET_HEIGHT)
-        if table == None:
-            self.shared.append((label, entry))
-        else:
-            table.append((label, entry))
+        self._wrap_align((label, entry), table)
         return entry
     
     def row_pwd_entry(self, label_name, table=None):
@@ -198,13 +195,9 @@ class TableAsm(gtk.Table):
         entry.set_size(self.right_width, WIDGET_HEIGHT)
         show_key = CheckButton(_("Show key"), padding_x=0)
         show_key.connect("toggled", lambda w: show_key.show_password(w.get_active()))
+        self._wrap_align((label, entry), table)
+        self._wrap_align((None, show_key), table)
 
-        if table == None:
-            self.shared.append((label, entry))
-            self.shared.append((None, show_key))
-        else:
-            table.append((label, entry))
-            table.append((None, show_key))
         return entry
 
     def row_spin(self, label_name, low, high, table=None):
@@ -213,11 +206,8 @@ class TableAsm(gtk.Table):
                       enable_select=False,
                       enable_double_click=False)
         spin = SpinBox(0, low, high, 1, self.right_width)
+        self._wrap_align((label, spin), table)
 
-        if table == None:
-            self.shared.append((label, spin))
-        else:
-            table.append((label, spin))
         return spin
 
     def row_toggle(self, label_name, table=None):
@@ -227,14 +217,11 @@ class TableAsm(gtk.Table):
                       enable_double_click=False)
 
         toggle = OffButton()
+        self._wrap_align((label, toggle), table)
 
-        if table == None:
-            self.shared.append((label, toggle))
-        else:
-            table.append((label, toggle))
         return toggle
     
-    def row_combo(self, label_name, combo_items, table):
+    def row_combo(self, label_name, combo_items, table=None):
         label = Label(label_name,
                       text_size=CONTENT_FONT_SIZE,
                       enable_select=False,
@@ -243,10 +230,8 @@ class TableAsm(gtk.Table):
         combo = ComboBox([combo_items],
                           max_width=self.right_width)
 
-        if table == None:
-            self.shared.append((label, combo))
-        else:
-            table.append((label, combo))
+        self._wrap_align((label, combo), table)
+    
         return combo
 
     def table_build(self, table_spec=[], insert=-1):
@@ -256,22 +241,23 @@ class TableAsm(gtk.Table):
             items = self.shared[:insert] + table_spec + self.shared[insert:]
         self._table_attach(self, items)
     
-    def _wrap_align(self, row_item):
+    def _wrap_align(self, row_item, table):
         left, right = row_item
         left_align = style.wrap_with_align(left, width = self.left_width)
         right_align = style.wrap_with_align(right, align="left")
-        return (left_align, right_align)
+        if table == None:
+            self.shared.append((left_align, right_align))
+        else:
+            table.append((left_align, right_align))
 
     def _table_attach(self, table, items):
         table.resize(len(items), 2)
         for row, item in enumerate(items):
             left, right = item
             if left:
-                align = style.wrap_with_align(left, width = self.left_width)
-                table.attach(align, 0, 1, row, row + 1)
+                table.attach(left, 0, 1, row, row + 1)
             if right:
-                align = style.wrap_with_align(right, align="left")
-                table.attach(align, 1, 2, row, row + 1)
+                table.attach(right, 1, 2, row, row + 1)
     
     def table_clear(self):
         container_remove_all(self)

@@ -408,7 +408,6 @@ class PPPConf(gtk.VBox):
             self.comp_table.table_build()
             self.require_mppe_128.set_active(False)
             self.mppe_stateful.set_active(False)
-
         self.show_all()
 
     #def refresh_table(self, require_mppe):

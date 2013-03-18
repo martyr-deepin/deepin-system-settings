@@ -1236,8 +1236,8 @@ class Network(object):
         if hasattr(self.wireless, "wireless"):
             vbox.pack_start(self.wireless, False, True, 0)
         vbox.pack_start(self.dsl, False, True, 0)
-        #if hasattr(self.mobile, "mobile"):
-        vbox.pack_start(self.mobile, False, True, 0)
+        if hasattr(self.mobile, "mobile"):
+            vbox.pack_start(self.mobile, False, True, 0)
         vbox.pack_start(self.vpn, False, True, 0)
         vbox.pack_start(self.proxy, False, True, 0)
         vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
