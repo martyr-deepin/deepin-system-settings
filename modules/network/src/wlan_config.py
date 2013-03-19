@@ -48,7 +48,6 @@ def check_settings(connection, fn):
         print "not pass, ==================>"
         print connection.get_setting("802-11-wireless-security").prop_dict
 
-
 class WirelessSetting(Settings):
     def __init__(self, ap, spec_connection=None):
         Settings.__init__(self,[Security,
@@ -112,7 +111,7 @@ class WirelessSetting(Settings):
                                        ap.object_path)
 
 class HiddenSetting(Settings):
-
+    
     def __init__(self, connection, spec_connection=None):
         Settings.__init__(self, [Sections])
         #self.settings_dict = Sections
@@ -149,8 +148,7 @@ class HiddenSetting(Settings):
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
             #Dispatcher.emit("connection-replace", connection)
             net_manager.add_hidden(connection)
-            Dispatcher.to_main_page()
-
+        Dispatcher.to_main_page()
 
 class NoSetting(gtk.VBox):
     def __init__(self):
@@ -167,14 +165,13 @@ class Sections(gtk.Alignment):
     def __init__(self, connection, set_button, need_ssid=False):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.set_padding(35, 0, 20, 0)
+        self.connection = connection
+        self.set_button = set_button
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
         basic = SettingSection(_("Basic"))
 
-        self.wireless = SettingSection(_("Wireless"), always_show=True)
-        self.ipv4 = SettingSection(_("IPv4 Setting"), always_show=True)
-        self.ipv6 = SettingSection(_("IPv6 Settings"), always_show=True)
         if need_ssid:
             security = Security(connection, set_button, need_ssid)
         else:
@@ -182,9 +179,6 @@ class Sections(gtk.Alignment):
         security.button.connect("clicked", self.show_more_options)
         basic.load([security])
 
-        self.wireless.load([Wireless(connection, set_button)])
-        self.ipv4.load([IPV4Conf(connection, set_button)])
-        self.ipv6.load([IPV6Conf(connection, set_button)])
 
         self.main_box.pack_start(basic, False, False)
 
@@ -193,6 +187,12 @@ class Sections(gtk.Alignment):
     def show_more_options(self, widget):
         print "sdfsf"
         widget.parent.destroy()
+        self.wireless = SettingSection(_("Wireless"), always_show=True)
+        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
+        self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
+        self.wireless.load([Wireless(self.connection, self.set_button)])
+        self.ipv4.load([IPV4Conf(self.connection, self.set_button)])
+        self.ipv6.load([IPV6Conf(self.connection, self.set_button)])
         self.main_box.pack_start(self.wireless, False, False, 15)
         self.main_box.pack_start(self.ipv4, False, False)
         self.main_box.pack_start(self.ipv6, False, False, 15)
@@ -582,7 +582,7 @@ class Wireless(gtk.VBox):
         #align = style.set_box_with_align(self.table, 'text')
         style.set_table(self.table)
 
-        section = SettingSection(_("Defalut Settings"), always_show= False, revert=True, label_right=True, has_seperator=False)
+        section = SettingSection(_("Default Settings"), always_show= False, revert=True, label_right=True, has_seperator=False)
         section.load([self.table])
         self.pack_start(section, False, False)
         #self.pack_start(self.table, False, False)

@@ -27,7 +27,7 @@ from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
 from dtk.ui.new_entry import EntryBuffer, Entry
 #from nm_modules import cache
-from shared_methods import NetManager
+from shared_methods import net_manager
 from widgets import AskPasswordDialog
 from nmlib.nm_remote_connection import NMRemoteConnection
 
@@ -37,12 +37,10 @@ from nm_modules import nm_module, cache
 #from wlan_config import WirelessSetting
 #from wired import *
 import threading
-import time
 import gtk
 import pango
 
 import sys,os
-from dtk.ui.label import Label
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
 from nls import _
@@ -59,7 +57,6 @@ bg_normal_color = "#f6f6f6"
 border_hover_color="#7da2ce"
 border_normal_color = "#d2d2d2"
 #border_normal_color = "#ffffff"
-net_manager = NetManager()
 
 class GenItems(TreeItem):
     H_PADDING = 10
@@ -196,13 +193,13 @@ class LoadingThread(td.Thread):
     
     def run(self):
         position = 0
-        try:
-            while self.widget.get_net_state() == 1:
-                self.widget.refresh_loading(position)
-                time.sleep(0.1)
-                position += 60
-        except Exception, e:
-            print "class LoadingThread got error %s" % e
+        #try:
+        while self.widget.get_net_state() == 1:
+            self.widget.refresh_loading(position)
+            time.sleep(0.1)
+            position += 60
+        #except Exception, e:
+            #print "class LoadingThread got error %s" % e
 ##################
 
 class WiredItem(GenItems):
@@ -317,6 +314,7 @@ class WirelessItem(GenItems):
 
     def connect_by_ssid(self, ssid, ap):
         connection =  net_manager.connect_wireless_by_ssid(ssid)
+        print connection, "DEBUG connect by ssid"
         self.ap = ap
         if connection and not isinstance(connection, NMRemoteConnection):
             security = net_manager.get_security_by_ap(self.ap)
@@ -329,6 +327,8 @@ class WirelessItem(GenItems):
                 nm_module.nmclient.activate_connection_async(connection.object_path,
                                           net_manager.wireless_devices[0].object_path,
                                            ap.object_path)
+        elif connection == None:
+            pass
 
     def toggle_dialog(self, connection, security=None):
         ssid = connection.get_setting("802-11-wireless").ssid
