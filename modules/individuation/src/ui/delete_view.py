@@ -23,6 +23,7 @@
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from helper import event_manager
+from theme_manager import theme_manager
 from ui.wallpaper_item import DeleteItem
 
 class DeleteView(IconView):
@@ -71,14 +72,27 @@ class DeleteView(IconView):
         return False
 
     def delete_wallpaper(self):
+        untitled_theme = theme_manager.get_untitled_theme()
+
         for item in self.items:
             if item.is_tick:
                 self.theme.remove_option("system_wallpaper", item.image_path.split("/")[-1])
                 self.theme.remove_option("user_wallpaper", item.image_path)
+                
+                if untitled_theme:
+                    untitled_theme.remove_option("system_wallpaper", item.image_path.split("/")[-1])
+                    untitled_theme.remove_option("user_wallpaper", item.image_path)
+                
                 event_manager.emit("delete-wallpaper-link", item.image_path)
 
         self.theme.save()
+        
+        if untitled_theme:
+            untitled_theme.save()
+
         self.set_theme(self.theme)
+
+        event_manager.emit("update-theme", None)
     
     def is_select_all(self):
         for item in self.items:

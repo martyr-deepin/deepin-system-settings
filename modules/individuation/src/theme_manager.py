@@ -266,10 +266,12 @@ class ThemeFile(RawConfigParser):
     
     def set_user_wallpaper_status(self, path, value):
         self.set_option("user_wallpaper", path, str(value))
-        
+        self.save()
+
     def set_system_wallpaper_status(self, path, value):    
         path = path.split("/")[-1]
         self.set_option("system_wallpaper", path, str(value))
+        self.save()
         
     def get_system_wallpaper_status(self, path):    
         path = path.split("/")[-1]
@@ -372,6 +374,14 @@ class ThemeManager(object):
         theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
         os.remove(theme_path)
 
+    def get_untitled_theme(self):
+        untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
+        
+        if not os.path.exists(untitled_path):
+            return None
+        
+        return ThemeFile(untitled_path)
+    
     def untitled_theme(self, copy_theme=None):
         untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
         if os.path.exists(untitled_path):
