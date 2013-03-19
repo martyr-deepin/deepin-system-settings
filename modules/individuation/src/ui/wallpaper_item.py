@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -95,6 +95,7 @@ class WallpaperItem(gobject.GObject):
                 self.is_tick = self.theme.get_user_wallpaper_status(path)
             
         self.tick_area = None
+        self.__is_double_click = False
 
     def do_apply_wallpaper(self):
         self.background_settings.set_string("picture-uri", "file://" + self.image_path)
@@ -283,14 +284,20 @@ class WallpaperItem(gobject.GObject):
         '''
         pass
     
+    def __is_single_click(self):
+        if not self.__is_double_click:
+            self.toggle_tick()
+            event_manager.emit("select-wallpaper", self)
+
+        self.__is_double_click = False
+
     def icon_item_single_click(self, x, y):
         '''
         Handle single click event.
         
         This is IconView interface, you should implement it.
         '''
-        self.toggle_tick()                                                      
-        event_manager.emit("select-wallpaper", self)
+        gobject.timeout_add(300, self.__is_single_click)
 
     def icon_item_double_click(self, x, y):
         '''
@@ -298,6 +305,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
+        self.__is_double_click = True
         self.is_tick = True
         self.emit_redraw_request()
         self.do_apply_wallpaper()
