@@ -155,10 +155,8 @@ class ThemeFile(RawConfigParser):
             return "Random" if result else "Sequential"
         else:
             return result
-            
     
     def set_background_random_mode(self, value):
-        print "DEBUG", value
         self.set_option("background", "random_mode", str(value))
         self.save()
         if value:

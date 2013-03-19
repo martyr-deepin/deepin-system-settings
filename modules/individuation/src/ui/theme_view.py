@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 #
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -59,11 +59,13 @@ class UserThemeView(IconView):
 
         for item in self.items:
             if theme_manager.is_current_theme(item.theme):
-                self.set_highlight(item)
+                self.__single_click_item = item
+                self.set_highlight(self.__single_click_item)
                 break
 
     def clear_highlight_status(self, name, obj, data):
         self.clear_highlight()
+        self.__single_click_item = None
 
     def get_scrolled_window(self):
         scrolled_window = ScrolledWindow()
@@ -82,7 +84,9 @@ class UserThemeView(IconView):
     def __is_single_click(self, item):
         if self.__is_double_click:
             item.do_double_click()
-            self.set_highlight(self.__single_click_item)
+            
+            if self.__single_click_item:
+                self.set_highlight(self.__single_click_item)
         else:
             self.__single_click_item = item
             event_manager.emit("clear-systemview-highlight", item.theme)            
@@ -92,7 +96,7 @@ class UserThemeView(IconView):
         self.__is_double_click = False
 
     def __on_single_click_item(self, widget, item, x, y):
-        gobject.timeout_add(200, self.__is_single_click, item)
+        gobject.timeout_add(300, self.__is_single_click, item)
 
     def on_create_new_theme(self, name, obj, new_theme):
         self.add_themes([new_theme])
@@ -171,11 +175,13 @@ class SystemThemeView(IconView):
 
         for item in self.items:
             if theme_manager.is_current_theme(item.theme):
-                self.set_highlight(item)
+                self.__single_click_item = item
+                self.set_highlight(self.__single_click_item)
                 break
 
     def clear_highlight_status(self, name, obj, data):
         self.clear_highlight()
+        self.__single_click_item = None
 
     def get_scrolled_window(self):
         scrolled_window = ScrolledWindow()
@@ -194,7 +200,9 @@ class SystemThemeView(IconView):
     def __is_single_click(self, item):                                          
         if self.__is_double_click:                                              
             item.do_double_click()
-            self.set_highlight(self.__single_click_item)
+
+            if self.__single_click_item:
+                self.set_highlight(self.__single_click_item)
         else:                                                                   
             self.__single_click_item = item                                                
             event_manager.emit("clear-userview-highlight", item.theme)            
