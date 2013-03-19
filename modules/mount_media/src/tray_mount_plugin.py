@@ -72,12 +72,22 @@ class MountMedia(EjecterApp):
                     self.this.hide_menu()
                     self.this.set_size_request(self.width, height)
                     self.this.show_menu()
+        else:
+            try:
+                if height == 75:
+                    self.tray_icon.set_visible(False)
+                else:
+                    self.tray_icon.set_visible(True)
+            except:
+                pass
 
     def init_values(self, this_list):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
         self.tray_icon.set_icon_theme("usb")
         #self.hide_mount_tray()
+        if self.height == 75:
+            self.tray_icon.set_visible(False)
 
     def id(slef):
         return "deepin-mount-media-hailongqiu"
