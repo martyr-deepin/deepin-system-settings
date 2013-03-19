@@ -33,6 +33,7 @@ from dtk.ui.entry import InputEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton, Button
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
+from dtk.ui.tooltip import text, disable
 import gobject
 import gtk
 import pango
@@ -63,6 +64,16 @@ class DeviceIconView(ScrolledWindow):
         self.device_scrolledwindow.add_child(self.device_iconview)
 
         self.add_child(self.device_scrolledwindow)
+
+        event_manager.add_callback("text", self.__on_text)
+        event_manager.add_callback("hide-text", self.__on_hide_text)
+
+    def __on_text(self, name, obj, argv):
+        disable(self, False)
+        text(self, argv)
+
+    def __on_hide_text(self, name, obj, argv):
+        disable(self, True)
 
     def __do_remove_item(self, item):
         item.do_remove()
@@ -191,8 +202,8 @@ class DeviceItem(gobject.GObject):
         This is IconView interface, you should implement it.
         '''
         self.hover_flag = True
-        
         self.emit_redraw_request()
+        event_manager.emit("text", self.name)
         
     def icon_item_lost_focus(self):
         '''
@@ -201,8 +212,8 @@ class DeviceItem(gobject.GObject):
         This is IconView interface, you should implement it.
         '''
         self.hover_flag = False
-        
         self.emit_redraw_request()
+        event_manager.emit("hide-text", None)
         
     def icon_item_highlight(self):
         '''
