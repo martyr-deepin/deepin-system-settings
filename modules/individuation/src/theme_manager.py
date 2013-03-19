@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -158,7 +158,9 @@ class ThemeFile(RawConfigParser):
             
     
     def set_background_random_mode(self, value):
+        print "DEBUG", value
         self.set_option("background", "random_mode", str(value))
+        self.save()
         if value:
             background_gsettings.set_string("cross-fade-auto-mode", "Random")
         else:    

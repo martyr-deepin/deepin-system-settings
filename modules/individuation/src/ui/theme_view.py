@@ -92,7 +92,7 @@ class UserThemeView(IconView):
         self.__is_double_click = False
 
     def __on_single_click_item(self, widget, item, x, y):
-        gobject.timeout_add(300, self.__is_single_click, item)
+        gobject.timeout_add(200, self.__is_single_click, item)
 
     def on_create_new_theme(self, name, obj, new_theme):
         self.add_themes([new_theme])

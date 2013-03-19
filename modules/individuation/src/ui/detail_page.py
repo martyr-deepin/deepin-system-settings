@@ -159,11 +159,7 @@ class DetailPage(gtk.VBox):
         event_manager.emit("switch-to-deletepage", self.theme)
 
     def __on_random_toggled(self, widget):
-        is_random = widget.get_active()
-        if is_random:
-            self.theme.set_background_random_mode(True)
-        else:
-            self.theme.set_background_random_mode(False)
+        self.theme.set_background_random_mode(widget.get_active())
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
