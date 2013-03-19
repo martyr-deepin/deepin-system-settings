@@ -34,10 +34,10 @@ from dtk.ui.draw import draw_pixbuf, draw_shadow, draw_text
 from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
 from theme import app_theme
+from theme_manager import theme_manager
 from cache_manager import SMALL_SIZE, cache_manager
 from helper import event_manager
 import common
-import deepin_gsettings
 from nls import _
 
 ITEM_PADDING_X = 20
@@ -211,14 +211,22 @@ class WallpaperItem(gobject.GObject):
         self.set_theme_tick(self.is_tick)
         self.emit_redraw_request()
         
-    def set_theme_tick(self, value):    
+    def set_theme_tick(self, value):
+        untitled_theme = theme_manager.get_untitled_theme()
+
         if self.readonly:
             self.theme.set_system_wallpaper_status(self.image_path, value)
+            if untitled_theme:
+                untitled_theme.set_system_wallpaper_status(self.image_path, value)
         else:    
             if self.theme == None:
                 return
 
             self.theme.set_user_wallpaper_status(self.image_path, value)
+            if untitled_theme:
+                untitled_theme.set_user_wallpaper_status(self.image_path, value)
+
+        event_manager.emit("update-theme", None)
         
     def icon_item_motion_notify(self, x, y):
         '''
