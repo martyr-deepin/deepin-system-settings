@@ -266,7 +266,10 @@ class Settings(object):
 
     def get_button_state(self):
         #if connection in self.setting_state.iterkeys():
-        return self.setting_state[self.connection]
+        try:
+            return self.setting_state[self.connection]
+        except:
+            return None
 
     def apply_changes(self):
         pass

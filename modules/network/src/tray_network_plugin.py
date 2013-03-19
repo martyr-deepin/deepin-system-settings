@@ -247,63 +247,6 @@ class TrayNetworkPlugin(object):
                 self.change_status_icon("wifi_disconnect")
             self.net_manager.disactive_wireless_device(device_disactive)
 
-    #def set_wireless_state(self, widget, device, new_state, old_state, reason):
-        #"""
-        #"wireless-change" signal callback
-        #"""
-        #self.this_device = device
-        #print new_state, old_state, reason
-        #if new_state is 20:
-            #self.gui.wireless.set_active((False, False))
-        #elif new_state is 30:
-            #print "==================="
-            ##self.notify_send("a", "disconnected", "")
-            #self.gui.wireless.set_sensitive(True)
-
-            #if self.gui.wire.get_active():
-                #self.change_status_icon("cable")
-            #else:
-                #self.change_status_icon("wifi_disconnect")
-            #if reason == 39:
-                #self.gui.wireless.set_active((True, False))
-                ##if self.gui.wireless.get_active():
-                    ##index = self.gui.get_active_ap()
-                    ##self.gui.set_active_ap(index, False)
-                    ##self.need_auth_flag = False
-            #'''
-            #if old_state == 120:
-                #if self.need_auth_flag:
-                    #self.toggle_dialog(self.this_connection)
-                    #device.nm_device_disconnect()
-               #'''     
-
-        #elif new_state is 40:
-            ##self.notify_send("a", "connecting", "")
-            #self.gui.wireless.set_active((True, True))
-            #self.change_status_icon("loading")
-
-            #self.let_rotate(True)
-        #elif new_state is 50:
-            #self.this_device = device
-            #self.timer.Enabled = True
-            #self.timer.Interval = WAIT_TIME
-                
-        ##elif new_state is 60 and old_state == 50:
-            ##active_connection = nm_module.nmclient.get_active_connections()
-            ##print map(lambda a: a.get_connection(), active_connection)
-            ##print "need auth"
-        #elif new_state is 100:
-            ##self.notify_send("a", "connected", "")
-            #self.change_status_icon("links")
-            #self.set_active_ap()
-            #self.need_auth_flag = False
-        #'''
-        #elif new_state is 120 and reason is 7:
-            #self.need_auth_flag = True
-            #active_connection = nm_module.nmclient.get_active_connections()[1]
-            #self.this_connection = active_connection.get_connection()
-        #'''
-
     def init_wireless_signals(self):
         device_manager.load_wireless_listener(self)
         self.gui.ap_tree.connect("single-click-item", self.ap_selected)

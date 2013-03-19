@@ -51,6 +51,8 @@ class ToggleThread(td.Thread):
             #self.tree.add_items(map(lambda i:WirelessItem(i), aps))
             if aps:
                 self.tree.add_items(aps)
+                self.tree.set_no_show_all(False)
+                self.tree.show()
                 self.tree.visible_items[-1].is_last = True
                 self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
             self.stop_run()

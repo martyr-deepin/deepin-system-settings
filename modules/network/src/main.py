@@ -78,6 +78,8 @@ class Section(gtk.VBox):
         self.content_box = gtk.VBox(spacing=15)
         self.pack_start(toggle, False, False)
         toggle.switch.connect("toggled", self.toggle_callback)
+
+        self.this_tree = content[0]
         
         for c in content:
             self.content_box.pack_start(c, False, False)
@@ -98,6 +100,12 @@ class Section(gtk.VBox):
         if is_active:
             self.toggle_on()
             if self.content_box not in self.align.get_children():
+                if not self.this_tree.visible_items:
+                    self.this_tree.set_no_show_all(True)
+                    self.this_tree.hide()
+                else:
+                    self.this_tree.set_no_show_all(False)
+                    self.this_tree.show()
                 self.align.add(self.content_box)
             self.show_all()
             self.toggle_on_after()
@@ -205,10 +213,11 @@ class WiredSection(Section, WiredDevice):
     def toggle_on(self):
         self.tree.delete_all_items()
         item_list = self.get_list()
-        item_list[-1].is_last = True
-
-        self.tree.add_items(item_list, 0, True)
-        self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
+        if item_list:
+            item_list[-1].is_last = True
+            
+            self.tree.add_items(item_list, 0, True)
+            self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
 
     def toggle_on_after(self):
         for i,d in enumerate(self.wired_devices):
@@ -335,6 +344,8 @@ class WirelessSection(Section, WirelessDevice):
                               underline=True,
                               enable_select=False,
                               enable_double_click=False)
+
+            self.label.connect("button-release-event", self.create_a_hidden_network)
             self.space = gtk.VBox()
             self.space.set_size_request(-1, 15)
             self.load(self.wireless, [self.tree, self.label])
@@ -352,7 +363,6 @@ class WirelessSection(Section, WirelessDevice):
         self._init_signals()
         Dispatcher.connect("ap-added", self.ap_added_callback)
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
-        self.label.connect("button-release-event", self.create_a_hidden_network)
 
     def create_a_hidden_network(self, widget, c):
         from wlan_config import HiddenSetting
@@ -852,10 +862,11 @@ class DSLSection(Section):
         self.label.connect("button-release-event", lambda w,x: self.jumpto_setting())
 
     def toggle_on(self):
-        item_list = self.get_list()
-        item_list[-1].is_last = True
         self.tree.delete_all_items()
-        self.tree.add_items(item_list)
+        item_list = self.get_list()
+        if item_list:
+            item_list[-1].is_last = True
+            self.tree.add_items(item_list)
 
     def toggle_on_after(self):
         pass
@@ -1090,10 +1101,11 @@ class MobileSection(Section):
 
     def toggle_on(self):
         item_list = self.get_list()
-        item_list[-1].is_last = True
+        if item_list:
+            item_list[-1].is_last = True
 
-        self.tree.delete_all_items()
-        self.tree.add_items(item_list)
+            self.tree.delete_all_items()
+            self.tree.add_items(item_list)
 
     def toggle_on_after(self):
         pass
