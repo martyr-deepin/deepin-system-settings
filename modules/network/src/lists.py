@@ -410,6 +410,10 @@ class HidenItem(GenItems):
     
     def get_column_renders(self):
         return [self.render_check, self.render_id, self.render_blank, self.render_jumpto]
+    
+    def jumpto_cb(self):
+        from wlan_config import HiddenSetting
+        Dispatcher.to_setting_page(HiddenSetting(self.connection))
 
 class HotspotItem(TreeItem):
 
@@ -641,6 +645,7 @@ class MobileItem(GenItems):
 
     def __init__(self, device, jumpto):
         GenItems.__init__(self)
+        from mm.mmdevice import MMDevice
         self.device = MMDevice(device)
         manufacturer = self.device.get_manufacturer()
         model = self.device.get_model()
@@ -667,7 +672,7 @@ class MobileItem(GenItems):
 
     def jumpto_cb(self):
         from mobile_config import MobileSetting
-        Dispatcher.to_setting_page(MobileSetting(self.connection))
+        Dispatcher.to_setting_page(MobileSetting())
 
 
 class VPNItem(DSLItem):

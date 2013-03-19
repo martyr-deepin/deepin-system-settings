@@ -38,13 +38,13 @@ class DeviceManager(object):
 
     def device_added_cb(self, widget, path):
         device =  cache.getobject(path)
+        self.__init_device()
         type = device.get_device_type() 
         if type == 1:
             Dispatcher.emit("wired-device-add", device)
         elif type == 2:
             Dispatcher.emit("wireless-device-add", device)
 
-        self.__init_device()
 
     def ap_added(self, devices):
         for device in devices:

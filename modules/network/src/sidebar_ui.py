@@ -43,9 +43,11 @@ class SideBar(gtk.VBox):
         self.buttonbox = gtk.VBox()
         self.pack_start(self.buttonbox, False, False)
         style.add_separator(self)
-        self.connection_tree = EntryTreeView()
+        #self.connection_tree = EntryTreeView()
         self.add_button = AddSettingItem(_("New Connection") ,self.add_new_connection)
-        self.pack_start(TreeView([self.add_button]), False, False)
+        add_setting_tree = TreeView([self.add_button])
+        add_setting_tree.set_expand_column(1)
+        self.pack_start(add_setting_tree, False, False)
         self.set_size_request(160, -1)
         self.show_all()
 
@@ -68,6 +70,7 @@ class SideBar(gtk.VBox):
             if isinstance(connection, NMRemoteConnection):
                 connection.init_settings_prop_dict()
         self.connection_tree = EntryTreeView()
+        self.connection_tree.set_expand_column(1)
         self.__init_tree(self.connections)
 
         if hasattr(self.network_object, "add_new_connection"):
@@ -78,6 +81,8 @@ class SideBar(gtk.VBox):
         self.init_select(network_object.spec_connection)
         if self.connections !=[]:
             crumb_name = network_object.crumb_name
+            if crumb_name == "":
+                crumb_name = _("Hidden network")
             Dispatcher.send_submodule_crumb(2, crumb_name)
             Dispatcher.slide_to_page("setting", "right")
 

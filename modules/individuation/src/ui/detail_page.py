@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Wang Yong
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
@@ -21,25 +21,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from theme import app_theme
 import gtk
 import gobject
 import deepin_gsettings
-from dtk.ui.tab_window import TabBox
-from dtk.ui.label import Label
-from dtk.ui.button import Button, CheckButton
-from dtk.ui.scalebar import HScalebar
-from dtk.ui.constant import ALIGN_END
+from theme import app_theme
+from dtk.ui.button import Button
 from ui.wallpaper_item import ITEM_PADDING_Y
 from ui.wallpaper_view import WallpaperView
 from ui.utils import get_toggle_group, get_combo_group
 from constant import STATUS_HEIGHT, WIDGET_HEIGHT
 from helper import event_manager
 from nls import _
-import threading as td
 
 TIME_COMBO_ITEM =  [
-    #(_("Never"), 0), 
     ("1 %s" % _("Minute"), 60), ("3 %s" % _("Minutes"), 180),
     ("5 %s" % _("Minutes"), 300), ("10 %s" % _("Minutes"), 600), 
     ("15 %s" % _("Minutes"), 900),("20 %s" % _("Minutes"), 1200), 
@@ -122,13 +116,13 @@ class DetailPage(gtk.VBox):
         self.time_combobox.set_sensitive(True)                              
         self.unorder_play.set_child_visible(True)                           
         self.random_toggle.set_child_visible(True)                          
-        self.random_toggle.set_active(True)
+        self.random_toggle.set_active(self.theme.get_background_random_mode())
 
     def __random_disable(self):
         self.time_combobox.set_sensitive(False)                             
         self.unorder_play.set_child_visible(False)                          
-        self.random_toggle.set_child_visible(False)                         
-        self.random_toggle.set_active(False)
+        self.random_toggle.set_child_visible(False)         
+        self.random_toggle.set_active(self.theme.get_background_random_mode())
 
     def on_wallpaper_select(self, name, obj, select_item):
         if self.wallpaper_view.is_randomable():
@@ -167,10 +161,10 @@ class DetailPage(gtk.VBox):
     def __on_random_toggled(self, widget):
         is_random = widget.get_active()
         if is_random:
-            self.__background_settings.set_string("cross-fade-auto-mode", "Random")
+            self.theme.set_background_random_mode(True)
         else:
-            self.__background_settings.set_string("cross-fade-auto-mode", "Sequential")
-        
+            self.theme.set_background_random_mode(False)
+
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
         cr.set_source_rgb(1, 1, 1)    
@@ -240,4 +234,3 @@ class DetailPage(gtk.VBox):
         cr.fill()
         
 gobject.type_register(DetailPage)        
-

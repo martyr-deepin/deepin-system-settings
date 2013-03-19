@@ -247,6 +247,7 @@ class AccountSetting(object):
         #self.container_widgets["button_hbox"].pack_start(self.button_widgets["del_account"], False, False)
         # init treeview item
         self.view_widgets["account"].add_items(self.get_user_list_treeitem(), clear_first=True)
+        self.view_widgets["account"].set_expand_column(0)
         ###############
         # accounts info
         self.alignment_widgets["right_vbox"].set(0, 0, 1, 1)
@@ -1023,6 +1024,7 @@ class AccountSetting(object):
 
     def cancel_set_icon(self, button):
         self.container_widgets["icon_edit_page"].stop_camera()
+        self.container_widgets["icon_edit_page"].draw_area.panel.hide_panel()
         self.set_to_page(self.alignment_widgets["main_hbox"], "left")
         self.change_crumb(1)
     ## << set icon ##

@@ -23,20 +23,16 @@
 import pango
 from dtk.ui.new_treeview import TreeItem
 from dtk.ui.draw import draw_text
-
-
 from ui.utils import (draw_single_mask)
 
-
 class ExpandItem(TreeItem):
-    
     def __init__(self, title, column_index=0):
         TreeItem.__init__(self)
         self.column_index = column_index
         self.side_padding = 5
         self.item_height = 37
         self.title = title
-        self.item_width = -1
+        self.item_width = 160
         self.child_items = []
         self.title_padding_x = 10
         self.widget = None
@@ -63,17 +59,6 @@ class ExpandItem(TreeItem):
         self.emit_redraw_request()
         
     def render_title(self, cr, rect):        
-        # Draw select background.
-            
-        # if self.is_select:    
-        #     draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemHighlight")
-        # elif self.is_hover:
-        #     draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemHover")
-        
-        # if self.is_select:
-        #     text_color = "#FFFFFF"
-        # else:    
-        #     text_color = "#000000"
         text_color = "#000000"
                 
         draw_text(cr, "<b>%s</b>" % self.title, rect.x + self.title_padding_x, rect.y, 

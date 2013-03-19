@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -21,15 +21,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import deepin_gsettings
 from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from helper import event_manager
 from ui.wallpaper_item import AddItem, WallpaperItem
 from theme_manager import background_gsettings
-import common
 from nls import _
 
 class WallpaperView(IconView):
@@ -48,7 +45,13 @@ class WallpaperView(IconView):
         event_manager.add_callback("select-wallpaper", self.on_wallpaper_select)
         event_manager.add_callback("apply-wallpaper", self.on_wallpaper_apply)
         event_manager.add_callback("apply-download-wallpaper", self.on_download_wallpaper_apply)
+        event_manager.add_callback("delete-wallpaper-link", self.__on_delete_wallpaper_link)
         self.theme = None
+
+    def __on_delete_wallpaper_link(self, name, obj, data):
+        items = filter(lambda item: item.image_path == data, self.items) 
+        if items:                                                               
+            self.delete_items(items) 
 
     def __on_right_click_item(self, widget, item, x, y):                        
         menu_items = [(None, _("Apply Wallpaper"), lambda : item.do_apply_wallpaper())]
@@ -84,7 +87,7 @@ class WallpaperView(IconView):
         self.add_images(image_paths, readonly=True)
         
     def add_images(self, images, readonly=False):
-        items = map(lambda image: WallpaperItem(image, readonly, self.theme), images)
+        items = map(lambda image: WallpaperItem(image, readonly, self.theme, background_gsettings), images)
         self.add_items(items, insert_pos=-1)
         
     def on_wallpaper_select(self, name, obj, select_item):    

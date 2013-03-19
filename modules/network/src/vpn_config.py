@@ -134,11 +134,11 @@ class Sections(gtk.Alignment):
 
     def __init__(self, connection, set_button):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
-        self.set_padding(35, 0, 50, 0)
+        self.set_padding(35, 0, 20, 0)
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
-        basic = SettingSection(_("Basic") +"(IPV4)")
+        basic = SettingSection(_("Basic"))
 
         self.button = Button(_("Advanced"))
         self.button.set_size_request(50, 22)
@@ -166,6 +166,7 @@ class Sections(gtk.Alignment):
 
 class PPTPConf(gtk.VBox):
     ENTRY_WIDTH = 222
+    LEFT_PADDING = 210
     def __init__(self, connection, module_frame, set_button_callback=None):
         gtk.VBox.__init__(self)
         self.connection = connection
@@ -196,9 +197,9 @@ class PPTPConf(gtk.VBox):
         radio_box.pack_start(self.l2tp_radio, False, False)
         #pack labels
         pptp_table.attach(style.wrap_with_align(radio_box, align="left"), 2,4, 0, 1)
-        pptp_table.attach(style.wrap_with_align(gateway_label), 0, 2 , 1, 2)
-        pptp_table.attach(style.wrap_with_align(user_label), 0, 2, 2, 3)
-        pptp_table.attach(style.wrap_with_align(password_label), 0, 2, 3, 4)
+        pptp_table.attach(style.wrap_with_align(gateway_label, width=self.LEFT_PADDING), 0, 2 , 1, 2)
+        pptp_table.attach(style.wrap_with_align(user_label, width=self.LEFT_PADDING), 0, 2, 2, 3)
+        pptp_table.attach(style.wrap_with_align(password_label, width=self.LEFT_PADDING), 0, 2, 3, 4)
         #pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 2, 5, 6)
 
         # entries
@@ -216,9 +217,9 @@ class PPTPConf(gtk.VBox):
         self.nt_domain_entry.set_size(self.ENTRY_WIDTH, 22)
 
         #pack entries
-        pptp_table.attach(style.wrap_with_align(self.gateway_entry), 2, 4, 1, 2)
-        pptp_table.attach(style.wrap_with_align(self.user_entry), 2, 4, 2, 3)
-        pptp_table.attach(style.wrap_with_align(self.password_entry), 2, 4, 3, 4)
+        pptp_table.attach(style.wrap_with_align(self.gateway_entry, align="left"), 2, 4, 1, 2)
+        pptp_table.attach(style.wrap_with_align(self.user_entry, align="left"), 2, 4, 2, 3)
+        pptp_table.attach(style.wrap_with_align(self.password_entry, align="left"), 2, 4, 3, 4)
         pptp_table.attach(style.wrap_with_align(self.password_show, align="left"), 2, 4, 4, 5)
         #pptp_table.attach(style.wrap_with_align(self.nt_domain_entry), 2, 4, 5, 6)
         # Advance setting button
@@ -235,11 +236,13 @@ class PPTPConf(gtk.VBox):
         self.l2tp_radio.connect("toggled",self.radio_toggled, "l2tp")
         # set signals
 
-        align = style.set_box_with_align(pptp_table, "text")
+        #align = style.set_box_with_align(pptp_table, "text")
+        table_align = gtk.Alignment(0, 0, 0, 0)
+        table_align.add(pptp_table)
         #style.set_table_items(pptp_table, "entry")
         style.draw_background_color(self)
         style.set_table(pptp_table)
-        self.add(align)
+        self.add(table_align)
         self.show_all()
         self.refresh()
         self.gateway_entry.entry.connect("changed", self.entry_changed, "gateway")

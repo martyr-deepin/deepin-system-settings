@@ -21,13 +21,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.draw import draw_line
-from dtk.ui.utils import color_hex_to_cairo
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
-from dtk.ui.constant import ALIGN_MIDDLE
 import gtk
-import gobject
 from ui.status_box import StatusBox
 from ui.theme_view import UserThemeView, SystemThemeView
 from ui.utils import get_separator

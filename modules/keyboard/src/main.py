@@ -496,6 +496,7 @@ class KeySetting(object):
         self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Workspace'))])
         self.view_widgets["shortcuts_selected"].add_items([SelectItem(_('Custom Shortcuts'))])
         self.view_widgets["shortcuts_selected"].set_data("is_custom", False)
+        self.view_widgets["shortcuts_selected"].set_expand_column(0)
         self.button_widgets["shortcuts_remove"].set_sensitive(False)
         self.__make_accel_page()
 
@@ -719,9 +720,9 @@ class KeySetting(object):
         dialog.body_align.set_padding(0, 0, 10, 10)
         layout_treetimes = map(lambda item: LayoutItem(*item), self.__layout_items)
         layout_add_treeview = TreeView(layout_treetimes, enable_hover=False)
+        layout_add_treeview.set_expand_column(0)
         # search input
         entry = InputEntry()
-        entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
         entry.set_size(dialog_width-30, 25)
         
         dialog.body_box.pack_start(layout_add_treeview)
@@ -840,6 +841,7 @@ class KeySetting(object):
                 i += 1
             settings.shortcuts_custom_set(key_dir, (action, '', name))
             entry = AccelEntry("", keybind_mk.check_shortcut_conflict, can_del=True)
+            entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
             entry.connect("accel-del", self.__remove_shortcuts_item)
             entry.settings_description = name
             entry.settings_key = '%s/%s' % (base_dir, key_dir)
@@ -850,7 +852,9 @@ class KeySetting(object):
             shortcut_vbox = self.container_widgets["shortcuts_swin"].get_children()[0].get_children()[0].get_children()[0]
             hbox = gtk.HBox(False)
             hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
-            description_label = Label(entry.settings_description, enable_select=False, enable_double_click=False)
+            description_label = Label(entry.settings_description, text_x_align=pango.ALIGN_RIGHT,
+                                      enable_select=False, enable_double_click=False)
+            description_label.set_size_request(self.max_label_width+30, description_label.get_size_request()[1])
             label_align = self.__make_align(description_label)
             label_align.set_size_request(self.max_label_width+30, CONTAINNER_HEIGHT)
             hbox.pack_start(label_align, False, False)
@@ -925,7 +929,9 @@ class KeySetting(object):
             for entry in self.__shortcuts_entries[category]:
                 hbox = gtk.HBox(False)
                 hbox.set_spacing(TEXT_WINDOW_RIGHT_WIDGET_PADDING)
-                description_label = Label(entry.settings_description, enable_select=False, enable_double_click=False)
+                description_label = Label(entry.settings_description, text_x_align=pango.ALIGN_RIGHT,
+                                          enable_select=False, enable_double_click=False)
+                #description_label.set_size_request(description_label.get_size_request()[0]+10, description_label.get_size_request()[1])
                 self.max_label_width = max(self.max_label_width, description_label.get_size_request()[0])
                 label_align = self.__make_align(description_label)
                 label_align_list.append(label_align)
@@ -936,6 +942,8 @@ class KeySetting(object):
                 entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
         for label_align in label_align_list:
             label_align.set_size_request(self.max_label_width+30, CONTAINNER_HEIGHT)
+            l = label_align.get_child()
+            l.set_size_request(self.max_label_width+30, l.get_size_request()[1])
 
     def get_accel_page(self):
         return self.__shortcuts_entries_page_widgets

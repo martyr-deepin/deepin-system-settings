@@ -30,7 +30,7 @@ from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from dtk.ui.draw import draw_text
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
-from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
+from dtk.ui.constant import ALIGN_START
 from dtk.ui.button import ToggleButton
 from dtk.ui.line import HSeparator
 from dtk.ui.new_treeview import TreeItem, TreeView
@@ -38,9 +38,6 @@ from vtk.button import SelectButton
 from deepin_utils.process import run_command
 import gobject
 import gtk
-import pango
-import time
-import common
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
 from nls import _

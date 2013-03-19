@@ -27,6 +27,7 @@ class SessionView(gtk.VBox):
                              enable_hover=True,
                              enable_multiple_select=False,
                              )
+        self.tree.set_expand_column(2)
 
         self.tree.set_column_titles((_("Application"), _("State"), _("Description")), self.sort_method)
 

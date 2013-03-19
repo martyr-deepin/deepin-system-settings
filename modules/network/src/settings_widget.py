@@ -446,7 +446,7 @@ class SettingItem(TreeItem):
         return self.height
     
     def get_column_widths(self):
-        return [47, -1, 37]
+        return [47, 20, 37]
 
     def get_buffer(self, column):
         buffers = [0, self.entry_buffer, 0]

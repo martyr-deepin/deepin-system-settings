@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -37,6 +37,7 @@ from theme import app_theme
 from cache_manager import SMALL_SIZE, cache_manager
 from helper import event_manager
 import common
+import deepin_gsettings
 from nls import _
 
 ITEM_PADDING_X = 20
@@ -51,13 +52,15 @@ class WallpaperItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    def __init__(self, path, readonly, theme):
+    def __init__(self, path, readonly, theme, background_settings=None):
         '''
         Initialize ItemIcon class.
         
         @param pixbuf: Icon pixbuf.
         '''
         gobject.GObject.__init__(self)
+
+        self.background_settings = background_settings
 
         self.image_path = path
         self.readonly = readonly
@@ -92,12 +95,11 @@ class WallpaperItem(gobject.GObject):
                 self.is_tick = self.theme.get_user_wallpaper_status(path)
             
         self.tick_area = None
-        
+        self.__is_double_click = False
+
     def do_apply_wallpaper(self):
-        event_manager.emit("apply-wallpaper", self)
-        self.is_tick = True
-        self.emit_redraw_request()
-    
+        self.background_settings.set_string("picture-uri", "file://" + self.image_path)
+
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
@@ -272,9 +274,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        self.toggle_tick()
-        event_manager.emit("select-wallpaper", self)
-        #event_manager.emit("apply-wallpaper", self)
+        pass
     
     def icon_item_button_release(self, x, y):
         '''
@@ -284,13 +284,20 @@ class WallpaperItem(gobject.GObject):
         '''
         pass
     
+    def __is_single_click(self):
+        if not self.__is_double_click:
+            self.toggle_tick()
+            event_manager.emit("select-wallpaper", self)
+
+        self.__is_double_click = False
+
     def icon_item_single_click(self, x, y):
         '''
         Handle single click event.
         
         This is IconView interface, you should implement it.
         '''
-        pass
+        gobject.timeout_add(300, self.__is_single_click)
 
     def icon_item_double_click(self, x, y):
         '''
@@ -298,8 +305,11 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
-        event_manager.emit("apply-wallpaper", self)
-    
+        self.__is_double_click = True
+        self.is_tick = True
+        self.emit_redraw_request()
+        self.do_apply_wallpaper()
+
     def icon_item_release_resource(self):
         '''
         Release item resource.
@@ -898,9 +908,8 @@ class CacheItem(gobject.GObject, MissionThread):
         event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
-    @common.threaded
     def create_cache_pixbuf(self):
-        image_path = cache_manager.get_image(self.image_object)
+        image_path = cache_manager.get_image(self.image_object, try_web = False)
         
         if image_path != None:
             self.is_downloaded = os.path.exists(self.download_dir + "/" +  image_path.split("/")[-1])

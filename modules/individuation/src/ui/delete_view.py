@@ -79,6 +79,7 @@ class DeleteView(IconView):
             if item.is_tick:
                 self.theme.remove_option("system_wallpaper", item.image_path.split("/")[-1])
                 self.theme.remove_option("user_wallpaper", item.image_path)
+                event_manager.emit("delete-wallpaper-link", item.image_path)
 
         self.theme.save()
         self.set_theme(self.theme)
