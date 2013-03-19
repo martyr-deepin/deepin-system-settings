@@ -36,9 +36,11 @@ THEME_TYPE_USER = 2
 
 class ThemeFile(RawConfigParser):
     
-    def __init__(self, location, default_location=None):
+    def __init__(self, location, default_location=None, is_system_theme=False):
         RawConfigParser.__init__(self)
         
+        self.is_system_theme = is_system_theme
+
         if default_location is None:
             default_location = get_config_path("default_theme.ini")
             
@@ -322,7 +324,7 @@ class ThemeManager(object):
         for theme_file in os.listdir(get_system_theme_dir()):        
             full_theme_file = os.path.join(get_system_theme_dir(), theme_file)
             if full_theme_file.endswith(".ini") and os.path.isfile(full_theme_file):
-                theme_file_object = ThemeFile(full_theme_file)
+                theme_file_object = ThemeFile(full_theme_file, is_system_theme = True)
                 self.system_themes[theme_file_object.location] = theme_file_object
                 
     def get_system_themes(self):

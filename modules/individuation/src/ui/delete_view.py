@@ -20,14 +20,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import deepin_gsettings
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from helper import event_manager
 from ui.wallpaper_item import DeleteItem
-from theme_manager import background_gsettings
-import common
 
 class DeleteView(IconView):
     
@@ -41,7 +37,7 @@ class DeleteView(IconView):
         self.theme = theme
         self.clear()
         
-        if self.theme.get_editable():
+        if not self.theme.is_system_theme and self.theme.get_editable():
             self.add_system_wallpapers(self.theme.get_system_wallpapers())        
         
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
