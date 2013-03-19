@@ -157,7 +157,7 @@ def parse_security(iwlist_output, address):
     cells=cells[1:]
 
     for cell in cells:
-        if get_address(cell) == address:
+        if get_address(cell).lower() == address.lower():
             return get_encryption(cell)
         else:
             continue
