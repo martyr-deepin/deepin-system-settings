@@ -34,7 +34,7 @@ from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
-from container import Contain
+from container import Contain, ToggleThread
 from lists import (WiredItem, WirelessItem, GeneralItem,
                   HidenItem, InfoItem, DSLItem, MobileItem,
                   VPNItem)
@@ -94,6 +94,7 @@ class Section(gtk.VBox):
 
     def toggle_callback(self, widget):
         is_active = widget.get_active()
+        print is_active
         if is_active:
             self.toggle_on()
             if self.content_box not in self.align.get_children():
@@ -211,7 +212,7 @@ class WiredSection(Section, WiredDevice):
 
     def toggle_on_after(self):
         for i,d in enumerate(self.wired_devices):
-            if d.get_state() > 30:
+            if d.get_state() == 100:
                 self.tree.visible_items[i].set_net_state(2)
             else:
                 device_ethernet = cache.get_spec_object(d.object_path)
@@ -243,7 +244,8 @@ class WirelessDevice(object):
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
         if reason == 39:
             # toggle off
-            print "sfsdf"
+            #self.toggle_lock = True
+            self.wireless.set_sensitive(True)
             self.wireless.set_active(False)
 
         if self._get_active_item():
@@ -358,19 +360,25 @@ class WirelessSection(Section, WirelessDevice):
 
     def ap_added_callback(self, widget):
         print "ap added"
+        if self.wireless.get_active:
+            self.wireless.set_active(True, emit=True)
 
     def ap_removed_callback(self, widget):
         print "ap removed"
+        if self.wireless.get_active:
+            self.wireless.set_active(True, emit=True)
 
     def set_selected_item(self, widget, item, column, x, y):
         self.selected_item = item
 
     def toggle_on(self):
         self.tree.delete_all_items()
-        item_list = self.get_list()
-        if self.ap_list:
-            self.tree.add_items(item_list)
-        self.tree.visible_items[-1].is_last = True
+        self.td = ToggleThread(self.get_list, self.tree, self.after)
+        self.td.start()
+        #item_list = self.get_list()
+        #if self.ap_list:
+            #self.tree.add_items(item_list)
+        #self.tree.visible_items[-1].is_last = True
 
     def get_actives(self, ap_list):
         if not ap_list:
@@ -389,6 +397,10 @@ class WirelessSection(Section, WirelessDevice):
         return filter(lambda i: i.get_net_state() > 0, self.tree.visible_items)
 
     def toggle_on_after(self):
+        pass
+        #while self.td.isAlive():
+            #continue
+    def after(self):
         indexs = self.get_actives(self.ap_list)
         if indexs:
             map(lambda i: self.tree.visible_items[i].set_net_state(2), indexs)
@@ -399,20 +411,18 @@ class WirelessSection(Section, WirelessDevice):
 
     def toggle_off(self):
         self.ap_list = []
+        self.td.stop_run()
         self.selected_item = None
         for wireless_device in self.wireless_devices:
             wireless_device.nm_device_disconnect()
+        #self.toggle_lock = True
+        self.wireless.set_sensitive(False)
 
     def get_list(self):
         self.ap_list = list()
         for wireless_device in self.wireless_devices:
             device_wifi = cache.get_spec_object(wireless_device.object_path)
             self.ap_list += device_wifi.order_ap_list()
-
-        ap = filter(lambda a: a.get_ssid() == "daydayup", self.ap_list)
-        if ap:
-            print ap[0].object_path
-
         aps = map(lambda i:WirelessItem(i), self.ap_list)
         
 
@@ -420,6 +430,7 @@ class WirelessSection(Section, WirelessDevice):
         hiddens = map(lambda c: HidenItem(c), hidden_list)
 
         return aps + hiddens
+        #return self.ap_list
 
     def get_hidden_connection(self, ap_list):
         from shared_methods import net_manager

@@ -146,7 +146,7 @@ class TrayUI(gtk.VBox):
                 self.more_button.set_ap_list(self.__ap_list[5:])
                 self.show_all = False
     
-    def set_ap(self, ap_list):
+    def set_ap(self, ap_list, redraw=True):
         if not ap_list:
             return 
         self.__set_ap_list(ap_list)
@@ -166,7 +166,8 @@ class TrayUI(gtk.VBox):
         self.tree_box.pack_start(self.ap_tree, False, False)
         self.show_all()
 
-        Dispatcher.request_resize()
+        if redraw:
+            Dispatcher.request_resize()
 
     def __set_ap_list(self, ap_list):
         self.__ap_list = ap_list
@@ -188,7 +189,7 @@ class TrayUI(gtk.VBox):
 
     def set_active_ap(self, index, state):
         self.active_ap_index = index
-        self.set_ap(self.__ap_list)
+        self.set_ap(self.__ap_list, redraw=False)
 
         if index:
             self.move_active(index)
