@@ -29,10 +29,9 @@ from dtk.ui.label import Label
 from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
-from dtk.ui.constant import ALIGN_START, ALIGN_END
+from dtk.ui.constant import ALIGN_START
 from dtk.ui.utils import color_hex_to_cairo
 from deepin_utils.ipc import is_dbus_name_exists
-import os
 import locale
 import gobject
 import gtk
@@ -333,6 +332,9 @@ class DatetimeView(gtk.HBox):
         self.__send_message("status", ("date_time", ""))
 
         SecondThread(self).start()
+
+    def show_again(self):                                                       
+        self.__send_message("status", ("date_time", ""))
 
     def reset(self):
         self.__send_message("status", ("date_time", _("Reset to default value")))

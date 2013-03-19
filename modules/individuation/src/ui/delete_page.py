@@ -24,14 +24,10 @@ from theme import app_theme
 import gtk
 import gobject
 from dtk.ui.dialog import ConfirmDialog
-from dtk.ui.tab_window import TabBox
-from dtk.ui.label import Label
-from dtk.ui.button import Button, CheckButton
-from dtk.ui.scalebar import HScalebar
-from dtk.ui.constant import ALIGN_END
+from dtk.ui.button import Button
 from ui.wallpaper_item import ITEM_PADDING_Y
 from ui.delete_view import DeleteView
-from constant import STATUS_HEIGHT, WIDGET_HEIGHT
+from constant import WIDGET_HEIGHT
 from helper import event_manager
 from nls import _
 from constant import CONTENT_FONT_SIZE
@@ -115,7 +111,7 @@ class DeletePage(gtk.VBox):
 
     def set_theme(self, theme):
         self.theme = theme
-        self.delete_view.set_theme(theme)
+        self.delete_view.set_theme(self.theme)
         self.select_all_button.set_label(_("Select All"))
         
     def draw_mask(self, cr, x, y, w, h):

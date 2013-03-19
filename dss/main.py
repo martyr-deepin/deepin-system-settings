@@ -27,7 +27,6 @@ from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
 from dtk.ui.breadcrumb import Crumb
-from dtk.ui.dialog import ConfirmDialog
 from deepin_utils.ipc import is_dbus_name_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo
@@ -64,7 +63,7 @@ def record_module_history(module_name):
     forward_modules = filter(lambda forward_module: forward_module != module_name, forward_modules)
     module_history_index = len(backward_modules)
     module_history = backward_modules + [module_name] + forward_modules
-    
+
 def get_backward_module():
     global module_history
     global module_history_index
@@ -132,11 +131,13 @@ class DBusService(dbus.service.Object):
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
                 record_module_history(module_id)
+                self.__set_ward()
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
                 record_module_history(module_id)
+                self.__set_ward()
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
@@ -146,6 +147,7 @@ class DBusService(dbus.service.Object):
                 call_module_by_name(module_id, module_dict, slider, content_page_info, "right", module_uid)
                 
                 record_module_history(module_id)
+                self.__set_ward()
             elif message_type == "back":
                 index = message_content
                 action_bar.bread.remove_node_after_index(index)
@@ -190,6 +192,24 @@ class DBusService(dbus.service.Object):
         setattr(DBusService, 
                 'unique', 
                 dbus.service.method(APP_DBUS_NAME)(unique))
+
+    def __set_ward(self):
+        backward_module_id = get_backward_module()
+        forward_module_id = get_forward_module()
+        
+        if backward_module_id:
+            action_bar.forward_button.set_sensitive(True)
+            action_bar.forward_button.set_active(True)
+        else:
+            action_bar.forward_button.set_sensitive(False)
+            action_bar.forward_button.set_active(False)
+
+        if forward_module_id:
+            action_bar.backward_button.set_sensitive(True)
+            action_bar.backward_button.set_active(True)
+        else:
+            action_bar.backward_button.set_sensitive(False)
+            action_bar.backward_button.set_active(False)
 
     def __on_bluetooth_cancel(self):
         send_message("bluetooth", "cancel", "progress cancel")
@@ -383,6 +403,8 @@ if __name__ == "__main__":
                            lambda : titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
                            lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
                            lambda : search_cb(action_bar, slider, foot_box))
+    action_bar.backward_button.set_sensitive(False)
+    action_bar.forward_button.set_sensitive(False)
     
     # Init slider.
     slider = HSlider(200)
