@@ -23,7 +23,6 @@
 
 from nls import _
 from theme import app_theme
-from dtk.ui.keymap import get_keyevent_name
 from dtk.ui.cache_pixbuf import CachePixbuf
 from dtk.ui.draw import draw_pixbuf
 from dtk.ui.new_entry import InputEntry

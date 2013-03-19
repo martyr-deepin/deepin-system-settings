@@ -27,7 +27,6 @@ from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
 from dtk.ui.breadcrumb import Crumb
-from dtk.ui.dialog import ConfirmDialog
 from deepin_utils.ipc import is_dbus_name_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo

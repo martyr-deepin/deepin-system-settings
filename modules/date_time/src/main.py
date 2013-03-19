@@ -38,6 +38,7 @@ if __name__ == "__main__":
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
+            date_time_view.show_again()
             module_frame.send_module_info()
         elif message_type == "reset":
             date_time_view.reset()
