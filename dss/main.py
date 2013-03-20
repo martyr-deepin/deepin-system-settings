@@ -245,6 +245,7 @@ def search_cb(action_bar, slider, foot_box):
     keyword = action_bar.search_entry.get_text()
     if keyword.strip() != "":
         search_page.query(keyword)
+        action_bar.bread.remove_node_after_index(0)
         slider.slide_to_page(search_page, "left")
 
     foot_box.hide()

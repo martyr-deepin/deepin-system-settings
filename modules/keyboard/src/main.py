@@ -335,7 +335,7 @@ class KeySetting(object):
         self.container_widgets["repeat_table"].attach(
             self.__make_align(self.scale_widgets["repeat_interval"], yalign=0.0, yscale=1.0, height=43), 1, 2, 1, 2, 4)
         self.container_widgets["repeat_table"].attach(
-            self.__make_align(self.button_widgets["repeat_test_entry"], xscale=1.0), 1, 2, 2, 3, 4)
+            self.__make_align(self.button_widgets["repeat_test_entry"], xscale=1.0, padding_top=10), 1, 2, 2, 3, 4)
         self.container_widgets["repeat_table"].set_size_request(MAIN_AREA_WIDTH, -1)
         self.button_widgets["repeat_test_entry"].set_size(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
 
