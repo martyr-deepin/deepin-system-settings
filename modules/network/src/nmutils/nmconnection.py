@@ -123,6 +123,7 @@ class NMConnection(gobject.GObject):
                 setattr(self, self.settings_info[setting_name][3], apply(self.settings_info[setting_name][0]))
                 self.settings_dict[setting_name] = getattr(self, self.settings_info[setting_name][3]).prop_dict
             else:
+                print "reinit failed", getattr(self, self.settings_info[setting_name][3])
                 #getattr(self, self.settings_info[setting_name][3]).prop_dict = self.settings_dict[setting_name]
                 pass
 

@@ -26,9 +26,9 @@ from constants import CONTENT_FONT_SIZE
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
-        fn('save', True)
+        Dispatcher.set_button('save', True)
     else:
-        fn("save", False)
+        Dispatcher.set_button("save", False)
 
 class DSLSetting(Settings):
 
@@ -52,20 +52,27 @@ class DSLSetting(Settings):
         self.connections = connections
 
         return self.connections
+    
+    def delete_request_redraw(self):
+        Dispatcher.emit("dsl-redraw")
+
 
     def save_changes(self, connection):
         if connection.check_setting_finish():
 
             from nmlib.nm_remote_connection import NMRemoteConnection
             if isinstance(connection, NMRemoteConnection):
-                print "before update", TypeConvert.dbus2py(connection.settings_dict)
+                #print "before update", TypeConvert.dbus2py(connection.settings_dict)
                 connection.update()
-                print "after update", TypeConvert.dbus2py(connection.settings_dict)
+                #print "after update", TypeConvert.dbus2py(connection.settings_dict)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 Dispatcher.emit("connection-replace", connection)
+                Dispatcher.emit("dsl-redraw")
 
-        Dispatcher.set_button("apply", True)
+        Dispatcher.to_main_page()
+
+        #Dispatcher.set_button("apply", True)
 
     def apply_changes(self, connection):
             device_path = nm_module.nmclient.get_wired_devices()[0].object_path

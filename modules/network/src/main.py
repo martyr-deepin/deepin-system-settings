@@ -249,6 +249,8 @@ class WirelessDevice(object):
         index = self.get_actives(self.ap_list)
         if index:
             map(lambda i: self.tree.visible_items[i].set_net_state(2), index)
+        wifi = cache.get_spec_object(widget.object_path)
+        wifi.thread_wifiauto.stop_run()
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
         if reason == 39:
@@ -363,6 +365,11 @@ class WirelessSection(Section, WirelessDevice):
         self._init_signals()
         Dispatcher.connect("ap-added", self.ap_added_callback)
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
+        Dispatcher.connect("wireless-redraw", self.wireless_redraw)
+
+    def wireless_redraw(self, widget):
+        if self.wireless.get_active():
+            self.wireless.set_active(True, emit=True)
 
     def create_a_hidden_network(self, widget, c):
         from wlan_config import HiddenSetting
@@ -417,6 +424,7 @@ class WirelessSection(Section, WirelessDevice):
         else:
             for d in self.wireless_devices:
                 wifi = cache.get_spec_object(d.object_path)
+                print  "wifi auto connect"
                 wifi.auto_connect()
 
     def toggle_off(self):
@@ -437,6 +445,7 @@ class WirelessSection(Section, WirelessDevice):
         
 
         hidden_list = self.get_hidden_connection(self.ap_list)
+        #hidden_list = []
         hiddens = map(lambda c: HidenItem(c), hidden_list)
 
         return aps + hiddens
@@ -860,6 +869,11 @@ class DSLSection(Section):
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,x: self.jumpto_setting())
+        Dispatcher.connect("dsl-redraw", self.dsl_redraw)
+
+    def dsl_redraw(self, widget):
+        if self.dsl.get_active():
+            self.dsl.set_active(True, emit=True)
 
     def toggle_on(self):
         self.tree.delete_all_items()
@@ -873,7 +887,6 @@ class DSLSection(Section):
     
     def toggle_off(self):
         pass
-
 
     def get_list(self):
         self.connections =  nm_module.nm_remote_settings.get_pppoe_connections()

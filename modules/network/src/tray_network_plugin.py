@@ -40,10 +40,13 @@ class TrayNetworkPlugin(object):
         self.gui = TrayUI(self.toggle_wired, self.toggle_wireless, self.mobile_toggle)
         self.net_manager = net_manager
         Dispatcher.connect("request_resize", self.request_resize)
+        Dispatcher.connect("ap-added", self.wireless_ap_added)
+        Dispatcher.connect("ap-removed", self.wireless_ap_removed)
         self.gui.button_more.connect("clicked", self.more_setting)
 
         self.need_auth_flag = False
         self.this_device = None
+        self.this_connection = None
 
         self.timer = Timer(WAIT_TIME)
         self.timer.Enabled = False
@@ -51,6 +54,14 @@ class TrayNetworkPlugin(object):
 
         self.init_wired_signals()
         self.init_wireless_signals()
+
+    def wireless_ap_added(self, widget):
+        if self.gui.wireless.get_active():
+            self.gui.wireless.set_active((True, True), emit=True)
+
+    def wireless_ap_removed(self, widget):
+        if self.gui.wireless.get_active():
+            self.gui.wireless.set_active((True, True), emit=True)
 
     def init_values(self, this_list):
         self.this_list = this_list
@@ -227,17 +238,12 @@ class TrayNetworkPlugin(object):
                 print "Debug", index
                 self.gui.set_active_ap(index, True)
             else:
-                #if self.this_device and self.this_device.get_state() != 40: 
                 self.activate_wireless()
-            #Dispatcher.tray_show_more()
             Dispatcher.request_resize()
         else:
             container_remove_all(self.gui.tree_box)
-            #self.gui.more_button.set_ap_list([])
             Dispatcher.request_resize()
             
-            #Dispatcher.tray_show_more()
-
             def device_disactive():
                 pass
 
@@ -255,13 +261,16 @@ class TrayNetworkPlugin(object):
 
     def ap_selected(self, widget, item, column, x, y):
         self.selected_item = item
-
+    
+    # wireless device singals 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
         self.change_status_icon("links")
         self.set_active_ap()
         self.need_auth_flag = False
+        self.this_connection = None
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        self.this_connection = None
         self.gui.wireless.set_sensitive(True)
         if self.gui.wire.get_active():
             self.change_status_icon("cable")
@@ -274,21 +283,25 @@ class TrayNetworkPlugin(object):
         self.gui.wireless.set_active((False, False))
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
+        if self.this_connection:
+            self.toggle_dialog(self.this_connection)
+
         self.gui.wireless.set_active((True, True))
         self.change_status_icon("loading")
 
         self.let_rotate(True)
         self.this_device = widget
-        self.timer.Enabled = True
-        self.timer.Interval = WAIT_TIME
+        #self.timer.Enabled = True
+        #self.timer.Interval = WAIT_TIME
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
-        connections = nm_module.nmclient.get_active_connections()
-        active_connection = connections[-1]
-        
-        self.this_connection = active_connection.get_connection()
-        self.this_device.nm_device_disconnect()
-        self.toggle_dialog(self.this_connection)
+
+        connections = nm_module.nmclient.get_wireless_active_connection()
+        if connections:
+            print "active connection"
+            self.this_connection = connections[0].get_connection()
+            #self.this_device.nm_device_disconnect()
+            #self.toggle_dialog(self.this_connection)
 
     def toggle_dialog(self, connection, security=None):
         ssid = connection.get_setting("802-11-wireless").ssid

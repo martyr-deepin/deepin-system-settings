@@ -250,10 +250,13 @@ class NMDeviceWifi(NMDevice):
     #Signals##
     def access_point_added_cb(self, ap_object_path):
         try:
-            added_ssid = cache.getobject(ap_object_path).get_ssid()
+            from nmaccesspoint import NMAccessPoint
+            added_ssid = NMAccessPoint(ap_object_path).get_ssid()
     
             if added_ssid not in set(self.ap_record_dict.values()):
+                self.origin_ap_list = self.get_access_points()
                 self.emit("access-point-added")
+                #print ap_object_path, added_ssid
                 #cache.clearcache()
                 #cache.clear_spec_cache()
             self.ap_record_dict[ap_object_path] = added_ssid
@@ -263,8 +266,10 @@ class NMDeviceWifi(NMDevice):
     def access_point_removed_cb(self, ap_object_path):
         try:
             removed_ssid = self.ap_record_dict[ap_object_path]
-            if len(filter(lambda x: x == removed_ssid, set(self.ap_record_dict.values()))) == 1:
+            if len(filter(lambda x: x == removed_ssid, self.ap_record_dict.values())) == 1:
+                self.origin_ap_list = self.get_access_points()
                 self.emit("access-point-removed")
+                #print ap_object_path, removed_ssid
                 #cache.clearcache()
                 #cache.clear_spec_cache()
             del self.ap_record_dict[ap_object_path]

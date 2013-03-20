@@ -54,6 +54,9 @@ class VPNSetting(Settings):
         Dispatcher.to_main_page()
         #Dispatcher.set_button("apply", True)
 
+    def delete_request_redraw(self):
+        Dispatcher.emit("vpn-redraw")
+
     def apply_changes(self, connection):
         # FIXME Now just support one device
 

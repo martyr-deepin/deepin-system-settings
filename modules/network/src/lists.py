@@ -148,7 +148,6 @@ class GenItems(TreeItem):
             self.redraw_request_callback(self)
 
     def set_net_state(self, state):
-        print state, "<==="
         self.network_state = state
         if state == self.NETWORK_LOADING:
             LoadingThread(self).start()
@@ -415,6 +414,13 @@ class HidenItem(GenItems):
         from wlan_config import HiddenSetting
         Dispatcher.to_setting_page(HiddenSetting(self.connection))
 
+    def click_cb(self):
+        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
+                                   wireless_device.object_path,
+                                   "/")
+
+
 class HotspotItem(TreeItem):
 
     def __init__(self, font_size=DEFAULT_FONT_SIZE):
@@ -639,6 +645,14 @@ class DSLItem(GenItems):
     def jumpto_cb(self):
         from dsl_config import DSLSetting
         Dispatcher.to_setting_page(DSLSetting(self.connection))
+
+    def click_cb(self):
+        device_path = nm_module.nmclient.get_wired_devices()[0].object_path
+        #FIXME need to change device path into variables
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
+                                           device_path,
+                                           "/")
+
 
 
 class MobileItem(GenItems):

@@ -42,11 +42,11 @@ def check_settings(connection, fn):
     if connection.check_setting_finish():
         Dispatcher.set_button('save', True)
         print "pass"
-        print connection.get_setting("802-11-wireless-security").prop_dict
+        #print connection.get_setting("802-11-wireless-security").prop_dict
     else:
         Dispatcher.set_button("save", False)
         print "not pass, ==================>"
-        print connection.get_setting("802-11-wireless-security").prop_dict
+        #print connection.get_setting("802-11-wireless-security").prop_dict
 
 class WirelessSetting(Settings):
     def __init__(self, ap, spec_connection=None):
@@ -81,6 +81,7 @@ class WirelessSetting(Settings):
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 Dispatcher.emit("connection-replace", connection)
+                #Dispatcher.emit("wireless-redraw")
                 # reset index
             #self.apply_changes(connection)
             #Dispatcher.set_button("apply", True)
@@ -120,16 +121,15 @@ class HiddenSetting(Settings):
         self.crumb_name = "Hidden network"
 
     def init_items(self, connection):
-        self.connection = connection 
-        if connection not in self.settings:
-            self.setting_lock[connection] = True
+        if self.connection not in self.settings:
+            self.setting_lock[self.connection] = True
             #self.init_button_state(connection)
             setting_list = []
             for setting in self.setting_list:
-                s = setting(connection, self.set_button, True)
+                s = setting(self.connection, self.set_button, True)
                 setting_list.append((s.tab_name, s))
-            self.settings[connection] = setting_list
-        return self.settings[connection][0][1]
+            self.settings[self.connection] = setting_list
+        return self.settings[self.connection][0][1]
 
     def get_connections(self):
         if self.connection:
@@ -142,7 +142,6 @@ class HiddenSetting(Settings):
 
     def save_changes(self, connection):
         if isinstance(connection, NMRemoteConnection):
-            #print "in update this setting ", connection.settings_dict
             connection.update()
         else:
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
@@ -185,7 +184,6 @@ class Sections(gtk.Alignment):
         self.add(self.main_box)
 
     def show_more_options(self, widget):
-        print "sdfsf"
         widget.parent.destroy()
         self.wireless = SettingSection(_("Wireless"), always_show=True)
         self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
@@ -421,7 +419,7 @@ class Security(gtk.VBox):
     def save_wpa_pwd(self, widget, content):
         if self.setting.verify_wpa_psk(content):
             self.setting.psk = content
-            print "in save wpa pwd", self.setting.prop_dict
+            #print "in save wpa pwd", self.connection.settings_dict
             check_settings(self.connection, self.set_button)
         else:
             Dispatcher.set_button("save", False)

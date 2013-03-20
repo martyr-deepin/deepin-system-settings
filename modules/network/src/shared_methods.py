@@ -190,9 +190,10 @@ class NetManager(object):
 
 
     def get_security_by_ap(self, ap_object):
-        from nmlib.getsec import get_ap_security
-        interface = self.wireless_device.get_ip_iface()
-        return get_ap_security( interface, ap_object.get_hw_address())
+        return ap_object.get_flags()
+        #from nmlib.getsec import get_ap_security
+        #interface = self.wireless_device.get_ip_iface()
+        #return get_ap_security( interface, ap_object.get_hw_address())
         
         #NM_802_11_AP_FLAGS_NONE = 0x0
         #NM_802_11_AP_FLAGS_PRIVACY = 0x1

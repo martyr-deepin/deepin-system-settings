@@ -99,12 +99,18 @@ class SideBar(gtk.VBox):
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
-            Dispatcher.emit("vpn-redraw")
+            if hasattr(self.network_object, "delete_request_redraw"):
+                print "redraw"
+                self.network_object.delete_request_redraw()
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
         container_remove_all(self.buttonbox)
         self.buttonbox.add(self.connection_tree)
+    
+    #def delete_request_redraw(self):
+        #pass
+
         #self.resize_tree()
 
     def resize_tree(self):
