@@ -232,7 +232,6 @@ def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot
 
 def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box):
     module_id = get_forward_module()
-    print "DEBUG titlebar_backward_cb", module_id
     if module_id:
         action_bar.bread.remove_node_after_index(0)
         if module_id == MAIN_MODULE:
