@@ -22,6 +22,7 @@
 
 import os
 import glib
+import shutil
 
 PROGRAM_NAME = "deepin-individuation"
 
@@ -108,7 +109,14 @@ def get_user_theme_dir():
     return user_theme_dir    
 
 def get_system_theme_dir():
-    return os.path.join(program_dir, "theme")
+    program_theme_dir = os.path.join(program_dir, "theme")
+
+    system_theme_dir = os.path.join(get_config_dir(), "system-theme")
+    if not os.path.exists(system_theme_dir):
+        os.makedirs(system_theme_dir)
+        for theme_file in os.listdir(program_theme_dir):
+            shutil.copy("%s/%s" % (program_theme_dir, theme_file), "%s/%s" % (system_theme_dir , theme_file))
+    return system_theme_dir
 
 def get_image_path(name):
     return os.path.join(program_dir, "data", "images", name)
