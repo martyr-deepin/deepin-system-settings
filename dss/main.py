@@ -274,8 +274,9 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
                      "click_crumb",
                      (index, label))
         
-def click_module_menu_item(slider, content_page_info, action_bar, module_info):
+def click_module_menu_item(slider, content_page_info, action_bar, module_info, foot_box):
     if module_info.id != content_page_info.get_active_module_id():
+        foot_box.hide()
         action_bar.bread.remove_node_after_index(0)
         start_module_process(slider, content_page_info, module_info.path, module_info.config)
         
@@ -398,7 +399,7 @@ if __name__ == "__main__":
     # Init action bar.
     action_bar = ActionBar(module_infos, 
                            lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box),
-                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info), 
+                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info, foot_box), 
                            lambda : titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
                            lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
                            lambda : search_cb(action_bar, slider, foot_box))
