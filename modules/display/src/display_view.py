@@ -31,8 +31,7 @@ from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo, set_clickable_cursor
 from deepin_utils.ipc import is_dbus_name_exists
-from dtk.ui.draw import (cairo_state, cairo_disable_antialias, draw_text, 
-                         draw_pixbuf)
+from dtk.ui.draw import cairo_disable_antialias, draw_text, draw_pixbuf
 import gobject
 import gtk
 import pango
@@ -481,6 +480,9 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.add_child(self.main_box)
         self.pack_start(self.scrolled_window)
 
+        self.__send_message("status", ("display", ""))
+
+    def show_again(self):
         self.__send_message("status", ("display", ""))
 
     def reset(self):

@@ -66,7 +66,14 @@ class WallpaperView(IconView):
         
         self.add_system_wallpapers(self.theme.get_system_wallpapers())        
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
-        
+
+    def is_editable(self):
+        if self.theme.is_system_theme:
+            if len(self.theme.get_user_wallpapers()) == 0:
+                return False
+
+        return True
+
     def is_exists(self, image):    
         if self.theme == None:
             return False

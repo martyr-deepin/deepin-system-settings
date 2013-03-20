@@ -75,7 +75,6 @@ class NetManager(object):
             state_list = []
             for device in self.wired_devices:
                 state_list.append(device.get_state() == 20)
-            
             if True in state_list:
                 return (False, False)
             else:
@@ -192,7 +191,8 @@ class NetManager(object):
 
     def get_security_by_ap(self, ap_object):
         from nmlib.getsec import get_ap_security
-        return get_ap_security("wlan0", ap_object.get_hw_address())
+        interface = self.wireless_device.get_ip_iface()
+        return get_ap_security( interface, ap_object.get_hw_address())
         
         #NM_802_11_AP_FLAGS_NONE = 0x0
         #NM_802_11_AP_FLAGS_PRIVACY = 0x1
@@ -266,7 +266,10 @@ class Settings(object):
 
     def get_button_state(self):
         #if connection in self.setting_state.iterkeys():
+        try:
             return self.setting_state[self.connection]
+        except:
+            return None
 
     def apply_changes(self):
         pass

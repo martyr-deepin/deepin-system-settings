@@ -21,7 +21,7 @@
 
 from dtk.ui.utils import container_remove_all
 from tray_ui import TrayUI
-from shared_methods import NetManager, device_manager
+from shared_methods import net_manager, device_manager
 from helper import Dispatcher
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -38,7 +38,7 @@ class TrayNetworkPlugin(object):
     def __init__(self):
         self.menu_showed = False
         self.gui = TrayUI(self.toggle_wired, self.toggle_wireless, self.mobile_toggle)
-        self.net_manager = NetManager()
+        self.net_manager = net_manager
         Dispatcher.connect("request_resize", self.request_resize)
         self.gui.button_more.connect("clicked", self.more_setting)
 
@@ -78,7 +78,7 @@ class TrayNetworkPlugin(object):
                 self.change_status_icon("cable")
             else:
                 self.change_status_icon("cable_disconnect")
-            Dispatcher.connect("wired-change", self.set_wired_state)
+            #Dispatcher.connect("wired-change", self.set_wired_state)
         else:
             self.gui.remove_net("wired")
         
@@ -89,7 +89,7 @@ class TrayNetworkPlugin(object):
                 self.change_status_icon("links")
 
 
-            Dispatcher.connect("wireless-change", self.set_wireless_state)
+            #Dispatcher.connect("wireless-change", self.set_wireless_state)
             Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
         else:
             self.gui.remove_net("wireless")
@@ -106,34 +106,33 @@ class TrayNetworkPlugin(object):
         else:
             self.net_manager.disactive_wired_device(self.disactive_wired)
 
-    def set_wired_state(self, widget, device, new_state, reason):
-        '''
-        wired-change callback
-        '''
-        print new_state, reason
-        if new_state is 20:
-            self.gui.wire.set_active((False, False))
-            if self.gui.wireless.get_active():
-                self.change_status_icon("links")
-            else:
-                self.change_status_icon("cable_disconnect")
-        elif new_state is 30:
+    #def set_wired_state(self, widget, device, new_state, reason):
+        #'''
+        #wired-change callback
+        #'''
+        #if new_state is 20:
+            #self.gui.wire.set_active((False, False))
+            #if self.gui.wireless.get_active():
+                #self.change_status_icon("links")
+            #else:
+                #self.change_status_icon("cable_disconnect")
+        #elif new_state is 30:
             
-            self.gui.wire.set_sensitive(True)
-            if self.gui.wireless.get_active():
-                self.change_status_icon("links")
-            else:
-                self.change_status_icon("cable_disconnect")
-            if reason is not 0:
-                self.gui.wire.set_active((True, False))
-        elif new_state is 40:
-            print "rotate"
-            if not self.gui.wire.get_active():
-                self.gui.wire.set_active((True, True))
-            self.change_status_icon("loading")
-            self.let_rotate(True)
-        elif new_state is 100:
-            self.active_wired()
+            #self.gui.wire.set_sensitive(True)
+            #if self.gui.wireless.get_active():
+                #self.change_status_icon("links")
+            #else:
+                #self.change_status_icon("cable_disconnect")
+            #if reason is not 0:
+                #self.gui.wire.set_active((True, False))
+        #elif new_state is 40:
+            #print "rotate"
+            #if not self.gui.wire.get_active():
+                #self.gui.wire.set_active((True, True))
+            #self.change_status_icon("loading")
+            #self.let_rotate(True)
+        #elif new_state is 100:
+            #self.active_wired()
 
     def init_wired_signals(self):
         device_manager.load_wired_listener(self)
@@ -248,63 +247,6 @@ class TrayNetworkPlugin(object):
                 self.change_status_icon("wifi_disconnect")
             self.net_manager.disactive_wireless_device(device_disactive)
 
-    def set_wireless_state(self, widget, device, new_state, old_state, reason):
-        """
-        "wireless-change" signal callback
-        """
-        self.this_device = device
-        print new_state, old_state, reason
-        if new_state is 20:
-            self.gui.wireless.set_active((False, False))
-        elif new_state is 30:
-            print "==================="
-            #self.notify_send("a", "disconnected", "")
-            self.gui.wireless.set_sensitive(True)
-
-            if self.gui.wire.get_active():
-                self.change_status_icon("cable")
-            else:
-                self.change_status_icon("wifi_disconnect")
-            if reason == 39:
-                self.gui.wireless.set_active((True, False))
-                #if self.gui.wireless.get_active():
-                    #index = self.gui.get_active_ap()
-                    #self.gui.set_active_ap(index, False)
-                    #self.need_auth_flag = False
-            '''
-            if old_state == 120:
-                if self.need_auth_flag:
-                    self.toggle_dialog(self.this_connection)
-                    device.nm_device_disconnect()
-               '''     
-
-        elif new_state is 40:
-            #self.notify_send("a", "connecting", "")
-            self.gui.wireless.set_active((True, True))
-            self.change_status_icon("loading")
-
-            self.let_rotate(True)
-        elif new_state is 50:
-            self.this_device = device
-            self.timer.Enabled = True
-            self.timer.Interval = WAIT_TIME
-                
-        #elif new_state is 60 and old_state == 50:
-            #active_connection = nm_module.nmclient.get_active_connections()
-            #print map(lambda a: a.get_connection(), active_connection)
-            #print "need auth"
-        elif new_state is 100:
-            #self.notify_send("a", "connected", "")
-            self.change_status_icon("links")
-            self.set_active_ap()
-            self.need_auth_flag = False
-        '''
-        elif new_state is 120 and reason is 7:
-            self.need_auth_flag = True
-            active_connection = nm_module.nmclient.get_active_connections()[1]
-            self.this_connection = active_connection.get_connection()
-        '''
-
     def init_wireless_signals(self):
         device_manager.load_wireless_listener(self)
         self.gui.ap_tree.connect("single-click-item", self.ap_selected)
@@ -332,7 +274,6 @@ class TrayNetworkPlugin(object):
         self.gui.wireless.set_active((False, False))
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
-        print "sdfsdf"
         self.gui.wireless.set_active((True, True))
         self.change_status_icon("loading")
 
@@ -441,7 +382,9 @@ class TrayNetworkPlugin(object):
         height = self.gui.get_widget_height()
         self.this.resize(1,1)
         if self.menu_showed:
+            self.this.hide_menu()
             self.this.set_size_request(185, height + 46)
+            self.this.show_menu()
 
 def return_plugin():
     return TrayNetworkPlugin

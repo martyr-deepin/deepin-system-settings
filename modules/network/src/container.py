@@ -19,6 +19,48 @@ import style
 ICON_PADDING = 5
 TEXT_PADDING = 5
 BUTTON_PADDING = 0
+
+import threading as td
+def post_gui(func):
+    '''Post GUI code in main thread.'''
+    def wrap(*a, **kw):
+        gtk.gdk.threads_enter()
+        ret = func(*a, **kw)
+        gtk.gdk.threads_leave()
+        return ret
+    return wrap 
+
+class ToggleThread(td.Thread):
+    def __init__(self, get_list_fn, tree, after):
+        td.Thread.__init__(self)
+        self.setDaemon(True)
+        self.get_list_fn = get_list_fn
+        self.tree = tree
+        self.stop = False
+        self.after = after
+
+    def run(self):
+        aps = self.get_list_fn()
+
+        self.render_list(aps)
+
+    @post_gui
+    def render_list(self, aps):
+        if not self.stop:
+            #from lists import WirelessItem
+            #self.tree.add_items(map(lambda i:WirelessItem(i), aps))
+            if aps:
+                self.tree.add_items(aps)
+                self.tree.set_no_show_all(False)
+                self.tree.show()
+                self.tree.visible_items[-1].is_last = True
+                self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
+            self.stop_run()
+            self.after()
+
+    def stop_run(self):
+        self.stop = True
+
 class Contain(gtk.Alignment):
 
     def __init__(self, icon, text, switch_callback=None, font_size = 10):

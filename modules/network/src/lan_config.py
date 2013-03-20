@@ -21,11 +21,9 @@
 from dss import app_theme
 #from dtk.ui.new_entry import InputEntry
 from elements import MyInputEntry as InputEntry
-from dtk.ui.label import Label
-from dtk.ui.spin import SpinBox
-from dtk.ui.button import Button
 #from dtk.ui.droplist import Droplist
 from nm_modules import nm_module
+from dtk.ui.button import Button
 #from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
 from nmlib.nmcache import cache
@@ -35,9 +33,7 @@ from elements import SettingSection, TableAsm
 import gtk
 wired_device = []
 
-from constants import  CONTENT_FONT_SIZE, WIDGET_HEIGHT
 from shared_methods import Settings
-import style
 from helper import Dispatcher
 from nls import _
 from device_manager import device_manager
@@ -68,6 +64,7 @@ class WiredSetting(Settings):
                 Dispatcher.emit("connection-replace", connection)
                 # reset index
             self.set_button("apply", True)
+            Dispatcher.to_main_page()
         else:
             print "not complete"
 
@@ -86,26 +83,34 @@ class Sections(gtk.Alignment):
     def __init__(self, connection, set_button):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.set_padding(35, 0, 20, 0)
+        self.connection = connection
+        self.set_button = set_button
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
-        basic = SettingSection(_("Basic") +"(IPV4)")
 
-        self.wired = SettingSection(_("Wired"), always_show=True)
-        self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
+        basic = SettingSection(_("Wired"), always_show=True)
+        button = Button(_("Advanced"))
+        button.connect("clicked", self.show_more_options)
+
         align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(0, 0, 225, 0)
+        align.set_padding(0, 0, 376, 0)
+        align.add(button)
+
+        basic.load([Wired(self.connection, self.set_button), align])
+        self.main_box.pack_start(basic, False, False)
+        self.add(self.main_box)
         # align.add(self.button)
         
-        basic.load([IPV4Conf(connection, set_button), align])
-        self.wired.load([Wired(connection, set_button)])
-        self.ipv6.load([IPV6Conf(connection, set_button)])
+    def show_more_options(self, widget):
+        ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
+        ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
+        ipv4.load([IPV4Conf(self.connection, self.set_button)])
+        ipv6.load([IPV6Conf(self.connection, self.set_button)])
 
-        self.main_box.pack_start(self.wired, False, False, 15)
-        self.main_box.pack_start(basic, False, False)
-        self.main_box.pack_start(self.ipv6, False, False)
+        self.main_box.pack_start(ipv4, False, False, 15)
+        self.main_box.pack_start(ipv6, False, False)
         
-        self.add(self.main_box)
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -151,15 +156,15 @@ class Wired(gtk.VBox):
         if type(value) is str:
             if TypeConvert.is_valid_mac_address(value):
                 print "valid mac"
-                widget.ancestor.set_normal()
-                self.queue_draw()
+                #widget.set_normal()
+                #self.queue_draw()
                 setattr(self.ethernet, types, value)
                 if self.connection.check_setting_finish():
                     self.set_button("save", True)
             else:
                 print "invalid mac"
-                widget.ancestor.set_warning()
-                self.queue_draw()
+                #widget.set_warning()
+                #self.queue_draw()
                 self.set_button("save", False)
                 if value is "":
                     #delattr(self.ethernet, types)

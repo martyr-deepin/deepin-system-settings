@@ -14,7 +14,7 @@ from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, WIDGET_HEIGHT
 from nls import _
 from container import MyRadioButton as RadioButton
 from helper import Dispatcher
-from elements import SettingSection
+from elements import SettingSection, DefaultToggle
 
 class IPV4Conf(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -31,7 +31,8 @@ class IPV4Conf(gtk.VBox):
 
 
         self.ip_table = gtk.Table(3, 2, False)
-        self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
+        #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
+        self.ip_section = DefaultToggle(_("Automatic get IP address"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
 
@@ -46,7 +47,8 @@ class IPV4Conf(gtk.VBox):
         
         #DNS configuration
         self.dns_table = gtk.Table(2, 2, False)
-        self.dns_section = SettingSection( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
+        #self.dns_section = SettingSection( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
+        self.dns_section = DefaultToggle(_("Automatic get DNS server"))
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
 
@@ -299,7 +301,8 @@ class IPV6Conf(gtk.VBox):
         self.set_button = set_button_callback
         # Ip configuration
         self.ip_table = gtk.Table(3, 2, False)
-        self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
+        #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
+        self.ip_section = DefaultToggle(_("Automatic get IP address"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
 

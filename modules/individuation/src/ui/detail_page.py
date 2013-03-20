@@ -159,11 +159,7 @@ class DetailPage(gtk.VBox):
         event_manager.emit("switch-to-deletepage", self.theme)
 
     def __on_random_toggled(self, widget):
-        is_random = widget.get_active()
-        if is_random:
-            self.theme.set_background_random_mode(True)
-        else:
-            self.theme.set_background_random_mode(False)
+        self.theme.set_background_random_mode(widget.get_active())
 
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
@@ -179,12 +175,23 @@ class DetailPage(gtk.VBox):
         self.theme.set_background_duration(data)
         self.theme.save()
 
+    def __set_delete_button_visible(self):
+        is_editable = self.wallpaper_view.is_editable()
+        if is_editable:
+            self.button_align.set_padding(0, 0, 35, 5)
+        else:
+            self.button_align.set_padding(0, 0, 115, 5)
+
+        self.delete_button.set_child_visible(is_editable)
+
     def __on_add_wallpapers(self, name, obj, image_paths):
         if len(self.wallpaper_view.items) < 2:                                  
             self.select_all_button.set_child_visible(False)                     
         else:                                                                   
             self.select_all_button.set_child_visible(True)
             self.select_all_button.set_label(_("Select All"))
+        
+        self.__set_delete_button_visible()
 
     def set_theme(self, theme):
         self.theme = theme
@@ -205,7 +212,9 @@ class DetailPage(gtk.VBox):
                 
         self.time_combobox.set_select_index(item_index)        
         self.wallpaper_view.set_theme(theme)
-       
+      
+        self.__set_delete_button_visible()
+
         if self.wallpaper_view.is_randomable():
             self.__random_enable()
         else:

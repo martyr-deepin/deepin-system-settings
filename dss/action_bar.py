@@ -23,7 +23,6 @@
 
 from nls import _
 from theme import app_theme
-from dtk.ui.keymap import get_keyevent_name
 from dtk.ui.cache_pixbuf import CachePixbuf
 from dtk.ui.draw import draw_pixbuf
 from dtk.ui.new_entry import InputEntry
@@ -71,6 +70,7 @@ class ActionBar(gtk.Alignment):
             app_theme.get_pixbuf("action_button/backward_normal.png"),
             app_theme.get_pixbuf("action_button/backward_hover.png"),
             app_theme.get_pixbuf("action_button/backward_press.png"),
+            insensitive_dpixbuf = app_theme.get_pixbuf("action_button/backward_normal.png")
             )
         self.backward_cb = backward_cb
         self.backward_button.connect("clicked", self.__backward_clicked)
@@ -82,6 +82,7 @@ class ActionBar(gtk.Alignment):
             app_theme.get_pixbuf("action_button/forward_normal.png"),
             app_theme.get_pixbuf("action_button/forward_hover.png"),
             app_theme.get_pixbuf("action_button/forward_press.png"),
+            insensitive_dpixbuf = app_theme.get_pixbuf("action_button/forward_normal.png")
             )
         self.forward_cb = forward_cb
         self.forward_button.connect("clicked", self.__forward_clicked)

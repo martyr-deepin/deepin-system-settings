@@ -227,6 +227,9 @@ class PowerView(gtk.VBox):
         self.__send_message("status", ("power", ""))
         self.__send_message("status", ("power", "show_reset"))
 
+    def show_again(self):                                                       
+        self.__send_message("status", ("power", ""))
+
     def __power_settings_changed(self, key):
         if key != "percentage":
             return
