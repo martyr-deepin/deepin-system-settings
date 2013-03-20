@@ -595,7 +595,7 @@ class HotspotBox(gtk.HBox):
     def __init__(self, action_btn_click_cb):
         super(HotspotBox, self).__init__()
         self.action_btn_click = action_btn_click_cb
-        self.set_size_request(645, 30)
+        self.set_size_request(-1, 30)
         self.connect("expose-event", self.expose_background)
 
         self.__init_ui()

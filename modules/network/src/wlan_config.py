@@ -121,15 +121,16 @@ class HiddenSetting(Settings):
         self.crumb_name = "Hidden network"
 
     def init_items(self, connection):
-        if self.connection not in self.settings:
-            self.setting_lock[self.connection] = True
+        self.connection = connection
+        if connection not in self.settings:
+            self.setting_lock[connection] = True
             #self.init_button_state(connection)
             setting_list = []
             for setting in self.setting_list:
-                s = setting(self.connection, self.set_button, True)
+                s = setting(connection, self.set_button, True)
                 setting_list.append((s.tab_name, s))
-            self.settings[self.connection] = setting_list
-        return self.settings[self.connection][0][1]
+            self.settings[connection] = setting_list
+        return self.settings[connection][0][1]
 
     def get_connections(self):
         if self.connection:
