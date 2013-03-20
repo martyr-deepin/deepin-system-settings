@@ -84,6 +84,7 @@ class DeepinIndividuation(object):
     def __init_data(self):
         from theme_manager import theme_manager
         theme_manager.load()
+        theme_manager.untitled_theme(theme_manager.get_default_theme())
     
     def message_handler(self, *message):
         (message_type, message_content) = message

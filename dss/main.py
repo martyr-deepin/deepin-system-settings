@@ -63,6 +63,8 @@ def record_module_history(module_name):
     forward_modules = filter(lambda forward_module: forward_module != module_name, forward_modules)
     module_history_index = len(backward_modules)
     module_history = backward_modules + [module_name] + forward_modules
+    
+    return len(backward_modules), len(forward_modules)
 
 def get_backward_module():
     global module_history
@@ -130,14 +132,14 @@ class DBusService(dbus.service.Object):
                 (crumb_index, (module_id, crumb_name)) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
-                record_module_history(module_id)
-                self.__set_ward()
+                backward_module_id, forward_module_id = record_module_history(module_id)
+                self.__set_ward(backward_module_id, forward_module_id)
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
-                record_module_history(module_id)
-                self.__set_ward()
+                backward_module_id, forward_module_id = record_module_history(module_id)
+                self.__set_ward(backward_module_id, forward_module_id)
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
@@ -193,24 +195,21 @@ class DBusService(dbus.service.Object):
                 'unique', 
                 dbus.service.method(APP_DBUS_NAME)(unique))
 
-    def __set_ward(self):
-        backward_module_id = get_backward_module()
-        forward_module_id = get_forward_module()
-        
-        if backward_module_id:
+    def __set_ward(self, backward_module_count, forward_module_count):
+        if backward_module_count:
             action_bar.forward_button.set_sensitive(True)
             action_bar.forward_button.set_active(True)
         else:
             action_bar.forward_button.set_sensitive(False)
             action_bar.forward_button.set_active(False)
 
-        if forward_module_id:
+        if forward_module_count:
             action_bar.backward_button.set_sensitive(True)
             action_bar.backward_button.set_active(True)
         else:
             action_bar.backward_button.set_sensitive(False)
             action_bar.backward_button.set_active(False)
-
+    
     def __on_bluetooth_cancel(self):
         send_message("bluetooth", "cancel", "progress cancel")
 
@@ -233,6 +232,7 @@ def titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot
 
 def titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box):
     module_id = get_forward_module()
+    print "DEBUG titlebar_backward_cb", module_id
     if module_id:
         action_bar.bread.remove_node_after_index(0)
         if module_id == MAIN_MODULE:

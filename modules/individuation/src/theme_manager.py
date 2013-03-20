@@ -384,18 +384,15 @@ class ThemeManager(object):
     
     def untitled_theme(self, copy_theme=None):
         untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
-        if os.path.exists(untitled_path):
-            try:
-                os.unlink(untitled_path)
-            except:    
-                pass
-            
         untitled_theme = ThemeFile(untitled_path)
+        
         if copy_theme:
             untitled_theme.copy_theme(copy_theme)
+        
         untitled_theme.set_default_name("untitled")    
         untitled_theme.set_locale_name(_("Untitled"))
         untitled_theme.save()    
+        
         return untitled_theme
     
     def is_current_theme(self, theme):

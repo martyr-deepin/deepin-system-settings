@@ -175,7 +175,6 @@ class DesktopView(gtk.VBox):
         self.topleft_label = self.__setup_label(_("Top Left"))
         self.topleft_combo = self.__setup_combo(self.hot_zone_items)
         command1 = self.compiz_integrated_settings.get_string("command-11")
-        print "DEBUG", command1
         if command1 == "":
             self.topleft_combo.set_select_index(0)
         elif command1 == self.LAUNCHER_CMD:
