@@ -34,7 +34,7 @@ from dtk.ui.new_slider import HSlider
 from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.box import ImageBox
-from dtk.ui.hscalebar import HScalebar
+from dtk.ui.new_scalebar import HScalebar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from treeitem import MyTreeItem as TreeItem
@@ -160,7 +160,8 @@ class SoundSetting(object):
         self.adjust_widgets["speaker"] = gtk.Adjustment(0, 0, volume_max_percent, 1, 5)
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, volume_max_percent, 1, 5)
         # scale init
-        self.scale_widgets["balance"] = MyHScalebar(value_min=-1, value_max=1)
+        #self.scale_widgets["balance"] = MyHScalebar(value_min=-1, value_max=1)
+        self.scale_widgets["balance"] = HScalebar(value_min=-1, value_max=1, gray_progress=True)
         self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
         self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
         ###################################

@@ -129,7 +129,7 @@ class AccelBuffer(object):
         '''
         if self.state is None or self.keyval is None:
             return ''
-        return markup_escape_text(gtk.accelerator_get_label(self.keyval, self.state))
+        return markup_escape_text(gtk.accelerator_get_label(self.keyval, self.state)).replace("制表", "Tab")
     
     def set_from_accel(self, accelerator):
         '''
