@@ -5,6 +5,9 @@ Dependence (Debian)
 Deepin Settings Daemon
 git clone git@github.com:linuxdeepin/deepin-settings-daemon.git
 
+== Individuation module ==
+sudo chmod 777 /usr/share/deepin-system-settings/modules/individuation/theme/
+
 == Account module ==
 Python polkit_permission Bindings
 sudo apt-get install libpolkit-gobject-1-dev
