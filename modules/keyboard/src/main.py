@@ -34,7 +34,7 @@ from dtk.ui.dialog import DialogBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.new_entry import InputEntry, Entry
 from dtk.ui.tab_window import TabBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.line import HSeparator
@@ -137,6 +137,7 @@ class KeySetting(object):
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["repeat_test_entry"] = InputEntry(_("Test Repeat Interval"))
+        self.button_widgets["repeat_test_entry2"] = Entry()
         self.button_widgets["blink_test_entry"] = BlinkButton(settings.keyboard_get_cursor_blink_time())
         #self.button_widgets["repeat_test_entry"] = gtk.Entry()
         #self.button_widgets["blink_test_entry"] = gtk.Entry()
@@ -521,6 +522,8 @@ class KeySetting(object):
             "button-release-event", self.scalebar_value_changed, "repeat-interval")
         #self.button_widgets["repeat_test_entry"].get_parent().connect("expose-event", self.repeat_entry_expose)
         #self.button_widgets["repeat_test_entry"].connect("expose-event", self.repeat_entry_expose)
+        #self.button_widgets["repeat_test_entry"].entry.connect("focus-in-event", self.focus_in_entry)
+        #self.button_widgets["repeat_test_entry"].entry.connect("focus-out-event", self.focus_out_entry)
         # blink
         self.scale_widgets["blink_cursor"].connect(
             "button-release-event", self.scalebar_value_changed, "cursor-blink-time")
@@ -821,6 +824,9 @@ class KeySetting(object):
             text = _("The hotkey for %s is set to %s") % (widget.settings_description, accel_str)
         self.set_status_text(text)
 
+    def on_accel_entry_wait_key_cb(self, widget, s):
+        self.set_status_text("%s" % (_("Please input new shortcuts. Esc to cancle.")))
+
     def __edit_custom_shortcuts_dilaog(self, is_edit=False):
         '''
         create a dialog to edit custom shortcuts
@@ -842,6 +848,7 @@ class KeySetting(object):
             settings.shortcuts_custom_set(key_dir, (action, '', name))
             entry = AccelEntry("", keybind_mk.check_shortcut_conflict, can_del=True)
             entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
+            entry.connect("wait-key-input", self.on_accel_entry_wait_key_cb)
             entry.connect("accel-del", self.__remove_shortcuts_item)
             entry.settings_description = name
             entry.settings_key = '%s/%s' % (base_dir, key_dir)
@@ -940,6 +947,7 @@ class KeySetting(object):
                 hbox.pack_start(self.__make_align())
                 vbox.pack_start(hbox, False, False)
                 entry.connect("accel-key-change", self.on_accel_entry_changed_cb)
+                entry.connect("wait-key-input", self.on_accel_entry_wait_key_cb)
         for label_align in label_align_list:
             label_align.set_size_request(self.max_label_width+30, CONTAINNER_HEIGHT)
             l = label_align.get_child()

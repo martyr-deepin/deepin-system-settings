@@ -441,6 +441,9 @@ msgstr "禁用"
 msgid "Please input new shortcuts"
 msgstr "请输入新的快捷键"
 
+msgid "Please input new shortcuts. Esc to cancle."
+msgstr "请输入新的快捷键。按Esc取消。"
+
 #: ../src/keybind_all.py:34
 msgid "Launch user manual"
 msgstr "启动用戶手冊"
