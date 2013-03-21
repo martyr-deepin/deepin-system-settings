@@ -146,9 +146,13 @@ class Sections(gtk.Alignment):
 
     def show_more_options(self, widget):
         widget.destroy()
-        self.ipv4 = SettingSection(_("Ipv6 setting"), always_show=False)
+        self.ipv4 = SettingSection(_("Ipv6 setting"), always_show=True)
         self.ipv4.load([IPV4Conf(self.connection, self.set_button)])
-        self.main_box.pack_start(self.ipv4, False, False)
+        ppp = SettingSection(_("PPP setting"), always_show=True)
+        ppp.load([PPPConf()])
+        Dispatcher.emit("vpn-type-change", self.connection)
+        self.main_box.pack_start(self.ipv4, False, False, 15 )
+        self.main_box.pack_start(ppp, False, False)
 
 class PPTPConf(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -313,6 +317,9 @@ class PPTPConf(gtk.VBox):
             Dispatcher.set_button("save", False)
             self.refresh()
 
+        Dispatcher.emit("vpn-type-change", self.connection)
+            
+
     def advanced_button_click(self, widget):
         ppp = PPPConf(self.module_frame, Dispatcher.set_button)
         ppp.refresh(self.connection)
@@ -320,20 +327,22 @@ class PPTPConf(gtk.VBox):
         nm_module.slider.slide_to_page(ppp, "right")
         #pass
 
-class PPPConf(ScrolledWindow):
+class PPPConf(gtk.VBox):
     ENTRY = 0
     OFFBUTTON = 1
 
     TABLE_WIDTH = 150
-    def __init__(self, module_frame, set_button_callback):
-        ScrolledWindow.__init__(self)
+    def __init__(self):
+        gtk.VBox.__init__(self)
         
-        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        Dispatcher.set_button = set_button_callback
-        self.module_frame = module_frame
+        #self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        #Dispatcher.set_button = set_button_callback
+        #self.module_frame = module_frame
         
-        self.method_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
-                                     _("Configure Method"), width=self.TABLE_WIDTH)
+        self.method_title = TitleBar(None,
+                                     _("Configure Method"),
+                                     width=self.TABLE_WIDTH,
+                                     has_separator=False)
 
         self.refuse_eap_label = Label(_("EAP"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -360,10 +369,15 @@ class PPPConf(ScrolledWindow):
 
         # visible settings
 
-        self.compression_title = TitleBar(app_theme.get_pixbuf("network/zip.png"),
-                                          _("Compression"), width=self.TABLE_WIDTH)
-        self.echo_title = TitleBar(app_theme.get_pixbuf("network/echo.png"),
-                                          _("Echo"), width=self.TABLE_WIDTH)
+        self.compression_title = TitleBar(None,
+                                          _("Compression"),
+                                          width=self.TABLE_WIDTH,
+                                          has_separator=False)
+
+        self.echo_title = TitleBar(None,
+                                   _("Echo"),
+                                   width=self.TABLE_WIDTH,
+                                   has_separator=False)
 
 
         #compressio))n = Label(_("Compression"), text_size=TITLE_FONT_SIZE)
@@ -409,8 +423,10 @@ class PPPConf(ScrolledWindow):
         self.ip_sec_enable = SwitchButton()
 
         ## Settings for IPSec
-        self.ipsec_title = TitleBar(app_theme.get_pixbuf("network/validation.png"),
-                                     _("IPSec Setting"), width=self.TABLE_WIDTH)
+        self.ipsec_title = TitleBar(None,
+                                    _("IPSec Setting"),
+                                    width=self.TABLE_WIDTH,
+                                    has_separator=False)
 
         self.ip_sec_enable_label = Label(_("Enable IPSec tunnel to l2tp host"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -455,20 +471,26 @@ class PPPConf(ScrolledWindow):
         for name in (compression_list+echo_list+methods_list + ip_sec_list):
             widget = getattr(self, name)
             if not name.endswith("label"):
-                align = style.wrap_with_align(widget, width=self.TABLE_WIDTH)
+                align = style.wrap_with_align(widget, align="left")
             else:
-                align = style.wrap_with_align(widget, width=(STANDARD_LINE - 50))
+                align = style.wrap_with_align(widget, width=210)
 
             setattr(self, name + "_align", align)
 
-        vbox = gtk.VBox()
-        vbox.pack_start(self.method_table, False, False)
+        #vbox = gtk.VBox()
+        table_align = gtk.Alignment(0, 0, 0, 0)
+        table_align.add(self.method_table)
+        style.set_table(self.method_table)
+
+        self.pack_start(table_align, False, False)
         self.method_table.set_row_spacing(5, 20)
         self.method_table.set_row_spacing(15, 20)
         self.method_table.set_row_spacing(18, 20)
-        align = style.set_box_with_align(vbox, "text")
-        self.add_with_viewport(align)
-        style.draw_background_color(align)
+
+        Dispatcher.connect("vpn-type-change", lambda w,c:self.refresh(c))
+        #align = style.set_box_with_align(vbox, "text")
+        #self.add_with_viewport(align)
+        #style.draw_background_color(align)
 
 
         #confirm_button = Button("Confirm")
@@ -727,7 +749,7 @@ class PPPConf(ScrolledWindow):
 
     def confirm_button_cb(self, widget):
         self.module_frame.send_message("change_crumb", 2)
-        nm_module,slider._slide_to_page("vpn", "left")
+        nm_module.slider._slide_to_page("vpn", "left")
         
     def auth_lock(self):
         if self.refuse_mschap.get_active() or self.refuse_mschapv2.get_active():

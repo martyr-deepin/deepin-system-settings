@@ -50,6 +50,7 @@ class ToggleThread(td.Thread):
             #from lists import WirelessItem
             #self.tree.add_items(map(lambda i:WirelessItem(i), aps))
             if aps:
+                print "draw gui"
                 self.tree.add_items(aps)
                 self.tree.set_no_show_all(False)
                 self.tree.show()

@@ -196,6 +196,9 @@ class TrayUI(gtk.VBox):
         
     def get_active_ap(self):
         return self.active_ap_index
+    
+    def get_active_in_ui(self):
+        return filter(lambda i: i.get_active() == True, self.ap_tree.visible_items)
 
     def resize_tree(self):
         self.tree_box.remove(self.more_button)
@@ -412,11 +415,7 @@ class SsidItem(TreeItem):
         self.is_double_click = True
 
     def single_click(self, column, offset_x, offset_y):
-        #if self.is_double_click:
-            #print "double click"
         Dispatcher.connect_by_ssid(self.ssid, self.ap)
-            #self.is_double_click = False
-        #self.redraw()
     
     def redraw(self):
         if self.redraw_request_callback:
@@ -425,6 +424,9 @@ class SsidItem(TreeItem):
     def set_active(self, state):
         self.active = state
         self.redraw()
+    
+    def get_active(self):
+        return self.active
 
     def render_background(self, cr, rect):
         if self.is_hover:

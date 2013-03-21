@@ -83,6 +83,10 @@ class EventDispatcher(gobject.GObject):
             "dsl-redraw": _(),
             "wireless_redraw": _(),
 
+            "dss_start": _(),
+
+            "vpn-type-change": _(obj),
+
             #"wired_device_add" : _(),
             #"wireless_device_add" : _()
             }
