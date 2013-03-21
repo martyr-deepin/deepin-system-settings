@@ -29,7 +29,7 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
-from dtk.ui.utils import color_hex_to_cairo, set_clickable_cursor
+from dtk.ui.utils import color_hex_to_cairo, set_clickable_cursor, get_content_size
 from deepin_utils.ipc import is_dbus_name_exists
 from dtk.ui.draw import cairo_disable_antialias, draw_text, draw_pixbuf
 import gobject
@@ -85,18 +85,12 @@ class MonitorResizableBox(ResizableBox):
     
     def expose_override(self, cr, rect):
         x, y = rect.x, rect.y
-        x = (self.width - self.output_width) / 2
+        x = (self.width + 30 - self.output_width) / 2
         y += 10
         
         output_infos = self.__display_manager.get_output_info()
         output_count = len(output_infos)
         
-        ''' 
-        FIXME: ResizableBox logic issue
-        if output_count < 2:
-            self.set_resizeable(False)
-        '''
-
         i = 0
         with cairo_disable_antialias(cr):
             while i < output_count:
@@ -121,14 +115,27 @@ class MonitorResizableBox(ResizableBox):
                 '''
                 output display name
                 '''
-                draw_text(cr = cr, 
+                output_display_name_width, output_display_name_height = get_content_size(output_display_name)
+                if not output_display_name_width < output_width:
+                    draw_text(cr = cr, 
                           markup = output_display_name, 
-                          x = output_x, 
-                          y = y + (output_height - self.text_size) / 2, 
-                          w = output_width, 
+                          x = output_x + 10, 
+                          y = y + (output_height - self.text_size) / 2 - CONTENT_FONT_SIZE, 
+                          w = output_width - 20, 
                           h = self.text_size,
                           text_size = self.text_size, 
-                          alignment = pango.ALIGN_CENTER)
+                          alignment = pango.ALIGN_CENTER, 
+                          wrap_width = output_width - 20)
+                else:
+                    draw_text(cr = cr,                                          
+                          markup = output_display_name,                         
+                          x = output_x,                                         
+                          y = y + (output_height - self.text_size) / 2,         
+                          w = output_width,                                
+                          h = self.text_size,                                   
+                          text_size = self.text_size,                           
+                          alignment = pango.ALIGN_CENTER,                       
+                          wrap_width = output_width)
                 
                 if output_count > 1:
                     if is_primary:
@@ -234,9 +241,10 @@ class DisplayView(gtk.VBox):
         scrolled_window
         '''
         self.scrolled_window = ScrolledWindow()
-        self.scrolled_window.set_size_request(800, 425)
+        self.scrolled_window.set_size_request(-1, 425)
         self.scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.main_box = gtk.VBox()
+        self.main_box.set_size_request(600, -1)
         self.body_box = gtk.HBox()
         '''
         left, right align
@@ -291,7 +299,7 @@ class DisplayView(gtk.VBox):
                                              align = ALIGN_START)
         goto_color = GOTO_FG_COLOR
         self.goto_individuation_label = self.__setup_label(
-            text = _("<span foreground=\"%s\" underline=\"single\">Individuation</span>") % goto_color, 
+            text = _("<span foreground=\"%s\" underline=\"single\">Personalization</span>") % goto_color, 
             width = None, 
             align = ALIGN_START)
         self.goto_individuation_label.connect("button-press-event", 
@@ -605,7 +613,7 @@ class DisplayView(gtk.VBox):
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "monitor_combo":
-            self.__send_message("status", ("display", _("Changed current output to %s") % item_value))
+            self.__send_message("status", ("display", _("Changed current output to %s") % item_text))
             self.__change_current_output(item_value)
             return
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-14 10:55+0800\n"
+"POT-Creation-Date: 2013-03-21 16:07+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/main.py:1022
+#: ../src/search_keyword.py:31 ../src/main.py:1030
 msgid "Set Picture"
 msgstr ""
 
@@ -109,7 +109,7 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: ../src/main.py:139 ../src/main.py:192 ../src/main.py:198 ../src/main.py:805
+#: ../src/main.py:139 ../src/main.py:192 ../src/main.py:198 ../src/main.py:811
 msgid "Cancel"
 msgstr ""
 
@@ -129,150 +129,150 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: ../src/main.py:471
-#, python-format
-msgid "允许%s自动登陆"
-msgstr ""
-
 #: ../src/main.py:473
 #, python-format
-msgid "禁止%s自动登陆"
+msgid "Enabled auto-login for %s"
 msgstr ""
 
-#: ../src/main.py:509
+#: ../src/main.py:475
+#, python-format
+msgid "Disabled auto-login for %s"
+msgstr ""
+
+#: ../src/main.py:511
 #, python-format
 msgid "%s has been created"
 msgstr ""
 
-#: ../src/main.py:515
+#: ../src/main.py:517
 msgid "The user name is invalid"
 msgstr ""
 
-#: ../src/main.py:541
+#: ../src/main.py:531
+msgid "用户名只能由字母、数字、下划线组成，并且由字母开头"
+msgstr ""
+
+#: ../src/main.py:547
 #, python-format
 msgid "%s has been deleted"
 msgstr ""
 
-#: ../src/main.py:558
+#: ../src/main.py:564
 #, python-format
 msgid "Do you want to keep <u>%s</u>'s files?"
 msgstr ""
 
-#: ../src/main.py:586 ../src/main.py:1055
+#: ../src/main.py:592 ../src/main.py:1064
 msgid "Account disabled"
 msgstr ""
 
-#: ../src/main.py:588 ../src/main.py:1057
+#: ../src/main.py:594 ../src/main.py:1066
 msgid "To be set at next login"
 msgstr ""
 
-#: ../src/main.py:590 ../src/main.py:1059
+#: ../src/main.py:596 ../src/main.py:1068
 msgid "None"
 msgstr ""
 
-#: ../src/main.py:648
+#: ../src/main.py:654
 #, python-format
 msgid "%s's account type has been set as %s"
 msgstr ""
 
-#: ../src/main.py:764
+#: ../src/main.py:770
 msgid "Action"
 msgstr ""
 
-#: ../src/main.py:765 ../src/main.py:887 ../src/main.py:897
+#: ../src/main.py:771 ../src/main.py:895 ../src/main.py:905
 msgid "Current password"
 msgstr ""
 
-#: ../src/main.py:766 ../src/main.py:889 ../src/main.py:898
+#: ../src/main.py:772 ../src/main.py:897 ../src/main.py:906
 msgid "New password"
 msgstr ""
 
-#: ../src/main.py:767 ../src/main.py:891 ../src/main.py:899
+#: ../src/main.py:773 ../src/main.py:899 ../src/main.py:907
 msgid "Confirm new password"
 msgstr ""
 
-#: ../src/main.py:769
+#: ../src/main.py:775
 msgid "Set a password now"
 msgstr ""
 
-#: ../src/main.py:770
+#: ../src/main.py:776
 msgid "Log in without a password"
 msgstr ""
 
-#: ../src/main.py:772
+#: ../src/main.py:778
 msgid "Enable this account"
 msgstr ""
 
-#: ../src/main.py:774
+#: ../src/main.py:780
 msgid "Disable this account"
 msgstr ""
 
-#: ../src/main.py:789
+#: ../src/main.py:795
 msgid "Show password"
 msgstr ""
 
-#: ../src/main.py:806
+#: ../src/main.py:812
 msgid "Change"
 msgstr ""
 
-#: ../src/main.py:857
-msgid "新密码长度必须为6~16位"
+#: ../src/main.py:871
+msgid "Password did not match."
 msgstr ""
 
-#: ../src/main.py:863
-msgid "两次密码输入不一致"
-msgstr ""
-
-#: ../src/main.py:917 ../src/main.py:941
+#: ../src/main.py:925 ../src/main.py:949
 msgid "password unchanged"
 msgstr ""
 
-#: ../src/main.py:919
+#: ../src/main.py:927
 msgid "authentication token manipulation error"
 msgstr ""
 
-#: ../src/main.py:921
+#: ../src/main.py:929
 msgid "new and old password are too similar"
 msgstr ""
 
-#: ../src/main.py:935
+#: ../src/main.py:943
 #, python-format
 msgid "%s's password has been changed"
 msgstr ""
 
-#: ../src/main.py:983
+#: ../src/main.py:991
 msgid "Passwords do not match"
 msgstr ""
 
-#: ../src/main.py:1210
+#: ../src/main.py:1219
 msgid "Error:"
 msgstr ""
 
-#: ../src/edit_icon_page.py:78
+#: ../src/edit_icon_page.py:85
 msgid "zoom in"
 msgstr ""
 
-#: ../src/edit_icon_page.py:83
+#: ../src/edit_icon_page.py:90
 msgid "zoom out"
 msgstr ""
 
-#: ../src/edit_icon_page.py:88
-msgid "拍照"
+#: ../src/edit_icon_page.py:95
+msgid "Take a photo"
 msgstr ""
 
-#: ../src/edit_icon_page.py:93
-msgid "再次拍照"
+#: ../src/edit_icon_page.py:100
+msgid "Try again"
 msgstr ""
 
-#: ../src/edit_icon_page.py:816
+#: ../src/edit_icon_page.py:856
 msgid "Clip"
 msgstr ""
 
-#: ../src/edit_icon_page.py:832
+#: ../src/edit_icon_page.py:872
 msgid "Preview"
 msgstr ""
 
-#: ../src/edit_icon_page.py:884
+#: ../src/edit_icon_page.py:924
 msgid "no picture"
 msgstr ""
 

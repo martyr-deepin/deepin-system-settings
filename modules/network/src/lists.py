@@ -313,21 +313,21 @@ class WirelessItem(GenItems):
 
     def connect_by_ssid(self, ssid, ap):
         connection =  net_manager.connect_wireless_by_ssid(ssid)
-        print connection, "DEBUG connect by ssid"
-        self.ap = ap
-        if connection and not isinstance(connection, NMRemoteConnection):
-            security = net_manager.get_security_by_ap(self.ap)
-            if security:
-                print "connect by ssid"
-                self.toggle_dialog(connection, security)
-            else:
-                connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
-                nm_module.nmclient.activate_connection_async(connection.object_path,
-                                          net_manager.wireless_devices[0].object_path,
-                                           ap.object_path)
-        elif connection == None:
-            pass
+        #print connection, "DEBUG connect by ssid"
+        #self.ap = ap
+        #if connection and not isinstance(connection, NMRemoteConnection):
+            #security = net_manager.get_security_by_ap(self.ap)
+            #if security:
+                #print "connect by ssid"
+                #self.toggle_dialog(connection, security)
+            #else:
+                #connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                ##ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
+                #nm_module.nmclient.activate_connection_async(connection.object_path,
+                                          #net_manager.wireless_devices[0].object_path,
+                                           #ap.object_path)
+        #elif connection == None:
+            #pass
 
     def toggle_dialog(self, connection, security=None):
         ssid = connection.get_setting("802-11-wireless").ssid

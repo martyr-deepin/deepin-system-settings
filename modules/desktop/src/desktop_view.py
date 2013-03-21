@@ -371,6 +371,11 @@ class DesktopView(gtk.VBox):
         self.desktop_settings.reset("show-computer-icon")
         self.desktop_settings.reset("show-home-icon")
         self.desktop_settings.reset("show-trash-icon")
+        self.desktop_settings.reset("show-dsc-icon")
+        self.computer_checkbutton.set_active(self.desktop_settings.get_boolean("show-computer-icon"))
+        self.home_checkbutton.set_active(self.desktop_settings.get_boolean("show-home-icon"))
+        self.trash_checkbutton.set_active(self.desktop_settings.get_boolean("show-trash-icon"))
+        self.dsc_checkbutton.set_active(self.desktop_settings.get_boolean("show-dsc-icon"))
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()

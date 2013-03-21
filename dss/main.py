@@ -148,8 +148,8 @@ class DBusService(dbus.service.Object):
                 action_bar.bread.remove_node_after_index(0)
                 call_module_by_name(module_id, module_dict, slider, content_page_info, "right", module_uid)
                 
-                record_module_history(module_id)
-                self.__set_ward()
+                backward_module_id, forward_module_id = record_module_history(module_id)
+                self.__set_ward(backward_module_id, forward_module_id)
             elif message_type == "back":
                 index = message_content
                 action_bar.bread.remove_node_after_index(index)
@@ -195,7 +195,7 @@ class DBusService(dbus.service.Object):
                 'unique', 
                 dbus.service.method(APP_DBUS_NAME)(unique))
 
-    def __set_ward(self, backward_module_count, forward_module_count):
+    def __set_ward(self, backward_module_count=None, forward_module_count=None):
         if backward_module_count:
             action_bar.forward_button.set_sensitive(True)
             action_bar.forward_button.set_active(True)
@@ -270,7 +270,6 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
             content_page_info.set_active_module_id("main")
             foot_box.hide()
     else:
-        foot_box.hide()
         send_message(content_page_info.get_active_module_id(),
                      "click_crumb",
                      (index, label))

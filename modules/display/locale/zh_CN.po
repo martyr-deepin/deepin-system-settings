@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 14:11+0800\n"
+"POT-Creation-Date: 2013-03-21 13:11+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/display_view.py:269
+#: ../src/search_keyword.py:29 ../src/display_view.py:276
 msgid "Monitor Display"
 msgstr "屏幕显示"
 
-#: ../src/search_keyword.py:30 ../src/display_view.py:276
+#: ../src/search_keyword.py:30 ../src/display_view.py:283
 msgid "Monitor"
 msgstr "显示器"
 
-#: ../src/search_keyword.py:31 ../src/display_view.py:320
+#: ../src/search_keyword.py:31 ../src/display_view.py:328
 msgid "Resolution"
 msgstr "分辨率"
 
-#: ../src/search_keyword.py:32 ../src/display_view.py:335
+#: ../src/search_keyword.py:32 ../src/display_view.py:343
 msgid "Rotation"
 msgstr "旋转"
 
-#: ../src/search_keyword.py:33 ../src/display_view.py:363
+#: ../src/search_keyword.py:33 ../src/display_view.py:371
 msgid "Monitor Brightness"
 msgstr "屏幕亮度"
 
-#: ../src/search_keyword.py:34 ../src/display_view.py:372
+#: ../src/search_keyword.py:34 ../src/display_view.py:380
 msgid "Brightness"
 msgstr "亮度"
 
@@ -45,7 +45,7 @@ msgstr "亮度"
 msgid "Auto Adjust Monitor Brightness"
 msgstr "自动调节屏幕亮度"
 
-#: ../src/search_keyword.py:36 ../src/display_view.py:404
+#: ../src/search_keyword.py:36 ../src/display_view.py:412
 msgid "Close Monitor"
 msgstr "关闭屏幕"
 
@@ -53,141 +53,140 @@ msgstr "关闭屏幕"
 msgid "Auto Lock User Monitor Screen"
 msgstr "自动锁定用户屏幕"
 
-#: ../src/search_keyword.py:38 ../src/display_view.py:438
+#: ../src/search_keyword.py:38 ../src/display_view.py:446
 msgid "Lock Screen"
 msgstr "锁定屏幕"
 
-#: ../src/display_view.py:218
+#: ../src/display_view.py:224
 msgid "Copy Display"
 msgstr "复制这些显示"
 
-#: ../src/display_view.py:219
+#: ../src/display_view.py:225
 msgid "Extend Display"
 msgstr "扩展这些显示"
 
-#: ../src/display_view.py:220
+#: ../src/display_view.py:226
 msgid "Only Monitor 1 shown"
 msgstr "只在1上显示"
 
-#: ../src/display_view.py:221
+#: ../src/display_view.py:227
 msgid "Only Monitor 2 shown"
 msgstr "只在2上显示"
 
-#: ../src/display_view.py:222
+#: ../src/display_view.py:228
 msgid "Normal"
 msgstr "正常"
 
-#: ../src/display_view.py:223
+#: ../src/display_view.py:229
 msgid "Right"
 msgstr "顺时针"
 
-#: ../src/display_view.py:224
+#: ../src/display_view.py:230
 msgid "Left"
 msgstr "逆时针"
 
-#: ../src/display_view.py:225
+#: ../src/display_view.py:231
 msgid "Inverted"
 msgstr "180度"
 
-#: ../src/display_view.py:226
+#: ../src/display_view.py:232
 msgid "Minute"
 msgstr "分钟"
 
-#: ../src/display_view.py:227 ../src/display_view.py:228
-#: ../src/display_view.py:229 ../src/display_view.py:230
-#: ../src/display_view.py:231
+#: ../src/display_view.py:233 ../src/display_view.py:234
+#: ../src/display_view.py:235 ../src/display_view.py:236
+#: ../src/display_view.py:237
 msgid "Minutes"
 msgstr "分钟"
 
-#: ../src/display_view.py:232
+#: ../src/display_view.py:238
 msgid "Hour"
 msgstr "小时"
 
-#: ../src/display_view.py:233
+#: ../src/display_view.py:239
 msgid "Never"
 msgstr "从不"
 
-#: ../src/display_view.py:289
+#: ../src/display_view.py:296
 msgid "Relative Settings"
 msgstr "相关设置"
 
-#: ../src/display_view.py:294
-#, python-format
-msgid "<span foreground=\"%s\" underline=\"single\">Individuation</span>"
+#: ../src/display_view.py:302
+msgid "<span foreground=\"%s\" underline=\"single\">Personalization</span>"
 msgstr "<span foreground=\"%s\" underline=\"single\">个性化</span>"
 
-#: ../src/display_view.py:302
+#: ../src/display_view.py:310
 #, python-format
 msgid "<span foreground=\"%s\" underline=\"single\">Power</span>"
 msgstr "<span foreground=\"%s\" underline=\"single\">电源</span>"
 
-#: ../src/display_view.py:348
+#: ../src/display_view.py:356
 msgid "Multi-Monitors"
 msgstr "多显示器"
 
-#: ../src/display_view.py:390
+#: ../src/display_view.py:398
 msgid "Auto Adjust Brightness"
 msgstr "自动调节屏幕亮度"
 
-#: ../src/display_view.py:417
+#: ../src/display_view.py:425
 msgid "Monitor Screen Lock"
 msgstr "锁定屏幕"
 
-#: ../src/display_view.py:423
+#: ../src/display_view.py:431
 msgid "Auto Lock User Screen"
 msgstr "自动锁定用户屏幕"
 
-#: ../src/display_view.py:486
+#: ../src/display_view.py:497
 msgid "Reset to default value"
 msgstr "恢复默认值"
 
-#: ../src/display_view.py:563
+#: ../src/display_view.py:574
 #, python-format
 msgid "Changed brightness to %0.2f"
 msgstr "亮度修改为%0.2f"
 
-#: ../src/display_view.py:588
+#: ../src/display_view.py:599
 msgid "Changed to manual adjustment"
 msgstr "修改为手动调节"
 
-#: ../src/display_view.py:591
+#: ../src/display_view.py:602
 msgid "Changed to automatic adjustment"
 msgstr "修改为自动调节"
 
-#: ../src/display_view.py:597
+#: ../src/display_view.py:608
 msgid "Changed to manual lock"
 msgstr "修改为手动锁定"
 
-#: ../src/display_view.py:600
+#: ../src/display_view.py:611
 msgid "Changed to automatic lock"
 msgstr "修改为自动锁定"
 
-#: ../src/display_view.py:605
+#: ../src/display_view.py:616
 #, python-format
 msgid "Changed current output to %s"
 msgstr "当前输出修改为%s"
 
-#: ../src/display_view.py:611
+#: ../src/display_view.py:622
 #, python-format
 msgid "Changed resolution to %s"
 msgstr "分辨率修改为%s"
 
-#: ../src/display_view.py:616
+#: ../src/display_view.py:627
 #, python-format
 msgid "Changed rotation to %s"
 msgstr "旋转修改为%s"
 
-#: ../src/display_view.py:621
+#: ../src/display_view.py:632
 #, python-format
 msgid "Changed multiply monitors mode to %s"
 msgstr "多显示器模式修改为%s"
 
-#: ../src/display_view.py:626
+#: ../src/display_view.py:637
 #, python-format
 msgid "Changed close monitor duration to %s"
 msgstr "关闭显示器时间修改为%s"
 
-#: ../src/display_view.py:631
+#: ../src/display_view.py:642
 #, python-format
 msgid "Changed lock display duration to %s"
 msgstr "锁屏时间修改为%s"
