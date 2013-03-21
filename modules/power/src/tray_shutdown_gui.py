@@ -28,6 +28,7 @@ from vtk.button import SelectButton
 from vtk.utils import cairo_disable_antialias
 from vtk.color import color_hex_to_cairo
 from dtk.ui.line import HSeparator
+from dtk.ui.utils import set_clickable_cursor
 import os
 import sys
 sys.path.append("/usr/share/deepin-system-settings/dss")
@@ -122,6 +123,7 @@ class Gui(gtk.VBox):
 
         if self.cmd_dbus.real_name != "Guest":
             self.pack_start(self.lock_btn, True, True)
+        set_clickable_cursor(self.user_label_event)
 
     def user_label_event_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
