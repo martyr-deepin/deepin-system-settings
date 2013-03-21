@@ -101,12 +101,12 @@ class Section(gtk.VBox):
             self.toggle_on()
             if self.content_box not in self.align.get_children():
                 self.align.add(self.content_box)
-                if not self.this_tree.visible_items:
-                    self.this_tree.set_no_show_all(True)
-                    self.this_tree.hide()
-                else:
-                    self.this_tree.set_no_show_all(False)
-                    self.this_tree.show()
+                #if not self.this_tree.visible_items:
+                    #self.this_tree.set_no_show_all(True)
+                    #self.this_tree.hide()
+                #else:
+                    #self.this_tree.set_no_show_all(False)
+                    #self.this_tree.show()
             self.show_all()
             self.toggle_on_after()
         
@@ -269,8 +269,8 @@ class WirelessDevice(object):
 
             # toggle off
             #self.toggle_lock = True
-            self.wireless.set_sensitive(True)
-            self.wireless.set_active(False)
+            #self.wireless.set_sensitive(True)
+            #self.wireless.set_active(False)
 
         if self._get_active_item():
             for item in self._get_active_item():
@@ -456,7 +456,7 @@ class WirelessSection(Section, WirelessDevice):
             #wireless_device.nm_device_disconnect()
             self.device_stop(wireless_device)
         #self.toggle_lock = True
-        self.wireless.set_sensitive(False)
+        #self.wireless.set_sensitive(False)
 
     def get_list(self):
         self.ap_list = list()
