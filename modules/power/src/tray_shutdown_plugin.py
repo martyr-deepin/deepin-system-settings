@@ -170,7 +170,7 @@ if __name__ == "__main__":
             if sys.argv[1] == 'logout':
                 gui.cmd_dbus.logout(1)
             elif sys.argv[1] == 'shutdown':
-                gui.cmd_dbus.shutdown()
+                gui.cmd_dbus.new_stop()
     gui = Gui()
     dialog = TrayDialog()
     dialog.connect("hide", lambda w : gtk.main_quit())
