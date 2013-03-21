@@ -852,10 +852,12 @@ class AccountSetting(object):
          error_label, is_myown, is_authorized, is_input_empty,
          label2, label3, label4) = all_widgets
         error_text = ""
-        if not text or len(text)<atleast or len(text)>16:
+        # 检测密码长度
+        #if not text or len(text)<atleast or len(text)>16:
+        if not text:
             is_input_empty[variety] = True
-            if entry.get_name() == "new" or entry.get_name() == "confirm":
-                error_text = _("The length of the new password must have 6~16 characters.")
+            #if entry.get_name() == "new" or entry.get_name() == "confirm":
+                #error_text = _("The length of the new password must have 6~16 characters.")
         else:
             is_input_empty[variety] = False
             new_pswd = new_pswd_input.entry.get_text()

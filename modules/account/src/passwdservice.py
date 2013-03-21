@@ -191,8 +191,8 @@ class PasswdService(dbus.service.Object):
 
     def __modify_user_passwd(self, new_password, username, old_password = " "):
         ###for normal password
-        if len(new_password) < 6:
-            raise Exception("You must choose a longer password")
+        #if len(new_password) < 6:
+            #raise Exception("You must choose a longer password")
 
         passwd = pexpect.spawn("/usr/bin/passwd %s" %username, timeout=8, env={"LANGUAGE": "en_US"})
         passwd.setecho(False)
