@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Wang Yong
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Wang Yong
 # 
 # Author:     Wang Yong <lazycat.manatee@gmail.com>
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
@@ -34,7 +34,6 @@ from helper import event_manager
 from nls import _
 
 TIME_COMBO_ITEM =  [
-    #(_("Never"), 0), 
     ("1 %s" % _("Minute"), 60), ("3 %s" % _("Minutes"), 180),
     ("5 %s" % _("Minutes"), 300), ("10 %s" % _("Minutes"), 600), 
     ("15 %s" % _("Minutes"), 900),("20 %s" % _("Minutes"), 1200), 
@@ -117,13 +116,13 @@ class DetailPage(gtk.VBox):
         self.time_combobox.set_sensitive(True)                              
         self.unorder_play.set_child_visible(True)                           
         self.random_toggle.set_child_visible(True)                          
-        self.random_toggle.set_active(True)
+        self.random_toggle.set_active(self.theme.get_background_random_mode())
 
     def __random_disable(self):
         self.time_combobox.set_sensitive(False)                             
         self.unorder_play.set_child_visible(False)                          
-        self.random_toggle.set_child_visible(False)                         
-        self.random_toggle.set_active(False)
+        self.random_toggle.set_child_visible(False)         
+        self.random_toggle.set_active(self.theme.get_background_random_mode())
 
     def on_wallpaper_select(self, name, obj, select_item):
         if self.wallpaper_view.is_randomable():
@@ -160,12 +159,8 @@ class DetailPage(gtk.VBox):
         event_manager.emit("switch-to-deletepage", self.theme)
 
     def __on_random_toggled(self, widget):
-        is_random = widget.get_active()
-        if is_random:
-            self.__background_settings.set_string("cross-fade-auto-mode", "Random")
-        else:
-            self.__background_settings.set_string("cross-fade-auto-mode", "Sequential")
-        
+        self.theme.set_background_random_mode(widget.get_active())
+
     def draw_tab_title_background(self, cr, widget):
         rect = widget.allocation
         cr.set_source_rgb(1, 1, 1)    
@@ -180,12 +175,23 @@ class DetailPage(gtk.VBox):
         self.theme.set_background_duration(data)
         self.theme.save()
 
+    def __set_delete_button_visible(self):
+        is_editable = self.wallpaper_view.is_editable()
+        if is_editable:
+            self.button_align.set_padding(0, 0, 35, 5)
+        else:
+            self.button_align.set_padding(0, 0, 115, 5)
+
+        self.delete_button.set_child_visible(is_editable)
+
     def __on_add_wallpapers(self, name, obj, image_paths):
         if len(self.wallpaper_view.items) < 2:                                  
             self.select_all_button.set_child_visible(False)                     
         else:                                                                   
             self.select_all_button.set_child_visible(True)
             self.select_all_button.set_label(_("Select All"))
+        
+        self.__set_delete_button_visible()
 
     def set_theme(self, theme):
         self.theme = theme
@@ -206,7 +212,9 @@ class DetailPage(gtk.VBox):
                 
         self.time_combobox.set_select_index(item_index)        
         self.wallpaper_view.set_theme(theme)
-       
+      
+        self.__set_delete_button_visible()
+
         if self.wallpaper_view.is_randomable():
             self.__random_enable()
         else:

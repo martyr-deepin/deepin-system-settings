@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -21,15 +21,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import deepin_gsettings
 from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
 from helper import event_manager
 from ui.wallpaper_item import AddItem, WallpaperItem
 from theme_manager import background_gsettings
-import common
 from nls import _
 
 class WallpaperView(IconView):
@@ -69,7 +66,14 @@ class WallpaperView(IconView):
         
         self.add_system_wallpapers(self.theme.get_system_wallpapers())        
         self.add_user_wallpapers(self.theme.get_user_wallpapers())
-        
+
+    def is_editable(self):
+        if self.theme.is_system_theme:
+            if len(self.theme.get_user_wallpapers()) == 0:
+                return False
+
+        return True
+
     def is_exists(self, image):    
         if self.theme == None:
             return False

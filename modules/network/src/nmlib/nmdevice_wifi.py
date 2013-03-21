@@ -88,6 +88,20 @@ class NMDeviceWifi(NMDevice):
         self.origin_ap_list = self.get_access_points()
         self.thread_wifiauto = None
 
+        ###only used for ap added/removed signal
+        self.ap_record_dict = {}
+        self.init_ap_record_dict()
+
+    def init_ap_record_dict(self):
+        try:
+            accesspoints_path = self.dbus_method("GetAccessPoints")
+            from nmaccesspoint import NMAccessPoint 
+            for ap_path in accesspoints_path:
+                self.ap_record_dict[ap_path] = NMAccessPoint(ap_path).get_ssid()
+        except:
+            traceback.print_exc()
+            return []
+
     def device_wifi_disconnect(self):
         if self.thread_wifiauto:
             self.thread_wifiauto.stop_run()
@@ -201,7 +215,8 @@ class NMDeviceWifi(NMDevice):
         try:
             ssids = self.get_ssid_record()
             aps = map(lambda ssid:self.get_ap_by_ssid(ssid), ssids)
-            return filter(lambda ap: ap.get_mode() != 1, aps)
+            return aps
+            #return filter(lambda ap: ap.get_mode() != 1, aps)
         except:    
             return []
 
@@ -235,21 +250,32 @@ class NMDeviceWifi(NMDevice):
             return []
     #Signals##
     def access_point_added_cb(self, ap_object_path):
-        added_ssid = cache.getobject(ap_object_path).get_ssid()
-        if added_ssid not in self.get_ssid_record():
-            self.origin_ap_list = self.get_access_points()
-            self.emit("access-point-added")
-            cache.clearcache()
-            cache.clear_spec_cache()
+        try:
+            from nmaccesspoint import NMAccessPoint
+            added_ssid = NMAccessPoint(ap_object_path).get_ssid()
+    
+            if added_ssid not in set(self.ap_record_dict.values()):
+                self.origin_ap_list = self.get_access_points()
+                self.emit("access-point-added")
+                #print ap_object_path, added_ssid
+                #cache.clearcache()
+                #cache.clear_spec_cache()
+            self.ap_record_dict[ap_object_path] = added_ssid
+        except:
+            traceback.print_exc()
 
     def access_point_removed_cb(self, ap_object_path):
-        removed_ssid = cache.getobject(ap_object_path).get_ssid()
-        if removed_ssid in self.get_ssid_record():
-            self.origin_ap_list = self.get_access_points()
-            if removed_ssid not in self.get_ssid_record():
+        try:
+            removed_ssid = self.ap_record_dict[ap_object_path]
+            if len(filter(lambda x: x == removed_ssid, self.ap_record_dict.values())) == 1:
+                self.origin_ap_list = self.get_access_points()
                 self.emit("access-point-removed")
-                cache.clearcache()
-                cache.clear_spec_cache()
+                #print ap_object_path, removed_ssid
+                #cache.clearcache()
+                #cache.clear_spec_cache()
+            del self.ap_record_dict[ap_object_path]
+        except:
+            traceback.print_exc()
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()

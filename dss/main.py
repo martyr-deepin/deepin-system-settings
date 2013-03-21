@@ -27,7 +27,6 @@ from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.new_slider import HSlider
 from dtk.ui.breadcrumb import Crumb
-from dtk.ui.dialog import ConfirmDialog
 from deepin_utils.ipc import is_dbus_name_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo
@@ -65,6 +64,8 @@ def record_module_history(module_name):
     module_history_index = len(backward_modules)
     module_history = backward_modules + [module_name] + forward_modules
     
+    return len(backward_modules), len(forward_modules)
+
 def get_backward_module():
     global module_history
     global module_history_index
@@ -131,12 +132,14 @@ class DBusService(dbus.service.Object):
                 (crumb_index, (module_id, crumb_name)) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
-                record_module_history(module_id)
+                backward_module_id, forward_module_id = record_module_history(module_id)
+                self.__set_ward(backward_module_id, forward_module_id)
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
-                record_module_history(module_id)
+                backward_module_id, forward_module_id = record_module_history(module_id)
+                self.__set_ward(backward_module_id, forward_module_id)
             elif message_type == "change_crumb":
                 crumb_index = message_content
                 action_bar.bread.remove_node_after_index(crumb_index)
@@ -146,6 +149,7 @@ class DBusService(dbus.service.Object):
                 call_module_by_name(module_id, module_dict, slider, content_page_info, "right", module_uid)
                 
                 record_module_history(module_id)
+                self.__set_ward()
             elif message_type == "back":
                 index = message_content
                 action_bar.bread.remove_node_after_index(index)
@@ -191,6 +195,21 @@ class DBusService(dbus.service.Object):
                 'unique', 
                 dbus.service.method(APP_DBUS_NAME)(unique))
 
+    def __set_ward(self, backward_module_count, forward_module_count):
+        if backward_module_count:
+            action_bar.forward_button.set_sensitive(True)
+            action_bar.forward_button.set_active(True)
+        else:
+            action_bar.forward_button.set_sensitive(False)
+            action_bar.forward_button.set_active(False)
+
+        if forward_module_count:
+            action_bar.backward_button.set_sensitive(True)
+            action_bar.backward_button.set_active(True)
+        else:
+            action_bar.backward_button.set_sensitive(False)
+            action_bar.backward_button.set_active(False)
+    
     def __on_bluetooth_cancel(self):
         send_message("bluetooth", "cancel", "progress cancel")
 
@@ -226,6 +245,7 @@ def search_cb(action_bar, slider, foot_box):
     keyword = action_bar.search_entry.get_text()
     if keyword.strip() != "":
         search_page.query(keyword)
+        action_bar.bread.remove_node_after_index(0)
         slider.slide_to_page(search_page, "left")
 
     foot_box.hide()
@@ -255,8 +275,9 @@ def switch_page(bread, content_page_info, index, label, slider, navigate_page, f
                      "click_crumb",
                      (index, label))
         
-def click_module_menu_item(slider, content_page_info, action_bar, module_info):
+def click_module_menu_item(slider, content_page_info, action_bar, module_info, foot_box):
     if module_info.id != content_page_info.get_active_module_id():
+        foot_box.hide()
         action_bar.bread.remove_node_after_index(0)
         start_module_process(slider, content_page_info, module_info.path, module_info.config)
         
@@ -379,10 +400,12 @@ if __name__ == "__main__":
     # Init action bar.
     action_bar = ActionBar(module_infos, 
                            lambda bread, index, label: switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box),
-                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info), 
+                           lambda module_info: click_module_menu_item(slider, content_page_info, action_bar, module_info, foot_box), 
                            lambda : titlebar_backward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
                            lambda : titlebar_forward_cb(module_dict, action_bar, slider, content_page_info, foot_box), 
                            lambda : search_cb(action_bar, slider, foot_box))
+    action_bar.backward_button.set_sensitive(False)
+    action_bar.forward_button.set_sensitive(False)
     
     # Init slider.
     slider = HSlider(200)

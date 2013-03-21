@@ -7,15 +7,12 @@ from dtk.ui.button import CheckButton, Button
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
-from dtk.ui.utils import container_remove_all
-from dtk.ui.scrolled_window import ScrolledWindow
 from nmlib.nm_utils import TypeConvert
 from nm_modules import nm_module
 
-from container import MyToggleButton as SwitchButton
 from container import TitleBar
 from ipsettings import IPV4Conf
-from elements import SettingSection, TableAsm
+from elements import SettingSection, TableAsm, DefaultToggle
 
 from shared_methods import Settings
 from helper import Dispatcher
@@ -29,9 +26,9 @@ from constants import CONTENT_FONT_SIZE
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
-        fn('save', True)
+        Dispatcher.set_button('save', True)
     else:
-        fn("save", False)
+        Dispatcher.set_button("save", False)
 
 class DSLSetting(Settings):
 
@@ -55,20 +52,27 @@ class DSLSetting(Settings):
         self.connections = connections
 
         return self.connections
+    
+    def delete_request_redraw(self):
+        Dispatcher.emit("dsl-redraw")
+
 
     def save_changes(self, connection):
         if connection.check_setting_finish():
 
             from nmlib.nm_remote_connection import NMRemoteConnection
             if isinstance(connection, NMRemoteConnection):
-                print "before update", TypeConvert.dbus2py(connection.settings_dict)
+                #print "before update", TypeConvert.dbus2py(connection.settings_dict)
                 connection.update()
-                print "after update", TypeConvert.dbus2py(connection.settings_dict)
+                #print "after update", TypeConvert.dbus2py(connection.settings_dict)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 Dispatcher.emit("connection-replace", connection)
+                Dispatcher.emit("dsl-redraw")
 
-        Dispatcher.set_button("apply", True)
+        Dispatcher.to_main_page()
+
+        #Dispatcher.set_button("apply", True)
 
     def apply_changes(self, connection):
             device_path = nm_module.nmclient.get_wired_devices()[0].object_path
@@ -90,6 +94,8 @@ class Sections(gtk.Alignment):
     def __init__(self, connection, set_button):
         gtk.Alignment.__init__(self, 0, 0 ,1, 0)
         self.set_padding(35, 0, 20, 0)
+        self.connection = connection
+        self.set_button = set_button
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
@@ -98,18 +104,12 @@ class Sections(gtk.Alignment):
         self.button = Button(_("Advanced"))
         #self.button.set_size_request(50, 22)
         self.button.connect("clicked", self.show_more_options)
-        self.wired = SettingSection(_("Wired"), always_show=False)
-        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=False)
-        self.ppp = SettingSection(_("PPP"), always_show=False)
         align = gtk.Alignment(0, 1.0, 0, 0)
         align.set_padding(0, 0, 376, 0)
         align.set_size_request(-1 ,30)
         align.add(self.button)
         
         basic.load([DSLConf(connection, set_button), align])
-        self.wired.load([Wired(connection, set_button)])
-        self.ipv4.load([IPV4Conf(connection, set_button)])
-        self.ppp.load([PPPConf(connection, set_button)])
 
         self.main_box.pack_start(basic, False, False)
 
@@ -117,10 +117,16 @@ class Sections(gtk.Alignment):
 
     def show_more_options(self, widget):
         widget.destroy()
+        wired = SettingSection(_("Wired"), always_show=True)
+        ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
+        ppp = SettingSection(_("PPP"), always_show=True)
+        wired.load([Wired(self.connection, self.set_button)])
+        ipv4.load([IPV4Conf(self.connection, self.set_button)])
+        ppp.load([PPPConf(self.connection, self.set_button)])
         #self.main_box.pack_start(self.space, False, False)
-        self.main_box.pack_start(self.wired, False, False, 15)
-        self.main_box.pack_start(self.ipv4, False, False)
-        self.main_box.pack_start(self.ppp, False, False, 15)
+        self.main_box.pack_start(wired, False, False, 15)
+        self.main_box.pack_start(ipv4, False, False)
+        self.main_box.pack_start(ppp, False, False, 15)
 
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -169,7 +175,9 @@ class Wired(gtk.VBox):
         #self.add(align)
         style.set_table(table)
         table_align = gtk.Alignment(0, 0, 0, 0)
-        table_align.add(table)
+        default_button = DefaultToggle(_("Default Setting"))
+        default_button.load([table])
+        table_align.add(default_button)
         self.pack_start(table_align, False, False)
 
         self.mac_entry.set_size(222, 22)
@@ -298,7 +306,6 @@ class DSLConf(gtk.VBox):
         self.password_entry.entry.set_text(str(password))
         setattr(self.dsl_setting, "password", str(password))
 
-        
     def save_changes(self, widget, value, types):
         print types," dsl changed"
         if value:
@@ -308,7 +315,7 @@ class DSLConf(gtk.VBox):
         check_settings(self.connection, self.set_button)
 
 class PPPConf(gtk.VBox):
-    TABLE_WIDTH = 300
+    TABLE_WIDTH = 1
     def __init__(self, connection, set_button_callback):
         gtk.VBox.__init__(self)
         self.tab_name = _("PPP")
@@ -320,36 +327,43 @@ class PPPConf(gtk.VBox):
 
         self.method_title = TitleBar(None,
                                      _("Configure Method"),
-                                     width=self.TABLE_WIDTH)
+                                     width=self.TABLE_WIDTH,
+                                     has_separator=False)
 
         self.method_table = TableAsm()
-
+        self.method_table.row_attach(self.method_title)
         self.refuse_eap = self.method_table.row_toggle(_("EAP"))
         self.refuse_pap = self.method_table.row_toggle(_("PAP"))
         self.refuse_chap = self.method_table.row_toggle(_("CHAP"))
         self.refuse_mschap = self.method_table.row_toggle(_("MSCHAP"))
         self.refuse_mschapv2 = self.method_table.row_toggle(_("MSCHAP v2"))
         
-        #self.method_table = gtk.Table(16, 3, False)
-
         # visible settings
 
-        self.compression_title = TitleBar(app_theme.get_pixbuf("network/zip.png"),
-                                          _("Compression"), width=self.TABLE_WIDTH)
-        self.echo_title = TitleBar(app_theme.get_pixbuf("network/echo.png"),
-                                          _("Echo"), width=self.TABLE_WIDTH)
+        self.compression_title = TitleBar(None,
+                                          _("Compression"),
+                                          width=self.TABLE_WIDTH,
+                                          has_separator=False)
+        self.echo_title = TitleBar(None,
+                                   _("Echo"),
+                                   width=self.TABLE_WIDTH,
+                                   has_separator=False)
 
         self.comp_table = TableAsm()
         self.sub_item = []
 
         #compressio))n = Label(_("Compression"), text_size=TITLE_FONT_SIZE)
+        self.comp_table.row_attach(self.compression_title)
         self.require_mppe = self.comp_table.row_toggle(_("Use point-to-point encryption(mppe)"))
         self.require_mppe_128 = self.comp_table.row_toggle(_("Require 128-bit encryption"), self.sub_item)
         self.mppe_stateful = self.comp_table.row_toggle(_("Use stataful MPPE"), self.sub_item)
         self.nobsdcomp = self.comp_table.row_toggle(_("Allow BSD data Compression"))
         self.nodeflate = self.comp_table.row_toggle(_("Allow Deflate date compression"))
         self.no_vj_comp = self.comp_table.row_toggle(_("Use TCP header compression"))
-        self.ppp_echo = self.comp_table.row_toggle(_("Send PPP echo packets"))
+
+        self.echo_table = TableAsm()
+        self.echo_table.row_attach(self.echo_title)
+        self.ppp_echo = self.echo_table.row_toggle(_("Send PPP echo packets"))
 
         #compression_list = ["require_mppe_label", "require_mppe",
                             #"require_mppe_128_label", "require_mppe_128",
@@ -371,12 +385,18 @@ class PPPConf(gtk.VBox):
             #setattr(self, name + "_align", align)
 
         self.method_table.table_build()
+        self.echo_table.table_build()
         vbox = gtk.VBox()
         table_align = gtk.Alignment(0, 0, 0, 0)
+        
+        #default_button = DefaultToggle(_("Default Setting"))
+        #default_button.load([self.method_table, self.comp_table, self.echo_table])
+        #table_align.add(default_button)
         table_align.add(vbox)
         self.pack_start(table_align)
         vbox.pack_start(self.method_table, False, False)
         vbox.pack_start(self.comp_table, False, False)
+        vbox.pack_start(self.echo_table, False, False)
         #self.method_table.set_col_spacing(0, 10)
         #self.method_table.set_row_spacing(6, 20)
         #self.method_table.set_row_spacing(8, 20)
@@ -403,7 +423,7 @@ class PPPConf(gtk.VBox):
     def refresh_table(self, require_mppe):
         self.comp_table.table_clear()
         if require_mppe:
-            self.comp_table.table_build(self.sub_item, 1)
+            self.comp_table.table_build(self.sub_item, 2)
         else:
             self.comp_table.table_build()
             self.require_mppe_128.set_active(False)

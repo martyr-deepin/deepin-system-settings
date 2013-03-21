@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -34,10 +34,10 @@ from dtk.ui.draw import draw_pixbuf, draw_shadow, draw_text
 from dtk.ui.threads import post_gui
 from dtk.ui.thread_pool import MissionThread
 from theme import app_theme
+from theme_manager import theme_manager
 from cache_manager import SMALL_SIZE, cache_manager
 from helper import event_manager
 import common
-import deepin_gsettings
 from nls import _
 
 ITEM_PADDING_X = 20
@@ -95,6 +95,7 @@ class WallpaperItem(gobject.GObject):
                 self.is_tick = self.theme.get_user_wallpaper_status(path)
             
         self.tick_area = None
+        self.__is_double_click = False
 
     def do_apply_wallpaper(self):
         self.background_settings.set_string("picture-uri", "file://" + self.image_path)
@@ -210,14 +211,22 @@ class WallpaperItem(gobject.GObject):
         self.set_theme_tick(self.is_tick)
         self.emit_redraw_request()
         
-    def set_theme_tick(self, value):    
+    def set_theme_tick(self, value):
+        untitled_theme = theme_manager.get_untitled_theme()
+
         if self.readonly:
             self.theme.set_system_wallpaper_status(self.image_path, value)
+            if untitled_theme:
+                untitled_theme.set_system_wallpaper_status(self.image_path, value)
         else:    
             if self.theme == None:
                 return
 
             self.theme.set_user_wallpaper_status(self.image_path, value)
+            if untitled_theme:
+                untitled_theme.set_user_wallpaper_status(self.image_path, value)
+
+        event_manager.emit("update-theme", None)
         
     def icon_item_motion_notify(self, x, y):
         '''
@@ -283,14 +292,20 @@ class WallpaperItem(gobject.GObject):
         '''
         pass
     
+    def __is_single_click(self):
+        if not self.__is_double_click:
+            self.toggle_tick()
+            event_manager.emit("select-wallpaper", self)
+
+        self.__is_double_click = False
+
     def icon_item_single_click(self, x, y):
         '''
         Handle single click event.
         
         This is IconView interface, you should implement it.
         '''
-        self.toggle_tick()                                                      
-        event_manager.emit("select-wallpaper", self)
+        gobject.timeout_add(300, self.__is_single_click)
 
     def icon_item_double_click(self, x, y):
         '''
@@ -298,6 +313,7 @@ class WallpaperItem(gobject.GObject):
         
         This is IconView interface, you should implement it.
         '''
+        self.__is_double_click = True
         self.is_tick = True
         self.emit_redraw_request()
         self.do_apply_wallpaper()
@@ -900,9 +916,8 @@ class CacheItem(gobject.GObject, MissionThread):
         event_manager.emit("add-download-wallpapers", [self.image_object.get_save_path()])
         event_manager.emit("apply-download-wallpaper", self.image_object.get_save_path())
 
-    @common.threaded
     def create_cache_pixbuf(self):
-        image_path = cache_manager.get_image(self.image_object)
+        image_path = cache_manager.get_image(self.image_object, try_web = False)
         
         if image_path != None:
             self.is_downloaded = os.path.exists(self.download_dir + "/" +  image_path.split("/")[-1])

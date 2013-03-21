@@ -50,7 +50,7 @@ class DeviceManager(object):
         for device in devices:
             wifi = cache.get_spec_object(device.object_path)
             wifi.connect("access-point-added", lambda w: Dispatcher.emit("ap-added"))
-            wifi.connect("access-point-removed", lambda w: Dispatcher.emit("ap-added"))
+            wifi.connect("access-point-removed", lambda w: Dispatcher.emit("ap-removed"))
 
     def load_wired_listener(self, module):
         if self.wired_devices:
@@ -80,7 +80,7 @@ class DeviceManager(object):
     
     def reinit_cache(self):
         self.__init_device()
-        self.init_signals()
+        #self.init_signals()
 
     def get_device_by_mac(self, mac_address):
         devices = self.wired_devices + self.wireless_devices

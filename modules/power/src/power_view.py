@@ -169,7 +169,8 @@ class PowerView(gtk.VBox):
         self.wakeup_password_image = ImageBox(app_theme.get_pixbuf("lock/lock.png"))
         self.wakeup_password_label = self.__setup_label(_("Password Protection Wakeup"), 
                                                         TITLE_FONT_SIZE, 
-                                                        ALIGN_START)
+                                                        ALIGN_START, 
+                                                        text_color=app_theme.get_color("globalTitleForeground"))
         self.wakeup_password_label.set_sensitive(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle_align = self.__setup_align(padding_top = 2,
                                                                padding_left = 80)
@@ -191,7 +192,8 @@ class PowerView(gtk.VBox):
         self.tray_battery_image = ImageBox(app_theme.get_pixbuf("power/tray_battery.png"))
         self.tray_battery_status_label = self.__setup_label(_("Show Battery Status In Tray"), 
                                                             TITLE_FONT_SIZE, 
-                                                            ALIGN_START)
+                                                            ALIGN_START, 
+                                                            text_color=app_theme.get_color("globalTitleForeground"))
         self.tray_battery_status_label.set_sensitive(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle_align = self.__setup_align(padding_top = 2, 
                                                                    padding_left = 80)
@@ -226,6 +228,9 @@ class PowerView(gtk.VBox):
 
         self.__send_message("status", ("power", ""))
         self.__send_message("status", ("power", "show_reset"))
+
+    def show_again(self):                                                       
+        self.__send_message("status", ("power", ""))
 
     def __power_settings_changed(self, key):
         if key != "percentage":
@@ -308,8 +313,8 @@ class PowerView(gtk.VBox):
         progressbar.set_size_request(121, WIDGET_HEIGHT)
         return progressbar
 
-    def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
-        label = Label(text, None, text_size, align, 200, False, False, False)
+    def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END, text_color=None):
+        label = Label(text, text_color, text_size, align, 200, False, False, False)
         return label
 
     def __setup_combo(self, items=[]):

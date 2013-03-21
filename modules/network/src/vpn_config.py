@@ -3,37 +3,27 @@
 
 from theme import app_theme
 
-from dtk.ui.tab_window import TabBox
 from dtk.ui.button import Button,  CheckButton, RadioButton
 from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
-from dtk.ui.new_treeview import TreeView
-#from dtk.ui.droplist import Droplist
-#from widgets import SettingButton
+
 from dtk.ui.scrolled_window import ScrolledWindow
-from settings_widget import SettingItem, EntryTreeView, AddSettingItem
-# NM lib import 
 from nm_modules import nm_module
 from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
-#from nmlib.nmclient import nmclient
-#from nmlib.nm_remote_settings import nm_remote_settings
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
-from ipsettings import IPV4Conf, IPV6Conf
+from ipsettings import IPV4Conf
 from elements import SettingSection
-from foot_box import FootBox
 from shared_methods import Settings
 from helper import Dispatcher
 
 import gtk
 from nls import _
 import style
-from constants import FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE, TITLE_FONT_SIZE, STANDARD_LINE
-#from container import MyRadioButton as RadioButton
+from constants import CONTENT_FONT_SIZE, STANDARD_LINE
 
-slider = nm_module.slider
 class VPNSetting(Settings):
 
     def __init__(self, spec_connection=None):
@@ -45,12 +35,6 @@ class VPNSetting(Settings):
     def get_connections(self):
         # Get all connections  
         connections = nm_module.nm_remote_settings.get_vpn_connections()
-        
-        #if init_connections:
-            #for connection in connections:
-                #connection.init_settings_prop_dict()
-        # Check connections
-
         if connections == []:
             # Create a new connection
             connect = nm_module.nm_remote_settings.new_vpn_pptp_connection()
@@ -67,7 +51,11 @@ class VPNSetting(Settings):
             Dispatcher.emit("connection-replace", connection)
 
         Dispatcher.emit("vpn-redraw")
+        Dispatcher.to_main_page()
         #Dispatcher.set_button("apply", True)
+
+    def delete_request_redraw(self):
+        Dispatcher.emit("vpn-redraw")
 
     def apply_changes(self, connection):
         # FIXME Now just support one device
@@ -134,6 +122,8 @@ class Sections(gtk.Alignment):
 
     def __init__(self, connection, set_button):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
+        self.connection = connection
+        self.set_button = set_button
         self.set_padding(35, 0, 20, 0)
 
         self.main_box = gtk.VBox()
@@ -141,19 +131,14 @@ class Sections(gtk.Alignment):
         basic = SettingSection(_("Basic"))
 
         self.button = Button(_("Advanced"))
-        self.button.set_size_request(50, 22)
         self.button.connect("clicked", self.show_more_options)
         self.wired = SettingSection(_("Wired"), always_show=False)
-        self.ipv4 = SettingSection(_("Ipv6 setting"), always_show=False)
         align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(0, 0, 225, 0)
+        align.set_padding(0, 0, 376, 0)
+        align.set_size_request(-1 , 30)
         align.add(self.button)
         
         basic.load([PPTPConf(connection, set_button), align])
-        self.ipv4.load([IPV4Conf(connection, set_button)])
-
-        self.space = gtk.HBox()
-        self.space.set_size_request(-1 ,30)
 
         self.main_box.pack_start(basic, False, False)
 
@@ -161,7 +146,8 @@ class Sections(gtk.Alignment):
 
     def show_more_options(self, widget):
         widget.destroy()
-        #self.main_box.pack_start(self.space, False, False)
+        self.ipv4 = SettingSection(_("Ipv6 setting"), always_show=False)
+        self.ipv4.load([IPV4Conf(self.connection, self.set_button)])
         self.main_box.pack_start(self.ipv4, False, False)
 
 class PPTPConf(gtk.VBox):
@@ -223,10 +209,10 @@ class PPTPConf(gtk.VBox):
         pptp_table.attach(style.wrap_with_align(self.password_show, align="left"), 2, 4, 4, 5)
         #pptp_table.attach(style.wrap_with_align(self.nt_domain_entry), 2, 4, 5, 6)
         # Advance setting button
-        advanced_button = Button(_("Advanced Setting"))
-        advanced_button.connect("clicked", self.advanced_button_click)
+        #advanced_button = Button(_("Advanced Setting"))
+        #advanced_button.connect("clicked", self.advanced_button_click)
 
-        pptp_table.attach(style.wrap_with_align(advanced_button), 3, 4, 6, 7)
+        #pptp_table.attach(style.wrap_with_align(advanced_button), 3, 4, 6, 7)
         self.service_type = self.vpn_setting.service_type.split(".")[-1]
         if self.service_type == "l2tp":
             self.l2tp_radio.set_active(True)

@@ -147,7 +147,8 @@ class SettingSection(gtk.VBox):
             
         else:
             self.toggle_off()
-            self.remove(self.align)
+            if self.align in self.get_children():
+                self.remove(self.align)
 
     def toggle_on(self):
         pass
@@ -166,6 +167,22 @@ class SettingSection(gtk.VBox):
         h_separator.set_size_request(500, height)
         widget.pack_start(h_separator, False, False)
 
+class DefaultToggle(SettingSection):
+
+    def __init__(self, title):
+        SettingSection.__init__(self,
+                                title,
+                                always_show=False,
+                                revert=True,
+                                label_right=True,
+                                has_seperator=False)
+
+        #self.toggle_off = self.do_show()
+        #self.toggle_on = self.do_hide()
+
+
+
+
 class TableAsm(gtk.Table):
 
     def __init__(self, left_width=210, right_width=220):
@@ -174,6 +191,12 @@ class TableAsm(gtk.Table):
         self.left_width = left_width
         self.right_width = right_width
         self.shared = list()
+
+    def row_attach(self, item, table=None):
+        if table:
+            table.append((item, None))
+        else:
+            self.shared.append((item, None))
 
     def row_input_entry(self, label_name, table=None):
         label = Label(label_name,

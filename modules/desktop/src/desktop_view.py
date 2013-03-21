@@ -57,8 +57,6 @@ class DesktopView(gtk.VBox):
             "org.compiz.core", "/org/compiz/profiles/deepin/plugins/core/")
         self.compiz_run_command_edge_settings = deepin_gsettings.new_with_path(
             "org.compiz.commands", "/org/compiz/profiles/deepin/plugins/commands/")
-        self.compiz_run_command_edge_settings.set_string("run-command0-edge", "TopLeft")
-        self.compiz_run_command_edge_settings.set_string("run-command1-edge", "TopRight")
         self.compiz_scale_settings = deepin_gsettings.new_with_path("org.compiz.scale", 
             "/org/compiz/profiles/deepin/plugins/scale/")
 
@@ -174,7 +172,7 @@ class DesktopView(gtk.VBox):
         self.topleft_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.topleft_label = self.__setup_label(_("Top Left"))
         self.topleft_combo = self.__setup_combo(self.hot_zone_items)
-        command1 = self.compiz_integrated_settings.get_string("command-1")
+        command1 = self.compiz_integrated_settings.get_string("command-11")
         if command1 == "":
             self.topleft_combo.set_select_index(0)
         elif command1 == self.LAUNCHER_CMD:
@@ -193,7 +191,7 @@ class DesktopView(gtk.VBox):
         self.topright_box = gtk.HBox(spacing = WIDGET_SPACING)                   
         self.topright_label = self.__setup_label(_("Top Right"))                  
         self.topright_combo = self.__setup_combo(self.hot_zone_items)
-        command2 = self.compiz_integrated_settings.get_string("command-2")          
+        command2 = self.compiz_integrated_settings.get_string("command-12")          
         if command2 == "":                                                      
             self.topright_combo.set_select_index(0)                              
         elif command2 == self.LAUNCHER_CMD:                                     
@@ -436,25 +434,33 @@ class DesktopView(gtk.VBox):
 
         if object == "topleft":
             if item_value == 0:
-                self.compiz_integrated_settings.set_string("command-1", "")
+                self.compiz_integrated_settings.set_string("command-11", "")
+                self.compiz_run_command_edge_settings.set_string("run-command10-edge", "")
+                self.compiz_scale_settings.set_string("initiate-edge", "")
             elif item_value == 1:
-                self.compiz_integrated_settings.set_string("command-1", "")
+                self.compiz_integrated_settings.set_string("command-11", "")
+                self.compiz_run_command_edge_settings.set_string("run-command10-edge", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "TopLeft")
             elif item_value == 2:
-                self.compiz_integrated_settings.set_string("command-1", self.LAUNCHER_CMD)
+                self.compiz_integrated_settings.set_string("command-11", self.LAUNCHER_CMD)
+                self.compiz_run_command_edge_settings.set_string("run-command10-edge", "TopLeft")
                 self.compiz_scale_settings.set_string("initiate-edge", "")
             else:
                 pass
             return
 
         if object == "topright":                                                 
-            if item_value == 0:                                                 
+            if item_value == 0:
+                self.compiz_integrated_settings.set_string("command-12", "")
+                self.compiz_run_command_edge_settings.set_string("run-command11-edge", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "")         
             elif item_value == 1:
-                self.compiz_integrated_settings.set_string("command-2", "")
+                self.compiz_integrated_settings.set_string("command-12", "")
+                self.compiz_run_command_edge_settings.set_string("run-command11-edge", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "TopRight")
             elif item_value == 2:                                               
-                self.compiz_integrated_settings.set_string("command-2", self.LAUNCHER_CMD)
+                self.compiz_integrated_settings.set_string("command-12", self.LAUNCHER_CMD)
+                self.compiz_run_command_edge_settings.set_string("run-command11-edge", "TopRight")
                 self.compiz_scale_settings.set_string("initiate-edge", "")
             else:                                                               
                 pass                                                            

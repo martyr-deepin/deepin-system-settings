@@ -77,7 +77,6 @@ class SettingUI(gtk.Alignment):
         self.sidebar.load_list(module_obj)
         self.apply_method = module_obj.apply_changes
         self.save_method = module_obj.save_changes
-        
 
     def __init_tab(self):
         tabs = self.tab_window.tab_items
@@ -94,7 +93,8 @@ class SettingUI(gtk.Alignment):
 
     def set_foot_bar_button(self, connection):
         states = self.setting_group.get_button_state()
-        Dispatcher.set_button(*states)
+        if states:
+            Dispatcher.set_button(*states)
         
     def set_tab_content(self, connection, init_connection=False):
         setting = self.setting_group.init_items(connection)

@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2013 Deepin, Inc.
-#               2011 ~ 2013 Hou Shaohui
+# Copyright (C) 2011 ~ 2012 Deepin, Inc.
+#               2011 ~ 2012 Hou Shaohui
 # 
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
@@ -36,9 +36,11 @@ THEME_TYPE_USER = 2
 
 class ThemeFile(RawConfigParser):
     
-    def __init__(self, location, default_location=None):
+    def __init__(self, location, default_location=None, is_system_theme=False):
         RawConfigParser.__init__(self)
         
+        self.is_system_theme = is_system_theme
+
         if default_location is None:
             default_location = get_config_path("default_theme.ini")
             
@@ -155,10 +157,10 @@ class ThemeFile(RawConfigParser):
             return "Random" if result else "Sequential"
         else:
             return result
-            
     
     def set_background_random_mode(self, value):
         self.set_option("background", "random_mode", str(value))
+        self.save()
         if value:
             background_gsettings.set_string("cross-fade-auto-mode", "Random")
         else:    
@@ -264,10 +266,12 @@ class ThemeFile(RawConfigParser):
     
     def set_user_wallpaper_status(self, path, value):
         self.set_option("user_wallpaper", path, str(value))
-        
+        self.save()
+
     def set_system_wallpaper_status(self, path, value):    
         path = path.split("/")[-1]
         self.set_option("system_wallpaper", path, str(value))
+        self.save()
         
     def get_system_wallpaper_status(self, path):    
         path = path.split("/")[-1]
@@ -322,7 +326,7 @@ class ThemeManager(object):
         for theme_file in os.listdir(get_system_theme_dir()):        
             full_theme_file = os.path.join(get_system_theme_dir(), theme_file)
             if full_theme_file.endswith(".ini") and os.path.isfile(full_theme_file):
-                theme_file_object = ThemeFile(full_theme_file)
+                theme_file_object = ThemeFile(full_theme_file, is_system_theme = True)
                 self.system_themes[theme_file_object.location] = theme_file_object
                 
     def get_system_themes(self):
@@ -370,20 +374,25 @@ class ThemeManager(object):
         theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
         os.remove(theme_path)
 
+    def get_untitled_theme(self):
+        untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
+        
+        if not os.path.exists(untitled_path):
+            return None
+        
+        return ThemeFile(untitled_path)
+    
     def untitled_theme(self, copy_theme=None):
         untitled_path = os.path.join(get_user_theme_dir(), "untitled.ini")
-        if os.path.exists(untitled_path):
-            try:
-                os.unlink(untitled_path)
-            except:    
-                pass
-            
         untitled_theme = ThemeFile(untitled_path)
+        
         if copy_theme:
             untitled_theme.copy_theme(copy_theme)
+        
         untitled_theme.set_default_name("untitled")    
         untitled_theme.set_locale_name(_("Untitled"))
         untitled_theme.save()    
+        
         return untitled_theme
     
     def is_current_theme(self, theme):
