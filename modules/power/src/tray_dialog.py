@@ -20,6 +20,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+sys.path.append("/usr/share/deepin-system-tray/src")
+sys.path.append("/usr/share/deepin-system-tray/image")
+
 import gtk
 import pango
 from nls import _
@@ -301,5 +305,7 @@ if __name__ == "__main__":
     dialog = TrayDialog("deepin_shutdown", 
                         cancel_text="Cancel", 
                         ok_text="Ok")
+    dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/home/long/Desktop/source/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
     dialog.run_exec = test_run
+    dialog.show_all()
     gtk.main()

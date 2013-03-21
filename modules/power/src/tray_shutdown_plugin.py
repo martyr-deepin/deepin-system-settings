@@ -163,3 +163,16 @@ def return_plugin():
     return TrayShutdownPlugin 
 
 
+if __name__ == "__main__":
+    gui = Gui()
+    dialog = TrayDialog()
+    dialog.show_dialog("deepin_hibernate",
+                        LOGOUT_TOP_TEXT,
+                        LOGOUT_BOTTOM_TEXT)
+    dialog.run_exec = gui.cmd_dbus.logout
+    dialog.argv = 1
+    dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
+    dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
+    dialog.show_image.set_from_pixbuf(dialog.show_pixbuf)
+    dialog.show_all()
+    gtk.main()
