@@ -34,7 +34,7 @@ from dtk.ui.dialog import DialogBox
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
-from dtk.ui.new_entry import InputEntry, Entry
+from dtk.ui.new_entry import InputEntry, EntryBuffer
 from dtk.ui.tab_window import TabBox
 from dtk.ui.hscalebar import HScalebar
 from dtk.ui.line import HSeparator
@@ -136,8 +136,10 @@ class KeySetting(object):
 
         self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         # button init
-        self.button_widgets["repeat_test_entry"] = InputEntry(_("Test Repeat Interval"))
-        self.button_widgets["repeat_test_entry2"] = Entry()
+        self.button_widgets["repeat_test_entry"] = InputEntry()
+        self.button_widgets["repeat_entry_buffer"] = self.button_widgets["repeat_test_entry"].entry.get_buffer()
+        self.button_widgets["repeat_entry_buffer2"] = EntryBuffer(_("Test Repeat Interval"))
+        self.button_widgets["repeat_test_entry"].entry.set_buffer(self.button_widgets["repeat_entry_buffer2"])
         self.button_widgets["blink_test_entry"] = BlinkButton(settings.keyboard_get_cursor_blink_time())
         #self.button_widgets["repeat_test_entry"] = gtk.Entry()
         #self.button_widgets["blink_test_entry"] = gtk.Entry()
@@ -522,8 +524,8 @@ class KeySetting(object):
             "button-release-event", self.scalebar_value_changed, "repeat-interval")
         #self.button_widgets["repeat_test_entry"].get_parent().connect("expose-event", self.repeat_entry_expose)
         #self.button_widgets["repeat_test_entry"].connect("expose-event", self.repeat_entry_expose)
-        #self.button_widgets["repeat_test_entry"].entry.connect("focus-in-event", self.focus_in_entry)
-        #self.button_widgets["repeat_test_entry"].entry.connect("focus-out-event", self.focus_out_entry)
+        self.button_widgets["repeat_test_entry"].entry.connect("focus-in-event", self.repeat_entry_focus_in_entry)
+        self.button_widgets["repeat_test_entry"].entry.connect("focus-out-event", self.repeat_entry_focus_out_entry)
         # blink
         self.scale_widgets["blink_cursor"].connect(
             "button-release-event", self.scalebar_value_changed, "cursor-blink-time")
@@ -646,6 +648,13 @@ class KeySetting(object):
         value = adjustment.get_upper() + adjustment.get_lower() - self.scale_get[key]()
         adjustment.set_value(value)
         adjustment.set_data("changed-by-other-app", True)
+
+    def repeat_entry_focus_in_entry(self, widget, event):
+        self.button_widgets["repeat_test_entry"].entry.set_buffer(self.button_widgets["repeat_entry_buffer"])
+
+    def repeat_entry_focus_out_entry(self, widget, event):
+        if not self.button_widgets["repeat_entry_buffer"].get_text():
+            self.button_widgets["repeat_test_entry"].entry.set_buffer(self.button_widgets["repeat_entry_buffer2"])
 
     def repeat_entry_expose(self, widget, event):
         text = widget.get_text()
