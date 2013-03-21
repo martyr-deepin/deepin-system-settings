@@ -166,6 +166,8 @@ def return_plugin():
 if __name__ == "__main__":
     gui = Gui()
     dialog = TrayDialog()
+    dialog.connect("hide", lambda w : gtk.main_quit())
+    dialog.connect("destroy", lambda w : gtk.main_quit())
     dialog.show_dialog("deepin_hibernate",
                         LOGOUT_TOP_TEXT,
                         LOGOUT_BOTTOM_TEXT)
