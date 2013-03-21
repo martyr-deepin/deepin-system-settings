@@ -299,7 +299,7 @@ class DisplayView(gtk.VBox):
                                              align = ALIGN_START)
         goto_color = GOTO_FG_COLOR
         self.goto_individuation_label = self.__setup_label(
-            text = _("<span foreground=\"%s\" underline=\"single\">Individuation</span>") % goto_color, 
+            text = _("<span foreground=\"%s\" underline=\"single\">Personalization</span>") % goto_color, 
             width = None, 
             align = ALIGN_START)
         self.goto_individuation_label.connect("button-press-event", 
