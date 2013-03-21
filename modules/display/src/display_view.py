@@ -244,7 +244,7 @@ class DisplayView(gtk.VBox):
         self.scrolled_window.set_size_request(-1, 425)
         self.scrolled_window.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         self.main_box = gtk.VBox()
-        self.main_box.set_size_request(600, 425)
+        self.main_box.set_size_request(600, -1)
         self.body_box = gtk.HBox()
         '''
         left, right align
