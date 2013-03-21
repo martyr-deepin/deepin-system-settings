@@ -25,8 +25,9 @@ from theme import app_theme
 from dtk.ui.new_entry import ShortcutKeyEntry
 from dtk.ui.label import Label
 from dtk.ui.dialog import DialogBox
-from dtk.ui.button import Button, ImageButton
+from dtk.ui.button import Button
 from dtk.ui.utils import color_hex_to_cairo
+from dtk.ui.draw import draw_pixbuf
 from nls import _
 import gtk
 import gobject
@@ -77,6 +78,40 @@ def resolve_accel_entry_conflict(origin_entry, conflict_entry, tmp_accel_buf):
 
 def set_gsettings_or_gconf_value(settings_obj, key, accel_name):
     pass
+
+class ImageButton(gtk.Button):
+    def __init__(self, 
+                 normal_dpixbuf, 
+                 hover_dpixbuf, 
+                 press_dpixbuf):
+        gtk.Button.__init__(self)
+        #cache_pixbuf = CachePixbuf()
+        self.request_width = normal_dpixbuf.get_pixbuf().get_width()
+        self.request_height = normal_dpixbuf.get_pixbuf().get_height()
+        self.set_size_request(self.request_width, self.request_height)
+        self.connect("expose-event", self.__draw_del_button,
+                     normal_dpixbuf, hover_dpixbuf, press_dpixbuf)
+        self.connect("hide", lambda w: self.set_state(gtk.STATE_NORMAL))
+
+    def __draw_del_button(self, widget, event,
+                          normal_dpixbuf, hover_dpixbuf, press_dpixbuf):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        if widget.state == gtk.STATE_NORMAL or widget.state == gtk.STATE_INSENSITIVE:
+            image = normal_dpixbuf.get_pixbuf()
+        elif widget.state == gtk.STATE_PRELIGHT:
+            image = hover_dpixbuf.get_pixbuf()
+        elif widget.state == gtk.STATE_ACTIVE:
+            image = press_dpixbuf.get_pixbuf()
+        draw_pixbuf(cr, image, rect.x, rect.y+(rect.height-self.request_height)/2)
+        return True
+        
+
+    def set_active(self, is_active):
+        if is_active:
+            self.set_state(gtk.STATE_PRELIGHT)
+        else:
+            self.set_state(gtk.STATE_NORMAL)
 
 class AccelBuffer(object):
     '''a buffer which store accelerator'''
@@ -187,15 +222,16 @@ class AccelEntry(ShortcutKeyEntry):
         self.accel_label = Label(self.accel_str, enable_select=False, enable_double_click=False)
         self.accel_align = gtk.Alignment()
         self.accel_align.set(0.0, 0.5, 0.0, 0.0)
+        self.accel_align.set_padding(0, 0, 6, 0)
         self.accel_align.add(self.accel_label)
         self.grab_area = gtk.EventBox()
         #self.grab_area.set_size_request(1, -1)
         self.grab_area.set_can_focus(True)
         self.grab_area.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.grab_area.add_events(gtk.gdk.KEY_PRESS_MASK)
-        self.del_button = ImageButton(app_theme.get_pixbuf("account/X_fg.png"),
-                                      app_theme.get_pixbuf("account/X_fg.png"),
-                                      app_theme.get_pixbuf("account/X_fg.png"))
+        self.del_button = ImageButton(app_theme.get_pixbuf("keyboard/cross0.png"),
+                                      app_theme.get_pixbuf("keyboard/cross1.png"),
+                                      app_theme.get_pixbuf("keyboard/cross1.png"))
         self.del_button.set_no_show_all(True)
         self.h_box.remove(self.entry)
         self.h_box.pack_start(self.accel_align)
@@ -236,6 +272,7 @@ class AccelEntry(ShortcutKeyEntry):
         if self.can_del and self.del_button in self.h_box.get_children():
             self.del_button.hide()
             self.h_box.remove(self.del_button)
+        self.emit("wait-key-input", self.shortcut_key)
         
     def __on_grab_area_button_press_cb(self, widget, event):
         gtk.gdk.keyboard_ungrab(0)
@@ -372,9 +409,8 @@ class AccelEntry(ShortcutKeyEntry):
             if widget in self.h_box.get_children():
                 widget.hide()
                 self.h_box.remove(self.del_button)
-        
-gobject.type_register(AccelEntry)
 
+gobject.type_register(AccelEntry)
 
 if __name__ == '__main__':
     from pprint import pprint

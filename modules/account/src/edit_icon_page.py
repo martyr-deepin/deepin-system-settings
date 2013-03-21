@@ -563,13 +563,13 @@ class IconEditArea(gtk.Layout):
                 gtk.timeout_remove(self.__refresh_time_id)
             if self.__button_time_id:
                 gtk.timeout_remove(self.__button_time_id)
-            self.__button_time_id = gobject.timeout_add(100, self.__slide_camera_button_show)
-            self.panel_layout.move(self.button_hbox, 0, self.button_hbox_height)
+            self.__button_time_id = gobject.timeout_add(30, self.__slide_camera_button_show)
+            #self.panel_layout.move(self.button_hbox, 0, self.button_hbox_height)
             x = event.x_root - event.x
             y = event.y_root - event.y - widget.allocation.y + self.AREA_HEIGHT - self.button_hbox_height
             self.set_win_pos(event.x_root - event.x - self.allocation.x,
                              event.y_root - event.y - widget.allocation.y - self.allocation.y)
-            self.panel.move(int(x), int(y))
+            self.panel.move(int(x), int(y) + self.button_hbox_height)
             self.panel.show_panel()
 
     def __draw_panel_background(self, widget, event):
@@ -601,7 +601,7 @@ class IconEditArea(gtk.Layout):
             return
         if self.__button_time_id:
             gtk.timeout_remove(self.__button_time_id)
-        self.__button_time_id = gobject.timeout_add(100, self.__slide_camera_button_hide)
+        self.__button_time_id = gobject.timeout_add(30, self.__slide_camera_button_hide)
 
     def __update_drag_point_coord(self):
         new_x = self.edit_coord_x + self.edit_coord_w - self.DRAG_WIDTH
@@ -699,13 +699,13 @@ class IconEditArea(gtk.Layout):
             gtk.timeout_remove(self.__refresh_time_id)
         if self.__button_time_id:
             gtk.timeout_remove(self.__button_time_id)
-        self.__button_time_id = gobject.timeout_add(100, self.__slide_button_show)
-        self.panel_layout.move(self.button_hbox, 0, self.button_hbox_height)
+        self.__button_time_id = gobject.timeout_add(30, self.__slide_button_show)
+        #self.panel_layout.move(self.button_hbox, 0, self.button_hbox_height)
         x = event.x_root - event.x
         y = event.y_root - event.y + self.AREA_HEIGHT - self.button_hbox_height
         self.set_win_pos(event.x_root - event.x - self.allocation.x,
                          event.y_root - event.y - self.allocation.y)
-        self.panel.move(int(x), int(y))
+        self.panel.move(int(x), int(y) + self.button_hbox_height)
         self.panel.show_panel()
         self.position = self.POS_OUT
         self.set_cursor()
@@ -717,15 +717,18 @@ class IconEditArea(gtk.Layout):
             gtk.timeout_remove(self.__refresh_time_id)
         if self.__button_time_id:
             gtk.timeout_remove(self.__button_time_id)
-        self.__button_time_id = gobject.timeout_add(100, self.__slide_button_hide)
+        self.__button_time_id = gobject.timeout_add(30, self.__slide_button_hide)
         self.position = self.POS_OUT
         self.set_cursor()
 
     def __slide_button_hide(self):
         step = self.button_hbox_height / 5
-        y0 = self.button_hbox.allocation.y
-        if y0 + step <= self.button_hbox_height:
-            self.panel_layout.move(self.button_hbox, 0, y0+step)
+        ph0 = self.panel.allocation.height
+        if ph0 > step:
+            self.panel.resize_panel(self.AREA_WIDTH, ph0-step)
+            self.panel.resize(self.AREA_WIDTH, ph0-step)
+            pos = self.panel.get_position()
+            self.panel.move(pos[0], pos[1]+step)
             return True
         self.__button_moving_flag = False
         self.__show_button_flag = False
@@ -735,11 +738,15 @@ class IconEditArea(gtk.Layout):
 
     def __slide_button_show(self):
         step = self.button_hbox_height / 5
-        y0 = self.button_hbox.allocation.y
-        h = self.button_hbox.allocation.height
-        if y0 + h - step >= self.button_hbox_height:
-            self.panel_layout.move(self.button_hbox, 0, y0-step)
+        ph0 = self.panel.allocation.height
+        if ph0 + step <= self.button_hbox_height:
+            self.panel.resize_panel(self.AREA_WIDTH, ph0+step)
+            self.panel.resize(self.AREA_WIDTH, ph0+step)
+            pos = self.panel.get_position()
+            self.panel.move(pos[0], pos[1]-step)
             return True
+        pos = self.panel.get_position()
+        self.panel.move(pos[0], pos[1]-step)
         self.__button_moving_flag = False
         self.__show_button_flag = True
         self.__button_time_id = None
@@ -754,6 +761,8 @@ class IconEditArea(gtk.Layout):
             gtk.timeout_remove(self.__refresh_time_id)
         self.__refresh_time_id = gobject.timeout_add(2000, self.__refresh_hide_button)
         self.panel_layout.move(self.button_hbox, 0, 0)
+        self.panel.set_size_request(self.AREA_WIDTH, self.button_hbox_height)
+        self.panel.resize_panel(self.AREA_WIDTH, self.button_hbox_height)
         self.panel.move(self.__win_pos_x+TEXT_WINDOW_LEFT_PADDING,
                         self.__win_pos_y+self.__widget_y+self.AREA_HEIGHT-self.button_hbox_height)
         self.panel.show_panel()
@@ -761,7 +770,7 @@ class IconEditArea(gtk.Layout):
     def __refresh_hide_button(self):
         if self.__button_time_id:
             gtk.timeout_remove(self.__button_time_id)
-        self.__button_time_id = gobject.timeout_add(100, self.__slide_button_hide)
+        self.__button_time_id = gobject.timeout_add(30, self.__slide_button_hide)
         self.__refresh_time_id = None
         return False
 
@@ -772,6 +781,8 @@ class IconEditArea(gtk.Layout):
             gtk.timeout_remove(self.__refresh_time_id)
         self.__refresh_time_id = gobject.timeout_add(2000, self.__refresh_hide_camera_button)
         self.panel_layout.move(self.button_hbox, 0, 0)
+        self.panel.set_size_request(self.AREA_WIDTH, self.button_hbox_height)
+        self.panel.resize_panel(self.AREA_WIDTH, self.button_hbox_height)
         self.panel.move(self.__win_pos_x+TEXT_WINDOW_LEFT_PADDING,
                         self.__win_pos_y+self.__widget_y+self.AREA_HEIGHT-self.button_hbox_height)
         self.panel.show_panel()
@@ -779,15 +790,18 @@ class IconEditArea(gtk.Layout):
     def __refresh_hide_camera_button(self):
         if self.__button_time_id:
             gtk.timeout_remove(self.__button_time_id)
-        self.__button_time_id = gobject.timeout_add(100, self.__slide_camera_button_hide)
+        self.__button_time_id = gobject.timeout_add(30, self.__slide_camera_button_hide)
         self.__refresh_time_id = None
         return False
 
     def __slide_camera_button_hide(self):
         step = self.button_hbox_height / 5
-        y0 = self.button_hbox.allocation.y
-        if y0 + step <= self.button_hbox_height:
-            self.panel_layout.move(self.button_hbox, 0, y0+step)
+        ph0 = self.panel.allocation.height
+        if ph0 > step:
+            self.panel.resize_panel(self.AREA_WIDTH, ph0-step)
+            self.panel.resize(self.AREA_WIDTH, ph0-step)
+            pos = self.panel.get_position()
+            self.panel.move(pos[0], pos[1]+step)
             return True
         self.__button_time_id = None
         self.panel.hide_panel()
@@ -795,11 +809,15 @@ class IconEditArea(gtk.Layout):
 
     def __slide_camera_button_show(self):
         step = self.button_hbox_height / 5
-        y0 = self.button_hbox.allocation.y
-        h = self.button_hbox.allocation.height
-        if y0 + h - step >= self.button_hbox_height:
-            self.panel_layout.move(self.button_hbox, 0, y0-step)
+        ph0 = self.panel.allocation.height
+        if ph0 + step <= self.button_hbox_height:
+            self.panel.resize_panel(self.AREA_WIDTH, ph0+step)
+            self.panel.resize(self.AREA_WIDTH, ph0+step)
+            pos = self.panel.get_position()
+            self.panel.move(pos[0], pos[1]-step)
             return True
+        pos = self.panel.get_position()
+        self.panel.move(pos[0], pos[1]-step)
         self.__button_time_id = None
         return False
 

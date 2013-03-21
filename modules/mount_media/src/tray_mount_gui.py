@@ -21,6 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from dtk.ui.line import HSeparator
+from dtk.ui.utils import set_clickable_cursor
 from vtk.draw  import draw_text, draw_pixbuf
 from vtk.utils import get_text_size
 from nls import _
@@ -47,12 +48,39 @@ class Device(gtk.HBox):
         self.open_btn  = gtk.Button()
         self.close_btn = gtk.Button()
         self.open_btn.connect("expose-event", self.open_btn_expose_event)
+        self.open_btn.connect("enter-notify-event", self.set_cursor_enter_notify_event)
+        self.open_btn.connect("leave-notify-event", self.set_cursor_leave_notify_event)
+        self.icon_image_event.connect("enter-notify-event", self.set_cursor_enter_notify_event)
+        self.icon_image_event.connect("leave-notify-event", self.set_cursor_leave_notify_event)
+        self.close_btn.connect("enter-notify-event", self.close_btn_set_cursor_enter_notify_event)
+        self.close_btn.connect("leave-notify-event", self.set_cursor_leave_notify_event)
+
         self.close_btn.connect("expose-event", self.close_btn_expose_event)
         self.pack_start(self.icon_image_event, False, False)
         self.pack_start(self.open_btn, True, True, 5)
         self.pack_start(self.close_btn, False, False)
         self.icon_image.set_size_request(20, 20)
         self.__init_values()
+
+    def close_btn_set_cursor_enter_notify_event(self, widget, event):
+        self.__set_cursor_type(widget, cursor_type = gtk.gdk.HAND2)
+
+    def set_cursor_enter_notify_event(self, widget, event):
+        if self.eject_check:
+            self.__set_cursor_type(widget, cursor_type = gtk.gdk.HAND2)
+
+    def set_cursor_leave_notify_event(self, widget, event):
+        self.__set_cursor_type(widget, cursor_type = None)
+
+    def __set_cursor_type(self, widget, cursor_type):
+        if isinstance(widget, gtk.Widget):
+            cursor_window = widget.window
+        elif isinstance(widget, gtk.gdk.window):
+            cursor_window = widget
+        if cursor_type == None:
+            cursor_window.set_cursor(None)
+        else:
+            cursor_window.set_cursor(gtk.gdk.Cursor(cursor_type))
 
     def __init_values(self):
         self.eject_check = False
@@ -257,6 +285,7 @@ class EjecterApp(gobject.GObject):
                     drive, volume, mount):
         show_unmount, show_eject = self.__set_mount_and_eject_bit(drive, volume, mount)
         device_btn = Device()
+        #set_clickable_cursor(device_btn.open_btn)
         #
         # 设置图标右边的显示标志位.
         if mount == None:
@@ -276,7 +305,7 @@ class EjecterApp(gobject.GObject):
         #
         self.monitor_vbox.pack_start(device_btn)
         self.monitor_vbox.show_all()
-        self.height += 25
+        self.height += 23
 
     def set_menu_size(self, height):
         pass
