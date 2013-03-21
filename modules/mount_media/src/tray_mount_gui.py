@@ -305,7 +305,7 @@ class EjecterApp(gobject.GObject):
         #
         self.monitor_vbox.pack_start(device_btn)
         self.monitor_vbox.show_all()
-        self.height += 25
+        self.height += 23
 
     def set_menu_size(self, height):
         pass
