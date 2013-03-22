@@ -440,8 +440,8 @@ msgstr "禁用"
 msgid "Please input new shortcuts"
 msgstr "請輸入新的快捷鍵"
 
-msgid "Please input new shortcuts. Esc to cancle."
-msgstr "請輸入新的快捷鍵。按Esc取消。"
+msgid "Please input new shortcuts. Press Esc to cancle or press Backspace to clear."
+msgstr "請輸入新的快捷鍵。按Esc取消或按Backspace清除。"
 
 #: ../src/keybind_all.py:34
 msgid "Launch user manual"
