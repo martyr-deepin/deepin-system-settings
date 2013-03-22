@@ -28,6 +28,7 @@ class FootBox(gtk.HBox):
     def __init__(self):
         gtk.HBox.__init__(self)
         self.set_size_request(-1, 35)
+        #self.connect("expose-event", self.expose_line)
         self.init_ui()
 
     def expose_line(self, widget, event):

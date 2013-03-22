@@ -138,6 +138,10 @@ class HiddenSetting(Settings):
         else:
             return [nm_module.nm_remote_settings.new_wireless_connection("", None)]
 
+    def delete_request_redraw(self):
+        net_manager.remove_hidden(self.connection)
+        Dispatcher.emit("wireless-redraw")
+
     def add_new_connection(self):
         pass
 

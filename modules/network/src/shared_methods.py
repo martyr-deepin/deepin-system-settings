@@ -67,6 +67,18 @@ class NetManager(object):
         except:
             print "save failded in addHidden"
 
+    def remove_hidden(self, connection):
+        ssid = connection.get_setting("802-11-wireless").ssid
+        self.cf.read(self.config_file)
+        if ssid not in self.cf.options("hidden"):
+            self.cf.remove_option("hidden", ssid)
+        try:
+            self.cf.write(open(self.config_file, "w"))
+            print "save succeed"
+        except:
+            print "save failded in addHidden"
+
+
         #print servicemanager.get_name_owner(s)
 
     def init_devices(self):
