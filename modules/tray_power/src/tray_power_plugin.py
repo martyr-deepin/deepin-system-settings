@@ -147,7 +147,7 @@ class TrayPower(object):
         pass
 
 def return_insert():
-    return 3
+    return 5
     
 def return_plugin():
     return TrayPower
