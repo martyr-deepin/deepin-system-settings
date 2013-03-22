@@ -138,12 +138,14 @@ class TrayDialog(Window):
             self.ok_key_check = False
             self.cancel_key_check = True
             self.cancel_btn.grab_focus()
-            self.cancel_btn.queue_draw()
         if e.keyval == KEY_RIGHT:
             self.ok_key_check = True
             self.cancel_key_check = False
             self.ok_btn.grab_focus()
+
+        if e.keyval in [KEY_LEFT, KEY_RIGHT]:
             self.ok_btn.queue_draw()
+            self.cancel_btn.queue_draw()
 
 
     def __init_settings(self):
@@ -285,7 +287,6 @@ class TrayDialog(Window):
 
     def label_expose_event(self, widget, event, width):
         color = self.cancel_color
-        print self.ok_key_check, self.cancel_key_check
         if widget == self.ok_btn and self.ok_key_check:
             color = "#FFFFFF"
         elif widget == self.cancel_btn and self.cancel_key_check:
