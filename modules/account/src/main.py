@@ -405,6 +405,7 @@ class AccountSetting(object):
     def __signals_connect(self):
         self.container_widgets["slider"].connect("expose-event", self.container_expose_cb)
         self.container_widgets["slider"].connect("completed_slide", self.slider_completed_slide_cb)
+        self.module_frame.connect("unmap-event", self.slider_hide_cb)
 
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
@@ -458,7 +459,8 @@ class AccountSetting(object):
         cr = widget.window.cairo_create()
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
         cr.rectangle(x, y, w, h)
-        cr.fill()
+        #cr.fill()
+        cr.paint()
 
     def auto_login_toggled(self, button):
         if not self.current_select_user:
@@ -1240,6 +1242,10 @@ class AccountSetting(object):
         if self.__is_first_show:
             self.__is_first_show = False
             widget.set_to_page(self.alignment_widgets["main_hbox"])
+
+    def slider_hide_cb(self, widget, event):
+        #self.container_widgets["icon_edit_page"].draw_area.panel.hide()
+        self.container_widgets["icon_edit_page"].draw_area.panel.hide_panel()
 
     def set_to_page(self, widget, direction):
         pre_widget = self.container_widgets["slider"].active_widget

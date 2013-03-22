@@ -834,7 +834,7 @@ class KeySetting(object):
         self.set_status_text(text)
 
     def on_accel_entry_wait_key_cb(self, widget, s):
-        self.set_status_text("%s" % (_("Please input new shortcuts. Esc to cancle.")))
+        self.set_status_text("%s" % (_("Please input new shortcuts. Press Esc to cancle or press Backspace to clear.")))
 
     def __edit_custom_shortcuts_dilaog(self, is_edit=False):
         '''
