@@ -137,5 +137,8 @@ class TrayTimePlugin(object):
     def hide_menu(self):
         print "menu hide....."
 
+def return_insert():
+    return 0
+
 def return_plugin():
     return TrayTimePlugin
