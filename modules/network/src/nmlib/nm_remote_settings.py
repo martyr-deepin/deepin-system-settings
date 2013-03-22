@@ -254,11 +254,12 @@ class NMRemoteSettings(NMObject):
         if key_mgmt:
             s_wireless.security = "802-11-wireless-security"
             s_wireless_security.key_mgmt = key_mgmt
+            s_wireless_security.auth_alg = "open"
 
-        s_ip4config.method = "shared"
         s_ip4config.clear_addresses()
         s_ip4config.clear_routes()
         s_ip4config.clear_dns()
+        s_ip4config.method = "shared"
 
         settings_dict = {"802-11-wireless":s_wireless.prop_dict,
                          "802-11-wireless-security":s_wireless_security.prop_dict,

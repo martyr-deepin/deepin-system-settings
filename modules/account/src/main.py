@@ -443,6 +443,7 @@ class AccountSetting(object):
             lambda w, e:self.button_widgets["backup_check_group_new"].set_active(
                 not self.button_widgets["backup_check_group_new"].get_active()))
 
+        self.button_widgets["account_name"].entry.connect("focus-in-event", self.account_name_focus_in_cb)
         self.button_widgets["account_name"].entry.connect(
             "changed", self.account_name_input_changed, self.button_widgets["account_create"])
 
@@ -524,6 +525,10 @@ class AccountSetting(object):
         else:
             if button.get_sensitive():
                 button.set_sensitive(False)
+
+    def account_name_focus_in_cb(self, widget, event):
+        if not widget.get_text():
+            self.__set_status_text(_("User names can only consist of letters, numbers, underscores and begin with a letter"))
     ## << add account cb ##
 
     ## del account cb >> ##

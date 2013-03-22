@@ -3,9 +3,10 @@
 from nm_modules import nm_module
 from nmlib.nmcache import cache
 from helper import Dispatcher
-from device_manager import device_manager
+from device_manager import DeviceManager
 from nmlib.servicemanager import servicemanager
 from nmlib.nm_remote_connection import NMRemoteConnection
+from deepin_utils.ipc import is_dbus_name_exists
 
 
 DEVICE_UNAVAILABLE = 0
@@ -16,14 +17,34 @@ DEVICE_ACTIVE = 2
 class NetManager(object):
 
     def __init__(self):
-        self.init_devices()
-        servicemanager.connect("service-start", self.__on_service_start_do)
-        servicemanager.connect("service-stop", self.__on_service_stop_do)
+        #self.init_devices()
+        if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+            servicemanager.connect("service-start", self.__on_service_start_do)
+            servicemanager.connect("service-stop", self.__on_service_stop_do)
+            self.device_manager = DeviceManager()
+            self.init_devices()
 
-        self.cf = nm_module.nm_remote_settings.cf
-        self.config_file = nm_module.nm_remote_settings.config_file
-        if "hidden" not in self.cf.sections():
-            self.cf.add_section("hidden")
+            self.cf = nm_module.nm_remote_settings.cf
+            self.config_file = nm_module.nm_remote_settings.config_file
+            if "hidden" not in self.cf.sections():
+                self.cf.add_section("hidden")
+        else:
+            pass
+
+
+    def __on_service_start_do(self, widget, s):
+        print "Debug::service_start", s
+        nm_module.init_objects()
+        #device_manager.reinit_cache()
+        self.device_manager = DeviceManager()
+        self.init_devices()
+        #print servicemanager.get_name_owner(s)
+
+    def __on_service_stop_do(self, widget, s):
+        print "Debug::service_stop", s
+        #self.device_manager.reinit_cache()
+        cache.clearcache()
+        cache.clear_spec_cache()
 
     def get_hiddens(self):
         hiddens = list()
@@ -45,25 +66,13 @@ class NetManager(object):
         except:
             print "save failded in addHidden"
 
-    def __on_service_start_do(self, widget, s):
-        print "Debug::service_start", s
-        nm_module.init_objects()
-        device_manager.reinit_cache()
-        self.init_devices()
-        #print servicemanager.get_name_owner(s)
-
-    def __on_service_stop_do(self, widget, s):
-        print "Debug::service_stop", s
-        global cache
-        cache.clearcache()
-        cache.clear_spec_cache()
         #print servicemanager.get_name_owner(s)
 
     def init_devices(self):
-        self.wired_devices = device_manager.get_wired_devices()
+        self.wired_devices = self.device_manager.get_wired_devices()
         if self.wired_devices:
             self.wired_device = self.wired_devices[0]
-        self.wireless_devices = device_manager.get_wireless_devices()
+        self.wireless_devices = self.device_manager.get_wireless_devices()
         if self.wireless_devices:
             self.wireless_device = self.wireless_devices[0]
 
@@ -131,11 +140,17 @@ class NetManager(object):
     def get_active_connection(self, ap_list):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         index = []
+        #if not self.wireless_device.is_active():
+            #print "not device active"
+            #return []
         active_connection = self.wireless_device.get_active_connection()
         if active_connection:
-            print active_connection.get_specific_object()
-            index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
-            return index
+            try:
+                print active_connection.get_specific_object()
+                index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
+                return index
+            except:
+                return []
         else:
             return []
 
@@ -274,3 +289,4 @@ class Settings(object):
 
     def apply_changes(self):
         pass
+

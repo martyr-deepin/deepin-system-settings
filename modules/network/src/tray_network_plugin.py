@@ -21,7 +21,8 @@
 
 from dtk.ui.utils import container_remove_all
 from tray_ui import TrayUI
-from shared_methods import net_manager, device_manager
+#from shared_methods import net_manager, device_manager
+from shared_methods import net_manager
 from helper import Dispatcher
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -56,10 +57,12 @@ class TrayNetworkPlugin(object):
         self.init_wireless_signals()
 
     def wireless_ap_added(self, widget):
+        print "wireless_ap_added in tray"
         if self.gui.wireless.get_active():
             self.gui.wireless.set_active((True, True), emit=True)
 
     def wireless_ap_removed(self, widget):
+        print "wireless ap removed in tray"
         if self.gui.wireless.get_active():
             self.gui.wireless.set_active((True, True), emit=True)
 
@@ -102,6 +105,7 @@ class TrayNetworkPlugin(object):
 
             #Dispatcher.connect("wireless-change", self.set_wireless_state)
             Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
+            self.pwd_failed = False
         else:
             self.gui.remove_net("wireless")
         
@@ -117,36 +121,9 @@ class TrayNetworkPlugin(object):
         else:
             self.net_manager.disactive_wired_device(self.disactive_wired)
 
-    #def set_wired_state(self, widget, device, new_state, reason):
-        #'''
-        #wired-change callback
-        #'''
-        #if new_state is 20:
-            #self.gui.wire.set_active((False, False))
-            #if self.gui.wireless.get_active():
-                #self.change_status_icon("links")
-            #else:
-                #self.change_status_icon("cable_disconnect")
-        #elif new_state is 30:
-            
-            #self.gui.wire.set_sensitive(True)
-            #if self.gui.wireless.get_active():
-                #self.change_status_icon("links")
-            #else:
-                #self.change_status_icon("cable_disconnect")
-            #if reason is not 0:
-                #self.gui.wire.set_active((True, False))
-        #elif new_state is 40:
-            #print "rotate"
-            #if not self.gui.wire.get_active():
-                #self.gui.wire.set_active((True, True))
-            #self.change_status_icon("loading")
-            #self.let_rotate(True)
-        #elif new_state is 100:
-            #self.active_wired()
 
     def init_wired_signals(self):
-        device_manager.load_wired_listener(self)
+        net_manager.device_manager.load_wired_listener(self)
 
     def wired_device_active(self, widget, new_state, old_state, reason):
         self.active_wired()
@@ -186,21 +163,6 @@ class TrayNetworkPlugin(object):
         pass
         #Dispatcher.connect("wired_change", self.wired_changed_cb)
 
-    def connect_by_ssid(self, widget, ssid, ap):
-        connection =  self.net_manager.connect_wireless_by_ssid(ssid)
-        self.ap = ap
-        if connection and not isinstance(connection, NMRemoteConnection):
-            security = self.net_manager.get_security_by_ap(self.ap)
-            if security:
-                print "NMCONNECTION"
-                self.toggle_dialog(connection, security)
-            else:
-                connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
-                nm_module.nmclient.activate_connection_async(connection.object_path,
-                                          self.net_manager.wireless_devices[0].object_path,
-                                           ap.object_path)
-        
     def active_wired(self):
         """
         after active
@@ -254,7 +216,7 @@ class TrayNetworkPlugin(object):
             self.net_manager.disactive_wireless_device(device_disactive)
 
     def init_wireless_signals(self):
-        device_manager.load_wireless_listener(self)
+        net_manager.device_manager.load_wireless_listener(self)
         self.gui.ap_tree.connect("single-click-item", self.ap_selected)
         self.selected_item = None
         #TODO signals 
@@ -265,9 +227,8 @@ class TrayNetworkPlugin(object):
     # wireless device singals 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
         self.change_status_icon("links")
+        #print "this device state:", widget.is_active()
         self.set_active_ap()
-        self.need_auth_flag = False
-        self.this_connection = None
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
         self.this_connection = None
@@ -283,12 +244,21 @@ class TrayNetworkPlugin(object):
         self.gui.wireless.set_active((False, False))
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
-        if self.this_connection:
+        if old_state == 120:
+            widget.nm_device_disconnect()
+            return
+
+        #connections = nm_module.nmclient.get_wireless_active_connection()
+        self.this_connection = widget.get_real_active_connection()
+
+        if self.selected_item and self.pwd_failed:
+            widget.nm_device_disconnect()
             self.toggle_dialog(self.this_connection)
+            self.pwd_failed = False
+            return
 
         self.gui.wireless.set_active((True, True))
         self.change_status_icon("loading")
-
         self.let_rotate(True)
         self.this_device = widget
         #self.timer.Enabled = True
@@ -296,12 +266,24 @@ class TrayNetworkPlugin(object):
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
 
-        connections = nm_module.nmclient.get_wireless_active_connection()
-        if connections:
-            print "active connection"
-            self.this_connection = connections[0].get_connection()
-            #self.this_device.nm_device_disconnect()
-            #self.toggle_dialog(self.this_connection)
+        if reason == 7:
+            self.toggle_dialog(self.this_connection, "wpa")
+            # pwd failed
+
+    def connect_by_ssid(self, widget, ssid, ap):
+        connection = self.net_manager.connect_wireless_by_ssid(ssid)
+        self.ap = ap
+        if connection and not isinstance(connection, NMRemoteConnection):
+            security = self.net_manager.get_security_by_ap(self.ap)
+            if security:
+                print "NMCONNECTION"
+                self.toggle_dialog(connection, security)
+            else:
+                connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
+                nm_module.nmclient.activate_connection_async(connection.object_path,
+                                          self.net_manager.wireless_devices[0].object_path,
+                                           ap.object_path)
 
     def toggle_dialog(self, connection, security=None):
         ssid = connection.get_setting("802-11-wireless").ssid
@@ -312,10 +294,12 @@ class TrayNetworkPlugin(object):
                               cancel_callback=self.cancel_ask_pwd,
                               confirm_callback=self.pwd_changed).show_all()
 
-
     def cancel_ask_pwd(self):
         self.timer.Enabled = False
         self.timer.Interval = WAIT_TIME
+        if self.this_device:
+            self.this_device.nm_device_disconnect()
+        
 
     def pwd_changed(self, pwd, connection):
         if not isinstance(connection, NMRemoteConnection):

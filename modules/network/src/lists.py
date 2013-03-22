@@ -313,7 +313,7 @@ class WirelessItem(GenItems):
 
     def connect_by_ssid(self, ssid, ap):
         connection =  net_manager.connect_wireless_by_ssid(ssid)
-        print connection, "DEBUG connect by ssid"
+        #print connection, "DEBUG connect by ssid"
         self.ap = ap
         if connection and not isinstance(connection, NMRemoteConnection):
             security = net_manager.get_security_by_ap(self.ap)

@@ -163,3 +163,33 @@ def return_plugin():
     return TrayShutdownPlugin 
 
 
+if __name__ == "__main__":
+    def ok_btn_clicked(widget):
+        #
+        if len(sys.argv) >= 2:
+            if sys.argv[1] == 'logout':
+                gui.cmd_dbus.logout(1)
+            elif sys.argv[1] == 'shutdown':
+                gui.cmd_dbus.new_stop()
+    gui = Gui()
+    dialog = TrayDialog()
+    dialog.connect("hide", lambda w : gtk.main_quit())
+    dialog.connect("destroy", lambda w : gtk.main_quit())
+    dialog.argv = 1
+    if len(sys.argv) >= 2:
+        if sys.argv[1] == 'shutdown':
+            dialog.show_dialog("deepin_shutdown")
+            #dialog.run_exec = gui.cmd_dbus.shutdown
+        elif sys.argv[1] == 'logout':
+            dialog.show_dialog("deepin_hibernate",
+                                LOGOUT_TOP_TEXT,
+                                LOGOUT_BOTTOM_TEXT)
+            #dialog.run_exec = gui.cmd_dbus.logout
+
+    dialog.ok_btn.connect("clicked", ok_btn_clicked)
+    #
+    dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
+    dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
+    dialog.show_image.set_from_pixbuf(dialog.show_pixbuf)
+    dialog.show_all()
+    gtk.main()
