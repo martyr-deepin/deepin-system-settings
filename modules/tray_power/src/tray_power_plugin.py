@@ -146,6 +146,9 @@ class TrayPower(object):
     def hide_menu(self):
         pass
 
+def return_insert():
+    return 5
+    
 def return_plugin():
     return TrayPower
 

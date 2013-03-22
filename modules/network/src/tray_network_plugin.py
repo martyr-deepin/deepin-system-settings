@@ -383,5 +383,8 @@ class TrayNetworkPlugin(object):
             self.this.set_size_request(185, height + 46)
             self.this.show_menu()
 
+def return_insert():
+    return 3
+    
 def return_plugin():
     return TrayNetworkPlugin

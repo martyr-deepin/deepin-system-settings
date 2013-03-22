@@ -159,6 +159,9 @@ class TrayShutdownPlugin(object):
         #print "shutdown hide menu..."
         pass
 
+def return_insert():
+    return 1
+
 def return_plugin():
     return TrayShutdownPlugin 
 

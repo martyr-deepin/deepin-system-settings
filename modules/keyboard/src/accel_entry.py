@@ -34,6 +34,7 @@ import gobject
 import settings
 from glib import markup_escape_text
 from constant import *
+import os
 
 def draw_widget_background(widget, event):
     x, y, w, h = widget.allocation
@@ -164,7 +165,12 @@ class AccelBuffer(object):
         '''
         if self.state is None or self.keyval is None:
             return ''
-        return markup_escape_text(gtk.accelerator_get_label(self.keyval, self.state)).replace("制表", "Tab")
+        old_lang = os.environ["LANGUAGE"]
+        os.environ["LANGUAGE"] = "en_US"
+        #return markup_escape_text(gtk.accelerator_get_label(self.keyval, self.state)).replace("制表", "Tab").replace("打印", "Print")
+        accel_label = markup_escape_text(gtk.accelerator_get_label(self.keyval, self.state))
+        os.environ["LANGUAGE"] = old_lang
+        return accel_label
     
     def set_from_accel(self, accelerator):
         '''

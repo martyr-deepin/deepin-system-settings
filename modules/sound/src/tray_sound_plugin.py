@@ -95,6 +95,9 @@ class SoundTray(object):
         if self.__this_visible:
             self.this.set_size_request(self.WIN_WIDTH, self.widget.get_widget_height())
             self.this.reshow_with_initial_size()
-        
+     
+def return_insert():
+    return 2
+    
 def return_plugin():
     return SoundTray

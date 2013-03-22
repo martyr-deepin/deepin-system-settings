@@ -109,7 +109,8 @@ class MountMedia(EjecterApp):
     def hide_menu(self):
         self.size_check = False
 
-
+def return_insert():
+    return 4
 
 def return_plugin():
     return MountMedia
