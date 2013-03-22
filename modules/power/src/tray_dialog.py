@@ -79,6 +79,8 @@ class TrayDialog(Window):
         self.run_exec = None
         self.argv = None
         self.set_pango_list()
+        self.ok_key_check = False
+        self.cancel_key_check = False
         #
         self.__init_widgets()
         self.__init_settings()
@@ -123,8 +125,26 @@ class TrayDialog(Window):
             
         self.pango_list.insert(pango.AttrForeground(r, g, b, start_index, end_index - 1))
 
-    def focus_out_window(self, widget, event):
+    def __focus_out_window(self, widget, event):
         self.quit_dialog_window(widget)
+
+    def __dialog_realize_event(self, widget):
+        self.ok_btn.grab_focus()
+
+    def __dialog_key_release_event(self, widget, e):
+        KEY_LEFT = 65361
+        KEY_RIGHT = 65363
+        if e.keyval == KEY_LEFT:
+            self.ok_key_check = False
+            self.cancel_key_check = True
+            self.cancel_btn.grab_focus()
+            self.cancel_btn.queue_draw()
+        if e.keyval == KEY_RIGHT:
+            self.ok_key_check = True
+            self.cancel_key_check = False
+            self.ok_btn.grab_focus()
+            self.ok_btn.queue_draw()
+
 
     def __init_settings(self):
         self.set_bg_pixbuf(vtk_theme.get_pixbuf("deepin_on_off_bg", 372))
@@ -135,7 +155,9 @@ class TrayDialog(Window):
         self.set_keep_above(True)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.connect("show", self.show_dialog_window)
-        self.connect("focus-out-event", self.focus_out_window)
+        self.connect("focus-out-event", self.__focus_out_window)
+        self.connect("realize", self.__dialog_realize_event)
+        self.connect("key-release-event", self.__dialog_key_release_event)
 
     def __init_widgets(self):
         self.main_vbox = gtk.VBox()
@@ -163,6 +185,7 @@ class TrayDialog(Window):
         self.main_vbox.pack_start(self.mid_hbox, True, True)
         self.main_vbox.pack_start(self.bottom_hbox_ali, False, False)
         self.add_widget(self.main_vbox)
+
 
     def init_titlebar(self):
         self.titlebar_ali = gtk.Alignment(1, 0, 0, 0)
@@ -262,6 +285,12 @@ class TrayDialog(Window):
 
     def label_expose_event(self, widget, event, width):
         color = self.cancel_color
+        print self.ok_key_check, self.cancel_key_check
+        if widget == self.ok_btn and self.ok_key_check:
+            color = "#FFFFFF"
+        elif widget == self.cancel_btn and self.cancel_key_check:
+            color = "#FFFFFF"
+
         if widget.state == gtk.STATE_PRELIGHT:
             color = "#FFFFFF"
         cr = widget.window.cairo_create()
