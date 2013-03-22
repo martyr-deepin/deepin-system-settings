@@ -360,7 +360,7 @@ class AddSettingItem(TreeItem):
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*BORDER_COLOR)
             cr.set_line_width(1)
-            draw_line(cr, rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height)
+            #draw_line(cr, rect.x + rect.width, rect.y, rect.x + rect.width, rect.y + rect.height)
 
     def render_background(self,  cr, rect):
         if self.is_select:

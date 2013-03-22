@@ -41,6 +41,7 @@ class ToggleThread(td.Thread):
 
     def run(self):
         aps = self.get_list_fn()
+        print "get list finish"
 
         self.render_list(aps)
 
@@ -56,6 +57,7 @@ class ToggleThread(td.Thread):
                 #self.tree.show()
                 self.tree.visible_items[-1].is_last = True
                 self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
+                self.tree.queue_draw()
             self.stop_run()
             self.after()
 

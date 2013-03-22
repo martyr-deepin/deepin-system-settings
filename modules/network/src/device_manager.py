@@ -19,7 +19,6 @@ class DeviceManager(object):
 
         nm_module.nmclient.connect("device-added", self.device_added_cb)
 
-
     def __init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()

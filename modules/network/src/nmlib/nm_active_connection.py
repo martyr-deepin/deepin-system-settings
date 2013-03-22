@@ -53,6 +53,7 @@ class ThreadVPNAuto(threading.Thread):
                         continue
                 except:
                     pass
+            self.stop_run()
 
     def stop_run(self):
         self.run_flag = False

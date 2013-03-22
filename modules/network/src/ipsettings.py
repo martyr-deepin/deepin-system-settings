@@ -483,19 +483,37 @@ class IPV6Conf(gtk.VBox):
     def set_dns_address(self, widget, content, index):
         self.dns[index] = content
         names = ["master", "slaver"]
-        if TypeConvert.is_valid_ip6(content):
-            setattr(self, names[index] + "_flag", True)
-            print "valid"+ names[index]
-        else:
-            setattr(self, names[index] + "_flag", False)
-
         dns = self.check_complete_dns()
         if dns:
+            Dispatcher.set_button("save", True)
             self.setting.clear_dns()
             for d in dns:
                 self.setting.add_dns(d)
         else:
             self.setting.clear_dns()
+
+        if TypeConvert.is_valid_ip4(content):
+            setattr(self, names[index] + "_flag", True)
+            print "valid"+ names[index]
+        else:
+            if content is not "":
+                Dispatcher.set_button("save", False)
+            setattr(self, names[index] + "_flag", False)
+        #self.dns[index] = content
+        #names = ["master", "slaver"]
+        #if TypeConvert.is_valid_ip4(content):
+            #setattr(self, names[index] + "_flag", True)
+            #print "valid"+ names[index]
+        #else:
+            #setattr(self, names[index] + "_flag", False)
+
+        #dns = self.check_complete_dns()
+        #if dns:
+            #self.setting.clear_dns()
+            #for d in dns:
+                #self.setting.add_dns(d)
+        #else:
+            #self.setting.clear_dns()
             
     def check_complete_dns(self):
         dns = []

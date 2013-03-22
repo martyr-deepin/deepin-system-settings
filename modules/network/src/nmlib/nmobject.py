@@ -87,6 +87,7 @@ class NMObject(gobject.GObject):
             print method_name
             print e
         except dbus.exceptions.DBusException, e:
+            print self.dbus_interface
             print "call dbus method failed:\n"
             print method_name
             print args

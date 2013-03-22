@@ -149,6 +149,7 @@ class HiddenSetting(Settings):
             #Dispatcher.emit("connection-replace", connection)
             net_manager.add_hidden(connection)
         Dispatcher.to_main_page()
+        Dispatcher.emit("wireless-redraw")
 
 class NoSetting(gtk.VBox):
     def __init__(self):

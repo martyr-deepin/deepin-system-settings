@@ -48,7 +48,7 @@ class SideBar(gtk.VBox):
         add_setting_tree = TreeView([self.add_button])
         add_setting_tree.set_expand_column(1)
         self.pack_start(add_setting_tree, False, False)
-        self.set_size_request(160, -1)
+        self.set_size_request(260, -1)
         self.show_all()
 
         self.__init_signals()
