@@ -33,8 +33,6 @@ class ContentPage(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
-        rc_str = "style 'my_style' {\n  bg[NORMAL] = \"%s\"\n }\nwidget '*' style 'my_style'" % "#FFFFFF"
-        gtk.rc_parse_string(rc_str)          
         self.module_id = module_id
         self.socket = None
         self.connect("realize", self._add_socket)
