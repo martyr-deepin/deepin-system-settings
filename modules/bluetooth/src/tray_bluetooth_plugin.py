@@ -249,5 +249,8 @@ class TrayBluetoothPlugin(object):
         hseparator.set_size_request(100, 3)                                       
         return hseparator
 
+def return_insert():
+    pass
+    
 def return_plugin():
     return TrayBluetoothPlugin
