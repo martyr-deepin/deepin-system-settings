@@ -42,7 +42,7 @@ class DesktopView(gtk.VBox):
     class docs
     '''
 
-    LAUNCHER_CMD = "launcher"
+    LAUNCHER_CMD = "launcher --toggle"
 
     def __init__(self):
         '''
