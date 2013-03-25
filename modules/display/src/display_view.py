@@ -173,7 +173,7 @@ class MonitorResizableBox(ResizableBox):
                 selected stroke
                 '''
                 if self.select_output_name == output_name:
-                    cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
+                    cr.set_source_rgb(*color_hex_to_cairo("#4DA9D6"))
                     cr.set_line_width(self.line_width)
                     cr.rectangle(output_x, y, output_width, output_height)
                     cr.stroke()
@@ -184,7 +184,7 @@ class MonitorResizableBox(ResizableBox):
                 '''
                 selected stroke && emit
                 '''
-                cr.set_source_rgb(*color_hex_to_cairo("#FFCC34"))
+                cr.set_source_rgb(*color_hex_to_cairo("#4DA9D6"))
                 cr.set_line_width(self.line_width)
                 cr.rectangle(output_x, y, output_width, output_height)
                 cr.stroke()
