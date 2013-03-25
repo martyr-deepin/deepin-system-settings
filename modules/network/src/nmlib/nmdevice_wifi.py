@@ -25,7 +25,8 @@ import traceback
 import threading
 import time
 from nmdevice import NMDevice
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 from nm_utils import TypeConvert, nm_alive
 
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")

@@ -24,7 +24,8 @@ import gobject
 from nmobject import NMObject
 from nm_utils import TypeConvert
 import traceback
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 from nm_utils import nm_alive
 
 class NMClient(NMObject):

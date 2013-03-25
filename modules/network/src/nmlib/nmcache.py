@@ -295,6 +295,14 @@ class NMCache(object):
 
 cache = NMCache()
 
+def update_cache():
+    global cache
+    cache = NMCache()
+
+def get_cache():
+    global cache
+    return cache
+
 if __name__ == "__main__":
     ap = []
     for i in range(10):

@@ -26,7 +26,8 @@ from nmobject import NMObject
 from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
 from nm_secret_agent import secret_agent
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''

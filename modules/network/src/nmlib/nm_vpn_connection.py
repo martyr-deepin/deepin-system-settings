@@ -22,7 +22,8 @@
 
 import gobject
 from nm_active_connection import NMActiveConnection
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 class NMVpnConnection(NMActiveConnection):
