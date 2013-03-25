@@ -165,7 +165,10 @@ class AccelBuffer(object):
         '''
         if self.state is None or self.keyval is None:
             return ''
-        old_lang = os.environ["LANGUAGE"]
+        if 'LANGUAGE' in os.environ:
+            old_lang = os.environ["LANGUAGE"]
+        else:
+            old_lang = ''
         os.environ["LANGUAGE"] = "en_US"
         #return markup_escape_text(gtk.accelerator_get_label(self.keyval, self.state)).replace("制表", "Tab").replace("打印", "Print")
         accel_label = markup_escape_text(gtk.accelerator_get_label(self.keyval, self.state))
