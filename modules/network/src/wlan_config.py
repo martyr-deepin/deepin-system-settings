@@ -118,7 +118,7 @@ class HiddenSetting(Settings):
         #self.settings_dict = Sections
         self.connection = connection
         self.spec_connection = spec_connection
-        self.crumb_name = "Hidden network"
+        self.crumb_name = _("Hidden network")
 
     def init_items(self, connection):
         self.connection = connection
@@ -138,6 +138,10 @@ class HiddenSetting(Settings):
         else:
             return [nm_module.nm_remote_settings.new_wireless_connection("", None)]
 
+    def delete_request_redraw(self):
+        net_manager.remove_hidden(self.connection)
+        Dispatcher.emit("wireless-redraw")
+
     def add_new_connection(self):
         pass
 
@@ -149,6 +153,7 @@ class HiddenSetting(Settings):
             #Dispatcher.emit("connection-replace", connection)
             net_manager.add_hidden(connection)
         Dispatcher.to_main_page()
+        Dispatcher.emit("wireless-redraw")
 
 class NoSetting(gtk.VBox):
     def __init__(self):

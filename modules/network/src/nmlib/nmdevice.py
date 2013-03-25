@@ -26,6 +26,7 @@ import os
 import traceback
 from nmobject import NMObject
 from nmcache import cache
+from nm_utils import nm_alive
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 udev_client = gudev.Client("net")
@@ -194,6 +195,7 @@ class NMDevice(NMObject):
     def disconnect_error(self, *error):
         pass
 
+    @nm_alive
     def state_changed_cb(self, new_state, old_state, reason):
         #self.emit("state-changed", new_state, old_state, reason)
         self.init_nmobject_with_properties()

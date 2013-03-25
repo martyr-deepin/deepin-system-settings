@@ -52,8 +52,8 @@ class IPV4Conf(gtk.VBox):
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
 
-        self.master_row = self.__set_row(_("Primary DNS server address:"), 0)
-        self.slave_row = self.__set_row(_("Slave DNS server address:"), 1)
+        self.master_row = self.__set_row(_("Primary DNS server address:"), 0, "dns")
+        self.slave_row = self.__set_row(_("Slave DNS server address:"), 1, "dns")
 
         self.__table_attach(self.dns_table, self.master_row, 0)
         self.__table_attach(self.dns_table, self.slave_row, 1)
@@ -86,12 +86,15 @@ class IPV4Conf(gtk.VBox):
                 print "in ipv"
                 Dispatcher.set_button("save", False)
 
-    def __set_row(self, name, arg):
+    def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
         entry = InputEntry()
-        entry.entry.connect("changed", self.set_ip_address, arg)
+        if types == "ip":
+            entry.entry.connect("changed", self.set_ip_address, arg)
+        else:
+            entry.entry.connect("changed", self.set_dns_address, arg)
         entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 
         return (label, entry)
@@ -198,7 +201,6 @@ class IPV4Conf(gtk.VBox):
     def set_dns_address(self, widget, content, index):
         self.dns[index] = content
         names = ["master", "slaver"]
-
         dns = self.check_complete_dns()
         if dns:
             Dispatcher.set_button("save", True)
@@ -321,8 +323,8 @@ class IPV6Conf(gtk.VBox):
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
 
-        self.master_row = self.__set_row(_("Primary DNS server address:"), 0)
-        self.slave_row = self.__set_row(_("Slave DNS server address:"), 1)
+        self.master_row = self.__set_row(_("Primary DNS server address:"), 0, "dns")
+        self.slave_row = self.__set_row(_("Slave DNS server address:"), 1, "dns")
 
         self.__table_attach(self.dns_table, self.master_row, 0)
         self.__table_attach(self.dns_table, self.slave_row, 1)
@@ -357,12 +359,15 @@ class IPV6Conf(gtk.VBox):
             else:
                 Dispatcher.set_button("save", False)
 
-    def __set_row(self, name, arg):
+    def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
         entry = InputEntry()
-        entry.entry.connect("changed", self.set_ip_address, arg)
+        if types == "ip":
+            entry.entry.connect("changed", self.set_ip_address, arg)
+        else:
+            entry.entry.connect("changed", self.set_dns_address, arg)
         entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 
         return (label, entry)
@@ -478,19 +483,37 @@ class IPV6Conf(gtk.VBox):
     def set_dns_address(self, widget, content, index):
         self.dns[index] = content
         names = ["master", "slaver"]
-        if TypeConvert.is_valid_ip6(content):
-            setattr(self, names[index] + "_flag", True)
-            print "valid"+ names[index]
-        else:
-            setattr(self, names[index] + "_flag", False)
-
         dns = self.check_complete_dns()
         if dns:
+            Dispatcher.set_button("save", True)
             self.setting.clear_dns()
             for d in dns:
                 self.setting.add_dns(d)
         else:
             self.setting.clear_dns()
+
+        if TypeConvert.is_valid_ip4(content):
+            setattr(self, names[index] + "_flag", True)
+            print "valid"+ names[index]
+        else:
+            if content is not "":
+                Dispatcher.set_button("save", False)
+            setattr(self, names[index] + "_flag", False)
+        #self.dns[index] = content
+        #names = ["master", "slaver"]
+        #if TypeConvert.is_valid_ip4(content):
+            #setattr(self, names[index] + "_flag", True)
+            #print "valid"+ names[index]
+        #else:
+            #setattr(self, names[index] + "_flag", False)
+
+        #dns = self.check_complete_dns()
+        #if dns:
+            #self.setting.clear_dns()
+            #for d in dns:
+                #self.setting.add_dns(d)
+        #else:
+            #self.setting.clear_dns()
             
     def check_complete_dns(self):
         dns = []

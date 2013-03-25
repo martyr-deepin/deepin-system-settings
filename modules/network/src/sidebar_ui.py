@@ -94,8 +94,6 @@ class SideBar(gtk.VBox):
 
     def delete_item_cb(self, widget, connection):
         '''docstring for delete_item_cb'''
-        if len(self.connection_tree.visible_items) == 1:
-            return
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
@@ -105,6 +103,10 @@ class SideBar(gtk.VBox):
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
+        if len(self.connection_tree.visible_items) == 0:
+            Dispatcher.to_main_page()
+            return
+        self.connection_tree.select_last_item()
         container_remove_all(self.buttonbox)
         self.buttonbox.add(self.connection_tree)
     

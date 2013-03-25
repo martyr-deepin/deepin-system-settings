@@ -12,6 +12,7 @@ import gtk
 import style
 from constants import TEXT_WINDOW_TOP_PADDING, TEXT_WINDOW_LEFT_PADDING, STANDARD_LINE
 from foot_box import FootBox
+from helper import Dispatcher
 from nls import _
 
 def wrap_all_with_align(obj, attr_list, w=None):
@@ -26,13 +27,11 @@ def wrap_all_with_align(obj, attr_list, w=None):
 class ProxyConfig(gtk.VBox):
     ENTRY_WIDTH = 222
 
-    def __init__(self, slide_back_cb=None, change_crumb_cb=None):
+    def __init__(self):
 
         gtk.VBox.__init__(self)
         #self.set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_LEFT_PADDING)
         self.proxysetting = ProxySettings()
-        self.slide_back = slide_back_cb
-        self.change_crumb = change_crumb_cb
 
         self.table = gtk.Table(5, 4, False)
 
@@ -218,5 +217,5 @@ class ProxyConfig(gtk.VBox):
             self.proxysetting.set_proxy_mode = "auto"
             self.proxysetting.set_proxy_autoconfig_url = conf_url
 
-        self.slide_back()
-        self.change_crumb()
+        Dispatcher.to_main_page()
+

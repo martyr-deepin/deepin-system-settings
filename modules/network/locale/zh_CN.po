@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-19 16:16+0800\n"
+"POT-Creation-Date: 2013-03-25 09:31+0800\n"
 "PO-Revision-Date: 2012-12-25 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,217 +16,217 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/proxy_config.py:47
+#: ../src/proxy_config.py:46
 msgid "Method"
 msgstr "代理方式"
 
-#: ../src/proxy_config.py:50
+#: ../src/proxy_config.py:49
 msgid "Http Proxy"
 msgstr "Http 代理"
 
-#: ../src/proxy_config.py:53
+#: ../src/proxy_config.py:52
 msgid "Https Proxy"
 msgstr "Https 代理"
 
-#: ../src/proxy_config.py:56
+#: ../src/proxy_config.py:55
 msgid "FTP Proxy"
 msgstr "FTP 代理"
 
-#: ../src/proxy_config.py:59
+#: ../src/proxy_config.py:58
 msgid "Socks Proxy"
 msgstr "Socks 代理"
 
-#: ../src/proxy_config.py:62
+#: ../src/proxy_config.py:61
 msgid "Configuration url"
 msgstr "设置路径"
 
-#: ../src/proxy_config.py:66 ../src/wlan_config.py:234
+#: ../src/proxy_config.py:65 ../src/wlan_config.py:238
 msgid "None"
 msgstr "无"
 
-#: ../src/proxy_config.py:67
+#: ../src/proxy_config.py:66
 msgid "Manual"
 msgstr "手动"
 
-#: ../src/proxy_config.py:68 ../src/wlan_config.py:535
+#: ../src/proxy_config.py:67 ../src/wlan_config.py:539
 msgid "Automatic"
 msgstr "自动"
 
-#: ../src/proxy_config.py:102
+#: ../src/proxy_config.py:101
 msgid "Apply"
 msgstr "应用"
 
-#: ../src/main.py:127 ../src/main.py:178 ../src/vpn_config.py:132
-#: ../src/tray_ui.py:58 ../src/dsl_config.py:113 ../src/dsl_config.py:129
+#: ../src/main.py:143 ../src/main.py:201 ../src/vpn_config.py:135
+#: ../src/tray_ui.py:58 ../src/dsl_config.py:120 ../src/dsl_config.py:136
 #: ../src/search_keyword.py:29 ../src/lan_config.py:44 ../src/lan_config.py:92
-#: ../src/lan_config.py:120
+#: ../src/lan_config.py:121
 msgid "Wired"
 msgstr "有线"
 
-#: ../src/main.py:327 ../src/wlan_config.py:190 ../src/wlan_config.py:515
+#: ../src/main.py:359 ../src/wlan_config.py:194 ../src/wlan_config.py:519
 #: ../src/tray_ui.py:59 ../src/search_keyword.py:30
 msgid "Wireless"
 msgstr "无线"
 
-#: ../src/main.py:333
+#: ../src/main.py:364
 msgid "Creat Hidden network"
 msgstr "创建隐藏网络"
 
-#: ../src/main.py:703
+#: ../src/main.py:503
 msgid "Hotspot"
 msgstr "无线热点"
 
-#: ../src/main.py:838 ../src/main.py:879 ../src/dsl_config.py:40
-#: ../src/dsl_config.py:213 ../src/search_keyword.py:31
+#: ../src/main.py:644 ../src/dsl_config.py:40 ../src/dsl_config.py:220
+#: ../src/search_keyword.py:31
 msgid "DSL"
 msgstr "拨号网络"
 
-#: ../src/main.py:841 ../src/main.py:887
+#: ../src/main.py:647
 msgid "DSL Configuration"
 msgstr "DSL设置"
 
-#: ../src/main.py:915 ../src/main.py:982
+#: ../src/main.py:699
 msgid "VPN Network"
 msgstr "VPN网络"
 
-#: ../src/main.py:918 ../src/main.py:984
+#: ../src/main.py:702
 msgid "VPN Setting"
 msgstr "VPN设置"
 
-#: ../src/main.py:1074 ../src/main.py:1123 ../src/tray_ui.py:60
+#: ../src/main.py:858 ../src/main.py:915 ../src/tray_ui.py:60
 #: ../src/search_keyword.py:33 ../src/mobile_config.py:39
 msgid "Mobile Network"
 msgstr "移动网络"
 
-#: ../src/main.py:1077 ../src/main.py:1146
+#: ../src/main.py:861 ../src/main.py:938
 msgid "Mobile Configuration"
 msgstr "移动网络设置"
 
-#: ../src/main.py:1192 ../src/main.py:1309 ../src/search_keyword.py:34
+#: ../src/main.py:983 ../src/main.py:1009 ../src/search_keyword.py:34
 msgid "Proxy"
 msgstr "代理"
 
-#: ../src/main.py:1201
+#: ../src/main.py:992
 msgid "Proxy Configuration"
 msgstr "代理设置"
 
-#: ../src/main.py:1307
-msgid "Wireless Setting"
-msgstr "无线"
-
-#: ../src/main.py:1368 ../src/vpn_config.py:32 ../src/search_keyword.py:32
+#: ../src/main.py:1171 ../src/vpn_config.py:32 ../src/search_keyword.py:32
 msgid "VPN"
 msgstr ""
 
-#: ../src/wlan_config.py:173 ../src/vpn_config.py:128 ../src/dsl_config.py:95
+#: ../src/wlan_config.py:121 ../src/sidebar_ui.py:85
+msgid "Hidden network"
+msgstr "连接到隐藏网络"
+
+#: ../src/wlan_config.py:178 ../src/vpn_config.py:131 ../src/dsl_config.py:102
 #: ../src/mobile_config.py:219 ../src/mobile_config.py:260
 msgid "Basic"
 msgstr "基本设置"
 
-#: ../src/wlan_config.py:191 ../src/dsl_config.py:114 ../src/lan_config.py:106
+#: ../src/wlan_config.py:195 ../src/dsl_config.py:121 ../src/lan_config.py:107
 #: ../src/mobile_config.py:225
 msgid "Ipv4 setting"
 msgstr "IPv4设置"
 
-#: ../src/wlan_config.py:192 ../src/vpn_config.py:146 ../src/lan_config.py:107
+#: ../src/wlan_config.py:196 ../src/vpn_config.py:149 ../src/lan_config.py:108
 msgid "Ipv6 setting"
 msgstr "IPv6设置"
 
-#: ../src/wlan_config.py:205
+#: ../src/wlan_config.py:209
 msgid "Security"
 msgstr "安全性"
 
-#: ../src/wlan_config.py:217
+#: ../src/wlan_config.py:221
 msgid "Security:"
 msgstr "安全性:"
 
-#: ../src/wlan_config.py:220
+#: ../src/wlan_config.py:224
 msgid "Key:"
 msgstr "密钥:"
 
-#: ../src/wlan_config.py:223
+#: ../src/wlan_config.py:227
 msgid "Wep index:"
 msgstr "Wep 索引"
 
-#: ../src/wlan_config.py:227
+#: ../src/wlan_config.py:231
 msgid "Authentication:"
 msgstr "验证"
 
-#: ../src/wlan_config.py:230 ../src/vpn_config.py:169 ../src/dsl_config.py:230
+#: ../src/wlan_config.py:234 ../src/vpn_config.py:176 ../src/dsl_config.py:237
 msgid "Password:"
 msgstr "密码:"
 
-#: ../src/wlan_config.py:235
+#: ../src/wlan_config.py:239
 msgid "WEP (Hex or ASCII)"
 msgstr ""
 
-#: ../src/wlan_config.py:236
+#: ../src/wlan_config.py:240
 msgid "WEP 104/128-bit Passphrase"
 msgstr ""
 
-#: ../src/wlan_config.py:237
+#: ../src/wlan_config.py:241
 msgid "WPA WPA2 Personal"
 msgstr ""
 
-#: ../src/wlan_config.py:244 ../src/widgets.py:77 ../src/elements.py:219
+#: ../src/wlan_config.py:248 ../src/widgets.py:77 ../src/elements.py:219
 msgid "Show key"
 msgstr "显示密码"
 
-#: ../src/wlan_config.py:248
+#: ../src/wlan_config.py:252
 msgid "Shared Key"
 msgstr "共享密钥"
 
-#: ../src/wlan_config.py:249
+#: ../src/wlan_config.py:253
 msgid "Open System"
 msgstr "开放系统"
 
-#: ../src/wlan_config.py:255 ../src/vpn_config.py:130 ../src/vpn_config.py:316
-#: ../src/dsl_config.py:97 ../src/lan_config.py:93 ../src/mobile_config.py:221
-#: ../src/mobile_config.py:279
+#: ../src/wlan_config.py:259 ../src/vpn_config.py:133 ../src/vpn_config.py:326
+#: ../src/dsl_config.py:104 ../src/lan_config.py:93
+#: ../src/mobile_config.py:221 ../src/mobile_config.py:279
 msgid "Advanced"
 msgstr "高级"
 
-#: ../src/wlan_config.py:297 ../src/wlan_config.py:520 ../src/lists.py:459
+#: ../src/wlan_config.py:301 ../src/wlan_config.py:524 ../src/lists.py:467
 msgid "SSID:"
 msgstr ""
 
-#: ../src/wlan_config.py:525
+#: ../src/wlan_config.py:529
 msgid "Mode:"
 msgstr "模式:"
 
-#: ../src/wlan_config.py:528
+#: ../src/wlan_config.py:532
 msgid "Infrastructure"
 msgstr "架构"
 
-#: ../src/wlan_config.py:528
+#: ../src/wlan_config.py:532
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: ../src/wlan_config.py:531
+#: ../src/wlan_config.py:535
 msgid "Band:"
 msgstr "基带:"
 
-#: ../src/wlan_config.py:539
+#: ../src/wlan_config.py:543
 msgid "Channel:"
 msgstr "信道:"
 
-#: ../src/wlan_config.py:544
+#: ../src/wlan_config.py:548
 msgid "BSSID:"
 msgstr ""
 
-#: ../src/wlan_config.py:548 ../src/dsl_config.py:136 ../src/lan_config.py:139
+#: ../src/wlan_config.py:552 ../src/dsl_config.py:143 ../src/lan_config.py:140
 msgid "Device Mac Address:"
 msgstr "设备mac地址:"
 
-#: ../src/wlan_config.py:552 ../src/dsl_config.py:143 ../src/lan_config.py:140
+#: ../src/wlan_config.py:556 ../src/dsl_config.py:150 ../src/lan_config.py:141
 msgid "Cloned Mac Address:"
 msgstr "克隆mac地址:"
 
-#: ../src/wlan_config.py:557 ../src/lan_config.py:141
+#: ../src/wlan_config.py:561 ../src/lan_config.py:142
 msgid "MTU:"
 msgstr ""
 
-#: ../src/wlan_config.py:585
+#: ../src/wlan_config.py:589
 msgid "Default Settings"
 msgstr "默认配置"
 
@@ -243,12 +243,12 @@ msgid "IPv4 Setting"
 msgstr "IPv4设置"
 
 #: ../src/shared_widget.py:35 ../src/shared_widget.py:317
-#: ../src/ipsettings.py:35 ../src/ipsettings.py:304
+#: ../src/ipsettings.py:35 ../src/ipsettings.py:307
 msgid "Automatic get IP address"
 msgstr "自动获取IP地址"
 
 #: ../src/shared_widget.py:40 ../src/shared_widget.py:322
-#: ../src/ipsettings.py:39 ../src/ipsettings.py:308
+#: ../src/ipsettings.py:39 ../src/ipsettings.py:311
 msgid "IP Address:"
 msgstr "IP地址:"
 
@@ -257,30 +257,30 @@ msgid "Mask:"
 msgstr "掩码:"
 
 #: ../src/shared_widget.py:51 ../src/shared_widget.py:333
-#: ../src/vpn_config.py:163 ../src/ipsettings.py:41 ../src/ipsettings.py:310
+#: ../src/vpn_config.py:170 ../src/ipsettings.py:41 ../src/ipsettings.py:313
 msgid "Gateway:"
 msgstr "网关:"
 
 #: ../src/shared_widget.py:57 ../src/shared_widget.py:339
-#: ../src/ipsettings.py:51 ../src/ipsettings.py:319
+#: ../src/ipsettings.py:51 ../src/ipsettings.py:322
 msgid "Automatic get DNS server"
 msgstr "自动获取DNS"
 
 #: ../src/shared_widget.py:62 ../src/shared_widget.py:344
-#: ../src/ipsettings.py:55 ../src/ipsettings.py:323
+#: ../src/ipsettings.py:55 ../src/ipsettings.py:326
 msgid "Primary DNS server address:"
 msgstr "主DNS服务器:"
 
 #: ../src/shared_widget.py:65 ../src/shared_widget.py:347
-#: ../src/ipsettings.py:56 ../src/ipsettings.py:324
+#: ../src/ipsettings.py:56 ../src/ipsettings.py:327
 msgid "Slave DNS server address:"
 msgstr "副DNS服务器:"
 
-#: ../src/shared_widget.py:313 ../src/ipsettings.py:300
+#: ../src/shared_widget.py:313 ../src/ipsettings.py:302
 msgid "IPv6 Settings"
 msgstr "IPv6设置"
 
-#: ../src/shared_widget.py:328 ../src/ipsettings.py:309
+#: ../src/shared_widget.py:328 ../src/ipsettings.py:312
 msgid "Prefix:"
 msgstr "前缀:"
 
@@ -288,169 +288,173 @@ msgstr "前缀:"
 msgid "New Connection"
 msgstr "新建连接"
 
-#: ../src/sidebar_ui.py:85
-msgid "Hidden network"
-msgstr "连接到隐藏网络"
-
-#: ../src/lists.py:493 ../src/settings_widget.py:609
+#: ../src/lists.py:501 ../src/settings_widget.py:609
 #: ../src/mobile_config.py:267
 msgid "password:"
 msgstr "密码:"
 
-#: ../src/lists.py:531
+#: ../src/lists.py:539
 msgid "active"
 msgstr ""
 
-#: ../src/vpn_config.py:156 ../src/vpn_config.py:176
+#: ../src/vpn_config.py:151
+msgid "PPP setting"
+msgstr "PPP设置"
+
+#: ../src/vpn_config.py:163 ../src/vpn_config.py:183
 msgid "PPTP"
 msgstr ""
 
-#: ../src/vpn_config.py:166 ../src/dsl_config.py:220
+#: ../src/vpn_config.py:173 ../src/dsl_config.py:227
 #: ../src/mobile_config.py:264
 msgid "Username:"
 msgstr "用户名:"
 
-#: ../src/vpn_config.py:172
+#: ../src/vpn_config.py:179
 msgid "NT Domain:"
 msgstr "NT域:"
 
-#: ../src/vpn_config.py:177
+#: ../src/vpn_config.py:184
 msgid "L2TP"
 msgstr ""
 
-#: ../src/vpn_config.py:196 ../src/dsl_config.py:247
+#: ../src/vpn_config.py:203 ../src/dsl_config.py:254
 msgid "Show Password"
 msgstr "显示密码"
 
-#: ../src/vpn_config.py:333 ../src/dsl_config.py:322
+#: ../src/vpn_config.py:343 ../src/dsl_config.py:329
 #: ../src/mobile_config.py:468
 msgid "Configure Method"
 msgstr "加密设置"
 
-#: ../src/vpn_config.py:335 ../src/dsl_config.py:327
+#: ../src/vpn_config.py:347 ../src/dsl_config.py:335
 #: ../src/mobile_config.py:470
 msgid "EAP"
 msgstr ""
 
-#: ../src/vpn_config.py:338 ../src/dsl_config.py:328
+#: ../src/vpn_config.py:350 ../src/dsl_config.py:336
 #: ../src/mobile_config.py:473
 msgid "PAP"
 msgstr ""
 
-#: ../src/vpn_config.py:341 ../src/dsl_config.py:329
+#: ../src/vpn_config.py:353 ../src/dsl_config.py:337
 #: ../src/mobile_config.py:476
 msgid "CHAP"
 msgstr ""
 
-#: ../src/vpn_config.py:344 ../src/dsl_config.py:330
+#: ../src/vpn_config.py:356 ../src/dsl_config.py:338
 #: ../src/mobile_config.py:479
 msgid "MSCHAP"
 msgstr ""
 
-#: ../src/vpn_config.py:347 ../src/dsl_config.py:331
+#: ../src/vpn_config.py:359 ../src/dsl_config.py:339
 #: ../src/mobile_config.py:482
 msgid "MSCHAP v2"
 msgstr ""
 
-#: ../src/vpn_config.py:361 ../src/dsl_config.py:336
+#: ../src/vpn_config.py:373 ../src/dsl_config.py:344
 #: ../src/mobile_config.py:496
 msgid "Compression"
 msgstr "压缩"
 
-#: ../src/vpn_config.py:363 ../src/dsl_config.py:338
+#: ../src/vpn_config.py:378 ../src/dsl_config.py:348
 #: ../src/mobile_config.py:500
 msgid "Echo"
 msgstr "响应"
 
-#: ../src/vpn_config.py:367 ../src/dsl_config.py:345
+#: ../src/vpn_config.py:384 ../src/dsl_config.py:357
 #: ../src/mobile_config.py:505
 msgid "Use point-to-point encryption(mppe)"
 msgstr "使用点对点加密(mppe)"
 
-#: ../src/vpn_config.py:370 ../src/dsl_config.py:346
+#: ../src/vpn_config.py:387 ../src/dsl_config.py:358
 #: ../src/mobile_config.py:508
 msgid "Require 128-bit encryption"
 msgstr "需要128位加密"
 
-#: ../src/vpn_config.py:373 ../src/dsl_config.py:347
+#: ../src/vpn_config.py:390 ../src/dsl_config.py:359
 #: ../src/mobile_config.py:511
 msgid "Use stataful MPPE"
 msgstr "使用带有状态的MPPE"
 
-#: ../src/vpn_config.py:376 ../src/dsl_config.py:348
+#: ../src/vpn_config.py:393 ../src/dsl_config.py:360
 #: ../src/mobile_config.py:514
 msgid "Allow BSD data Compression"
 msgstr "允许BSD数据压缩"
 
-#: ../src/vpn_config.py:379 ../src/dsl_config.py:349
+#: ../src/vpn_config.py:396 ../src/dsl_config.py:361
 #: ../src/mobile_config.py:517
 msgid "Allow Deflate date compression"
 msgstr "允许Deflate数据压缩"
 
-#: ../src/vpn_config.py:382 ../src/dsl_config.py:350
+#: ../src/vpn_config.py:399 ../src/dsl_config.py:362
 #: ../src/mobile_config.py:520
 msgid "Use TCP header compression"
 msgstr "使用TCP头压缩"
 
-#: ../src/vpn_config.py:386 ../src/dsl_config.py:354
+#: ../src/vpn_config.py:403 ../src/dsl_config.py:366
 #: ../src/mobile_config.py:523
 msgid "Send PPP echo packets"
 msgstr "发送PPP响应包"
 
-#: ../src/vpn_config.py:389
+#: ../src/vpn_config.py:406
 msgid "Use protocal field compression negotiation"
 msgstr "使用协议压缩协商"
 
-#: ../src/vpn_config.py:392
+#: ../src/vpn_config.py:409
 msgid "Use Address/Control compression"
 msgstr "使用A/C压缩"
 
-#: ../src/vpn_config.py:410
+#: ../src/vpn_config.py:427
 msgid "IPSec Setting"
 msgstr "IPSec设置"
 
-#: ../src/vpn_config.py:412
+#: ../src/vpn_config.py:431
 msgid "Enable IPSec tunnel to l2tp host"
 msgstr "对l2tp主机启用IPSec管道"
 
-#: ../src/vpn_config.py:415
+#: ../src/vpn_config.py:434
 msgid "Group Name:"
 msgstr "组名:"
 
-#: ../src/vpn_config.py:418
+#: ../src/vpn_config.py:437
 msgid "Gateway ID:"
 msgstr "网关 ID:"
 
-#: ../src/vpn_config.py:421
+#: ../src/vpn_config.py:440
 msgid "Pre_Shared_key"
 msgstr "预共享密钥"
 
+#: ../src/foot_box_ui.py:76
+msgid "save"
+msgstr "保存"
+
 #: ../src/foot_box_ui.py:123
 msgid "Tip:"
-msgstr ""
+msgstr "提示:"
 
 #: ../src/tray_ui.py:64
 msgid "Advanced..."
 msgstr "更多高级设置..."
 
-#: ../src/tray_ui.py:451
+#: ../src/tray_ui.py:453
 msgid "more wireless ap"
 msgstr ""
 
-#: ../src/tray_ui.py:540
+#: ../src/tray_ui.py:542
 msgid "more wireless..."
 msgstr "更多无线"
 
-#: ../src/dsl_config.py:115 ../src/dsl_config.py:314
+#: ../src/dsl_config.py:122 ../src/dsl_config.py:321
 #: ../src/mobile_config.py:226 ../src/mobile_config.py:460
 msgid "PPP"
 msgstr ""
 
-#: ../src/dsl_config.py:171 ../src/dsl_config.py:380
+#: ../src/dsl_config.py:178
 msgid "Default Setting"
 msgstr "默认配置"
 
-#: ../src/dsl_config.py:226
+#: ../src/dsl_config.py:233
 msgid "Service:"
 msgstr "服务:"
 
@@ -548,6 +552,9 @@ msgstr "GSM配置"
 msgid "Config"
 msgstr "配置"
 
+#~ msgid "Wireless Setting"
+#~ msgstr "无线"
+
 #~ msgid "IPV4 Settings"
 #~ msgstr "IPV4设置"
 
@@ -563,9 +570,6 @@ msgstr "配置"
 
 #~ msgid "connect"
 #~ msgstr "连接"
-
-#~ msgid "save"
-#~ msgstr "保存"
 
 #~ msgid "IPv4 Settings"
 #~ msgstr "IPv4设置"

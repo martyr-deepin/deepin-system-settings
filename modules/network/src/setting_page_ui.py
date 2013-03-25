@@ -31,6 +31,7 @@ class SettingUI(gtk.Alignment):
         #self.add(self.scroll_win)
         self.scroll_win.add_with_viewport(self.hbox)
         self.scroll_align = gtk.Alignment()
+        self.scroll_win.set_size_request(800, 435)
         self.scroll_align.set(0, 0, 0, 0)
         self.scroll_align.set_padding(0, 0, 30, 0)
         self.scroll_align.add(self.scroll_win)
@@ -40,7 +41,10 @@ class SettingUI(gtk.Alignment):
         self.sidebar = SideBar( None)
         padding_align.add(self.sidebar)
         self.hpaned = HPaned(always_show_button=True)
+        self.hpaned.set_size_request(800, -1)
         self.hpaned.connect("expose-event",self.expose_line)
+        #self.hpaned.pack1(padding_align, True, True)
+        #self.hpaned.pack2(self.scroll_align, True, False)
         self.hpaned.add1(padding_align)
         self.hpaned.add2(self.scroll_align)
         self.connect_after("show", self.__init_paned)
@@ -49,18 +53,18 @@ class SettingUI(gtk.Alignment):
         self.add(main_vbox)
         # Build ui
         #self.hbox.pack_start(self.hpaned, False , False)
-        style.draw_background_color(self)
-        style.draw_separator(self.sidebar, 3)
+        #style.draw_background_color(self)
+        #style.draw_separator(self.sidebar, 3)
 
         self.__init_signals()
 
     def __init_paned(self, widget):
-        self.hpaned.saved_position = 150
+        self.hpaned.saved_position = 160
         self.hpaned.change_position(1)
 
     def __init_tab_box(self):
+        pass
         #container_remove_all(self.hbox)
-        self.scroll_win.set_size_request(800, 435)
 
     def __init_signals(self):
         Dispatcher.connect("connection-change", self.switch_tab)
@@ -99,7 +103,8 @@ class SettingUI(gtk.Alignment):
     def set_tab_content(self, connection, init_connection=False):
         setting = self.setting_group.init_items(connection)
         self.hbox.add(setting)
-        self.hbox.queue_draw()
+        #self.hbox.queue_draw()
+        self.hbox.show_all()
         self.foot_box.set_lock(False)
 
     def expose_line(self, widget, event):

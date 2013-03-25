@@ -49,6 +49,7 @@ class NetManager(object):
     def get_hiddens(self):
         hiddens = list()
         connections = nm_module.nm_remote_settings.get_wireless_connections()
+        self.cf.read(self.config_file)
 
         for index, ssid in enumerate(map(lambda x: x.get_setting("802-11-wireless").ssid, connections)):
             if ssid in self.cf.options("hidden"):
@@ -57,7 +58,7 @@ class NetManager(object):
     
     def add_hidden(self, connection):
         ssid = connection.get_setting("802-11-wireless").ssid
-
+        self.cf.read(self.config_file)
         if ssid not in self.cf.options("hidden"):
             self.cf.set("hidden", ssid)
         try:
@@ -65,6 +66,18 @@ class NetManager(object):
             print "save succeed"
         except:
             print "save failded in addHidden"
+
+    def remove_hidden(self, connection):
+        ssid = connection.get_setting("802-11-wireless").ssid
+        self.cf.read(self.config_file)
+        if ssid not in self.cf.options("hidden"):
+            self.cf.remove_option("hidden", ssid)
+        try:
+            self.cf.write(open(self.config_file, "w"))
+            print "save succeed"
+        except:
+            print "save failded in addHidden"
+
 
         #print servicemanager.get_name_owner(s)
 
@@ -133,6 +146,7 @@ class NetManager(object):
     def get_ap_list(self):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         device_wifi = cache.get_spec_object(wireless_device.object_path)
+        #print "DEBUG in get ap list", device_wifi
         ap_list = device_wifi.order_ap_list()
         # 返回ap对象，ap.get_ssid() 获取ssid, ap.get_flags()获得加密状态，0为加密，1加密
         return ap_list

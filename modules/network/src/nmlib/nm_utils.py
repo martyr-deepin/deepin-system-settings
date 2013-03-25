@@ -24,6 +24,15 @@ import struct
 import socket
 import copy
 
+from deepin_utils.ipc import is_dbus_name_exists
+
+def nm_alive(func):
+    print "check nm alive"
+    def wrap(*a, **kwd):
+        if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+           return func(*a, **kwd)
+    return wrap
+
 class TypeConvert(object):
     
     def __init__(self):

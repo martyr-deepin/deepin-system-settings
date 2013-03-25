@@ -309,7 +309,8 @@ class WirelessItem(GenItems):
             from wlan_config import WirelessSetting
             Dispatcher.to_setting_page(WirelessSetting(self.ap))
         elif column < 2:
-            self.connect_by_ssid(self.ssid, self.ap)
+            if self.network_state != 2:
+                self.connect_by_ssid(self.ssid, self.ap)
 
     def connect_by_ssid(self, ssid, ap):
         connection =  net_manager.connect_wireless_by_ssid(ssid)
@@ -389,6 +390,7 @@ class HidenItem(GenItems):
         
         self.connection = connection
         self.id = self.connection.get_setting("802-11-wireless").ssid + "[H]"
+        print self.id
 
     def render_id(self, cr, rect):
         self.render_background(cr, rect)
