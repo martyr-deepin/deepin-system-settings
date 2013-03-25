@@ -44,6 +44,7 @@ class PowerManager:
     def __init__(self):
         self.power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.lockdown_settings = deepin_gsettings.new("org.gnome.desktop.screensaver")
+        self.session_settings = deepin_gsettings.new("org.gnome.desktop.session")
 
     def __get_item_value(self, items, ori_value):
         for item, value in items:
@@ -145,6 +146,7 @@ class PowerManager:
     def set_close_monitor(self, value):
         self.power_settings.set_int("sleep-display-battery", value)
         self.power_settings.set_int("sleep-display-ac", value)
+        self.session_settings.set_uint("idle-delay", self.BIG_NUM)
 
     def get_wakeup_password(self):
         return self.lockdown_settings.get_boolean("lock-enabled")
