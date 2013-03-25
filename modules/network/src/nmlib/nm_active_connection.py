@@ -21,7 +21,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from nmobject import NMObject
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 import time
 import threading
 

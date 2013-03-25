@@ -10,7 +10,6 @@ from dtk.ui.utils import container_remove_all
 
 from dtk.ui.scrolled_window import ScrolledWindow
 from nm_modules import nm_module
-from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
@@ -94,7 +93,7 @@ class VPNSetting(Settings):
                                                specific_path)
             if active_object != None:
                 print "in wired device"
-                active_vpn = cache.get_spec_object(active_object.object_path)
+                active_vpn = nm_module.cache.get_spec_object(active_object.object_path)
                 self.state_change_cb(active_vpn, connection.get_setting("connection").id)
             else:
                 raise Exception
@@ -111,7 +110,7 @@ class VPNSetting(Settings):
                                                specific_path)
             if active_object != None:
                 print "in wireless device"
-                active_vpn = cache.get_spec_object(active_object.object_path)
+                active_vpn = nm_module.cache.get_spec_object(active_object.object_path)
                 self.state_change_cb(active_vpn, connection.get_setting("connection").id)
 
     def add_new_connection(self):

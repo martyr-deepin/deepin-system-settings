@@ -31,7 +31,7 @@ from shared_methods import net_manager
 from widgets import AskPasswordDialog
 from nmlib.nm_remote_connection import NMRemoteConnection
 
-from nm_modules import nm_module, cache
+from nm_modules import nm_module
 
 #from lan_config import WiredSetting, NoSetting
 #from wlan_config import WirelessSetting
@@ -234,7 +234,7 @@ class WiredItem(GenItems):
             from lan_config import WiredSetting
             Dispatcher.to_setting_page(WiredSetting(self.device))
         else:
-            device_ethernet = cache.get_spec_object(self.device.object_path)
+            device_ethernet = nm_module.cache.get_spec_object(self.device.object_path)
             device_ethernet.auto_connect()
         self.redraw()
 
@@ -721,7 +721,7 @@ class VPNItem(DSLItem):
         Dispatcher.to_setting_page(VPNSetting(self.connection))
 
     def vpn_active_cb(self, active):
-        vpn_connection = cache.get_spec_object(active.object_path)
+        vpn_connection = nm_module.cache.get_spec_object(active.object_path)
         vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
         vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
         vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))

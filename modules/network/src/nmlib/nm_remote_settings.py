@@ -25,7 +25,8 @@ import time
 import re
 from nmobject import NMObject
 from nm_utils import TypeConvert
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 from nmutils.nmsetting_connection import NMSettingConnection
 from nmutils.nmsetting_wired import NMSettingWired
 from nmutils.nmsetting_ip4config import NMSettingIP4Config

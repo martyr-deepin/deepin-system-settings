@@ -79,7 +79,7 @@ class NMObject(gobject.GObject):
         self.properties = self.init_properties()
         self.properties_access = {}
 
-    #@nm_alive
+    @nm_alive
     def dbus_method(self, method_name, *args, **kwargs):
         try:
             # return TypeConvert.dbus2py(apply(getattr(self.dbus_interface, method_name), args, kwargs))

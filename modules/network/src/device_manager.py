@@ -2,7 +2,6 @@
 #-*- coding:utf-8 -*-
 
 from nm_modules import nm_module
-from nmlib.nmcache import cache
 from helper import Dispatcher
 
 class DeviceManager(object):
@@ -26,19 +25,19 @@ class DeviceManager(object):
         self.ap_added(self.wireless_devices)
 
     def mm_device_added(self, widget, path):
-        device = cache.getobject(path)
+        device = nm_module.cache.getobject(path)
         Dispatcher.emit("mmdevice-added", device)
         Dispatcher.emit("recheck-section", 3)
 
     def mm_device_removed(self, widget, path):
-        device = cache.getobject(path)
+        device = nm_module.cache.getobject(path)
         Dispatcher.emit("mmdevice-removed", device)
         Dispatcher.emit("recheck-section", 3)
 
 
     def device_added_cb(self, widget, path):
         self.__init_device()
-        device =  cache.getobject(path)
+        device =  nm_module.cache.getobject(path)
         type = device.get_device_type() 
         if type == 1:
             Dispatcher.emit("wired-device-add", device)
@@ -49,7 +48,7 @@ class DeviceManager(object):
 
     def device_removed_cb(self, widget, path):
         self.__init_device()
-        device = cache.getobject(path)
+        device = nm_module.cache.getobject(path)
         type = device.get_device_type() 
         if type == 1:
             Dispatcher.emit("wired-device-remove", device)
@@ -60,7 +59,7 @@ class DeviceManager(object):
 
     def ap_added(self, devices):
         for device in devices:
-            wifi = cache.get_spec_object(device.object_path)
+            wifi = nm_module.cache.get_spec_object(device.object_path)
             wifi.connect("access-point-added", lambda w: Dispatcher.emit("ap-added"))
             wifi.connect("access-point-removed", lambda w: Dispatcher.emit("ap-removed"))
 
@@ -97,7 +96,7 @@ class DeviceManager(object):
     def get_device_by_mac(self, mac_address):
         devices = self.wired_devices + self.wireless_devices
         
-        spec_devices = map(lambda d: cache.get_spec_object(d.object_path), devices)
+        spec_devices = map(lambda d: nm_module.cache.get_spec_object(d.object_path), devices)
         for index, device in enumerate(spec_devices):
             if device.get_hw_address == mac_address:
                 return (devices[index], spec_devices[index])
@@ -116,6 +115,7 @@ class Handler(object):
         pass
     def activate_failed(self, new_state, old_state, reason):
         pass
+
 device_manager = DeviceManager()
 
 if __name__ == "__main__":

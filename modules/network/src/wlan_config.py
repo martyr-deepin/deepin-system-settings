@@ -26,7 +26,6 @@ from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox
 from nm_modules import nm_module
-from nmlib.nmcache import cache
 import gtk
 
 #from nmlib.nm_utils import TypeConvert
@@ -94,7 +93,7 @@ class WirelessSetting(Settings):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         if wireless_device.get_state() == 100:
             return
-        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
         ssid = connection.get_setting("802-11-wireless").ssid
         ap = device_wifi.get_ap_by_ssid(ssid)
 
@@ -502,7 +501,7 @@ class Security(gtk.VBox):
         self.setting.adapt_wireless_security_commit()
         self.connection.update()
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid
         ap = device_wifi.get_ap_by_ssid(ssid)

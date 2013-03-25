@@ -25,7 +25,8 @@ import gudev
 import os
 import traceback
 from nmobject import NMObject
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 from nm_utils import nm_alive
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 

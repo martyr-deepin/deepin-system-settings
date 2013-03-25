@@ -24,7 +24,8 @@ import gobject
 from nmobject import NMObject
 from nm_utils import TypeConvert
 import traceback
-from nmcache import cache
+from nmcache import get_cache
+cache = get_cache()
 from nm_utils import nm_alive
 
 class NMClient(NMObject):
@@ -282,13 +283,13 @@ class NMClient(NMObject):
             return []
 
     ###Signals ###
-    #@nm_alive
+    @nm_alive
     def device_added_cb(self, device_object_path):
         cache.clearcache()
         cache.clear_spec_cache()
         self.emit("device-added", device_object_path)
 
-    #@nm_alive
+    @nm_alive
     def device_removed_cb(self, device_object_path):
         cache.clearcache()
         cache.clear_spec_cache()

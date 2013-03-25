@@ -181,13 +181,13 @@ class NMCache(object):
             print path
 
     def putobject(self, path, object):
-        if path not in self.cache_dict.iterkeys():
+        if path not in self.cache_dict.keys():
             self.cache_dict[path] = object
         else:
             print "already stored the object"
     
     def getobject(self, path):
-        if path in self.cache_dict.iterkeys():
+        if path in self.cache_dict.keys():
             return self.cache_dict[path]
         else:
             self.putobject(path, self.new_object(path))
@@ -294,6 +294,14 @@ class NMCache(object):
             print "doesn't exist"
 
 cache = NMCache()
+
+def update_cache():
+    global cache
+    cache = NMCache()
+
+def get_cache():
+    global cache
+    return cache
 
 if __name__ == "__main__":
     ap = []
