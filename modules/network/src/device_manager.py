@@ -18,6 +18,7 @@ class DeviceManager(object):
                               "activate_failed"]
 
         nm_module.nmclient.connect("device-added", self.device_added_cb)
+        nm_module.nmclient.connect("device-removed", self.device_removed_cb)
 
     def __init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
@@ -29,20 +30,36 @@ class DeviceManager(object):
     def mm_device_added(self, widget, path):
         device = cache.getobject(path)
         Dispatcher.emit("mmdevice-added", device)
+        Dispatcher.emit("recheck-section", 3)
 
     def mm_device_removed(self, widget, path):
         device = cache.getobject(path)
         Dispatcher.emit("mmdevice-removed", device)
+        Dispatcher.emit("recheck-section", 3)
 
 
     def device_added_cb(self, widget, path):
-        device =  cache.getobject(path)
         self.__init_device()
+        device =  cache.getobject(path)
         type = device.get_device_type() 
         if type == 1:
             Dispatcher.emit("wired-device-add", device)
+            Dispatcher.emit("recheck-section", 0)
         elif type == 2:
             Dispatcher.emit("wireless-device-add", device)
+            Dispatcher.emit("recheck-section", 1)
+
+    def device_removed_cb(self, widget, path):
+        self.__init_device()
+        device = cache.getobject(path)
+        type = device.get_device_type() 
+        if type == 1:
+            Dispatcher.emit("wired-device-remove", device)
+            Dispatcher.emit("recheck-section", 0)
+        elif type == 2:
+            Dispatcher.emit("wireless-device-remove", device)
+            Dispatcher.emit("recheck-section", 1)
+
 
 
     def ap_added(self, devices):

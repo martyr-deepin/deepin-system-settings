@@ -59,6 +59,7 @@ from nmlib.servicemanager import servicemanager
 
 from nls import _
 from constants import *
+import style
 
 slider = nm_module.slider
 PADDING = 32
@@ -74,19 +75,28 @@ class Section(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
 
-    def load(self, toggle, content):
+    def load(self, toggle, content=[]):
         self.content_box = gtk.VBox(spacing=15)
         self.pack_start(toggle, False, False)
         toggle.switch.connect("toggled", self.toggle_callback)
 
-        self.this_tree = content[0]
-        
+        self.tree = TreeView([])
+        self.tree.set_expand_column(1)
+        self.tree.draw_mask = self.draw_mask
+        #self.content_box.pack_start(self.tree, False, False)
+        content.insert(0, self.tree)
+            
         for c in content:
             self.content_box.pack_start(c, False, False)
 
         self.align = self._set_align()
         self.pack_start(self.align, False, False)
         self.show_all()
+
+    def draw_mask(self, cr, x, y, w, h):
+        cr.set_source_rgb(1, 1, 1)
+        cr.rectangle(x, y, w, h)
+        cr.fill()
 
     def _set_align(self):
         align = gtk.Alignment(0,0,1,0)
@@ -96,22 +106,17 @@ class Section(gtk.VBox):
 
     def toggle_callback(self, widget):
         is_active = widget.get_active()
-        print is_active
         if is_active:
-            self.toggle_on()
             if self.content_box not in self.align.get_children():
                 self.align.add(self.content_box)
-                #if not self.this_tree.visible_items:
-                    #self.this_tree.set_no_show_all(True)
-                    #self.this_tree.hide()
-                #else:
-                    #self.this_tree.set_no_show_all(False)
-                    #self.this_tree.show()
             self.show_all()
-            self.toggle_on_after()
+
+            self.td = ToggleThread(self.get_list, self.tree, self.toggle_on_after)
+            self.td.start()
         
         else:
             self.align.remove(self.content_box)
+            self.td.stop_run()
             self.toggle_off()
 
     def toggle_on(self):
@@ -126,6 +131,9 @@ class Section(gtk.VBox):
 
     def toggle_off(self):
         print "off"
+        pass
+    
+    def get_list(self):
         pass
 
 class TestSection(Section):
@@ -180,13 +188,20 @@ class WiredSection(Section, WiredDevice):
         self.init_state()
 
         self.init_signals()
+    
+    @classmethod
+    def show_or_hide(self):
+        if device_manager.get_wired_devices():
+            return True
+        else:
+            return False
 
     def init_state(self):
         if self.wired_devices:
             self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w:w)
-            self.tree = TreeView([])
-            self.tree.set_expand_column(1)
-            self.load(self.wire, [self.tree])
+            #self.tree = TreeView([])
+            #self.tree.set_expand_column(1)
+            self.load(self.wire, [])
             if self.get_state(self.wired_devices):
                 self.wire.set_active(True)
         else:
@@ -322,7 +337,7 @@ class WirelessDevice(object):
 
 class WirelessSection(Section, WirelessDevice):
 
-    def __init__(self, crumb):
+    def __init__(self):
         Section.__init__(self)
         WirelessDevice.__init__(self)
         self.wireless_devices = device_manager.get_wireless_devices()
@@ -332,12 +347,18 @@ class WirelessSection(Section, WirelessDevice):
         self.init_state()
         self.init_signals()
 
+    @classmethod
+    def show_or_hide(self):
+        if device_manager.get_wireless_devices():
+            return True
+        else:
+            return False
+
     def init_state(self):
         if self.wireless_devices:
             self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), lambda w:w)
-            self.tree = TreeView([], enable_multiple_select=False)
-            self.tree.set_expand_column(1)
-            self.tree.connect("single-click-item", self.set_selected_item)
+            #self.tree = TreeView([], enable_multiple_select=False)
+            #self.tree.set_expand_column(1)
             #self.hotspot = HotSpot(None)
             self.vbox = gtk.VBox(False)
             self.label =  Label(_("Creat Hidden network"), 
@@ -349,7 +370,8 @@ class WirelessSection(Section, WirelessDevice):
             self.label.connect("button-release-event", self.create_a_hidden_network)
             self.space = gtk.VBox()
             self.space.set_size_request(-1, 15)
-            self.load(self.wireless, [self.tree, self.label])
+            self.load(self.wireless, [self.label])
+            self.tree.connect("single-click-item", self.set_selected_item)
             #self.vbox.pack_start(self.space, False, False)
             #self.vbox.pack_start(self.hotspot, False, False)
             #self.pack_start(self.vbox, False, False)
@@ -620,19 +642,26 @@ class DSLSection(Section):
         if self.wired_devices:
 
             self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
-            self.tree = TreeView([])
-            self.tree.set_expand_column(1)
+            #self.tree = TreeView([])
+            #self.tree.set_expand_column(1)
             self.label =  Label(_("DSL Configuration"), 
                               LABEL_COLOR,
                               underline=True,
                               enable_select=False,
                               enable_double_click=False)
             
-            self.load(self.dsl, [self.tree, self.label])
+            self.load(self.dsl, [self.label])
 
             self.__init_signals()
         else:
             pass
+
+    @classmethod
+    def show_or_hide(self):
+        if device_manager.get_wired_devices():
+            return True
+        else:
+            return False
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,x: self.jumpto_setting())
@@ -662,61 +691,25 @@ class DSLSection(Section):
     def jumpto_setting(self):
         Dispatcher.to_setting_page(DSLSetting())
 
-class DSLzSection(gtk.VBox):
-    def __init__(self, slide_to_setting_cb):
-        gtk.VBox.__init__(self)
-        self.slide_to_setting = slide_to_setting_cb
-        self.setting_page = None
-        self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), self.toggle_cb)
-        self.pack_start(self.dsl, False, False)
-
-    def toggle_cb(self, widget):
-        active = widget.get_active()
-        if active:
-            self.align = gtk.Alignment(0,0,0,0)
-            self.align.set_padding(0,0,PADDING,11)
-            label = Label(_("DSL Configuration"), 
-                          LABEL_COLOR,
-                          underline=True,
-                          enable_select=False,
-                          enable_double_click=False)
-            label.connect("button-release-event", self.slide_to_event)
-
-            self.align.add(label)
-            self.add(self.align)
-            self.show_all()
-        else:
-            self.align.destroy()
-
-    def add_setting_page(self, setting_page):
-        self.setting_page = setting_page
-
-    def slide_to_event(self, widget, event):
-        #from dsl_config import DSLSetting
-        Dispatcher.to_setting_page(DSLSetting())
-        #self.setting_page.init(init_connections=True)
-        #self.slide_to_setting()
-        #slider.slide_to_page(self.setting_page, "right")
-
 class VpnSection(Section):
     def __init__(self):
         Section.__init__(self)
 
         #init
         self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), lambda w:w)
-        self.tree = TreeView([])
-        self.tree.set_expand_column(1)
+        #self.tree = TreeView([])
+        #self.tree.set_expand_column(1)
         self.label = Label(_("VPN Setting"), 
                            LABEL_COLOR,
                            underline=True,
                            enable_select=False,
                            enable_double_click=False)
 
-        self.load(self.vpn, [self.tree, self.label])
+        self.load(self.vpn, [self.label])
         self.init_state()
         
         self.__init_signals()
-    
+
     def init_state(self):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
@@ -766,94 +759,94 @@ class VpnSection(Section):
     def jumpto_cb(self):
         Dispatcher.to_setting_page(VPNSetting())
 
-class VnSection(gtk.VBox):
-    def __init__(self, slide_to_subcrumb_cb):
-        gtk.VBox.__init__(self)
-        self.slide_to_subcrumb = slide_to_subcrumb_cb
-        self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.toggle_cb)
-        self.connection_tree = TreeView([])
-        self.label = Label(_("VPN Setting"), 
-                           LABEL_COLOR,
-                           underline=True,
-                           enable_select=False,
-                           enable_double_click=False)
-        self.label.connect("button-release-event", self.slide_to_event)
+#class VnSection(gtk.VBox):
+    #def __init__(self, slide_to_subcrumb_cb):
+        #gtk.VBox.__init__(self)
+        #self.slide_to_subcrumb = slide_to_subcrumb_cb
+        #self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.toggle_cb)
+        #self.connection_tree = TreeView([])
+        #self.label = Label(_("VPN Setting"), 
+                           #LABEL_COLOR,
+                           #underline=True,
+                           #enable_select=False,
+                           #enable_double_click=False)
+        #self.label.connect("button-release-event", self.slide_to_event)
 
-        self.vbox = gtk.VBox(False, spacing=15)
-        self.align = gtk.Alignment()
-        self.align.show()
-        self.align.set(0,0,1,0)
-        self.align.set_padding(0,0,PADDING,11 + 11)
-        self.align.add(self.vbox)
-        self.pack_start(self.vpn, False, False)
-        self.pack_start(self.align, False, False)
+        #self.vbox = gtk.VBox(False, spacing=15)
+        #self.align = gtk.Alignment()
+        #self.align.show()
+        #self.align.set(0,0,1,0)
+        #self.align.set_padding(0,0,PADDING,11 + 11)
+        #self.align.add(self.vbox)
+        #self.pack_start(self.vpn, False, False)
+        #self.pack_start(self.align, False, False)
 
-        self.__init_state()
+        #self.__init_state()
 
-    def toggle_cb(self, widget):
-        active = widget.get_active()
-        if active:
-            vpn_active = nm_module.nmclient.get_vpn_active_connection()
-            if vpn_active:
-                connection = vpn_active[0].get_connection()
-                connection_name = connection.get_setting("connection").id
-                #self.vbox.pack_start(self.connection_tree, False, False)
-                self.add_item(connection_name, state=2)
+    #def toggle_cb(self, widget):
+        #active = widget.get_active()
+        #if active:
+            #vpn_active = nm_module.nmclient.get_vpn_active_connection()
+            #if vpn_active:
+                #connection = vpn_active[0].get_connection()
+                #connection_name = connection.get_setting("connection").id
+                ##self.vbox.pack_start(self.connection_tree, False, False)
+                #self.add_item(connection_name, state=2)
+                ##self.vbox.pack_end(self.label, False, False)
+            #else:
                 #self.vbox.pack_end(self.label, False, False)
-            else:
-                self.vbox.pack_end(self.label, False, False)
 
-            self.show_all()
-        else:
-            container_remove_all(self.vbox)
-            vpn_active = nm_module.nmclient.get_vpn_active_connection()
-            if vpn_active:
-                nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
+            #self.show_all()
+        #else:
+            #container_remove_all(self.vbox)
+            #vpn_active = nm_module.nmclient.get_vpn_active_connection()
+            #if vpn_active:
+                #nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
 
-    def add_item(self, connection_name , state):
-        #self.vbox.remove(self.connection_tree) 
-        container_remove_all(self.vbox)
-        self.connection_tree.delete_all_items()
-        self.item = GeneralItem(connection_name,
-                            None,
-                            self.setting,
-                            lambda :slider.slide_to_page(self.setting, "right"),
-                            self.slide_to_subcrumb,
-                            check_state=state)
-        self.connection_tree.add_items([self.item]) 
-        #self.connection_tree.set_size_request(, -1)
-        self.vbox.pack_start(self.connection_tree, False, False)
+    #def add_item(self, connection_name , state):
+        ##self.vbox.remove(self.connection_tree) 
+        #container_remove_all(self.vbox)
+        #self.connection_tree.delete_all_items()
+        #self.item = GeneralItem(connection_name,
+                            #None,
+                            #self.setting,
+                            #lambda :slider.slide_to_page(self.setting, "right"),
+                            #self.slide_to_subcrumb,
+                            #check_state=state)
+        #self.connection_tree.add_items([self.item]) 
+        ##self.connection_tree.set_size_request(, -1)
+        #self.vbox.pack_start(self.connection_tree, False, False)
         
 
-    #def vpn_state_changed(self, widget, state, reason):
-        #print "changed",state
+    ##def vpn_state_changed(self, widget, state, reason):
+        ##print "changed",state
 
-    def vpn_connected(self, widget, connection_name):
-        print "vpn connected"
-        self.item.set_net_state(2)
-        #self.sidebar.set_active()
+    #def vpn_connected(self, widget, connection_name):
+        #print "vpn connected"
+        #self.item.set_net_state(2)
+        ##self.sidebar.set_active()
 
-    def vpn_connecting(self, widget, connection_name):
-        self.add_item(connection_name, state=1)
-        self.item.set_net_state(1)
+    #def vpn_connecting(self, widget, connection_name):
+        #self.add_item(connection_name, state=1)
+        #self.item.set_net_state(1)
 
-        #self.vbox.pack_start(self.connection_tree, False, False)
-        print "vpn connecting"
+        ##self.vbox.pack_start(self.connection_tree, False, False)
+        #print "vpn connecting"
 
-    def vpn_disconnected(self, widget):
-        print "vpn disconnected"
-        container_remove_all(self.vbox)
-        if self.vpn.switch.get_active():
-            self.vbox.pack_start(self.label, False, False)
-        cache.del_spec_object(widget.object_path)
+    #def vpn_disconnected(self, widget):
+        #print "vpn disconnected"
+        #container_remove_all(self.vbox)
+        #if self.vpn.switch.get_active():
+            #self.vbox.pack_start(self.label, False, False)
+        #cache.del_spec_object(widget.object_path)
 
-    def slide_to_event(self, widget, event):
-        Dispatcher.to_setting_page(VPNSetting())
+    #def slide_to_event(self, widget, event):
+        #Dispatcher.to_setting_page(VPNSetting())
 
-    def __init_state(self):
-        vpn_active = nm_module.nmclient.get_vpn_active_connection()
-        if vpn_active:
-            self.vpn.switch.set_active(True)
+    #def __init_state(self):
+        #vpn_active = nm_module.nmclient.get_vpn_active_connection()
+        #if vpn_active:
+            #self.vpn.switch.set_active(True)
 
 class MobileSection(Section):
 
@@ -863,17 +856,24 @@ class MobileSection(Section):
         # init values
         if self.get_list():
             self.mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), lambda w:w)
-            self.tree = TreeView([])
-            self.tree.set_expand_column(1)
+            #self.tree = TreeView([])
+            #self.tree.set_expand_column(1)
             self.label = Label(_("Mobile Configuration"),
                           LABEL_COLOR,
                           underline=True,
                           enable_select=False,
                           enable_double_click=False)
 
-            self.load(self.mobile, [self.tree, self.label])
+            self.load(self.mobile, [self.label])
         else:
             pass
+
+    @classmethod
+    def show_or_hide(self):
+        if nm_module.mmclient.get_cdma_device() or nm_module.nm_module.get_gsm_device():
+            return True
+        else:
+            return False
 
     def __init_signals(self):
         nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
@@ -978,9 +978,8 @@ class Mobile(gtk.VBox):
         self.settings = setting_page
 
 class Proxy(gtk.VBox):
-    def __init__(self, slide_to_setting_cb):
+    def __init__(self):
         gtk.VBox.__init__(self)
-        self.slide_to_setting = slide_to_setting_cb
         proxy = Contain(app_theme.get_pixbuf("network/proxy.png"), _("Proxy"), self.toggle_cb)
         self.settings = None
         self.add(proxy)
@@ -1004,12 +1003,13 @@ class Proxy(gtk.VBox):
             self.align.destroy()
 
     def slide_to_event(self, widget, event):
+        self.settings = ProxyConfig()
         self.settings.init(True)
-        self.slide_to_setting()
         slider.slide_to_page(self.settings, "right")
+        Dispatcher.send_submodule_crumb(2, _("Proxy"))
 
-    def add_setting_page(self, setting_page):
-        self.settings = setting_page
+    #def add_setting_page(self, setting_page):
+        #self.settings = setting_page
 
 class Network(object):
     def __init__(self):        
@@ -1017,11 +1017,6 @@ class Network(object):
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
-        #slider._append_page(self.wired_setting_page, "wired")
-        #slider._append_page(self.dsl_setting_page, "dsl")
-        #slider._append_page(self.wireless_setting_page, "wireless")
-        #slider._append_page(self.proxy_setting_page, "proxy")
-        #slider._append_page(self.vpn_setting_page, "vpn")
         from setting_page_ui import SettingUI
         self.setting_page_ui = SettingUI(None, None)
         slider._append_page(self.setting_page_ui, "setting")
@@ -1032,19 +1027,37 @@ class Network(object):
         slider._set_to_page("main")
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
 
+        self.sections = []
+    
+    def __init_sections(self, index):
+        section_list = [WiredSection, WirelessSection, DSLSection, MobileSection, VpnSection, Proxy]
+        self.sections = map(lambda s: s.show_or_hide(), section_list)
+        if index == -1:
+            container_remove_all(self.vbox)
+            for section in section_list:
+                if section.show_or_hide():
+                    self.vbox.pack_start(apply(section), False, True)
+        else:
+            if section_list[index].show_or_hide():
+                self.vbox.add
+             
+
+                
+
     def __init_ui(self):
-        vbox = gtk.VBox(False, BETWEEN_SPACING)
+
+        self.vbox = gtk.VBox(False, BETWEEN_SPACING)
         if hasattr(self.wired, "wire"):
-            vbox.pack_start(self.wired, False, True,0)
+            self.vbox.pack_start(self.wired, False, True,0)
         if hasattr(self.wireless, "wireless"):
-            vbox.pack_start(self.wireless, False, True, 0)
+            self.vbox.pack_start(self.wireless, False, True, 0)
         if hasattr(self.dsl, "dsl"):
-            vbox.pack_start(self.dsl, False, True, 0)
+            self.vbox.pack_start(self.dsl, False, True, 0)
         if hasattr(self.mobile, "mobile"):
-            vbox.pack_start(self.mobile, False, True, 0)
-        vbox.pack_start(self.vpn, False, True, 0)
-        vbox.pack_start(self.proxy, False, True, 0)
-        vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
+            self.vbox.pack_start(self.mobile, False, True, 0)
+        self.vbox.pack_start(self.vpn, False, True, 0)
+        self.vbox.pack_start(self.proxy, False, True, 0)
+        self.vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
         
         scroll_win = ScrolledWindow(right_space=0, top_bottom_space=0)
         scroll_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
@@ -1056,13 +1069,13 @@ class Network(object):
                                     TEXT_WINDOW_LEFT_PADDING,
                                     TEXT_WINDOW_LEFT_PADDING)
 
-        ui_align.add(vbox)
+        ui_align.add(self.vbox)
         scroll_win.add_with_viewport(ui_align)
 
         self.eventbox = gtk.EventBox()
         self.eventbox.set_above_child(False)
         self.eventbox.add(scroll_win)
-        vbox.connect("expose-event", self.expose_callback)
+        self.vbox.connect("expose-event", self.expose_callback)
         ui_align.connect("expose-event", self.expose_callback)
     
     def __pack_start(self, parent, child_list, expand=False, fill=False):
@@ -1097,16 +1110,12 @@ class Network(object):
     def init_sections(self):
         #slider._set_to_page("main")
         self.wired = WiredSection()
-        self.wireless = WirelessSection(lambda : module_frame.send_submodule_crumb(2, _("Wireless Setting")))
+        self.wireless = WirelessSection()
         self.dsl = DSLSection()
-        self.proxy = Proxy(lambda : module_frame.send_submodule_crumb(2, _("Proxy")))
+        self.proxy = Proxy()
+        self.mobile = MobileSection()
         self.vpn = VpnSection()
 
-        self.proxy_setting_page = ProxyConfig( lambda  :slider.slide_to_page(self.eventbox, "left"),
-                                          lambda  : module_frame.send_message("change_crumb", 1))
-        self.proxy.add_setting_page(self.proxy_setting_page)
-
-        self.mobile = MobileSection()
         #self.mobile_setting_page = MobileSetting( lambda  :slider.slide_to_page(self.eventbox, "left"),
                                           #lambda  : module_frame.send_message("change_crumb", 1))
         #self.mobile.add_setting_page(self.mobile_setting_page)

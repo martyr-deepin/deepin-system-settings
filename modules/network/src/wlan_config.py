@@ -118,7 +118,7 @@ class HiddenSetting(Settings):
         #self.settings_dict = Sections
         self.connection = connection
         self.spec_connection = spec_connection
-        self.crumb_name = "Hidden network"
+        self.crumb_name = _("Hidden network")
 
     def init_items(self, connection):
         self.connection = connection
