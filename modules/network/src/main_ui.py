@@ -52,7 +52,7 @@ from settings_widget import HotspotBox
 #from nmlib.nmcache import cache
 from nm_modules import nm_module
 from helper import Dispatcher
-from device_manager import device_manager
+from shared_methods import net_manager
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 #from module_frame import ModuleFrame 
@@ -160,7 +160,7 @@ class WiredDevice(object):
         pass
 
     def _init_signals(self):
-        device_manager.load_wired_listener(self)
+        net_manager.device_manager.load_wired_listener(self)
 
     def wired_device_active(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
@@ -193,14 +193,14 @@ class WiredSection(Section, WiredDevice):
     def __init__(self):
         Section.__init__(self)
         WiredDevice.__init__(self)
-        self.wired_devices = device_manager.get_wired_devices()
+        self.wired_devices = net_manager.device_manager.get_wired_devices()
         self.init_state()
 
         self.init_signals()
     
     @classmethod
     def show_or_hide(self):
-        if device_manager.get_wired_devices():
+        if net_manager.device_manager.get_wired_devices():
             return True
         else:
             return False
@@ -228,7 +228,7 @@ class WiredSection(Section, WiredDevice):
     
     def device_added(self, widget, device):
         print "device_added"
-        self.wired_devices = device_manager.get_wired_devices()
+        self.wired_devices = net_manager.device_manager.get_wired_devices()
         self.wire.set_active(True, emit=True)
 
     def get_list(self):
@@ -260,7 +260,7 @@ class WirelessDevice(object):
         self.pwd_failed = False
 
     def _init_signals(self):
-        device_manager.load_wireless_listener(self)
+        net_manager.device_manager.load_wireless_listener(self)
 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
         self.pwd_failed = False
@@ -349,7 +349,7 @@ class WirelessSection(Section, WirelessDevice):
     def __init__(self):
         Section.__init__(self)
         WirelessDevice.__init__(self)
-        self.wireless_devices = device_manager.get_wireless_devices()
+        self.wireless_devices = net_manager.device_manager.get_wireless_devices()
 
         self.selected_item = None
 
@@ -358,7 +358,7 @@ class WirelessSection(Section, WirelessDevice):
 
     @classmethod
     def show_or_hide(self):
-        if device_manager.get_wireless_devices():
+        if net_manager.device_manager.get_wireless_devices():
             return True
         else:
             return False
@@ -646,7 +646,7 @@ class HotSpot(gtk.VBox):
 class DSLSection(Section):
     def __init__(self):
         Section.__init__(self)
-        self.wired_devices = device_manager.get_wired_devices()
+        self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
 
             self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
@@ -666,7 +666,7 @@ class DSLSection(Section):
 
     @classmethod
     def show_or_hide(self):
-        if device_manager.get_wired_devices():
+        if net_manager.device_manager.get_wired_devices():
             return True
         else:
             return False
@@ -1163,7 +1163,7 @@ if __name__ == '__main__':
             #cache.clearcache()
             #cache.clear_spec_cache()
             nm_module.init_objects()
-            device_manager.reinit_cache()
+            net_manager.device_manager.reinit_cache()
             #network.refresh()
 
         servicemanager.connect("service-start", service_start_cb)

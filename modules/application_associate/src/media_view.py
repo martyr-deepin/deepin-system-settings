@@ -56,7 +56,7 @@ class MediaView(gtk.VBox):
         table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 5, 6)
         table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
         
-        table.attach(style.wrap_with_align(self.auto_check), 0, 3, 1, 2)
+        #table.attach(style.wrap_with_align(self.auto_check), 0, 3, 1, 2)
         table.attach(style.wrap_with_align(self.cd), 1, 3, 2, 3)
         table.attach(style.wrap_with_align(self.dvd), 1, 3, 3, 4)
         table.attach(style.wrap_with_align(self.player), 1, 3, 4, 5)

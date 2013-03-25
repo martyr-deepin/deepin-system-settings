@@ -32,10 +32,9 @@ from elements import SettingSection, TableAsm
 import gtk
 wired_device = []
 
-from shared_methods import Settings
+from shared_methods import Settings, net_manager
 from helper import Dispatcher
 from nls import _
-from device_manager import device_manager
 
 class WiredSetting(Settings):
     def __init__(self, device, spec_connection=None):
@@ -68,7 +67,7 @@ class WiredSetting(Settings):
             print "not complete"
 
     def apply_changes(self, connection):
-        wired_device = device_manager.get_wired_devices()[0]
+        wired_device = net_manager.device_manager.get_wired_devices()[0]
         if wired_device.get_state() != 20:
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                                wired_device.object_path,

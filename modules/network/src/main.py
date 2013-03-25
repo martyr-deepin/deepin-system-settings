@@ -30,6 +30,7 @@ def start_ui():
     slider.init_dict()
     
     Network()
+    slider.show_all()
 
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
