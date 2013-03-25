@@ -389,8 +389,7 @@ class NMAccessPoint(NMObject):
         return self.properties["HwAddress"]
 
     def properties_changed_cb(self, prop_dict):
-        pass
-
+        self.init_nmobject_with_properties()
 if __name__ == "__main__":
     #nm_access_point = NMAccessPoint("/org/freedesktop/NetworkManager/AccessPoint/840")
     #print nm_access_point.properties

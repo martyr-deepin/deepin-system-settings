@@ -120,7 +120,7 @@ class NMActiveConnection(NMObject):
 
     ###Signals###
     def properties_changed_cb(self, prop_dict):
-        pass
+        self.init_nmobject_with_properties()
 
 if __name__ == "__main__":
     nm_active_connection = NMActiveConnection("/org/freedesktop/NetworkManager/ActiveConnection/4");

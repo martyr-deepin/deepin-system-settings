@@ -9,8 +9,6 @@ class DeviceManager(object):
 
     def __init__(self):
         self.__init_device()
-        #self.init_signals()
-        
         self.__signal_list = ["device_active",
                               "device_deactive",
                               "device_unavailable",
@@ -59,8 +57,6 @@ class DeviceManager(object):
         elif type == 2:
             Dispatcher.emit("wireless-device-remove", device)
             Dispatcher.emit("recheck-section", 1)
-
-
 
     def ap_added(self, devices):
         for device in devices:

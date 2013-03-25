@@ -40,27 +40,30 @@ class ThreadWifiAuto(threading.Thread):
         self.run_flag = True
 
     def run(self):
-        while self.run_flag:
             for conn in self.conns:
-                #print conn, "Debug in ThreadWifiAuto"
-                ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
-                if ssid in self.device.get_ssid_record():
-                    try:
-                        specific = self.device.get_ap_by_ssid(ssid)
-                        active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, specific.object_path)
-                        while(active_conn.get_state() == 1):
-                            time.sleep(1)
+                if self.run_flag:
+                    ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
+                    if ssid in self.device.get_ssid_record():
+                        try:
+                            specific = self.device.get_ap_by_ssid(ssid)
+                            active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, specific.object_path)
+                            while(active_conn.get_state() == 1 and self.run_flag):
+                                print "state 1"
+                                time.sleep(1)
 
-                        if active_conn.get_state() == 2:
-                            self.stop_run()
-                            return True
-                        else:
-                            continue
-                    except:
-                        pass
+                            if active_conn.get_state() == 2:
+                                self.stop_run()
+                                return True
+                            else:
+                                continue
+                        except:
+                            pass
+                    else:
+                        continue
                 else:
-                    continue
-            self.stop_run()
+                    return False
+
+            #self.stop_run()
 
     def stop_run(self):
         self.run_flag = False
@@ -77,11 +80,11 @@ class NMDeviceWifi(NMDevice):
         NMDevice.__init__(self, wifi_device_object_path, "org.freedesktop.NetworkManager.Device.Wireless")
         self.prop_list = ["HwAddress", "PermHwAddress", "Mode", "Bitrate", "ActiveAccessPoint", "WirelessCapabilities"]
 
-        #self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface,
-                                     #path = self.object_path, signal_name = "AccessPointAdded")
+        self.bus.add_signal_receiver(self.access_point_added_cb, dbus_interface = self.object_interface,
+                                     path = self.object_path, signal_name = "AccessPointAdded")
 
-        #self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, 
-                                     #path = self.object_path, signal_name = "AccessPointRemoved")
+        self.bus.add_signal_receiver(self.access_point_removed_cb, dbus_interface = self.object_interface, 
+                                     path = self.object_path, signal_name = "AccessPointRemoved")
 
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")

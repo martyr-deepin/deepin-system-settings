@@ -19,7 +19,6 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from nmlib.nmclient import NMClient
 #from nmlib.nm_remote_settings import NMRemoteSettings
 from nmlib.nmcache import  cache
 from nmlib.nm_secret_agent import NMSecretAgent
@@ -58,6 +57,7 @@ class NModule(object):
 
     def __init__(self):
         self.init_objects()
+        self.hslider = MySlider()
 
     def init_objects(self):
         print "reinit object"
@@ -65,7 +65,6 @@ class NModule(object):
         self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
         self.agent = NMSecretAgent()
         self.mclient = MMClient()
-        self.hslider = MySlider()
 
     @property
     def nmclient(self):

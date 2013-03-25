@@ -104,8 +104,8 @@ class FootBox(gtk.HBox):
         self.__setting_module = module
 
     def button_click(self, widget):
-        if self.button_box.label == "save":
-            Dispatcher.emit("setting-saved")
+        #if self.button_box.label == "save":
+        Dispatcher.emit("setting-saved")
         #elif self.button_box.label == _("connect"):
             #Dispatcher.set_tip("setting saved")
             #Dispatcher.emit("setting-appled")

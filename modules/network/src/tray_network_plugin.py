@@ -48,6 +48,7 @@ class TrayNetworkPlugin(object):
         self.need_auth_flag = False
         self.this_device = None
         self.this_connection = None
+        self.dialog_toggled_flag = False
 
         self.timer = Timer(WAIT_TIME)
         self.timer.Enabled = False

@@ -35,6 +35,7 @@ from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_
 from nm_utils import InvalidObjectPath , InvalidObjectInterface, InvalidService
 # from servicemanager import nm_bus
 from servicemanager import servicemanager
+from nm_utils import nm_alive
 
 # name_re = re.compile("[0-9a-zA-Z-]*")
 # dbus_loop = gobject.MainLoop()
@@ -78,6 +79,7 @@ class NMObject(gobject.GObject):
         self.properties = self.init_properties()
         self.properties_access = {}
 
+    #@nm_alive
     def dbus_method(self, method_name, *args, **kwargs):
         try:
             # return TypeConvert.dbus2py(apply(getattr(self.dbus_interface, method_name), args, kwargs))
