@@ -110,7 +110,7 @@ class MouseSetting(object):
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
             DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
             enable_select=False, enable_double_click=False)
-        self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
+        self.button_widgets["set_to_default"] = Button(_("Reset"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()
@@ -380,6 +380,7 @@ class MouseSetting(object):
             lambda w: self.scale_widgets["double_click_rate"].set_value(
                 self.adjust_widgets["double_click_rate"].get_value()))
         self.button_widgets["double_test"].set_data("has_double_clicked", False)
+        self.button_widgets["double_test"].set_data("last_press_time", 0)
         self.button_widgets["double_test"].connect("button-press-event", self.double_click_test)
         self.button_widgets["double_test"].connect("expose-event", self.double_click_test_expose)
         
@@ -464,7 +465,10 @@ class MouseSetting(object):
 
     def double_click_test(self, widget, event):
         '''double clicked callback, to test the double-click time'''
-        if event.type == gtk.gdk._2BUTTON_PRESS or event.type == gtk.gdk._3BUTTON_PRESS:
+        interval_time = event.time - widget.get_data("last_press_time")
+        widget.set_data("last_press_time", event.time)
+        if interval_time <= settings.mouse_get_double_click():
+            widget.set_data("last_press_time", 0)
             widget.set_data("has_double_clicked", not widget.get_data("has_double_clicked"))
             widget.queue_draw()
     
