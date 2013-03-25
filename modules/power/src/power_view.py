@@ -318,8 +318,7 @@ class PowerView(gtk.VBox):
         return label
 
     def __setup_combo(self, items=[]):
-        combo = ComboBox(items, None, 0, 120)
-        combo.set_size_request(-1, WIDGET_HEIGHT)
+        combo = ComboBox(items = items, select_index = 0, max_width = 120, fixed_width = 120)
         return combo
 
     def __setup_toggle(self):
