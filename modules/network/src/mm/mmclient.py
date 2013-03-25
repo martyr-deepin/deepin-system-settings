@@ -79,10 +79,10 @@ class MMClient(MMObject):
 
         return filter(lambda x:MMDevice(x).get_type() == 1, self.enumerate_devices())
 
-    #@nm_alive
+    @nm_alive
     def device_added_cb(self, device_path):
         self.emit("device-added", device_path)
-    #@nm_alive
+    @nm_alive
     def device_removed_cb(self, device_path):
         self.emit("device-removed", device_path)
 

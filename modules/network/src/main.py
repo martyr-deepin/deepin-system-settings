@@ -19,7 +19,12 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import dss
+import dbus
+from dbus.mainloop.glib import DBusGMainLoop
+DBusGMainLoop(set_as_default = True)
+dbus.mainloop.glib.threads_init()
 from proxy_config import ProxyConfig
 import sys
 import os
@@ -1148,24 +1153,25 @@ class Network(object):
 if __name__ == '__main__':
     if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
         module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-        #Dispatcher.load_module_frame(module_frame)
-        #Dispatcher.load_slider(slider)
-        #network = Network()
+        Dispatcher.load_module_frame(module_frame)
+        Dispatcher.load_slider(slider)
+        network = Network()
 
         def service_stop_cb(widget, s):
             #network.stop()
-            global cache
             cache.clearcache()
             cache.clear_spec_cache()
 
         def service_start_cb(widget, s):
             print "#service start#"
+            #cache.clearcache()
+            #cache.clear_spec_cache()
             nm_module.init_objects()
             device_manager.reinit_cache()
             #network.refresh()
 
-        #servicemanager.connect("service-start", service_start_cb)
-        #servicemanager.connect("service-stop", service_stop_cb)
+        servicemanager.connect("service-start", service_start_cb)
+        servicemanager.connect("service-stop", service_stop_cb)
         #main_align = network.get_main_page()
         module_frame.add(slider)
         

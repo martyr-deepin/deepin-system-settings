@@ -19,8 +19,8 @@ class NetManager(object):
     def __init__(self):
         #self.init_devices()
         if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
-            servicemanager.connect("service-start", self.__on_service_start_do)
-            servicemanager.connect("service-stop", self.__on_service_stop_do)
+            #servicemanager.connect("service-start", self.__on_service_start_do)
+            #servicemanager.connect("service-stop", self.__on_service_stop_do)
             self.device_manager = DeviceManager()
             self.init_devices()
 
