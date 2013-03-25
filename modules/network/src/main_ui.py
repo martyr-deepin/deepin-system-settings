@@ -313,7 +313,7 @@ class WirelessDevice(object):
             self.selected_item.set_net_state(1)
         else:
             index = self.get_actives(self.ap_list)
-            if index:
+            if index and self.tree.visible_items:
                 for i in index:
                     self.tree.visible_items[i].set_net_state(1)
 
@@ -729,7 +729,14 @@ class VpnSection(Section):
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
-        Dispatcher.connect("vpn-redraw", lambda w:self.vpn.set_active(True, emit=True))
+        Dispatcher.connect("vpn-redraw", self.vpn_redraw)
+
+    def vpn_redraw(self, widget):
+        print "vpn-redraw"
+        if self.vpn.get_active():
+            self.vpn.set_active(True, emit=True)
+            self.show_all()
+
 
     def connect_vpn_signals(self, active_vpn, connection_name):
         active_vpn.connect("vpn-connected", self.vpn_connected, connection_name)

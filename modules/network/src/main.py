@@ -17,6 +17,7 @@ from helper import Dispatcher
 
 from nm_modules import nm_module
 from main_ui import Network
+from nls import _
 slider = nm_module.slider
 def service_stop_cb(widget, s):
     pass

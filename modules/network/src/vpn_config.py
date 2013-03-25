@@ -48,8 +48,8 @@ class VPNSetting(Settings):
         else:
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
             Dispatcher.emit("connection-replace", connection)
+            Dispatcher.emit("vpn-redraw")
 
-        Dispatcher.emit("vpn-redraw")
         Dispatcher.to_main_page()
         #Dispatcher.set_button("apply", True)
 

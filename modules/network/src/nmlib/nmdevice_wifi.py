@@ -64,7 +64,7 @@ class ThreadWifiAuto(threading.Thread):
                 else:
                     return False
 
-            #self.stop_run()
+            self.stop_run()
 
     def stop_run(self):
         self.run_flag = False
