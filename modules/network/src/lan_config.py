@@ -26,7 +26,6 @@ from nm_modules import nm_module
 from dtk.ui.button import Button
 #from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
-from nmlib.nmcache import cache
 from nmlib.nm_remote_connection import NMRemoteConnection
 from ipsettings import IPV4Conf, IPV6Conf
 from elements import SettingSection, TableAsm
@@ -74,7 +73,7 @@ class WiredSetting(Settings):
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                                wired_device.object_path,
                                                "/")
-            self.device_ethernet = cache.get_spec_object(wired_device.object_path)
+            self.device_ethernet = nm_module.cache.get_spec_object(wired_device.object_path)
             self.device_ethernet.emit("try-activate-begin")
         Dispatcher.to_main_page()
 

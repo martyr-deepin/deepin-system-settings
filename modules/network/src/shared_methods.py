@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 from nm_modules import nm_module
-from nmlib.nmcache import cache
 from helper import Dispatcher
 from device_manager import DeviceManager
 from nmlib.servicemanager import servicemanager
@@ -30,7 +29,6 @@ class NetManager(object):
                 self.cf.add_section("hidden")
         else:
             pass
-
 
     def __on_service_start_do(self, widget, s):
         print "Debug::service_start", s
@@ -115,7 +113,7 @@ class NetManager(object):
                 if not connections:
                     connection = nm_module.nm_remote_settings.new_wired_connection()
                     nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                device_ethernet = cache.get_spec_object(device.object_path)
+                device_ethernet = nm_module.cache.get_spec_object(device.object_path)
                 device_ethernet.auto_connect()
 
     def disactive_wired_device(self, disactived_cb):
@@ -126,7 +124,7 @@ class NetManager(object):
             #disactived_cb()
         #device.connect("device-deactive", device_is_disactive)
         for device in self.wired_devices:
-            wired = cache.get_spec_object(device.object_path)
+            wired = nm_module.cache.get_spec_object(device.object_path)
             wired.device_wired_disconnect()
             device.nm_device_disconnect()
 
@@ -145,7 +143,7 @@ class NetManager(object):
 
     def get_ap_list(self):
         wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
         #print "DEBUG in get ap list", device_wifi
         ap_list = device_wifi.order_ap_list()
         # 返回ap对象，ap.get_ssid() 获取ssid, ap.get_flags()获得加密状态，0为加密，1加密
@@ -186,7 +184,7 @@ class NetManager(object):
         
 
     def connect_wireless_by_ssid(self, ssid):
-        device_wifi = cache.get_spec_object(self.wireless_device.object_path)
+        device_wifi = nm_module.cache.get_spec_object(self.wireless_device.object_path)
         return device_wifi.active_ssid_connection(ssid)
 
 
@@ -198,7 +196,7 @@ class NetManager(object):
             #print "active"
             #actived_cb()
         #wireless_device.connect("device-active", device_is_active)
-        device_wifi = cache.get_spec_object(wireless_device.object_path)
+        device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
         device_wifi.auto_connect()
 
     def disactive_wireless_device(self, disactived_cb):
@@ -208,7 +206,7 @@ class NetManager(object):
             #active = wireless_device.get_active_connection()
             #disactived_cb()
         #wireless_device.connect("device-deactive", device_is_disactive)
-        wifi = cache.get_spec_object(wireless_device.object_path)
+        wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
         wifi.device_wifi_disconnect()
         wireless_device.nm_device_disconnect()
 

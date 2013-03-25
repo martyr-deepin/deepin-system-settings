@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #from nmlib.nm_remote_settings import NMRemoteSettings
-from nmlib.nmcache import  cache
+from nmlib.nmcache import get_cache, update_cache
 from nmlib.nm_secret_agent import NMSecretAgent
 from mm.mmclient import MMClient
 from dtk.ui.new_slider import HSlider
@@ -29,7 +29,9 @@ class MySlider(HSlider):
 
     def __init__(self):
         HSlider.__init__(self)
+        self.__slider_dict = {}
 
+    def init_dict(self):
         self.__slider_dict = {}
 
     def _append_page(self, page, name):
@@ -56,15 +58,25 @@ class MySlider(HSlider):
 class NModule(object):
 
     def __init__(self):
-        self.init_objects()
         self.hslider = MySlider()
+        self.my_cache = get_cache()
+        self.init_objects()
 
     def init_objects(self):
         print "reinit object"
-        self.client = cache.getobject("/org/freedesktop/NetworkManager")
-        self.setting = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+        self.client = self.my_cache.getobject("/org/freedesktop/NetworkManager")
+        self.setting = self.my_cache.getobject("/org/freedesktop/NetworkManager/Settings")
         self.agent = NMSecretAgent()
         self.mclient = MMClient()
+        self.hslider.init_dict()
+
+    def update_cache(self):
+        update_cache()
+        self.my_cache = get_cache()
+
+    @property
+    def cache(self):
+        return self.my_cache
 
     @property
     def nmclient(self):
