@@ -157,8 +157,8 @@ class NetManager(object):
             #return []
         active_connection = self.wireless_device.get_active_connection()
         if active_connection:
+            print active_connection.get_state(), "Debug in get active connection"
             try:
-                print active_connection.get_specific_object()
                 index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
                 return index
             except:
@@ -214,7 +214,20 @@ class NetManager(object):
         cdma = nm_module.mmclient.get_cdma_device()
         gsm = nm_module.mmclient.get_gsm_device()
         return cdma + gsm
+    
+    def connect_mm_device(self):
+        cdma = nm_module.mmclient.get_cdma_device()
+        gsm = nm_module.mmclient.get_gsm_device()
+        device = cdma + gsm
+        if device:
+            d = device[0]
+            from mm.mmdevice import MMDevice
+            MMDevice(d).auto_connect()
 
+    def disconnect_mm_device(self):
+        device = nm_module.nmclient.get_modem_devices()
+        if device:
+            device[0].nm_device_disconnect()
 
     def get_security_by_ap(self, ap_object):
         return ap_object.get_flags()

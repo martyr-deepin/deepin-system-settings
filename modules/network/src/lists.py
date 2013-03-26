@@ -655,8 +655,6 @@ class DSLItem(GenItems):
                                            device_path,
                                            "/")
 
-
-
 class MobileItem(GenItems):
 
     def __init__(self, device, jumpto):
