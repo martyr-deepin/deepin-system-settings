@@ -690,6 +690,9 @@ class MobileItem(GenItems):
         from mobile_config import MobileSetting
         Dispatcher.to_setting_page(MobileSetting())
 
+    def click_cb(self):
+        self.device.auto_connect()
+
 
 class VPNItem(DSLItem):
 

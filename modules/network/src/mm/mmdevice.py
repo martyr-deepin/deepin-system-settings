@@ -23,6 +23,41 @@
 import gobject
 from mmclient import MMObject
 from nmlib.nm_utils import TypeConvert
+from nmlib.nmcache import get_cache
+import threading
+import time
+cache = get_cache()
+
+nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+
+class ThreadWiredAuto(threading.Thread):
+
+    def __init__(self, device_path, connections):
+        threading.Thread.__init__(self)
+        self.device = cache.get_spec_object(device_path)
+        self.conns = connections
+        self.run_flag = True
+
+    def run(self):
+        for conn in self.conns:
+            if self.run_flag:
+                try:
+                    active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, "/")
+                    while(active_conn.get_state() == 1 and self.run_flag):
+                        time.sleep(1)
+
+                    if active_conn.get_state() == 2:
+                        self.stop_run()
+                        return True
+                    else:
+                        continue
+                except:
+                    pass
+        self.stop_run()
+
+    def stop_run(self):
+        self.run_flag = False
 
 class MMDevice(MMObject):
     '''MMDevice'''
@@ -82,8 +117,44 @@ class MMDevice(MMObject):
     def connect_finish(self, *reply):
         pass
     
+    def auto_connect(self):
+        #if self.get_state() == 100:
+            #return True
+        #if self.get_state() < 30:
+            #return False
+
+        if self.__get_connections():
+
+            wired_prio_connections = sorted(self.__get_connections(),
+                                    key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
+                                    reverse = True)
+
+            nm_device = filter(lambda d: d.get_udi() == self.object_path, nmclient.get_modem_devices())[0]
+            print nm_device
+            object_path = nm_device.object_path
+
+            self.thread_wiredauto = ThreadWiredAuto(object_path, wired_prio_connections)
+            self.thread_wiredauto.setDaemon(True)
+            self.thread_wiredauto.start()
+
+        else:
+            try:
+                nmconn = nm_remote_settings.new_wired_connection()
+                conn = nm_remote_settings.new_connection_finish(nmconn.settings_dict)
+                nmclient.activate_connection(conn.object_path, self.object_path, "/")
+            except:
+                return False
+    
     def connect_error(self, *error):
         pass
+
+    def __get_connections(self):
+        if self.get_type() == 2:
+            return nm_remote_settings.get_cdma_connections()
+        elif self.get_type() == 1:
+            return nm_remote_settings.get_gsm_connections()
+        else:
+            return []
 
     def disconnect(self):
         self.dbus_method("Disconnect", reply_handler = self.disconnect_finish, error_handler = self.disconnect_error)
