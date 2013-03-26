@@ -875,10 +875,7 @@ class MobileSection(Section):
     def __init__(self):
         Section.__init__(self)
         # init values
-        #if self.get_list():
         self.mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), lambda w:w)
-        #self.tree = TreeView([])
-        #self.tree.set_expand_column(1)
         self.label = Label(_("Mobile Configuration"),
                       LABEL_COLOR,
                       underline=True,
