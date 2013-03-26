@@ -43,6 +43,7 @@ class TrayNetworkPlugin(object):
         Dispatcher.connect("request_resize", self.request_resize)
         Dispatcher.connect("ap-added", self.wireless_ap_added)
         Dispatcher.connect("ap-removed", self.wireless_ap_removed)
+        Dispatcher.connect("recheck-section", self.recheck_sections)
         self.gui.button_more.connect("clicked", self.more_setting)
 
         self.need_auth_flag = False
@@ -56,6 +57,12 @@ class TrayNetworkPlugin(object):
 
         self.init_wired_signals()
         self.init_wireless_signals()
+        self.init_mm_signals()
+        Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals)
+
+    def recheck_sections(self, widget, index):
+        self.init_widgets()
+        Dispatcher.emit("request-resize")
 
     def wireless_ap_added(self, widget):
         print "wireless_ap_added in tray"
@@ -73,8 +80,44 @@ class TrayNetworkPlugin(object):
         self.tray_icon = self.this_list[1]
         self.init_widgets()
 
+    def init_mm_signals(self):
+        net_manager.device_manager.load_mm_listener(self)
+
+    def mm_device_active(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("cable")
+
+    def mm_device_deactive(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("link")
+        else:
+            self.change_status_icon("cable_disconnect")
+
+    def mm_device_unavailable(self,  widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+
+    def mm_activate_start(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("loading")
+        self.let_rotate(True)
+
+    def mm_activate_failed(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
+        else:
+            self.change_status_icon("cable_disconnect")
+
     def mobile_toggle(self, widget):
-        pass
+        if widget.get_active():
+            self.mm_device = self.net_manager.connect_mm_device()
+        else:
+            self.net_manager.disconnect_mm_device()
     
     def timer_count_down_finish(self, widget):
         connections = nm_module.nmclient.get_active_connections()
@@ -88,6 +131,7 @@ class TrayNetworkPlugin(object):
     def init_widgets(self):
         wired_state = self.net_manager.get_wired_state()
         if wired_state:
+            self.gui.show_net("wire")
             self.gui.wire.set_active(wired_state)
             if wired_state[0] and wired_state[1]:
                 self.change_status_icon("cable")
@@ -95,10 +139,11 @@ class TrayNetworkPlugin(object):
                 self.change_status_icon("cable_disconnect")
             #Dispatcher.connect("wired-change", self.set_wired_state)
         else:
-            self.gui.remove_net("wired")
+            self.gui.remove_net("wire")
         
         wireless_state= self.net_manager.get_wireless_state()
         if wireless_state:
+            self.gui.show_net("wireless")
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
                 self.change_status_icon("links")
@@ -112,7 +157,8 @@ class TrayNetworkPlugin(object):
         
         # Mobile init
         if self.net_manager.get_mm_devices():
-            pass
+            self.gui.show_net("mobile")
+
         else:
             self.gui.remove_net("mobile")
 
@@ -121,7 +167,6 @@ class TrayNetworkPlugin(object):
             self.net_manager.active_wired_device(self.active_wired)
         else:
             self.net_manager.disactive_wired_device(self.disactive_wired)
-
 
     def init_wired_signals(self):
         net_manager.device_manager.load_wired_listener(self)
