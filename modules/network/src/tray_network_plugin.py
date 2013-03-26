@@ -58,7 +58,7 @@ class TrayNetworkPlugin(object):
         self.init_wired_signals()
         self.init_wireless_signals()
         self.init_mm_signals()
-        Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals)
+        Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals())
 
     def recheck_sections(self, widget, index):
         self.init_widgets()
