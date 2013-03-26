@@ -534,7 +534,7 @@ class DisplayView(gtk.VBox):
         if not self.display_manager.is_copy_monitors():
             self.__setup_sizes_items()
         if len(self.sizes_items):
-            self.sizes_combo.set_items(items = self.sizes_items, fixed_width = HSCALEBAR_WIDTH)
+            self.sizes_combo.add_items(items = self.sizes_items)
         self.sizes_combo.set_select_index(self.display_manager.get_screen_size_index(
             self.__current_output_name, self.sizes_items))
     
@@ -559,12 +559,11 @@ class DisplayView(gtk.VBox):
 
         self.display_manager.init_xml()
         self.__setup_monitor_items()
-        self.monitor_combo.set_items(items = self.monitor_items, fixed_width = HSCALEBAR_WIDTH)
+        self.monitor_combo.add_items(items = self.monitor_items)
         if len(self.monitor_items) > 1:
             if self.display_manager.is_copy_monitors():
                 self.__set_same_sizes()
-                self.sizes_combo.set_items(items = self.sizes_items,                    
-                                           fixed_width = HSCALEBAR_WIDTH) 
+                self.sizes_combo.add_items(items = self.sizes_items) 
 
             self.multi_monitors_align.set_size_request(-1, 30)
             self.multi_monitors_align.set_child_visible(True)
