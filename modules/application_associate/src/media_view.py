@@ -105,7 +105,7 @@ class MediaView(gtk.VBox):
             else:
                 default_value = len(app_info_list) + ["ask", "do_nothing","open_folder"].index(state) + 1
 
-            key.set_items(map(lambda info:(info.get_name(), info), app_info_list) + default_list, max_width=self.ENTRY_WIDTH, select_index=default_value)
+            key.add_items(map(lambda info:(info.get_name(), info), app_info_list) + default_list, select_index=default_value)
 
     def connect_signal_to_combos(self):
         for combo in self.all_app_dict:
