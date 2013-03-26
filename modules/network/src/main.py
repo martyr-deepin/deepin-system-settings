@@ -17,6 +17,7 @@ from helper import Dispatcher
 
 from nm_modules import nm_module
 from main_ui import Network
+from nls import _
 slider = nm_module.slider
 def service_stop_cb(widget, s):
     pass
@@ -30,6 +31,7 @@ def start_ui():
     slider.init_dict()
     
     Network()
+    slider.show_all()
 
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
