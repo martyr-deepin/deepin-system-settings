@@ -239,6 +239,7 @@ class TrayNetworkPlugin(object):
         else:
             self.change_status_icon("wifi_disconnect")
         if reason == 39:
+            print "user close"
             self.gui.wireless.set_active((True, False))
 
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):

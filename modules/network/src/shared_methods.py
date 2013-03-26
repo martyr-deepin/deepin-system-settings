@@ -200,15 +200,17 @@ class NetManager(object):
         device_wifi.auto_connect()
 
     def disactive_wireless_device(self, disactived_cb):
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+
+        for device in nm_module.nmclient.get_wireless_devices():
         
         #def device_is_disactive( widget, reason):
             #active = wireless_device.get_active_connection()
             #disactived_cb()
         #wireless_device.connect("device-deactive", device_is_disactive)
-        wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
-        wifi.device_wifi_disconnect()
-        wireless_device.nm_device_disconnect()
+            wifi = nm_module.cache.get_spec_object(device.object_path)
+            wifi.device_wifi_disconnect()
+            #device.nm_device_disconnect()
 
     def get_mm_devices(self):
         cdma = nm_module.mmclient.get_cdma_device()

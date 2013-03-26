@@ -274,6 +274,7 @@ class WirelessDevice(object):
             map(lambda i: self.tree.visible_items[i].set_net_state(2), index)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        self.wireless.set_sensitive(True)
         if new_state == 60:
             wifi = nm_module.cache.get_spec_object(widget.object_path)
             wifi.nm_device_disconnect()
@@ -289,7 +290,6 @@ class WirelessDevice(object):
 
             # toggle off
             #self.toggle_lock = True
-            #self.wireless.set_sensitive(True)
             #self.wireless.set_active(False)
 
         if self._get_active_item():
@@ -431,6 +431,8 @@ class WirelessSection(Section, WirelessDevice):
         for wireless_device in self.wireless_devices:
             active_connection = wireless_device.get_active_connection()
             if active_connection:
+                #if active_connection.get_state() != 2:
+                    #return []
                 try:
                     conn = active_connection.get_connection()
                     #print map(lambda a: a.object_path, ap_list)
@@ -447,6 +449,7 @@ class WirelessSection(Section, WirelessDevice):
         ###while self.td.isAlive():
             ###continue
     #def after(self):
+        self.wireless.set_sensitive(True)
         indexs = self.get_actives(self.ap_list)
         if indexs:
             map(lambda i: self.tree.visible_items[i].set_net_state(2), indexs)
@@ -461,12 +464,12 @@ class WirelessSection(Section, WirelessDevice):
         #self.td.stop_run()
         self.selected_item = None
         for wireless_device in self.wireless_devices:
-            #wireless_device.nm_device_disconnect()
-            wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
-            wifi.device_wifi_disconnect()
+            wireless_device.nm_device_disconnect()
+            #wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
+            #wifi.device_wifi_disconnect()
             #self.device_stop(wireless_device)
         #self.toggle_lock = True
-        #self.wireless.set_sensitive(False)
+        self.wireless.set_sensitive(False)
 
     def get_list(self):
         self.ap_list = list()

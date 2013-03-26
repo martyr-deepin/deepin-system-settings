@@ -201,7 +201,7 @@ class NMDevice(NMObject):
         #self.emit("state-changed", new_state, old_state, reason)
         self.init_nmobject_with_properties()
 
-        if old_state == 100:
+        if old_state == 100 or reason ==39:
             print "device-deactive", new_state, old_state, reason
             self.emit("device-deactive", new_state, old_state, reason)
             return 
