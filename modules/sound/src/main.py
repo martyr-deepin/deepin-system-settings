@@ -125,8 +125,8 @@ class SoundSetting(object):
         self.button_widgets["speaker"] = OffButton()
         self.button_widgets["microphone"] = OffButton()
         self.button_widgets["advanced"] = Button(_("Advanced"))
-        self.button_widgets["speaker_combo"] = ComboBox(max_width=HSCALEBAR_WIDTH, fixed_width=HSCALEBAR_WIDTH)
-        self.button_widgets["microphone_combo"] = ComboBox(max_width=HSCALEBAR_WIDTH, fixed_width=HSCALEBAR_WIDTH)
+        self.button_widgets["speaker_combo"] = ComboBox(max_width=HSCALEBAR_WIDTH-5)
+        self.button_widgets["microphone_combo"] = ComboBox(max_width=HSCALEBAR_WIDTH-5)
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()
