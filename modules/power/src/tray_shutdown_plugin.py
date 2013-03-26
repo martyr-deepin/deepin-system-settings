@@ -38,7 +38,7 @@ RESTART_TOP_TEXT = _("<span foreground='#FF0000'>Restart</span> your computer no
 #RESTART_BOTTOM_TEXT = "系统即将在%s秒后自动重启。"
 RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.,12")
 #SUSPEND_TOP_TEXT = "现在挂起此系统吗？"
-SUSPEND_TOP_TEXT = _("<span foreground='#FF0000'>uspend</span> your computer now?,12")
+SUSPEND_TOP_TEXT = _("<span foreground='#FF0000'>Suspend</span> your computer now?,12")
 #SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
 SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.,12")
 LOGOUT_TOP_TEXT = _("<span foreground='#FF0000'>Logout</span> your computer now?,12")

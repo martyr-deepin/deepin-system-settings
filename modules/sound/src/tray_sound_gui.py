@@ -99,7 +99,7 @@ class TrayGui(gtk.VBox):
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
 
         table = gtk.Table(2, 3)
-        speaker_img = ImageBox(app_theme.get_pixbuf("sound/tray_speaker-3.png"))
+        speaker_img = ImageBox(app_theme.get_pixbuf("sound/speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.speaker_scale.set_size_request(100, 10)
         self.speaker_mute_button = OffButton()
@@ -107,7 +107,7 @@ class TrayGui(gtk.VBox):
         table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=25), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
-        microphone_img = ImageBox(app_theme.get_pixbuf("sound/tray_microphone.png"))
+        microphone_img = ImageBox(app_theme.get_pixbuf("sound/microphone.png"))
         self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.microphone_scale.set_size_request(100, 10)
         self.microphone_mute_button = OffButton()
