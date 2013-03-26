@@ -90,7 +90,7 @@ class Gui(gtk.VBox):
         #
         ali_padding = 100  
         font_size = 10
-        self.switch_btn = SelectButton(_("切换用户"), 
+        self.switch_btn = SelectButton(_("Switch user"), 
                                        font_size=font_size, 
                                        ali_padding=ali_padding)
         self.stop_btn = SelectButton(_("shutdown"), 
@@ -105,7 +105,7 @@ class Gui(gtk.VBox):
         self.logout_btn = SelectButton(_("logout"), 
                                        font_size=font_size, 
                                        ali_padding=ali_padding)
-        self.lock_btn = SelectButton(_("锁屏"), 
+        self.lock_btn = SelectButton(_("Lock"), 
                                      font_size=font_size, 
                                      ali_padding=ali_padding)
         #
