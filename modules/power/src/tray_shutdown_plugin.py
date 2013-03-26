@@ -34,15 +34,15 @@ from accounts import User
 DBUS_USER_STR = "/org/freedesktop/Accounts/User%s" % (os.getuid())
 
 #RESTART_TOP_TEXT = "现在重启此系统吗？"
-RESTART_TOP_TEXT = _("Restart your computer now?")
+RESTART_TOP_TEXT = _("<span foreground='#FF0000'>Restart</span> your computer now?,12")
 #RESTART_BOTTOM_TEXT = "系统即将在%s秒后自动重启。"
-RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.")
+RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.,12")
 #SUSPEND_TOP_TEXT = "现在挂起此系统吗？"
-SUSPEND_TOP_TEXT = _("Suspend your computer now?")
+SUSPEND_TOP_TEXT = _("<span foreground='#FF0000'>uspend</span> your computer now?,12")
 #SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
-SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.")
-LOGOUT_TOP_TEXT = _("Logout your computer now?")
-LOGOUT_BOTTOM_TEXT = _("The system will Logout in \n%s secs.")
+SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.,12")
+LOGOUT_TOP_TEXT = _("<span foreground='#FF0000'>Logout</span> your computer now?,12")
+LOGOUT_BOTTOM_TEXT = _("The system will Logout in \n%s secs.,12")
 
 RUN_DSS_COMMAND = "deepin-system-settings account"
 RUN_SWITCH_TOGREETER = "switchtogreeter"
