@@ -353,7 +353,14 @@ class ThemeManager(object):
     
     def get_theme(self, location):
         pass
-    
+   
+    def is_theme_exist(self, name):
+        theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
+        if os.path.exists(theme_path):
+            return True
+
+        return False
+
     def create_new_theme(self, name, copy_theme=None):
         new_theme_path = os.path.join(get_user_theme_dir(), "%s.ini" % name)
         new_theme = ThemeFile(new_theme_path)
