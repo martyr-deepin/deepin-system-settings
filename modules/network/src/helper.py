@@ -90,6 +90,11 @@ class EventDispatcher(gobject.GObject):
 
             #"wired_device_add" : _(),
             #"wireless_device_add" : _()
+            #"mm-start": _(obj),
+            #"mm-deactive": _(obj),
+            #"mm-active": _(obj),
+            #"mm-failed": _(obj),
+
             }
 
     def __init__(self):

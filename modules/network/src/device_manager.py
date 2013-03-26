@@ -20,16 +20,19 @@ class DeviceManager(object):
     def __init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
+        self.mm_devices = nm_module.nmclient.get_modem_devices()
         nm_module.mmclient.connect("device-added", self.mm_device_added)
         nm_module.mmclient.connect("device-removed", self.mm_device_removed)
         self.ap_added(self.wireless_devices)
 
     def mm_device_added(self, widget, path):
+        self.__init_device()
         device = nm_module.cache.getobject(path)
         Dispatcher.emit("mmdevice-added", device)
         Dispatcher.emit("recheck-section", 3)
 
     def mm_device_removed(self, widget, path):
+        self.__init_device()
         device = nm_module.cache.getobject(path)
         Dispatcher.emit("mmdevice-removed", device)
         Dispatcher.emit("recheck-section", 3)
@@ -72,8 +75,12 @@ class DeviceManager(object):
         if self.wireless_devices:
             for device in self.wireless_devices:
                 map(lambda s: self.__connect(device, s, module, "wireless"), self.__signal_list)
-                
-    
+
+    def load_mm_listener(self, module):
+        if self.mm_devices:
+            for d in self.mm_devices:
+                map(lambda s: self.__connect(d, s, module, "mm") ,self.__signal_list)
+
     def __connect(self, sender, signal, module, type):
         sender.connect(signal, getattr(module, type + "_" + signal))
 

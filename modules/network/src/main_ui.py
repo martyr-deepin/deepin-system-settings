@@ -869,11 +869,47 @@ class VpnSection(Section):
         #vpn_active = nm_module.nmclient.get_vpn_active_connection()
         #if vpn_active:
             #self.vpn.switch.set_active(True)
+class MobileDevice(object):
 
-class MobileSection(Section):
+    def __init__(self):
+        pass
+
+    def _init_signals(self):
+        net_manager.device_manager.load_mm_listener(self)
+
+    def mm_device_active(self, widget, new_state, old_state, reason):
+        item = self.get_item(widget)
+        if item:
+            item.set_net_state(2)
+
+    def mm_device_deactive(self, widget, new_state, old_state, reason):
+        item = self.get_item(widget)
+        if item:
+            item.set_net_state(0)
+        #index = self.wired_devices.index(widget)
+        #if not reason == 0:
+            #if self.tree.visible_items != []:
+                #self.tree.visible_items[index].set_net_state(0)
+                #self.tree.queue_draw()
+
+    def mm_device_unavailable(self,  widget, new_state, old_state, reason):
+        pass
+
+    def mm_activate_start(self, widget, new_state, old_state, reason):
+        item = self.get_item(widget)
+        if item:
+            item.set_net_state(1)
+
+    def mm_activate_failed(self, widget, new_state, old_state, reason):
+        item = self.get_item(widget)
+        if item:
+            item.set_net_state(0)
+
+class MobileSection(Section, MobileDevice):
 
     def __init__(self):
         Section.__init__(self)
+        MobileDevice.__init__(self)
         # init values
         self.mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), lambda w:w)
         self.label = Label(_("Mobile Configuration"),
@@ -883,8 +919,20 @@ class MobileSection(Section):
                       enable_double_click=False)
 
         self.load(self.mobile, [])
-        #else:
-            #pass
+        self.init_signal()
+
+    def init_signal(self):
+        self._init_signals()
+
+    def get_item(self, device):
+        modem_path =device.get_udi()
+        try:
+            index = self.devices.index(modem_path)
+            return self.tree.visible_items[index]
+        except:
+            print "get device index error"
+            return None
+        
 
     @classmethod
     def show_or_hide(self):
@@ -894,8 +942,15 @@ class MobileSection(Section):
             return False
 
     def __init_signals(self):
-        nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
+        #nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
+        Dispatcher.connect("mmdevice-added", self.device_added)
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
+
+    def device_added(self, widget, device):
+        self.init_signal()
+        if self.mobile.get_active():
+            self.mobile.set_active(True)
+
 
     def toggle_on(self):
         item_list = self.get_list()
