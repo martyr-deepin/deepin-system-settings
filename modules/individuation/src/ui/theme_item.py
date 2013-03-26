@@ -153,6 +153,7 @@ class ThemeItem(gobject.GObject):
         # Draw wallpapers.
         if self.pixbufs == []:
             wallpaper_paths = self.theme.get_wallpaper_paths()[:3]
+            wallpaper_paths = wallpaper_paths[::-1]
             for wallpaper_file in wallpaper_paths:
                 self.pixbufs.append(get_optimum_pixbuf_from_file(wallpaper_file, self.wallpaper_width, self.wallpaper_height))
                 
