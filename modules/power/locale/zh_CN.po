@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-01 14:08+0800\n"
+"POT-Creation-Date: 2013-03-26 16:32+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,53 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../src/tray_shutdown_gui.py:88
-msgid "切换用户"
-msgstr ""
-
-#: ../src/tray_shutdown_gui.py:91
-msgid "shutdown"
-msgstr "关机"
-
-#: ../src/tray_shutdown_gui.py:94
-msgid "restart"
-msgstr "重启"
-
-#: ../src/tray_shutdown_gui.py:97
-msgid "suspend"
-msgstr "挂起"
-
-#: ../src/tray_shutdown_gui.py:100
-msgid "logout"
-msgstr "注销"
-
-#: ../src/tray_shutdown_gui.py:103
-msgid "锁屏"
-msgstr ""
-
-#: ../src/tray_dialog.py:35
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/tray_dialog.py:36
-msgid "OK"
-msgstr "确认"
-
-#: ../src/tray_dialog.py:38
-msgid "Turn off your computer now?"
-msgstr "现在关闭此系统吗？"
-
-#: ../src/tray_dialog.py:40
-#, python-format
-msgid ""
-"The system will shutdown in \n"
-"%s secs."
-msgstr "现系统即将在%s秒后自动关闭。"
-
-#: ../src/tray_dialog.py:42
-msgid "WenQuanYi Micro Hei Bold"
-msgstr "文泉驿微米黑 Bold"
 
 #: ../src/power_view.py:50 ../src/power_view.py:51 ../src/power_view.py:52
 msgid "Minutes"
@@ -128,57 +81,57 @@ msgstr "当前电池电量"
 msgid "Password Protection Wakeup"
 msgstr "唤醒时的密码保护"
 
-#: ../src/power_view.py:192
+#: ../src/power_view.py:193
 msgid "Show Battery Status In Tray"
 msgstr "在系统托盘显示电池状态"
 
-#: ../src/power_view.py:287
+#: ../src/power_view.py:292
 msgid "Reset to default value"
 msgstr "恢复默认值"
 
-#: ../src/power_view.py:343
+#: ../src/power_view.py:347
 #, python-format
 msgid "Changed Press Power Button to %s"
 msgstr "修改按电源按钮为%s"
 
-#: ../src/power_view.py:348
+#: ../src/power_view.py:352
 #, python-format
 msgid "Changed Close Notebook Cover to %s"
 msgstr "修改合上笔记本盖子为%s"
 
-#: ../src/power_view.py:353
+#: ../src/power_view.py:357
 #, python-format
 msgid "Changed Press Hibernate Button to %s"
 msgstr "修改按休眠按钮为%s"
 
-#: ../src/power_view.py:358
+#: ../src/power_view.py:362
 #, python-format
 msgid "Changed Suspend Status to %s"
 msgstr "修改休眠状态为%s"
 
-#: ../src/power_view.py:363
+#: ../src/power_view.py:367
 #, python-format
 msgid "Changed Close Harddisk to %s"
 msgstr "修改关闭硬盘为%s"
 
-#: ../src/power_view.py:368
+#: ../src/power_view.py:372
 #, python-format
 msgid "Changed Close Monitor to %s"
 msgstr "修改关闭显示器为%s"
 
-#: ../src/power_view.py:375
+#: ../src/power_view.py:379
 msgid "Changed to Password Protection Wakeup"
 msgstr "修改为唤醒时有密码保护"
 
-#: ../src/power_view.py:377
+#: ../src/power_view.py:381
 msgid "Changed to NO Password Protection Wakeup"
 msgstr "修改为唤醒时无密码保护"
 
-#: ../src/power_view.py:384
+#: ../src/power_view.py:388
 msgid "Changed to Show Battery Status In Tray"
 msgstr "修改为在系统托盘显示电池状态"
 
-#: ../src/power_view.py:386
+#: ../src/power_view.py:390
 msgid "Changed to Hide Battery Status In Tray"
 msgstr "修改为在系统托盘隐藏电池状态"
 
@@ -191,34 +144,80 @@ msgid "Show Battery Status In The Tray"
 msgstr "在系统托盘显示电池状态"
 
 #: ../src/tray_shutdown_plugin.py:37
-msgid "Restart your computer now?"
-msgstr "现在重启此系统吗？"
+msgid "<span foreground='#FF0000'>Restart</span> your computer now?,12"
+msgstr "现在<span foreground='#FF0000'>重启</span>此系统吗？,10"
 
 #: ../src/tray_shutdown_plugin.py:39
 #, python-format
 msgid ""
 "The system will restart in \n"
-"%s secs."
-msgstr "系统即将在%s秒后自动重启。"
+"%s secs.,12"
+msgstr "系统即将在%s秒后自动重启。,10"
 
 #: ../src/tray_shutdown_plugin.py:41
-msgid "Suspend your computer now?"
-msgstr "现在挂起此系统吗？"
+msgid "<span foreground='#FF0000'>Suspend</span> your computer now?,12"
+msgstr "现在<span foreground='#FF0000'>挂起</span>此系统吗？,10"
 
 #: ../src/tray_shutdown_plugin.py:43
 #, python-format
 msgid ""
 "The system will suspend in \n"
-"%s secs."
-msgstr "系统即将在%s秒后自动挂起。"
+"%s secs.,12"
+msgstr "系统即将在%s秒后自动挂起。,10"
 
 #: ../src/tray_shutdown_plugin.py:44
-msgid "Logout your computer now?"
-msgstr "现在注销此系统吗？"
+msgid "<span foreground='#FF0000'>Logout</span> your computer now?,12"
+msgstr "现在<span foreground='#FF0000'>注销</span>此系统吗？,10"
 
 #: ../src/tray_shutdown_plugin.py:45
 #, python-format
 msgid ""
 "The system will Logout in \n"
-"%s secs."
-msgstr "现系统即将在%s秒后自动注销。"
+"%s secs.,12"
+msgstr "现系统即将在%s秒后自动注销。,10"
+
+#: ../src/tray_shutdown_gui.py:93
+msgid "切换用户"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:96
+msgid "shutdown"
+msgstr "关机"
+
+#: ../src/tray_shutdown_gui.py:99
+msgid "restart"
+msgstr "重启"
+
+#: ../src/tray_shutdown_gui.py:102
+msgid "suspend"
+msgstr "挂起"
+
+#: ../src/tray_shutdown_gui.py:105
+msgid "logout"
+msgstr "注销"
+
+#: ../src/tray_shutdown_gui.py:108
+msgid "锁屏"
+msgstr ""
+
+#: ../src/tray_dialog.py:39
+msgid "Cancel"
+msgstr "取消"
+
+#: ../src/tray_dialog.py:40
+msgid "OK"
+msgstr "确认"
+
+#: ../src/tray_dialog.py:42
+msgid "<span foreground='#FF0000'>Turn off</span> your computer now?,12"
+msgstr "现在<span foreground='#FF0000'>关闭</span>此系统吗？,10"
+
+#: ../src/tray_dialog.py:44
+msgid ""
+"The system will shutdown in \n"
+"%s secs.,12"
+msgstr "现系统即将在%s秒后自动关闭。,10"
+
+#: ../src/tray_dialog.py:46
+msgid "WenQuanYi Micro Hei Bold"
+msgstr "文泉驿微米黑 Bold"
