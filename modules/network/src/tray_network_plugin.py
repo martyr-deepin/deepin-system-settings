@@ -92,7 +92,7 @@ class TrayNetworkPlugin(object):
         if self.gui.wire.get_active():
             self.change_status_icon("cable")
         elif self.gui.wireless.get_active():
-            self.change_status_icon("link")
+            self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
 
@@ -432,7 +432,7 @@ class TrayNetworkPlugin(object):
         self.this.resize(1,1)
         if self.menu_showed:
             self.this.hide_menu()
-            self.this.set_size_request(185, height + 46)
+            self.this.set_size_request(185, height + 40)
             self.this.show_menu()
 
 def return_insert():
