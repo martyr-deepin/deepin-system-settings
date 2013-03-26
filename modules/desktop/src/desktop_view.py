@@ -372,10 +372,20 @@ class DesktopView(gtk.VBox):
         self.desktop_settings.reset("show-home-icon")
         self.desktop_settings.reset("show-trash-icon")
         self.desktop_settings.reset("show-dsc-icon")
+        self.dock_settings.reset("hide-mode")
         self.computer_checkbutton.set_active(self.desktop_settings.get_boolean("show-computer-icon"))
         self.home_checkbutton.set_active(self.desktop_settings.get_boolean("show-home-icon"))
         self.trash_checkbutton.set_active(self.desktop_settings.get_boolean("show-trash-icon"))
         self.dsc_checkbutton.set_active(self.desktop_settings.get_boolean("show-dsc-icon"))
+        hide_mode = self.dock_settings.get_string("hide-mode")                  
+        hide_mode_index = 0                                                     
+        if hide_mode == "default":                                              
+            hide_mode_index = 0                                                 
+        elif hide_mode == "autohide":                                           
+            hide_mode_index = 1                                                 
+        else:                                                                   
+            hide_mode_index = 2                                                 
+        self.display_style_combo.set_select_index(hide_mode_index)
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()

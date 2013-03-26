@@ -65,9 +65,9 @@ class ProxyConfig(gtk.VBox):
         self.methods = ComboBox([(_("None"), 0),
                                  (_("Manual"), 1),
                                  (_("Automatic"), 2)],
-                                 max_width=self.ENTRY_WIDTH)
+                                 max_width=self.ENTRY_WIDTH -5)
 
-        self.methods.set_size_request(self.ENTRY_WIDTH,22)
+        self.methods.set_size_request(-1,22)
         self.methods.connect("item-selected", self.method_changed)
 
         width , height = self.ENTRY_WIDTH , 22
@@ -95,6 +95,8 @@ class ProxyConfig(gtk.VBox):
         wrap_all_with_align(self, spin_list)
 
         self.methods_align = style.wrap_with_align(self.methods)
+        #for entry in entry_list:
+            #getattr(self, entry).set_size_request(self.ENTRY_WIDTH, 22)
 
 
         #hbox.pack_start(table_align, False, False)

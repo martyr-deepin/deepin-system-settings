@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-
 import dss
 import dbus
 from dbus.mainloop.glib import DBusGMainLoop

@@ -316,6 +316,7 @@ class WallpaperItem(gobject.GObject):
         self.__is_double_click = True
         self.is_tick = True
         self.emit_redraw_request()
+        event_manager.emit("select-wallpaper", self)
         self.do_apply_wallpaper()
 
     def icon_item_release_resource(self):

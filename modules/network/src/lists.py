@@ -655,8 +655,6 @@ class DSLItem(GenItems):
                                            device_path,
                                            "/")
 
-
-
 class MobileItem(GenItems):
 
     def __init__(self, device, jumpto):
@@ -689,6 +687,9 @@ class MobileItem(GenItems):
     def jumpto_cb(self):
         from mobile_config import MobileSetting
         Dispatcher.to_setting_page(MobileSetting())
+
+    def click_cb(self):
+        self.device.auto_connect()
 
 
 class VPNItem(DSLItem):
