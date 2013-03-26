@@ -284,6 +284,7 @@ class NMDeviceWifi(NMDevice):
         except:
             traceback.print_exc()
 
+    @nm_alive
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
 
