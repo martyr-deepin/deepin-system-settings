@@ -518,12 +518,15 @@ class DisplayView(gtk.VBox):
         self.__send_message("goto", (module_id, ""))
 
     def __expose(self, widget, event):
-        cr = widget.window.cairo_create()                                        
-        rect = widget.allocation                                                 
+        try:
+            cr = widget.window.cairo_create()                                        
+            rect = widget.allocation                                                 
         
-        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                  
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                    
-        cr.fill()
+            cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                  
+            cr.rectangle(rect.x, rect.y, rect.width, rect.height)                    
+            cr.fill()
+        except e:
+            print "DEBUG", e
 
     def __change_current_output(self, output_name, from_monitor_combo=True):
         self.__current_output_name = output_name
