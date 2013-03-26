@@ -43,6 +43,7 @@ class TrayNetworkPlugin(object):
         Dispatcher.connect("request_resize", self.request_resize)
         Dispatcher.connect("ap-added", self.wireless_ap_added)
         Dispatcher.connect("ap-removed", self.wireless_ap_removed)
+        Dispatcher.connect("recheck-section", self.recheck_sections)
         self.gui.button_more.connect("clicked", self.more_setting)
 
         self.need_auth_flag = False
@@ -56,6 +57,10 @@ class TrayNetworkPlugin(object):
 
         self.init_wired_signals()
         self.init_wireless_signals()
+
+    def recheck_sections(self, widget, index):
+        self.init_widgets()
+        Dispatcher.emit("request-resize")
 
     def wireless_ap_added(self, widget):
         print "wireless_ap_added in tray"
@@ -74,7 +79,10 @@ class TrayNetworkPlugin(object):
         self.init_widgets()
 
     def mobile_toggle(self, widget):
-        pass
+        if widget.get_active():
+            self.mm_device = self.net_manager.connect_mm_device()
+        else:
+            self.net_manager.disconnect_mm_device()
     
     def timer_count_down_finish(self, widget):
         connections = nm_module.nmclient.get_active_connections()
@@ -88,6 +96,7 @@ class TrayNetworkPlugin(object):
     def init_widgets(self):
         wired_state = self.net_manager.get_wired_state()
         if wired_state:
+            self.gui.show_net("wire")
             self.gui.wire.set_active(wired_state)
             if wired_state[0] and wired_state[1]:
                 self.change_status_icon("cable")
@@ -95,10 +104,11 @@ class TrayNetworkPlugin(object):
                 self.change_status_icon("cable_disconnect")
             #Dispatcher.connect("wired-change", self.set_wired_state)
         else:
-            self.gui.remove_net("wired")
+            self.gui.remove_net("wire")
         
         wireless_state= self.net_manager.get_wireless_state()
         if wireless_state:
+            self.gui.show_net("wireless")
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
                 self.change_status_icon("links")
@@ -112,7 +122,7 @@ class TrayNetworkPlugin(object):
         
         # Mobile init
         if self.net_manager.get_mm_devices():
-            pass
+            self.gui.show_net("mobile")
         else:
             self.gui.remove_net("mobile")
 

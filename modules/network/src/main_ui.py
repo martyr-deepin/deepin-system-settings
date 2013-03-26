@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import dss
-from proxy_config import ProxyConfig
+from proxy_config import ProxyConfig, ProxySettings
 import sys
 import os
 from dss import app_theme
@@ -882,7 +882,7 @@ class MobileSection(Section):
                       enable_select=False,
                       enable_double_click=False)
 
-        self.load(self.mobile, [self.label])
+        self.load(self.mobile, [])
         #else:
             #pass
 
@@ -998,9 +998,15 @@ class Mobile(gtk.VBox):
 class Proxy(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
-        proxy = Contain(app_theme.get_pixbuf("network/proxy.png"), _("Proxy"), self.toggle_cb)
+        self.proxy = Contain(app_theme.get_pixbuf("network/proxy.png"), _("Proxy"), self.toggle_cb)
+        self.proxysetting = ProxySettings()
         self.settings = None
-        self.add(proxy)
+        self.add(self.proxy)
+        self.init_state()
+
+    def init_state(self):
+        if self.proxysetting.get_proxy_mode() != "none":
+            self.proxy.set_active(True)
 
     @classmethod
     def show_or_hide(self):
@@ -1023,6 +1029,7 @@ class Proxy(gtk.VBox):
             self.show_all()
         else:
             self.align.destroy()
+            self.proxysetting.set_proxy_mode("none")
 
     def slide_to_event(self, widget, event):
         self.settings = ProxyConfig()

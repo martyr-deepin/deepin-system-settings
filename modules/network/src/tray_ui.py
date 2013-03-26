@@ -71,6 +71,9 @@ class TrayUI(gtk.VBox):
         self.wire_box = self.section_box([self.wire])
         self.wireless_box = self.section_box([self.wireless, self.tree_box])
         self.mobile_box = self.section_box([self.mobile])
+        self.wire_state = False
+        self.wireless_state = False
+        self.mobile_state = False
 
         self.pack_start(self.wire_box, False, False)
         self.pack_start(self.wireless_box, False, False)
@@ -79,10 +82,9 @@ class TrayUI(gtk.VBox):
 
     def get_widget_height(self):
         height = 0
-        widgets = self.get_children()
-        if self.wire_box in widgets:
+        if self.wire_state:
             height += 35
-        if self.wireless_box in widgets:
+        if self.wireless_state:
             height += 35
             if self.ap_tree.visible_items and self.wireless.get_active():
                 height += self.ap_tree.get_size_request()[1]
@@ -93,7 +95,7 @@ class TrayUI(gtk.VBox):
             #if self.more_button in self.tree_box.get_children():
                 #height += WIDGET_HEIGHT
 
-        if self.mobile_box in widgets:
+        if self.mobile_state:
             height += 35
         height += 25
         return height
@@ -106,12 +108,15 @@ class TrayUI(gtk.VBox):
         return box
 
     def remove_net(self, net_type):
-        if net_type == "wired":
-            self.remove(self.wire_box)
-        elif net_type == "wireless":
-            self.remove(self.wireless_box)
-        elif net_type == "mobile":
-            self.remove(self.mobile_box)
+        print net_type
+        getattr(self, net_type + "_box").set_no_show_all(True)
+        getattr(self, net_type + "_box").hide()
+        setattr(self, net_type + "_state", False)
+
+    def show_net(self, net_type):
+        getattr(self, net_type + "_box").set_no_show_all(False)
+        getattr(self, net_type + "_box").show()
+        setattr(self, net_type + "_state", True)
 
     def set_wired_state(self, widget, new_state, reason):
         if new_state is 20:
