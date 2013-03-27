@@ -126,6 +126,9 @@ class SettingUI(gtk.Alignment):
         print type(self.focus_connection)
         self.apply_method(self.focus_connection)
 
+    def create_new_connection(self):
+        self.sidebar.add_new_connection()
+
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)
     win.set_title("Container")
