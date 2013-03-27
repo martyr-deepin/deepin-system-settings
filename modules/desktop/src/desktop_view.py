@@ -458,7 +458,7 @@ class DesktopView(gtk.VBox):
                     self.topright_combo.set_select_index(2)
                     self.compiz_integrated_settings.set_string("command-12", self.LAUNCHER_CMD)
                     self.compiz_run_command_edge_settings.set_string("run-command11-edge", "TopRight")
-                    self.compiz_scale_settings.set_string("initiate-edge", "")
+                    #self.compiz_scale_settings.set_string("initiate-edge", "")
 
                 self.compiz_integrated_settings.set_string("command-11", "")
                 self.compiz_run_command_edge_settings.set_string("run-command10-edge", "")
@@ -472,7 +472,7 @@ class DesktopView(gtk.VBox):
                 
                 self.compiz_integrated_settings.set_string("command-11", self.LAUNCHER_CMD)
                 self.compiz_run_command_edge_settings.set_string("run-command10-edge", "TopLeft")
-                self.compiz_scale_settings.set_string("initiate-edge", "")
+                #self.compiz_scale_settings.set_string("initiate-edge", "")
             else:
                 pass
             return
@@ -488,7 +488,7 @@ class DesktopView(gtk.VBox):
                     self.topleft_combo.set_select_index(2)
                     self.compiz_integrated_settings.set_string("command-11", self.LAUNCHER_CMD)
                     self.compiz_run_command_edge_settings.set_string("run-command10-edge", "TopLeft")
-                    self.compiz_scale_settings.set_string("initiate-edge", "")
+                    #self.compiz_scale_settings.set_string("initiate-edge", "")
 
                 self.compiz_integrated_settings.set_string("command-12", "")
                 self.compiz_run_command_edge_settings.set_string("run-command11-edge", "")
@@ -502,7 +502,7 @@ class DesktopView(gtk.VBox):
 
                 self.compiz_integrated_settings.set_string("command-12", self.LAUNCHER_CMD)
                 self.compiz_run_command_edge_settings.set_string("run-command11-edge", "TopRight")
-                self.compiz_scale_settings.set_string("initiate-edge", "")
+                #self.compiz_scale_settings.set_string("initiate-edge", "")
             else:                                                               
                 pass                                                            
             return

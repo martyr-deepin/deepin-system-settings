@@ -44,6 +44,9 @@ class Bizhi360(BaseFetch):
         results = self.api_request(self.url, extra_data=params, start=self.start, count=self.count)
                 
         if results:
+            if not results.has_key("data"):
+                return
+
             for item in results["data"]:
                 try:
                     small_url = item["url_mid"]

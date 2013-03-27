@@ -69,6 +69,7 @@ class CacheView(IconView):
         pass
     
     def fetch_failed(self):
+        print "DEBUG fetch_failed"
         pass
     
     def emit_download(self):
