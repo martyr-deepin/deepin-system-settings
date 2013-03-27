@@ -239,8 +239,8 @@ class Security(gtk.VBox):
                       (_("WEP 104/128-bit Passphrase"), "none"),
                       (_("WPA WPA2 Personal"), "wpa-psk")]
         #entry_item = map(lambda l: (l[1],l[0]), enumerate(self.encry_list))
-        self.security_combo = ComboBox(self.encry_list, max_width=self.ENTRY_WIDTH)
-        self.security_combo.set_size_request(self.ENTRY_WIDTH, 22)
+        self.security_combo = ComboBox(self.encry_list, fixed_width=self.ENTRY_WIDTH)
+        #self.security_combo.set_size_request(self.ENTRY_WIDTH, 22)
 
         self.key_entry = PasswordEntry()
         self.password_entry = PasswordEntry()
@@ -249,7 +249,7 @@ class Security(gtk.VBox):
         self.wep_index_spin = SpinBox(0, 0, 3, 1, self.ENTRY_WIDTH)
         self.auth_combo = ComboBox([
                                     (_("Shared Key"), "shared"),
-                                    (_("Open System"), "open")],max_width=self.ENTRY_WIDTH)
+                                    (_("Open System"), "open")],fixed_width=self.ENTRY_WIDTH)
 
         ## advance button
         self.align = gtk.Alignment(0, 1.0, 0, 0)

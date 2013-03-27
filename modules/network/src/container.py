@@ -52,7 +52,6 @@ class ToggleThread(td.Thread):
                 self.tree.add_items(items)
                 self.tree.visible_items[-1].is_last = True
                 self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
-                self.tree.show()
                 #self.tree.show_all()
                 #self.tree.queue_draw()
             else:

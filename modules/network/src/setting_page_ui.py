@@ -63,7 +63,7 @@ class SettingUI(gtk.Alignment):
         self.hpaned.change_position(1)
 
     def __init_tab_box(self):
-        pass
+        self.__init_paned(None)
         #container_remove_all(self.hbox)
 
     def __init_signals(self):
@@ -75,6 +75,7 @@ class SettingUI(gtk.Alignment):
     def load_module(self, module_obj):
         #self.__init_tab()
         self.__init_tab_box()
+
         # need this for corect button set
         self.foot_box.set_setting(module_obj)
         self.setting_group = module_obj
@@ -124,6 +125,9 @@ class SettingUI(gtk.Alignment):
     def apply_connection_setting(self, widget):
         print type(self.focus_connection)
         self.apply_method(self.focus_connection)
+
+    def create_new_connection(self):
+        self.sidebar.add_new_connection()
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)
