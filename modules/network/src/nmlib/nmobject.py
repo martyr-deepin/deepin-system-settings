@@ -148,8 +148,8 @@ class NMObject(gobject.GObject):
                 return apply(getattr(self.dbus_interface, method_name), args, kwargs)
             except:
                 print "call dbus_method failed\n"
-                print method_name
-                #traceback.print_exc()
+                print self, method_name
+                traceback.print_exc()
         else:
             pass
 

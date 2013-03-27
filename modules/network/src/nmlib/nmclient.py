@@ -285,14 +285,14 @@ class NMClient(NMObject):
     ###Signals ###
     @nm_alive
     def device_added_cb(self, device_object_path):
-        cache.clearcache()
-        cache.clear_spec_cache()
+        #cache.clearcache()
+        #cache.clear_spec_cache()
         self.emit("device-added", device_object_path)
 
     @nm_alive
     def device_removed_cb(self, device_object_path):
-        cache.clearcache()
-        cache.clear_spec_cache()
+        #cache.clearcache()
+        #cache.clear_spec_cache()
         self.emit("device-removed", device_object_path)
 
     def permisson_changed_cb(self):

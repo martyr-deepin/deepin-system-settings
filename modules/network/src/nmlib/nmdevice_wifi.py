@@ -31,6 +31,7 @@ from nm_utils import TypeConvert, nm_alive
 
 nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
+print nmclient, nm_remote_settings, "Debug in nmdevice_wifi"
 
 class ThreadWifiAuto(threading.Thread):
 

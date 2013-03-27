@@ -213,15 +213,18 @@ class NMDevice(NMObject):
 
         if new_state == 100:
             print "device-active", new_state, old_state, reason
-            self.emit("device-active", new_state, old_state, reason)
-            conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
             try:
-                priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid) + 1 )
-            except:
-                priority = 1
+                conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
+                self.emit("device-active", new_state, old_state, reason)
+                try:
+                    priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid) + 1 )
+                except:
+                    priority = 1
 
-            nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
-            nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
+                nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
+                nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
+            except:
+                pass
 
         if new_state == 120:
             print "activate-failed", new_state, old_state, reason

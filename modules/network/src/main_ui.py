@@ -590,7 +590,7 @@ class HotSpot(gtk.VBox):
 
     def is_adhoc_active(self):
         # TODO just for one device
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        wireless_device = net_manager.device_manager.get_wireless_devices()[0]
         active = wireless_device.get_active_connection()
         if active:
             if active.get_connection().get_setting("802-11-wireless").mode == "adhoc":
@@ -617,7 +617,7 @@ class HotSpot(gtk.VBox):
 
             if isinstance(self.connection, NMRemoteConnection):
                 self.connection.update()
-                wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+                wireless_device = net_manager.device_manager.get_wireless_devices()[0]
                 self.active_this_adhoc = True
                 wireless_device.nm_device_disconnect()
 
