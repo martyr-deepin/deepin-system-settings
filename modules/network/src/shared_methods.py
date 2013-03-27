@@ -23,10 +23,10 @@ class NetManager(object):
             self.device_manager = DeviceManager()
             self.init_devices()
 
-            #self.cf = nm_module.nm_remote_settings.cf
-            #self.config_file = nm_module.nm_remote_settings.config_file
-            #if "hidden" not in self.cf.sections():
-                #self.cf.add_section("hidden")
+            self.cf = nm_module.nm_remote_settings.cf
+            self.config_file = nm_module.nm_remote_settings.config_file
+            if "hidden" not in self.cf.sections():
+                self.cf.add_section("hidden")
         else:
             pass
 
