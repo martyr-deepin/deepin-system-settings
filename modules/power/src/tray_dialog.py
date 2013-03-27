@@ -116,6 +116,8 @@ class TrayDialog(Window):
         self.show_all()
 
     def set_pango_list(self):
+        self.pango_list = None
+        '''
         r, g, b = (65535, 0, 0)
         self.pango_list = pango.AttrList()
         if cn_check():
@@ -124,6 +126,9 @@ class TrayDialog(Window):
             start_index, end_index = EN_RED_TEXT[self.show_top_text] 
             
         self.pango_list.insert(pango.AttrForeground(r, g, b, start_index, end_index - 1))
+        '''
+        pass
+
 
     def __focus_out_window(self, widget, event):
         self.quit_dialog_window(widget)
