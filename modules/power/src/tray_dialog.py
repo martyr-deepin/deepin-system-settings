@@ -129,7 +129,6 @@ class TrayDialog(Window):
         '''
         pass
 
-
     def __focus_out_window(self, widget, event):
         self.quit_dialog_window(widget)
 
@@ -237,9 +236,9 @@ class TrayDialog(Window):
         self.bottom_text_btn_ali.add(self.bottom_text_btn)
         #
         self.top_text_btn.connect("expose-event", 
-                     self.top_text_btn_expose_event, self.top_text_color, self.pango_list)
+                     self.top_text_btn_expose_event, self.top_text_color)
         self.bottom_text_btn.connect("expose-event", 
-                     self.top_text_btn_expose_event, self.bottom_text_color, None)
+                     self.top_text_btn_expose_event, self.bottom_text_color)
 
     def timer_tick_evnet(self, timer):
         self.bottom_text_btn.set_label(self.show_bottom_text % (self.second))
@@ -251,7 +250,7 @@ class TrayDialog(Window):
                 gtk.timeout_add(1, self.run_exec_timeout)
         self.second -= 1
 
-    def top_text_btn_expose_event(self, widget, event, font_color, pango_list):
+    def top_text_btn_expose_event(self, widget, event, font_color):
         cr = widget.window.cairo_create()
         rect = widget.allocation
         text_list = widget.get_label().split(",")
@@ -260,7 +259,7 @@ class TrayDialog(Window):
         #
         size = get_text_size(text, font_size)
         size_padding = get_text_size("a", font_size)
-        size_padding = size_padding[0] * 40
+        size_padding = size_padding[0] * 35
         #
         draw_text(cr, 
                   text,
@@ -268,10 +267,9 @@ class TrayDialog(Window):
                   rect.y + rect.height/2 - size[1]/2,
                   font_size,
                   font_color,
-                  pango_list=pango_list,
                   markup=text)
-        btn_width = max(size[0] + 10 - size_padding, 30)
-        widget.set_size_request(btn_width, size[1] + 4 + 10)
+        # 
+        widget.set_size_request(size[0], size[1])
         return True
 
     def init_bottom_button(self):
