@@ -30,26 +30,28 @@ dbus.mainloop.glib.threads_init()
 from xml.dom import minidom
 import traceback
 import gobject
+# import re
 from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_dbus_name_exists
 from nm_utils import InvalidObjectPath , InvalidObjectInterface, InvalidService
+# from servicemanager import nm_bus
 from servicemanager import servicemanager
+from nm_utils import nm_alive
 
-#nm_bus = servicemanager.get_nm_bus()
+# name_re = re.compile("[0-9a-zA-Z-]*")
+# dbus_loop = gobject.MainLoop()
+nm_bus = servicemanager.get_nm_bus()
     
 class NMObject(gobject.GObject):
     '''NMObject'''
 
-    def __init__(self, object_path, object_interface, service_name = "org.freedesktop.NetworkManager", bus = None):
+    def __init__(self, object_path, object_interface, service_name = "org.freedesktop.NetworkManager", bus = nm_bus):
         gobject.GObject.__init__(self)
 
-        if bus:
-            self.bus = bus
-        else:
-            self.bus = self.get_system_bus() 
+        self.bus = bus
         self.service_name = service_name
 
-        #if not is_dbus_name_exists(service_name, False):
-        #    raise InvalidService(service_name)
+        if not is_dbus_name_exists(service_name, False):
+            raise InvalidService(service_name)
 
         if valid_object_path(object_path):
             self.object_path = object_path
@@ -61,97 +63,39 @@ class NMObject(gobject.GObject):
         else:
             raise InvalidObjectInterface(object_interface)
 
-        self.dbus_proxy = self.get_dbus_proxy(service_name, object_path)
-        self.dbus_interface = self.get_dbus_interface(service_name, object_path, object_interface)
-        self.properties_interface = None
-        self.introspect_interface = None
-
-    def get_system_bus(self):
         try:
-            return servicemanager.get_nm_bus()
-        except:
-            print "get system bus failed\n"
-            #traceback.print_exc()
-            return None
-
-    def get_dbus_proxy(self, service_name, object_path):
-        try:
-            if is_dbus_name_exists(service_name, False):
-                return self.bus.get_object(service_name, object_path)
-            else:
-                return None
-        except:
-            print "get dbus proxy failed\n"
-            #traceback.print_exc()
-            return None
-
-    def get_dbus_interface(self, service_name,  object_path, object_interface):
-        if is_dbus_name_exists(service_name, False):
-            if not self.dbus_proxy:
-                self.dbus_proxy = self.get_dbus_proxy(service_name, object_path)
-            try:
-                return dbus.Interface(self.dbus_proxy, object_interface);
-            except:
-                print "get dbus interface failed\n"
-                #traceback.print_exc()
-                return None
-        else:
-            return None
-
-    def get_properties_interface(self, service_name, object_path):
-        if is_dbus_name_exists(service_name, False):
-            if not self.dbus_proxy:
-                self.dbus_proxy = self.get_dbus_proxy(service_name, object_path)
-            try:
-                return dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties")
-            except:
-                print "get properties interface failed\n"
-                #traceback.print_exc()
-                return None
-        else:
-            return None
-
-    def get_introspect_interface(self, service_name, object_path):
-        if is_dbus_name_exists(service_name, False):
-            if not self.dbus_proxy:
-                self.dbus_proxy = self.get_dbus_proxy(service_name, object_path)
-            try:
-                return dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Introspectable")
-            except:
-                print "get introspect interface failed\n"
-                #traceback.print_exc()
-                return None
-        else:
-            return None
+            self.dbus_proxy = self.bus.get_object (service_name, object_path)
+            self.dbus_interface = dbus.Interface (self.dbus_proxy, object_interface)
+        except dbus.exceptions.DBusException:
+            traceback.print_exc()
 
     def init_nmobject_with_properties(self):  
-        if is_dbus_name_exists(self.service_name, False):
-            if not self.dbus_proxy:
-                self.dbus_proxy = self.get_dbus_proxy(self.service_name, self.object_path)
+        try:
+            self.properties_interface = dbus.Interface (self.dbus_proxy, "org.freedesktop.DBus.Properties" )
+            self.introspect_interface = dbus.Interface (self.dbus_proxy, "org.freedesktop.DBus.Introspectable")
+        except dbus.exceptions.DBusException:
+            traceback.print_exc()
 
-            if not self.properties_interface:
-                self.properties_interface = self.get_properties_interface(self.service_name, self.object_path)
+        self.properties = self.init_properties()
+        self.properties_access = {}
 
-            if not self.introspect_interface:
-                self.introspect_interface = self.get_introspect_interface(self.service_name, self.object_path)
-                
-            self.properties = self.init_properties()
-            self.properties_access = {}
-        else:
-            pass
-
+    @nm_alive
     def dbus_method(self, method_name, *args, **kwargs):
-        if is_dbus_name_exists(self.service_name, False):
-            if not self.dbus_interface:
-                self.dbus_interface = self.get_dbus_interface(self.service_name, self.object_path, self.object_interface)
-            try:
-                return apply(getattr(self.dbus_interface, method_name), args, kwargs)
-            except:
-                print "call dbus_method failed\n"
-                print self, method_name
-                traceback.print_exc()
-        else:
-            pass
+        try:
+            # return TypeConvert.dbus2py(apply(getattr(self.dbus_interface, method_name), args, kwargs))
+            return apply(getattr(self.dbus_interface, method_name), args, kwargs)
+        except dbus.exceptions.UnknownMethodException, e:    
+            print "unknown dbus method"
+            print method_name
+            print e
+        except dbus.exceptions.DBusException, e:
+            print self.dbus_interface
+            print "call dbus method failed:\n"
+            print method_name
+            print args
+            print kwargs
+            print e
+            traceback.print_exc()
 
     def init_properties(self): 
         try:

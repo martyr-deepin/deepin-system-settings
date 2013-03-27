@@ -30,17 +30,15 @@ from dtk.ui.new_treeview import TreeView
 from dtk.ui.draw import  draw_line
 from dtk.ui.utils import color_hex_to_cairo, container_remove_all, get_content_size
 from deepin_utils.file import  get_parent_dir
-from deepin_utils.ipc import is_dbus_name_exists
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
 from container import Contain, ToggleThread
-from lists import (WiredItem, WirelessItem, GeneralItem,
+from lists import (WiredItem, WirelessItem,
                   HidenItem, InfoItem, DSLItem, MobileItem,
                   VPNItem)
 from widgets import AskPasswordDialog
-from nmlib.nm_remote_connection import NMRemoteConnection
 
 
 from dsl_config import DSLSetting
@@ -114,7 +112,6 @@ class Section(gtk.VBox):
 
             self.td = ToggleThread(self.get_list, self.tree, self.toggle_on_after)
             self.td.start()
-        
         else:
             self.align.remove(self.content_box)
             self.td.stop_run()
@@ -1035,6 +1032,7 @@ class Network(object):
         slider._set_to_page("main")
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
         Dispatcher.connect("recheck-section", lambda w, i: self.__init_sections(0))
+        Dispatcher.connect("service-stop-add-more", lambda w: self.stop())
 
         self.sections = []
     
@@ -1093,32 +1091,32 @@ class Network(object):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def slide_to_setting_page(self, widget, setting_module):
-        self.setting_page_ui.load_module(setting_module)
+    #def slide_to_setting_page(self, widget, setting_module):
+        #self.setting_page_ui.load_module(setting_module)
 
-    def activate_succeed(self, widget, connection_path):
-        print "active_succeed with", connection_path
-        print connection_path
+    #def activate_succeed(self, widget, connection_path):
+        #print "active_succeed with", connection_path
+        #print connection_path
 
-    def activate_failed(self, widget, connection_path):
-        print "active failed"
+    #def activate_failed(self, widget, connection_path):
+        #print "active failed"
 
-    def device_added(self, widget, connection_path):
-        print "device add:", connection_path
-        self.wired.refresh_device()
+    #def device_added(self, widget, connection_path):
+        #print "device add:", connection_path
+        #self.wired.refresh_device()
 
-    def device_removed(self, widget, connection_path):
-        print "device remove:", connection_path
-        self.wired.refresh_device()
+    #def device_removed(self, widget, connection_path):
+        #print "device remove:", connection_path
+        #self.wired.refresh_device()
 
-    def init_sections(self):
-        #slider._set_to_page("main")
-        self.wired = WiredSection()
-        self.wireless = WirelessSection()
-        self.dsl = DSLSection()
-        self.proxy = Proxy()
-        self.mobile = MobileSection()
-        self.vpn = VpnSection()
+    #def init_sections(self):
+        ##slider._set_to_page("main")
+        #self.wired = WiredSection()
+        #self.wireless = WirelessSection()
+        #self.dsl = DSLSection()
+        #self.proxy = Proxy()
+        #self.mobile = MobileSection()
+        #self.vpn = VpnSection()
 
     def refresh(self):
         #self.init_sections()
@@ -1132,42 +1130,3 @@ class Network(object):
     def get_main_page(self):
         return self.eventbox
 
-if __name__ == '__main__':
-    if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
-        module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-        Dispatcher.load_module_frame(module_frame)
-        Dispatcher.load_slider(slider)
-        network = Network()
-
-        def service_stop_cb(widget, s):
-            #network.stop()
-            cache.clearcache()
-            cache.clear_spec_cache()
-
-        def service_start_cb(widget, s):
-            print "#service start#"
-            #cache.clearcache()
-            #cache.clear_spec_cache()
-            nm_module.init_objects()
-            net_manager.device_manager.reinit_cache()
-            #network.refresh()
-
-        servicemanager.connect("service-start", service_start_cb)
-        servicemanager.connect("service-stop", service_stop_cb)
-        #main_align = network.get_main_page()
-        module_frame.add(slider)
-        
-        def message_handler(*message):
-            (message_type, message_content) = message
-            if message_type == "show_again":
-                slider._set_to_page("main")
-                module_frame.send_module_info()
-            elif message_type == "click_crumb":
-                print "click_crumb"
-                (crumb_index, crumb_label) = message_content
-                if crumb_index == 1:
-                    slider._slide_to_page("main", "left")
-                if crumb_label == _("VPN"):
-                    slider._slide_to_page("vpn", "left")
-        module_frame.module_message_handler = message_handler
-        module_frame.run()
