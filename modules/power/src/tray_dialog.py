@@ -132,21 +132,23 @@ class TrayDialog(Window):
         self.ok_btn.grab_focus()
 
     def __dialog_key_release_event(self, widget, e):
-        KEY_LEFT = 65361
+        KEY_LEFT  = 65361
         KEY_RIGHT = 65363
+        KEY_ESC   = 65307
         if e.keyval == KEY_LEFT:
             self.ok_key_check = False
             self.cancel_key_check = True
             self.cancel_btn.grab_focus()
-        if e.keyval == KEY_RIGHT:
+        elif e.keyval == KEY_RIGHT:
             self.ok_key_check = True
             self.cancel_key_check = False
             self.ok_btn.grab_focus()
+        elif e.keyval == KEY_ESC: # 退出窗口.
+            self.quit_dialog_window(widget)
 
         if e.keyval in [KEY_LEFT, KEY_RIGHT]:
             self.ok_btn.queue_draw()
             self.cancel_btn.queue_draw()
-
 
     def __init_settings(self):
         self.set_bg_pixbuf(vtk_theme.get_pixbuf("deepin_on_off_bg", 372))
