@@ -11,22 +11,23 @@ from deepin_utils.file import  get_parent_dir
 from deepin_utils.ipc import is_dbus_name_exists
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from module_frame import ModuleFrame 
-from nmlib.servicemanager import servicemanager
 from helper import Dispatcher
 
 from nm_modules import nm_module
 from main_ui import Network
 from nls import _
 slider = nm_module.slider
-def service_stop_cb(widget, s):
-    pass
+#def service_stop_cb(widget, s):
+    #pass
 
-def service_start_cb(widget, s):
-    print "#service start#"
-    nm_module.update_cache()
-    start_ui()
+#def service_start_cb(widget, s):
+    #print "#service start#"
+    #nm_module.update_cache()
+    #start_ui()
+Dispatcher.connect("service-start-do-more", lambda w: start_ui())
 
 def start_ui():
+    print "start ui"
     slider.init_dict()
     
     Network()
@@ -36,8 +37,6 @@ if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
     Dispatcher.load_module_frame(module_frame)
     Dispatcher.load_slider(slider)
-    servicemanager.connect("service-start", service_start_cb)
-    servicemanager.connect("service-stop", service_stop_cb)
 
     module_frame.add(slider)
 

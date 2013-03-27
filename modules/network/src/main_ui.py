@@ -39,8 +39,6 @@ from lists import (WiredItem, WirelessItem,
                   HidenItem, InfoItem, DSLItem, MobileItem,
                   VPNItem)
 from widgets import AskPasswordDialog
-
-
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
@@ -58,7 +56,6 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from nls import _
 from constants import *
-import style
 
 slider = nm_module.slider
 PADDING = 32

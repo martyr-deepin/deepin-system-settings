@@ -88,6 +88,9 @@ class EventDispatcher(gobject.GObject):
 
             "vpn-type-change": _(obj),
 
+            "service-stop-do-more": _(),
+            "service-start-do-more": _(),
+
             #"wired_device_add" : _(),
             #"wireless_device_add" : _()
             #"mm-start": _(obj),

@@ -53,12 +53,14 @@ class NetManager(object):
         nm_module.nmclient.get_devices()
         self.device_manager = DeviceManager()
         self.init_devices()
+        Dispatcher.emit("service-start-do-more")
         #print servicemanager.get_name_owner(s)
 
     def __on_service_stop_do(self, widget, s):
         print "Debug::service_stop", s
         nm_module.cache.clearcache()
         nm_module.cache.clear_spec_cache()
+        Dispatcher.emit("service-stop-do-more")
 
     def get_hiddens(self):
         hiddens = list()
