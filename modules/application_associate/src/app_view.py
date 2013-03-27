@@ -76,9 +76,8 @@ class AppView(gtk.VBox):
         for app in apps:
             app.set_size_request(self.ENTRY_WIDTH, 22)
         for key in all_app_dict.iterkeys():
-            apps[key].set_items(all_app_dict[key], max_width=self.ENTRY_WIDTH)
+            apps[key].add_items(all_app_dict[key])
     
-
     def attach_to(self, table, widget_list, row, width):
         for index, widget in enumerate(widget_list):
             align = style.wrap_with_align(widget, width=width[index])

@@ -117,7 +117,7 @@ class AccountSetting(object):
         # button
         self.button_widgets["account_name"] = InputEntry()
         self.button_widgets["lock"] = gtk.Button()
-        self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=COMBO_WIDTH)
+        self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
         #self.button_widgets["auto_login"] = gtk.ToggleButton()
         self.button_widgets["auto_login"] = OffButton()
         self.button_widgets["passwd"] = InputEntry()
@@ -137,7 +137,7 @@ class AccountSetting(object):
         self.button_widgets["del_account"] = Button(_("Delete"))
         self.button_widgets["account_create"] = Button(_("Create"))
         self.button_widgets["account_cancle"] = Button(_("Cancel"))
-        self.button_widgets["account_type_new"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], max_width=COMBO_WIDTH)
+        self.button_widgets["account_type_new"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
         self.button_widgets["net_access_check_new"] = CheckButton(_("网络访问权限"), padding_x=0)
         self.button_widgets["disk_readonly_check_new"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
         self.button_widgets["mountable_check_new"] = CheckButton(_("可加载移动设备"), padding_x=0)
@@ -780,7 +780,7 @@ class AccountSetting(object):
             action_items.append((_("Enable this account"), self.CH_PASSWD_ACTION_ENABLE))
         else:
             action_items.append((_("Disable this account"), self.CH_PASSWD_ACTION_DISABLE))
-        action_combo = ComboBox(action_items, max_width=COMBO_WIDTH)
+        action_combo = ComboBox(action_items, fixed_width=COMBO_WIDTH)
         action_combo.set_size_request(COMBO_WIDTH, WIDGET_HEIGHT)
 
         current_pswd_input = PasswordEntry()

@@ -49,7 +49,6 @@ class ThreadWifiAuto(threading.Thread):
                             specific = self.device.get_ap_by_ssid(ssid)
                             active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, specific.object_path)
                             while(active_conn.get_state() == 1 and self.run_flag):
-                                print "state 1"
                                 time.sleep(1)
 
                             if active_conn.get_state() == 2:

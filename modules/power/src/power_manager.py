@@ -152,7 +152,7 @@ class PowerManager:
         return self.lockdown_settings.get_boolean("lock-enabled")
 
     def set_wakeup_password(self, value):
-        self.lockdown_settings.set_boolean("lock-enabled", value)
+        pass
 
     def get_tray_battery_status(self):
         return self.power_settings.get_boolean("show-tray")

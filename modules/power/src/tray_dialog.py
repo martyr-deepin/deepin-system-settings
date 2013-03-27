@@ -39,9 +39,9 @@ APP_HEIGHT = 169
 CANCEL_TEXT = _("Cancel")
 OK_TEXT = _("OK")
 #SHUTDOWN_TOP_TEXT = _("现在关闭此系统吗？")
-SHUTDOWN_TOP_TEXT = _("Turn off your computer now?")
+SHUTDOWN_TOP_TEXT = _("<span foreground='#FF0000'>Turn off</span> your computer now?,12")
 #SHUTDOWN_BOTTOM_TEXT = _("系统即将在%s秒后自动关闭。")
-SHUTDOWN_BOTTOM_TEXT = _("The system will shutdown in \n%s secs.")
+SHUTDOWN_BOTTOM_TEXT = _("The system will shutdown in \n%s secs.,12")
 #FONT_TYPE = _("文泉驿微米黑 Bold")
 FONT_TYPE = _("WenQuanYi Micro Hei Bold")
 
@@ -73,7 +73,7 @@ class TrayDialog(Window):
         # init time.
         self.timer = Timer(1000)
         self.second = 60
-        self.timer.Enabled = True
+        self.timer.Enabled = False
         self.timer.connect("Tick", self.timer_tick_evnet)
         #
         self.run_exec = None
@@ -116,6 +116,8 @@ class TrayDialog(Window):
         self.show_all()
 
     def set_pango_list(self):
+        self.pango_list = None
+        '''
         r, g, b = (65535, 0, 0)
         self.pango_list = pango.AttrList()
         if cn_check():
@@ -124,6 +126,8 @@ class TrayDialog(Window):
             start_index, end_index = EN_RED_TEXT[self.show_top_text] 
             
         self.pango_list.insert(pango.AttrForeground(r, g, b, start_index, end_index - 1))
+        '''
+        pass
 
     def __focus_out_window(self, widget, event):
         self.quit_dialog_window(widget)
@@ -232,9 +236,9 @@ class TrayDialog(Window):
         self.bottom_text_btn_ali.add(self.bottom_text_btn)
         #
         self.top_text_btn.connect("expose-event", 
-                     self.top_text_btn_expose_event, self.top_text_color, self.pango_list)
+                     self.top_text_btn_expose_event, self.top_text_color)
         self.bottom_text_btn.connect("expose-event", 
-                     self.top_text_btn_expose_event, self.bottom_text_color, None)
+                     self.top_text_btn_expose_event, self.bottom_text_color)
 
     def timer_tick_evnet(self, timer):
         self.bottom_text_btn.set_label(self.show_bottom_text % (self.second))
@@ -246,23 +250,26 @@ class TrayDialog(Window):
                 gtk.timeout_add(1, self.run_exec_timeout)
         self.second -= 1
 
-    def top_text_btn_expose_event(self, widget, event, font_color, pango_list):
+    def top_text_btn_expose_event(self, widget, event, font_color):
         cr = widget.window.cairo_create()
         rect = widget.allocation
+        text_list = widget.get_label().split(",")
+        text = text_list[0]
+        font_size = text_list[1]
         #
-        font_size = 10
-        if cn_check():
-            font_size = 12
-        size = get_text_size(widget.get_label(), font_size)
+        size = get_text_size(text, font_size)
+        size_padding = get_text_size("a", font_size)
+        size_padding = size_padding[0] * 35
         #
         draw_text(cr, 
-                  widget.get_label(),
+                  text,
                   rect.x,
                   rect.y + rect.height/2 - size[1]/2,
                   font_size,
                   font_color,
-                  pango_list=pango_list)
-        widget.set_size_request(size[0] + 10, size[1] + 4)
+                  markup=text)
+        # 
+        widget.set_size_request(size[0], size[1])
         return True
 
     def init_bottom_button(self):
@@ -273,6 +280,16 @@ class TrayDialog(Window):
         self.cancel_btn.connect("expose-event", self.label_expose_event, 30)
         self.ok_btn.connect("clicked", self.ok_btn_clicked)
         self.ok_btn.connect("expose-event", self.label_expose_event, 0)
+        self.ok_btn.connect("enter-notify-event", self.label_enter_notify_event)
+        self.cancel_btn.connect("enter-notify-event", self.label_enter_notify_event)
+
+    def label_enter_notify_event(self, widget, event):
+        self.ok_btn.queue_draw()
+        self.cancel_btn.queue_draw()
+        if self.ok_btn != widget:
+            self.ok_key_check = False
+        if self.cancel_btn != widget:
+            self.cancel_key_check = False
 
     def ok_btn_clicked(self, widget):
         self.quit_dialog_window(widget)
@@ -294,6 +311,7 @@ class TrayDialog(Window):
 
         if widget.state == gtk.STATE_PRELIGHT:
             color = "#FFFFFF"
+        #
         cr = widget.window.cairo_create()
         rect = widget.allocation
         #
@@ -304,9 +322,9 @@ class TrayDialog(Window):
                   widget.get_label(),
                   rect.x + rect.width/2 - size[0]/2, 
                   rect.y + rect.height/2 - size[1]/2, 
-                  self.cancel_size, 
-                  color, 
-                  self.cancel_font)  
+                  text_size=self.cancel_size, 
+                  text_color=color, 
+                  text_font=self.cancel_font)  
         widget.set_size_request(size[0] + width, size[1] + 10)
         #
         return True

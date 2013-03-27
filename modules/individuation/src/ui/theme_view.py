@@ -223,6 +223,12 @@ class SystemThemeView(IconView):
         #gobject.timeout_add(300, self.__is_single_click, item)
 
     def create_new_theme(self, name, item):
+        if name == "":
+            return
+        
+        if theme_manager.is_theme_exist(name):
+            return
+
         new_theme = theme_manager.create_new_theme(name, item.theme)
         new_theme.set_editable(True)
         event_manager.emit("create-new-theme", new_theme)

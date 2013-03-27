@@ -152,9 +152,9 @@ class ThemeItem(gobject.GObject):
                 
         # Draw wallpapers.
         if self.pixbufs == []:
-            wallpaper_paths = self.theme.get_wallpaper_paths()
-            wallpaper_count = len(wallpaper_paths)
-            for wallpaper_file in wallpaper_paths[wallpaper_count - 3:wallpaper_count]:
+            wallpaper_paths = self.theme.get_wallpaper_paths()[:3]
+            wallpaper_paths = wallpaper_paths[::-1]
+            for wallpaper_file in wallpaper_paths:
                 self.pixbufs.append(get_optimum_pixbuf_from_file(wallpaper_file, self.wallpaper_width, self.wallpaper_height))
                 
         theme_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, rect.width, rect.height)   

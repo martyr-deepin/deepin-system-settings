@@ -57,6 +57,8 @@ class TrayNetworkPlugin(object):
 
         self.init_wired_signals()
         self.init_wireless_signals()
+        self.init_mm_signals()
+        Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals())
 
     def recheck_sections(self, widget, index):
         self.init_widgets()
@@ -77,6 +79,39 @@ class TrayNetworkPlugin(object):
         self.this = self.this_list[0]
         self.tray_icon = self.this_list[1]
         self.init_widgets()
+
+    def init_mm_signals(self):
+        net_manager.device_manager.load_mm_listener(self)
+
+    def mm_device_active(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("cable")
+
+    def mm_device_deactive(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
+        else:
+            self.change_status_icon("cable_disconnect")
+
+    def mm_device_unavailable(self,  widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+
+    def mm_activate_start(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("loading")
+        self.let_rotate(True)
+
+    def mm_activate_failed(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
+        else:
+            self.change_status_icon("cable_disconnect")
 
     def mobile_toggle(self, widget):
         if widget.get_active():
@@ -123,6 +158,7 @@ class TrayNetworkPlugin(object):
         # Mobile init
         if self.net_manager.get_mm_devices():
             self.gui.show_net("mobile")
+
         else:
             self.gui.remove_net("mobile")
 
@@ -131,7 +167,6 @@ class TrayNetworkPlugin(object):
             self.net_manager.active_wired_device(self.active_wired)
         else:
             self.net_manager.disactive_wired_device(self.disactive_wired)
-
 
     def init_wired_signals(self):
         net_manager.device_manager.load_wired_listener(self)
@@ -249,6 +284,7 @@ class TrayNetworkPlugin(object):
         else:
             self.change_status_icon("wifi_disconnect")
         if reason == 39:
+            print "user close"
             self.gui.wireless.set_active((True, False))
 
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
@@ -396,7 +432,7 @@ class TrayNetworkPlugin(object):
         self.this.resize(1,1)
         if self.menu_showed:
             self.this.hide_menu()
-            self.this.set_size_request(185, height + 46)
+            self.this.set_size_request(185, height + 40)
             self.this.show_menu()
 
 def return_insert():
