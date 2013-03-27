@@ -65,7 +65,7 @@ class ProxyConfig(gtk.VBox):
         self.methods = ComboBox([(_("None"), 0),
                                  (_("Manual"), 1),
                                  (_("Automatic"), 2)],
-                                 max_width=self.ENTRY_WIDTH -5)
+                                 fixed_width=self.ENTRY_WIDTH )
 
         self.methods.set_size_request(-1,22)
         self.methods.connect("item-selected", self.method_changed)

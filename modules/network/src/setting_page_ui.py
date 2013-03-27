@@ -63,7 +63,7 @@ class SettingUI(gtk.Alignment):
         self.hpaned.change_position(1)
 
     def __init_tab_box(self):
-        pass
+        self.__init_paned(None)
         #container_remove_all(self.hbox)
 
     def __init_signals(self):
@@ -75,6 +75,7 @@ class SettingUI(gtk.Alignment):
     def load_module(self, module_obj):
         #self.__init_tab()
         self.__init_tab_box()
+
         # need this for corect button set
         self.foot_box.set_setting(module_obj)
         self.setting_group = module_obj
