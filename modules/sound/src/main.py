@@ -732,7 +732,7 @@ class SoundSetting(object):
                 i += 1
             if not items:
                 items.append((" ", 0))
-            self.button_widgets["speaker_combo"].add_items(items, select_index, HSCALEBAR_WIDTH)
+            self.button_widgets["speaker_combo"].add_items(items, select_index)
 
     def __set_input_port_status(self):
         current_source = pypulse.get_fallback_source_index()
@@ -755,7 +755,7 @@ class SoundSetting(object):
                 i += 1
             if not items:
                 items.append((" ", 0))
-            self.button_widgets["microphone_combo"].add_items(items, select_index, HSCALEBAR_WIDTH)
+            self.button_widgets["microphone_combo"].add_items(items, select_index)
         
     def __set_card_treeview_status(self):
         card_list = []
