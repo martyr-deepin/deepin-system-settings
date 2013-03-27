@@ -25,7 +25,6 @@ from nmobject import NMObject
 from nm_utils import TypeConvert
 import traceback
 from nmcache import get_cache
-cache = get_cache()
 from nm_utils import nm_alive
 
 class NMClient(NMObject):
@@ -66,7 +65,7 @@ class NMClient(NMObject):
     def get_devices(self):
         '''return father device objects'''
         try:
-            return map(lambda x: cache.getobject(x), TypeConvert.dbus2py(self.dbus_method("GetDevices")))
+            return map(lambda x: get_cache().getobject(x), TypeConvert.dbus2py(self.dbus_method("GetDevices")))
         except:
             return []
 
@@ -112,7 +111,7 @@ class NMClient(NMObject):
     def get_device_by_iface(self, iface):
         device = self.dbus_method("GetDeviceByIpIface", iface)
         if device:
-            return cache.getobject(device)
+            return get_cache().getobject(device)
         else:
             return None
 
@@ -121,23 +120,23 @@ class NMClient(NMObject):
         try:
             active = self.dbus_interface.ActivateConnection(connection_path, device_path, specific_object_path)
             if active:
-                if "vpn" in cache.getobject(connection_path).settings_dict.iterkeys():
-                    vpn_active_connection = cache.get_spec_object(active)
+                if "vpn" in get_cache().getobject(connection_path).settings_dict.iterkeys():
+                    vpn_active_connection = get_cache().get_spec_object(active)
                     
                     if vpn_active_connection.get_vpnstate() in [1, 2, 3, 4]:
                         vpn_active_connection.emit("vpn-connecting")
-                        return cache.getobject(active)
+                        return get_cache().getobject(active)
 
                     elif vpn_active_connection.get_vpnstate() == 5:
                         vpn_active_connection.emit("vpn-connected")
-                        return cache.getobject(active)
+                        return get_cache().getobject(active)
 
                     else:
                         vpn_active_connection.emit("vpn-disconnected")
-                        return cache.getobject(active)
+                        return get_cache().getobject(active)
 
                 else:    
-                    return cache.getobject(active)
+                    return get_cache().getobject(active)
             else:
                 return None
         except:
@@ -154,7 +153,7 @@ class NMClient(NMObject):
 
     def activate_finish(self, active_path):
         if active_path:
-            return cache.getobject(active_path)
+            return get_cache().getobject(active_path)
     
     def activate_error(self, *error):
         pass
@@ -163,7 +162,7 @@ class NMClient(NMObject):
         try:
             active = self.dbus_interface.AddAndActivateConnection(connection_path, device_path, specific_object_path)
             if active:
-                return cache.getobject(active)
+                return get_cache().getobject(active)
         except:
             traceback.print_exc()
 
@@ -176,7 +175,7 @@ class NMClient(NMObject):
 
     def add_activate_finish(self, active_path):
         if active_path:
-            return cache.getobject(active_path)
+            return get_cache().getobject(active_path)
 
     def add_activate_error(self, *error):
         pass
@@ -251,7 +250,7 @@ class NMClient(NMObject):
     def get_active_connections(self):
         '''return active connections objects'''
         try:
-            return filter(lambda x: x.get_state() == 2, map(lambda x: cache.getobject(x), self.properties["ActiveConnections"]))
+            return filter(lambda x: x.get_state() == 2, map(lambda x: get_cache().getobject(x), self.properties["ActiveConnections"]))
         except:
             return []
 
@@ -285,14 +284,14 @@ class NMClient(NMObject):
     ###Signals ###
     @nm_alive
     def device_added_cb(self, device_object_path):
-        #cache.clearcache()
-        #cache.clear_spec_cache()
+        #get_cache().clearget_cache()()
+        #get_cache().clear_spec_get_cache()()
         self.emit("device-added", device_object_path)
 
     @nm_alive
     def device_removed_cb(self, device_object_path):
-        #cache.clearcache()
-        #cache.clear_spec_cache()
+        #get_cache().clearget_cache()()
+        #get_cache().clear_spec_get_cache()()
         self.emit("device-removed", device_object_path)
 
     def permisson_changed_cb(self):

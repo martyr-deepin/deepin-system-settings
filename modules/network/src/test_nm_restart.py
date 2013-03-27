@@ -23,6 +23,7 @@ def get_devices(widget):
     print "wired_spec",nm_module.cache.get_spec_object(net_manager.wired_device.object_path)
     print "wireless_spec",nm_module.cache.get_spec_object(net_manager.wireless_device.object_path)
 
+
 def init_all(widget):
     print nm_module.nm_remote_settings.list_connections()
     print nm_module.nmclient.get_devices()

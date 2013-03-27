@@ -26,9 +26,7 @@ import os
 import traceback
 from nmobject import NMObject
 from nmcache import get_cache
-cache = get_cache()
 from nm_utils import nm_alive
-nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 udev_client = gudev.Client("net")
 
@@ -65,7 +63,7 @@ class NMDevice(NMObject):
     def get_active_connection(self):
         '''return active connection object'''
         if self.properties["ActiveConnection"]:
-            return cache.getobject(self.properties["ActiveConnection"])
+            return get_cache().getobject(self.properties["ActiveConnection"])
         else:
             return None
 
@@ -86,10 +84,10 @@ class NMDevice(NMObject):
             return self.get_active_connection().get_connection()
 
     def get_dhcp4_config(self):
-        return cache.getobject(self.properties["Dhcp4Config"])
+        return get_cache().getobject(self.properties["Dhcp4Config"])
 
     def get_dhcp6_config(self):
-        return cache.getobject(self.properties["Dhcp6Config"])
+        return get_cache().getobject(self.properties["Dhcp6Config"])
 
     def get_driver(self):
         return self.properties["Driver"]
@@ -104,10 +102,10 @@ class NMDevice(NMObject):
         return self.properties["IpInterface"]
 
     def get_ip4_config(self):
-        return cache.getobject(self.properties["Ip4Config"])
+        return get_cache().getobject(self.properties["Ip4Config"])
 
     def get_ip6_config(self):
-        return cache.getobject(self.properties["Ip6Config"])
+        return get_cache().getobject(self.properties["Ip6Config"])
 
     def get_managed(self):
         return self.properties["Managed"]
@@ -216,6 +214,7 @@ class NMDevice(NMObject):
             try:
                 conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
                 self.emit("device-active", new_state, old_state, reason)
+                nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
                 try:
                     priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid) + 1 )
                 except:
