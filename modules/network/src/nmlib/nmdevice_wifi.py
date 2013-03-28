@@ -24,6 +24,7 @@ import gobject
 import traceback
 import threading
 import time
+import glib
 from nmdevice import NMDevice
 from nmcache import get_cache
 from nm_utils import TypeConvert
@@ -92,17 +93,8 @@ class NMDeviceWifi(NMDevice):
 
         ###only used for ap added/removed signal
         self.ap_record_dict = {}
-        self.init_ap_record_dict()
-
-    def init_ap_record_dict(self):
-        try:
-            accesspoints_path = self.dbus_method("GetAccessPoints")
-            from nmaccesspoint import NMAccessPoint 
-            for ap_path in accesspoints_path:
-                self.ap_record_dict[ap_path] = NMAccessPoint(ap_path).get_ssid()
-        except:
-            traceback.print_exc()
-            return []
+        self.ap_record_inited = 0
+        self.ap_timer_id = 0
 
     def device_wifi_disconnect(self):
         if self.thread_wifiauto:
@@ -158,6 +150,15 @@ class NMDeviceWifi(NMDevice):
     def get_access_points(self):
         try:
             ap = self.dbus_method("GetAccessPoints")
+            if not self.ap_record_inited:
+                self.ap_record_inited = 1
+                try:
+                    from nmaccesspoint import NMAccessPoint
+                    for ap_path in ap:
+                        self.ap_record_dict[ap_path] = NMAccessPoint(ap_path).get_ssid()
+                except:
+                    self.ap_recrod_dict = {}
+
             return map(lambda x:get_cache().getobject(x), TypeConvert.dbus2py(ap))
         except:
             return []
@@ -253,6 +254,11 @@ class NMDeviceWifi(NMDevice):
         except:
             return []
     #Signals##
+    def emit_cb(self, signal):
+        if self.ap_timer_id > 0:
+            glib.source_remove(self.ap_timer_id)
+        self.emit(signal)
+
     def access_point_added_cb(self, ap_object_path):
         try:
             from nmaccesspoint import NMAccessPoint
@@ -260,7 +266,7 @@ class NMDeviceWifi(NMDevice):
     
             if added_ssid not in set(self.ap_record_dict.values()):
                 self.origin_ap_list = self.get_access_points()
-                self.emit("access-point-added")
+                self.ap_timer_id = glib.timeout_add(300, self.emit_cb, "access-point-added")
 
             self.ap_record_dict[ap_object_path] = added_ssid
         except:
@@ -271,7 +277,7 @@ class NMDeviceWifi(NMDevice):
             removed_ssid = self.ap_record_dict[ap_object_path]
             if len(filter(lambda x: x == removed_ssid, self.ap_record_dict.values())) == 1:
                 self.origin_ap_list = self.get_access_points()
-                self.emit("access-point-removed")
+                self.ap_timer_id = glib.timeout_add(300, self.emit_cb, "access-point-removed")
 
             del self.ap_record_dict[ap_object_path]
         except:
