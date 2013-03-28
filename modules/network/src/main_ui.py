@@ -977,8 +977,10 @@ class Network(object):
         for section in self.vbox.get_children():
             section.init_state()
         slider._append_page(Region(), "region")
+        from setting_page_ui import SettingUI
+        self.setting_page_ui = SettingUI(None, None)
+        slider._append_page(self.setting_page_ui, "setting")
          
-
     def __init_sections(self, index):
         section_list = [WiredSection, WirelessSection, DSLSection, MobileSection, VpnSection, Proxy]
         if index == -1:
@@ -1034,34 +1036,7 @@ class Network(object):
         cr.fill()
 
     def slide_to_setting_page(self, widget, setting_module):
-        from setting_page_ui import SettingUI
-        self.setting_page_ui = SettingUI(None, None)
-        slider._append_page(self.setting_page_ui, "setting")
         self.setting_page_ui.load_module(setting_module)
-
-    #def activate_succeed(self, widget, connection_path):
-        #print "active_succeed with", connection_path
-        #print connection_path
-
-    #def activate_failed(self, widget, connection_path):
-        #print "active failed"
-
-    #def device_added(self, widget, connection_path):
-        #print "device add:", connection_path
-        #self.wired.refresh_device()
-
-    #def device_removed(self, widget, connection_path):
-        #print "device remove:", connection_path
-        #self.wired.refresh_device()
-
-    #def init_sections(self):
-        ##slider._set_to_page("main")
-        #self.wired = WiredSection()
-        #self.wireless = WirelessSection()
-        #self.dsl = DSLSection()
-        #self.proxy = Proxy()
-        #self.mobile = MobileSection()
-        #self.vpn = VpnSection()
 
     def refresh(self):
         #self.init_sections()

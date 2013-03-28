@@ -91,13 +91,6 @@ class EventDispatcher(gobject.GObject):
             "service-stop-do-more": _(),
             "service-start-do-more": _(),
 
-            #"wired_device_add" : _(),
-            #"wireless_device_add" : _()
-            #"mm-start": _(obj),
-            #"mm-deactive": _(obj),
-            #"mm-active": _(obj),
-            #"mm-failed": _(obj),
-
             }
 
     def __init__(self):
@@ -182,4 +175,3 @@ class EventDispatcher(gobject.GObject):
         self.emit("request_redraw")
 
 Dispatcher = EventDispatcher()
-print Dispatcher
