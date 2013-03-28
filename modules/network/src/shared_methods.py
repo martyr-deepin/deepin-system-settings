@@ -21,7 +21,6 @@ class NetManager(object):
             servicemanager.connect("service-start", self.__on_service_start_do)
             servicemanager.connect("service-stop", self.__on_service_stop_do)
             self.device_manager = DeviceManager()
-            self.init_devices()
 
             self.cf = nm_module.nm_remote_settings.cf
             self.config_file = nm_module.nm_remote_settings.config_file
@@ -34,6 +33,7 @@ class NetManager(object):
         self.device_manager = DeviceManager()
 
     def init_devices(self):
+        self.device_manager.init_device()
         self.wired_devices = self.device_manager.get_wired_devices()
         if self.wired_devices:
             self.wired_device = self.wired_devices[0]

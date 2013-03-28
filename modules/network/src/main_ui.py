@@ -194,6 +194,8 @@ class WiredSection(Section, WiredDevice):
     def __init__(self):
         Section.__init__(self)
         WiredDevice.__init__(self)
+        self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w:w)
+        self.load(self.wire, [])
     
     @classmethod
     def show_or_hide(self):
@@ -205,8 +207,6 @@ class WiredSection(Section, WiredDevice):
     def init_state(self):
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
-            self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w:w)
-            self.load(self.wire, [])
             if self.get_state(self.wired_devices):
                 self.wire.set_active(True)
         else:
@@ -349,6 +349,14 @@ class WirelessSection(Section, WirelessDevice):
     def __init__(self):
         Section.__init__(self)
         WirelessDevice.__init__(self)
+        self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), lambda w:w)
+        self.label =  Label(_("Creat Hidden network"), 
+                          LABEL_COLOR,
+                          underline=True,
+                          enable_select=False,
+                          enable_double_click=False)
+
+        self.load(self.wireless, [self.label])
 
         self.selected_item = None
 
@@ -362,21 +370,6 @@ class WirelessSection(Section, WirelessDevice):
     def init_state(self):
         self.wireless_devices = net_manager.device_manager.get_wireless_devices()
         if self.wireless_devices:
-            self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), lambda w:w)
-            #self.tree = TreeView([], enable_multiple_select=False)
-            #self.tree.set_expand_column(1)
-            #self.hotspot = HotSpot(None)
-            self.vbox = gtk.VBox(False)
-            self.label =  Label(_("Creat Hidden network"), 
-                              LABEL_COLOR,
-                              underline=True,
-                              enable_select=False,
-                              enable_double_click=False)
-
-            self.label.connect("button-release-event", self.create_a_hidden_network)
-            self.space = gtk.VBox()
-            self.space.set_size_request(-1, 15)
-            self.load(self.wireless, [self.label])
             self.tree.connect("single-click-item", self.set_selected_item)
             ## check state
             if self.get_state(self.wireless_devices):
@@ -391,6 +384,7 @@ class WirelessSection(Section, WirelessDevice):
         Dispatcher.connect("ap-added", self.ap_added_callback)
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
         Dispatcher.connect("wireless-redraw", self.wireless_redraw)
+        self.label.connect("button-release-event", self.create_a_hidden_network)
 
     def wireless_redraw(self, widget):
         print "wireless redraw"
@@ -656,19 +650,18 @@ class HotSpot(gtk.VBox):
 class DSLSection(Section):
     def __init__(self):
         Section.__init__(self)
+        self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
+        self.label =  Label(_("Create DSL Setting"), 
+                          LABEL_COLOR,
+                          underline=True,
+                          enable_select=False,
+                          enable_double_click=False)
+        
+        self.load(self.dsl, [self.label])
 
     def init_state(self):
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
-            self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
-            self.label =  Label(_("Create DSL Setting"), 
-                              LABEL_COLOR,
-                              underline=True,
-                              enable_select=False,
-                              enable_double_click=False)
-            
-            self.load(self.dsl, [self.label])
-
             self.__init_signals()
         else:
             pass
@@ -841,9 +834,10 @@ class MobileSection(Section, MobileDevice):
                       enable_double_click=False)
 
         self.load(self.mobile, [])
-        self.init_signal()
+        #self.init_signal()
 
     def init_state(self):
+        self.init_signal()
         pass
 
     def init_signal(self):
@@ -965,8 +959,7 @@ class Network(object):
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
-        
-        self.eventbox.connect_after("show", self.init_sections_state)
+        slider.connect_after("show", self.init_sections_state)
         slider.show_all()
         slider._set_to_page("main")
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
@@ -974,8 +967,13 @@ class Network(object):
         Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
 
     def init_sections_state(self, widget):
+        net_manager.init_devices()
         for section in self.vbox.get_children():
-            section.init_state()
+            if section.show_or_hide():
+                section.section_show()
+                section.init_state()
+            else:
+                section.section_hide()
         slider._append_page(Region(), "region")
         from setting_page_ui import SettingUI
         self.setting_page_ui = SettingUI(None, None)
@@ -988,17 +986,13 @@ class Network(object):
             for section in section_list:
                 section_ins = apply(section)
                 self.vbox.pack_start(section_ins, False, True)
-                if section.show_or_hide():
-                    section_ins.section_show()
-                else:
-                    section_ins.section_hide()
         else:
             for section in self.vbox.get_children():
+
                 if section.show_or_hide():
                     section.section_show()
                 else:
                     section.section_hide()
-
     def __init_ui(self):
 
         self.vbox = gtk.VBox(False, BETWEEN_SPACING)

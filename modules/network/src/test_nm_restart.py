@@ -2,7 +2,10 @@
 #-*- coding:utf-8 -*-
 
 #import dss
+import time
+t = time.time()
 from shared_methods import net_manager, nm_module
+print time.time() - t
 import gtk
 
 def get_ap_list(widget):

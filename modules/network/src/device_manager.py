@@ -7,7 +7,7 @@ from helper import Dispatcher
 class DeviceManager(object):
 
     def __init__(self):
-        self.__init_device()
+        #self.__init_device()
         self.__signal_list = ["device_active",
                               "device_deactive",
                               "device_unavailable",
@@ -17,7 +17,7 @@ class DeviceManager(object):
         nm_module.nmclient.connect("device-added", self.device_added_cb)
         nm_module.nmclient.connect("device-removed", self.device_removed_cb)
 
-    def __init_device(self):
+    def init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
         self.wireless_devices = nm_module.nmclient.get_wireless_devices()
         self.mm_devices = nm_module.nmclient.get_modem_devices()
