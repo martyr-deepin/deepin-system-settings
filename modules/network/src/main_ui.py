@@ -72,9 +72,10 @@ class Section(gtk.VBox):
         gtk.VBox.__init__(self)
 
     def load(self, toggle, content=[]):
+        self.toggle = toggle
         self.content_box = gtk.VBox(spacing=15)
-        self.pack_start(toggle, False, False)
-        toggle.switch.connect("toggled", self.toggle_callback)
+        self.pack_start(self.toggle, False, False)
+        self.toggle.switch.connect("toggled", self.toggle_callback)
 
         self.tree = TreeView([])
         self.tree.set_expand_column(1)
@@ -88,6 +89,9 @@ class Section(gtk.VBox):
         self.align = self._set_align()
         self.pack_start(self.align, False, False)
         self.show_all()
+
+    def set_active(self, state):
+        self.toggle.set_active(state)
 
     def draw_mask(self, cr, x, y, w, h):
         cr.set_source_rgb(1, 1, 1)
@@ -223,7 +227,9 @@ class WiredSection(Section, WiredDevice):
     def device_added(self, widget, device):
         print "device_added"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
-        self.wire.set_active(True, emit=True)
+        self._init_signals()
+        if self.wire.get_active():
+            self.wire.set_active(True, emit=True)
 
     def get_list(self):
         return map(lambda d: WiredItem(d), self.wired_devices)
@@ -295,7 +301,8 @@ class WirelessDevice(object):
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         self.this_connection = widget.get_real_active_connection()
-        print "Debug: (wireless active start in main):",self.this_connection.get_setting("802-11-wireless").ssid
+        if self.this_connection:
+            print "Debug: (wireless active start in main):",self.this_connection.get_setting("802-11-wireless").ssid
         if not self.wireless.get_active():
             self.wireless.set_active(True)
 
@@ -383,6 +390,7 @@ class WirelessSection(Section, WirelessDevice):
 
     def init_signals(self):
         self._init_signals()
+        Dispatcher.connect("wireless-device-add", self.device_added)
         Dispatcher.connect("ap-added", self.ap_added_callback)
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
         Dispatcher.connect("wireless-redraw", self.wireless_redraw)
@@ -392,18 +400,26 @@ class WirelessSection(Section, WirelessDevice):
         if self.wireless.get_active():
             self.wireless.set_active(True, emit=True)
 
+    def device_added(self, widget, device):
+        print "wireless device added"
+        self.wireless_devices = net_manager.device_manager.get_wireless_devices()
+        self._init_signals()
+        if self.wireless.get_active():
+            self.wireless.set_active(True, emit=True)
+
+
     def create_a_hidden_network(self, widget, c):
         from wlan_config import HiddenSetting
         Dispatcher.to_setting_page(HiddenSetting(None))
 
     def ap_added_callback(self, widget):
-        print "ap added"
         if self.wireless.get_active():
+            print "ap added"
             self.wireless.set_active(True, emit=True)
 
     def ap_removed_callback(self, widget):
-        print "ap removed"
         if self.wireless.get_active():
+            print "ap removed"
             self.wireless.set_active(True, emit=True)
 
     def set_selected_item(self, widget, item, column, x, y):
@@ -1014,9 +1030,12 @@ class Proxy(gtk.VBox):
         self.set_no_show_all(True)
         self.hide()
 
+    def set_active(self, state):
+        self.proxy.set_active(state)
+
 class Network(object):
     def __init__(self):        
-        self.init_sections()
+        #self.init_sections()
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
@@ -1029,7 +1048,7 @@ class Network(object):
         slider._set_to_page("main")
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
         Dispatcher.connect("recheck-section", lambda w, i: self.__init_sections(0))
-        Dispatcher.connect("service-stop-add-more", lambda w: self.stop())
+        Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
 
         self.sections = []
     
@@ -1088,8 +1107,8 @@ class Network(object):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    #def slide_to_setting_page(self, widget, setting_module):
-        #self.setting_page_ui.load_module(setting_module)
+    def slide_to_setting_page(self, widget, setting_module):
+        self.setting_page_ui.load_module(setting_module)
 
     #def activate_succeed(self, widget, connection_path):
         #print "active_succeed with", connection_path
@@ -1122,6 +1141,8 @@ class Network(object):
         self.eventbox.queue_draw()
 
     def stop(self):
+        for section in self.vbox.get_children():
+            section.set_active(False)
         self.eventbox.set_above_child(True)
         
     def get_main_page(self):

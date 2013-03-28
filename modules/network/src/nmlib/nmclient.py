@@ -286,7 +286,8 @@ class NMClient(NMObject):
     def device_added_cb(self, device_object_path):
         #get_cache().clearget_cache()()
         #get_cache().clear_spec_get_cache()()
-        self.emit("device-added", device_object_path)
+        if not filter(lambda d: d.object_path == device_object_path, self.devices):
+            self.emit("device-added", device_object_path)
 
     @nm_alive
     def device_removed_cb(self, device_object_path):
