@@ -87,14 +87,12 @@ class NMDeviceWifi(NMDevice):
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
-        self.init_nmobject_with_properties()
-        self.origin_ap_list = self.get_access_points()
-        self.thread_wifiauto = None
-
-        ###only used for ap added/removed signal
         self.ap_record_dict = {}
         self.ap_record_inited = 0
         self.ap_timer_id = 0
+        self.init_nmobject_with_properties()
+        self.origin_ap_list = self.get_access_points()
+        self.thread_wifiauto = None
 
     def device_wifi_disconnect(self):
         if self.thread_wifiauto:
