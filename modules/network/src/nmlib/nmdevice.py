@@ -195,32 +195,32 @@ class NMDevice(NMObject):
     def disconnect_error(self, *error):
         pass
 
+    def emit_cb(self, signal, new_state, old_state, reason):
+        print "emit_cb", signal, new_state, old_state, reason
+        if self.state_id > 0:
+            glib.source_remove(self.state_id)
+
+        self.emit(signal, new_state, old_state, reason)
+
     def state_changed_cb(self, new_state, old_state, reason):
         #self.emit("state-changed", new_state, old_state, reason)
         self.init_nmobject_with_properties()
 
-        def emit(signal):
-            print signal, new_state, old_state, reason
-            self.emit(signal, new_state, old_state, reason)
-
-        if self.state_id > 0:
-            glib.source_remove(self.state_id)
-
         if old_state == 100 or reason ==39:
-            #print "device-deactive", new_state, old_state, reason
-            self.state_id = glib.timeout_add(500, emit, "device-deactive")
+            print "device-deactive", new_state, old_state, reason
+            self.state_id = glib.timeout_add(2000, self.emit_cb, "device-deactive", new_state, old_state, reason)
             return 
 
         if new_state == 40:
-            #print "activate-start", new_state, old_state, reason
-            self.state_id = glib.timeout_add(500, emit, "activate-start")
+            print "activate-start", new_state, old_state, reason
+            self.state_id = glib.timeout_add(2000, self.emit_cb, "activate-start", new_state, old_state, reason)
             return 
 
         if new_state == 100:
-            #print "device-active", new_state, old_state, reason
+            print "device-active", new_state, old_state, reason
             try:
                 conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
-                self.state_id = glib.timeout_add(500, emit, "device-active")
+                self.state_id = glib.timeout_add(2000, self.emit_cb, "device-active", new_state, old_state, reason)
                 nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
                 try:
                     priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid) + 1 )
@@ -233,13 +233,13 @@ class NMDevice(NMObject):
                 pass
 
         if new_state == 120:
-            #print "activate-failed", new_state, old_state, reason
-            self.state_id = glib.timeout_add(500, emit, "activate-failed")
+            print "activate-failed", new_state, old_state, reason
+            self.state_id = glib.timeout_add(2000, self.emit_cb, "activate-failed", new_state, old_state, reason)
             return 
 
         if new_state == 10 or new_state == 20:
-            #print "device-unavailable", new_state, old_state, reason
-            self.state_id = glib.timeout_add(500, emit, "device-unavailable")
+            print "device-unavailable", new_state, old_state, reason
+            self.state_id = glib.timeout_add(2000, self.emit_cb, "device-unavailable", new_state, old_state, reason)
             return 
 
 if __name__ == "__main__":
