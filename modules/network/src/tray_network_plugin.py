@@ -62,6 +62,14 @@ class TrayNetworkPlugin(object):
         Dispatcher.connect("wired-device-add", lambda w,p: self.init_wired_signals())
         Dispatcher.connect("wireless-device-add", lambda w,p: self.init_wireless_signals())
 
+        Dispatcher.connect("service_start_do_more", self.service_start_do_more)
+
+    def service_start_do_more(self, widget):
+        self.init_wired_signals()
+        self.init_wireless_signals()
+        self.init_mm_signals()
+
+
     def recheck_sections(self, widget, index):
         self.init_widgets()
         Dispatcher.emit("request-resize")
