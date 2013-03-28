@@ -332,7 +332,7 @@ class TrayGui(gtk.VBox):
     def sink_input_changed_cb(self, obj, index):
         obj.get_devices()
         playback = obj.get_playback_streams()
-        if index not in self.stream_list:
+        if index not in self.stream_list and index in playback:
             self.__make_playback_box(playback[index], index)
         elif index in playback:
             self.__set_playback_status(playback[index],
