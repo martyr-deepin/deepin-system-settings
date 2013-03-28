@@ -25,7 +25,6 @@ from nmobject import NMObject
 from nm_utils import TypeConvert
 import traceback
 from nmcache import get_cache
-from nm_utils import nm_alive
 
 class NMClient(NMObject):
     '''NMClient'''
@@ -282,17 +281,11 @@ class NMClient(NMObject):
             return []
 
     ###Signals ###
-    @nm_alive
     def device_added_cb(self, device_object_path):
-        #get_cache().clearget_cache()()
-        #get_cache().clear_spec_get_cache()()
         if not filter(lambda d: d.object_path == device_object_path, self.devices):
             self.emit("device-added", device_object_path)
 
-    @nm_alive
     def device_removed_cb(self, device_object_path):
-        #get_cache().clearget_cache()()
-        #get_cache().clear_spec_get_cache()()
         self.emit("device-removed", device_object_path)
 
     def permisson_changed_cb(self):
