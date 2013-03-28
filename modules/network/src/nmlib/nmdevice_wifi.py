@@ -26,7 +26,7 @@ import threading
 import time
 from nmdevice import NMDevice
 from nmcache import get_cache
-from nm_utils import TypeConvert, nm_alive
+from nm_utils import TypeConvert
 
 class ThreadWifiAuto(threading.Thread):
 
@@ -253,7 +253,6 @@ class NMDeviceWifi(NMDevice):
         except:
             return []
     #Signals##
-    @nm_alive
     def access_point_added_cb(self, ap_object_path):
         try:
             from nmaccesspoint import NMAccessPoint
@@ -262,28 +261,22 @@ class NMDeviceWifi(NMDevice):
             if added_ssid not in set(self.ap_record_dict.values()):
                 self.origin_ap_list = self.get_access_points()
                 self.emit("access-point-added")
-                #print ap_object_path, added_ssid
-                #get_cache().clearget_cache()()
-                #get_cache().clear_spec_get_cache()()
+
             self.ap_record_dict[ap_object_path] = added_ssid
         except:
             traceback.print_exc()
 
-    @nm_alive
     def access_point_removed_cb(self, ap_object_path):
         try:
             removed_ssid = self.ap_record_dict[ap_object_path]
             if len(filter(lambda x: x == removed_ssid, self.ap_record_dict.values())) == 1:
                 self.origin_ap_list = self.get_access_points()
                 self.emit("access-point-removed")
-                #print ap_object_path, removed_ssid
-                #get_cache().clearget_cache()()
-                #get_cache().clear_spec_get_cache()()
+
             del self.ap_record_dict[ap_object_path]
         except:
             traceback.print_exc()
 
-    @nm_alive
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
 
