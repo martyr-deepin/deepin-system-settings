@@ -40,6 +40,7 @@ class TrayNetworkPlugin(object):
         self.menu_showed = False
         self.gui = TrayUI(self.toggle_wired, self.toggle_wireless, self.mobile_toggle)
         self.net_manager = net_manager
+        self.net_manager.init_devices()
         Dispatcher.connect("request_resize", self.request_resize)
         Dispatcher.connect("ap-added", self.wireless_ap_added)
         Dispatcher.connect("ap-removed", self.wireless_ap_removed)

@@ -27,7 +27,7 @@ import time
 import glib
 from nmdevice import NMDevice
 from nmcache import get_cache
-from nm_utils import TypeConvert
+from nm_utils import TypeConvert, nm_alive
 
 class ThreadWifiAuto(threading.Thread):
 
@@ -257,24 +257,25 @@ class NMDeviceWifi(NMDevice):
             glib.source_remove(self.ap_timer_id)
         self.emit(signal)
 
+    @nm_alive
     def access_point_added_cb(self, ap_object_path):
         try:
             from nmaccesspoint import NMAccessPoint
             added_ssid = NMAccessPoint(ap_object_path).get_ssid()
     
             if added_ssid not in set(self.ap_record_dict.values()):
-                #self.origin_ap_list = self.get_access_points()
+                self.origin_ap_list = self.get_access_points()
                 self.ap_timer_id = glib.timeout_add(300, self.emit_cb, "access-point-added")
 
             self.ap_record_dict[ap_object_path] = added_ssid
         except:
             traceback.print_exc()
-
+    @nm_alive
     def access_point_removed_cb(self, ap_object_path):
         try:
             removed_ssid = self.ap_record_dict[ap_object_path]
             if len(filter(lambda x: x == removed_ssid, self.ap_record_dict.values())) == 1:
-                #self.origin_ap_list = self.get_access_points()
+                self.origin_ap_list = self.get_access_points()
                 self.ap_timer_id = glib.timeout_add(300, self.emit_cb, "access-point-removed")
 
             del self.ap_record_dict[ap_object_path]

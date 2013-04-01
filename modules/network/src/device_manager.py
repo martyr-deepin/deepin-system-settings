@@ -14,6 +14,8 @@ class DeviceManager(object):
                               "activate_start",
                               "activate_failed"]
 
+        self.connected_device = list()
+
         nm_module.nmclient.connect("device-added", self.device_added_cb)
         nm_module.nmclient.connect("device-removed", self.device_removed_cb)
 
@@ -26,31 +28,33 @@ class DeviceManager(object):
         self.ap_added(self.wireless_devices)
 
     def mm_device_added(self, widget, path):
-        self.__init_device()
+        self.init_device()
         device = nm_module.cache.getobject(path)
         Dispatcher.emit("mmdevice-added", device)
         Dispatcher.emit("recheck-section", 3)
 
     def mm_device_removed(self, widget, path):
-        self.__init_device()
+        self.init_device()
         device = nm_module.cache.getobject(path)
         Dispatcher.emit("mmdevice-removed", device)
         Dispatcher.emit("recheck-section", 3)
 
 
     def device_added_cb(self, widget, path):
-        self.__init_device()
+        self.init_device()
         device =  nm_module.cache.getobject(path)
         type = device.get_device_type() 
         if type == 1:
-            Dispatcher.emit("wired-device-add", device)
-            Dispatcher.emit("recheck-section", 0)
+            if device not in self.connected_device:
+                Dispatcher.emit("wired-device-add", device)
+                Dispatcher.emit("recheck-section", 0)
         elif type == 2:
-            Dispatcher.emit("wireless-device-add", device)
-            Dispatcher.emit("recheck-section", 1)
+            if device not in self.connected_device:
+                Dispatcher.emit("wireless-device-add", device)
+                Dispatcher.emit("recheck-section", 1)
 
     def device_removed_cb(self, widget, path):
-        self.__init_device()
+        self.init_device()
         device = nm_module.cache.getobject(path)
         type = device.get_device_type() 
         if type == 1:
@@ -62,19 +66,24 @@ class DeviceManager(object):
 
     def ap_added(self, devices):
         for device in devices:
-            wifi = nm_module.cache.get_spec_object(device.object_path)
-            wifi.connect("access-point-added", lambda w: Dispatcher.emit("ap-added"))
-            wifi.connect("access-point-removed", lambda w: Dispatcher.emit("ap-removed"))
+            if device not in self.connected_device:
+                wifi = nm_module.cache.get_spec_object(device.object_path)
+                wifi.connect("access-point-added", lambda w: Dispatcher.emit("ap-added"))
+                wifi.connect("access-point-removed", lambda w: Dispatcher.emit("ap-removed"))
 
     def load_wired_listener(self, module):
         if self.wired_devices:
             for device in self.wired_devices:
-                map(lambda s: self.__connect(device, s, module, "wired"), self.__signal_list)
+                if device not in self.connected_device:
+                    map(lambda s: self.__connect(device, s, module, "wired"), self.__signal_list)
+                    self.connected_device.append(device)
 
     def load_wireless_listener(self, module):
         if self.wireless_devices:
             for device in self.wireless_devices:
-                map(lambda s: self.__connect(device, s, module, "wireless"), self.__signal_list)
+                if device not in self.connected_device:
+                    map(lambda s: self.__connect(device, s, module, "wireless"), self.__signal_list)
+                    self.connected_device.append(device)
 
     def load_mm_listener(self, module):
         if self.mm_devices:

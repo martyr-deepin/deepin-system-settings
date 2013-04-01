@@ -5,6 +5,7 @@
 import time
 t = time.time()
 from shared_methods import net_manager, nm_module
+net_manager.init_devices()
 print time.time() - t
 import gtk
 

@@ -23,6 +23,13 @@ import dbus
 import struct
 import socket
 import copy
+from deepin_utils.ipc import is_dbus_name_exists
+
+def nm_alive(func):
+    def wrap(*a, **kws):
+        if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+            return func(*a, **kws)
+    return wrap
 
 class TypeConvert(object):
     

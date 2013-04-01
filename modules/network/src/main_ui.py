@@ -262,6 +262,8 @@ class WirelessDevice(object):
         net_manager.device_manager.load_wireless_listener(self)
 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         self.pwd_failed = False
 
         if self.selected_item:
@@ -273,6 +275,8 @@ class WirelessDevice(object):
             map(lambda i: self.tree.visible_items[i].set_net_state(2), index)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         self.wireless.set_sensitive(True)
         if new_state == 60:
             wifi = nm_module.cache.get_spec_object(widget.object_path)
@@ -296,9 +300,14 @@ class WirelessDevice(object):
                 item.set_net_state(0)
 
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         pass
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
+        print widget
         self.this_connection = widget.get_real_active_connection()
         if self.this_connection:
             print "Debug: (wireless active start in main):",self.this_connection.get_setting("802-11-wireless").ssid
@@ -318,6 +327,8 @@ class WirelessDevice(object):
                     self.tree.visible_items[i].set_net_state(1)
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         if reason == 7:
             self.pwd_failed = True
 
@@ -959,7 +970,7 @@ class Network(object):
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
-        slider.connect_after("show", self.init_sections_state)
+        self.eventbox.connect_after("show", self.init_sections_state)
         slider.show_all()
         slider._set_to_page("main")
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
@@ -967,6 +978,7 @@ class Network(object):
         Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
 
     def init_sections_state(self, widget):
+        print "Debug :: ui finish, ======================"
         net_manager.init_devices()
         for section in self.vbox.get_children():
             if section.show_or_hide():
