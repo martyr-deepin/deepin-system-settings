@@ -89,7 +89,6 @@ class DeletePage(gtk.VBox):
 
     def __delete_confirm(self):
         self.delete_view.delete_wallpaper()
-        event_manager.emit("update-theme", None)
 
     def __on_delete(self, widget):
         if self.delete_view.is_deletable():

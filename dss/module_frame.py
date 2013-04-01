@@ -116,6 +116,9 @@ class ModuleFrame(gtk.Plug):
         # Send module information.
         self.send_module_info()
 
+    def exit(self):
+        gtk.main_quit()
+
     def module_frame_exit(self, widget):
         print "%s module exit" % (self.module_id)
         

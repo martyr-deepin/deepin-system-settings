@@ -858,6 +858,8 @@ if __name__ == '__main__':
             sound_settings.container_widgets["slider"].set_to_page(
                 sound_settings.alignment_widgets["main_hbox"])
             module_frame.send_module_info()
+        elif message_type == "exit":
+            module_frame.exit()
 
     module_frame.module_message_handler = message_handler
 

@@ -99,6 +99,9 @@ class DeepinIndividuation(object):
             self.slider.set_to_page(self.theme_page)
             self.module_frame.send_module_info()
 
+        elif message_type == "exit":
+            self.module_frame.exit()
+
     def switch_delete_page(self, name, obj, theme):
         self.slider.slide_to_page(self.delete_page, "right")
         self.delete_page.set_theme(theme)

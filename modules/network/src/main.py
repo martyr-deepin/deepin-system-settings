@@ -56,5 +56,8 @@ if __name__ == '__main__':
                     slider._slide_to_page("main", "left")
                 if crumb_label == _("VPN"):
                     slider._slide_to_page("vpn", "left")
+            elif message_type == "exit":
+                module_frame.exit()
+
         module_frame.module_message_handler = message_handler
         module_frame.run()

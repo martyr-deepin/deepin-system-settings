@@ -286,7 +286,10 @@ def add_crumb(index, label):
 def start_module_process(slider, content_page_info, module_path, module_config, force_direction=None, 
                          module_uid=None):
     global preview_module_id
-    
+   
+    if preview_module_id:
+        send_message(preview_module_id, "exit", "")
+
     module_id = module_config.get("main", "id")
     module_slide_to_page = True
     if module_config.has_option("main", "slide_to_page"):

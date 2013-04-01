@@ -226,7 +226,7 @@ class WallpaperItem(gobject.GObject):
             if untitled_theme:
                 untitled_theme.set_user_wallpaper_status(self.image_path, value)
 
-        event_manager.emit("update-theme", None)
+        #event_manager.emit("update-theme", None)
         
     def icon_item_motion_notify(self, x, y):
         '''
