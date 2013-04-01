@@ -417,7 +417,7 @@ class HidenItem(GenItems):
         Dispatcher.to_setting_page(HiddenSetting(self.connection))
 
     def click_cb(self):
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        wireless_device = net_manager.device_manager.get_wireless_devices()[0]
         nm_module.nmclient.activate_connection_async(self.connection.object_path,
                                    wireless_device.object_path,
                                    "/")
@@ -649,11 +649,13 @@ class DSLItem(GenItems):
         Dispatcher.to_setting_page(DSLSetting(self.connection))
 
     def click_cb(self):
-        device_path = nm_module.nmclient.get_wired_devices()[0].object_path
-        #FIXME need to change device path into variables
-        nm_module.nmclient.activate_connection_async(self.connection.object_path,
-                                           device_path,
-                                           "/")
+        if net_manager.wired_device:
+
+            device_path = net_manager.wired_device.object_path
+            #FIXME need to change device path into variables
+            nm_module.nmclient.activate_connection_async(self.connection.object_path,
+                                               device_path,
+                                               "/")
 
 class MobileItem(GenItems):
 

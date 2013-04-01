@@ -26,7 +26,6 @@ import re
 from nmobject import NMObject
 from nm_utils import TypeConvert
 from nmcache import get_cache
-cache = get_cache()
 from nmutils.nmsetting_connection import NMSettingConnection
 from nmutils.nmsetting_wired import NMSettingWired
 from nmutils.nmsetting_ip4config import NMSettingIP4Config
@@ -85,17 +84,13 @@ class NMRemoteSettings(NMObject):
 
     def list_connections(self):
         '''return connections object'''
-        conns = self.dbus_method("ListConnections")
-        if conns:
-            ###order connections by their object path
-            conns = sorted(conns, key = lambda x:int(x.split("/")[-1]))
-            return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(conns))
-        else:
+        try:
+            return map(lambda x:get_cache().getobject(x), TypeConvert.dbus2py(self.dbus_method("ListConnections")))
+        except:
             return []
-        #return map(lambda x:cache.getobject(x), filter(lambda x: "Settings" == x.split("/")[-2] ,cache.cache_dict.iterkeys()))
 
     def get_connection_by_uuid(self, uuid):
-        return cache.getobject(self.dbus_method("GetConnectionByUuid", uuid))
+        return get_cache().getobject(self.dbus_method("GetConnectionByUuid", uuid))
 
     def save_hostname(self, hostname):
         self.dbus_method("SaveHostname", hostname)
@@ -103,10 +98,10 @@ class NMRemoteSettings(NMObject):
     def add_connection(self, settings_dict):
         conn_path = self.dbus_method("AddConnection", settings_dict)
         if conn_path:
-            nm_connection = cache.getobject(conn_path)
+            nm_connection = get_cache().getobject(conn_path)
             nm_connection.settings_dict = settings_dict
             nm_connection.update()
-            cache.new_object(conn_path)
+            get_cache().new_object(conn_path)
             self.cf.set("conn_priority", nm_connection.settings_dict["connection"]["uuid"], 0)
             self.cf.write(open(self.config_file, "w"))
             return nm_connection
@@ -562,7 +557,7 @@ class ThreadVPNSpec(threading.Thread):
         self.succeed = False
 
     def run(self):
-        nmclient = cache.getobject("/org/freedesktop/NetworkManager")
+        nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
         while self.run_flag:
             #print "active_conn", nmclient.get_active_connections()
             for active_conn in nmclient.get_active_connections():
@@ -573,7 +568,7 @@ class ThreadVPNSpec(threading.Thread):
                                                               device.object_path,
                                                               active_conn.object_path)
         
-                        vpn_connection = cache.get_spec_object(active.object_path)
+                        vpn_connection = get_cache().get_spec_object(active.object_path)
                         while(vpn_connection.get_vpnstate() <5 ):
                             time.sleep(1)
                         

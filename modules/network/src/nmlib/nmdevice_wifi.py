@@ -24,19 +24,16 @@ import gobject
 import traceback
 import threading
 import time
+import glib
 from nmdevice import NMDevice
 from nmcache import get_cache
-cache = get_cache()
 from nm_utils import TypeConvert, nm_alive
-
-nmclient = cache.getobject("/org/freedesktop/NetworkManager")
-nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 class ThreadWifiAuto(threading.Thread):
 
     def __init__(self, device_path, connections):
         threading.Thread.__init__(self)
-        self.device = cache.get_spec_object(device_path)
+        self.device = get_cache().get_spec_object(device_path)
         self.conns = connections
         self.run_flag = True
 
@@ -47,6 +44,7 @@ class ThreadWifiAuto(threading.Thread):
                     if ssid in self.device.get_ssid_record():
                         try:
                             specific = self.device.get_ap_by_ssid(ssid)
+                            nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                             active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, specific.object_path)
                             while(active_conn.get_state() == 1 and self.run_flag):
                                 time.sleep(1)
@@ -89,28 +87,17 @@ class NMDeviceWifi(NMDevice):
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "PropertiesChanged")
 
+        self.ap_record_dict = {}
+        self.ap_record_inited = 0
+        self.ap_timer_id = 0
         self.init_nmobject_with_properties()
         self.origin_ap_list = self.get_access_points()
         self.thread_wifiauto = None
 
-        ###only used for ap added/removed signal
-        self.ap_record_dict = {}
-        self.init_ap_record_dict()
-
-    def init_ap_record_dict(self):
-        try:
-            accesspoints_path = self.dbus_method("GetAccessPoints")
-            from nmaccesspoint import NMAccessPoint 
-            for ap_path in accesspoints_path:
-                self.ap_record_dict[ap_path] = NMAccessPoint(ap_path).get_ssid()
-        except:
-            traceback.print_exc()
-            return []
-
     def device_wifi_disconnect(self):
         if self.thread_wifiauto:
             self.thread_wifiauto.stop_run()
-        cache.getobject(self.object_path).nm_device_disconnect()
+        get_cache().getobject(self.object_path).nm_device_disconnect()
 
     def get_hw_address(self):
         return self.properties["HwAddress"]
@@ -126,7 +113,7 @@ class NMDeviceWifi(NMDevice):
 
     def get_active_access_point(self):
         '''return active access point object'''
-        return cache.getobject(self.properties["ActiveAccessPoint"])
+        return get_cache().getobject(self.properties["ActiveAccessPoint"])
         
     def get_capabilities(self):
         return self.properties["WirelessCapabilities"]
@@ -161,27 +148,38 @@ class NMDeviceWifi(NMDevice):
     def get_access_points(self):
         try:
             ap = self.dbus_method("GetAccessPoints")
-            return map(lambda x:cache.getobject(x), TypeConvert.dbus2py(ap))
+            if not self.ap_record_inited:
+                self.ap_record_inited = 1
+                try:
+                    from nmaccesspoint import NMAccessPoint
+                    for ap_path in ap:
+                        self.ap_record_dict[ap_path] = NMAccessPoint(ap_path).get_ssid()
+                except:
+                    self.ap_recrod_dict = {}
+
+            return map(lambda x:get_cache().getobject(x), TypeConvert.dbus2py(ap))
         except:
             return []
 
     def active_ssid_connection(self, ssid):
         '''try only one connection now'''
-        if cache.getobject(self.object_path).is_active():
-            conn = cache.getobject(self.object_path).get_active_connection().get_connection()
+        if get_cache().getobject(self.object_path).is_active():
+            conn = get_cache().getobject(self.object_path).get_active_connection().get_connection()
             if TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])== ssid:
                 return None
         else:
             pass
 
+        nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         connections = nm_remote_settings.get_ssid_associate_connections(ssid)
         if connections:
             conn = sorted(connections, key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])), 
                     reverse = True)[0]
             try:
                 specific = self.get_ap_by_ssid(ssid)
+                nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                 nmclient.activate_connection(conn.object_path, self.object_path, specific.object_path)
-                if cache.getobject(self.object_path).is_active():
+                if get_cache().getobject(self.object_path).is_active():
                     return None
                 else:
                     return conn
@@ -191,11 +189,12 @@ class NMDeviceWifi(NMDevice):
             return nm_remote_settings.new_wireless_connection(ssid, None)
 
     def auto_connect(self):
-        if cache.getobject(self.object_path).is_active():
+        if get_cache().getobject(self.object_path).is_active():
             return True
-        if cache.getobject(self.object_path).get_state() < 30:
+        if get_cache().getobject(self.object_path).get_state() < 30:
             return False
 
+        nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         wireless_connections = nm_remote_settings.get_wireless_connections()
         if wireless_connections:
             wireless_prio_connections = sorted(nm_remote_settings.get_wireless_connections(),
@@ -253,6 +252,11 @@ class NMDeviceWifi(NMDevice):
         except:
             return []
     #Signals##
+    def emit_cb(self, signal):
+        if self.ap_timer_id > 0:
+            glib.source_remove(self.ap_timer_id)
+        self.emit(signal)
+
     @nm_alive
     def access_point_added_cb(self, ap_object_path):
         try:
@@ -261,24 +265,19 @@ class NMDeviceWifi(NMDevice):
     
             if added_ssid not in set(self.ap_record_dict.values()):
                 self.origin_ap_list = self.get_access_points()
-                self.emit("access-point-added")
-                #print ap_object_path, added_ssid
-                #cache.clearcache()
-                #cache.clear_spec_cache()
+                self.ap_timer_id = glib.timeout_add(300, self.emit_cb, "access-point-added")
+
             self.ap_record_dict[ap_object_path] = added_ssid
         except:
             traceback.print_exc()
-
     @nm_alive
     def access_point_removed_cb(self, ap_object_path):
         try:
             removed_ssid = self.ap_record_dict[ap_object_path]
             if len(filter(lambda x: x == removed_ssid, self.ap_record_dict.values())) == 1:
                 self.origin_ap_list = self.get_access_points()
-                self.emit("access-point-removed")
-                #print ap_object_path, removed_ssid
-                #cache.clearcache()
-                #cache.clear_spec_cache()
+                self.ap_timer_id = glib.timeout_add(300, self.emit_cb, "access-point-removed")
+
             del self.ap_record_dict[ap_object_path]
         except:
             traceback.print_exc()

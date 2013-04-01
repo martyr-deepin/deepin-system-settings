@@ -30,15 +30,10 @@ dbus.mainloop.glib.threads_init()
 from xml.dom import minidom
 import traceback
 import gobject
-# import re
-from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_dbus_name_exists
+from nm_utils import TypeConvert, valid_object_path, valid_object_interface, is_dbus_name_exists, nm_alive
 from nm_utils import InvalidObjectPath , InvalidObjectInterface, InvalidService
-# from servicemanager import nm_bus
 from servicemanager import servicemanager
-from nm_utils import nm_alive
 
-# name_re = re.compile("[0-9a-zA-Z-]*")
-# dbus_loop = gobject.MainLoop()
 nm_bus = servicemanager.get_nm_bus()
     
 class NMObject(gobject.GObject):
@@ -89,12 +84,13 @@ class NMObject(gobject.GObject):
             print method_name
             print e
         except dbus.exceptions.DBusException, e:
-            print self.dbus_interface
-            print "call dbus method failed:\n"
-            print method_name
-            print args
-            print kwargs
-            print e
+            print self
+            #print self.dbus_interface
+            #print "call dbus method failed:\n"
+            #print method_name
+            #print args
+            #print kwargs
+            #print e
             traceback.print_exc()
 
     def init_properties(self): 

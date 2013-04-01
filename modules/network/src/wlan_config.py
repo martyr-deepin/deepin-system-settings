@@ -90,7 +90,7 @@ class WirelessSetting(Settings):
         #self.setting_group.set_button(connection)
     def apply_changes(self, connection):
         print "apply changes"
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        wireless_device = net_manager.device_manager.get_wireless_devices()[0]
         if wireless_device.get_state() == 100:
             return
         device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
@@ -500,7 +500,7 @@ class Security(gtk.VBox):
         # Update
         self.setting.adapt_wireless_security_commit()
         self.connection.update()
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        wireless_device = net_manager.device_manager.get_wireless_devices()[0]
         device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
         setting = self.connection.get_setting("802-11-wireless")
         ssid = setting.ssid

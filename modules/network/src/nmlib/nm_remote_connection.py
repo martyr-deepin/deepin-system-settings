@@ -27,7 +27,6 @@ from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
 from nm_secret_agent import secret_agent
 from nmcache import get_cache
-cache = get_cache()
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''
@@ -60,7 +59,7 @@ class NMRemoteConnection(NMObject, NMConnection):
     def delete(self):
         try:
             self.dbus_interface.Delete(reply_handler = self.delete_finish, error_handler = self.delete_error)
-            cache.delobject(self.object_path)
+            get_cache().delobject(self.object_path)
             ###nm_remote_settings.remove_option("conn_priority", self.settings_dict["connection"]["uuid"]) 
         except:
             traceback.print_exc()

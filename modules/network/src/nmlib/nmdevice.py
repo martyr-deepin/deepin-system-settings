@@ -23,12 +23,10 @@
 import gobject
 import gudev
 import os
+import glib
 import traceback
 from nmobject import NMObject
 from nmcache import get_cache
-cache = get_cache()
-from nm_utils import nm_alive
-nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
 
 udev_client = gudev.Client("net")
 
@@ -55,6 +53,8 @@ class NMDevice(NMObject):
 
         self.init_nmobject_with_properties()
         self.udev_device = ""
+        self.state_id = 0
+        self.new_state = 0
 
     def get_capabilities(self):
         return self.properties["Capabilities"]
@@ -65,7 +65,7 @@ class NMDevice(NMObject):
     def get_active_connection(self):
         '''return active connection object'''
         if self.properties["ActiveConnection"]:
-            return cache.getobject(self.properties["ActiveConnection"])
+            return get_cache().getobject(self.properties["ActiveConnection"])
         else:
             return None
 
@@ -86,10 +86,10 @@ class NMDevice(NMObject):
             return self.get_active_connection().get_connection()
 
     def get_dhcp4_config(self):
-        return cache.getobject(self.properties["Dhcp4Config"])
+        return get_cache().getobject(self.properties["Dhcp4Config"])
 
     def get_dhcp6_config(self):
-        return cache.getobject(self.properties["Dhcp6Config"])
+        return get_cache().getobject(self.properties["Dhcp6Config"])
 
     def get_driver(self):
         return self.properties["Driver"]
@@ -104,10 +104,10 @@ class NMDevice(NMObject):
         return self.properties["IpInterface"]
 
     def get_ip4_config(self):
-        return cache.getobject(self.properties["Ip4Config"])
+        return get_cache().getobject(self.properties["Ip4Config"])
 
     def get_ip6_config(self):
-        return cache.getobject(self.properties["Ip6Config"])
+        return get_cache().getobject(self.properties["Ip6Config"])
 
     def get_managed(self):
         return self.properties["Managed"]
@@ -196,41 +196,56 @@ class NMDevice(NMObject):
     def disconnect_error(self, *error):
         pass
 
-    @nm_alive
+    def emit_cb(self):
+        self.state_id = 0
+        return False
+
+    def emit_in_time(self, *args):
+        if args[1] != self.new_state and self.new_state != 0:
+            if self.state_id:
+                glib.source_remove(self.state_id)
+            self.state_id = 0
+
+        if self.state_id > 0:
+            return
+        else:
+            self.emit(*args)
+            self.state_id = glib.timeout_add(300, self.emit_cb)
+        self.new_state = args[1]
+
     def state_changed_cb(self, new_state, old_state, reason):
         #self.emit("state-changed", new_state, old_state, reason)
         self.init_nmobject_with_properties()
 
         if old_state == 100 or reason ==39:
-            print "device-deactive", new_state, old_state, reason
-            self.emit("device-deactive", new_state, old_state, reason)
+            self.emit_in_time("device-deactive", new_state, old_state, reason)
             return 
 
         if new_state == 40:
-            print "activate-start", new_state, old_state, reason
-            self.emit("activate-start", new_state, old_state, reason)
+            self.emit_in_time("activate-start", new_state, old_state, reason)
             return 
 
         if new_state == 100:
-            print "device-active", new_state, old_state, reason
-            self.emit("device-active", new_state, old_state, reason)
-            conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
             try:
-                priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid) + 1 )
-            except:
-                priority = 1
+                conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
+                self.emit_in_time("device-active", new_state, old_state, reason)
+                nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
+                try:
+                    priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid) + 1 )
+                except:
+                    priority = 1
 
-            nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
-            nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
+                nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
+                nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
+            except:
+                pass
 
         if new_state == 120:
-            print "activate-failed", new_state, old_state, reason
-            self.emit("activate-failed", new_state, old_state, reason)
+            self.emit_in_time("activate-failed", new_state, old_state, reason)
             return 
 
         if new_state == 10 or new_state == 20:
-            print "device-unavailable", new_state, old_state, reason
-            self.emit("device-unavailable", new_state, old_state, reason)
+            self.emit_in_time("device-unavailable", new_state, old_state, reason)
             return 
 
 if __name__ == "__main__":

@@ -119,9 +119,12 @@ class IPV4Conf(gtk.VBox):
             self.ip_section.set_active(False)
             #self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
-                self.addr_row[1].set_text(self.setting.addresses[0][0])
-                self.mask_row[1].set_text(self.setting.addresses[0][1])
-                self.gate_row[1].set_text(self.setting.addresses[0][2])
+                #print self.setting.addresses[0][0]
+                addr, mask, gate = self.setting.addresses[0]
+                #self.ip_section.set_active(True)
+                self.addr_row[1].set_text(addr)
+                self.mask_row[1].set_text(mask)
+                self.gate_row[1].set_text(gate)
                 self.ip = self.setting.addresses[0]
 
         if self.setting.dns == []:
@@ -420,9 +423,11 @@ class IPV6Conf(gtk.VBox):
             self.ip_section.set_active(False)
             self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
-                self.addr_row[1].set_text(self.setting.addresses[0][0])
-                self.mask_row[1].set_text(self.setting.addresses[0][1])
-                self.gate_row[1].set_text(self.setting.addresses[0][2])
+                addr, mask, gate = self.setting.addresses[0]
+
+                self.addr_row[1].set_text(addr)
+                self.mask_row[1].set_text(mask)
+                self.gate_row[1].set_text(gate)
                 self.ip = self.setting.addresses
 
         if self.setting.dns == []:
@@ -499,21 +504,6 @@ class IPV6Conf(gtk.VBox):
             if content is not "":
                 Dispatcher.set_button("save", False)
             setattr(self, names[index] + "_flag", False)
-        #self.dns[index] = content
-        #names = ["master", "slaver"]
-        #if TypeConvert.is_valid_ip4(content):
-            #setattr(self, names[index] + "_flag", True)
-            #print "valid"+ names[index]
-        #else:
-            #setattr(self, names[index] + "_flag", False)
-
-        #dns = self.check_complete_dns()
-        #if dns:
-            #self.setting.clear_dns()
-            #for d in dns:
-                #self.setting.add_dns(d)
-        #else:
-            #self.setting.clear_dns()
             
     def check_complete_dns(self):
         dns = []

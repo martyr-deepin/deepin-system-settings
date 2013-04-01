@@ -18,10 +18,9 @@ class NetManager(object):
     def __init__(self):
         #self.init_devices()
         if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
-            #servicemanager.connect("service-start", self.__on_service_start_do)
-            #servicemanager.connect("service-stop", self.__on_service_stop_do)
+            servicemanager.connect("service-start", self.__on_service_start_do)
+            servicemanager.connect("service-stop", self.__on_service_stop_do)
             self.device_manager = DeviceManager()
-            self.init_devices()
 
             self.cf = nm_module.nm_remote_settings.cf
             self.config_file = nm_module.nm_remote_settings.config_file
@@ -30,19 +29,38 @@ class NetManager(object):
         else:
             pass
 
+    def init_all_objects(self):
+        self.device_manager = DeviceManager()
+
+    def init_devices(self):
+        self.device_manager.init_device()
+        self.wired_devices = self.device_manager.get_wired_devices()
+        if self.wired_devices:
+            self.wired_device = self.wired_devices[0]
+        else:
+            self.wired_device = None
+        self.wireless_devices = self.device_manager.get_wireless_devices()
+        if self.wireless_devices:
+            self.wireless_device = self.wireless_devices[0]
+        else:
+            self.wireless_device = None
+        
     def __on_service_start_do(self, widget, s):
         print "Debug::service_start", s
+        nm_module.update_cache()
         nm_module.init_objects()
-        #device_manager.reinit_cache()
+        nm_module.nm_remote_settings.list_connections()
+        nm_module.nmclient.get_devices()
         self.device_manager = DeviceManager()
         self.init_devices()
+        Dispatcher.emit("service-start-do-more")
         #print servicemanager.get_name_owner(s)
 
     def __on_service_stop_do(self, widget, s):
         print "Debug::service_stop", s
-        #self.device_manager.reinit_cache()
-        cache.clearcache()
-        cache.clear_spec_cache()
+        nm_module.cache.clearcache()
+        nm_module.cache.clear_spec_cache()
+        Dispatcher.emit("service-stop-do-more")
 
     def get_hiddens(self):
         hiddens = list()
@@ -76,16 +94,8 @@ class NetManager(object):
         except:
             print "save failded in addHidden"
 
-
         #print servicemanager.get_name_owner(s)
 
-    def init_devices(self):
-        self.wired_devices = self.device_manager.get_wired_devices()
-        if self.wired_devices:
-            self.wired_device = self.wired_devices[0]
-        self.wireless_devices = self.device_manager.get_wireless_devices()
-        if self.wireless_devices:
-            self.wireless_device = self.wireless_devices[0]
 
     def get_wired_state(self):
         if self.wired_devices is []:
@@ -130,8 +140,8 @@ class NetManager(object):
 
     # Wireless
     def get_wireless_state(self):
-        wireless_devices = nm_module.nmclient.get_wireless_devices()
-        if not wireless_devices:
+        #wireless_devices = nm_module.nmclient.get_wireless_devices()
+        if not self.wireless_devices:
             return None
         else:
             #if not nm_module.nmclient.wireless_get_enabled():
@@ -139,15 +149,18 @@ class NetManager(object):
             if not nm_module.nmclient.wireless_get_enabled():
                 return (False, False)
             else:
-                return (True, wireless_devices[0].is_active())
+                return (True, self.wireless_devices[0].is_active())
 
     def get_ap_list(self):
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-        device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
-        #print "DEBUG in get ap list", device_wifi
-        ap_list = device_wifi.order_ap_list()
+        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        if self.wireless_device:
+            device_wifi = nm_module.cache.get_spec_object(self.wireless_device.object_path)
+            #print "DEBUG in get ap list", device_wifi
+            ap_list = device_wifi.order_ap_list()
         # 返回ap对象，ap.get_ssid() 获取ssid, ap.get_flags()获得加密状态，0为加密，1加密
-        return ap_list
+            return ap_list
+        else:
+            return []
 
     def get_active_connection(self, ap_list):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
@@ -172,14 +185,14 @@ class NetManager(object):
         connection.update()
         #nm_module.secret_agent.agent_save_secrets(connection.object_path, setting_name, method)
         
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         if ap:
             nm_module.nmclient.activate_connection_async(connection.object_path,
-                                       wireless_device.object_path,
+                                       self.wireless_device.object_path,
                                        ap.object_path)
         else:
             nm_module.nmclient.activate_connection_async(connection.object_path,
-                                       wireless_device.object_path,
+                                       self.wireless_device.object_path,
                                        "/")
         
 
@@ -189,28 +202,20 @@ class NetManager(object):
 
 
     def active_wireless_device(self, actived_cb):
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         print "fsdf"
 
         #def device_is_active(widget, reason):
             #print "active"
             #actived_cb()
         #wireless_device.connect("device-active", device_is_active)
-        device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
+        device_wifi = nm_module.cache.get_spec_object(self.wireless_device.object_path)
         device_wifi.auto_connect()
 
     def disactive_wireless_device(self, disactived_cb):
-        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-
-        for device in nm_module.nmclient.get_wireless_devices():
-        
-        #def device_is_disactive( widget, reason):
-            #active = wireless_device.get_active_connection()
-            #disactived_cb()
-        #wireless_device.connect("device-deactive", device_is_disactive)
+        for device in self.wireless_devices:
             wifi = nm_module.cache.get_spec_object(device.object_path)
             wifi.device_wifi_disconnect()
-            #device.nm_device_disconnect()
 
     def get_mm_devices(self):
         cdma = nm_module.mmclient.get_cdma_device()
@@ -233,37 +238,6 @@ class NetManager(object):
 
     def get_security_by_ap(self, ap_object):
         return ap_object.get_flags()
-        #from nmlib.getsec import get_ap_security
-        #interface = self.wireless_device.get_ip_iface()
-        #return get_ap_security( interface, ap_object.get_hw_address())
-        
-        #NM_802_11_AP_FLAGS_NONE = 0x0
-        #NM_802_11_AP_FLAGS_PRIVACY = 0x1
-        #NM_802_11_AP_SEC_NONE = 0x0
-        #NM_802_11_AP_SEC_PAIR_WEP40 = 0x1
-        #NM_802_11_AP_SEC_PAIR_WEP104 = 0x2
-        #NM_802_11_AP_SEC_PAIR_TKIP = 0x4
-        #NM_802_11_AP_SEC_PAIR_CCMP = 0x8
-        #NM_802_11_AP_SEC_GROUP_WEP40 = 0x10
-        #NM_802_11_AP_SEC_GROUP_WEP104 = 0x20
-        #NM_802_11_AP_SEC_GROUP_TKIP = 0x40
-        #NM_802_11_AP_SEC_GROUP_CCMP = 0x80
-        #NM_802_11_AP_SEC_KEY_MGMT_PSK = 0x100
-        #NM_802_11_AP_SEC_KEY_MGMT_802_1X = 0x200
-
-        #ap = ap_object
-
-        #wpa_flags = ap.get_wpa_flags()
-        #rsn_flags = ap.get_rsn_flags()
-        #flags = ap.get_flags()
-
-        #if flags & NM_802_11_AP_FLAGS_PRIVACY:
-            #if wpa_flags == NM_802_11_AP_SEC_NONE and rsn_flags == NM_802_11_AP_SEC_NONE :
-                #return "none" # WEP
-            #if not wpa_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X and not rsn_flags & NM_802_11_AP_SEC_KEY_MGMT_802_1X :
-                #return "wpa-psk" # wpa
-        #else:
-            #return None
 
 net_manager = NetManager()
 
