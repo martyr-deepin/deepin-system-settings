@@ -114,7 +114,7 @@ class UserThemeView(IconView):
         item.rename_theme(name)
 
     def delete_theme(self, item):
-        theme = theme_manager.delete_theme(item.theme.get_name())
+        theme = theme_manager.delete_theme(item.theme.get_default_name())
         self.items.remove(item)
         self.queue_draw()
 
