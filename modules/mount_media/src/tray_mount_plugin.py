@@ -112,5 +112,8 @@ class MountMedia(EjecterApp):
 def return_insert():
     return 4
 
+def return_id():
+    return "mount_media"
+
 def return_plugin():
     return MountMedia

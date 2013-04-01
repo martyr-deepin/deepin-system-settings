@@ -250,10 +250,7 @@ class TrayBluetoothPlugin(object):
         return hseparator
 
 def return_insert():
-    pass
-
-def return_id():
-    return "bluetooth"
+    return pass
     
 def return_plugin():
     return TrayBluetoothPlugin

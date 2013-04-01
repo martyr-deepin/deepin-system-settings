@@ -162,6 +162,9 @@ class TrayShutdownPlugin(object):
 def return_insert():
     return 1
 
+def return_id():
+    return "shutdown"
+
 def return_plugin():
     return TrayShutdownPlugin 
 

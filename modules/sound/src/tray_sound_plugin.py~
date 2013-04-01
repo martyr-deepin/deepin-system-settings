@@ -100,7 +100,6 @@ def return_insert():
     return 2
 
 def return_id():
-    return "sound"
-     
+    return "sound" 
 def return_plugin():
     return SoundTray

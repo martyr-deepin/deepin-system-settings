@@ -140,5 +140,8 @@ class TrayTimePlugin(object):
 def return_insert():
     return 0
 
+def return_id():
+    return "date_time"
+
 def return_plugin():
     return TrayTimePlugin
