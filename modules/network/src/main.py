@@ -29,9 +29,9 @@ Dispatcher.connect("service-start-do-more", lambda w: start_ui())
 def start_ui():
     print "start ui"
     slider.init_dict()
-    
     Network()
-    slider.show_all()
+
+    #slider.show_all()
 
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))

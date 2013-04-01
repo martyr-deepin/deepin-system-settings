@@ -970,9 +970,9 @@ class Network(object):
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
-        self.eventbox.connect_after("show", self.init_sections_state)
-        slider.show_all()
+        slider.connect_after("show", self.init_sections_state)
         slider._set_to_page("main")
+        slider.show_all()
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
         Dispatcher.connect("recheck-section", lambda w, i: self.__init_sections(0))
         Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
