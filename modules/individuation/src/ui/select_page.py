@@ -46,6 +46,7 @@ class SelectView(IconView):
     def __init__(self, monitor_dir, padding_x=8, padding_y=10, filter_dir=None):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
         
+        self.is_file_added = False
         self.monitor_dir = monitor_dir
         self.filter_dir = filter_dir
         self.library_monitor = LibraryMonitor(monitor_dir)
@@ -61,6 +62,7 @@ class SelectView(IconView):
         if is_image_type:
             image_path = gfile.get_path()
             if not self.is_exists(image_path):
+                self.is_file_added = True
                 self.add_items([SelectItem(image_path)])
                 
     def on_library_folder_added(self, obj, gfile):            
@@ -89,6 +91,9 @@ class SelectView(IconView):
     '''
     @common.threaded
     def __init_monitor_images(self):    
+        if self.is_file_added:
+            return
+        
         items = []
         image_paths = []
         i = 0
@@ -102,7 +107,7 @@ class SelectView(IconView):
             self.__image_index += 1
             i += 1
 
-        if items:    
+        if items and items not in self.items:    
             self.add_items(items)
         self.set_loading(False)
 
