@@ -24,6 +24,7 @@
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
 from deepin_utils.process import run_command
+import deepin_gsettings
 from nls import _
 import gtk
 import os
@@ -52,6 +53,11 @@ RUN_LOCK_COMMAND = "dlock"
 
 class TrayShutdownPlugin(object):
     def __init__(self):
+        self.__xrandr_gsettings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
+        new_brightness = self.__xrandr_gsettings.get_double("brightness") - 0.01
+        if new_brightness > 0.1:
+            self.__xrandr_gsettings.set_double("brightness", new_brightness)
+        
         self.gui = Gui()
         self.dbus_user = User(DBUS_USER_STR)
         self.dialog = TrayDialog()
