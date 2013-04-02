@@ -34,7 +34,8 @@ class Aibizhi(BaseFetch):
                                    height=self.screen_height, limit=20)
         if results:
             for item in results:
-                self.add_image(item["s"], item["b"])
+                if isinstance(item, dict):
+                    self.add_image(item["s"], item["b"])
             return True    
         return False
         

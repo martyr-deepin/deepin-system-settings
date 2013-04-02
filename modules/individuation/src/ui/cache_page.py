@@ -23,6 +23,8 @@
 
 import gtk
 import copy
+from theme import app_theme
+from dtk.ui.box import ImageBox
 from dtk.ui.button import Button
 from dtk.ui.iconview import IconView
 from dtk.ui.threads import post_gui
@@ -69,7 +71,7 @@ class CacheView(IconView):
         pass
     
     def fetch_failed(self):
-        print "DEBUG fetch_failed"
+        event_manager.emit("fetch-failed", None)
         pass
     
     def emit_download(self):
@@ -124,6 +126,8 @@ class CachePage(gtk.VBox):
         self.cache_view = CacheView(network_interface, download_dir = get_download_wallpaper_dir())
         self.cache_view_sw = self.cache_view.get_scrolled_window()
         
+        self.nolink_image = ImageBox(app_theme.get_pixbuf("individuation/notlink.png"))
+        
         self.back_button = Button(_("Back"))                                    
         self.back_button.connect("clicked", self.__on_back)
         download_button = Button(_("Download All"))
@@ -131,16 +135,26 @@ class CachePage(gtk.VBox):
         
         control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(self.back_button, False, False)
-        #control_box.pack_start(download_button, False, False)
         
-        control_align = gtk.Alignment()
-        control_align.set(1.0, 0.5, 0, 0)
-        control_align.set_padding(0, 5, 0, 10)
-        control_align.add(control_box)
-        
+        self.control_align = gtk.Alignment()
+        self.control_align.set(1.0, 0.5, 0, 0)
+        self.control_align.set_padding(0, 5, 0, 10)
+        self.control_align.add(control_box)
+
         self.pack_start(self.cache_view_sw, True, True)
-        self.pack_start(control_align, False, True)
+        self.pack_start(self.control_align, False, True)
+
+        event_manager.add_callback("fetch-failed", self.__fetch_failed)
     
+    def __fetch_failed(self, name, obj, data):
+        self.cache_view_sw.set_size_request(0, 0)
+        self.nolink_align = gtk.Alignment()
+        self.nolink_align.set(0, 0, 0, 0)
+        self.nolink_align.set_padding(0, 0, 160, 0)
+        self.nolink_align.add(self.nolink_image)
+        self.pack_start(self.nolink_align)
+        self.control_align.set_child_visible(False)
+
     def set_theme(self, theme):
         self.theme = theme
 
