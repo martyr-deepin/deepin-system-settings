@@ -25,6 +25,7 @@ from dtk.ui.label import Label
 from dtk.ui.button import Button
 import style
 from helper import Dispatcher
+from timer import Timer
 from nls import _
 '''
 signals set-button, set-tip
@@ -36,6 +37,8 @@ class FootBox(gtk.HBox):
 
         self.apply_method = None
         self.init_ui()
+
+        self.timer = Timer(3000, self.__clear_tips)
 
         Dispatcher.connect("button-change", self.set_button)
         Dispatcher.connect("set-tip", self.set_tip)
@@ -119,5 +122,9 @@ class FootBox(gtk.HBox):
         self.buttons_list = buttons_list
         self.queue_draw()
 
+    def __clear_tips(self):
+        self.tip.set_text("")
+
     def set_tip(self, widget, new_tip):
         self.tip.set_text(_("Tip:") + new_tip)
+        self.timer.restart()

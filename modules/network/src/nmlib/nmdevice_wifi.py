@@ -38,30 +38,30 @@ class ThreadWifiAuto(threading.Thread):
         self.run_flag = True
 
     def run(self):
-            for conn in self.conns:
-                if self.run_flag:
-                    ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
-                    if ssid in self.device.get_ssid_record():
-                        try:
-                            specific = self.device.get_ap_by_ssid(ssid)
-                            nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
-                            active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, specific.object_path)
-                            while(active_conn.get_state() == 1 and self.run_flag):
-                                time.sleep(1)
+        for conn in self.conns:
+            if self.run_flag:
+                ssid = TypeConvert.ssid_ascii2string(conn.settings_dict["802-11-wireless"]["ssid"])
+                if ssid in self.device.get_ssid_record():
+                    try:
+                        specific = self.device.get_ap_by_ssid(ssid)
+                        nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
+                        active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, specific.object_path)
+                        while(active_conn.get_state() == 1 and self.run_flag):
+                            time.sleep(1)
 
-                            if active_conn.get_state() == 2:
-                                self.stop_run()
-                                return True
-                            else:
-                                continue
-                        except:
-                            pass
-                    else:
-                        continue
+                        if active_conn.get_state() == 2:
+                            self.stop_run()
+                            return True
+                        else:
+                            continue
+                    except:
+                        pass
                 else:
-                    return False
+                    continue
+            else:
+                return False
 
-            self.stop_run()
+        self.stop_run()
 
     def stop_run(self):
         self.run_flag = False

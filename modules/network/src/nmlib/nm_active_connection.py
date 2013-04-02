@@ -34,14 +34,14 @@ class ThreadVPNAuto(threading.Thread):
         self.run_flag = True
 
     def run(self):
-        while self.run_flag:
-            for conn in self.conns:
+        for conn in self.conns:
+            if self.run_flag:
                 try:
                     nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                     active_conn = nmclient.activate_connection(conn.object_path, 
                                                                 self.activeconn.propperties["Devices"][0],
                                                                 self.activeconn.object_path)
-                    while(active_conn.get_state() == 1):
+                    while(active_conn.get_state() == 1 and self.run_flag):
                         time.sleep(1)
 
                     if active_conn.get_state() == 2:
@@ -51,7 +51,7 @@ class ThreadVPNAuto(threading.Thread):
                         continue
                 except:
                     pass
-            self.stop_run()
+        self.stop_run()
 
     def stop_run(self):
         self.run_flag = False
