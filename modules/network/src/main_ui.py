@@ -56,6 +56,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from nls import _
 from constants import *
+from timer import Timer
 
 slider = nm_module.slider
 PADDING = 32
@@ -70,6 +71,8 @@ class Section(gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
+
+        self.timer = Timer(300, self.action_after_toggle)
 
     def load(self, toggle, content=[]):
         self.toggle = toggle
@@ -108,12 +111,17 @@ class Section(gtk.VBox):
         return align
 
     def toggle_callback(self, widget):
-        is_active = widget.get_active()
+        if self.timer.alive():
+            self.timer.restart()
+        else:
+            self.timer.start()
+
+    def action_after_toggle(self):
+        is_active = self.toggle.get_active()
         if is_active:
             if self.content_box not in self.align.get_children():
                 self.align.add(self.content_box)
             self.show_all()
-
             self.td = ToggleThread(self.get_list, self.tree, self.toggle_on_after)
             self.td.start()
         else:
@@ -277,7 +285,7 @@ class WirelessDevice(object):
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
             return
-        self.wireless.set_sensitive(True)
+        #self.wireless.set_sensitive(True)
         if new_state == 60:
             wifi = nm_module.cache.get_spec_object(widget.object_path)
             wifi.nm_device_disconnect()
@@ -446,9 +454,9 @@ class WirelessSection(Section, WirelessDevice):
                 #if active_connection.get_state() != 2:
                     #return []
                 try:
-                    conn = active_connection.get_connection()
+                    ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
                     #print map(lambda a: a.object_path, ap_list)
-                    index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
+                    index.append([ap.get_ssid() for ap in ap_list].index(ssid))
                 except ValueError:
                     print "not found in ap list"
         return index
@@ -461,7 +469,7 @@ class WirelessSection(Section, WirelessDevice):
         ###while self.td.isAlive():
             ###continue
     #def after(self):
-        self.wireless.set_sensitive(True)
+        #self.wireless.set_sensitive(True)
         indexs = self.get_actives(self.ap_list)
         if indexs:
             map(lambda i: self.tree.visible_items[i].set_net_state(2), indexs)
@@ -481,7 +489,7 @@ class WirelessSection(Section, WirelessDevice):
             #wifi.device_wifi_disconnect()
             #self.device_stop(wireless_device)
         #self.toggle_lock = True
-        self.wireless.set_sensitive(False)
+        #self.wireless.set_sensitive(False)
 
     def get_list(self):
         self.ap_list = list()
