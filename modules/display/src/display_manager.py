@@ -77,6 +77,9 @@ class DisplayManager:
         self.__power_settings.reset("sleep-display-battery")
         self.__power_settings.reset("sleep-display-ac")
         self.__session_settings.reset("idle-delay")
+        self.__xrandr_settings.reset("copy-multi-monitors")           
+        self.__xrandr_settings.reset("only-monitor-shown")
+        self.__xrandr_settings.reset("extend-multi-monitors")
 
     def __create_monitors_xml(self):
         pass
