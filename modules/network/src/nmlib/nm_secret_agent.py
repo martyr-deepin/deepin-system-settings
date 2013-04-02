@@ -29,7 +29,6 @@ import dbus.service
 import dbus.mainloop.glib
 from nmobject import NMObject
 from nmcache import get_cache
-cache = get_cache()
 
 class NMAgentManager(NMObject):
     '''NMAgentManager'''
@@ -87,7 +86,7 @@ class NMSecretAgent(NMObject):
         self.identifier = "org.freedesktop.NetworkManager.SecretAgent"
         self.registered = ""
         try:
-            cache.getobject("/org/freedesktop/NetworkManager/AgentManager").register(self.identifier)
+            get_cache().getobject("/org/freedesktop/NetworkManager/AgentManager").register(self.identifier)
         except:
             traceback.print_exc()
 
@@ -95,7 +94,7 @@ class NMSecretAgent(NMObject):
         return str("nm_" + uuid +"_" + setting_name + "_" + method)
 
     def agent_get_secrets(self, conn_path, setting_name, method):
-        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"],
+        service = self.generate_service_name(get_cache().getobject(conn_path).settings_dict["connection"]["uuid"],
                                              setting_name, method)
         username = getpass.getuser()
         try:
@@ -107,27 +106,27 @@ class NMSecretAgent(NMObject):
         pass
 
     def agent_save_secrets(self, conn_path, setting_name, method):
-        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
+        service = self.generate_service_name(get_cache().getobject(conn_path).settings_dict["connection"]["uuid"], 
                                              setting_name, method)
         username = getpass.getuser()
         print "agent_save_secrets"
         if setting_name == "vpn":
-            password = cache.getobject(conn_path).settings_dict[setting_name]["secrets"][method]
+            password = get_cache().getobject(conn_path).settings_dict[setting_name]["secrets"][method]
         else:    
             print "in agent save secrets"
             print conn_path
             print setting_name
             print method
-            print cache.getobject(conn_path).settings_dict
+            print get_cache().getobject(conn_path).settings_dict
             print "\n\n\n"
-            password = cache.getobject(conn_path).settings_dict[setting_name][method]
+            password = get_cache().getobject(conn_path).settings_dict[setting_name][method]
         try:
             keyring.set_password(service, username, password)
         except:
             traceback.print_exc()
 
     def agent_delete_secrets(self, conn_path, setting_name, method):
-        service = self.generate_service_name(cache.getobject(conn_path).settings_dict["connection"]["uuid"], 
+        service = self.generate_service_name(get_cache().getobject(conn_path).settings_dict["connection"]["uuid"], 
                                              setting_name, method)
         username = getpass.get_user()
         try:

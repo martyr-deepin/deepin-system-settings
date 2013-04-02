@@ -22,7 +22,6 @@
 
 from nmsetting import NMSetting
 from nmlib.nm_utils import TypeConvert
-from nmlib.nmconstant import NMSettingParamFlags as pflag
 
 class NMSettingSerial (NMSetting):
     '''NMSettingSerial'''

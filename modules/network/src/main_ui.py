@@ -30,19 +30,15 @@ from dtk.ui.new_treeview import TreeView
 from dtk.ui.draw import  draw_line
 from dtk.ui.utils import color_hex_to_cairo, container_remove_all, get_content_size
 from deepin_utils.file import  get_parent_dir
-from deepin_utils.ipc import is_dbus_name_exists
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
 from container import Contain, ToggleThread
-from lists import (WiredItem, WirelessItem, GeneralItem,
+from lists import (WiredItem, WirelessItem,
                   HidenItem, InfoItem, DSLItem, MobileItem,
                   VPNItem)
 from widgets import AskPasswordDialog
-from nmlib.nm_remote_connection import NMRemoteConnection
-
-
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
@@ -60,7 +56,6 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from nls import _
 from constants import *
-import style
 
 slider = nm_module.slider
 PADDING = 32
@@ -77,9 +72,10 @@ class Section(gtk.VBox):
         gtk.VBox.__init__(self)
 
     def load(self, toggle, content=[]):
+        self.toggle = toggle
         self.content_box = gtk.VBox(spacing=15)
-        self.pack_start(toggle, False, False)
-        toggle.switch.connect("toggled", self.toggle_callback)
+        self.pack_start(self.toggle, False, False)
+        self.toggle.switch.connect("toggled", self.toggle_callback)
 
         self.tree = TreeView([])
         self.tree.set_expand_column(1)
@@ -93,6 +89,12 @@ class Section(gtk.VBox):
         self.align = self._set_align()
         self.pack_start(self.align, False, False)
         self.show_all()
+
+    def init_state(self):
+        pass
+
+    def set_active(self, state):
+        self.toggle.set_active(state)
 
     def draw_mask(self, cr, x, y, w, h):
         cr.set_source_rgb(1, 1, 1)
@@ -114,7 +116,6 @@ class Section(gtk.VBox):
 
             self.td = ToggleThread(self.get_list, self.tree, self.toggle_on_after)
             self.td.start()
-        
         else:
             self.align.remove(self.content_box)
             self.td.stop_run()
@@ -193,10 +194,8 @@ class WiredSection(Section, WiredDevice):
     def __init__(self):
         Section.__init__(self)
         WiredDevice.__init__(self)
-        self.wired_devices = net_manager.device_manager.get_wired_devices()
-        self.init_state()
-
-        self.init_signals()
+        self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w:w)
+        self.load(self.wire, [])
     
     @classmethod
     def show_or_hide(self):
@@ -206,15 +205,13 @@ class WiredSection(Section, WiredDevice):
             return False
 
     def init_state(self):
+        self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
-            self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w:w)
-            #self.tree = TreeView([])
-            #self.tree.set_expand_column(1)
-            self.load(self.wire, [])
             if self.get_state(self.wired_devices):
                 self.wire.set_active(True)
         else:
             pass
+        self.init_signals()
 
     def init_signals(self):
         Dispatcher.connect("wired-device-add", self.device_added)
@@ -229,7 +226,9 @@ class WiredSection(Section, WiredDevice):
     def device_added(self, widget, device):
         print "device_added"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
-        self.wire.set_active(True, emit=True)
+        self._init_signals()
+        if self.wire.get_active():
+            self.wire.set_active(True, emit=True)
 
     def get_list(self):
         return map(lambda d: WiredItem(d), self.wired_devices)
@@ -263,6 +262,8 @@ class WirelessDevice(object):
         net_manager.device_manager.load_wireless_listener(self)
 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         self.pwd_failed = False
 
         if self.selected_item:
@@ -274,6 +275,8 @@ class WirelessDevice(object):
             map(lambda i: self.tree.visible_items[i].set_net_state(2), index)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         self.wireless.set_sensitive(True)
         if new_state == 60:
             wifi = nm_module.cache.get_spec_object(widget.object_path)
@@ -297,11 +300,17 @@ class WirelessDevice(object):
                 item.set_net_state(0)
 
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         pass
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
+        print widget
         self.this_connection = widget.get_real_active_connection()
-        print "Debug: (wireless active start in main):",self.this_connection.get_setting("802-11-wireless").ssid
+        if self.this_connection:
+            print "Debug: (wireless active start in main):",self.this_connection.get_setting("802-11-wireless").ssid
         if not self.wireless.get_active():
             self.wireless.set_active(True)
 
@@ -318,6 +327,8 @@ class WirelessDevice(object):
                     self.tree.visible_items[i].set_net_state(1)
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
+        if widget not in net_manager.device_manager.wireless_devices:
+            return
         if reason == 7:
             self.pwd_failed = True
 
@@ -349,12 +360,16 @@ class WirelessSection(Section, WirelessDevice):
     def __init__(self):
         Section.__init__(self)
         WirelessDevice.__init__(self)
-        self.wireless_devices = net_manager.device_manager.get_wireless_devices()
+        self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), lambda w:w)
+        self.label =  Label(_("Creat Hidden network"), 
+                          LABEL_COLOR,
+                          underline=True,
+                          enable_select=False,
+                          enable_double_click=False)
+
+        self.load(self.wireless, [self.label])
 
         self.selected_item = None
-
-        self.init_state()
-        self.init_signals()
 
     @classmethod
     def show_or_hide(self):
@@ -364,52 +379,49 @@ class WirelessSection(Section, WirelessDevice):
             return False
 
     def init_state(self):
+        self.wireless_devices = net_manager.device_manager.get_wireless_devices()
         if self.wireless_devices:
-            self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), lambda w:w)
-            #self.tree = TreeView([], enable_multiple_select=False)
-            #self.tree.set_expand_column(1)
-            #self.hotspot = HotSpot(None)
-            self.vbox = gtk.VBox(False)
-            self.label =  Label(_("Creat Hidden network"), 
-                              LABEL_COLOR,
-                              underline=True,
-                              enable_select=False,
-                              enable_double_click=False)
-
-            self.label.connect("button-release-event", self.create_a_hidden_network)
-            self.space = gtk.VBox()
-            self.space.set_size_request(-1, 15)
-            self.load(self.wireless, [self.label])
             self.tree.connect("single-click-item", self.set_selected_item)
             ## check state
             if self.get_state(self.wireless_devices):
                 self.wireless.set_active(True)
         else:
             pass
+        self.init_signals()
 
     def init_signals(self):
         self._init_signals()
+        Dispatcher.connect("wireless-device-add", self.device_added)
         Dispatcher.connect("ap-added", self.ap_added_callback)
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
         Dispatcher.connect("wireless-redraw", self.wireless_redraw)
+        self.label.connect("button-release-event", self.create_a_hidden_network)
 
     def wireless_redraw(self, widget):
         print "wireless redraw"
         if self.wireless.get_active():
             self.wireless.set_active(True, emit=True)
 
+    def device_added(self, widget, device):
+        print "wireless device added"
+        self.wireless_devices = net_manager.device_manager.get_wireless_devices()
+        self._init_signals()
+        if self.wireless.get_active():
+            self.wireless.set_active(True, emit=True)
+
+
     def create_a_hidden_network(self, widget, c):
         from wlan_config import HiddenSetting
         Dispatcher.to_setting_page(HiddenSetting(None))
 
     def ap_added_callback(self, widget):
-        print "ap added"
         if self.wireless.get_active():
+            print "ap added"
             self.wireless.set_active(True, emit=True)
 
     def ap_removed_callback(self, widget):
-        print "ap removed"
         if self.wireless.get_active():
+            print "ap removed"
             self.wireless.set_active(True, emit=True)
 
     def set_selected_item(self, widget, item, column, x, y):
@@ -590,7 +602,7 @@ class HotSpot(gtk.VBox):
 
     def is_adhoc_active(self):
         # TODO just for one device
-        wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        wireless_device = net_manager.device_manager.get_wireless_devices()[0]
         active = wireless_device.get_active_connection()
         if active:
             if active.get_connection().get_setting("802-11-wireless").mode == "adhoc":
@@ -617,7 +629,7 @@ class HotSpot(gtk.VBox):
 
             if isinstance(self.connection, NMRemoteConnection):
                 self.connection.update()
-                wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+                wireless_device = net_manager.device_manager.get_wireless_devices()[0]
                 self.active_this_adhoc = True
                 wireless_device.nm_device_disconnect()
 
@@ -649,23 +661,22 @@ class HotSpot(gtk.VBox):
 class DSLSection(Section):
     def __init__(self):
         Section.__init__(self)
+        self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
+        self.label =  Label(_("Create DSL Setting"), 
+                          LABEL_COLOR,
+                          underline=True,
+                          enable_select=False,
+                          enable_double_click=False)
+        
+        self.load(self.dsl, [self.label])
+
+    def init_state(self):
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
-
-            self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
-            #self.tree = TreeView([])
-            #self.tree.set_expand_column(1)
-            self.label =  Label(_("Create DSL Setting"), 
-                              LABEL_COLOR,
-                              underline=True,
-                              enable_select=False,
-                              enable_double_click=False)
-            
-            self.load(self.dsl, [self.label])
-
             self.__init_signals()
         else:
             pass
+
 
     @classmethod
     def show_or_hide(self):
@@ -719,14 +730,12 @@ class VpnSection(Section):
                            enable_double_click=False)
 
         self.load(self.vpn, [self.label])
-        self.init_state()
-        
-        self.__init_signals()
 
     def init_state(self):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
             self.vpn.set_active(True)
+        self.__init_signals()
 
     @classmethod
     def show_or_hide(self):
@@ -836,7 +845,11 @@ class MobileSection(Section, MobileDevice):
                       enable_double_click=False)
 
         self.load(self.mobile, [])
+        #self.init_signal()
+
+    def init_state(self):
         self.init_signal()
+        pass
 
     def init_signal(self):
         self._init_signals()
@@ -896,85 +909,13 @@ class MobileSection(Section, MobileDevice):
     def jumpto_cb(self):
         Dispatcher.to_setting_page(MobileSetting())
 
-
-class Mobile(gtk.VBox):
-    def __init__(self,
-                 send_to_crumb_cb):
-        gtk.VBox.__init__(self)
-        self.send_to_crumb_cb = send_to_crumb_cb
-        mobile = Contain(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.toggle_cb)
-        self.add(mobile)
-        self.settings = None
-        nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
-
-    def toggle_cb(self, widget):
-        active = widget.get_active()
-        if active:
-            self.align = gtk.Alignment(0,0,0,0)
-            self.align.set_padding(0,0,PADDING,11 + 11)
-            self.add(self.align)
-        # Check if there's any mobile device
-            mobile_device = nm_module.mmclient.get_cdma_device()
-            if mobile_device:
-                self.show_device(mobile_device[0])
-            else:
-                self.show_link()
-            self.show_all()
-        else:
-            self.align.destroy()
-
-    def show_link(self):
-        container_remove_all(self.align)
-        label = Label(_("Mobile Configuration"),
-                      LABEL_COLOR,
-                      underline=True,
-                      enable_select=False,
-                      enable_double_click=False)
-        label.connect("button-release-event", self.slide_to_event)
-        self.align.add(label)
-
-    def show_device(self, device_path):
-        from mm.mmdevice import MMDevice
-        container_remove_all(self.align)
-        device = MMDevice(device_path)
-        manufacturer = device.get_manufacturer()
-        model = device.get_model()
-        info = model + " " + manufacturer
-        item = InfoItem(info, self.jumpto_cb,is_last=True)
-        #item = GeneralItem(info,
-                           #None,
-                           #self.settings,
-                           #lambda :slider.slide_to_page(self.settings, "right"),
-                           #self.send_to_crumb_cb)
-        self.tree = TreeView([item])
-        self.tree.set_size_request(758, len(self.tree.visible_items) * self.tree.visible_items[0].get_height())
-        self.tree.show_all()
-        self.align.add(self.tree)
-
-    def jumpto_cb(self):
-        Dispatcher.to_setting_page(MobileSetting(None))
-
-    def device_is_active(self, widget, a):
-        print a, "active"
-
-    def device_is_deactive(self, widget, a):
-        '''docstring for device_is_deactive'''
-        print a, "deactive"
-
-    def slide_to_event(self, widget, event):
-        Dispatcher.to_setting_page(MobileSetting(None))
-
-    def add_setting_page(self, setting_page):
-        self.settings = setting_page
-
 class Proxy(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
         self.proxy = Contain(app_theme.get_pixbuf("network/proxy.png"), _("Proxy"), self.toggle_cb)
         self.proxysetting = ProxySettings()
-        self.settings = None
         self.add(self.proxy)
-        self.init_state()
+        #self.init_state()
 
     def init_state(self):
         if self.proxysetting.get_proxy_mode() != "none":
@@ -1004,9 +945,9 @@ class Proxy(gtk.VBox):
             self.proxysetting.set_proxy_mode("none")
 
     def slide_to_event(self, widget, event):
-        self.settings = ProxyConfig()
-        self.settings.init(True)
-        slider.slide_to_page(self.settings, "right")
+        settings = ProxyConfig()
+        settings.init(True)
+        slider.slide_to_page(settings, "right")
         Dispatcher.send_submodule_crumb(2, _("Proxy"))
 
     #def add_setting_page(self, setting_page):
@@ -1020,43 +961,50 @@ class Proxy(gtk.VBox):
         self.set_no_show_all(True)
         self.hide()
 
+    def set_active(self, state):
+        self.proxy.set_active(state)
+
 class Network(object):
     def __init__(self):        
-        self.init_sections()
+        #self.init_sections()
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
+        slider.connect_after("show", self.init_sections_state)
+        slider._set_to_page("main")
+        slider.show_all()
+        Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
+        Dispatcher.connect("recheck-section", lambda w, i: self.__init_sections(0))
+        Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
+
+    def init_sections_state(self, widget):
+        print "Debug :: ui finish, ======================"
+        net_manager.init_devices()
+        for section in self.vbox.get_children():
+            if section.show_or_hide():
+                section.section_show()
+                section.init_state()
+            else:
+                section.section_hide()
+        slider._append_page(Region(), "region")
         from setting_page_ui import SettingUI
         self.setting_page_ui = SettingUI(None, None)
         slider._append_page(self.setting_page_ui, "setting")
-        
-        slider._append_page(Region(), "region")
-        slider.show_all()
-        slider._set_to_page("main")
-        Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
-        Dispatcher.connect("recheck-section", lambda w, i: self.__init_sections(0))
-
-        self.sections = []
-    
+         
     def __init_sections(self, index):
         section_list = [WiredSection, WirelessSection, DSLSection, MobileSection, VpnSection, Proxy]
-        self.sections = map(lambda s: s.show_or_hide(), section_list)
         if index == -1:
             container_remove_all(self.vbox)
             for section in section_list:
                 section_ins = apply(section)
                 self.vbox.pack_start(section_ins, False, True)
-                if section.show_or_hide():
-                    section_ins.section_show()
-                else:
-                    section_ins.section_hide()
         else:
             for section in self.vbox.get_children():
+
                 if section.show_or_hide():
                     section.section_show()
                 else:
                     section.section_hide()
-
     def __init_ui(self):
 
         self.vbox = gtk.VBox(False, BETWEEN_SPACING)
@@ -1096,30 +1044,6 @@ class Network(object):
     def slide_to_setting_page(self, widget, setting_module):
         self.setting_page_ui.load_module(setting_module)
 
-    def activate_succeed(self, widget, connection_path):
-        print "active_succeed with", connection_path
-        print connection_path
-
-    def activate_failed(self, widget, connection_path):
-        print "active failed"
-
-    def device_added(self, widget, connection_path):
-        print "device add:", connection_path
-        self.wired.refresh_device()
-
-    def device_removed(self, widget, connection_path):
-        print "device remove:", connection_path
-        self.wired.refresh_device()
-
-    def init_sections(self):
-        #slider._set_to_page("main")
-        self.wired = WiredSection()
-        self.wireless = WirelessSection()
-        self.dsl = DSLSection()
-        self.proxy = Proxy()
-        self.mobile = MobileSection()
-        self.vpn = VpnSection()
-
     def refresh(self):
         #self.init_sections()
         self.__init_sections(-1)
@@ -1127,47 +1051,10 @@ class Network(object):
         self.eventbox.queue_draw()
 
     def stop(self):
+        for section in self.vbox.get_children():
+            section.set_active(False)
         self.eventbox.set_above_child(True)
         
     def get_main_page(self):
         return self.eventbox
 
-if __name__ == '__main__':
-    if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
-        module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
-        Dispatcher.load_module_frame(module_frame)
-        Dispatcher.load_slider(slider)
-        network = Network()
-
-        def service_stop_cb(widget, s):
-            #network.stop()
-            cache.clearcache()
-            cache.clear_spec_cache()
-
-        def service_start_cb(widget, s):
-            print "#service start#"
-            #cache.clearcache()
-            #cache.clear_spec_cache()
-            nm_module.init_objects()
-            net_manager.device_manager.reinit_cache()
-            #network.refresh()
-
-        servicemanager.connect("service-start", service_start_cb)
-        servicemanager.connect("service-stop", service_stop_cb)
-        #main_align = network.get_main_page()
-        module_frame.add(slider)
-        
-        def message_handler(*message):
-            (message_type, message_content) = message
-            if message_type == "show_again":
-                slider._set_to_page("main")
-                module_frame.send_module_info()
-            elif message_type == "click_crumb":
-                print "click_crumb"
-                (crumb_index, crumb_label) = message_content
-                if crumb_index == 1:
-                    slider._slide_to_page("main", "left")
-                if crumb_label == _("VPN"):
-                    slider._slide_to_page("vpn", "left")
-        module_frame.module_message_handler = message_handler
-        module_frame.run()

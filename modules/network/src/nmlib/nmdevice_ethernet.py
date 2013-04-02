@@ -22,17 +22,14 @@
 
 from nmdevice import NMDevice
 from nmcache import get_cache
-cache = get_cache()
 import time
 import threading
-nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
-nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 
 class ThreadWiredAuto(threading.Thread):
 
     def __init__(self, device_path, connections):
         threading.Thread.__init__(self)
-        self.device = cache.get_spec_object(device_path)
+        self.device = get_cache().get_spec_object(device_path)
         self.conns = connections
         self.run_flag = True
 
@@ -40,6 +37,7 @@ class ThreadWiredAuto(threading.Thread):
         for conn in self.conns:
             if self.run_flag:
                 try:
+                    nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                     active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, "/")
                     while(active_conn.get_state() == 1 and self.run_flag):
                         time.sleep(1)
@@ -72,7 +70,7 @@ class NMDeviceEthernet(NMDevice):
     def device_wired_disconnect(self):
         if self.thread_wiredauto:
             self.thread_wiredauto.stop_run()
-        cache.getobject(self.object_path).nm_device_disconnect()
+        get_cache().getobject(self.object_path).nm_device_disconnect()
 
     def device_dsl_disconnect(self):
         if self.thread_dslauto:
@@ -91,11 +89,12 @@ class NMDeviceEthernet(NMDevice):
         return self.properties["Speed"]
 
     def auto_connect(self):
-        if cache.getobject(self.object_path).is_active():
+        if get_cache().getobject(self.object_path).is_active():
             return True
-        if cache.getobject(self.object_path).get_state() < 30:
+        if get_cache().getobject(self.object_path).get_state() < 30:
             return False
 
+        nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         if nm_remote_settings.get_wired_connections():
 
             wired_prio_connections = sorted(nm_remote_settings.get_wired_connections(),
@@ -110,12 +109,14 @@ class NMDeviceEthernet(NMDevice):
             try:
                 nmconn = nm_remote_settings.new_wired_connection()
                 conn = nm_remote_settings.new_connection_finish(nmconn.settings_dict)
+                nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                 nmclient.activate_connection(conn.object_path, self.object_path, "/")
             except:
                 return False
 
     def dsl_auto_connect(self):
-        if not cache.getobject(self.object_path).is_active():
+        nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
+        if not get_cache().getobject(self.object_path).is_active():
             return False
 
         elif not nm_remote_settings.get_pppoe_connections():

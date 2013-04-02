@@ -40,6 +40,7 @@ class TrayNetworkPlugin(object):
         self.menu_showed = False
         self.gui = TrayUI(self.toggle_wired, self.toggle_wireless, self.mobile_toggle)
         self.net_manager = net_manager
+        self.net_manager.init_devices()
         Dispatcher.connect("request_resize", self.request_resize)
         Dispatcher.connect("ap-added", self.wireless_ap_added)
         Dispatcher.connect("ap-removed", self.wireless_ap_removed)
@@ -59,6 +60,16 @@ class TrayNetworkPlugin(object):
         self.init_wireless_signals()
         self.init_mm_signals()
         Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals())
+        Dispatcher.connect("wired-device-add", lambda w,p: self.init_wired_signals())
+        Dispatcher.connect("wireless-device-add", lambda w,p: self.init_wireless_signals())
+
+        Dispatcher.connect("service_start_do_more", self.service_start_do_more)
+
+    def service_start_do_more(self, widget):
+        self.init_wired_signals()
+        self.init_wireless_signals()
+        self.init_mm_signals()
+
 
     def recheck_sections(self, widget, index):
         self.init_widgets()

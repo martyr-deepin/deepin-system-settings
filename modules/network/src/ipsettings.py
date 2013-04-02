@@ -3,6 +3,7 @@
 
 from dtk.ui.label import Label
 from dtk.ui.new_entry import InputEntry
+from dtk.ui.address_entry import IpAddressEntry
 from nmlib.nm_utils import TypeConvert
 from dtk.ui.button import OffButton
 from nmlib.nm_remote_connection import NMRemoteConnection
@@ -39,7 +40,6 @@ class IPV4Conf(gtk.VBox):
         self.addr_row = self.__set_row(_("IP Address:"), 0)
         self.mask_row = self.__set_row(_("Mask:"), 1)
         self.gate_row = self.__set_row(_("Gateway:"), 2)
-
         self.__table_attach(self.ip_table, self.addr_row, 0)
         self.__table_attach(self.ip_table, self.mask_row, 1)
         self.__table_attach(self.ip_table, self.gate_row, 2)
@@ -90,12 +90,12 @@ class IPV4Conf(gtk.VBox):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        entry = InputEntry()
+        entry = IpAddressEntry()
         if types == "ip":
-            entry.entry.connect("changed", self.set_ip_address, arg)
+            entry.connect("focus-out", self.set_ip_address, arg)
         else:
-            entry.entry.connect("changed", self.set_dns_address, arg)
-        entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
+            entry.connect("focus-out", self.set_dns_address, arg)
+        #entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 
         return (label, entry)
 
@@ -119,9 +119,12 @@ class IPV4Conf(gtk.VBox):
             self.ip_section.set_active(False)
             #self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
-                self.addr_row[1].set_text(self.setting.addresses[0][0])
-                self.mask_row[1].set_text(self.setting.addresses[0][1])
-                self.gate_row[1].set_text(self.setting.addresses[0][2])
+                #print self.setting.addresses[0][0]
+                addr, mask, gate = self.setting.addresses[0]
+                #self.ip_section.set_active(True)
+                self.addr_row[1].set_text(addr)
+                self.mask_row[1].set_text(mask)
+                self.gate_row[1].set_text(gate)
                 self.ip = self.setting.addresses[0]
 
         if self.setting.dns == []:
@@ -136,51 +139,24 @@ class IPV4Conf(gtk.VBox):
                 self.dns = self.setting.dns
 
         self.reset_table()
-        #if self.dns_only:
-            #self.set_group_sensitive("ip", False)
-            #self.auto_ip.set_sensitive(False)
-            #self.manual_ip.set_sensitive(False)
 
     def reset_table(self):
         pass
-        #container_remove_all(self.table)
-        #if not self.auto_ip.get_active():
-            #self.table.attach(self.addr_label_align, 0,1,2,3)
-            #self.table.attach(self.addr_entry_align, 1,2,2,3)
-            #self.table.attach(self.mask_label_align, 0,1,3,4)
-            #self.table.attach(self.mask_entry_align, 1,2,3,4)
-            #self.table.attach(self.gate_label_align, 0,1,4,5)
-            #self.table.attach(self.gate_entry_align, 1,2,4,5)
-        
-        #hbox = gtk.HBox()
-        #hbox.set_size_request(-1, 20)
-        #self.table.attach(hbox, 0, 1, 5, 6) 
-        #self.table.attach(self.dns_label_align, 0, 1, 6, 7) 
-        #self.table.attach(self.auto_dns_align, 1, 2, 6, 7)
-        #if not self.auto_dns.get_active():
-            #self.table.attach(self.master_dns_align, 0, 1, 7, 8)
-            #self.table.attach(self.master_entry_align, 1, 2, 7, 8)
-            #self.table.attach(self.slave_dns_align, 0, 1, 8, 9)
-            #self.table.attach(self.slave_entry_align, 1, 2, 8, 9)
-
-        #self.table.show_all()
         self.queue_draw()
 
     def set_group_sensitive(self, group_name, sensitive):
         pass
-                #self.addr_entry.set_text("")
-                #self.mask_entry.set_text("")
-                ##self.gate_entry.set_text("")
-                #self.master_entry.set_text("")
-                #self.slave_entry.set_text("")
 
     def set_ip_address(self, widget, content, index):
+        print "focus out"
         names = ["ip4", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
             print "ip4 valid"
+            widget.set_frame_alert(False)
             setattr(self, names[index] + "_flag", True)
         else:
+            widget.set_frame_alert(True)
             Dispatcher.set_tip("ipv4 invalid")
             setattr(self, names[index] + "_flag", False)
 
@@ -262,9 +238,9 @@ class IPV4Conf(gtk.VBox):
 
     def ip_toggle_off(self):
         print "manual"
-        self.addr_row[1].set_text("")
-        self.mask_row[1].set_text("")
-        self.gate_row[1].set_text("")
+        self.addr_row[1].set_address("")
+        self.mask_row[1].set_address("")
+        self.gate_row[1].set_address("")
         self.setting.method = 'manual'
         #self.set_group_sensitive("ip", True)
         if self.connection.check_setting_finish():
@@ -420,9 +396,11 @@ class IPV6Conf(gtk.VBox):
             self.ip_section.set_active(False)
             self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
-                self.addr_row[1].set_text(self.setting.addresses[0][0])
-                self.mask_row[1].set_text(self.setting.addresses[0][1])
-                self.gate_row[1].set_text(self.setting.addresses[0][2])
+                addr, mask, gate = self.setting.addresses[0]
+
+                self.addr_row[1].set_text(addr)
+                self.mask_row[1].set_text(mask)
+                self.gate_row[1].set_text(gate)
                 self.ip = self.setting.addresses
 
         if self.setting.dns == []:
@@ -499,21 +477,6 @@ class IPV6Conf(gtk.VBox):
             if content is not "":
                 Dispatcher.set_button("save", False)
             setattr(self, names[index] + "_flag", False)
-        #self.dns[index] = content
-        #names = ["master", "slaver"]
-        #if TypeConvert.is_valid_ip4(content):
-            #setattr(self, names[index] + "_flag", True)
-            #print "valid"+ names[index]
-        #else:
-            #setattr(self, names[index] + "_flag", False)
-
-        #dns = self.check_complete_dns()
-        #if dns:
-            #self.setting.clear_dns()
-            #for d in dns:
-                #self.setting.add_dns(d)
-        #else:
-            #self.setting.clear_dns()
             
     def check_complete_dns(self):
         dns = []

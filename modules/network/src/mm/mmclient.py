@@ -26,7 +26,7 @@ sys.path.append("../")
 import dbus
 import gobject
 from nmlib.nmobject import NMObject
-from nmlib.nm_utils import TypeConvert, nm_alive
+from nmlib.nm_utils import TypeConvert
 # from mmdevice import MMDevice
 
 mm_bus = dbus.SystemBus()
@@ -79,10 +79,9 @@ class MMClient(MMObject):
 
         return filter(lambda x:MMDevice(x).get_type() == 1, self.enumerate_devices())
 
-    @nm_alive
     def device_added_cb(self, device_path):
         self.emit("device-added", device_path)
-    @nm_alive
+
     def device_removed_cb(self, device_path):
         self.emit("device-removed", device_path)
 

@@ -63,7 +63,7 @@ class NModule(object):
         self.init_objects()
 
     def init_objects(self):
-        print "reinit object"
+        print "reinit object", self.my_cache
         self.client = self.my_cache.getobject("/org/freedesktop/NetworkManager")
         self.setting = self.my_cache.getobject("/org/freedesktop/NetworkManager/Settings")
         self.agent = NMSecretAgent()
