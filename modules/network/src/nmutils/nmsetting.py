@@ -24,12 +24,6 @@ sys.path.append("../")
 
 import dbus
 import gobject
-# import copy
-# from nmlib.nmconstant import NMSettingCompareFlags as cflags
-# from nmlib.nmconstant import NMSettingParamFlags as pflags
-# from nmlib.nmconstant import NMSettingSecretFlags as sflags
-# from pynm.nmlib.nm_remote_connection import NMRemoteConnection
-# from nmlib.nm_utils import TypeConvert
 
 class NMSetting (gobject.GObject):
     '''NMSetting, should be abstract'''

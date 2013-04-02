@@ -28,7 +28,6 @@ class SettingUI(gtk.Alignment):
         self.foot_box = FootBox()
         self.hbox = gtk.HBox()
 
-        #self.add(self.scroll_win)
         self.scroll_win.add_with_viewport(self.hbox)
         self.scroll_align = gtk.Alignment()
         self.scroll_win.set_size_request(800, 435)
@@ -43,18 +42,12 @@ class SettingUI(gtk.Alignment):
         self.hpaned = HPaned(always_show_button=True)
         self.hpaned.set_size_request(800, -1)
         self.hpaned.connect("expose-event",self.expose_line)
-        #self.hpaned.pack1(padding_align, True, True)
-        #self.hpaned.pack2(self.scroll_align, True, False)
         self.hpaned.add1(padding_align)
         self.hpaned.add2(self.scroll_align)
         self.connect_after("show", self.__init_paned)
         main_vbox.pack_start(self.hpaned, True, True)
         main_vbox.pack_start(self.foot_box, False, False)
         self.add(main_vbox)
-        # Build ui
-        #self.hbox.pack_start(self.hpaned, False , False)
-        #style.draw_background_color(self)
-        #style.draw_separator(self.sidebar, 3)
 
         self.__init_signals()
 

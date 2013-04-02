@@ -22,29 +22,26 @@
 
 from nmobject import NMObject
 from nmcache import get_cache
-cache = get_cache()
 import time
 import threading
-
-nm_remote_settings = cache.getobject("/org/freedesktop/NetworkManager/Settings")
-nmclient = cache.getobject("/org/freedesktop/NetworkManager")
 
 class ThreadVPNAuto(threading.Thread):
 
     def __init__(self, active_path, connections):
         threading.Thread.__init__(self)
-        self.activeconn = cache.getobject(active_path)
+        self.activeconn = get_cache().getobject(active_path)
         self.conns = connections
         self.run_flag = True
 
     def run(self):
-        while self.run_flag:
-            for conn in self.conns:
+        for conn in self.conns:
+            if self.run_flag:
                 try:
+                    nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                     active_conn = nmclient.activate_connection(conn.object_path, 
                                                                 self.activeconn.propperties["Devices"][0],
                                                                 self.activeconn.object_path)
-                    while(active_conn.get_state() == 1):
+                    while(active_conn.get_state() == 1 and self.run_flag):
                         time.sleep(1)
 
                     if active_conn.get_state() == 2:
@@ -54,7 +51,7 @@ class ThreadVPNAuto(threading.Thread):
                         continue
                 except:
                     pass
-            self.stop_run()
+        self.stop_run()
 
     def stop_run(self):
         self.run_flag = False
@@ -87,14 +84,14 @@ class NMActiveConnection(NMObject):
         return self.properties["Uuid"]
 
     def get_connection(self):
-        return cache.getobject(self.properties["Connection"])
+        return get_cache().getobject(self.properties["Connection"])
 
     def get_specific_object(self):
         return self.properties["SpecificObject"]
 
     def get_devices(self):
         try:
-            return map(lambda x:cache.getobject(x), self.properties["Devices"])
+            return map(lambda x:get_cache().getobject(x), self.properties["Devices"])
         except:
             return []
 
@@ -108,6 +105,7 @@ class NMActiveConnection(NMObject):
         return self.properties["Default6"]
 
     def vpn_auto_connect(self):
+        nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         if self.get_state() != 2:
             return False
         elif nm_remote_settings.get_vpn_connections():
