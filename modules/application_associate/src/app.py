@@ -54,6 +54,7 @@ class ThreadSet(td.Thread):
             self.stop_run()
 
     def stop_run(self):
+        print "ThreadSet stop"
         self.stop = True
 
 class AppManager(gobject.GObject):
@@ -67,7 +68,7 @@ class AppManager(gobject.GObject):
         self.calendar_content_type = "text/calendar"
         self.editor_content_type = "text/plain"
         self.audio_content_type = "audio/mpeg"
-        self.video_content_type = "video/x-ogm+ogg"
+        self.video_content_type = "video/mp4"
         self.photo_content_type = "image/jpeg"
         self.rough_types = ["audio", "video"]
         self.thread = None
