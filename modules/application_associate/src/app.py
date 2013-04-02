@@ -23,7 +23,7 @@
 import gobject
 import gio
 import threading as td
-
+import time
 
 def threaded(f):
     def wraps(*args, **kwargs):
@@ -48,6 +48,7 @@ class ThreadSet(td.Thread):
                 if self.stop:
                     break
                 else:
+                    time.sleep(0.1)
                     self.set_func(self.desktopapp, content_type)
             print "ThreadSet finish"
             self.stop_run()
@@ -68,7 +69,7 @@ class AppManager(gobject.GObject):
         self.audio_content_type = "audio/mpeg"
         self.video_content_type = "video/x-ogm+ogg"
         self.photo_content_type = "image/jpeg"
-        self.rough_types = ["audio", "video", "image"]
+        self.rough_types = ["audio", "video"]
         self.thread = None
     
     def get_app_info(self, commandline, application_name = None, flags = gio.APP_INFO_CREATE_NONE):
@@ -78,13 +79,13 @@ class AppManager(gobject.GObject):
             print "get app info failed"
 
     def set_default_for_rough_type(self, desktopapp, types):
-        #if self.thread and self.thread.isAlive():
-            #self.thread.stop_run()
-            #self.thread = ThreadSet(desktopapp, types, self.set_default_for_type)
-            #self.thread.start()
-        #else:
-        self.thread = ThreadSet(desktopapp, types, self.set_default_for_type)
-        self.thread.start()
+        if self.thread and self.thread.isAlive():
+            self.thread.stop_run()
+            self.thread = ThreadSet(desktopapp, types, self.set_default_for_type)
+            self.thread.start()
+        else:
+            self.thread = ThreadSet(desktopapp, types, self.set_default_for_type)
+            self.thread.start()
 
 
     def get_default_for_type(self, content_type, must_support_uris = False):
