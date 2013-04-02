@@ -498,6 +498,7 @@ class DisplayView(gtk.VBox):
         self.display_manager.reset()
         self.close_monitor_combo.set_select_index(self.display_manager.get_close_monitor_index(self.duration_items))
         self.lock_display_combo.set_select_index(self.display_manager.get_lock_display_index(self.duration_items))
+        self.multi_monitors_combo.set_select_index(0)
 
     def __handle_dbus_replay(self, *reply):
         pass
