@@ -107,5 +107,12 @@ class AppView(gtk.VBox):
             
     def item_select(self, widget, content, value, index, types):
         default_apps = self.get_default_app()
+        rough_types = self.content_type_list[types].split("/")[0]
         if content != "None" and default_apps[types].get_name() != content:
-            self.app.set_default_for_type(value, self.content_type_list[types])
+            if rough_types in self.app.rough_types:
+                print "start.."
+                self.app.set_default_for_rough_type(value, rough_types)
+                print 'stop...'
+            else:
+                self.app.set_default_for_type(value, self.content_type_list[types])
+
