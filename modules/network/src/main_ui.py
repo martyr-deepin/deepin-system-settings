@@ -72,7 +72,7 @@ class Section(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
 
-        self.timer = Timer(300, self.action_after_toggle)
+        self.timer = Timer(200, self.action_after_toggle)
 
     def load(self, toggle, content=[]):
         self.toggle = toggle

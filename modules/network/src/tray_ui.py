@@ -33,6 +33,7 @@ from nls import _
 from constants import CONTENT_FONT_SIZE, IMG_WIDTH
 import style
 from helper import Dispatcher
+from timer import Timer
 WIDGET_HEIGHT = 22
 
 ALIGN_SPACING = 28
@@ -246,10 +247,10 @@ class Section(gtk.HBox):
         gtk.HBox.__init__(self)
         self.icon = icon
         self.text = text
-        self.toggle_callback = toggle_callback
         self.height = 30
         self.set_size_request(-1, self.height)
         self.has_separater = has_separater
+        self.timer = Timer(200, toggle_callback)
 
         self.__init_ui()
 
@@ -262,6 +263,12 @@ class Section(gtk.HBox):
         self.pack_start(self.__wrap_with_align(self.label, align="left"), False, False, padding=10)
         self.pack_end(self.__wrap_with_align(self.offbutton), False, False)
         self.show_all()
+
+    def toggle_callback(self, widget):
+        if self.timer.alive():
+            self.timer.restart()
+        else:
+            self.timer.start()
 
 
     def __wrap_with_align(self, widget, align="right",h=25):
@@ -444,112 +451,6 @@ class SsidItem(TreeItem):
     def set_padding(self, padding):
         self.right_padding = padding
         self.redraw()
-
-class MoreItem(TreeItem):
-
-    def __init__(self, child_list, resize_tree_cb):
-        TreeItem.__init__(self)
-        self.children = child_list
-        self.resize_tree = resize_tree_cb
-        #self.arrow_right=ui_theme.get_pixbuf("treeview/arrow_right.png")
-        #self.arrow_down=ui_theme.get_pixbuf("treeview/arrow_down.png")
-
-    def render_content(self, cr, rect):
-        content = _("more wireless ap")
-        self.render_background(cr, rect)
-        (text_width, text_height) = get_content_size(content)
-        import pango
-        draw_text(cr, content, rect.x, rect.y, rect.width, rect.height,
-                alignment=pango.ALIGN_LEFT)
-
-    def render_right(self, cr, rect):
-        self.render_background(cr, rect)
-        
-
-    def get_column_renders(self):
-        return [self.render_content,
-                self.render_right]
-
-    def get_column_widths(self):
-        return [-1, IMG_WIDTH]
-
-    def get_height(self):
-        return WIDGET_HEIGHT
-
-    def single_click(self, column, offset_x, offset_y):
-        if self.is_expand:
-            self.unexpand()
-        else:
-            self.expand()
-
-    def expand(self):
-        self.is_expand = True
-        self.add_child_item()
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-        self.resize_tree()
-
-    def unexpand(self):
-        '''docstring for unexpand'''
-        self.delete_child_item()
-
-        self.is_expand = False
-        if self.redraw_request_callback:
-            self.redraw_request_callback(self)
-        self.resize_tree()
-
-    def add_child_item(self):
-        self.delete()
-        self.child_items = self.children
-        self.add_items_callback(self.child_items, self.row_index + 1)
-        
-    def delete_child_item(self):
-        self.delete_items_callback(self.child_items)
-
-    def render_background(self, cr, rect):
-        cr.set_source_rgb(1, 1, 1 )
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        cr.fill()
-
-class MoreButton(Button):
-
-    def __init__(self, name, tree,  refresh_cb):
-        Button.__init__(self, name)
-        self.tree = tree
-        self.refresh = refresh_cb
-        self.show_all = False
-        self.connect("clicked", self.show_more)
-        self.connect("expose-event", self.expose_button)
-        self.set_size_request(-1, WIDGET_HEIGHT)
-
-    def set_ap_list(self, ap_list):
-        self.ap_list = ap_list
-
-    def show_more(self, widget):
-        if self.show_all is False:
-            self.tree.add_items(map(lambda ap: SsidItem(ap), self.ap_list))
-            self.refresh()
-    
-    def expose_button(self, widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
-        
-        if widget.state == gtk.STATE_NORMAL:
-            bg_color = "#ffffff"
-        else:
-            bg_color = "#ebf4fd"
-
-        cr.set_source_rgb(*color_hex_to_cairo(bg_color))
-
-        cr.rectangle(rect.x , rect.y, rect.width, rect.height)
-        cr.fill()
-        # draw text
-        label = _("more wireless...")
-        (text_width, text_height) = get_content_size(label)
-        offset_y = (rect.height - text_height)/2
-        draw_text(cr, label, rect.x + ALIGN_SPACING, rect.y + offset_y, text_width, text_height,
-                alignment = pango.ALIGN_LEFT)
-        return True
 
 class APButton(gtk.Button):        
     def __init__(self, 
