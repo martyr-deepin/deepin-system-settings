@@ -8,7 +8,6 @@ from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
 
-from dtk.ui.scrolled_window import ScrolledWindow
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 from container import MyToggleButton as SwitchButton
@@ -21,7 +20,7 @@ from helper import Dispatcher
 import gtk
 from nls import _
 import style
-from constants import CONTENT_FONT_SIZE, STANDARD_LINE
+from constants import CONTENT_FONT_SIZE
 
 class VPNSetting(Settings):
 
@@ -169,15 +168,19 @@ class PPTPConf(gtk.VBox):
         gateway_label = Label(_("Gateway:"),
                                enable_select=False,
                                enable_double_click=False)
+        gateway_label.set_can_focus(False)
         user_label = Label(_("Username:"),
                                enable_select=False,
                                enable_double_click=False)
+        user_label.set_can_focus(False)
         password_label = Label(_("Password:"),
                                enable_select=False,
                                enable_double_click=False)
+        password_label.set_can_focus(False)
         nt_domain_label = Label(_("NT Domain:"),
                                enable_select=False,
                                enable_double_click=False)
+        nt_domain_label.set_can_focus(False)
         # Radio Button
         self.pptp_radio = RadioButton(_("PPTP"))
         self.l2tp_radio = RadioButton(_("L2TP"))

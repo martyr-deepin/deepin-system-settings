@@ -93,6 +93,10 @@ class ProxyConfig(gtk.VBox):
         wrap_all_with_align(self, label_list, STANDARD_LINE )
         wrap_all_with_align(self, entry_list)
         wrap_all_with_align(self, spin_list)
+        
+        for label in label_list:
+            l = getattr(self, label)
+            l.set_can_focus(False)
 
         self.methods_align = style.wrap_with_align(self.methods)
         #for entry in entry_list:

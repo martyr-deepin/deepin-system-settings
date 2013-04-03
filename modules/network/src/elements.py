@@ -198,11 +198,17 @@ class TableAsm(gtk.Table):
         else:
             self.shared.append((item, None))
 
-    def row_input_entry(self, label_name, table=None):
+    def __label(self, label_name):
         label = Label(label_name,
                       text_size=CONTENT_FONT_SIZE,
                       enable_select=False,
                       enable_double_click=False)
+        label.set_can_focus(False)
+        return label
+
+
+    def row_input_entry(self, label_name, table=None):
+        label = self.__label(label_name)
 
         entry = InputEntry()
         entry.set_size(self.right_width, WIDGET_HEIGHT)
@@ -210,10 +216,7 @@ class TableAsm(gtk.Table):
         return entry
     
     def row_pwd_entry(self, label_name, table=None):
-        label = Label(label_name,
-                      text_size=CONTENT_FONT_SIZE,
-                      enable_select=False,
-                      enable_double_click=False)
+        label = self.__label(label_name)
         entry = PasswordEntry()
         entry.set_size(self.right_width, WIDGET_HEIGHT)
         show_key = CheckButton(_("Show key"), padding_x=0)
@@ -224,20 +227,14 @@ class TableAsm(gtk.Table):
         return entry
 
     def row_spin(self, label_name, low, high, table=None):
-        label = Label(label_name,
-                      text_size=CONTENT_FONT_SIZE,
-                      enable_select=False,
-                      enable_double_click=False)
+        label = self.__label(label_name)
         spin = SpinBox(0, low, high, 1, self.right_width)
         self._wrap_align((label, spin), table)
 
         return spin
 
     def row_toggle(self, label_name, table=None):
-        label = Label(label_name,
-                      text_size=CONTENT_FONT_SIZE,
-                      enable_select=False,
-                      enable_double_click=False)
+        label = self.__label(label_name)
 
         toggle = OffButton()
         self._wrap_align((label, toggle), table)
@@ -245,10 +242,7 @@ class TableAsm(gtk.Table):
         return toggle
     
     def row_combo(self, label_name, combo_items, table=None):
-        label = Label(label_name,
-                      text_size=CONTENT_FONT_SIZE,
-                      enable_select=False,
-                      enable_double_click=False)
+        label = self.__label(label_name)
 
         combo = ComboBox([combo_items],
                           max_width=self.right_width)

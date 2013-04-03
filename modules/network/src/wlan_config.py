@@ -265,6 +265,7 @@ class Security(gtk.VBox):
         widget_list = ["password_entry", "key_entry", "wep_index_spin", "auth_combo", "security_combo"]
         for label in label_list:
             l = getattr(self, label)
+            l.set_can_focus(False)
             align = style.wrap_with_align(l, width=210)
             setattr(self, label+"_align", align)
 
@@ -575,6 +576,7 @@ class Wireless(gtk.VBox):
         for widget in widget_list:
             item = getattr(self, widget)
             if widget.endswith("label"):
+                item.set_can_focus(False)
                 align = style.wrap_with_align(item, width=210)
             else:
                 align = style.wrap_with_align(item, align="left")
