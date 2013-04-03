@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import dss
+#import dss
 from proxy_config import ProxyConfig, ProxySettings
 import sys
 import os
@@ -246,7 +246,6 @@ class WiredSection(Section, WiredDevice):
         item_list = self.get_list()
         if item_list:
             item_list[-1].is_last = True
-            
             self.tree.add_items(item_list, 0, True)
             self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
 
@@ -256,6 +255,7 @@ class WiredSection(Section, WiredDevice):
                 self.tree.visible_items[i].set_net_state(2)
             else:
                 device_ethernet = nm_module.cache.get_spec_object(d.object_path)
+                print "Debug: auto connect wired"
                 device_ethernet.auto_connect()
 
     def toggle_off(self):

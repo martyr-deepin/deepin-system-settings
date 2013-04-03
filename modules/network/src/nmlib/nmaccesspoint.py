@@ -97,8 +97,16 @@ class NMAccessPoint(NMObject):
         self.init_nmobject_with_properties()
         self.bssid = ""
 
-        self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
+        self.match = self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
+
+    def remove_signals(self):
+        try:
+            self.bus.remove_signal_receiver(self.match, dbus_interface = self.object_interface,
+                                         path = self.object_path, signal_name = "PropertiesChanged")
+        except:
+            print "remove signals failed"
+
 
     ###Methods###
     def get_flags(self):
