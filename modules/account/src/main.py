@@ -100,7 +100,8 @@ class AccountSetting(object):
         self.label_widgets["account"] = Label(_("Account type"), enable_select=False, enable_double_click=False)
         self.label_widgets["passwd"] = Label(_("Password"), enable_select=False, enable_double_click=False)
         self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH-1, enable_select=False, enable_double_click=False)
-        self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
+        ##self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
+        self.label_widgets["nopw_login"] = Label(_("Log in without a password"), enable_select=False, enable_double_click=False)
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"), enable_select=False, enable_double_click=False)
         self.label_widgets["deepin_account"] = Label(_("Unbound"), enable_select=False, enable_double_click=False)
         self.label_widgets["account_name_new"] = Label(_("Account Name"), enable_select=False, enable_double_click=False)
@@ -119,7 +120,8 @@ class AccountSetting(object):
         self.button_widgets["lock"] = gtk.Button()
         self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
         #self.button_widgets["auto_login"] = gtk.ToggleButton()
-        self.button_widgets["auto_login"] = OffButton()
+        ##self.button_widgets["auto_login"] = OffButton()
+        self.button_widgets["nopw_login"] = OffButton()
         self.button_widgets["passwd"] = InputEntry()
         self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
         self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
@@ -133,8 +135,9 @@ class AccountSetting(object):
         self.container_widgets["backup_check_group_vbox"] = gtk.VBox(False)
 
         self.button_widgets["binding"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False, enable_double_click=False)
-        self.button_widgets["add_account"] = Button(_("Add"))
-        self.button_widgets["del_account"] = Button(_("Delete"))
+        self.button_widgets["disable_account"] = Button(_("Enable this account"))
+        self.button_widgets["add_account"] = Button(_("Add a account"))
+        self.button_widgets["del_account"] = Button(_("Delete the account"))
         self.button_widgets["account_create"] = Button(_("Create"))
         self.button_widgets["account_cancle"] = Button(_("Cancel"))
         self.button_widgets["account_type_new"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
@@ -209,10 +212,12 @@ class AccountSetting(object):
         self.alignment_widgets["set_iconfile"].set_name("set_iconfile")
         self.alignment_widgets["edit_iconfile"].set_name("edit_iconfile")
 
-        self.container_widgets["statusbar"].set_buttons([self.button_widgets["add_account"], self.button_widgets["del_account"]])
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["disable_account"], 
+                                                         self.button_widgets["add_account"],
+                                                         self.button_widgets["del_account"]])
         self.statusbar_buttons_bak = []
         self.statusbar_buttons = {
-            "main_hbox": [self.button_widgets["add_account"], self.button_widgets["del_account"]],
+            "main_hbox": [self.button_widgets["disable_account"], self.button_widgets["add_account"], self.button_widgets["del_account"]],
             "set_iconfile": [self.button_widgets["cancel_set_icon"]],
             "edit_iconfile": [self.button_widgets["cancel_set_icon"], self.button_widgets["save_edit_icon"]]}
 
@@ -270,10 +275,15 @@ class AccountSetting(object):
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.button_widgets["account_type"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 1, 2, 4)
 
+        ##self.container_widgets["account_info_table"].attach(
+            ##self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
+        ##self.container_widgets["account_info_table"].attach(
+            ##self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
+
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
+            self.__make_align(self.label_widgets["nopw_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
+            self.__make_align(self.button_widgets["nopw_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
 
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
@@ -416,7 +426,9 @@ class AccountSetting(object):
         self.button_widgets["del_account"].connect("clicked", self.del_account_button_clicked)
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
         self.button_widgets["account_create"].connect("clicked", self.account_create_button_clicked)
-        self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
+        ##self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
+        self.button_widgets["nopw_login"].connect("toggled", self.nopw_login_toggled)
+        self.button_widgets["disable_account"].connect("clicked", self.account_lock_button_clicked)
 
         self.button_widgets["del_button"].connect("clicked", self.del_delete_user_file_cd, True)
         self.button_widgets["keep_button"].connect("clicked", self.del_delete_user_file_cd, False)
@@ -485,6 +497,44 @@ class AccountSetting(object):
                 button.set_active(not button.get_active())
                 self.set_account_info_error_text(e.msg)
 
+    def nopw_login_toggled(self, button):
+        if not self.current_select_user:
+            return
+        if button.get_data("changed_by_other_app"):
+            button.set_data("changed_by_other_app", False)
+            return
+        try:
+            self.set_account_info_error_text("")
+            if button.get_active():
+                self.current_select_user.set_password_mode(2)
+                self.__set_status_text(_("Enabled passwordless login for %s") % settings.get_user_show_name(self.current_select_user))
+            else:
+                self.current_select_user.set_password_mode(0)
+                self.__set_status_text(_("Disabled passwordless login for %s") % settings.get_user_show_name(self.current_select_user))
+        except Exception, e:
+            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+
+                button.set_data("changed_by_other_app", True)
+                button.set_active(not button.get_active())
+                self.set_account_info_error_text(e.msg)
+
+    def account_lock_button_clicked(self, button):
+        if not self.current_select_user:
+            return
+        try:
+            is_locked = self.current_select_user.get_locked()
+            self.set_account_info_error_text("")
+            self.current_select_user.set_locked(not is_locked)
+            if is_locked:
+                self.__set_status_text(_("UnLock %s") % settings.get_user_show_name(self.current_select_user))
+                self.button_widgets["disable_account"].set_label(_("Disable this account"))
+            else:
+                self.__set_status_text(_("Lock %s") % settings.get_user_show_name(self.current_select_user))
+                self.button_widgets["disable_account"].set_label(_("Enable this account"))
+        except Exception, e:
+            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+                self.set_account_info_error_text(e.msg)
+        
     ## add account cb >> ##
     def add_account_button_clicked(self, button):
         container_remove_all(self.container_widgets["right_vbox"])
@@ -505,7 +555,9 @@ class AccountSetting(object):
         self.container_widgets["right_vbox"].show_all()
         #self.button_widgets["add_account"].set_sensitive(True)
         self.container_widgets["button_hbox"].set_sensitive(True)
-        self.container_widgets["statusbar"].set_buttons([self.button_widgets["add_account"], self.button_widgets["del_account"]])
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["disable_account"], 
+                                                         self.button_widgets["add_account"],
+                                                         self.button_widgets["del_account"]])
         self.set_account_info_error_text("")
 
     def account_create_button_clicked(self, button):
@@ -541,7 +593,9 @@ class AccountSetting(object):
         container_remove_all(self.container_widgets["right_vbox"])
         self.container_widgets["right_vbox"].pack_start(self.alignment_widgets["account_info_vbox"], False, False)
         self.container_widgets["right_vbox"].show_all()
-        self.container_widgets["statusbar"].set_buttons([self.button_widgets["add_account"], self.button_widgets["del_account"]])
+        self.container_widgets["statusbar"].set_buttons([self.button_widgets["disable_account"], 
+                                                         self.button_widgets["add_account"],
+                                                         self.button_widgets["del_account"]])
         self.set_account_info_error_text("")
 
     def del_delete_user_file_cd(self, button, del_file):
@@ -601,9 +655,18 @@ class AccountSetting(object):
             self.label_widgets["passwd_char"].set_text(_("None"))
         else:
             self.label_widgets["passwd_char"].set_text("****")
-        if dbus_obj.get_automatic_login() != self.button_widgets["auto_login"].get_active():
-            self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
-            self.button_widgets["auto_login"].set_active(dbus_obj.get_automatic_login())
+        ##if dbus_obj.get_automatic_login() != self.button_widgets["auto_login"].get_active():
+            ##self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
+            ##self.button_widgets["auto_login"].set_active(dbus_obj.get_automatic_login())
+        nopw_login = (dbus_obj.get_password_mode() == 2)
+        if self.button_widgets["nopw_login"].get_active() != nopw_login:
+            self.button_widgets["nopw_login"].set_data("changed_by_other_app", True)
+            self.button_widgets["nopw_login"].set_active(nopw_login)
+
+        if dbus_obj.get_locked():
+            self.button_widgets["disable_account"].set_label(_("Enable this account"))
+        else:
+            self.button_widgets["disable_account"].set_label(_("Disable this account"))
 
         if item.is_myowner:     # is current user that current process' owner
             if self.button_widgets["del_account"].get_sensitive():
@@ -614,9 +677,13 @@ class AccountSetting(object):
                 self.label_widgets["account_name"].set_sensitive(True)
             if not self.label_widgets["passwd_char"].get_sensitive():
                 self.label_widgets["passwd_char"].set_sensitive(True)
+            if self.button_widgets["disable_account"].get_sensitive():
+                self.button_widgets["disable_account"].set_sensitive(False)
         elif self.button_widgets["lock"].get_data("unlocked"):
             if not self.button_widgets["del_account"].get_sensitive():
                 self.button_widgets["del_account"].set_sensitive(True)
+            if not self.button_widgets["disable_account"].get_sensitive():
+                self.button_widgets["disable_account"].set_sensitive(True)
         else:
             if self.image_widgets["account_icon"].get_sensitive():
                 self.image_widgets["account_icon"].set_sensitive(False)
@@ -624,6 +691,8 @@ class AccountSetting(object):
                 self.label_widgets["account_name"].set_sensitive(False)
             if self.label_widgets["passwd_char"].get_sensitive():
                 self.label_widgets["passwd_char"].set_sensitive(False)
+            if self.button_widgets["disable_account"].get_sensitive():
+                self.button_widgets["disable_account"].set_sensitive(False)
 
     def lock_button_expose(self, button, event):
         cr = button.window.cairo_create()
@@ -675,7 +744,7 @@ class AccountSetting(object):
         else:
             if widget.window:
                 widget.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
-            widget.set_text("  %s" % widget.get_text())
+            ##widget.set_text("  %s" % widget.get_text())
             p_rect = widget.get_parent().allocation
             rect = widget.allocation
             cr = widget.get_parent().window.cairo_create()
@@ -700,7 +769,7 @@ class AccountSetting(object):
             if widget.window:
                 widget.window.set_cursor(None)
             self.container_widgets["account_info_table"].queue_draw()
-            widget.set_text("%s" % pango.parse_markup(widget.get_text().strip())[1])
+            ##widget.set_text("%s" % pango.parse_markup(widget.get_text().strip())[1])
 
     def realname_change_press_cb(self, widget, event):
         if not self.current_select_user:
@@ -1073,9 +1142,17 @@ class AccountSetting(object):
                 self.label_widgets["passwd_char"].set_text(_("None"))
             else:
                 self.label_widgets["passwd_char"].set_text("****")
-            if user.get_automatic_login() != self.button_widgets["auto_login"].get_active():
-                self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
-                self.button_widgets["auto_login"].set_active(user.get_automatic_login())
+            ##if user.get_automatic_login() != self.button_widgets["auto_login"].get_active():
+                ##self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
+                ##self.button_widgets["auto_login"].set_active(user.get_automatic_login())
+            nopw_login = (user.get_password_mode() == 2)
+            if self.button_widgets["nopw_login"].get_active() != nopw_login:
+                self.button_widgets["nopw_login"].set_data("changed_by_other_app", True)
+                self.button_widgets["nopw_login"].set_active(nopw_login)
+            if user.get_locked():
+                self.button_widgets["disable_account"].set_label(_("Enable this account"))
+            else:
+                self.button_widgets["disable_account"].set_label(_("Disable this account"))
 
     def account_user_set_random_icon(self, user_obj):
         if self.get_authorized():
@@ -1190,7 +1267,8 @@ class AccountSetting(object):
         #self.container_widgets["button_hbox"].set_sensitive(authorized)
         self.button_widgets["add_account"].set_sensitive(authorized)
         self.button_widgets["account_type"].set_sensitive(authorized)
-        self.button_widgets["auto_login"].set_sensitive(authorized)
+        ##self.button_widgets["auto_login"].set_sensitive(authorized)
+        self.button_widgets["nopw_login"].set_sensitive(authorized)
         self.container_widgets["check_button_table"].set_sensitive(authorized)
         if self.current_select_user and not settings.check_is_myown(self.current_select_user.get_uid()):
             self.image_widgets["account_icon"].set_sensitive(authorized)
