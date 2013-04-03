@@ -90,6 +90,7 @@ class IPV4Conf(gtk.VBox):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
+
         label.set_can_focus(False)
         entry = IpAddressEntry()
         if types == "ip":
@@ -149,7 +150,6 @@ class IPV4Conf(gtk.VBox):
         pass
 
     def set_ip_address(self, widget, content, index):
-        print "focus out"
         names = ["ip4", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
@@ -239,9 +239,10 @@ class IPV4Conf(gtk.VBox):
 
     def ip_toggle_off(self):
         print "manual"
-        self.addr_row[1].set_address("")
-        self.mask_row[1].set_address("")
-        self.gate_row[1].set_address("")
+        #self.addr_row[1].set_address("")
+        #print self.addr_row[1].entry_list
+        #self.mask_row[1].set_address("")
+        #self.gate_row[1].set_address("")
         self.setting.method = 'manual'
         #self.set_group_sensitive("ip", True)
         if self.connection.check_setting_finish():
