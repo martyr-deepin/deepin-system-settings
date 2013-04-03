@@ -158,8 +158,6 @@ class TrayNetworkPlugin(object):
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
                 self.change_status_icon("links")
-
-
             #Dispatcher.connect("wireless-change", self.set_wireless_state)
             Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
             self.pwd_failed = False
