@@ -90,6 +90,7 @@ class IPV4Conf(gtk.VBox):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
+        label.set_can_focus(False)
         entry = IpAddressEntry()
         if types == "ip":
             entry.connect("focus-out", self.set_ip_address, arg)
@@ -122,20 +123,20 @@ class IPV4Conf(gtk.VBox):
                 #print self.setting.addresses[0][0]
                 addr, mask, gate = self.setting.addresses[0]
                 #self.ip_section.set_active(True)
-                self.addr_row[1].set_text(addr)
-                self.mask_row[1].set_text(mask)
-                self.gate_row[1].set_text(gate)
+                self.addr_row[1].set_address(addr)
+                self.mask_row[1].set_address(mask)
+                self.gate_row[1].set_address(gate)
                 self.ip = self.setting.addresses[0]
 
         if self.setting.dns == []:
             self.dns_section.set_active(True)
         else:
             self.dns_section.set_active(False)
-            self.master_row[1].set_text(self.setting.dns[0])
+            self.master_row[1].set_address(self.setting.dns[0])
 
             self.dns = self.setting.dns + [""]
             if len(self.setting.dns) > 1:
-                self.slave_row[1].set_text(self.setting.dns[1])
+                self.slave_row[1].set_address(self.setting.dns[1])
                 self.dns = self.setting.dns
 
         self.reset_table()
