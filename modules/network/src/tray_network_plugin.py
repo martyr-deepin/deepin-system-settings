@@ -124,8 +124,8 @@ class TrayNetworkPlugin(object):
         else:
             self.change_status_icon("cable_disconnect")
 
-    def mobile_toggle(self, widget):
-        if widget.get_active():
+    def mobile_toggle(self):
+        if self.gui.mobile.get_active():
             self.mm_device = self.net_manager.connect_mm_device()
         else:
             self.net_manager.disconnect_mm_device()
@@ -173,8 +173,8 @@ class TrayNetworkPlugin(object):
         else:
             self.gui.remove_net("mobile")
 
-    def toggle_wired(self, widget):
-        if widget.get_active():
+    def toggle_wired(self):
+        if self.gui.wire.get_active():
             self.net_manager.active_wired_device(self.active_wired)
         else:
             self.net_manager.disactive_wired_device(self.disactive_wired)
@@ -249,8 +249,8 @@ class TrayNetworkPlugin(object):
         self.ap_list = self.__get_ssid_list()
         self.gui.set_ap(self.ap_list)
 
-    def toggle_wireless(self, widget):
-        if widget.get_active():
+    def toggle_wireless(self):
+        if self.gui.wireless.get_active():
             self.init_tree()
             index = self.net_manager.get_active_connection(self.ap_list)
             if index:

@@ -278,6 +278,8 @@ class NMDeviceWifi(NMDevice):
                 self.origin_ap_list = self.get_access_points()
                 self.ap_timer_id = glib.timeout_add(300, self.emit_cb, "access-point-removed")
 
+            get_cache().getobject(ap_object_path).remove_signals()
+
             del self.ap_record_dict[ap_object_path]
         except:
             traceback.print_exc()

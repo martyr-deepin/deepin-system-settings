@@ -17,6 +17,9 @@ class Timer(object):
         self.timer = 0
         return False
     
+    def alive(self):
+        return self.timer != 0
+    
     def stop(self):
         if self.timer:
             glib.source_remove(self.timer)
