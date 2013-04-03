@@ -39,6 +39,7 @@ class ThreadWiredAuto(threading.Thread):
                 try:
                     nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                     active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, "/")
+
                     while(active_conn.get_state() == 1 and self.run_flag):
                         time.sleep(1)
 

@@ -144,6 +144,7 @@ class Wired(gtk.VBox):
                             text_size=CONTENT_FONT_SIZE,
                             enable_select=False,
                             enable_double_click=False)
+        mac_address.set_can_focus(False)
 
         self.mac_entry = InputEntry()
 
@@ -151,12 +152,14 @@ class Wired(gtk.VBox):
                            text_size=CONTENT_FONT_SIZE,
                            enable_select=False,
                            enable_double_click=False)
+        clone_addr.set_can_focus(False)
         self.clone_entry = InputEntry()
 
         mtu = Label("MTU:", 
                     text_size=CONTENT_FONT_SIZE,
                     enable_select=False,
                     enable_double_click=False)
+        mtu.set_can_focus(False)
         self.mtu_spin = SpinBox(0,0, 1500, 1, self.ENTRY_WIDTH)
         
         '''
@@ -228,16 +231,19 @@ class DSLConf(gtk.VBox):
                                text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
+        username_label.set_can_focus(False)
 
 
         service_label = Label(_("Service:"), 
                               text_size=CONTENT_FONT_SIZE,
                               enable_select=False,
                               enable_double_click=False)
+        service_label.set_can_focus(False)
         password_label = Label(_("Password:"),
                                text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
+        password_label.set_can_focus(False)
 
         #pack labels
         dsl_table.attach(style.wrap_with_align(username_label, width=self.LEFT_PADDING), 0, 1 , 0, 1)

@@ -21,6 +21,7 @@ class SettingUI(gtk.Alignment):
         #style.set_main_window(self)
         
         self.scroll_win = ScrolledWindow()
+        self.scroll_win.set_can_focus(False)
         #style.draw_background_color(align)
 
         self.scroll_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)

@@ -77,20 +77,28 @@ class GenItems(TreeItem):
 
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
-        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box_out.png")
+        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box-3.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
+        self.check_hover_pixbuf = app_theme.get_pixbuf("network/check_box-4.png")
 
         self.border_color = border_normal_color
         self.bg_color = bg_normal_color
         self.is_last = is_last
+        self.is_hover = False
 
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
 
-        if self.network_state == self.NETWORK_LOADING:
-            self.draw_loading(cr, rect)
-        elif self.network_state == self.NETWORK_CONNECTED:
-            draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        if self.is_hover and self.network_state ==self.NETWORK_DISCONNECT:
+            draw_pixbuf(cr, self.check_hover_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        else:
+            if self.network_state == self.NETWORK_LOADING:
+                self.draw_loading(cr, rect)
+            elif self.network_state == self.NETWORK_CONNECTED:
+                draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+            elif self.network_state == self.NETWORK_DISCONNECT:
+                draw_pixbuf(cr, self.check_out_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+
 
         #draw outline
 
@@ -132,13 +140,13 @@ class GenItems(TreeItem):
             cr.fill()
 
     def hover(self, column, offset_x, offset_y):
-        #self.is_hover = True
+        self.is_hover = True
         self.bg_color = bg_hover_color
         #self.border_color = border_hover_color
         self.redraw()
 
     def unhover(self, column, offset_x, offset_y):
-        #self.is_hover = False
+        self.is_hover = False
         self.bg_color = bg_normal_color
         #self.border_color = border_normal_color
         self.redraw()

@@ -172,7 +172,8 @@ class NetManager(object):
         if active_connection:
             print active_connection.get_state(), "Debug in get active connection"
             try:
-                index.append([ap.object_path for ap in ap_list].index(active_connection.get_specific_object()))
+                ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
+                index.append([ap.get_ssid() for ap in ap_list].index(ssid))
                 return index
             except:
                 return []

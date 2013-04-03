@@ -90,6 +90,8 @@ class IPV4Conf(gtk.VBox):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
+
+        label.set_can_focus(False)
         entry = IpAddressEntry()
         if types == "ip":
             entry.connect("focus-out", self.set_ip_address, arg)
@@ -122,20 +124,20 @@ class IPV4Conf(gtk.VBox):
                 #print self.setting.addresses[0][0]
                 addr, mask, gate = self.setting.addresses[0]
                 #self.ip_section.set_active(True)
-                self.addr_row[1].set_text(addr)
-                self.mask_row[1].set_text(mask)
-                self.gate_row[1].set_text(gate)
+                self.addr_row[1].set_address(addr)
+                self.mask_row[1].set_address(mask)
+                self.gate_row[1].set_address(gate)
                 self.ip = self.setting.addresses[0]
 
         if self.setting.dns == []:
             self.dns_section.set_active(True)
         else:
             self.dns_section.set_active(False)
-            self.master_row[1].set_text(self.setting.dns[0])
+            self.master_row[1].set_address(self.setting.dns[0])
 
             self.dns = self.setting.dns + [""]
             if len(self.setting.dns) > 1:
-                self.slave_row[1].set_text(self.setting.dns[1])
+                self.slave_row[1].set_address(self.setting.dns[1])
                 self.dns = self.setting.dns
 
         self.reset_table()
@@ -148,7 +150,6 @@ class IPV4Conf(gtk.VBox):
         pass
 
     def set_ip_address(self, widget, content, index):
-        print "focus out"
         names = ["ip4", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
@@ -238,9 +239,10 @@ class IPV4Conf(gtk.VBox):
 
     def ip_toggle_off(self):
         print "manual"
-        self.addr_row[1].set_address("")
-        self.mask_row[1].set_address("")
-        self.gate_row[1].set_address("")
+        #self.addr_row[1].set_address("")
+        #print self.addr_row[1].entry_list
+        #self.mask_row[1].set_address("")
+        #self.gate_row[1].set_address("")
         self.setting.method = 'manual'
         #self.set_group_sensitive("ip", True)
         if self.connection.check_setting_finish():
