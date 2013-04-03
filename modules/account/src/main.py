@@ -403,7 +403,10 @@ class AccountSetting(object):
         self.alignment_widgets["edit_iconfile"].add(self.container_widgets["icon_edit_page"])
 
     def __signals_connect(self):
-        self.container_widgets["slider"].connect("expose-event", self.container_expose_cb)
+        #self.container_widgets["slider"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["main_hbox"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["set_iconfile"].connect("expose-event", self.container_expose_cb)
+        self.alignment_widgets["edit_iconfile"].connect("expose-event", self.container_expose_cb)
         self.container_widgets["slider"].connect("completed_slide", self.slider_completed_slide_cb)
         self.module_frame.connect("unmap-event", self.slider_hide_cb)
 
@@ -1149,6 +1152,7 @@ class AccountSetting(object):
         user_list = settings.get_user_list()
         user_items = []
         for user in user_list:
+            print user.get_user_name(), user.get_password_mode()
             icon_file = user.get_icon_file()
             if os.path.exists(icon_file):
                 try:

@@ -42,6 +42,7 @@ def get_user_list(account=ACCOUNT):
     @return: a list container some accounts.User objects
     '''
     user_list = account.list_cached_users()
+    user_list.sort()
     return map(accounts.User, user_list)
 
 def get_user_info(user_path):
