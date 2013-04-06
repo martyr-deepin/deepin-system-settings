@@ -506,17 +506,26 @@ class AccountSetting(object):
         try:
             self.set_account_info_error_text("")
             if button.get_active():
-                self.current_select_user.set_password_mode(2)
+                groups = self.current_select_user.get_groups()
+                if "nopasswdlogin" not in groups:
+                    groups.append("nopasswdlogin")
+                self.current_select_user.set_groups(','.join(groups))
+                #self.current_select_user.set_password_mode(2)
                 self.__set_status_text(_("Enabled passwordless login for %s") % settings.get_user_show_name(self.current_select_user))
             else:
-                self.current_select_user.set_password_mode(0)
+                groups = self.current_select_user.get_groups()
+                if "nopasswdlogin" in groups:
+                    groups.remove("nopasswdlogin")
+                self.current_select_user.set_groups(','.join(groups))
+                #self.current_select_user.set_password_mode(0)
                 self.__set_status_text(_("Disabled passwordless login for %s") % settings.get_user_show_name(self.current_select_user))
         except Exception, e:
-            if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
+            #if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
 
                 button.set_data("changed_by_other_app", True)
                 button.set_active(not button.get_active())
-                self.set_account_info_error_text(e.msg)
+                #self.set_account_info_error_text(e.msg)
+                self.set_account_info_error_text(e.message)
 
     def account_lock_button_clicked(self, button):
         if not self.current_select_user:
@@ -658,7 +667,8 @@ class AccountSetting(object):
         ##if dbus_obj.get_automatic_login() != self.button_widgets["auto_login"].get_active():
             ##self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
             ##self.button_widgets["auto_login"].set_active(dbus_obj.get_automatic_login())
-        nopw_login = (dbus_obj.get_password_mode() == 2)
+        #nopw_login = (dbus_obj.get_password_mode() == 2)
+        nopw_login = ("nopasswdlogin" in dbus_obj.get_groups())
         if self.button_widgets["nopw_login"].get_active() != nopw_login:
             self.button_widgets["nopw_login"].set_data("changed_by_other_app", True)
             self.button_widgets["nopw_login"].set_active(nopw_login)
@@ -1058,7 +1068,8 @@ class AccountSetting(object):
             ##if user.get_automatic_login() != self.button_widgets["auto_login"].get_active():
                 ##self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
                 ##self.button_widgets["auto_login"].set_active(user.get_automatic_login())
-            nopw_login = (user.get_password_mode() == 2)
+            #nopw_login = (user.get_password_mode() == 2)
+            nopw_login = ("nopasswdlogin" in user.get_groups())
             if self.button_widgets["nopw_login"].get_active() != nopw_login:
                 self.button_widgets["nopw_login"].set_data("changed_by_other_app", True)
                 self.button_widgets["nopw_login"].set_active(nopw_login)

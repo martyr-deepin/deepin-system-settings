@@ -229,6 +229,23 @@ class PasswdService(dbus.service.Object):
         except Exception, e:
             raise e
 
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ss", out_signature = "i", 
+                         sender_keyword = 'sender', connection_keyword = 'conn')    
+    def modify_user_groups(self, username, groups, sender=None, conn=None):
+        # usermod -G group1,group2,.. user
+        if not authWithPolicyKit(sender, conn, "com.deepin.passwdservice.modify-password"):
+            raise dbus.DBusException("not authWithPolicyKit")
+        try:
+            passwd = pexpect.spawn("/usr/sbin/usermod -G %s %s" % (groups, username),
+                                   timeout=8, env={"LANGUAGE": "en_US"})
+            passwd.setecho(False)
+            while passwd.isalive():
+                time.sleep(0.1)
+            retval = passwd.exitstatus
+            return retval
+        except Exception, e:
+            raise e
+
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
