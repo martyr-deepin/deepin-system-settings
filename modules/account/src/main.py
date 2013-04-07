@@ -681,28 +681,29 @@ class AccountSetting(object):
         if item.is_myowner:     # is current user that current process' owner
             if self.button_widgets["del_account"].get_sensitive():
                 self.button_widgets["del_account"].set_sensitive(False)
-            if not self.image_widgets["account_icon"].get_sensitive():
-                self.image_widgets["account_icon"].set_sensitive(True)
-            if not self.label_widgets["account_name"].get_sensitive():
-                self.label_widgets["account_name"].set_sensitive(True)
-            if not self.label_widgets["passwd_char"].get_sensitive():
-                self.label_widgets["passwd_char"].set_sensitive(True)
+            #if not self.image_widgets["account_icon"].get_sensitive():
+                #self.image_widgets["account_icon"].set_sensitive(True)
+            #if not self.label_widgets["account_name"].get_sensitive():
+                #self.label_widgets["account_name"].set_sensitive(True)
+            #if not self.label_widgets["passwd_char"].get_sensitive():
+                #self.label_widgets["passwd_char"].set_sensitive(True)
             if self.button_widgets["disable_account"].get_sensitive():
                 self.button_widgets["disable_account"].set_sensitive(False)
-        elif self.button_widgets["lock"].get_data("unlocked"):
+            if self.button_widgets["account_type"].get_sensitive():
+                self.button_widgets["account_type"].set_sensitive(False)
+        else:
             if not self.button_widgets["del_account"].get_sensitive():
                 self.button_widgets["del_account"].set_sensitive(True)
+            #if self.image_widgets["account_icon"].get_sensitive():
+                #self.image_widgets["account_icon"].set_sensitive(False)
+            #if self.label_widgets["account_name"].get_sensitive():
+                #self.label_widgets["account_name"].set_sensitive(False)
+            #if self.label_widgets["passwd_char"].get_sensitive():
+                #self.label_widgets["passwd_char"].set_sensitive(False)
             if not self.button_widgets["disable_account"].get_sensitive():
                 self.button_widgets["disable_account"].set_sensitive(True)
-        else:
-            if self.image_widgets["account_icon"].get_sensitive():
-                self.image_widgets["account_icon"].set_sensitive(False)
-            if self.label_widgets["account_name"].get_sensitive():
-                self.label_widgets["account_name"].set_sensitive(False)
-            if self.label_widgets["passwd_char"].get_sensitive():
-                self.label_widgets["passwd_char"].set_sensitive(False)
-            if self.button_widgets["disable_account"].get_sensitive():
-                self.button_widgets["disable_account"].set_sensitive(False)
+            if not self.button_widgets["account_type"].get_sensitive():
+                self.button_widgets["account_type"].set_sensitive(True)
 
     def lock_button_expose(self, button, event):
         cr = button.window.cairo_create()
