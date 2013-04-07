@@ -1,7 +1,7 @@
 # element widgets to construct complex widgets
 from dss import app_theme
 from dtk.ui.new_entry import InputEntry, PasswordEntry
-from dtk.ui.button import OffButton, CheckButton
+from dtk.ui.button import OffButton, CheckButton, RadioButton
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 #from container import TitleBar, Contain
@@ -193,10 +193,14 @@ class TableAsm(gtk.Table):
         self.shared = list()
 
     def row_attach(self, item, table=None):
-        if table:
-            table.append((item, None))
+        if type(item) is not tuple:
+            items = (item, None)
         else:
-            self.shared.append((item, None))
+            items = item
+        if table:
+            table.append(items)
+        else:
+            self.shared.append(items)
 
     def __label(self, label_name):
         label = Label(label_name,
@@ -270,7 +274,7 @@ class TableAsm(gtk.Table):
     def _table_attach(self, table, items):
         table.resize(len(items), 2)
         for row, item in enumerate(items):
-            left, right = item
+            left, right = item 
             if left:
                 table.attach(left, 0, 1, row, row + 1)
             if right:
@@ -278,3 +282,33 @@ class TableAsm(gtk.Table):
     
     def table_clear(self):
         container_remove_all(self)
+
+    def set_sensitive(self, state):
+        for child in self.get_children():
+            map(lambda i: i.set_sensitive(state), child.get_children())
+        
+
+class MyRadioButton(RadioButton):
+    '''docstring for MyRadioButton'''
+    def __init__(self, main_button=None, label_text=None, padding_x=0, font_size=CONTENT_FONT_SIZE):
+        super(MyRadioButton, self).__init__(label_text, padding_x, font_size)
+        self.main_button = main_button
+        self.switch_lock = False
+
+        if self.main_button:
+            self.main_button.button_list.append(self)
+        else:
+            self.button_list = [self]
+        self.connect("clicked", self.click_radio_button)
+
+    def click_radio_button(self, widget):
+        if self.main_button:
+            buttons = self.main_button.button_list
+        else:
+            buttons = self.button_list
+
+        if not self.switch_lock:
+            for w in buttons:
+                w.switch_lock = True
+                w.set_active(w == self)
+                w.switch_lock = False
