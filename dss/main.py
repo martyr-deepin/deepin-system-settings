@@ -264,11 +264,15 @@ def send_message(module_id, message_type, message_content):
                )
         
 def switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box):
+    global preview_module_id
+
     if index == 0:
         if label == _("System Settings"):
             slider.slide_to_page(navigate_page, "left")
             content_page_info.set_active_module_id("main")
             foot_box.hide()
+            if preview_module_id:                                                       
+                send_message(preview_module_id, "exit", "")
     else:
         send_message(content_page_info.get_active_module_id(),
                      "click_crumb",
@@ -286,9 +290,6 @@ def add_crumb(index, label):
 def start_module_process(slider, content_page_info, module_path, module_config, force_direction=None, 
                          module_uid=None):
     global preview_module_id
-   
-    if preview_module_id:
-        send_message(preview_module_id, "exit", "")
 
     module_id = module_config.get("main", "id")
     module_slide_to_page = True
