@@ -54,7 +54,7 @@ RUN_LOCK_COMMAND = "dlock"
 class TrayShutdownPlugin(object):
     def __init__(self):
         self.__xrandr_gsettings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
-        new_brightness = self.__xrandr_gsettings.get_double("brightness") - 0.01
+        new_brightness = self.__xrandr_gsettings.get_double("brightness")
         if new_brightness > 0.1:
             self.__xrandr_gsettings.set_double("brightness", new_brightness)
         

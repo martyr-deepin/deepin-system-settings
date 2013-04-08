@@ -396,9 +396,10 @@ class ThemeManager(object):
         if copy_theme:
             untitled_theme.copy_theme(copy_theme)
         
-        untitled_theme.set_default_name("untitled")    
-        untitled_theme.set_locale_name(_("Untitled"))
-        untitled_theme.save()    
+        if not os.path.exists(untitled_path):
+            untitled_theme.set_default_name("untitled")    
+            untitled_theme.set_locale_name(_("Untitled"))
+            untitled_theme.save()    
         
         return untitled_theme
     

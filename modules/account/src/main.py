@@ -605,21 +605,35 @@ class AccountSetting(object):
         self.container_widgets["statusbar"].set_buttons([self.button_widgets["disable_account"], 
                                                          self.button_widgets["add_account"],
                                                          self.button_widgets["del_account"]])
-        self.set_account_info_error_text("")
+        #self.set_account_info_error_text("")
 
     def del_delete_user_file_cd(self, button, del_file):
         try:
             self.container_widgets["del_account_button_hbox"].set_sensitive(False)
             name = settings.get_user_show_name(self.current_del_user)
-            self.account_dbus.delete_user(self.current_del_user.get_uid(), del_file)
+            uid = self.current_del_user.get_uid()
+            self.account_dbus.delete_user(uid, del_file)
             self.__set_status_text(_("%s has been deleted") % name)
+            self.del_cancel_delete_cb(button)
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 #self.label_widgets["del_account_error_label"].set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
                 self.set_status_error_text(e.msg)
             self.container_widgets["del_account_button_hbox"].set_sensitive(True)
-            return
-        self.del_cancel_delete_cb(button)
+            print e
+        # TODO delete item
+        #i = 0
+        #for item in self.view_widgets["account"].visible_items:
+            #if uid == item.dbus_obj.get_uid():
+                #self.view_widgets["account"].delete_items([item])
+                ## if delete current selected row, then changed the selected row
+                #if self.current_select_user == item.dbus_obj:
+                    #if i >= len(self.view_widgets["account"].visible_items):
+                        #i = len(self.view_widgets["account"].visible_items) - 1
+                    #if i >= 0:
+                        #self.view_widgets["account"].set_select_rows([i])
+                #break
+            #i += 1
 
     def del_account_button_clicked(self, button):
         if not self.current_select_user:
@@ -681,28 +695,29 @@ class AccountSetting(object):
         if item.is_myowner:     # is current user that current process' owner
             if self.button_widgets["del_account"].get_sensitive():
                 self.button_widgets["del_account"].set_sensitive(False)
-            if not self.image_widgets["account_icon"].get_sensitive():
-                self.image_widgets["account_icon"].set_sensitive(True)
-            if not self.label_widgets["account_name"].get_sensitive():
-                self.label_widgets["account_name"].set_sensitive(True)
-            if not self.label_widgets["passwd_char"].get_sensitive():
-                self.label_widgets["passwd_char"].set_sensitive(True)
+            #if not self.image_widgets["account_icon"].get_sensitive():
+                #self.image_widgets["account_icon"].set_sensitive(True)
+            #if not self.label_widgets["account_name"].get_sensitive():
+                #self.label_widgets["account_name"].set_sensitive(True)
+            #if not self.label_widgets["passwd_char"].get_sensitive():
+                #self.label_widgets["passwd_char"].set_sensitive(True)
             if self.button_widgets["disable_account"].get_sensitive():
                 self.button_widgets["disable_account"].set_sensitive(False)
-        elif self.button_widgets["lock"].get_data("unlocked"):
+            if self.button_widgets["account_type"].get_sensitive():
+                self.button_widgets["account_type"].set_sensitive(False)
+        else:
             if not self.button_widgets["del_account"].get_sensitive():
                 self.button_widgets["del_account"].set_sensitive(True)
+            #if self.image_widgets["account_icon"].get_sensitive():
+                #self.image_widgets["account_icon"].set_sensitive(False)
+            #if self.label_widgets["account_name"].get_sensitive():
+                #self.label_widgets["account_name"].set_sensitive(False)
+            #if self.label_widgets["passwd_char"].get_sensitive():
+                #self.label_widgets["passwd_char"].set_sensitive(False)
             if not self.button_widgets["disable_account"].get_sensitive():
                 self.button_widgets["disable_account"].set_sensitive(True)
-        else:
-            if self.image_widgets["account_icon"].get_sensitive():
-                self.image_widgets["account_icon"].set_sensitive(False)
-            if self.label_widgets["account_name"].get_sensitive():
-                self.label_widgets["account_name"].set_sensitive(False)
-            if self.label_widgets["passwd_char"].get_sensitive():
-                self.label_widgets["passwd_char"].set_sensitive(False)
-            if self.button_widgets["disable_account"].get_sensitive():
-                self.button_widgets["disable_account"].set_sensitive(False)
+            if not self.button_widgets["account_type"].get_sensitive():
+                self.button_widgets["account_type"].set_sensitive(True)
 
     def lock_button_expose(self, button, event):
         cr = button.window.cairo_create()

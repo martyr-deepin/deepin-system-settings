@@ -76,7 +76,7 @@ def get_togglebutton():
     return toggle
 
 def get_toggle_group(name, callback=None, active=True):    
-    box = gtk.HBox(2)
+    box = gtk.HBox(spacing = 8)
     title = Label(name)
     toggle_button = get_togglebutton()
     toggle_button.set_active(active)
@@ -90,11 +90,11 @@ def get_toggle_group(name, callback=None, active=True):
     return (box, toggle_button) 
 
 def get_combo_group(name, items, callback=None):
-    box = gtk.HBox(2)
+    box = gtk.HBox(spacing = 8)
     label = Label(name)
     combo_box = ComboBox(items)
     box.pack_start(label, False, False)
-    box.pack_start(combo_box)
+    box.pack_start(combo_box, False, False)
     
     if callback:
         combo_box.connect("item-selected", callback)
