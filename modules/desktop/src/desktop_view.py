@@ -28,7 +28,7 @@ from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.combo import ComboBox
-from dtk.ui.entry import InputEntry
+from dtk.ui.new_entry import InputEntry
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from constant import *
 from nls import _
