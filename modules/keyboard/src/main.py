@@ -36,7 +36,7 @@ from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
 from dtk.ui.new_entry import InputEntry, EntryBuffer
 from dtk.ui.tab_window import TabBox
-from dtk.ui.hscalebar import HScalebar
+from dtk.ui.new_scalebar import HScalebar
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor, container_remove_all

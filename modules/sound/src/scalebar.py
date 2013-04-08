@@ -22,7 +22,7 @@
 
 
 from theme import app_theme
-from dtk.ui.hscalebar import HScalebar
+from dtk.ui.new_scalebar import HScalebar
 from dtk.ui.constant import DEFAULT_FONT, DEFAULT_FONT_SIZE
 from dtk.ui.draw import draw_pixbuf, draw_text, draw_line
 from dtk.ui.utils import (color_hex_to_cairo, get_content_size, cairo_state, cairo_disable_antialias)

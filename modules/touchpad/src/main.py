@@ -36,7 +36,7 @@ from dtk.ui.theme import ui_theme
 from dtk.ui.theme import DynamicColor
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton, Button
-from dtk.ui.hscalebar import HScalebar
+from dtk.ui.new_scalebar import HScalebar
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
 from dtk.ui.scrolled_window import ScrolledWindow

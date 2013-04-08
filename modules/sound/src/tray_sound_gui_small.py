@@ -29,7 +29,7 @@ from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.button import OffButton
 from dtk.ui.line import HSeparator
-from dtk.ui.hscalebar import HScalebar
+from dtk.ui.new_scalebar import HScalebar
 from dtk.ui.box import ImageBox
 from nls import _
 from constant import *
