@@ -67,6 +67,7 @@ class TrayGui(gtk.VBox):
 
         self.__mpris_total_height = 0
         self.mpris_list = {}
+        self.mpris_stream = {}
         self.mpris2 = Mpris2()
         self.mpris2.connect("new", self.mpris2_new_cb)
         self.mpris2.connect("removed", self.mpris2_removed_cb)
@@ -171,6 +172,7 @@ class TrayGui(gtk.VBox):
         process_id = int(stream['proplist']['application.process.id'])
         # if it has show mpris, then don't show sink_input
         if process_id in self.mpris_list:
+            self.mpris_stream[process_id] = index
             return
         self.stream_list[index] = {}
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
@@ -197,6 +199,7 @@ class TrayGui(gtk.VBox):
         self.stream_list[index]['button'] = mute_button
         self.stream_list[index]['container'] = hbox
         self.stream_list[index]['process_id'] = process_id
+        self.stream_list[index]['stream_id'] = index
         self.stream_process[process_id] = self.stream_list[index]
         self.__set_playback_status(stream, scale, mute_button)
         if stream['volume_writable']:
@@ -442,7 +445,7 @@ class TrayGui(gtk.VBox):
         if obj.mpris_process[pid]['property']['PlaybackStatus'] == 'Stopped':
             app_title = obj.mpris_process[pid]['property']['Identity']
         else:
-            app_title = "%s - %s" % (obj.mpris_process[pid]['property']['Identity'], obj.mpris_process[pid]['property']['PlaybackStatus'])
+            app_title = "%s - %s" % (obj.mpris_process[pid]['property']['Identity'], _(obj.mpris_process[pid]['property']['PlaybackStatus']))
         label = Label(app_title, label_width=115)
         hbox = gtk.HBox(False, 5)
         hbox.pack_start(self.__make_align(img), False, False)
@@ -526,6 +529,11 @@ class TrayGui(gtk.VBox):
             self.__set_mpris_meta_info(pid)
             self.mpris_list[pid]['height'] = 50 + 48
         self.__mpris_total_height += self.mpris_list[pid]['height']
+        # delete playback_stream widget
+        if pid in self.stream_process:
+            self.stream_process[pid]['container'].destroy()
+            del self.stream_list[self.stream_process[pid]['stream_id']]
+            del self.stream_process[pid]
         vbox.show_all()
         self.__mpris_vbox.pack_start(vbox, False, False)
 
@@ -566,6 +574,11 @@ class TrayGui(gtk.VBox):
             self.mpris_list[pid]['container'].destroy()
             self.__mpris_total_height -= self.mpris_list[pid]['height']
             del self.mpris_list[pid]
+        if pid in self.mpris_stream:
+            stream_id = self.mpris_stream[pid]
+            playback_streams = pypulse.PULSE.get_playback_streams()
+            if stream_id in playback_streams:
+                self.__make_playback_box(playback_streams[stream_id], stream_id)
         stream_num = len(self.stream_list.keys())
         mpris_num = len(self.mpris_list.keys())
         if stream_num == 0 and mpris_num == 0:
@@ -575,7 +588,7 @@ class TrayGui(gtk.VBox):
         self.emit("stream-changed")
 
     def mpris2_changed_cb(self, obj, pid, changed):
-        print "mpris changed", pid, changed
+        #print "mpris changed", pid, changed
         if pid not in self.mpris_list:
             return
         if 'Volume' in changed:
@@ -592,7 +605,7 @@ class TrayGui(gtk.VBox):
                     self.adjust_size()
                     self.emit("stream-changed")
             else:
-                self.mpris_list[pid]['app_title'].set_text("%s - %s" % (obj.mpris_process[pid]['property']['Identity'], changed['PlaybackStatus']))
+                self.mpris_list[pid]['app_title'].set_text("%s - %s" % (obj.mpris_process[pid]['property']['Identity'], _(changed['PlaybackStatus'])))
             # button image
             if changed['PlaybackStatus'] == 'Playing':
                 self.mpris_list[pid]['pause'].pixbuf = self.pause_img

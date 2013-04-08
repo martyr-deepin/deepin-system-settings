@@ -36,8 +36,8 @@ class Mpris2(gobject.GObject):
     def __init__(self):
         super(Mpris2, self).__init__()
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        self.mpris_process = {}
-        self.mpris_list = {}
+        self.mpris_process = {} # pid -> dbus_object
+        self.mpris_list = {}    # name -> pid
      
         self.bus = dbus.SessionBus()
         self.bus.add_signal_receiver(self.name_owner_changed_cb, dbus_interface='org.freedesktop.DBus', signal_name='NameOwnerChanged')
@@ -111,6 +111,7 @@ class Mpris2(gobject.GObject):
                 if pid in self.mpris_process:
                     continue
                 obj = self.bus.get_object(name, '/org/mpris/MediaPlayer2')
+                self.mpris_list[name] = pid
                 self.mpris_process[pid] = {}
                 self.mpris_process[pid]['obj'] = obj
                 self.get_properties(pid)
@@ -138,10 +139,15 @@ class Mpris2(gobject.GObject):
                 if pid in self.mpris_process:
                     del self.mpris_process[pid]
         elif old_owner:
-            if old_owner in self.mpris_list:
-                pid = self.mpris_list[old_owner]
-            else:
-                pid = None
+            try:
+                #print "name changed:", old_owner, self.mpris_list
+                pid = self.get_pid(old_owner)
+            except:
+                if old_owner in self.mpris_list:
+                    pid = self.mpris_list[old_owner]
+                    del self.mpris_list[old_owner]
+                else:
+                    pid = None
             op = "remove"
             if pid in self.mpris_process:
                 del self.mpris_process[pid]

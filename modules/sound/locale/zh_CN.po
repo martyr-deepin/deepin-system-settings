@@ -74,6 +74,12 @@ msgstr "音量"
 msgid "Mute"
 msgstr "静音"
 
+msgid "Playing"
+msgstr "播放中"
+
+msgid "Paused"
+msgstr "已暂停"
+
 #: ../src/main.py:108
 #: ../src/main.py:258
 msgid "Left"
