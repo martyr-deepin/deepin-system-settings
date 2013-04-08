@@ -36,7 +36,6 @@ class ToggleThread(td.Thread):
         self.setDaemon(True)
         self.get_list_fn = get_list_fn
         self.tree = tree
-        self.tree.delete_all_items()
         self.stop = False
         self.after = after
 

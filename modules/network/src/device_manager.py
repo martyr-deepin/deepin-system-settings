@@ -105,6 +105,9 @@ class DeviceManager(object):
     def get_wired_devices(self):
         return self.wired_devices
     
+    def get_spec_cache(self, device):
+        return nm_module.cache.get_spec_object(device.object_path)
+    
     def reinit_cache(self):
         self.__init_device()
         #self.init_signals()

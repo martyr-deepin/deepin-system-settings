@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env pythonelif 
 #-*- coding:utf-8 -*-
 from nm_modules import nm_module
 from helper import Dispatcher

@@ -310,7 +310,7 @@ class WirelessDevice(object):
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
             return
-        pass
+
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:

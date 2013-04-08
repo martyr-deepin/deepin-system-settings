@@ -27,6 +27,7 @@ import style
 from helper import Dispatcher
 from timer import Timer
 from nls import _
+import pango
 '''
 signals set-button, set-tip
 '''
@@ -50,7 +51,9 @@ class FootBox(gtk.HBox):
 
     def init_ui(self):
         self.tip_align = gtk.Alignment(0, 0.5, 0, 1)
-        self.tip = Label("")
+        self.tip = Label("",
+                         text_x_align=pango.ALIGN_CENTER,
+                         label_width=500)
         self.tip_align.set_padding(5, 5, 20, 0)
         self.tip_align.add(self.tip)
 

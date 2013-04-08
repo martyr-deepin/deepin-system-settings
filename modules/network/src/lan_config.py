@@ -18,13 +18,9 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from dss import app_theme
-#from dtk.ui.new_entry import InputEntry
-from elements import MyInputEntry as InputEntry
-#from dtk.ui.droplist import Droplist
+#from dss import app_theme
 from nm_modules import nm_module
 from dtk.ui.button import Button
-#from widgets import SettingButton
 from nmlib.nm_utils import TypeConvert
 from nmlib.nm_remote_connection import NMRemoteConnection
 from ipsettings import IPV4Conf, IPV6Conf
@@ -145,23 +141,22 @@ class Wired(gtk.VBox):
         self.pack_start(align)
    
     def __init_signals(self):
-        self.mac_entry.entry.connect("changed", self.save_settings, "mac_address")
-        self.clone_entry.entry.connect("changed", self.save_settings, "cloned_mac_address")
+        self.mac_entry.entry.connect("focus-out-event", self.save_settings, "mac_address")
+        self.clone_entry.entry.connect("focus-out-event", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
 
         ## retrieve wired info
-
-    def save_settings(self, widget, value, types):
+    def save_settings(self, widget, event, types):
+        value = widget.get_text()
         if type(value) is str:
             if TypeConvert.is_valid_mac_address(value):
-                print "valid mac"
                 #widget.set_normal()
                 #self.queue_draw()
                 setattr(self.ethernet, types, value)
                 if self.connection.check_setting_finish():
                     self.set_button("save", True)
             else:
-                print "invalid mac"
+                Dispatcher.set_tip("invalid mac address, please check your settings") 
                 #widget.set_warning()
                 #self.queue_draw()
                 self.set_button("save", False)
@@ -172,4 +167,3 @@ class Wired(gtk.VBox):
             setattr(self.ethernet, types, value)
             if self.connection.check_setting_finish():
                 self.set_button("save", True)
-
