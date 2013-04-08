@@ -290,10 +290,13 @@ class TrayNetworkPlugin(object):
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
         self.this_connection = None
         self.gui.wireless.set_sensitive(True)
-        if self.gui.wire.get_active():
+        if net_manager.get_wireless_state()[1]:
+            self.change_status_icon("links")
+        elif self.gui.wire.get_active():
             self.change_status_icon("cable")
         else:
             self.change_status_icon("wifi_disconnect")
+
         if reason == 39:
             print "user close"
             self.gui.wireless.set_active((True, False))
@@ -349,6 +352,7 @@ class TrayNetworkPlugin(object):
             return
         ssid = connection.get_setting("802-11-wireless").ssid
         if ssid != None:
+            self.this.hide_menu()
             AskPasswordDialog(connection,
                               ssid,
                               key_mgmt=security,

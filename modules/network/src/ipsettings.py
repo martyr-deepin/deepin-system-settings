@@ -5,15 +5,12 @@ from dtk.ui.label import Label
 from dtk.ui.new_entry import InputEntry
 from dtk.ui.address_entry import IpAddressEntry
 from nmlib.nm_utils import TypeConvert
-from dtk.ui.button import OffButton
 from nmlib.nm_remote_connection import NMRemoteConnection
-from dtk.ui.utils import container_remove_all
 import gtk
 
 import style
-from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, WIDGET_HEIGHT
+from constants import CONTENT_FONT_SIZE, WIDGET_HEIGHT
 from nls import _
-from container import MyRadioButton as RadioButton
 from helper import Dispatcher
 from elements import SettingSection, DefaultToggle
 
@@ -29,7 +26,6 @@ class IPV4Conf(gtk.VBox):
 
         # Ip configuration
         #self.ip_main_section = SettingSection(_("Ipv4 setting"), text_size=TITLE_FONT_SIZE, always_show=True, has_seperator=False )
-
 
         self.ip_table = gtk.Table(3, 2, False)
         #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
@@ -105,6 +101,7 @@ class IPV4Conf(gtk.VBox):
         for i, item in enumerate(row_item):
             if i >=1:
                 align = style.wrap_with_align(item, align="left")
+                align.set_padding(0, 0, 1, 0)
             else:
                 align = style.wrap_with_align(item)
                 align.set_size_request(210, -1)
