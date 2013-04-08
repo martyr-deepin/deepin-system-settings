@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
+import dss
 from dtk.ui.button import Button, CheckButton
 from dtk.ui.dialog import DialogBox
 from dtk.ui.new_entry import PasswordEntry
@@ -85,6 +86,7 @@ class AskPasswordDialog(DialogBox):
         self.confirm_button = Button(_("OK"))
         self.cancel_button = Button(_("Cancel"))
         
+        self.entry.entry.connect("press-return", lambda w: self.click_confirm_button())
         self.confirm_button.connect("clicked", lambda w: self.click_confirm_button())
         self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
         
@@ -92,7 +94,7 @@ class AskPasswordDialog(DialogBox):
         self.body_box.pack_start(self.hint_align, True, True)
         self.body_box.pack_start(self.entry_align, True, True)
         
-        self.right_button_box.set_buttons([self.confirm_button, self.cancel_button])
+        self.right_button_box.set_buttons([self.cancel_button, self.confirm_button])
         self.connect("show", self.focus_input)
 
     def __set_label(self, name):
