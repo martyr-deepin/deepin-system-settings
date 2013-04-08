@@ -50,8 +50,6 @@ from nls import _
 from glib import markup_escape_text
 import xkb
 import gtk
-import shortcuts
-#import keybind_list
 import keybind_mk
 import pangocairo
 import pango
