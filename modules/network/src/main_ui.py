@@ -954,7 +954,7 @@ class Proxy(gtk.VBox):
 
     def slide_to_event(self, widget, event):
         settings = ProxyConfig()
-        settings.init(True)
+        settings.init()
         slider.slide_to_page(settings, "right")
         Dispatcher.send_submodule_crumb(2, _("Proxy"))
 

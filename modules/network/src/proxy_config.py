@@ -259,6 +259,11 @@ class ProxyConfig(gtk.VBox):
 
         table.row_attach((label_align, hbox_align))
         return [entry, spin]
+
+    def expose_line(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        style.draw_out_line(cr, rect, exclude=["left", "right", "top"])
     
     def __row_check(self, label_name, table, main=None):
         check = RadioButton(main, label_name)
@@ -296,6 +301,7 @@ class ProxyConfig(gtk.VBox):
         #buttons_aligns = gtk.Alignment(1, 1, 0, 0)
         #buttons_aligns.add(apply_button)
         foot_box = FootBox()
+        align.connect("expose-event", self.expose_line)
         foot_box.set_buttons([apply_button])
         self.pack_end(foot_box, False, False)
         #self.connect("expose-event", self.expose_event)
