@@ -34,6 +34,7 @@ from dtk.ui.box import ImageBox
 from nls import _
 from constant import *
 from vtk.button import SelectButton
+from mpris2 import Mpris2
 
 import threading as td
 import gtk
@@ -42,30 +43,6 @@ import pypulse
 import traceback
 
 gtk.gdk.threads_init()
-
-class SettingVolumeThread(td.Thread):
-    def __init__(self, obj, func, *args):
-        td.Thread.__init__(self)
-        # it need a mutex locker
-        self.mutex = td.Lock()
-        self.setDaemon(True)
-        self.obj = obj
-        self.args = args
-        self.thread_func = func
-
-    def run(self):
-        try:
-            self.setting_volume()
-        except Exception, e:
-            print "class LoadingThread got error: %s" % (e)
-            traceback.print_exc(file=sys.stdout)
-
-    def setting_volume(self):
-        # lock it
-        self.mutex.acquire()
-        self.thread_func(*self.args)
-        # unlock it
-        self.mutex.release()
 
 
 class TrayGui(gtk.VBox):
@@ -83,6 +60,12 @@ class TrayGui(gtk.VBox):
         self.stream_icon = app_theme.get_pixbuf("sound/device.png").get_pixbuf().scale_simple(16, 16, gtk.gdk.INTERP_TILES)
         self.stream_num = 0
         self.stream_list = {}
+        self.stream_process = {}
+        self.mpris_list = {}
+        self.mpris2 = Mpris2()
+        self.mpris2.connect("new", self.mpris2_new_cb)
+        self.mpris2.connect("removed", self.mpris2_removed_cb)
+        self.mpris2.connect("changed", self.mpris2_changed_cb)
 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
@@ -124,6 +107,9 @@ class TrayGui(gtk.VBox):
         hseparator.set_size_request(140, 5)
         self.__app_vbox.pack_start(self.__make_align(Label(_("Applications"), enable_select=False, enable_double_click=False)), False, False)
         self.__app_vbox.pack_start(self.__make_align(hseparator, xalign=0.5, height=5), False, False)
+
+        self.__mpris_vbox = gtk.VBox(False)
+        self.__app_vbox.pack_start(self.__mpris_vbox)
         self.pack_start(self.__app_vbox)
 
         hseparator = HSeparator(separator_color, 0, 0)
@@ -152,7 +138,9 @@ class TrayGui(gtk.VBox):
         pypulse.PULSE.connect("sink-input-removed", self.sink_input_removed_cb)
         playback_streams = pypulse.PULSE.get_playback_streams()
         self.stream_num = len(playback_streams.keys())
-        if self.stream_num == 0:
+        self.mpris2.get_mpris_list()
+        self.mpris_num = len(self.mpris2.mpris_process.keys())
+        if self.stream_num == 0 and self.mpris_num == 0:
             self.__app_vbox.set_no_show_all(True)
         for stream in playback_streams:
             self.__make_playback_box(playback_streams[stream], stream)
@@ -169,6 +157,12 @@ class TrayGui(gtk.VBox):
         return align
 
     def __make_playback_box(self, stream, index):
+        #for p in stream['proplist']:
+            #print p, stream['proplist'][p]
+        process_id = int(stream['proplist']['application.process.id'])
+        # if it has show mpris, then don't show sink_input
+        if process_id in self.mpris_list:
+            return
         self.stream_list[index] = {}
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
         icon_name = None
@@ -199,6 +193,8 @@ class TrayGui(gtk.VBox):
         self.stream_list[index]['scale'] = scale
         self.stream_list[index]['button'] = mute_button
         self.stream_list[index]['container'] = hbox
+        self.stream_list[index]['process_id'] = process_id
+        self.stream_process[process_id] = self.stream_list[index]
         self.__set_playback_status(stream, scale, mute_button)
         if stream['volume_writable']:
             scale.connect("value-changed", self.playback_stream_scale_changed_cb, index, mute_button)
@@ -225,10 +221,6 @@ class TrayGui(gtk.VBox):
 
     def speaker_scale_value_changed(self, widget, value):
         '''set output volume'''
-        #try:
-            #SettingVolumeThread(self, self.speaker_value_changed_thread).start()
-        #except:
-            #pass
         self.speaker_value_changed_thread()
 
     def microphone_value_changed_thread(self):
@@ -342,9 +334,13 @@ class TrayGui(gtk.VBox):
 
     def sink_input_removed_cb(self, obj, index):
         if index in self.stream_list:
+            process_id = self.stream_list[index]['process_id']
+            if process_id in self.stream_process:
+                del self.stream_process[process_id]
             self.stream_list[index]['container'].destroy()
+            del self.stream_list[index]
             self.stream_num -= 1
-            if self.stream_num == 0:
+            if self.stream_num == 0 and self.mpris_num == 0:
                 self.__app_vbox.hide_all()
                 self.__app_vbox.set_no_show_all(True)
             self.adjust_size()
@@ -413,10 +409,120 @@ class TrayGui(gtk.VBox):
             scale.set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
             scale.volume_channels = len(stream['volume'])
 
+    # mpris dbus signal
+    def mpris2_new_cb(self, obj, pid):
+        print "mpris new", pid
+        self.mpris_list[pid] = {}
+        scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=1)
+        scale.set_size_request(100, 10)
+        prev_bt = gtk.Button()
+        pause_bt = gtk.Button()
+        stop_bt = gtk.Button()
+        next_bt = gtk.Button()
+
+        play_img = gtk.image_new_from_icon_name('media-playback-start', gtk.ICON_SIZE_MENU)
+        pause_img = gtk.image_new_from_icon_name('media-playback-pause', gtk.ICON_SIZE_MENU)
+        prev_img = gtk.image_new_from_icon_name('media-skip-backward', gtk.ICON_SIZE_MENU)
+        next_img = gtk.image_new_from_icon_name('media-skip-forward', gtk.ICON_SIZE_MENU)
+        stop_img = gtk.image_new_from_icon_name('media-playback-stop', gtk.ICON_SIZE_MENU)
+
+        prev_bt.set_size_request(16, 16)
+        pause_bt.set_size_request(16, 16)
+        stop_bt.set_size_request(16, 16)
+        next_bt.set_size_request(16, 16)
+
+        prev_bt.add(prev_img)
+        pause_bt.add(play_img)
+        stop_bt.add(stop_img)
+        next_bt.add(next_img)
+
+        prev_bt.connect("clicked", self.__mpris_prev_cb, obj, pid)
+        pause_bt.connect("clicked", self.__mpris_pause_cb, obj, pid)
+        stop_bt.connect("clicked", self.__mpris_stop_cb, obj, pid)
+        next_bt.connect("clicked", self.__mpris_next_cb, obj, pid)
+        scale.connect("value-changed", self.__mpris_volume_cb, obj, pid)
+
+        hbox = gtk.HBox()
+        hbox.pack_start(self.__make_align(prev_bt), False, False)
+        hbox.pack_start(self.__make_align(pause_bt), False, False)
+        hbox.pack_start(self.__make_align(stop_bt), False, False)
+        hbox.pack_start(self.__make_align(next_bt), False, False)
+        hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, height=25), False, False)
+        self.mpris_list[pid]['container'] = hbox
+        hbox.show_all()
+        self.__mpris_vbox.pack_start(hbox, False, False)
+
+    def mpris2_removed_cb(self, obj, pid):
+        print "mpris removed", pid
+        if pid in self.mpris_list:
+            self.mpris_list[pid]['container'].destroy()
+            del self.mpris_list[pid]
+
+    def mpris2_changed_cb(self, obj, pid, changed):
+        print "mpris changed", pid
+
+    def __mpris_prev_cb(self, bt, obj, pid):
+        if pid not in obj.mpris_process:
+            return
+        try:
+            obj.mpris_process[pid]['obj'].get_dbus_method(
+                'Previous', 'org.mpris.MediaPlayer2.Player')()
+        except Exception, e:
+            print e
+        
+    def __mpris_pause_cb(self, bt, obj, pid):
+        if pid not in obj.mpris_process:
+            return
+        try:
+            if obj.mpris_process[pid]['property']['PlaybackStatus'] == "stop":
+                play = obj.mpris_process[pid]['obj'].get_dbus_method(
+                    'Play', 'org.mpris.MediaPlayer2.Player')
+                play()
+            else:
+                playpause = obj.mpris_process[pid]['obj'].get_dbus_method(
+                    'PlayPause', 'org.mpris.MediaPlayer2.Player')
+                playpause()
+        except Exception, e:
+            print e
+        
+    def __mpris_stop_cb(self, bt, obj, pid):
+        if pid not in obj.mpris_process:
+            return
+        try:
+            obj.mpris_process[pid]['obj'].get_dbus_method(
+                'Stop', 'org.mpris.MediaPlayer2.Player')()
+        except Exception, e:
+            print e
+        
+    def __mpris_next_cb(self, bt, obj, pid):
+        if pid not in obj.mpris_process:
+            return
+        try:
+            obj.mpris_process[pid]['obj'].get_dbus_method(
+                'Next', 'org.mpris.MediaPlayer2.Player')()
+        except Exception, e:
+            print e
+        
+    def __mpris_volume_cb(self, widget, value, obj, pid):
+        if pid not in obj.mpris_process:
+            return
+        try:
+            print 'scale changed', value, obj.mpris_process[pid]['property']['Volume']
+            property_manager = dbus.Interface(obj.mpris_process[pid]['obj'], 'org.freedesktop.DBus.Properties')
+            print 'scale changed----------------1'
+            property_manager.Set('org.mpris.MediaPlayer2.Player', 'Volume', value)
+            print 'scale changed----------------2'
+            #obj.mpris_process[pid]['property']['Volume'] = value
+        except Exception, e:
+            print e
+        
     ######################
     def get_widget_height(self):
-        if self.stream_num > 0:
-            return self.BASE_HEIGHT + 30 + 25 * self.stream_num + 5
+        # TODO
+        stream_num = len(self.stream_list.keys())
+        mpris_num = len(self.mpris_list.keys())
+        if stream_num > 0 or mpris_num > 0:
+            return self.BASE_HEIGHT + 30 + 25 * stream_num + 40 * mpris_num + 5
         else:
             return self.BASE_HEIGHT + 5
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-21 16:07+0800\n"
+"POT-Creation-Date: 2013-04-03 17:50+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:25 ../src/main.py:103
+#: ../src/search_keyword.py:25
 msgid "Automatic login"
 msgstr ""
 
-#: ../src/search_keyword.py:26 ../src/main.py:104 ../src/main.py:108
+#: ../src/search_keyword.py:26 ../src/main.py:105 ../src/main.py:109
 msgid "Deepin Account"
 msgstr ""
 
-#: ../src/search_keyword.py:27 ../src/main.py:106
+#: ../src/search_keyword.py:27 ../src/main.py:107
 msgid "Account Name"
 msgstr ""
 
@@ -41,7 +41,7 @@ msgstr ""
 msgid "Change Password"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/main.py:1030
+#: ../src/search_keyword.py:31 ../src/main.py:1017
 msgid "Set Picture"
 msgstr ""
 
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Account"
 msgstr ""
 
-#: ../src/main.py:100 ../src/main.py:107
+#: ../src/main.py:100 ../src/main.py:108
 msgid "Account type"
 msgstr ""
 
@@ -57,194 +57,205 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: ../src/main.py:105 ../src/main.py:109
+#: ../src/main.py:104
+msgid "Log in without a password"
+msgstr ""
+
+#: ../src/main.py:106 ../src/main.py:110
 msgid "Unbound"
 msgstr ""
 
-#: ../src/main.py:120 ../src/main.py:140
+#: ../src/main.py:121 ../src/main.py:143
 msgid "Standard"
 msgstr ""
 
-#: ../src/main.py:120 ../src/main.py:140
+#: ../src/main.py:121 ../src/main.py:143
 msgid "Administrator"
 msgstr ""
 
-#: ../src/main.py:124 ../src/main.py:141
+#: ../src/main.py:126 ../src/main.py:144
 msgid "网络访问权限"
 msgstr ""
 
-#: ../src/main.py:125 ../src/main.py:142
+#: ../src/main.py:127 ../src/main.py:145
 msgid "磁盘操作权限只读"
 msgstr ""
 
-#: ../src/main.py:126 ../src/main.py:143
+#: ../src/main.py:128 ../src/main.py:146
 msgid "可加载移动设备"
 msgstr ""
 
-#: ../src/main.py:127 ../src/main.py:144
+#: ../src/main.py:129 ../src/main.py:147
 msgid "磁盘操作权限完全"
 msgstr ""
 
-#: ../src/main.py:130 ../src/main.py:147
+#: ../src/main.py:132 ../src/main.py:150
 msgid ""
 "自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不"
 "再需要设置偏好。"
 msgstr ""
 
-#: ../src/main.py:135 ../src/main.py:152
+#: ../src/main.py:137 ../src/main.py:155
 msgid ""
 "提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</"
 "span>。"
 msgstr ""
 
-#: ../src/main.py:136
-msgid "Add"
+#: ../src/main.py:138 ../src/main.py:533 ../src/main.py:667
+#: ../src/main.py:1066
+msgid "Enable this account"
 msgstr ""
 
-#: ../src/main.py:137
-msgid "Delete"
+#: ../src/main.py:139
+msgid "Add a account"
 msgstr ""
 
-#: ../src/main.py:138
+#: ../src/main.py:140
+msgid "Delete the account"
+msgstr ""
+
+#: ../src/main.py:141
 msgid "Create"
 msgstr ""
 
-#: ../src/main.py:139 ../src/main.py:192 ../src/main.py:198 ../src/main.py:811
+#: ../src/main.py:142 ../src/main.py:195 ../src/main.py:201 ../src/main.py:873
 msgid "Cancel"
 msgstr ""
 
-#: ../src/main.py:187
+#: ../src/main.py:190
 msgid "It is possible to keep the home directory when deleting a user account."
 msgstr ""
 
-#: ../src/main.py:190
+#: ../src/main.py:193
 msgid "Delete Files"
 msgstr ""
 
-#: ../src/main.py:191
+#: ../src/main.py:194
 msgid "Keep Files"
 msgstr ""
 
-#: ../src/main.py:199
+#: ../src/main.py:202
 msgid "Save"
 msgstr ""
 
-#: ../src/main.py:473
+#: ../src/main.py:490
 #, python-format
 msgid "Enabled auto-login for %s"
 msgstr ""
 
-#: ../src/main.py:475
+#: ../src/main.py:492
 #, python-format
 msgid "Disabled auto-login for %s"
 msgstr ""
 
-#: ../src/main.py:511
+#: ../src/main.py:510
+#, python-format
+msgid "Enabled passwordless login for %s"
+msgstr ""
+
+#: ../src/main.py:513
+#, python-format
+msgid "Disabled passwordless login for %s"
+msgstr ""
+
+#: ../src/main.py:529
+#, python-format
+msgid "UnLock %s"
+msgstr ""
+
+#: ../src/main.py:530 ../src/main.py:669 ../src/main.py:1068
+msgid "Disable this account"
+msgstr ""
+
+#: ../src/main.py:532
+#, python-format
+msgid "Lock %s"
+msgstr ""
+
+#: ../src/main.py:568
 #, python-format
 msgid "%s has been created"
 msgstr ""
 
-#: ../src/main.py:517
+#: ../src/main.py:574
 msgid "The user name is invalid"
 msgstr ""
 
-#: ../src/main.py:531
-msgid "用户名只能由字母、数字、下划线组成，并且由字母开头"
+#: ../src/main.py:588
+msgid ""
+"User names can only consist of letters, numbers, underscores and begin with "
+"a letter"
 msgstr ""
 
-#: ../src/main.py:547
+#: ../src/main.py:606
 #, python-format
 msgid "%s has been deleted"
 msgstr ""
 
-#: ../src/main.py:564
+#: ../src/main.py:623
 #, python-format
 msgid "Do you want to keep <u>%s</u>'s files?"
 msgstr ""
 
-#: ../src/main.py:592 ../src/main.py:1064
+#: ../src/main.py:651 ../src/main.py:1051
 msgid "Account disabled"
 msgstr ""
 
-#: ../src/main.py:594 ../src/main.py:1066
+#: ../src/main.py:653 ../src/main.py:1053
 msgid "To be set at next login"
 msgstr ""
 
-#: ../src/main.py:596 ../src/main.py:1068
+#: ../src/main.py:655 ../src/main.py:1055
 msgid "None"
 msgstr ""
 
-#: ../src/main.py:654
+#: ../src/main.py:728
 #, python-format
 msgid "%s's account type has been set as %s"
 msgstr ""
 
-#: ../src/main.py:770
-msgid "Action"
-msgstr ""
-
-#: ../src/main.py:771 ../src/main.py:895 ../src/main.py:905
+#: ../src/main.py:845
 msgid "Current password"
 msgstr ""
 
-#: ../src/main.py:772 ../src/main.py:897 ../src/main.py:906
+#: ../src/main.py:846
 msgid "New password"
 msgstr ""
 
-#: ../src/main.py:773 ../src/main.py:899 ../src/main.py:907
+#: ../src/main.py:847
 msgid "Confirm new password"
 msgstr ""
 
-#: ../src/main.py:775
-msgid "Set a password now"
-msgstr ""
-
-#: ../src/main.py:776
-msgid "Log in without a password"
-msgstr ""
-
-#: ../src/main.py:778
-msgid "Enable this account"
-msgstr ""
-
-#: ../src/main.py:780
-msgid "Disable this account"
-msgstr ""
-
-#: ../src/main.py:795
+#: ../src/main.py:860
 msgid "Show password"
 msgstr ""
 
-#: ../src/main.py:812
+#: ../src/main.py:874
 msgid "Change"
 msgstr ""
 
-#: ../src/main.py:871
+#: ../src/main.py:919
 msgid "Password did not match."
 msgstr ""
 
-#: ../src/main.py:925 ../src/main.py:949
+#: ../src/main.py:935 ../src/main.py:959
 msgid "password unchanged"
 msgstr ""
 
-#: ../src/main.py:927
+#: ../src/main.py:937
 msgid "authentication token manipulation error"
 msgstr ""
 
-#: ../src/main.py:929
+#: ../src/main.py:939
 msgid "new and old password are too similar"
 msgstr ""
 
-#: ../src/main.py:943
+#: ../src/main.py:953
 #, python-format
 msgid "%s's password has been changed"
 msgstr ""
 
-#: ../src/main.py:991
-msgid "Passwords do not match"
-msgstr ""
-
-#: ../src/main.py:1219
+#: ../src/main.py:1216
 msgid "Error:"
 msgstr ""
 

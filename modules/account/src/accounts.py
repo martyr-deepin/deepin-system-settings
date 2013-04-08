@@ -29,6 +29,7 @@ import time
 import os
 import dbus
 import getpass
+import subprocess
 from consolekit import ck
 
 class Accounts(BusBase):
@@ -236,6 +237,18 @@ class User(BusBase):
     def get_uid(self):
         return long(self.properties["Uid"])
 
+    def get_groups(self):
+        name = self.get_user_name()
+        try:
+            p = subprocess.Popen(['groups', name], stdout=subprocess.PIPE)
+            p.wait()
+            s = p.stdout.read()
+            if not s.startswith(name):
+                return []
+            return s.split(':')[1].strip().split(' ')
+        except:
+            return []
+
     ###set methods
     def set_account_type(self, account_type):
         self.call_async("SetAccountType", account_type, reply_handler = None, error_handler = None)
@@ -298,6 +311,14 @@ class User(BusBase):
 
     def set_x_session(self, x_session):
         self.call_async("SetXSession", x_session, reply_handler = None, error_handler = None)
+
+    def set_groups(self, groups):
+        bus = dbus.SystemBus()
+        dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+        dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
+
+        return dbus_interface.modify_user_groups(
+            self.get_user_name(), groups)
 
     ###signals
     def changed_cb(self):

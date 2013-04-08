@@ -255,7 +255,6 @@ class WiredSection(Section, WiredDevice):
                 self.tree.visible_items[i].set_net_state(2)
             else:
                 device_ethernet = nm_module.cache.get_spec_object(d.object_path)
-                print "Debug: auto connect wired"
                 device_ethernet.auto_connect()
 
     def toggle_off(self):
@@ -936,6 +935,7 @@ class Proxy(gtk.VBox):
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
+            self.proxysetting.set_proxy_mode("manual")
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
             label = Label(_("Proxy Configuration"),
