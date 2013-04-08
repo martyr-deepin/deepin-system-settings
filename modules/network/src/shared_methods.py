@@ -18,12 +18,20 @@ class NetManager(object):
     def __init__(self):
         #self.init_devices()
         if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+
+            if not nm_module.nmclient.networking_get_enabled():
+                try:
+                    nm_module.nmclient.networking_set_enabled()
+                except Exception,e:
+                    print "network enable failed", e
+
             servicemanager.connect("service-start", self.__on_service_start_do)
             servicemanager.connect("service-stop", self.__on_service_stop_do)
             self.device_manager = DeviceManager()
 
             self.cf = nm_module.nm_remote_settings.cf
             self.config_file = nm_module.nm_remote_settings.config_file
+            self.cf.read(self.config_file)
             if "hidden" not in self.cf.sections():
                 self.cf.add_section("hidden")
         else:
@@ -149,7 +157,10 @@ class NetManager(object):
             if not nm_module.nmclient.wireless_get_enabled():
                 return (False, False)
             else:
-                return (True, self.wireless_devices[0].is_active())
+                for device in self.wireless_devices:
+                    if device.is_active():
+                        return (True, True)
+                return (True, False)
 
     def get_ap_list(self):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
