@@ -255,7 +255,6 @@ class WiredSection(Section, WiredDevice):
                 self.tree.visible_items[i].set_net_state(2)
             else:
                 device_ethernet = nm_module.cache.get_spec_object(d.object_path)
-                print "Debug: auto connect wired"
                 device_ethernet.auto_connect()
 
     def toggle_off(self):
@@ -310,7 +309,7 @@ class WirelessDevice(object):
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
             return
-        pass
+
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
@@ -936,6 +935,7 @@ class Proxy(gtk.VBox):
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
+            self.proxysetting.set_proxy_mode("manual")
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
             label = Label(_("Proxy Configuration"),
@@ -954,7 +954,7 @@ class Proxy(gtk.VBox):
 
     def slide_to_event(self, widget, event):
         settings = ProxyConfig()
-        settings.init(True)
+        settings.init()
         slider.slide_to_page(settings, "right")
         Dispatcher.send_submodule_crumb(2, _("Proxy"))
 

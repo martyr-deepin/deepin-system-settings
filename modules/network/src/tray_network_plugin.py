@@ -158,6 +158,8 @@ class TrayNetworkPlugin(object):
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
                 self.change_status_icon("links")
+            else:
+                self.change_status_icon("wifi_disconnect")
             #Dispatcher.connect("wireless-change", self.set_wireless_state)
             Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
             self.pwd_failed = False
@@ -301,7 +303,8 @@ class TrayNetworkPlugin(object):
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         if old_state == 120:
-            widget.nm_device_disconnect()
+            wifi = nm_module.cache.get_spec_object(widget)
+            wifi.device_wifi_disconnect()
             return
 
         #connections = nm_module.nmclient.get_wireless_active_connection()
@@ -437,12 +440,14 @@ class TrayNetworkPlugin(object):
         """
         resize this first
         """
-        height = self.gui.get_widget_height()
         self.this.resize(1,1)
         if self.menu_showed:
             self.this.hide_menu()
-            self.this.set_size_request(185, height + 40)
+            #self.this.set_size_request(185, height + 40)
+            self.show_menu()
             self.this.show_menu()
+
+        #height = self.gui.get_widget_height()
 
 def return_insert():
     return 3

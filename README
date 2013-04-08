@@ -74,6 +74,8 @@ sudo apt-get install bluez
 Python binding for DBus
 sudo apt-get install python-dbus
 
+sudo apt-get install python-psutil
+
 PulseAudio python binding
 git@github.com:linuxdeepin/pypulseaudio.git
 cd pypulseaudio

@@ -61,6 +61,7 @@ class Accounts(BusBase):
     def delete_user(self, id, remove_files_flag):
         if self.find_user_by_id(id):
             self.call_async("DeleteUser", id, remove_files_flag, reply_handler = None, error_handler = None)
+            #self.dbus_method("DeleteUser", id, remove_files_flag)
         else:
             print "user doesn't exists"
 

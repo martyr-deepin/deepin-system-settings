@@ -198,7 +198,6 @@ class NMDevice(NMObject):
 
     def emit_cb(self):
         self.state_id = 0
-        print "wait finish"
         return False
 
     def emit_in_time(self, *args):
@@ -210,16 +209,16 @@ class NMDevice(NMObject):
         if self.state_id > 0:
             return
         else:
-            print "Debug", args[0]
+            print "Debug[nmdevice]", args
             self.emit(*args)
-            self.state_id = glib.timeout_add(500, self.emit_cb)
+            self.state_id = glib.timeout_add(1000, self.emit_cb)
         self.new_state = args[1]
 
     def state_changed_cb(self, new_state, old_state, reason):
         #self.emit("state-changed", new_state, old_state, reason)
         self.init_nmobject_with_properties()
 
-        if old_state == 100 or reason ==39:
+        if old_state == 100 or reason ==39 or reason == 42:
             self.emit_in_time("device-deactive", new_state, old_state, reason)
             return 
 

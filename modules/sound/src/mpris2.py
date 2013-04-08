@@ -36,13 +36,14 @@ class Mpris2(gobject.GObject):
     def __init__(self):
         super(Mpris2, self).__init__()
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        self.mpris_process = {} # pid -> dbus_object
+        self.mpris_list = {}    # name -> pid
      
         self.bus = dbus.SessionBus()
         self.bus.add_signal_receiver(self.name_owner_changed_cb, dbus_interface='org.freedesktop.DBus', signal_name='NameOwnerChanged')
         self.bus_path = self.bus.get_object('org.freedesktop.DBus', '/')
         self.get_pid = self.bus_path.get_dbus_method('GetConnectionUnixProcessID', 'org.freedesktop.DBus')
         self.get_name_list = self.bus_path.get_dbus_method('ListNames', 'org.freedesktop.DBus')
-        self.mpris_process = {}
         
     def parse_xml(self, data, pid):
         root = ET.fromstring(data)
@@ -88,64 +89,84 @@ class Mpris2(gobject.GObject):
                               #path_keyword="path",
                               #message_keyword="mesg"
                               )
-        # TODO get org.mpris.MediaPlayer2 Identity
         property_manager = dbus.Interface(obj, 'org.freedesktop.DBus.Properties')
         properties = property_manager.GetAll('org.mpris.MediaPlayer2.Player')
         identity = property_manager.Get('org.mpris.MediaPlayer2', 'Identity')
+        desktop_entry = property_manager.Get('org.mpris.MediaPlayer2', 'DesktopEntry')
         self.mpris_process[pid]['property'] = properties
         self.mpris_process[pid]['property']['Identity'] = identity
-        print "get property---------------", obj, identity
-        for k in properties:
-            print k, properties[k]
-        print "-"*5
+        self.mpris_process[pid]['property']['DesktopEntry'] = desktop_entry
+        #print "get property---------------", obj, identity
+        #for k in properties:
+            #print k, properties[k]
+        #print "-"*5
 
     def get_mpris_list(self):
         dbus_list = self.get_name_list()
         for name in dbus_list:
             if not name.startswith('org.mpris.MediaPlayer2'):
                 continue
-            pid = self.get_pid(name)
-            if pid in self.mpris_process:
-                continue
-            obj = self.bus.get_object(name, '/org/mpris/MediaPlayer2')
-            self.mpris_process[pid] = {}
-            self.mpris_process[pid]['obj'] = obj
-            self.get_properties(pid)
-            self.introspectable(pid)
-            self.emit("new", pid)
+            try:
+                pid = self.get_pid(name)
+                if pid in self.mpris_process:
+                    continue
+                obj = self.bus.get_object(name, '/org/mpris/MediaPlayer2')
+                self.mpris_list[name] = pid
+                self.mpris_process[pid] = {}
+                self.mpris_process[pid]['obj'] = obj
+                self.get_properties(pid)
+                self.introspectable(pid)
+                self.emit("new", pid)
+            except:
+                if pid in self.mpris_process:
+                    del self.mpris_process[pid]
 
     def name_owner_changed_cb(self, name, old_owner, new_owner):
         if not name.startswith('org.mpris.MediaPlayer2'):
             return
         if new_owner:
-            pid = self.get_pid(new_owner)
-            op = "add"
-            obj = self.bus.get_object(name, '/org/mpris/MediaPlayer2')
-            self.mpris_process[pid] = {}
-            self.mpris_process[pid]['obj'] = obj
-            self.get_properties(pid)
-            self.introspectable(pid)
-            self.emit("new", pid)
+            try:
+                pid = self.get_pid(new_owner)
+                op = "add"
+                obj = self.bus.get_object(name, '/org/mpris/MediaPlayer2')
+                self.mpris_list[new_owner] = pid
+                self.mpris_process[pid] = {}
+                self.mpris_process[pid]['obj'] = obj
+                self.get_properties(pid)
+                self.introspectable(pid)
+                self.emit("new", pid)
+            except:
+                if pid in self.mpris_process:
+                    del self.mpris_process[pid]
         elif old_owner:
-            pid = self.get_pid(old_owner)
+            try:
+                #print "name changed:", old_owner, self.mpris_list
+                pid = self.get_pid(old_owner)
+            except:
+                if old_owner in self.mpris_list:
+                    pid = self.mpris_list[old_owner]
+                    del self.mpris_list[old_owner]
+                else:
+                    pid = None
             op = "remove"
             if pid in self.mpris_process:
                 del self.mpris_process[pid]
-            self.emit("removed", pid)
+            if pid:
+                self.emit("removed", pid)
         else:
             pid = -1
             op = "NULL"
-        print "op: '%s'\tname:'%s'\told:'%s'\tnew:'%s'\tpid:%d" % (op, name, old_owner, new_owner, pid), self.mpris_process
+        #print "op: '%s'\tname:'%s'\told:'%s'\tnew:'%s'\tpid:%d" % (op, name, old_owner, new_owner, pid), self.mpris_process
 
     def property_changed_cb(self, ifname, changed, invalid, **kw):
-        print ifname, "property changed", kw
+        #print ifname, "property changed", kw
         pid = self.get_pid(kw['unique'])
         for k in changed:
-            print k, changed[k]
+            #print k, changed[k]
             self.mpris_process[pid]['property'][k] = changed[k]
         self.emit("changed", pid, changed)
-        print invalid
-        print "-"*20
+        #print "invalid:^^^^^^^^^^^^^^^^6", invalid
+        #print "-"*20
 if __name__ == '__main__':
     mainloop = gobject.MainLoop()
     Mpris2()
