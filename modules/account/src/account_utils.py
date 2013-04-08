@@ -146,6 +146,8 @@ class BusBase(gobject.GObject):
                 raise AccountsUserExists(e.message)
             elif "org.freedesktop.Accounts.Error.Failed" == e.get_dbus_name():
                 raise AccountsFailed(e.message)
+            elif "org.freedesktop.DBus.Error.NoReply" == e.get_dbus_name():
+                raise Exception(e.message)
             else:
                 traceback.print_exc()
 

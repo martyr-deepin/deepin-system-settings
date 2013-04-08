@@ -621,19 +621,6 @@ class AccountSetting(object):
                 self.set_status_error_text(e.msg)
             self.container_widgets["del_account_button_hbox"].set_sensitive(True)
             print e
-        # TODO delete item
-        #i = 0
-        #for item in self.view_widgets["account"].visible_items:
-            #if uid == item.dbus_obj.get_uid():
-                #self.view_widgets["account"].delete_items([item])
-                ## if delete current selected row, then changed the selected row
-                #if self.current_select_user == item.dbus_obj:
-                    #if i >= len(self.view_widgets["account"].visible_items):
-                        #i = len(self.view_widgets["account"].visible_items) - 1
-                    #if i >= 0:
-                        #self.view_widgets["account"].set_select_rows([i])
-                #break
-            #i += 1
 
     def del_account_button_clicked(self, button):
         if not self.current_select_user:
@@ -1156,6 +1143,9 @@ class AccountSetting(object):
                         self.view_widgets["account"].set_select_rows([i])
                 break
             i += 1
+        # if it is in del_page, then go back
+        if self.alignment_widgets["del_main_vbox"] in self.container_widgets["right_vbox"].get_children():
+            self.del_cancel_delete_cb(None)
 
     # signals callback end
     ######################################
@@ -1168,7 +1158,6 @@ class AccountSetting(object):
         user_list = settings.get_user_list()
         user_items = []
         for user in user_list:
-            print user.get_user_name(), user.get_password_mode()
             icon_file = user.get_icon_file()
             if os.path.exists(icon_file):
                 try:

@@ -1000,6 +1000,8 @@ if __name__ == '__main__':
             print "DEBUG show_again module_uid", message_content
             module_frame.send_module_info()
             key_settings.show_again()
+        elif message_type == "exit":
+            module_frame.exit()
 
     module_frame.module_message_handler = message_handler        
     

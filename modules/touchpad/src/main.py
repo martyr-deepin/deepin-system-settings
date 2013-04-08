@@ -613,6 +613,8 @@ if __name__ == '__main__':
             module_frame.send_module_info()
         if message_type == "reset":
             mouse_settings.set_to_default()
+        elif message_type == "exit":
+            module_frame.exit()
 
     module_frame.module_message_handler = message_handler        
     
