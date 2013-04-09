@@ -33,9 +33,9 @@ from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.button import CheckButton, Button, OffButton
-from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.combo import ComboBox
-from dtk.ui.new_slider import HSlider
+from dtk.ui.slider import HSlider
 from dtk.ui.utils import container_remove_all, color_hex_to_cairo, cairo_disable_antialias
 from treeitem import MyTreeView as TreeView
 from treeitem import MyTreeItem as TreeItem

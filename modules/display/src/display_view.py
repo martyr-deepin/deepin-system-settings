@@ -26,7 +26,7 @@ from dtk.ui.box import ResizableBox, ImageBox
 from dtk.ui.label import Label
 from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
-from dtk.ui.new_scalebar import HScalebar
+from dtk.ui.scalebar import HScalebar
 from dtk.ui.button import ToggleButton
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.utils import color_hex_to_cairo, set_clickable_cursor, get_content_size

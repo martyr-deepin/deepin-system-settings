@@ -25,7 +25,7 @@ import sys
 import os
 from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-from dtk.ui.new_slider import HSlider
+from dtk.ui.slider import HSlider
 from ui.detail_page import DetailPage
 from ui.delete_page import DeletePage
 from ui.theme_page import ThemePage

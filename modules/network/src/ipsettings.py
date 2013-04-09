@@ -2,7 +2,7 @@
 #-*- coding:utf-8 -*-
 
 from dtk.ui.label import Label
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.entry import InputEntry
 from dtk.ui.address_entry import IpAddressEntry
 from nmlib.nm_utils import TypeConvert
 from nmlib.nm_remote_connection import NMRemoteConnection

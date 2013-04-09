@@ -30,11 +30,11 @@ from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
 from dtk.ui.tab_window import TabBox
-from dtk.ui.new_slider import HSlider
+from dtk.ui.slider import HSlider
 from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.box import ImageBox
-from dtk.ui.new_scalebar import HScalebar
+from dtk.ui.scalebar import HScalebar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from treeitem import MyTreeItem as TreeItem

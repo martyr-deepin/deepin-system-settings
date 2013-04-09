@@ -21,10 +21,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from dss import app_theme
-from dtk.ui.new_treeview import TreeView, TreeItem
+from dtk.ui.treeview import TreeView, TreeItem
 from dtk.ui.draw import draw_text, draw_pixbuf,draw_vlinear, draw_line
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, is_left_button, is_right_button, get_content_size, container_remove_all, cairo_state
-from dtk.ui.new_entry import EntryBuffer, Entry, InputEntry
+from dtk.ui.entry import EntryBuffer, Entry, InputEntry
 from dtk.ui.button import Button, ImageButton
 from dtk.ui.label import Label
 import gobject

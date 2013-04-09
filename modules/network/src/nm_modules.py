@@ -23,7 +23,7 @@
 from nmlib.nmcache import get_cache, update_cache
 from nmlib.nm_secret_agent import NMSecretAgent
 from mm.mmclient import MMClient
-from dtk.ui.new_slider import HSlider
+from dtk.ui.slider import HSlider
 
 class MySlider(HSlider):
 

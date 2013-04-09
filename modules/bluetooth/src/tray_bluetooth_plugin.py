@@ -33,7 +33,7 @@ from dtk.ui.label import Label
 from dtk.ui.constant import ALIGN_START
 from dtk.ui.button import ToggleButton
 from dtk.ui.line import HSeparator
-from dtk.ui.new_treeview import TreeItem, TreeView
+from dtk.ui.treeview import TreeItem, TreeView
 from vtk.button import SelectButton
 from deepin_utils.process import run_command
 import gobject

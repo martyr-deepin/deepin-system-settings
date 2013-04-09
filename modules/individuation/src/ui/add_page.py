@@ -22,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-from dtk.ui.new_treeview import TreeView
+from dtk.ui.treeview import TreeView
 from ui.add_item import ExpandItem
 from ui.cache_page import CachePage
 from ui.download_page import TaskPage
