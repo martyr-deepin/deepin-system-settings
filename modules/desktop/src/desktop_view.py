@@ -59,6 +59,8 @@ class DesktopView(gtk.VBox):
             "org.compiz.commands", "/org/compiz/profiles/deepin/plugins/commands/")
         self.compiz_scale_settings = deepin_gsettings.new_with_path("org.compiz.scale", 
             "/org/compiz/profiles/deepin/plugins/scale/")
+        self.compiz_grid_settings = deepin_gsettings.new_with_path("org.compiz.grid", 
+            "/org/compiz/profiles/deepin/plugins/grid/")
 
         self.display_style_items = [(_("Default Style"), 0), 
                                     (_("Auto Hide"), 1), 
@@ -70,6 +72,7 @@ class DesktopView(gtk.VBox):
         self.hot_zone_items = [(_("Nothing"), 0), 
                                (_("Opening Window"), 1), 
                                (_("Launcher"), 2)]
+        self.grid_items = [(_("Maximize"), 0), (_("Nothing"), 1)]
         '''
         icon title
         '''
@@ -206,6 +209,45 @@ class DesktopView(gtk.VBox):
         self.__widget_pack_start(self.topright_box, [self.topright_label, self.topright_combo])
         self.topright_align.add(self.topright_box)
         '''
+        top edge
+        '''
+        self.topedge_align = self.__setup_align()
+        self.topedge_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.topedge_label = self.__setup_label(_("Top Edge"))
+        self.topedge_combo = self.__setup_combo(self.grid_items)
+        top_edge_action = self.compiz_grid_settings.get_int("top-edge-action")
+        if top_edge_action == 10:
+            self.topedge_combo.set_select_index(0)
+        else:
+            self.topedge_combo.set_select_index(1)
+        self.topedge_combo.connect("item-selected", self.__combo_item_selected, "topedge")
+        self.__widget_pack_start(self.topedge_box, [self.topedge_label, self.topedge_combo])
+        self.topedge_align.add(self.topedge_box)
+        self.leftedge_align = self.__setup_align()                               
+        self.leftedge_box = gtk.HBox(spacing = WIDGET_SPACING)                   
+        self.leftedge_label = self.__setup_label(_("Left Edge"))                  
+        self.leftedge_combo = self.__setup_combo(self.grid_items)
+        left_edge_action = self.compiz_grid_settings.get_int("left-edge-action")
+        if left_edge_action == 10:
+            self.leftedge_combo.set_select_index(0)
+        else:
+            self.leftedge_combo.set_select_index(1)
+        self.leftedge_combo.connect("item-selected", self.__combo_item_selected, "leftedge")
+        self.__widget_pack_start(self.leftedge_box, [self.leftedge_label, self.leftedge_combo])
+        self.leftedge_align.add(self.leftedge_box)
+        self.rightedge_align = self.__setup_align()                               
+        self.rightedge_box = gtk.HBox(spacing = WIDGET_SPACING)                   
+        self.rightedge_label = self.__setup_label(_("Right Edge"))                  
+        self.rightedge_combo = self.__setup_combo(self.grid_items)                
+        right_edge_action = self.compiz_grid_settings.get_int("right-edge-action")
+        if right_edge_action == 10:
+            self.rightedge_combo.set_select_index(0)
+        else:
+            self.rightedge_combo.set_select_index(1)
+        self.rightedge_combo.connect("item-selected", self.__combo_item_selected, "rightedge")
+        self.__widget_pack_start(self.rightedge_box, [self.rightedge_label, self.rightedge_combo])
+        self.rightedge_align.add(self.rightedge_box)
+        '''
         greeter
         '''
         self.greeter_title_align = self.__setup_title_align(                       
@@ -259,6 +301,9 @@ class DesktopView(gtk.VBox):
                                   self.hot_title_align, 
                                   self.topleft_align, 
                                   self.topright_align, 
+                                  self.topedge_align, 
+                                  self.leftedge_align, 
+                                  self.rightedge_align, 
                                   #self.greeter_title_align, 
                                   #self.greeter_align, 
                                   #self.lock_align
@@ -409,6 +454,10 @@ class DesktopView(gtk.VBox):
         combo.set_size_request(-1, WIDGET_HEIGHT)
         return combo
 
+    def __setup_toggle(self):                                                      
+        return ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            app_theme.get_pixbuf("toggle_button/active_normal.png"))               
+
     def __setup_entry(self, content=""):
         entry = InputEntry(content)
         entry.set_size(215, WIDGET_HEIGHT)
@@ -505,6 +554,27 @@ class DesktopView(gtk.VBox):
                 #self.compiz_scale_settings.set_string("initiate-edge", "")
             else:                                                               
                 pass                                                            
+            return
+
+        if object == "topedge":
+            if item_value == 0:
+                self.compiz_grid_settings.set_int("top-edge-action", 10)
+            else:
+                self.compiz_grid_settings.set_int("top-edge-action", 0)
+            return
+
+        if object == "leftedge":                                                 
+            if item_value == 0:                                                    
+                self.compiz_grid_settings.set_int("left-edge-action", 10)        
+            else:                                                               
+                self.compiz_grid_settings.set_int("left-edge-action", 0)         
+            return
+
+        if object == "rightedge":                                                 
+            if item_value == 0:                                                    
+                self.compiz_grid_settings.set_int("right-edge-action", 10)        
+            else:                                                               
+                self.compiz_grid_settings.set_int("right-edge-action", 0)         
             return
 
 gobject.type_register(DesktopView)        

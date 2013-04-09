@@ -197,9 +197,9 @@ class SystemPage(gtk.VBox):
         add_button.connect("clicked", self.on_add_wallpapers)
         
         control_box = gtk.HBox(spacing = 10)
-        control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(self.select_all_button, False, False)
         control_box.pack_start(add_button, False, False)
+        control_box.pack_start(self.back_button, False, False)
         
         control_align = gtk.Alignment()
         control_align.set(1.0, 0.5, 0, 0)
@@ -254,9 +254,9 @@ class PicturePage(gtk.VBox):
                                                                                    
         control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(self.notice_label, False, False)
-        control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(self.select_all_button, False, False)
-        control_box.pack_start(add_button, False, False)                           
+        control_box.pack_start(add_button, False, False)
+        control_box.pack_start(self.back_button, False, False)
                                                                                 
         control_align = gtk.Alignment()                                         
         control_align.set(1.0, 0.5, 0, 0)                                       
@@ -312,10 +312,10 @@ class UserPage(gtk.VBox):
         add_button.connect("clicked", self.on_add_wallpapers)
         
         control_box = gtk.HBox(spacing = 10)
-        control_box.pack_start(self.back_button, False, False)
         control_box.pack_start(self.select_all_button, False, False)
         control_box.pack_start(delete_button, False, False)
         control_box.pack_start(add_button, False, False)
+        control_box.pack_start(self.back_button, False, False)
         
         control_align = gtk.Alignment()
         control_align.set(1.0, 0.5, 0, 0)
