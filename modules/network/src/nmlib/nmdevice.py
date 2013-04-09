@@ -218,7 +218,7 @@ class NMDevice(NMObject):
         else:
             self.emit(*args)
             self.state_id = glib.timeout_add(300, self.emit_cb)
-            #print "Debug[nmdevice]", args, self.state_id
+            print "Debug[nmdevice]", args, self.state_id
         self.new_state = args[1]
 
     def state_changed_cb(self, new_state, old_state, reason):

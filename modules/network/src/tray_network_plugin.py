@@ -187,13 +187,17 @@ class TrayNetworkPlugin(object):
         self.active_wired()
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
-        self.gui.wire.set_sensitive(True)
+        #print widget, reason
+        #self.gui.wire.set_sensitive(True)
         if self.gui.wireless.get_active():
             self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
-        if reason is not 0:
+        if reason != 0:
             self.gui.wire.set_active((True, False))
+            if reason == 40:
+                self.gui.wire.set_active((False, False))
+
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         self.gui.wire.set_active((False, False))

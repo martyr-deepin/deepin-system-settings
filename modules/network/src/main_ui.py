@@ -183,7 +183,13 @@ class WiredDevice(object):
         if not reason == 0:
             if self.tree.visible_items != []:
                 self.tree.visible_items[index].set_net_state(0)
-                self.tree.queue_draw()
+                for item in self.tree.visible_items:
+                    if item.get_net_state() > 0:
+                        return
+                print "toggle off"
+                self.wire.set_active(False)
+
+            
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         pass
