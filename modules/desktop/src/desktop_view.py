@@ -565,14 +565,14 @@ class DesktopView(gtk.VBox):
 
         if object == "leftedge":                                                 
             if item_value == 0:                                                    
-                self.compiz_grid_settings.set_int("left-edge-action", 10)        
+                self.compiz_grid_settings.set_int("left-edge-action", 4)        
             else:                                                               
                 self.compiz_grid_settings.set_int("left-edge-action", 0)         
             return
 
         if object == "rightedge":                                                 
             if item_value == 0:                                                    
-                self.compiz_grid_settings.set_int("right-edge-action", 10)        
+                self.compiz_grid_settings.set_int("right-edge-action", 4)        
             else:                                                               
                 self.compiz_grid_settings.set_int("right-edge-action", 0)         
             return
