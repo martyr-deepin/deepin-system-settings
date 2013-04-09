@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-26 16:31+0800\n"
+"POT-Creation-Date: 2013-04-09 11:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Small"
 msgstr ""
 
-#: ../src/desktop_view.py:70
+#: ../src/desktop_view.py:70 ../src/desktop_view.py:73
 msgid "Nothing"
 msgstr ""
 
@@ -57,106 +57,122 @@ msgstr ""
 msgid "Launcher"
 msgstr ""
 
-#: ../src/desktop_view.py:78 ../src/search_keyword.py:29
+#: ../src/desktop_view.py:73
+msgid "Maximize"
+msgstr ""
+
+#: ../src/desktop_view.py:79 ../src/search_keyword.py:29
 msgid "Desktop Icon"
 msgstr ""
 
-#: ../src/desktop_view.py:86
+#: ../src/desktop_view.py:87
 msgid "Computer"
 msgstr ""
 
-#: ../src/desktop_view.py:89
+#: ../src/desktop_view.py:90
 msgid "Home"
 msgstr ""
 
-#: ../src/desktop_view.py:92
+#: ../src/desktop_view.py:93
 msgid "Trash"
 msgstr ""
 
-#: ../src/desktop_view.py:95
+#: ../src/desktop_view.py:96
 msgid "Software Center"
 msgstr ""
 
-#: ../src/desktop_view.py:110
+#: ../src/desktop_view.py:111
 msgid "Dock"
 msgstr ""
 
-#: ../src/desktop_view.py:116
+#: ../src/desktop_view.py:117
 msgid "Display Style"
 msgstr ""
 
-#: ../src/desktop_view.py:136
+#: ../src/desktop_view.py:137
 msgid "Place Style"
 msgstr ""
 
-#: ../src/desktop_view.py:148
+#: ../src/desktop_view.py:149
 msgid "Icon Size"
 msgstr ""
 
-#: ../src/desktop_view.py:162
+#: ../src/desktop_view.py:163
 msgid "Preview"
 msgstr ""
 
-#: ../src/desktop_view.py:170
+#: ../src/desktop_view.py:171
 msgid "Hot Zone"
 msgstr ""
 
-#: ../src/desktop_view.py:173
+#: ../src/desktop_view.py:174
 msgid "Top Left"
 msgstr ""
 
-#: ../src/desktop_view.py:192
+#: ../src/desktop_view.py:193
 msgid "Top Right"
 msgstr ""
 
-#: ../src/desktop_view.py:213
+#: ../src/desktop_view.py:214
+msgid "Top Edge"
+msgstr ""
+
+#: ../src/desktop_view.py:220
+msgid "Left Edge"
+msgstr ""
+
+#: ../src/desktop_view.py:226
+msgid "Right Edge"
+msgstr ""
+
+#: ../src/desktop_view.py:235
 msgid "Login &amp;&amp; Lock"
 msgstr ""
 
-#: ../src/desktop_view.py:221
+#: ../src/desktop_view.py:243
 msgid "Login Page"
 msgstr ""
 
-#: ../src/desktop_view.py:226 ../src/desktop_view.py:242
+#: ../src/desktop_view.py:248 ../src/desktop_view.py:264
 msgid "Select"
 msgstr ""
 
-#: ../src/desktop_view.py:237
+#: ../src/desktop_view.py:259
 msgid "Lock Page"
 msgstr ""
 
-#: ../src/desktop_view.py:289
+#: ../src/desktop_view.py:314
 msgid "Show computer icon"
 msgstr ""
 
-#: ../src/desktop_view.py:291
+#: ../src/desktop_view.py:316
 msgid "Hide computer icon"
 msgstr ""
 
-#: ../src/desktop_view.py:297
+#: ../src/desktop_view.py:322
 msgid "Show home icon"
 msgstr ""
 
-#: ../src/desktop_view.py:299
+#: ../src/desktop_view.py:324
 msgid "Hide home icon"
 msgstr ""
 
-#: ../src/desktop_view.py:305
+#: ../src/desktop_view.py:330
 msgid "Show trash icon"
 msgstr ""
 
-#: ../src/desktop_view.py:307
+#: ../src/desktop_view.py:332
 msgid "Hide trash icon"
 msgstr ""
 
-#: ../src/desktop_view.py:313
+#: ../src/desktop_view.py:338
 msgid "Show deepin software center icon"
 msgstr ""
 
-#: ../src/desktop_view.py:315
+#: ../src/desktop_view.py:340
 msgid "Hide deepin software conter icon"
 msgstr ""
 
-#: ../src/desktop_view.py:370
+#: ../src/desktop_view.py:395
 msgid "Reset to default value"
 msgstr ""
