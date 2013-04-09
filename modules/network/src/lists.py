@@ -77,7 +77,7 @@ class GenItems(TreeItem):
 
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
-        self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box-3.png")
+        #self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box-3.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
         self.check_hover_pixbuf = app_theme.get_pixbuf("network/check_box-4.png")
 
@@ -96,8 +96,8 @@ class GenItems(TreeItem):
                 self.draw_loading(cr, rect)
             elif self.network_state == self.NETWORK_CONNECTED:
                 draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
-            elif self.network_state == self.NETWORK_DISCONNECT:
-                draw_pixbuf(cr, self.check_out_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+            #elif self.network_state == self.NETWORK_DISCONNECT:
+                #draw_pixbuf(cr, self.check_out_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
 
 
         #draw outline
