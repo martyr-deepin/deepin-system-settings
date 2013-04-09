@@ -183,7 +183,13 @@ class WiredDevice(object):
         if not reason == 0:
             if self.tree.visible_items != []:
                 self.tree.visible_items[index].set_net_state(0)
-                self.tree.queue_draw()
+                for item in self.tree.visible_items:
+                    if item.get_net_state() > 0:
+                        return
+                print "toggle off"
+                self.wire.set_active(False)
+
+            
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         pass
@@ -213,6 +219,7 @@ class WiredSection(Section, WiredDevice):
             return False
 
     def init_state(self):
+        print "init wired state"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
             if self.get_state(self.wired_devices):
@@ -234,6 +241,7 @@ class WiredSection(Section, WiredDevice):
     def device_added(self, widget, device):
         print "device_added"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
+        print ">>>>",self.wired_devices
         self._init_signals()
         if self.wire.get_active():
             self.wire.set_active(True, emit=True)
@@ -386,6 +394,7 @@ class WirelessSection(Section, WirelessDevice):
             return False
 
     def init_state(self):
+        self.ap_list = []
         self.wireless_devices = net_manager.device_manager.get_wireless_devices()
         if self.wireless_devices:
             self.tree.connect("single-click-item", self.set_selected_item)
@@ -419,7 +428,7 @@ class WirelessSection(Section, WirelessDevice):
 
     def create_a_hidden_network(self, widget, c):
         from wlan_config import HiddenSetting
-        Dispatcher.to_setting_page(HiddenSetting(None))
+        Dispatcher.to_setting_page(HiddenSetting(None), False)
 
     def ap_added_callback(self, widget):
         if self.wireless.get_active():
@@ -718,7 +727,7 @@ class DSLSection(Section):
         return map(lambda c: DSLItem(c, None), self.connections)
 
     def jumpto_setting(self):
-        Dispatcher.to_setting_page(DSLSetting())
+        Dispatcher.to_setting_page(DSLSetting(),hide_left=True)
         setting = nm_module.slider.get_page_by_name("setting")
         setting.create_new_connection()
 
@@ -797,7 +806,7 @@ class VpnSection(Section):
         return map(lambda c: VPNItem(c, None), self.connection)
     
     def jumpto_cb(self):
-        Dispatcher.to_setting_page(VPNSetting())
+        Dispatcher.to_setting_page(VPNSetting(), True)
         setting = nm_module.slider.get_page_by_name("setting")
         setting.create_new_connection()
         
@@ -914,7 +923,7 @@ class MobileSection(Section, MobileDevice):
         return map(lambda c: MobileItem(c, None), self.devices)
     
     def jumpto_cb(self):
-        Dispatcher.to_setting_page(MobileSetting())
+        Dispatcher.to_setting_page(MobileSetting(), False)
 
 class Proxy(gtk.VBox):
     def __init__(self):
@@ -978,14 +987,14 @@ class Network(object):
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
-        slider.connect_after("show", self.init_sections_state)
+        slider.connect_after("show", lambda w: self.init_sections_state())
         slider._set_to_page("main")
         slider.show_all()
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
         Dispatcher.connect("recheck-section", lambda w, i: self.__init_sections(0))
         Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
 
-    def init_sections_state(self, widget):
+    def init_sections_state(self):
         print "Debug :: ui finish, ======================"
         net_manager.init_devices()
         for section in self.vbox.get_children():
@@ -1049,12 +1058,13 @@ class Network(object):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def slide_to_setting_page(self, widget, setting_module):
-        self.setting_page_ui.load_module(setting_module)
+    def slide_to_setting_page(self, widget, setting_module, hide_left):
+        self.setting_page_ui.load_module(setting_module, hide_left)
 
     def refresh(self):
         #self.init_sections()
         self.__init_sections(-1)
+        self.init_sections_state()
         self.eventbox.set_above_child(False)
         self.eventbox.queue_draw()
 

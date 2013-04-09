@@ -159,7 +159,8 @@ class TrayNetworkPlugin(object):
             if wireless_state[0] and wireless_state[1]:
                 self.change_status_icon("links")
             else:
-                self.change_status_icon("wifi_disconnect")
+                if not self.gui.wire.get_active():
+                    self.change_status_icon("wifi_disconnect")
             #Dispatcher.connect("wireless-change", self.set_wireless_state)
             Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
             self.pwd_failed = False
@@ -186,13 +187,17 @@ class TrayNetworkPlugin(object):
         self.active_wired()
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
-        self.gui.wire.set_sensitive(True)
+        #print widget, reason
+        #self.gui.wire.set_sensitive(True)
         if self.gui.wireless.get_active():
             self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
-        if reason is not 0:
+        if reason != 0:
             self.gui.wire.set_active((True, False))
+            if reason == 40:
+                self.gui.wire.set_active((False, False))
+
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         self.gui.wire.set_active((False, False))

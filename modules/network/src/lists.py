@@ -240,7 +240,7 @@ class WiredItem(GenItems):
     def single_click(self, column, x, y):
         if column == 2:
             from lan_config import WiredSetting
-            Dispatcher.to_setting_page(WiredSetting(self.device))
+            Dispatcher.to_setting_page(WiredSetting(self.device), False)
         else:
             device_ethernet = nm_module.cache.get_spec_object(self.device.object_path)
             device_ethernet.auto_connect()
@@ -315,7 +315,7 @@ class WirelessItem(GenItems):
     def single_click(self, column, x, y):
         if column ==3:
             from wlan_config import WirelessSetting
-            Dispatcher.to_setting_page(WirelessSetting(self.ap))
+            Dispatcher.to_setting_page(WirelessSetting(self.ap), False)
         elif column < 2:
             if self.network_state != 2:
                 self.connect_by_ssid(self.ssid, self.ap)
@@ -422,7 +422,7 @@ class HidenItem(GenItems):
     
     def jumpto_cb(self):
         from wlan_config import HiddenSetting
-        Dispatcher.to_setting_page(HiddenSetting(self.connection))
+        Dispatcher.to_setting_page(HiddenSetting(self.connection), False)
 
     def click_cb(self):
         wireless_device = net_manager.device_manager.get_wireless_devices()[0]
@@ -654,7 +654,7 @@ class DSLItem(GenItems):
     
     def jumpto_cb(self):
         from dsl_config import DSLSetting
-        Dispatcher.to_setting_page(DSLSetting(self.connection))
+        Dispatcher.to_setting_page(DSLSetting(self.connection), True)
 
     def click_cb(self):
         if net_manager.wired_device:
@@ -696,7 +696,7 @@ class MobileItem(GenItems):
 
     def jumpto_cb(self):
         from mobile_config import MobileSetting
-        Dispatcher.to_setting_page(MobileSetting())
+        Dispatcher.to_setting_page(MobileSetting(), False)
 
     def click_cb(self):
         self.device.auto_connect()
@@ -729,7 +729,7 @@ class VPNItem(DSLItem):
 
     def jumpto_cb(self):
         from vpn_config import VPNSetting
-        Dispatcher.to_setting_page(VPNSetting(self.connection))
+        Dispatcher.to_setting_page(VPNSetting(self.connection), True)
 
     def vpn_active_cb(self, active):
         vpn_connection = nm_module.cache.get_spec_object(active.object_path)
