@@ -22,7 +22,7 @@
 
 import os
 import gtk
-from dtk.ui.new_treeview import TreeView
+from dtk.ui.treeview import TreeView
 
 from ui.download_item import TaskItem
 

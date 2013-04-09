@@ -3,7 +3,7 @@
 from nmlib.proxysettings import ProxySettings
 from dtk.ui.label import Label
 from dtk.ui.button import Button
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.entry import InputEntry
 from dtk.ui.address_entry import IpAddressEntry
 from dtk.ui.spin import SpinBox
 from elements import MyRadioButton as RadioButton

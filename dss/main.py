@@ -25,7 +25,7 @@ from nls import _
 from constant import APP_DBUS_NAME, APP_OBJECT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT
 from theme import app_theme
 from dtk.ui.application import Application
-from dtk.ui.new_slider import HSlider
+from dtk.ui.slider import HSlider
 from dtk.ui.breadcrumb import Crumb
 from deepin_utils.ipc import is_dbus_name_exists
 from search_page import SearchPage

@@ -1,6 +1,6 @@
 # element widgets to construct complex widgets
 from dss import app_theme
-from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.button import OffButton, CheckButton, RadioButton
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox

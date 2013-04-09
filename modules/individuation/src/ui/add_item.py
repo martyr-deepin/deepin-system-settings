@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pango
-from dtk.ui.new_treeview import TreeItem
+from dtk.ui.treeview import TreeItem
 from dtk.ui.draw import draw_text
 from ui.utils import (draw_single_mask)
 

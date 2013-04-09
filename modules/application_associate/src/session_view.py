@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from dtk.ui.new_treeview import TreeView
+from dtk.ui.treeview import TreeView
 from dtk.ui.button import Button
 from dtk.ui.label import Label
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.entry import InputEntry
 from treeview import SessionItem, NothingItem
 
 import gtk
