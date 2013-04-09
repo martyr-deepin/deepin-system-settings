@@ -3,7 +3,7 @@
 
 from dss import app_theme
 from dtk.ui.theme import ui_theme
-from dtk.ui.new_treeview import TreeItem, TreeView
+from dtk.ui.treeview import TreeItem, TreeView
 from dtk.ui.box import ImageBox
 from dtk.ui.draw import draw_vlinear, draw_text, draw_pixbuf
 from dtk.ui.label import Label

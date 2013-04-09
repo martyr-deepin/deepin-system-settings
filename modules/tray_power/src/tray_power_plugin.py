@@ -82,10 +82,15 @@ class TrayPower(object):
 
     def visible_power_tray(self):
         show_value = self.power_set.get_boolean("show-tray")
-        self.tray_icon.set_visible(show_value)
+        if show_value:
+            self.tray_icon.set_no_show_all(False)
+            self.tray_icon.show_all()
+        else:
+            self.tray_icon.set_no_show_all(True)
+            self.tray_icon.hide()
 
     def modify_battery_icon(self, online_value, value):
-        if online_value and value != 100:
+        if online_value:
             self.tray_icon.set_tooltip_text(_("charging"))
             self.tray_icon.set_icon_theme("tray_battery")
 

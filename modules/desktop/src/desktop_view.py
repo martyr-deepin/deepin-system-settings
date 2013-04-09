@@ -28,7 +28,7 @@ from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.combo import ComboBox
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.entry import InputEntry
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from constant import *
 from nls import _
@@ -450,7 +450,7 @@ class DesktopView(gtk.VBox):
         return Label(text, None, text_size, align, 200, False, False, False)
 
     def __setup_combo(self, items=[]):
-        combo = ComboBox(items, None, 0, 285)
+        combo = ComboBox(items, None, 0, max_width = 285, fixed_width = 285)
         combo.set_size_request(-1, WIDGET_HEIGHT)
         return combo
 
@@ -565,14 +565,14 @@ class DesktopView(gtk.VBox):
 
         if object == "leftedge":                                                 
             if item_value == 0:                                                    
-                self.compiz_grid_settings.set_int("left-edge-action", 10)        
+                self.compiz_grid_settings.set_int("left-edge-action", 4)        
             else:                                                               
                 self.compiz_grid_settings.set_int("left-edge-action", 0)         
             return
 
         if object == "rightedge":                                                 
             if item_value == 0:                                                    
-                self.compiz_grid_settings.set_int("right-edge-action", 10)        
+                self.compiz_grid_settings.set_int("right-edge-action", 4)        
             else:                                                               
                 self.compiz_grid_settings.set_int("right-edge-action", 0)         
             return

@@ -20,7 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from theme import app_theme
 from dtk.ui.button import CheckButton, Button
-from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all

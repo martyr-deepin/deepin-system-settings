@@ -20,12 +20,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from theme import app_theme
 from dtk.ui.theme import ui_theme
-from dtk.ui.new_treeview import TreeItem, TreeView
+from dtk.ui.treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text, draw_line
 from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, cairo_state
 from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
-from dtk.ui.new_entry import EntryBuffer, Entry
+from dtk.ui.entry import EntryBuffer, Entry
 #from nm_modules import cache
 from shared_methods import net_manager
 from widgets import AskPasswordDialog

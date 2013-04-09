@@ -56,7 +56,7 @@ def set_table_items(table, item_name):
     children = table.get_children()
     for child in children:
         if item_name is "entry":
-            from dtk.ui.new_entry import InputEntry, PasswordEntry
+            from dtk.ui.entry import InputEntry, PasswordEntry
             if type(child) is gtk.Alignment:
                 c = child.get_children()[0]
                 if type(c).__name__ == type(InputEntry()).__name__ or \

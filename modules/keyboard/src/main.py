@@ -30,13 +30,13 @@ import settings
 
 from dtk.ui.theme import ui_theme
 from dtk.ui.theme import DynamicColor
-from dtk.ui.dialog import DialogBox
+from dtk.ui.dialog import DialogBox, DIALOG_MASK_SINGLE_PAGE
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
-from dtk.ui.new_entry import InputEntry, EntryBuffer
+from dtk.ui.entry import InputEntry, EntryBuffer
 from dtk.ui.tab_window import TabBox
-from dtk.ui.new_scalebar import HScalebar
+from dtk.ui.scalebar import HScalebar
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor, container_remove_all
@@ -562,13 +562,6 @@ class KeySetting(object):
         self.button_widgets["set_to_default"].connect("clicked", self.set_to_default)
     
     ######################################
-    def draw_dialog_background(self, widget, event):
-        x, y, w, h = widget.allocation
-        cr = widget.window.cairo_create()
-        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
-        cr.rectangle(x+1, y+1, w-2, h-2)                                                 
-        cr.fill()
-    
     def draw_background(self, widget, event):
         cr = widget.window.cairo_create()
         x, y, w, h = widget.allocation
@@ -721,12 +714,10 @@ class KeySetting(object):
         self.container_widgets["layout_button_hbox"].set_sensitive(False)
         dialog_width = 400
         dialog_heigth = 380
-        dialog = DialogBox(_("Select an input source to add"), dialog_width, dialog_heigth)
+        dialog = DialogBox(_("Select an input source to add"), dialog_width, dialog_heigth, DIALOG_MASK_SINGLE_PAGE)
         dialog.connect("destroy", lambda w: self.container_widgets["layout_button_hbox"].set_sensitive(True))
-        dialog.window_frame.connect("expose-event", self.draw_dialog_background)
         dialog.set_keep_above(True)
-        dialog.set_modal(True)
-        #dialog.set_transient_for(parent)
+        #dialog.set_modal(True)
         dialog.body_align.set_padding(0, 0, 10, 10)
         layout_treetimes = map(lambda item: LayoutItem(*item), self.__layout_items)
         layout_add_treeview = TreeView(layout_treetimes, enable_hover=False)
@@ -879,12 +870,10 @@ class KeySetting(object):
             dialog.destroy()
             self.set_status_text(_("Add custom hotkey"))
         self.container_widgets["shortcuts_toolbar_hbox"].set_sensitive(False)
-        dialog = DialogBox(_("Custom Shortcuts"), 250, 150)
+        dialog = DialogBox(_("Custom Shortcuts"), 250, 150, DIALOG_MASK_SINGLE_PAGE)
         dialog.connect("destroy", lambda w: self.button_widgets["shortcuts_add"].set_sensitive(True))
-        dialog.window_frame.connect("expose-event", self.draw_dialog_background)
         dialog.set_keep_above(True)
-        dialog.set_modal(True)
-        #dialog.set_transient_for(self.container_widgets["window"])
+        #dialog.set_modal(True)
         dialog.body_align.set_padding(15, 10, 10, 10)
         
         table = gtk.Table(2, 2, False)

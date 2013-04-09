@@ -81,7 +81,6 @@ class DetailPage(gtk.VBox):
                                              self.__on_random_toggled, 
                                              self.__is_random)
         self.button_align = gtk.Alignment()
-        self.button_align.set_padding(0, 0, 50, 5)
         self.button_box = gtk.HBox(spacing = 10)
         self.select_all_button = Button(_("Select All"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
@@ -131,9 +130,10 @@ class DetailPage(gtk.VBox):
             self.__random_disable()
 
         if self.wallpaper_view.is_select_all():                                 
-            self.select_all_button.set_label(_("UnSelect All"))                 
+            self.select_all_button.set_label(_("UnSelect All"))
         else:                                                                   
             self.select_all_button.set_label(_("Select All"))
+        self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __on_wallpaper_apply(self, name, obj, select_item):
         self.__random_disable()
@@ -142,6 +142,7 @@ class DetailPage(gtk.VBox):
             self.select_all_button.set_label(_("UnSelect All"))                 
         else:                                                                   
             self.select_all_button.set_label(_("Select All"))
+        self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __on_select_all(self, widget):
         self.wallpaper_view.select_all()                            
@@ -149,6 +150,7 @@ class DetailPage(gtk.VBox):
             self.select_all_button.set_label(_("UnSelect All"))         
         else:                                                                   
             self.select_all_button.set_label(_("Select All"))
+        self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
         if self.wallpaper_view.is_randomable():    
             self.__random_enable()
@@ -178,9 +180,9 @@ class DetailPage(gtk.VBox):
     def __set_delete_button_visible(self):
         is_editable = self.wallpaper_view.is_editable()
         if is_editable:
-            self.button_align.set_padding(0, 0, 35, 5)
+            self.button_align.set_padding(0, 0, 125, 5)
         else:
-            self.button_align.set_padding(0, 0, 115, 5)
+            self.button_align.set_padding(0, 0, 215, 5)
 
         self.delete_button.set_child_visible(is_editable)
 
@@ -227,6 +229,7 @@ class DetailPage(gtk.VBox):
 
         if self.wallpaper_view.is_select_all():
             self.select_all_button.set_label(_("UnSelect All"))
+            self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
         
     def draw_mask(self, cr, x, y, w, h):
         '''
