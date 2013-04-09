@@ -61,9 +61,9 @@ class DeletePage(gtk.VBox):
         self.delete_button = Button(_("Delete"))
         self.delete_button.set_size_request(80, WIDGET_HEIGHT)
         self.delete_button.connect("clicked", self.__on_delete)
-        self.action_box.pack_start(self.back_button, False, False)
         self.action_box.pack_start(self.select_all_button, False, False)
         self.action_box.pack_start(self.delete_button, False, False)
+        self.action_box.pack_start(self.back_button, False, False)
         self.action_align.add(self.action_box)
         
         self.pack_start(self.delete_view_sw, True, True)
