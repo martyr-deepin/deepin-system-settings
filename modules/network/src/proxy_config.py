@@ -325,7 +325,7 @@ class ProxyConfig(gtk.VBox):
         if mode == "manual":
             self.manual_radio.set_active(True)
             self.auto_table.set_sensitive(False)
-            self.manual_radio.set_sensitive(True)
+            self.auto_radio.set_sensitive(True)
             self.proxysetting.set_http_enabled(True)
 
             http_host = self.proxysetting.get_http_host()
@@ -348,8 +348,7 @@ class ProxyConfig(gtk.VBox):
         elif mode == "auto":
             self.auto_radio.set_active(True)
             self.manual_table.set_sensitive(False)
-            self.auto_radio.set_sensitive(True)
-            self.auto_radio.emit("toggled")
+            self.manual_radio.set_sensitive(True)
             conf_url = self.proxysetting.get_proxy_authconfig_url()
             self.conf_entry.set_text(conf_url)
 
