@@ -57,11 +57,20 @@ class FootBox(gtk.HBox):
         self.tip_align.set_padding(5, 5, 20, 0)
         self.tip_align.add(self.tip)
 
-        self.button_box = Button("Connect")
-        self.button_box.connect("clicked", self.button_click)
+
+        self.btn_delete = Button(_("Delete"))
+        self.btn_delete.connect("clicked", self.delete_click)
+        self.btn_delete.set_no_show_all(True)
+        self.btn_save = Button()
+        self.btn_save.connect("clicked", self.button_click)
+
+        button_box = gtk.HBox(spacing=10)
+        button_box.pack_start(self.btn_delete)
+        button_box.pack_start(self.btn_save)
+
         self.buttons_align = gtk.Alignment(1, 0.5, 0, 0)
         self.buttons_align.set_padding(0, 0, 0, 10)
-        self.buttons_align.add(self.button_box)
+        self.buttons_align.add(button_box)
         self.pack(self, [self.tip_align], True, True)
         self.pack_end(self.buttons_align, False, False)
     
@@ -79,29 +88,42 @@ class FootBox(gtk.HBox):
         #print "DEBUG:set button", content, state, self.get_lock()
 
         self.__setting_module.set_button(content, state)
-        self.button_box.set_label(_("save"))
+        self.btn_save.set_label(_("save"))
 
         if self.get_lock():
-            self.button_box.set_sensitive(False)
+            self.btn_save.set_sensitive(False)
         else:
             if content == "apply":
-                #self.button_box.set_label(_("save"))
-                self.button_box.set_sensitive(False)
+                #self.btn_save.set_label(_("save"))
+                self.btn_save.set_sensitive(False)
             else:
                 
-                #self.button_box.set_label("save")
-                self.button_box.set_sensitive(state)
+                #self.btn_save.set_label("save")
+                self.btn_save.set_sensitive(state)
+
+    def delete_click(self, widget):
+        if self.focus_connection:
+            Dispatcher.delete_setting(self.focus_connection)
+            Dispatcher.to_main_page()
+
+    def show_delete(self, connection):
+        self.btn_delete.show()
+        self.focus_connection = connection
+
+    def hide_delete(self):
+        self.btn_delete.hide()
+        self.focus_connection = None
             
 
         #if content == "save":
             #if state and not self.get_lock():
                 #Dispatcher.emit("setting-saved")
             #else:
-                #self.button_box.set_label(_("connect"))
-                #self.button_box.set_sensitive(False)
+                #self.btn_save.set_label(_("connect"))
+                #self.btn_save.set_sensitive(False)
         #else:
-            #self.button_box.set_label(_("connect"))
-            #self.button_box.set_sensitive(True)
+            #self.btn_save.set_label(_("connect"))
+            #self.btn_save.set_sensitive(True)
 
     def get_button(self):
         return self.__setting_module.get_button_state()
@@ -110,20 +132,11 @@ class FootBox(gtk.HBox):
         self.__setting_module = module
 
     def button_click(self, widget):
-        #if self.button_box.label == "save":
+        #if self.btn_save.label == "save":
         Dispatcher.emit("setting-saved")
-        #elif self.button_box.label == _("connect"):
+        #elif self.btn_save.label == _("connect"):
             #Dispatcher.set_tip("setting saved")
             #Dispatcher.emit("setting-appled")
-
-    def set_buttons(self, buttons_list):
-        width = 0
-        for button in buttons_list:
-            width += button.get_size_request()[0]
-        self.button_box.set_size_request(width, -1)
-        self.pack(self.button_box, buttons_list)
-        self.buttons_list = buttons_list
-        self.queue_draw()
 
     def __clear_tips(self):
         self.tip.set_text("")

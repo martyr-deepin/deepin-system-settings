@@ -67,6 +67,9 @@ class NMDeviceEthernet(NMDevice):
         self.thread_wiredauto = None
         self.thread_dslauto = None
 
+    def remove_signals(self):
+        pass
+
     ###Methods###
     def device_wired_disconnect(self):
         if self.thread_wiredauto:

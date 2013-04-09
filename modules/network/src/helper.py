@@ -65,7 +65,7 @@ class EventDispatcher(gobject.GObject):
             "ap-added": _(),
             "ap-removed": _(),
 
-            "to-setting-page": _(obj),
+            "to-setting-page": _(obj, obj),
             "to-region-page":_(obj),
             "region-back": _(obj, obj, str),
 
@@ -149,8 +149,8 @@ class EventDispatcher(gobject.GObject):
     def device_add(self, device):
         pass
 
-    def to_setting_page(self, module):
-        self.emit('to-setting-page', module)
+    def to_setting_page(self, module, hide_left=False):
+        self.emit('to-setting-page', module, hide_left)
 
     def load_module_frame(self, module_frame):
         self.__module_frame = module_frame

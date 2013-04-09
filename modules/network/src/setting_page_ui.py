@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 from dss import app_theme
-from dtk.ui.tab_window import TabBox
 import gtk
 import style
 from foot_box_ui import FootBox
@@ -9,6 +8,7 @@ from dtk.ui.paned import HPaned
 from sidebar_ui import SideBar
 from dtk.ui.utils import container_remove_all
 from dtk.ui.scrolled_window import ScrolledWindow
+from nmlib.nm_remote_connection import NMRemoteConnection
 #from shared_widget import Settings
 
 from helper import Dispatcher
@@ -40,9 +40,10 @@ class SettingUI(gtk.Alignment):
         padding_align.set_padding(15, 0, 0, 0)
         self.sidebar = SideBar( None)
         padding_align.add(self.sidebar)
-        self.hpaned = HPaned(always_show_button=True)
+        self.hpaned = MyPaned()
         self.hpaned.set_size_request(800, -1)
         self.hpaned.connect("expose-event",self.expose_line)
+        #self.hpaned.do_enter_notify_event = self.enter_notify_event
         self.hpaned.add1(padding_align)
         self.hpaned.add2(self.scroll_align)
         self.connect_after("show", self.__init_paned)
@@ -51,6 +52,9 @@ class SettingUI(gtk.Alignment):
         self.add(main_vbox)
 
         self.__init_signals()
+
+    def enter_notify_event(self, e):
+        pass
 
     def __init_paned(self, widget):
         self.hpaned.saved_position = 160
@@ -66,9 +70,11 @@ class SettingUI(gtk.Alignment):
         Dispatcher.connect("setting-appled", self.apply_connection_setting)
         Dispatcher.connect("request_redraw", lambda w: self.scroll_win.show_all())
 
-    def load_module(self, module_obj):
+    def load_module(self, module_obj, hide_left):
         #self.__init_tab()
         self.__init_tab_box()
+
+        self.hpaned.set_button_show(hide_left)
 
         # need this for corect button set
         self.foot_box.set_setting(module_obj)
@@ -92,6 +98,12 @@ class SettingUI(gtk.Alignment):
 
     def set_foot_bar_button(self, connection):
         states = self.setting_group.get_button_state()
+
+        if type(connection) == NMRemoteConnection:
+            self.foot_box.show_delete(connection)
+        else:
+            self.foot_box.hide_delete()
+
         if states:
             Dispatcher.set_button(*states)
         
@@ -122,6 +134,69 @@ class SettingUI(gtk.Alignment):
 
     def create_new_connection(self):
         self.sidebar.add_new_connection()
+
+class MyPaned(HPaned):
+
+    def __init__(self):
+        HPaned.__init__(self,
+                        always_show_button=True)
+        self.no_show_button = False
+
+    def do_enter_notify_event(self, e):
+        pass
+
+    def set_button_show(self, hide):
+        self.no_show_button = hide
+        self.always_show_button = not hide
+        self.queue_draw()
+        
+    def do_motion_notify_event(self, e):
+        '''
+        change the cursor style  when move in handler
+        '''
+        # Reset press coordinate if motion mouse after press event.
+
+        handle = self.get_handle_window()
+        if self.no_show_button:
+            handle.set_cursor(None)
+            return
+        self.press_coordinate = None
+        
+        (width, height) = handle.get_size()
+        if self.is_in_button(e.x, e.y):
+            handle.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND1))
+            
+            self.init_button("hover")
+        else:
+            if self.enable_drag:
+                handle.set_cursor(self.cursor_type)
+                gtk.Paned.do_motion_notify_event(self, e)                
+            else:    
+                handle.set_cursor(None)
+            self.init_button("normal")
+
+    def do_button_press_event(self, e):
+        '''
+        when press the handler's button change the position.
+        '''
+        if self.no_show_button:
+            return
+        handle = self.get_handle_window()
+        if e.window == handle:
+            if self.is_in_button(e.x, e.y):
+                self.init_button("press")
+            
+                self.do_press_actoin()
+            else:
+                (width, height) = handle.get_size()
+                if is_in_rect((e.x, e.y), (0, 0, width, height)):
+                    self.press_coordinate = (e.x, e.y)
+            
+                gtk.Paned.do_button_press_event(self, e)
+        else:
+            gtk.Paned.do_button_press_event(self, e)
+        return True
+    
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

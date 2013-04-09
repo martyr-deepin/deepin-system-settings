@@ -70,15 +70,6 @@ class VPNSetting(Settings):
         else:
             print "no active connection available"
 
-        #wired_devices = nm_module.nmclient.get_wired_devices()
-        #wireless_devices = nm_module.nmclient.get_wireless_devices() 
-        #if wired_devices:
-            #try:
-                #self.try_to_connect_wired_device(wired_devices[0], connection)
-            #except Exception:
-                #if wireless_devices:
-                    #self.try_to_connect_wireless_device(wireless_devices[0], connection)
-
         Dispatcher.to_main_page()
 
 
@@ -164,7 +155,13 @@ class PPTPConf(gtk.VBox):
         self.vpn_setting = self.connection.get_setting("vpn")
 
         # UI
+
         pptp_table = gtk.Table(7, 4, False)
+
+        ssid_label = Label(_("Setting Name:"),
+                               enable_select=False,
+                               enable_double_click=False)
+        ssid_label.set_can_focus(False)
         gateway_label = Label(_("Gateway:"),
                                enable_select=False,
                                enable_double_click=False)
@@ -189,12 +186,16 @@ class PPTPConf(gtk.VBox):
         radio_box.pack_start(self.l2tp_radio, False, False)
         #pack labels
         pptp_table.attach(style.wrap_with_align(radio_box, align="left"), 2,4, 0, 1)
-        pptp_table.attach(style.wrap_with_align(gateway_label, width=self.LEFT_PADDING), 0, 2 , 1, 2)
-        pptp_table.attach(style.wrap_with_align(user_label, width=self.LEFT_PADDING), 0, 2, 2, 3)
-        pptp_table.attach(style.wrap_with_align(password_label, width=self.LEFT_PADDING), 0, 2, 3, 4)
+        pptp_table.attach(style.wrap_with_align(ssid_label, width=self.LEFT_PADDING), 0, 2, 1, 2)
+        pptp_table.attach(style.wrap_with_align(gateway_label, width=self.LEFT_PADDING), 0, 2 , 2, 3)
+        pptp_table.attach(style.wrap_with_align(user_label, width=self.LEFT_PADDING), 0, 2, 3, 4)
+        pptp_table.attach(style.wrap_with_align(password_label, width=self.LEFT_PADDING), 0, 2, 4, 5)
         #pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 2, 5, 6)
 
         # entries
+        self.ssid_entry = InputEntry()
+        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
+
         self.gateway_entry = InputEntry()
         self.gateway_entry.set_size(self.ENTRY_WIDTH,22)
         self.user_entry = InputEntry()
@@ -209,10 +210,11 @@ class PPTPConf(gtk.VBox):
         self.nt_domain_entry.set_size(self.ENTRY_WIDTH, 22)
 
         #pack entries
-        pptp_table.attach(style.wrap_with_align(self.gateway_entry, align="left"), 2, 4, 1, 2)
-        pptp_table.attach(style.wrap_with_align(self.user_entry, align="left"), 2, 4, 2, 3)
-        pptp_table.attach(style.wrap_with_align(self.password_entry, align="left"), 2, 4, 3, 4)
-        pptp_table.attach(style.wrap_with_align(self.password_show, align="left"), 2, 4, 4, 5)
+        pptp_table.attach(style.wrap_with_align(self.ssid_entry, align="left"), 2, 4, 1, 2)
+        pptp_table.attach(style.wrap_with_align(self.gateway_entry, align="left"), 2, 4, 2, 3)
+        pptp_table.attach(style.wrap_with_align(self.user_entry, align="left"), 2, 4, 3, 4)
+        pptp_table.attach(style.wrap_with_align(self.password_entry, align="left"), 2, 4, 4, 5)
+        pptp_table.attach(style.wrap_with_align(self.password_show, align="left"), 2, 4, 5, 6)
         #pptp_table.attach(style.wrap_with_align(self.nt_domain_entry), 2, 4, 5, 6)
         # Advance setting button
         #advanced_button = Button(_("Advanced Setting"))
@@ -237,6 +239,7 @@ class PPTPConf(gtk.VBox):
         self.add(table_align)
         self.show_all()
         self.refresh()
+        self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
         self.gateway_entry.entry.connect("changed", self.entry_changed, "gateway")
         self.user_entry.entry.connect("changed", self.entry_changed, "user")
         self.password_entry.entry.connect("changed", self.entry_changed, "password")
@@ -252,9 +255,13 @@ class PPTPConf(gtk.VBox):
     def refresh(self):
         #print ">>>",self.vpn_setting.data
         #print self.vpn_setting.data
+        ssid = self.connection.get_setting("connection").id
         gateway = self.vpn_setting.get_data_item("gateway")
         user = self.vpn_setting.get_data_item("user")
         domain = self.vpn_setting.get_data_item("domain")
+
+        if type(self.connection) == NMRemoteConnection:
+            self.ssid_entry.set_text(ssid)
 
         if gateway:
             self.gateway_entry.set_text(gateway)
@@ -291,11 +298,15 @@ class PPTPConf(gtk.VBox):
 
     def entry_changed(self, widget, content, item):
         text = content
+        if item == "ssid":
+            self.connection.get_setting("connection").id = content
+
         if text:
             if item == "password":
                 self.vpn_setting.set_secret_item(item, text)
             else:
                 self.vpn_setting.set_data_item(item, text)
+
             
         else:
             if item == "password":
