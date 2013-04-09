@@ -64,20 +64,24 @@ class MountMedia(EjecterApp):
             if height == 75: # 无移动设备挂载.
                 print "无移动设备挂载了... .."
                 self.this.hide_menu()
-                self.tray_icon.set_visible(False)
+                self.tray_icon.hide()
+                self.tray_icon.set_no_show_all(True)
             else:
                 old_width, old_height = self.this.get_size_request()
                 if old_height != height:
-                    self.tray_icon.set_visible(True)
+                    self.tray_icon.show_all()
+                    self.tray_icon.set_no_show_all(False)
                     self.this.hide_menu()
                     self.this.set_size_request(self.width, height)
                     self.this.show_menu()
         else:
             try:
                 if height == 75:
-                    self.tray_icon.set_visible(False)
+                    self.tray_icon.hide()
+                    self.tray_icon.set_no_show_all(True)
                 else:
-                    self.tray_icon.set_visible(True)
+                    self.tray_icon.show_all()
+                    self.tray_icon.set_no_show_all(False)
             except:
                 pass
 
@@ -87,7 +91,7 @@ class MountMedia(EjecterApp):
         self.tray_icon.set_icon_theme("usb")
         #self.hide_mount_tray()
         if self.height == 75:
-            self.tray_icon.set_visible(False)
+            self.tray_icon.set_no_show_all(True)
 
     def id(slef):
         return "deepin-mount-media-hailongqiu"
