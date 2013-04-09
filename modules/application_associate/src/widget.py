@@ -3,7 +3,7 @@
 from dss import app_theme
 from dtk.ui.dialog import DialogBox, OpenFileDialog
 from dtk.ui.button import Button
-from dtk.ui.new_entry import InputEntry
+from dtk.ui.entry import InputEntry
 from dtk.ui.label import Label
 from dtk.ui.button import ImageButton
 from dtk.ui.theme import DynamicPixbuf

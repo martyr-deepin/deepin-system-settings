@@ -5,7 +5,7 @@
 from dss import app_theme
 from dtk.ui.button import Button,CheckButton
 from elements import SettingSection
-from dtk.ui.new_entry import InputEntry, PasswordEntry
+from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox

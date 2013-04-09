@@ -30,11 +30,11 @@ from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.button import Button, OffButton
 from dtk.ui.tab_window import TabBox
-from dtk.ui.new_slider import HSlider
+from dtk.ui.slider import HSlider
 from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
 from dtk.ui.box import ImageBox
-from dtk.ui.new_scalebar import HScalebar
+from dtk.ui.scalebar import HScalebar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from treeitem import MyTreeItem as TreeItem
@@ -52,30 +52,6 @@ import traceback
 
 MODULE_NAME = "sound"
 MUTE_TEXT_COLOR = "#DCDCDC"
-
-class SettingVolumeThread(td.Thread):
-    def __init__(self, obj, func, *args):
-        td.Thread.__init__(self)
-        # it need a mutex locker
-        self.mutex = td.Lock()
-        self.setDaemon(True)
-        self.obj = obj
-        self.args = args
-        self.thread_func = func
-
-    def run(self):
-        try:
-            self.setting_volume()
-        except Exception, e:
-            print "class LoadingThread got error: %s" % (e)
-            traceback.print_exc(file=sys.stdout)
-
-    def setting_volume(self):
-        # lock it
-        self.mutex.acquire()
-        self.thread_func(*self.args)
-        # unlock it
-        self.mutex.release()
 
 class SoundSetting(object):
     '''sound setting class'''
@@ -364,6 +340,7 @@ class SoundSetting(object):
         self.view_widgets["ad_input"].set_expand_column(0)
         self.view_widgets["ad_output"].set_expand_column(0)
         self.view_widgets["ad_hardware"].set_expand_column(0)
+        self.__first_time = True
         self.__set_output_status()
         self.__set_input_status()
 
@@ -373,6 +350,7 @@ class SoundSetting(object):
         self.__set_card_treeview_status()
         self.__set_output_treeview_status()
         self.__set_input_treeview_status()
+        self.__first_time = False
         # set output volume
         self.speaker_ports = None
         # set input volume
@@ -435,6 +413,9 @@ class SoundSetting(object):
         cr.fill()
 
     def speaker_toggled_cb(self, button):
+        if button.get_data("change-by-other"):
+            button.set_data("change-by-other", False)
+            return
         active = button.get_active()
         current_sink = pypulse.get_fallback_sink_index()
         self.scale_widgets["speaker"].set_enable(active)
@@ -450,6 +431,9 @@ class SoundSetting(object):
             self.set_status_text(_("Unmuted output"))
 
     def microphone_toggled_cb(self, button):
+        if button.get_data("change-by-other"):
+            button.set_data("change-by-other", False)
+            return
         active = button.get_active()
         current_source = pypulse.get_fallback_source_index()
         self.scale_widgets["microphone"].set_enable(active)
@@ -637,6 +621,8 @@ class SoundSetting(object):
             self.scale_widgets["speaker"].set_sensitive(False)
             self.scale_widgets["balance"].set_sensitive(False)
 
+            if self.button_widgets["speaker"].get_active() and not self.__first_time:
+                self.button_widgets["speaker"].set_data("change-by-other", True)
             self.button_widgets["speaker"].set_active(False)
             self.scale_widgets["speaker"].set_enable(False)
             self.scale_widgets["balance"].set_enable(False)
@@ -653,6 +639,8 @@ class SoundSetting(object):
             self.scale_widgets["balance"].set_sensitive(True)
 
             is_mute = sinks[current_sink]['mute']
+            if self.button_widgets["speaker"].get_active() == is_mute and not self.__first_time:
+                self.button_widgets["speaker"].set_data("change-by-other", True)
             self.button_widgets["speaker"].set_active(not is_mute)
             self.scale_widgets["speaker"].set_enable(not is_mute)
             self.scale_widgets["balance"].set_enable(not is_mute)
@@ -687,6 +675,8 @@ class SoundSetting(object):
             self.button_widgets["microphone"].set_sensitive(False)
             self.scale_widgets["microphone"].set_sensitive(False)
 
+            if self.button_widgets["microphone"].get_active() and not self.__first_time:
+                self.button_widgets["microphone"].set_data("change-by-other", True)
             self.button_widgets["microphone"].set_active(False)
             self.scale_widgets["microphone"].set_enable(False)
         # set input volume
@@ -700,6 +690,8 @@ class SoundSetting(object):
             self.scale_widgets["microphone"].set_sensitive(True)
 
             is_mute = sources[current_source]['mute']
+            if self.button_widgets["microphone"].get_active() == is_mute and not self.__first_time:
+                self.button_widgets["microphone"].set_data("change-by-other", True)
             self.button_widgets["microphone"].set_active(not is_mute)
             self.scale_widgets["microphone"].set_enable(not is_mute)
             source_volume = pypulse.PULSE.get_input_volume()

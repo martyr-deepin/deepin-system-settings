@@ -22,7 +22,7 @@
 
 from theme import app_theme
 
-from dtk.ui.new_entry import ShortcutKeyEntry
+from dtk.ui.entry import ShortcutKeyEntry
 from dtk.ui.label import Label
 from dtk.ui.dialog import DialogBox
 from dtk.ui.button import Button

@@ -26,7 +26,7 @@ import sys
 import os
 from dss import app_theme
 from dtk.ui.theme import ui_theme
-from dtk.ui.new_treeview import TreeView
+from dtk.ui.treeview import TreeView
 from dtk.ui.draw import  draw_line
 from dtk.ui.utils import color_hex_to_cairo, container_remove_all, get_content_size
 from deepin_utils.file import  get_parent_dir

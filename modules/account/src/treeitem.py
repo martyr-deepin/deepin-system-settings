@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.new_treeview import TreeItem, TreeView
+from dtk.ui.treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias
 from nls import _

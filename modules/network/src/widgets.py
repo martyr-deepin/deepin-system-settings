@@ -3,7 +3,7 @@
 import dss
 from dtk.ui.button import Button, CheckButton
 from dtk.ui.dialog import DialogBox
-from dtk.ui.new_entry import PasswordEntry
+from dtk.ui.entry import PasswordEntry
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 
