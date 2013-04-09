@@ -8,6 +8,7 @@ from dtk.ui.new_entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from nmlib.nm_utils import TypeConvert
+from nmlib.nm_remote_connection import NMRemoteConnection
 from nm_modules import nm_module
 
 from container import TitleBar
@@ -226,7 +227,13 @@ class DSLConf(gtk.VBox):
         self.dsl_setting = self.connection.get_setting("pppoe")
 
         # UI
-        dsl_table = gtk.Table(4, 3, False)
+        dsl_table = gtk.Table(5, 3, False)
+        ssid_label = Label(_("Setting Name:"),
+                               text_size=CONTENT_FONT_SIZE,
+                               enable_select=False,
+                               enable_double_click=False)
+        ssid_label.set_can_focus(False)
+
         username_label = Label(_("Username:"),
                                text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -246,17 +253,20 @@ class DSLConf(gtk.VBox):
         password_label.set_can_focus(False)
 
         #pack labels
-        dsl_table.attach(style.wrap_with_align(username_label, width=self.LEFT_PADDING), 0, 1 , 0, 1)
-        dsl_table.attach(style.wrap_with_align(service_label, width=self.LEFT_PADDING), 0, 1, 1, 2)
-        dsl_table.attach(style.wrap_with_align(password_label, width=self.LEFT_PADDING), 0, 1, 2, 3)
+        dsl_table.attach(style.wrap_with_align(ssid_label, width=self.LEFT_PADDING), 0, 1 , 0, 1)
+        dsl_table.attach(style.wrap_with_align(username_label, width=self.LEFT_PADDING), 0, 1 , 1, 2)
+        dsl_table.attach(style.wrap_with_align(service_label, width=self.LEFT_PADDING), 0, 1, 2, 3)
+        dsl_table.attach(style.wrap_with_align(password_label, width=self.LEFT_PADDING), 0, 1, 3, 4)
 
         # entries
+        self.ssid_entry = InputEntry()
+        self.ssid_entry.set_size(220 ,22)
         self.username_entry = InputEntry()
-        self.username_entry.set_size(220,22)
+        self.username_entry.set_size(220 ,22)
         self.service_entry = InputEntry()
-        self.service_entry.set_size(220,22 )
+        self.service_entry.set_size(220 ,22)
         self.password_entry = PasswordEntry()
-        self.password_entry.set_size(220, 22)
+        self.password_entry.set_size(220 ,22)
         self.show_password = CheckButton(_("Show Password"), font_size=CONTENT_FONT_SIZE, padding_x=0)
         def show_password(widget):
             if widget.get_active():
@@ -266,10 +276,11 @@ class DSLConf(gtk.VBox):
         self.show_password.connect("toggled", show_password)
 
         #pack entries
-        dsl_table.attach(style.wrap_with_align(self.username_entry, align="left"), 1, 3, 0, 1)
-        dsl_table.attach(style.wrap_with_align(self.service_entry, align="left"), 1, 3, 1, 2)
-        dsl_table.attach(style.wrap_with_align(self.password_entry, align="left"), 1, 3, 2, 3)
-        dsl_table.attach(style.wrap_with_align(self.show_password, align="left"), 1,3,3,4)
+        dsl_table.attach(style.wrap_with_align(self.ssid_entry, align="left"), 1, 3, 0, 1)
+        dsl_table.attach(style.wrap_with_align(self.username_entry, align="left"), 1, 3, 1, 2)
+        dsl_table.attach(style.wrap_with_align(self.service_entry, align="left"), 1, 3, 2, 3)
+        dsl_table.attach(style.wrap_with_align(self.password_entry, align="left"), 1, 3, 3, 4)
+        dsl_table.attach(style.wrap_with_align(self.show_password, align="left"), 1, 3, 4, 5)
 
         # TODO UI change
         style.draw_background_color(self)
@@ -283,6 +294,7 @@ class DSLConf(gtk.VBox):
         self.show_all()
         self.refresh()
 
+        self.ssid_entry.entry.connect("changed", self.save_changes, "ssid")
         self.username_entry.entry.connect("changed", self.save_changes, "username")
         self.service_entry.entry.connect("changed", self.save_changes, "service")
         self.password_entry.entry.connect("changed", self.save_changes, "password")
@@ -290,6 +302,9 @@ class DSLConf(gtk.VBox):
     def refresh(self):
         #print ">>>",self.connection.settings_dict
         # get dsl settings
+        ssid = self.connection.get_setting("connection").id
+        if type(self.connection) == NMRemoteConnection:
+            self.ssid_entry.set_text(ssid)
         username = self.dsl_setting.username
         service = self.dsl_setting.service
         (setting_name, method) = self.connection.guess_secret_info() 
@@ -313,7 +328,10 @@ class DSLConf(gtk.VBox):
         setattr(self.dsl_setting, "password", str(password))
 
     def save_changes(self, widget, value, types):
-        print types," dsl changed"
+        if types == "ssid":
+            self.connection.get_setting("connection").id = value
+            check_settings(self.connection, self.set_button)
+            return
         if value:
             setattr(self.dsl_setting, types, value)
         else:

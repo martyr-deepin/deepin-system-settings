@@ -419,7 +419,7 @@ class WirelessSection(Section, WirelessDevice):
 
     def create_a_hidden_network(self, widget, c):
         from wlan_config import HiddenSetting
-        Dispatcher.to_setting_page(HiddenSetting(None))
+        Dispatcher.to_setting_page(HiddenSetting(None), False)
 
     def ap_added_callback(self, widget):
         if self.wireless.get_active():
@@ -718,7 +718,7 @@ class DSLSection(Section):
         return map(lambda c: DSLItem(c, None), self.connections)
 
     def jumpto_setting(self):
-        Dispatcher.to_setting_page(DSLSetting())
+        Dispatcher.to_setting_page(DSLSetting(),hide_left=True)
         setting = nm_module.slider.get_page_by_name("setting")
         setting.create_new_connection()
 
@@ -797,7 +797,7 @@ class VpnSection(Section):
         return map(lambda c: VPNItem(c, None), self.connection)
     
     def jumpto_cb(self):
-        Dispatcher.to_setting_page(VPNSetting())
+        Dispatcher.to_setting_page(VPNSetting(), True)
         setting = nm_module.slider.get_page_by_name("setting")
         setting.create_new_connection()
         
@@ -914,7 +914,7 @@ class MobileSection(Section, MobileDevice):
         return map(lambda c: MobileItem(c, None), self.devices)
     
     def jumpto_cb(self):
-        Dispatcher.to_setting_page(MobileSetting())
+        Dispatcher.to_setting_page(MobileSetting(), False)
 
 class Proxy(gtk.VBox):
     def __init__(self):
@@ -1049,8 +1049,8 @@ class Network(object):
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-    def slide_to_setting_page(self, widget, setting_module):
-        self.setting_page_ui.load_module(setting_module)
+    def slide_to_setting_page(self, widget, setting_module, hide_left):
+        self.setting_page_ui.load_module(setting_module, hide_left)
 
     def refresh(self):
         #self.init_sections()
