@@ -450,7 +450,7 @@ class DesktopView(gtk.VBox):
         return Label(text, None, text_size, align, 200, False, False, False)
 
     def __setup_combo(self, items=[]):
-        combo = ComboBox(items, None, 0, 285)
+        combo = ComboBox(items, None, 0, max_width = 285, fixed_width = 285)
         combo.set_size_request(-1, WIDGET_HEIGHT)
         return combo
 

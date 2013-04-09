@@ -310,7 +310,7 @@ class DatetimeView(gtk.HBox):
             _("TimeZone"), 
             TEXT_WINDOW_TOP_PADDING)
         self.timezone_combo_align = self.__setup_align(padding_top = 6)
-        self.timezone_combo = ComboBox(self.timezone_items, max_width = 325)
+        self.timezone_combo = ComboBox(self.timezone_items, max_width = 340, fixed_width = 340)
         self.timezone_combo.set_select_index(self.__deepin_dt.get_gmtoff() + 11)
         self.timezone_combo.connect("item-selected", self.__combo_item_selected)
         self.timezone_combo_align.add(self.timezone_combo)

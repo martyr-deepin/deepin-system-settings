@@ -50,7 +50,7 @@ class DeletePage(gtk.VBox):
         self.delete_view_sw = self.delete_view.get_scrolled_window()
         
         self.action_align = gtk.Alignment()
-        self.action_align.set_padding(5, 5, 500, 5)
+        self.action_align.set_padding(5, 5, 520, 5)
         self.action_box = gtk.HBox(spacing = 10)
         self.back_button = Button(_("Back"))
         self.back_button.set_size_request(80, WIDGET_HEIGHT)
@@ -79,6 +79,7 @@ class DeletePage(gtk.VBox):
             self.select_all_button.set_label(_("UnSelect All"))                 
         else:                                                                   
             self.select_all_button.set_label(_("Select All"))
+        self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __on_select_all(self, widget):
         self.delete_view.select_all()
@@ -86,6 +87,7 @@ class DeletePage(gtk.VBox):
             self.select_all_button.set_label(_("UnSelect All"))
         else:
             self.select_all_button.set_label(_("Select All"))
+        self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __delete_confirm(self):
         self.delete_view.delete_wallpaper()
@@ -112,6 +114,7 @@ class DeletePage(gtk.VBox):
         self.theme = theme
         self.delete_view.set_theme(self.theme)
         self.select_all_button.set_label(_("Select All"))
+        self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
         
     def draw_mask(self, cr, x, y, w, h):
         '''
