@@ -48,13 +48,20 @@ class NMDevice(NMObject):
 
         self.prop_list = ["Capabilities", "DeviceType", "ActiveConnection", "Dhcp4Config", "Dhcp6Config", "Driver", "FirmwareMissing", "Interface", "IpInterface", "Ip4Config", "Ip6Config", "Managed", "State"]
 
-        self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, 
+        self.state_match = self.bus.add_signal_receiver(self.state_changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "StateChanged")
 
         self.init_nmobject_with_properties()
         self.udev_device = ""
         self.state_id = 0
         self.new_state = 0
+
+    def remove_signals(self):
+        try:
+            self.bus.remove_signal_receiver(self.state_match, dbus_interface = self.object_interface,
+                                         path = self.object_path, signal_name = "StateChanged")
+        except:
+            print "remove signals failed"
 
     def get_capabilities(self):
         return self.properties["Capabilities"]

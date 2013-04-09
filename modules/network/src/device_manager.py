@@ -3,6 +3,13 @@
 
 from nm_modules import nm_module
 from helper import Dispatcher
+import logging
+
+FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
+logging.basicConfig(format=FORMAT)
+
+log = logging.getLogger(__name__)
+
 
 class DeviceManager(object):
 
@@ -76,6 +83,7 @@ class DeviceManager(object):
             for device in self.wired_devices:
                 if device not in self.connected_device:
                     map(lambda s: self.__connect(device, s, module, "wired"), self.__signal_list)
+                    log.info("wired signal add to ", device)
                     self.connected_device.append(device)
 
     def load_wireless_listener(self, module):
@@ -83,12 +91,16 @@ class DeviceManager(object):
             for device in self.wireless_devices:
                 if device not in self.connected_device:
                     map(lambda s: self.__connect(device, s, module, "wireless"), self.__signal_list)
+                    log.info("wireless signal add to ", device)
                     self.connected_device.append(device)
 
     def load_mm_listener(self, module):
         if self.mm_devices:
             for d in self.mm_devices:
-                map(lambda s: self.__connect(d, s, module, "mm") ,self.__signal_list)
+                if d not in self.connected_device:
+                    map(lambda s: self.__connect(d, s, module, "mm") ,self.__signal_list)
+                    log.info("mobile signal add to ", d)
+                    self.connected_device.append(d)
 
     def __connect(self, sender, signal, module, type):
         sender.connect(signal, getattr(module, type + "_" + signal))

@@ -287,6 +287,10 @@ class NMClient(NMObject):
 
     def device_removed_cb(self, device_object_path):
         self.emit("device-removed", device_object_path)
+        device = get_cache().getobject(device_object_path)
+        device.remove_signals()
+        spec_device = get_cache().get_spec_object(device_object_path)
+        spec_device.remove_signals()
 
     def permisson_changed_cb(self):
         self.emit("permission-changed")

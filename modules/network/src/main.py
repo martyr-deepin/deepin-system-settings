@@ -24,12 +24,12 @@ slider = nm_module.slider
     #print "#service start#"
     #nm_module.update_cache()
     #start_ui()
-Dispatcher.connect("service-start-do-more", lambda w: start_ui())
 
-def start_ui():
+def start_ui(network):
     print "start ui"
-    slider.init_dict()
-    Network()
+    #slider.init_dict()
+    network.refresh()
+
 
     #slider.show_all()
 
@@ -41,7 +41,8 @@ if __name__ == '__main__':
     module_frame.add(slider)
 
     if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
-        start_ui()
+        n = Network()
+        Dispatcher.connect("service-start-do-more", lambda w: start_ui(n))
         
         def message_handler(*message):
             (message_type, message_content) = message

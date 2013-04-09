@@ -213,6 +213,7 @@ class WiredSection(Section, WiredDevice):
             return False
 
     def init_state(self):
+        print "init wired state"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
             if self.get_state(self.wired_devices):
@@ -234,6 +235,7 @@ class WiredSection(Section, WiredDevice):
     def device_added(self, widget, device):
         print "device_added"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
+        print ">>>>",self.wired_devices
         self._init_signals()
         if self.wire.get_active():
             self.wire.set_active(True, emit=True)
@@ -386,6 +388,7 @@ class WirelessSection(Section, WirelessDevice):
             return False
 
     def init_state(self):
+        self.ap_list = []
         self.wireless_devices = net_manager.device_manager.get_wireless_devices()
         if self.wireless_devices:
             self.tree.connect("single-click-item", self.set_selected_item)
@@ -978,14 +981,14 @@ class Network(object):
         self.__init_ui()
 
         slider._append_page(self.eventbox, "main")
-        slider.connect_after("show", self.init_sections_state)
+        slider.connect_after("show", lambda w: self.init_sections_state())
         slider._set_to_page("main")
         slider.show_all()
         Dispatcher.connect("to-setting-page", self.slide_to_setting_page)
         Dispatcher.connect("recheck-section", lambda w, i: self.__init_sections(0))
         Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
 
-    def init_sections_state(self, widget):
+    def init_sections_state(self):
         print "Debug :: ui finish, ======================"
         net_manager.init_devices()
         for section in self.vbox.get_children():
@@ -1055,6 +1058,7 @@ class Network(object):
     def refresh(self):
         #self.init_sections()
         self.__init_sections(-1)
+        self.init_sections_state()
         self.eventbox.set_above_child(False)
         self.eventbox.queue_draw()
 
