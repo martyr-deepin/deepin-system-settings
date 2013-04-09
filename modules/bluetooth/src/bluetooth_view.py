@@ -382,6 +382,10 @@ class BlueToothView(gtk.VBox):
         self.enable_align = self.__setup_align()
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.enable_open_label = self.__setup_label(_("Bluetooth Get Powered"))
+        if self.my_bluetooth.adapter:
+            self.enable_open_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        else:
+            self.enable_open_label.set_sensitive(False)
         self.enable_open_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.enable_open_toggle = self.__setup_toggle()
         if self.my_bluetooth.adapter:
@@ -398,6 +402,10 @@ class BlueToothView(gtk.VBox):
         self.display_align = self.__setup_align()
         self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.display_device_label = self.__setup_label(_("Device Shown Name"))
+        if self.my_bluetooth.adapter:
+            self.display_device_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        else:
+            self.display_device_label.set_sensitive(False)
         self.display_device_entry = InputEntry()
         if self.my_bluetooth.adapter:
             self.display_device_entry.set_text(self.my_bluetooth.adapter.get_name())
@@ -412,6 +420,10 @@ class BlueToothView(gtk.VBox):
         self.search_align = self.__setup_align()
         self.search_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.search_label = self.__setup_label(_("Be Discoverable"))
+        if self.my_bluetooth.adapter:
+            self.search_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        else:
+            self.search_label.set_sensitive(False)
         self.search_timeout_align = self.__setup_align(padding_top = 0, padding_left = 0)
         self.search_timeout_label = self.__setup_label("", width = 110, align = ALIGN_START)
         self.search_timeout_align.add(self.search_timeout_label)
@@ -555,9 +567,14 @@ class BlueToothView(gtk.VBox):
 
         if object == "enable_open":
             self.my_bluetooth.adapter.set_powered(widget.get_active())
+            self.enable_open_label.set_sensitive(widget.get_active())
+            self.display_device_label.set_sensitive(widget.get_active())
+            self.search_label.set_sensitive(widget.get_active())
             self.display_align.set_sensitive(widget.get_active())
+            self.device_iconview.set_sensitive(widget.get_active())
             self.search_align.set_sensitive(widget.get_active())
             self.search_timeout_label.set_child_visible(False)
+            self.search_button.set_sensitive(widget.get_active())
             return
 
         if object == "search":
