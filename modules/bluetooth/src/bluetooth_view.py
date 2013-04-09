@@ -377,8 +377,18 @@ class BlueToothView(gtk.VBox):
         '''
         enable open
         '''
-        self.title_align = self.__setup_title_align(
-            app_theme.get_pixbuf("bluetooth/enable_open.png"), _("Bluetooth"))
+        if self.my_bluetooth.adapter:
+            if self.my_bluetooth.adapter.get_powered():
+                self.title_align, self.title_label = self.__setup_title_align(
+                    app_theme.get_pixbuf("bluetooth/enable_open.png"), _("Bluetooth"))
+                self.title_label.set_sensitive(True)
+            else:
+                self.title_align, self.title_label = self.__setup_title_align(  
+                    app_theme.get_pixbuf("bluetooth/enable_open_disable.png"), _("Bluetooth"))
+        else:
+            self.title_align, self.title_label = self.__setup_title_align(  
+                app_theme.get_pixbuf("bluetooth/enable_open_disable.png"), _("Bluetooth"))
+            self.title_label.set_sensitive(False)
         self.enable_align = self.__setup_align()
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.enable_open_label = self.__setup_label(_("Bluetooth Get Powered"))
@@ -525,7 +535,7 @@ class BlueToothView(gtk.VBox):
         self.__widget_pack_start(title_box, [image, label])                     
         self.__widget_pack_start(align_box, [title_box, separator])             
         align.add(align_box)                                                    
-        return align
+        return align, label
 
     def __get_devices(self):
         devices = self.my_bluetooth.get_devices()
