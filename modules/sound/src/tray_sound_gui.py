@@ -44,6 +44,8 @@ import gobject
 import pypulse
 import traceback
 import psutil
+import dtk_cairo_blur
+import cairo
 
 gtk.gdk.threads_init()
 
@@ -66,6 +68,7 @@ class TrayGui(gtk.VBox):
         self.stream_process = {}
 
         self.__mpris_total_height = 0
+        self.mpris_base_height = 50
         self.mpris_list = {}
         self.mpris_stream = {}
         self.mpris2 = Mpris2()
@@ -73,12 +76,6 @@ class TrayGui(gtk.VBox):
         self.mpris2.connect("removed", self.mpris2_removed_cb)
         self.mpris2.connect("changed", self.mpris2_changed_cb)
 
-        self.play_img = app_theme.get_pixbuf("sound/media-playback-start.png").get_pixbuf()
-        self.pause_img = app_theme.get_pixbuf("sound/media-playback-pause.png").get_pixbuf()
-        self.prev_img = app_theme.get_pixbuf("sound/media-skip-backward.png").get_pixbuf()
-        self.next_img = app_theme.get_pixbuf("sound/media-skip-forward.png").get_pixbuf()
-        self.stop_img = app_theme.get_pixbuf("sound/media-playback-stop.png").get_pixbuf()
- 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
         #separator_color = [(0, ("#000000", 0.3)), (0.5, ("#000000", 0.2)), (1, ("#777777", 0.0))]
@@ -442,10 +439,11 @@ class TrayGui(gtk.VBox):
         vbox = gtk.VBox()
         img = gtk.image_new_from_icon_name(obj.mpris_process[pid]['property']['DesktopEntry'], gtk.ICON_SIZE_MENU)
         # application title
-        if obj.mpris_process[pid]['property']['PlaybackStatus'] == 'Stopped':
-            app_title = obj.mpris_process[pid]['property']['Identity']
-        else:
-            app_title = "%s - %s" % (obj.mpris_process[pid]['property']['Identity'], _(obj.mpris_process[pid]['property']['PlaybackStatus']))
+        app_title = obj.mpris_process[pid]['property']['Identity']
+        #if obj.mpris_process[pid]['property']['PlaybackStatus'] == 'Stopped':
+            #app_title = obj.mpris_process[pid]['property']['Identity']
+        #else:
+            #app_title = "%s - %s" % (obj.mpris_process[pid]['property']['Identity'], _(obj.mpris_process[pid]['property']['PlaybackStatus']))
         label = Label(app_title, label_width=115)
         hbox = gtk.HBox(False, 5)
         hbox.pack_start(self.__make_align(img), False, False)
@@ -455,45 +453,47 @@ class TrayGui(gtk.VBox):
         # metadata info
         meta_box = gtk.HBox(False, 10)
         xesam_vbox = gtk.VBox(False)
-        art_img = gtk.Image()
-        art_img.set_size_request(48, 48)
+        #art_img = gtk.Image()
+        art_img = gtk.EventBox()
+        art_img.set_size_request(34, 34)
+        art_img.connect("expose-event", self.__draw_mpris_art_img)
 
-        xesam_title = Label("", label_width=80)
-        xesam_artist = Label("", label_width=80)
-        xesam_album = Label("", label_width=80)
-        xesam_vbox.pack_start(xesam_title, False, False)
-        xesam_vbox.pack_start(xesam_artist, False, False)
-        xesam_vbox.pack_start(xesam_album, False, False)
-        meta_box.pack_start(art_img, False, False)
+        xesam_title = Label("", label_width=75)
+        xesam_artist = Label("", label_width=75)
+        xesam_album = Label("", label_width=75)
+        xesam_vbox.pack_start(xesam_title)
+        xesam_vbox.pack_start(xesam_artist)
+        #xesam_vbox.pack_start(xesam_album)
+        meta_box.pack_start(self.__make_align(art_img, padding_left=21, height=34), False, False)
         meta_box.pack_start(xesam_vbox)
 
         self.mpris_list[pid] = {}
         # mpris control
-        scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=1)
-        scale.set_size_request(100, 10)
+        scale = HScalebar(app_theme.get_pixbuf("sound/point.png"), show_value=False, format_value="%", value_min=0, value_max=1, line_height=3)
+        scale.set_size_request(70, 10)
         prev_bt = gtk.Button()
         pause_bt = gtk.Button()
         stop_bt = gtk.Button()
         next_bt = gtk.Button()
 
-        prev_bt.set_size_request(16, 16)
-        pause_bt.set_size_request(16, 16)
-        stop_bt.set_size_request(16, 16)
-        next_bt.set_size_request(16, 16)
+        prev_bt.set_size_request(20, 22)
+        pause_bt.set_size_request(29, 30)
+        #stop_bt.set_size_request(16, 16)
+        next_bt.set_size_request(20, 22)
 
-        prev_bt.pixbuf = self.prev_img
+        prev_bt.pixbuf = "previous"
         if obj.mpris_process[pid]['property']['PlaybackStatus'] == 'Playing':
-            pause_bt.pixbuf = self.pause_img
+            pause_bt.pixbuf = "pause"
         else:
-            pause_bt.pixbuf = self.play_img
-        stop_bt.pixbuf = self.stop_img
-        next_bt.pixbuf = self.next_img
+            pause_bt.pixbuf = "play"
+        #stop_bt.pixbuf = self.stop_img
+        next_bt.pixbuf = "next"
 
         scale.set_value(obj.mpris_process[pid]['property']['Volume'])
 
         prev_bt.connect("clicked", self.__mpris_prev_cb, obj, pid)
         pause_bt.connect("clicked", self.__mpris_pause_cb, obj, pid)
-        stop_bt.connect("clicked", self.__mpris_stop_cb, obj, pid)
+        #stop_bt.connect("clicked", self.__mpris_stop_cb, obj, pid)
         next_bt.connect("clicked", self.__mpris_next_cb, obj, pid)
         prev_bt.connect("expose-event", self.__draw_mpris_button_cb)
         pause_bt.connect("expose-event", self.__draw_mpris_button_cb)
@@ -504,10 +504,10 @@ class TrayGui(gtk.VBox):
         hbox = gtk.HBox()
         hbox.pack_start(self.__make_align(prev_bt), False, False)
         hbox.pack_start(self.__make_align(pause_bt), False, False)
-        hbox.pack_start(self.__make_align(stop_bt), False, False)
+        #hbox.pack_start(self.__make_align(stop_bt), False, False)
         hbox.pack_start(self.__make_align(next_bt), False, False)
         hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, height=25), False, False)
-        vbox.pack_start(hbox, False, False)
+        vbox.pack_start(self.__make_align(hbox, xalign=0.5, height=-1), False, False)
 
         self.mpris_list[pid]['app_title'] = label
         self.mpris_list[pid]['prev'] = prev_bt
@@ -522,12 +522,12 @@ class TrayGui(gtk.VBox):
         self.mpris_list[pid]['meta_album'] = xesam_album
         self.mpris_list[pid]['container'] = vbox
         if not obj.mpris_process[pid]['property']['Metadata']:
-            self.mpris_list[pid]['height'] = 50
+            self.mpris_list[pid]['height'] = self.mpris_base_height
         else:
             vbox.pack_start(meta_box, False, False)
             vbox.reorder_child(meta_box, 1)
             self.__set_mpris_meta_info(pid)
-            self.mpris_list[pid]['height'] = 50 + 48
+            self.mpris_list[pid]['height'] = self.mpris_base_height + 34
         self.__mpris_total_height += self.mpris_list[pid]['height']
         # delete playback_stream widget
         if pid in self.stream_process:
@@ -545,14 +545,38 @@ class TrayGui(gtk.VBox):
         self.adjust_size()
         self.emit("stream-changed")
 
+    def __draw_mpris_art_img(self, widget, event):
+        x, y, w, h = widget.allocation
+        cr = widget.window.cairo_create()
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h) 
+        surface_cr = gtk.gdk.CairoContext(cairo.Context(surface))
+        surface_cr.set_source_rgba(0, 0, 0, 1.0)
+        surface_cr.rectangle(6, 6, w - 12, h - 12)
+        surface_cr.stroke()
+
+        dtk_cairo_blur.gaussian_blur(surface, 3)
+        cr.set_source_surface(surface, 0, 0)
+        cr.paint()
+
+        cr.set_source_rgb(1, 1, 1)
+        cr.rectangle(2, 2, w-4, h-4)
+        cr.fill()
+
+        if widget.pixbuf:
+            cr.set_source_pixbuf(widget.pixbuf, 4, 4)
+            cr.paint()
+        return True
+
     def __set_mpris_meta_info(self, pid):
         if 'mpris:artUrl' in self.mpris2.mpris_process[pid]['property']['Metadata']:
             arturl = urlparse(self.mpris2.mpris_process[pid]['property']['Metadata']['mpris:artUrl'])
             if arturl.scheme == 'file' and os.path.exists(arturl.path):
-                art_pixbuf = gtk.gdk.pixbuf_new_from_file(arturl.path).scale_simple(48, 48, gtk.gdk.INTERP_TILES)
-                self.mpris_list[pid]['meta_img'].set_from_pixbuf(art_pixbuf)
+                art_pixbuf = gtk.gdk.pixbuf_new_from_file(arturl.path).scale_simple(26, 26, gtk.gdk.INTERP_TILES)
+                #self.mpris_list[pid]['meta_img'].set_from_pixbuf(art_pixbuf)
+                self.mpris_list[pid]['meta_img'].pixbuf = art_pixbuf
         else:
-            self.mpris_list[pid]['meta_img'].clear()
+            self.mpris_list[pid]['meta_img'].pixbuf = None
+        self.mpris_list[pid]['meta_img'].queue_draw()
         if 'xesam:title' in self.mpris2.mpris_process[pid]['property']['Metadata']:
             self.mpris_list[pid]['meta_title'].set_text(
                 markup_escape_text(self.mpris2.mpris_process[pid]['property']['Metadata']['xesam:title']))
@@ -596,21 +620,18 @@ class TrayGui(gtk.VBox):
         if 'PlaybackStatus' in changed:
             # application title && hide meta info
             if changed['PlaybackStatus'] == 'Stopped':
-                self.mpris_list[pid]['app_title'].set_text(obj.mpris_process[pid]['property']['Identity'])
                 if self.mpris_list[pid]['meta'] in self.mpris_list[pid]['container'].get_children():
                     self.mpris_list[pid]['container'].remove(self.mpris_list[pid]['meta'])
                     self.__mpris_total_height -= self.mpris_list[pid]['height']
-                    self.mpris_list[pid]['height'] = 50
+                    self.mpris_list[pid]['height'] = self.mpris_base_height
                     self.__mpris_total_height += self.mpris_list[pid]['height']
                     self.adjust_size()
                     self.emit("stream-changed")
-            else:
-                self.mpris_list[pid]['app_title'].set_text("%s - %s" % (obj.mpris_process[pid]['property']['Identity'], _(changed['PlaybackStatus'])))
             # button image
             if changed['PlaybackStatus'] == 'Playing':
-                self.mpris_list[pid]['pause'].pixbuf = self.pause_img
+                self.mpris_list[pid]['pause'].pixbuf = "pause"
             else:
-                self.mpris_list[pid]['pause'].pixbuf = self.play_img
+                self.mpris_list[pid]['pause'].pixbuf = "play"
             self.mpris_list[pid]['pause'].queue_draw()
         if 'Metadata' in changed and obj.mpris_process[pid]['property']['PlaybackStatus'] != 'Stopped':
             self.__set_mpris_meta_info(pid)
@@ -619,7 +640,7 @@ class TrayGui(gtk.VBox):
                 self.mpris_list[pid]['container'].reorder_child(self.mpris_list[pid]['meta'], 1)
                 self.mpris_list[pid]['container'].show_all()
                 self.__mpris_total_height -= self.mpris_list[pid]['height']
-                self.mpris_list[pid]['height'] = 50 + 48
+                self.mpris_list[pid]['height'] = self.mpris_base_height + 34
                 self.__mpris_total_height += self.mpris_list[pid]['height']
                 self.adjust_size()
                 self.emit("stream-changed")
@@ -676,8 +697,15 @@ class TrayGui(gtk.VBox):
             print e
         
     def __draw_mpris_button_cb(self, bt, event):
+        if bt.get_state() == gtk.STATE_PRELIGHT:
+            pixbuf = app_theme.get_pixbuf("sound/%s_hover.png" % bt.pixbuf).get_pixbuf()
+        elif bt.get_state() == gtk.STATE_ACTIVE:
+            pixbuf = app_theme.get_pixbuf("sound/%s_press.png" % bt.pixbuf).get_pixbuf()
+        else:
+            pixbuf = app_theme.get_pixbuf("sound/%s_normal.png" % bt.pixbuf).get_pixbuf()
         cr = bt.window.cairo_create()
-        cr.set_source_pixbuf(bt.pixbuf, bt.allocation.x, bt.allocation.y)
+        pix_height = pixbuf.get_height()
+        cr.set_source_pixbuf(pixbuf, bt.allocation.x, bt.allocation.y + (bt.allocation.height - pix_height) / 2)
         cr.paint()
         return True
 
