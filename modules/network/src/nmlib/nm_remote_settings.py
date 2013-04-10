@@ -50,6 +50,7 @@ class NMRemoteSettings(NMObject):
 
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
+        self.prop_list = ["CanModify", "Hostname"]
         self.init_nmobject_with_properties()
         self.__init_network_config()
 
