@@ -114,6 +114,8 @@ class TrayBluetoothPlugin(object):
         self.ori_height = 95
         self.height = self.ori_height
         self.device_items = []
+        if self.my_bluetooth.adapter == None:
+            self.tray_icon.set_visible(False)
 
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
