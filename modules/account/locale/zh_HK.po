@@ -48,6 +48,9 @@ msgstr "設置頭像"
 msgid "Account"
 msgstr "帳號"
 
+msgid "User Accounts"
+msgstr "帳戶設置"
+
 #: ../src/main.py:100 ../src/main.py:108
 msgid "Account type"
 msgstr "帳號類型"
@@ -74,15 +77,15 @@ msgstr "管理員"
 
 #: ../src/main.py:138 ../src/main.py:533 ../src/main.py:667
 #: ../src/main.py:1066
-msgid "Enable this account"
+msgid "Enable"
 msgstr "啟用此帳號"
 
 #: ../src/main.py:139
-msgid "Add a account"
+msgid "Add"
 msgstr "添加帳戶"
 
 #: ../src/main.py:140
-msgid "Delete the account"
+msgid "Delete"
 msgstr "刪除帳戶"
 
 #: ../src/main.py:141
@@ -130,7 +133,7 @@ msgid "Disable %s"
 msgstr "禁用%s"
 
 #: ../src/main.py:530 ../src/main.py:669 ../src/main.py:1068
-msgid "Disable this account"
+msgid "Disable"
 msgstr "禁用此帳號"
 
 #: ../src/main.py:532

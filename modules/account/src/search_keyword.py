@@ -30,4 +30,5 @@ keywords = [("__account_id1", _("Automatic login")),
             ("__account_id6", _("Change Password")), 
             ("__account_id7", _("Set Picture")), 
             ("__account_id8", _("Account")), 
+            ("__account_id9", _("User Accounts")), 
            ]

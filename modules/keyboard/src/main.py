@@ -40,6 +40,7 @@ from dtk.ui.scalebar import HScalebar
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, set_clickable_cursor, container_remove_all
+from dtk.ui.constant import ALIGN_END
 from treeitem import (SelectItem, LayoutItem,
                       AccelBuffer, ShortcutItem)
 from treeitem import MyTreeView as TreeView
@@ -111,11 +112,15 @@ class KeySetting(object):
         self.image_widgets["touchpad"] = ImageBox(app_theme.get_pixbuf("%s/typing.png" % MODULE_NAME))
         self.image_widgets["layout"] = ImageBox(app_theme.get_pixbuf("%s/layout.png" % MODULE_NAME))
         # label init
-        self.label_widgets["repeat"] = Label(_("Repeat"),
-            app_theme.get_color("globalTitleForeground"),
-            text_size=title_item_font_size, enable_select=False, enable_double_click=False)
-        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
-        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"), text_size=option_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["repeat"] = Label(_("Repeat"), app_theme.get_color("globalTitleForeground"),
+                                             text_size=title_item_font_size, enable_select=False,
+                                             enable_double_click=False)
+        self.label_widgets["repeat_delay"] = Label(_("Repeat Delay"), text_size=option_item_font_size,
+                                                   text_x_align=ALIGN_END, enable_select=False,
+                                                   enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["repeat_interval"] = Label(_("Repeat Interval"), text_size=option_item_font_size,
+                                                      text_x_align=ALIGN_END, enable_select=False,
+                                                      enable_double_click=False, fixed_width=STANDARD_LINE)
         self.label_widgets["repeat_fast"] = Label(_("Fast"), enable_select=False, enable_double_click=False)
         self.label_widgets["repeat_slow"] = Label(_("Slow"), enable_select=False, enable_double_click=False)
         self.label_widgets["repeat_long"] = Label(_("Long"), enable_select=False, enable_double_click=False)
@@ -132,7 +137,8 @@ class KeySetting(object):
             app_theme.get_color("globalTitleForeground"),
             text_size=title_item_font_size, enable_select=False, enable_double_click=False)
 
-        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
+        self.label_widgets["relevant"] = Label(_("Relevant Settings"), text_size=title_item_font_size,
+                                               enable_select=False, enable_double_click=False, fixed_width=180)
         # button init
         self.button_widgets["repeat_test_entry"] = InputEntry()
         self.button_widgets["repeat_entry_buffer"] = self.button_widgets["repeat_test_entry"].entry.get_buffer()
@@ -145,10 +151,10 @@ class KeySetting(object):
         # relevant settings button
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Settings"),
             DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
-            enable_select=False, enable_double_click=False)
+            enable_select=False, enable_double_click=False, fixed_width=180)
         self.button_widgets["touchpad_setting"] = Label("<u>%s</u>" % _("TouchPad Settings"),
             DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
-            enable_select=False, enable_double_click=False)
+            enable_select=False, enable_double_click=False, fixed_width=180)
         self.button_widgets["set_to_default"] = Button(_("Reset"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
@@ -194,7 +200,8 @@ class KeySetting(object):
         #####################################
         # Layout widgets create
         # label
-        self.label_widgets["layout_current_layout"] = Label("", enable_select=False, enable_double_click=False)
+        self.label_widgets["layout_current_layout"] = Label("", text_x_align=ALIGN_END,
+                                                            enable_select=False, enable_double_click=False)
         # button init
         self.button_widgets["layout_add"] = Button(_("Replace"))
         self.button_widgets["layout_remove"] = Button(_("Remove"))
@@ -447,6 +454,7 @@ class KeySetting(object):
         # table attach
         #self.container_widgets["layout_table"].set_size_request(STANDARD_LINE+HSCALEBAR_WIDTH-TEXT_WINDOW_LEFT_PADDING-OPTION_LEFT_PADDING, -1)
         self.container_widgets["layout_table"].set_col_spacings(WIDGET_SPACING)
+        self.label_widgets["layout_current_layout"].set_fixed_width(STANDARD_LINE+HSCALEBAR_WIDTH-self.button_widgets["layout_add"].get_size_request()[0])
         layout_align = self.__make_align(self.label_widgets["layout_current_layout"],
             width=STANDARD_LINE+HSCALEBAR_WIDTH-self.button_widgets["layout_add"].get_size_request()[0])
         self.container_widgets["layout_table"].attach(
@@ -548,8 +556,7 @@ class KeySetting(object):
         ########################
         # layout widget signal
         # toolbutton
-        self.button_widgets["layout_add"].connect("clicked",
-            lambda b: self.__create_add_layout_dialog())
+        self.button_widgets["layout_add"].connect("clicked", lambda b: self.__create_add_layout_dialog())
         settings.XKB_KEYBOARS_SETTINGS.connect("changed", self.xkb_keyboard_setting_changed_cd)
         ########################
         # shortcuts widget signal

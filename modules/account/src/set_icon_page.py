@@ -146,11 +146,11 @@ class IconSetPage(gtk.VBox):
         self.history_list_hbox.set_size_request(-1, 56)
         self.history_list_hbox.set_spacing(4)
 
-        main_vbox.pack_start(tools.make_align(Label(_("Choose a new picture for your account"), enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("Choose a new picture for your account"), label_width=460, enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
         main_vbox.pack_start(tools.make_align(self.icon_list_tabel), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 
-        main_vbox.pack_start(tools.make_align(Label(_("Previously used pictures"), enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
+        main_vbox.pack_start(tools.make_align(Label(_("Previously used pictures"), label_width=460, enable_select=False, enable_double_click=False), height=CONTAINNER_HEIGHT), False, False)
         main_vbox.pack_start(tools.make_align(self.history_list_hbox), False, False)
         main_vbox.pack_start(tools.make_align(height=20), False, False)
 

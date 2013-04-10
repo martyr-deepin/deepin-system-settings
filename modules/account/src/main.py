@@ -37,6 +37,7 @@ from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.slider import HSlider
 from dtk.ui.utils import container_remove_all, color_hex_to_cairo, cairo_disable_antialias
+from dtk.ui.constant import ALIGN_END
 from treeitem import MyTreeView as TreeView
 from treeitem import MyTreeItem as TreeItem
 from account_utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
@@ -97,11 +98,14 @@ class AccountSetting(object):
         # account list page
         # label
         self.label_widgets["account_name"] = Label("", label_width=255, enable_select=False, enable_double_click=False)
-        self.label_widgets["account"] = Label(_("Account type"), enable_select=False, enable_double_click=False)
-        self.label_widgets["passwd"] = Label(_("Password"), enable_select=False, enable_double_click=False)
+        self.label_widgets["account"] = Label(_("Account type"), enable_select=False,
+                text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
+        self.label_widgets["passwd"] = Label(_("Password"), enable_select=False,
+                text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
         self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH-1, enable_select=False, enable_double_click=False)
         ##self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
-        self.label_widgets["nopw_login"] = Label(_("Log in without a password"), enable_select=False, enable_double_click=False)
+        self.label_widgets["nopw_login"] = Label(_("Log in without a password"), enable_select=False,
+                text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"), enable_select=False, enable_double_click=False)
         self.label_widgets["deepin_account"] = Label(_("Unbound"), enable_select=False, enable_double_click=False)
         self.label_widgets["account_name_new"] = Label(_("Account Name"), enable_select=False, enable_double_click=False)
@@ -123,36 +127,36 @@ class AccountSetting(object):
         ##self.button_widgets["auto_login"] = OffButton()
         self.button_widgets["nopw_login"] = OffButton()
         self.button_widgets["passwd"] = InputEntry()
-        self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
-        self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
-        self.button_widgets["mountable_check"] = CheckButton(_("可加载移动设备"), padding_x=0)
-        self.button_widgets["disk_readwrite_check"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
+        #self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
+        #self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
+        #self.button_widgets["mountable_check"] = CheckButton(_("可加载移动设备"), padding_x=0)
+        #self.button_widgets["disk_readwrite_check"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
 
-        self.button_widgets["backup_check_group"] = CheckButton("", padding_x=0)
-        self.label_widgets["backup_check_group"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False, enable_double_click=False)
-        self.alignment_widgets["backup_check_group"] = gtk.Alignment()
-        self.container_widgets["backup_check_group_hbox"] = gtk.HBox(False)
-        self.container_widgets["backup_check_group_vbox"] = gtk.VBox(False)
+        #self.button_widgets["backup_check_group"] = CheckButton("", padding_x=0)
+        #self.label_widgets["backup_check_group"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False, enable_double_click=False)
+        #self.alignment_widgets["backup_check_group"] = gtk.Alignment()
+        #self.container_widgets["backup_check_group_hbox"] = gtk.HBox(False)
+        #self.container_widgets["backup_check_group_vbox"] = gtk.VBox(False)
 
-        self.button_widgets["binding"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False, enable_double_click=False)
-        self.button_widgets["disable_account"] = Button(_("Enable this account"))
-        self.button_widgets["add_account"] = Button(_("Add a account"))
-        self.button_widgets["del_account"] = Button(_("Delete the account"))
+        #self.button_widgets["binding"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False, enable_double_click=False)
+        self.button_widgets["disable_account"] = Button(_("Enable"))
+        self.button_widgets["add_account"] = Button(_("Add"))
+        self.button_widgets["del_account"] = Button(_("Delete"))
         self.button_widgets["account_create"] = Button(_("Create"))
         self.button_widgets["account_cancle"] = Button(_("Cancel"))
         self.button_widgets["account_type_new"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
-        self.button_widgets["net_access_check_new"] = CheckButton(_("网络访问权限"), padding_x=0)
-        self.button_widgets["disk_readonly_check_new"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
-        self.button_widgets["mountable_check_new"] = CheckButton(_("可加载移动设备"), padding_x=0)
-        self.button_widgets["disk_readwrite_check_new"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
+        #self.button_widgets["net_access_check_new"] = CheckButton(_("网络访问权限"), padding_x=0)
+        #self.button_widgets["disk_readonly_check_new"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
+        #self.button_widgets["mountable_check_new"] = CheckButton(_("可加载移动设备"), padding_x=0)
+        #self.button_widgets["disk_readwrite_check_new"] = CheckButton(_("磁盘操作权限完全"), padding_x=0)
 
-        self.button_widgets["backup_check_group_new"] = CheckButton("", padding_x=0)
-        self.label_widgets["backup_check_group_new"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False, enable_double_click=False)
-        self.alignment_widgets["backup_check_group_new"] = gtk.Alignment()
-        self.container_widgets["backup_check_group_hbox_new"] = gtk.HBox(False)
-        self.container_widgets["backup_check_group_vbox_new"] = gtk.VBox(False)
+        #self.button_widgets["backup_check_group_new"] = CheckButton("", padding_x=0)
+        #self.label_widgets["backup_check_group_new"] = Label(_("自动备份个人偏好设置并上传到云端，重新装机或在另一台计算机登录深度系统时您不再需要设置偏好。"), wrap_width=360, enable_select=False, enable_double_click=False)
+        #self.alignment_widgets["backup_check_group_new"] = gtk.Alignment()
+        #self.container_widgets["backup_check_group_hbox_new"] = gtk.HBox(False)
+        #self.container_widgets["backup_check_group_vbox_new"] = gtk.VBox(False)
 
-        self.button_widgets["binding_new"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False, enable_double_click=False)
+        #self.button_widgets["binding_new"] = Label(_("提示：此功能需要绑定<span foreground=\"blue\" underline=\"single\">深度帐号</span>。"), enable_select=False, enable_double_click=False)
         # container
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()
@@ -306,23 +310,23 @@ class AccountSetting(object):
         self.alignment_widgets["lock_button"].add(self.button_widgets["lock"])
         self.alignment_widgets["lock_button"].set(1.0, 0.5, 0, 0)
 
-        self.container_widgets["backup_check_group_hbox"].pack_start(self.alignment_widgets["backup_check_group"], False, False)
-        self.container_widgets["backup_check_group_hbox"].pack_start(self.container_widgets["backup_check_group_vbox"], False, False)
-        self.alignment_widgets["backup_check_group"].add(self.button_widgets["backup_check_group"])
-        self.container_widgets["backup_check_group_vbox"].pack_start(self.label_widgets["backup_check_group"], False, False)
-        self.container_widgets["backup_check_group_vbox"].pack_start(self.button_widgets["binding"], False, False, BETWEEN_SPACING)
+        #self.container_widgets["backup_check_group_hbox"].pack_start(self.alignment_widgets["backup_check_group"], False, False)
+        #self.container_widgets["backup_check_group_hbox"].pack_start(self.container_widgets["backup_check_group_vbox"], False, False)
+        #self.alignment_widgets["backup_check_group"].add(self.button_widgets["backup_check_group"])
+        #self.container_widgets["backup_check_group_vbox"].pack_start(self.label_widgets["backup_check_group"], False, False)
+        #self.container_widgets["backup_check_group_vbox"].pack_start(self.button_widgets["binding"], False, False, BETWEEN_SPACING)
 
-        self.container_widgets["check_button_table"].set_col_spacings(WIDGET_SPACING)
-        self.container_widgets["check_button_table"].attach(
-            self.__make_align(self.button_widgets["net_access_check"]), 0, 1, 0, 1)
-        self.container_widgets["check_button_table"].attach(
-            self.__make_align(self.button_widgets["disk_readonly_check"]), 1, 2, 0, 1)
-        self.container_widgets["check_button_table"].attach(
-            self.__make_align(self.button_widgets["mountable_check"]), 0, 1, 1, 2)
-        self.container_widgets["check_button_table"].attach(
-            self.__make_align(self.button_widgets["disk_readwrite_check"]), 1, 2, 1, 2)
-        self.container_widgets["check_button_table"].attach(
-            self.__make_align(self.container_widgets["backup_check_group_hbox"]), 0, 2, 2, 3)
+        #self.container_widgets["check_button_table"].set_col_spacings(WIDGET_SPACING)
+        #self.container_widgets["check_button_table"].attach(
+            #self.__make_align(self.button_widgets["net_access_check"]), 0, 1, 0, 1)
+        #self.container_widgets["check_button_table"].attach(
+            #self.__make_align(self.button_widgets["disk_readonly_check"]), 1, 2, 0, 1)
+        #self.container_widgets["check_button_table"].attach(
+            #self.__make_align(self.button_widgets["mountable_check"]), 0, 1, 1, 2)
+        #self.container_widgets["check_button_table"].attach(
+            #self.__make_align(self.button_widgets["disk_readwrite_check"]), 1, 2, 1, 2)
+        #self.container_widgets["check_button_table"].attach(
+            #self.__make_align(self.container_widgets["backup_check_group_hbox"]), 0, 2, 2, 3)
 
         ####################
         # create new account
@@ -344,23 +348,23 @@ class AccountSetting(object):
         self.button_widgets["account_name"].set_size(COMBO_WIDTH, WIDGET_HEIGHT)
         self.button_widgets["account_type_new"].set_size_request(COMBO_WIDTH, WIDGET_HEIGHT)
 
-        self.container_widgets["backup_check_group_hbox_new"].pack_start(self.alignment_widgets["backup_check_group_new"], False, False)
-        self.container_widgets["backup_check_group_hbox_new"].pack_start(self.container_widgets["backup_check_group_vbox_new"], False, False)
-        self.alignment_widgets["backup_check_group_new"].add(self.button_widgets["backup_check_group_new"])
-        self.container_widgets["backup_check_group_vbox_new"].pack_start(self.label_widgets["backup_check_group_new"], False, False)
-        self.container_widgets["backup_check_group_vbox_new"].pack_start(self.button_widgets["binding_new"], False, False, BETWEEN_SPACING)
+        #self.container_widgets["backup_check_group_hbox_new"].pack_start(self.alignment_widgets["backup_check_group_new"], False, False)
+        #self.container_widgets["backup_check_group_hbox_new"].pack_start(self.container_widgets["backup_check_group_vbox_new"], False, False)
+        #self.alignment_widgets["backup_check_group_new"].add(self.button_widgets["backup_check_group_new"])
+        #self.container_widgets["backup_check_group_vbox_new"].pack_start(self.label_widgets["backup_check_group_new"], False, False)
+        #self.container_widgets["backup_check_group_vbox_new"].pack_start(self.button_widgets["binding_new"], False, False, BETWEEN_SPACING)
 
-        self.container_widgets["check_button_table_new"].set_col_spacings(WIDGET_SPACING)
-        self.container_widgets["check_button_table_new"].attach(
-            self.__make_align(self.button_widgets["net_access_check_new"]), 0, 1, 0, 1)
-        self.container_widgets["check_button_table_new"].attach(
-            self.__make_align(self.button_widgets["disk_readonly_check_new"]), 1, 2, 0, 1)
-        self.container_widgets["check_button_table_new"].attach(
-            self.__make_align(self.button_widgets["mountable_check_new"]), 0, 1, 1, 2)
-        self.container_widgets["check_button_table_new"].attach(
-            self.__make_align(self.button_widgets["disk_readwrite_check_new"]), 1, 2, 1, 2)
-        self.container_widgets["check_button_table_new"].attach(
-            self.__make_align(self.container_widgets["backup_check_group_hbox_new"]), 0, 2, 2, 3)
+        #self.container_widgets["check_button_table_new"].set_col_spacings(WIDGET_SPACING)
+        #self.container_widgets["check_button_table_new"].attach(
+            #self.__make_align(self.button_widgets["net_access_check_new"]), 0, 1, 0, 1)
+        #self.container_widgets["check_button_table_new"].attach(
+            #self.__make_align(self.button_widgets["disk_readonly_check_new"]), 1, 2, 0, 1)
+        #self.container_widgets["check_button_table_new"].attach(
+            #self.__make_align(self.button_widgets["mountable_check_new"]), 0, 1, 1, 2)
+        #self.container_widgets["check_button_table_new"].attach(
+            #self.__make_align(self.button_widgets["disk_readwrite_check_new"]), 1, 2, 1, 2)
+        #self.container_widgets["check_button_table_new"].attach(
+            #self.__make_align(self.container_widgets["backup_check_group_hbox_new"]), 0, 2, 2, 3)
 
         self.alignment_widgets["account_create_error"] = self.__make_align(self.label_widgets["account_create_error"], height=60)
         self.alignment_widgets["button_hbox_new"].set(1, 0, 0, 0)
@@ -451,14 +455,14 @@ class AccountSetting(object):
         self.label_widgets["passwd_char"].connect("leave-notify-event", self.label_leave_notify_cb)
         self.label_widgets["passwd_char"].connect("button-press-event", self.password_change_press_cb)
 
-        self.label_widgets["backup_check_group"].connect(
-            "button-press-event",
-            lambda w, e:self.button_widgets["backup_check_group"].set_active(
-                not self.button_widgets["backup_check_group"].get_active()))
-        self.label_widgets["backup_check_group_new"].connect(
-            "button-press-event",
-            lambda w, e:self.button_widgets["backup_check_group_new"].set_active(
-                not self.button_widgets["backup_check_group_new"].get_active()))
+        #self.label_widgets["backup_check_group"].connect(
+            #"button-press-event",
+            #lambda w, e:self.button_widgets["backup_check_group"].set_active(
+                #not self.button_widgets["backup_check_group"].get_active()))
+        #self.label_widgets["backup_check_group_new"].connect(
+            #"button-press-event",
+            #lambda w, e:self.button_widgets["backup_check_group_new"].set_active(
+                #not self.button_widgets["backup_check_group_new"].get_active()))
 
         self.button_widgets["account_name"].entry.connect("focus-in-event", self.account_name_focus_in_cb)
         self.button_widgets["account_name"].entry.connect(
@@ -535,11 +539,11 @@ class AccountSetting(object):
             self.set_account_info_error_text("")
             self.current_select_user.set_locked(not is_locked)
             if is_locked:
-                self.__set_status_text(_("Disable %s") % settings.get_user_show_name(self.current_select_user))
-                self.button_widgets["disable_account"].set_label(_("Disable this account"))
-            else:
                 self.__set_status_text(_("Enable %s") % settings.get_user_show_name(self.current_select_user))
-                self.button_widgets["disable_account"].set_label(_("Enable this account"))
+                self.button_widgets["disable_account"].set_label(_("Disable"))
+            else:
+                self.__set_status_text(_("Disable %s") % settings.get_user_show_name(self.current_select_user))
+                self.button_widgets["disable_account"].set_label(_("Enable"))
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.set_account_info_error_text(e.msg)
@@ -675,9 +679,9 @@ class AccountSetting(object):
             self.button_widgets["nopw_login"].set_active(nopw_login)
 
         if dbus_obj.get_locked():
-            self.button_widgets["disable_account"].set_label(_("Enable this account"))
+            self.button_widgets["disable_account"].set_label(_("Enable"))
         else:
-            self.button_widgets["disable_account"].set_label(_("Disable this account"))
+            self.button_widgets["disable_account"].set_label(_("Disable"))
 
         if item.is_myowner:     # is current user that current process' owner
             if self.button_widgets["del_account"].get_sensitive():
@@ -854,9 +858,12 @@ class AccountSetting(object):
         if self.current_passwd_user.get_password_mode() == 2:
             is_myown = False
 
-        label1 = Label(_("Current password"), enable_select=False, enable_double_click=False)
-        label2 = Label(_("New password"), enable_select=False, enable_double_click=False)
-        label3 = Label(_("Confirm new password"), enable_select=False, enable_double_click=False)
+        label1 = Label(_("Current password"), enable_select=False,
+                text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
+        label2 = Label(_("New password"), enable_select=False,
+                text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
+        label3 = Label(_("Confirm new password"), enable_select=False,
+                text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
 
         current_pswd_input = PasswordEntry()
         current_pswd_input.entry.set_name("current")
@@ -1076,9 +1083,9 @@ class AccountSetting(object):
                 self.button_widgets["nopw_login"].set_data("changed_by_other_app", True)
                 self.button_widgets["nopw_login"].set_active(nopw_login)
             if user.get_locked():
-                self.button_widgets["disable_account"].set_label(_("Enable this account"))
+                self.button_widgets["disable_account"].set_label(_("Enable"))
             else:
-                self.button_widgets["disable_account"].set_label(_("Disable this account"))
+                self.button_widgets["disable_account"].set_label(_("Disable"))
 
     def account_user_set_random_icon(self, user_obj):
         if self.get_authorized():

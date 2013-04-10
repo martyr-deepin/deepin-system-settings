@@ -73,6 +73,9 @@ msgstr "音量"
 msgid "Mute"
 msgstr "靜音"
 
+msgid "Sound Enabled"
+msgstr "開啓聲音"
+
 msgid "Playing"
 msgstr "播放中"
 

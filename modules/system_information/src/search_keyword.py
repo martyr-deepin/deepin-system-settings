@@ -26,5 +26,6 @@ keywords = [("__sysinfo_id1", _("CPU")),
             ("__sysinfo_id2", _("Memory")), 
             ("__sysinfo_id3", _("OS Type")), 
             ("__sysinfo_id4", _("Disk")), 
+            ("__sysinfo_id5", _("System")), 
             ("__sysinfo_id5", _("System information")), 
            ]

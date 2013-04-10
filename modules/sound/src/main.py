@@ -37,6 +37,7 @@ from dtk.ui.box import ImageBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.constant import ALIGN_END
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
 from statusbar import StatusBar
@@ -82,13 +83,27 @@ class SoundSetting(object):
         self.label_widgets["microphone"] = Label(_("Microphone"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         self.label_widgets["left"] = Label(_("Left"), enable_select=False, enable_double_click=False)
         self.label_widgets["right"] = Label(_("Right"), enable_select=False, enable_double_click=False)
-        self.label_widgets["speaker_port"] = Label(_("Output Port"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
-        self.label_widgets["speaker_volume"] = Label(_("Output Volume"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
-        self.label_widgets["speaker_mute"] = Label(_("Mute"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
-        self.label_widgets["speaker_balance"] = Label(_("Balance"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
-        self.label_widgets["microphone_port"] = Label(_("Input Port"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
-        self.label_widgets["microphone_volume"] = Label(_("Input Volume"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
-        self.label_widgets["microphone_mute"] = Label(_("Mute"), text_size=option_item_font_szie, enable_select=False, enable_double_click=False)
+        self.label_widgets["speaker_port"] = Label(_("Output Port"), text_size=option_item_font_szie,
+                                                   text_x_align=ALIGN_END, enable_select=False,
+                                                   enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["speaker_volume"] = Label(_("Output Volume"), text_size=option_item_font_szie,
+                                                     text_x_align=ALIGN_END, enable_select=False,
+                                                     enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["speaker_mute"] = Label(_("Sound Enabled"), text_size=option_item_font_szie,
+                                                   text_x_align=ALIGN_END, enable_select=False,
+                                                   enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["speaker_balance"] = Label(_("Balance"), text_size=option_item_font_szie,
+                                                      text_x_align=ALIGN_END, enable_select=False,
+                                                      enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["microphone_port"] = Label(_("Input Port"), text_size=option_item_font_szie,
+                                                      text_x_align=ALIGN_END, enable_select=False,
+                                                      enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["microphone_volume"] = Label(_("Input Volume"), text_size=option_item_font_szie,
+                                                        text_x_align=ALIGN_END, enable_select=False,
+                                                        enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["microphone_mute"] = Label(_("Sound Enabled"), text_size=option_item_font_szie,
+                                                      text_x_align=ALIGN_END, enable_select=False,
+                                                      enable_double_click=False, fixed_width=STANDARD_LINE)
         #####################################
         # image init
         self.image_widgets["balance"] = ImageBox(app_theme.get_pixbuf("%s/balance.png" % MODULE_NAME))

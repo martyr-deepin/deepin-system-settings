@@ -32,6 +32,9 @@ msgstr "操作系統類型"
 msgid "Disk"
 msgstr "磁盤"
 
+msgid "System"
+msgstr "系統"
+
 #: ../src/search_keyword.py:29
 msgid "System information"
 msgstr "系統信息"
