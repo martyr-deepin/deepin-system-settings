@@ -420,8 +420,6 @@ class AccountSetting(object):
         self.container_widgets["slider"].connect("completed_slide", self.slider_completed_slide_cb)
         self.module_frame.connect("unmap-event", self.slider_hide_cb)
 
-        self.view_widgets["account"].connect("select", self.account_treeview_select)
-        self.view_widgets["account"].select_first_item()
         self.button_widgets["add_account"].connect("clicked", self.add_account_button_clicked)
         self.button_widgets["del_account"].connect("clicked", self.del_account_button_clicked)
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
@@ -429,6 +427,9 @@ class AccountSetting(object):
         ##self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
         self.button_widgets["nopw_login"].connect("toggled", self.nopw_login_toggled)
         self.button_widgets["disable_account"].connect("clicked", self.account_lock_button_clicked)
+
+        self.view_widgets["account"].connect("select", self.account_treeview_select)
+        self.view_widgets["account"].select_first_item()
 
         self.button_widgets["del_button"].connect("clicked", self.del_delete_user_file_cd, True)
         self.button_widgets["keep_button"].connect("clicked", self.del_delete_user_file_cd, False)
@@ -524,7 +525,6 @@ class AccountSetting(object):
 
                 button.set_data("changed_by_other_app", True)
                 button.set_active(not button.get_active())
-                #self.set_account_info_error_text(e.msg)
                 self.set_account_info_error_text(e.message)
 
     def account_lock_button_clicked(self, button):

@@ -711,11 +711,11 @@ class KeySetting(object):
             settings.xkb_set_layouts(layout_list)
             dialog.destroy()
             self.set_status_text(_("Current Layout is: %s") % item.name)
-        self.container_widgets["layout_button_hbox"].set_sensitive(False)
+        self.button_widgets["layout_add"].set_sensitive(False)
         dialog_width = 400
         dialog_heigth = 380
         dialog = DialogBox(_("Select an input source to add"), dialog_width, dialog_heigth, DIALOG_MASK_SINGLE_PAGE)
-        dialog.connect("destroy", lambda w: self.container_widgets["layout_button_hbox"].set_sensitive(True))
+        dialog.connect("destroy", lambda w: self.button_widgets["layout_add"].set_sensitive(True))
         dialog.set_keep_above(True)
         #dialog.set_modal(True)
         dialog.body_align.set_padding(0, 0, 10, 10)
