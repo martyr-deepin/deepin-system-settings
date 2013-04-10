@@ -36,7 +36,7 @@ import gtk
 
 from container import Contain, ToggleThread
 from lists import (WiredItem, WirelessItem,
-                  HidenItem, InfoItem, DSLItem, MobileItem,
+                  HidenItem, DSLItem, MobileItem,
                   VPNItem)
 from widgets import AskPasswordDialog
 from dsl_config import DSLSetting
@@ -189,10 +189,11 @@ class WiredDevice(object):
                 print "toggle off"
                 self.wire.set_active(False)
 
-            
-
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
-        pass
+        for item in self.tree.visible_items:
+            if item.get_net_state() > 0:
+                return
+        self.wire.set_active(False)
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
@@ -263,7 +264,8 @@ class WiredSection(Section, WiredDevice):
                 self.tree.visible_items[i].set_net_state(2)
             else:
                 device_ethernet = nm_module.cache.get_spec_object(d.object_path)
-                device_ethernet.auto_connect()
+                if device_ethernet:
+                    device_ethernet.auto_connect()
 
     def toggle_off(self):
         for wired_device in self.wired_devices:

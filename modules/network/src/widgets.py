@@ -7,7 +7,7 @@ from dtk.ui.entry import PasswordEntry
 from nm_modules import nm_module
 from nmlib.nm_remote_connection import NMRemoteConnection
 
-from dtk.ui.locales import _
+from nls import _
 from dtk.ui.label import Label
 import gtk
 
@@ -46,7 +46,7 @@ class AskPasswordDialog(DialogBox):
         @param cancel_callback: Callback when user click cancel button, this callback not need argument.
         '''
         # Init.
-        DialogBox.__init__(self, "Set password", default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        DialogBox.__init__(self, _("Set password"), default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
     
@@ -55,7 +55,7 @@ class AskPasswordDialog(DialogBox):
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
         self.hint_align.set_padding(0, 0, 10, 10)
-        self.hint_text = Label("Please input password for %s :"%ssid,
+        self.hint_text = Label(_("Please input password for %s :")%ssid,
                                enable_select=False,
                                enable_double_click=False)
         self.hint_align.add(self.hint_text)
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     
     def show_dialog():
         mm = nm_module.nm_remote_settings.get_wireless_connections()
-        i = filter(lambda i: i.get_setting("802-11-wireless").ssid == "DeepinWork", mm)
+        i = filter(lambda i: i.get_setting("802-11-wireless").ssid == "linuxdeepin-1", mm)
         connection = i[0]
         ssid = connection.get_setting("802-11-wireless").ssid
         if ssid != None:

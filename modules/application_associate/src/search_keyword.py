@@ -28,4 +28,5 @@ TODO: keywords list
 '''
 keywords = [("application", _("Application")),
             ("media", _("Media")),
-            ("autostart", _("Autostart"))]
+            ("autostart", _("Autostart")),
+            ("application associate", _("Application Associate"))]

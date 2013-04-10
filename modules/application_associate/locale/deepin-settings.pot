@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-25 14:44+0800\n"
+"POT-Creation-Date: 2013-04-10 12:04+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,40 +17,33 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/widget.py:44
-msgid "Autostart app"
+#: ../src/session_view.py:32 ../src/app_asso_view.py:87
+#: ../src/search_keyword.py:29
+msgid "Application"
 msgstr ""
 
-#: ../src/widget.py:53
-msgid "OK"
+#: ../src/session_view.py:32
+msgid "State"
 msgstr ""
 
-#: ../src/widget.py:54
-msgid "Cancel"
+#: ../src/session_view.py:32
+msgid "Description"
 msgstr ""
 
-#: ../src/widget.py:87
-msgid "Name:"
+#: ../src/session_view.py:45
+msgid "New"
 msgstr ""
 
-#: ../src/widget.py:88
-msgid "Exec:"
+#: ../src/session_view.py:46
+msgid "Delete"
 msgstr ""
 
-#: ../src/widget.py:89
-msgid "Description:"
+#: ../src/app_asso_view.py:88 ../src/search_keyword.py:30
+msgid "Media"
 msgstr ""
 
-#: ../src/treeview.py:112
-msgid "No description"
-msgstr ""
-
-#: ../src/treeview.py:122
-msgid "active"
-msgstr ""
-
-#: ../src/treeview.py:124
-msgid "not running"
+#: ../src/app_asso_view.py:89 ../src/search_keyword.py:31
+msgid "Autostart"
 msgstr ""
 
 #: ../src/app_view.py:40
@@ -77,32 +70,32 @@ msgstr ""
 msgid "photo"
 msgstr ""
 
-#: ../src/app_asso_view.py:87 ../src/session_view.py:31
-msgid "Application"
+#: ../src/widget.py:44
+msgid "Autostart app"
 msgstr ""
 
-#: ../src/app_asso_view.py:88
-msgid "Media"
+#: ../src/widget.py:53
+msgid "OK"
 msgstr ""
 
-#: ../src/app_asso_view.py:89
-msgid "Autostart"
+#: ../src/widget.py:54
+msgid "Cancel"
 msgstr ""
 
-#: ../src/session_view.py:31
-msgid "State"
+#: ../src/widget.py:87
+msgid "Name:"
 msgstr ""
 
-#: ../src/session_view.py:31
-msgid "Description"
+#: ../src/widget.py:88
+msgid "Exec:"
 msgstr ""
 
-#: ../src/session_view.py:44
-msgid "New"
+#: ../src/widget.py:89
+msgid "Description:"
 msgstr ""
 
-#: ../src/session_view.py:45
-msgid "Delete"
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
 msgstr ""
 
 #: ../src/media_view.py:32
@@ -147,4 +140,16 @@ msgstr ""
 
 #: ../src/media_view.py:49
 msgid "more option"
+msgstr ""
+
+#: ../src/treeview.py:115
+msgid "No description"
+msgstr ""
+
+#: ../src/treeview.py:125
+msgid "active"
+msgstr ""
+
+#: ../src/treeview.py:127
+msgid "not running"
 msgstr ""
