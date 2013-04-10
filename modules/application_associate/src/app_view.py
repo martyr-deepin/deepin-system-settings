@@ -44,12 +44,12 @@ class AppView(gtk.VBox):
         movie_label = Label(_("video"))
         pic_label = Label(_("photo"))
 
-        self.web = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)
-        self.mail = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)
-        self.editor = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)
-        self.music = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)
-        self.movie = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)
-        self.pic = ComboBox([("None",0)], max_width=self.ENTRY_WIDTH)
+        self.web = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
+        self.mail = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
+        self.editor = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
+        self.music = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
+        self.movie = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
+        self.pic = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
 
         table = gtk.Table(7, 2, False)
         #table.attach(style.wrap_with_align(info_label), 0, 2, 0, 1)

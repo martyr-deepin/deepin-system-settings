@@ -297,7 +297,7 @@ class Broadband(gtk.VBox):
                                       ("2G", 1),
                                       ("Prefer 3G", 2),
                                       ("Prefer 2G", 3)],
-                                      max_width=self.ENTRY_WIDTH)
+                                      fixed_width=self.ENTRY_WIDTH)
         self.roam_check = CheckButton(_("Allow roaming if home network is not available"), padding_x=0)
         self.pin = InputEntry()
         

@@ -249,7 +249,7 @@ class TableAsm(gtk.Table):
         label = self.__label(label_name)
 
         combo = ComboBox([combo_items],
-                          max_width=self.right_width)
+                          fixed_width=self.right_width)
 
         self._wrap_align((label, combo), table)
     

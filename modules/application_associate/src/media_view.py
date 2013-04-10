@@ -40,11 +40,11 @@ class MediaView(gtk.VBox):
                         (_("do nothing"), "do_nothing"),
                         (_("open folder"),"open_folder")]
         self.auto_check = CheckButton(_("apply auto play for all media and devices"))
-        self.cd = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
-        self.dvd = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
-        self.player= ComboBox(default_list, max_width=self.ENTRY_WIDTH)
-        self.photo = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
-        self.software = ComboBox(default_list, max_width=self.ENTRY_WIDTH)
+        self.cd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.player= ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.photo = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.software = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
 
         self.more_option = Button(_("more option"))
         #self.more_option.set_size_request( 30, 22)

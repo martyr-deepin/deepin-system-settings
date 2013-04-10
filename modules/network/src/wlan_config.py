@@ -529,7 +529,7 @@ class Wireless(gtk.VBox):
         self.mode_label = Label(_("Mode:"),
                                enable_select=False,
                                enable_double_click=False)
-        self.mode_combo = ComboBox([(_("Infrastructure"),"infrastructure"),(_("Ad-hoc"), "adhoc")], max_width=self.ENTRY_WIDTH)
+        self.mode_combo = ComboBox([(_("Infrastructure"),"infrastructure"),(_("Ad-hoc"), "adhoc")], fixed_width=self.ENTRY_WIDTH)
         
         # TODO need to put this section to personal wifi
         self.band_label = Label(_("Band:"),
@@ -539,7 +539,7 @@ class Wireless(gtk.VBox):
         self.band_combo = ComboBox([(_("Automatic"), None),
                                     ("a (5 GHZ)", "a"),
                                     ("b/g (2.4)", "bg")],
-                                    max_width=self.ENTRY_WIDTH)
+                                    fixed_width=self.ENTRY_WIDTH)
         self.channel_label = Label(_("Channel:"),
                                    enable_select=False,
                                    enable_double_click=False)
