@@ -170,7 +170,7 @@ class WallpaperView(IconView):
         filter_images = filter(lambda image: not self.is_exists(image), image_paths)        
         if filter_images:
             self.add_user_wallpapers(filter_images, save=True)
-        event_manager.emit("update-theme", None)
+        event_manager.emit("update-theme", self.theme)
             
     def on_wallpapers_deleted(self, name, obj, image_paths):        
         items = filter(lambda item: item.image_path in image_paths, self.items)

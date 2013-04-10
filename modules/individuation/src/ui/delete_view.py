@@ -90,7 +90,7 @@ class DeleteView(IconView):
         if untitled_theme:
             untitled_theme.save()
 
-        event_manager.emit("update-theme", None)
+        event_manager.emit("update-theme", self.theme)
 
         self.set_theme(self.theme)
     

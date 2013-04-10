@@ -149,6 +149,11 @@ class UserThemeView(IconView):
 
     # FIXME: update theme bring in the SaveAs bug
     def __on_update_theme(self, name, obj, new_theme):
+        for item in self.items:
+            if item.theme == new_theme:
+                item.update_theme()
+                break
+
         self.queue_draw()
 
     def add_themes(self, themes):

@@ -91,6 +91,10 @@ class ThemeItem(gobject.GObject):
         self.theme.reload()
         self.emit_redraw_request()
 
+    def update_theme(self):
+        self.theme.reload()
+        self.emit_redraw_request()
+
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
