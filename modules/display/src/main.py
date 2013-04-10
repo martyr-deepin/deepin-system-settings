@@ -44,6 +44,8 @@ if __name__ == "__main__":
             display_view.reset()
         elif message_type == "exit":
             module_frame.exit()
+        elif message_type == "size_changed":
+            pass
 
     module_frame.module_message_handler = message_handler 
     
