@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-09 14:23+0800\n"
+"POT-Creation-Date: 2013-04-10 11:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -223,6 +223,15 @@ msgstr ""
 
 #: ../src/foot_box_ui.py:145
 msgid "Tip:"
+msgstr ""
+
+#: ../src/widgets.py:49
+msgid "Set password"
+msgstr ""
+
+#: ../src/widgets.py:58
+#, python-format
+msgid "Please input password for %s :"
 msgstr ""
 
 #: ../src/widgets.py:78 ../src/elements.py:226 ../src/wlan_config.py:247
