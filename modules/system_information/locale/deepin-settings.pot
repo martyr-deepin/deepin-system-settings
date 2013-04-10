@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-24 11:34+0800\n"
+"POT-Creation-Date: 2013-04-10 09:49+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,28 +17,32 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../src/search_keyword.py:25 ../src/main.py:59
+msgid "CPU"
+msgstr ""
+
+#: ../src/search_keyword.py:26 ../src/main.py:60
+msgid "Memory"
+msgstr ""
+
+#: ../src/search_keyword.py:27 ../src/main.py:61
+msgid "OS Type"
+msgstr ""
+
+#: ../src/search_keyword.py:28 ../src/main.py:62
+msgid "Disk"
+msgstr ""
+
+#: ../src/search_keyword.py:29
+msgid "System information"
+msgstr ""
+
 #: ../src/main.py:57
 msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
 msgstr ""
 
 #: ../src/main.py:58
 msgid "Version"
-msgstr ""
-
-#: ../src/main.py:59
-msgid "CPU"
-msgstr ""
-
-#: ../src/main.py:60
-msgid "Memory"
-msgstr ""
-
-#: ../src/main.py:61
-msgid "OS Type"
-msgstr ""
-
-#: ../src/main.py:62
-msgid "Disk"
 msgstr ""
 
 #: ../src/main.py:151

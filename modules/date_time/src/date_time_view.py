@@ -132,7 +132,7 @@ class DatetimeView(gtk.HBox):
         self.timezone_items.append((_("(UTC+05:00)Islamabad, Karachi, Tashkent"), 5))
         self.timezone_items.append((_("(UTC+06:00)Dhaka, Novosibirsk"), 6))
         self.timezone_items.append((_("(UTC+07:00)Bangkok, Hanoi, Jakarta"), 7))
-        self.timezone_items.append((_("(UTC+08:00)Beijing, Chongqing, HongKong, Urumqi"), 8))
+        self.timezone_items.append((_("(UTC+08:00)Beijing, Chongqing, HongKong, Taipei, Urumqi"), 8))
         self.timezone_items.append((_("(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"), 9))
         self.timezone_items.append((_("(UTC+10:00)Guam, Canberra, Melbourne, Sydney"), 10))
         self.timezone_items.append((_("(UTC+11:00)Magadan, Solomon Islands"), 11))

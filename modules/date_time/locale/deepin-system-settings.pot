@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-13 10:05+0800\n"
+"POT-Creation-Date: 2013-04-10 09:45+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,155 +17,155 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/date_time_view.py:117
+#: ../src/date_time_view.py:116
 msgid "(UTC-11:00)Samoa"
 msgstr ""
 
-#: ../src/date_time_view.py:118
+#: ../src/date_time_view.py:117
 msgid "(UTC-10:00)Hawaii"
 msgstr ""
 
-#: ../src/date_time_view.py:119
+#: ../src/date_time_view.py:118
 msgid "(UTC-09:00)Alaska"
 msgstr ""
 
-#: ../src/date_time_view.py:120
+#: ../src/date_time_view.py:119
 msgid "(UTC-08:00)Lower California"
 msgstr ""
 
-#: ../src/date_time_view.py:121
+#: ../src/date_time_view.py:120
 msgid "(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"
 msgstr ""
 
-#: ../src/date_time_view.py:122
+#: ../src/date_time_view.py:121
 msgid "(UTC-06:00)Saskatchewan, Mexico City, Monterrey"
 msgstr ""
 
-#: ../src/date_time_view.py:123
+#: ../src/date_time_view.py:122
 msgid "(UTC-05:00)Indiana, Bogota, Lima, Quito"
 msgstr ""
 
-#: ../src/date_time_view.py:124
+#: ../src/date_time_view.py:123
 msgid "(UTC-04:00)San Diego, Georgetown, San Juan"
 msgstr ""
 
-#: ../src/date_time_view.py:125
+#: ../src/date_time_view.py:124
 msgid "(UTC-03:00)Greenland, Brasilia, Fortaleza"
 msgstr ""
 
-#: ../src/date_time_view.py:126
+#: ../src/date_time_view.py:125
 msgid "(UTC-02:00)Mid-Atlantic"
 msgstr ""
 
-#: ../src/date_time_view.py:127
+#: ../src/date_time_view.py:126
 msgid "(UTC-01:00)Cape Verde Islands, Azores"
 msgstr ""
 
-#: ../src/date_time_view.py:128
+#: ../src/date_time_view.py:127
 msgid "(UTC)London, Dublin, Edinburgh, Lisbon, Casablanca"
 msgstr ""
 
-#: ../src/date_time_view.py:129
+#: ../src/date_time_view.py:128
 msgid "(UTC+01:00)Paris, Amsterdam, Berlin, Rome, Vienna"
 msgstr ""
 
-#: ../src/date_time_view.py:130
+#: ../src/date_time_view.py:129
 msgid "(UTC+02:00)Cairo, Athens, Istanbul, Jerusalem"
 msgstr ""
 
-#: ../src/date_time_view.py:131
+#: ../src/date_time_view.py:130
 msgid "(UTC+03:00)Moscow, St. Petersburg, Baghdad"
 msgstr ""
 
-#: ../src/date_time_view.py:132
+#: ../src/date_time_view.py:131
 msgid "(UTC+04:00)Port Louis, Abu Dhabi, Muscat, Yerevan"
 msgstr ""
 
-#: ../src/date_time_view.py:133
+#: ../src/date_time_view.py:132
 msgid "(UTC+05:00)Islamabad, Karachi, Tashkent"
 msgstr ""
 
-#: ../src/date_time_view.py:134
+#: ../src/date_time_view.py:133
 msgid "(UTC+06:00)Dhaka, Novosibirsk"
 msgstr ""
 
-#: ../src/date_time_view.py:135
+#: ../src/date_time_view.py:134
 msgid "(UTC+07:00)Bangkok, Hanoi, Jakarta"
 msgstr ""
 
-#: ../src/date_time_view.py:136
-msgid "(UTC+08:00)Beijing, Chongqing, HongKong, Urumqi"
+#: ../src/date_time_view.py:135
+msgid "(UTC+08:00)Beijing, Chongqing, HongKong, Taipei, Urumqi"
 msgstr ""
 
-#: ../src/date_time_view.py:137
+#: ../src/date_time_view.py:136
 msgid "(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"
 msgstr ""
 
-#: ../src/date_time_view.py:138
+#: ../src/date_time_view.py:137
 msgid "(UTC+10:00)Guam, Canberra, Melbourne, Sydney"
 msgstr ""
 
-#: ../src/date_time_view.py:139
+#: ../src/date_time_view.py:138
 msgid "(UTC+11:00)Magadan, Solomon Islands"
 msgstr ""
 
-#: ../src/date_time_view.py:155
+#: ../src/date_time_view.py:154
 msgid "Calendar"
 msgstr ""
 
-#: ../src/date_time_view.py:161 ../src/date_time_view.py:415
+#: ../src/date_time_view.py:160 ../src/date_time_view.py:416
 #, python-format
 msgid "Current Date: %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:183
+#: ../src/date_time_view.py:182
 msgid "Change Date"
 msgstr ""
 
-#: ../src/date_time_view.py:189
+#: ../src/date_time_view.py:188
 msgid "Cancel"
 msgstr ""
 
-#: ../src/date_time_view.py:192
+#: ../src/date_time_view.py:191
 msgid "Confirm"
 msgstr ""
 
-#: ../src/date_time_view.py:223
+#: ../src/date_time_view.py:222
 msgid "Time"
 msgstr ""
 
-#: ../src/date_time_view.py:230 ../src/date_time_view.py:239
-#: ../src/date_time_view.py:385
+#: ../src/date_time_view.py:229 ../src/date_time_view.py:238
+#: ../src/date_time_view.py:386
 #, python-format
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr ""
 
-#: ../src/date_time_view.py:260 ../src/search_keyword.py:31
+#: ../src/date_time_view.py:259 ../src/search_keyword.py:31
 msgid "Auto Set Time"
 msgstr ""
 
-#: ../src/date_time_view.py:277
+#: ../src/date_time_view.py:276
 msgid "Manual"
 msgstr ""
 
-#: ../src/date_time_view.py:297
+#: ../src/date_time_view.py:296
 msgid "Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:311 ../src/search_keyword.py:30
+#: ../src/date_time_view.py:310 ../src/search_keyword.py:30
 msgid "TimeZone"
 msgstr ""
 
-#: ../src/date_time_view.py:338
+#: ../src/date_time_view.py:340
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/date_time_view.py:413
+#: ../src/date_time_view.py:414
 #, python-format
 msgid "Changed date to %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:459
+#: ../src/date_time_view.py:460
 msgid "Changed to automatic set time"
 msgstr ""
 
@@ -219,7 +219,7 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:117
+#: ../src/tray_time_plugin.py:122
 msgid "Change DateTime settings"
 msgstr ""
 

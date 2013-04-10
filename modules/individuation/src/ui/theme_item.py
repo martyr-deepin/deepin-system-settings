@@ -47,8 +47,8 @@ class ThemeItem(gobject.GObject):
         "redraw-request" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
     }
     
-    ITEM_WIDTH = 180
-    ITEM_HEIGHT = 185
+    ITEM_WIDTH = 170
+    ITEM_HEIGHT = 170
     
     def __init__(self, theme):
         '''
@@ -62,14 +62,14 @@ class ThemeItem(gobject.GObject):
         self.hover_flag = False
         self.highlight_flag = False
         self.pixbufs = []
-        self.wallpaper_offset_x = 55
-        self.wallpaper_offset_y = 20
+        self.wallpaper_offset_x = 50
+        self.wallpaper_offset_y = 21
         self.wallpaper_width = 100
         self.wallpaper_height = 75
         self.wallpaper_render_offset = 15
         self.wallpaper_frame_size = 4
         self.window_frame_padding_x = 40
-        self.window_frame_padding_y = 100
+        self.window_frame_padding_y = 80
         self.window_frame_width = 48
         self.window_frame_height = 48
         self.reflection_height = 23
