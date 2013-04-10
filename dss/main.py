@@ -382,7 +382,6 @@ if __name__ == "__main__":
         app_theme.get_pixbuf("logo.png"), 
         _("Deepin System Settings"),
         enable_gaussian=False,
-        #titlebar_bg_pixbuf=app_theme.get_pixbuf("titlebar/titlebar_bg.png")
 	)
     
     # Init main box.
