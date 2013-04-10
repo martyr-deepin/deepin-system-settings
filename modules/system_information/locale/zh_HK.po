@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-24 11:34+0800\n"
+"POT-Creation-Date: 2013-04-10 09:49+0800\n"
 "PO-Revision-Date: 2013-01-16 17:45+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../src/search_keyword.py:25 ../src/main.py:59
+msgid "CPU"
+msgstr "處理器"
+
+#: ../src/search_keyword.py:26 ../src/main.py:60
+msgid "Memory"
+msgstr "內存"
+
+#: ../src/search_keyword.py:27 ../src/main.py:61
+msgid "OS Type"
+msgstr "操作系統類型"
+
+#: ../src/search_keyword.py:28 ../src/main.py:62
+msgid "Disk"
+msgstr "磁盤"
+
+#: ../src/search_keyword.py:29
+msgid "System information"
+msgstr "系統信息"
+
 #: ../src/main.py:57
 msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
 msgstr "深之度公司 版權所有"
@@ -23,22 +43,6 @@ msgstr "深之度公司 版權所有"
 #: ../src/main.py:58
 msgid "Version"
 msgstr "版本"
-
-#: ../src/main.py:59
-msgid "CPU"
-msgstr "處理器"
-
-#: ../src/main.py:60
-msgid "Memory"
-msgstr "內存"
-
-#: ../src/main.py:61
-msgid "OS Type"
-msgstr "操作系統類型"
-
-#: ../src/main.py:62
-msgid "Disk"
-msgstr "磁盤"
 
 #: ../src/main.py:151
 msgid "bit"
