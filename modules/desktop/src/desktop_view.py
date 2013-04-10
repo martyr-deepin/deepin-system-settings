@@ -302,8 +302,8 @@ class DesktopView(gtk.VBox):
                                   self.topleft_align, 
                                   self.topright_align, 
                                   self.topedge_align, 
-                                  self.leftedge_align, 
-                                  self.rightedge_align, 
+                                  #self.leftedge_align, 
+                                  #self.rightedge_align, 
                                   #self.greeter_title_align, 
                                   #self.greeter_align, 
                                   #self.lock_align
