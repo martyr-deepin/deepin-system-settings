@@ -31,7 +31,6 @@ from theme_manager import theme_manager
 from nls import _
 from common import threaded
 from constant import CONTENT_FONT_SIZE
-import gobject
 
 class UserThemeView(IconView):
 
@@ -148,11 +147,15 @@ class UserThemeView(IconView):
                           (None, _("Delete Theme"), lambda : self.on_theme_delete(item))]
         Menu(menu_items, True).show((int(x), int(y)))
 
+    # FIXME: update theme bring in the SaveAs bug
     def __on_update_theme(self, name, obj, new_theme):
-        self.clear()
-        theme_items = [ThemeItem(theme_file) for theme_file in theme_manager.get_user_themes()]
-        self.add_items(theme_items)
-    
+        for item in self.items:
+            if item.theme == new_theme:
+                item.update_theme()
+                break
+
+        self.queue_draw()
+
     def add_themes(self, themes):
         theme_items = [ThemeItem(theme_file) for theme_file in themes ]
         self.add_items(theme_items)

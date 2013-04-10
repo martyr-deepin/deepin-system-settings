@@ -90,9 +90,9 @@ class DeleteView(IconView):
         if untitled_theme:
             untitled_theme.save()
 
-        self.set_theme(self.theme)
+        event_manager.emit("update-theme", self.theme)
 
-        event_manager.emit("update-theme", None)
+        self.set_theme(self.theme)
     
     def is_select_all(self):
         for item in self.items:
