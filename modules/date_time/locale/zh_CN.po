@@ -225,7 +225,7 @@ msgstr "更改日期和时间设置"
 
 #: ../src/search_keyword.py:29
 msgid "DateTime"
-msgstr "日期"
+msgstr "日期时间"
 
 #: ../src/search_keyword.py:32
 msgid "Hour Display"

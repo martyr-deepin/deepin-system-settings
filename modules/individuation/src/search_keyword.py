@@ -26,7 +26,9 @@ from nls import _
 TODO: keywords list
       item (module_uid, search_keyword)
 '''
-keywords = [("desktop_1", _("Desktop Icon")), 
-            ("desktop_2", _("Dock")), 
-            ("desktop_3", _("Hot Zone")), 
+keywords = [("individuation_1", _("Personalization")), 
+            ("individuation_2", _("My Theme")), 
+            ("individuation_3", _("System Theme")), 
+            ("individuation_4", _("Wallpaper")), 
+            ("individuation_5", _("Picture")), 
            ]
