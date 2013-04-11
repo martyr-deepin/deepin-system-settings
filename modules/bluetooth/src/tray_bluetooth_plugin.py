@@ -114,8 +114,7 @@ class TrayBluetoothPlugin(object):
         self.ori_height = 95
         self.height = self.ori_height
         self.device_items = []
-        if self.my_bluetooth.adapter == None:
-            self.tray_icon.set_visible(False)
+        print "DEBUG xxxxxxxxxxxxxxxx", self.my_bluetooth.adapter
 
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
@@ -130,9 +129,9 @@ class TrayBluetoothPlugin(object):
         
         if self.my_bluetooth.adapter:
             if not self.my_bluetooth.adapter.get_powered():
-                self.tray_icon.set_visible(False)
+                self.tray_icon.set_no_show_all(True)
         else:
-            self.tray_icon.set_visible(False)
+            self.tray_icon.set_no_show_all(True)
 
     def id(slef):
         return "deepin-bluetooth-plugin-hailongqiu"
