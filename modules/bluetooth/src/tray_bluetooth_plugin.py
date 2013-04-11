@@ -111,10 +111,9 @@ class TrayBluetoothPlugin(object):
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
                                         self.__on_default_adapter_changed)
         self.width = DeviceItem.NAME_WIDTH
-        self.ori_height = 95
+        self.ori_height = 88
         self.height = self.ori_height
         self.device_items = []
-        print "DEBUG xxxxxxxxxxxxxxxx", self.my_bluetooth.adapter
 
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
@@ -176,7 +175,7 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter:
             adapter_toggle.set_active(self.my_bluetooth.adapter.get_powered())
         adapter_toggle.connect("toggled", self.__adapter_toggled)
-        separator_align = self.__setup_align(padding_bottom = 3)
+        separator_align = self.__setup_align(padding_bottom = 0)
         separator = self.__setup_separator()
         separator_align.add(separator)
         '''
@@ -193,6 +192,7 @@ class TrayBluetoothPlugin(object):
             device_treeview.set_size_request(self.width, device_count * DeviceItem.ITEM_HEIGHT)
         else:
             device_treeview.set_child_visible(False)
+            device_separator_align.set_size_request(-1, 0)
             device_separator_align.set_child_visible(False)
         '''
         select button
