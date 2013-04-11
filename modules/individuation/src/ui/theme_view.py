@@ -36,7 +36,7 @@ class UserThemeView(IconView):
 
     def __init__(self, padding_x=0, padding_y=0, status_box=None):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
-
+        self.untitled_theme = theme_manager.get_untitled_theme()
         self.status_box = status_box
 
         self.__is_double_click = False
@@ -89,15 +89,25 @@ class UserThemeView(IconView):
         else:
             self.__single_click_item = item
             event_manager.emit("clear-systemview-highlight", item.theme)            
-            theme_manager.apply_theme(item.theme)                                      
+            theme_manager.apply_theme(item.theme)
+            self.__sync_untitle_theme(item.theme)
             self.status_box.set_status(_("Changed User Theme to %s") % item.theme.get_name())
         
         self.__is_double_click = False
+
+    def __sync_untitle_theme(self, theme):
+        self.untitled_theme.clear_system_wallpapers()
+        self.untitled_theme.add_system_wallpapers(theme.get_system_wallpapers())
+        self.untitled_theme.clear_user_wallpapers()
+        self.untitled_theme.add_user_wallpapers(theme.get_user_wallpapers())
+        self.untitled_theme.save()
+        event_manager.emit("update-theme", self.untitled_theme)
 
     def __on_single_click_item(self, widget, item, x, y):
         self.set_highlight(item)
         event_manager.emit("clear-systemview-highlight", item.theme)
         theme_manager.apply_theme(item.theme)
+        self.__sync_untitle_theme(item.theme)
         self.status_box.set_status(_("Changed User Theme to %s") % item.theme.get_name())
         #gobject.timeout_add(300, self.__is_single_click, item)
 
@@ -160,7 +170,7 @@ class SystemThemeView(IconView):
 
     def __init__(self, padding_x=0, padding_y=0, status_box=None):
         IconView.__init__(self, padding_x=padding_x, padding_y=padding_y)
-
+        self.untitled_theme = theme_manager.get_untitled_theme()
         self.status_box = status_box
         
         self.__is_double_click = False
@@ -200,6 +210,14 @@ class SystemThemeView(IconView):
         self.__is_double_click = True
         event_manager.emit("theme-detail", item.theme)
 
+    def __sync_untitle_theme(self, theme):                                      
+        self.untitled_theme.clear_system_wallpapers()                           
+        self.untitled_theme.add_system_wallpapers(theme.get_system_wallpapers())
+        self.untitled_theme.clear_user_wallpapers()                             
+        self.untitled_theme.add_user_wallpapers(theme.get_user_wallpapers())       
+        self.untitled_theme.save()
+        event_manager.emit("update-theme", self.untitled_theme)
+
     def __is_single_click(self, item):                                          
         if self.__is_double_click:                                              
             item.do_double_click()
@@ -210,6 +228,7 @@ class SystemThemeView(IconView):
             self.__single_click_item = item                                                
             event_manager.emit("clear-userview-highlight", item.theme)            
             theme_manager.apply_theme(item.theme)                                   
+            self.__sync_untitle_theme(item.theme)
             self.status_box.set_status(_("Changed System Theme to %s") % item.theme.get_name())
                                                                                 
         self.__is_double_click = False
@@ -218,6 +237,7 @@ class SystemThemeView(IconView):
         self.set_highlight(item)
         event_manager.emit("clear-userview-highlight", item.theme)
         theme_manager.apply_theme(item.theme)
+        self.__sync_untitle_theme(item.theme)
         self.status_box.set_status(_("Changed System Theme to %s") % item.theme.get_name())
         #gobject.timeout_add(300, self.__is_single_click, item)
 
