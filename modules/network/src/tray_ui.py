@@ -22,7 +22,7 @@
 from dss import app_theme
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
-from dtk.ui.button import OffButton, Button
+from dtk.ui.button import SwitchButton, Button
 from vtk.button import SelectButton
 from dtk.ui.treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_pixbuf
@@ -257,7 +257,7 @@ class Section(gtk.HBox):
     def __init_ui(self):
         icon = ImageBox(self.icon)
         self.label = Label(self.text)
-        self.offbutton = OffButton()
+        self.offbutton = SwitchButton()
         self.offbutton.connect("toggled", self.toggle_callback)
         self.pack_start(self.__wrap_with_align(icon), False, False)
         self.pack_start(self.__wrap_with_align(self.label, align="left"), False, False, padding=10)

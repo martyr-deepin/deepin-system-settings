@@ -33,7 +33,7 @@ from dtk.ui.theme import DynamicColor
 from dtk.ui.dialog import DialogBox, DIALOG_MASK_SINGLE_PAGE
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.label import Label
-from dtk.ui.button import Button, OffButton
+from dtk.ui.button import Button, SwitchButton
 from dtk.ui.entry import InputEntry, EntryBuffer
 from dtk.ui.tab_window import TabBox
 from dtk.ui.scalebar import HScalebar
@@ -147,7 +147,7 @@ class KeySetting(object):
         self.button_widgets["blink_test_entry"] = BlinkButton(settings.keyboard_get_cursor_blink_time())
         #self.button_widgets["repeat_test_entry"] = gtk.Entry()
         #self.button_widgets["blink_test_entry"] = gtk.Entry()
-        self.button_widgets["touchpad_disable"] = OffButton()
+        self.button_widgets["touchpad_disable"] = SwitchButton()
         # relevant settings button
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Settings"),
             DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,

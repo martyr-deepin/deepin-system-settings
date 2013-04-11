@@ -1,7 +1,7 @@
 # element widgets to construct complex widgets
 from dss import app_theme
 from dtk.ui.entry import InputEntry, PasswordEntry
-from dtk.ui.button import OffButton, CheckButton, RadioButton
+from dtk.ui.button import SwitchButton, CheckButton, RadioButton
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 #from container import TitleBar, Contain
@@ -75,7 +75,7 @@ class Title(gtk.HBox):
         self.pack_start(self.label_box, False, False)
 
         if not always_show:
-            self.switch = OffButton()
+            self.switch = SwitchButton()
             align = style.wrap_with_align(self.switch, align="left")
             self.pack_start(align, False, False)
             self.switch.connect("toggled", toggle_callback)
@@ -240,7 +240,7 @@ class TableAsm(gtk.Table):
     def row_toggle(self, label_name, table=None):
         label = self.__label(label_name)
 
-        toggle = OffButton()
+        toggle = SwitchButton()
         self._wrap_align((label, toggle), table)
 
         return toggle

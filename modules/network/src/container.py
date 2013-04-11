@@ -10,7 +10,7 @@ import sys,os
 from deepin_utils.file import get_parent_dir
 from dtk.ui.label import Label
 from dtk.ui.box import ImageBox
-from dtk.ui.button import RadioButton, OffButton
+from dtk.ui.button import RadioButton, SwitchButton
 from dtk.ui.line import HSeparator
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
@@ -86,7 +86,7 @@ class Contain(gtk.Alignment):
                                enable_double_click=False)
         self.hbox.pack_start(self.label, False, False, TEXT_PADDING)
 
-        self.switch = OffButton()
+        self.switch = SwitchButton()
         #from style import wrap_with_align
         #align = wrap_with_align(self.switch)
         self.hbox.pack_start(self.switch, False , False, BUTTON_PADDING)
@@ -152,9 +152,9 @@ class TitleBar(gtk.VBox):
             container.pack_start(item, expand, fill)
         
 
-class MyToggleButton(OffButton):
+class MyToggleButton(SwitchButton):
     def __init__(self):
-        OffButton.__init__(self)
+        SwitchButton.__init__(self)
 
 class MyRadioButton(RadioButton):
     '''docstring for MyRadioButton'''

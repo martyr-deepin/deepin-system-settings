@@ -32,7 +32,7 @@ from icon_button import IconButton
 from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
 from dtk.ui.scrolled_window import ScrolledWindow
-from dtk.ui.button import CheckButton, Button, OffButton
+from dtk.ui.button import CheckButton, Button, SwitchButton
 from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.combo import ComboBox
 from dtk.ui.slider import HSlider
@@ -124,8 +124,8 @@ class AccountSetting(object):
         self.button_widgets["lock"] = gtk.Button()
         self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
         #self.button_widgets["auto_login"] = gtk.ToggleButton()
-        ##self.button_widgets["auto_login"] = OffButton()
-        self.button_widgets["nopw_login"] = OffButton()
+        ##self.button_widgets["auto_login"] = SwitchButton()
+        self.button_widgets["nopw_login"] = SwitchButton()
         self.button_widgets["passwd"] = InputEntry()
         #self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
         #self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)

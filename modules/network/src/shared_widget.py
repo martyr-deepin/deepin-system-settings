@@ -4,7 +4,7 @@
 from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
 from nmlib.nm_utils import TypeConvert
-from dtk.ui.button import OffButton
+from dtk.ui.button import SwitchButton
 from nmlib.nm_remote_connection import NMRemoteConnection
 from dtk.ui.utils import container_remove_all
 import gtk
@@ -35,7 +35,7 @@ class IPV4Conf(gtk.VBox):
         self.ip_label = Label(_("Automatic get IP address"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        self.auto_ip = OffButton()
+        self.auto_ip = SwitchButton()
 
         self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -57,7 +57,7 @@ class IPV4Conf(gtk.VBox):
         self.dns_label = Label( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        self.auto_dns = OffButton()
+        self.auto_dns = SwitchButton()
 
         self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -317,7 +317,7 @@ class IPV6Conf(gtk.VBox):
         self.ip_label = Label(_("Automatic get IP address"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        self.auto_ip = OffButton()
+        self.auto_ip = SwitchButton()
 
         self.addr_label = Label(_("IP Address:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
@@ -339,7 +339,7 @@ class IPV6Conf(gtk.VBox):
         self.dns_label = Label( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        self.auto_dns = OffButton()
+        self.auto_dns = SwitchButton()
 
         self.master_dns = Label(_("Primary DNS server address:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,

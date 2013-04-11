@@ -28,7 +28,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
 from dtk.ui.label import Label
-from dtk.ui.button import Button, OffButton
+from dtk.ui.button import Button, SwitchButton
 from dtk.ui.tab_window import TabBox
 from dtk.ui.slider import HSlider
 from dtk.ui.line import HSeparator
@@ -111,9 +111,9 @@ class SoundSetting(object):
         self.image_widgets["microphone"] = ImageBox(app_theme.get_pixbuf("%s/microphone.png" % MODULE_NAME))
         self.image_widgets["device"] = app_theme.get_pixbuf("%s/device.png" % MODULE_NAME)
         # button init
-        self.button_widgets["balance"] = OffButton()
-        self.button_widgets["speaker"] = OffButton()
-        self.button_widgets["microphone"] = OffButton()
+        self.button_widgets["balance"] = SwitchButton()
+        self.button_widgets["speaker"] = SwitchButton()
+        self.button_widgets["microphone"] = SwitchButton()
         self.button_widgets["advanced"] = Button(_("Advanced"))
         self.button_widgets["speaker_combo"] = ComboBox(fixed_width=HSCALEBAR_WIDTH)
         self.button_widgets["microphone_combo"] = ComboBox(fixed_width=HSCALEBAR_WIDTH)

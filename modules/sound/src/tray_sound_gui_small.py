@@ -27,7 +27,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
 from dtk.ui.label import Label
-from dtk.ui.button import OffButton
+from dtk.ui.button import SwitchButton
 from dtk.ui.line import HSeparator
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.box import ImageBox
@@ -77,7 +77,7 @@ class TrayGui(gtk.VBox):
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.speaker_scale.set_size_request(100, 10)
-        self.speaker_mute_button = OffButton()
+        self.speaker_mute_button = SwitchButton()
         table.attach(self.__make_align(speaker_img), 0, 1, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=25), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
@@ -85,7 +85,7 @@ class TrayGui(gtk.VBox):
         microphone_img = ImageBox(app_theme.get_pixbuf("sound/microphone.png"))
         self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.microphone_scale.set_size_request(100, 10)
-        self.microphone_mute_button = OffButton()
+        self.microphone_mute_button = SwitchButton()
         table.attach(self.__make_align(microphone_img), 0, 1, 1, 2, 4)
         table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, height=25), 1, 2, 1, 2, 4)
         table.attach(self.__make_align(self.microphone_mute_button), 2, 3, 1, 2, 4)
@@ -172,7 +172,7 @@ class TrayGui(gtk.VBox):
             img = gtk.image_new_from_pixbuf(self.stream_icon)
         scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         scale.set_size_request(100, 10)
-        mute_button = OffButton()
+        mute_button = SwitchButton()
         hbox = gtk.HBox()
         hbox.pack_start(self.__make_align(img), False, False)
         hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, height=25), False, False)

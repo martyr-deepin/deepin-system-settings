@@ -138,6 +138,6 @@ def draw_background_color(widget):
         #if widget is "entry":
             #row.append(InputEntry())
         #elif widget is "offbutton":
-            #row.append(OffButton())
+            #row.append(SwitchButton())
         #elif widget is "spin":
             #row.append()
