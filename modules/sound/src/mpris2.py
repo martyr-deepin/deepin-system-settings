@@ -140,12 +140,15 @@ class Mpris2(gobject.GObject):
                     del self.mpris_process[pid]
         elif old_owner:
             try:
-                #print "name changed:", old_owner, self.mpris_list
                 pid = self.get_pid(old_owner)
             except:
+                #print "name changed:", old_owner, name, self.mpris_list
                 if old_owner in self.mpris_list:
                     pid = self.mpris_list[old_owner]
                     del self.mpris_list[old_owner]
+                elif name in self.mpris_list:
+                    pid = self.mpris_list[name]
+                    del self.mpris_list[name]
                 else:
                     pid = None
             op = "remove"

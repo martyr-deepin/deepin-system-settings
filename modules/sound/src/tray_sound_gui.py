@@ -64,13 +64,14 @@ class TrayGui(gtk.VBox):
 
         self.stream_icon = app_theme.get_pixbuf("sound/device.png").get_pixbuf().scale_simple(16, 16, gtk.gdk.INTERP_TILES)
         self.stream_num = 0
-        self.stream_list = {}
-        self.stream_process = {}
+        self.stream_list = {}    # stream widgets
+        self.stream_process = {} # process id to stream widgets
+        self.stream_mpris = {}   # stream id to mpris process id
 
         self.__mpris_total_height = 0
-        self.mpris_base_height = 50
-        self.mpris_list = {}
-        self.mpris_stream = {}
+        self.mpris_base_height = 73
+        self.mpris_list = {}     # mpris widgets
+        self.mpris_stream = {}   # mpris process id to stream id
         self.mpris2 = Mpris2()
         self.mpris2.connect("new", self.mpris2_new_cb)
         self.mpris2.connect("removed", self.mpris2_removed_cb)
@@ -94,18 +95,18 @@ class TrayGui(gtk.VBox):
         table = gtk.Table(2, 3)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
-        self.speaker_scale.set_size_request(100, 10)
+        self.speaker_scale.set_size_request(90, 10)
         self.speaker_mute_button = SwitchButton()
         table.attach(self.__make_align(speaker_img), 0, 1, 0, 1, 4)
-        table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, height=25), 1, 2, 0, 1, 4)
+        table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=25), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
 
         #microphone_img = ImageBox(app_theme.get_pixbuf("sound/microphone.png"))
         #self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
-        #self.microphone_scale.set_size_request(100, 10)
+        #self.microphone_scale.set_size_request(90, 10)
         #self.microphone_mute_button = SwitchButton()
         #table.attach(self.__make_align(microphone_img), 0, 1, 1, 2, 4)
-        #table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, height=25), 1, 2, 1, 2, 4)
+        #table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=25), 1, 2, 1, 2, 4)
         #table.attach(self.__make_align(self.microphone_mute_button), 2, 3, 1, 2, 4)
 
         self.pack_start(table, False, False)
@@ -170,6 +171,7 @@ class TrayGui(gtk.VBox):
         # if it has show mpris, then don't show sink_input
         if process_id in self.mpris_list:
             self.mpris_stream[process_id] = index
+            self.stream_mpris[index] = process_id
             return
         self.stream_list[index] = {}
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
@@ -186,11 +188,11 @@ class TrayGui(gtk.VBox):
         else:
             img = gtk.image_new_from_pixbuf(self.stream_icon)
         scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
-        scale.set_size_request(100, 10)
+        scale.set_size_request(90, 10)
         mute_button = SwitchButton()
         hbox = gtk.HBox()
         hbox.pack_start(self.__make_align(img), False, False)
-        hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, height=25), False, False)
+        hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=25), False, False)
         hbox.pack_start(self.__make_align(mute_button), False, False)
         self.stream_list[index]['scale'] = scale
         self.stream_list[index]['button'] = mute_button
@@ -356,6 +358,10 @@ class TrayGui(gtk.VBox):
                                        self.stream_list[index]['button'])
 
     def sink_input_removed_cb(self, obj, index):
+        if index in self.stream_mpris:
+            if self.stream_mpris[index] in self.mpris_stream:
+                del self.mpris_stream[self.stream_mpris[index]]
+            del self.stream_mpris[index]
         if index in self.stream_list:
             process_id = self.stream_list[index]['process_id']
             if process_id in self.stream_process:
@@ -455,7 +461,7 @@ class TrayGui(gtk.VBox):
         xesam_vbox = gtk.VBox(False)
         #art_img = gtk.Image()
         art_img = gtk.EventBox()
-        art_img.set_size_request(34, 34)
+        art_img.set_size_request(40, 40)
         art_img.connect("expose-event", self.__draw_mpris_art_img)
 
         xesam_title = Label("", label_width=75)
@@ -464,7 +470,7 @@ class TrayGui(gtk.VBox):
         xesam_vbox.pack_start(xesam_title)
         xesam_vbox.pack_start(xesam_artist)
         #xesam_vbox.pack_start(xesam_album)
-        meta_box.pack_start(self.__make_align(art_img, padding_left=21, height=34), False, False)
+        meta_box.pack_start(self.__make_align(art_img, padding_left=21, height=40), False, False)
         meta_box.pack_start(xesam_vbox)
 
         self.mpris_list[pid] = {}
@@ -502,12 +508,12 @@ class TrayGui(gtk.VBox):
         scale.connect("value-changed", self.__mpris_volume_cb, obj, pid)
 
         hbox = gtk.HBox()
-        hbox.pack_start(self.__make_align(prev_bt), False, False)
-        hbox.pack_start(self.__make_align(pause_bt), False, False)
-        #hbox.pack_start(self.__make_align(stop_bt), False, False)
-        hbox.pack_start(self.__make_align(next_bt), False, False)
-        hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, height=25), False, False)
-        vbox.pack_start(self.__make_align(hbox, xalign=0.5, height=-1), False, False)
+        hbox.pack_start(self.__make_align(prev_bt, height=-1), False, False)
+        hbox.pack_start(self.__make_align(pause_bt, height=-1), False, False)
+        #hbox.pack_start(self.__make_align(stop_bt, height=-1), False, False)
+        hbox.pack_start(self.__make_align(next_bt, height=-1), False, False)
+        hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, height=-1), False, False)
+        vbox.pack_start(self.__make_align(hbox, xalign=0.5, padding_top=5, padding_bottom=10, height=-1), False, False)
 
         self.mpris_list[pid]['app_title'] = label
         self.mpris_list[pid]['prev'] = prev_bt
@@ -551,7 +557,7 @@ class TrayGui(gtk.VBox):
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h) 
         surface_cr = gtk.gdk.CairoContext(cairo.Context(surface))
         surface_cr.set_source_rgba(0, 0, 0, 1.0)
-        surface_cr.rectangle(6, 6, w - 12, h - 12)
+        surface_cr.rectangle(5, 5, w-10, h-10)
         surface_cr.stroke()
 
         dtk_cairo_blur.gaussian_blur(surface, 3)
@@ -571,7 +577,7 @@ class TrayGui(gtk.VBox):
         if 'mpris:artUrl' in self.mpris2.mpris_process[pid]['property']['Metadata']:
             arturl = urlparse(self.mpris2.mpris_process[pid]['property']['Metadata']['mpris:artUrl'])
             if arturl.scheme == 'file' and os.path.exists(arturl.path):
-                art_pixbuf = gtk.gdk.pixbuf_new_from_file(arturl.path).scale_simple(26, 26, gtk.gdk.INTERP_TILES)
+                art_pixbuf = gtk.gdk.pixbuf_new_from_file(arturl.path).scale_simple(32, 32, gtk.gdk.INTERP_TILES)
                 #self.mpris_list[pid]['meta_img'].set_from_pixbuf(art_pixbuf)
                 self.mpris_list[pid]['meta_img'].pixbuf = art_pixbuf
         else:
@@ -652,7 +658,8 @@ class TrayGui(gtk.VBox):
             obj.mpris_process[pid]['obj'].get_dbus_method(
                 'Previous', 'org.mpris.MediaPlayer2.Player')()
         except Exception, e:
-            print e
+            if e._dbus_error_name == "org.freedesktop.DBus.Error.ServiceUnknown":
+                self.mpris2_removed_cb(obj, pid)
         
     def __mpris_pause_cb(self, bt, obj, pid):
         if pid not in obj.mpris_process:
@@ -667,7 +674,8 @@ class TrayGui(gtk.VBox):
                     'PlayPause', 'org.mpris.MediaPlayer2.Player')
                 playpause()
         except Exception, e:
-            print e
+            if e._dbus_error_name == "org.freedesktop.DBus.Error.ServiceUnknown":
+                self.mpris2_removed_cb(obj, pid)
         
     def __mpris_stop_cb(self, bt, obj, pid):
         if pid not in obj.mpris_process:
@@ -676,7 +684,8 @@ class TrayGui(gtk.VBox):
             obj.mpris_process[pid]['obj'].get_dbus_method(
                 'Stop', 'org.mpris.MediaPlayer2.Player')()
         except Exception, e:
-            print e
+            if e._dbus_error_name == "org.freedesktop.DBus.Error.ServiceUnknown":
+                self.mpris2_removed_cb(obj, pid)
         
     def __mpris_next_cb(self, bt, obj, pid):
         if pid not in obj.mpris_process:
@@ -685,7 +694,8 @@ class TrayGui(gtk.VBox):
             obj.mpris_process[pid]['obj'].get_dbus_method(
                 'Next', 'org.mpris.MediaPlayer2.Player')()
         except Exception, e:
-            print e
+            if e._dbus_error_name == "org.freedesktop.DBus.Error.ServiceUnknown":
+                self.mpris2_removed_cb(obj, pid)
         
     def __mpris_volume_cb(self, widget, value, obj, pid):
         if pid not in obj.mpris_process:
@@ -694,7 +704,8 @@ class TrayGui(gtk.VBox):
             property_manager = dbus.Interface(obj.mpris_process[pid]['obj'], 'org.freedesktop.DBus.Properties')
             property_manager.Set('org.mpris.MediaPlayer2.Player', 'Volume', value)
         except Exception, e:
-            print e
+            if e._dbus_error_name == "org.freedesktop.DBus.Error.ServiceUnknown":
+                self.mpris2_removed_cb(obj, pid)
         
     def __draw_mpris_button_cb(self, bt, event):
         if bt.get_state() == gtk.STATE_PRELIGHT:

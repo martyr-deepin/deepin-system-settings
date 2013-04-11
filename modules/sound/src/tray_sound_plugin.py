@@ -47,7 +47,7 @@ class SoundTray(object):
         self.this_list = value_list
         self.this = self.this_list[0]
         self.tray_obj = self.this_list[1]
-        #self.tray_obj.set_icon_theme("tray_sound_icon")
+        self.tray_obj.set_icon_theme("tray_sound_icon")
         self.this.set_default_size(self.WIN_WIDTH, self.widget.get_widget_height())
         self.widget.update_tray_icon()
 
