@@ -232,7 +232,10 @@ class ThemeFile(RawConfigParser):
         except NoSectionError:
             self.add_section(section)
             self.set(section, option, value)
-        
+    
+    def clear_user_wallpapers(self):
+        self.remove_section("user_wallpaper")
+
     def get_user_wallpapers(self):
         save_wallpapers = self.get_section_options("user_wallpaper")
         user_wallpapers = []
@@ -254,7 +257,7 @@ class ThemeFile(RawConfigParser):
     
     def add_user_wallpapers(self, paths):
         for path in paths:
-            self.set_option("user_wallpaper", path, "False")
+            self.set_option("user_wallpaper", path, "True")
         self.save()    
         
     def get_user_wallpaper_status(self, path):    
@@ -266,6 +269,14 @@ class ThemeFile(RawConfigParser):
     
     def set_user_wallpaper_status(self, path, value):
         self.set_option("user_wallpaper", path, str(value))
+        self.save()
+
+    def clear_system_wallpapers(self):
+        self.remove_section("system_wallpaper")
+                                                                                
+    def add_system_wallpapers(self, paths):                                       
+        for path in paths:                                                      
+            self.set_option("system_wallpaper", path, "True")                    
         self.save()
 
     def set_system_wallpaper_status(self, path, value):    

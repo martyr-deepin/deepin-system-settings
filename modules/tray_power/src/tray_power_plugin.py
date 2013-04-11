@@ -22,6 +22,7 @@
 
 import gtk
 import dbus
+import dbus.mainloop.glib
 from nls import _
 from tray_power_gui import PowerGui
 from deepin_utils.process import run_command
@@ -47,13 +48,12 @@ class TrayPower(object):
     def __init__(self):
         self.gui = PowerGui()
         self.gui.click_btn.connect("clicked", self.click_btn_clicked_event)
-        #
-        self.error = False
         try:
             self.__init_dbus_inter()
         except Exception, e:
             print "traypower[error]:", e
-            self.error = True
+            self.power_inter = None
+            self.power_proper = None
         self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.power_set.connect("changed", self.power_set_changed)
 
@@ -62,23 +62,59 @@ class TrayPower(object):
         run_command(RUN_COMMAND) 
 
     def __init_dbus_inter(self):
-        session_bus = dbus.SystemBus()
-        power_obj = session_bus.get_object(ORG_UPOWER_NAME, ORG_UPOWER_PATH)
-        power_inter = dbus.Interface(power_obj, dbus_interface=ORG_UPOWER_INTERFACES)
-        acpi_path = power_inter.EnumerateDevices()
-        acpi_obj = session_bus.get_object(ORG_UPOWER_NAME, acpi_path[0])
-        self.acpi_inter = dbus.Interface(acpi_obj, dbus_interface=ORG_DBUS_PROPER)
+        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        self.sys_bus = dbus.SystemBus()
+        power_obj = self.sys_bus.get_object(ORG_UPOWER_NAME, ORG_UPOWER_PATH)
+        self.power_inter = dbus.Interface(power_obj, dbus_interface=ORG_UPOWER_INTERFACES)
+        self.power_proper = dbus.Interface(power_obj, dbus_interface=ORG_DBUS_PROPER)
+        self.sys_bus.add_signal_receiver(self.__power_dbus_changed, signal_name="Changed",
+                                         dbus_interface=ORG_UPOWER_INTERFACES, path=ORG_UPOWER_PATH)
+        self.sys_bus.add_signal_receiver(self.__power_dbus_device_changed, signal_name="DeviceAdded",
+                                         dbus_interface=ORG_UPOWER_INTERFACES, path=ORG_UPOWER_PATH)
+        self.sys_bus.add_signal_receiver(self.__power_dbus_device_changed, signal_name="DeviceChanged",
+                                         dbus_interface=ORG_UPOWER_INTERFACES, path=ORG_UPOWER_PATH)
+        self.sys_bus.add_signal_receiver(self.__power_dbus_device_changed, signal_name="DeviceRemoved",
+                                         dbus_interface=ORG_UPOWER_INTERFACES, path=ORG_UPOWER_PATH)
 
-    def power_set_changed(self, key):
-        if not self.error:
-            self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
-        if key not in  ["percentage", "show-tray"]: 
-            return 
-        #
+    def __power_dbus_changed(self):
+        self.online_value = self.get_line_power()
         value = self.power_set.get_double("percentage")
         self.update_power_icon(int(value))
-        self.visible_power_tray()
-        self.modify_battery_icon(self.online_value, value)
+        self.modify_battery_icon(int(value))
+
+    def __power_dbus_device_changed(self, dev_path):
+        self.has_battery = self.get_has_battery()
+        value = self.power_set.get_double("percentage")
+        self.update_power_icon(int(value))
+        self.modify_battery_icon(int(value))
+
+    def get_has_battery(self):
+        ''' whether power has battery '''
+        try:
+            devices = self.power_inter.EnumerateDevices()
+            for dev in devices:
+                dev_obj = self.sys_bus.get_object(ORG_UPOWER_NAME, dev)
+                dev_inter = dbus.Interface(dev_obj, dbus_interface=ORG_DBUS_PROPER)
+                if dev_inter.Get(ORG_UPOWER_DEVICE, "Type") == 2:
+                    return True
+            return False
+        except:
+            return False
+
+    def get_line_power(self):
+        ''' Whether power is currently being provided through line power '''
+        try:
+            return not self.power_proper.Get(ORG_UPOWER_INTERFACES, "OnBattery")
+        except:
+            return False
+
+    def power_set_changed(self, key):
+        if key == "show-tray":
+            self.visible_power_tray()
+        elif key == "percentage":
+            value = self.power_set.get_double("percentage")
+            self.update_power_icon(int(value))
+            self.modify_battery_icon(int(value))
 
     def visible_power_tray(self):
         show_value = self.power_set.get_boolean("show-tray")
@@ -89,12 +125,22 @@ class TrayPower(object):
             self.tray_icon.set_no_show_all(True)
             self.tray_icon.hide()
 
-    def modify_battery_icon(self, online_value, value):
-        if online_value:
-            self.tray_icon.set_tooltip_text(_("charging"))
+    def modify_battery_icon(self, value):
+        if not self.online_value:
+            return
+        if self.has_battery:
             self.tray_icon.set_icon_theme("tray_battery")
+            if value == 100:
+                self.tray_icon.set_tooltip_text(_("fully charged"))
+            else:
+                self.tray_icon.set_tooltip_text(_("charging"))
+        else:
+            self.tray_icon.set_icon_theme("computer_d")
+            self.tray_icon.set_tooltip_text("")
 
     def update_power_icon(self, percentage):
+        if self.online_value:
+            return
         if percentage >= 91 and percentage <= 100:
             self.tray_icon.set_icon_theme("battery91-100")
         elif percentage >= 81 and percentage <= 90:
@@ -122,16 +168,14 @@ class TrayPower(object):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
         # visible icon pixbuf.
-        xrandr_settings = deepin_gsettings.new(XRANDR_SETTINGS_GSET)
-        visible_check = xrandr_settings.get_boolean("is-laptop")
-        #self.tray_icon.set_visible(visible_check)
+        self.has_battery = self.get_has_battery()
+        self.online_value = self.get_line_power()
         self.visible_power_tray()
-        if visible_check:
+        if self.has_battery:
             # get power value.
             percentage = self.power_set.get_double("percentage")
             self.update_power_icon(percentage)
-            self.online_value = self.acpi_inter.Get(ORG_UPOWER_DEVICE, "Online")
-            self.modify_battery_icon(self.online_value, percentage)
+            self.modify_battery_icon(percentage)
             # init tray_icon events.
         else:
             self.tray_icon.set_icon_theme("computer_d")
