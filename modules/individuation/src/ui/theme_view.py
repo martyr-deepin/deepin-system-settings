@@ -115,7 +115,6 @@ class UserThemeView(IconView):
     def delete_theme(self, item):
         theme = theme_manager.delete_theme(item.theme.get_default_name())
         self.items.remove(item)
-        self.queue_draw()
 
     def on_theme_sava_as(self, item):
         input_dialog = InputDialog(_("Theme Save As"), "", 300, 100, lambda name: self.create_new_theme(name, item), None, True)
@@ -147,14 +146,11 @@ class UserThemeView(IconView):
                           (None, _("Delete Theme"), lambda : self.on_theme_delete(item))]
         Menu(menu_items, True).show((int(x), int(y)))
 
-    # FIXME: update theme bring in the SaveAs bug
     def __on_update_theme(self, name, obj, new_theme):
         for item in self.items:
             if item.theme == new_theme:
                 item.update_theme()
-                break
-
-        self.queue_draw()
+                return
 
     def add_themes(self, themes):
         theme_items = [ThemeItem(theme_file) for theme_file in themes ]

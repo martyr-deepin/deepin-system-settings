@@ -93,7 +93,7 @@ class ThemeItem(gobject.GObject):
 
     def update_theme(self):
         self.theme.reload()
-        self.emit_redraw_request()
+        self.pixbufs = []
 
     def emit_redraw_request(self):
         '''
@@ -126,7 +126,6 @@ class ThemeItem(gobject.GObject):
         This is IconView interface, you should implement it.
         
         '''
-        
         # Draw background.
         if self.highlight_flag:                
             with cairo_disable_antialias(cr):
@@ -151,8 +150,6 @@ class ThemeItem(gobject.GObject):
                 cr.set_line_width(1)
                 cr.set_source_rgb(*color_hex_to_cairo(self.hover_stroke_dcolor.get_color()))
                 cr.stroke()
-                
-
                 
         # Draw wallpapers.
         if self.pixbufs == []:
