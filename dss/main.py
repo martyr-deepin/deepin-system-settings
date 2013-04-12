@@ -129,7 +129,7 @@ class DBusService(dbus.service.Object):
                 content_page = content_page_info.get_content_page(module_id)
                 content_page.add_plug_id(plug_id)
             elif message_type == "send_module_info":
-                (crumb_index, (module_id, crumb_name)) = message_content
+                (crumb_index, (module_id, crumb_name), argv) = message_content
                 action_bar.bread.add(Crumb(crumb_name, None))
                 
                 backward_module_id, forward_module_id = record_module_history(module_id)

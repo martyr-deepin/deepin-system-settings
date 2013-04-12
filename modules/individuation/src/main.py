@@ -97,7 +97,7 @@ class DeepinIndividuation(object):
                 
         elif message_type == "show_again":
             self.slider.set_to_page(self.theme_page)
-            self.module_frame.send_module_info()
+            self.module_frame.send_module_info("DEBUG")
 
         elif message_type == "exit":
             self.module_frame.exit()

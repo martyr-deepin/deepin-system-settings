@@ -143,7 +143,7 @@ class ModuleFrame(gtk.Plug):
         pass
     
         
-    def send_module_info(self):
+    def send_module_info(self, argv=""):
         name = self.module_config.get("name", "zh_CN")
         if len(locale.getdefaultlocale()):
             if locale.getdefaultlocale()[0].find("zh_") != 0:
@@ -154,8 +154,8 @@ class ModuleFrame(gtk.Plug):
         self.send_message("send_module_info", 
                           (1, 
                            (self.module_config.get("main", "id"), 
-                            name)
-                           ))
+                            name), 
+                           argv))
         self.send_message("send_plug_id", (self.module_id, self.get_id()))
         
     def send_submodule_crumb(self, crumb_index, crumb_name):

@@ -425,6 +425,8 @@ class ThemeManager(object):
         if image_paths:
             image_uris = ";".join(["file://%s" % path for path in image_paths])
             background_gsettings.set_string("picture-uris", image_uris)
+        else:
+            background_gsettings.set_string("picture-uris", "")
         background_gsettings.set_int("background-duration", duration)
         # background_gsettings.set_string("draw-mode", draw_mode)
         # background_gsettings.set_string("cross-fade-auto-mode", random_mode)
