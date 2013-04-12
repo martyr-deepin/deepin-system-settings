@@ -115,6 +115,6 @@ def get_fallback_source_index():
     else:
         return None
     for key in input_devices.keys():
-        if name == output_devices[key]['name']:
+        if name == input_devices[key]['name']:
             return key
     return None

@@ -44,7 +44,7 @@ from statusbar import StatusBar
 from nls import _
 import gtk
 #import settings
-import pypulse_small as pypulse
+import pypulse
 
 from module_frame import ModuleFrame
 from constant import *
@@ -69,16 +69,6 @@ class SoundSetting(object):
         self.view_widgets = {}
 
         self.__is_first_show = True
-        self.__fallback_sink_index = None
-        self.__fallback_source_index = None
-        self.__state_cb_fun = {}
-        self.__state_cb_fun["server"] = self.__server_state_cb
-        self.__state_cb_fun["sink"] = self.__sink_state_cb
-        self.__state_cb_fun["source"] = self.__source_state_cb
-        self.__state_cb_fun["card"] = self.__card_state_cb
-
-        # TODO
-        self.__record_stream_cb_fun = {"read": self.__record_stream_read_cb, "suspended": self.__record_stream_suspended}
 
         self.__create_widget()
         self.__adjust_widget()
@@ -212,8 +202,8 @@ class SoundSetting(object):
 
         self.container_widgets["advance_set_tab_box"].add_items(
             [(_("Input"), self.alignment_widgets["advance_input_box"]),
-             (_("Output"), self.alignment_widgets["advance_output_box"]),
-             (_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
+             (_("Output"), self.alignment_widgets["advance_output_box"])])
+             #(_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
         ###########################
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)    # the spacing between left and right
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
@@ -365,7 +355,6 @@ class SoundSetting(object):
         self.view_widgets["ad_input"].set_expand_column(0)
         self.view_widgets["ad_output"].set_expand_column(0)
         self.view_widgets["ad_hardware"].set_expand_column(0)
-
         self.__first_time = True
         self.__set_output_status()
         self.__set_input_status()
@@ -373,15 +362,14 @@ class SoundSetting(object):
         self.__set_output_port_status()
         self.__set_input_port_status()
 
-        #self.__set_card_treeview_status()
-        #self.__set_output_treeview_status()
-        #self.__set_input_treeview_status()
+        self.__set_card_treeview_status()
+        self.__set_output_treeview_status()
+        self.__set_input_treeview_status()
         self.__first_time = False
-
-        ## set output volume
-        #self.speaker_ports = None
-        ## set input volume
-        #self.microphone_ports = None
+        # set output volume
+        self.speaker_ports = None
+        # set input volume
+        self.microphone_ports = None
 
     def __signals_connect(self):
         ''' widget signals connect'''
@@ -410,11 +398,19 @@ class SoundSetting(object):
         self.container_widgets["advance_hardware_box"].connect("expose-event", self.treeview_container_expose_cb, self.view_widgets["ad_hardware"])
         #######################
         # pulseaudio signals
-        pypulse.PULSE.connect_to_pulse(self.__state_cb_fun)
+        pypulse.PULSE.connect("sink-new", self.pa_sink_new_cb)
+        pypulse.PULSE.connect("sink-changed", self.pa_sink_changed_cb)
         pypulse.PULSE.connect("sink-removed", self.pa_sink_removed_cb)
+
+        pypulse.PULSE.connect("source-new", self.pa_source_new_cb)
+        pypulse.PULSE.connect("source-changed", self.pa_source_changed_cb)
         pypulse.PULSE.connect("source-removed", self.pa_source_removed_cb)
+
+        pypulse.PULSE.connect("card-new", self.pa_card_new_cb)
+        pypulse.PULSE.connect("card-changed", self.pa_card_changed_cb)
         pypulse.PULSE.connect("card-removed", self.pa_card_removed_cb)
-        #pypulse.PULSE.connect("server-changed", self.pa_server_changed_cb)
+
+        pypulse.PULSE.connect("server-changed", self.pa_server_changed_cb)
 
     ######################################
     # signals callback begin
@@ -532,105 +528,68 @@ class SoundSetting(object):
 
     #########################
     # pulseaudio signals
-    def __server_state_cb(self, obj, dt):
-        pypulse.server_info = dt
-        fallback_sink = pypulse.get_fallback_sink_index()
-        if self.__fallback_sink_index != fallback_sink:
-            self.__fallback_sink_index = fallback_sink
-            if self.__fallback_sink_index in pypulse.output_volumes:
-                self.__set_output_status()
-                self.__set_output_port_status()
-                self.__set_output_treeview_status()
-
-        fallback_source = pypulse.get_fallback_source_index()
-        if self.__fallback_source_index is None and fallback_source is None:
-            obj.connect_record(self.__record_stream_cb_fun)
-        if self.__fallback_source_index != fallback_source:
-            self.__fallback_source_index = fallback_source
-            obj.connect_record(self.__record_stream_cb_fun)
-            if self.__fallback_source_index in pypulse.input_volumes:
-                self.__set_input_status()
-                self.__set_input_port_status()
-                self.__set_input_treeview_status()
-
-    def __record_stream_read_cb(self, obj, value):
-        print "stream record:", value
-
-    def __record_stream_suspended(self, obj):
-        print "suspended"
-
-    def __sink_state_cb(self, obj, channel, port, volume, sink, idx):
-        if idx in pypulse.output_devices:
-            op = "changed"
-        else:
-            op = "new"
-        pypulse.output_channels[idx] = channel
-        pypulse.output_active_ports[idx] = port
-        pypulse.output_volumes[idx] = volume
-        pypulse.output_devices[idx] = sink
-        if self.__fallback_sink_index is None and pypulse.get_fallback_sink_name() == sink['name']:
-            self.__fallback_sink_index = idx
-        if self.__fallback_sink_index == idx:
-            self.__set_output_status()
-            self.__set_output_port_status()
-        if op == "new":
-            self.__set_output_treeview_status()
-
-    def __source_state_cb(self, obj, channel, port, volume, source, idx):
-        if idx in pypulse.input_devices:
-            op = "changed"
-        else:
-            op = "new"
-        pypulse.input_channels[idx] = channel
-        pypulse.input_active_ports[idx] = port
-        pypulse.input_volumes[idx] = volume
-        pypulse.input_devices[idx] = source
-        if self.__fallback_source_index is None and pypulse.get_fallback_source_name() == source['name']:
-            self.__fallback_source_index = idx
-        if self.__fallback_source_index == idx:
-            self.__set_input_status()
-            self.__set_input_port_status()
-        if op == "new":
-            self.__set_input_treeview_status()
-
-    def __card_state_cb(self, obj, dt, idx):
-        print "card state", dt, idx
-        if idx in pypulse.card_devices:
-            op = "changed"
-        else:
-            op = "new"
-        pypulse.card_devices[idx] = dt
-        if op == "new":
-            self.__set_card_treeview_status()
-
-    ### TODO
-    # pulseaudio remove signal
-    def pa_sink_removed_cb(self, obj, index):
-        if index in pypulse.output_devices:
-            del pypulse.output_devices[index]
-        if index in pypulse.output_channels:
-            del pypulse.output_channels[index]
-        if index in pypulse.output_active_ports:
-            del pypulse.output_active_ports[index]
-        if index in pypulse.output_volumes:
-            del pypulse.output_volumes[index]
+    def pa_sink_new_cb(self, obj, index):
+        obj.get_devices()
         self.__set_output_treeview_status()
 
-    def pa_source_removed_cb(self, obj, index):
-        if index in pypulse.input_devices:
-            del pypulse.input_devices[index]
-        if index in pypulse.input_channels:
-            del pypulse.input_channels[index]
-        if index in pypulse.input_active_ports:
-            del pypulse.input_active_ports[index]
-        if index in pypulse.input_volumes:
-            del pypulse.input_volumes[index]
+    def pa_sink_changed_cb(self, obj, index):
+        obj.get_devices()
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is None or current_sink != index:
+            return
+        self.__set_output_status()
+        self.__set_output_port_status()
+
+    def pa_sink_removed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_output_treeview_status()
+
+    def pa_source_new_cb(self, obj, index):
+        obj.get_devices()
         self.__set_input_treeview_status()
 
-    def pa_card_removed_cb(self, obj, index):
-        if index in pypulse.card_devices:
-            del pypulse.card_devices[index]
+    def pa_source_changed_cb(self, obj, index):
+        obj.get_devices()
+        current_source = pypulse.get_fallback_source_index()
+        if current_source is None or current_source != index:
+            return
+        self.__set_input_status()
+        self.__set_input_port_status()
+
+    def pa_source_removed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_input_treeview_status()
+
+    def pa_card_new_cb(self, obj, index):
+        obj.get_devices()
         self.__set_card_treeview_status()
+
+    def pa_card_changed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_card_treeview_status()
+
+    def pa_card_removed_cb(self, obj, index):
+        obj.get_devices()
+        self.__set_card_treeview_status()
+
+    def pa_server_changed_cb(self, obj):
+        obj.get_devices()
+        self.__set_output_status()
+        self.__set_output_port_status()
+        current_sink = pypulse.get_fallback_sink_index()
+        if current_sink is not None:
+            for item in self.view_widgets["ad_output"].get_items():
+                if item.device_index == current_sink:
+                    self.view_widgets["ad_output"].select_items([item])
+                    break
+        self.__set_input_status()
+        self.__set_input_port_status()
+        current_source = pypulse.get_fallback_source_index()
+        if current_source is not None:
+            for item in self.view_widgets["ad_input"].get_items():
+                if item.device_index == current_source:
+                    self.view_widgets["ad_input"].select_items([item])
+                    break
 
     # signals callback end
     ######################################
@@ -664,8 +623,8 @@ class SoundSetting(object):
 
     def __set_output_status(self):
         # if sinks list is empty, then can't set output volume
-        current_sink = self.__fallback_sink_index
-        sinks = pypulse.output_devices
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
         if current_sink is None:
             self.label_widgets["speaker_port"].set_sensitive(False)
             self.label_widgets["speaker_mute"].set_sensitive(False)
@@ -683,7 +642,7 @@ class SoundSetting(object):
             self.scale_widgets["speaker"].set_enable(False)
             self.scale_widgets["balance"].set_enable(False)
         # set output volume
-        else:
+        elif current_sink in sinks:
             self.label_widgets["speaker_port"].set_sensitive(True)
             self.label_widgets["speaker_mute"].set_sensitive(True)
             self.label_widgets["speaker_volume"].set_sensitive(True)
@@ -701,23 +660,27 @@ class SoundSetting(object):
             self.scale_widgets["speaker"].set_enable(not is_mute)
             self.scale_widgets["balance"].set_enable(not is_mute)
 
-            sink_volume = pypulse.output_volumes[current_sink]
-            sink_channel = pypulse.output_channels[current_sink]
+            sink_volume = pypulse.PULSE.get_output_volume()
+            sink_channel = pypulse.PULSE.get_output_channels_by_index(current_sink)
             balance = None
-            volume = max(sink_volume)
-            if sink_channel and sink_channel['can_balance']:
-                balance = pypulse.get_volume_balance(sink_channel['channels'],
-                                                     sink_volume,
-                                                     sink_channel['map'])
-            if balance is None:
+            if current_sink in sink_volume:
+                volume = max(sink_volume[current_sink])
+                if sink_channel and sink_channel['can_balance']:
+                    balance = pypulse.get_volume_balance(sink_channel['channels'],
+                                                         sink_volume[current_sink],
+                                                         sink_channel['map'])
+                if balance is None:
+                    balance = 0
+            else:
+                volume = 0
                 balance = 0
             self.scale_widgets["speaker"].set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
             self.scale_widgets["balance"].set_value(balance)
 
     def __set_input_status(self):
         # if sources list is empty, then can't set input volume
-        current_source = self.__fallback_source_index
-        sources = pypulse.input_devices
+        current_source = pypulse.get_fallback_source_index()
+        sources = pypulse.PULSE.get_input_devices()
         if current_source is None:
             self.label_widgets["microphone_port"].set_sensitive(False)
             self.label_widgets["microphone_mute"].set_sensitive(False)
@@ -732,7 +695,7 @@ class SoundSetting(object):
             self.button_widgets["microphone"].set_active(False)
             self.scale_widgets["microphone"].set_enable(False)
         # set input volume
-        else:
+        elif current_source in sources:
             self.label_widgets["microphone_port"].set_sensitive(True)
             self.label_widgets["microphone_mute"].set_sensitive(True)
             self.label_widgets["microphone_volume"].set_sensitive(True)
@@ -742,25 +705,26 @@ class SoundSetting(object):
             self.scale_widgets["microphone"].set_sensitive(True)
 
             is_mute = sources[current_source]['mute']
-            print "729", self.button_widgets["microphone"].get_active(), is_mute
             if self.button_widgets["microphone"].get_active() == is_mute and not self.__first_time:
                 self.button_widgets["microphone"].set_data("change-by-other", True)
             self.button_widgets["microphone"].set_active(not is_mute)
             self.scale_widgets["microphone"].set_enable(not is_mute)
-
-            source_volume = pypulse.input_volumes[current_source]
-            volume = max(source_volume)
+            source_volume = pypulse.PULSE.get_input_volume()
+            if current_source in source_volume:
+                volume = max(source_volume[current_source])
+            else:
+                volume = 0
             self.scale_widgets["microphone"].set_value(volume * 100.0 / pypulse.NORMAL_VOLUME_VALUE)
 
     def __set_output_port_status(self):
-        current_sink = self.__fallback_sink_index
-        sinks = pypulse.output_devices
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
         self.__current_sink_ports= {}
         if current_sink is None:
             return
-        else:
+        elif current_sink in sinks:
             ports = sinks[current_sink]['ports']
-            active_port = pypulse.output_active_ports[current_sink]
+            active_port = pypulse.PULSE.get_output_active_ports_by_index(current_sink)
             if active_port is None:
                 select_index = 0
             i = 0
@@ -776,14 +740,14 @@ class SoundSetting(object):
             self.button_widgets["speaker_combo"].add_items(items, select_index)
 
     def __set_input_port_status(self):
-        current_source = self.__fallback_source_index
-        sources = pypulse.input_devices
+        current_source = pypulse.get_fallback_source_index()
+        sources = pypulse.PULSE.get_input_devices()
         self.__current_source_ports= {}
         if current_source is None:
             return
         elif current_source in sources:
             ports = sources[current_source]['ports']
-            active_port = pypulse.input_active_ports[current_source]
+            active_port = pypulse.PULSE.get_input_active_ports_by_index(current_source)
             if active_port is None:
                 select_index = 0
             i = 0
@@ -800,7 +764,7 @@ class SoundSetting(object):
         
     def __set_card_treeview_status(self):
         card_list = []
-        cards = pypulse.card_devices
+        cards = pypulse.PULSE.get_cards()
         for idx in cards:
             active_profile = cards[idx]['active_profile']
             if active_profile:
@@ -824,13 +788,12 @@ class SoundSetting(object):
                     card_info = " "
             card_list.append(TreeItem(self.image_widgets["device"], card_info, cards[idx]['name'], idx))
         self.view_widgets["ad_hardware"].add_items(card_list, clear_first=True)
-        print card_list
         if card_list:
             self.view_widgets["ad_hardware"].set_select_rows([0])
 
     def __set_output_treeview_status(self):
-        current_sink = self.__fallback_sink_index
-        sinks = pypulse.output_devices
+        current_sink = pypulse.get_fallback_sink_index()
+        sinks = pypulse.PULSE.get_output_devices()
         output_list = []
         i = 0
         selected_row = -1
@@ -849,7 +812,7 @@ class SoundSetting(object):
 
     def __set_input_treeview_status(self):
         current_source = pypulse.get_fallback_source_index()
-        sources = pypulse.input_devices
+        sources = pypulse.PULSE.get_input_devices()
         input_list = []
         i = 0
         selected_row = -1
