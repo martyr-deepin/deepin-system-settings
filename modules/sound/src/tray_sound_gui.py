@@ -602,6 +602,7 @@ class TrayGui(gtk.VBox):
     def mpris2_removed_cb(self, obj, pid):
         if pid in self.mpris_list:
             self.mpris_list[pid]['container'].destroy()
+            self.mpris_list[pid]['meta'].destroy()
             self.__mpris_total_height -= self.mpris_list[pid]['height']
             del self.mpris_list[pid]
         if pid in self.mpris_stream:

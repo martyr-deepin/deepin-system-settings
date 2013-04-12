@@ -21,7 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 try:
-    import deepin_pulseaudio
+    import deepin_pulseaudio_small as deepin_pulseaudio
 except ImportError:
     print "----------Please Install Deepin Pulseaudio Python Binding----------"   
     print "git clone git@github.com:linuxdeepin/pypulseaudio.git"
@@ -56,6 +56,12 @@ except ImportError:
 # sourceoutput_state_cb(dp_pa, dict, int)
 #   dict: sourceoutput info
 #   int: sourceoutput index
+
+# record_stream_read_cb(obj, value):
+#   value: stream fragment data of buffer
+
+# record_stream_suspended(obj):
+
 
 MAX_VOLUME_VALUE = deepin_pulseaudio.VOLUME_UI_MAX
 NORMAL_VOLUME_VALUE = deepin_pulseaudio.VOLUME_NORM

@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from tray_sound_gui import TrayGui
+from tray_sound_gui_small import TrayGui
 
 from subprocess import Popen
 import gtk
