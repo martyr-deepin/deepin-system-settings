@@ -69,7 +69,7 @@ class TrayGui(gtk.VBox):
         self.stream_mpris = {}   # stream id to mpris process id
 
         self.__mpris_total_height = 0
-        self.mpris_base_height = 73
+        self.mpris_base_height = 70
         self.mpris_list = {}     # mpris widgets
         self.mpris_stream = {}   # mpris process id to stream id
         self.mpris2 = Mpris2()
@@ -533,7 +533,7 @@ class TrayGui(gtk.VBox):
             vbox.pack_start(meta_box, False, False)
             vbox.reorder_child(meta_box, 1)
             self.__set_mpris_meta_info(pid)
-            self.mpris_list[pid]['height'] = self.mpris_base_height + 34
+            self.mpris_list[pid]['height'] = self.mpris_base_height + 40
         self.__mpris_total_height += self.mpris_list[pid]['height']
         # delete playback_stream widget
         if pid in self.stream_process:
@@ -646,7 +646,7 @@ class TrayGui(gtk.VBox):
                 self.mpris_list[pid]['container'].reorder_child(self.mpris_list[pid]['meta'], 1)
                 self.mpris_list[pid]['container'].show_all()
                 self.__mpris_total_height -= self.mpris_list[pid]['height']
-                self.mpris_list[pid]['height'] = self.mpris_base_height + 34
+                self.mpris_list[pid]['height'] = self.mpris_base_height + 40
                 self.__mpris_total_height += self.mpris_list[pid]['height']
                 self.adjust_size()
                 self.emit("stream-changed")
