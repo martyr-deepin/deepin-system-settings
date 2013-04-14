@@ -37,6 +37,7 @@ from dtk.ui.box import ImageBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.progressbar import ProgressBar
 from dtk.ui.constant import ALIGN_END
 from treeitem import MyTreeItem as TreeItem
 from treeitem import MyTreeView as TreeView
@@ -77,7 +78,6 @@ class SoundSetting(object):
         self.__state_cb_fun["source"] = self.__source_state_cb
         self.__state_cb_fun["card"] = self.__card_state_cb
 
-        # TODO
         self.__record_stream_cb_fun = {"read": self.__record_stream_read_cb, "suspended": self.__record_stream_suspended}
 
         self.__create_widget()
@@ -114,6 +114,9 @@ class SoundSetting(object):
         self.label_widgets["microphone_mute"] = Label(_("Sound Enabled"), text_size=option_item_font_szie,
                                                       text_x_align=ALIGN_END, enable_select=False,
                                                       enable_double_click=False, fixed_width=STANDARD_LINE)
+        self.label_widgets["microphone_input_level"] = Label(_("Input Level"), text_size=option_item_font_szie,
+                                                        text_x_align=ALIGN_END, enable_select=False,
+                                                        enable_double_click=False, fixed_width=STANDARD_LINE)
         #####################################
         # image init
         self.image_widgets["balance"] = ImageBox(app_theme.get_pixbuf("%s/balance.png" % MODULE_NAME))
@@ -143,7 +146,7 @@ class SoundSetting(object):
         self.container_widgets["speaker_table"] = gtk.Table(4, 2)
         self.container_widgets["microphone_main_vbox"] = gtk.VBox(False)     # microphone
         self.container_widgets["microphone_label_hbox"] = gtk.HBox(False)
-        self.container_widgets["microphone_table"] = gtk.Table(4, 2)
+        self.container_widgets["microphone_table"] = gtk.Table(5, 2)
         # alignment init
         self.alignment_widgets["slider"] = gtk.Alignment()
         self.alignment_widgets["main_hbox"] = gtk.Alignment()
@@ -163,6 +166,7 @@ class SoundSetting(object):
         self.scale_widgets["balance"] = HScalebar(value_min=-1, value_max=1, gray_progress=True)
         self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
         self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
+        self.scale_widgets["input_test"] = ProgressBar()
         ###################################
         # advance set
         self.container_widgets["advance_input_box"] = gtk.VBox(False)
@@ -212,8 +216,8 @@ class SoundSetting(object):
 
         self.container_widgets["advance_set_tab_box"].add_items(
             [(_("Input"), self.alignment_widgets["advance_input_box"]),
-             (_("Output"), self.alignment_widgets["advance_output_box"]),
-             (_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
+             (_("Output"), self.alignment_widgets["advance_output_box"])])
+             #(_("Hardware"), self.alignment_widgets["advance_hardware_box"])])
         ###########################
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)    # the spacing between left and right
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
@@ -335,10 +339,18 @@ class SoundSetting(object):
             microphone_volume_align, 0, 1, 2, 3, 4)
         self.container_widgets["microphone_table"].attach(
             self.__make_align(self.scale_widgets["microphone"], yalign=0.0, yscale=1.0, height=43), 1, 2, 2, 3, 4)
+        microphone_input_align = self.__make_align(self.label_widgets["microphone_input_level"])
+        microphone_input_align.set_size_request(STANDARD_LINE, CONTAINNER_HEIGHT)
         self.container_widgets["microphone_table"].attach(
-            self.__make_align(self.button_widgets["advanced"]), 0, 2, 3, 4, 4, ypadding=15)
+            microphone_input_align, 0, 1, 3, 4, 4)
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.scale_widgets["input_test"], yalign=0.5, height=CONTAINNER_HEIGHT), 1, 2, 3, 4, 4)
+        #
+        self.container_widgets["microphone_table"].attach(
+            self.__make_align(self.button_widgets["advanced"]), 0, 2, 4, 5, 4, ypadding=15)
         self.button_widgets["microphone_combo"].set_size_request(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
         self.scale_widgets["microphone"].set_size_request(HSCALEBAR_WIDTH, -1)
+        self.scale_widgets["input_test"].set_size_request(HSCALEBAR_WIDTH, -1)
 
         # advanced
         self.alignment_widgets["advance_input_box"].add(self.container_widgets["advance_input_box"])
@@ -473,8 +485,9 @@ class SoundSetting(object):
         if current_sink is None:
             return
         balance = self.scale_widgets["balance"].get_value()
+        channel_list = pypulse.output_channels[current_sink]
         volume = int((self.scale_widgets["speaker"].get_value()) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
-        pypulse.PULSE.set_output_volume_with_balance(current_sink, volume, balance)
+        pypulse.PULSE.set_output_volume_with_balance(current_sink, volume, balance, channel_list['channels'], channel_list['map'])
 
     def microphone_value_changed_cb(self, widget, value):
         if not self.button_widgets["microphone"].get_active():
@@ -482,11 +495,11 @@ class SoundSetting(object):
         current_source = pypulse.get_fallback_source_index()
         if current_source is None:
             return
-        channel_list = pypulse.PULSE.get_input_channels_by_index(current_source)
+        channel_list = pypulse.input_channels[current_source]
         if not channel_list:
             return
         volume = int((value) / 100.0 * pypulse.NORMAL_VOLUME_VALUE)
-        pypulse.PULSE.set_input_volume(current_source, [volume] * channel_list['channels'])
+        pypulse.PULSE.set_input_volume(current_source, [volume] * channel_list['channels'], channel_list['channels'])
 
     def speaker_port_changed(self, combo, content, value, index):
         current_sink = pypulse.get_fallback_sink_index()
@@ -555,6 +568,7 @@ class SoundSetting(object):
 
     def __record_stream_read_cb(self, obj, value):
         print "stream record:", value
+        self.scale_widgets["input_test"].set_progress(int(value * 100))
 
     def __record_stream_suspended(self, obj):
         print "suspended"
@@ -594,7 +608,6 @@ class SoundSetting(object):
             self.__set_input_treeview_status()
 
     def __card_state_cb(self, obj, dt, idx):
-        print "card state", dt, idx
         if idx in pypulse.card_devices:
             op = "changed"
         else:
@@ -603,7 +616,6 @@ class SoundSetting(object):
         if op == "new":
             self.__set_card_treeview_status()
 
-    ### TODO
     # pulseaudio remove signal
     def pa_sink_removed_cb(self, obj, index):
         if index in pypulse.output_devices:
@@ -742,7 +754,6 @@ class SoundSetting(object):
             self.scale_widgets["microphone"].set_sensitive(True)
 
             is_mute = sources[current_source]['mute']
-            print "729", self.button_widgets["microphone"].get_active(), is_mute
             if self.button_widgets["microphone"].get_active() == is_mute and not self.__first_time:
                 self.button_widgets["microphone"].set_data("change-by-other", True)
             self.button_widgets["microphone"].set_active(not is_mute)
@@ -824,7 +835,6 @@ class SoundSetting(object):
                     card_info = " "
             card_list.append(TreeItem(self.image_widgets["device"], card_info, cards[idx]['name'], idx))
         self.view_widgets["ad_hardware"].add_items(card_list, clear_first=True)
-        print card_list
         if card_list:
             self.view_widgets["ad_hardware"].set_select_rows([0])
 

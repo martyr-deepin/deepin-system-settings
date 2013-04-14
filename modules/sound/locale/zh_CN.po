@@ -107,6 +107,10 @@ msgstr "输出音量"
 msgid "Input Port"
 msgstr "输入端口"
 
+#: ../src/main.py:117
+msgid "Input Level"
+msgstr "输入等级"
+
 #: ../src/main.py:115
 #: ../src/main.py:457
 #: ../src/main.py:460
