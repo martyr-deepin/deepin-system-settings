@@ -85,7 +85,8 @@ gobject.type_register(MyTreeView)
 class MyTreeItem(TreeItem):
     '''TreeItem class'''
 
-    ACCOUNT_TYPE = ["Standard", "Administrator"]
+    ACCOUNT_TYPE = [_("Standard"), _("Administrator")]
+
     def __init__(self, icon, real_name, user_name, user_type, dbus_obj, is_myowner=False, is_head=False):
         '''
         initialization.
