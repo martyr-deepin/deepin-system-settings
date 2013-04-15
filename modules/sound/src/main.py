@@ -27,6 +27,8 @@ from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
+from dtk.ui.theme import ui_theme
+from dtk.ui.draw import draw_vlinear
 from dtk.ui.label import Label
 from dtk.ui.button import Button, SwitchButton
 from dtk.ui.tab_window import TabBox
@@ -36,7 +38,7 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.box import ImageBox
 from dtk.ui.scalebar import HScalebar
 from dtk.ui.scrolled_window import ScrolledWindow
-from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, cairo_state
 from dtk.ui.progressbar import ProgressBar
 from dtk.ui.constant import ALIGN_END
 from treeitem import MyTreeItem as TreeItem
@@ -47,6 +49,7 @@ import gtk
 #import settings
 import pypulse_small as pypulse
 
+from cairo import ANTIALIAS_NONE
 from module_frame import ModuleFrame
 from constant import *
 import threading as td
@@ -167,6 +170,7 @@ class SoundSetting(object):
         self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
         self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
         self.scale_widgets["input_test"] = ProgressBar()
+        self.scale_widgets["input_test"].progress_buffer.render = self.__render_progress_buffer
         ###################################
         # advance set
         self.container_widgets["advance_input_box"] = gtk.VBox(False)
@@ -193,6 +197,52 @@ class SoundSetting(object):
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(0, 0, rect.width, rect.height - 1)
         cr.fill()
+
+    def __render_progress_buffer(self, cr, rect):
+        # Init.
+        x, y, w, h = rect.x, rect.y, rect.width, rect.height
+        # Draw background frame.
+        with cairo_state(cr):
+            cr.rectangle(x, y + 1, w, h - 2)
+            cr.rectangle(x + 1, y, w - 2, h)
+            cr.clip()
+            cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("progressbar_background_frame").get_color()))
+            cr.rectangle(x, y, w, h)
+            cr.set_line_width(1)
+            cr.stroke()
+        # Draw background.
+        with cairo_state(cr):
+            cr.rectangle(x + 1, y + 1, w - 2, h - 2)
+            cr.clip()
+            draw_vlinear(cr, x + 1, y + 1, w - 2, h - 2,
+                         ui_theme.get_shadow_color("progressbar_background").get_color_info(), 
+                         )
+            
+        progress = self.scale_widgets["input_test"].progress_buffer.progress
+        if progress > 0:
+            # Draw foreground frame.
+            with cairo_state(cr):
+                cr.rectangle(x, y + 1, w, h - 2)
+                cr.rectangle(x + 1, y, w - 2, h)
+                cr.clip()
+                cr.set_antialias(ANTIALIAS_NONE)
+                cr.set_source_rgb(*color_hex_to_cairo(ui_theme.get_color("progressbar_foreground_frame").get_color()))
+                cr.rectangle(x + 1, y + 1, int(w * progress / 100) - 1, h - 1)
+                cr.set_line_width(1)
+                cr.stroke()
+            # Draw foreground.
+            with cairo_state(cr):
+                cr.rectangle(x + 1, y + 1, w - 2, h - 2)
+                cr.clip()
+                draw_vlinear(cr, x + 1, y + 1, int(w * progress / 100) - 2, h - 2,
+                             #ui_theme.get_shadow_color("progressbar_foreground").get_color_info(), 
+                             [(0, ("#30abee", 1)), (1, ("#30abee", 1)),]
+                             )
+        # Draw light.
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgba(1, 1, 1, 0.5)
+            cr.rectangle(x + 1, y + 1, w - 2, 1)
+            cr.fill()
 
     def __adjust_widget(self):
         ''' adjust widget '''
@@ -572,7 +622,7 @@ class SoundSetting(object):
 
     def __record_stream_read_cb(self, obj, value):
         #print "stream record:", value
-        self.scale_widgets["input_test"].set_progress(int(value * 100))
+        self.scale_widgets["input_test"].set_progress(int(round(value, 2) * 100))
 
     def __record_stream_suspended(self, obj):
         print "suspended"
