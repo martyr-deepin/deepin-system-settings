@@ -204,8 +204,11 @@ class SoundSetting(object):
         self.container_widgets["main_vbox"].pack_start(self.container_widgets["statusbar"], False, False)
         self.alignment_widgets["slider"].add(self.container_widgets["slider"])
         self.alignment_widgets["slider"].set(0, 0, 1, 1)
-        self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
+        self.container_widgets["slider"].append_page(self.container_widgets["swin"])
+        #self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["advance_set_tab_box"])
+        self.container_widgets["swin"].add_child(self.alignment_widgets["main_hbox"])
+        self.alignment_widgets["main_hbox"].set_size_request(WINDOW_WIDTH-20, 520)
         self.alignment_widgets["main_hbox"].add(self.container_widgets["main_hbox"])
         self.alignment_widgets["advance_set_tab_box"].add(self.container_widgets["advance_set_tab_box"])
         self.container_widgets["advance_set_tab_box"].set_size_request(WINDOW_WIDTH, -1)
@@ -434,7 +437,8 @@ class SoundSetting(object):
     def slider_completed_slide_cb(self, widget):
         if self.__is_first_show:
             self.__is_first_show = False
-            widget.set_to_page(self.alignment_widgets["main_hbox"])
+            #widget.set_to_page(self.alignment_widgets["main_hbox"])
+            widget.set_to_page(self.container_widgets["swin"])
 
     def container_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
@@ -567,11 +571,12 @@ class SoundSetting(object):
                 self.__set_input_treeview_status()
 
     def __record_stream_read_cb(self, obj, value):
-        print "stream record:", value
+        #print "stream record:", value
         self.scale_widgets["input_test"].set_progress(int(value * 100))
 
     def __record_stream_suspended(self, obj):
         print "suspended"
+        self.scale_widgets["input_test"].set_progress(0)
 
     def __sink_state_cb(self, obj, channel, port, volume, sink, idx):
         if idx in pypulse.output_devices:
@@ -901,14 +906,16 @@ if __name__ == '__main__':
         if message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
             if crumb_index == 1:
-                sound_settings.container_widgets["slider"].slide_to_page(
-                    sound_settings.alignment_widgets["main_hbox"], "left")
                 #sound_settings.container_widgets["slider"].slide_to_page(
-                    #sound_settings.container_widgets["main_hbox"], "left")
+                    #sound_settings.alignment_widgets["main_hbox"], "left")
+                sound_settings.container_widgets["slider"].slide_to_page(
+                    sound_settings.container_widgets["swin"], "left")
         elif message_type == "show_again":
             print "DEBUG show_again module_uid", message_content
+            #sound_settings.container_widgets["slider"].set_to_page(
+                #sound_settings.alignment_widgets["main_hbox"])
             sound_settings.container_widgets["slider"].set_to_page(
-                sound_settings.alignment_widgets["main_hbox"])
+                sound_settings.container_widgets["swin"])
             module_frame.send_module_info()
         elif message_type == "exit":
             module_frame.exit()

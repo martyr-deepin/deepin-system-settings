@@ -943,11 +943,13 @@ class IconEditPage(gtk.HBox):
                 history_icon.history.insert(0, backup_path)
                 history_icon.set_history(history_icon.history)
         except Exception, e:
+            print e
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 #self.error_label.set_text("<span foreground='red'>%s%s</span>" % (_("Error:"), e.msg))
                 self.account_setting.set_status_error_text(e.msg)
                 return
         self.stop_camera()
+        self.draw_area.panel.hide_panel()
         self.account_setting.set_to_page(
             self.account_setting.alignment_widgets["main_hbox"], "left")
         self.account_setting.change_crumb(1)
