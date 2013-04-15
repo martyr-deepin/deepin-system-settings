@@ -179,16 +179,22 @@ class TrayGui(gtk.VBox):
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
         icon_name = self.__white_list_check(stream)
         if icon_name:
-            if icon_name[0] == '/' and os.path.exists(icon_name):
+            if icon_name[0] == '/':
                 try:
                     img = gtk.image_new_from_pixbuf(gtk.gdk.pixbuf_new_from_file(
                         icon_name).scale_simple(16, 16, gtk.gdk.INTERP_TILES))
                 except:
                     img = gtk.image_new_from_pixbuf(self.stream_icon)
             else:
-                img = gtk.image_new_from_icon_name(icon_name, gtk.ICON_SIZE_MENU)
+                image_pixbuf = self.__get_pixbuf_from_icon_name(icon_name)
+                if image_pixbuf:
+                    img = gtk.image_new_from_pixbuf(image_pixbuf)
+                else:
+                    img = gtk.image_new_from_pixbuf(self.stream_icon)
+                    #img = gtk.image_new_from_icon_name(icon_name, gtk.ICON_SIZE_MENU)
         else:
             img = gtk.image_new_from_pixbuf(self.stream_icon)
+        img.set_size_request(16, 16)
         scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         scale.set_size_request(90, 10)
         mute_button = SwitchButton()
@@ -226,6 +232,20 @@ class TrayGui(gtk.VBox):
             if stream['proplist']['application.name'] == 'deepin-music-player':
                 icon_name = "deepin-music-player"
         return icon_name
+
+    def __get_pixbuf_from_icon_name(self, name):
+        screen = self.get_screen()
+        icon_theme = gtk.icon_theme_get_for_screen(screen)
+        icon_info = icon_theme.lookup_icon(name, 16, 0)
+        if not icon_info:
+            return None
+        filename = icon_info.get_filename()
+        if not filename or not os.path.exists(filename):
+            return None
+        pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
+        if icon_info.get_base_size() != 16:
+            pixbuf = pixbuf.scale_simple(16, 16, gtk.gdk.INTERP_TILES)
+        return pixbuf
 
     ####################################################
     # widget signals
@@ -463,7 +483,12 @@ class TrayGui(gtk.VBox):
     # mpris dbus signal
     def mpris2_new_cb(self, obj, pid):
         vbox = gtk.VBox()
-        img = gtk.image_new_from_icon_name(obj.mpris_process[pid]['property']['DesktopEntry'], gtk.ICON_SIZE_MENU)
+        image_pixbuf = self.__get_pixbuf_from_icon_name(obj.mpris_process[pid]['property']['DesktopEntry'])
+        if image_pixbuf:
+            img = gtk.image_new_from_pixbuf(image_pixbuf)
+        else:
+            img = gtk.image_new_from_pixbuf(self.stream_icon)
+        img.set_size_request(16, 16)
         # application title
         app_title = obj.mpris_process[pid]['property']['Identity']
         #if obj.mpris_process[pid]['property']['PlaybackStatus'] == 'Stopped':
