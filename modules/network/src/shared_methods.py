@@ -116,7 +116,14 @@ class NetManager(object):
             if True in state_list:
                 return (False, False)
             else:
-                return (True, self.wired_devices[state_list.index(False)].is_active())
+                '''
+                TODO: my_list.index(x) is an error if there is no such item, 
+                      so please check whether or not there is such item in list at first
+                '''
+                if False in state_list:
+                    return (True, self.wired_devices[state_list.index(False)].is_active())
+                else:
+                    return (True, False)
 
     def active_wired_device(self,  actived_cb):
         #wired_devices = nm_module.nmclient.get_wired_devices()
