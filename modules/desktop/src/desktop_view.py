@@ -192,7 +192,7 @@ class DesktopView(gtk.VBox):
         self.topleft_align.add(self.topleft_box)
         self.topright_align = self.__setup_align()                               
         self.topright_box = gtk.HBox(spacing = WIDGET_SPACING)                   
-        self.topright_label = self.__setup_label(_("Top Right"))                  
+        self.topright_label = self.__setup_label(_("Bottom Right"))                  
         self.topright_combo = self.__setup_combo(self.hot_zone_items)
         command2 = self.compiz_integrated_settings.get_string("command-12")          
         if command2 == "":                                                      
@@ -202,7 +202,7 @@ class DesktopView(gtk.VBox):
         else:                                                                   
             pass
         
-        if scale_edge_str == "TopRight":
+        if scale_edge_str == "BottomRight":
             self.topright_combo.set_select_index(1)
 
         self.topright_combo.connect("item-selected", self.__combo_item_selected, "topright")
@@ -301,7 +301,7 @@ class DesktopView(gtk.VBox):
                                   self.hot_title_align, 
                                   self.topleft_align, 
                                   self.topright_align, 
-                                  self.topedge_align, 
+                                  #self.topedge_align, 
                                   #self.leftedge_align, 
                                   #self.rightedge_align, 
                                   #self.greeter_title_align, 
@@ -506,7 +506,7 @@ class DesktopView(gtk.VBox):
                 if topright_current_value == 1:
                     self.topright_combo.set_select_index(2)
                     self.compiz_integrated_settings.set_string("command-12", self.LAUNCHER_CMD)
-                    self.compiz_run_command_edge_settings.set_string("run-command11-edge", "TopRight")
+                    self.compiz_run_command_edge_settings.set_string("run-command11-edge", "BottomRight")
                     #self.compiz_scale_settings.set_string("initiate-edge", "")
 
                 self.compiz_integrated_settings.set_string("command-11", "")
@@ -517,7 +517,7 @@ class DesktopView(gtk.VBox):
                     self.topright_combo.set_select_index(1)
                     self.compiz_integrated_settings.set_string("command-12", "")       
                     self.compiz_run_command_edge_settings.set_string("run-command11-edge", "") 
-                    self.compiz_scale_settings.set_string("initiate-edge", "TopRight")
+                    self.compiz_scale_settings.set_string("initiate-edge", "BottomRight")
                 
                 self.compiz_integrated_settings.set_string("command-11", self.LAUNCHER_CMD)
                 self.compiz_run_command_edge_settings.set_string("run-command10-edge", "TopLeft")
@@ -541,7 +541,7 @@ class DesktopView(gtk.VBox):
 
                 self.compiz_integrated_settings.set_string("command-12", "")
                 self.compiz_run_command_edge_settings.set_string("run-command11-edge", "")
-                self.compiz_scale_settings.set_string("initiate-edge", "TopRight")
+                self.compiz_scale_settings.set_string("initiate-edge", "BottomRight")
             elif item_value == 2:                        
                 if topleft_current_value == 2:
                     self.topleft_combo.set_select_index(1)
@@ -550,7 +550,7 @@ class DesktopView(gtk.VBox):
                     self.compiz_scale_settings.set_string("initiate-edge", "TopLeft")
 
                 self.compiz_integrated_settings.set_string("command-12", self.LAUNCHER_CMD)
-                self.compiz_run_command_edge_settings.set_string("run-command11-edge", "TopRight")
+                self.compiz_run_command_edge_settings.set_string("run-command11-edge", "BottomRight")
                 #self.compiz_scale_settings.set_string("initiate-edge", "")
             else:                                                               
                 pass                                                            
