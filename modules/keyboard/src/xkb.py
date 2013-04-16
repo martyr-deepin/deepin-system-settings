@@ -181,12 +181,16 @@ def search_layout_treeitems(treeitems, key):
     @param key: the search key, a string type
     @return: a sub list of treeitems
     '''
-    key = key.strip()
     if not key:
         return treeitems
+    key_len = len(key)
     result = []
     for item in treeitems:
-        if key in item.name:
+        if key in item.name.lower():
+            pos = item.name.lower().index(key)
+            item.name_in_search = '%s<span foreground="red">%s</span>%s' % (
+                item.name[0:pos], item.name[pos:pos+key_len], item.name[pos+key_len:])
+            item.redraw_request_callback(item)
             result.append(item)
     return result
 

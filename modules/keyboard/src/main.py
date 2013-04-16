@@ -686,8 +686,18 @@ class KeySetting(object):
     # layout create dailog
     def __create_add_layout_dialog(self):
         def entry_changed(entry, value, treeview):
-            treeview.add_items(xkb.search_layout_treeitems(
-                layout_treetimes, value), None, True)
+            #treeview.add_items(xkb.search_layout_treeitems(
+                #layout_treetimes, value.lower()), None, True)
+            value = markup_escape_text(value.strip().lower())
+            if value:
+                treeview.show_search_flag = True
+            else:
+                treeview.show_search_flag = False
+            result = xkb.search_layout_treeitems(layout_treetimes, value)
+            if result:
+                treeview.add_items(result, None, True)
+            else:
+                treeview.clear()
         
         def treeview_select(tv, item, row, button):
             layouts, variants = xkb.get_treeview_layout_variants(
@@ -728,6 +738,7 @@ class KeySetting(object):
         dialog.body_align.set_padding(0, 0, 10, 10)
         layout_treetimes = map(lambda item: LayoutItem(*item), self.__layout_items)
         layout_add_treeview = TreeView(layout_treetimes, enable_hover=False)
+        layout_add_treeview.show_search_flag = False
         layout_add_treeview.set_expand_column(0)
         # search input
         entry = InputEntry()
