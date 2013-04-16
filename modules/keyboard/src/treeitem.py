@@ -179,6 +179,7 @@ class LayoutItem(BaseItem):
             self.name = markup_escape_text(name)
         except:
             self.name = " "
+        self.name_in_search = " "
         self.layout = layout
         self.variants = variants
         self.padding_x = 5
@@ -209,7 +210,10 @@ class LayoutItem(BaseItem):
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
         cr.rectangle(rect.x+1, rect.y, rect.width-2, rect.height-1)
         cr.paint()
-        draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+        if self.get_treeview().show_search_flag:
+            draw_text(cr, self.name_in_search, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
+        else:
+            draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
 
 gobject.type_register(LayoutItem)
 
