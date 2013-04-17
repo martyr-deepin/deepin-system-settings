@@ -884,10 +884,11 @@ class MobileSection(Section, MobileDevice):
 
     @classmethod
     def show_or_hide(self):
-        if nm_module.mmclient.get_cdma_device() or nm_module.mmclient.get_gsm_device():
-            return True
-        else:
-            return False
+        return True
+#        if nm_module.mmclient.get_cdma_device() or nm_module.mmclient.get_gsm_device():
+#            return True
+#        else:
+#            return False
 
     def __init_signals(self):
         #nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
