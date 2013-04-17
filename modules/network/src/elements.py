@@ -9,6 +9,7 @@ from dtk.ui.spin import SpinBox
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, alpha_color_hex_to_cairo, propagate_expose, container_remove_all
 from dtk.ui.line import HSeparator
 from constants import TITLE_FONT_SIZE, CONTENT_FONT_SIZE, WIDGET_HEIGHT, BETWEEN_SPACING, STANDARD_LINE
+from helper import Dispatcher
 import style
 
 import gtk
