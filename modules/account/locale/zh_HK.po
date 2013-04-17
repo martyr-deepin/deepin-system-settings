@@ -268,7 +268,7 @@ msgstr "選擇用戶頭像"
 
 #: ../src/set_icon_page.py:153
 msgid "Previously used pictures"
-msgstr "曆史使用頭像"
+msgstr "歷史使用頭像"
 
 #: ../src/set_icon_page.py:197
 msgid "Set <u>%s</u>'s picture"
