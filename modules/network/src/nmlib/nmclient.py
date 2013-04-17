@@ -24,6 +24,7 @@ import gobject
 from nmobject import NMObject
 from nm_utils import TypeConvert
 import traceback
+import dbus
 from nmcache import get_cache
 
 class NMClient(NMObject):
@@ -60,6 +61,21 @@ class NMClient(NMObject):
         self.bus.add_signal_receiver(self.state_changed_cb,dbus_interface = self.object_interface, 
                                      path = self.object_path,signal_name = "StateChanged")
         self.devices = self.get_devices()
+
+        for device in self.devices:
+            if not device.get_managed():
+                gobject.timeout_add(3000, lambda : self.fix_unmanaged())
+
+    def fix_unmanaged(self):
+        try:
+            print "fix unmanaged"
+            bus = dbus.SystemBus()
+            proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
+            interface = dbus.Interface(proxy, "com.deepin.network")
+
+            interface.fix_unmanaged()
+        except:
+            traceback.print_exc()
 
     def get_devices(self):
         '''return father device objects'''

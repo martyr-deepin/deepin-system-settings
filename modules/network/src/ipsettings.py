@@ -73,13 +73,14 @@ class IPV4Conf(gtk.VBox):
         self.show_all()
 
         if type(self.connection) is NMRemoteConnection:
+            print "in ipv set apply true"
             Dispatcher.set_button("apply", True)
         else:
             if self.connection.check_setting_finish():
-                print "in ipv"
+                print "in ipv setting finish"
                 Dispatcher.set_button("save", True)
             else:
-                print "in ipv"
+                print "in ipv setting not finish"
                 Dispatcher.set_button("save", False)
 
     def __set_row(self, name, arg, types="ip"):
@@ -164,10 +165,10 @@ class IPV4Conf(gtk.VBox):
             self.setting.add_address(self.ip)
 
             if self.connection.check_setting_finish():
-                print "sfsdf"
+                print "setting finish"
                 Dispatcher.set_button("save", True)
             else:
-                print "xxxxxxxxxx"
+                print "setting not finish"
                 Dispatcher.set_button("save", False)
         else:
             self.setting.clear_addresses()
@@ -340,8 +341,10 @@ class IPV6Conf(gtk.VBox):
                                enable_double_click=False)
         entry = InputEntry()
         if types == "ip":
+            print "ip row changed"
             entry.entry.connect("changed", self.set_ip_address, arg)
         else:
+            print "dns row changed"
             entry.entry.connect("changed", self.set_dns_address, arg)
         entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
+<policyconfig>
+  <vendor>Fix NetworkManager Unmanaged</vendor>
+  <vendor_url>http://www.linuxdeepin.com/</vendor_url>
+
+  <action id="com.deepin.network.fix-unmanged">
+    <description>Fix NetworkManager Unmanaged</description>
+    <message>Authentication is required to Fix NetworkManager Unmanaged</message>
+    <defaults>
+      <allow_any>no</allow_any>
+      <allow_inactive>yes</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+</policyconfig>

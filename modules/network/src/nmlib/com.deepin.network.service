@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.deepin.network
+Exec=/usr/lib/network_service.py
+User=root
