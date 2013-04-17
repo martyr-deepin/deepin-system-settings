@@ -310,16 +310,22 @@ class ProxyConfig(gtk.VBox):
         self.auto_radio.connect("toggled", self.auto_radio_selected_cb)
         self.manual_table.table_build()
         self.auto_table.table_build()
-
+        
     def manual_radio_selected_cb(self, widget):
-       self.manual_table.set_sensitive(widget.get_active()) 
-       self.manual_radio.set_sensitive(True)
-    
+        sensitive = widget.get_active()
+        self.manual_table.set_sensitive(sensitive) 
+        self.manual_radio.set_sensitive(True)
+        
+        self.http_spin.set_sensitive(sensitive)
+        self.https_spin.set_sensitive(sensitive)
+        self.ftp_spin.set_sensitive(sensitive)
+        self.socks_spin.set_sensitive(sensitive)
+       
     def auto_radio_selected_cb(self, widget):
-       self.auto_table.set_sensitive(widget.get_active())
-       self.auto_radio.set_sensitive(True)
-
-    
+        sensitive = widget.get_active()
+        self.auto_table.set_sensitive(sensitive)
+        self.auto_radio.set_sensitive(True)
+        
     def init(self):
         mode = self.proxysetting.get_proxy_mode()
         if mode == "manual":
