@@ -35,8 +35,7 @@ from constant import *
 class MyTreeView(TreeView):
     ''' my TreeView'''
     __gsignals__ = {
-        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, int)),
-        "unselect": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())}
+        "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_PYOBJECT, int))}
 
     def __init__(self,
                  items=[],
@@ -210,7 +209,7 @@ class LayoutItem(BaseItem):
         cr.set_source_rgb(*color_hex_to_cairo(bg_color))
         cr.rectangle(rect.x+1, rect.y, rect.width-2, rect.height-1)
         cr.paint()
-        if self.get_treeview().show_search_flag:
+        if self.get_treeview().show_search_flag and not self.is_select:
             draw_text(cr, self.name_in_search, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)
         else:
             draw_text(cr, self.name, rect.x+self.padding_x, rect.y, rect.width, rect.height, text_color=text_color)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-10 09:45+0800\n"
+"POT-Creation-Date: 2013-04-17 16:33+0800\n"
 "PO-Revision-Date: 2012-12-30 23:05+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,62 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/tray_time_plugin.py:38
+msgid "Monday"
+msgstr "星期一"
+
+#: ../src/tray_time_plugin.py:38
+msgid "Tuesday"
+msgstr "星期二"
+
+#: ../src/tray_time_plugin.py:38
+msgid "Wednesday"
+msgstr "星期三"
+
+#: ../src/tray_time_plugin.py:38
+msgid "Thursday"
+msgstr "星期四"
+
+#: ../src/tray_time_plugin.py:39
+msgid "Friday"
+msgstr "星期五"
+
+#: ../src/tray_time_plugin.py:39
+msgid "Saturday"
+msgstr "星期六"
+
+#: ../src/tray_time_plugin.py:39
+msgid "Sunday"
+msgstr "星期天"
+
+#: ../src/tray_time_plugin.py:122
+msgid "Change DateTime settings"
+msgstr "更改日期和时间设置"
+
+#: ../src/search_keyword.py:29
+msgid "DateTime"
+msgstr "日期时间"
+
+#: ../src/search_keyword.py:30 ../src/date_time_view.py:311
+msgid "TimeZone"
+msgstr "时区"
+
+#: ../src/search_keyword.py:31 ../src/date_time_view.py:260
+msgid "Auto Set Time"
+msgstr "自动设置时间"
+
+#: ../src/search_keyword.py:32
+msgid "Hour Display"
+msgstr "小时制显示"
+
+#: ../src/tray_time.py:74
+msgid "AM"
+msgstr "上午"
+
+#: ../src/tray_time.py:75
+msgid "PM"
+msgstr "下午"
 
 #: ../src/date_time_view.py:116
 msgid "(UTC-11:00)Samoa"
@@ -109,132 +165,80 @@ msgstr "(UTC+10:00)关岛, 堪培拉, 墨尔本, 悉尼"
 msgid "(UTC+11:00)Magadan, Solomon Islands"
 msgstr "(UTC+11:00)马加丹, 索罗门群岛"
 
-#: ../src/date_time_view.py:154
+#: ../src/date_time_view.py:139
+msgid "(UTC+12:00)New Zealand, Kiribati"
+msgstr "(UTC+12:00)新西兰, 基里巴斯"
+
+#: ../src/date_time_view.py:155
 msgid "Calendar"
 msgstr "日期"
 
-#: ../src/date_time_view.py:160 ../src/date_time_view.py:416
+#: ../src/date_time_view.py:161 ../src/date_time_view.py:417
 #, python-format
 msgid "Current Date: %d-%d-%d"
 msgstr "当前日期：%d年%d月%d日"
 
-#: ../src/date_time_view.py:182
+#: ../src/date_time_view.py:183
 msgid "Change Date"
 msgstr "更改日期"
 
-#: ../src/date_time_view.py:188
+#: ../src/date_time_view.py:189
 msgid "Cancel"
 msgstr "取消"
 
-#: ../src/date_time_view.py:191
+#: ../src/date_time_view.py:192
 msgid "Confirm"
 msgstr "确定"
 
-#: ../src/date_time_view.py:222
+#: ../src/date_time_view.py:223
 msgid "Time"
 msgstr "时间"
 
-#: ../src/date_time_view.py:229 ../src/date_time_view.py:238
-#: ../src/date_time_view.py:386
+#: ../src/date_time_view.py:230 ../src/date_time_view.py:239
+#: ../src/date_time_view.py:387
 #, python-format
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr "当前时间: %s %02d:%02d:%02d (%d 小时制)"
 
-#: ../src/date_time_view.py:259 ../src/search_keyword.py:31
-msgid "Auto Set Time"
-msgstr "自动设置时间"
-
-#: ../src/date_time_view.py:276
+#: ../src/date_time_view.py:277
 msgid "Manual"
 msgstr "手动设置"
 
-#: ../src/date_time_view.py:296
+#: ../src/date_time_view.py:297
 msgid "Hour"
 msgstr "小时制显示"
 
-#: ../src/date_time_view.py:310 ../src/search_keyword.py:30
-msgid "TimeZone"
-msgstr "时区"
-
-#: ../src/date_time_view.py:340
+#: ../src/date_time_view.py:341
 msgid "Reset to default value"
 msgstr "恢复默认值"
 
-#: ../src/date_time_view.py:414
+#: ../src/date_time_view.py:415
 #, python-format
 msgid "Changed date to %d-%d-%d"
 msgstr "修改日期为%d年%d月%d日"
 
-#: ../src/date_time_view.py:460
+#: ../src/date_time_view.py:461
 msgid "Changed to automatic set time"
 msgstr "修改为自动设置时间"
 
-#: ../src/date_time_view.py:464
+#: ../src/date_time_view.py:465
 msgid "Changed to manual set time"
 msgstr "修改为手动设置时间"
 
-#: ../src/date_time_view.py:472
+#: ../src/date_time_view.py:473
 msgid "Changed to 24 Hour"
 msgstr "修改为24小时制"
 
-#: ../src/date_time_view.py:474
+#: ../src/date_time_view.py:475
 msgid "Changed to 12 Hour"
 msgstr "修改为12小时制"
 
-#: ../src/date_time_view.py:483
+#: ../src/date_time_view.py:484
 #, python-format
 msgid "Changed time to %02d:%02d:%02d"
 msgstr "修改时间为%02d:%02d:%02d"
 
-#: ../src/date_time_view.py:505
+#: ../src/date_time_view.py:506
 #, python-format
 msgid "Changed timezone to %s"
 msgstr "修改时区为%s"
-
-#: ../src/tray_time_plugin.py:38
-msgid "Monday"
-msgstr "星期一"
-
-#: ../src/tray_time_plugin.py:38
-msgid "Tuesday"
-msgstr "星期二"
-
-#: ../src/tray_time_plugin.py:38
-msgid "Wednesday"
-msgstr "星期三"
-
-#: ../src/tray_time_plugin.py:38
-msgid "Thursday"
-msgstr "星期四"
-
-#: ../src/tray_time_plugin.py:39
-msgid "Friday"
-msgstr "星期五"
-
-#: ../src/tray_time_plugin.py:39
-msgid "Saturday"
-msgstr "星期六"
-
-#: ../src/tray_time_plugin.py:39
-msgid "Sunday"
-msgstr "星期天"
-
-#: ../src/tray_time_plugin.py:122
-msgid "Change DateTime settings"
-msgstr "更改日期和时间设置"
-
-#: ../src/search_keyword.py:29
-msgid "DateTime"
-msgstr "日期时间"
-
-#: ../src/search_keyword.py:32
-msgid "Hour Display"
-msgstr "小时制显示"
-
-#: ../src/tray_time.py:74
-msgid "AM"
-msgstr "上午"
-
-#: ../src/tray_time.py:75
-msgid "PM"
-msgstr "下午"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-10 10:09+0800\n"
+"POT-Creation-Date: 2013-04-12 12:02+0800\n"
 "PO-Revision-Date: 2013-02-25 16:44+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -109,7 +109,7 @@ msgid "Top Left"
 msgstr ""
 
 #: ../src/desktop_view.py:195
-msgid "Top Right"
+msgid "Bottom Right"
 msgstr ""
 
 #: ../src/desktop_view.py:216

@@ -81,7 +81,6 @@ class DeviceIconView(ScrolledWindow):
 
     def __on_right_click_item(self, widget, item, x, y):
         menu_items = [(None, _("Pair"), lambda : item.do_pair())]
-        # TODO: the first item do not show delete                               
         if item.is_paired:                                         
             menu_items = [(None, _("Send File"), lambda : item.do_send_file()), 
                           None,                                                 
@@ -233,7 +232,6 @@ class DeviceItem(gobject.GObject):
         '''
         self.highlight_flag = False
         self.is_button_press = False
-        
         self.emit_redraw_request()
     
     def icon_item_button_press(self, x, y):
@@ -266,13 +264,19 @@ class DeviceItem(gobject.GObject):
 
     def do_remove(self):
         self.adapter.remove_device(self.device.object_path)
-    
+   
+    def __reply_handler_cb(self, device):
+        self.is_paired = True
+        self.emit_redraw_request()
+
+    def __error_handler_cb(self, error):
+        pass
+
     def do_pair(self):
         if self.is_paired:                                                      
             return                                                              
                                                                                 
         from bt.gui_agent import GuiAgent                                           
-        # TODO: wired... it need to use uuid to identify bluez device path         
         path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))    
         agent = GuiAgent(path,                                                     
                          _("Please confirm %s pin match as below") % self.name, 
@@ -291,8 +295,12 @@ class DeviceItem(gobject.GObject):
         '''
         Handle double click event.
         '''
+        if self.is_paired:
+            self.do_send_file()
+            return
+
         self.do_pair()
-    
+
     def icon_item_release_resource(self):
         '''
         Release item resource.
