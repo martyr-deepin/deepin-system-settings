@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-10 09:45+0800\n"
+"POT-Creation-Date: 2013-04-17 16:33+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,62 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/tray_time_plugin.py:38
+msgid "Monday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:38
+msgid "Tuesday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:38
+msgid "Wednesday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:38
+msgid "Thursday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:39
+msgid "Friday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:39
+msgid "Saturday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:39
+msgid "Sunday"
+msgstr ""
+
+#: ../src/tray_time_plugin.py:122
+msgid "Change DateTime settings"
+msgstr ""
+
+#: ../src/search_keyword.py:29
+msgid "DateTime"
+msgstr ""
+
+#: ../src/search_keyword.py:30 ../src/date_time_view.py:311
+msgid "TimeZone"
+msgstr ""
+
+#: ../src/search_keyword.py:31 ../src/date_time_view.py:260
+msgid "Auto Set Time"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Hour Display"
+msgstr ""
+
+#: ../src/tray_time.py:74
+msgid "AM"
+msgstr ""
+
+#: ../src/tray_time.py:75
+msgid "PM"
+msgstr ""
 
 #: ../src/date_time_view.py:116
 msgid "(UTC-11:00)Samoa"
@@ -109,132 +165,80 @@ msgstr ""
 msgid "(UTC+11:00)Magadan, Solomon Islands"
 msgstr ""
 
-#: ../src/date_time_view.py:154
+#: ../src/date_time_view.py:139
+msgid "(UTC+12:00)New Zealand, Kiribati"
+msgstr ""
+
+#: ../src/date_time_view.py:155
 msgid "Calendar"
 msgstr ""
 
-#: ../src/date_time_view.py:160 ../src/date_time_view.py:416
+#: ../src/date_time_view.py:161 ../src/date_time_view.py:417
 #, python-format
 msgid "Current Date: %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:182
+#: ../src/date_time_view.py:183
 msgid "Change Date"
 msgstr ""
 
-#: ../src/date_time_view.py:188
+#: ../src/date_time_view.py:189
 msgid "Cancel"
 msgstr ""
 
-#: ../src/date_time_view.py:191
+#: ../src/date_time_view.py:192
 msgid "Confirm"
 msgstr ""
 
-#: ../src/date_time_view.py:222
+#: ../src/date_time_view.py:223
 msgid "Time"
 msgstr ""
 
-#: ../src/date_time_view.py:229 ../src/date_time_view.py:238
-#: ../src/date_time_view.py:386
+#: ../src/date_time_view.py:230 ../src/date_time_view.py:239
+#: ../src/date_time_view.py:387
 #, python-format
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr ""
 
-#: ../src/date_time_view.py:259 ../src/search_keyword.py:31
-msgid "Auto Set Time"
-msgstr ""
-
-#: ../src/date_time_view.py:276
+#: ../src/date_time_view.py:277
 msgid "Manual"
 msgstr ""
 
-#: ../src/date_time_view.py:296
+#: ../src/date_time_view.py:297
 msgid "Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:310 ../src/search_keyword.py:30
-msgid "TimeZone"
-msgstr ""
-
-#: ../src/date_time_view.py:340
+#: ../src/date_time_view.py:341
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/date_time_view.py:414
+#: ../src/date_time_view.py:415
 #, python-format
 msgid "Changed date to %d-%d-%d"
 msgstr ""
 
-#: ../src/date_time_view.py:460
+#: ../src/date_time_view.py:461
 msgid "Changed to automatic set time"
 msgstr ""
 
-#: ../src/date_time_view.py:464
+#: ../src/date_time_view.py:465
 msgid "Changed to manual set time"
 msgstr ""
 
-#: ../src/date_time_view.py:472
+#: ../src/date_time_view.py:473
 msgid "Changed to 24 Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:474
+#: ../src/date_time_view.py:475
 msgid "Changed to 12 Hour"
 msgstr ""
 
-#: ../src/date_time_view.py:483
+#: ../src/date_time_view.py:484
 #, python-format
 msgid "Changed time to %02d:%02d:%02d"
 msgstr ""
 
-#: ../src/date_time_view.py:505
+#: ../src/date_time_view.py:506
 #, python-format
 msgid "Changed timezone to %s"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:38
-msgid "Monday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:38
-msgid "Tuesday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:38
-msgid "Wednesday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:38
-msgid "Thursday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:39
-msgid "Friday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:39
-msgid "Saturday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:39
-msgid "Sunday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:122
-msgid "Change DateTime settings"
-msgstr ""
-
-#: ../src/search_keyword.py:29
-msgid "DateTime"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Hour Display"
-msgstr ""
-
-#: ../src/tray_time.py:74
-msgid "AM"
-msgstr ""
-
-#: ../src/tray_time.py:75
-msgid "PM"
 msgstr ""

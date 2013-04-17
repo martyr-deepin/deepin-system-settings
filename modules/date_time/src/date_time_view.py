@@ -136,6 +136,7 @@ class DatetimeView(gtk.HBox):
         self.timezone_items.append((_("(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"), 9))
         self.timezone_items.append((_("(UTC+10:00)Guam, Canberra, Melbourne, Sydney"), 10))
         self.timezone_items.append((_("(UTC+11:00)Magadan, Solomon Islands"), 11))
+        self.timezone_items.append((_("(UTC+12:00)New Zealand, Kiribati"), 12))
         self.is_24hour = self.datetime_settings.get_boolean("is-24hour")
         '''
         left align
