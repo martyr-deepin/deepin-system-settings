@@ -3,11 +3,13 @@ from dss import app_theme
 from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.button import SwitchButton, CheckButton, RadioButton
 from dtk.ui.label import Label
+from dtk.ui.constant import ALIGN_END
 from dtk.ui.spin import SpinBox
 #from container import TitleBar, Contain
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, alpha_color_hex_to_cairo, propagate_expose, container_remove_all
 from dtk.ui.line import HSeparator
-from constants import TITLE_FONT_SIZE, CONTENT_FONT_SIZE, WIDGET_HEIGHT, BETWEEN_SPACING
+from constants import TITLE_FONT_SIZE, CONTENT_FONT_SIZE, WIDGET_HEIGHT, BETWEEN_SPACING, STANDARD_LINE
+from helper import Dispatcher
 import style
 
 import gtk
@@ -204,9 +206,11 @@ class TableAsm(gtk.Table):
 
     def __label(self, label_name):
         label = Label(label_name,
+                      text_x_align = ALIGN_END,
                       text_size=CONTENT_FONT_SIZE,
                       enable_select=False,
-                      enable_double_click=False)
+                      enable_double_click=False,
+                      fixed_width = STANDARD_LINE)
         label.set_can_focus(False)
         return label
 
