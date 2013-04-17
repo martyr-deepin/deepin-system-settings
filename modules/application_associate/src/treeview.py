@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 from theme import app_theme
-from dtk.ui.treeview import TreeView, TreeItem
+from dtk.ui.treeview import TreeItem
 from dtk.ui.button import Button, CheckButtonBuffer
-from dtk.ui.utils import get_content_size, cairo_state, color_hex_to_cairo
-from dtk.ui.draw import (draw_pixbuf, draw_text, 
-                         draw_vlinear)
+from dtk.ui.utils import get_content_size, color_hex_to_cairo
+from dtk.ui.draw import (draw_text, draw_vlinear)
 import gtk
 import pango
 from nls import _

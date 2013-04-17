@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
+
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 import gtk
 
 from app import AppManager
-from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING, FRAME_LEFT_PADDING
+from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING
 import style
-
+import dmenu
 from nls import _
+
 
 class AppView(gtk.VBox):
     ENTRY_WIDTH = 200
@@ -43,6 +45,7 @@ class AppView(gtk.VBox):
         music_label = Label(_("music"))
         movie_label = Label(_("video"))
         pic_label = Label(_("photo"))
+        terminal_label = Label(_("terminal"))
 
         self.web = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
         self.mail = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
@@ -50,8 +53,9 @@ class AppView(gtk.VBox):
         self.music = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
         self.movie = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
         self.pic = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
-
-        table = gtk.Table(7, 2, False)
+        self.terminal = self.get_terminal_combo()
+        
+        table = gtk.Table(8, 2, False)
         #table.attach(style.wrap_with_align(info_label), 0, 2, 0, 1)
         table.attach(style.wrap_with_align(web_label, width=self.LEFT_WIDTH), 0, 1, 1, 2)
         table.attach(style.wrap_with_align(mail_label, width=self.LEFT_WIDTH), 0, 1, 2, 3)
@@ -59,6 +63,7 @@ class AppView(gtk.VBox):
         table.attach(style.wrap_with_align(music_label, width=self.LEFT_WIDTH), 0, 1, 4, 5)
         table.attach(style.wrap_with_align(movie_label, width=self.LEFT_WIDTH), 0, 1, 5, 6)
         table.attach(style.wrap_with_align(pic_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
+        table.attach(style.wrap_with_align(terminal_label, width=self.LEFT_WIDTH), 0, 1, 7, 8)
 
         table.attach(style.wrap_with_align(self.web), 1, 2, 1, 2, 0)
         table.attach(style.wrap_with_align(self.mail),1, 2, 2, 3, 0)
@@ -66,6 +71,7 @@ class AppView(gtk.VBox):
         table.attach(style.wrap_with_align(self.music), 1, 2, 4, 5)
         table.attach(style.wrap_with_align(self.movie), 1, 2, 5, 6)
         table.attach(style.wrap_with_align(self.pic), 1, 2, 6, 7)
+        table.attach(style.wrap_with_align(self.terminal), 1, 2, 7, 8)
         align = style.set_box_with_align(table, "text")
         style.set_table(table)
 
@@ -91,6 +97,24 @@ class AppView(gtk.VBox):
                 dic[index] = default_app
 
         return dic
+    
+    def get_terminal_combo(self):
+        default_terminal = dmenu.get_default_terminal()
+        terminal_apps = dmenu.get_terminal_apps()
+        try:
+            index = terminal_apps.index(default_terminal)
+        except Exception, e:    
+            print e
+            index = 0
+            
+        combo_box = ComboBox([(exec_.capitalize(), exec_) for exec_ in terminal_apps], 
+                        select_index=index,
+                        fixed_width=self.ENTRY_WIDTH)    
+        combo_box.connect("item-selected", self.on_terminal_item_selected)
+        return combo_box
+        
+    def on_terminal_item_selected(self, widget, title, value, index):    
+        dmenu.set_default_terminal(value)
 
     def get_all_app(self):
         dic = {}
