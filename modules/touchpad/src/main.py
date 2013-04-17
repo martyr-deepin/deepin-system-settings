@@ -32,7 +32,6 @@ from theme import app_theme
 import settings
 
 from nls import _
-from dtk.ui.theme import ui_theme
 from dtk.ui.theme import DynamicColor
 from dtk.ui.label import Label
 from dtk.ui.button import RadioButton, Button
@@ -48,6 +47,7 @@ from constant import *
 from statusbar import StatusBar
 
 MODULE_NAME = "touchpad"
+
 
 class TouchpadSetting(object):
     '''touchpad setting class'''
@@ -74,6 +74,11 @@ class TouchpadSetting(object):
         self.alignment_widgets = {}
         self.container_widgets = {}
 
+        self.has_touchpad = settings.is_has_touchpad()
+        if self.has_touchpad:
+            self.has_touchpad_icon = ""
+        else:
+            self.has_touchpad_icon = "-no"
         self.__create_widget()
         self.__adjust_widget()
         self.__signals_connect()
@@ -83,12 +88,18 @@ class TouchpadSetting(object):
         title_item_font_size = TITLE_FONT_SIZE
         option_item_font_size = CONTENT_FONT_SIZE
         # image init
-        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME))
-        self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf("%s/pointer.png" % MODULE_NAME))
-        self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf("%s/double-click.png" % MODULE_NAME))
-        self.image_widgets["drag"] = ImageBox(app_theme.get_pixbuf("%s/drag.png" % MODULE_NAME))
-        self.image_widgets["double_test_1"] = app_theme.get_pixbuf("%s/smiley00.png" % MODULE_NAME)
-        self.image_widgets["double_test_2"] = app_theme.get_pixbuf("%s/smiley01.png" % MODULE_NAME)
+        self.image_widgets["custom"] = ImageBox(app_theme.get_pixbuf(
+            "%s/pad_l%s.png" % (MODULE_NAME, self.has_touchpad_icon)))
+        self.image_widgets["speed"] = ImageBox(app_theme.get_pixbuf(
+            "%s/pointer%s.png" % (MODULE_NAME, self.has_touchpad_icon)))
+        self.image_widgets["double"] = ImageBox(app_theme.get_pixbuf(
+            "%s/double-click%s.png" % (MODULE_NAME, self.has_touchpad_icon)))
+        self.image_widgets["drag"] = ImageBox(app_theme.get_pixbuf(
+            "%s/drag%s.png" % (MODULE_NAME, self.has_touchpad_icon)))
+        self.image_widgets["double_test_1"] = app_theme.get_pixbuf(
+            "%s/smiley00%s.png" % (MODULE_NAME, self.has_touchpad_icon))
+        self.image_widgets["double_test_2"] = app_theme.get_pixbuf(
+            "%s/smiley01.png" % (MODULE_NAME))
         # label init
         self.label_widgets["custom"] = Label(_("Custom"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
         self.label_widgets["pointer_speed"] = Label(_("Pointer Speed"), app_theme.get_color("globalTitleForeground"), text_size=title_item_font_size, enable_select=False, enable_double_click=False)
@@ -238,15 +249,19 @@ class TouchpadSetting(object):
         if is_left == "mouse":
             if settings.mouse_get_left_handed():
                 self.button_widgets["left_hand_radio"].set_active(True)
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_r%s.png" % (MODULE_NAME, self.has_touchpad_icon))
             else:
                 self.button_widgets["right_hand_radio"].set_active(True)
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_l%s.png" % (MODULE_NAME, self.has_touchpad_icon))
         else:
             if is_left == "left":
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_r%s.png" % (MODULE_NAME, self.has_touchpad_icon))
             else:
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_l%s.png" % (MODULE_NAME, self.has_touchpad_icon))
             self.button_widgets["%s_hand_radio" % is_left].set_active(True)
         #self.container_widgets["custom_button_hbox"].set_spacing(WIDGET_SPACING)
         self.container_widgets["custom_button_hbox0"] = gtk.HBox(False)
@@ -405,7 +420,7 @@ class TouchpadSetting(object):
         self.alignment_widgets["keyboard_setting"].set_size_request(-1, -1)
         self.alignment_widgets["mouse_setting"].set_size_request(-1, -1)
 
-        if not settings.is_has_touchpad():
+        if not self.has_touchpad:
             self.container_widgets["statusbar"].set_sensitive(False)
             self.alignment_widgets["left"].set_sensitive(False)
             self.label_widgets["acceleration"].set_sensitive(False)
@@ -512,16 +527,20 @@ class TouchpadSetting(object):
             if settings.mouse_get_left_handed():
                 self.button_widgets["left_hand_radio"].set_active(True)
                 self.button_widgets["left_hand_radio"].set_data("changed-by-other-app", True)
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_r%s.png" % (MODULE_NAME, self.has_touchpad_icon))
             else:
                 self.button_widgets["right_hand_radio"].set_active(True)
                 self.button_widgets["right_hand_radio"].set_data("changed-by-other-app", True)
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_l%s.png" % (MODULE_NAME, self.has_touchpad_icon))
         else:
             if is_left == "left":
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_r.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_r%s.png" % (MODULE_NAME, self.has_touchpad_icon))
             else:
-                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/pad_l.png" % MODULE_NAME)
+                self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf(
+                    "%s/pad_l%s.png" % (MODULE_NAME, self.has_touchpad_icon))
             self.button_widgets["%s_hand_radio" % is_left].set_active(True)
             self.button_widgets["%s_hand_radio" % is_left].set_data("changed-by-other-app", True)
         self.image_widgets["custom"].queue_draw()
