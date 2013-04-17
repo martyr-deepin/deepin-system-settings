@@ -95,6 +95,7 @@ class KeySetting(object):
         self.view_widgets = {}
         self.dialog_widget = {}
 
+        self.__layout_name = None
         self.__create_widget()
         self.__adjust_widget()
         self.__signals_connect()
@@ -467,10 +468,10 @@ class KeySetting(object):
         for name in current_variants:
             if name and name[0]:
                 try:
-                    layout_name = markup_escape_text(name[0])
+                    self.__layout_name = markup_escape_text(name[0])
                 except:
-                    layout_name = " "
-                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % layout_name)
+                    self.__layout_name = " "
+                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % self.__layout_name)
                 break
 
         #############################
@@ -699,24 +700,23 @@ class KeySetting(object):
             else:
                 treeview.clear()
         
-        def treeview_select(tv, item, row, button):
-            layouts, variants = xkb.get_treeview_layout_variants(
-                self.view_widgets["layout_selected"])
-            #layouts = self.xkb.get_current_layouts()
-            #variants = self.xkb.get_current_variants()
-            if not variants:
-                variants = [''] * len(layouts)
-            if item.layout in layouts and item.variants in variants:
-                if button.get_sensitive():
-                    button.set_sensitive(False)
-            elif not button.get_sensitive():
-                button.set_sensitive(True)
+        #def treeview_select(tv, item, row, button):
+            #layouts, variants = xkb.get_treeview_layout_variants(
+                #self.view_widgets["layout_selected"])
+            #if not variants:
+                #variants = [''] * len(layouts)
+            #if item.layout in layouts and item.variants in variants:
+                #if button.get_sensitive():
+                    #button.set_sensitive(False)
+            #elif not button.get_sensitive():
+                #button.set_sensitive(True)
 
         def add_layout(treeview, dialog):
             if not treeview.select_rows:
                 return
             select_row = treeview.select_rows[0]
             item = treeview.visible_items[select_row]
+            self.__layout_name = item.name
             layout = item.layout
             variants = item.variants
             if variants:
@@ -728,6 +728,21 @@ class KeySetting(object):
             settings.xkb_set_layouts(layout_list)
             dialog.destroy()
             self.set_status_text(_("Current Layout is: %s") % item.name)
+
+        def create_layout_item(layout_items):
+            result = []
+            current_item = None
+            for item in layout_items:
+                i = LayoutItem(*item)
+                if self.__layout_name and self.__layout_name == item[0]:
+                    current_item = i
+                result.append(i)
+            return result, current_item
+
+        def layout_treeview_selected(tv, item, row, current_item):
+            if current_item and current_item.is_select and current_item not in tv.visible_items:
+                current_item.is_select = False
+        self.__selected_layout_item = None
         self.button_widgets["layout_add"].set_sensitive(False)
         dialog_width = 400
         dialog_heigth = 380
@@ -736,13 +751,22 @@ class KeySetting(object):
         dialog.set_keep_above(True)
         #dialog.set_modal(True)
         dialog.body_align.set_padding(0, 0, 10, 10)
-        layout_treetimes = map(lambda item: LayoutItem(*item), self.__layout_items)
-        layout_add_treeview = TreeView(layout_treetimes, enable_hover=False)
+        #layout_treetimes = map(lambda item: LayoutItem(*item), self.__layout_items)
+        layout_treetimes, current_item = create_layout_item(self.__layout_items)
+        layout_add_treeview = TreeView(layout_treetimes, enable_hover=False,
+                                       enable_multiple_select=False, enable_highlight=False)
+        if current_item:
+            #layout_add_treeview.set_highlight_item(current_item)
+            #layout_add_treeview.visible_highlight_item()
+            layout_add_treeview.select_items([current_item])
+            layout_add_treeview.visible_item(current_item)
+        layout_add_treeview.connect("select", layout_treeview_selected, current_item)
         layout_add_treeview.show_search_flag = False
         layout_add_treeview.set_expand_column(0)
         # search input
         entry = InputEntry()
         entry.set_size(dialog_width-30, 25)
+        entry.connect("show", lambda w: entry.focus_input())
         
         dialog.body_box.pack_start(layout_add_treeview)
         dialog.body_box.pack_start(entry, False, False, 5)
@@ -767,7 +791,8 @@ class KeySetting(object):
                     descript = self.xkb.get_variants_description(variants[1], variants[0])
                 else:
                     descript = self.xkb.get_variants_description('', variants[0])
-                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % markup_escape_text(descript))
+                self.__layout_name = markup_escape_text(descript)
+                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % self.__layout_name)
             else:
                 mutex = threading.Lock()
                 t = threading.Thread(target=self.xkb_keyboard_setting_changed_thread, args=(mutex,))
@@ -782,11 +807,11 @@ class KeySetting(object):
         for name in current_variants:
             if name and name[0]:
                 try:
-                    layout_name = markup_escape_text(name[0])
+                    self.__layout_name = markup_escape_text(name[0])
                 except:
-                    layout_name = " "
+                    self.__layout_name = " "
                 gtk.gdk.threads_enter()
-                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % layout_name)
+                self.label_widgets['layout_current_layout'].set_text(_("Current Layout: %s") % self.__layout_name)
                 gtk.gdk.threads_leave()
                 break
         mutex.release()
