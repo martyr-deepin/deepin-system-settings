@@ -5,7 +5,8 @@ from nm_modules import nm_module
 from helper import Dispatcher
 import logging
 
-FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
+#FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
+FORMAT = '%(asctime)-15s %(message)s'
 logging.basicConfig(format=FORMAT)
 
 log = logging.getLogger(__name__)
