@@ -127,9 +127,15 @@ class SoundSetting(object):
         self.image_widgets["microphone"] = ImageBox(app_theme.get_pixbuf("%s/microphone.png" % MODULE_NAME))
         self.image_widgets["device"] = app_theme.get_pixbuf("%s/device.png" % MODULE_NAME)
         # button init
-        self.button_widgets["balance"] = SwitchButton()
-        self.button_widgets["speaker"] = SwitchButton()
-        self.button_widgets["microphone"] = SwitchButton()
+        self.button_widgets["balance"] = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+        self.button_widgets["speaker"] = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+        self.button_widgets["microphone"] = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
         self.button_widgets["advanced"] = Button(_("Advanced"))
         self.button_widgets["speaker_combo"] = ComboBox(fixed_width=HSCALEBAR_WIDTH)
         self.button_widgets["microphone_combo"] = ComboBox(fixed_width=HSCALEBAR_WIDTH)

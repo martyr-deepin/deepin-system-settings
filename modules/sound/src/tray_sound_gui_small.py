@@ -96,7 +96,9 @@ class TrayGui(gtk.VBox):
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         self.speaker_scale.set_size_request(90, 10)
-        self.speaker_mute_button = SwitchButton()
+        self.speaker_mute_button = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
         table.attach(self.__make_align(speaker_img), 0, 1, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=25), 1, 2, 0, 1, 4)
         table.attach(self.__make_align(self.speaker_mute_button), 2, 3, 0, 1, 4)
@@ -104,7 +106,9 @@ class TrayGui(gtk.VBox):
         #microphone_img = ImageBox(app_theme.get_pixbuf("sound/microphone.png"))
         #self.microphone_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         #self.microphone_scale.set_size_request(90, 10)
-        #self.microphone_mute_button = SwitchButton()
+        #self.microphone_mute_button = SwitchButton(
+            #inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            #active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
         #table.attach(self.__make_align(microphone_img), 0, 1, 1, 2, 4)
         #table.attach(self.__make_align(self.microphone_scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=25), 1, 2, 1, 2, 4)
         #table.attach(self.__make_align(self.microphone_mute_button), 2, 3, 1, 2, 4)
@@ -197,7 +201,9 @@ class TrayGui(gtk.VBox):
         img.set_size_request(16, 16)
         scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
         scale.set_size_request(90, 10)
-        mute_button = SwitchButton()
+        mute_button = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
         hbox = gtk.HBox()
         hbox.pack_start(self.__make_align(img), False, False)
         hbox.pack_start(self.__make_align(scale, yalign=0.0, yscale=1.0, padding_left=5, padding_right=5, height=25), False, False)
