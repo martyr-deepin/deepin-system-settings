@@ -59,6 +59,7 @@ class NMRemoteConnection(NMObject, NMConnection):
     def delete(self):
         try:
             self.dbus_interface.Delete(reply_handler = self.delete_finish, error_handler = self.delete_error)
+            nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
             nm_remote_settings.cf.remove_option("conn_priority", self.settings_dict["connection"]["uuid"]) 
             nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
             get_cache().delobject(self.object_path)
