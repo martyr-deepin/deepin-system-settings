@@ -154,7 +154,9 @@ class TitleBar(gtk.VBox):
 
 class MyToggleButton(SwitchButton):
     def __init__(self):
-        SwitchButton.__init__(self)
+        SwitchButton.__init__(self, 
+            inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
 
 class MyRadioButton(RadioButton):
     '''docstring for MyRadioButton'''
