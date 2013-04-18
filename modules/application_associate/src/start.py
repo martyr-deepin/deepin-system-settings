@@ -20,10 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import glib
-import gio
-import os
-import ConfigParser
+import gobject
 
 class AppManager(gobject.GObject):
     def __init__(self):
@@ -65,13 +62,13 @@ class App(gobject.GObject):
     def __init__(self):
         self.basename = ""
         self.path = ""
-        self.hidden = false
-        self.no_display = false
-        self.enabled = false
-        self.shown = false
+        self.hidden = False
+        self.no_display = False
+        self.enabled = False
+        self.shown = False
 
         self.name = ""
-        self.exec = ""
+        self.exec_ = ""
         self.comment = ""
         self.icon = ""
         self.gicon = None
@@ -81,7 +78,7 @@ class App(gobject.GObject):
         self.save_timeout = None
         self.save_mask = None
         self.old_system_path = ""
-        self.skip_next_monitor_event = false
+        self.skip_next_monitor_event = False
 
     def __ensure_user_autostart_dir(self):
         """docstring for __ensure_user_autostart_dir"""
@@ -121,7 +118,7 @@ class App(gobject.GObject):
 
     def get_exec(self):
         """docstring for get_exec"""
-        return self.exec
+        return self.exec_
 
     def get_comment(self):
         """docstring for get_comment"""

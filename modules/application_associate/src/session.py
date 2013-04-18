@@ -8,6 +8,13 @@ import os
 import glib
 import ConfigParser
 import psutil
+import locale
+
+from functools import partial
+
+def get_system_lang():    
+    (lang, encode) = locale.getdefaultlocale()
+    return lang
 
 def get_user_config_dir():
     dirs = os.path.join(glib.get_user_config_dir(), "autostart")
@@ -29,7 +36,7 @@ class AutoStart(object):
         self.file_name = None
         self.dir = get_user_config_dir()
         self.conf = ConfigParser.RawConfigParser()
-        self.conf.optionxform = str
+        
         if file_path != None and os.path.exists(file_path):
             self.file_name = os.path.basename(file_path).split(".")[0]
             self.conf.read(file_path)
@@ -44,16 +51,26 @@ class AutoStart(object):
             return self.conf.get(self.SECTION, option)
         except:
             pass
-
+        
+    def get_locale_option(self, key, default=None):    
+        lang_key = "%s[%s]" % (key, get_system_lang())
+        if self.conf.has_option(self.SECTION, lang_key):
+            return self.conf.get(self.SECTION, lang_key)
+        try:
+            return self.conf.get(self.SECTION, key)
+        except:
+            return default
+    
     def options(self):
         return self.conf.options(self.SECTION)
     
+    @property
     def name(self):
-        name = self.get_option("Name")
-        if name:
-            return name
-        else:
-            return self.file_name
+        return self.get_locale_option("Name", "Unknow")
+    
+    @property
+    def comment(self):
+        return self.get_locale_option("Comment")
 
     def has_gnome_auto(self):
         enable = self.get_option("X-GNOME-Autostart-enabled")
@@ -121,10 +138,10 @@ class SessionManager(object):
     def list_sys_auto_starts(self):
         return map(lambda w: AutoStart(os.path.join(self.__sys_dir, w)), os.listdir(self.__sys_dir))
 
+    
     def locale(self):
-        lang = os.environ["LANG"].split(".")[0]
-        return "[%s]"%lang
-
+        return "[%s]" % get_system_lang()
+    
     def add(self, app_name, exec_path, comment):
         auto_file = AutoStart()
         auto_file.set_option("Name", app_name)

@@ -84,7 +84,7 @@ class SessionItem(TreeItem):
         self.redraw()
 
     def render_app(self, cr, rect):
-        self.app_name = self.item.name()
+        self.app_name = self.item.name
         self.render_background(cr, rect)
         CHECK_LEFT_PADDING = 5
         CHECK_RIGHT_PADDING = 5
@@ -104,7 +104,7 @@ class SessionItem(TreeItem):
                 alignment = pango.ALIGN_LEFT)
 
     def render_description(self, cr, rect):
-        self.description = self.item.get_option("Comment")
+        self.description = self.item.comment
         self.render_background(cr, rect)
         if self.description:
             (text_width, text_height) = get_content_size(self.description)
@@ -129,11 +129,11 @@ class SessionItem(TreeItem):
                 alignment = pango.ALIGN_LEFT, text_color="#000000")
 
     def get_column_renders(self):
-        return [self.render_app, self.render_state, self.render_description]
+        return [self.render_app, self.render_description]
 
     def get_column_widths(self):
         '''docstring for get_column_widths'''
-        return [200, 100, -1]
+        return [200,  -1]
 
     def get_height(self):
         return 30
