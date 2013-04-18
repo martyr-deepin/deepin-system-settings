@@ -700,17 +700,6 @@ class KeySetting(object):
             else:
                 treeview.clear()
         
-        #def treeview_select(tv, item, row, button):
-            #layouts, variants = xkb.get_treeview_layout_variants(
-                #self.view_widgets["layout_selected"])
-            #if not variants:
-                #variants = [''] * len(layouts)
-            #if item.layout in layouts and item.variants in variants:
-                #if button.get_sensitive():
-                    #button.set_sensitive(False)
-            #elif not button.get_sensitive():
-                #button.set_sensitive(True)
-
         def add_layout(treeview, dialog):
             if not treeview.select_rows:
                 return
@@ -739,9 +728,11 @@ class KeySetting(object):
                 result.append(i)
             return result, current_item
 
-        def layout_treeview_selected(tv, item, row, current_item):
-            if current_item and current_item.is_select and current_item not in tv.visible_items:
-                current_item.is_select = False
+        def layout_treeview_selected(tv, item, row):
+            if self.__selected_layout_item and self.__selected_layout_item.is_select and\
+                self.__selected_layout_item != item and self.__selected_layout_item not in tv.visible_items:
+                    self.__selected_layout_item.is_select = False
+                    self.__selected_layout_item = item
         self.__selected_layout_item = None
         self.button_widgets["layout_add"].set_sensitive(False)
         dialog_width = 400
@@ -758,9 +749,10 @@ class KeySetting(object):
         if current_item:
             #layout_add_treeview.set_highlight_item(current_item)
             #layout_add_treeview.visible_highlight_item()
+            self.__selected_layout_item = current_item
             layout_add_treeview.select_items([current_item])
             layout_add_treeview.visible_item(current_item)
-        layout_add_treeview.connect("select", layout_treeview_selected, current_item)
+        layout_add_treeview.connect("select", layout_treeview_selected)
         layout_add_treeview.show_search_flag = False
         layout_add_treeview.set_expand_column(0)
         # search input
