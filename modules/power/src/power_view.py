@@ -146,6 +146,7 @@ class PowerView(gtk.VBox):
         self.__widget_pack_start(self.close_monitor_box, 
             [self.close_monitor_label, self.close_monitor_combo])
         self.close_monitor_align.add(self.close_monitor_box)
+        self.power_manager.power_settings.connect("changed", self.__power_settings_changed)
         '''
         percentage
         '''
@@ -233,10 +234,13 @@ class PowerView(gtk.VBox):
         self.__send_message("status", ("power", ""))
 
     def __power_settings_changed(self, key):
-        if key != "percentage":
+        if key == "sleep-display-ac" or key == "sleep-display-battery":
+            self.close_monitor_combo.set_select_index(self.power_manager.get_close_monitor(self.wait_duration_items))
             return
         
-        self.percentage_progressbar.progress_buffer.progress = self.power_manager.power_settings.get_double("percentage")
+        if key == "percentage":
+            self.percentage_progressbar.progress_buffer.progress = self.power_manager.power_settings.get_double("percentage")
+            return
 
     def __handle_dbus_replay(self, *reply):                                     
         pass                                                                    
