@@ -160,8 +160,9 @@ class PowerManager:
    
     def set_current_plan(self, value):
         current_plan = "default"
-
-        if value == 1:
+        if value == 0:
+            current_plan = "default"
+        elif value == 1:
             current_plan = "saving"
         elif value == 2:
             current_plan = "high_performance"
