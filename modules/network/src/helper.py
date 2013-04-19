@@ -106,7 +106,8 @@ class EventDispatcher(gobject.GObject):
         #self.emit("connection-change", new_connection)
 
     def set_button(self, content, state):
-        self.emit("button_change", content, state)
+        print "emit button change", content, state
+        self.emit("button-change", content, state)
 
     def set_tip(self, content):
         self.emit("set-tip", content)

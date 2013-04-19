@@ -263,6 +263,7 @@ net_manager = NetManager()
 class Settings(object):
     def __init__(self, setting_list):
         self.setting_list = setting_list 
+        print "Settings:", setting_list
         self.setting_state = {}
         self.settings = {}
         self.setting_lock = {}
@@ -279,9 +280,12 @@ class Settings(object):
             self.settings[connection] = setting_list
         return self.settings[connection][1][1]
 
+    #################
+    # TODO 输入合法性检查，再统一设置按钮状态
     def set_button(self, name, state):
-        #Dispatcher.set_button(name, state)
+        Dispatcher.set_button(name, state)
         self.setting_state[self.connection] = (name, state)
+        print "set button", name, state, self.connection
     
     def set_lock(self, lock):
         self.setting_lock[self.connection] = lock
