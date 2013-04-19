@@ -115,13 +115,38 @@ class PowerView(gtk.VBox):
         self.power_plan_combo.connect("item-selected", self.__combo_item_selected, "power_plan")
         self.power_plan_button = Button(_("Customized"))
         self.power_plan_button.set_size_request(80, WIDGET_HEIGHT)
+        self.power_plan_button.connect("clicked", self.__on_power_plan_customized)
         self.__widget_pack_start(self.power_plan_box, 
             [self.power_plan_label, self.power_plan_combo, self.power_plan_button])
         self.power_plan_align.add(self.power_plan_box)
         '''
-        customzied
+        close monitor
         '''
-
+        self.close_monitor_align = self.__setup_align()
+        self.close_monitor_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.close_monitor_label = self.__setup_label(_("Close Monitor"))
+        self.close_monitor_combo = self.__setup_combo(self.wait_duration_items)
+        self.close_monitor_combo.set_select_index(0)
+        self.close_monitor_combo.connect("item-selected", self.__combo_item_selected, "close_monitor")
+        self.__widget_pack_start(self.close_monitor_box, 
+            [self.close_monitor_label, self.close_monitor_combo])
+        self.close_monitor_align.add(self.close_monitor_box)
+        self.close_monitor_align.set_size_request(-1, 0)
+        self.close_monitor_align.set_child_visible(False)
+        '''
+        suspend
+        '''
+        self.suspend_align = self.__setup_align()
+        self.suspend_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.suspend_label = self.__setup_label(_("Suspend"))
+        self.suspend_combo = self.__setup_combo(self.wait_duration_items)
+        self.suspend_combo.set_select_index(0)
+        self.suspend_combo.connect("item-selected", self.__combo_item_selected, "suspend")
+        self.__widget_pack_start(self.suspend_box, 
+            [self.suspend_label, self.suspend_combo])
+        self.suspend_align.add(self.suspend_box)
+        self.suspend_align.set_size_request(-1, 0)
+        self.suspend_align.set_child_visible(False)
         '''
         percentage
         '''
@@ -192,6 +217,8 @@ class PowerView(gtk.VBox):
              self.close_notebook_cover_align, 
              self.power_save_config_align, 
              self.power_plan_align, 
+             self.close_monitor_align, 
+             self.suspend_align, 
              self.percentage_align, 
              self.wakeup_password_align, 
              self.tray_battery_status_align, 
@@ -201,6 +228,13 @@ class PowerView(gtk.VBox):
 
         self.__send_message("status", ("power", ""))
         self.__send_message("status", ("power", "show_reset"))
+
+    def __on_power_plan_customized(self, widget):
+        self.close_monitor_align.set_child_visible(True)
+        self.close_monitor_align.set_size_request(-1, 30)
+        self.suspend_align.set_child_visible(True)
+        self.suspend_align.set_size_request(-1, 30)
+        self.queue_draw()
 
     def show_again(self):                                                       
         self.__send_message("status", ("power", ""))
