@@ -47,11 +47,12 @@ class PowerView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
-        self.wait_duration_items = [("5 %s" % _("Minutes"), 300), 
+        self.wait_duration_items = [("1 %s" % _("Minute"), 60), 
+                                    ("5 %s" % _("Minutes"), 300), 
                                     ("10 %s" % _("Minutes"), 600), 
                                     ("30 %s" % _("Minutes"), 1800), 
                                     ("1 %s" % _("Hour"), 3600), 
-                                    (_("Never"), PowerManager.BIG_NUM)
+                                    (_("Never"), 0)
                                    ]
         self.power_manager = PowerManager()
         self.power_manager.power_settings.connect("changed", self.__power_settings_changed)
@@ -59,10 +60,15 @@ class PowerView(gtk.VBox):
                                    (_("Suspend"), self.power_manager.suspend), 
                                    (_("Shutdown"), self.power_manager.shutdown)
                                   ]
-        self.power_plan_items = [(_("Default"), 0), 
-                                 (_("Saving"), 1), 
-                                 (_("High Performance"), 2)
+        self.power_plan_items = [(_("Default"), self.power_manager.default), 
+                                 (_("Saving"), self.power_manager.saving), 
+                                 (_("High Performance"), self.power_manager.high_performance)
                                 ]
+        self.power_plan_items_with_customized = [(_("Default"), self.power_manager.default),                        
+                                                 (_("Saving"), self.power_manager.saving),                      
+                                                 (_("High Performance"), self.power_manager.high_performance), 
+                                                 (_("Customized"), self.power_manager.customized)
+                                                ]
         '''
         button power config
         '''
@@ -108,10 +114,15 @@ class PowerView(gtk.VBox):
         self.power_plan_align = self.__setup_align()
         self.power_plan_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.power_plan_label = self.__setup_label(_("Power Plan"))
-        self.power_plan_combo = self.__setup_combo(self.power_plan_items, 
-                                                   max_width = 120, 
-                                                   fixed_width = 120)
-        self.power_plan_combo.set_select_index(0)
+        if len(self.power_manager.powers_plan) == 3:
+            self.power_plan_combo = self.__setup_combo(self.power_plan_items, 
+                                                       max_width = 120, 
+                                                       fixed_width = 120)
+        else:
+            self.power_plan_combo = self.__setup_combo(self.power_plan_items_with_customized,   
+                                                       max_width = 120,             
+                                                       fixed_width = 120)
+        self.power_plan_combo.set_select_index(self.power_manager.get_current_plan())
         self.power_plan_combo.connect("item-selected", self.__combo_item_selected, "power_plan")
         self.power_plan_button = Button(_("Customized"))
         self.power_plan_button.set_size_request(80, WIDGET_HEIGHT)
@@ -235,6 +246,12 @@ class PowerView(gtk.VBox):
         self.suspend_align.set_child_visible(True)
         self.suspend_align.set_size_request(-1, 30)
         self.queue_draw()
+
+        select_plan = self.power_plan_combo.get_select_index()
+        plan_info = self.power_manager.get_plan_info(select_plan)
+        self.close_monitor_combo.set_select_index(
+            self.power_manager.get_close_monitor_from_xml(self.wait_duration_items, plan_info[1]))
+        self.suspend_combo.set_select_index(self.power_manager.get_suspend_from_xml(self.wait_duration_items, plan_info[2]))
 
     def show_again(self):                                                       
         self.__send_message("status", ("power", ""))
@@ -364,14 +381,14 @@ class PowerView(gtk.VBox):
             self.power_manager.set_close_notebook_cover(item_value)
             return
 
+        if object == "power_plan":
+            self.__send_message("status", ("power", _("Changed Power Plan to %s") % item_text))
+            self.power_manager.set_current_plan(item_value)
+            return
+
         if object == "suspend_status":
             self.__send_message("status", ("power", _("Changed Suspend Status to %s") % item_text))
             self.power_manager.set_suspend_status(item_value)
-            return
-
-        if object == "close_harddisk":
-            self.__send_message("status", ("power", _("Changed Close Harddisk to %s") % item_text))
-            self.power_manager.set_close_harddisk(item_value)
             return
 
         if object == "close_monitor":

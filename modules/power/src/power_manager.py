@@ -26,6 +26,8 @@ except ImportError:
     print "----------Please Install Deepin GSettings Python Binding----------"
     print "git clone git@github.com:linuxdeepin/deepin-gsettings.git"
     print "------------------------------------------------------------------"
+import os
+from xml.dom import minidom
 
 class PowerManager:
     '''
@@ -36,7 +38,12 @@ class PowerManager:
     shutdown    = 2
     suspend     = 1
 
-    BIG_NUM = 2147483647
+    default = 0
+    saving = 1
+    high_performance = 2
+    customized = 3
+
+    BIG_NUM = 0
 
     '''
     class docs
@@ -45,6 +52,46 @@ class PowerManager:
         self.power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.lockdown_settings = deepin_gsettings.new("org.gnome.desktop.screensaver")
         self.session_settings = deepin_gsettings.new("org.gnome.desktop.session")
+
+        self.__powers_xml_filename = "%s/.config/powers.xml" % os.path.expanduser('~')
+        self.__xmldoc = minidom.parse(self.__powers_xml_filename)
+
+        self.powers_plan = []
+
+        self.init_xml()
+
+    def init_xml(self):
+        self.__xmldoc = minidom.parse(self.__powers_xml_filename)
+        if self.__xmldoc != None:
+            plans = self.__xmldoc.getElementsByTagName("plan")
+            for plan in plans:
+                plan_name = plan.attributes["name"].value
+                close_monitor = plan.getElementsByTagName("close-monitor")
+                suspend = plan.getElementsByTagName("suspend")
+                '''
+                powers_plan {
+                    plan_name, 
+                    close_monitor, 
+                    suspend
+                }
+                '''
+                self.powers_plan.append(
+                    (plan_name, 
+                     int(self.__getText(close_monitor[0].childNodes)), 
+                     int(self.__getText(suspend[0].childNodes))))
+
+    def get_plan_info(self, plan):
+        if plan < 0 or plan > len(self.powers_plan):
+            return None
+
+        return self.powers_plan[plan]
+
+    def __getText(self, nodelist):                                                 
+        rc = []                                                                    
+        for node in nodelist:                                                      
+            if node.nodeType == node.TEXT_NODE:                                    
+                rc.append(node.data)                                               
+        return ''.join(rc)
 
     def __get_item_value(self, items, ori_value):
         for item, value in items:
@@ -88,9 +135,6 @@ class PowerManager:
         self.__set_item_value("button-power", value)
 
     def get_close_notebook_cover(self, items):
-        '''
-        TODO: I use notebook so consider battery first :)
-        '''
         return self.__get_item_value(items, self.power_settings.get_string("lid-close-battery-action"))
     
     def set_close_notebook_cover(self, value):
@@ -103,9 +147,39 @@ class PowerManager:
     def set_press_button_hibernate(self, value):
         self.__set_item_value("button-hibernate", value)
 
-    '''
-    TODO: sleep-inactive-ac-timeout unit is second
-    '''
+    def get_current_plan(self):
+        current_plan = self.power_settings.get_string("current-plan")
+        if current_plan == "default":
+            return 0
+        elif current_plan == "saving":
+            return 1
+        elif current_plan == "high_performance":
+            return 2
+        else:
+            return 3
+   
+    def set_current_plan(self, value):
+        current_plan = "default"
+
+        if value == 1:
+            current_plan = "saving"
+        elif value == 2:
+            current_plan = "high_performance"
+        else:
+            current_plan = "customized"
+        
+        self.power_settings.set_string("current-plan", current_plan)
+
+    def get_suspend_from_xml(self, items, plan):
+        i = 0
+
+        for item, value in items:
+            if value == plan:
+                return i
+            i += 1
+
+        return 0
+    
     def get_suspend_status(self, items):
         suspend_status_value = self.power_settings.get_int("sleep-inactive-battery-timeout")
         i = 0
@@ -119,7 +193,6 @@ class PowerManager:
 
     def set_suspend_status(self, value):
         self.power_settings.set_string("sleep-inactive-battery-type", "suspend")
-        # 高性能模式
         self.power_settings.set_int("sleep-inactive-battery-timeout", value)
         self.power_settings.set_string("sleep-inactive-ac-type", "suspend")
         self.power_settings.set_int("sleep-inactive-ac-timeout", value)
@@ -130,15 +203,23 @@ class PowerManager:
     def set_close_harddisk(self, value):
         pass
 
-    '''
-    TODO: unit is second
-    '''
     def get_close_monitor(self, items):
         close_monitor_value = self.power_settings.get_int("sleep-display-battery")
         i = 0
 
         for item, value in items:
             if value == close_monitor_value:
+                return i
+            i += 1
+
+        return 0
+
+    def get_close_monitor_from_xml(self, items, plan):
+        i = 0
+
+        for item, value in items:
+            if value == plan:
+                print "DEBUG", i
                 return i
             i += 1
 

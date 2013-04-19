@@ -20,13 +20,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
 import dbus
 import dbus.mainloop.glib
 from nls import _
 from tray_power_gui import PowerGui
 from deepin_utils.process import run_command
-from vtk.timer import Timer
 try:
     import deepin_gsettings
 except ImportError:
