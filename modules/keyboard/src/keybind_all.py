@@ -33,20 +33,27 @@ shortcuts_group_dict = {
     _('System') : [
         {'type': TYPE_DP, 'name': "key1", 'description': _("Launcher"), 'value-type': TYPE_STRING, 'command': "/usr/bin/launcher"},              # 启动器
         {'type': TYPE_WM, 'name': "show-desktop", 'description': _("Show desktop"), 'value-type': TYPE_STRV},        # 显示桌面
-        {'type': TYPE_MEDIA, 'name': "screensaver", 'description': _("Lock screen"), 'value-type': TYPE_STRING},      # 锁屏
-        {'type': TYPE_DP, 'name': "key2", 'description': _("File manager"), 'value-type': TYPE_STRING, 'command': "/usr/bin/nautilus"},            # 文件管理器
+        #{'type': TYPE_MEDIA, 'name': "screensaver", 'description': _(""), 'value-type': TYPE_STRING},      # 锁屏
+        {'type': TYPE_DP, 'name': "key3", 'description': _("Lock screen"), 'value-type': TYPE_STRING, 'command': "/usr/bin/dlock"},              # 启动器
+        {'type': TYPE_DP, 'name': "key11", 'description': _("File manager"), 'value-type': TYPE_STRING, 'command': "/usr/bin/nautilus"},            # 文件管理器
         {'type': TYPE_WM, 'name': "switch-windows", 'description': _("Switch applications"), 'value-type': TYPE_STRV},                   # 应用程序切换
         {'type': TYPE_WM, 'name': "switch-windows-backward", 'description': _("Reverse switch applications"), 'value-type': TYPE_STRV},  # 应用程序反向切换
         {'type': TYPE_COMPIZ, 'plugin': "shift", 'name': "next-key", 'description': _("Switch applications with 3D effect"), 'value-type': TYPE_STRING},             # 应用程序3D切换
         {'type': TYPE_COMPIZ, 'plugin': "shift", 'name': "prev-key", 'description': _("Reverse switch applications with 3D effect"), 'value-type': TYPE_STRING},     # 应用程序3D反向
         {'type': TYPE_DP, 'name': "key4", 'description': _("Show/Hide the dock"), 'value-type': TYPE_STRING, 'command': "dbus-send --type=method_call --dest=com.deepin.dde.dock /com/deepin/dde/dock com.deepin.dde.dock.ToggleShow"},     # 显示/隐藏Dock
-        {'type': TYPE_MEDIA, 'name': "help", 'description': _("Launch user manual"), 'value-type': TYPE_STRING},
-        {'type': TYPE_MEDIA, 'name': "screenshot", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING},  # 截图
-        {'type': TYPE_MEDIA, 'name': "area-screenshot", 'description': _("Take a screenshot of full screen"), 'value-type': TYPE_STRING},
-        {'type': TYPE_MEDIA, 'name': "window-screenshot", 'description': _("Take a screenshot of a window"), 'value-type': TYPE_STRING},
-        {'type': TYPE_MEDIA, 'name': "screenshot-delay", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING},
-        {'type': TYPE_DP, 'name': "key3", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "/usr/bin/gnome-terminal"},
-        {'type': TYPE_MEDIA, 'name': "logout", 'description': _("Log out"), 'value-type': TYPE_STRING}],
+        #{'type': TYPE_MEDIA, 'name': "help", 'description': _("Launch user manual"), 'value-type': TYPE_STRING},
+        {'type': TYPE_DP, 'name': "key6", 'description': _("Launch user manual"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-user-manual'},
+        #{'type': TYPE_MEDIA, 'name': "screenshot", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING},  # 截图
+        {'type': TYPE_DP, 'name': "key7", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot'},  # 截图
+        #{'type': TYPE_MEDIA, 'name': "area-screenshot", 'description': _("Take a screenshot of full screen"), 'value-type': TYPE_STRING},
+        {'type': TYPE_DP, 'name': "key8", 'description': _("Take a screenshot of full screen"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot -f'},
+        #{'type': TYPE_MEDIA, 'name': "window-screenshot", 'description': _("Take a screenshot of a window"), 'value-type': TYPE_STRING},
+        {'type': TYPE_DP, 'name': "key9", 'description': _("Take a screenshot of a window"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot -w'},
+        #{'type': TYPE_MEDIA, 'name': "screenshot-delay", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING},
+        {'type': TYPE_DP, 'name': "key10", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot -d 5'},
+        {'type': TYPE_DP, 'name': "key2", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "/usr/bin/gnome-terminal"},
+        #{'type': TYPE_MEDIA, 'name': "logout", 'description': _("Log out"), 'value-type': TYPE_STRING}],
+        {'type': TYPE_DP, 'name': "key5", 'description': _("Log out"), 'value-type': TYPE_STRING, 'command': 'python /usr/share/deepin-system-settings/modules/power/src/tray_shutdown_plugin.py logout'}],
     _('Sound and Media') : [
         {'type': TYPE_MEDIA, 'name': "calculator", 'description': _("Launch calculator"), 'value-type': TYPE_STRING},
         {'type': TYPE_MEDIA, 'name': "email", 'description': _("Launch email client"), 'value-type': TYPE_STRING},
