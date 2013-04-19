@@ -81,7 +81,7 @@ class PowerManager:
                      int(self.__getText(suspend[0].childNodes))))
 
     def get_plan_info(self, plan):
-        if plan < 0 or plan > len(self.powers_plan):
+        if plan < 0 or plan >= len(self.powers_plan):
             return None
 
         return self.powers_plan[plan]
@@ -219,7 +219,6 @@ class PowerManager:
 
         for item, value in items:
             if value == plan:
-                print "DEBUG", i
                 return i
             i += 1
 

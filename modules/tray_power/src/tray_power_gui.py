@@ -29,7 +29,6 @@ from vtk.button import SelectButton
 from vtk.draw import draw_text
 from vtk.theme import vtk_theme
 from dtk.ui.line import HSeparator
-import deepin_gsettings
 
 LOAD_IMAGE_PATH = os.path.dirname(sys.argv[0]) 
 HSEPARATOR_COLOR = [(0,   ("#777777", 0.0)),
@@ -39,7 +38,6 @@ HSEPARATOR_COLOR = [(0,   ("#777777", 0.0)),
 class PowerGui(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
-        self.power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.hbox = gtk.HBox()
         # init top widgets.
         self.icon = vtk_theme.name.get_image("power/power_icon.png") 
@@ -64,12 +62,7 @@ class PowerGui(gtk.VBox):
         self.one_mode_btn.set_size_request(-1, self.mode_height)
         self.two_mode_btn.set_size_request(-1, self.mode_height)
         self.tree_mode_btn.set_size_request(-1, self.mode_height)
-        if len(self.power_settings.get_strv("plans")) == 4:
-            self.customized_mode_btn.set_size_request(-1, self.mode_height)
-        else:
-            self.customized_mode_btn.set_size_request(-1, 0)
-            self.customized_mode_btn.set_child_visible(False)
-        #self.power_settings.connect("changed", self.__on_power_settings_changed)
+        self.customized_mode_btn.set_size_request(-1, self.mode_height)
         # init bottom widgets
         self.bottom_line_ali = gtk.Alignment(1.0, 1.0, 1.0, 1.0)
         self.bottom_line_ali.set_padding(5, 5, 0, 0)
@@ -86,18 +79,6 @@ class PowerGui(gtk.VBox):
         self.pack_start(self.customized_mode_btn, False, False)
         self.pack_start(self.bottom_line_ali, False, False)
         self.pack_start(self.click_btn, False, False)
-
-    def __on_power_settings_changed(self, key):
-        if key != "plans":
-            return
-
-        if len(self.power_settings.get_strv("plans")) == 4:
-            self.customized_mode_btn.set_size_request(-1, self.mode_height)
-            self.customized_mode_btn.set_child_visible(True)
-        else:
-            self.customized_mode_btn.set_size_request(-1, 0)
-            self.customized_mode_btn.set_child_visible(False)
-        self.queue_draw()
 
     def label_expose_event(self, widget, event):
         cr = widget.window.cairo_create()

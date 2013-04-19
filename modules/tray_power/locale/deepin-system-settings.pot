@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-19 14:00+0800\n"
+"POT-Creation-Date: 2013-04-19 17:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_power_gui.py:46
+#: ../src/tray_power_gui.py:44
 msgid "Power"
 msgstr ""
 
-#: ../src/tray_power_gui.py:55
+#: ../src/tray_power_gui.py:53
 msgid "Default"
 msgstr ""
 
-#: ../src/tray_power_gui.py:56
+#: ../src/tray_power_gui.py:54
 msgid "Saving"
 msgstr ""
 
-#: ../src/tray_power_gui.py:57
+#: ../src/tray_power_gui.py:55
 msgid "Hight Performance"
 msgstr ""
 
-#: ../src/tray_power_gui.py:58
+#: ../src/tray_power_gui.py:56
 msgid "Customized"
 msgstr ""
 
-#: ../src/tray_power_gui.py:77
+#: ../src/tray_power_gui.py:71
 msgid "Advanced..."
 msgstr ""
 

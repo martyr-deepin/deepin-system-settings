@@ -191,7 +191,7 @@ class TrayPower(object):
         return self.gui
 
     def show_menu(self):
-        self.this.set_size_request(175, 172)
+        self.this.set_size_request(175, 200)
 
     def hide_menu(self):
         pass
