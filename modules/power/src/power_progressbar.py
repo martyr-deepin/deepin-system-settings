@@ -20,10 +20,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from dtk.ui.cache_pixbuf import CachePixbuf
 from dtk.ui.draw import draw_vlinear, draw_pixbuf
 from dtk.ui.theme import ui_theme
 from dtk.ui.utils import cairo_state, propagate_expose, color_hex_to_cairo, cairo_disable_antialias
-import cairo
 import gobject
 import gtk
 from theme import app_theme
@@ -68,12 +68,16 @@ class PowerProgressBuffer(gobject.GObject):
             draw_vlinear(cr, x + 1, y + 1, w - 2, h - 2,
                          ui_theme.get_shadow_color("progressbar_background").get_color_info(), 
                          )
+            cache_pixbuf_object = CachePixbuf()
             if self.progress > 0 and self.progress < 100:
-                draw_pixbuf(cr, 
-                            self.percentage_dpixbuf[int(self.progress / 10)].get_pixbuf(), 
-                            x, y)
+                cache_pixbuf_object.scale(self.percentage_dpixbuf[int(self.progress / 10)].get_pixbuf(), 
+                                          w, 
+                                          h)
             if self.progress == 100:
-                draw_pixbuf(cr, self.percentage_dpixbuf[9].get_pixbuf(), x, y)
+                cache_pixbuf_object.scale(self.percentage_dpixbuf[9].get_pixbuf(), 
+                                          w, 
+                                          h)
+            draw_pixbuf(cr, cache_pixbuf_object.get_cache(), x, y)
         
         # Draw light.
         with cairo_disable_antialias(cr):
