@@ -27,7 +27,7 @@ from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.line import HSeparator
 from dtk.ui.combo import ComboBox
-from dtk.ui.button import ToggleButton
+from dtk.ui.button import ToggleButton, Button
 from power_progressbar import PowerProgressBar
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from constant import *
@@ -59,6 +59,10 @@ class PowerView(gtk.VBox):
                                    (_("Suspend"), self.power_manager.suspend), 
                                    (_("Shutdown"), self.power_manager.shutdown)
                                   ]
+        self.power_plan_items = [(_("Default"), 0), 
+                                 (_("Saving"), 1), 
+                                 (_("High Performance"), 2)
+                                ]
         '''
         button power config
         '''
@@ -93,60 +97,31 @@ class PowerView(gtk.VBox):
         self.close_notebook_cover_align.add(self.close_notebook_cover_box)
         self.close_notebook_cover_align.set_child_visible(is_laptop())
         '''
-        press button hibernate
-        '''
-        self.press_button_hibernate_align = self.__setup_align()
-        self.press_button_hibernate_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.press_button_hibernate_label = self.__setup_label(_("Press Hibernate Button"))
-        self.press_button_hibernate_combo = self.__setup_combo(self.power_manage_items)
-        self.press_button_hibernate_combo.set_select_index(self.power_manager.get_press_button_hibernate(self.power_manage_items))
-        self.press_button_hibernate_combo.connect("item-selected", self.__combo_item_selected, "press_button_hibernate")
-        self.__widget_pack_start(self.press_button_hibernate_box, 
-            [self.press_button_hibernate_label, self.press_button_hibernate_combo])
-        self.press_button_hibernate_align.add(self.press_button_hibernate_box)
-        '''
         power save config
         '''
         self.power_save_config_align = self.__setup_title_align(
             app_theme.get_pixbuf("power/power_save.png"), 
             _("Saving Power Configuration")) 
         '''
-        hibernate status
+        power plan
         '''
-        self.suspend_status_align = self.__setup_align()
-        self.suspend_status_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.suspend_status_label = self.__setup_label(_("Being Suspend"))
-        self.suspend_status_combo = self.__setup_combo(self.wait_duration_items)
-        self.suspend_status_combo.set_select_index(self.power_manager.get_suspend_status(self.wait_duration_items))
-        self.suspend_status_combo.connect("item-selected", self.__combo_item_selected, "suspend_status")
-        self.__widget_pack_start(self.suspend_status_box, 
-            [self.suspend_status_label, self.suspend_status_combo])
-        self.suspend_status_align.add(self.suspend_status_box)
+        self.power_plan_align = self.__setup_align()
+        self.power_plan_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.power_plan_label = self.__setup_label(_("Power Plan"))
+        self.power_plan_combo = self.__setup_combo(self.power_plan_items, 
+                                                   max_width = 120, 
+                                                   fixed_width = 120)
+        self.power_plan_combo.set_select_index(0)
+        self.power_plan_combo.connect("item-selected", self.__combo_item_selected, "power_plan")
+        self.power_plan_button = Button(_("Customized"))
+        self.power_plan_button.set_size_request(80, WIDGET_HEIGHT)
+        self.__widget_pack_start(self.power_plan_box, 
+            [self.power_plan_label, self.power_plan_combo, self.power_plan_button])
+        self.power_plan_align.add(self.power_plan_box)
         '''
-        close harddisk
+        customzied
         '''
-        self.close_harddisk_align = self.__setup_align()
-        self.close_harddisk_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.close_harddisk_label = self.__setup_label(_("Close Harddisk"))
-        self.close_harddisk_combo = self.__setup_combo(self.wait_duration_items)
-        self.close_harddisk_combo.set_select_index(self.power_manager.get_close_harddisk(self.wait_duration_items))
-        self.close_harddisk_combo.connect("item-selected", self.__combo_item_selected, "close_harddisk")
-        self.__widget_pack_start(self.close_harddisk_box, 
-            [self.close_harddisk_label, self.close_harddisk_combo])
-        self.close_harddisk_align.add(self.close_harddisk_box)
-        '''
-        close monitor
-        '''
-        self.close_monitor_align = self.__setup_align()
-        self.close_monitor_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.close_monitor_label = self.__setup_label(_("Close Monitor"))
-        self.close_monitor_combo = self.__setup_combo(self.wait_duration_items)
-        self.close_monitor_combo.set_select_index(self.power_manager.get_close_monitor(self.wait_duration_items))
-        self.close_monitor_combo.connect("item-selected", self.__combo_item_selected, "close_monitor")
-        self.__widget_pack_start(self.close_monitor_box, 
-            [self.close_monitor_label, self.close_monitor_combo])
-        self.close_monitor_align.add(self.close_monitor_box)
-        self.power_manager.power_settings.connect("changed", self.__power_settings_changed)
+
         '''
         percentage
         '''
@@ -174,7 +149,7 @@ class PowerView(gtk.VBox):
                                                         text_color=app_theme.get_color("globalTitleForeground"))
         self.wakeup_password_label.set_sensitive(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle_align = self.__setup_align(padding_top = 2,
-                                                               padding_left = 80)
+                                                               padding_left = 168)
         self.wakeup_password_toggle = self.__setup_toggle()
         self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle.connect("toggled", self.__toggled, "wakeup_password")
@@ -197,7 +172,7 @@ class PowerView(gtk.VBox):
                                                             text_color=app_theme.get_color("globalTitleForeground"))
         self.tray_battery_status_label.set_sensitive(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle_align = self.__setup_align(padding_top = 2, 
-                                                                   padding_left = 80)
+                                                                   padding_left = 168)
         self.tray_battery_status_toggle = self.__setup_toggle()
         self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle.connect("toggled", self.__toggled, "tray_battery_status")
@@ -215,11 +190,8 @@ class PowerView(gtk.VBox):
             [self.button_power_config_align, 
              self.press_button_power_align, 
              self.close_notebook_cover_align, 
-             #self.press_button_hibernate_align, 
              self.power_save_config_align, 
-             self.suspend_status_align, 
-             #self.close_harddisk_align, 
-             self.close_monitor_align, 
+             self.power_plan_align, 
              self.percentage_align, 
              self.wakeup_password_align, 
              self.tray_battery_status_align, 
@@ -297,7 +269,6 @@ class PowerView(gtk.VBox):
         self.power_manager.reset()
         self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
         self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(self.power_manage_items))
-        self.press_button_hibernate_combo.set_select_index(self.power_manager.get_press_button_hibernate(self.power_manage_items))
         self.suspend_status_combo.set_select_index(self.power_manager.get_suspend_status(self.wait_duration_items))
         self.close_monitor_combo.set_select_index(self.power_manager.get_close_monitor(self.wait_duration_items))
         self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
@@ -314,16 +285,18 @@ class PowerView(gtk.VBox):
     def __setup_progressbar(self, progress):
         progressbar = PowerProgressBar()
         progressbar.progress_buffer.progress = progress
-        progressbar.set_size_request(121, WIDGET_HEIGHT)
+        progressbar.set_size_request(210, WIDGET_HEIGHT)
         return progressbar
 
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END, text_color=None):
         label = Label(text, text_color, text_size, align, 200, False, False, False)
         return label
 
-    def __setup_combo(self, items=[]):
-        combo = ComboBox(items = items, select_index = 0, max_width = 120, fixed_width = 120)
-        return combo
+    def __setup_combo(self, items=[], max_width = 210, fixed_width = 210):
+        return ComboBox(items = items, 
+                        select_index = 0, 
+                        max_width = max_width, 
+                        fixed_width = fixed_width)
 
     def __setup_toggle(self):
         toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
@@ -355,11 +328,6 @@ class PowerView(gtk.VBox):
         if object == "close_notebook_cover":
             self.__send_message("status", ("power", _("Changed Close Notebook Cover to %s") % item_text))
             self.power_manager.set_close_notebook_cover(item_value)
-            return
-
-        if object == "press_button_hibernate":
-            self.__send_message("status", ("power", _("Changed Press Hibernate Button to %s") % item_text))
-            self.power_manager.set_press_button_hibernate(item_value)
             return
 
         if object == "suspend_status":
