@@ -3,6 +3,8 @@
 # iwlistparse.py
 # Hugo Chargois - 17 jan. 2010 - v.0.1
 # Parses the output of iwlist scan into a table
+# Modified : LongWei 2012-2013
+#            yilang2007lw@gmail.com
 
 import sys
 
