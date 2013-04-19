@@ -20,20 +20,33 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from iwlistparse import parse_security
-from deepin_utils.process import get_command_output
+import dbus
+import traceback
 
 def get_ap_security(interface, address):
     '''interface: wlan0 for wireless device
        address: bssid of access point
     '''
-    command = ["/sbin/iwlist"]
-    command.append(interface)
-    command.append("scan")
+    try:
+        bus = dbus.SystemBus()
+        proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
+        interface = dbus.Interface(proxy, "com.deepin.network")
 
-    iwlist_output = map(lambda x: x.rstrip(), get_command_output(command))
+        return interface.get_ap_sec(interface, address)
+    except:
+        print "parse ap sec with dbus failed"
+        traceback.print_exc()
+
+        from iwlistparse import parse_security
+        from deepin_utils.process import get_command_output
+
+        command = ["/sbin/iwlist"]
+        command.append(interface)
+        command.append("scan")
+
+        iwlist_output = map(lambda x: x.rstrip(), get_command_output(command))
     
-    return parse_security(iwlist_output, address)
+        return parse_security(iwlist_output, address)
 
 if __name__ == "__main__":
     print get_ap_security("wlan0", "5C:63:BF:7E:ED:64")

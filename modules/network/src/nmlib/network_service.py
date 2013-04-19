@@ -43,7 +43,6 @@ class NetworkService(dbus.service.Object):
 
     @dbus.service.method(NETWORK_INTERFACE, in_signature = "", out_signature = "")
     def fix_unmanaged(self):
-
         lines = []
         with open("/etc/NetworkManager/NetworkManager.conf") as cf:
             try:
@@ -69,12 +68,30 @@ class NetworkService(dbus.service.Object):
 
         os.system("service network-manager restart")
 
-        self.do_exit()
+    ### Fix me, need to test
+    @dbus.service.method(NETWORK_INTERFACE, in_signature = "ss", out_signature = "s")
+    def get_ap_sec(self, interface, address):
 
-    def do_exit(self):
-        mainloop.quit()
+        from iwlistparse import parse_security
+        from deepin_utils.process import get_command_output
+        from nm_utils import TypeConvert
+        
+        if not TypeConvert.is_valid_mac_address(address):
+            return None
 
+        command = ["/sbin/iwlist"]
+        command.append(interface)
+        command.append("scan")
+
+        try:
+            iwlist_output = map(lambda x: x.rstrip(), get_command_output(command))
+            return parse_security(iwlist_output, address)
+        except:
+            traceback.print_exc()
+            return None
+    
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     NetworkService()
+    gobject.timeout_add(60000, lambda :mainloop.quit()) 
     mainloop.run()
