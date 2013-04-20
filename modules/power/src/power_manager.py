@@ -68,6 +68,9 @@ class PowerManager:
                 plan_name = plan.attributes["name"].value
                 close_monitor = plan.getElementsByTagName("close-monitor")
                 suspend = plan.getElementsByTagName("suspend")
+                if len(plan_name) == 0 or len(close_monitor) == 0 or len(suspend) == 0:
+                    continue
+                
                 '''
                 powers_plan {
                     plan_name, 
@@ -80,6 +83,34 @@ class PowerManager:
                      int(self.__getText(close_monitor[0].childNodes)), 
                      int(self.__getText(suspend[0].childNodes))))
 
+    def update_xml(self, close_monitor_value=None, suspend_value=None):
+        plans = self.__xmldoc.getElementsByTagName("plan")
+        is_updatable = False
+        for plan in plans:
+            if plan.attributes["name"].value != "customized":
+                continue
+
+            close_monitor = plan.getElementsByTagName("close-monitor")
+            suspend = plan.getElementsByTagName("suspend")
+
+            if len(close_monitor) == 0 or len(suspend) == 0:
+                continue
+
+            if close_monitor_value:
+                close_monitor[0].firstChild.data = close_monitor_value
+                is_updatable = True
+
+            if suspend_value:
+                suspend[0].firstChild.data = suspend_value
+                is_updatable = True
+
+        if not is_updatable:
+            return
+
+        f = open(self.__powers_xml_filename, 'w')                             
+        self.__xmldoc.writexml(f)                                               
+        f.close()
+                    
     def get_plan_info(self, plan):
         if plan < 0 or plan >= len(self.powers_plan):
             return None

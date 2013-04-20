@@ -372,12 +372,14 @@ class PowerView(gtk.VBox):
             self.__send_message("status", ("power", _("Changed Suspend Status to %s") % item_text))
             self.power_plan_combo.set_select_index(self.power_manager.customized)
             self.power_manager.set_suspend_status(item_value)
+            self.power_manager.update_xml(None, item_value)
             return
 
         if object == "close_monitor":
             self.__send_message("status", ("power", _("Changed Close Monitor to %s") % item_text))
             self.power_plan_combo.set_select_index(self.power_manager.customized)
             self.power_manager.set_close_monitor(item_value)
+            self.power_manager.update_xml(item_value, None)
             return
 
     def __toggled(self, widget, object=None):
