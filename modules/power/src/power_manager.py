@@ -259,7 +259,7 @@ class PowerManager:
     def set_close_monitor(self, value):
         self.power_settings.set_int("sleep-display-battery", value)
         self.power_settings.set_int("sleep-display-ac", value)
-        self.session_settings.set_uint("idle-delay", self.BIG_NUM)
+        self.session_settings.set_uint("idle-delay", value)
 
     def get_wakeup_password(self):
         return self.lockdown_settings.get_boolean("lock-enabled")
