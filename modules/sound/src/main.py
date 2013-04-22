@@ -173,8 +173,11 @@ class SoundSetting(object):
         self.adjust_widgets["microphone"] = gtk.Adjustment(0, 0, volume_max_percent, 1, 5)
         # scale init
         self.scale_widgets["balance"] = HScalebar(value_min=-1, value_max=1, gray_progress=True)
+        self.scale_widgets["balance"].set_magnetic_values([(0, 0.1), (1, 0.1), (2, 0.1)])
         self.scale_widgets["speaker"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
+        self.scale_widgets["speaker"].set_magnetic_values([(0, 5), (100, 5), (volume_max_percent, 5)])
         self.scale_widgets["microphone"] = HScalebar(show_value=True, format_value="%", value_min=0, value_max=volume_max_percent)
+        self.scale_widgets["microphone"].set_magnetic_values([(0, 5), (100, 5), (volume_max_percent, 5)])
         self.scale_widgets["input_test"] = ProgressBar()
         self.scale_widgets["input_test"].progress_buffer.render = self.__render_progress_buffer
         ###################################

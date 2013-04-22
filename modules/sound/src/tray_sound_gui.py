@@ -95,6 +95,7 @@ class TrayGui(gtk.VBox):
         table = gtk.Table(2, 3)
         speaker_img = ImageBox(app_theme.get_pixbuf("sound/speaker-3.png"))
         self.speaker_scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
+        self.speaker_scale.set_magnetic_values([(0, 5), (100, 5), (volume_max_percent, 5)])
         self.speaker_scale.set_size_request(90, 10)
         self.speaker_mute_button = SwitchButton(
             inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
@@ -192,6 +193,7 @@ class TrayGui(gtk.VBox):
         else:
             img = gtk.image_new_from_pixbuf(self.stream_icon)
         scale = HScalebar(show_value=False, format_value="%", value_min=0, value_max=volume_max_percent)
+        scale.set_magnetic_values([(0, 5), (100, 5), (volume_max_percent, 5)])
         scale.set_size_request(90, 10)
         mute_button = SwitchButton(
             inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
@@ -482,6 +484,7 @@ class TrayGui(gtk.VBox):
         self.mpris_list[pid] = {}
         # mpris control
         scale = HScalebar(app_theme.get_pixbuf("sound/point.png"), show_value=False, format_value="%", value_min=0, value_max=1, line_height=3)
+        scale.set_magnetic_values([(0, 0.1), (1, 0.1)])
         scale.set_size_request(70, 10)
         prev_bt = gtk.Button()
         pause_bt = gtk.Button()
