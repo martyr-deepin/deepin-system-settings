@@ -231,6 +231,7 @@ class TrayNetworkPlugin(object):
         """
         self.gui.wire.set_active((True, True))
         self.change_status_icon("cable")
+        self.let_rotate(False)
     
     def tray_resize(self, widget, height):
         pass
@@ -291,6 +292,7 @@ class TrayNetworkPlugin(object):
         self.change_status_icon("links")
         #print "this device state:", widget.is_active()
         self.set_active_ap()
+        self.let_rotate(False)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
         self.this_connection = None
