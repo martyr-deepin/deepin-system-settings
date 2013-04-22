@@ -147,8 +147,12 @@ class Wired(gtk.VBox):
 
         ## retrieve wired info
     def save_settings(self, widget, event, types):
-        value = widget.get_text()
-        if type(value) is str:
+        # if widget is SpinBox
+        if hasattr(widget, "get_value"):
+            value = widget.get_value()
+        else:
+            value = widget.get_text()
+        if type(value) is str and value:
             if TypeConvert.is_valid_mac_address(value):
                 #widget.set_normal()
                 #self.queue_draw()

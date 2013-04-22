@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-11 10:40+0800\n"
+"POT-Creation-Date: 2013-04-19 17:26+0800\n"
 "PO-Revision-Date: 2013-03-01 10:21+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,35 +16,39 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_power_plugin.py:94
-msgid "charging"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:115
-#, python-format
-msgid "%s remaining"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:117
-msgid "fully charged"
-msgstr ""
-
-#: ../src/tray_power_gui.py:47
+#: ../src/tray_power_gui.py:44
 msgid "Power"
 msgstr ""
 
+#: ../src/tray_power_gui.py:53
+msgid "Default"
+msgstr ""
+
+#: ../src/tray_power_gui.py:54
+msgid "Saving"
+msgstr ""
+
+#: ../src/tray_power_gui.py:55
+msgid "Hight Performance"
+msgstr ""
+
 #: ../src/tray_power_gui.py:56
-msgid "平衡模式"
-msgstr ""
-
-#: ../src/tray_power_gui.py:57
-msgid "节能模式"
-msgstr ""
-
-#: ../src/tray_power_gui.py:58
-msgid "高性能模式"
+msgid "Customized"
 msgstr ""
 
 #: ../src/tray_power_gui.py:71
 msgid "Advanced..."
+msgstr ""
+
+#: ../src/tray_power_plugin.py:132 ../src/tray_power_plugin.py:161
+msgid "fully charged"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:134
+msgid "charging"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:159
+#, python-format
+msgid "%s remaining"
 msgstr ""

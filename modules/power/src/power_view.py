@@ -47,11 +47,12 @@ class PowerView(gtk.VBox):
         init docs
         '''
         gtk.VBox.__init__(self)
-        self.wait_duration_items = [("5 %s" % _("Minutes"), 300), 
+        self.wait_duration_items = [("1 %s" % _("Minute"), 60), 
+                                    ("5 %s" % _("Minutes"), 300), 
                                     ("10 %s" % _("Minutes"), 600), 
                                     ("30 %s" % _("Minutes"), 1800), 
                                     ("1 %s" % _("Hour"), 3600), 
-                                    (_("Never"), PowerManager.BIG_NUM)
+                                    (_("Never"), 0)
                                    ]
         self.power_manager = PowerManager()
         self.power_manager.power_settings.connect("changed", self.__power_settings_changed)
@@ -59,9 +60,10 @@ class PowerView(gtk.VBox):
                                    (_("Suspend"), self.power_manager.suspend), 
                                    (_("Shutdown"), self.power_manager.shutdown)
                                   ]
-        self.power_plan_items = [(_("Default"), 0), 
-                                 (_("Saving"), 1), 
-                                 (_("High Performance"), 2)
+        self.power_plan_items = [(_("Default"), self.power_manager.default),                        
+                                 (_("Saving"), self.power_manager.saving),                      
+                                 (_("High Performance"), self.power_manager.high_performance), 
+                                 (_("Customized"), self.power_manager.customized)
                                 ]
         '''
         button power config
@@ -111,17 +113,36 @@ class PowerView(gtk.VBox):
         self.power_plan_combo = self.__setup_combo(self.power_plan_items, 
                                                    max_width = 120, 
                                                    fixed_width = 120)
-        self.power_plan_combo.set_select_index(0)
+        self.power_plan_combo.set_select_index(self.power_manager.get_current_plan())
         self.power_plan_combo.connect("item-selected", self.__combo_item_selected, "power_plan")
-        self.power_plan_button = Button(_("Customized"))
-        self.power_plan_button.set_size_request(80, WIDGET_HEIGHT)
         self.__widget_pack_start(self.power_plan_box, 
-            [self.power_plan_label, self.power_plan_combo, self.power_plan_button])
+            [self.power_plan_label, self.power_plan_combo])
         self.power_plan_align.add(self.power_plan_box)
         '''
-        customzied
+        close monitor
         '''
-
+        self.close_monitor_align = self.__setup_align()
+        self.close_monitor_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.close_monitor_label = self.__setup_label(_("Close Monitor"))
+        self.close_monitor_combo = self.__setup_combo(self.wait_duration_items)
+        self.close_monitor_combo.set_select_index(0)
+        self.close_monitor_combo.connect("item-selected", self.__combo_item_selected, "close_monitor")
+        self.__widget_pack_start(self.close_monitor_box, 
+            [self.close_monitor_label, self.close_monitor_combo])
+        self.close_monitor_align.add(self.close_monitor_box)
+        '''
+        suspend
+        '''
+        self.suspend_align = self.__setup_align()
+        self.suspend_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.suspend_label = self.__setup_label(_("Suspend"))
+        self.suspend_combo = self.__setup_combo(self.wait_duration_items)
+        self.suspend_combo.set_select_index(0)
+        self.suspend_combo.connect("item-selected", self.__combo_item_selected, "suspend")
+        self.__widget_pack_start(self.suspend_box, 
+            [self.suspend_label, self.suspend_combo])
+        self.suspend_align.add(self.suspend_box)
+        self.__on_power_plan_customized()
         '''
         percentage
         '''
@@ -149,7 +170,7 @@ class PowerView(gtk.VBox):
                                                         text_color=app_theme.get_color("globalTitleForeground"))
         self.wakeup_password_label.set_sensitive(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle_align = self.__setup_align(padding_top = 2,
-                                                               padding_left = 168)
+                                                               padding_left = 78)
         self.wakeup_password_toggle = self.__setup_toggle()
         self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle.connect("toggled", self.__toggled, "wakeup_password")
@@ -172,7 +193,7 @@ class PowerView(gtk.VBox):
                                                             text_color=app_theme.get_color("globalTitleForeground"))
         self.tray_battery_status_label.set_sensitive(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle_align = self.__setup_align(padding_top = 2, 
-                                                                   padding_left = 168)
+                                                                   padding_left = 78)
         self.tray_battery_status_toggle = self.__setup_toggle()
         self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle.connect("toggled", self.__toggled, "tray_battery_status")
@@ -192,6 +213,8 @@ class PowerView(gtk.VBox):
              self.close_notebook_cover_align, 
              self.power_save_config_align, 
              self.power_plan_align, 
+             self.close_monitor_align, 
+             self.suspend_align, 
              self.percentage_align, 
              self.wakeup_password_align, 
              self.tray_battery_status_align, 
@@ -201,6 +224,15 @@ class PowerView(gtk.VBox):
 
         self.__send_message("status", ("power", ""))
         self.__send_message("status", ("power", "show_reset"))
+
+    def __on_power_plan_customized(self):
+        select_plan = self.power_plan_combo.get_select_index()
+        plan_info = self.power_manager.get_plan_info(select_plan)
+        if plan_info == None:
+            return
+        self.close_monitor_combo.set_select_index(
+            self.power_manager.get_close_monitor_from_xml(self.wait_duration_items, plan_info[1]))
+        self.suspend_combo.set_select_index(self.power_manager.get_suspend_from_xml(self.wait_duration_items, plan_info[2]))
 
     def show_again(self):                                                       
         self.__send_message("status", ("power", ""))
@@ -285,14 +317,14 @@ class PowerView(gtk.VBox):
     def __setup_progressbar(self, progress):
         progressbar = PowerProgressBar()
         progressbar.progress_buffer.progress = progress
-        progressbar.set_size_request(210, WIDGET_HEIGHT)
+        progressbar.set_size_request(120, WIDGET_HEIGHT)
         return progressbar
 
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END, text_color=None):
         label = Label(text, text_color, text_size, align, 200, False, False, False)
         return label
 
-    def __setup_combo(self, items=[], max_width = 210, fixed_width = 210):
+    def __setup_combo(self, items=[], max_width = 120, fixed_width = 120):
         return ComboBox(items = items, 
                         select_index = 0, 
                         max_width = max_width, 
@@ -330,19 +362,24 @@ class PowerView(gtk.VBox):
             self.power_manager.set_close_notebook_cover(item_value)
             return
 
-        if object == "suspend_status":
-            self.__send_message("status", ("power", _("Changed Suspend Status to %s") % item_text))
-            self.power_manager.set_suspend_status(item_value)
+        if object == "power_plan":
+            self.__send_message("status", ("power", _("Changed Power Plan to %s") % item_text))
+            self.__on_power_plan_customized()
+            self.power_manager.set_current_plan(item_value)
             return
 
-        if object == "close_harddisk":
-            self.__send_message("status", ("power", _("Changed Close Harddisk to %s") % item_text))
-            self.power_manager.set_close_harddisk(item_value)
+        if object == "suspend":
+            self.__send_message("status", ("power", _("Changed Suspend Status to %s") % item_text))
+            self.power_plan_combo.set_select_index(self.power_manager.customized)
+            self.power_manager.set_suspend_status(item_value)
+            self.power_manager.update_xml(None, item_value)
             return
 
         if object == "close_monitor":
             self.__send_message("status", ("power", _("Changed Close Monitor to %s") % item_text))
+            self.power_plan_combo.set_select_index(self.power_manager.customized)
             self.power_manager.set_close_monitor(item_value)
+            self.power_manager.update_xml(item_value, None)
             return
 
     def __toggled(self, widget, object=None):

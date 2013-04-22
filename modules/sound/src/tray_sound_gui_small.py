@@ -179,9 +179,11 @@ class TrayGui(gtk.VBox):
             self.mpris_stream[process_id] = index
             self.stream_mpris[index] = process_id
             return
+        icon_name, is_filtered = self.__white_list_check(stream, index)
+        if is_filtered:
+            return
         self.stream_list[index] = {}
         volume_max_percent = pypulse.MAX_VOLUME_VALUE * 100 / pypulse.NORMAL_VOLUME_VALUE
-        icon_name = self.__white_list_check(stream)
         if icon_name:
             if icon_name[0] == '/':
                 try:
@@ -221,23 +223,33 @@ class TrayGui(gtk.VBox):
         hbox.show_all()
         self.__app_vbox.pack_start(hbox, False, False)
 
-    def __white_list_check(self, stream):
+    def __white_list_check(self, stream, index):
         icon_name = None
         # check deepin-media-player
-        if 'application.process.binary' in stream['proplist']:
-            if stream['proplist']['application.process.binary'] == 'mplayer':
-                process_id = int(stream['proplist']['application.process.id'])
-                process_list = psutil.get_process_list()
-                for p in process_list:
-                    if p.pid == process_id and p.ppid != 0 and p.parent.name.startswith('deepin-media'):
-                        return "deepin-media-player"
+        if 'application.process.binary' in stream['proplist'] and \
+                stream['proplist']['application.process.binary'] == 'mplayer':
+            process_id = int(stream['proplist']['application.process.id'])
+            stream_process_obj = psutil.Process(process_id)
+            stream_process_parent_obj = stream_process_obj.parent
+            if stream_process_parent_obj.pid != 0 and \
+                    stream_process_parent_obj.name.startswith("deepin-media"):
+                children_process = stream_process_parent_obj.get_children()
+                # check this process is the preview window of deepin-media-player
+                if process_id != children_process[0].pid:
+                    return None, True
+                ## check deepin-media-player whether enable mpris
+                #if stream_process_parent_obj.pid in self.mpris_list:
+                    #self.mpris_stream[stream_process_parent_obj.pid] = index
+                    #self.stream_mpris[index] = stream_process_parent_obj.pid
+                    #return None, True
+                return "deepin-media-player", False
         if 'application.icon_name' in stream['proplist']:
             icon_name = stream['proplist']['application.icon_name']
         # check deepin-music-player
         if 'application.name' in stream['proplist']:
             if stream['proplist']['application.name'] == 'deepin-music-player':
                 icon_name = "deepin-music-player"
-        return icon_name
+        return icon_name, False
 
     def __get_pixbuf_from_icon_name(self, name):
         screen = self.get_screen()
@@ -377,8 +389,9 @@ class TrayGui(gtk.VBox):
             return
         if index not in self.stream_list:
             self.__make_playback_box(dt, index)
-            self.stream_num += 1
-            if self.stream_num > 0:
+            stream_num = len(self.stream_list.keys())
+            mpris_num = len(self.mpris_list.keys())
+            if stream_num > 0 or mpris_num > 0:
                 self.__app_vbox.set_no_show_all(False)
                 self.__app_vbox.show_all()
             self.adjust_size()

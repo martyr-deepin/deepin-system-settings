@@ -27,16 +27,13 @@ import os
 from nls import _
 from vtk.button import SelectButton 
 from vtk.draw import draw_text
-from vtk.utils import get_text_size
 from vtk.theme import vtk_theme
 from dtk.ui.line import HSeparator
-
 
 LOAD_IMAGE_PATH = os.path.dirname(sys.argv[0]) 
 HSEPARATOR_COLOR = [(0,   ("#777777", 0.0)),
                     (0.5, ("#000000", 0.3)),
                     (1,   ("#777777", 0.0))]
-
 
 class PowerGui(gtk.VBox):
     def __init__(self):
@@ -53,16 +50,19 @@ class PowerGui(gtk.VBox):
         self.top_line_ali.set_padding(5, 5, 0, 0)
         self.top_line = HSeparator(HSEPARATOR_COLOR, 0, 0) 
         self.top_line_ali.add(self.top_line)
-        self.one_mode_btn = SelectButton(_("平衡模式"), ali_padding=125)
-        self.two_mode_btn = SelectButton(_("节能模式"), ali_padding=125)
-        self.tree_mode_btn = SelectButton(_("高性能模式"), ali_padding=125)
+        self.one_mode_btn = SelectButton(_("Default"), ali_padding=125)
+        self.two_mode_btn = SelectButton(_("Saving"), ali_padding=125)
+        self.tree_mode_btn = SelectButton(_("Hight Performance"), ali_padding=125)
+        self.customized_mode_btn = SelectButton(_("Customized"), ali_padding=125)
         self.one_mode_btn.connect("clicked", self.one_mode_btn_clicked)
         self.two_mode_btn.connect("clicked", self.two_mode_btn_clicked)
         self.tree_mode_btn.connect("clicked", self.tree_mode_btn_clicked)
-        mode_height = 25
-        self.one_mode_btn.set_size_request(-1, mode_height)
-        self.two_mode_btn.set_size_request(-1, mode_height)
-        self.tree_mode_btn.set_size_request(-1, mode_height)
+        self.customized_mode_btn.connect("clicked", self.__on_customized_mode_btn_clicked)
+        self.mode_height = 25
+        self.one_mode_btn.set_size_request(-1, self.mode_height)
+        self.two_mode_btn.set_size_request(-1, self.mode_height)
+        self.tree_mode_btn.set_size_request(-1, self.mode_height)
+        self.customized_mode_btn.set_size_request(-1, self.mode_height)
         # init bottom widgets
         self.bottom_line_ali = gtk.Alignment(1.0, 1.0, 1.0, 1.0)
         self.bottom_line_ali.set_padding(5, 5, 0, 0)
@@ -76,6 +76,7 @@ class PowerGui(gtk.VBox):
         self.pack_start(self.one_mode_btn, False, False)
         self.pack_start(self.two_mode_btn, False, False)
         self.pack_start(self.tree_mode_btn, False, False)
+        self.pack_start(self.customized_mode_btn, False, False)
         self.pack_start(self.bottom_line_ali, False, False)
         self.pack_start(self.click_btn, False, False)
 
@@ -96,13 +97,17 @@ class PowerGui(gtk.VBox):
     def tree_mode_btn_clicked(self, widget):
         self.set_mode_bit(widget)
 
+    def __on_customized_mode_btn_clicked(self, widget):
+        self.set_mode_bit(widget)
+
     def set_mode_bit(self, widget):
         self.one_mode_btn.text_color = "#000000" 
         self.two_mode_btn.text_color = "#000000"
         self.tree_mode_btn.text_color = "#000000"
+        self.customized_mode_btn.text_color = "#000000"
         self.one_mode_btn.queue_draw()
         self.two_mode_btn.queue_draw()
         self.tree_mode_btn.queue_draw()
+        self.customized_mode_btn.queue_draw()
         # set press color.
         widget.text_color = "#3da1f7"
-
