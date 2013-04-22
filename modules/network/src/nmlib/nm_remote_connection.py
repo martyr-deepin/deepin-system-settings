@@ -87,6 +87,7 @@ class NMRemoteConnection(NMObject, NMConnection):
             if self.secret_setting_name != None and self.secret_method != None:
                 secret_agent.agent_save_secrets(self.object_path, self.secret_setting_name, self.secret_method)
 
+            self.check_setting_commit()
             self.dbus_interface.Update(self.settings_dict, reply_handler = self.update_finish, error_handler = self.update_error)
             # print secret_agent.agent_get_secrets(self.object_path, self.secret_setting_name, self.secret_method)
         except:

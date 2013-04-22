@@ -164,10 +164,10 @@ class PPTPConf(gtk.VBox):
 
         pptp_table = gtk.Table(7, 4, False)
 
-        ssid_label = Label(_("Setting Name:"),
+        name_label = Label(_("Setting Name:"),
                                enable_select=False,
                                enable_double_click=False)
-        ssid_label.set_can_focus(False)
+        name_label.set_can_focus(False)
         gateway_label = Label(_("Gateway:"),
                                enable_select=False,
                                enable_double_click=False)
@@ -192,15 +192,15 @@ class PPTPConf(gtk.VBox):
         radio_box.pack_start(self.l2tp_radio, False, False)
         #pack labels
         pptp_table.attach(style.wrap_with_align(radio_box, align="left"), 2,4, 0, 1)
-        pptp_table.attach(style.wrap_with_align(ssid_label, width=self.LEFT_PADDING), 0, 2, 1, 2)
+        pptp_table.attach(style.wrap_with_align(name_label, width=self.LEFT_PADDING), 0, 2, 1, 2)
         pptp_table.attach(style.wrap_with_align(gateway_label, width=self.LEFT_PADDING), 0, 2 , 2, 3)
         pptp_table.attach(style.wrap_with_align(user_label, width=self.LEFT_PADDING), 0, 2, 3, 4)
         pptp_table.attach(style.wrap_with_align(password_label, width=self.LEFT_PADDING), 0, 2, 4, 5)
         #pptp_table.attach(style.wrap_with_align(nt_domain_label), 0, 2, 5, 6)
 
         # entries
-        self.ssid_entry = InputEntry()
-        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.name_entry = InputEntry()
+        self.name_entry.set_size(self.ENTRY_WIDTH, 22)
 
         self.gateway_entry = InputEntry()
         self.gateway_entry.set_size(self.ENTRY_WIDTH,22)
@@ -216,7 +216,7 @@ class PPTPConf(gtk.VBox):
         self.nt_domain_entry.set_size(self.ENTRY_WIDTH, 22)
 
         #pack entries
-        pptp_table.attach(style.wrap_with_align(self.ssid_entry, align="left"), 2, 4, 1, 2)
+        pptp_table.attach(style.wrap_with_align(self.name_entry, align="left"), 2, 4, 1, 2)
         pptp_table.attach(style.wrap_with_align(self.gateway_entry, align="left"), 2, 4, 2, 3)
         pptp_table.attach(style.wrap_with_align(self.user_entry, align="left"), 2, 4, 3, 4)
         pptp_table.attach(style.wrap_with_align(self.password_entry, align="left"), 2, 4, 4, 5)
@@ -245,7 +245,7 @@ class PPTPConf(gtk.VBox):
         self.add(table_align)
         self.show_all()
         self.refresh()
-        self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
+        self.name_entry.entry.connect("changed", self.entry_changed, "name")
         self.gateway_entry.entry.connect("changed", self.entry_changed, "gateway")
         self.user_entry.entry.connect("changed", self.entry_changed, "user")
         self.password_entry.entry.connect("changed", self.entry_changed, "password")
@@ -261,13 +261,13 @@ class PPTPConf(gtk.VBox):
     def refresh(self):
         #print ">>>",self.vpn_setting.data
         #print self.vpn_setting.data
-        ssid = self.connection.get_setting("connection").id
+        name = self.connection.get_setting("connection").id
         gateway = self.vpn_setting.get_data_item("gateway")
         user = self.vpn_setting.get_data_item("user")
         domain = self.vpn_setting.get_data_item("domain")
 
         if type(self.connection) == NMRemoteConnection:
-            self.ssid_entry.set_text(ssid)
+            self.name_entry.set_text(name)
 
         if gateway:
             self.gateway_entry.set_text(gateway)
@@ -304,15 +304,14 @@ class PPTPConf(gtk.VBox):
 
     def entry_changed(self, widget, content, item):
         text = content
-        if item == "ssid":
+        if item == "name":
             self.connection.get_setting("connection").id = content
 
         if text:
             if item == "password":
                 self.vpn_setting.set_secret_item(item, text)
-            else:
+            elif item != "name":
                 self.vpn_setting.set_data_item(item, text)
-
             
         else:
             if item == "password":
@@ -687,7 +686,7 @@ class PPPConf(gtk.VBox):
 
     def entry_focus_out_cb(self, widget, event, key):
         text = widget.get_text()
-        if text:
+        if text and key != "name":
             self.vpn_setting.set_data_item(key, text)
         else:
             self.vpn_setting.delete_data_item(key)
@@ -695,7 +694,7 @@ class PPPConf(gtk.VBox):
         if string == "":
             print key,"entry is empty"
             self.vpn_setting.delete_data_item(key)
-        else:
+        elif key != "name":
             self.vpn_setting.set_data_item(key, string)
 
     def check_button_cb(self, widget, key):
@@ -733,7 +732,7 @@ class PPPConf(gtk.VBox):
             else:
                 self.vpn_setting.delete_data_item("lcp_echo_failure")
                 self.vpn_setting.delete_data_item("lcp_echo_interval")
-        else:
+        elif key != "name":
             if active:
                 self.vpn_setting.set_data_item(key, "yes")
             else:
@@ -741,7 +740,7 @@ class PPPConf(gtk.VBox):
     
     def click_mppe_callback(self, widget, key):
         active = widget.get_active()
-        if active:
+        if active and key != "name":
             self.vpn_setting.set_data_item(key, "yes")
             self.set_group_active(False)
             self.set_group_sensitive(False)
