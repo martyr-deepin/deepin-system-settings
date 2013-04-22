@@ -33,6 +33,7 @@ from ui.add_page import AddPage
 from module_frame import ModuleFrame
 from constant import PAGE_WIDTH, PAGE_HEIGHT
 from helper import event_manager
+from theme_manager import theme_manager
 from nls import _
 
 class DeepinIndividuation(object):
@@ -43,8 +44,10 @@ class DeepinIndividuation(object):
         
         # Init theme datas.
         self.__init_data()
-        
-        self.module_frame = ModuleFrame(self.config_file)
+        argv = ""
+        for theme in theme_manager.get_user_themes() + theme_manager.get_system_themes():
+            argv += theme.get_name() + ";"
+        self.module_frame = ModuleFrame(self.config_file, argv)
         
         # Init slider.
         self.slider = HSlider()
@@ -82,7 +85,6 @@ class DeepinIndividuation(object):
         self.module_frame.run()        
 
     def __init_data(self):
-        from theme_manager import theme_manager
         theme_manager.load()
         theme_manager.untitled_theme(theme_manager.get_default_theme())
     
@@ -97,7 +99,19 @@ class DeepinIndividuation(object):
                 
         elif message_type == "show_again":
             self.slider.set_to_page(self.theme_page)
-            self.module_frame.send_module_info("DEBUG")
+            self.module_frame.send_module_info()
+
+        elif message_type == "switch-theme":
+            theme = None
+
+            for item in theme_manager.get_user_themes() + theme_manager.get_system_themes():
+                if item.get_name() == message_content:
+                    theme = item
+                    break
+
+            if theme:
+                print "DEBUG", theme
+                event_manager.emit("theme-detail", theme)
 
         elif message_type == "exit":
             self.module_frame.exit()

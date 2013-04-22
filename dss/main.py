@@ -26,6 +26,9 @@ from constant import APP_DBUS_NAME, APP_OBJECT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT
 from theme import app_theme
 from dtk.ui.application import Application
 from dtk.ui.slider import HSlider
+from dtk.ui.theme import ui_theme
+from dtk.ui.draw import draw_text, draw_vlinear
+from dtk.ui.treeview import TreeItem
 from dtk.ui.breadcrumb import Crumb
 from deepin_utils.ipc import is_dbus_name_exists
 from search_page import SearchPage
@@ -97,6 +100,62 @@ def call_module_by_name(module_name, module_dict, slider, content_page_info, for
                              force_direction, 
                              module_uid)
 
+class ThemeItem(TreeItem):
+    ITEM_HEIGHT = 20
+    ITEM_WIDTH = 100
+    
+    def __init__(self, name):
+        TreeItem.__init__(self)
+        self.name = name
+
+    def __render_name(self, cr, rect):                                          
+        font_color = ui_theme.get_color("menu_font").get_color()
+        '''
+        cr.set_source_rgb(1, 1, 1)                                              
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                   
+        cr.fill()
+        '''
+        if self.is_hover:                                                       
+            # Draw background.                                                  
+            draw_vlinear(cr, rect.x, rect.y, rect.width, rect.height,           
+                         ui_theme.get_shadow_color("menu_item_select").get_color_info())
+            font_color = ui_theme.get_color("menu_select_font").get_color()
+                                                                                
+        draw_text(cr,                                                           
+                  self.name,                                       
+                  rect.x + 10,                                                   
+                  rect.y,                                                       
+                  self.ITEM_WIDTH,                                               
+                  rect.height, 
+                  text_color=font_color)
+
+    def button_press(self, column, offset_x, offset_y):
+        send_message("individuation", "switch-theme", self.name)
+
+    def get_height(self):
+        return self.ITEM_HEIGHT
+
+    def get_width(self):                                                
+        return self.ITEM_WIDTH                                  
+    
+    def get_column_widths(self):
+        return [self.ITEM_WIDTH]
+
+    def get_column_renders(self):                                               
+        return [self.__render_name]                                             
+
+    def unhover(self, column, offset_x, offset_y):                              
+        self.is_hover = False                                                   
+                                                                                
+        if self.redraw_request_callback:                                        
+            self.redraw_request_callback(self)                                  
+                                                                                
+    def hover(self, column, offset_x, offset_y):                                
+        self.is_hover = True                                                    
+                                                                                
+        if self.redraw_request_callback:                                        
+            self.redraw_request_callback(self)
+
 class DBusService(dbus.service.Object):
     def __init__(self, 
                  action_bar, 
@@ -130,14 +189,18 @@ class DBusService(dbus.service.Object):
                 content_page.add_plug_id(plug_id)
             elif message_type == "send_module_info":
                 (crumb_index, (module_id, crumb_name), argv) = message_content
-                action_bar.bread.add(Crumb(crumb_name, None))
+                if argv == "":
+                    action_bar.bread.add(Crumb(crumb_name, None))
+                else:
+                    menu_items = [ThemeItem(x) for x in argv.split(';') if x.strip()]
+                    action_bar.bread.add(Crumb(crumb_name, menu_items))
                 
                 backward_module_id, forward_module_id = record_module_history(module_id)
                 self.__set_ward(backward_module_id, forward_module_id)
             elif message_type == "send_submodule_info":
                 (crumb_index, crumb_name, module_id) = message_content
-                action_bar.bread.add(Crumb(crumb_name, None))
-                
+                action_bar.bread.remove_node_after_index(1)
+                action_bar.bread.add(Crumb(crumb_name, None)) 
                 backward_module_id, forward_module_id = record_module_history(module_id)
                 self.__set_ward(backward_module_id, forward_module_id)
             elif message_type == "change_crumb":

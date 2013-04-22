@@ -57,7 +57,7 @@ class ModuleFrame(gtk.Plug):
     class docs
     '''
 	
-    def __init__(self, module_config_path):
+    def __init__(self, module_config_path, argv=""):
         '''
         init docs
         '''
@@ -67,6 +67,7 @@ class ModuleFrame(gtk.Plug):
         self.module_config = Config(self.module_config_path)
         self.module_config.load()
         self.module_id = self.module_config.get("main", "id")
+        self.argv = argv
         
         # WARING: only use once in one process
         DBusGMainLoop(set_as_default=True) 
@@ -141,9 +142,8 @@ class ModuleFrame(gtk.Plug):
     def handle_dbus_error(self, *error):
         #print "%s (error): %s" % (self.module_dbus_name, str(error))
         pass
-    
         
-    def send_module_info(self, argv=""):
+    def send_module_info(self):
         name = self.module_config.get("name", "zh_CN")
         if len(locale.getdefaultlocale()):
             if locale.getdefaultlocale()[0].find("zh_") != 0:
@@ -155,7 +155,7 @@ class ModuleFrame(gtk.Plug):
                           (1, 
                            (self.module_config.get("main", "id"), 
                             name), 
-                           argv))
+                           self.argv))
         self.send_message("send_plug_id", (self.module_id, self.get_id()))
         
     def send_submodule_crumb(self, crumb_index, crumb_name):
