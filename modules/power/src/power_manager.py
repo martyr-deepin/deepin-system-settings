@@ -184,7 +184,7 @@ class PowerManager:
             return 0
         elif current_plan == "saving":
             return 1
-        elif current_plan == "high_performance":
+        elif current_plan == "high-performance":
             return 2
         else:
             return 3
@@ -196,7 +196,7 @@ class PowerManager:
         elif value == 1:
             current_plan = "saving"
         elif value == 2:
-            current_plan = "high_performance"
+            current_plan = "high-performance"
         else:
             current_plan = "customized"
         
