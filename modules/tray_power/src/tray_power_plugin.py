@@ -32,7 +32,6 @@ except ImportError:
 
 
 POWER_SETTING_GSET = "org.gnome.settings-daemon.plugins.power"
-XRANDR_SETTINGS_GSET = "org.gnome.settings-daemon.plugins.xrandr"
 RUN_COMMAND = "deepin-system-settings power"
 
 # dbus string values.
@@ -44,7 +43,8 @@ ORG_UPOWER_DEVICE = "org.freedesktop.Upower.Device"
 
 class TrayPower(object):
     def __init__(self):
-        self.gui = PowerGui()
+        self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
+        self.gui = PowerGui(self.power_set)
         self.gui.click_btn.connect("clicked", self.click_btn_clicked_event)
         try:
             self.__init_dbus_inter()
@@ -52,8 +52,8 @@ class TrayPower(object):
             print "traypower[error]:", e
             self.power_inter = None
             self.power_proper = None
-        self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.power_set.connect("changed", self.power_set_changed)
+        self.__get_current_plan()
 
     def click_btn_clicked_event(self, widget):
         self.this.hide_menu()
@@ -106,13 +106,32 @@ class TrayPower(object):
         except:
             return False
 
+    def __get_current_plan(self):
+        current_plan = self.power_set.get_string("current-plan")            
+        if current_plan == "default":                                       
+            self.gui.set_mode_bit(self.gui.one_mode_btn)                    
+        elif current_plan == "saving":                                      
+            self.gui.set_mode_bit(self.gui.two_mode_btn)                    
+        elif current_plan == "high-performance":                            
+            self.gui.set_mode_bit(self.gui.tree_mode_btn)                  
+        elif current_plan == "customized":                                  
+            self.gui.set_mode_bit(self.gui.customized_mode_btn)             
+        else:                                                               
+            pass                                                            
+
     def power_set_changed(self, key):
         if key == "show-tray":
             self.visible_power_tray()
-        elif key == "percentage":
+            return
+
+        if key == "percentage":
             value = self.power_set.get_double("percentage")
             self.update_power_icon(int(value))
             self.modify_battery_icon(int(value))
+            return
+
+        if key == "current-plan":
+            self.__get_current_plan()
 
     def visible_power_tray(self):
         show_value = self.power_set.get_boolean("show-tray")

@@ -40,7 +40,7 @@ from xml.dom import minidom
 from deepin_utils.process import run_command
 
 class DisplayManager:
-    BIG_NUM = 2147483647
+    BIG_NUM = 0
     SESSION_NAME = "deepin"
     
     def __init__(self):

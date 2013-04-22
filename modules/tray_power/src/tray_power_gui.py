@@ -36,8 +36,9 @@ HSEPARATOR_COLOR = [(0,   ("#777777", 0.0)),
                     (1,   ("#777777", 0.0))]
 
 class PowerGui(gtk.VBox):
-    def __init__(self):
+    def __init__(self, power_settings):
         gtk.VBox.__init__(self)
+        self.power_settings = power_settings
         self.hbox = gtk.HBox()
         # init top widgets.
         self.icon = vtk_theme.name.get_image("power/power_icon.png") 
@@ -90,15 +91,19 @@ class PowerGui(gtk.VBox):
 
     def one_mode_btn_clicked(self, widget):
         self.set_mode_bit(widget)
+        self.power_settings.set_string("current-plan", "default")
 
     def two_mode_btn_clicked(self, widget):
         self.set_mode_bit(widget)
+        self.power_settings.set_string("current-plan", "saving")
 
     def tree_mode_btn_clicked(self, widget):
         self.set_mode_bit(widget)
+        self.power_settings.set_string("current-plan", "high-performance")
 
     def __on_customized_mode_btn_clicked(self, widget):
         self.set_mode_bit(widget)
+        self.power_settings.set_string("current-plan", "customized")
 
     def set_mode_bit(self, widget):
         self.one_mode_btn.text_color = "#000000" 

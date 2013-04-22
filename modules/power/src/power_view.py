@@ -241,9 +241,27 @@ class PowerView(gtk.VBox):
         if key == "sleep-display-ac" or key == "sleep-display-battery":
             self.close_monitor_combo.set_select_index(self.power_manager.get_close_monitor(self.wait_duration_items))
             return
-        
+       
+        if key == "sleep-inactive-ac-timeout" or key == "sleep-inactive-battery-timeout":
+            self.suspend_combo.set_select_index(self.power_manager.get_suspend_status(self.wait_duration_items))
+            return
+
         if key == "percentage":
             self.percentage_progressbar.progress_buffer.progress = self.power_manager.power_settings.get_double("percentage")
+            return
+
+        if key == "current-plan":
+            current_plan = self.power_manager.power_settings.get_string("current-plan")
+            if current_plan == "default":
+                self.power_plan_combo.set_select_index(self.power_manager.default)
+            elif current_plan == "saving":
+                self.power_plan_combo.set_select_index(self.power_manager.saving)
+            elif current_plan == "high-performance":
+                self.power_plan_combo.set_select_index(self.power_manager.high_performance)
+            elif current_plan == "customized":
+                self.power_plan_combo.set_select_index(self.power_manager.customized)
+            else:
+                pass
             return
 
     def __handle_dbus_replay(self, *reply):                                     
