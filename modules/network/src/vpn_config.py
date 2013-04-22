@@ -135,7 +135,7 @@ class Sections(gtk.Alignment):
 
     def show_more_options(self, widget):
         widget.destroy()
-        self.ipv4 = SettingSection(_("Ipv6 setting"), always_show=True)
+        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
         self.ipv4.load([IPV4Conf(self.connection, self.set_button)])
         ppp = SettingSection(_("PPP setting"), always_show=True)
         ppp.load([PPPConf()])
