@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2011 ~ 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -20,17 +20,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#from dtk.ui.init_skin import init_skin
-#from dtk.ui.utils import get_parent_dir
-#import os
-
-#app_theme = init_skin(
-    #"deepin-application-associate-settings", 
-    #"1.0",
-    #"01",
-    #os.path.join(get_parent_dir(__file__, 2), "skin"),
-    #os.path.join(get_parent_dir(__file__, 2), "theme"),
-    #)
 import dss
 from dtk.ui.tab_window import TabBox
 from dtk.ui.label import Label
@@ -48,23 +37,11 @@ from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, FRAME_TOP_PADDING
 from nls import _
 
 class AppMain(gtk.Alignment):
-
     def __init__(self):
         gtk.Alignment.__init__(self, 0, 0, 0, 0)
         self.set_padding(FRAME_TOP_PADDING, 0, 0, 0)
-        #style.set_main_window(self, True)
         self.add(AppAssoView())
-
         style.draw_background_color(self)
-
-        #self.connect("expose-event", self.expose_event)
-
-    #def expose_event(self, widget, event):
-        #cr = widget.window.cairo_create()
-        #rect = widget.allocation
-        #cr.set_source_rgb( 1, 1, 1) 
-        #cr.rectangle(rect.x, rect.y, rect.width, rect.height)
-        #cr.fill()
 
 class AppAssoView(TabBox):
     '''
@@ -78,17 +55,12 @@ class AppAssoView(TabBox):
         TabBox.__init__(self)
         self.set_size_request(800, 600)
         self.draw_title_background = self.draw_tab_title_background
-        #self.set_size_request(722, 356)
-        
         self.app_box = AppView()
         self.autorun_box = MediaView()
         self.boot_box = SessionView()
-
         self.add_items([(_("Application"), self.app_box), 
                         (_("Media"), self.autorun_box), 
                         (_("Autostart"), self.boot_box)])
-
-        #self.connect("expose-event", self.expose_outline, ["top"])
 
     def expose_outline(self, widget, event, exclude):
         cr = widget.window.cairo_create()

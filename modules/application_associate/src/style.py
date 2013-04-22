@@ -41,12 +41,12 @@ def set_table(table):
     #table.set_row_spacings(8)
     table.set_col_spacings(BETWEEN_SPACING)
 
-def wrap_with_align(widget, align="right", width=-1):
+def wrap_with_align(widget, align="right", width=-1, left=1):
     if align is "left":
         align = gtk.Alignment(0, 0.5, 1, 0)
     elif align is "right":
         align = gtk.Alignment(1, 0.5, 0, 0)
-        align.set_padding(0,0, 1, 0)
+    align.set_padding(0, 0, left, 0)
     align.set_size_request(width, CONTAINNER_HEIGHT)
     align.add(widget)
     return align

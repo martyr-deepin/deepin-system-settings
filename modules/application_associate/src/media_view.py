@@ -1,6 +1,25 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.                                        
+#               2012 ~ 2013 Zhai Xiang                                          
+#                                                                               
+# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>                            
+# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>                            
+#                                                                               
+# This program is free software: you can redistribute it and/or modify          
+# it under the terms of the GNU General Public License as published by          
+# the Free Software Foundation, either version 3 of the License, or             
+# any later version.                                                            
+#                                                                               
+# This program is distributed in the hope that it will be useful,               
+# but WITHOUT ANY WARRANTY; without even the implied warranty of                
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 
+# GNU General Public License for more details.                                  
+#                                                                               
+# You should have received a copy of the GNU General Public License             
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import CheckButton, Button
@@ -27,7 +46,7 @@ class MediaView(gtk.VBox):
 
         table = gtk.Table(8, 3, False)
 
-        #info_label = Label("您可以选择插入每种媒体或设备时的后续操作")
+        info_label = Label(_("You can choose the operation after plugining media or device"))
 
         cd_label = Label(_("CD"))
         dvd_label = Label(_("DVD"))
@@ -39,7 +58,8 @@ class MediaView(gtk.VBox):
                         (_("ask"), "ask"),
                         (_("do nothing"), "do_nothing"),
                         (_("open folder"),"open_folder")]
-        self.auto_check = CheckButton(_("apply auto play for all media and devices"))
+        self.auto_mount = CheckButton(_("apply auto mount for all media and devices"))
+        self.auto_mount_open = CheckButton(_("apply auto open for all media and devices"))
         self.cd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.player= ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
@@ -49,19 +69,20 @@ class MediaView(gtk.VBox):
         self.more_option = Button(_("more option"))
         #self.more_option.set_size_request( 30, 22)
 
-        #table.attach(style.wrap_with_align(info_label, width=self.LEFT_WIDTH), 0, 3, 0, 1)
-        table.attach(style.wrap_with_align(cd_label, width=self.LEFT_WIDTH), 0, 1, 2, 3)
-        table.attach(style.wrap_with_align(dvd_label, width=self.LEFT_WIDTH), 0, 1, 3, 4)
-        table.attach(style.wrap_with_align(player_label, width=self.LEFT_WIDTH), 0, 1, 4, 5)
-        table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 5, 6)
-        table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
+        table.attach(style.wrap_with_align(info_label, width=self.LEFT_WIDTH), 0, 3, 0, 1)
+        table.attach(style.wrap_with_align(cd_label, width=self.LEFT_WIDTH), 0, 1, 4, 5)
+        table.attach(style.wrap_with_align(dvd_label, width=self.LEFT_WIDTH), 0, 1, 5, 6)
+        table.attach(style.wrap_with_align(player_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
+        table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 7, 8)
+        table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 8, 9)
         
-        #table.attach(style.wrap_with_align(self.auto_check), 0, 3, 1, 2)
-        table.attach(style.wrap_with_align(self.cd), 1, 3, 2, 3)
-        table.attach(style.wrap_with_align(self.dvd), 1, 3, 3, 4)
-        table.attach(style.wrap_with_align(self.player), 1, 3, 4, 5)
-        table.attach(style.wrap_with_align(self.photo), 1, 3, 5, 6)
-        table.attach(style.wrap_with_align(self.software), 1, 3, 6, 7)
+        table.attach(style.wrap_with_align(self.auto_mount, align = "left", left = 180), 0, 3, 1, 2)
+        table.attach(style.wrap_with_align(self.auto_mount_open, "left", left = 180), 0, 3, 2, 3)
+        table.attach(style.wrap_with_align(self.cd), 1, 3, 4, 5)
+        table.attach(style.wrap_with_align(self.dvd), 1, 3, 5, 6)
+        table.attach(style.wrap_with_align(self.player), 1, 3, 6, 7)
+        table.attach(style.wrap_with_align(self.photo), 1, 3, 7, 8)
+        table.attach(style.wrap_with_align(self.software), 1, 3, 8, 9)
         #table.attach(style.wrap_with_align(self.more_option), 2, 3, 7, 8)
 
         # UI style
@@ -78,11 +99,13 @@ class MediaView(gtk.VBox):
         if self.media_handle.autorun_never:
             for combo in self.all_app_dict:
                 combo.set_sensitive(False)
-                self.auto_check.set_active(False)
+                self.auto_mount.set_active(False)
         else:
             for combo in self.all_app_dict:
                 combo.set_sensitive(True)
-                self.auto_check.set_active(True)
+                self.auto_mount.set_active(True)
+
+        self.auto_mount_open.set_active(self.media_handle.automount_open)
 
         self.connect_signal_to_combos()
 
@@ -110,7 +133,8 @@ class MediaView(gtk.VBox):
     def connect_signal_to_combos(self):
         for combo in self.all_app_dict:
             combo.connect("item-selected", self.change_autorun_callback)
-        self.auto_check.connect("toggled", self.autorun_toggle_cb)
+        self.auto_mount.connect("toggled", self.automount_toggle_cb)
+        self.auto_mount_open.connect("toggled", self.automount_open_toggle_cb)
 
     def change_autorun_callback(self, widget, content, value, index):
         if type(value) is not str:
@@ -119,7 +143,7 @@ class MediaView(gtk.VBox):
         else:
             self.set_media_handler_preference(self.all_app_dict[widget], value)
 
-    def autorun_toggle_cb(self, widget):
+    def automount_toggle_cb(self, widget):
         self.media_handle.autorun_never = not widget.get_active()
         
         if widget.get_active():
@@ -128,6 +152,9 @@ class MediaView(gtk.VBox):
         else:
             for combo in self.all_app_dict:
                 combo.set_sensitive(False)
+
+    def automount_open_toggle_cb(self, widget):
+        self.media_handle.automount_open = widget.get_active()
 
     def set_media_handler_preference(self, x_content, action_name=None):
         if action_name == "ask":

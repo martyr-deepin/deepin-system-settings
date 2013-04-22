@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-17 21:44+0800\n"
+"POT-Creation-Date: 2013-04-22 13:45+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -15,111 +15,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../src/app_asso_view.py:87 ../src/search_keyword.py:29
-#: ../src/session_view.py:32
-msgid "Application"
-msgstr "应用程序"
-
-#: ../src/app_asso_view.py:88 ../src/search_keyword.py:30
-msgid "Media"
-msgstr "自动运行"
-
-#: ../src/app_asso_view.py:89 ../src/search_keyword.py:31
-msgid "Autostart"
-msgstr "启动项"
-
-#: ../src/media_view.py:32
-msgid "CD"
-msgstr "CD音频"
-
-#: ../src/media_view.py:33
-msgid "DVD"
-msgstr "DVD视频"
-
-#: ../src/media_view.py:34
-msgid "music player"
-msgstr "音乐播放器"
-
-#: ../src/media_view.py:35
-msgid "camera"
-msgstr "图片"
-
-#: ../src/media_view.py:36
-msgid "software"
-msgstr "软件"
-
-#: ../src/media_view.py:38
-msgid "other applications"
-msgstr "其他应用程序"
-
-#: ../src/media_view.py:39
-msgid "ask"
-msgstr "询问"
-
-#: ../src/media_view.py:40
-msgid "do nothing"
-msgstr "无操作"
-
-#: ../src/media_view.py:41
-msgid "open folder"
-msgstr "打开文件夹"
-
-#: ../src/media_view.py:42
-msgid "apply auto play for all media and devices"
-msgstr "为所有媒体和设备使用自动播放"
-
-#: ../src/media_view.py:49
-msgid "more option"
-msgstr "更多选项"
-
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
-msgstr "应用程序关联"
-
-#: ../src/session_view.py:32
-msgid "State"
-msgstr "状态"
-
-#: ../src/session_view.py:32
-msgid "Description"
-msgstr "描述"
-
-#: ../src/session_view.py:45
-msgid "New"
-msgstr "新建"
-
-#: ../src/session_view.py:46
-msgid "Delete"
-msgstr "删除"
-
-#: ../src/app_view.py:42
-msgid "web"
-msgstr "网络"
-
-#: ../src/app_view.py:43
-msgid "mail"
-msgstr "邮件"
-
-#: ../src/app_view.py:44
-msgid "editor"
-msgstr "文件"
-
-#: ../src/app_view.py:45
-msgid "music"
-msgstr "音乐"
-
-#: ../src/app_view.py:46
-msgid "video"
-msgstr "视频"
-
-#: ../src/app_view.py:47
-msgid "photo"
-msgstr "图片"
-
-#: ../src/app_view.py:48
-msgid "terminal"
-msgstr "终端"
 
 #: ../src/widget.py:44
 msgid "Autostart app"
@@ -156,3 +51,115 @@ msgstr "运行"
 #: ../src/treeview.py:126
 msgid "not running"
 msgstr "未运行"
+
+#: ../src/session_view.py:51 ../src/search_keyword.py:29
+#: ../src/app_asso_view.py:61
+msgid "Application"
+msgstr "应用程序"
+
+#: ../src/session_view.py:51
+msgid "Description"
+msgstr "描述"
+
+#: ../src/session_view.py:64
+msgid "New"
+msgstr "新建"
+
+#: ../src/session_view.py:65
+msgid "Delete"
+msgstr "删除"
+
+#: ../src/search_keyword.py:30 ../src/app_asso_view.py:62
+msgid "Media"
+msgstr "自动运行"
+
+#: ../src/search_keyword.py:31 ../src/app_asso_view.py:63
+msgid "Autostart"
+msgstr "启动项"
+
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr "应用程序关联"
+
+#: ../src/media_view.py:49
+msgid "You can choose the operation after plugining media or device"
+msgstr "您可以选择插入每种媒体或设备时的后续操作"
+
+#: ../src/media_view.py:51
+msgid "CD"
+msgstr "CD音频"
+
+#: ../src/media_view.py:52
+msgid "DVD"
+msgstr "DVD视频"
+
+#: ../src/media_view.py:53
+msgid "music player"
+msgstr "音乐播放器"
+
+#: ../src/media_view.py:54
+msgid "camera"
+msgstr "图片"
+
+#: ../src/media_view.py:55
+msgid "software"
+msgstr "软件"
+
+#: ../src/media_view.py:57
+msgid "other applications"
+msgstr "其他应用程序"
+
+#: ../src/media_view.py:58
+msgid "ask"
+msgstr "询问"
+
+#: ../src/media_view.py:59
+msgid "do nothing"
+msgstr "无操作"
+
+#: ../src/media_view.py:60
+msgid "open folder"
+msgstr "打开文件夹"
+
+#: ../src/media_view.py:61
+msgid "apply auto mount for all media and devices"
+msgstr "为所有媒体和设备使用自动挂载"
+
+#: ../src/media_view.py:62
+msgid "apply auto open for all media and devices"
+msgstr "为所有媒体和设备使用自动播放"
+
+#: ../src/media_view.py:69
+msgid "more option"
+msgstr "更多选项"
+
+#: ../src/app_view.py:42
+msgid "web"
+msgstr "网络"
+
+#: ../src/app_view.py:43
+msgid "mail"
+msgstr "邮件"
+
+#: ../src/app_view.py:44
+msgid "editor"
+msgstr "文件"
+
+#: ../src/app_view.py:45
+msgid "music"
+msgstr "音乐"
+
+#: ../src/app_view.py:46
+msgid "video"
+msgstr "视频"
+
+#: ../src/app_view.py:47
+msgid "photo"
+msgstr "图片"
+
+#: ../src/app_view.py:48
+msgid "terminal"
+msgstr "终端"
+
+#~ msgid "State"
+#~ msgstr "状态"

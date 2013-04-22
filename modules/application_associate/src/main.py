@@ -1,8 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012 Deepin, Inc.
-#               2012 Zhai Xiang
+# Copyright (C) 2012 ~ 2013 Deepin, Inc.
+#               2012 ~ 2013 Zhai Xiang
 # 
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
@@ -25,7 +25,7 @@ import os
 from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
-from app_asso_view import AppAssoView, AppMain
+from app_asso_view import AppMain
 from module_frame import ModuleFrame
 
 if __name__ == "__main__":
