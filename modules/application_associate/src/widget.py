@@ -46,7 +46,7 @@ class NewSessionDialog(DialogBox):
         self.cancel_callback = cancel_callback
         
         self.new_session = new_session
-        self.app_name = self.new_session.name()
+        self.app_name = self.new_session.name
         self.command = self.new_session.get_option("Exec")
         self.desc = self.new_session.get_option("Comment")
         
