@@ -210,7 +210,7 @@ class MobileSetting(Settings):
         #return self.setting_state[self.connection]
 class Sections(gtk.Alignment):
 
-    def __init__(self, connection, set_button):
+    def __init__(self, connection, set_button, settings_obj=None):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.set_padding(35, 0, 20, 0)
 
@@ -228,9 +228,9 @@ class Sections(gtk.Alignment):
         align.set_padding(0, 0, 225, 0)
         align.add(self.button)
         
-        basic.load([Broadband(connection, set_button), align])
-        self.ipv4.load([IPV4Conf(connection, set_button)])
-        self.ppp.load([PPPConf(connection, set_button)])
+        basic.load([Broadband(connection, set_button, settings_obj), align])
+        self.ipv4.load([IPV4Conf(connection, set_button, settings_obj)])
+        self.ppp.load([PPPConf(connection, set_button, settings_obj)])
 
         self.space = gtk.HBox()
         self.space.set_size_request(-1 ,30)
@@ -248,11 +248,14 @@ class Sections(gtk.Alignment):
 class Broadband(gtk.VBox):
     ENTRY_WIDTH = 222
     LEFT_PADDING = 210
-    def __init__(self, connection, set_button_callback):
+    def __init__(self, connection, set_button_callback, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("Broadband")
         self.connection = connection        
         self.set_button = set_button_callback
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
+
         # Init widgets
         self.table = gtk.Table(12, 4, False)
         
@@ -455,13 +458,16 @@ class Broadband(gtk.VBox):
 class PPPConf(gtk.VBox):
     TABLE_WIDTH = 20
     LEFT_PADDING = 210
-    def __init__(self, connection, set_button_callback):
+    def __init__(self, connection, set_button_callback, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("PPP")
         #self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
         self.connection = connection
         self.set_button = set_button_callback
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
+
         self.ppp_setting = self.connection.get_setting("ppp")
 
         self.method_title = TitleBar(None,

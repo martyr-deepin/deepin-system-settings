@@ -166,11 +166,13 @@ class NoSetting(gtk.VBox):
 
 class Sections(gtk.Alignment):
 
-    def __init__(self, connection, set_button, need_ssid=False):
+    def __init__(self, connection, set_button, need_ssid=False, settings_obj=None):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.set_padding(35, 0, 20, 0)
         self.connection = connection
         self.set_button = set_button
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
@@ -203,11 +205,14 @@ class Sections(gtk.Alignment):
 class Security(gtk.VBox):
     ENTRY_WIDTH = 222
 
-    def __init__(self, connection, set_button_cb, need_ssid=False):
+    def __init__(self, connection, set_button_cb, need_ssid=False, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("Security")
         self.connection = connection
         self.set_button = set_button_cb
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
+
         self.need_ssid = need_ssid
 
         self.add_ssid_entry()

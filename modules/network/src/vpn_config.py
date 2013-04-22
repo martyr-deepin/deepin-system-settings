@@ -109,10 +109,13 @@ class VPNSetting(Settings):
 
 class Sections(gtk.Alignment):
 
-    def __init__(self, connection, set_button):
+    def __init__(self, connection, set_button, settings_obj=None):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.connection = connection
         self.set_button = set_button
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
+
         self.set_padding(35, 0, 20, 0)
 
         self.main_box = gtk.VBox()
@@ -146,12 +149,15 @@ class Sections(gtk.Alignment):
 class PPTPConf(gtk.VBox):
     ENTRY_WIDTH = 222
     LEFT_PADDING = 210
-    def __init__(self, connection, module_frame, set_button_callback=None):
+    def __init__(self, connection, module_frame, set_button_callback=None, settings_obj=None):
         gtk.VBox.__init__(self)
         self.connection = connection
         self.tab_name = _("PPTP")
         self.module_frame = module_frame
         self.set_button = set_button_callback
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
+
         self.vpn_setting = self.connection.get_setting("vpn")
 
         # UI

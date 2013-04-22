@@ -92,11 +92,13 @@ class DSLSetting(Settings):
 
 class Sections(gtk.Alignment):
 
-    def __init__(self, connection, set_button):
+    def __init__(self, connection, set_button, settings_obj=None):
         gtk.Alignment.__init__(self, 0, 0 ,1, 0)
         self.set_padding(35, 0, 20, 0)
         self.connection = connection
         self.set_button = set_button
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
@@ -132,10 +134,12 @@ class Sections(gtk.Alignment):
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
     LEFT_PADDING = 210
-    def __init__(self, connection, set_button):
+    def __init__(self, connection, set_button, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("Wired")
         self.set_button = set_button
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
         
         ethernet_setting = connection.get_setting("802-3-ethernet")
 
@@ -219,11 +223,13 @@ class Wired(gtk.VBox):
 class DSLConf(gtk.VBox):
     LEFT_PADDING = 210
 
-    def __init__(self, connection, set_button_callback=None):
+    def __init__(self, connection, set_button_callback=None, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("DSL")
         self.connection = connection
         self.set_button = set_button_callback
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
         self.dsl_setting = self.connection.get_setting("pppoe")
 
         # UI
@@ -340,11 +346,13 @@ class DSLConf(gtk.VBox):
 
 class PPPConf(gtk.VBox):
     TABLE_WIDTH = 1
-    def __init__(self, connection, set_button_callback):
+    def __init__(self, connection, set_button_callback, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("PPP")
         self.connection = connection
         self.set_button = set_button_callback
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
         self.ppp_setting = self.connection.get_setting("ppp")
 
         

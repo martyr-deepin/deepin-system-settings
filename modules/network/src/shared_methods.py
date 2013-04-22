@@ -263,7 +263,7 @@ net_manager = NetManager()
 class Settings(object):
     def __init__(self, setting_list):
         self.setting_list = setting_list 
-        print "Settings:", setting_list
+        #print "Settings:", setting_list
         self.setting_state = {}
         self.settings = {}
         self.setting_lock = {}
