@@ -232,6 +232,11 @@ class NMConnection(gobject.GObject):
         ###delete invalid setting property before update
         info_dict = TypeConvert.dbus2py(self.settings_dict)
         try:
+            for key in info_dict.keys():
+                for key2 in info_dict[key]:
+                    if info_dict[key][key2] == None:
+                        del info_dict[key][key2]
+                    
             if info_dict["connection"]["type"] == "802-3-ethernet":
                 if not self.get_setting("802-3-ethernet").wired_valid():
                     ###or raise exception
@@ -239,7 +244,7 @@ class NMConnection(gobject.GObject):
                 self.get_setting("ipv4").adapt_ip4config_commit()
 
                 if "ipv6" in info_dict.iterkeys():
-                    self.get_setting("ipv6").apapt_ip6config_commit()
+                    self.get_setting("ipv6").apdpt_ip6config_commit()
 
             elif info_dict["connection"]["type"] == "802-11-wireless":
                 self.get_setting("802-11-wireless").adapt_wireless_commit()
@@ -250,7 +255,7 @@ class NMConnection(gobject.GObject):
                 self.get_setting("ipv4").adapt_ip4config_commit()
 
                 if "ipv6" in info_dict.iterkeys():
-                    self.get_setting("ipv6").apapt_ip6config_commit()
+                    self.get_setting("ipv6").adapt_ip6config_commit()
 
             elif info_dict["connection"]["type"] == "pppoe":
                 if not self.get_setting("802-3-ethernet").wired_valid():
@@ -258,7 +263,7 @@ class NMConnection(gobject.GObject):
                 self.get_setting("ipv4").adapt_ip4config_commit()
 
                 if "ipv6" in info_dict.iterkeys():
-                    self.get_setting("ipv6").apapt_ip6config_commit()
+                    self.get_setting("ipv6").adapt_ip6config_commit()
 
             elif info_dict["connection"]["type"] == "vpn":
                 pass
