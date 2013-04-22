@@ -527,7 +527,11 @@ class SettingItem(TreeItem):
     def set_connection_name(self, text):
         self.connection.get_setting("connection").id = text
         #if self.set_button:
-        Dispatcher.set_button("save", True)
+        #Dispatcher.set_button("save", True)
+        # connection的settings_obj属性在shared_methods的init_items里被设置
+        print "set_connection_name:", text, self.connection.settings_obj
+        if hasattr(self.connection, "settings_obj"):
+            self.connection.settings_obj.set_button("save", True)
 
     def unselect(self):
         self.is_select = False
@@ -540,6 +544,7 @@ class SettingItem(TreeItem):
         self.is_select = True
         if self.is_hover:
             self.hover(0,0,0)
+        # TODO 切换网络连接时更改按钮状态
         Dispatcher.change_setting(self.connection)
         if self.redraw_request_callback:
             self.redraw_request_callback(self)

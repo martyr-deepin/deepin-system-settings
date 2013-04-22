@@ -87,7 +87,7 @@ class FootBox(gtk.HBox):
     def set_button(self, widget, content, state):
         #print "DEBUG:set button", content, state, self.get_lock()
 
-        self.__setting_module.set_button(content, state)
+        #self.__setting_module.set_button(content, state)
         self.btn_save.set_label(_("save"))
 
         if self.get_lock():

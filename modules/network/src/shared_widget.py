@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+# 该模块好像没有再被使用！
+
 from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
 from nmlib.nm_utils import TypeConvert

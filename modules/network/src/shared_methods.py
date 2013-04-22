@@ -270,22 +270,41 @@ class Settings(object):
 
     def init_items(self, connection):
         self.connection = connection 
+        # 
+        self.connection.settings_obj = self
+        # 新增以下几个变量，用于set_button时判断输入的合法性。
+        self.mac_is_valid = True
+        self.ipv4_ip_is_valid = True
+        self.ipv4_dns_is_valid = True
+        self.ipv6_ip_is_valid = True
+        self.ipv6_dns_is_valid = True
+
         if connection not in self.settings:
             self.setting_lock[connection] = True
             #self.init_button_state(connection)
             setting_list = []
             for setting in self.setting_list:
-                s = setting(connection, self.set_button)
+                # 新增了settings_obj参数，方便
+                s = setting(connection, self.set_button, settings_obj=self)
                 setting_list.append((s.tab_name, s))
             self.settings[connection] = setting_list
         return self.settings[connection][1][1]
 
     #################
-    # TODO 输入合法性检查，再统一设置按钮状态
     def set_button(self, name, state):
-        Dispatcher.set_button(name, state)
-        self.setting_state[self.connection] = (name, state)
-        print "set button", name, state, self.connection
+        #print "mac_is_valid:", self.mac_is_valid, "ipv4:", self.ipv4_ip_is_valid, self.ipv4_dns_is_valid, "ipv6:", self.ipv6_ip_is_valid, self.ipv6_dns_is_valid
+        # 输入合法性检查，再统一设置按钮状态
+        if self.mac_is_valid and \
+                self.ipv4_ip_is_valid and \
+                self.ipv4_dns_is_valid and \
+                self.ipv6_ip_is_valid and \
+                self.ipv6_dns_is_valid:
+            Dispatcher.set_button(name, True)
+            self.setting_state[self.connection] = (name, True)
+        else:
+            Dispatcher.set_button(name, False)
+            self.setting_state[self.connection] = (name, False)
+        #print "set button", name, state, self.connection
     
     def set_lock(self, lock):
         self.setting_lock[self.connection] = lock

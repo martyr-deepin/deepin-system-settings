@@ -74,11 +74,13 @@ class WiredSetting(Settings):
 
 class Sections(gtk.Alignment):
 
-    def __init__(self, connection, set_button):
+    def __init__(self, connection, set_button, settings_obj=None):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.set_padding(35, 0, 20, 0)
         self.connection = connection
         self.set_button = set_button
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
 
         self.main_box = gtk.VBox()
         self.tab_name = "sfds"
@@ -91,7 +93,7 @@ class Sections(gtk.Alignment):
         align.set_padding(0, 0, 376, 0)
         align.add(button)
 
-        basic.load([Wired(self.connection, self.set_button), align])
+        basic.load([Wired(self.connection, self.set_button, settings_obj), align])
         self.main_box.pack_start(basic, False, False)
         self.add(self.main_box)
         # align.add(self.button)
@@ -100,8 +102,8 @@ class Sections(gtk.Alignment):
         widget.destroy()
         ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
         ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
-        ipv4.load([IPV4Conf(self.connection, self.set_button)])
-        ipv6.load([IPV6Conf(self.connection, self.set_button)])
+        ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
 
         self.main_box.pack_start(ipv4, False, False, 15)
         self.main_box.pack_start(ipv6, False, False)
@@ -110,13 +112,15 @@ class Sections(gtk.Alignment):
 class Wired(gtk.VBox):
     ENTRY_WIDTH = 222
 
-    def __init__(self, connection, set_button_callback=None):
+    def __init__(self, connection, set_button_callback=None, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("Wired")
         
         self.ethernet = connection.get_setting("802-3-ethernet")
         self.connection = connection
         self.set_button = set_button_callback
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
 
         self.__init_table()
         self.__init_signals()
@@ -152,6 +156,28 @@ class Wired(gtk.VBox):
             value = widget.get_value()
         else:
             value = widget.get_text()
+        setattr(self.ethernet, types, value)
+        # check mac address whether is valid
+        if self.settings_obj is None:
+            return
+        mac_address = self.mac_entry.entry.get_text()
+        cloned_mac_address = self.clone_entry.entry.get_text()
+        if (mac_address == "") or (TypeConvert.is_valid_mac_address(mac_address)):
+            mac_address_is_valid = True
+        else:
+            mac_address_is_valid = False
+        if (cloned_mac_address == "") or (TypeConvert.is_valid_mac_address(cloned_mac_address)):
+            cloned_mac_address_is_valid = True
+        else:
+            cloned_mac_address_is_valid = False
+        if mac_address_is_valid and cloned_mac_address_is_valid:
+            self.settings_obj.mac_is_valid = True
+        else:
+            self.settings_obj.mac_is_valid = False
+
+        # 统一调用shared_methods.Settings的set_button
+        self.settings_obj.set_button("save", True)
+        """
         if type(value) is str and value:
             if TypeConvert.is_valid_mac_address(value):
                 #widget.set_normal()
@@ -171,3 +197,4 @@ class Wired(gtk.VBox):
             setattr(self.ethernet, types, value)
             if self.connection.check_setting_finish():
                 self.set_button("save", True)
+        """
