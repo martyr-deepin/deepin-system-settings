@@ -97,6 +97,7 @@ class NMSecretAgent(NMObject):
         service = self.generate_service_name(get_cache().getobject(conn_path).settings_dict["connection"]["uuid"],
                                              setting_name, method)
         username = getpass.getuser()
+        print "agent_get_secrets"
         try:
             return keyring.get_password(service, username)
         except:
@@ -110,15 +111,11 @@ class NMSecretAgent(NMObject):
                                              setting_name, method)
         username = getpass.getuser()
         print "agent_save_secrets"
+        print get_cache().getobject(conn_path).settings_dict
+
         if setting_name == "vpn":
             password = get_cache().getobject(conn_path).settings_dict[setting_name]["secrets"][method]
         else:    
-            print "in agent save secrets"
-            print conn_path
-            print setting_name
-            print method
-            print get_cache().getobject(conn_path).settings_dict
-            print "\n\n\n"
             password = get_cache().getobject(conn_path).settings_dict[setting_name][method]
         try:
             keyring.set_password(service, username, password)
