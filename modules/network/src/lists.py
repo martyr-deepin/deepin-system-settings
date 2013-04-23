@@ -77,7 +77,6 @@ class GenItems(TreeItem):
 
         self.loading_pixbuf = app_theme.get_pixbuf("network/loading.png")
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
-        #self.check_out_pixbuf = app_theme.get_pixbuf("network/check_box-3.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
         self.check_hover_pixbuf = app_theme.get_pixbuf("network/check_box-4.png")
 
@@ -191,7 +190,6 @@ class GenItems(TreeItem):
     def click_cb(self):
         pass
 
-
 class LoadingThread(td.Thread):
     def __init__(self, widget):
         td.Thread.__init__(self)
@@ -205,9 +203,6 @@ class LoadingThread(td.Thread):
             self.widget.refresh_loading(position)
             time.sleep(0.1)
             position += 60
-        #except Exception, e:
-            #print "class LoadingThread got error %s" % e
-##################
 
 class WiredItem(GenItems):
     def __init__(self, device, font_size=DEFAULT_FONT_SIZE):
@@ -552,7 +547,6 @@ class HotspotItem(TreeItem):
         gap = (rect.height - IMG_WIDTH)/2
         draw_pixbuf(cr, self.jumpto_pixbuf.get_pixbuf(), rect.x + 10, rect.y + gap)   
 
-
     def set_connection_name(self, sdf):
         pass
 
@@ -710,7 +704,8 @@ class VPNItem(GenItems):
         GenItems.__init__(self, jumpto)                                         
                                                                                 
         self.connection = connection                                            
-        self.id = self.connection.get_setting("connection").id                  
+        self.id = self.connection.get_setting("connection").id
+        self.click_cb()
                                                                                 
         event_manager.add_callback("update-vpn-id", self.__on_update_id)            
                                                                                 
@@ -759,6 +754,7 @@ class Monitor(threading.Thread):
     def __init__(self, connection, stop_callback, active_callback):
         threading.Thread.__init__(self)
         self.setDaemon(True)
+        self.connection = connection
         self.stop_callback = stop_callback
         self.active_callback = active_callback
         from nmlib.nm_remote_settings import ThreadVPNSpec
@@ -774,24 +770,25 @@ class Monitor(threading.Thread):
                 self.active_callback()
             else:
                 self.stop_callback()
-        #from nmlib.nm_remote_settings import ThreadVPNSpec
-        #td = ThreadVPNSpec(self.connection, self.vpn_active_cb)
-        #td.start()
-        #if td.active:
-            #self.vpn_active_cb(self, td_active)
+        
+        '''
+        from nmlib.nm_remote_settings import ThreadVPNSpec
+        td = ThreadVPNSpec(self.connection, self.vpn_active_cb)
+        td.start()
+        if td.active:
+            self.vpn_active_cb(self, td_active)
     
-        #active_connections = nm_module.nmclient.get_active_connections()
-        #if active_connections:
-            #device_path = active_connections[0].get_devices()[0].object_path
-            #specific_path = active_connections[0].object_path
-            #active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
-                                           #device_path,
-                                           #specific_path)
-            ##active_object.connect("vpn-state-changed", self.vpn_state_changed)
-        #else:
-            #print "no active connection available"
-    
-
+        active_connections = nm_module.nmclient.get_active_connections()
+        if active_connections:
+            device_path = active_connections[0].get_devices()[0].object_path
+            specific_path = active_connections[0].object_path
+            active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
+                                           device_path,
+                                           specific_path)
+            active_object.connect("vpn-state-changed", self.vpn_state_changed)
+        else:
+            print "no active connection available"
+        '''
 
 class GeneralItem(TreeItem):
     CHECK_LEFT_PADDING = 10
@@ -963,11 +960,9 @@ class GeneralItem(TreeItem):
 
         self.redraw()
 
-
     def redraw(self):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
-
 
     def set_net_state(self, state):
         self.network_state = state
