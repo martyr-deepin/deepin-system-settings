@@ -16,7 +16,7 @@ from ipsettings import IPV4Conf
 from elements import SettingSection, TableAsm, DefaultToggle
 
 from shared_methods import Settings
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 
 import gtk
 
@@ -72,7 +72,7 @@ class DSLSetting(Settings):
                 Dispatcher.emit("dsl-redraw")
 
         Dispatcher.to_main_page()
-
+        event_manager.emit("update-dsl-id", connection.get_setting("connection").id)
         #Dispatcher.set_button("apply", True)
 
     def apply_changes(self, connection):

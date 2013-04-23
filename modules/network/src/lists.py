@@ -45,7 +45,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constant import *
 from nls import _
 from math import radians
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 
 #from settings_widget import LoadingThread
 import threading as td
@@ -632,6 +632,12 @@ class DSLItem(GenItems):
         self.connection = connection
         self.id = self.connection.get_setting("connection").id
 
+        event_manager.add_callback("update-dsl-id", self.__on_update_id)
+
+    def __on_update_id(self, name, obj, data):
+        self.id = data
+        self.redraw()
+    
     def render_id(self, cr, rect):
         self.render_background(cr, rect)
         (text_width, text_height) = get_content_size(self.id)
@@ -658,9 +664,7 @@ class DSLItem(GenItems):
 
     def click_cb(self):
         if net_manager.wired_device:
-
             device_path = net_manager.wired_device.object_path
-            #FIXME need to change device path into variables
             nm_module.nmclient.activate_connection_async(self.connection.object_path,
                                                device_path,
                                                "/")
@@ -701,26 +705,40 @@ class MobileItem(GenItems):
     def click_cb(self):
         self.device.auto_connect()
 
+class VPNItem(GenItems):                                                        
+    def __init__(self, connection, jumpto=None, font_size=DEFAULT_FONT_SIZE):   
+        GenItems.__init__(self, jumpto)                                         
+                                                                                
+        self.connection = connection                                            
+        self.id = self.connection.get_setting("connection").id                  
+                                                                                
+        event_manager.add_callback("update-vpn-id", self.__on_update_id)            
+                                                                                
+    def __on_update_id(self, name, obj, data):                                  
+        self.id = data                                                          
+        self.redraw()                                                           
+                                                                                
+    def render_id(self, cr, rect):                                              
+        self.render_background(cr, rect)                                        
+        (text_width, text_height) = get_content_size(self.id)                   
+        draw_text(cr, self.id, rect.x, rect.y, rect.width, rect.height,         
+                alignment = pango.ALIGN_LEFT)                                   
+                                                                                
+        with cairo_disable_antialias(cr):                                       
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))           
+            cr.set_line_width(1)                                                
+            if self.is_last:                                                    
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)       
+            cr.rectangle(rect.x, rect.y, rect.width, 1)                         
+            cr.fill()
 
-class VPNItem(DSLItem):
-
-    def __init__(self, connection, jumpto):
-        DSLItem.__init__(self,connection, jumpto)
-        self.connection = connection
+    def get_column_widths(self):                                                
+        return [self.CHECK_WIDTH, -1, self.JUMP_WIDTH]                          
+                                                                                
+    def get_column_renders(self):                                               
+        return [self.render_check, self.render_id, self.render_jumpto]
 
     def click_cb(self):
-        print "clicked"
-        #active_connections = nm_module.nmclient.get_active_connections()
-        #if active_connections:
-            #device_path = active_connections[0].get_devices()[0].object_path
-            #specific_path = active_connections[0].object_path
-            #active_object = nm_module.nmclient.activate_connection(self.connection.object_path,
-                                           #device_path,
-                                           #specific_path)
-            #self.vpn_active_cb(active_object)
-            #active_object.connect("vpn-state-changed", self.vpn_state_changed)
-        #else:
-            #print "no active connection available"
         self.set_net_state(1)
         monitor = Monitor(self.connection,
                           lambda:self.set_net_state(0),

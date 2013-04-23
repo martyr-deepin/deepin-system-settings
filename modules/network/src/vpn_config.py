@@ -15,7 +15,7 @@ from container import TitleBar
 from ipsettings import IPV4Conf
 from elements import SettingSection
 from shared_methods import Settings
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 
 import gtk
 from nls import _
@@ -50,6 +50,7 @@ class VPNSetting(Settings):
             Dispatcher.emit("vpn-redraw")
 
         Dispatcher.to_main_page()
+        event_manager.emit("update-vpn-id", connection.get_setting("connection").id)
         #Dispatcher.set_button("apply", True)
 
     def delete_request_redraw(self):

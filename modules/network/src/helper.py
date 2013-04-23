@@ -21,6 +21,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import gobject
 
+from events import EventManager                                                 
+event_manager = EventManager(use_logger=False)
+
 int = gobject.TYPE_INT
 obj = gobject.TYPE_PYOBJECT
 str = gobject.TYPE_STRING
