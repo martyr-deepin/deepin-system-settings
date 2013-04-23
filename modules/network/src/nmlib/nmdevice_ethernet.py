@@ -24,6 +24,7 @@ from nmdevice import NMDevice
 from nmcache import get_cache
 import time
 import threading
+from nm_utils import TypeConvert
 
 class ThreadWiredAuto(threading.Thread):
 
@@ -36,6 +37,11 @@ class ThreadWiredAuto(threading.Thread):
     def run(self):
         for conn in self.conns:
             if self.run_flag:
+                if conn.settings_dict["802-3-ethernet"]["mac-address"]:
+                    if TypeConvert.dbus2py(conn.settings_dict["802-3-ethernet"]["mac-address"]) != self.device.get_hw_address():
+                            continue
+                    else:
+                        pass
                 try:
                     nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
                     active_conn = nmclient.activate_connection(conn.object_path, self.device.object_path, "/")
