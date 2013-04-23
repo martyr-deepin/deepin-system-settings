@@ -111,7 +111,7 @@ class TrayBluetoothPlugin(object):
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
                                         self.__on_default_adapter_changed)
         self.width = DeviceItem.NAME_WIDTH
-        self.ori_height = 88
+        self.ori_height = 93
         self.height = self.ori_height
         self.device_items = []
 
