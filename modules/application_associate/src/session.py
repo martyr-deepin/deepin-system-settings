@@ -36,6 +36,7 @@ class AutoStart(object):
         self.file_name = None
         self.dir = get_user_config_dir()
         self.conf = ConfigParser.RawConfigParser()
+        self.conf.optionxform = str
         
         if file_path != None and os.path.exists(file_path):
             self.file_name = os.path.basename(file_path).split(".")[0]
@@ -71,6 +72,13 @@ class AutoStart(object):
     @property
     def comment(self):
         return self.get_locale_option("Comment")
+    
+    @property
+    def exec_(self):
+        try:
+            return self.conf.get(self.SECTION, "Exec")
+        except:
+            return None
 
     def has_gnome_auto(self):
         enable = self.get_option("X-GNOME-Autostart-enabled")
@@ -146,5 +154,5 @@ class SessionManager(object):
         auto_file = AutoStart()
         auto_file.set_option("Name", app_name)
         auto_file.set_option("Exec", exec_path)
-        auto_file.set_option("Comment" + self.locale(), comment)
+        auto_file.set_option("Comment", comment)
         return auto_file

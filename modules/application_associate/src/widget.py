@@ -97,9 +97,9 @@ class NewSessionDialog(DialogBox):
         self.name_entry.set_size(200, 22)
         self.exec_entry.set_size(200, 22)
         self.desc_entry.set_size(200, 22)
-        self.name_entry.entry.connect("changed", self.entry_changed, "Name")
-        self.exec_entry.entry.connect("changed", self.entry_changed, "Exec")
-        self.desc_entry.entry.connect("changed", self.entry_changed, "Comment")
+        # self.name_entry.entry.connect("changed", self.entry_changed, "Name")
+        # self.exec_entry.entry.connect("changed", self.entry_changed, "Exec")
+        # self.desc_entry.entry.connect("changed", self.entry_changed, "Comment")
 
         
         #entry_list = [name_entry, exec_entry, desc_entry]
@@ -154,6 +154,14 @@ class NewSessionDialog(DialogBox):
         '''
         Inernal fucntion to handle click confirm button.
         '''
+        name = self.name_entry.get_text()
+        exec_ = self.exec_entry.get_text()
+        comment = self.desc_entry.get_text()
+        
+        self.new_session.set_option("Name", name)
+        self.new_session.set_option("Exec", exec_)
+        self.new_session.set_option("Comment", comment)
+        
         if self.confirm_callback != None:
             self.confirm_callback(self.new_session)        
         
