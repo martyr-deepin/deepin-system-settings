@@ -239,11 +239,11 @@ class TrayGui(gtk.VBox):
                 # check this process is the preview window of deepin-media-player
                 if process_id != children_process[0].pid:
                     return None, True
-                ## check deepin-media-player whether enable mpris
-                #if stream_process_parent_obj.pid in self.mpris_list:
-                    #self.mpris_stream[stream_process_parent_obj.pid] = index
-                    #self.stream_mpris[index] = stream_process_parent_obj.pid
-                    #return None, True
+                # check deepin-media-player whether enable mpris
+                if stream_process_parent_obj.pid in self.mpris_list:
+                    self.mpris_stream[stream_process_parent_obj.pid] = index
+                    self.stream_mpris[index] = stream_process_parent_obj.pid
+                    return None, True
                 return "deepin-media-player", False
         if 'application.icon_name' in stream['proplist']:
             icon_name = stream['proplist']['application.icon_name']
