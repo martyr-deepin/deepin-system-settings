@@ -407,12 +407,6 @@ def application_focus_changed_cb(widget, event, tp):
     if preview_module_id:
         send_message(preview_module_id, "focus_changed", tp)
 
-def application_expose_cb(widget, event):
-    rect = widget.allocation
-    if rect.width != WINDOW_WIDTH or rect.height != WINDOW_HEIGHT:
-        if preview_module_id:
-            send_message(preview_module_id, "size_changed", "")
-
 if __name__ == "__main__":
     ops, args = getopt.getopt(sys.argv[1:], '')
     module_name = ""
@@ -431,7 +425,6 @@ if __name__ == "__main__":
     application = Application(resizable=False)
     application.window.connect("focus-out-event", application_focus_changed_cb, "o")
     application.window.connect("focus-in-event", application_focus_changed_cb, "i")
-    application.window.connect("expose-event", application_expose_cb)
 
     # Set application default size.
     application.window.set_geometry_hints(
