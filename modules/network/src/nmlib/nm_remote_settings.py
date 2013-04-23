@@ -560,7 +560,7 @@ class ThreadVPNSpec(threading.Thread):
     def run(self):
         nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
         for active_conn in nmclient.get_active_connections():
-            if self.run_flag:
+            if active_conn.get_state() == 2:
                 for device in active_conn.get_devices():
                     if self.run_flag:
                         try:
@@ -584,7 +584,7 @@ class ThreadVPNSpec(threading.Thread):
                     else:
                         break
             else:
-                break
+                continue
 
         return False
     

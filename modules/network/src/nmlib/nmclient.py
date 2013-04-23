@@ -269,6 +269,12 @@ class NMClient(NMObject):
         except:
             return []
 
+    def get_anti_vpn_active_connection(self):
+        try:
+            return filter(lambda x:x.get_vpn() != 1, self.get_active_connections())
+        except:
+            return []
+
     def get_vpn_active_connection(self):
         try:
             return filter(lambda x:x.get_vpn() == 1, self.get_active_connections())
