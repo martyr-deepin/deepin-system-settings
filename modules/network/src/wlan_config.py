@@ -179,9 +179,9 @@ class Sections(gtk.Alignment):
         basic = SettingSection(_("Basic"))
 
         if need_ssid:
-            security = Security(connection, set_button, need_ssid)
+            security = Security(connection, set_button, need_ssid, settings_obj=settings_obj)
         else:
-            security = Security(connection, set_button)
+            security = Security(connection, set_button, settings_obj=settings_obj)
         security.button.connect("clicked", self.show_more_options)
         basic.load([security])
 
