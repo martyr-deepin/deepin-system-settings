@@ -130,7 +130,7 @@ class Sections(gtk.Alignment):
         align.set_size_request(-1 , 30)
         align.add(self.button)
         
-        basic.load([PPTPConf(connection, set_button), align])
+        basic.load([PPTPConf(connection, set_button, settings_obj=self.settings_obj), align])
 
         self.main_box.pack_start(basic, False, False)
 
@@ -139,11 +139,11 @@ class Sections(gtk.Alignment):
     def show_more_options(self, widget):
         widget.destroy()
         self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
-        self.ipv4.load([IPV4Conf(self.connection, self.set_button)])
+        self.ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
         ppp = SettingSection(_("PPP setting"), always_show=True)
-        ppp.load([PPPConf()])
+        ppp.load([PPPConf(settings_obj=self.settings_obj)])
         Dispatcher.emit("vpn-type-change", self.connection)
-        self.main_box.pack_start(self.ipv4, False, False, 15 )
+        self.main_box.pack_start(self.ipv4, False, False, 15)
         self.main_box.pack_start(ppp, False, False)
 
 class PPTPConf(gtk.VBox):
@@ -251,12 +251,16 @@ class PPTPConf(gtk.VBox):
         self.password_entry.entry.connect("changed", self.entry_changed, "password")
         self.nt_domain_entry.entry.connect("changed", self.entry_changed, "domain")
 
-        if self.connection.check_setting_finish():
-            print "in vpn"
-            Dispatcher.set_button("save", True)
-        else:
-            print "in vpn"
-            Dispatcher.set_button("save", False)
+        #if self.connection.check_setting_finish():
+            #print "in vpn"
+            #Dispatcher.set_button("save", True)
+        #else:
+            #print "in vpn"
+            #Dispatcher.set_button("save", False)
+        ##############
+        is_valid = self.connection.check_setting_finish()
+        self.settings_obj.vpn_is_valid = is_valid
+        self.settings_obj.set_button("save", is_valid)
 
     def refresh(self):
         #print ">>>",self.vpn_setting.data
@@ -319,10 +323,14 @@ class PPTPConf(gtk.VBox):
             else:
                 self.vpn_setting.delete_data_item(item)
 
-        if self.connection.check_setting_finish():
-            Dispatcher.set_button("save", True)
-        else:
-            Dispatcher.set_button("save", False)
+        #if self.connection.check_setting_finish():
+            #Dispatcher.set_button("save", True)
+        #else:
+            #Dispatcher.set_button("save", False)
+        ##############
+        is_valid = self.connection.check_setting_finish()
+        self.settings_obj.vpn_is_valid = is_valid
+        self.settings_obj.set_button("save", is_valid)
     
     def radio_toggled(self, widget, service_type):
         if widget.get_active():
@@ -350,12 +358,15 @@ class PPPConf(gtk.VBox):
     OFFBUTTON = 1
 
     TABLE_WIDTH = 150
-    def __init__(self):
+    def __init__(self, settings_obj=None):
         gtk.VBox.__init__(self)
         
         #self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         #Dispatcher.set_button = set_button_callback
         #self.module_frame = module_frame
+
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
         
         self.method_title = TitleBar(None,
                                      _("Configure Method"),

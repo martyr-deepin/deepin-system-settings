@@ -112,7 +112,7 @@ class Sections(gtk.Alignment):
         align.set_size_request(-1 ,30)
         align.add(self.button)
         
-        basic.load([DSLConf(connection, set_button), align])
+        basic.load([DSLConf(connection, set_button, settings_obj=self.settings_obj), align])
 
         self.main_box.pack_start(basic, False, False)
 
@@ -123,9 +123,9 @@ class Sections(gtk.Alignment):
         wired = SettingSection(_("Wired"), always_show=True)
         ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
         ppp = SettingSection(_("PPP"), always_show=True)
-        wired.load([Wired(self.connection, self.set_button)])
-        ipv4.load([IPV4Conf(self.connection, self.set_button)])
-        ppp.load([PPPConf(self.connection, self.set_button)])
+        wired.load([Wired(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        ppp.load([PPPConf(self.connection, self.set_button, settings_obj=self.settings_obj)])
         #self.main_box.pack_start(self.space, False, False)
         self.main_box.pack_start(wired, False, False, 15)
         self.main_box.pack_start(ipv4, False, False)
@@ -336,13 +336,16 @@ class DSLConf(gtk.VBox):
     def save_changes(self, widget, value, types):
         if types == "ssid":
             self.connection.get_setting("connection").id = value
-            check_settings(self.connection, self.set_button)
-            return
-        if value:
-            setattr(self.dsl_setting, types, value)
         else:
-            delattr(self.dsl_setting, types)
-        check_settings(self.connection, self.set_button)
+            if value:
+                setattr(self.dsl_setting, types, value)
+            else:
+                delattr(self.dsl_setting, types)
+        #check_settings(self.connection, self.set_button)
+        ############
+        is_valid = self.connection.check_setting_finish()
+        self.settings_obj.dsl_is_valid = is_valid
+        self.settings_obj.set_button("save", is_valid)
 
 class PPPConf(gtk.VBox):
     TABLE_WIDTH = 1
@@ -571,7 +574,11 @@ class PPPConf(gtk.VBox):
                 setattr(self.ppp_setting, key, True)
             else:
                 setattr(self.ppp_setting, key, False)
-        check_settings(self.connection, self.set_button)
+        #check_settings(self.connection, self.set_button)
+        ##################
+        is_valid = self.connection.check_setting_finish()
+        self.settings_obj.ppp_is_valid = is_valid
+        self.settings_obj.set_button("save", is_valid)
 
         if key is "require_mppe":
             if active:
