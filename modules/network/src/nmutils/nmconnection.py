@@ -157,6 +157,12 @@ class NMConnection(gobject.GObject):
                         return False
         return True
 
+    def check_ip6_setting(self, info_dict):
+        if "ipv6" in info_dict.keys():
+            pass
+
+        return True
+
     def check_conn_setting(self, info_dict):
         if "connection" not in info_dict.keys():
             print "missing connection setting"
@@ -189,6 +195,21 @@ class NMConnection(gobject.GObject):
 
             if not self.check_ip4_setting(info_dict):
                 return False
+
+            if "mac-address" in info_dict["802-3-ethernet"].keys():
+                if not TypeConvert.is_valid_mac_address(info_dict["802-3-ethernet"]["mac-address"]):
+                    print "wired invalid mac address"
+                    return False
+
+            if "cloned-mac-address" in info_dict["802-3-ethernet"].keys():
+                if not TypeConvert.is_valid_mac_address(info_dict["802-3-ethernet"]["mac-address"]):
+                    print "wired invalid clone mac address"
+                    return False
+
+            if "duplex" in info_dict["802-3-ethernet"].keys():
+                if info_dict["802-3-ethernet"]["duplex"] not in ["full", "half"]:
+                    print "wired invalid duplex"
+                    return False
         return True
 
     def is_wireless_setting_ok(self, info_dict):
@@ -201,48 +222,69 @@ class NMConnection(gobject.GObject):
             if not self.check_ip4_setting(info_dict):
                 return False
 
-            if len(info_dict["802-11-wireless"]["ssid"]) == 0:
+            if "802-11-wireless" not in info_dict.keys():
+                print "missing 802-11-wireless setting "
                 return False
+
+            if len(info_dict["802-11-wireless"]["ssid"]) == 0:
+                print "wireless invalid ssid"
+                return False
+
+            if "mode" in info_dict["802-11-wireless"].keys():
+                if info_dict["802-11-wireless"]["mode"] not in ["infrastructure", "ad-hoc", "ap"]:
+                    print "wireless invalid mode"
+                    return False
+
+            if "mac-address" in info_dict["802-11-wireless"].keys():
+                if not TypeConvert.is_valid_mac_address(info_dict["802-3-ethernet"]["mac-address"]):
+                    print "wireless invalid mac address"
+                    return False
 
             if "802-11-wireless-security" in info_dict.iterkeys():
                 if info_dict["802-11-wireless-security"]["key-mgmt"] == "none":
-
                     ####wep
                     if "wep-tx-keyidx" in info_dict["802-11-wireless-security"].iterkeys():
                         if info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 0:
                             if not info_dict["802-11-wireless-security"]["wep-key0"]:
+                                print "wireless invalid wep-key0"
                                 return False
 
                         elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 1:
                             if not info_dict["802-11-wireless-security"]["wep-key1"]:
+                                print "wireless invalid wep-key1"
                                 return False
 
                         elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 2:
                             if not info_dict["802-11-wireless-security"]["wep-key2"]:
+                                print "wireless invalid wep-key2"
                                 return False
 
                         elif info_dict["802-11-wireless-security"]["wep-tx-keyidx"] == 3:
                             if not info_dict["802-11-wireless-security"]["wep-key3"]:
+                                print "wireless invalid wep-key3"
                                 return False
                         else:
-                                return False
+                            print "wireless invalid wep tx keyidx"
+                            return False
                     else:
                         if not info_dict["802-11-wireless-security"]["wep-key0"]:
+                            print "wireless invalid wep-key0"
                             return False
-
                     ###psk    
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-psk":
                     if not info_dict["802-11-wireless-security"]["psk"]:
+                        print "wireless invalid psk"
                         return False
 
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "ieee8021x":
-                    # currently not support
+                    print "wireless currently doesn't support ieee8021x"
                     return False
 
                 elif info_dict["802-11-wireless-security"]["key-mgmt"] == "wpa-eap":
-                    # currently not support
+                    print "wireless currently not support wpa-eap"
                     return False
                 else:
+                    print "wireless invalid security method"
                     return False
 
         return True
@@ -258,6 +300,11 @@ class NMConnection(gobject.GObject):
                 return False
 
             if not info_dict["pppoe"]["username"]:
+                print "dsl invalid username"
+                return False
+
+            if not info_dict["pppoe"]["password"]:
+                print "dsl invalid password"
                 return False
 
         return True
