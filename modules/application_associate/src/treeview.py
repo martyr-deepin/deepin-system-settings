@@ -74,8 +74,8 @@ class SessionItem(TreeItem):
         self.is_double_click = False
         self.autorun = item.has_gnome_auto()
         self.check_buffer = CheckButtonBuffer(self.autorun, 2, 3)
-
-
+        
+        self.padding_x = 10
 
     def set_autorun_state(self, run):
         self.item.set_option("X-GNOME-Autostart-enabled", str(run).lower())
@@ -100,12 +100,29 @@ class SessionItem(TreeItem):
         # Draw Text
 
         (text_width, text_height) = get_content_size(self.app_name)
+        rect.width -= self.padding_x
         draw_text(cr, self.app_name, rect.x + CHECK_RIGHT_PADDING*2 + 16, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
+        
+        
+    def render_exec(self, cr, rect):
+        exec_ = self.item.exec_
+        self.render_background(cr, rect)
+        rect.width -= self.padding_x
+        if exec_:
+            (text_width, text_height) = get_content_size(exec_)
+            draw_text(cr, exec_, rect.x, rect.y, rect.width, rect.height,
+                    alignment = pango.ALIGN_LEFT)
+        else:
+            description = _("No exec")
+            (text_width, text_height) = get_content_size(description)
+            draw_text(cr, description, rect.x, rect.y, rect.width, rect.height,
+                    alignment = pango.ALIGN_LEFT)
 
     def render_description(self, cr, rect):
         self.description = self.item.comment
         self.render_background(cr, rect)
+        rect.width -= self.padding_x
         if self.description:
             (text_width, text_height) = get_content_size(self.description)
             draw_text(cr, self.description, rect.x, rect.y, rect.width, rect.height,
@@ -115,7 +132,6 @@ class SessionItem(TreeItem):
             (text_width, text_height) = get_content_size(description)
             draw_text(cr, description, rect.x, rect.y, rect.width, rect.height,
                     alignment = pango.ALIGN_LEFT)
-
         
     def render_state(self, cr, rect):
         self.state = self.item.is_active()
@@ -129,11 +145,11 @@ class SessionItem(TreeItem):
                 alignment = pango.ALIGN_LEFT, text_color="#000000")
 
     def get_column_renders(self):
-        return [self.render_app, self.render_description]
+        return [self.render_app, self.render_exec, self.render_description]
 
     def get_column_widths(self):
         '''docstring for get_column_widths'''
-        return [200,  -1]
+        return [200,  200, 300]
 
     def get_height(self):
         return 30

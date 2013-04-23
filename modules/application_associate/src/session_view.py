@@ -47,8 +47,8 @@ class SessionView(gtk.VBox):
                              enable_hover=True,
                              enable_multiple_select=False,
                              )
-        self.tree.set_expand_column(1)
-        self.tree.set_column_titles((_("Application"), _("Description")),)
+        self.tree.set_expand_column(2)
+        self.tree.set_column_titles((_("Application"), _("Exec"), _("Description")),)
 
         self.tree.set_size_request(800, -1)
         self.tree.connect("right-press-items", self.right_press_item)
