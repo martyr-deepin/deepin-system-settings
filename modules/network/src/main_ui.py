@@ -803,9 +803,14 @@ class VpnSection(Section):
             pass
 
     def toggle_off(self):
+        for active in nm_module.nmclient.get_anti_vpn_active_connection():
+            active.device_vpn_disconnect()
+
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
-        if vpn_active:
-            nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
+        for vpn in vpn_active:
+            nm_module.nmclient.deactive_connection_async(vpn.object_path)
+        #if vpn_active:
+        #    nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
     
     def get_list(self):
         self.connection = nm_module.nm_remote_settings.get_vpn_connections()

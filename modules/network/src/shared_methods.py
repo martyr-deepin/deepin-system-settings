@@ -273,12 +273,19 @@ class Settings(object):
         # 
         self.connection.settings_obj = self
         # 新增以下几个变量，用于set_button时判断输入的合法性。
+        # 基本设置
         self.mac_is_valid = True
         self.ipv4_ip_is_valid = True
         self.ipv4_dns_is_valid = True
         self.ipv6_ip_is_valid = True
         self.ipv6_dns_is_valid = True
+        # 无线设置
         self.wlan_encry_is_valid = True
+        # 拨号设置
+        self.dsl_is_valid = True
+        self.ppp_is_valid = True
+        # VPN设置
+        self.vpn_is_valid = True
 
         if connection not in self.settings:
             self.setting_lock[connection] = True
@@ -300,7 +307,10 @@ class Settings(object):
                 self.ipv4_dns_is_valid and \
                 self.ipv6_ip_is_valid and \
                 self.ipv6_dns_is_valid and \
-                self.wlan_encry_is_valid:
+                self.wlan_encry_is_valid and \
+                self.dsl_is_valid and \
+                self.ppp_is_valid and \
+                self.vpn_is_valid:
             Dispatcher.set_button(name, True)
             self.setting_state[self.connection] = (name, True)
         else:
