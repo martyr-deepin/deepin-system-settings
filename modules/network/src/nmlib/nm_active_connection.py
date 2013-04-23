@@ -115,9 +115,13 @@ class NMActiveConnection(NMObject):
                                         key = lambda x:int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
                                         reverse = True)
 
-            self.thread_vpnauto = ThreadVPNAuto(self.object_path, vpn_prio_connections)
-            self.thread_vpnauto.setDaemon(True)
-            self.thread_vpnauto.start()
+            nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
+            if len(nmclient.get_active_vpn_connection()) == 0:
+                self.thread_vpnauto = ThreadVPNAuto(self.object_path, vpn_prio_connections)
+                self.thread_vpnauto.setDaemon(True)
+                self.thread_vpnauto.start()
+            else:
+                return True
 
     ###Signals###
     def properties_changed_cb(self, prop_dict):
