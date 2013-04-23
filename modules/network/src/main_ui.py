@@ -808,7 +808,7 @@ class VpnSection(Section):
 
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         for vpn in vpn_active:
-            nm_module.nmclient.deactive_connection_async(vpn_active.object_path)
+            nm_module.nmclient.deactive_connection_async(vpn.object_path)
         #if vpn_active:
         #    nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
     
