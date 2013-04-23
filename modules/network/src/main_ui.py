@@ -83,7 +83,6 @@ class Section(gtk.VBox):
         self.tree = TreeView([])
         self.tree.set_expand_column(1)
         self.tree.draw_mask = self.draw_mask
-        #self.content_box.pack_start(self.tree, False, False)
         content.insert(0, self.tree)
             
         for c in content:
@@ -106,8 +105,7 @@ class Section(gtk.VBox):
 
     def _set_align(self):
         align = gtk.Alignment(0,0,1,0)
-        align.set_padding(0,0,PADDING,11 + 11)
-        #align.add(self.content_box)
+        align.set_padding(0, 0, PADDING, 11 + 11)
         return align
 
     def toggle_callback(self, widget):
@@ -764,11 +762,9 @@ class VpnSection(Section):
         Dispatcher.connect("vpn-redraw", self.vpn_redraw)
 
     def vpn_redraw(self, widget):
-        print "vpn-redraw"
         if self.vpn.get_active():
             self.vpn.set_active(True, emit=True)
             self.show_all()
-
 
     def connect_vpn_signals(self, active_vpn, connection_name):
         active_vpn.connect("vpn-connected", self.vpn_connected, connection_name)
@@ -777,7 +773,6 @@ class VpnSection(Section):
 
     def toggle_on(self):
         item_list = self.get_list()
-        #item_list=[]
         if item_list:
             item_list[-1].is_last = True
             self.tree.delete_all_items()
@@ -820,7 +815,6 @@ class VpnSection(Section):
         Dispatcher.to_setting_page(VPNSetting(), True)
         setting = nm_module.slider.get_page_by_name("setting")
         setting.create_new_connection()
-        
 
 class MobileDevice(object):
 
