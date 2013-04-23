@@ -278,13 +278,14 @@ class Settings(object):
         self.ipv4_dns_is_valid = True
         self.ipv6_ip_is_valid = True
         self.ipv6_dns_is_valid = True
+        self.wlan_encry_is_valid = True
 
         if connection not in self.settings:
             self.setting_lock[connection] = True
             #self.init_button_state(connection)
             setting_list = []
             for setting in self.setting_list:
-                # 新增了settings_obj参数，方便
+                # 新增了settings_obj参数，方便访问xxx_is_valid变量
                 s = setting(connection, self.set_button, settings_obj=self)
                 setting_list.append((s.tab_name, s))
             self.settings[connection] = setting_list
@@ -298,7 +299,8 @@ class Settings(object):
                 self.ipv4_ip_is_valid and \
                 self.ipv4_dns_is_valid and \
                 self.ipv6_ip_is_valid and \
-                self.ipv6_dns_is_valid:
+                self.ipv6_dns_is_valid and \
+                self.wlan_encry_is_valid:
             Dispatcher.set_button(name, True)
             self.setting_state[self.connection] = (name, True)
         else:
