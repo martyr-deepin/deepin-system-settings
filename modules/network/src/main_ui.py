@@ -784,6 +784,15 @@ class VpnSection(Section):
             self.tree.add_items(item_list)
 
     def toggle_on_after(self):
+        for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
+            if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
+                try:
+                    active_conn.vpn_auto_connect()
+                except:
+                    pass
+            else:
+                break
+
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
             # TODO fix for mutiple
