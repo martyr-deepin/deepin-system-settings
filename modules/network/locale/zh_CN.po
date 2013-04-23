@@ -230,8 +230,8 @@ msgstr "设置密码"
 
 #: ../src/widgets.py:58
 #, python-format
-msgid "Please input password for %s :"
-msgstr "输入 %s 的密码:"
+msgid "Please input password for %s"
+msgstr "输入 %s 的密码"
 
 #: ../src/widgets.py:78 ../src/elements.py:226 ../src/wlan_config.py:247
 msgid "Show key"

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-import dss
 from dtk.ui.button import Button, CheckButton
 from dtk.ui.dialog import DialogBox
 from dtk.ui.entry import PasswordEntry
@@ -16,14 +15,14 @@ DIALOG_MASK_GLASS_PAGE = 1
 DIALOG_MASK_MULTIPLE_PAGE = 2
 DIALOG_MASK_TAB_PAGE = 3
 
+
 class AskPasswordDialog(DialogBox):
     '''
     Simple input dialog.
-    
     @undocumented: click_confirm_button
     @undocumented: click_cancel_button
     '''
-	
+    
     def __init__(self,
                  connection,
                  ssid,
@@ -31,7 +30,7 @@ class AskPasswordDialog(DialogBox):
                  #title, 
                  #init_text, 
                  default_width=330,
-                 default_height=145,
+                 default_height=120,
                  confirm_callback=None, 
                  cancel_callback=None,
                  ):
@@ -46,7 +45,8 @@ class AskPasswordDialog(DialogBox):
         @param cancel_callback: Callback when user click cancel button, this callback not need argument.
         '''
         # Init.
-        DialogBox.__init__(self, _("Set password"), default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        #DialogBox.__init__(self, _("Set password"), default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        DialogBox.__init__(self, _("Please input password for %s") % ssid, default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
     
@@ -55,14 +55,14 @@ class AskPasswordDialog(DialogBox):
         self.hint_align = gtk.Alignment()
         self.hint_align.set(0.5, 0.5, 0, 0)
         self.hint_align.set_padding(0, 0, 10, 10)
-        self.hint_text = Label(_("Please input password for %s :")%ssid,
+        self.hint_text = Label(_("Please input password for %s")%ssid,
                                enable_select=False,
                                enable_double_click=False)
         self.hint_align.add(self.hint_text)
 
         self.entry_align = gtk.Alignment()
-        self.entry_align.set(0.5, 0.5, 0, 0)
-        self.entry_align.set_padding(10, 0, 10, 10)
+        self.entry_align.set(0.0, 0.5, 0, 0)
+        self.entry_align.set_padding(10, 0, 5, 9)
         if self.connection and isinstance(self.connection, NMRemoteConnection):
             (setting_name, method) = self.connection.guess_secret_info()  
             if setting_name and method:
@@ -75,12 +75,16 @@ class AskPasswordDialog(DialogBox):
             self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, "wpa-psk")
             init_text = ''
         self.entry = PasswordEntry(init_text)
-        self.show_key_check = CheckButton(_("Show key"))
+        self.show_key_check = CheckButton(_("Show key"), 0)
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
 
-        self.entry.set_size(default_width - 95, 25)
+        self.entry.set_size(default_width - 22, 25)
         self.main_box = gtk.VBox()
-        self.main_box.pack_start(self.entry, False, False)
+        entry_align = gtk.Alignment(0.0, 0.5, 0, 0)
+        entry_align.set_padding(0, 0, 5, 0)
+        entry_align.set_size_request(-1, 30)
+        entry_align.add(self.entry)
+        self.main_box.pack_start(entry_align, False, False)
         self.main_box.pack_start(self.show_key_check, False, False)
         
         self.confirm_button = Button(_("OK"))
@@ -91,8 +95,10 @@ class AskPasswordDialog(DialogBox):
         self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
         
         self.entry_align.add(self.main_box)
-        self.body_box.pack_start(self.hint_align, True, True)
+        #self.body_box.pack_start(self.hint_align, True, True)
         self.body_box.pack_start(self.entry_align, True, True)
+
+        #self.body_box.pack_start(self.main_box, True, True)
         
         self.right_button_box.set_buttons([self.cancel_button, self.confirm_button])
         self.connect("show", self.focus_input)
