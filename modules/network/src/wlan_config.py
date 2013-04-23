@@ -195,9 +195,9 @@ class Sections(gtk.Alignment):
         self.wireless = SettingSection(_("Wireless"), always_show=True)
         self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
         self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
-        self.wireless.load([Wireless(self.connection, self.set_button)])
-        self.ipv4.load([IPV4Conf(self.connection, self.set_button)])
-        self.ipv6.load([IPV6Conf(self.connection, self.set_button)])
+        self.wireless.load([Wireless(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        self.ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        self.ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
         self.main_box.pack_start(self.wireless, False, False, 15)
         self.main_box.pack_start(self.ipv4, False, False)
         self.main_box.pack_start(self.ipv6, False, False, 15)
@@ -363,7 +363,10 @@ class Security(gtk.VBox):
                 
                 self.password_entry.entry.set_text(secret)
                 if secret:
-                    Dispatcher.set_button("save", True)
+                    #Dispatcher.set_button("save", True)
+                    ###########
+                    self.settings_obj.wlan_encry_is_valid = True
+                    self.settings_obj.set_button("save", True)
                 self.setting.psk = secret
 
             elif self.security_combo.get_current_item()[1] == "none":
@@ -411,7 +414,9 @@ class Security(gtk.VBox):
             del self.connection.get_setting("802-11-wireless").security
             self.has_security = False
             self.reset(self.has_security)
-            Dispatcher.set_button("save", True)
+            #Dispatcher.set_button("save", True)
+            self.settings_obj.wlan_encry_is_valid = True
+            self.settings_obj.set_button("save", True)
         else:
             if self.has_security == False:
                 self.connection.get_setting("802-11-wireless").security = "802-11-wireless-security"
@@ -424,28 +429,38 @@ class Security(gtk.VBox):
                 self.setting.wep_key_type = index
                 for key in range(0, 4):
                     delattr(self.setting, "wep_key%d"%key)
-            Dispatcher.set_button("save", False)
+            #Dispatcher.set_button("save", False)
             self.reset()
+            self.settings_obj.wlan_encry_is_valid = False
+            self.settings_obj.set_button("save", False)
 
     def save_wpa_pwd(self, widget, content):
+        is_valid = False
         if self.setting.verify_wpa_psk(content):
             self.setting.psk = content
             #print "in save wpa pwd", self.connection.settings_dict
-            check_settings(self.connection, self.set_button)
-        else:
-            Dispatcher.set_button("save", False)
-            print "invalid"
+            #check_settings(self.connection, self.set_button)
+        #else:
+            #Dispatcher.set_button("save", False)
+            #print "invalid"
+            #######
+            is_valid = self.connection.check_setting_finish()
+        self.settings_obj.wlan_encry_is_valid = is_valid
+        self.settings_obj.set_button("save", is_valid)
 
     def save_wep_pwd(self, widget, content):
         active = self.setting.wep_tx_keyidx
         wep_type = self.setting.wep_key_type
+        is_valid = False
         if self.setting.verify_wep_key(content, wep_type):
             self.setting.set_wep_key(active, content)
-            check_settings(self.connection, self.set_button)
-        else:
-            Dispatcher.set_button("save", False)
-            print "invalid"
-
+            #check_settings(self.connection, self.set_button)
+        #else:
+            #Dispatcher.set_button("save", False)
+            #print "invalid"
+            is_valid = self.connection.check_setting_finish()
+        self.settings_obj.wlan_encry_is_valid = is_valid
+        self.settings_obj.set_button("save", is_valid)
     
     def show_key_check_button_cb(self, widget):
         name = self.security_combo.get_current_item()[1]
@@ -519,11 +534,14 @@ class Security(gtk.VBox):
 class Wireless(gtk.VBox):
     ENTRY_WIDTH = 222
 
-    def __init__(self, connection, set_button_cb):
+    def __init__(self, connection, set_button_cb, settings_obj=None):
         gtk.VBox.__init__(self)
         self.tab_name = _("Wireless")
         self.connection = connection 
         self.set_button = set_button_cb
+        # 新增settings_obj变量，用于访问shared_methods.Settings对象
+        self.settings_obj = settings_obj
+
         self.wireless = self.connection.get_setting("802-11-wireless")
         ### UI
         self.ssid_label = Label(_("SSID:"),
@@ -613,24 +631,27 @@ class Wireless(gtk.VBox):
         self.mac_entry.entry.connect("changed", self.entry_changed, "mac_address")
         self.clone_entry.entry.connect("changed", self.entry_changed, "cloned_mac_address")
 
-
     def spin_value_changed(self, widget, value, types):
         setattr(self.wireless, types, value)
 
     def entry_changed(self, widget, content, types):
+        is_valid = True
         if types.endswith("ssid"):
             setattr(self.wireless, types, content)
         else:
             from nmlib.nm_utils import TypeConvert
             if TypeConvert.is_valid_mac_address(content):
                 setattr(self.ethernet, types, content)
-                check_settings(self.connection, self.set_button)
+                #check_settings(self.connection, self.set_button)
+                is_valid = self.connection.check_setting_finish()
             else:
-                Dispatcher.set_button("save", False)
+                is_valid = False
+                #Dispatcher.set_button("save", False)
+        self.settings_obj.mac_is_valid = is_valid
+        self.settings_obj.set_button("save", is_valid)
 
     def band_combo_selected(self, widget, content, value, index):
         self.wirless.band = value
-
 
     def mode_combo_selected(self, widget, content, value, index):
         self.wireless.mode = value
