@@ -222,8 +222,8 @@ class TrayNetworkPlugin(object):
             self.let_rotate(True)
 
     def wired_activate_failed(self, widget, new_state, old_state, reason):
-        pass
         #Dispatcher.connect("wired_change", self.wired_changed_cb)
+        self.change_status_icon("cable_disconnect")
 
     def active_wired(self):
         """
