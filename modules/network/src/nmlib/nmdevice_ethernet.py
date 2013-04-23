@@ -37,8 +37,9 @@ class ThreadWiredAuto(threading.Thread):
     def run(self):
         for conn in self.conns:
             if self.run_flag:
-                if conn.settings_dict["802-3-ethernet"]["mac-address"]:
+                if "mac-address" in conn.settings_dict["802-3-ethernet"].iterkeys():
                     if TypeConvert.dbus2py(conn.settings_dict["802-3-ethernet"]["mac-address"]) != self.device.get_hw_address():
+                            print "connection mac address doesn't match the device"
                             continue
                     else:
                         pass
@@ -56,7 +57,10 @@ class ThreadWiredAuto(threading.Thread):
                         continue
                 except:
                     pass
+            else:
+                return True
         self.stop_run()
+        return True
 
     def stop_run(self):
         self.run_flag = False
