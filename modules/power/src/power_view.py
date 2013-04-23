@@ -233,7 +233,7 @@ class PowerView(gtk.VBox):
         self.close_monitor_combo.set_select_index(
             self.power_manager.get_close_monitor_from_xml(self.wait_duration_items, plan_info[1]))
         self.suspend_combo.set_select_index(self.power_manager.get_suspend_from_xml(self.wait_duration_items, plan_info[2]))
-
+    
     def show_again(self):                                                       
         self.__send_message("status", ("power", ""))
 
@@ -245,7 +245,7 @@ class PowerView(gtk.VBox):
         if key == "sleep-inactive-ac-timeout" or key == "sleep-inactive-battery-timeout":
             self.suspend_combo.set_select_index(self.power_manager.get_suspend_status(self.wait_duration_items))
             return
-
+        
         if key == "percentage":
             self.percentage_progressbar.progress_buffer.progress = self.power_manager.power_settings.get_double("percentage")
             return
@@ -382,7 +382,6 @@ class PowerView(gtk.VBox):
 
         if object == "power_plan":
             self.__send_message("status", ("power", _("Changed Power Plan to %s") % item_text))
-            self.__on_power_plan_customized()
             self.power_manager.set_current_plan(item_value)
             return
 
