@@ -737,8 +737,6 @@ class VpnSection(Section):
 
         #init
         self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), lambda w:w)
-        #self.tree = TreeView([])
-        #self.tree.set_expand_column(1)
         self.label = Label(_("Create VPN Setting"), 
                            LABEL_COLOR,
                            underline=True,

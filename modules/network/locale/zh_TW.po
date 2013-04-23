@@ -230,7 +230,7 @@ msgstr ""
 
 #: ../src/widgets.py:58
 #, python-format
-msgid "Please input password for %s :"
+msgid "Please input password for %s"
 msgstr ""
 
 #: ../src/widgets.py:78 ../src/elements.py:226 ../src/wlan_config.py:247
