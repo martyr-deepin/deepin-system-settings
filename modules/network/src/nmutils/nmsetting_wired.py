@@ -51,6 +51,8 @@ class NMSettingWired (NMSetting):
     def cloned_mac_address(self, new_cloned_mac_address):
         if len(new_cloned_mac_address) > 0:
             self.prop_dict["cloned-mac-address"] = TypeConvert.mac_address_string2array(new_cloned_mac_address)
+        elif "cloned-mac-address" in self.prop_dict.iterkeys():
+            del self.prop_dict["cloned-mac-address"]
 
     @property
     def mac_address(self):
@@ -61,6 +63,8 @@ class NMSettingWired (NMSetting):
     def mac_address(self, new_mac_address):
         if len(new_mac_address) > 0:
             self.prop_dict["mac-address"] = TypeConvert.mac_address_string2array(new_mac_address)
+        elif "mac-address" in self.prop_dict.iterkeys():
+            del self.prop_dict["mac-address"]
 
     @property
     def duplex(self):
