@@ -41,6 +41,9 @@ class Region(gtk.Alignment):
     def __init__(self, connection=None):
         gtk.Alignment.__init__(self)
 
+        #################
+        self.provider_select = None
+
         #style.set_main_window(self, True)
         self.connect('expose-event', self.expose_event)
         self.prop_dict = {}
@@ -152,6 +155,10 @@ class Region(gtk.Alignment):
 
 
     def next_button_clicked(self, widget):
+        # 检查是否选择了运营商
+        if not self.provider_select:
+            print "provider has not selected"
+            return
         try:
             self.plan_select
         except:
@@ -233,6 +240,7 @@ class Region(gtk.Alignment):
         else:
             self.provider_names = self.__sp.get_country_providers_name(self.code)
         
+        self.provider_select = None
         self.provider_tree.add_items([Item(p, self.__sp, self.code) for p in self.provider_names])
         self.provider_tree.show_all()
 

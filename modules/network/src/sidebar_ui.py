@@ -66,11 +66,15 @@ class SideBar(gtk.VBox):
         '''
         self.network_object = network_object
         self.connections = self.network_object.get_connections()
+        connections = []
         for connection in self.connections:
             if isinstance(connection, NMRemoteConnection):
                 connection.init_settings_prop_dict()
+                connections.append(connection)
+        self.connections = connections
         self.connection_tree = EntryTreeView()
         self.connection_tree.set_expand_column(1)
+        print "load list tree:", self.connections
         self.__init_tree(self.connections)
 
         if hasattr(self.network_object, "add_new_connection"):
