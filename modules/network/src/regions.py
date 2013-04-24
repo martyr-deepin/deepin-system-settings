@@ -192,14 +192,14 @@ class Region(gtk.Alignment):
         #broadband = setting_page.setting_group.get_broadband()
         if self.connection_type == None:
             new_connection = getattr(nm_module.nm_remote_settings, "new_%s_connection"%provider_type)()
-            Dispatcher.emit("region_back", new_connection, self.prop_dict, provider_type)
+            Dispatcher.emit("region-back", new_connection, self.prop_dict, provider_type)
 
             #setting_page.sidebar.new_connection_list[provider_type].append(new_connection)
             #setting_page.init(setting_page.sidebar.new_connection_list)
             #setting_page.sidebar.set_active(new_connection)
             #broadband.set_new_values(self.prop_dict, provider_type)
         else:
-            Dispatcher.emit("region_back", self.connection, self.prop_dict, provider_type)
+            Dispatcher.emit("region-back", self.connection, self.prop_dict, provider_type)
 
             #broadband.set_new_values(self.prop_dict, provider_type)
 

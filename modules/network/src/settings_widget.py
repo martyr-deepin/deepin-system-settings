@@ -194,7 +194,7 @@ class EntryTreeView(TreeView):
         if event.in_:
             item.entry_buffer.set_property('cursor-visible', True)
         else:
-            # 输入杠失去焦点，编辑完成
+            # 输入框失去焦点，编辑完成
             #item.entry_buffer.set_property('cursor-visible', False)
             entry.destroy()
 

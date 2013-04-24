@@ -313,7 +313,7 @@ class NMRemoteSettings(NMObject):
 
         return new_connection    
         
-    def new_gsm_connection(self, username = "username", password = "password", apn = "apn"):
+    def new_gsm_connection(self, username = "", password = "", apn = ""):
         s_connection = NMSettingConnection()
         s_gsm = NMSettingGsm()
         s_serial = NMSettingSerial()
@@ -358,7 +358,7 @@ class NMRemoteSettings(NMObject):
 
         return new_connection    
 
-    def new_cdma_connection(self, username = "username", password = "password"):
+    def new_cdma_connection(self, username = "", password = ""):
         s_connection = NMSettingConnection()
         s_cdma = NMSettingCdma()
         s_serial = NMSettingSerial()

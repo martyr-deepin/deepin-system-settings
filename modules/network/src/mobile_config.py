@@ -40,7 +40,8 @@ class MobileSetting(Settings):
         self.spec_connection = spec_connection
 
     def get_broadband(self, connection):
-        return self.settings[connection][0][1]
+        # Broadband被实例化了两次，应该返回Sections的Broadband实例对像
+        return self.settings[connection][1][1].broadband
 
     def get_connections(self):
         # Get all connections  
@@ -228,7 +229,8 @@ class Sections(gtk.Alignment):
         align.set_padding(0, 0, 225, 0)
         align.add(self.button)
         
-        basic.load([Broadband(connection, set_button, settings_obj), align])
+        self.broadband = Broadband(connection, set_button, settings_obj)
+        basic.load([self.broadband, align])
         self.ipv4.load([IPV4Conf(connection, set_button, settings_obj)])
         self.ppp.load([PPPConf(connection, set_button, settings_obj)])
 
@@ -323,8 +325,8 @@ class Broadband(gtk.VBox):
 
         # wrap with alignment
         
-        self.refresh()
         # Refesh
+        self.refresh()
 
     def password_show_toggled(self, widget):
         if widget.get_active():
@@ -384,8 +386,9 @@ class Broadband(gtk.VBox):
         self.broadband_setting = self.connection.get_setting(mobile_type)
         number = self.broadband_setting.number
         username = self.broadband_setting.username
-        
+
         password = self.broadband_setting.password
+
         if password == None:
             try:
                 (setting_name, method) = self.connection.guess_secret_info() 
@@ -394,7 +397,6 @@ class Broadband(gtk.VBox):
                                                         method)
             except:
                 password = ""
-
 
         # both
         self.number.set_text(number)

@@ -58,7 +58,7 @@ class SideBar(gtk.VBox):
         Dispatcher.connect("connection-replace", self.replace_connection)
 
         # This one just for mobile setting
-        Dispatcher.connect("region_back", self.append_new_connection)
+        Dispatcher.connect("region-back", self.append_new_connection)
 
     def load_list(self, network_object):
         '''
@@ -74,7 +74,6 @@ class SideBar(gtk.VBox):
         self.connections = connections
         self.connection_tree = EntryTreeView()
         self.connection_tree.set_expand_column(1)
-        print "load list tree:", self.connections
         self.__init_tree(self.connections)
 
         if hasattr(self.network_object, "add_new_connection"):
