@@ -189,12 +189,14 @@ class EntryTreeView(TreeView):
         item.redraw_request_callback(item)
         self.draw_area.grab_focus()
         self.set_data("entry_widget", None)
-   
+
     def entry_focus_changed(self, entry, event, item):
         if event.in_:
             item.entry_buffer.set_property('cursor-visible', True)
         else:
-            item.entry_buffer.set_property('cursor-visible', False)
+            # 输入杠失去焦点，编辑完成
+            #item.entry_buffer.set_property('cursor-visible', False)
+            entry.destroy()
 
     def release_item(self, event):
         if is_left_button(event):
@@ -436,8 +438,6 @@ class SettingItem(TreeItem):
         self.delete_pixbuf_prelight = app_theme.get_pixbuf("network/delete.png")
         self.delete_pixbuf_active = app_theme.get_pixbuf("network/delete-1.png")
         
-
-    
     def entry_buffer_changed(self, bf):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
