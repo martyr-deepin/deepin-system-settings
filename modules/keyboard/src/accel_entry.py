@@ -295,6 +295,10 @@ class AccelEntry(ShortcutKeyEntry):
             return False
         gtk.gdk.keyboard_ungrab(0)
         gtk.gdk.pointer_ungrab(0)
+
+        # HACK: we don't want to use SysRq as a keybinding, so we avoid  its translation from Alt+Print.
+        if event.keyval == gtk.keysyms.Sys_Req and event.state & gtk.gdk.MOD1_MASK:
+            event.keyval = gtk.keysyms.Print
         keyval = event.keyval
         state = event.state = event.state & (~gtk.gdk.MOD2_MASK)  # ignore MOD2_MASK
         # cancel edit
