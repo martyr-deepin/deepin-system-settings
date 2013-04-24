@@ -131,14 +131,12 @@ class Section(gtk.VBox):
         '''
         method cb when toggle on
         '''
-        print "on"
         pass
 
     def toggle_on_after(self):
         pass
 
     def toggle_off(self):
-        print "off"
         pass
     
     def get_list(self):
@@ -178,13 +176,25 @@ class WiredDevice(object):
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
-        if not reason == 0:
-            if self.tree.visible_items != []:
-                self.tree.visible_items[index].set_net_state(0)
-                for item in self.tree.visible_items:
-                    if item.get_net_state() > 0:
-                        return
-                print "toggle off"
+        i = 0
+
+        if reason == 0:
+            return
+
+        if self.tree.visible_items != []:
+            for device in self.wired_devices:
+                if i == index:
+                    if device.get_state() == "":
+                        self.tree.visible_items[index].set_net_state(0)
+                    else:
+                        self.tree.visible_items[index].set_net_state(2)
+                i += 1
+                
+            for item in self.tree.visible_items:
+                if item.get_net_state() > 0:
+                    return
+            
+            if net_manager.get_wired_state() == None:
                 self.wire.set_active(False)
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
@@ -218,7 +228,6 @@ class WiredSection(Section, WiredDevice):
             return False
 
     def init_state(self):
-        print "init wired state"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
             if self.get_state(self.wired_devices):
@@ -238,9 +247,7 @@ class WiredSection(Section, WiredDevice):
         return False
     
     def device_added(self, widget, device):
-        print "device_added"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
-        print ">>>>",self.wired_devices
         self._init_signals()
         if self.wire.get_active():
             self.wire.set_active(True, emit=True)
@@ -322,10 +329,7 @@ class WirelessDevice(object):
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
             return
-        print widget
         self.this_connection = widget.get_real_active_connection()
-        if self.this_connection:
-            print "Debug: (wireless active start in main):",self.this_connection.get_setting("802-11-wireless").ssid
         if not self.wireless.get_active():
             self.wireless.set_active(True)
 
@@ -361,14 +365,8 @@ class WirelessDevice(object):
 
     def pwd_changed(self, pwd, connection):
         item = self._get_active_item()
-        print item
-        index = self.get_actives(self.ap_list)
-        print index,"sdf"
         if item:
             map(lambda i: i.pwd_changed(pwd, connection), item)
-        else:
-            print "no active items found"
-    ######
 
 class WirelessSection(Section, WirelessDevice):
 
@@ -414,12 +412,10 @@ class WirelessSection(Section, WirelessDevice):
         self.label.connect("button-release-event", self.create_a_hidden_network)
 
     def wireless_redraw(self, widget):
-        print "wireless redraw"
         if self.wireless.get_active():
             self.wireless.set_active(True, emit=True)
 
     def device_added(self, widget, device):
-        print "wireless device added"
         self.wireless_devices = net_manager.device_manager.get_wireless_devices()
         self._init_signals()
         if self.wireless.get_active():
@@ -432,12 +428,10 @@ class WirelessSection(Section, WirelessDevice):
 
     def ap_added_callback(self, widget):
         if self.wireless.get_active():
-            print "ap added"
             self.wireless.set_active(True, emit=True)
 
     def ap_removed_callback(self, widget):
         if self.wireless.get_active():
-            print "ap removed"
             self.wireless.set_active(True, emit=True)
 
     def set_selected_item(self, widget, item, column, x, y):
@@ -463,7 +457,6 @@ class WirelessSection(Section, WirelessDevice):
                     #return []
                 try:
                     ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
-                    #print map(lambda a: a.object_path, ap_list)
                     index.append([ap.get_ssid() for ap in ap_list].index(ssid))
                 except ValueError:
                     print "not found in ap list"
@@ -484,7 +477,6 @@ class WirelessSection(Section, WirelessDevice):
         else:
             for d in self.wireless_devices:
                 wifi = nm_module.cache.get_spec_object(d.object_path)
-                print "auto connect"
                 wifi.auto_connect()
 
     def toggle_off(self):
@@ -611,7 +603,6 @@ class HotSpot(gtk.VBox):
         connections = filter(lambda c: c.get_setting("802-11-wireless").mode == "adhoc",
                              nm_module.nm_remote_settings.get_wireless_connections())
         if connections:
-            print "adhoc connection:",connections[0].get_setting("802-11-wireless").ssid
             return connections[0]
         else:
            return nm_module.nm_remote_settings.new_adhoc_connection("")
@@ -654,10 +645,7 @@ class HotSpot(gtk.VBox):
                                                "/")
             return True
         else:
-            print "pwd not valid"
             return False
-
-        
 
     def slide_to_event(self, widget, event):
         self.settings.init("",init_connections=True, all_adhoc=True)
@@ -884,9 +872,7 @@ class MobileSection(Section, MobileDevice):
             index = self.devices.index(modem_path)
             return self.tree.visible_items[index]
         except:
-            print "get device index error"
             return None
-        
 
     @classmethod
     def show_or_hide(self):
@@ -1004,7 +990,6 @@ class Network(object):
         Dispatcher.connect("service-stop-do-more", lambda w: self.stop())
 
     def init_sections_state(self):
-        print "Debug :: ui finish, ======================"
         net_manager.init_devices()
         for section in self.vbox.get_children():
             if section.show_or_hide():

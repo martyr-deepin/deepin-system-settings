@@ -107,7 +107,7 @@ class NetManager(object):
 
     def get_wired_state(self):
         if self.wired_devices is []:
-            # 没有有限设备
+            # No wired device
             return None
         else:
             state_list = []
