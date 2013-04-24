@@ -197,12 +197,12 @@ class NMConnection(gobject.GObject):
                 return False
 
             if "mac-address" in info_dict["802-3-ethernet"].keys():
-                if not TypeConvert.is_valid_mac_address(info_dict["802-3-ethernet"]["mac-address"]):
+                if not TypeConvert.is_valid_mac_address(TypeConvert.mac_address_array2string(info_dict["802-3-ethernet"]["mac-address"])):
                     print "wired invalid mac address"
                     return False
 
             if "cloned-mac-address" in info_dict["802-3-ethernet"].keys():
-                if not TypeConvert.is_valid_mac_address(info_dict["802-3-ethernet"]["mac-address"]):
+                if not TypeConvert.is_valid_mac_address(TypeConvert.mac_address_array2string(info_dict["802-3-ethernet"]["mac-address"])):
                     print "wired invalid clone mac address"
                     return False
 
@@ -236,7 +236,7 @@ class NMConnection(gobject.GObject):
                     return False
 
             if "mac-address" in info_dict["802-11-wireless"].keys():
-                if not TypeConvert.is_valid_mac_address(info_dict["802-3-ethernet"]["mac-address"]):
+                if not TypeConvert.is_valid_mac_address(TypeConvert.mac_address_array2string(info_dict["802-3-ethernet"]["mac-address"])):
                     print "wireless invalid mac address"
                     return False
 
