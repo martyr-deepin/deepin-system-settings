@@ -167,18 +167,12 @@ class WiredDevice(object):
         net_manager.device_manager.load_wired_listener(self)
 
     def wired_device_active(self, widget, new_state, old_state, reason):
-        #index = self.wired_devices.index(widget)
-        #self.wire.set_active(True)
-        #if self.tree.visible_items != []:
-        #    self.tree.visible_items[index].set_net_state(2)
-        #    self.tree.queue_draw()
         index = self.wired_devices.index(widget)
         if self.tree.visible_items != []:
             print "device active ,set state 2"
             self.tree.visible_items[index].set_net_state(2)
             self.tree.queue_draw()
-
-        self.set_active(True)
+        self.wire.set_active(True)
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
         #index = self.wired_devices.index(widget)
@@ -207,17 +201,24 @@ class WiredDevice(object):
         #    
         #    if net_manager.get_wired_state() == None:
         #        self.wire.set_active(False)
-        index = self.wired_devices.index(widget)
-        if self.tree.visible_items != []:
-            print "device deactive ,set state 0"
-            self.tree.visible_items[index].set_net_state(0)
-            self.tree.queue_draw()
-
-        if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
-            self.wire.set_active(False)
-
         if len(self.tree.visible_items) > len(net_manager.wired_devices):
             print "in fact there had device removed"
+        ########################
+            self.wired_devices = net_manager.wired_devices
+            self._init_signals()
+            self.tree.delete_all_items()
+            item_list = self.get_list()
+            if item_list:
+                item_list[-1].is_last = True
+                self.tree.add_items(item_list, 0, True)
+                self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
+        index = 0
+        for d in self.wired_devices:
+            if d.get_state() == 100:
+                self.tree.visible_items[index].set_net_state(2)
+            index += 1
+        if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
+            self.wire.set_active(False)
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         #for item in self.tree.visible_items:
@@ -225,17 +226,7 @@ class WiredDevice(object):
         #    if item.get_net_state() > 0:
         #        return
         #self.wire.set_active(False)
-        index = self.wired_devices.index(widget)
-        if self.tree.visible_items != []:
-            print "device unavailable ,set state 0"
-            self.tree.visible_items[index].set_net_state(0)
-            self.tree.queue_draw()
-
-        if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
-            self.wire.set_active(False)
-
-        if len(self.tree.visible_items) > len(net_manager.wired_devices):
-            print "in fact there had device removed"
+        self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
