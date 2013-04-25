@@ -51,7 +51,8 @@ shortcuts_group_dict = {
         {'type': TYPE_DP, 'name': "key9", 'description': _("Take a screenshot of a window"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot -w'},
         #{'type': TYPE_MEDIA, 'name': "screenshot-delay", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING},
         {'type': TYPE_DP, 'name': "key10", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot -d 5'},
-        {'type': TYPE_DP, 'name': "key2", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "/usr/bin/gnome-terminal"},
+        #{'type': TYPE_DP, 'name': "key2", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "/usr/bin/gnome-terminal"},
+        {'type': TYPE_DP, 'name': "key2", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "python /usr/share/deepin-system-settings/modules/keyboard/src/terminal.py"},
         #{'type': TYPE_MEDIA, 'name': "logout", 'description': _("Log out"), 'value-type': TYPE_STRING}],
         {'type': TYPE_DP, 'name': "key5", 'description': _("Log out"), 'value-type': TYPE_STRING, 'command': 'python /usr/share/deepin-system-settings/modules/power/src/tray_shutdown_plugin.py logout'}],
     _('Sound and Media') : [
