@@ -100,7 +100,8 @@ class SessionItem(TreeItem):
         # Draw Text
 
         (text_width, text_height) = get_content_size(self.app_name)
-        rect.width -= self.padding_x
+        rect.x += self.padding_x
+        rect.width -= self.padding_x * 2        
         draw_text(cr, self.app_name, rect.x + CHECK_RIGHT_PADDING*2 + 16, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
         
@@ -108,7 +109,8 @@ class SessionItem(TreeItem):
     def render_exec(self, cr, rect):
         exec_ = self.item.exec_
         self.render_background(cr, rect)
-        rect.width -= self.padding_x
+        rect.x += self.padding_x
+        rect.width -= self.padding_x * 2        
         if exec_:
             (text_width, text_height) = get_content_size(exec_)
             draw_text(cr, exec_, rect.x, rect.y, rect.width, rect.height,
@@ -122,7 +124,8 @@ class SessionItem(TreeItem):
     def render_description(self, cr, rect):
         self.description = self.item.comment
         self.render_background(cr, rect)
-        rect.width -= self.padding_x
+        rect.x += self.padding_x
+        rect.width -= self.padding_x * 2        
         if self.description:
             (text_width, text_height) = get_content_size(self.description)
             draw_text(cr, self.description, rect.x, rect.y, rect.width, rect.height,
