@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-#-*- coding:utf-8 -*-
+#!/usr/bin/env python #-*- coding:utf-8 -*-
 
 # Copyright (C) 2011 ~ 2013 Deepin, Inc.
 #               2011 ~ 2013 Zeng Zhi
@@ -168,42 +167,69 @@ class WiredDevice(object):
         net_manager.device_manager.load_wired_listener(self)
 
     def wired_device_active(self, widget, new_state, old_state, reason):
+        #index = self.wired_devices.index(widget)
+        #self.wire.set_active(True)
+        #if self.tree.visible_items != []:
+        #    self.tree.visible_items[index].set_net_state(2)
+        #    self.tree.queue_draw()
         index = self.wired_devices.index(widget)
-        self.wire.set_active(True)
         if self.tree.visible_items != []:
+            print "device active ,set state 2"
             self.tree.visible_items[index].set_net_state(2)
             self.tree.queue_draw()
 
+        self.set_active(True)
+
     def wired_device_deactive(self, widget, new_state, old_state, reason):
+        #index = self.wired_devices.index(widget)
+        #i = 0
+
+        #if reason == 0:
+        #    return
+
+        #if self.tree.visible_items != []:
+        #    print "wired_device_deactive"
+        #    for device in self.wired_devices:
+        #        if i == index:
+        #            print i
+        #            print device.get_state()
+        #            if device.get_state() == "":
+        #                print "set state 0"
+        #                self.tree.visible_items[index].set_net_state(0)
+        #            else:
+        #                print "set state 2"
+        #                self.tree.visible_items[index].set_net_state(2)
+        #        i += 1
+        #        
+        #    for item in self.tree.visible_items:
+        #        if item.get_net_state() > 0:
+        #            return
+        #    
+        #    if net_manager.get_wired_state() == None:
+        #        self.wire.set_active(False)
         index = self.wired_devices.index(widget)
-        i = 0
-
-        if reason == 0:
-            return
-
         if self.tree.visible_items != []:
-            print "wired_device_deactive"
-            for device in self.wired_devices:
-                if i == index:
-                    if device.get_state() == "":
-                        self.tree.visible_items[index].set_net_state(0)
-                    else:
-                        self.tree.visible_items[index].set_net_state(2)
-                i += 1
-                
-            for item in self.tree.visible_items:
-                if item.get_net_state() > 0:
-                    return
-            
-            if net_manager.get_wired_state() == None:
-                self.wire.set_active(False)
+            print "device deactive ,set state 0"
+            self.tree.visible_items[index].set_net_state(0)
+            self.tree.queue_draw()
+
+        if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
+            self.wire.set_active(False)
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
-        for item in self.tree.visible_items:
-            print "wired device unavailable"
-            if item.get_net_state() > 0:
-                return
-        self.wire.set_active(False)
+        #for item in self.tree.visible_items:
+        #    print "wired device unavailable"
+        #    if item.get_net_state() > 0:
+        #        return
+        #self.wire.set_active(False)
+        index = self.wired_devices.index(widget)
+        if self.tree.visible_items != []:
+            print "device unavailable ,set state 0"
+            self.tree.visible_items[index].set_net_state(0)
+            self.tree.queue_draw()
+
+        if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
+            self.wire.set_active(False)
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
@@ -212,7 +238,12 @@ class WiredDevice(object):
             self.tree.queue_draw()
 
     def wired_activate_failed(self, widget, new_state, old_state, reason):
-        pass
+        #pass
+        index = self.wired_devices.index(widget)
+        if self.tree.visible_items != []:
+            print "device activate failed,set state 0"
+            self.tree.visible_items[index].set_net_state(0)
+            self.tree.queue_draw()
 
 class WiredSection(Section, WiredDevice):
 
@@ -250,6 +281,7 @@ class WiredSection(Section, WiredDevice):
         #return False
     
     def device_added(self, widget, device):
+        print "device added cb"
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         self._init_signals()
         if self.wire.get_active():

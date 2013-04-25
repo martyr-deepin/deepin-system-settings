@@ -67,6 +67,7 @@ class DeviceManager(object):
         type = device.get_device_type() 
         if type == 1:
             Dispatcher.emit("wired-device-remove", device)
+            print "device manager emit wired device removed"
             Dispatcher.emit("recheck-section", 0)
         elif type == 2:
             Dispatcher.emit("wireless-device-remove", device)

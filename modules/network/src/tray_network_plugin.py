@@ -193,26 +193,20 @@ class TrayNetworkPlugin(object):
         print "wired", self.gui.wire.get_active()
         print "wireless", self.gui.wireless.get_active()
 
-        if self.gui.wire.get_active():
+        if any([d.get_state() == 100 for d in net_manager.wired_devices]):
             self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
         else:
-            self.change_status_icon("cable_disconnect")
-        #if reason != 0:
-        #    self.gui.wire.set_active((True, False))
-        #    if reason == 40:
-        #        self.gui.wire.set_active((False, False))
-
+            if any([d.get_state() == 100 for d in net_manager.wireless_devices]):
+                self.change_status_icon("links")
+            else:
+                self.change_status_icon("cable_disconnect")
+            if reason != 0:
+                self.gui.wire.set_active((True, False))
+                if reason == 40:
+                    self.gui.wire.set_active((False, False))
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
-        #self.gui.wire.set_active((False, False))
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        else:
-            self.change_status_icon("cable_disconnect")
+        self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def wired_device_available(self, widget, new_state, old_state, reason):
         self.gui.wire.set_sensitive(True)
@@ -233,12 +227,7 @@ class TrayNetworkPlugin(object):
 
     def wired_activate_failed(self, widget, new_state, old_state, reason):
         #Dispatcher.connect("wired_change", self.wired_changed_cb)
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        else:
-            self.change_status_icon("cable_disconnect")
+        self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def active_wired(self):
         """

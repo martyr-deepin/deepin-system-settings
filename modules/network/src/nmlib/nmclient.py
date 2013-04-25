@@ -309,17 +309,18 @@ class NMClient(NMObject):
 
     def device_removed_cb(self, device_object_path):
         self.emit("device-removed", device_object_path)
-        try:
-            device = get_cache().getobject(device_object_path)
-            device.remove_signals()
-        except:
-            pass
+        print "backend emit device removed"
+        #try:
+        #    device = get_cache().getobject(device_object_path)
+        #    device.remove_signals()
+        #except:
+        #    pass
 
-        try:
-            spec_device = get_cache().get_spec_object(device_object_path)
-            spec_device.remove_signals()
-        except:
-            pass
+        #try:
+        #    spec_device = get_cache().get_spec_object(device_object_path)
+        #    spec_device.remove_signals()
+        #except:
+        #    pass
 
     def permisson_changed_cb(self):
         self.emit("permission-changed")
