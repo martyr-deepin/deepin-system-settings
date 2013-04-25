@@ -110,20 +110,23 @@ class NetManager(object):
             # No wired device
             return None
         else:
-            state_list = []
-            for device in self.wired_devices:
-                state_list.append(device.get_state() == 20)
-            if True in state_list:
-                return (False, False)
-            else:
-                '''
-                TODO: my_list.index(x) is an error if there is no such item, 
-                      so please check whether or not there is such item in list at first
-                '''
-                if False in state_list:
-                    return (True, self.wired_devices[state_list.index(False)].is_active())
-                else:
-                    return (True, False)
+            dev_state = any([device.get_state() > 20 for device in self.wired_devices])
+            conn_state = any([device.is_active() for device in self.wired_devices])
+            return (dev_state, conn_state)
+            #state_list = []
+            #for device in self.wired_devices:
+            #    state_list.append(device.get_state() == 20)
+            #if True in state_list:
+            #    return (False, False)
+            #else:
+            #    '''
+            #    TODO: my_list.index(x) is an error if there is no such item, 
+            #          so please check whether or not there is such item in list at first
+            #    '''
+            #    if False in state_list:
+            #        return (True, self.wired_devices[state_list.index(False)].is_active())
+            #    else:
+            #        return (True, False)
 
     def active_wired_device(self,  actived_cb):
         #wired_devices = nm_module.nmclient.get_wired_devices()
@@ -159,15 +162,18 @@ class NetManager(object):
         if not self.wireless_devices:
             return None
         else:
+            dev_state = any([device.get_state() > 20 for device in self.wireless_devices])
+            conn_state = any([device.is_active() for device in self.wireless_devices])
+            return (dev_state, conn_state)
+            ##if not nm_module.nmclient.wireless_get_enabled():
+            #    #nm_module.nmclient.wireless_set_enabled(True)
             #if not nm_module.nmclient.wireless_get_enabled():
-                #nm_module.nmclient.wireless_set_enabled(True)
-            if not nm_module.nmclient.wireless_get_enabled():
-                return (False, False)
-            else:
-                for device in self.wireless_devices:
-                    if device.is_active():
-                        return (True, True)
-                return (True, False)
+            #    return (False, False)
+            #else:
+            #    for device in self.wireless_devices:
+            #        if device.is_active():
+            #            return (True, True)
+            #    return (True, False)
 
     def get_ap_list(self):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]

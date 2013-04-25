@@ -100,10 +100,10 @@ class TrayNetworkPlugin(object):
 
     def mm_device_deactive(self, widget, new_state, old_state, reason):
         self.gui.mobile.set_active((True, False))
-        if self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        elif self.gui.wire.get_active():
+        if self.gui.wire.get_active():
             self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
 
@@ -117,10 +117,10 @@ class TrayNetworkPlugin(object):
 
     def mm_activate_failed(self, widget, new_state, old_state, reason):
         self.gui.mobile.set_active((True, False))
-        if self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        elif self.gui.wire.get_active():
+        if self.gui.wire.get_active():
             self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
 
@@ -189,41 +189,56 @@ class TrayNetworkPlugin(object):
     def wired_device_deactive(self, widget, new_state, old_state, reason):
         #print widget, reason
         #self.gui.wire.set_sensitive(True)
-        if self.gui.wireless.get_active():
+        print "tray:wired_device_deactive"
+        print "wired", self.gui.wire.get_active()
+        print "wireless", self.gui.wireless.get_active()
+
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
             self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
-        if reason != 0:
-            self.gui.wire.set_active((True, False))
-            if reason == 40:
-                self.gui.wire.set_active((False, False))
+        #if reason != 0:
+        #    self.gui.wire.set_active((True, False))
+        #    if reason == 40:
+        #        self.gui.wire.set_active((False, False))
 
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
-        self.gui.wire.set_active((False, False))
-        if self.gui.wireless.get_active():
+        #self.gui.wire.set_active((False, False))
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
             self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
 
     def wired_device_available(self, widget, new_state, old_state, reason):
-            self.gui.wire.set_sensitive(True)
-            if self.gui.wireless.get_active():
-                self.change_status_icon("links")
-            else:
-                self.change_status_icon("cable_disconnect")
-            if reason is not 0:
-                self.gui.wire.set_active((True, False))
+        self.gui.wire.set_sensitive(True)
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
+        else:
+            self.change_status_icon("cable_disconnect")
+        #if reason is not 0:
+        #    self.gui.wire.set_active((True, False))
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
-            if not self.gui.wire.get_active():
-                self.gui.wire.set_active((True, True))
-            self.change_status_icon("loading")
-            self.let_rotate(True)
+        if not self.gui.wire.get_active():
+            self.gui.wire.set_active((True, True))
+        self.change_status_icon("loading")
+        self.let_rotate(True)
 
     def wired_activate_failed(self, widget, new_state, old_state, reason):
         #Dispatcher.connect("wired_change", self.wired_changed_cb)
-        self.change_status_icon("cable_disconnect")
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
+        else:
+            self.change_status_icon("cable_disconnect")
 
     def active_wired(self):
         """
@@ -240,9 +255,12 @@ class TrayNetworkPlugin(object):
         """
         after diactive
         """
-        if self.net_manager.get_wired_state()[0]:
-            self.gui.wire.set_active((True, False))
-        if self.gui.wireless.get_active():
+        #if self.net_manager.get_wired_state()[0]:
+        #    self.gui.wire.set_active((True, False))
+
+        if self.gui.wire.get_active():
+            self.change_status_icon("wired")
+        elif self.gui.wireless.get_active():
             self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")

@@ -270,7 +270,6 @@ class Section(gtk.HBox):
         else:
             self.timer.start()
 
-
     def __wrap_with_align(self, widget, align="right",h=25):
         if align is "left":
             align = gtk.Alignment(0, 0.5, 1, 0)
@@ -288,6 +287,11 @@ class Section(gtk.HBox):
         '''
         state format : (dev_state, con_state)
         '''
+        print "---------------------"
+        print "someone set off button"
+        print "state", state
+        print "active", self.get_active()
+        print "------------------------"
         (dev_state, con_state) = state
         if dev_state is False:
             self.offbutton.set_active(False)

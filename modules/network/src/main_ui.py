@@ -182,6 +182,7 @@ class WiredDevice(object):
             return
 
         if self.tree.visible_items != []:
+            print "wired_device_deactive"
             for device in self.wired_devices:
                 if i == index:
                     if device.get_state() == "":
@@ -199,6 +200,7 @@ class WiredDevice(object):
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         for item in self.tree.visible_items:
+            print "wired device unavailable"
             if item.get_net_state() > 0:
                 return
         self.wire.set_active(False)
@@ -241,10 +243,11 @@ class WiredSection(Section, WiredDevice):
         self._init_signals()
     
     def get_state(self, devices):
-        for d in devices:
-            if d.get_state() == 100:
-                return True
-        return False
+        return any([d.get_state() == 100 for d in devices])
+        #for d in devices:
+        #    if d.get_state() == 100:
+        #        return True
+        #return False
     
     def device_added(self, widget, device):
         self.wired_devices = net_manager.device_manager.get_wired_devices()
