@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-22 13:45+0800\n"
+"POT-Creation-Date: 2013-04-25 09:45+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,69 +17,17 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/widget.py:44
-msgid "Autostart app"
-msgstr ""
-
-#: ../src/widget.py:53
-msgid "OK"
-msgstr ""
-
-#: ../src/widget.py:54
-msgid "Cancel"
-msgstr ""
-
-#: ../src/widget.py:87
-msgid "Name:"
-msgstr ""
-
-#: ../src/widget.py:88
-msgid "Exec:"
-msgstr ""
-
-#: ../src/widget.py:89
-msgid "Description:"
-msgstr ""
-
-#: ../src/treeview.py:114
-msgid "No description"
-msgstr ""
-
-#: ../src/treeview.py:124
-msgid "active"
-msgstr ""
-
-#: ../src/treeview.py:126
-msgid "not running"
-msgstr ""
-
-#: ../src/session_view.py:51 ../src/search_keyword.py:29
-#: ../src/app_asso_view.py:61
+#: ../src/app_asso_view.py:61 ../src/search_keyword.py:29
+#: ../src/session_view.py:51
 msgid "Application"
 msgstr ""
 
-#: ../src/session_view.py:51
-msgid "Description"
-msgstr ""
-
-#: ../src/session_view.py:64
-msgid "New"
-msgstr ""
-
-#: ../src/session_view.py:65
-msgid "Delete"
-msgstr ""
-
-#: ../src/search_keyword.py:30 ../src/app_asso_view.py:62
+#: ../src/app_asso_view.py:62 ../src/search_keyword.py:30
 msgid "Media"
 msgstr ""
 
-#: ../src/search_keyword.py:31 ../src/app_asso_view.py:63
+#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
 msgid "Autostart"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
 msgstr ""
 
 #: ../src/media_view.py:49
@@ -134,6 +82,26 @@ msgstr ""
 msgid "more option"
 msgstr ""
 
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Exec"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Description"
+msgstr ""
+
+#: ../src/session_view.py:64
+msgid "New"
+msgstr ""
+
+#: ../src/session_view.py:65
+msgid "Delete"
+msgstr ""
+
 #: ../src/app_view.py:42
 msgid "web"
 msgstr ""
@@ -160,4 +128,44 @@ msgstr ""
 
 #: ../src/app_view.py:48
 msgid "terminal"
+msgstr ""
+
+#: ../src/widget.py:44
+msgid "Autostart app"
+msgstr ""
+
+#: ../src/widget.py:53
+msgid "OK"
+msgstr ""
+
+#: ../src/widget.py:54
+msgid "Cancel"
+msgstr ""
+
+#: ../src/widget.py:87
+msgid "Name:"
+msgstr ""
+
+#: ../src/widget.py:88
+msgid "Exec:"
+msgstr ""
+
+#: ../src/widget.py:89
+msgid "Description:"
+msgstr ""
+
+#: ../src/treeview.py:117
+msgid "No exec"
+msgstr ""
+
+#: ../src/treeview.py:131
+msgid "No description"
+msgstr ""
+
+#: ../src/treeview.py:140
+msgid "active"
+msgstr ""
+
+#: ../src/treeview.py:142
+msgid "not running"
 msgstr ""
