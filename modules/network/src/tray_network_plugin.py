@@ -100,10 +100,10 @@ class TrayNetworkPlugin(object):
 
     def mm_device_deactive(self, widget, new_state, old_state, reason):
         self.gui.mobile.set_active((True, False))
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
+        if self.gui.wireless.get_active():
             self.change_status_icon("links")
+        elif self.gui.wire.get_active():
+            self.change_status_icon("cable")
         else:
             self.change_status_icon("cable_disconnect")
 
@@ -117,10 +117,10 @@ class TrayNetworkPlugin(object):
 
     def mm_activate_failed(self, widget, new_state, old_state, reason):
         self.gui.mobile.set_active((True, False))
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
+        if self.gui.wireless.get_active():
             self.change_status_icon("links")
+        elif self.gui.wire.get_active():
+            self.change_status_icon("cable")
         else:
             self.change_status_icon("cable_disconnect")
 
