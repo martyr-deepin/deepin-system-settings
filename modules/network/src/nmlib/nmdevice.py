@@ -247,6 +247,7 @@ class NMDevice(NMObject):
                 nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
             except:
                 pass
+            return 
 
         if new_state == 120:
             self.emit_in_time("activate-failed", new_state, old_state, reason)

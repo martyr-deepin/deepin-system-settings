@@ -309,8 +309,7 @@ class NMClient(NMObject):
 
     def device_removed_cb(self, device_object_path):
         self.emit("device-removed", device_object_path)
-        print "backend emit device removed"
-        #try:
+        ##try:
         #    device = get_cache().getobject(device_object_path)
         #    device.remove_signals()
         #except:

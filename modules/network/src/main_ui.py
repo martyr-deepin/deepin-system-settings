@@ -216,6 +216,9 @@ class WiredDevice(object):
         if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
             self.wire.set_active(False)
 
+        if len(self.tree.visible_items) > len(net_manager.wired_devices):
+            print "in fact there had device removed"
+
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         #for item in self.tree.visible_items:
         #    print "wired device unavailable"
@@ -230,6 +233,9 @@ class WiredDevice(object):
 
         if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
             self.wire.set_active(False)
+
+        if len(self.tree.visible_items) > len(net_manager.wired_devices):
+            print "in fact there had device removed"
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
         index = self.wired_devices.index(widget)
@@ -1046,11 +1052,11 @@ class Network(object):
                 self.vbox.pack_start(section_ins, False, True)
         else:
             for section in self.vbox.get_children():
-
                 if section.show_or_hide():
                     section.section_show()
                 else:
                     section.section_hide()
+
     def __init_ui(self):
 
         self.vbox = gtk.VBox(False, BETWEEN_SPACING)

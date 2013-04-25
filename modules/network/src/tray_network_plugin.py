@@ -70,7 +70,6 @@ class TrayNetworkPlugin(object):
         self.init_wireless_signals()
         self.init_mm_signals()
 
-
     def recheck_sections(self, widget, index):
         self.init_widgets()
         Dispatcher.emit("request-resize")
