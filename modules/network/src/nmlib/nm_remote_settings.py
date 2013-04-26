@@ -41,6 +41,7 @@ from nmutils.nmsetting_ppp import NMSettingPPP
 import os
 import glib
 import ConfigParser 
+import traceback
 
 class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
@@ -86,8 +87,11 @@ class NMRemoteSettings(NMObject):
     def list_connections(self):
         '''return connections object'''
         try:
-            return map(lambda x:get_cache().getobject(x), TypeConvert.dbus2py(self.dbus_method("ListConnections")))
+            return filter(lambda x: "read-only" not in x.settings_dict["connection"] or not x.settings_dict["connection"]["read-only"], 
+                            map(lambda x:get_cache().getobject(x), TypeConvert.dbus2py(self.dbus_method("ListConnections")))
+                        )
         except:
+            traceback.print_exc()
             return []
 
     def get_connection_by_uuid(self, uuid):
