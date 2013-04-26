@@ -20,15 +20,16 @@
 # You should have received a copy of the GNU General Public License             
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
-from dtk.ui.button import CheckButton, Button
+from dtk.ui.button import CheckButton, Button, ToggleButton
 
 from media import MediaAutorun
 from app import AppManager
 import gtk
 import style
-from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING
+from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING, WIDGET_SPACING
 from nls import _
 
 class MediaView(gtk.VBox):
@@ -37,6 +38,7 @@ class MediaView(gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
+        self.all_app_default_value = {}
         style.draw_background_color(self)
         self.media_handle = MediaAutorun()
         self.app_manager = AppManager()
@@ -58,18 +60,19 @@ class MediaView(gtk.VBox):
                         (_("ask"), "ask"),
                         (_("do nothing"), "do_nothing"),
                         (_("open folder"),"open_folder")]
-        #self.auto_mount = CheckButton(_("apply auto mount for all media and devices"))
-        self.auto_mount_open = CheckButton(_("apply auto open for all media and devices"))
-        self.autorun_never = CheckButton(_("Never prompt or autorun/autostart programs when media are inserted"))
+        self.auto_mount_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.auto_mount_label = Label(_("apply auto open for all media and devices"))
+        self.auto_mount_toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            app_theme.get_pixbuf("toggle_button/active_normal.png"))
+        self.auto_mount_box.pack_start(self.auto_mount_label, False, False)
+        self.auto_mount_box.pack_start(self.auto_mount_toggle, False, False)
 
         self.cd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.player= ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.photo = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.software = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
-
         self.more_option = Button(_("more option"))
-        #self.more_option.set_size_request( 30, 22)
 
         ###below content type displayed as more option is clicked"
         self.audio_dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
@@ -89,19 +92,14 @@ class MediaView(gtk.VBox):
         table.attach(style.wrap_with_align(player_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
         table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 7, 8)
         table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 8, 9)
-        
-        #table.attach(style.wrap_with_align(self.auto_mount, align = "left", left = 180), 0, 3, 1, 2)
-        #table.attach(style.wrap_with_align(self.auto_mount_open, "left", left = 180), 0, 3, 2, 3)
 
-        table.attach(style.wrap_with_align(self.auto_mount_open, align = "left", left = 180), 0, 3, 1, 2)
-        #table.attach(style.wrap_with_align(self.autorun_never, "left", left = 180), 0, 3, 2, 3)
+        table.attach(style.wrap_with_align(self.auto_mount_box, align = "left", left = 180), 0, 3, 1, 2)
 
         table.attach(style.wrap_with_align(self.cd), 1, 3, 4, 5)
         table.attach(style.wrap_with_align(self.dvd), 1, 3, 5, 6)
         table.attach(style.wrap_with_align(self.player), 1, 3, 6, 7)
         table.attach(style.wrap_with_align(self.photo), 1, 3, 7, 8)
         table.attach(style.wrap_with_align(self.software), 1, 3, 8, 9)
-        #table.attach(style.wrap_with_align(self.more_option), 2, 3, 7, 8)
 
         # UI style
         table_align = style.set_box_with_align(table, "text")
@@ -116,22 +114,14 @@ class MediaView(gtk.VBox):
         self.refresh_app_list(default_list)
 
         self.media_handle.auto_mount = True
-        #if self.media_handle.autorun_never:
-        #    for combo in self.all_app_dict:
-        #        combo.set_sensitive(False)
-        #        self.auto_mount.set_active(False)
-        #else:
-        #    for combo in self.all_app_dict:
-        #        combo.set_sensitive(True)
-        #        self.auto_mount.set_active(True)
-        if self.media_handle.autorun_never:
-            for combo in self.all_app_dict:
-                combo.set_sensitive(False)
-        else:
+        if self.media_handle.automount_open:
             for combo in self.all_app_dict:
                 combo.set_sensitive(True)
-        
-        self.auto_mount_open.set_active(self.media_handle.automount_open)
+        else:
+            for combo in self.all_app_dict:
+                combo.set_sensitive(False)
+    
+        self.auto_mount_toggle.set_active(self.media_handle.automount_open)
 
         self.connect_signal_to_combos()
 
@@ -156,37 +146,38 @@ class MediaView(gtk.VBox):
 
             key.add_items(map(lambda info:(info.get_name(), info), app_info_list) + default_list, select_index=default_value)
 
+        self.all_app_default_value = {self.cd: self.cd.get_select_index(), 
+                                      self.dvd: self.dvd.get_select_index(), 
+                                      self.player: self.player.get_select_index(), 
+                                      self.photo: self.photo.get_select_index(), 
+                                      self.software: self.software.get_select_index()
+                                     }
+
     def connect_signal_to_combos(self):
         for combo in self.all_app_dict:
             combo.connect("item-selected", self.change_autorun_callback)
-        #self.auto_mount.connect("toggled", self.automount_toggle_cb)
-        self.auto_mount_open.connect("toggled", self.automount_open_toggle_cb)
-        self.autorun_never.connect("toggled", self.autorun_never_toggle_cb)
+        
+        self.auto_mount_toggle.connect("toggled", self.automount_open_toggle_cb)
 
     def change_autorun_callback(self, widget, content, value, index):
+        self.all_app_default_value[widget] = index
         if type(value) is not str:
-            self.set_media_handler_preference(self.all_app_dict[widget], "set_default")
+            self.set_media_handler_preference(self.all_app_dict[widget], widget, "set_default")
             self.app_manager.set_default_for_type(value, self.all_app_dict[widget])
         else:
-            self.set_media_handler_preference(self.all_app_dict[widget], value)
-
-    #def automount_toggle_cb(self, widget):
-    #    self.media_handle.autorun_never = not widget.get_active()
-    #    
-    #    if widget.get_active():
-    #        for combo in self.all_app_dict:
-    #            combo.set_sensitive(True)
-    #    else:
-    #        for combo in self.all_app_dict:
-    #            combo.set_sensitive(False)
+            self.set_media_handler_preference(self.all_app_dict[widget], widget, value)
 
     def automount_open_toggle_cb(self, widget):
         self.media_handle.automount_open = widget.get_active()
+        
+        if widget.get_active():
+            for combo in self.all_app_dict:
+                combo.set_sensitive(True)
+        else:
+            for combo in self.all_app_dict:
+                combo.set_sensitive(False)
 
-    def autorun_never_toggle_cb(self, widget):
-        self.media_handle.autorun_never = widget.get_active()
-
-    def set_media_handler_preference(self, x_content, action_name=None):
+    def set_media_handler_preference(self, x_content, widget, action_name=None):
         if action_name == "ask":
             self.media_handle.remove_x_content_start_app(x_content)
             self.media_handle.remove_x_content_ignore(x_content)
@@ -212,7 +203,14 @@ class MediaView(gtk.VBox):
             print action_name, ">>>",self.get_state(x_content)
         else:
             from dtk.ui.dialog import OpenFileDialog
-            OpenFileDialog("test", self.get_toplevel(), lambda name: self.add_app_info(name, x_content))
+            OpenFileDialog(
+                _("other applications"), 
+                self.get_toplevel(), 
+                lambda name: self.add_app_info(name, x_content), 
+                self.__cancel_other_application(widget))
+
+    def __cancel_other_application(self, widget):
+        widget.set_select_index(self.all_app_default_value[widget])
 
     def add_app_info(self, app_name, x_content):
         import os
