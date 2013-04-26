@@ -47,7 +47,7 @@ msgstr "音乐播放器"
 
 #: ../src/media_view.py:54
 msgid "camera"
-msgstr "图片"
+msgstr "相机"
 
 #: ../src/media_view.py:55
 msgid "software"

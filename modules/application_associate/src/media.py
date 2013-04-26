@@ -33,24 +33,38 @@ class MediaAutorun(object):
         self.photo_content_type = "x-content/image-dcf"
         self.software_content_type = "x-content/unix-software"
 
-        self.other_content_types = {"x-content/audio-dvd", "audio DVD",
-                                    "x-content/blank-bd", "blank Blu-ray disc",
-                                    "x-content/blank-cd", "blank CD disc",
-                                    "x-content/blank-dvd", "blank DVD disc",
-                                    "x-content/blank-hddvd", "blank HD DVD disc",
-                                    "x-content/video-bluray", "Blu-ray video disc",
-                                    "x-content/ebook-reader", "e-book reader",
-                                    "x-content/video-hddvd", "HD DVD video disc",
-                                    "x-content/image-picturecd", "Picture CD",
-                                    "x-content/video-svcd", "Super Video CD",
-                                    "x-content/video-vcd", "Video CD" }
-        
+        ###other content types
+        self.audio_dvd_content_type = "x-content/audio-dvd"
+        self.blank_bd_content_type = "x-content/blank-bd"
+        self.blank_cd_content_type = "x-content/blank-dvd"
+        self.blank_hddvd_content_type = "x-content/blank-hddvd"
+        self.video_bluray_content_type = "x-content/video-bluray"
+        self.ebook_reader_content_type = "x-content/ebook-reader"
+        self.video_hddvd_content_type = "x-content/video-hddvd"
+        self.image_picturecd_content_type = "x-content/image-picturecd"
+        self.video_svcd_content_type = "x-content/video-svcd"
+        self.video_vcd_content_type = "x-content/video-vcd"
+
+        '''
+        self.other_content_types = {"x-content/audio-dvd", "audio DVD","音频 DVD"
+                                    "x-content/blank-bd", "blank Blu-ray disc","空白蓝光光盘"
+                                    "x-content/blank-cd", "blank CD disc","空白 CD 光盘"
+                                    "x-content/blank-dvd", "blank DVD disc","空白 DVD 光盘"
+                                    "x-content/blank-hddvd", "blank HD DVD disc","空白 HD DVD 光盘"
+                                    "x-content/video-bluray", "Blu-ray video disc","蓝光视频光盘"
+                                    "x-content/ebook-reader", "e-book reader","电子书阅读器"
+                                    "x-content/video-hddvd", "HD DVD video disc","HD DVD 视频光盘"
+                                    "x-content/image-picturecd", "Picture CD","图片 CD"
+                                    "x-content/video-svcd", "Super Video CD","超级 VCD"
+                                    "x-content/video-vcd", "Video CD","视频 CD" }
+        '''
     @property
     def automount(self):
         if self.media_autorun_settings.get_boolean("automount") != None:
             return self.media_autorun_settings.get_boolean("automount")
         else:
             return True
+
     @automount.setter
     def automount(self, automount):
         self.media_autorun_settings.set_boolean("automount", automount)
@@ -61,6 +75,7 @@ class MediaAutorun(object):
             return self.media_autorun_settings.get_boolean("automount-open")
         else:
             return True
+
     @automount_open.setter
     def automount_open(self, automount_open):
         self.media_autorun_settings.set_boolean("automount-open", automount_open)
@@ -71,6 +86,7 @@ class MediaAutorun(object):
             return self.media_autorun_settings.get_boolean("autorun-never")
         else:
             return False
+
     @autorun_never.setter
     def autorun_never(self, autorun_never):
         self.media_autorun_settings.set_boolean("autorun-never", autorun_never)
@@ -104,6 +120,7 @@ class MediaAutorun(object):
             return content
         else:
             return []
+
     @autorun_x_content_open_folder.setter 
     def autorun_x_content_open_folder(self, autorun_x_content_open_folder):
         self.media_autorun_settings.set_strv("autorun-x-content-open-folder",autorun_x_content_open_folder)

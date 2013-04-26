@@ -69,6 +69,18 @@ class MediaView(gtk.VBox):
         self.more_option = Button(_("more option"))
         #self.more_option.set_size_request( 30, 22)
 
+        ###below content type displayed as more option is clicked"
+        self.audio_dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.blank_bd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.blank_cd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.blank_hddvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.video_bluray = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.ebook_reader = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.video_hddvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.image_picturecd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.video_svcd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.video_vcd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+
         table.attach(style.wrap_with_align(info_label, width=self.LEFT_WIDTH), 0, 3, 0, 1)
         table.attach(style.wrap_with_align(cd_label, width=self.LEFT_WIDTH), 0, 1, 4, 5)
         table.attach(style.wrap_with_align(dvd_label, width=self.LEFT_WIDTH), 0, 1, 5, 6)
