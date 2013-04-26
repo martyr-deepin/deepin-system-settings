@@ -41,13 +41,12 @@ from deepin_utils.process import run_command
 
 class DisplayManager:
     BIG_NUM = 0
-    SESSION_NAME = "deepin"
     
     def __init__(self):
         self.__deepin_xrandr = deepin_xrandr.new()
         self.__xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")
         self.__power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
-        self.__session_settings = deepin_gsettings.new("org.gnome.desktop.session")
+        self.__idle_delay_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.idle-delay")
         self.__screensaver_settings = deepin_gsettings.new("org.gnome.desktop.screensaver")
 
         self.__output_count = 0
@@ -70,13 +69,13 @@ class DisplayManager:
         self.__xrandr_settings = None
         self.__power_settings.delete()
         self.__power_settings = None
-        self.__session_settings.delete()
-        self.__session_settings = None
+        self.__idle_delay_settings.delete()
+        self.__idle_delay_settings = None
 
     def reset(self):
         self.__power_settings.reset("sleep-display-battery")
         self.__power_settings.reset("sleep-display-ac")
-        self.__session_settings.reset("idle-delay")
+        self.__idle_delay_settings.reset("timeout")
         self.__xrandr_settings.reset("copy-multi-monitors")           
         self.__xrandr_settings.reset("only-monitor-shown")
         self.__xrandr_settings.reset("extend-multi-monitors")
@@ -479,8 +478,7 @@ class DisplayManager:
         self.__power_settings.set_int("sleep-display-ac", value * 60)
 
     def is_enable_lock_display(self):
-        self.__session_settings.set_string("session-name", self.SESSION_NAME)
-        if self.__session_settings.get_uint("idle-delay") < self.BIG_NUM / 60:
+        if self.__idle_delay_settings.get_uint("timeout") != 0:
             return True
 
         return False
@@ -489,10 +487,10 @@ class DisplayManager:
     TODO: unit is second
     '''
     def get_lock_display(self):
-        return self.__session_settings.get_uint("idle-delay")
+        return self.__idle_delay_settings.get_uint("timeout")
 
     def get_lock_display_index(self, items):
         return self.__get_duration_index(self.get_lock_display() / 60, items)
 
     def set_lock_display(self, value):
-        self.__session_settings.set_uint("idle-delay", value * 60)
+        self.__idle_delay_settings.set_uint("timeout", value * 60)
