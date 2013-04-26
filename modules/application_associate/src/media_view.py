@@ -58,8 +58,10 @@ class MediaView(gtk.VBox):
                         (_("ask"), "ask"),
                         (_("do nothing"), "do_nothing"),
                         (_("open folder"),"open_folder")]
-        self.auto_mount = CheckButton(_("apply auto mount for all media and devices"))
+        #self.auto_mount = CheckButton(_("apply auto mount for all media and devices"))
         self.auto_mount_open = CheckButton(_("apply auto open for all media and devices"))
+        self.autorun_never = CheckButton(_("Never prompt or autorun/autostart programs when media are inserted"))
+
         self.cd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.player= ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
@@ -88,8 +90,12 @@ class MediaView(gtk.VBox):
         table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 7, 8)
         table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 8, 9)
         
-        table.attach(style.wrap_with_align(self.auto_mount, align = "left", left = 180), 0, 3, 1, 2)
-        table.attach(style.wrap_with_align(self.auto_mount_open, "left", left = 180), 0, 3, 2, 3)
+        #table.attach(style.wrap_with_align(self.auto_mount, align = "left", left = 180), 0, 3, 1, 2)
+        #table.attach(style.wrap_with_align(self.auto_mount_open, "left", left = 180), 0, 3, 2, 3)
+
+        table.attach(style.wrap_with_align(self.auto_mount_open, align = "left", left = 180), 0, 3, 1, 2)
+        #table.attach(style.wrap_with_align(self.autorun_never, "left", left = 180), 0, 3, 2, 3)
+
         table.attach(style.wrap_with_align(self.cd), 1, 3, 4, 5)
         table.attach(style.wrap_with_align(self.dvd), 1, 3, 5, 6)
         table.attach(style.wrap_with_align(self.player), 1, 3, 6, 7)
@@ -108,15 +114,23 @@ class MediaView(gtk.VBox):
             combo.set_size_request(self.ENTRY_WIDTH, 22)
 
         self.refresh_app_list(default_list)
+
+        self.media_handle.auto_mount = True
+        #if self.media_handle.autorun_never:
+        #    for combo in self.all_app_dict:
+        #        combo.set_sensitive(False)
+        #        self.auto_mount.set_active(False)
+        #else:
+        #    for combo in self.all_app_dict:
+        #        combo.set_sensitive(True)
+        #        self.auto_mount.set_active(True)
         if self.media_handle.autorun_never:
             for combo in self.all_app_dict:
                 combo.set_sensitive(False)
-                self.auto_mount.set_active(False)
         else:
             for combo in self.all_app_dict:
                 combo.set_sensitive(True)
-                self.auto_mount.set_active(True)
-
+        
         self.auto_mount_open.set_active(self.media_handle.automount_open)
 
         self.connect_signal_to_combos()
@@ -145,8 +159,9 @@ class MediaView(gtk.VBox):
     def connect_signal_to_combos(self):
         for combo in self.all_app_dict:
             combo.connect("item-selected", self.change_autorun_callback)
-        self.auto_mount.connect("toggled", self.automount_toggle_cb)
+        #self.auto_mount.connect("toggled", self.automount_toggle_cb)
         self.auto_mount_open.connect("toggled", self.automount_open_toggle_cb)
+        self.autorun_never.connect("toggled", self.autorun_never_toggle_cb)
 
     def change_autorun_callback(self, widget, content, value, index):
         if type(value) is not str:
@@ -155,18 +170,21 @@ class MediaView(gtk.VBox):
         else:
             self.set_media_handler_preference(self.all_app_dict[widget], value)
 
-    def automount_toggle_cb(self, widget):
-        self.media_handle.autorun_never = not widget.get_active()
-        
-        if widget.get_active():
-            for combo in self.all_app_dict:
-                combo.set_sensitive(True)
-        else:
-            for combo in self.all_app_dict:
-                combo.set_sensitive(False)
+    #def automount_toggle_cb(self, widget):
+    #    self.media_handle.autorun_never = not widget.get_active()
+    #    
+    #    if widget.get_active():
+    #        for combo in self.all_app_dict:
+    #            combo.set_sensitive(True)
+    #    else:
+    #        for combo in self.all_app_dict:
+    #            combo.set_sensitive(False)
 
     def automount_open_toggle_cb(self, widget):
         self.media_handle.automount_open = widget.get_active()
+
+    def autorun_never_toggle_cb(self, widget):
+        self.media_handle.autorun_never = widget.get_active()
 
     def set_media_handler_preference(self, x_content, action_name=None):
         if action_name == "ask":
