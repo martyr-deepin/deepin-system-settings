@@ -41,7 +41,6 @@ class VPNSetting(Settings):
         return connections
         
     def save_changes(self, connection):
-        print "saving"
         if isinstance(connection, NMRemoteConnection):
             connection.update()
         else:
@@ -50,7 +49,8 @@ class VPNSetting(Settings):
             Dispatcher.emit("vpn-redraw")
 
         Dispatcher.to_main_page()
-        event_manager.emit("update-vpn-id", connection.get_setting("connection").id)
+        event_manager.emit("update-vpn-id", connection.get_setting("connection").id, 
+            self.spec_connection)
         #Dispatcher.set_button("apply", True)
 
     def delete_request_redraw(self):

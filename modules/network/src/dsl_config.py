@@ -72,7 +72,8 @@ class DSLSetting(Settings):
                 Dispatcher.emit("dsl-redraw")
 
         Dispatcher.to_main_page()
-        event_manager.emit("update-dsl-id", connection.get_setting("connection").id)
+        event_manager.emit("update-dsl-id", connection.get_setting("connection").id, 
+            self.spec_connection)
         #Dispatcher.set_button("apply", True)
 
     def apply_changes(self, connection):

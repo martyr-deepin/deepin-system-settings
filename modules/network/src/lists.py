@@ -629,6 +629,9 @@ class DSLItem(GenItems):
         event_manager.add_callback("update-dsl-id", self.__on_update_id)
 
     def __on_update_id(self, name, obj, data):
+        if obj != self.connection:
+            return
+
         self.id = data
         self.redraw()
     
@@ -710,6 +713,9 @@ class VPNItem(GenItems):
         event_manager.add_callback("update-vpn-id", self.__on_update_id)            
                                                                                 
     def __on_update_id(self, name, obj, data):                                  
+        if obj != self.connection:
+            return
+
         self.id = data                                                          
         self.redraw()                                                           
                                                                                 
