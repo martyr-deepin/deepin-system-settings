@@ -59,7 +59,7 @@ class NetworkService(dbus.service.Object):
             except:
                 traceback.print_exc()
 
-        with open("/etc/network/interface", "w") as it:
+        with open("/etc/network/interfaces", "w") as it:
             try:
                 it.write("auto lo\n")
                 it.write("iface lo inet loopback\n")
