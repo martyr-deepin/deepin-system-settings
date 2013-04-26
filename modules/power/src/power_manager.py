@@ -51,7 +51,7 @@ class PowerManager:
     def __init__(self):
         self.power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.lockdown_settings = deepin_gsettings.new("org.gnome.desktop.screensaver")
-        self.idle_delay_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.idle-delay")
+        self.session_settings = deepin_gsettings.new("org.gnome.desktop.session")
 
         self.__powers_xml_filename = "%s/.config/powers.xml" % os.path.expanduser('~')
         self.__xmldoc = minidom.parse(self.__powers_xml_filename)
@@ -259,7 +259,7 @@ class PowerManager:
     def set_close_monitor(self, value):
         self.power_settings.set_int("sleep-display-battery", value)
         self.power_settings.set_int("sleep-display-ac", value)
-        self.idle_delay_settings.set_uint("timeout", value)
+        self.session_settings.set_uint("idle-delay", value)
 
     def get_wakeup_password(self):
         return self.lockdown_settings.get_boolean("lock-enabled")
