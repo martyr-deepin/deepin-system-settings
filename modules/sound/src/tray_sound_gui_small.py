@@ -38,14 +38,13 @@ from mpris2 import Mpris2
 from glib import markup_escape_text
 from urlparse import urlparse
 
-import threading as td
 import gtk
 import gobject
 import pypulse_small as pypulse
-import traceback
 import psutil
 import dtk_cairo_blur
 import cairo
+from play_media import Play
 
 gtk.gdk.threads_init()
 
@@ -76,6 +75,8 @@ class TrayGui(gtk.VBox):
         self.mpris2.connect("new", self.mpris2_new_cb)
         self.mpris2.connect("removed", self.mpris2_removed_cb)
         self.mpris2.connect("changed", self.mpris2_changed_cb)
+
+        self.__play_dingdong = Play(os.path.join(get_parent_dir(__file__, 1), 'dingdong.wav'))
 
         hbox = gtk.HBox(False)
         hbox.set_spacing(WIDGET_SPACING)
@@ -151,6 +152,7 @@ class TrayGui(gtk.VBox):
         self.speaker_mute_button.connect("toggled", self.speaker_toggled)
         #self.microphone_mute_button.connect("toggled", self.microphone_toggled)
         self.speaker_scale.connect("value-changed", self.speaker_scale_value_changed)
+        self.speaker_scale.connect("button-release-event", lambda w, e: self.__play_dingdong.play())
         #self.microphone_scale.connect("value-changed", self.microphone_scale_value_changed)
         # pulseaudio signals
         pypulse.PULSE.connect("sink-removed", self.sink_removed_cb)
@@ -175,6 +177,8 @@ class TrayGui(gtk.VBox):
 
     def __make_playback_box(self, stream, index):
         process_id = int(stream['proplist']['application.process.id'])
+        if process_id == os.getpid():
+            return
         # if it has show mpris, then don't show sink_input
         if process_id in self.mpris_list:
             self.mpris_stream[process_id] = index
@@ -388,6 +392,9 @@ class TrayGui(gtk.VBox):
 
     def __sinkinput_state_cb(self, obj, dt, index):
         if index in self.stream_mpris:
+            return
+        process_id = int(dt['proplist']['application.process.id'])
+        if process_id == os.getpid():
             return
         if index not in self.stream_list:
             self.__make_playback_box(dt, index)
