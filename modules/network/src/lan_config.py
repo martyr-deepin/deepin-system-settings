@@ -164,8 +164,8 @@ class Wired(gtk.VBox):
         # check mac address whether is valid
         if self.settings_obj is None:
             return
-        mac_address = self.mac_entry.get_address()
-        cloned_mac_address = self.clone_entry.get_address()
+        mac_address = event
+        cloned_mac_address = event
         if (mac_address == "") or (TypeConvert.is_valid_mac_address(mac_address)):
             mac_address_is_valid = True
         else:

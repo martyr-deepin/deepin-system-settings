@@ -643,7 +643,7 @@ class Wireless(gtk.VBox):
         else:
             from nmlib.nm_utils import TypeConvert
             if TypeConvert.is_valid_mac_address(content):
-                setattr(self.ethernet, types, content)
+                setattr(self.wireless, types, content)
                 #check_settings(self.connection, self.set_button)
                 is_valid = self.connection.check_setting_finish()
             else:

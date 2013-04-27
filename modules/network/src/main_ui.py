@@ -525,18 +525,16 @@ class WirelessSection(Section, WirelessDevice):
 
     def get_list(self):
         self.ap_list = list()
+        if self.wireless_devices == None:
+            return []
+
         for wireless_device in self.wireless_devices:
             device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
             self.ap_list += device_wifi.order_ap_list()
         aps = map(lambda i:WirelessItem(i), self.ap_list)
-        
-
         hidden_list = self.get_hidden_connection(self.ap_list)
-        #hidden_list = []
         hiddens = map(lambda c: HidenItem(c), hidden_list)
-
         return aps + hiddens
-        #return self.ap_list
 
     def get_hidden_connection(self, ap_list):
         from shared_methods import net_manager
