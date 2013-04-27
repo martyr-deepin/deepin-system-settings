@@ -46,17 +46,16 @@ from treeitem import MyTreeView as TreeView
 from statusbar import StatusBar
 from nls import _
 import gtk
-#import settings
 import pypulse_small as pypulse
 
 from cairo import ANTIALIAS_NONE
 from module_frame import ModuleFrame
+from play_media import Play
 from constant import *
-import threading as td
-import traceback
 
 MODULE_NAME = "sound"
 MUTE_TEXT_COLOR = "#DCDCDC"
+
 
 class SoundSetting(object):
     '''sound setting class'''
@@ -83,6 +82,7 @@ class SoundSetting(object):
 
         self.__record_stream_cb_fun = {"read": self.__record_stream_read_cb, "suspended": self.__record_stream_suspended}
 
+        self.__play_dingdong = Play(os.path.join(get_parent_dir(__file__, 1), 'dingdong.wav'))
         self.__create_widget()
         self.__adjust_widget()
         self.__signals_connect()
@@ -470,6 +470,7 @@ class SoundSetting(object):
 
         self.scale_widgets["balance"].connect("value-changed", self.speaker_value_changed_cb)
         self.scale_widgets["speaker"].connect("value-changed", self.speaker_value_changed_cb)
+        self.scale_widgets["speaker"].connect("button-release-event", lambda w, e: self.__play_dingdong.play())
         self.scale_widgets["microphone"].connect("value-changed", self.microphone_value_changed_cb)
 
         self.button_widgets["speaker_combo"].connect("item-selected", self.speaker_port_changed)
