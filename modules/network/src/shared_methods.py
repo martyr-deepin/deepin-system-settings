@@ -306,7 +306,10 @@ class Settings(object):
 
     #################
     def set_button(self, name, state):
+        #print "-"*15
         #print "mac_is_valid:", self.mac_is_valid, "ipv4:", self.ipv4_ip_is_valid, self.ipv4_dns_is_valid, "ipv6:", self.ipv6_ip_is_valid, self.ipv6_dns_is_valid
+        #print "wlan dsl ppp vpn", self.wlan_encry_is_valid, self.dsl_is_valid, self.ppp_is_valid, self.vpn_is_valid
+        #print "-"*15
         # 输入合法性检查，再统一设置按钮状态
         if self.mac_is_valid and \
                 self.ipv4_ip_is_valid and \

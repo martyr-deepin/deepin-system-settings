@@ -151,26 +151,32 @@ class Wired(gtk.VBox):
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
 
         ## retrieve wired info
-    def save_settings(self, widget, event, types):
-        value = None
-        # if widget is SpinBox
-        if hasattr(widget, "get_value"):
-            value = widget.get_value()
-        elif hasattr(widget, "get_text"):
-            value = widget.get_text()
-        else:
-            value = widget.get_address()
-        setattr(self.ethernet, types, value)
-        # check mac address whether is valid
+    def save_settings(self, widget, content, types):
+        #value = None
+        setattr(self.ethernet, types, content)
         if self.settings_obj is None:
             return
-        mac_address = event
-        cloned_mac_address = event
-        if (mac_address == "") or (TypeConvert.is_valid_mac_address(mac_address)):
+        
+        # check mac address whether is valid
+        if types == "mac_address":
+            mac_address = content
+            cloned_mac_address = self.clone_entry.get_address()
+        elif types == "cloned_mac_address":
+            mac_address = self.mac_entry.get_address()
+            cloned_mac_address = content
+        else:
+            mac_address = self.mac_entry.get_address()
+            cloned_mac_address = self.clone_entry.get_address()
+
+        if (mac_address == ":::::") or \
+                (mac_address == "") or \
+                (TypeConvert.is_valid_mac_address(mac_address)):
             mac_address_is_valid = True
         else:
             mac_address_is_valid = False
-        if (cloned_mac_address == "") or (TypeConvert.is_valid_mac_address(cloned_mac_address)):
+        if (cloned_mac_address == ":::::") or \
+                (cloned_mac_address == "") or \
+                (TypeConvert.is_valid_mac_address(cloned_mac_address)):
             cloned_mac_address_is_valid = True
         else:
             cloned_mac_address_is_valid = False
