@@ -82,12 +82,13 @@ class SideBar(gtk.VBox):
         if hasattr(self.network_object, "delete_item"):
             pass
         self.init_select(network_object.spec_connection)
-        if self.connections !=[]:
-            crumb_name = network_object.crumb_name
-            if crumb_name == "":
-                crumb_name = _("Hidden network")
-            Dispatcher.send_submodule_crumb(2, crumb_name)
-            Dispatcher.slide_to_page("setting", "right")
+        # FIXME: COME ON, why check the connections count?!
+        #if self.connections !=[]:
+        crumb_name = network_object.crumb_name
+        if crumb_name == "":
+            crumb_name = _("Hidden network")
+        Dispatcher.send_submodule_crumb(2, crumb_name)
+        Dispatcher.slide_to_page("setting", "right")
 
     def __init_tree(self, items_list, insert_pos=None):
         if items_list:
