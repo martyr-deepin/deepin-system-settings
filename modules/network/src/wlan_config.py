@@ -309,11 +309,11 @@ class Security(gtk.VBox):
                                 enable_select=False,
                                 enable_double_click=False)
         self.ssid_label_align = style.wrap_with_align(self.ssid_label, width=210)
-        self.ssid_entry = InputEntry()
-        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.ssid_entry = MACEntry()
+        self.ssid_entry.set_size_request(130, 22)
         self.ssid_entry_align = style.wrap_with_align(self.ssid_entry, align="left")
-        self.ssid_entry.entry.connect("changed", self.set_ssid)
-        self.ssid_entry.set_text(self.wireless.ssid)
+        self.ssid_entry.connect("changed", self.set_ssid)
+        self.ssid_entry.set_address(self.wireless.ssid)
 
         #self.add(align)
 
@@ -549,12 +549,12 @@ class Wireless(gtk.VBox):
         self.ssid_label = Label(_("SSID:"),
                                 enable_select=False,
                                 enable_double_click=False)
-        self.ssid_entry = InputEntry()
+        self.ssid_entry = MACEntry()
 
         self.mode_label = Label(_("Mode:"),
                                enable_select=False,
                                enable_double_click=False)
-        self.mode_combo = ComboBox([(_("Infrastructure"),"infrastructure"),(_("Ad-hoc"), "adhoc")], fixed_width=self.ENTRY_WIDTH)
+        self.mode_combo = ComboBox([(_("Infrastructure"),"infrastructure"),(_("Ad-hoc"), "adhoc")], fixed_width=130)
         
         # TODO need to put this section to personal wifi
         self.band_label = Label(_("Band:"),
@@ -573,7 +573,7 @@ class Wireless(gtk.VBox):
         self.bssid_label = Label(_("BSSID:"),
                                  enable_select=False,
                                  enable_double_click=False)
-        self.bssid_entry = InputEntry()
+        self.bssid_entry = MACEntry()
         self.mac_address_label = Label(_("Device Mac Address:"),
                                  enable_select=False,
                                  enable_double_click=False)
@@ -586,7 +586,7 @@ class Wireless(gtk.VBox):
         self.mtu_label = Label(_("MTU:"),
                            enable_select=False,
                            enable_double_click=False)
-        self.mtu_spin = SpinBox(0, 0, 1500, 1, self.ENTRY_WIDTH)
+        self.mtu_spin = SpinBox(0, 0, 1500, 1, 130)
 
         self.table = gtk.Table(8, 2, False)
 
@@ -618,18 +618,18 @@ class Wireless(gtk.VBox):
         #self.pack_start(self.table, False, False)
         #self.table.set_size_request(340, 227)
 
-        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.bssid_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.mac_entry.set_size_request(self.ENTRY_WIDTH, 22)
-        self.clone_entry.set_size_request(self.ENTRY_WIDTH, 22)
+        self.ssid_entry.set_size_request(130, 22)
+        self.bssid_entry.set_size_request(130, 22)
+        self.mac_entry.set_size_request(130, 22)
+        self.clone_entry.set_size_request(130, 22)
 
         self.reset()
         #self.mode_combo.connect("item-selected", self.mode_combo_selected)
         self.band_combo.connect("item-selected", self.band_combo_selected)
         self.mtu_spin.connect("value-changed", self.spin_value_changed, "mtu")
         self.channel_spin.connect("value-changed", self.spin_value_changed, "channel")
-        self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
-        self.bssid_entry.entry.connect("changed", self.entry_changed, "bssid")
+        self.ssid_entry.connect("changed", self.entry_changed, "ssid")
+        self.bssid_entry.connect("changed", self.entry_changed, "bssid")
         self.mac_entry.connect("changed", self.entry_changed, "mac_address")
         self.clone_entry.connect("changed", self.entry_changed, "cloned_mac_address")
 
@@ -693,10 +693,10 @@ class Wireless(gtk.VBox):
         wireless = self.wireless
         ## retrieve wireless info
         if wireless.ssid != None:
-            self.ssid_entry.set_text(wireless.ssid)
+            self.ssid_entry.set_address(wireless.ssid)
 
         if wireless.bssid != None:
-            self.bssid_entry.set_text(wireless.bssid)
+            self.bssid_entry.set_address(wireless.bssid)
 
         if wireless.mode == 'infrastructure':
             #self.mode_combo.set_select_index(0)
@@ -719,11 +719,11 @@ class Wireless(gtk.VBox):
     
     def save_change(self):
         
-        self.wireless.ssid = self.ssid_entry.get_text()
+        self.wireless.ssid = self.ssid_entry.get_address()
         self.wireless.mode = self.mode_combo.get_current_item()[0]
 
-        if self.bssid_entry.get_text() != "":
-            self.wireless.bssid = self.bssid_entry.get_text()
+        if self.bssid_entry.get_address() != "":
+            self.wireless.bssid = self.bssid_entry.get_address()
         if self.mac_entry.get_address() != "":
             self.wireless.mac_address = self.mac_entry.get_address()
         if self.clone_entry.get_address() != "":

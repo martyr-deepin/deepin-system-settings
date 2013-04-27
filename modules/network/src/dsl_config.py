@@ -167,7 +167,7 @@ class Wired(gtk.VBox):
                     enable_select=False,
                     enable_double_click=False)
         mtu.set_can_focus(False)
-        self.mtu_spin = SpinBox(0,0, 1500, 1, self.ENTRY_WIDTH)
+        self.mtu_spin = SpinBox(0,0, 1500, 1, 130)
         
         '''
         Park table
@@ -190,8 +190,8 @@ class Wired(gtk.VBox):
         table_align.add(default_button)
         self.pack_start(table_align, False, False)
 
-        self.mac_entry.set_size_request(222, 22)
-        self.clone_entry.set_size_request(222, 22)
+        self.mac_entry.set_size_request(130, 22)
+        self.clone_entry.set_size_request(130, 22)
         ## retrieve wired info
         self.mac_entry.connect("changed", self.save_settings, "mac_address")
         self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")

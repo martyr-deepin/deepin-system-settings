@@ -91,7 +91,7 @@ class Sections(gtk.Alignment):
         button.connect("clicked", self.show_more_options)
 
         align = gtk.Alignment(0, 0, 0, 0)
-        align.set_padding(0, 0, 376, 0)
+        align.set_padding(0, 0, 285, 0)
         align.add(button)
 
         basic.load([Wired(self.connection, self.set_button, settings_obj), align])
@@ -128,9 +128,9 @@ class Wired(gtk.VBox):
 
         (mac, clone_mac, mtu) = self.ethernet.mac_address, self.ethernet.cloned_mac_address, self.ethernet.mtu
         if mac != None:
-            self.mac_entry.set_text(mac)
+            self.mac_entry.set_address(mac)
         if clone_mac !=None:
-            self.clone_entry.set_text(clone_mac)
+            self.clone_entry.set_address(clone_mac)
         if mtu != None:
             self.mtu_spin.set_value(int(mtu))
 

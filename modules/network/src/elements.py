@@ -188,7 +188,7 @@ class DefaultToggle(SettingSection):
 
 class TableAsm(gtk.Table):
 
-    def __init__(self, left_width=210, right_width=220):
+    def __init__(self, left_width=210, right_width=130):
         gtk.Table.__init__(self, 1, 2, False)
         self.set_col_spacings(BETWEEN_SPACING)
         self.left_width = left_width
