@@ -24,16 +24,18 @@ import gtk
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 import style
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 from timer import Timer
 from nls import _
 import pango
+
 '''
 signals set-button, set-tip
 '''
 class FootBox(gtk.HBox):
     def __init__(self):
         gtk.HBox.__init__(self)
+
         self.set_size_request(-1, 35)
 
         self.apply_method = None
@@ -43,6 +45,12 @@ class FootBox(gtk.HBox):
 
         Dispatcher.connect("button-change", self.set_button)
         Dispatcher.connect("set-tip", self.set_tip)
+
+        event_manager.add_callback("update-delete-button", self.__on_update_delete_button)
+
+    def __on_update_delete_button(self, name, obj, data):
+        self.btn_delete.set_child_visible(data)
+        self.queue_draw()
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()

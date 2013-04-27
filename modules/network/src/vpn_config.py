@@ -29,6 +29,7 @@ class VPNSetting(Settings):
                                  Sections])
         self.crumb_name = _("VPN")
         self.spec_connection = spec_connection
+        event_manager.emit("update-delete-button", True)
 
     def get_connections(self):
         # Get all connections  

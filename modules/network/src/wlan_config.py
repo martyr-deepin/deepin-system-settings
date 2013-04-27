@@ -35,7 +35,7 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 import style
 from nls import _
 from shared_methods import Settings, net_manager
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -58,6 +58,7 @@ class WirelessSetting(Settings):
         else:
             self.crumb_name = ""
         self.spec_connection = spec_connection
+        event_manager.emit("update-delete-button", False)
 
     def get_ssid(self):
         return self.connections.get_setting("802-11-wireless").ssid

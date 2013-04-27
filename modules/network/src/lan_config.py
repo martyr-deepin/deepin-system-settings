@@ -29,7 +29,7 @@ import gtk
 wired_device = []
 
 from shared_methods import Settings, net_manager
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 from nls import _
 
 class WiredSetting(Settings):
@@ -38,6 +38,7 @@ class WiredSetting(Settings):
         self.crumb_name = _("Wired")
         self.device = device
         self.spec_connection = spec_connection
+        event_manager.emit("update-delete-button", False)
 
     def get_connections(self):
         self.connections = nm_module.nm_remote_settings.get_wired_connections()

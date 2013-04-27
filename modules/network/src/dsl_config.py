@@ -32,7 +32,6 @@ def check_settings(connection, fn):
         Dispatcher.set_button("save", False)
 
 class DSLSetting(Settings):
-
     def __init__(self, spec_connection=None):
         Settings.__init__(self, [DSLConf,
                         Sections,
@@ -40,6 +39,7 @@ class DSLSetting(Settings):
                         PPPConf])
         self.crumb_name = _("DSL")
         self.spec_connection= spec_connection
+        event_manager.emit("update-delete-button", True)
 
     def get_connections(self):
         # Get all connections  
