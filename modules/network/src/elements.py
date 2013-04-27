@@ -1,6 +1,7 @@
 # element widgets to construct complex widgets
 from dss import app_theme
 from dtk.ui.entry import InputEntry, PasswordEntry
+from dtk.ui.net import MACEntry
 from dtk.ui.button import SwitchButton, CheckButton, RadioButton
 from dtk.ui.label import Label
 from dtk.ui.constant import ALIGN_END
@@ -221,6 +222,14 @@ class TableAsm(gtk.Table):
         entry = InputEntry()
         entry.set_size(self.right_width, WIDGET_HEIGHT)
         self._wrap_align((label, entry), table)
+        return entry
+
+    def row_mac_entry(self, label_name, table=None):                          
+        label = self.__label(label_name)                                        
+                                                                                
+        entry = MACEntry()                                                    
+        entry.set_size_request(self.right_width, WIDGET_HEIGHT)                         
+        self._wrap_align((label, entry), table)                                 
         return entry
     
     def row_pwd_entry(self, label_name, table=None):

@@ -3,7 +3,7 @@
 
 from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
-from dtk.ui.address_entry import IpAddressEntry
+from dtk.ui.net import IPV4Entry
 from nmlib.nm_utils import TypeConvert
 from nmlib.nm_remote_connection import NMRemoteConnection
 import gtk
@@ -91,11 +91,11 @@ class IPV4Conf(gtk.VBox):
                                enable_double_click=False)
 
         label.set_can_focus(False)
-        entry = IpAddressEntry()
+        entry = IPV4Entry()
         if types == "ip":
-            entry.connect("focus-out", self.set_ip_address, arg)
+            entry.connect("changed", self.set_ip_address, arg)
         else:
-            entry.connect("focus-out", self.set_dns_address, arg)
+            entry.connect("changed", self.set_dns_address, arg)
         #entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 
         return (label, entry)

@@ -136,8 +136,8 @@ class Wired(gtk.VBox):
 
     def __init_table(self):
         self.table = TableAsm()
-        self.mac_entry = self.table.row_input_entry(_("Device Mac Address:"))
-        self.clone_entry = self.table.row_input_entry(_("Cloned Mac Address:"))
+        self.mac_entry = self.table.row_mac_entry(_("Device Mac Address:"))
+        self.clone_entry = self.table.row_mac_entry(_("Cloned Mac Address:"))
         self.mtu_spin = self.table.row_spin(_("MTU:"), 0, 1500)
         self.table.table_build()
         # TODO UI change
@@ -146,23 +146,26 @@ class Wired(gtk.VBox):
         self.pack_start(align)
    
     def __init_signals(self):
-        self.mac_entry.entry.connect("focus-out-event", self.save_settings, "mac_address")
-        self.clone_entry.entry.connect("focus-out-event", self.save_settings, "cloned_mac_address")
+        self.mac_entry.connect("changed", self.save_settings, "mac_address")
+        self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
 
         ## retrieve wired info
     def save_settings(self, widget, event, types):
+        value = None
         # if widget is SpinBox
         if hasattr(widget, "get_value"):
             value = widget.get_value()
-        else:
+        elif hasattr(widget, "get_text"):
             value = widget.get_text()
+        else:
+            value = widget.get_address()
         setattr(self.ethernet, types, value)
         # check mac address whether is valid
         if self.settings_obj is None:
             return
-        mac_address = self.mac_entry.entry.get_text()
-        cloned_mac_address = self.clone_entry.entry.get_text()
+        mac_address = self.mac_entry.get_address()
+        cloned_mac_address = self.clone_entry.get_address()
         if (mac_address == "") or (TypeConvert.is_valid_mac_address(mac_address)):
             mac_address_is_valid = True
         else:

@@ -21,6 +21,7 @@
 from theme import app_theme
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.entry import InputEntry, PasswordEntry
+from dtk.ui.net import MACEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from dtk.ui.utils import container_remove_all
@@ -576,11 +577,11 @@ class Wireless(gtk.VBox):
         self.mac_address_label = Label(_("Device Mac Address:"),
                                  enable_select=False,
                                  enable_double_click=False)
-        self.mac_entry = InputEntry()
+        self.mac_entry = MACEntry()
         self.clone_addr_label = Label(_("Cloned Mac Address:"),
                                  enable_select=False,
                                  enable_double_click=False)
-        self.clone_entry = InputEntry()
+        self.clone_entry = MACEntry()
 
         self.mtu_label = Label(_("MTU:"),
                            enable_select=False,
@@ -619,8 +620,8 @@ class Wireless(gtk.VBox):
 
         self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
         self.bssid_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.mac_entry.set_size(self.ENTRY_WIDTH, 22)
-        self.clone_entry.set_size(self.ENTRY_WIDTH, 22)
+        self.mac_entry.set_size_request(self.ENTRY_WIDTH, 22)
+        self.clone_entry.set_size_request(self.ENTRY_WIDTH, 22)
 
         self.reset()
         #self.mode_combo.connect("item-selected", self.mode_combo_selected)
@@ -629,8 +630,8 @@ class Wireless(gtk.VBox):
         self.channel_spin.connect("value-changed", self.spin_value_changed, "channel")
         self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
         self.bssid_entry.entry.connect("changed", self.entry_changed, "bssid")
-        self.mac_entry.entry.connect("changed", self.entry_changed, "mac_address")
-        self.clone_entry.entry.connect("changed", self.entry_changed, "cloned_mac_address")
+        self.mac_entry.connect("changed", self.entry_changed, "mac_address")
+        self.clone_entry.connect("changed", self.entry_changed, "cloned_mac_address")
 
     def spin_value_changed(self, widget, value, types):
         setattr(self.wireless, types, value)
@@ -705,10 +706,10 @@ class Wireless(gtk.VBox):
             self.mode_combo.set_select_index(1)
 
         if wireless.mac_address != None:
-            self.mac_entry.set_text(wireless.mac_address)
+            self.mac_entry.set_address(wireless.mac_address)
 
         if wireless.cloned_mac_address !=None:
-            self.clone_entry.set_text(wireless.cloned_mac_address)
+            self.clone_entry.set_address(wireless.cloned_mac_address)
 
         if wireless.mtu != None:
             self.mtu_spin.set_value(int(wireless.mtu))
@@ -723,10 +724,10 @@ class Wireless(gtk.VBox):
 
         if self.bssid_entry.get_text() != "":
             self.wireless.bssid = self.bssid_entry.get_text()
-        if self.mac_entry.get_text() != "":
-            self.wireless.mac_address = self.mac_entry.get_text()
-        if self.clone_entry.get_text() != "":
-            self.wireless.cloned_mac_address = self.clone_entry.get_text()
+        if self.mac_entry.get_address() != "":
+            self.wireless.mac_address = self.mac_entry.get_address()
+        if self.clone_entry.get_address() != "":
+            self.wireless.cloned_mac_address = self.clone_entry.get_address()
 
         self.wireless.mtu = self.mtu_spin.get_value()
         self.wireless.adapt_wireless_commit()

@@ -5,6 +5,7 @@
 from dss import app_theme
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.entry import InputEntry, PasswordEntry
+from dtk.ui.net import MACEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
 from nmlib.nm_utils import TypeConvert
@@ -152,14 +153,14 @@ class Wired(gtk.VBox):
                             enable_double_click=False)
         mac_address.set_can_focus(False)
 
-        self.mac_entry = InputEntry()
+        self.mac_entry = MACEntry()
 
         clone_addr = Label(_("Cloned Mac Address:"),
                            text_size=CONTENT_FONT_SIZE,
                            enable_select=False,
                            enable_double_click=False)
         clone_addr.set_can_focus(False)
-        self.clone_entry = InputEntry()
+        self.clone_entry = MACEntry()
 
         mtu = Label("MTU:", 
                     text_size=CONTENT_FONT_SIZE,
@@ -189,19 +190,19 @@ class Wired(gtk.VBox):
         table_align.add(default_button)
         self.pack_start(table_align, False, False)
 
-        self.mac_entry.set_size(222, 22)
-        self.clone_entry.set_size(222, 22)
+        self.mac_entry.set_size_request(222, 22)
+        self.clone_entry.set_size_request(222, 22)
         ## retrieve wired info
-        self.mac_entry.entry.connect("changed", self.save_settings, "mac_address")
-        self.clone_entry.entry.connect("changed", self.save_settings, "cloned_mac_address")
+        self.mac_entry.connect("changed", self.save_settings, "mac_address")
+        self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
 
         (mac, clone_mac, mtu) = ethernet_setting.mac_address, ethernet_setting.cloned_mac_address, ethernet_setting.mtu
         #print mac, clone_mac, mtu
         if mac != None:
-            self.mac_entry.set_text(mac)
+            self.mac_entry.set_address(mac)
         if clone_mac !=None:
-            self.clone_entry.set_text(clone_mac)
+            self.clone_entry.set_address(clone_mac)
         if mtu != None:
             self.mtu_spin.set_value(int(mtu))
 
