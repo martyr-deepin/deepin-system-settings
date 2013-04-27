@@ -108,6 +108,7 @@ class NMActiveConnection(NMObject):
 
     def vpn_auto_connect(self):
         nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
+        print "vpn auto connect state", self.get_state()
         if self.get_state() != 2:
             return False
         elif nm_remote_settings.get_vpn_connections():

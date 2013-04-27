@@ -142,8 +142,9 @@ class Wired(gtk.VBox):
         self.set_button = set_button
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+        self.connection = connection
         
-        ethernet_setting = connection.get_setting("802-3-ethernet")
+        self.ethernet_setting = connection.get_setting("802-3-ethernet")
 
         table = gtk.Table(3, 2, False)
         
@@ -197,7 +198,7 @@ class Wired(gtk.VBox):
         self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
 
-        (mac, clone_mac, mtu) = ethernet_setting.mac_address, ethernet_setting.cloned_mac_address, ethernet_setting.mtu
+        (mac, clone_mac, mtu) = self.ethernet_setting.mac_address, self.ethernet_setting.cloned_mac_address, self.ethernet_setting.mtu
         #print mac, clone_mac, mtu
         if mac != None:
             self.mac_entry.set_address(mac)
@@ -207,9 +208,10 @@ class Wired(gtk.VBox):
             self.mtu_spin.set_value(int(mtu))
 
     def save_settings(self, widget, value, types):
+        print widget, value, types
         if type(value) is str:
             if TypeConvert.is_valid_mac_address(value):
-                setattr(self.ethernet, types, value)
+                setattr(self.ethernet_setting, types, value)
                 if self.connection.check_setting_finish():
                     Dispatcher.set_button("save", True)
             else:

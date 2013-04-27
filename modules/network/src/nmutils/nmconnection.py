@@ -213,7 +213,7 @@ class NMConnection(gobject.GObject):
         return True
 
     def is_wireless_setting_ok(self, info_dict):
-        if info_dict["connection"]["type"] != "802-11-wireless-security":
+        if info_dict["connection"]["type"] != "802-11-wireless":
             return False
         else:
             if not self.check_conn_setting(info_dict):
@@ -236,7 +236,7 @@ class NMConnection(gobject.GObject):
                     return False
 
             if "mac-address" in info_dict["802-11-wireless"].keys():
-                if not TypeConvert.is_valid_mac_address(TypeConvert.mac_address_array2string(info_dict["802-3-ethernet"]["mac-address"])):
+                if not TypeConvert.is_valid_mac_address(TypeConvert.mac_address_array2string(info_dict["802-11-wireless"]["mac-address"])):
                     print "wireless invalid mac address"
                     return False
 
