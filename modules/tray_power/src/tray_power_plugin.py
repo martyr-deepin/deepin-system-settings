@@ -108,7 +108,7 @@ class TrayPower(object):
 
     def __get_current_plan(self):
         current_plan = self.power_set.get_string("current-plan")            
-        if current_plan == "default":                                       
+        if current_plan == "balance":                                       
             self.gui.set_mode_bit(self.gui.one_mode_btn)                    
         elif current_plan == "saving":                                      
             self.gui.set_mode_bit(self.gui.two_mode_btn)                    

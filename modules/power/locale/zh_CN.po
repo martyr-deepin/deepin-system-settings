@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-19 16:44+0800\n"
+"POT-Creation-Date: 2013-04-27 11:10+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -70,7 +70,7 @@ msgstr "从不"
 msgid "Nothing"
 msgstr "不采取任何措施"
 
-#: ../src/power_view.py:60 ../src/power_view.py:152
+#: ../src/power_view.py:60 ../src/power_view.py:138
 msgid "Suspend"
 msgstr "挂起"
 
@@ -78,100 +78,100 @@ msgstr "挂起"
 msgid "Shutdown"
 msgstr "关机"
 
-#: ../src/power_view.py:63 ../src/power_view.py:67
-msgid "Default"
-msgstr "默认"
+#: ../src/power_view.py:63
+msgid "Balance"
+msgstr "平衡"
 
-#: ../src/power_view.py:64 ../src/power_view.py:68
+#: ../src/power_view.py:64
 msgid "Saving"
 msgstr "节能"
 
-#: ../src/power_view.py:65 ../src/power_view.py:69
+#: ../src/power_view.py:65
 msgid "High Performance"
 msgstr "高性能"
 
-#: ../src/power_view.py:70 ../src/power_view.py:127
+#: ../src/power_view.py:66
 msgid "Customized"
 msgstr "自定义"
 
-#: ../src/power_view.py:77 ../src/search_keyword.py:29
+#: ../src/power_view.py:73 ../src/search_keyword.py:29
 msgid "Power Button Configuration"
 msgstr "电源按钮配置"
 
-#: ../src/power_view.py:85 ../src/search_keyword.py:30
+#: ../src/power_view.py:81 ../src/search_keyword.py:30
 msgid "Press Power Button"
 msgstr "按电源按钮时"
 
-#: ../src/power_view.py:97 ../src/search_keyword.py:31
+#: ../src/power_view.py:93 ../src/search_keyword.py:31
 msgid "Close Notebook Cover"
 msgstr "合上笔记本盖子时"
 
-#: ../src/power_view.py:110 ../src/search_keyword.py:33
+#: ../src/power_view.py:106 ../src/search_keyword.py:33
 msgid "Saving Power Configuration"
 msgstr "电源节能设置"
 
-#: ../src/power_view.py:116
+#: ../src/power_view.py:112
 msgid "Power Plan"
 msgstr "电源计划"
 
-#: ../src/power_view.py:138 ../src/search_keyword.py:36
+#: ../src/power_view.py:126 ../src/search_keyword.py:36
 msgid "Close Monitor"
 msgstr "关闭显示器"
 
-#: ../src/power_view.py:166
+#: ../src/power_view.py:151
 msgid "Current Battery"
 msgstr "当前电池电量"
 
-#: ../src/power_view.py:182 ../src/search_keyword.py:37
+#: ../src/power_view.py:167 ../src/search_keyword.py:37
 msgid "Password Protection Wakeup"
 msgstr "唤醒时的密码保护"
 
-#: ../src/power_view.py:205
+#: ../src/power_view.py:190
 msgid "Show Battery Status In Tray"
 msgstr "在系统托盘显示电池状态"
 
-#: ../src/power_view.py:319
-msgid "Reset to default value"
-msgstr "恢复默认值"
+#: ../src/power_view.py:318
+msgid "Reset to balance value"
+msgstr "恢复平衡值"
 
-#: ../src/power_view.py:375
+#: ../src/power_view.py:374
 #, python-format
 msgid "Changed Press Power Button to %s"
 msgstr "修改按电源按钮为%s"
 
-#: ../src/power_view.py:380
+#: ../src/power_view.py:379
 #, python-format
 msgid "Changed Close Notebook Cover to %s"
 msgstr "修改合上笔记本盖子为%s"
 
-#: ../src/power_view.py:385
+#: ../src/power_view.py:384
 #, python-format
 msgid "Changed Power Plan to %s"
 msgstr "修改按电源计划为%s"
 
-#: ../src/power_view.py:390
+#: ../src/power_view.py:389
 #, python-format
 msgid "Changed Suspend Status to %s"
 msgstr "修改休眠状态为%s"
 
-#: ../src/power_view.py:395
+#: ../src/power_view.py:396
 #, python-format
 msgid "Changed Close Monitor to %s"
 msgstr "修改关闭显示器为%s"
 
-#: ../src/power_view.py:402
+#: ../src/power_view.py:405
 msgid "Changed to Password Protection Wakeup"
 msgstr "修改为唤醒时有密码保护"
 
-#: ../src/power_view.py:404
+#: ../src/power_view.py:407
 msgid "Changed to NO Password Protection Wakeup"
 msgstr "修改为唤醒时无密码保护"
 
-#: ../src/power_view.py:411
+#: ../src/power_view.py:414
 msgid "Changed to Show Battery Status In Tray"
 msgstr "修改为在系统托盘显示电池状态"
 
-#: ../src/power_view.py:413
+#: ../src/power_view.py:416
 msgid "Changed to Hide Battery Status In Tray"
 msgstr "修改为在系统托盘隐藏电池状态"
 
@@ -237,3 +237,6 @@ msgstr "关闭硬盘"
 #: ../src/search_keyword.py:38
 msgid "Show Battery Status In The Tray"
 msgstr "在系统托盘显示电池状态"
+
+#~ msgid "Default"
+#~ msgstr "默认"

@@ -51,7 +51,7 @@ class PowerGui(gtk.VBox):
         self.top_line_ali.set_padding(5, 5, 0, 0)
         self.top_line = HSeparator(HSEPARATOR_COLOR, 0, 0) 
         self.top_line_ali.add(self.top_line)
-        self.one_mode_btn = SelectButton(_("Default"), ali_padding=125)
+        self.one_mode_btn = SelectButton(_("Balance"), ali_padding=125)
         self.two_mode_btn = SelectButton(_("Saving"), ali_padding=125)
         self.tree_mode_btn = SelectButton(_("Hight Performance"), ali_padding=125)
         self.customized_mode_btn = SelectButton(_("Customized"), ali_padding=125)
@@ -91,7 +91,7 @@ class PowerGui(gtk.VBox):
 
     def one_mode_btn_clicked(self, widget):
         self.set_mode_bit(widget)
-        self.power_settings.set_string("current-plan", "default")
+        self.power_settings.set_string("current-plan", "balance")
 
     def two_mode_btn_clicked(self, widget):
         self.set_mode_bit(widget)

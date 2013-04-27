@@ -60,7 +60,7 @@ class PowerView(gtk.VBox):
                                    (_("Suspend"), self.power_manager.suspend), 
                                    (_("Shutdown"), self.power_manager.shutdown)
                                   ]
-        self.power_plan_items = [(_("Default"), self.power_manager.default),                        
+        self.power_plan_items = [(_("Balance"), self.power_manager.balance),                        
                                  (_("Saving"), self.power_manager.saving),                      
                                  (_("High Performance"), self.power_manager.high_performance), 
                                  (_("Customized"), self.power_manager.customized)
@@ -252,8 +252,8 @@ class PowerView(gtk.VBox):
 
         if key == "current-plan":
             current_plan = self.power_manager.power_settings.get_string("current-plan")
-            if current_plan == "default":
-                self.power_plan_combo.set_select_index(self.power_manager.default)
+            if current_plan == "balance":
+                self.power_plan_combo.set_select_index(self.power_manager.balance)
             elif current_plan == "saving":
                 self.power_plan_combo.set_select_index(self.power_manager.saving)
             elif current_plan == "high-performance":
@@ -315,7 +315,7 @@ class PowerView(gtk.VBox):
         return align        
 
     def reset(self):
-        self.__send_message("status", ("power", _("Reset to default value")))
+        self.__send_message("status", ("power", _("Reset to balance value")))
         self.power_manager.reset()
         self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
         self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(self.power_manage_items))

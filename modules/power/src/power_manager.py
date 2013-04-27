@@ -38,7 +38,7 @@ class PowerManager:
     shutdown    = 2
     suspend     = 1
 
-    default = 0
+    balance = 0
     saving = 1
     high_performance = 2
     customized = 3
@@ -180,7 +180,7 @@ class PowerManager:
 
     def get_current_plan(self):
         current_plan = self.power_settings.get_string("current-plan")
-        if current_plan == "default":
+        if current_plan == "balance":
             return 0
         elif current_plan == "saving":
             return 1
@@ -190,9 +190,9 @@ class PowerManager:
             return 3
    
     def set_current_plan(self, value):
-        current_plan = "default"
+        current_plan = "balance"
         if value == 0:
-            current_plan = "default"
+            current_plan = "balance"
         elif value == 1:
             current_plan = "saving"
         elif value == 2:
