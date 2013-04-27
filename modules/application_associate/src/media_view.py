@@ -160,7 +160,8 @@ class MediaView(gtk.VBox):
         self.auto_mount_toggle.connect("toggled", self.automount_open_toggle_cb)
 
     def change_autorun_callback(self, widget, content, value, index):
-        self.all_app_default_value[widget] = index
+        if value != "other_app":
+            self.all_app_default_value[widget] = index
         if type(value) is not str:
             self.set_media_handler_preference(self.all_app_dict[widget], widget, "set_default")
             self.app_manager.set_default_for_type(value, self.all_app_dict[widget])
