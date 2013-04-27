@@ -450,7 +450,7 @@ if __name__ == "__main__":
     # Init main box.
     main_align = gtk.Alignment()
     main_align.set(0.5, 0.5, 1, 1)
-    main_align.set_padding(0, 2, 2, 2)
+    main_align.set_padding(3, 5, 5, 5)
     main_box = gtk.VBox()
     body_box = gtk.VBox()
     foot_box = FootBox()
