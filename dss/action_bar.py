@@ -29,6 +29,7 @@ from dtk.ui.entry import InputEntry
 from dtk.ui.button import ImageButton
 from dtk.ui.breadcrumb import Bread
 from dtk.ui.poplist import IconTextItem
+from dtk.ui.utils import propagate_expose
 import itertools
 import gtk
 import gobject
@@ -158,6 +159,11 @@ class ActionBar(gtk.Alignment):
         self.cache_bg_pixbuf.scale(self.bg_pixbuf.get_pixbuf(), rect.width, rect.height)
         draw_pixbuf(cr, self.cache_bg_pixbuf.get_cache(), rect.x, rect.y)
 
+        # Propagate expose.
+        propagate_expose(widget, event)
+        
+        return True
+    
 gobject.type_register(ActionBar)
 
 class ModuleMenuItem(IconTextItem):
