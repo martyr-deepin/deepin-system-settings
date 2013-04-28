@@ -56,6 +56,9 @@ class MediaView(gtk.VBox):
         photo_label = Label(_("camera"))
         software_label = Label(_("software"))
 
+        self.all_label_list = [cd_label, dvd_label, player_label,
+                               photo_label, software_label]
+
         default_list = [(_("other applications"), "other_app"),
                         (_("ask"), "ask"),
                         (_("do nothing"), "do_nothing"),
@@ -67,9 +70,6 @@ class MediaView(gtk.VBox):
             app_theme.get_pixbuf("toggle_button/active_normal.png"))
         #self.auto_mount_box.pack_start(self.auto_mount_label, False, False)
         #self.auto_mount_box.pack_start(self.auto_mount_toggle, False, False)
-
-        self.all_label_list = [cd_label, dvd_label, player_label, photo_label,
-                               software_label, self.auto_mount_label]
 
         self.cd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
