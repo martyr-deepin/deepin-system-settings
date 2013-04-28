@@ -21,8 +21,14 @@ msgstr ""
 msgid "Application"
 msgstr ""
 
+msgid "Default Applications"
+msgstr ""
+
 #: ../src/app_asso_view.py:62 ../src/search_keyword.py:30
 msgid "Media"
+msgstr ""
+
+msgid "Autoplay"
 msgstr ""
 
 #: ../src/app_asso_view.py:63 ../src/search_keyword.py:31

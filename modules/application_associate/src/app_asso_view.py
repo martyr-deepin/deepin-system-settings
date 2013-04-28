@@ -58,8 +58,8 @@ class AppAssoView(TabBox):
         self.app_box = AppView()
         self.autorun_box = MediaView()
         self.boot_box = SessionView()
-        self.add_items([(_("Application"), self.app_box), 
-                        (_("Media"), self.autorun_box), 
+        self.add_items([(_("Default Applications"), self.app_box), 
+                        (_("Autoplay"), self.autorun_box), 
                         (_("Autostart"), self.boot_box)])
 
     def expose_outline(self, widget, event, exclude):

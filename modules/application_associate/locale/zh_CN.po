@@ -21,13 +21,19 @@ msgstr ""
 msgid "Application"
 msgstr "应用程序"
 
+msgid "Default Applications"
+msgstr "默认程序"
+
 #: ../src/app_asso_view.py:62 ../src/search_keyword.py:30
 msgid "Media"
 msgstr "自动运行"
 
+msgid "Autoplay"
+msgstr "自动播放"
+
 #: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
 msgid "Autostart"
-msgstr "启动项"
+msgstr "开机启动"
 
 #: ../src/media_view.py:49
 msgid "You can choose the operation after plugining media or device"

@@ -148,11 +148,11 @@ class SessionItem(TreeItem):
                 alignment = pango.ALIGN_LEFT, text_color="#000000")
 
     def get_column_renders(self):
-        return [self.render_app, self.render_exec, self.render_description]
+        return [self.render_app, self.render_description, self.render_exec]
 
     def get_column_widths(self):
         '''docstring for get_column_widths'''
-        return [200,  200, 300]
+        return [200,  300, 200]
 
     def get_height(self):
         return 30

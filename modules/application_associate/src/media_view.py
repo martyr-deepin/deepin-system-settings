@@ -48,24 +48,28 @@ class MediaView(gtk.VBox):
 
         table = gtk.Table(8, 3, False)
 
-        info_label = Label(_("You can choose the operation after plugining media or device"))
+        #info_label = Label(_("You can choose the operation after plugining media or device"))
 
         cd_label = Label(_("CD"))
         dvd_label = Label(_("DVD"))
         player_label = Label(_("music player"))
         photo_label = Label(_("camera"))
         software_label = Label(_("software"))
-        
+
         default_list = [(_("other applications"), "other_app"),
                         (_("ask"), "ask"),
                         (_("do nothing"), "do_nothing"),
                         (_("open folder"),"open_folder")]
-        self.auto_mount_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.auto_mount_label = Label(_("apply auto open for all media and devices"))
+        #self.auto_mount_box = gtk.HBox(spacing = WIDGET_SPACING)
+        #self.auto_mount_label = Label(_("apply auto open for all media and devices"))
+        self.auto_mount_label = Label(_("Autoplay"))
         self.auto_mount_toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
             app_theme.get_pixbuf("toggle_button/active_normal.png"))
-        self.auto_mount_box.pack_start(self.auto_mount_label, False, False)
-        self.auto_mount_box.pack_start(self.auto_mount_toggle, False, False)
+        #self.auto_mount_box.pack_start(self.auto_mount_label, False, False)
+        #self.auto_mount_box.pack_start(self.auto_mount_toggle, False, False)
+
+        self.all_label_list = [cd_label, dvd_label, player_label, photo_label,
+                               software_label, self.auto_mount_label]
 
         self.cd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
@@ -86,14 +90,16 @@ class MediaView(gtk.VBox):
         self.video_svcd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.video_vcd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
 
-        table.attach(style.wrap_with_align(info_label, width=self.LEFT_WIDTH), 0, 3, 0, 1)
+        #table.attach(style.wrap_with_align(info_label, width=self.LEFT_WIDTH), 0, 3, 0, 1)
         table.attach(style.wrap_with_align(cd_label, width=self.LEFT_WIDTH), 0, 1, 4, 5)
         table.attach(style.wrap_with_align(dvd_label, width=self.LEFT_WIDTH), 0, 1, 5, 6)
         table.attach(style.wrap_with_align(player_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
         table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 7, 8)
         table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 8, 9)
 
-        table.attach(style.wrap_with_align(self.auto_mount_box, align = "left", left = 180), 0, 3, 1, 2)
+        #table.attach(style.wrap_with_align(self.auto_mount_box, align = "left", left = 180), 0, 3, 1, 2)
+        table.attach(style.wrap_with_align(self.auto_mount_label, width=self.LEFT_WIDTH), 0, 1, 1, 2)
+        table.attach(style.wrap_with_align(self.auto_mount_toggle), 1, 3, 1, 2)
 
         table.attach(style.wrap_with_align(self.cd), 1, 3, 4, 5)
         table.attach(style.wrap_with_align(self.dvd), 1, 3, 5, 6)
@@ -117,9 +123,13 @@ class MediaView(gtk.VBox):
         if self.media_handle.automount_open:
             for combo in self.all_app_dict:
                 combo.set_sensitive(True)
+            for l in self.all_label_list:
+                l.set_sensitive(True)
         else:
             for combo in self.all_app_dict:
                 combo.set_sensitive(False)
+            for l in self.all_label_list:
+                l.set_sensitive(False)
     
         self.auto_mount_toggle.set_active(self.media_handle.automount_open)
 
@@ -174,9 +184,13 @@ class MediaView(gtk.VBox):
         if widget.get_active():
             for combo in self.all_app_dict:
                 combo.set_sensitive(True)
+            for l in self.all_label_list:
+                l.set_sensitive(True)
         else:
             for combo in self.all_app_dict:
                 combo.set_sensitive(False)
+            for l in self.all_label_list:
+                l.set_sensitive(False)
 
     def set_media_handler_preference(self, x_content, widget, action_name=None):
         if action_name == "ask":
