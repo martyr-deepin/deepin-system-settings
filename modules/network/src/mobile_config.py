@@ -231,7 +231,7 @@ class Sections(gtk.Alignment):
         
         self.broadband = Broadband(connection, set_button, settings_obj)
         basic.load([self.broadband, align])
-        self.ipv4.load([IPV4Conf(connection, set_button, settings_obj)])
+        self.ipv4.load([IPV4Conf(connection, set_button, settings_obj=settings_obj)])
         self.ppp.load([PPPConf(connection, set_button, settings_obj)])
 
         self.space = gtk.HBox()

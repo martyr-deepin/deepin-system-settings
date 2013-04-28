@@ -638,11 +638,11 @@ class Wireless(gtk.VBox):
 
     def entry_changed(self, widget, content, types):
         is_valid = True
-        if types.endswith("ssid"):
+        if types == "ssid":
             setattr(self.wireless, types, content)
         else:
             from nmlib.nm_utils import TypeConvert
-            if TypeConvert.is_valid_mac_address(content):
+            if (content == "") or TypeConvert.is_valid_mac_address(content):
                 setattr(self.wireless, types, content)
                 #check_settings(self.connection, self.set_button)
                 is_valid = self.connection.check_setting_finish()

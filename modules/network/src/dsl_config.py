@@ -208,19 +208,19 @@ class Wired(gtk.VBox):
             self.mtu_spin.set_value(int(mtu))
 
     def save_settings(self, widget, value, types):
-        print widget, value, types
         if type(value) is str:
-            if TypeConvert.is_valid_mac_address(value):
+            if (value == "") or TypeConvert.is_valid_mac_address(value):
                 setattr(self.ethernet_setting, types, value)
-                if self.connection.check_setting_finish():
-                    Dispatcher.set_button("save", True)
+                #if self.connection.check_setting_finish():
+                    #Dispatcher.set_button("save", True)
+                is_valid = self.connection.check_setting_finish()
             else:
-                Dispatcher.set_button("save", False)
-                if value is "":
-                    #delattr(self.ethernet, types)
-                    Dispatcher.set_button("save", True)
+                is_valid = False
+                #Dispatcher.set_button("save", False)
+            self.settings_obj.mac_is_valid = is_valid
+            self.settings_obj.set_button("save", is_valid)
         else:
-            setattr(self.ethernet, types, value)
+            setattr(self.ethernet_setting, types, value)
             if self.connection.check_setting_finish():
                 Dispatcher.set_button("save", True)
 
