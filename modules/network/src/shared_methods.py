@@ -177,14 +177,26 @@ class NetManager(object):
 
     def get_ap_list(self):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-        if self.wireless_device:
-            device_wifi = nm_module.cache.get_spec_object(self.wireless_device.object_path)
-            #print "DEBUG in get ap list", device_wifi
-            ap_list = device_wifi.order_ap_list()
-        # 返回ap对象，ap.get_ssid() 获取ssid, ap.get_flags()获得加密状态，0为加密，1加密
-            return ap_list
-        else:
+        ap_list = []
+        if not self.wireless_devices:
             return []
+
+        for wireless_device in self.wireless_devices:
+            device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
+            ap_list += device_wifi.order_ap_list()
+
+        return self.__ap_list_merge(ap_list)
+
+    def __ap_list_merge(self, origin_ap):
+        ap_ssid = set(map(lambda ap: ap.get_ssid(), origin_ap))
+        merged_ap = []
+        for ap in origin_ap:
+            if ap.get_ssid() in ap_ssid:
+                merged_ap.append(ap)
+                ap_ssid.remove(ap.get_ssid())
+
+        return merged_ap
+        # 返回ap对象，ap.get_ssid() 获取ssid, ap.get_flags()获得加密状态，0为加密，1加密
 
     def get_active_connection(self, ap_list):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
