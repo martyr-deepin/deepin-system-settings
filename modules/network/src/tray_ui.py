@@ -22,7 +22,6 @@
 from dss import app_theme
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
-from dtk.ui.button import SwitchButton, Button
 from vtk.button import SelectButton
 from dtk.ui.treeview import TreeItem, TreeView
 from dtk.ui.draw import draw_text, draw_pixbuf
@@ -34,6 +33,7 @@ from constants import CONTENT_FONT_SIZE, IMG_WIDTH
 import style
 from helper import Dispatcher
 from timer import Timer
+from container import MyToggleButton as SwitchButton
 WIDGET_HEIGHT = 22
 
 ALIGN_SPACING = 28

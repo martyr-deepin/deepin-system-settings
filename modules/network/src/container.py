@@ -86,7 +86,7 @@ class Contain(gtk.Alignment):
                                enable_double_click=False)
         self.hbox.pack_start(self.label, False, False, TEXT_PADDING)
 
-        self.switch = SwitchButton()
+        self.switch = MyToggleButton()
         #from style import wrap_with_align
         #align = wrap_with_align(self.switch)
         self.hbox.pack_start(self.switch, False , False, BUTTON_PADDING)
@@ -154,7 +154,8 @@ class TitleBar(gtk.VBox):
 
 class MyToggleButton(SwitchButton):
     def __init__(self):
-        SwitchButton.__init__(self, 
+        SwitchButton.__init__(self,
+            False,
             inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
             active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
 

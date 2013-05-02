@@ -66,11 +66,12 @@ class SideBar(gtk.VBox):
         '''
         self.network_object = network_object
         self.connections = self.network_object.get_connections()
+        print self.connections, "load_list"
         connections = []
         for connection in self.connections:
             if isinstance(connection, NMRemoteConnection):
                 connection.init_settings_prop_dict()
-                connections.append(connection)
+            connections.append(connection)
         self.connections = connections
         self.connection_tree = EntryTreeView()
         self.connection_tree.set_expand_column(1)
@@ -163,12 +164,13 @@ class SideBar(gtk.VBox):
         broadband = self.network_object.get_broadband(connection)
         broadband.set_new_values(prop_dict, type)
     
-    def init_select(self, connection=None):
-        if connection:
-            self.set_active(connection)
+    def init_select(self, spec_connection=None):
+        if spec_connection:
+            self.set_active(spec_connection)
         else:
             try:
                 self.connection_tree.select_first_item()
+                
             except:
                 print "no connections found"
 

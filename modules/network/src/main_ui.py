@@ -531,10 +531,22 @@ class WirelessSection(Section, WirelessDevice):
         for wireless_device in self.wireless_devices:
             device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
             self.ap_list += device_wifi.order_ap_list()
+        # merge ap list
+        self.ap_list = self.__ap_list_merge()
         aps = map(lambda i:WirelessItem(i), self.ap_list)
         hidden_list = self.get_hidden_connection(self.ap_list)
         hiddens = map(lambda c: HidenItem(c), hidden_list)
         return aps + hiddens
+
+    def __ap_list_merge(self):
+        ap_ssid = set(map(lambda ap: ap.get_ssid(), self.ap_list))
+        merged_ap = []
+        for ap in self.ap_list:
+            if ap.get_ssid() in ap_ssid:
+                merged_ap.append(ap)
+                ap_ssid.remove(ap.get_ssid())
+
+        return merged_ap
 
     def get_hidden_connection(self, ap_list):
         from shared_methods import net_manager
