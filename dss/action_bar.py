@@ -159,7 +159,7 @@ class ActionBar(gtk.Alignment):
         self.cache_bg_pixbuf.scale(self.bg_pixbuf.get_pixbuf(), rect.width, rect.height)
         draw_pixbuf(cr, self.cache_bg_pixbuf.get_cache(), rect.x, rect.y)
         
-        cr.set_source_rgba(*color_hex_to_cairo("#949494"))
+        cr.set_source_rgba(*color_hex_to_cairo("#aeaeae"))
         cr.rectangle(rect.x, rect.y, rect.width, 1)
         cr.rectangle(rect.x, rect.y + rect.height - 1, rect.width, 1)
         cr.fill()
