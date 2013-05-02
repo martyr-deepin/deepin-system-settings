@@ -612,9 +612,9 @@ class Wireless(gtk.VBox):
         #align = style.set_box_with_align(self.table, 'text')
         style.set_table(self.table)
 
-        section = SettingSection(_("Default Settings"), always_show= False, revert=True, label_right=True, has_seperator=False)
-        section.load([self.table])
-        self.pack_start(section, False, False)
+        self.section = SettingSection(_("Default Settings"), always_show= False, revert=True, label_right=True, has_seperator=False)
+        self.section.load([self.table])
+        self.pack_start(self.section, False, False)
         #self.pack_start(self.table, False, False)
         #self.table.set_size_request(340, 227)
 
@@ -715,7 +715,6 @@ class Wireless(gtk.VBox):
             self.mtu_spin.set_value(int(wireless.mtu))
         
         self.reset_table()
-
     
     def save_change(self):
         
