@@ -191,6 +191,7 @@ class DBusService(dbus.service.Object):
             elif message_type == "send_module_info":
                 (crumb_index, (module_id, crumb_name), argv) = message_content
                 if argv == "":
+                    action_bar.bread.remove_node_after_index(0)
                     action_bar.bread.add(Crumb(crumb_name, None))
                 else:
                     menu_items = [ThemeItem(x) for x in argv.split(';') if x.strip()]
