@@ -65,7 +65,7 @@ class DetailPage(gtk.VBox):
         self.window_theme_box = gtk.VBox()
         self.wallpaper_view = WallpaperView(padding_x=30, padding_y=ITEM_PADDING_Y)
         self.wallpaper_view_sw = self.wallpaper_view.get_scrolled_window()
-        self.wallpaper_view_sw.set_size_request(-1, 433)
+        self.wallpaper_view_sw.set_size_request(-1, 426)
 
         position_group, self.position_combobox = get_combo_group(_("Position"),
                                                                  DRAW_COMBO_ITEM,
@@ -180,9 +180,9 @@ class DetailPage(gtk.VBox):
     def __set_delete_button_visible(self):
         is_editable = self.wallpaper_view.is_editable()
         if is_editable:
-            self.button_align.set_padding(0, 0, 125, 5)
+            self.button_align.set_padding(0, 0, 113, 5)
         else:
-            self.button_align.set_padding(0, 0, 215, 5)
+            self.button_align.set_padding(0, 0, 210, 5)
 
         self.delete_button.set_child_visible(is_editable)
 
