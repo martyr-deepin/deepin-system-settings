@@ -18,9 +18,8 @@
 # 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from theme import app_theme
 from dtk.ui.button import CheckButton, Button
-from dtk.ui.entry import InputEntry, PasswordEntry
+from dtk.ui.entry import PasswordEntry
 from dtk.ui.net import MACEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox

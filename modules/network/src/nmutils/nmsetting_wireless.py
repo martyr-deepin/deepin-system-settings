@@ -66,11 +66,11 @@ class NMSettingWireless (NMSetting):
     @property
     def bssid(self):
         if "bssid" in self.prop_dict.iterkeys():
-            return TypeConvert.ssid_ascii2string(self.prop_dict["bssid"])
+            return TypeConvert.mac_address_array2string(self.prop_dict["bssid"])
 
     @bssid.setter
     def bssid(self, new_bssid):
-        self.prop_dict["bssid"] = TypeConvert.ssid_string2ascii(new_bssid)
+        self.prop_dict["bssid"] = TypeConvert.mac_address_string2array(new_bssid)
 
     @property
     def channel(self):
