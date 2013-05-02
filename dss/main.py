@@ -30,6 +30,7 @@ from dtk.ui.theme import ui_theme
 from dtk.ui.draw import draw_text, draw_vlinear
 from dtk.ui.treeview import TreeItem
 from dtk.ui.breadcrumb import Crumb
+from dtk.ui.utils import color_hex_to_cairo, propagate_expose
 from deepin_utils.ipc import is_dbus_name_exists
 from search_page import SearchPage
 from content_page import ContentPageInfo
@@ -447,10 +448,29 @@ if __name__ == "__main__":
         enable_gaussian=False,
 	)
     
+    frame_padding = 6
+    frame_padding_top = 4
+
     # Init main box.
+    def expose_frame(widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        
+        cr.set_source_rgb(*color_hex_to_cairo("#aeaeae"))
+        cr.rectangle(rect.x + frame_padding - 1, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
+        cr.rectangle(rect.x + rect.width - frame_padding, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
+        cr.rectangle(rect.x + frame_padding - 1, rect.y + rect.height - frame_padding, rect.width - frame_padding * 2 + 2, 1)
+        cr.fill()
+        
+        # Propagate expose.
+        propagate_expose(widget, event)
+        
+        return True
+    
     main_align = gtk.Alignment()
     main_align.set(0.5, 0.5, 1, 1)
-    main_align.set_padding(3, 5, 5, 5)
+    main_align.set_padding(frame_padding_top, frame_padding, frame_padding, frame_padding)
+    main_align.connect("expose-event", expose_frame)
     main_box = gtk.VBox()
     body_box = gtk.VBox()
     foot_box = FootBox()
