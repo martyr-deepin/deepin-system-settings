@@ -50,7 +50,7 @@ class DeletePage(gtk.VBox):
         self.delete_view_sw = self.delete_view.get_scrolled_window()
         
         self.action_align = gtk.Alignment()
-        self.action_align.set_padding(5, 5, 520, 5)
+        self.action_align.set_padding(5, 5, 510, 5)
         self.action_box = gtk.HBox(spacing = 10)
         self.back_button = Button(_("Back"))
         self.back_button.set_size_request(80, WIDGET_HEIGHT)

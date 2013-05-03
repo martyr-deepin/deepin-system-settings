@@ -60,7 +60,7 @@ class FootBox(gtk.HBox):
 
     def __setup_buttons_align(self, list):
         buttons_align = self.__setup_align(padding_top = 7,                   
-            padding_left = 100 - (len(list) - 1) * 10,                
+            padding_left = 80 - (len(list) - 1) * 10,                
             padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING / 5)
         buttons_box = gtk.HBox(spacing = 5)                  
         i = 0
