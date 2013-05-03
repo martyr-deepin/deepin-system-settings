@@ -1065,6 +1065,7 @@ class Network(object):
         self.vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
         
         scroll_win = ScrolledWindow(right_space=0, top_bottom_space=0)
+        scroll_win.connect("event", self.test)
         scroll_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
         # FIXME UI a align to adjust ui
@@ -1082,6 +1083,9 @@ class Network(object):
         self.eventbox.add(scroll_win)
         self.vbox.connect("expose-event", self.expose_callback)
         ui_align.connect("expose-event", self.expose_callback)
+        
+    def test(self, widget, event):
+        print event
     
     def __pack_start(self, parent, child_list, expand=False, fill=False):
         for child in child_list:

@@ -447,6 +447,7 @@ if __name__ == "__main__":
         app_theme.get_pixbuf("logo.png"), 
         _("Deepin System Settings"),
         enable_gaussian=False,
+        name_size=10,
 	)
     
     frame_padding = 6
