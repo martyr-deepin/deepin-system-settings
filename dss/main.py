@@ -21,9 +21,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from search_page import SearchPage
 from nls import _
 from constant import APP_DBUS_NAME, APP_OBJECT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT
-from theme import app_theme
+from deepin_utils.file import get_parent_dir
 from dtk.ui.application import Application
 from dtk.ui.slider import HSlider
 from dtk.ui.theme import ui_theme
@@ -32,7 +33,6 @@ from dtk.ui.treeview import TreeItem
 from dtk.ui.breadcrumb import Crumb
 from dtk.ui.utils import color_hex_to_cairo, propagate_expose
 from deepin_utils.ipc import is_dbus_name_exists
-from search_page import SearchPage
 from content_page import ContentPageInfo
 from action_bar import ActionBar
 from navigate_page import NavigatePage
@@ -434,17 +434,18 @@ if __name__ == "__main__":
         WINDOW_WIDTH, WINDOW_HEIGHT,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         )
+    image_dir = os.path.join(get_parent_dir(__file__, 2), "image")
 
     # Set application icon.
-    application.set_icon(app_theme.get_pixbuf("icon.png"))
+    application.set_icon(os.path.join(image_dir, "icon.png"))
     
     # Set application preview pixbuf.
-    application.set_skin_preview(app_theme.get_pixbuf("frame.png"))
+    application.set_skin_preview(os.path.join(image_dir, "frame.png"))
     
     # Add titlebar.
     application.add_titlebar(
         ["min", "close"], 
-        app_theme.get_pixbuf("logo.png"), 
+        os.path.join(image_dir, "logo.png"),
         _("Deepin System Settings"),
         enable_gaussian=False,
         name_size=10,
