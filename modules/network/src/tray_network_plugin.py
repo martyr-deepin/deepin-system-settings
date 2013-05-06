@@ -71,6 +71,7 @@ class TrayNetworkPlugin(object):
         self.init_mm_signals()
 
     def recheck_sections(self, widget, index):
+        print "recheck sections"
         self.init_widgets()
         Dispatcher.emit("request-resize")
 

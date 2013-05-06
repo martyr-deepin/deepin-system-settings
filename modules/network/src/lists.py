@@ -244,9 +244,11 @@ class WiredItem(GenItems):
 class WirelessItem(GenItems):
     def  __init__(self,
                   ap,
+                  device,
                   font_size = DEFAULT_FONT_SIZE):
         GenItems.__init__(self)
         self.ap = ap
+        self.device = device
         self.ssid = self.ap.get_ssid()
         self.strength = ap.get_strength()
         self.security = int(ap.get_flags())
@@ -316,7 +318,7 @@ class WirelessItem(GenItems):
                 self.connect_by_ssid(self.ssid, self.ap)
 
     def connect_by_ssid(self, ssid, ap):
-        connection =  net_manager.connect_wireless_by_ssid(ssid)
+        connection =  net_manager.connect_wireless_by_ssid(ssid, self.device)
         #print connection, "DEBUG connect by ssid"
         self.ap = ap
         if connection and not isinstance(connection, NMRemoteConnection):
@@ -980,6 +982,93 @@ class GeneralItem(TreeItem):
     
     def refresh_loading(self, position):
         self.position = position
+        self.redraw()
+
+class DeviceToggleItem(GenItems):
+    
+    def  __init__(self,
+                  devices,
+                  index,
+                  font_size = DEFAULT_FONT_SIZE):
+        GenItems.__init__(self)
+        self.devices = devices
+        self.index = index
+        self.device_name = devices[self.index].get_device_desc()
+
+        self.wifi = app_theme.get_pixbuf("network/wifi_device.png")
+        self.left = app_theme.get_pixbuf("network/left.png")
+        self.right = app_theme.get_pixbuf("network/right.png")
+
+    def render_icon(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.wifi.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, 1, rect.height)
+            cr.fill()
+
+
+    def render_left(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.left.get_pixbuf(), rect.x + IMG_WIDTH + 5, rect.y + (rect.height - IMG_WIDTH)/2)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def render_right(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.right.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.rectangle(rect.x + rect.width -1, rect.y, 1, rect.height)
+            cr.fill()
+    
+    def render_device(self, cr, rect):
+        self.render_background(cr, rect)
+        (text_width, text_height) = get_content_size(self.device_name)
+        draw_text(cr, self.device_name, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_LEFT)
+
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            cr.set_line_width(1)
+            if self.is_last:
+                cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            cr.rectangle(rect.x, rect.y, rect.width, 1)
+            cr.fill()
+
+    def get_column_widths(self):
+        return [IMG_WIDTH + 20, -1, IMG_WIDTH*2 +5 + 20, IMG_WIDTH + 10]
+    
+    def get_column_renders(self):
+        return [self.render_icon, self.render_device, self.render_left, self.render_right]
+
+    def single_click(self, column, x, y):
+        if column == 3:
+            self.index += 1
+            if self.index >= len(self.devices):
+                self.index = len(self.devices) - 1
+                return
+        elif column == 2:
+            self.index -= 1
+            if self.index < 0:
+                self.index = 0
+                return
+
+        self.device_name = self.devices[self.index].get_device_desc()
+        Dispatcher.emit("switch-device", self.devices[self.index])
         self.redraw()
 
 if __name__=="__main__":

@@ -106,6 +106,7 @@ class NetManager(object):
 
 
     def get_wired_state(self):
+        self.wired_devices = self.device_manager.get_wired_devices()
         if self.wired_devices is []:
             # No wired device
             return None
@@ -135,6 +136,7 @@ class NetManager(object):
         #def device_is_active( widget, reason):
             #actived_cb()
         #device.connect("device-active", device_is_active)
+        self.wired_devices = self.device_manager.get_wired_devices()
         for device in self.wired_devices:
             if not device.is_active():
                 connections = nm_module.nm_remote_settings.get_wired_connections()
@@ -151,6 +153,7 @@ class NetManager(object):
         #def device_is_disactive( widget, reason):
             #disactived_cb()
         #device.connect("device-deactive", device_is_disactive)
+        self.wired_devices = self.device_manager.get_wired_devices()
         for device in self.wired_devices:
             wired = nm_module.cache.get_spec_object(device.object_path)
             wired.device_wired_disconnect()
@@ -159,11 +162,12 @@ class NetManager(object):
     # Wireless
     def get_wireless_state(self):
         #wireless_devices = nm_module.nmclient.get_wireless_devices()
-        if not self.wireless_devices:
+        devices = self.device_manager.get_wireless_devices()
+        if not devices:
             return None
         else:
-            dev_state = any([device.get_state() > 20 for device in self.wireless_devices])
-            conn_state = any([device.is_active() for device in self.wireless_devices])
+            dev_state = any([device.get_state() > 20 for device in devices])
+            conn_state = any([device.is_active() for device in devices])
             return (dev_state, conn_state)
             ##if not nm_module.nmclient.wireless_get_enabled():
             #    #nm_module.nmclient.wireless_set_enabled(True)
@@ -177,6 +181,7 @@ class NetManager(object):
 
     def get_ap_list(self):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+        self.wireless_devices = self.device_manager.get_wireless_devices()
         ap_list = []
         if not self.wireless_devices:
             return []
@@ -204,6 +209,7 @@ class NetManager(object):
         #if not self.wireless_device.is_active():
             #print "not device active"
             #return []
+        self.wireless_devices = self.device_manager.get_wireless_devices()
         active_connection = self.wireless_device.get_active_connection()
         if active_connection:
             print active_connection.get_state(), "Debug in get active connection"
@@ -233,8 +239,13 @@ class NetManager(object):
                                        "/")
         
 
-    def connect_wireless_by_ssid(self, ssid):
-        device_wifi = nm_module.cache.get_spec_object(self.wireless_device.object_path)
+    def connect_wireless_by_ssid(self, ssid, device=None):
+
+        # TODO will change device to no arg, since tray doesnt change yet
+        if device:
+            device_wifi = nm_module.cache.get_spec_object(device.object_path)
+        else:
+            device_wifi = nm_module.cache.get_spec_object(self.wireless_device.object_path)
         return device_wifi.active_ssid_connection(ssid)
 
 
@@ -250,6 +261,7 @@ class NetManager(object):
         device_wifi.auto_connect()
 
     def disactive_wireless_device(self, disactived_cb):
+        self.wireless_devices = self.device_manager.get_wireless_devices()
         for device in self.wireless_devices:
             wifi = nm_module.cache.get_spec_object(device.object_path)
             wifi.device_wifi_disconnect()
