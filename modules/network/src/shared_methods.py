@@ -210,15 +210,17 @@ class NetManager(object):
             #print "not device active"
             #return []
         self.wireless_devices = self.device_manager.get_wireless_devices()
-        active_connection = self.wireless_device.get_active_connection()
-        if active_connection:
-            print active_connection.get_state(), "Debug in get active connection"
-            try:
-                ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
-                index.append([ap.get_ssid() for ap in ap_list].index(ssid))
-                return index
-            except:
-                return []
+        if self.wireless_devices:
+            self.wireless_device = self.wireless_devices[0]
+            active_connection = self.wireless_device.get_active_connection()
+            if active_connection:
+                print active_connection.get_state(), "Debug in get active connection"
+                try:
+                    ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
+                    index.append([ap.get_ssid() for ap in ap_list].index(ssid))
+                    return index
+                except:
+                    return []
         else:
             return []
 
