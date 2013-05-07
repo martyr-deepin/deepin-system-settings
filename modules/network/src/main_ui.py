@@ -36,7 +36,7 @@ import gtk
 from container import Contain, ToggleThread
 from lists import (WiredItem, WirelessItem,
                   HidenItem, DSLItem, MobileItem,
-                  VPNItem)
+                  VPNItem, DeviceToggleItem)
 from widgets import AskPasswordDialog
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
@@ -201,9 +201,12 @@ class WiredDevice(object):
         #    
         #    if net_manager.get_wired_state() == None:
         #        self.wire.set_active(False)
-        if len(self.tree.visible_items) > len(net_manager.wired_devices):
+        #if len(self.tree.visible_items) > len(net_manager.wired_devices):
+            #print "in fact there had device removed"
+        if reason == 36:
             print "in fact there had device removed"
         ########################
+            net_manager.init_devices()
             self.wired_devices = net_manager.wired_devices
             self._init_signals()
             self.tree.delete_all_items()
@@ -321,24 +324,35 @@ class WirelessDevice(object):
         self.pwd_failed = False
 
         if self.selected_item:
+            #self.device_dict[widget] = [self.selected_item, 2]
             self.selected_item.set_net_state(2)
             return
 
         index = self.get_actives(self.ap_list)
         if index:
-            map(lambda i: self.tree.visible_items[i].set_net_state(2), index)
+            map(lambda (i, s): self.tree.visible_items[i].set_net_state(2), index)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        print widget, widget.get_state()
         if widget not in net_manager.device_manager.wireless_devices:
             return
         #self.wireless.set_sensitive(True)
+        if reason == 36:
+            net_manager.init_devices()
+            self.remove_switcher() 
+            return 
+
         if new_state == 60:
             wifi = nm_module.cache.get_spec_object(widget.object_path)
             wifi.nm_device_disconnect()
             return
         if reason == 39:
-            self.wireless.set_active(False)
-            return
+            if any([d.get_state() == 100 for d in self.wireless_devices]):
+                return
+            else:
+
+                self.wireless.set_active(False)
+                return
             #if self.hotspot.get_net_state() == 1:
             #if self._get_active_item():
                 #for item in self._get_active_item():
@@ -352,6 +366,7 @@ class WirelessDevice(object):
         if self._get_active_item():
             for item in self._get_active_item():
                 item.set_net_state(0)
+                #self.device_dict[widget] = [item, 0]
 
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
@@ -359,6 +374,7 @@ class WirelessDevice(object):
 
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
+        print widget, widget.get_state()
         if widget not in net_manager.device_manager.wireless_devices:
             return
         self.this_connection = widget.get_real_active_connection()
@@ -368,14 +384,17 @@ class WirelessDevice(object):
         if self._get_active_item():
             for item in self._get_active_item():
                 item.set_net_state(0)
+                #self.device_dict[widget] = [item, 0]
 
         if self.selected_item:
             self.selected_item.set_net_state(1)
+            #self.device_dict[widget] = [self.selected_item, 1]
         else:
             index = self.get_actives(self.ap_list)
             if index and self.tree.visible_items:
-                for i in index:
+                for i,s in index:
                     self.tree.visible_items[i].set_net_state(1)
+                    #self.device_dict[widget] = [self.tree.visible_items[i], 1]
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
@@ -400,6 +419,7 @@ class WirelessDevice(object):
         if item:
             map(lambda i: i.pwd_changed(pwd, connection), item)
 
+
 class WirelessSection(Section, WirelessDevice):
 
     def __init__(self):
@@ -413,8 +433,32 @@ class WirelessSection(Section, WirelessDevice):
                           enable_double_click=False)
 
         self.load(self.wireless, [self.label])
+        self.content_box.set_spacing(0)
 
         self.selected_item = None
+        self.device_tree = None
+        self.focused_device = None
+
+
+    def add_switcher(self):
+        if self.device_tree == None:
+            self.device_tree = TreeView([DeviceToggleItem(self.wireless_devices, 0)])
+            self.device_tree.set_expand_column(1)
+            self.content_box.pack_start(self.device_tree, False, True)
+            self.content_box.reorder_child(self.device_tree, 0)
+
+    def remove_switcher(self):
+        if self.device_tree\
+           and self.device_tree in self.content_box.get_children():
+            self.content_box.remove(self.device_tree)
+            self.device_tree = None
+            self.focused_device = self.wireless_devices[0]
+            #devices = filter(lambda d: d in self.device_manager.wireless_devices, self.device_dict.keys())
+            #print devices
+            #[self.device_dict.pop(d) for d in devices]
+                
+            self.wireless_redraw(None)
+
 
     @classmethod
     def show_or_hide(self):
@@ -427,6 +471,10 @@ class WirelessSection(Section, WirelessDevice):
         self.ap_list = []
         self.wireless_devices = net_manager.device_manager.get_wireless_devices()
         if self.wireless_devices:
+            #self.device_dict = dict()
+            self.focused_device = self.wireless_devices[0]
+            if len(self.wireless_devices) > 1:
+                self.add_switcher()
             self.tree.connect("single-click-item", self.set_selected_item)
             ## check state
             if self.get_state(self.wireless_devices):
@@ -435,13 +483,21 @@ class WirelessSection(Section, WirelessDevice):
             pass
         self.init_signals()
 
+
     def init_signals(self):
-        self._init_signals()
+        self._init_signals() 
+        Dispatcher.connect("switch-device", self.switch_devices)
         Dispatcher.connect("wireless-device-add", self.device_added)
         Dispatcher.connect("ap-added", self.ap_added_callback)
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
         Dispatcher.connect("wireless-redraw", self.wireless_redraw)
         self.label.connect("button-release-event", self.create_a_hidden_network)
+
+    def switch_devices(self, widget, device):
+        self.focused_device = device
+        #item, state = self.device_dict[device]
+        #item.set_net_state(state)
+        self.wireless_redraw(None)
 
     def wireless_redraw(self, widget):
         if self.wireless.get_active():
@@ -450,6 +506,10 @@ class WirelessSection(Section, WirelessDevice):
     def device_added(self, widget, device):
         self.wireless_devices = net_manager.device_manager.get_wireless_devices()
         self._init_signals()
+        if len(self.wireless_devices) > 1:
+            self.add_switcher()
+        else:
+            self.remove_switcher()
         if self.wireless.get_active():
             self.wireless.set_active(True, emit=True)
 
@@ -479,20 +539,30 @@ class WirelessSection(Section, WirelessDevice):
         #self.tree.visible_items[-1].is_last = True
 
     def get_actives(self, ap_list):
+
+        def to_item_state(device):
+            if device.get_state() <= 30:
+                return 0
+            elif device.get_state() < 100:
+                return 1
+            elif device.get_state() == 100:
+                return 2
+
         if not ap_list:
             return []
         index = []
-        for wireless_device in self.wireless_devices:
-            active_connection = wireless_device.get_active_connection()
-            if active_connection:
-                #if active_connection.get_state() != 2:
-                    #return []
-                try:
-                    ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
-                    index.append([ap.get_ssid() for ap in ap_list].index(ssid))
-                except ValueError:
-                    print "not found in ap list"
+        #for wireless_device in self.wireless_devices:
+        active_connection = self.focused_device.get_active_connection()
+        if active_connection:
+            #if active_connection.get_state() != 2:
+                #return []
+            try:
+                ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
+                index.append([[ap.get_ssid() for ap in ap_list].index(ssid), to_item_state(self.focused_device)])
+            except ValueError:
+                print "not found in ap list"
         return index
+    
 
     def _get_active_item(self):
         return filter(lambda i: i.get_net_state() > 0, self.tree.visible_items)
@@ -505,7 +575,7 @@ class WirelessSection(Section, WirelessDevice):
         #self.wireless.set_sensitive(True)
         indexs = self.get_actives(self.ap_list)
         if indexs:
-            map(lambda i: self.tree.visible_items[i].set_net_state(2), indexs)
+            map(lambda (i, s): self.tree.visible_items[i].set_net_state(s), indexs)
         else:
             for d in self.wireless_devices:
                 wifi = nm_module.cache.get_spec_object(d.object_path)
@@ -525,15 +595,15 @@ class WirelessSection(Section, WirelessDevice):
 
     def get_list(self):
         self.ap_list = list()
-        if self.wireless_devices == None:
+        if not self.wireless_devices:
             return []
 
-        for wireless_device in self.wireless_devices:
-            device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
-            self.ap_list += device_wifi.order_ap_list()
+        #for wireless_device in self.wireless_devices:
+        device_wifi = nm_module.cache.get_spec_object(self.focused_device.object_path)
+        self.ap_list += device_wifi.order_ap_list()
         # merge ap list
-        self.ap_list = self.__ap_list_merge()
-        aps = map(lambda i:WirelessItem(i), self.ap_list)
+        #self.ap_list = self.__ap_list_merge()
+        aps = map(lambda i:WirelessItem(i, self.focused_device), self.ap_list)
         hidden_list = self.get_hidden_connection(self.ap_list)
         hiddens = map(lambda c: HidenItem(c), hidden_list)
         return aps + hiddens
@@ -1065,7 +1135,7 @@ class Network(object):
         self.vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
         
         scroll_win = ScrolledWindow(right_space=0, top_bottom_space=0)
-        scroll_win.connect("event", self.test)
+        #scroll_win.connect("event", self.test)
         scroll_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
 
         # FIXME UI a align to adjust ui
@@ -1084,9 +1154,6 @@ class Network(object):
         self.vbox.connect("expose-event", self.expose_callback)
         ui_align.connect("expose-event", self.expose_callback)
         
-    def test(self, widget, event):
-        print event
-    
     def __pack_start(self, parent, child_list, expand=False, fill=False):
         for child in child_list:
             parent.pack_start(child, expand, fill)

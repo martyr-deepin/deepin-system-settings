@@ -110,31 +110,41 @@ class AppManager(gobject.GObject):
             print "set app default failed for type ",content_type 
 
     def get_all_for_type(self, content_type):
-        return gio.app_info_get_all_for_type(content_type)
+        apps = gio.app_info_get_all_for_type(content_type)
+        default_app = self.get_default_for_type(content_type)
+        if default_app and default_app.get_id().startswith("userapp"):
+            apps.remove(default_app)
+
+            # get real default
+            app = filter(lambda a: a.get_commandline().split(" ")[0] == default_app.get_commandline().split(" ")[0], apps)
+            if app:
+                apps.remove(app[0])
+                apps.insert(0, app[0])
+        return apps
 
 if __name__ == "__main__":
 
     manager = AppManager()
     print "default for http:"
-    print manager.get_default_for_type(manager.http_content_type).get_name()
-
+    app = manager.get_default_for_type(manager.photo_content_type)
+        
     print "available list for http:"
-    for app in manager.get_all_for_type(manager.http_content_type):
-        print app.get_name()
+    for app in manager.get_all_for_type(manager.photo_content_type):
+        print app.get_commandline(), app.get_name(),app.get_id()
 
 
-    print "set default for http:"    
-    for app in manager.get_all_for_type(manager.http_content_type):
-        if app != manager.get_default_for_type(manager.http_content_type):
-            ###attention, let https same as http
-            manager.set_default_for_type(app, manager.http_content_type)
-            manager.set_default_for_type(app, manager.https_content_type)
-            break
-        else:
-            continue
+    #print "set default for http:"    
+    #for app in manager.get_all_for_type(manager.http_content_type):
+        #if app != manager.get_default_for_type(manager.http_content_type):
+            ####attention, let https same as http
+            #manager.set_default_for_type(app, manager.http_content_type)
+            #manager.set_default_for_type(app, manager.https_content_type)
+            #break
+        #else:
+            #continue
 
-    print "now default for http:"    
-    print manager.get_default_for_type(manager.http_content_type).get_name()
+    #print "now default for http:"    
+    #print manager.get_default_for_type(manager.http_content_type).get_name()
 
-    # for app in manager.get_all_for_type(manager.http_content_type):
-    #     print app.get_id()
+    ## for app in manager.get_all_for_type(manager.http_content_type):
+    ##     print app.get_id()

@@ -94,6 +94,8 @@ class EventDispatcher(gobject.GObject):
             "service-stop-do-more": _(),
             "service-start-do-more": _(),
 
+            "switch-device": _(obj),
+
             }
 
     def __init__(self):

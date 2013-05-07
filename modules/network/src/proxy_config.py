@@ -237,7 +237,7 @@ class ProxyConfig(gtk.VBox):
         self.__init_widget()
         self.init()
 
-    def __row_entry_spin(self, label_name, table):
+    def __row_entry_spin(self, label_name, table, types):
         label = Label(label_name,
                       text_size=CONTENT_FONT_SIZE,
                       enable_select=False,
@@ -249,6 +249,9 @@ class ProxyConfig(gtk.VBox):
         entry = InputEntry()
         entry.set_size(self.ENTRY_WIDTH, 22)
         spin = SpinBox(0, 0, 49151, 1, 60)
+        spin.value_entry.connect("changed", lambda w, v: spin.update_and_emit(int(v)))
+
+        #spin.connect("value-changed", lambda w, v: setattr(self.proxysetting, "set_%s_port"%types, v))
 
         hbox = gtk.HBox(spacing=10)
         hbox.set_size_request(-1 ,22)
@@ -274,10 +277,10 @@ class ProxyConfig(gtk.VBox):
         self.manual_table = TableAsm()
 
         self.manual_radio = self.__row_check(_("Manual"), self.manual_table, None)
-        self.http_entry, self.http_spin = self.__row_entry_spin(_("Http Proxy"), self.manual_table)
-        self.https_entry, self.https_spin = self.__row_entry_spin(_("Https Proxy"), self.manual_table)
-        self.ftp_entry, self.ftp_spin = self.__row_entry_spin(_("FTP Proxy"), self.manual_table)
-        self.socks_entry, self.socks_spin = self.__row_entry_spin(_("Socks Proxy"), self.manual_table)
+        self.http_entry, self.http_spin = self.__row_entry_spin(_("Http Proxy"), self.manual_table, "http")
+        self.https_entry, self.https_spin = self.__row_entry_spin(_("Https Proxy"), self.manual_table, "https")
+        self.ftp_entry, self.ftp_spin = self.__row_entry_spin(_("FTP Proxy"), self.manual_table, "ftp")
+        self.socks_entry, self.socks_spin = self.__row_entry_spin(_("Socks Proxy"), self.manual_table, "socks")
 
         self.auto_table = TableAsm(right_width=self.ENTRY_WIDTH)
         self.auto_radio = self.__row_check(_("Automatic"), self.auto_table, self.manual_radio)

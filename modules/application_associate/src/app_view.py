@@ -78,6 +78,7 @@ class AppView(gtk.VBox):
         self.pack_start(align, False, False)
 
         all_app_dict = self.get_all_app()
+        print all_app_dict
         apps = [self.web, self.mail, self.editor, self.music, self.movie, self.pic]
         for app in apps:
             app.set_size_request(self.ENTRY_WIDTH, 22)
