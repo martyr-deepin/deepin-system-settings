@@ -571,7 +571,7 @@ class BlueToothView(gtk.VBox):
                          app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(devices[i].get_class())).get_pixbuf(), 
                          devices[i], 
                          self.my_bluetooth.adapter, 
-                         True, 
+                         devices[i].get_paired(), 
                          self.module_frame))
             i += 1
 
