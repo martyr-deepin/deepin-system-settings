@@ -386,6 +386,7 @@ class BlueToothView(gtk.VBox):
         enable open
         '''
         if self.my_bluetooth.adapter:
+            self.my_bluetooth.adapter.connect("property-changed", self.__on_property_changed)
             if self.my_bluetooth.adapter.get_powered():
                 self.title_align, self.title_label = self.__setup_title_align(
                     app_theme.get_pixbuf("bluetooth/enable_open.png"), _("Bluetooth"))
@@ -495,6 +496,17 @@ class BlueToothView(gtk.VBox):
 
         self.__get_devices()
 
+    def __on_property_changed(self, adapter, key, value):
+        if key != "Powered":
+            return
+
+        if value == 1:
+            self.enable_open_toggle.set_active(True)
+            self.__set_enable_open(True)
+        else:
+            self.enable_open_toggle.set_active(False)
+            self.__set_enable_open(False)
+
     def sendfile(self, device_name):
         event_manager.emit("send-file", device_name)
 
@@ -579,20 +591,23 @@ class BlueToothView(gtk.VBox):
             if adapter.get_discovering():
                 adapter.stop_discovery()
 
+    def __set_enable_open(self, is_open=True):
+        self.my_bluetooth.adapter.set_powered(is_open)             
+        self.enable_open_label.set_sensitive(is_open)              
+        self.display_device_label.set_sensitive(is_open)           
+        self.search_label.set_sensitive(is_open)                   
+        self.display_align.set_sensitive(is_open)                  
+        self.device_iconview.set_sensitive(is_open)                
+        self.search_align.set_sensitive(is_open)                
+        self.search_timeout_label.set_child_visible(False)                  
+        self.search_button.set_sensitive(is_open)
+    
     def __toggled(self, widget, object):
         if self.my_bluetooth.adapter == None:
             return
 
         if object == "enable_open":
-            self.my_bluetooth.adapter.set_powered(widget.get_active())
-            self.enable_open_label.set_sensitive(widget.get_active())
-            self.display_device_label.set_sensitive(widget.get_active())
-            self.search_label.set_sensitive(widget.get_active())
-            self.display_align.set_sensitive(widget.get_active())
-            self.device_iconview.set_sensitive(widget.get_active())
-            self.search_align.set_sensitive(widget.get_active())
-            self.search_timeout_label.set_child_visible(False)
-            self.search_button.set_sensitive(widget.get_active())
+            self.__set_enable_open(widget.get_active())
             return
 
         if object == "search":
