@@ -271,7 +271,9 @@ class DeviceItem(gobject.GObject):
         self.emit_redraw_request()
 
     def __error_handler_cb(self, error):
-        pass
+        send_message("dialog",                                                  
+                     ("bluetooth", "reply", _("Pair Failed!"), "False")
+                    )
 
     def do_pair(self):
         if self.is_paired:                                                      
