@@ -44,7 +44,6 @@ from bt.utils import bluetooth_class_to_type
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
 from helper import event_manager
-from killable_thread import KillableThread
 import time
 import threading as td
 import uuid
@@ -347,27 +346,27 @@ class DiscoveryDeviceThread(td.Thread):
         except Exception, e:
             print "class DiscoveryDeviceThread got error: %s" % e
 
-# FIXME: HOWTO use KillableThread
-class BeDiscoveriedThread(KillableThread):
+class PerodicTimer:
+    def __init__(self, ThisPtr, timeout):
+        # register a periodic timer
+        self.ThisPtr = ThisPtr
+        self.tick = 120
+        self.tag = gobject.timeout_add_seconds(timeout, self.callback)
 
-    def __init__(self, ThisPtr):                                                
-        KillableThread.__init__(self)                                                
-        self.setDaemon(True)                                                    
-        self.ThisPtr = ThisPtr                                                  
-        self.tick = 120                                                          
-                                                                                
-    def run(self):                                                              
-        try:                         
-            while self.ThisPtr.is_discoverable and self.tick:                                                    
-                self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
-                self.tick -= 1                                                  
-                time.sleep(1)
-
+    def callback(self):
+        if self.tick == 0:
             self.ThisPtr.my_bluetooth.adapter.set_discoverable(False)
             self.ThisPtr.search_timeout_label.set_child_visible(False)
             self.ThisPtr.search_toggle.set_active(False)
-        except Exception, e:                                                    
-            print "class DiscoveryDeviceThread got error: %s" % e
+            return False
+        
+        self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
+        self.tick -= 1
+        return True
+
+    def stop(self):
+        self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % 120)
+        gobject.source_remove(self.tag)
 
 class BlueToothView(gtk.VBox):
     '''
@@ -385,6 +384,7 @@ class BlueToothView(gtk.VBox):
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
                                         self.__on_default_adapter_changed, 
                                         self.__device_found)
+        self.periodic_timer = None
         self.is_discoverable = False
         '''
         enable open
@@ -615,14 +615,13 @@ class BlueToothView(gtk.VBox):
             return
 
         if object == "search":
-            thread = BeDiscoveriedThread(self)
             self.is_discoverable = widget.get_active()
             self.my_bluetooth.adapter.set_discoverable(self.is_discoverable)
             self.search_timeout_label.set_child_visible(self.is_discoverable)
             if self.is_discoverable:
-                thread.start()
+                self.periodic_timer = PerodicTimer(self, 1)
             else:
-                thread.terminate()
+                self.periodic_timer.stop()
             return
 
     def __expose(self, widget, event):                                           
