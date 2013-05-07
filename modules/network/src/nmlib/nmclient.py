@@ -62,9 +62,9 @@ class NMClient(NMObject):
                                      path = self.object_path,signal_name = "StateChanged")
         self.devices = self.get_devices()
 
-        for device in self.devices:
-            if not device.get_managed():
-                gobject.timeout_add(3000, lambda : self.fix_unmanaged())
+        #for device in self.devices:
+        #    if not device.get_managed():
+        #        gobject.timeout_add(3000, lambda : self.fix_unmanaged())
 
     def fix_unmanaged(self):
         try:
