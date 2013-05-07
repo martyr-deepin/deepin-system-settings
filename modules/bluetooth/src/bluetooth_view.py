@@ -353,7 +353,10 @@ class BeDiscoveriedThread(td.Thread):
         self.tick = 120                                                          
                                                                                 
     def run(self):                                                              
-        try:                                                                    
+        try:                         
+            if not self.ThisPtr.is_discoverable:
+                self.tick = 0
+            
             while self.ThisPtr.is_discoverable and self.tick:                                                    
                 self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
                 self.tick -= 1                                                  
@@ -601,7 +604,7 @@ class BlueToothView(gtk.VBox):
         self.search_align.set_sensitive(is_open)                
         self.search_timeout_label.set_child_visible(False)                  
         self.search_button.set_sensitive(is_open)
-    
+
     def __toggled(self, widget, object):
         if self.my_bluetooth.adapter == None:
             return
