@@ -44,6 +44,7 @@ from bt.utils import bluetooth_class_to_type
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
 from helper import event_manager
+from killable_thread import KillableThread
 import time
 import threading as td
 import uuid
@@ -344,19 +345,17 @@ class DiscoveryDeviceThread(td.Thread):
         except Exception, e:
             print "class DiscoveryDeviceThread got error: %s" % e
 
-class BeDiscoveriedThread(td.Thread):
+# FIXME: HOWTO use KillableThread
+class BeDiscoveriedThread(KillableThread):
 
     def __init__(self, ThisPtr):                                                
-        td.Thread.__init__(self)                                                
+        KillableThread.__init__(self)                                                
         self.setDaemon(True)                                                    
         self.ThisPtr = ThisPtr                                                  
         self.tick = 120                                                          
                                                                                 
     def run(self):                                                              
         try:                         
-            if not self.ThisPtr.is_discoverable:
-                self.tick = 0
-            
             while self.ThisPtr.is_discoverable and self.tick:                                                    
                 self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
                 self.tick -= 1                                                  
@@ -614,11 +613,14 @@ class BlueToothView(gtk.VBox):
             return
 
         if object == "search":
+            thread = BeDiscoveriedThread(self)
             self.is_discoverable = widget.get_active()
             self.my_bluetooth.adapter.set_discoverable(self.is_discoverable)
             self.search_timeout_label.set_child_visible(self.is_discoverable)
             if self.is_discoverable:
-                BeDiscoveriedThread(self).start()
+                thread.start()
+            else:
+                thread.terminate()
             return
 
     def __expose(self, widget, event):                                           
