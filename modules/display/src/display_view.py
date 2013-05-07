@@ -45,7 +45,7 @@ class MonitorResizableBox(ResizableBox):
         "select-output" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),}
     
     def __init__(self, display_manager):
-        ResizableBox.__init__(self, resizeable = False)
+        ResizableBox.__init__(self, resizable = False)
 
         self.__display_manager = display_manager
 
