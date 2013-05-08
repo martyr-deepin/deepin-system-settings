@@ -270,7 +270,9 @@ class DeviceItem(gobject.GObject):
         self.emit_redraw_request()
 
     def __error_handler_cb(self, error):
-        pass
+        send_message("dialog",                                                  
+                     ("bluetooth", "reply", _("Pair Failed!"), "False")
+                    )
 
     def do_pair(self):
         if self.is_paired:                                                      
@@ -344,26 +346,27 @@ class DiscoveryDeviceThread(td.Thread):
         except Exception, e:
             print "class DiscoveryDeviceThread got error: %s" % e
 
-class BeDiscoveriedThread(td.Thread):
+class PerodicTimer:
+    def __init__(self, ThisPtr, timeout):
+        # register a periodic timer
+        self.ThisPtr = ThisPtr
+        self.tick = 120
+        self.tag = gobject.timeout_add_seconds(timeout, self.callback)
 
-    def __init__(self, ThisPtr):                                                
-        td.Thread.__init__(self)                                                
-        self.setDaemon(True)                                                    
-        self.ThisPtr = ThisPtr                                                  
-        self.tick = 120                                                          
-                                                                                
-    def run(self):                                                              
-        try:                                                                    
-            while self.ThisPtr.is_discoverable and self.tick:                                                    
-                self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
-                self.tick -= 1                                                  
-                time.sleep(1)
-
+    def callback(self):
+        if self.tick == 0:
             self.ThisPtr.my_bluetooth.adapter.set_discoverable(False)
             self.ThisPtr.search_timeout_label.set_child_visible(False)
             self.ThisPtr.search_toggle.set_active(False)
-        except Exception, e:                                                    
-            print "class DiscoveryDeviceThread got error: %s" % e
+            return False
+        
+        self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % self.tick)
+        self.tick -= 1
+        return True
+
+    def stop(self):
+        self.ThisPtr.search_timeout_label.set_text(_("in %d seconds") % 120)
+        gobject.source_remove(self.tag)
 
 class BlueToothView(gtk.VBox):
     '''
@@ -381,11 +384,13 @@ class BlueToothView(gtk.VBox):
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
                                         self.__on_default_adapter_changed, 
                                         self.__device_found)
+        self.periodic_timer = None
         self.is_discoverable = False
         '''
         enable open
         '''
         if self.my_bluetooth.adapter:
+            self.my_bluetooth.adapter.connect("property-changed", self.__on_property_changed)
             if self.my_bluetooth.adapter.get_powered():
                 self.title_align, self.title_label = self.__setup_title_align(
                     app_theme.get_pixbuf("bluetooth/enable_open.png"), _("Bluetooth"))
@@ -495,6 +500,17 @@ class BlueToothView(gtk.VBox):
 
         self.__get_devices()
 
+    def __on_property_changed(self, adapter, key, value):
+        if key != "Powered":
+            return
+
+        if value == 1:
+            self.enable_open_toggle.set_active(True)
+            self.__set_enable_open(True)
+        else:
+            self.enable_open_toggle.set_active(False)
+            self.__set_enable_open(False)
+
     def sendfile(self, device_name):
         event_manager.emit("send-file", device_name)
 
@@ -555,7 +571,7 @@ class BlueToothView(gtk.VBox):
                          app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(devices[i].get_class())).get_pixbuf(), 
                          devices[i], 
                          self.my_bluetooth.adapter, 
-                         True, 
+                         devices[i].get_paired(), 
                          self.module_frame))
             i += 1
 
@@ -579,20 +595,23 @@ class BlueToothView(gtk.VBox):
             if adapter.get_discovering():
                 adapter.stop_discovery()
 
+    def __set_enable_open(self, is_open=True):
+        self.my_bluetooth.adapter.set_powered(is_open)             
+        self.enable_open_label.set_sensitive(is_open)              
+        self.display_device_label.set_sensitive(is_open)           
+        self.search_label.set_sensitive(is_open)                   
+        self.display_align.set_sensitive(is_open)                  
+        self.device_iconview.set_sensitive(is_open)                
+        self.search_align.set_sensitive(is_open)                
+        self.search_timeout_label.set_child_visible(False)                  
+        self.search_button.set_sensitive(is_open)
+
     def __toggled(self, widget, object):
         if self.my_bluetooth.adapter == None:
             return
 
         if object == "enable_open":
-            self.my_bluetooth.adapter.set_powered(widget.get_active())
-            self.enable_open_label.set_sensitive(widget.get_active())
-            self.display_device_label.set_sensitive(widget.get_active())
-            self.search_label.set_sensitive(widget.get_active())
-            self.display_align.set_sensitive(widget.get_active())
-            self.device_iconview.set_sensitive(widget.get_active())
-            self.search_align.set_sensitive(widget.get_active())
-            self.search_timeout_label.set_child_visible(False)
-            self.search_button.set_sensitive(widget.get_active())
+            self.__set_enable_open(widget.get_active())
             return
 
         if object == "search":
@@ -600,7 +619,9 @@ class BlueToothView(gtk.VBox):
             self.my_bluetooth.adapter.set_discoverable(self.is_discoverable)
             self.search_timeout_label.set_child_visible(self.is_discoverable)
             if self.is_discoverable:
-                BeDiscoveriedThread(self).start()
+                self.periodic_timer = PerodicTimer(self, 1)
+            else:
+                self.periodic_timer.stop()
             return
 
     def __expose(self, widget, event):                                           

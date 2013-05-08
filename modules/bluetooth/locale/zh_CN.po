@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-13 10:01+0800\n"
+"POT-Creation-Date: 2013-05-07 21:15+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,13 +17,90 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:535
+#: ../src/tray_bluetooth_plugin.py:173
+msgid "Adapter"
+msgstr "适配器"
+
+#: ../src/tray_bluetooth_plugin.py:201
+msgid "Advanced option..."
+msgstr "更多高级选项..."
+
+#: ../src/bluetooth_view.py:84
+msgid "Pair"
+msgstr "配对"
+
+#: ../src/bluetooth_view.py:86
+msgid "Send File"
+msgstr "发送文件"
+
+#: ../src/bluetooth_view.py:88
+msgid "Remove Device"
+msgstr "删除设备"
+
+#: ../src/bluetooth_view.py:275
+msgid "Pair Failed!"
+msgstr "配对失败!"
+
+#: ../src/bluetooth_view.py:285
+#, python-format
+msgid "Please confirm %s pin match as below"
+msgstr "请确认显示于%s上面的pin于此匹配"
+
+#: ../src/bluetooth_view.py:286
+msgid "Yes"
+msgstr "匹配"
+
+#: ../src/bluetooth_view.py:287
+msgid "No"
+msgstr "不匹配"
+
+#: ../src/bluetooth_view.py:362
+#, python-format
+msgid "in %d seconds"
+msgstr "在%d秒内"
+
+#: ../src/bluetooth_view.py:396 ../src/bluetooth_view.py:400
+#: ../src/bluetooth_view.py:403
+msgid "Bluetooth"
+msgstr "蓝牙"
+
+#: ../src/bluetooth_view.py:407 ../src/search_keyword.py:29
 msgid "Bluetooth Get Powered"
 msgstr "蓝牙是否开启"
 
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:551
+#: ../src/bluetooth_view.py:427 ../src/search_keyword.py:30
 msgid "Device Shown Name"
 msgstr "显示设备名称"
+
+#: ../src/bluetooth_view.py:445
+msgid "Be Discoverable"
+msgstr "可发现"
+
+#: ../src/bluetooth_view.py:478
+msgid "Search"
+msgstr "搜索"
+
+#: ../src/bluetooth_sender.py:51
+#, python-format
+msgid ""
+"Failed!\n"
+"error msg: %s"
+msgstr ""
+"抱歉！文件发送失败，请返回检查你的蓝牙网络设置\n"
+"错误信息: %s"
+
+#: ../src/bluetooth_sender.py:66
+#, python-format
+msgid "Sending file to %s"
+msgstr "正在向“%s”发送文件"
+
+#: ../src/bluetooth_sender.py:83
+msgid "Succeed!"
+msgstr "文件已发送成功！"
+
+#: ../src/bluetooth_sender.py:114
+msgid "Select File"
+msgstr "选择文件"
 
 #: ../src/search_keyword.py:31
 msgid "Be Searchedable"
@@ -33,82 +110,8 @@ msgstr "是否可被发现"
 msgid "Searching Device Timeout"
 msgstr "检测设备超时"
 
-#: ../src/tray_bluetooth_plugin.py:140
-msgid "Adapter"
-msgstr "适配器"
+#~ msgid "Cancel"
+#~ msgstr "取消"
 
-#: ../src/tray_bluetooth_plugin.py:167
-msgid "Advanced option..."
-msgstr "更多高级选项..."
-
-#: ../src/bluetooth_view.py:82
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/bluetooth_view.py:127
-msgid "Ok"
-msgstr "确定"
-
-#: ../src/bluetooth_view.py:158
-msgid "Pair"
-msgstr "配对"
-
-#: ../src/bluetooth_view.py:161
-msgid "Send File"
-msgstr "发送文件"
-
-#: ../src/bluetooth_view.py:163
-msgid "Remove Device"
-msgstr "删除设备"
-
-#: ../src/bluetooth_view.py:348
-#, python-format
-msgid ""
-"Failed!\n"
-"error msg: %s"
-msgstr ""
-"抱歉！文件发送失败，请返回检查你的蓝牙网络设置\n"
-"错误信息: %s"
-
-#: ../src/bluetooth_view.py:362
-#, python-format
-msgid "Sending file to %s"
-msgstr "正在向“%s”发送文件"
-
-#: ../src/bluetooth_view.py:378
-msgid "Succeed!"
-msgstr "文件已发送成功！"
-
-#: ../src/bluetooth_view.py:411
-msgid "Select File"
-msgstr "选择文件"
-
-#: ../src/bluetooth_view.py:432
-#, python-format
-msgid "Please confirm %s pin match as below"
-msgstr "请确认显示于%s上面的pin于此匹配"
-
-#: ../src/bluetooth_view.py:433
-msgid "Yes"
-msgstr "匹配"
-
-#: ../src/bluetooth_view.py:434
-msgid "No"
-msgstr "不匹配"
-
-#: ../src/bluetooth_view.py:504
-#, python-format
-msgid "in %d seconds"
-msgstr "在%d秒内"
-
-#: ../src/bluetooth_view.py:532
-msgid "Bluetooth"
-msgstr "蓝牙"
-
-#: ../src/bluetooth_view.py:565
-msgid "Be Discoverable"
-msgstr "可发现"
-
-#: ../src/bluetooth_view.py:594
-msgid "Search"
-msgstr "搜索"
+#~ msgid "Ok"
+#~ msgstr "确定"
