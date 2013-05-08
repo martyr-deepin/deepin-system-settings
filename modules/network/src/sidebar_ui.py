@@ -92,7 +92,8 @@ class SideBar(gtk.VBox):
         Dispatcher.slide_to_page("setting", "right")
 
     def __init_tree(self, items_list, insert_pos=None):
-        if items_list:
+        if items_list and items_list != [None, -1]:
+            print items_list, "__init_tree"
             container_remove_all(self.buttonbox)
             self.connection_tree.add_items(map(lambda c: SettingItem(c, None), items_list), insert_pos=insert_pos)
             self.buttonbox.pack_start(self.connection_tree, False, False)
