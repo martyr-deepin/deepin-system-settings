@@ -78,12 +78,15 @@ class AppView(gtk.VBox):
         self.pack_start(align, False, False)
 
         all_app_dict = self.get_all_app()
-        print all_app_dict
+        #print all_app_dict
         apps = [self.web, self.mail, self.editor, self.music, self.movie, self.pic]
         for app in apps:
             app.set_size_request(self.ENTRY_WIDTH, 22)
         for key in all_app_dict.iterkeys():
-            apps[key].add_items(all_app_dict[key])
+            if self.get_default_app:
+                apps[key].add_items(all_app_dict[key])
+            else:
+                apps[key].add_items(all_app_dict[key], clear_first = False)
     
     def attach_to(self, table, widget_list, row, width):
         for index, widget in enumerate(widget_list):
@@ -133,7 +136,7 @@ class AppView(gtk.VBox):
     def item_select(self, widget, content, value, index, types):
         default_apps = self.get_default_app()
         rough_types = self.content_type_list[types].split("/")[0]
-        print content, value, index, types, default_apps[types].get_name()
+        #print content, value, index, types, default_apps[types].get_name()
         if content != "None" and default_apps[types].get_name() != content:
             if rough_types in self.app.rough_types:
                 self.app.set_default_for_rough_type(value, rough_types)

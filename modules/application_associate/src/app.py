@@ -101,11 +101,12 @@ class AppManager(gobject.GObject):
     def set_default_for_type(self, desktopapp, content_type):
         gio.app_info_reset_type_associations(content_type)
 
-        commandline = desktopapp.get_commandline()
-        app = self.get_app_info(commandline)
+        #commandline = desktopapp.get_commandline()
+        #app = self.get_app_info(commandline)
 
         try:
-            app.set_as_default_for_type(content_type)
+            #print desktopapp
+            desktopapp.set_as_default_for_type(content_type)
         except:    
             print "set app default failed for type ",content_type 
 
@@ -125,8 +126,9 @@ class AppManager(gobject.GObject):
 if __name__ == "__main__":
 
     manager = AppManager()
-    print "default for http:"
+    gio.app_info_reset_type_associations(manager.photo_content_type)
     app = manager.get_default_for_type(manager.photo_content_type)
+    print "default for http:", app
         
     print "available list for http:"
     for app in manager.get_all_for_type(manager.photo_content_type):
