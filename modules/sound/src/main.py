@@ -508,38 +508,40 @@ class SoundSetting(object):
         cr.fill()
 
     def speaker_toggled_cb(self, button):
+        active = button.get_active()
+        if not active:
+            self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
+            self.label_widgets["speaker_balance"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Balance")))
+            tips_text = _("Muted output")
+        else:
+            self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
+            self.label_widgets["speaker_balance"].set_text("%s" % _("Balance"))
+            tips_text = _("Unmuted output")
         if button.get_data("change-by-other"):
             button.set_data("change-by-other", False)
             return
-        active = button.get_active()
         current_sink = pypulse.get_fallback_sink_index()
         self.scale_widgets["speaker"].set_enable(active)
         if current_sink is not None:
             pypulse.PULSE.set_output_mute(current_sink, not active)
-        if not active:
-            self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
-            self.label_widgets["speaker_balance"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Balance")))
-            self.set_status_text(_("Muted output"))
-        else:
-            self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
-            self.label_widgets["speaker_balance"].set_text("%s" % _("Balance"))
-            self.set_status_text(_("Unmuted output"))
+        self.set_status_text(tips_text)
 
     def microphone_toggled_cb(self, button):
+        active = button.get_active()
+        if not active:
+            self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
+            tips_text = _("Muted input")
+        else:
+            self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
+            tips_text = _("Unmuted input")
         if button.get_data("change-by-other"):
             button.set_data("change-by-other", False)
             return
-        active = button.get_active()
         current_source = pypulse.get_fallback_source_index()
         self.scale_widgets["microphone"].set_enable(active)
         if current_source is not None:
             pypulse.PULSE.set_input_mute(current_source, not active)
-        if not active:
-            self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
-            self.set_status_text(_("Muted input"))
-        else:
-            self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
-            self.set_status_text(_("Unmuted input"))
+        self.set_status_text(tips_text)
 
     def speaker_value_changed_cb(self, widget, value):
         ''' speaker hscale value changed callback thread'''
@@ -774,6 +776,12 @@ class SoundSetting(object):
             is_mute = sinks[current_sink]['mute']
             if self.button_widgets["speaker"].get_active() == is_mute and not self.__first_time:
                 self.button_widgets["speaker"].set_data("change-by-other", True)
+            if is_mute:
+                self.label_widgets["speaker_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Output Volume")))
+                self.label_widgets["speaker_balance"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Balance")))
+            else:
+                self.label_widgets["speaker_volume"].set_text("%s" % _("Output Volume"))
+                self.label_widgets["speaker_balance"].set_text("%s" % _("Balance"))
             self.button_widgets["speaker"].set_active(not is_mute)
             self.scale_widgets["speaker"].set_enable(not is_mute)
             self.scale_widgets["balance"].set_enable(not is_mute)
@@ -821,6 +829,10 @@ class SoundSetting(object):
             is_mute = sources[current_source]['mute']
             if self.button_widgets["microphone"].get_active() == is_mute and not self.__first_time:
                 self.button_widgets["microphone"].set_data("change-by-other", True)
+            if is_mute:
+                self.label_widgets["microphone_volume"].set_text("<span foreground=\"%s\">%s</span>" % (MUTE_TEXT_COLOR, _("Input Volume")))
+            else:
+                self.label_widgets["microphone_volume"].set_text("%s" % _("Input Volume"))
             self.button_widgets["microphone"].set_active(not is_mute)
             self.scale_widgets["microphone"].set_enable(not is_mute)
 

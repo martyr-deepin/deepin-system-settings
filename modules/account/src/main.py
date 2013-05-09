@@ -125,7 +125,9 @@ class AccountSetting(object):
         self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
         #self.button_widgets["auto_login"] = gtk.ToggleButton()
         ##self.button_widgets["auto_login"] = SwitchButton()
-        self.button_widgets["nopw_login"] = SwitchButton()
+        self.button_widgets["nopw_login"] = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
         self.button_widgets["passwd"] = InputEntry()
         #self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
         #self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
