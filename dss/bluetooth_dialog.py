@@ -74,7 +74,7 @@ class BluetoothProgressDialog(DialogBox):
 
     def set_progress(self, progress):
         self.progress_bar.set_progress(progress)
-        self.percentage_label.set_text("%d" % progress + "%")
+        self.percentage_label.set_text(_("Transmitted %d") % progress + "%")
 
     def __on_cancel_button_clicked(self, widget):
         if self.cancel_cb:

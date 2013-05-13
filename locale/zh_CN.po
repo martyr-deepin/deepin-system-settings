@@ -29,6 +29,10 @@ msgstr "恢复默认"
 msgid "Cancel"
 msgstr "取消"
 
+#: ../dss/bluetooth_dialog.py:77
+msgid "Transmitted"
+msgstr "已发送"
+
 #: ../dss/bluetooth_dialog.py:112
 msgid "Ok"
 msgstr "确定"
