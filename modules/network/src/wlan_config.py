@@ -19,7 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from dtk.ui.button import CheckButton, Button
-from dtk.ui.entry import PasswordEntry
+from dtk.ui.entry import PasswordEntry, InputEntry
 from dtk.ui.net import MACEntry
 from dtk.ui.label import Label
 from dtk.ui.spin import SpinBox
@@ -308,11 +308,11 @@ class Security(gtk.VBox):
                                 enable_select=False,
                                 enable_double_click=False)
         self.ssid_label_align = style.wrap_with_align(self.ssid_label, width=210)
-        self.ssid_entry = MACEntry()
-        self.ssid_entry.set_size_request(130, 22)
+        self.ssid_entry = InputEntry()
+        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
         self.ssid_entry_align = style.wrap_with_align(self.ssid_entry, align="left")
-        self.ssid_entry.connect("changed", self.set_ssid)
-        self.ssid_entry.set_address(self.wireless.ssid)
+        self.ssid_entry.entry.connect("changed", self.set_ssid)
+        self.ssid_entry.set_text(self.wireless.ssid)
 
         #self.add(align)
 
@@ -548,7 +548,8 @@ class Wireless(gtk.VBox):
         self.ssid_label = Label(_("SSID:"),
                                 enable_select=False,
                                 enable_double_click=False)
-        self.ssid_entry = MACEntry()
+        self.ssid_entry = InputEntry()
+        self.ssid_entry.set_size(self.ENTRY_WIDTH, 22)
 
         self.mode_label = Label(_("Mode:"),
                                enable_select=False,
@@ -617,7 +618,7 @@ class Wireless(gtk.VBox):
         #self.pack_start(self.table, False, False)
         #self.table.set_size_request(340, 227)
 
-        self.ssid_entry.set_size_request(130, 22)
+        #self.ssid_entry.set_size_request(130, 22)
         self.bssid_entry.set_size_request(130, 22)
         self.mac_entry.set_size_request(130, 22)
         self.clone_entry.set_size_request(130, 22)
@@ -627,7 +628,7 @@ class Wireless(gtk.VBox):
         self.band_combo.connect("item-selected", self.band_combo_selected)
         self.mtu_spin.connect("value-changed", self.spin_value_changed, "mtu")
         self.channel_spin.connect("value-changed", self.spin_value_changed, "channel")
-        self.ssid_entry.connect("changed", self.entry_changed, "ssid")
+        self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
         self.bssid_entry.connect("changed", self.entry_changed, "bssid")
         self.mac_entry.connect("changed", self.entry_changed, "mac_address")
         self.clone_entry.connect("changed", self.entry_changed, "cloned_mac_address")
@@ -692,7 +693,7 @@ class Wireless(gtk.VBox):
         wireless = self.wireless
         ## retrieve wireless info
         if wireless.ssid != None:
-            self.ssid_entry.set_address(wireless.ssid)
+            self.ssid_entry.set_text(wireless.ssid)
 
         if wireless.bssid != None:
             self.bssid_entry.set_address(wireless.bssid)
@@ -717,7 +718,7 @@ class Wireless(gtk.VBox):
     
     def save_change(self):
         
-        self.wireless.ssid = self.ssid_entry.get_address()
+        self.wireless.ssid = self.ssid_entry.get_text()
         self.wireless.mode = self.mode_combo.get_current_item()[0]
 
         if self.bssid_entry.get_address() != "":

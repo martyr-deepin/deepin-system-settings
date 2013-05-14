@@ -117,7 +117,7 @@ class NMActiveConnection(NMObject):
                                         reverse = True)
 
             nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
-            if len(nmclient.get_active_vpn_connection()) == 0:
+            if len(nmclient.get_vpn_active_connection()) == 0:
                 self.thread_vpnauto = ThreadVPNAuto(self.object_path, vpn_prio_connections)
                 self.thread_vpnauto.setDaemon(True)
                 self.thread_vpnauto.start()

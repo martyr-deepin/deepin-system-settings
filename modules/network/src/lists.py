@@ -710,7 +710,7 @@ class VPNItem(GenItems):
                                                                                 
         self.connection = connection                                            
         self.id = self.connection.get_setting("connection").id
-        self.click_cb()
+        #self.click_cb()
                                                                                 
         event_manager.add_callback("update-vpn-id", self.__on_update_id)            
                                                                                 

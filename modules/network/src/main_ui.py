@@ -432,7 +432,10 @@ class WirelessSection(Section, WirelessDevice):
                           enable_select=False,
                           enable_double_click=False)
 
-        self.load(self.wireless, [self.label])
+        space = gtk.VBox()
+        space.set_size_request(-1, 15)
+
+        self.load(self.wireless, [space, self.label])
         self.content_box.set_spacing(0)
 
         self.selected_item = None

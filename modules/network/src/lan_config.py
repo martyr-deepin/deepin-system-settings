@@ -122,6 +122,7 @@ class Wired(gtk.VBox):
         self.set_button = set_button_callback
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+        #self.settings_obj.set_button("save", True)
 
         self.__init_table()
         self.__init_signals()
@@ -133,6 +134,10 @@ class Wired(gtk.VBox):
             self.clone_entry.set_address(clone_mac)
         if mtu != None:
             self.mtu_spin.set_value(int(mtu))
+        
+        # check valid for nmconnection init
+        if not type(self.connection) == NMRemoteConnection:
+            self.save_settings(None, None, None)
 
     def __init_table(self):
         self.table = TableAsm()
@@ -153,7 +158,8 @@ class Wired(gtk.VBox):
         ## retrieve wired info
     def save_settings(self, widget, content, types):
         #value = None
-        setattr(self.ethernet, types, content)
+        if types:
+            setattr(self.ethernet, types, content)
         if self.settings_obj is None:
             return
         
@@ -187,6 +193,7 @@ class Wired(gtk.VBox):
 
         # 统一调用shared_methods.Settings的set_button
         self.settings_obj.set_button("save", True)
+
         """
         if type(value) is str and value:
             if TypeConvert.is_valid_mac_address(value):
