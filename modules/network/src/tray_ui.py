@@ -34,6 +34,7 @@ import style
 from helper import Dispatcher
 from timer import Timer
 from container import MyToggleButton as SwitchButton
+from shared_methods import net_manager
 WIDGET_HEIGHT = 22
 
 ALIGN_SPACING = 28
@@ -75,6 +76,7 @@ class TrayUI(gtk.VBox):
         self.wire_state = False
         self.wireless_state = False
         self.mobile_state = False
+        self.device_tree = None
 
         self.pack_start(self.wire_box, False, False)
         self.pack_start(self.wireless_box, False, False)
@@ -89,6 +91,8 @@ class TrayUI(gtk.VBox):
             height += 35
             if self.ap_tree.visible_items and self.wireless.get_active():
                 height += self.ap_tree.get_size_request()[1]
+            if self.device_tree:
+                height += 22
                 #if len(self.ap_tree.visible_items) >=10:
                     #height += 10 * WIDGET_HEIGHT
                 #else:
@@ -202,6 +206,20 @@ class TrayUI(gtk.VBox):
         
     def get_active_ap(self):
         return self.active_ap_index
+
+    def add_switcher(self):
+        if not hasattr(self, "device_tree") or not self.device_tree:
+            self.device_tree = TreeView([DeviceItem()], mask_bound_height=0)
+            self.device_tree.set_expand_column(1)
+            self.wireless_box.pack_start(self.device_tree, False, False)
+            self.wireless_box.reorder_child(self.wireless_box.get_children()[-2], len(self.wireless_box.get_children()))
+            print "sdf", self.wireless_box.get_children()
+            net_manager.emit_wifi_switch(0)
+
+    def remove_switcher(self):
+        if self.device_tree:
+            self.wireless_box.remove(self.device_tree)
+            self.device_tree = None
     
     def get_active_in_ui(self):
         return filter(lambda i: i.get_active() == True, self.ap_tree.visible_items)
@@ -482,3 +500,112 @@ class APButton(gtk.Button):
         self.connect("button-press-event", self.select_button_button_press_event)
         self.connect("button-release-event", self.select_button_button_release_event)
         self.connect("expose-event", self.select_button_expose_event)        
+
+class DeviceItem(TreeItem):
+    SPACING = 5
+    
+    def __init__(self,
+                 font_size = CONTENT_FONT_SIZE):
+
+        TreeItem.__init__(self)
+        self.wifi = app_theme.get_pixbuf("network/wifi_device.png")
+        self.left = app_theme.get_pixbuf("network/left.png")
+        self.right = app_theme.get_pixbuf("network/right.png")
+
+        self.devices =  net_manager.device_manager.wireless_devices
+
+        self.index = 1
+
+    def render_icon(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.wifi.get_pixbuf(), rect.x + 16, rect.y)
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            #cr.set_line_width(1)
+            #if self.is_last:
+                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, 1, rect.height)
+            #cr.fill()
+    
+    def render_text(self, cr, rect):
+        self.render_background(cr, rect)
+        text = _("card %d")%(self.index)
+        (text_width, text_height) = get_content_size(text)
+        draw_text(cr, text, rect.x, rect.y, rect.width, rect.height,
+                alignment = pango.ALIGN_CENTER)
+
+        #with cairo_disable_antialias(cr):
+            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
+            #cr.set_line_width(1)
+            #if self.is_last:
+                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+            #cr.rectangle(rect.x, rect.y, rect.width, 1)
+            #cr.fill()
+
+    def render_left(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.left.get_pixbuf(), rect.x + ALIGN_SPACING, rect.y + (rect.height - 16)/2)
+
+    def render_right(self, cr, rect):
+        self.render_background(cr, rect)
+        draw_pixbuf(cr, self.right.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
+
+    def get_column_widths(self):
+        return [16 + ALIGN_SPACING, -1, IMG_WIDTH + self.SPACING]
+    
+    def get_height(self):
+        return 22
+
+    def get_column_renders(self):
+        return [self.render_left, self.render_text,
+                self.render_right]
+
+    def hover(self, column, offset_x, offset_y):
+        self.is_hover = True
+
+        self.redraw()
+
+    def unhover(self, column, offset_x, offset_y):
+        self.is_hover = False
+        self.redraw()
+
+    def round_plus(self):
+        if self.index == len(self.devices):
+            self.index = 1
+        else:
+            self.index += 1
+
+    def round_minus(self):
+        self.index -= 1
+        if self.index == 0:
+            self.index = len(self.devices)
+
+    def single_click(self, column, offset_x, offset_y):
+        if column == 2:
+            self.round_plus()
+            
+
+            #Dispatcher.emit("switch_device", self.devices[self.index -1])
+        elif column == 0:
+            self.round_minus()
+
+        net_manager.emit_wifi_switch(self.index -1)
+        self.redraw()
+
+    def set_index(self, device):
+        self.index = self.devices.index(device) + 1
+        self.redraw()
+
+
+    def render_background(self, cr, rect):
+        if self.is_hover:
+            cr.set_source_rgb(*BG_COLOR)
+        else:
+            cr.set_source_rgb(1, 1, 1 )
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
+        cr.fill()
+
+    def redraw(self):
+        if self.redraw_request_callback:
+            self.redraw_request_callback(self)

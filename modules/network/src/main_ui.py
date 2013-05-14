@@ -449,6 +449,7 @@ class WirelessSection(Section, WirelessDevice):
             self.device_tree.set_expand_column(1)
             self.content_box.pack_start(self.device_tree, False, True)
             self.content_box.reorder_child(self.device_tree, 0)
+            net_manager.emit_wifi_switch(0)
 
     def remove_switcher(self):
         if self.device_tree\
@@ -498,6 +499,8 @@ class WirelessSection(Section, WirelessDevice):
 
     def switch_devices(self, widget, device):
         self.focused_device = device
+        if self.device_tree:
+            self.device_tree.visible_items[0].set_index(device)
         #item, state = self.device_dict[device]
         #item.set_net_state(state)
         self.wireless_redraw(None)

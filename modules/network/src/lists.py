@@ -997,7 +997,13 @@ class DeviceToggleItem(GenItems):
 
         self.wifi = app_theme.get_pixbuf("network/wifi_device.png")
         self.left = app_theme.get_pixbuf("network/left.png")
+        self.left_hover = app_theme.get_pixbuf("network/left_hover.png")
+        self.right_hover = app_theme.get_pixbuf("network/right_hover.png")
         self.right = app_theme.get_pixbuf("network/right.png")
+        self.bg_color = "#ffffff"
+
+        self.is_hover_left = False
+        self.is_hover_right = False
 
     def render_icon(self, cr, rect):
         self.render_background(cr, rect)
@@ -1014,7 +1020,11 @@ class DeviceToggleItem(GenItems):
 
     def render_left(self, cr, rect):
         self.render_background(cr, rect)
-        draw_pixbuf(cr, self.left.get_pixbuf(), rect.x + IMG_WIDTH + 5, rect.y + (rect.height - IMG_WIDTH)/2)
+        if self.is_hover_left:
+            icon = self.left_hover
+        else:
+            icon = self.left
+        draw_pixbuf(cr, icon.get_pixbuf(), rect.x + IMG_WIDTH + 5, rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
@@ -1025,7 +1035,11 @@ class DeviceToggleItem(GenItems):
 
     def render_right(self, cr, rect):
         self.render_background(cr, rect)
-        draw_pixbuf(cr, self.right.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
+        if self.is_hover_right:
+            icon = self.right_hover
+        else:
+            icon = self.right
+        draw_pixbuf(cr, icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
@@ -1055,20 +1069,49 @@ class DeviceToggleItem(GenItems):
     def get_column_renders(self):
         return [self.render_icon, self.render_device, self.render_left, self.render_right]
 
+    def hover(self, column, offset_x, offset_y):
+        pass
+
+    def motion_notify(self, column, offset_x, offset_y):
+        if column == 3:
+            self.is_hover_right = True
+            self.is_hover_left = False
+        elif column == 2:
+            self.is_hover_left = True
+            self.is_hover_right = False
+
+        self.redraw()
+
+    def unhover(self, column, offset_x, offset_y):
+        #if column == 3:
+        self.is_hover_right = False
+        self.is_hover_left = False
+        self.redraw()
+
     def single_click(self, column, x, y):
         if column == 3:
-            self.index += 1
-            if self.index >= len(self.devices):
-                self.index = len(self.devices) - 1
-                return
+            self.round_plus()
         elif column == 2:
-            self.index -= 1
-            if self.index < 0:
-                self.index = 0
-                return
+            self.round_minus()
 
-        self.device_name = self.devices[self.index].get_device_desc()
-        Dispatcher.emit("switch-device", self.devices[self.index])
+        self.device_name = self.devices[self.index - 1].get_device_desc()
+        net_manager.emit_wifi_switch(self.index - 1)
+        self.redraw()
+
+    def round_plus(self):
+        if self.index == len(self.devices):
+            self.index = 1
+        else:
+            self.index += 1
+
+    def round_minus(self):
+        self.index -= 1
+        if self.index == 0:
+            self.index = len(self.devices)
+
+    def set_index(self, device):
+        self.device_name = device.get_device_desc()
+        self.index = self.devices.index(device) + 1
         self.redraw()
 
 if __name__=="__main__":

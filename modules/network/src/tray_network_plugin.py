@@ -61,7 +61,8 @@ class TrayNetworkPlugin(object):
         self.init_mm_signals()
         Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals())
         Dispatcher.connect("wired-device-add", lambda w,p: self.init_wired_signals())
-        Dispatcher.connect("wireless-device-add", lambda w,p: self.init_wireless_signals())
+        Dispatcher.connect("wireless-device-add", self.wireless_device_added)
+        Dispatcher.connect("switch-device", self.switch_device)
 
         Dispatcher.connect("service_start_do_more", self.service_start_do_more)
 
@@ -154,6 +155,7 @@ class TrayNetworkPlugin(object):
         
         wireless_state= self.net_manager.get_wireless_state()
         if wireless_state:
+            self.focus_device = self.net_manager.device_manager.wireless_devices[0]
             self.gui.show_net("wireless")
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
@@ -254,26 +256,41 @@ class TrayNetworkPlugin(object):
         else:
             self.change_status_icon("cable_disconnect")
     #####=======================Wireless
+    def switch_device(self, widget, device):
+        print "switch device in tray"
+        self.focus_device = device
+        if self.gui.device_tree:
+            self.gui.device_tree.visible_items[0].set_index(device)
+        self.toggle_wireless()
+
     def __get_ssid_list(self):
         return self.net_manager.get_ap_list()
 
+    def wireless_device_added(self, widget, path):
+        self.init_wireless_signals()
+        if len(self.net_manager.device_manager.wireless_devices) > 1:
+            self.gui.add_switcher()
+
     def init_tree(self):
         print "init+tree"
-        self.ap_list = self.__get_ssid_list()
+        self.ap_list = self.net_manager.get_ap_list(self.focus_device)
         self.gui.set_ap(self.ap_list)
 
     def toggle_wireless(self):
         if self.gui.wireless.get_active():
             self.init_tree()
-            index = self.net_manager.get_active_connection(self.ap_list)
+            if len(self.net_manager.device_manager.wireless_devices) > 1:
+                self.gui.add_switcher()
+            index = self.net_manager.get_active_connection(self.ap_list, self.focus_device)
             if index:
                 print "Debug", index
                 self.gui.set_active_ap(index, True)
             else:
-                self.activate_wireless()
+                self.activate_wireless(self.focus_device)
             Dispatcher.request_resize()
         else:
             container_remove_all(self.gui.tree_box)
+            self.gui.remove_switcher()
             Dispatcher.request_resize()
             
             def device_disactive():
@@ -310,6 +327,12 @@ class TrayNetworkPlugin(object):
             self.change_status_icon("cable")
         else:
             self.change_status_icon("wifi_disconnect")
+
+        if reason == 36:
+            print "some device removed"
+            self.net_manager.init_devices()
+            self.gui.remove_switcher()
+            self.focus_device = self.net_manager.wireless_devices[0]
 
         if reason == 39:
             print "user close"
@@ -358,7 +381,7 @@ class TrayNetworkPlugin(object):
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
                 nm_module.nmclient.activate_connection_async(connection.object_path,
-                                          self.net_manager.wireless_devices[0].object_path,
+                                          self.focus_device.object_path,
                                            ap.object_path)
 
     def toggle_dialog(self, connection, security=None):
@@ -396,17 +419,15 @@ class TrayNetworkPlugin(object):
             self.net_manager.save_and_connect(pwd, connection, None)
             
     def set_active_ap(self):
-        index = self.net_manager.get_active_connection(self.ap_list)
+        index = self.net_manager.get_active_connection(self.ap_list, self.focus_device)
         print "active index", index
         self.gui.set_active_ap(index, True)
 
-    def activate_wireless(self):
+    def activate_wireless(self, device):
         """
         try to auto active wireless
         """
-        def device_actived():
-            pass
-        self.net_manager.active_wireless_device(device_actived)
+        self.net_manager.active_wireless_device(device)
     
     def change_status_icon(self, icon_name):
         """
@@ -464,7 +485,6 @@ class TrayNetworkPlugin(object):
             #self.this.set_size_request(185, height + 40)
             self.show_menu()
             self.this.show_menu()
-
         #height = self.gui.get_widget_height()
 
 def return_insert():

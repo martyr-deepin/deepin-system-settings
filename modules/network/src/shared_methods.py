@@ -6,12 +6,14 @@ from device_manager import DeviceManager
 from nmlib.servicemanager import servicemanager
 from nmlib.nm_remote_connection import NMRemoteConnection
 from deepin_utils.ipc import is_dbus_name_exists
+import dbus
 
 
 DEVICE_UNAVAILABLE = 0
 DEVICE_AVAILABLE = 1
 DEVICE_DISACTIVE = 1
 DEVICE_ACTIVE = 2
+
 
 class NetManager(object):
 
@@ -34,6 +36,13 @@ class NetManager(object):
             self.cf.read(self.config_file)
             if "hidden" not in self.cf.sections():
                 self.cf.add_section("hidden")
+
+            bus = dbus.SystemBus()
+            bus.add_signal_receiver(lambda i: Dispatcher.emit("switch-device", self.device_manager.wireless_devices[i]),
+                                    dbus_interface = "com.deepin.network",
+                                    signal_name = "DeviceChanged")
+
+
         else:
             pass
 
@@ -179,18 +188,14 @@ class NetManager(object):
             #            return (True, True)
             #    return (True, False)
 
-    def get_ap_list(self):
-        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
+    def get_ap_list(self, device):
         self.wireless_devices = self.device_manager.get_wireless_devices()
-        ap_list = []
         if not self.wireless_devices:
             return []
 
-        for wireless_device in self.wireless_devices:
-            device_wifi = nm_module.cache.get_spec_object(wireless_device.object_path)
-            ap_list += device_wifi.order_ap_list()
+        device_wifi = nm_module.cache.get_spec_object(device.object_path)
+        return device_wifi.order_ap_list()
 
-        return self.__ap_list_merge(ap_list)
 
     def __ap_list_merge(self, origin_ap):
         ap_ssid = set(map(lambda ap: ap.get_ssid(), origin_ap))
@@ -203,7 +208,7 @@ class NetManager(object):
         return merged_ap
         # 返回ap对象，ap.get_ssid() 获取ssid, ap.get_flags()获得加密状态，0为加密，1加密
 
-    def get_active_connection(self, ap_list):
+    def get_active_connection(self, ap_list, device):
         #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         index = []
         #if not self.wireless_device.is_active():
@@ -211,7 +216,7 @@ class NetManager(object):
             #return []
         self.wireless_devices = self.device_manager.get_wireless_devices()
         if self.wireless_devices:
-            self.wireless_device = self.wireless_devices[0]
+            self.wireless_device = device
             active_connection = self.wireless_device.get_active_connection()
             if active_connection:
                 print active_connection.get_state(), "Debug in get active connection"
@@ -251,15 +256,8 @@ class NetManager(object):
         return device_wifi.active_ssid_connection(ssid)
 
 
-    def active_wireless_device(self, actived_cb):
-        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
-        print "fsdf"
-
-        #def device_is_active(widget, reason):
-            #print "active"
-            #actived_cb()
-        #wireless_device.connect("device-active", device_is_active)
-        device_wifi = nm_module.cache.get_spec_object(self.wireless_device.object_path)
+    def active_wireless_device(self, device):
+        device_wifi = nm_module.cache.get_spec_object(device.object_path)
         device_wifi.auto_connect()
 
     def disactive_wireless_device(self, disactived_cb):
@@ -289,6 +287,12 @@ class NetManager(object):
 
     def get_security_by_ap(self, ap_object):
         return ap_object.get_flags()
+
+    def emit_wifi_switch(self, index):
+        bus = dbus.SystemBus()
+        proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
+        interface = dbus.Interface(proxy, "com.deepin.network")
+        interface.emitDeviceChanged(index)
 
 net_manager = NetManager()
 
