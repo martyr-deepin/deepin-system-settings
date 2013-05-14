@@ -258,7 +258,7 @@ class WirelessItem(GenItems):
         '''
         Pixbufs
         '''
-        self.lock_pixbuf =  app_theme.get_pixbuf("lock/lock.png")
+        self.lock_pixbuf =  app_theme.get_pixbuf("network/lock.png")
         self.strength_0 = app_theme.get_pixbuf("network/Wifi_0.png")
         self.strength_1 = app_theme.get_pixbuf("network/Wifi_1.png")
         self.strength_2 = app_theme.get_pixbuf("network/Wifi_2.png")
