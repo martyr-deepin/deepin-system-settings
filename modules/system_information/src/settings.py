@@ -83,6 +83,12 @@ def get_disk_size():
     return get_total_disk_size()
 
 def get_total_disk_size():
+    total_size = get_total_disk_size_with_udisk2()
+    if total_size is None:
+        total_size = get_total_disk_size_with_udisk()
+    return total_size
+
+def get_total_disk_size_with_udisk():
     BUS_NAME = "org.freedesktop.UDisks"
     OBJ_NAME = "/org/freedesktop/UDisks"
     try:
@@ -102,6 +108,34 @@ def get_total_disk_size():
         for d in internal_dev:
             dev = internal_dev[d]
             total_size += dev.Get("org.freedesktop.DBus.Properties", 'DeviceSize')
+        value1 = round(total_size / 1000.0 / 1000 / 1000, 1)
+        value2 = round(value1, 0)
+        if abs(value1 - value2) > 2.0:
+            return value1
+        return value2
+    except Exception, e:
+        print e
+        return None
+
+def get_total_disk_size_with_udisk2():
+    BUS_NAME = "org.freedesktop.UDisks2"
+    OBJ_NAME = "/org/freedesktop/UDisks2"
+    try:
+        bus = dbus.SystemBus()
+        obj_manager = dbus.Interface(bus.get_object(BUS_NAME, OBJ_NAME),
+                                     "org.freedesktop.DBus.ObjectManager")
+        objs = obj_manager.GetManagedObjects()
+        driver_list = []
+        for key, value in objs.items():
+            if 'org.freedesktop.UDisks2.Block' in value and \
+                    value['org.freedesktop.UDisks2.Block']['Drive'] != '/':
+                driver_list.append(value['org.freedesktop.UDisks2.Block']['Drive'])
+        driver_list = set(driver_list)
+        
+        total_size = 0
+        for driver in driver_list:
+            if driver in objs and not objs[driver]['org.freedesktop.UDisks2.Drive']['Removable']:
+                total_size += objs[driver]['org.freedesktop.UDisks2.Drive']['Size']
         value1 = round(total_size / 1000.0 / 1000 / 1000, 1)
         value2 = round(value1, 0)
         if abs(value1 - value2) > 2.0:
