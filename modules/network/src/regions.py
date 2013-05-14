@@ -253,7 +253,10 @@ class Region(gtk.Alignment):
 
     def auto_scroll_to(self):
         vadjust = self.country_tree.scrolled_window.get_vadjustment()
-        vadjust.set_value(((self.country_tree.select_rows[0]- 4)*30))
+        upper = vadjust.upper
+        page_size = vadjust.page_size
+
+        vadjust.set_value(min(upper - page_size, (self.country_tree.select_rows[0]- 4)*30))
         
 class Item(TreeItem):
 
