@@ -181,7 +181,7 @@ class TrayNetworkPlugin(object):
         else:
             self.gui.remove_net("mobile")
 
-        if nm_module.nm_remote_settings.get_vpn_connections:
+        if nm_module.nm_remote_settings.get_vpn_connections():
             self.gui.show_net("vpn")
             self.active_vpn = None
             if nm_module.nmclient.get_vpn_active_connection():
@@ -450,6 +450,15 @@ class TrayNetworkPlugin(object):
     # TODO VPN
 
     def on_vpn_setting_change(self, widget):
+        if not nm_module.nm_remote_settings.get_vpn_connections():
+            self.gui.remove_net("vpn")
+            return
+        else:
+            if not self.gui.vpn_state:
+                self.init_widgets()
+                return
+            #self.init_widgets()
+
         if self.gui.vpn.get_active():
             self.gui.vpn.set_active((True, True), emit=True)
         #print "setting_added"
