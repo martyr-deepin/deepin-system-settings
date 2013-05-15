@@ -752,11 +752,11 @@ class VPNItem(GenItems):
         from vpn_config import VPNSetting
         Dispatcher.to_setting_page(VPNSetting(self.connection), True)
 
-    def vpn_active_cb(self, active):
-        vpn_connection = nm_module.cache.get_spec_object(active.object_path)
-        vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
-        vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
-        vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))
+    #def vpn_active_cb(self, active):
+        #vpn_connection = nm_module.cache.get_spec_object(active.object_path)
+        #vpn_connection.connect("vpn-connected", lambda w: self.set_net_state(2))
+        #vpn_connection.connect("vpn-disconnected", lambda w:self.set_net_state(0))
+        #vpn_connection.connect("vpn-connecting", lambda w:self.set_net_state(1))
         
 class Monitor(threading.Thread):
     def __init__(self, connection, stop_callback, active_callback):
@@ -766,18 +766,23 @@ class Monitor(threading.Thread):
         self.stop_callback = stop_callback
         self.active_callback = active_callback
         from nmlib.nm_remote_settings import ThreadVPNSpec
-        self.td = ThreadVPNSpec(connection)
+        self.td = ThreadVPNSpec(connection, self.on_active_conn_create)
         self.td.start()
 
+    def on_active_conn_create(self, active_conn):
+        net_manager.emit_vpn_start(active_conn)
+         
     def run(self):
         while self.td.isAlive():
             time.sleep(1)
 
         else:
             if self.td.succeed:
-                self.active_callback()
+                #self.active_callback()
+                pass
             else:
-                self.stop_callback()
+                #self.stop_callback()
+                pass
         
         '''
         from nmlib.nm_remote_settings import ThreadVPNSpec

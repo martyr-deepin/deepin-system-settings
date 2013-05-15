@@ -95,43 +95,52 @@ class NetworkService(dbus.service.Object):
         print "DeviceChanged emited", device_index
         return
 
-    @dbus.service.signal(NETWORK_INTERFACE)
-    def VpnSettingAdded(self):
-        print "VpnSettingAdded emit"
-        return 
     
-
     @dbus.service.method(NETWORK_INTERFACE,
                          in_signature='i', out_signature='')
     def emitDeviceChanged(self, index):
         self.DeviceChanged(index)
         return
 
-    @dbus.service.method(NETWORK_INTERFACE,
-                         in_signature='', out_signature='as')
-    def changeVpnSetting(self):
-        self.VpnSettingAdded()
-        return 'Signal emitted'
-
     @dbus.service.signal(NETWORK_INTERFACE)
-    def MainVpnStart(self, path):
+    def VpnSettingChange(self):
+        print "VpnSettingAdded emit"
         return 
 
+    @dbus.service.method(NETWORK_INTERFACE,
+                         in_signature='', out_signature='')
+    def emitVpnSettingChange(self):
+        self.VpnSettingChange()
+        return
+
     @dbus.service.signal(NETWORK_INTERFACE)
-    def TrayVpnStart(self, path):
+    def VpnStart(self, path):
         return 
 
     @dbus.service.method(NETWORK_INTERFACE,
                          in_signature='o', out_signature='')
-    def emitMainVpnStart(self, active_path):
-        self.MainVpnStart(active_path)
+    def emitVpnStart(self, active_path):
+        self.VpnStart(active_path)
         return ''
+    #@dbus.service.signal(NETWORK_INTERFACE)
+    #def MainVpnStart(self, path):
+        #return 
 
-    @dbus.service.method(NETWORK_INTERFACE,
-                         in_signature='o', out_signature='')
-    def emitTrayVpnStart(self, active_path):
-        self.TrayVpnStart(active_path)
-        return ''
+    #@dbus.service.signal(NETWORK_INTERFACE)
+    #def TrayVpnStart(self, path):
+        #return 
+
+    #@dbus.service.method(NETWORK_INTERFACE,
+                         #in_signature='o', out_signature='')
+    #def emitMainVpnStart(self, active_path):
+        #self.MainVpnStart(active_path)
+        #return ''
+
+    #@dbus.service.method(NETWORK_INTERFACE,
+                         #in_signature='o', out_signature='')
+    #def emitTrayVpnStart(self, active_path):
+        #self.TrayVpnStart(active_path)
+        #return ''
 
     #def vpnConnectStart(self, path):
         #print "before emit in start", path

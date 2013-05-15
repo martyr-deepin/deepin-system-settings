@@ -855,6 +855,9 @@ class VpnSection(Section):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
             self.vpn.set_active(True)
+            for active in vpn_active:
+                self.connect_vpn_signals(nm_module.cache.get_spec_object(active.object_path))
+            
         self.__init_signals()
 
     @classmethod
@@ -864,16 +867,17 @@ class VpnSection(Section):
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
         Dispatcher.connect("vpn-redraw", self.vpn_redraw)
+        Dispatcher.connect('vpn-start', self.on_vpn_connecting)
 
     def vpn_redraw(self, widget):
         if self.vpn.get_active():
             self.vpn.set_active(True, emit=True)
             self.show_all()
 
-    def connect_vpn_signals(self, active_vpn, connection_name):
-        active_vpn.connect("vpn-connected", self.vpn_connected, connection_name)
-        active_vpn.connect("vpn-connecting", self.vpn_connecting, connection_name)
+    def connect_vpn_signals(self, active_vpn):
+        active_vpn.connect("vpn-connected", self.vpn_connected)
         active_vpn.connect("vpn-disconnected", self.vpn_disconnected)
+        active_vpn.connect('vpn-user-disconnect', lambda w: self.vpn.set_active(False))
 
     def toggle_on(self):
         item_list = self.get_list()
@@ -882,11 +886,15 @@ class VpnSection(Section):
             self.tree.delete_all_items()
             self.tree.add_items(item_list)
 
+    def on_active_conn_create(self, active_conn):
+        net_manager.emit_vpn_start(active_conn)
+        #self.on_vpn_connecting(None, active_conn.object_path)
+
     def toggle_on_after(self):
         for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
             if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
                 try:
-                    active_conn.vpn_auto_connect()
+                    active_conn.vpn_auto_connect(self.on_active_conn_create)
                 except:
                     pass
             else:
@@ -924,6 +932,31 @@ class VpnSection(Section):
         Dispatcher.to_setting_page(VPNSetting(), True)
         setting = nm_module.slider.get_page_by_name("setting")
         setting.create_new_connection()
+
+    # vpn signals
+    def on_vpn_connecting(self, widget, path):
+        if not self.vpn.get_active():
+            self.vpn.set_active(True)
+        print "on vpn connecting in main"
+        self.active_vpn = nm_module.cache.getobject(path)
+        vpn_con = nm_module.cache.get_spec_object(path)
+        vpn_con.connect("vpn-connected", self.vpn_connected)
+        vpn_con.connect("vpn-disconnected", self.vpn_disconnected)
+        vpn_con.connect('vpn-user-disconnect', lambda w: self.vpn.set_active(False))
+
+        map(lambda p: p.set_net_state(0), self.tree.visible_items)
+        items = filter(lambda p: p.connection.object_path == self.active_vpn.get_connection().object_path, self.tree.visible_items)
+        map(lambda i: i.set_net_state(1), items)
+
+    def vpn_connected(self, widget):
+        items = filter(lambda p: p.connection.object_path == self.active_vpn.get_connection().object_path, self.tree.visible_items)
+        map(lambda i: i.set_net_state(2), items)
+
+    def vpn_disconnected(self, widget):
+        print "vpn disconnt"
+        items = filter(lambda p: p.connection.object_path == self.active_vpn.get_connection().object_path, self.tree.visible_items)
+        map(lambda i: i.set_net_state(0), items)
+        self.active_vpn = None
 
 class MobileDevice(object):
 

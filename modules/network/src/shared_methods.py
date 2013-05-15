@@ -41,7 +41,12 @@ class NetManager(object):
             bus.add_signal_receiver(lambda i: Dispatcher.emit("switch-device", self.device_manager.wireless_devices[i]),
                                     dbus_interface = "com.deepin.network",
                                     signal_name = "DeviceChanged")
-
+            bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-start", path),
+                                    dbus_interface = "com.deepin.network",
+                                    signal_name="VpnStart")
+            bus.add_signal_receiver(lambda : Dispatcher.emit("vpn-setting-change"),
+                                    dbus_interface = "com.deepin.network",
+                                    signal_name="VpnSettingChange")
 
         else:
             pass
@@ -293,6 +298,18 @@ class NetManager(object):
         proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
         interface = dbus.Interface(proxy, "com.deepin.network")
         interface.emitDeviceChanged(index)
+
+    def emit_vpn_start(self, active_conn):
+        bus = dbus.SystemBus()
+        proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
+        interface = dbus.Interface(proxy, "com.deepin.network")
+        interface.emitVpnStart(active_conn.object_path)
+
+    def emit_vpn_setting_change(self):
+        bus = dbus.SystemBus()
+        proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
+        interface = dbus.Interface(proxy, "com.deepin.network")
+        interface.emitVpnSettingChange()
 
 net_manager = NetManager()
 

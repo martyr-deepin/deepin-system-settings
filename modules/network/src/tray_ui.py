@@ -24,7 +24,7 @@ from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from vtk.button import SelectButton
 from dtk.ui.treeview import TreeItem, TreeView
-from dtk.ui.draw import draw_text, draw_pixbuf
+from dtk.ui.draw import draw_text, draw_pixbuf, draw_line
 from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, container_remove_all
 import gtk
 import pango
@@ -47,11 +47,16 @@ BG_COLOR = color_hex_to_cairo(bg_color)
 #net_manager = NetManager()
 class TrayUI(gtk.VBox):
 
-    def __init__(self, wired_toggle_cb, wireless_toggle_cb, mobile_toggle_cb):
+    def __init__(self, 
+                 wired_toggle_cb,
+                 wireless_toggle_cb,
+                 mobile_toggle_cb,
+                 vpn_toggle_cb):
         gtk.VBox.__init__(self, spacing=0)
         self.wired_toggle = wired_toggle_cb
         self.wireless_toggle = wireless_toggle_cb
         self.mobile_toggle = mobile_toggle_cb
+        self.vpn_toggle = vpn_toggle_cb
         self.init_ui()
         self.active_ap_index = []
         self.all_showed = False
@@ -60,6 +65,8 @@ class TrayUI(gtk.VBox):
         self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.wired_toggle)
         self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), self.wireless_toggle)
         self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
+        # vpn
+        self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("Vpn Network"), self.vpn_toggle)
 
         self.ssid_list = []
         self.tree_box = gtk.VBox(spacing=0)
@@ -68,19 +75,24 @@ class TrayUI(gtk.VBox):
         #self.pack_start(self.button_more, False, False)
         self.ap_tree = TreeView(mask_bound_height=0)
         self.ap_tree.set_expand_column(0)
+
+        self.vpn_list = ConList()
         #self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
 
         self.wire_box = self.section_box([self.wire])
         self.wireless_box = self.section_box([self.wireless, self.tree_box])
         self.mobile_box = self.section_box([self.mobile])
+        self.vpn_box = self.section_box([self.vpn , self.vpn_list])
         self.wire_state = False
         self.wireless_state = False
         self.mobile_state = False
+        self.vpn_state = False
         self.device_tree = None
 
         self.pack_start(self.wire_box, False, False)
         self.pack_start(self.wireless_box, False, False)
         self.pack_start(self.mobile_box, False, False)
+        self.pack_start(self.vpn_box, False, False)
         self.pack_start(self.button_more, False, False)
 
     def get_widget_height(self):
@@ -102,7 +114,13 @@ class TrayUI(gtk.VBox):
 
         if self.mobile_state:
             height += 35
+
+        if self.vpn_state:
+            height += 35 + len(self.vpn_list.get_children()) * 22
         height += 25
+
+        # just for test
+        #height += 100
         return height
 
     def section_box(self, widgets):
@@ -609,3 +627,117 @@ class DeviceItem(TreeItem):
     def redraw(self):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+
+class ConList(gtk.VBox):
+
+    def __init__(self):
+        gtk.VBox.__init__(self)
+
+    def clear(self):
+        container_remove_all(self)
+
+    def add_items(self, connections):
+        for c in connections:
+            self.pack_start(ConButton(c))
+        self.show_all()
+
+    def set_active_by(self, index):
+        self.get_children()[index].set_active(True)
+
+    def reset_state(self):
+        map(lambda i: i.set_active(False), self.get_active_item())
+
+    def get_item_by(self, connection):
+        return filter(lambda c: c.connection == connection, self.get_children())
+    
+    def get_active_item(self):
+        return filter(lambda c: c.is_active, self.get_children())
+
+class ConButton(gtk.Button):        
+    def __init__(self, 
+                 connection,
+                 ali_padding=0,
+                 font_size=10,
+                 bg_color="#ebf4fd",
+                 line_color="#7da2ce",):
+
+        gtk.Button.__init__(self)
+        self.connection = connection
+        self.font_size = font_size
+        self.bg_color = bg_color
+
+        self.__init_values()
+
+    def __init_values(self):
+        self.con = self.connection.get_setting("connection").id
+        self.is_active = False
+        self.text_color = "#000000"
+
+        self.set_size_request(-1, WIDGET_HEIGHT)
+        self.connect("expose-event", self.__expose_event)
+        self.connect("clicked", self.__active_one_vpn)
+
+    def stop_callback(self):
+        pass
+
+    def active_callback(self):
+        pass
+
+
+    def __active_one_vpn(self, widget):
+        from lists import Monitor
+        monitor = Monitor(self.connection,
+                          None,
+                          None,)
+        monitor.start()
+
+
+    def set_active(self, state):
+        self.is_active = state
+        if state:
+            self.text_color = "#3da1f7"
+        else:
+            self.text_color = "#000000"
+        self.queue_draw()
+
+    def __expose_event(self, widget, event):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        x, y, w, h = rect.x, rect.y, rect.width, rect.height
+        
+        # Get color info.
+        if widget.state == gtk.STATE_NORMAL:
+            border = None
+            bg = None
+            
+        elif widget.state == gtk.STATE_PRELIGHT:
+            border = BORDER_COLOR
+            bg = BG_COLOR
+        elif widget.state == gtk.STATE_ACTIVE:
+            border = None
+            bg = None
+        elif widget.state == gtk.STATE_INSENSITIVE:
+            pass
+            
+        # Draw background.
+        if bg:
+            cr.set_source_rgb(*BG_COLOR)
+            cr.rectangle(x, y , w, h)
+            cr.fill()
+        
+        # Draw border.
+        if border:
+            cr.set_source_rgb(*border)
+            draw_line(cr, x + 2, y + 1, x + w - 2, y + 1) # top
+            draw_line(cr, x + 2, y + h, x + w - 2, y + h) # bottom
+            draw_line(cr, x + 1, y + 2, x + 1, y + h - 2) # left
+            draw_line(cr, x + w, y + 2, x + w, y + h - 2) # right
+        
+        # Draw font.
+        draw_text(cr, self.con, x + ALIGN_SPACING, y, w, h, self.font_size, self.text_color,
+                    alignment=pango.ALIGN_LEFT)
+        
+        return True
+        
+
+

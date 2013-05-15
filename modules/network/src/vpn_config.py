@@ -14,7 +14,7 @@ from container import MyToggleButton as SwitchButton
 from container import TitleBar
 from ipsettings import IPV4Conf
 from elements import SettingSection
-from shared_methods import Settings
+from shared_methods import Settings, net_manager
 from helper import Dispatcher, event_manager
 
 import gtk
@@ -48,6 +48,7 @@ class VPNSetting(Settings):
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'vpn')
             Dispatcher.emit("connection-replace", connection)
             Dispatcher.emit("vpn-redraw")
+            net_manager.emit_vpn_setting_change()
 
         Dispatcher.to_main_page()
         event_manager.emit("update-vpn-id", connection.get_setting("connection").id, 
@@ -56,6 +57,7 @@ class VPNSetting(Settings):
 
     def delete_request_redraw(self):
         Dispatcher.emit("vpn-redraw")
+        net_manager.emit_vpn_setting_change()
 
     def apply_changes(self, connection):
         # FIXME Now just support one device

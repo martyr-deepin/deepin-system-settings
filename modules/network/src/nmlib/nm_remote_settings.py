@@ -554,10 +554,11 @@ class NMRemoteSettings(NMObject):
 
 import threading
 class ThreadVPNSpec(threading.Thread):
-    def __init__(self, connection):
+    def __init__(self, connection, active_conn_creat_cb):
         threading.Thread.__init__(self)
         self.setDaemon(True)
         self.connection = connection
+        self.active_conn_creat_cb = active_conn_creat_cb
         self.run_flag = True
         self.succeed = False
 
@@ -571,6 +572,7 @@ class ThreadVPNSpec(threading.Thread):
                             active = nmclient.activate_connection(self.connection.object_path,
                                                                   device.object_path,
                                                                   active_conn.object_path)
+                            self.active_conn_creat_cb(active)
             
                             vpn_connection = get_cache().get_spec_object(active.object_path)
 

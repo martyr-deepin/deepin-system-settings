@@ -31,7 +31,8 @@ class NMVpnConnection(NMActiveConnection):
             "vpn-state-changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.TYPE_UINT, gobject.TYPE_UINT)),
             "vpn-connected":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
             "vpn-connecting":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-            "vpn-disconnected":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
+            "vpn-disconnected":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+            "vpn-user-disconnect":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ())
             }
 
     def __init__(self, vpn_connection_object_path):
@@ -54,6 +55,7 @@ class NMVpnConnection(NMActiveConnection):
 
     ###Signals###
     def vpn_state_changed_cb(self, state, reason):
+        print state, reason
         self.init_nmobject_with_properties()
         nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         if state in [1, 2, 3, 4]:
@@ -68,8 +70,11 @@ class NMVpnConnection(NMActiveConnection):
 
             nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
             nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
+        elif state == 7:
+            self.emit('vpn-user-disconnect')
         else:
             self.emit("vpn-disconnected")
+
 
 if __name__ == "__main__":
     pass
