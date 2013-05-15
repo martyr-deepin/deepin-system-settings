@@ -51,7 +51,7 @@ class AutoStart(object):
         try:
             return self.conf.get(self.SECTION, option)
         except:
-            pass
+            return None
         
     def get_locale_option(self, key, default=None):    
         lang_key = "%s[%s]" % (key, get_system_lang())
@@ -81,12 +81,13 @@ class AutoStart(object):
             return None
 
     def has_gnome_auto(self):
-        enable = self.get_option("X-GNOME-Autostart-enabled")
-        if enable:
-            if enable == "true":
-                return True
-            else:
-                return False
+        auto_start = self.get_option("X-GNOME-Autostart-enabled")
+        if auto_start == None:
+            self.set_option("X-GNOME-Autostart-enabled", 'true')
+            self.save(self.file_name)
+            return True
+        elif auto_start == "true":
+            return True
         else:
             return False
 
