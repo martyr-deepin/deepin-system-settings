@@ -45,6 +45,8 @@ import gtk
 import pango
 import threading
 import tools
+import getpass
+import crypt
 from random import randint
 from module_frame import ModuleFrame
 from constant import *
@@ -88,6 +90,7 @@ class AccountSetting(object):
         self.current_passwd_user = None
         self.current_set_user = None
         self.current_select_item = None
+        self.mutex = threading.Lock()
 
         self.__create_widget()
         self.__adjust_widget()
@@ -560,6 +563,7 @@ class AccountSetting(object):
         self.label_widgets["account_create_error"].set_text("")
         self.button_widgets["account_create"].set_sensitive(False)
         self.container_widgets["right_vbox"].show_all()
+        self.button_widgets["account_name"].entry.grab_focus()
         self.container_widgets["statusbar"].set_buttons([self.button_widgets["account_cancle"], self.button_widgets["account_create"]])
         #button.set_sensitive(False)
         self.container_widgets["button_hbox"].set_sensitive(False)
@@ -948,8 +952,8 @@ class AccountSetting(object):
             change_button.set_sensitive(True)
             self.set_status_error_text("")
 
-    def change_user_password_thread(self, new_pswd, mutex, old_pswd, button):
-        mutex.acquire()
+    def change_user_password_thread(self, new_pswd, old_pswd, button):
+        print "in thread........."
         try:
             b = self.account_dbus.modify_user_passwd(new_pswd, self.current_passwd_user.get_user_name(), old_pswd)
             if b != 0:
@@ -973,6 +977,7 @@ class AccountSetting(object):
                 self.button_widgets["cancel_change_pswd"].clicked()
                 self.__set_status_text(_("%s's password has been changed") % settings.get_user_show_name(self.current_select_user))
                 gtk.gdk.threads_leave()
+            print "thread finish......"
         except Exception, e:
             if not isinstance(e, (TIMEOUT, EOF)):
                 error_msg = e.message
@@ -985,7 +990,7 @@ class AccountSetting(object):
             button.set_sensitive(True)
             self.button_widgets["cancel_change_pswd"].set_sensitive(True)
             gtk.gdk.threads_leave()
-        mutex.release()
+        self.mutex.release()
 
     def change_user_password(self, button, entry_widgets, is_myown):
         (current_pswd_input, new_pswd_input, confirm_pswd_input) = entry_widgets
@@ -1003,11 +1008,28 @@ class AccountSetting(object):
             button.set_sensitive(True)
             self.button_widgets["cancel_change_pswd"].set_sensitive(True)
             return
-        mutex = threading.Lock()
-        t = threading.Thread(target=self.change_user_password_thread,
-                             args=(new_pswd, mutex, old_pswd, button))
-        t.setDaemon(True)
-        t.start()
+        # to change myowner passwd, use pexpect.
+        # else use AccountsService dbus.
+        if getpass.getuser() == self.current_passwd_user.get_user_name():
+            self.mutex.acquire()
+            t = threading.Thread(target=self.change_user_password_thread,
+                                 args=(new_pswd, old_pswd, button))
+            t.setDaemon(True)
+            t.start()
+        else:
+            try:
+                self.current_passwd_user.set_password(crypt.crypt(new_pswd, '$6$deepin$'))
+            except Exception, e:
+                if 'nopasswdlogin' not in e.msg:
+                    self.set_status_error_text(e.msg)
+                    self.container_widgets["main_hbox"].set_sensitive(True)
+                    button.set_sensitive(True)
+                    self.button_widgets["cancel_change_pswd"].set_sensitive(True)
+                    return
+            button.set_sensitive(True)
+            self.button_widgets["cancel_change_pswd"].set_sensitive(True)
+            self.button_widgets["cancel_change_pswd"].clicked()
+            self.__set_status_text(_("%s's password has been changed") % settings.get_user_show_name(self.current_select_user))
 
     def cancel_change_password(self, button, passwd_align, passwd_char_align, *del_widgets):
         for w in del_widgets:
