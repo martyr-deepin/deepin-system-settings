@@ -131,7 +131,7 @@ class TrayUI(gtk.VBox):
         return box
 
     def remove_net(self, net_type):
-        print net_type
+        #print net_type
         getattr(self, net_type + "_box").set_no_show_all(True)
         getattr(self, net_type + "_box").hide()
         setattr(self, net_type + "_state", False)
@@ -633,12 +633,15 @@ class ConList(gtk.VBox):
     def __init__(self):
         gtk.VBox.__init__(self)
 
+    def connecting_cb(self):
+        pass
+
     def clear(self):
         container_remove_all(self)
 
     def add_items(self, connections):
         for c in connections:
-            self.pack_start(ConButton(c))
+            self.pack_start(ConButton(c, self.connecting_cb))
         self.show_all()
 
     def set_active_by(self, index):
@@ -656,6 +659,7 @@ class ConList(gtk.VBox):
 class ConButton(gtk.Button):        
     def __init__(self, 
                  connection,
+                 connecting_cb,
                  ali_padding=0,
                  font_size=10,
                  bg_color="#ebf4fd",
@@ -663,6 +667,7 @@ class ConButton(gtk.Button):
 
         gtk.Button.__init__(self)
         self.connection = connection
+        self.connecting_cb = connecting_cb
         self.font_size = font_size
         self.bg_color = bg_color
 
@@ -687,10 +692,10 @@ class ConButton(gtk.Button):
     def __active_one_vpn(self, widget):
         from lists import Monitor
         monitor = Monitor(self.connection,
-                          None,
-                          None,)
+                          lambda : Dispatcher.emit("vpn-force-stop"),
+                          self.active_callback,)
         monitor.start()
-
+        self.connecting_cb()
 
     def set_active(self, state):
         self.is_active = state

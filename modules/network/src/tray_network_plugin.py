@@ -21,13 +21,12 @@
 
 from dtk.ui.utils import container_remove_all
 from tray_ui import TrayUI
+from nm_modules import nm_module
 #from shared_methods import net_manager, device_manager
 from shared_methods import net_manager
-from helper import Dispatcher
-from nm_modules import nm_module
+from helper import Dispatcher, event_manager
 from nmlib.nm_remote_connection import NMRemoteConnection
 from subprocess import Popen
-
 
 from widgets import AskPasswordDialog
 from vtk.timer import Timer
@@ -66,8 +65,18 @@ class TrayNetworkPlugin(object):
         Dispatcher.connect("wired-device-add", lambda w,p: self.init_wired_signals())
         Dispatcher.connect("wireless-device-add", self.wireless_device_added)
         Dispatcher.connect("switch-device", self.switch_device)
-        Dispatcher.connect('vpn-start', self.on_vpn_connecting)
-        Dispatcher.connect('vpn-setting-change', self.on_vpn_setting_change)
+        Dispatcher.connect('vpn-start', self.vpn_start_cb)
+        #Dispatcher.connect('vpn-setting-change', self.on_vpn_setting_change)
+        #Dispatcher.connect('vpn-force-stop', self.on_vpn_force_stop)
+        #event_manager.add_callback('vpn-disconnect', self.__vpn_failed_callback)
+        event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
+        event_manager.add_callback('vpn-connected', self.__vpn_active_callback)
+        event_manager.add_callback('vpn-disconnected', self.__vpn_failed_callback)
+        event_manager.add_callback('vpn-user-disconnect', lambda n, e, d: self.gui.vpn.set_active((True, False)))
+        event_manager.add_callback('vpn-connection-removed', self.vpn_connection_remove_cb)
+        event_manager.add_callback('vpn-new-added', self.on_vpn_setting_change)
+        print event_manager
+        print "tray start"
 
         Dispatcher.connect("service_start_do_more", self.service_start_do_more)
 
@@ -183,11 +192,16 @@ class TrayNetworkPlugin(object):
 
         if nm_module.nm_remote_settings.get_vpn_connections():
             self.gui.show_net("vpn")
+            def change_to_loading():
+                self.change_status_icon('loading')
+                self.let_rotate(True)
+            self.gui.vpn_list.connecting_cb = change_to_loading
             self.active_vpn = None
+            self.no_vpn_connecting = False
             if nm_module.nmclient.get_vpn_active_connection():
-                for vpn_active in nm_module.nmclient.get_vpn_active_connection():
-                    vpn_spec = nm_module.cache.get_spec_object(vpn_active.object_path)
-                    self.connect_vpn_signals(vpn_spec)
+                #for vpn_active in nm_module.nmclient.get_vpn_active_connection():
+                    #vpn_spec = nm_module.cache.get_spec_object(vpn_active.object_path)
+                    #self.connect_vpn_signals(vpn_spec)
                 self.gui.vpn.set_active((True, True))
                 self.tray_icon.set_icon_theme("links_vpn")
         else:
@@ -449,18 +463,24 @@ class TrayNetworkPlugin(object):
 
     # TODO VPN
 
-    def on_vpn_setting_change(self, widget):
-        if not nm_module.nm_remote_settings.get_vpn_connections():
-            self.gui.remove_net("vpn")
+    def on_vpn_setting_change(self, name, event, conn):
+        #connection = nm_module.cache.getobject(path)
+        #connection.connect("removed", self.vpn_connection_remove_cb)
+
+        if self.gui.vpn_state == False:
+            self.gui.show_net("vpn")
             return
-        else:
-            if not self.gui.vpn_state:
-                self.init_widgets()
-                return
-            #self.init_widgets()
 
         if self.gui.vpn.get_active():
             self.gui.vpn.set_active((True, True), emit=True)
+
+    def vpn_connection_remove_cb(self, name, event, data):
+        if not nm_module.nm_remote_settings.get_vpn_connections():
+            self.gui.remove_net('vpn')
+            return
+        if self.gui.vpn.get_active():
+            self.gui.vpn.set_active((True, True), emit=True)
+
         #print "setting_added"
         # dss vpn setting add or remove will call this function
 
@@ -490,7 +510,7 @@ class TrayNetworkPlugin(object):
                     #active_conn.vpn_auto_connect(self.vpn_active, self.vpn_stop, self.vpn_connecting)
         else:
             self.gui.vpn_list.clear()
-            self.__vpn_failed_callback(None)
+            self.__vpn_failed_callback(None, None, None)
             for active in nm_module.nmclient.get_anti_vpn_active_connection():
                 active.device_vpn_disconnect()
 
@@ -499,36 +519,47 @@ class TrayNetworkPlugin(object):
                 nm_module.nmclient.deactive_connection_async(vpn.object_path)
         Dispatcher.request_resize()
 
-    def on_vpn_connecting(self, widget, path):
+    def on_vpn_force_stop(self, widget):
+        if self.active_vpn:
+            return
+        self.__vpn_failed_callback(None)
+        self.no_vpn_connecting = True
+
+    def vpn_start_cb(self, widget, path):
+        vpn_active = nm_module.cache.get_spec_object(path)
+        if vpn_active.get_vpnstate() < 5:
+            self.on_vpn_connecting(None, None, path)
+
+    def on_vpn_connecting(self, name, event, path):
         print "tray vpn connecting"
         if not self.gui.vpn.get_active():
             self.gui.vpn.set_active((True, True))
+
         self.change_status_icon('loading')
         self.let_rotate(True)
-        self.active_vpn = nm_module.cache.getobject(path)
-        self.connect_vpn_signals(nm_module.cache.get_spec_object(path))
+        self.this_setting = nm_module.cache.getobject(path).get_connection().object_path
 
-    def __vpn_active_callback(self, widget):
+    def __vpn_active_callback(self, name, event, path):
         #print name, data
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable_vpn")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon('links_vpn')
 
-        self.change_status_icon('links_vpn')
-
-        if self.active_vpn:
-            connection = nm_module.cache.getobject(self.active_vpn.object_path).get_connection().object_path
-
-            index = map(lambda i: i.connection.object_path, self.gui.vpn_list).index(connection)
+            index = map(lambda i: i.connection.object_path, self.gui.vpn_list).index(self.this_setting)
 
             self.gui.vpn_list.set_active_by(index)
         return 
 
-    def connect_vpn_signals(self, active_vpn):
-        active_vpn.connect("vpn-connected", self.__vpn_active_callback)
-        active_vpn.connect("vpn-disconnected", self.__vpn_failed_callback)
-        active_vpn.connect('vpn-user-disconnect', lambda w: self.gui.vpn.set_active((True, False)))
 
-    def __vpn_failed_callback(self, widget):
-        self.change_status_icon("links")
-        self.active_vpn = None
+    def __vpn_failed_callback(self, name, event, path):
+        print "vpn failed callback"
+
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon('links')
+        self.this_setting = None
     
     def change_status_icon(self, icon_name):
         """

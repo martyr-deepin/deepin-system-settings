@@ -42,6 +42,10 @@ import os
 import glib
 import ConfigParser 
 import traceback
+try:
+    from network.src.helper import event_manager
+except:
+    from helper import event_manager
 
 class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
@@ -51,6 +55,8 @@ class NMRemoteSettings(NMObject):
 
         self.bus.add_signal_receiver(self.properties_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertiesChanged")
+        self.bus.add_signal_receiver(self.new_connection_cb, dbus_interface = self.object_interface,
+                                     path = self.object_path, signal_name = "NewConnection")
         self.prop_list = ["CanModify", "Hostname"]
         self.init_nmobject_with_properties()
         self.__init_network_config()
@@ -551,6 +557,13 @@ class NMRemoteSettings(NMObject):
 
     def properties_changed_cb(self, prop_dict):
         self.init_nmobject_with_properties()
+
+    def new_connection_cb(self, path):
+        self.init_nmobject_with_properties()
+        conn = get_cache().getobject(path)
+        if conn.settings_dict["connection"]['type'] == 'vpn':
+            event_manager.emit("vpn-new-added", conn)
+
 
 import threading
 class ThreadVPNSpec(threading.Thread):

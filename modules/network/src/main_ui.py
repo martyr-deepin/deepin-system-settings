@@ -46,8 +46,9 @@ from settings_widget import HotspotBox
 
 #from nmlib.nmcache import cache
 from nm_modules import nm_module
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 from shared_methods import net_manager
+#from nmlib.nm_dispatcher import nm_events
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 #from module_frame import ModuleFrame 
@@ -850,6 +851,8 @@ class VpnSection(Section):
                            enable_double_click=False)
 
         self.load(self.vpn, [self.label])
+        self.no_auto_connect = False
+        self.no_vpn_connecting = False
 
     def init_state(self):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
@@ -867,12 +870,25 @@ class VpnSection(Section):
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
         Dispatcher.connect("vpn-redraw", self.vpn_redraw)
-        Dispatcher.connect('vpn-start', self.on_vpn_connecting)
+        Dispatcher.connect('vpn-start', self.vpn_start_cb)
+
+        event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
+        event_manager.add_callback('vpn-connected', self.vpn_connected)
+        event_manager.add_callback('vpn-disconnected', self.vpn_disconnected)
+        event_manager.add_callback('vpn-user-disconnect', lambda n, e, d: self.vpn.set_active(False))
 
     def vpn_redraw(self, widget):
         if self.vpn.get_active():
+            self.no_auto_connect = True
             self.vpn.set_active(True, emit=True)
+            #self.toggle_on()
             self.show_all()
+
+    def vpn_start_cb(self, widget, path):
+        vpn_active = nm_module.cache.get_spec_object(path)
+        if vpn_active.get_vpnstate() < 5:
+            self.on_vpn_connecting(None, None, path)
+
 
     def connect_vpn_signals(self, active_vpn):
         active_vpn.connect("vpn-connected", self.vpn_connected)
@@ -891,14 +907,18 @@ class VpnSection(Section):
         #self.on_vpn_connecting(None, active_conn.object_path)
 
     def toggle_on_after(self):
-        for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
-            if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
-                try:
-                    active_conn.vpn_auto_connect(self.on_active_conn_create)
-                except:
-                    pass
-            else:
-                break
+        if self.no_auto_connect:
+            self.no_auto_connect = False
+            pass
+        else:
+            for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
+                if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
+                    try:
+                        active_conn.vpn_auto_connect(self.on_active_conn_create)
+                    except:
+                        pass
+                else:
+                    break
 
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
@@ -934,29 +954,31 @@ class VpnSection(Section):
         setting.create_new_connection()
 
     # vpn signals
-    def on_vpn_connecting(self, widget, path):
+    def on_vpn_connecting(self, name, event, data):
         if not self.vpn.get_active():
             self.vpn.set_active(True)
+            return
         print "on vpn connecting in main"
-        self.active_vpn = nm_module.cache.getobject(path)
-        vpn_con = nm_module.cache.get_spec_object(path)
-        vpn_con.connect("vpn-connected", self.vpn_connected)
-        vpn_con.connect("vpn-disconnected", self.vpn_disconnected)
-        vpn_con.connect('vpn-user-disconnect', lambda w: self.vpn.set_active(False))
-
+        self.this_setting = nm_module.cache.getobject(data).get_connection().object_path
         map(lambda p: p.set_net_state(0), self.tree.visible_items)
-        items = filter(lambda p: p.connection.object_path == self.active_vpn.get_connection().object_path, self.tree.visible_items)
-        map(lambda i: i.set_net_state(1), items)
+        try:
+            items = filter(lambda p: p.connection.object_path == self.this_setting, self.tree.visible_items)
+            map(lambda i: i.set_net_state(1), items)
+        except:
+            pass
 
-    def vpn_connected(self, widget):
-        items = filter(lambda p: p.connection.object_path == self.active_vpn.get_connection().object_path, self.tree.visible_items)
+    def vpn_connected(self, name, event, data):
+        items = filter(lambda p: p.connection.object_path == self.this_setting, self.tree.visible_items)
         map(lambda i: i.set_net_state(2), items)
 
-    def vpn_disconnected(self, widget):
-        print "vpn disconnt"
-        items = filter(lambda p: p.connection.object_path == self.active_vpn.get_connection().object_path, self.tree.visible_items)
+    def vpn_disconnected(self, name, event, data):
+        if self.this_setting == None:
+            map(lambda i: i.set_net_state(0), self.tree.visible_items)
+            return
+
+        items = filter(lambda p: p.connection.object_path == self.this_setting, self.tree.visible_items)
         map(lambda i: i.set_net_state(0), items)
-        self.active_vpn = None
+        self.this_setting = None
 
 class MobileDevice(object):
 

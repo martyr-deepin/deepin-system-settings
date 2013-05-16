@@ -44,7 +44,7 @@ class NetManager(object):
             bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-start", path),
                                     dbus_interface = "com.deepin.network",
                                     signal_name="VpnStart")
-            bus.add_signal_receiver(lambda : Dispatcher.emit("vpn-setting-change"),
+            bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-setting-change", path),
                                     dbus_interface = "com.deepin.network",
                                     signal_name="VpnSettingChange")
 
@@ -304,12 +304,13 @@ class NetManager(object):
         proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
         interface = dbus.Interface(proxy, "com.deepin.network")
         interface.emitVpnStart(active_conn.object_path)
+        print "emit vpn start"
 
-    def emit_vpn_setting_change(self):
+    def emit_vpn_setting_change(self, connection):
         bus = dbus.SystemBus()
         proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
         interface = dbus.Interface(proxy, "com.deepin.network")
-        interface.emitVpnSettingChange()
+        interface.emitVpnSettingChange(connection.object_path)
 
 net_manager = NetManager()
 

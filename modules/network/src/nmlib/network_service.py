@@ -103,14 +103,14 @@ class NetworkService(dbus.service.Object):
         return
 
     @dbus.service.signal(NETWORK_INTERFACE)
-    def VpnSettingChange(self):
+    def VpnSettingChange(self, conn_path):
         print "VpnSettingAdded emit"
         return 
 
     @dbus.service.method(NETWORK_INTERFACE,
-                         in_signature='', out_signature='')
-    def emitVpnSettingChange(self):
-        self.VpnSettingChange()
+                         in_signature='o', out_signature='')
+    def emitVpnSettingChange(self, conn_path):
+        self.VpnSettingChange(conn_path)
         return
 
     @dbus.service.signal(NETWORK_INTERFACE)

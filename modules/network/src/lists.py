@@ -781,6 +781,7 @@ class Monitor(threading.Thread):
                 #self.active_callback()
                 pass
             else:
+                #Dispatcher.emit('vpn-force-stop')
                 #self.stop_callback()
                 pass
         
