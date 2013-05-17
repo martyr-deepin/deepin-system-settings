@@ -66,7 +66,7 @@ class TrayUI(gtk.VBox):
         self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), self.wireless_toggle)
         self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
         # vpn
-        self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("Vpn Network"), self.vpn_toggle)
+        self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.vpn_toggle)
 
         self.ssid_list = []
         self.tree_box = gtk.VBox(spacing=0)
@@ -719,7 +719,7 @@ class ConButton(gtk.Button):
             border = BORDER_COLOR
             bg = BG_COLOR
         elif widget.state == gtk.STATE_ACTIVE:
-            border = None
+            border = BORDER_COLOR
             bg = None
         elif widget.state == gtk.STATE_INSENSITIVE:
             pass
@@ -733,10 +733,12 @@ class ConButton(gtk.Button):
         # Draw border.
         if border:
             cr.set_source_rgb(*border)
-            draw_line(cr, x + 2, y + 1, x + w - 2, y + 1) # top
-            draw_line(cr, x + 2, y + h, x + w - 2, y + h) # bottom
-            draw_line(cr, x + 1, y + 2, x + 1, y + h - 2) # left
-            draw_line(cr, x + w, y + 2, x + w, y + h - 2) # right
+            cr.rectangle(x, y, w, h)
+            cr.stroke()
+            #draw_line(cr, x + 1, y + 1, x + w - 2, y + 1) # top
+            #draw_line(cr, x + 2, y + h, x + w - 2, y + h) # bottom
+            #draw_line(cr, x + 1, y + 2, x + 1, y + h - 2) # left
+            #draw_line(cr, x + w, y + 2, x + w, y + h - 2) # right
         
         # Draw font.
         draw_text(cr, self.con, x + ALIGN_SPACING, y, w, h, self.font_size, self.text_color,
