@@ -153,11 +153,11 @@ class PowerManager:
         self.power_settings.reset("button-power")
         self.power_settings.reset("lid-close-battery-action")
         self.power_settings.reset("button-hibernate")
-        # 节能模式  
         self.power_settings.reset("sleep-inactive-battery-timeout")       
         self.power_settings.reset("sleep-inactive-ac-timeout")
         self.power_settings.reset("sleep-display-battery")             
-        self.power_settings.reset("sleep-display-ac") 
+        self.power_settings.reset("sleep-display-ac")
+        self.power_settings.reset("current-plan")
     
     def get_press_button_power(self, items):
         return self.__get_item_value(items, self.power_settings.get_string("button-power"))
