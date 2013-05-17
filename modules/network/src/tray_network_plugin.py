@@ -40,7 +40,8 @@ class TrayNetworkPlugin(object):
         self.gui = TrayUI(self.toggle_wired,
                           self.toggle_wireless,
                           self.mobile_toggle,
-                          self.toggle_vpn)
+                          self.toggle_vpn,
+                          self.toggle_dsl)
         self.net_manager = net_manager
         self.net_manager.init_devices()
         Dispatcher.connect("request_resize", self.request_resize)
@@ -66,17 +67,18 @@ class TrayNetworkPlugin(object):
         Dispatcher.connect("wireless-device-add", self.wireless_device_added)
         Dispatcher.connect("switch-device", self.switch_device)
         Dispatcher.connect('vpn-start', self.vpn_start_cb)
-        #Dispatcher.connect('vpn-setting-change', self.on_vpn_setting_change)
-        #Dispatcher.connect('vpn-force-stop', self.on_vpn_force_stop)
-        #event_manager.add_callback('vpn-disconnect', self.__vpn_failed_callback)
+
+        # vpn signals 
         event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
         event_manager.add_callback('vpn-connected', self.__vpn_active_callback)
         event_manager.add_callback('vpn-disconnected', self.__vpn_failed_callback)
         event_manager.add_callback('vpn-user-disconnect', lambda n, e, d: self.gui.vpn.set_active((True, False)))
         event_manager.add_callback('vpn-connection-removed', self.vpn_connection_remove_cb)
         event_manager.add_callback('vpn-new-added', self.on_vpn_setting_change)
-        print event_manager
-        print "tray start"
+
+        # dsl signals
+        #event_manager.add_callback('dsl-new-added', self.dsl_new_added)
+        #event_manager.add_callback('dsl-connection-removed', self.dsl_removed)
 
         Dispatcher.connect("service_start_do_more", self.service_start_do_more)
 
@@ -206,7 +208,14 @@ class TrayNetworkPlugin(object):
                 self.tray_icon.set_icon_theme("links_vpn")
         else:
             self.gui.remove_net("vpn")
+        
+        if nm_module.nm_remote_settings.get_pppoe_connections():
+            self.gui.show_net("dsl")
 
+        #if nm_module.nmclient.get_pppoe_connections():
+            #self.gui.dsl.set_active((True, True))
+
+        
     def toggle_wired(self):
         if self.gui.wire.get_active():
             self.net_manager.active_wired_device(self.active_wired)
@@ -560,6 +569,13 @@ class TrayNetworkPlugin(object):
         elif self.gui.wireless.get_active():
             self.change_status_icon('links')
         self.this_setting = None
+
+    # dsl settings
+    def toggle_dsl(self):
+        if self.gui.dsl.get_active():
+            pass
+            
+    #
     
     def change_status_icon(self, icon_name):
         """

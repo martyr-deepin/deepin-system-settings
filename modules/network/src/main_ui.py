@@ -800,7 +800,6 @@ class DSLSection(Section):
         else:
             pass
 
-
     @classmethod
     def show_or_hide(self):
         if net_manager.device_manager.get_wired_devices():

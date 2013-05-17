@@ -294,7 +294,10 @@ class NMClient(NMObject):
             return []
 
     def get_pppoe_active_connection(self):
-        pass
+        try:
+            return filter(lambda x:x.get_devices()[0].get_device_type() == 12, self.get_active_connections())
+        except:
+            return []
 
     def get_mobile_active_connection(self):
         try:
