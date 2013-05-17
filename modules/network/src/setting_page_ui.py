@@ -57,8 +57,11 @@ class SettingUI(gtk.Alignment):
         pass
 
     def __init_paned(self, widget):
+        print self.hpaned.get_position()
         self.hpaned.saved_position = 160
-        self.hpaned.change_position(1)
+        self.hpaned.set_position(1)
+        self.hpaned.animation_position_frames = [0]
+        self.hpaned.update_position()
 
     def __init_tab_box(self):
         self.__init_paned(None)
