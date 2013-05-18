@@ -182,7 +182,7 @@ class DetailPage(gtk.VBox):
         if is_editable:
             self.button_align.set_padding(0, 0, 113, 5)
         else:
-            self.button_align.set_padding(0, 0, 210, 5)
+            self.button_align.set_padding(0, 0, 204, 5)
 
         self.delete_button.set_child_visible(is_editable)
 
