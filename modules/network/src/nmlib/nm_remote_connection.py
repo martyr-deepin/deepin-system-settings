@@ -27,10 +27,11 @@ from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
 from nm_secret_agent import secret_agent
 from nmcache import get_cache
-try:
-    from network.src.helper import event_manager
-except:
-    from helper import event_manager
+#try:
+    #from network.src.helper import event_manager
+#except:
+    #from helper import event_manager
+from nm_dispatcher import nm_events
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''
@@ -131,7 +132,10 @@ class NMRemoteConnection(NMObject, NMConnection):
     def removed_cb(self):
         self.emit("removed", self.object_path)
         if self.settings_dict["connection"]["type"] == "vpn":
-            event_manager.emit("vpn-connection-removed", None)
+            nm_events.emit("vpn-connection-removed", None)
+            return
+        if self.settings_dict["connection"]["type"] == "pppoe":
+            nm_events.emit("dsl-connection-removed", None)
 
     def updated_cb(self):
         self.emit("updated", self.object_path)

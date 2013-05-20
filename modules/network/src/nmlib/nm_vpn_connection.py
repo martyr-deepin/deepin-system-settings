@@ -23,10 +23,11 @@
 import gobject
 from nm_active_connection import NMActiveConnection
 from nmcache import get_cache
-try:
-    from network.src.helper import event_manager
-except:
-    from helper import event_manager
+from nm_dispatcher import nm_events
+#try:
+    #from network.src.helper import event_manager
+#except:
+    #from helper import event_manager
 
 #from nm_dispatcher import nm_events
 
@@ -66,12 +67,12 @@ class NMVpnConnection(NMActiveConnection):
         nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         if state in [1, 2, 3, 4]:
             #self.emit("vpn-connecting")
-            event_manager.emit('vpn-connecting', self.object_path)
+            nm_events.emit('vpn-connecting', self.object_path)
             print "vpn-connecting"
         elif state == 5:
             #self.emit("vpn-connected")
             #print "vpn-connected"
-            event_manager.emit('vpn-connected', self.object_path)
+            nm_events.emit('vpn-connected', self.object_path)
             conn_uuid = get_cache().getobject(self.object_path).get_connection().settings_dict["connection"]["uuid"]
             try:
                 priority = int(nm_remote_settings.cf.getint("conn_priority", conn_uuid)) + 1
@@ -81,10 +82,10 @@ class NMVpnConnection(NMActiveConnection):
             nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
             nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
         elif state == 7:
-            event_manager.emit('vpn-user-disconnect', None)
+            nm_events.emit('vpn-user-disconnect', None)
         else:
             #self.emit("vpn-disconnected")
-            event_manager.emit('vpn-disconnected', self.object_path)
+            nm_events.emit('vpn-disconnected', self.object_path)
             
 
 

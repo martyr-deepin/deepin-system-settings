@@ -40,7 +40,8 @@ class TrayNetworkPlugin(object):
         self.gui = TrayUI(self.toggle_wired,
                           self.toggle_wireless,
                           self.mobile_toggle,
-                          self.toggle_vpn)
+                          self.toggle_vpn,
+                          self.toggle_dsl)
         self.net_manager = net_manager
         self.net_manager.init_devices()
         Dispatcher.connect("request_resize", self.request_resize)
@@ -66,17 +67,19 @@ class TrayNetworkPlugin(object):
         Dispatcher.connect("wireless-device-add", self.wireless_device_added)
         Dispatcher.connect("switch-device", self.switch_device)
         Dispatcher.connect('vpn-start', self.vpn_start_cb)
-        #Dispatcher.connect('vpn-setting-change', self.on_vpn_setting_change)
-        #Dispatcher.connect('vpn-force-stop', self.on_vpn_force_stop)
-        #event_manager.add_callback('vpn-disconnect', self.__vpn_failed_callback)
+
+        # vpn signals 
         event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
         event_manager.add_callback('vpn-connected', self.__vpn_active_callback)
         event_manager.add_callback('vpn-disconnected', self.__vpn_failed_callback)
         event_manager.add_callback('vpn-user-disconnect', lambda n, e, d: self.gui.vpn.set_active((True, False)))
         event_manager.add_callback('vpn-connection-removed', self.vpn_connection_remove_cb)
         event_manager.add_callback('vpn-new-added', self.on_vpn_setting_change)
-        print event_manager
-        print "tray start"
+        self.__init_dsl_signals()
+
+        # dsl signals
+        #event_manager.add_callback('dsl-new-added', self.dsl_new_added)
+        #event_manager.add_callback('dsl-connection-removed', self.dsl_removed)
 
         Dispatcher.connect("service_start_do_more", self.service_start_do_more)
 
@@ -206,7 +209,23 @@ class TrayNetworkPlugin(object):
                 self.tray_icon.set_icon_theme("links_vpn")
         else:
             self.gui.remove_net("vpn")
+        
+        if wired_state[0] and nm_module.nm_remote_settings.get_pppoe_connections():
+            self.gui.show_net("dsl")
+            self.gui.dsl_list.connecting_cb = change_to_loading
+            #self.active_dsl = None
+            #self.no_vpn_connecting = False
+            if nm_module.nmclient.get_pppoe_active_connection():
+                self.gui.dsl.set_active((True, True))
+                self.tray_icon.set_icon_theme("cable")
+        else:
+            self.gui.remove_net("dsl")
 
+
+        #if nm_module.nmclient.get_pppoe_connections():
+            #self.gui.dsl.set_active((True, True))
+
+        
     def toggle_wired(self):
         if self.gui.wire.get_active():
             self.net_manager.active_wired_device(self.active_wired)
@@ -554,12 +573,111 @@ class TrayNetworkPlugin(object):
 
     def __vpn_failed_callback(self, name, event, path):
         print "vpn failed callback"
-
         if self.gui.wire.get_active():
             self.change_status_icon("cable")
         elif self.gui.wireless.get_active():
             self.change_status_icon('links')
         self.this_setting = None
+
+    # dsl settings
+    def device_active(self, name, event, data):
+        self.gui.dsl.set_active((True, True), emit=True)
+        self.change_status_icon("cable")
+        self.let_rotate(False)
+
+    def device_unavailable(self, name, event, data):
+        print "device unavailable"
+
+    def device_deactive(self, name, event, data):
+        new_state, old_state, reason = data
+        if any([d.get_state() == 100 for d in net_manager.wired_devices]):
+            self.change_status_icon("cable")
+        else:
+            if any([d.get_state() == 100 for d in net_manager.wireless_devices]):
+                self.change_status_icon("links")
+            else:
+                self.change_status_icon("cable_disconnect")
+            if reason != 0:
+                self.gui.dsl.set_active((True, False))
+                if reason == 40:
+                    self.gui.dsl.set_active((True, False))
+
+    def activate_start(self, name, event, data):
+        if not self.gui.dsl.get_active():
+            self.gui.dsl.set_active((True, True))
+        self.change_status_icon("loading")
+        self.let_rotate(True)
+
+
+    def activate_failed(self, name, event, data):
+        print "device failded"
+        new_state, old_state, reason = data
+        if self.gui.wireless.get_active():
+            self.change_status_icon('links')
+        else:
+            self.change_status_icon('wifi_disconnect')
+        if reason == 13:
+            self.dsl.set_active(False)
+
+    def __init_dsl_signals(self):
+        signal_list = ["device_active",
+                              "device_deactive",
+                              "device_unavailable",
+                              "activate_start",
+                              "activate_failed"]
+
+        for signal in signal_list:
+            event_manager.add_callback(('dsl_%s'%signal).replace("_", "-"), getattr(self, signal))
+
+        event_manager.add_callback('dsl-new-added', self.on_dsl_setting_change)
+        event_manager.add_callback('dsl-connection-removed', self.dsl_connection_remove_cb)
+
+    def on_dsl_setting_change(self, name, event, conn):
+        if self.gui.dsl_state == False:
+            self.gui.show_net("dsl")
+            return
+
+        if self.gui.dsl.get_active():
+            self.gui.dsl.set_active((True, True), emit=True)
+
+    def dsl_connection_remove_cb(self, name, event, data):
+        if not nm_module.nm_remote_settings.get_pppoe_connections():
+            self.gui.remove_net('dsl')
+            return
+        if self.gui.dsl.get_active():
+            self.gui.dsl.set_active((True, True), emit=True)
+        
+    def __init_dsl_list(self):
+        self.gui.dsl_list.clear()
+        cons = nm_module.nm_remote_settings.get_pppoe_connections()
+        self.gui.dsl_list.add_items(cons)
+        self.gui.queue_draw()
+
+    def toggle_dsl(self):
+        if self.gui.dsl.get_active():
+            self.__init_dsl_list()
+
+            dsl_active = nm_module.nmclient.get_pppoe_active_connection()
+            if dsl_active:
+                try:
+                    for dsl in dsl_active:
+                        index = nm_module.nm_remote_settings.get_pppoe_connections().index(dsl.get_connection())
+                        self.gui.dsl_list.set_active_by(index)
+                        return
+                except Exception, e:
+                    print e
+            else:
+                pass
+        
+        else:
+            self.gui.dsl_list.clear()
+            for wired_device in net_manager.device_manager.wired_devices:
+                wired_device.nm_device_disconnect()
+        
+        Dispatcher.request_resize()
+
+            
+    # tray settings
     
     def change_status_icon(self, icon_name):
         """

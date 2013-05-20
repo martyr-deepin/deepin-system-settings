@@ -35,6 +35,8 @@ from helper import Dispatcher
 from timer import Timer
 from container import MyToggleButton as SwitchButton
 from shared_methods import net_manager
+from nm_modules import nm_module
+
 WIDGET_HEIGHT = 22
 
 ALIGN_SPACING = 28
@@ -51,12 +53,14 @@ class TrayUI(gtk.VBox):
                  wired_toggle_cb,
                  wireless_toggle_cb,
                  mobile_toggle_cb,
-                 vpn_toggle_cb):
+                 vpn_toggle_cb,
+                 dsl_toggle_cb):
         gtk.VBox.__init__(self, spacing=0)
         self.wired_toggle = wired_toggle_cb
         self.wireless_toggle = wireless_toggle_cb
         self.mobile_toggle = mobile_toggle_cb
         self.vpn_toggle = vpn_toggle_cb
+        self.dsl_toggle = dsl_toggle_cb
         self.init_ui()
         self.active_ap_index = []
         self.all_showed = False
@@ -67,6 +71,7 @@ class TrayUI(gtk.VBox):
         self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
         # vpn
         self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.vpn_toggle)
+        self.dsl = Section(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), self.dsl_toggle)
 
         self.ssid_list = []
         self.tree_box = gtk.VBox(spacing=0)
@@ -77,22 +82,27 @@ class TrayUI(gtk.VBox):
         self.ap_tree.set_expand_column(0)
 
         self.vpn_list = ConList()
+        self.dsl_list = DSLConList()
         #self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
 
         self.wire_box = self.section_box([self.wire])
         self.wireless_box = self.section_box([self.wireless, self.tree_box])
         self.mobile_box = self.section_box([self.mobile])
         self.vpn_box = self.section_box([self.vpn , self.vpn_list])
+        self.dsl_box = self.section_box([self.dsl, self.dsl_list])
         self.wire_state = False
         self.wireless_state = False
         self.mobile_state = False
         self.vpn_state = False
+        self.dsl_state = False
+
         self.device_tree = None
 
         self.pack_start(self.wire_box, False, False)
         self.pack_start(self.wireless_box, False, False)
         self.pack_start(self.mobile_box, False, False)
         self.pack_start(self.vpn_box, False, False)
+        self.pack_start(self.dsl_box, False, False)
         self.pack_start(self.button_more, False, False)
 
     def get_widget_height(self):
@@ -117,6 +127,11 @@ class TrayUI(gtk.VBox):
 
         if self.vpn_state:
             height += 35 + len(self.vpn_list.get_children()) * 22
+
+        if self.dsl_state:
+            height += 35 + len(self.dsl_list.get_children()) * 22
+
+
         height += 25
 
         # just for test
@@ -745,6 +760,25 @@ class ConButton(gtk.Button):
                     alignment=pango.ALIGN_LEFT)
         
         return True
-        
 
+class DSLConButton(ConButton):
 
+    def __init__(self, connection, connecting_cb=None):
+        ConButton.__init__(self, connection, connecting_cb)
+        self.connect("clicked", self.__active_dsl)
+
+    def __active_dsl(self, widget):
+        device_path = net_manager.wired_device.object_path
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
+                                               device_path,
+                                               "/")
+
+class DSLConList(ConList):
+    def __init__(self):
+        ConList.__init__(self)
+        self.connections_cb = None
+
+    def add_items(self, connections):
+        for c in connections:
+            self.pack_start(DSLConButton(c, self.connecting_cb))
+        self.show_all()

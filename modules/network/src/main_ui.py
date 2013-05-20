@@ -264,7 +264,8 @@ class WiredSection(Section, WiredDevice):
     def init_state(self):
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
-            if self.get_state(self.wired_devices):
+            #if self.get_state(self.wired_devices):
+            if nm_module.nmclient.get_wired_active_connection():
                 self.wire.set_active(True)
         else:
             pass
@@ -793,13 +794,19 @@ class DSLSection(Section):
         
         self.load(self.dsl, [self.label])
 
+        self.active_connection = None
+
     def init_state(self):
         self.wired_devices = net_manager.device_manager.get_wired_devices()
         if self.wired_devices:
             self.__init_signals()
+            if nm_module.nmclient.get_pppoe_active_connection():
+                print nm_module.nmclient.get_pppoe_active_connection()
+                print nm_module.nmclient.get_wired_active_connection()
+
+                self.dsl.set_active(True)
         else:
             pass
-
 
     @classmethod
     def show_or_hide(self):
@@ -811,6 +818,73 @@ class DSLSection(Section):
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,x: self.jumpto_setting())
         Dispatcher.connect("dsl-redraw", self.dsl_redraw)
+
+        event_manager.add_callback('dsl-connection-start', self.connection_start_by_user)
+
+
+        signal_list = ["device_active",
+                              "device_deactive",
+                              "device_unavailable",
+                              "activate_start",
+                              "activate_failed"]
+
+        for signal in signal_list:
+            event_manager.add_callback(('dsl_%s'%signal).replace("_", "-"), getattr(self, signal))
+
+
+    def connection_start_by_user(self, name, event, data):
+        connection = data
+        self.active_connection = connection
+
+    def device_active(self, name, event, data):
+        print "device active"
+        if not self.dsl.get_active():
+            self.dsl.set_active(True)
+        if self.active_connection:
+            index = self.connections.index(self.active_connection)
+            if self.tree.visible_items != []:
+                self.tree.visible_items[index].set_net_state(2)
+                self.tree.queue_draw()
+
+    def device_unavailable(self, name, event, data):
+        print "device unavailable"
+
+    def device_deactive(self, name, event, data):
+        print "device deactive"
+        new_state, old_state, reason = data
+        if reason == 39:
+            self.dsl.set_active(False)
+            return
+        if reason == 36:
+            print "in fact there had device removed"
+        ########################
+            net_manager.init_devices()
+            self.wired_devices = net_manager.wired_devices
+            self._init_signals()
+            self.tree.delete_all_items()
+            item_list = self.get_list()
+            if item_list:
+                item_list[-1].is_last = True
+                self.tree.add_items(item_list, 0, True)
+                self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
+        index = 0
+        for d in self.wired_devices:
+            if d.get_state() == 100:
+                self.tree.visible_items[index].set_net_state(2)
+            index += 1
+        if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
+            self.dsl.set_active(False)
+
+    def activate_start(self, name, event, data):
+        print "active start in main"
+        if self.active_connection:
+            index = self.connections.index(self.active_connection)
+            if self.tree.visible_items != []:
+                self.tree.visible_items[index].set_net_state(1)
+                self.tree.queue_draw()
+
+    def activate_failed(self, name, event, data):
+        print "device failded"
 
     def dsl_redraw(self, widget):
         if self.dsl.get_active():
@@ -824,10 +898,22 @@ class DSLSection(Section):
             self.tree.add_items(item_list)
 
     def toggle_on_after(self):
-        pass
-    
+        active_dsl = nm_module.nmclient.get_pppoe_active_connection()
+        if active_dsl:
+            try:
+                for a in active_dsl:
+                    connection = a.get_connection()
+                    index = self.connections.index(connection)
+                    self.tree.visible_items[index].set_net_state(2)
+            except:
+                index = []
+        else:
+            # add auto connect stuff
+            pass
+            
     def toggle_off(self):
-        pass
+        for wired_device in self.wired_devices:
+            wired_device.nm_device_disconnect()
 
     def get_list(self):
         self.connections =  nm_module.nm_remote_settings.get_pppoe_connections()
