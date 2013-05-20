@@ -662,6 +662,7 @@ class DSLItem(GenItems):
         Dispatcher.to_setting_page(DSLSetting(self.connection), True)
 
     def click_cb(self):
+        event_manager.emit('dsl-connection-start', self.connection)
         if net_manager.wired_device:
             device_path = net_manager.wired_device.object_path
             nm_module.nmclient.activate_connection_async(self.connection.object_path,

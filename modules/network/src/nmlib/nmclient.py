@@ -283,7 +283,16 @@ class NMClient(NMObject):
 
     def get_wired_active_connection(self):
         try:
-            return filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())
+            active_connection = filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())
+            pppoe_connection = self.get_pppoe_active_connection()
+            return filter(lambda x: x not in pppoe_connection, active_connection)
+            #return active_connection
+        except:
+            return []
+
+    def get_pppoe_active_connection(self):
+        try:
+            return filter(lambda c: c.get_connection().get_setting('connection').type == 'pppoe', self.get_active_connections())
         except:
             return []
 
@@ -293,11 +302,11 @@ class NMClient(NMObject):
         except:
             return []
 
-    def get_pppoe_active_connection(self):
-        try:
-            return filter(lambda x:x.get_devices()[0].get_device_type() == 12, self.get_active_connections())
-        except:
-            return []
+    #def get_pppoe_active_connection(self):
+        #try:
+            #return filter(lambda x:x.get_devices()[0].get_device_type() == 12, self.get_active_connections())
+        #except:
+            #return []
 
     def get_mobile_active_connection(self):
         try:

@@ -35,6 +35,8 @@ from helper import Dispatcher
 from timer import Timer
 from container import MyToggleButton as SwitchButton
 from shared_methods import net_manager
+from nm_modules import nm_module
+
 WIDGET_HEIGHT = 22
 
 ALIGN_SPACING = 28
@@ -68,9 +70,9 @@ class TrayUI(gtk.VBox):
         self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), self.wireless_toggle)
         self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
         # vpn
-        self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("Vpn Network"), self.vpn_toggle)
+        self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.vpn_toggle)
 
-        self.dsl = Section(app_theme.get_pixbuf("network/dsl.png"), _("Dsl Network"), self.dsl_toggle)
+        self.dsl = Section(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), self.dsl_toggle)
 
         self.ssid_list = []
         self.tree_box = gtk.VBox(spacing=0)
@@ -81,7 +83,7 @@ class TrayUI(gtk.VBox):
         self.ap_tree.set_expand_column(0)
 
         self.vpn_list = ConList()
-        self.dsl_list = ConList()
+        self.dsl_list = DSLConList()
         #self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
 
         self.wire_box = self.section_box([self.wire])
@@ -757,3 +759,25 @@ class ConButton(gtk.Button):
                     alignment=pango.ALIGN_LEFT)
         
         return True
+
+class DSLConButton(ConButton):
+
+    def __init__(self, connection, connecting_cb=None):
+        ConButton.__init__(self, connection, connecting_cb)
+        self.connect("clicked", self.__active_dsl)
+
+    def __active_dsl(self, widget):
+        device_path = net_manager.wired_device.object_path
+        nm_module.nmclient.activate_connection_async(self.connection.object_path,
+                                               device_path,
+                                               "/")
+
+class DSLConList(ConList):
+    def __init__(self):
+        ConList.__init__(self)
+        self.connections_cb = None
+
+    def add_items(self, connections):
+        for c in connections:
+            self.pack_start(DSLConButton(c, self.connecting_cb))
+        self.show_all()
