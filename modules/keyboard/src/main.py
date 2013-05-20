@@ -841,6 +841,8 @@ class KeySetting(object):
         settings.GCONF_CLIENT.unset('%s/binding' % gconf_dir)
         settings.GCONF_CLIENT.unset('%s/name' % gconf_dir)
         button.get_parent().get_parent().destroy()
+        if button in keybind_mk.ACCEL_ENTRY_LIST:
+            keybind_mk.ACCEL_ENTRY_LIST.remove(button)
         self.set_status_text(_("Deleted custom hotkey"))
     
     def __add_shortcuts_item(self):

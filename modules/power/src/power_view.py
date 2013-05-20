@@ -316,6 +316,7 @@ class PowerView(gtk.VBox):
 
     def reset(self):
         self.__send_message("status", ("power", _("Reset to balance value")))
+        self.power_plan_combo.set_select_index(0)
         self.power_manager.reset()
         self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
         self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(self.power_manage_items))
