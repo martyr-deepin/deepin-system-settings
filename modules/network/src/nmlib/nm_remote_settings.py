@@ -42,7 +42,10 @@ import os
 import glib
 import ConfigParser 
 import traceback
-from nm_dispatcher import nm_events
+try:
+    from network.src.nmlib.nm_dispatcher import nm_events
+except:
+    from nm_dispatcher import nm_events
 #try:
     #from network.src.helper import event_manager
 #except:

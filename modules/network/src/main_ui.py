@@ -961,7 +961,10 @@ class VpnSection(Section):
         event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
         event_manager.add_callback('vpn-connected', self.vpn_connected)
         event_manager.add_callback('vpn-disconnected', self.vpn_disconnected)
-        event_manager.add_callback('vpn-user-disconnect', lambda n, e, d: self.vpn.set_active(False))
+        event_manager.add_callback('vpn-user-disconnect', self.on_user_stop_vpn)
+
+    def on_user_stop_vpn(self, name, event, data):
+        self.vpn.set_active(False)
 
     def vpn_redraw(self, widget):
         if self.vpn.get_active():

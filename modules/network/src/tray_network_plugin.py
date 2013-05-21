@@ -72,7 +72,8 @@ class TrayNetworkPlugin(object):
         event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
         event_manager.add_callback('vpn-connected', self.__vpn_active_callback)
         event_manager.add_callback('vpn-disconnected', self.__vpn_failed_callback)
-        event_manager.add_callback('vpn-user-disconnect', lambda n, e, d: self.gui.vpn.set_active((True, False)))
+
+        event_manager.add_callback('vpn-user-disconnect', self.on_user_stop_vpn)
         event_manager.add_callback('vpn-connection-removed', self.vpn_connection_remove_cb)
         event_manager.add_callback('vpn-new-added', self.on_vpn_setting_change)
         self.__init_dsl_signals()
@@ -537,6 +538,9 @@ class TrayNetworkPlugin(object):
             for vpn in vpn_active:
                 nm_module.nmclient.deactive_connection_async(vpn.object_path)
         Dispatcher.request_resize()
+
+    def on_user_stop_vpn(self, name, event, data):
+        self.gui.vpn.set_active((True, False))
 
     def on_vpn_force_stop(self, widget):
         if self.active_vpn:

@@ -27,11 +27,10 @@ from nmutils.nmconnection import NMConnection
 from nm_utils import TypeConvert
 from nm_secret_agent import secret_agent
 from nmcache import get_cache
-#try:
-    #from network.src.helper import event_manager
-#except:
-    #from helper import event_manager
-from nm_dispatcher import nm_events
+try:
+    from network.src.nmlib.nm_dispatcher import nm_events
+except:
+    from nm_dispatcher import nm_events
 
 class NMRemoteConnection(NMObject, NMConnection):
     '''NMRemoteConnection'''

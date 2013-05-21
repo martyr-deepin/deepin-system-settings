@@ -27,7 +27,10 @@ import glib
 import traceback
 from nmobject import NMObject
 from nmcache import get_cache
-from nm_dispatcher import nm_events
+try:
+    from network.src.nmlib.nm_dispatcher import nm_events
+except:
+    from nm_dispatcher import nm_events
 
 udev_client = gudev.Client("net")
 

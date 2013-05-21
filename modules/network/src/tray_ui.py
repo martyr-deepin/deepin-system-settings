@@ -747,9 +747,13 @@ class ConButton(gtk.Button):
         
         # Draw border.
         if border:
-            cr.set_source_rgb(*border)
-            cr.rectangle(x, y, w, h)
-            cr.stroke()
+            with cairo_disable_antialias(cr):
+                cr.set_source_rgb(*border)
+                cr.set_line_width(1)
+                #if self.is_last:
+                    #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
+                cr.rectangle(x + 1, y + 1, w - 1, h -1)
+                cr.stroke()
             #draw_line(cr, x + 1, y + 1, x + w - 2, y + 1) # top
             #draw_line(cr, x + 2, y + h, x + w - 2, y + h) # bottom
             #draw_line(cr, x + 1, y + 2, x + 1, y + h - 2) # left

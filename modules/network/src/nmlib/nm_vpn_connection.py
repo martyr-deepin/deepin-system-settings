@@ -23,7 +23,10 @@
 import gobject
 from nm_active_connection import NMActiveConnection
 from nmcache import get_cache
-from nm_dispatcher import nm_events
+try:
+    from network.src.nmlib.nm_dispatcher import nm_events
+except:
+    from nm_dispatcher import nm_events
 #try:
     #from network.src.helper import event_manager
 #except:
@@ -82,7 +85,7 @@ class NMVpnConnection(NMActiveConnection):
             nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
             nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
         elif state == 7:
-            nm_events.emit('vpn-user-disconnect', None)
+            nm_events.emit('vpn-user-disconnect', self.object_path)
         else:
             #self.emit("vpn-disconnected")
             nm_events.emit('vpn-disconnected', self.object_path)
