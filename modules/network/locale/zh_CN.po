@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-20 20:23+0800\n"
+"POT-Creation-Date: 2013-05-21 11:30+0800\n"
 "PO-Revision-Date: 2012-12-25 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -36,8 +36,8 @@ msgstr "创建隐藏网络"
 msgid "Hotspot"
 msgstr "无线热点"
 
-#: ../src/main_ui.py:788 ../src/dsl_config.py:41 ../src/dsl_config.py:232
-#: ../src/search_keyword.py:31
+#: ../src/main_ui.py:788 ../src/tray_ui.py:74 ../src/dsl_config.py:41
+#: ../src/dsl_config.py:232 ../src/search_keyword.py:31
 msgid "DSL"
 msgstr "拨号网络"
 
@@ -53,20 +53,20 @@ msgstr "VPN网络"
 msgid "Create VPN Setting"
 msgstr "新建VPN网络"
 
-#: ../src/main_ui.py:1111 ../src/tray_ui.py:71 ../src/mobile_config.py:39
+#: ../src/main_ui.py:1114 ../src/tray_ui.py:71 ../src/mobile_config.py:39
 #: ../src/search_keyword.py:33
 msgid "Mobile Network"
 msgstr "移动网络"
 
-#: ../src/main_ui.py:1112
+#: ../src/main_ui.py:1115
 msgid "Mobile Configuration"
 msgstr "移动网络设置"
 
-#: ../src/main_ui.py:1185 ../src/main_ui.py:1222 ../src/search_keyword.py:34
+#: ../src/main_ui.py:1188 ../src/main_ui.py:1225 ../src/search_keyword.py:34
 msgid "Proxy"
 msgstr "代理"
 
-#: ../src/main_ui.py:1204
+#: ../src/main_ui.py:1207
 msgid "Proxy Configuration"
 msgstr "代理设置"
 
@@ -88,7 +88,7 @@ msgstr "IPv6设置"
 
 #: ../src/lan_config.py:144 ../src/dsl_config.py:151 ../src/wlan_config.py:577
 msgid "Device Mac Address:"
-msgstr "设备mac地址:"
+msgstr "mac地址绑定:"
 
 #: ../src/lan_config.py:145 ../src/dsl_config.py:159 ../src/wlan_config.py:581
 msgid "Cloned Mac Address:"
@@ -98,16 +98,11 @@ msgstr "克隆mac地址:"
 msgid "MTU:"
 msgstr ""
 
-#: ../src/tray_ui.py:75
-#, fuzzy
-msgid "DSL Network"
-msgstr "网络"
-
-#: ../src/tray_ui.py:79
+#: ../src/tray_ui.py:78
 msgid "Advanced..."
 msgstr "更多高级设置..."
 
-#: ../src/tray_ui.py:567
+#: ../src/tray_ui.py:566
 #, python-format
 msgid "card %d"
 msgstr "设备%d"
@@ -542,33 +537,37 @@ msgstr "提示:请选择设备对应的运营商"
 msgid "Region"
 msgstr "地区"
 
-#: ../src/nmlib/nm_remote_settings.py:128
+#: ../src/nmlib/nm_remote_settings.py:131
 msgid "Wired config"
 msgstr "有线配置"
 
-#: ../src/nmlib/nm_remote_settings.py:131
+#: ../src/nmlib/nm_remote_settings.py:134
 msgid "Wireless config"
 msgstr "无线配置"
 
-#: ../src/nmlib/nm_remote_settings.py:134
+#: ../src/nmlib/nm_remote_settings.py:137
 msgid "Dsl config"
 msgstr "DSL配置"
 
-#: ../src/nmlib/nm_remote_settings.py:137
+#: ../src/nmlib/nm_remote_settings.py:140
 msgid "VPN config"
 msgstr "VPN配置"
 
-#: ../src/nmlib/nm_remote_settings.py:140
+#: ../src/nmlib/nm_remote_settings.py:143
 msgid "CDMA config"
 msgstr "CDMA配置"
 
-#: ../src/nmlib/nm_remote_settings.py:143
+#: ../src/nmlib/nm_remote_settings.py:146
 msgid "GSM config"
 msgstr "GSM配置"
 
-#: ../src/nmlib/nm_remote_settings.py:145
+#: ../src/nmlib/nm_remote_settings.py:148
 msgid "Config"
 msgstr "配置"
+
+#, fuzzy
+#~ msgid "DSL Network"
+#~ msgstr "网络"
 
 #~ msgid "Set password"
 #~ msgstr "设置密码"
