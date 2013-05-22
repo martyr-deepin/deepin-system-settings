@@ -27,6 +27,10 @@ import glib
 import traceback
 from nmobject import NMObject
 from nmcache import get_cache
+try:
+    from network.src.nmlib.nm_dispatcher import nm_events
+except:
+    from nm_dispatcher import nm_events
 
 udev_client = gudev.Client("net")
 
@@ -55,6 +59,11 @@ class NMDevice(NMObject):
         self.udev_device = ""
         self.state_id = 0
         self.new_state = 0
+        
+        try:
+            self.is_dsl = self.get_real_active_connection().get_setting('connection').type == 'pppoe'
+        except:
+            self.is_dsl = False
 
     def remove_signals(self):
         try:
@@ -216,26 +225,43 @@ class NMDevice(NMObject):
         if self.state_id > 0:
             return
         else:
-            self.emit(*args)
+            if self.is_dsl:
+                print "Debug[nmdevice]+ dsl", args, self.state_id
+                nm_events.emit("dsl-" + args[0], args[1:])
+            else:
+                print "Debug[nmdevice]", args, self.state_id
+                self.emit(*args)
+            if args[1] != 100 and args[1] != 40:
+                self.is_dsl = False
             self.state_id = glib.timeout_add(300, self.emit_cb)
-            print "Debug[nmdevice]", args, self.state_id
         self.new_state = args[1]
 
     def state_changed_cb(self, new_state, old_state, reason):
         #self.emit("state-changed", new_state, old_state, reason)
         self.init_nmobject_with_properties()
 
+
         if old_state == 100 or reason ==39 or reason == 42 or reason == 36:
+            #if dsl_flag:
+                #self.emit_in_time("dsl-device-deactive", new_state, old_state, reason)
+                #return
             self.emit_in_time("device-deactive", new_state, old_state, reason)
             return 
 
         if new_state == 40:
+            #if dsl_flag:
+                #self.emit_in_time("active-start", new_state, old_state, reason)
+                #return
+            self.is_dsl = self.get_real_active_connection().get_setting('connection').type == 'pppoe'
             self.emit_in_time("activate-start", new_state, old_state, reason)
             return 
 
         if new_state == 100:
             try:
                 conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
+                #if dsl_flag:
+                    #self.emit_in_time("dsl-device-active", new_state, old_state, reason)
+                    #return
                 self.emit_in_time("device-active", new_state, old_state, reason)
                 nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
                 try:
@@ -250,10 +276,16 @@ class NMDevice(NMObject):
             return 
 
         if new_state == 120:
+            #if dsl_flag:
+                #self.emit_in_time("dsl-activate-failed", new_state, old_state, reason)
+                #return
             self.emit_in_time("activate-failed", new_state, old_state, reason)
             return 
 
         if new_state == 10 or new_state == 20:
+            #if dsl_flag:
+                #self.emit_in_time("dsl-device-unavailable", new_state, old_state, reason)
+                #return
             self.emit_in_time("device-unavailable", new_state, old_state, reason)
             return 
 

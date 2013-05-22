@@ -126,7 +126,7 @@ class NetManager(object):
             return None
         else:
             dev_state = any([device.get_state() > 20 for device in self.wired_devices])
-            conn_state = any([device.is_active() for device in self.wired_devices])
+            conn_state = any([device.is_active() and nm_module.nmclient.get_wired_active_connection() for device in self.wired_devices])
             return (dev_state, conn_state)
             #state_list = []
             #for device in self.wired_devices:

@@ -43,9 +43,13 @@ import glib
 import ConfigParser 
 import traceback
 try:
-    from network.src.helper import event_manager
+    from network.src.nmlib.nm_dispatcher import nm_events
 except:
-    from helper import event_manager
+    from nm_dispatcher import nm_events
+#try:
+    #from network.src.helper import event_manager
+#except:
+    #from helper import event_manager
 
 class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
@@ -562,7 +566,11 @@ class NMRemoteSettings(NMObject):
         self.init_nmobject_with_properties()
         conn = get_cache().getobject(path)
         if conn.settings_dict["connection"]['type'] == 'vpn':
-            event_manager.emit("vpn-new-added", conn)
+            nm_events.emit("vpn-new-added", conn)
+            return
+        if conn.settings_dict["connection"]['type'] == 'pppoe':
+            nm_events.emit("dsl-new-added", conn)
+            return
 
 
 import threading
