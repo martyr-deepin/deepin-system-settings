@@ -463,7 +463,7 @@ class DisplayView(gtk.VBox):
              self.monitor_bright_align, 
              self.brightness_align, 
              #self.auto_adjust_align, 
-             self.close_monitor_align, 
+             #self.close_monitor_align, 
              self.monitor_lock_align, 
              self.auto_lock_align, 
              self.lock_display_align])
