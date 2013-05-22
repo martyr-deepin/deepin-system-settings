@@ -249,13 +249,13 @@ class PicturePage(gtk.VBox):
         self.back_button.connect("clicked", self.__on_back)
         self.select_all_button = Button(_("Select All"))                        
         self.select_all_button.connect("clicked", self.on_select_all)
-        add_button = Button(_("Add"))                                              
-        add_button.connect("clicked", self.on_add_wallpapers)                      
+        self.add_button = Button(_("Add"))                                              
+        self.add_button.connect("clicked", self.on_add_wallpapers)                      
                                                                                    
         control_box = gtk.HBox(spacing = 10)
         control_box.pack_start(self.notice_label, False, False)
         control_box.pack_start(self.select_all_button, False, False)
-        control_box.pack_start(add_button, False, False)
+        control_box.pack_start(self.add_button, False, False)
         control_box.pack_start(self.back_button, False, False)
                                                                                 
         control_align = gtk.Alignment()                                         
@@ -279,7 +279,9 @@ class PicturePage(gtk.VBox):
     def set_theme(self, theme):                                                 
         self.theme = theme
         if len(self.select_view.items) == 0:                                    
-            self.notice_label.set_text(_("Please copy some pictures under %s") % get_images_dir())
+            self.notice_label.set_text(_("Please copy some pictures under Pictures"))
+            self.select_all_button.set_child_visible(False)
+            self.add_button.set_child_visible(False)
  
     def on_select_all(self, widget):                                            
         self.select_view.select_all()                                           

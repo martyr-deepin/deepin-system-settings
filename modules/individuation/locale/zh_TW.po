@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-22 09:42+0800\n"
+"POT-Creation-Date: 2013-05-22 15:46+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,16 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:108 ../src/ui/delete_page.py:97 ../src/ui/select_page.py:355
+#: ../src/main.py:122 ../src/ui/delete_page.py:97 ../src/ui/select_page.py:357
 msgid "Delete Wallpaper"
 msgstr ""
 
-#: ../src/main.py:122
+#: ../src/main.py:136
 #, python-format
 msgid "%s Theme Setting"
 msgstr ""
 
-#: ../src/main.py:127
+#: ../src/main.py:141
 msgid "Add Wallpaper"
 msgstr ""
 
@@ -122,14 +122,14 @@ msgstr ""
 #: ../src/ui/delete_page.py:116 ../src/ui/select_page.py:194
 #: ../src/ui/select_page.py:223 ../src/ui/select_page.py:231
 #: ../src/ui/select_page.py:250 ../src/ui/select_page.py:274
-#: ../src/ui/select_page.py:290 ../src/ui/select_page.py:307
-#: ../src/ui/select_page.py:334 ../src/ui/select_page.py:348
-#: ../src/ui/select_page.py:352
+#: ../src/ui/select_page.py:292 ../src/ui/select_page.py:309
+#: ../src/ui/select_page.py:336 ../src/ui/select_page.py:350
+#: ../src/ui/select_page.py:354
 msgid "Select All"
 msgstr ""
 
 #: ../src/ui/detail_page.py:88 ../src/ui/delete_page.py:61
-#: ../src/ui/select_page.py:309
+#: ../src/ui/select_page.py:311
 msgid "Delete"
 msgstr ""
 
@@ -137,8 +137,8 @@ msgstr ""
 #: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
 #: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
 #: ../src/ui/select_page.py:221 ../src/ui/select_page.py:229
-#: ../src/ui/select_page.py:272 ../src/ui/select_page.py:288
-#: ../src/ui/select_page.py:332 ../src/ui/select_page.py:346
+#: ../src/ui/select_page.py:272 ../src/ui/select_page.py:290
+#: ../src/ui/select_page.py:334 ../src/ui/select_page.py:348
 msgid "UnSelect All"
 msgstr ""
 
@@ -188,7 +188,7 @@ msgstr ""
 
 #: ../src/ui/cache_page.py:131 ../src/ui/delete_page.py:55
 #: ../src/ui/select_page.py:192 ../src/ui/select_page.py:248
-#: ../src/ui/select_page.py:305
+#: ../src/ui/select_page.py:307
 msgid "Back"
 msgstr ""
 
@@ -196,16 +196,15 @@ msgstr ""
 msgid "Download All"
 msgstr ""
 
-#: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:356
+#: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:358
 msgid "Are you sure delete wallpaper?"
 msgstr ""
 
 #: ../src/ui/select_page.py:196 ../src/ui/select_page.py:252
-#: ../src/ui/select_page.py:311
+#: ../src/ui/select_page.py:313
 msgid "Add"
 msgstr ""
 
 #: ../src/ui/select_page.py:282
-#, python-format
-msgid "Please copy some pictures under %s"
+msgid "Please copy some pictures under Pictures"
 msgstr ""
