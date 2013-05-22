@@ -41,7 +41,6 @@ from deepin_utils.process import run_command
 
 class DisplayManager:
     BIG_NUM = 0
-    SESSION_NAME = "deepin"
     
     def __init__(self):
         self.__deepin_xrandr = deepin_xrandr.new()
@@ -437,8 +436,6 @@ class DisplayManager:
         return self.__xrandr_settings.get_double("brightness")
     
     def set_screen_brightness(self, output_name, value):
-        i = 0
-        
         if value < 0.1 or value > 1.0:
             return
 
@@ -479,11 +476,10 @@ class DisplayManager:
         self.__power_settings.set_int("sleep-display-ac", value * 60)
 
     def is_enable_lock_display(self):
-        self.__session_settings.set_string("session-name", self.SESSION_NAME)
-        if self.__session_settings.get_uint("idle-delay") < self.BIG_NUM / 60:
-            return True
+        if self.__session_settings.get_uint("idle-delay") == self.BIG_NUM:
+            return False
 
-        return False
+        return True
     
     '''
     TODO: unit is second
