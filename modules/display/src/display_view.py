@@ -558,19 +558,22 @@ class DisplayView(gtk.VBox):
             i += 1                                                          
     
     def __xrandr_changed(self, key):
-        if key != "output-names":
+        if key == "output-names":
+            self.display_manager.init_xml()
+            self.__setup_monitor_items()
+            self.monitor_combo.add_items(items = self.monitor_items)
+            if len(self.monitor_items) > 1:
+                if self.display_manager.is_copy_monitors():
+                    self.__set_same_sizes()
+                    self.sizes_combo.add_items(items = self.sizes_items) 
+
+                self.multi_monitors_align.set_size_request(-1, 30)
+                self.multi_monitors_align.set_child_visible(True)
             return
 
-        self.display_manager.init_xml()
-        self.__setup_monitor_items()
-        self.monitor_combo.add_items(items = self.monitor_items)
-        if len(self.monitor_items) > 1:
-            if self.display_manager.is_copy_monitors():
-                self.__set_same_sizes()
-                self.sizes_combo.add_items(items = self.sizes_items) 
-
-            self.multi_monitors_align.set_size_request(-1, 30)
-            self.multi_monitors_align.set_child_visible(True)
+        if key == "brightness":
+            self.brightness_scale.set_value(self.display_manager.get_screen_brightness())
+            return
 
     def __set_brightness(self, widget, event):
         value = self.brightness_scale.get_value()
