@@ -760,7 +760,7 @@ class ConButton(gtk.Button):
             #draw_line(cr, x + w, y + 2, x + w, y + h - 2) # right
         
         # Draw font.
-        draw_text(cr, self.con, x + ALIGN_SPACING, y, w, h, self.font_size, self.text_color,
+        draw_text(cr, self.con, x + ALIGN_SPACING, y, w, h, CONTENT_FONT_SIZE, self.text_color,
                     alignment=pango.ALIGN_LEFT)
         
         return True

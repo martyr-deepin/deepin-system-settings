@@ -570,9 +570,9 @@ class TrayNetworkPlugin(object):
         elif self.gui.wireless.get_active():
             self.change_status_icon('links_vpn')
 
-            index = map(lambda i: i.connection.object_path, self.gui.vpn_list).index(self.this_setting)
+        index = map(lambda i: i.connection.object_path, self.gui.vpn_list).index(self.this_setting)
 
-            self.gui.vpn_list.set_active_by(index)
+        self.gui.vpn_list.set_active_by(index)
         return 
 
 
