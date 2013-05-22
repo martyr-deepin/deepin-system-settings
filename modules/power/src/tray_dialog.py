@@ -88,6 +88,9 @@ class TrayDialog(Window):
     def show_dialog_window(self, widget):
         for alpha in range(0, 11):
             self.set_opacity(alpha * 0.1)
+        self.ok_key_check = True
+        self.cancel_key_check = False
+        self.ok_btn.grab_focus()
 
     def show_dialog(self,
                     show_pixbuf_name="deepin_shutdown",
@@ -230,7 +233,7 @@ class TrayDialog(Window):
     def init_show_text(self):
         top_padding = 25
         self.top_text_btn_ali = gtk.Alignment()
-        self.top_text_btn_ali.set_padding(top_padding, 0, 0, 0)
+        self.top_text_btn_ali.set_padding(top_padding + 3, 8, 0, 0)
         self.top_text_btn = gtk.Button(self.show_top_text)
         self.top_text_btn_ali.add(self.top_text_btn)
         self.bottom_text_btn_ali = gtk.Alignment()

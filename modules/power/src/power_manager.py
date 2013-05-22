@@ -96,11 +96,11 @@ class PowerManager:
             if len(close_monitor) == 0 or len(suspend) == 0:
                 continue
 
-            if close_monitor_value:
+            if close_monitor_value != None:
                 close_monitor[0].firstChild.data = close_monitor_value
                 is_updatable = True
 
-            if suspend_value:
+            if suspend_value != None:
                 suspend[0].firstChild.data = suspend_value
                 is_updatable = True
 
