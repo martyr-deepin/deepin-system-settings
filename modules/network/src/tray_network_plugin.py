@@ -441,11 +441,12 @@ class TrayNetworkPlugin(object):
         ssid = connection.get_setting("802-11-wireless").ssid
         if ssid != None:
             self.this.hide_menu()
-            AskPasswordDialog(connection,
+            dialog = AskPasswordDialog(connection,
                               ssid,
                               key_mgmt=security,
                               cancel_callback=self.cancel_ask_pwd,
                               confirm_callback=self.pwd_changed).show_all()
+            dialog.place_center()
         self.dialog_toggled_flag = True
 
     def cancel_ask_pwd(self):
