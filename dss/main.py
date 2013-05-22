@@ -248,6 +248,7 @@ class DBusService(dbus.service.Object):
                             is_succeed = False
                         reply_dlg = BluetoothReplyDialog(message, is_succeed = is_succeed)
                         reply_dlg.show_all()
+                        #reply_dlg.place_center(application.window) 
             else:
                 print message
                     
