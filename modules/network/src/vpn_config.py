@@ -192,8 +192,8 @@ class PPTPConf(gtk.VBox):
         self.pptp_radio = RadioButton(_("PPTP"))
         self.l2tp_radio = RadioButton(_("L2TP"))
         radio_box = gtk.HBox(spacing=30)
-        radio_box.pack_start(self.pptp_radio, False, False)
-        radio_box.pack_start(self.l2tp_radio, False, False)
+        radio_box.pack_start(self.pptp_radio, True, True)
+        radio_box.pack_start(self.l2tp_radio, True, True)
         #pack labels
         pptp_table.attach(style.wrap_with_align(radio_box, align="left"), 2,4, 0, 1)
         pptp_table.attach(style.wrap_with_align(name_label, width=self.LEFT_PADDING), 0, 2, 1, 2)

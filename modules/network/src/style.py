@@ -7,8 +7,10 @@ from dtk.ui.utils import  cairo_disable_antialias, color_hex_to_cairo
 from deepin_utils.file import get_parent_dir
 from dtk.ui.draw import draw_line
 from dtk.ui.line import HSeparator
+from dtk.ui.label import Label
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from constants import *
+from dtk.ui.constant import ALIGN_END
 import gtk
 
 MYHSEPARATOR_COLOR = [
@@ -59,10 +61,14 @@ def wrap_with_align(widget, align="right", width=-1):
         return None
 
     if align is "left":
-        align = gtk.Alignment(0, 0.5, 0, 0)
+        align = gtk.Alignment(0, 0.5, 1, 0)
     elif align is "right":
         align = gtk.Alignment(1, 0.5, 0, 0)
         align.set_padding(0,0, 1, 0)
+        if type(widget) is Label:
+            widget.set_size_request(STANDARD_LINE + 1, CONTAINNER_HEIGHT)
+            widget.text_x_align = ALIGN_END
+
     align.set_size_request(width, CONTAINNER_HEIGHT)
     align.add(widget)
     return align
