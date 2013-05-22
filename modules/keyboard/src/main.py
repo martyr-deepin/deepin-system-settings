@@ -29,6 +29,7 @@ from theme import app_theme
 import settings
 
 from dtk.ui.theme import ui_theme
+from dtk.ui.draw import draw_vlinear
 from dtk.ui.theme import DynamicColor
 from dtk.ui.dialog import DialogBox, DIALOG_MASK_SINGLE_PAGE
 from dtk.ui.scrolled_window import ScrolledWindow
@@ -733,6 +734,7 @@ class KeySetting(object):
                 self.__selected_layout_item != item and self.__selected_layout_item not in tv.visible_items:
                     self.__selected_layout_item.is_select = False
                     self.__selected_layout_item = item
+                    
         self.__selected_layout_item = None
         self.button_widgets["layout_add"].set_sensitive(False)
         dialog_width = 400
@@ -741,11 +743,13 @@ class KeySetting(object):
         dialog.connect("destroy", lambda w: self.button_widgets["layout_add"].set_sensitive(True))
         dialog.set_keep_above(True)
         #dialog.set_modal(True)
-        dialog.body_align.set_padding(0, 0, 10, 10)
+        dialog.body_align.set_padding(0, 0, 4, 4)
         #layout_treetimes = map(lambda item: LayoutItem(*item), self.__layout_items)
         layout_treetimes, current_item = create_layout_item(self.__layout_items)
         layout_add_treeview = TreeView(layout_treetimes, enable_hover=False,
-                                       enable_multiple_select=False, enable_highlight=False)
+                                       enable_multiple_select=False, 
+                                       enable_highlight=False,
+                                       )
         if current_item:
             #layout_add_treeview.set_highlight_item(current_item)
             #layout_add_treeview.visible_highlight_item()
