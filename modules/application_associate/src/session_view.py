@@ -115,7 +115,9 @@ class SessionView(gtk.VBox):
             #self.tree.unselect_all()
             current_item.select()
             if self.open_dialog == False:
-                NewSessionDialog(session, confirm_callback= self.edit_done, cancel_callback = self.cancel_callback).show_all()
+                dialog = NewSessionDialog(session, confirm_callback= self.edit_done, cancel_callback = self.cancel_callback)
+                dialog.place_center()
+                dialog.show_all()
                 self.open_dialog = True
 
     def expose_line(self, widget, event):

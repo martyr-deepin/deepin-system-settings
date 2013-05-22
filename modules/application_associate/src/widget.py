@@ -106,9 +106,9 @@ class NewSessionDialog(DialogBox):
         #for entry in entry_list:
             #entry.set_size(200, 22)
             #entry.connect("changed", )
-        name_label_align = style.wrap_with_align(name_label)
-        exec_label_align = style.wrap_with_align(exec_label)
-        desc_label_align = style.wrap_with_align(desc_label)
+        name_label_align = self.wrap_with_align(name_label)
+        exec_label_align = self.wrap_with_align(exec_label)
+        desc_label_align = self.wrap_with_align(desc_label)
 
         name_align = style.wrap_with_align(self.name_entry)
         exec_align = style.wrap_with_align(self.exec_entry)
@@ -133,6 +133,13 @@ class NewSessionDialog(DialogBox):
     def table_add(self, table,  widget, column):
         for index, w in enumerate(widget):
             table.attach(w, column, column + 1, index, index + 1)
+
+    def wrap_with_align(self, label):
+
+        align = gtk.Alignment(1, 0.5, 0, 0)
+        align.set_padding(0, 0, 1, 0)
+        align.add(label)
+        return align
 
     def ok_callback(self, file_name):
         self.exec_entry.set_text(file_name)
