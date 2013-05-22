@@ -41,7 +41,7 @@ msgstr "系統信息"
 
 #: ../src/main.py:57
 msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr "深之度公司 版權所有"
+msgstr "武漢深之度科技優先公司 版權所有"
 
 #: ../src/main.py:58
 msgid "Version"
