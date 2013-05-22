@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-21 13:11+0800\n"
+"POT-Creation-Date: 2013-05-22 17:30+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -141,53 +141,53 @@ msgstr ""
 msgid "Reset to default value"
 msgstr ""
 
-#: ../src/display_view.py:574
+#: ../src/display_view.py:581
 #, python-format
-msgid "Changed brightness to %0.2f"
+msgid "Changed brightness to %d%%"
 msgstr ""
 
-#: ../src/display_view.py:599
+#: ../src/display_view.py:606
 msgid "Changed to manual adjustment"
 msgstr ""
 
-#: ../src/display_view.py:602
+#: ../src/display_view.py:609
 msgid "Changed to automatic adjustment"
 msgstr ""
 
-#: ../src/display_view.py:608
+#: ../src/display_view.py:615
 msgid "Changed to manual lock"
 msgstr ""
 
-#: ../src/display_view.py:611
+#: ../src/display_view.py:618
 msgid "Changed to automatic lock"
 msgstr ""
 
-#: ../src/display_view.py:616
+#: ../src/display_view.py:623
 #, python-format
 msgid "Changed current output to %s"
 msgstr ""
 
-#: ../src/display_view.py:622
+#: ../src/display_view.py:629
 #, python-format
 msgid "Changed resolution to %s"
 msgstr ""
 
-#: ../src/display_view.py:627
+#: ../src/display_view.py:634
 #, python-format
 msgid "Changed rotation to %s"
 msgstr ""
 
-#: ../src/display_view.py:632
+#: ../src/display_view.py:639
 #, python-format
 msgid "Changed multiply monitors mode to %s"
 msgstr ""
 
-#: ../src/display_view.py:637
+#: ../src/display_view.py:644
 #, python-format
 msgid "Changed close monitor duration to %s"
 msgstr ""
 
-#: ../src/display_view.py:642
+#: ../src/display_view.py:649
 #, python-format
 msgid "Changed lock display duration to %s"
 msgstr ""

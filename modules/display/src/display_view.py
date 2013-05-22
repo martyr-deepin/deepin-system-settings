@@ -577,7 +577,8 @@ class DisplayView(gtk.VBox):
 
     def __set_brightness(self, widget, event):
         value = self.brightness_scale.get_value()
-        self.__send_message("status", ("display", _("Changed brightness to %0.2f") % value))
+        self.__send_message("status", 
+                ("display", _("Changed brightness to %d%%") % int(value * 100)))
         self.display_manager.set_screen_brightness(self.__current_output_name, 
                                                    value)
     
