@@ -95,11 +95,15 @@ class AutoStart(object):
         self.conf.set(self.SECTION, option, value)
 
     def save(self, file_name):
-        path = os.path.join(self.dir , file_name + ".desktop")
-        with open(path, "wb") as configfile:
-            self.conf.write(configfile)
+        if file_name:
+            path = os.path.join(self.dir , file_name + ".desktop")
+            with open(path, "wb") as configfile:
+                self.conf.write(configfile)
 
-        self.file_name = file_name
+            self.file_name = file_name
+            return True
+        else:
+            return False
 
     def remove_option(self, option):
 
