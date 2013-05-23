@@ -482,7 +482,7 @@ class KeySetting(object):
         self.alignment_widgets["shortcuts_table"].add(
             self.container_widgets["shortcuts_table"])
         self.view_widgets["shortcuts_selected"].set_size_request(190, -1)
-        self.container_widgets["shortcuts_swin"].set_size_request(590, -1)
+        self.container_widgets["shortcuts_swin"].set_size_request(582, -1)
         self.alignment_widgets["shortcuts_table"].set(0.0, 0.0, 1, 1)
         self.alignment_widgets["shortcuts_table"].set_padding(10, 0, 0, 0)
         # shortcut toolbar
