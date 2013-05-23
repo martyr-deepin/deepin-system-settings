@@ -72,7 +72,7 @@ class NewSessionDialog(DialogBox):
         
         table = self.add_new_box() 
         self.pack(self.body_box, [table])
-        self.right_button_box.set_buttons([self.confirm_button, self.cancel_button])
+        self.right_button_box.set_buttons([self.cancel_button, self.confirm_button])
         
         self.connect("show", self.focus_input)
 
