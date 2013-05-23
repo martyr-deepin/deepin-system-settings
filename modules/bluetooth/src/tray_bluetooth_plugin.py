@@ -145,6 +145,10 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter == None:
             return
 
+        if widget.get_active():
+            self.tray_icon.set_icon_theme("enable")
+        else:
+            self.tray_icon.set_icon_theme("enable_disconnect")
         self.my_bluetooth.adapter.set_powered(widget.get_active())
 
     def __bluetooth_selected(self, widget, event):                                 
@@ -174,6 +178,10 @@ class TrayBluetoothPlugin(object):
         adapter_toggle = self.__setup_toggle()
         if self.my_bluetooth.adapter:
             adapter_toggle.set_active(self.my_bluetooth.adapter.get_powered())
+            if self.my_bluetooth.adapter.get_powered():
+                self.tray_icon.set_icon_theme("enable")
+            else:
+                self.tray_icon.set_icon_theme("enable_disconnect")
         adapter_toggle.connect("toggled", self.__adapter_toggled)
         separator_align = self.__setup_align(padding_bottom = 0)
         separator = self.__setup_separator()
