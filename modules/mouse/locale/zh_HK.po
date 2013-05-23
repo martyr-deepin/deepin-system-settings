@@ -93,7 +93,7 @@ msgstr "相關設置"
 
 #: ../src/main.py:107
 msgid "Keyboard Settings"
-msgstr "鍵槃設置"
+msgstr "鍵盤設置"
 
 #: ../src/main.py:110
 msgid "TouchPad Settings"
