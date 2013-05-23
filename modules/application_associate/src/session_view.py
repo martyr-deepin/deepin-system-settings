@@ -147,20 +147,20 @@ class SessionView(gtk.VBox):
         self.new_session.set_option(option, content)
 
     def edit_done(self, session):
-        session.save(session.file_name)
-        self.new_session = None
-        items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
-        self.tree.redraw_request(items, True)
-        self.open_dialog = False
+        if session.save(session.file_name):
+            self.new_session = None
+            items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
+            self.tree.redraw_request(items, True)
+            self.open_dialog = False
 
     def confirm_callback(self, session):
-        session.save(session.get_option("Name"))
-        items = self.tree.visible_items
-        if len(items) == 1 and type(items[0]) is NothingItem:
-            self.tree.delete_all_items()
-        self.tree.add_items([SessionItem(session)]) 
-        self.new_session = None
-        self.open_dialog = False
+        if session.save(session.get_option("Name")):
+            items = self.tree.visible_items
+            if len(items) == 1 and type(items[0]) is NothingItem:
+                self.tree.delete_all_items()
+            self.tree.add_items([SessionItem(session)]) 
+            self.new_session = None
+            self.open_dialog = False
 
     def cancel_callback(self):
         self.new_session = None

@@ -33,7 +33,7 @@ msgstr "鎖定屏幕"
 
 #: ../src/search_keyword.py:25
 msgid "Keyboard"
-msgstr "鍵槃"
+msgstr "鍵盤"
 
 #: ../src/search_keyword.py:26
 #: ../src/main.py:252
@@ -194,7 +194,7 @@ msgstr "開關屏幕閱讀器"
 
 #: ../src/keybind_list.py:61
 msgid "Turn on-screen keyboard on or off"
-msgstr "開關屏幕鍵槃"
+msgstr "開關屏幕鍵盤"
 
 #: ../src/keybind_list.py:62
 msgid "Increase text size"
@@ -516,7 +516,7 @@ msgstr "打字時禁用觸摸板"
 
 #: ../src/main.py:133
 msgid "Keyboard Layout"
-msgstr "鍵槃布局"
+msgstr "鍵盤布局"
 
 #: ../src/main.py:137
 msgid "Relevant Settings"

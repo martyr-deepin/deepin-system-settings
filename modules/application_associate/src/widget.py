@@ -72,7 +72,7 @@ class NewSessionDialog(DialogBox):
         
         table = self.add_new_box() 
         self.pack(self.body_box, [table])
-        self.right_button_box.set_buttons([self.confirm_button, self.cancel_button])
+        self.right_button_box.set_buttons([self.cancel_button, self.confirm_button])
         
         self.connect("show", self.focus_input)
 
@@ -84,9 +84,12 @@ class NewSessionDialog(DialogBox):
     def add_new_box(self):
         table = gtk.Table()
         #hbox.set_size_request(-1, 30)
-        name_label = Label(_("Name:"))
-        exec_label = Label(_("Exec:"))
-        desc_label = Label(_("Description:"))
+        name_label = Label(_("Name:"), enable_select=False)
+        name_label.set_can_focus(False)
+        exec_label = Label(_("Exec:"), enable_select=False)
+        exec_label.set_can_focus(False)
+        desc_label = Label(_("Description:"), enable_select=False)
+        desc_label.set_can_focus(False)
         
         self.name_entry = InputEntry()
         self.exec_entry = InputEntry()
