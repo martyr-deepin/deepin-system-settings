@@ -75,6 +75,7 @@ class PasswdService(dbus.service.Object):
         self.image_list = []
         self.user_icon = {}
         self.cf = ConfigParser.RawConfigParser()
+        self.default_icon = "/var/lib/AccountsService/icons/guest.jpg"
 
     def __init_users_real(self):
         try:
@@ -179,6 +180,7 @@ class PasswdService(dbus.service.Object):
 
         else:
             print "invalid username %s"  % username
+            return self.default_icon
 
     @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "sss", out_signature = "i", 
                          sender_keyword = 'sender', connection_keyword = 'conn')    
