@@ -133,12 +133,15 @@ class IPV4Conf(gtk.VBox):
             self.dns_section.set_active(True)
         else:
             self.dns_section.set_active(False)
-            self.master_row[1].set_address(self.setting.dns[0])
-
-            self.dns = self.setting.dns + [""]
-            if len(self.setting.dns) > 1:
-                self.slave_row[1].set_address(self.setting.dns[1])
+            if len(self.setting.dns) == 1:
+                self.dns = self.setting.dns + [""]
+            else:
                 self.dns = self.setting.dns
+
+            self.master_row[1].set_address(self.dns[0])
+            
+            if self.dns[1]:
+                self.slave_row[1].set_address(self.dns[1])
 
         self.reset_table()
 
