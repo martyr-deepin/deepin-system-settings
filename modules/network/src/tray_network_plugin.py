@@ -194,11 +194,12 @@ class TrayNetworkPlugin(object):
         else:
             self.gui.remove_net("mobile")
 
+        def change_to_loading():
+            self.change_status_icon('loading')
+            self.let_rotate(True)
+
         if nm_module.nm_remote_settings.get_vpn_connections():
             self.gui.show_net("vpn")
-            def change_to_loading():
-                self.change_status_icon('loading')
-                self.let_rotate(True)
             self.gui.vpn_list.connecting_cb = change_to_loading
             self.active_vpn = None
             self.no_vpn_connecting = False
@@ -427,7 +428,7 @@ class TrayNetworkPlugin(object):
             security = self.net_manager.get_security_by_ap(self.ap)
             if security:
                 print "NMCONNECTION"
-                self.toggle_dialog(connection, security)
+                self.toggle_dialog(connection, "wpa")
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
@@ -436,6 +437,8 @@ class TrayNetworkPlugin(object):
                                            ap.object_path)
 
     def toggle_dialog(self, connection, security=None):
+        encry = self.net_manager.get_sec_ap(self.focus_device, self.ap)
+        print encry, "for this ap"
         if self.dialog_toggled_flag:
             return
         ssid = connection.get_setting("802-11-wireless").ssid
@@ -443,7 +446,7 @@ class TrayNetworkPlugin(object):
             self.this.hide_menu()
             dialog = AskPasswordDialog(connection,
                               ssid,
-                              key_mgmt=security,
+                              key_mgmt=encry,
                               cancel_callback=self.cancel_ask_pwd,
                               confirm_callback=self.pwd_changed).show_all()
             dialog.place_center()

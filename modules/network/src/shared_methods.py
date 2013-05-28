@@ -1,12 +1,13 @@
 #!/usr/bin/env pythonelif 
 #-*- coding:utf-8 -*-
 from nm_modules import nm_module
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 from device_manager import DeviceManager
 from nmlib.servicemanager import servicemanager
 from nmlib.nm_remote_connection import NMRemoteConnection
 from deepin_utils.ipc import is_dbus_name_exists
 import dbus
+
 
 
 DEVICE_UNAVAILABLE = 0
@@ -292,6 +293,21 @@ class NetManager(object):
 
     def get_security_by_ap(self, ap_object):
         return ap_object.get_flags()
+
+    def get_sec_ap(self, device, ap_object):
+        "slow version of get security"
+        hw_address = ap_object.get_hw_address()                                  
+        bus = dbus.SystemBus()                                                   
+        proxy = bus.get_object("com.deepin.network", "/com/deepin/network")      
+        interface = dbus.Interface(proxy, "com.deepin.network")                  
+        encry = interface.get_ap_sec(device.get_iface, hw_address)        
+        if encry == "WPA/WPA2":
+            return "wpa"
+        elif encry == "WEP":
+            return "wep"
+        else:
+            return None
+
 
     def emit_wifi_switch(self, index):
         bus = dbus.SystemBus()
