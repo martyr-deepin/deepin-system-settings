@@ -4,17 +4,14 @@
 from dss import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.treeview import TreeItem, TreeView
-from dtk.ui.box import ImageBox
-from dtk.ui.draw import draw_vlinear, draw_text, draw_pixbuf
-from dtk.ui.label import Label
+from dtk.ui.draw import draw_text, draw_pixbuf
 from dtk.ui.button import Button
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, get_content_size
 from nm_modules import nm_module
 import gtk
 import pango
 
-import style
-from constants import FRAME_VERTICAL_SPACING, TITLE_FONT_SIZE, BETWEEN_SPACING, TREEVIEW_BG_COLOR, IMG_WIDTH
+from constants import BETWEEN_SPACING, TREEVIEW_BG_COLOR, IMG_WIDTH
 from container import TitleBar
 from foot_box import FootBox
 from helper import Dispatcher

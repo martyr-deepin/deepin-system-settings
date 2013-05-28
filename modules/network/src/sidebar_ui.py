@@ -28,8 +28,6 @@ from helper import Dispatcher
 import style
 
 import gtk
-import style
-from helper import Dispatcher
 from nls import _
 
 class SideBar(gtk.VBox):

@@ -5,13 +5,14 @@ from dtk.ui.label import Label
 from dtk.ui.button import Button
 from dtk.ui.entry import InputEntry
 from dtk.ui.spin import SpinBox
+from dtk.ui.combo import ComboBox
 from elements import MyRadioButton as RadioButton
 from elements import TableAsm
 from dtk.ui.utils import container_remove_all
 import gtk
 
 import style
-from constants import TEXT_WINDOW_TOP_PADDING, TEXT_WINDOW_LEFT_PADDING, STANDARD_LINE, CONTENT_FONT_SIZE
+from constants import  STANDARD_LINE, CONTENT_FONT_SIZE
 from foot_box import FootBox
 from helper import Dispatcher
 from nls import _
