@@ -19,6 +19,10 @@ BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 from nls import _
 
+import gettext
+gettext.bindtextdomain('iso_3166', '/usr/share/locale')
+gettext.textdomain('iso_3166')
+
 
 def render_background(self, cr, rect):
     if self.is_select:
@@ -288,7 +292,8 @@ class Item(TreeItem):
         else:
             text_color = "#000000"
 
-        draw_text(cr, self.html_escape(self.content), rect.x + IMG_WIDTH + 10, rect.y, rect.width, rect.height,
+        content = gettext.gettext(self.content)
+        draw_text(cr, self.html_escape(content), rect.x + IMG_WIDTH + 10, rect.y, rect.width, rect.height,
                 alignment=pango.ALIGN_LEFT,
                 text_color=text_color)
 
@@ -395,7 +400,8 @@ class CountryItem(TreeItem):
             text_color = "#ffffff"
         else:
             text_color = "#000000"
-        draw_text(cr, self.content, rect.x , rect.y, rect.width, rect.height,
+        content = gettext.gettext(self.content)
+        draw_text(cr, content, rect.x , rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT, text_color=text_color)
 
     def get_column_widths(self):
@@ -448,7 +454,9 @@ class SubItem(TreeItem):
             text_color = "#ffffff"
         else:
             text_color = "#000000"
-        draw_text(cr, self.content, rect.x + 50, rect.y, rect.width, rect.height,
+
+        content = gettext.gettext(self.content)
+        draw_text(cr, content, rect.x + 50, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT,
                 text_color=text_color)
 
