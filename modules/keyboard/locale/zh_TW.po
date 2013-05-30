@@ -1,7 +1,7 @@
 # Chinese translations for PACKAGE package.
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2012.
+# Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
 #
 msgid ""
 msgstr ""
@@ -24,12 +24,12 @@ msgstr "啟動器"
 #: ../src/keybinds.py:108
 #: ../src/keybind_all.py:47
 msgid "Terminal"
-msgstr "終端"
+msgstr "終端機"
 
 #: ../src/keybinds.py:119
 #: ../src/keybind_all.py:37
 msgid "Lock screen"
-msgstr "鎖定屏幕"
+msgstr "鎖定畫面"
 
 #: ../src/search_keyword.py:25
 msgid "Keyboard"
@@ -38,7 +38,7 @@ msgstr "鍵盤"
 #: ../src/search_keyword.py:26
 #: ../src/main.py:252
 msgid "Shortcuts"
-msgstr "快捷鍵"
+msgstr "捷徑鍵"
 
 #: ../src/search_keyword.py:27
 #: ../src/main.py:251
@@ -47,12 +47,12 @@ msgstr "打字"
 
 #: ../src/search_keyword.py:28
 msgid "Layout"
-msgstr "布局"
+msgstr "鍵盤配置"
 
 #: ../src/search_keyword.py:29
 #: ../src/main.py:116
 msgid "Repeat"
-msgstr "字符重復"
+msgstr "按鍵重復"
 
 #: ../src/search_keyword.py:30
 #: ../src/main.py:119
@@ -62,7 +62,7 @@ msgstr "重復延遲"
 #: ../src/search_keyword.py:31
 #: ../src/main.py:120
 msgid "Repeat Interval"
-msgstr "重復速度"
+msgstr "重復間隔"
 
 #: ../src/keybind_list.py:27
 #: ../src/keybind_all.py:33
@@ -73,7 +73,7 @@ msgstr "系統"
 #: ../src/keybind_list.py:28
 #: ../src/keybind_all.py:48
 msgid "Log out"
-msgstr "注銷"
+msgstr "登出"
 
 #: ../src/keybind_list.py:31
 msgid "Launchers"
@@ -81,32 +81,32 @@ msgstr "啟動器"
 
 #: ../src/keybind_list.py:32
 msgid "Launch help browser"
-msgstr "啟動幫助瀏覽器"
+msgstr "執行說明文件瀏覽器"
 
 #: ../src/keybind_list.py:33
 #: ../src/keybind_all.py:50
 msgid "Launch calculator"
-msgstr "啟動計算器"
+msgstr "執行計數機"
 
 #: ../src/keybind_list.py:34
 #: ../src/keybind_all.py:51
 msgid "Launch email client"
-msgstr "啟動郵件客戶端"
+msgstr "執行電子郵件客戶端"
 
 #: ../src/keybind_list.py:35
 #: ../src/keybind_all.py:52
 msgid "Launch web browser"
-msgstr "啟動網頁瀏覽器"
+msgstr "執行網頁瀏覽器"
 
 #: ../src/keybind_list.py:36
 msgid "Search"
-msgstr "搜索"
+msgstr "搜尋"
 
 #: ../src/keybind_list.py:37
 #: ../src/keybind_all.py:49
 #: ../src/main.py:494
 msgid "Sound and Media"
-msgstr "聲音和媒體"
+msgstr "聲音與媒體"
 
 #: ../src/keybind_list.py:38
 #: ../src/keybind_all.py:57
@@ -116,22 +116,22 @@ msgstr "靜音"
 #: ../src/keybind_list.py:39
 #: ../src/keybind_all.py:58
 msgid "Volume down"
-msgstr "減小音量"
+msgstr "調低音量"
 
 #: ../src/keybind_list.py:40
 #: ../src/keybind_all.py:59
 msgid "Volume up"
-msgstr "增大音量"
+msgstr "調高音量"
 
 #: ../src/keybind_list.py:41
 #: ../src/keybind_all.py:53
 msgid "Launch media player"
-msgstr "啟動媒體播放器"
+msgstr "執行媒體播放程式"
 
 #: ../src/keybind_list.py:42
 #: ../src/keybind_all.py:54
 msgid "Play (or play/pause)"
-msgstr "播放(或者 播放/暫停）"
+msgstr "播放(或 播放/暫停)"
 
 #: ../src/keybind_list.py:43
 #: ../src/keybind_all.py:55
@@ -146,31 +146,31 @@ msgstr "停止播放"
 #: ../src/keybind_list.py:45
 #: ../src/keybind_all.py:60
 msgid "Previous track"
-msgstr "上一音軌"
+msgstr "上一首歌曲"
 
 #: ../src/keybind_list.py:46
 #: ../src/keybind_all.py:61
 msgid "Next track"
-msgstr "下一音軌"
+msgstr "下一首歌曲"
 
 #: ../src/keybind_list.py:47
 #: ../src/keybind_all.py:62
 msgid "Eject"
-msgstr "彈出"
+msgstr "退出"
 
 #: ../src/keybind_list.py:48
 msgid "Screenshots"
-msgstr "截圖"
+msgstr "螢幕擷圖"
 
 #: ../src/keybind_list.py:49
 #: ../src/keybind_all.py:43
 msgid "Take a screenshot"
-msgstr "截圖"
+msgstr "螢幕擷圖"
 
 #: ../src/keybind_list.py:52
 #: ../src/keybind_all.py:46
 msgid "Take a screenshot delayed"
-msgstr "延時截圖"
+msgstr "延遲截圖"
 
 #: ../src/keybind_list.py:56
 msgid "Universal Access"
