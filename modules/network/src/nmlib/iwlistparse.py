@@ -45,6 +45,7 @@ def get_address(cell):
 
 # Here's a dictionary of rules that will be applied to the description of each
 # cell. The key will be the name of the column in the table. The value is a
+
 # function defined above.
 
 rules={"Name":get_name,

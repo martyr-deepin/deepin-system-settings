@@ -322,15 +322,15 @@ class WirelessItem(GenItems):
         print connection, "DEBUG connect by ssid"
         self.ap = ap
         if connection and not isinstance(connection, NMRemoteConnection):
-            security = net_manager.get_security_by_ap(self.ap)
+            security = net_manager.get_sec_ap(self.ap)
             if security:
-                print "connect by ssid"
+                print "connect by ssid", security
                 self.toggle_dialog(connection, security)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
                 nm_module.nmclient.activate_connection_async(connection.object_path,
-                                          net_manager.wireless_devices[0].object_path,
+                                          self.device.object_path,
                                            ap.object_path)
         elif connection == None:
             pass
@@ -348,12 +348,13 @@ class WirelessItem(GenItems):
         pass
 
     def pwd_changed(self, pwd, connection):
+        print connection, "in pwd changed"
         if not isinstance(connection, NMRemoteConnection):
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
         
         if hasattr(self, "connection"):
             if self.connection:
-                net_manager.save_and_connect(pwd, connection, self.app)
+                net_manager.save_and_connect(pwd, connection, self.ap)
             else:
                 net_manager.save_and_connect(pwd, connection, None)
         else:

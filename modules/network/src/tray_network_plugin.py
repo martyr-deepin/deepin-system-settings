@@ -424,11 +424,12 @@ class TrayNetworkPlugin(object):
     def connect_by_ssid(self, widget, ssid, ap):
         connection = self.net_manager.connect_wireless_by_ssid(ssid)
         self.ap = ap
+        print self.ap.object_path
         if connection and not isinstance(connection, NMRemoteConnection):
-            security = self.net_manager.get_security_by_ap(self.ap)
+            security = self.net_manager.get_sec_ap(self.ap)
             if security:
-                print "NMCONNECTION"
-                self.toggle_dialog(connection, "wpa")
+                print "NMCONNECTION", security, self.ap.get_hw_address()
+                self.toggle_dialog(connection, security)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
@@ -437,8 +438,6 @@ class TrayNetworkPlugin(object):
                                            ap.object_path)
 
     def toggle_dialog(self, connection, security=None):
-        encry = self.net_manager.get_sec_ap(self.focus_device, self.ap)
-        print encry, "for this ap"
         if self.dialog_toggled_flag:
             return
         ssid = connection.get_setting("802-11-wireless").ssid
@@ -446,10 +445,11 @@ class TrayNetworkPlugin(object):
             self.this.hide_menu()
             dialog = AskPasswordDialog(connection,
                               ssid,
-                              key_mgmt=encry,
+                              key_mgmt=security,
                               cancel_callback=self.cancel_ask_pwd,
-                              confirm_callback=self.pwd_changed).show_all()
+                              confirm_callback=self.pwd_changed)
             dialog.place_center()
+            dialog.show_all()
         self.dialog_toggled_flag = True
 
     def cancel_ask_pwd(self):

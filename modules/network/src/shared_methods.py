@@ -236,7 +236,9 @@ class NetManager(object):
             return []
 
     def save_and_connect(self, serect, connection, ap):
+        print connection, "save and connect"
         (setting_name, method) = connection.guess_secret_info() 
+        print setting_name, method
         connection.settings_dict[setting_name][method] = serect
         connection.update()
         #nm_module.secret_agent.agent_save_secrets(connection.object_path, setting_name, method)
@@ -251,9 +253,7 @@ class NetManager(object):
                                        self.wireless_device.object_path,
                                        "/")
         
-
     def connect_wireless_by_ssid(self, ssid, device=None):
-
         # TODO will change device to no arg, since tray doesnt change yet
         if device:
             device_wifi = nm_module.cache.get_spec_object(device.object_path)
@@ -293,20 +293,22 @@ class NetManager(object):
 
     def get_security_by_ap(self, ap_object):
         return ap_object.get_flags()
-
-    def get_sec_ap(self, device, ap_object):
-        "slow version of get security"
-        hw_address = ap_object.get_hw_address()                                  
+    
+    
+    def get_sec_ap(self, ap_object):
+        "fast version of get security using wpa_cli"
+        hw_address = ap_object.get_hw_address().lower()
         bus = dbus.SystemBus()                                                   
         proxy = bus.get_object("com.deepin.network", "/com/deepin/network")      
         interface = dbus.Interface(proxy, "com.deepin.network")                  
-        encry = interface.get_ap_sec(device.get_iface, hw_address)        
-        if encry == "WPA/WPA2":
-            return "wpa"
-        elif encry == "WEP":
-            return "wep"
-        else:
-            return None
+        return interface.get_ap_sec(hw_address)        
+
+        #if encry == "WPA/WPA2":
+            #return "wpa"
+        #elif encry == "WEP":
+            #return "wep"
+        #else:
+            #return None
 
 
     def emit_wifi_switch(self, index):
