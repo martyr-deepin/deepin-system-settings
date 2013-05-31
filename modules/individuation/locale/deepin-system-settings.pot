@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-22 15:46+0800\n"
+"POT-Creation-Date: 2013-05-31 15:46+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:122 ../src/ui/delete_page.py:97 ../src/ui/select_page.py:357
+#: ../src/main.py:122 ../src/ui/select_page.py:357 ../src/ui/delete_page.py:97
 msgid "Delete Wallpaper"
 msgstr ""
 
@@ -52,103 +52,6 @@ msgstr ""
 
 #: ../src/theme_manager.py:412
 msgid "Untitled"
-msgstr ""
-
-#: ../src/ui/add_page.py:79
-msgid "Library"
-msgstr ""
-
-#: ../src/ui/add_page.py:80
-msgid "From Internet"
-msgstr ""
-
-#: ../src/ui/add_page.py:84
-msgid "System"
-msgstr ""
-
-#: ../src/ui/add_page.py:86
-msgid "My Favorite"
-msgstr ""
-
-#: ../src/ui/add_page.py:87
-msgid "360BiZhi"
-msgstr ""
-
-#: ../src/ui/add_page.py:88
-msgid "LoveBiZhi HD"
-msgstr ""
-
-#: ../src/ui/detail_page.py:37
-msgid "Minute"
-msgstr ""
-
-#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
-#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
-msgid "Minutes"
-msgstr ""
-
-#: ../src/ui/detail_page.py:40
-msgid "Hour"
-msgstr ""
-
-#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
-#: ../src/ui/detail_page.py:43
-msgid "Hours"
-msgstr ""
-
-#: ../src/ui/detail_page.py:46
-msgid "Scaling"
-msgstr ""
-
-#: ../src/ui/detail_page.py:46
-msgid "Tiling"
-msgstr ""
-
-#: ../src/ui/detail_page.py:70
-msgid "Position"
-msgstr ""
-
-#: ../src/ui/detail_page.py:73
-msgid "Duration"
-msgstr ""
-
-#: ../src/ui/detail_page.py:80
-msgid "Random"
-msgstr ""
-
-#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
-#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
-#: ../src/ui/detail_page.py:194 ../src/ui/delete_page.py:58
-#: ../src/ui/delete_page.py:81 ../src/ui/delete_page.py:89
-#: ../src/ui/delete_page.py:116 ../src/ui/select_page.py:194
-#: ../src/ui/select_page.py:223 ../src/ui/select_page.py:231
-#: ../src/ui/select_page.py:250 ../src/ui/select_page.py:274
-#: ../src/ui/select_page.py:292 ../src/ui/select_page.py:309
-#: ../src/ui/select_page.py:336 ../src/ui/select_page.py:350
-#: ../src/ui/select_page.py:354
-msgid "Select All"
-msgstr ""
-
-#: ../src/ui/detail_page.py:88 ../src/ui/delete_page.py:61
-#: ../src/ui/select_page.py:311
-msgid "Delete"
-msgstr ""
-
-#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
-#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
-#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
-#: ../src/ui/select_page.py:221 ../src/ui/select_page.py:229
-#: ../src/ui/select_page.py:272 ../src/ui/select_page.py:290
-#: ../src/ui/select_page.py:334 ../src/ui/select_page.py:348
-msgid "UnSelect All"
-msgstr ""
-
-#: ../src/ui/wallpaper_view.py:57
-msgid "Apply Wallpaper"
-msgstr ""
-
-#: ../src/ui/wallpaper_item.py:1027
-msgid "downloaded"
 msgstr ""
 
 #: ../src/ui/theme_view.py:94 ../src/ui/theme_view.py:111
@@ -187,18 +90,23 @@ msgstr ""
 msgid "Changed System Theme to %s"
 msgstr ""
 
-#: ../src/ui/cache_page.py:131 ../src/ui/delete_page.py:55
 #: ../src/ui/select_page.py:192 ../src/ui/select_page.py:248
-#: ../src/ui/select_page.py:307
+#: ../src/ui/select_page.py:307 ../src/ui/delete_page.py:55
+#: ../src/ui/cache_page.py:131
 msgid "Back"
 msgstr ""
 
-#: ../src/ui/cache_page.py:133
-msgid "Download All"
-msgstr ""
-
-#: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:358
-msgid "Are you sure delete wallpaper?"
+#: ../src/ui/select_page.py:194 ../src/ui/select_page.py:223
+#: ../src/ui/select_page.py:231 ../src/ui/select_page.py:250
+#: ../src/ui/select_page.py:274 ../src/ui/select_page.py:292
+#: ../src/ui/select_page.py:309 ../src/ui/select_page.py:336
+#: ../src/ui/select_page.py:350 ../src/ui/select_page.py:354
+#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
+#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
+#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
+#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
+#: ../src/ui/detail_page.py:194
+msgid "Select All"
 msgstr ""
 
 #: ../src/ui/select_page.py:196 ../src/ui/select_page.py:252
@@ -206,6 +114,98 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
+#: ../src/ui/select_page.py:221 ../src/ui/select_page.py:229
+#: ../src/ui/select_page.py:272 ../src/ui/select_page.py:290
+#: ../src/ui/select_page.py:334 ../src/ui/select_page.py:348
+#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
+#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
+#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
+msgid "UnSelect All"
+msgstr ""
+
 #: ../src/ui/select_page.py:282
 msgid "Please copy some pictures under Pictures"
+msgstr ""
+
+#: ../src/ui/select_page.py:311 ../src/ui/delete_page.py:61
+#: ../src/ui/detail_page.py:88
+msgid "Delete"
+msgstr ""
+
+#: ../src/ui/select_page.py:358 ../src/ui/delete_page.py:98
+msgid "Are you sure delete wallpaper?"
+msgstr ""
+
+#: ../src/ui/wallpaper_view.py:57
+msgid "Apply Wallpaper"
+msgstr ""
+
+#: ../src/ui/add_page.py:79
+msgid "Library"
+msgstr ""
+
+#: ../src/ui/add_page.py:80
+msgid "From Internet"
+msgstr ""
+
+#: ../src/ui/add_page.py:84
+msgid "System"
+msgstr ""
+
+#: ../src/ui/add_page.py:86
+msgid "My Favorite"
+msgstr ""
+
+#: ../src/ui/add_page.py:87
+msgid "360 Wallpaper"
+msgstr ""
+
+#: ../src/ui/add_page.py:88
+msgid "LoveWallpaper"
+msgstr ""
+
+#: ../src/ui/cache_page.py:133
+msgid "Download All"
+msgstr ""
+
+#: ../src/ui/wallpaper_item.py:1027
+msgid "downloaded"
+msgstr ""
+
+#: ../src/ui/detail_page.py:37
+msgid "Minute"
+msgstr ""
+
+#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
+#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
+msgid "Minutes"
+msgstr ""
+
+#: ../src/ui/detail_page.py:40
+msgid "Hour"
+msgstr ""
+
+#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
+#: ../src/ui/detail_page.py:43
+msgid "Hours"
+msgstr ""
+
+#: ../src/ui/detail_page.py:46
+msgid "Scaling"
+msgstr ""
+
+#: ../src/ui/detail_page.py:46
+msgid "Tiling"
+msgstr ""
+
+#: ../src/ui/detail_page.py:70
+msgid "Position"
+msgstr ""
+
+#: ../src/ui/detail_page.py:73
+msgid "Duration"
+msgstr ""
+
+#: ../src/ui/detail_page.py:80
+msgid "Random"
 msgstr ""
