@@ -81,24 +81,30 @@ class NModule(object):
     @property
     def nmclient(self):
         return self.client
+
     @nmclient.setter
     def nmclient(self, val):
         self.client = val
     @property
     def nm_remote_settings(self):
         return self.setting
+
     @nm_remote_settings.setter
     def nm_remote_settings(self, val):
         self.setting = val
+
     @property
     def secret_agent(self):
         return self.agent
+
     @secret_agent.setter
     def secret_agent(self, val):
         self.agent = NMSecretAgent()
+
     @property
     def mmclient(self):
         return self.mclient
+
     @mmclient.setter
     def mmclient(self, val):
         self.mclient = MMClient()

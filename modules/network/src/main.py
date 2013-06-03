@@ -17,21 +17,10 @@ from nm_modules import nm_module
 from main_ui import Network
 from nls import _
 slider = nm_module.slider
-#def service_stop_cb(widget, s):
-    #pass
-
-#def service_start_cb(widget, s):
-    #print "#service start#"
-    #nm_module.update_cache()
-    #start_ui()
 
 def start_ui(network):
     print "start ui"
-    #slider.init_dict()
     network.refresh()
-
-
-    #slider.show_all()
 
 if __name__ == '__main__':
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))

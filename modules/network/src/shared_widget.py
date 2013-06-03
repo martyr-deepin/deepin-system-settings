@@ -12,9 +12,8 @@ from dtk.ui.utils import container_remove_all
 import gtk
 
 import style
-from constants import CONTENT_FONT_SIZE, TITLE_FONT_SIZE, WIDGET_HEIGHT
+from constants import CONTENT_FONT_SIZE, WIDGET_HEIGHT
 from nls import _
-from container import MyRadioButton as RadioButton
 from helper import Dispatcher
 
 def wrap_with_align(self, widget_list):

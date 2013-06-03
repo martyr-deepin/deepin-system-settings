@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-25 09:45+0800\n"
+"POT-Creation-Date: 2013-06-03 08:58+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,88 +16,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/app_asso_view.py:61 ../src/search_keyword.py:29
-#: ../src/session_view.py:51
+#: ../src/session_view.py:51 ../src/search_keyword.py:29
 msgid "Application"
 msgstr "应用程序"
-
-msgid "Default Applications"
-msgstr "默认程序"
-
-#: ../src/app_asso_view.py:62 ../src/search_keyword.py:30
-msgid "Media"
-msgstr "自动运行"
-
-msgid "Autoplay"
-msgstr "自动播放"
-
-#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
-msgid "Autostart"
-msgstr "开机启动"
-
-#: ../src/media_view.py:49
-msgid "You can choose the operation after plugining media or device"
-msgstr "您可以选择插入每种媒体或设备时的后续操作"
-
-#: ../src/media_view.py:51
-msgid "CD"
-msgstr "CD音频"
-
-#: ../src/media_view.py:52
-msgid "DVD"
-msgstr "DVD视频"
-
-#: ../src/media_view.py:53
-msgid "music player"
-msgstr "音乐播放器"
-
-#: ../src/media_view.py:54
-msgid "camera"
-msgstr "相机"
-
-#: ../src/media_view.py:55
-msgid "software"
-msgstr "软件"
-
-#: ../src/media_view.py:57
-msgid "other applications"
-msgstr "其他应用程序"
-
-#: ../src/media_view.py:58
-msgid "ask"
-msgstr "询问"
-
-#: ../src/media_view.py:59
-msgid "do nothing"
-msgstr "无操作"
-
-#: ../src/media_view.py:60
-msgid "open folder"
-msgstr "打开文件夹"
-
-#: ../src/media_view.py:61
-msgid "apply auto mount for all media and devices"
-msgstr "为所有媒体和设备使用自动挂载"
-
-#: ../src/media_view.py:62
-msgid "apply auto open for all media and devices"
-msgstr "为所有媒体和设备使用自动播放"
-
-#: ../src/media_view.py:69
-msgid "more option"
-msgstr "更多选项"
-
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
-msgstr "应用程序关联"
-
-#: ../src/session_view.py:51
-msgid "Exec"
-msgstr "命令"
 
 #: ../src/session_view.py:51
 msgid "Description"
 msgstr "描述"
+
+#: ../src/session_view.py:51
+msgid "Exec"
+msgstr "命令"
 
 #: ../src/session_view.py:64
 msgid "New"
@@ -106,6 +35,18 @@ msgstr "新建"
 #: ../src/session_view.py:65
 msgid "Delete"
 msgstr "删除"
+
+#: ../src/app_asso_view.py:61
+msgid "Default Applications"
+msgstr "默认程序"
+
+#: ../src/app_asso_view.py:62 ../src/media_view.py:68
+msgid "Autoplay"
+msgstr "自动播放"
+
+#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
+msgid "Autostart"
+msgstr "开机启动"
 
 #: ../src/app_view.py:42
 msgid "web"
@@ -151,29 +92,89 @@ msgstr "取消"
 msgid "Name:"
 msgstr "名称:"
 
-#: ../src/widget.py:88
+#: ../src/widget.py:89
 msgid "Exec:"
 msgstr "命令:"
 
-#: ../src/widget.py:89
-msgid "Description:"
+#: ../src/widget.py:91
+msgid "Comment:"
 msgstr "描述:"
 
-#: ../src/treeview.py:117
+#: ../src/search_keyword.py:30
+msgid "Media"
+msgstr "自动运行"
+
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr "应用程序关联"
+
+#: ../src/media_view.py:53
+msgid "CD"
+msgstr "CD音频"
+
+#: ../src/media_view.py:54
+msgid "DVD"
+msgstr "DVD视频"
+
+#: ../src/media_view.py:55
+msgid "music player"
+msgstr "音乐播放器"
+
+#: ../src/media_view.py:56
+msgid "camera"
+msgstr "相机"
+
+#: ../src/media_view.py:57
+msgid "software"
+msgstr "软件"
+
+#: ../src/media_view.py:62 ../src/media_view.py:222
+msgid "other applications"
+msgstr "其他应用程序"
+
+#: ../src/media_view.py:63
+msgid "ask"
+msgstr "询问"
+
+#: ../src/media_view.py:64
+msgid "do nothing"
+msgstr "无操作"
+
+#: ../src/media_view.py:65
+msgid "open folder"
+msgstr "打开文件夹"
+
+#: ../src/media_view.py:79
+msgid "more option"
+msgstr "更多选项"
+
+#: ../src/treeview.py:119
 msgid "No exec"
 msgstr "未知命令"
 
-#: ../src/treeview.py:131
+#: ../src/treeview.py:134
 msgid "No description"
 msgstr "没有相关描述"
 
-#: ../src/treeview.py:140
+#: ../src/treeview.py:143
 msgid "active"
 msgstr "运行"
 
-#: ../src/treeview.py:142
+#: ../src/treeview.py:145
 msgid "not running"
 msgstr "未运行"
+
+#~ msgid "You can choose the operation after plugining media or device"
+#~ msgstr "您可以选择插入每种媒体或设备时的后续操作"
+
+#~ msgid "apply auto mount for all media and devices"
+#~ msgstr "为所有媒体和设备使用自动挂载"
+
+#~ msgid "apply auto open for all media and devices"
+#~ msgstr "为所有媒体和设备使用自动播放"
+
+#~ msgid "Description:"
+#~ msgstr "描述:"
 
 #~ msgid "State"
 #~ msgstr "状态"

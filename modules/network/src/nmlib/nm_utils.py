@@ -272,6 +272,8 @@ class TypeConvert(object):
                 return False
 
     def is_valid_gw(self, ipstr, mask_str, gw_str):
+        if gw_str == "0.0.0.0":
+            return True
         if not self.is_valid_ip4(gw_str):
             return False
         

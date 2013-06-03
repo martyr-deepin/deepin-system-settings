@@ -194,11 +194,12 @@ class TrayNetworkPlugin(object):
         else:
             self.gui.remove_net("mobile")
 
+        def change_to_loading():
+            self.change_status_icon('loading')
+            self.let_rotate(True)
+
         if nm_module.nm_remote_settings.get_vpn_connections():
             self.gui.show_net("vpn")
-            def change_to_loading():
-                self.change_status_icon('loading')
-                self.let_rotate(True)
             self.gui.vpn_list.connecting_cb = change_to_loading
             self.active_vpn = None
             self.no_vpn_connecting = False
@@ -423,10 +424,11 @@ class TrayNetworkPlugin(object):
     def connect_by_ssid(self, widget, ssid, ap):
         connection = self.net_manager.connect_wireless_by_ssid(ssid)
         self.ap = ap
+        print self.ap.object_path
         if connection and not isinstance(connection, NMRemoteConnection):
-            security = self.net_manager.get_security_by_ap(self.ap)
+            security = self.net_manager.get_sec_ap(self.ap)
             if security:
-                print "NMCONNECTION"
+                print "NMCONNECTION", security, self.ap.get_hw_address()
                 self.toggle_dialog(connection, security)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
@@ -445,8 +447,9 @@ class TrayNetworkPlugin(object):
                               ssid,
                               key_mgmt=security,
                               cancel_callback=self.cancel_ask_pwd,
-                              confirm_callback=self.pwd_changed).show_all()
+                              confirm_callback=self.pwd_changed)
             dialog.place_center()
+            dialog.show_all()
         self.dialog_toggled_flag = True
 
     def cancel_ask_pwd(self):

@@ -26,7 +26,7 @@ class NewSessionDialog(DialogBox):
 	
     def __init__(self,
                  new_session,
-                 default_width=330,
+                 default_width=350,
                  default_height=160,
                  confirm_callback=None, 
                  cancel_callback=None):
@@ -88,7 +88,7 @@ class NewSessionDialog(DialogBox):
         name_label.set_can_focus(False)
         exec_label = Label(_("Exec:"), enable_select=False)
         exec_label.set_can_focus(False)
-        desc_label = Label(_("Description:"), enable_select=False)
+        desc_label = Label(_("Comment:"), enable_select=False)
         desc_label.set_can_focus(False)
         
         self.name_entry = InputEntry()

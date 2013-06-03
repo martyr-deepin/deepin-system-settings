@@ -21,11 +21,11 @@
 from theme import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.treeview import TreeItem, TreeView
-from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text, draw_line
+from dtk.ui.draw import draw_vlinear, draw_pixbuf, draw_text
 from dtk.ui.utils import get_content_size, cairo_disable_antialias, color_hex_to_cairo, cairo_state
 from deepin_utils.file import get_parent_dir
 from dtk.ui.constant import DEFAULT_FONT_SIZE
-from dtk.ui.entry import EntryBuffer, Entry
+from dtk.ui.entry import EntryBuffer
 #from nm_modules import cache
 from shared_methods import net_manager
 from widgets import AskPasswordDialog
@@ -319,18 +319,18 @@ class WirelessItem(GenItems):
 
     def connect_by_ssid(self, ssid, ap):
         connection =  net_manager.connect_wireless_by_ssid(ssid, self.device)
-        #print connection, "DEBUG connect by ssid"
+        print connection, "DEBUG connect by ssid"
         self.ap = ap
         if connection and not isinstance(connection, NMRemoteConnection):
-            security = net_manager.get_security_by_ap(self.ap)
+            security = net_manager.get_sec_ap(self.ap)
             if security:
-                print "connect by ssid"
+                print "connect by ssid", security
                 self.toggle_dialog(connection, security)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 #ap = filter(lambda ap:ap.get_ssid() == ssid, self.ap_list)
                 nm_module.nmclient.activate_connection_async(connection.object_path,
-                                          net_manager.wireless_devices[0].object_path,
+                                          self.device.object_path,
                                            ap.object_path)
         elif connection == None:
             pass
@@ -348,12 +348,13 @@ class WirelessItem(GenItems):
         pass
 
     def pwd_changed(self, pwd, connection):
+        print connection, "in pwd changed"
         if not isinstance(connection, NMRemoteConnection):
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
         
         if hasattr(self, "connection"):
             if self.connection:
-                net_manager.save_and_connect(pwd, connection, self.app)
+                net_manager.save_and_connect(pwd, connection, self.ap)
             else:
                 net_manager.save_and_connect(pwd, connection, None)
         else:

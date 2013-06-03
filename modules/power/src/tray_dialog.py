@@ -302,6 +302,7 @@ class TrayDialog(Window):
             gtk.timeout_add(1, self.run_exec_timeout)
 
     def run_exec_timeout(self):
+        print self.run_exec
         if not self.argv:
             self.run_exec()
         else:

@@ -153,7 +153,7 @@ class NMConnection(gobject.GObject):
 
             if "dns" in info_dict["ipv4"].keys() and len(info_dict["ipv4"]["dns"]) > 0:
                 for dns in info_dict["ipv4"]["dns"]:
-                    if not TypeConvert.is_valid_ip4(dns):
+                    if not TypeConvert.is_valid_ip4(TypeConvert.ip4_net2native(dns)):
                         print "ipv4 invalid dns"
                         return False
         return True

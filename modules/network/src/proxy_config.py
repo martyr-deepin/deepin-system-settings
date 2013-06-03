@@ -5,13 +5,14 @@ from dtk.ui.label import Label
 from dtk.ui.button import Button
 from dtk.ui.entry import InputEntry
 from dtk.ui.spin import SpinBox
+from dtk.ui.combo import ComboBox
 from elements import MyRadioButton as RadioButton
 from elements import TableAsm
 from dtk.ui.utils import container_remove_all
 import gtk
 
 import style
-from constants import TEXT_WINDOW_TOP_PADDING, TEXT_WINDOW_LEFT_PADDING, STANDARD_LINE, CONTENT_FONT_SIZE
+from constants import  STANDARD_LINE, CONTENT_FONT_SIZE
 from foot_box import FootBox
 from helper import Dispatcher
 from nls import _
@@ -269,7 +270,8 @@ class ProxyConfig(gtk.VBox):
     
     def __row_check(self, label_name, table, main=None):
         check = RadioButton(main, label_name)
-        check_align = style.wrap_with_align(check, width=260)
+        check_align = style.wrap_with_align(check, align="left", width=260)
+        check_align.set_padding(0, 0, 200, 1)
         table.row_attach(check_align)
         return check
 
@@ -282,7 +284,7 @@ class ProxyConfig(gtk.VBox):
         self.ftp_entry, self.ftp_spin = self.__row_entry_spin(_("FTP Proxy"), self.manual_table, "ftp")
         self.socks_entry, self.socks_spin = self.__row_entry_spin(_("Socks Proxy"), self.manual_table, "socks")
 
-        self.auto_table = TableAsm(right_width=self.ENTRY_WIDTH)
+        self.auto_table = TableAsm(left_width=STANDARD_LINE, right_width=self.ENTRY_WIDTH)
         self.auto_radio = self.__row_check(_("Automatic"), self.auto_table, self.manual_radio)
         self.conf_entry = self.auto_table.row_input_entry(_("Configuration url"))
 

@@ -72,7 +72,7 @@ class AskPasswordDialog(DialogBox):
             else:
                 init_text = ""
         else:
-            self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, "wpa-psk")
+            self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, key_mgmt)
             init_text = ''
         self.entry = PasswordEntry(init_text)
         self.show_key_check = CheckButton(_("Show key"), 0)

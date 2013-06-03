@@ -4,23 +4,24 @@
 from dss import app_theme
 from dtk.ui.theme import ui_theme
 from dtk.ui.treeview import TreeItem, TreeView
-from dtk.ui.box import ImageBox
-from dtk.ui.draw import draw_vlinear, draw_text, draw_pixbuf
-from dtk.ui.label import Label
+from dtk.ui.draw import draw_text, draw_pixbuf
 from dtk.ui.button import Button
 from dtk.ui.utils import color_hex_to_cairo, cairo_disable_antialias, get_content_size
 from nm_modules import nm_module
 import gtk
 import pango
 
-import style
-from constants import FRAME_VERTICAL_SPACING, TITLE_FONT_SIZE, BETWEEN_SPACING, TREEVIEW_BG_COLOR, IMG_WIDTH
+from constants import BETWEEN_SPACING, TREEVIEW_BG_COLOR, IMG_WIDTH
 from container import TitleBar
 from foot_box import FootBox
 from helper import Dispatcher
 BORDER_COLOR = color_hex_to_cairo("#d2d2d2")
 
 from nls import _
+
+import gettext
+gettext.bindtextdomain('iso_3166', '/usr/share/locale')
+gettext.textdomain('iso_3166')
 
 
 def render_background(self, cr, rect):
@@ -291,7 +292,8 @@ class Item(TreeItem):
         else:
             text_color = "#000000"
 
-        draw_text(cr, self.html_escape(self.content), rect.x + IMG_WIDTH + 10, rect.y, rect.width, rect.height,
+        content = gettext.gettext(self.content)
+        draw_text(cr, self.html_escape(content), rect.x + IMG_WIDTH + 10, rect.y, rect.width, rect.height,
                 alignment=pango.ALIGN_LEFT,
                 text_color=text_color)
 
@@ -398,7 +400,8 @@ class CountryItem(TreeItem):
             text_color = "#ffffff"
         else:
             text_color = "#000000"
-        draw_text(cr, self.content, rect.x , rect.y, rect.width, rect.height,
+        content = gettext.gettext(self.content)
+        draw_text(cr, content, rect.x , rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT, text_color=text_color)
 
     def get_column_widths(self):
@@ -451,7 +454,9 @@ class SubItem(TreeItem):
             text_color = "#ffffff"
         else:
             text_color = "#000000"
-        draw_text(cr, self.content, rect.x + 50, rect.y, rect.width, rect.height,
+
+        content = gettext.gettext(self.content)
+        draw_text(cr, content, rect.x + 50, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT,
                 text_color=text_color)
 

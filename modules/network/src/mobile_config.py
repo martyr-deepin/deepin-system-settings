@@ -9,7 +9,6 @@ from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
 from dtk.ui.utils import container_remove_all
 from dtk.ui.combo import ComboBox
-from dtk.ui.scrolled_window import ScrolledWindow
 from nm_modules import nm_module
 from container import MyToggleButton as SwitchButton
 from container import TitleBar
@@ -17,7 +16,7 @@ from ipsettings import IPV4Conf
 
 import gtk
 from shared_methods import Settings
-from constants import TITLE_FONT_SIZE, FRAME_VERTICAL_SPACING, CONTENT_FONT_SIZE
+from constants import  CONTENT_FONT_SIZE
 import style
 from nls import _
 from helper import Dispatcher
@@ -68,7 +67,6 @@ class MobileSetting(Settings):
                 connection.update()
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-                mobile_type = connection.get_setting("connection").type
                 Dispatcher.emit("connection-replace", connection)
 
                 #index = self.sidebar.new_connection_list[mobile_type].index(connection)
@@ -408,7 +406,6 @@ class Broadband(gtk.VBox):
             network_id = self.broadband_setting.network_id
             network_type = self.broadband_setting.network_type
             home_only = self.broadband_setting.home_only
-            pin = self.broadband_setting.pin
             
             # gsm
             self.apn.set_text(apn)

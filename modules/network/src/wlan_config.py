@@ -345,14 +345,13 @@ class Security(gtk.VBox):
             self.security_combo.set_select_index(key_type)
         else:
             self.security_combo.set_select_index(keys.index(self.key_mgmt))
-        
+
         if not self.security_combo.get_current_item()[1] == None: 
             try:
                 (setting_name, method) = self.connection.guess_secret_info() 
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
-                self.setting.psk = secret
             except:
                 secret = ""
 
@@ -430,6 +429,7 @@ class Security(gtk.VBox):
                 self.setting.wep_key_type = index
                 for key in range(0, 4):
                     delattr(self.setting, "wep_key%d"%key)
+            print "psk deled", self.connection.settings_dict
             #Dispatcher.set_button("save", False)
             self.reset()
             self.settings_obj.wlan_encry_is_valid = False

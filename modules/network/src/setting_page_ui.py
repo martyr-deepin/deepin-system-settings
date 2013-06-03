@@ -178,27 +178,27 @@ class MyPaned(HPaned):
                 handle.set_cursor(None)
             self.init_button("normal")
 
-    def do_button_press_event(self, e):
-        '''
-        when press the handler's button change the position.
-        '''
-        if self.no_show_button:
-            return
-        handle = self.get_handle_window()
-        if e.window == handle:
-            if self.is_in_button(e.x, e.y):
-                self.init_button("press")
+    #def do_button_press_event(self, e):
+        #'''
+        #when press the handler's button change the position.
+        #'''
+        #if self.no_show_button:
+            #return
+        #handle = self.get_handle_window()
+        #if e.window == handle:
+            #if self.is_in_button(e.x, e.y):
+                #self.init_button("press")
             
-                self.do_press_actoin()
-            else:
-                (width, height) = handle.get_size()
-                if is_in_rect((e.x, e.y), (0, 0, width, height)):
-                    self.press_coordinate = (e.x, e.y)
+                #self.do_press_actoin()
+            #else:
+                #(width, height) = handle.get_size()
+                #if is_in_rect((e.x, e.y), (0, 0, width, height)):
+                    #self.press_coordinate = (e.x, e.y)
             
-                gtk.Paned.do_button_press_event(self, e)
-        else:
-            gtk.Paned.do_button_press_event(self, e)
-        return True
+                #gtk.Paned.do_button_press_event(self, e)
+        #else:
+            #gtk.Paned.do_button_press_event(self, e)
+        #return True
     
 
 if __name__=="__main__":

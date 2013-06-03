@@ -44,15 +44,11 @@ from mobile_config import MobileSetting
 from regions import Region
 from settings_widget import HotspotBox
 
-#from nmlib.nmcache import cache
 from nm_modules import nm_module
 from helper import Dispatcher, event_manager
 from shared_methods import net_manager
-#from nmlib.nm_dispatcher import nm_events
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
-#from module_frame import ModuleFrame 
-#from nmlib.servicemanager import servicemanager
 
 from nls import _
 from constants import *
