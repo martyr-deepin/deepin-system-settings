@@ -163,6 +163,14 @@ class IPV4Conf(gtk.VBox):
             widget.set_frame_alert(True)
             Dispatcher.set_tip("ipv4 invalid")
             setattr(self, names[index] + "_flag", False)
+        
+        if hasattr(self, "netmask_flag") and self.netmask_flag:
+            if self.ip4_flag:
+                if self.setting.addresses:
+                    self.setting.clear_addresses()
+                self.ip[2] = "0.0.0.0"
+                self.setting.add_address(self.ip)
+
 
         if self.check_valid("gw"):
             if self.setting.addresses:
@@ -175,12 +183,12 @@ class IPV4Conf(gtk.VBox):
             #else:
                 #print "setting not finish"
                 #Dispatcher.set_button("save", False)
-        else:
-            self.setting.clear_addresses()
+        #else:
+            #self.setting.clear_addresses()
 
         ############
         # 检查ip、子网掩码、网关是否正确
-        for n in names:
+        for n in ["ip4", "netmask"]:
             is_valid = self.check_valid(n)
             if not is_valid:
                 break
