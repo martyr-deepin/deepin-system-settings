@@ -22,6 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import locale
 from ConfigParser import (RawConfigParser, NoSectionError, NoOptionError)
 import common
 from xdg_support import (get_user_theme_dir, get_system_theme_dir, 
@@ -167,7 +168,14 @@ class ThemeFile(RawConfigParser):
             background_gsettings.set_string("cross-fade-auto-mode", "Sequential")
         
     def get_name(self):
-        lang = common.get_system_lang()
+        lang = "default"
+        if len(locale.getdefaultlocale(['LANGUAGE'])):                          
+            if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") == 0:        
+                lang = "zh_CN"                                   
+            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_TW") == 0:   
+                lang = "zh_TW"                      
+            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_HK") == 0:   
+                lang = "zh_HK"
         if self.has_option("name", lang):
             return self.get_option("name", lang)
         else:

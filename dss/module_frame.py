@@ -144,13 +144,14 @@ class ModuleFrame(gtk.Plug):
         pass
         
     def send_module_info(self):
-        name = self.module_config.get("name", "zh_CN")
-        if len(locale.getdefaultlocale()):
-            if locale.getdefaultlocale()[0].find("zh_") != 0:
-                name = self.module_config.get("name", "default")
-        else:
-            name = self.module_config.get("name", "default")
-
+        name = self.module_config.get("name", "default")                           
+        if len(locale.getdefaultlocale(['LANGUAGE'])):                          
+            if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") == 0:        
+                name = self.module_config.get("name", "zh_CN")                             
+            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_TW") == 0:   
+                name = self.module_config.get("name", "zh_TW")                              
+            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_HK") == 0:   
+                name = self.module_config.get("name", "zh_HK")
         self.send_message("send_module_info", 
                           (1, 
                            (self.module_config.get("main", "id"), 

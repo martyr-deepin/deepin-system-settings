@@ -49,6 +49,8 @@ class ModuleInfo(object):
         # TODO: lihongwu req to support i18n
         self.default_name = self.config.get("name", "default")
         self.name = self.config.get("name", "zh_CN")
+        self.name_zh_TW = self.config.get("name", "zh_TW")
+        self.name_zh_HK = self.config.get("name", "zh_HK")
         '''
         TODO: snyh give standard way to get pixbuf
         '''
