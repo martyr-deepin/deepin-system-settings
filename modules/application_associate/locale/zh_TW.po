@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-25 09:45+0800\n"
+"POT-Creation-Date: 2013-06-03 08:58+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,87 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/app_asso_view.py:61 ../src/search_keyword.py:29
-#: ../src/session_view.py:51
+#: ../src/session_view.py:51 ../src/search_keyword.py:29
 msgid "Application"
-msgstr ""
-
-msgid "Default Applications"
-msgstr ""
-
-#: ../src/app_asso_view.py:62 ../src/search_keyword.py:30
-msgid "Media"
-msgstr ""
-
-msgid "Autoplay"
-msgstr ""
-
-#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
-msgid "Autostart"
-msgstr ""
-
-#: ../src/media_view.py:49
-msgid "You can choose the operation after plugining media or device"
-msgstr ""
-
-#: ../src/media_view.py:51
-msgid "CD"
-msgstr ""
-
-#: ../src/media_view.py:52
-msgid "DVD"
-msgstr ""
-
-#: ../src/media_view.py:53
-msgid "music player"
-msgstr ""
-
-#: ../src/media_view.py:54
-msgid "camera"
-msgstr ""
-
-#: ../src/media_view.py:55
-msgid "software"
-msgstr ""
-
-#: ../src/media_view.py:57
-msgid "other applications"
-msgstr ""
-
-#: ../src/media_view.py:58
-msgid "ask"
-msgstr ""
-
-#: ../src/media_view.py:59
-msgid "do nothing"
-msgstr ""
-
-#: ../src/media_view.py:60
-msgid "open folder"
-msgstr ""
-
-#: ../src/media_view.py:61
-msgid "apply auto mount for all media and devices"
-msgstr ""
-
-#: ../src/media_view.py:62
-msgid "apply auto open for all media and devices"
-msgstr ""
-
-#: ../src/media_view.py:69
-msgid "more option"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
-msgstr ""
-
-#: ../src/session_view.py:51
-msgid "Exec"
 msgstr ""
 
 #: ../src/session_view.py:51
 msgid "Description"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Exec"
 msgstr ""
 
 #: ../src/session_view.py:64
@@ -105,6 +34,18 @@ msgstr ""
 
 #: ../src/session_view.py:65
 msgid "Delete"
+msgstr ""
+
+#: ../src/app_asso_view.py:61
+msgid "Default Applications"
+msgstr ""
+
+#: ../src/app_asso_view.py:62 ../src/media_view.py:68
+msgid "Autoplay"
+msgstr ""
+
+#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
+msgid "Autostart"
 msgstr ""
 
 #: ../src/app_view.py:42
@@ -151,26 +92,74 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
-#: ../src/widget.py:88
+#: ../src/widget.py:89
 msgid "Exec:"
 msgstr ""
 
-#: ../src/widget.py:89
-msgid "Description:"
+#: ../src/widget.py:91
+msgid "Comment:"
 msgstr ""
 
-#: ../src/treeview.py:117
+#: ../src/search_keyword.py:30
+msgid "Media"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr ""
+
+#: ../src/media_view.py:53
+msgid "CD"
+msgstr ""
+
+#: ../src/media_view.py:54
+msgid "DVD"
+msgstr ""
+
+#: ../src/media_view.py:55
+msgid "music player"
+msgstr ""
+
+#: ../src/media_view.py:56
+msgid "camera"
+msgstr ""
+
+#: ../src/media_view.py:57
+msgid "software"
+msgstr ""
+
+#: ../src/media_view.py:62 ../src/media_view.py:222
+msgid "other applications"
+msgstr ""
+
+#: ../src/media_view.py:63
+msgid "ask"
+msgstr ""
+
+#: ../src/media_view.py:64
+msgid "do nothing"
+msgstr ""
+
+#: ../src/media_view.py:65
+msgid "open folder"
+msgstr ""
+
+#: ../src/media_view.py:79
+msgid "more option"
+msgstr ""
+
+#: ../src/treeview.py:119
 msgid "No exec"
 msgstr ""
 
-#: ../src/treeview.py:131
+#: ../src/treeview.py:134
 msgid "No description"
 msgstr ""
 
-#: ../src/treeview.py:140
+#: ../src/treeview.py:143
 msgid "active"
 msgstr ""
 
-#: ../src/treeview.py:142
+#: ../src/treeview.py:145
 msgid "not running"
 msgstr ""
