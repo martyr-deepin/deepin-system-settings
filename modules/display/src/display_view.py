@@ -223,8 +223,8 @@ class DisplayView(gtk.VBox):
             self.__setup_sizes_items()
         self.multi_monitors_items = [(_("Copy Display"), 1), 
                                      (_("Extend Display"), 2), 
-                                     (_("Only Monitor 1 shown"), 3), 
-                                     (_("Only Monitor 2 shown"), 4)]
+                                     (_("Only shown in display 1"), 3), 
+                                     (_("Only shown in display 2"), 4)]
         self.rotation_items = [(_("Normal"), 1), 
                                (_("Right"), 2), 
                                (_("Left"), 3), 
@@ -273,7 +273,7 @@ class DisplayView(gtk.VBox):
         '''
         self.monitor_display_align = self.__setup_title_align(
             app_theme.get_pixbuf("display/monitor_display.png"), 
-            _("Monitor Display"), 
+            _("Display"), 
             0)
         '''
         monitor
@@ -293,7 +293,7 @@ class DisplayView(gtk.VBox):
         '''
         self.goto_align = self.__setup_align()
         self.goto_box = gtk.VBox(spacing = WIDGET_SPACING)
-        self.goto_label = self.__setup_label(_("Relative Settings"), 
+        self.goto_label = self.__setup_label(_("Relevant Settings"), 
                                              text_size = TITLE_FONT_SIZE, 
                                              width = None, 
                                              align = ALIGN_START)
@@ -353,7 +353,7 @@ class DisplayView(gtk.VBox):
         '''
         self.multi_monitors_align = self.__setup_align()
         self.multi_monitors_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.multi_monitors_label = self.__setup_label(_("Multi-Monitors"))
+        self.multi_monitors_label = self.__setup_label(_("Multi-Monitor"))
         self.multi_monitors_combo = self.__setup_combo(self.multi_monitors_items)
         self.multi_monitors_combo.set_select_index(self.display_manager.get_multi_monitor_index())
         self.multi_monitors_combo.connect("item-selected", self.__combo_item_selected, "multi_monitors_combo")
@@ -368,7 +368,7 @@ class DisplayView(gtk.VBox):
         '''
         self.monitor_bright_align = self.__setup_title_align(
             app_theme.get_pixbuf("display/monitor_bright.png"), 
-            _("Monitor Brightness"))
+            _("Brightness"))
         '''
         brightness
         '''
@@ -395,7 +395,7 @@ class DisplayView(gtk.VBox):
         '''
         self.auto_adjust_align = self.__setup_align()
         self.auto_adjust_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.auto_adjust_label = self.__setup_label(_("Auto Adjust Brightness"))
+        self.auto_adjust_label = self.__setup_label(_("Auto-Brightness"))
         self.auto_adjust_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.auto_adjust_toggle = self.__setup_toggle()
         self.auto_adjust_toggle.set_active(self.display_manager.is_enable_close_monitor())
@@ -409,7 +409,7 @@ class DisplayView(gtk.VBox):
         '''
         self.close_monitor_align = self.__setup_align()
         self.close_monitor_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.close_monitor_label = self.__setup_label(_("Close Monitor"))
+        self.close_monitor_label = self.__setup_label(_("Turn off monitor"))
         self.close_monitor_combo = self.__setup_combo(self.duration_items)
         self.close_monitor_combo.set_select_index(self.display_manager.get_close_monitor_index(self.duration_items))
         self.close_monitor_combo.connect("item-selected", self.__combo_item_selected, "close_monitor_combo")
@@ -422,13 +422,13 @@ class DisplayView(gtk.VBox):
         '''
         self.monitor_lock_align = self.__setup_title_align(
             app_theme.get_pixbuf("lock/lock.png"), 
-            _("Monitor Screen Lock"))
+            _("Lock Screen"))
         '''
         auto monitor lock
         '''
         self.auto_lock_align = self.__setup_align()
         self.auto_lock_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.auto_lock_label = self.__setup_label(_("Auto Lock User Screen"))
+        self.auto_lock_label = self.__setup_label(_("Lock screen automatically"))
         self.auto_lock_toggle_align = self.__setup_align(padding_top = 4, padding_left = 158)
         self.auto_lock_toggle = self.__setup_toggle()
         is_enable_lock_display = self.display_manager.is_enable_lock_display()
@@ -636,17 +636,17 @@ class DisplayView(gtk.VBox):
             return
 
         if object == "multi_monitors_combo":
-            self.__send_message("status", ("display", _("Changed multiply monitors mode to %s") % item_text))
+            self.__send_message("status", ("display", _("Changed multi-monitor mode to %s") % item_text))
             self.display_manager.set_multi_monitor(item_value)
             return
         
         if object == "close_monitor_combo":
-            self.__send_message("status", ("display", _("Changed close monitor duration to %s") % item_text))
+            self.__send_message("status", ("display", _("Idle time before turning off display has been changed to to %s") % item_text))
             self.display_manager.set_close_monitor(item_value)
             return
 
         if object == "lock_display_combo":
-            self.__send_message("status", ("display", _("Changed lock display duration to %s") % item_text))
+            self.__send_message("status", ("display", _("Idle time before locking display has been changed to %s") % item_text))
             if item_value == DisplayManager.BIG_NUM / 60:
                 self.auto_lock_toggle.set_active(False)
             else:

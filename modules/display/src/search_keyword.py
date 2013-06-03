@@ -26,14 +26,13 @@ from nls import _
 TODO: keywords list
       item (module_uid, search_keyword)
 '''
-keywords = [("display_1", _("Monitor Display")), 
+keywords = [("display_1", _("Display")), 
             ("display_2", _("Monitor")), 
             ("display_3", _("Resolution")), 
             ("display_4", _("Rotation")), 
-            ("display_5", _("Monitor Brightness")), 
-            ("display_6", _("Brightness")), 
-            ("display_7", _("Auto Adjust Monitor Brightness")), 
-            ("display_8", _("Close Monitor")), 
-            ("display_9", _("Auto Lock User Monitor Screen")), 
-            ("display_10", _("Lock Screen"))
+            ("display_5", _("Brightness")), 
+            ("display_6", _("Auto-Brightness")), 
+            ("display_7", _("Turn off monitor")), 
+            ("display_8", _("Lock screen automatically")), 
+            ("display_9", _("Lock Screen"))
            ]
