@@ -807,6 +807,7 @@ class SoundSetting(object):
             self.label_widgets["microphone_port"].set_sensitive(False)
             self.label_widgets["microphone_mute"].set_sensitive(False)
             self.label_widgets["microphone_volume"].set_sensitive(False)
+            self.label_widgets["microphone_input_level"].set_sensitive(False)
 
             self.button_widgets["microphone_combo"].set_sensitive(False)
             self.button_widgets["microphone"].set_sensitive(False)
@@ -821,6 +822,7 @@ class SoundSetting(object):
             self.label_widgets["microphone_port"].set_sensitive(True)
             self.label_widgets["microphone_mute"].set_sensitive(True)
             self.label_widgets["microphone_volume"].set_sensitive(True)
+            self.label_widgets["microphone_input_level"].set_sensitive(True)
 
             self.button_widgets["microphone_combo"].set_sensitive(True)
             self.button_widgets["microphone"].set_sensitive(True)

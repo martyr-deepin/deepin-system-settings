@@ -212,11 +212,13 @@ if __name__ == "__main__":
             print "powerkey"
             if power_settings.get_string("button-power") == "shutdown":
                 print "show shutdown"
+                sys.argv[1] = 'shutdown'
                 dialog.show_dialog("deepin_shutdown")
                 dialog.show_all()
 
             elif power_settings.get_string("button-power") == "suspend":
                 print "show suspend"
+                sys.argv[1] = 'suspend'
                 dialog.show_dialog("deepin_suspend",
                                     SUSPEND_TOP_TEXT,
                                     SUSPEND_BOTTOM_TEXT)
@@ -224,6 +226,7 @@ if __name__ == "__main__":
 
             elif power_settings.get_string("button-power") == "logout":
                 print "show logout"
+                sys.argv[1] = 'logout'
                 dialog.show_dialog("deepin_hibernate",
                                     LOGOUT_TOP_TEXT,
                                     LOGOUT_BOTTOM_TEXT)

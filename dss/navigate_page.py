@@ -30,6 +30,7 @@ import gtk
 import gobject
 import os
 import locale
+from nls import _
 
 from theme import app_theme
 
@@ -130,11 +131,11 @@ class IconItem(gobject.GObject):
         gobject.GObject.__init__(self)
         self.start_callback = start_callback
         self.module_info = module_info
-        self.icon_padding_y = 21
+        self.icon_padding_y = int(_("10"))
         self.name_padding_y = 8
         self.hover_flag = False
         self.highlight_flag = False
-        self.hover_offset = 5
+        self.hover_offset = 1
         self.hover_stroke_dcolor = app_theme.get_color("globalHoverStroke")
         self.hover_fill_dcolor = app_theme.get_color("globalHoverFill")
         self.hover_response_rect = gtk.gdk.Rectangle(
@@ -194,7 +195,8 @@ class IconItem(gobject.GObject):
             cr, 
             self.module_info.icon_pixbuf,
             rect.x + (rect.width - icon_width) / 2,
-            rect.y + self.icon_padding_y)
+            rect.y + self.icon_padding_y
+            )
         
         # Draw icon name.
         # TODO: lihongwu req to support i18n
@@ -205,12 +207,15 @@ class IconItem(gobject.GObject):
         else:
             name = self.module_info.default_name
         
+        padding_x = 10
         draw_text(cr, name, 
-                  rect.x, 
+                  rect.x + padding_x,
                   rect.y + self.icon_padding_y + icon_height + self.name_padding_y,
-                  rect.width, 
+                  rect.width - padding_x * 2,
                   DEFAULT_FONT_SIZE, 
-                  alignment=pango.ALIGN_CENTER)
+                  alignment=pango.ALIGN_CENTER,
+                  wrap_width=rect.width - padding_x * 2,
+                  )
         
     def icon_item_motion_notify(self, x, y):
         '''

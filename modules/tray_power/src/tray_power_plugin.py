@@ -148,9 +148,9 @@ class TrayPower(object):
         if self.has_battery:
             self.tray_icon.set_icon_theme("tray_battery")
             if value == 100:
-                self.tray_icon.set_tooltip_text(_("fully charged"))
+                self.tray_icon.set_tooltip_text(_("Fully charged"))
             else:
-                self.tray_icon.set_tooltip_text(_("charging"))
+                self.tray_icon.set_tooltip_text(_("Charging"))
         else:
             self.tray_icon.set_icon_theme("computer_d")
             self.tray_icon.set_tooltip_text("")
@@ -177,7 +177,7 @@ class TrayPower(object):
         #
         string = _("%s remaining") % (str(int(percentage)) + '%')
         if int(percentage) == 100:
-            string = _("fully charged")
+            string = _("Fully charged")
 
         self.tray_icon.set_tooltip_text(string)
 
