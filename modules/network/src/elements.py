@@ -278,20 +278,27 @@ class TableAsm(gtk.Table):
     def _wrap_align(self, row_item, table):
         left, right = row_item
         left_align = style.wrap_with_align(left, width = self.left_width)
-        right_align = style.wrap_with_align(right, align="left")
+        right_align = style.wrap_with_align(right, align="left", width=self.right_width)
         if table == None:
             self.shared.append((left_align, right_align))
         else:
             table.append((left_align, right_align))
 
     def _table_attach(self, table, items):
-        table.resize(len(items), 2)
+        table.resize(len(items), 1)
         for row, item in enumerate(items):
-            left, right = item 
-            if left:
-                table.attach(left, 0, 1, row, row + 1)
+            left, right = item
+            hbox = gtk.HBox(spacing=BETWEEN_SPACING)
+            hbox.pack_start(left)
             if right:
-                table.attach(right, 1, 2, row, row + 1)
+                hbox.pack_start(right)
+            table.attach(hbox, 0, 1, row, row + 1)
+            
+            #left, right = item 
+            #if left:
+                #table.attach(left, 0, 1, row, row + 1)
+            #if right:
+                #table.attach(right, 1, 2, row, row + 1)
     
     def table_clear(self):
         container_remove_all(self)
