@@ -77,6 +77,21 @@ def get_inhibit_programs():
         
     return programs
 
+def get_inhibis():
+    return gs_interface.GetInhibitors()
+
+def get_inhibit_info(path):
+    try:
+        inhibit_proxy = gs_bus.get_object("org.gnome.SessionManager", path)
+        inhibit_interface = dbus.Interface(inhibit_proxy, "org.gnome.SessionManager.Inhibitor")
+    except:
+        traceback.print_exc()
+        return ("", "")
+
+    app_id = str(inhibit_interface.GetAppId())
+    reason = inhibit_interface.GetReason()
+    return (app_id, reason)
+
 def test_cb(path):
     print "inhibit added path", path
     print "inhibit programs", get_inhibit_programs()

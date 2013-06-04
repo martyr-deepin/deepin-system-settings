@@ -32,6 +32,10 @@ from vtk.utils import cn_check, get_text_size, in_window_check
 from vtk.draw import draw_text
 from vtk.theme import vtk_theme
 from vtk.timer import Timer
+from dtk.ui.treeview import TreeView, TreeItem
+from dtk.ui.draw import draw_text as dtk_draw_text, render_text
+from dtk.ui.constant import DEFAULT_FONT, DEFAULT_FONT_SIZE
+import inhibit
 
 
 APP_WIDTH = 375
@@ -132,7 +136,7 @@ class TrayDialog(Window):
         '''
         pass
 
-    def __focus_out_window(self, widget, event):
+    def focus_out_window(self, widget, event):
         self.quit_dialog_window(widget)
 
     def __dialog_realize_event(self, widget):
@@ -166,7 +170,7 @@ class TrayDialog(Window):
         self.set_keep_above(True)
         self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DIALOG)
         self.connect("show", self.show_dialog_window)
-        self.connect("focus-out-event", self.__focus_out_window)
+        self.connect("focus-out-event", self.focus_out_window)
         self.connect("realize", self.__dialog_realize_event)
         self.connect("key-release-event", self.__dialog_key_release_event)
 
@@ -302,8 +306,7 @@ class TrayDialog(Window):
             gtk.timeout_add(1, self.run_exec_timeout)
 
     def run_exec_timeout(self):
-        print self.run_exec
-        if not self.argv:
+        if self.argv is None:
             self.run_exec()
         else:
             self.run_exec(self.argv)
@@ -352,6 +355,153 @@ class TrayDialog(Window):
 #@ run_exec
 '''
 
+
+class InhibitTreeItem(TreeItem):
+    def __init__(self, app_id, reason):
+        super(InhibitTreeItem, self).__init__()
+        self.app_id = "<b>%s</b>" % app_id
+        self.reason = reason
+        self.height = 40
+
+    def get_height(self):
+        return self.height
+
+    def get_column_widths(self):
+        return [-1]
+
+    def get_column_renders(self):
+        return [self.render_item]
+
+    def render_item(self, cr, rect):
+        render_text(cr, self.app_id,
+                  rect.x+5, rect.y,
+                  rect.width, 20,
+                  text_color="#000000",)
+        render_text(cr, self.reason,
+                  rect.x+5, rect.y+20,
+                  rect.width, 20,
+                  text_color="#000000",)
+
+
+class InhibitDialog(TrayDialog):
+    def __init__(self, ok_text=OK_TEXT, cancel_text=CANCEL_TEXT):
+        super(InhibitDialog, self).__init__(cancel_text=cancel_text, ok_text=ok_text)
+        self.show_top_text = "<span foreground='#FF0000'>%s</span>" % _("A program is still running:")
+        self.show_bottom_text = _("Waiting for programs to finish.  Interrupting these programs may cause you to lose work.")
+        self.wrap_width = 320
+
+        # remove image and title
+        self.show_image_ali.destroy()
+        #self.titlebar_ali.destroy()
+
+        # text
+        self.mid_hbox.remove(self.show_text_vbox)
+        show_text_align = gtk.Alignment(0.5, 0, 0, 0)
+        show_text_align.set_padding(0, 0, 5, 5)
+        show_text_align.add(self.show_text_vbox)
+        self.mid_hbox.pack_start(show_text_align, True, True)
+
+        self.top_text_btn_ali.set_padding(0, 3, 0, 0)
+        self.bottom_text_btn_ali.set_padding(3, 0, 0, 0)
+
+        # add treeview
+        self.inhibit_treeview = TreeView()
+        self.inhibit_treeview.draw_mask = self.__treeview_draw_mask
+        self.inhibit_treeview.set_size_request(-1, 40)
+        self.show_text_vbox.pack_start(self.inhibit_treeview, False, False)
+        self.show_text_vbox.reorder_child(self.inhibit_treeview, 1)
+        #self.set_size_request(APP_WIDTH, 200)
+
+    def show_dialog(self, cancel_text=CANCEL_TEXT, ok_text=OK_TEXT):
+        self.cancel_text = cancel_text
+        self.ok_text = ok_text
+        self.cancel_btn.set_label(cancel_text)
+        self.ok_btn.set_label(ok_text)
+        self.argv = None
+        self.run_exec = None
+        self.set_pango_list()
+        self.top_text_btn.set_label(self.show_top_text)
+        self.bottom_text_btn.set_label(self.show_bottom_text)
+        w, h = self.get_text_size(self.show_top_text, self.wrap_width)
+        if h > 15: h = 15
+        self.top_text_btn.set_size_request(w, h)
+        w, h = self.get_text_size(self.show_bottom_text, self.wrap_width)
+        if h > 30: h = 30
+        self.bottom_text_btn.set_size_request(w, h)
+
+        self.init_inhibit_treeview()
+        self.show_all()
+
+    def focus_out_window(self, widget, event=None):
+        pass
+
+    def top_text_btn_expose_event(self, widget, event, color):
+        cr = widget.window.cairo_create()
+        rect = widget.allocation
+        text = widget.get_label()
+        dtk_draw_text(cr, text, rect.x, rect.y,
+                      rect.width, rect.height,
+                      text_color=color, wrap_width=self.wrap_width)
+        return True
+
+    def get_text_size(self, text, wrap_width,
+                      text_size=DEFAULT_FONT_SIZE,
+                      text_font=DEFAULT_FONT):
+        try:
+            layout = self.create_pango_layout(" ")
+            layout.set_wrap(pango.WRAP_WORD_CHAR)
+            layout.set_width(wrap_width*pango.SCALE)
+            layout.get_pixel_size()
+
+            temp_font = pango.FontDescription("%s %s" % (text_font, text_size))
+            layout.set_font_description(temp_font)
+            layout.set_markup(text)
+            return layout.get_pixel_size()
+        except:
+            return (-1, -1)
+
+    def __inhibit_added_cb(self, path):
+        if path not in self.__inhibit_dict:
+            self.__inhibit_dict[path] = inhibit.get_inhibit_info(path)
+            item = InhibitTreeItem(*self.__inhibit_dict[path])
+            self.__inhibit_item[path] = item
+            self.inhibit_treeview.add_items([item])
+
+    def __inhibit_removed_cb(self, path):
+        if path in self.__inhibit_dict:
+            self.inhibit_treeview.delete_items([self.__inhibit_item[path]])
+            del self.__inhibit_dict[path]
+            del self.__inhibit_item[path]
+        if not self.__inhibit_dict:
+            print "inhibit is empty"
+
+    def init_inhibit_treeview(self):
+        self.__inhibit_dict = {}
+        self.__inhibit_item = {}
+        for path in inhibit.get_inhibis():
+            self.__inhibit_dict[path] = inhibit.get_inhibit_info(path)
+            item = InhibitTreeItem(*self.__inhibit_dict[path])
+            self.__inhibit_item[path] = item
+            self.inhibit_treeview.add_items([item])
+
+        print self.__inhibit_dict
+        inhibit.gs_bus.add_signal_receiver(
+            self.__inhibit_removed_cb,
+            dbus_interface="org.gnome.SessionManager",
+            path="/org/gnome/SessionManager",
+            signal_name="InhibitorRemoved")
+        inhibit.gs_bus.add_signal_receiver(
+            self.__inhibit_added_cb,
+            dbus_interface="org.gnome.SessionManager",
+            path="/org/gnome/SessionManager",
+            signal_name="InhibitorAdded")
+
+    def __treeview_draw_mask(self, cr, x, y, w, h):
+        cr.set_source_rgba(0.32, 0.4, 0.4, 0.3)
+        cr.rectangle(x, y, w, h)
+        cr.fill()
+
+
 if __name__ == "__main__":
     def test_run():
         print "i love c and linux..."
@@ -359,7 +509,7 @@ if __name__ == "__main__":
     dialog = TrayDialog("deepin_shutdown", 
                         cancel_text="Cancel", 
                         ok_text="Ok")
-    dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/home/long/Desktop/source/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
+    dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
     dialog.run_exec = test_run
     dialog.show_all()
     gtk.main()
