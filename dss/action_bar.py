@@ -180,13 +180,15 @@ class ModuleMenuItem(IconTextItem):
         '''
         init docs
         '''
-        name = module_info.name
-        if len(locale.getdefaultlocale()):
-            if locale.getdefaultlocale()[0].find("zh_") != 0:
-                name = module_info.default_name
-        else:
-            name = module_info.default_name
-
+        self.module_info = module_info
+        name = self.module_info.default_name                                    
+        if len(locale.getdefaultlocale(['LANGUAGE'])):                          
+            if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") == 0:        
+                name = self.module_info.name                                    
+            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_TW") == 0:   
+                name = self.module_info.name_zh_TW                              
+            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_HK") == 0:   
+                name = self.module_info.name_zh_HK
         IconTextItem.__init__(
             self, 
             (module_info.menu_icon_pixbuf,
@@ -195,7 +197,6 @@ class ModuleMenuItem(IconTextItem):
              ),
             name
             )
-        self.module_info = module_info
         self.click_callback = click_callback
         
     def button_press(self, column, offset_x, offset_y):

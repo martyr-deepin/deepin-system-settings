@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-22 17:30+0800\n"
+"POT-Creation-Date: 2013-06-03 15:20+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/search_keyword.py:29 ../src/display_view.py:276
-msgid "Monitor Display"
+msgid "Display"
 msgstr ""
 
 #: ../src/search_keyword.py:30 ../src/display_view.py:283
@@ -33,26 +33,24 @@ msgid "Rotation"
 msgstr ""
 
 #: ../src/search_keyword.py:33 ../src/display_view.py:371
-msgid "Monitor Brightness"
-msgstr ""
-
-#: ../src/search_keyword.py:34 ../src/display_view.py:380
+#: ../src/display_view.py:380
 msgid "Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:35
-msgid "Auto Adjust Monitor Brightness"
+#: ../src/search_keyword.py:34 ../src/display_view.py:398
+msgid "Auto-Brightness"
 msgstr ""
 
-#: ../src/search_keyword.py:36 ../src/display_view.py:412
-msgid "Close Monitor"
+#: ../src/search_keyword.py:35 ../src/display_view.py:412
+msgid "Turn off monitor"
 msgstr ""
 
-#: ../src/search_keyword.py:37
-msgid "Auto Lock User Monitor Screen"
+#: ../src/search_keyword.py:36 ../src/display_view.py:431
+msgid "Lock screen automatically"
 msgstr ""
 
-#: ../src/search_keyword.py:38 ../src/display_view.py:446
+#: ../src/search_keyword.py:37 ../src/display_view.py:425
+#: ../src/display_view.py:446
 msgid "Lock Screen"
 msgstr ""
 
@@ -65,11 +63,11 @@ msgid "Extend Display"
 msgstr ""
 
 #: ../src/display_view.py:226
-msgid "Only Monitor 1 shown"
+msgid "Only shown in display 1"
 msgstr ""
 
 #: ../src/display_view.py:227
-msgid "Only Monitor 2 shown"
+msgid "Only shown in display 2"
 msgstr ""
 
 #: ../src/display_view.py:228
@@ -107,7 +105,7 @@ msgid "Never"
 msgstr ""
 
 #: ../src/display_view.py:296
-msgid "Relative Settings"
+msgid "Relevant Settings"
 msgstr ""
 
 #: ../src/display_view.py:302
@@ -121,19 +119,7 @@ msgid "<span foreground=\"%s\" underline=\"single\">Power</span>"
 msgstr ""
 
 #: ../src/display_view.py:356
-msgid "Multi-Monitors"
-msgstr ""
-
-#: ../src/display_view.py:398
-msgid "Auto Adjust Brightness"
-msgstr ""
-
-#: ../src/display_view.py:425
-msgid "Monitor Screen Lock"
-msgstr ""
-
-#: ../src/display_view.py:431
-msgid "Auto Lock User Screen"
+msgid "Multi-Monitor"
 msgstr ""
 
 #: ../src/display_view.py:497
@@ -178,15 +164,15 @@ msgstr ""
 
 #: ../src/display_view.py:639
 #, python-format
-msgid "Changed multiply monitors mode to %s"
+msgid "Changed multi-monitor mode to %s"
 msgstr ""
 
 #: ../src/display_view.py:644
 #, python-format
-msgid "Changed close monitor duration to %s"
+msgid "Idle time before turning off display has been changed to to %s"
 msgstr ""
 
 #: ../src/display_view.py:649
 #, python-format
-msgid "Changed lock display duration to %s"
+msgid "Idle time before locking display has been changed to %s"
 msgstr ""
