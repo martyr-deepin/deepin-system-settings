@@ -19,7 +19,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#import dss
 from proxy_config import ProxyConfig, ProxySettings
 import sys
 import os
@@ -34,9 +33,8 @@ from dtk.ui.scrolled_window import ScrolledWindow
 import gtk
 
 from container import Contain, ToggleThread
-from lists import (WiredItem, WirelessItem,
-                  HidenItem, DSLItem, MobileItem,
-                  VPNItem, DeviceToggleItem)
+from lists import (WiredItem, WirelessItem, HidenItem, DSLItem,
+                   MobileItem, VPNItem, DeviceToggleItem)
 from widgets import AskPasswordDialog
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
@@ -50,20 +48,24 @@ from shared_methods import net_manager
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
-from nls import _
 from constants import *
+from nls import _
 from timer import Timer
 
 slider = nm_module.slider
-PADDING = 32
 from dtk.ui.theme import DynamicColor
+
 LABEL_COLOR = DynamicColor("#666666")
+PADDING = 32
+
+from dss_log import log
 
 def pack_start(parent, child_list, expand=False, fill=False):
     for child in child_list:
         parent.pack_start(child, expand, fill)
 
 class Section(gtk.VBox):
+    # Section prototype
 
     def __init__(self):
         gtk.VBox.__init__(self)
@@ -146,24 +148,13 @@ class Section(gtk.VBox):
         self.set_no_show_all(True)
         self.hide()
 
-class TestSection(Section):
-
-    def __init__(self):
-        Section.__init__(self)
-        self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w: w)
-        self.button = gtk.Button("Test")
-        self.label = Label("this is a test")
-        self.load(self.wire, (self.button, self.label))
-
 class WiredDevice(object):
-
-    def __init__(self):
-        pass
 
     def _init_signals(self):
         net_manager.device_manager.load_wired_listener(self)
 
     def wired_device_active(self, widget, new_state, old_state, reason):
+
         index = self.wired_devices.index(widget)
         if self.tree.visible_items != []:
             print "device active ,set state 2"
@@ -172,34 +163,6 @@ class WiredDevice(object):
         self.wire.set_active(True)
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
-        #index = self.wired_devices.index(widget)
-        #i = 0
-
-        #if reason == 0:
-        #    return
-
-        #if self.tree.visible_items != []:
-        #    print "wired_device_deactive"
-        #    for device in self.wired_devices:
-        #        if i == index:
-        #            print i
-        #            print device.get_state()
-        #            if device.get_state() == "":
-        #                print "set state 0"
-        #                self.tree.visible_items[index].set_net_state(0)
-        #            else:
-        #                print "set state 2"
-        #                self.tree.visible_items[index].set_net_state(2)
-        #        i += 1
-        #        
-        #    for item in self.tree.visible_items:
-        #        if item.get_net_state() > 0:
-        #            return
-        #    
-        #    if net_manager.get_wired_state() == None:
-        #        self.wire.set_active(False)
-        #if len(self.tree.visible_items) > len(net_manager.wired_devices):
-            #print "in fact there had device removed"
         if reason == 36:
             print "in fact there had device removed"
         ########################
@@ -221,11 +184,6 @@ class WiredDevice(object):
             self.wire.set_active(False)
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
-        #for item in self.tree.visible_items:
-        #    print "wired device unavailable"
-        #    if item.get_net_state() > 0:
-        #        return
-        #self.wire.set_active(False)
         self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
@@ -246,7 +204,6 @@ class WiredSection(Section, WiredDevice):
 
     def __init__(self):
         Section.__init__(self)
-        WiredDevice.__init__(self)
         self.wire = Contain(app_theme.get_pixbuf("network/cable.png"), _("Wired"), lambda w:w)
         self.load(self.wire, [])
     
@@ -273,10 +230,6 @@ class WiredSection(Section, WiredDevice):
     
     def get_state(self, devices):
         return any([d.get_state() == 100 for d in devices])
-        #for d in devices:
-        #    if d.get_state() == 100:
-        #        return True
-        #return False
     
     def device_added(self, widget, device):
         print "device added cb"
@@ -331,11 +284,12 @@ class WirelessDevice(object):
             map(lambda (i, s): self.tree.visible_items[i].set_net_state(2), index)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
-        print widget, widget.get_state()
+        log.info(__name__, widget, widget.get_state())
         if widget not in net_manager.device_manager.wireless_devices:
             return
         #self.wireless.set_sensitive(True)
         if reason == 36:
+            log.info(__name__, "some device removed")
             net_manager.init_devices()
             self.remove_switcher() 
             return 
@@ -351,15 +305,6 @@ class WirelessDevice(object):
 
                 self.wireless.set_active(False)
                 return
-            #if self.hotspot.get_net_state() == 1:
-            #if self._get_active_item():
-                #for item in self._get_active_item():
-                    #item.set_net_state(0)
-                #return
-
-            # toggle off
-            #self.toggle_lock = True
-            #self.wireless.set_active(False)
 
         if self._get_active_item():
             for item in self._get_active_item():
@@ -369,7 +314,6 @@ class WirelessDevice(object):
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
             return
-
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         print widget, widget.get_state()

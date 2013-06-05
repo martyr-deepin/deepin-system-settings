@@ -74,16 +74,16 @@ class IPV4Conf(gtk.VBox):
         #ip_switch.connect("toggled", self.manual_ip_entry)
         self.show_all()
 
-        if type(self.connection) is NMRemoteConnection:
-            print "in ipv set apply true"
-            Dispatcher.set_button("apply", True)
-        else:
-            if self.connection.check_setting_finish():
-                print "in ipv setting finish"
-                Dispatcher.set_button("save", True)
-            else:
-                print "in ipv setting not finish"
-                Dispatcher.set_button("save", False)
+        #if type(self.connection) is NMRemoteConnection:
+            #print "in ipv set apply true"
+            #Dispatcher.set_button("apply", True)
+        #else:
+            #if self.connection.check_setting_finish():
+                #print "in ipv setting finish"
+                #Dispatcher.set_button("save", True)
+            #else:
+                #print "in ipv setting not finish"
+                #Dispatcher.set_button("save", False)
 
     def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
@@ -381,13 +381,13 @@ class IPV6Conf(gtk.VBox):
         self.pack_start(self.dns_section, False, False)
         self.reset(connection)
 
-        if type(self.connection) is NMRemoteConnection:
-            Dispatcher.set_button("apply", True)
-        else:
-            if self.connection.check_setting_finish():
-                Dispatcher.set_button("save", True)
-            else:
-                Dispatcher.set_button("save", False)
+        #if type(self.connection) is NMRemoteConnection:
+            #Dispatcher.set_button("apply", True)
+        #else:
+            #if self.connection.check_setting_finish():
+                #Dispatcher.set_button("save", True)
+            #else:
+                #Dispatcher.set_button("save", False)
 
     def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
@@ -395,10 +395,10 @@ class IPV6Conf(gtk.VBox):
                                enable_double_click=False)
         entry = InputEntry()
         if types == "ip":
-            print "ip row changed"
+            #print "ip row changed"
             entry.entry.connect("changed", self.set_ip_address, arg)
         else:
-            print "dns row changed"
+            #print "dns row changed"
             entry.entry.connect("changed", self.set_dns_address, arg)
         entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 

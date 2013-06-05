@@ -40,6 +40,8 @@ BG_COLOR = color_hex_to_cairo(TREEVIEW_BG_COLOR)
 import threading as td
 import time
 from math import radians
+
+from dss_log import log
 class EntryTreeView(TreeView):
     __gsignals__ = {
         "select"  : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (gobject.GObject, int)),
@@ -526,10 +528,7 @@ class SettingItem(TreeItem):
     
     def set_connection_name(self, text):
         self.connection.get_setting("connection").id = text
-        #if self.set_button:
-        #Dispatcher.set_button("save", True)
-        # connection的settings_obj属性在shared_methods的init_items里被设置
-        print "set_connection_name:", text, self.connection.settings_obj
+        log.debug(text)
         if hasattr(self.connection, "settings_obj"):
             self.connection.settings_obj.set_button("save", True)
 

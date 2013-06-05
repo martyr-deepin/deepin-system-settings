@@ -22,8 +22,6 @@
 import gobject
 
 from nmlib.nm_dispatcher import nm_events as event_manager                                          
-print event_manager, "in main"
-#event_manager = EventManager(use_logger=False)
 
 int = gobject.TYPE_INT
 obj = gobject.TYPE_PYOBJECT
@@ -115,7 +113,7 @@ class EventDispatcher(gobject.GObject):
         #self.emit("connection-change", new_connection)
 
     def set_button(self, content, state):
-        print "emit button change", content, state
+        #print "emit button change", content, state
         self.emit("button-change", content, state)
 
     def set_tip(self, content):
@@ -160,6 +158,9 @@ class EventDispatcher(gobject.GObject):
         pass
 
     def to_setting_page(self, module, hide_left=False):
+        '''
+        receiver main Network
+        '''
         self.emit('to-setting-page', module, hide_left)
 
     def load_module_frame(self, module_frame):

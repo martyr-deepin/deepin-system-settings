@@ -226,10 +226,10 @@ class NMDevice(NMObject):
             return
         else:
             if self.is_dsl:
-                print "Debug[nmdevice]+ dsl", args, self.state_id
+                #print "Debug[nmdevice]+ dsl", args, self.state_id
                 nm_events.emit("dsl-" + args[0], args[1:])
             else:
-                print "Debug[nmdevice]", args, self.state_id
+                #print "Debug[nmdevice]", args, self.state_id
                 self.emit(*args)
             if args[1] != 100 and args[1] != 40:
                 self.is_dsl = False
@@ -252,7 +252,10 @@ class NMDevice(NMObject):
             #if dsl_flag:
                 #self.emit_in_time("active-start", new_state, old_state, reason)
                 #return
-            self.is_dsl = self.get_real_active_connection().get_setting('connection').type == 'pppoe'
+            try:
+                self.is_dsl = self.get_real_active_connection().get_setting('connection').type == 'pppoe'
+            except:
+                self.is_dsl = False
             self.emit_in_time("activate-start", new_state, old_state, reason)
             return 
 

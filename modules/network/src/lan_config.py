@@ -26,15 +26,16 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 from ipsettings import IPV4Conf, IPV6Conf
 from elements import SettingSection, TableAsm
 import gtk
-wired_device = []
 
 from shared_methods import Settings, net_manager
 from helper import Dispatcher, event_manager
 from nls import _
+wired_device = []
+from dss_log import log
 
 class WiredSetting(Settings):
     def __init__(self, device, spec_connection=None):
-        Settings.__init__(self,[Wired, Sections, IPV6Conf])
+        Settings.__init__(self, Sections)
         self.crumb_name = _("Wired")
         self.device = device
         self.spec_connection = spec_connection
@@ -61,7 +62,7 @@ class WiredSetting(Settings):
             self.set_button("apply", True)
             Dispatcher.to_main_page()
         else:
-            print "not complete"
+            raise "not complete"
 
     def apply_changes(self, connection):
         wired_device = net_manager.device_manager.get_wired_devices()[0]
@@ -84,7 +85,6 @@ class Sections(gtk.Alignment):
         self.settings_obj = settings_obj
 
         self.main_box = gtk.VBox()
-        self.tab_name = "sfds"
 
         basic = SettingSection(_("Wired"), always_show=True)
         button = Button(_("Advanced"))
@@ -97,7 +97,6 @@ class Sections(gtk.Alignment):
         basic.load([Wired(self.connection, self.set_button, settings_obj), align])
         self.main_box.pack_start(basic, False, False)
         self.add(self.main_box)
-        # align.add(self.button)
         
     def show_more_options(self, widget):
         widget.destroy()
@@ -136,8 +135,8 @@ class Wired(gtk.VBox):
             self.mtu_spin.set_value(int(mtu))
         
         # check valid for nmconnection init
-        if not type(self.connection) == NMRemoteConnection:
-            self.save_settings(None, None, None)
+        #if not type(self.connection) == NMRemoteConnection:
+            #self.save_settings(None, None, None)
 
     def __init_table(self):
         self.table = TableAsm()

@@ -87,7 +87,6 @@ class NMVpnConnection(NMActiveConnection):
         elif state == 7:
             nm_events.emit('vpn-user-disconnect', self.object_path)
         else:
-            #self.emit("vpn-disconnected")
             nm_events.emit('vpn-disconnected', self.object_path)
             
 

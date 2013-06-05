@@ -16,6 +16,8 @@ from helper import Dispatcher
 from nm_modules import nm_module
 from main_ui import Network
 from nls import _
+from dss_log import log
+
 slider = nm_module.slider
 
 def start_ui(network):

@@ -8,6 +8,8 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 from deepin_utils.ipc import is_dbus_name_exists
 import dbus
 
+from dss_log import log
+
 
 
 DEVICE_UNAVAILABLE = 0
@@ -321,9 +323,9 @@ class NetManager(object):
 net_manager = NetManager()
 
 class Settings(object):
-    def __init__(self, setting_list):
-        self.setting_list = setting_list 
-        #print "Settings:", setting_list
+    def __init__(self, section):
+        self.section = section 
+        #print "Settings:", section
         self.setting_state = {}
         self.settings = {}
         self.setting_lock = {}
@@ -350,13 +352,10 @@ class Settings(object):
         if connection not in self.settings:
             self.setting_lock[connection] = True
             #self.init_button_state(connection)
-            setting_list = []
-            for setting in self.setting_list:
                 # 新增了settings_obj参数，方便访问xxx_is_valid变量
-                s = setting(connection, self.set_button, settings_obj=self)
-                setting_list.append((s.tab_name, s))
-            self.settings[connection] = setting_list
-        return self.settings[connection][0][1]
+            s = self.section(connection, self.set_button, settings_obj=self)
+            self.settings[connection] = s
+        return self.settings[connection]
 
     #################
     def set_button(self, name, state):
@@ -365,6 +364,7 @@ class Settings(object):
         #print "wlan dsl ppp vpn", self.wlan_encry_is_valid, self.dsl_is_valid, self.ppp_is_valid, self.vpn_is_valid
         #print "-"*15
         # 输入合法性检查，再统一设置按钮状态
+        #log.debug("someone set button", name, state)
         if self.mac_is_valid and \
                 self.ipv4_ip_is_valid and \
                 self.ipv4_dns_is_valid and \
@@ -394,16 +394,22 @@ class Settings(object):
 
     def init_button_state(self, connection):
         if isinstance(connection, NMRemoteConnection):
-            self.set_button("apply", True)
+            Dispatcher.set_button("save", False)
         else:
-            self.set_button("save", False)
+            if connection.check_setting_finish():
+                Dispatcher.set_button("save", True)
+            else:
+                Dispatcher.set_button("save", False)
 
-    def get_button_state(self):
-        #if connection in self.setting_state.iterkeys():
+    def get_button_state(self, connection):
         try:
-            return self.setting_state[self.connection]
+            return self.setting_state[connection]
         except:
+            log.warn("no button state for this connection, will init one")
+            self.init_button_state(connection)
             return None
+
+
 
     def apply_changes(self):
         pass

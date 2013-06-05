@@ -35,7 +35,9 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 import style
 from nls import _
 from shared_methods import Settings, net_manager
-from helper import Dispatcher, event_manager
+from helper import Dispatcher
+
+from dss_log import log
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -49,16 +51,17 @@ def check_settings(connection, fn):
 
 class WirelessSetting(Settings):
     def __init__(self, ap, spec_connection=None):
-        Settings.__init__(self,[Security,
+        Settings.__init__(self,[
                                 Sections,
-                                IPV4Conf,
-                                IPV6Conf],)
+                                #IPV4Conf,
+                                #IPV6Conf],
+                                ])
         if ap:
             self.crumb_name = ap.get_ssid()
         else:
             self.crumb_name = ""
         self.spec_connection = spec_connection
-        event_manager.emit("update-delete-button", False)
+        #event_manager.emit("update-delete-button", False)
 
     def get_ssid(self):
         return self.connections.get_setting("802-11-wireless").ssid
@@ -176,8 +179,9 @@ class Sections(gtk.Alignment):
         self.settings_obj = settings_obj
 
         self.main_box = gtk.VBox()
-        self.tab_name = "sfds"
+        self.tab_name = ""
         basic = SettingSection(_("Basic"))
+        log.debug("start section")
 
         if need_ssid:
             security = Security(connection, set_button, need_ssid, settings_obj=settings_obj)
@@ -185,8 +189,6 @@ class Sections(gtk.Alignment):
             security = Security(connection, set_button, settings_obj=settings_obj)
         security.button.connect("clicked", self.show_more_options)
         basic.load([security])
-
-
         self.main_box.pack_start(basic, False, False)
 
         self.add(self.main_box)
@@ -215,8 +217,9 @@ class Security(gtk.VBox):
         self.settings_obj = settings_obj
 
         self.need_ssid = need_ssid
-
-        self.add_ssid_entry()
+        
+        if self.need_ssid:
+            self.add_ssid_entry()
         
         if self.connection.get_setting("802-11-wireless").security == "802-11-wireless-security":
             self.has_security = True

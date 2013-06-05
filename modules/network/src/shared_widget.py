@@ -110,15 +110,15 @@ class IPV4Conf(gtk.VBox):
         self.auto_ip.connect("toggled", self.get_ip_addr)
         self.auto_dns.connect("toggled", self.dns_set)
 
-        if type(self.connection) is NMRemoteConnection:
-            Dispatcher.set_button("apply", True)
-        else:
-            if self.connection.check_setting_finish():
-                print "in ipv"
-                Dispatcher.set_button("save", True)
-            else:
-                print "in ipv"
-                Dispatcher.set_button("save", False)
+        #if type(self.connection) is NMRemoteConnection:
+            #Dispatcher.set_button("apply", True)
+        #else:
+            #if self.connection.check_setting_finish():
+                #print "in ipv"
+                #Dispatcher.set_button("save", True)
+            #else:
+                #print "in ipv"
+                #Dispatcher.set_button("save", False)
 
 
     def reset(self, connection):
@@ -389,13 +389,13 @@ class IPV6Conf(gtk.VBox):
         self.auto_ip.connect("toggled", self.get_ip_addr)
         self.auto_dns.connect("toggled", self.dns_set)
 
-        if type(self.connection) is NMRemoteConnection:
-            Dispatcher.set_button("apply", True)
-        else:
-            if self.connection.check_setting_finish():
-                Dispatcher.set_button("save", True)
-            else:
-                Dispatcher.set_button("save", False)
+        #if type(self.connection) is NMRemoteConnection:
+            #Dispatcher.set_button("apply", True)
+        #else:
+            #if self.connection.check_setting_finish():
+                #Dispatcher.set_button("save", True)
+            #else:
+                #Dispatcher.set_button("save", False)
 
     def reset_table(self):
         container_remove_all(self.table)

@@ -183,7 +183,7 @@ class NMDeviceWifi(NMDevice):
 
         nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         connections = nm_remote_settings.get_ssid_associate_connections(ssid)
-        print connections, "active ssid connection"
+        #print connections, "active ssid connection"
         if connections:
             conn = sorted(connections, key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])), 
                     reverse = True)[0]
