@@ -29,7 +29,7 @@ if __name__ == '__main__':
     gui = Gui()
     action = {
         #'switch': (None, None),
-        'logout': (gui.cmd_dbus.logout, 1),
+        'logout': (gui.cmd_dbus.logout, 2),
         'suspend': (gui.cmd_dbus.suspend, None),
         #'hibernate': (None, None),
         'shutdown': (gui.cmd_dbus.new_stop, None),
