@@ -45,9 +45,9 @@ class NetManager(object):
             bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-start", path),
                                     dbus_interface = "com.deepin.network",
                                     signal_name="VpnStart")
-            bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-setting-change", path),
-                                    dbus_interface = "com.deepin.network",
-                                    signal_name="VpnSettingChange")
+            #bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-setting-change", path),
+                                    #dbus_interface = "com.deepin.network",
+                                    #signal_name="VpnSettingChange")
 
         else:
             pass
@@ -144,13 +144,7 @@ class NetManager(object):
             #    else:
             #        return (True, False)
 
-    def active_wired_device(self,  actived_cb):
-        #wired_devices = nm_module.nmclient.get_wired_devices()
-        #device = wired_devices[0]
-
-        #def device_is_active( widget, reason):
-            #actived_cb()
-        #device.connect("device-active", device_is_active)
+    def active_wired_device(self):
         self.wired_devices = self.device_manager.get_wired_devices()
         for device in self.wired_devices:
             if not device.is_active():
@@ -161,13 +155,7 @@ class NetManager(object):
                 device_ethernet = nm_module.cache.get_spec_object(device.object_path)
                 device_ethernet.auto_connect()
 
-    def disactive_wired_device(self, disactived_cb):
-        #wired_devices = nm_module.nmclient.get_wired_devices()
-        #device = wired_devices[0]
-
-        #def device_is_disactive( widget, reason):
-            #disactived_cb()
-        #device.connect("device-deactive", device_is_disactive)
+    def disactive_wired_device(self):
         self.wired_devices = self.device_manager.get_wired_devices()
         for device in self.wired_devices:
             wired = nm_module.cache.get_spec_object(device.object_path)
@@ -225,7 +213,7 @@ class NetManager(object):
             self.wireless_device = device
             active_connection = self.wireless_device.get_active_connection()
             if active_connection:
-                print active_connection.get_state(), "Debug in get active connection"
+                #print active_connection.get_state(), "Debug in get active connection"
                 try:
                     ssid = active_connection.get_connection().get_setting("802-11-wireless").ssid
                     index.append([ap.get_ssid() for ap in ap_list].index(ssid))
@@ -266,7 +254,7 @@ class NetManager(object):
         device_wifi = nm_module.cache.get_spec_object(device.object_path)
         device_wifi.auto_connect()
 
-    def disactive_wireless_device(self, disactived_cb):
+    def disactive_wireless_device(self):
         self.wireless_devices = self.device_manager.get_wireless_devices()
         for device in self.wireless_devices:
             wifi = nm_module.cache.get_spec_object(device.object_path)
@@ -368,7 +356,7 @@ class Settings(object):
                 s = setting(connection, self.set_button, settings_obj=self)
                 setting_list.append((s.tab_name, s))
             self.settings[connection] = setting_list
-        return self.settings[connection][1][1]
+        return self.settings[connection][0][1]
 
     #################
     def set_button(self, name, state):
