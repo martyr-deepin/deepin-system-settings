@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-31 16:07+0800\n"
+"POT-Creation-Date: 2013-06-05 10:37+0800\n"
 "PO-Revision-Date: 2013-01-17 10:16+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,18 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../dss/foot_box.py:57
+msgid "Reset"
+msgstr "恢复默认"
+
+#: ../dss/main.py:337 ../dss/action_bar.py:101
+msgid "System Settings"
+msgstr "系统设置"
+
+#: ../dss/main.py:451
+msgid "Deepin System Settings"
+msgstr "系统设置"
 
 #: ../dss/navigate_page.py:134
 msgid "10"
@@ -33,15 +45,3 @@ msgstr "已发送"
 #: ../dss/bluetooth_dialog.py:112
 msgid "Ok"
 msgstr "确定"
-
-#: ../dss/main.py:337 ../dss/action_bar.py:101
-msgid "System Settings"
-msgstr "系统设置"
-
-#: ../dss/main.py:451
-msgid "Deepin System Settings"
-msgstr "系统设置"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "恢复默认"

@@ -64,7 +64,7 @@ class SideBar(gtk.VBox):
         '''
         self.network_object = network_object
         self.connections = self.network_object.get_connections()
-        print self.connections, "load_list"
+        #print self.connections, "load_list"
         connections = []
         for connection in self.connections:
             if isinstance(connection, NMRemoteConnection):
@@ -91,7 +91,7 @@ class SideBar(gtk.VBox):
 
     def __init_tree(self, items_list, insert_pos=None):
         if items_list and items_list != [None, -1]:
-            print items_list, "__init_tree"
+            #print items_list, "__init_tree"
             container_remove_all(self.buttonbox)
             self.connection_tree.add_items(map(lambda c: SettingItem(c, None), items_list), insert_pos=insert_pos)
             self.buttonbox.pack_start(self.connection_tree, False, False)
@@ -102,7 +102,7 @@ class SideBar(gtk.VBox):
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
             if hasattr(self.network_object, "delete_request_redraw"):
-                print "redraw"
+                #print "redraw"
                 self.network_object.delete_request_redraw()
         else:
             index = self.connections.index(connection)

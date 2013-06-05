@@ -22,7 +22,7 @@
 import gobject
 
 from nmlib.nm_dispatcher import nm_events as event_manager                                          
-print event_manager, "in main"
+#print event_manager, "in main"
 #event_manager = EventManager(use_logger=False)
 
 int = gobject.TYPE_INT
@@ -115,7 +115,7 @@ class EventDispatcher(gobject.GObject):
         #self.emit("connection-change", new_connection)
 
     def set_button(self, content, state):
-        print "emit button change", content, state
+        #print "emit button change", content, state
         self.emit("button-change", content, state)
 
     def set_tip(self, content):

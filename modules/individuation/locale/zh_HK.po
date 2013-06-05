@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-31 15:46+0800\n"
+"POT-Creation-Date: 2013-06-05 10:41+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -49,44 +49,16 @@ msgstr ""
 msgid "Picture"
 msgstr ""
 
-#: ../src/theme_manager.py:412
+#: ../src/theme_manager.py:420
 msgid "Untitled"
 msgstr ""
 
-#: ../src/ui/theme_view.py:94 ../src/ui/theme_view.py:111
-#, python-format
-msgid "Changed User Theme to %s"
+#: ../src/ui/wallpaper_view.py:57
+msgid "Apply Wallpaper"
 msgstr ""
 
-#: ../src/ui/theme_view.py:130 ../src/ui/theme_view.py:256
-msgid "Theme Save As"
-msgstr ""
-
-#: ../src/ui/theme_view.py:135
-msgid "Theme ReName"
-msgstr ""
-
-#: ../src/ui/theme_view.py:139 ../src/ui/theme_view.py:156
-msgid "Delete Theme"
-msgstr ""
-
-#: ../src/ui/theme_view.py:140
-#, python-format
-msgid "Are you sure delete %s theme?"
-msgstr ""
-
-#: ../src/ui/theme_view.py:150 ../src/ui/theme_view.py:154
-#: ../src/ui/theme_view.py:260
-msgid "Save As"
-msgstr ""
-
-#: ../src/ui/theme_view.py:153
-msgid "ReName"
-msgstr ""
-
-#: ../src/ui/theme_view.py:232 ../src/ui/theme_view.py:241
-#, python-format
-msgid "Changed System Theme to %s"
+#: ../src/ui/wallpaper_item.py:1027
+msgid "downloaded"
 msgstr ""
 
 #: ../src/ui/select_page.py:192 ../src/ui/select_page.py:248
@@ -100,11 +72,11 @@ msgstr ""
 #: ../src/ui/select_page.py:274 ../src/ui/select_page.py:292
 #: ../src/ui/select_page.py:309 ../src/ui/select_page.py:336
 #: ../src/ui/select_page.py:350 ../src/ui/select_page.py:354
-#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
-#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
 #: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
 #: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
-#: ../src/ui/detail_page.py:194
+#: ../src/ui/detail_page.py:194 ../src/ui/delete_page.py:58
+#: ../src/ui/delete_page.py:81 ../src/ui/delete_page.py:89
+#: ../src/ui/delete_page.py:116
 msgid "Select All"
 msgstr ""
 
@@ -116,9 +88,9 @@ msgstr ""
 #: ../src/ui/select_page.py:221 ../src/ui/select_page.py:229
 #: ../src/ui/select_page.py:272 ../src/ui/select_page.py:290
 #: ../src/ui/select_page.py:334 ../src/ui/select_page.py:348
-#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
 #: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
 #: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
+#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
 msgid "UnSelect All"
 msgstr ""
 
@@ -126,49 +98,13 @@ msgstr ""
 msgid "Please copy some pictures under Pictures"
 msgstr ""
 
-#: ../src/ui/select_page.py:311 ../src/ui/delete_page.py:61
-#: ../src/ui/detail_page.py:88
+#: ../src/ui/select_page.py:311 ../src/ui/detail_page.py:88
+#: ../src/ui/delete_page.py:61
 msgid "Delete"
 msgstr ""
 
 #: ../src/ui/select_page.py:358 ../src/ui/delete_page.py:98
 msgid "Are you sure delete wallpaper?"
-msgstr ""
-
-#: ../src/ui/wallpaper_view.py:57
-msgid "Apply Wallpaper"
-msgstr ""
-
-#: ../src/ui/add_page.py:79
-msgid "Library"
-msgstr ""
-
-#: ../src/ui/add_page.py:80
-msgid "From Internet"
-msgstr ""
-
-#: ../src/ui/add_page.py:84
-msgid "System"
-msgstr ""
-
-#: ../src/ui/add_page.py:86
-msgid "My Favorite"
-msgstr ""
-
-#: ../src/ui/add_page.py:87
-msgid "360 Wallpaper"
-msgstr ""
-
-#: ../src/ui/add_page.py:88
-msgid "LoveWallpaper"
-msgstr ""
-
-#: ../src/ui/cache_page.py:133
-msgid "Download All"
-msgstr ""
-
-#: ../src/ui/wallpaper_item.py:1027
-msgid "downloaded"
 msgstr ""
 
 #: ../src/ui/detail_page.py:37
@@ -207,4 +143,68 @@ msgstr ""
 
 #: ../src/ui/detail_page.py:80
 msgid "Random"
+msgstr ""
+
+#: ../src/ui/theme_view.py:94 ../src/ui/theme_view.py:111
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr ""
+
+#: ../src/ui/theme_view.py:130 ../src/ui/theme_view.py:256
+msgid "Theme Save As"
+msgstr ""
+
+#: ../src/ui/theme_view.py:135
+msgid "Theme ReName"
+msgstr ""
+
+#: ../src/ui/theme_view.py:139 ../src/ui/theme_view.py:156
+msgid "Delete Theme"
+msgstr ""
+
+#: ../src/ui/theme_view.py:140
+#, python-format
+msgid "Are you sure delete %s theme?"
+msgstr ""
+
+#: ../src/ui/theme_view.py:150 ../src/ui/theme_view.py:154
+#: ../src/ui/theme_view.py:260
+msgid "Save As"
+msgstr ""
+
+#: ../src/ui/theme_view.py:153
+msgid "ReName"
+msgstr ""
+
+#: ../src/ui/theme_view.py:232 ../src/ui/theme_view.py:241
+#, python-format
+msgid "Changed System Theme to %s"
+msgstr ""
+
+#: ../src/ui/cache_page.py:133
+msgid "Download All"
+msgstr ""
+
+#: ../src/ui/add_page.py:79
+msgid "Library"
+msgstr ""
+
+#: ../src/ui/add_page.py:80
+msgid "From Internet"
+msgstr ""
+
+#: ../src/ui/add_page.py:84
+msgid "System"
+msgstr ""
+
+#: ../src/ui/add_page.py:86
+msgid "My Favorite"
+msgstr ""
+
+#: ../src/ui/add_page.py:87
+msgid "360 Wallpaper"
+msgstr ""
+
+#: ../src/ui/add_page.py:88
+msgid "LoveWallpaper"
 msgstr ""

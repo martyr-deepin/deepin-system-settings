@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-07 21:15+0800\n"
+"POT-Creation-Date: 2013-06-05 10:42+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,44 +16,60 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_bluetooth_plugin.py:173
+#: ../src/tray_bluetooth_plugin.py:177
 msgid "Adapter"
 msgstr "介面卡"
 
-#: ../src/tray_bluetooth_plugin.py:201
+#: ../src/tray_bluetooth_plugin.py:209
 msgid "Advanced option..."
 msgstr "進階選項..."
 
-#: ../src/bluetooth_view.py:84
+#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:407
+msgid "Bluetooth Get Powered"
+msgstr "藍牙是否啟用"
+
+#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:427
+msgid "Device Shown Name"
+msgstr "顯示裝置名稱"
+
+#: ../src/search_keyword.py:31
+msgid "Be Searchedable"
+msgstr "可被搜尋"
+
+#: ../src/search_keyword.py:32
+msgid "Searching Device Timeout"
+msgstr "搜尋裝置逾時"
+
+#: ../src/bluetooth_view.py:83
 msgid "Pair"
 msgstr "配對"
 
-#: ../src/bluetooth_view.py:86
+#: ../src/bluetooth_view.py:85
 msgid "Send File"
 msgstr "傳送檔案"
 
-#: ../src/bluetooth_view.py:88
+#: ../src/bluetooth_view.py:87
 msgid "Remove Device"
 msgstr "移除裝置"
 
-#: ../src/bluetooth_view.py:275
+#: ../src/bluetooth_view.py:274
 msgid "Pair Failed!"
 msgstr "配對失敗"
 
-#: ../src/bluetooth_view.py:285
+#: ../src/bluetooth_view.py:284
 #, python-format
 msgid "Please confirm %s pin match as below"
 msgstr "請確認裝置 %s 上顯示的 PIN 與下面的相符"
 
-#: ../src/bluetooth_view.py:286
+#: ../src/bluetooth_view.py:285
 msgid "Yes"
 msgstr "是"
 
-#: ../src/bluetooth_view.py:287
+#: ../src/bluetooth_view.py:286
 msgid "No"
 msgstr "否"
 
-#: ../src/bluetooth_view.py:362
+#: ../src/bluetooth_view.py:363 ../src/bluetooth_view.py:368
 #, python-format
 msgid "in %d seconds"
 msgstr "在 %d 秒內"
@@ -62,14 +78,6 @@ msgstr "在 %d 秒內"
 #: ../src/bluetooth_view.py:403
 msgid "Bluetooth"
 msgstr "藍牙"
-
-#: ../src/bluetooth_view.py:407 ../src/search_keyword.py:29
-msgid "Bluetooth Get Powered"
-msgstr "藍牙是否啟用"
-
-#: ../src/bluetooth_view.py:427 ../src/search_keyword.py:30
-msgid "Device Shown Name"
-msgstr "顯示裝置名稱"
 
 #: ../src/bluetooth_view.py:445
 msgid "Be Discoverable"
@@ -100,11 +108,3 @@ msgstr "傳送成功！"
 #: ../src/bluetooth_sender.py:114
 msgid "Select File"
 msgstr "選擇檔案"
-
-#: ../src/search_keyword.py:31
-msgid "Be Searchedable"
-msgstr "可被搜尋"
-
-#: ../src/search_keyword.py:32
-msgid "Searching Device Timeout"
-msgstr "搜尋裝置逾時"
