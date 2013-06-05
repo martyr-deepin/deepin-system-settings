@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-31 16:58+0800\n"
+"POT-Creation-Date: 2013-06-04 16:20+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -15,6 +15,137 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/search_keyword.py:29 ../src/power_view.py:73
+msgid "Power Button Configuration"
+msgstr ""
+
+#: ../src/search_keyword.py:30 ../src/power_view.py:81
+msgid "Press Power Button"
+msgstr ""
+
+#: ../src/search_keyword.py:31 ../src/power_view.py:93
+msgid "Close Notebook Cover"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Press Hibernate Button"
+msgstr ""
+
+#: ../src/search_keyword.py:33 ../src/power_view.py:106
+msgid "Saving Power Configuration"
+msgstr ""
+
+#: ../src/search_keyword.py:34
+msgid "Being Hibernate"
+msgstr ""
+
+#: ../src/search_keyword.py:35
+msgid "Close Harddisk"
+msgstr ""
+
+#: ../src/search_keyword.py:36 ../src/power_view.py:126
+msgid "Close Monitor"
+msgstr ""
+
+#: ../src/search_keyword.py:37 ../src/power_view.py:167
+msgid "Password Protection Wakeup"
+msgstr ""
+
+#: ../src/search_keyword.py:38
+msgid "Show Battery Status In The Tray"
+msgstr ""
+
+#: ../src/tray_dialog.py:43
+msgid "Cancel"
+msgstr ""
+
+#: ../src/tray_dialog.py:44
+msgid "OK"
+msgstr ""
+
+#: ../src/tray_dialog.py:46
+msgid "<span foreground='#FF0000'>Turn off</span> your computer now?,12"
+msgstr ""
+
+#: ../src/tray_dialog.py:48
+#, python-format
+msgid ""
+"The system will shutdown in \n"
+"%s secs.,12"
+msgstr ""
+
+#: ../src/tray_dialog.py:50
+msgid "WenQuanYi Micro Hei Bold"
+msgstr ""
+
+#: ../src/tray_dialog.py:389
+msgid "A program is still running:"
+msgstr ""
+
+#: ../src/tray_dialog.py:390
+msgid ""
+"Waiting for programs to finish.  Interrupting these programs may cause you "
+"to lose work."
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:93
+msgid "Switch user"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:96 ../src/power_view.py:61
+msgid "Shutdown"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:99
+msgid "Restart"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:102 ../src/power_view.py:60
+#: ../src/power_view.py:138
+msgid "Suspend"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:105
+msgid "Logout"
+msgstr ""
+
+#: ../src/tray_shutdown_gui.py:108
+msgid "Lock"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:46
+msgid "<span foreground='#FF0000'>Restart</span> your computer now?,12"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:48
+#, python-format
+msgid ""
+"The system will restart in \n"
+"%s secs.,12"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:50
+msgid "<span foreground='#FF0000'>Suspend</span> your computer now?,12"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:52
+#, python-format
+msgid ""
+"The system will suspend in \n"
+"%s secs.,12"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:53
+msgid "<span foreground='#FF0000'>Logout</span> your computer now?,12"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:54
+#, python-format
+msgid ""
+"The system will Logout in \n"
+"%s secs.,12"
+msgstr ""
 
 #: ../src/power_view.py:50
 msgid "Minute"
@@ -36,15 +167,6 @@ msgstr ""
 msgid "Nothing"
 msgstr ""
 
-#: ../src/power_view.py:60 ../src/power_view.py:138
-#: ../src/tray_shutdown_gui.py:102
-msgid "Suspend"
-msgstr ""
-
-#: ../src/power_view.py:61 ../src/tray_shutdown_gui.py:96
-msgid "Shutdown"
-msgstr ""
-
 #: ../src/power_view.py:63
 msgid "Balance"
 msgstr ""
@@ -61,36 +183,12 @@ msgstr ""
 msgid "Customized"
 msgstr ""
 
-#: ../src/power_view.py:73 ../src/search_keyword.py:29
-msgid "Power Button Configuration"
-msgstr ""
-
-#: ../src/power_view.py:81 ../src/search_keyword.py:30
-msgid "Press Power Button"
-msgstr ""
-
-#: ../src/power_view.py:93 ../src/search_keyword.py:31
-msgid "Close Notebook Cover"
-msgstr ""
-
-#: ../src/power_view.py:106 ../src/search_keyword.py:33
-msgid "Saving Power Configuration"
-msgstr ""
-
 #: ../src/power_view.py:112
 msgid "Power Plan"
 msgstr ""
 
-#: ../src/power_view.py:126 ../src/search_keyword.py:36
-msgid "Close Monitor"
-msgstr ""
-
 #: ../src/power_view.py:151
 msgid "Current Battery"
-msgstr ""
-
-#: ../src/power_view.py:167 ../src/search_keyword.py:37
-msgid "Password Protection Wakeup"
 msgstr ""
 
 #: ../src/power_view.py:190
@@ -140,92 +238,4 @@ msgstr ""
 
 #: ../src/power_view.py:419
 msgid "Changed to Hide Battery Status In Tray"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Press Hibernate Button"
-msgstr ""
-
-#: ../src/search_keyword.py:34
-msgid "Being Hibernate"
-msgstr ""
-
-#: ../src/search_keyword.py:35
-msgid "Close Harddisk"
-msgstr ""
-
-#: ../src/search_keyword.py:38
-msgid "Show Battery Status In The Tray"
-msgstr ""
-
-#: ../src/tray_shutdown_gui.py:93
-msgid "Switch user"
-msgstr ""
-
-#: ../src/tray_shutdown_gui.py:99
-msgid "Restart"
-msgstr ""
-
-#: ../src/tray_shutdown_gui.py:105
-msgid "Logout"
-msgstr ""
-
-#: ../src/tray_shutdown_gui.py:108
-msgid "Lock"
-msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:46
-msgid "<span foreground='#FF0000'>Restart</span> your computer now?,12"
-msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:48
-#, python-format
-msgid ""
-"The system will restart in \n"
-"%s secs.,12"
-msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:50
-msgid "<span foreground='#FF0000'>Suspend</span> your computer now?,12"
-msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:52
-#, python-format
-msgid ""
-"The system will suspend in \n"
-"%s secs.,12"
-msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:53
-msgid "<span foreground='#FF0000'>Logout</span> your computer now?,12"
-msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:54
-#, python-format
-msgid ""
-"The system will Logout in \n"
-"%s secs.,12"
-msgstr ""
-
-#: ../src/tray_dialog.py:39
-msgid "Cancel"
-msgstr ""
-
-#: ../src/tray_dialog.py:40
-msgid "OK"
-msgstr ""
-
-#: ../src/tray_dialog.py:42
-msgid "<span foreground='#FF0000'>Turn off</span> your computer now?,12"
-msgstr ""
-
-#: ../src/tray_dialog.py:44
-#, python-format
-msgid ""
-"The system will shutdown in \n"
-"%s secs.,12"
-msgstr ""
-
-#: ../src/tray_dialog.py:46
-msgid "WenQuanYi Micro Hei Bold"
 msgstr ""

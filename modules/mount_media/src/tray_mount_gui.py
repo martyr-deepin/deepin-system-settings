@@ -156,7 +156,7 @@ class EjecterApp(gobject.GObject):
         self.size_check = False
         self.hbox = gtk.HBox()
         self.title_image = gtk.image_new_from_file(os.path.join(image_path, "image/usb/usb_label.png"))
-        self.title_label = gtk.Label(_("USB Device"))
+        self.title_label = gtk.Label(_("Storage Device"))
         #self.title_label.connect("expose-event", self.title_label_expose_event)
         self.title_label_ali = gtk.Alignment(0, 0, 0, 0)
         self.title_label_ali.set_padding(0, 0, 0, 0)
@@ -174,7 +174,7 @@ class EjecterApp(gobject.GObject):
         self.vbox = gtk.VBox()
         self.vbox.pack_start(self.hbox, False, False)
         self.vbox.pack_start(self.h_separator_ali, True, True)
-        self.vbox.pack_start(self.monitor_vbox, False, False)
+        self.vbox.pack_start(self.monitor_vbox, True, True)
 
         self.monitor = gio.VolumeMonitor()
 

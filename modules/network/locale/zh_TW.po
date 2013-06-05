@@ -388,7 +388,7 @@ msgstr "WEP「104/128-位元」密語"
 
 #: ../src/wlan_config.py:246
 msgid "WPA WPA2 Personal"
-msgstr "WPA & WPA2 個人版"
+msgstr "WPA / WPA2 個人版"
 
 #: ../src/wlan_config.py:257
 msgid "Shared Key"
@@ -501,7 +501,7 @@ msgstr "針對 l2tp 主機啟用 IPSec 穿隧"
 
 #: ../src/vpn_config.py:467
 msgid "Group Name:"
-msgstr ""群組名稱：
+msgstr "群組名稱:"
 
 #: ../src/vpn_config.py:470
 msgid "Gateway ID:"

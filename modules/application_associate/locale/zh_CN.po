@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-03 08:58+0800\n"
+"POT-Creation-Date: 2013-06-05 09:53+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -49,31 +49,31 @@ msgid "Autostart"
 msgstr "开机启动"
 
 #: ../src/app_view.py:42
-msgid "web"
+msgid "Web"
 msgstr "网络"
 
 #: ../src/app_view.py:43
-msgid "mail"
-msgstr "邮件"
+msgid "Mail"
+msgstr ""
 
 #: ../src/app_view.py:44
-msgid "editor"
+msgid "Editor"
 msgstr "文件"
 
 #: ../src/app_view.py:45
-msgid "music"
+msgid "Music"
 msgstr "音乐"
 
 #: ../src/app_view.py:46
-msgid "video"
+msgid "Video"
 msgstr "视频"
 
 #: ../src/app_view.py:47
-msgid "photo"
+msgid "Photo"
 msgstr "图片"
 
 #: ../src/app_view.py:48
-msgid "terminal"
+msgid "Terminal"
 msgstr "终端"
 
 #: ../src/widget.py:44
@@ -117,15 +117,15 @@ msgid "DVD"
 msgstr "DVD视频"
 
 #: ../src/media_view.py:55
-msgid "music player"
+msgid "Music Player"
 msgstr "音乐播放器"
 
 #: ../src/media_view.py:56
-msgid "camera"
+msgid "Camera"
 msgstr "相机"
 
 #: ../src/media_view.py:57
-msgid "software"
+msgid "Software"
 msgstr "软件"
 
 #: ../src/media_view.py:62 ../src/media_view.py:222
@@ -163,6 +163,9 @@ msgstr "运行"
 #: ../src/treeview.py:145
 msgid "not running"
 msgstr "未运行"
+
+#~ msgid "mail"
+#~ msgstr "邮件"
 
 #~ msgid "You can choose the operation after plugining media or device"
 #~ msgstr "您可以选择插入每种媒体或设备时的后续操作"

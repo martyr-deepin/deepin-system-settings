@@ -39,13 +39,13 @@ class AppView(gtk.VBox):
     def app_table(self):
         # Labels 
         #info_label = Label("您可以根据自己需要对深度系统在默认情况下使用的程序进行设置")
-        web_label = Label(_("web"))
-        mail_label = Label(_("mail"))
-        editor_label = Label(_("editor"))
-        music_label = Label(_("music"))
-        movie_label = Label(_("video"))
-        pic_label = Label(_("photo"))
-        terminal_label = Label(_("terminal"))
+        web_label = Label(_("Web"))
+        mail_label = Label(_("Mail"))
+        editor_label = Label(_("Editor"))
+        music_label = Label(_("Music"))
+        movie_label = Label(_("Video"))
+        pic_label = Label(_("Photo"))
+        terminal_label = Label(_("Terminal"))
 
         self.web = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)
         self.mail = ComboBox([("None",0)], fixed_width=self.ENTRY_WIDTH)

@@ -23,13 +23,13 @@
 from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
-from dtk.ui.button import CheckButton, Button, ToggleButton
+from dtk.ui.button import Button, ToggleButton
 
 from media import MediaAutorun
 from app import AppManager
 import gtk
 import style
-from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING, WIDGET_SPACING
+from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING 
 from nls import _
 
 class MediaView(gtk.VBox):
@@ -52,9 +52,9 @@ class MediaView(gtk.VBox):
 
         cd_label = Label(_("CD"))
         dvd_label = Label(_("DVD"))
-        player_label = Label(_("music player"))
-        photo_label = Label(_("camera"))
-        software_label = Label(_("software"))
+        player_label = Label(_("Music Player"))
+        photo_label = Label(_("Camera"))
+        software_label = Label(_("Software"))
 
         self.all_label_list = [cd_label, dvd_label, player_label,
                                photo_label, software_label]
