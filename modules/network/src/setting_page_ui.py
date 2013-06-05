@@ -57,7 +57,6 @@ class SettingUI(gtk.Alignment):
         pass
 
     def __init_paned(self, widget):
-        print self.hpaned.get_position()
         self.hpaned.saved_position = 160
         self.hpaned.set_position(1)
         self.hpaned.animation_position_frames = [0]
@@ -92,7 +91,7 @@ class SettingUI(gtk.Alignment):
             self.tab_window.delete_items(tabs)
 
     def switch_tab(self, widget, connection):
-        print "switch tab"
+        #print "switch tab"
         container_remove_all(self.hbox)
         self.set_tab_content(connection)
         self.set_foot_bar_button(connection)
@@ -132,7 +131,7 @@ class SettingUI(gtk.Alignment):
         self.save_method(self.focus_connection)
 
     def apply_connection_setting(self, widget):
-        print type(self.focus_connection)
+        #print type(self.focus_connection)
         self.apply_method(self.focus_connection)
 
     def create_new_connection(self):

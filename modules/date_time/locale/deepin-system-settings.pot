@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-17 16:33+0800\n"
+"POT-Creation-Date: 2013-06-05 10:39+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,30 +47,6 @@ msgstr ""
 
 #: ../src/tray_time_plugin.py:122
 msgid "Change DateTime settings"
-msgstr ""
-
-#: ../src/search_keyword.py:29
-msgid "DateTime"
-msgstr ""
-
-#: ../src/search_keyword.py:30 ../src/date_time_view.py:311
-msgid "TimeZone"
-msgstr ""
-
-#: ../src/search_keyword.py:31 ../src/date_time_view.py:260
-msgid "Auto Set Time"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Hour Display"
-msgstr ""
-
-#: ../src/tray_time.py:74
-msgid "AM"
-msgstr ""
-
-#: ../src/tray_time.py:75
-msgid "PM"
 msgstr ""
 
 #: ../src/date_time_view.py:116
@@ -200,12 +176,20 @@ msgstr ""
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr ""
 
+#: ../src/date_time_view.py:260 ../src/search_keyword.py:31
+msgid "Auto Set Time"
+msgstr ""
+
 #: ../src/date_time_view.py:277
 msgid "Manual"
 msgstr ""
 
 #: ../src/date_time_view.py:297
 msgid "Hour"
+msgstr ""
+
+#: ../src/date_time_view.py:311 ../src/search_keyword.py:30
+msgid "TimeZone"
 msgstr ""
 
 #: ../src/date_time_view.py:341
@@ -241,4 +225,20 @@ msgstr ""
 #: ../src/date_time_view.py:506
 #, python-format
 msgid "Changed timezone to %s"
+msgstr ""
+
+#: ../src/tray_time.py:74
+msgid "AM"
+msgstr ""
+
+#: ../src/tray_time.py:75
+msgid "PM"
+msgstr ""
+
+#: ../src/search_keyword.py:29
+msgid "DateTime"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Hour Display"
 msgstr ""

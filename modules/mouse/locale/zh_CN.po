@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-13 17:04+0800\n"
+"POT-Creation-Date: 2013-06-05 10:43+0800\n"
 "PO-Revision-Date: 2013-03-14 11:19+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,101 +17,86 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:25
-msgid "Mouse"
-msgstr "鼠标"
-
-#: ../src/search_keyword.py:26
 #: ../src/main.py:85
-msgid "Pointer Speed"
-msgstr "指针速度"
-
-#: ../src/search_keyword.py:27
-#: ../src/main.py:86
-msgid "Acceleration"
-msgstr "移动速度"
-
-#: ../src/search_keyword.py:28
-#: ../src/main.py:90
-msgid "Sensitivity"
-msgstr "精确度"
-
-#: ../src/search_keyword.py:29
-#: ../src/main.py:94
-msgid "Double-click"
-msgstr "双击速度"
-
-#: ../src/search_keyword.py:30
-#: ../src/main.py:95
-msgid "Frequency"
-msgstr "点击频率"
-
-#: ../src/search_keyword.py:31
-#: ../src/main.py:103
-msgid "Right-handed"
-msgstr "惯用右手"
-
-#: ../src/search_keyword.py:32
-#: ../src/main.py:104
-msgid "Left-handed"
-msgstr "惯用左手"
-
-#: ../src/main.py:84
 msgid "Custom"
 msgstr "使用习惯"
 
-#: ../src/main.py:88
-#: ../src/main.py:97
-#: ../src/main.py:273
-#: ../src/main.py:320
+#: ../src/main.py:86 ../src/search_keyword.py:26
+msgid "Pointer Speed"
+msgstr "指针速度"
+
+#: ../src/main.py:87 ../src/search_keyword.py:27
+msgid "Acceleration"
+msgstr "移动速度"
+
+#: ../src/main.py:90 ../src/main.py:101 ../src/main.py:278 ../src/main.py:325
 msgid "Fast"
 msgstr "快"
 
-#: ../src/main.py:89
-#: ../src/main.py:98
-#: ../src/main.py:272
-#: ../src/main.py:319
+#: ../src/main.py:91 ../src/main.py:102 ../src/main.py:277 ../src/main.py:324
 msgid "Slow"
 msgstr "慢"
 
-#: ../src/main.py:92
-#: ../src/main.py:287
+#: ../src/main.py:92 ../src/search_keyword.py:28
+msgid "Sensitivity"
+msgstr "精确度"
+
+#: ../src/main.py:95 ../src/main.py:292
 msgid "Low"
 msgstr "低"
 
-#: ../src/main.py:93
-#: ../src/main.py:288
+#: ../src/main.py:96 ../src/main.py:293
 msgid "High"
 msgstr "高"
 
-#: ../src/main.py:99
+#: ../src/main.py:97 ../src/search_keyword.py:29
+msgid "Double-click"
+msgstr "双击速度"
+
+#: ../src/main.py:98 ../src/search_keyword.py:30
+msgid "Frequency"
+msgstr "点击频率"
+
+#: ../src/main.py:103
 msgid "Double-click on the smiley face to test your settings."
 msgstr "双击笑脸测试您的点击频率。"
 
-#: ../src/main.py:101
+#: ../src/main.py:105
 msgid "Relevant Settings"
 msgstr "相关设置"
 
-#: ../src/main.py:107
+#: ../src/main.py:108 ../src/search_keyword.py:31
+msgid "Right-handed"
+msgstr "惯用右手"
+
+#: ../src/main.py:109 ../src/search_keyword.py:32
+msgid "Left-handed"
+msgstr "惯用左手"
+
+#: ../src/main.py:112
 msgid "Keyboard Settings"
 msgstr "键盘设置"
 
-#: ../src/main.py:110
+#: ../src/main.py:115
 msgid "TouchPad Settings"
 msgstr "触摸板设置"
 
-#: ../src/main.py:113
+#: ../src/main.py:118
 msgid "Reset"
 msgstr "恢复默认"
 
-#: ../src/main.py:430
+#: ../src/main.py:436
 msgid "Set to left-handed"
 msgstr "设为惯用左手"
 
-#: ../src/main.py:432
+#: ../src/main.py:438
 msgid "Set to right-handed"
 msgstr "设为惯用右手"
 
-#: ../src/main.py:516
+#: ../src/main.py:525
 msgid "Reset to defaults"
 msgstr "恢复默认值"
+
+#: ../src/search_keyword.py:25
+msgid "Mouse"
+msgstr "鼠标"

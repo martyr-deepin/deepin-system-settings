@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-13 17:06+0800\n"
+"POT-Creation-Date: 2013-06-05 10:42+0800\n"
 "PO-Revision-Date: 2013-03-14 11:40+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,112 +17,102 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:25
-msgid "Touchpad"
-msgstr "触摸板"
-
-#: ../src/search_keyword.py:26
-#: ../src/main.py:93
-msgid "Pointer Speed"
-msgstr "指针速度"
-
-#: ../src/search_keyword.py:27
-#: ../src/main.py:94
-msgid "Acceleration"
-msgstr "移动速度"
-
-#: ../src/search_keyword.py:28
-#: ../src/main.py:96
-msgid "Sensitivity"
-msgstr "精确度"
-
-#: ../src/search_keyword.py:29
-#: ../src/main.py:98
-msgid "Double-click"
-msgstr "双击速度"
-
-#: ../src/search_keyword.py:30
-#: ../src/main.py:99
-msgid "Frequency"
-msgstr "点击频率"
-
-#: ../src/search_keyword.py:31
-#: ../src/main.py:108
-msgid "Right-handed"
-msgstr "惯用右手"
-
-#: ../src/search_keyword.py:32
-#: ../src/main.py:109
-msgid "Left-handed"
-msgstr "惯用左手"
-
-#: ../src/search_keyword.py:33
 #: ../src/main.py:104
-msgid "Drag threshold"
-msgstr "解除延时"
-
-#: ../src/main.py:92
 msgid "Custom"
 msgstr "使用习惯"
 
-#: ../src/main.py:101
+#: ../src/main.py:105 ../src/search_keyword.py:26
+msgid "Pointer Speed"
+msgstr "指针速度"
+
+#: ../src/main.py:106 ../src/search_keyword.py:27
+msgid "Acceleration"
+msgstr "移动速度"
+
+#: ../src/main.py:109 ../src/search_keyword.py:28
+msgid "Sensitivity"
+msgstr "精确度"
+
+#: ../src/main.py:112 ../src/search_keyword.py:29
+msgid "Double-click"
+msgstr "双击速度"
+
+#: ../src/main.py:113 ../src/search_keyword.py:30
+msgid "Frequency"
+msgstr "点击频率"
+
+#: ../src/main.py:116
 msgid "Double-click on the smiley face to test your settings."
 msgstr "双击笑脸测试您的点击频率。"
 
-#: ../src/main.py:103
+#: ../src/main.py:118
 msgid "Drag and Drop"
 msgstr "拖放速度"
 
-#: ../src/main.py:106
+#: ../src/main.py:119 ../src/search_keyword.py:33
+msgid "Drag threshold"
+msgstr "解除延时"
+
+#: ../src/main.py:122
 msgid "Relevant Settings"
 msgstr "相关设置"
 
-#: ../src/main.py:112
+#: ../src/main.py:125 ../src/search_keyword.py:31
+msgid "Right-handed"
+msgstr "惯用右手"
+
+#: ../src/main.py:126 ../src/search_keyword.py:32
+msgid "Left-handed"
+msgstr "惯用左手"
+
+#: ../src/main.py:129
 msgid "Keyboard Settings"
 msgstr "键盘设置"
 
-#: ../src/main.py:115
+#: ../src/main.py:132
 msgid "Mouse Settings"
 msgstr "鼠标设置"
 
-#: ../src/main.py:118
+#: ../src/main.py:135
 msgid "Reset to Defaults"
 msgstr "恢复默认"
 
-#: ../src/main.py:281
-#: ../src/main.py:331
+#: ../src/main.py:302 ../src/main.py:352
 msgid "Slow"
 msgstr "慢"
 
-#: ../src/main.py:282
-#: ../src/main.py:332
+#: ../src/main.py:303 ../src/main.py:353
 msgid "Fast"
 msgstr "快"
 
-#: ../src/main.py:297
+#: ../src/main.py:318
 msgid "Low"
 msgstr "低"
 
-#: ../src/main.py:298
+#: ../src/main.py:319
 msgid "High"
 msgstr "高"
 
-#: ../src/main.py:374
+#: ../src/main.py:395
 msgid "Short"
 msgstr "短"
 
-#: ../src/main.py:375
+#: ../src/main.py:396
 msgid "Long"
 msgstr "长"
 
-#: ../src/main.py:496
+#: ../src/main.py:519
 msgid "Set to right-handed"
 msgstr "设为惯用左手"
 
-#: ../src/main.py:498
+#: ../src/main.py:521
 msgid "Set to left-handed"
 msgstr "设为惯用右手"
 
-#: ../src/main.py:592
+#: ../src/main.py:622
 msgid "Reset to defaults"
 msgstr "恢复默认值"
+
+#: ../src/search_keyword.py:25
+msgid "Touchpad"
+msgstr "触摸板"

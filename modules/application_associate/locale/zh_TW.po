@@ -1,95 +1,3 @@
-#: ../src/session_view.py:51 ../src/search_keyword.py:29
-msgid "Application"
-msgstr "應用程式"
-
-#: ../src/session_view.py:51
-msgid "Description"
-msgstr "描述"
-
-#: ../src/session_view.py:51
-msgid "Exec"
-msgstr "執行"
-
-#: ../src/session_view.py:64
-msgid "New"
-msgstr "新增"
-
-#: ../src/session_view.py:65
-msgid "Delete"
-msgstr "刪除"
-
-#: ../src/app_asso_view.py:61
-msgid "Default Applications"
-msgstr "預設應用程式"
-
-#: ../src/app_asso_view.py:62 ../src/media_view.py:68
-msgid "Autoplay"
-msgstr "自動播放"
-
-#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
-msgid "Autostart"
-msgstr "自動啟動"
-
-#: ../src/app_view.py:42
-msgid "Web"
-msgstr "網頁"
-
-#: ../src/app_view.py:43
-msgid "Mail"
-msgstr "郵件"
-
-#: ../src/app_view.py:44
-msgid "Editor"
-msgstr "編輯器"
-
-#: ../src/app_view.py:45
-msgid "Music"
-msgstr "音樂"
-
-#: ../src/app_view.py:46
-msgid "Video"
-msgstr "影片"
-
-#: ../src/app_view.py:47
-msgid "Photo"
-msgstr "相片"
-
-#: ../src/app_view.py:48
-msgid "Terminal"
-msgstr "終端機"
-
-#: ../src/widget.py:44
-msgid "Autostart app"
-msgstr "自動啟動程式"
-
-#: ../src/widget.py:53
-msgid "OK"
-msgstr "確定"
-
-#: ../src/widget.py:54
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/widget.py:87
-msgid "Name:"
-msgstr "名稱:"
-
-#: ../src/widget.py:89
-msgid "Exec:"
-msgstr "執行:"
-
-#: ../src/widget.py:91
-msgid "Comment:"
-msgstr "描述:"
-
-#: ../src/search_keyword.py:30
-msgid "Media"
-msgstr "媒體"
-
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
-msgstr "應用程式關聯"
-
 #: ../src/media_view.py:53
 msgid "CD"
 msgstr "CD"
@@ -100,48 +8,140 @@ msgstr "DVD"
 
 #: ../src/media_view.py:55
 msgid "Music Player"
-msgstr "音樂播放器"
+msgstr ""
 
 #: ../src/media_view.py:56
 msgid "Camera"
-msgstr "照相機"
+msgstr ""
 
 #: ../src/media_view.py:57
 msgid "Software"
-msgstr "應用程式"
+msgstr ""
 
 #: ../src/media_view.py:62 ../src/media_view.py:222
 msgid "other applications"
-msgstr "其他應用程式"
+msgstr ""
 
 #: ../src/media_view.py:63
 msgid "ask"
-msgstr "詢問"
+msgstr ""
 
 #: ../src/media_view.py:64
 msgid "do nothing"
-msgstr "不做任何事"
+msgstr ""
 
 #: ../src/media_view.py:65
 msgid "open folder"
-msgstr "開啟資料夾"
+msgstr ""
+
+#: ../src/media_view.py:68 ../src/app_asso_view.py:62
+msgid "Autoplay"
+msgstr ""
 
 #: ../src/media_view.py:79
 msgid "more option"
-msgstr "更多選項"
+msgstr ""
 
 #: ../src/treeview.py:119
 msgid "No exec"
-msgstr "無執行"
+msgstr ""
 
 #: ../src/treeview.py:134
 msgid "No description"
-msgstr "無描述"
+msgstr ""
 
 #: ../src/treeview.py:143
 msgid "active"
-msgstr "使用"
+msgstr ""
 
 #: ../src/treeview.py:145
 msgid "not running"
-msgstr "未運行"
+msgstr ""
+
+#: ../src/app_view.py:42
+msgid "Web"
+msgstr ""
+
+#: ../src/app_view.py:43
+msgid "Mail"
+msgstr ""
+
+#: ../src/app_view.py:44
+msgid "Editor"
+msgstr ""
+
+#: ../src/app_view.py:45
+msgid "Music"
+msgstr ""
+
+#: ../src/app_view.py:46
+msgid "Video"
+msgstr ""
+
+#: ../src/app_view.py:47
+msgid "Photo"
+msgstr ""
+
+#: ../src/app_view.py:48
+msgid "Terminal"
+msgstr ""
+
+#: ../src/app_asso_view.py:61
+msgid "Default Applications"
+msgstr ""
+
+#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
+msgid "Autostart"
+msgstr ""
+
+#: ../src/search_keyword.py:29 ../src/session_view.py:51
+msgid "Application"
+msgstr ""
+
+#: ../src/search_keyword.py:30
+msgid "Media"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Description"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Exec"
+msgstr ""
+
+#: ../src/session_view.py:64
+msgid "New"
+msgstr ""
+
+#: ../src/session_view.py:65
+msgid "Delete"
+msgstr ""
+
+#: ../src/widget.py:44
+msgid "Autostart app"
+msgstr ""
+
+#: ../src/widget.py:53
+msgid "OK"
+msgstr ""
+
+#: ../src/widget.py:54
+msgid "Cancel"
+msgstr ""
+
+#: ../src/widget.py:87
+msgid "Name:"
+msgstr ":"
+
+#: ../src/widget.py:89
+msgid "Exec:"
+msgstr ":"
+
+#: ../src/widget.py:91
+msgid "Comment:"
+msgstr ":"

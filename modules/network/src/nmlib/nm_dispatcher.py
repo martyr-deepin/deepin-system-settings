@@ -23,4 +23,4 @@
 
 from events import EventManager                                                 
 nm_events = EventManager(use_logger=False)
-print nm_events, "-lib"
+#print nm_events, "-lib"

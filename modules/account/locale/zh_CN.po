@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-03 17:50+0800\n"
+"POT-Creation-Date: 2013-06-05 10:42+0800\n"
 "PO-Revision-Date: 2013-03-14 11:11+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,17 +17,233 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/search_keyword.py:25
-msgid "Automatic login"
-msgstr "自动登录"
+#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:129
+msgid "Local picture"
+msgstr "从本地文件"
 
-#: ../src/search_keyword.py:26 ../src/main.py:105 ../src/main.py:109
+#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:130
+msgid "Take a screeshot"
+msgstr "使用深度截图"
+
+#: ../src/set_icon_page.py:131
+msgid "From camera"
+msgstr "使用摄像头"
+
+#: ../src/set_icon_page.py:149
+msgid "Choose a new picture for your account"
+msgstr "选择用户头像"
+
+#: ../src/set_icon_page.py:153
+msgid "Previously used pictures"
+msgstr "历史使用头像"
+
+#: ../src/set_icon_page.py:197
+#, python-format
+msgid "Set <u>%s</u>'s picture"
+msgstr "设置<u>%s</u>的头像"
+
+#: ../src/set_icon_page.py:360 ../src/set_icon_page.py:389
+#: ../src/set_icon_page.py:395
+msgid "Edit Picture"
+msgstr "编辑头像"
+
+#: ../src/main.py:104 ../src/main.py:115
+msgid "Account type"
+msgstr "帐号类型"
+
+#: ../src/main.py:106
+msgid "Password"
+msgstr "密码"
+
+#: ../src/main.py:110
+msgid "Log in without a password"
+msgstr "不使用密码登录"
+
+#: ../src/main.py:112 ../src/main.py:116 ../src/search_keyword.py:26
 msgid "Deepin Account"
 msgstr "深度帐号"
 
-#: ../src/search_keyword.py:27 ../src/main.py:107
+#: ../src/main.py:113 ../src/main.py:117
+msgid "Unbound"
+msgstr "未绑定"
+
+#: ../src/main.py:114 ../src/search_keyword.py:27
 msgid "Account Name"
 msgstr "帐号名"
+
+#: ../src/main.py:128 ../src/main.py:152 ../src/treeitem.py:88
+msgid "Standard"
+msgstr "标准"
+
+#: ../src/main.py:128 ../src/main.py:152 ../src/treeitem.py:88
+msgid "Administrator"
+msgstr "管理员"
+
+#: ../src/main.py:147 ../src/main.py:551 ../src/main.py:688
+#: ../src/main.py:1110
+msgid "Enable"
+msgstr "启用此帐号"
+
+#: ../src/main.py:148
+msgid "Add"
+msgstr "添加帐户"
+
+#: ../src/main.py:149
+msgid "Delete"
+msgstr "删除帐户"
+
+#: ../src/main.py:150
+msgid "Create"
+msgstr "创建"
+
+#: ../src/main.py:151 ../src/main.py:204 ../src/main.py:210 ../src/main.py:898
+msgid "Cancel"
+msgstr "取消"
+
+#: ../src/main.py:199
+msgid "It is possible to keep the home directory when deleting a user account."
+msgstr "删除用户时可以保留用户主目录。"
+
+#: ../src/main.py:202
+msgid "Delete Files"
+msgstr "删除文件"
+
+#: ../src/main.py:203
+msgid "Keep Files"
+msgstr "保留文件"
+
+#: ../src/main.py:211
+msgid "Save"
+msgstr "保存"
+
+#: ../src/main.py:500
+#, python-format
+msgid "Enabled auto-login for %s"
+msgstr "允许%s自动登录"
+
+#: ../src/main.py:502
+#, python-format
+msgid "Disabled auto-login for %s"
+msgstr "禁止%s自动登录"
+
+#: ../src/main.py:524
+#, python-format
+msgid "Enabled passwordless login for %s"
+msgstr "允许%s不使用密码登录"
+
+#: ../src/main.py:531
+#, python-format
+msgid "Disabled passwordless login for %s"
+msgstr "禁止%s不使用密码登录"
+
+#: ../src/main.py:547
+#, python-format
+msgid "Enable %s"
+msgstr "启用%s"
+
+#: ../src/main.py:548 ../src/main.py:690 ../src/main.py:1112
+msgid "Disable"
+msgstr "禁用此帐号"
+
+#: ../src/main.py:550
+#, python-format
+msgid "Disable %s"
+msgstr "禁用%s"
+
+#: ../src/main.py:587
+#, python-format
+msgid "%s has been created"
+msgstr "%s已创建"
+
+#: ../src/main.py:593
+msgid "The user name is invalid"
+msgstr "用户名不合法"
+
+#: ../src/main.py:607
+msgid ""
+"User names can only consist of letters, numbers, underscores and begin with "
+"a letter"
+msgstr "用户名只能由字母、数字、下划线组成，并且由字母开头"
+
+#: ../src/main.py:626
+#, python-format
+msgid "%s has been deleted"
+msgstr "%s已被删除"
+
+#: ../src/main.py:643
+#, python-format
+msgid "Do you want to keep <u>%s</u>'s files?"
+msgstr "你想要保留<u>%s</u>的文件吗？"
+
+#: ../src/main.py:671 ../src/main.py:1094
+msgid "Account disabled"
+msgstr "帐号已禁用"
+
+#: ../src/main.py:673 ../src/main.py:1096
+msgid "To be set at next login"
+msgstr "下次登录时设置"
+
+#: ../src/main.py:675 ../src/main.py:1098
+msgid "None"
+msgstr "无"
+
+#: ../src/main.py:750
+#, python-format
+msgid "%s's account type has been set as %s"
+msgstr "%s的帐户类型被设置为%s"
+
+#: ../src/main.py:867
+msgid "Current password"
+msgstr "当前密码"
+
+#: ../src/main.py:869
+msgid "New password"
+msgstr "新密码"
+
+#: ../src/main.py:871
+msgid "Confirm new password"
+msgstr "确认密码"
+
+#: ../src/main.py:885
+msgid "Show password"
+msgstr "显示密码"
+
+#: ../src/main.py:899
+msgid "Change"
+msgstr "修改"
+
+#: ../src/main.py:944
+msgid "Password did not match."
+msgstr "两次密码输入不一致"
+
+#: ../src/main.py:960 ../src/main.py:985
+msgid "password unchanged"
+msgstr "密码未被修改"
+
+#: ../src/main.py:962
+msgid "authentication token manipulation error"
+msgstr "认证令牌操作错误"
+
+#: ../src/main.py:964
+msgid "new and old password are too similar"
+msgstr "新密码与旧密码过于相近"
+
+#: ../src/main.py:978 ../src/main.py:1032
+#, python-format
+msgid "%s's password has been changed"
+msgstr "%s的密码修改完成"
+
+#: ../src/main.py:1060 ../src/search_keyword.py:31
+msgid "Set Picture"
+msgstr "设置头像"
+
+#: ../src/main.py:1262
+msgid "Error:"
+msgstr "错误："
+
+#: ../src/search_keyword.py:25
+msgid "Automatic login"
+msgstr "自动登录"
 
 #: ../src/search_keyword.py:28
 msgid "Create Account"
@@ -41,187 +257,21 @@ msgstr "删除帐号"
 msgid "Change Password"
 msgstr "修改密码"
 
-#: ../src/search_keyword.py:31 ../src/main.py:1017
-msgid "Set Picture"
-msgstr "设置头像"
-
 #: ../src/search_keyword.py:32
 msgid "Account"
 msgstr "帐号"
 
+#: ../src/search_keyword.py:33
 msgid "User Accounts"
 msgstr "帐户设置"
 
-#: ../src/main.py:100 ../src/main.py:108
-msgid "Account type"
-msgstr "帐号类型"
+#: ../src/treeitem.py:176
+msgid "My Account"
+msgstr "我的帐号"
 
-#: ../src/main.py:101
-msgid "Password"
-msgstr "密码"
-
-#: ../src/main.py:104
-msgid "Log in without a password"
-msgstr "不使用密码登录"
-
-#: ../src/main.py:106 ../src/main.py:110
-msgid "Unbound"
-msgstr "未绑定"
-
-#: ../src/main.py:121 ../src/main.py:143
-msgid "Standard"
-msgstr "标准"
-
-#: ../src/main.py:121 ../src/main.py:143
-msgid "Administrator"
-msgstr "管理员"
-
-#: ../src/main.py:138 ../src/main.py:533 ../src/main.py:667
-#: ../src/main.py:1066
-msgid "Enable"
-msgstr "启用此帐号"
-
-#: ../src/main.py:139
-msgid "Add"
-msgstr "添加帐户"
-
-#: ../src/main.py:140
-msgid "Delete"
-msgstr "删除帐户"
-
-#: ../src/main.py:141
-msgid "Create"
-msgstr "创建"
-
-#: ../src/main.py:142 ../src/main.py:195 ../src/main.py:201 ../src/main.py:873
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/main.py:190
-msgid "It is possible to keep the home directory when deleting a user account."
-msgstr "删除用户时可以保留用户主目录。"
-
-#: ../src/main.py:193
-msgid "Delete Files"
-msgstr "删除文件"
-
-#: ../src/main.py:194
-msgid "Keep Files"
-msgstr "保留文件"
-
-#: ../src/main.py:202
-msgid "Save"
-msgstr "保存"
-
-#: ../src/main.py:490
-msgid "Enabled auto-login for %s"
-msgstr "允许%s自动登录"
-
-#: ../src/main.py:492
-msgid "Disabled auto-login for %s"
-msgstr "禁止%s自动登录"
-
-#: ../src/main.py:510
-msgid "Enabled passwordless login for %s"
-msgstr "允许%s不使用密码登录"
-
-#: ../src/main.py:513
-msgid "Disabled passwordless login for %s"
-msgstr "禁止%s不使用密码登录"
-
-#: ../src/main.py:529
-msgid "Disable %s"
-msgstr "禁用%s"
-
-#: ../src/main.py:530 ../src/main.py:669 ../src/main.py:1068
-msgid "Disable"
-msgstr "禁用此帐号"
-
-#: ../src/main.py:532
-msgid "Enable %s"
-msgstr "启用%s"
-
-#: ../src/main.py:568
-msgid "%s has been created"
-msgstr "%s已创建"
-
-#: ../src/main.py:574
-msgid "The user name is invalid"
-msgstr "用户名不合法"
-
-#: ../src/main.py:588
-msgid ""
-"User names can only consist of letters, numbers, underscores and begin with "
-"a letter"
-msgstr "用户名只能由字母、数字、下划线组成，并且由字母开头"
-
-#: ../src/main.py:606
-msgid "%s has been deleted"
-msgstr "%s已被删除"
-
-#: ../src/main.py:623
-msgid "Do you want to keep <u>%s</u>'s files?"
-msgstr "你想要保留<u>%s</u>的文件吗？"
-
-#: ../src/main.py:651 ../src/main.py:1051
-msgid "Account disabled"
-msgstr "帐号已禁用"
-
-#: ../src/main.py:653 ../src/main.py:1053
-msgid "To be set at next login"
-msgstr "下次登录时设置"
-
-#: ../src/main.py:655 ../src/main.py:1055
-msgid "None"
-msgstr "无"
-
-#: ../src/main.py:728
-msgid "%s's account type has been set as %s"
-msgstr "%s的帐户类型被设置为%s"
-
-#: ../src/main.py:845
-msgid "Current password"
-msgstr "当前密码"
-
-#: ../src/main.py:846
-msgid "New password"
-msgstr "新密码"
-
-#: ../src/main.py:847
-msgid "Confirm new password"
-msgstr "确认密码"
-
-#: ../src/main.py:860
-msgid "Show password"
-msgstr "显示密码"
-
-#: ../src/main.py:874
-msgid "Change"
-msgstr "修改"
-
-#: ../src/main.py:919
-msgid "Password did not match."
-msgstr "两次密码输入不一致"
-
-#: ../src/main.py:935 ../src/main.py:959
-msgid "password unchanged"
-msgstr "密码未被修改"
-
-#: ../src/main.py:937
-msgid "authentication token manipulation error"
-msgstr "认证令牌操作错误"
-
-#: ../src/main.py:939
-msgid "new and old password are too similar"
-msgstr "新密码与旧密码过于相近"
-
-#: ../src/main.py:953
-msgid "%s's password has been changed"
-msgstr "%s的密码修改完成"
-
-#: ../src/main.py:1216
-msgid "Error:"
-msgstr "错误："
+#: ../src/treeitem.py:180
+msgid "Other Accounts"
+msgstr "其他帐号"
 
 #: ../src/edit_icon_page.py:85
 msgid "zoom in"
@@ -250,43 +300,6 @@ msgstr "头像预览"
 #: ../src/edit_icon_page.py:924
 msgid "no picture"
 msgstr "头像为空"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:129
-msgid "Local picture"
-msgstr "从本地文件"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:130
-msgid "Take a screeshot"
-msgstr "使用深度截图"
-
-#: ../src/set_icon_page.py:131
-msgid "From camera"
-msgstr "使用摄像头"
-
-#: ../src/set_icon_page.py:149
-msgid "Choose a new picture for your account"
-msgstr "选择用户头像"
-
-#: ../src/set_icon_page.py:153
-msgid "Previously used pictures"
-msgstr "历史使用头像"
-
-#: ../src/set_icon_page.py:197
-msgid "Set <u>%s</u>'s picture"
-msgstr "设置<u>%s</u>的头像"
-
-#: ../src/set_icon_page.py:360 ../src/set_icon_page.py:389
-#: ../src/set_icon_page.py:395
-msgid "Edit Picture"
-msgstr "编辑头像"
-
-#: ../src/treeitem.py:175
-msgid "My Account"
-msgstr "我的帐号"
-
-#: ../src/treeitem.py:179
-msgid "Other Accounts"
-msgstr "其他帐号"
 
 #~ msgid "Action"
 #~ msgstr "动作"

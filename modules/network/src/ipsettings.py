@@ -395,10 +395,10 @@ class IPV6Conf(gtk.VBox):
                                enable_double_click=False)
         entry = InputEntry()
         if types == "ip":
-            print "ip row changed"
+            #print "ip row changed"
             entry.entry.connect("changed", self.set_ip_address, arg)
         else:
-            print "dns row changed"
+            #print "dns row changed"
             entry.entry.connect("changed", self.set_dns_address, arg)
         entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 

@@ -61,7 +61,7 @@ class WiredSetting(Settings):
             self.set_button("apply", True)
             Dispatcher.to_main_page()
         else:
-            print "not complete"
+            raise "not complete"
 
     def apply_changes(self, connection):
         wired_device = net_manager.device_manager.get_wired_devices()[0]

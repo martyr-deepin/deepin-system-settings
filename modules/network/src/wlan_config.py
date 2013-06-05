@@ -185,8 +185,6 @@ class Sections(gtk.Alignment):
             security = Security(connection, set_button, settings_obj=settings_obj)
         security.button.connect("clicked", self.show_more_options)
         basic.load([security])
-
-
         self.main_box.pack_start(basic, False, False)
 
         self.add(self.main_box)

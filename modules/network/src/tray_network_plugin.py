@@ -29,137 +29,44 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 from subprocess import Popen
 
 from widgets import AskPasswordDialog
-from vtk.timer import Timer
+from tray_log import tray_log
 
-WAIT_TIME = 15000
+class BaseMixIn(object):
 
-class TrayNetworkPlugin(object):
+    def change_status_icon(self, load_image_name):
+        event_manager.emit("change-status-icon", load_image_name)
 
-    def __init__(self):
-        self.menu_showed = False
-        self.gui = TrayUI(self.toggle_wired,
-                          self.toggle_wireless,
-                          self.mobile_toggle,
-                          self.toggle_vpn,
-                          self.toggle_dsl)
-        self.net_manager = net_manager
-        self.net_manager.init_devices()
-        Dispatcher.connect("request_resize", self.request_resize)
-        Dispatcher.connect("ap-added", self.wireless_ap_added)
-        Dispatcher.connect("ap-removed", self.wireless_ap_removed)
-        Dispatcher.connect("recheck-section", self.recheck_sections)
-        self.gui.button_more.connect("clicked", self.more_setting)
+    def close(self):
+        # used when network_manager restarts
+        self.this_gui.set_active((False, False))
 
-        self.need_auth_flag = False
-        self.this_device = None
-        self.this_connection = None
-        self.dialog_toggled_flag = False
+    def check_net_state(self):
+        # which tray icon to show
+        if any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
+            # change tray icon to cable if there's still wire device
+            self.change_status_icon("cable") 
 
-        self.timer = Timer(WAIT_TIME)
-        self.timer.Enabled = False
-        self.timer.connect("Tick", self.timer_count_down_finish)
-
-        self.init_wired_signals()
-        self.init_wireless_signals()
-        self.init_mm_signals()
-        Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals())
-        Dispatcher.connect("wired-device-add", lambda w,p: self.init_wired_signals())
-        Dispatcher.connect("wireless-device-add", self.wireless_device_added)
-        Dispatcher.connect("switch-device", self.switch_device)
-        Dispatcher.connect('vpn-start', self.vpn_start_cb)
-
-        # vpn signals 
-        event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
-        event_manager.add_callback('vpn-connected', self.__vpn_active_callback)
-        event_manager.add_callback('vpn-disconnected', self.__vpn_failed_callback)
-
-        event_manager.add_callback('vpn-user-disconnect', self.on_user_stop_vpn)
-        event_manager.add_callback('vpn-connection-removed', self.vpn_connection_remove_cb)
-        event_manager.add_callback('vpn-new-added', self.on_vpn_setting_change)
-        self.__init_dsl_signals()
-
-        # dsl signals
-        #event_manager.add_callback('dsl-new-added', self.dsl_new_added)
-        #event_manager.add_callback('dsl-connection-removed', self.dsl_removed)
-
-        Dispatcher.connect("service_start_do_more", self.service_start_do_more)
-
-    def service_start_do_more(self, widget):
-        self.init_wired_signals()
-        self.init_wireless_signals()
-        self.init_mm_signals()
-
-    def recheck_sections(self, widget, index):
-        print "recheck sections"
-        self.init_widgets()
-        Dispatcher.emit("request-resize")
-
-    def wireless_ap_added(self, widget):
-        print "wireless_ap_added in tray"
-        if self.gui.wireless.get_active():
-            self.gui.wireless.set_active((True, True), emit=True)
-
-    def wireless_ap_removed(self, widget):
-        print "wireless ap removed in tray"
-        if self.gui.wireless.get_active():
-            self.gui.wireless.set_active((True, True), emit=True)
-
-    def init_values(self, this_list):
-        self.this_list = this_list
-        self.this = self.this_list[0]
-        self.tray_icon = self.this_list[1]
-        self.init_widgets()
-
-    def init_mm_signals(self):
-        net_manager.device_manager.load_mm_listener(self)
-
-    def mm_device_active(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, True))
-        self.change_status_icon("cable")
-
-    def mm_device_deactive(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, False))
-        if self.gui.wire.get_active():
+        if any([d.get_state() == 100 for d in net_manager.device_manager.mm_devices]):
             self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
+
+        if any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices]):
             self.change_status_icon("links")
         else:
             self.change_status_icon("cable_disconnect")
 
-    def mm_device_unavailable(self,  widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, False))
+    def net_state(self):
+        pass
 
-    def mm_activate_start(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, True))
-        self.change_status_icon("loading")
-        self.let_rotate(True)
+class WireSection(BaseMixIn):
 
-    def mm_activate_failed(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, False))
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        else:
-            self.change_status_icon("cable_disconnect")
+    def __init__(self, tray_ui):
+        self.gui = tray_ui
+        self.this_gui = tray_ui.wire
+        self._init_signals()
+        self._init_section()
 
-    def mobile_toggle(self):
-        if self.gui.mobile.get_active():
-            self.mm_device = self.net_manager.connect_mm_device()
-        else:
-            self.net_manager.disconnect_mm_device()
-    
-    def timer_count_down_finish(self, widget):
-        connections = nm_module.nmclient.get_active_connections()
-        active_connection = connections[-1]
-        
-        self.this_connection = active_connection.get_connection()
-        self.this_device.nm_device_disconnect()
-        self.toggle_dialog(self.this_connection)
-        widget.Enabled = False
-
-    def init_widgets(self):
-        wired_state = self.net_manager.get_wired_state()
+    def _init_section(self):
+        wired_state = net_manager.get_wired_state()
         if wired_state:
             self.gui.show_net("wire")
             self.gui.wire.set_active(wired_state)
@@ -167,13 +74,109 @@ class TrayNetworkPlugin(object):
                 self.change_status_icon("cable")
             else:
                 self.change_status_icon("cable_disconnect")
-            #Dispatcher.connect("wired-change", self.set_wired_state)
         else:
             self.gui.remove_net("wire")
-        
-        wireless_state= self.net_manager.get_wireless_state()
+            return
+
+    def _init_signals(self):
+        self.gui.wire.connect_to_toggle(self._toggle_callback)
+        Dispatcher.connect("wired-device-add", lambda w,p: self.init_wired_signals())
+        self.init_wired_signals()
+
+    def init_wired_signals(self):
+        net_manager.device_manager.load_wired_listener(self)
+
+    def _toggle_callback(self):
+        if self.gui.wire.get_active():
+            net_manager.active_wired_device()
+        else:
+            net_manager.disactive_wired_device()
+
+    # Actions callback
+    def wired_device_active(self, widget, new_state, old_state, reason):
+        '''
+        wired device is active , state 100. button toggle on,
+        also change trayicon
+        '''
+        tray_log.debug("wired active")
+        self.gui.wire.set_active((True, True))
+        self.change_status_icon("cable")
+
+    def wired_device_deactive(self, widget, new_state, old_state, reason):
+        '''
+        wired device deavtive
+        . user disconnect, toggle off
+        . reason 40 means cable was unpluged, make it insensitive
+        '''
+        tray_log.debug("===wired deactive", new_state, reason)
+        if reason != 0:
+            self.gui.wire.set_active((True, False))
+            if reason == 40:
+                # cable unpluged
+                self.gui.wire.set_active((False, False))
+        self.check_net_state()
+
+    def wired_device_unavailable(self,  widget, new_state, old_state, reason):
+        '''
+        make it insensitive for sure
+        '''
+        tray_log.debug("wired unaviable")
+        self.gui.wire.set_active((False, False))
+        #self.wired_device_deactive(widget, new_state, old_state, reason)
+
+    def wired_device_available(self, widget, new_state, old_state, reason):
+        '''
+        Once device available, set sensitive to True
+        '''
+        tray_log.debug("wired available")
+        self.gui.wire.set_sensitive(True)
+        #if self.gui.wire.get_active():
+            #self.change_status_icon("cable")
+        #elif self.gui.wireless.get_active():
+            #self.change_status_icon("links")
+        #else:
+            #self.change_status_icon("cable_disconnect")
+        #if reason is not 0:
+        #    self.gui.wire.set_active((True, False))
+
+    def wired_activate_start(self, widget, new_state, old_state, reason):
+        '''
+        device start to connect
+        '''
+        tray_log.debug("===wired start")
+        if not self.gui.wire.get_active():
+            self.gui.wire.set_active((True, True))
+        self.change_status_icon("loading")
+
+    def wired_activate_failed(self, widget, new_state, old_state, reason):
+        '''
+        Just disconnect
+        '''
+        tray_log.debug("wired failed", reason)
+        self.gui.wire.set_active((True, False))
+        # force loading stop
+        self.check_net_state()
+
+class WirelessSection(BaseMixIn):
+
+    def __init__(self, gui):
+        self.gui = gui
+        self.this_gui = self.gui.wireless
+
+        self.this_device = None
+        self.this_connection = None
+        self.dialog_toggled_flag = False
+        self.focus_device = None
+        self.pwd_failed = False
+
+        self._init_signals()
+        self._init_state()
+
+    def _init_state(self):
+        wireless_state = net_manager.get_wireless_state()
         if wireless_state:
-            self.focus_device = self.net_manager.device_manager.wireless_devices[0]
+            # always focus on first device on init
+            self.focus_device = net_manager.device_manager.wireless_devices[0]
             self.gui.show_net("wireless")
             self.gui.wireless.set_active(wireless_state)
             if wireless_state[0] and wireless_state[1]:
@@ -181,161 +184,61 @@ class TrayNetworkPlugin(object):
             else:
                 if not self.gui.wire.get_active():
                     self.change_status_icon("wifi_disconnect")
-            #Dispatcher.connect("wireless-change", self.set_wireless_state)
-            Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
-            self.pwd_failed = False
         else:
             self.gui.remove_net("wireless")
-        
-        # Mobile init
-        if self.net_manager.get_mm_devices():
-            self.gui.show_net("mobile")
 
-        else:
-            self.gui.remove_net("mobile")
+    def _init_signals(self):
+        self.this_gui.connect_to_toggle(self._toggle_callback)
+        Dispatcher.connect("switch-device", self.switch_device)
+        Dispatcher.connect("wireless-device-add", self.wireless_device_added)
+        Dispatcher.connect("ap-added", self.wireless_ap_added)
+        Dispatcher.connect("ap-removed", self.wireless_ap_removed)
+        Dispatcher.connect("connect_by_ssid", self.connect_by_ssid)
+        self.init_wireless_signals()
 
-        def change_to_loading():
-            self.change_status_icon('loading')
-            self.let_rotate(True)
+    def init_wireless_signals(self):
+        net_manager.device_manager.load_wireless_listener(self)
+        self.gui.ap_tree.connect("single-click-item", self.ap_selected)
+        self.selected_item = None
 
-        if nm_module.nm_remote_settings.get_vpn_connections():
-            self.gui.show_net("vpn")
-            self.gui.vpn_list.connecting_cb = change_to_loading
-            self.active_vpn = None
-            self.no_vpn_connecting = False
-            if nm_module.nmclient.get_vpn_active_connection():
-                #for vpn_active in nm_module.nmclient.get_vpn_active_connection():
-                    #vpn_spec = nm_module.cache.get_spec_object(vpn_active.object_path)
-                    #self.connect_vpn_signals(vpn_spec)
-                self.gui.vpn.set_active((True, True))
-                self.tray_icon.set_icon_theme("links_vpn")
-        else:
-            self.gui.remove_net("vpn")
-        
-        if wired_state[0] and nm_module.nm_remote_settings.get_pppoe_connections():
-            self.gui.show_net("dsl")
-            self.gui.dsl_list.connecting_cb = change_to_loading
-            #self.active_dsl = None
-            #self.no_vpn_connecting = False
-            if nm_module.nmclient.get_pppoe_active_connection():
-                self.gui.dsl.set_active((True, True))
-                self.tray_icon.set_icon_theme("cable")
-        else:
-            self.gui.remove_net("dsl")
+    def ap_selected(self, widget, item, column, x, y):
+        '''
+        selected item when user click item
+        '''
+        self.selected_item = item
 
-
-        #if nm_module.nmclient.get_pppoe_connections():
-            #self.gui.dsl.set_active((True, True))
-
-        
-    def toggle_wired(self):
-        if self.gui.wire.get_active():
-            self.net_manager.active_wired_device(self.active_wired)
-        else:
-            self.net_manager.disactive_wired_device(self.disactive_wired)
-
-    def init_wired_signals(self):
-        net_manager.device_manager.load_wired_listener(self)
-
-    def wired_device_active(self, widget, new_state, old_state, reason):
-        self.active_wired()
-
-    def wired_device_deactive(self, widget, new_state, old_state, reason):
-        #print widget, reason
-        #self.gui.wire.set_sensitive(True)
-        print "tray:wired_device_deactive"
-        print "wired", self.gui.wire.get_active()
-        print "wireless", self.gui.wireless.get_active()
-
-        if any([d.get_state() == 100 for d in net_manager.wired_devices]):
-            self.change_status_icon("cable")
-        else:
-            if any([d.get_state() == 100 for d in net_manager.wireless_devices]):
-                self.change_status_icon("links")
-            else:
-                self.change_status_icon("cable_disconnect")
-            if reason != 0:
-                self.gui.wire.set_active((True, False))
-                if reason == 40:
-                    self.gui.wire.set_active((False, False))
-
-    def wired_device_unavailable(self,  widget, new_state, old_state, reason):
-        self.wired_device_deactive(widget, new_state, old_state, reason)
-
-    def wired_device_available(self, widget, new_state, old_state, reason):
-        self.gui.wire.set_sensitive(True)
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        else:
-            self.change_status_icon("cable_disconnect")
-        #if reason is not 0:
-        #    self.gui.wire.set_active((True, False))
-
-    def wired_activate_start(self, widget, new_state, old_state, reason):
-        if not self.gui.wire.get_active():
-            self.gui.wire.set_active((True, True))
-        self.change_status_icon("loading")
-        self.let_rotate(True)
-
-    def wired_activate_failed(self, widget, new_state, old_state, reason):
-        #Dispatcher.connect("wired_change", self.wired_changed_cb)
-        self.wired_device_deactive(widget, new_state, old_state, reason)
-
-    def active_wired(self):
-        """
-        after active
-        """
-        self.gui.wire.set_active((True, True))
-        self.change_status_icon("cable")
-        self.let_rotate(False)
-    
-    def tray_resize(self, widget, height):
-        pass
-
-    def disactive_wired(self):
-        """
-        after diactive
-        """
-        #if self.net_manager.get_wired_state()[0]:
-        #    self.gui.wire.set_active((True, False))
-
-        if self.gui.wire.get_active():
-            self.change_status_icon("wired")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        else:
-            self.change_status_icon("cable_disconnect")
-    #####=======================Wireless
     def switch_device(self, widget, device):
-        print "switch device in tray"
+        #print "switch device in tray"
+        '''
+        this function is used on multi device support
+        '''
         self.focus_device = device
         if self.gui.device_tree:
             self.gui.device_tree.visible_items[0].set_index(device)
-        self.toggle_wireless()
-
-    def __get_ssid_list(self):
-        return self.net_manager.get_ap_list()
+        self._toggle_callback()
 
     def wireless_device_added(self, widget, path):
+        tray_log.info("one wireless device added")
         self.init_wireless_signals()
-        if len(self.net_manager.device_manager.wireless_devices) > 1:
+        if len(net_manager.device_manager.wireless_devices) > 1:
             self.gui.add_switcher()
 
     def init_tree(self):
-        print "init+tree"
-        self.ap_list = self.net_manager.get_ap_list(self.focus_device)
+        try:
+            self.ap_list = net_manager.get_ap_list(self.focus_device)
+        except Exception,e:
+            tray_log.error("no self.focus_device")
+            raise e
         self.gui.set_ap(self.ap_list)
 
-    def toggle_wireless(self):
+    def _toggle_callback(self):
         if self.gui.wireless.get_active():
             self.init_tree()
-            if len(self.net_manager.device_manager.wireless_devices) > 1:
+            if len(net_manager.device_manager.wireless_devices) > 1:
                 self.gui.add_switcher()
-            index = self.net_manager.get_active_connection(self.ap_list, self.focus_device)
+            index = net_manager.get_active_connection(self.ap_list, self.focus_device)
             if index:
-                print "Debug", index
+                tray_log.info(index)
                 self.gui.set_active_ap(index, True)
             else:
                 self.activate_wireless(self.focus_device)
@@ -345,32 +248,20 @@ class TrayNetworkPlugin(object):
             self.gui.remove_switcher()
             Dispatcher.request_resize()
             
-            def device_disactive():
-                pass
-
             if self.gui.wire.get_active():
                 self.change_status_icon("cable")
             else:
                 self.change_status_icon("wifi_disconnect")
-            self.net_manager.disactive_wireless_device(device_disactive)
+            net_manager.disactive_wireless_device()
 
-    def init_wireless_signals(self):
-        net_manager.device_manager.load_wireless_listener(self)
-        self.gui.ap_tree.connect("single-click-item", self.ap_selected)
-        self.selected_item = None
-        #TODO signals 
-
-    def ap_selected(self, widget, item, column, x, y):
-        self.selected_item = item
-    
     # wireless device singals 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
+        tray_log.debug("wireless device active")
         self.change_status_icon("links")
-        #print "this device state:", widget.is_active()
         self.set_active_ap()
-        self.let_rotate(False)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
+        tray_log.debug("==wireless deactive", new_state, old_state, reason)
         self.this_connection = None
         self.gui.wireless.set_sensitive(True)
         if net_manager.get_wireless_state()[1]:
@@ -381,19 +272,20 @@ class TrayNetworkPlugin(object):
             self.change_status_icon("wifi_disconnect")
 
         if reason == 36:
-            print "some device removed"
-            self.net_manager.init_devices()
+            net_manager.init_devices()
             self.gui.remove_switcher()
-            self.focus_device = self.net_manager.wireless_devices[0]
+            self.focus_device = net_manager.wireless_devices[0]
 
         if reason == 39:
-            print "user close"
+            #print "user close"
             self.gui.wireless.set_active((True, False))
 
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
+        tray_log.debug("unaviable")
         self.gui.wireless.set_active((False, False))
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
+        tray_log.debug("==wireless start")
         if old_state == 120:
             wifi = nm_module.cache.get_spec_object(widget)
             wifi.device_wifi_disconnect()
@@ -410,23 +302,30 @@ class TrayNetworkPlugin(object):
 
         self.gui.wireless.set_active((True, True))
         self.change_status_icon("loading")
-        self.let_rotate(True)
         self.this_device = widget
-        #self.timer.Enabled = True
-        #self.timer.Interval = WAIT_TIME
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
+        tray_log.debug("wireless failed")
 
         if reason == 7:
             self.toggle_dialog(self.this_connection, "wpa")
             # pwd failed
+    def wireless_ap_added(self, widget):
+        #print "wireless_ap_added in tray"
+        if self.gui.wireless.get_active():
+            self.gui.wireless.set_active((True, True), emit=True)
+
+    def wireless_ap_removed(self, widget):
+        tray_log.info("wireless ap removed in tray")
+        if self.gui.wireless.get_active():
+            self.gui.wireless.set_active((True, True), emit=True)
 
     def connect_by_ssid(self, widget, ssid, ap):
-        connection = self.net_manager.connect_wireless_by_ssid(ssid)
+        connection = net_manager.connect_wireless_by_ssid(ssid)
         self.ap = ap
         print self.ap.object_path
         if connection and not isinstance(connection, NMRemoteConnection):
-            security = self.net_manager.get_sec_ap(self.ap)
+            security = net_manager.get_sec_ap(self.ap)
             if security:
                 print "NMCONNECTION", security, self.ap.get_hw_address()
                 self.toggle_dialog(connection, security)
@@ -454,8 +353,6 @@ class TrayNetworkPlugin(object):
 
     def cancel_ask_pwd(self):
         self.dialog_toggled_flag = False
-        self.timer.Enabled = False
-        self.timer.Interval = WAIT_TIME
         if self.this_device:
             self.this_device.nm_device_disconnect()
         
@@ -467,30 +364,139 @@ class TrayNetworkPlugin(object):
         
         if hasattr(self, "ap"):
             if self.ap:
-                self.net_manager.save_and_connect(pwd, connection, self.ap)
+                net_manager.save_and_connect(pwd, connection, self.ap)
             else:
-                self.net_manager.save_and_connect(pwd, connection, None)
+                net_manager.save_and_connect(pwd, connection, None)
         else:
-            self.net_manager.save_and_connect(pwd, connection, None)
+            net_manager.save_and_connect(pwd, connection, None)
             
     def set_active_ap(self):
-        index = self.net_manager.get_active_connection(self.ap_list, self.focus_device)
-        print "active index", index
+        index = net_manager.get_active_connection(self.ap_list, self.focus_device)
+        tray_log.info("acitve_index"%index)
         self.gui.set_active_ap(index, True)
 
     def activate_wireless(self, device):
         """
         try to auto active wireless
         """
-        self.net_manager.active_wireless_device(device)
+        net_manager.active_wireless_device(device)
 
+class MobileSection(BaseMixIn):
 
-    # TODO VPN
+    def __init__(self, gui):
+        self.gui = gui
+        self.this_gui = self.gui.mobile
+        
+        self._init_signals()
+        self._init_section()
 
-    def on_vpn_setting_change(self, name, event, conn):
-        #connection = nm_module.cache.getobject(path)
-        #connection.connect("removed", self.vpn_connection_remove_cb)
+    def _init_section(self):
+        if net_manager.get_mm_devices():
+            self.gui.show_net("mobile")
+        else:
+            self.gui.remove_net("mobile")
 
+    def _init_signals(self):
+        Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals())
+
+    def init_mm_signals(self):
+        net_manager.device_manager.load_mm_listener(self)
+
+    def mm_device_active(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("cable")
+
+    def mm_device_deactive(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
+        else:
+            self.change_status_icon("cable_disconnect")
+
+    def mm_device_unavailable(self,  widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+
+    def mm_activate_start(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("loading")
+
+    def mm_activate_failed(self, widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+        if self.gui.wire.get_active():
+            self.change_status_icon("cable")
+        elif self.gui.wireless.get_active():
+            self.change_status_icon("links")
+        else:
+            self.change_status_icon("cable_disconnect")
+
+    def mobile_toggle(self):
+        if self.gui.mobile.get_active():
+            self.mm_device = net_manager.connect_mm_device()
+        else:
+            net_manager.disconnect_mm_device()
+    
+    def timer_count_down_finish(self, widget):
+        connections = nm_module.nmclient.get_active_connections()
+        active_connection = connections[-1]
+        
+        self.this_connection = active_connection.get_connection()
+        self.this_device.nm_device_disconnect()
+        self.toggle_dialog(self.this_connection)
+        widget.Enabled = False
+        
+    def toggle_wired(self):
+        if self.gui.wire.get_active():
+            net_manager.active_wired_device()
+        else:
+            net_manager.disactive_wired_device()
+
+class VPNSection(BaseMixIn):
+
+    def __init__(self, gui):
+        self.gui = gui
+        self.this_gui = self.gui.vpn
+
+        self.this_setting = None
+
+        self._init_signals()
+        self._init_section()
+
+    def _init_section(self):
+        if nm_module.nm_remote_settings.get_vpn_connections():
+            self.gui.show_net("vpn")
+            self.gui.vpn_list.connecting_cb = lambda:self.change_status_icon('loading')
+            self.active_vpn = None
+            self.no_vpn_connecting = False
+            if nm_module.nmclient.get_vpn_active_connection():
+                self.gui.vpn.set_active((True, True))
+                self.tray_icon.set_icon_theme("links_vpn")
+
+            tray_log.info("vpn section show and start")
+        else:
+            self.gui.remove_net("vpn")
+
+    def _init_signals(self):
+        # vpn signals 
+        self.this_gui.connect_to_toggle(self._toggle_callback)
+        event_manager.add_callback("vpn-connecting", self.__on_vpn_connecting)
+        event_manager.add_callback('vpn-connected', self.__vpn_active_callback)
+        event_manager.add_callback('vpn-disconnected', self.__vpn_failed_callback)
+        event_manager.add_callback('vpn-user-disconnect', self.__on_user_stop_vpn)
+        # from nm_remote_connection
+        event_manager.add_callback('vpn-connection-removed', self.__vpn_connection_remove_cb)
+        # from nm_remote_setting
+        event_manager.add_callback('vpn-new-added', self.__on_vpn_setting_change)
+        Dispatcher.connect('vpn-start', self.vpn_start_cb)
+
+    
+    def __on_vpn_setting_change(self, name, event, conn):
+        '''
+        dss user add vpn setting
+        show vpn if at least one setting
+        '''
+        tray_log.debug("vpn setting added")
         if self.gui.vpn_state == False:
             self.gui.show_net("vpn")
             return
@@ -498,27 +504,25 @@ class TrayNetworkPlugin(object):
         if self.gui.vpn.get_active():
             self.gui.vpn.set_active((True, True), emit=True)
 
-    def vpn_connection_remove_cb(self, name, event, data):
+    def __vpn_connection_remove_cb(self, name, event, data):
+
+        tray_log.debug("vpn connection was destroyed")
         if not nm_module.nm_remote_settings.get_vpn_connections():
             self.gui.remove_net('vpn')
             return
         if self.gui.vpn.get_active():
             self.gui.vpn.set_active((True, True), emit=True)
 
-        #print "setting_added"
-        # dss vpn setting add or remove will call this function
-
     def __init_vpn_list(self):
-        #print "init vpn list in tray"
         self.gui.vpn_list.clear()
         cons = nm_module.nm_remote_settings.get_vpn_connections()
         self.gui.vpn_list.add_items(cons)
         self.gui.queue_draw()
 
-    def toggle_vpn(self):
+    def _toggle_callback(self):
         if self.gui.vpn.get_active():
+            tray_log.info("*vpn toggle on*")
             self.__init_vpn_list()
-
             vpn_active = nm_module.nmclient.get_vpn_active_connection()
             if vpn_active:
                 try:
@@ -527,14 +531,14 @@ class TrayNetworkPlugin(object):
                         self.gui.vpn_list.set_active_by(index)
                         return
                 except Exception, e:
-                    print e
+                    tray_log.error(e)
             else:
                 pass
-                #for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
-                    #active_conn.vpn_auto_connect(self.vpn_active, self.vpn_stop, self.vpn_connecting)
         else:
+            tray_log.info("*vpn toggle off*")
             self.gui.vpn_list.clear()
-            self.__vpn_failed_callback(None, None, None)
+            self.check_net_state()
+            self.this_setting = None
             for active in nm_module.nmclient.get_anti_vpn_active_connection():
                 active.device_vpn_disconnect()
 
@@ -543,55 +547,70 @@ class TrayNetworkPlugin(object):
                 nm_module.nmclient.deactive_connection_async(vpn.object_path)
         Dispatcher.request_resize()
 
-    def on_user_stop_vpn(self, name, event, data):
+    def __on_user_stop_vpn(self, name, event, data):
+        
+        tray_log.debug("user stop vpn")
         self.gui.vpn.set_active((True, False))
 
-    def on_vpn_force_stop(self, widget):
-        if self.active_vpn:
-            return
-        self.__vpn_failed_callback(None)
-        self.no_vpn_connecting = True
-
     def vpn_start_cb(self, widget, path):
+        tray_log.debug("vpn_start")
         vpn_active = nm_module.cache.get_spec_object(path)
         if vpn_active.get_vpnstate() < 5:
-            self.on_vpn_connecting(None, None, path)
+            self.__on_vpn_connecting(None, None, path)
 
-    def on_vpn_connecting(self, name, event, path):
-        print "tray vpn connecting"
+    def __on_vpn_connecting(self, name, event, path):
+        tray_log.debug("vpn connecting start")
+        #print "tray vpn connecting"
         if not self.gui.vpn.get_active():
             self.gui.vpn.set_active((True, True))
 
         self.change_status_icon('loading')
-        self.let_rotate(True)
         self.this_setting = nm_module.cache.getobject(path).get_connection().object_path
 
     def __vpn_active_callback(self, name, event, path):
         #print name, data
+        tray_log.debug("==Vpn active")
         if self.gui.wire.get_active():
             self.change_status_icon("cable_vpn")
         elif self.gui.wireless.get_active():
             self.change_status_icon('links_vpn')
 
         index = map(lambda i: i.connection.object_path, self.gui.vpn_list).index(self.this_setting)
-
         self.gui.vpn_list.set_active_by(index)
         return 
 
-
     def __vpn_failed_callback(self, name, event, path):
-        print "vpn failed callback"
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon('links')
+        tray_log.debug("==Vpn active failed")
+        #print "vpn failed callback"
+        self.check_net_state()
         self.this_setting = None
+
+class DSLSection(BaseMixIn):
+
+    def __init__(self, gui):
+        self.gui = gui
+        self.this_gui = self.gui.vpn
+        
+        #self._init_signals()
+        #self._init_section()
+
+    def _init_section(self):
+        wired_state = net_manager.get_wired_state()
+        if wired_state[0] and nm_module.nm_remote_settings.get_pppoe_connections():
+            self.gui.show_net("dsl")
+            self.gui.dsl_list.connecting_cb = lambda:self.change_status_icon('loading')
+            #self.active_dsl = None
+            #self.no_vpn_connecting = False
+            if nm_module.nmclient.get_pppoe_active_connection():
+                self.gui.dsl.set_active((True, True))
+                self.tray_icon.set_icon_theme("cable")
+        else:
+            self.gui.remove_net("dsl")
 
     # dsl settings
     def device_active(self, name, event, data):
         self.gui.dsl.set_active((True, True), emit=True)
         self.change_status_icon("cable")
-        self.let_rotate(False)
 
     def device_unavailable(self, name, event, data):
         print "device unavailable"
@@ -614,11 +633,10 @@ class TrayNetworkPlugin(object):
         if not self.gui.dsl.get_active():
             self.gui.dsl.set_active((True, True))
         self.change_status_icon("loading")
-        self.let_rotate(True)
 
 
     def activate_failed(self, name, event, data):
-        print "device failded"
+        #print "device failded"
         new_state, old_state, reason = data
         if self.gui.wireless.get_active():
             self.change_status_icon('links')
@@ -627,18 +645,6 @@ class TrayNetworkPlugin(object):
         if reason == 13:
             self.dsl.set_active(False)
 
-    def __init_dsl_signals(self):
-        signal_list = ["device_active",
-                              "device_deactive",
-                              "device_unavailable",
-                              "activate_start",
-                              "activate_failed"]
-
-        for signal in signal_list:
-            event_manager.add_callback(('dsl_%s'%signal).replace("_", "-"), getattr(self, signal))
-
-        event_manager.add_callback('dsl-new-added', self.on_dsl_setting_change)
-        event_manager.add_callback('dsl-connection-removed', self.dsl_connection_remove_cb)
 
     def on_dsl_setting_change(self, name, event, conn):
         if self.gui.dsl_state == False:
@@ -683,18 +689,89 @@ class TrayNetworkPlugin(object):
                 wired_device.nm_device_disconnect()
         
         Dispatcher.request_resize()
-
             
+class TrayNetworkPlugin(object):
+    sections = [WireSection, 
+                WirelessSection,
+                MobileSection,
+                VPNSection,
+                DSLSection
+                ]
+    def __init__(self):
+
+        self.menu_showed = False
+        self.need_auth_flag = False
+        self.this_device = None
+        self.this_connection = None
+        self.dialog_toggled_flag = False
+        
+        # TODO add section signal init
+
+    def _init_sections(self):
+        event_manager.add_callback('change-status-icon', self.change_status_icon)
+        self.section_instance = []
+        for section in self.sections:
+            self.section_instance.append(section(self.gui))
+
+    def _init_tray_signals(self):
+        Dispatcher.connect("request_resize", self.request_resize)
+        Dispatcher.connect("recheck-section", self.recheck_sections)
+        Dispatcher.connect("service_start_do_more", self.service_start_do_more)
+        self.gui.button_more.connect("clicked", self.more_setting_callback)
+
+    def more_setting_callback(self, button):
+        '''
+        show dss main program
+        '''
+        try:
+            self.this.hide_menu()
+            Popen(("deepin-system-settings", "network"))
+        except Exception, e:
+            print e
+            pass
+
+    def request_resize(self, widget):
+        """
+        resize this first
+        """
+        self.this.resize(1,1)
+        # dirty way to refresh
+        if self.menu_showed:
+            self.this.hide_menu()
+            self.show_menu()
+            self.this.show_menu()
+
+    def service_start_do_more(self, widget):
+        self.init_wired_signals()
+        self.init_wireless_signals()
+        self.init_mm_signals()
+
+    def recheck_sections(self, widget, index):
+        #print "recheck sections"
+        map(lambda s: s._init_section(), self.section_instance)
+        Dispatcher.emit("request-resize")
+
     # tray settings
+    def init_values(self, this_list):
+        self.this_list = this_list
+        self.this = self.this_list[0]
+        self.tray_icon = self.this_list[1]
+
+        self.gui = TrayUI()
+        net_manager.init_devices()
+        self._init_tray_signals()
+        self._init_sections()
     
-    def change_status_icon(self, icon_name):
+    def change_status_icon(self, name, event, data):
         """
         change status icon state
         """
-        self.timer.Enabled = False
-        self.timer.Interval = WAIT_TIME
+        tray_log.debug("change status icon", data)
+        icon_name = data
         self.let_rotate(False)
         self.tray_icon.set_icon_theme(icon_name)
+        if icon_name == 'loading':
+            self.let_rotate(True)
 
     def let_rotate(self, rotate_check, interval=100):
         self.tray_icon.set_rotate(rotate_check, interval)
@@ -705,45 +782,21 @@ class TrayNetworkPlugin(object):
     def insert(self):
         return 3
 
-    def more_setting(self, button):
-        try:
-            self.this.hide_menu()
-            Popen(("deepin-system-settings", "network"))
-        except Exception, e:
-            print e
-            pass
-        
     def id(self):
         return "tray-network_plugin"
 
     def plugin_widget(self):
         return self.gui 
-    
-    def tray_show_more(self, widget):
-        print "tray show more"
 
     def show_menu(self):
         self.menu_showed = True
         height = self.gui.get_widget_height()
         self.this.set_size_request(185, height + 46)
-        #Dispatcher.request_resize()
 
     def hide_menu(self):
         self.menu_showed = False
         if self.gui.wireless.get_active() and hasattr(self, "ap_list"):
             self.gui.reset_tree()
-
-    def request_resize(self, widget):
-        """
-        resize this first
-        """
-        self.this.resize(1,1)
-        if self.menu_showed:
-            self.this.hide_menu()
-            #self.this.set_size_request(185, height + 40)
-            self.show_menu()
-            self.this.show_menu()
-        #height = self.gui.get_widget_height()
 
 def return_insert():
     return 3

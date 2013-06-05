@@ -41,6 +41,7 @@ class NetworkService(dbus.service.Object):
 
         dbus.service.Object.__init__(self, bus_name, NETWORK_PATH)
 
+    '''
     @dbus.service.method(NETWORK_INTERFACE, in_signature = "", out_signature = "")
     def fix_unmanaged(self):
         lines = []
@@ -67,12 +68,11 @@ class NetworkService(dbus.service.Object):
                 traceback.print_exc()
 
         os.system("service network-manager restart")
-
+    '''
     ### Fix me, need to test
     @dbus.service.method(NETWORK_INTERFACE, in_signature = "s", out_signature = "s")
     def getget(self, address):
         return address
-
 
     @dbus.service.method(NETWORK_INTERFACE, in_signature = "s", out_signature = "s")
     def get_ap_sec(self, address):
@@ -102,7 +102,6 @@ class NetworkService(dbus.service.Object):
         print "DeviceChanged emited", device_index
         return
 
-    
     @dbus.service.method(NETWORK_INTERFACE,
                          in_signature='i', out_signature='')
     def emitDeviceChanged(self, index):

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-03 15:20+0800\n"
+"POT-Creation-Date: 2013-06-05 10:41+0800\n"
 "PO-Revision-Date: 2012-12-29 11:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,13 +17,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/search_keyword.py:29 ../src/display_view.py:276
-<<<<<<< HEAD
 msgid "Display"
-msgstr ""
-=======
-msgid "Monitor Display"
-msgstr "顯示器顯示設定值"
->>>>>>> b5cca4270e25a1f6d14b10e208c350ea7e739b42
+msgstr "顯示"
 
 #: ../src/search_keyword.py:30 ../src/display_view.py:283
 msgid "Monitor"
@@ -38,18 +33,10 @@ msgid "Rotation"
 msgstr "旋轉"
 
 #: ../src/search_keyword.py:33 ../src/display_view.py:371
-<<<<<<< HEAD
 #: ../src/display_view.py:380
-=======
-msgid "Monitor Brightness"
-msgstr "螢幕亮度設定值"
-
-#: ../src/search_keyword.py:34 ../src/display_view.py:380
->>>>>>> b5cca4270e25a1f6d14b10e208c350ea7e739b42
 msgid "Brightness"
 msgstr "螢幕亮度"
 
-<<<<<<< HEAD
 #: ../src/search_keyword.py:34 ../src/display_view.py:398
 msgid "Auto-Brightness"
 msgstr ""
@@ -61,19 +48,6 @@ msgstr ""
 #: ../src/search_keyword.py:36 ../src/display_view.py:431
 msgid "Lock screen automatically"
 msgstr ""
-=======
-#: ../src/search_keyword.py:35
-msgid "Auto Adjust Monitor Brightness"
-msgstr "自動調整螢幕亮度設定值"
-
-#: ../src/search_keyword.py:36 ../src/display_view.py:412
-msgid "Close Monitor"
-msgstr "關閉顯示器"
-
-#: ../src/search_keyword.py:37
-msgid "Auto Lock User Monitor Screen"
-msgstr "自動鎖定使用者的畫面"
->>>>>>> b5cca4270e25a1f6d14b10e208c350ea7e739b42
 
 #: ../src/search_keyword.py:37 ../src/display_view.py:425
 #: ../src/display_view.py:446
@@ -89,21 +63,12 @@ msgid "Extend Display"
 msgstr "延伸顯示"
 
 #: ../src/display_view.py:226
-<<<<<<< HEAD
 msgid "Only shown in display 1"
 msgstr ""
 
 #: ../src/display_view.py:227
 msgid "Only shown in display 2"
 msgstr ""
-=======
-msgid "Only Monitor 1 shown"
-msgstr "僅顯示第 1 個顯示器"
-
-#: ../src/display_view.py:227
-msgid "Only Monitor 2 shown"
-msgstr "僅顯示第 2 個顯示器"
->>>>>>> b5cca4270e25a1f6d14b10e208c350ea7e739b42
 
 #: ../src/display_view.py:228
 msgid "Normal"
@@ -140,13 +105,8 @@ msgid "Never"
 msgstr "永不"
 
 #: ../src/display_view.py:296
-<<<<<<< HEAD
 msgid "Relevant Settings"
 msgstr ""
-=======
-msgid "Relative Settings"
-msgstr "關聯設定值"
->>>>>>> b5cca4270e25a1f6d14b10e208c350ea7e739b42
 
 #: ../src/display_view.py:302
 #, python-format
@@ -159,25 +119,8 @@ msgid "<span foreground=\"%s\" underline=\"single\">Power</span>"
 msgstr "<span foreground=\"%s\" underline=\"single\">電源</span>"
 
 #: ../src/display_view.py:356
-<<<<<<< HEAD
 msgid "Multi-Monitor"
 msgstr ""
-=======
-msgid "Multi-Monitors"
-msgstr "多個顯示器"
-
-#: ../src/display_view.py:398
-msgid "Auto Adjust Brightness"
-msgstr "自動調整螢幕亮度"
-
-#: ../src/display_view.py:425
-msgid "Monitor Screen Lock"
-msgstr "鎖定畫面"
-
-#: ../src/display_view.py:431
-msgid "Auto Lock User Screen"
-msgstr "自動鎖定使用者畫面"
->>>>>>> b5cca4270e25a1f6d14b10e208c350ea7e739b42
 
 #: ../src/display_view.py:497
 msgid "Reset to default value"
@@ -221,7 +164,6 @@ msgstr "已變更旋轉設定值為 %s"
 
 #: ../src/display_view.py:639
 #, python-format
-<<<<<<< HEAD
 msgid "Changed multi-monitor mode to %s"
 msgstr ""
 
@@ -234,17 +176,48 @@ msgstr ""
 #, python-format
 msgid "Idle time before locking display has been changed to %s"
 msgstr ""
-=======
-msgid "Changed multiply monitors mode to %s"
-msgstr "已變更多重顯示器模式為 %s"
 
-#: ../src/display_view.py:644
-#, python-format
-msgid "Changed close monitor duration to %s"
-msgstr "已變更顯示器關閉持續時間為 %s"
+#~ msgid "Monitor Display"
+#~ msgstr "顯示器顯示設定值"
 
-#: ../src/display_view.py:649
-#, python-format
-msgid "Changed lock display duration to %s"
-msgstr "已變更書面鎖定持續時間為 %s"
->>>>>>> b5cca4270e25a1f6d14b10e208c350ea7e739b42
+#~ msgid "Monitor Brightness"
+#~ msgstr "螢幕亮度設定值"
+
+#~ msgid "Auto Adjust Monitor Brightness"
+#~ msgstr "自動調整螢幕亮度設定值"
+
+#~ msgid "Close Monitor"
+#~ msgstr "關閉顯示器"
+
+#~ msgid "Auto Lock User Monitor Screen"
+#~ msgstr "自動鎖定使用者的畫面"
+
+#~ msgid "Only Monitor 1 shown"
+#~ msgstr "僅顯示第 1 個顯示器"
+
+#~ msgid "Only Monitor 2 shown"
+#~ msgstr "僅顯示第 2 個顯示器"
+
+#~ msgid "Relative Settings"
+#~ msgstr "關聯設定值"
+
+#~ msgid "Multi-Monitors"
+#~ msgstr "多個顯示器"
+
+#~ msgid "Auto Adjust Brightness"
+#~ msgstr "自動調整螢幕亮度"
+
+#~ msgid "Monitor Screen Lock"
+#~ msgstr "鎖定畫面"
+
+#~ msgid "Auto Lock User Screen"
+#~ msgstr "自動鎖定使用者畫面"
+
+#~ msgid "Changed multiply monitors mode to %s"
+#~ msgstr "已變更多重顯示器模式為 %s"
+
+#~ msgid "Changed close monitor duration to %s"
+#~ msgstr "已變更顯示器關閉持續時間為 %s"
+
+#~ msgid "Changed lock display duration to %s"
+#~ msgstr "已變更書面鎖定持續時間為 %s"

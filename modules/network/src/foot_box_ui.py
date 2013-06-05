@@ -49,7 +49,7 @@ class FootBox(gtk.HBox):
         event_manager.add_callback("update-delete-button", self.__on_update_delete_button)
 
     def __on_update_delete_button(self, name, obj, data):
-        self.btn_delete.set_child_visible(data)
+        #self.btn_delete.set_child_visible(data)
         self.queue_draw()
 
     def expose_line(self, widget, event):

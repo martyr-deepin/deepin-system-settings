@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 09:53+0800\n"
+"POT-Creation-Date: 2013-06-05 10:37+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -15,99 +15,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: ../src/session_view.py:51 ../src/search_keyword.py:29
-msgid "Application"
-msgstr ""
-
-#: ../src/session_view.py:51
-msgid "Description"
-msgstr ""
-
-#: ../src/session_view.py:51
-msgid "Exec"
-msgstr ""
-
-#: ../src/session_view.py:64
-msgid "New"
-msgstr ""
-
-#: ../src/session_view.py:65
-msgid "Delete"
-msgstr ""
-
-#: ../src/app_asso_view.py:61
-msgid "Default Applications"
-msgstr ""
-
-#: ../src/app_asso_view.py:62 ../src/media_view.py:68
-msgid "Autoplay"
-msgstr ""
-
-#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
-msgid "Autostart"
-msgstr ""
-
-#: ../src/app_view.py:42
-msgid "Web"
-msgstr ""
-
-#: ../src/app_view.py:43
-msgid "Mail"
-msgstr ""
-
-#: ../src/app_view.py:44
-msgid "Editor"
-msgstr ""
-
-#: ../src/app_view.py:45
-msgid "Music"
-msgstr ""
-
-#: ../src/app_view.py:46
-msgid "Video"
-msgstr ""
-
-#: ../src/app_view.py:47
-msgid "Photo"
-msgstr ""
-
-#: ../src/app_view.py:48
-#, fuzzy
-msgid "Terminal"
-msgstr "終端"
-
-#: ../src/widget.py:44
-msgid "Autostart app"
-msgstr ""
-
-#: ../src/widget.py:53
-msgid "OK"
-msgstr ""
-
-#: ../src/widget.py:54
-msgid "Cancel"
-msgstr ""
-
-#: ../src/widget.py:87
-msgid "Name:"
-msgstr ""
-
-#: ../src/widget.py:89
-msgid "Exec:"
-msgstr ""
-
-#: ../src/widget.py:91
-msgid "Comment:"
-msgstr ""
-
-#: ../src/search_keyword.py:30
-msgid "Media"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
-msgstr ""
 
 #: ../src/media_view.py:53
 msgid "CD"
@@ -145,6 +52,10 @@ msgstr ""
 msgid "open folder"
 msgstr ""
 
+#: ../src/media_view.py:68 ../src/app_asso_view.py:62
+msgid "Autoplay"
+msgstr ""
+
 #: ../src/media_view.py:79
 msgid "more option"
 msgstr ""
@@ -163,4 +74,93 @@ msgstr ""
 
 #: ../src/treeview.py:145
 msgid "not running"
+msgstr ""
+
+#: ../src/app_view.py:42
+msgid "Web"
+msgstr ""
+
+#: ../src/app_view.py:43
+msgid "Mail"
+msgstr ""
+
+#: ../src/app_view.py:44
+msgid "Editor"
+msgstr ""
+
+#: ../src/app_view.py:45
+msgid "Music"
+msgstr ""
+
+#: ../src/app_view.py:46
+msgid "Video"
+msgstr ""
+
+#: ../src/app_view.py:47
+msgid "Photo"
+msgstr ""
+
+#: ../src/app_view.py:48
+#, fuzzy
+msgid "Terminal"
+msgstr "終端"
+
+#: ../src/app_asso_view.py:61
+msgid "Default Applications"
+msgstr ""
+
+#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
+msgid "Autostart"
+msgstr ""
+
+#: ../src/search_keyword.py:29 ../src/session_view.py:51
+msgid "Application"
+msgstr ""
+
+#: ../src/search_keyword.py:30
+msgid "Media"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Description"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Exec"
+msgstr ""
+
+#: ../src/session_view.py:64
+msgid "New"
+msgstr ""
+
+#: ../src/session_view.py:65
+msgid "Delete"
+msgstr ""
+
+#: ../src/widget.py:44
+msgid "Autostart app"
+msgstr ""
+
+#: ../src/widget.py:53
+msgid "OK"
+msgstr ""
+
+#: ../src/widget.py:54
+msgid "Cancel"
+msgstr ""
+
+#: ../src/widget.py:87
+msgid "Name:"
+msgstr ""
+
+#: ../src/widget.py:89
+msgid "Exec:"
+msgstr ""
+
+#: ../src/widget.py:91
+msgid "Comment:"
 msgstr ""

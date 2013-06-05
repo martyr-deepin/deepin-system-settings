@@ -37,6 +37,8 @@ from container import MyToggleButton as SwitchButton
 from shared_methods import net_manager
 from nm_modules import nm_module
 
+from tray_log import tray_log
+
 WIDGET_HEIGHT = 22
 
 ALIGN_SPACING = 28
@@ -49,29 +51,19 @@ BG_COLOR = color_hex_to_cairo(bg_color)
 #net_manager = NetManager()
 class TrayUI(gtk.VBox):
 
-    def __init__(self, 
-                 wired_toggle_cb,
-                 wireless_toggle_cb,
-                 mobile_toggle_cb,
-                 vpn_toggle_cb,
-                 dsl_toggle_cb):
+    def __init__(self):
         gtk.VBox.__init__(self, spacing=0)
-        self.wired_toggle = wired_toggle_cb
-        self.wireless_toggle = wireless_toggle_cb
-        self.mobile_toggle = mobile_toggle_cb
-        self.vpn_toggle = vpn_toggle_cb
-        self.dsl_toggle = dsl_toggle_cb
         self.init_ui()
         self.active_ap_index = []
         self.all_showed = False
 
     def init_ui(self):
-        self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("Wired"), self.wired_toggle)
-        self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), self.wireless_toggle)
-        self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"), self.mobile_toggle)
+        self.wire = Section(app_theme.get_pixbuf("network/cable.png"), _("Wired"))
+        self.wireless = Section(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"))
+        self.mobile = Section(app_theme.get_pixbuf("network/3g.png"), _("Mobile Network"))
         # vpn
-        self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), self.vpn_toggle)
-        self.dsl = Section(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), self.dsl_toggle)
+        self.vpn = Section(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"))
+        self.dsl = Section(app_theme.get_pixbuf("network/dsl.png"), _("DSL"))
 
         self.ssid_list = []
         self.tree_box = gtk.VBox(spacing=0)
@@ -83,7 +75,6 @@ class TrayUI(gtk.VBox):
 
         self.vpn_list = ConList()
         self.dsl_list = DSLConList()
-        #self.more_button = MoreButton("more", self.ap_tree, self.resize_tree)
 
         self.wire_box = self.section_box([self.wire])
         self.wireless_box = self.section_box([self.wireless, self.tree_box])
@@ -115,12 +106,6 @@ class TrayUI(gtk.VBox):
                 height += self.ap_tree.get_size_request()[1]
             if self.device_tree:
                 height += 22
-                #if len(self.ap_tree.visible_items) >=10:
-                    #height += 10 * WIDGET_HEIGHT
-                #else:
-                    #height += len(self.ap_tree.visible_items) * WIDGET_HEIGHT
-            #if self.more_button in self.tree_box.get_children():
-                #height += WIDGET_HEIGHT
 
         if self.mobile_state:
             height += 35
@@ -130,12 +115,8 @@ class TrayUI(gtk.VBox):
 
         if self.dsl_state:
             height += 35 + len(self.dsl_list.get_children()) * 22
-
-
         height += 25
 
-        # just for test
-        #height += 100
         return height
 
     def section_box(self, widgets):
@@ -160,14 +141,14 @@ class TrayUI(gtk.VBox):
         if new_state is 20:
             self.wire.set_active(0)
         else:
-            print new_state, reason
+            tray_log.debug(__name__, new_state, reason)
 
     def set_visible_aps(self, show_all=False):
         if not self.__ap_list:
             self.visible_aps = []
             return
 
-        print len(self.__ap_list)
+        tray_log.debug(len(self.__ap_list))
 
         if show_all:
             if len(self.__ap_list) <= 10:
@@ -180,11 +161,9 @@ class TrayUI(gtk.VBox):
 
         else:
             if len(self.__ap_list) <= 5:
-                print "aaaaaaaaaa"
                 self.visible_aps = self.__ap_list[:]
                 self.show_all = True
             else:
-                print "bbbbbbbbb"
                 self.visible_aps = self.__ap_list[:5]
                 self.more_button.set_ap_list(self.__ap_list[5:])
                 self.show_all = False
@@ -218,7 +197,6 @@ class TrayUI(gtk.VBox):
     def move_active(self, index):
         if index != [] and self.__ap_list:
             for i in index:
-                print i
                 if i < len(self.ap_tree.visible_items):
                     self.ap_tree.delete_item_by_index(i)
                     self.ap_tree.add_items([SsidItem(self.__ap_list[i])],
@@ -246,7 +224,7 @@ class TrayUI(gtk.VBox):
             self.device_tree.set_expand_column(1)
             self.wireless_box.pack_start(self.device_tree, False, False)
             self.wireless_box.reorder_child(self.wireless_box.get_children()[-2], len(self.wireless_box.get_children()))
-            print "sdf", self.wireless_box.get_children()
+            tray_log.debug(self.wireless_box.get_children())
             net_manager.emit_wifi_switch(0)
 
     def remove_switcher(self):
@@ -257,35 +235,11 @@ class TrayUI(gtk.VBox):
     def get_active_in_ui(self):
         return filter(lambda i: i.get_active() == True, self.ap_tree.visible_items)
 
-    def resize_tree(self):
-        self.tree_box.remove(self.more_button)
-        container_remove_all(self.tree_box)
-        self.ap_tree.delete_all_items()
-
-        self.ap_tree.add_items(map(lambda ap: SsidItem(ap), self.__ap_list))
-        if self.active_ap_index:
-            self.move_active(self.active_ap_index)
-        #self.tree_box.pack_start(self.ap_tree, True, True)
-        length = len(self.ap_tree.visible_items)
-        if length <=10:
-            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*length)
-        else:
-            self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*10)
-            for item in self.ap_tree.visible_items:
-                item.set_padding(10)
-        self.tree_box.pack_start(self.ap_tree, True, True)
-        self.show_all()
-        self.all_showed = True
-        
-        Dispatcher.request_resize()
-
     def reset_tree(self):
         if len(self.ap_tree.visible_items) >= 5 and self.all_showed:
-            #container_remove_all(self.tree_box)
             remove_items = self.ap_tree.visible_items[5:]
             self.ap_tree.delete_items(remove_items)
             self.ap_tree.set_size_request(-1, WIDGET_HEIGHT*5)
-            #self.tree_box.pack_start(self.ap_tree, True, True)
             self.tree_box.pack_start(self.more_button, False, False)
             self.all_showed = False
             
@@ -294,14 +248,13 @@ class Section(gtk.HBox):
     TOGGLE_INACTIVE = 1
     TOGGLE_ACTIVE = 2
 
-    def __init__(self, icon, text, toggle_callback, has_separater=True):
+    def __init__(self, icon, text, has_separater=True):
         gtk.HBox.__init__(self)
         self.icon = icon
         self.text = text
         self.height = 30
         self.set_size_request(-1, self.height)
         self.has_separater = has_separater
-        self.timer = Timer(200, toggle_callback)
 
         self.__init_ui()
 
@@ -309,11 +262,15 @@ class Section(gtk.HBox):
         icon = ImageBox(self.icon)
         self.label = Label(self.text)
         self.offbutton = SwitchButton()
-        self.offbutton.connect("toggled", self.toggle_callback)
         self.pack_start(self.__wrap_with_align(icon), False, False)
         self.pack_start(self.__wrap_with_align(self.label, align="left"), False, False, padding=10)
         self.pack_end(self.__wrap_with_align(self.offbutton), False, False)
         self.show_all()
+
+    def connect_to_toggle(self, toggle_func):
+        self.offbutton.connect("toggled", lambda w: toggle_func())
+        self.timer = Timer(200, toggle_func)
+
 
     def toggle_callback(self, widget):
         if self.timer.alive():
@@ -338,11 +295,12 @@ class Section(gtk.HBox):
         '''
         state format : (dev_state, con_state)
         '''
-        print "---------------------"
-        print "someone set off button"
-        print "state", state
-        print "active", self.get_active()
-        print "------------------------"
+        tray_log.debug("someone set button", state)
+        #print "---------------------"
+        #print "someone set off button"
+        #print "state", state
+        #print "active", self.get_active()
+        #print "------------------------"
         (dev_state, con_state) = state
         if dev_state is False:
             self.offbutton.set_active(False)
@@ -427,10 +385,6 @@ class SsidItem(TreeItem):
         if self.is_select:
             pass
 
-        #if self.security:
-            #lock_icon = self.lock_pixbuf
-            #draw_pixbuf(cr, lock_icon.get_pixbuf(), rect.x , rect.y + (rect.height - IMG_WIDTH)/2)
-
         if self.strength > 80:
             signal_icon = self.strength_3
         elif self.strength > 60:
@@ -445,8 +399,6 @@ class SsidItem(TreeItem):
             with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*BORDER_COLOR)
                 cr.set_line_width(1)
-                #if self.is_last:
-                    #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
                 cr.rectangle(rect.x -1 , rect.y +1, rect.width , rect.height -1 )
                 cr.stroke()
 
@@ -466,7 +418,6 @@ class SsidItem(TreeItem):
     
     def hover(self, column, offset_x, offset_y):
         self.is_hover = True
-
         self.redraw()
 
     def unhover(self, column, offset_x, offset_y):
@@ -507,33 +458,6 @@ class SsidItem(TreeItem):
         self.right_padding = padding
         self.redraw()
 
-class APButton(gtk.Button):        
-    def __init__(self, 
-                 ap,
-                 ali_padding=0,
-                 font_size=10,
-                 bg_color="#ebf4fd",
-                 line_color="#7da2ce"):
-        gtk.Button.__init__(self)
-        self.ap = ap
-        self.font_size = font_size
-        self.bg_color = bg_color
-
-        self.__init_values()
-
-    def __init_values(self):
-        self.ssid = self.ap.get_ssid()
-        self.security = self.ap.get_flags()
-        self.strength = self.ap.get_strength()
-        self.active = False
-
-        # init values.
-        # init events.
-        self.add_events(gtk.gdk.ALL_EVENTS_MASK)
-        self.connect("button-press-event", self.select_button_button_press_event)
-        self.connect("button-release-event", self.select_button_button_release_event)
-        self.connect("expose-event", self.select_button_expose_event)        
-
 class DeviceItem(TreeItem):
     SPACING = 5
     
@@ -552,14 +476,6 @@ class DeviceItem(TreeItem):
     def render_icon(self, cr, rect):
         self.render_background(cr, rect)
         draw_pixbuf(cr, self.wifi.get_pixbuf(), rect.x + 16, rect.y)
-        #with cairo_disable_antialias(cr):
-            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            #cr.set_line_width(1)
-            #if self.is_last:
-                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, 1, rect.height)
-            #cr.fill()
     
     def render_text(self, cr, rect):
         self.render_background(cr, rect)
@@ -567,14 +483,6 @@ class DeviceItem(TreeItem):
         (text_width, text_height) = get_content_size(text)
         draw_text(cr, text, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_CENTER)
-
-        #with cairo_disable_antialias(cr):
-            #cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
-            #cr.set_line_width(1)
-            #if self.is_last:
-                #cr.rectangle(rect.x, rect.y + rect.height -1, rect.width, 1)
-            #cr.rectangle(rect.x, rect.y, rect.width, 1)
-            #cr.fill()
 
     def render_left(self, cr, rect):
         self.render_background(cr, rect)
@@ -617,9 +525,6 @@ class DeviceItem(TreeItem):
     def single_click(self, column, offset_x, offset_y):
         if column == 2:
             self.round_plus()
-            
-
-            #Dispatcher.emit("switch_device", self.devices[self.index -1])
         elif column == 0:
             self.round_minus()
 
