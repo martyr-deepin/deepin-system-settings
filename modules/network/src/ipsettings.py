@@ -200,7 +200,7 @@ class IPV4Conf(gtk.VBox):
         self.dns[index] = content
         names = ["master", "slaver"]
         dns = self.check_complete_dns()
-        print "set dns address:", dns, content
+        #print "set dns address:", dns, content
         if dns:
             #Dispatcher.set_button("save", True)
             is_valid = True
@@ -288,11 +288,11 @@ class IPV4Conf(gtk.VBox):
         self.setting.method = 'manual'
         #self.set_group_sensitive("ip", True)
         if self.connection.check_setting_finish():
-            print "settings complete"
+            #print "settings complete"
             #Dispatcher.set_button("save", True)
             ip_is_valid = True
         else:
-            print "settings incomplete"
+            #print "settings incomplete"
             #Dispatcher.set_button("save", False)
             ip_is_valid = False
         # TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
@@ -308,10 +308,10 @@ class IPV4Conf(gtk.VBox):
             self.setting.method = 'auto'
             self.set_group_sensitive("ip", False)
             if self.connection.check_setting_finish():
-                print "settings complete"
+                #print "settings complete"
                 Dispatcher.set_button("save", True)
             else:
-                print "settings incomplete"
+                #print "settings incomplete"
                 Dispatcher.set_button("save", False)
         else:
             self.setting.method = 'manual'
@@ -541,11 +541,11 @@ class IPV6Conf(gtk.VBox):
 
         if TypeConvert.is_valid_ip6(content):
             setattr(self, names[index] + "_flag", True)
-            print "valid"+ names[index]
+            #print "valid"+ names[index]
         else:
             #if content is not "":
                 #Dispatcher.set_button("save", False)
-            print "invalid"+ names[index]
+            #print "invalid"+ names[index]
             setattr(self, names[index] + "_flag", False)
 
         ############

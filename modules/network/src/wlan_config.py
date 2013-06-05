@@ -51,11 +51,7 @@ def check_settings(connection, fn):
 
 class WirelessSetting(Settings):
     def __init__(self, ap, spec_connection=None):
-        Settings.__init__(self,[
-                                Sections,
-                                #IPV4Conf,
-                                #IPV6Conf],
-                                ])
+        Settings.__init__(self, Sections)
         if ap:
             self.crumb_name = ap.get_ssid()
         else:
@@ -77,7 +73,7 @@ class WirelessSetting(Settings):
         return (nm_module.nm_remote_settings.new_wireless_connection(self.crumb_name, None), -1)
     
     def save_changes(self, connection):
-        print "save changes"
+        #print "save changes"
         if connection.check_setting_finish():
             if isinstance(connection, NMRemoteConnection):
                 connection.update()
@@ -118,7 +114,6 @@ class HiddenSetting(Settings):
     
     def __init__(self, connection, spec_connection=None):
         Settings.__init__(self, [Sections])
-        #self.settings_dict = Sections
         self.connection = connection
         self.spec_connection = spec_connection
         self.crumb_name = _("Hidden network")
@@ -411,7 +406,7 @@ class Security(gtk.VBox):
         Dispatcher.request_redraw()
 
     def change_encry_type(self, widget, content, value, index):
-        print content, value, index
+        #print content, value, index
         if value == None:
             self.connection.del_setting("802-11-wireless-security")
             del self.connection.get_setting("802-11-wireless").security
@@ -432,7 +427,7 @@ class Security(gtk.VBox):
                 self.setting.wep_key_type = index
                 for key in range(0, 4):
                     delattr(self.setting, "wep_key%d"%key)
-            print "psk deled", self.connection.settings_dict
+            #print "psk deled", self.connection.settings_dict
             #Dispatcher.set_button("save", False)
             self.reset()
             self.settings_obj.wlan_encry_is_valid = False

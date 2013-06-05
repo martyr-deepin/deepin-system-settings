@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-
-from theme import app_theme
-
 from dtk.ui.button import Button,  CheckButton, RadioButton
 from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.label import Label
@@ -25,8 +22,7 @@ from constants import CONTENT_FONT_SIZE
 class VPNSetting(Settings):
 
     def __init__(self, spec_connection=None):
-        Settings.__init__(self, [PPTPConf,
-                                 Sections])
+        Settings.__init__(self, Sections)
         self.crumb_name = _("VPN")
         self.spec_connection = spec_connection
         event_manager.emit("update-delete-button", True)

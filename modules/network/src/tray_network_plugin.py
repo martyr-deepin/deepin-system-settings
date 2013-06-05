@@ -170,9 +170,9 @@ class WirelessSection(BaseMixIn):
         self.pwd_failed = False
 
         self._init_signals()
-        self._init_state()
+        self._init_section()
 
-    def _init_state(self):
+    def _init_section(self):
         wireless_state = net_manager.get_wireless_state()
         if wireless_state:
             # always focus on first device on init

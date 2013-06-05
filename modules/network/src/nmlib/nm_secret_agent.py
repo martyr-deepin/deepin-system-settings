@@ -110,8 +110,6 @@ class NMSecretAgent(NMObject):
         service = self.generate_service_name(get_cache().getobject(conn_path).settings_dict["connection"]["uuid"], 
                                              setting_name, method)
         username = getpass.getuser()
-        print "agent_save_secrets"
-        print get_cache().getobject(conn_path).settings_dict
 
         if setting_name == "vpn":
             password = get_cache().getobject(conn_path).settings_dict[setting_name]["secrets"][method]
