@@ -37,7 +37,6 @@ class Mylogger(object):
         if level >= self.level:
             print string
 
-<<<<<<< HEAD
     def create_str(self, type, args):
         return "[%s]\t%s %s: %s"%(type, time.strftime(TIME_FORMAT), self.get_func_name(), args)
 
@@ -49,45 +48,24 @@ class Mylogger(object):
         
     def info(self, *args):
         info = self.create_str("INFO", args)
-=======
-    def get_func_name(self):
-        current = inspect.currentframe()
-        current = inspect.getouterframes(current)
-        return "(%s) %s"%(os.path.basename(current[2][1]), current[2][3])
-        
-    def info(self, *args):
-        info = "[Info] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
->>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
         self.verbose(info, 0)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")
 
     def debug(self, *args):
-<<<<<<< HEAD
         info = self.create_str("DEBUG", args)
-=======
-        info = "[Debug] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
->>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
         self.verbose(info, -1)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")
 
     def warn(self, *args):
-<<<<<<< HEAD
         info = self.create_str("WARN", args)
-=======
-        info = "[Warn] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
->>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
         self.verbose(info, 1)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")
 
     def error(self, *args):
-<<<<<<< HEAD
         info = self.create_str("ERROR", args)
-=======
-        info = "[Error] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
->>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
         self.verbose(info, 2)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")
