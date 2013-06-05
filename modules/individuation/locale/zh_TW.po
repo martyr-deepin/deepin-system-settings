@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-31 15:46+0800\n"
+"POT-Creation-Date: 2013-06-05 10:41+0800\n"
 "PO-Revision-Date: 2013-02-27 17:23+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -49,45 +49,17 @@ msgstr "桌布"
 msgid "Picture"
 msgstr "「圖片」目錄"
 
-#: ../src/theme_manager.py:412
+#: ../src/theme_manager.py:420
 msgid "Untitled"
 msgstr "無標題"
 
-#: ../src/ui/theme_view.py:94 ../src/ui/theme_view.py:111
-#, python-format
-msgid "Changed User Theme to %s"
-msgstr "已變更使用者的佈景主題為「%s」"
+#: ../src/ui/wallpaper_view.py:57
+msgid "Apply Wallpaper"
+msgstr "設定為目前桌布"
 
-#: ../src/ui/theme_view.py:130 ../src/ui/theme_view.py:256
-msgid "Theme Save As"
-msgstr "另存為"
-
-#: ../src/ui/theme_view.py:135
-msgid "Theme ReName"
-msgstr "重新命名"
-
-#: ../src/ui/theme_view.py:139 ../src/ui/theme_view.py:156
-msgid "Delete Theme"
-msgstr "刪除"
-
-#: ../src/ui/theme_view.py:140
-#, python-format
-msgid "Are you sure delete %s theme?"
-msgstr "您確定要刪除佈景主題「%s」嗎？"
-
-#: ../src/ui/theme_view.py:150 ../src/ui/theme_view.py:154
-#: ../src/ui/theme_view.py:260
-msgid "Save As"
-msgstr "另存為"
-
-#: ../src/ui/theme_view.py:153
-msgid "ReName"
-msgstr "重新命名"
-
-#: ../src/ui/theme_view.py:232 ../src/ui/theme_view.py:241
-#, python-format
-msgid "Changed System Theme to %s"
-msgstr "已變更系統佈景主題為「%s」"
+#: ../src/ui/wallpaper_item.py:1027
+msgid "downloaded"
+msgstr "已下載"
 
 #: ../src/ui/select_page.py:192 ../src/ui/select_page.py:248
 #: ../src/ui/select_page.py:307 ../src/ui/delete_page.py:55
@@ -100,11 +72,11 @@ msgstr "上一頁"
 #: ../src/ui/select_page.py:274 ../src/ui/select_page.py:292
 #: ../src/ui/select_page.py:309 ../src/ui/select_page.py:336
 #: ../src/ui/select_page.py:350 ../src/ui/select_page.py:354
-#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
-#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
 #: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
 #: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
-#: ../src/ui/detail_page.py:194
+#: ../src/ui/detail_page.py:194 ../src/ui/delete_page.py:58
+#: ../src/ui/delete_page.py:81 ../src/ui/delete_page.py:89
+#: ../src/ui/delete_page.py:116
 msgid "Select All"
 msgstr "全部選取"
 
@@ -116,9 +88,9 @@ msgstr "加入"
 #: ../src/ui/select_page.py:221 ../src/ui/select_page.py:229
 #: ../src/ui/select_page.py:272 ../src/ui/select_page.py:290
 #: ../src/ui/select_page.py:334 ../src/ui/select_page.py:348
-#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
 #: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
 #: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
+#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
 msgid "UnSelect All"
 msgstr "取消全選"
 
@@ -126,50 +98,14 @@ msgstr "取消全選"
 msgid "Please copy some pictures under Pictures"
 msgstr "請將幾張圖片複製到「圖片」目錄下"
 
-#: ../src/ui/select_page.py:311 ../src/ui/delete_page.py:61
-#: ../src/ui/detail_page.py:88
+#: ../src/ui/select_page.py:311 ../src/ui/detail_page.py:88
+#: ../src/ui/delete_page.py:61
 msgid "Delete"
 msgstr "刪除"
 
 #: ../src/ui/select_page.py:358 ../src/ui/delete_page.py:98
 msgid "Are you sure delete wallpaper?"
 msgstr "你確定要刪除桌布嗎？"
-
-#: ../src/ui/wallpaper_view.py:57
-msgid "Apply Wallpaper"
-msgstr "設定為目前桌布"
-
-#: ../src/ui/add_page.py:79
-msgid "Library"
-msgstr "本地資料庫"
-
-#: ../src/ui/add_page.py:80
-msgid "From Internet"
-msgstr "網路資料庫"
-
-#: ../src/ui/add_page.py:84
-msgid "System"
-msgstr "系統桌布"
-
-#: ../src/ui/add_page.py:86
-msgid "My Favorite"
-msgstr "我的愛好"
-
-#: ../src/ui/add_page.py:87
-msgid "360 Wallpaper"
-msgstr "360 壁紙"
-
-#: ../src/ui/add_page.py:88
-msgid "LoveWallpaper"
-msgstr "愛壁紙 HD"
-
-#: ../src/ui/cache_page.py:133
-msgid "Download All"
-msgstr "下載全部"
-
-#: ../src/ui/wallpaper_item.py:1027
-msgid "downloaded"
-msgstr "已下載"
 
 #: ../src/ui/detail_page.py:37
 msgid "Minute"
@@ -208,6 +144,70 @@ msgstr "變更桌布時間間隔"
 #: ../src/ui/detail_page.py:80
 msgid "Random"
 msgstr "隨機變更"
+
+#: ../src/ui/theme_view.py:94 ../src/ui/theme_view.py:111
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr "已變更使用者的佈景主題為「%s」"
+
+#: ../src/ui/theme_view.py:130 ../src/ui/theme_view.py:256
+msgid "Theme Save As"
+msgstr "另存為"
+
+#: ../src/ui/theme_view.py:135
+msgid "Theme ReName"
+msgstr "重新命名"
+
+#: ../src/ui/theme_view.py:139 ../src/ui/theme_view.py:156
+msgid "Delete Theme"
+msgstr "刪除"
+
+#: ../src/ui/theme_view.py:140
+#, python-format
+msgid "Are you sure delete %s theme?"
+msgstr "您確定要刪除佈景主題「%s」嗎？"
+
+#: ../src/ui/theme_view.py:150 ../src/ui/theme_view.py:154
+#: ../src/ui/theme_view.py:260
+msgid "Save As"
+msgstr "另存為"
+
+#: ../src/ui/theme_view.py:153
+msgid "ReName"
+msgstr "重新命名"
+
+#: ../src/ui/theme_view.py:232 ../src/ui/theme_view.py:241
+#, python-format
+msgid "Changed System Theme to %s"
+msgstr "已變更系統佈景主題為「%s」"
+
+#: ../src/ui/cache_page.py:133
+msgid "Download All"
+msgstr "下載全部"
+
+#: ../src/ui/add_page.py:79
+msgid "Library"
+msgstr "本地資料庫"
+
+#: ../src/ui/add_page.py:80
+msgid "From Internet"
+msgstr "網路資料庫"
+
+#: ../src/ui/add_page.py:84
+msgid "System"
+msgstr "系統桌布"
+
+#: ../src/ui/add_page.py:86
+msgid "My Favorite"
+msgstr "我的愛好"
+
+#: ../src/ui/add_page.py:87
+msgid "360 Wallpaper"
+msgstr "360 壁紙"
+
+#: ../src/ui/add_page.py:88
+msgid "LoveWallpaper"
+msgstr "愛壁紙 HD"
 
 #~ msgid "360BiZhi"
 #~ msgstr "360 壁紙"

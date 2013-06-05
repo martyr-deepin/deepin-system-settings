@@ -580,7 +580,11 @@ class VPNSection(BaseMixIn):
         return 
 
     def __vpn_failed_callback(self, name, event, path):
+<<<<<<< HEAD
         tray_log.debug("==Vpn active failed or disconnected")
+=======
+        tray_log.debug("==Vpn active failed")
+>>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
         #print "vpn failed callback"
         self.check_net_state()
         self.this_setting = None
@@ -592,7 +596,11 @@ class DSLSection(BaseMixIn):
         self.this_gui = self.gui.vpn
         
         #self._init_signals()
+<<<<<<< HEAD
         self._init_section()
+=======
+        #self._init_section()
+>>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
 
     def _init_section(self):
         wired_state = net_manager.get_wired_state()

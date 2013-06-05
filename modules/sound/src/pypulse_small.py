@@ -98,9 +98,12 @@ def get_fallback_sink_index():
         name = server_info['fallback_sink']
     else:
         return None
-    for key in output_devices.keys():
-        if name == output_devices[key]['name']:
-            return key
+    try:
+        for key in output_devices.keys():
+            if name == output_devices[key]['name']:
+                return key
+    except:
+        pass
     return None
 
 def get_fallback_source_name():
@@ -114,7 +117,10 @@ def get_fallback_source_index():
         name = server_info['fallback_source']
     else:
         return None
-    for key in input_devices.keys():
-        if name == input_devices[key]['name']:
-            return key
+    try:
+        for key in input_devices.keys():
+            if name == input_devices[key]['name']:
+                return key
+    except:
+        pass
     return None

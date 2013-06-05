@@ -63,7 +63,10 @@ class TrayTime(gobject.GObject):
         self.emit("hour-changed", self.get_time(), self.__tray_time_hour_type)
 
     def set_deepin_dde_datetime(self):
-        self.set_hour_type(not self.set_date.get_boolean("is-24hour"))
+        if self.set_date.get_boolean("is-24hour"):
+            self.set_hour_type(TRAY_TIME_24_HOUR)
+        else:
+            self.set_hour_type(TRAY_TIME_12_HOUR)
 
     def get_time(self):
         time_struct = time.localtime(time.time())
