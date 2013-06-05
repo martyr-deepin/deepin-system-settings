@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-31 16:58+0800\n"
+"POT-Creation-Date: 2013-06-04 16:20+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -15,6 +15,137 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/search_keyword.py:29 ../src/power_view.py:73
+msgid "Power Button Configuration"
+msgstr "電源按鈕設定值"
+
+#: ../src/search_keyword.py:30 ../src/power_view.py:81
+msgid "Press Power Button"
+msgstr "當按下電源按鈕時"
+
+#: ../src/search_keyword.py:31 ../src/power_view.py:93
+msgid "Close Notebook Cover"
+msgstr "當關上手提電腦上蓋時"
+
+#: ../src/search_keyword.py:32
+msgid "Press Hibernate Button"
+msgstr "按下休眠按鈕時"
+
+#: ../src/search_keyword.py:33 ../src/power_view.py:106
+msgid "Saving Power Configuration"
+msgstr "電源節省設定值"
+
+#: ../src/search_keyword.py:34
+msgid "Being Hibernate"
+msgstr "進入休眠模式"
+
+#: ../src/search_keyword.py:35
+msgid "Close Harddisk"
+msgstr "關閉硬碟"
+
+#: ../src/search_keyword.py:36 ../src/power_view.py:126
+msgid "Close Monitor"
+msgstr "關閉顯示器"
+
+#: ../src/search_keyword.py:37 ../src/power_view.py:167
+msgid "Password Protection Wakeup"
+msgstr "喚醒系統時密碼保護設定值"
+
+#: ../src/search_keyword.py:38
+msgid "Show Battery Status In The Tray"
+msgstr "在系統匣顯示電池狀態圖示"
+
+#: ../src/tray_dialog.py:43
+msgid "Cancel"
+msgstr "取消"
+
+#: ../src/tray_dialog.py:44
+msgid "OK"
+msgstr "確認"
+
+#: ../src/tray_dialog.py:46
+msgid "<span foreground='#FF0000'>Turn off</span> your computer now?,12"
+msgstr "現在要<span foreground='#FF0000'>關閉</span>電腦？,10"
+
+#: ../src/tray_dialog.py:48
+#, python-format
+msgid ""
+"The system will shutdown in \n"
+"%s secs.,12"
+msgstr "系統將會在 %s 秒內關閉。,10"
+
+#: ../src/tray_dialog.py:50
+msgid "WenQuanYi Micro Hei Bold"
+msgstr "文泉驛微米黑-粗體"
+
+#: ../src/tray_dialog.py:389
+msgid "A program is still running:"
+msgstr "一個程式仍在執行中："
+
+#: ../src/tray_dialog.py:390
+msgid ""
+"Waiting for programs to finish.  Interrupting these programs may cause you "
+"to lose work."
+msgstr "正在等待程式結束。中斷這個程式可能造成您的工作遺失。"
+
+#: ../src/tray_shutdown_gui.py:93
+msgid "Switch user"
+msgstr "切換使用者"
+
+#: ../src/tray_shutdown_gui.py:96 ../src/power_view.py:61
+msgid "Shutdown"
+msgstr "關機"
+
+#: ../src/tray_shutdown_gui.py:99
+msgid "Restart"
+msgstr "重新啟動"
+
+#: ../src/tray_shutdown_gui.py:102 ../src/power_view.py:60
+#: ../src/power_view.py:138
+msgid "Suspend"
+msgstr "暫停"
+
+#: ../src/tray_shutdown_gui.py:105
+msgid "Logout"
+msgstr "登出"
+
+#: ../src/tray_shutdown_gui.py:108
+msgid "Lock"
+msgstr "鎖定"
+
+#: ../src/tray_shutdown_plugin.py:46
+msgid "<span foreground='#FF0000'>Restart</span> your computer now?,12"
+msgstr "現在要<span foreground='#FF0000'>重新啟動</span>電腦？,10"
+
+#: ../src/tray_shutdown_plugin.py:48
+#, python-format
+msgid ""
+"The system will restart in \n"
+"%s secs.,12"
+msgstr "系統將會在 %s 秒內重新啟動。,10"
+
+#: ../src/tray_shutdown_plugin.py:50
+msgid "<span foreground='#FF0000'>Suspend</span> your computer now?,12"
+msgstr "現在要<span foreground='#FF0000'>暫停</span>電腦？,10"
+
+#: ../src/tray_shutdown_plugin.py:52
+#, python-format
+msgid ""
+"The system will suspend in \n"
+"%s secs.,12"
+msgstr "系統將會在 %s 秒內暫停。,10"
+
+#: ../src/tray_shutdown_plugin.py:53
+msgid "<span foreground='#FF0000'>Logout</span> your computer now?,12"
+msgstr "現在要<span foreground='#FF0000'>登出</span>電腦？,10"
+
+#: ../src/tray_shutdown_plugin.py:54
+#, python-format
+msgid ""
+"The system will Logout in \n"
+"%s secs.,12"
+msgstr "系統將會在 %s 秒內登出。,10"
 
 #: ../src/power_view.py:50
 msgid "Minute"
@@ -36,15 +167,6 @@ msgstr "永不"
 msgid "Nothing"
 msgstr "不做事情"
 
-#: ../src/power_view.py:60 ../src/power_view.py:138
-#: ../src/tray_shutdown_gui.py:102
-msgid "Suspend"
-msgstr "暫停"
-
-#: ../src/power_view.py:61 ../src/tray_shutdown_gui.py:96
-msgid "Shutdown"
-msgstr "關機"
-
 #: ../src/power_view.py:63
 msgid "Balance"
 msgstr "平衡"
@@ -61,37 +183,13 @@ msgstr "高性能"
 msgid "Customized"
 msgstr "自訂"
 
-#: ../src/power_view.py:73 ../src/search_keyword.py:29
-msgid "Power Button Configuration"
-msgstr "電源按鈕設定值"
-
-#: ../src/power_view.py:81 ../src/search_keyword.py:30
-msgid "Press Power Button"
-msgstr "當按下電源按鈕時"
-
-#: ../src/power_view.py:93 ../src/search_keyword.py:31
-msgid "Close Notebook Cover"
-msgstr "當關上手提電腦上蓋時"
-
-#: ../src/power_view.py:106 ../src/search_keyword.py:33
-msgid "Saving Power Configuration"
-msgstr "電源節省設定值"
-
 #: ../src/power_view.py:112
 msgid "Power Plan"
 msgstr "電源運行計劃"
 
-#: ../src/power_view.py:126 ../src/search_keyword.py:36
-msgid "Close Monitor"
-msgstr "關閉顯示器"
-
 #: ../src/power_view.py:151
 msgid "Current Battery"
 msgstr "目前電池電量"
-
-#: ../src/power_view.py:167 ../src/search_keyword.py:37
-msgid "Password Protection Wakeup"
-msgstr "喚醒系統時密碼保護設定值"
 
 #: ../src/power_view.py:190
 msgid "Show Battery Status In Tray"
@@ -141,94 +239,6 @@ msgstr "已變更為在系統匣顯示電池狀態圖示"
 #: ../src/power_view.py:419
 msgid "Changed to Hide Battery Status In Tray"
 msgstr "已變更為在系統匣隱藏電池狀態圖示"
-
-#: ../src/search_keyword.py:32
-msgid "Press Hibernate Button"
-msgstr "按下休眠按鈕時"
-
-#: ../src/search_keyword.py:34
-msgid "Being Hibernate"
-msgstr "進入休眠模式"
-
-#: ../src/search_keyword.py:35
-msgid "Close Harddisk"
-msgstr "關閉硬碟"
-
-#: ../src/search_keyword.py:38
-msgid "Show Battery Status In The Tray"
-msgstr "在系統匣顯示電池狀態圖示"
-
-#: ../src/tray_shutdown_gui.py:93
-msgid "Switch user"
-msgstr "切換使用者"
-
-#: ../src/tray_shutdown_gui.py:99
-msgid "Restart"
-msgstr "重新啟動"
-
-#: ../src/tray_shutdown_gui.py:105
-msgid "Logout"
-msgstr "登出"
-
-#: ../src/tray_shutdown_gui.py:108
-msgid "Lock"
-msgstr "鎖定"
-
-#: ../src/tray_shutdown_plugin.py:46
-msgid "<span foreground='#FF0000'>Restart</span> your computer now?,12"
-msgstr "現在要<span foreground='#FF0000'>重新啟動</span>電腦？,10"
-
-#: ../src/tray_shutdown_plugin.py:48
-#, python-format
-msgid ""
-"The system will restart in \n"
-"%s secs.,12"
-msgstr "系統將會在 %s 秒內重新啟動。,10"
-
-#: ../src/tray_shutdown_plugin.py:50
-msgid "<span foreground='#FF0000'>Suspend</span> your computer now?,12"
-msgstr "現在要<span foreground='#FF0000'>暫停</span>電腦？,10"
-
-#: ../src/tray_shutdown_plugin.py:52
-#, python-format
-msgid ""
-"The system will suspend in \n"
-"%s secs.,12"
-msgstr "系統將會在 %s 秒內暫停。,10"
-
-#: ../src/tray_shutdown_plugin.py:53
-msgid "<span foreground='#FF0000'>Logout</span> your computer now?,12"
-msgstr "現在要<span foreground='#FF0000'>登出</span>電腦？,10"
-
-#: ../src/tray_shutdown_plugin.py:54
-#, python-format
-msgid ""
-"The system will Logout in \n"
-"%s secs.,12"
-msgstr "系統將會在 %s 秒內登出。,10"
-
-#: ../src/tray_dialog.py:39
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/tray_dialog.py:40
-msgid "OK"
-msgstr "確認"
-
-#: ../src/tray_dialog.py:42
-msgid "<span foreground='#FF0000'>Turn off</span> your computer now?,12"
-msgstr "現在要<span foreground='#FF0000'>關閉</span>電腦？,10"
-
-#: ../src/tray_dialog.py:44
-#, python-format
-msgid ""
-"The system will shutdown in \n"
-"%s secs.,12"
-msgstr "系統將會在 %s 秒內關閉。,10"
-
-#: ../src/tray_dialog.py:46
-msgid "WenQuanYi Micro Hei Bold"
-msgstr "文泉驛微米黑-粗體"
 
 #~ msgid "shutdown"
 #~ msgstr "關機"

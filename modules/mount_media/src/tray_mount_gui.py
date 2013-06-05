@@ -174,7 +174,7 @@ class EjecterApp(gobject.GObject):
         self.vbox = gtk.VBox()
         self.vbox.pack_start(self.hbox, False, False)
         self.vbox.pack_start(self.h_separator_ali, True, True)
-        self.vbox.pack_start(self.monitor_vbox, False, False)
+        self.vbox.pack_start(self.monitor_vbox, True, True)
 
         self.monitor = gio.VolumeMonitor()
 
