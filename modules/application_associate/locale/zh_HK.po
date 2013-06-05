@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-03 08:58+0800\n"
+"POT-Creation-Date: 2013-06-05 09:53+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -49,31 +49,32 @@ msgid "Autostart"
 msgstr ""
 
 #: ../src/app_view.py:42
-msgid "web"
+msgid "Web"
 msgstr ""
 
 #: ../src/app_view.py:43
-msgid "mail"
+msgid "Mail"
 msgstr ""
 
 #: ../src/app_view.py:44
-msgid "editor"
+msgid "Editor"
 msgstr ""
 
 #: ../src/app_view.py:45
-msgid "music"
+msgid "Music"
 msgstr ""
 
 #: ../src/app_view.py:46
-msgid "video"
+msgid "Video"
 msgstr ""
 
 #: ../src/app_view.py:47
-msgid "photo"
+msgid "Photo"
 msgstr ""
 
 #: ../src/app_view.py:48
-msgid "terminal"
+#, fuzzy
+msgid "Terminal"
 msgstr "終端"
 
 #: ../src/widget.py:44
@@ -117,15 +118,15 @@ msgid "DVD"
 msgstr ""
 
 #: ../src/media_view.py:55
-msgid "music player"
+msgid "Music Player"
 msgstr ""
 
 #: ../src/media_view.py:56
-msgid "camera"
+msgid "Camera"
 msgstr ""
 
 #: ../src/media_view.py:57
-msgid "software"
+msgid "Software"
 msgstr ""
 
 #: ../src/media_view.py:62 ../src/media_view.py:222
