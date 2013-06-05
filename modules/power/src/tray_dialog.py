@@ -33,7 +33,7 @@ from vtk.draw import draw_text
 from vtk.theme import vtk_theme
 from vtk.timer import Timer
 from dtk.ui.treeview import TreeView, TreeItem
-from dtk.ui.draw import draw_text as dtk_draw_text, render_text
+from dtk.ui.draw import draw_text as dtk_draw_text, render_text, draw_line
 from dtk.ui.constant import DEFAULT_FONT, DEFAULT_FONT_SIZE
 import inhibit
 
@@ -374,13 +374,15 @@ class InhibitTreeItem(TreeItem):
 
     def render_item(self, cr, rect):
         render_text(cr, self.app_id,
-                  rect.x+5, rect.y,
-                  rect.width, 20,
-                  text_color="#000000",)
+                    rect.x+5, rect.y,
+                    rect.width, 18,
+                    text_color="#000000",)
         render_text(cr, self.reason,
-                  rect.x+5, rect.y+20,
-                  rect.width, 20,
-                  text_color="#000000",)
+                    rect.x+5, rect.y+18,
+                    rect.width, 18,
+                    text_color="#000000",)
+        draw_line(cr, rect.x, rect.y+37,
+                  rect.x+rect.width, rect.y+37)
 
 
 class InhibitDialog(TrayDialog):
@@ -473,7 +475,7 @@ class InhibitDialog(TrayDialog):
             del self.__inhibit_dict[path]
             del self.__inhibit_item[path]
         if not self.__inhibit_dict:
-            print "inhibit is empty"
+            self.ok_btn_clicked(None)
 
     def init_inhibit_treeview(self):
         self.__inhibit_dict = {}
