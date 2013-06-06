@@ -404,56 +404,48 @@ class MobileSection(BaseMixIn):
     def init_mm_signals(self):
         net_manager.device_manager.load_mm_listener(self)
 
-    def mm_device_active(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, True))
-        self.change_status_icon("cable")
-
-    def mm_device_deactive(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, False))
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        else:
-            self.change_status_icon("cable_disconnect")
-
-    def mm_device_unavailable(self,  widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, False))
-
-    def mm_activate_start(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, True))
-        self.change_status_icon("loading")
-
-    def mm_activate_failed(self, widget, new_state, old_state, reason):
-        self.gui.mobile.set_active((True, False))
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon("links")
-        else:
-            self.change_status_icon("cable_disconnect")
-
     def _toggle_callback(self):
         if self.gui.mobile.get_active():
             self.mm_device = net_manager.connect_mm_device()
         else:
             net_manager.disconnect_mm_device()
-    
-    def timer_count_down_finish(self, widget):
-        connections = nm_module.nmclient.get_active_connections()
-        active_connection = connections[-1]
-        
-        self.this_connection = active_connection.get_connection()
-        self.this_device.nm_device_disconnect()
-        self.toggle_dialog(self.this_connection)
-        widget.Enabled = False
-        
-    def toggle_wired(self):
-        if self.gui.wire.get_active():
-            net_manager.active_wired_device()
-        else:
-            net_manager.disactive_wired_device()
 
+    def mm_device_active(self, widget, new_state, old_state, reason):
+        tray_log.debug("===mobile active")
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("cable")
+
+    def mm_device_deactive(self, widget, new_state, old_state, reason):
+        tray_log.debug("===mobile deactive", new_state, reason)
+        self.gui.mobile.set_active((True, False))
+
+        self.check_net_state()
+        #if self.gui.wire.get_active():
+            #self.change_status_icon("cable")
+        #elif self.gui.wireless.get_active():
+            #self.change_status_icon("links")
+        #else:
+            #self.change_status_icon("cable_disconnect")
+
+    def mm_device_unavailable(self,  widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+
+    def mm_activate_start(self, widget, new_state, old_state, reason):
+        tray_log.debug("===mobile connecting")
+        self.gui.mobile.set_active((True, True))
+        self.change_status_icon("loading")
+
+    def mm_activate_failed(self, widget, new_state, old_state, reason):
+        tray_log.debug("mobile active failed")
+        self.gui.mobile.set_active((True, False))
+
+        self.check_net_state()
+        #if self.gui.wire.get_active():
+            #self.change_status_icon("cable")
+        #elif self.gui.wireless.get_active():
+            #self.change_status_icon("links")
+        #else:
+            #self.change_status_icon("cable_disconnect")
 class VPNSection(BaseMixIn):
 
     def __init__(self, gui):
