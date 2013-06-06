@@ -36,6 +36,9 @@ class BaseMixIn(object):
     def change_status_icon(self, load_image_name):
         event_manager.emit("change-status-icon", load_image_name)
 
+    def hide_menu(self, state):
+        event_manager.emit("hide_menu", state)
+
     def close(self):
         # used when network_manager restarts
         self.this_gui.set_active((False, False))
@@ -341,7 +344,7 @@ class WirelessSection(BaseMixIn):
             return
         ssid = connection.get_setting("802-11-wireless").ssid
         if ssid != None:
-            self.this.hide_menu()
+            self.hide_menu(True)
             dialog = AskPasswordDialog(connection,
                               ssid,
                               key_mgmt=security,
@@ -721,6 +724,7 @@ class TrayNetworkPlugin(object):
 
     def _init_sections(self):
         event_manager.add_callback('change-status-icon', self.change_status_icon)
+        event_manager.add_callback('hide_menu', self.hide_this_menu)
         self.section_instance = []
         for section in self.sections:
             self.section_instance.append(section(self.gui))
@@ -799,6 +803,17 @@ class TrayNetworkPlugin(object):
 
     def plugin_widget(self):
         return self.gui 
+
+    def hide_this_menu(self, name, event, data):
+        '''
+        Callback from Basemixin
+        '''
+        tray_log.debug("hide this menu", data)
+        state = data
+        if state:
+            self.this.hide_menu()
+        else:
+            self.show_menu()
 
     def show_menu(self):
         self.menu_showed = True

@@ -27,8 +27,6 @@ class AskPasswordDialog(DialogBox):
                  connection,
                  ssid,
                  key_mgmt=None,
-                 #title, 
-                 #init_text, 
                  default_width=330,
                  default_height=120,
                  confirm_callback=None, 
@@ -46,7 +44,13 @@ class AskPasswordDialog(DialogBox):
         '''
         # Init.
         #DialogBox.__init__(self, _("Set password"), default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
-        DialogBox.__init__(self, _("Please input password for %s") % ssid, default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        DialogBox.__init__(self,
+                           _("Please input password for %s") % ssid,
+                           default_width,
+                           default_height,
+                           DIALOG_MASK_SINGLE_PAGE)
+
+        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
     

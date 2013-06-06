@@ -8,8 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:44+0800\n"
-"POT-Creation-Date: 2013-06-05 10:42+0800\n"
+"POT-Creation-Date: 2013-06-06 16:22+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +16,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/tray_power_plugin.py:151 ../src/tray_power_plugin.py:180
+msgid "Fully charged"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:153
+msgid "Charging"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:178
+#, python-format
+msgid "%s remaining"
+msgstr ""
 
 #: ../src/tray_power_gui.py:45
 msgid "Power"
@@ -31,7 +43,7 @@ msgid "Power saver"
 msgstr ""
 
 #: ../src/tray_power_gui.py:56
-msgid "Hight performance"
+msgid "High performance"
 msgstr ""
 
 #: ../src/tray_power_gui.py:57
@@ -40,17 +52,4 @@ msgstr ""
 
 #: ../src/tray_power_gui.py:72
 msgid "Advanced..."
-msgstr ""
-
-#: ../src/tray_power_plugin.py:151 ../src/tray_power_plugin.py:180
-msgid "Fully charged"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:153
-msgid "Charging"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:178
-#, python-format
-msgid "%s remaining"
 msgstr ""

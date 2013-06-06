@@ -914,6 +914,7 @@ class VpnSection(Section):
             self.show_all()
 
     def vpn_start_cb(self, widget, path):
+        log.debug("vpn start by tray")
         vpn_active = nm_module.cache.get_spec_object(path)
         if vpn_active.get_vpnstate() < 5:
             self.on_vpn_connecting(None, None, path)
@@ -959,7 +960,7 @@ class VpnSection(Section):
                 self.tree.visible_items[index].set_net_state(2)
                 return
             except Exception, e:
-                print e
+                log.error(e)
         else:
             pass
 
@@ -987,7 +988,8 @@ class VpnSection(Section):
         if not self.vpn.get_active():
             self.vpn.set_active(True)
             return
-        print "on vpn connecting in main"
+        log.debug("vpn start connect", data)
+        #print "on vpn connecting in main"
         self.this_setting = nm_module.cache.getobject(data).get_connection().object_path
         map(lambda p: p.set_net_state(0), self.tree.visible_items)
         try:
@@ -997,10 +999,12 @@ class VpnSection(Section):
             pass
 
     def vpn_connected(self, name, event, data):
+        log.debug(data)
         items = filter(lambda p: p.connection.object_path == self.this_setting, self.tree.visible_items)
         map(lambda i: i.set_net_state(2), items)
 
     def vpn_disconnected(self, name, event, data):
+        log.debug(data)
         if self.this_setting == None:
             map(lambda i: i.set_net_state(0), self.tree.visible_items)
             return
@@ -1141,7 +1145,8 @@ class Proxy(gtk.VBox):
     def toggle_cb(self, widget):
         active = widget.get_active()
         if active:
-            self.proxysetting.set_proxy_mode("manual")
+            if self.proxysetting.get_proxy_mode() == "none":
+                self.proxysetting.set_proxy_mode("manual")
             self.align = gtk.Alignment(0,0,0,0)
             self.align.set_padding(0,0,PADDING,11)
             label = Label(_("Proxy Configuration"),
