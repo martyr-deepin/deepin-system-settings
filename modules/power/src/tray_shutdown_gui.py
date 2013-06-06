@@ -25,7 +25,6 @@ sys.path.append("/usr/share/deepin-system-tray/src")
 sys.path.append("/usr/share/deepin-system-tray/image")
 
 import gtk
-import pango
 from nls import _
 from tray_shutdown_dbus import CmdDbus
 from vtk.button import SelectButton
@@ -33,11 +32,11 @@ from vtk.utils import cairo_disable_antialias
 from vtk.color import color_hex_to_cairo
 from dtk.ui.line import HSeparator
 from dtk.ui.utils import set_clickable_cursor
-import os
 import sys
 sys.path.append("/usr/share/deepin-system-settings/dss")
 from theme import app_theme
 from vtk.utils import get_text_size
+from livecd import is_deepin_livecd
 
 WIDTH = 120
 HEIGHT = 25
@@ -128,6 +127,15 @@ class Gui(gtk.VBox):
         if self.cmd_dbus.real_name != "Guest":
             self.pack_start(self.lock_btn, True, True)
         set_clickable_cursor(self.user_label_event)
+
+        if is_deepin_livecd():
+            self.switch_btn.set_sensitive(False)
+            #self.suspend_btn.set_sensitive(False)
+            self.logout_btn.set_sensitive(False)
+        else:
+            self.switch_btn.set_sensitive(True)
+            #self.suspend_btn.set_sensitive(True)
+            self.logout_btn.set_sensitive(True)
 
     def user_label_event_expose_event(self, widget, event):
         cr = widget.window.cairo_create()
