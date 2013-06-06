@@ -130,11 +130,11 @@ class Gui(gtk.VBox):
 
         if is_deepin_livecd():
             self.switch_btn.set_sensitive(False)
-            self.suspend_btn.set_sensitive(False)
+            #self.suspend_btn.set_sensitive(False)
             self.logout_btn.set_sensitive(False)
         else:
             self.switch_btn.set_sensitive(True)
-            self.suspend_btn.set_sensitive(True)
+            #self.suspend_btn.set_sensitive(True)
             self.logout_btn.set_sensitive(True)
 
     def user_label_event_expose_event(self, widget, event):
