@@ -397,7 +397,9 @@ class MobileSection(BaseMixIn):
             self.gui.remove_net("mobile")
 
     def _init_signals(self):
+        self.this_gui.connect_to_toggle(self._toggle_callback)
         Dispatcher.connect("mmdevice-added", lambda w,p: self.init_mm_signals())
+        self.init_mm_signals()
 
     def init_mm_signals(self):
         net_manager.device_manager.load_mm_listener(self)
@@ -431,7 +433,7 @@ class MobileSection(BaseMixIn):
         else:
             self.change_status_icon("cable_disconnect")
 
-    def mobile_toggle(self):
+    def _toggle_callback(self):
         if self.gui.mobile.get_active():
             self.mm_device = net_manager.connect_mm_device()
         else:
@@ -580,11 +582,7 @@ class VPNSection(BaseMixIn):
         return 
 
     def __vpn_failed_callback(self, name, event, path):
-<<<<<<< HEAD
         tray_log.debug("==Vpn active failed or disconnected")
-=======
-        tray_log.debug("==Vpn active failed")
->>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
         #print "vpn failed callback"
         self.check_net_state()
         self.this_setting = None
@@ -595,12 +593,8 @@ class DSLSection(BaseMixIn):
         self.gui = gui
         self.this_gui = self.gui.vpn
         
-        #self._init_signals()
-<<<<<<< HEAD
+        self._init_signals()
         self._init_section()
-=======
-        #self._init_section()
->>>>>>> 13fb9269c384709b8ea2bb2f2a17ec9369fe9ef5
 
     def _init_section(self):
         wired_state = net_manager.get_wired_state()
@@ -614,6 +608,20 @@ class DSLSection(BaseMixIn):
                 self.tray_icon.set_icon_theme("cable")
         else:
             self.gui.remove_net("dsl")
+
+    def _init_signals(self):
+        self.this_gui.connect_to_toggle(self._toggle_callback)
+        signal_list = ["device_active",
+                              "device_deactive",
+                              "device_unavailable",
+                              "activate_start",
+                              "activate_failed"]
+
+        for signal in signal_list:
+            event_manager.add_callback(('dsl_%s'%signal).replace("_", "-"), getattr(self, signal))
+
+        event_manager.add_callback('dsl-new-added', self.on_dsl_setting_change)
+        event_manager.add_callback('dsl-connection-removed', self.dsl_connection_remove_cb)
 
     # dsl settings
     def device_active(self, name, event, data):
@@ -675,7 +683,7 @@ class DSLSection(BaseMixIn):
         self.gui.dsl_list.add_items(cons)
         self.gui.queue_draw()
 
-    def toggle_dsl(self):
+    def _toggle_callback(self):
         if self.gui.dsl.get_active():
             self.__init_dsl_list()
 
