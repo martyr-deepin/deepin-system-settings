@@ -984,10 +984,11 @@ class VpnSection(Section):
 
     # vpn signals
     def on_vpn_connecting(self, name, event, data):
+        log.debug("vpn start connect")
         if not self.vpn.get_active():
             self.vpn.set_active(True)
             return
-        print "on vpn connecting in main"
+        #print "on vpn connecting in main"
         self.this_setting = nm_module.cache.getobject(data).get_connection().object_path
         map(lambda p: p.set_net_state(0), self.tree.visible_items)
         try:
