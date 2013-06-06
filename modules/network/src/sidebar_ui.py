@@ -29,6 +29,7 @@ import style
 
 import gtk
 from nls import _
+from dss_log import log
 
 class SideBar(gtk.VBox):
     def __init__(self, connections):
@@ -62,6 +63,8 @@ class SideBar(gtk.VBox):
         '''
         will add hasattr part for network_object
         '''
+        
+        log.info("sidebar start load list")
         self.network_object = network_object
         self.connections = self.network_object.get_connections()
         #print self.connections, "load_list"

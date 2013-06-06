@@ -40,12 +40,10 @@ def render_background(self, cr, rect):
 
 class Region(gtk.Alignment):
     def __init__(self, connection=None):
-        gtk.Alignment.__init__(self)
+        gtk.Alignment.__init__(self, 0, 0, 0, 0)
 
         #################
         self.provider_select = None
-
-        #style.set_main_window(self, True)
         self.connect('expose-event', self.expose_event)
         self.prop_dict = {}
 
@@ -59,7 +57,7 @@ class Region(gtk.Alignment):
                                      )
         self.country_tree.set_expand_column(1)
 
-        self.country_tree.set_size_request(370, 385)
+        self.country_tree.set_size_request(365, 380)
         self.country_tree.draw_mask = self.draw_mask
         self.country_tree.connect("button-press-item", self.country_selected)
         left_box_align = gtk.Alignment(0, 0, 0, 0)
@@ -77,10 +75,9 @@ class Region(gtk.Alignment):
 
         self.provider_tree = TreeView(enable_multiple_select=False,
                                      enable_drag_drop=False,
-                                     #enable_hover=False,
                                       )
         self.provider_tree.set_expand_column(0)
-        self.provider_tree.set_size_request(370, 385)
+        self.provider_tree.set_size_request(365, 380)
         self.provider_tree.draw_mask = self.draw_mask
         self.provider_tree.connect("button-press-item", self.provider_selected)
         right_box_align = gtk.Alignment(0, 0, 0, 0)

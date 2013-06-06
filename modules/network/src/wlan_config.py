@@ -35,7 +35,9 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 import style
 from nls import _
 from shared_methods import Settings, net_manager
-from helper import Dispatcher, event_manager
+from helper import Dispatcher
+
+from dss_log import log
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -49,16 +51,13 @@ def check_settings(connection, fn):
 
 class WirelessSetting(Settings):
     def __init__(self, ap, spec_connection=None):
-        Settings.__init__(self,[Security,
-                                Sections,
-                                IPV4Conf,
-                                IPV6Conf],)
+        Settings.__init__(self, Sections)
         if ap:
             self.crumb_name = ap.get_ssid()
         else:
             self.crumb_name = ""
         self.spec_connection = spec_connection
-        event_manager.emit("update-delete-button", False)
+        #event_manager.emit("update-delete-button", False)
 
     def get_ssid(self):
         return self.connections.get_setting("802-11-wireless").ssid
@@ -74,7 +73,7 @@ class WirelessSetting(Settings):
         return (nm_module.nm_remote_settings.new_wireless_connection(self.crumb_name, None), -1)
     
     def save_changes(self, connection):
-        print "save changes"
+        #print "save changes"
         if connection.check_setting_finish():
             if isinstance(connection, NMRemoteConnection):
                 connection.update()
@@ -115,7 +114,6 @@ class HiddenSetting(Settings):
     
     def __init__(self, connection, spec_connection=None):
         Settings.__init__(self, [Sections])
-        #self.settings_dict = Sections
         self.connection = connection
         self.spec_connection = spec_connection
         self.crumb_name = _("Hidden network")
@@ -176,8 +174,9 @@ class Sections(gtk.Alignment):
         self.settings_obj = settings_obj
 
         self.main_box = gtk.VBox()
-        self.tab_name = "sfds"
+        self.tab_name = ""
         basic = SettingSection(_("Basic"))
+        log.debug("start section")
 
         if need_ssid:
             security = Security(connection, set_button, need_ssid, settings_obj=settings_obj)
@@ -213,8 +212,9 @@ class Security(gtk.VBox):
         self.settings_obj = settings_obj
 
         self.need_ssid = need_ssid
-
-        self.add_ssid_entry()
+        
+        if self.need_ssid:
+            self.add_ssid_entry()
         
         if self.connection.get_setting("802-11-wireless").security == "802-11-wireless-security":
             self.has_security = True
@@ -406,7 +406,7 @@ class Security(gtk.VBox):
         Dispatcher.request_redraw()
 
     def change_encry_type(self, widget, content, value, index):
-        print content, value, index
+        #print content, value, index
         if value == None:
             self.connection.del_setting("802-11-wireless-security")
             del self.connection.get_setting("802-11-wireless").security
@@ -427,7 +427,7 @@ class Security(gtk.VBox):
                 self.setting.wep_key_type = index
                 for key in range(0, 4):
                     delattr(self.setting, "wep_key%d"%key)
-            print "psk deled", self.connection.settings_dict
+            #print "psk deled", self.connection.settings_dict
             #Dispatcher.set_button("save", False)
             self.reset()
             self.settings_obj.wlan_encry_is_valid = False

@@ -74,16 +74,16 @@ class IPV4Conf(gtk.VBox):
         #ip_switch.connect("toggled", self.manual_ip_entry)
         self.show_all()
 
-        if type(self.connection) is NMRemoteConnection:
-            print "in ipv set apply true"
-            Dispatcher.set_button("apply", True)
-        else:
-            if self.connection.check_setting_finish():
-                print "in ipv setting finish"
-                Dispatcher.set_button("save", True)
-            else:
-                print "in ipv setting not finish"
-                Dispatcher.set_button("save", False)
+        #if type(self.connection) is NMRemoteConnection:
+            #print "in ipv set apply true"
+            #Dispatcher.set_button("apply", True)
+        #else:
+            #if self.connection.check_setting_finish():
+                #print "in ipv setting finish"
+                #Dispatcher.set_button("save", True)
+            #else:
+                #print "in ipv setting not finish"
+                #Dispatcher.set_button("save", False)
 
     def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
@@ -200,7 +200,7 @@ class IPV4Conf(gtk.VBox):
         self.dns[index] = content
         names = ["master", "slaver"]
         dns = self.check_complete_dns()
-        print "set dns address:", dns, content
+        #print "set dns address:", dns, content
         if dns:
             #Dispatcher.set_button("save", True)
             is_valid = True
@@ -288,11 +288,11 @@ class IPV4Conf(gtk.VBox):
         self.setting.method = 'manual'
         #self.set_group_sensitive("ip", True)
         if self.connection.check_setting_finish():
-            print "settings complete"
+            #print "settings complete"
             #Dispatcher.set_button("save", True)
             ip_is_valid = True
         else:
-            print "settings incomplete"
+            #print "settings incomplete"
             #Dispatcher.set_button("save", False)
             ip_is_valid = False
         # TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
@@ -308,10 +308,10 @@ class IPV4Conf(gtk.VBox):
             self.setting.method = 'auto'
             self.set_group_sensitive("ip", False)
             if self.connection.check_setting_finish():
-                print "settings complete"
+                #print "settings complete"
                 Dispatcher.set_button("save", True)
             else:
-                print "settings incomplete"
+                #print "settings incomplete"
                 Dispatcher.set_button("save", False)
         else:
             self.setting.method = 'manual'
@@ -381,13 +381,13 @@ class IPV6Conf(gtk.VBox):
         self.pack_start(self.dns_section, False, False)
         self.reset(connection)
 
-        if type(self.connection) is NMRemoteConnection:
-            Dispatcher.set_button("apply", True)
-        else:
-            if self.connection.check_setting_finish():
-                Dispatcher.set_button("save", True)
-            else:
-                Dispatcher.set_button("save", False)
+        #if type(self.connection) is NMRemoteConnection:
+            #Dispatcher.set_button("apply", True)
+        #else:
+            #if self.connection.check_setting_finish():
+                #Dispatcher.set_button("save", True)
+            #else:
+                #Dispatcher.set_button("save", False)
 
     def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
@@ -541,11 +541,11 @@ class IPV6Conf(gtk.VBox):
 
         if TypeConvert.is_valid_ip6(content):
             setattr(self, names[index] + "_flag", True)
-            print "valid"+ names[index]
+            #print "valid"+ names[index]
         else:
             #if content is not "":
                 #Dispatcher.set_button("save", False)
-            print "invalid"+ names[index]
+            #print "invalid"+ names[index]
             setattr(self, names[index] + "_flag", False)
 
         ############

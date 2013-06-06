@@ -93,21 +93,8 @@ class FootBox(gtk.HBox):
         return self.__setting_module.get_lock()
 
     def set_button(self, widget, content, state):
-        #print "DEBUG:set button", content, state, self.get_lock()
-
-        #self.__setting_module.set_button(content, state)
         self.btn_save.set_label(_("save"))
-
-        if self.get_lock():
-            self.btn_save.set_sensitive(False)
-        else:
-            if content == "apply":
-                #self.btn_save.set_label(_("save"))
-                self.btn_save.set_sensitive(False)
-            else:
-                
-                #self.btn_save.set_label("save")
-                self.btn_save.set_sensitive(state)
+        self.btn_save.set_sensitive(state)
 
     def delete_click(self, widget):
         if self.focus_connection:

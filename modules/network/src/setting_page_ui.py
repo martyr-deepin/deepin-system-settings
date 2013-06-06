@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from dss import app_theme
 import gtk
 import style
 from foot_box_ui import FootBox
@@ -9,20 +8,17 @@ from sidebar_ui import SideBar
 from dtk.ui.utils import container_remove_all
 from dtk.ui.scrolled_window import ScrolledWindow
 from nmlib.nm_remote_connection import NMRemoteConnection
-#from shared_widget import Settings
 
 from helper import Dispatcher
+from dss_log import log
 class SettingUI(gtk.Alignment):
-
     def __init__(self, slide_back_cb, change_crumb_cb):
         gtk.Alignment.__init__(self, 0, 0, 0, 0)
         self.slide_back = slide_back_cb
         self.change_crumb = change_crumb_cb
-        #style.set_main_window(self)
         
         self.scroll_win = ScrolledWindow()
         self.scroll_win.set_can_focus(False)
-        #style.draw_background_color(align)
 
         self.scroll_win.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
         main_vbox = gtk.VBox()
@@ -62,36 +58,31 @@ class SettingUI(gtk.Alignment):
         self.hpaned.animation_position_frames = [0]
         self.hpaned.update_position()
 
-    def __init_tab_box(self):
-        self.__init_paned(None)
-        #container_remove_all(self.hbox)
-
     def __init_signals(self):
-        Dispatcher.connect("connection-change", self.switch_tab)
+        Dispatcher.connect("connection-change", self.switch_content)
         Dispatcher.connect("setting-saved", self.save_connection_setting)
         Dispatcher.connect("setting-appled", self.apply_connection_setting)
         Dispatcher.connect("request_redraw", lambda w: self.scroll_win.show_all())
 
     def load_module(self, module_obj, hide_left):
-        #self.__init_tab()
-        self.__init_tab_box()
-
-        self.hpaned.set_button_show(hide_left)
-
-        # need this for corect button set
-        self.foot_box.set_setting(module_obj)
+        # create a reference
         self.setting_group = module_obj
+        
+        # init paned
+        self.__init_paned(None)
+        log.info("dss start load module", module_obj)
+        self.hpaned.set_button_show(hide_left)
+        
+        # init foot_box
+        self.foot_box.set_setting(module_obj)
+
+        # init sidebar
         self.sidebar.load_list(module_obj)
         self.apply_method = module_obj.apply_changes
         self.save_method = module_obj.save_changes
+        
 
-    def __init_tab(self):
-        tabs = self.tab_window.tab_items
-        if tabs:
-            self.tab_window.delete_items(tabs)
-
-    def switch_tab(self, widget, connection):
-        #print "switch tab"
+    def switch_content(self, widget, connection):
         container_remove_all(self.hbox)
         self.set_tab_content(connection)
         self.set_foot_bar_button(connection)
@@ -99,20 +90,18 @@ class SettingUI(gtk.Alignment):
         self.focus_connection = connection
 
     def set_foot_bar_button(self, connection):
-        states = self.setting_group.get_button_state()
-
         if type(connection) == NMRemoteConnection:
             self.foot_box.show_delete(connection)
         else:
             self.foot_box.hide_delete()
-
+        states = self.setting_group.get_button_state(connection)
         if states:
             Dispatcher.set_button(*states)
         
-    def set_tab_content(self, connection, init_connection=False):
+    def set_tab_content(self, connection):
+        log.debug("set tab content", connection)
         setting = self.setting_group.init_items(connection)
         self.hbox.add(setting)
-        #self.hbox.queue_draw()
         self.hbox.show_all()
         self.foot_box.set_lock(False)
 
@@ -176,29 +165,6 @@ class MyPaned(HPaned):
             else:    
                 handle.set_cursor(None)
             self.init_button("normal")
-
-    #def do_button_press_event(self, e):
-        #'''
-        #when press the handler's button change the position.
-        #'''
-        #if self.no_show_button:
-            #return
-        #handle = self.get_handle_window()
-        #if e.window == handle:
-            #if self.is_in_button(e.x, e.y):
-                #self.init_button("press")
-            
-                #self.do_press_actoin()
-            #else:
-                #(width, height) = handle.get_size()
-                #if is_in_rect((e.x, e.y), (0, 0, width, height)):
-                    #self.press_coordinate = (e.x, e.y)
-            
-                #gtk.Paned.do_button_press_event(self, e)
-        #else:
-            #gtk.Paned.do_button_press_event(self, e)
-        #return True
-    
 
 if __name__=="__main__":
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

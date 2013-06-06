@@ -32,9 +32,9 @@ from vtk.utils import cn_check, get_text_size, in_window_check
 from vtk.draw import draw_text
 from vtk.theme import vtk_theme
 from vtk.timer import Timer
-from dtk.ui.treeview import TreeView, TreeItem
-from dtk.ui.draw import draw_text as dtk_draw_text, render_text, draw_line
+from dtk.ui.draw import draw_text as dtk_draw_text
 from dtk.ui.constant import DEFAULT_FONT, DEFAULT_FONT_SIZE
+from dtk.ui.label import Label
 import inhibit
 
 
@@ -356,35 +356,6 @@ class TrayDialog(Window):
 '''
 
 
-class InhibitTreeItem(TreeItem):
-    def __init__(self, app_id, reason):
-        super(InhibitTreeItem, self).__init__()
-        self.app_id = "<b>%s</b>" % app_id
-        self.reason = reason
-        self.height = 40
-
-    def get_height(self):
-        return self.height
-
-    def get_column_widths(self):
-        return [-1]
-
-    def get_column_renders(self):
-        return [self.render_item]
-
-    def render_item(self, cr, rect):
-        render_text(cr, self.app_id,
-                    rect.x+5, rect.y,
-                    rect.width, 18,
-                    text_color="#000000",)
-        render_text(cr, self.reason,
-                    rect.x+5, rect.y+18,
-                    rect.width, 18,
-                    text_color="#000000",)
-        draw_line(cr, rect.x, rect.y+37,
-                  rect.x+rect.width, rect.y+37)
-
-
 class InhibitDialog(TrayDialog):
     def __init__(self, ok_text=OK_TEXT, cancel_text=CANCEL_TEXT):
         super(InhibitDialog, self).__init__(cancel_text=cancel_text, ok_text=ok_text)
@@ -406,12 +377,14 @@ class InhibitDialog(TrayDialog):
         self.top_text_btn_ali.set_padding(0, 3, 0, 0)
         self.bottom_text_btn_ali.set_padding(3, 0, 0, 0)
 
-        # add treeview
-        self.inhibit_treeview = TreeView()
-        self.inhibit_treeview.draw_mask = self.__treeview_draw_mask
-        self.inhibit_treeview.set_size_request(-1, 40)
-        self.show_text_vbox.pack_start(self.inhibit_treeview, False, False)
-        self.show_text_vbox.reorder_child(self.inhibit_treeview, 1)
+        inhibit_vbox = gtk.VBox(True)
+        inhibit_vbox.set_size_request(-1, 40)
+        self.inhibit_app_label = Label(label_width=320)
+        self.inhibit_reason_label = Label(label_width=320)
+        inhibit_vbox.pack_start(self.inhibit_app_label, False, False)
+        inhibit_vbox.pack_start(self.inhibit_reason_label, False, False)
+        self.show_text_vbox.pack_start(inhibit_vbox, False, False)
+        self.show_text_vbox.reorder_child(inhibit_vbox, 1)
         #self.set_size_request(APP_WIDTH, 200)
 
     def show_dialog(self, cancel_text=CANCEL_TEXT, ok_text=OK_TEXT):
@@ -431,7 +404,7 @@ class InhibitDialog(TrayDialog):
         if h > 30: h = 30
         self.bottom_text_btn.set_size_request(w, h)
 
-        self.init_inhibit_treeview()
+        self.init_inhibit_list()
         self.show_all()
 
     def focus_out_window(self, widget, event=None):
@@ -465,26 +438,31 @@ class InhibitDialog(TrayDialog):
     def __inhibit_added_cb(self, path):
         if path not in self.__inhibit_dict:
             self.__inhibit_dict[path] = inhibit.get_inhibit_info(path)
-            item = InhibitTreeItem(*self.__inhibit_dict[path])
-            self.__inhibit_item[path] = item
-            self.inhibit_treeview.add_items([item])
+            self.__inhibit_list.append(path)
 
     def __inhibit_removed_cb(self, path):
         if path in self.__inhibit_dict:
-            self.inhibit_treeview.delete_items([self.__inhibit_item[path]])
             del self.__inhibit_dict[path]
-            del self.__inhibit_item[path]
-        if not self.__inhibit_dict:
+            self.__inhibit_list.remove(path)
+        if self.__inhibit_list:
+            self.inhibit_app_label.set_text(
+                "<b><span foreground='#FFFFFF'>%s</span></b>" % self.__inhibit_dict[self.__inhibit_list[0]][0])
+            self.inhibit_reason_label.set_text(
+                "<span foreground='#FFFFFF'>%s</span>" % self.__inhibit_dict[self.__inhibit_list[0]][1])
+        if not self.__inhibit_list:
             self.ok_btn_clicked(None)
 
-    def init_inhibit_treeview(self):
+    def init_inhibit_list(self):
         self.__inhibit_dict = {}
-        self.__inhibit_item = {}
+        self.__inhibit_list = []
         for path in inhibit.get_inhibis():
             self.__inhibit_dict[path] = inhibit.get_inhibit_info(path)
-            item = InhibitTreeItem(*self.__inhibit_dict[path])
-            self.__inhibit_item[path] = item
-            self.inhibit_treeview.add_items([item])
+            self.__inhibit_list.append(path)
+        if self.__inhibit_list:
+            self.inhibit_app_label.set_text(
+                "<b><span foreground='#FFFFFF'>%s</span></b>" % self.__inhibit_dict[self.__inhibit_list[0]][0])
+            self.inhibit_reason_label.set_text(
+                "<span foreground='#FFFFFF'>%s</span>" % self.__inhibit_dict[self.__inhibit_list[0]][1])
 
         print self.__inhibit_dict
         inhibit.gs_bus.add_signal_receiver(

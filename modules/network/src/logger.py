@@ -19,6 +19,7 @@ import sys
 
 DSS_LOG_PATH = "/tmp/network.log"
 TRAY_LOG_PATH = "/tmp/network.tray.log"
+TIME_FORMAT = "[%D] %H:%M:%S"
 class Mylogger(object):
 
     def __init__(self, file_name):
@@ -36,31 +37,35 @@ class Mylogger(object):
         if level >= self.level:
             print string
 
+    def create_str(self, type, args):
+        return "[%s]\t%s %s: %s"%(type, time.strftime(TIME_FORMAT), self.get_func_name(), args)
+
+
     def get_func_name(self):
         current = inspect.currentframe()
         current = inspect.getouterframes(current)
-        return "(%s) %s"%(os.path.basename(current[2][1]), current[2][3])
+        return "%s [%s]"%(os.path.basename(current[3][1]), current[3][3])
         
     def info(self, *args):
-        info = "[Info] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
+        info = self.create_str("INFO", args)
         self.verbose(info, 0)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")
 
     def debug(self, *args):
-        info = "[Debug] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
+        info = self.create_str("DEBUG", args)
         self.verbose(info, -1)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")
 
     def warn(self, *args):
-        info = "[Warn] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
+        info = self.create_str("WARN", args)
         self.verbose(info, 1)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")
 
     def error(self, *args):
-        info = "[Error] %s %s:] %s"%(time.asctime(), self.get_func_name(), args)
+        info = self.create_str("ERROR", args)
         self.verbose(info, 2)
         with open(self.file_name, 'a') as logger:
             logger.write(info + "\n")

@@ -22,8 +22,6 @@
 import gobject
 
 from nmlib.nm_dispatcher import nm_events as event_manager                                          
-#print event_manager, "in main"
-#event_manager = EventManager(use_logger=False)
 
 int = gobject.TYPE_INT
 obj = gobject.TYPE_PYOBJECT
@@ -160,6 +158,9 @@ class EventDispatcher(gobject.GObject):
         pass
 
     def to_setting_page(self, module, hide_left=False):
+        '''
+        receiver main Network
+        '''
         self.emit('to-setting-page', module, hide_left)
 
     def load_module_frame(self, module_frame):

@@ -34,13 +34,12 @@ def check_settings(connection, fn):
 class MobileSetting(Settings):
 
     def __init__(self, spec_connection=None):
-        Settings.__init__(self, [Broadband, Sections, PPPConf])
+        Settings.__init__(self, Sections)
         self.crumb_name = _("Mobile Network")
         self.spec_connection = spec_connection
 
     def get_broadband(self, connection):
-        # Broadband被实例化了两次，应该返回Sections的Broadband实例对像
-        return self.settings[connection][1][1].broadband
+        return self.settings[connection].broadband
 
     def get_connections(self):
         # Get all connections  

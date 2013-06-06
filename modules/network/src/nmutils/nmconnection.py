@@ -136,7 +136,6 @@ class NMConnection(gobject.GObject):
                     print "ipv4 addresses not complete"
                     return False
                 else:
-                    print info_dict['ipv4']['addresses']
                     [address, netmask, gateway] = TypeConvert.ip4address_net2native(info_dict["ipv4"]["addresses"][0])
 
                     if not TypeConvert.is_valid_ip4(address):
