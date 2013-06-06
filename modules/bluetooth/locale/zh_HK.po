@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:42+0800\n"
+"POT-Creation-Date: 2013-06-06 16:59+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -21,23 +21,7 @@ msgid "Adapter"
 msgstr ""
 
 #: ../src/tray_bluetooth_plugin.py:209
-msgid "Advanced option..."
-msgstr ""
-
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:407
-msgid "Bluetooth Get Powered"
-msgstr ""
-
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:427
-msgid "Device Shown Name"
-msgstr ""
-
-#: ../src/search_keyword.py:31
-msgid "Be Searchedable"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Searching Device Timeout"
+msgid "Advanced options..."
 msgstr ""
 
 #: ../src/bluetooth_view.py:83
@@ -79,8 +63,16 @@ msgstr ""
 msgid "Bluetooth"
 msgstr ""
 
-#: ../src/bluetooth_view.py:445
-msgid "Be Discoverable"
+#: ../src/bluetooth_view.py:407 ../src/search_keyword.py:29
+msgid "Enable bluetooth"
+msgstr ""
+
+#: ../src/bluetooth_view.py:427 ../src/search_keyword.py:30
+msgid "Device name"
+msgstr ""
+
+#: ../src/bluetooth_view.py:445 ../src/search_keyword.py:31
+msgid "Discoverable"
 msgstr ""
 
 #: ../src/bluetooth_view.py:478
@@ -100,9 +92,13 @@ msgid "Sending file to %s"
 msgstr ""
 
 #: ../src/bluetooth_sender.py:83
-msgid "Succeed!"
+msgid "Transfer complete!"
 msgstr ""
 
 #: ../src/bluetooth_sender.py:114
 msgid "Select File"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "Searching Device Timeout"
 msgstr ""

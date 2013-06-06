@@ -404,7 +404,7 @@ class BlueToothView(gtk.VBox):
             self.title_label.set_sensitive(False)
         self.enable_align = self.__setup_align()
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.enable_open_label = self.__setup_label(_("Bluetooth Get Powered"))
+        self.enable_open_label = self.__setup_label(_("Enable bluetooth"))
         if self.my_bluetooth.adapter:
             self.enable_open_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
         else:
@@ -424,7 +424,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.display_align = self.__setup_align()
         self.display_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.display_device_label = self.__setup_label(_("Device Shown Name"))
+        self.display_device_label = self.__setup_label(_("Device name"))
         if self.my_bluetooth.adapter:
             self.display_device_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
         else:
@@ -442,7 +442,7 @@ class BlueToothView(gtk.VBox):
         '''
         self.search_align = self.__setup_align()
         self.search_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.search_label = self.__setup_label(_("Be Discoverable"))
+        self.search_label = self.__setup_label(_("Discoverable"))
         if self.my_bluetooth.adapter:
             self.search_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
         else:

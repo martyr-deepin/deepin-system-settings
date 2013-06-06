@@ -26,8 +26,8 @@ from nls import _
 TODO: keywords list
       item (module_uid, search_keyword)
 '''
-keywords = [("bluetooth_1", _("Bluetooth Get Powered")), 
-            ("bluetooth_2", _("Device Shown Name")), 
-            ("bluetooth_3", _("Be Searchedable")), 
+keywords = [("bluetooth_1", _("Enable bluetooth")), 
+            ("bluetooth_2", _("Device name")), 
+            ("bluetooth_3", _("Discoverable")), 
             ("bluetooth_4", _("Searching Device Timeout")) 
            ]

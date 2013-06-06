@@ -80,7 +80,7 @@ class BluetoothSender:
         self.__session.Disconnect()
         self.__session.Close()
 
-        send_message("dialog", ("bluetooth", "reply", _("Succeed!"), ""))
+        send_message("dialog", ("bluetooth", "reply", _("Transfer complete!"), ""))
 
     def __on_session_created(self, manager, session):
         self.__session = session
