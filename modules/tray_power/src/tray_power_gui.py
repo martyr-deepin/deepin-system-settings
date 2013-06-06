@@ -53,7 +53,7 @@ class PowerGui(gtk.VBox):
         self.top_line_ali.add(self.top_line)
         self.one_mode_btn = SelectButton(_("Balanced"), ali_padding=125)
         self.two_mode_btn = SelectButton(_("Power saver"), ali_padding=125)
-        self.tree_mode_btn = SelectButton(_("Hight performance"), ali_padding=125)
+        self.tree_mode_btn = SelectButton(_("High performance"), ali_padding=125)
         self.customized_mode_btn = SelectButton(_("Custom"), ali_padding=125)
         self.one_mode_btn.connect("clicked", self.one_mode_btn_clicked)
         self.two_mode_btn.connect("clicked", self.two_mode_btn_clicked)
