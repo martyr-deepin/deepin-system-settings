@@ -32,12 +32,11 @@ from vtk.utils import cairo_disable_antialias
 from vtk.color import color_hex_to_cairo
 from dtk.ui.line import HSeparator
 from dtk.ui.utils import set_clickable_cursor
-import subprocess
-from deepin_utils.file import get_current_dir
 import sys
 sys.path.append("/usr/share/deepin-system-settings/dss")
 from theme import app_theme
 from vtk.utils import get_text_size
+from livecd import is_deepin_livecd
 
 WIDTH = 120
 HEIGHT = 25
@@ -129,9 +128,7 @@ class Gui(gtk.VBox):
             self.pack_start(self.lock_btn, True, True)
         set_clickable_cursor(self.user_label_event)
 
-        p = subprocess.Popen(['python', '%s/livecd.py' % get_current_dir(__file__)])
-        p.wait()
-        if p.returncode == 0:
+        if is_deepin_livecd():
             self.switch_btn.set_sensitive(False)
             self.suspend_btn.set_sensitive(False)
             self.logout_btn.set_sensitive(False)
