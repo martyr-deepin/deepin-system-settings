@@ -617,13 +617,15 @@ class DSLSection(BaseMixIn):
 
     # dsl settings
     def device_active(self, name, event, data):
+        tray_log.debug("=== dsl active", data)
         self.gui.dsl.set_active((True, True), emit=True)
         self.change_status_icon("cable")
 
     def device_unavailable(self, name, event, data):
-        print "device unavailable"
+        tray_log.debug("device unavailable")
 
     def device_deactive(self, name, event, data):
+        tray_log.debug('dsl deactive', data) 
         new_state, old_state, reason = data
         if any([d.get_state() == 100 for d in net_manager.wired_devices]):
             self.change_status_icon("cable")
@@ -638,12 +640,14 @@ class DSLSection(BaseMixIn):
                     self.gui.dsl.set_active((True, False))
 
     def activate_start(self, name, event, data):
+        tray_log.debug('dsl active start', data)
         if not self.gui.dsl.get_active():
             self.gui.dsl.set_active((True, True))
         self.change_status_icon("loading")
 
 
     def activate_failed(self, name, event, data):
+        tray_log.debug("dsl active failed", data)
         #print "device failded"
         new_state, old_state, reason = data
         if self.gui.wireless.get_active():
@@ -651,7 +655,7 @@ class DSLSection(BaseMixIn):
         else:
             self.change_status_icon('wifi_disconnect')
         if reason == 13:
-            self.dsl.set_active(False)
+            self.gui.dsl.set_active((True, False))
 
 
     def on_dsl_setting_change(self, name, event, conn):
@@ -687,7 +691,7 @@ class DSLSection(BaseMixIn):
                         self.gui.dsl_list.set_active_by(index)
                         return
                 except Exception, e:
-                    print e
+                    tray_log.error(e)
             else:
                 pass
         
