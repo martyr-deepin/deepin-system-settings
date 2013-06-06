@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:37+0800\n"
+"POT-Creation-Date: 2013-06-06 10:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ../dss/main.py:337 ../dss/action_bar.py:101
+#: ../dss/action_bar.py:101 ../dss/main.py:337
 msgid "System Settings"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgstr ""
 
 #: ../dss/bluetooth_dialog.py:77
 #, python-format
-msgid "Transmitted %d"
+msgid "Sent %d"
 msgstr ""
 
 #: ../dss/bluetooth_dialog.py:112
