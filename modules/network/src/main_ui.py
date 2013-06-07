@@ -35,7 +35,6 @@ import gtk
 from container import Contain, ToggleThread
 from lists import (WiredItem, WirelessItem, HidenItem, DSLItem,
                    MobileItem, VPNItem, DeviceToggleItem)
-from widgets import AskPasswordDialog
 from dsl_config import DSLSetting
 from vpn_config import VPNSetting
 from mobile_config import MobileSetting
@@ -74,7 +73,7 @@ class Section(gtk.VBox):
 
     def load(self, toggle, content=[]):
         self.toggle = toggle
-        self.content_box = gtk.VBox(spacing=15)
+        self.content_box = gtk.VBox(spacing=0)
         self.pack_start(self.toggle, False, False)
         self.toggle.switch.connect("toggled", self.toggle_callback)
 
@@ -157,7 +156,7 @@ class WiredDevice(object):
 
         index = self.wired_devices.index(widget)
         if self.tree.visible_items != []:
-            print "device active ,set state 2"
+            log.debug()
             self.tree.visible_items[index].set_net_state(2)
             self.tree.queue_draw()
         self.wire.set_active(True)
@@ -275,7 +274,6 @@ class WirelessDevice(object):
         self.pwd_failed = False
 
         if self.selected_item:
-            #self.device_dict[widget] = [self.selected_item, 2]
             self.selected_item.set_net_state(2)
             return
 
@@ -289,7 +287,7 @@ class WirelessDevice(object):
             return
         #self.wireless.set_sensitive(True)
         if reason == 36:
-            log.info(__name__, "some device removed")
+            log.info("some device removed")
             net_manager.init_devices()
             self.remove_switcher() 
             return 
@@ -316,7 +314,7 @@ class WirelessDevice(object):
             return
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
-        print widget, widget.get_state()
+        log.debug(new_state, old_state, reason)
         if widget not in net_manager.device_manager.wireless_devices:
             return
         self.this_connection = widget.get_real_active_connection()
@@ -341,14 +339,17 @@ class WirelessDevice(object):
         if reason == 7:
             self.pwd_failed = True
 
-    def toggle_dialog(self, connection, security=None):
-        ssid = connection.get_setting("802-11-wireless").ssid
-        if ssid != None:
-            AskPasswordDialog(connection,
-                              ssid,
-                              key_mgmt=security,
-                              cancel_callback=self.cancel_ask_pwd,
-                              confirm_callback=self.pwd_changed).show_all()
+    #def toggle_dialog(self, connection, security=None):
+        #'''
+        #This dialog only show up when clicked ap hs no connections
+        #'''
+        #ssid = connection.get_setting("802-11-wireless").ssid
+        #if ssid != None:
+            #AskPasswordDialog(connection,
+                              #ssid,
+                              #key_mgmt=security,
+                              #cancel_callback=self.cancel_ask_pwd,
+                              #confirm_callback=self.pwd_changed).show_all()
 
     def cancel_ask_pwd(self):
         pass
@@ -381,7 +382,6 @@ class WirelessSection(Section, WirelessDevice):
         self.device_tree = None
         self.focused_device = None
         self.wireless_devices = None
-
 
     def add_switcher(self):
         if self.device_tree == None:
@@ -895,7 +895,11 @@ class VpnSection(Section):
         event_manager.add_callback('vpn-connected', self.vpn_connected)
         event_manager.add_callback('vpn-disconnected', self.vpn_disconnected)
         event_manager.add_callback('vpn-user-disconnect', self.on_user_stop_vpn)
-        event_manager.add_callback('user-toggle-off-vpn-tray', lambda n,e,d: self.vpn.set_active(False))
+        event_manager.add_callback('user-toggle-off-vpn-tray', self.user_toggle_off_vpn_tray)
+
+    def user_toggle_off_vpn_tray(self, name, event, data):
+        log.debug("toggle off vpn from tray")
+        self.vpn.set_active(False)
 
     def on_user_stop_vpn(self, name, event, data):
         self.vpn.set_active(False)
