@@ -448,7 +448,7 @@ if __name__ == "__main__":
     application.add_titlebar(
         ["min", "close"], 
         os.path.join(image_dir, "logo.png"),
-        _("Deepin System Settings"),
+        _("System Settings"),
         enable_gaussian=False,
         name_size=10,
 	)

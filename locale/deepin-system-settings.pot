@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-06 10:52+0800\n"
+"POT-Creation-Date: 2013-06-07 11:47+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,12 +21,8 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ../dss/action_bar.py:101 ../dss/main.py:337
+#: ../dss/action_bar.py:101 ../dss/main.py:337 ../dss/main.py:451
 msgid "System Settings"
-msgstr ""
-
-#: ../dss/main.py:451
-msgid "Deepin System Settings"
 msgstr ""
 
 #: ../dss/navigate_page.py:134

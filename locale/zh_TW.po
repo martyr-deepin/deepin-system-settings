@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-06 10:52+0800\n"
+"POT-Creation-Date: 2013-06-07 11:47+0800\n"
 "PO-Revision-Date: 2013-01-17 10:16+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -20,13 +20,9 @@ msgstr ""
 msgid "Reset"
 msgstr "重設"
 
-#: ../dss/action_bar.py:101 ../dss/main.py:337
+#: ../dss/action_bar.py:101 ../dss/main.py:337 ../dss/main.py:451
 msgid "System Settings"
 msgstr "系統設定"
-
-#: ../dss/main.py:451
-msgid "Deepin System Settings"
-msgstr "深度系統設定"
 
 #: ../dss/navigate_page.py:134
 msgid "10"
@@ -44,6 +40,3 @@ msgstr ""
 #: ../dss/bluetooth_dialog.py:112
 msgid "Ok"
 msgstr "確認"
-
-#~ msgid "Transmitted %d"
-#~ msgstr "已送出 %d"
