@@ -33,9 +33,6 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 
 from nm_modules import nm_module
 
-#from lan_config import WiredSetting, NoSetting
-#from wlan_config import WirelessSetting
-#from wired import *
 import threading
 import gtk
 import pango
@@ -47,16 +44,13 @@ from nls import _
 from math import radians
 from helper import Dispatcher, event_manager
 
-#from settings_widget import LoadingThread
 import threading as td
 import time
 
 bg_hover_color="#ebf4fd"
 bg_normal_color = "#f6f6f6"
-#bg_normal_color = "#ffffff"
 border_hover_color="#7da2ce"
 border_normal_color = "#d2d2d2"
-#border_normal_color = "#ffffff"
 
 class GenItems(TreeItem):
     H_PADDING = 10
@@ -95,12 +89,8 @@ class GenItems(TreeItem):
                 self.draw_loading(cr, rect)
             elif self.network_state == self.NETWORK_CONNECTED:
                 draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
-            #elif self.network_state == self.NETWORK_DISCONNECT:
-                #draw_pixbuf(cr, self.check_out_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
-
 
         #draw outline
-
         with cairo_disable_antialias(cr):
             cr.set_source_rgb(*color_hex_to_cairo(self.border_color))
             cr.set_line_width(1)
@@ -141,13 +131,11 @@ class GenItems(TreeItem):
     def hover(self, column, offset_x, offset_y):
         self.is_hover = True
         self.bg_color = bg_hover_color
-        #self.border_color = border_hover_color
         self.redraw()
 
     def unhover(self, column, offset_x, offset_y):
         self.is_hover = False
         self.bg_color = bg_normal_color
-        #self.border_color = border_normal_color
         self.redraw()
 
     def redraw(self):

@@ -417,7 +417,7 @@ class Settings(object):
         try:
             return self.setting_state[connection]
         except:
-            log.warn("no button state for this connection, will init one")
+            log.debug("no button state for this connection, will init one")
             self.init_button_state(connection)
             return None
 

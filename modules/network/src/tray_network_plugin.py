@@ -488,8 +488,11 @@ class VPNSection(BaseMixIn):
         # from nm_remote_setting
         event_manager.add_callback('vpn-new-added', self.__on_vpn_setting_change)
         Dispatcher.connect('vpn-start', self.vpn_start_cb)
-        event_manager.add_callback('user-toggle-off-vpn-main', lambda n,e,d: self.gui.vpn.set_active((True, False)))
+        event_manager.add_callback('user-toggle-off-vpn-main', self.user_toggle_off_vpn_main)
 
+    def user_toggle_off_vpn_main(self, name, event, data):
+        tray_log.debug("from MAIN toggle off")
+        self.gui.vpn.set_active((True, False))
     
     def __on_vpn_setting_change(self, name, event, conn):
         '''

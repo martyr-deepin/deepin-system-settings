@@ -12,8 +12,8 @@ from dtk.ui.line import HSeparator
 from constants import TITLE_FONT_SIZE, CONTENT_FONT_SIZE, WIDGET_HEIGHT, BETWEEN_SPACING, STANDARD_LINE
 from helper import Dispatcher
 import style
-
 import gtk
+from dss_log import log
 class MyInputEntry(InputEntry):
 
     def __init__(self, content="",):
@@ -273,7 +273,17 @@ class TableAsm(gtk.Table):
             items = self.shared + table_spec
         else:
             items = self.shared[:insert] + table_spec + self.shared[insert:]
+        #log.debug(items)
         self._table_attach(self, items)
+
+    def __remove_all_items(self):
+        if not self.get_children():
+            log.debug("not items", self)
+            return
+        for c in self.get_children():
+            log.debug(c)
+            container_remove_all(c)
+        container_remove_all(self)
     
     def _wrap_align(self, row_item, table):
         left, right = row_item
@@ -293,15 +303,13 @@ class TableAsm(gtk.Table):
             if right:
                 hbox.pack_start(right)
             table.attach(hbox, 0, 1, row, row + 1)
-            
-            #left, right = item 
-            #if left:
-                #table.attach(left, 0, 1, row, row + 1)
-            #if right:
-                #table.attach(right, 1, 2, row, row + 1)
+        
     
     def table_clear(self):
-        container_remove_all(self)
+        '''
+        since used in many place, dont delete it now
+        '''
+        self.__remove_all_items()
 
     def set_sensitive(self, state):
         for child in self.get_children():
