@@ -74,7 +74,7 @@ class Section(gtk.VBox):
 
     def load(self, toggle, content=[]):
         self.toggle = toggle
-        self.content_box = gtk.VBox(spacing=15)
+        self.content_box = gtk.VBox(spacing=0)
         self.pack_start(self.toggle, False, False)
         self.toggle.switch.connect("toggled", self.toggle_callback)
 
