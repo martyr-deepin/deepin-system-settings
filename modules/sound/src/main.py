@@ -102,7 +102,7 @@ class SoundSetting(object):
         self.label_widgets["speaker_volume"] = Label(_("Output Volume"), text_size=option_item_font_szie,
                                                      text_x_align=ALIGN_END, enable_select=False,
                                                      enable_double_click=False, fixed_width=STANDARD_LINE)
-        self.label_widgets["speaker_mute"] = Label(_("Sound Enabled"), text_size=option_item_font_szie,
+        self.label_widgets["speaker_mute"] = Label(_("Enable Sound"), text_size=option_item_font_szie,
                                                    text_x_align=ALIGN_END, enable_select=False,
                                                    enable_double_click=False, fixed_width=STANDARD_LINE)
         self.label_widgets["speaker_balance"] = Label(_("Balance"), text_size=option_item_font_szie,
@@ -114,7 +114,7 @@ class SoundSetting(object):
         self.label_widgets["microphone_volume"] = Label(_("Input Volume"), text_size=option_item_font_szie,
                                                         text_x_align=ALIGN_END, enable_select=False,
                                                         enable_double_click=False, fixed_width=STANDARD_LINE)
-        self.label_widgets["microphone_mute"] = Label(_("Sound Enabled"), text_size=option_item_font_szie,
+        self.label_widgets["microphone_mute"] = Label(_("Enable Sound"), text_size=option_item_font_szie,
                                                       text_x_align=ALIGN_END, enable_select=False,
                                                       enable_double_click=False, fixed_width=STANDARD_LINE)
         self.label_widgets["microphone_input_level"] = Label(_("Input Level"), text_size=option_item_font_szie,
