@@ -113,22 +113,37 @@ class WirelessSetting(Settings):
 class HiddenSetting(Settings):
     
     def __init__(self, connection, spec_connection=None):
-        Settings.__init__(self, [Sections])
+        Settings.__init__(self, Sections)
         self.connection = connection
         self.spec_connection = spec_connection
         self.crumb_name = _("Hidden network")
 
     def init_items(self, connection):
-        self.connection = connection
+        self.connection = connection 
+        # 
+        self.connection.settings_obj = self
+        # 新增以下几个变量，用于set_button时判断输入的合法性。
+        # 基本设置
+        self.mac_is_valid = True
+        self.ipv4_ip_is_valid = True
+        self.ipv4_dns_is_valid = True
+        self.ipv6_ip_is_valid = True
+        self.ipv6_dns_is_valid = True
+        # 无线设置
+        self.wlan_encry_is_valid = True
+        # 拨号设置
+        self.dsl_is_valid = True
+        self.ppp_is_valid = True
+        # VPN设置
+        self.vpn_is_valid = True
         if connection not in self.settings:
             self.setting_lock[connection] = True
             #self.init_button_state(connection)
-            setting_list = []
-            for setting in self.setting_list:
-                s = setting(connection, self.set_button, True)
-                setting_list.append((s.tab_name, s))
-            self.settings[connection] = setting_list
-        return self.settings[connection][0][1]
+                #s = setting(connection, self.set_button, True)
+                #setting_list.append((s.tab_name, s))
+            s = self.section(connection, self.set_button, True, self)
+            self.settings[connection] = s
+        return self.settings[connection]
 
     def get_connections(self):
         if self.connection:
@@ -214,6 +229,7 @@ class Security(gtk.VBox):
         self.need_ssid = need_ssid
         
         if self.need_ssid:
+            log.info("enter hidden network settings")
             self.add_ssid_entry()
         
         if self.connection.get_setting("802-11-wireless").security == "802-11-wireless-security":
@@ -350,7 +366,9 @@ class Security(gtk.VBox):
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
-            except:
+                log.debug("get secret", setting_name, method, secret)
+            except Exception, e:
+                log.error("get secret error", e)
                 secret = ""
 
             if self.security_combo.get_current_item()[1] == "wpa-psk":
@@ -384,10 +402,12 @@ class Security(gtk.VBox):
                 try:
                     index = self.setting.wep_tx_keyidx
                     auth = self.setting.auth_alg
-                    self.auth_combo.set_select_index(["open", "shared"].index(auth))
-                except:
+                    log.debug(auth)
+                    self.auth_combo.set_select_index(["shared", "open"].index(auth))
+                except Exception, e:
+                    log.error(e)
                     index = 0
-                    auth = "open"
+                    auth = "shared"
                 # must convert long int to int 
                 index = int(index)
                 
@@ -401,7 +421,7 @@ class Security(gtk.VBox):
                 self.key_entry.entry.set_text(secret)
                 self.setting.set_wep_key(index, secret)
                 self.wep_index_spin.set_value(index)
-                self.auth_combo.set_select_index(["open", "shared"].index(auth))
+                self.auth_combo.set_select_index(["shared", "open"].index(auth))
 
         Dispatcher.request_redraw()
 
@@ -512,9 +532,9 @@ class Security(gtk.VBox):
             self.setting.set_wep_key(index, passwd)
             self.setting.wep_tx_keyidx = index
             if auth_active == 0:
-                self.setting.auth_alg = "open"
-            else:
                 self.setting.auth_alg = "shared"
+            else:
+                self.setting.auth_alg = "open"
             del self.setting.psk
 
         # Update

@@ -44,7 +44,7 @@ class Mylogger(object):
     def get_func_name(self):
         current = inspect.currentframe()
         current = inspect.getouterframes(current)
-        return "%s [%s]"%(os.path.basename(current[3][1]), current[3][3])
+        return "%s [%s %s]"%(os.path.basename(current[3][1]),current[3][2], current[3][3])
         
     def info(self, *args):
         info = self.create_str("INFO", args)

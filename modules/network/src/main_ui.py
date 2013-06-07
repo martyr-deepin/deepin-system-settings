@@ -326,17 +326,14 @@ class WirelessDevice(object):
         if self._get_active_item():
             for item in self._get_active_item():
                 item.set_net_state(0)
-                #self.device_dict[widget] = [item, 0]
 
         if self.selected_item:
             self.selected_item.set_net_state(1)
-            #self.device_dict[widget] = [self.selected_item, 1]
         else:
             index = self.get_actives(self.ap_list)
             if index and self.tree.visible_items:
                 for i,s in index:
                     self.tree.visible_items[i].set_net_state(1)
-                    #self.device_dict[widget] = [self.tree.visible_items[i], 1]
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
         if widget not in net_manager.device_manager.wireless_devices:
@@ -383,6 +380,7 @@ class WirelessSection(Section, WirelessDevice):
         self.selected_item = None
         self.device_tree = None
         self.focused_device = None
+        self.wireless_devices = None
 
 
     def add_switcher(self):
@@ -399,10 +397,6 @@ class WirelessSection(Section, WirelessDevice):
             self.content_box.remove(self.device_tree)
             self.device_tree = None
             self.focused_device = self.wireless_devices[0]
-            #devices = filter(lambda d: d in self.device_manager.wireless_devices, self.device_dict.keys())
-            #print devices
-            #[self.device_dict.pop(d) for d in devices]
-                
             self.wireless_redraw(None)
 
 
@@ -546,11 +540,8 @@ class WirelessSection(Section, WirelessDevice):
         if not self.wireless_devices:
             return []
 
-        #for wireless_device in self.wireless_devices:
         device_wifi = nm_module.cache.get_spec_object(self.focused_device.object_path)
         self.ap_list += device_wifi.order_ap_list()
-        # merge ap list
-        #self.ap_list = self.__ap_list_merge()
         aps = map(lambda i:WirelessItem(i, self.focused_device), self.ap_list)
         hidden_list = self.get_hidden_connection(self.ap_list)
         hiddens = map(lambda c: HidenItem(c), hidden_list)
@@ -879,6 +870,8 @@ class VpnSection(Section):
         self.load(self.vpn, [self.label])
         self.no_auto_connect = False
         self.no_vpn_connecting = False
+        self.this_setting = None
+        self.vpn_path = None
 
     def init_state(self):
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
@@ -902,6 +895,7 @@ class VpnSection(Section):
         event_manager.add_callback('vpn-connected', self.vpn_connected)
         event_manager.add_callback('vpn-disconnected', self.vpn_disconnected)
         event_manager.add_callback('vpn-user-disconnect', self.on_user_stop_vpn)
+        event_manager.add_callback('user-toggle-off-vpn-tray', lambda n,e,d: self.vpn.set_active(False))
 
     def on_user_stop_vpn(self, name, event, data):
         self.vpn.set_active(False)
@@ -917,6 +911,7 @@ class VpnSection(Section):
         log.debug("vpn start by tray")
         vpn_active = nm_module.cache.get_spec_object(path)
         if vpn_active.get_vpnstate() < 5:
+            self.vpn_path = path
             self.on_vpn_connecting(None, None, path)
 
 
@@ -941,14 +936,18 @@ class VpnSection(Section):
             self.no_auto_connect = False
             pass
         else:
-            for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
-                if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
-                    try:
-                        active_conn.vpn_auto_connect(self.on_active_conn_create)
-                    except:
-                        pass
-                else:
-                    break
+            if not self.vpn_path:
+
+                for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
+                    if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
+                        try:
+                            active_conn.vpn_auto_connect(self.on_active_conn_create)
+                        except:
+                            pass
+                    else:
+                        break
+            else:
+                self.on_vpn_connecting(None, None, self.vpn_path)
 
         vpn_active = nm_module.nmclient.get_vpn_active_connection()
         if vpn_active:
@@ -965,14 +964,17 @@ class VpnSection(Section):
             pass
 
     def toggle_off(self):
+        self.user_toggle_off()
         for active in nm_module.nmclient.get_anti_vpn_active_connection():
             active.device_vpn_disconnect()
-
-        vpn_active = nm_module.nmclient.get_vpn_active_connection()
-        for vpn in vpn_active:
-            nm_module.nmclient.deactive_connection_async(vpn.object_path)
+        
+        if self.vpn_path:
+            nm_module.nmclient.deactive_connection_async(self.vpn_path)
         #if vpn_active:
         #    nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
+
+    def user_toggle_off(self):
+        net_manager.emit_user_toggle_off("vpn-main")
     
     def get_list(self):
         self.connection = nm_module.nm_remote_settings.get_vpn_connections()
@@ -990,6 +992,7 @@ class VpnSection(Section):
             return
         log.debug("vpn start connect", data)
         #print "on vpn connecting in main"
+        self.vpn_path = data
         self.this_setting = nm_module.cache.getobject(data).get_connection().object_path
         map(lambda p: p.set_net_state(0), self.tree.visible_items)
         try:
@@ -1012,6 +1015,7 @@ class VpnSection(Section):
         items = filter(lambda p: p.connection.object_path == self.this_setting, self.tree.visible_items)
         map(lambda i: i.set_net_state(0), items)
         self.this_setting = None
+        self.vpn_path = None
 
 class MobileDevice(object):
 

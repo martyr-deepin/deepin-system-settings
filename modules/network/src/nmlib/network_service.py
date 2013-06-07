@@ -128,6 +128,17 @@ class NetworkService(dbus.service.Object):
     def emitVpnStart(self, active_path):
         self.VpnStart(active_path)
         return ''
+
+    @dbus.service.signal(NETWORK_INTERFACE)
+    def userToggleOff(self, network_type):
+        return 
+
+    @dbus.service.method(NETWORK_INTERFACE,
+                         in_signature='s', out_signature='')
+    def emitUserToggleOff(self, network_type):
+        self.userToggleOff(network_type)
+        return
+
     #@dbus.service.signal(NETWORK_INTERFACE)
     #def MainVpnStart(self, path):
         #return 

@@ -161,7 +161,7 @@ class IPV4Conf(gtk.VBox):
             setattr(self, names[index] + "_flag", True)
         else:
             widget.set_frame_alert(True)
-            Dispatcher.set_tip("ipv4 invalid")
+            #Dispatcher.set_tip("ipv4 invalid")
             setattr(self, names[index] + "_flag", False)
         
         if hasattr(self, "netmask_flag") and self.netmask_flag:
@@ -202,7 +202,6 @@ class IPV4Conf(gtk.VBox):
         dns = self.check_complete_dns()
         #print "set dns address:", dns, content
         if dns:
-            #Dispatcher.set_button("save", True)
             is_valid = True
             self.setting.clear_dns()
             for d in dns:
@@ -213,14 +212,7 @@ class IPV4Conf(gtk.VBox):
 
         if TypeConvert.is_valid_ip4(content):
             setattr(self, names[index] + "_flag", True)
-            #print "valid"+ names[index]
-            #widget.set_frame_alert(False)
         else:
-            #widget.set_frame_alert(False)
-            #if content is not "":
-                ##Dispatcher.set_button("save", False)
-                #widget.set_frame_alert(True)
-                #print "dns is invalid"
             setattr(self, names[index] + "_flag", False)
 
         ############

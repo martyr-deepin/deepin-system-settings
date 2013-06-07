@@ -258,9 +258,9 @@ class PPTPConf(gtk.VBox):
             #print "in vpn"
             #Dispatcher.set_button("save", False)
         ##############
-        is_valid = self.connection.check_setting_finish()
-        self.settings_obj.vpn_is_valid = is_valid
-        self.settings_obj.set_button("save", is_valid)
+        #is_valid = self.connection.check_setting_finish()
+        #self.settings_obj.vpn_is_valid = is_valid
+        #self.settings_obj.set_button("save", is_valid)
 
     def refresh(self):
         #print ">>>",self.vpn_setting.data
@@ -603,7 +603,7 @@ class PPPConf(gtk.VBox):
         #=========================
         # retreieve settings
         self.service_type = self.vpn_setting.service_type.split(".")[-1]
-        print ">>",self.vpn_setting.data
+        #print ">>",self.vpn_setting.data
         refuse_eap = self.vpn_setting.get_data_item("refuse-eap")
         refuse_pap = self.vpn_setting.get_data_item("refuse-pap")
         refuse_chap = self.vpn_setting.get_data_item("refuse-chap")

@@ -53,6 +53,7 @@ class SettingUI(gtk.Alignment):
         pass
 
     def __init_paned(self, widget):
+        log.debug("")
         self.hpaned.saved_position = 160
         self.hpaned.set_position(1)
         self.hpaned.animation_position_frames = [0]

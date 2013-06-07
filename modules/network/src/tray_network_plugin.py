@@ -345,6 +345,7 @@ class WirelessSection(BaseMixIn):
         ssid = connection.get_setting("802-11-wireless").ssid
         if ssid != None:
             self.hide_menu(True)
+            tray_log.debug(ssid, security)
             dialog = AskPasswordDialog(connection,
                               ssid,
                               key_mgmt=security,
@@ -456,6 +457,7 @@ class VPNSection(BaseMixIn):
         self.this_gui = self.gui.vpn
 
         self.this_setting = None
+        self.vpn_path = None
 
         self._init_signals()
         self._init_section()
@@ -468,7 +470,7 @@ class VPNSection(BaseMixIn):
             self.no_vpn_connecting = False
             if nm_module.nmclient.get_vpn_active_connection():
                 self.gui.vpn.set_active((True, True))
-                self.tray_icon.set_icon_theme("links_vpn")
+                self.change_status_icon("links_vpn")
 
             tray_log.info("vpn section show and start")
         else:
@@ -486,6 +488,7 @@ class VPNSection(BaseMixIn):
         # from nm_remote_setting
         event_manager.add_callback('vpn-new-added', self.__on_vpn_setting_change)
         Dispatcher.connect('vpn-start', self.vpn_start_cb)
+        event_manager.add_callback('user-toggle-off-vpn-main', lambda n,e,d: self.gui.vpn.set_active((True, False)))
 
     
     def __on_vpn_setting_change(self, name, event, conn):
@@ -532,20 +535,22 @@ class VPNSection(BaseMixIn):
             else:
                 pass
         else:
+            self.user_toggle_off_button()
             tray_log.info("*vpn toggle off*")
             self.gui.vpn_list.clear()
             self.check_net_state()
-            self.this_setting = None
             for active in nm_module.nmclient.get_anti_vpn_active_connection():
                 active.device_vpn_disconnect()
-
-            vpn_active = nm_module.nmclient.get_vpn_active_connection()
-            for vpn in vpn_active:
-                nm_module.nmclient.deactive_connection_async(vpn.object_path)
+            
+            if self.vpn_path:
+                nm_module.nmclient.deactive_connection_async(self.vpn_path)
+            self.this_setting = None
         Dispatcher.request_resize()
 
+    def user_toggle_off_button(self):
+        net_manager.emit_user_toggle_off("vpn-tray")
+
     def __on_user_stop_vpn(self, name, event, data):
-        
         tray_log.debug("user stop vpn")
         self.gui.vpn.set_active((True, False))
 
@@ -563,6 +568,7 @@ class VPNSection(BaseMixIn):
 
         self.change_status_icon('loading')
         self.this_setting = nm_module.cache.getobject(path).get_connection().object_path
+        self.vpn_path = path
 
     def __vpn_active_callback(self, name, event, path):
         #print name, data
@@ -581,6 +587,7 @@ class VPNSection(BaseMixIn):
         #print "vpn failed callback"
         self.check_net_state()
         self.this_setting = None
+        self.vpn_path = None
 
 class DSLSection(BaseMixIn):
 

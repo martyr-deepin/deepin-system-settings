@@ -47,6 +47,9 @@ class NetManager(object):
             bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-start", path),
                                     dbus_interface = "com.deepin.network",
                                     signal_name="VpnStart")
+            bus.add_signal_receiver(lambda type: self.classify_network_type(type),
+                                    dbus_interface = "com.deepin.network",
+                                    signal_name="userToggleOff")
             #bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-setting-change", path),
                                     #dbus_interface = "com.deepin.network",
                                     #signal_name="VpnSettingChange")
@@ -56,6 +59,9 @@ class NetManager(object):
 
     def init_all_objects(self):
         self.device_manager = DeviceManager()
+
+    def classify_network_type(self, type):
+        event_manager.emit("user-toggle-off-%s"%type, None)
 
     def init_devices(self):
         self.device_manager.init_device()
@@ -319,6 +325,12 @@ class NetManager(object):
         proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
         interface = dbus.Interface(proxy, "com.deepin.network")
         interface.emitVpnSettingChange(connection.object_path)
+
+    def emit_user_toggle_off(self, network_type):
+        bus = dbus.SystemBus()
+        proxy = bus.get_object("com.deepin.network", "/com/deepin/network")
+        interface = dbus.Interface(proxy, "com.deepin.network")
+        interface.emitUserToggleOff(network_type)
 
 net_manager = NetManager()
 
