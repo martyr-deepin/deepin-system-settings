@@ -974,6 +974,7 @@ class VpnSection(Section):
         #    nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
 
     def user_toggle_off(self):
+        log.debug("emit user toggle off")
         net_manager.emit_user_toggle_off("vpn-main")
     
     def get_list(self):

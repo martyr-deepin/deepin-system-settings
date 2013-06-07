@@ -548,6 +548,7 @@ class VPNSection(BaseMixIn):
         Dispatcher.request_resize()
 
     def user_toggle_off_button(self):
+        tray_log.debug("user toggle off from tray")
         net_manager.emit_user_toggle_off("vpn-tray")
 
     def __on_user_stop_vpn(self, name, event, data):
