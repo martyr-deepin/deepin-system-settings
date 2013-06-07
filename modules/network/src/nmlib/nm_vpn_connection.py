@@ -84,8 +84,8 @@ class NMVpnConnection(NMActiveConnection):
 
             nm_remote_settings.cf.set("conn_priority", conn_uuid, priority)
             nm_remote_settings.cf.write(open(nm_remote_settings.config_file, "w"))
-        elif state == 7:
-            nm_events.emit('vpn-user-disconnect', self.object_path)
+        #elif state == 7:
+            #nm_events.emit('vpn-user-disconnect', self.object_path)
         else:
             nm_events.emit('vpn-disconnected', self.object_path)
             
