@@ -318,8 +318,11 @@ class NMConnection(gobject.GObject):
 
             if not self.check_ip4_setting(info_dict):
                 return False
-
-            if not info_dict["vpn"]["data"]["gateway"] or not info_dict["vpn"]["secrets"]:
+            
+            try:
+                if not info_dict["vpn"]["data"]["gateway"] or not info_dict["vpn"]["secrets"]:
+                    return False
+            except:
                 return False
 
         return True
