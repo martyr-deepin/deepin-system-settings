@@ -84,8 +84,8 @@ class DesktopView(gtk.VBox):
         '''
         icon
         '''
-        self.icon_align = self.__setup_align(padding_left = 225)
-        self.icon_box = gtk.HBox(spacing = WIDGET_SPACING * 3)
+        self.icon_align = self.__setup_align(padding_left = 265)
+        self.icon_box = gtk.VBox(spacing = WIDGET_SPACING)
         self.computer_checkbutton = self.__setup_checkbutton(_("Computer"))
         self.computer_checkbutton.set_active(self.desktop_settings.get_boolean("show-computer-icon"))
         self.computer_checkbutton.connect("toggled", self.__toggled, "computer");

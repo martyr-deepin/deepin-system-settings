@@ -55,7 +55,7 @@ class DeletePage(gtk.VBox):
         self.back_button = Button(_("Back"))
         self.back_button.set_size_request(80, WIDGET_HEIGHT)
         self.back_button.connect("clicked", self.__on_back)
-        self.select_all_button = Button(_("Select All"))
+        self.select_all_button = Button(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
         self.select_all_button.connect("clicked", self.__on_select_all)
         self.delete_button = Button(_("Delete"))
@@ -76,17 +76,17 @@ class DeletePage(gtk.VBox):
 
     def __on_select_delete_wallpaper(self, name, obj, select_item):
         if self.delete_view.is_select_all():                                    
-            self.select_all_button.set_label(_("UnSelect All"))                 
+            self.select_all_button.set_label(_("Clear all"))                 
         else:                                                                   
-            self.select_all_button.set_label(_("Select All"))
+            self.select_all_button.set_label(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __on_select_all(self, widget):
         self.delete_view.select_all()
         if self.delete_view.is_select_all():
-            self.select_all_button.set_label(_("UnSelect All"))
+            self.select_all_button.set_label(_("Clear all"))
         else:
-            self.select_all_button.set_label(_("Select All"))
+            self.select_all_button.set_label(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __delete_confirm(self):
@@ -113,7 +113,7 @@ class DeletePage(gtk.VBox):
     def set_theme(self, theme):
         self.theme = theme
         self.delete_view.set_theme(self.theme)
-        self.select_all_button.set_label(_("Select All"))
+        self.select_all_button.set_label(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
         
     def draw_mask(self, cr, x, y, w, h):

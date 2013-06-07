@@ -77,13 +77,13 @@ class AddPage(gtk.HBox):
         self.navigatebar.draw_mask = self.on_navigatebar_draw_mask
         
         local_expand_item = ExpandItem(_("Library"))
-        network_expand_item = ExpandItem(_("From Internet"))
+        network_expand_item = ExpandItem(_("Internet"))
         self.navigatebar.add_items([local_expand_item, 
                                     network_expand_item, 
                                    ])
         local_expand_item.add_childs([(_("System"), self.system_wallpapers_page),
-                                      (_("Picture"), self.picture_wallpapers_page), 
-                                      (_("My Favorite"), self.download_wallpapaers_page)], expand=True)
+                                      (_("Pictures"), self.picture_wallpapers_page), 
+                                      (_("Favorites"), self.download_wallpapaers_page)], expand=True)
         network_expand_item.add_childs([(_("360 Wallpaper"), self.bizhi360_cache_page), 
                                         (_("LoveWallpaper"), self.aibizhi_cache_page),
                                        ], expand=True)        

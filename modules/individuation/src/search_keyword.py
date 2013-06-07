@@ -27,8 +27,8 @@ TODO: keywords list
       item (module_uid, search_keyword)
 '''
 keywords = [("individuation_1", _("Personalization")), 
-            ("individuation_2", _("My Theme")), 
-            ("individuation_3", _("System Theme")), 
+            ("individuation_2", _("My Themes")), 
+            ("individuation_3", _("System Themes")), 
             ("individuation_4", _("Wallpaper")), 
-            ("individuation_5", _("Picture")), 
+            ("individuation_5", _("Pictures")), 
            ]

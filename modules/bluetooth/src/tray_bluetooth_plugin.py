@@ -206,7 +206,7 @@ class TrayBluetoothPlugin(object):
         select button
         '''
         select_button_align = self.__setup_align()
-        select_button = SelectButton(_("Advanced option..."),             
+        select_button = SelectButton(_("Advanced options..."),             
                                      font_size = 10,                            
                                      ali_padding = 5)                           
         select_button.set_size_request(self.width, 25)                          

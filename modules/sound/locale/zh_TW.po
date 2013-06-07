@@ -46,7 +46,7 @@ msgstr "輸出音量"
 
 #: ../src/main.py:105 ../src/main.py:117 ../src/main_full.py:92
 #: ../src/main_full.py:104
-msgid "Sound Enabled"
+msgid "Enable Sound"
 msgstr "啟用音效"
 
 #: ../src/main.py:108 ../src/main.py:514 ../src/main.py:518 ../src/main.py:781

@@ -90,6 +90,7 @@ class AccountSetting(object):
         self.current_passwd_user = None
         self.current_set_user = None
         self.current_select_item = None
+        self.added_user_name = None
         self.mutex = threading.Lock()
 
         self.__create_widget()
@@ -592,6 +593,7 @@ class AccountSetting(object):
             elif isinstance(e, (AccountsFailed)):
                 self.set_status_error_text(_("The user name is invalid"))
             return
+        self.added_user_name = username
         self.account_cancle_button_clicked(None)
 
     def account_name_input_changed(self, entry, value, button):
@@ -1159,6 +1161,8 @@ class AccountSetting(object):
                              tools.escape_markup_string(user_info[3]),
                              user_info[4], user_info[0])
         self.view_widgets["account"].add_items([user_item])
+        if user_info[3] == self.added_user_name:
+            self.view_widgets["account"].select_last_item()
 
     def account_user_deleted_cb(self, account_obj, user_path):
         print "%s deleted" % user_path

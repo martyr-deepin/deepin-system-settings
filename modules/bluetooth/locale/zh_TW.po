@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:42+0800\n"
+"POT-Creation-Date: 2013-06-06 16:59+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -21,24 +21,9 @@ msgid "Adapter"
 msgstr "介面卡"
 
 #: ../src/tray_bluetooth_plugin.py:209
-msgid "Advanced option..."
+#, fuzzy
+msgid "Advanced options..."
 msgstr "進階選項..."
-
-#: ../src/search_keyword.py:29 ../src/bluetooth_view.py:407
-msgid "Bluetooth Get Powered"
-msgstr "藍牙是否啟用"
-
-#: ../src/search_keyword.py:30 ../src/bluetooth_view.py:427
-msgid "Device Shown Name"
-msgstr "顯示裝置名稱"
-
-#: ../src/search_keyword.py:31
-msgid "Be Searchedable"
-msgstr "可被搜尋"
-
-#: ../src/search_keyword.py:32
-msgid "Searching Device Timeout"
-msgstr "搜尋裝置逾時"
 
 #: ../src/bluetooth_view.py:83
 msgid "Pair"
@@ -79,8 +64,19 @@ msgstr "在 %d 秒內"
 msgid "Bluetooth"
 msgstr "藍牙"
 
-#: ../src/bluetooth_view.py:445
-msgid "Be Discoverable"
+#: ../src/bluetooth_view.py:407 ../src/search_keyword.py:29
+#, fuzzy
+msgid "Enable bluetooth"
+msgstr "藍牙"
+
+#: ../src/bluetooth_view.py:427 ../src/search_keyword.py:30
+#, fuzzy
+msgid "Device name"
+msgstr "顯示裝置名稱"
+
+#: ../src/bluetooth_view.py:445 ../src/search_keyword.py:31
+#, fuzzy
+msgid "Discoverable"
 msgstr "可被發現"
 
 #: ../src/bluetooth_view.py:478
@@ -102,9 +98,22 @@ msgid "Sending file to %s"
 msgstr "正在傳送檔案到「%s」"
 
 #: ../src/bluetooth_sender.py:83
-msgid "Succeed!"
+msgid "Transfer complete!"
 msgstr "傳送成功！"
 
 #: ../src/bluetooth_sender.py:114
 msgid "Select File"
 msgstr "選擇檔案"
+
+#: ../src/search_keyword.py:32
+msgid "Searching Device Timeout"
+msgstr "搜尋裝置逾時"
+
+#~ msgid "Bluetooth Get Powered"
+#~ msgstr "藍牙是否啟用"
+
+#~ msgid "Be Searchedable"
+#~ msgstr "可被搜尋"
+
+#~ msgid "Succeed!"
+#~ msgstr "傳送成功！"

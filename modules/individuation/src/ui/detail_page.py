@@ -43,7 +43,7 @@ TIME_COMBO_ITEM =  [
     ("12 %s" % _("Hours"), 12 * 60 * 60), ("24 %s" % _("Hours"), 24 * 60 * 60)
     ]
 
-DRAW_COMBO_ITEM = [(_("Scaling"), "Scaling"), (_("Tiling"), "Tiling")]
+DRAW_COMBO_ITEM = [(_("Stretch"), "Scaling"), (_("Tile"), "Tiling")]
 
 class DetailPage(gtk.VBox):
     '''
@@ -82,7 +82,7 @@ class DetailPage(gtk.VBox):
                                              self.__is_random)
         self.button_align = gtk.Alignment()
         self.button_box = gtk.HBox(spacing = 10)
-        self.select_all_button = Button(_("Select All"))
+        self.select_all_button = Button(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
         self.select_all_button.connect("clicked", self.__on_select_all)
         self.delete_button = Button(_("Delete"))
@@ -130,26 +130,26 @@ class DetailPage(gtk.VBox):
             self.__random_disable()
 
         if self.wallpaper_view.is_select_all():                                 
-            self.select_all_button.set_label(_("UnSelect All"))
+            self.select_all_button.set_label(_("Clear all"))
         else:                                                                   
-            self.select_all_button.set_label(_("Select All"))
+            self.select_all_button.set_label(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __on_wallpaper_apply(self, name, obj, select_item):
         self.__random_disable()
 
         if self.wallpaper_view.is_select_all():                                 
-            self.select_all_button.set_label(_("UnSelect All"))                 
+            self.select_all_button.set_label(_("Clear all"))                 
         else:                                                                   
-            self.select_all_button.set_label(_("Select All"))
+            self.select_all_button.set_label(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
     def __on_select_all(self, widget):
         self.wallpaper_view.select_all()                            
         if self.wallpaper_view.is_select_all():                         
-            self.select_all_button.set_label(_("UnSelect All"))         
+            self.select_all_button.set_label(_("Clear all"))         
         else:                                                                   
-            self.select_all_button.set_label(_("Select All"))
+            self.select_all_button.set_label(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
 
         if self.wallpaper_view.is_randomable():    
@@ -191,7 +191,7 @@ class DetailPage(gtk.VBox):
             self.select_all_button.set_child_visible(False)                     
         else:                                                                   
             self.select_all_button.set_child_visible(True)
-            self.select_all_button.set_label(_("Select All"))
+            self.select_all_button.set_label(_("Select all"))
         
         self.__set_delete_button_visible()
 
@@ -228,7 +228,7 @@ class DetailPage(gtk.VBox):
             self.select_all_button.set_child_visible(True)
 
         if self.wallpaper_view.is_select_all():
-            self.select_all_button.set_label(_("UnSelect All"))
+            self.select_all_button.set_label(_("Clear all"))
             self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
         
     def draw_mask(self, cr, x, y, w, h):

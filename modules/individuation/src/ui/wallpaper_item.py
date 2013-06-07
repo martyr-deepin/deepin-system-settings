@@ -1024,7 +1024,7 @@ class CacheItem(gobject.GObject, MissionThread):
             cr.stroke()
 
         if self.is_downloaded:
-            downloaded_str = _("downloaded")
+            downloaded_str = _("Downloaded")
             downloaded_padding = 4
             downloaded_str_width, downloaded_str_height = get_content_size(downloaded_str)
             cr.rectangle(wallpaper_x + 1, 
