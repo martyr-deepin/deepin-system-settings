@@ -52,12 +52,12 @@ class ThemePage(gtk.VBox):
         self.label_padding_y = 10
         
         self.theme_box = gtk.VBox()
-        self.user_theme_label = Label(_("My Theme"), text_size=TITLE_FONT_SIZE, 
+        self.user_theme_label = Label(_("My Themes"), text_size=TITLE_FONT_SIZE, 
                                       text_color=app_theme.get_color("globalTitleForeground"))
         self.user_theme_view = UserThemeView(status_box = self.status_box)
         self.user_theme_scrolledwindow = self.user_theme_view.get_scrolled_window()
         
-        self.system_theme_label = Label(_("System Theme"), text_size=TITLE_FONT_SIZE, 
+        self.system_theme_label = Label(_("System Themes"), text_size=TITLE_FONT_SIZE, 
                                       text_color=app_theme.get_color("globalTitleForeground"))
         self.system_theme_view = SystemThemeView(status_box = self.status_box)
         self.system_theme_scrolledwindow = self.system_theme_view.get_scrolled_window()
