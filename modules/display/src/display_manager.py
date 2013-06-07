@@ -425,12 +425,15 @@ class DisplayManager:
         elif rotation == 4:
             rotation_str = "inverted"
         
+        
         while i < len(self.__output_names):
             (output_display_name, output_name) = self.get_output_name(self.__output_names[i])
             self.__update_xml(output_name = output_name, 
                               rotation_value = rotation_str)
 
             i += 1
+
+        run_command("xrandr -o %s" % rotation_str)
 
     def get_screen_brightness(self):
         return self.__xrandr_settings.get_double("brightness")
