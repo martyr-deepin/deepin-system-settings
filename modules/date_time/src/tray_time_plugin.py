@@ -97,22 +97,21 @@ class TrayTimePlugin(object):
     def plugin_widget(self):
         self.tray_icon.set_tooltip_text("%s %s" % (time.strftime("%Y-%m-%d"),   
                                                    self.WEEK[int(time.strftime("%w")) - 1]))
-        print "DEBUG plugin_widget"
         align = self.__setup_align()
         box = gtk.VBox(spacing = 5)
         calendar_align = self.__setup_align()
         calendar = deepin_lunar.new()
         self.calendar = deepin_lunar.new()                                      
-        if len(locale.getdefaultlocale()) and locale.getdefaultlocale()[0] is not None:
-            if locale.getdefaultlocale()[0].find("zh_") != 0:                   
+        if len(locale.getdefaultlocale(['LANGUAGE'])) and locale.getdefaultlocale(['LANGUAGE'])[0] is not None:
+            if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") != 0:
                 self.calendar = dltk_calendar.new()                             
         else:                                                                   
             self.calendar = dltk_calendar.new()
         calendar.mark_day(time.localtime().tm_mday)
         calendar.set_day_padding(0)
         calendar.get_handle().set_property("show-details", False)
-        if len(locale.getdefaultlocale()) and locale.getdefaultlocale()[0] is not None:
-            if locale.getdefaultlocale()[0].find("zh_") != 0:
+        if len(locale.getdefaultlocale(['LANGUAGE'])) and locale.getdefaultlocale(['LANGUAGE'])[0] is not None:
+            if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") != 0:
                 self.width = 230
         else:
             self.width = 230
