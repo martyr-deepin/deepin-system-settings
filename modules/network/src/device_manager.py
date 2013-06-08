@@ -25,7 +25,7 @@ class DeviceManager(object):
         self.connected_device = list()
 
         nm_module.nmclient.connect("device-added", self.device_added_cb)
-        #nm_module.nmclient.connect("device-removed", self.device_removed_cb)
+        nm_module.nmclient.connect("device-removed", self.device_removed_cb)
 
     def init_device(self):
         self.wired_devices = nm_module.nmclient.get_wired_devices()
@@ -65,18 +65,8 @@ class DeviceManager(object):
         '''
             no use as can't get device type when device is removed
         '''
-        pass
-        #self.init_device()
-        #device = nm_module.cache.getobject(path)
-        #type = device.get_device_type() 
-
-        #if type == 1:
-        #    Dispatcher.emit("wired-device-remove", device)
-        #    print "device manager emit wired device removed"
-        #    Dispatcher.emit("recheck-section", 0)
-        #elif type == 2:
-        #    Dispatcher.emit("wireless-device-remove", device)
-        #    Dispatcher.emit("recheck-section", 1)
+        self.init_device()
+        Dispatcher.emit("recheck-section", 0)
 
     def ap_added(self, devices):
         for device in devices:

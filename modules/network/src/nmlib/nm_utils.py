@@ -263,6 +263,10 @@ class TypeConvert(object):
             return False
         prefix = map(lambda x :bin(int(x))[2:], mask_str.split('.'))
         prefix_str = "".join([str(x) for x in prefix])
+        try:
+            prefix_str.index("0")
+        except:
+            return False
         if not prefix_str.index("0"):
             return True
         else:

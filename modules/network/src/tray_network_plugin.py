@@ -241,7 +241,7 @@ class WirelessSection(BaseMixIn):
                 self.gui.add_switcher()
             index = net_manager.get_active_connection(self.ap_list, self.focus_device)
             if index:
-                tray_log.info(index)
+                #tray_log.info(index)
                 self.gui.set_active_ap(index, True)
             else:
                 self.activate_wireless(self.focus_device)
@@ -277,7 +277,11 @@ class WirelessSection(BaseMixIn):
         if reason == 36:
             net_manager.init_devices()
             self.gui.remove_switcher()
-            self.focus_device = net_manager.wireless_devices[0]
+            try:
+                self.focus_device = net_manager.wireless_devices[0]
+            except:
+                tray_log.info("there's no wireless device")
+                self.focus_device = None
 
         if reason == 39:
             #print "user close"
@@ -319,7 +323,8 @@ class WirelessSection(BaseMixIn):
             self.gui.wireless.set_active((True, True), emit=True)
 
     def wireless_ap_removed(self, widget):
-        tray_log.info("wireless ap removed in tray")
+        # since this print too much info ....
+        #tray_log.info("wireless ap removed in tray")
         if self.gui.wireless.get_active():
             self.gui.wireless.set_active((True, True), emit=True)
 
@@ -330,7 +335,7 @@ class WirelessSection(BaseMixIn):
         if connection and not isinstance(connection, NMRemoteConnection):
             security = net_manager.get_sec_ap(self.ap)
             if security:
-                print "NMCONNECTION", security, self.ap.get_hw_address()
+                tray_log.debug("NMCONNECTION", security, self.ap.get_hw_address())
                 self.toggle_dialog(connection, security)
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')

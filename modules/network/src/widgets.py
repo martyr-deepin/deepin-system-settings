@@ -50,7 +50,7 @@ class AskPasswordDialog(DialogBox):
                            default_height,
                            DIALOG_MASK_SINGLE_PAGE)
 
-        self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
+        #self.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
     

@@ -282,7 +282,7 @@ class WirelessDevice(object):
             map(lambda (i, s): self.tree.visible_items[i].set_net_state(2), index)
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
-        log.info(__name__, widget, widget.get_state())
+        log.info(widget, widget.get_state())
         if widget not in net_manager.device_manager.wireless_devices:
             return
         #self.wireless.set_sensitive(True)
@@ -297,7 +297,7 @@ class WirelessDevice(object):
             wifi.nm_device_disconnect()
             return
         if reason == 39:
-            if any([d.get_state() == 100 for d in self.wireless_devices]):
+            if any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices]):
                 return
             else:
 
@@ -396,15 +396,21 @@ class WirelessSection(Section, WirelessDevice):
            and self.device_tree in self.content_box.get_children():
             self.content_box.remove(self.device_tree)
             self.device_tree = None
-            self.focused_device = self.wireless_devices[0]
+            try:
+                self.focused_device = self.wireless_devices[0]
+            except:
+                log.error("get no wireless devices but try to index")
+                self.focused_device = None
             self.wireless_redraw(None)
 
 
     @classmethod
     def show_or_hide(self):
         if net_manager.device_manager.get_wireless_devices():
+            self.wireless_devices = net_manager.device_manager.get_wireless_devices()
             return True
         else:
+            self.wireless_devices = []
             return False
 
     def init_state(self):
@@ -933,7 +939,16 @@ class VpnSection(Section):
 
     def on_active_conn_create(self, active_conn):
         net_manager.emit_vpn_start(active_conn)
-        #self.on_vpn_connecting(None, active_conn.object_path)
+
+    def try_active_vpn(self):
+        for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
+            if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
+                try:
+                    active_conn.vpn_auto_connect(self.on_active_conn_create)
+                except:
+                    pass
+            else:
+                break
 
     def toggle_on_after(self):
         if self.no_auto_connect:
@@ -941,15 +956,7 @@ class VpnSection(Section):
             pass
         else:
             if not self.vpn_path:
-
-                for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
-                    if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
-                        try:
-                            active_conn.vpn_auto_connect(self.on_active_conn_create)
-                        except:
-                            pass
-                    else:
-                        break
+                self.try_active_vpn()
             else:
                 self.on_vpn_connecting(None, None, self.vpn_path)
 
@@ -957,7 +964,6 @@ class VpnSection(Section):
         if vpn_active:
             # TODO fix for mutiple
             connection = vpn_active[0].get_connection()
-
             try:
                 index = self.connection.index(connection)
                 self.tree.visible_items[index].set_net_state(2)
@@ -974,8 +980,6 @@ class VpnSection(Section):
         
         if self.vpn_path:
             nm_module.nmclient.deactive_connection_async(self.vpn_path)
-        #if vpn_active:
-        #    nm_module.nmclient.deactive_connection_async(vpn_active[0].object_path)
 
     def user_toggle_off(self):
         log.debug("emit user toggle off")
@@ -996,7 +1000,6 @@ class VpnSection(Section):
             self.vpn.set_active(True)
             return
         log.debug("vpn start connect", data)
-        #print "on vpn connecting in main"
         self.vpn_path = data
         self.this_setting = nm_module.cache.getobject(data).get_connection().object_path
         map(lambda p: p.set_net_state(0), self.tree.visible_items)
@@ -1039,11 +1042,6 @@ class MobileDevice(object):
         item = self.get_item(widget)
         if item:
             item.set_net_state(0)
-        #index = self.wired_devices.index(widget)
-        #if not reason == 0:
-            #if self.tree.visible_items != []:
-                #self.tree.visible_items[index].set_net_state(0)
-                #self.tree.queue_draw()
 
     def mm_device_unavailable(self,  widget, new_state, old_state, reason):
         pass
@@ -1092,10 +1090,6 @@ class MobileSection(Section, MobileDevice):
     @classmethod
     def show_or_hide(self):
         return True
-#        if nm_module.mmclient.get_cdma_device() or nm_module.mmclient.get_gsm_device():
-#            return True
-#        else:
-#            return False
 
     def __init_signals(self):
         #nm_module.mmclient.connect("device-added", lambda w,p: mobile.set_active(True))
@@ -1106,7 +1100,6 @@ class MobileSection(Section, MobileDevice):
         self.init_signal()
         if self.mobile.get_active():
             self.mobile.set_active(True)
-
 
     def toggle_on(self):
         item_list = self.get_list()
@@ -1233,7 +1226,6 @@ class Network(object):
                     section.section_hide()
 
     def __init_ui(self):
-
         self.vbox = gtk.VBox(False, BETWEEN_SPACING)
         self.__init_sections( -1)
         self.vbox.set_size_request(WINDOW_WIDTH - 2 * TEXT_WINDOW_LEFT_PADDING, -1)
