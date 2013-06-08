@@ -5,14 +5,15 @@ from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
 from dtk.ui.net import IPV4Entry
 from nmlib.nm_utils import TypeConvert
-from nmlib.nm_remote_connection import NMRemoteConnection
+#from nmlib.nm_remote_connection import NMRemoteConnection
 import gtk
 
 import style
 from constants import CONTENT_FONT_SIZE, WIDGET_HEIGHT
 from nls import _
-from helper import Dispatcher
 from elements import SettingSection, DefaultToggle
+
+from dss_log import log
 
 class IPV4Conf(gtk.VBox):
     ENTRY_WIDTH = 222
@@ -66,6 +67,9 @@ class IPV4Conf(gtk.VBox):
         # Init Settings
         self.ip = ["","",""]
         self.dns = ["",""]
+        names = ["ip4", "netmask", "gw"]
+        for n in names:
+            setattr(self, n + "_flag", False)
         #self.pack_start(self.ip_main_section, False, False)
         #self.ip_main_section.load([self.ip_section, self.dns_section])
         self.pack_start(self.ip_section, False, False)
@@ -118,6 +122,7 @@ class IPV4Conf(gtk.VBox):
             #self.set_group_sensitive("ip", False)
             
         else:
+            log.debug("get addresses", self.setting.addresses)
             self.ip_section.set_active(False)
             #self.set_group_sensitive("ip", True)
             if not self.setting.addresses == []:
@@ -153,45 +158,29 @@ class IPV4Conf(gtk.VBox):
         pass
 
     def set_ip_address(self, widget, content, index):
+        # if you really want no gateway, just put a 0.0.0.0
         names = ["ip4", "netmask", "gw"]
         self.ip[index] = content
+
         if self.check_valid(names[index]):
-            #print "ip4 valid"
-            widget.set_frame_alert(False)
             setattr(self, names[index] + "_flag", True)
         else:
-            widget.set_frame_alert(True)
-            #Dispatcher.set_tip("ipv4 invalid")
             setattr(self, names[index] + "_flag", False)
-        
-        if hasattr(self, "netmask_flag") and self.netmask_flag:
-            if self.ip4_flag:
-                if self.setting.addresses:
-                    self.setting.clear_addresses()
-                self.ip[2] = "0.0.0.0"
-                self.setting.add_address(self.ip)
 
-
-        if self.check_valid("gw"):
+        if self.gw_flag:
             if self.setting.addresses:
                 self.setting.clear_addresses()
             self.setting.add_address(self.ip)
-
-            #if self.connection.check_setting_finish():
-                #print "setting finish"
-                #Dispatcher.set_button("save", True)
-            #else:
-                #print "setting not finish"
-                #Dispatcher.set_button("save", False)
-        #else:
-            #self.setting.clear_addresses()
+            log.debug(names[index], self.setting.addresses)
 
         ############
         # 检查ip、子网掩码、网关是否正确
-        for n in ["ip4", "netmask"]:
-            is_valid = self.check_valid(n)
-            if not is_valid:
+        is_valid = True
+        for n in names:
+            if not getattr(self, "%s_flag"%n):
+                is_valid = False
                 break
+        
         if self.settings_obj:
             self.settings_obj.ipv4_ip_is_valid = is_valid
             self.settings_obj.set_button("save", is_valid)
@@ -292,27 +281,27 @@ class IPV4Conf(gtk.VBox):
             self.settings_obj.ipv4_ip_is_valid = ip_is_valid
             self.settings_obj.set_button("save", ip_is_valid)
 
-    # TODO 该函数好像没有被调用
-    def get_ip_addr(self, widget):
-        if widget.get_active():
-            self.setting.clear_addresses()
-            self.ip = ["","",""]
-            self.setting.method = 'auto'
-            self.set_group_sensitive("ip", False)
-            if self.connection.check_setting_finish():
-                #print "settings complete"
-                Dispatcher.set_button("save", True)
-            else:
-                #print "settings incomplete"
-                Dispatcher.set_button("save", False)
-        else:
-            self.setting.method = 'manual'
-            self.set_group_sensitive("ip", True)
-            if self.connection.check_setting_finish():
-                Dispatcher.set_button("save", True)
-            else:
-                Dispatcher.set_button("save", False)
-        self.reset_table()
+    ## TODO 该函数好像没有被调用
+    #def get_ip_addr(self, widget):
+        #if widget.get_active():
+            #self.setting.clear_addresses()
+            #self.ip = ["","",""]
+            #self.setting.method = 'auto'
+            #self.set_group_sensitive("ip", False)
+            #if self.connection.check_setting_finish():
+                ##print "settings complete"
+                #Dispatcher.set_button("save", True)
+            #else:
+                ##print "settings incomplete"
+                #Dispatcher.set_button("save", False)
+        #else:
+            #self.setting.method = 'manual'
+            #self.set_group_sensitive("ip", True)
+            #if self.connection.check_setting_finish():
+                #Dispatcher.set_button("save", True)
+            #else:
+                #Dispatcher.set_button("save", False)
+        #self.reset_table()
 
 class IPV6Conf(gtk.VBox):
     ENTRY_WIDTH = 300
@@ -354,11 +343,6 @@ class IPV6Conf(gtk.VBox):
         self.__table_attach(self.dns_table, self.slave_row, 1)
         self.dns_section.load([self.dns_table])
         
-        __widget_list = ["ip_label", "addr_label", "addr_entry",
-                         "mask_label", "mask_entry", "gate_label", "gate_entry",
-                         "dns_label", "master_entry", "slave_entry",
-                         "slave_dns", "master_dns"]
-
         # TODO UI change
         style.draw_background_color(self)
         style.set_table(self.ip_table)
@@ -407,30 +391,6 @@ class IPV6Conf(gtk.VBox):
 
     def reset_table(self):
         pass
-        #container_remove_all(self.table)
-        #self.table.attach(self.ip_label_align, 0,1,0,1)
-        #self.table.attach(self.auto_ip_align, 1, 2, 0, 1)
-        #if not self.auto_ip.get_active():
-            #self.table.attach(self.addr_label_align, 0,1,2,3)
-            #self.table.attach(self.addr_entry_align, 1,2,2,3)
-            #self.table.attach(self.mask_label_align, 0,1,3,4)
-            #self.table.attach(self.mask_entry_align, 1,2,3,4)
-            #self.table.attach(self.gate_label_align, 0,1,4,5)
-            #self.table.attach(self.gate_entry_align, 1,2,4,5)
-        
-        #hbox = gtk.HBox()
-        #hbox.set_size_request(-1, 20)
-        #self.table.attach(hbox, 0, 1, 5, 6) 
-        #self.table.attach(self.dns_label_align, 0, 1, 6, 7) 
-        #self.table.attach(self.auto_dns_align, 1, 2, 6, 7)
-        #if not self.auto_dns.get_active():
-            #self.table.attach(self.master_dns_align, 0, 1, 7, 8)
-            #self.table.attach(self.master_entry_align, 1, 2, 7, 8)
-            #self.table.attach(self.slave_dns_align, 0, 1, 8, 9)
-            #self.table.attach(self.slave_entry_align, 1, 2, 8, 9)
-
-        ##self.table.show_all()
-        #self.queue_draw()
 
     def reset(self, connection):
         self.setting = connection.get_setting("ipv6")       
