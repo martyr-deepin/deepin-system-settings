@@ -26,8 +26,8 @@ from nls import _
 TODO: keywords list
       item (module_uid, search_keyword)
 '''
-keywords = [("date_time_1", _("DateTime")), 
-            ("date_time_2", _("TimeZone")), 
-            ("date_time_3", _("Auto Set Time")), 
-            ("date_time_4", _("Hour Display")) 
+keywords = [("date_time_1", _("Date and Time")), 
+            ("date_time_2", _("Time Zone")), 
+            ("date_time_3", _("Set Automatically")), 
+            ("date_time_4", _("hour format")) 
            ]

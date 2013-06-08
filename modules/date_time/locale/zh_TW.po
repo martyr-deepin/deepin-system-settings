@@ -45,7 +45,7 @@ msgid "Sunday"
 msgstr "星期天"
 
 #: ../src/tray_time_plugin.py:122
-msgid "Change DateTime settings"
+msgid "Change date and time settings"
 msgstr "變更日期與時刻"
 
 #: ../src/date_time_view.py:116
@@ -176,11 +176,11 @@ msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr "目前時刻: %s %02d:%02d:%02d (%d 小時制)"
 
 #: ../src/date_time_view.py:260 ../src/search_keyword.py:31
-msgid "Auto Set Time"
+msgid "Set Automatically"
 msgstr "自動設定時刻"
 
 #: ../src/date_time_view.py:277
-msgid "Manual"
+msgid "Set Time"
 msgstr "手動設定"
 
 #: ../src/date_time_view.py:297
@@ -188,7 +188,7 @@ msgid "Hour"
 msgstr "時制顯示"
 
 #: ../src/date_time_view.py:311 ../src/search_keyword.py:30
-msgid "TimeZone"
+msgid "Time Zone"
 msgstr "時區"
 
 #: ../src/date_time_view.py:341
@@ -201,19 +201,19 @@ msgid "Changed date to %d-%d-%d"
 msgstr "變更日期為 %d-%d-%d"
 
 #: ../src/date_time_view.py:461
-msgid "Changed to automatic set time"
+msgid "Time will be synchronized with an Internet time server"
 msgstr "修改為「自動設定時刻」"
 
 #: ../src/date_time_view.py:465
-msgid "Changed to manual set time"
+msgid "Time will not be synchronized with an Internet time server"
 msgstr "修改為「手動設定時刻」"
 
 #: ../src/date_time_view.py:473
-msgid "Changed to 24 Hour"
+msgid "Time will be shown in 24 hour format"
 msgstr "變更為「24 小時制」"
 
 #: ../src/date_time_view.py:475
-msgid "Changed to 12 Hour"
+msgid "Time will be shown in 12 hour format"
 msgstr "變更為「12 小時制」"
 
 #: ../src/date_time_view.py:484
@@ -223,7 +223,7 @@ msgstr "變更時間為 %02d:%02d:%02d"
 
 #: ../src/date_time_view.py:506
 #, python-format
-msgid "Changed timezone to %s"
+msgid "Changed time zone to %s"
 msgstr "變更時區為「%s」"
 
 #: ../src/tray_time.py:74
@@ -235,9 +235,9 @@ msgid "PM"
 msgstr "下午"
 
 #: ../src/search_keyword.py:29
-msgid "DateTime"
+msgid "Date and Time"
 msgstr "日期與時刻"
 
 #: ../src/search_keyword.py:32
-msgid "Hour Display"
+msgid "hour format"
 msgstr "小時制顯示"

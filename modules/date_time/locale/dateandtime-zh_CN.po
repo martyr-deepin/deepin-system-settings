@@ -1,4 +1,5 @@
-# Chinese translations for PACKAGE package.
+# Chinese translations for PACKAGE package
+# PACKAGE 软件包的简体中文翻译.
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Automatically generated, 2012.
@@ -11,7 +12,7 @@ msgstr ""
 "PO-Revision-Date: 2012-12-30 23:05+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
-"Language: zh_HK\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,12 +46,13 @@ msgid "Sunday"
 msgstr "星期天"
 
 #: ../src/tray_time_plugin.py:122
+#msgid "Change DateTime settings"
 msgid "Change date and time settings"
-msgstr "變更日期與時刻"
+msgstr "更改日期和时间设置"
 
 #: ../src/date_time_view.py:116
 msgid "(UTC-11:00)Samoa"
-msgstr "(UTC-11:00)薩摩亞群島"
+msgstr "(UTC-11:00)萨摩亚"
 
 #: ../src/date_time_view.py:117
 msgid "(UTC-10:00)Hawaii"
@@ -58,31 +60,31 @@ msgstr "(UTC-10:00)夏威夷"
 
 #: ../src/date_time_view.py:118
 msgid "(UTC-09:00)Alaska"
-msgstr "(UTC-09:00)阿拉斯加"
+msgstr "(UTC-09:00)阿拉斯加州"
 
 #: ../src/date_time_view.py:119
 msgid "(UTC-08:00)Lower California"
-msgstr "(UTC-08:00)下加利福尼亞州"
+msgstr "(UTC-08:00)下加利福尼亚州"
 
 #: ../src/date_time_view.py:120
 msgid "(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"
-msgstr "(UTC-07:00)亞利桑那, 馬薩特蘭, 赤瓦瓦"
+msgstr "(UTC-07:00)亚利桑那州, 利马斯, 马萨特兰, 吉瓦瓦"
 
 #: ../src/date_time_view.py:121
 msgid "(UTC-06:00)Saskatchewan, Mexico City, Monterrey"
-msgstr "(UTC-06:00)薩克其萬, 墨西哥城, 蒙特瑞"
+msgstr "(UTC-06:00)萨斯喀彻温, 墨西哥城, 蒙特雷"
 
 #: ../src/date_time_view.py:122
 msgid "(UTC-05:00)Indiana, Bogota, Lima, Quito"
-msgstr "(UTC-05:00)印第安納, 波哥大, 來瑪, 基多"
+msgstr "(UTC-05:00)印第安纳州, 波哥达, 利马, 基多"
 
 #: ../src/date_time_view.py:123
 msgid "(UTC-04:00)San Diego, Georgetown, San Juan"
-msgstr "(UTC-04:00)聖地牙哥, 喬治市, 聖胡安"
+msgstr "(UTC-04:00)圣地亚哥, 乔治敦, 圣胡安"
 
 #: ../src/date_time_view.py:124
 msgid "(UTC-03:00)Greenland, Brasilia, Fortaleza"
-msgstr "(UTC-03:00)格陵蘭, 巴西利亞, 福塔力沙"
+msgstr "(UTC-03:00)格陵兰岛, 巴西利亚, 福塔雷萨"
 
 #: ../src/date_time_view.py:125
 msgid "(UTC-02:00)Mid-Atlantic"
@@ -90,72 +92,72 @@ msgstr "(UTC-02:00)中大西洋"
 
 #: ../src/date_time_view.py:126
 msgid "(UTC-01:00)Cape Verde Islands, Azores"
-msgstr "(UTC-01:00)維德角島, 亞速爾群島"
+msgstr "(UTC-01:00)佛得角群岛, 亚速尔群岛"
 
 #: ../src/date_time_view.py:127
 msgid "(UTC)London, Dublin, Edinburgh, Lisbon, Casablanca"
-msgstr "(UTC)倫敦, 都伯林, 愛丁堡, 里斯本, 卡薩布蘭加"
+msgstr "(UTC)伦敦, 都柏林, 爱丁堡, 里斯本, 卡萨布兰卡"
 
 #: ../src/date_time_view.py:128
 msgid "(UTC+01:00)Paris, Amsterdam, Berlin, Rome, Vienna"
-msgstr "(UTC+01:00)巴黎, 阿姆斯特丹, 柏林, 羅馬, 維也納"
+msgstr "(UTC+01:00)巴黎, 阿姆斯特丹, 柏林, 罗马, 维也纳"
 
 #: ../src/date_time_view.py:129
 msgid "(UTC+02:00)Cairo, Athens, Istanbul, Jerusalem"
-msgstr "(UTC+02:00)開羅, 雅典, 伊斯坦堡, 耶路撒冷"
+msgstr "(UTC+02:00)开罗, 雅典, 伊斯坦布尔, 耶路撒冷"
 
 #: ../src/date_time_view.py:130
 msgid "(UTC+03:00)Moscow, St. Petersburg, Baghdad"
-msgstr "(UTC+03:00)莫斯科, 聖彼得堡, 巴格達"
+msgstr "(UTC+03:00)莫斯科, 圣彼得堡, 巴格达"
 
 #: ../src/date_time_view.py:131
 msgid "(UTC+04:00)Port Louis, Abu Dhabi, Muscat, Yerevan"
-msgstr "(UTC+04:00)路易士港, 阿布達比, 馬斯喀特, 葉勒凡"
+msgstr "(UTC+04:00)路易港, 阿布扎比, 马斯喀特, 埃里温"
 
 #: ../src/date_time_view.py:132
 msgid "(UTC+05:00)Islamabad, Karachi, Tashkent"
-msgstr "(UTC+05:00)伊斯蘭馬巴德, 喀拉蚩, 塔什干"
+msgstr "(UTC+05:00)伊斯兰堡, 卡拉奇, 塔什干"
 
 #: ../src/date_time_view.py:133
 msgid "(UTC+06:00)Dhaka, Novosibirsk"
-msgstr "(UTC+06:00)達卡, 新西伯利亞"
+msgstr "(UTC+06:00)达卡, 新西伯利亚"
 
 #: ../src/date_time_view.py:134
 msgid "(UTC+07:00)Bangkok, Hanoi, Jakarta"
-msgstr "(UTC+07:00)曼谷, 河內, 雅加達"
+msgstr "(UTC+07:00)曼谷, 河内, 雅加达"
 
 #: ../src/date_time_view.py:135
 msgid "(UTC+08:00)Beijing, Chongqing, HongKong, Taipei, Urumqi"
-msgstr "(UTC+08:00)北京, 重慶, 香港, 臺北, 烏魯木齊"
+msgstr "(UTC+08:00)北京, 重庆, 香港特别行政区, 台北, 乌鲁木齐"
 
 #: ../src/date_time_view.py:136
 msgid "(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"
-msgstr "(UTC+09:00)大阪, 札幌, 東京, 首爾"
+msgstr "(UTC+09:00)大阪, 札幌, 东京, 首尔"
 
 #: ../src/date_time_view.py:137
 msgid "(UTC+10:00)Guam, Canberra, Melbourne, Sydney"
-msgstr "(UTC+10:00)關島, 坎培拉, 墨爾本, 雪黎"
+msgstr "(UTC+10:00)关岛, 堪培拉, 墨尔本, 悉尼"
 
 #: ../src/date_time_view.py:138
 msgid "(UTC+11:00)Magadan, Solomon Islands"
-msgstr "(UTC+11:00)馬加丹, 索羅門群島"
+msgstr "(UTC+11:00)马加丹, 索罗门群岛"
 
 #: ../src/date_time_view.py:139
 msgid "(UTC+12:00)New Zealand, Kiribati"
-msgstr "(UTC+12:00)紐西蘭, 吉里巴斯"
+msgstr "(UTC+12:00)新西兰, 基里巴斯"
 
 #: ../src/date_time_view.py:155
 msgid "Calendar"
-msgstr "行事曆"
+msgstr "日期"
 
 #: ../src/date_time_view.py:161 ../src/date_time_view.py:417
 #, python-format
 msgid "Current Date: %d-%d-%d"
-msgstr "目前日期: %d-%d-%d"
+msgstr "当前日期：%d年%d月%d日"
 
 #: ../src/date_time_view.py:183
 msgid "Change Date"
-msgstr "變更日期"
+msgstr "更改日期"
 
 #: ../src/date_time_view.py:189
 msgid "Cancel"
@@ -163,68 +165,76 @@ msgstr "取消"
 
 #: ../src/date_time_view.py:192
 msgid "Confirm"
-msgstr "確認"
+msgstr "确定"
 
 #: ../src/date_time_view.py:223
 msgid "Time"
-msgstr "時刻"
+msgstr "时间"
 
 #: ../src/date_time_view.py:230 ../src/date_time_view.py:239
 #: ../src/date_time_view.py:387
 #, python-format
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
-msgstr "目前時刻: %s %02d:%02d:%02d (%d 小時制)"
+msgstr "当前时间: %s %02d:%02d:%02d (%d 小时制)"
 
 #: ../src/date_time_view.py:260 ../src/search_keyword.py:31
+#msgid "Auto Set Time"
 msgid "Set Automatically"
-msgstr "自動設定時刻"
+msgstr "自动设置时间"
 
 #: ../src/date_time_view.py:277
+#msgid "Manual"
 msgid "Set Time"
-msgstr "手動設定"
+msgstr "手动设置"
 
 #: ../src/date_time_view.py:297
 msgid "Hour"
-msgstr "時制顯示"
+msgstr "小时制显示"
 
 #: ../src/date_time_view.py:311 ../src/search_keyword.py:30
+#msgid "TimeZone"
 msgid "Time Zone"
-msgstr "時區"
+msgstr "时区"
 
 #: ../src/date_time_view.py:341
 msgid "Reset to default value"
-msgstr "重設為預設值"
+msgstr "恢复默认值"
 
 #: ../src/date_time_view.py:415
 #, python-format
 msgid "Changed date to %d-%d-%d"
-msgstr "變更日期為 %d-%d-%d"
+msgstr "修改日期为%d年%d月%d日"
 
 #: ../src/date_time_view.py:461
+#msgid "Changed to automatic set time"
 msgid "Time will be synchronized with an Internet time server"
-msgstr "修改為「自動設定時刻」"
+msgstr "修改为自动设置时间"
 
 #: ../src/date_time_view.py:465
+#msgid "Changed to manual set time"
 msgid "Time will not be synchronized with an Internet time server"
-msgstr "修改為「手動設定時刻」"
+msgstr "修改为手动设置时间"
 
 #: ../src/date_time_view.py:473
+#msgid "Changed to 24 Hour"
 msgid "Time will be shown in 24 hour format"
-msgstr "變更為「24 小時制」"
+msgstr "修改为24小时制"
 
 #: ../src/date_time_view.py:475
+#msgid "Changed to 12 Hour"
 msgid "Time will be shown in 12 hour format"
-msgstr "變更為「12 小時制」"
+msgstr "修改为12小时制"
 
 #: ../src/date_time_view.py:484
 #, python-format
 msgid "Changed time to %02d:%02d:%02d"
-msgstr "變更時間為 %02d:%02d:%02d"
+msgstr "修改时间为%02d:%02d:%02d"
 
 #: ../src/date_time_view.py:506
 #, python-format
+#msgid "Changed timezone to %s"
 msgid "Changed time zone to %s"
-msgstr "變更時區為「%s」"
+msgstr "修改时区为%s"
 
 #: ../src/tray_time.py:74
 msgid "AM"
@@ -235,9 +245,11 @@ msgid "PM"
 msgstr "下午"
 
 #: ../src/search_keyword.py:29
+#msgid "DateTime"
 msgid "Date and Time"
-msgstr "日期與時刻"
+msgstr "日期时间"
 
 #: ../src/search_keyword.py:32
+#msgid "Hour Display"
 msgid "hour format"
-msgstr "小時制顯示"
+msgstr "小时制显示"
