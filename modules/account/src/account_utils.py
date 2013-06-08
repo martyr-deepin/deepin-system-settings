@@ -179,9 +179,8 @@ class PolkitPermission:
     
     def is_valid_action_id(self, action):
         import locale
-        if locale.getdefaultlocale():
-            loc = locale.getdefaultlocale()[0]
-        else:
+        loc = locale.getdefaultlocale()[0]
+        if loc is None:
             loc = "en.UTF-8"
 
         try:

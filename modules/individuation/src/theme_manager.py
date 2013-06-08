@@ -169,7 +169,7 @@ class ThemeFile(RawConfigParser):
         
     def get_name(self):
         lang = "default"
-        if len(locale.getdefaultlocale(['LANGUAGE'])):                          
+        if len(locale.getdefaultlocale(['LANGUAGE'])) and locale.getdefaultlocale(['LANGUAGE'])[0] is not None:
             if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") == 0:        
                 lang = "zh_CN"                                   
             elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_TW") == 0:   
