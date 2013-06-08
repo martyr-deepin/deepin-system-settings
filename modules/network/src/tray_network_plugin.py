@@ -602,7 +602,7 @@ class DSLSection(BaseMixIn):
 
     def __init__(self, gui):
         self.gui = gui
-        self.this_gui = self.gui.vpn
+        self.this_gui = self.gui.dsl
         
         self._init_signals()
         self._init_section()
