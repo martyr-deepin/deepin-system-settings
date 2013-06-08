@@ -849,6 +849,9 @@ class DSLSection(Section):
             pass
             
     def toggle_off(self):
+        active_dsl = nm_module.nmclient.get_pppoe_active_connection()
+        if not active_dsl:
+            return
         for wired_device in self.wired_devices:
             wired_device.nm_device_disconnect()
 
