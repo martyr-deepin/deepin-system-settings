@@ -52,20 +52,20 @@ class MediaView(gtk.VBox):
 
         cd_label = Label(_("CD"))
         dvd_label = Label(_("DVD"))
-        player_label = Label(_("Music Player"))
+        player_label = Label(_("Audio Player"))
         photo_label = Label(_("Camera"))
-        software_label = Label(_("Software"))
+        software_label = Label(_("Applications"))
 
         self.all_label_list = [cd_label, dvd_label, player_label,
                                photo_label, software_label]
 
-        default_list = [(_("other applications"), "other_app"),
-                        (_("ask"), "ask"),
-                        (_("do nothing"), "do_nothing"),
-                        (_("open folder"),"open_folder")]
+        default_list = [(_("Other applications"), "other_app"),
+                        (_("Ask"), "ask"),
+                        (_("Do nothing"), "do_nothing"),
+                        (_("Open folder"),"open_folder")]
         #self.auto_mount_box = gtk.HBox(spacing = WIDGET_SPACING)
         #self.auto_mount_label = Label(_("apply auto open for all media and devices"))
-        self.auto_mount_label = Label(_("Autoplay"))
+        self.auto_mount_label = Label(_("AutoPlay"))
         self.auto_mount_toggle = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
             app_theme.get_pixbuf("toggle_button/active_normal.png"))
         #self.auto_mount_box.pack_start(self.auto_mount_label, False, False)
@@ -76,7 +76,7 @@ class MediaView(gtk.VBox):
         self.player= ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.photo = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.software = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
-        self.more_option = Button(_("more option"))
+        #self.more_option = Button(_("more option"))
 
         ###below content type displayed as more option is clicked"
         self.audio_dvd = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
@@ -219,7 +219,7 @@ class MediaView(gtk.VBox):
         else:
             from dtk.ui.dialog import OpenFileDialog
             OpenFileDialog(
-                _("other applications"), 
+                _("Other applications"), 
                 self.get_toplevel(), 
                 lambda name: self.add_app_info(name, x_content), 
                 self.__cancel_other_application(widget))

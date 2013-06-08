@@ -135,17 +135,6 @@ class SessionItem(TreeItem):
             (text_width, text_height) = get_content_size(description)
             draw_text(cr, description, rect.x, rect.y, rect.width, rect.height,
                     alignment = pango.ALIGN_LEFT)
-        
-    def render_state(self, cr, rect):
-        self.state = self.item.is_active()
-        self.render_background(cr, rect)
-        if self.state:
-            state = _("active")
-        else:
-            state = _("not running")
-        (text_width, text_height) = get_content_size(state)
-        draw_text(cr, state, rect.x, rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_LEFT, text_color="#000000")
 
     def get_column_renders(self):
         return [self.render_app, self.render_description, self.render_exec]
