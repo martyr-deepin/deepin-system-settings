@@ -172,7 +172,6 @@ class NetManager(object):
 
     # Wireless
     def get_wireless_state(self):
-        #wireless_devices = nm_module.nmclient.get_wireless_devices()
         devices = self.device_manager.get_wireless_devices()
         if not devices:
             return None
@@ -180,15 +179,6 @@ class NetManager(object):
             dev_state = any([device.get_state() > 20 for device in devices])
             conn_state = any([device.is_active() for device in devices])
             return (dev_state, conn_state)
-            ##if not nm_module.nmclient.wireless_get_enabled():
-            #    #nm_module.nmclient.wireless_set_enabled(True)
-            #if not nm_module.nmclient.wireless_get_enabled():
-            #    return (False, False)
-            #else:
-            #    for device in self.wireless_devices:
-            #        if device.is_active():
-            #            return (True, True)
-            #    return (True, False)
 
     def get_ap_list(self, device):
         self.wireless_devices = self.device_manager.get_wireless_devices()
@@ -198,24 +188,8 @@ class NetManager(object):
         device_wifi = nm_module.cache.get_spec_object(device.object_path)
         return device_wifi.order_ap_list()
 
-
-    def __ap_list_merge(self, origin_ap):
-        ap_ssid = set(map(lambda ap: ap.get_ssid(), origin_ap))
-        merged_ap = []
-        for ap in origin_ap:
-            if ap.get_ssid() in ap_ssid:
-                merged_ap.append(ap)
-                ap_ssid.remove(ap.get_ssid())
-
-        return merged_ap
-        # 返回ap对象，ap.get_ssid() 获取ssid, ap.get_flags()获得加密状态，0为加密，1加密
-
     def get_active_connection(self, ap_list, device):
-        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         index = []
-        #if not self.wireless_device.is_active():
-            #print "not device active"
-            #return []
         self.wireless_devices = self.device_manager.get_wireless_devices()
         if self.wireless_devices:
             self.wireless_device = device
@@ -237,9 +211,6 @@ class NetManager(object):
         print setting_name, method
         connection.settings_dict[setting_name][method] = serect
         connection.update()
-        #nm_module.secret_agent.agent_save_secrets(connection.object_path, setting_name, method)
-        
-        #wireless_device = nm_module.nmclient.get_wireless_devices()[0]
         if ap:
             nm_module.nmclient.activate_connection_async(connection.object_path,
                                        self.wireless_device.object_path,
@@ -290,7 +261,6 @@ class NetManager(object):
     def get_security_by_ap(self, ap_object):
         return ap_object.get_flags()
     
-    
     def get_sec_ap(self, ap_object):
         "fast version of get security using wpa_cli"
         hw_address = ap_object.get_hw_address().lower()
@@ -298,14 +268,6 @@ class NetManager(object):
         proxy = bus.get_object("com.deepin.network", "/com/deepin/network")      
         interface = dbus.Interface(proxy, "com.deepin.network")                  
         return interface.get_ap_sec(hw_address)        
-
-        #if encry == "WPA/WPA2":
-            #return "wpa"
-        #elif encry == "WEP":
-            #return "wep"
-        #else:
-            #return None
-
 
     def emit_wifi_switch(self, index):
         bus = dbus.SystemBus()
