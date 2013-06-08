@@ -340,7 +340,7 @@ class PowerView(gtk.VBox):
         return progressbar
 
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END, text_color=None):
-        label = Label(text, text_color, text_size, align, 200, False, False, False)
+        label = Label(text, text_color, text_size, align, 240, False, False, False)
         return label
 
     def __setup_combo(self, items=[], max_width = 120, fixed_width = 120):
