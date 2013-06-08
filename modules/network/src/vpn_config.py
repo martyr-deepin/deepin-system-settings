@@ -138,9 +138,9 @@ class Sections(gtk.Alignment):
 
     def show_more_options(self, widget):
         widget.destroy()
-        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
+        self.ipv4 = SettingSection(_("IPv4 setting"), always_show=True)
         self.ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
-        ppp = SettingSection(_("PPP setting"), always_show=True)
+        ppp = SettingSection(_("PPP settings"), always_show=True)
         ppp.load([PPPConf(settings_obj=self.settings_obj)])
         Dispatcher.emit("vpn-type-change", self.connection)
         self.main_box.pack_start(self.ipv4, False, False, 15)
@@ -164,7 +164,7 @@ class PPTPConf(gtk.VBox):
 
         pptp_table = gtk.Table(7, 4, False)
 
-        name_label = Label(_("Setting Name:"),
+        name_label = Label(_("Connection Name:"),
                                enable_select=False,
                                enable_double_click=False)
         name_label.set_can_focus(False)

@@ -100,8 +100,8 @@ class Sections(gtk.Alignment):
         
     def show_more_options(self, widget):
         widget.destroy()
-        ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
-        ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
+        ipv4 = SettingSection(_("IPv4 setting"), always_show=True)
+        ipv6 = SettingSection(_("IPv6 setting"), always_show=True)
         ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
         ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
 

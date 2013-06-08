@@ -366,7 +366,7 @@ class WirelessSection(Section, WirelessDevice):
         Section.__init__(self)
         WirelessDevice.__init__(self)
         self.wireless = Contain(app_theme.get_pixbuf("network/wifi.png"), _("Wireless"), lambda w:w)
-        self.label =  Label(_("Creat Hidden network"), 
+        self.label =  Label(_("Set up a hidden wireless connection"), 
                           LABEL_COLOR,
                           underline=True,
                           enable_select=False,
@@ -723,7 +723,7 @@ class DSLSection(Section):
     def __init__(self):
         Section.__init__(self)
         self.dsl = Contain(app_theme.get_pixbuf("network/dsl.png"), _("DSL"), lambda w: w)
-        self.label =  Label(_("Create DSL Setting"), 
+        self.label =  Label(_("Create a DSL connection"), 
                           LABEL_COLOR,
                           underline=True,
                           enable_select=False,
@@ -870,7 +870,7 @@ class VpnSection(Section):
 
         #init
         self.vpn = Contain(app_theme.get_pixbuf("network/vpn.png"), _("VPN Network"), lambda w:w)
-        self.label = Label(_("Create VPN Setting"), 
+        self.label = Label(_("Create a VPN connection"), 
                            LABEL_COLOR,
                            underline=True,
                            enable_select=False,

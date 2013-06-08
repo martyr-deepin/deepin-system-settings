@@ -206,8 +206,8 @@ class Sections(gtk.Alignment):
     def show_more_options(self, widget):
         widget.parent.destroy()
         self.wireless = SettingSection(_("Wireless"), always_show=True)
-        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
-        self.ipv6 = SettingSection(_("Ipv6 setting"), always_show=True)
+        self.ipv4 = SettingSection(_("IPv4 setting"), always_show=True)
+        self.ipv6 = SettingSection(_("IPv6 setting"), always_show=True)
         self.wireless.load([Wireless(self.connection, self.set_button, settings_obj=self.settings_obj)])
         self.ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
         self.ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
@@ -264,7 +264,7 @@ class Security(gtk.VBox):
 
         self.key_entry = PasswordEntry()
         self.password_entry = PasswordEntry()
-        self.show_key_check = CheckButton(_("Show key"), padding_x=0)
+        self.show_key_check = CheckButton(_("Show password"), padding_x=0)
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
         self.wep_index_spin = SpinBox(0, 0, 3, 1, self.ENTRY_WIDTH)
         self.auth_combo = ComboBox([

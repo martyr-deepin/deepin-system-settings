@@ -281,7 +281,8 @@ class DBusService(dbus.service.Object):
         send_message("bluetooth", "cancel", "progress cancel")
 
 def handle_dbus_reply(*reply):
-    print "com.deepin.system_settings (reply): %s" % (str(reply))
+    #print "com.deepin.system_settings (reply): %s" % (str(reply))
+    pass
     
 def handle_dbus_error(*error):
     print "com.deepin.system_settings (error): %s" % (str(error))

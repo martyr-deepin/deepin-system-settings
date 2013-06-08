@@ -492,7 +492,7 @@ class HotspotItem(TreeItem):
     def render_pwd(self, cr, rect):
         render_background(cr, rect)
 
-        draw_text(cr, _("password:"), rect.x, rect.y, rect.width, rect.height,
+        draw_text(cr, _("Password:"), rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
 
     def render_pwd_entry(self, cr, rect):

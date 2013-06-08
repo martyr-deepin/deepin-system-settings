@@ -606,11 +606,11 @@ class HotspotBox(gtk.HBox):
     
     def __init_ui(self):
         #self.check_bar = Imag\cceBox(app_theme.get_pixbuf("network/check_box-2.png"))
-        self.ssid_label = Label(_("ssid:"))
+        self.ssid_label = Label(_("SSID:"))
         self.ssid_entry = InputEntry("Deepin.org")
         self.ssid_entry.entry.set_size_request(200 ,22)
 
-        self.password_label = Label(_("password:"))
+        self.password_label = Label(_("Password:"))
         self.password_entry = InputEntry("")
         self.password_entry.entry.set_size_request(200 ,22)
 
