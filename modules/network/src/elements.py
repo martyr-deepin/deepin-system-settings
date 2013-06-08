@@ -236,7 +236,7 @@ class TableAsm(gtk.Table):
         label = self.__label(label_name)
         entry = PasswordEntry()
         entry.set_size(self.right_width, WIDGET_HEIGHT)
-        show_key = CheckButton(_("Show key"), padding_x=0)
+        show_key = CheckButton(_("Show password"), padding_x=0)
         show_key.connect("toggled", lambda w: show_key.show_password(w.get_active()))
         self._wrap_align((label, entry), table)
         self._wrap_align((None, show_key), table)

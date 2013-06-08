@@ -24,7 +24,7 @@ from nls import _
 # UI
 import style
 from constants import CONTENT_FONT_SIZE
-from dss_log import log
+#from dss_log import log
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -118,7 +118,7 @@ class Sections(gtk.Alignment):
     def show_more_options(self, widget):
         widget.destroy()
         wired = SettingSection(_("Wired"), always_show=True)
-        ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
+        ipv4 = SettingSection(_("IPv4 setting"), always_show=True)
         ppp = SettingSection(_("PPP"), always_show=True)
         wired.load([Wired(self.connection, self.set_button, settings_obj=self.settings_obj)])
         ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
@@ -233,7 +233,7 @@ class DSLConf(gtk.VBox):
 
         # UI
         dsl_table = gtk.Table(5, 3, False)
-        ssid_label = Label(_("Setting Name:"),
+        ssid_label = Label(_("Connection Name:"),
                                text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)

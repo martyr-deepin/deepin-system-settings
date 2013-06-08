@@ -79,7 +79,7 @@ class AskPasswordDialog(DialogBox):
             self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, key_mgmt)
             init_text = ''
         self.entry = PasswordEntry(init_text)
-        self.show_key_check = CheckButton(_("Show key"), 0)
+        self.show_key_check = CheckButton(_("Show password"), 0)
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
 
         self.entry.set_size(default_width - 22, 25)

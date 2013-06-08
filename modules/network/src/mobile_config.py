@@ -220,7 +220,7 @@ class Sections(gtk.Alignment):
         self.button.set_size_request(50, 22)
         self.button.connect("clicked", self.show_more_options)
         self.broadband = SettingSection(_("Broadband"), always_show=True)
-        self.ipv4 = SettingSection(_("Ipv4 setting"), always_show=True)
+        self.ipv4 = SettingSection(_("IPv4 setting"), always_show=True)
         self.ppp = SettingSection(_("PPP"), always_show=True)
         align = gtk.Alignment(0, 0, 0, 0)
         align.set_padding(0, 0, 225, 0)
@@ -266,14 +266,14 @@ class Broadband(gtk.VBox):
         self.label_username = Label(_("Username:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        self.label_password = Label(_("password:"), text_size=CONTENT_FONT_SIZE,
+        self.label_password = Label(_("Password:"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
 
         self.number = InputEntry()
         self.username = InputEntry()
         self.password = PasswordEntry()
-        self.password_show = CheckButton(_("show password"), padding_x=0)
+        self.password_show = CheckButton(_("Show password"), padding_x=0)
         self.button_to_region = Button(_("Regions setting"))
 
 

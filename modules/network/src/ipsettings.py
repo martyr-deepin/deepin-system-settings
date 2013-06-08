@@ -20,7 +20,7 @@ class IPV4Conf(gtk.VBox):
     def __init__(self, connection=None, set_button_callback=None, dns_only=False, settings_obj=None):
         
         gtk.VBox.__init__(self)
-        self.tab_name = _("IPv4 Setting")
+        self.tab_name = _("IPv4 settings")
         self.connection = connection 
         self.set_button = set_button_callback
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
@@ -33,12 +33,12 @@ class IPV4Conf(gtk.VBox):
 
         self.ip_table = gtk.Table(3, 2, False)
         #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
-        self.ip_section = DefaultToggle(_("Automatic get IP address"))
+        self.ip_section = DefaultToggle(_("Obtain an IP address automatically"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
 
         self.addr_row = self.__set_row(_("IP Address:"), 0)
-        self.mask_row = self.__set_row(_("Mask:"), 1)
+        self.mask_row = self.__set_row(_("Subnet Mask:"), 1)
         self.gate_row = self.__set_row(_("Gateway:"), 2)
         self.__table_attach(self.ip_table, self.addr_row, 0)
         self.__table_attach(self.ip_table, self.mask_row, 1)
@@ -48,7 +48,7 @@ class IPV4Conf(gtk.VBox):
         #DNS configuration
         self.dns_table = gtk.Table(2, 2, False)
         #self.dns_section = SettingSection( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
-        self.dns_section = DefaultToggle(_("Automatic get DNS server"))
+        self.dns_section = DefaultToggle(_("Obtain DNS server address automatically"))
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
 
@@ -317,7 +317,7 @@ class IPV6Conf(gtk.VBox):
         # Ip configuration
         self.ip_table = gtk.Table(3, 2, False)
         #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
-        self.ip_section = DefaultToggle(_("Automatic get IP address"))
+        self.ip_section = DefaultToggle(_("Obtain an IP address automatically"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
 
@@ -332,7 +332,7 @@ class IPV6Conf(gtk.VBox):
 
         #DNS configuration
         self.dns_table = gtk.Table(2, 2, False)
-        self.dns_section = SettingSection( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
+        self.dns_section = SettingSection( _("Obtain DNS server address automatically"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
 
