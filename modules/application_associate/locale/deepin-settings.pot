@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-07 09:58+0800\n"
+"POT-Creation-Date: 2013-06-08 10:46+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,64 +17,20 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/media_view.py:53
-msgid "CD"
+#: ../src/search_keyword.py:29 ../src/session_view.py:51
+msgid "Application"
 msgstr ""
 
-#: ../src/media_view.py:54
-msgid "DVD"
+#: ../src/search_keyword.py:30
+msgid "Media"
 msgstr ""
 
-#: ../src/media_view.py:55
-msgid "Music Player"
+#: ../src/search_keyword.py:31 ../src/app_asso_view.py:63
+msgid "Autostart"
 msgstr ""
 
-#: ../src/media_view.py:56
-msgid "Camera"
-msgstr ""
-
-#: ../src/media_view.py:57
-msgid "Software"
-msgstr ""
-
-#: ../src/media_view.py:62 ../src/media_view.py:222
-msgid "other applications"
-msgstr ""
-
-#: ../src/media_view.py:63
-msgid "ask"
-msgstr ""
-
-#: ../src/media_view.py:64
-msgid "do nothing"
-msgstr ""
-
-#: ../src/media_view.py:65
-msgid "open folder"
-msgstr ""
-
-#: ../src/media_view.py:68 ../src/app_asso_view.py:62
-msgid "Autoplay"
-msgstr ""
-
-#: ../src/media_view.py:79
-msgid "more option"
-msgstr ""
-
-#: ../src/treeview.py:119
-msgid "No exec"
-msgstr ""
-
-#: ../src/treeview.py:134
-msgid "No description"
-msgstr ""
-
-#: ../src/treeview.py:143
-msgid "active"
-msgstr ""
-
-#: ../src/treeview.py:145
-msgid "not running"
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
 msgstr ""
 
 #: ../src/app_view.py:42
@@ -105,40 +61,52 @@ msgstr ""
 msgid "Terminal"
 msgstr ""
 
-#: ../src/app_asso_view.py:61
-msgid "Default Applications"
+#: ../src/media_view.py:53
+msgid "CD"
 msgstr ""
 
-#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
-msgid "Autostart"
+#: ../src/media_view.py:54
+msgid "DVD"
 msgstr ""
 
-#: ../src/search_keyword.py:29 ../src/session_view.py:51
-msgid "Application"
+#: ../src/media_view.py:55
+msgid "Audio Player"
 msgstr ""
 
-#: ../src/search_keyword.py:30
-msgid "Media"
+#: ../src/media_view.py:56
+msgid "Camera"
 msgstr ""
 
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
+#: ../src/media_view.py:57
+msgid "Applications"
 msgstr ""
 
-#: ../src/session_view.py:51
-msgid "Description"
+#: ../src/media_view.py:62 ../src/media_view.py:222
+msgid "Other applications"
 msgstr ""
 
-#: ../src/session_view.py:51
-msgid "Exec"
+#: ../src/media_view.py:63
+msgid "Ask"
 msgstr ""
 
-#: ../src/session_view.py:64
-msgid "New"
+#: ../src/media_view.py:64
+msgid "Do nothing"
 msgstr ""
 
-#: ../src/session_view.py:65
-msgid "Delete"
+#: ../src/media_view.py:65
+msgid "Open folder"
+msgstr ""
+
+#: ../src/media_view.py:68 ../src/app_asso_view.py:62
+msgid "AutoPlay"
+msgstr ""
+
+#: ../src/treeview.py:119
+msgid "No exec"
+msgstr ""
+
+#: ../src/treeview.py:134
+msgid "No description"
 msgstr ""
 
 #: ../src/widget.py:44
@@ -163,4 +131,24 @@ msgstr ""
 
 #: ../src/widget.py:91
 msgid "Comment:"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Description"
+msgstr ""
+
+#: ../src/session_view.py:51
+msgid "Exec"
+msgstr ""
+
+#: ../src/session_view.py:64
+msgid "New"
+msgstr ""
+
+#: ../src/session_view.py:65
+msgid "Delete"
+msgstr ""
+
+#: ../src/app_asso_view.py:61
+msgid "Default Applications"
 msgstr ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:37+0800\n"
+"POT-Creation-Date: 2013-06-08 10:13+0800\n"
 "PO-Revision-Date: 2013-01-21 09:25+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,65 +16,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/media_view.py:53
-msgid "CD"
-msgstr "CD音频"
+#: ../src/search_keyword.py:29 ../src/session_view.py:51
+msgid "Application"
+msgstr "应用程序"
 
-#: ../src/media_view.py:54
-msgid "DVD"
-msgstr "DVD视频"
+#: ../src/search_keyword.py:30
+msgid "Media"
+msgstr "自动运行"
 
-#: ../src/media_view.py:55
-msgid "Music Player"
-msgstr "音乐播放器"
+#: ../src/search_keyword.py:31 ../src/app_asso_view.py:63
+msgid "Autostart"
+msgstr "开机启动"
 
-#: ../src/media_view.py:56
-msgid "Camera"
-msgstr "相机"
-
-#: ../src/media_view.py:57
-msgid "Software"
-msgstr "软件"
-
-#: ../src/media_view.py:62 ../src/media_view.py:222
-msgid "other applications"
-msgstr "其他应用程序"
-
-#: ../src/media_view.py:63
-msgid "ask"
-msgstr "询问"
-
-#: ../src/media_view.py:64
-msgid "do nothing"
-msgstr "无操作"
-
-#: ../src/media_view.py:65
-msgid "open folder"
-msgstr "打开文件夹"
-
-#: ../src/media_view.py:68 ../src/app_asso_view.py:62
-msgid "Autoplay"
-msgstr "自动播放"
-
-#: ../src/media_view.py:79
-msgid "more option"
-msgstr "更多选项"
-
-#: ../src/treeview.py:119
-msgid "No exec"
-msgstr "未知命令"
-
-#: ../src/treeview.py:134
-msgid "No description"
-msgstr "没有相关描述"
-
-#: ../src/treeview.py:143
-msgid "active"
-msgstr "运行"
-
-#: ../src/treeview.py:145
-msgid "not running"
-msgstr "未运行"
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr "应用程序关联"
 
 #: ../src/app_view.py:42
 msgid "Web"
@@ -82,7 +38,7 @@ msgstr "网络"
 
 #: ../src/app_view.py:43
 msgid "Mail"
-msgstr ""
+msgstr "邮件"
 
 #: ../src/app_view.py:44
 msgid "Editor"
@@ -104,41 +60,53 @@ msgstr "图片"
 msgid "Terminal"
 msgstr "终端"
 
-#: ../src/app_asso_view.py:61
-msgid "Default Applications"
-msgstr "默认程序"
+#: ../src/media_view.py:53
+msgid "CD"
+msgstr "CD音频"
 
-#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
-msgid "Autostart"
-msgstr "开机启动"
+#: ../src/media_view.py:54
+msgid "DVD"
+msgstr "DVD视频"
 
-#: ../src/search_keyword.py:29 ../src/session_view.py:51
-msgid "Application"
-msgstr "应用程序"
+#: ../src/media_view.py:55
+msgid "Audio Player"
+msgstr "音乐播放器"
 
-#: ../src/search_keyword.py:30
-msgid "Media"
-msgstr "自动运行"
+#: ../src/media_view.py:56
+msgid "Camera"
+msgstr "相机"
 
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
-msgstr "应用程序关联"
+#: ../src/media_view.py:57
+msgid "Applications"
+msgstr "软件"
 
-#: ../src/session_view.py:51
-msgid "Description"
-msgstr "描述"
+#: ../src/media_view.py:62 ../src/media_view.py:222
+msgid "Other applications"
+msgstr "其他应用程序"
 
-#: ../src/session_view.py:51
-msgid "Exec"
-msgstr "命令"
+#: ../src/media_view.py:63
+msgid "Ask"
+msgstr "询问"
 
-#: ../src/session_view.py:64
-msgid "New"
-msgstr "新建"
+#: ../src/media_view.py:64
+msgid "Do nothing"
+msgstr "无操作"
 
-#: ../src/session_view.py:65
-msgid "Delete"
-msgstr "删除"
+#: ../src/media_view.py:65
+msgid "Open folder"
+msgstr "打开文件夹"
+
+#: ../src/media_view.py:68 ../src/app_asso_view.py:62
+msgid "AutoPlay"
+msgstr "自动播放"
+
+#: ../src/treeview.py:119
+msgid "No exec"
+msgstr "未知命令"
+
+#: ../src/treeview.py:134
+msgid "No description"
+msgstr "没有相关描述"
 
 #: ../src/widget.py:44
 msgid "Autostart app"
@@ -163,6 +131,41 @@ msgstr "命令:"
 #: ../src/widget.py:91
 msgid "Comment:"
 msgstr "描述:"
+
+#: ../src/session_view.py:51
+msgid "Description"
+msgstr "描述"
+
+#: ../src/session_view.py:51
+msgid "Exec"
+msgstr "命令"
+
+#: ../src/session_view.py:64
+msgid "New"
+msgstr "新建"
+
+#: ../src/session_view.py:65
+msgid "Delete"
+msgstr "删除"
+
+#: ../src/app_asso_view.py:61
+msgid "Default Applications"
+msgstr "默认程序"
+
+#~ msgid "other applications"
+#~ msgstr "其他应用程序"
+
+#~ msgid "Software"
+#~ msgstr "软件"
+
+#~ msgid "more option"
+#~ msgstr "更多选项"
+
+#~ msgid "active"
+#~ msgstr "运行"
+
+#~ msgid "not running"
+#~ msgstr "未运行"
 
 #~ msgid "mail"
 #~ msgstr "邮件"
