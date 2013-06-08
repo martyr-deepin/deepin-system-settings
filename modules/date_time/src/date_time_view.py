@@ -257,7 +257,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.auto_time_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
-        self.auto_time_label = self.__setup_label(_("Auto Set Time"))
+        self.auto_time_label = self.__setup_label(_("Set Automatically"))
         self.auto_time_toggle = self.__setup_toggle()
         is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
         if is_auto_set_time:
@@ -274,7 +274,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.set_time_spin_align = self.__setup_align(padding_left = 10, padding_top = 1)
         self.set_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
-        self.set_time_label = self.__setup_label(_("Manual"), 60)
+        self.set_time_label = self.__setup_label(_("Set Time"), 60)
         self.set_time_spin = TimeSpinBox(is_24hour = self.is_24hour)                 
         self.set_time_spin.set_size_request(85, WIDGET_HEIGHT)                               
         self.set_time_spin.connect("value-changed", self.__time_changed)
@@ -308,7 +308,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.timezone_title_align = self.__setup_title_align(
             app_theme.get_pixbuf("datetime/globe-green.png"), 
-            _("TimeZone"), 
+            _("Time Zone"), 
             TEXT_WINDOW_TOP_PADDING)
         self.timezone_combo_align = self.__setup_align(padding_top = 6)
         self.timezone_combo = ComboBox(self.timezone_items, max_width = 340, fixed_width = 340)
@@ -458,11 +458,11 @@ class DatetimeView(gtk.HBox):
             is_auto_set_time = widget.get_active()
             self.datetime_settings.set_boolean("is-auto-set", is_auto_set_time)
             if is_auto_set_time:
-                self.__send_message("status", ("date_time", _("Changed to automatic set time")))
+                self.__send_message("status", ("date_time", _("Time will be synchronized with an Internet time server")))
                 self.set_time_spin_align.set_child_visible(False)
                 self.__deepin_dt.set_using_ntp(True)
             else:
-                self.__send_message("status", ("date_time", _("Changed to manual set time")))
+                self.__send_message("status", ("date_time", _("Time will not be synchronized with an Internet time server")))
                 self.set_time_spin_align.set_child_visible(True)
                 self.__deepin_dt.set_using_ntp(False)
             return
@@ -470,9 +470,9 @@ class DatetimeView(gtk.HBox):
         if argv == "time_display_toggle":
             self.is_24hour = widget.get_active()
             if self.is_24hour:
-                self.__send_message("status", ("date_time", _("Changed to 24 Hour")))
+                self.__send_message("status", ("date_time", _("Time will be shown in 24 hour format")))
             else:
-                self.__send_message("status", ("date_time", _("Changed to 12 Hour")))
+                self.__send_message("status", ("date_time", _("Time will be shown in 12 hour format")))
             self.datetime_settings.set_boolean("is-24hour", self.is_24hour)
             self.datetime_widget.set_is_24hour(self.is_24hour)
             self.set_time_spin.set_24hour(self.is_24hour)
@@ -503,7 +503,7 @@ class DatetimeView(gtk.HBox):
         cr.fill()
     
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None):
-        self.__send_message("status", ("date_time", _("Changed timezone to %s") % item_text))
+        self.__send_message("status", ("date_time", _("Changed time zone to %s") % item_text))
         self.__deepin_dt.set_timezone_by_gmtoff(item_value)
 
     def __setup_label(self, text="", width=90, align=ALIGN_START):

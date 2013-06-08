@@ -119,7 +119,7 @@ class TrayTimePlugin(object):
         calendar.get_handle().set_size_request(self.width, 172)
         calendar_align.add(calendar.get_handle())
         select_align = self.__setup_align()
-        select_button = SelectButton(_("Change DateTime settings"), 
+        select_button = SelectButton(_("Change date and time settings"), 
                                      font_size = 10, 
                                      ali_padding = 5)
         select_button.set_size_request(self.width, 25)
