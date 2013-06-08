@@ -26,14 +26,14 @@ from nls import _
 TODO: keywords list
       item (module_uid, search_keyword)
 '''
-keywords = [("power_1", _("Power Button Configuration")), 
-            ("power_2", _("Press Power Button")), 
-            ("power_3", _("Close Notebook Cover")), 
-            ("power_4", _("Press Hibernate Button")), 
-            ("power_5", _("Saving Power Configuration")), 
-            ("power_6", _("Being Hibernate")), 
-            ("power_7", _("Close Harddisk")), 
-            ("power_8", _("Close Monitor")), 
-            ("power_9", _("Password Protection Wakeup")), 
-            ("power_10", _("Show Battery Status In The Tray"))
+keywords = [("power_1", _("Power Button Settings")), 
+            ("power_2", _("When I press the power button")), 
+            ("power_3", _("When I close the lid")), 
+            ("power_4", _("When I press the sleep button")), 
+            ("power_5", _("Power Saving Settings")), 
+            ("power_6", _("Hibernate")), 
+            ("power_7", _("Turn off hard disk")), 
+            ("power_8", _("Turn off monitor")), 
+            ("power_9", _("Require password when computer wakes")), 
+            ("power_10", _("Always show icon in the tray"))
            ]

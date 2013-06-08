@@ -50,8 +50,8 @@ RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.,12")
 SUSPEND_TOP_TEXT = _("<span foreground='#FF0000'>Suspend</span> your computer now?,12")
 #SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
 SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.,12")
-LOGOUT_TOP_TEXT = _("<span foreground='#FF0000'>Logout</span> your computer now?,12")
-LOGOUT_BOTTOM_TEXT = _("The system will Logout in \n%s secs.,12")
+LOGOUT_TOP_TEXT = _("<span foreground='#FF0000'>Log out</span> of your system now?,12")
+LOGOUT_BOTTOM_TEXT = _("You will be automatically logged out in \n%s secs.,12")
 
 RUN_DSS_COMMAND = "deepin-system-settings account"
 RUN_SWITCH_TOGREETER = "switchtogreeter"
