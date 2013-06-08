@@ -43,7 +43,6 @@ msgid "Power saver"
 msgstr "节能"
 
 #: ../src/tray_power_gui.py:56
-#, fuzzy
 msgid "High performance"
 msgstr "高性能"
 
