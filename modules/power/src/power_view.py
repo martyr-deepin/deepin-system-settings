@@ -110,9 +110,7 @@ class PowerView(gtk.VBox):
         self.power_plan_align = self.__setup_align()
         self.power_plan_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.power_plan_label = self.__setup_label(_("Power Plan"))
-        self.power_plan_combo = self.__setup_combo(self.power_plan_items, 
-                                                   max_width = 120, 
-                                                   fixed_width = 120)
+        self.power_plan_combo = self.__setup_combo(self.power_plan_items)
         self.power_plan_combo.set_select_index(self.power_manager.get_current_plan())
         self.power_plan_combo.connect("item-selected", self.__combo_item_selected, "power_plan")
         self.__widget_pack_start(self.power_plan_box, 
@@ -170,7 +168,7 @@ class PowerView(gtk.VBox):
                                                         text_color=app_theme.get_color("globalTitleForeground"))
         self.wakeup_password_label.set_sensitive(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle_align = self.__setup_align(padding_top = 2,
-                                                               padding_left = 78)
+                                                               padding_left = 88)
         self.wakeup_password_toggle = self.__setup_toggle()
         self.wakeup_password_toggle.set_active(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle.connect("toggled", self.__toggled, "wakeup_password")
@@ -193,7 +191,7 @@ class PowerView(gtk.VBox):
                                                             text_color=app_theme.get_color("globalTitleForeground"))
         self.tray_battery_status_label.set_sensitive(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle_align = self.__setup_align(padding_top = 2, 
-                                                                   padding_left = 78)
+                                                                   padding_left = 88)
         self.tray_battery_status_toggle = self.__setup_toggle()
         self.tray_battery_status_toggle.set_active(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle.connect("toggled", self.__toggled, "tray_battery_status")
@@ -336,14 +334,14 @@ class PowerView(gtk.VBox):
     def __setup_progressbar(self, progress):
         progressbar = PowerProgressBar()
         progressbar.progress_buffer.progress = progress
-        progressbar.set_size_request(120, WIDGET_HEIGHT)
+        progressbar.set_size_request(130, WIDGET_HEIGHT)
         return progressbar
 
     def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END, text_color=None):
         label = Label(text, text_color, text_size, align, 240, False, False, False)
         return label
 
-    def __setup_combo(self, items=[], max_width = 120, fixed_width = 120):
+    def __setup_combo(self, items=[], max_width = 130, fixed_width = 130):
         return ComboBox(items = items, 
                         select_index = 0, 
                         max_width = max_width, 
