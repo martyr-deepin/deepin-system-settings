@@ -22,7 +22,7 @@ msgid "Switch user"
 msgstr "切换用户"
 
 #: ../src/tray_shutdown_gui.py:96 ../src/power_view.py:61
-msgid "Shutdown"
+msgid "Shut down"
 msgstr "关机"
 
 #: ../src/tray_shutdown_gui.py:99
@@ -32,10 +32,10 @@ msgstr "重启"
 #: ../src/tray_shutdown_gui.py:102 ../src/power_view.py:60
 #: ../src/power_view.py:138
 msgid "Suspend"
-msgstr "挂起"
+msgstr "待机"
 
 #: ../src/tray_shutdown_gui.py:105
-msgid "Logout"
+msgid "Log out"
 msgstr "注销"
 
 #: ../src/tray_shutdown_gui.py:108
@@ -43,43 +43,43 @@ msgid "Lock"
 msgstr "锁屏"
 
 #: ../src/search_keyword.py:29 ../src/power_view.py:73
-msgid "Power Button Configuration"
+msgid "Power Button Settings"
 msgstr "电源按钮配置"
 
 #: ../src/search_keyword.py:30 ../src/power_view.py:81
-msgid "Press Power Button"
+msgid "When I press the power button"
 msgstr "按电源按钮时"
 
 #: ../src/search_keyword.py:31 ../src/power_view.py:93
-msgid "Close Notebook Cover"
+msgid "When I close the lid"
 msgstr "合上笔记本盖子时"
 
 #: ../src/search_keyword.py:32
-msgid "Press Hibernate Button"
-msgstr "按休眠按钮时"
+msgid "When I press the sleep button"
+msgstr "按睡眠按钮时"
 
 #: ../src/search_keyword.py:33 ../src/power_view.py:106
-msgid "Saving Power Configuration"
+msgid "Power Saving Settings"
 msgstr "电源节能设置"
 
 #: ../src/search_keyword.py:34
-msgid "Being Hibernate"
+msgid "Hibernate"
 msgstr "进入休眠状态"
 
 #: ../src/search_keyword.py:35
-msgid "Close Harddisk"
+msgid "Turn off hard disk"
 msgstr "关闭硬盘"
 
 #: ../src/search_keyword.py:36 ../src/power_view.py:126
-msgid "Close Monitor"
+msgid "Turn off monitor"
 msgstr "关闭显示器"
 
 #: ../src/search_keyword.py:37 ../src/power_view.py:167
-msgid "Password Protection Wakeup"
+msgid "Require password when computer wakes"
 msgstr "唤醒时的密码保护"
 
-#: ../src/search_keyword.py:38
-msgid "Show Battery Status In The Tray"
+#: ../src/search_keyword.py:38 ../src/power_view.py:190
+msgid "Always show icon in the tray"
 msgstr "在系统托盘显示电池状态"
 
 #: ../src/tray_dialog.py:43
@@ -97,9 +97,9 @@ msgstr "现在<span foreground='#FF0000'>关闭</span>此系统吗？,10"
 #: ../src/tray_dialog.py:48
 #, python-format
 msgid ""
-"The system will shutdown in \n"
+"The system will shut down in \n"
 "%s secs.,12"
-msgstr "现系统即将在%s秒后自动关闭。,10"
+msgstr "系统将在%s秒后自动关闭。,10"
 
 #: ../src/tray_dialog.py:50
 msgid "WenQuanYi Micro Hei Bold"
@@ -111,8 +111,8 @@ msgstr "有程序仍在运行中："
 
 #: ../src/tray_dialog.py:392
 msgid ""
-"Waiting for programs to finish.  Interrupting these programs may cause you "
-"to lose work."
+"Waiting for applications to terminate. Interrupting these may cause "
+"unexpected results."
 msgstr "正在等候程序结束。中断程序可能导致您的工作成果丢失。"
 
 #: ../src/power_view.py:50
@@ -132,23 +132,23 @@ msgid "Never"
 msgstr "从不"
 
 #: ../src/power_view.py:59
-msgid "Nothing"
+msgid "Do nothing"
 msgstr "不采取任何措施"
 
 #: ../src/power_view.py:63
-msgid "Balance"
+msgid "Balanced"
 msgstr "平衡"
 
 #: ../src/power_view.py:64
-msgid "Saving"
+msgid "Power saver"
 msgstr "节能"
 
 #: ../src/power_view.py:65
-msgid "High Performance"
+msgid "High performance"
 msgstr "高性能"
 
 #: ../src/power_view.py:66
-msgid "Customized"
+msgid "Custom"
 msgstr "自定义"
 
 #: ../src/power_view.py:112
@@ -156,30 +156,26 @@ msgid "Power Plan"
 msgstr "电源计划"
 
 #: ../src/power_view.py:151
-msgid "Current Battery"
+msgid "Battery power remaining"
 msgstr "当前电池电量"
 
-#: ../src/power_view.py:190
-msgid "Show Battery Status In Tray"
-msgstr "在系统托盘显示电池状态"
-
 #: ../src/power_view.py:318
-msgid "Reset to balance value"
+msgid "Power plan has been reset to Balanced"
 msgstr "恢复平衡值"
 
 #: ../src/power_view.py:375
 #, python-format
-msgid "Changed Press Power Button to %s"
+msgid "%s when pressing the power button"
 msgstr "修改按电源按钮为%s"
 
 #: ../src/power_view.py:380
 #, python-format
-msgid "Changed Close Notebook Cover to %s"
+msgid "%s when closing the lid"
 msgstr "修改合上笔记本盖子为%s"
 
 #: ../src/power_view.py:385
 #, python-format
-msgid "Changed Power Plan to %s"
+msgid "Power plan has been changed to %s"
 msgstr "修改按电源计划为%s"
 
 #: ../src/power_view.py:390
@@ -189,23 +185,23 @@ msgstr "修改休眠状态为%s"
 
 #: ../src/power_view.py:398
 #, python-format
-msgid "Changed Close Monitor to %s"
+msgid "The time before turning off monitor has been changed to %s"
 msgstr "修改关闭显示器为%s"
 
 #: ../src/power_view.py:408
-msgid "Changed to Password Protection Wakeup"
+msgid "You will be asked for a password when computer wakes"
 msgstr "修改为唤醒时有密码保护"
 
 #: ../src/power_view.py:410
-msgid "Changed to NO Password Protection Wakeup"
+msgid "The system will not requrie a password after sleep"
 msgstr "修改为唤醒时无密码保护"
 
 #: ../src/power_view.py:417
-msgid "Changed to Show Battery Status In Tray"
+msgid "Battery status will be shown in the tray"
 msgstr "修改为在系统托盘显示电池状态"
 
 #: ../src/power_view.py:419
-msgid "Changed to Hide Battery Status In Tray"
+msgid "Battery status will not be shown in the tray"
 msgstr "修改为在系统托盘隐藏电池状态"
 
 #: ../src/tray_shutdown_plugin.py:46
@@ -221,31 +217,28 @@ msgstr "系统即将在%s秒后自动重启。,10"
 
 #: ../src/tray_shutdown_plugin.py:50
 msgid "<span foreground='#FF0000'>Suspend</span> your computer now?,12"
-msgstr "现在<span foreground='#FF0000'>挂起</span>此系统吗？,10"
+msgstr "现在<span foreground='#FF0000'>待机</span>吗？,10"
 
 #: ../src/tray_shutdown_plugin.py:52
 #, python-format
 msgid ""
 "The system will suspend in \n"
 "%s secs.,12"
-msgstr "系统即将在%s秒后自动挂起。,10"
+msgstr "系统将在%s秒后自动待机。,10"
 
 #: ../src/tray_shutdown_plugin.py:53
-msgid "<span foreground='#FF0000'>Logout</span> your computer now?,12"
+msgid "<span foreground='#FF0000'>Log out</span> of your system now?,12"
 msgstr "现在<span foreground='#FF0000'>注销</span>此系统吗？,10"
 
 #: ../src/tray_shutdown_plugin.py:54
 #, python-format
 msgid ""
-"The system will Logout in \n"
+"You will be automatically logged out in \n"
 "%s secs.,12"
-msgstr "现系统即将在%s秒后自动注销。,10"
+msgstr "系统将在%s秒后自动注销。,10"
 
 #~ msgid "shutdown"
 #~ msgstr "关机"
 
 #~ msgid "suspend"
 #~ msgstr "挂起"
-
-#~ msgid "Default"
-#~ msgstr "默认"

@@ -56,21 +56,21 @@ class PowerView(gtk.VBox):
                                    ]
         self.power_manager = PowerManager()
         self.power_manager.power_settings.connect("changed", self.__power_settings_changed)
-        self.power_manage_items = [(_("Nothing"), self.power_manager.nothing), 
+        self.power_manage_items = [(_("Do nothing"), self.power_manager.nothing), 
                                    (_("Suspend"), self.power_manager.suspend), 
-                                   (_("Shutdown"), self.power_manager.shutdown)
+                                   (_("Shut down"), self.power_manager.shutdown)
                                   ]
-        self.power_plan_items = [(_("Balance"), self.power_manager.balance),                        
-                                 (_("Saving"), self.power_manager.saving),                      
-                                 (_("High Performance"), self.power_manager.high_performance), 
-                                 (_("Customized"), self.power_manager.customized)
+        self.power_plan_items = [(_("Balanced"), self.power_manager.balance),                        
+                                 (_("Power saver"), self.power_manager.saving),                      
+                                 (_("High performance"), self.power_manager.high_performance), 
+                                 (_("Custom"), self.power_manager.customized)
                                 ]
         '''
         button power config
         '''
         self.button_power_config_align = self.__setup_title_align(
             app_theme.get_pixbuf("power/button_power.png"), 
-            _("Power Button Configuration"), 
+            _("Power Button Settings"), 
             TEXT_WINDOW_TOP_PADDING, 
             TEXT_WINDOW_LEFT_PADDING)
         '''
@@ -78,7 +78,7 @@ class PowerView(gtk.VBox):
         '''
         self.press_button_power_align = self.__setup_align()
         self.press_button_power_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.press_button_power_label = self.__setup_label(_("Press Power Button"))
+        self.press_button_power_label = self.__setup_label(_("When I press the power button"))
         self.press_button_power_combo = self.__setup_combo(self.power_manage_items)
         self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
         self.press_button_power_combo.connect("item-selected", self.__combo_item_selected, "press_button_power")
@@ -90,7 +90,7 @@ class PowerView(gtk.VBox):
         '''
         self.close_notebook_cover_align = self.__setup_align()
         self.close_notebook_cover_box = gtk.HBox(spacing=WIDGET_SPACING)
-        self.close_notebook_cover_label = self.__setup_label(_("Close Notebook Cover"))
+        self.close_notebook_cover_label = self.__setup_label(_("When I close the lid"))
         self.close_notebook_cover_combo = self.__setup_combo(self.power_manage_items)
         self.close_notebook_cover_combo.set_select_index(self.power_manager.get_close_notebook_cover(self.power_manage_items))
         self.close_notebook_cover_combo.connect("item-selected", self.__combo_item_selected, "close_notebook_cover")
@@ -103,7 +103,7 @@ class PowerView(gtk.VBox):
         '''
         self.power_save_config_align = self.__setup_title_align(
             app_theme.get_pixbuf("power/power_save.png"), 
-            _("Saving Power Configuration")) 
+            _("Power Saving Settings")) 
         '''
         power plan
         '''
@@ -123,7 +123,7 @@ class PowerView(gtk.VBox):
         '''
         self.close_monitor_align = self.__setup_align()
         self.close_monitor_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.close_monitor_label = self.__setup_label(_("Close Monitor"))
+        self.close_monitor_label = self.__setup_label(_("Turn off monitor"))
         self.close_monitor_combo = self.__setup_combo(self.wait_duration_items)
         self.close_monitor_combo.set_select_index(0)
         self.close_monitor_combo.connect("item-selected", self.__combo_item_selected, "close_monitor")
@@ -148,7 +148,7 @@ class PowerView(gtk.VBox):
         '''
         self.percentage_align = self.__setup_align()
         self.percentage_box = gtk.HBox(spacing = WIDGET_SPACING)
-        self.percentage_label = self.__setup_label(_("Current Battery"))
+        self.percentage_label = self.__setup_label(_("Battery power remaining"))
         self.percentage_progressbar_align = self.__setup_align(padding_left = 0, padding_top = 0)
         self.percentage_progressbar = self.__setup_progressbar(
             self.power_manager.power_settings.get_double("percentage"))
@@ -164,7 +164,7 @@ class PowerView(gtk.VBox):
                                                         padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.wakeup_password_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.wakeup_password_image = ImageBox(app_theme.get_pixbuf("lock/lock.png"))
-        self.wakeup_password_label = self.__setup_label(_("Password Protection Wakeup"), 
+        self.wakeup_password_label = self.__setup_label(_("Require password when computer wakes"), 
                                                         TITLE_FONT_SIZE, 
                                                         ALIGN_START, 
                                                         text_color=app_theme.get_color("globalTitleForeground"))
@@ -187,7 +187,7 @@ class PowerView(gtk.VBox):
                                                             padding_left = TEXT_WINDOW_LEFT_PADDING)
         self.tray_battery_status_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.tray_battery_image = ImageBox(app_theme.get_pixbuf("power/tray_battery.png"))
-        self.tray_battery_status_label = self.__setup_label(_("Show Battery Status In Tray"), 
+        self.tray_battery_status_label = self.__setup_label(_("Always show icon in the tray"), 
                                                             TITLE_FONT_SIZE, 
                                                             ALIGN_START, 
                                                             text_color=app_theme.get_color("globalTitleForeground"))
@@ -315,7 +315,7 @@ class PowerView(gtk.VBox):
         return align        
 
     def reset(self):
-        self.__send_message("status", ("power", _("Reset to balance value")))
+        self.__send_message("status", ("power", _("Power plan has been reset to Balanced")))
         self.power_plan_combo.set_select_index(0)
         self.power_manager.reset()
         self.press_button_power_combo.set_select_index(self.power_manager.get_press_button_power(self.power_manage_items))
@@ -372,17 +372,17 @@ class PowerView(gtk.VBox):
 
     def __combo_item_selected(self, widget, item_text=None, item_value=None, item_index=None, object=None):
         if object == "press_button_power":
-            self.__send_message("status", ("power", _("Changed Press Power Button to %s") % item_text))
+            self.__send_message("status", ("power", _("%s when pressing the power button") % item_text))
             self.power_manager.set_press_button_power(item_value)
             return
 
         if object == "close_notebook_cover":
-            self.__send_message("status", ("power", _("Changed Close Notebook Cover to %s") % item_text))
+            self.__send_message("status", ("power", _("%s when closing the lid") % item_text))
             self.power_manager.set_close_notebook_cover(item_value)
             return
 
         if object == "power_plan":
-            self.__send_message("status", ("power", _("Changed Power Plan to %s") % item_text))
+            self.__send_message("status", ("power", _("Power plan has been changed to %s") % item_text))
             self.power_manager.set_current_plan(item_value)
             return
 
@@ -395,7 +395,7 @@ class PowerView(gtk.VBox):
             return
 
         if object == "close_monitor":
-            self.__send_message("status", ("power", _("Changed Close Monitor to %s") % item_text))
+            self.__send_message("status", ("power", _("The time before turning off monitor has been changed to %s") % item_text))
             self.power_plan_combo.set_select_index(self.power_manager.customized)
             self.power_manager.set_close_monitor(item_value)
             self.power_manager.update_xml(item_value, self.suspend_combo.get_current_item()[1])
@@ -405,18 +405,18 @@ class PowerView(gtk.VBox):
     def __toggled(self, widget, object=None):
         if object == "wakeup_password":
             if widget.get_active():
-                self.__send_message("status", ("power", _("Changed to Password Protection Wakeup")))
+                self.__send_message("status", ("power", _("You will be asked for a password when computer wakes")))
             else:
-                self.__send_message("status", ("power", _("Changed to NO Password Protection Wakeup")))
+                self.__send_message("status", ("power", _("The system will not requrie a password after sleep")))
             self.power_manager.set_wakeup_password(widget.get_active())
             self.wakeup_password_label.set_sensitive(widget.get_active())
             return
 
         if object == "tray_battery_status":
             if widget.get_active():
-                self.__send_message("status", ("power", _("Changed to Show Battery Status In Tray")))
+                self.__send_message("status", ("power", _("Battery status will be shown in the tray")))
             else:
-                self.__send_message("status", ("power", _("Changed to Hide Battery Status In Tray")))
+                self.__send_message("status", ("power", _("Battery status will not be shown in the tray")))
             self.power_manager.set_tray_battery_status(widget.get_active())
             return
 

@@ -92,7 +92,7 @@ class Gui(gtk.VBox):
         self.switch_btn = SelectButton(_("Switch user"), 
                                        font_size=font_size, 
                                        ali_padding=ali_padding)
-        self.stop_btn = SelectButton(_("Shutdown"), 
+        self.stop_btn = SelectButton(_("Shut down"), 
                                      font_size=font_size, 
                                      ali_padding=ali_padding)
         self.restart_btn = SelectButton(_("Restart"), 
@@ -101,7 +101,7 @@ class Gui(gtk.VBox):
         self.suspend_btn = SelectButton(_("Suspend"), 
                                         font_size=font_size, 
                                         ali_padding=ali_padding)
-        self.logout_btn = SelectButton(_("Logout"), 
+        self.logout_btn = SelectButton(_("Log out"), 
                                        font_size=font_size, 
                                        ali_padding=ali_padding)
         self.lock_btn = SelectButton(_("Lock"), 

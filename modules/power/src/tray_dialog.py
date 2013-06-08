@@ -45,7 +45,7 @@ OK_TEXT = _("OK")
 #SHUTDOWN_TOP_TEXT = _("现在关闭此系统吗？")
 SHUTDOWN_TOP_TEXT = _("<span foreground='#FF0000'>Turn off</span> your computer now?,12")
 #SHUTDOWN_BOTTOM_TEXT = _("系统即将在%s秒后自动关闭。")
-SHUTDOWN_BOTTOM_TEXT = _("The system will shutdown in \n%s secs.,12")
+SHUTDOWN_BOTTOM_TEXT = _("The system will shut down in \n%s secs.,12")
 #FONT_TYPE = _("文泉驿微米黑 Bold")
 FONT_TYPE = _("WenQuanYi Micro Hei Bold")
 
@@ -360,7 +360,7 @@ class InhibitDialog(TrayDialog):
     def __init__(self, ok_text=OK_TEXT, cancel_text=CANCEL_TEXT):
         super(InhibitDialog, self).__init__(cancel_text=cancel_text, ok_text=ok_text)
         self.show_top_text = "<span foreground='#FF0000'>%s</span>" % _("A program is still running:")
-        self.show_bottom_text = _("Waiting for programs to finish.  Interrupting these programs may cause you to lose work.")
+        self.show_bottom_text = _("Waiting for applications to terminate. Interrupting these may cause unexpected results.")
         self.wrap_width = 320
 
         # remove image and title
