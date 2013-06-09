@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-08 16:00+0800\n"
+"POT-Creation-Date: 2013-06-09 16:06+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../src/elements.py:239 ../src/wlan_config.py:267
-#: ../src/mobile_config.py:276 ../src/widgets.py:82
+#: ../src/mobile_config.py:276 ../src/widgets.py:85
 msgid "Show password"
 msgstr ""
 
@@ -63,7 +63,7 @@ msgid "Prefix:"
 msgstr ""
 
 #: ../src/dsl_config.py:38 ../src/dsl_config.py:227
-#: ../src/search_keyword.py:31 ../src/tray_ui.py:66 ../src/main_ui.py:725
+#: ../src/search_keyword.py:31 ../src/tray_ui.py:66 ../src/main_ui.py:717
 msgid "DSL"
 msgstr ""
 
@@ -81,7 +81,7 @@ msgstr ""
 #: ../src/dsl_config.py:120 ../src/dsl_config.py:136
 #: ../src/search_keyword.py:29 ../src/lan_config.py:39 ../src/lan_config.py:89
 #: ../src/lan_config.py:117 ../src/vpn_config.py:127 ../src/tray_ui.py:61
-#: ../src/main_ui.py:206
+#: ../src/main_ui.py:217
 msgid "Wired"
 msgstr ""
 
@@ -206,7 +206,7 @@ msgid "Send PPP echo packets"
 msgstr ""
 
 #: ../src/search_keyword.py:30 ../src/wlan_config.py:208
-#: ../src/wlan_config.py:558 ../src/tray_ui.py:62 ../src/main_ui.py:368
+#: ../src/wlan_config.py:558 ../src/tray_ui.py:62 ../src/main_ui.py:383
 msgid "Wireless"
 msgstr ""
 
@@ -215,11 +215,11 @@ msgid "VPN"
 msgstr ""
 
 #: ../src/search_keyword.py:33 ../src/mobile_config.py:38 ../src/tray_ui.py:63
-#: ../src/main_ui.py:1068
+#: ../src/main_ui.py:1060
 msgid "Mobile Network"
 msgstr ""
 
-#: ../src/search_keyword.py:34 ../src/main_ui.py:1137 ../src/main_ui.py:1175
+#: ../src/search_keyword.py:34 ../src/main_ui.py:1129 ../src/main_ui.py:1167
 msgid "Proxy"
 msgstr ""
 
@@ -298,11 +298,6 @@ msgstr ""
 
 #: ../src/settings_widget.py:617
 msgid "Active"
-msgstr ""
-
-#: ../src/helper.py:111
-#, python-format
-msgid "%s deleted"
 msgstr ""
 
 #: ../src/lists.py:533
@@ -467,7 +462,7 @@ msgstr ""
 msgid "Region"
 msgstr ""
 
-#: ../src/tray_ui.py:65 ../src/main_ui.py:872
+#: ../src/tray_ui.py:65 ../src/main_ui.py:864
 msgid "VPN Network"
 msgstr ""
 
@@ -475,45 +470,45 @@ msgstr ""
 msgid "Advanced..."
 msgstr ""
 
-#: ../src/tray_ui.py:482
+#: ../src/tray_ui.py:483
 #, python-format
 msgid "card %d"
 msgstr ""
 
-#: ../src/widgets.py:48 ../src/widgets.py:62
+#: ../src/widgets.py:50 ../src/widgets.py:64
 #, python-format
 msgid "Please input password for %s"
 msgstr ""
 
-#: ../src/widgets.py:94
+#: ../src/widgets.py:97
 msgid "OK"
 msgstr ""
 
-#: ../src/widgets.py:95
+#: ../src/widgets.py:98
 msgid "Cancel"
 msgstr ""
 
-#: ../src/main_ui.py:369
+#: ../src/main_ui.py:384
 msgid "Set up a hidden wireless connection"
 msgstr ""
 
-#: ../src/main_ui.py:591
+#: ../src/main_ui.py:583
 msgid "Hotspot"
 msgstr ""
 
-#: ../src/main_ui.py:726
+#: ../src/main_ui.py:718
 msgid "Create a DSL connection"
 msgstr ""
 
-#: ../src/main_ui.py:873
+#: ../src/main_ui.py:865
 msgid "Create a VPN connection"
 msgstr ""
 
-#: ../src/main_ui.py:1069
+#: ../src/main_ui.py:1061
 msgid "Mobile Configuration"
 msgstr ""
 
-#: ../src/main_ui.py:1157
+#: ../src/main_ui.py:1149
 msgid "Proxy Configuration"
 msgstr ""
 
