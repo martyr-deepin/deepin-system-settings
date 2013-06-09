@@ -267,6 +267,7 @@ class NetManager(object):
         bus = dbus.SystemBus()                                                   
         proxy = bus.get_object("com.deepin.network", "/com/deepin/network")      
         interface = dbus.Interface(proxy, "com.deepin.network")                  
+        log.debug(hw_address)
         return interface.get_ap_sec(hw_address)        
 
     def emit_wifi_switch(self, index):

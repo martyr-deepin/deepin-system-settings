@@ -26,7 +26,7 @@ def get_encry_by_bssid(bssid):
             elif "WEP" in encry:
                 return "none"
             else:
-                return None
+                return ""
         except KeyError:
             return "wpa-psk"
 

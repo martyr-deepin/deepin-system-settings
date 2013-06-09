@@ -19,6 +19,7 @@ class DeviceManager(object):
         self.__signal_list = ["device_active",
                               "device_deactive",
                               "device_unavailable",
+                              "device_available",
                               "activate_start",
                               "activate_failed"]
 

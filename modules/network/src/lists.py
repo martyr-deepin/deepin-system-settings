@@ -186,7 +186,6 @@ class LoadingThread(td.Thread):
     
     def run(self):
         position = 0
-        #try:
         while self.widget.get_net_state() == 1:
             self.widget.refresh_loading(position)
             time.sleep(0.1)
@@ -307,7 +306,7 @@ class WirelessItem(GenItems):
 
     def connect_by_ssid(self, ssid, ap):
         connection =  net_manager.connect_wireless_by_ssid(ssid, self.device)
-        print connection, "DEBUG connect by ssid"
+        #print connection, "DEBUG connect by ssid"
         self.ap = ap
         if connection and not isinstance(connection, NMRemoteConnection):
             security = net_manager.get_sec_ap(self.ap)
@@ -383,6 +382,7 @@ class HidenItem(GenItems):
         GenItems.__init__(self, jumpto)
         
         self.connection = connection
+        self.ap = None
         self.id = self.connection.get_setting("802-11-wireless").ssid + "[H]"
         print self.id
 
@@ -969,6 +969,8 @@ class GeneralItem(TreeItem):
             self.redraw_request_callback(self)
 
     def set_net_state(self, state):
+        if self.network_state == state:
+            return
         self.network_state = state
         if state == self.NETWORK_LOADING:
             LoadingThread(self).start()

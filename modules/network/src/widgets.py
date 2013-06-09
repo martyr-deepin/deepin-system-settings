@@ -10,6 +10,8 @@ from nls import _
 from dtk.ui.label import Label
 import gtk
 
+from tray_log import tray_log
+
 DIALOG_MASK_SINGLE_PAGE = 0
 DIALOG_MASK_GLASS_PAGE = 1
 DIALOG_MASK_MULTIPLE_PAGE = 2
@@ -76,6 +78,7 @@ class AskPasswordDialog(DialogBox):
             else:
                 init_text = ""
         else:
+            tray_log.debug()
             self.connection = nm_module.nm_remote_settings.new_wireless_connection(ssid, key_mgmt)
             init_text = ''
         self.entry = PasswordEntry(init_text)

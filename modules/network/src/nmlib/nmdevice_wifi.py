@@ -301,13 +301,3 @@ class NMDeviceWifi(NMDevice):
 
 if __name__ == "__main__":
     wifi_device = NMDeviceWifi("/org/freedesktop/NetworkManager/Devices/0")
-    # print wifi_device.update_ap_list()
-    # for ap in wifi_device.update_ap_list():
-    #     if ap.get_ssid() == "CMCC":
-    #         print ap.get_strength()
-
-    # print wifi_device.get_ap_by_ssid("CMCC")
-    # print wifi_device.get_ap_by_ssid("CMCC").get_strength()
-    # wifi_device.get_access_points_async()
-    # print wifi_device.order_ap_list()
-    # gobject.MainLoop().run()

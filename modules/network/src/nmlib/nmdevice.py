@@ -237,21 +237,19 @@ class NMDevice(NMObject):
         self.new_state = args[1]
 
     def state_changed_cb(self, new_state, old_state, reason):
-        #self.emit("state-changed", new_state, old_state, reason)
         self.init_nmobject_with_properties()
+        print new_state, old_state, reason
 
-
-        if old_state == 100 or reason ==39 or reason == 42 or reason == 36:
-            #if dsl_flag:
-                #self.emit_in_time("dsl-device-deactive", new_state, old_state, reason)
-                #return
+        if new_state == 30 and old_state < 30:
+            self.emit_in_time("device-available", new_state, old_state, reason)
+            return
+        
+        #if old_state == 100 or reason ==39 or reason == 42 or reason == 36:
+        if new_state == 30 and old_state > 30:
             self.emit_in_time("device-deactive", new_state, old_state, reason)
             return 
 
         if new_state == 40:
-            #if dsl_flag:
-                #self.emit_in_time("active-start", new_state, old_state, reason)
-                #return
             try:
                 self.is_dsl = self.get_real_active_connection().get_setting('connection').type == 'pppoe'
             except:
@@ -262,9 +260,6 @@ class NMDevice(NMObject):
         if new_state == 100:
             try:
                 conn_uuid = self.get_real_active_connection().settings_dict["connection"]["uuid"]
-                #if dsl_flag:
-                    #self.emit_in_time("dsl-device-active", new_state, old_state, reason)
-                    #return
                 self.emit_in_time("device-active", new_state, old_state, reason)
                 nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
                 try:
@@ -279,16 +274,10 @@ class NMDevice(NMObject):
             return 
 
         if new_state == 120:
-            #if dsl_flag:
-                #self.emit_in_time("dsl-activate-failed", new_state, old_state, reason)
-                #return
             self.emit_in_time("activate-failed", new_state, old_state, reason)
             return 
 
         if new_state == 10 or new_state == 20:
-            #if dsl_flag:
-                #self.emit_in_time("dsl-device-unavailable", new_state, old_state, reason)
-                #return
             self.emit_in_time("device-unavailable", new_state, old_state, reason)
             return 
 

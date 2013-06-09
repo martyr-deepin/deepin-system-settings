@@ -125,6 +125,7 @@ class WireSection(BaseMixIn):
         '''
         tray_log.debug("wired unaviable")
         self.gui.wire.set_active((False, False))
+        event_manager.emit("dsl-init-state", None)
         #self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def wired_device_available(self, widget, new_state, old_state, reason):
@@ -132,7 +133,8 @@ class WireSection(BaseMixIn):
         Once device available, set sensitive to True
         '''
         tray_log.debug("wired available")
-        self.gui.wire.set_sensitive(True)
+        self.gui.wire.set_active((True, False))
+        event_manager.emit("dsl-init-state", None)
         #if self.gui.wire.get_active():
             #self.change_status_icon("cable")
         #elif self.gui.wireless.get_active():
@@ -291,6 +293,10 @@ class WirelessSection(BaseMixIn):
         tray_log.debug("unaviable")
         self.gui.wireless.set_active((False, False))
 
+    def wireless_device_available(self, widget, new_state, old_state, reason):
+        tray_log.debug("aviable")
+        self.gui.wireless.set_active((True, False))
+
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         tray_log.debug("==wireless start")
         if old_state == 120:
@@ -356,9 +362,11 @@ class WirelessSection(BaseMixIn):
                               key_mgmt=security,
                               cancel_callback=self.cancel_ask_pwd,
                               confirm_callback=self.pwd_changed)
+
             dialog.place_center()
             dialog.show_all()
         self.dialog_toggled_flag = True
+        tray_log.debug()
 
     def cancel_ask_pwd(self):
         self.dialog_toggled_flag = False
@@ -614,9 +622,10 @@ class DSLSection(BaseMixIn):
             self.gui.dsl_list.connecting_cb = lambda:self.change_status_icon('loading')
             #self.active_dsl = None
             #self.no_vpn_connecting = False
+            tray_log.info("dsl section start and show")
             if nm_module.nmclient.get_pppoe_active_connection():
                 self.gui.dsl.set_active((True, True))
-                self.tray_icon.set_icon_theme("cable")
+                self.change_status_icon("cable")
         else:
             self.gui.remove_net("dsl")
 
@@ -634,7 +643,15 @@ class DSLSection(BaseMixIn):
         event_manager.add_callback('dsl-new-added', self.on_dsl_setting_change)
         event_manager.add_callback('dsl-connection-removed', self.dsl_connection_remove_cb)
 
+        # wired available will re init dsl
+        event_manager.add_callback('dsl-init-state', self.need_init)
+
     # dsl settings
+    def need_init(self, name, event, data):
+        tray_log.debug()
+        self._init_section()
+        Dispatcher.emit("request_resize") 
+
     def device_active(self, name, event, data):
         tray_log.debug("=== dsl active", data)
         self.gui.dsl.set_active((True, True), emit=True)
@@ -703,6 +720,7 @@ class DSLSection(BaseMixIn):
             self.__init_dsl_list()
 
             dsl_active = nm_module.nmclient.get_pppoe_active_connection()
+            tray_log.debug(dsl_active)
             if dsl_active:
                 try:
                     for dsl in dsl_active:

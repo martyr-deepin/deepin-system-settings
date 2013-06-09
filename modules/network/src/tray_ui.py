@@ -115,6 +115,7 @@ class TrayUI(gtk.VBox):
 
         if self.dsl_state:
             height += 35 + len(self.dsl_list.get_children()) * 22
+            height += 5
         height += 25
 
         return height
@@ -612,7 +613,7 @@ class ConButton(gtk.Button):
     def __active_one_vpn(self, widget):
         from lists import Monitor
         monitor = Monitor(self.connection,
-                          lambda : Dispatcher.emit("vpn-force-stop"),
+                          self.stop_callback,
                           self.active_callback,)
         monitor.start()
         self.connecting_cb()
