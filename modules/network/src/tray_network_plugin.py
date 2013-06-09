@@ -45,17 +45,19 @@ class BaseMixIn(object):
 
     def check_net_state(self):
         # which tray icon to show
-        if any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
-            # change tray icon to cable if there's still wire device
-            self.change_status_icon("cable") 
+        wire = any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices])
 
-        if any([d.get_state() == 100 for d in net_manager.device_manager.mm_devices]):
-            self.change_status_icon("cable")
+        mm = any([d.get_state() == 100 for d in net_manager.device_manager.mm_devices])
 
-        if any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices]):
+        wireless = any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices])
+
+        if wireless:
             self.change_status_icon("links")
         else:
-            self.change_status_icon("cable_disconnect")
+            if wire or mm:
+                self.change_status_icon("cable")
+            else:
+                self.change_status_icon("cable_disconnect")
 
     def net_state(self):
         pass
@@ -284,7 +286,8 @@ class WirelessSection(BaseMixIn):
             except:
                 tray_log.info("there's no wireless device")
                 self.focus_device = None
-
+        if old_state == 50:
+            return
         if reason == 39:
             #print "user close"
             self.gui.wireless.set_active((True, False))
@@ -299,13 +302,16 @@ class WirelessSection(BaseMixIn):
 
     def wireless_activate_start(self, widget, new_state, old_state, reason):
         tray_log.debug("==wireless start")
-        if old_state == 120:
-            wifi = nm_module.cache.get_spec_object(widget)
+        if old_state == 120 or self.dialog_toggled_flag:
+            wifi = nm_module.cache.get_spec_object(widget.object_path)
             wifi.device_wifi_disconnect()
             return
 
         #connections = nm_module.nmclient.get_wireless_active_connection()
         self.this_connection = widget.get_real_active_connection()
+        if self._get_active_item():
+            for item in self._get_active_item():
+                item.set_active(False)
 
         if self.selected_item and self.pwd_failed:
             widget.nm_device_disconnect()
@@ -373,7 +379,6 @@ class WirelessSection(BaseMixIn):
         if self.this_device:
             self.this_device.nm_device_disconnect()
         
-
     def pwd_changed(self, pwd, connection):
         self.dialog_toggled_flag = False
         if not isinstance(connection, NMRemoteConnection):
@@ -397,6 +402,9 @@ class WirelessSection(BaseMixIn):
         try to auto active wireless
         """
         net_manager.active_wireless_device(device)
+
+    def _get_active_item(self):
+        return filter(lambda i: i.get_active(), self.gui.ap_tree.visible_items)
 
 class MobileSection(BaseMixIn):
 
