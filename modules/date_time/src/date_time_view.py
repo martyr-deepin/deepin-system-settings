@@ -260,7 +260,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.auto_time_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
-        self.auto_time_label = self.__setup_label(_("Auto"))
+        self.auto_time_label = self.__setup_label(_("NTP"))
         self.auto_time_toggle = self.__setup_toggle()
         is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
         if is_auto_set_time:
