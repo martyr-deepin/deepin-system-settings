@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:39+0800\n"
+"POT-Creation-Date: 2013-06-09 09:53+0800\n"
 "PO-Revision-Date: 2012-12-30 23:05+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -44,9 +44,33 @@ msgstr "星期六"
 msgid "Sunday"
 msgstr "星期天"
 
-#: ../src/tray_time_plugin.py:122
+#: ../src/tray_time_plugin.py:121
 msgid "Change date and time settings"
 msgstr "變更日期與時刻"
+
+#: ../src/search_keyword.py:29
+msgid "Date and Time"
+msgstr "日期與時刻"
+
+#: ../src/search_keyword.py:30 ../src/date_time_view.py:311
+msgid "Time Zone"
+msgstr "時區"
+
+#: ../src/search_keyword.py:31
+msgid "Set Automatically"
+msgstr "自動設定時刻"
+
+#: ../src/search_keyword.py:32
+msgid "hour format"
+msgstr "小時制顯示"
+
+#: ../src/tray_time.py:77
+msgid "AM"
+msgstr "上午"
+
+#: ../src/tray_time.py:78
+msgid "PM"
+msgstr "下午"
 
 #: ../src/date_time_view.py:116
 msgid "(UTC-11:00)Samoa"
@@ -175,9 +199,9 @@ msgstr "時刻"
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr "目前時刻: %s %02d:%02d:%02d (%d 小時制)"
 
-#: ../src/date_time_view.py:260 ../src/search_keyword.py:31
-msgid "Set Automatically"
-msgstr "自動設定時刻"
+#: ../src/date_time_view.py:260
+msgid "Auto"
+msgstr ""
 
 #: ../src/date_time_view.py:277
 msgid "Set Time"
@@ -186,10 +210,6 @@ msgstr "手動設定"
 #: ../src/date_time_view.py:297
 msgid "Hour"
 msgstr "時制顯示"
-
-#: ../src/date_time_view.py:311 ../src/search_keyword.py:30
-msgid "Time Zone"
-msgstr "時區"
 
 #: ../src/date_time_view.py:341
 msgid "Reset to default value"
@@ -225,19 +245,3 @@ msgstr "變更時間為 %02d:%02d:%02d"
 #, python-format
 msgid "Changed time zone to %s"
 msgstr "變更時區為「%s」"
-
-#: ../src/tray_time.py:74
-msgid "AM"
-msgstr "上午"
-
-#: ../src/tray_time.py:75
-msgid "PM"
-msgstr "下午"
-
-#: ../src/search_keyword.py:29
-msgid "Date and Time"
-msgstr "日期與時刻"
-
-#: ../src/search_keyword.py:32
-msgid "hour format"
-msgstr "小時制顯示"

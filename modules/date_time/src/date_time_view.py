@@ -107,6 +107,9 @@ class DatetimeView(gtk.HBox):
         '''
         gtk.HBox.__init__(self)
 
+        self.__toggle_id = None
+        self.__time_id = None
+
         self.datetime_settings = deepin_gsettings.new("com.deepin.dde.datetime")
 
         self.__deepin_dt = DeepinDateTime()
@@ -257,7 +260,7 @@ class DatetimeView(gtk.HBox):
         '''
         self.auto_time_align = self.__setup_align(padding_top = TEXT_WINDOW_TOP_PADDING)
         self.auto_time_box = gtk.HBox(spacing = BETWEEN_SPACING)
-        self.auto_time_label = self.__setup_label(_("Set Automatically"))
+        self.auto_time_label = self.__setup_label(_("Auto"))
         self.auto_time_toggle = self.__setup_toggle()
         is_auto_set_time = self.datetime_settings.get_boolean("is-auto-set")
         if is_auto_set_time:
@@ -453,6 +456,9 @@ class DatetimeView(gtk.HBox):
         align.add(align_box)                                                    
         return align    
     
+    def __set_using_ntp(self, data=True):
+        self.__deepin_dt.set_using_ntp(data)
+
     def __toggled(self, widget, argv):
         if argv == "auto_time_toggle":
             is_auto_set_time = widget.get_active()
@@ -460,11 +466,13 @@ class DatetimeView(gtk.HBox):
             if is_auto_set_time:
                 self.__send_message("status", ("date_time", _("Time will be synchronized with an Internet time server")))
                 self.set_time_spin_align.set_child_visible(False)
-                self.__deepin_dt.set_using_ntp(True)
+                gobject.timeout_add_seconds(3, self.__set_using_ntp, True)
             else:
                 self.__send_message("status", ("date_time", _("Time will not be synchronized with an Internet time server")))
                 self.set_time_spin_align.set_child_visible(True)
-                self.__deepin_dt.set_using_ntp(False)
+                if self.__toggle_id:
+                    gobject.source_remove(self.__toggle_id)
+                self.__toggle_id = gobject.timeout_add_seconds(3, self.__set_using_ntp, False)
             return
 
         if argv == "time_display_toggle":
@@ -480,9 +488,15 @@ class DatetimeView(gtk.HBox):
     def auto_set_time(self):
         self.__deepin_dt.set_using_ntp(True)
 
+    def __set_time(self, hour, min, sec):
+        self.__deepin_dt.set_time_by_hms(hour, min, sec)
+    
     def __time_changed(self, widget, hour, min, sec):
         self.__send_message("status", ("date_time", _("Changed time to %02d:%02d:%02d") % (hour, min, sec)))
-        self.__deepin_dt.set_time_by_hms(hour, min, sec)
+   
+        if self.__time_id:
+            gobject.source_remove(self.__time_id)
+        self.__time_id = gobject.timeout_add_seconds(1, self.__set_time, hour, min, sec)
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()                                       

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:39+0800\n"
+"POT-Creation-Date: 2013-06-09 09:53+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,8 +45,32 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-#: ../src/tray_time_plugin.py:122
-msgid "Change DateTime settings"
+#: ../src/tray_time_plugin.py:121
+msgid "Change date and time settings"
+msgstr ""
+
+#: ../src/search_keyword.py:29
+msgid "Date and Time"
+msgstr ""
+
+#: ../src/search_keyword.py:30 ../src/date_time_view.py:311
+msgid "Time Zone"
+msgstr ""
+
+#: ../src/search_keyword.py:31
+msgid "Set Automatically"
+msgstr ""
+
+#: ../src/search_keyword.py:32
+msgid "hour format"
+msgstr ""
+
+#: ../src/tray_time.py:77
+msgid "AM"
+msgstr ""
+
+#: ../src/tray_time.py:78
+msgid "PM"
 msgstr ""
 
 #: ../src/date_time_view.py:116
@@ -176,20 +200,16 @@ msgstr ""
 msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
 msgstr ""
 
-#: ../src/date_time_view.py:260 ../src/search_keyword.py:31
-msgid "Auto Set Time"
+#: ../src/date_time_view.py:260
+msgid "Auto"
 msgstr ""
 
 #: ../src/date_time_view.py:277
-msgid "Manual"
+msgid "Set Time"
 msgstr ""
 
 #: ../src/date_time_view.py:297
 msgid "Hour"
-msgstr ""
-
-#: ../src/date_time_view.py:311 ../src/search_keyword.py:30
-msgid "TimeZone"
 msgstr ""
 
 #: ../src/date_time_view.py:341
@@ -202,19 +222,19 @@ msgid "Changed date to %d-%d-%d"
 msgstr ""
 
 #: ../src/date_time_view.py:461
-msgid "Changed to automatic set time"
+msgid "Time will be synchronized with an Internet time server"
 msgstr ""
 
 #: ../src/date_time_view.py:465
-msgid "Changed to manual set time"
+msgid "Time will not be synchronized with an Internet time server"
 msgstr ""
 
 #: ../src/date_time_view.py:473
-msgid "Changed to 24 Hour"
+msgid "Time will be shown in 24 hour format"
 msgstr ""
 
 #: ../src/date_time_view.py:475
-msgid "Changed to 12 Hour"
+msgid "Time will be shown in 12 hour format"
 msgstr ""
 
 #: ../src/date_time_view.py:484
@@ -224,21 +244,5 @@ msgstr ""
 
 #: ../src/date_time_view.py:506
 #, python-format
-msgid "Changed timezone to %s"
-msgstr ""
-
-#: ../src/tray_time.py:74
-msgid "AM"
-msgstr ""
-
-#: ../src/tray_time.py:75
-msgid "PM"
-msgstr ""
-
-#: ../src/search_keyword.py:29
-msgid "DateTime"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Hour Display"
+msgid "Changed time zone to %s"
 msgstr ""
