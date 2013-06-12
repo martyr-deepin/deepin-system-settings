@@ -284,8 +284,8 @@ class WirelessDevice(object):
         if widget not in net_manager.device_manager.wireless_devices:
             return
 
-        if self.try_hardly_item:
-            self.try_hardly_item.set_net_state(2)
+        if self.selected_item:
+            self.selected_item.set_net_state(2)
             return
 
         index = self.get_actives(self.ap_list)
@@ -308,6 +308,11 @@ class WirelessDevice(object):
                 wifi = nm_module.cache.get_spec_object(widget.object_path)
                 wifi.device_wifi_disconnect()
 
+        if old_state == 50:
+            if self._get_active_item():
+                for item in self._get_active_item():
+                    item.set_net_state(0)
+            return
         if reason == 39:
             if any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices]):
                 return
@@ -333,22 +338,28 @@ class WirelessDevice(object):
         log.debug(new_state, old_state, reason)
         if widget not in net_manager.device_manager.wireless_devices:
             return
-        try:
-            items = self.get_item_by_connection(widget.get_real_active_connection())
-            self.try_hardly_item = items[0]
-            log.debug(self.try_hardly_item)
-        except:
-            pass
+
+        #if old_state == 120 or self.dialog_toggled_flag:
+            #wifi = nm_module.cache.get_spec_object(widget.object_path)
+            #wifi.device_wifi_disconnect()
+            #return
+        #try:
+            #items = self.get_item_by_connection(widget.get_real_active_connection())
+            #self.try_hardly_item = items[0]
+            #log.debug(self.try_hardly_item)
+        #except:
+            #pass
 
         if not self.wireless.get_active():
             self.wireless.set_active(True)
 
         if self._get_active_item():
             for item in self._get_active_item():
+                tray_log.debug(item, "set net state 0")
                 item.set_net_state(0)
         
-        if self.try_hardly_item:
-            self.try_hardly_item.set_net_state(1)
+        if self.selected_item:
+            self.selected_item.set_net_state(1)
         else:
             index = self.get_actives(self.ap_list)
             if index and self.tree.visible_items:
@@ -1039,6 +1050,9 @@ class MobileDevice(object):
             item.set_net_state(0)
 
     def mm_device_unavailable(self,  widget, new_state, old_state, reason):
+        pass
+
+    def mm_device_available(self,  widget, new_state, old_state, reason):
         pass
 
     def mm_activate_start(self, widget, new_state, old_state, reason):

@@ -455,6 +455,9 @@ class MobileSection(BaseMixIn):
     def mm_device_unavailable(self,  widget, new_state, old_state, reason):
         self.gui.mobile.set_active((True, False))
 
+    def mm_device_available(self,  widget, new_state, old_state, reason):
+        self.gui.mobile.set_active((True, False))
+
     def mm_activate_start(self, widget, new_state, old_state, reason):
         tray_log.debug("===mobile connecting")
         self.gui.mobile.set_active((True, True))
