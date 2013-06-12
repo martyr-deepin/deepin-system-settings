@@ -205,6 +205,8 @@ class DisplayView(gtk.VBox):
         '''
         gtk.VBox.__init__(self)
 
+        self.brightness_id = None
+
         self.display_manager = DisplayManager()
         self.__xrandr_settings = self.display_manager.get_xrandr_settings()
         self.__xrandr_settings.connect("changed", self.__xrandr_changed)
@@ -575,12 +577,16 @@ class DisplayView(gtk.VBox):
             self.brightness_scale.set_value(self.display_manager.get_screen_brightness())
             return
 
+    def __set_brightness_value(self, value):
+        self.display_manager.set_screen_brightness(self.__current_output_name, value)
+
     def __set_brightness(self, widget, event):
         value = self.brightness_scale.get_value()
         self.__send_message("status", 
                 ("display", _("Changed brightness to %d%%") % int(value * 100)))
-        self.display_manager.set_screen_brightness(self.__current_output_name, 
-                                                   value)
+        if self.brightness_id:
+            gobject.source_remove(self.brightness_id)
+        self.brightness_id = gobject.timeout_add_seconds(1, self.__set_brightness_value, value)
     
     def __setup_monitor_items(self):
         self.__output_names = self.display_manager.get_output_names()
