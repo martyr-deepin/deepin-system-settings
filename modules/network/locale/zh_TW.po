@@ -28,7 +28,6 @@ msgid "IPv4 settings"
 msgstr "Ipv4 設定值"
 
 #: ../src/ipsettings.py:36 ../src/ipsettings.py:320
-#, fuzzy
 msgid "Automatic IP address"
 msgstr "自動獲取 IP 位址"
 
@@ -45,7 +44,6 @@ msgid "Gateway:"
 msgstr "通訊閘："
 
 #: ../src/ipsettings.py:51 ../src/ipsettings.py:335
-#, fuzzy
 msgid "Automatic DNS server address"
 msgstr "自動設定 DNS 伺服器"
 
@@ -58,7 +56,6 @@ msgid "Slave DNS server address:"
 msgstr "次要 DNS 伺服器位址："
 
 #: ../src/ipsettings.py:312 ../src/lan_config.py:104 ../src/wlan_config.py:210
-#, fuzzy
 msgid "IPv6 settings"
 msgstr "Ipv6 設定值"
 
