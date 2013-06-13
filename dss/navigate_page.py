@@ -33,6 +33,7 @@ import locale
 from nls import _
 
 from theme import app_theme
+from constant import MAIN_LANG
 
 ICON_SIZE = 106
 
@@ -201,14 +202,8 @@ class IconItem(gobject.GObject):
         # Draw icon name.
         # TODO: lihongwu req to support i18n
         name = self.module_info.default_name
-        default_locale = locale.getdefaultlocale(['LANGUAGE'])
-        if len(default_locale) and default_locale[0] is not None:
-            if default_locale[0].find("zh_CN") == 0:
-                name = self.module_info.name
-            elif default_locale[0].find("zh_TW") == 0:
-                name = self.module_info.name_zh_TW
-            elif default_locale[0].find("zh_HK") == 0:
-                name = self.module_info.name_zh_HK
+        if MAIN_LANG != "en_US":
+            name = self.module_info.name
         padding_x = 10
         draw_text(cr, name, 
                   rect.x + padding_x,

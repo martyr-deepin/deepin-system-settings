@@ -34,6 +34,7 @@ import itertools
 import gtk
 import gobject
 import locale
+from constant import MAIN_LANG
 
 class ActionBar(gtk.Alignment):
     '''
@@ -181,15 +182,9 @@ class ModuleMenuItem(IconTextItem):
         init docs
         '''
         self.module_info = module_info
-        name = self.module_info.default_name                                    
-        default_locale = locale.getdefaultlocale(['LANGUAGE'])
-        if len(default_locale) and default_locale[0] is not None:
-            if default_locale[0].find("zh_CN") == 0:
-                name = self.module_info.name
-            elif default_locale[0].find("zh_TW") == 0:
-                name = self.module_info.name_zh_TW
-            elif default_locale[0].find("zh_HK") == 0:
-                name = self.module_info.name_zh_HK
+        name = self.module_info.default_name
+        if MAIN_LANG != "en_US":
+            name = self.module_info.name
         IconTextItem.__init__(
             self, 
             (module_info.menu_icon_pixbuf,

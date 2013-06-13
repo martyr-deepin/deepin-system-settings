@@ -31,7 +31,10 @@ except ImportError:
     print "------------------------------------------------------------------"
 import dbus
 from deepin_utils.ipc import is_dbus_name_exists
+from deepin_utils.file import get_parent_dir
+from dtk.ui.locales import get_locale_code
 
+MAIN_LANG = get_locale_code("deepin-system-settings", get_parent_dir(__file__, 2) + "/locale")
 APP_DBUS_NAME = "com.deepin.system_settings"
 APP_OBJECT_NAME = "/com/deepin/system_settings"
 
