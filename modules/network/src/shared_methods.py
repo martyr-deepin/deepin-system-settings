@@ -154,6 +154,9 @@ class NetManager(object):
 
     def active_wired_device(self):
         self.wired_devices = self.device_manager.get_wired_devices()
+        if any([d.get_active_connection() for d in self.wired_devices]):
+            return
+
         for device in self.wired_devices:
             if not device.is_active():
                 connections = nm_module.nm_remote_settings.get_wired_connections()

@@ -167,6 +167,7 @@ class WiredDevice(object):
         self.wire.set_active(True)
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
+        log.debug(new_state, old_state, reason)
         if reason == 36:
             print "in fact there had device removed"
         ########################
@@ -204,6 +205,7 @@ class WiredDevice(object):
 
     def wired_activate_failed(self, widget, new_state, old_state, reason):
         #pass
+        log.debug(reason)
         index = self.wired_devices.index(widget)
         if self.tree.visible_items != []:
             print "device activate failed,set state 0"
@@ -269,6 +271,7 @@ class WiredSection(Section, WiredDevice):
                     device_ethernet.auto_connect()
 
     def toggle_off(self):
+        log.debug()
         for wired_device in self.wired_devices:
             wired_device.nm_device_disconnect()
 

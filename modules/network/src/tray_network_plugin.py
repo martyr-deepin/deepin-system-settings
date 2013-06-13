@@ -92,7 +92,9 @@ class WireSection(BaseMixIn):
         net_manager.device_manager.load_wired_listener(self)
 
     def _toggle_callback(self):
+        tray_log.debug()
         if self.gui.wire.get_active():
+            tray_log.debug("active wired device")
             net_manager.active_wired_device()
         else:
             net_manager.disactive_wired_device()
@@ -137,14 +139,6 @@ class WireSection(BaseMixIn):
         tray_log.debug("wired available")
         self.gui.wire.set_active((True, False))
         event_manager.emit("dsl-init-state", None)
-        #if self.gui.wire.get_active():
-            #self.change_status_icon("cable")
-        #elif self.gui.wireless.get_active():
-            #self.change_status_icon("links")
-        #else:
-            #self.change_status_icon("cable_disconnect")
-        #if reason is not 0:
-        #    self.gui.wire.set_active((True, False))
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
         '''
