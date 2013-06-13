@@ -23,7 +23,7 @@
 from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
-from dtk.ui.button import Button, ToggleButton
+from dtk.ui.button import ToggleButton
 
 from media import MediaAutorun
 from app import AppManager
