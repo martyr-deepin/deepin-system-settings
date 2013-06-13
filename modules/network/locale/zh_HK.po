@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-09 16:06+0800\n"
+"POT-Creation-Date: 2013-06-13 15:30+0800\n"
 "PO-Revision-Date: 2012-12-25 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,17 +16,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/elements.py:239 ../src/wlan_config.py:267
+#: ../src/elements.py:240 ../src/wlan_config.py:267
 #: ../src/mobile_config.py:276 ../src/widgets.py:85
 msgid "Show password"
 msgstr ""
 
-#: ../src/ipsettings.py:23
+#: ../src/ipsettings.py:23 ../src/dsl_config.py:121 ../src/lan_config.py:103
+#: ../src/vpn_config.py:141 ../src/wlan_config.py:209
+#: ../src/mobile_config.py:223
 msgid "IPv4 settings"
 msgstr ""
 
 #: ../src/ipsettings.py:36 ../src/ipsettings.py:320
-msgid "Obtain an IP address automatically"
+msgid "Automatic IP address"
 msgstr ""
 
 #: ../src/ipsettings.py:40 ../src/ipsettings.py:324
@@ -42,7 +44,7 @@ msgid "Gateway:"
 msgstr ""
 
 #: ../src/ipsettings.py:51 ../src/ipsettings.py:335
-msgid "Obtain DNS server address automatically"
+msgid "Automatic DNS server address"
 msgstr ""
 
 #: ../src/ipsettings.py:55 ../src/ipsettings.py:339
@@ -53,8 +55,8 @@ msgstr ""
 msgid "Slave DNS server address:"
 msgstr ""
 
-#: ../src/ipsettings.py:312
-msgid "IPv6 Settings"
+#: ../src/ipsettings.py:312 ../src/lan_config.py:104 ../src/wlan_config.py:210
+msgid "IPv6 settings"
 msgstr ""
 
 #: ../src/ipsettings.py:325
@@ -62,7 +64,7 @@ msgid "Prefix:"
 msgstr ""
 
 #: ../src/dsl_config.py:38 ../src/dsl_config.py:227
-#: ../src/search_keyword.py:31 ../src/tray_ui.py:66 ../src/main_ui.py:717
+#: ../src/search_keyword.py:31 ../src/tray_ui.py:66 ../src/main_ui.py:731
 msgid "DSL"
 msgstr ""
 
@@ -80,13 +82,8 @@ msgstr ""
 #: ../src/dsl_config.py:120 ../src/dsl_config.py:136
 #: ../src/search_keyword.py:29 ../src/lan_config.py:39 ../src/lan_config.py:89
 #: ../src/lan_config.py:117 ../src/vpn_config.py:127 ../src/tray_ui.py:61
-#: ../src/main_ui.py:217
+#: ../src/main_ui.py:219
 msgid "Wired"
-msgstr ""
-
-#: ../src/dsl_config.py:121 ../src/lan_config.py:103 ../src/vpn_config.py:141
-#: ../src/wlan_config.py:209 ../src/mobile_config.py:223
-msgid "IPv4 setting"
 msgstr ""
 
 #: ../src/dsl_config.py:122 ../src/dsl_config.py:353
@@ -205,7 +202,7 @@ msgid "Send PPP echo packets"
 msgstr ""
 
 #: ../src/search_keyword.py:30 ../src/wlan_config.py:208
-#: ../src/wlan_config.py:558 ../src/tray_ui.py:62 ../src/main_ui.py:383
+#: ../src/wlan_config.py:558 ../src/tray_ui.py:62 ../src/main_ui.py:397
 msgid "Wireless"
 msgstr ""
 
@@ -214,20 +211,16 @@ msgid "VPN"
 msgstr ""
 
 #: ../src/search_keyword.py:33 ../src/mobile_config.py:38 ../src/tray_ui.py:63
-#: ../src/main_ui.py:1060
+#: ../src/main_ui.py:1077
 msgid "Mobile Network"
 msgstr ""
 
-#: ../src/search_keyword.py:34 ../src/main_ui.py:1129 ../src/main_ui.py:1167
+#: ../src/search_keyword.py:34 ../src/main_ui.py:1146 ../src/main_ui.py:1184
 msgid "Proxy"
 msgstr ""
 
 #: ../src/search_keyword.py:35
 msgid "Network"
-msgstr ""
-
-#: ../src/lan_config.py:104 ../src/wlan_config.py:210
-msgid "IPv6 setting"
 msgstr ""
 
 #: ../src/lan_config.py:145 ../src/wlan_config.py:604
@@ -461,7 +454,7 @@ msgstr ""
 msgid "Region"
 msgstr ""
 
-#: ../src/tray_ui.py:65 ../src/main_ui.py:864
+#: ../src/tray_ui.py:65 ../src/main_ui.py:878
 msgid "VPN Network"
 msgstr ""
 
@@ -487,27 +480,27 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../src/main_ui.py:384
+#: ../src/main_ui.py:398
 msgid "Set up a hidden wireless connection"
 msgstr ""
 
-#: ../src/main_ui.py:583
+#: ../src/main_ui.py:597
 msgid "Hotspot"
 msgstr ""
 
-#: ../src/main_ui.py:718
+#: ../src/main_ui.py:732
 msgid "Create a DSL connection"
 msgstr ""
 
-#: ../src/main_ui.py:865
+#: ../src/main_ui.py:879
 msgid "Create a VPN connection"
 msgstr ""
 
-#: ../src/main_ui.py:1061
+#: ../src/main_ui.py:1078
 msgid "Mobile Configuration"
 msgstr ""
 
-#: ../src/main_ui.py:1149
+#: ../src/main_ui.py:1166
 msgid "Proxy Configuration"
 msgstr ""
 

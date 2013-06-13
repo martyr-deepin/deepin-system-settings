@@ -33,7 +33,7 @@ class IPV4Conf(gtk.VBox):
 
         self.ip_table = gtk.Table(3, 2, False)
         #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
-        self.ip_section = DefaultToggle(_("Obtain an IP address automatically"))
+        self.ip_section = DefaultToggle(_("Automatic IP address"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
 
@@ -48,7 +48,7 @@ class IPV4Conf(gtk.VBox):
         #DNS configuration
         self.dns_table = gtk.Table(2, 2, False)
         #self.dns_section = SettingSection( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
-        self.dns_section = DefaultToggle(_("Obtain DNS server address automatically"))
+        self.dns_section = DefaultToggle(_("Automatic DNS server address"))
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
 
@@ -309,7 +309,7 @@ class IPV6Conf(gtk.VBox):
         
         gtk.VBox.__init__(self)
         self.connection = connection 
-        self.tab_name = _("IPv6 Settings")
+        self.tab_name = _("IPv6 settings")
         self.set_button = set_button_callback
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
@@ -317,7 +317,7 @@ class IPV6Conf(gtk.VBox):
         # Ip configuration
         self.ip_table = gtk.Table(3, 2, False)
         #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
-        self.ip_section = DefaultToggle(_("Obtain an IP address automatically"))
+        self.ip_section = DefaultToggle(_("Automatic IP address"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
 
@@ -332,7 +332,7 @@ class IPV6Conf(gtk.VBox):
 
         #DNS configuration
         self.dns_table = gtk.Table(2, 2, False)
-        self.dns_section = SettingSection( _("Obtain DNS server address automatically"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
+        self.dns_section = DefaultToggle(_("Automatic DNS server address"))
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
 

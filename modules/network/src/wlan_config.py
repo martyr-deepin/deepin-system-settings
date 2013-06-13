@@ -206,8 +206,8 @@ class Sections(gtk.Alignment):
     def show_more_options(self, widget):
         widget.parent.destroy()
         self.wireless = SettingSection(_("Wireless"), always_show=True)
-        self.ipv4 = SettingSection(_("IPv4 setting"), always_show=True)
-        self.ipv6 = SettingSection(_("IPv6 setting"), always_show=True)
+        self.ipv4 = SettingSection(_("IPv4 settings"), always_show=True)
+        self.ipv6 = SettingSection(_("IPv6 settings"), always_show=True)
         self.wireless.load([Wireless(self.connection, self.set_button, settings_obj=self.settings_obj)])
         self.ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
         self.ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])

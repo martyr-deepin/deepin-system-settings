@@ -175,6 +175,7 @@ class DefaultToggle(SettingSection):
     def __init__(self, title):
         SettingSection.__init__(self,
                                 title,
+                                #text_size=CONTENT_FONT_SIZE,
                                 always_show=False,
                                 revert=True,
                                 label_right=True,
