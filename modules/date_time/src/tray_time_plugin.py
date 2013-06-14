@@ -33,6 +33,10 @@ import time
 import deepin_lunar
 import dltk_calendar
 import gtk
+from deepin_utils.file import get_parent_dir
+from dtk.ui.locales import get_locale_code                                      
+                                                                                
+MAIN_LANG = get_locale_code("deepin-system-settings", get_parent_dir(__file__, 2) + "/locale")
 
 class TrayTimePlugin(object):
     WEEK = [_("Monday"), _("Tuesday"), _("Wednesday"), _("Thursday"), 
@@ -102,10 +106,7 @@ class TrayTimePlugin(object):
         calendar_align = self.__setup_align()
         calendar = deepin_lunar.new()
         self.calendar = deepin_lunar.new()                                      
-        if len(locale.getdefaultlocale(['LANGUAGE'])) and locale.getdefaultlocale(['LANGUAGE'])[0] is not None:
-            if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") != 0:
-                self.calendar = dltk_calendar.new()                             
-        else:                                                                   
+        if MAIN_LANG == "en_US":
             self.calendar = dltk_calendar.new()
         calendar.mark_day(time.localtime().tm_mday)
         calendar.set_day_padding(0)
