@@ -108,7 +108,7 @@ class EventDispatcher(gobject.GObject):
         self.emit("connection-change", connection)
 
     def delete_setting(self, old_connection):
-        self.set_tip("%s deleted"%(old_connection.get_setting("connection").id)) 
+        #self.set_tip("%s deleted"%(old_connection.get_setting("connection").id)) 
         self.emit("connection-delete", old_connection)
         #self.emit("connection-change", new_connection)
 

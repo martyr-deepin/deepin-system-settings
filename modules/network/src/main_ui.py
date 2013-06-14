@@ -760,9 +760,10 @@ class DSLSection(Section):
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,x: self.jumpto_setting())
-        Dispatcher.connect("dsl-redraw", self.dsl_redraw)
+        Dispatcher.connect("dsl-redraw", lambda w: self.dsl_redraw(None, None,None))
 
         event_manager.add_callback('dsl-connection-start', self.connection_start_by_user)
+        event_manager.add_callback('dsl-connection-removed', self.dsl_redraw)
 
 
         signal_list = ["device_active",
@@ -829,8 +830,9 @@ class DSLSection(Section):
     def activate_failed(self, name, event, data):
         print "device failded"
 
-    def dsl_redraw(self, widget):
+    def dsl_redraw(self, name, event, data):
         if self.dsl.get_active():
+            log.debug("dsl redraw action")
             self.dsl.set_active(True, emit=True)
 
     def toggle_on(self):
@@ -863,6 +865,7 @@ class DSLSection(Section):
 
     def get_list(self):
         self.connections =  nm_module.nm_remote_settings.get_pppoe_connections()
+        log.debug(self.connections)
         return map(lambda c: DSLItem(c, None), self.connections)
 
     def jumpto_setting(self):
@@ -903,7 +906,7 @@ class VpnSection(Section):
 
     def __init_signals(self):
         self.label.connect("button-release-event", lambda w,p: self.jumpto_cb())
-        Dispatcher.connect("vpn-redraw", self.vpn_redraw)
+        Dispatcher.connect("vpn-redraw", lambda w: self.vpn_redraw(None, None, None))
         Dispatcher.connect('vpn-start', self.vpn_start_cb)
 
         event_manager.add_callback("vpn-connecting", self.on_vpn_connecting)
@@ -911,6 +914,7 @@ class VpnSection(Section):
         event_manager.add_callback('vpn-disconnected', self.vpn_disconnected)
         event_manager.add_callback('vpn-user-disconnect', self.on_user_stop_vpn)
         event_manager.add_callback('user-toggle-off-vpn-tray', self.user_toggle_off_vpn_tray)
+        event_manager.add_callback('vpn-connection-removed', self.vpn_redraw)
 
     def user_toggle_off_vpn_tray(self, name, event, data):
         log.debug("toggle off vpn from tray")
@@ -919,7 +923,7 @@ class VpnSection(Section):
     def on_user_stop_vpn(self, name, event, data):
         self.vpn.set_active(False)
 
-    def vpn_redraw(self, widget):
+    def vpn_redraw(self, name, event, data):
         if self.vpn.get_active():
             self.no_auto_connect = True
             self.vpn.set_active(True, emit=True)

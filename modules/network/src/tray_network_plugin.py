@@ -239,7 +239,7 @@ class WirelessSection(BaseMixIn):
                 self.gui.add_switcher()
             index = net_manager.get_active_connection(self.ap_list, self.focus_device)
             if index:
-                #tray_log.info(index)
+                tray_log.info(index)
                 self.gui.set_active_ap(index, True)
             else:
                 self.activate_wireless(self.focus_device)
@@ -625,8 +625,6 @@ class DSLSection(BaseMixIn):
         if wired_state[0] and nm_module.nm_remote_settings.get_pppoe_connections():
             self.gui.show_net("dsl")
             self.gui.dsl_list.connecting_cb = lambda:self.change_status_icon('loading')
-            #self.active_dsl = None
-            #self.no_vpn_connecting = False
             tray_log.info("dsl section start and show")
             if nm_module.nmclient.get_pppoe_active_connection():
                 self.gui.dsl.set_active((True, True))
@@ -685,7 +683,6 @@ class DSLSection(BaseMixIn):
         if not self.gui.dsl.get_active():
             self.gui.dsl.set_active((True, True))
         self.change_status_icon("loading")
-
 
     def activate_failed(self, name, event, data):
         tray_log.debug("dsl active failed", data)

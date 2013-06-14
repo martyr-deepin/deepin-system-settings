@@ -58,6 +58,7 @@ class SideBar(gtk.VBox):
 
         # This one just for mobile setting
         Dispatcher.connect("region-back", self.append_new_connection)
+        #event_manager.add_callback("nmconnection-delete-finish", self.nmconnection_delete_finish)
 
     def load_list(self, network_object):
         '''
@@ -94,7 +95,6 @@ class SideBar(gtk.VBox):
 
     def __init_tree(self, items_list, insert_pos=None):
         if items_list and items_list != [None, -1]:
-            #print items_list, "__init_tree"
             container_remove_all(self.buttonbox)
             self.connection_tree.add_items(map(lambda c: SettingItem(c, None), items_list), insert_pos=insert_pos)
             self.buttonbox.pack_start(self.connection_tree, False, False)
@@ -104,24 +104,11 @@ class SideBar(gtk.VBox):
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
-            if hasattr(self.network_object, "delete_request_redraw"):
-                #print "redraw"
-                self.network_object.delete_request_redraw()
+            log.debug(connection)
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
-        if len(self.connection_tree.visible_items) == 0:
-            Dispatcher.to_main_page()
-            return
-        self.connection_tree.select_last_item()
-        container_remove_all(self.buttonbox)
-        self.buttonbox.add(self.connection_tree)
     
-    #def delete_request_redraw(self):
-        #pass
-
-        #self.resize_tree()
-
     def resize_tree(self):
         if self.connection_tree.visible_items != []:
             self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
