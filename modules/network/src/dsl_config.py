@@ -55,7 +55,6 @@ class DSLSetting(Settings):
     def delete_request_redraw(self):
         Dispatcher.emit("dsl-redraw")
 
-
     def save_changes(self, connection):
         if connection.check_setting_finish():
 

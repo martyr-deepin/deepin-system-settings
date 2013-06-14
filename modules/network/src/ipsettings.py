@@ -161,14 +161,15 @@ class IPV4Conf(gtk.VBox):
     def set_ip_address(self, widget, content, index):
         # if you really want no gateway, just put a 0.0.0.0
         names = ["ip4", "netmask", "gw"]
+        verbose_name = [_("IPv4"), _("Subnet Mask"), _("Gateway")]
         self.ip[index] = content
 
         if self.check_valid(names[index]):
             setattr(self, names[index] + "_flag", True)
-            Dispatcher.set_tip(_("%s is valid")%names[index])
+            Dispatcher.set_tip(_("Valid %s address.")%verbose_name[index])
         else:
             setattr(self, names[index] + "_flag", False)
-            Dispatcher.set_tip(_("%s is invalid")%names[index])
+            Dispatcher.set_tip(_("Invalid %s address.")%verbose_name[index])
 
 
         ############
