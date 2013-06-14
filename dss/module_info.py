@@ -27,6 +27,7 @@ from deepin_utils.file import get_parent_dir
 import gtk
 import os
 from theme import app_theme
+from constant import MAIN_LANG
 
 MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        
 FIRST_MODULE_NAMES = ["display", "desktop", "individuation", "sound", "date_time", "power"]
@@ -48,9 +49,9 @@ class ModuleInfo(object):
         self.id = self.config.get("main", "id")
         # TODO: lihongwu req to support i18n
         self.default_name = self.config.get("name", "default")
-        self.name = self.config.get("name", "zh_CN")
-        self.name_zh_TW = self.config.get("name", "zh_TW")
-        self.name_zh_HK = self.config.get("name", "zh_HK")
+        self.name = self.default_name
+        if MAIN_LANG != "en_US":
+            self.name = self.config.get("name", MAIN_LANG)
         '''
         TODO: snyh give standard way to get pixbuf
         '''

@@ -25,7 +25,7 @@
 import gtk
 import gobject
 import glib
-from constant import APP_DBUS_NAME, APP_OBJECT_NAME
+from constant import APP_DBUS_NAME, APP_OBJECT_NAME, MAIN_LANG
 from deepin_utils.config import Config
 from deepin_utils.ipc import is_dbus_name_exists
 from dbus.mainloop.glib import DBusGMainLoop
@@ -144,14 +144,9 @@ class ModuleFrame(gtk.Plug):
         pass
         
     def send_module_info(self):
-        name = self.module_config.get("name", "default")                           
-        if len(locale.getdefaultlocale(['LANGUAGE'])) and locale.getdefaultlocale(['LANGUAGE'])[0] is not None:
-            if locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_CN") == 0:        
-                name = self.module_config.get("name", "zh_CN")                             
-            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_TW") == 0:   
-                name = self.module_config.get("name", "zh_TW")                              
-            elif locale.getdefaultlocale(['LANGUAGE'])[0].find("zh_HK") == 0:   
-                name = self.module_config.get("name", "zh_HK")
+        name = self.module_config.get("name", "default")
+        if MAIN_LANG != "en_US":
+            name = self.module_config.get("name", MAIN_LANG)                           
         self.send_message("send_module_info", 
                           (1, 
                            (self.module_config.get("main", "id"), 
