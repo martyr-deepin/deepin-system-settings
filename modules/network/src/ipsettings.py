@@ -1,18 +1,36 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
+# Copyright (C) 2011 ~ 2013 Deepin, Inc.
+#               2011 ~ 2013 Zeng Zhi
+# 
+# Author:     Zeng Zhi <zengzhilg@gmail.com>
+# Maintainer: Zeng Zhi <zengzhilg@gmail.com>
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 from dtk.ui.label import Label
 from dtk.ui.entry import InputEntry
 from dtk.ui.net import IPV4Entry
 from nmlib.nm_utils import TypeConvert
-#from nmlib.nm_remote_connection import NMRemoteConnection
 import gtk
 
 import style
 from constants import CONTENT_FONT_SIZE, WIDGET_HEIGHT
 from nls import _
-from elements import SettingSection, DefaultToggle
-
+from elements import DefaultToggle
+from helper import Dispatcher
 from dss_log import log
 
 class IPV4Conf(gtk.VBox):
@@ -29,10 +47,8 @@ class IPV4Conf(gtk.VBox):
         self.dns_only = dns_only
 
         # Ip configuration
-        #self.ip_main_section = SettingSection(_("Ipv4 setting"), text_size=TITLE_FONT_SIZE, always_show=True, has_seperator=False )
 
         self.ip_table = gtk.Table(3, 2, False)
-        #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
         self.ip_section = DefaultToggle(_("Automatic IP address"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
@@ -47,7 +63,6 @@ class IPV4Conf(gtk.VBox):
         
         #DNS configuration
         self.dns_table = gtk.Table(2, 2, False)
-        #self.dns_section = SettingSection( _("Automatic get DNS server"), text_size=CONTENT_FONT_SIZE,has_seperator=False, always_show=False, revert=True, label_right=True)
         self.dns_section = DefaultToggle(_("Automatic DNS server address"))
         self.dns_section.toggle_on = self.dns_toggle_off
         self.dns_section.toggle_off = self.dns_toggle_on
@@ -70,24 +85,11 @@ class IPV4Conf(gtk.VBox):
         names = ["ip4", "netmask", "gw"]
         for n in names:
             setattr(self, n + "_flag", False)
-        #self.pack_start(self.ip_main_section, False, False)
-        #self.ip_main_section.load([self.ip_section, self.dns_section])
         self.pack_start(self.ip_section, False, False)
         self.pack_start(self.dns_section, False, False)
         self.reset(connection)
-        #ip_switch.connect("toggled", self.manual_ip_entry)
         self.show_all()
 
-        #if type(self.connection) is NMRemoteConnection:
-            #print "in ipv set apply true"
-            #Dispatcher.set_button("apply", True)
-        #else:
-            #if self.connection.check_setting_finish():
-                #print "in ipv setting finish"
-                #Dispatcher.set_button("save", True)
-            #else:
-                #print "in ipv setting not finish"
-                #Dispatcher.set_button("save", False)
 
     def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
@@ -100,7 +102,6 @@ class IPV4Conf(gtk.VBox):
             entry.connect("changed", self.set_ip_address, arg)
         else:
             entry.connect("changed", self.set_dns_address, arg)
-        #entry.set_size(self.ENTRY_WIDTH, WIDGET_HEIGHT)
 
         return (label, entry)
 
@@ -164,14 +165,11 @@ class IPV4Conf(gtk.VBox):
 
         if self.check_valid(names[index]):
             setattr(self, names[index] + "_flag", True)
+            Dispatcher.set_tip(_("%s is valid")%names[index])
         else:
             setattr(self, names[index] + "_flag", False)
+            Dispatcher.set_tip(_("%s is invalid")%names[index])
 
-        if self.gw_flag:
-            if self.setting.addresses:
-                self.setting.clear_addresses()
-            self.setting.add_address(self.ip)
-            log.debug(names[index], self.setting.addresses)
 
         ############
         # 检查ip、子网掩码、网关是否正确
@@ -180,6 +178,10 @@ class IPV4Conf(gtk.VBox):
             if not getattr(self, "%s_flag"%n):
                 is_valid = False
                 break
+        if is_valid:
+            if self.setting.addresses:
+                self.setting.clear_addresses()
+            self.setting.add_address(self.ip)
         
         if self.settings_obj:
             self.settings_obj.ipv4_ip_is_valid = is_valid
@@ -238,13 +240,10 @@ class IPV4Conf(gtk.VBox):
 
     def dns_toggle_off(self):
         self.set_group_sensitive("dns", True)
-        #Dispatcher.set_button("save", False)
         # 统一调用shared_methods.Settings的set_button
         if self.connection.check_setting_finish():
-            #Dispatcher.set_button("save", True)
             dns_is_valid = True
         else:
-            #Dispatcher.set_button("save", False)
             dns_is_valid = False
         if self.settings_obj:
             self.settings_obj.ipv4_dns_is_valid = dns_is_valid
@@ -261,47 +260,16 @@ class IPV4Conf(gtk.VBox):
             self.settings_obj.set_button("save", True)
 
     def ip_toggle_off(self):
-        #print "manual"
-        #self.addr_row[1].set_address("")
-        #print self.addr_row[1].entry_list
-        #self.mask_row[1].set_address("")
-        #self.gate_row[1].set_address("")
         self.setting.method = 'manual'
-        #self.set_group_sensitive("ip", True)
         if self.connection.check_setting_finish():
-            #print "settings complete"
-            #Dispatcher.set_button("save", True)
             ip_is_valid = True
         else:
-            #print "settings incomplete"
-            #Dispatcher.set_button("save", False)
             ip_is_valid = False
         # TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
         if self.settings_obj:
             self.settings_obj.ipv4_ip_is_valid = ip_is_valid
             self.settings_obj.set_button("save", ip_is_valid)
 
-    ## TODO 该函数好像没有被调用
-    #def get_ip_addr(self, widget):
-        #if widget.get_active():
-            #self.setting.clear_addresses()
-            #self.ip = ["","",""]
-            #self.setting.method = 'auto'
-            #self.set_group_sensitive("ip", False)
-            #if self.connection.check_setting_finish():
-                ##print "settings complete"
-                #Dispatcher.set_button("save", True)
-            #else:
-                ##print "settings incomplete"
-                #Dispatcher.set_button("save", False)
-        #else:
-            #self.setting.method = 'manual'
-            #self.set_group_sensitive("ip", True)
-            #if self.connection.check_setting_finish():
-                #Dispatcher.set_button("save", True)
-            #else:
-                #Dispatcher.set_button("save", False)
-        #self.reset_table()
 
 class IPV6Conf(gtk.VBox):
     ENTRY_WIDTH = 300
@@ -451,11 +419,8 @@ class IPV6Conf(gtk.VBox):
         names = ["ip6", "netmask", "gw"]
         self.ip[index] = content
         if self.check_valid(names[index]):
-            #print "is valid "+names[index]
             setattr(self, names[index] + "_flag", True)
-            #print "valid"+ names[index]
         else:
-            #print "is invalid "+names[index]
             setattr(self, names[index] + "_flag", False)
 
         if self.check_valid("gw"):
@@ -482,7 +447,6 @@ class IPV6Conf(gtk.VBox):
         names = ["master", "slaver"]
         dns = self.check_complete_dns()
         if dns:
-            #Dispatcher.set_button("save", True)
             is_valid = True
             self.setting.clear_dns()
             for d in dns:
@@ -493,11 +457,7 @@ class IPV6Conf(gtk.VBox):
 
         if TypeConvert.is_valid_ip6(content):
             setattr(self, names[index] + "_flag", True)
-            #print "valid"+ names[index]
         else:
-            #if content is not "":
-                #Dispatcher.set_button("save", False)
-            #print "invalid"+ names[index]
             setattr(self, names[index] + "_flag", False)
 
         ############
@@ -537,12 +497,9 @@ class IPV6Conf(gtk.VBox):
 
     def dns_toggle_off(self):
         self.set_group_sensitive("dns", True)
-        #Dispatcher.set_button("save", False)
         if self.connection.check_setting_finish():
-            #Dispatcher.set_button("save", True)
             dns_is_valid = True
         else:
-            #Dispatcher.set_button("save", False)
             dns_is_valid = False
         ##########
         if self.settings_obj:
@@ -563,10 +520,8 @@ class IPV6Conf(gtk.VBox):
         self.setting.method = 'manual'
         self.set_group_sensitive("ip", True)
         if self.connection.check_setting_finish():
-            #Dispatcher.set_button("save", True)
             ip_is_valid = True
         else:
-            #Dispatcher.set_button("save", False)
             ip_is_valid = False
         # TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
         if self.settings_obj:

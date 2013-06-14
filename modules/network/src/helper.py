@@ -22,12 +22,13 @@
 import gobject
 
 from nmlib.nm_dispatcher import nm_events as event_manager                                          
+from nls import _
 
 int = gobject.TYPE_INT
 obj = gobject.TYPE_PYOBJECT
 str = gobject.TYPE_STRING
 
-def _(*arg):
+def event(*arg):
     return (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (arg))
 
 class EventDispatcher(gobject.GObject):
@@ -41,62 +42,62 @@ class EventDispatcher(gobject.GObject):
 
     __gsignals__= {
 
-            "connection-change" : _(obj),
-            "connection-delete" : _(obj),
-            "button-change" : _(obj, obj),
-            "set-tip" :       _(str),
-            "wired_change" : _(obj, int, int),
-            "wireless_change" : _(obj, int, int, int),
-            "connect_by_ssid" : _(str, obj),
-            "select-connection" : _(obj),
-            "slide-to" : _(obj, str),
-            "change-crumb" : _(str),
-            "tray-show-more": _(),
+            "connection-change" : event(obj),
+            "connection-delete" : event(obj),
+            "button-change" : event(obj, obj),
+            "set-tip" :       event(str),
+            "wired_change" : event(obj, int, int),
+            "wireless_change" : event(obj, int, int, int),
+            "connect_by_ssid" : event(str, obj),
+            "select-connection" : event(obj),
+            "slide-to" : event(obj, str),
+            "change-crumb" : event(str),
+            "tray-show-more": event(),
 
-            "nm-start": _(),
-            "nm-stop": _(),
+            "nm-start": event(),
+            "nm-stop": event(),
 
-            "wired-device-add": _(obj),
-            "wired-device-remove": _(obj),
-            "wireless-device-add": _(obj),
-            "wireless-device-remove": _(obj),
-            "mmdevice-added" : _(obj),
-            "mmdevice-removed": _(obj),
-            "recheck-section" : _(int),
+            "wired-device-add": event(obj),
+            "wired-device-remove": event(obj),
+            "wireless-device-add": event(obj),
+            "wireless-device-remove": event(obj),
+            "mmdevice-added" : event(obj),
+            "mmdevice-removed": event(obj),
+            "recheck-section" : event(int),
 
-            "ap-added": _(),
-            "ap-removed": _(),
+            "ap-added": event(),
+            "ap-removed": event(),
 
-            "to-setting-page": _(obj, obj),
-            "to-region-page":_(obj),
-            "region-back": _(obj, obj, str),
+            "to-setting-page": event(obj, obj),
+            "to-region-page": event(obj),
+            "region-back": event(obj, obj, str),
 
-            "new-connection-created": _(obj),
+            "new-connection-created": event(obj),
 
-            "setting-saved": _(),
-            "setting-appled": _(),
-            "connection-replace": _(obj),
+            "setting-saved": event(),
+            "setting-appled": event(),
+            "connection-replace": event(obj),
 
-            "request_resize": _(),
+            "request_resize": event(),
 
-            "request-redraw":_(),
+            "request-redraw": event(),
 
-            "vpn-redraw": _(),
+            "vpn-redraw": event(),
             
-            "dsl-redraw": _(),
-            "wireless_redraw": _(),
+            "dsl-redraw": event(),
+            "wireless_redraw": event(),
 
-            "dss_start": _(),
+            "dss_start": event(),
 
-            "vpn-type-change": _(obj),
+            "vpn-type-change": event(obj),
 
-            "service-stop-do-more": _(),
-            "service-start-do-more": _(),
+            "service-stop-do-more": event(),
+            "service-start-do-more": event(),
 
-            "switch-device": _(obj),
-            "vpn-start" : _(obj),
-            'vpn-setting-change': _(obj),
-            'vpn-force-stop': _(),
+            "switch-device": event(obj),
+            "vpn-start" : event(obj),
+            'vpn-setting-change': event(obj),
+            'vpn-force-stop': event(),
 
             }
 
@@ -108,7 +109,7 @@ class EventDispatcher(gobject.GObject):
         self.emit("connection-change", connection)
 
     def delete_setting(self, old_connection):
-        #self.set_tip("%s deleted"%(old_connection.get_setting("connection").id)) 
+        self.set_tip(_("%s deleted")%(old_connection.get_setting("connection").id)) 
         self.emit("connection-delete", old_connection)
         #self.emit("connection-change", new_connection)
 
