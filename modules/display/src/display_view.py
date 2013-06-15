@@ -571,6 +571,9 @@ class DisplayView(gtk.VBox):
 
                 self.multi_monitors_align.set_size_request(-1, 30)
                 self.multi_monitors_align.set_child_visible(True)
+            else:
+                self.multi_monitors_align.set_size_request(-1, 0)
+                self.multi_monitors_align.set_child_visible(False)
             return
 
         if key == "brightness":
