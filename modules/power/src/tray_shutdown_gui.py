@@ -37,6 +37,7 @@ sys.path.append("/usr/share/deepin-system-settings/dss")
 from theme import app_theme
 from vtk.utils import get_text_size
 from livecd import is_deepin_livecd
+import gobject
 
 WIDTH = 120
 HEIGHT = 25
@@ -128,7 +129,14 @@ class Gui(gtk.VBox):
             self.pack_start(self.lock_btn, True, True)
         set_clickable_cursor(self.user_label_event)
 
-        if is_deepin_livecd():
+        gobject.timeout_add_seconds(2, self.check_is_livecd)
+
+    def check_is_livecd(self):
+        try:
+            is_livecd = is_deepin_livecd()
+        except:
+            return True
+        if is_livecd:
             self.switch_btn.set_sensitive(False)
             #self.suspend_btn.set_sensitive(False)
             self.logout_btn.set_sensitive(False)
