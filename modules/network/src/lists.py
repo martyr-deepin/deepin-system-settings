@@ -36,6 +36,7 @@ from nm_modules import nm_module
 import threading
 import gtk
 import pango
+from style import string_markup
 
 import sys,os
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
@@ -253,8 +254,9 @@ class WirelessItem(GenItems):
 
     def render_ssid(self, cr, rect):
         self.render_background(cr,rect)
-        (text_width, text_height) = get_content_size(self.ssid)
-        draw_text(cr, self.ssid, rect.x, rect.y, rect.width, rect.height,
+        ssid = self.ssid.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        (text_width, text_height) = get_content_size(ssid)
+        draw_text(cr, ssid, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
 
         with cairo_disable_antialias(cr):
@@ -388,8 +390,9 @@ class HidenItem(GenItems):
 
     def render_id(self, cr, rect):
         self.render_background(cr, rect)
-        (text_width, text_height) = get_content_size(self.id)
-        draw_text(cr, self.id, rect.x, rect.y, rect.width, rect.height,
+        id  = string_markup(self.id)
+        (text_width, text_height) = get_content_size(id)
+        draw_text(cr, id, rect.x, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
 
         with cairo_disable_antialias(cr):

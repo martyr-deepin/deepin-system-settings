@@ -134,6 +134,10 @@ def draw_background_color(widget):
         cr.fill()
     widget.connect("expose-event", expose_background)
 
+def string_markup(string):
+    return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
 # Table UI utils
 
 #def creat_row_widgets(label_content, widget_name, widget_type):
