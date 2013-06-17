@@ -282,7 +282,7 @@ class NMSettingWirelessSecurity (NMSetting):
     def verify_wep_key(self, key, wep_type):
         if not key:
             return False
-    	keylen = len(key)
+        keylen = len(key)
         if wep_type == 1 or wep_type == 0:
             import string
             if keylen == 10 or keylen == 26:
@@ -291,7 +291,7 @@ class NMSettingWirelessSecurity (NMSetting):
                         return False
             elif keylen == 5 or keylen == 13:
                 for i in range(keylen):
-                    if key[i] not in string.ascii_letters:
+                    if key[i] not in (string.ascii_letters + string.digits):
                         return False
             else:
                 return False
