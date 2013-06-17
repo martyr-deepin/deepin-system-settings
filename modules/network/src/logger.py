@@ -26,8 +26,8 @@ class Mylogger(object):
         self.file_name = file_name
         if os.path.exists(self.file_name):
             os.remove(self.file_name)
-
         open(self.file_name, 'w').close()
+        os.chmod(self.file_name, 0777)
 
     def set_level(self, level):
         self.level = level
