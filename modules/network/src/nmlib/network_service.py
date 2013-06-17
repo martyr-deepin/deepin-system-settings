@@ -139,5 +139,5 @@ class NetworkService(dbus.service.Object):
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     NetworkService()
-    #gobject.timeout_add(60000, lambda :mainloop.quit()) 
+    gobject.timeout_add(60000, lambda :mainloop.quit()) 
     mainloop.run()
