@@ -335,6 +335,7 @@ class SsidItem(TreeItem):
         TreeItem.__init__(self)
         self.ap = ap
         self.ssid = ap.get_ssid()
+        print self.ssid
         self.security = ap.get_flags()
         self.strength = ap.get_strength()
         self.is_double_click = False
@@ -365,12 +366,13 @@ class SsidItem(TreeItem):
 
     def render_essid(self, cr, rect):
         self.render_background(cr,rect)
-        (text_width, text_height) = get_content_size(self.ssid)
+        ssid = self.ssid.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        (text_width, text_height) = get_content_size(ssid)
         if self.active:
             text_color = "#3da1f7"
         else:
             text_color = "#000000"
-        draw_text(cr, self.ssid, rect.x + ALIGN_SPACING , rect.y, rect.width, rect.height,
+        draw_text(cr, ssid, rect.x + ALIGN_SPACING , rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT, text_color = text_color)
 
         if self.is_hover:
