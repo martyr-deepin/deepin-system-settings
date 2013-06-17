@@ -17,17 +17,19 @@ import time
 import inspect
 import sys
 
-DSS_LOG_PATH = "/tmp/network.log"
-TRAY_LOG_PATH = "/tmp/network.tray.log"
+DSS_LOG_PATH = "network.log"
+TRAY_LOG_PATH = "network.tray.log"
+CACHE = os.path.expanduser("~/.cache")
 TIME_FORMAT = "[%D] %H:%M:%S"
 class Mylogger(object):
 
     def __init__(self, file_name):
-        self.file_name = file_name
+        if not os.path.exists(CACHE):
+            os.mkdir(CACHE)
+        self.file_name = os.path.join(CACHE, file_name)
         if os.path.exists(self.file_name):
             os.remove(self.file_name)
         open(self.file_name, 'w').close()
-        os.chmod(self.file_name, 0777)
 
     def set_level(self, level):
         self.level = level
