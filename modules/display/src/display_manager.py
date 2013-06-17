@@ -152,7 +152,7 @@ class DisplayManager:
                 self.__primary_output_name = self.__output_info_by_xml[0][0]
    
     def get_output_count(self):
-        return self.__output_count
+        return len(self.__output_names)
 
     def get_output_info(self):
         return self.__output_info_by_xml
