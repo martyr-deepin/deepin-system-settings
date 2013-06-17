@@ -130,6 +130,7 @@ class TrayUI(gtk.VBox):
     def remove_net(self, net_type):
         #print net_type
         getattr(self, net_type + "_box").set_no_show_all(True)
+        #getattr(self, net_type).set_active((True, False))
         getattr(self, net_type + "_box").hide()
         setattr(self, net_type + "_state", False)
 

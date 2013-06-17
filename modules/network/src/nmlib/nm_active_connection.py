@@ -58,7 +58,8 @@ class ThreadVPNAuto(threading.Thread):
                                     return True
                                 else:
                                     continue
-                            except:
+                            except Exception, e:
+                                print e
                                 pass
                         else:
                             break
@@ -133,6 +134,7 @@ class NMActiveConnection(NMObject):
                 self.thread_vpnauto = ThreadVPNAuto(self.object_path, vpn_prio_connections, active_conn_creat_cb)
                 self.thread_vpnauto.setDaemon(True)
                 self.thread_vpnauto.start()
+                return self.thread_vpnauto
             else:
                 return True
 

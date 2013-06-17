@@ -611,7 +611,8 @@ class ThreadVPNSpec(threading.Thread):
                                 return True
                             else:
                                 continue
-                        except:
+                        except Exception, e:
+                            print "except",e
                             pass
                     else:
                         break

@@ -24,8 +24,6 @@ import dbus
 import dbus.service
 import dbus.mainloop.glib
 import gobject
-import traceback
-import os
     
 mainloop = gobject.MainLoop()
 
@@ -69,7 +67,6 @@ class NetworkService(dbus.service.Object):
 
         os.system("service network-manager restart")
     '''
-    ### Fix me, need to test
     @dbus.service.method(NETWORK_INTERFACE, in_signature = "s", out_signature = "s")
     def getget(self, address):
         return address
@@ -127,7 +124,7 @@ class NetworkService(dbus.service.Object):
                          in_signature='o', out_signature='')
     def emitVpnStart(self, active_path):
         self.VpnStart(active_path)
-        return ''
+        return
 
     @dbus.service.signal(NETWORK_INTERFACE)
     def userToggleOff(self, network_type):
@@ -139,34 +136,8 @@ class NetworkService(dbus.service.Object):
         self.userToggleOff(network_type)
         return
 
-    #@dbus.service.signal(NETWORK_INTERFACE)
-    #def MainVpnStart(self, path):
-        #return 
-
-    #@dbus.service.signal(NETWORK_INTERFACE)
-    #def TrayVpnStart(self, path):
-        #return 
-
-    #@dbus.service.method(NETWORK_INTERFACE,
-                         #in_signature='o', out_signature='')
-    #def emitMainVpnStart(self, active_path):
-        #self.MainVpnStart(active_path)
-        #return ''
-
-    #@dbus.service.method(NETWORK_INTERFACE,
-                         #in_signature='o', out_signature='')
-    #def emitTrayVpnStart(self, active_path):
-        #self.TrayVpnStart(active_path)
-        #return ''
-
-    #def vpnConnectStart(self, path):
-        #print "before emit in start", path
-        #self.VpnConnectStart(path)
-        #print "after emit"
-        #return 'Signal emitted'
-    
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     NetworkService()
-    gobject.timeout_add(60000, lambda :mainloop.quit()) 
+    #gobject.timeout_add(60000, lambda :mainloop.quit()) 
     mainloop.run()

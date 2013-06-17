@@ -954,14 +954,18 @@ class VpnSection(Section):
         net_manager.emit_vpn_start(active_conn)
 
     def try_active_vpn(self):
-        for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
-            if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
-                try:
-                    active_conn.vpn_auto_connect(self.on_active_conn_create)
-                except:
-                    pass
-            else:
-                break
+        from lists import VpnAutoMonitor
+        monitor = VpnAutoMonitor()
+        monitor.start()
+        return monitor
+        #for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
+            #if len(nm_module.nmclient.get_vpn_active_connection()) == 0:
+                #try:
+                    #active_conn.vpn_auto_connect(self.on_active_conn_create)
+                #except:
+                    #pass
+            #else:
+                #break
 
     def toggle_on_after(self):
         if self.no_auto_connect:
@@ -969,7 +973,7 @@ class VpnSection(Section):
             pass
         else:
             if not self.vpn_path:
-                self.try_active_vpn()
+                self.monitor = self.try_active_vpn()
             else:
                 self.on_vpn_connecting(None, None, self.vpn_path)
 
@@ -980,6 +984,7 @@ class VpnSection(Section):
             try:
                 index = self.connection.index(connection)
                 self.tree.visible_items[index].set_net_state(2)
+                self.vpn_path = vpn_active[0].object_path
                 return
             except Exception, e:
                 log.error(e)
@@ -987,6 +992,11 @@ class VpnSection(Section):
             pass
 
     def toggle_off(self):
+
+        # first of all, kill monitor thread if there's any
+        if hasattr(self, "monitor") and self.monitor.isAlive():
+            self.monitor.stop()
+
         self.user_toggle_off()
         for active in nm_module.nmclient.get_anti_vpn_active_connection():
             active.device_vpn_disconnect()
@@ -1014,7 +1024,11 @@ class VpnSection(Section):
             return
         log.debug("vpn start connect", data)
         self.vpn_path = data
-        self.this_setting = nm_module.cache.getobject(data).get_connection().object_path
+        try:
+            self.this_setting = nm_module.cache.getobject(data).get_connection().object_path
+        except Exception, e:
+            log.error(e)
+            self.this_setting = None
         map(lambda p: p.set_net_state(0), self.tree.visible_items)
         try:
             items = filter(lambda p: p.connection.object_path == self.this_setting, self.tree.visible_items)

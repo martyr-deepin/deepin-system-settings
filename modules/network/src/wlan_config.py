@@ -478,6 +478,7 @@ class Security(gtk.VBox):
             #Dispatcher.set_button("save", False)
             #print "invalid"
             is_valid = self.connection.check_setting_finish()
+
         self.settings_obj.wlan_encry_is_valid = is_valid
         self.settings_obj.set_button("save", is_valid)
     

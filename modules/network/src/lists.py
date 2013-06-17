@@ -760,6 +760,7 @@ class Monitor(threading.Thread):
         self.td.start()
 
     def on_active_conn_create(self, active_conn):
+        #pass
         net_manager.emit_vpn_start(active_conn)
          
     def run(self):
@@ -793,6 +794,38 @@ class Monitor(threading.Thread):
         else:
             print "no active connection available"
         '''
+class VpnAutoMonitor(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.setDaemon(True)
+        self.run_flag = True
+
+    def on_active_conn_create(self, active_conn):
+        #pass
+        net_manager.emit_vpn_start(active_conn)
+         
+    def run(self):
+        for active_conn in nm_module.nmclient.get_anti_vpn_active_connection():
+            if self.run_flag:
+                self.thread = active_conn.vpn_auto_connect(self.on_active_conn_create)
+                if self.thread == True:
+                    self.run_flag = False
+                elif self.thread == False:
+                    continue
+                else:
+                    while self.thread.isAlive() and self.run_flag:
+                        time.sleep(1)
+                    else:
+                        if self.thread.succeed:
+                            self.run_flag = False
+                        else:
+                            continue
+    def stop(self):
+        self.run_flag = False
+        if hasattr(self, "thread"):
+            self.thread.stop_run()
+    
+
 
 class GeneralItem(TreeItem):
     CHECK_LEFT_PADDING = 10

@@ -9,6 +9,7 @@ from deepin_utils.ipc import is_dbus_name_exists
 import dbus
 
 from dss_log import log
+from tray_log import tray_log
 
 
 
@@ -23,6 +24,7 @@ class NetManager(object):
     def __init__(self):
         #self.init_devices()
         if is_dbus_name_exists("org.freedesktop.NetworkManager", False):
+            tray_log.debug("network-manager start")
 
             if not nm_module.nmclient.networking_get_enabled():
                 try:
@@ -50,11 +52,8 @@ class NetManager(object):
             bus.add_signal_receiver(lambda type: self.classify_network_type(type),
                                     dbus_interface = "com.deepin.network",
                                     signal_name="userToggleOff")
-            #bus.add_signal_receiver(lambda path: Dispatcher.emit("vpn-setting-change", path),
-                                    #dbus_interface = "com.deepin.network",
-                                    #signal_name="VpnSettingChange")
-
         else:
+            tray_log.debug("network-manager disabled")
             pass
 
     def init_all_objects(self):

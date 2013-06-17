@@ -550,6 +550,7 @@ class VPNSection(BaseMixIn):
                     for vpn in vpn_active:
                         index = nm_module.nm_remote_settings.get_vpn_connections().index(vpn.get_connection())
                         self.gui.vpn_list.set_active_by(index)
+                        self.vpn_path = vpn.object_path
                         return
                 except Exception, e:
                     tray_log.error(e)
@@ -589,25 +590,41 @@ class VPNSection(BaseMixIn):
             self.gui.vpn.set_active((True, True))
 
         self.change_status_icon('loading')
-        self.this_setting = nm_module.cache.getobject(path).get_connection().object_path
+        try:
+            self.this_setting = nm_module.cache.getobject(path).get_connection().object_path
+        except Exception, e:
+            tray_log.error(e)
+            self.this_setting = None
         self.vpn_path = path
 
     def __vpn_active_callback(self, name, event, path):
         #print name, data
+        path = path
         tray_log.debug("==Vpn active")
-        if self.gui.wire.get_active():
-            self.change_status_icon("cable_vpn")
-        elif self.gui.wireless.get_active():
-            self.change_status_icon('links_vpn')
 
-        index = map(lambda i: i.connection.object_path, self.gui.vpn_list).index(self.this_setting)
+        self.set_device_vpn(nm_module.cache.getobject(path))
+        try:
+            index = map(lambda i: i.connection.object_path, self.gui.vpn_list).index(self.this_setting)
+        except Exception, e:
+            tray_log.error(e)
+            index = []
         self.gui.vpn_list.set_active_by(index)
         return 
+
+    def set_device_vpn(self, vpn_active):
+        tray_log.debug(vpn_active)
+        for d in vpn_active.get_devices():
+            tray_log.debug(d)
+            if d.get_device_type() == 1:
+                self.change_status_icon("cable_vpn")
+            else:
+                self.change_status_icon("links_vpn")
 
     def __vpn_failed_callback(self, name, event, path):
         tray_log.debug("==Vpn active failed or disconnected")
         #print "vpn failed callback"
         self.check_net_state()
+        self.gui.vpn_list.reset_state()
         self.this_setting = None
         self.vpn_path = None
 
