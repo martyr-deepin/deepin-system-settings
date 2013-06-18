@@ -492,6 +492,8 @@ class Security(gtk.VBox):
     
     def save_auth_cb(self, widget, content, value, index):
         self.setting.auth_alg = value
+        if self.connection.check_setting_finish():
+            self.settings_obj.set_button("save", True)
         self.reset()
 
     def wep_index_spin_cb(self, widget, value):
