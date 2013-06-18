@@ -190,7 +190,7 @@ if __name__ == "__main__":
             if sys.argv[1] == 'logout':
                 gui.cmd_dbus.logout(1)
             elif sys.argv[1] == 'shutdown':
-                gui.cmd_dbus.stop()
+                gui.cmd_dbus.new_stop()
             elif sys.argv[1] == 'suspend':
                 gui.cmd_dbus.suspend()
     gui = Gui()
