@@ -130,6 +130,7 @@ class WireSection(BaseMixIn):
         tray_log.debug("wired unaviable")
         self.gui.wire.set_active((False, False))
         event_manager.emit("dsl-init-state", None)
+        self.check_net_state()
         #self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def wired_device_available(self, widget, new_state, old_state, reason):
@@ -289,6 +290,7 @@ class WirelessSection(BaseMixIn):
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         tray_log.debug("unaviable")
         self.gui.wireless.set_active((False, False))
+        self.check_net_state()
 
     def wireless_device_available(self, widget, new_state, old_state, reason):
         tray_log.debug("aviable")
