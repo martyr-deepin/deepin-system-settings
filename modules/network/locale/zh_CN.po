@@ -509,7 +509,7 @@ msgstr "取消"
 
 #: ../src/main_ui.py:398
 msgid "Set up a hidden wireless connection"
-msgstr ""
+msgstr "设置一个隐藏的无线网络连接"
 
 #: ../src/main_ui.py:597
 msgid "Hotspot"
