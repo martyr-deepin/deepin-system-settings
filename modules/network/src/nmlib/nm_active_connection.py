@@ -33,6 +33,7 @@ class ThreadVPNAuto(threading.Thread):
         self.conns = connections
         self.active_conn_creat = active_conn_creat_cb
         self.run_flag = True
+        self.succeed = False
 
     def run(self):
         nmclient = get_cache().getobject("/org/freedesktop/NetworkManager")
