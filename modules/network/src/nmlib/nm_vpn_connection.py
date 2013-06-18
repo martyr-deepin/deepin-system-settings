@@ -65,7 +65,7 @@ class NMVpnConnection(NMActiveConnection):
 
     ###Signals###
     def vpn_state_changed_cb(self, state, reason):
-        print state, reason
+        #print state, reason
         self.init_nmobject_with_properties()
         nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
         if state in [1, 2, 3, 4]:

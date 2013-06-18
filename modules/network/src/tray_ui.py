@@ -335,7 +335,6 @@ class SsidItem(TreeItem):
         TreeItem.__init__(self)
         self.ap = ap
         self.ssid = ap.get_ssid()
-        print self.ssid
         self.security = ap.get_flags()
         self.strength = ap.get_strength()
         self.is_double_click = False
