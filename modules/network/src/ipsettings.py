@@ -117,11 +117,15 @@ class IPV4Conf(gtk.VBox):
 
     def reset(self, connection):
         self.setting = connection.get_setting("ipv4")       
+        if "ipv4" not in connection.settings_dict.iterkeys():
+            log.debug("ipv4 not in settings dict, will create one")
+            self.setting.method = "auto"
+            connection.settings_dict["ipv4"] = self.setting.prop_dict
 
         if self.setting.method == "auto":
             self.ip_section.set_active(True)
             #self.set_group_sensitive("ip", False)
-            
+        	    
         else:
             log.debug("get addresses", self.setting.addresses)
             self.ip_section.set_active(False)
@@ -363,6 +367,11 @@ class IPV6Conf(gtk.VBox):
 
     def reset(self, connection):
         self.setting = connection.get_setting("ipv6")       
+
+        if "ipv6" not in connection.settings_dict.iterkeys():
+            log.debug("ipv6 not in settings dict, will create one")
+            self.setting.method = "auto"
+            connection.settings_dict["ipv6"] = self.setting.prop_dict
         
         #  FIXME: ipv6 method刚开始为None并且还会记住上次操作,应该每次开始时为auto。
         if self.setting.method == "auto" or self.setting.method is None:
