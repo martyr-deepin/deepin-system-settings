@@ -282,9 +282,11 @@ class TypeConvert(object):
             return False
         
         try:
-            return all(map(lambda i: int(bin(int(ipstr.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:]) == 
-                     int(bin(int(gw_str.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:])
-                     ,[0,1,2,3]))
+            return all(map(lambda i: int(ipstr.split(".")[i]) & int(mask_str.split('.')[i]) == 
+                                     int(gw_str.split(".")[i]) & int(mask_str.split(".")[i]), [0,1,2,3]))
+            #return all(map(lambda i: int(bin(int(ipstr.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:]) == 
+                     #int(bin(int(gw_str.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:])
+                     #,[0,1,2,3]))
         except:
             return False
 
