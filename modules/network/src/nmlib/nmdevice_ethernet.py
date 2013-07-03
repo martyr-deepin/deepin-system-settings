@@ -145,7 +145,8 @@ class NMDeviceEthernet(NMDevice):
             self.thread_dslauto.start()
 
     def properties_changed_cb(self, prop_dict):
-        self.init_nmobject_with_properties()
+        pass
+        #self.init_nmobject_with_properties()
 
 if __name__ == "__main__":
     ethernet_device = NMDeviceEthernet ("/org/freedesktop/NetworkManager/Devices/0")

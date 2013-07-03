@@ -297,7 +297,8 @@ class NMDeviceWifi(NMDevice):
             traceback.print_exc()
 
     def properties_changed_cb(self, prop_dict):
-        self.init_nmobject_with_properties()
+        pass
+        #self.init_nmobject_with_properties()
 
 if __name__ == "__main__":
     wifi_device = NMDeviceWifi("/org/freedesktop/NetworkManager/Devices/0")

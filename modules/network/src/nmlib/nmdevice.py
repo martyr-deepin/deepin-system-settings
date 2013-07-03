@@ -237,7 +237,8 @@ class NMDevice(NMObject):
         self.new_state = args[1]
 
     def state_changed_cb(self, new_state, old_state, reason):
-        self.init_nmobject_with_properties()
+        if new_state > 90 or new_state < 70:
+            self.init_nmobject_with_properties()
         print new_state, old_state, reason
 
         if new_state == 30 and old_state < 30:
