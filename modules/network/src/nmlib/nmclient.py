@@ -283,7 +283,7 @@ class NMClient(NMObject):
 
     def get_wired_active_connection(self):
         try:
-            active_connection = filter(lambda x:x.get_devices()[0] == self.get_wired_device(), self.get_active_connections())
+            active_connection = filter(lambda x:x.get_devices()[0] in self.get_wired_devices(), self.get_active_connections())
             pppoe_connection = self.get_pppoe_active_connection()
             return filter(lambda x: x not in pppoe_connection, active_connection)
             #return active_connection
@@ -298,7 +298,7 @@ class NMClient(NMObject):
 
     def get_wireless_active_connection(self):
         try:
-            return filter(lambda x:x.get_devices()[0] == self.get_wireless_device(), self.get_active_connections())
+            return filter(lambda x:x.get_devices()[0] in self.get_wireless_devices(), self.get_active_connections())
         except:
             return []
 
