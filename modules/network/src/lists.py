@@ -47,6 +47,7 @@ from helper import Dispatcher, event_manager
 
 import threading as td
 import time
+from dss_log import log
 
 bg_hover_color="#ebf4fd"
 bg_normal_color = "#f6f6f6"
@@ -74,17 +75,28 @@ class GenItems(TreeItem):
         self.check_pixbuf = app_theme.get_pixbuf("network/check_box-2.png")
         self.jumpto_pixbuf = app_theme.get_pixbuf("network/jump_to.png")
         self.check_hover_pixbuf = app_theme.get_pixbuf("network/check_box-4.png")
+        self.check_disable = app_theme.get_pixbuf("network/check_box-5.png")
 
         self.border_color = border_normal_color
         self.bg_color = bg_normal_color
         self.is_last = is_last
         self.is_hover = False
-
+        self.hover_column = -1
+        self.can_disable = False
+        
     def render_check(self, cr, rect):
         self.render_background(cr,rect)
 
         if self.is_hover and self.network_state ==self.NETWORK_DISCONNECT:
             draw_pixbuf(cr, self.check_hover_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+        elif self.is_hover:
+            if self.hover_column == 0 and self.can_disable:
+                draw_pixbuf(cr, self.check_disable.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
+            else:
+                if self.network_state == self.NETWORK_LOADING:
+                    self.draw_loading(cr, rect)
+                elif self.network_state == self.NETWORK_CONNECTED:
+                    draw_pixbuf(cr, self.check_pixbuf.get_pixbuf(), rect.x + self.H_PADDING, rect.y + (rect.height - IMG_WIDTH)/2)
         else:
             if self.network_state == self.NETWORK_LOADING:
                 self.draw_loading(cr, rect)
@@ -132,10 +144,13 @@ class GenItems(TreeItem):
     def hover(self, column, offset_x, offset_y):
         self.is_hover = True
         self.bg_color = bg_hover_color
+        self.hover_column = column
+
         self.redraw()
 
     def unhover(self, column, offset_x, offset_y):
         self.is_hover = False
+        self.hover_column = -1
         self.bg_color = bg_normal_color
         self.redraw()
 
@@ -179,6 +194,10 @@ class GenItems(TreeItem):
     def click_cb(self):
         pass
 
+    def force_stop_loading(self):
+        self.network_state = 0
+
+
 class LoadingThread(td.Thread):
     def __init__(self, widget):
         td.Thread.__init__(self)
@@ -198,6 +217,7 @@ class WiredItem(GenItems):
         self.device = device
         self.essid = self.device.get_device_desc()
         self.font_size = font_size
+        self.can_disable = True
 
         self.jumpto_icon = app_theme.get_pixbuf("network/jump_to.png")
 
@@ -221,6 +241,10 @@ class WiredItem(GenItems):
         return [self.render_check, self.render_device, self.render_jumpto]
     
     def single_click(self, column, x, y):
+        if column == 0 and self.network_state > 0:
+            log.debug(self.device)
+            net_manager.disactive_wired_device([self.device])
+            #self.device.nm_device_disconnect()
         if column == 2:
             from lan_config import WiredSetting
             Dispatcher.to_setting_page(WiredSetting(self.device), False)

@@ -65,12 +65,14 @@ class BaseMixIn(object):
 class WireSection(BaseMixIn):
 
     def __init__(self, tray_ui):
+        tray_log.debug()
         self.gui = tray_ui
         self.this_gui = tray_ui.wire
         self._init_signals()
         self._init_section()
 
     def _init_section(self):
+        tray_log.debug()
         wired_state = net_manager.get_wired_state()
         if wired_state:
             self.gui.show_net("wire")
@@ -84,11 +86,13 @@ class WireSection(BaseMixIn):
             return
 
     def _init_signals(self):
+        tray_log.debug()
         self.gui.wire.connect_to_toggle(self._toggle_callback)
         Dispatcher.connect("wired-device-add", lambda w,p: self.init_wired_signals())
         self.init_wired_signals()
 
     def init_wired_signals(self):
+        tray_log.debug()
         net_manager.device_manager.load_wired_listener(self)
 
     def _toggle_callback(self):
@@ -117,20 +121,23 @@ class WireSection(BaseMixIn):
         '''
         tray_log.debug("===wired deactive", new_state, reason)
         if reason != 0:
-            self.gui.wire.set_active((True, False))
-            if reason == 40:
-                # cable unpluged
-                self.gui.wire.set_active((False, False))
-        self.check_net_state()
+            if not any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
+                if reason == 36:
+                    tray_log.debug("there's one device removed")
+                if reason == 40:
+                    # cable unpluged
+                    self.gui.wire.set_active((False, False))
+            self.check_net_state()
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         '''
         make it insensitive for sure
         '''
         tray_log.debug("wired unaviable")
-        self.gui.wire.set_active((False, False))
-        event_manager.emit("dsl-init-state", None)
-        self.check_net_state()
+        if not any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
+            self.gui.wire.set_active((False, False))
+            event_manager.emit("dsl-init-state", None)
+            self.check_net_state()
         #self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def wired_device_available(self, widget, new_state, old_state, reason):
@@ -138,7 +145,8 @@ class WireSection(BaseMixIn):
         Once device available, set sensitive to True
         '''
         tray_log.debug("wired available")
-        self.gui.wire.set_active((True, False))
+        if not any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
+            self.gui.wire.set_active((True, False))
         event_manager.emit("dsl-init-state", None)
 
     def wired_activate_start(self, widget, new_state, old_state, reason):
@@ -162,6 +170,7 @@ class WireSection(BaseMixIn):
 class WirelessSection(BaseMixIn):
 
     def __init__(self, gui):
+        tray_log.debug()
         self.gui = gui
         self.this_gui = self.gui.wireless
 
@@ -175,6 +184,7 @@ class WirelessSection(BaseMixIn):
         self._init_section()
 
     def _init_section(self):
+        tray_log.debug()
         wireless_state = net_manager.get_wireless_state()
         if wireless_state:
             # always focus on first device on init
@@ -190,6 +200,7 @@ class WirelessSection(BaseMixIn):
             self.gui.remove_net("wireless")
 
     def _init_signals(self):
+        tray_log.debug()
         self.this_gui.connect_to_toggle(self._toggle_callback)
         Dispatcher.connect("switch-device", self.switch_device)
         Dispatcher.connect("wireless-device-add", self.wireless_device_added)
@@ -199,6 +210,7 @@ class WirelessSection(BaseMixIn):
         self.init_wireless_signals()
 
     def init_wireless_signals(self):
+        tray_log.debug()
         net_manager.device_manager.load_wireless_listener(self)
         self.gui.ap_tree.connect("single-click-item", self.ap_selected)
         self.selected_item = None
@@ -234,6 +246,7 @@ class WirelessSection(BaseMixIn):
         self.gui.set_ap(self.ap_list)
 
     def _toggle_callback(self):
+        tray_log.debug()
         if self.gui.wireless.get_active():
             self.init_tree()
             if len(net_manager.device_manager.wireless_devices) > 1:

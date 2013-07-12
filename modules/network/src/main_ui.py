@@ -159,7 +159,7 @@ class WiredDevice(object):
 
     def wired_device_active(self, widget, new_state, old_state, reason):
 
-        index = self.wired_devices.index(widget)
+        index = net_manager.device_manager.wired_devices.index(widget)
         if self.tree.visible_items != []:
             log.debug()
             self.tree.visible_items[index].set_net_state(2)
@@ -167,9 +167,9 @@ class WiredDevice(object):
         self.wire.set_active(True)
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
-        log.debug(new_state, old_state, reason)
+        log.debug(new_state, old_state, reason, widget)
         if reason == 36:
-            print "in fact there had device removed"
+            print "in fact there's device removed"
         ########################
             net_manager.init_devices()
             self.wired_devices = net_manager.wired_devices
@@ -180,12 +180,13 @@ class WiredDevice(object):
                 item_list[-1].is_last = True
                 self.tree.add_items(item_list, 0, True)
                 self.tree.set_size_request(-1, len(self.tree.visible_items)*30)
-        index = 0
-        for d in self.wired_devices:
+        for i, d in enumerate(self.wired_devices):
             if d.get_state() == 100:
-                self.tree.visible_items[index].set_net_state(2)
-            index += 1
-        if not any([d.get_state() == 100 for d in net_manager.wired_devices]):
+                self.tree.visible_items[i].set_net_state(2)
+            elif d.get_state() == 30:
+                self.tree.visible_items[i].set_net_state(0)
+        if not any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
+            print "sfsf"
             self.wire.set_active(False)
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
@@ -265,7 +266,7 @@ class WiredSection(Section, WiredDevice):
         for i,d in enumerate(self.wired_devices):
             if d.get_state() == 100:
                 self.tree.visible_items[i].set_net_state(2)
-            else:
+            elif len(self.wired_devices) == 1:
                 device_ethernet = nm_module.cache.get_spec_object(d.object_path)
                 if device_ethernet:
                     device_ethernet.auto_connect()

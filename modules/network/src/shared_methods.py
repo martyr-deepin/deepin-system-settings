@@ -165,11 +165,15 @@ class NetManager(object):
                 device_ethernet = nm_module.cache.get_spec_object(device.object_path)
                 device_ethernet.auto_connect()
 
-    def disactive_wired_device(self):
-        self.wired_devices = self.device_manager.get_wired_devices()
+    def disactive_wired_device(self, device_spec=[]):
+        if device_spec:
+            self.wired_devices = device_spec
+        else:
+            self.wired_devices = self.device_manager.get_wired_devices()
         for device in self.wired_devices:
             wired = nm_module.cache.get_spec_object(device.object_path)
-            wired.device_wired_disconnect()
+            if wired:
+                wired.device_wired_disconnect()
             device.nm_device_disconnect()
 
     # Wireless
