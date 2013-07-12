@@ -778,7 +778,7 @@ class TrayNetworkPlugin(object):
                 WirelessSection,
                 MobileSection,
                 VPNSection,
-                DSLSection
+                DSLSection,
                 ]
     def __init__(self):
 
@@ -832,7 +832,11 @@ class TrayNetworkPlugin(object):
 
     def recheck_sections(self, widget, index):
         #print "recheck sections"
-        map(lambda s: s._init_section(), self.section_instance)
+        if index == 0:
+            self.section_instance[index]._init_section()
+            self.section_instance[4]._init_section()
+        else:
+            map(lambda s: s._init_section(), self.section_instance)
         Dispatcher.emit("request-resize")
 
     # tray settings
