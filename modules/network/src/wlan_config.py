@@ -184,6 +184,7 @@ class Sections(gtk.Alignment):
         gtk.Alignment.__init__(self, 0, 0 ,0, 0)
         self.set_padding(35, 0, 20, 0)
         self.connection = connection
+        
         self.set_button = set_button
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj

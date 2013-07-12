@@ -24,6 +24,20 @@ import struct
 import socket
 import copy
 from deepin_utils.ipc import is_dbus_name_exists
+from contextlib import contextmanager
+import os
+import glib
+CONFIG_FILE = os.path.join(glib.get_user_config_dir(), "network.conf")
+@contextmanager
+def read_fresh(config):
+    config.read(CONFIG_FILE)
+    yield
+
+@contextmanager
+def real_write(config):
+    config.read(CONFIG_FILE)
+    yield
+    config.write(open(CONFIG_FILE, 'w'))
 
 def nm_alive(func):
     def wrap(*a, **kws):

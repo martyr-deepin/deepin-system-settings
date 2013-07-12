@@ -114,6 +114,7 @@ class NMDeviceEthernet(NMDevice):
             wired_prio_connections = sorted(nm_remote_settings.get_wired_connections(),
                                     key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
                                     reverse = True)
+            wired_prio_connections = self._reorder_connections(wired_prio_connections)
 
             self.thread_wiredauto = ThreadWiredAuto(self.object_path, wired_prio_connections)
             self.thread_wiredauto.setDaemon(True)
@@ -127,6 +128,20 @@ class NMDeviceEthernet(NMDevice):
                 nmclient.activate_connection(conn.object_path, self.object_path, "/")
             except:
                 return False
+    def _reorder_connections(self, wired_prio_connections):
+        nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
+        connection_uuid = str(nm_remote_settings._wired_get_primary_connection(self.get_hw_address()))
+        print connection_uuid
+        try:
+            index = map(lambda c: c.settings_dict["connection"]["uuid"], wired_prio_connections).index(connection_uuid)
+            print "reordered connections", index, connection_uuid
+            connection = wired_prio_connections.pop(index)
+            wired_prio_connections.insert(0, connection)
+            return wired_prio_connections
+        except:
+            return wired_prio_connections
+
+        
 
     def dsl_auto_connect(self):
         nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")

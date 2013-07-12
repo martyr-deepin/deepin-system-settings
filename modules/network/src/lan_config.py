@@ -38,8 +38,20 @@ class WiredSetting(Settings):
         Settings.__init__(self, Sections)
         self.crumb_name = _("Wired")
         self.device = device
+        device_ethernet = nm_module.cache.get_spec_object(self.device.object_path)
+        self.hw_address = device_ethernet.get_hw_address()
         self.spec_connection = spec_connection
         event_manager.emit("update-delete-button", False)
+        event_manager.add_callback("connection_set_to_be_active", self.lan_set_active)
+
+    def lan_set_active(self, event, name ,data ):
+        log.debug()
+        connection = data
+        device_ethernet = nm_module.cache.get_spec_object(self.device.object_path)
+        if isinstance(connection, NMRemoteConnection):
+            nm_module.nm_remote_settings._wired_set_primary_connection(device_ethernet.get_hw_address(),
+                                                                       connection)
+            log.info("wired set to be active")
 
     def get_connections(self):
         self.connections = nm_module.nm_remote_settings.get_wired_connections()
@@ -57,6 +69,9 @@ class WiredSetting(Settings):
                 connection.update()
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                device_ethernet = nm_module.cache.get_spec_object(self.device.object_path)
+                nm_module.nm_remote_settings._wired_set_primary_connection(device_ethernet.get_hw_address(),
+                                                                           connection)
                 Dispatcher.emit("connection-replace", connection)
                 # reset index
             self.set_button("apply", True)
@@ -97,6 +112,7 @@ class Sections(gtk.Alignment):
         basic.load([Wired(self.connection, self.set_button, settings_obj), align])
         self.main_box.pack_start(basic, False, False)
         self.add(self.main_box)
+        
         
     def show_more_options(self, widget):
         widget.destroy()

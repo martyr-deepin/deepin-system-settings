@@ -8,6 +8,8 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 from deepin_utils.ipc import is_dbus_name_exists
 import dbus
 
+from nmlib.nm_utils import  real_write, CONFIG_FILE
+
 from dss_log import log
 from tray_log import tray_log
 
@@ -37,10 +39,9 @@ class NetManager(object):
             self.device_manager = DeviceManager()
 
             self.cf = nm_module.nm_remote_settings.cf
-            self.config_file = nm_module.nm_remote_settings.config_file
-            self.cf.read(self.config_file)
-            if "hidden" not in self.cf.sections():
-                self.cf.add_section("hidden")
+            with real_write(self.cf):
+                if "hidden" not in self.cf.sections():
+                    self.cf.add_section("hidden")
 
             bus = dbus.SystemBus()
             bus.add_signal_receiver(lambda i: Dispatcher.emit("switch-device", self.device_manager.wireless_devices[i]),
@@ -95,8 +96,7 @@ class NetManager(object):
     def get_hiddens(self):
         hiddens = list()
         connections = nm_module.nm_remote_settings.get_wireless_connections()
-        self.cf.read(self.config_file)
-
+        self.cf.read(CONFIG_FILE)
         for index, ssid in enumerate(map(lambda x: x.get_setting("802-11-wireless").ssid, connections)):
             if ssid in self.cf.options("hidden"):
                 hiddens.append(connections[index])
@@ -104,25 +104,15 @@ class NetManager(object):
     
     def add_hidden(self, connection):
         ssid = connection.get_setting("802-11-wireless").ssid
-        self.cf.read(self.config_file)
-        if ssid not in self.cf.options("hidden"):
-            self.cf.set("hidden", ssid)
-        try:
-            self.cf.write(open(self.config_file, "w"))
-            print "save succeed"
-        except:
-            print "save failded in addHidden"
+        with real_write(self.cf):
+            if ssid not in self.cf.options("hidden"):
+                self.cf.set("hidden", ssid)
 
     def remove_hidden(self, connection):
         ssid = connection.get_setting("802-11-wireless").ssid
-        self.cf.read(self.config_file)
-        if ssid not in self.cf.options("hidden"):
-            self.cf.remove_option("hidden", ssid)
-        try:
-            self.cf.write(open(self.config_file, "w"))
-            print "save succeed"
-        except:
-            print "save failded in addHidden"
+        with real_write(self.cf):
+            if ssid not in self.cf.options("hidden"):
+                self.cf.remove_option("hidden", ssid)
 
         #print servicemanager.get_name_owner(s)
 
@@ -306,6 +296,7 @@ class Settings(object):
         self.setting_state = {}
         self.settings = {}
         self.setting_lock = {}
+        self.hw_address = ''
 
     def init_items(self, connection):
         self.connection = connection 

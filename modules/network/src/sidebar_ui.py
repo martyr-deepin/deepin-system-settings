@@ -24,7 +24,8 @@ from dtk.ui.treeview import TreeView
 from dtk.ui.utils import container_remove_all
 from settings_widget import SettingItem, AddSettingItem, EntryTreeView
 from nmlib.nm_remote_connection import NMRemoteConnection
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
+from nm_modules import nm_module
 import style
 
 import gtk
@@ -157,12 +158,20 @@ class SideBar(gtk.VBox):
         if spec_connection:
             self.set_active(spec_connection)
         else:
-            try:
-                self.connection_tree.select_first_item()
-                
-            except:
-                print "no connections found"
+            self.set_primary_connection()
 
+    def set_primary_connection(self):
+        if hasattr(self, "hw_address"):
+            try:
+                print self.hw_address
+                uuid = nm_module.nm_remote_settings._wired_get_primary_connection(self.hw_address)
+                index = map(lambda c:c.settings_dict["connection"]["uuid"] , self.connections).index(uuid)
+                self.set_active(self.connections[index])
+            except Exception, e:
+                log.error(e)
+                self.connection_tree.select_first_item()
+        
+    
     def replace_connection(self, widget, connection):
         '''
         This is a method used to solve fake connection save thing,

@@ -24,7 +24,7 @@ import uuid
 import time
 import re
 from nmobject import NMObject
-from nm_utils import TypeConvert
+from nm_utils import TypeConvert, real_write, CONFIG_FILE
 from nmcache import get_cache
 from nmutils.nmsetting_connection import NMSettingConnection
 from nmutils.nmsetting_wired import NMSettingWired
@@ -38,6 +38,7 @@ from nmutils.nmsetting_cdma import NMSettingCdma
 from nmutils.nmsetting_gsm import NMSettingGsm
 from nmutils.nmsetting_serial import NMSettingSerial
 from nmutils.nmsetting_ppp import NMSettingPPP
+
 import os
 import glib
 import ConfigParser 
@@ -80,6 +81,14 @@ class NMRemoteSettings(NMObject):
         if "conn_priority" not in self.cf.sections():
             self.cf.add_section("conn_priority")
 
+        if "primary_wired" not in self.cf.sections():
+            self.cf.add_section("primary_wired")
+            #self.cf.set("primary", '')
+
+        if "primary_wireless" not in self.cf.sections():
+            self.cf.add_section("primary_wireless")
+            #self.cf.set("primary", '')
+
         max_prio = 0
         for conn_uuid in map(lambda x: x.settings_dict["connection"]["uuid"], self.list_connections()):
             if conn_uuid not in self.cf.options("conn_priority"):
@@ -104,6 +113,24 @@ class NMRemoteSettings(NMObject):
             traceback.print_exc()
             return []
 
+    def _wired_get_primary_connection(self, hw_address):
+        ''' get primary connection from network.conf file'''
+        self.cf.read(CONFIG_FILE)
+        print self.cf.items("primary_wired"), "in get"
+        try:
+            return self.cf.get("primary_wired", hw_address)
+        except:
+            self._wired_set_primary_connection(hw_address, None)
+            return ""
+
+    def _wired_set_primary_connection(self, hw_address, connection):
+        print hw_address, "set wired_set_primary_connection"
+        with real_write(self.cf):
+            if connection:
+                self.cf.set("primary_wired", hw_address, connection.settings_dict["connection"]["uuid"])
+            else:
+                self.cf.set("primary_wired", hw_address, "")
+        
     def get_connection_by_uuid(self, uuid):
         return get_cache().getobject(self.dbus_method("GetConnectionByUuid", uuid))
 
@@ -117,15 +144,15 @@ class NMRemoteSettings(NMObject):
             nm_connection.settings_dict = settings_dict
             nm_connection.update()
             get_cache().new_object(conn_path)
-            self.cf.set("conn_priority", nm_connection.settings_dict["connection"]["uuid"], 0)
-            self.cf.write(open(self.config_file, "w"))
+            with real_write(self.cf):
+                self.cf.set("conn_priority", nm_connection.settings_dict["connection"]["uuid"], 0)
             return nm_connection
         else:
             return None
 
     def generate_connection_id(self, connection_type):
         from nls import _
-
+        print connection_type, "in generate connection id"
         if connection_type == "wired":
             conn_list = self.get_wired_connections()
             conn_start = _("Wired config")

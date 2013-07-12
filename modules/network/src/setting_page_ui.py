@@ -9,7 +9,7 @@ from dtk.ui.utils import container_remove_all
 from dtk.ui.scrolled_window import ScrolledWindow
 from nmlib.nm_remote_connection import NMRemoteConnection
 
-from helper import Dispatcher
+from helper import Dispatcher, event_manager
 from dss_log import log
 class SettingUI(gtk.Alignment):
     def __init__(self, slide_back_cb, change_crumb_cb):
@@ -78,6 +78,7 @@ class SettingUI(gtk.Alignment):
         self.foot_box.set_setting(module_obj)
 
         # init sidebar
+        self.sidebar.hw_address = module_obj.hw_address
         self.sidebar.load_list(module_obj)
         self.apply_method = module_obj.apply_changes
         self.save_method = module_obj.save_changes
@@ -89,6 +90,7 @@ class SettingUI(gtk.Alignment):
         self.set_foot_bar_button(connection)
     
         self.focus_connection = connection
+        event_manager.emit("connection_set_to_be_active", connection) 
 
     def set_foot_bar_button(self, connection):
         if type(connection) == NMRemoteConnection:
