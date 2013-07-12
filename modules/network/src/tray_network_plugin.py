@@ -352,7 +352,6 @@ class WirelessSection(BaseMixIn):
     def connect_by_ssid(self, widget, ssid, ap):
         connection = net_manager.connect_wireless_by_ssid(ssid)
         self.ap = ap
-        print self.ap.object_path
         if connection and not isinstance(connection, NMRemoteConnection):
             security = net_manager.get_sec_ap(self.ap)
             if security:
