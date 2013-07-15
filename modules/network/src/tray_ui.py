@@ -304,7 +304,6 @@ class Section(gtk.HBox):
         #print "active", self.get_active()
         #print "------------------------"
         (dev_state, con_state) = state
-        print state, emit
         if dev_state is False:
             self.offbutton.set_active(False)
             self.label.set_sensitive(dev_state)
