@@ -840,10 +840,10 @@ class VpnAutoMonitor(threading.Thread):
                 elif self.thread == False:
                     continue
                 else:
-                    while self.thread.isAlive() and self.run_flag:
+                    while self.thread and self.thread.isAlive() and self.run_flag:
                         time.sleep(1)
                     else:
-                        if self.thread.succeed:
+                        if self.thread and self.thread.succeed:
                             self.run_flag = False
                         else:
                             continue
@@ -852,8 +852,6 @@ class VpnAutoMonitor(threading.Thread):
         if hasattr(self, "thread"):
             self.thread.stop_run()
     
-
-
 class GeneralItem(TreeItem):
     CHECK_LEFT_PADDING = 10
     CHECK_RIGHT_PADIING = 10
