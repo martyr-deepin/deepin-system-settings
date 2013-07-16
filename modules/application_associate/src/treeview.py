@@ -9,6 +9,9 @@ import gtk
 import pango
 from nls import _
 
+def str_mark_down(string):
+    return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") 
+
 def render_background(cr, rect, is_select=False):
     if is_select:
         background_color = [(0,["#91aadd", 1.0]),
@@ -82,9 +85,11 @@ class SessionItem(TreeItem):
         self.item.save(self.item.get_file())
         self.autorun = run
         self.redraw()
+    
+
 
     def render_app(self, cr, rect):
-        self.app_name = self.item.name
+        app_name = str_mark_down(self.item.name)
         self.render_background(cr, rect)
         CHECK_LEFT_PADDING = 5
         CHECK_RIGHT_PADDING = 5
@@ -99,10 +104,10 @@ class SessionItem(TreeItem):
 
         # Draw Text
 
-        (text_width, text_height) = get_content_size(self.app_name)
+        (text_width, text_height) = get_content_size(app_name)
         rect.x += self.padding_x
         rect.width -= self.padding_x * 2        
-        draw_text(cr, self.app_name, rect.x + CHECK_RIGHT_PADDING*2 + 16, rect.y, rect.width, rect.height,
+        draw_text(cr, app_name, rect.x + CHECK_RIGHT_PADDING*2 + 16, rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
         
         
@@ -122,7 +127,7 @@ class SessionItem(TreeItem):
                     alignment = pango.ALIGN_LEFT)
 
     def render_description(self, cr, rect):
-        self.description = self.item.comment
+        self.description = str_mark_down(self.item.comment)
         self.render_background(cr, rect)
         rect.x += self.padding_x
         rect.width -= self.padding_x * 2        

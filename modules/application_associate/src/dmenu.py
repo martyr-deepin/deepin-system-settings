@@ -41,7 +41,10 @@ class DesktopEntry(ConfigParser):
     def __init__(self, filename):
         ConfigParser.__init__(self)
         self.filename = filename
-        self.read(filename)
+        try:
+            self.read(filename)
+        except:
+            pass
 
     def __repr__(self):
         return '<DesktopEntry at 0x%x (%r)>' % (id(self), self.filename)
@@ -63,7 +66,11 @@ class DesktopEntry(ConfigParser):
         if not self.has_option_default(key):
             return default
         else:
-            return self.get_default(key).strip(';').split(';') # TODO: comma separated?
+            string = self.get_default(key)
+            if isinstance(string, list):
+                string = str(string)[1 : -1]
+
+            return string.strip(';').split(';') # TODO: comma separated?
 
     def get_locale(self, key, locale=''):
         try:
