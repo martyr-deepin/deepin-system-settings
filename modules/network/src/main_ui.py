@@ -183,10 +183,9 @@ class WiredDevice(object):
         for i, d in enumerate(self.wired_devices):
             if d.get_state() == 100:
                 self.tree.visible_items[i].set_net_state(2)
-            elif d.get_state() == 30:
+            elif d.get_state() <= 30:
                 self.tree.visible_items[i].set_net_state(0)
         if not any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
-            print "sfsf"
             self.wire.set_active(False)
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
