@@ -82,7 +82,7 @@ msgstr "管理员"
 #: ../src/main.py:147 ../src/main.py:551 ../src/main.py:688
 #: ../src/main.py:1110
 msgid "Enable"
-msgstr "启用此帐号"
+msgstr "启用此帐户"
 
 #: ../src/main.py:148
 msgid "Add"
@@ -143,7 +143,7 @@ msgstr "启用%s"
 
 #: ../src/main.py:548 ../src/main.py:690 ../src/main.py:1112
 msgid "Disable"
-msgstr "禁用此帐号"
+msgstr "禁用此帐户"
 
 #: ../src/main.py:550
 #, python-format
@@ -177,7 +177,7 @@ msgstr "你想要保留<u>%s</u>的文件吗？"
 
 #: ../src/main.py:671 ../src/main.py:1094
 msgid "Account disabled"
-msgstr "帐号已禁用"
+msgstr "帐户已禁用"
 
 #: ../src/main.py:673 ../src/main.py:1096
 msgid "To be set at next login"
