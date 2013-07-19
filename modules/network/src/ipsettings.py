@@ -175,7 +175,6 @@ class IPV4Conf(gtk.VBox):
             setattr(self, names[index] + "_flag", False)
             Dispatcher.set_tip(_("Invalid %s address.")%verbose_name[index])
 
-
         ############
         # 检查ip、子网掩码、网关是否正确
         is_valid = True
@@ -236,7 +235,6 @@ class IPV4Conf(gtk.VBox):
     
     def dns_toggle_on(self):
         self.setting.clear_dns()
-        self.dns = ["",""]
         self.set_group_sensitive("dns", False)
         ###########
         if self.settings_obj:
@@ -245,18 +243,23 @@ class IPV4Conf(gtk.VBox):
 
     def dns_toggle_off(self):
         self.set_group_sensitive("dns", True)
+        master, slave = self.dns
+        if master:
+            self.master_row[1].emit('changed', master)
+        if slave:
+            self.slave_row[1].emit('changed', slave)
         # 统一调用shared_methods.Settings的set_button
-        if self.connection.check_setting_finish():
-            dns_is_valid = True
-        else:
-            dns_is_valid = False
-        if self.settings_obj:
-            self.settings_obj.ipv4_dns_is_valid = dns_is_valid
-            self.settings_obj.set_button("save", dns_is_valid)
+        #if self.connection.check_setting_finish():
+            #dns_is_valid = True
+        #else:
+            #dns_is_valid = False
+        #if self.settings_obj:
+            #self.settings_obj.ipv4_dns_is_valid = dns_is_valid
+            #self.settings_obj.set_button("save", dns_is_valid)
         
     def ip_toggle_on(self):
         self.setting.clear_addresses()
-        self.ip = ["","",""]
+        #self.ip = ["","",""]
         self.setting.method = 'auto'
         self.set_group_sensitive("ip", False)
         ########
@@ -266,14 +269,22 @@ class IPV4Conf(gtk.VBox):
 
     def ip_toggle_off(self):
         self.setting.method = 'manual'
-        if self.connection.check_setting_finish():
-            ip_is_valid = True
-        else:
-            ip_is_valid = False
-        # TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
-        if self.settings_obj:
-            self.settings_obj.ipv4_ip_is_valid = ip_is_valid
-            self.settings_obj.set_button("save", ip_is_valid)
+        addr, mask, gate = self.ip
+        if addr:
+            self.addr_row[1].emit("changed", addr)
+        if mask:
+            self.mask_row[1].emit("changed", mask)
+        if gate:
+            self.gate_row[1].emit("changed", gate)
+        
+        #if self.connection.check_setting_finish():
+            #ip_is_valid = True
+        #else:
+            #ip_is_valid = False
+        ## TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
+        #if self.settings_obj:
+            #self.settings_obj.ipv4_ip_is_valid = ip_is_valid
+            #self.settings_obj.set_button("save", ip_is_valid)
 
 
 class IPV6Conf(gtk.VBox):
@@ -498,7 +509,7 @@ class IPV6Conf(gtk.VBox):
 
     def dns_toggle_on(self):
         self.setting.clear_dns()
-        self.dns = ["",""]
+        #self.dns = ["",""]
         self.set_group_sensitive("dns", False)
         ###########
         if self.settings_obj:
@@ -507,18 +518,23 @@ class IPV6Conf(gtk.VBox):
 
     def dns_toggle_off(self):
         self.set_group_sensitive("dns", True)
-        if self.connection.check_setting_finish():
-            dns_is_valid = True
-        else:
-            dns_is_valid = False
-        ##########
-        if self.settings_obj:
-            self.settings_obj.ipv6_dns_is_valid = dns_is_valid
-            self.settings_obj.set_button("save", dns_is_valid)
+        master, slave = self.dns
+        if master:
+            self.master_row[1].entry.emit('changed', master)
+        if slave:
+            self.slave_row[1].entry.emit('changed', slave)
+        #if self.connection.check_setting_finish():
+            #dns_is_valid = True
+        #else:
+            #dns_is_valid = False
+        ###########
+        #if self.settings_obj:
+            #self.settings_obj.ipv6_dns_is_valid = dns_is_valid
+            #self.settings_obj.set_button("save", dns_is_valid)
     
     def ip_toggle_on(self):
         self.setting.clear_addresses()
-        self.ip = ["","",""]
+        #self.ip = ["","",""]
         self.setting.method = 'auto'
         self.set_group_sensitive("ip", False)
         ########
@@ -529,11 +545,18 @@ class IPV6Conf(gtk.VBox):
     def ip_toggle_off(self):
         self.setting.method = 'manual'
         self.set_group_sensitive("ip", True)
-        if self.connection.check_setting_finish():
-            ip_is_valid = True
-        else:
-            ip_is_valid = False
-        # TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
-        if self.settings_obj:
-            self.settings_obj.ipv6_ip_is_valid = ip_is_valid
-            self.settings_obj.set_button("save", ip_is_valid)
+        addr, mask, gate = self.ip
+        if addr:
+            self.addr_row[1].entry.emit("changed", addr)
+        if mask:
+            self.mask_row[1].entry.emit("changed", mask)
+        if gate:
+            self.gate_row[1].entry.emit("changed", gate)
+        #if self.connection.check_setting_finish():
+            #ip_is_valid = True
+        #else:
+            #ip_is_valid = False
+        ## TODO 手动配置ip地址时，应该检查ip输入框的值是否合法，然后再设置保存按钮的状态
+        #if self.settings_obj:
+            #self.settings_obj.ipv6_ip_is_valid = ip_is_valid
+            #self.settings_obj.set_button("save", ip_is_valid)
