@@ -24,7 +24,7 @@ import os
 import gtk
 import gobject
 
-from deepin_utils.net import is_network_connected
+# from deepin_utils.net import is_network_connected
 from dtk.ui.utils import get_optimum_pixbuf_from_file
 from dtk.ui.thread_pool import MissionThreadPool
 
@@ -79,7 +79,7 @@ class CacheManager(object):
                 del pixbuf
                 return image_path
             
-        if try_web and is_network_connected():
+        if try_web:
             small_image_url = image_object.small_url
             if small_image_url:
                 ret = common.download(small_image_url, temp_path)
