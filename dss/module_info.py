@@ -21,7 +21,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from dtk.ui.utils import get_system_icon_info
 from deepin_utils.config import Config
 from deepin_utils.file import get_parent_dir
 import gtk
@@ -52,23 +51,30 @@ class ModuleInfo(object):
         self.name = self.default_name
         if MAIN_LANG != "en_US":
             self.name = self.config.get("name", MAIN_LANG)
-        '''
-        TODO: snyh give standard way to get pixbuf
-        '''
-        icon_infos = [get_system_icon_info("Deepin", "preferences-%s" % self.id), 
-                      get_system_icon_info("Deepin", "preferences-%s" % self.id, 16)
+
+        icon_infos = [self.get_system_icon_info(self.id, 48), 
+                      self.get_system_icon_info(self.id, 16),
                      ]
         
         self.icon_pixbuf = None
         self.menu_icon_pixbuf = None
         if icon_infos[0] and icon_infos[1]:
-            self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[0].get_filename())
-            self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[1].get_filename())
+            self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[0])
+            self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[1])
         else:
             self.icon_pixbuf = app_theme.get_pixbuf("navigate/none-big.png").get_pixbuf()
             self.menu_icon_pixbuf = app_theme.get_pixbuf("navigate/none-small.png").get_pixbuf()
             
         self.search_keyword = self.config.get("main", "search_keyword")
+        
+    def get_system_icon_info(self, icon_id, icon_size):
+        '''
+        NOTE: Because dtk.ui.utils.get_system_icon_info need take 20ms every call,
+        it will slow down start speed of deepin system settings.
+        
+        So i return path directly to solve start speed problem.
+        '''
+        return "/usr/share/icons/Deepin/apps/%s/preferences-%s.png" % (icon_size, icon_id)
         
 def get_module_infos():
     all_module_names = filter(lambda module_name: os.path.isdir(os.path.join(MODULE_DIR, module_name)), os.listdir(MODULE_DIR))        

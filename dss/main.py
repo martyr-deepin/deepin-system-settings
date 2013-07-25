@@ -413,6 +413,7 @@ def application_focus_changed_cb(widget, event, tp):
         send_message(preview_module_id, "focus_changed", tp)
 
 if __name__ == "__main__":
+    
     ops, args = getopt.getopt(sys.argv[1:], '')
     module_name = ""
 
@@ -487,6 +488,7 @@ if __name__ == "__main__":
     for module_info_list in module_infos:
         for module_info in module_info_list:
             module_dict[module_info.id] = module_info
+            
     
     # Init action bar.
     action_bar = ActionBar(module_infos, 
