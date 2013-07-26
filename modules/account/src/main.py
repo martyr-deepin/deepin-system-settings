@@ -107,7 +107,7 @@ class AccountSetting(object):
         self.label_widgets["passwd"] = Label(_("Password"), enable_select=False,
                 text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
         self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH-1, enable_select=False, enable_double_click=False)
-        ##self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
+        self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
         self.label_widgets["nopw_login"] = Label(_("Log in without a password"), enable_select=False,
                 text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"), enable_select=False, enable_double_click=False)
@@ -128,10 +128,12 @@ class AccountSetting(object):
         self.button_widgets["lock"] = gtk.Button()
         self.button_widgets["account_type"] = ComboBox([(_('Standard'), 0), (_('Administrator'), 1)], fixed_width=COMBO_WIDTH)
         #self.button_widgets["auto_login"] = gtk.ToggleButton()
-        ##self.button_widgets["auto_login"] = SwitchButton()
+        self.button_widgets["auto_login"] = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/active_normal.png"))
         self.button_widgets["nopw_login"] = SwitchButton(
             inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
-            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/active_normal.png"))
         self.button_widgets["passwd"] = InputEntry()
         #self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
         #self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
@@ -285,20 +287,20 @@ class AccountSetting(object):
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.button_widgets["account_type"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 1, 2, 4)
 
-        ##self.container_widgets["account_info_table"].attach(
-            ##self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
-        ##self.container_widgets["account_info_table"].attach(
-            ##self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["auto_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
 
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["nopw_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 2, 3, 4)
+            self.__make_align(self.label_widgets["nopw_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["nopw_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
+            self.__make_align(self.button_widgets["nopw_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
 
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
+            self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 4, 5, 4)
         self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
+            self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 4, 5, 4)
         #self.container_widgets["account_info_table"].attach(
             #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 5, 6, 4)
         #self.container_widgets["account_info_table"].attach(
@@ -434,7 +436,7 @@ class AccountSetting(object):
         self.button_widgets["del_account"].connect("clicked", self.del_account_button_clicked)
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
         self.button_widgets["account_create"].connect("clicked", self.account_create_button_clicked)
-        ##self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
+        self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
         self.button_widgets["nopw_login"].connect("toggled", self.nopw_login_toggled)
         self.button_widgets["disable_account"].connect("clicked", self.account_lock_button_clicked)
 
@@ -677,9 +679,9 @@ class AccountSetting(object):
             self.label_widgets["passwd_char"].set_text(_("None"))
         else:
             self.label_widgets["passwd_char"].set_text("****")
-        ##if dbus_obj.get_automatic_login() != self.button_widgets["auto_login"].get_active():
-            ##self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
-            ##self.button_widgets["auto_login"].set_active(dbus_obj.get_automatic_login())
+        if dbus_obj.get_automatic_login() != self.button_widgets["auto_login"].get_active():
+            self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
+            self.button_widgets["auto_login"].set_active(dbus_obj.get_automatic_login())
         #nopw_login = (dbus_obj.get_password_mode() == 2)
         nopw_login = ("nopasswdlogin" in dbus_obj.get_groups())
         if self.button_widgets["nopw_login"].get_active() != nopw_login:
@@ -1037,8 +1039,8 @@ class AccountSetting(object):
         for w in del_widgets:
             w.destroy()
         button.destroy()
-        self.container_widgets["account_info_table"].attach(passwd_align, 0, 1, 3, 4, 4)
-        self.container_widgets["account_info_table"].attach(passwd_char_align, 1, 2, 3, 4, 4)
+        self.container_widgets["account_info_table"].attach(passwd_align, 0, 1, 4, 5, 4)
+        self.container_widgets["account_info_table"].attach(passwd_char_align, 1, 2, 4, 5, 4)
         self.container_widgets["account_info_table"].show_all()
         self.container_widgets["main_hbox"].set_sensitive(True)
         self.set_account_info_error_text("")
@@ -1100,9 +1102,9 @@ class AccountSetting(object):
                 self.label_widgets["passwd_char"].set_text(_("None"))
             else:
                 self.label_widgets["passwd_char"].set_text("****")
-            ##if user.get_automatic_login() != self.button_widgets["auto_login"].get_active():
-                ##self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
-                ##self.button_widgets["auto_login"].set_active(user.get_automatic_login())
+            if user.get_automatic_login() != self.button_widgets["auto_login"].get_active():
+                self.button_widgets["auto_login"].set_data("changed_by_other_app", True)
+                self.button_widgets["auto_login"].set_active(user.get_automatic_login())
             #nopw_login = (user.get_password_mode() == 2)
             nopw_login = ("nopasswdlogin" in user.get_groups())
             if self.button_widgets["nopw_login"].get_active() != nopw_login:
@@ -1230,7 +1232,7 @@ class AccountSetting(object):
         #self.container_widgets["button_hbox"].set_sensitive(authorized)
         self.button_widgets["add_account"].set_sensitive(authorized)
         self.button_widgets["account_type"].set_sensitive(authorized)
-        ##self.button_widgets["auto_login"].set_sensitive(authorized)
+        self.button_widgets["auto_login"].set_sensitive(authorized)
         self.button_widgets["nopw_login"].set_sensitive(authorized)
         self.container_widgets["check_button_table"].set_sensitive(authorized)
         if self.current_select_user and not settings.check_is_myown(self.current_select_user.get_uid()):
