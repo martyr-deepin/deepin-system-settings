@@ -92,7 +92,10 @@ class AutoStart(object):
             return False
 
     def set_option(self, option, value):
-        self.conf.set(self.SECTION, option, value)
+        try:
+            self.conf.set(self.SECTION, option, value)
+        except Exception:
+            pass
 
     def save(self, file_name):
         if file_name:
