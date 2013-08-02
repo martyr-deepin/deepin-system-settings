@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-02 16:37+0800\n"
+"POT-Creation-Date: 2013-08-02 17:15+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,15 +41,24 @@ msgstr ""
 msgid "Advanced..."
 msgstr ""
 
-#: ../src/tray_power_plugin.py:156 ../src/tray_power_plugin.py:186
+#: ../src/tray_power_plugin.py:164 ../src/tray_power_plugin.py:194
 msgid "Fully charged"
 msgstr ""
 
-#: ../src/tray_power_plugin.py:158
+#: ../src/tray_power_plugin.py:166
 msgid "Charging"
 msgstr ""
 
-#: ../src/tray_power_plugin.py:184
+#: ../src/tray_power_plugin.py:192
 #, python-format
 msgid "%s remaining"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:201
+#, python-format
+msgid "Low power(%s%%)"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:202
+msgid "Your battery is running low, please charge!"
 msgstr ""

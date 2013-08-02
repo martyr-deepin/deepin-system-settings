@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-02 16:37+0800\n"
+"POT-Creation-Date: 2013-08-02 17:15+0800\n"
 "PO-Revision-Date: 2013-03-01 10:21+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -40,15 +40,24 @@ msgstr "自訂"
 msgid "Advanced..."
 msgstr "進階設定..."
 
-#: ../src/tray_power_plugin.py:156 ../src/tray_power_plugin.py:186
+#: ../src/tray_power_plugin.py:164 ../src/tray_power_plugin.py:194
 msgid "Fully charged"
 msgstr "電池已完全充飽"
 
-#: ../src/tray_power_plugin.py:158
+#: ../src/tray_power_plugin.py:166
 msgid "Charging"
 msgstr "充電中"
 
-#: ../src/tray_power_plugin.py:184
+#: ../src/tray_power_plugin.py:192
 #, python-format
 msgid "%s remaining"
 msgstr "剩餘電量「%s」"
+
+#: ../src/tray_power_plugin.py:201
+#, python-format
+msgid "Low power(%s%%)"
+msgstr ""
+
+#: ../src/tray_power_plugin.py:202
+msgid "Your battery is running low, please charge!"
+msgstr ""
