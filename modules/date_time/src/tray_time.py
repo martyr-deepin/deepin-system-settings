@@ -44,7 +44,7 @@ class TrayTime(gobject.GObject):
         }        
     def __init__(self):
         gobject.GObject.__init__(self)
-        self.__timer = Timer(1)
+        self.__timer = Timer(5000)
         self.__tray_time_hour_type = TRAY_TIME_12_HOUR
         self.__timer.connect("Tick", self.__update_time)
         # setting 12/24 hour.    
