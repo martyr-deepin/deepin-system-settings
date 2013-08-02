@@ -170,9 +170,13 @@ class SessionManager(object):
     is_desktop_file_sys = property(lambda self : partial(is_desktop_file, basename=self.__sys_dir))
     
 def is_desktop_file(filename, basename):
-    with open(basename + os.sep + filename) as config_file:
-        try:
-            ConfigParser.SafeConfigParser().readfp(config_file)
-            return True
-        except Exception:
-            return False
+    file_path = basename + os.sep + filename
+    if os.access(file_path, os.R_OK):
+        with open(file_path) as config_file:
+            try:
+                ConfigParser.SafeConfigParser().readfp(config_file)
+                return True
+            except Exception:
+                return False
+    else:
+        return False
