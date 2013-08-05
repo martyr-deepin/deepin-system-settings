@@ -171,7 +171,7 @@ class TrayPower(object):
     def update_power_icon(self, percentage):
         if self.online_value:
             return
-        self.check_for_warning()
+        self.check_for_warning(percentage)
         if percentage >= 91 and percentage <= 100:
             self.tray_icon.set_icon_theme("battery91-100")
         elif percentage >= 81 and percentage <= 90:

@@ -1133,8 +1133,8 @@ class CacheItem(gobject.GObject, MissionThread):
         This is IconView interface, you should implement it.
         '''
         self.emit_redraw_request()
-        if self.is_downloaded:
-            event_manager.emit("apply-wallpaper", self)
+        # if self.is_downloaded:
+        event_manager.emit("apply-wallpaper", self)
         event_manager.emit("download-images", [self.image_object])
     
     def icon_item_button_release(self, x, y):
