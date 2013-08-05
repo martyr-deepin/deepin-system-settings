@@ -57,8 +57,8 @@ msgstr "剩余%s电量"
 #: ../src/tray_power_plugin.py:201
 #, python-format
 msgid "Low power(%s%%)"
-msgstr ""
+msgstr "电量低(%s%%)"
 
 #: ../src/tray_power_plugin.py:202
 msgid "Your battery is running low, please charge!"
-msgstr ""
+msgstr "你的电池电量较低，请及时充电！"
