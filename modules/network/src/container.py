@@ -157,7 +157,7 @@ class MyToggleButton(SwitchButton):
         SwitchButton.__init__(self,
             False,
             inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
-            active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+            active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/active_disable.png"))
 
 class MyRadioButton(RadioButton):
     '''docstring for MyRadioButton'''

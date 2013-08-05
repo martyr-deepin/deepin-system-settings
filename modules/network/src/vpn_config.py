@@ -65,7 +65,7 @@ class VPNSetting(Settings):
             active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                            device_path,
                                            specific_path)
-            print active_object
+            #print active_object
             active_object.connect("vpn-state-changed", self.vpn_state_changed)
         else:
             print "no active connection available"
@@ -82,7 +82,7 @@ class VPNSetting(Settings):
                                                device_path,
                                                specific_path)
             if active_object != None:
-                print "in wired device"
+                #print "in wired device"
                 active_vpn = nm_module.cache.get_spec_object(active_object.object_path)
                 self.state_change_cb(active_vpn, connection.get_setting("connection").id)
             else:
@@ -92,14 +92,14 @@ class VPNSetting(Settings):
     def try_to_connect_wireless_device(self, device, connection):
         active = device.get_active_connection()
         if active:
-            print active
+            #print active
             device_path = device.object_path
             specific_path = active.object_path
             active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
             if active_object != None:
-                print "in wireless device"
+                #print "in wireless device"
                 active_vpn = nm_module.cache.get_spec_object(active_object.object_path)
                 self.state_change_cb(active_vpn, connection.get_setting("connection").id)
 
@@ -584,7 +584,7 @@ class PPPConf(gtk.VBox):
         table_attach("ppp_echo", 18)
 
         if self.service_type == "l2tp":
-            print "this is l2tp"
+            #print "this is l2tp"
             table_attach("nopcomp", 14)
             table_attach("noaccomp", 15)
             
@@ -679,7 +679,7 @@ class PPPConf(gtk.VBox):
             ipsec_gateway_id = self.vpn_setting.get_data_item("ipsec-gateway-id")
             ipsec_psk = self.vpn_setting.get_data_item("ipsec-psk")
             
-            print ipsec_group_name
+            #print ipsec_group_name
             self.group_name.set_text(ipsec_group_name)
             self.gateway_id.set_text(ipsec_gateway_id)
             self.pre_shared_key.set_text(ipsec_psk)
@@ -703,7 +703,7 @@ class PPPConf(gtk.VBox):
             self.vpn_setting.delete_data_item(key)
     def entry_changed_cb(self, widget, string, key):
         if string == "":
-            print key,"entry is empty"
+            #print key,"entry is empty"
             self.vpn_setting.delete_data_item(key)
         elif key != "name":
             self.vpn_setting.set_data_item(key, string)
@@ -722,13 +722,13 @@ class PPPConf(gtk.VBox):
                 self.require_mppe.set_sensitive(False)
                 self.require_mppe.set_active(False)
 
-                self.set_group_active(True)
-                self.set_group_sensitive(False)
+                #self.set_group_active(True)
+                self.set_group_sensitive(True)
 
             else:
                 self.require_mppe_label.set_sensitive(True)
                 self.require_mppe.set_sensitive(True)
-                self.set_group_sensitive(True)
+                #self.set_group_sensitive(True)
 
         elif key.startswith("no"):
             if active:
@@ -753,13 +753,13 @@ class PPPConf(gtk.VBox):
         active = widget.get_active()
         if active and key != "name":
             self.vpn_setting.set_data_item(key, "yes")
-            self.set_group_active(False)
+            #self.set_group_active(False)
             self.set_group_sensitive(False)
 
             self.mppe_group_set_sensitive(True)
             self.init_ui()
         else:
-            self.set_group_active(True)
+            #self.set_group_active(True)
             self.set_group_sensitive(True)
             self.vpn_setting.delete_data_item(key)
             self.mppe_group_set_sensitive(False)
