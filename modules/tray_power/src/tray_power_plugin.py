@@ -24,6 +24,7 @@ import dbus
 import dbus.mainloop.glib
 from nls import _
 from tray_power_gui import PowerGui
+from dtk.ui.dbus_notify import DbusNotify
 from deepin_utils.process import run_command
 try:
     import deepin_gsettings
@@ -85,7 +86,19 @@ class TrayPower(object):
         value = self.power_set.get_double("percentage")
         self.update_power_icon(int(value))
         self.modify_battery_icon(int(value))
-
+    
+    @property
+    def percentage_low_threshhold(self):
+        return 20
+        
+    @property
+    def percentage_low(self):
+        return self.power_set.get_int("percentage-low")
+    
+    @property
+    def percentage_low_critical(self):
+        return self.power_set.get_int("percentage-critical")
+        
     def get_has_battery(self):
         ''' whether power has battery '''
         try:
@@ -158,6 +171,7 @@ class TrayPower(object):
     def update_power_icon(self, percentage):
         if self.online_value:
             return
+        self.check_for_warning()
         if percentage >= 91 and percentage <= 100:
             self.tray_icon.set_icon_theme("battery91-100")
         elif percentage >= 81 and percentage <= 90:
@@ -180,6 +194,14 @@ class TrayPower(object):
             string = _("Fully charged")
 
         self.tray_icon.set_tooltip_text(string)
+        
+    def check_for_warning(self, percentage):
+        if percentage == self.percentage_low_threshhold or percentage == self.percentage_low or percentage == self.percentage_low_critical:
+            ntf = DbusNotify("deepin-system-settings", "/usr/share/icons/Deepin/apps/48/preferences-power.png")
+            ntf.set_summary(_("Low power(%s%%)" % percentage))
+            ntf.set_body(_("Your battery is running low, please charge!"))
+            ntf.notify()
+
 
     def init_values(self, this_list):
         self.this = this_list[0]
@@ -197,7 +219,7 @@ class TrayPower(object):
         else:
             self.tray_icon.set_icon_theme("computer_d")
 
-    def id(slef):
+    def id(self):
         return "deepin-tray-power-hailongqiu"
 
     def run(self):
@@ -223,4 +245,3 @@ def return_id():
 
 def return_plugin():
     return TrayPower
-
