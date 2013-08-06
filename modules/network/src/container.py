@@ -159,12 +159,14 @@ class MyToggleButton(SwitchButton):
             inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
             active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/active_disable.png"))
         
-        if not self.get_sensitive():
-            self.state_saver = False
-        else:
-            self.state_saver = None
+        #if not self.get_sensitive():
+            #self.state_saver = False
+        #else:
+            #self.state_saver = None
 
     def set_sensitive(self, state):
+        if state == self.get_sensitive():
+            return 
         if not state:
             super(MyToggleButton, self).set_sensitive(state)
             self.state_saver = self.get_active()
@@ -174,6 +176,8 @@ class MyToggleButton(SwitchButton):
             super(MyToggleButton, self).set_sensitive(state)
             if self.state_saver == True:
                 self.set_active(True)
+                self.state_saver = None
+            else:
                 self.state_saver = None
             
 

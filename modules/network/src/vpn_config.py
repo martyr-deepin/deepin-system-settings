@@ -778,6 +778,11 @@ class PPPConf(gtk.VBox):
             else:
                 Dispatcher.set_button("save", False)
 
+        if self.auth_lock():
+            self.require_mppe_label.set_sensitive(False)
+            self.require_mppe.set_sensitive(False)
+            return
+
 
     def mppe_group_set_sensitive(self, boolean):
         self.require_mppe_128_label.set_sensitive(boolean)
