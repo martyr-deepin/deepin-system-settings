@@ -292,10 +292,10 @@ class AccountSetting(object):
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.button_widgets["auto_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 2, 3, 4)
 
-        self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.label_widgets["nopw_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
-        self.container_widgets["account_info_table"].attach(
-            self.__make_align(self.button_widgets["nopw_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
+        #self.container_widgets["account_info_table"].attach(
+            #self.__make_align(self.label_widgets["nopw_login"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 3, 4, 4)
+        #self.container_widgets["account_info_table"].attach(
+            #self.__make_align(self.button_widgets["nopw_login"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 3, 4, 4)
 
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 4, 5, 4)
