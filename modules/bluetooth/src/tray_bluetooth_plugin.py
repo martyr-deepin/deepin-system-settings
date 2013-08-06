@@ -114,12 +114,31 @@ class TrayBluetoothPlugin(object):
         self.ori_height = 93
         self.height = self.ori_height
         self.device_items = []
+        self.register_agent()
 
+    def register_agent(self):
+        if not hasattr(self, "agent"):
+            from bt.agent import Agent
+            
+            try:
+                path = "/com/deepin/bluetooth/agent"
+
+                self.agent = Agent(path)
+                self.agent.set_exit_on_release(False)
+            except Exception, e:
+                print e
+                
+        try:
+            self.my_bluetooth.register_agent(self.agent.agent_path)
+        except Exception, e:
+            print e
+        
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
 
     def __on_default_adapter_changed(self):
         self.tray_icon.set_visible(True)
+        self.register_agent()
 
     def init_values(self, this_list):
         self.this = this_list[0]

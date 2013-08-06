@@ -119,11 +119,13 @@ class GuiAgent(dbus.service.Object):
         if self.exit_on_release:
 	   mainloop.quit()
     
-    @dbus.service.method("org.bluez.Agent", in_signature="os", out_signature="")
-    def Authorize(self, device_path, uuid):
+    @dbus.service.method("org.bluez.Agent", in_signature="os", out_signature="", async_callbacks=("ok", "err"))
+    def Authorize(self, device_path, uuid, ok, err):
         print "Authorize (%s, %s)" % (device_path, uuid)
         authorize = raw_input("Authorize connection (yes/no): ")
         if (authorize == "yes"):
+            Device(device_path).set_trusted(True)
+            ok()
             return
         raise Rejected("Connection rejected by user")
     

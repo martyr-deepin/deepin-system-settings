@@ -35,6 +35,7 @@ class Device(BusBase):
 
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Device")
+        self.device_path = device_path
 
         self.bus.add_signal_receiver(self.disconnect_requested_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "DisconnectRequested")

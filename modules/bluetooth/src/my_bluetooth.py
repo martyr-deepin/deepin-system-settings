@@ -63,6 +63,14 @@ class MyBluetooth():
             i += 1
 
         return ret
+    
+    def register_agent(self, agent_path):
+        if self.adapter:
+            print "register agent!!!"
+            try:
+                self.adapter.register_agent(agent_path, "")
+            except Exception,e:
+                print e
 
     def __adapter_removed(self, manager, path):
         if self.__adapter_removed_cb != None:

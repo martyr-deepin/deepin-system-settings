@@ -190,13 +190,17 @@ def test_service():
 
     manager = Manager()
     adapter = Adapter(manager.get_default_adapter())
+    device = Device(adapter.get_devices()[0])
     if adapter.get_devices():
         device = Device(adapter.get_devices()[0])
     else:
         print "after paired, should exists devices"
 
-    # device_get_services(device)    
-    # device_discover_services(device)    
+    print "device_get_services"
+    device_get_services(device)    
+    print "device_discover_services"
+    device_discover_services(device)    
+    print "device_get_uuids"
     device_get_uuids(device)    
 
     mainloop = gobject.MainLoop()
@@ -304,8 +308,8 @@ def test_phone():
 
 if __name__ == "__main__":
     # test_adapter_prop()
-    test_found_pair()
-    # test_service()
+    # test_found_pair()
+    test_service()
     #test_phone()
     #test_passive()
     pass

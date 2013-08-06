@@ -120,6 +120,7 @@ class Adapter(BusBase):
 
     def register_agent(self, agent_path, capability):
         if capability in ["DisplayOnly", "DisplayYesNo", "KeyboardOnly", "NoInputNoOutput", ""]:
+            self.agent = agent_path
             return self.dbus_method("RegisterAgent", agent_path, capability)
         else:
             pass
