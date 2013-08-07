@@ -191,11 +191,11 @@ class DeviceItem(gobject.GObject):
     @property
     def device_properties(self):
         return map(lambda _uuid : bluetooth_uuid_to_string(_uuid), self.device.get_uuids())
-    
+
     @property
     def is_connected(self):
         return self.device.get_connected()
-    
+
     def emit_redraw_request(self):
         '''
         Emit `redraw-request` signal.
@@ -646,43 +646,45 @@ class BlueToothView(gtk.VBox):
     def __refresh_notice_label(self):
         searching_str = _("Discovering device")
 
-        self.notice_label.set_text(searching_str + ".")
-        gobject.timeout_add_seconds(1, lambda txt : self.notice_label.set_text(searching_str + txt), "..")
-        gobject.timeout_add_seconds(2, lambda txt : self.notice_label.set_text(searching_str + txt), "...")
-        
+        if self.notice_label.get_text().count(".") == 3:
+            self.notice_label.set_text(searching_str + ".")
+        else:
+            self.notice_label.set_text(self.notice_label.get_text() + ".")
+
         return True
-        
+
     def __on_search(self, widget):
         if not self.is_searching:
             self.my_bluetooth.adapter.start_discovery()
-            self.__refresh_notice_label()
-            self.refresh_lable_timeout = gobject.timeout_add_seconds(4, self.__refresh_notice_label)
+            self.notice_label.set_text(_("Discovering device"))
+            self.refresh_lable_timeout = gobject.timeout_add_seconds(1, self.__refresh_notice_label)
             self.my_bluetooth.adapter.connect("property-changed", self.on_adapter_property_changed)
             self.is_searching = True
-            
+
     def on_adapter_property_changed(self, obj, key, value):
         if key == "Discovering" and value == False:
             gobject.source_remove(self.refresh_lable_timeout)
             self.is_searching = False
             self.notice_label.set_text("")
-            
+            try:
+                self.my_bluetooth.adapter.stop_discovery()
+            except Exception, e:
+                print e
+
     def __device_found(self, adapter, address, values):
-        if address not in adapter.get_address_records():
-            created_device = adapter.create_device(address)
-            if create_device:
-                device = Device(created_device)
-                items = []
+        if address not in adapter.get_address_records() and address not in adapter.get_devices():
+            device = Device(adapter.create_device(address))
+            items = []
+            
+            if not values.has_key("Name"):
+                return
 
-                if not values.has_key("Name"):
-                    return
-
-                items.append(DeviceItem(values['Name'],
-                                        app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter))
-                self.device_iconview.add_items(items)
+            items.append(DeviceItem(values['Name'], 
+                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter))
+            self.device_iconview.add_items(items)
         else:
             if adapter.get_discovering():
                 adapter.stop_discovery()
-
     def __set_enable_open(self, is_open=True):
         self.my_bluetooth.adapter.set_powered(is_open)
         self.enable_open_label.set_sensitive(is_open)
