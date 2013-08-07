@@ -114,11 +114,12 @@ class TrayBluetoothPlugin(object):
         self.ori_height = 93
         self.height = self.ori_height
         self.device_items = []
-        self.register_agent()
+        # self.register_agent()
 
     def register_agent(self):
         if not hasattr(self, "agent"):
             from bt.agent import Agent
+            import dbus.mainloop.glib
             
             try:
                 path = "/com/deepin/bluetooth/agent"
@@ -129,6 +130,7 @@ class TrayBluetoothPlugin(object):
                 print e
                 
         try:
+            dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             self.my_bluetooth.register_agent(self.agent.agent_path)
         except Exception, e:
             print e
@@ -151,7 +153,7 @@ class TrayBluetoothPlugin(object):
         else:
             self.tray_icon.set_no_show_all(True)
 
-    def id(slef):
+    def id(self):
         return "deepin-bluetooth-plugin-hailongqiu"
 
     def run(self):

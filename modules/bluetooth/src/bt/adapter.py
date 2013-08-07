@@ -38,19 +38,19 @@ class Adapter(BusBase):
     def __init__(self, adapter_path):
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.Adapter")
 
-        self.bus.add_signal_receiver(self.device_created_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.device_created_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "DeviceCreated")
 
-        self.bus.add_signal_receiver(self.device_disappeared_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.device_disappeared_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "DeviceDisappeared")
 
-        self.bus.add_signal_receiver(self.device_found_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.device_found_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "DeviceFound")
 
-        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.device_removed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "DeviceRemoved")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
     def create_device(self, address):
@@ -61,18 +61,18 @@ class Adapter(BusBase):
 
     def cancel_device_creation(self, address):
         return self.dbus_method("CancelDeviceCreation", address)
-    
-    def create_paired_device(self, address, agent_path, capability, 
+
+    def create_paired_device(self, address, agent_path, capability,
                              reply_handler_cb = None, error_handler_cb = None):
         if reply_handler_cb and error_handler_cb:
-            return self.dbus_method("CreatePairedDevice", address, agent_path, capability, 
-                                    reply_handler = reply_handler_cb, 
+            return self.dbus_method("CreatePairedDevice", address, agent_path, capability,
+                                    reply_handler = reply_handler_cb,
                                     error_handler = error_handler_cb)
-        
-        return self.dbus_method("CreatePairedDevice", address, agent_path, capability, 
+
+        return self.dbus_method("CreatePairedDevice", address, agent_path, capability,
                                 reply_handler = self.create_paired_reply,
                                 error_handler = self.create_paired_error)
-    
+
     def create_paired_reply(self, device):
         print "paried %s succeed\n" % device
 
@@ -97,7 +97,7 @@ class Adapter(BusBase):
             if devices:
                 devices = map(lambda x:str(x), devices)
 
-        return devices    
+        return devices
 
     def get_address_records(self):
         addresses = []
@@ -134,7 +134,7 @@ class Adapter(BusBase):
     def release_session(self):
         return self.dbus_method("ReleaseSession")
 
-    ###Props    
+    ###Props
     def get_properties(self):
         if self.dbus_method("GetProperties"):
             return self.dbus_method("GetProperties")
@@ -223,7 +223,7 @@ class Adapter(BusBase):
             if uuids:
                 uuids = map(lambda x:str(x), uuids)
 
-        return uuids        
+        return uuids
 
     ###Signals
     def device_created_cb(self, dev_path):
@@ -265,7 +265,7 @@ class Media(BusBase):
 
     def __init__(self, adapter_path):
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.Media")
-            
+
     def register_end_point(self, endpoint, properties):
         return self.dbus_method("RegisterEndPoint", endpoint, properties)
 
@@ -299,7 +299,7 @@ class OutOfBand(BusBase):
 
     def remove_remote_data(self, data_string):
         return self.dbus_method("RemoveRemoteData", data_string)
-        
+
     def read_local_data(self):
         return self.dbus_method("ReadLocalData")
 
@@ -313,10 +313,10 @@ class SerialProxyManager(BusBase):
     def __init__(self, adapter_path):
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.SerialProxyManager")
 
-        self.bus.add_signal_receiver(self.proxy_created_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.proxy_created_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "ProxyCreated")
 
-        self.bus.add_signal_receiver(self.proxy_removed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.proxy_removed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "ProxyRemoved")
 
     def create_proxy(self, pattern, address):

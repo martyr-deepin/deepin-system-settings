@@ -80,7 +80,7 @@ def test_found_pair():
         device = Device(dev_path)
         pair(device)
 
-    def pair(device):        
+    def pair(device):
         from agent import Agent
         path = "/org/bluez/agent"
         agent = Agent(path)
@@ -88,10 +88,10 @@ def test_found_pair():
         device.set_trusted(True)
         if not device.get_paired():
             print "create paired device"
-            adapter.create_paired_device(device.get_address(), 
-                                         path, 
-                                         "DisplayYesNo", 
-                                         create_paired_reply, 
+            adapter.create_paired_device(device.get_address(),
+                                         path,
+                                         "DisplayYesNo",
+                                         create_paired_reply,
                                          create_paired_error)
 
     def create_paired_reply(device):
@@ -197,11 +197,11 @@ def test_service():
         print "after paired, should exists devices"
 
     print "device_get_services"
-    device_get_services(device)    
+    device_get_services(device)
     print "device_discover_services"
-    device_discover_services(device)    
+    device_discover_services(device)
     print "device_get_uuids"
-    device_get_uuids(device)    
+    device_get_uuids(device)
 
     mainloop = gobject.MainLoop()
     mainloop.run()
@@ -218,7 +218,7 @@ def test_phone():
             else:
                 continue
 
-        return services    
+        return services
 
     def send_file(device, files):
         ###please see the example in obex_agent.py
@@ -228,7 +228,7 @@ def test_phone():
         ###please see the example in utils.py
         pass
 
-    ### test phone audio 
+    ### test phone audio
     def connect_phone_audio(device):
         from device import AudioSource
         from device import Control
@@ -236,31 +236,31 @@ def test_phone():
         ###AudioSource
         if "AudioSource" not in get_device_supported_services(device):
             print "device not support AudioSource"
-            return 
+            return
 
         audiosource = AudioSource(device.object_path)
         ###when connect, voice switch from phone to my'pc
         if audiosource.get_state() == "disconnected":
             audiosource.connect()
 
-        ###Control    
+        ###Control
         if "A/V_RemoteControlTarget" not in get_device_supported_services(device):
             print "device not support A/V control"
             return
-        
+
         control = Control(device.object_path)
         if not control.get_connected():
             return
 
-        for i in range(10):    
-            control.volume_up()    
+        for i in range(10):
+            control.volume_up()
 
-        ###HandsFreeGateway    
+        ###HandsFreeGateway
         from device import HandsfreeGateway
         from handsfree_agent import HandsfreeAgent
         if not "HandsfreeAudioGateway" in get_device_supported_services(device):
             print "device not support handsfree gateway"
-            return 
+            return
 
         hfg = HandsfreeGateway(device.object_path)
         HandsfreeAgent("/org/bluez/HandsfreeAgent")
@@ -273,10 +273,10 @@ def test_phone():
         '''for my phone, it's nap'''
         from device import Network
         from adapter import NetworkServer
-        
+
         if "NAP" not in get_device_supported_services(device):
             print "device not support NAP"
-            return 
+            return
 
         network = Network(device.object_path)
         server = NetworkServer(adapter.object_path)
@@ -300,8 +300,8 @@ def test_phone():
         print "after paired, should exists devices"
 
     send_file(device, ["/home/zhaixiang/debug"])
-    #connect_phone_audio(device)    
-    # connect_phone_network(adapter, device)    
+    #connect_phone_audio(device)
+    # connect_phone_network(adapter, device)
 
     mainloop = gobject.MainLoop()
     mainloop.run()

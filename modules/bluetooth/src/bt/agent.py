@@ -37,15 +37,15 @@ class Rejected(dbus.DBusException):
     _dbus_error_name = "org.bluez.Error.Rejected"
 
 class Agent(dbus.service.Object):
-    def __init__(self, 
-                 path = "/org/bluez/agent", 
+    def __init__(self,
+                 path = "/com/deepin/bluetooth/agent",
                  bus = None):
         self.agent_path = path
         if bus is None:
-	    bus = dbus.SystemBus()    
-    
-        dbus.service.Object.__init__(self, bus, path)	
-    
+            bus = dbus.SystemBus()
+
+        dbus.service.Object.__init__(self, bus, path)
+
         self.exit_on_release = True
 
     def set_exit_on_release(self, exit_on_release):
@@ -94,13 +94,13 @@ class Agent(dbus.service.Object):
                          in_signature="ou", out_signature="")
     def RequestConfirmation(self, device, passkey):
         print("RequestConfirmation (%s, %06d)" % (device, passkey))
-        
+
         # notification = DbusNotify(app_name="Deepin System Settings", icon="deepin-system-settings")
         # notification.summary = "Pair request"
-        # notification.body = "Device %s request for pair,\n please make sure the key is %s" % (device, passkey) 
+        # notification.body = "Device %s request for pair,\n please make sure the key is %s" % (device, passkey)
         # notification.
-        
-        
+
+
         confirm = ask("Confirm passkey (yes/no): ")
         if (confirm == "yes"):
             return
@@ -136,12 +136,12 @@ if __name__ == '__main__':
     path = "/test/agent"
 
     agent = Agent(path, bus)
-    
+
     from manager import Manager
     from adapter import Adapter
-    
+
     adptr = Adapter(Manager().get_default_adapter())
     adptr.register_agent(path, "")
-    
+
     mainloop = gobject.MainLoop()
     mainloop.run()
