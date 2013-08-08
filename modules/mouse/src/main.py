@@ -3,20 +3,20 @@
 
 # Copyright (C) 2011 ~ 2012 Deepin, Inc.
 #               2011 ~ 2012 Long Changjin
-# 
+#
 # Author:     Long Changjin <admin@longchangjin.cn>
 # Maintainer: Long Changjin <admin@longchangjin.cn>
-# 
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -166,7 +166,7 @@ class MouseSetting(object):
             #None, None, None, None, None, None,
             #app_theme.get_pixbuf("scalebar/point.png"))
         #self.scale_widgets["double_click_rate"].set_adjustment( self.adjust_widgets["double_click_rate"])
-     
+
     def __adjust_widget(self):
         ''' adjust widget '''
         MID_SPACING = 10
@@ -182,7 +182,7 @@ class MouseSetting(object):
         self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["main_hbox"].set_padding(
             TEXT_WINDOW_TOP_PADDING, 0, 0, 0)
-        
+
         self.container_widgets["main_hbox"].set_spacing(MID_SPACING)
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["left"])
         self.container_widgets["main_hbox"].pack_start(self.alignment_widgets["right"], False, False)
@@ -194,7 +194,7 @@ class MouseSetting(object):
         # set right padding
         self.alignment_widgets["right"].set(0.0, 0.0, 1.0, 1.0)
         self.alignment_widgets["right"].set_padding(0, 0, 0, 60)
-        
+
         self.container_widgets["left_vbox"].set_spacing(BETWEEN_SPACING)
         self.container_widgets["left_vbox"].pack_start(
             self.container_widgets["custom_main_vbox"], False, False)
@@ -388,7 +388,7 @@ class MouseSetting(object):
         self.button_widgets["double_test"].set_data("last_press_time", 0)
         self.button_widgets["double_test"].connect("button-press-event", self.double_click_test)
         self.button_widgets["double_test"].connect("expose-event", self.double_click_test_expose)
-        
+
         # relevant setting
         self.button_widgets["keyboard_setting"].connect("button-press-event", self.relevant_press, "keyboard")
         self.button_widgets["touchpad_setting"].connect("button-press-event", self.relevant_press, "touchpad")
@@ -396,7 +396,7 @@ class MouseSetting(object):
         set_clickable_cursor(self.button_widgets["touchpad_setting"])
 
         self.button_widgets["set_to_default"].connect("clicked", self.set_to_default)
-    
+
     #############################
     def container_expose_cb(self, widget, event):
         cr = widget.window.cairo_create()
@@ -404,7 +404,7 @@ class MouseSetting(object):
         cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
         cr.rectangle(x, y, w, h)
         cr.fill()
-    
+
     def settings_changed_cb(self, key):
         args = [self.settings, key]
         if key == 'left-handed':
@@ -424,7 +424,7 @@ class MouseSetting(object):
         else:
             return
         callback(*args)
-    
+
     def left_or_right_set(self, button, active):
         ''' set left-handed '''
         if button.get_data("changed-by-other-app"):
@@ -436,7 +436,7 @@ class MouseSetting(object):
                 self.set_status_text(_("Set to left-handed"))
             else:
                 self.set_status_text(_("Set to right-handed"))
-    
+
     def left_or_right_setting_changed(self, setting, key):
         ''' set left or right radio button active '''
         if setting.get_boolean(key):
@@ -448,7 +448,7 @@ class MouseSetting(object):
             self.image_widgets["custom"].image_dpixbuf = app_theme.get_pixbuf("%s/mouse_l.png" % MODULE_NAME)
             self.button_widgets["right_hand_radio"].set_data("changed-by-other-app", True)
         self.image_widgets["custom"].queue_draw()
-    
+
     def scalebar_value_changed(self, widget, event, key):
         '''adjustment value changed, and settings set the value'''
         value = widget.value + widget.value_min
@@ -462,7 +462,7 @@ class MouseSetting(object):
             else:
                 value = int(new_value)
         self.scale_set[key](value)
-    
+
     def settings_value_changed(self, settings, key, adjustment):
         '''settings value changed, and adjustment set the value'''
         adjustment.set_value(self.scale_get[key]())
@@ -476,12 +476,12 @@ class MouseSetting(object):
             widget.set_data("last_press_time", 0)
             widget.set_data("has_double_clicked", not widget.get_data("has_double_clicked"))
             widget.queue_draw()
-    
+
     def double_click_test_expose(self, widget, event):
         '''double_test button expsoe'''
         cr = widget.window.cairo_create()
-        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))                                               
-        cr.rectangle(*widget.allocation)                                                 
+        cr.set_source_rgb(*color_hex_to_cairo(MODULE_BG_COLOR))
+        cr.rectangle(*widget.allocation)
         cr.paint()
         if widget.get_data("has_double_clicked"):
             cr.set_source_pixbuf(self.image_widgets["double_test_2"].get_pixbuf(), 0, 0)
@@ -490,11 +490,11 @@ class MouseSetting(object):
         cr.paint()
         propagate_expose(widget, event)
         return True
-    
+
     def relevant_press(self, widget, event, action):
         '''relevant button pressed'''
         self.module_frame.send_message("goto", (action, ""))
-    
+
     def __make_align(self, widget=None, xalign=0.0, yalign=0.5, xscale=0.0,
                      yscale=0.0, padding_top=0, padding_bottom=0, padding_left=0,
                      padding_right=0, width=-1, height=CONTAINNER_HEIGHT):
@@ -510,12 +510,12 @@ class MouseSetting(object):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
         hseparator.set_size_request(450, 10)
         return hseparator
-    
+
     def __setup_separator(self):
         return self.__make_align(self.__make_separator(), xalign=0.0, xscale=0.0,
                                  padding_top=10,# padding_bottom=10,
                                  padding_left=TEXT_WINDOW_LEFT_PADDING, height=-1)
-    
+
     def set_status_text(self, text):
         self.container_widgets["statusbar"].set_text(text)
 
@@ -523,18 +523,18 @@ class MouseSetting(object):
         '''set to the default'''
         settings.mouse_set_to_default()
         self.set_status_text(_("Reset to defaults"))
-    
+
 if __name__ == '__main__':
     gtk.gdk.threads_init()
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
 
     mouse_settings = MouseSetting(module_frame)
-    
+
     module_frame.add(mouse_settings.container_widgets["main_vbox"])
-    
+
     if len(sys.argv) > 1:
         print "module_uid:", sys.argv[1]
-    
+
     def message_handler(*message):
         (message_type, message_content) = message
         if message_type == "show_again":
@@ -543,6 +543,6 @@ if __name__ == '__main__':
         elif message_type == "exit":
             module_frame.exit()
 
-    module_frame.module_message_handler = message_handler        
-    
+    module_frame.module_message_handler = message_handler
+
     module_frame.run()
