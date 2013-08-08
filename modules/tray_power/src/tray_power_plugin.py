@@ -44,6 +44,7 @@ ORG_UPOWER_DEVICE = "org.freedesktop.Upower.Device"
 
 class TrayPower(object):
     def __init__(self):
+        super(TrayPower, self).__init__()
         self.power_set = deepin_gsettings.new(POWER_SETTING_GSET)
         self.gui = PowerGui(self.power_set)
         self.gui.click_btn.connect("clicked", self.click_btn_clicked_event)
@@ -79,13 +80,13 @@ class TrayPower(object):
         self.online_value = self.get_line_power()
         value = self.power_set.get_double("percentage")
         self.update_power_icon(int(value))
-        self.modify_battery_icon(int(value))
+        self.modify_battery_icon(value)
 
     def __power_dbus_device_changed(self, dev_path):
         self.has_battery = self.get_has_battery()
         value = self.power_set.get_double("percentage")
         self.update_power_icon(int(value))
-        self.modify_battery_icon(int(value))
+        self.modify_battery_icon(value)
     
     @property
     def percentage_low_threshhold(self):
@@ -140,7 +141,7 @@ class TrayPower(object):
         if key == "percentage":
             value = self.power_set.get_double("percentage")
             self.update_power_icon(int(value))
-            self.modify_battery_icon(int(value))
+            self.modify_battery_icon(value)
             return
 
         if key == "current-plan":
@@ -160,7 +161,7 @@ class TrayPower(object):
             return
         if self.has_battery:
             self.tray_icon.set_icon_theme("tray_battery")
-            if value == 100:
+            if value >= 99.8:
                 self.tray_icon.set_tooltip_text(_("Fully charged"))
             else:
                 self.tray_icon.set_tooltip_text(_("Charging"))
