@@ -336,10 +336,6 @@ class PPTPConf(gtk.VBox):
         if widget.get_active():
             self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
             self.service_type = service_type
-            if service_type == "l2tp":
-                self.vpn_setting.set_data_item("password-flags", "1")
-            else:
-                self.vpn_setting.set_data_item("password-flags", "0")
 
         if self.connection.check_setting_finish():
             Dispatcher.set_button("save", True)
