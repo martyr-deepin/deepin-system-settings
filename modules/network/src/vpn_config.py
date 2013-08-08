@@ -597,6 +597,8 @@ class PPPConf(gtk.VBox):
 
         self.method_table.show_all()
 
+
+
     def refresh(self, connection):
         self.connection = connection
         self.vpn_setting = self.connection.get_setting("vpn")
@@ -663,7 +665,9 @@ class PPPConf(gtk.VBox):
             self.ppp_echo.set_active(True)
 
         self.init_signal()
+        self.init_lock = False
         self.require_mppe.emit("toggled")
+        self.init_lock = True
         self.init_ui()
         #==================================
         # Connect signal
@@ -720,15 +724,12 @@ class PPPConf(gtk.VBox):
             if auth_lock:
                 self.require_mppe_label.set_sensitive(False)
                 self.require_mppe.set_sensitive(False)
-                self.require_mppe.set_active(False)
+                #self.require_mppe.set_active(False)
 
-                #self.set_group_active(True)
                 self.set_group_sensitive(True)
-
             else:
                 self.require_mppe_label.set_sensitive(True)
                 self.require_mppe.set_sensitive(True)
-                #self.set_group_sensitive(True)
 
         elif key.startswith("no"):
             if active:
@@ -748,6 +749,11 @@ class PPPConf(gtk.VBox):
                 self.vpn_setting.set_data_item(key, "yes")
             else:
                 self.vpn_setting.delete_data_item(key)
+
+        if self.connection.check_setting_finish():
+            Dispatcher.set_button("save", True)
+        else:
+            Dispatcher.set_button("save", False)
     
     def click_mppe_callback(self, widget, key):
         active = widget.get_active()
@@ -765,6 +771,18 @@ class PPPConf(gtk.VBox):
             self.mppe_group_set_sensitive(False)
             self.mppe_group_set_active(False)
             self.init_ui()
+        
+        if self.init_lock:
+            if self.connection.check_setting_finish():
+                Dispatcher.set_button("save", True)
+            else:
+                Dispatcher.set_button("save", False)
+
+        if self.auth_lock():
+            self.require_mppe_label.set_sensitive(False)
+            self.require_mppe.set_sensitive(False)
+            return
+
 
     def mppe_group_set_sensitive(self, boolean):
         self.require_mppe_128_label.set_sensitive(boolean)
@@ -798,3 +816,4 @@ class PPPConf(gtk.VBox):
         self.refuse_eap_label.set_sensitive(boolean)
         self.refuse_pap_label.set_sensitive(boolean)
         self.refuse_chap_label.set_sensitive(boolean)
+

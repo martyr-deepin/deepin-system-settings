@@ -576,6 +576,7 @@ class SettingItem(TreeItem):
         elif column == 2 and self.delete_hover:
             if self.is_hover:
                 #self.delete_connection(self.connection)
+                print "delete this setting"
                 Dispatcher.delete_setting(self.connection)
             
         if self.redraw_request_callback:

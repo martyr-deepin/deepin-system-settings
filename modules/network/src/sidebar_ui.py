@@ -98,6 +98,7 @@ class SideBar(gtk.VBox):
             container_remove_all(self.buttonbox)
             self.connection_tree.add_items(map(lambda c: SettingItem(c, None), items_list), insert_pos=insert_pos)
             self.buttonbox.pack_start(self.connection_tree, False, False)
+            self.resize_tree()
 
     def delete_item_cb(self, widget, connection):
         '''docstring for delete_item_cb'''
@@ -108,6 +109,14 @@ class SideBar(gtk.VBox):
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
+        # focus on last item
+        if self.connection_tree.visible_items != []:
+            self.connection_tree.select_last_item()
+        else:
+            Dispatcher.to_main_page()
+            return
+            
+        self.resize_tree()
     
     def resize_tree(self):
         if self.connection_tree.visible_items != []:
