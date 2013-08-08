@@ -67,6 +67,9 @@ class DeviceIconView(ScrolledWindow):
 
         event_manager.add_callback("text", self.__on_text)
         event_manager.add_callback("hide-text", self.__on_hide_text)
+        
+        from bluetooth_transfer import BluetoothTransfer
+        BluetoothTransfer()
 
     def __on_text(self, name, obj, argv):
         disable(self, False)
@@ -675,11 +678,11 @@ class BlueToothView(gtk.VBox):
         if address not in adapter.get_address_records() and address not in adapter.get_devices():
             device = Device(adapter.create_device(address))
             items = []
-            
+
             if not values.has_key("Name"):
                 return
 
-            items.append(DeviceItem(values['Name'], 
+            items.append(DeviceItem(values['Name'],
                          app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter))
             self.device_iconview.add_items(items)
         else:
