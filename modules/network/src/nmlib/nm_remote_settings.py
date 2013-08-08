@@ -437,7 +437,7 @@ class NMRemoteSettings(NMObject):
 
         s_vpn.set_data_item("user", "")
         s_vpn.set_data_item("gateway", "")
-        s_vpn.set_data_item("password-flags", "0")
+        s_vpn.set_data_item("password-flags", "1")
 
         s_vpn.set_secret_item("password","")
 
@@ -477,8 +477,8 @@ class NMRemoteSettings(NMObject):
         s_vpn.set_data_item("user", "")
         s_vpn.set_data_item("gateway", "")
         s_vpn.set_data_item("password-flags", "0")
-        s_vpn.set_data_item("require-mppe", "yes")
-        s_vpn.set_data_item("refuse-eap", "yes")
+        #s_vpn.set_data_item("require-mppe", "yes")
+        #s_vpn.set_data_item("refuse-eap", "yes")
 
         s_vpn.set_secret_item("password","")
 

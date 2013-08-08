@@ -336,6 +336,10 @@ class PPTPConf(gtk.VBox):
         if widget.get_active():
             self.vpn_setting.service_type = "org.freedesktop.NetworkManager." + service_type
             self.service_type = service_type
+            if service_type == "l2tp":
+                self.vpn_setting.set_data_item("password-flags", "1")
+            else:
+                self.vpn_setting.set_data_item("password-flags", "0")
 
         if self.connection.check_setting_finish():
             Dispatcher.set_button("save", True)
@@ -712,6 +716,12 @@ class PPPConf(gtk.VBox):
         elif key != "name":
             self.vpn_setting.set_data_item(key, string)
 
+        if self.connection.check_setting_finish():
+            Dispatcher.set_button("save", True)
+        else:
+            Dispatcher.set_button("save", False)
+
+
     def check_button_cb(self, widget, key):
         auth_lock = self.auth_lock()
         active = widget.get_active()
@@ -744,7 +754,7 @@ class PPPConf(gtk.VBox):
             else:
                 self.vpn_setting.delete_data_item("lcp_echo_failure")
                 self.vpn_setting.delete_data_item("lcp_echo_interval")
-        elif key != "name":
+        elif key.startswith("ipsec"):
             if active:
                 self.vpn_setting.set_data_item(key, "yes")
             else:
