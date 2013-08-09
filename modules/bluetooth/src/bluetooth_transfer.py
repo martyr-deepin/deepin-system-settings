@@ -24,7 +24,10 @@ from bt.manager import Manager
 from bt.adapter import Adapter
 from bt.device import Device
 from ods.OdsManager import OdsManager
+from helper import notify_message
+from nls import _
 import os
+from bluetooth_dialog import BluetoothProgressDialog, BluetoothReplyDialog
 
 class BluetoothTransfer(OdsManager):
     def __init__(self):
@@ -68,40 +71,44 @@ class BluetoothTransfer(OdsManager):
         session.server = server
 
     def on_transfer_started(self, session, filename, local_path, total_bytes):
+        self.progress_dialog = BluetoothProgressDialog()
         info = session.server.GetServerSessionInfo(session.object_path)
         try:
-            dev = Adapter(Manager().get_default_adapter()).create_device(info["BluetoothAddress"])
+            dev = Device(Adapter(Manager().get_default_adapter()).create_device(info["BluetoothAddress"]))
             name = dev.get_alias()
-            trusted = dev.get_trusted()
         except Exception, e:
             print e
             name = info["BluetoothAddress"]
-            trusted = False
 
         session.transfer["filename"] = filename
         session.transfer["filepath"] = local_path
         session.transfer["total"] = total_bytes
-        session.transfer["finished"] = False
         session.transfer["failed"] = False
-        session.transfer["waiting"] = True
 
         session.transfer["address"] = info["BluetoothAddress"]
         session.transfer["name"] = name
 
-        session.transfer["transferred"] = 0
-
-        result = raw_input(str(session.transfer) + "?")
-        if result == "yes":
-            session.Accept()
-        else:
-            session.Reject()
+        session.Accept()
 
     def transfer_progress(self, session, bytes_transferred):
-        session.transfer["transferred"] = bytes_transferred
-        print bytes_transferred
+        print bytes_transferred / float(session.transfer["total"])
+        self.progress_dialog.cancel_cb = lambda : session.Cancel()
+        self.progress_dialog.set_message(_("Receiving file from %s") % session.transfer["name"])
+        self.progress_dialog.set_progress(bytes_transferred / float(session.transfer["total"]) * 100)
+        self.progress_dialog.show_all()
 
-    def transfer_finished(self, session, *args):
-        print args
-
-    def on_server_destroyed(self, inst, server):
-        print "server_destroyed"
+    def transfer_finished(self, session, arg):
+        if arg in ["error", "cancelled"]:
+            reply_dlg = BluetoothReplyDialog(_("Transfer failed!"), is_succeed=False)
+            reply_dlg.set_keep_above(True)
+            reply_dlg.show_all()
+            session.transfer["failed"] = True
+            if self.progress_dialog.get_visible():
+                self.progress_dialog.destroy()
+        if arg == "completed":  # signal "completed" will be received even the transfer failed
+            if not session.transfer["failed"]:
+                reply_dlg = BluetoothReplyDialog(_("Transfer completed!"))
+                reply_dlg.set_keep_above(True)
+                reply_dlg.show_all()
+                if self.progress_dialog.get_visible():
+                    self.progress_dialog.destroy()

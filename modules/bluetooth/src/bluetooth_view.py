@@ -34,7 +34,6 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton, Button
 from dtk.ui.constant import ALIGN_START, ALIGN_MIDDLE, ALIGN_END
 from dtk.ui.tooltip import text, disable
-from dtk.ui.dbus_notify import DbusNotify
 import gobject
 import gtk
 import pango
@@ -45,7 +44,7 @@ from bt.utils import bluetooth_class_to_type, bluetooth_uuid_to_string
 
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
-from helper import event_manager
+from helper import event_manager, notify_message
 import uuid
 import re
 
@@ -67,9 +66,6 @@ class DeviceIconView(ScrolledWindow):
 
         event_manager.add_callback("text", self.__on_text)
         event_manager.add_callback("hide-text", self.__on_hide_text)
-        
-        from bluetooth_transfer import BluetoothTransfer
-        BluetoothTransfer()
 
     def __on_text(self, name, obj, argv):
         disable(self, False)
@@ -136,13 +132,6 @@ class DeviceItem(gobject.GObject):
 
         self.highlight_fill_color = "#7db7f2"
         self.highlight_stroke_color = "#396497"
-
-    def notify_message(self, summary, body):
-        notify_agent = DbusNotify("deepin-system-settings",
-                                  "/usr/share/icons/Deepin/apps/48/preferences-system-bluetooth.png")
-        notify_agent.set_summary(summary)
-        notify_agent.set_body(body)
-        notify_agent.notify()
 
     def render(self, cr, rect):
         padding = 10
@@ -316,10 +305,10 @@ class DeviceItem(gobject.GObject):
             self.audio_sink_service = AudioSink(self.device.device_path)
             self.audio_sink_service.as_connect()
             if self.audio_sink_service.get_state() == "connected":
-                self.notify_message(_("Bluetooth Audio"),
-                                    _("Successfully connected to a Bluetooth audio device."))
+                notify_message(_("Bluetooth Audio"),
+                               _("Successfully connected to a Bluetooth audio device."))
             else:
-                self.notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
+                notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
             self.emit_redraw_request()
         except Exception, e:
             print "Exception:", e
@@ -337,10 +326,10 @@ class DeviceItem(gobject.GObject):
             self.headset_service = Headset(self.device.device_path)
             self.headset_service.hs_connect()
             if self.headset_service.get_state() == "connected":
-                self.notify_message(_("Bluetooth Headset"),
-                                    _("Successfully connected to a Bluetooth headset device."))
+                notify_message(_("Bluetooth Headset"),
+                               _("Successfully connected to a Bluetooth headset device."))
             else:
-                self.notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
+                notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
             self.emit_redraw_request()
         except Exception, e:
             print "Exception:", e

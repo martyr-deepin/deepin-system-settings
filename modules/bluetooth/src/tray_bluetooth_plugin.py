@@ -1,28 +1,28 @@
-#! /usr/bin/env python                                                          
-# -*- coding: utf-8 -*-                                                         
-                                                                                
-# Copyright (C) 2013 Deepin, Inc.                                        
-#               2013 Zhai Xiang                                          
-#                                                                               
-# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>                            
-# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>                            
-#                                                                               
-# This program is free software: you can redistribute it and/or modify          
-# it under the terms of the GNU General Public License as published by          
-# the Free Software Foundation, either version 3 of the License, or             
-# any later version.                                                            
-#                                                                               
-# This program is distributed in the hope that it will be useful,               
-# but WITHOUT ANY WARRANTY; without even the implied warranty of                
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 
-# GNU General Public License for more details.                                  
-#                                                                               
-# You should have received a copy of the GNU General Public License             
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# Copyright (C) 2013 Deepin, Inc.
+#               2013 Zhai Xiang
+#
+# Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
+# Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys                                                                      
-import os                                                                       
-from deepin_utils.file import get_parent_dir                                    
+import sys
+import os
+from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 
 from theme import app_theme
@@ -40,26 +40,27 @@ import gobject
 import gtk
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
+from bluetooth_transfer import BluetoothTransfer
 from nls import _
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 22
     NAME_WIDTH = 160
-    
+
     def __init__(self, PluginPtr, adapter, device):
         TreeItem.__init__(self)
         self.PluginPtr = PluginPtr
         self.adapter = adapter
         self.device = device
         self.is_hover = False
-
-    def hover(self, column, offset_x, offset_y):                                
+        
+    def hover(self, column, offset_x, offset_y):
         self.is_hover = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
-                                                                                
-    def unhover(self, column, offset_x, offset_y):                              
-        self.is_hover = False                                                   
+
+    def unhover(self, column, offset_x, offset_y):
+        self.is_hover = False
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
 
@@ -71,28 +72,28 @@ class DeviceItem(TreeItem):
 
         run_command("deepin-system-settings bluetooth")
 
-    def __render_name(self, cr, rect):                                           
+    def __render_name(self, cr, rect):
         name_width = 130
-        
-        cr.set_source_rgb(1, 1, 1)                                             
-        cr.rectangle(rect.x, rect.y, rect.width, rect.height)                   
+
+        cr.set_source_rgb(1, 1, 1)
+        cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()
 
-        if self.is_hover:                                                       
-            with cairo_disable_antialias(cr):                                   
+        if self.is_hover:
+            with cairo_disable_antialias(cr):
                 cr.set_source_rgb(*color_hex_to_cairo("#EBF4FD"))
                 cr.rectangle(rect.x, rect.y, name_width, rect.height)
                 cr.fill()
-                cr.set_source_rgb(*color_hex_to_cairo("#7DA2CE"))                   
-                cr.set_line_width(1)                                            
-                cr.rectangle(rect.x + 1, rect.y + 1, name_width, rect.height - 1)  
+                cr.set_source_rgb(*color_hex_to_cairo("#7DA2CE"))
+                cr.set_line_width(1)
+                cr.rectangle(rect.x + 1, rect.y + 1, name_width, rect.height - 1)
                 cr.stroke()
 
-        draw_text(cr, 
-                  self.device.get_name(), 
-                  rect.x + 5, 
-                  rect.y, 
-                  name_width - 6, 
+        draw_text(cr,
+                  self.device.get_name(),
+                  rect.x + 5,
+                  rect.y,
+                  name_width - 6,
                   rect.height)
 
     def get_height(self):
@@ -108,19 +109,20 @@ gobject.type_register(DeviceItem)
 
 class TrayBluetoothPlugin(object):
     def __init__(self):
-        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
+        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
                                         self.__on_default_adapter_changed)
         self.width = DeviceItem.NAME_WIDTH
         self.ori_height = 93
         self.height = self.ori_height
         self.device_items = []
         # self.register_agent()
+        self.transfer = BluetoothTransfer()
 
     def register_agent(self):
         if not hasattr(self, "agent"):
             from bt.agent import Agent
             import dbus.mainloop.glib
-            
+
             try:
                 path = "/com/deepin/bluetooth/agent"
 
@@ -128,25 +130,24 @@ class TrayBluetoothPlugin(object):
                 self.agent.set_exit_on_release(False)
             except Exception, e:
                 print e
-                
+
         try:
             dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             self.my_bluetooth.register_agent(self.agent.agent_path)
         except Exception, e:
             print e
-        
+
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
 
     def __on_default_adapter_changed(self):
         self.tray_icon.set_visible(True)
-        self.register_agent()
 
     def init_values(self, this_list):
         self.this = this_list[0]
         self.tray_icon = this_list[1]
         self.tray_icon.set_icon_theme("enable")
-        
+
         if self.my_bluetooth.adapter:
             if not self.my_bluetooth.adapter.get_powered():
                 self.tray_icon.set_no_show_all(True)
@@ -172,15 +173,15 @@ class TrayBluetoothPlugin(object):
             self.tray_icon.set_icon_theme("enable_disconnect")
         self.my_bluetooth.adapter.set_powered(widget.get_active())
 
-    def __bluetooth_selected(self, widget, event):                                 
-        self.this.hide_menu()                         
+    def __bluetooth_selected(self, widget, event):
+        self.this.hide_menu()
         run_command("deepin-system-settings bluetooth")
 
     def __get_devices(self):
-        devices = self.my_bluetooth.get_devices()                               
-        device_count = len(devices)                                                                        
+        devices = self.my_bluetooth.get_devices()
+        device_count = len(devices)
         i = 0
-       
+
         self.device_items = []
         while i < device_count:
             self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, devices[i]))
@@ -211,8 +212,8 @@ class TrayBluetoothPlugin(object):
         devices treeview
         '''
         device_treeview = TreeView()
-        device_separator_align = self.__setup_align()                           
-        device_separator = self.__setup_separator()                             
+        device_separator_align = self.__setup_align()
+        device_separator = self.__setup_separator()
         device_separator_align.add(device_separator)
         device_count = len(self.device_items)
         if device_count:
@@ -227,23 +228,23 @@ class TrayBluetoothPlugin(object):
         select button
         '''
         select_button_align = self.__setup_align()
-        select_button = SelectButton(_("Advanced options..."),             
-                                     font_size = 10,                            
-                                     ali_padding = 5)                           
-        select_button.set_size_request(self.width, 25)                          
+        select_button = SelectButton(_("Advanced options..."),
+                                     font_size = 10,
+                                     ali_padding = 5)
+        select_button.set_size_request(self.width, 25)
         select_button.connect("button-press-event", self.__bluetooth_selected)
         select_button_align.add(select_button)
-        
+
         adapter_box.pack_start(adapter_image, False, False)
         adapter_box.pack_start(adapter_label, False, False)
         adapter_box.pack_start(adapter_toggle, False, False)
-        
+
         plugin_box.pack_start(adapter_box, False, False)
         plugin_box.pack_start(separator_align, False, False)
         plugin_box.pack_start(device_treeview, False, False)
         plugin_box.pack_start(device_separator_align, False, False)
         plugin_box.pack_start(select_button_align, False, False)
-        
+
         return plugin_box
 
     def show_menu(self):
@@ -252,31 +253,31 @@ class TrayBluetoothPlugin(object):
     def hide_menu(self):
         pass
 
-    def __setup_align(self, 
-                      xalign=0, 
-                      yalign=0, 
-                      xscale=0, 
-                      yscale=0,                
-                      padding_top=5,                                 
-                      padding_bottom=0,                                            
-                      padding_left=0,                       
-                      padding_right=0):                                           
-        align = gtk.Alignment()                                                    
-        align.set(xalign, yalign, xscale, yscale)                                  
+    def __setup_align(self,
+                      xalign=0,
+                      yalign=0,
+                      xscale=0,
+                      yscale=0,
+                      padding_top=5,
+                      padding_bottom=0,
+                      padding_left=0,
+                      padding_right=0):
+        align = gtk.Alignment()
+        align.set(xalign, yalign, xscale, yscale)
         align.set_padding(padding_top, padding_bottom, padding_left, padding_right)
         return align
 
-    def __setup_label(self, text="", width=50, align=ALIGN_START):                  
+    def __setup_label(self, text="", width=50, align=ALIGN_START):
         return Label(text, None, 9, align, width, False, False, False)
 
-    def __setup_toggle(self):                                                      
-        return ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
-            app_theme.get_pixbuf("toggle_button/active_normal.png"),               
+    def __setup_toggle(self):
+        return ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"),
+            app_theme.get_pixbuf("toggle_button/active_normal.png"),
             inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
 
-    def __setup_separator(self):                                                   
+    def __setup_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
-        hseparator.set_size_request(100, 3)                                       
+        hseparator.set_size_request(100, 3)
         return hseparator
 
 def return_insert():
@@ -284,6 +285,6 @@ def return_insert():
 
 def return_id():
     return "bluetooth"
-    
+
 def return_plugin():
     return TrayBluetoothPlugin
