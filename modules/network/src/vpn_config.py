@@ -543,7 +543,7 @@ class PPPConf(gtk.VBox):
         self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe-stateful")
         self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
         self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
-        self.no_vj_comp.connect("toggled", self.check_button_cb, "novj")
+        self.no_vj_comp.connect("toggled", self.check_button_cb, "no-vj-comp")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
         self.nopcomp.connect("toggled", self.check_button_cb, "nopcomp")
         self.noaccomp.connect("toggled", self.check_button_cb, "noaccomp")
@@ -618,7 +618,7 @@ class PPPConf(gtk.VBox):
 
         nobsdcomp = self.vpn_setting.get_data_item("nobsdcomp")
         nodeflate = self.vpn_setting.get_data_item("nodeflate")
-        no_vj_comp = self.vpn_setting.get_data_item("novj")
+        no_vj_comp = self.vpn_setting.get_data_item("no-vj-comp")
 
 
         lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
