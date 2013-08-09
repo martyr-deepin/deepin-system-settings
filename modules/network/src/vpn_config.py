@@ -730,7 +730,6 @@ class PPPConf(gtk.VBox):
             if auth_lock:
                 self.require_mppe_label.set_sensitive(False)
                 self.require_mppe.set_sensitive(False)
-                #self.require_mppe.set_active(False)
 
                 self.set_group_sensitive(True)
             else:
@@ -745,11 +744,11 @@ class PPPConf(gtk.VBox):
 
         elif key == "echo":
             if active:
-                self.vpn_setting.set_data_item("lcp_echo_failure", "5")
-                self.vpn_setting.set_data_item("lcp_echo_interval", "30")
+                self.vpn_setting.set_data_item("lcp-echo-failure", "5")
+                self.vpn_setting.set_data_item("lcp-echo-interval", "30")
             else:
-                self.vpn_setting.delete_data_item("lcp_echo_failure")
-                self.vpn_setting.delete_data_item("lcp_echo_interval")
+                self.vpn_setting.delete_data_item("lcp-echo-failure")
+                self.vpn_setting.delete_data_item("lcp-echo-interval")
         elif key.startswith("ipsec"):
             if active:
                 self.vpn_setting.set_data_item(key, "yes")
@@ -822,4 +821,3 @@ class PPPConf(gtk.VBox):
         self.refuse_eap_label.set_sensitive(boolean)
         self.refuse_pap_label.set_sensitive(boolean)
         self.refuse_chap_label.set_sensitive(boolean)
-
