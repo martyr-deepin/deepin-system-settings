@@ -38,10 +38,12 @@ from vtk.button import SelectButton
 from deepin_utils.process import run_command
 import gobject
 import gtk
+from nls import _
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
-from bluetooth_transfer import BluetoothTransfer
-from nls import _
+from bt.device import AudioSink
+from helper import notify_message
+from bt.utils import is_bluetooth_audio_type
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 22
@@ -53,7 +55,7 @@ class DeviceItem(TreeItem):
         self.adapter = adapter
         self.device = device
         self.is_hover = False
-        
+
     def hover(self, column, offset_x, offset_y):
         self.is_hover = True
         if self.redraw_request_callback:
@@ -67,10 +69,32 @@ class DeviceItem(TreeItem):
     def single_click(self, column, offset_x, offset_y):
         self.PluginPtr.hide_menu()
 
-        sender = BluetoothSender(self.adapter, self.device)
-        sender.do_send_file()
+        self.__get_action_by_device_class()()
 
         run_command("deepin-system-settings bluetooth")
+
+    def __get_action_by_device_class(self):
+        def do_send_file():
+            sender = BluetoothSender(self.adapter, self.device)
+            sender.do_send_file()
+
+        def do_connect_audio_sink():
+            try:
+                self.audio_sink_service = AudioSink(self.device.device_path)
+                self.audio_sink_service.as_connect()
+                if self.audio_sink_service.get_state() == "connected":
+                    notify_message(_("Bluetooth Audio"),
+                                   _("Successfully connected to a Bluetooth audio device."))
+                else:
+                    notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
+                    self.emit_redraw_request()
+            except Exception, e:
+                print "Exception:", e
+
+        if is_bluetooth_audio_type(self.device.get_class()):
+            return do_connect_audio_sink
+        else:
+            return do_send_file
 
     def __render_name(self, cr, rect):
         name_width = 130
@@ -116,7 +140,10 @@ class TrayBluetoothPlugin(object):
         self.height = self.ori_height
         self.device_items = []
         # self.register_agent()
-        self.transfer = BluetoothTransfer()
+        run_command("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__))
+        # For debug purpose :)
+        # subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
+        #                  stderr=subprocess.STDOUT, shell=True)
 
     def register_agent(self):
         if not hasattr(self, "agent"):
@@ -180,12 +207,11 @@ class TrayBluetoothPlugin(object):
     def __get_devices(self):
         devices = self.my_bluetooth.get_devices()
         device_count = len(devices)
-        i = 0
 
         self.device_items = []
-        while i < device_count:
-            self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, devices[i]))
-            i += 1
+        for d in devices:
+            if d.get_paired():
+                self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, d))
 
         self.height = self.ori_height
         if device_count:

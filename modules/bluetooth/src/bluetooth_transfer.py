@@ -24,7 +24,6 @@ from bt.manager import Manager
 from bt.adapter import Adapter
 from bt.device import Device
 from ods.OdsManager import OdsManager
-from helper import notify_message
 from nls import _
 import os
 from bluetooth_dialog import BluetoothProgressDialog, BluetoothReplyDialog

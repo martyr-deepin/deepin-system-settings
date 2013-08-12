@@ -43,6 +43,13 @@ def bluetooth_verify_address(bdaddr):
 
     return True
 
+def is_bluetooth_audio_type(klass):
+    p = (klass & 0x1f00) >> 8
+    if p == 0x02:
+        return True
+    else:
+        return False
+
 def bluetooth_class_to_type(klass):
     p = (klass & 0x1f00) >> 8
 
