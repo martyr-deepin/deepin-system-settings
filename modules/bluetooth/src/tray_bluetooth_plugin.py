@@ -43,7 +43,7 @@ from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
 from bt.device import AudioSink
 from helper import notify_message
-from bt.utils import is_bluetooth_audio_type
+from bt.utils import is_bluetooth_audio_type, is_bluetooth_file_type
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 22
@@ -69,7 +69,9 @@ class DeviceItem(TreeItem):
     def single_click(self, column, offset_x, offset_y):
         self.PluginPtr.hide_menu()
 
-        self.__get_action_by_device_class()()
+        action = self.__get_action_by_device_class()
+        if action:
+            action()
 
         run_command("deepin-system-settings bluetooth")
 
@@ -91,10 +93,12 @@ class DeviceItem(TreeItem):
             except Exception, e:
                 print "Exception:", e
 
-        if is_bluetooth_audio_type(self.device.get_class()):
+        if is_bluetooth_audio_type(self.device):
             return do_connect_audio_sink
-        else:
+        elif is_bluetooth_file_type(self.device):
             return do_send_file
+        else:
+            return None
 
     def __render_name(self, cr, rect):
         name_width = 130
