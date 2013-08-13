@@ -97,11 +97,12 @@ class BluetoothTransfer(OdsManager):
         # noti.add_action("transfer_reject", _("Reject"), action_invoked)
         # noti.show()
         
-        confirm_d = ConfirmDialog(_("Incoming file from Bluetooth"), 
-                                  _("Incoming file %s from %s") % (filename, name),
-                                  confirm_callback=lambda : session.Accept(),
-                                  cancel_callback=lambda : session.Reject())
-        confirm_d.show_all()
+        self.confirm_d = ConfirmDialog(_("Incoming file from Bluetooth"), 
+                                       _("Incoming file %s from %s") % (filename, name),
+                                       confirm_callback=lambda : session.Accept(),
+                                       cancel_callback=lambda : session.Reject())
+        self.confirm_d.set_keep_above(True)
+        self.confirm_d.show_all()
         
     def transfer_progress(self, session, bytes_transferred):
         print bytes_transferred / float(session.transfer["total"])
@@ -116,12 +117,14 @@ class BluetoothTransfer(OdsManager):
             reply_dlg.set_keep_above(True)
             reply_dlg.show_all()
             session.transfer["failed"] = True
-            if self.progress_dialog.get_visible():
-                self.progress_dialog.destroy()
+
         if arg == "completed":  # signal "completed" will be received even the transfer failed
             if not session.transfer["failed"]:
                 reply_dlg = BluetoothReplyDialog(_("Transfer completed!"))
                 reply_dlg.set_keep_above(True)
                 reply_dlg.show_all()
-                if self.progress_dialog.get_visible():
-                    self.progress_dialog.destroy()
+                
+        if self.progress_dialog.get_visible():
+            self.progress_dialog.destroy()
+        if self.confirm_d.get_visible():
+            self.confirm_d.destroy()
