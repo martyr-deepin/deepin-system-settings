@@ -358,15 +358,16 @@ class DeviceItem(gobject.GObject):
         if self.is_paired:
             return
 
-        from bt.gui_agent import GuiAgent
+        # from bt.gui_agent import GuiAgent
+        from bt.agent import Agent
         path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
-        agent = GuiAgent(self.name, path)
+        agent = Agent(path)
         agent.set_exit_on_release(False)
         self.device.set_trusted(True)
         if not self.device.get_paired():
             self.adapter.create_paired_device(self.device.get_address(),
                                               path,
-                                              "DisplayYesNo",
+                                              "",
                                               self.__reply_handler_cb,
                                               self.__error_handler_cb)
 
@@ -650,6 +651,7 @@ class BlueToothView(gtk.VBox):
             self.my_bluetooth.adapter.start_discovery()
             self.notice_label.set_text(_("Discovering device"))
             self.refresh_lable_timeout = gobject.timeout_add_seconds(1, self.__refresh_notice_label)
+            self.stop_discovery_timeout = gobject.timeout_add_seconds(20, self.my_bluetooth.adapter.stop_discovery)
             self.my_bluetooth.adapter.connect("property-changed", self.on_adapter_property_changed)
             self.is_searching = True
 
@@ -674,9 +676,7 @@ class BlueToothView(gtk.VBox):
             items.append(DeviceItem(values['Name'],
                          app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter))
             self.device_iconview.add_items(items)
-        else:
-            if adapter.get_discovering():
-                adapter.stop_discovery()
+                
     def __set_enable_open(self, is_open=True):
         self.my_bluetooth.adapter.set_powered(is_open)
         self.enable_open_label.set_sensitive(is_open)

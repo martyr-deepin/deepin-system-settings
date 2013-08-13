@@ -20,12 +20,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import gtk
 import gobject
 import dbus
 import dbus.service
 import dbus.mainloop.glib
 
-from dtk.ui.dbus_notify import DbusNotify
+from nls import _
+from bluetooth_dialog import BluetoothInputDialog, AgentDialog
 
 def ask(prompt):
     try:
@@ -70,8 +72,29 @@ class Agent(dbus.service.Object):
     @dbus.service.method("org.bluez.Agent",
                          in_signature="o", out_signature="s")
     def RequestPinCode(self, device):
-        print("RequestPinCode (%s)" % (device))
-        return ask("Enter PIN Code: ")
+        print "RequestPinCode (%s)" % device
+        
+        loop = None
+        input_pin = [""]
+        
+        def set_input_pin(s):
+            input_pin[0] = s
+            
+        input_d = BluetoothInputDialog(_("Enter PIN Code:"), 
+                                       "", 
+                                       cancel_callback=lambda : set_input_pin(""),
+                                       confirm_callback=lambda s : set_input_pin(s)
+                                       )
+        input_d.connect("destroy", lambda x : loop.quit())
+        input_d.show_all()
+        
+        # block the function execution
+        loop = gobject.MainLoop(None, False)
+        gtk.gdk.threads_leave()
+        loop.run()
+        gtk.gdk.threads_enter()
+
+        return input_pin[0]
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="o", out_signature="u")
@@ -95,16 +118,26 @@ class Agent(dbus.service.Object):
     def RequestConfirmation(self, device, passkey):
         print("RequestConfirmation (%s, %06d)" % (device, passkey))
 
-        # notification = DbusNotify(app_name="Deepin System Settings", icon="deepin-system-settings")
-        # notification.summary = "Pair request"
-        # notification.body = "Device %s request for pair,\n please make sure the key is %s" % (device, passkey)
-        # notification.
+        # def action_invoked(_id, _action):
+        #     if _action == "pair_accept":
+        #         pass
+        #     elif _action == "pair_reject":
+        #         raise Rejected("Passkey doesn't match")
 
-
-        confirm = ask("Confirm passkey (yes/no): ")
-        if (confirm == "yes"):
-            return
-        raise Rejected("Passkey doesn't match")
+        # noti = pynotify.Notification(_("Pair request"),
+        #                              _("Device %s request for pair,\n please make sure the key is %s") % (device, passkey))
+        # noti.add_action("pair_accept", _("Accept"), action_invoked)
+        # noti.add_action("pair_reject", _("Reject"), action_invoked)
+        # noti.show()
+        
+        def cancel_cb():
+            raise Rejected("Passkey doesn't match")
+        
+        agent_d = AgentDialog(_("Pair request"), 
+                              _("Device %s request for pair,\n please make sure the key is %s") % (device, passkey),
+                              confirm_callback=lambda : True,
+                              cancel_callback= cancel_cb)
+        agent_d.show()
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="s", out_signature="")

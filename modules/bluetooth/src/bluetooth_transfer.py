@@ -20,20 +20,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 from bt.manager import Manager
 from bt.adapter import Adapter
 from bt.device import Device
 from ods.OdsManager import OdsManager
+
 from nls import _
-import os
+from dtk.ui.dialog import ConfirmDialog
 from bluetooth_dialog import BluetoothProgressDialog, BluetoothReplyDialog
 
 class BluetoothTransfer(OdsManager):
     def __init__(self):
         OdsManager.__init__(self)
         self.GHandle("server-created", self.on_server_created)
-
-        self.create_server()
 
     def start_server(self, pattern):
         server = self.get_server(pattern)
@@ -68,8 +68,11 @@ class BluetoothTransfer(OdsManager):
         session.transfer = {}
 
         session.server = server
-
+        
     def on_transfer_started(self, session, filename, local_path, total_bytes):
+        def action_invoked(_id, _action):
+            print _id, _action
+        
         self.progress_dialog = BluetoothProgressDialog()
         info = session.server.GetServerSessionInfo(session.object_path)
         try:
@@ -87,8 +90,19 @@ class BluetoothTransfer(OdsManager):
         session.transfer["address"] = info["BluetoothAddress"]
         session.transfer["name"] = name
 
-        session.Accept()
-
+        # noti = pynotify.Notification(_("Incoming file from Bluetooth"),
+        #                              _("Incoming file %s from %s") % (filename, name),
+        #                              "/usr/share/icons/Deepin/apps/48/preferences-system-bluetooth.png")
+        # noti.add_action("transfer_accept", _("Accept"), action_invoked)
+        # noti.add_action("transfer_reject", _("Reject"), action_invoked)
+        # noti.show()
+        
+        confirm_d = ConfirmDialog(_("Incoming file from Bluetooth"), 
+                                  _("Incoming file %s from %s") % (filename, name),
+                                  confirm_callback=lambda : session.Accept(),
+                                  cancel_callback=lambda : session.Reject())
+        confirm_d.show_all()
+        
     def transfer_progress(self, session, bytes_transferred):
         print bytes_transferred / float(session.transfer["total"])
         self.progress_dialog.cancel_cb = lambda : session.Cancel()

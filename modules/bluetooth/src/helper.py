@@ -20,6 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from dtk.ui.dbus_notify import DbusNotify
+import pynotify
+pynotify.init("deepin-system-settings")
 
 from events import EventManager
 event_manager = EventManager(use_logger=False)
@@ -31,9 +33,7 @@ apply-theme    :  apply current theme.
 '''
 
 def notify_message(summary, body):
-    notify_agent = DbusNotify("deepin-system-settings",
-                              "/usr/share/icons/Deepin/apps/48/preferences-system-bluetooth.png")
-    notify_agent.set_summary(summary)
-    notify_agent.set_body(body)
-    notify_agent.notify()
-
+    noti = pynotify.Notification(summary, body, "/usr/share/icons/Deepin/apps/48/preferences-system-bluetooth.png")
+    noti.show()
+    
+pynotify = pynotify

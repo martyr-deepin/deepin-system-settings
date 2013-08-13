@@ -140,10 +140,11 @@ class TrayBluetoothPlugin(object):
         self.height = self.ori_height
         self.device_items = []
         # self.register_agent()
-        run_command("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__))
+        # run_command("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__))
         # For debug purpose :)
-        # subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
-        #                  stderr=subprocess.STDOUT, shell=True)
+        import subprocess
+        subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
+                         stderr=subprocess.STDOUT, shell=True)
 
     def register_agent(self):
         if not hasattr(self, "agent"):

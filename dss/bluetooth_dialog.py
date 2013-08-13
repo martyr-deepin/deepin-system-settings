@@ -25,7 +25,7 @@ from dtk.ui.progressbar import ProgressBar
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import Button
-from dtk.ui.dialog import DialogBox
+from dtk.ui.dialog import DialogBox, InputDialog
 import gobject
 import gtk
 from constant import *
@@ -118,3 +118,63 @@ class BluetoothReplyDialog(DialogBox):
         self.body_box.pack_start(self.confirm_align, False, False)
 
 gobject.type_register(BluetoothReplyDialog)
+
+class BluetoothInputDialog(InputDialog):
+    
+    def __init__(self, title, init_text, cancel_callback=None, confirm_callback=None):
+        InputDialog.__init__(self, title, init_text,
+                             cancel_callback=cancel_callback,
+                             confirm_callback=confirm_callback)
+        
+gobject.type_register(BluetoothInputDialog)
+
+class AgentDialog(DialogBox):
+    def __init__(self,
+                 title,
+                 message,
+                 default_width=400,
+                 default_height=220,
+                 confirm_callback=None,
+                 cancel_callback=None,
+                 confirm_button_text="Yes",
+                 cancel_button_text="No"):
+        DialogBox.__init__(self, "", default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
+        self.confirm_callback = confirm_callback
+        self.cancel_callback = cancel_callback
+
+        self.title_align = gtk.Alignment()
+        self.title_align.set(0, 0, 0, 0)
+        self.title_align.set_padding(0, 0, FRAME_LEFT_PADDING, 8)
+        self.title_label = Label(title, wrap_width=300)
+
+        self.label_align = gtk.Alignment()
+        self.label_align.set(0.5, 0.5, 0, 0)
+        self.label_align.set_padding(0, 0, 8, 8)
+        self.label = Label(message, text_x_align=ALIGN_MIDDLE, text_size=55)
+
+        self.confirm_button = Button(confirm_button_text)
+        self.cancel_button = Button(cancel_button_text)
+
+        self.confirm_button.connect("clicked", lambda w: self.click_confirm_button())
+        self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
+
+        self.body_box.pack_start(self.title_align, False, False)
+        self.title_align.add(self.title_label)
+        self.body_box.pack_start(self.label_align, True, True)
+        self.label_align.add(self.label)
+
+        self.right_button_box.set_buttons([self.cancel_button, self.confirm_button])
+
+    def click_confirm_button(self):
+        if self.confirm_callback != None:
+            self.confirm_callback()
+
+        self.destroy()
+
+    def click_cancel_button(self):
+        if self.cancel_callback != None:
+            self.cancel_callback()
+
+        self.destroy()
+
+gobject.type_register(AgentDialog)

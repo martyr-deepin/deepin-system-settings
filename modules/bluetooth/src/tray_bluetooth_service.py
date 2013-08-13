@@ -22,7 +22,7 @@
 
 import os
 import sys
-import gobject
+import gtk
 import dbus.mainloop.glib
 from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
@@ -44,7 +44,7 @@ if default_adapter != "None":
     adptr = Adapter(default_adapter)
     adptr.register_agent(path, "")
     
-    BluetoothTransfer()
+    transfer = BluetoothTransfer()
+    transfer.create_server()
     
-mainloop = gobject.MainLoop()
-mainloop.run()
+gtk.main()
