@@ -634,8 +634,10 @@ class Wireless(gtk.VBox):
         style.set_table(self.table)
 
         self.section = SettingSection(_("Default Settings"), always_show= False, revert=True, label_right=True, has_seperator=False)
-        self.section.load([self.table])
         self.pack_start(self.section, False, False)
+        self.section.toggle_off = self.use_default_setting
+        self.section.toggle_on = self.use_user_setting
+        self.section.load([self.table])
         #self.pack_start(self.table, False, False)
         #self.table.set_size_request(340, 227)
 
@@ -654,8 +656,20 @@ class Wireless(gtk.VBox):
         self.mac_entry.connect("changed", self.entry_changed, "mac_address")
         self.clone_entry.connect("changed", self.entry_changed, "cloned_mac_address")
 
+    def use_default_setting(self):
+        log.debug()
+        self.bssid_entry.set_address("")
+        self.mac_entry.set_address("")
+        self.clone_entry.set_address("")
+        self.mtu_spin.set_value(0)
+
+    def use_user_setting(self):
+        pass
+
     def spin_value_changed(self, widget, value, types):
         setattr(self.wireless, types, value)
+        is_valid = self.connection.check_setting_finish()
+        self.settings_obj.set_button("save", is_valid)
 
     def entry_changed(self, widget, content, types):
         is_valid = True
@@ -713,6 +727,7 @@ class Wireless(gtk.VBox):
     def reset(self):
         wireless = self.wireless
         ## retrieve wireless info
+        setting_list = ['bssid','mac_address', 'cloned_mac_address', 'mtu']
         if wireless.ssid != None:
             self.ssid_entry.set_text(wireless.ssid)
 
@@ -734,6 +749,9 @@ class Wireless(gtk.VBox):
 
         if wireless.mtu != None:
             self.mtu_spin.set_value(int(wireless.mtu))
+
+        if any(map(lambda i: getattr(wireless, i), setting_list)):
+            self.section.set_active(False)
         
         self.reset_table()
     
