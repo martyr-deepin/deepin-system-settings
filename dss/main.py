@@ -55,7 +55,7 @@ MAIN_MODULE = "main"
 module_history = [MAIN_MODULE]
 module_history_index = 0
 
-preview_module_id = None
+previous_module_id = None
 
 def record_module_history(module_name):
     global module_history
@@ -173,16 +173,17 @@ class DBusService(dbus.service.Object):
 
         # Define DBus method.
         def unique(self, module_name):
-            global preview_module_id
+            global previous_module_id
 
             if application:
-                # if module_name != "" and preview_module_id != module_name:
-                if module_name != "":
+                # if module_name != "" and  previous_module_id != module_name:
                 # bugfix: by hualet
-                # navigate page won't set preview_module_id to 'navigate', so if you called navigate page from some module else,
+                # navigate page won't set previous_module_id to 'navigate', so if you called navigate page from some module else,
                 # you won't be able to get back by calling command like "deepin-system-settings module-name"
-                    action_bar.bread.remove_node_after_index(0)
-                    call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
+                if module_name != "": 
+                    if previous_module_id != module_name or content_page_info.get_active_module_id() == MAIN_MODULE:
+                        action_bar.bread.remove_node_after_index(0)
+                        call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
 
                 application.raise_to_top()
 
@@ -337,15 +338,15 @@ def send_message(module_id, message_type, message_content):
                )
 
 def switch_page(bread, content_page_info, index, label, slider, navigate_page, foot_box):
-    global preview_module_id
+    global previous_module_id
 
     if index == 0:
         if label == _("System Settings"):
             slider.slide_to_page(navigate_page, "left")
             content_page_info.set_active_module_id("main")
             foot_box.hide()
-            if preview_module_id:
-                send_message(preview_module_id, "exit", "")
+            if previous_module_id:
+                send_message(previous_module_id, "exit", "")
     else:
         send_message(content_page_info.get_active_module_id(),
                      "click_crumb",
@@ -362,7 +363,7 @@ def add_crumb(index, label):
 
 def start_module_process(slider, content_page_info, module_path, module_config, force_direction=None,
                          module_uid=None):
-    global preview_module_id
+    global previous_module_id
 
     module_id = module_config.get("main", "id")
     module_slide_to_page = True
@@ -391,7 +392,7 @@ def start_module_process(slider, content_page_info, module_path, module_config, 
         else:
             send_message(module_id, "show_again", "")
 
-    preview_module_id = module_id
+    previous_module_id = module_id
 
 def is_exists(app_dbus_name, app_object_name, module_name):
     """
@@ -414,8 +415,8 @@ def is_exists(app_dbus_name, app_object_name, module_name):
         return False
 
 def application_focus_changed_cb(widget, event, tp):
-    if preview_module_id:
-        send_message(preview_module_id, "focus_changed", tp)
+    if previous_module_id:
+        send_message(previous_module_id, "focus_changed", tp)
 
 if __name__ == "__main__":
 
