@@ -346,18 +346,20 @@ class Settings(object):
         #print "-"*15
         # 输入合法性检查，再统一设置按钮状态
         #log.debug("someone set button", name, state)
-        if self.mac_is_valid and \
-                self.ipv4_ip_is_valid and \
-                self.ipv4_dns_is_valid and \
-                self.ipv6_ip_is_valid and \
-                self.ipv6_dns_is_valid and \
-                self.wlan_encry_is_valid and \
-                self.dsl_is_valid and \
-                self.ppp_is_valid and \
-                self.vpn_is_valid:
+        validate_list = [self.mac_is_valid, 
+                        self.ipv4_ip_is_valid, 
+                        self.ipv4_dns_is_valid, 
+                        self.ipv6_ip_is_valid,
+                        self.ipv6_dns_is_valid,
+                        self.wlan_encry_is_valid,
+                        self.dsl_is_valid,
+                        self.ppp_is_valid,
+                        self.vpn_is_valid]
+        if all(validate_list):
             Dispatcher.set_button(name, True)
             self.setting_state[self.connection] = (name, True)
         else:
+            log.debug("valid check failed", [i for i,v in enumerate(validate_list) if v == False])
             Dispatcher.set_button(name, False)
             self.setting_state[self.connection] = (name, False)
         #print "set button", name, state, self.connection

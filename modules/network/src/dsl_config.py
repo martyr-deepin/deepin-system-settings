@@ -191,7 +191,7 @@ class Wired(gtk.VBox):
         self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
 
-        (mac, clone_mac, mtu) = self.ethernet_setting.mac_address, self.ethernet_setting.cloned_mac_address, self.ethernet_setting.mtu
+        setting_list = (mac, clone_mac, mtu) = self.ethernet_setting.mac_address, self.ethernet_setting.cloned_mac_address, self.ethernet_setting.mtu
         #print mac, clone_mac, mtu
         if mac != None:
             self.mac_entry.set_address(mac)
@@ -199,6 +199,11 @@ class Wired(gtk.VBox):
             self.clone_entry.set_address(clone_mac)
         if mtu != None:
             self.mtu_spin.set_value(int(mtu))
+        
+        self.__init = True
+        if any(setting_list):
+            default_button.set_active(False)
+        self.__init = False
 
     def save_settings(self, widget, value, types):
         if type(value) is str:
@@ -211,10 +216,11 @@ class Wired(gtk.VBox):
                 is_valid = False
                 #Dispatcher.set_button("save", False)
             self.settings_obj.mac_is_valid = is_valid
-            self.settings_obj.set_button("save", is_valid)
+            if not self.__init:
+                self.settings_obj.set_button("save", is_valid)
         else:
             setattr(self.ethernet_setting, types, value)
-            if self.connection.check_setting_finish():
+            if self.connection.check_setting_finish() and not self.__init:
                 Dispatcher.set_button("save", True)
 
 class DSLConf(gtk.VBox):
