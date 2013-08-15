@@ -36,6 +36,7 @@ class Adapter(BusBase):
             }
 
     def __init__(self, adapter_path):
+        print "DEBUG ", adapter_path
         BusBase.__init__(self, path = adapter_path, interface = "org.bluez.Adapter")
 
         self.bus.add_signal_receiver(self.device_created_cb, dbus_interface = self.object_interface,

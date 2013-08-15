@@ -76,6 +76,17 @@ class SetDateThread(td.Thread):
     def run(self):
         self.__deepin_dt.set_date(self.day, self.month, self.year)
 
+class DateThread(td.Thread):                                                  
+    def __init__(self, ThisPtr):                                                
+        td.Thread.__init__(self)                                                
+        self.setDaemon(True)                                                    
+        self.ThisPtr = ThisPtr                                                  
+                                                                                
+    def run(self):                                                              
+        while True:                                                             
+            self.ThisPtr.set_cur_date()                                         
+            time.sleep(10)
+
 class SecondThread(td.Thread):
     def __init__(self, ThisPtr):
         td.Thread.__init__(self)
@@ -333,6 +344,7 @@ class DatetimeView(gtk.HBox):
         self.__send_message("status", ("date_time", ""))
 
         SecondThread(self).start()
+        DateThread(self).start()
 
     def show_again(self):                                                       
         self.__send_message("status", ("date_time", ""))
@@ -371,6 +383,14 @@ class DatetimeView(gtk.HBox):
                    message_content,                                             
                    reply_handler=self.__handle_dbus_replay,                     
                    error_handler=self.__handle_dbus_error)      
+
+    def set_cur_date(self):
+        year = time.localtime().tm_year
+        month = time.localtime().tm_mon
+        day = time.localtime().tm_mday
+        self.cur_date_label.set_text(_("Current Date: %d-%d-%d") % (year, month, day))
+        self.calendar.clear_marks()
+        self.calendar.select_day(day)
 
     def set_cur_time_label(self):
         is_24hour = 24
