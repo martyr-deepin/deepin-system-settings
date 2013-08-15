@@ -436,6 +436,7 @@ class DatetimeView(gtk.HBox):
         self.__hide_edit_date()
         self.cur_date_label.set_text(_("Current Date: %d-%d-%d") % (year, month, day))
         self.calendar.mark_day(day)
+        self.auto_time_toggle.set_active(False)
         SetDateThread(self.__deepin_dt, day, month, year).start()
 
     def __setup_separator(self):                                                
