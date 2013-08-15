@@ -473,7 +473,8 @@ class PPPConf(gtk.VBox):
         self.group_name.set_size(self.TABLE_WIDTH, 22)
         self.gateway_id = InputEntry()
         self.gateway_id.set_size(self.TABLE_WIDTH, 22)
-        self.pre_shared_key = InputEntry()
+        self.pre_shared_key = PasswordEntry()
+        self.pre_shared_key.set_text = self.pre_shared_key.entry.set_text
         self.pre_shared_key.set_size(self.TABLE_WIDTH, 22)
         
         methods_list = ["refuse_eap", "refuse_eap_label",
