@@ -650,6 +650,7 @@ class Wireless(gtk.VBox):
         #self.mode_combo.connect("item-selected", self.mode_combo_selected)
         self.band_combo.connect("item-selected", self.band_combo_selected)
         self.mtu_spin.connect("value-changed", self.spin_value_changed, "mtu")
+        self.mtu_spin.value_entry.connect("changed", self.spin_user_set)
         self.channel_spin.connect("value-changed", self.spin_value_changed, "channel")
         self.ssid_entry.entry.connect("changed", self.entry_changed, "ssid")
         self.bssid_entry.connect("changed", self.entry_changed, "bssid")
@@ -665,6 +666,18 @@ class Wireless(gtk.VBox):
 
     def use_user_setting(self):
         pass
+
+    def spin_user_set(self, widget, value):
+        if value == "":
+            return
+        value = int(value)
+        if self.mtu_spin.lower_value <= value <= self.mtu_spin.upper_value:
+            self.mtu_spin.update_and_emit(value)
+        elif value < self.mtu_spin.lower_value:
+            self.mtu_spin.update_and_emit(self.mtu_spin.lower_value)
+        else:
+            self.mtu_spin.update_and_emit(self.mtu_spin.upper_value)
+            
 
     def spin_value_changed(self, widget, value, types):
         setattr(self.wireless, types, value)
