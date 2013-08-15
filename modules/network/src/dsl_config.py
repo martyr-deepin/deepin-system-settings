@@ -24,7 +24,6 @@ from nls import _
 # UI
 import style
 from constants import CONTENT_FONT_SIZE
-#from dss_log import log
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -286,9 +285,7 @@ class DSLConf(gtk.VBox):
         dsl_table.attach(style.wrap_with_align(self.password_entry, align="left"), 1, 3, 3, 4)
         dsl_table.attach(style.wrap_with_align(self.show_password, align="left"), 1, 3, 4, 5)
 
-        # TODO UI change
         style.draw_background_color(self)
-        #align = style.set_box_with_align(dsl_table, "text")
         style.set_table(dsl_table)
         # just make table postion looks right
         table_align = gtk.Alignment(0, 0, 0, 0)
@@ -325,6 +322,7 @@ class DSLConf(gtk.VBox):
             service = ""
         if password == None:
             password = ""
+            self.settings_obj.dsl_is_valid = False
         # fill entry
         self.username_entry.entry.set_text(str(username))
         self.service_entry.entry.set_text(str(service))
@@ -336,6 +334,7 @@ class DSLConf(gtk.VBox):
             self.connection.get_setting("connection").id = value
         else:
             if value:
+                
                 setattr(self.dsl_setting, types, value)
             else:
                 delattr(self.dsl_setting, types)
@@ -407,17 +406,17 @@ class PPPConf(gtk.VBox):
 
         self.refresh()
 
-        self.refuse_eap.connect("toggled", self.check_button_cb, "refuse-eap")
-        self.refuse_pap.connect("toggled", self.check_button_cb, "refuse-pap")
-        self.refuse_chap.connect("toggled", self.check_button_cb, "refuse-chap")
-        self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse-mschap")
-        self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse-mschapv2")
-        self.require_mppe.connect("toggled", self.check_button_cb, "require-mppe")
-        self.require_mppe_128.connect("toggled", self.check_button_cb, "require-mppe-128")
-        self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe-stateful")
+        self.refuse_eap.connect("toggled", self.check_button_cb, "refuse_eap")
+        self.refuse_pap.connect("toggled", self.check_button_cb, "refuse_pap")
+        self.refuse_chap.connect("toggled", self.check_button_cb, "refuse_chap")
+        self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse_mschap")
+        self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse_mschapv2")
+        self.require_mppe.connect("toggled", self.check_button_cb, "require_mppe")
+        self.require_mppe_128.connect("toggled", self.check_button_cb, "require_mppe_128")
+        self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe_stateful")
         self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
         self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
-        self.no_vj_comp.connect("toggled", self.check_button_cb, "no-vj-comp")
+        self.no_vj_comp.connect("toggled", self.check_button_cb, "no_vj_comp")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
 
 
@@ -488,7 +487,7 @@ class PPPConf(gtk.VBox):
                 setattr(self.ppp_setting, key, True)
         elif key is "echo":
             if active:
-                setattr(self.ppp_setting, "lcp-echo-failure", 5)
+                setattr(self.ppp_setting, "lcp_echo_failure", 5)
                 setattr(self.ppp_setting, "lcp_echo_interval", 30)
             else:
                 setattr(self.ppp_setting, "lcp_echo_failure", 0)
@@ -501,7 +500,7 @@ class PPPConf(gtk.VBox):
         #check_settings(self.connection, self.set_button)
         ##################
         is_valid = self.connection.check_setting_finish()
-        self.settings_obj.ppp_is_valid = is_valid
+        #self.settings_obj.ppp_is_valid = is_valid
         self.settings_obj.set_button("save", is_valid)
 
         if key is "require-mppe":
