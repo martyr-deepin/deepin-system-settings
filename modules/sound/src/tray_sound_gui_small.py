@@ -257,18 +257,18 @@ class TrayGui(gtk.VBox):
                 icon_name = "deepin-music-player"
         return icon_name, False
 
-    def __get_pixbuf_from_icon_name(self, name):
+    def __get_pixbuf_from_icon_name(self, name, size=16):
         screen = self.get_screen()
         icon_theme = gtk.icon_theme_get_for_screen(screen)
-        icon_info = icon_theme.lookup_icon(name, 16, 0)
+        icon_info = icon_theme.lookup_icon(name, size, 0)
         if not icon_info:
             return None
         filename = icon_info.get_filename()
         if not filename or not os.path.exists(filename):
             return None
         pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
-        if icon_info.get_base_size() != 16:
-            pixbuf = pixbuf.scale_simple(16, 16, gtk.gdk.INTERP_TILES)
+        if icon_info.get_base_size() != size:
+            pixbuf = pixbuf.scale_simple(size, size, gtk.gdk.INTERP_TILES)
         return pixbuf
 
     ####################################################
@@ -511,7 +511,10 @@ class TrayGui(gtk.VBox):
     # mpris dbus signal
     def mpris2_new_cb(self, obj, pid):
         vbox = gtk.VBox()
-        image_pixbuf = self.__get_pixbuf_from_icon_name(obj.mpris_process[pid]['property']['DesktopEntry'])
+        image_pixbuf = self.__get_pixbuf_from_icon_name(
+            obj.mpris_process[pid]['property']['DesktopEntry'])
+        logo_pixbuf = self.__get_pixbuf_from_icon_name(
+            obj.mpris_process[pid]['property']['DesktopEntry'], 32)
         if image_pixbuf:
             img = gtk.image_new_from_pixbuf(image_pixbuf)
         else:
@@ -601,6 +604,7 @@ class TrayGui(gtk.VBox):
         self.mpris_list[pid]['meta_artist'] = xesam_artist
         self.mpris_list[pid]['meta_album'] = xesam_album
         self.mpris_list[pid]['container'] = vbox
+        self.mpris_list[pid]['logo'] = logo_pixbuf
         if not obj.mpris_process[pid]['property']['Metadata']:
             self.mpris_list[pid]['height'] = self.mpris_base_height
         else:
@@ -655,7 +659,7 @@ class TrayGui(gtk.VBox):
                 #self.mpris_list[pid]['meta_img'].set_from_pixbuf(art_pixbuf)
                 self.mpris_list[pid]['meta_img'].pixbuf = art_pixbuf
         else:
-            self.mpris_list[pid]['meta_img'].pixbuf = None
+            self.mpris_list[pid]['meta_img'].pixbuf = self.mpris_list[pid]['logo']
         self.mpris_list[pid]['meta_img'].queue_draw()
         if 'xesam:title' in self.mpris2.mpris_process[pid]['property']['Metadata']:
             self.mpris_list[pid]['meta_title'].set_text(
