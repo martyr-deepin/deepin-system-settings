@@ -30,6 +30,7 @@ from dtk.ui.constant import ALIGN_MIDDLE
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 from dtk.ui.dialog import DIALOG_MASK_SINGLE_PAGE, DialogBox
+from bluetooth_dialog import BluetoothInputDialog
 from constant import *
 from nls import _
 
@@ -84,6 +85,12 @@ class AgentDialog(DialogBox):
 
 gobject.type_register(AgentDialog)
 
+def ask(prompt):
+    try:
+        return raw_input(prompt)
+    except:
+        return input(prompt)
+
 class Rejected(dbus.DBusException):
     _dbus_error_name = "org.bluez.Error.Rejected"
 
@@ -103,6 +110,13 @@ class GuiAgent(dbus.service.Object):
         dbus.service.Object.__init__(self, bus, path)
 
         self.exit_on_release = True
+        self.__is_rejected = False
+
+    def is_rejected(self):
+        return self.__is_rejected
+        
+    def set_rejected(self, value):
+        self.__is_rejected = value
 
     def set_exit_on_release(self, exit_on_release):
         self.exit_on_release = exit_on_release
@@ -127,7 +141,17 @@ class GuiAgent(dbus.service.Object):
                          in_signature="o", out_signature="s")
     def RequestPinCode(self, device):
         print("RequestPinCode (%s)" % (device))
-        return ask("Enter PIN Code: ")
+        # return ask("Enter PIN Code: ")
+        
+        dlg = gtk.Dialog()
+        input_d = BluetoothInputDialog("Enter PIN code:", "")
+        input_d.show_all()
+        # dlg.set_position(10000, 10000)
+        response = dlg.run()
+        dlg.destroy()
+
+        print response
+        return ""
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="o", out_signature="u")
@@ -155,8 +179,8 @@ class GuiAgent(dbus.service.Object):
                              str(passkey),
                              confirm_button_text = _("Yes"),
                              cancel_button_text = _("No"),
-                             confirm_callback = lambda : True,
-                             cancel_callback = lambda : raise_rejected("Passkey doesn't match.")
+                             confirm_callback = lambda : self.set_rejected(False),
+                             cancel_callback = lambda : self.set_rejected(True)
                              )
         dialog.show_all()
 

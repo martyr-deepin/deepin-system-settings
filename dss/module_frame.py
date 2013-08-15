@@ -73,7 +73,7 @@ class ModuleFrame(gtk.Plug):
         DBusGMainLoop(set_as_default=True) 
         
         # Init threads.
-        # gtk.gdk.threads_init()
+        gtk.gdk.threads_init()
 
         # Init dbus.
         self.bus = dbus.SessionBus()

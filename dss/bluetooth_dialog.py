@@ -25,7 +25,8 @@ from dtk.ui.progressbar import ProgressBar
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import Button
-from dtk.ui.dialog import DialogBox, InputDialog
+from dtk.ui.constant import ALIGN_MIDDLE
+from dtk.ui.dialog import DIALOG_MASK_SINGLE_PAGE, DialogBox, InputDialog, ConfirmDialog
 import gobject
 import gtk
 from constant import *
@@ -127,6 +128,15 @@ class BluetoothInputDialog(InputDialog):
                              confirm_callback=confirm_callback)
         
 gobject.type_register(BluetoothInputDialog)
+
+class BluetoothConfirmDialog(ConfirmDialog):
+    
+    def __init__(self, title, message, confirm_cb, cancel_cb):
+        ConfirmDialog.__init__(self, title, message, 
+                               confirm_callback=confirm_cb, 
+                               cancel_callback=cancel_cb)
+        
+gobject.type_register(BluetoothConfirmDialog)
 
 class AgentDialog(DialogBox):
     def __init__(self,

@@ -358,16 +358,15 @@ class DeviceItem(gobject.GObject):
         if self.is_paired:
             return
 
-        # from bt.gui_agent import GuiAgent
-        from bt.agent import Agent
+        from bt.gui_agent import GuiAgent
         path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
-        agent = Agent(path)
+        agent = GuiAgent(self.name, path)
         agent.set_exit_on_release(False)
         self.device.set_trusted(True)
         if not self.device.get_paired():
             self.adapter.create_paired_device(self.device.get_address(),
                                               path,
-                                              "",
+                                              "DisplayOnly",
                                               self.__reply_handler_cb,
                                               self.__error_handler_cb)
 
@@ -651,19 +650,19 @@ class BlueToothView(gtk.VBox):
             self.my_bluetooth.adapter.start_discovery()
             self.notice_label.set_text(_("Discovering device"))
             self.refresh_lable_timeout = gobject.timeout_add_seconds(1, self.__refresh_notice_label)
-            self.stop_discovery_timeout = gobject.timeout_add_seconds(20, self.my_bluetooth.adapter.stop_discovery)
+            # self.stop_discovery_timeout = gobject.timeout_add_seconds(20, self.__stop_discovery)
             self.my_bluetooth.adapter.connect("property-changed", self.on_adapter_property_changed)
             self.is_searching = True
 
+    def __stop_discovery(self):
+        self.my_bluetooth.adapter.stop_discovery()
+     
     def on_adapter_property_changed(self, obj, key, value):
         if key == "Discovering" and value == False:
+            print "property changed"
             gobject.source_remove(self.refresh_lable_timeout)
             self.is_searching = False
             self.notice_label.set_text("")
-            try:
-                self.my_bluetooth.adapter.stop_discovery()
-            except Exception, e:
-                print e
 
     def __device_found(self, adapter, address, values):
         if address not in adapter.get_address_records() and address not in adapter.get_devices():

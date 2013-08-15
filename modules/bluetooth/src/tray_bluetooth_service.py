@@ -34,6 +34,8 @@ from bluetooth_transfer import BluetoothTransfer
 
 dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
 
+# gtk.gdk.threads_init()
+
 bus = dbus.SystemBus()
 path = "/com/deepin/bluetooth/agent"
 
