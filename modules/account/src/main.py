@@ -1162,6 +1162,7 @@ class AccountSetting(object):
         user_item = TreeItem(icon_pixbuf, tools.escape_markup_string(user_info[2]),
                              tools.escape_markup_string(user_info[3]),
                              user_info[4], user_info[0])
+        user_info[0].connect("changed", self.user_info_changed_cb, user_item)
         self.view_widgets["account"].add_items([user_item])
         if user_info[3] == self.added_user_name:
             self.view_widgets["account"].select_last_item()
