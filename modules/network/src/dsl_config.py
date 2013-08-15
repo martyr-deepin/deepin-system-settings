@@ -471,7 +471,7 @@ class PPPConf(gtk.VBox):
         self.nodeflate.set_active(not nodeflate)
         self.no_vj_comp.set_active(not no_vj_comp)
 
-        if lcp_echo_failure == None and lcp_echo_interval == None:
+        if not lcp_echo_failure and not lcp_echo_interval:
             self.ppp_echo.set_active(False)
         else:
             self.ppp_echo.set_active(True)
@@ -509,7 +509,7 @@ class PPPConf(gtk.VBox):
         #self.settings_obj.ppp_is_valid = is_valid
         self.settings_obj.set_button("save", is_valid)
 
-        if key is "require-mppe":
+        if key is "require_mppe":
             if active:
                 self.refresh_table(1)
             else:
