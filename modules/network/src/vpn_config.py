@@ -543,7 +543,7 @@ class PPPConf(gtk.VBox):
         self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe-stateful")
         self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
         self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
-        self.no_vj_comp.connect("toggled", self.check_button_cb, "novj")
+        self.no_vj_comp.connect("toggled", self.check_button_cb, "no-vj-comp")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
         self.nopcomp.connect("toggled", self.check_button_cb, "nopcomp")
         self.noaccomp.connect("toggled", self.check_button_cb, "noaccomp")
@@ -618,7 +618,7 @@ class PPPConf(gtk.VBox):
 
         nobsdcomp = self.vpn_setting.get_data_item("nobsdcomp")
         nodeflate = self.vpn_setting.get_data_item("nodeflate")
-        no_vj_comp = self.vpn_setting.get_data_item("novj")
+        no_vj_comp = self.vpn_setting.get_data_item("no-vj-comp")
 
 
         lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
@@ -712,6 +712,12 @@ class PPPConf(gtk.VBox):
         elif key != "name":
             self.vpn_setting.set_data_item(key, string)
 
+        if self.connection.check_setting_finish():
+            Dispatcher.set_button("save", True)
+        else:
+            Dispatcher.set_button("save", False)
+
+
     def check_button_cb(self, widget, key):
         auth_lock = self.auth_lock()
         active = widget.get_active()
@@ -724,7 +730,6 @@ class PPPConf(gtk.VBox):
             if auth_lock:
                 self.require_mppe_label.set_sensitive(False)
                 self.require_mppe.set_sensitive(False)
-                #self.require_mppe.set_active(False)
 
                 self.set_group_sensitive(True)
             else:
@@ -739,12 +744,12 @@ class PPPConf(gtk.VBox):
 
         elif key == "echo":
             if active:
-                self.vpn_setting.set_data_item("lcp_echo_failure", "5")
-                self.vpn_setting.set_data_item("lcp_echo_interval", "30")
+                self.vpn_setting.set_data_item("lcp-echo-failure", "5")
+                self.vpn_setting.set_data_item("lcp-echo-interval", "30")
             else:
-                self.vpn_setting.delete_data_item("lcp_echo_failure")
-                self.vpn_setting.delete_data_item("lcp_echo_interval")
-        elif key != "name":
+                self.vpn_setting.delete_data_item("lcp-echo-failure")
+                self.vpn_setting.delete_data_item("lcp-echo-interval")
+        elif key.startswith("ipsec"):
             if active:
                 self.vpn_setting.set_data_item(key, "yes")
             else:
@@ -816,4 +821,3 @@ class PPPConf(gtk.VBox):
         self.refuse_eap_label.set_sensitive(boolean)
         self.refuse_pap_label.set_sensitive(boolean)
         self.refuse_chap_label.set_sensitive(boolean)
-

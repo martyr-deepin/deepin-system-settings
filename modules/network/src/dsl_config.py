@@ -407,17 +407,17 @@ class PPPConf(gtk.VBox):
 
         self.refresh()
 
-        self.refuse_eap.connect("toggled", self.check_button_cb, "refuse_eap")
-        self.refuse_pap.connect("toggled", self.check_button_cb, "refuse_pap")
-        self.refuse_chap.connect("toggled", self.check_button_cb, "refuse_chap")
-        self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse_mschap")
-        self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse_mschapv2")
-        self.require_mppe.connect("toggled", self.check_button_cb, "require_mppe")
-        self.require_mppe_128.connect("toggled", self.check_button_cb, "require_mppe_128")
-        self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe_stateful")
+        self.refuse_eap.connect("toggled", self.check_button_cb, "refuse-eap")
+        self.refuse_pap.connect("toggled", self.check_button_cb, "refuse-pap")
+        self.refuse_chap.connect("toggled", self.check_button_cb, "refuse-chap")
+        self.refuse_mschap.connect("toggled", self.check_button_cb, "refuse-mschap")
+        self.refuse_mschapv2.connect("toggled", self.check_button_cb, "refuse-mschapv2")
+        self.require_mppe.connect("toggled", self.check_button_cb, "require-mppe")
+        self.require_mppe_128.connect("toggled", self.check_button_cb, "require-mppe-128")
+        self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe-stateful")
         self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
         self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
-        self.no_vj_comp.connect("toggled", self.check_button_cb, "no_vj_comp")
+        self.no_vj_comp.connect("toggled", self.check_button_cb, "no-vj-comp")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
 
 
@@ -488,7 +488,7 @@ class PPPConf(gtk.VBox):
                 setattr(self.ppp_setting, key, True)
         elif key is "echo":
             if active:
-                setattr(self.ppp_setting, "lcp_echo_failure", 5)
+                setattr(self.ppp_setting, "lcp-echo-failure", 5)
                 setattr(self.ppp_setting, "lcp_echo_interval", 30)
             else:
                 setattr(self.ppp_setting, "lcp_echo_failure", 0)
@@ -504,7 +504,7 @@ class PPPConf(gtk.VBox):
         self.settings_obj.ppp_is_valid = is_valid
         self.settings_obj.set_button("save", is_valid)
 
-        if key is "require_mppe":
+        if key is "require-mppe":
             if active:
                 self.refresh_table(1)
             else:
