@@ -122,7 +122,7 @@ gobject.type_register(BluetoothReplyDialog)
 
 class BluetoothInputDialog(InputDialog):
     
-    def __init__(self, title, init_text, cancel_callback=None, confirm_callback=None):
+    def __init__(self, title, init_text="", cancel_callback=None, confirm_callback=None):
         InputDialog.__init__(self, title, init_text,
                              cancel_callback=cancel_callback,
                              confirm_callback=confirm_callback)

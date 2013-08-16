@@ -8,6 +8,7 @@
 # Maintainer: Wang Yong <lazycat.manatee@gmail.com>
 #             Xia Bin <xiabin@linuxdeepin.com>
 #             Zhai Xiang <zhaixiang@linuxdeepin.com>
+#             Wang Yaohua <mr.asianwang@gmail.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -73,7 +74,8 @@ class ModuleFrame(gtk.Plug):
         DBusGMainLoop(set_as_default=True) 
         
         # Init threads.
-        gtk.gdk.threads_init()
+        if self.module_id != "bluetooth": # Added by hualet, wonder why? go ask him :)
+            gtk.gdk.threads_init()
 
         # Init dbus.
         self.bus = dbus.SessionBus()

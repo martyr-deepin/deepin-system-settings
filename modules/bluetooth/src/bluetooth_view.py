@@ -66,7 +66,7 @@ class DeviceIconView(ScrolledWindow):
 
         event_manager.add_callback("text", self.__on_text)
         event_manager.add_callback("hide-text", self.__on_hide_text)
-
+        
     def __on_text(self, name, obj, argv):
         disable(self, False)
         text(self, argv)
@@ -358,9 +358,9 @@ class DeviceItem(gobject.GObject):
         if self.is_paired:
             return
 
-        from bt.gui_agent import GuiAgent
+        from bt.agent import Agent
         path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
-        agent = GuiAgent(self.name, path)
+        agent = Agent(path)
         agent.set_exit_on_release(False)
         self.device.set_trusted(True)
         if not self.device.get_paired():
@@ -653,7 +653,7 @@ class BlueToothView(gtk.VBox):
             # self.stop_discovery_timeout = gobject.timeout_add_seconds(20, self.__stop_discovery)
             self.my_bluetooth.adapter.connect("property-changed", self.on_adapter_property_changed)
             self.is_searching = True
-
+            
     def __stop_discovery(self):
         self.my_bluetooth.adapter.stop_discovery()
      

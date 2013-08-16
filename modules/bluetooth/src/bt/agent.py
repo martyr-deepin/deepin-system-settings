@@ -69,56 +69,40 @@ class Agent(dbus.service.Object):
                          in_signature="os", out_signature="")
     def Authorize(self, device, uuid):
         print("Authorize (%s, %s)" % (device, uuid))
-        # authorize = ask("Authorize connection (yes/no): ")
-        # if (authorize == "yes"):
-        #     return
-        # raise Rejected("Connection rejected by user")
-        confirm_d = BluetoothConfirmDialog(_("Authorize connection"), 
+
+        loop = None
+        confirm_d = BluetoothConfirmDialog(_("Authorize connection"),
                                            _("Authorize connection request from %s?") % Device(device).get_alias(),
                                            confirm_cb=lambda : True,
                                            cancel_cb=lambda : raise_rejected("Connection rejected by user."))
         confirm_d.show_all()
+        confirm_d.connect("destroy", lambda widget : loop.quit())
 
-    
-    @dbus.service.method("org.bluez.Agent",
-                         in_signature="o", out_signature="s")
-    def RequestPinCode(self, device):
-        print "RequestPinCode (%s)" % device
-        
-        result = [""]
-        def set_result(s):
-            result[0] = s
-        loop = None
-        input_d = BluetoothInputDialog(_("Enter PIN code to pair with %s:") % Device(Device).get_alias(), 
-                                       "", 
-                                       cancel_callback=lambda : set_result(""),
-                                       confirm_callback=lambda s : set_result(s)
-                                       )
-        input_d.show_all()
-        input_d.connect("destroy", lambda widget : loop.quit())
-        
         loop = gobject.MainLoop(None, False)
         gtk.gdk.threads_leave()
         loop.run()
         gtk.gdk.threads_enter()
-        
-        return result[0]
-        
-        # try:
-        #     dialog = gtk.Dialog("My dialog",
-        #                         None,
-        #                         gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-        #                         (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,))
 
-        #     response = dialog.run()
-        #     if response == gtk.RESPONSE_ACCEPT:
-        #         print "ok"
-        #     dialog.destroy()
-            
-        # except Exception, e:
-        #     print e
-            
-        # return "0"
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="o", out_signature="s")
+    def RequestPinCode(self, device):
+        print "RequestPinCode (%s)" % device
+
+        result = []
+        loop = None
+        input_d = BluetoothInputDialog(_("Enter PIN code to pair with %s:") % Device(device).get_alias(),
+                                       cancel_callback=lambda : result.append(""),
+                                       confirm_callback=lambda s : result.append(s)
+                                       )
+        input_d.show_all()
+        input_d.connect("destroy", lambda widget : loop.quit())
+
+        loop = gobject.MainLoop(None, False)
+        gtk.gdk.threads_leave()
+        loop.run()
+        gtk.gdk.threads_enter()
+
+        return result[0]
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="o", out_signature="u")
@@ -153,7 +137,8 @@ class Agent(dbus.service.Object):
         # noti.add_action("pair_accept", _("Accept"), action_invoked)
         # noti.add_action("pair_reject", _("Reject"), action_invoked)
         # noti.show()
-        
+
+        loop = None
         agent_d = AgentDialog(_("Please confirm %s pin match as below") % Device(device).get_alias(),
                               str(passkey),
                               confirm_button_text = _("Yes"),
@@ -161,6 +146,13 @@ class Agent(dbus.service.Object):
                               confirm_callback = lambda : True,
                               cancel_callback = lambda : raise_rejected("Passkey doesn't match")
                               )
+
+        agent_d.connect("destroy", lambda widget : loop.quit())
+
+        loop = gobject.MainLoop(None, False)
+        gtk.gdk.threads_leave()
+        loop.run()
+        gtk.gdk.threads_enter()
 
         agent_d.show_all()
 

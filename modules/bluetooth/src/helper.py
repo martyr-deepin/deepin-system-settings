@@ -19,7 +19,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from dtk.ui.dbus_notify import DbusNotify
+
 import pynotify
 pynotify.init("deepin-system-settings")
 
