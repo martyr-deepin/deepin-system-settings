@@ -28,7 +28,10 @@ from ods.OdsManager import OdsManager
 
 from nls import _
 from dtk.ui.dialog import ConfirmDialog
+from deepin_utils.process import run_command
 from bluetooth_dialog import BluetoothProgressDialog, BluetoothReplyDialog
+
+TRANSFER_DIR = "~"
 
 class BluetoothTransfer(OdsManager):
     def __init__(self):
@@ -39,7 +42,7 @@ class BluetoothTransfer(OdsManager):
         server = self.get_server(pattern)
         if server != None:
             if pattern == "opp":
-                server.Start(os.path.expanduser("~"), True, False)
+                server.Start(os.path.expanduser(TRANSFER_DIR), True, False)
                 return True
         else:
             return False
@@ -59,20 +62,17 @@ class BluetoothTransfer(OdsManager):
             return
 
         session.GHandle("transfer-progress", self.transfer_progress)
-        session.GHandle("cancelled", self.transfer_finished, "cancelled")
-        session.GHandle("disconnected", self.transfer_finished, "disconnected")
-        session.GHandle("transfer-completed", self.transfer_finished, "completed")
-        session.GHandle("error-occurred", self.transfer_finished, "error")
+        session.GHandle("cancelled", self.transfer_cancelled)
+        session.GHandle("disconnected", self.transfer_disconnected)
+        session.GHandle("transfer-completed", self.transfer_finished)
+        session.GHandle("error-occurred", self.transfer_error)
         session.GHandle("transfer-started", self.on_transfer_started)
 
         session.transfer = {}
 
         session.server = server
-        
+
     def on_transfer_started(self, session, filename, local_path, total_bytes):
-        def action_invoked(_id, _action):
-            print _id, _action
-        
         self.progress_dialog = BluetoothProgressDialog()
         info = session.server.GetServerSessionInfo(session.object_path)
         try:
@@ -85,25 +85,20 @@ class BluetoothTransfer(OdsManager):
         session.transfer["filename"] = filename
         session.transfer["filepath"] = local_path
         session.transfer["total"] = total_bytes
-        session.transfer["failed"] = False
+        session.transfer["cancelled"] = False
 
         session.transfer["address"] = info["BluetoothAddress"]
         session.transfer["name"] = name
 
-        # noti = pynotify.Notification(_("Incoming file from Bluetooth"),
-        #                              _("Incoming file %s from %s") % (filename, name),
-        #                              "/usr/share/icons/Deepin/apps/48/preferences-system-bluetooth.png")
-        # noti.add_action("transfer_accept", _("Accept"), action_invoked)
-        # noti.add_action("transfer_reject", _("Reject"), action_invoked)
-        # noti.show()
-        
-        self.confirm_d = ConfirmDialog(_("Incoming file from Bluetooth"), 
-                                       _("Incoming file %s from %s") % (filename, name),
+        self.confirm_d = ConfirmDialog(_("Incoming file from %s" % name),
+                                       _("Accept incoming file %s?") % filename,
                                        confirm_callback=lambda : session.Accept(),
                                        cancel_callback=lambda : session.Reject())
+        self.confirm_d.confirm_button.set_label(_("Accept"))
+        self.confirm_d.cancel_button.set_label(_("Reject"))
         self.confirm_d.set_keep_above(True)
         self.confirm_d.show_all()
-        
+
     def transfer_progress(self, session, bytes_transferred):
         print bytes_transferred / float(session.transfer["total"])
         self.progress_dialog.cancel_cb = lambda : session.Cancel()
@@ -111,19 +106,31 @@ class BluetoothTransfer(OdsManager):
         self.progress_dialog.set_progress(bytes_transferred / float(session.transfer["total"]) * 100)
         self.progress_dialog.show_all()
 
-    def transfer_finished(self, session, arg):
-        if arg in ["error", "cancelled"]:
-            reply_dlg = BluetoothReplyDialog(_("Transfer failed!"), is_succeed=False)
-            reply_dlg.set_keep_above(True)
-            reply_dlg.show_all()
-            session.transfer["failed"] = True
+    def transfer_finished(self, session):
+        print "transfer_finished"
+        if not session.transfer["cancelled"]:
+            # reply_dlg = BluetoothReplyDialog(_("Transfer completed!"))
+            # reply_dlg.set_keep_above(True)
+            # reply_dlg.show_all()
+            
+            run_command("xdg-open %s" % TRANSFER_DIR)
 
-        if arg == "completed":  # signal "completed" will be received even the transfer failed
-            if not session.transfer["failed"]:
-                reply_dlg = BluetoothReplyDialog(_("Transfer completed!"))
-                reply_dlg.set_keep_above(True)
-                reply_dlg.show_all()
-                
+            if self.progress_dialog.get_visible():
+                self.progress_dialog.destroy()
+
+    def transfer_cancelled(self, session):
+        print "transfer_cancelled"
+        session.transfer["cancelled"] = True
+
+    def transfer_disconnected(self, sesssion):
+        print "transfer_disconnected"
+
+    def transfer_error(self, session, name, msg):
+        print "transfer_errer", name, msg
+        reply_dlg = BluetoothReplyDialog(_("Transfer failed : %s") % msg, is_succeed=False)
+        reply_dlg.set_keep_above(True)
+        reply_dlg.show_all()
+
         if self.progress_dialog.get_visible():
             self.progress_dialog.destroy()
         if self.confirm_d.get_visible():
