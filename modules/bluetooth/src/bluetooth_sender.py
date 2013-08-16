@@ -50,6 +50,8 @@ class BluetoothSender:
         send_message("dialog",
                      ("bluetooth", "reply", _("Failed!\nerror msg: %s") % msg, "False")
                     )
+        # notify_message(_("Send file failed"), 
+        #                _("Error! %s") % msg)
 
     def __on_cancel(self, name, obj, argv):
         def reply(*args):

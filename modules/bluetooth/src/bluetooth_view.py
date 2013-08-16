@@ -360,8 +360,7 @@ class DeviceItem(gobject.GObject):
 
         from bt.agent import Agent
         path = "/org/bluez/agent/%s" % re.sub('[-]', '_', str(uuid.uuid4()))
-        agent = Agent(path)
-        agent.set_exit_on_release(False)
+        Agent(path)
         self.device.set_trusted(True)
         if not self.device.get_paired():
             self.adapter.create_paired_device(self.device.get_address(),
@@ -650,30 +649,36 @@ class BlueToothView(gtk.VBox):
             self.my_bluetooth.adapter.start_discovery()
             self.notice_label.set_text(_("Discovering device"))
             self.refresh_lable_timeout = gobject.timeout_add_seconds(1, self.__refresh_notice_label)
-            # self.stop_discovery_timeout = gobject.timeout_add_seconds(20, self.__stop_discovery)
             self.my_bluetooth.adapter.connect("property-changed", self.on_adapter_property_changed)
             self.is_searching = True
             
-    def __stop_discovery(self):
-        self.my_bluetooth.adapter.stop_discovery()
-     
     def on_adapter_property_changed(self, obj, key, value):
         if key == "Discovering" and value == False:
-            print "property changed"
             gobject.source_remove(self.refresh_lable_timeout)
+            if self.is_searching:
+                self.my_bluetooth.adapter.stop_discovery()
             self.is_searching = False
             self.notice_label.set_text("")
 
     def __device_found(self, adapter, address, values):
-        if address not in adapter.get_address_records() and address not in adapter.get_devices():
-            device = Device(adapter.create_device(address))
+        print "address", address
+        if address not in adapter.get_address_records():
+            device_path = adapter.create_device(address)
+            if device_path == "None":
+                return 
+            
+            device = Device(device_path)
             items = []
-
+        
             if not values.has_key("Name"):
                 return
-
+        
+            print bluetooth_class_to_type(device.get_class())
             items.append(DeviceItem(values['Name'],
-                         app_theme.get_pixbuf("bluetooth/%s.png" % bluetooth_class_to_type(device.get_class())).get_pixbuf(), device, adapter))
+                                    app_theme.get_pixbuf("bluetooth/%s.png" 
+                                                         % bluetooth_class_to_type(device.get_class())).get_pixbuf(), 
+                                    device, 
+                                    adapter))
             self.device_iconview.add_items(items)
                 
     def __set_enable_open(self, is_open=True):

@@ -247,8 +247,7 @@ class DBusService(dbus.service.Object):
                         if argv == "False":
                             is_succeed = False
                         reply_dlg = BluetoothReplyDialog(message, is_succeed = is_succeed)
-                        print "*************: %s" % application.window
-                        reply_dlg.place_center(application.window)
+                        # reply_dlg.place_center(application.window)
                         reply_dlg.show_all()
             else:
                 print message

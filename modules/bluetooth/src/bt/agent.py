@@ -53,17 +53,11 @@ class Agent(dbus.service.Object):
 
         dbus.service.Object.__init__(self, bus, path)
 
-        self.exit_on_release = True
-
-    def set_exit_on_release(self, exit_on_release):
-        self.exit_on_release = exit_on_release
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="", out_signature="")
     def Release(self):
         print("Release")
-        if self.exit_on_release:
-            mainloop.quit()
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="os", out_signature="")
@@ -75,8 +69,8 @@ class Agent(dbus.service.Object):
                                            _("Authorize connection request from %s?") % Device(device).get_alias(),
                                            confirm_cb=lambda : True,
                                            cancel_cb=lambda : raise_rejected("Connection rejected by user."))
-        confirm_d.show_all()
         confirm_d.connect("destroy", lambda widget : loop.quit())
+        confirm_d.show_all()
 
         loop = gobject.MainLoop(None, False)
         gtk.gdk.threads_leave()
@@ -94,8 +88,8 @@ class Agent(dbus.service.Object):
                                        cancel_callback=lambda : result.append(""),
                                        confirm_callback=lambda s : result.append(s)
                                        )
-        input_d.show_all()
         input_d.connect("destroy", lambda widget : loop.quit())
+        input_d.show_all()
 
         loop = gobject.MainLoop(None, False)
         gtk.gdk.threads_leave()
@@ -138,23 +132,26 @@ class Agent(dbus.service.Object):
         # noti.add_action("pair_reject", _("Reject"), action_invoked)
         # noti.show()
 
+        result = []
         loop = None
         agent_d = AgentDialog(_("Please confirm %s pin match as below") % Device(device).get_alias(),
                               str(passkey),
                               confirm_button_text = _("Yes"),
                               cancel_button_text = _("No"),
-                              confirm_callback = lambda : True,
-                              cancel_callback = lambda : raise_rejected("Passkey doesn't match")
+                              confirm_callback = lambda : result.append("yes"),
+                              cancel_callback = lambda : result.append(None)
                               )
 
         agent_d.connect("destroy", lambda widget : loop.quit())
+        agent_d.show_all()
 
         loop = gobject.MainLoop(None, False)
         gtk.gdk.threads_leave()
         loop.run()
         gtk.gdk.threads_enter()
-
-        agent_d.show_all()
+        
+        if not result[0]:
+            raise_rejected("Passkey doesn't match.")
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="s", out_signature="")
