@@ -44,13 +44,14 @@ def bluetooth_verify_address(bdaddr):
     return True
 
 def is_bluetooth_audio_type(device):
-    props = device.get_properties()
+    props = map(lambda x : bluetooth_uuid_to_string(x), device.get_uuids())
+    print props
     if "AudioSink" in props:
         return True
     return False
 
 def is_bluetooth_file_type(device):
-    props = device.get_properties()
+    props = map(lambda x : bluetooth_uuid_to_string(x), device.get_uuids())    
     if "OBEXObjectPush" in props:
         return True
     return False

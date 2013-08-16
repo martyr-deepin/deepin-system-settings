@@ -72,8 +72,8 @@ class DeviceItem(TreeItem):
         action = self.__get_action_by_device_class()
         if action:
             action()
-
-        run_command("deepin-system-settings bluetooth")
+        else:
+            run_command("deepin-system-settings bluetooth")
 
     def __get_action_by_device_class(self):
         def do_send_file():
@@ -150,25 +150,6 @@ class TrayBluetoothPlugin(object):
         subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
                          stderr=subprocess.STDOUT, shell=True)
 
-    def register_agent(self):
-        if not hasattr(self, "agent"):
-            from bt.agent import Agent
-            import dbus.mainloop.glib
-
-            try:
-                path = "/com/deepin/bluetooth/agent"
-
-                self.agent = Agent(path)
-                self.agent.set_exit_on_release(False)
-            except Exception, e:
-                print e
-
-        try:
-            dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-            self.my_bluetooth.register_agent(self.agent.agent_path)
-        except Exception, e:
-            print e
-
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
 
@@ -211,7 +192,7 @@ class TrayBluetoothPlugin(object):
 
     def __get_devices(self):
         devices = self.my_bluetooth.get_devices()
-        device_count = len(devices)
+        device_count = len(filter(lambda x : x.get_paired(), devices))
 
         self.device_items = []
         for d in devices:

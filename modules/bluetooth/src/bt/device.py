@@ -23,6 +23,7 @@
 import dbus
 import gobject
 from bus_utils import BusBase
+from utils import bluetooth_uuid_to_string
 
 class Device(BusBase):
 
@@ -166,13 +167,12 @@ class Device(BusBase):
         return uuids
 
     def get_services(self):
-        services = []
         if "Services" in self.get_properties().keys():
             services = self.get_properties()["Services"]
             if services:
                 services = map(lambda x:str(x), services)
-
-        return services
+            return services
+        return []
 
     def disconnect_requested_cb(self):
         self.emit("disconnect-requested")
