@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-19 14:42+0800\n"
+"POT-Creation-Date: 2013-08-19 16:25+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,20 +18,21 @@ msgstr ""
 
 #: ../src/tray_bluetooth_plugin.py:88 ../src/bluetooth_view.py:308
 msgid "Bluetooth Audio"
-msgstr "藍牙"
+msgstr "藍牙音訊"
 
 #: ../src/tray_bluetooth_plugin.py:89 ../src/bluetooth_view.py:309
 msgid "Successfully connected to the Bluetooth audio device."
-msgstr ""
+msgstr "成功連線到藍牙音訊裝置。"
 
 #: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:311
 #: ../src/bluetooth_view.py:332
 msgid "Connection Failed"
-msgstr ""
+msgstr "連線失敗"
 
 #: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:311
+#: ../src/bluetooth_view.py:332
 msgid "An error occured when connecting to the device."
-msgstr ""
+msgstr "連線到裝置時發生錯誤。"
 
 #: ../src/tray_bluetooth_plugin.py:210
 msgid "Adapter"
@@ -51,11 +52,11 @@ msgstr "移除裝置"
 
 #: ../src/bluetooth_view.py:286 ../src/bluetooth_view.py:288
 msgid "Headset"
-msgstr ""
+msgstr "耳機服務"
 
 #: ../src/bluetooth_view.py:291 ../src/bluetooth_view.py:293
 msgid "Audio Sink"
-msgstr ""
+msgstr "音訊接收卡"
 
 #: ../src/bluetooth_view.py:295
 msgid "Send File"
@@ -63,15 +64,11 @@ msgstr "傳送檔案"
 
 #: ../src/bluetooth_view.py:329
 msgid "Bluetooth Headset"
-msgstr "藍牙"
+msgstr "藍牙耳機"
 
 #: ../src/bluetooth_view.py:330
 msgid "Successfully connected to the Bluetooth headset."
-msgstr ""
-
-#: ../src/bluetooth_view.py:332
-msgid "Error occured when connecting to the devibce."
-msgstr ""
+msgstr "成功連線到藍牙耳機。"
 
 #: ../src/bluetooth_view.py:354
 msgid "Pairing failed!"
@@ -145,11 +142,11 @@ msgstr "正在傳送檔案到「%s」"
 
 #: ../src/bluetooth_transfer.py:97
 msgid "Accept"
-msgstr ""
+msgstr "接受"
 
 #: ../src/bluetooth_transfer.py:98
 msgid "Reject"
-msgstr ""
+msgstr "拒絕"
 
 #: ../src/bluetooth_transfer.py:105
 #, python-format
@@ -159,29 +156,29 @@ msgstr "正在傳送檔案到「%s」"
 #: ../src/bluetooth_transfer.py:130
 #, python-format
 msgid "Transfer failed : %s"
-msgstr ""
+msgstr "傳送失敗：%s"
 
 #: ../src/dialog.py:166
 msgid "OK"
-msgstr ""
+msgstr "確認"
 
 #: ../src/dialog.py:168
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: ../src/bt/agent.py:68
 msgid "Authorize connection"
-msgstr ""
+msgstr "授權連線"
 
 #: ../src/bt/agent.py:69
 #, python-format
 msgid "Authorize connection request from %s?"
-msgstr ""
+msgstr "授權來自「%s」的連線請求？"
 
 #: ../src/bt/agent.py:87
 #, python-format
 msgid "Enter PIN code to pair with %s:"
-msgstr ""
+msgstr "輸入與「%s」配對的 PIN 碼："
 
 #: ../src/bt/agent.py:137
 #, python-format
@@ -195,6 +192,9 @@ msgstr "是"
 #: ../src/bt/agent.py:140
 msgid "No"
 msgstr "否"
+
+#~ msgid "Error occured when connecting to the device."
+#~ msgstr "連線到裝置時發生錯誤。"
 
 #~ msgid "Bluetooth Get Powered"
 #~ msgstr "藍牙是否啟用"

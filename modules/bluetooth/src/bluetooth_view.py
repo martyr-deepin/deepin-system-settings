@@ -329,7 +329,7 @@ class DeviceItem(gobject.GObject):
                 notify_message(_("Bluetooth Headset"),
                                _("Successfully connected to the Bluetooth headset."))
             else:
-                notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
+                notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
             self.emit_redraw_request()
         except Exception, e:
             print "Exception:", e

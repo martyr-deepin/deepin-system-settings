@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-19 14:47+0800\n"
+"POT-Creation-Date: 2013-08-19 16:25+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -31,6 +31,7 @@ msgid "Connection Failed"
 msgstr "连接失败"
 
 #: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:311
+#: ../src/bluetooth_view.py:332
 msgid "An error occured when connecting to the device."
 msgstr "连接设备出错"
 
@@ -52,7 +53,7 @@ msgstr "删除设备"
 
 #: ../src/bluetooth_view.py:286 ../src/bluetooth_view.py:288
 msgid "Headset"
-msgstr "耳机"
+msgstr "耳麦服务"
 
 #: ../src/bluetooth_view.py:291 ../src/bluetooth_view.py:293
 msgid "Audio Sink"
@@ -64,15 +65,11 @@ msgstr "发送文件"
 
 #: ../src/bluetooth_view.py:329
 msgid "Bluetooth Headset"
-msgstr "蓝牙耳机"
+msgstr "耳麦服务"
 
 #: ../src/bluetooth_view.py:330
 msgid "Successfully connected to the Bluetooth headset."
-msgstr "成功连接到蓝牙耳机"
-
-#: ../src/bluetooth_view.py:332
-msgid "Error occured when connecting to the devibce."
-msgstr "连接设备出错"
+msgstr "成功连接到蓝牙耳麦服务"
 
 #: ../src/bluetooth_view.py:354
 msgid "Pairing failed!"
@@ -196,3 +193,6 @@ msgstr "匹配"
 #: ../src/bt/agent.py:140
 msgid "No"
 msgstr "不匹配"
+
+#~ msgid "Error occured when connecting to the devibce."
+#~ msgstr "连接设备出错"
