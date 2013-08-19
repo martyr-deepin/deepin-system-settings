@@ -86,9 +86,9 @@ class DeviceItem(TreeItem):
                 self.audio_sink_service.as_connect()
                 if self.audio_sink_service.get_state() == "connected":
                     notify_message(_("Bluetooth Audio"),
-                                   _("Successfully connected to a Bluetooth audio device."))
+                                   _("Successfully connected to the Bluetooth audio device."))
                 else:
-                    notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
+                    notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
                     self.emit_redraw_request()
             except Exception, e:
                 print "Exception:", e
@@ -143,12 +143,11 @@ class TrayBluetoothPlugin(object):
         self.ori_height = 93
         self.height = self.ori_height
         self.device_items = []
-        # self.register_agent()
-        # run_command("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__))
+        run_command("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__))
         # For debug purpose :)
-        import subprocess
-        subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
-                         stderr=subprocess.STDOUT, shell=True)
+        # import subprocess
+        # subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
+        #                  stderr=subprocess.STDOUT, shell=True)
 
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)

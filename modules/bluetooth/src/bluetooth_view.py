@@ -306,9 +306,9 @@ class DeviceItem(gobject.GObject):
             self.audio_sink_service.as_connect()
             if self.audio_sink_service.get_state() == "connected":
                 notify_message(_("Bluetooth Audio"),
-                               _("Successfully connected to a Bluetooth audio device."))
+                               _("Successfully connected to the Bluetooth audio device."))
             else:
-                notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
+                notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
             self.emit_redraw_request()
         except Exception, e:
             print "Exception:", e
@@ -327,7 +327,7 @@ class DeviceItem(gobject.GObject):
             self.headset_service.hs_connect()
             if self.headset_service.get_state() == "connected":
                 notify_message(_("Bluetooth Headset"),
-                               _("Successfully connected to a Bluetooth headset device."))
+                               _("Successfully connected to the Bluetooth headset."))
             else:
                 notify_message(_("Connection Failed"), _("Error occured when connecting to the devibce."))
             self.emit_redraw_request()
@@ -351,7 +351,7 @@ class DeviceItem(gobject.GObject):
 
     def __error_handler_cb(self, error):
         send_message("dialog",
-                     ("bluetooth", "reply", _("Pair Failed!"), "False")
+                     ("bluetooth", "reply", _("Pairing failed!"), "False")
                     )
 
     def do_pair(self):
