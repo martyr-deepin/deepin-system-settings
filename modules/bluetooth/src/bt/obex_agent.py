@@ -27,9 +27,6 @@ import dbus.service
 import dbus.mainloop.glib
 import uuid
 
-dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-mainloop = gobject.MainLoop()
-
 class ObexAgent(dbus.service.Object, gobject.GObject):
 
     __gsignals__  = {
@@ -86,6 +83,7 @@ class ObexAgent(dbus.service.Object, gobject.GObject):
         mainloop.quit()
 
 if __name__ == '__main__':
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     bus = dbus.SessionBus()
     client = dbus.Interface(bus.get_object("org.openobex.client", "/"),
                             "org.openobex.Client")
@@ -98,5 +96,5 @@ if __name__ == '__main__':
     agent = ObexAgent(bus, path)
 
     client.SendFiles({ "Destination": sys.argv[1] }, sys.argv[2:], path)
-
+    mainloop = gobject.MainLoop()
     mainloop.run()

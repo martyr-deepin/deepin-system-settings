@@ -23,6 +23,7 @@
 import dbus
 import gobject
 from bus_utils import BusBase
+from utils import bluetooth_uuid_to_string
 
 class Device(BusBase):
 
@@ -35,17 +36,18 @@ class Device(BusBase):
 
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Device")
+        self.device_path = device_path
 
-        self.bus.add_signal_receiver(self.disconnect_requested_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.disconnect_requested_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "DisconnectRequested")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-        self.bus.add_signal_receiver(self.node_created_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.node_created_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "NodeCreated")
 
-        self.bus.add_signal_receiver(self.node_removed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.node_removed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "NodeRemoved")
 
     def disconnect(self):
@@ -62,7 +64,7 @@ class Device(BusBase):
         if nodes:
             nodes = map(lambda x:str(x), nodes)
 
-        return nodes    
+        return nodes
 
     def create_node(self, uuid):
         return self.dbus_method("CreateNode", uuid)
@@ -115,7 +117,7 @@ class Device(BusBase):
             if nodes:
                 nodes = map(lambda x:str(x), nodes)
 
-        return nodes        
+        return nodes
 
     def get_paired(self):
         if "Paired" in self.get_properties().keys():
@@ -129,14 +131,14 @@ class Device(BusBase):
         if "Blocked" in self.get_properties().keys():
             return bool(self.get_properties()["Blocked"])
 
-    def set_blocked(self, blocked):    
+    def set_blocked(self, blocked):
         self.set_property("Blocked", dbus.Boolean(blocked))
 
     def get_trusted(self):
         if "Trusted" in self.get_properties().keys():
             return bool(self.get_properties()["Trusted"])
 
-    def set_trusted(self, trusted):    
+    def set_trusted(self, trusted):
         self.set_property("Trusted", dbus.Boolean(trusted))
 
     def get_adapter(self):
@@ -162,16 +164,15 @@ class Device(BusBase):
             if uuids:
                 uuids = map(lambda x:str(x), uuids)
 
-        return uuids        
+        return uuids
 
     def get_services(self):
-        services = []
         if "Services" in self.get_properties().keys():
             services = self.get_properties()["Services"]
             if services:
                 services = map(lambda x:str(x), services)
-
-        return services        
+            return services
+        return []
 
     def disconnect_requested_cb(self):
         self.emit("disconnect-requested")
@@ -194,13 +195,13 @@ class Audio(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Audio")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-    def connect(self):
+    def a_connect(self):
         return self.dbus_method("Connect")
 
-    def disconnect(self):
+    def a_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def get_properties(self):
@@ -223,16 +224,16 @@ class Headset(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Headset")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
         self.bus.add_signal_receiver(self.answer_requested_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "AnswerRequested")
 
-    def connect(self):
+    def hs_connect(self):
         return self.dbus_method("Connect")
 
-    def disconnect(self):
+    def hs_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def is_connected(self):
@@ -303,12 +304,12 @@ class AudioSink(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.AudioSink")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
-    def connect(self):
+    def as_connect(self):
         return self.dbus_method("Connect")
 
-    def disconnect(self):
+    def as_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def get_properties(self):
@@ -338,12 +339,12 @@ class AudioSource(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.AudioSource")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
-    def connect(self):
+    def as_connect(self):
         return self.dbus_method("Connect")
 
-    def disconnect(self):
+    def as_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def get_properties(self):
@@ -370,25 +371,25 @@ class HeadsetFreeGateway(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.HeadsetGateway")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-        self.bus.add_signal_receiver(self.ring_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.ring_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "Ring")
 
-        self.bus.add_signal_receiver(self.call_terminated_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.call_terminated_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "CallTerminated")
 
-        self.bus.add_signal_receiver(self.call_started_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.call_started_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "CallStarted")
 
-        self.bus.add_signal_receiver(self.call_ended_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.call_ended_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "CallEnded")
 
-    def connect(self):
+    def hfg_connect(self):
         return self.dbus_method("Connect")
 
-    def disconnect(self):
+    def hfg_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def answer_call(self):
@@ -408,38 +409,38 @@ class HeadsetFreeGateway(BusBase):
 
     def get_subscriber_number(self):
         return self.dbus_method("GetSubscriberNumber")
-    
+
     def get_properties(self):
         return self.dbus_method("GetProperties")
 
     def get_connected(self):
         if "Connected" in self.get_properties().keys():
             return self.get_properties()["Connected"]
-    
+
     def get_registration_status(self):
         if "RegistrationStatus" in self.get_properties().keys():
             return self.get_properties()["RegistrationStatus"]
-    
+
     def get_signal_strength(self):
         if "SignalStrength" in self.get_properties().keys():
             return self.get_properties()["SignalStrength"]
-    
+
     def get_roaming_status(self):
         if "RoamingStatus" in self.get_properties().keys():
             return self.get_properties()["RoamingStatus"]
-    
+
     def get_battery_charge(self):
         if "BatteryCharge" in self.get_properties().keys():
             return self.get_properties()["BatteryCharge"]
-    
+
     def get_speaker_gain(self):
         if "Connected" in self.get_properties().keys():
             return self.get_properties()["Connected"]
-    
+
     def get_microphone_gain(self):
         if "MicrophoneGain" in self.get_properties().keys():
             return self.get_properties()["MicrophoneGain"]
-    
+
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
 
@@ -466,13 +467,13 @@ class Control(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Control")
 
-        self.bus.add_signal_receiver(self.connected_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.connected_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "Connected")
 
-        self.bus.add_signal_receiver(self.disconnected_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.disconnected_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "Disconnected")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
     def volume_up(self):
@@ -510,13 +511,13 @@ class HealthManager(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.HealthDevice")
 
-        self.bus.add_signal_receiver(self.channel_connected_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.channel_connected_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "ChannelConnected")
 
-        self.bus.add_signal_receiver(self.channel_deleted_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.channel_deleted_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "ChannelDeleted")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
     def echo(self):
@@ -553,12 +554,12 @@ class HandsfreeGateway(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.HandsfreeGateway")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
-    def connect(self):
+    def hfg_connect(self):
         return self.dbus_method("Connect")
 
-    def disconnect(self):
+    def hfg_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def get_properties(self):
@@ -573,7 +574,7 @@ class HandsfreeGateway(BusBase):
 
     def unregister_agent(self, agent_path):
         return self.dbus_method("UnregisterAgent", agent_path)
-    
+
     def property_changed_cb(self, key, value):
         self.emit("property-changed", key, value)
 
@@ -586,13 +587,13 @@ class Network(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Network")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-    def connect(self, uuid):
+    def n_connect(self, uuid):
         return self.dbus_method("Connect", uuid)
 
-    def disconnect(self):
+    def n_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def get_properties(self):
@@ -622,13 +623,13 @@ class Input(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Input")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
-    def connect(self):
+    def i_connect(self):
         return self.dbus_method("Connect")
 
-    def disconnect(self):
+    def i_disconnect(self):
         return self.dbus_method("Disconnect")
 
     def get_properties(self):
@@ -646,20 +647,20 @@ class Serial(BusBase):
     def __init__(self, device_path):
         BusBase.__init__(self, path = device_path, interface = "org.bluez.Serial")
 
-    def connect(self, pattern):
+    def s_connect(self, pattern):
         return self.dbus_method("Connect", pattern)
-    
+
     def connect_fd(self, pattern):
         return self.dbus_method("ConnectFD", pattern)
 
-    def disconnect(self, device):
+    def s_disconnect(self, device):
         return self.dbus_method("Disconnect", device)
 
 
 if __name__ == "__main__":
     from manager import Manager
     from adapter import Adapter
-    
+
     adapter = Adapter(Manager().get_default_adapter())
 
     device = Device(adapter.get_devices()[0])

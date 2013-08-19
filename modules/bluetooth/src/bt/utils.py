@@ -6,6 +6,7 @@
 #
 # Author:     Long Wei <yilang2007lw@gmail.com>
 # Maintainer: Long Wei <yilang2007lw@gmail.com>
+#             Wang Yaohua <mr.asianwang@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,7 +41,20 @@ def bluetooth_verify_address(bdaddr):
         if bdaddr[i] not in "0123456789abcdefABCDEF":
             return False
 
-    return True    
+    return True
+
+def is_bluetooth_audio_type(device):
+    props = map(lambda x : bluetooth_uuid_to_string(x), device.get_uuids())
+    print props
+    if "AudioSink" in props:
+        return True
+    return False
+
+def is_bluetooth_file_type(device):
+    props = map(lambda x : bluetooth_uuid_to_string(x), device.get_uuids())    
+    if "OBEXObjectPush" in props:
+        return True
+    return False
 
 def bluetooth_class_to_type(klass):
     p = (klass & 0x1f00) >> 8
@@ -98,11 +112,11 @@ def bluetooth_class_to_type(klass):
         else:
             pass
 
-    return "any"    
-        
+    return "any"
+
 def uuid16_custom_to_string (uuid16):
     if uuid16 == 0x2:
-	    return "SyncMLClient"
+            return "SyncMLClient"
     elif uuid16 == 0x5601:
         return "Nokia SyncML Server";
     else:
@@ -111,58 +125,58 @@ def uuid16_custom_to_string (uuid16):
 def uuid16_to_string(uuid16):
 
     if uuid16 == 0x1101:
-	    return "SerialPort"
+            return "SerialPort"
     elif uuid16 == 0x1103:
-	    return "DialupNetworking"
+            return "DialupNetworking"
     elif uuid16 == 0x1104:
-	    return "IrMCSync"
+            return "IrMCSync"
     elif uuid16 == 0x1105:
-	    return "OBEXObjectPush"
+            return "OBEXObjectPush"
     elif uuid16 == 0x1106:
-	    return "OBEXFileTransfer"
+            return "OBEXFileTransfer"
     elif uuid16 == 0x1108:
-	    return "HSP"
+            return "HSP"
     elif uuid16 == 0x110A:
-	    return "AudioSource"
+            return "AudioSource"
     elif uuid16 == 0x110B:
-	    return "AudioSink"
+            return "AudioSink"
     elif uuid16 == 0x110c:
-	    return "A/V_RemoteControlTarget"
+            return "A/V_RemoteControlTarget"
     elif uuid16 == 0x110e:
-	    return "A/V_RemoteControl"
+            return "A/V_RemoteControl"
     elif uuid16 == 0x1112:
-	    return "Headset_-_AG"
+            return "Headset_-_AG"
     elif uuid16 == 0x1115:
-	    return "PANU"
+            return "PANU"
     elif uuid16 == 0x1116:
-	    return "NAP"
+            return "NAP"
     elif uuid16 == 0x1117:
-	    return "GN"
+            return "GN"
     elif uuid16 == 0x111e:
-	    return "Handsfree";
+            return "Handsfree";
     elif uuid16 == 0x111F:
-	    return "HandsfreeAudioGateway"
+            return "HandsfreeAudioGateway"
     elif uuid16 == 0x1124:
-	    return "HumanInterfaceDeviceService"
+            return "HumanInterfaceDeviceService"
     elif uuid16 == 0x112d:
-	    return "SIM_Access"
+            return "SIM_Access"
     elif uuid16 == 0x112F:
-	    return "Phonebook_Access_-_PSE"
+            return "Phonebook_Access_-_PSE"
     elif uuid16 == 0x1203:
-	    return "GenericAudio";
+            return "GenericAudio";
     elif uuid16 in [0x1000, 0x1200]:
         # /* ServiceDiscoveryServerServiceClassID */
         # /* PnPInformation */
-	# /* Those are ignored */
+        # /* Those are ignored */
         pass
     elif uuid16 == 0x1201:
-	    return "GenericNetworking";
+            return "GenericNetworking";
     elif uuid16 == 0x1303:
-	    return "VideoSource";
+            return "VideoSource";
     elif uuid16 in [0x8e771303, 0x8e771301]:
-	    return "SEMC HLA";
+            return "SEMC HLA";
     elif uuid16 == 0x8e771401:
-	    return "SEMC Watch Phone";
+            return "SEMC Watch Phone";
     else:
         return None
 
@@ -172,7 +186,7 @@ def bluetooth_uuid_to_string(uuid):
     except:
         is_custom = False
 
-    parts = uuid.split("-")    
+    parts = uuid.split("-")
 
     try:
         uuid16 = int(parts[0], 16)
@@ -181,7 +195,7 @@ def bluetooth_uuid_to_string(uuid):
 
     if uuid16 == 0:
         return None
-    
+
     if is_custom == False:
         return uuid16_to_string(uuid16)
     else:
