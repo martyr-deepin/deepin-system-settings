@@ -227,6 +227,7 @@ class Security(gtk.VBox):
         self.settings_obj = settings_obj
 
         self.need_ssid = need_ssid
+        self.presave_index = None
         
         if self.need_ssid:
             log.info("enter hidden network settings")
@@ -349,6 +350,7 @@ class Security(gtk.VBox):
         self.table.attach(self.security_combo_align, 1, 4, 1, 2)
 
         if not security:
+            self.presave_index = self.security_combo.get_select_index()
             return 
         
         keys = [None, "none", "none","wpa-psk"]
@@ -422,17 +424,21 @@ class Security(gtk.VBox):
                 self.setting.set_wep_key(index, secret)
                 self.wep_index_spin.set_value(index)
                 self.auth_combo.set_select_index(["shared", "open"].index(auth))
-
+        self.presave_index = self.security_combo.get_select_index()
         Dispatcher.request_redraw()
 
     def change_encry_type(self, widget, content, value, index):
-        #print content, value, index
+        #print type(content), type(value), index
+        if self.presave_index == None:
+            self.presave_index = index
+        elif self.presave_index == index:
+            return
+
         if value == None:
             self.connection.del_setting("802-11-wireless-security")
             del self.connection.get_setting("802-11-wireless").security
             self.has_security = False
             self.reset(self.has_security)
-            #Dispatcher.set_button("save", True)
             self.settings_obj.wlan_encry_is_valid = True
             self.settings_obj.set_button("save", True)
         else:
@@ -447,21 +453,15 @@ class Security(gtk.VBox):
                 self.setting.wep_key_type = index
                 for key in range(0, 4):
                     delattr(self.setting, "wep_key%d"%key)
-            #print "psk deled", self.connection.settings_dict
-            #Dispatcher.set_button("save", False)
             self.reset()
             self.settings_obj.wlan_encry_is_valid = False
             self.settings_obj.set_button("save", False)
+
 
     def save_wpa_pwd(self, widget, content):
         is_valid = False
         if self.setting.verify_wpa_psk(content):
             self.setting.psk = content
-            #print "in save wpa pwd", self.connection.settings_dict
-            #check_settings(self.connection, self.set_button)
-        #else:
-            #Dispatcher.set_button("save", False)
-            #print "invalid"
             #######
             is_valid = self.connection.check_setting_finish()
         self.settings_obj.wlan_encry_is_valid = is_valid
