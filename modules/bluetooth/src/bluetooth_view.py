@@ -282,12 +282,16 @@ class DeviceItem(gobject.GObject):
 
         for prop in self.device_properties:
             if prop == "HSP":
-                if hasattr(self, "headset_service") and self.headset_service.is_connected():
+                if not hasattr(self, "headset_service"):
+                    self.headset_service = Headset(self.device.device_path)
+                if self.headset_service.is_connected():
                     items.append((self.service_connected_pixbufs, _("Headset"), lambda : self.do_disconnect_headset()))
                 else:
                     items.append((None, _("Headset"), lambda : self.do_connect_headset()))
             if prop == "AudioSink":
-                if hasattr(self, "audio_sink_service") and self.audio_sink_service.get_connected():
+                if not hasattr(self, "audio_sink_service"):
+                    self.audio_sink_service = AudioSink(self.device.device_path)
+                if self.audio_sink_service.get_connected():
                     items.append((self.service_connected_pixbufs, _("Audio Sink"), lambda : self.do_disconnect_audio_sink()))
                 else:
                     items.append((None, _("Audio Sink"), lambda : self.do_connect_audio_sink()))
@@ -302,7 +306,6 @@ class DeviceItem(gobject.GObject):
 
     def do_connect_audio_sink(self):
         try:
-            self.audio_sink_service = AudioSink(self.device.device_path)
             self.audio_sink_service.as_connect()
             if self.audio_sink_service.get_state() == "connected":
                 notify_message(_("Bluetooth Audio"),
@@ -323,7 +326,6 @@ class DeviceItem(gobject.GObject):
 
     def do_connect_headset(self):
         try:
-            self.headset_service = Headset(self.device.device_path)
             self.headset_service.hs_connect()
             if self.headset_service.get_state() == "connected":
                 notify_message(_("Bluetooth Headset"),
