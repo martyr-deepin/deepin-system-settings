@@ -68,13 +68,15 @@ class MountMedia(EjecterApp):
                 self.tray_icon.set_no_show_all(True)
             else:
                 old_width, old_height = self.this.get_size_request()
+                print "old_height", old_height, "height", height
                 if old_height != height:
                     self.tray_icon.show_all()
                     self.tray_icon.set_no_show_all(False)
-                    self.this.hide_menu()
+                    # self.this.hide_menu()
                     self.this.set_size_request(self.width, height)
-                    self.this.show_menu()
-        else:
+                    # self.this.show_menu()
+                    self.this.show_all() # hacked by hualet, bugfix: traymenu will become scrap 
+        else:                            # if you plugin in an usb stick and then remove it mercilessly
             try:
                 if height == 75:
                     self.tray_icon.hide()
@@ -107,11 +109,13 @@ class MountMedia(EjecterApp):
 
     def show_menu(self):
         self.size_check = True
+        print "set size_check True"
         #print self.height
         self.this.set_size_request(self.width, self.height)
 
     def hide_menu(self):
         self.size_check = False
+        print "set size_check False"
 
 def return_insert():
     return 4
