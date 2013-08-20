@@ -127,7 +127,7 @@ class BluetoothTransfer(OdsManager):
 
     def transfer_error(self, session, name, msg):
         print "transfer_errer", name, msg
-        reply_dlg = BluetoothReplyDialog(_("Transfer failed : %s") % msg, is_succeed=False)
+        reply_dlg = BluetoothReplyDialog(_("Failed to receive the file : %s") % msg, is_succeed=False)
         reply_dlg.set_keep_above(True)
         reply_dlg.show_all()
 

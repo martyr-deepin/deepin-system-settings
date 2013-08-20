@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-19 16:25+0800\n"
+"POT-Creation-Date: 2013-08-20 11:35+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,21 +16,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_bluetooth_plugin.py:88 ../src/bluetooth_view.py:308
+#: ../src/tray_bluetooth_plugin.py:88 ../src/bluetooth_view.py:315
 msgid "Bluetooth Audio"
 msgstr "藍牙音訊"
 
-#: ../src/tray_bluetooth_plugin.py:89 ../src/bluetooth_view.py:309
+#: ../src/tray_bluetooth_plugin.py:89 ../src/bluetooth_view.py:316
 msgid "Successfully connected to the Bluetooth audio device."
 msgstr "成功連線到藍牙音訊裝置。"
 
-#: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:311
-#: ../src/bluetooth_view.py:332
+#: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:318
+#: ../src/bluetooth_view.py:338
 msgid "Connection Failed"
 msgstr "連線失敗"
 
-#: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:311
-#: ../src/bluetooth_view.py:332
+#: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:318
+#: ../src/bluetooth_view.py:338
 msgid "An error occured when connecting to the device."
 msgstr "連線到裝置時發生錯誤。"
 
@@ -42,65 +42,65 @@ msgstr "介面卡"
 msgid "Advanced options..."
 msgstr "進階選項..."
 
-#: ../src/bluetooth_view.py:82
+#: ../src/bluetooth_view.py:83
 msgid "Pair"
 msgstr "配對"
 
-#: ../src/bluetooth_view.py:87
+#: ../src/bluetooth_view.py:88
 msgid "Remove Device"
 msgstr "移除裝置"
 
-#: ../src/bluetooth_view.py:286 ../src/bluetooth_view.py:288
+#: ../src/bluetooth_view.py:292 ../src/bluetooth_view.py:294
 msgid "Headset"
 msgstr "耳機服務"
 
-#: ../src/bluetooth_view.py:291 ../src/bluetooth_view.py:293
+#: ../src/bluetooth_view.py:299 ../src/bluetooth_view.py:301
 msgid "Audio Sink"
 msgstr "音訊接收卡"
 
-#: ../src/bluetooth_view.py:295
+#: ../src/bluetooth_view.py:303
 msgid "Send File"
 msgstr "傳送檔案"
 
-#: ../src/bluetooth_view.py:329
+#: ../src/bluetooth_view.py:335
 msgid "Bluetooth Headset"
 msgstr "藍牙耳機"
 
-#: ../src/bluetooth_view.py:330
+#: ../src/bluetooth_view.py:336
 msgid "Successfully connected to the Bluetooth headset."
 msgstr "成功連線到藍牙耳機。"
 
-#: ../src/bluetooth_view.py:354
+#: ../src/bluetooth_view.py:360
 msgid "Pairing failed!"
 msgstr "配對失敗"
 
-#: ../src/bluetooth_view.py:419 ../src/bluetooth_view.py:424
+#: ../src/bluetooth_view.py:425 ../src/bluetooth_view.py:430
 #, python-format
 msgid "in %d seconds"
 msgstr "在 %d 秒內"
 
-#: ../src/bluetooth_view.py:453 ../src/bluetooth_view.py:457
-#: ../src/bluetooth_view.py:460
+#: ../src/bluetooth_view.py:459 ../src/bluetooth_view.py:463
+#: ../src/bluetooth_view.py:466
 msgid "Bluetooth"
 msgstr "藍牙"
 
-#: ../src/bluetooth_view.py:464 ../src/search_keyword.py:29
+#: ../src/bluetooth_view.py:470 ../src/search_keyword.py:29
 msgid "Enable bluetooth"
 msgstr "藍牙是否啟用"
 
-#: ../src/bluetooth_view.py:484 ../src/search_keyword.py:30
+#: ../src/bluetooth_view.py:490 ../src/search_keyword.py:30
 msgid "Device name"
 msgstr "顯示裝置名稱"
 
-#: ../src/bluetooth_view.py:502 ../src/search_keyword.py:31
+#: ../src/bluetooth_view.py:508 ../src/search_keyword.py:31
 msgid "Discoverable"
 msgstr "可被搜尋"
 
-#: ../src/bluetooth_view.py:535
+#: ../src/bluetooth_view.py:541
 msgid "Search"
 msgstr "搜尋"
 
-#: ../src/bluetooth_view.py:638 ../src/bluetooth_view.py:650
+#: ../src/bluetooth_view.py:645 ../src/bluetooth_view.py:657
 msgid "Discovering device"
 msgstr "可被搜尋"
 
@@ -133,12 +133,12 @@ msgstr "搜尋裝置逾時"
 #: ../src/bluetooth_transfer.py:93
 #, python-format
 msgid "Incoming file from %s"
-msgstr "正在傳送檔案到「%s」"
+msgstr "來自「%s」的檔案"
 
 #: ../src/bluetooth_transfer.py:94
 #, python-format
 msgid "Accept incoming file %s?"
-msgstr "正在傳送檔案到「%s」"
+msgstr "接收檔案「%s」？"
 
 #: ../src/bluetooth_transfer.py:97
 msgid "Accept"
@@ -151,12 +151,12 @@ msgstr "拒絕"
 #: ../src/bluetooth_transfer.py:105
 #, python-format
 msgid "Receiving file from %s"
-msgstr "正在傳送檔案到「%s」"
+msgstr "正在接收來自「%s」的檔案"
 
 #: ../src/bluetooth_transfer.py:130
 #, python-format
-msgid "Transfer failed : %s"
-msgstr "傳送失敗：%s"
+msgid "Failed to receive the file : %s"
+msgstr "接收檔案失敗：「%s」"
 
 #: ../src/dialog.py:166
 msgid "OK"
@@ -192,6 +192,9 @@ msgstr "是"
 #: ../src/bt/agent.py:140
 msgid "No"
 msgstr "否"
+
+#~ msgid "Transfer failed : %s"
+#~ msgstr "傳送失敗：%s"
 
 #~ msgid "Error occured when connecting to the device."
 #~ msgstr "連線到裝置時發生錯誤。"
