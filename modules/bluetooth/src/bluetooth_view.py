@@ -6,6 +6,7 @@
 #
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
+#             Wang Yaohua <mr.asianwang@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -87,6 +88,9 @@ class DeviceIconView(ScrolledWindow):
             menu_items.append((None, _("Remove Device"), lambda : self.__do_remove_item(item)))
 
         Menu(menu_items, True).show((int(x), int(y)))
+        
+    def clear(self):
+        self.device_iconview.clear()
 
     def draw_mask(self, cr, x, y, w, h):
         cr.set_source_rgb(*color_hex_to_cairo("#FFFFFF"))
@@ -565,10 +569,11 @@ class BlueToothView(gtk.VBox):
 
         if value == 1:
             self.enable_open_toggle.set_active(True)
-            self.__set_enable_open(True)
+            # removed by hualet, this will cause devices are added twice.
+            # self.__set_enable_open(True)
         else:
             self.enable_open_toggle.set_active(False)
-            self.__set_enable_open(False)
+            # self.__set_enable_open(False)
 
     def sendfile(self, device_name):
         event_manager.emit("send-file", device_name)
@@ -689,10 +694,15 @@ class BlueToothView(gtk.VBox):
         self.display_device_label.set_sensitive(is_open)
         self.search_label.set_sensitive(is_open)
         self.display_align.set_sensitive(is_open)
-        self.device_iconview.set_sensitive(is_open)
+        # self.device_iconview.set_sensitive(is_open)
         self.search_align.set_sensitive(is_open)
         self.search_timeout_label.set_child_visible(False)
         self.search_button.set_sensitive(is_open)
+        # changed by hualet, to fix the bug that device icons stay while disabling the iconview widget
+        if is_open:
+            self.__get_devices()
+        else:
+            self.device_iconview.clear()
 
     def __toggled(self, widget, object):
         if self.my_bluetooth.adapter == None:
