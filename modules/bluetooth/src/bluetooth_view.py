@@ -564,16 +564,18 @@ class BlueToothView(gtk.VBox):
         self.__get_devices()
 
     def __on_property_changed(self, adapter, key, value):
-        if key != "Powered":
-            return
-
-        if value == 1:
-            self.enable_open_toggle.set_active(True)
-            # removed by hualet, this will cause devices are added twice.
-            # self.__set_enable_open(True)
-        else:
-            self.enable_open_toggle.set_active(False)
-            # self.__set_enable_open(False)
+        if key == "Powered":
+            if value == 1:
+                self.enable_open_toggle.set_active(True)
+                # removed by hualet, this will cause devices are added twice.
+                # self.__set_enable_open(True)
+            else:
+                self.enable_open_toggle.set_active(False)
+                # self.__set_enable_open(False)
+        if key == "Devices":    # fixbug: iconview didn't update accordingly 
+                                # while adapter paired other devices in system tray. 
+            self.device_iconview.clear()
+            self.__get_devices()
 
     def sendfile(self, device_name):
         event_manager.emit("send-file", device_name)
