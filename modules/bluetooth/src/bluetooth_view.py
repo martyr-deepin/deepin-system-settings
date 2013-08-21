@@ -585,9 +585,11 @@ class BlueToothView(gtk.VBox):
 
     def __on_adapter_removed(self):
         self.set_sensitive(False)
+        self.display_device_entry.set_sensitive(False)
 
     def __on_default_adapter_changed(self):
         self.set_sensitive(True)
+        self.display_device_entry.set_sensitive(True)
 
     def __display_device_changed(self, widget, event):
         self.my_bluetooth.adapter.set_name(widget.get_text())
