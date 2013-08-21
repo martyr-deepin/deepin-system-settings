@@ -78,12 +78,11 @@ class MountMedia(EjecterApp):
                     self.this.show_all() # hacked by hualet, bugfix: traymenu will become crap 
         else:                            # if you plugin in an usb stick and then remove it mercilessly
             try:
+                # hailongqiu self-created set_visible style :)
                 if height == 75:
-                    self.tray_icon.hide()
-                    self.tray_icon.set_no_show_all(True)
+                    self.tray_icon.set_visible(False)
                 else:
-                    self.tray_icon.show_all()
-                    self.tray_icon.set_no_show_all(False)
+                    self.tray_icon.set_visible(True)
             except:
                 pass
 
