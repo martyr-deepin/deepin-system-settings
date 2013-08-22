@@ -90,6 +90,9 @@ class BluetoothTransfer(OdsManager):
         session.transfer["address"] = info["BluetoothAddress"]
         session.transfer["name"] = name
 
+        def confirm_clicked():
+            session.Accept()
+            session.Transfer["accept"] = True
         self.confirm_d = ConfirmDialog(_("Incoming file from %s" % name),
                                        _("Accept incoming file %s?") % filename,
                                        confirm_callback=lambda : session.Accept(),
@@ -127,9 +130,10 @@ class BluetoothTransfer(OdsManager):
 
     def transfer_error(self, session, name, msg):
         print "transfer_errer", name, msg
-        reply_dlg = BluetoothReplyDialog(_("Failed to receive the file : %s") % msg, is_succeed=False)
-        reply_dlg.set_keep_above(True)
-        reply_dlg.show_all()
+        if not session.transfer["cancelled"]:
+            reply_dlg = BluetoothReplyDialog(_("Failed to receive the file : %s") % msg, is_succeed=False)
+            reply_dlg.set_keep_above(True)
+            reply_dlg.show_all()
 
         if self.progress_dialog.get_visible():
             self.progress_dialog.destroy()
