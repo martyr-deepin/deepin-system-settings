@@ -197,13 +197,13 @@ def write_sorted_menu_entry(ment_entry_list):
 
 
 if __name__ == "__main__":
-    print is_setting_item_exists("GRUB_TIMEOUT")
-    print is_setting_item_exists("GRUB_TIMEOUT_T")
+    # print is_setting_item_exists("GRUB_TIMEOUT")
+    # print is_setting_item_exists("GRUB_TIMEOUT_T")
     
     # remove_item("GRUB_TIMEOUT")
     # set_setting_item("GRUB_TIMEOUT", 50)
     # set_setting_item("GRUB_TIMEOUT_CUSTOMIZE", 20)
     
-    # print get_proper_resolutions()
-    print find_all_menu_entry()
+    print get_proper_resolutions()
+    # print find_all_menu_entry()
     # write_sorted_menu_entry([])

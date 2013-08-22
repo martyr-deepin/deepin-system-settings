@@ -31,7 +31,7 @@ from constant import MAIN_LANG
 MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        
 FIRST_MODULE_NAMES = ["display", "desktop", "individuation", "sound", "date_time", "power"]
 SECOND_MODULE_NAMES = ["keyboard", "mouse", "touchpad", "printer", "network", "bluetooth", "driver"]
-THIRD_MODULE_NAMES = ["account", "application_associate", "system_information"]
+THIRD_MODULE_NAMES = ["account", "application_associate", "system_information", "grub2"]
 
 class ModuleInfo(object):
     '''
@@ -58,10 +58,10 @@ class ModuleInfo(object):
         
         self.icon_pixbuf = None
         self.menu_icon_pixbuf = None
-        if icon_infos[0] and icon_infos[1]:
+        try:
             self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[0])
             self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[1])
-        else:
+        except Exception:
             self.icon_pixbuf = app_theme.get_pixbuf("navigate/none-big.png").get_pixbuf()
             self.menu_icon_pixbuf = app_theme.get_pixbuf("navigate/none-small.png").get_pixbuf()
             
