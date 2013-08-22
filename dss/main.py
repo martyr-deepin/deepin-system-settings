@@ -176,14 +176,9 @@ class DBusService(dbus.service.Object):
             global previous_module_id
 
             if application:
-                # if module_name != "" and  previous_module_id != module_name:
-                # bugfix: by hualet
-                # navigate page won't set previous_module_id to 'navigate', so if you called navigate page from some module else,
-                # you won't be able to get back by calling command like "deepin-system-settings module-name"
-                if module_name != "": 
-                    if previous_module_id != module_name or content_page_info.get_active_module_id() == MAIN_MODULE:
-                        action_bar.bread.remove_node_after_index(0)
-                        call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
+                if module_name != "" and previous_module_id != module_name:
+                    action_bar.bread.remove_node_after_index(0)
+                    call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
 
                 application.raise_to_top()
 
@@ -253,9 +248,8 @@ class DBusService(dbus.service.Object):
                         if argv == "False":
                             is_succeed = False
                         reply_dlg = BluetoothReplyDialog(message, is_succeed = is_succeed)
-                        print "*************: %s" % application.window
+                        # reply_dlg.place_center(application.window)
                         reply_dlg.show_all()
-                        reply_dlg.place_center(application.window)
             else:
                 print message
 

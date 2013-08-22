@@ -349,30 +349,39 @@ class EjecterApp(gobject.GObject):
         self.monitor.connect("drive-changed", self.drive_changed_callback)
 
     def mount_added_callback(self, volume_monitor, mount):
+        print "mount added"
         self.__load_monitor()
 
     def mount_removed_callback(self, volume_monitor, mount):
+        print "mount removed"
         self.__load_monitor()
 
     def mount_changed_callback(self, volume_monitor, mount):
+        print "mount changed"
         self.__load_monitor()
 
     def volume_added_callback(self, volume_monitor, volume):
+        print "volume added"
         self.__load_monitor()
 
     def volume_removed_callback(self, volume_monitor, volume):
+        print "volume removed"
         self.__load_monitor()
 
     def volume_changed_callback(self, volume_monitor, volume):
+        print "volume changed"
         self.__load_monitor()
 
     def drive_disconnected_callback(self, volume_monitor, drive):
+        print "drive disconnected"
         self.__load_monitor()
 
     def drive_connected_callback(self, volume_monitor, drive):
+        print "drive connected"
         self.__load_monitor()
 
     def drive_changed_callback(self, volume_monitor, drive):
+        print "drive changed"
         self.__load_monitor()
 
 if __name__ == "__main__":

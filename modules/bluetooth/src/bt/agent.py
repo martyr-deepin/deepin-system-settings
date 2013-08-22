@@ -20,75 +20,161 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import gtk
 import gobject
 import dbus
 import dbus.service
 import dbus.mainloop.glib
 
+from nls import _
+from bluetooth_dialog import AgentDialog, BluetoothInputDialog, BluetoothConfirmDialog
+
+from device import Device
+
+def ask(prompt):
+    try:
+        return raw_input(prompt)
+    except:
+        return input(prompt)
+
 class Rejected(dbus.DBusException):
     _dbus_error_name = "org.bluez.Error.Rejected"
 
-class Agent(dbus.service.Object):
-    def __init__(self, 
-                 path = "/org/bluez/agent", 
-                 bus = None):
-        if bus is None:
-	    bus = dbus.SystemBus()    
-    
-        dbus.service.Object.__init__(self, bus, path)	
-    
-        self.exit_on_release = True
-    
-    def set_exit_on_release(self, exit_on_release):
-        self.exit_on_release = exit_on_release
+def raise_rejected(err_message):
+    raise Rejected(err_message)
 
-    @dbus.service.method("org.bluez.Agent", in_signature="", out_signature="")
+class Agent(dbus.service.Object):
+    def __init__(self,
+                 path = "/com/deepin/bluetooth/agent",
+                 bus = None):
+        self.agent_path = path
+        if bus is None:
+            bus = dbus.SystemBus()
+
+        dbus.service.Object.__init__(self, bus, path)
+
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="", out_signature="")
     def Release(self):
-        if self.exit_on_release:
-	   mainloop.quit()
-    
-    @dbus.service.method("org.bluez.Agent", in_signature="os", out_signature="")
-    def Authorize(self, device_path, uuid):
-        print "Authorize (%s, %s)" % (device_path, uuid)
-        authorize = raw_input("Authorize connection (yes/no): ")
-        if (authorize == "yes"):
-            return
-        raise Rejected("Connection rejected by user")
-    
-    @dbus.service.method("org.bluez.Agent", in_signature="o", out_signature="s")
-    def RequestPinCode(self, device_path):
-        print "RequestPinCode (%s)" % (device_path)
-        return raw_input("Enter PIN Code: ")
-    
-    @dbus.service.method("org.bluez.Agent", in_signature="o", out_signature="u")
-    def RequestPasskey(self, device_path):
-        print "RequestPasskey (%s)" % (device_path)
-        passkey = raw_input("Enter passkey: ")
+        print("Release")
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="os", out_signature="")
+    def Authorize(self, device, uuid):
+        print("Authorize (%s, %s)" % (device, uuid))
+
+        loop = None
+        confirm_d = BluetoothConfirmDialog(_("Authorize connection"),
+                                           _("Authorize connection request from %s?") % Device(device).get_alias(),
+                                           confirm_cb=lambda : True,
+                                           cancel_cb=lambda : raise_rejected("Connection rejected by user."))
+        confirm_d.connect("destroy", lambda widget : loop.quit())
+        confirm_d.show_all()
+
+        loop = gobject.MainLoop(None, False)
+        gtk.gdk.threads_leave()
+        loop.run()
+        gtk.gdk.threads_enter()
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="o", out_signature="s")
+    def RequestPinCode(self, device):
+        print "RequestPinCode (%s)" % device
+
+        result = []
+        loop = None
+        input_d = BluetoothInputDialog(_("Enter PIN code to pair with %s:") % Device(device).get_alias(),
+                                       cancel_callback=lambda : result.append(""),
+                                       confirm_callback=lambda s : result.append(s)
+                                       )
+        input_d.connect("destroy", lambda widget : loop.quit())
+        input_d.show_all()
+
+        loop = gobject.MainLoop(None, False)
+        gtk.gdk.threads_leave()
+        loop.run()
+        gtk.gdk.threads_enter()
+
+        return result[0]
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="o", out_signature="u")
+    def RequestPasskey(self, device):
+        print("RequestPasskey (%s)" % (device))
+        passkey = ask("Enter passkey: ")
         return dbus.UInt32(passkey)
-    
-    @dbus.service.method("org.bluez.Agent", in_signature="oub", out_signature="")
-    def DisplayPasskey(self, device_path, passkey, entered):
-	print "DisplayPasskey (%s, %d)" % (device_path, passkey, entered)
-    
-    @dbus.service.method("org.bluez.Agent", in_signature="ou", out_signature="")
-    def RequestConfirmation(self, device_path, passkey):
-        print "RequestConfirmation (%s, %d)" % (device_path, passkey)
-        confirm = raw_input("Confirm passkey (yes/no): ")
-        if (confirm == "yes"):
-            return
-        raise Rejected("Passkey doesn't match")
-    
-    @dbus.service.method("org.bluez.Agent", in_signature="s", out_signature="")
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="ou", out_signature="")
+    def DisplayPasskey(self, device, passkey):
+        print("DisplayPasskey (%s, %06d)" % (device, passkey))
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="os", out_signature="")
+    def DisplayPinCode(self, device, pincode):
+        print("DisplayPinCode (%s, %s)" % (device, pincode))
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="ou", out_signature="")
+    def RequestConfirmation(self, device, passkey):
+        print("RequestConfirmation (%s, %06d)" % (device, passkey))
+
+        # def action_invoked(_id, _action):
+        #     if _action == "pair_accept":
+        #         pass
+        #     elif _action == "pair_reject":
+        #         raise Rejected("Passkey doesn't match")
+
+        # noti = pynotify.Notification(_("Pair request"),
+        #                              _("Device %s request for pair,\n please make sure the key is %s") % (device, passkey))
+        # noti.add_action("pair_accept", _("Accept"), action_invoked)
+        # noti.add_action("pair_reject", _("Reject"), action_invoked)
+        # noti.show()
+
+        result = []
+        loop = None
+        agent_d = AgentDialog(_("Please confirm %s pin match as below") % Device(device).get_alias(),
+                              str(passkey),
+                              confirm_button_text = _("Yes"),
+                              cancel_button_text = _("No"),
+                              confirm_callback = lambda : result.append("yes"),
+                              cancel_callback = lambda : result.append(None)
+                              )
+
+        agent_d.connect("destroy", lambda widget : loop.quit())
+        agent_d.show_all()
+
+        loop = gobject.MainLoop(None, False)
+        gtk.gdk.threads_leave()
+        loop.run()
+        gtk.gdk.threads_enter()
+        
+        if not result[0]:
+            raise_rejected("Passkey doesn't match.")
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="s", out_signature="")
     def ConfirmModeChange(self, mode):
-        print "ConfirmModeChange (%s)" % (mode)
-        authorize = raw_input("Authorize mode change (yes/no): ")
+        print("ConfirmModeChange (%s)" % (mode))
+        authorize = ask("Authorize mode change (yes/no): ")
         if (authorize == "yes"):
-	   return
+            return
         raise Rejected("Mode change by user")
-    
-    @dbus.service.method("org.bluez.Agent", in_signature="", out_signature="")
+
+    @dbus.service.method("org.bluez.Agent",
+                         in_signature="", out_signature="")
     def Cancel(self):
-    	print "Cancel"
+        print("Cancel")
+
+def create_device_reply(device):
+    print("New device (%s)" % (device))
+    mainloop.quit()
+
+def create_device_error(error):
+    print("Creating device failed: %s" % (error))
+    mainloop.quit()
+
 
 if __name__ == '__main__':
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
@@ -97,5 +183,12 @@ if __name__ == '__main__':
     path = "/test/agent"
 
     agent = Agent(path, bus)
+
+    from manager import Manager
+    from adapter import Adapter
+
+    adptr = Adapter(Manager().get_default_adapter())
+    adptr.register_agent(path, "")
+
     mainloop = gobject.MainLoop()
     mainloop.run()

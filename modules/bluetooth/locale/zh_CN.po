@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-06 16:59+0800\n"
+"POT-Creation-Date: 2013-08-21 11:59+0800\n"
 "PO-Revision-Date: 2013-01-03 13:36+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,11 +17,29 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_bluetooth_plugin.py:177
+#: ../src/tray_bluetooth_plugin.py:88 ../src/bluetooth_view.py:315
+msgid "Bluetooth Audio"
+msgstr "蓝牙音频"
+
+#: ../src/tray_bluetooth_plugin.py:89 ../src/bluetooth_view.py:316
+msgid "Successfully connected to the Bluetooth audio device."
+msgstr "成功连接到蓝牙音频设备"
+
+#: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:318
+#: ../src/bluetooth_view.py:338
+msgid "Connection Failed"
+msgstr "连接失败"
+
+#: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:318
+#: ../src/bluetooth_view.py:338
+msgid "An error occured when connecting to the device."
+msgstr "连接设备出错"
+
+#: ../src/tray_bluetooth_plugin.py:210
 msgid "Adapter"
 msgstr "适配器"
 
-#: ../src/tray_bluetooth_plugin.py:209
+#: ../src/tray_bluetooth_plugin.py:242
 msgid "Advanced options..."
 msgstr "更多高级选项..."
 
@@ -29,56 +47,63 @@ msgstr "更多高级选项..."
 msgid "Pair"
 msgstr "配对"
 
-#: ../src/bluetooth_view.py:85
-msgid "Send File"
-msgstr "发送文件"
-
-#: ../src/bluetooth_view.py:87
+#: ../src/bluetooth_view.py:88
 msgid "Remove Device"
 msgstr "删除设备"
 
-#: ../src/bluetooth_view.py:274
-msgid "Pair Failed!"
+#: ../src/bluetooth_view.py:292 ../src/bluetooth_view.py:294
+msgid "Headset"
+msgstr "耳麦服务"
+
+#: ../src/bluetooth_view.py:299 ../src/bluetooth_view.py:301
+msgid "Audio Sink"
+msgstr "音频槽"
+
+#: ../src/bluetooth_view.py:303
+msgid "Send File"
+msgstr "发送文件"
+
+#: ../src/bluetooth_view.py:335
+msgid "Bluetooth Headset"
+msgstr "耳麦服务"
+
+#: ../src/bluetooth_view.py:336
+msgid "Successfully connected to the Bluetooth headset."
+msgstr "成功连接到蓝牙耳麦服务"
+
+#: ../src/bluetooth_view.py:360
+msgid "Pairing failed!"
 msgstr "配对失败!"
 
-#: ../src/bluetooth_view.py:284
-#, python-format
-msgid "Please confirm %s pin match as below"
-msgstr "请确认显示于%s上面的pin于此匹配"
-
-#: ../src/bluetooth_view.py:285
-msgid "Yes"
-msgstr "匹配"
-
-#: ../src/bluetooth_view.py:286
-msgid "No"
-msgstr "不匹配"
-
-#: ../src/bluetooth_view.py:363 ../src/bluetooth_view.py:368
+#: ../src/bluetooth_view.py:425 ../src/bluetooth_view.py:430
 #, python-format
 msgid "in %d seconds"
 msgstr "在%d秒内"
 
-#: ../src/bluetooth_view.py:396 ../src/bluetooth_view.py:400
-#: ../src/bluetooth_view.py:403
+#: ../src/bluetooth_view.py:459 ../src/bluetooth_view.py:463
+#: ../src/bluetooth_view.py:466
 msgid "Bluetooth"
 msgstr "蓝牙"
 
-#: ../src/bluetooth_view.py:407 ../src/search_keyword.py:29
+#: ../src/bluetooth_view.py:470 ../src/search_keyword.py:29
 msgid "Enable bluetooth"
 msgstr "蓝牙是否开启"
 
-#: ../src/bluetooth_view.py:427 ../src/search_keyword.py:30
+#: ../src/bluetooth_view.py:490 ../src/search_keyword.py:30
 msgid "Device name"
 msgstr "显示设备名称"
 
-#: ../src/bluetooth_view.py:445 ../src/search_keyword.py:31
+#: ../src/bluetooth_view.py:508 ../src/search_keyword.py:31
 msgid "Discoverable"
 msgstr "是否可被发现"
 
-#: ../src/bluetooth_view.py:478
+#: ../src/bluetooth_view.py:541
 msgid "Search"
 msgstr "搜索"
+
+#: ../src/bluetooth_view.py:647 ../src/bluetooth_view.py:659
+msgid "Discovering device"
+msgstr "正在查找设备"
 
 #: ../src/bluetooth_sender.py:51
 #, python-format
@@ -89,19 +114,88 @@ msgstr ""
 "抱歉！文件发送失败，请返回检查你的蓝牙网络设置\n"
 "错误信息: %s"
 
-#: ../src/bluetooth_sender.py:66
+#: ../src/bluetooth_sender.py:68
 #, python-format
 msgid "Sending file to %s"
 msgstr "正在向“%s”发送文件"
 
-#: ../src/bluetooth_sender.py:83
+#: ../src/bluetooth_sender.py:85
 msgid "Transfer complete!"
 msgstr "文件已发送成功！"
 
-#: ../src/bluetooth_sender.py:114
+#: ../src/bluetooth_sender.py:116
 msgid "Select File"
 msgstr "选择文件"
 
 #: ../src/search_keyword.py:32
 msgid "Searching Device Timeout"
 msgstr "检测设备超时"
+
+#: ../src/bluetooth_transfer.py:93
+#, python-format
+msgid "Incoming file from %s"
+msgstr "来自“%s”的文件"
+
+#: ../src/bluetooth_transfer.py:94
+#, python-format
+msgid "Accept incoming file %s?"
+msgstr "接收文件“%s”？"
+
+#: ../src/bluetooth_transfer.py:97
+msgid "Accept"
+msgstr "接受"
+
+#: ../src/bluetooth_transfer.py:98
+msgid "Reject"
+msgstr "拒绝"
+
+#: ../src/bluetooth_transfer.py:105
+#, python-format
+msgid "Receiving file from %s"
+msgstr "正在接收来自“%s”的文件"
+
+#: ../src/bluetooth_transfer.py:130
+#, python-format
+msgid "Failed to receive the file : %s"
+msgstr "接收文件失败：“%s”"
+
+#: ../src/dialog.py:166
+msgid "OK"
+msgstr "确定"
+
+#: ../src/dialog.py:168
+msgid "Cancel"
+msgstr "取消"
+
+#: ../src/bt/agent.py:68
+msgid "Authorize connection"
+msgstr "授权连接"
+
+#: ../src/bt/agent.py:69
+#, python-format
+msgid "Authorize connection request from %s?"
+msgstr "授权来自%s的连接？"
+
+#: ../src/bt/agent.py:87
+#, python-format
+msgid "Enter PIN code to pair with %s:"
+msgstr "输入与%s匹配的PIN码:"
+
+#: ../src/bt/agent.py:137
+#, python-format
+msgid "Please confirm %s pin match as below"
+msgstr "请确认显示于%s上面的pin与此匹配"
+
+#: ../src/bt/agent.py:139
+msgid "Yes"
+msgstr "匹配"
+
+#: ../src/bt/agent.py:140
+msgid "No"
+msgstr "不匹配"
+
+#~ msgid "Transfer failed : %s"
+#~ msgstr "连接失败: %s"
+
+#~ msgid "Error occured when connecting to the devibce."
+#~ msgstr "连接设备出错"

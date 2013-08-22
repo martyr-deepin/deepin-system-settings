@@ -336,6 +336,7 @@ class DesktopView(gtk.VBox):
             self.compiz_core_settings.set_strv("active-plugins", active_plugins)
 
     def __toggled(self, widget, obj):
+        print "toggled"
         is_toggled = widget.get_active()
 
         if obj == "computer":
@@ -371,6 +372,7 @@ class DesktopView(gtk.VBox):
             return
     
     def __on_setting_changed(self, key):
+        print "on_setting_changed"
         if key == "show-computer-icon":
             self.computer_checkbutton.set_active(self.desktop_settings.get_boolean("show-computer-icon"))
             return
@@ -394,15 +396,13 @@ class DesktopView(gtk.VBox):
             self.display_style_combo.set_select_index(hide_mode_index)
         if key == "command-11":
             command_11 = self.compiz_integrated_settings.get_string("command-11")
-            if command_11 == "":
-                self.topleft_combo.set_select_index(0)
-            elif command_11 == self.LAUNCHER_CMD:
+            run_command10_edge = self.compiz_run_command_edge_settings.get_string("run-command10-edge")
+            if command_11 == self.LAUNCHER_CMD and run_command10_edge == "TopLeft":
                 self.topleft_combo.set_select_index(2)
         if key == "command-12":
             command_12 = self.compiz_integrated_settings.get_string("command-12")
-            if command_12 == "":
-                self.topright_combo.set_select_index(0)
-            elif command_12 == self.LAUNCHER_CMD:
+            run_command11_edge = self.compiz_run_command_edge_settings.get_string("run-command11-edge")
+            if command_12 == self.LAUNCHER_CMD and run_command11_edge == "BottomRight":
                 self.topright_combo.set_select_index(2)
         if key == "initiate-edge":
             initiate_edge = self.compiz_scale_settings.get_string("initiate-edge")
