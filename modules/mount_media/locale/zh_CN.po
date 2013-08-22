@@ -20,3 +20,19 @@ msgstr ""
 #: ../src/tray_mount_gui.py:159
 msgid "Storage Device"
 msgstr "储存设备"
+
+#: ../src/tray_mount_plugin.py:70
+msgid "Unmount Failed"
+msgstr "卸载失败"
+
+#: ../src/tray_mount_plugin.py:71
+msgid "Mount Failed"
+msgstr "挂载失败"
+
+#: ../src/tray_mount_plugin.py:71
+msgid "mount '%s' error."
+msgstr "挂载 '%s' 出错。"
+
+#: ../src/tray_mount_plugin.py:71
+msgid "umount '%s' error."
+msgstr "卸载 '%s' 出错。"
