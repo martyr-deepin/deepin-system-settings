@@ -282,9 +282,11 @@ class TrayBluetoothPlugin(object):
         return Label(text, None, 9, align, width, False, False, False)
 
     def __setup_toggle(self):
-        return ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"),
-            app_theme.get_pixbuf("toggle_button/active_normal.png"),
-            inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+        toggle_button = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"),
+                                     app_theme.get_pixbuf("toggle_button/active_normal.png"),
+                                     inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+        toggle_button.set_active(self.my_bluetooth.adapter.get_powered())
+        return toggle_button
 
     def __setup_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
