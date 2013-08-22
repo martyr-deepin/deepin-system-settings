@@ -43,6 +43,7 @@ from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
 from bt.device import AudioSink
 from helper import notify_message
+from servicemanager import servicemanager
 from bt.utils import is_bluetooth_audio_type, is_bluetooth_file_type
 
 class DeviceItem(TreeItem):
@@ -137,23 +138,46 @@ gobject.type_register(DeviceItem)
 
 class TrayBluetoothPlugin(object):
     def __init__(self):
-        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
-                                        self.__on_default_adapter_changed)
         self.width = DeviceItem.NAME_WIDTH
         self.ori_height = 93
         self.height = self.ori_height
         self.device_items = []
-        run_command("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__))
-        # For debug purpose :)
-        # import subprocess
-        # subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
-        #                  stderr=subprocess.STDOUT, shell=True)
+        self.__start_service()
+        
+        try:
+            self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
+                                            self.__on_default_adapter_changed)
+        except Exception, e:
+            print e
+        
+        servicemanager.connect("service-start", self.__on_bluetooth_service_start)
+        servicemanager.connect("service-stop", self.__on_bluetooth_service_stop)
+        
+    def __on_bluetooth_service_start(self, gobj, path):
+        self.tray_icon.set_visible(True)
+        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
+                                        self.__on_default_adapter_changed)
+        self.__start_service()
+        
+    def __on_bluetooth_service_stop(self, gobj, path):
+        self.tray_icon.set_visible(False)
 
     def __on_adapter_removed(self):
         self.tray_icon.set_visible(False)
 
     def __on_default_adapter_changed(self):
         self.tray_icon.set_visible(True)
+        if not hasattr(self, "service_process"):
+            self.__start_service()
+        
+    def __start_service(self):
+        import subprocess
+        
+        if hasattr(self, "service_process"):
+            os.kill(self.service_process.pid, 9)
+            os.kill(self.service_process.pid + 1, 9)
+        self.service_process = subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
+                                                stderr=subprocess.STDOUT, shell=True)
 
     def init_values(self, this_list):
         self.this = this_list[0]
@@ -282,9 +306,11 @@ class TrayBluetoothPlugin(object):
         return Label(text, None, 9, align, width, False, False, False)
 
     def __setup_toggle(self):
-        return ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"),
-            app_theme.get_pixbuf("toggle_button/active_normal.png"),
-            inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+        toggle_button = ToggleButton(app_theme.get_pixbuf("toggle_button/inactive_normal.png"),
+                                     app_theme.get_pixbuf("toggle_button/active_normal.png"),
+                                     inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"))
+        toggle_button.set_active(self.my_bluetooth.adapter.get_powered())
+        return toggle_button
 
     def __setup_separator(self):
         hseparator = HSeparator(app_theme.get_shadow_color("hSeparator").get_color_info(), 0, 0)
