@@ -270,8 +270,14 @@ class DeepinDateTime(BusBase):
         print "set timezone error"
         print error
 
+    def sync_time(self):
+        return self.dbus_method("SyncTime")
+
     def set_using_ntp(self, is_using_ntp):
         try:
+            if is_using_ntp:
+                self.sync_time()
+
             if self.can_set_using_ntp():
                 if bool(self.get_using_ntp()) == bool(is_using_ntp):
                     pass
