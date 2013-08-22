@@ -467,12 +467,15 @@ class WirelessSection(Section, WirelessDevice):
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
         Dispatcher.connect("wireless-redraw", self.wireless_redraw)
         self.label.connect("button-release-event", self.create_a_hidden_network)
-        event_manager.add_callback('hidden-connection-removed', self.wireless_redraw)
+        event_manager.add_callback('hidden-connection-removed', self.on_delete_redraw)
 
     def switch_devices(self, widget, device):
         self.focused_device = device
         if self.device_tree:
             self.device_tree.visible_items[0].set_index(device)
+        self.wireless_redraw(None)
+
+    def on_delete_redraw(self, name, event, data):
         self.wireless_redraw(None)
 
     def wireless_redraw(self, widget):

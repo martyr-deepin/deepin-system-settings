@@ -96,17 +96,27 @@ class NetManager(object):
         hiddens = list()
         connections = nm_module.nm_remote_settings.get_wireless_connections()
         self.cf.read(self.config_file)
-
-        for index, ssid in enumerate(map(lambda x: x.get_setting("802-11-wireless").ssid, connections)):
+        
+        self.remove_un_exist_connections(connections)
+        for index, ssid in enumerate(map(lambda x: x.get_setting('802-11-wireless').ssid, connections)):
             if ssid in self.cf.options("hidden"):
                 hiddens.append(connections[index])
         return hiddens
+
+    def remove_un_exist_connections(self, connections):
+        uuid_list = (map(lambda x: x.settings_dict["connection"]["uuid"], connections))
+        for option, uuid in self.cf.items("hidden"):
+            if uuid not in uuid_list:
+                self.cf.remove_option('hidden', option)
+                print "option removed", option
+        self.cf.write(open(self.config_file, "w"))
+        self.cf.read(self.config_file)
     
     def add_hidden(self, connection):
         ssid = connection.get_setting("802-11-wireless").ssid
         self.cf.read(self.config_file)
         if ssid not in self.cf.options("hidden"):
-            self.cf.set("hidden", ssid)
+            self.cf.set("hidden", ssid, connection.settings_dict["connection"]["uuid"])
         try:
             self.cf.write(open(self.config_file, "w"))
             print "save succeed"
