@@ -164,7 +164,8 @@ class TrayPower(object):
             if value >= 99.8:
                 self.tray_icon.set_tooltip_text(_("Fully charged"))
             else:
-                self.tray_icon.set_tooltip_text(_("Charging"))
+                self.tray_icon.set_tooltip_text(
+                        _("Charging, %s remaining") % (str(int(value)) + '%'))
         else:
             self.tray_icon.set_icon_theme("computer_d")
             self.tray_icon.set_tooltip_text("")
