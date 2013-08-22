@@ -467,6 +467,7 @@ class WirelessSection(Section, WirelessDevice):
         Dispatcher.connect("ap-removed", self.ap_removed_callback)
         Dispatcher.connect("wireless-redraw", self.wireless_redraw)
         self.label.connect("button-release-event", self.create_a_hidden_network)
+        event_manager.add_callback('hidden-connection-removed', self.wireless_redraw)
 
     def switch_devices(self, widget, device):
         self.focused_device = device
@@ -475,8 +476,11 @@ class WirelessSection(Section, WirelessDevice):
         self.wireless_redraw(None)
 
     def wireless_redraw(self, widget):
+        log.debug()
         if self.wireless.get_active():
             self.wireless.set_active(True, emit=True)
+            self.show_all()
+
 
     def device_added(self, widget, device):
         self.wireless_devices = net_manager.device_manager.get_wireless_devices()
@@ -555,7 +559,7 @@ class WirelessSection(Section, WirelessDevice):
         device_wifi = nm_module.cache.get_spec_object(self.focused_device.object_path)
         self.ap_list += device_wifi.order_ap_list()
         aps = map(lambda i:WirelessItem(i, self.focused_device), self.ap_list)
-        hidden_list = self.get_hidden_connection(self.ap_list)
+        hidden_list = self.get_hidden_connection()
         hiddens = map(lambda c: HidenItem(c), hidden_list)
         return aps + hiddens
 
@@ -569,13 +573,8 @@ class WirelessSection(Section, WirelessDevice):
 
         return merged_ap
 
-    def get_hidden_connection(self, ap_list):
+    def get_hidden_connection(self):
         from shared_methods import net_manager
-
-
-        #ssids = map(lambda a: a.get_ssid(), ap_list)
-        #hiddens = filter(lambda c: c.get_setting("802-11-wireless").ssid not in ssids, 
-                         #nm_module.nm_remote_settings.get_wireless_connections())
         return net_manager.get_hiddens()
 
         ## need to filter all aps
@@ -744,8 +743,8 @@ class DSLSection(Section):
         if self.wired_devices:
             self.__init_signals()
             if nm_module.nmclient.get_pppoe_active_connection():
-                print nm_module.nmclient.get_pppoe_active_connection()
-                print nm_module.nmclient.get_wired_active_connection()
+                #print nm_module.nmclient.get_pppoe_active_connection()
+                #print nm_module.nmclient.get_wired_active_connection()
 
                 self.dsl.set_active(True)
         else:
