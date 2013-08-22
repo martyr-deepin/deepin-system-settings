@@ -135,6 +135,11 @@ class NMRemoteConnection(NMObject, NMConnection):
             return
         if self.settings_dict["connection"]["type"] == "pppoe":
             nm_events.emit("dsl-connection-removed", None)
+            return
+        nm_remote_settings = get_cache().getobject("/org/freedesktop/NetworkManager/Settings")
+        hidden_items = dict(nm_remote_settings.cf.items('hidden')).values()
+        if self.settings_dict["connection"]["uuid"] in hidden_items:
+            nm_events.emit("hidden-connection-removed", None)
 
     def updated_cb(self):
         self.emit("updated", self.object_path)

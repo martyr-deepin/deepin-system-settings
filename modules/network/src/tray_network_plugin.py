@@ -51,6 +51,8 @@ class BaseMixIn(object):
 
         wireless = any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices])
 
+        print wire, mm , wireless
+
         if wireless:
             self.change_status_icon("links")
         else:
@@ -127,6 +129,8 @@ class WireSection(BaseMixIn):
                 if reason == 40:
                     # cable unpluged
                     self.gui.wire.set_active((False, False))
+                else:
+                    self.gui.wire.set_active((True, False))
             self.check_net_state()
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
