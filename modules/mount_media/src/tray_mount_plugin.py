@@ -23,7 +23,9 @@
 import os
 import gtk
 import gio
+from nls import _
 from tray_mount_gui import EjecterApp
+from dtk.ui.dbus_notify import DbusNotify
 
 class MountMedia(EjecterApp):
     def __init__(self):
@@ -47,16 +49,33 @@ class MountMedia(EjecterApp):
 
     def device_btn_close_btn_clicked(self, widget, drive, volume, mount):
         # 挂载的开关.
-        print "device_btn_close_btn_clicked...", 
+        print "device_btn_close_btn_clicked..."
         op = gio.MountOperation()
         if mount:
             mount.unmount(self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
         else:
             if volume:
-                volume.mount(op, self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
+                volume.mount(op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
 
     def cancall_opeartion(self, object, res):
-        pass
+        source = res.get_source_object()
+        try:
+            if isinstance(source, gio.Volume):
+                summary = _("Mount Failed")
+                body = _("mount '%s' error.") % source.get_name()
+                result = source.mount_finish(res)
+            else:
+                summary = _("Unmount Failed")
+                body = _("umount '%s' error.") % source.get_root().get_uri()
+                result = source.unmount_finish(res)
+        except:
+            result = False
+
+        if not result:
+            ntf = DbusNotify("deepin-system-settings", "/usr/share/icons/Deepin/apps/48/mountmanager.png")
+            ntf.set_summary(summary)
+            ntf.set_body(body)
+            ntf.notify()
 
     def set_menu_size(self, height):
         if self.size_check:
