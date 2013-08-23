@@ -180,6 +180,8 @@ class Wired(gtk.VBox):
         style.set_table(table)
         table_align = gtk.Alignment(0, 0, 0, 0)
         default_button = DefaultToggle(_("Default Setting"))
+        default_button.toggle_off = self.use_default_setting
+        default_button.toggle_on = self.use_user_setting
         default_button.load([table])
         table_align.add(default_button)
         self.pack_start(table_align, False, False)
@@ -187,9 +189,11 @@ class Wired(gtk.VBox):
         self.mac_entry.set_size_request(130, 22)
         self.clone_entry.set_size_request(130, 22)
         ## retrieve wired info
+        self._init = True
         self.mac_entry.connect("changed", self.save_settings, "mac_address")
         self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
+        self.mtu_spin.value_entry.connect("changed", self.spin_user_set)
 
         setting_list = (mac, clone_mac, mtu) = self.ethernet_setting.mac_address, self.ethernet_setting.cloned_mac_address, self.ethernet_setting.mtu
         #print mac, clone_mac, mtu
@@ -200,10 +204,9 @@ class Wired(gtk.VBox):
         if mtu != None:
             self.mtu_spin.set_value(int(mtu))
         
-        self.__init = True
         if any(setting_list):
             default_button.set_active(False)
-        self.__init = False
+        self._init = False
 
     def save_settings(self, widget, value, types):
         if type(value) is str:
@@ -216,12 +219,31 @@ class Wired(gtk.VBox):
                 is_valid = False
                 #Dispatcher.set_button("save", False)
             self.settings_obj.mac_is_valid = is_valid
-            if not self.__init:
+            if not self._init:
                 self.settings_obj.set_button("save", is_valid)
         else:
             setattr(self.ethernet_setting, types, value)
-            if self.connection.check_setting_finish() and not self.__init:
+            if self.connection.check_setting_finish() and not self._init:
                 Dispatcher.set_button("save", True)
+
+    def spin_user_set(self, widget, value):
+        if value == "":
+            return
+        value = int(value)
+        if self.mtu_spin.lower_value <= value <= self.mtu_spin.upper_value:
+            self.mtu_spin.update_and_emit(value)
+        elif value < self.mtu_spin.lower_value:
+            self.mtu_spin.update_and_emit(self.mtu_spin.lower_value)
+        else:
+            self.mtu_spin.update_and_emit(self.mtu_spin.upper_value)
+
+    def use_default_setting(self):
+        self.mac_entry.set_address("")
+        self.clone_entry.set_address("")
+        self.mtu_spin.set_value(0)
+
+    def use_user_setting(self):
+        pass
 
 class DSLConf(gtk.VBox):
     LEFT_PADDING = 210
