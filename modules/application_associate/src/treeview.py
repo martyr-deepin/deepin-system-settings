@@ -10,7 +10,10 @@ import pango
 from nls import _
 
 def str_mark_down(string):
-    return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") 
+    if string:
+        return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") 
+    else:
+        return ''
 
 def render_background(cr, rect, is_select=False):
     if is_select:

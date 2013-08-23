@@ -39,7 +39,7 @@ class AutoStart(object):
         self.conf.optionxform = str
         
         if file_path != None and os.path.exists(file_path):
-            self.file_name = os.path.basename(file_path).split(".")[0]
+            self.file_name = os.path.splitext(os.path.basename(file_path))[0]
             self.conf.read(file_path)
         else:
             self.new()
