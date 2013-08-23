@@ -34,13 +34,15 @@ from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.combo import ComboBox
+from dtk.ui.entry import InputEntry
 from module_frame import ModuleFrame
 from grub_setting_utils import get_proper_resolutions
 from nls import _
 
 ALIGN_SPACING = 10
 
-RESOLUTIONS = get_proper_resolutions()
+RESOLUTIONS = [("1024x768", 0), ("320x240", 1), ("340x560", 2)]
+# RESOLUTIONS = get_proper_resolutions()
 
 class GrubSettings(object):
     def __init__(self, module_frame):
@@ -64,17 +66,33 @@ class GrubSettings(object):
             TEXT_WINDOW_TOP_PADDING,
             TEXT_WINDOW_LEFT_PADDING)
         
+        self.default_delay_hbox = gtk.HBox()
+        self.default_delay_label = self.__setup_label(_("Default delay:"))
+        self.default_delay_input = self.__setup_entry("60")
+        self.__widget_pack_start(self.default_delay_hbox, [self.default_delay_label, self.default_delay_input])
+        self.default_delay_align = self.__setup_align()
+        self.default_delay_align.add(self.default_delay_hbox)
+        
         self.customize_resolution_hbox = gtk.HBox()
-        self.customize_resolution_check = self.__setup_checkbutton(_("Customize resolution:"), padding_x=2)
+        self.customize_resolution_label = self.__setup_label(_("Customize resolution:"))
         self.customize_resolution_combo = self.__setup_combo(RESOLUTIONS)
-        self.customize_resolution_hbox.pack_start(self.customize_resolution_check, True, True, 0)
-        self.customize_resolution_hbox.pack_start(self.customize_resolution_combo, True, True, 0)
+        self.customize_resolution_check = self.__setup_checkbutton(_("Open"))
+        # self.customize_resolution_hbox.pack_start(self.customize_resolution_label, False, False, 0)
+        # self.customize_resolution_hbox.pack_start(self.customize_resolution_combo, False, False, 5)
+        # self.customize_resolution_hbox.pack_end(self.customize_resolution_check, False, False, 50)
+        self.__widget_pack_start(self.customize_resolution_hbox, [self.customize_resolution_label, 
+                                                                  self.customize_resolution_combo,
+                                                                  self.customize_resolution_check])
         self.customize_resolution_align = self.__setup_align()
         self.customize_resolution_align.add(self.customize_resolution_hbox)
+        
+
+        
         self.appearance_vbox = gtk.VBox()
         self.appearance_vbox.pack_start(self.customize_resolution_align, False, False, 0)
         
         self.main_vbox.pack_start(self.appearance_title_align, False, False, 0)
+        self.main_vbox.pack_start(self.default_delay_align, False, False, 0)
         self.main_vbox.pack_start(self.appearance_vbox, False, False, 0)
         self.module_frame.add(self.main_vbox)
         
@@ -88,7 +106,7 @@ class GrubSettings(object):
         return Label(text, None, text_size, align, 200, False, False, False)
 
     def __setup_combo(self, items=[]):
-        combo = ComboBox(items, None, 0, max_width = 285, fixed_width = 285)
+        combo = ComboBox(items, None, 0, max_width = 100, fixed_width = 100)
         combo.set_size_request(-1, WIDGET_HEIGHT)
         return combo
 
@@ -150,7 +168,7 @@ class GrubSettings(object):
         if parent_widget == None:
             return
         for item in widgets:
-            parent_widget.pack_start(item, False, False)
+            parent_widget.pack_start(item, False, False, WIDGET_SPACING)
 
 
 if __name__ == "__main__":
