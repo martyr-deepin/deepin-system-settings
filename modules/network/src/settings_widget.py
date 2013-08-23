@@ -61,7 +61,7 @@ class EntryTreeView(TreeView):
             start_drag_offset=50,
             mask_bound_height=24,
             right_space=0,
-            top_bottom_space=3):
+            top_bottom_space=0):
         super(EntryTreeView, self).__init__(
             items, drag_data, enable_hover,
             enable_highlight, enable_multiple_select,

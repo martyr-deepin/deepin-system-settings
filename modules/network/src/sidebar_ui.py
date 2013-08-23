@@ -82,8 +82,8 @@ class SideBar(gtk.VBox):
         if hasattr(self.network_object, "add_new_connection"):
             self.new_connection = self.network_object.add_new_connection
             #self.add_button.change_add_setting(self.network_object.add_new_connection)
-        if hasattr(self.network_object, "delete_item"):
-            pass
+        if hasattr(self.network_object, "delete_request_redraw"):
+            self.request_redraw = self.network_object.delete_request_redraw
         self.init_select(network_object.spec_connection)
         # FIXME: COME ON, why check the connections count?!
         #if self.connections !=[]:
@@ -104,8 +104,12 @@ class SideBar(gtk.VBox):
         '''docstring for delete_item_cb'''
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
+            try:
+                self.request_redraw()
+            except:
+                pass
             connection.delete()
-            log.debug(connection)
+            #log.debug(connection)
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
@@ -120,7 +124,7 @@ class SideBar(gtk.VBox):
     
     def resize_tree(self):
         if self.connection_tree.visible_items != []:
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height() + 1)
         else:
             container_remove_all(self.buttonbox)
 
