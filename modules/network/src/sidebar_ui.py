@@ -104,10 +104,6 @@ class SideBar(gtk.VBox):
         '''docstring for delete_item_cb'''
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
-            try:
-                self.request_redraw()
-            except:
-                pass
             connection.delete()
             #log.debug(connection)
         else:
