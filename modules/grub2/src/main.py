@@ -28,6 +28,7 @@ from theme import app_theme
 
 import gtk
 from constant import *
+from menu_entry import MenuEntry
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
@@ -35,11 +36,17 @@ from dtk.ui.label import Label
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.combo import ComboBox
 from dtk.ui.entry import InputEntry
+from dtk.ui.color_selection import ColorButton
+from dtk.ui.scrolled_window import ScrolledWindow
+from dtk.ui.treeview import TreeView
 from module_frame import ModuleFrame
+from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 from grub_setting_utils import get_proper_resolutions
 from nls import _
+from ui_utils import set_widget_resize
 
 ALIGN_SPACING = 10
+SUB_TITLE_SPACING = 175
 
 RESOLUTIONS = [("1024x768", 0), ("320x240", 1), ("340x560", 2)]
 # RESOLUTIONS = get_proper_resolutions()
@@ -59,6 +66,7 @@ class GrubSettings(object):
                                     TEXT_WINDOW_RIGHT_WIDGET_PADDING)
         self.main_vbox = gtk.VBox()
         self.main_vbox.set_spacing(ALIGN_SPACING)
+        self.main_vbox.connect("expose-event", self.__main_box_expose)
         
         self.appearance_title_align = self.__setup_title_align(
             app_theme.get_pixbuf("desktop/icon.png"),
@@ -69,7 +77,7 @@ class GrubSettings(object):
         self.default_delay_hbox = gtk.HBox()
         self.default_delay_label = self.__setup_label(_("Default delay:"))
         self.default_delay_input = self.__setup_entry("60")
-        self.__widget_pack_start(self.default_delay_hbox, [self.default_delay_label, self.default_delay_input])
+        self.__widget_pack_start(self.default_delay_hbox, [self.default_delay_label, self.default_delay_input], WIDGET_SPACING)
         self.default_delay_align = self.__setup_align()
         self.default_delay_align.add(self.default_delay_hbox)
         
@@ -77,24 +85,111 @@ class GrubSettings(object):
         self.customize_resolution_label = self.__setup_label(_("Customize resolution:"))
         self.customize_resolution_combo = self.__setup_combo(RESOLUTIONS)
         self.customize_resolution_check = self.__setup_checkbutton(_("Open"))
-        # self.customize_resolution_hbox.pack_start(self.customize_resolution_label, False, False, 0)
-        # self.customize_resolution_hbox.pack_start(self.customize_resolution_combo, False, False, 5)
-        # self.customize_resolution_hbox.pack_end(self.customize_resolution_check, False, False, 50)
         self.__widget_pack_start(self.customize_resolution_hbox, [self.customize_resolution_label, 
                                                                   self.customize_resolution_combo,
-                                                                  self.customize_resolution_check])
+                                                                  self.customize_resolution_check], WIDGET_SPACING)
         self.customize_resolution_align = self.__setup_align()
         self.customize_resolution_align.add(self.customize_resolution_hbox)
         
+        self.menu_color_normal_hbox = gtk.HBox()
+        self.menu_color_normal_align = self.__setup_align()
+        self.menu_color_normal_label = self.__setup_label(_("Normal menu color:"))
+        self.__widget_pack_start(self.menu_color_normal_hbox, [self.menu_color_normal_label,],
+                                 WIDGET_SPACING)
+        self.menu_color_normal_align.add(self.menu_color_normal_hbox)
+        
+        self.color_normal_align = self.__setup_align()
+        self.color_normal_align.set_padding(8, 0, 
+                                            TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING + SUB_TITLE_SPACING, 0)
+        self.color_normal_hbox = gtk.HBox()
+        self.color_normal_fg = self.__setup_label("Font color:", text_width=100)
+        self.color_normal_fg_button = ColorButton()
+        self.color_normal_fg_button.button.disconnect("clicked", lambda w : True)
+        self.color_normal_bg = self.__setup_label("Background color:", text_width=100)
+        self.color_normal_bg_button = ColorButton()
+        self.__widget_pack_start(self.color_normal_hbox, [self.color_normal_fg, 
+                                                             self.color_normal_fg_button, 
+                                                             self.color_normal_bg, 
+                                                             self.color_normal_bg_button],
+                                 5)
+        self.color_normal_align.add(self.color_normal_hbox)
+        
+        
+        self.menu_color_highlight_hbox = gtk.HBox()
+        self.menu_color_highlight_align = self.__setup_align()
+        self.menu_color_highlight_label = self.__setup_label(_("Highlight menu color:"))
+        self.__widget_pack_start(self.menu_color_highlight_hbox, [self.menu_color_highlight_label,],
+                                 WIDGET_SPACING)
+        self.menu_color_highlight_align.add(self.menu_color_highlight_hbox)
+        
+        self.color_highlight_align = self.__setup_align()
+        self.color_highlight_align.set_padding(8, 0, 
+                                               TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING + SUB_TITLE_SPACING, 0)        
+        self.color_highlight_hbox = gtk.HBox()
+        self.color_highlight_fg = self.__setup_label("Font color:", text_width=100)
+        self.color_highlight_fg_button = ColorButton()
+        self.color_highlight_bg = self.__setup_label("Background color:", text_width=100)
+        self.color_highlight_bg_button = ColorButton()
+        self.__widget_pack_start(self.color_highlight_hbox, [self.color_highlight_fg, 
+                                                             self.color_highlight_fg_button, 
+                                                             self.color_highlight_bg, 
+                                                             self.color_highlight_bg_button],
+                                 5)
 
+        self.color_highlight_align.add(self.color_highlight_hbox)
+        
+        self.background_img_hbox = gtk.HBox()
+        self.background_img_label = self.__setup_label(_("Background image:"))
+        self.background_img_button = self.__setup_button(_("None"))
+        self.background_img_button.set_size_request(300, 25)
+        self.background_img_align = self.__setup_align()
+        self.__widget_pack_start(self.background_img_hbox, [self.background_img_label,
+                                                            self.background_img_button], WIDGET_SPACING)
+        self.background_img_align.add(self.background_img_hbox)
         
         self.appearance_vbox = gtk.VBox()
-        self.appearance_vbox.pack_start(self.customize_resolution_align, False, False, 0)
+        self.__widget_pack_start(self.appearance_vbox, [self.default_delay_align,
+                                                        self.customize_resolution_align,
+                                                        self.menu_color_normal_align, 
+                                                        self.color_normal_align,
+                                                        self.menu_color_highlight_align,
+                                                        self.color_highlight_align,
+                                                        self.background_img_align])
         
-        self.main_vbox.pack_start(self.appearance_title_align, False, False, 0)
-        self.main_vbox.pack_start(self.default_delay_align, False, False, 0)
-        self.main_vbox.pack_start(self.appearance_vbox, False, False, 0)
-        self.module_frame.add(self.main_vbox)
+        self.list_title_align = self.__setup_title_align(
+            app_theme.get_pixbuf("desktop/icon.png"),
+            _("Menu List Settings"),
+            TEXT_WINDOW_TOP_PADDING,
+            TEXT_WINDOW_LEFT_PADDING)
+        
+        self.menu_hbox = gtk.HBox()
+        self.menu_hbox.set_size_request(650, -1)
+        self.menu_hbox.add(self.__setup_menu_entry())
+        self.menu_align = self.__setup_align()
+        self.menu_align.set_padding(10, 20,
+                                    TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING, 0)
+        self.menu_align.add(self.menu_hbox)
+        
+        self.__widget_pack_start(self.main_vbox, [self.appearance_title_align, 
+                                                  self.appearance_vbox, 
+                                                  self.list_title_align,
+                                                  self.menu_align])
+        self.scrolled_window = ScrolledWindow()
+        self.scrolled_window.add_child(self.main_vbox)
+        self.module_frame.add(self.scrolled_window)
+        
+        self.__send_message("status", ("desktop", ""))
+        
+    def __setup_menu_entry(self):
+        menu_entries = [MenuEntry("Hello"), MenuEntry("World")]
+        self._menu = TreeView(menu_entries, expand_column=0)
+        self._menu.set_highlight_item(menu_entries[0])
+        self._menu_align = gtk.Alignment(1, 1, 1, 1)
+        self._menu_align.set_padding(5, 5, 5, 5)
+        self._menu_align.add(self._menu)
+        self._menu_align.connect("expose-event", self.__menu_align_expose)
+        
+        return self._menu_align
         
     def __setup_checkbutton(self, label_text, padding_x=0):
         return CheckButton(label_text, padding_x)
@@ -102,8 +197,8 @@ class GrubSettings(object):
     def __setup_button(self, label):
         return Button(label)
 
-    def __setup_label(self, text="", text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
-        return Label(text, None, text_size, align, 200, False, False, False)
+    def __setup_label(self, text="", text_width = 200, text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
+        return Label(text, None, text_size, align, text_width, enable_double_click=False)
 
     def __setup_combo(self, items=[]):
         combo = ComboBox(items, None, 0, max_width = 100, fixed_width = 100)
@@ -116,7 +211,7 @@ class GrubSettings(object):
 
     def __setup_entry(self, content=""):
         entry = InputEntry(content)
-        entry.set_size(215, WIDGET_HEIGHT)
+        entry.set_size(100, WIDGET_HEIGHT)
         return entry
 
     def __setup_align(self,
@@ -164,13 +259,45 @@ class GrubSettings(object):
         align.add(align_box)
         return align
 
-    def __widget_pack_start(self, parent_widget, widgets=[]):
+    def __widget_pack_start(self, parent_widget, widgets=[], widget_spacing=0):
         if parent_widget == None:
             return
         for item in widgets:
-            parent_widget.pack_start(item, False, False, WIDGET_SPACING)
+            parent_widget.pack_start(item, False, False, widget_spacing)
+            
+    def __main_box_expose(self, widget, event):
+        cr = widget.window.cairo_create()
+        x, y, w, h = widget.allocation
+        
+        cr.set_source_rgb(1, 1, 1)
+        cr.rectangle(x, y, w, h)
+        cr.fill()
+        
+    def __menu_align_expose(self, widget, event):
+        print "expose"
+        cr = widget.window.cairo_create()
+        x, y, w, h = widget.allocation
+        
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo("#AEAEAE"))
+            cr.rectangle(x, y, w, h)
+            cr.stroke()
+        
+    def __send_message(self, message_type, message_content):
+        if is_dbus_name_exists(APP_DBUS_NAME):
+            bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
+            method = bus_object.get_dbus_method("message_receiver")
+            method(message_type,
+                   message_content,
+                   reply_handler=self.__handle_dbus_replay,
+                   error_handler=self.__handle_dbus_error)
+            
+    def __handle_dbus_replay(self, *reply):
+        pass
 
-
+    def __handle_dbus_error(self, *error):
+        pass
+            
 if __name__ == "__main__":
     module_frame = ModuleFrame(os.path.join(get_parent_dir(__file__, 2), "config.ini"))
     GrubSettings(module_frame)

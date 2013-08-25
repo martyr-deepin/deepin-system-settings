@@ -204,6 +204,10 @@ if __name__ == "__main__":
     # set_setting_item("GRUB_TIMEOUT", 50)
     # set_setting_item("GRUB_TIMEOUT_CUSTOMIZE", 20)
     
-    print get_proper_resolutions()
-    # print find_all_menu_entry()
+    # print get_proper_resolutions()
+    for entry in find_all_menu_entry():
+        print "entry_name:"
+        print entry["entry_name"]
+        print "entry_content"
+        print entry["entry_content"]
     # write_sorted_menu_entry([])
