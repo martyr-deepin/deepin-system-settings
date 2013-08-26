@@ -42,14 +42,14 @@ from module_frame import ModuleFrame
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 
 from nls import _
+from core import core_api
 from color_button import ColorButton
-from grub_setting_utils import get_proper_resolutions
+from grub_setting_utils import get_default_delay
 
 ALIGN_SPACING = 10
 SUB_TITLE_SPACING = 175
 
-RESOLUTIONS = [("1024x768", 0), ("320x240", 1), ("340x560", 2)]
-# RESOLUTIONS = get_proper_resolutions()
+RESOLUTIONS = core_api.get_proper_resolutions()
 
 class GrubSettings(object):
     def __init__(self, module_frame):
@@ -76,7 +76,7 @@ class GrubSettings(object):
         
         self.default_delay_hbox = gtk.HBox()
         self.default_delay_label = self.__setup_label(_("Default delay:"))
-        self.default_delay_input = self.__setup_entry("60")
+        self.default_delay_input = self.__setup_entry(get_default_delay())
         self.__widget_pack_start(self.default_delay_hbox, [self.default_delay_label, self.default_delay_input], WIDGET_SPACING)
         self.default_delay_align = self.__setup_align()
         self.default_delay_align.add(self.default_delay_hbox)

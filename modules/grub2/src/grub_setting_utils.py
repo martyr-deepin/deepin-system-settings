@@ -22,11 +22,52 @@
 import re
 
 import gtk
-from deepin_utils.process import get_command_output
+from deepin_utils.process import get_command_output, run_command
 
 ETC_DEFAULT_GRUB = "/etc/default/grub"
 BOOT_GRUB_CFG = "/boot/grub/grub.cfg"
 
+########################################################
+# core api
+########################################################
+def set_default_delay(delay_time):
+    set_setting_item("GRUB_TIMEOUT", delay_time)
+    
+def get_default_delay():
+    return get_setting_item_value("GRUB_TIMEOUT", "0")
+    
+def set_resolution(resolution):
+    '''
+    Set resolution.
+    '''
+    set_setting_item("GRUB_GFXMODE", resolution)
+    
+def set_background_image(valid_img_file):
+    """
+    Set grub background
+    """
+    set_setting_item("GRUB_MENU_PICTURE", valid_img_file)
+
+def set_item_color(color_fg, color_bg, is_highlight_item=False):
+    '''
+    Set the color of grub items
+    '''
+    if is_highlight_item:
+        set_setting_item("GRUB_COLOR_HIGHLIGHT", "%s/%s" % (color_fg, color_bg))
+    else:
+        set_setting_item("GRUB_COLOR_NORMAL", "%s/%s" % (color_fg, color_bg))
+
+def set_font(font_size, font_file):
+    run_command("grub-mkfont -s %s -o /boot/grub/unicode.pf2 %s" % (font_size, font_file))
+    set_setting_item("GRUB_FONT", "/boot/grub/unicode.pf2")
+
+def reset_all_setttings():
+    set_setting_item("GRUB_TIMEOUT", "10")
+    remove_item("GRUB_GFXMODE")
+    remove_item("GRUB_MENU_PICTURE")
+    remove_item("GRUB_COLOR_HIGHLIGHT")
+    remove_item("GRUB_COLOR_NORMAL")
+    remove_item("GRUB_FONT")
 
 ########################################################
 # util functions for editting the /etc/default/grub file
@@ -114,15 +155,24 @@ def remove_item(item_name):
 
 def is_setting_item_exists(item_name):
     '''
-    return True and the index of the line contains item if the item exists, otherwise return False and -1.
+    return True and index of the line contains that item if the item exists, otherwise return False and -1.
     '''
     with open(ETC_DEFAULT_GRUB) as etc_default_grub:
         lines = etc_default_grub.readlines()
         for line_index, line in enumerate(lines):
-            # in case that two variable has the same prefix, eg.GRUB_CMDLINE_LINUX_DEFAULT AND GRUB_CMD_LINE_LINUX
+            # in case that two variable has the same prefix, eg.GRUB_CMDLINE_LINUX_DEFAULT and GRUB_CMD_LINE_LINUX
             if line.find(item_name + "=") != -1:
                 return True, line_index
         return False, -1
+    
+def get_setting_item_value(item_name, default=""):
+    is_exists, line_index= is_setting_item_exists(item_name)
+    if is_exists:
+        with open(ETC_DEFAULT_GRUB) as etc_default_grub:
+            content = etc_default_grub.readlines()
+            return content[line_index].split("=")[1].strip().strip("\"")
+    else:
+        return default
 
 def validate_image(file_name):
     '''
@@ -139,7 +189,7 @@ def validate_image(file_name):
 # util function for generate proper resolutions for grub
 ########################################################
 def get_proper_resolutions():
-    output_lines = get_command_output("sudo hwinfo --framebuffer | grep Mode", True)
+    output_lines = get_command_output("hwinfo --framebuffer | grep Mode", True)
     output_str = join_all(output_lines)
     
     return collect_all_resolutions(output_str)

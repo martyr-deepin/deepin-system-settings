@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.deepin.grub2
+Exec=/usr/share/deepin-system-settings/modules/grub2/src/grub2_modification_service.py
+User=root

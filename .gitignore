@@ -10,6 +10,6 @@ dtk.egg-info
 .zcache
 *.egg-info
 *.egg-info/*
-#*#
+*#*#
 search_db/*
 .gitignore
