@@ -42,6 +42,7 @@ from constant import *
 from nls import _
 from bt.device import Device, AudioSink, Headset
 from bt.utils import bluetooth_class_to_type, bluetooth_uuid_to_string
+from bt.utils import is_bluetooth_file_type, is_bluetooth_audio_type
 
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
@@ -380,7 +381,10 @@ class DeviceItem(gobject.GObject):
         Handle double click event.
         '''
         if self.is_paired:
-            self.do_send_file()
+            if is_bluetooth_file_type(self.device):
+                self.do_send_file()
+            elif is_bluetooth_audio_type(self.device):
+                self.do_connect_audio_sink()
             return
 
         self.do_pair()
