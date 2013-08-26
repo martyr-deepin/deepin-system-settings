@@ -36,14 +36,14 @@ from dtk.ui.label import Label
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.combo import ComboBox
 from dtk.ui.entry import InputEntry
-from dtk.ui.color_selection import ColorButton
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.treeview import TreeView
 from module_frame import ModuleFrame
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
-from grub_setting_utils import get_proper_resolutions
+
 from nls import _
-from ui_utils import set_widget_resize
+from color_button import ColorButton
+from grub_setting_utils import get_proper_resolutions
 
 ALIGN_SPACING = 10
 SUB_TITLE_SPACING = 175
@@ -102,15 +102,14 @@ class GrubSettings(object):
         self.color_normal_align.set_padding(8, 0, 
                                             TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING + SUB_TITLE_SPACING, 0)
         self.color_normal_hbox = gtk.HBox()
-        self.color_normal_fg = self.__setup_label("Font color:", text_width=100)
+        self.color_normal_fg = self.__setup_label("Font:", text_width=75)
         self.color_normal_fg_button = ColorButton()
-        self.color_normal_fg_button.button.disconnect("clicked", lambda w : True)
-        self.color_normal_bg = self.__setup_label("Background color:", text_width=100)
+        self.color_normal_bg = self.__setup_label("Background:", text_width=75)
         self.color_normal_bg_button = ColorButton()
         self.__widget_pack_start(self.color_normal_hbox, [self.color_normal_fg, 
-                                                             self.color_normal_fg_button, 
-                                                             self.color_normal_bg, 
-                                                             self.color_normal_bg_button],
+                                                          self.color_normal_fg_button, 
+                                                          self.color_normal_bg, 
+                                                          self.color_normal_bg_button],
                                  5)
         self.color_normal_align.add(self.color_normal_hbox)
         
@@ -126,9 +125,9 @@ class GrubSettings(object):
         self.color_highlight_align.set_padding(8, 0, 
                                                TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING + SUB_TITLE_SPACING, 0)        
         self.color_highlight_hbox = gtk.HBox()
-        self.color_highlight_fg = self.__setup_label("Font color:", text_width=100)
+        self.color_highlight_fg = self.__setup_label("Font:", text_width=75)
         self.color_highlight_fg_button = ColorButton()
-        self.color_highlight_bg = self.__setup_label("Background color:", text_width=100)
+        self.color_highlight_bg = self.__setup_label("Background:", text_width=75)
         self.color_highlight_bg_button = ColorButton()
         self.__widget_pack_start(self.color_highlight_hbox, [self.color_highlight_fg, 
                                                              self.color_highlight_fg_button, 
@@ -178,7 +177,18 @@ class GrubSettings(object):
         self.scrolled_window.add_child(self.main_vbox)
         self.module_frame.add(self.scrolled_window)
         
+        self.__setup_signals()
+        
         self.__send_message("status", ("desktop", ""))
+        
+    def __color_button_color_selected(self, gobj, color_string, button_name):
+        print "set " + button_name + " to " + color_string
+        
+    def __setup_signals(self):
+        self.color_normal_fg_button.connect("color-select", self.__color_button_color_selected, "normal_fg")
+        self.color_normal_bg_button.connect("color-select", self.__color_button_color_selected, "normal_bg")
+        self.color_highlight_fg_button.connect("color-select", self.__color_button_color_selected, "highlight_fg")
+        self.color_highlight_bg_button.connect("color-select", self.__color_button_color_selected, "highlight_bg")
         
     def __setup_menu_entry(self):
         menu_entries = [MenuEntry("Hello"), MenuEntry("World")]
@@ -274,7 +284,6 @@ class GrubSettings(object):
         cr.fill()
         
     def __menu_align_expose(self, widget, event):
-        print "expose"
         cr = widget.window.cairo_create()
         x, y, w, h = widget.allocation
         
