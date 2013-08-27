@@ -66,8 +66,8 @@ class Grub2Service(dbus.service.Object):
     @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "", out_signature = "as", 
                          sender_keyword = 'sender', connection_keyword = 'conn')    
     def getResolutions(self, sender = None, conn = None):
-        if not authWithPolicyKit(sender, conn, "com.deepin.grub2.get-proper-resolutions"):
-            raise dbus.DBusException("Not authorized with polkit.")
+        # if not authWithPolicyKit(sender, conn, "com.deepin.grub2.get-proper-resolutions"):
+            # raise dbus.DBusException("Not authorized with polkit.")
         return get_proper_resolutions()
     
 if __name__ == "__main__":
