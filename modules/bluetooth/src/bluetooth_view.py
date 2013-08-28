@@ -125,6 +125,7 @@ class DeviceItem(gobject.GObject):
         self.is_paired = is_paired
         self.module_frame = module_frame
 
+        self.device.connect("property-changed", self.__device_property_changed)
         self.pair_pixbuf = app_theme.get_pixbuf("bluetooth/pair.png")
         self.service_connected_pixbufs = (app_theme.get_pixbuf("bluetooth/check_box-2.png"),
                                           app_theme.get_pixbuf("bluetooth/check_box-3.png"),
@@ -137,6 +138,10 @@ class DeviceItem(gobject.GObject):
 
         self.highlight_fill_color = "#7db7f2"
         self.highlight_stroke_color = "#396497"
+        
+    def __device_property_changed(self, device, key, value):
+        self.is_paired = True
+        self.emit_redraw_request()
 
     def render(self, cr, rect):
         padding = 10
@@ -592,6 +597,7 @@ class BlueToothView(gtk.VBox):
 
     def __on_default_adapter_changed(self):
         self.set_sensitive(True)
+        self.display_device_entry.set_text(self.my_bluetooth.adapter.get_name())
 
     def __display_device_changed(self, widget, event):
         self.my_bluetooth.adapter.set_name(widget.get_text())
