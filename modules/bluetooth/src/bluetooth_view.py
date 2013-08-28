@@ -140,8 +140,13 @@ class DeviceItem(gobject.GObject):
         self.highlight_stroke_color = "#396497"
         
     def __device_property_changed(self, device, key, value):
-        self.is_paired = True
-        self.emit_redraw_request()
+        if key == "Paired":
+            if bool(value):
+                self.is_paired = True
+                self.emit_redraw_request()
+            else:
+                self.is_paired = False
+                self.emit_redraw_request()
 
     def render(self, cr, rect):
         padding = 10

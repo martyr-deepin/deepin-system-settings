@@ -64,18 +64,19 @@ class Agent(dbus.service.Object):
     def Authorize(self, device, uuid):
         print("Authorize (%s, %s)" % (device, uuid))
 
-        loop = None
-        confirm_d = BluetoothConfirmDialog(_("Authorize connection"),
-                                           _("Authorize connection request from %s?") % Device(device).get_alias(),
-                                           confirm_cb=lambda : True,
-                                           cancel_cb=lambda : raise_rejected("Connection rejected by user."))
-        confirm_d.connect("destroy", lambda widget : loop.quit())
-        confirm_d.show_all()
+        # loop = None
+        # confirm_d = BluetoothConfirmDialog(_("Authorize connection"),
+        #                                    _("Authorize connection request from %s?") % Device(device).get_alias(),
+        #                                    confirm_cb=lambda : True,
+        #                                    cancel_cb=lambda : raise_rejected("Connection rejected by user."))
+        # confirm_d.connect("destroy", lambda widget : loop.quit())
+        # confirm_d.show_all()
 
-        loop = gobject.MainLoop(None, False)
-        gtk.gdk.threads_leave()
-        loop.run()
-        gtk.gdk.threads_enter()
+        # loop = gobject.MainLoop(None, False)
+        # gtk.gdk.threads_leave()
+        # loop.run()
+        # gtk.gdk.threads_enter()
+        return True
 
     @dbus.service.method("org.bluez.Agent",
                          in_signature="o", out_signature="s")
