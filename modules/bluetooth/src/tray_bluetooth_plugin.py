@@ -167,8 +167,10 @@ class TrayBluetoothPlugin(object):
 
     def __on_default_adapter_changed(self):
         self.tray_icon.set_visible(True)
-        if not hasattr(self, "service_process"):
-            self.__start_service()
+        
+        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
+                                        self.__on_default_adapter_changed)
+        self.__start_service()
         
     def __start_service(self):
         import subprocess

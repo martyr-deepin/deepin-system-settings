@@ -71,9 +71,17 @@ class BluetoothTransfer(OdsManager):
         session.transfer = {}
 
         session.server = server
+        
+    def on_session_removed(self, server, session):
+        try:
+            session.transfer["process_dialog"].destroy()
+            session.transfer["confirm_dialog"].destroy()
+        except Exception, e:
+            print e
 
     def on_transfer_started(self, session, filename, local_path, total_bytes):
-        self.progress_dialog = BluetoothProgressDialog()
+        session.transfer["progress_dialog"] = BluetoothProgressDialog()
+        session.transfer["progress_dialog"].set_keep_above(True)
         info = session.server.GetServerSessionInfo(session.object_path)
         try:
             dev = Device(Adapter(Manager().get_default_adapter()).create_device(info["BluetoothAddress"]))
@@ -93,21 +101,21 @@ class BluetoothTransfer(OdsManager):
         def confirm_clicked():
             session.Accept()
             session.Transfer["accept"] = True
-        self.confirm_d = ConfirmDialog(_("Incoming file from %s" % name),
+        session.transfer["confirm_dialog"] = ConfirmDialog(_("Incoming file from %s" % name),
                                        _("Accept incoming file %s?") % filename,
                                        confirm_callback=lambda : session.Accept(),
                                        cancel_callback=lambda : session.Reject())
-        self.confirm_d.confirm_button.set_label(_("Accept"))
-        self.confirm_d.cancel_button.set_label(_("Reject"))
-        self.confirm_d.set_keep_above(True)
-        self.confirm_d.show_all()
+        session.transfer["confirm_dialog"].confirm_button.set_label(_("Accept"))
+        session.transfer["confirm_dialog"].cancel_button.set_label(_("Reject"))
+        session.transfer["confirm_dialog"].set_keep_above(True)
+        session.transfer["confirm_dialog"].show_all()
 
     def transfer_progress(self, session, bytes_transferred):
         print bytes_transferred / float(session.transfer["total"])
-        self.progress_dialog.cancel_cb = lambda : session.Cancel()
-        self.progress_dialog.set_message(_("Receiving file from %s") % session.transfer["name"])
-        self.progress_dialog.set_progress(bytes_transferred / float(session.transfer["total"]) * 100)
-        self.progress_dialog.show_all()
+        session.transfer["progress_dialog"].cancel_cb = lambda : session.Cancel()
+        session.transfer["progress_dialog"].set_message(_("Receiving file from %s") % session.transfer["name"])
+        session.transfer["progress_dialog"].set_progress(bytes_transferred / float(session.transfer["total"]) * 100)
+        session.transfer["progress_dialog"].show_all()
 
     def transfer_finished(self, session):
         print "transfer_finished"
@@ -118,8 +126,8 @@ class BluetoothTransfer(OdsManager):
             
             run_command("xdg-open %s" % TRANSFER_DIR)
 
-            if self.progress_dialog.get_visible():
-                self.progress_dialog.destroy()
+            if session.transfer["progress_dialog"].get_visible():
+                session.transfer["progress_dialog"].destroy()
 
     def transfer_cancelled(self, session):
         print "transfer_cancelled"
@@ -135,7 +143,7 @@ class BluetoothTransfer(OdsManager):
             reply_dlg.set_keep_above(True)
             reply_dlg.show_all()
 
-        if self.progress_dialog.get_visible():
-            self.progress_dialog.destroy()
-        if self.confirm_d.get_visible():
-            self.confirm_d.destroy()
+        if session.transfer["progress_dialog"].get_visible():
+            session.transfer["progress_dialog"].destroy()
+        if session.transfer["confirm_dialog"].get_visible():
+            session.transfer["confirm_dialog"].destroy()
