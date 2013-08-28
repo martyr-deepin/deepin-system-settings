@@ -201,6 +201,12 @@ DEFAULT_COLOR_LIST = {_("white"): "#ffffff", _("blue"): "#0000a8",
                       _("black"): "#000000", _("light-cyan"): "#54fefe", 
                       _("light-green"): "#54fe54", _("brown"): "#a85400"}
 
+def color_to_name(hex_color):
+    for key, value in DEFAULT_COLOR_LIST.iteritems():
+        if value == hex_color:
+            return key
+    return ""
+
 class ColorSelectionDialog(DialogBox):
 
     def __init__(self, color, confirm_callback=None, cancel_callback=None):
@@ -413,3 +419,4 @@ class ColorButton(gtk.VBox):
         return True
 
 gobject.type_register(ColorButton)
+

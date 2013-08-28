@@ -209,6 +209,13 @@ def get_setting_item_value(file_path, item_name, default=""):
     else:
         return default
 
+def validate_number(text):
+    try:
+        int(text)
+        return True
+    except:
+        return False
+    
 def validate_image(file_name):
     '''
     check wether file_name is an invalid image file
@@ -237,8 +244,8 @@ def join_all(str_list):
 
 def collect_all_resolutions(search_str):
     resolutions = []
-    pattern = re.compile(r"Mode.*: (\d*x\d*) .*bits")
-    pattern.sub(lambda match_obj : resolutions.append(match_obj.group(1)), search_str)
+    pattern = re.compile(r"Mode.*: (\d*x\d*) .* (\d*) bits")
+    pattern.sub(lambda match_obj : resolutions.append("%sx%s" % (match_obj.group(1), match_obj.group(2))), search_str)
 
     return resolutions
 
@@ -279,8 +286,7 @@ def write_sorted_menu_entry(ment_entry_list):
         boot_grub_cfg.seek(0)
         boot_grub_cfg.truncate(0)
         boot_grub_cfg.write(boot_grub_cfg_str)
-
-
+        
 if __name__ == "__main__":
     # print is_setting_item_exists("GRUB_TIMEOUT")
     # print is_setting_item_exists("GRUB_TIMEOUT_T")
@@ -289,10 +295,10 @@ if __name__ == "__main__":
     # set_setting_item("GRUB_TIMEOUT", 50)
     # set_setting_item("GRUB_TIMEOUT_CUSTOMIZE", 20)
 
-    # print get_proper_resolutions()
-    for entry in find_all_menu_entry():
-        print "entry_name:"
-        print entry["entry_name"]
-        print "entry_content"
-        print entry["entry_content"]
+    print get_proper_resolutions()
+    # for entry in find_all_menu_entry():
+    #     print "entry_name:"
+    #     print entry["entry_name"]
+    #     print "entry_content"
+    #     print entry["entry_content"]
     # write_sorted_menu_entry([])

@@ -28,6 +28,7 @@ from theme import app_theme
 
 import gtk
 from constant import *
+from foot_box import FootBox
 from menu_entry import MenuEntry
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.line import HSeparator
@@ -38,13 +39,14 @@ from dtk.ui.combo import ComboBox
 from dtk.ui.entry import InputEntry
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.treeview import TreeView
+from dtk.ui.dialog import OpenFileDialog
 from module_frame import ModuleFrame
 from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo
 
 from nls import _
 from core import core_api
-from color_button import ColorButton, DEFAULT_COLOR_LIST
-from grub_setting_utils import GrubSettingsApi
+from color_button import ColorButton, DEFAULT_COLOR_LIST, color_to_name
+from grub_setting_utils import GrubSettingsApi, validate_number, validate_image
 
 ALIGN_SPACING = 10
 SUB_TITLE_SPACING = 175
@@ -78,6 +80,7 @@ class GrubSettings(object):
         self.default_delay_hbox = gtk.HBox()
         self.default_delay_label = self.__setup_label(_("Default delay:"))
         self.default_delay_input = self.__setup_entry(self.setting_api.get_default_delay())
+        self.default_delay_input.entry.connect("changed", self.__input_content_changed)
         self.__widget_pack_start(self.default_delay_hbox, [self.default_delay_label, self.default_delay_input], WIDGET_SPACING)
         self.default_delay_align = self.__setup_align()
         self.default_delay_align.add(self.default_delay_hbox)
@@ -86,12 +89,11 @@ class GrubSettings(object):
         self.customize_resolution_active = self.setting_api.is_resolution_active()
         self.customize_resolution_label = self.__setup_label(_("Customize resolution:"))
         self.customize_resolution_combo = self.__setup_combo(RESOLUTIONS)
-        self.customize_resolution_combo.set_sensitive(self.customize_resolution_active)
-        self.customize_resolution_check = self.__setup_checkbutton(_("Open"))
-        self.customize_resolution_check.set_active(self.customize_resolution_active)
+        # self.customize_resolution_combo.set_sensitive(self.customize_resolution_active)
+        # self.customize_resolution_check = self.__setup_checkbutton(_("Open"))
+        # self.customize_resolution_check.set_active(self.customize_resolution_active)
         self.__widget_pack_start(self.customize_resolution_hbox, [self.customize_resolution_label,
-                                                                  self.customize_resolution_combo,
-                                                                  self.customize_resolution_check], WIDGET_SPACING)
+                                                                  self.customize_resolution_combo], WIDGET_SPACING)
         self.customize_resolution_align = self.__setup_align()
         self.customize_resolution_align.add(self.customize_resolution_hbox)
 
@@ -154,6 +156,7 @@ class GrubSettings(object):
             app_theme.get_pixbuf("entry/search_hover.png"),
             app_theme.get_pixbuf("entry/search_press.png")
             )
+        find_image_button.connect("clicked", self.__on_find_image_file)
         self.background_img_hbox = gtk.HBox()
         self.background_img_label = self.__setup_label(_("Background image:"))
         self.background_img_entry = self.__setup_entry(self.setting_api.get_background_image(), find_image_button)
@@ -193,21 +196,61 @@ class GrubSettings(object):
                                                   self.list_title_align,
                                                   self.menu_align])
         self.scrolled_window = ScrolledWindow()
+        self.scrolled_window.set_size_request(-1, 420)
         self.scrolled_window.add_child(self.main_vbox)
-        self.module_frame.add(self.scrolled_window)
+        
+        # FootBox
+        self.foot_box_align = self.__setup_align()
+        self.foot_box = gtk.HBox(spacing = WIDGET_SPACING)
+        self.foot_box_align.connect("expose-event", self.__foot_box_expose)
+        self.notice_label = Label("", text_x_align = ALIGN_START, label_width=480)
+        self.reset_button = self.__setup_button(_("Reset"))
+        self.reset_button.connect("clicked", lambda : True)
+        self.apply_button = self.__setup_button(_("Apply"))        
+        self.apply_button.connect("clicked", self.__on_apply)
+        self.__widget_pack_start(self.foot_box,
+                [self.notice_label,
+                 self.reset_button,
+                 self.apply_button
+                ])
+        self.foot_box_align.add(self.foot_box)
+        
+        self.bigger_main_vbox = gtk.VBox()
+        self.__widget_pack_start(self.bigger_main_vbox, [self.scrolled_window, 
+                                                         self.foot_box_align])
+        self.module_frame.add(self.bigger_main_vbox)
 
-        self.__setup_signals()
-
-        self.__send_message("status", ("desktop", ""))
+        # self.__setup_signals()
 
     def __color_button_color_selected(self, gobj, color_string, button_name):
         print "set " + button_name + " to " + color_string
-
+        
+    def __input_content_changed(self, widget, text):
+        print "input changed", text
+        
     def __setup_signals(self):
         self.color_normal_fg_button.connect("color-select", self.__color_button_color_selected, "normal_fg")
         self.color_normal_bg_button.connect("color-select", self.__color_button_color_selected, "normal_bg")
         self.color_highlight_fg_button.connect("color-select", self.__color_button_color_selected, "highlight_fg")
         self.color_highlight_bg_button.connect("color-select", self.__color_button_color_selected, "highlight_bg")
+        
+    def __on_find_image_file(self, widget):
+        image_file = []
+        OpenFileDialog(_("Choose background image"), 
+                       self.module_frame.get_parent(), 
+                       lambda file_name : image_file.append(file_name))
+        self.background_img_entry.set_text(image_file[0])
+        
+    def __on_apply(self, widget):
+        if validate_number(self.default_delay_input.get_text()):
+            self.setting_api.set_default_delay(self.default_delay_input.get_text())
+        self.setting_api.set_resolution(self.customize_resolution_combo.get_current_item())
+        self.setting_api.set_item_color(color_to_name(self.color_normal_fg_button.get_color()), 
+                                        color_to_name(self.color_normal_bg_button.get_color()))
+        self.setting_api.set_item_color(color_to_name(self.color_highlight_fg_button.get_color()),
+                                        color_to_name(self.color_highlight_bg_button.get_color()))
+        if validate_image(self.background_img_entry.get_text()):
+            self.setting_api.set_background_image(self.background_img_entry.get_text())
 
     def __setup_menu_entry(self):
         menu_entries = [MenuEntry("Hello"), MenuEntry("World")]
@@ -224,7 +267,9 @@ class GrubSettings(object):
         return CheckButton(label_text, padding_x)
 
     def __setup_button(self, label):
-        return Button(label)
+        button = Button(label)
+        button.set_size_request(100, 24)
+        return button
 
     def __setup_label(self, text="", text_width = 200, text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
         return Label(text, None, text_size, align, text_width, enable_double_click=False)
@@ -301,6 +346,20 @@ class GrubSettings(object):
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
+        
+    def __foot_box_expose(self, widget, event):
+        cr = widget.window.cairo_create()
+        x, y, w, h = widget.allocation
+        
+        cr.set_source_rgb(1, 1, 1)
+        cr.rectangle(x, y, w, h)
+        cr.fill()
+        
+        with cairo_disable_antialias(cr):
+            cr.set_source_rgb(*color_hex_to_cairo("#AEAEAE"))            
+            cr.move_to(x, y)
+            cr.line_to(x + w, y)
+            cr.stroke()
 
     def __menu_align_expose(self, widget, event):
         cr = widget.window.cairo_create()
