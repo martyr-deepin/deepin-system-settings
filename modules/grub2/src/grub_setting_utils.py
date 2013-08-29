@@ -31,166 +31,145 @@ BOOT_GRUB_CFG = "/boot/grub/grub.cfg"
 
 class GrubSettingsApi(object):
     def __init__(self):
-        self.uuid = uuid4()
+        self.uuid = str(uuid4())
         self.default_grub_path = "/tmp/%s-grub" % self.uuid
         self.grub_cfg_path = "/tmp/%s-grub.cfg" % self.uuid
         shutil.copy(ETC_DEFAULT_GRUB, self.default_grub_path)
-        shutil.copy(BOOT_GRUB_CFG, self.grub_cfg_path)
-        
+        with open(self.default_grub_path) as file_obj:
+            self.default_grub_content = file_obj.readlines()
+
     def is_item_active(self, item_name):
-        return is_setting_item_exists(self.default_grub_path, item_name, True)[0]
-        
+        return self.is_setting_item_exists(item_name, True)[0]
+
     def set_default_delay(self, delay_time):
-        set_setting_item(self.default_grub_path, "GRUB_TIMEOUT", delay_time)
+        self.set_setting_item("GRUB_TIMEOUT", delay_time)
 
     def get_default_delay(self):
-        return get_setting_item_value(self.default_grub_path, "GRUB_TIMEOUT", "0")
-    
+        return self.get_setting_item_value("GRUB_TIMEOUT", "0")
+
     def is_resolution_active(self):
         return self.is_item_active("GRUB_GFXMODE")
-    
+
     def set_resolution(self, resolution):
         '''
         Set resolution.
         '''
-        set_setting_item(self.default_grub_path, "GRUB_GFXMODE", resolution)
-    
+        self.set_setting_item("GRUB_GFXMODE", resolution)
+
     def get_resolution(self):
-        return get_setting_item_value(self.default_grub_path, "GRUB_GFXMODE", "")
-    
+        return self.get_setting_item_value("GRUB_GFXMODE", "")
+
+    def disable_customize_resolution(self):
+        self.remove_item("GRUB_GFXMODE")
+
+    def is_background_image_active(self):
+        return self.is_item_active("GRUB_MENU_PICTURE")
+        
     def set_background_image(self, valid_img_file):
         """
         Set grub background
         """
-        set_setting_item(self.default_grub_path, "GRUB_MENU_PICTURE", valid_img_file)
-        
+        self.set_setting_item("GRUB_MENU_PICTURE", valid_img_file)
+
     def get_background_image(self):
-        return get_setting_item_value(self.default_grub_path, "GRUB_MENU_PICTURE", "None")
+        return self.get_setting_item_value("GRUB_MENU_PICTURE", "None")
     
+    def disable_background_image(self):
+        self.remove_item("GRUB_MENU_PICTURE")
+
     def set_item_color(self, color_fg, color_bg, is_highlight_item=False):
         '''
         Set the color of grub items
         '''
         if is_highlight_item:
-            set_setting_item(self.default_grub_path, "GRUB_COLOR_HIGHLIGHT", "%s/%s" % (color_fg, color_bg))
+            self.set_setting_item("GRUB_COLOR_HIGHLIGHT", "%s/%s" % (color_fg, color_bg))
         else:
-            set_setting_item(self.default_grub_path, "GRUB_COLOR_NORMAL", "%s/%s" % (color_fg, color_bg))
-            
+            self.set_setting_item("GRUB_COLOR_NORMAL", "%s/%s" % (color_fg, color_bg))
+
     def get_item_color(self, is_highlight_item=False):
         if is_highlight_item:
-            return get_setting_item_value(self.default_grub_path, "GRUB_COLOR_HIGHLIGHT", "")
+            return self.get_setting_item_value("GRUB_COLOR_HIGHLIGHT", "white/white")
         else:
-            return get_setting_item_value(self.default_grub_path, "GRUB_COLOR_NORMAL", "")
-    
+            return self.get_setting_item_value("GRUB_COLOR_NORMAL", "white/white")
+
     def set_font(self, font_size, font_file):
         run_command("grub-mkfont -s %s -o /boot/grub/unicode.pf2 %s" % (font_size, font_file))
-        set_setting_item("GRUB_FONT", "/boot/grub/unicode.pf2")
-    
-    def reset_all_setttings(self):
+        self.set_setting_item("GRUB_FONT", "/boot/grub/unicode.pf2")
+
+    def reset_all_settings(self):
         self.uuid = uuid4()
         self.default_grub_path = "/tmp/%s-grub" % self.uuid
         self.grub_cfg_path = "/tmp/%s-grub.cfg" % self.uuid
         shutil.copy(ETC_DEFAULT_GRUB, self.default_grub_path)
         shutil.copy(BOOT_GRUB_CFG, self.grub_cfg_path)
-        # set_setting_item("GRUB_TIMEOUT", "10")
-        # remove_item("GRUB_GFXMODE")
-        # remove_item("GRUB_MENU_PICTURE")
-        # remove_item("GRUB_COLOR_HIGHLIGHT")
-        # remove_item("GRUB_COLOR_NORMAL")
-        # remove_item("GRUB_FONT")
-    
-        
-########################################################
-# util functions for editting the /etc/default/grub file
-########################################################
-def comment_line(line):
-    '''
-    comment line and clean redundant #s in the line
-    '''
-    if line.startswith("#"):
-        line = uncomment_line(line)
-        line = "#" + line
-    else:
-        line = "#" + line
 
-    return line
+    def __comment_line(self, line):
+        '''
+        comment line and clean redundant #s in the line
+        '''
+        if line.startswith("#"):
+            line = self.__uncomment_line(line)
+            line = "#" + line
+        else:
+            line = "#" + line
 
-def uncomment_line(line):
-    if line.startswith("#"):
-        line = line.strip("#")
+        return line
 
-    return line
+    def __uncomment_line(self, line):
+        if line.startswith("#"):
+            line = line.strip("#")
 
+        return line
 
-def new_setting_item(file_path, item_name, item_value):
-    '''
-    make new item if item item_name doesn't exists.
-    '''
-    etc_default_grub = open(file_path, "r+")
-    content = etc_default_grub.readlines()
-    new_line = "export %s=\"%s\"\n" % (item_name, item_value)
-    content.append(new_line)
-    etc_default_grub.seek(0)
-    etc_default_grub.truncate(0)
-    for line in content:
-        etc_default_grub.write(line)
-    etc_default_grub.close()
+    def __write_to_file(self, file_path, lines):
+        with open(file_path, "w") as file_obj:
+            for line in lines:
+                file_obj.write(line)
 
+    def new_setting_item(self, item_name, item_value):
+        '''
+        make new item if item item_name doesn't exists.
+        '''
+        new_line = "export %s=\"%s\"\n" % (item_name, item_value)
+        self.default_grub_content.append(new_line)
+        self.__write_to_file(self.default_grub_path, self.default_grub_content)
 
-def update_setting_item(file_path, item_name, item_value, line_index):
-    '''
-    update the value of item item_name if item exists.
-    '''
-    etc_default_grub = open(file_path, "r+")
-    content = etc_default_grub.readlines()
+    def update_setting_item(self, item_name, item_value, line_index):
+        '''
+        update the value of item item_name if item exists.
+        '''
+        the_line = self.default_grub_content[line_index]
+        if the_line.startswith("#"):
+            the_line = self.__uncomment_line(the_line)
+        the_line = "%s=\"%s\"\n" % (the_line.split("=")[0], item_value)
+        self.default_grub_content[line_index] = the_line
+        self.__write_to_file(self.default_grub_path, self.default_grub_content)
 
+    def set_setting_item(self, item_name, item_value):
+        '''
+        convenient function for setting item values(doesn't care if item_name exists).
+        '''
+        is_exists, line_index = self.is_setting_item_exists(item_name)
 
-    the_line = content[line_index]
-    if the_line.startswith("#"):
-        the_line = uncomment_line(the_line)
-    the_line = "%s=\"%s\"\n" % (the_line.split("=")[0], item_value)
-    content[line_index] = the_line
+        if is_exists:
+            self.update_setting_item(item_name, item_value, line_index)
+        else:
+            self.new_setting_item(item_name, item_value)
 
-    etc_default_grub.seek(0)
-    etc_default_grub.truncate(0)
-    for line in content:
-        etc_default_grub.write(line)
-    etc_default_grub.close()
+    def remove_item(self, item_name):
+        '''
+        if item exists, comment the line the item located.
+        '''
+        is_exists, line_index = self.is_setting_item_exists(item_name)
+        if is_exists:
+            self.default_grub_content[line_index] = self.__comment_line(self.default_grub_content[line_index])
+            self.__write_to_file(self.default_grub_path, self.default_grub_content)
 
-
-def set_setting_item(file_path, item_name, item_value):
-    '''
-    convenient function for setting item values(doesn't care if item_name exists).
-    '''
-    is_exists, line_index = is_setting_item_exists(file_path, item_name)
-
-    if is_exists:
-        update_setting_item(file_path, item_name, item_value, line_index)
-    else:
-        new_setting_item(file_path, item_name, item_value)
-
-def remove_item(file_path, item_name):
-    '''
-    if item exists, comment the line the item located.
-    '''
-    is_exists, line_index = is_setting_item_exists(file_path, item_name)
-    if is_exists:
-        etc_default_grub = open(file_path, "r+")
-        content = etc_default_grub.readlines()
-        content[line_index] = comment_line(content[line_index])
-        etc_default_grub.seek(0)
-        etc_default_grub.truncate(0)
-        for line in content:
-            etc_default_grub.write(line)
-        etc_default_grub.close()
-
-def is_setting_item_exists(file_path, item_name, check_active=False):
-    '''
-    return True and index of the line contains that item if the item exists, otherwise return False and -1.
-    '''
-    with open(file_path) as etc_default_grub:
-        lines = etc_default_grub.readlines()
-        for line_index, line in enumerate(lines):
+    def is_setting_item_exists(self, item_name, check_active=False):
+        '''
+        return True and index of the line contains that item if the item exists, otherwise return False and -1.
+        '''
+        for line_index, line in enumerate(self.default_grub_content):
             # in case that two variable has the same prefix, eg.GRUB_CMDLINE_LINUX_DEFAULT and GRUB_CMD_LINE_LINUX
             if line.find(item_name + "=") != -1:
                 if check_active:
@@ -200,14 +179,12 @@ def is_setting_item_exists(file_path, item_name, check_active=False):
                     return True, line_index
         return False, -1
 
-def get_setting_item_value(file_path, item_name, default=""):
-    is_exists, line_index= is_setting_item_exists(file_path, item_name)
-    if is_exists:
-        with open(file_path) as etc_default_grub:
-            content = etc_default_grub.readlines()
-            return content[line_index].split("=")[1].strip().strip("\"")
-    else:
-        return default
+    def get_setting_item_value(self, item_name, default=""):
+        is_exists, line_index= self.is_setting_item_exists(item_name)
+        if is_exists:
+            return self.default_grub_content[line_index].split("=")[1].strip().strip("\"")
+        else:
+            return default
 
 def validate_number(text):
     try:
@@ -215,7 +192,7 @@ def validate_number(text):
         return True
     except:
         return False
-    
+
 def validate_image(file_name):
     '''
     check wether file_name is an invalid image file
@@ -261,13 +238,19 @@ def find_all_menu_entry():
         boot_grub_cfg_str = join_all(boot_grub_cfg.readlines())
 
         # find entries
-        menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*)'.*{[\s\S]*?})", re.MULTILINE)
+        menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*?)'.*{[\s\S]*?})", re.MULTILINE)
         menuentry_pattern.sub(lambda match_obj : menu_entry_list.append((match_obj.groupdict())), boot_grub_cfg_str)
         # find submenu entries
-        menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*)'.*{[\s\S]*?})", re.MULTILINE)
+        menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*?)'.*{[\s\S]*?})", re.MULTILINE)
         menuentry_pattern.sub(lambda match_obj : menu_entry_list.append((match_obj.groupdict())), boot_grub_cfg_str)
 
     return menu_entry_list
+
+def rename_menu_entry(menu_entry, new_name):
+    menu_entry["entry_name"] = new_name
+    menu_entry["entry_content"] = re.sub("^menuentry '.*?'", "menuentry '%s'" % new_name, menu_entry["entry_content"])
+    menu_entry["entry_content"] = re.sub("^submenu '.*?'", "menuentry '%s'" % new_name, menu_entry["entry_content"])
+    return menu_entry
 
 def write_sorted_menu_entry(ment_entry_list):
     with open(BOOT_GRUB_CFG, "r+") as boot_grub_cfg:
@@ -286,7 +269,7 @@ def write_sorted_menu_entry(ment_entry_list):
         boot_grub_cfg.seek(0)
         boot_grub_cfg.truncate(0)
         boot_grub_cfg.write(boot_grub_cfg_str)
-        
+
 if __name__ == "__main__":
     # print is_setting_item_exists("GRUB_TIMEOUT")
     # print is_setting_item_exists("GRUB_TIMEOUT_T")
@@ -295,10 +278,18 @@ if __name__ == "__main__":
     # set_setting_item("GRUB_TIMEOUT", 50)
     # set_setting_item("GRUB_TIMEOUT_CUSTOMIZE", 20)
 
-    print get_proper_resolutions()
-    # for entry in find_all_menu_entry():
-    #     print "entry_name:"
-    #     print entry["entry_name"]
-    #     print "entry_content"
-    #     print entry["entry_content"]
+    # print get_proper_resolutions()
+    for index, entry in enumerate(find_all_menu_entry()):
+        if index == 0:
+            print "entry_name:"
+            print entry["entry_name"]
+            print "entry_content:"
+            print entry["entry_content"]
+
+            rename_menu_entry(entry, "new_name")
+            print "entry_name:"
+            print entry["entry_name"]
+            print "entry_content:"
+            print entry["entry_content"]
+
     # write_sorted_menu_entry([])

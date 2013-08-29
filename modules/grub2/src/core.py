@@ -30,6 +30,9 @@ class CoreApi(BusBase):
     def get_proper_resolutions(self):
         return self.dbus_method("getResolutions")
     
+    def update_grub(self, uuid):
+        return self.dbus_method("updateGrub", uuid)
+    
 core_api = CoreApi()
 
 if __name__ == "__main__":

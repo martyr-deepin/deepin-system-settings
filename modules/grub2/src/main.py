@@ -28,13 +28,12 @@ from theme import app_theme
 
 import gtk
 from constant import *
-from foot_box import FootBox
 from menu_entry import MenuEntry
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
 from dtk.ui.label import Label
-from dtk.ui.button import CheckButton, Button, ImageButton
+from dtk.ui.button import CheckButton, Button
 from dtk.ui.combo import ComboBox
 from dtk.ui.entry import InputEntry
 from dtk.ui.scrolled_window import ScrolledWindow
@@ -47,11 +46,27 @@ from nls import _
 from core import core_api
 from color_button import ColorButton, DEFAULT_COLOR_LIST, color_to_name
 from grub_setting_utils import GrubSettingsApi, validate_number, validate_image
+from grub_setting_utils import find_all_menu_entry
 
+def process_resolutions(resolutions):
+    result = []
+    
+    for index, value in enumerate(resolutions):
+        result.append((str(value), index + 1))
+    result.insert(0, (_("Defaulf"), 0))
+    
+    return result
+
+def get_index_by_value(combo_items, string):
+    for value, index in combo_items:
+        if value == string:
+            return index
+    return 0
+        
 ALIGN_SPACING = 10
 SUB_TITLE_SPACING = 175
 
-RESOLUTIONS = [(value, index) for index, value in enumerate(core_api.get_proper_resolutions())]
+RESOLUTIONS = process_resolutions(core_api.get_proper_resolutions())
 
 class GrubSettings(object):
     def __init__(self, module_frame):
@@ -86,12 +101,11 @@ class GrubSettings(object):
         self.default_delay_align.add(self.default_delay_hbox)
 
         self.customize_resolution_hbox = gtk.HBox()
-        self.customize_resolution_active = self.setting_api.is_resolution_active()
         self.customize_resolution_label = self.__setup_label(_("Customize resolution:"))
         self.customize_resolution_combo = self.__setup_combo(RESOLUTIONS)
-        # self.customize_resolution_combo.set_sensitive(self.customize_resolution_active)
-        # self.customize_resolution_check = self.__setup_checkbutton(_("Open"))
-        # self.customize_resolution_check.set_active(self.customize_resolution_active)
+        if self.setting_api.is_resolution_active():
+            self.customize_resolution_combo.set_select_index(get_index_by_value(RESOLUTIONS, 
+                                                                                self.setting_api.get_resolution()))
         self.__widget_pack_start(self.customize_resolution_hbox, [self.customize_resolution_label,
                                                                   self.customize_resolution_combo], WIDGET_SPACING)
         self.customize_resolution_align = self.__setup_align()
@@ -151,21 +165,24 @@ class GrubSettings(object):
 
         self.color_highlight_align.add(self.color_highlight_hbox)
         
-        find_image_button = ImageButton(
-            app_theme.get_pixbuf("entry/search_normal.png"),
-            app_theme.get_pixbuf("entry/search_hover.png"),
-            app_theme.get_pixbuf("entry/search_press.png")
-            )
-        find_image_button.connect("clicked", self.__on_find_image_file)
         self.background_img_hbox = gtk.HBox()
         self.background_img_label = self.__setup_label(_("Background image:"))
-        self.background_img_entry = self.__setup_entry(self.setting_api.get_background_image(), find_image_button)
+        if self.setting_api.is_background_image_active():
+            self.background_img_entry = self.__setup_entry(self.setting_api.get_background_image())
+            self.background_img_pixbuf = gtk.gdk.pixbuf_new_from_file(self.setting_api.get_background_image())
+        else:
+            self.background_img_entry = self.__setup_entry("")            
+            self.background_img_pixbuf = None
         self.background_img_entry.set_size(300, WIDGET_HEIGHT)
+        self.find_image_button = Button(_("Choose file"))
+        self.find_image_button.set_size_request(100, WIDGET_HEIGHT)
+        self.find_image_button.connect("clicked", self.__on_find_image_file)
         self.background_img_align = self.__setup_align()
         self.background_img_align.set_padding(20, 0, 
                                               TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING, 0)
         self.__widget_pack_start(self.background_img_hbox, [self.background_img_label,
                                                             self.background_img_entry], WIDGET_SPACING)
+        self.background_img_hbox.pack_start(self.find_image_button)
         self.background_img_align.add(self.background_img_hbox)
 
         self.appearance_vbox = gtk.VBox()
@@ -220,10 +237,19 @@ class GrubSettings(object):
                                                          self.foot_box_align])
         self.module_frame.add(self.bigger_main_vbox)
 
-        # self.__setup_signals()
+        self.__setup_signals()
 
     def __color_button_color_selected(self, gobj, color_string, button_name):
-        print "set " + button_name + " to " + color_string
+        if button_name == "normal_fg":
+            map(lambda x : x.set_normal_fg(color_string), self.menu_entries)
+        if button_name == "normal_bg":
+            map(lambda x : x.set_normal_bg(color_string), self.menu_entries)
+        if button_name == "highlight_fg":
+            map(lambda x : x.set_highlight_fg(color_string), self.menu_entries)
+        if button_name == "highlight_bg":
+            map(lambda x : x.set_highlight_bg(color_string), self.menu_entries)
+            
+        map(lambda x : x.emit_redraw_request(), self.menu_entries)
         
     def __input_content_changed(self, widget, text):
         print "input changed", text
@@ -239,29 +265,57 @@ class GrubSettings(object):
         OpenFileDialog(_("Choose background image"), 
                        self.module_frame.get_parent(), 
                        lambda file_name : image_file.append(file_name))
-        self.background_img_entry.set_text(image_file[0])
+        if len(image_file) != 0:
+            self.background_img_entry.set_text(image_file[0])
+            try:
+                self.background_img_pixbuf = gtk.gdk.pixbuf_new_from_file(image_file[0])
+                self._menu.queue_draw()
+            except:
+                self._menu.queue_draw()
         
     def __on_apply(self, widget):
         if validate_number(self.default_delay_input.get_text()):
             self.setting_api.set_default_delay(self.default_delay_input.get_text())
-        self.setting_api.set_resolution(self.customize_resolution_combo.get_current_item())
+        if self.customize_resolution_combo.get_select_index() == 0:
+            self.setting_api.disable_customize_resolution()
+        else:
+            self.setting_api.set_resolution(str(self.customize_resolution_combo.get_current_item()[0]))
         self.setting_api.set_item_color(color_to_name(self.color_normal_fg_button.get_color()), 
                                         color_to_name(self.color_normal_bg_button.get_color()))
         self.setting_api.set_item_color(color_to_name(self.color_highlight_fg_button.get_color()),
-                                        color_to_name(self.color_highlight_bg_button.get_color()))
+                                        color_to_name(self.color_highlight_bg_button.get_color()), True)
         if validate_image(self.background_img_entry.get_text()):
             self.setting_api.set_background_image(self.background_img_entry.get_text())
+        else:
+            self.setting_api.disable_background_image()
+            
+        core_api.update_grub(self.setting_api.uuid)
 
     def __setup_menu_entry(self):
-        menu_entries = [MenuEntry("Hello"), MenuEntry("World")]
-        self._menu = TreeView(menu_entries, expand_column=0)
-        self._menu.set_highlight_item(menu_entries[0])
+        self.menu_entries = [MenuEntry(entry) for entry in find_all_menu_entry()]
+        self._menu = TreeView(self.menu_entries, expand_column=0)
+        self._menu.draw_mask = self.__menu_entry_draw_mask
+        self._menu.set_highlight_item(self.menu_entries[0])
         self._menu_align = gtk.Alignment(1, 1, 1, 1)
         self._menu_align.set_padding(5, 5, 5, 5)
         self._menu_align.add(self._menu)
         self._menu_align.connect("expose-event", self.__menu_align_expose)
 
         return self._menu_align
+    
+    def __menu_entry_draw_mask(self, cr, x, y, w, h):
+        if self.background_img_pixbuf:
+            try:
+                cr.set_source_pixbuf(self.background_img_pixbuf, x, y)
+                cr.paint()
+            except Exception, e:
+                cr.set_source_rgb(0, 0, 0)
+                cr.rectangle(x, y, w, h)
+                cr.fill()
+        else:
+            cr.set_source_rgb(0, 0, 0)
+            cr.rectangle(x, y, w, h)
+            cr.fill()
 
     def __setup_checkbutton(self, label_text, padding_x=0):
         return CheckButton(label_text, padding_x)

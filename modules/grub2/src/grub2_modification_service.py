@@ -20,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import shutil
 import gobject
 import dbus
 import dbus.service
@@ -66,9 +67,19 @@ class Grub2Service(dbus.service.Object):
     @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "", out_signature = "as", 
                          sender_keyword = 'sender', connection_keyword = 'conn')    
     def getResolutions(self, sender = None, conn = None):
-        # if not authWithPolicyKit(sender, conn, "com.deepin.grub2.get-proper-resolutions"):
-            # raise dbus.DBusException("Not authorized with polkit.")
         return get_proper_resolutions()
+    
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "s", out_signature = "b", 
+                         sender_keyword = 'sender', connection_keyword = 'conn')    
+    def updateGrub(self, uid, sender = None, conn = None):
+        if not authWithPolicyKit(sender, conn, "com.deepin.grub2.update-grub"):
+            raise dbus.DBusException("Not authorized with polkit.")
+        try:
+            shutil.copy("/tmp/%s-grub" % uid, "/etc/default/grub")
+            return True
+        except Exception, e:
+            print e
+            return False
     
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)

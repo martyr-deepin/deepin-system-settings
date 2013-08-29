@@ -38,13 +38,14 @@ def draw_single_mask(cr, x, y, width, height, color_name):
 
 class MenuEntry(TreeItem):
 
-    def __init__(self, title, is_parent=False):
+    def __init__(self, menu_entry):
         '''
         init docs
         '''
         TreeItem.__init__(self)
 
-        self._title = title
+        self.menu_entry = menu_entry
+        self._title = menu_entry["entry_name"]
 
         self.item_height = 26
         self.item_width = 200
@@ -54,15 +55,12 @@ class MenuEntry(TreeItem):
         self.is_hover = False
         self.is_select = False
         self.is_highlight = False
-
-        self.is_parent = is_parent
-
-        if is_parent:
-            self.row_index = 0
-        else:
-            self.row_index = 1
-
-        self.child_offset = 10
+        self.row_index = 0
+        
+        self.highlight_fg = None
+        self.highlight_bg = None
+        self.normal_fg = None
+        self.normal_bg = None
 
     @property
     def title(self):
@@ -71,6 +69,18 @@ class MenuEntry(TreeItem):
     @title.setter
     def title(self, title):
         self._title = title
+        
+    def set_normal_fg(self, color):
+        self.normal_fg = color
+    
+    def set_normal_bg(self, color):
+        self.normal_bg = color
+        
+    def set_highlight_fg(self, color):
+        self.highlight_fg = color
+        
+    def set_highlight_bg(self, color):
+        self.highlight_bg = color
 
     def add_child_items(self, items):
         self.child_items = items
@@ -119,18 +129,24 @@ class MenuEntry(TreeItem):
         # Draw select background.
         rect.width -= 2
 
-        if not self.is_parent:
-            if self.is_highlight:
-                draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemSelect")
-            elif self.is_hover:
-                draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemHover")
-
-            if self.is_highlight:
-                text_color = "#FFFFFF"
+        if self.is_highlight:
+            if self.highlight_bg:
+                if not self.highlight_bg == "#000000":
+                    draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, self.highlight_bg)
             else:
-                text_color = "#000000"
+                draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, "globalItemSelect")
+            if self.highlight_fg:
+                text_color = self.highlight_fg
+            else:
+                text_color = "#FFFFFF"
         else:
-            text_color = "#000000"
+            if self.normal_bg:
+                if not self.normal_bg == "#000000":
+                    draw_single_mask(cr, rect.x, rect.y, rect.width, rect.height, self.normal_bg)
+            if self.normal_fg:
+                text_color = self.normal_fg
+            else:
+                text_color = "#FFFFFF"
 
         draw_text(cr, " " + self.title,
                   rect.x,
@@ -143,11 +159,11 @@ class MenuEntry(TreeItem):
 
     def hover(self, column, offset_x, offset_y):
         self.is_hover = True
-        self.emit_redraw_request()
+        # self.emit_redraw_request()
 
     def unhover(self, column, offset_x, offset_y):
         self.is_hover = False
-        self.emit_redraw_request()
+        # self.emit_redraw_request()
 
     def highlight(self):
         self.is_highlight = True
