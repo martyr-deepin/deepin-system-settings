@@ -176,7 +176,8 @@ class DBusService(dbus.service.Object):
             global previous_module_id
 
             if application:
-                if module_name != "" and previous_module_id != module_name:
+                if module_name != "" and (previous_module_id != module_name or 
+                                          content_page_info.get_active_module_id() == "main"):
                     action_bar.bread.remove_node_after_index(0)
                     call_module_by_name(module_name, module_dict, slider, content_page_info, "right", "")
 

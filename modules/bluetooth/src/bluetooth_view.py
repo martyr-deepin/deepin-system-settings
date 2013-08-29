@@ -42,6 +42,7 @@ from constant import *
 from nls import _
 from bt.device import Device, AudioSink, Headset
 from bt.utils import bluetooth_class_to_type, bluetooth_uuid_to_string
+from bt.utils import is_bluetooth_file_type, is_bluetooth_audio_type
 
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
@@ -124,6 +125,7 @@ class DeviceItem(gobject.GObject):
         self.is_paired = is_paired
         self.module_frame = module_frame
 
+        self.device.connect("property-changed", self.__device_property_changed)
         self.pair_pixbuf = app_theme.get_pixbuf("bluetooth/pair.png")
         self.service_connected_pixbufs = (app_theme.get_pixbuf("bluetooth/check_box-2.png"),
                                           app_theme.get_pixbuf("bluetooth/check_box-3.png"),
@@ -136,6 +138,15 @@ class DeviceItem(gobject.GObject):
 
         self.highlight_fill_color = "#7db7f2"
         self.highlight_stroke_color = "#396497"
+        
+    def __device_property_changed(self, device, key, value):
+        if key == "Paired":
+            if bool(value):
+                self.is_paired = True
+                self.emit_redraw_request()
+            else:
+                self.is_paired = False
+                self.emit_redraw_request()
 
     def render(self, cr, rect):
         padding = 10
@@ -380,7 +391,10 @@ class DeviceItem(gobject.GObject):
         Handle double click event.
         '''
         if self.is_paired:
-            self.do_send_file()
+            if is_bluetooth_file_type(self.device):
+                self.do_send_file()
+            elif is_bluetooth_audio_type(self.device):
+                self.do_connect_audio_sink()
             return
 
         self.do_pair()
@@ -588,6 +602,7 @@ class BlueToothView(gtk.VBox):
 
     def __on_default_adapter_changed(self):
         self.set_sensitive(True)
+        self.display_device_entry.set_text(self.my_bluetooth.adapter.get_name())
 
     def __display_device_changed(self, widget, event):
         self.my_bluetooth.adapter.set_name(widget.get_text())

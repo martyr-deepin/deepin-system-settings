@@ -154,6 +154,7 @@ class TrayBluetoothPlugin(object):
         servicemanager.connect("service-stop", self.__on_bluetooth_service_stop)
         
     def __on_bluetooth_service_start(self, gobj, path):
+        print "service_start"
         self.tray_icon.set_visible(True)
         self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
                                         self.__on_default_adapter_changed)
@@ -161,21 +162,29 @@ class TrayBluetoothPlugin(object):
         
     def __on_bluetooth_service_stop(self, gobj, path):
         self.tray_icon.set_visible(False)
-
+        
     def __on_adapter_removed(self):
+        print "adapter removed"
         self.tray_icon.set_visible(False)
-
+        
     def __on_default_adapter_changed(self):
+        print "adapter changed"
         self.tray_icon.set_visible(True)
-        if not hasattr(self, "service_process"):
+        
+        if not self.my_bluetooth.adapter:
+            self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
+                                            self.__on_default_adapter_changed)
             self.__start_service()
         
     def __start_service(self):
         import subprocess
         
         if hasattr(self, "service_process"):
-            os.kill(self.service_process.pid, 9)
-            os.kill(self.service_process.pid + 1, 9)
+            try:
+                os.kill(self.service_process.pid, 9)
+                os.kill(self.service_process.pid + 1, 9)
+            except Exception, e:
+                print "DEBUG ", e
         self.service_process = subprocess.Popen("python %s/tray_bluetooth_service.py" % os.path.dirname(__file__), 
                                                 stderr=subprocess.STDOUT, shell=True)
 
