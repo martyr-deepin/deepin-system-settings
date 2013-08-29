@@ -29,10 +29,9 @@ msgid "Mount Failed"
 msgstr "掛載失敗"
 
 #: ../src/tray_mount_plugin.py:71
-msgid "mount '' error."
-msgstr "掛載 '' 齣錯。"
+msgid "Mount '%s' error."
+msgstr "掛載 '%s' 齣錯。"
 
 #: ../src/tray_mount_plugin.py:71
-msgid "umount '' error."
-msgstr "卸載 '' 齣錯。"
-
+msgid "Unmount '%s' error. Please unmount it in file manager"
+msgstr "卸載'%s'出錯，請到文件管理將它卸載。"

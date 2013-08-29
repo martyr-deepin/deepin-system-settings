@@ -62,20 +62,24 @@ class MountMedia(EjecterApp):
         try:
             if isinstance(source, gio.Volume):
                 summary = _("Mount Failed")
-                body = _("mount '%s' error.") % source.get_name()
+                body = _("Mount '%s' error.") % source.get_name()
                 result = source.mount_finish(res)
             else:
                 summary = _("Unmount Failed")
-                body = _("umount '%s' error.") % source.get_root().get_uri()
+                #body = _("Unmount '%s' error.") % source.get_root().get_uri()
+                body = _("Unmount '%s' error. Please unmount it in file manager") % source.get_root().get_uri()
                 result = source.unmount_finish(res)
         except:
             result = False
 
         if not result:
-            ntf = DbusNotify("deepin-system-settings", "/usr/share/icons/Deepin/apps/48/mountmanager.png")
-            ntf.set_summary(summary)
-            ntf.set_body(body)
-            ntf.notify()
+            try:
+                ntf = DbusNotify("deepin-system-settings", "/usr/share/icons/Deepin/apps/48/mountmanager.png")
+                ntf.set_summary(summary)
+                ntf.set_body(body)
+                ntf.notify()
+            except:
+                pass
 
     def set_menu_size(self, height):
         if self.size_check:
