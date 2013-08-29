@@ -40,16 +40,14 @@ msgstr "发现新的可移动设备“%s”"
 msgid "Mount Failed"
 msgstr "挂载失败"
 
-#: ../src/tray_mount_plugin.py:65
-#, python-format
-msgid "mount '%s' error."
-msgstr "挂载 '%s' 出错。"
-
 #: ../src/tray_mount_plugin.py:68
 msgid "Unmount Failed"
 msgstr "卸载失败"
 
-#: ../src/tray_mount_plugin.py:69
-#, python-format
-msgid "umount '%s' error."
-msgstr "卸载 '%s' 出错。"
+#: ../src/tray_mount_plugin.py:71
+msgid "Mount '%s' error."
+msgstr "挂载 '%s' 出错。"
+
+#: ../src/tray_mount_plugin.py:71
+msgid "Unmount '%s' error. Please unmount it in file manager"
+msgstr "卸载'%s'出错，请到文件管理将它卸载。"

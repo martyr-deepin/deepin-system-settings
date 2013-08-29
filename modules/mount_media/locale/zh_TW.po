@@ -39,16 +39,14 @@ msgstr "發現新的可移除裝置「%s」"
 msgid "Mount Failed"
 msgstr "掛載失敗"
 
-#: ../src/tray_mount_plugin.py:65
-#, fuzzy, python-format
-msgid "mount '%s' error."
-msgstr "掛載 '' 齣錯。"
-
 #: ../src/tray_mount_plugin.py:68
 msgid "Unmount Failed"
 msgstr "卸載失敗"
 
-#: ../src/tray_mount_plugin.py:69
-#, fuzzy, python-format
-msgid "umount '%s' error."
-msgstr "卸載 '' 齣錯。"
+#: ../src/tray_mount_plugin.py:71
+msgid "Mount '%s' error."
+msgstr "掛載 '%s' 齣錯。"
+
+#: ../src/tray_mount_plugin.py:71
+msgid "Unmount '%s' error. Please unmount it in file manager"
+msgstr "卸載'%s'出錯，請到文件管理將它卸載。"

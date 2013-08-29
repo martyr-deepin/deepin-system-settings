@@ -267,7 +267,7 @@ class Security(gtk.VBox):
         self.password_entry = PasswordEntry()
         self.show_key_check = CheckButton(_("Show password"), padding_x=0)
         self.show_key_check.connect("toggled", self.show_key_check_button_cb)
-        self.wep_index_spin = SpinBox(0, 0, 3, 1, self.ENTRY_WIDTH)
+        self.wep_index_spin = SpinBox(0, 1, 4, 1, self.ENTRY_WIDTH)
         self.auth_combo = ComboBox([
                                     (_("Shared Key"), "shared"),
                                     (_("Open System"), "open")],fixed_width=self.ENTRY_WIDTH)
@@ -404,7 +404,7 @@ class Security(gtk.VBox):
                 try:
                     index = self.setting.wep_tx_keyidx
                     auth = self.setting.auth_alg
-                    log.debug(auth)
+                    log.debug(auth, index)
                     self.auth_combo.set_select_index(["shared", "open"].index(auth))
                 except Exception, e:
                     log.error(e)
@@ -422,7 +422,7 @@ class Security(gtk.VBox):
                 #if init_key:
                 self.key_entry.entry.set_text(secret)
                 self.setting.set_wep_key(index, secret)
-                self.wep_index_spin.set_value(index)
+                self.wep_index_spin.set_value(index + 1)
                 self.auth_combo.set_select_index(["shared", "open"].index(auth))
         self.presave_index = self.security_combo.get_select_index()
         Dispatcher.request_redraw()
@@ -497,6 +497,7 @@ class Security(gtk.VBox):
         self.reset()
 
     def wep_index_spin_cb(self, widget, value):
+        value = value -1
         if isinstance(self.connection, NMRemoteConnection):
             try:
                 key = self.setting.get_wep_key(value)
