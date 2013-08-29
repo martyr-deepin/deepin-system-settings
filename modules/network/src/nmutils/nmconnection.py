@@ -104,8 +104,15 @@ class NMConnection(gobject.GObject):
         else:
             if not getattr(self, self.settings_info[setting_name][3]):
                 setattr(self, self.settings_info[setting_name][3], apply(self.settings_info[setting_name][0]))
+                self.try_add_to_settings_dict(setting_name)
 
             return getattr(self, self.settings_info[setting_name][3])    
+    
+    def try_add_to_settings_dict(self, setting_name):
+        ''' since we got sync problem when key doesnt exist in settings_dict, here's a workround that force create keys'''
+        if setting_name not in self.settings_dict.iterkeys():
+            self.settings_dict[setting_name] = getattr(self, self.settings_info[setting_name][3]).prop_dict
+
 
     def del_setting(self, setting_name):
         if setting_name not in self.settings_info.iterkeys():
