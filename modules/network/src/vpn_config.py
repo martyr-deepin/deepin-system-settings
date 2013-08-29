@@ -18,6 +18,7 @@ import gtk
 from nls import _
 import style
 from constants import CONTENT_FONT_SIZE
+from dss_log import log
 
 class VPNSetting(Settings):
 
@@ -634,6 +635,8 @@ class PPPConf(gtk.VBox):
         self.refuse_chap.set_active(refuse_chap == None)
 
         self.require_mppe_128.set_active(require_mppe_128 != None)
+        if self.require_mppe_128.get_active() or self.mppe_stateful.get_active():
+            self.require_mppe.set_active(True)
         self.mppe_stateful.set_active(mppe_stateful != None)
         self.nobsdcomp.set_active(nobsdcomp == None)
         self.nodeflate.set_active(nodeflate == None)
@@ -755,6 +758,12 @@ class PPPConf(gtk.VBox):
                 self.vpn_setting.set_data_item(key, "yes")
             else:
                 self.vpn_setting.delete_data_item(key)
+        elif key.startswith("require") or key.startswith("mppe"):
+            if active:
+                self.vpn_setting.set_data_item(key, "yes")
+            else:
+                self.vpn_setting.delete_data_item(key)
+            
 
         if self.connection.check_setting_finish():
             Dispatcher.set_button("save", True)
@@ -774,8 +783,8 @@ class PPPConf(gtk.VBox):
             #self.set_group_active(True)
             self.set_group_sensitive(True)
             self.vpn_setting.delete_data_item(key)
-            self.mppe_group_set_sensitive(False)
             self.mppe_group_set_active(False)
+            self.mppe_group_set_sensitive(False)
             self.init_ui()
         
         if self.init_lock:
@@ -797,6 +806,7 @@ class PPPConf(gtk.VBox):
         self.mppe_stateful.set_sensitive(boolean)
 
     def mppe_group_set_active(self, boolean):
+        log.debug()
         self.require_mppe_128.set_active(boolean)
         self.mppe_stateful.set_active(boolean)
 
