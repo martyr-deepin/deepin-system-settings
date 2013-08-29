@@ -21,6 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from split_word import split_word
 from dtk.ui.utils import (color_hex_to_cairo, set_clickable_cursor)
 from deepin_utils.ipc import is_dbus_name_exists
 from deepin_utils.file import get_parent_dir, remove_directory
@@ -32,18 +33,14 @@ import os
 import gobject
 import gtk
 import dbus
-'''
-TODO: production level do not need split word any more
-'''
-#from split_word import init_jieba, split_word
+
+from dtk.ui.locales import get_locale_code
 from theme import app_theme
 from constant import *
 import xappy
 import threading as td
 
 sys.path.append(os.path.join(get_parent_dir(__file__, 2), "modules"))
-
-SEARCH_DB_DIR = os.path.join(get_parent_dir(__file__, 2), "search_db")
 
 class BuildIndexThread(td.Thread):
     def __init__(self, ThisPtr):
@@ -55,26 +52,28 @@ class BuildIndexThread(td.Thread):
         try:
             self.ThisPtr.build_index()
         except Exception, e:
-            print "class BuildIndexThread got error" % e
+            print "class BuildIndexThread got error %s" % e
 
 class KeywordSearch:
     def __init__(self, keywords):
+        loc = get_locale_code("deepin-system-settings", get_parent_dir(__file__, 2) + "/locale")
+        print loc
+        if loc == "zh_HK":      # No translation and search for HongKong
+            loc = "zh_TW"
+        self.search_db_dir = os.path.join(get_parent_dir(__file__, 2), "search_db/%s" % loc)
         self.__xappy = None
 
         self.__keywords = keywords
 
-        '''
-        TODO: production level do not need to init jieba any more
-        '''
-        #init_jieba()
     '''
     TODO: production level no need to build index any more
     '''
     def build_index(self, remove_old=True):
+        
         if remove_old:
-            remove_directory(SEARCH_DB_DIR)
-
-        self.__xappy = xappy.IndexerConnection(SEARCH_DB_DIR)
+            remove_directory(self.search_db_dir)
+            
+        self.__xappy = xappy.IndexerConnection(self.search_db_dir)
 
         self.__xappy.add_field_action("module_uid", 
                                       xappy.FieldActions.STORE_CONTENT)
@@ -95,16 +94,16 @@ class KeywordSearch:
                 self.__xappy.add(module_doc)
 
         self.__xappy.close()
-    
+        
     def query(self, keyword):
-        return self.search_query([x for x in keyword.split(' ') if x.strip()])
         '''
         TODO: production level do not need to split word any more
         '''
-        #return self.search_query(list(split_word(keyword, True)))
+        return self.search_query([x for x in keyword.split(' ') if x.strip()])
+        # return self.search_query(list(split_word(keyword, True)))    
 
     def search_query(self, keywords):
-        sconn = xappy.SearchConnection(SEARCH_DB_DIR)
+        sconn = xappy.SearchConnection(self.search_db_dir)
 
         search = ' '.join(keywords)
         q = sconn.query_parse(search, default_op=sconn.OP_AND)
@@ -158,12 +157,6 @@ class SearchPage(gtk.VBox):
                         continue
 
         self.__keyword_search = KeywordSearch(self.__keywords)
-        '''
-        TODO: build index might be a heavey operation depend on keywords count
-              production level do not need to build index any more
-        '''
-        #BuildIndexThread(self).start()
-
         self.scrolled_window.add_child(self.result_align)
         self.pack_start(self.scrolled_window)
 
@@ -266,8 +259,5 @@ class SearchPage(gtk.VBox):
                     TODO: if remove widgets from self, it is better to show_all
                     '''
                     self.show_all()
-
-    def build_index(self):
-        self.__keyword_search.build_index()
 
 gobject.type_register(SearchPage)
