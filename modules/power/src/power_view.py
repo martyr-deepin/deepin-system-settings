@@ -166,7 +166,7 @@ class PowerView(gtk.VBox):
                                                         TITLE_FONT_SIZE, 
                                                         ALIGN_START, 
                                                         text_color=app_theme.get_color("globalTitleForeground"))
-        self.wakeup_password_label.set_sensitive(self.power_manager.get_wakeup_password())
+        #self.wakeup_password_label.set_sensitive(self.power_manager.get_wakeup_password())
         self.wakeup_password_toggle_align = self.__setup_align(padding_top = 2,
                                                                padding_left = 88)
         self.wakeup_password_toggle = self.__setup_toggle()
@@ -189,7 +189,7 @@ class PowerView(gtk.VBox):
                                                             TITLE_FONT_SIZE, 
                                                             ALIGN_START, 
                                                             text_color=app_theme.get_color("globalTitleForeground"))
-        self.tray_battery_status_label.set_sensitive(self.power_manager.get_tray_battery_status())
+        #self.tray_battery_status_label.set_sensitive(self.power_manager.get_tray_battery_status())
         self.tray_battery_status_toggle_align = self.__setup_align(padding_top = 2, 
                                                                    padding_left = 88)
         self.tray_battery_status_toggle = self.__setup_toggle()
@@ -407,7 +407,7 @@ class PowerView(gtk.VBox):
             else:
                 self.__send_message("status", ("power", _("The system will not requrie a password after sleep")))
             self.power_manager.set_wakeup_password(widget.get_active())
-            self.wakeup_password_label.set_sensitive(widget.get_active())
+            #self.wakeup_password_label.set_sensitive(widget.get_active())
             return
 
         if object == "tray_battery_status":
