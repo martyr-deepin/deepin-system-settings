@@ -22,6 +22,7 @@
 
 import sys
 import os
+import string
 from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
@@ -32,10 +33,12 @@ from menu_entry import MenuEntry
 from dtk.ui.constant import ALIGN_START, ALIGN_END
 from dtk.ui.line import HSeparator
 from dtk.ui.box import ImageBox
+from dtk.ui.menu import Menu
 from dtk.ui.label import Label
 from dtk.ui.button import CheckButton, Button
 from dtk.ui.combo import ComboBox
 from dtk.ui.entry import InputEntry
+from dtk.ui.dialog import InputDialog
 from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.treeview import TreeView
 from dtk.ui.dialog import OpenFileDialog
@@ -201,7 +204,11 @@ class GrubSettings(object):
             TEXT_WINDOW_LEFT_PADDING)
 
         self.menu_hbox = gtk.HBox()
-        self.menu_hbox.set_size_request(650, -1)
+        self.menu_hbox.set_size_request(650, 150)
+        # self.menu_align = self.__setup_menu_entry()
+        # self.menu_button_vbox = self.__setup_menu_buttons()
+        # self.menu_hbox.pack_start(self.menu_align, True, True, 5)
+        # self.menu_hbox.pack_start(self.menu_button_vbox, False, False)
         self.menu_hbox.add(self.__setup_menu_entry())
         self.menu_align = self.__setup_align()
         self.menu_align.set_padding(10, 20,
@@ -252,7 +259,8 @@ class GrubSettings(object):
         map(lambda x : x.emit_redraw_request(), self.menu_entries)
         
     def __input_content_changed(self, widget, text):
-        print "input changed", text
+        if text[-1] not in string.digits:
+            widget.set_text(text[:-1])
         
     def __setup_signals(self):
         self.color_normal_fg_button.connect("color-select", self.__color_button_color_selected, "normal_fg")
@@ -287,6 +295,7 @@ class GrubSettings(object):
         if validate_image(self.background_img_entry.get_text()):
             self.setting_api.set_background_image(self.background_img_entry.get_text())
         else:
+            self.background_img_entry.set_text("")
             self.setting_api.disable_background_image()
             
         core_api.update_grub(self.setting_api.uuid)
@@ -296,12 +305,74 @@ class GrubSettings(object):
         self._menu = TreeView(self.menu_entries, expand_column=0)
         self._menu.draw_mask = self.__menu_entry_draw_mask
         self._menu.set_highlight_item(self.menu_entries[0])
+        self._menu.connect("right-press-items", self.__menu_entry_right_press_items)
+        self._menu.connect("single-click-item", self.__menu_entry_single_click_item)
         self._menu_align = gtk.Alignment(1, 1, 1, 1)
         self._menu_align.set_padding(5, 5, 5, 5)
         self._menu_align.add(self._menu)
         self._menu_align.connect("expose-event", self.__menu_align_expose)
 
         return self._menu_align
+    
+    def __move_up_down(self, item, up=True):
+        if item not in self.menu_entries:
+            return
+        
+        index = self.menu_entries.index(item)
+        if (index == 0 and up) or (index == len(self.menu_entries) - 1 and not up):
+            return
+        else:
+            if up:
+                self.menu_entries[index - 1], self.menu_entries[index] = self.menu_entries[index], self.menu_entries[index - 1]
+            else:
+                self.menu_entries[index], self.menu_entries[index + 1] = self.menu_entries[index + 1], self.menu_entries[index]    
+                
+            self._menu.add_items(self.menu_entries, clear_first=True)
+            self._menu.queue_draw()
+            
+    def __rename_item(self, item):
+        def confirm_callback(s):
+            item.title = s
+            item.emit_redraw_request()
+            
+        InputDialog(_("Rename entry"), item.title, confirm_callback=confirm_callback).show_all()
+        
+    def __delete_item(self, item):
+        if item in self.menu_entries and not len(self.menu_entries) == 1:
+            self.menu_entries.remove(item)
+            self._menu.add_items(self.menu_entries, clear_first=True)
+            self._menu.queue_draw()
+            
+        for entry in self.menu_entries:
+            print entry
+                
+    def __menu_entry_single_click_item(self, widget, item, column, x, y):
+        print "single click"
+        widget.set_highlight_item(item)
+
+    def __menu_entry_right_press_items(self, widget, x, y, current_item, select_items):
+        print "right press"
+        widget.set_highlight_item(current_item)
+        menu_items = [(None, _("Move up"), lambda : self.__move_up_down(current_item)),
+                      (None, _("Move down"), lambda : self.__move_up_down(current_item, False)),
+                      (None, _("Rename"), lambda : self.__rename_item(current_item)),
+                      (None, _("Delete"), lambda : self.__delete_item(current_item))]
+        Menu(menu_items, True).show((x, y))
+    
+    def __setup_menu_buttons(self):
+        menu_button_vbox = gtk.VBox(homogeneous=True)
+        
+        move_up_button = self.__setup_menu_button(_("Move up"))
+        move_down_button = self.__setup_menu_button(_("Move down"))
+        rename_button = self.__setup_menu_button(_("Rename"))
+        delete_button = self.__setup_menu_button(_("Delete"))
+        
+        self.__widget_pack_start(menu_button_vbox, [move_up_button,
+                                                    move_down_button,
+                                                    rename_button,
+                                                    delete_button])
+        
+        return menu_button_vbox
     
     def __menu_entry_draw_mask(self, cr, x, y, w, h):
         if self.background_img_pixbuf:
@@ -324,6 +395,11 @@ class GrubSettings(object):
         button = Button(label)
         button.set_size_request(100, 24)
         return button
+    
+    def __setup_menu_button(self, label):
+        button = Button(label)
+        button.set_size_request(50, 24)
+        return button 
 
     def __setup_label(self, text="", text_width = 200, text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
         return Label(text, None, text_size, align, text_width, enable_double_click=False)

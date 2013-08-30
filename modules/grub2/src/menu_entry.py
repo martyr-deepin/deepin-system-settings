@@ -70,6 +70,9 @@ class MenuEntry(TreeItem):
     def title(self, title):
         self._title = title
         
+    def __str__(self):
+        return self._title
+        
     def set_normal_fg(self, color):
         self.normal_fg = color
     
