@@ -25,7 +25,7 @@ import sys
 supported_locales = ["zh_CN", "zh_TW", "en_US"]
 from module_info import get_module_infos
 from split_word import init_jieba
-from search_page import BuildIndexThread, KeywordSearch
+from search_page import KeywordSearch
 
 init_jieba()
 
