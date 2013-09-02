@@ -304,9 +304,9 @@ class GrubSettings(object):
 
     # Invoked after update-grub2 is executed, modify /boot/grub/grub.cfg directly.
     def __write_new_menu_entry(self, gobj):
-        # shutil.copy("/boot/grub/grub.cfg", "/tmp/%s-grub.cfg" % self.setting_api.uuid)
+        shutil.copyfile("/boot/grub/grub.cfg", "/tmp/%s-grub.cfg" % self.setting_api.uuid)
         self.setting_api.write_sorted_menu_entry([x.menu_entry for x in self.menu_entries])
-        core_api.copy_grub_cfg(self.uuid)
+        core_api.copy_grub_cfg(self.setting_api.uuid)
 
     def __setup_menu_entry(self):
         self.menu_entries = [MenuEntry(entry) for entry in find_all_menu_entry()]

@@ -192,14 +192,14 @@ class GrubSettingsApi(object):
             boot_grub_cfg_str = join_all(_grub_cfg.readlines())
     
             # clear all entries
-            menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*)'.*{[\s\S]*?})", re.MULTILINE)
+            menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*)'.*{[\s\S]*?^})", re.MULTILINE)
             boot_grub_cfg_str = menuentry_pattern.sub("", boot_grub_cfg_str)
             # clear all submenu entries
-            menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*)'.*{[\s\S]*?}\s*})", re.MULTILINE)
+            menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*)'.*{[\s\S]*?}\s*^})", re.MULTILINE)
             boot_grub_cfg_str = menuentry_pattern.sub("", boot_grub_cfg_str)
     
             for menuentry in ment_entry_list:
-                boot_grub_cfg_str += menuentry["entry_content"]
+                boot_grub_cfg_str += "\n" + menuentry["entry_content"]
     
             _grub_cfg.seek(0)
             _grub_cfg.truncate(0)
@@ -257,10 +257,10 @@ def find_all_menu_entry():
         boot_grub_cfg_str = join_all(boot_grub_cfg.readlines())
 
         # find entries
-        menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*?)'.*{[\s\S]*?})", re.MULTILINE)
+        menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*?)'.*{[\s\S]*?^})", re.MULTILINE)
         menuentry_pattern.sub(lambda match_obj : menu_entry_list.append((match_obj.groupdict())), boot_grub_cfg_str)
         # find submenu entries
-        menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*?)'.*{[\s\S]*?})", re.MULTILINE)
+        menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*?)'.*{[\s\S]*?^})", re.MULTILINE)
         menuentry_pattern.sub(lambda match_obj : menu_entry_list.append((match_obj.groupdict())), boot_grub_cfg_str)
 
     return menu_entry_list
@@ -268,7 +268,7 @@ def find_all_menu_entry():
 def rename_menu_entry(menu_entry, new_name):
     menu_entry["entry_name"] = new_name
     menu_entry["entry_content"] = re.sub("^menuentry '.*?'", "menuentry '%s'" % new_name, menu_entry["entry_content"])
-    menu_entry["entry_content"] = re.sub("^submenu '.*?'", "menuentry '%s'" % new_name, menu_entry["entry_content"])
+    menu_entry["entry_content"] = re.sub("^submenu '.*?'", "submenu '%s'" % new_name, menu_entry["entry_content"])
     return menu_entry
 
 if __name__ == "__main__":
@@ -280,17 +280,23 @@ if __name__ == "__main__":
     # set_setting_item("GRUB_TIMEOUT_CUSTOMIZE", 20)
 
     # print get_proper_resolutions()
-    for index, entry in enumerate(find_all_menu_entry()):
-        if index == 0:
-            print "entry_name:"
-            print entry["entry_name"]
-            print "entry_content:"
-            print entry["entry_content"]
+    # for index, entry in enumerate(find_all_menu_entry()):
+    #     if index == 0:
+    #         print "entry_name:"
+    #         print entry["entry_name"]
+    #         print "entry_content:"
+    #         print entry["entry_content"]
 
-            rename_menu_entry(entry, "new_name")
-            print "entry_name:"
-            print entry["entry_name"]
-            print "entry_content:"
-            print entry["entry_content"]
+    #         rename_menu_entry(entry, "new_name")
+    #         print "entry_name:"
+    #         print entry["entry_name"]
+    #         print "entry_content:"
+    #         print entry["entry_content"]
+    
+    for entry in find_all_menu_entry():
+        print "entry_name: "
+        print entry["entry_name"]
+        print "entry_content: "
+        print entry["entry_content"]
 
     # write_sorted_menu_entry([])
