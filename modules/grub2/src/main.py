@@ -299,6 +299,12 @@ class GrubSettings(object):
             self.setting_api.disable_background_image()
             
         core_api.update_grub(self.setting_api.uuid)
+        core.connect("grub-updated", self.__write_new_menu_entry)
+
+    # Invoked after update-grub2 is executed, modify /boot/grub/grub.cfg directly.
+    def __write_new_menu_entry(self):
+        self.setting_api.write_sorted_menu_entry([x.menu_entry for x in self.menu_entries])
+        core_api.copy_grub_cfg(self.uuid)
 
     def __setup_menu_entry(self):
         self.menu_entries = [MenuEntry(entry) for entry in find_all_menu_entry()]
@@ -332,8 +338,9 @@ class GrubSettings(object):
             
     def __rename_item(self, item):
         def confirm_callback(s):
-            item.title = s
-            item.emit_redraw_request()
+            if 0 != len(s):
+                item.rename(s)
+                item.emit_redraw_request()
             
         InputDialog(_("Rename entry"), item.title, confirm_callback=confirm_callback).show_all()
         
@@ -342,16 +349,11 @@ class GrubSettings(object):
             self.menu_entries.remove(item)
             self._menu.add_items(self.menu_entries, clear_first=True)
             self._menu.queue_draw()
-            
-        for entry in self.menu_entries:
-            print entry
                 
     def __menu_entry_single_click_item(self, widget, item, column, x, y):
-        print "single click"
         widget.set_highlight_item(item)
 
     def __menu_entry_right_press_items(self, widget, x, y, current_item, select_items):
-        print "right press"
         widget.set_highlight_item(current_item)
         menu_items = [(None, _("Move up"), lambda : self.__move_up_down(current_item)),
                       (None, _("Move down"), lambda : self.__move_up_down(current_item, False)),

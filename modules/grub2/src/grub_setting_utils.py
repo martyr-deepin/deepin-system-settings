@@ -35,6 +35,8 @@ class GrubSettingsApi(object):
         self.default_grub_path = "/tmp/%s-grub" % self.uuid
         self.grub_cfg_path = "/tmp/%s-grub.cfg" % self.uuid
         shutil.copy(ETC_DEFAULT_GRUB, self.default_grub_path)
+        # backup used to recovery if exception was caught
+        shutil.copy(ETC_DEFAULT_GRUB, "%s.bak" % self.default_grub_path)
         with open(self.default_grub_path) as file_obj:
             self.default_grub_content = file_obj.readlines()
 
@@ -185,6 +187,24 @@ class GrubSettingsApi(object):
             return self.default_grub_content[line_index].split("=")[1].strip().strip("\"")
         else:
             return default
+        
+    def write_sorted_menu_entry(self, ment_entry_list):
+        with open(self.grub_cfg_path, "r+") as _grub_cfg:
+            boot_grub_cfg_str = join_all(_grub_cfg.readlines())
+    
+            # clear all entries
+            menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*)'.*{[\s\S]*?})", re.MULTILINE)
+            boot_grub_cfg_str = menuentry_pattern.sub("", boot_grub_cfg_str)
+            # clear all submenu entries
+            menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*)'.*{[\s\S]*?}\s*})", re.MULTILINE)
+            boot_grub_cfg_str = menuentry_pattern.sub("", boot_grub_cfg_str)
+    
+            for menuentry in ment_entry_list:
+                boot_grub_cfg_str += menuentry["entry_content"]
+    
+            _grub_cfg.seek(0)
+            _grub_cfg.truncate(0)
+            _grub_cfg.write(boot_grub_cfg_str)
 
 def validate_number(text):
     try:
@@ -251,24 +271,6 @@ def rename_menu_entry(menu_entry, new_name):
     menu_entry["entry_content"] = re.sub("^menuentry '.*?'", "menuentry '%s'" % new_name, menu_entry["entry_content"])
     menu_entry["entry_content"] = re.sub("^submenu '.*?'", "menuentry '%s'" % new_name, menu_entry["entry_content"])
     return menu_entry
-
-def write_sorted_menu_entry(ment_entry_list):
-    with open(BOOT_GRUB_CFG, "r+") as boot_grub_cfg:
-        boot_grub_cfg_str = join_all(boot_grub_cfg.readlines())
-
-        # clear all entries
-        menuentry_pattern = re.compile(r"(?P<entry_content>^menuentry '(?P<entry_name>.*)'.*{[\s\S]*?})", re.MULTILINE)
-        boot_grub_cfg_str = menuentry_pattern.sub("", boot_grub_cfg_str)
-        # clear all submenu entries
-        menuentry_pattern = re.compile(r"(?P<entry_content>^submenu '(?P<entry_name>.*)'.*{[\s\S]*?}\s*})", re.MULTILINE)
-        boot_grub_cfg_str = menuentry_pattern.sub("", boot_grub_cfg_str)
-
-        for menuentry in ment_entry_list:
-            boot_grub_cfg_str += menuentry["entry_content"]
-
-        boot_grub_cfg.seek(0)
-        boot_grub_cfg.truncate(0)
-        boot_grub_cfg.write(boot_grub_cfg_str)
 
 if __name__ == "__main__":
     # print is_setting_item_exists("GRUB_TIMEOUT")

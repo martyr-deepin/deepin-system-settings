@@ -25,6 +25,7 @@ import gobject
 import dbus
 import dbus.service
 import dbus.mainloop.glib
+from deepin_utils.process import get_command_output
 from grub_setting_utils import get_proper_resolutions
 
 def authWithPolicyKit(sender, connection, action, interactive=1):
@@ -71,15 +72,34 @@ class Grub2Service(dbus.service.Object):
     
     @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "s", out_signature = "b", 
                          sender_keyword = 'sender', connection_keyword = 'conn')    
-    def updateGrub(self, uid, sender = None, conn = None):
+    def updateGrub(self, uuid, sender = None, conn = None):
         if not authWithPolicyKit(sender, conn, "com.deepin.grub2.update-grub"):
             raise dbus.DBusException("Not authorized with polkit.")
         try:
-            shutil.copy("/tmp/%s-grub" % uid, "/etc/default/grub")
+            shutil.copy("/tmp/%s-grub" % uuid, "/etc/default/grub")
+            get_command_output("update-grub2")
+            shutil.copy("/boot/grub/grub.cfg", "/tmp/%s-grub.cfg" % uuid)
+            self.grubUpdated()
+            return True
+        except Exception, e:
+            print e
+            shutil.copy("/tmp/%s-grub.bak" % uuid, "/etc/default/grub")
+            get_command_output("update-grub2")
+            return False
+        
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "s", out_signature = "b", 
+                         sender_keyword = 'sender', connection_keyword = 'conn')    
+    def copyGrubCfg(self, uuid, sender = None, conn = None):
+        try:
+            shutil.copy("/tmp/%s-grub.cfg" % uuid, "/boot/grub/grub.cfg")
             return True
         except Exception, e:
             print e
             return False
+            
+    @dbus.service.signal(DBUS_INTERFACE_NAME, signature="")
+    def GrubUpdated(self):
+        pass
     
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)

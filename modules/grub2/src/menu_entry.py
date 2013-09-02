@@ -26,6 +26,8 @@ from dtk.ui.treeview import TreeItem
 from dtk.ui.draw import draw_text
 from dtk.ui.utils import color_hex_to_cairo
 
+from grub_setting_utils import rename_menu_entry
+
 def draw_single_mask(cr, x, y, width, height, color_name):
     if color_name.startswith("#"):
         color = color_name
@@ -69,6 +71,10 @@ class MenuEntry(TreeItem):
     @title.setter
     def title(self, title):
         self._title = title
+        
+    def rename(self, new_name):
+        self.title = new_name
+        rename_menu_entry(self.menu_entry, new_name)
         
     def __str__(self):
         return self._title
