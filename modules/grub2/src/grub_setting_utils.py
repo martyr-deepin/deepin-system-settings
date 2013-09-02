@@ -103,7 +103,6 @@ class GrubSettingsApi(object):
         self.default_grub_path = "/tmp/%s-grub" % self.uuid
         self.grub_cfg_path = "/tmp/%s-grub.cfg" % self.uuid
         shutil.copy(ETC_DEFAULT_GRUB, self.default_grub_path)
-        shutil.copy(BOOT_GRUB_CFG, self.grub_cfg_path)
 
     def __comment_line(self, line):
         '''

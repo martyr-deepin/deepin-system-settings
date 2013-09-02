@@ -77,9 +77,8 @@ class Grub2Service(dbus.service.Object):
             raise dbus.DBusException("Not authorized with polkit.")
         try:
             shutil.copy("/tmp/%s-grub" % uuid, "/etc/default/grub")
-            get_command_output("update-grub2")
-            shutil.copy("/boot/grub/grub.cfg", "/tmp/%s-grub.cfg" % uuid)
-            self.grubUpdated()
+            get_command_output("/usr/sbin/update-grub2")
+            self.GrubUpdated()  # emit the signal to synchronize with the parent process.
             return True
         except Exception, e:
             print e
@@ -105,5 +104,5 @@ if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     Grub2Service()
     mainloop = gobject.MainLoop()
-    gobject.timeout_add(60000, lambda : mainloop.quit())
+    # gobject.timeout_add(60000, lambda : mainloop.quit())
     mainloop.run()

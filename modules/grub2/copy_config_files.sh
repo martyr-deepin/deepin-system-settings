@@ -1,4 +1,5 @@
 #! /bin/bash
+#This file is used for testing only!!!
 
 if [ "$1" == "install" ];then
     cp -v data/com.deepin.grub2.service /usr/share/dbus-1/system-services

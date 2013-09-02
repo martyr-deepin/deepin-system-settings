@@ -22,6 +22,7 @@
 
 import sys
 import os
+import shutil
 import string
 from deepin_utils.file import get_parent_dir
 sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
@@ -53,11 +54,11 @@ from grub_setting_utils import find_all_menu_entry
 
 def process_resolutions(resolutions):
     result = []
-    
+
     for index, value in enumerate(resolutions):
         result.append((str(value), index + 1))
     result.insert(0, (_("Defaulf"), 0))
-    
+
     return result
 
 def get_index_by_value(combo_items, string):
@@ -65,7 +66,7 @@ def get_index_by_value(combo_items, string):
         if value == string:
             return index
     return 0
-        
+
 ALIGN_SPACING = 10
 SUB_TITLE_SPACING = 175
 
@@ -107,7 +108,7 @@ class GrubSettings(object):
         self.customize_resolution_label = self.__setup_label(_("Customize resolution:"))
         self.customize_resolution_combo = self.__setup_combo(RESOLUTIONS)
         if self.setting_api.is_resolution_active():
-            self.customize_resolution_combo.set_select_index(get_index_by_value(RESOLUTIONS, 
+            self.customize_resolution_combo.set_select_index(get_index_by_value(RESOLUTIONS,
                                                                                 self.setting_api.get_resolution()))
         self.__widget_pack_start(self.customize_resolution_hbox, [self.customize_resolution_label,
                                                                   self.customize_resolution_combo], WIDGET_SPACING)
@@ -167,21 +168,21 @@ class GrubSettings(object):
                                  5)
 
         self.color_highlight_align.add(self.color_highlight_hbox)
-        
+
         self.background_img_hbox = gtk.HBox()
         self.background_img_label = self.__setup_label(_("Background image:"))
         if self.setting_api.is_background_image_active():
             self.background_img_entry = self.__setup_entry(self.setting_api.get_background_image())
             self.background_img_pixbuf = gtk.gdk.pixbuf_new_from_file(self.setting_api.get_background_image())
         else:
-            self.background_img_entry = self.__setup_entry("")            
+            self.background_img_entry = self.__setup_entry("")
             self.background_img_pixbuf = None
         self.background_img_entry.set_size(300, WIDGET_HEIGHT)
         self.find_image_button = Button(_("Choose file"))
         self.find_image_button.set_size_request(100, WIDGET_HEIGHT)
         self.find_image_button.connect("clicked", self.__on_find_image_file)
         self.background_img_align = self.__setup_align()
-        self.background_img_align.set_padding(20, 0, 
+        self.background_img_align.set_padding(20, 0,
                                               TEXT_WINDOW_LEFT_PADDING + IMG_WIDTH + WIDGET_SPACING, 0)
         self.__widget_pack_start(self.background_img_hbox, [self.background_img_label,
                                                             self.background_img_entry], WIDGET_SPACING)
@@ -222,7 +223,7 @@ class GrubSettings(object):
         self.scrolled_window = ScrolledWindow()
         self.scrolled_window.set_size_request(-1, 420)
         self.scrolled_window.add_child(self.main_vbox)
-        
+
         # FootBox
         self.foot_box_align = self.__setup_align()
         self.foot_box = gtk.HBox(spacing = WIDGET_SPACING)
@@ -230,7 +231,7 @@ class GrubSettings(object):
         self.notice_label = Label("", text_x_align = ALIGN_START, label_width=480)
         self.reset_button = self.__setup_button(_("Reset"))
         self.reset_button.connect("clicked", lambda : True)
-        self.apply_button = self.__setup_button(_("Apply"))        
+        self.apply_button = self.__setup_button(_("Apply"))
         self.apply_button.connect("clicked", self.__on_apply)
         self.__widget_pack_start(self.foot_box,
                 [self.notice_label,
@@ -238,9 +239,9 @@ class GrubSettings(object):
                  self.apply_button
                 ])
         self.foot_box_align.add(self.foot_box)
-        
+
         self.bigger_main_vbox = gtk.VBox()
-        self.__widget_pack_start(self.bigger_main_vbox, [self.scrolled_window, 
+        self.__widget_pack_start(self.bigger_main_vbox, [self.scrolled_window,
                                                          self.foot_box_align])
         self.module_frame.add(self.bigger_main_vbox)
 
@@ -255,23 +256,23 @@ class GrubSettings(object):
             map(lambda x : x.set_highlight_fg(color_string), self.menu_entries)
         if button_name == "highlight_bg":
             map(lambda x : x.set_highlight_bg(color_string), self.menu_entries)
-            
+
         map(lambda x : x.emit_redraw_request(), self.menu_entries)
-        
+
     def __input_content_changed(self, widget, text):
         if text[-1] not in string.digits:
             widget.set_text(text[:-1])
-        
+
     def __setup_signals(self):
         self.color_normal_fg_button.connect("color-select", self.__color_button_color_selected, "normal_fg")
         self.color_normal_bg_button.connect("color-select", self.__color_button_color_selected, "normal_bg")
         self.color_highlight_fg_button.connect("color-select", self.__color_button_color_selected, "highlight_fg")
         self.color_highlight_bg_button.connect("color-select", self.__color_button_color_selected, "highlight_bg")
-        
+
     def __on_find_image_file(self, widget):
         image_file = []
-        OpenFileDialog(_("Choose background image"), 
-                       self.module_frame.get_parent(), 
+        OpenFileDialog(_("Choose background image"),
+                       self.module_frame.get_parent(),
                        lambda file_name : image_file.append(file_name))
         if len(image_file) != 0:
             self.background_img_entry.set_text(image_file[0])
@@ -280,7 +281,7 @@ class GrubSettings(object):
                 self._menu.queue_draw()
             except:
                 self._menu.queue_draw()
-        
+
     def __on_apply(self, widget):
         if validate_number(self.default_delay_input.get_text()):
             self.setting_api.set_default_delay(self.default_delay_input.get_text())
@@ -288,7 +289,7 @@ class GrubSettings(object):
             self.setting_api.disable_customize_resolution()
         else:
             self.setting_api.set_resolution(str(self.customize_resolution_combo.get_current_item()[0]))
-        self.setting_api.set_item_color(color_to_name(self.color_normal_fg_button.get_color()), 
+        self.setting_api.set_item_color(color_to_name(self.color_normal_fg_button.get_color()),
                                         color_to_name(self.color_normal_bg_button.get_color()))
         self.setting_api.set_item_color(color_to_name(self.color_highlight_fg_button.get_color()),
                                         color_to_name(self.color_highlight_bg_button.get_color()), True)
@@ -297,12 +298,13 @@ class GrubSettings(object):
         else:
             self.background_img_entry.set_text("")
             self.setting_api.disable_background_image()
-            
+
         core_api.update_grub(self.setting_api.uuid)
-        core.connect("grub-updated", self.__write_new_menu_entry)
+        core_api.connect("grub-updated", self.__write_new_menu_entry)
 
     # Invoked after update-grub2 is executed, modify /boot/grub/grub.cfg directly.
-    def __write_new_menu_entry(self):
+    def __write_new_menu_entry(self, gobj):
+        # shutil.copy("/boot/grub/grub.cfg", "/tmp/%s-grub.cfg" % self.setting_api.uuid)
         self.setting_api.write_sorted_menu_entry([x.menu_entry for x in self.menu_entries])
         core_api.copy_grub_cfg(self.uuid)
 
@@ -318,12 +320,18 @@ class GrubSettings(object):
         self._menu_align.add(self._menu)
         self._menu_align.connect("expose-event", self.__menu_align_expose)
 
+        # Init menu item color
+        map(lambda x : x.set_normal_fg(DEFAULT_COLOR_LIST[self.color_normal_item_value[0]]), self.menu_entries)
+        map(lambda x : x.set_normal_bg(DEFAULT_COLOR_LIST[self.color_normal_item_value[1]]), self.menu_entries)
+        map(lambda x : x.set_highlight_fg(DEFAULT_COLOR_LIST[self.color_highlight_item_value[0]]), self.menu_entries)
+        map(lambda x : x.set_highlight_bg(DEFAULT_COLOR_LIST[self.color_highlight_item_value[1]]), self.menu_entries)
+
         return self._menu_align
-    
+
     def __move_up_down(self, item, up=True):
         if item not in self.menu_entries:
             return
-        
+
         index = self.menu_entries.index(item)
         if (index == 0 and up) or (index == len(self.menu_entries) - 1 and not up):
             return
@@ -331,25 +339,25 @@ class GrubSettings(object):
             if up:
                 self.menu_entries[index - 1], self.menu_entries[index] = self.menu_entries[index], self.menu_entries[index - 1]
             else:
-                self.menu_entries[index], self.menu_entries[index + 1] = self.menu_entries[index + 1], self.menu_entries[index]    
-                
+                self.menu_entries[index], self.menu_entries[index + 1] = self.menu_entries[index + 1], self.menu_entries[index]
+
             self._menu.add_items(self.menu_entries, clear_first=True)
             self._menu.queue_draw()
-            
+
     def __rename_item(self, item):
         def confirm_callback(s):
             if 0 != len(s):
                 item.rename(s)
                 item.emit_redraw_request()
-            
+
         InputDialog(_("Rename entry"), item.title, confirm_callback=confirm_callback).show_all()
-        
+
     def __delete_item(self, item):
         if item in self.menu_entries and not len(self.menu_entries) == 1:
             self.menu_entries.remove(item)
             self._menu.add_items(self.menu_entries, clear_first=True)
             self._menu.queue_draw()
-                
+
     def __menu_entry_single_click_item(self, widget, item, column, x, y):
         widget.set_highlight_item(item)
 
@@ -360,22 +368,22 @@ class GrubSettings(object):
                       (None, _("Rename"), lambda : self.__rename_item(current_item)),
                       (None, _("Delete"), lambda : self.__delete_item(current_item))]
         Menu(menu_items, True).show((x, y))
-    
+
     def __setup_menu_buttons(self):
         menu_button_vbox = gtk.VBox(homogeneous=True)
-        
+
         move_up_button = self.__setup_menu_button(_("Move up"))
         move_down_button = self.__setup_menu_button(_("Move down"))
         rename_button = self.__setup_menu_button(_("Rename"))
         delete_button = self.__setup_menu_button(_("Delete"))
-        
+
         self.__widget_pack_start(menu_button_vbox, [move_up_button,
                                                     move_down_button,
                                                     rename_button,
                                                     delete_button])
-        
+
         return menu_button_vbox
-    
+
     def __menu_entry_draw_mask(self, cr, x, y, w, h):
         if self.background_img_pixbuf:
             try:
@@ -397,11 +405,11 @@ class GrubSettings(object):
         button = Button(label)
         button.set_size_request(100, 24)
         return button
-    
+
     def __setup_menu_button(self, label):
         button = Button(label)
         button.set_size_request(50, 24)
-        return button 
+        return button
 
     def __setup_label(self, text="", text_width = 200, text_size=CONTENT_FONT_SIZE, align=ALIGN_END):
         return Label(text, None, text_size, align, text_width, enable_double_click=False)
@@ -478,17 +486,17 @@ class GrubSettings(object):
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
-        
+
     def __foot_box_expose(self, widget, event):
         cr = widget.window.cairo_create()
         x, y, w, h = widget.allocation
-        
+
         cr.set_source_rgb(1, 1, 1)
         cr.rectangle(x, y, w, h)
         cr.fill()
-        
+
         with cairo_disable_antialias(cr):
-            cr.set_source_rgb(*color_hex_to_cairo("#AEAEAE"))            
+            cr.set_source_rgb(*color_hex_to_cairo("#AEAEAE"))
             cr.move_to(x, y)
             cr.line_to(x + w, y)
             cr.stroke()

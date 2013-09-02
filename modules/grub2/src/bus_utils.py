@@ -22,10 +22,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import dbus
+from dbus.mainloop.glib import DBusGMainLoop
 import gobject
 import re
-import traceback
 
+DBusGMainLoop(set_as_default=True)
 name_re = re.compile("[0-9a-zA-Z-]*")
 system_bus = dbus.SystemBus()
 
@@ -73,32 +74,32 @@ class BusBase(gobject.GObject):
         try:
             self.dbus_proxy = self.bus.get_object(self.service, self.object_path)
             self.dbus_interface = dbus.Interface(self.dbus_proxy, self.object_interface)
-        except dbus.exceptions.DBusException:
-            traceback.print_exc()
+        except dbus.exceptions.DBusException, e:
+            print e
 
     def init_dbus_properties(self):
         try:
             self.properties_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties" )
-        except dbus.exceptions.DBusException:
-            traceback.print_exc()
+        except dbus.exceptions.DBusException, e:
+            print e
 
         if self.properties_interface:
             try:
                 self.properties = self.properties_interface.GetAll(self.object_interface)
-            except:
+            except Exception, e:
                 print "get properties failed"
-                traceback.print_exc()
+                print e
 
     def dbus_method(self, method_name, *args, **kwargs):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
-        except:
+        except Exception, e:
             print "error occured when call %s" % method_name
-            traceback.print_exc()
+            print e
 
     def call_async(self, method_name, *args, **kwargs):
         try:
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
-        except:
-            traceback.print_exc()
+        except Exception, e:
+            print e
 
