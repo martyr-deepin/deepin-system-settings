@@ -192,14 +192,23 @@ class ColorItem(gobject.GObject):
 
 gobject.type_register(ColorItem)
 
-DEFAULT_COLOR_LIST = {_("white"): "#ffffff", _("blue"): "#0000a8", 
-                      _("magenta"): "#a800a8", _("cyan"): "#00a8a8",
-                      _("light-gray"): "#a8a8a8", _("yellow"): "#fefe54",
-                      _("red"): "#ff0000", _("light-magenta"): "#fe54fe", 
-                      _("dark-gray"): "#545454", _("green"): "#00a800",
-                      _("light-blue"): "#5454fe", _("light-red"): "#fe5454", 
-                      _("black"): "#000000", _("light-cyan"): "#54fefe", 
-                      _("light-green"): "#54fe54", _("brown"): "#a85400"}
+# DEFAULT_COLOR_LIST = {_("white"): "#ffffff", _("blue"): "#0000a8", 
+#                       _("magenta"): "#a800a8", _("cyan"): "#00a8a8",
+#                       _("light-gray"): "#a8a8a8", _("yellow"): "#fefe54",
+#                       _("red"): "#ff0000", _("light-magenta"): "#fe54fe", 
+#                       _("dark-gray"): "#545454", _("green"): "#00a800",
+#                       _("light-blue"): "#5454fe", _("light-red"): "#fe5454", 
+#                       _("black"): "#000000", _("light-cyan"): "#54fefe", 
+#                       _("light-green"): "#54fe54", _("brown"): "#a85400"}
+
+DEFAULT_COLOR_LIST = {"white": "#ffffff", "blue": "#0000a8", 
+                      "magenta": "#a800a8", "cyan": "#00a8a8",
+                      "light-gray": "#a8a8a8", "yellow": "#fefe54",
+                      "red": "#ff0000", "light-magenta": "#fe54fe", 
+                      "dark-gray": "#545454", "green": "#00a800",
+                      "light-blue": "#5454fe", "light-red": "#fe5454", 
+                      "black": "#000000", "light-cyan": "#54fefe", 
+                      "light-green": "#54fe54", "brown": "#a85400"}
 
 def color_to_name(hex_color):
     for key, value in DEFAULT_COLOR_LIST.iteritems():

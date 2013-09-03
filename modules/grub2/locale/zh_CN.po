@@ -1,15 +1,15 @@
-# Chinese translations for PACKAGE package
-# PACKAGE 软件包的简体中文翻译.
-# Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Chinese translations for grub package
+# grub 软件包的简体中文翻译.
+# Copyright (C) 2013 THE grub'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the grub package.
 # Automatically generated, 2013.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: grub 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:44+0800\n"
-"PO-Revision-Date: 2013-01-16 17:45+0800\n"
+"POT-Creation-Date: 2013-09-03 16:19+0800\n"
+"PO-Revision-Date: 2013-09-03 16:21+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: zh_CN\n"
@@ -17,38 +17,130 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:57
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr "武汉深之度科技有限公司 版权所有"
+#: ../src/main.py:60
+msgid "Defaulf"
+msgstr "默认"
 
-#: ../src/main.py:58
-msgid "Version"
-msgstr "版本"
+#: ../src/main.py:95
+msgid "Appearance Settings"
+msgstr "外观设置"
 
-#: ../src/main.py:59 ../src/search_keyword.py:25
-msgid "CPU"
-msgstr "处理器"
+#: ../src/main.py:100
+msgid "Default delay:"
+msgstr "默认延时："
 
-#: ../src/main.py:60 ../src/search_keyword.py:26
-msgid "Memory"
-msgstr "内存"
+#: ../src/main.py:108
+msgid "Customize resolution:"
+msgstr "自定义分辨率："
 
-#: ../src/main.py:61 ../src/search_keyword.py:27
-msgid "OS Type"
-msgstr "操作系统类型"
+#: ../src/main.py:120
+msgid "Normal menu color:"
+msgstr "普通菜单颜色："
 
-#: ../src/main.py:62 ../src/search_keyword.py:28
-msgid "Disk"
-msgstr "磁盘"
+#: ../src/main.py:147
+msgid "Highlight menu color:"
+msgstr "高亮菜单颜色："
 
-#: ../src/main.py:152
-msgid "bit"
-msgstr "位"
+#: ../src/main.py:173
+msgid "Background image:"
+msgstr "背景图片："
 
-#: ../src/search_keyword.py:29
-msgid "System"
-msgstr "系统"
+#: ../src/main.py:181
+msgid "Choose file"
+msgstr "选择图片"
 
-#: ../src/search_keyword.py:30
-msgid "System information"
-msgstr "系统信息"
+#: ../src/main.py:203
+msgid "Menu List Settings"
+msgstr "菜单列表设置"
+
+#: ../src/main.py:232
+msgid "Reset"
+msgstr "恢复默认"
+
+#: ../src/main.py:234
+msgid "Apply"
+msgstr "应用设置"
+
+#: ../src/main.py:274
+msgid "Choose background image"
+msgstr "选择背景图片"
+
+#: ../src/main.py:359
+msgid "Rename entry"
+msgstr "重命名选项"
+
+#: ../src/main.py:372 ../src/main.py:381
+msgid "Move up"
+msgstr "上移"
+
+#: ../src/main.py:373 ../src/main.py:382
+msgid "Move down"
+msgstr "下移"
+
+#: ../src/main.py:374 ../src/main.py:383
+msgid "Rename"
+msgstr ""
+
+#: ../src/main.py:375 ../src/main.py:384
+msgid "Delete"
+msgstr "删除"
+
+#: ../src/color_button.py:222
+msgid "Select color"
+msgstr "选择颜色"
+
+#: ../src/color_button.py:243
+msgid "OK"
+msgstr "确定"
+
+#: ../src/color_button.py:244
+msgid "Cancel"
+msgstr "取消"
+
+#~ msgid "white"
+#~ msgstr "白色"
+
+#~ msgid "blue"
+#~ msgstr "蓝色"
+
+#~ msgid "magenta"
+#~ msgstr "品红色"
+
+#~ msgid "cyan"
+#~ msgstr "青色"
+
+#~ msgid "light-gray"
+#~ msgstr "淡灰色"
+
+#~ msgid "yellow"
+#~ msgstr "黄色"
+
+#~ msgid "red"
+#~ msgstr "红色"
+
+#~ msgid "light-magenta"
+#~ msgstr "浅品红"
+
+#~ msgid "dark-gray"
+#~ msgstr "深灰色"
+
+#~ msgid "green"
+#~ msgstr "绿色"
+
+#~ msgid "light-blue"
+#~ msgstr "深蓝色"
+
+#~ msgid "light-red"
+#~ msgstr "浅红色"
+
+#~ msgid "black"
+#~ msgstr "透明"
+
+#~ msgid "light-cyan"
+#~ msgstr "浅青色"
+
+#~ msgid "light-green"
+#~ msgstr "浅绿色"
+
+#~ msgid "brown"
+#~ msgstr "棕色"

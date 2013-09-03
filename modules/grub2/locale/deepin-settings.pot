@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:44+0800\n"
+"POT-Creation-Date: 2013-09-03 16:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,38 +17,82 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:57
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
+#: ../src/main.py:60
+msgid "Defaulf"
 msgstr ""
 
-#: ../src/main.py:58
-msgid "Version"
+#: ../src/main.py:95
+msgid "Appearance Settings"
 msgstr ""
 
-#: ../src/main.py:59 ../src/search_keyword.py:25
-msgid "CPU"
+#: ../src/main.py:100
+msgid "Default delay:"
 msgstr ""
 
-#: ../src/main.py:60 ../src/search_keyword.py:26
-msgid "Memory"
+#: ../src/main.py:108
+msgid "Customize resolution:"
 msgstr ""
 
-#: ../src/main.py:61 ../src/search_keyword.py:27
-msgid "OS Type"
+#: ../src/main.py:120
+msgid "Normal menu color:"
 msgstr ""
 
-#: ../src/main.py:62 ../src/search_keyword.py:28
-msgid "Disk"
+#: ../src/main.py:147
+msgid "Highlight menu color:"
 msgstr ""
 
-#: ../src/main.py:152
-msgid "bit"
+#: ../src/main.py:173
+msgid "Background image:"
 msgstr ""
 
-#: ../src/search_keyword.py:29
-msgid "System"
+#: ../src/main.py:181
+msgid "Choose file"
 msgstr ""
 
-#: ../src/search_keyword.py:30
-msgid "System information"
+#: ../src/main.py:203
+msgid "Menu List Settings"
+msgstr ""
+
+#: ../src/main.py:232
+msgid "Reset"
+msgstr ""
+
+#: ../src/main.py:234
+msgid "Apply"
+msgstr ""
+
+#: ../src/main.py:274
+msgid "Choose background image"
+msgstr ""
+
+#: ../src/main.py:359
+msgid "Rename entry"
+msgstr ""
+
+#: ../src/main.py:372 ../src/main.py:381
+msgid "Move up"
+msgstr ""
+
+#: ../src/main.py:373 ../src/main.py:382
+msgid "Move down"
+msgstr ""
+
+#: ../src/main.py:374 ../src/main.py:383
+msgid "Rename"
+msgstr ""
+
+#: ../src/main.py:375 ../src/main.py:384
+msgid "Delete"
+msgstr ""
+
+#: ../src/color_button.py:222
+msgid "Select color"
+msgstr ""
+
+#: ../src/color_button.py:243
+msgid "OK"
+msgstr ""
+
+#: ../src/color_button.py:244
+msgid "Cancel"
 msgstr ""

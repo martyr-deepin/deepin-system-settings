@@ -1,14 +1,14 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Chinese translations for grub package.
+# Copyright (C) 2013 THE grub'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the grub package.
 # Automatically generated, 2013.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: grub 2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:44+0800\n"
-"PO-Revision-Date: 2013-01-16 17:45+0800\n"
+"POT-Creation-Date: 2013-09-03 16:19+0800\n"
+"PO-Revision-Date: 2013-09-03 15:49+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: zh_TW\n"
@@ -16,38 +16,82 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.py:57
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr "武漢深之度科技有限公司 版權所有"
+#: ../src/main.py:60
+msgid "Defaulf"
+msgstr ""
 
-#: ../src/main.py:58
-msgid "Version"
-msgstr "版本"
+#: ../src/main.py:95
+msgid "Appearance Settings"
+msgstr ""
 
-#: ../src/main.py:59 ../src/search_keyword.py:25
-msgid "CPU"
-msgstr "處理器"
+#: ../src/main.py:100
+msgid "Default delay:"
+msgstr ""
 
-#: ../src/main.py:60 ../src/search_keyword.py:26
-msgid "Memory"
-msgstr "記憶體"
+#: ../src/main.py:108
+msgid "Customize resolution:"
+msgstr ""
 
-#: ../src/main.py:61 ../src/search_keyword.py:27
-msgid "OS Type"
-msgstr "OS 類型"
+#: ../src/main.py:120
+msgid "Normal menu color:"
+msgstr ""
 
-#: ../src/main.py:62 ../src/search_keyword.py:28
-msgid "Disk"
-msgstr "磁碟"
+#: ../src/main.py:147
+msgid "Highlight menu color:"
+msgstr ""
 
-#: ../src/main.py:152
-msgid "bit"
-msgstr "位元"
+#: ../src/main.py:173
+msgid "Background image:"
+msgstr ""
 
-#: ../src/search_keyword.py:29
-msgid "System"
-msgstr "系統"
+#: ../src/main.py:181
+msgid "Choose file"
+msgstr ""
 
-#: ../src/search_keyword.py:30
-msgid "System information"
-msgstr "系統資訊"
+#: ../src/main.py:203
+msgid "Menu List Settings"
+msgstr ""
+
+#: ../src/main.py:232
+msgid "Reset"
+msgstr ""
+
+#: ../src/main.py:234
+msgid "Apply"
+msgstr ""
+
+#: ../src/main.py:274
+msgid "Choose background image"
+msgstr ""
+
+#: ../src/main.py:359
+msgid "Rename entry"
+msgstr ""
+
+#: ../src/main.py:372 ../src/main.py:381
+msgid "Move up"
+msgstr ""
+
+#: ../src/main.py:373 ../src/main.py:382
+msgid "Move down"
+msgstr ""
+
+#: ../src/main.py:374 ../src/main.py:383
+msgid "Rename"
+msgstr ""
+
+#: ../src/main.py:375 ../src/main.py:384
+msgid "Delete"
+msgstr ""
+
+#: ../src/color_button.py:222
+msgid "Select color"
+msgstr ""
+
+#: ../src/color_button.py:243
+msgid "OK"
+msgstr ""
+
+#: ../src/color_button.py:244
+msgid "Cancel"
+msgstr ""
