@@ -305,9 +305,10 @@ class ColorButton(gtk.VBox):
         @param widget: ColorButton widget.
         @param event: Button press event.
         '''
-        dialog = ColorSelectionDialog(self.color, self.select_color)
-        dialog.show_all()
-        place_center(self.get_toplevel(), dialog)
+        if not hasattr(self, "dialog") or not self.dialog.get_visible():
+            self.dialog = ColorSelectionDialog(self.color, self.select_color)
+            self.dialog.show_all()
+            place_center(self.get_toplevel(), self.dialog)
 
     def select_color(self, color):
         '''

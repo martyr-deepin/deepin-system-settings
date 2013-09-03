@@ -48,13 +48,13 @@ class GrubSettingsApi(object):
         shutil.copy(ETC_DEFAULT_GRUB, self.default_grub_path)
         # backup used to recovery if exception was caught
         shutil.copy(ETC_DEFAULT_GRUB, "%s.bak" % self.default_grub_path)
-        shutil.copy(DSS_CUSTOM_PATH, self.dss_custom_path)
         
         with open(self.default_grub_path) as file_obj:
             self.default_grub_content = file_obj.readlines()
             
         # initialize color values.
         if os.path.exists(DSS_CUSTOM_PATH):
+            shutil.copy(DSS_CUSTOM_PATH, self.dss_custom_path)
             with open(DSS_CUSTOM_PATH) as dss_custom:
                 lines = dss_custom.readlines()
                 print lines
