@@ -54,7 +54,7 @@ class GrubSettingsApi(object):
             
         # initialize color values.
         if os.path.exists(DSS_CUSTOM_PATH):
-            shutil.copy(DSS_CUSTOM_PATH, self.dss_custom_path)
+            shutil.copyfile(DSS_CUSTOM_PATH, self.dss_custom_path)
             with open(DSS_CUSTOM_PATH) as dss_custom:
                 lines = dss_custom.readlines()
                 print lines
@@ -110,7 +110,7 @@ class GrubSettingsApi(object):
                                        "highlight_fg": self.color_highlight_fg,
                                        "highlight_bg": self.color_highlight_bg}
             dss_custom.write(s)
-        os.chmod(self.dss_custom_path, stat.S_IRWXU | stat.S_IRWXG)
+        os.chmod(self.dss_custom_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         
     def set_item_color(self, color_fg, color_bg, is_highlight_item=False):
         '''
@@ -137,10 +137,24 @@ class GrubSettingsApi(object):
         self.set_setting_item("GRUB_FONT", "/boot/grub/unicode.pf2")
 
     def reset_all_settings(self):
-        self.uuid = uuid4()
-        self.default_grub_path = "/tmp/%s-grub" % self.uuid
-        self.grub_cfg_path = "/tmp/%s-grub.cfg" % self.uuid
         shutil.copy(ETC_DEFAULT_GRUB, self.default_grub_path)
+        # backup used to recovery if exception was caught
+        shutil.copy(ETC_DEFAULT_GRUB, "%s.bak" % self.default_grub_path)
+        
+        with open(self.default_grub_path) as file_obj:
+            self.default_grub_content = file_obj.readlines()
+            
+        # initialize color values.
+        if os.path.exists(DSS_CUSTOM_PATH):
+            shutil.copyfile(DSS_CUSTOM_PATH, self.dss_custom_path)
+            with open(DSS_CUSTOM_PATH) as dss_custom:
+                lines = dss_custom.readlines()
+                print lines
+                self.color_normal_fg, self.color_normal_bg = lines[2].strip().split("=")[1].split("/")
+                self.color_highlight_fg, self.color_highlight_bg = lines[3].strip().split("=")[1].split("/")
+        else:
+            self.color_normal_fg = self.color_highlight_fg = "white"
+            self.color_highlight_bg = self.color_normal_bg = "black"
 
     def __comment_line(self, line):
         '''

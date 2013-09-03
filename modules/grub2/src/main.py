@@ -230,7 +230,7 @@ class GrubSettings(object):
         self.foot_box_align.connect("expose-event", self.__foot_box_expose)
         self.notice_label = Label("", text_x_align = ALIGN_START, label_width=480)
         self.reset_button = self.__setup_button(_("Reset"))
-        self.reset_button.connect("clicked", lambda : True)
+        self.reset_button.connect("clicked", self.__on_reset)
         self.apply_button = self.__setup_button(_("Apply"))
         self.apply_button.connect("clicked", self.__on_apply)
         self.__widget_pack_start(self.foot_box,
@@ -282,6 +282,12 @@ class GrubSettings(object):
             except:
                 self._menu.queue_draw()
 
+    def __on_reset(self, widget):
+        self.setting_api.reset_all_settings()
+        self.module_frame.remove(self.bigger_main_vbox)
+        self.__init_widgets()
+        self.module_frame.show_all()
+                
     def __on_apply(self, widget):
         if validate_number(self.default_delay_input.get_text()):
             self.setting_api.set_default_delay(self.default_delay_input.get_text())
