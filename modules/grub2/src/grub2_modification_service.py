@@ -20,13 +20,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import shutil
 import gobject
 import dbus
 import dbus.service
 import dbus.mainloop.glib
 from deepin_utils.process import get_command_output
-from grub_setting_utils import get_proper_resolutions
+from grub_setting_utils import get_proper_resolutions, DSS_CUSTOM_PATH
 
 def authWithPolicyKit(sender, connection, action, interactive=1):
     system_bus = dbus.SystemBus()
@@ -77,11 +78,14 @@ class Grub2Service(dbus.service.Object):
             raise dbus.DBusException("Not authorized with polkit.")
         try:
             shutil.copy("/tmp/%s-grub" % uuid, "/etc/default/grub")
+            shutil.copy("/tmp/%s-dss_custom" % uuid, DSS_CUSTOM_PATH)
             get_command_output("/usr/sbin/update-grub2")
             self.GrubUpdated()  # emit the signal to synchronize with the parent process.
             return True
         except Exception, e:
             print e
+            if os.path.exists(DSS_CUSTOM_PATH):
+                os.unlink(DSS_CUSTOM_PATH)
             shutil.copy("/tmp/%s-grub.bak" % uuid, "/etc/default/grub")
             get_command_output("update-grub2")
             return False

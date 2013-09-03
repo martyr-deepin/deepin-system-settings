@@ -20,6 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import re
+import os
+import stat
 import shutil
 from uuid import uuid4
 
@@ -28,17 +30,39 @@ from deepin_utils.process import get_command_output, run_command
 
 ETC_DEFAULT_GRUB = "/etc/default/grub"
 BOOT_GRUB_CFG = "/boot/grub/grub.cfg"
+DSS_CUSTOM_PATH = "/etc/grub.d/80_dss_custom"
+
+DSS_CUSTOM_TEMPLATE = '''#!/bin/sh
+cat <<EOF
+set menu_color_normal=%(normal_fg)s/%(normal_bg)s
+set menu_color_highlight=%(highlight_fg)s/%(highlight_bg)s
+EOF'''
+
 
 class GrubSettingsApi(object):
     def __init__(self):
         self.uuid = str(uuid4())
         self.default_grub_path = "/tmp/%s-grub" % self.uuid
         self.grub_cfg_path = "/tmp/%s-grub.cfg" % self.uuid
+        self.dss_custom_path = "/tmp/%s-dss_custom" % self.uuid
         shutil.copy(ETC_DEFAULT_GRUB, self.default_grub_path)
         # backup used to recovery if exception was caught
         shutil.copy(ETC_DEFAULT_GRUB, "%s.bak" % self.default_grub_path)
+        shutil.copy(DSS_CUSTOM_PATH, self.dss_custom_path)
+        
         with open(self.default_grub_path) as file_obj:
             self.default_grub_content = file_obj.readlines()
+            
+        # initialize color values.
+        if os.path.exists(DSS_CUSTOM_PATH):
+            with open(DSS_CUSTOM_PATH) as dss_custom:
+                lines = dss_custom.readlines()
+                print lines
+                self.color_normal_fg, self.color_normal_bg = lines[2].strip().split("=")[1].split("/")
+                self.color_highlight_fg, self.color_highlight_bg = lines[3].strip().split("=")[1].split("/")
+        else:
+            self.color_normal_fg = self.color_highlight_fg = "white"
+            self.color_highlight_bg = self.color_normal_bg = "black"
 
     def is_item_active(self, item_name):
         return self.is_setting_item_exists(item_name, True)[0]
@@ -79,20 +103,34 @@ class GrubSettingsApi(object):
     def disable_background_image(self):
         self.remove_item("GRUB_MENU_PICTURE")
 
+    def __write_color_settings(self):
+        with open(self.dss_custom_path, "w") as dss_custom:
+            s = DSS_CUSTOM_TEMPLATE % {"normal_fg": self.color_normal_fg, 
+                                       "normal_bg": self.color_normal_bg,
+                                       "highlight_fg": self.color_highlight_fg,
+                                       "highlight_bg": self.color_highlight_bg}
+            dss_custom.write(s)
+        os.chmod(self.dss_custom_path, stat.S_IRWXU | stat.S_IRWXG)
+        
     def set_item_color(self, color_fg, color_bg, is_highlight_item=False):
         '''
         Set the color of grub items
         '''
         if is_highlight_item:
-            self.set_setting_item("GRUB_COLOR_HIGHLIGHT", "%s/%s" % (color_fg, color_bg))
+            self.color_highlight_fg, self.color_highlight_bg = color_fg, color_bg
+            # self.set_setting_item("GRUB_COLOR_HIGHLIGHT", "%s/%s" % (color_fg, color_bg))
         else:
-            self.set_setting_item("GRUB_COLOR_NORMAL", "%s/%s" % (color_fg, color_bg))
+            self.color_normal_fg, self.color_normal_bg = color_fg, color_bg            
+            # self.set_setting_item("GRUB_COLOR_NORMAL", "%s/%s" % (color_fg, color_bg))
+        self.__write_color_settings()
 
     def get_item_color(self, is_highlight_item=False):
         if is_highlight_item:
-            return self.get_setting_item_value("GRUB_COLOR_HIGHLIGHT", "white/white")
+            # return self.get_setting_item_value("GRUB_COLOR_HIGHLIGHT", "white/white")
+            return self.color_highlight_fg + "/" + self.color_highlight_bg
         else:
-            return self.get_setting_item_value("GRUB_COLOR_NORMAL", "white/white")
+            # return self.get_setting_item_value("GRUB_COLOR_NORMAL", "white/white")
+            return self.color_normal_fg + "/" + self.color_normal_bg        
 
     def set_font(self, font_size, font_file):
         run_command("grub-mkfont -s %s -o /boot/grub/unicode.pf2 %s" % (font_size, font_file))
