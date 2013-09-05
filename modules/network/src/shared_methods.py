@@ -56,6 +56,11 @@ class NetManager(object):
             tray_log.debug("network-manager disabled")
             pass
 
+    get_primary_wire = property(lambda self: nm_module.nm_remote_settings.get_primary_wire)
+    set_primary_wire = property(lambda self: nm_module.nm_remote_settings.set_primary_wire)
+    get_primary_wireless = property(lambda self: nm_module.nm_remote_settings.get_primary_wireless)
+    set_primary_wireless = property(lambda self: nm_module.nm_remote_settings.set_primary_wireless)
+
     def init_all_objects(self):
         self.device_manager = DeviceManager()
 
