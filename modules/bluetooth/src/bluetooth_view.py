@@ -509,6 +509,9 @@ class BlueToothView(gtk.VBox):
         self.display_device_entry = InputEntry()
         if self.my_bluetooth.adapter:
             self.display_device_entry.set_text(self.my_bluetooth.adapter.get_name())
+            self.display_device_entry.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        else:
+            self.display_device_entry.set_sensitive(False)
         self.display_device_entry.set_size(HSCALEBAR_WIDTH, WIDGET_HEIGHT)
         self.display_device_entry.entry.connect("changed", self.__display_device_changed)
         self.__widget_pack_start(self.display_box,
@@ -553,6 +556,7 @@ class BlueToothView(gtk.VBox):
         self.oper_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.notice_label = Label("", text_x_align = ALIGN_START, label_width = 610)
         self.search_button = Button(_("Search"))
+        self.search_button.set_sensitive(self.my_bluetooth.adapter.get_powered())
         self.search_button.connect("clicked", self.__on_search)
         self.__widget_pack_start(self.oper_box,
                 [self.notice_label,
@@ -575,7 +579,8 @@ class BlueToothView(gtk.VBox):
 
         self.connect("expose-event", self.__expose)
 
-        self.__get_devices()
+        if self.my_bluetooth.adapter.get_powered():
+            self.__get_devices()
 
     def __on_property_changed(self, adapter, key, value):
         if key == "Powered":
@@ -727,6 +732,7 @@ class BlueToothView(gtk.VBox):
             return
 
         if object == "enable_open":
+            print "toggled"
             self.__set_enable_open(widget.get_active())
             return
 

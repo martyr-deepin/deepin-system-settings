@@ -142,26 +142,33 @@ class TrayBluetoothPlugin(object):
         self.ori_height = 93
         self.height = self.ori_height
         self.device_items = []
-        self.__start_service()
-        
-        try:
-            self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
-                                            self.__on_default_adapter_changed)
-        except Exception, e:
-            print e
+        self.__init_my_bluetooth_and_start_service()
         
         servicemanager.connect("service-start", self.__on_bluetooth_service_start)
         servicemanager.connect("service-stop", self.__on_bluetooth_service_stop)
         
+    def __init_my_bluetooth_and_start_service(self):
+        try:
+            self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
+                                            self.__on_default_adapter_changed)
+            self.my_bluetooth.adapter.connect("property-changed", self.__on_adapter_property_changed)
+        except Exception, e:
+            print e
+        self.__start_service()
+        
     def __on_bluetooth_service_start(self, gobj, path):
         print "service_start"
         self.tray_icon.set_visible(True)
-        self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
-                                        self.__on_default_adapter_changed)
-        self.__start_service()
+        self.__init_my_bluetooth_and_start_service()
         
     def __on_bluetooth_service_stop(self, gobj, path):
         self.tray_icon.set_visible(False)
+        
+    def __on_adapter_property_changed(self, gobj, key, value):
+        if key == "Powered":
+            self.adapter_toggle.set_active(value)
+            theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect"
+            self.tray_icon.set_icon_theme(theme)
         
     def __on_adapter_removed(self):
         print "adapter removed"
@@ -172,9 +179,7 @@ class TrayBluetoothPlugin(object):
         self.tray_icon.set_visible(True)
         
         if not self.my_bluetooth.adapter:
-            self.my_bluetooth = MyBluetooth(self.__on_adapter_removed, 
-                                            self.__on_default_adapter_changed)
-            self.__start_service()
+            self.__init_my_bluetooth_and_start_service()
         
     def __start_service(self):
         import subprocess
@@ -194,10 +199,13 @@ class TrayBluetoothPlugin(object):
         self.tray_icon.set_icon_theme("enable")
 
         if self.my_bluetooth.adapter:
-            if not self.my_bluetooth.adapter.get_powered():
-                self.tray_icon.set_no_show_all(True)
-        else:
-            self.tray_icon.set_no_show_all(True)
+        #     if not self.my_bluetooth.adapter.get_powered():
+        #         self.tray_icon.set_no_show_all(True)
+        # else:
+        #     self.tray_icon.set_no_show_all(True)
+            powered = self.my_bluetooth.adapter.get_powered()
+            theme = "enable" if powered else "enable_disconnect"
+            self.tray_icon.set_icon_theme(theme)
 
     def id(self):
         return "deepin-bluetooth-plugin-hailongqiu"
