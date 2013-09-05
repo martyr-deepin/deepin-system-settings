@@ -8,7 +8,7 @@ from dtk.ui.draw import (draw_text, draw_vlinear)
 import gtk
 import pango
 from nls import _
-
+CHECK_WIDTH = 60
 def str_mark_down(string):
     if string:
         return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") 
@@ -56,12 +56,13 @@ class NothingItem(TreeItem):
 
     def get_column_renders(self):
         return [lambda w,r: self.render_background(w, r),
+                lambda w,r: self.render_background(w, r),
                 self.render_nothing,
                 lambda w,r: self.render_background(w, r)]
 
     def get_column_widths(self):
         '''docstring for get_column_widths'''
-        return [200, 100, -1]
+        return [CHECK_WIDTH, 200, 100, -1]
     
     def get_height(self):
         return 30
@@ -79,7 +80,7 @@ class SessionItem(TreeItem):
         self.item = item
         self.is_double_click = False
         self.autorun = item.has_gnome_auto()
-        self.check_buffer = CheckButtonBuffer(self.autorun, 2, 3)
+        self.check_buffer = CheckButtonBuffer(self.autorun, CHECK_WIDTH/2 - 16, 3)
         
         self.padding_x = 10
 
@@ -89,16 +90,19 @@ class SessionItem(TreeItem):
         self.autorun = run
         self.redraw()
     
+    
+    def render_check(self, cr, rect):
+        self.render_background(cr, rect)
+        #if self.autorun:
+        self.check_buffer.render(cr, rect)
 
 
     def render_app(self, cr, rect):
         app_name = str_mark_down(self.item.name)
         self.render_background(cr, rect)
-        CHECK_LEFT_PADDING = 5
-        CHECK_RIGHT_PADDING = 5
         
         #if self.autorun:
-        self.check_buffer.render(cr, rect)
+        #self.check_buffer.render(cr, rect)
             #if self.is_select:
                 #check_icon = app_theme.get_pixbuf("network/check_box-3.png")
             #else:
@@ -110,7 +114,7 @@ class SessionItem(TreeItem):
         (text_width, text_height) = get_content_size(app_name)
         rect.x += self.padding_x
         rect.width -= self.padding_x * 2        
-        draw_text(cr, app_name, rect.x + CHECK_RIGHT_PADDING*2 + 16, rect.y, rect.width, rect.height,
+        draw_text(cr, app_name, rect.x , rect.y, rect.width, rect.height,
                 alignment = pango.ALIGN_LEFT)
         
         
@@ -145,11 +149,11 @@ class SessionItem(TreeItem):
                     alignment = pango.ALIGN_LEFT)
 
     def get_column_renders(self):
-        return [self.render_app, self.render_description, self.render_exec]
+        return [self.render_check, self.render_app, self.render_description, self.render_exec]
 
     def get_column_widths(self):
         '''docstring for get_column_widths'''
-        return [200,  300, 200]
+        return [CHECK_WIDTH, 200,  300, 200]
 
     def get_height(self):
         return 30
