@@ -50,6 +50,7 @@ class PowerView(gtk.VBox):
         self.wait_duration_items = [("1 %s" % _("Minute"), 60), 
                                     ("5 %s" % _("Minutes"), 300), 
                                     ("10 %s" % _("Minutes"), 600), 
+                                    ("15 %s" % _("Minutes"), 900),
                                     ("30 %s" % _("Minutes"), 1800), 
                                     ("1 %s" % _("Hour"), 3600), 
                                     (_("Never"), 0)
