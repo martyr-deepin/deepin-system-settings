@@ -114,6 +114,9 @@ class NMDeviceEthernet(NMDevice):
             wired_prio_connections = sorted(nm_remote_settings.get_wired_connections(),
                                     key = lambda x: int(nm_remote_settings.cf.get("conn_priority", x.settings_dict["connection"]["uuid"])),
                                     reverse = True)
+            
+            primary_connection = nm_remote_settings.get_primary_wire(self.object_path)
+            if primary_connection: wired_prio_connections.insert(0, primary_connection)
 
             self.thread_wiredauto = ThreadWiredAuto(self.object_path, wired_prio_connections)
             self.thread_wiredauto.setDaemon(True)

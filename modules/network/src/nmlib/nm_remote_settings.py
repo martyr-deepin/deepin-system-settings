@@ -50,6 +50,8 @@ except:
     #from network.src.helper import event_manager
 #except:
     #from helper import event_manager
+WIRE_SECTION = 'primary_wired'
+WIRELESS_SECTION = 'primary_wireless'
 
 class NMRemoteSettings(NMObject):
     '''NMRemoteSettings'''
@@ -80,6 +82,12 @@ class NMRemoteSettings(NMObject):
         if "conn_priority" not in self.cf.sections():
             self.cf.add_section("conn_priority")
 
+        if WIRE_SECTION not in self.cf.sections():
+            self.cf.add_section(WIRE_SECTION)
+
+        if WIRELESS_SECTION not in self.cf.sections():
+            self.cf.add_section(WIRELESS_SECTION)
+
         max_prio = 0
         for conn_uuid in map(lambda x: x.settings_dict["connection"]["uuid"], self.list_connections()):
             if conn_uuid not in self.cf.options("conn_priority"):
@@ -93,6 +101,63 @@ class NMRemoteSettings(NMObject):
                 self.cf.set("conn_priority", conn_uuid, int(self.cf.getint("conn_priority", conn_uuid)/2))
 
         self.cf.write(open(self.config_file, "w"))
+
+    def write_config(self):
+        with open(self.config_file, 'w') as f:
+            self.cf.write(f)
+
+    def remove_gones(self, hw, uuid):
+        connection = self.get_connection_by_uuid(uuid)
+        if connection:
+            return connection
+        else:
+            self.remove_option(WIRE_SECTION, hw)
+            return None
+
+    def set_primary_wire(self, wired_device, connection):
+        if connection == None:
+            result = self.get_primary_wire(wired_device)
+            if result:
+                self.cf.remove_option(WIRE_SECTION, result)
+        else:
+            devices = get_cache().get_spec_object(wired_device.object_path)
+            hw_address = devices.get_hw_address().replace(":", "-")
+            uuid = connection.settings_dict["connection"]["uuid"]
+            self.cf.set(WIRE_SECTION, hw_address, uuid)
+
+        self.write_config()
+        return True
+
+    def get_primary_wire(self, wired_device):
+        if type(wired_device) is str:
+            devices = get_cache().get_spec_object(wired_device)
+        else:
+            devices = get_cache().get_spec_object(wired_device.object_path)
+        hw_address = devices.get_hw_address().replace(":", "-")
+        if hw_address in self.cf.options(WIRE_SECTION):
+            return self.remove_gones(hw_address, self.cf.get(WIRE_SECTION, hw_address))
+        else:
+            return None
+
+    def set_primary_wireless(self, ap, connection):
+        if connection == None:
+            result = self.get_primary_wireless(ap)
+            if result:
+                self.cf.remove_option(WIRELESS_SECTION, result)
+        else:
+            hw_address = ap.get_hw_address().replace(":", "-")
+            uuid = connection.settings_dict["connection"]["uuid"]
+            self.cf.set(WIRELESS_SECTION, hw_address, uuid)
+
+        self.write_config()
+        return True
+
+    def get_primary_wireless(self, ap):
+        hw_address = ap.get_hw_address().replace(":", "-")
+        if hw_address in self.cf.options(WIRELESS_SECTION):
+            return self.remove_gones(hw_address, self.cf.get(WIRELESS_SECTION, hw_address))
+        else:
+            return None
 
     def list_connections(self):
         '''return connections object'''

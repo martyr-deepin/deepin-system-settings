@@ -57,6 +57,8 @@ class WiredSetting(Settings):
                 connection.update()
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                net_manager.set_primary_wire(self.device, connection)
+
                 Dispatcher.emit("connection-replace", connection)
                 # reset index
             self.set_button("apply", True)
@@ -83,6 +85,9 @@ class Sections(gtk.Alignment):
         self.set_button = set_button
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+        
+        if isinstance(connection, NMRemoteConnection):
+            net_manager.set_primary_wire(settings_obj.device, connection)
 
         self.main_box = gtk.VBox()
 

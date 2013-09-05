@@ -247,7 +247,7 @@ class WiredItem(GenItems):
             #self.device.nm_device_disconnect()
         if column == 2:
             from lan_config import WiredSetting
-            Dispatcher.to_setting_page(WiredSetting(self.device), False)
+            Dispatcher.to_setting_page(WiredSetting(self.device, net_manager.get_primary_wire(self.device)), False)
         else:
             device_ethernet = nm_module.cache.get_spec_object(self.device.object_path)
             device_ethernet.auto_connect()
@@ -325,7 +325,7 @@ class WirelessItem(GenItems):
     def single_click(self, column, x, y):
         if column ==3:
             from wlan_config import WirelessSetting
-            Dispatcher.to_setting_page(WirelessSetting(self.ap), False)
+            Dispatcher.to_setting_page(WirelessSetting(self.ap, net_manager.get_primary_wireless(self.ap)), False)
         elif column < 2:
             if self.network_state != 2:
                 self.connect_by_ssid(self.ssid, self.ap)
