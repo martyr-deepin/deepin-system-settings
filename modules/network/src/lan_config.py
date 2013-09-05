@@ -158,6 +158,18 @@ class Wired(gtk.VBox):
         self.mac_entry.connect("changed", self.save_settings, "mac_address")
         self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
+        self.mtu_spin.value_entry.connect("changed", self.spin_user_set)
+
+    def spin_user_set(self, widget, value):
+        if value == "":
+            return
+        value = int(value)
+        if self.mtu_spin.lower_value <= value <= self.mtu_spin.upper_value:
+            self.mtu_spin.update_and_emit(value)
+        elif value < self.mtu_spin.lower_value:
+            self.mtu_spin.update_and_emit(self.mtu_spin.lower_value)
+        else:
+            self.mtu_spin.update_and_emit(self.mtu_spin.upper_value)
 
         ## retrieve wired info
     def save_settings(self, widget, content, types):
