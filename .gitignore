@@ -11,5 +11,4 @@ dtk.egg-info
 *.egg-info
 *.egg-info/*
 #*#
-search_db/*
-.gitignore
+

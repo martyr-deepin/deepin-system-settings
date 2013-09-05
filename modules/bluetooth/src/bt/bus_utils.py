@@ -103,7 +103,7 @@ class BusBase(gobject.GObject):
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except:
             print "error occured when call %s" % method_name
-            #traceback.print_exc()
+            traceback.print_exc()
 
     def call_async(self, method_name, *args, **kwargs):
         try:

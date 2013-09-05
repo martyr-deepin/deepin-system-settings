@@ -21,6 +21,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import gtk
+import gobject
 from dtk.ui.menu import Menu
 from dtk.ui.iconview import IconView
 from dtk.ui.scrolled_window import ScrolledWindow
@@ -48,10 +50,10 @@ class UserThemeView(IconView):
         event_manager.add_callback("create-new-theme", self.on_create_new_theme)
         event_manager.add_callback("update-theme", self.__on_update_theme)
         event_manager.add_callback("clear-userview-highlight", self.clear_highlight_status)
-        self.__init_themes()
-
-    @threaded
+        gobject.timeout_add(500, lambda : self.__init_themes())
+        
     def __init_themes(self):
+        print "user start"
         user_themes = theme_manager.get_user_themes()
         if user_themes:
             self.add_themes(user_themes)
@@ -61,6 +63,7 @@ class UserThemeView(IconView):
                 self.__single_click_item = item
                 self.set_highlight(self.__single_click_item)
                 break
+        print "user end"
 
     def clear_highlight_status(self, name, obj, data):
         self.clear_highlight()
@@ -163,8 +166,15 @@ class UserThemeView(IconView):
                 return
 
     def add_themes(self, themes):
-        theme_items = [ThemeItem(theme_file) for theme_file in themes ]
-        self.add_items(theme_items)
+        for theme_file in themes:
+            @threaded
+            def add_theme_intern(f):
+                self.add_items([ThemeItem(f)])
+                
+            gtk.gdk.threads_enter()
+            add_theme_intern(theme_file)
+            gtk.gdk.threads_leave()
+        
 
 class SystemThemeView(IconView):
 
@@ -178,10 +188,11 @@ class SystemThemeView(IconView):
         self.connect("double-click-item", self.__on_double_click_item)
         self.connect("single-click-item", self.__on_single_click_item)
         self.connect("right-click-item", self.__on_right_click_item)
-        self.__init_themes()
         event_manager.add_callback("clear-systemview-highlight", self.clear_highlight_status)
-
+        gobject.timeout_add(500, lambda : self.__init_themes())
+        
     def __init_themes(self):
+        print "system start"
         system_themes = theme_manager.get_system_themes()
         if system_themes:
             self.add_themes(system_themes)
@@ -191,6 +202,7 @@ class SystemThemeView(IconView):
                 self.__single_click_item = item
                 self.set_highlight(self.__single_click_item)
                 break
+        print "system end"
 
     def clear_highlight_status(self, name, obj, data):
         self.clear_highlight()
@@ -261,5 +273,11 @@ class SystemThemeView(IconView):
         Menu(menu_items, True).show((int(x), int(y)))
 
     def add_themes(self, themes):
-        theme_items = [ThemeItem(theme_file) for theme_file in themes ]
-        self.add_items(theme_items)
+        for theme_file in themes:
+            @threaded
+            def add_theme_intern(f):
+                self.add_items([ThemeItem(f)])
+                
+            gtk.gdk.threads_enter()
+            add_theme_intern(theme_file)
+            gtk.gdk.threads_leave()

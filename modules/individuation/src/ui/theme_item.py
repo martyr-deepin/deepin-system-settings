@@ -245,7 +245,6 @@ class ThemeItem(gobject.GObject):
                   self.title_size,
                   alignment=pango.ALIGN_CENTER
                   )
-        
     def render_wallpaper(self, cr, pixbuf, wallpaper_draw_x, wallpaper_draw_y, reflection=False):    
         cr.set_source_rgba(1, 1, 1, 1)
         cr.rectangle(wallpaper_draw_x - self.wallpaper_frame_size,

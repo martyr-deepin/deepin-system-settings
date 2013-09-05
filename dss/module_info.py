@@ -58,10 +58,10 @@ class ModuleInfo(object):
         
         self.icon_pixbuf = None
         self.menu_icon_pixbuf = None
-        if icon_infos[0] and icon_infos[1]:
+        try:
             self.icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[0])
             self.menu_icon_pixbuf = gtk.gdk.pixbuf_new_from_file(icon_infos[1])
-        else:
+        except:
             self.icon_pixbuf = app_theme.get_pixbuf("navigate/none-big.png").get_pixbuf()
             self.menu_icon_pixbuf = app_theme.get_pixbuf("navigate/none-small.png").get_pixbuf()
             

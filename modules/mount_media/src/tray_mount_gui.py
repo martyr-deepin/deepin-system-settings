@@ -32,6 +32,11 @@ import gio
 import glib
 import gobject
 
+import pynotify
+pynotify.init("Mount manager")
+def notify_message(summary, body):
+    noti = pynotify.Notification(summary, body, "/usr/share/icons/Deepin/apps/48/mountmanager.png")
+    noti.show()
 
 image_path = os.path.dirname(sys.argv[0])
 ICON_SIZE = 16
@@ -374,10 +379,12 @@ class EjecterApp(gobject.GObject):
 
     def drive_disconnected_callback(self, volume_monitor, drive):
         print "drive disconnected"
+        notify_message(_("Mount manager"), _("Removable media \"%s\" has been removed") % drive.get_name())
         self.__load_monitor()
 
     def drive_connected_callback(self, volume_monitor, drive):
         print "drive connected"
+        notify_message(_("Mount manager"), _("Found new removable media \"%s\"") % drive.get_name())
         self.__load_monitor()
 
     def drive_changed_callback(self, volume_monitor, drive):

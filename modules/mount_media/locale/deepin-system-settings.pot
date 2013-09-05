@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:41+0800\n"
+"POT-Creation-Date: 2013-08-29 15:22+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,38 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_mount_gui.py:159
+#: ../src/tray_mount_gui.py:164
 msgid "Storage Device"
+msgstr ""
+
+#: ../src/tray_mount_gui.py:382 ../src/tray_mount_gui.py:387
+msgid "Mount manager"
+msgstr ""
+
+#: ../src/tray_mount_gui.py:382
+#, python-format
+msgid "Removable media \"%s\" has been removed"
+msgstr ""
+
+#: ../src/tray_mount_gui.py:387
+#, python-format
+msgid "Found new removable media \"%s\""
+msgstr ""
+
+#: ../src/tray_mount_plugin.py:64
+msgid "Mount Failed"
+msgstr ""
+
+#: ../src/tray_mount_plugin.py:65
+#, python-format
+msgid "mount '%s' error."
+msgstr ""
+
+#: ../src/tray_mount_plugin.py:68
+msgid "Unmount Failed"
+msgstr ""
+
+#: ../src/tray_mount_plugin.py:69
+#, python-format
+msgid "umount '%s' error."
 msgstr ""
