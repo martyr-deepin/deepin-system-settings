@@ -140,6 +140,12 @@ class MyPaned(HPaned):
     def set_button_show(self, hide):
         self.no_show_button = hide
         self.always_show_button = not hide
+        if self.no_show_button:
+            self.do_button_press_event = lambda e: e
+            self.do_button_release_event = lambda e:e
+        else:
+            self.do_button_press_event = super(MyPaned, self).do_button_press_event
+            self.do_button_release_event = super(MyPaned, self).do_button_release_event
         self.queue_draw()
         
     def do_motion_notify_event(self, e):
