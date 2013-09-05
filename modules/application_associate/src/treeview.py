@@ -62,7 +62,7 @@ class NothingItem(TreeItem):
 
     def get_column_widths(self):
         '''docstring for get_column_widths'''
-        return [CHECK_WIDTH, 200, 100, -1]
+        return [CHECK_WIDTH, 200, 300, 200]
     
     def get_height(self):
         return 30
