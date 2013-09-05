@@ -409,7 +409,7 @@ class HidenItem(GenItems):
         
         self.connection = connection
         self.ap = None
-        self.id = self.connection.get_setting("802-11-wireless").ssid + "[H]"
+        self.id = self.connection.get_setting("802-11-wireless").ssid
         print self.id
 
     def render_id(self, cr, rect):
