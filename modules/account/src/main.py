@@ -118,6 +118,8 @@ class AccountSetting(object):
         self.label_widgets["deepin_account_new"] = Label(_("Unbound"), enable_select=False, enable_double_click=False)
         self.label_widgets["account_create_error"] = Label("", wrap_width=360, enable_select=False, enable_double_click=False)
         self.label_widgets["account_info_error"] = Label("", wrap_width=360, enable_select=False, enable_double_click=False)
+        self.label_widgets["face_recognition"] = Label(_("Face Recognition"), wrap_width=360, 
+                                                       enable_select=False, enable_double_click=False)
         # image
         self.image_widgets["lock_pixbuf"] = app_theme.get_pixbuf("lock/lock.png")
         self.image_widgets["unlock_pixbuf"] = app_theme.get_pixbuf("lock/unlock.png")
@@ -135,6 +137,11 @@ class AccountSetting(object):
             inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
             active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/active_normal.png"))
         self.button_widgets["passwd"] = InputEntry()
+        self.button_widgets["face_recognition"] = SwitchButton(
+            inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+            active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/active_normal.png"))
+        self.button_widgets["face_record"] = Button(_("Record"))
+        self.button_widgets["recognition_test"] = Button(_("Test"))
         #self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
         #self.button_widgets["disk_readonly_check"] = CheckButton(_("磁盘操作权限只读"), padding_x=0)
         #self.button_widgets["mountable_check"] = CheckButton(_("可加载移动设备"), padding_x=0)
@@ -176,7 +183,7 @@ class AccountSetting(object):
         self.container_widgets["account_info_hbox"] = gtk.HBox(False)
         self.container_widgets["account_info_vbox"] = gtk.VBox(False)
         self.container_widgets["account_add_vbox"] = gtk.VBox(False)
-        self.container_widgets["account_info_table"] = gtk.Table(6, 2)
+        self.container_widgets["account_info_table"] = gtk.Table(7, 2)
         self.container_widgets["check_button_table"] = gtk.Table(4, 2)
         self.container_widgets["account_info_table_new"] = gtk.Table(4, 2)
         self.container_widgets["check_button_table_new"] = gtk.Table(4, 2)
@@ -212,6 +219,12 @@ class AccountSetting(object):
         self.alignment_widgets["edit_iconfile"] = gtk.Alignment()
         self.button_widgets["cancel_set_icon"] = Button(_("Cancel"))
         self.button_widgets["save_edit_icon"] = Button(_("Save"))
+        
+        # face record page 
+        self.alignment_widgets["face_record"] = gtk.Alignment()
+        self.button_widgets["back_face_record"] = Button(_("Back"))
+        self.button_widgets["expi"]lll= 
+        self.button_widgets["ok_face_record"] = Button(_("OK"))
 
     def __adjust_widget(self):
         self.container_widgets["main_vbox"].pack_start(self.container_widgets["slider"])
@@ -219,10 +232,12 @@ class AccountSetting(object):
         self.container_widgets["slider"].append_page(self.alignment_widgets["main_hbox"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["set_iconfile"])
         self.container_widgets["slider"].append_page(self.alignment_widgets["edit_iconfile"])
+        self.container_widgets["slider"].append_page(self.alignment_widgets["face_record"])
         self.container_widgets["slider"].set_size_request(800, 450)
         self.alignment_widgets["main_hbox"].set_name("main_hbox")
         self.alignment_widgets["set_iconfile"].set_name("set_iconfile")
         self.alignment_widgets["edit_iconfile"].set_name("edit_iconfile")
+        self.alignment_widgets["face_record"].set_name("face_record")
 
         self.container_widgets["statusbar"].set_buttons([self.button_widgets["disable_account"], 
                                                          self.button_widgets["add_account"],
@@ -301,6 +316,19 @@ class AccountSetting(object):
             self.__make_align(self.label_widgets["passwd"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 4, 5, 4)
         self.container_widgets["account_info_table"].attach(
             self.__make_align(self.label_widgets["passwd_char"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 4, 5, 4)
+        
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.label_widgets["face_recognition"], xalign=1.0, width=LABEL_WIDTH), 0, 1, 5, 6, 4)
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.button_widgets["face_recognition"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 5, 6, 4)
+        
+        self.container_widgets["face_record_test_hbox"] = gtk.HBox(homogeneous=True, spacing=WIDGET_SPACING)
+        if self.button_widgets["face_recognition"].get_active():
+            self.container_widgets["face_record_test_hbox"].pack_start(self.button_widgets["face_record"])
+            self.container_widgets["face_record_test_hbox"].pack_start(self.button_widgets["recognition_test"])
+        self.container_widgets["account_info_table"].attach(
+            self.__make_align(self.container_widgets["face_record_test_hbox"], xalign=0.0, width=COMBO_WIDTH), 1, 2, 6, 7, 4)
+        
         #self.container_widgets["account_info_table"].attach(
             #self.__make_align(self.label_widgets["deepin_account_tips"]), 0, 1, 5, 6, 4)
         #self.container_widgets["account_info_table"].attach(
@@ -436,9 +464,11 @@ class AccountSetting(object):
         self.button_widgets["del_account"].connect("clicked", self.del_account_button_clicked)
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
         self.button_widgets["account_create"].connect("clicked", self.account_create_button_clicked)
+        self.button_widgets["face_record"].connect("clicked", self.face_record_clicked_cb)
         self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
         self.button_widgets["nopw_login"].connect("toggled", self.nopw_login_toggled)
         self.button_widgets["disable_account"].connect("clicked", self.account_lock_button_clicked)
+        self.button_widgets["face_recognition"].connect("toggled", self.face_recognition_switch_toggled)
 
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
@@ -555,6 +585,14 @@ class AccountSetting(object):
         except Exception, e:
             if isinstance(e, (AccountsPermissionDenied, AccountsUserExists, AccountsFailed, AccountsUserDoesNotExist)):
                 self.set_account_info_error_text(e.msg)
+                
+    def face_recognition_switch_toggled(self, button):
+        if  button.get_active():
+            self.container_widgets["face_record_test_hbox"].pack_start(self.button_widgets["face_record"])
+            self.container_widgets["face_record_test_hbox"].pack_start(self.button_widgets["recognition_test"])
+        else:
+            container_remove_all(self.container_widgets["face_record_test_hbox"])
+        self.container_widgets["face_record_test_hbox"].show_all()
         
     ## add account cb >> ##
     def add_account_button_clicked(self, button):
@@ -1054,6 +1092,17 @@ class AccountSetting(object):
 
     ## set icon >> ##
     def icon_file_press_cb(self, widget, event):
+        if not self.current_select_user:
+            return
+        self.set_account_info_error_text("")
+        self.current_set_user = self.current_select_user
+        self.container_widgets["icon_set_page"].refresh()
+        self.alignment_widgets["set_iconfile"].show_all()
+        self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
+        self.module_frame.send_submodule_crumb(2, _("Set Picture"))
+        
+    # face record
+    def face_record_clicked_cb(self, widget):
         if not self.current_select_user:
             return
         self.set_account_info_error_text("")
