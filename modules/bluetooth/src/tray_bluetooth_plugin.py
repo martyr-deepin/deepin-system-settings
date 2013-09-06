@@ -206,6 +206,8 @@ class TrayBluetoothPlugin(object):
             powered = self.my_bluetooth.adapter.get_powered()
             theme = "enable" if powered else "enable_disconnect"
             self.tray_icon.set_icon_theme(theme)
+        else:
+            self.tray_icon.set_no_show_all(True)
 
     def id(self):
         return "deepin-bluetooth-plugin-hailongqiu"
