@@ -100,8 +100,8 @@ class DeviceItem(TreeItem):
             try:
                 self.input_service = Input(self.device.device_path)
                 self.input_service.i_connect()
-                if self.input_service.get_state() == "connected":
-                    notify_message(_("Bluetooth Audio"),
+                if self.input_service.get_connected():
+                    notify_message(_("Bluetooth Input Service"),
                                    _("Successfully connected to the Bluetooth input device."))
                 else:
                     notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))

@@ -314,6 +314,7 @@ class DeviceItem(gobject.GObject):
             if prop == "HumanInterfaceDeviceService":
                 if not hasattr(self, "input_service"):
                     self.input_service = Input(self.device.device_path)
+                print self.input_service.get_connected()
                 if self.input_service.get_connected():
                     items.append((self.service_connected_pixbufs, _("Input Service"), lambda : self.do_disconnect_input_service()))
                 else:
@@ -350,8 +351,9 @@ class DeviceItem(gobject.GObject):
     def do_connect_input_service(self):
         try:
             self.input_service.i_connect()
+            print self.input_service.get_connected() 
             if self.input_service.get_connected() == True:
-                notify_message(_("Bluetooth Audio"),
+                notify_message(_("Bluetooth Input Service"),
                                _("Successfully connected to the Bluetooth input device."))
             else:
                 notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
