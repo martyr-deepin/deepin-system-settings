@@ -33,8 +33,8 @@ class PermanentSettings(object):
                 os.makedirs(os.path.dirname(BLUETOOTH_CONFIG_PATH))
                 with open(BLUETOOTH_CONFIG_PATH, "w") as cfg_fileobj:
                     self.cfg_parser.add_section("General")
-                    self.cfg_parser.set("General", "Powered", "True")
-                    self.cfg_parser.set("General", "Disable-Icon-When-Close", "False")
+                    self.cfg_parser.set("General", "Powered", "true")
+                    self.cfg_parser.set("General", "Disable-Icon-When-Close", "false")
                     self.cfg_parser.write(cfg_fileobj)
             else:
                 with open(BLUETOOTH_CONFIG_PATH) as cfg_fileobj:
@@ -43,6 +43,7 @@ class PermanentSettings(object):
             print e
 
     def set_powered(self, value):
+        value = "true" if value else "false"
         with open(BLUETOOTH_CONFIG_PATH, "w") as cfg_fileobj:
             self.cfg_parser.set("General", "Powered", value)
             self.cfg_parser.write(cfg_fileobj)

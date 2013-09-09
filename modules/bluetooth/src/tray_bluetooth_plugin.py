@@ -183,6 +183,7 @@ class TrayBluetoothPlugin(object):
         
     def __on_adapter_property_changed(self, gobj, key, value):
         if key == "Powered":
+            print self.my_bluetooth.adapter.get_powered()
             theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect" 
             self.tray_icon.set_icon_theme(theme)
         
@@ -250,6 +251,7 @@ class TrayBluetoothPlugin(object):
     def __bluetooth_selected(self, widget, event):
         self.this.hide_menu()
         run_command("deepin-system-settings bluetooth")
+        widget.show_all()
 
     def __get_devices(self):
         if self.my_bluetooth.adapter.get_powered():

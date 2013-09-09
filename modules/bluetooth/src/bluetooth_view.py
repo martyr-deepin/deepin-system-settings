@@ -511,6 +511,7 @@ class BlueToothView(gtk.VBox):
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.enable_open_label = self.__setup_label(_("Enable bluetooth"))
         if self.my_bluetooth.adapter:
+            self.my_bluetooth.adapter.set_powered(permanent_settings.get_powered())
             self.enable_open_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
         else:
             self.enable_open_label.set_sensitive(False)
@@ -742,7 +743,6 @@ class BlueToothView(gtk.VBox):
             self.device_iconview.add_items(items)
                 
     def __set_enable_open(self, is_open=True):
-        self.my_bluetooth.adapter.set_powered(is_open)
         self.enable_open_label.set_sensitive(is_open)
         self.display_device_label.set_sensitive(is_open)
         self.search_label.set_sensitive(is_open)
@@ -763,9 +763,9 @@ class BlueToothView(gtk.VBox):
             return
 
         if object == "enable_open":
-            print "toggled"
             self.__set_enable_open(widget.get_active())
-            permanent_settings.set_powered(widget.get_powered())
+            permanent_settings.set_powered(widget.get_active())
+            self.my_bluetooth.adapter.set_powered(widget.get_active())
             return
 
         if object == "search":
