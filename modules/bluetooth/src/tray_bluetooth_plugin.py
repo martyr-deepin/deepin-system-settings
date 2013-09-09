@@ -184,7 +184,6 @@ class TrayBluetoothPlugin(object):
             self.adapter_toggle.set_active(value)
             theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect" 
             self.tray_icon.set_icon_theme(theme)
-            self.tray_icon.queue_draw()
         
     def __on_adapter_removed(self):
         print "adapter removed"
