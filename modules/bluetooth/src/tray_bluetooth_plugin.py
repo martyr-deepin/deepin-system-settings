@@ -6,6 +6,7 @@
 #
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
+#             Wang Yaohua <mr.asianwang@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -181,7 +182,6 @@ class TrayBluetoothPlugin(object):
         
     def __on_adapter_property_changed(self, gobj, key, value):
         if key == "Powered":
-            self.adapter_toggle.set_active(value)
             theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect" 
             self.tray_icon.set_icon_theme(theme)
         
@@ -235,24 +235,30 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter == None:
             return
 
+        self.my_bluetooth.adapter.set_powered(widget.get_active())
         if widget.get_active():
             self.tray_icon.set_icon_theme("enable")
         else:
             self.tray_icon.set_icon_theme("enable_disconnect")
-        self.my_bluetooth.adapter.set_powered(widget.get_active())
-
+        self.this.hide_menu()
+        self.tray_icon.emit("popup-menu-event", TrayBluetoothPlugin.__class__) # Hacked by hualet :)
+            
     def __bluetooth_selected(self, widget, event):
         self.this.hide_menu()
         run_command("deepin-system-settings bluetooth")
 
     def __get_devices(self):
-        devices = self.my_bluetooth.get_devices()
-        device_count = len(filter(lambda x : x.get_paired(), devices))
+        if self.my_bluetooth.adapter.get_powered():
+            devices = self.my_bluetooth.get_devices()
+            device_count = len(filter(lambda x : x.get_paired(), devices))
 
-        self.device_items = []
-        for d in devices:
-            if d.get_paired():
-                self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, d))
+            self.device_items = []
+            for d in devices:
+                if d.get_paired():
+                    self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, d))
+        else:
+            device_count = 0
+            self.device_items = []
 
         self.height = self.ori_height
         if device_count:
