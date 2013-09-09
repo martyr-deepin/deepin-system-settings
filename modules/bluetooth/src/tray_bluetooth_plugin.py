@@ -168,7 +168,8 @@ class TrayBluetoothPlugin(object):
         try:
             self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
                                             self.__on_default_adapter_changed)
-            self.my_bluetooth.adapter.connect("property-changed", self.__on_adapter_property_changed)
+            if self.my_bluetooth.adapter:
+                self.my_bluetooth.adapter.connect("property-changed", self.__on_adapter_property_changed)
         except Exception, e:
             print e
         self.__start_service()
