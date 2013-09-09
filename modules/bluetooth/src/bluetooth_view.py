@@ -584,7 +584,10 @@ class BlueToothView(gtk.VBox):
         self.oper_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.notice_label = Label("", text_x_align = ALIGN_START, label_width = 610)
         self.search_button = Button(_("Search"))
-        self.search_button.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        if self.my_bluetooth.adapter:
+            self.search_button.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        else:
+            self.search_button.set_sensitive(False)
         self.search_button.connect("clicked", self.__on_search)
         self.__widget_pack_start(self.oper_box,
                 [self.notice_label,
