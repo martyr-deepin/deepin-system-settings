@@ -40,7 +40,7 @@ import gtk
 import pango
 from constant import *
 from nls import _
-from bt.device import Device, AudioSink, Headset
+from bt.device import Device, AudioSink, Headset, Input
 from bt.utils import bluetooth_class_to_type, bluetooth_uuid_to_string
 from bt.utils import is_bluetooth_file_type, is_bluetooth_audio_type
 
@@ -304,12 +304,19 @@ class DeviceItem(gobject.GObject):
                 else:
                     items.append((None, _("Headset"), lambda : self.do_connect_headset()))
             if prop == "AudioSink":
-                if not hasattr(self, "audio_sink_service"):
-                    self.audio_sink_service = AudioSink(self.device.device_path)
-                if self.audio_sink_service.get_connected():
+                if not hasattr(self, "audio_sink"):
+                    self.audio_sink = AudioSink(self.device.device_path)
+                if self.audio_sink.get_connected():
                     items.append((self.service_connected_pixbufs, _("Audio Sink"), lambda : self.do_disconnect_audio_sink()))
                 else:
                     items.append((None, _("Audio Sink"), lambda : self.do_connect_audio_sink()))
+            if prop == "HumanInterfaceDeviceService":
+                if not hasattr(self, "input_service"):
+                    self.input_service = Input(self.device.device_path)
+                if self.input_service.get_connected():
+                    items.append((self.service_connected_pixbufs, _("Input Service"), lambda : self.do_disconnect_input_service()))
+                else:
+                    items.append((None, _("Input Service"), lambda : self.do_connect_input_service()))
             if prop == "OBEXObjectPush":
                 items.append((None, _("Send File"), lambda : self.do_send_file()))
 
@@ -335,6 +342,26 @@ class DeviceItem(gobject.GObject):
         if hasattr(self, "audio_sink_service"):
             try:
                 self.audio_sink_service.as_disconnect()
+            except Exception, e:
+                print e
+            self.emit_redraw_request()
+
+    def do_connect_input_service(self):
+        try:
+            self.input_service.i_connect()
+            if self.input_service.get_connected() == True:
+                notify_message(_("Bluetooth Audio"),
+                               _("Successfully connected to the Bluetooth input device."))
+            else:
+                notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
+            self.emit_redraw_request()
+        except Exception, e:
+            print "Exception:", e
+
+    def do_disconnect_input_service(self):
+        if hasattr(self, "audio_sink_service"):
+            try:
+                self.audio_sink_service.i_disconnect()
             except Exception, e:
                 print e
             self.emit_redraw_request()
