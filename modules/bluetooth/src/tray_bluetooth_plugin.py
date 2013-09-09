@@ -45,6 +45,7 @@ from bluetooth_sender import BluetoothSender
 from bt.device import AudioSink, Input
 from helper import notify_message
 from servicemanager import servicemanager
+from permanent_settings import permanent_settings
 from bt.utils import is_bluetooth_audio_type, is_bluetooth_file_type, is_bluetooth_input_type
 
 class DeviceItem(TreeItem):
@@ -216,6 +217,7 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter:
         #     if not self.my_bluetooth.adapter.get_powered():
         #         self.tray_icon.set_no_show_all(True)
+            self.my_bluetooth.adapter.set_powered(permanent_settings.get_powered())
             powered = self.my_bluetooth.adapter.get_powered()
             theme = "enable" if powered else "enable_disconnect"
             self.tray_icon.set_icon_theme(theme)
@@ -238,8 +240,10 @@ class TrayBluetoothPlugin(object):
         self.my_bluetooth.adapter.set_powered(widget.get_active())
         if widget.get_active():
             self.tray_icon.set_icon_theme("enable")
+            permanent_settings.set_powered(True)
         else:
             self.tray_icon.set_icon_theme("enable_disconnect")
+            permanent_settings.set_powered(False)
         self.this.hide_menu()
         self.tray_icon.emit("popup-menu-event", TrayBluetoothPlugin.__class__) # Hacked by hualet :)
             

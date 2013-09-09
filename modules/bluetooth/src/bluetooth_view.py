@@ -46,6 +46,7 @@ from bt.utils import is_bluetooth_file_type, is_bluetooth_audio_type
 
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
+from permanent_settings import permanent_settings
 from helper import event_manager, notify_message
 import uuid
 import re
@@ -761,6 +762,7 @@ class BlueToothView(gtk.VBox):
         if object == "enable_open":
             print "toggled"
             self.__set_enable_open(widget.get_active())
+            permanent_settings.set_powered(widget.get_powered())
             return
 
         if object == "search":

@@ -44,7 +44,7 @@ class PermanentSettings(object):
 
     def set_powered(self, value):
         with open(BLUETOOTH_CONFIG_PATH, "w") as cfg_fileobj:
-            self.cfg_parser.set("General", "Powered", str(value))
+            self.cfg_parser.set("General", "Powered", value)
             self.cfg_parser.write(cfg_fileobj)
             
     def get_powered(self):
@@ -58,4 +58,4 @@ class PermanentSettings(object):
     def get_disable_icon_when_close(self):
         return self.cfg_parser.getboolean("General", "Disable-Icon-When-Close")
             
-settings = PermanentSettings()
+permanent_settings = PermanentSettings()
