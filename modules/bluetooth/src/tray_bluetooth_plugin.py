@@ -41,10 +41,10 @@ import gtk
 from nls import _
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
-from bt.device import AudioSink
+from bt.device import AudioSink, Input
 from helper import notify_message
 from servicemanager import servicemanager
-from bt.utils import is_bluetooth_audio_type, is_bluetooth_file_type
+from bt.utils import is_bluetooth_audio_type, is_bluetooth_file_type, is_bluetooth_input_type
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 22
@@ -94,10 +94,25 @@ class DeviceItem(TreeItem):
             except Exception, e:
                 print "Exception:", e
 
+        def do_connect_input_service():
+            try:
+                self.input_service = Input(self.device.device_path)
+                self.input_service.i_connect()
+                if self.input_service.get_state() == "connected":
+                    notify_message(_("Bluetooth Audio"),
+                                   _("Successfully connected to the Bluetooth input device."))
+                else:
+                    notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
+                    self.emit_redraw_request()
+            except Exception, e:
+                print "Exception:", e
+
         if is_bluetooth_audio_type(self.device):
             return do_connect_audio_sink
         elif is_bluetooth_file_type(self.device):
             return do_send_file
+        elif is_bluetooth_input_type(self.device):
+            return do_connect_input_service
         else:
             return None
 
@@ -167,8 +182,9 @@ class TrayBluetoothPlugin(object):
     def __on_adapter_property_changed(self, gobj, key, value):
         if key == "Powered":
             self.adapter_toggle.set_active(value)
-            theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect"
+            theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect" 
             self.tray_icon.set_icon_theme(theme)
+            self.tray_icon.queue_draw()
         
     def __on_adapter_removed(self):
         print "adapter removed"
@@ -201,8 +217,6 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter:
         #     if not self.my_bluetooth.adapter.get_powered():
         #         self.tray_icon.set_no_show_all(True)
-        # else:
-        #     self.tray_icon.set_no_show_all(True)
             powered = self.my_bluetooth.adapter.get_powered()
             theme = "enable" if powered else "enable_disconnect"
             self.tray_icon.set_icon_theme(theme)
