@@ -83,7 +83,6 @@ class MountMedia(EjecterApp):
 
     def set_menu_size(self, height):
         if self.size_check:
-            print "set_size_request..."
             if height == 75: # 无移动设备挂载.
                 print "无移动设备挂载了... .."
                 self.this.hide_menu()
@@ -131,13 +130,11 @@ class MountMedia(EjecterApp):
 
     def show_menu(self):
         self.size_check = True
-        print "set size_check True"
         #print self.height
         self.this.set_size_request(self.width, self.height)
 
     def hide_menu(self):
         self.size_check = False
-        print "set size_check False"
 
 def return_insert():
     return 4

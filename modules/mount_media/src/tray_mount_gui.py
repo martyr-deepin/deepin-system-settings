@@ -20,11 +20,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from theme import app_theme
+from dtk.ui.button import ToggleButton
 from dtk.ui.line import HSeparator
 from dtk.ui.utils import set_clickable_cursor
 from vtk.draw  import draw_text, draw_pixbuf
 from vtk.utils import get_text_size
 from nls import _
+from permanent_settings import get_auto_mount, set_auto_mount
+
 import os
 import sys
 import gtk
@@ -166,9 +170,20 @@ class EjecterApp(gobject.GObject):
         self.title_label_ali = gtk.Alignment(0, 0, 0, 0)
         self.title_label_ali.set_padding(0, 0, 0, 0)
         self.title_label_ali.add(self.title_label)
+        
+        self.inactive_normal_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png")
+        self.active_normal_dpixbuf = app_theme.get_pixbuf("toggle_button/active_normal.png")
+        self.active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/active_disable.png")
+        self.auto_mount_toggle = ToggleButton(active_normal_dpixbuf=self.active_normal_dpixbuf, 
+                                              active_disable_dpixbuf=self.active_disable_dpixbuf, 
+                                              inactive_normal_dpixbuf=self.inactive_normal_dpixbuf)
+        self.auto_mount_toggle.set_tooltip_text(_("Automatically mount"))
+        self.auto_mount_toggle.set_active(get_auto_mount())
+        self.auto_mount_toggle.connect("toggled", self.__auto_mount_toggled)
 
         self.hbox.pack_start(self.title_image, False, False)
         self.hbox.pack_start(self.title_label_ali, True, True)
+        self.hbox.pack_end(self.auto_mount_toggle, False, False)
 
         self.h_separator_top = HSeparator(hseparator_color, 0, 0)
         self.h_separator_ali = gtk.Alignment(1, 1, 1, 1)
@@ -182,6 +197,10 @@ class EjecterApp(gobject.GObject):
         self.vbox.pack_start(self.monitor_vbox, True, True)
 
         self.monitor = gio.VolumeMonitor()
+        self.op = gio.MountOperation()        
+        
+    def __auto_mount_toggled(self, widget):
+        set_auto_mount(widget.get_active())
 
     def __load_monitor(self):
         # 移除挂载上的控件.
@@ -191,6 +210,7 @@ class EjecterApp(gobject.GObject):
             self.monitor_vbox.remove(widget)
         self.network_mounts_list = []
         self.network_volumes_list = []
+        
         drives = self.monitor.get_connected_drives()
         # 获取大硬盘下的东西.
         for drive in drives:
@@ -367,6 +387,8 @@ class EjecterApp(gobject.GObject):
 
     def volume_added_callback(self, volume_monitor, volume):
         print "volume added"
+        if get_auto_mount() and not volume.get_mount() and volume.should_automount():
+            volume.mount(self.op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
         self.__load_monitor()
 
     def volume_removed_callback(self, volume_monitor, volume):
