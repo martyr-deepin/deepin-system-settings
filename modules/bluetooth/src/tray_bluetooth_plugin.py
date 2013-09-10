@@ -249,10 +249,9 @@ class TrayBluetoothPlugin(object):
         self.this.hide_menu()
         self.tray_icon.emit("popup-menu-event", TrayBluetoothPlugin.__class__) # Hacked by hualet :)
             
-    def __bluetooth_selected(self, widget, event):
+    def __bluetooth_selected(self, widget):
         self.this.hide_menu()
         run_command("deepin-system-settings bluetooth")
-        widget.show_all()
 
     def __get_devices(self):
         if self.my_bluetooth.adapter.get_powered():
@@ -312,7 +311,7 @@ class TrayBluetoothPlugin(object):
                                      font_size = 10,
                                      ali_padding = 5)
         select_button.set_size_request(self.width, 25)
-        select_button.connect("button-press-event", self.__bluetooth_selected)
+        select_button.connect("clicked", self.__bluetooth_selected)
         select_button_align.add(select_button)
 
         adapter_box.pack_start(adapter_image, False, False)
@@ -326,7 +325,7 @@ class TrayBluetoothPlugin(object):
         plugin_box.pack_start(select_button_align, False, False)
 
         return plugin_box
-
+    
     def show_menu(self):
         self.this.set_size_request(self.width, self.height)
 
