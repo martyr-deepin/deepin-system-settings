@@ -311,8 +311,8 @@ class TrayBluetoothPlugin(object):
                                      font_size = 10,
                                      ali_padding = 5)
         select_button.set_size_request(self.width, 25)
-        select_button.connect("clicked", self.__bluetooth_selected)
-        select_button_align.add(select_button)
+        select_button.connect("clicked", self.__bluetooth_selected) # I don't know why, but replacing "button-press-event" with 
+        select_button_align.add(select_button)                      # clicked really works...
 
         adapter_box.pack_start(adapter_image, False, False)
         adapter_box.pack_start(adapter_label, False, False)
