@@ -43,12 +43,12 @@ class Webcam(gtk.DrawingArea):
                 return True
         return False
         
-    def create_video_pipeline(self):    
+    def create_video_pipeline(self, width, height):    
         # size list : ['352:288', '640:480', '800:600', '960:720', '1280:720']
         #self.pipestr = "v4l2src ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! xvimagesink"
         #self.pipestr = "v4l2src ! video/x-raw-yuv ! ffmpegcolorspace ! videoflip method=horizontal-flip ! ximagesink,force-aspect-ratio=true"
         #self.pipestr = "v4l2src ! video/x-raw-yuv ! ffmpegcolorspace ! ximagesink,force-aspect-ratio=true"
-        self.pipestr = "v4l2src ! video/x-raw-rgb,width=320,height=240 ! ffmpegcolorspace ! videoflip method=horizontal-flip ! ximagesink force-aspect-ratio=true"
+        self.pipestr = "v4l2src ! video/x-raw-rgb,width=%s,height=%s ! ffmpegcolorspace ! videoflip method=horizontal-flip ! ximagesink force-aspect-ratio=true" % (width, height)
         self.video_player = gst.parse_launch(self.pipestr)
         self.video_player.set_state(gst.STATE_PLAYING)
         self.__video_bus = self.video_player.get_bus()

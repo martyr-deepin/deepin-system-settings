@@ -53,6 +53,7 @@ from constant import *
 from pexpect import TIMEOUT, EOF
 from set_icon_page import IconSetPage
 from edit_icon_page import IconEditPage
+from face_record_page import FaceRecordPage
 from statusbar import StatusBar
 
 MODULE_NAME = "account"
@@ -223,7 +224,6 @@ class AccountSetting(object):
         # face record page 
         self.alignment_widgets["face_record"] = gtk.Alignment()
         self.button_widgets["back_face_record"] = Button(_("Back"))
-        self.button_widgets["expi"]lll= 
         self.button_widgets["ok_face_record"] = Button(_("OK"))
 
     def __adjust_widget(self):
@@ -250,6 +250,8 @@ class AccountSetting(object):
 
         self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 10)
         self.alignment_widgets["edit_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 100)
+        self.alignment_widgets["face_record"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, 
+                                                          TEXT_WINDOW_LEFT_PADDING, TEXT_WINDOW_LEFT_PADDING)
 
         #self.alignment_widgets["main_hbox"].set(0.0, 0.0, 1, 1)
         #self.alignment_widgets["main_hbox"].set_padding(FRAME_TOP_PADDING, 10, 0, FRAME_LEFT_PADDING)
@@ -451,6 +453,10 @@ class AccountSetting(object):
         self.alignment_widgets["edit_iconfile"].set(0.5, 0.5, 1, 1)
         self.container_widgets["icon_edit_page"] = IconEditPage(self)
         self.alignment_widgets["edit_iconfile"].add(self.container_widgets["icon_edit_page"])
+
+        self.alignment_widgets["face_record"].set(0.5, 0.5, 1, 1)
+        self.container_widgets["face_record_page"] = FaceRecordPage(self)
+        self.alignment_widgets["face_record"].add(self.container_widgets["face_record_page"])
 
     def __signals_connect(self):
         #self.container_widgets["slider"].connect("expose-event", self.container_expose_cb)
@@ -1107,10 +1113,10 @@ class AccountSetting(object):
             return
         self.set_account_info_error_text("")
         self.current_set_user = self.current_select_user
-        self.container_widgets["icon_set_page"].refresh()
-        self.alignment_widgets["set_iconfile"].show_all()
-        self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
-        self.module_frame.send_submodule_crumb(2, _("Set Picture"))
+        self.container_widgets["face_record_page"].refresh()
+        self.alignment_widgets["face_record"].show_all()
+        self.set_to_page(self.alignment_widgets["face_record"], "right")
+        self.module_frame.send_submodule_crumb(2, _("Face Record"))
 
     def cancel_set_icon(self, button):
         self.container_widgets["icon_edit_page"].stop_camera()

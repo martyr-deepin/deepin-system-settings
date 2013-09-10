@@ -32,6 +32,8 @@ import dbus.service
 import dbus.mainloop.glib
 import gobject
 import getpass
+
+FACE_RECOG_FILE = "/etc/face_recognition.cfg"
     
 def authWithPolicyKit(sender, connection, action, interactive=1):
     system_bus = dbus.SystemBus()
@@ -58,7 +60,6 @@ def authWithPolicyKit(sender, connection, action, interactive=1):
     (ok, notused, details) = authority.CheckAuthorization(subject, action, details, flags, cancel_id)
 
     return ok
-
 
 class PasswdService(dbus.service.Object):
 
