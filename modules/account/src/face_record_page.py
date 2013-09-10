@@ -21,8 +21,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import dbus
 import gobject
 import cairo
+import thread
 from threading import Thread
 from nls import _
 from theme import app_theme
@@ -37,6 +39,12 @@ facepp = API("e7d24ca8e91351b8cac02eb6e6080678", "iH_Dls3_gE2wx5dp2cKHPrO8W5V5NT
 CAMERA_BOX_SIZE = 140
 WEBCAM_SIZE = 130
 WIDGET_SPACING = 20
+
+def get_person_id():
+    bus = dbus.SystemBus()
+    dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+    dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
+    return dbus_interface.cfg_get("person_id")
 
 class FaceRecordPage(gtk.VBox):
     def __init__(self, account_setting):
@@ -72,24 +80,44 @@ class FaceRecordPage(gtk.VBox):
     def __start_record_clicked(self, widget):
         self.webcam_align = gtk.Alignment(0, 0.5, 0, 0)
         self.webcam_align.set_padding(5, 5, 5, 5)
-        # if not hasattr(self.account_setting, "record_webcam"):
-        #     self.account_setting.record_webcam = Webcam()
-        #     self.account_setting.record_webcam.set_size_request(WEBCAM_SIZE, 120)
-        #     self.account_setting.record_webcam.create_video_pipeline(160, 120)
-        # self.webcam_align.add(self.account_setting.record_webcam)
+        if not hasattr(self.account_setting, "record_webcam"):
+            self.account_setting.record_webcam = Webcam()
+            self.account_setting.record_webcam.set_size_request(WEBCAM_SIZE, 120)
+            self.account_setting.record_webcam.create_video_pipeline(160, 120)
+        self.webcam_align.add(self.account_setting.record_webcam)
         container_remove_all(self.camera_box)
         self.camera_box.add(self.webcam_align)
-        # self.account_setting.record_webcam.play()
-        gobject.timeout_add(2000, self.__do_action)
+        self.account_setting.record_webcam.play()
+        gobject.timeout_add(2000, self.__do_detection)
+        
+        # gobject.timeout_add(3000, self.__do_action)
+        
+    def __do_detection(self):
+        
+        def recognition_process(pixbuf):
+            path = "/tmp/face_recognition-%s.png" % thread.get_ident()
+            pixbuf.save(path, "png")
+            result = facepp.detection.detect(img=File(path), mode="oneface")
+            print result
+            if result["face"]:
+                try:
+                    facepp.person.create(person_name=get_person_id())
+                except:
+                    pass
+                facepp.person.add_face(person_name=get_person_id(), face_id=result["face"][0]["face_id"])
+        
+        pixbuf = self.account_setting.record_webcam.get_snapshot()
+        # gtk.gdk.threads_enter()
+        # Thread(target=recognition_process, args=[pixbuf]).start()
+        # gtk.gdk.threads_leave()
+        recognition_process(pixbuf)
 
     def __do_action(self):
-        # self.snapshot_pixbuf = self.account_setting.record_webcam.get_snapshot()
-        # self.snapshot_pixbuf.save("/tmp/face_recognition.png", "png")
-        # self.account_setting.record_webcam.stop()
-        # self.webcam_align.remove(self.account_setting.record_webcam)
+        self.snapshot_pixbuf = self.account_setting.record_webcam.get_snapshot()
+        self.account_setting.record_webcam.stop()
+        self.webcam_align.remove(self.account_setting.record_webcam)
 
-        # self.scanning_box = ScanningBox(self.snapshot_pixbuf)
-        self.scanning_box = ScanningBox(gtk.gdk.pixbuf_new_from_file("/tmp/face_recognition.png"))
+        self.scanning_box = ScanningBox(self.snapshot_pixbuf)
         self.scanning_box.set_size_request(WEBCAM_SIZE, WEBCAM_SIZE)
         self.webcam_align.add(self.scanning_box)
         self.webcam_align.show_all()
@@ -130,11 +158,6 @@ class ScanningBox(gtk.Button):
         self.progress = WEBCAM_SIZE
 
         self.connect("expose-event", self.__expose)
-        Thread(target=self.recognition_process, args=["/tmp/face_recognition.png"]).start()
-        
-    def recognition_process(self, path):
-        result = facepp.detection.detect(img=File(path))
-        print result
 
     def __expose(self, widget, event):
         cr = widget.window.cairo_create()

@@ -32,6 +32,8 @@ import dbus.service
 import dbus.mainloop.glib
 import gobject
 import getpass
+from uuid import uuid4
+config_parser = ConfigParser.ConfigParser()
 
 FACE_RECOG_FILE = "/etc/face_recognition.cfg"
     
@@ -60,6 +62,17 @@ def authWithPolicyKit(sender, connection, action, interactive=1):
     (ok, notused, details) = authority.CheckAuthorization(subject, action, details, flags, cancel_id)
 
     return ok
+
+# Create cfg file if there's no one.
+if not os.path.exists(FACE_RECOG_FILE):
+    with(open(FACE_RECOG_FILE, "w")) as cfg:
+        config_parser.add_section("recognition")
+        config_parser.set("recognition", "enable", "false")
+        config_parser.set("recognition", "person_name", str(uuid4()))
+        config_parser.write(cfg)
+else:
+    with(open(FACE_RECOG_FILE)) as cfg:
+        config_parser.readfp(cfg)
 
 class PasswdService(dbus.service.Object):
 
@@ -249,6 +262,15 @@ class PasswdService(dbus.service.Object):
         except Exception, e:
             raise e
 
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "s", out_signature = "s")    
+    def cfg_get(self, key):
+        return config_parser.get("recognition", key)
+        
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ss", out_signature = "")    
+    def cfg_set(self, key, value):
+        with open(FACE_RECOG_FILE, "w") as cfg:
+            config_parser.set("recognition", key, value)
+            config_parser.write(cfg)
 
 if __name__ == "__main__":
     dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
