@@ -35,23 +35,26 @@ import getpass
 from uuid import uuid4
 config_parser = ConfigParser.ConfigParser()
 
+dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
+system_bus = dbus.SystemBus()
+
 FACE_RECOG_FILE = "/etc/face_recognition.cfg"
-    
+
 def authWithPolicyKit(sender, connection, action, interactive=1):
     system_bus = dbus.SystemBus()
-    obj = system_bus.get_object("org.freedesktop.PolicyKit1", 
-                                "/org/freedesktop/PolicyKit1/Authority", 
+    obj = system_bus.get_object("org.freedesktop.PolicyKit1",
+                                "/org/freedesktop/PolicyKit1/Authority",
                                 "org.freedesktop.PolicyKit1.Authority")
 
     authority = dbus.Interface(obj, "org.freedesktop.PolicyKit1.Authority")
 
     info = dbus.Interface(connection.get_object('org.freedesktop.DBus',
-                                                '/org/freedesktop/DBus/Bus', 
-                                                False), 
+                                                '/org/freedesktop/DBus/Bus',
+                                                False),
                           'org.freedesktop.DBus')
-    pid = info.GetConnectionUnixProcessID(sender) 
+    pid = info.GetConnectionUnixProcessID(sender)
 
-    subject = ('unix-process', 
+    subject = ('unix-process',
                { 'pid' : dbus.UInt32(pid, variant_level=1),
                  'start-time' : dbus.UInt64(0),
                  }
@@ -63,17 +66,28 @@ def authWithPolicyKit(sender, connection, action, interactive=1):
 
     return ok
 
+def get_all_user_names():
+    dbus_object = system_bus.get_object("org.freedesktop.Accounts", "/org/freedesktop/Accounts")
+    dbus_interface = dbus.Interface(dbus_object, "org.freedesktop.Accounts")
+    users = dbus_interface.ListCachedUsers()
+    for user in users:
+        dbus_object = system_bus.get_object("org.freedesktop.Accounts", user)
+        dbus_interface = dbus.Interface(dbus_object, "org.freedesktop.DBus.Properties")
+        yield dbus_interface.GetAll("org.freedesktop.Accounts.User")["UserName"]
+
 # Create cfg file if there's no one.
 if not os.path.exists(FACE_RECOG_FILE):
     with(open(FACE_RECOG_FILE, "w")) as cfg:
-        config_parser.add_section("recognition")
-        config_parser.set("recognition", "enable", "false")
-        config_parser.set("recognition", "person_name", str(uuid4()))
+        for user_name in get_all_user_names():
+            print user_name
+            config_parser.add_section(user_name)
+            config_parser.set(user_name, "enable", "false")
+            config_parser.set(user_name, "person_name", str(uuid4()))
         config_parser.write(cfg)
 else:
     with(open(FACE_RECOG_FILE)) as cfg:
         config_parser.readfp(cfg)
-
+        
 class PasswdService(dbus.service.Object):
 
     DBUS_INTERFACE_NAME = "com.deepin.passwdservice"
@@ -82,7 +96,7 @@ class PasswdService(dbus.service.Object):
         if bus is None:
             bus = dbus.SystemBus()
 
-        bus_name = dbus.service.BusName(self.DBUS_INTERFACE_NAME, bus = bus)    
+        bus_name = dbus.service.BusName(self.DBUS_INTERFACE_NAME, bus = bus)
         dbus.service.Object.__init__(self, bus_name, "/")
         self.icon_dir = "/var/lib/AccountsService/icons"
         self.config_file = "/var/lib/AccountsService/user.config"
@@ -114,7 +128,7 @@ class PasswdService(dbus.service.Object):
                 os.makedirs(self.icon_dir)
             if not os.path.exists(self.config_file):
                 open(self.config_file, "w").close()
-                
+
             self.cf.optionxform = str
             self.cf.read(self.config_file)
 
@@ -123,7 +137,7 @@ class PasswdService(dbus.service.Object):
 
             if "Count" not in self.cf.sections():
                 self.cf.add_section("Count")
-            
+
             for files in os.walk(self.icon_dir):
                 self.image_list.extend(files[2])
 
@@ -156,8 +170,8 @@ class PasswdService(dbus.service.Object):
         except:
             traceback.print_exc()
 
-    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "s", out_signature = "s", 
-                         sender_keyword = 'sender', connection_keyword = 'conn')    
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "s", out_signature = "s",
+                         sender_keyword = 'sender', connection_keyword = 'conn')
     def get_user_fake_icon(self, username, sender = None, conn = None):
         self.__init_users_real()
         self.__sync_user_config()
@@ -196,8 +210,8 @@ class PasswdService(dbus.service.Object):
             print "invalid username %s"  % username
             return self.default_icon
 
-    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "sss", out_signature = "i", 
-                         sender_keyword = 'sender', connection_keyword = 'conn')    
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "sss", out_signature = "i",
+                         sender_keyword = 'sender', connection_keyword = 'conn')
     def modify_user_passwd(self, new_password, username, old_password, sender = None, conn = None):
         if getpass.getuser() != username:
             if not authWithPolicyKit(sender, conn, "com.deepin.passwdservice.modify-password"):
@@ -212,7 +226,7 @@ class PasswdService(dbus.service.Object):
 
         passwd = pexpect.spawn("/usr/bin/passwd %s" %username, timeout=8, env={"LANGUAGE": "en_US"})
         passwd.setecho(False)
-        
+
         if passwd.expect(["(current)", pexpect.EOF, pexpect.TIMEOUT], 5) == 0:
             try:
                 #print "input old:'%s'" % old_password
@@ -245,8 +259,8 @@ class PasswdService(dbus.service.Object):
         except Exception, e:
             raise e
 
-    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ss", out_signature = "i", 
-                         sender_keyword = 'sender', connection_keyword = 'conn')    
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ss", out_signature = "i",
+                         sender_keyword = 'sender', connection_keyword = 'conn')
     def modify_user_groups(self, username, groups, sender=None, conn=None):
         # usermod -G group1,group2,.. user
         if not authWithPolicyKit(sender, conn, "com.deepin.passwdservice.modify-password"):
@@ -262,18 +276,17 @@ class PasswdService(dbus.service.Object):
         except Exception, e:
             raise e
 
-    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "s", out_signature = "s")    
-    def cfg_get(self, key):
-        return config_parser.get("recognition", key)
-        
-    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ss", out_signature = "")    
-    def cfg_set(self, key, value):
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ss", out_signature = "s")
+    def cfg_get(self, user_name, key):
+        return config_parser.get(user_name, key)
+
+    @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "sss", out_signature = "")
+    def cfg_set(self, user_name, key, value):
         with open(FACE_RECOG_FILE, "w") as cfg:
-            config_parser.set("recognition", key, value)
+            config_parser.set(user_name, key, value)
             config_parser.write(cfg)
 
 if __name__ == "__main__":
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default = True)
     PasswdService()
     mainloop = gobject.MainLoop()
     gobject.timeout_add(60000, lambda : mainloop.quit())
