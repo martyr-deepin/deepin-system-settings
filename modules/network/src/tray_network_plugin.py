@@ -826,7 +826,8 @@ class TrayNetworkPlugin(object):
         if self.menu_showed:
             self.this.hide_menu()
             self.show_menu()
-            self.this.show_menu()
+            self.tray_icon.emit("popup-menu-event", TrayNetworkPlugin.__class__)
+            #self.this.show_menu()
 
     def service_start_do_more(self, widget):
         self.init_wired_signals()
