@@ -21,6 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
+from dtk.ui.dialog import ConfirmDialog
 from dtk.ui.line import HSeparator
 from vtk.draw  import draw_text, draw_pixbuf
 from vtk.utils import get_text_size
@@ -168,13 +169,8 @@ class EjecterApp(gobject.GObject):
         self.title_label_ali.set_padding(0, 0, 0, 0)
         self.title_label_ali.add(self.title_label)
         
-        self.auto_mount_toggle.set_tooltip_text(_("Automatically mount USB devices"))
-        self.auto_mount_toggle.set_active(get_auto_mount())
-        self.auto_mount_toggle.connect("toggled", self.__auto_mount_toggled)
-
         self.hbox.pack_start(self.title_image, False, False)
         self.hbox.pack_start(self.title_label_ali, True, True)
-        self.hbox.pack_end(self.auto_mount_toggle, False, False)
 
         self.h_separator_top = HSeparator(hseparator_color, 0, 0)
         self.h_separator_ali = gtk.Alignment(1, 1, 1, 1)
@@ -363,6 +359,10 @@ class EjecterApp(gobject.GObject):
 
     def mount_added_callback(self, volume_monitor, mount):
         print "mount added"
+        if get_auto_mount() == "mount_and_open" or self._ask_confirmed:
+            os.popen("xdg-open %s" % (mount.get_root().get_uri()))
+            self._ask_confirmed = False
+
         self.__load_monitor()
 
     def mount_removed_callback(self, volume_monitor, mount):
@@ -375,8 +375,21 @@ class EjecterApp(gobject.GObject):
 
     def volume_added_callback(self, volume_monitor, volume):
         print "volume added"
-        if get_auto_mount() and not volume.get_mount() and volume.should_automount():
-            volume.mount(self.op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
+        
+        def confirm_cb():
+            if not volume.get_mount():
+                self._ask_confirmed = True
+                volume.mount(self.op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
+            
+        auto = get_auto_mount()
+        if auto == "mount" or auto == "mount_and_open":
+            if not volume.get_mount():
+                volume.mount(self.op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
+        elif auto == "ask":
+            ConfirmDialog(_("Storage Device"), 
+                          _("Mount and open device \"%s\"?") % volume.get_name(),
+                          confirm_callback=confirm_cb).show_all()
+
         self.__load_monitor()
 
     def volume_removed_callback(self, volume_monitor, volume):
@@ -400,7 +413,7 @@ class EjecterApp(gobject.GObject):
     def drive_changed_callback(self, volume_monitor, drive):
         print "drive changed"
         self.__load_monitor()
-
+        
 if __name__ == "__main__":
     import gtk
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

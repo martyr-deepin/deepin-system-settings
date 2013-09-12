@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-12 14:05+0800\n"
+"POT-Creation-Date: 2013-09-12 17:38+0800\n"
 "PO-Revision-Date: 2013-03-01 10:11+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,21 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_mount_gui.py:167 ../src/tray_mount_gui.py:403
-#: ../src/tray_mount_gui.py:408
+#: ../src/tray_mount_gui.py:166 ../src/tray_mount_gui.py:389
+#: ../src/tray_mount_gui.py:405 ../src/tray_mount_gui.py:410
 msgid "Storage Device"
 msgstr "儲存裝置"
 
-#: ../src/tray_mount_gui.py:179
-msgid "Automatically mount USB devices"
-msgstr "自動掛載USB裝置"
+#: ../src/tray_mount_gui.py:390
+#, python-format
+msgid "Mount and open device \"%s\"?"
+msgstr "掛載並開啓裝置「%s」？"
 
-#: ../src/tray_mount_gui.py:403
+#: ../src/tray_mount_gui.py:405
 #, python-format
 msgid "Removable media \"%s\" has been removed"
 msgstr "可移除裝置「%s」已移除"
 
-#: ../src/tray_mount_gui.py:408
+#: ../src/tray_mount_gui.py:410
 #, python-format
 msgid "Found new removable media \"%s\""
 msgstr "發現新的可移除裝置「%s」"
@@ -52,6 +53,9 @@ msgstr "卸載失敗"
 #, python-format
 msgid "Unmount '%s' error. Please unmount it in file manager"
 msgstr "卸載'%s'出錯，請到文件管理將它卸載。"
+
+#~ msgid "Automatically mount USB devices"
+#~ msgstr "自動掛載USB裝置"
 
 # 掛載管理器
 #~ msgid "Mount manager"
