@@ -33,11 +33,10 @@ import os
 import sys
 import gtk
 import gio
-import glib
 import gobject
 
 import pynotify
-pynotify.init("Mount manager")
+pynotify.init("Storage Device")
 def notify_message(summary, body):
     noti = pynotify.Notification(summary, body, "/usr/share/icons/Deepin/apps/48/mountmanager.png")
     noti.show()
@@ -177,7 +176,7 @@ class EjecterApp(gobject.GObject):
         self.auto_mount_toggle = ToggleButton(active_normal_dpixbuf=self.active_normal_dpixbuf, 
                                               active_disable_dpixbuf=self.active_disable_dpixbuf, 
                                               inactive_normal_dpixbuf=self.inactive_normal_dpixbuf)
-        self.auto_mount_toggle.set_tooltip_text(_("Automatically mount"))
+        self.auto_mount_toggle.set_tooltip_text(_("Automatically mount USB devices"))
         self.auto_mount_toggle.set_active(get_auto_mount())
         self.auto_mount_toggle.connect("toggled", self.__auto_mount_toggled)
 
@@ -401,12 +400,12 @@ class EjecterApp(gobject.GObject):
 
     def drive_disconnected_callback(self, volume_monitor, drive):
         print "drive disconnected"
-        notify_message(_("Mount manager"), _("Removable media \"%s\" has been removed") % drive.get_name())
+        notify_message(_("Storage Device"), _("Removable media \"%s\" has been removed") % drive.get_name())
         self.__load_monitor()
 
     def drive_connected_callback(self, volume_monitor, drive):
         print "drive connected"
-        notify_message(_("Mount manager"), _("Found new removable media \"%s\"") % drive.get_name())
+        notify_message(_("Storage Device"), _("Found new removable media \"%s\"") % drive.get_name())
         self.__load_monitor()
 
     def drive_changed_callback(self, volume_monitor, drive):
