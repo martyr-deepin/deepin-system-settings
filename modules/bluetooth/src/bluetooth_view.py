@@ -40,12 +40,13 @@ import gtk
 import pango
 from constant import *
 from nls import _
-from bt.device import Device, AudioSink, Headset
+from bt.device import Device, AudioSink, Headset, Input
 from bt.utils import bluetooth_class_to_type, bluetooth_uuid_to_string
 from bt.utils import is_bluetooth_file_type, is_bluetooth_audio_type
 
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
+from permanent_settings import permanent_settings
 from helper import event_manager, notify_message
 import uuid
 import re
@@ -304,12 +305,20 @@ class DeviceItem(gobject.GObject):
                 else:
                     items.append((None, _("Headset"), lambda : self.do_connect_headset()))
             if prop == "AudioSink":
-                if not hasattr(self, "audio_sink_service"):
-                    self.audio_sink_service = AudioSink(self.device.device_path)
-                if self.audio_sink_service.get_connected():
+                if not hasattr(self, "audio_sink"):
+                    self.audio_sink = AudioSink(self.device.device_path)
+                if self.audio_sink.get_connected():
                     items.append((self.service_connected_pixbufs, _("Audio Sink"), lambda : self.do_disconnect_audio_sink()))
                 else:
                     items.append((None, _("Audio Sink"), lambda : self.do_connect_audio_sink()))
+            if prop == "HumanInterfaceDeviceService":
+                if not hasattr(self, "input_service"):
+                    self.input_service = Input(self.device.device_path)
+                print self.input_service.get_connected()
+                if self.input_service.get_connected():
+                    items.append((self.service_connected_pixbufs, _("Input Service"), lambda : self.do_disconnect_input_service()))
+                else:
+                    items.append((None, _("Input Service"), lambda : self.do_connect_input_service()))
             if prop == "OBEXObjectPush":
                 items.append((None, _("Send File"), lambda : self.do_send_file()))
 
@@ -335,6 +344,27 @@ class DeviceItem(gobject.GObject):
         if hasattr(self, "audio_sink_service"):
             try:
                 self.audio_sink_service.as_disconnect()
+            except Exception, e:
+                print e
+            self.emit_redraw_request()
+
+    def do_connect_input_service(self):
+        try:
+            self.input_service.i_connect()
+            print self.input_service.get_connected() 
+            if self.input_service.get_connected() == True:
+                notify_message(_("Bluetooth Input Service"),
+                               _("Successfully connected to the Bluetooth input device."))
+            else:
+                notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
+            self.emit_redraw_request()
+        except Exception, e:
+            print "Exception:", e
+
+    def do_disconnect_input_service(self):
+        if hasattr(self, "audio_sink_service"):
+            try:
+                self.audio_sink_service.i_disconnect()
             except Exception, e:
                 print e
             self.emit_redraw_request()
@@ -483,6 +513,7 @@ class BlueToothView(gtk.VBox):
         self.enable_box = gtk.HBox(spacing=WIDGET_SPACING)
         self.enable_open_label = self.__setup_label(_("Enable bluetooth"))
         if self.my_bluetooth.adapter:
+            self.my_bluetooth.adapter.set_powered(permanent_settings.get_powered())
             self.enable_open_label.set_sensitive(self.my_bluetooth.adapter.get_powered())
         else:
             self.enable_open_label.set_sensitive(False)
@@ -556,7 +587,10 @@ class BlueToothView(gtk.VBox):
         self.oper_box = gtk.HBox(spacing = WIDGET_SPACING)
         self.notice_label = Label("", text_x_align = ALIGN_START, label_width = 610)
         self.search_button = Button(_("Search"))
-        self.search_button.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        if self.my_bluetooth.adapter:
+            self.search_button.set_sensitive(self.my_bluetooth.adapter.get_powered())
+        else:
+            self.search_button.set_sensitive(False)
         self.search_button.connect("clicked", self.__on_search)
         self.__widget_pack_start(self.oper_box,
                 [self.notice_label,
@@ -711,7 +745,6 @@ class BlueToothView(gtk.VBox):
             self.device_iconview.add_items(items)
                 
     def __set_enable_open(self, is_open=True):
-        self.my_bluetooth.adapter.set_powered(is_open)
         self.enable_open_label.set_sensitive(is_open)
         self.display_device_label.set_sensitive(is_open)
         self.search_label.set_sensitive(is_open)
@@ -732,8 +765,9 @@ class BlueToothView(gtk.VBox):
             return
 
         if object == "enable_open":
-            print "toggled"
             self.__set_enable_open(widget.get_active())
+            permanent_settings.set_powered(widget.get_active())
+            self.my_bluetooth.adapter.set_powered(widget.get_active())
             return
 
         if object == "search":

@@ -6,6 +6,7 @@
 #
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
+#             Wang Yaohua <mr.asianwang@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,10 +42,11 @@ import gtk
 from nls import _
 from my_bluetooth import MyBluetooth
 from bluetooth_sender import BluetoothSender
-from bt.device import AudioSink
+from bt.device import AudioSink, Input
 from helper import notify_message
 from servicemanager import servicemanager
-from bt.utils import is_bluetooth_audio_type, is_bluetooth_file_type
+from permanent_settings import permanent_settings
+from bt.utils import is_bluetooth_audio_type, is_bluetooth_file_type, is_bluetooth_input_type
 
 class DeviceItem(TreeItem):
     ITEM_HEIGHT = 22
@@ -94,10 +96,25 @@ class DeviceItem(TreeItem):
             except Exception, e:
                 print "Exception:", e
 
+        def do_connect_input_service():
+            try:
+                self.input_service = Input(self.device.device_path)
+                self.input_service.i_connect()
+                if self.input_service.get_connected():
+                    notify_message(_("Bluetooth Input Service"),
+                                   _("Successfully connected to the Bluetooth input device."))
+                else:
+                    notify_message(_("Connection Failed"), _("An error occured when connecting to the device."))
+                    self.emit_redraw_request()
+            except Exception, e:
+                print "Exception:", e
+
         if is_bluetooth_audio_type(self.device):
             return do_connect_audio_sink
         elif is_bluetooth_file_type(self.device):
             return do_send_file
+        elif is_bluetooth_input_type(self.device):
+            return do_connect_input_service
         else:
             return None
 
@@ -151,7 +168,8 @@ class TrayBluetoothPlugin(object):
         try:
             self.my_bluetooth = MyBluetooth(self.__on_adapter_removed,
                                             self.__on_default_adapter_changed)
-            self.my_bluetooth.adapter.connect("property-changed", self.__on_adapter_property_changed)
+            if self.my_bluetooth.adapter:
+                self.my_bluetooth.adapter.connect("property-changed", self.__on_adapter_property_changed)
         except Exception, e:
             print e
         self.__start_service()
@@ -166,8 +184,8 @@ class TrayBluetoothPlugin(object):
         
     def __on_adapter_property_changed(self, gobj, key, value):
         if key == "Powered":
-            self.adapter_toggle.set_active(value)
-            theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect"
+            print self.my_bluetooth.adapter.get_powered()
+            theme = "enable" if self.my_bluetooth.adapter.get_powered() else "enable_disconnect" 
             self.tray_icon.set_icon_theme(theme)
         
     def __on_adapter_removed(self):
@@ -201,11 +219,12 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter:
         #     if not self.my_bluetooth.adapter.get_powered():
         #         self.tray_icon.set_no_show_all(True)
-        # else:
-        #     self.tray_icon.set_no_show_all(True)
+            self.my_bluetooth.adapter.set_powered(permanent_settings.get_powered())
             powered = self.my_bluetooth.adapter.get_powered()
             theme = "enable" if powered else "enable_disconnect"
             self.tray_icon.set_icon_theme(theme)
+        else:
+            self.tray_icon.set_no_show_all(True)
 
     def id(self):
         return "deepin-bluetooth-plugin-hailongqiu"
@@ -220,24 +239,32 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter == None:
             return
 
+        self.my_bluetooth.adapter.set_powered(widget.get_active())
         if widget.get_active():
             self.tray_icon.set_icon_theme("enable")
+            permanent_settings.set_powered(True)
         else:
             self.tray_icon.set_icon_theme("enable_disconnect")
-        self.my_bluetooth.adapter.set_powered(widget.get_active())
-
-    def __bluetooth_selected(self, widget, event):
+            permanent_settings.set_powered(False)
+        self.this.hide_menu()
+        self.tray_icon.emit("popup-menu-event", TrayBluetoothPlugin.__class__) # Hacked by hualet :)
+            
+    def __bluetooth_selected(self, widget):
         self.this.hide_menu()
         run_command("deepin-system-settings bluetooth")
 
     def __get_devices(self):
-        devices = self.my_bluetooth.get_devices()
-        device_count = len(filter(lambda x : x.get_paired(), devices))
+        if self.my_bluetooth.adapter.get_powered():
+            devices = self.my_bluetooth.get_devices()
+            device_count = len(filter(lambda x : x.get_paired(), devices))
 
-        self.device_items = []
-        for d in devices:
-            if d.get_paired():
-                self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, d))
+            self.device_items = []
+            for d in devices:
+                if d.get_paired():
+                    self.device_items.append(DeviceItem(self, self.my_bluetooth.adapter, d))
+        else:
+            device_count = 0
+            self.device_items = []
 
         self.height = self.ori_height
         if device_count:
@@ -284,8 +311,8 @@ class TrayBluetoothPlugin(object):
                                      font_size = 10,
                                      ali_padding = 5)
         select_button.set_size_request(self.width, 25)
-        select_button.connect("button-press-event", self.__bluetooth_selected)
-        select_button_align.add(select_button)
+        select_button.connect("clicked", self.__bluetooth_selected) # I don't know why, but replacing "button-press-event" with 
+        select_button_align.add(select_button)                      # clicked really works...
 
         adapter_box.pack_start(adapter_image, False, False)
         adapter_box.pack_start(adapter_label, False, False)
@@ -298,7 +325,7 @@ class TrayBluetoothPlugin(object):
         plugin_box.pack_start(select_button_align, False, False)
 
         return plugin_box
-
+    
     def show_menu(self):
         self.this.set_size_request(self.width, self.height)
 

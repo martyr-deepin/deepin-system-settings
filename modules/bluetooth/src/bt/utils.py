@@ -56,6 +56,12 @@ def is_bluetooth_file_type(device):
         return True
     return False
 
+def is_bluetooth_input_type(device):
+    props = map(lambda x : bluetooth_uuid_to_string(x), device.get_uuids())    
+    if "HumanInterfaceDeviceService" in props:
+        return True
+    return False
+
 def bluetooth_class_to_type(klass):
     p = (klass & 0x1f00) >> 8
 
