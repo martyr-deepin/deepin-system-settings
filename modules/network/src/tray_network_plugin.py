@@ -51,8 +51,6 @@ class BaseMixIn(object):
 
         wireless = any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices])
 
-        print wire, mm , wireless
-
         if wireless:
             self.change_status_icon("links")
         else:
@@ -259,6 +257,8 @@ class WirelessSection(BaseMixIn):
             if index:
                 tray_log.info(index)
                 self.gui.set_active_ap(index, True)
+                # wireless is active for sure, so check status icon 
+                self.check_net_state()
             else:
                 self.activate_wireless(self.focus_device)
             Dispatcher.request_resize()
