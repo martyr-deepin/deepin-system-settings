@@ -20,10 +20,12 @@
 # You should have received a copy of the GNU General Public License             
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 from theme import app_theme
 from dtk.ui.label import Label
 from dtk.ui.combo import ComboBox
 from dtk.ui.button import ToggleButton
+from ConfigParser import ConfigParser
 
 from media import MediaAutorun
 from app import AppManager
@@ -31,6 +33,11 @@ import gtk
 import style
 from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING 
 from nls import _
+
+MOUNT_MEDIA_SETTINGS = os.path.expanduser("~/.config/deepin-system-settings/mount_media/mount_media.ini")
+parser = ConfigParser()
+with open(MOUNT_MEDIA_SETTINGS) as cfg:
+    parser.readfp(cfg)
 
 class MediaView(gtk.VBox):
     ENTRY_WIDTH = 200
@@ -55,6 +62,7 @@ class MediaView(gtk.VBox):
         player_label = Label(_("Audio Player"))
         photo_label = Label(_("Camera"))
         software_label = Label(_("Applications"))
+        auto_mount_label = Label(_("Automatically Mount"))
 
         self.all_label_list = [cd_label, dvd_label, player_label,
                                photo_label, software_label]
@@ -63,6 +71,10 @@ class MediaView(gtk.VBox):
                         (_("Ask"), "ask"),
                         (_("Do nothing"), "do_nothing"),
                         (_("Open folder"),"open_folder")]
+        auto_mount_list = [(_("Do nothing"), "do_nothing"), 
+                           (_("Ask"), "ask"),
+                           (_("Mount"), "mount"),
+                           (_("Mount and open folder"), "mount_and_open")]
         #self.auto_mount_box = gtk.HBox(spacing = WIDGET_SPACING)
         #self.auto_mount_label = Label(_("apply auto open for all media and devices"))
         self.auto_mount_label = Label(_("AutoPlay"))
@@ -76,6 +88,7 @@ class MediaView(gtk.VBox):
         self.player= ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.photo = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.software = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
+        self.auto_mount = ComboBox(auto_mount_list, fixed_width=self.ENTRY_WIDTH)
         #self.more_option = Button(_("more option"))
 
         ###below content type displayed as more option is clicked"
@@ -96,6 +109,7 @@ class MediaView(gtk.VBox):
         table.attach(style.wrap_with_align(player_label, width=self.LEFT_WIDTH), 0, 1, 6, 7)
         table.attach(style.wrap_with_align(photo_label, width=self.LEFT_WIDTH), 0, 1, 7, 8)
         table.attach(style.wrap_with_align(software_label, width=self.LEFT_WIDTH), 0, 1, 8, 9)
+        table.attach(style.wrap_with_align(auto_mount_label, width=self.LEFT_WIDTH), 0, 1, 9, 10)
 
         #table.attach(style.wrap_with_align(self.auto_mount_box, align = "left", left = 180), 0, 3, 1, 2)
         table.attach(style.wrap_with_align(self.auto_mount_label, width=self.LEFT_WIDTH), 0, 1, 1, 2)
@@ -106,6 +120,7 @@ class MediaView(gtk.VBox):
         table.attach(style.wrap_with_align(self.player), 1, 3, 6, 7)
         table.attach(style.wrap_with_align(self.photo), 1, 3, 7, 8)
         table.attach(style.wrap_with_align(self.software), 1, 3, 8, 9)
+        table.attach(style.wrap_with_align(self.auto_mount), 1, 3, 9, 10)
 
         # UI style
         table_align = style.set_box_with_align(table, "text")
@@ -141,7 +156,7 @@ class MediaView(gtk.VBox):
                              self.dvd: self.media_handle.dvd_content_type,
                              self.player: self.media_handle.player_content_type,
                              self.photo: self.media_handle.photo_content_type,
-                             self.software: self.media_handle.software_content_type
+                             self.software: self.media_handle.software_content_type,
                              }
 
         for key, value in self.all_app_dict.iteritems():
@@ -160,14 +175,19 @@ class MediaView(gtk.VBox):
                                       self.dvd: self.dvd.get_select_index(), 
                                       self.player: self.player.get_select_index(), 
                                       self.photo: self.photo.get_select_index(), 
-                                      self.software: self.software.get_select_index()
+                                      self.software: self.software.get_select_index(),
                                      }
 
     def connect_signal_to_combos(self):
         for combo in self.all_app_dict:
             combo.connect("item-selected", self.change_autorun_callback)
-        
+        self.auto_mount.connect("item-selected", self.auto_mount_combo_changed)
         self.auto_mount_toggle.connect("toggled", self.automount_open_toggle_cb)
+        
+    def auto_mount_combo_changed(self, widget, content, value, index):
+        with open(MOUNT_MEDIA_SETTINGS, "w") as cfg:
+            parser.set("mount_media", "auto_mount", value)
+            parser.write(cfg)
 
     def change_autorun_callback(self, widget, content, value, index):
         if value != "other_app":

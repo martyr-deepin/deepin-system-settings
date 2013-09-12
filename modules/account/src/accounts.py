@@ -160,7 +160,8 @@ class User(BusBase):
     
     def __init__(self, userpath):
         BusBase.__init__(self, path = userpath, interface = "org.freedesktop.Accounts.User")
-        self.bus.add_signal_receiver(self.changed_cb, dbus_interface = self.object_interface, 
+     
+   self.bus.add_signal_receiver(self.changed_cb, dbus_interface = self.object_interface, 
                                      path = self.object_path, signal_name = "Changed")
         self.init_dbus_properties()
 

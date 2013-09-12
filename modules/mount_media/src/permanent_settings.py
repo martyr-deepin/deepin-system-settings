@@ -37,14 +37,9 @@ else:
         parser.readfp(cfg)
         
 def get_auto_mount():
-    return parser.getboolean("mount_media", "auto_mount")
+    return parser.get("mount_media", "auto_mount")
 
-def set_auto_mount(auto_mount):
-    if auto_mount:
-        with open(CFG_FILE, "w") as cfg:
-            parser.set("mount_media", "auto_mount", "true")
-            parser.write(cfg)
-    else:
-        with open(CFG_FILE, "w") as cfg:
-            parser.set("mount_media", "auto_mount", "false")
-            parser.write(cfg)
+def set_auto_mount(auto_mount_option):
+    with open(CFG_FILE, "w") as cfg:
+        parser.set("mount_media", "auto_mount", auto_mount_option)
+        parser.write(cfg)

@@ -21,9 +21,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from theme import app_theme
-from dtk.ui.button import ToggleButton
 from dtk.ui.line import HSeparator
-from dtk.ui.utils import set_clickable_cursor
 from vtk.draw  import draw_text, draw_pixbuf
 from vtk.utils import get_text_size
 from nls import _
@@ -170,12 +168,6 @@ class EjecterApp(gobject.GObject):
         self.title_label_ali.set_padding(0, 0, 0, 0)
         self.title_label_ali.add(self.title_label)
         
-        self.inactive_normal_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png")
-        self.active_normal_dpixbuf = app_theme.get_pixbuf("toggle_button/active_normal.png")
-        self.active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/active_disable.png")
-        self.auto_mount_toggle = ToggleButton(active_normal_dpixbuf=self.active_normal_dpixbuf, 
-                                              active_disable_dpixbuf=self.active_disable_dpixbuf, 
-                                              inactive_normal_dpixbuf=self.inactive_normal_dpixbuf)
         self.auto_mount_toggle.set_tooltip_text(_("Automatically mount USB devices"))
         self.auto_mount_toggle.set_active(get_auto_mount())
         self.auto_mount_toggle.connect("toggled", self.__auto_mount_toggled)
@@ -198,9 +190,6 @@ class EjecterApp(gobject.GObject):
         self.monitor = gio.VolumeMonitor()
         self.op = gio.MountOperation()        
         
-    def __auto_mount_toggled(self, widget):
-        set_auto_mount(widget.get_active())
-
     def __load_monitor(self):
         # 移除挂载上的控件.
         self.height = 75
