@@ -24,6 +24,7 @@ import gtk
 import dbus
 import gobject
 import cairo
+import getpass
 from nls import _
 from theme import app_theme
 from webcam import Webcam
@@ -43,7 +44,7 @@ def get_person_name():
     bus = dbus.SystemBus()
     dbus_object = bus.get_object("com.deepin.passwdservice", "/")
     dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
-    return dbus_interface.cfg_get("person_name")
+    return dbus_interface.cfg_get(getpass.getuser(), "person_name")
 
 class FaceRecordPage(gtk.VBox):
     def __init__(self, account_setting):
@@ -129,14 +130,15 @@ class FaceRecordPage(gtk.VBox):
     def __do_action(self):
         success = 0
         for i in xrange(3):
-            result = facepp.detection.detect(img=File("/tmp/face_recognition_%s.png" % i), mode="oneface")
+            result = facepp.detection.detect(img=File("/tmp/face_recognition_%s.png" % i), 
+                                             mode="oneface", timeout=2, retry_delay=3)
             print result
             if result["face"]:
                 try:
-                    facepp.person.create(person_name=get_person_name())
+                    facepp.person.create(person_name=get_person_name(), timeout=2)
                 except:
                     pass
-                add_result = facepp.person.add_face(person_name=get_person_name(), face_id=result["face"][0]["face_id"])
+                add_result = facepp.person.add_face(person_name=get_person_name(), face_id=result["face"][0]["face_id"], timeout=2)
                 print "add_result, ", add_result
                 success += 1
         
