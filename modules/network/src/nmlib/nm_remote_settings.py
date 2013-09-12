@@ -140,6 +140,9 @@ class NMRemoteSettings(NMObject):
             return None
 
     def set_primary_wireless(self, ap, connection):
+        if not ap:
+            return 
+            
         if connection == None:
             result = self.get_primary_wireless(ap)
             if result:

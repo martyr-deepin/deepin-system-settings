@@ -119,6 +119,7 @@ class HiddenSetting(Settings):
         self.connection = connection
         self.spec_connection = spec_connection
         self.crumb_name = _("Hidden network")
+        self.ap = None
 
     def init_items(self, connection):
         self.connection = connection 
@@ -163,9 +164,9 @@ class HiddenSetting(Settings):
     def save_changes(self, connection):
         if isinstance(connection, NMRemoteConnection):
             connection.update()
+            net_manager.rename_hidden(connection)
         else:
             connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
-            #Dispatcher.emit("connection-replace", connection)
             net_manager.add_hidden(connection)
         Dispatcher.to_main_page()
         Dispatcher.emit("wireless-redraw")
@@ -230,10 +231,11 @@ class Security(gtk.VBox):
         self.set_button = set_button_cb
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+        self.settings_obj.initial_lock = True
 
         self.need_ssid = need_ssid
         self.presave_index = None
-        
+
         if self.need_ssid:
             log.info("enter hidden network settings")
             self.add_ssid_entry()
@@ -321,6 +323,7 @@ class Security(gtk.VBox):
         self.security_combo.set_size_request(width, height)
         self.pack_start(table_align, False, False)
         self.pack_start(self.align, False, False, 0)
+        self.settings_obj.initial_lock = False
 
     def add_ssid_entry(self):
         self.wireless = self.connection.get_setting("802-11-wireless")
@@ -373,7 +376,7 @@ class Security(gtk.VBox):
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
-                log.debug("get secret", setting_name, method, secret)
+                log.debug("get secret", setting_name, method, "secret")
             except Exception, e:
                 log.error("get secret error", e)
                 secret = ""
@@ -453,13 +456,14 @@ class Security(gtk.VBox):
                 self.setting = self.connection.get_setting("802-11-wireless-security")
             self.has_security = True
             self.setting.key_mgmt = value
+            self.setting.adapt_wireless_security_commit()
             if value == "none":
-                del self.setting.psk
                 self.setting.wep_key_type = index
-                for key in range(0, 4):
-                    delattr(self.setting, "wep_key%d"%key)
+                #for key in range(0, 4):
+                    #delattr(self.setting, "wep_key%d"%key)
             self.reset()
-            self.settings_obj.wlan_encry_is_valid = False
+            is_valid = self.connection.check_setting_finish()
+            self.settings_obj.wlan_encry_is_valid = is_valid
             self.settings_obj.set_button("save", False)
 
 

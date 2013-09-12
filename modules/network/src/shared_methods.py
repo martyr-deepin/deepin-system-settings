@@ -18,8 +18,16 @@ DEVICE_AVAILABLE = 1
 DEVICE_DISACTIVE = 1
 DEVICE_ACTIVE = 2
 
+HIDDEN_OPTION = 'hidden'
+
 
 class NetManager(object):
+
+    get_primary_wire = property(lambda self: nm_module.nm_remote_settings.get_primary_wire)
+    set_primary_wire = property(lambda self: nm_module.nm_remote_settings.set_primary_wire)
+    get_primary_wireless = property(lambda self: nm_module.nm_remote_settings.get_primary_wireless)
+    set_primary_wireless = property(lambda self: nm_module.nm_remote_settings.set_primary_wireless)
+    write_config = property(lambda self: nm_module.nm_remote_settings.write_config)
 
     def __init__(self):
         #self.init_devices()
@@ -38,9 +46,11 @@ class NetManager(object):
 
             self.cf = nm_module.nm_remote_settings.cf
             self.config_file = nm_module.nm_remote_settings.config_file
-            self.cf.read(self.config_file)
-            if "hidden" not in self.cf.sections():
-                self.cf.add_section("hidden")
+
+            if HIDDEN_OPTION not in self.cf.sections():
+                self.cf.add_section(HIDDEN_OPTION)
+            
+            self.write_config()
 
             bus = dbus.SystemBus()
             bus.add_signal_receiver(lambda i: Dispatcher.emit("switch-device", self.device_manager.wireless_devices[i]),
@@ -55,11 +65,6 @@ class NetManager(object):
         else:
             tray_log.debug("network-manager disabled")
             pass
-
-    get_primary_wire = property(lambda self: nm_module.nm_remote_settings.get_primary_wire)
-    set_primary_wire = property(lambda self: nm_module.nm_remote_settings.set_primary_wire)
-    get_primary_wireless = property(lambda self: nm_module.nm_remote_settings.get_primary_wireless)
-    set_primary_wireless = property(lambda self: nm_module.nm_remote_settings.set_primary_wireless)
 
     def init_all_objects(self):
         self.device_manager = DeviceManager()
@@ -98,49 +103,52 @@ class NetManager(object):
         Dispatcher.emit("service-stop-do-more")
 
     def get_hiddens(self):
+        print 'get_hiddens'
         hiddens = list()
         connections = nm_module.nm_remote_settings.get_wireless_connections()
-        self.cf.read(self.config_file)
         
+        self.cf.read(self.config_file)
         self.remove_un_exist_connections(connections)
         for index, ssid in enumerate(map(lambda x: x.get_setting('802-11-wireless').ssid, connections)):
-            if ssid in self.cf.options("hidden"):
+            if ssid in self.cf.options(HIDDEN_OPTION):
                 hiddens.append(connections[index])
+                print connections[index].settings_dict["connection"]["uuid"]
         return hiddens
 
     def remove_un_exist_connections(self, connections):
         uuid_list = (map(lambda x: x.settings_dict["connection"]["uuid"], connections))
-        for option, uuid in self.cf.items("hidden"):
+        for option, uuid in self.cf.items(HIDDEN_OPTION):
             if uuid not in uuid_list:
-                self.cf.remove_option('hidden', option)
+                self.cf.remove_option(HIDDEN_OPTION, option)
                 print "option removed", option
-        self.cf.write(open(self.config_file, "w"))
-        self.cf.read(self.config_file)
+        self.write_config()
     
     def add_hidden(self, connection):
         ssid = connection.get_setting("802-11-wireless").ssid
-        self.cf.read(self.config_file)
-        if ssid not in self.cf.options("hidden"):
-            self.cf.set("hidden", ssid, connection.settings_dict["connection"]["uuid"])
-        try:
-            self.cf.write(open(self.config_file, "w"))
-            print "save succeed"
-        except:
-            print "save failded in addHidden"
+        if ssid not in self.cf.options(HIDDEN_OPTION):
+            self.cf.set(HIDDEN_OPTION, ssid, connection.settings_dict["connection"]["uuid"])
+        self.write_config()
+
+    def rename_hidden(self, connection):
+        ssid = connection.get_setting("802-11-wireless").ssid
+        this_uuid = connection.settings_dict["connection"]["uuid"]
+        for option, uuid in self.cf.items(HIDDEN_OPTION):
+            if uuid == this_uuid:
+                self.cf.remove_option(HIDDEN_OPTION, option)
+                self.cf.set(HIDDEN_OPTION, ssid, uuid)
+                print ssid, 'in add hidden'
+                break
+        self.write_config()
+        return connection
 
     def remove_hidden(self, connection):
         ssid = connection.get_setting("802-11-wireless").ssid
-        self.cf.read(self.config_file)
-        if ssid not in self.cf.options("hidden"):
-            self.cf.remove_option("hidden", ssid)
-        try:
-            self.cf.write(open(self.config_file, "w"))
-            print "save succeed"
-        except:
-            print "save failded in addHidden"
+        if ssid not in self.cf.options(HIDDEN_OPTION):
+            self.cf.remove_option(HIDDEN_OPTION, ssid)
+
+        self.write_config()
 
         #print servicemanager.get_name_owner(s)
-
 
     def get_wired_state(self):
         self.wired_devices = self.device_manager.get_wired_devices()
@@ -325,6 +333,9 @@ class Settings(object):
         self.setting_state = {}
         self.settings = {}
         self.setting_lock = {}
+        
+        # lock button to false on setting initialize
+        self.initial_lock = False
 
     def init_items(self, connection):
         self.connection = connection 
@@ -370,6 +381,11 @@ class Settings(object):
                         self.dsl_is_valid,
                         self.ppp_is_valid,
                         self.vpn_is_valid]
+        if self.initial_lock:
+            Dispatcher.set_button(name, False)
+            self.setting_state[self.connection] = (name, False)
+            return
+            
         if all(validate_list):
             Dispatcher.set_button(name, True)
             self.setting_state[self.connection] = (name, True)
