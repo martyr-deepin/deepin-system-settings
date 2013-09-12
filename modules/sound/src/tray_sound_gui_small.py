@@ -353,7 +353,7 @@ class TrayGui(gtk.VBox):
             current_sink = self.__fallback_sink_index
             sinks = pypulse.output_devices
             sink_volume = pypulse.output_volumes
-            tip_text = "%s %d%%" % (_("Volume"), self.speaker_scale.get_value())
+            tip_text = "%s %d%%" % (_("Volume"), round(self.speaker_scale.get_value()))
             if current_sink in sinks and current_sink in sink_volume:
                 is_mute = sinks[current_sink]['mute']
                 if is_mute:
