@@ -238,10 +238,10 @@ class AccelEntry(ShortcutKeyEntry):
         self.grab_area.set_can_focus(True)
         self.grab_area.add_events(gtk.gdk.BUTTON_PRESS_MASK)
         self.grab_area.add_events(gtk.gdk.KEY_PRESS_MASK)
-        self.del_button = ImageButton(app_theme.get_pixbuf("keyboard/cross0.png"),
-                                      app_theme.get_pixbuf("keyboard/cross1.png"),
-                                      app_theme.get_pixbuf("keyboard/cross1.png"))
-        self.del_button.set_no_show_all(True)
+        self.del_button = ImageButton(app_theme.get_pixbuf("keyboard/delete-normal.png"),
+                                      app_theme.get_pixbuf("keyboard/delete-hover.png"),
+                                      app_theme.get_pixbuf("keyboard/delete-hover.png"))
+        #self.del_button.set_no_show_all(True)
         self.h_box.remove(self.entry)
         self.h_box.pack_start(self.accel_align)
         self.h_box.pack_start(self.grab_area, False, False)
@@ -249,17 +249,31 @@ class AccelEntry(ShortcutKeyEntry):
         self.grab_area.connect("button-press-event", self.__on_grab_area_button_press_cb)
         self.grab_area.connect("key-press-event", self.__on_grab_area_key_press_cb)
         self.accel_label.connect("button-press-event", self.__on_label_button_press_cb)
-        self.accel_label.connect("enter-notify-event", self.__on_label_enter_cb)
-        self.accel_label.connect("leave-notify-event", self.__on_label_leave_cb)
-        self.del_button.connect("leave-notify-event", self.__on_del_button_leave_cb)
+
+        #self.accel_label.connect("enter-notify-event", self.__on_label_enter_cb)
+        #self.accel_label.connect("leave-notify-event", self.__on_label_leave_cb)
+        #self.del_button.connect("leave-notify-event", self.__on_del_button_leave_cb)
+
         self.del_button.connect("clicked", lambda w:self.emit("accel-del"))
         self.accel_label.keymap = {}
-        self.set_size(200, 24)
 
         self.check_conflict_func = check_conflict_func
         self.resolve_conflict_func = resolve_conflict_func
         self.process_unmodifier_func = process_unmodifier_func
         self.can_del = can_del
+
+        widget_width = 200
+        if self.can_del:
+            widget_width = 220
+            new_hbox = gtk.HBox()
+            new_align = gtk.Alignment(0.5, 0.5, 1.0, 1.0)
+            new_align.add(self.del_button)
+            self.remove(self.align)
+            self.pack_start(new_hbox, False, False)
+            new_hbox.pack_start(self.align, False, False)
+            new_hbox.pack_start(new_align, False, False)
+
+        self.set_size(widget_width, 24)
 
         self.settings_description = ""
         self.settings_key = ""
@@ -381,9 +395,14 @@ class AccelEntry(ShortcutKeyEntry):
     
     def set_size(self, width, height):
         super(AccelEntry, self).set_size(width, height)
-        self.accel_align.set_size_request(width, height)
-        self.accel_label.label_width = width
-        self.accel_label.set_size_request(width, height)
+        if self.can_del:
+            self.accel_align.set_size_request(width-20, height)
+            self.accel_label.label_width = width - 20
+            self.accel_label.set_size_request(width-20, height)
+        else:
+            self.accel_align.set_size_request(width, height)
+            self.accel_label.label_width = width
+            self.accel_label.set_size_request(width, height)
 
     def __on_accel_key_change_cb(self, widget, accel_name):
         if not self.settings_obj:
