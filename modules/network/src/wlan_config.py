@@ -56,6 +56,7 @@ class WirelessSetting(Settings):
             self.crumb_name = ap.get_ssid()
         else:
             self.crumb_name = ""
+        self.ap = ap
         self.spec_connection = spec_connection
         #event_manager.emit("update-delete-button", False)
 
@@ -79,6 +80,7 @@ class WirelessSetting(Settings):
                 connection.update()
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                net_manager.set_primary_wireless(self.ap, connection)
                 Dispatcher.emit("connection-replace", connection)
                 #Dispatcher.emit("wireless-redraw")
                 # reset index
@@ -156,7 +158,7 @@ class HiddenSetting(Settings):
         Dispatcher.emit("wireless-redraw")
 
     def add_new_connection(self):
-        pass
+        return (nm_module.nm_remote_settings.new_wireless_connection('', None), -1)
 
     def save_changes(self, connection):
         if isinstance(connection, NMRemoteConnection):
@@ -187,6 +189,9 @@ class Sections(gtk.Alignment):
         self.set_button = set_button
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+
+        if isinstance(connection, NMRemoteConnection):
+            net_manager.set_primary_wireless(settings_obj.ap, connection)
 
         self.main_box = gtk.VBox()
         self.tab_name = ""
