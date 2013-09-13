@@ -133,7 +133,6 @@ class UserThemeView(IconView):
         input_dialog = InputDialog(_("Save Theme As"), "", 300, 100, lambda name: self.create_new_theme(name, item), None, True)
         input_dialog.show_all()
 
-
     def on_theme_rename(self, item):
         input_dialog = InputDialog(_("Rename Theme"), "", 300, 100, lambda name: self.rename_theme(name, item), None, True)
         input_dialog.show_all()
@@ -171,10 +170,7 @@ class UserThemeView(IconView):
             def add_theme_intern(f):
                 self.add_items([ThemeItem(f)])
                 
-            gtk.gdk.threads_enter()
             add_theme_intern(theme_file)
-            gtk.gdk.threads_leave()
-        
 
 class SystemThemeView(IconView):
 
@@ -278,6 +274,4 @@ class SystemThemeView(IconView):
             def add_theme_intern(f):
                 self.add_items([ThemeItem(f)])
                 
-            gtk.gdk.threads_enter()
             add_theme_intern(theme_file)
-            gtk.gdk.threads_leave()
