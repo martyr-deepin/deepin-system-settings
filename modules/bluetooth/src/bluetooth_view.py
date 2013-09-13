@@ -305,9 +305,9 @@ class DeviceItem(gobject.GObject):
                 else:
                     items.append((None, _("Headset"), lambda : self.do_connect_headset()))
             if prop == "AudioSink":
-                if not hasattr(self, "audio_sink"):
-                    self.audio_sink = AudioSink(self.device.device_path)
-                if self.audio_sink.get_connected():
+                if not hasattr(self, "audio_sink_service"):
+                    self.audio_sink_service = AudioSink(self.device.device_path)
+                if self.audio_sink_service.get_connected():
                     items.append((self.service_connected_pixbufs, _("Audio Sink"), lambda : self.do_disconnect_audio_sink()))
                 else:
                     items.append((None, _("Audio Sink"), lambda : self.do_connect_audio_sink()))
