@@ -36,8 +36,14 @@ from nls import _
 
 MOUNT_MEDIA_SETTINGS = os.path.expanduser("~/.config/deepin-system-settings/mount_media/mount_media.ini")
 parser = ConfigParser()
-with open(MOUNT_MEDIA_SETTINGS) as cfg:
-    parser.readfp(cfg)
+if not os.path.exists(MOUNT_MEDIA_SETTINGS):
+    with open(MOUNT_MEDIA_SETTINGS, "w") as cfg:
+        parser.add_section("mount_media")
+        parser.set("mount_media", "auto_mount", "false")
+        parser.write(cfg)
+else:
+    with open(MOUNT_MEDIA_SETTINGS) as cfg:
+        parser.readfp(cfg)
 
 class MediaView(gtk.VBox):
     ENTRY_WIDTH = 200
@@ -50,6 +56,11 @@ class MediaView(gtk.VBox):
         self.media_handle = MediaAutorun()
         self.app_manager = AppManager()
         self.init_table()
+        
+    def __get_index_from_value(self, value, _list):
+        for tup in _list:
+            if tup[1] == value:
+                return _list.index(tup)
 
     def init_table(self):
 
@@ -89,6 +100,7 @@ class MediaView(gtk.VBox):
         self.photo = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.software = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.auto_mount = ComboBox(auto_mount_list, fixed_width=self.ENTRY_WIDTH)
+        self.auto_mount.set_select_index(self.__get_index_from_value(parser.get("mount_media", "auto_mount"), auto_mount_list))
         #self.more_option = Button(_("more option"))
 
         ###below content type displayed as more option is clicked"

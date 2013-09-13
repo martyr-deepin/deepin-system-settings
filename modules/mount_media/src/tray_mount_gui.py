@@ -20,13 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from theme import app_theme
 from dtk.ui.dialog import ConfirmDialog
 from dtk.ui.line import HSeparator
 from vtk.draw  import draw_text, draw_pixbuf
 from vtk.utils import get_text_size
 from nls import _
-from permanent_settings import get_auto_mount, set_auto_mount
+from permanent_settings import get_auto_mount
 
 import os
 import sys
