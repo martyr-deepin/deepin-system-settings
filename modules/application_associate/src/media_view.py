@@ -34,16 +34,30 @@ import style
 from constants import STANDARD_LINE, TEXT_WINDOW_LEFT_PADDING 
 from nls import _
 
-MOUNT_MEDIA_SETTINGS = os.path.expanduser("~/.config/deepin-system-settings/mount_media/mount_media.ini")
-parser = ConfigParser()
-if not os.path.exists(MOUNT_MEDIA_SETTINGS):
-    with open(MOUNT_MEDIA_SETTINGS, "w") as cfg:
+CFG_FILE = os.path.expanduser("~/.config/deepin-system-settings/mount_media/mount_media.ini")
+
+if not os.path.exists(CFG_FILE):
+    os.makedirs(os.path.dirname(CFG_FILE))
+    with open(CFG_FILE, "w") as cfg:
+        parser = ConfigParser()
         parser.add_section("mount_media")
-        parser.set("mount_media", "auto_mount", "false")
+        parser.set("mount_media", "auto_mount", "none")
         parser.write(cfg)
-else:
-    with open(MOUNT_MEDIA_SETTINGS) as cfg:
+        
+def get_auto_mount():
+    with open(CFG_FILE) as cfg:
+        parser = ConfigParser()        
         parser.readfp(cfg)
+        return parser.get("mount_media", "auto_mount")
+
+def set_auto_mount(auto_mount_option):
+    with open(CFG_FILE, "r+") as cfg:
+        parser = ConfigParser()
+        parser.readfp(cfg)
+        cfg.seek(0)
+        cfg.truncate()
+        parser.set("mount_media", "auto_mount", auto_mount_option)
+        parser.write(cfg)
 
 class MediaView(gtk.VBox):
     ENTRY_WIDTH = 200
@@ -100,7 +114,7 @@ class MediaView(gtk.VBox):
         self.photo = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.software = ComboBox(default_list, fixed_width=self.ENTRY_WIDTH)
         self.auto_mount = ComboBox(auto_mount_list, fixed_width=self.ENTRY_WIDTH)
-        self.auto_mount.set_select_index(self.__get_index_from_value(parser.get("mount_media", "auto_mount"), auto_mount_list))
+        self.auto_mount.set_select_index(self.__get_index_from_value(get_auto_mount(), auto_mount_list))
         #self.more_option = Button(_("more option"))
 
         ###below content type displayed as more option is clicked"
@@ -197,9 +211,7 @@ class MediaView(gtk.VBox):
         self.auto_mount_toggle.connect("toggled", self.automount_open_toggle_cb)
         
     def auto_mount_combo_changed(self, widget, content, value, index):
-        with open(MOUNT_MEDIA_SETTINGS, "w") as cfg:
-            parser.set("mount_media", "auto_mount", value)
-            parser.write(cfg)
+        set_auto_mount(value)
 
     def change_autorun_callback(self, widget, content, value, index):
         if value != "other_app":

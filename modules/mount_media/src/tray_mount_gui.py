@@ -20,6 +20,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+import os
+from deepin_utils.file import get_parent_dir
+sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
+
 from dtk.ui.dialog import ConfirmDialog
 from dtk.ui.line import HSeparator
 from vtk.draw  import draw_text, draw_pixbuf
@@ -182,6 +187,7 @@ class EjecterApp(gobject.GObject):
         self.vbox.pack_start(self.h_separator_ali, True, True)
         self.vbox.pack_start(self.monitor_vbox, True, True)
 
+        self._ask_confirmed = False
         self.monitor = gio.VolumeMonitor()
         self.op = gio.MountOperation()        
         
