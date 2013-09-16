@@ -613,7 +613,7 @@ class BlueToothView(gtk.VBox):
 
         self.connect("expose-event", self.__expose)
 
-        if self.my_bluetooth.adapter.get_powered():
+        if self.my_bluetooth.adapter and self.my_bluetooth.adapter.get_powered():
             self.__get_devices()
 
     def __on_property_changed(self, adapter, key, value):
