@@ -155,6 +155,7 @@ class FaceRecordPage(gtk.VBox):
         container_remove_all(self.under_camera_box)
         self.start_record_button.label = _("Another time")
         if success > 0:
+            facepp.train.verify(person_name=get_person_name())
             self.under_camera_box.pack_start(self.success)
         else:
             self.under_camera_box.pack_start(self.fail)
