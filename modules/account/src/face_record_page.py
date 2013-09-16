@@ -76,7 +76,7 @@ class FaceRecordPage(gtk.VBox):
         
         self.keep_few_minutes = Label(_("Please keep still for 5 seconds"))
         self.success = Label(_("Your face has been successfully recorded"))
-        self.fail = Label(_("Face recording failed."))
+        self.fail = Label(_("Failed to record your face"))
 
     def refresh(self):
         pass
@@ -158,13 +158,16 @@ class FaceRecordPage(gtk.VBox):
         self.webcam_align.show_all()
         
         container_remove_all(self.under_camera_box)
+        print "set name"
         self.start_record_button.label = _("Another time")
+        start_record_button_align = gtk.Alignment(0.5, 0.5, 0, 0)
+        start_record_button_align.add(self.start_record_button)
         if success > 0:
             facepp.train.verify(person_name=get_person_name())
             self.under_camera_box.pack_start(self.success)
         else:
             self.under_camera_box.pack_start(self.fail)
-        self.under_camera_box.pack_start(self.start_record_button)
+        self.under_camera_box.pack_start(start_record_button_align)
 
     def __camera_box_expose(self, widget, event):
         cr = widget.window.cairo_create()
