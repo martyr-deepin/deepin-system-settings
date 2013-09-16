@@ -131,6 +131,11 @@ class FaceRecordPage(gtk.VBox):
         success = 0
         
         try:
+            facepp.person.delete(person_name=get_person_name(), timeout=2)
+        except:
+            pass
+        
+        try:
             facepp.person.create(person_name=get_person_name(), timeout=2)
         except:
             pass
