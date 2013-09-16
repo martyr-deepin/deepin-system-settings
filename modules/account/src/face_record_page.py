@@ -129,15 +129,16 @@ class FaceRecordPage(gtk.VBox):
 
     def __do_action(self):
         success = 0
+        
+        try:
+            facepp.person.create(person_name=get_person_name(), timeout=2)
+        except:
+            pass
+        
         for i in xrange(3):
             result = facepp.detection.detect(img=File("/tmp/face_recognition_%s.png" % i), 
                                              mode="oneface", timeout=2, retry_delay=3)
-            print result
             if result["face"]:
-                try:
-                    facepp.person.create(person_name=get_person_name(), timeout=2)
-                except:
-                    pass
                 add_result = facepp.person.add_face(person_name=get_person_name(), face_id=result["face"][0]["face_id"], timeout=2)
                 print "add_result, ", add_result
                 success += 1

@@ -61,6 +61,23 @@ COMBO_WIDTH = 190
 LABEL_WIDTH = 180
 INSENSITIVE_TEXT_COLOR = "#DCDCDC"
 
+def get_face_recognition_enable():
+    bus = dbus.SystemBus()
+    dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+    dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
+    if dbus_interface.cfg_get(getpass.getuser(), "enable") == "true":
+        return True
+    return False
+
+def set_face_recognition_enable(value):
+    bus = dbus.SystemBus()
+    dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+    dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
+    if value:
+       dbus_interface.cfg_set(getpass.getuser(), "enable", "true")
+    else:
+       dbus_interface.cfg_set(getpass.getuser(), "enable", "false")        
+
 class AccountSetting(object):
     '''account setting'''
     CH_PASSWD_CURRENT_PSWD = 0
@@ -141,6 +158,7 @@ class AccountSetting(object):
         self.button_widgets["face_recognition"] = SwitchButton(
             inactive_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
             active_disable_dpixbuf=app_theme.get_pixbuf("toggle_button/active_normal.png"))
+        self.button_widgets["face_recognition"].set_active(get_face_recognition_enable())
         self.button_widgets["face_record"] = Button(_("Record"))
         self.button_widgets["recognition_test"] = Button(_("Test"))
         #self.button_widgets["net_access_check"] = CheckButton(_("网络访问权限"), padding_x=0)
@@ -598,6 +616,8 @@ class AccountSetting(object):
             self.container_widgets["face_record_test_hbox"].pack_start(self.button_widgets["recognition_test"])
         else:
             container_remove_all(self.container_widgets["face_record_test_hbox"])
+        
+        set_face_recognition_enable(button.get_active())
         self.container_widgets["face_record_test_hbox"].show_all()
         
     ## add account cb >> ##
