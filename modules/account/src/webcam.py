@@ -48,7 +48,7 @@ class Webcam(gtk.DrawingArea):
         #self.pipestr = "v4l2src ! video/x-raw-yuv,width=320,height=240 ! ffmpegcolorspace ! xvimagesink"
         #self.pipestr = "v4l2src ! video/x-raw-yuv ! ffmpegcolorspace ! videoflip method=horizontal-flip ! ximagesink,force-aspect-ratio=true"
         #self.pipestr = "v4l2src ! video/x-raw-yuv ! ffmpegcolorspace ! ximagesink,force-aspect-ratio=true"
-        self.pipestr = "v4l2src ! video/x-raw-rgb,width=%s,height=%s ! ffmpegcolorspace ! videoflip method=horizontal-flip ! ximagesink force-aspect-ratio=true" % (width, height)
+        self.pipestr = "v4l2src ! video/x-raw-rgb,width=%s,height=%s ! ffmpegcolorspace ! videoflip method=horizontal-flip ! videoscale !ximagesink force-aspect-ratio=true" % (width, height)
         self.video_player = gst.parse_launch(self.pipestr)
         self.video_player.set_state(gst.STATE_PLAYING)
         self.__video_bus = self.video_player.get_bus()

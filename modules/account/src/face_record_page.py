@@ -37,8 +37,8 @@ from dtk.ui.draw import draw_pixbuf
 from facepp import API, File
 facepp = API("e7d24ca8e91351b8cac02eb6e6080678", "iH_Dls3_gE2wx5dp2cKHPrO8W5V5NTr-")
 
-CAMERA_BOX_SIZE = 140
-WEBCAM_SIZE = 130
+CAMERA_BOX_SIZE = 154
+WEBCAM_SIZE = 144
 WIDGET_SPACING = 20
 
 def get_person_name():
@@ -90,8 +90,8 @@ class FaceRecordPage(gtk.VBox):
         self.webcam_align.set_padding(5, 5, 5, 5)
         if not hasattr(self.account_setting, "record_webcam"):
             self.account_setting.record_webcam = Webcam()
-            self.account_setting.record_webcam.set_size_request(WEBCAM_SIZE, 120)
-            self.account_setting.record_webcam.create_video_pipeline(160, 120)
+            self.account_setting.record_webcam.set_size_request(WEBCAM_SIZE, min(WEBCAM_SIZE, 240))
+            self.account_setting.record_webcam.create_video_pipeline(320, 240)
         self.webcam_align.add(self.account_setting.record_webcam)
         container_remove_all(self.camera_box)
         self.camera_box.add(self.webcam_align)
