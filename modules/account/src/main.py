@@ -31,7 +31,6 @@ from nls import _
 from icon_button import IconButton
 from dtk.ui.theme import ui_theme
 from dtk.ui.label import Label
-from dtk.ui.scrolled_window import ScrolledWindow
 from dtk.ui.button import CheckButton, Button, SwitchButton
 from dtk.ui.entry import InputEntry, PasswordEntry
 from dtk.ui.combo import ComboBox
@@ -42,11 +41,11 @@ from treeitem import MyTreeView as TreeView
 from treeitem import MyTreeItem as TreeItem
 from account_utils import AccountsPermissionDenied, AccountsUserDoesNotExist, AccountsUserExists, AccountsFailed
 import gtk
-import pango
 import threading
 import tools
 import getpass
 import crypt
+from deepin_utils.process import run_command
 from random import randint
 from module_frame import ModuleFrame
 from constant import *
@@ -125,7 +124,8 @@ class AccountSetting(object):
         self.label_widgets["passwd"] = Label(_("Password"), enable_select=False,
                 text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
         self.label_widgets["passwd_char"] = Label("****", label_width=COMBO_WIDTH-1, enable_select=False, enable_double_click=False)
-        self.label_widgets["auto_login"] = Label(_("Automatic login"), enable_select=False, enable_double_click=False)
+        self.label_widgets["auto_login"] = Label(_("Automatic login"), wrap_width=360,
+                                                 enable_select=False, enable_double_click=False)
         self.label_widgets["nopw_login"] = Label(_("Log in without a password"), enable_select=False,
                 text_x_align=ALIGN_END, enable_double_click=False, fixed_width=LABEL_WIDTH)
         self.label_widgets["deepin_account_tips"] = Label(_("Deepin Account"), enable_select=False, enable_double_click=False)
@@ -136,7 +136,7 @@ class AccountSetting(object):
         self.label_widgets["deepin_account_new"] = Label(_("Unbound"), enable_select=False, enable_double_click=False)
         self.label_widgets["account_create_error"] = Label("", wrap_width=360, enable_select=False, enable_double_click=False)
         self.label_widgets["account_info_error"] = Label("", wrap_width=360, enable_select=False, enable_double_click=False)
-        self.label_widgets["face_recognition"] = Label(_("Face Recognition"), wrap_width=360, 
+        self.label_widgets["face_recognition"] = Label(_("Facial recognition"), wrap_width=360, 
                                                        enable_select=False, enable_double_click=False)
         # image
         self.image_widgets["lock_pixbuf"] = app_theme.get_pixbuf("lock/lock.png")
@@ -242,7 +242,8 @@ class AccountSetting(object):
         # face record page 
         self.alignment_widgets["face_record"] = gtk.Alignment()
         self.button_widgets["back_face_record"] = Button(_("Back"))
-        self.button_widgets["ok_face_record"] = Button(_("OK"))
+        self.button_widgets["experience_face_record"] = Button(_("Experience"))
+        # self.button_widgets["ok_face_record"] = Button(_("OK"))
 
     def __adjust_widget(self):
         self.container_widgets["main_vbox"].pack_start(self.container_widgets["slider"])
@@ -264,7 +265,8 @@ class AccountSetting(object):
         self.statusbar_buttons = {
             "main_hbox": [self.button_widgets["disable_account"], self.button_widgets["add_account"], self.button_widgets["del_account"]],
             "set_iconfile": [self.button_widgets["cancel_set_icon"]],
-            "edit_iconfile": [self.button_widgets["cancel_set_icon"], self.button_widgets["save_edit_icon"]]}
+            "edit_iconfile": [self.button_widgets["cancel_set_icon"], self.button_widgets["save_edit_icon"]],
+            "face_record" : [self.button_widgets["back_face_record"], self.button_widgets["experience_face_record"]]}
 
         self.alignment_widgets["set_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 10)
         self.alignment_widgets["edit_iconfile"].set_padding(TEXT_WINDOW_TOP_PADDING, 0, TEXT_WINDOW_LEFT_PADDING, 100)
@@ -489,10 +491,13 @@ class AccountSetting(object):
         self.button_widgets["account_cancle"].connect("clicked", self.account_cancle_button_clicked)
         self.button_widgets["account_create"].connect("clicked", self.account_create_button_clicked)
         self.button_widgets["face_record"].connect("clicked", self.face_record_clicked_cb)
+        self.button_widgets["recognition_test"].connect("clicked", lambda widget : run_command("dlock"))
         self.button_widgets["auto_login"].connect("toggled", self.auto_login_toggled)
         self.button_widgets["nopw_login"].connect("toggled", self.nopw_login_toggled)
         self.button_widgets["disable_account"].connect("clicked", self.account_lock_button_clicked)
         self.button_widgets["face_recognition"].connect("toggled", self.face_recognition_switch_toggled)
+        self.button_widgets["back_face_record"].connect("clicked", self.back_face_record_clicked)
+        self.button_widgets["experience_face_record"].connect("clicked", lambda w : run_command("dlock"))
 
         self.view_widgets["account"].connect("select", self.account_treeview_select)
         self.view_widgets["account"].select_first_item()
@@ -1127,6 +1132,13 @@ class AccountSetting(object):
         self.set_to_page(self.alignment_widgets["set_iconfile"], "right")
         self.module_frame.send_submodule_crumb(2, _("Set Picture"))
         
+    def cancel_set_icon(self, button):
+        self.container_widgets["icon_edit_page"].stop_camera()
+        self.container_widgets["icon_edit_page"].draw_area.panel.hide_panel()
+        self.set_to_page(self.alignment_widgets["main_hbox"], "left")
+        self.change_crumb(1)
+    ## << set icon ##
+        
     # face record
     def face_record_clicked_cb(self, widget):
         if not self.current_select_user:
@@ -1137,13 +1149,12 @@ class AccountSetting(object):
         self.alignment_widgets["face_record"].show_all()
         self.set_to_page(self.alignment_widgets["face_record"], "right")
         self.module_frame.send_submodule_crumb(2, _("Face Record"))
-
-    def cancel_set_icon(self, button):
-        self.container_widgets["icon_edit_page"].stop_camera()
-        self.container_widgets["icon_edit_page"].draw_area.panel.hide_panel()
+        
+    def back_face_record_clicked(self, button):
+        if hasattr(self, "record_webcam"):
+            self.record_webcam.stop()
         self.set_to_page(self.alignment_widgets["main_hbox"], "left")
         self.change_crumb(1)
-    ## << set icon ##
 
     # dbus signals
     def user_info_changed_cb(self, user, item):

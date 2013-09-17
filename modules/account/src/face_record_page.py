@@ -80,7 +80,9 @@ class FaceRecordPage(gtk.VBox):
         self.fail = Label(_("Failed to record your face"), label_width=300, text_x_align=pango.ALIGN_CENTER)
 
     def refresh(self):
-        pass
+        container_remove_all(self.camera_box)
+        container_remove_all(self.under_camera_box)
+        self.under_camera_box.pack_start(self.start_record_button)
 
     def __start_record_clicked(self, widget):
         container_remove_all(self.under_camera_box)
@@ -159,11 +161,11 @@ class FaceRecordPage(gtk.VBox):
         self.webcam_align.show_all()
         
         container_remove_all(self.under_camera_box)
-        self.another_time_button = Button(_("Another time"))
-        self.another_time_button.set_size_request(CAMERA_BOX_SIZE, 25)
-        self.another_time_button.connect("clicked", self.__start_record_clicked)
+        self.try_again_button = Button(_("Try Again"))
+        self.try_again_button.set_size_request(CAMERA_BOX_SIZE, 25)
+        self.try_again_button.connect("clicked", self.__start_record_clicked)
         start_record_button_align = gtk.Alignment(0.5, 0.5, 0, 0)
-        start_record_button_align.add(self.another_time_button)
+        start_record_button_align.add(self.try_again_button)
         if success > 0:
             facepp.train.verify(person_name=get_person_name())
             self.under_camera_box.pack_start(self.success)
