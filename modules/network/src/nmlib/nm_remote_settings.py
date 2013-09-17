@@ -107,11 +107,14 @@ class NMRemoteSettings(NMObject):
             self.cf.write(f)
 
     def remove_gones(self, hw, uuid):
-        connection = self.get_connection_by_uuid(uuid)
-        if connection:
-            return connection
-        else:
-            self.remove_option(WIRE_SECTION, hw)
+        try:
+            connection = self.get_connection_by_uuid(uuid)
+            if connection:
+                return connection
+            else:
+                self.remove_option(WIRE_SECTION, hw)
+                return None
+        except:
             return None
 
     def set_primary_wire(self, wired_device, connection):
