@@ -107,14 +107,11 @@ class NMRemoteSettings(NMObject):
             self.cf.write(f)
 
     def remove_gones(self, hw, uuid):
-        try:
-            connection = self.get_connection_by_uuid(uuid)
-            if connection:
-                return connection
-            else:
-                self.remove_option(WIRE_SECTION, hw)
-                return None
-        except:
+        connection = self.get_connection_by_uuid(uuid)
+        if connection:
+            return connection
+        else:
+            self.cf.remove_option(WIRE_SECTION, hw)
             return None
 
     def set_primary_wire(self, wired_device, connection):
@@ -176,7 +173,10 @@ class NMRemoteSettings(NMObject):
             return []
 
     def get_connection_by_uuid(self, uuid):
-        return get_cache().getobject(self.dbus_method("GetConnectionByUuid", uuid))
+        try:
+            return get_cache().getobject(self.dbus_method("GetConnectionByUuid", uuid))
+        except:
+            return None
 
     def save_hostname(self, hostname):
         self.dbus_method("SaveHostname", hostname)
