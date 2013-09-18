@@ -172,7 +172,8 @@ class TrayBluetoothPlugin(object):
                 self.my_bluetooth.adapter.connect("property-changed", self.__on_adapter_property_changed)
         except Exception, e:
             print e
-        self.__start_service()
+        if self.my_bluetooth.adapter:
+            self.__start_service()
         
     def __on_bluetooth_service_start(self, gobj, path):
         print "service_start"
@@ -191,6 +192,12 @@ class TrayBluetoothPlugin(object):
     def __on_adapter_removed(self):
         print "adapter removed"
         self.tray_icon.set_visible(False)
+        if hasattr(self, "service_process"):
+            try:
+                os.kill(self.service_process.pid, 9)
+                os.kill(self.service_process.pid + 1, 9)
+            except Exception, e:
+                print "DEBUG ", e
         
     def __on_default_adapter_changed(self):
         print "adapter changed"
@@ -239,6 +246,7 @@ class TrayBluetoothPlugin(object):
         if self.my_bluetooth.adapter == None:
             return
 
+        self.this.hide_menu()
         self.my_bluetooth.adapter.set_powered(widget.get_active())
         if widget.get_active():
             self.tray_icon.set_icon_theme("enable")
@@ -246,7 +254,6 @@ class TrayBluetoothPlugin(object):
         else:
             self.tray_icon.set_icon_theme("enable_disconnect")
             permanent_settings.set_powered(False)
-        self.this.hide_menu()
         self.tray_icon.emit("popup-menu-event", TrayBluetoothPlugin.__class__) # Hacked by hualet :)
             
     def __bluetooth_selected(self, widget):

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-29 15:22+0800\n"
+"POT-Creation-Date: 2013-09-12 17:38+0800\n"
 "PO-Revision-Date: 2013-03-01 10:11+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,21 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_mount_gui.py:164
+#: ../src/tray_mount_gui.py:166 ../src/tray_mount_gui.py:389
+#: ../src/tray_mount_gui.py:405 ../src/tray_mount_gui.py:410
 msgid "Storage Device"
 msgstr "儲存裝置"
 
-#: ../src/tray_mount_gui.py:382 ../src/tray_mount_gui.py:387
-#, fuzzy
-msgid "Mount manager"
-msgstr "掛載失敗"
+#: ../src/tray_mount_gui.py:390
+#, python-format
+msgid "Mount and open device \"%s\"?"
+msgstr ""
 
-#: ../src/tray_mount_gui.py:382
+#: ../src/tray_mount_gui.py:405
 #, python-format
 msgid "Removable media \"%s\" has been removed"
 msgstr ""
 
-#: ../src/tray_mount_gui.py:387
+#: ../src/tray_mount_gui.py:410
 #, python-format
 msgid "Found new removable media \"%s\""
 msgstr ""
@@ -39,14 +40,20 @@ msgstr ""
 msgid "Mount Failed"
 msgstr "掛載失敗"
 
+#: ../src/tray_mount_plugin.py:65
+#, python-format
+msgid "Mount '%s' error."
+msgstr "掛載 '%s' 齣錯。"
+
 #: ../src/tray_mount_plugin.py:68
 msgid "Unmount Failed"
 msgstr "卸載失敗"
 
-#: ../src/tray_mount_plugin.py:71
-msgid "Mount '%s' error."
-msgstr "掛載 '%s' 齣錯。"
-
-#: ../src/tray_mount_plugin.py:71
+#: ../src/tray_mount_plugin.py:70
+#, python-format
 msgid "Unmount '%s' error. Please unmount it in file manager"
 msgstr "卸載'%s'出錯，請到文件管理將它卸載。"
+
+#, fuzzy
+#~ msgid "Mount manager"
+#~ msgstr "掛載失敗"
