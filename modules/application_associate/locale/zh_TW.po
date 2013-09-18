@@ -82,7 +82,7 @@ msgstr "開啟資料夾"
 
 #: ../src/media_view.py:76
 msgid "Mount"
-msgstr ""
+msgstr "掛載"
 
 #: ../src/media_view.py:77
 msgid "Mount and open folder"
