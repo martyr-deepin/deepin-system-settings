@@ -35,7 +35,7 @@ from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, container_
 from dtk.ui.draw import draw_pixbuf
 
 from facepp import API, File
-facepp = API("e7d24ca8e91351b8cac02eb6e6080678", "iH_Dls3_gE2wx5dp2cKHPrO8W5V5NTr-")
+facepp = API("e7d24ca8e91351b8cac02eb6e6080678", "iH_Dls3_gE2wx5dp2cKHPrO8W5V5NTr-", max_retries=2)
 
 CAMERA_BOX_SIZE = 154
 WEBCAM_SIZE = 144
@@ -51,6 +51,10 @@ class FaceRecordPage(gtk.VBox):
     def __init__(self, account_setting):
         gtk.VBox.__init__(self)
         self.account_setting = account_setting
+        
+        self.camera_pixbuf = app_theme.get_pixbuf("account/camera.png").get_pixbuf()
+        self.error_pixbuf = app_theme.get_pixbuf("account/error.png").get_pixbuf()
+        self.success_pixbuf = app_theme.get_pixbuf("account/success.png").get_pixbuf()
 
         self.camera_box_align = gtk.Alignment(0.5, 0, 0, 0)
         self.camera_box = gtk.VBox()
@@ -63,26 +67,40 @@ class FaceRecordPage(gtk.VBox):
         self.under_camera_box_align.set_padding(WIDGET_SPACING, 0, 0, 0)
         self.under_camera_box_align.add(self.under_camera_box)
         self.__init_widgets()
-        self.under_camera_box.pack_start(self.start_record_button)
+        if Webcam.has_device():
+            self.under_camera_box.pack_start(self.start_record_button)
+        else:
+            self.under_camera_box.pack_start(self.no_device_warning)
 
         self.pack_start(self.camera_box_align, False, False)
         self.pack_start(self.under_camera_box_align, False, False)
-
-        self.camera_pixbuf = app_theme.get_pixbuf("account/camera.png").get_pixbuf()
 
     def __init_widgets(self):
         self.start_record_button = Button(_("Start"))
         self.start_record_button.set_size_request(CAMERA_BOX_SIZE, 25)
         self.start_record_button.connect("clicked", self.__start_record_clicked)
         
+        self.no_device_warning = Label(_("Please plug in or enable your camera"), label_width=300, text_x_align=pango.ALIGN_CENTER)
         self.keep_few_minutes = Label(_("Please keep still for 5 seconds"), label_width=300, text_x_align=pango.ALIGN_CENTER)
-        self.success = Label(_("Your face has been successfully recorded"), label_width=300, text_x_align=pango.ALIGN_CENTER)
+        # self.success = Label(_("Your face has been successfully recorded"), label_width=300, text_x_align=pango.ALIGN_CENTER)
         self.fail = Label(_("Failed to record your face"), label_width=300, text_x_align=pango.ALIGN_CENTER)
+        
+        self.success = gtk.Alignment(0.5, 0.5, 0, 0)
+        self.success.set_size_request(300, -1)
+        self.success_img = gtk.Image()
+        self.success_img.set_from_pixbuf(self.success_pixbuf)
+        self.success_box = gtk.HBox()
+        self.success_box.pack_start(self.success_img, False, False, 5)
+        self.success_box.pack_start(Label(_("Your face has been successfully recorded")))
+        self.success.add(self.success_box)
 
     def refresh(self):
         container_remove_all(self.camera_box)
         container_remove_all(self.under_camera_box)
-        self.under_camera_box.pack_start(self.start_record_button)
+        if Webcam.has_device():
+            self.under_camera_box.pack_start(self.start_record_button)
+        else:
+            self.under_camera_box.pack_start(self.no_device_warning)        
 
     def __start_record_clicked(self, widget):
         container_remove_all(self.under_camera_box)
@@ -134,22 +152,19 @@ class FaceRecordPage(gtk.VBox):
         success = 0
         
         try:
-            facepp.person.delete(person_name=get_person_name(), timeout=2)
-        except:
-            pass
-        
-        try:
-            facepp.person.create(person_name=get_person_name(), timeout=2)
-        except:
-            pass
-        
-        for i in xrange(3):
-            result = facepp.detection.detect(img=File("/tmp/face_recognition_%s.png" % i), 
-                                             mode="oneface", timeout=2, retry_delay=3)
-            if result["face"]:
-                add_result = facepp.person.add_face(person_name=get_person_name(), face_id=result["face"][0]["face_id"], timeout=2)
-                print "add_result, ", add_result
-                success += 1
+            facepp.person.delete(person_name=get_person_name())
+            facepp.person.create(person_name=get_person_name())
+            
+            for i in xrange(3):
+                result = facepp.detection.detect(img=File("/tmp/face_recognition_%s.png" % i), 
+                                                 mode="oneface")
+                if result["face"]:
+                    add_result = facepp.person.add_face(person_name=get_person_name(), 
+                                                        face_id=result["face"][0]["face_id"])
+                    print "add_result, ", add_result
+                    success += 1
+        except Exception, e:
+            print e
         
         self.snapshot_pixbuf = self.account_setting.record_webcam.get_snapshot()
         self.account_setting.record_webcam.stop()
@@ -160,18 +175,20 @@ class FaceRecordPage(gtk.VBox):
         self.webcam_align.add(self.scanning_box)
         self.webcam_align.show_all()
         
-        container_remove_all(self.under_camera_box)
-        self.try_again_button = Button(_("Try Again"))
-        self.try_again_button.set_size_request(CAMERA_BOX_SIZE, 25)
-        self.try_again_button.connect("clicked", self.__start_record_clicked)
-        start_record_button_align = gtk.Alignment(0.5, 0.5, 0, 0)
-        start_record_button_align.add(self.try_again_button)
-        if success > 0:
-            facepp.train.verify(person_name=get_person_name())
-            self.under_camera_box.pack_start(self.success)
-        else:
-            self.under_camera_box.pack_start(self.fail)
-        self.under_camera_box.pack_start(start_record_button_align)
+        def things_after_scanning():
+            container_remove_all(self.under_camera_box)
+            self.try_again_button = Button(_("Try Again"))
+            self.try_again_button.set_size_request(CAMERA_BOX_SIZE, 25)
+            self.try_again_button.connect("clicked", self.__start_record_clicked)
+            start_record_button_align = gtk.Alignment(0.5, 0.5, 0, 0)
+            start_record_button_align.add(self.try_again_button)
+            if success > 0:
+                facepp.train.verify(person_name=get_person_name())
+                self.under_camera_box.pack_start(self.success)
+            else:
+                self.under_camera_box.pack_start(self.fail)
+            self.under_camera_box.pack_start(start_record_button_align)
+        gobject.timeout_add(2000, things_after_scanning)
 
     def __camera_box_expose(self, widget, event):
         cr = widget.window.cairo_create()
@@ -196,6 +213,11 @@ class FaceRecordPage(gtk.VBox):
             draw_pixbuf(cr, self.camera_pixbuf,
                         x = x + (CAMERA_BOX_SIZE - self.camera_pixbuf.get_width()) / 2,
                         y = y + (CAMERA_BOX_SIZE - self.camera_pixbuf.get_height()) / 2)
+            if not Webcam.has_device():
+                draw_pixbuf(cr, self.error_pixbuf,
+                            x = x + (CAMERA_BOX_SIZE - self.camera_pixbuf.get_width()) / 2 + 12,
+                            y = y + (CAMERA_BOX_SIZE - self.camera_pixbuf.get_height()) / 2 + 12)
+                
             
 class ScanningBox(gtk.Button):
 
