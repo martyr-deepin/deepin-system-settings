@@ -209,7 +209,7 @@ class LoadingThread(td.Thread):
         while self.widget.get_net_state() == 1:
             self.widget.refresh_loading(position)
             time.sleep(0.1)
-            position += 60
+            position += 45
 
 class WiredItem(GenItems):
     def __init__(self, device, font_size=DEFAULT_FONT_SIZE):
