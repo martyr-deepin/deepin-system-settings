@@ -378,6 +378,8 @@ class Security(gtk.VBox):
                 secret = nm_module.secret_agent.agent_get_secrets(self.connection.object_path,
                                                         setting_name,
                                                         method)
+                if secret == None:
+                    secret = ''
                 log.debug("get secret", setting_name, method, "secret")
             except Exception, e:
                 log.error("get secret error", e)
