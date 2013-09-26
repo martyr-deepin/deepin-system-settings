@@ -210,16 +210,18 @@ class Sections(gtk.Alignment):
         self.add(self.main_box)
 
     def show_more_options(self, widget):
+        self.settings_obj.initial_lock = True
         widget.parent.destroy()
         self.wireless = SettingSection(_("Wireless"), always_show=True)
         self.ipv4 = SettingSection(_("IPv4 settings"), always_show=True)
         self.ipv6 = SettingSection(_("IPv6 settings"), always_show=True)
         self.wireless.load([Wireless(self.connection, self.set_button, settings_obj=self.settings_obj)])
-        self.ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
-        self.ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        self.ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj, link_local=True)])
+        self.ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj, link_local=True)])
         self.main_box.pack_start(self.wireless, False, False, 15)
         self.main_box.pack_start(self.ipv4, False, False)
         self.main_box.pack_start(self.ipv6, False, False, 15)
+        self.settings_obj.initial_lock = False
 
 class Security(gtk.VBox):
     ENTRY_WIDTH = 222

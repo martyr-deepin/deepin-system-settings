@@ -65,20 +65,23 @@ class Title(gtk.HBox):
         gtk.HBox.__init__(self)
         self.set_size_request(-1, 30)
         
-        label = Label(name,
+        self.label = Label(name,
                       text_size=text_size,
                       text_color=app_theme.get_color("globalTitleForeground"), 
                       enable_select=False,
                       enable_double_click=False)
         if label_right:
-            self.label_box = style.wrap_with_align(label, width=210)
+            self.label_box = style.wrap_with_align(self.label, width=210)
         else:
-            self.label_box = style.wrap_with_align(label, align="left", width=210)
+            self.label_box = style.wrap_with_align(self.label, align="left", width=210)
         self.label_box.set_size_request(210, 30)
         self.pack_start(self.label_box, False, False)
 
         if not always_show:
-            self.switch = SwitchButton()
+            self.switch = SwitchButton(
+                                        False,
+                                        inactive_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/inactive_normal.png"), 
+                                        active_disable_dpixbuf = app_theme.get_pixbuf("toggle_button/active_disable.png"))
             align = style.wrap_with_align(self.switch, align="left")
             self.pack_start(align, False, False)
             self.switch.connect("toggled", toggle_callback)
@@ -133,6 +136,11 @@ class SettingSection(gtk.VBox):
 
     def get_active(self):
         self.title.switch.get_active()
+
+    def set_sensitive(self, state):
+        self.set_active(True)
+        self.title.label.set_sensitive(state)
+        self.title.switch.set_sensitive(state)
 
     def _set_align(self):
         align = gtk.Alignment(0,0,0,0)
