@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-14 17:14+0800\n"
+"POT-Creation-Date: 2013-09-26 14:51+0800\n"
 "PO-Revision-Date: 2012-12-25 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,228 +16,232 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/elements.py:240 ../src/wlan_config.py:267
+#: ../src/elements.py:248 ../src/wlan_config.py:277
 #: ../src/mobile_config.py:276 ../src/widgets.py:85
 msgid "Show password"
 msgstr "顯示密碼"
 
-#: ../src/ipsettings.py:41 ../src/dsl_config.py:120 ../src/lan_config.py:103
-#: ../src/vpn_config.py:141 ../src/wlan_config.py:209
+#: ../src/ipsettings.py:41 ../src/dsl_config.py:119 ../src/lan_config.py:109
+#: ../src/vpn_config.py:142 ../src/wlan_config.py:216
 #: ../src/mobile_config.py:223
 msgid "IPv4 settings"
 msgstr "Ipv4 設定值"
 
-#: ../src/ipsettings.py:52 ../src/ipsettings.py:289
+#: ../src/ipsettings.py:51 ../src/ipsettings.py:322
+msgid "Link-Local Only"
+msgstr "僅本地端連線"
+
+#: ../src/ipsettings.py:53 ../src/ipsettings.py:323
 msgid "Automatic IP address"
 msgstr "自動獲取 IP 位址"
 
-#: ../src/ipsettings.py:56 ../src/ipsettings.py:293
+#: ../src/ipsettings.py:57 ../src/ipsettings.py:327
 msgid "IP Address:"
 msgstr "IP 位址："
 
-#: ../src/ipsettings.py:57
+#: ../src/ipsettings.py:58
 msgid "Subnet Mask:"
 msgstr "網絡遮罩："
 
-#: ../src/ipsettings.py:58 ../src/ipsettings.py:295 ../src/vpn_config.py:171
+#: ../src/ipsettings.py:59 ../src/ipsettings.py:329 ../src/vpn_config.py:172
 msgid "Gateway:"
 msgstr "通訊閘："
 
-#: ../src/ipsettings.py:66 ../src/ipsettings.py:304
+#: ../src/ipsettings.py:67 ../src/ipsettings.py:338
 msgid "Automatic DNS server address"
 msgstr "自動設定 DNS 伺服器"
 
-#: ../src/ipsettings.py:70 ../src/ipsettings.py:308
+#: ../src/ipsettings.py:71 ../src/ipsettings.py:342
 msgid "Primary DNS server address:"
 msgstr "主要 DNS 伺服器位址："
 
-#: ../src/ipsettings.py:71 ../src/ipsettings.py:309
+#: ../src/ipsettings.py:72 ../src/ipsettings.py:343
 msgid "Slave DNS server address:"
 msgstr "次要 DNS 伺服器位址："
 
-#: ../src/ipsettings.py:164
+#: ../src/ipsettings.py:185
 msgid "IPv4"
 msgstr ""
 
-#: ../src/ipsettings.py:164
+#: ../src/ipsettings.py:185
 msgid "Subnet Mask"
 msgstr "網絡遮罩："
 
-#: ../src/ipsettings.py:164
+#: ../src/ipsettings.py:185
 msgid "Gateway"
 msgstr "通訊閘："
 
-#: ../src/ipsettings.py:169
+#: ../src/ipsettings.py:190
 #, python-format
 msgid "Valid %s address."
 msgstr "有效的 IPv4 位址"
 
-#: ../src/ipsettings.py:172
+#: ../src/ipsettings.py:193
 #, python-format
 msgid "Invalid %s address."
 msgstr "無效的 IPv4 位址"
 
-#: ../src/ipsettings.py:281 ../src/lan_config.py:104 ../src/wlan_config.py:210
+#: ../src/ipsettings.py:314 ../src/lan_config.py:110 ../src/wlan_config.py:217
 msgid "IPv6 settings"
 msgstr "Ipv6 設定值"
 
-#: ../src/ipsettings.py:294
+#: ../src/ipsettings.py:328
 msgid "Prefix:"
 msgstr "前綴："
 
-#: ../src/dsl_config.py:38 ../src/dsl_config.py:226
-#: ../src/search_keyword.py:31 ../src/tray_ui.py:66 ../src/main_ui.py:731
+#: ../src/dsl_config.py:37 ../src/dsl_config.py:253
+#: ../src/search_keyword.py:31 ../src/tray_ui.py:66 ../src/main_ui.py:733
 msgid "DSL"
 msgstr "DSL 網路"
 
-#: ../src/dsl_config.py:101 ../src/vpn_config.py:123 ../src/wlan_config.py:193
+#: ../src/dsl_config.py:100 ../src/vpn_config.py:124 ../src/wlan_config.py:199
 #: ../src/mobile_config.py:217 ../src/mobile_config.py:262
 msgid "Basic"
 msgstr "基本設定值"
 
-#: ../src/dsl_config.py:103 ../src/lan_config.py:90 ../src/vpn_config.py:125
-#: ../src/vpn_config.py:352 ../src/wlan_config.py:278
+#: ../src/dsl_config.py:102 ../src/lan_config.py:95 ../src/vpn_config.py:126
+#: ../src/vpn_config.py:353 ../src/wlan_config.py:288
 #: ../src/mobile_config.py:219 ../src/mobile_config.py:281
 msgid "Advanced"
 msgstr "進階"
 
-#: ../src/dsl_config.py:119 ../src/dsl_config.py:135
-#: ../src/search_keyword.py:29 ../src/lan_config.py:39 ../src/lan_config.py:89
-#: ../src/lan_config.py:117 ../src/vpn_config.py:127 ../src/tray_ui.py:61
+#: ../src/dsl_config.py:118 ../src/dsl_config.py:134
+#: ../src/search_keyword.py:29 ../src/lan_config.py:39 ../src/lan_config.py:94
+#: ../src/lan_config.py:124 ../src/vpn_config.py:128 ../src/tray_ui.py:61
 #: ../src/main_ui.py:219
 msgid "Wired"
 msgstr "有線"
 
-#: ../src/dsl_config.py:121 ../src/dsl_config.py:352
+#: ../src/dsl_config.py:120 ../src/dsl_config.py:379
 #: ../src/mobile_config.py:224 ../src/mobile_config.py:461
 msgid "PPP"
 msgstr "PPP"
 
-#: ../src/dsl_config.py:145 ../src/lan_config.py:143 ../src/wlan_config.py:595
+#: ../src/dsl_config.py:144 ../src/lan_config.py:152 ../src/wlan_config.py:610
 msgid "Device Mac Address:"
 msgstr "裝置 Mac 位址："
 
-#: ../src/dsl_config.py:153 ../src/lan_config.py:144 ../src/wlan_config.py:599
+#: ../src/dsl_config.py:152 ../src/lan_config.py:153 ../src/wlan_config.py:614
 msgid "Cloned Mac Address:"
 msgstr "複製的 Mac 位址："
 
-#: ../src/dsl_config.py:183
+#: ../src/dsl_config.py:182
 msgid "Default Setting"
 msgstr "預設值"
 
-#: ../src/dsl_config.py:235 ../src/vpn_config.py:167
+#: ../src/dsl_config.py:262 ../src/vpn_config.py:168
 msgid "Connection Name:"
 msgstr "設定名稱："
 
-#: ../src/dsl_config.py:241 ../src/vpn_config.py:175
+#: ../src/dsl_config.py:268 ../src/vpn_config.py:176
 #: ../src/mobile_config.py:266
 msgid "Username:"
 msgstr "使用者："
 
-#: ../src/dsl_config.py:248
+#: ../src/dsl_config.py:275
 msgid "Service:"
 msgstr "服務："
 
-#: ../src/dsl_config.py:253 ../src/vpn_config.py:179
-#: ../src/settings_widget.py:613 ../src/lists.py:495 ../src/wlan_config.py:253
+#: ../src/dsl_config.py:280 ../src/vpn_config.py:180
+#: ../src/settings_widget.py:614 ../src/lists.py:522 ../src/wlan_config.py:263
 #: ../src/mobile_config.py:269
 msgid "Password:"
 msgstr "密碼："
 
-#: ../src/dsl_config.py:274 ../src/vpn_config.py:212
+#: ../src/dsl_config.py:301 ../src/vpn_config.py:213
 msgid "Show Password"
 msgstr "顯示密碼"
 
-#: ../src/dsl_config.py:360 ../src/vpn_config.py:372
+#: ../src/dsl_config.py:387 ../src/vpn_config.py:373
 #: ../src/mobile_config.py:472
 msgid "Configure Method"
 msgstr "設定方法"
 
-#: ../src/dsl_config.py:366 ../src/vpn_config.py:376
+#: ../src/dsl_config.py:393 ../src/vpn_config.py:377
 #: ../src/mobile_config.py:474
 msgid "EAP"
 msgstr "EAP"
 
-#: ../src/dsl_config.py:367 ../src/vpn_config.py:379
+#: ../src/dsl_config.py:394 ../src/vpn_config.py:380
 #: ../src/mobile_config.py:477
 msgid "PAP"
 msgstr "PAP"
 
-#: ../src/dsl_config.py:368 ../src/vpn_config.py:382
+#: ../src/dsl_config.py:395 ../src/vpn_config.py:383
 #: ../src/mobile_config.py:480
 msgid "CHAP"
 msgstr "CHAP"
 
-#: ../src/dsl_config.py:369 ../src/vpn_config.py:385
+#: ../src/dsl_config.py:396 ../src/vpn_config.py:386
 #: ../src/mobile_config.py:483
 msgid "MSCHAP"
 msgstr "MSCHAP"
 
-#: ../src/dsl_config.py:370 ../src/vpn_config.py:388
+#: ../src/dsl_config.py:397 ../src/vpn_config.py:389
 #: ../src/mobile_config.py:486
 msgid "MSCHAP v2"
 msgstr "MSCHAP v2"
 
-#: ../src/dsl_config.py:373 ../src/vpn_config.py:402
+#: ../src/dsl_config.py:400 ../src/vpn_config.py:403
 #: ../src/mobile_config.py:500
 msgid "Compression"
 msgstr "壓縮"
 
-#: ../src/dsl_config.py:377 ../src/vpn_config.py:407
+#: ../src/dsl_config.py:404 ../src/vpn_config.py:408
 #: ../src/mobile_config.py:504
 msgid "Echo"
 msgstr "回音"
 
-#: ../src/dsl_config.py:386 ../src/vpn_config.py:413
+#: ../src/dsl_config.py:413 ../src/vpn_config.py:414
 #: ../src/mobile_config.py:509
 msgid "Use point-to-point encryption(mppe)"
 msgstr "使用點對點式加密(mppe)"
 
-#: ../src/dsl_config.py:387 ../src/vpn_config.py:416
+#: ../src/dsl_config.py:414 ../src/vpn_config.py:417
 #: ../src/mobile_config.py:512
 msgid "Require 128-bit encryption"
 msgstr "需要「128-位元」加密"
 
-#: ../src/dsl_config.py:388 ../src/vpn_config.py:419
+#: ../src/dsl_config.py:415 ../src/vpn_config.py:420
 #: ../src/mobile_config.py:515
 msgid "Use stataful MPPE"
 msgstr "使用有狀態的 MPPE"
 
-#: ../src/dsl_config.py:389 ../src/vpn_config.py:422
+#: ../src/dsl_config.py:416 ../src/vpn_config.py:423
 #: ../src/mobile_config.py:518
 msgid "Allow BSD data Compression"
 msgstr "允許 BSD 資料壓縮"
 
-#: ../src/dsl_config.py:390 ../src/vpn_config.py:425
+#: ../src/dsl_config.py:417 ../src/vpn_config.py:426
 #: ../src/mobile_config.py:521
 msgid "Allow Deflate date compression"
 msgstr "允許 Deflate 資料壓縮"
 
-#: ../src/dsl_config.py:391 ../src/vpn_config.py:428
+#: ../src/dsl_config.py:418 ../src/vpn_config.py:429
 #: ../src/mobile_config.py:524
 msgid "Use TCP header compression"
 msgstr "使用 TCP 標頭壓縮"
 
-#: ../src/dsl_config.py:395 ../src/vpn_config.py:432
+#: ../src/dsl_config.py:422 ../src/vpn_config.py:433
 #: ../src/mobile_config.py:527
 msgid "Send PPP echo packets"
 msgstr "傳送 PPP 回音封包"
 
-#: ../src/search_keyword.py:30 ../src/wlan_config.py:208
-#: ../src/wlan_config.py:558 ../src/tray_ui.py:62 ../src/main_ui.py:397
+#: ../src/search_keyword.py:30 ../src/wlan_config.py:215
+#: ../src/wlan_config.py:573 ../src/tray_ui.py:62 ../src/main_ui.py:397
 msgid "Wireless"
 msgstr "無線"
 
-#: ../src/search_keyword.py:32 ../src/vpn_config.py:26 ../src/main.py:48
+#: ../src/search_keyword.py:32 ../src/vpn_config.py:27 ../src/main.py:48
 msgid "VPN"
 msgstr "VPN"
 
 #: ../src/search_keyword.py:33 ../src/mobile_config.py:38 ../src/tray_ui.py:63
-#: ../src/main_ui.py:1081
+#: ../src/main_ui.py:1097
 msgid "Mobile Network"
 msgstr "行動網路"
 
-#: ../src/search_keyword.py:34 ../src/main_ui.py:1150 ../src/main_ui.py:1188
+#: ../src/search_keyword.py:34 ../src/main_ui.py:1166 ../src/main_ui.py:1204
 msgid "Proxy"
 msgstr "代理伺服器"
 
@@ -245,7 +249,7 @@ msgstr "代理伺服器"
 msgid "Network"
 msgstr "網路"
 
-#: ../src/lan_config.py:145 ../src/wlan_config.py:604
+#: ../src/lan_config.py:154 ../src/wlan_config.py:619
 msgid "MTU:"
 msgstr "MTU："
 
@@ -261,56 +265,56 @@ msgstr "保存"
 msgid "Tip:"
 msgstr "提示："
 
-#: ../src/vpn_config.py:143
+#: ../src/vpn_config.py:144
 msgid "PPP settings"
 msgstr "PPP 設定值"
 
-#: ../src/vpn_config.py:155 ../src/vpn_config.py:188
+#: ../src/vpn_config.py:156 ../src/vpn_config.py:189
 msgid "PPTP"
 msgstr "PPTP"
 
-#: ../src/vpn_config.py:183
+#: ../src/vpn_config.py:184
 msgid "NT Domain:"
 msgstr "NT 網域："
 
-#: ../src/vpn_config.py:189
+#: ../src/vpn_config.py:190
 msgid "L2TP"
 msgstr "L2TP"
 
-#: ../src/vpn_config.py:435
+#: ../src/vpn_config.py:436
 msgid "Use protocal field compression negotiation"
 msgstr "使用協議欄位壓縮協商"
 
-#: ../src/vpn_config.py:438
+#: ../src/vpn_config.py:439
 msgid "Use Address/Control compression"
 msgstr "使用位址/控制壓縮"
 
-#: ../src/vpn_config.py:456
+#: ../src/vpn_config.py:457
 msgid "IPSec Setting"
 msgstr "IPSec 設定值"
 
-#: ../src/vpn_config.py:460
+#: ../src/vpn_config.py:461
 msgid "Enable IPSec tunnel to l2tp host"
 msgstr "針對 l2tp 主機啟用 IPSec 穿隧"
 
-#: ../src/vpn_config.py:463
+#: ../src/vpn_config.py:464
 msgid "Group Name:"
 msgstr "群組名稱:"
 
-#: ../src/vpn_config.py:466
+#: ../src/vpn_config.py:467
 msgid "Gateway ID:"
 msgstr "通訊閘 ID："
 
-#: ../src/vpn_config.py:469
+#: ../src/vpn_config.py:470
 msgid "Pre_Shared_key"
 msgstr "預共享密碼匙"
 
-#: ../src/settings_widget.py:609 ../src/lists.py:461 ../src/wlan_config.py:321
-#: ../src/wlan_config.py:566
+#: ../src/settings_widget.py:610 ../src/lists.py:488 ../src/wlan_config.py:332
+#: ../src/wlan_config.py:581
 msgid "SSID:"
 msgstr "SSID："
 
-#: ../src/settings_widget.py:617
+#: ../src/settings_widget.py:618
 msgid "Active"
 msgstr "使用"
 
@@ -319,87 +323,87 @@ msgstr "使用"
 msgid "%s deleted"
 msgstr "%s 已刪除"
 
-#: ../src/lists.py:533
+#: ../src/lists.py:560
 msgid "active"
 msgstr "使用"
 
-#: ../src/wlan_config.py:119 ../src/sidebar_ui.py:92
+#: ../src/wlan_config.py:121 ../src/sidebar_ui.py:92
 msgid "Hidden network"
 msgstr "連接到隱藏的網路"
 
-#: ../src/wlan_config.py:223
+#: ../src/wlan_config.py:231
 msgid "Security"
 msgstr "安全性"
 
-#: ../src/wlan_config.py:240
+#: ../src/wlan_config.py:250
 msgid "Security:"
 msgstr "安全性："
 
-#: ../src/wlan_config.py:243
+#: ../src/wlan_config.py:253
 msgid "Key:"
 msgstr "密碼匙："
 
-#: ../src/wlan_config.py:246
+#: ../src/wlan_config.py:256
 msgid "Wep index:"
 msgstr "WEP 索引："
 
-#: ../src/wlan_config.py:250
+#: ../src/wlan_config.py:260
 msgid "Authentication:"
 msgstr "驗證："
 
-#: ../src/wlan_config.py:257
+#: ../src/wlan_config.py:267
 msgid "None"
 msgstr "沒有"
 
-#: ../src/wlan_config.py:258
+#: ../src/wlan_config.py:268
 msgid "WEP (Hex or ASCII)"
 msgstr "WEP（Hex 或 ASCII）"
 
-#: ../src/wlan_config.py:259
+#: ../src/wlan_config.py:269
 msgid "WEP 104/128-bit Passphrase"
 msgstr "WEP「104/128-位元」密語"
 
-#: ../src/wlan_config.py:260
+#: ../src/wlan_config.py:270
 msgid "WPA WPA2 Personal"
 msgstr "WPA / WPA2 個人版"
 
-#: ../src/wlan_config.py:271
+#: ../src/wlan_config.py:281
 msgid "Shared Key"
 msgstr "共享密碼匙"
 
-#: ../src/wlan_config.py:272
+#: ../src/wlan_config.py:282
 msgid "Open System"
 msgstr "開放系統"
 
-#: ../src/wlan_config.py:572
+#: ../src/wlan_config.py:587
 msgid "Mode:"
 msgstr "模式："
 
-#: ../src/wlan_config.py:575
+#: ../src/wlan_config.py:590
 msgid "Infrastructure"
 msgstr "基礎架構"
 
-#: ../src/wlan_config.py:575
+#: ../src/wlan_config.py:590
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: ../src/wlan_config.py:578
+#: ../src/wlan_config.py:593
 msgid "Band:"
 msgstr "基帶："
 
-#: ../src/wlan_config.py:582 ../src/proxy_config.py:87
+#: ../src/wlan_config.py:597 ../src/proxy_config.py:87
 msgid "Automatic"
 msgstr "自動"
 
-#: ../src/wlan_config.py:586
+#: ../src/wlan_config.py:601
 msgid "Channel:"
 msgstr "頻道："
 
-#: ../src/wlan_config.py:591
+#: ../src/wlan_config.py:606
 msgid "BSSID:"
 msgstr "BSSID："
 
-#: ../src/wlan_config.py:633
+#: ../src/wlan_config.py:648
 msgid "Default Settings"
 msgstr "預設定值"
 
@@ -481,7 +485,7 @@ msgstr "這能幫助你輕易地設定行動寬頻連線，連至手機（3G）�
 msgid "Region"
 msgstr "地區"
 
-#: ../src/tray_ui.py:65 ../src/main_ui.py:881
+#: ../src/tray_ui.py:65 ../src/main_ui.py:883
 msgid "VPN Network"
 msgstr "VPN 網路"
 
@@ -489,7 +493,7 @@ msgstr "VPN 網路"
 msgid "Advanced..."
 msgstr "進階設定..."
 
-#: ../src/tray_ui.py:483
+#: ../src/tray_ui.py:485
 #, python-format
 msgid "card %d"
 msgstr "裝置「%d」"
@@ -511,23 +515,23 @@ msgstr "取消"
 msgid "Set up a hidden wireless connection"
 msgstr "設定一個隱藏的無線網路連線"
 
-#: ../src/main_ui.py:597
+#: ../src/main_ui.py:599
 msgid "Hotspot"
 msgstr "熱點"
 
-#: ../src/main_ui.py:732
+#: ../src/main_ui.py:734
 msgid "Create a DSL connection"
 msgstr "建立 DSL 網路連線"
 
-#: ../src/main_ui.py:882
+#: ../src/main_ui.py:884
 msgid "Create a VPN connection"
 msgstr "建立 VPN 網絡連線"
 
-#: ../src/main_ui.py:1082
+#: ../src/main_ui.py:1098
 msgid "Mobile Configuration"
 msgstr "行動網路組態"
 
-#: ../src/main_ui.py:1170
+#: ../src/main_ui.py:1186
 msgid "Proxy Configuration"
 msgstr "代理伺服器組態"
 
@@ -535,31 +539,31 @@ msgstr "代理伺服器組態"
 msgid "New Connection"
 msgstr "建立連線"
 
-#: ../src/nmlib/nm_remote_settings.py:131
+#: ../src/nmlib/nm_remote_settings.py:208
 msgid "Wired config"
 msgstr "有線網路設定"
 
-#: ../src/nmlib/nm_remote_settings.py:134
+#: ../src/nmlib/nm_remote_settings.py:211
 msgid "Wireless config"
 msgstr "無線網路設定"
 
-#: ../src/nmlib/nm_remote_settings.py:137
+#: ../src/nmlib/nm_remote_settings.py:214
 msgid "Dsl config"
 msgstr "DSL 網路設定"
 
-#: ../src/nmlib/nm_remote_settings.py:140
+#: ../src/nmlib/nm_remote_settings.py:217
 msgid "VPN config"
 msgstr "VPN 網路設定"
 
-#: ../src/nmlib/nm_remote_settings.py:143
+#: ../src/nmlib/nm_remote_settings.py:220
 msgid "CDMA config"
 msgstr "CDMA 設定"
 
-#: ../src/nmlib/nm_remote_settings.py:146
+#: ../src/nmlib/nm_remote_settings.py:223
 msgid "GSM config"
 msgstr "GSM 設定"
 
-#: ../src/nmlib/nm_remote_settings.py:148
+#: ../src/nmlib/nm_remote_settings.py:225
 msgid "Config"
 msgstr "設定"
 

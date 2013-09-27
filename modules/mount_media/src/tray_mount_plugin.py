@@ -23,7 +23,9 @@
 import os
 import gtk
 import gio
+from nls import _
 from tray_mount_gui import EjecterApp
+from dtk.ui.dbus_notify import DbusNotify
 
 class MountMedia(EjecterApp):
     def __init__(self):
@@ -47,20 +49,40 @@ class MountMedia(EjecterApp):
 
     def device_btn_close_btn_clicked(self, widget, drive, volume, mount):
         # 挂载的开关.
-        print "device_btn_close_btn_clicked...", 
+        print "device_btn_close_btn_clicked..."
         op = gio.MountOperation()
         if mount:
             mount.unmount(self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
         else:
             if volume:
-                volume.mount(op, self.cancall_opeartion, flags=gio.MOUNT_UNMOUNT_NONE)
+                volume.mount(op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
 
     def cancall_opeartion(self, object, res):
-        pass
+        source = res.get_source_object()
+        try:
+            if isinstance(source, gio.Volume):
+                summary = _("Mount Failed")
+                body = _("Mount '%s' error.") % source.get_name()
+                result = source.mount_finish(res)
+            else:
+                summary = _("Unmount Failed")
+                #body = _("Unmount '%s' error.") % source.get_root().get_uri()
+                body = _("Unmount '%s' error. Please unmount it in file manager") % source.get_root().get_uri()
+                result = source.unmount_finish(res)
+        except:
+            result = False
+
+        if not result:
+            try:
+                ntf = DbusNotify("deepin-system-settings", "/usr/share/icons/Deepin/apps/48/mountmanager.png")
+                ntf.set_summary(summary)
+                ntf.set_body(body)
+                ntf.notify()
+            except:
+                pass
 
     def set_menu_size(self, height):
         if self.size_check:
-            print "set_size_request..."
             if height == 75: # 无移动设备挂载.
                 print "无移动设备挂载了... .."
                 self.this.hide_menu()
@@ -68,20 +90,21 @@ class MountMedia(EjecterApp):
                 self.tray_icon.set_no_show_all(True)
             else:
                 old_width, old_height = self.this.get_size_request()
+                print "old_height", old_height, "height", height
                 if old_height != height:
                     self.tray_icon.show_all()
                     self.tray_icon.set_no_show_all(False)
-                    self.this.hide_menu()
+                    # self.this.hide_menu()
                     self.this.set_size_request(self.width, height)
-                    self.this.show_menu()
-        else:
+                    # self.this.show_menu()
+                    self.this.show_all() # hacked by hualet, bugfix: traymenu will become crap 
+        else:                            # if you plugin in an usb stick and then remove it mercilessly
             try:
+                # hailongqiu self-created set_visible style :)
                 if height == 75:
-                    self.tray_icon.hide()
-                    self.tray_icon.set_no_show_all(True)
+                    self.tray_icon.set_visible(False)
                 else:
-                    self.tray_icon.show_all()
-                    self.tray_icon.set_no_show_all(False)
+                    self.tray_icon.set_visible(True)
             except:
                 pass
 

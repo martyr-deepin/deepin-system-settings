@@ -24,7 +24,6 @@ from nls import _
 # UI
 import style
 from constants import CONTENT_FONT_SIZE
-#from dss_log import log
 
 def check_settings(connection, fn):
     if connection.check_setting_finish():
@@ -181,6 +180,8 @@ class Wired(gtk.VBox):
         style.set_table(table)
         table_align = gtk.Alignment(0, 0, 0, 0)
         default_button = DefaultToggle(_("Default Setting"))
+        default_button.toggle_off = self.use_default_setting
+        default_button.toggle_on = self.use_user_setting
         default_button.load([table])
         table_align.add(default_button)
         self.pack_start(table_align, False, False)
@@ -188,11 +189,13 @@ class Wired(gtk.VBox):
         self.mac_entry.set_size_request(130, 22)
         self.clone_entry.set_size_request(130, 22)
         ## retrieve wired info
+        self._init = True
         self.mac_entry.connect("changed", self.save_settings, "mac_address")
         self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
+        self.mtu_spin.value_entry.connect("changed", self.spin_user_set)
 
-        (mac, clone_mac, mtu) = self.ethernet_setting.mac_address, self.ethernet_setting.cloned_mac_address, self.ethernet_setting.mtu
+        setting_list = (mac, clone_mac, mtu) = self.ethernet_setting.mac_address, self.ethernet_setting.cloned_mac_address, self.ethernet_setting.mtu
         #print mac, clone_mac, mtu
         if mac != None:
             self.mac_entry.set_address(mac)
@@ -200,6 +203,10 @@ class Wired(gtk.VBox):
             self.clone_entry.set_address(clone_mac)
         if mtu != None:
             self.mtu_spin.set_value(int(mtu))
+        
+        if any(setting_list):
+            default_button.set_active(False)
+        self._init = False
 
     def save_settings(self, widget, value, types):
         if type(value) is str:
@@ -212,11 +219,31 @@ class Wired(gtk.VBox):
                 is_valid = False
                 #Dispatcher.set_button("save", False)
             self.settings_obj.mac_is_valid = is_valid
-            self.settings_obj.set_button("save", is_valid)
+            if not self._init:
+                self.settings_obj.set_button("save", is_valid)
         else:
             setattr(self.ethernet_setting, types, value)
-            if self.connection.check_setting_finish():
+            if self.connection.check_setting_finish() and not self._init:
                 Dispatcher.set_button("save", True)
+
+    def spin_user_set(self, widget, value):
+        if value == "":
+            return
+        value = int(value)
+        if self.mtu_spin.lower_value <= value <= self.mtu_spin.upper_value:
+            self.mtu_spin.update_and_emit(value)
+        elif value < self.mtu_spin.lower_value:
+            self.mtu_spin.update_and_emit(self.mtu_spin.lower_value)
+        else:
+            self.mtu_spin.update_and_emit(self.mtu_spin.upper_value)
+
+    def use_default_setting(self):
+        self.mac_entry.set_address("")
+        self.clone_entry.set_address("")
+        self.mtu_spin.set_value(0)
+
+    def use_user_setting(self):
+        pass
 
 class DSLConf(gtk.VBox):
     LEFT_PADDING = 210
@@ -286,9 +313,7 @@ class DSLConf(gtk.VBox):
         dsl_table.attach(style.wrap_with_align(self.password_entry, align="left"), 1, 3, 3, 4)
         dsl_table.attach(style.wrap_with_align(self.show_password, align="left"), 1, 3, 4, 5)
 
-        # TODO UI change
         style.draw_background_color(self)
-        #align = style.set_box_with_align(dsl_table, "text")
         style.set_table(dsl_table)
         # just make table postion looks right
         table_align = gtk.Alignment(0, 0, 0, 0)
@@ -325,6 +350,7 @@ class DSLConf(gtk.VBox):
             service = ""
         if password == None:
             password = ""
+            self.settings_obj.dsl_is_valid = False
         # fill entry
         self.username_entry.entry.set_text(str(username))
         self.service_entry.entry.set_text(str(service))
@@ -336,6 +362,7 @@ class DSLConf(gtk.VBox):
             self.connection.get_setting("connection").id = value
         else:
             if value:
+                
                 setattr(self.dsl_setting, types, value)
             else:
                 delattr(self.dsl_setting, types)
@@ -466,7 +493,7 @@ class PPPConf(gtk.VBox):
         self.nodeflate.set_active(not nodeflate)
         self.no_vj_comp.set_active(not no_vj_comp)
 
-        if lcp_echo_failure == None and lcp_echo_interval == None:
+        if not lcp_echo_failure and not lcp_echo_interval:
             self.ppp_echo.set_active(False)
         else:
             self.ppp_echo.set_active(True)
@@ -501,7 +528,7 @@ class PPPConf(gtk.VBox):
         #check_settings(self.connection, self.set_button)
         ##################
         is_valid = self.connection.check_setting_finish()
-        self.settings_obj.ppp_is_valid = is_valid
+        #self.settings_obj.ppp_is_valid = is_valid
         self.settings_obj.set_button("save", is_valid)
 
         if key is "require_mppe":

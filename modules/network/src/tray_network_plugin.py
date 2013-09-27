@@ -127,6 +127,8 @@ class WireSection(BaseMixIn):
                 if reason == 40:
                     # cable unpluged
                     self.gui.wire.set_active((False, False))
+                else:
+                    self.gui.wire.set_active((True, False))
             self.check_net_state()
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
@@ -255,6 +257,8 @@ class WirelessSection(BaseMixIn):
             if index:
                 tray_log.info(index)
                 self.gui.set_active_ap(index, True)
+                # wireless is active for sure, so check status icon 
+                self.check_net_state()
             else:
                 self.activate_wireless(self.focus_device)
             Dispatcher.request_resize()
@@ -822,7 +826,8 @@ class TrayNetworkPlugin(object):
         if self.menu_showed:
             self.this.hide_menu()
             self.show_menu()
-            self.this.show_menu()
+            self.tray_icon.emit("popup-menu-event", TrayNetworkPlugin.__class__)
+            #self.this.show_menu()
 
     def service_start_do_more(self, widget):
         self.init_wired_signals()

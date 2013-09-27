@@ -993,6 +993,7 @@ if __name__ == '__main__':
             module_frame.send_module_info()
         elif message_type == "exit":
             module_frame.exit()
+            os._exit(1)
 
     module_frame.module_message_handler = message_handler
 

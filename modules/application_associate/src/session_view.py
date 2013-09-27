@@ -28,7 +28,8 @@ from treeview import SessionItem, NothingItem
 
 import gtk
 import style
-from session import SessionManager
+from session import SessionManager, get_user_config_dir
+from monitor import LibraryMonitor
 from widget import NewSessionDialog
 from foot_box import FootBox
 from nls import _
@@ -47,8 +48,8 @@ class SessionView(gtk.VBox):
                              enable_hover=True,
                              enable_multiple_select=False,
                              )
-        self.tree.set_expand_column(2)
-        self.tree.set_column_titles((_("Application"), _("Description"), _("Exec")),)
+        self.tree.set_expand_column(3)
+        self.tree.set_column_titles((_("Active"), _("Application"), _("Description"), _("Exec")),)
 
         self.tree.set_size_request(800, -1)
         self.tree.connect("right-press-items", self.right_press_item)
@@ -76,6 +77,14 @@ class SessionView(gtk.VBox):
         #self.pack_end(self.new_box, False, False)
 
         self.show_all()
+
+        self._init_monitor()
+
+    def _init_monitor(self):
+        self.library_monitor = LibraryMonitor(get_user_config_dir())
+        self.library_monitor.set_property("monitored", True)
+        self.library_monitor.connect("file-added", self.refresh_list)
+        self.library_monitor.connect("location-removed", self.refresh_list)
 
     def add_new_box(self):
         hbox = gtk.HBox()
@@ -181,3 +190,9 @@ class SessionView(gtk.VBox):
             return map(lambda w: SessionItem(w), usr_list)
         else:
             return [NothingItem()]
+
+    def refresh_list(self, widget, gfile):
+        self.tree.clear()
+        self.tree.add_items(self.get_list())
+        self.tree.show()
+        

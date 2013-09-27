@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-06 16:22+0800\n"
+"POT-Creation-Date: 2013-08-22 09:47+0800\n"
 "PO-Revision-Date: 2013-03-01 10:21+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,18 +16,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/tray_power_plugin.py:151 ../src/tray_power_plugin.py:180
+#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
 msgid "Fully charged"
 msgstr "電池已完全充飽"
 
-#: ../src/tray_power_plugin.py:153
-msgid "Charging"
-msgstr "充電中"
+#: ../src/tray_power_plugin.py:168
+msgid "Charging, %s remaining"
+msgstr "充電中, 剩餘電量「%s」"
 
-#: ../src/tray_power_plugin.py:178
+#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "剩餘電量「%s」"
+
+#: ../src/tray_power_plugin.py:203
+#, python-format
+msgid "Low power(%s%%)"
+msgstr "電量較低(%s%%)"
+
+#: ../src/tray_power_plugin.py:204
+msgid "Your battery is running low, please charge!"
+msgstr "您的電池電量較低，請及時充電！"
 
 #: ../src/tray_power_gui.py:45
 msgid "Power"

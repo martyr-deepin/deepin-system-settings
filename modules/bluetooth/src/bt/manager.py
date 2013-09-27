@@ -35,16 +35,16 @@ class Manager(BusBase):
     def __init__(self):
         BusBase.__init__(self, path = "/", interface = "org.bluez.Manager")
 
-        self.bus.add_signal_receiver(self.adapter_added_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.adapter_added_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "AdapterAdded")
 
-        self.bus.add_signal_receiver(self.adapter_removed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.adapter_removed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "AdapterRemoved")
 
-        self.bus.add_signal_receiver(self.default_adapter_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.default_adapter_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "DefaultAdapterChanged")
 
-        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.property_changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "PropertyChanged")
 
     def get_default_adapter(self):
@@ -53,7 +53,7 @@ class Manager(BusBase):
     def find_adapter(self, pattern):
         # Valid patterns are "hci0" or "00:11:22:33:44:55".
         return str(self.dbus_method("FindAdapter", pattern))
- 
+
     def get_properties(self):
         return dict(self.dbus_method("GetProperties"))
 
@@ -63,10 +63,10 @@ class Manager(BusBase):
             adapters = self.get_properties()["Adapters"]
             if adapters:
                 adapters = map(lambda x:str(x), adapters)
-        else:        
+        else:
             adapters = self.dbus_method("ListAdapters")
 
-        return adapters    
+        return adapters
 
     def adapter_added_cb(self, path):
         self.emit("adapter-added", path)

@@ -39,7 +39,7 @@ class AutoStart(object):
         self.conf.optionxform = str
         
         if file_path != None and os.path.exists(file_path):
-            self.file_name = os.path.basename(file_path).split(".")[0]
+            self.file_name = os.path.splitext(os.path.basename(file_path))[0]
             self.conf.read(file_path)
         else:
             self.new()
@@ -92,7 +92,10 @@ class AutoStart(object):
             return False
 
     def set_option(self, option, value):
-        self.conf.set(self.SECTION, option, value)
+        try:
+            self.conf.set(self.SECTION, option, value)
+        except Exception:
+            pass
 
     def save(self, file_name):
         if file_name:
@@ -146,11 +149,12 @@ class SessionManager(object):
         pass
 
     def list_user_auto_starts(self):
-        return map(lambda w: AutoStart(os.path.join( self.__user_dir, w)), os.listdir(self.__user_dir))
+        return map(lambda w: AutoStart(os.path.join( self.__user_dir, w)), 
+                   filter(self.is_desktop_file_user, os.listdir(self.__user_dir)))
     
     def list_sys_auto_starts(self):
-        return map(lambda w: AutoStart(os.path.join(self.__sys_dir, w)), os.listdir(self.__sys_dir))
-
+        return map(lambda w: AutoStart(os.path.join(self.__sys_dir, w)), 
+                   filter(self.is_desktop_file_sys, os.listdir(self.__sys_dir)))
     
     def locale(self):
         return "[%s]" % get_system_lang()
@@ -161,3 +165,18 @@ class SessionManager(object):
         auto_file.set_option("Exec", exec_path)
         auto_file.set_option("Comment", comment)
         return auto_file
+    
+    is_desktop_file_user = property(lambda self : partial(is_desktop_file, basename=self.__user_dir))
+    is_desktop_file_sys = property(lambda self : partial(is_desktop_file, basename=self.__sys_dir))
+    
+def is_desktop_file(filename, basename):
+    file_path = basename + os.sep + filename
+    if os.access(file_path, os.R_OK):
+        with open(file_path) as config_file:
+            try:
+                ConfigParser.SafeConfigParser().readfp(config_file)
+                return True
+            except Exception:
+                return False
+    else:
+        return False

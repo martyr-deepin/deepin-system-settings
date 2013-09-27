@@ -18,6 +18,7 @@ import gtk
 from nls import _
 import style
 from constants import CONTENT_FONT_SIZE
+from dss_log import log
 
 class VPNSetting(Settings):
 
@@ -65,7 +66,7 @@ class VPNSetting(Settings):
             active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                            device_path,
                                            specific_path)
-            print active_object
+            #print active_object
             active_object.connect("vpn-state-changed", self.vpn_state_changed)
         else:
             print "no active connection available"
@@ -82,7 +83,7 @@ class VPNSetting(Settings):
                                                device_path,
                                                specific_path)
             if active_object != None:
-                print "in wired device"
+                #print "in wired device"
                 active_vpn = nm_module.cache.get_spec_object(active_object.object_path)
                 self.state_change_cb(active_vpn, connection.get_setting("connection").id)
             else:
@@ -92,14 +93,14 @@ class VPNSetting(Settings):
     def try_to_connect_wireless_device(self, device, connection):
         active = device.get_active_connection()
         if active:
-            print active
+            #print active
             device_path = device.object_path
             specific_path = active.object_path
             active_object = nm_module.nmclient.activate_connection(connection.object_path,
                                                device_path,
                                                specific_path)
             if active_object != None:
-                print "in wireless device"
+                #print "in wireless device"
                 active_vpn = nm_module.cache.get_spec_object(active_object.object_path)
                 self.state_change_cb(active_vpn, connection.get_setting("connection").id)
 
@@ -473,7 +474,8 @@ class PPPConf(gtk.VBox):
         self.group_name.set_size(self.TABLE_WIDTH, 22)
         self.gateway_id = InputEntry()
         self.gateway_id.set_size(self.TABLE_WIDTH, 22)
-        self.pre_shared_key = InputEntry()
+        self.pre_shared_key = PasswordEntry()
+        self.pre_shared_key.set_text = self.pre_shared_key.entry.set_text
         self.pre_shared_key.set_size(self.TABLE_WIDTH, 22)
         
         methods_list = ["refuse_eap", "refuse_eap_label",
@@ -543,7 +545,7 @@ class PPPConf(gtk.VBox):
         self.mppe_stateful.connect("toggled", self.check_button_cb,"mppe-stateful")
         self.nobsdcomp.connect("toggled", self.check_button_cb, "nobsdcomp")
         self.nodeflate.connect("toggled", self.check_button_cb, "nodeflate")
-        self.no_vj_comp.connect("toggled", self.check_button_cb, "novj")
+        self.no_vj_comp.connect("toggled", self.check_button_cb, "no-vj-comp")
         self.ppp_echo.connect("toggled", self.check_button_cb, "echo")
         self.nopcomp.connect("toggled", self.check_button_cb, "nopcomp")
         self.noaccomp.connect("toggled", self.check_button_cb, "noaccomp")
@@ -584,7 +586,7 @@ class PPPConf(gtk.VBox):
         table_attach("ppp_echo", 18)
 
         if self.service_type == "l2tp":
-            print "this is l2tp"
+            #print "this is l2tp"
             table_attach("nopcomp", 14)
             table_attach("noaccomp", 15)
             
@@ -596,6 +598,8 @@ class PPPConf(gtk.VBox):
                 table_attach("pre_shared_key", 23)
 
         self.method_table.show_all()
+
+
 
     def refresh(self, connection):
         self.connection = connection
@@ -616,7 +620,7 @@ class PPPConf(gtk.VBox):
 
         nobsdcomp = self.vpn_setting.get_data_item("nobsdcomp")
         nodeflate = self.vpn_setting.get_data_item("nodeflate")
-        no_vj_comp = self.vpn_setting.get_data_item("novj")
+        no_vj_comp = self.vpn_setting.get_data_item("no-vj-comp")
 
 
         lcp_echo_failure = self.vpn_setting.get_data_item("lcp-echo-failure")
@@ -631,6 +635,8 @@ class PPPConf(gtk.VBox):
         self.refuse_chap.set_active(refuse_chap == None)
 
         self.require_mppe_128.set_active(require_mppe_128 != None)
+        if self.require_mppe_128.get_active() or self.mppe_stateful.get_active():
+            self.require_mppe.set_active(True)
         self.mppe_stateful.set_active(mppe_stateful != None)
         self.nobsdcomp.set_active(nobsdcomp == None)
         self.nodeflate.set_active(nodeflate == None)
@@ -663,7 +669,9 @@ class PPPConf(gtk.VBox):
             self.ppp_echo.set_active(True)
 
         self.init_signal()
+        self.init_lock = False
         self.require_mppe.emit("toggled")
+        self.init_lock = True
         self.init_ui()
         #==================================
         # Connect signal
@@ -679,7 +687,7 @@ class PPPConf(gtk.VBox):
             ipsec_gateway_id = self.vpn_setting.get_data_item("ipsec-gateway-id")
             ipsec_psk = self.vpn_setting.get_data_item("ipsec-psk")
             
-            print ipsec_group_name
+            #print ipsec_group_name
             self.group_name.set_text(ipsec_group_name)
             self.gateway_id.set_text(ipsec_gateway_id)
             self.pre_shared_key.set_text(ipsec_psk)
@@ -703,10 +711,16 @@ class PPPConf(gtk.VBox):
             self.vpn_setting.delete_data_item(key)
     def entry_changed_cb(self, widget, string, key):
         if string == "":
-            print key,"entry is empty"
+            #print key,"entry is empty"
             self.vpn_setting.delete_data_item(key)
         elif key != "name":
             self.vpn_setting.set_data_item(key, string)
+
+        if self.connection.check_setting_finish():
+            Dispatcher.set_button("save", True)
+        else:
+            Dispatcher.set_button("save", False)
+
 
     def check_button_cb(self, widget, key):
         auth_lock = self.auth_lock()
@@ -720,15 +734,11 @@ class PPPConf(gtk.VBox):
             if auth_lock:
                 self.require_mppe_label.set_sensitive(False)
                 self.require_mppe.set_sensitive(False)
-                self.require_mppe.set_active(False)
 
-                self.set_group_active(True)
-                self.set_group_sensitive(False)
-
+                self.set_group_sensitive(True)
             else:
                 self.require_mppe_label.set_sensitive(True)
                 self.require_mppe.set_sensitive(True)
-                self.set_group_sensitive(True)
 
         elif key.startswith("no"):
             if active:
@@ -738,33 +748,56 @@ class PPPConf(gtk.VBox):
 
         elif key == "echo":
             if active:
-                self.vpn_setting.set_data_item("lcp_echo_failure", "5")
-                self.vpn_setting.set_data_item("lcp_echo_interval", "30")
+                self.vpn_setting.set_data_item("lcp-echo-failure", "5")
+                self.vpn_setting.set_data_item("lcp-echo-interval", "30")
             else:
-                self.vpn_setting.delete_data_item("lcp_echo_failure")
-                self.vpn_setting.delete_data_item("lcp_echo_interval")
-        elif key != "name":
+                self.vpn_setting.delete_data_item("lcp-echo-failure")
+                self.vpn_setting.delete_data_item("lcp-echo-interval")
+        elif key.startswith("ipsec"):
             if active:
                 self.vpn_setting.set_data_item(key, "yes")
             else:
                 self.vpn_setting.delete_data_item(key)
+        elif key.startswith("require") or key.startswith("mppe"):
+            if active:
+                self.vpn_setting.set_data_item(key, "yes")
+            else:
+                self.vpn_setting.delete_data_item(key)
+            
+
+        if self.connection.check_setting_finish():
+            Dispatcher.set_button("save", True)
+        else:
+            Dispatcher.set_button("save", False)
     
     def click_mppe_callback(self, widget, key):
         active = widget.get_active()
         if active and key != "name":
             self.vpn_setting.set_data_item(key, "yes")
-            self.set_group_active(False)
+            #self.set_group_active(False)
             self.set_group_sensitive(False)
 
             self.mppe_group_set_sensitive(True)
             self.init_ui()
         else:
-            self.set_group_active(True)
+            #self.set_group_active(True)
             self.set_group_sensitive(True)
             self.vpn_setting.delete_data_item(key)
-            self.mppe_group_set_sensitive(False)
             self.mppe_group_set_active(False)
+            self.mppe_group_set_sensitive(False)
             self.init_ui()
+        
+        if self.init_lock:
+            if self.connection.check_setting_finish():
+                Dispatcher.set_button("save", True)
+            else:
+                Dispatcher.set_button("save", False)
+
+        if self.auth_lock():
+            self.require_mppe_label.set_sensitive(False)
+            self.require_mppe.set_sensitive(False)
+            return
+
 
     def mppe_group_set_sensitive(self, boolean):
         self.require_mppe_128_label.set_sensitive(boolean)
@@ -773,6 +806,7 @@ class PPPConf(gtk.VBox):
         self.mppe_stateful.set_sensitive(boolean)
 
     def mppe_group_set_active(self, boolean):
+        log.debug()
         self.require_mppe_128.set_active(boolean)
         self.mppe_stateful.set_active(boolean)
 

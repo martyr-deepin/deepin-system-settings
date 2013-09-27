@@ -226,5 +226,5 @@ class NMSettingPPP (NMSetting):
 
     @lcp_echo_interval.setter
     def lcp_echo_interval(self, new_lcp_echo_interval):
-        return TypeConvert.py2_dbus_uint32(new_lcp_echo_interval)
+        self.prop_dict["lcp-echo-interval"] = TypeConvert.py2_dbus_uint32(new_lcp_echo_interval)
 

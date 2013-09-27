@@ -45,10 +45,10 @@ def valid_object_path(object_path):
     if not object_path.startswith("/"):
         return False
 
-    return all(map(lambda x:name_re.match(x), object_path.split(".")))    
+    return all(map(lambda x:name_re.match(x), object_path.split(".")))
 
 class InvalidPropType(Exception):
-    
+
     def __init__(self, prop_name, need_type, real_type = "string"):
         self.prop_name = prop_name
         self.need_type = need_type
@@ -59,7 +59,7 @@ class InvalidPropType(Exception):
                     (self.prop_name, self.need_type, self.real_type))
 
 class InvalidObjectPath(Exception):
-    
+
     def __init__(self, path):
         self.path = path
 
@@ -67,7 +67,7 @@ class InvalidObjectPath(Exception):
         return repr("InvalidObjectPath:" + self.path)
 
 class BusBase(gobject.GObject):
-    
+
     def __init__(self, path, interface, service = "org.bluez", bus = system_bus):
         gobject.GObject.__init__(self)
         if valid_object_path(path):
@@ -85,7 +85,7 @@ class BusBase(gobject.GObject):
         except dbus.exceptions.DBusException:
             traceback.print_exc()
 
-    def init_dbus_properties(self):        
+    def init_dbus_properties(self):
         try:
             self.properties_interface = dbus.Interface(self.dbus_proxy, "org.freedesktop.DBus.Properties" )
         except dbus.exceptions.DBusException:
@@ -103,7 +103,7 @@ class BusBase(gobject.GObject):
             return apply(getattr(self.dbus_interface, method_name), args, kwargs)
         except:
             print "error occured when call %s" % method_name
-            #traceback.print_exc()
+            # traceback.print_exc()
 
     def call_async(self, method_name, *args, **kwargs):
         try:

@@ -3,35 +3,36 @@
 
 # Copyright (C) 2013 Deepin, Inc.
 #               2013 Zhai Xiang
-# 
+#
 # Author:     Zhai Xiang <zhaixiang@linuxdeepin.com>
 # Maintainer: Zhai Xiang <zhaixiang@linuxdeepin.com>
-# 
+#             Wang Yaohua <mr.asianwang@gmail.com>
+#
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from bt.manager import Manager                                                  
-from bt.adapter import Adapter                                                  
-from bt.device import Device                                                    
+from bt.manager import Manager
+from bt.adapter import Adapter
+from bt.device import Device
 
 class MyBluetooth():
-    def __init__(self, 
-                 adapter_removed_cb=None, 
-                 default_adapter_changed_cb=None, 
+    def __init__(self,
+                 adapter_removed_cb=None,
+                 default_adapter_changed_cb=None,
                  device_found_cb=None):
         self.__adapter_removed_cb = adapter_removed_cb
         self.__default_adapter_changed_cb = default_adapter_changed_cb
-        
+
         self.manager = Manager()
         if self.__adapter_removed_cb:
             self.manager.connect("adapter-removed", self.__adapter_removed)
@@ -39,10 +40,10 @@ class MyBluetooth():
             self.manager.connect("default-adapter-changed", self.__default_adapter_changed)
         self.adapter = None
         self.default_adapter = self.manager.get_default_adapter()
-        
+
         if self.default_adapter != "None":
             self.adapter = Adapter(self.default_adapter)
-            self.adapter.set_powered(True)
+            # self.adapter.set_powered(True)
             self.adapter.set_discoverable(False)
             self.adapter.set_pairable(True)
             if device_found_cb:
@@ -50,19 +51,26 @@ class MyBluetooth():
 
     def get_devices(self):
         ret = []
-        
+
         if self.adapter == None:
             return ret
 
         devices = self.adapter.get_devices()
         i = 0
         ret = []
-        
+
         while i < len(devices):
             ret.append(Device(devices[i]))
             i += 1
 
         return ret
+
+    def register_agent(self, agent_path):
+        if self.adapter:
+            try:
+                self.adapter.register_agent(agent_path, "")
+            except Exception,e:
+                print e
 
     def __adapter_removed(self, manager, path):
         if self.__adapter_removed_cb != None:

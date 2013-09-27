@@ -7,6 +7,7 @@
 # Author:     Hou Shaohui <houshao55@gmail.com>
 # Maintainer: Hou Shaohui <houshao55@gmail.com>
 #             Zhai Xiang <zhaixiang83@gmail.com>
+#             Wang Yaohua <mr.asianwang@gmail.com>
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1133,7 +1134,8 @@ class CacheItem(gobject.GObject, MissionThread):
         This is IconView interface, you should implement it.
         '''
         self.emit_redraw_request()
-        if self.is_downloaded:
+        # if self.is_downloaded: # is_download may be set to True even if download failed actually.
+        if os.path.exists(self.image_object.get_save_path()):
             event_manager.emit("apply-wallpaper", self)
         event_manager.emit("download-images", [self.image_object])
     

@@ -57,6 +57,8 @@ class WiredSetting(Settings):
                 connection.update()
             else:
                 connection = nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                net_manager.set_primary_wire(self.device, connection)
+
                 Dispatcher.emit("connection-replace", connection)
                 # reset index
             self.set_button("apply", True)
@@ -83,6 +85,9 @@ class Sections(gtk.Alignment):
         self.set_button = set_button
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+        
+        if isinstance(connection, NMRemoteConnection):
+            net_manager.set_primary_wire(settings_obj.device, connection)
 
         self.main_box = gtk.VBox()
 
@@ -99,14 +104,16 @@ class Sections(gtk.Alignment):
         self.add(self.main_box)
         
     def show_more_options(self, widget):
+        self.settings_obj.initial_lock = True
         widget.destroy()
         ipv4 = SettingSection(_("IPv4 settings"), always_show=True)
         ipv6 = SettingSection(_("IPv6 settings"), always_show=True)
-        ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
-        ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj, link_local=True)])
+        ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj, link_local=True)])
 
         self.main_box.pack_start(ipv4, False, False, 15)
         self.main_box.pack_start(ipv6, False, False)
+        self.settings_obj.initial_lock = False
         
 
 class Wired(gtk.VBox):
@@ -121,6 +128,7 @@ class Wired(gtk.VBox):
         self.set_button = set_button_callback
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+        self.settings_obj.initial_lock = True
         #self.settings_obj.set_button("save", True)
 
         self.__init_table()
@@ -137,6 +145,7 @@ class Wired(gtk.VBox):
         # check valid for nmconnection init
         #if not type(self.connection) == NMRemoteConnection:
             #self.save_settings(None, None, None)
+        self.settings_obj.initial_lock = False
 
     def __init_table(self):
         self.table = TableAsm()
@@ -153,6 +162,18 @@ class Wired(gtk.VBox):
         self.mac_entry.connect("changed", self.save_settings, "mac_address")
         self.clone_entry.connect("changed", self.save_settings, "cloned_mac_address")
         self.mtu_spin.connect("value_changed", self.save_settings, "mtu")
+        self.mtu_spin.value_entry.connect("changed", self.spin_user_set)
+
+    def spin_user_set(self, widget, value):
+        if value == "":
+            return
+        value = int(value)
+        if self.mtu_spin.lower_value <= value <= self.mtu_spin.upper_value:
+            self.mtu_spin.update_and_emit(value)
+        elif value < self.mtu_spin.lower_value:
+            self.mtu_spin.update_and_emit(self.mtu_spin.lower_value)
+        else:
+            self.mtu_spin.update_and_emit(self.mtu_spin.upper_value)
 
         ## retrieve wired info
     def save_settings(self, widget, content, types):
@@ -191,6 +212,7 @@ class Wired(gtk.VBox):
             self.settings_obj.mac_is_valid = False
 
         # 统一调用shared_methods.Settings的set_button
+        log.debug('set_button True')
         self.settings_obj.set_button("save", True)
 
         """

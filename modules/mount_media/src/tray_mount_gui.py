@@ -20,18 +20,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
+import os
+from deepin_utils.file import get_parent_dir
+sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
+from theme import app_theme
+from dtk.ui.dialog import ConfirmDialog
 from dtk.ui.line import HSeparator
-from dtk.ui.utils import set_clickable_cursor
 from vtk.draw  import draw_text, draw_pixbuf
 from vtk.utils import get_text_size
 from nls import _
+from permanent_settings import get_auto_mount
+
 import os
 import sys
 import gtk
 import gio
-import glib
 import gobject
 
+import pynotify
+pynotify.init("Storage Device")
+def notify_message(summary, body):
+    noti = pynotify.Notification(summary, body, "/usr/share/icons/Deepin/apps/48/mountmanager.png")
+    noti.show()
 
 image_path = os.path.dirname(sys.argv[0])
 ICON_SIZE = 16
@@ -161,7 +172,7 @@ class EjecterApp(gobject.GObject):
         self.title_label_ali = gtk.Alignment(0, 0, 0, 0)
         self.title_label_ali.set_padding(0, 0, 0, 0)
         self.title_label_ali.add(self.title_label)
-
+        
         self.hbox.pack_start(self.title_image, False, False)
         self.hbox.pack_start(self.title_label_ali, True, True)
 
@@ -176,8 +187,10 @@ class EjecterApp(gobject.GObject):
         self.vbox.pack_start(self.h_separator_ali, True, True)
         self.vbox.pack_start(self.monitor_vbox, True, True)
 
+        self._ask_confirmed = False
         self.monitor = gio.VolumeMonitor()
-
+        self.op = gio.MountOperation()        
+        
     def __load_monitor(self):
         # 移除挂载上的控件.
         self.height = 75
@@ -186,6 +199,7 @@ class EjecterApp(gobject.GObject):
             self.monitor_vbox.remove(widget)
         self.network_mounts_list = []
         self.network_volumes_list = []
+        
         drives = self.monitor.get_connected_drives()
         # 获取大硬盘下的东西.
         for drive in drives:
@@ -349,32 +363,62 @@ class EjecterApp(gobject.GObject):
         self.monitor.connect("drive-changed", self.drive_changed_callback)
 
     def mount_added_callback(self, volume_monitor, mount):
+        print "mount added"
+        if get_auto_mount() == "mount_and_open" or self._ask_confirmed:
+            os.popen("xdg-open %s" % (mount.get_root().get_uri()))
+            self._ask_confirmed = False
+
         self.__load_monitor()
 
     def mount_removed_callback(self, volume_monitor, mount):
+        print "mount removed"
         self.__load_monitor()
 
     def mount_changed_callback(self, volume_monitor, mount):
+        print "mount changed"
         self.__load_monitor()
 
     def volume_added_callback(self, volume_monitor, volume):
+        print "volume added"
+        
+        def confirm_cb():
+            if not volume.get_mount():
+                self._ask_confirmed = True
+                volume.mount(self.op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
+            
+        auto = get_auto_mount()
+        if auto == "mount" or auto == "mount_and_open":
+            if not volume.get_mount():
+                volume.mount(self.op, self.cancall_opeartion, flags=gio.MOUNT_MOUNT_NONE)
+        elif auto == "ask":
+            ConfirmDialog(_("Storage Device"), 
+                          _("Mount and open device \"%s\"?") % volume.get_name(),
+                          confirm_callback=confirm_cb).show_all()
+
         self.__load_monitor()
 
     def volume_removed_callback(self, volume_monitor, volume):
+        print "volume removed"
         self.__load_monitor()
 
     def volume_changed_callback(self, volume_monitor, volume):
+        print "volume changed"
         self.__load_monitor()
 
     def drive_disconnected_callback(self, volume_monitor, drive):
+        print "drive disconnected"
+        notify_message(_("Storage Device"), _("Removable media \"%s\" has been removed") % drive.get_name())
         self.__load_monitor()
 
     def drive_connected_callback(self, volume_monitor, drive):
+        print "drive connected"
+        notify_message(_("Storage Device"), _("Found new removable media \"%s\"") % drive.get_name())
         self.__load_monitor()
 
     def drive_changed_callback(self, volume_monitor, drive):
+        print "drive changed"
         self.__load_monitor()
-
+        
 if __name__ == "__main__":
     import gtk
     win = gtk.Window(gtk.WINDOW_TOPLEVEL)

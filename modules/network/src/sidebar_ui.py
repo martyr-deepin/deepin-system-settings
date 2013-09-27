@@ -82,8 +82,8 @@ class SideBar(gtk.VBox):
         if hasattr(self.network_object, "add_new_connection"):
             self.new_connection = self.network_object.add_new_connection
             #self.add_button.change_add_setting(self.network_object.add_new_connection)
-        if hasattr(self.network_object, "delete_item"):
-            pass
+        if hasattr(self.network_object, "delete_request_redraw"):
+            self.request_redraw = self.network_object.delete_request_redraw
         self.init_select(network_object.spec_connection)
         # FIXME: COME ON, why check the connections count?!
         #if self.connections !=[]:
@@ -98,20 +98,29 @@ class SideBar(gtk.VBox):
             container_remove_all(self.buttonbox)
             self.connection_tree.add_items(map(lambda c: SettingItem(c, None), items_list), insert_pos=insert_pos)
             self.buttonbox.pack_start(self.connection_tree, False, False)
+            self.resize_tree()
 
     def delete_item_cb(self, widget, connection):
         '''docstring for delete_item_cb'''
         self.connection_tree.delete_select_items()
         if isinstance(connection, NMRemoteConnection):
             connection.delete()
-            log.debug(connection)
+            #log.debug(connection)
         else:
             index = self.connections.index(connection)
             self.connections.pop(index)
+        # focus on last item
+        if self.connection_tree.visible_items != []:
+            self.connection_tree.select_last_item()
+        else:
+            Dispatcher.to_main_page()
+            return
+            
+        self.resize_tree()
     
     def resize_tree(self):
         if self.connection_tree.visible_items != []:
-            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height())
+            self.connection_tree.set_size_request(-1,len(self.connection_tree.visible_items) * self.connection_tree.visible_items[0].get_height() + 1)
         else:
             container_remove_all(self.buttonbox)
 
