@@ -29,13 +29,13 @@ import gtk
 import style
 from constants import CONTENT_FONT_SIZE, WIDGET_HEIGHT
 from nls import _
-from elements import DefaultToggle
+from elements import DefaultToggle, Title
 from helper import Dispatcher
 from dss_log import log
 
 class IPV4Conf(gtk.VBox):
     ENTRY_WIDTH = 222
-    def __init__(self, connection=None, set_button_callback=None, dns_only=False, settings_obj=None):
+    def __init__(self, connection=None, set_button_callback=None, dns_only=False, settings_obj=None, link_local=False):
         
         gtk.VBox.__init__(self)
         self.tab_name = _("IPv4 settings")
@@ -47,7 +47,8 @@ class IPV4Conf(gtk.VBox):
         self.dns_only = dns_only
 
         # Ip configuration
-
+         
+        self.link_section = Title(_("Link-Local Only"), toggle_callback = self.link_local_callback, label_right=True)
         self.ip_table = gtk.Table(3, 2, False)
         self.ip_section = DefaultToggle(_("Automatic IP address"))
         self.ip_section.toggle_on = self.ip_toggle_off
@@ -87,6 +88,8 @@ class IPV4Conf(gtk.VBox):
             setattr(self, n + "_flag", False)
         self.pack_start(self.ip_section, False, False)
         self.pack_start(self.dns_section, False, False)
+        if link_local:
+            self.pack_start(self.link_section, False, False)
         self.reset(connection)
         self.show_all()
 
@@ -114,7 +117,19 @@ class IPV4Conf(gtk.VBox):
                 align = style.wrap_with_align(item)
                 align.set_size_request(210, -1)
             table.attach(align, i, i +1, row, row + 1)
+    
+    def link_local_callback(self, widget):
+        self._ip_group_sensitive(not widget.get_active())
+        if widget.get_active():
+            self.setting.method = 'link-local'
+        else:
+            self.setting.method = 'auto'
+        self.settings_obj.set_button('save', True)
 
+    def _ip_group_sensitive(self, state):
+        self.ip_section.set_sensitive(state)
+        self.dns_section.set_sensitive(state)
+             
     def reset(self, connection):
         self.setting = connection.get_setting("ipv4")       
         if "ipv4" not in connection.settings_dict.iterkeys():
@@ -122,22 +137,24 @@ class IPV4Conf(gtk.VBox):
             self.setting.method = "auto"
             connection.settings_dict["ipv4"] = self.setting.prop_dict
 
-        if self.setting.method == "auto":
-            self.ip_section.set_active(True)
-            #self.set_group_sensitive("ip", False)
-        	    
+        if self.setting.method == 'link-local':
+            self.link_section.switch.set_active(True)
         else:
-            log.debug("get addresses", self.setting.addresses)
-            self.ip_section.set_active(False)
-            #self.set_group_sensitive("ip", True)
-            if not self.setting.addresses == []:
-                #print self.setting.addresses[0][0]
-                addr, mask, gate = self.setting.addresses[0]
-                #self.ip_section.set_active(True)
-                self.addr_row[1].set_address(addr)
-                self.mask_row[1].set_address(mask)
-                self.gate_row[1].set_address(gate)
-                self.ip = self.setting.addresses[0]
+            if self.setting.method == "auto":
+                self.ip_section.set_active(True)
+                    
+            else:
+                log.debug("get addresses", self.setting.addresses)
+                self.ip_section.set_active(False)
+                #self.set_group_sensitive("ip", True)
+                if not self.setting.addresses == []:
+                    #print self.setting.addresses[0][0]
+                    addr, mask, gate = self.setting.addresses[0]
+                    #self.ip_section.set_active(True)
+                    self.addr_row[1].set_address(addr)
+                    self.mask_row[1].set_address(mask)
+                    self.gate_row[1].set_address(gate)
+                    self.ip = self.setting.addresses[0]
 
         if self.setting.dns == []:
             self.dns_section.set_active(True)
@@ -177,6 +194,7 @@ class IPV4Conf(gtk.VBox):
 
         ############
         # 检查ip、子网掩码、网关是否正确
+        log.debug(widget, content, index)
         is_valid = True
         for n in names:
             if not getattr(self, "%s_flag"%n):
@@ -289,7 +307,7 @@ class IPV4Conf(gtk.VBox):
 
 class IPV6Conf(gtk.VBox):
     ENTRY_WIDTH = 300
-    def __init__(self, connection=None, set_button_callback=None, settings_obj=None):
+    def __init__(self, connection=None, set_button_callback=None, settings_obj=None, link_local=False):
         
         gtk.VBox.__init__(self)
         self.connection = connection 
@@ -301,6 +319,7 @@ class IPV6Conf(gtk.VBox):
         # Ip configuration
         self.ip_table = gtk.Table(3, 2, False)
         #self.ip_section = SettingSection(_("Automatic get IP address"),text_size=CONTENT_FONT_SIZE, has_seperator=False, always_show=False, revert=True, label_right=True)
+        self.link_section = Title(_("Link-Local Only"), toggle_callback = self.link_local_callback, label_right=True)
         self.ip_section = DefaultToggle(_("Automatic IP address"))
         self.ip_section.toggle_on = self.ip_toggle_off
         self.ip_section.toggle_off = self.ip_toggle_on
@@ -339,6 +358,8 @@ class IPV6Conf(gtk.VBox):
         self.setting =None
         self.pack_start(self.ip_section, False, False)
         self.pack_start(self.dns_section, False, False)
+        if link_local:
+            self.pack_start(self.link_section, False, False)
         self.reset(connection)
 
         #if type(self.connection) is NMRemoteConnection:
@@ -348,6 +369,17 @@ class IPV6Conf(gtk.VBox):
                 #Dispatcher.set_button("save", True)
             #else:
                 #Dispatcher.set_button("save", False)
+    def link_local_callback(self, widget):
+        self._ip_group_sensitive(not widget.get_active())
+        if widget.get_active():
+            self.setting.method = 'link-local'
+        else:
+            self.setting.method = 'auto'
+        self.settings_obj.set_button('save', True)
+
+    def _ip_group_sensitive(self, state):
+        self.ip_section.set_sensitive(state)
+        self.dns_section.set_sensitive(state)
 
     def __set_row(self, name, arg, types="ip"):
         label = Label(name, text_size=CONTENT_FONT_SIZE,
@@ -385,20 +417,23 @@ class IPV6Conf(gtk.VBox):
             connection.settings_dict["ipv6"] = self.setting.prop_dict
         
         #  FIXME: ipv6 method刚开始为None并且还会记住上次操作,应该每次开始时为auto。
-        if self.setting.method == "auto" or self.setting.method is None:
-            self.ip_section.set_active(True)
-            self.set_group_sensitive("ip", False)
-            
+        if self.setting.method == 'link-local':
+            self.link_section.switch.set_active(True)
         else:
-            self.ip_section.set_active(False)
-            self.set_group_sensitive("ip", True)
-            if not self.setting.addresses == []:
-                addr, mask, gate = self.setting.addresses[0]
+            if self.setting.method == "auto" or self.setting.method is None:
+                self.ip_section.set_active(True)
+                self.set_group_sensitive("ip", False)
+                
+            else:
+                self.ip_section.set_active(False)
+                self.set_group_sensitive("ip", True)
+                if not self.setting.addresses == []:
+                    addr, mask, gate = self.setting.addresses[0]
 
-                self.addr_row[1].set_text(addr)
-                self.mask_row[1].set_text(mask)
-                self.gate_row[1].set_text(gate)
-                self.ip = self.setting.addresses
+                    self.addr_row[1].set_text(addr)
+                    self.mask_row[1].set_text(mask)
+                    self.gate_row[1].set_text(gate)
+                    self.ip = self.setting.addresses
 
         if self.setting.dns == []:
             self.dns_section.set_active(True)

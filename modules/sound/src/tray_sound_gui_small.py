@@ -231,6 +231,14 @@ class TrayGui(gtk.VBox):
 
     def __white_list_check(self, stream, index):
         icon_name = None
+        # check deepin-game-center
+        if 'application.process.binary' in stream['proplist'] and \
+                stream['proplist']['application.process.binary'].startswith('python'):
+            process_id = int(stream['proplist']['application.process.id'])
+            stream_process_obj = psutil.Process(process_id)
+            if len(stream_process_obj.cmdline) > 1 and \
+                    'deepin-game-center' in stream_process_obj.cmdline[1]:
+                return "deepin-game-center", False
         # check deepin-media-player
         if 'application.process.binary' in stream['proplist'] and \
                 stream['proplist']['application.process.binary'] == 'mplayer':

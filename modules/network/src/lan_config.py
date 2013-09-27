@@ -104,14 +104,16 @@ class Sections(gtk.Alignment):
         self.add(self.main_box)
         
     def show_more_options(self, widget):
+        self.settings_obj.initial_lock = True
         widget.destroy()
         ipv4 = SettingSection(_("IPv4 settings"), always_show=True)
         ipv6 = SettingSection(_("IPv6 settings"), always_show=True)
-        ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
-        ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj)])
+        ipv4.load([IPV4Conf(self.connection, self.set_button, settings_obj=self.settings_obj, link_local=True)])
+        ipv6.load([IPV6Conf(self.connection, self.set_button, settings_obj=self.settings_obj, link_local=True)])
 
         self.main_box.pack_start(ipv4, False, False, 15)
         self.main_box.pack_start(ipv6, False, False)
+        self.settings_obj.initial_lock = False
         
 
 class Wired(gtk.VBox):
@@ -126,6 +128,7 @@ class Wired(gtk.VBox):
         self.set_button = set_button_callback
         # 新增settings_obj变量，用于访问shared_methods.Settings对象
         self.settings_obj = settings_obj
+        self.settings_obj.initial_lock = True
         #self.settings_obj.set_button("save", True)
 
         self.__init_table()
@@ -142,6 +145,7 @@ class Wired(gtk.VBox):
         # check valid for nmconnection init
         #if not type(self.connection) == NMRemoteConnection:
             #self.save_settings(None, None, None)
+        self.settings_obj.initial_lock = False
 
     def __init_table(self):
         self.table = TableAsm()
@@ -208,6 +212,7 @@ class Wired(gtk.VBox):
             self.settings_obj.mac_is_valid = False
 
         # 统一调用shared_methods.Settings的set_button
+        log.debug('set_button True')
         self.settings_obj.set_button("save", True)
 
         """

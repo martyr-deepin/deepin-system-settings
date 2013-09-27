@@ -206,7 +206,7 @@ class LoadingThread(td.Thread):
     
     def run(self):
         position = 0
-        while self.widget.get_net_state() == 1:
+        while self.widget.get_net_state() == 1 and time:
             self.widget.refresh_loading(position)
             time.sleep(0.1)
             position += 60

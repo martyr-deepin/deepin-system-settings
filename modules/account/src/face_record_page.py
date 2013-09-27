@@ -35,7 +35,7 @@ from dtk.ui.utils import cairo_disable_antialias, color_hex_to_cairo, container_
 from dtk.ui.draw import draw_pixbuf
 
 from facepp import API, File
-facepp = API("e7d24ca8e91351b8cac02eb6e6080678", "iH_Dls3_gE2wx5dp2cKHPrO8W5V5NTr-", timeout=10, max_retries=1)
+facepp = API("e7d24ca8e91351b8cac02eb6e6080678", "iH_Dls3_gE2wx5dp2cKHPrO8W5V5NTr-", timeout=15, max_retries=1)
 
 CAMERA_BOX_SIZE = 154
 WEBCAM_SIZE = 144
@@ -155,6 +155,7 @@ class FaceRecordPage(gtk.VBox):
             facepp.person.delete(person_name=get_person_name())
         except:
             pass
+        
         try:
             facepp.person.create(person_name=get_person_name())
             
