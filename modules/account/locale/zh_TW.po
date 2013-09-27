@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-17 11:41+0800\n"
+"POT-Creation-Date: 2013-09-27 16:15+0800\n"
 "PO-Revision-Date: 2012-12-13 14:16+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -32,26 +32,29 @@ msgstr "我的帳號"
 msgid "Other Accounts"
 msgstr "其他帳號"
 
-#: ../src/face_record_page.py:74
+#: ../src/face_record_page.py:79
 msgid "Start"
 msgstr ""
 
-#: ../src/face_record_page.py:78
+#: ../src/face_record_page.py:83
+msgid "Please plug in or enable your camera"
+msgstr ""
+
+#: ../src/face_record_page.py:84
 msgid "Please keep still for 5 seconds"
 msgstr ""
 
-#: ../src/face_record_page.py:79
-msgid "Your face has been successfully recorded"
-msgstr ""
-
-#: ../src/face_record_page.py:80
+#: ../src/face_record_page.py:86
 msgid "Failed to record your face"
 msgstr ""
 
-#: ../src/face_record_page.py:164
-#, fuzzy
+#: ../src/face_record_page.py:94
+msgid "Your face has been successfully recorded"
+msgstr ""
+
+#: ../src/face_record_page.py:184
 msgid "Try Again"
-msgstr "再次照相"
+msgstr ""
 
 #: ../src/main.py:122 ../src/main.py:134
 msgid "Account type"
