@@ -28,7 +28,7 @@ import gtk
 import pango
 from nls import _
 from vtk.window import Window
-from vtk.utils import cn_check, get_text_size, in_window_check 
+from vtk.utils import get_text_size
 from vtk.draw import draw_text
 from vtk.theme import vtk_theme
 from vtk.timer import Timer
@@ -96,12 +96,38 @@ class TrayDialog(Window):
         self.cancel_key_check = False
         self.ok_btn.grab_focus()
 
+    def show_warning(self,
+                    show_top_text=SHUTDOWN_TOP_TEXT,
+                    show_bottom_text=SHUTDOWN_BOTTOM_TEXT,
+                    cancel_text=CANCEL_TEXT,
+                    ok_text=OK_TEXT,
+                    ):
+        self.show_pixbuf = vtk_theme.get_pixbuf("deepin_warning", 50)
+        self.show_top_text = show_top_text
+        self.show_bottom_text = show_bottom_text
+        self.cancel_text = cancel_text
+        self.ok_text = ok_text
+        self.argv = None
+        self.run_exec = None
+        
+        self.set_pango_list()
+        
+        self.top_text_btn.set_label(self.show_top_text)
+        self.bottom_text_btn.set_label(self.show_bottom_text)
+        if self.show_pixbuf:
+            self.show_image.set_from_pixbuf(self.show_pixbuf)
+        self.bottom_text_btn.set_label(self.show_bottom_text)
+        self.bottom_text_btn.queue_draw()
+        self.timer.Enabled = False
+        self.show_all()
+
     def show_dialog(self,
                     show_pixbuf_name="deepin_shutdown",
                     show_top_text=SHUTDOWN_TOP_TEXT,
                     show_bottom_text=SHUTDOWN_BOTTOM_TEXT,
                     cancel_text=CANCEL_TEXT,
-                    ok_text=OK_TEXT):
+                    ok_text=OK_TEXT,
+                    ):
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
         self.show_top_text = show_top_text
         self.show_bottom_text = show_bottom_text
@@ -110,9 +136,9 @@ class TrayDialog(Window):
         self.second = 60
         self.argv = None
         self.run_exec = None
-        #
+        
         self.set_pango_list()
-        #
+        
         self.top_text_btn.set_label(self.show_top_text)
         self.bottom_text_btn.set_label(self.show_bottom_text)
         if self.show_pixbuf:
@@ -121,6 +147,7 @@ class TrayDialog(Window):
         self.bottom_text_btn.queue_draw()
         self.timer.Enabled = True
         self.show_all()
+        self.default_action_btn.hide()
 
     def set_pango_list(self):
         self.pango_list = None
@@ -178,29 +205,32 @@ class TrayDialog(Window):
         self.main_vbox = gtk.VBox()
         self.mid_hbox = gtk.HBox()
         self.show_text_vbox = gtk.VBox()
-        self.bottom_hbox_ali = gtk.Alignment(1, 0, 0, 0)
-        self.bottom_hbox_ali.set_padding(0, 3, 0, 15)
+        self.bottom_hbox_ali = gtk.Alignment(0, 0.5, 1, 0)
+        self.bottom_hbox_ali.set_padding(3, 3, 15, 15)
         self.bottom_hbox = gtk.HBox()
         self.bottom_hbox_ali.add(self.bottom_hbox)
-        #
+        
         self.init_titlebar()
         self.init_close_button()
         self.init_show_image()
         self.init_show_text()
         self.init_bottom_button()
-        #
+        
         self.titlebar_hbox.pack_start(self.close_btn, False, False)
         self.show_text_vbox.pack_start(self.top_text_btn_ali, False, False)
         self.show_text_vbox.pack_start(self.bottom_text_btn_ali, False, False)
+
         self.mid_hbox.pack_start(self.show_image_ali, False, False)
         self.mid_hbox.pack_start(self.show_text_vbox, True, True)
-        self.bottom_hbox.pack_start(self.cancel_btn, False, False)
-        self.bottom_hbox.pack_start(self.ok_btn, False, False)
+
+        self.bottom_hbox.pack_start(self.default_action_btn, False, False)
+        self.bottom_hbox.pack_end(self.ok_btn, False, False)
+        self.bottom_hbox.pack_end(self.cancel_btn, False, False)
+
         self.main_vbox.pack_start(self.titlebar_ali, False, False)
         self.main_vbox.pack_start(self.mid_hbox, True, True)
         self.main_vbox.pack_start(self.bottom_hbox_ali, False, False)
         self.add_widget(self.main_vbox)
-
 
     def init_titlebar(self):
         self.titlebar_ali = gtk.Alignment(1, 0, 0, 0)
@@ -284,13 +314,20 @@ class TrayDialog(Window):
     def init_bottom_button(self):
         self.cancel_btn = gtk.Button(self.cancel_text)
         self.ok_btn = gtk.Button(self.ok_text)
-        #
+
+        self.default_action_btn = gtk.Button("强制执行")
+
         self.cancel_btn.connect("clicked", self.quit_dialog_window)
         self.cancel_btn.connect("expose-event", self.label_expose_event, 30)
+        self.cancel_btn.connect("enter-notify-event", self.label_enter_notify_event)
+
         self.ok_btn.connect("clicked", self.ok_btn_clicked)
         self.ok_btn.connect("expose-event", self.label_expose_event, 0)
         self.ok_btn.connect("enter-notify-event", self.label_enter_notify_event)
-        self.cancel_btn.connect("enter-notify-event", self.label_enter_notify_event)
+
+        self.default_action_btn.connect("expose-event", self.label_expose_event, 0)
+        self.default_action_btn.connect("clicked", self.default_action_btn_clicked)
+        self.default_action_btn.connect("enter-notify-event", self.label_enter_notify_event)
 
     def label_enter_notify_event(self, widget, event):
         self.ok_btn.queue_draw()
@@ -304,6 +341,9 @@ class TrayDialog(Window):
         self.quit_dialog_window(widget)
         if self.run_exec:
             gtk.timeout_add(1, self.run_exec_timeout)
+
+    def default_action_btn_clicked(self, widget):
+        pass
 
     def run_exec_timeout(self):
         if self.argv is None:
@@ -320,22 +360,22 @@ class TrayDialog(Window):
 
         if widget.state == gtk.STATE_PRELIGHT:
             color = "#FFFFFF"
-        #
+        
         cr = widget.window.cairo_create()
         rect = widget.allocation
-        #
+        
         size = get_text_size(widget.get_label(), 
                              self.cancel_size, 
                              self.cancel_font)
         draw_text(cr, 
                   widget.get_label(),
-                  rect.x + rect.width/2 - size[0]/2, 
+                  rect.x, 
                   rect.y + rect.height/2 - size[1]/2, 
                   text_size=self.cancel_size, 
                   text_color=color, 
                   text_font=self.cancel_font)  
         widget.set_size_request(size[0] + width, size[1] + 10)
-        #
+        
         return True
 
     def quit_dialog_window(self, widget):
