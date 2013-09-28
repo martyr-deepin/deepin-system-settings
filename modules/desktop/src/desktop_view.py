@@ -189,7 +189,7 @@ class DesktopView(gtk.VBox):
             pass
 
         scale_edge_str = self.compiz_scale_settings.get_string("initiate-edge")
-        if scale_edge_str == "Top Left":
+        if scale_edge_str == "TopLeft":
             self.topleft_combo.set_select_index(1)
 
         self.topleft_combo.connect("item-selected", self.__combo_item_selected, "topleft")
@@ -372,7 +372,7 @@ class DesktopView(gtk.VBox):
             return
     
     def __on_setting_changed(self, key):
-        print "on_setting_changed"
+        print "on_setting_changed", key
         if key == "show-computer-icon":
             self.computer_checkbutton.set_active(self.desktop_settings.get_boolean("show-computer-icon"))
             return
@@ -397,15 +397,18 @@ class DesktopView(gtk.VBox):
         if key == "command-11":
             command_11 = self.compiz_integrated_settings.get_string("command-11")
             run_command10_edge = self.compiz_run_command_edge_settings.get_string("run-command10-edge")
+            # print "command-11: %s, run_command10_edge: %s" % (command_11, run_command10_edge)
             if command_11 == self.LAUNCHER_CMD and run_command10_edge == "TopLeft":
                 self.topleft_combo.set_select_index(2)
         if key == "command-12":
             command_12 = self.compiz_integrated_settings.get_string("command-12")
             run_command11_edge = self.compiz_run_command_edge_settings.get_string("run-command11-edge")
+            # print "command-12: %s, run_command11_edge: %s" % (command_12, run_command11_edge)            
             if command_12 == self.LAUNCHER_CMD and run_command11_edge == "BottomRight":
                 self.topright_combo.set_select_index(2)
         if key == "initiate-edge":
             initiate_edge = self.compiz_scale_settings.get_string("initiate-edge")
+            # print "initialte-edget: %s" % initiate_edge
             if initiate_edge == "Top Left":
                 self.topleft_combo.set_select_index(1)
             if initiate_edge  == "BottomRight":
