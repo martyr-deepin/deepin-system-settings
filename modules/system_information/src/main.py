@@ -145,8 +145,7 @@ class SysInfo(object):
         self.container_widgets["info_table"].set_col_spacings(WIDGET_SPACING)
 
         # show sysinfo
-        #self.label_widgets["version_info"].set_text("%s" % settings.get_os_version())
-        self.label_widgets["version_info"].set_text('12.12.1')
+        self.label_widgets["version_info"].set_text("%s" % settings.get_os_version())
         self.label_widgets["cpu_info"].set_text("%s" % settings.get_cpu_info())
         self.label_widgets["mem_info"].set_text("%.1fGB" % settings.get_mem_info())
         self.label_widgets["arch_info"].set_text("%s%s" % (settings.get_os_arch(), _("bit")))
