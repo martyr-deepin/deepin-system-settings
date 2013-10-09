@@ -278,7 +278,17 @@ class PasswdService(dbus.service.Object):
 
     @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "ss", out_signature = "s")
     def cfg_get(self, user_name, key):
-        return config_parser.get(user_name, key)
+        value = ""
+        try:
+            value = config_parser.get(user_name, key)
+        except Exception:
+            with(open(FACE_RECOG_FILE, "w")) as cfg:
+                config_parser.add_section(user_name)
+                config_parser.set(user_name, "enable", "false")
+                config_parser.set(user_name, "person_name", str(uuid4()))
+                config_parser.write(cfg)
+            value = config_parser.get(user_name, key)
+        return value
 
     @dbus.service.method(DBUS_INTERFACE_NAME, in_signature = "sss", out_signature = "")
     def cfg_set(self, user_name, key, value):
