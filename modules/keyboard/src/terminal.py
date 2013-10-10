@@ -32,11 +32,11 @@ if __name__ == '__main__':
     gnome_terminal = gnome.get_string('exec')
 
     if dde_terminal:
-        print "opem terminal:", dde_terminal
+        print "open terminal:", dde_terminal
         subprocess.Popen(dde_terminal)
     elif gnome_terminal:
-        print "opem terminal:", gnome_terminal
+        print "open terminal:", gnome_terminal
         subprocess.Popen(gnome_terminal)
     else:
-        print "opem terminal: gnome-terminal"
+        print "open terminal: gnome-terminal"
         subprocess.Popen('gnome-terminal')

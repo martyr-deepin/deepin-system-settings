@@ -42,7 +42,7 @@ shortcuts_group_dict = {
         {'type': TYPE_COMPIZ, 'plugin': "shift", 'name': "prev-key", 'description': _("Reverse switch applications with 3D effect"), 'value-type': TYPE_STRING},     # 应用程序3D反向
         {'type': TYPE_DP, 'name': "key4", 'description': _("Show/Hide the dock"), 'value-type': TYPE_STRING, 'command': "dbus-send --type=method_call --dest=com.deepin.dde.dock /com/deepin/dde/dock com.deepin.dde.dock.ToggleShow"},     # 显示/隐藏Dock
         #{'type': TYPE_MEDIA, 'name': "help", 'description': _("Launch user manual"), 'value-type': TYPE_STRING},
-        {'type': TYPE_DP, 'name': "key6", 'description': _("Launch user manual"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-user-manual'},
+        # {'type': TYPE_DP, 'name': "key6", 'description': _("Launch user manual"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-user-manual'},
         #{'type': TYPE_MEDIA, 'name': "screenshot", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING},  # 截图
         {'type': TYPE_DP, 'name': "key7", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot'},  # 截图
         #{'type': TYPE_MEDIA, 'name': "area-screenshot", 'description': _("Take a screenshot of full screen"), 'value-type': TYPE_STRING},
@@ -52,7 +52,8 @@ shortcuts_group_dict = {
         #{'type': TYPE_MEDIA, 'name': "screenshot-delay", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING},
         {'type': TYPE_DP, 'name': "key10", 'description': _("Take a screenshot delayed"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-screenshot -d 5'},
         #{'type': TYPE_DP, 'name': "key2", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "/usr/bin/gnome-terminal"},
-        {'type': TYPE_DP, 'name': "key2", 'description': _("Terminal"), 'value-type': TYPE_STRING, 'command': "python /usr/share/deepin-system-settings/modules/keyboard/src/terminal.py"},
+        {'type': TYPE_DP, 'name': "key2", 'description': _("Deepin terminal"), 'value-type': TYPE_STRING, 'command': "deepin-terminal"},
+        {'type': TYPE_DP, 'name': "key6", 'description': _("Deepin terminal quake mode"), 'value-type': TYPE_STRING, 'command': 'deepin-terminal --quake-mode'},
         #{'type': TYPE_MEDIA, 'name': "logout", 'description': _("Log out"), 'value-type': TYPE_STRING}],
         {'type': TYPE_DP, 'name': "key5", 'description': _("Log out"), 'value-type': TYPE_STRING, 'command': 'python /usr/share/deepin-system-settings/modules/power/src/tray_shutdown_plugin.py logout'}],
     _('Sound and Media') : [
