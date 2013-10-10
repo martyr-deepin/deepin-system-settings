@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:43+0800\n"
+"POT-Creation-Date: 2013-10-10 16:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/treeitem.py:308 ../src/accel_entry.py:230 ../src/accel_entry.py:393
+msgid "disable"
+msgstr ""
 
 #: ../src/accel_entry.py:52
 #, python-format
@@ -47,11 +51,7 @@ msgstr ""
 msgid "Reassign"
 msgstr ""
 
-#: ../src/accel_entry.py:230 ../src/accel_entry.py:379 ../src/treeitem.py:308
-msgid "disable"
-msgstr ""
-
-#: ../src/accel_entry.py:272
+#: ../src/accel_entry.py:286
 msgid "Please input new shortcuts"
 msgstr ""
 
@@ -148,15 +148,15 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: ../src/main.py:505 ../src/keybind_all.py:58
+#: ../src/main.py:505 ../src/keybind_all.py:59
 msgid "Sound and Media"
 msgstr ""
 
-#: ../src/main.py:506 ../src/keybind_all.py:72
+#: ../src/main.py:506 ../src/keybind_all.py:73
 msgid "Windows"
 msgstr ""
 
-#: ../src/main.py:507 ../src/keybind_all.py:81
+#: ../src/main.py:507 ../src/keybind_all.py:82
 msgid "Workspace"
 msgstr ""
 
@@ -216,14 +216,6 @@ msgstr ""
 msgid "Reset to default"
 msgstr ""
 
-#: ../src/search_keyword.py:25
-msgid "Keyboard"
-msgstr ""
-
-#: ../src/search_keyword.py:28
-msgid "Layout"
-msgstr ""
-
 #: ../src/keybind_all.py:34
 msgid "Launcher"
 msgstr ""
@@ -260,10 +252,6 @@ msgstr ""
 msgid "Show/Hide the dock"
 msgstr ""
 
-#: ../src/keybind_all.py:45
-msgid "Launch user manual"
-msgstr ""
-
 #: ../src/keybind_all.py:47
 msgid "Take a screenshot"
 msgstr ""
@@ -281,157 +269,169 @@ msgid "Take a screenshot delayed"
 msgstr ""
 
 #: ../src/keybind_all.py:55
-msgid "Terminal"
+msgid "Deepin terminal"
 msgstr ""
 
-#: ../src/keybind_all.py:57
+#: ../src/keybind_all.py:56
+msgid "Deepin terminal quake mode"
+msgstr ""
+
+#: ../src/keybind_all.py:58
 msgid "Log out"
 msgstr ""
 
-#: ../src/keybind_all.py:59
+#: ../src/keybind_all.py:60
 msgid "Launch calculator"
 msgstr ""
 
-#: ../src/keybind_all.py:60
+#: ../src/keybind_all.py:61
 msgid "Launch email client"
 msgstr ""
 
-#: ../src/keybind_all.py:61
+#: ../src/keybind_all.py:62
 msgid "Launch web browser"
 msgstr ""
 
-#: ../src/keybind_all.py:62
+#: ../src/keybind_all.py:63
 msgid "Launch media player"
 msgstr ""
 
-#: ../src/keybind_all.py:63
+#: ../src/keybind_all.py:64
 msgid "Play (or play/pause)"
 msgstr ""
 
-#: ../src/keybind_all.py:64
+#: ../src/keybind_all.py:65
 msgid "Pause playback"
 msgstr ""
 
-#: ../src/keybind_all.py:65
+#: ../src/keybind_all.py:66
 msgid "Stop playback"
 msgstr ""
 
-#: ../src/keybind_all.py:66
+#: ../src/keybind_all.py:67
 msgid "Volume mute"
 msgstr ""
 
-#: ../src/keybind_all.py:67
+#: ../src/keybind_all.py:68
 msgid "Volume down"
 msgstr ""
 
-#: ../src/keybind_all.py:68
+#: ../src/keybind_all.py:69
 msgid "Volume up"
 msgstr ""
 
-#: ../src/keybind_all.py:69
+#: ../src/keybind_all.py:70
 msgid "Previous track"
 msgstr ""
 
-#: ../src/keybind_all.py:70
+#: ../src/keybind_all.py:71
 msgid "Next track"
 msgstr ""
 
-#: ../src/keybind_all.py:71
+#: ../src/keybind_all.py:72
 msgid "Eject"
 msgstr ""
 
-#: ../src/keybind_all.py:73
+#: ../src/keybind_all.py:74
 msgid "Close window"
 msgstr ""
 
-#: ../src/keybind_all.py:74
+#: ../src/keybind_all.py:75
 msgid "Maximize window"
 msgstr ""
 
-#: ../src/keybind_all.py:75
+#: ../src/keybind_all.py:76
 msgid "Restore window"
 msgstr ""
 
-#: ../src/keybind_all.py:76
+#: ../src/keybind_all.py:77
 msgid "Minimize window"
 msgstr ""
 
-#: ../src/keybind_all.py:77
+#: ../src/keybind_all.py:78
 msgid "Move window"
 msgstr ""
 
-#: ../src/keybind_all.py:78
+#: ../src/keybind_all.py:79
 msgid "Resize window"
 msgstr ""
 
-#: ../src/keybind_all.py:79
+#: ../src/keybind_all.py:80
 msgid "Toggle shaded state"
 msgstr ""
 
-#: ../src/keybind_all.py:80
+#: ../src/keybind_all.py:81
 msgid "Activate the window menu"
 msgstr ""
 
-#: ../src/keybind_all.py:82
+#: ../src/keybind_all.py:83
 msgid "Switch to workspace 1"
 msgstr ""
 
-#: ../src/keybind_all.py:83
+#: ../src/keybind_all.py:84
 msgid "Switch to workspace 2"
 msgstr ""
 
-#: ../src/keybind_all.py:84
+#: ../src/keybind_all.py:85
 msgid "Switch to workspace 3"
 msgstr ""
 
-#: ../src/keybind_all.py:85
+#: ../src/keybind_all.py:86
 msgid "Switch to workspace 4"
 msgstr ""
 
-#: ../src/keybind_all.py:86
+#: ../src/keybind_all.py:87
 msgid "Switch to workspace left"
 msgstr ""
 
-#: ../src/keybind_all.py:87
+#: ../src/keybind_all.py:88
 msgid "Switch to workspace right"
 msgstr ""
 
-#: ../src/keybind_all.py:88
+#: ../src/keybind_all.py:89
 msgid "Switch to workspace above"
 msgstr ""
 
-#: ../src/keybind_all.py:89
+#: ../src/keybind_all.py:90
 msgid "Switch to workspace below"
 msgstr ""
 
-#: ../src/keybind_all.py:90
+#: ../src/keybind_all.py:91
 msgid "Move window to workspace 1"
 msgstr ""
 
-#: ../src/keybind_all.py:91
+#: ../src/keybind_all.py:92
 msgid "Move window to workspace 2"
 msgstr ""
 
-#: ../src/keybind_all.py:92
+#: ../src/keybind_all.py:93
 msgid "Move window to workspace 3"
 msgstr ""
 
-#: ../src/keybind_all.py:93
+#: ../src/keybind_all.py:94
 msgid "Move window to workspace 4"
 msgstr ""
 
-#: ../src/keybind_all.py:98
+#: ../src/keybind_all.py:99
 msgid "Move window one workspace to the left"
 msgstr ""
 
-#: ../src/keybind_all.py:99
+#: ../src/keybind_all.py:100
 msgid "Move window one workspace to the right"
 msgstr ""
 
-#: ../src/keybind_all.py:100
+#: ../src/keybind_all.py:101
 msgid "Move window one workspace up"
 msgstr ""
 
-#: ../src/keybind_all.py:101
+#: ../src/keybind_all.py:102
 msgid "Move window one workspace down"
+msgstr ""
+
+#: ../src/search_keyword.py:25
+msgid "Keyboard"
+msgstr ""
+
+#: ../src/search_keyword.py:28
+msgid "Layout"
 msgstr ""
