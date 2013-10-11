@@ -256,6 +256,7 @@ class AccelEntry(ShortcutKeyEntry):
         #self.h_box.pack_start(self.del_button, False, False)
         self.grab_area.connect("button-press-event", self.__on_grab_area_button_press_cb)
         self.grab_area.connect("key-press-event", self.__on_grab_area_key_press_cb)
+        self.grab_area.connect("key-release-event", self.__on_grab_area_key_release_cb)
         self.accel_label.connect("button-press-event", self.__on_label_button_press_cb)
 
         #self.accel_label.connect("enter-notify-event", self.__on_label_enter_cb)
@@ -309,6 +310,30 @@ class AccelEntry(ShortcutKeyEntry):
         gtk.gdk.keyboard_ungrab(0)
         gtk.gdk.pointer_ungrab(0)
         self.accel_label.set_text(self.accel_str)
+
+    def __on_grab_area_key_release_cb(self, widget, event):
+        if not event.is_modifier:
+            return False
+        if not gtk.gdk.pointer_is_grabbed():
+            return False
+        event.state = event.state & (~gtk.gdk.MOD2_MASK) & (~gtk.gdk.MOD3_MASK) & (~gtk.gdk.MOD4_MASK) & (~gtk.gdk.MOD5_MASK)
+        # is not Super key
+        if not (event.keyval == gtk.keysyms.Super_R or event.keyval == gtk.keysyms.Super_L and 
+                event.state == gtk.gdk.SUPER_MASK):
+            return False
+        gtk.gdk.keyboard_ungrab(0)
+        gtk.gdk.pointer_ungrab(0)
+
+        tmp_accel_buf = AccelBuffer()
+        tmp_accel_buf.set_keyval(0)
+        tmp_accel_buf.set_state(gtk.gdk.SUPER_MASK)
+
+        if self.check_conflict_func and self.resolve_conflict_func:
+            conflict_entry = self.check_conflict_func(self, tmp_accel_buf)
+            if conflict_entry:
+                self.resolve_conflict_func(self, conflict_entry, tmp_accel_buf)
+                return
+        self.set_keyval_and_state(0, gtk.gdk.SUPER_MASK)
 
     def __on_grab_area_key_press_cb(self, widget, event):
         if event.is_modifier:
