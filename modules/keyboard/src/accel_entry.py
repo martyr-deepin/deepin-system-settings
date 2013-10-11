@@ -156,6 +156,8 @@ class AccelBuffer(object):
         '''
         if self.state is None or self.keyval is None:
             return ''
+        if self.keyval == 0 and self.state == gtk.gdk.SUPER_MASK:
+            return 'Super'
         return gtk.accelerator_name(self.keyval, self.state)
     
     def get_accel_label(self):
@@ -165,6 +167,8 @@ class AccelBuffer(object):
         '''
         if self.state is None or self.keyval is None:
             return ''
+        if self.keyval == 0 and self.state == gtk.gdk.SUPER_MASK:
+            return 'Super'
         if 'LANGUAGE' in os.environ:
             old_lang = os.environ["LANGUAGE"]
         else:
@@ -180,7 +184,11 @@ class AccelBuffer(object):
         parses the accelerator string and update keyval and state
         @parse accelerator: a accelerator string
         '''
-        (self.keyval, self.state) = gtk.accelerator_parse(accelerator)
+        if accelerator.lower() == "super":
+            self.keyval = 0
+            self.state = gtk.gdk.SUPER_MASK
+        else:
+            (self.keyval, self.state) = gtk.accelerator_parse(accelerator)
     
     def is_equal(self, accel_buffer):
         '''
