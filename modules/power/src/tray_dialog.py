@@ -136,6 +136,7 @@ class TrayDialog(Window):
         self.second = 60
         self.argv = None
         self.run_exec = None
+        self.run_default_action = None
         
         self.set_pango_list()
         
@@ -315,7 +316,7 @@ class TrayDialog(Window):
         self.cancel_btn = gtk.Button(self.cancel_text)
         self.ok_btn = gtk.Button(self.ok_text)
 
-        self.default_action_btn = gtk.Button("强制执行")
+        self.default_action_btn = gtk.Button("")
 
         self.cancel_btn.connect("clicked", self.quit_dialog_window)
         self.cancel_btn.connect("expose-event", self.label_expose_event, 30)
@@ -343,7 +344,9 @@ class TrayDialog(Window):
             gtk.timeout_add(1, self.run_exec_timeout)
 
     def default_action_btn_clicked(self, widget):
-        pass
+        self.quit_dialog_window(widget)
+        if self.run_default_action:
+            gtk.timeout_add(1, self.run_default_action)
 
     def run_exec_timeout(self):
         if self.argv is None:
