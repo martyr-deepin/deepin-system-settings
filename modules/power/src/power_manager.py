@@ -224,9 +224,14 @@ class PowerManager:
         return 0
 
     def set_suspend_status(self, value):
-        self.power_settings.set_string("sleep-inactive-battery-type", "suspend")
+        if int(value) > 0:
+            self.power_settings.set_string("sleep-inactive-battery-type", "suspend")
+            self.power_settings.set_string("sleep-inactive-ac-type", "suspend")
+        else:
+            self.power_settings.set_string("sleep-inactive-battery-type", "nothing")
+            self.power_settings.set_string("sleep-inactive-ac-type", "nothing")
+
         self.power_settings.set_int("sleep-inactive-battery-timeout", value)
-        self.power_settings.set_string("sleep-inactive-ac-type", "suspend")
         self.power_settings.set_int("sleep-inactive-ac-timeout", value)
 
     def get_close_harddisk(self, items):

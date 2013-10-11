@@ -8,14 +8,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-05 10:43+0800\n"
-"PO-Revision-Date: 2013-03-15 15:44+0800\n"
+"POT-Creation-Date: 2013-10-10 16:41+0800\n"
+"PO-Revision-Date: 2013-10-10 16:42+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/treeitem.py:308 ../src/accel_entry.py:230 ../src/accel_entry.py:393
+msgid "disable"
+msgstr "禁用"
 
 #: ../src/accel_entry.py:52
 #, python-format
@@ -47,11 +51,7 @@ msgstr "如果你重新分配快捷键\"%s\"，则快捷键\"%s\"将被禁用"
 msgid "Reassign"
 msgstr "重新分配"
 
-#: ../src/accel_entry.py:230 ../src/accel_entry.py:379 ../src/treeitem.py:308
-msgid "disable"
-msgstr "禁用"
-
-#: ../src/accel_entry.py:272
+#: ../src/accel_entry.py:286
 msgid "Please input new shortcuts"
 msgstr "请输入新的快捷键"
 
@@ -148,15 +148,15 @@ msgstr "当前布局： %s"
 msgid "System"
 msgstr "系统"
 
-#: ../src/main.py:505 ../src/keybind_all.py:58
+#: ../src/main.py:505 ../src/keybind_all.py:59
 msgid "Sound and Media"
 msgstr "声音和媒体"
 
-#: ../src/main.py:506 ../src/keybind_all.py:72
+#: ../src/main.py:506 ../src/keybind_all.py:73
 msgid "Windows"
 msgstr "窗口"
 
-#: ../src/main.py:507 ../src/keybind_all.py:81
+#: ../src/main.py:507 ../src/keybind_all.py:82
 msgid "Workspace"
 msgstr "工作区"
 
@@ -216,14 +216,6 @@ msgstr "确定"
 msgid "Reset to default"
 msgstr "恢复默认值"
 
-#: ../src/search_keyword.py:25
-msgid "Keyboard"
-msgstr "键盘"
-
-#: ../src/search_keyword.py:28
-msgid "Layout"
-msgstr "布局"
-
 #: ../src/keybind_all.py:34
 msgid "Launcher"
 msgstr "启动器"
@@ -260,10 +252,6 @@ msgstr "应用程序3D反向切换"
 msgid "Show/Hide the dock"
 msgstr "显示/隐藏Dock"
 
-#: ../src/keybind_all.py:45
-msgid "Launch user manual"
-msgstr "启动用戶手冊"
-
 #: ../src/keybind_all.py:47
 msgid "Take a screenshot"
 msgstr "截图"
@@ -281,160 +269,175 @@ msgid "Take a screenshot delayed"
 msgstr "延时截图"
 
 #: ../src/keybind_all.py:55
-msgid "Terminal"
-msgstr "终端"
+msgid "Deepin terminal"
+msgstr "深度终端"
 
-#: ../src/keybind_all.py:57
+#: ../src/keybind_all.py:56
+msgid "Deepin terminal quake mode"
+msgstr "深度终端雷神模式"
+
+#: ../src/keybind_all.py:58
 msgid "Log out"
 msgstr "注销"
 
-#: ../src/keybind_all.py:59
+#: ../src/keybind_all.py:60
 msgid "Launch calculator"
 msgstr "启动计算器"
 
-#: ../src/keybind_all.py:60
+#: ../src/keybind_all.py:61
 msgid "Launch email client"
 msgstr "启动邮件客户端"
 
-#: ../src/keybind_all.py:61
+#: ../src/keybind_all.py:62
 msgid "Launch web browser"
 msgstr "启动网页浏览器"
 
-#: ../src/keybind_all.py:62
+#: ../src/keybind_all.py:63
 msgid "Launch media player"
 msgstr "启动媒体播放器"
 
-#: ../src/keybind_all.py:63
+#: ../src/keybind_all.py:64
 msgid "Play (or play/pause)"
 msgstr "播放(或者 播放/暂停）"
 
-#: ../src/keybind_all.py:64
+#: ../src/keybind_all.py:65
 msgid "Pause playback"
 msgstr "暂停播放"
 
-#: ../src/keybind_all.py:65
+#: ../src/keybind_all.py:66
 msgid "Stop playback"
 msgstr "停止播放"
 
-#: ../src/keybind_all.py:66
+#: ../src/keybind_all.py:67
 msgid "Volume mute"
 msgstr "静音"
 
-#: ../src/keybind_all.py:67
+#: ../src/keybind_all.py:68
 msgid "Volume down"
 msgstr "减小音量"
 
-#: ../src/keybind_all.py:68
+#: ../src/keybind_all.py:69
 msgid "Volume up"
 msgstr "增大音量"
 
-#: ../src/keybind_all.py:69
+#: ../src/keybind_all.py:70
 msgid "Previous track"
 msgstr "上一音轨"
 
-#: ../src/keybind_all.py:70
+#: ../src/keybind_all.py:71
 msgid "Next track"
 msgstr "下一音轨"
 
-#: ../src/keybind_all.py:71
+#: ../src/keybind_all.py:72
 msgid "Eject"
 msgstr "弹出"
 
-#: ../src/keybind_all.py:73
+#: ../src/keybind_all.py:74
 msgid "Close window"
 msgstr "关闭窗口"
 
-#: ../src/keybind_all.py:74
+#: ../src/keybind_all.py:75
 msgid "Maximize window"
 msgstr "最大化窗口"
 
-#: ../src/keybind_all.py:75
+#: ../src/keybind_all.py:76
 msgid "Restore window"
 msgstr "恢复窗口"
 
-#: ../src/keybind_all.py:76
+#: ../src/keybind_all.py:77
 msgid "Minimize window"
 msgstr "最小化窗口"
 
-#: ../src/keybind_all.py:77
+#: ../src/keybind_all.py:78
 msgid "Move window"
 msgstr "移动窗口"
 
-#: ../src/keybind_all.py:78
+#: ../src/keybind_all.py:79
 msgid "Resize window"
 msgstr "改变窗口大小"
 
-#: ../src/keybind_all.py:79
+#: ../src/keybind_all.py:80
 msgid "Toggle shaded state"
 msgstr "切换卷起状态"
 
-#: ../src/keybind_all.py:80
+#: ../src/keybind_all.py:81
 msgid "Activate the window menu"
 msgstr "激活窗口菜单"
 
-#: ../src/keybind_all.py:82
+#: ../src/keybind_all.py:83
 msgid "Switch to workspace 1"
 msgstr "切换到工作区1"
 
-#: ../src/keybind_all.py:83
+#: ../src/keybind_all.py:84
 msgid "Switch to workspace 2"
 msgstr "切换到工作区2"
 
-#: ../src/keybind_all.py:84
+#: ../src/keybind_all.py:85
 msgid "Switch to workspace 3"
 msgstr "切换到工作区3"
 
-#: ../src/keybind_all.py:85
+#: ../src/keybind_all.py:86
 msgid "Switch to workspace 4"
 msgstr "切换到工作区4"
 
-#: ../src/keybind_all.py:86
+#: ../src/keybind_all.py:87
 msgid "Switch to workspace left"
 msgstr "切换到左侧工作区"
 
-#: ../src/keybind_all.py:87
+#: ../src/keybind_all.py:88
 msgid "Switch to workspace right"
 msgstr "切换到右侧工作区"
 
-#: ../src/keybind_all.py:88
+#: ../src/keybind_all.py:89
 msgid "Switch to workspace above"
 msgstr "切换到上层工作区"
 
-#: ../src/keybind_all.py:89
+#: ../src/keybind_all.py:90
 msgid "Switch to workspace below"
 msgstr "切换到下层工作区"
 
-#: ../src/keybind_all.py:90
+#: ../src/keybind_all.py:91
 msgid "Move window to workspace 1"
 msgstr "将窗口移到工作区1"
 
-#: ../src/keybind_all.py:91
+#: ../src/keybind_all.py:92
 msgid "Move window to workspace 2"
 msgstr "将窗口移到工作区2"
 
-#: ../src/keybind_all.py:92
+#: ../src/keybind_all.py:93
 msgid "Move window to workspace 3"
 msgstr "将窗口移到工作区3"
 
-#: ../src/keybind_all.py:93
+#: ../src/keybind_all.py:94
 msgid "Move window to workspace 4"
 msgstr "将窗口移到工作区4"
 
-#: ../src/keybind_all.py:98
+#: ../src/keybind_all.py:99
 msgid "Move window one workspace to the left"
 msgstr "将窗口左移一个工作区"
 
-#: ../src/keybind_all.py:99
+#: ../src/keybind_all.py:100
 msgid "Move window one workspace to the right"
 msgstr "将窗口右移一个工作区"
 
-#: ../src/keybind_all.py:100
+#: ../src/keybind_all.py:101
 msgid "Move window one workspace up"
 msgstr "将窗口上移一个工作区"
 
-#: ../src/keybind_all.py:101
+#: ../src/keybind_all.py:102
 msgid "Move window one workspace down"
 msgstr "将窗口下移一个工作区"
+
+#: ../src/search_keyword.py:25
+msgid "Keyboard"
+msgstr "键盘"
+
+#: ../src/search_keyword.py:28
+msgid "Layout"
+msgstr "布局"
+
+#~ msgid "Launch user manual"
+#~ msgstr "启动用戶手冊"
 
 #~ msgid "Launchers"
 #~ msgstr "启动器"
