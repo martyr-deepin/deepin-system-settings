@@ -24,7 +24,6 @@
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
 from deepin_utils.process import run_command
-from deepin_utils.ipc import is_dbus_name_exists
 
 from nls import _
 import gtk
@@ -62,18 +61,14 @@ RUN_LOCK_COMMAND = "dlock"
 DSC_WARNING_TOP_TEXT = _("软件中心正在运行! <span foreground='#ff0000'>%s</span>可能会破坏系统！,12")
 DSC_WARNING_BOTTOM_TEXT = _("是否打开软件中心查看进度？,12")
 
-need_check_action_label = {
-        "shutdown": _("关机"),
-        "restart": _("重启"),
-        "suspend": _("休眠"),
-        "logout": _("注销"),
-        }
-
 DSC_SERVICE_NAME = "com.linuxdeepin.softwarecenter"
 DSC_SERVICE_PATH = "/com/linuxdeepin/softwarecenter"
 
+"""BACKEND_PID is define in deepin software center backend program"""
+BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
+
 def is_software_center_working():
-    return is_dbus_name_exists(DSC_SERVICE_NAME, False)
+    return os.path.exists(BACKEND_PID)
 
 class TrayShutdownPlugin(object):
     def __init__(self):
@@ -87,10 +82,10 @@ class TrayShutdownPlugin(object):
         self.dialog = TrayDialog()
 
         self.need_check_action = {
-                "shutdown": self.stop_btn_clicked,
-                "restart": self.restart_btn_clicked,
-                "suspend": self.suspend_btn_clicked,
-                "logout": self.logout_btn_clicked,
+                "shutdown": (_("关机"), self.stop_btn_clicked, self.gui.cmd_dbus.new_stop),
+                "restart": (_("重启"), self.restart_btn_clicked, self.gui.cmd_dbus.new_restart),
+                "suspend": (_("待机"), self.suspend_btn_clicked, self.gui.cmd_dbus.suspend),
+                "logout": (_("注销"), self.logout_btn_clicked, lambda:self.gui.cmd_dbus.logout(1)),
                 }
 
         self.gui.stop_btn.connect("clicked", self.check_system_app_running, 'shutdown')
@@ -106,13 +101,14 @@ class TrayShutdownPlugin(object):
 
     def check_system_app_running(self, widget, action_id):
         if is_software_center_working():
-            self.dialog.default_action_btn.set_label(need_check_action_label[action_id])
-            self.dialog.show_warning(DSC_WARNING_TOP_TEXT % need_check_action_label[action_id],
+            self.dialog.default_action_btn.set_label(self.need_check_action[action_id][0])
+            self.dialog.show_warning(DSC_WARNING_TOP_TEXT % self.need_check_action[action_id][0],
                                      DSC_WARNING_BOTTOM_TEXT)
             self.dialog.run_exec = lambda:self.exec_command(["deepin-software-center"])
+            self.dialog.run_default_action = self.need_check_action[action_id][2]
             self.this.hide_menu()
         else:
-            self.need_check_action[action_id](widget)
+            self.need_check_action[action_id][1](widget)
 
     def stop_btn_clicked(self, widget):
         self.dialog.show_dialog("deepin_shutdown")
