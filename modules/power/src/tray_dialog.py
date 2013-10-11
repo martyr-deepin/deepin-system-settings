@@ -316,7 +316,7 @@ class TrayDialog(Window):
         self.cancel_btn = gtk.Button(self.cancel_text)
         self.ok_btn = gtk.Button(self.ok_text)
 
-        self.default_action_btn = gtk.Button("强制执行")
+        self.default_action_btn = gtk.Button("")
 
         self.cancel_btn.connect("clicked", self.quit_dialog_window)
         self.cancel_btn.connect("expose-event", self.label_expose_event, 30)

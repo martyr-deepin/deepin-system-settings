@@ -24,7 +24,6 @@
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
 from deepin_utils.process import run_command
-from deepin_utils.ipc import is_dbus_name_exists
 
 from nls import _
 import gtk
@@ -65,8 +64,11 @@ DSC_WARNING_BOTTOM_TEXT = _("是否打开软件中心查看进度？,12")
 DSC_SERVICE_NAME = "com.linuxdeepin.softwarecenter"
 DSC_SERVICE_PATH = "/com/linuxdeepin/softwarecenter"
 
+"""BACKEND_PID is define in deepin software center backend program"""
+BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
+
 def is_software_center_working():
-    return is_dbus_name_exists(DSC_SERVICE_NAME, False)
+    return os.path.exists(BACKEND_PID)
 
 class TrayShutdownPlugin(object):
     def __init__(self):
