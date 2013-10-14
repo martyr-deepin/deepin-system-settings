@@ -43,6 +43,7 @@ class AutoStart(object):
         assert(os.path.exists(file_path))
         self.file_name = None
         self.file_path = file_path
+        self.is_shadow = False
         self.type = file_type #TYPE_USER or TYPE_SYS
         self.app_id = os.path.basename(file_path)
         self.dir = get_user_config_dir()
@@ -122,20 +123,28 @@ class AutoStart(object):
 
     def set_shadow_item(self, item):
         assert(self.type == AutoStart.TYPE_SYS)
+        self.is_shadow = True
         self.conf = item.conf
         self.file_path = item.file_path
     def ensure_shadow(self):
-        if self.type == AutoStart.TYPE_SYS:
+        if (not self.is_shadow) and self.type == AutoStart.TYPE_SYS:
             self.set_shadow_item(create_autostart(self.appid, self.name, self.exec_, self.comment))
 
     def set_autostart_state(self, value):
         self.ensure_shadow()
+        print "value:", value
+        print "begin autostart", self.is_autostart()
         self.set_option("X-GNOME-Autostart-enabled", str(value).lower())
+        print "end autostart", self.is_autostart()
         self.save()
 
     def save(self):
         self.ensure_shadow()
+        print "save before", self.is_autostart()
         save_config_to_file(self.conf, self.file_path)
+
+        print "save to ", self.file_path
+        print "autostart", self.is_autostart()
 
 
 def create_autostart(app_id, app_name, exec_path, comment):
