@@ -74,26 +74,23 @@ class NothingItem(TreeItem):
 
 class SessionItem(TreeItem):
 
-    def __init__(self, item):
+    def __init__(self, session_view, item):
 
         TreeItem.__init__(self)
+        self.session_view = session_view
         self.item = item
         self.is_double_click = False
-        self.autorun = item.has_gnome_auto()
-        self.check_buffer = CheckButtonBuffer(self.autorun, CHECK_WIDTH/2 - 16, 3)
+        self.check_buffer = CheckButtonBuffer(self.item.is_autostart(), CHECK_WIDTH/2 - 16, 3)
         
         self.padding_x = 10
 
     def set_autorun_state(self, run):
-        self.item.set_option("X-GNOME-Autostart-enabled", str(run).lower())
-        self.item.save(self.item.get_file())
-        self.autorun = run
+        self.item.set_autostart_state(run)
         self.redraw()
     
     
     def render_check(self, cr, rect):
         self.render_background(cr, rect)
-        #if self.autorun:
         self.check_buffer.render(cr, rect)
 
 
@@ -101,14 +98,6 @@ class SessionItem(TreeItem):
         app_name = str_mark_down(self.item.name)
         self.render_background(cr, rect)
         
-        #if self.autorun:
-        #self.check_buffer.render(cr, rect)
-            #if self.is_select:
-                #check_icon = app_theme.get_pixbuf("network/check_box-3.png")
-            #else:
-                #check_icon = app_theme.get_pixbuf("network/check_box-2.png")
-            #draw_pixbuf(cr, check_icon.get_pixbuf(), rect.x + CHECK_LEFT_PADDING, rect.y + (rect.height - 16)/2)
-
         # Draw Text
 
         (text_width, text_height) = get_content_size(app_name)
@@ -162,6 +151,10 @@ class SessionItem(TreeItem):
         self.is_select = True
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
+        if self.item.type == self.item.TYPE_SYS:
+            self.session_view.disable_delete_button(True)
+        else:
+            self.session_view.disable_delete_button(False)
 
     def unselect(self):
         self.is_select = False
@@ -177,25 +170,22 @@ class SessionItem(TreeItem):
             if self.check_buffer.release_button(x,y):
                 state = self.check_buffer.get_active()
                 self.set_autorun_state(state)
-    
+
     def single_click(self, column, offset_x, offset_y):
         self.is_select = True
         self.redraw()
 
     def double_click(self, column, offset_x, offset_y):
         self.is_double_click = True
-        self.set_autorun_state(not self.autorun)
+        self.set_autorun_state(not self.item.is_autostart())
 
 
     def redraw(self):
         if self.redraw_request_callback:
             self.redraw_request_callback(self)
-    
+
 
     def render_background(self,  cr, rect):
-        #if self.is_highlight:
-            #background_color = app_theme.get_color("globalItemHighlight")
-        #else:
         if self.is_select:
             background_color = app_theme.get_color("globalItemSelect")
         else:
@@ -203,6 +193,7 @@ class SessionItem(TreeItem):
                 background_color = app_theme.get_color("globalItemHover")
             else:
                 background_color = app_theme.get_color("tooltipText")
+
         cr.set_source_rgb(*color_hex_to_cairo(background_color.get_color()))
         cr.rectangle(rect.x, rect.y, rect.width, rect.height)
         cr.fill()

@@ -6,6 +6,7 @@ ENV_SYSTEM = "XDG_CONFIG_DIRS"
 
 import os
 import glib
+import gio
 import ConfigParser
 import psutil
 import locale
@@ -29,20 +30,27 @@ def get_system_config_dir():
         #os.mkdir(dirs)
     return dirs
 
+def save_config_to_file(conf, path):
+    with open(path, "wb") as configfile:
+        conf.write(configfile)
+
 class AutoStart(object):
     SECTION = "Desktop Entry"
+    TYPE_USER = 0
+    TYPE_SYS = 1
 
-    def __init__(self, file_path=None):
+    def __init__(self, file_type, file_path):
+        assert(os.path.exists(file_path))
         self.file_name = None
+        self.file_path = file_path
+        self.type = file_type #TYPE_USER or TYPE_SYS
+        self.app_id = os.path.basename(file_path)
         self.dir = get_user_config_dir()
         self.conf = ConfigParser.RawConfigParser()
         self.conf.optionxform = str
-        
-        if file_path != None and os.path.exists(file_path):
-            self.file_name = os.path.splitext(os.path.basename(file_path))[0]
-            self.conf.read(file_path)
-        else:
-            self.new()
+
+        self.file_name = os.path.splitext(os.path.basename(file_path))[0]
+        self.conf.read(file_path)
 
     def get_file(self):
         return self.file_name
@@ -66,12 +74,21 @@ class AutoStart(object):
         return self.conf.options(self.SECTION)
     
     @property
+    def appid(self):
+        return self.app_id
+
+
+    @property
     def name(self):
         return self.get_locale_option("Name", "Unknow")
+    def set_name(self, value):
+        self.set_option("Name", value)
     
     @property
     def comment(self):
         return self.get_locale_option("Comment")
+    def set_comment(self, value):
+        self.set_option("Comment", value)
     
     @property
     def exec_(self):
@@ -79,14 +96,12 @@ class AutoStart(object):
             return self.conf.get(self.SECTION, "Exec")
         except:
             return None
+    def set_exec(self, value):
+        self.set_option("Exec", value)
 
-    def has_gnome_auto(self):
+    def is_autostart(self):
         auto_start = self.get_option("X-GNOME-Autostart-enabled")
-        if auto_start == None:
-            self.set_option("X-GNOME-Autostart-enabled", 'true')
-            self.save(self.file_name)
-            return True
-        elif auto_start == "true":
+        if auto_start == None or auto_start == "true":
             return True
         else:
             return False
@@ -97,49 +112,45 @@ class AutoStart(object):
         except Exception:
             pass
 
-    def save(self, file_name):
-        if file_name:
-            path = os.path.join(self.dir , file_name + ".desktop")
-            with open(path, "wb") as configfile:
-                self.conf.write(configfile)
-
-            self.file_name = file_name
-            return True
-        else:
-            return False
-
     def remove_option(self, option):
-
         self.conf.remove_option(self.SECTION, option)
 
     def delete(self):
         if self.file_name:
             path = os.path.join(self.dir , self.file_name + ".desktop")
             os.remove(path)
-            print "autostart removed"
-            
-    def new(self):
-        self.conf.add_section(self.SECTION)
-        new_autostart = [("Type", "Application"),
-                         ("Exec", ""),
-                         ("Hidden", "false"),
-                         ("NoDisplay", "false"),
-                         ("X-GNOME-Autostart-enabled", "true"),
-                         ("Name", ""),
-                         ("Comment", "")]
 
-        for option in new_autostart:
-            self.set_option(*option)
+    def set_shadow_item(self, item):
+        assert(self.type == AutoStart.TYPE_SYS)
+        self.conf = item.conf
+        self.file_path = item.file_path
+    def ensure_shadow(self):
+        if self.type == AutoStart.TYPE_SYS:
+            self.set_shadow_item(create_autostart(self.appid, self.name, self.exec_, self.comment))
 
-    def is_active(self):
-        try:
-            this_proc = filter(lambda w: w.name == self.name(), psutil.get_process_list())
-        except:
-            this_proc = None
-        if this_proc:
-            return True
-        else:
-            return False
+    def set_autostart_state(self, value):
+        self.ensure_shadow()
+        self.set_option("X-GNOME-Autostart-enabled", str(value).lower())
+        self.save()
+
+    def save(self):
+        self.ensure_shadow()
+        save_config_to_file(self.conf, self.file_path)
+
+
+def create_autostart(app_id, app_name, exec_path, comment):
+    conf = ConfigParser.RawConfigParser()
+    conf.optionxform = str
+    conf.add_section(AutoStart.SECTION)
+    conf.set(AutoStart.SECTION, "Type", "Application")
+    conf.set(AutoStart.SECTION, "Exec", exec_path)
+    conf.set(AutoStart.SECTION, "Hidden", "false")
+    conf.set(AutoStart.SECTION, "Name", app_name)
+    conf.set(AutoStart.SECTION, "Comment", comment)
+    conf.set(AutoStart.SECTION, "X-GNOME-Autostart-enabled", "true")
+    save_config_to_file(conf, os.path.join(get_user_config_dir(), app_id))
+    return AutoStart(AutoStart.TYPE_USER, os.path.join(get_user_config_dir(), app_id))
+
 
 class SessionManager(object):
     __user_dir = get_user_config_dir()
@@ -148,35 +159,40 @@ class SessionManager(object):
     def __init__(self):
         pass
 
-    def list_user_auto_starts(self):
-        return map(lambda w: AutoStart(os.path.join( self.__user_dir, w)), 
-                   filter(self.is_desktop_file_user, os.listdir(self.__user_dir)))
-    
-    def list_sys_auto_starts(self):
-        return map(lambda w: AutoStart(os.path.join(self.__sys_dir, w)), 
-                   filter(self.is_desktop_file_sys, os.listdir(self.__sys_dir)))
+    def list_autostart_items(self):
+        items = []
+        system_item_name = {}
+        for name in filter(self.is_desktop_file_sys, os.listdir(self.__sys_dir)):
+            item = AutoStart(AutoStart.TYPE_SYS, os.path.join(self.__sys_dir, name))
+            items.append(item)
+            system_item_name[name] = item
+
+        for name in filter(self.is_desktop_file_user, os.listdir(self.__user_dir)):
+            item = AutoStart(AutoStart.TYPE_USER, os.path.join(self.__user_dir, name))
+            if not name in system_item_name.keys():
+                items.append(item)
+            else:
+                system_item_name[name].set_shadow_item(item)
+
+
+        return items
     
     def locale(self):
         return "[%s]" % get_system_lang()
     
     def add(self, app_name, exec_path, comment):
-        auto_file = AutoStart()
-        auto_file.set_option("Name", app_name)
-        auto_file.set_option("Exec", exec_path)
-        auto_file.set_option("Comment", comment)
-        return auto_file
+        if not app_name:
+            app_id = "tmp.desktop"
+        else:
+            app_id = app_name + ".desktop"
+        return create_autostart(app_id, app_name, exec_path, comment)
     
-    is_desktop_file_user = property(lambda self : partial(is_desktop_file, basename=self.__user_dir))
-    is_desktop_file_sys = property(lambda self : partial(is_desktop_file, basename=self.__sys_dir))
+    is_desktop_file_user = property(lambda self : partial(is_deepin_desktop_file, basename=self.__user_dir))
+    is_desktop_file_sys = property(lambda self : partial(is_deepin_desktop_file, basename=self.__sys_dir))
     
-def is_desktop_file(filename, basename):
+def is_deepin_desktop_file(filename, basename):
     file_path = basename + os.sep + filename
-    if os.access(file_path, os.R_OK):
-        with open(file_path) as config_file:
-            try:
-                ConfigParser.SafeConfigParser().readfp(config_file)
-                return True
-            except Exception:
-                return False
-    else:
+    appinfo = gio.unix.desktop_app_info_new_from_filename(file_path)
+    if not appinfo:
         return False
+    return appinfo.should_show()

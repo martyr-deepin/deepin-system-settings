@@ -25,7 +25,6 @@ class NewSessionDialog(DialogBox):
     '''
 	
     def __init__(self,
-                 new_session,
                  default_width=350,
                  default_height=160,
                  confirm_callback=None, 
@@ -44,11 +43,7 @@ class NewSessionDialog(DialogBox):
         DialogBox.__init__(self, _("Autostart app"), default_width, default_height, DIALOG_MASK_SINGLE_PAGE)
         self.confirm_callback = confirm_callback
         self.cancel_callback = cancel_callback
-        
-        self.new_session = new_session
-        self.app_name = self.new_session.name
-        self.command = self.new_session.get_option("Exec")
-        self.desc = self.new_session.get_option("Comment")
+        self.on_click = None
         
         self.confirm_button = Button(_("OK"))
         self.cancel_button = Button(_("Cancel"))
@@ -77,6 +72,8 @@ class NewSessionDialog(DialogBox):
         self.connect("show", self.focus_input)
 
 
+    def set_on_click(self, func):
+        self.on_click = func
     def pack(self, container, widgets, expand=False, fill=False):
         for widget in widgets:
             container.pack_start(widget, expand, fill)
@@ -94,21 +91,10 @@ class NewSessionDialog(DialogBox):
         self.name_entry = InputEntry()
         self.exec_entry = InputEntry()
         self.desc_entry = InputEntry()
-        self.name_entry.set_text(self.app_name)
-        self.exec_entry.set_text(self.command)
-        self.desc_entry.set_text(self.desc)
         self.name_entry.set_size(200, 22)
         self.exec_entry.set_size(200, 22)
         self.desc_entry.set_size(200, 22)
-        # self.name_entry.entry.connect("changed", self.entry_changed, "Name")
-        # self.exec_entry.entry.connect("changed", self.entry_changed, "Exec")
-        # self.desc_entry.entry.connect("changed", self.entry_changed, "Comment")
 
-        
-        #entry_list = [name_entry, exec_entry, desc_entry]
-        #for entry in entry_list:
-            #entry.set_size(200, 22)
-            #entry.connect("changed", )
         name_label_align = self.wrap_with_align(name_label)
         exec_label_align = self.wrap_with_align(exec_label)
         desc_label_align = self.wrap_with_align(desc_label)
@@ -130,9 +116,6 @@ class NewSessionDialog(DialogBox):
         align.add(table)
         return align
 
-    def entry_changed(self, widget, content, option):
-        self.new_session.set_option(option, content)
-    
     def table_add(self, table,  widget, column):
         for index, w in enumerate(widget):
             table.attach(w, column, column + 1, index, index + 1)
@@ -164,16 +147,8 @@ class NewSessionDialog(DialogBox):
         '''
         Inernal fucntion to handle click confirm button.
         '''
-        name = self.name_entry.get_text()
-        exec_ = self.exec_entry.get_text()
-        comment = self.desc_entry.get_text()
-        
-        self.new_session.set_option("Name", name)
-        self.new_session.set_option("Exec", exec_)
-        self.new_session.set_option("Comment", comment)
-        
         if self.confirm_callback != None:
-            self.confirm_callback(self.new_session)        
+            self.confirm_callback(self)
         
         self.destroy()
         
