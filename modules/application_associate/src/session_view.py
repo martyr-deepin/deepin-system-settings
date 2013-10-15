@@ -33,14 +33,14 @@ from monitor import LibraryMonitor
 from widget import NewSessionDialog
 from foot_box import FootBox
 from nls import _
-sessions = SessionManager()
+session_manager = SessionManager()
 
 class SessionView(gtk.VBox):
 
     def __init__(self):
         gtk.VBox.__init__(self)
-        self.new_session = None
         self.open_dialog = False
+        self.tmp_editing_session = None
         
         # UI style
         style.draw_background_color(self)
@@ -63,16 +63,15 @@ class SessionView(gtk.VBox):
 
 
         add_button = Button(_("New"))
-        delete_button = Button(_("Delete"))
+        self.delete_button = Button(_("Delete"))
         add_button.connect("clicked", self.add_autostart)
-        delete_button.connect("clicked", self.delete_autostart)
+        self.delete_button.connect("clicked", self.delete_autostart)
+        self.delete_button.set_sensitive(False)
         
         foot_box = FootBox(adjustment=15)
-        foot_box.set_buttons([add_button, delete_button])
+        foot_box.set_buttons([add_button, self.delete_button])
         self.pack_start(align, True, True)
         
-        #self.new_box = self.add_new_box()
-
         self.pack_end(foot_box, False, False)
         #self.pack_end(self.new_box, False, False)
 
@@ -80,54 +79,35 @@ class SessionView(gtk.VBox):
 
         self._init_monitor()
 
+    def disable_delete_button(self, value):
+        self.delete_button.set_sensitive(not value)
     def _init_monitor(self):
         self.library_monitor = LibraryMonitor(get_user_config_dir())
         self.library_monitor.set_property("monitored", True)
         self.library_monitor.connect("file-added", self.refresh_list)
         self.library_monitor.connect("location-removed", self.refresh_list)
 
-    def add_new_box(self):
-        hbox = gtk.HBox()
-        hbox.set_size_request(-1, 30)
-        name_label = Label("Name:")
-        exec_label = Label("Exec:")
-        desc_label = Label("Description:")
-        
-        name_entry = InputEntry()
-        exec_entry = InputEntry()
-        desc_entry = InputEntry()
-        name_entry.set_size(200, 22)
-        exec_entry.set_size(200, 22)
-        desc_entry.set_size(200, 22)
-        name_entry.entry.connect("changed", self.entry_changed, "Name")
-        exec_entry.entry.connect("changed", self.entry_changed, "Exec")
-        desc_entry.entry.connect("changed", self.entry_changed, "Comment" + sessions.locale())
-
-        
-        #entry_list = [name_entry, exec_entry, desc_entry]
-        #for entry in entry_list:
-            #entry.set_size(200, 22)
-            #entry.connect("changed", )
-
-        name_align = style.wrap_with_align(name_entry)
-        exec_align = style.wrap_with_align(exec_entry)
-        desc_align = style.wrap_with_align(desc_entry)
-
-        self.pack(hbox, [name_label, name_align, exec_label, exec_align, desc_label, desc_align])
-        return hbox
-    
     def right_press_item(self, widget,  x_root, y_root, current_item, select_items):
+        self.tmp_editing_session = current_item.item
         for item in select_items:
             item.unselect()
         if current_item != None:
-            session = current_item.item
-            #self.tree.unselect_all()
             current_item.select()
             if self.open_dialog == False:
-                dialog = NewSessionDialog(session, confirm_callback= self.edit_done, cancel_callback = self.cancel_callback)
+                dialog = NewSessionDialog(confirm_callback = self.edit_done, cancel_callback = self.cancel_callback)
+                dialog.name_entry.set_text(current_item.item.name)
+                dialog.exec_entry.set_text(current_item.item.exec_)
+                dialog.desc_entry.set_text(current_item.item.comment)
                 dialog.place_center()
                 dialog.show_all()
                 self.open_dialog = True
+
+    def create_session_item(self, dialog):
+        name = dialog.name_entry.get_text()
+        exec_ = dialog.exec_entry.get_text()
+        comment = dialog.desc_entry.get_text()
+        session_manager.add(name, exec_, comment)
+        self.open_dialog = False
 
     def expose_line(self, widget, event):
         cr = widget.window.cairo_create()
@@ -138,9 +118,9 @@ class SessionView(gtk.VBox):
         pass
 
     def add_autostart(self, widget):
-        self.new_session = sessions.add("","","")
         if self.open_dialog == False:
-            NewSessionDialog(self.new_session, confirm_callback= self.confirm_callback, cancel_callback = self.cancel_callback).show_all()
+            dialog = NewSessionDialog(confirm_callback= self.create_session_item, cancel_callback = self.cancel_callback)
+            dialog.show_all()
             self.open_dialog = True
 
     def delete_autostart(self, widget):
@@ -151,28 +131,18 @@ class SessionView(gtk.VBox):
         if self.tree.visible_items == []:
             self.tree.add_items([NothingItem()])
 
-
-    def entry_changed(self, widget, content, option):
-        self.new_session.set_option(option, content)
-
-    def edit_done(self, session):
-        if session.save(session.file_name):
-            self.new_session = None
-            items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
-            self.tree.redraw_request(items, True)
-            self.open_dialog = False
-
-    def confirm_callback(self, session):
-        if session.save(session.get_option("Name")):
-            items = self.tree.visible_items
-            if len(items) == 1 and type(items[0]) is NothingItem:
-                self.tree.delete_all_items()
-            self.tree.add_items([SessionItem(session)]) 
-            self.new_session = None
-            self.open_dialog = False
+    def edit_done(self, dialog):
+        self.tmp_editing_session.set_name(dialog.name_entry.get_text())
+        self.tmp_editing_session.set_exec(dialog.exec_entry.get_text())
+        self.tmp_editing_session.set_comment(dialog.desc_entry.get_text())
+        self.tmp_editing_session.save()
+        self.tmp_editing_session = None
+        items = map(lambda row: self.tree.visible_items[row], self.tree.select_rows)
+        self.tree.redraw_request(items, True)
+        self.open_dialog = False
 
     def cancel_callback(self):
-        self.new_session = None
+        self.tmp_editing_session = None
         self.open_dialog = False
 
     def pack(self, parent, widget_list, expand=False, fill=False):
@@ -185,9 +155,9 @@ class SessionView(gtk.VBox):
         cr.fill()
 
     def get_list(self):
-        usr_list = sessions.list_user_auto_starts()
+        usr_list = session_manager.list_autostart_items()
         if usr_list:
-            return map(lambda w: SessionItem(w), usr_list)
+            return map(lambda w: SessionItem(self, w), usr_list)
         else:
             return [NothingItem()]
 
@@ -195,4 +165,3 @@ class SessionView(gtk.VBox):
         self.tree.clear()
         self.tree.add_items(self.get_list())
         self.tree.show()
-        

@@ -37,15 +37,15 @@ class Accounts(BusBase):
     __gsignals__  = {
         "user-added":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,)),
         "user-deleted":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, (str,))
-            }
+        }
 
     def __init__(self):
         BusBase.__init__(self, path = "/org/freedesktop/Accounts", interface = "org.freedesktop.Accounts")
 
-        self.bus.add_signal_receiver(self.user_added_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.user_added_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "UserAdded")
 
-        self.bus.add_signal_receiver(self.user_deleted_cb, dbus_interface = self.object_interface, 
+        self.bus.add_signal_receiver(self.user_deleted_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "UserDeleted")
 
         self.init_dbus_properties()
@@ -101,7 +101,7 @@ class Accounts(BusBase):
 
         passwd = pexpect.spawn("/usr/bin/passwd %s" %username, timeout=8, env={"LANGUAGE": "en_US"})
         passwd.setecho(False)
-        
+
         if passwd.expect(["(current)", pexpect.EOF, pexpect.TIMEOUT], 5) == 0:
             try:
                 #print "input old:'%s'" % old_password
@@ -156,16 +156,16 @@ class User(BusBase):
 
     __gsignals__  = {
         "changed":(gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
-            }
-    
+        }
+
     def __init__(self, userpath):
         BusBase.__init__(self, path = userpath, interface = "org.freedesktop.Accounts.User")
-     
-        self.bus.add_signal_receiver(self.changed_cb, dbus_interface = self.object_interface, 
+
+        self.bus.add_signal_receiver(self.changed_cb, dbus_interface = self.object_interface,
                                      path = self.object_path, signal_name = "Changed")
         self.init_dbus_properties()
 
-    ###get properties    
+    ###get properties
     def get_x_keyboard_layouts(self):
         if self.properties["XKeyboardLayouts"]:
             return map(lambda x:str(x), self.properties["XKeyboardLayouts"])
@@ -201,7 +201,7 @@ class User(BusBase):
 
     def get_home_directory(self):
         return str(self.properties["HomeDirectory"])
-    
+
     def get_icon_file(self):
         if self.properties["IconFile"] and os.path.exists(self.properties["IconFile"]):
             return str(self.properties["IconFile"])
@@ -226,7 +226,7 @@ class User(BusBase):
 
     def get_shell(self):
         return str(self.properties["Shell"])
-    
+
     def get_user_name(self):
         return str(self.properties["UserName"])
 
@@ -257,6 +257,22 @@ class User(BusBase):
 
     def set_automatic_login(self, automatic_login):
         self.call_async("SetAutomaticLogin", automatic_login, reply_handler = None, error_handler = None)
+        try:
+            bus = dbus.SystemBus()
+            dbus_object = bus.get_object("com.deepin.passwdservice", "/")
+            dbus_interface = dbus.Interface(dbus_object, "com.deepin.passwdservice")
+            groups = self.get_groups()
+            if automatic_login:
+                groups = ",".join(groups + ["nopasswdlogin"])
+                print groups, automatic_login
+                dbus_interface.modify_user_groups(self.get_user_name(), groups)
+            else:
+                groups.remove("nopasswdlogin")
+                groups = ",".join(groups)
+                print groups, automatic_login
+                dbus_interface.modify_user_groups(self.get_user_name(), groups)
+        except Exception, e:
+            print e
 
     def set_background_file(self, background_file):
         self.call_async("SetBackgroundFile", background_file, reply_handler = None, error_handler = None)
@@ -333,7 +349,7 @@ if __name__ == "__main__":
 
     # user_path = accounts.create_user("acu", "acu", 0)
     # user = User(user_path)
-    
+
     # user.set_password("acu", "acu")
     # # user.set_user_name("account_user")
     # # print accounts.get_exist_username_list()
