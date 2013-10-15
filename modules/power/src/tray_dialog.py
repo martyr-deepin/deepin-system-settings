@@ -45,7 +45,7 @@ OK_TEXT = _("OK")
 #SHUTDOWN_TOP_TEXT = _("现在关闭此系统吗？")
 SHUTDOWN_TOP_TEXT = _("<span foreground='#FF0000'>Turn off</span> your computer now?,12")
 #SHUTDOWN_BOTTOM_TEXT = _("系统即将在%s秒后自动关闭。")
-SHUTDOWN_BOTTOM_TEXT = _("The system will shut down in \n%s secs.,12")
+SHUTDOWN_BOTTOM_TEXT = _("The system will shut down in \n%s seconds.,12")
 #FONT_TYPE = _("文泉驿微米黑 Bold")
 FONT_TYPE = _("WenQuanYi Micro Hei Bold")
 

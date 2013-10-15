@@ -46,20 +46,20 @@ DBUS_USER_STR = "/org/freedesktop/Accounts/User%s" % (os.getuid())
 #RESTART_TOP_TEXT = "现在重启此系统吗？"
 RESTART_TOP_TEXT = _("<span foreground='#FF0000'>Restart</span> your computer now?,12")
 #RESTART_BOTTOM_TEXT = "系统即将在%s秒后自动重启。"
-RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.,12")
+RESTART_BOTTOM_TEXT = _("The system will restart in \n%s seconds.,12")
 #SUSPEND_TOP_TEXT = "现在挂起此系统吗？"
 SUSPEND_TOP_TEXT = _("<span foreground='#FF0000'>Suspend</span> your computer now?,12")
 #SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
-SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.,12")
+SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s seconds.,12")
 LOGOUT_TOP_TEXT = _("<span foreground='#FF0000'>Log out</span> of your system now?,12")
-LOGOUT_BOTTOM_TEXT = _("You will be automatically logged out in \n%s secs.,12")
+LOGOUT_BOTTOM_TEXT = _("You will be automatically logged out in \n%s seconds.,12")
 
 RUN_DSS_COMMAND = "deepin-system-settings account"
 RUN_SWITCH_TOGREETER = "switchtogreeter"
 RUN_LOCK_COMMAND = "dlock"
 
-DSC_WARNING_TOP_TEXT = _("软件中心正在运行! <span foreground='#ff0000'>%s</span>可能会破坏系统！,12")
-DSC_WARNING_BOTTOM_TEXT = _("是否打开软件中心查看进度？,12")
+DSC_WARNING_TOP_TEXT = _("The Software Center is running. <span foreground='#ff0000'>%s</span> now may harm your computer.,12")
+DSC_WARNING_BOTTOM_TEXT = _("Do you want to view the process in the Software Center?,12")
 
 DSC_SERVICE_NAME = "com.linuxdeepin.softwarecenter"
 DSC_SERVICE_PATH = "/com/linuxdeepin/softwarecenter"
@@ -82,10 +82,10 @@ class TrayShutdownPlugin(object):
         self.dialog = TrayDialog()
 
         self.need_check_action = {
-                "shutdown": (_("关机"), self.stop_btn_clicked, self.gui.cmd_dbus.new_stop),
-                "restart": (_("重启"), self.restart_btn_clicked, self.gui.cmd_dbus.new_restart),
-                "suspend": (_("待机"), self.suspend_btn_clicked, self.gui.cmd_dbus.suspend),
-                "logout": (_("注销"), self.logout_btn_clicked, lambda:self.gui.cmd_dbus.logout(1)),
+                "shutdown": (_("Shut down"), self.stop_btn_clicked, self.gui.cmd_dbus.new_stop),
+                "restart": (_("Restart"), self.restart_btn_clicked, self.gui.cmd_dbus.new_restart),
+                "suspend": (_("Suspend"), self.suspend_btn_clicked, self.gui.cmd_dbus.suspend),
+                "logout": (_("Log out"), self.logout_btn_clicked, lambda:self.gui.cmd_dbus.logout(1)),
                 }
 
         self.gui.stop_btn.connect("clicked", self.check_system_app_running, 'shutdown')
