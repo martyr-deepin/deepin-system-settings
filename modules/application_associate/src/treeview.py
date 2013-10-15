@@ -73,6 +73,7 @@ class NothingItem(TreeItem):
         cr.fill()
 
 class SessionItem(TreeItem):
+    TYPE_SYS_COLOR = "#666666"
 
     def __init__(self, session_view, item):
 
@@ -103,8 +104,13 @@ class SessionItem(TreeItem):
         (text_width, text_height) = get_content_size(app_name)
         rect.x += self.padding_x
         rect.width -= self.padding_x * 2        
-        draw_text(cr, app_name, rect.x , rect.y, rect.width, rect.height,
-                alignment = pango.ALIGN_LEFT)
+
+        if self.item.type == self.item.TYPE_SYS:
+            draw_text(cr, app_name, rect.x , rect.y, rect.width, rect.height,
+                    text_color=self.TYPE_SYS_COLOR, alignment = pango.ALIGN_LEFT)
+        else:
+            draw_text(cr, app_name, rect.x , rect.y, rect.width, rect.height,
+                    alignment = pango.ALIGN_LEFT)
         
         
     def render_exec(self, cr, rect):
@@ -112,14 +118,19 @@ class SessionItem(TreeItem):
         self.render_background(cr, rect)
         rect.x += self.padding_x
         rect.width -= self.padding_x * 2        
+
         if exec_:
-            (text_width, text_height) = get_content_size(exec_)
-            draw_text(cr, exec_, rect.x, rect.y, rect.width, rect.height,
-                    alignment = pango.ALIGN_LEFT)
+            text_to_draw = exec_
         else:
-            description = _("No exec")
-            (text_width, text_height) = get_content_size(description)
-            draw_text(cr, description, rect.x, rect.y, rect.width, rect.height,
+            text_to_draw = _("No exec")
+
+        (text_width, text_height) = get_content_size(text_to_draw)
+
+        if self.item.type == self.item.TYPE_SYS:
+            draw_text(cr, text_to_draw, rect.x, rect.y, rect.width, rect.height,
+                    text_color=self.TYPE_SYS_COLOR, alignment = pango.ALIGN_LEFT)
+        else:
+            draw_text(cr, text_to_draw, rect.x, rect.y, rect.width, rect.height,
                     alignment = pango.ALIGN_LEFT)
 
     def render_description(self, cr, rect):
@@ -127,14 +138,19 @@ class SessionItem(TreeItem):
         self.render_background(cr, rect)
         rect.x += self.padding_x
         rect.width -= self.padding_x * 2        
+
         if self.description:
-            (text_width, text_height) = get_content_size(self.description)
-            draw_text(cr, self.description, rect.x, rect.y, rect.width, rect.height,
-                    alignment = pango.ALIGN_LEFT)
+            text_to_draw = self.description
         else:
-            description = _("No description")
-            (text_width, text_height) = get_content_size(description)
-            draw_text(cr, description, rect.x, rect.y, rect.width, rect.height,
+            text_to_draw = _("No description")
+
+        (text_width, text_height) = get_content_size(text_to_draw)
+
+        if self.item.type == self.item.TYPE_SYS:
+            draw_text(cr, text_to_draw, rect.x, rect.y, rect.width, rect.height,
+                    text_color=self.TYPE_SYS_COLOR, alignment = pango.ALIGN_LEFT)
+        else:
+            draw_text(cr, text_to_draw, rect.x, rect.y, rect.width, rect.height,
                     alignment = pango.ALIGN_LEFT)
 
     def get_column_renders(self):
