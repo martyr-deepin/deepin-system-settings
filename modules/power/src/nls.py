@@ -22,6 +22,7 @@
 
 import gettext
 import os
+from dtk.ui.locales import get_locale_code
 
 def get_parent_dir(filepath, level=1):
     '''Get parent dir.'''
@@ -42,3 +43,5 @@ try:
     _ = gettext.translation("deepin-system-settings", LOCALE_DIR).gettext
 except Exception, e:
     _ = lambda i : i
+
+LANGUAGE=get_locale_code("deepin-system-settings", LOCALE_DIR)

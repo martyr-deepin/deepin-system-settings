@@ -27,7 +27,7 @@ sys.path.append("/usr/share/deepin-system-tray/image")
 import gtk
 import pango
 import gobject
-from nls import _
+from nls import _, LANGUAGE
 from vtk.window import Window
 from vtk.utils import get_text_size
 from vtk.draw import draw_text
@@ -210,8 +210,12 @@ class TrayDialog(Window):
         self.titlebar_hbox.pack_start(self.close_btn, False, False)
         #self.show_text_vbox.pack_start(self.top_text_btn_ali, False, False)
         #self.show_text_vbox.pack_start(self.bottom_text_btn_ali, False, False)
+        if LANGUAGE == 'en_US':
+            text_size = 9
+        else:
+            text_size = 10
         self.tick_label = TickLabel("", 
-                text_color="#FFFFFF", wrap_width=230, text_size=10)
+                text_color="#FFFFFF", wrap_width=230, text_size=text_size)
         self.show_text_vbox.pack_start(self.tick_label, False, False)
 
         self.mid_hbox.pack_start(self.show_image_ali, False, False)
