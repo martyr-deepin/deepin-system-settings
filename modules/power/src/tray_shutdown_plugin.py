@@ -24,6 +24,7 @@
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
 from deepin_utils.process import run_command
+import inhibit
 
 from nls import _
 import gtk
@@ -43,31 +44,33 @@ power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
 
 DBUS_USER_STR = "/org/freedesktop/Accounts/User%s" % (os.getuid())
 
-#RESTART_TOP_TEXT = "现在重启此系统吗？"
-RESTART_TOP_TEXT = _("<span foreground='#FF0000'>Restart</span> your computer now?,12")
-#RESTART_BOTTOM_TEXT = "系统即将在%s秒后自动重启。"
-RESTART_BOTTOM_TEXT = _("The system will restart in \n%s seconds.,12")
-#SUSPEND_TOP_TEXT = "现在挂起此系统吗？"
-SUSPEND_TOP_TEXT = _("<span foreground='#FF0000'>Suspend</span> your computer now?,12")
-#SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
-SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s seconds.,12")
-LOGOUT_TOP_TEXT = _("<span foreground='#FF0000'>Log out</span> of your system now?,12")
-LOGOUT_BOTTOM_TEXT = _("You will be automatically logged out in \n%s seconds.,12")
+RESTART_TEXT = _("\n<span foreground='#FF0000'>Restart</span> your computer now?\
+\n\nThe system will restart in %s seconds.")
+
+SUSPEND_TEXT = _("\n<span foreground='#FF0000'>Suspend</span> your computer now?\
+\n\nThe system will suspend in %s seconds.")
+
+LOGOUT_TEXT = _("\n<span foreground='#FF0000'>Log out</span> of your system now?\
+\n\nYou will be automatically logged out in %s seconds.")
+
+INHIBIT_HEAD = _("\n<span foreground='#FF0000'>A program is still running:</span>")
+INHIBIT_HEAD_PLURAL = _("\n<span foreground='#FF0000'>%s programs are still running:</span>")
+INHIBIT_TAIL = _("Waiting for applications to terminate. Interrupting these may \
+cause unexpected results.")
 
 RUN_DSS_COMMAND = "deepin-system-settings account"
 RUN_SWITCH_TOGREETER = "switchtogreeter"
 RUN_LOCK_COMMAND = "dlock"
 
-DSC_WARNING_TOP_TEXT = _("The Software Center is running. <span foreground='#ff0000'>%s</span> now may harm your computer.,12")
-DSC_WARNING_BOTTOM_TEXT = _("Do you want to view the process in the Software Center?,12")
+DSC_WARNING_TEXT = _("The Software Center is running. <span foreground=\
+'#ff0000'>%s</span> now may harm your computer.\n\nDo you want to view the \
+process in the Software Center?")
 
-DSC_SERVICE_NAME = "com.linuxdeepin.softwarecenter"
-DSC_SERVICE_PATH = "/com/linuxdeepin/softwarecenter"
-
-"""BACKEND_PID is define in deepin software center backend program"""
+""" BACKEND_PID is define in deepin software center backend program. """
 BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
 
 def is_software_center_working():
+    #return True
     return os.path.exists(BACKEND_PID)
 
 class TrayShutdownPlugin(object):
@@ -101,14 +104,27 @@ class TrayShutdownPlugin(object):
 
     def check_system_app_running(self, widget, action_id):
         if is_software_center_working():
-            self.dialog.default_action_btn.set_label(self.need_check_action[action_id][0])
-            self.dialog.show_warning(DSC_WARNING_TOP_TEXT % self.need_check_action[action_id][0],
-                                     DSC_WARNING_BOTTOM_TEXT)
+            self.dialog.default_action_btn.set_label(
+                    self.need_check_action[action_id][0])
+            self.dialog.show_warning(DSC_WARNING_TEXT % 
+                    self.need_check_action[action_id][0])
             self.dialog.run_exec = lambda:self.exec_command(["deepin-software-center"])
             self.dialog.run_default_action = self.need_check_action[action_id][2]
             self.this.hide_menu()
         else:
-            self.need_check_action[action_id][1](widget)
+            running_program = inhibit.get_inhibit_programs()
+            if running_program:
+                self.dialog.default_action_btn.set_label(
+                        self.need_check_action[action_id][0])
+                if len(running_program) == 1:
+                    self.dialog.show_warning(INHIBIT_HEAD+"\n\n"+INHIBIT_TAIL)
+                else:
+                    self.dialog.show_warning(INHIBIT_HEAD_PLURAL % len(running_program) 
+                            +"\n\n"+INHIBIT_TAIL)
+                self.dialog.run_default_action = self.need_check_action[action_id][2]
+                self.this.hide_menu()
+            else:
+                self.need_check_action[action_id][1](widget)
 
     def stop_btn_clicked(self, widget):
         self.dialog.show_dialog("deepin_shutdown")
@@ -118,8 +134,7 @@ class TrayShutdownPlugin(object):
 
     def restart_btn_clicked(self, widget):
         self.dialog.show_dialog("deepin_restart",
-                                RESTART_TOP_TEXT,
-                                RESTART_BOTTOM_TEXT
+                                RESTART_TEXT,
                                 )
         self.dialog.run_exec = self.gui.cmd_dbus.new_restart
         self.this.hide_menu()
@@ -127,16 +142,16 @@ class TrayShutdownPlugin(object):
 
     def suspend_btn_clicked(self, widget): 
         self.dialog.show_dialog("deepin_suspend",
-                                SUSPEND_TOP_TEXT,
-                                SUSPEND_BOTTOM_TEXT)
+                                SUSPEND_TEXT,
+                                )
         self.dialog.run_exec = self.gui.cmd_dbus.suspend
         self.this.hide_menu()
         #self.gui.cmd_dbus.suspend()
 
     def logout_btn_clicked(self, widget):
         self.dialog.show_dialog("deepin_hibernate",
-                                LOGOUT_TOP_TEXT,
-                                LOGOUT_BOTTOM_TEXT)
+                                LOGOUT_TEXT,
+                                )
         self.dialog.run_exec = self.gui.cmd_dbus.logout
         self.dialog.argv = 1
         self.this.hide_menu()
@@ -255,16 +270,16 @@ if __name__ == "__main__":
                 print "show suspend"
                 sys.argv[1] = 'suspend'
                 dialog.show_dialog("deepin_suspend",
-                                    SUSPEND_TOP_TEXT,
-                                    SUSPEND_BOTTOM_TEXT)
+                                    SUSPEND_TEXT,
+                                    )
                 dialog.show_all()
 
             elif power_settings.get_string("button-power") == "logout":
                 print "show logout"
                 sys.argv[1] = 'logout'
                 dialog.show_dialog("deepin_hibernate",
-                                    LOGOUT_TOP_TEXT,
-                                    LOGOUT_BOTTOM_TEXT)
+                                    LOGOUT_TEXT,
+                                    )
                 dialog.show_all()
 
             elif power_settings.get_string("button-power") == "nothing":
@@ -275,8 +290,8 @@ if __name__ == "__main__":
                 pass
         elif sys.argv[1] == 'logout':
             dialog.show_dialog("deepin_hibernate",
-                                LOGOUT_TOP_TEXT,
-                                LOGOUT_BOTTOM_TEXT)
+                                LOGOUT_TEXT,
+                                )
             #dialog.run_exec = gui.cmd_dbus.logout
             dialog.show_all()
 

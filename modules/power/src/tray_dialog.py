@@ -26,6 +26,7 @@ sys.path.append("/usr/share/deepin-system-tray/image")
 
 import gtk
 import pango
+import gobject
 from nls import _
 from vtk.window import Window
 from vtk.utils import get_text_size
@@ -35,6 +36,7 @@ from vtk.timer import Timer
 from dtk.ui.draw import draw_text as dtk_draw_text
 from dtk.ui.constant import DEFAULT_FONT, DEFAULT_FONT_SIZE
 from dtk.ui.label import Label
+from dtk.ui.theme import DynamicColor
 import inhibit
 
 
@@ -42,10 +44,10 @@ APP_WIDTH = 375
 APP_HEIGHT = 169
 CANCEL_TEXT = _("Cancel")
 OK_TEXT = _("OK")
-#SHUTDOWN_TOP_TEXT = _("现在关闭此系统吗？")
-SHUTDOWN_TOP_TEXT = _("<span foreground='#FF0000'>Turn off</span> your computer now?,12")
-#SHUTDOWN_BOTTOM_TEXT = _("系统即将在%s秒后自动关闭。")
-SHUTDOWN_BOTTOM_TEXT = _("The system will shut down in \n%s seconds.,12")
+
+SHUTDOWN_TEXT = _("\n<span foreground='#FF0000'>Turn off</span> your computer \
+now? \n\nThe system will shut down in %s seconds.")
+
 #FONT_TYPE = _("文泉驿微米黑 Bold")
 FONT_TYPE = _("WenQuanYi Micro Hei Bold")
 
@@ -57,15 +59,13 @@ EN_RED_TEXT = {"Turn off your computer now?":(0, 9),
 class TrayDialog(Window):
     def __init__(self,
                  show_pixbuf_name="deepin_shutdown",
-                 show_top_text=SHUTDOWN_TOP_TEXT,
-                 show_bottom_text=SHUTDOWN_BOTTOM_TEXT,
+                 info_text=SHUTDOWN_TEXT,
                  cancel_text=CANCEL_TEXT,
                  ok_text=OK_TEXT):
         Window.__init__(self)
         # init values.
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
-        self.show_top_text = show_top_text
-        self.show_bottom_text = show_bottom_text
+        self.info_text=SHUTDOWN_TEXT
         self.top_text_color = "#FFFFFF"
         self.bottom_text_color = "#b9b9b9"
         self.cancel_text = cancel_text
@@ -97,14 +97,12 @@ class TrayDialog(Window):
         self.ok_btn.grab_focus()
 
     def show_warning(self,
-                    show_top_text=SHUTDOWN_TOP_TEXT,
-                    show_bottom_text=SHUTDOWN_BOTTOM_TEXT,
+                    info_text,
                     cancel_text=CANCEL_TEXT,
                     ok_text=OK_TEXT,
                     ):
         self.show_pixbuf = vtk_theme.get_pixbuf("deepin_warning", 50)
-        self.show_top_text = show_top_text
-        self.show_bottom_text = show_bottom_text
+        self.info_text = info_text
         self.cancel_text = cancel_text
         self.ok_text = ok_text
         self.argv = None
@@ -112,25 +110,20 @@ class TrayDialog(Window):
         
         self.set_pango_list()
         
-        self.top_text_btn.set_label(self.show_top_text)
-        self.bottom_text_btn.set_label(self.show_bottom_text)
         if self.show_pixbuf:
             self.show_image.set_from_pixbuf(self.show_pixbuf)
-        self.bottom_text_btn.set_label(self.show_bottom_text)
-        self.bottom_text_btn.queue_draw()
+        self.tick_label.set_text(info_text)
         self.timer.Enabled = False
         self.show_all()
 
     def show_dialog(self,
                     show_pixbuf_name="deepin_shutdown",
-                    show_top_text=SHUTDOWN_TOP_TEXT,
-                    show_bottom_text=SHUTDOWN_BOTTOM_TEXT,
+                    info_text=SHUTDOWN_TEXT,
                     cancel_text=CANCEL_TEXT,
                     ok_text=OK_TEXT,
                     ):
         self.show_pixbuf = vtk_theme.get_pixbuf(show_pixbuf_name, 50)
-        self.show_top_text = show_top_text
-        self.show_bottom_text = show_bottom_text
+        self.info_text = info_text
         self.cancel_text = cancel_text
         self.ok_text = ok_text
         self.second = 60
@@ -140,12 +133,9 @@ class TrayDialog(Window):
         
         self.set_pango_list()
         
-        self.top_text_btn.set_label(self.show_top_text)
-        self.bottom_text_btn.set_label(self.show_bottom_text)
         if self.show_pixbuf:
             self.show_image.set_from_pixbuf(self.show_pixbuf)
-        self.bottom_text_btn.set_label(self.show_bottom_text % (self.second))	
-        self.bottom_text_btn.queue_draw()
+        self.tick_label.set_text(self.info_text % 60)
         self.timer.Enabled = True
         self.show_all()
         self.default_action_btn.hide()
@@ -214,12 +204,15 @@ class TrayDialog(Window):
         self.init_titlebar()
         self.init_close_button()
         self.init_show_image()
-        self.init_show_text()
+        #self.init_show_text()
         self.init_bottom_button()
         
         self.titlebar_hbox.pack_start(self.close_btn, False, False)
-        self.show_text_vbox.pack_start(self.top_text_btn_ali, False, False)
-        self.show_text_vbox.pack_start(self.bottom_text_btn_ali, False, False)
+        #self.show_text_vbox.pack_start(self.top_text_btn_ali, False, False)
+        #self.show_text_vbox.pack_start(self.bottom_text_btn_ali, False, False)
+        self.tick_label = TickLabel("", 
+                text_color="#FFFFFF", wrap_width=230, text_size=10)
+        self.show_text_vbox.pack_start(self.tick_label, False, False)
 
         self.mid_hbox.pack_start(self.show_image_ali, False, False)
         self.mid_hbox.pack_start(self.show_text_vbox, True, True)
@@ -265,6 +258,7 @@ class TrayDialog(Window):
         if self.show_pixbuf:
             self.show_image.set_from_pixbuf(self.show_pixbuf)
 
+    """
     def init_show_text(self):
         top_padding = 25
         self.top_text_btn_ali = gtk.Alignment()
@@ -279,10 +273,10 @@ class TrayDialog(Window):
                      self.top_text_btn_expose_event, self.top_text_color)
         self.bottom_text_btn.connect("expose-event", 
                      self.top_text_btn_expose_event, self.bottom_text_color)
+    """
 
     def timer_tick_evnet(self, timer):
-        self.bottom_text_btn.set_label(self.show_bottom_text % (self.second))
-        self.bottom_text_btn.queue_draw()
+        self.tick_label.set_text(self.info_text % self.second)
         if self.second == 0:
             timer.Enabled = False
             self.quit_dialog_window(self)
@@ -290,6 +284,7 @@ class TrayDialog(Window):
                 gtk.timeout_add(1, self.run_exec_timeout)
         self.second -= 1
 
+    """
     def top_text_btn_expose_event(self, widget, event, font_color):
         cr = widget.window.cairo_create()
         rect = widget.allocation
@@ -311,6 +306,7 @@ class TrayDialog(Window):
         # 
         widget.set_size_request(size[0], size[1])
         return True
+    """
 
     def init_bottom_button(self):
         self.cancel_btn = gtk.Button(self.cancel_text)
@@ -524,6 +520,39 @@ class InhibitDialog(TrayDialog):
         cr.rectangle(x, y, w, h)
         cr.fill()
 
+class TickLabel(Label):
+
+    __gsignals__ = {
+        "tick-complete" : (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE, ()),
+        }
+
+    def __init__(self,
+                 text="",
+                 text_size=9,
+                 text_color=None,
+                 wrap_width=None,
+                 ):
+
+        Label.__init__(self, text="", text_color=DynamicColor(text_color),
+                wrap_width=wrap_width, text_size=text_size)
+        self.set_text(text)
+
+
+    def start(self, text, tick_time):
+        self.origin_text = text
+        self.set_text(self.origin_text % tick_time)
+        self.tick_time = tick_time
+        gtk.timeout_add(1000, self._tick)
+
+    def _tick(self):
+        header_text, operator, tail_text = self.origin_text.partition("%s")
+        if operator == '%s' and self.tick_time > 0:
+            self.tick_time -= 1
+            self.set_text(self.origin_text % self.tick_time)
+            return True
+        else:
+            self.emit("tick-complete")
+            return False
 
 if __name__ == "__main__":
     def test_run():
