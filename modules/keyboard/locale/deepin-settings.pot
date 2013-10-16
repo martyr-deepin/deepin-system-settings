@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-10 16:41+0800\n"
+"POT-Creation-Date: 2013-10-16 10:11+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,58 +17,264 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/treeitem.py:308 ../src/accel_entry.py:230 ../src/accel_entry.py:393
-msgid "disable"
+#: ../src/search_keyword.py:25
+msgid "Keyboard"
 msgstr ""
 
-#: ../src/accel_entry.py:52
-#, python-format
-msgid ""
-"The shortcut \"%s\" cannot be used because it will become impossible to type "
-"using this key."
+#: ../src/search_keyword.py:26 ../src/main.py:262
+msgid "Shortcuts"
 msgstr ""
 
-#: ../src/accel_entry.py:53
-msgid "Please try with a key such as Control, Alt or Shift at the same time."
+#: ../src/search_keyword.py:27 ../src/main.py:261
+msgid "Typing"
 msgstr ""
 
-#: ../src/accel_entry.py:56 ../src/accel_entry.py:74 ../src/main.py:772
-msgid "Cancel"
+#: ../src/search_keyword.py:28
+msgid "Layout"
 msgstr ""
 
-#: ../src/accel_entry.py:67
-#, python-format
-msgid "The shortcut \"%s\" is already used for\"%s\""
+#: ../src/search_keyword.py:29 ../src/main.py:117
+msgid "Repeat"
 msgstr ""
 
-#: ../src/accel_entry.py:69
-#, python-format
-msgid ""
-"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
+#: ../src/search_keyword.py:30 ../src/main.py:120
+msgid "Repeat Delay"
 msgstr ""
 
-#: ../src/accel_entry.py:73
-msgid "Reassign"
+#: ../src/search_keyword.py:31 ../src/main.py:123
+msgid "Repeat Interval"
 msgstr ""
 
-#: ../src/accel_entry.py:286
-msgid "Please input new shortcuts"
+#: ../src/keybind_all.py:33 ../src/main.py:504
+msgid "System"
+msgstr ""
+
+#: ../src/keybind_all.py:34
+msgid "Launcher"
+msgstr ""
+
+#: ../src/keybind_all.py:35
+msgid "Show desktop"
+msgstr ""
+
+#: ../src/keybind_all.py:37
+msgid "Lock screen"
+msgstr ""
+
+#: ../src/keybind_all.py:38
+msgid "File manager"
+msgstr ""
+
+#: ../src/keybind_all.py:39
+msgid "Switch applications"
+msgstr ""
+
+#: ../src/keybind_all.py:40
+msgid "Reverse switch applications"
+msgstr ""
+
+#: ../src/keybind_all.py:41
+msgid "Switch applications with 3D effect"
+msgstr ""
+
+#: ../src/keybind_all.py:42
+msgid "Reverse switch applications with 3D effect"
+msgstr ""
+
+#: ../src/keybind_all.py:43
+msgid "Show/Hide the dock"
+msgstr ""
+
+#: ../src/keybind_all.py:47
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../src/keybind_all.py:49
+msgid "Take a screenshot of full screen"
+msgstr ""
+
+#: ../src/keybind_all.py:51
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../src/keybind_all.py:53
+msgid "Take a screenshot delayed"
+msgstr ""
+
+#: ../src/keybind_all.py:56
+msgid "Terminal"
+msgstr ""
+
+#: ../src/keybind_all.py:57
+msgid "Deepin terminal quake mode"
+msgstr ""
+
+#: ../src/keybind_all.py:59
+msgid "Log out"
+msgstr ""
+
+#: ../src/keybind_all.py:60 ../src/main.py:505
+msgid "Sound and Media"
+msgstr ""
+
+#: ../src/keybind_all.py:61
+msgid "Launch calculator"
+msgstr ""
+
+#: ../src/keybind_all.py:62
+msgid "Launch email client"
+msgstr ""
+
+#: ../src/keybind_all.py:63
+msgid "Launch web browser"
+msgstr ""
+
+#: ../src/keybind_all.py:64
+msgid "Launch media player"
+msgstr ""
+
+#: ../src/keybind_all.py:65
+msgid "Play (or play/pause)"
+msgstr ""
+
+#: ../src/keybind_all.py:66
+msgid "Pause playback"
+msgstr ""
+
+#: ../src/keybind_all.py:67
+msgid "Stop playback"
+msgstr ""
+
+#: ../src/keybind_all.py:68
+msgid "Volume mute"
+msgstr ""
+
+#: ../src/keybind_all.py:69
+msgid "Volume down"
+msgstr ""
+
+#: ../src/keybind_all.py:70
+msgid "Volume up"
+msgstr ""
+
+#: ../src/keybind_all.py:71
+msgid "Previous track"
+msgstr ""
+
+#: ../src/keybind_all.py:72
+msgid "Next track"
+msgstr ""
+
+#: ../src/keybind_all.py:73
+msgid "Eject"
+msgstr ""
+
+#: ../src/keybind_all.py:74 ../src/main.py:506
+msgid "Windows"
+msgstr ""
+
+#: ../src/keybind_all.py:75
+msgid "Close window"
+msgstr ""
+
+#: ../src/keybind_all.py:76
+msgid "Maximize window"
+msgstr ""
+
+#: ../src/keybind_all.py:77
+msgid "Restore window"
+msgstr ""
+
+#: ../src/keybind_all.py:78
+msgid "Minimize window"
+msgstr ""
+
+#: ../src/keybind_all.py:79
+msgid "Move window"
+msgstr ""
+
+#: ../src/keybind_all.py:80
+msgid "Resize window"
+msgstr ""
+
+#: ../src/keybind_all.py:81
+msgid "Toggle shaded state"
+msgstr ""
+
+#: ../src/keybind_all.py:82
+msgid "Activate the window menu"
+msgstr ""
+
+#: ../src/keybind_all.py:83 ../src/main.py:507
+msgid "Workspace"
+msgstr ""
+
+#: ../src/keybind_all.py:84
+msgid "Switch to workspace 1"
+msgstr ""
+
+#: ../src/keybind_all.py:85
+msgid "Switch to workspace 2"
+msgstr ""
+
+#: ../src/keybind_all.py:86
+msgid "Switch to workspace 3"
+msgstr ""
+
+#: ../src/keybind_all.py:87
+msgid "Switch to workspace 4"
+msgstr ""
+
+#: ../src/keybind_all.py:88
+msgid "Switch to workspace left"
+msgstr ""
+
+#: ../src/keybind_all.py:89
+msgid "Switch to workspace right"
+msgstr ""
+
+#: ../src/keybind_all.py:90
+msgid "Switch to workspace above"
+msgstr ""
+
+#: ../src/keybind_all.py:91
+msgid "Switch to workspace below"
+msgstr ""
+
+#: ../src/keybind_all.py:92
+msgid "Move window to workspace 1"
+msgstr ""
+
+#: ../src/keybind_all.py:93
+msgid "Move window to workspace 2"
+msgstr ""
+
+#: ../src/keybind_all.py:94
+msgid "Move window to workspace 3"
+msgstr ""
+
+#: ../src/keybind_all.py:95
+msgid "Move window to workspace 4"
+msgstr ""
+
+#: ../src/keybind_all.py:100
+msgid "Move window one workspace to the left"
+msgstr ""
+
+#: ../src/keybind_all.py:101
+msgid "Move window one workspace to the right"
+msgstr ""
+
+#: ../src/keybind_all.py:102
+msgid "Move window one workspace up"
+msgstr ""
+
+#: ../src/keybind_all.py:103
+msgid "Move window one workspace down"
 msgstr ""
 
 #: ../src/main.py:78 ../src/main.py:508 ../src/main.py:914
 msgid "Custom Shortcuts"
-msgstr ""
-
-#: ../src/main.py:117 ../src/search_keyword.py:29
-msgid "Repeat"
-msgstr ""
-
-#: ../src/main.py:120 ../src/search_keyword.py:30
-msgid "Repeat Delay"
-msgstr ""
-
-#: ../src/main.py:123 ../src/search_keyword.py:31
-msgid "Repeat Interval"
 msgstr ""
 
 #: ../src/main.py:126 ../src/main.py:133 ../src/main.py:340 ../src/main.py:379
@@ -131,33 +337,9 @@ msgstr ""
 msgid "Add"
 msgstr ""
 
-#: ../src/main.py:261 ../src/search_keyword.py:27
-msgid "Typing"
-msgstr ""
-
-#: ../src/main.py:262 ../src/search_keyword.py:26
-msgid "Shortcuts"
-msgstr ""
-
 #: ../src/main.py:475 ../src/main.py:791 ../src/main.py:810
 #, python-format
 msgid "Current Layout: %s"
-msgstr ""
-
-#: ../src/main.py:504 ../src/keybind_all.py:33
-msgid "System"
-msgstr ""
-
-#: ../src/main.py:505 ../src/keybind_all.py:59
-msgid "Sound and Media"
-msgstr ""
-
-#: ../src/main.py:506 ../src/keybind_all.py:73
-msgid "Windows"
-msgstr ""
-
-#: ../src/main.py:507 ../src/keybind_all.py:82
-msgid "Workspace"
 msgstr ""
 
 #: ../src/main.py:628
@@ -175,6 +357,10 @@ msgstr ""
 
 #: ../src/main.py:742
 msgid "Select an input source to add"
+msgstr ""
+
+#: ../src/main.py:772 ../src/accel_entry.py:56 ../src/accel_entry.py:74
+msgid "Cancel"
 msgstr ""
 
 #: ../src/main.py:850
@@ -216,222 +402,36 @@ msgstr ""
 msgid "Reset to default"
 msgstr ""
 
-#: ../src/keybind_all.py:34
-msgid "Launcher"
+#: ../src/treeitem.py:308 ../src/accel_entry.py:238 ../src/accel_entry.py:426
+msgid "disable"
 msgstr ""
 
-#: ../src/keybind_all.py:35
-msgid "Show desktop"
+#: ../src/accel_entry.py:52
+#, python-format
+msgid ""
+"The shortcut \"%s\" cannot be used because it will become impossible to type "
+"using this key."
 msgstr ""
 
-#: ../src/keybind_all.py:37
-msgid "Lock screen"
+#: ../src/accel_entry.py:53
+msgid "Please try with a key such as Control, Alt or Shift at the same time."
 msgstr ""
 
-#: ../src/keybind_all.py:38
-msgid "File manager"
+#: ../src/accel_entry.py:67
+#, python-format
+msgid "The shortcut \"%s\" is already used for\"%s\""
 msgstr ""
 
-#: ../src/keybind_all.py:39
-msgid "Switch applications"
+#: ../src/accel_entry.py:69
+#, python-format
+msgid ""
+"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
 msgstr ""
 
-#: ../src/keybind_all.py:40
-msgid "Reverse switch applications"
+#: ../src/accel_entry.py:73
+msgid "Reassign"
 msgstr ""
 
-#: ../src/keybind_all.py:41
-msgid "Switch applications with 3D effect"
-msgstr ""
-
-#: ../src/keybind_all.py:42
-msgid "Reverse switch applications with 3D effect"
-msgstr ""
-
-#: ../src/keybind_all.py:43
-msgid "Show/Hide the dock"
-msgstr ""
-
-#: ../src/keybind_all.py:47
-msgid "Take a screenshot"
-msgstr ""
-
-#: ../src/keybind_all.py:49
-msgid "Take a screenshot of full screen"
-msgstr ""
-
-#: ../src/keybind_all.py:51
-msgid "Take a screenshot of a window"
-msgstr ""
-
-#: ../src/keybind_all.py:53
-msgid "Take a screenshot delayed"
-msgstr ""
-
-#: ../src/keybind_all.py:55
-msgid "Deepin terminal"
-msgstr ""
-
-#: ../src/keybind_all.py:56
-msgid "Deepin terminal quake mode"
-msgstr ""
-
-#: ../src/keybind_all.py:58
-msgid "Log out"
-msgstr ""
-
-#: ../src/keybind_all.py:60
-msgid "Launch calculator"
-msgstr ""
-
-#: ../src/keybind_all.py:61
-msgid "Launch email client"
-msgstr ""
-
-#: ../src/keybind_all.py:62
-msgid "Launch web browser"
-msgstr ""
-
-#: ../src/keybind_all.py:63
-msgid "Launch media player"
-msgstr ""
-
-#: ../src/keybind_all.py:64
-msgid "Play (or play/pause)"
-msgstr ""
-
-#: ../src/keybind_all.py:65
-msgid "Pause playback"
-msgstr ""
-
-#: ../src/keybind_all.py:66
-msgid "Stop playback"
-msgstr ""
-
-#: ../src/keybind_all.py:67
-msgid "Volume mute"
-msgstr ""
-
-#: ../src/keybind_all.py:68
-msgid "Volume down"
-msgstr ""
-
-#: ../src/keybind_all.py:69
-msgid "Volume up"
-msgstr ""
-
-#: ../src/keybind_all.py:70
-msgid "Previous track"
-msgstr ""
-
-#: ../src/keybind_all.py:71
-msgid "Next track"
-msgstr ""
-
-#: ../src/keybind_all.py:72
-msgid "Eject"
-msgstr ""
-
-#: ../src/keybind_all.py:74
-msgid "Close window"
-msgstr ""
-
-#: ../src/keybind_all.py:75
-msgid "Maximize window"
-msgstr ""
-
-#: ../src/keybind_all.py:76
-msgid "Restore window"
-msgstr ""
-
-#: ../src/keybind_all.py:77
-msgid "Minimize window"
-msgstr ""
-
-#: ../src/keybind_all.py:78
-msgid "Move window"
-msgstr ""
-
-#: ../src/keybind_all.py:79
-msgid "Resize window"
-msgstr ""
-
-#: ../src/keybind_all.py:80
-msgid "Toggle shaded state"
-msgstr ""
-
-#: ../src/keybind_all.py:81
-msgid "Activate the window menu"
-msgstr ""
-
-#: ../src/keybind_all.py:83
-msgid "Switch to workspace 1"
-msgstr ""
-
-#: ../src/keybind_all.py:84
-msgid "Switch to workspace 2"
-msgstr ""
-
-#: ../src/keybind_all.py:85
-msgid "Switch to workspace 3"
-msgstr ""
-
-#: ../src/keybind_all.py:86
-msgid "Switch to workspace 4"
-msgstr ""
-
-#: ../src/keybind_all.py:87
-msgid "Switch to workspace left"
-msgstr ""
-
-#: ../src/keybind_all.py:88
-msgid "Switch to workspace right"
-msgstr ""
-
-#: ../src/keybind_all.py:89
-msgid "Switch to workspace above"
-msgstr ""
-
-#: ../src/keybind_all.py:90
-msgid "Switch to workspace below"
-msgstr ""
-
-#: ../src/keybind_all.py:91
-msgid "Move window to workspace 1"
-msgstr ""
-
-#: ../src/keybind_all.py:92
-msgid "Move window to workspace 2"
-msgstr ""
-
-#: ../src/keybind_all.py:93
-msgid "Move window to workspace 3"
-msgstr ""
-
-#: ../src/keybind_all.py:94
-msgid "Move window to workspace 4"
-msgstr ""
-
-#: ../src/keybind_all.py:99
-msgid "Move window one workspace to the left"
-msgstr ""
-
-#: ../src/keybind_all.py:100
-msgid "Move window one workspace to the right"
-msgstr ""
-
-#: ../src/keybind_all.py:101
-msgid "Move window one workspace up"
-msgstr ""
-
-#: ../src/keybind_all.py:102
-msgid "Move window one workspace down"
-msgstr ""
-
-#: ../src/search_keyword.py:25
-msgid "Keyboard"
-msgstr ""
-
-#: ../src/search_keyword.py:28
-msgid "Layout"
+#: ../src/accel_entry.py:295
+msgid "Please input new shortcuts"
 msgstr ""
