@@ -32,16 +32,20 @@ def threaded(f):
     return wraps
 
 class ThreadSet(td.Thread):
-    def __init__(self, desktopapp, types, set_func):
+    def __init__(self, desktopapp, types, set_func, rough_type_lists):
         td.Thread.__init__(self)
         #self.setDaemon(True)
         self.desktopapp = desktopapp
         self.types = types
         self.set_func = set_func
+        self.rough_type_lists = rough_type_lists
         self.stop = False
 
     def run(self):
-        content_types = filter(lambda c: c.startswith(self.types) , gio.content_types_get_registered())
+        if self.rough_type_lists.get(self.types):
+            content_types = self.rough_type_lists.get(self.types)
+        else:
+            content_types = filter(lambda c: c.startswith(self.types) , gio.content_types_get_registered())
         print len(content_types)
         if content_types:
             for content_type in content_types:
@@ -70,7 +74,15 @@ class AppManager(gobject.GObject):
         self.audio_content_type = "audio/mpeg"
         self.video_content_type = "video/mp4"
         self.photo_content_type = "image/jpeg"
-        self.rough_types = ["audio", "video"]
+        self.rough_types = ["audio", "video", "image"]
+        self.rough_type_lists = {
+                "image": [
+                    "image/jpeg",
+                    "image/bmp",
+                    "image/png",
+                    "image/tiff",
+                    ],
+                }
         self.thread = None
     
     def get_app_info(self, commandline, application_name = None, flags = gio.APP_INFO_CREATE_NONE):
@@ -82,10 +94,10 @@ class AppManager(gobject.GObject):
     def set_default_for_rough_type(self, desktopapp, types):
         if self.thread and self.thread.isAlive():
             self.thread.stop_run()
-            self.thread = ThreadSet(desktopapp, types, self.set_default_for_type)
+            self.thread = ThreadSet(desktopapp, types, self.set_default_for_type, self.rough_type_lists)
             self.thread.start()
         else:
-            self.thread = ThreadSet(desktopapp, types, self.set_default_for_type)
+            self.thread = ThreadSet(desktopapp, types, self.set_default_for_type, self.rough_type_lists)
             self.thread.start()
 
 
