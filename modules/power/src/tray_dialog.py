@@ -284,8 +284,7 @@ class TrayDialog(Window):
     def ok_btn_clicked(self, widget):
         self.quit_dialog_window(widget)
         if self.run_exec:
-            #gtk.timeout_add(1, self.run_exec_timeout)
-            print self.run_exec
+            gtk.timeout_add(1, self.run_exec_timeout)
 
     def run_exec_timeout(self):
         if self.argv is None:
