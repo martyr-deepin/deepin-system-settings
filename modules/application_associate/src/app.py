@@ -81,6 +81,7 @@ class AppManager(gobject.GObject):
                     "image/bmp",
                     "image/png",
                     "image/tiff",
+                    "image/gif",
                     ],
                 }
         self.thread = None
