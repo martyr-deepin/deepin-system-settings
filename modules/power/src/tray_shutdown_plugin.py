@@ -148,39 +148,6 @@ class TrayShutdownPlugin(object):
                 self.dialog.run_exec = resource["ok_exec"]
                 self.this.hide_menu()
 
-    def stop_btn_clicked(self, widget):
-        self.dialog.show_dialog("deepin_shutdown", ok_text=_("Shut down"))
-        self.dialog.run_exec = self.gui.cmd_dbus.new_stop
-        self.this.hide_menu()
-        #self.gui.cmd_dbus.stop()
-
-    def restart_btn_clicked(self, widget):
-        self.dialog.show_dialog("deepin_restart",
-                                RESTART_TEXT,
-                                ok_text=_("Restart"),
-                                )
-        self.dialog.run_exec = self.gui.cmd_dbus.new_restart
-        self.this.hide_menu()
-        #self.gui.cmd_dbus.stop()
-
-    def suspend_btn_clicked(self, widget): 
-        self.dialog.show_dialog("deepin_suspend",
-                                SUSPEND_TEXT,
-                                ok_text=_("Suspend"),
-                                )
-        self.dialog.run_exec = self.gui.cmd_dbus.suspend
-        self.this.hide_menu()
-        #self.gui.cmd_dbus.suspend()
-
-    def logout_btn_clicked(self, widget):
-        self.dialog.show_dialog("deepin_hibernate",
-                                LOGOUT_TEXT,
-                                ok_text=_("Log out"),
-                                )
-        self.dialog.run_exec = self.gui.cmd_dbus.logout
-        self.dialog.argv = 1
-        self.this.hide_menu()
-
     def user_label_clicked(self, widget, event):
         # run dss command.
         if event.button == 1:
@@ -257,55 +224,54 @@ def return_plugin():
 
 
 if __name__ == "__main__":
-    def ok_btn_clicked(widget):
-        #
-        if len(sys.argv) >= 2:
-            if sys.argv[1] == 'logout':
-                gui.cmd_dbus.logout(1)
-            elif sys.argv[1] == 'shutdown':
-                gui.cmd_dbus.new_stop()
-            elif sys.argv[1] == 'suspend':
-                gui.cmd_dbus.suspend()
-    gui = Gui()
-    dialog = TrayDialog()
-    dialog.connect("hide", lambda w : gtk.main_quit())
-    dialog.connect("destroy", lambda w : gtk.main_quit())
-    dialog.ok_btn.connect("clicked", ok_btn_clicked)
+    class ThisObject(object):
+        def __init__(self):
+            pass
+        def hide_menu(self, *a, **b):
+            pass
+    #def ok_btn_clicked(widget):
+        ##
+        #if len(sys.argv) >= 2:
+            #if sys.argv[1] == 'logout':
+                #gui.cmd_dbus.logout(1)
+            #elif sys.argv[1] == 'shutdown':
+                #gui.cmd_dbus.new_stop()
+            #elif sys.argv[1] == 'suspend':
+                #gui.cmd_dbus.suspend()
+    #gui = Gui()
+    #dialog = TrayDialog()
+    #dialog.connect("hide", lambda w : gtk.main_quit())
+    #dialog.connect("destroy", lambda w : gtk.main_quit())
+    #dialog.ok_btn.connect("clicked", ok_btn_clicked)
 
-    dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
-    dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
-    dialog.show_image.set_from_pixbuf(dialog.show_pixbuf)
+    #dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
+    #dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
+    #dialog.show_image.set_from_pixbuf(dialog.show_pixbuf)
 
-    dialog.argv = 1
+    #dialog.argv = 1
+    shutdown_obj = TrayShutdownPlugin()
+    shutdown_obj.dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
+    shutdown_obj.dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
+    shutdown_obj.dialog.show_image.set_from_pixbuf(shutdown_obj.dialog.show_pixbuf)
+    shutdown_obj.this = ThisObject()
+    shutdown_obj.dialog.quit_alone = True
     if len(sys.argv) >= 2:
         if sys.argv[1] == 'shutdown':
             print "shutdown"
-            dialog.show_dialog("deepin_shutdown")
-            #dialog.run_exec = gui.cmd_dbus.shutdown
-            dialog.show_all()
+            shutdown_obj.check_system_app_running(shutdown_obj, "deepin_shutdown")
         elif sys.argv[1] == 'powerkey':
             print "powerkey"
             if power_settings.get_string("button-power") == "shutdown":
-                print "show shutdown"
-                sys.argv[1] = 'shutdown'
-                dialog.show_dialog("deepin_shutdown")
-                dialog.show_all()
+                print "shutdown"
+                shutdown_obj.check_system_app_running(shutdown_obj, "deepin_shutdown")
 
             elif power_settings.get_string("button-power") == "suspend":
                 print "show suspend"
-                sys.argv[1] = 'suspend'
-                dialog.show_dialog("deepin_suspend",
-                                    SUSPEND_TEXT,
-                                    )
-                dialog.show_all()
+                shutdown_obj.check_system_app_running(shutdown_obj, "deepin_suspend")
 
             elif power_settings.get_string("button-power") == "logout":
                 print "show logout"
-                sys.argv[1] = 'logout'
-                dialog.show_dialog("deepin_hibernate",
-                                    LOGOUT_TEXT,
-                                    )
-                dialog.show_all()
+                shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
 
             elif power_settings.get_string("button-power") == "nothing":
                 print "show nothing"
@@ -314,10 +280,7 @@ if __name__ == "__main__":
             else:
                 pass
         elif sys.argv[1] == 'logout':
-            dialog.show_dialog("deepin_hibernate",
-                                LOGOUT_TEXT,
-                                )
-            #dialog.run_exec = gui.cmd_dbus.logout
-            dialog.show_all()
+            print "logout"
+            shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
 
     gtk.main()

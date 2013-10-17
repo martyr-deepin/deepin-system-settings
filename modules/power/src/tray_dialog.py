@@ -282,9 +282,9 @@ class TrayDialog(Window):
             self.cancel_key_check = False
 
     def ok_btn_clicked(self, widget):
-        self.quit_dialog_window(widget)
         if self.run_exec:
-            gtk.timeout_add(1, self.run_exec_timeout)
+            self.run_exec_timeout()
+        self.quit_dialog_window(widget)
 
     def run_exec_timeout(self):
         if self.argv is None:
@@ -325,6 +325,9 @@ class TrayDialog(Window):
         self.hide_all()
         self.timer.Enabled = False
         self.grab_remove()
+
+        if hasattr(self, "quit_alone"):
+            gtk.main_quit()
 
 class BottomButton(gtk.Button):
     def __init__(self, label="", label_size=DEFAULT_FONT_SIZE):
