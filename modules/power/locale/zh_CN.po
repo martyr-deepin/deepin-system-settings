@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-16 14:25+0800\n"
+"POT-Creation-Date: 2013-10-17 15:07+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -21,6 +21,19 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
+"<span foreground='#FF0000'>Turn off</span> your computer now? \n"
+"\n"
+"The system will shut down in %s seconds."
+msgstr ""
+"\n"
+"现在<span foreground='#FF0000'>关机</span>吗？\n"
+"\n"
+"系统将在%s秒后自动关机。"
+
+#: ../src/tray_shutdown_plugin.py:50
+#, python-format
+msgid ""
+"\n"
 "<span foreground='#FF0000'>Restart</span> your computer now?\n"
 "\n"
 "The system will restart in %s seconds."
@@ -30,7 +43,7 @@ msgstr ""
 "\n"
 "系统将在%s秒后自动重启。"
 
-#: ../src/tray_shutdown_plugin.py:50
+#: ../src/tray_shutdown_plugin.py:53
 #, python-format
 msgid ""
 "\n"
@@ -43,7 +56,7 @@ msgstr ""
 "\n"
 "系统将在%s秒后自动待机。"
 
-#: ../src/tray_shutdown_plugin.py:53
+#: ../src/tray_shutdown_plugin.py:56
 #, python-format
 msgid ""
 "\n"
@@ -56,7 +69,7 @@ msgstr ""
 "\n"
 "系统将在%s秒后自动注销。"
 
-#: ../src/tray_shutdown_plugin.py:56
+#: ../src/tray_shutdown_plugin.py:59
 msgid ""
 "\n"
 "<span foreground='#FF0000'>A program is still running:</span>"
@@ -64,7 +77,7 @@ msgstr ""
 "\n"
 "<span foreground='#FF0000'>有一个程序仍在运行中：</span>"
 
-#: ../src/tray_shutdown_plugin.py:57
+#: ../src/tray_shutdown_plugin.py:60
 #, python-format
 msgid ""
 "\n"
@@ -73,41 +86,56 @@ msgstr ""
 "\n"
 "<span foreground='#FF0000'>%s个程序仍在运行中：</span>"
 
-#: ../src/tray_shutdown_plugin.py:58 ../src/tray_dialog.py:402
+#: ../src/tray_shutdown_plugin.py:61
 msgid ""
 "Waiting for applications to terminate. Interrupting these may cause "
 "unexpected results."
 msgstr "正在等候程序结束。中断程序可能导致您的工作成果丢失。"
 
-#: ../src/tray_shutdown_plugin.py:65
-#, python-format
+#: ../src/tray_shutdown_plugin.py:68
 msgid ""
-"The Software Center is running. <span foreground='#ff0000'>%s</span> now may "
-"harm your computer.\n"
 "\n"
-"Do you want to view the process in the Software Center?"
+"<span foreground='#FF0000'>The Software Center is still running.</span>"
 msgstr ""
-"软件中心正在运行! <span foreground='#ff0000'>%s</span>可能会破坏系统！\n"
 "\n"
-"是否打开软件中心查看进度？"
+"<span foreground='#FF0000'>软件中心仍在运行中：</span>"
 
-#: ../src/tray_shutdown_plugin.py:88 ../src/tray_shutdown_gui.py:96
-#: ../src/power_view.py:62
+#: ../src/tray_shutdown_plugin.py:91 ../src/tray_shutdown_plugin.py:152
+#: ../src/tray_shutdown_gui.py:96 ../src/power_view.py:62
 msgid "Shut down"
 msgstr "关机"
 
-#: ../src/tray_shutdown_plugin.py:89 ../src/tray_shutdown_gui.py:99
+#: ../src/tray_shutdown_plugin.py:92
+msgid "Force shut down"
+msgstr "强制关机"
+
+#: ../src/tray_shutdown_plugin.py:97 ../src/tray_shutdown_plugin.py:160
+#: ../src/tray_shutdown_gui.py:99
 msgid "Restart"
 msgstr "重启"
 
-#: ../src/tray_shutdown_plugin.py:90 ../src/tray_shutdown_gui.py:102
-#: ../src/power_view.py:61 ../src/power_view.py:137
+#: ../src/tray_shutdown_plugin.py:98
+msgid "Force restart"
+msgstr "强制重启"
+
+#: ../src/tray_shutdown_plugin.py:103 ../src/tray_shutdown_plugin.py:169
+#: ../src/tray_shutdown_gui.py:102 ../src/power_view.py:61
+#: ../src/power_view.py:137
 msgid "Suspend"
 msgstr "待机"
 
-#: ../src/tray_shutdown_plugin.py:91 ../src/tray_shutdown_gui.py:105
+#: ../src/tray_shutdown_plugin.py:104
+msgid "Force suspend"
+msgstr "强制待机"
+
+#: ../src/tray_shutdown_plugin.py:109 ../src/tray_shutdown_plugin.py:178
+#: ../src/tray_shutdown_gui.py:105
 msgid "Log out"
 msgstr "注销"
+
+#: ../src/tray_shutdown_plugin.py:110
+msgid "Force log out"
+msgstr "强制注销"
 
 #: ../src/search_keyword.py:29 ../src/power_view.py:74
 msgid "Power Button Settings"
@@ -149,34 +177,13 @@ msgstr "唤醒时的密码保护"
 msgid "Always show icon in the tray"
 msgstr "在系统托盘显示电池状态"
 
-#: ../src/tray_dialog.py:45
+#: ../src/tray_dialog.py:42
 msgid "Cancel"
 msgstr "取消"
 
-#: ../src/tray_dialog.py:46
+#: ../src/tray_dialog.py:43
 msgid "OK"
 msgstr "确认"
-
-#: ../src/tray_dialog.py:48
-#, python-format
-msgid ""
-"\n"
-"<span foreground='#FF0000'>Turn off</span> your computer now? \n"
-"\n"
-"The system will shut down in %s seconds."
-msgstr ""
-"\n"
-"现在<span foreground='#FF0000'>关机</span>吗？\n"
-"\n"
-"系统将在%s秒后自动关机。"
-
-#: ../src/tray_dialog.py:52
-msgid "WenQuanYi Micro Hei Bold"
-msgstr "文泉驿微米黑 Bold"
-
-#: ../src/tray_dialog.py:401
-msgid "A program is still running:"
-msgstr "有程序仍在运行中："
 
 #: ../src/tray_shutdown_gui.py:93
 msgid "Switch user"
@@ -277,6 +284,22 @@ msgid "Battery status will not be shown in the tray"
 msgstr "修改为在系统托盘隐藏电池状态"
 
 #~ msgid ""
+#~ "The Software Center is running. <span foreground='#ff0000'>%s</span> now "
+#~ "may harm your computer.\n"
+#~ "\n"
+#~ "Do you want to view the process in the Software Center?"
+#~ msgstr ""
+#~ "软件中心正在运行! <span foreground='#ff0000'>%s</span>可能会破坏系统！\n"
+#~ "\n"
+#~ "是否打开软件中心查看进度？"
+
+#~ msgid "WenQuanYi Micro Hei Bold"
+#~ msgstr "文泉驿微米黑 Bold"
+
+#~ msgid "A program is still running:"
+#~ msgstr "有程序仍在运行中："
+
+#~ msgid ""
 #~ "The system will restart in \n"
 #~ "%s seconds.,12"
 #~ msgstr "系统即将在%s秒后自动重启。,10"
@@ -298,9 +321,3 @@ msgstr "修改为在系统托盘隐藏电池状态"
 #~ "The system will shut down in \n"
 #~ "%s seconds.,12"
 #~ msgstr "系统将在%s秒后自动关闭。,10"
-
-#~ msgid "shutdown"
-#~ msgstr "关机"
-
-#~ msgid "suspend"
-#~ msgstr "挂起"

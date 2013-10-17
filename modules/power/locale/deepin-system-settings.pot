@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-16 14:25+0800\n"
+"POT-Creation-Date: 2013-10-17 15:07+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,12 +21,21 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
+"<span foreground='#FF0000'>Turn off</span> your computer now? \n"
+"\n"
+"The system will shut down in %s seconds."
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:50
+#, python-format
+msgid ""
+"\n"
 "<span foreground='#FF0000'>Restart</span> your computer now?\n"
 "\n"
 "The system will restart in %s seconds."
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:50
+#: ../src/tray_shutdown_plugin.py:53
 #, python-format
 msgid ""
 "\n"
@@ -35,7 +44,7 @@ msgid ""
 "The system will suspend in %s seconds."
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:53
+#: ../src/tray_shutdown_plugin.py:56
 #, python-format
 msgid ""
 "\n"
@@ -44,50 +53,66 @@ msgid ""
 "You will be automatically logged out in %s seconds."
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:56
+#: ../src/tray_shutdown_plugin.py:59
 msgid ""
 "\n"
 "<span foreground='#FF0000'>A program is still running:</span>"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:57
+#: ../src/tray_shutdown_plugin.py:60
 #, python-format
 msgid ""
 "\n"
 "<span foreground='#FF0000'>%s programs are still running:</span>"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:58 ../src/tray_dialog.py:402
+#: ../src/tray_shutdown_plugin.py:61
 msgid ""
 "Waiting for applications to terminate. Interrupting these may cause "
 "unexpected results."
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:65
-#, python-format
+#: ../src/tray_shutdown_plugin.py:68
 msgid ""
-"The Software Center is running. <span foreground='#ff0000'>%s</span> now may "
-"harm your computer.\n"
 "\n"
-"Do you want to view the process in the Software Center?"
+"<span foreground='#FF0000'>The Software Center is still running.</span>"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:88 ../src/tray_shutdown_gui.py:96
-#: ../src/power_view.py:62
+#: ../src/tray_shutdown_plugin.py:91 ../src/tray_shutdown_plugin.py:152
+#: ../src/tray_shutdown_gui.py:96 ../src/power_view.py:62
 msgid "Shut down"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:89 ../src/tray_shutdown_gui.py:99
+#: ../src/tray_shutdown_plugin.py:92
+msgid "Force shut down"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:97 ../src/tray_shutdown_plugin.py:160
+#: ../src/tray_shutdown_gui.py:99
 msgid "Restart"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:90 ../src/tray_shutdown_gui.py:102
-#: ../src/power_view.py:61 ../src/power_view.py:137
+#: ../src/tray_shutdown_plugin.py:98
+msgid "Force restart"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:103 ../src/tray_shutdown_plugin.py:169
+#: ../src/tray_shutdown_gui.py:102 ../src/power_view.py:61
+#: ../src/power_view.py:137
 msgid "Suspend"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:91 ../src/tray_shutdown_gui.py:105
+#: ../src/tray_shutdown_plugin.py:104
+msgid "Force suspend"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:109 ../src/tray_shutdown_plugin.py:178
+#: ../src/tray_shutdown_gui.py:105
 msgid "Log out"
+msgstr ""
+
+#: ../src/tray_shutdown_plugin.py:110
+msgid "Force log out"
 msgstr ""
 
 #: ../src/search_keyword.py:29 ../src/power_view.py:74
@@ -130,29 +155,12 @@ msgstr ""
 msgid "Always show icon in the tray"
 msgstr ""
 
-#: ../src/tray_dialog.py:45
+#: ../src/tray_dialog.py:42
 msgid "Cancel"
 msgstr ""
 
-#: ../src/tray_dialog.py:46
+#: ../src/tray_dialog.py:43
 msgid "OK"
-msgstr ""
-
-#: ../src/tray_dialog.py:48
-#, python-format
-msgid ""
-"\n"
-"<span foreground='#FF0000'>Turn off</span> your computer now? \n"
-"\n"
-"The system will shut down in %s seconds."
-msgstr ""
-
-#: ../src/tray_dialog.py:52
-msgid "WenQuanYi Micro Hei Bold"
-msgstr ""
-
-#: ../src/tray_dialog.py:401
-msgid "A program is still running:"
 msgstr ""
 
 #: ../src/tray_shutdown_gui.py:93
