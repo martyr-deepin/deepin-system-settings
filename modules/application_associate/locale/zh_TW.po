@@ -1,7 +1,8 @@
 # Chinese translations for PACKAGE package.
 # Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2013.
+# Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
+# Freddy <freddy4212@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
@@ -102,7 +103,7 @@ msgstr "自動啟動"
 
 #: ../src/session_view.py:52
 msgid "Active"
-msgstr "啓用"
+msgstr "啟用"
 
 #: ../src/session_view.py:52 ../src/search_keyword.py:29
 msgid "Application"
