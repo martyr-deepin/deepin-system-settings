@@ -18,7 +18,7 @@ msgstr ""
 
 #: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
 msgid "Standard"
-msgstr "標准"
+msgstr "標準"
 
 #: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
 msgid "Administrator"
@@ -38,7 +38,7 @@ msgstr "開始錄製"
 
 #: ../src/face_record_page.py:83
 msgid "Please plug in or enable your camera"
-msgstr "煩請插入或者開啓照相機"
+msgstr "煩請插入或者開啟照相機"
 
 #: ../src/face_record_page.py:84
 msgid "Please keep still for 5 seconds"
@@ -78,7 +78,7 @@ msgstr "深度帳號"
 
 #: ../src/main.py:132 ../src/main.py:136
 msgid "Unbound"
-msgstr "未綁定"
+msgstr "未繫結"
 
 #: ../src/main.py:133 ../src/search_keyword.py:27
 msgid "Account Name"
@@ -188,7 +188,7 @@ msgstr "使用者名稱無效"
 msgid ""
 "User names can only consist of letters, numbers, underscores and begin with "
 "a letter"
-msgstr "使用者名稱只能由英文字母、數字、下划線組成，并且以字母開頭"
+msgstr "使用者名稱只能由英文字母、數字、下划線組成，並且以字母開頭"
 
 #: ../src/main.py:699
 #, python-format
@@ -247,7 +247,7 @@ msgstr "密碼未被變更"
 
 #: ../src/main.py:1035
 msgid "authentication token manipulation error"
-msgstr "認證令牌操作錯誤"
+msgstr "認證授權操作錯誤"
 
 #: ../src/main.py:1037
 msgid "new and old password are too similar"
@@ -260,7 +260,7 @@ msgstr "%s 的密碼變更完成"
 
 #: ../src/main.py:1133 ../src/search_keyword.py:31
 msgid "Set Picture"
-msgstr "設定頭像"
+msgstr "設定帳號照片"
 
 #: ../src/main.py:1151
 msgid "Face Record"
