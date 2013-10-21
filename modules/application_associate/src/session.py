@@ -66,8 +66,19 @@ class AutoStart(object):
         lang_key = "%s[%s]" % (key, get_system_lang())
         if self.conf.has_option(self.SECTION, lang_key):
             return self.conf.get(self.SECTION, lang_key)
+
         try:
             return self.conf.get(self.SECTION, key)
+        except:
+            return default
+
+    def set_locale_option(self, key, value, default=None):
+        lang_key = "%s[%s]" % (key, get_system_lang())
+        if self.conf.has_option(self.SECTION, lang_key):
+            return self.conf.set(self.SECTION, lang_key, value)
+
+        try:
+            return self.conf.set(self.SECTION, key, value)
         except:
             return default
     
@@ -83,13 +94,13 @@ class AutoStart(object):
     def name(self):
         return self.get_locale_option("Name", "Unknow")
     def set_name(self, value):
-        self.set_option("Name", value)
+        self.set_locale_option("Name", value)
     
     @property
     def comment(self):
         return self.get_locale_option("Comment")
     def set_comment(self, value):
-        self.set_option("Comment", value)
+        self.set_locale_option("Comment", value)
     
     @property
     def exec_(self):
@@ -98,7 +109,7 @@ class AutoStart(object):
         except:
             return None
     def set_exec(self, value):
-        self.set_option("Exec", value)
+        self.set_locale_option("Exec", value)
 
     def is_autostart(self):
         auto_start = self.get_option("X-GNOME-Autostart-enabled")
