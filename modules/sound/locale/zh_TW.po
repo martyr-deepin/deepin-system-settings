@@ -2,6 +2,7 @@
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013
+# Freddy <freddy4212@gmail.com>, 2013
 #
 msgid ""
 msgstr ""
@@ -67,7 +68,7 @@ msgstr "輸入音量"
 
 #: ../src/main.py:120
 msgid "Input Level"
-msgstr "输入等级"
+msgstr "輸入等级"
 
 #: ../src/main.py:139 ../src/main.py:742 ../src/main_full.py:123
 #: ../src/main_full.py:631
