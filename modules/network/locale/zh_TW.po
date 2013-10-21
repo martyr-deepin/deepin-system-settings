@@ -2,6 +2,7 @@
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
+# Freddy <freddy4212@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
@@ -25,15 +26,15 @@ msgstr "顯示密碼"
 #: ../src/vpn_config.py:142 ../src/wlan_config.py:216
 #: ../src/mobile_config.py:223
 msgid "IPv4 settings"
-msgstr "Ipv4 設定值"
+msgstr "Ipv4 設定"
 
 #: ../src/ipsettings.py:51 ../src/ipsettings.py:322
 msgid "Link-Local Only"
-msgstr "僅本地端連線"
+msgstr "僅本機連線"
 
 #: ../src/ipsettings.py:53 ../src/ipsettings.py:323
 msgid "Automatic IP address"
-msgstr "自動獲取 IP 位址"
+msgstr "自動取得 IP 位址"
 
 #: ../src/ipsettings.py:57 ../src/ipsettings.py:327
 msgid "IP Address:"
@@ -41,7 +42,7 @@ msgstr "IP 位址："
 
 #: ../src/ipsettings.py:58
 msgid "Subnet Mask:"
-msgstr "網絡遮罩："
+msgstr "網路遮罩："
 
 #: ../src/ipsettings.py:59 ../src/ipsettings.py:329 ../src/vpn_config.py:172
 msgid "Gateway:"
@@ -61,11 +62,11 @@ msgstr "次要 DNS 伺服器位址："
 
 #: ../src/ipsettings.py:185
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
 #: ../src/ipsettings.py:185
 msgid "Subnet Mask"
-msgstr "網絡遮罩："
+msgstr "網路遮罩："
 
 #: ../src/ipsettings.py:185
 msgid "Gateway"
@@ -83,7 +84,7 @@ msgstr "無效的 IPv4 位址"
 
 #: ../src/ipsettings.py:314 ../src/lan_config.py:110 ../src/wlan_config.py:217
 msgid "IPv6 settings"
-msgstr "Ipv6 設定值"
+msgstr "Ipv6 設定"
 
 #: ../src/ipsettings.py:328
 msgid "Prefix:"
@@ -103,7 +104,7 @@ msgstr "基本設定值"
 #: ../src/vpn_config.py:353 ../src/wlan_config.py:288
 #: ../src/mobile_config.py:219 ../src/mobile_config.py:281
 msgid "Advanced"
-msgstr "進階"
+msgstr "進階設定"
 
 #: ../src/dsl_config.py:118 ../src/dsl_config.py:134
 #: ../src/search_keyword.py:29 ../src/lan_config.py:39 ../src/lan_config.py:94
@@ -190,7 +191,7 @@ msgstr "壓縮"
 #: ../src/dsl_config.py:404 ../src/vpn_config.py:408
 #: ../src/mobile_config.py:504
 msgid "Echo"
-msgstr "回音"
+msgstr "回應"
 
 #: ../src/dsl_config.py:413 ../src/vpn_config.py:414
 #: ../src/mobile_config.py:509
@@ -225,7 +226,7 @@ msgstr "使用 TCP 標頭壓縮"
 #: ../src/dsl_config.py:422 ../src/vpn_config.py:433
 #: ../src/mobile_config.py:527
 msgid "Send PPP echo packets"
-msgstr "傳送 PPP 回音封包"
+msgstr "傳送 PPP 回應封包"
 
 #: ../src/search_keyword.py:30 ../src/wlan_config.py:215
 #: ../src/wlan_config.py:573 ../src/tray_ui.py:62 ../src/main_ui.py:397
@@ -259,7 +260,7 @@ msgstr "刪除"
 
 #: ../src/foot_box_ui.py:96
 msgid "Save"
-msgstr "保存"
+msgstr "儲存"
 
 #: ../src/foot_box_ui.py:140
 msgid "Tip:"
@@ -307,7 +308,7 @@ msgstr "通訊閘 ID："
 
 #: ../src/vpn_config.py:470
 msgid "Pre_Shared_key"
-msgstr "預共享密碼匙"
+msgstr "預先分享密碼"
 
 #: ../src/settings_widget.py:610 ../src/lists.py:488 ../src/wlan_config.py:332
 #: ../src/wlan_config.py:581
@@ -329,7 +330,7 @@ msgstr "使用"
 
 #: ../src/wlan_config.py:121 ../src/sidebar_ui.py:92
 msgid "Hidden network"
-msgstr "連接到隱藏的網路"
+msgstr "連線到隱藏的網路"
 
 #: ../src/wlan_config.py:231
 msgid "Security"
@@ -341,7 +342,7 @@ msgstr "安全性："
 
 #: ../src/wlan_config.py:253
 msgid "Key:"
-msgstr "密碼匙："
+msgstr "密碼："
 
 #: ../src/wlan_config.py:256
 msgid "Wep index:"
@@ -369,7 +370,7 @@ msgstr "WPA / WPA2 個人版"
 
 #: ../src/wlan_config.py:281
 msgid "Shared Key"
-msgstr "共享密碼匙"
+msgstr "分享密碼"
 
 #: ../src/wlan_config.py:282
 msgid "Open System"
@@ -405,7 +406,7 @@ msgstr "BSSID："
 
 #: ../src/wlan_config.py:648
 msgid "Default Settings"
-msgstr "預設定值"
+msgstr "預設值"
 
 #: ../src/proxy_config.py:80
 msgid "Manual"
@@ -465,7 +466,7 @@ msgstr "PIN 碼："
 
 #: ../src/mobile_config.py:303
 msgid "Allow roaming if home network is not available"
-msgstr "如果家庭網絡無法使用，允許使用漫遊"
+msgstr "如果家庭網路無法使用，允許使用漫遊"
 
 #: ../src/regions.py:71
 msgid "Country or Region:"
