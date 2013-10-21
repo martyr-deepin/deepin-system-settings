@@ -2,6 +2,7 @@
 # Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
+# Freddy <freddy4212@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
@@ -50,7 +51,7 @@ msgstr "無標題"
 
 #: ../src/ui/add_page.py:79
 msgid "Library"
-msgstr "本地資料庫"
+msgstr "本機資料庫"
 
 #: ../src/ui/add_page.py:80
 msgid "Internet"
