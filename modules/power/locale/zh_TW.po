@@ -2,6 +2,7 @@
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
+# Freddy <freddy4212@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
@@ -143,7 +144,7 @@ msgstr "登出"
 
 #: ../src/search_keyword.py:29 ../src/power_view.py:74
 msgid "Power Button Settings"
-msgstr "電源按鈕設定值"
+msgstr "電源按鈕設定"
 
 #: ../src/search_keyword.py:30 ../src/power_view.py:82
 msgid "When I press the power button"
@@ -151,7 +152,7 @@ msgstr "當按下電源按鈕時"
 
 #: ../src/search_keyword.py:31 ../src/power_view.py:94
 msgid "When I close the lid"
-msgstr "當關上手提電腦上蓋時"
+msgstr "當關上筆記型電腦上蓋時"
 
 #: ../src/search_keyword.py:32
 msgid "When I press the sleep button"
@@ -228,7 +229,7 @@ msgstr "節省"
 
 #: ../src/power_view.py:66
 msgid "High performance"
-msgstr "高性能"
+msgstr "高效能"
 
 #: ../src/power_view.py:67
 msgid "Custom"
@@ -244,7 +245,7 @@ msgstr "目前電池電量"
 
 #: ../src/power_view.py:317
 msgid "Power plan has been reset to Balanced"
-msgstr "重設為預設的平衡值"
+msgstr "重設為預設的平衡計劃"
 
 #: ../src/power_view.py:374
 #, python-format
