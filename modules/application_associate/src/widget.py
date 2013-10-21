@@ -50,7 +50,7 @@ class NewSessionDialog(DialogBox):
         
         self.confirm_button.connect("clicked", lambda w: self.click_confirm_button())
         self.cancel_button.connect("clicked", lambda w: self.click_cancel_button())
-        self.connect("destroy", self.close_callback)
+        self.connect("destroy", self._close_callback) #self.close_callback is None at this moment, so we use _close_callback
         # get system pixbuf
         icon_theme = gtk.IconTheme()
         icon_theme.set_custom_theme("Deepin")
@@ -130,7 +130,7 @@ class NewSessionDialog(DialogBox):
     def ok_callback(self, file_name):
         self.exec_entry.set_text(file_name)
 
-    def close_callback(self, widget):
+    def _close_callback(self, widget):
         self.cancel_callback()
         self.destroy()
 
