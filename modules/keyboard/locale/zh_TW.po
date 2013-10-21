@@ -2,6 +2,7 @@
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
+# Freddy <freddy4212@gmail.com>, 2013
 #
 msgid ""
 msgstr ""
@@ -38,7 +39,7 @@ msgstr "按鍵重復"
 
 #: ../src/search_keyword.py:30 ../src/main.py:120
 msgid "Repeat Delay"
-msgstr "重復延遲"
+msgstr "重復延時"
 
 #: ../src/search_keyword.py:31 ../src/main.py:123
 msgid "Repeat Interval"
@@ -70,7 +71,7 @@ msgstr "切換應用程式"
 
 #: ../src/keybind_all.py:40
 msgid "Reverse switch applications"
-msgstr "反向切換應用程式"
+msgstr "逆向切換應用程式"
 
 #: ../src/keybind_all.py:41
 msgid "Switch applications with 3D effect"
@@ -78,7 +79,7 @@ msgstr "使用3D效果切換應用程式"
 
 #: ../src/keybind_all.py:42
 msgid "Reverse switch applications with 3D effect"
-msgstr "使用3D效果反響切換應用程式"
+msgstr "使用3D效果逆向切換應用程式"
 
 #: ../src/keybind_all.py:43
 msgid "Show/Hide the dock"
@@ -86,7 +87,7 @@ msgstr "顯示/隱藏 Dock"
 
 #: ../src/keybind_all.py:47
 msgid "Take a screenshot"
-msgstr "螢幕擷圖"
+msgstr "螢幕截圖"
 
 #: ../src/keybind_all.py:49
 msgid "Take a screenshot of full screen"
@@ -98,10 +99,9 @@ msgstr "拍攝視窗截圖"
 
 #: ../src/keybind_all.py:53
 msgid "Take a screenshot delayed"
-msgstr "延遲截圖"
+msgstr "延時截圖"
 
 #: ../src/keybind_all.py:56
-#, fuzzy
 msgid "Terminal"
 msgstr "終端機"
 
@@ -119,7 +119,7 @@ msgstr "聲音與媒體"
 
 #: ../src/keybind_all.py:61
 msgid "Launch calculator"
-msgstr "執行計數機"
+msgstr "執行計算機"
 
 #: ../src/keybind_all.py:62
 msgid "Launch email client"
@@ -199,7 +199,7 @@ msgstr "調整視窗大小"
 
 #: ../src/keybind_all.py:81
 msgid "Toggle shaded state"
-msgstr "切換視窗捲起/放下狀態"
+msgstr "切換視窗收起/放下狀態"
 
 #: ../src/keybind_all.py:82
 msgid "Activate the window menu"
