@@ -2,6 +2,7 @@
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
+# Freddy <freddy4212@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
@@ -56,11 +57,11 @@ msgstr "鎖定畫面"
 
 #: ../src/display_view.py:224
 msgid "Copy Display"
-msgstr "複製顯示"
+msgstr "複製顯示器畫面"
 
 #: ../src/display_view.py:225
 msgid "Extend Display"
-msgstr "延伸顯示"
+msgstr "延伸顯示器畫面"
 
 #: ../src/display_view.py:226
 msgid "Only shown in display 1"
@@ -106,7 +107,7 @@ msgstr "永不"
 
 #: ../src/display_view.py:296
 msgid "Relevant Settings"
-msgstr "關聯設定值"
+msgstr "相關設定"
 
 #: ../src/display_view.py:302
 #, python-format
@@ -129,7 +130,7 @@ msgstr "重設為預設值"
 #: ../src/display_view.py:581
 #, python-format
 msgid "Changed brightness to %d%%"
-msgstr "已變更亮度設定值為「%d%%」"
+msgstr "已變更亮度設定為「%d%%」"
 
 #: ../src/display_view.py:606
 msgid "Changed to manual adjustment"
@@ -170,12 +171,12 @@ msgstr "已變更多顯示器模式為「%s」"
 #: ../src/display_view.py:644
 #, python-format
 msgid "Idle time before turning off display has been changed to to %s"
-msgstr "顯示器關閉前閑置時間已變更為「%s」"
+msgstr "顯示器關閉前閒置時間已變更為「%s」"
 
 #: ../src/display_view.py:649
 #, python-format
 msgid "Idle time before locking display has been changed to %s"
-msgstr "顯示器鎖定前閑置時間已變更為「%s」"
+msgstr "顯示器鎖定前閒置時間已變更為「%s」"
 
 #~ msgid "Monitor Display"
 #~ msgstr "顯示器顯示設定值"
