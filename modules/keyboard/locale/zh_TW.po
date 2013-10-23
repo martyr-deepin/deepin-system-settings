@@ -315,11 +315,11 @@ msgstr "測試重復間隔"
 
 #: ../src/main.py:154
 msgid "Mouse Settings"
-msgstr "滑鼠設定值"
+msgstr "滑鼠設定"
 
 #: ../src/main.py:157
 msgid "TouchPad Settings"
-msgstr "觸控板設定值"
+msgstr "觸控板設定"
 
 #: ../src/main.py:160
 msgid "Reset"
