@@ -456,8 +456,8 @@ if __name__ == "__main__":
         name_size=10,
         )
 
-    frame_padding = 3
-    frame_padding_top = 1
+    frame_padding = 2
+    frame_padding_top = 0
 
     # Init main box.
     # def expose_frame(widget, event):
