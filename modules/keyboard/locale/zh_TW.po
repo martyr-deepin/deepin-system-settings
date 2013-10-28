@@ -307,7 +307,7 @@ msgstr "鍵盤配置"
 
 #: ../src/main.py:142
 msgid "Relevant Settings"
-msgstr "關聯設定"
+msgstr "相關設定"
 
 #: ../src/main.py:147 ../src/main.py:663
 msgid "Test Repeat Interval"
@@ -323,7 +323,7 @@ msgstr "觸控板設定"
 
 #: ../src/main.py:160
 msgid "Reset"
-msgstr "重設為預設值"
+msgstr "重設"
 
 #: ../src/main.py:208 ../src/main.py:770
 msgid "Replace"
