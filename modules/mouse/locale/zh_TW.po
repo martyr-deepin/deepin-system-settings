@@ -63,7 +63,7 @@ msgstr "雙擊笑臉來測試點擊頻率設定值。"
 
 #: ../src/main.py:105
 msgid "Relevant Settings"
-msgstr "關聯設定"
+msgstr "相關設定"
 
 #: ../src/main.py:108 ../src/search_keyword.py:31
 msgid "Right-handed"
@@ -83,7 +83,7 @@ msgstr "觸控板設定"
 
 #: ../src/main.py:118
 msgid "Reset"
-msgstr "重設為預設值"
+msgstr "重設"
 
 #: ../src/main.py:436
 msgid "Set to left-handed"
