@@ -167,4 +167,4 @@ msgstr "媒體"
 
 #: ../src/search_keyword.py:32
 msgid "Application Associate"
-msgstr "應用程式關聯"
+msgstr "預設應用程式"
