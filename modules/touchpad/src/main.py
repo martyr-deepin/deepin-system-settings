@@ -132,7 +132,7 @@ class TouchpadSetting(object):
         self.button_widgets["mouse_setting"] = Label("<u>%s</u>" % _("Mouse Settings"),
             DynamicColor(GOTO_FG_COLOR), text_size=option_item_font_size,
             enable_select=False, enable_double_click=False, fixed_width=180)
-        self.button_widgets["set_to_default"] = Button(_("Reset to Defaults"))
+        self.button_widgets["set_to_default"] = Button(_("Reset"))
         # container init
         self.container_widgets["main_vbox"] = gtk.VBox(False)
         self.container_widgets["statusbar"] = StatusBar()

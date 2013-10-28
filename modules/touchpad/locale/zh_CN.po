@@ -74,7 +74,7 @@ msgid "Mouse Settings"
 msgstr "鼠标设置"
 
 #: ../src/main.py:135
-msgid "Reset to Defaults"
+msgid "Reset"
 msgstr "恢复默认"
 
 #: ../src/main.py:302 ../src/main.py:352
