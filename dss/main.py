@@ -501,7 +501,7 @@ if __name__ == "__main__":
     action_bar.backward_button.set_sensitive(False)
     action_bar.forward_button.set_sensitive(False)
     
-    application.window.add_move_event(action_bar)
+    application.window.add_move_event(action_bar.navigate_bar)
 
     # Init slider.
     slider = HSlider(200)
