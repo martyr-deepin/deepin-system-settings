@@ -23,17 +23,13 @@
 
 from nls import _
 from theme import app_theme
-from dtk.ui.cache_pixbuf import CachePixbuf
-from dtk.ui.draw import draw_pixbuf
 from dtk.ui.entry import InputEntry
 from dtk.ui.button import ImageButton
 from dtk.ui.breadcrumb import Bread
 from dtk.ui.poplist import IconTextItem
-from dtk.ui.utils import propagate_expose, color_hex_to_cairo
 import itertools
 import gtk
 import gobject
-import locale
 from constant import MAIN_LANG
 
 class ActionBar(gtk.Alignment):
