@@ -64,13 +64,22 @@ class MonitorResizableBox(ResizableBox):
         self.__eventx = 0
         self.__eventy = 0
 
+        output_names = self.__display_manager.get_connect_output_names()
+        self.output_infos = []
+        for name in output_names:
+            info = {}
+            info['name'] = name
+            info['is_primary'] = name == self.__display_manager.get_primary_output_name()
+            info['output_x'] = None
+            info['output_width'] = None
+            self.output_infos.append(info)
+
         self.connect("button-press-event", self.__button_press)
 
     def __button_press(self, widget, event):
         self.select_output_name = None
         self.__eventx = event.x
-        self.__eventy = event.y
-        self.invalidate()
+        self.queue_draw()
 
     def select_output(self, output_name):
         output_names = self.__display_manager.get_output_names()
@@ -88,8 +97,7 @@ class MonitorResizableBox(ResizableBox):
         x = (self.width + 30 - self.output_width) / 2
         y += 10
         
-        output_infos = self.__display_manager.get_connect_output_names()
-        output_count = len(output_infos)
+        output_count = len(self.output_infos)
         
         i = 0
         with cairo_disable_antialias(cr):
@@ -97,10 +105,15 @@ class MonitorResizableBox(ResizableBox):
                 output_x = x + i * (self.output_width + self.output_padding)
                 if output_count > 1:
                     output_x -= self.output_width / 3.0
+
                 output_width = self.output_width - i * self.output_small_size
                 output_height = self.output_height - i * self.output_small_size
-                output_name = output_infos[i]
-                is_primary = self.__display_manager.get_primary_output_name() == output_infos[i]
+
+                self.output_infos[i]['output_x'] = output_x
+                self.output_infos[i]['output_width'] = output_width
+
+                output_name = self.output_infos[i]['name']
+                is_primary = self.output_infos[i]['is_primary']
                 output_display_name = self.__display_manager.get_output_display_name(output_name)
                 '''
                 background
@@ -189,6 +202,7 @@ class MonitorResizableBox(ResizableBox):
                 cr.rectangle(output_x, y, output_width, output_height)
                 cr.stroke()
                 self.emit("select-output", output_name)
+                self.__eventx = output_x + output_width + 1
 
                 i += 1
 
@@ -545,6 +559,7 @@ class DisplayView(gtk.VBox):
             self.__current_output_name, self.sizes_items))
     
     def __select_output(self, widget, output_name):
+        print "Output name:", output_name
         self.__change_current_output(output_name, False)
     
     def __set_same_sizes(self):
