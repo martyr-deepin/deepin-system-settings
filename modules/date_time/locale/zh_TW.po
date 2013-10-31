@@ -202,7 +202,7 @@ msgstr "目前時刻: %s %02d:%02d:%02d (%d 小時制)"
 
 #: ../src/date_time_view.py:263
 msgid "NTP"
-msgstr ""
+msgstr "自動設定"
 
 #: ../src/date_time_view.py:280
 msgid "Set Time"

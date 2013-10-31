@@ -500,6 +500,8 @@ if __name__ == "__main__":
                            lambda : search_cb(action_bar, slider, foot_box))
     action_bar.backward_button.set_sensitive(False)
     action_bar.forward_button.set_sensitive(False)
+    
+    application.window.add_move_event(action_bar.navigate_bar)
 
     # Init slider.
     slider = HSlider(200)
