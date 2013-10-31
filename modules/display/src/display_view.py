@@ -88,7 +88,7 @@ class MonitorResizableBox(ResizableBox):
         x = (self.width + 30 - self.output_width) / 2
         y += 10
         
-        output_infos = self.__display_manager.get_output_info()
+        output_infos = self.__display_manager.get_connect_output_names()
         output_count = len(output_infos)
         
         i = 0
@@ -99,8 +99,8 @@ class MonitorResizableBox(ResizableBox):
                     output_x -= self.output_width / 3.0
                 output_width = self.output_width - i * self.output_small_size
                 output_height = self.output_height - i * self.output_small_size
-                output_name = output_infos[i][0]
-                is_primary = output_infos[i][5]
+                output_name = output_infos[i]
+                is_primary = self.__display_manager.get_primary_output_name() == output_infos[i]
                 output_display_name = self.__display_manager.get_output_display_name(output_name)
                 '''
                 background

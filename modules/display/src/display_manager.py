@@ -283,6 +283,10 @@ class DisplayManager:
  
         return self.__output_names
 
+    def get_connect_output_names(self):
+        names = self.__deepin_xrandr.get_output_names()
+        return [name for name in names if name != "NULL"]
+
     def get_screen_sizes(self, output_name):
         ret_sizes = []
         screen_sizes = self.__deepin_xrandr.get_screen_sizes(output_name)
@@ -495,3 +499,8 @@ class DisplayManager:
 
     def set_lock_display(self, value):
         self.__session_settings.set_uint("idle-delay", value * 60)
+
+if __name__ == '__main__':
+    manager = DisplayManager()
+    print manager.get_connect_output_names()
+    print manager.get_primary_output_name()
