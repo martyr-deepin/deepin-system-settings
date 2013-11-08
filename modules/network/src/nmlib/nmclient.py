@@ -26,6 +26,10 @@ from nm_utils import TypeConvert
 import traceback
 import dbus
 from nmcache import get_cache
+try:
+    from network.src.nmlib.nm_dispatcher import nm_events
+except:
+    from nm_dispatcher import nm_events
 
 class NMClient(NMObject):
     '''NMClient'''
@@ -44,6 +48,7 @@ class NMClient(NMObject):
                           "WwanHardwareEnabled", "WimaxEnabled", "WimaxHardwareEnabled", "ActivateConnections", "State"]
 
         self.manager_running = False
+        self.properties = []
         self.init_nmobject_with_properties()
 
         self.bus.add_signal_receiver(self.permisson_changed_cb, dbus_interface = self.object_interface, 
@@ -340,6 +345,10 @@ class NMClient(NMObject):
         self.emit("state-changed", TypeConvert.dbus2py(state))
     
     def properties_changed_cb(self, prop_dict):
+        if "ActiveConnections" in prop_dict.keys() and  len(prop_dict["ActiveConnections"]) != len(self.properties["ActiveConnections"]):
+            print TypeConvert.dbus_dictionary_2py(prop_dict)["ActiveConnections"]
+            prop_dict = map(lambda x: get_cache().getobject(x), TypeConvert.dbus_dictionary_2py(prop_dict)["ActiveConnections"])
+            nm_events.emit("properties_changed", prop_dict, obj=self)
         self.init_nmobject_with_properties()
 
 if __name__ == "__main__":
