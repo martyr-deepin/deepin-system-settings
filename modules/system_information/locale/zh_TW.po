@@ -34,7 +34,7 @@ msgstr "記憶體"
 
 #: ../src/main.py:61 ../src/search_keyword.py:27
 msgid "OS Type"
-msgstr "OS 類型"
+msgstr "作業系統類型"
 
 #: ../src/main.py:62 ../src/search_keyword.py:28
 msgid "Disk"

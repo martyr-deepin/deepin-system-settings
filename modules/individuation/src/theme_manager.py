@@ -182,6 +182,7 @@ class ThemeFile(RawConfigParser):
             return self.get_option("name", "default", "")
  
     def get_default_name(self):
+        print self.get_option("name", "default", "")
         return self.get_option("name", "default", "")
 
     def set_default_name(self, theme_name):    
@@ -349,7 +350,13 @@ class ThemeManager(object):
                 self.system_themes[theme_file_object.location] = theme_file_object
                 
     def get_system_themes(self):
-        return self.system_themes.values()
+        values = []
+        for value in self.system_themes.keys():
+            if value.endswith('default.ini'):
+                values.insert(0, self.system_themes[value])
+            else:
+                values.append(self.system_themes[value])
+        return values
     
     def get_user_themes(self):
         themes = []

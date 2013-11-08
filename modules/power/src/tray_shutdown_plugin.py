@@ -24,11 +24,13 @@
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
 from deepin_utils.process import run_command
-import deepin_gsettings
+import inhibit
+
 from nls import _
 import gtk
 import os
 import sys
+import subprocess
 sys.path.append("/usr/share/deepin-system-settings/modules/account/src")
 from accounts import User
 try:
@@ -42,22 +44,35 @@ power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
 
 DBUS_USER_STR = "/org/freedesktop/Accounts/User%s" % (os.getuid())
 
-#RESTART_TOP_TEXT = "现在重启此系统吗？"
-RESTART_TOP_TEXT = _("<span foreground='#FF0000'>Restart</span> your computer now?,12")
-#RESTART_BOTTOM_TEXT = "系统即将在%s秒后自动重启。"
-RESTART_BOTTOM_TEXT = _("The system will restart in \n%s secs.,12")
-#SUSPEND_TOP_TEXT = "现在挂起此系统吗？"
-SUSPEND_TOP_TEXT = _("<span foreground='#FF0000'>Suspend</span> your computer now?,12")
-#SUSPEND_BOTTOM_TEXT = "系统即将在%s秒后自动挂起。"
-SUSPEND_BOTTOM_TEXT = _("The system will suspend in \n%s secs.,12")
-LOGOUT_TOP_TEXT = _("<span foreground='#FF0000'>Log out</span> of your system now?,12")
-LOGOUT_BOTTOM_TEXT = _("You will be automatically logged out in \n%s secs.,12")
+SHUTDOWN_TEXT = _("\n<span foreground='#FF0000'>Turn off</span> your computer \
+now? \n\nThe system will shut down in %s seconds.")
+
+RESTART_TEXT = _("\n<span foreground='#FF0000'>Restart</span> your computer now?\
+\n\nThe system will restart in %s seconds.")
+
+SUSPEND_TEXT = _("\n<span foreground='#FF0000'>Suspend</span> your computer now?\
+\n\nThe system will suspend in %s seconds.")
+
+LOGOUT_TEXT = _("\n<span foreground='#FF0000'>Log out</span> of your system now?\
+\n\nYou will be automatically logged out in %s seconds.")
+
+INHIBIT_HEAD = _("\n<span foreground='#FF0000'>A program is still running:</span>")
+INHIBIT_HEAD_PLURAL = _("\n<span foreground='#FF0000'>%s programs are still running:</span>")
+INHIBIT_TAIL = _("Waiting for applications to terminate. Interrupting these may \
+cause unexpected results.")
 
 RUN_DSS_COMMAND = "deepin-system-settings account"
 RUN_SWITCH_TOGREETER = "switchtogreeter"
 RUN_LOCK_COMMAND = "dlock"
 
+DSC_WARNING_TEXT = _("\n<span foreground='#FF0000'>The Software Center is still running.</span>")
 
+""" BACKEND_PID is define in deepin software center backend program. """
+BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
+
+def is_software_center_working():
+    #return True
+    return os.path.exists(BACKEND_PID)
 
 class TrayShutdownPlugin(object):
     def __init__(self):
@@ -69,44 +84,69 @@ class TrayShutdownPlugin(object):
         self.gui = Gui()
         self.dbus_user = User(DBUS_USER_STR)
         self.dialog = TrayDialog()
-        self.gui.stop_btn.connect("clicked", self.stop_btn_clicked)
-        self.gui.restart_btn.connect("clicked", self.restart_btn_clicked)
-        self.gui.suspend_btn.connect("clicked", self.suspend_btn_clicked)
-        self.gui.logout_btn.connect("clicked", self.logout_btn_clicked)
+
+        self.resource_dict = {
+                "deepin_shutdown": {
+                    "info_text": SHUTDOWN_TEXT,
+                    "ok_text": _("Shut down"),
+                    "force_ok_text": _("Force shut down"),
+                    "ok_exec": self.gui.cmd_dbus.new_stop,
+                    },
+                "deepin_restart": {
+                    "info_text": RESTART_TEXT,
+                    "ok_text": _("Restart"),
+                    "force_ok_text": _("Force restart"),
+                    "ok_exec": self.gui.cmd_dbus.new_restart,
+                    },
+                "deepin_suspend": {
+                    "info_text": SUSPEND_TEXT,
+                    "ok_text": _("Suspend"),
+                    "force_ok_text": _("Force suspend"),
+                    "ok_exec": self.gui.cmd_dbus.suspend,
+                    },
+                "deepin_hibernate": {
+                    "info_text": LOGOUT_TEXT,
+                    "ok_text": _("Log out"),
+                    "force_ok_text": _("Force log out"),
+                    "ok_exec": lambda:self.gui.cmd_dbus.logout(1),
+                    },
+                }
+
+        self.gui.stop_btn.connect("clicked", self.check_system_app_running, 'deepin_shutdown')
+        self.gui.restart_btn.connect("clicked", self.check_system_app_running, 'deepin_restart')
+        self.gui.suspend_btn.connect("clicked", self.check_system_app_running, 'deepin_suspend')
+        self.gui.logout_btn.connect("clicked", self.check_system_app_running, 'deepin_hibernate')
         self.gui.switch_btn.connect("clicked", self.switch_btn_clicked)
         self.gui.lock_btn.connect("clicked", self.lock_btn_clicked)
         self.gui.user_label_event.connect("button-press-event", self.user_label_clicked)
 
-    def stop_btn_clicked(self, widget):
-        self.dialog.show_dialog("deepin_shutdown")
-        self.dialog.run_exec = self.gui.cmd_dbus.new_stop
-        self.this.hide_menu()
-        #self.gui.cmd_dbus.stop()
+    def exec_command(self, command):
+        subprocess.Popen(command, stderr=subprocess.STDOUT, shell=False)
 
-    def restart_btn_clicked(self, widget):
-        self.dialog.show_dialog("deepin_restart",
-                                RESTART_TOP_TEXT,
-                                RESTART_BOTTOM_TEXT
-                                )
-        self.dialog.run_exec = self.gui.cmd_dbus.new_restart
-        self.this.hide_menu()
-        #self.gui.cmd_dbus.stop()
-
-    def suspend_btn_clicked(self, widget): 
-        self.dialog.show_dialog("deepin_suspend",
-                                SUSPEND_TOP_TEXT,
-                                SUSPEND_BOTTOM_TEXT)
-        self.dialog.run_exec = self.gui.cmd_dbus.suspend
-        self.this.hide_menu()
-        #self.gui.cmd_dbus.suspend()
-
-    def logout_btn_clicked(self, widget):
-        self.dialog.show_dialog("deepin_hibernate",
-                                LOGOUT_TOP_TEXT,
-                                LOGOUT_BOTTOM_TEXT)
-        self.dialog.run_exec = self.gui.cmd_dbus.logout
-        self.dialog.argv = 1
-        self.this.hide_menu()
+    def check_system_app_running(self, widget, action_id):
+        resource = self.resource_dict[action_id]
+        if is_software_center_working():
+            self.dialog.show_warning(DSC_WARNING_TEXT + "\n\n" + INHIBIT_TAIL,
+                    ok_text=resource["force_ok_text"],
+                    )
+            self.dialog.run_exec = resource["ok_exec"]
+            self.this.hide_menu()
+        else:
+            running_program = inhibit.get_inhibit_programs()
+            if running_program:
+                if len(running_program) == 1:
+                    self.dialog.show_warning(INHIBIT_HEAD+"\n\n"+INHIBIT_TAIL,
+                        ok_text=resource["force_ok_text"])
+                else:
+                    self.dialog.show_warning(INHIBIT_HEAD_PLURAL % len(running_program) 
+                            +"\n\n"+INHIBIT_TAIL,
+                        ok_text=resource["force_ok_text"])
+                self.dialog.run_exec = resource["ok_exec"]
+                self.this.hide_menu()
+            else:
+                self.dialog.show_dialog(action_id, resource["info_text"], resource["ok_text"])
+                self.dialog.run_exec = resource["ok_exec"]
+                self.this.hide_menu()
 
     def user_label_clicked(self, widget, event):
         # run dss command.
@@ -184,55 +224,54 @@ def return_plugin():
 
 
 if __name__ == "__main__":
-    def ok_btn_clicked(widget):
-        #
-        if len(sys.argv) >= 2:
-            if sys.argv[1] == 'logout':
-                gui.cmd_dbus.logout(1)
-            elif sys.argv[1] == 'shutdown':
-                gui.cmd_dbus.new_stop()
-            elif sys.argv[1] == 'suspend':
-                gui.cmd_dbus.suspend()
-    gui = Gui()
-    dialog = TrayDialog()
-    dialog.connect("hide", lambda w : gtk.main_quit())
-    dialog.connect("destroy", lambda w : gtk.main_quit())
-    dialog.ok_btn.connect("clicked", ok_btn_clicked)
+    class ThisObject(object):
+        def __init__(self):
+            pass
+        def hide_menu(self, *a, **b):
+            pass
+    #def ok_btn_clicked(widget):
+        ##
+        #if len(sys.argv) >= 2:
+            #if sys.argv[1] == 'logout':
+                #gui.cmd_dbus.logout(1)
+            #elif sys.argv[1] == 'shutdown':
+                #gui.cmd_dbus.new_stop()
+            #elif sys.argv[1] == 'suspend':
+                #gui.cmd_dbus.suspend()
+    #gui = Gui()
+    #dialog = TrayDialog()
+    #dialog.connect("hide", lambda w : gtk.main_quit())
+    #dialog.connect("destroy", lambda w : gtk.main_quit())
+    #dialog.ok_btn.connect("clicked", ok_btn_clicked)
 
-    dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
-    dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
-    dialog.show_image.set_from_pixbuf(dialog.show_pixbuf)
+    #dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
+    #dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
+    #dialog.show_image.set_from_pixbuf(dialog.show_pixbuf)
 
-    dialog.argv = 1
+    #dialog.argv = 1
+    shutdown_obj = TrayShutdownPlugin()
+    shutdown_obj.dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
+    shutdown_obj.dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
+    shutdown_obj.dialog.show_image.set_from_pixbuf(shutdown_obj.dialog.show_pixbuf)
+    shutdown_obj.this = ThisObject()
+    shutdown_obj.dialog.quit_alone = True
     if len(sys.argv) >= 2:
         if sys.argv[1] == 'shutdown':
             print "shutdown"
-            dialog.show_dialog("deepin_shutdown")
-            #dialog.run_exec = gui.cmd_dbus.shutdown
-            dialog.show_all()
+            shutdown_obj.check_system_app_running(shutdown_obj, "deepin_shutdown")
         elif sys.argv[1] == 'powerkey':
             print "powerkey"
             if power_settings.get_string("button-power") == "shutdown":
-                print "show shutdown"
-                sys.argv[1] = 'shutdown'
-                dialog.show_dialog("deepin_shutdown")
-                dialog.show_all()
+                print "shutdown"
+                shutdown_obj.check_system_app_running(shutdown_obj, "deepin_shutdown")
 
             elif power_settings.get_string("button-power") == "suspend":
                 print "show suspend"
-                sys.argv[1] = 'suspend'
-                dialog.show_dialog("deepin_suspend",
-                                    SUSPEND_TOP_TEXT,
-                                    SUSPEND_BOTTOM_TEXT)
-                dialog.show_all()
+                shutdown_obj.check_system_app_running(shutdown_obj, "deepin_suspend")
 
             elif power_settings.get_string("button-power") == "logout":
                 print "show logout"
-                sys.argv[1] = 'logout'
-                dialog.show_dialog("deepin_hibernate",
-                                    LOGOUT_TOP_TEXT,
-                                    LOGOUT_BOTTOM_TEXT)
-                dialog.show_all()
+                shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
 
             elif power_settings.get_string("button-power") == "nothing":
                 print "show nothing"
@@ -241,10 +280,7 @@ if __name__ == "__main__":
             else:
                 pass
         elif sys.argv[1] == 'logout':
-            dialog.show_dialog("deepin_hibernate",
-                                LOGOUT_TOP_TEXT,
-                                LOGOUT_BOTTOM_TEXT)
-            #dialog.run_exec = gui.cmd_dbus.logout
-            dialog.show_all()
+            print "logout"
+            shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
 
     gtk.main()

@@ -456,29 +456,29 @@ if __name__ == "__main__":
         name_size=10,
         )
 
-    frame_padding = 6
-    frame_padding_top = 4
+    frame_padding = 2
+    frame_padding_top = 0
 
     # Init main box.
-    def expose_frame(widget, event):
-        cr = widget.window.cairo_create()
-        rect = widget.allocation
+    # def expose_frame(widget, event):
+    #     cr = widget.window.cairo_create()
+    #     rect = widget.allocation
 
-        cr.set_source_rgb(*color_hex_to_cairo("#aeaeae"))
-        cr.rectangle(rect.x + frame_padding - 1, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
-        cr.rectangle(rect.x + rect.width - frame_padding, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
-        cr.rectangle(rect.x + frame_padding - 1, rect.y + rect.height - frame_padding, rect.width - frame_padding * 2 + 2, 1)
-        cr.fill()
+        # cr.set_source_rgb(*color_hex_to_cairo("#aeaeae"))
+        # cr.rectangle(rect.x + frame_padding - 1, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
+        # cr.rectangle(rect.x + rect.width - frame_padding, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
+        # cr.rectangle(rect.x + frame_padding - 1, rect.y + rect.height - frame_padding, rect.width - frame_padding * 2 + 2, 1)
+        # cr.fill()
 
         # Propagate expose.
-        propagate_expose(widget, event)
+        # propagate_expose(widget, event)
 
-        return True
+        # return True
 
     main_align = gtk.Alignment()
     main_align.set(0.5, 0.5, 1, 1)
     main_align.set_padding(frame_padding_top, frame_padding, frame_padding, frame_padding)
-    main_align.connect("expose-event", expose_frame)
+    # main_align.connect("expose-event", expose_frame)
     main_box = gtk.VBox()
     body_box = gtk.VBox()
     foot_box = FootBox()
@@ -500,6 +500,8 @@ if __name__ == "__main__":
                            lambda : search_cb(action_bar, slider, foot_box))
     action_bar.backward_button.set_sensitive(False)
     action_bar.forward_button.set_sensitive(False)
+    
+    application.window.add_move_event(action_bar.navigate_bar)
 
     # Init slider.
     slider = HSlider(200)

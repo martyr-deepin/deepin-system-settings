@@ -36,6 +36,7 @@ gnome_terminal_gsettings = deepin_gsettings.new("org.gnome.desktop.default-appli
 deepin_terminal_gsettings = deepin_gsettings.new("com.deepin.desktop.default-applications.terminal")
 
 x_terminals = ("gnome-terminal", "terminator")
+terminal_blacklist = ['guake']
 
 class DesktopEntry(ConfigParser):
     def __init__(self, filename):
@@ -115,7 +116,7 @@ class DesktopEntry(ConfigParser):
     
 def get_terminal_apps():    
     return list(set([e.exec_ for e in DesktopEntry.get_all() if TerminalEmulator in e.categories and 
-                "x-terminal-emulator" not in e.exec_]))
+                "x-terminal-emulator" not in e.exec_ and e.exec_ not in terminal_blacklist]))
 
 def get_default_terminal():
     terminal_exec = deepin_terminal_gsettings.get_string("exec")
@@ -134,4 +135,3 @@ def set_default_terminal(app_name):
         return True
     except:    
         return False
-    

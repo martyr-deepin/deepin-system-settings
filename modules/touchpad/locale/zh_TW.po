@@ -2,6 +2,7 @@
 # Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
+# Freddy <freddy4212@gmail.com>, 2013.
 #
 msgid ""
 msgstr ""
@@ -54,7 +55,7 @@ msgstr "解除延時"
 
 #: ../src/main.py:122
 msgid "Relevant Settings"
-msgstr "關聯設定值"
+msgstr "相關設定"
 
 #: ../src/main.py:125 ../src/search_keyword.py:31
 msgid "Right-handed"
@@ -66,15 +67,15 @@ msgstr "慣用左手"
 
 #: ../src/main.py:129
 msgid "Keyboard Settings"
-msgstr "鍵盤配置"
+msgstr "鍵盤設定"
 
 #: ../src/main.py:132
 msgid "Mouse Settings"
-msgstr "滑鼠設定值"
+msgstr "滑鼠設定"
 
 #: ../src/main.py:135
-msgid "Reset to Defaults"
-msgstr "重設為預設值"
+msgid "Reset"
+msgstr "重設"
 
 #: ../src/main.py:302 ../src/main.py:352
 msgid "Slow"

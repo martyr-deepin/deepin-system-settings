@@ -23,17 +23,13 @@
 
 from nls import _
 from theme import app_theme
-from dtk.ui.cache_pixbuf import CachePixbuf
-from dtk.ui.draw import draw_pixbuf
 from dtk.ui.entry import InputEntry
 from dtk.ui.button import ImageButton
 from dtk.ui.breadcrumb import Bread
 from dtk.ui.poplist import IconTextItem
-from dtk.ui.utils import propagate_expose, color_hex_to_cairo
 import itertools
 import gtk
 import gobject
-import locale
 from constant import MAIN_LANG
 
 class ActionBar(gtk.Alignment):
@@ -61,9 +57,6 @@ class ActionBar(gtk.Alignment):
         # Init action box.
         self.main_box = gtk.HBox()
         
-        self.cache_bg_pixbuf = CachePixbuf()
-        self.bg_pixbuf = app_theme.get_pixbuf("crumb/crumbs_bg.png")
-
         # Init action button.
         self.backward_align = gtk.Alignment()
         self.backward_align.set(0, 0, 0, 0)
@@ -134,9 +127,6 @@ class ActionBar(gtk.Alignment):
         self.main_box.pack_start(self.search_align, False, False)
         self.add(self.main_box)
         
-        # Connect signals.
-        self.connect("expose-event", self.expose_action_bar)
-   
     def __search_changed(self, widget, event):
         if self.search_cb:
             self.search_cb()
@@ -152,23 +142,6 @@ class ActionBar(gtk.Alignment):
     def __forward_clicked(self, widget):
         if self.forward_cb:
             self.forward_cb()
-    
-    def expose_action_bar(self, widget, event):
-        cr = widget.window.cairo_create()                                        
-        rect = widget.allocation
-        
-        self.cache_bg_pixbuf.scale(self.bg_pixbuf.get_pixbuf(), rect.width, rect.height)
-        draw_pixbuf(cr, self.cache_bg_pixbuf.get_cache(), rect.x, rect.y)
-        
-        cr.set_source_rgba(*color_hex_to_cairo("#aeaeae"))
-        cr.rectangle(rect.x, rect.y, rect.width, 1)
-        cr.rectangle(rect.x, rect.y + rect.height - 1, rect.width, 1)
-        cr.fill()
-        
-        # Propagate expose.
-        propagate_expose(widget, event)
-        
-        return True
     
 gobject.type_register(ActionBar)
 

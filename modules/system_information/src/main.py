@@ -27,6 +27,7 @@ sys.path.append(os.path.join(get_parent_dir(__file__, 4), "dss"))
 from theme import app_theme
 
 from nls import _
+from datetime import datetime
 from dtk.ui.label import Label
 from dtk.ui.box import ImageBox
 from dtk.ui.utils import color_hex_to_cairo
@@ -54,7 +55,9 @@ class SysInfo(object):
 
     def __create_widget(self):
         # label widget
-        self.label_widgets["copyright"] = Label("%s%s" % ("Copyright © 2011 - 2013 ", _("Wuhan Deepin Technology Co.Ltd, All rights reserved")), enable_select=False, enable_double_click=False)
+        self.label_widgets["copyright"] = Label("%s%s" % ("Copyright © 2011 - %s " % datetime.today().year, 
+                                                          _("Wuhan Deepin Technology Co.Ltd, All rights reserved")), 
+                                                enable_select=False, enable_double_click=False)
         self.label_widgets["version"] = Label(_("Version"), enable_select=False, enable_double_click=False)
         self.label_widgets["cpu"] = Label(_("CPU"), enable_select=False, enable_double_click=False)
         self.label_widgets["mem"] = Label(_("Memory"), enable_select=False, enable_double_click=False)
@@ -145,8 +148,7 @@ class SysInfo(object):
         self.container_widgets["info_table"].set_col_spacings(WIDGET_SPACING)
 
         # show sysinfo
-        #self.label_widgets["version_info"].set_text("%s" % settings.get_os_version())
-        self.label_widgets["version_info"].set_text('12.12.1')
+        self.label_widgets["version_info"].set_text("%s" % settings.get_os_version())
         self.label_widgets["cpu_info"].set_text("%s" % settings.get_cpu_info())
         self.label_widgets["mem_info"].set_text("%.1fGB" % settings.get_mem_info())
         self.label_widgets["arch_info"].set_text("%s%s" % (settings.get_os_arch(), _("bit")))
