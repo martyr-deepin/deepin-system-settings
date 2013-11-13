@@ -27,6 +27,7 @@ import glib
 import traceback
 from nmobject import NMObject
 from nmcache import get_cache
+from nm_utils import TypeConvert
 try:
     from network.src.nmlib.nm_dispatcher import nm_events
 except:
@@ -85,6 +86,9 @@ class NMDevice(NMObject):
         else:
             return None
 
+    def get_available_connections(self):
+        return map(lambda c: get_cache().getobject(c) , self.properties["AvailableConnections"])
+
     def is_active(self):
         try:
             if self.get_active_connection() and self.get_active_connection().get_state() == 2:
@@ -100,6 +104,9 @@ class NMDevice(NMObject):
     def get_real_active_connection(self):
         if self.get_active_connection():
             return self.get_active_connection().get_connection()
+
+    def get_ip4address(self):
+        return TypeConvert.ip4_net2native(self.properties["Ip4Address"])
 
     def get_dhcp4_config(self):
         return get_cache().getobject(self.properties["Dhcp4Config"])
@@ -239,7 +246,7 @@ class NMDevice(NMObject):
     def state_changed_cb(self, new_state, old_state, reason):
         if new_state > 90 or new_state < 70:
             self.init_nmobject_with_properties()
-        print new_state, old_state, reason
+        #print new_state, old_state, reason
 
         if new_state == 30 and old_state < 30:
             self.emit_in_time("device-available", new_state, old_state, reason)

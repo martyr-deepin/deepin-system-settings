@@ -29,7 +29,13 @@ from nmlib.nm_remote_connection import NMRemoteConnection
 from subprocess import Popen
 
 from widgets import AskPasswordDialog
+from nm_constants import *
 from tray_log import tray_log
+
+NM_TYPES = { "802-11-wireless" : 'links',
+        "802-3-ethernet" : 'cable',
+        }
+        #"vpn" : 'links_vpn'}
 
 class BaseMixIn(object):
 
@@ -43,21 +49,42 @@ class BaseMixIn(object):
         # used when network_manager restarts
         self.this_gui.set_active((False, False))
 
-    def check_net_state(self):
-        # which tray icon to show
-        wire = any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices])
-
-        mm = any([d.get_state() == 100 for d in net_manager.device_manager.mm_devices])
-
-        wireless = any([d.get_state() == 100 for d in net_manager.device_manager.wireless_devices])
-
-        if wireless:
-            self.change_status_icon("links")
+    def check_net_state(self, *args, **kargs):
+        previous_icon = self.tray_instance.status_icon_name
+        if len(args) == 3:
+            active_connections = args[-1]
         else:
-            if wire or mm:
-                self.change_status_icon("cable")
+            active_connections = nm_module.nmclient.get_active_connections()
+        if active_connections:
+            if int(active_connections[0].get_state()) == 2:
+                connection = active_connections[0].get_connection()
+                con_type = connection.get_settings()['connection']['type']
+                if con_type == "vpn":
+                    if previous_icon in ['cable_disconnect', 'cable', 'cable_vpn']:
+                        tray_icon = 'cable_vpn'
+                    elif previous_icon in ['wifi_disconnect', 'link', 'links_vpn']:
+                        tray_icon = 'links_vpn'
+                    else:
+                        tray_icon = 'cable'
+                else:
+                    tray_icon = NM_TYPES[con_type]
+                # set tray_icon_text
+                devices = active_connections[0].get_devices()
+                if devices:
+                    event_manager.emit('set_tooltip_text', devices[0].get_ip4address())
+
+
+            elif int(active_connections[0].get_state()) == 1:
+                tray_icon = "loading"
+                event_manager.emit('set_tooltip_text', tray_icon)
+        else:
+            if previous_icon == 'link':
+                tray_icon = "wifi_disconnect"
             else:
-                self.change_status_icon("cable_disconnect")
+                tray_icon ="cable_disconnect"
+            event_manager.emit('set_tooltip_text', '')
+            
+        self.change_status_icon(tray_icon)
 
     def net_state(self):
         pass
@@ -77,10 +104,10 @@ class WireSection(BaseMixIn):
         if wired_state:
             self.gui.show_net("wire")
             self.gui.wire.set_active(wired_state)
-            if wired_state[0] and wired_state[1]:
-                self.change_status_icon("cable")
-            else:
-                self.change_status_icon("cable_disconnect")
+            #if wired_state[0] and wired_state[1]:
+                #self.change_status_icon("cable")
+            #else:
+                #self.change_status_icon("cable_disconnect")
         else:
             self.gui.remove_net("wire")
             return
@@ -112,6 +139,8 @@ class WireSection(BaseMixIn):
         tray_log.debug("wired active")
         self.gui.wire.set_active((True, True))
         self.change_status_icon("cable")
+        event_manager.emit("set_tooltip_text", widget.get_ip4address())
+        #self.check_net_state()
 
     def wired_device_deactive(self, widget, new_state, old_state, reason):
         '''
@@ -129,7 +158,7 @@ class WireSection(BaseMixIn):
                     self.gui.wire.set_active((False, False))
                 else:
                     self.gui.wire.set_active((True, False))
-            self.check_net_state()
+            #self.check_net_state()
 
     def wired_device_unavailable(self,  widget, new_state, old_state, reason):
         '''
@@ -139,7 +168,7 @@ class WireSection(BaseMixIn):
         if not any([d.get_state() == 100 for d in net_manager.device_manager.wired_devices]):
             self.gui.wire.set_active((False, False))
             event_manager.emit("dsl-init-state", None)
-            self.check_net_state()
+            #self.check_net_state()
         #self.wired_device_deactive(widget, new_state, old_state, reason)
 
     def wired_device_available(self, widget, new_state, old_state, reason):
@@ -158,7 +187,7 @@ class WireSection(BaseMixIn):
         tray_log.debug("===wired start")
         if not self.gui.wire.get_active():
             self.gui.wire.set_active((True, True))
-        self.change_status_icon("loading")
+        #self.change_status_icon("loading")
 
     def wired_activate_failed(self, widget, new_state, old_state, reason):
         '''
@@ -167,7 +196,7 @@ class WireSection(BaseMixIn):
         tray_log.debug("wired failed", reason)
         self.gui.wire.set_active((True, False))
         # force loading stop
-        self.check_net_state()
+        #self.check_net_state()
 
 class WirelessSection(BaseMixIn):
 
@@ -193,11 +222,11 @@ class WirelessSection(BaseMixIn):
             self.focus_device = net_manager.device_manager.wireless_devices[0]
             self.gui.show_net("wireless")
             self.gui.wireless.set_active(wireless_state)
-            if wireless_state[0] and wireless_state[1]:
-                self.change_status_icon("links")
-            else:
-                if not self.gui.wire.get_active():
-                    self.change_status_icon("wifi_disconnect")
+            #if wireless_state[0] and wireless_state[1]:
+                #self.change_status_icon("links")
+            #else:
+                #if not self.gui.wire.get_active():
+                    #self.change_status_icon("wifi_disconnect")
         else:
             self.gui.remove_net("wireless")
 
@@ -258,7 +287,7 @@ class WirelessSection(BaseMixIn):
                 tray_log.info(index)
                 self.gui.set_active_ap(index, True)
                 # wireless is active for sure, so check status icon 
-                self.check_net_state()
+                #self.check_net_state()
             else:
                 self.activate_wireless(self.focus_device)
             Dispatcher.request_resize()
@@ -267,28 +296,29 @@ class WirelessSection(BaseMixIn):
             self.gui.remove_switcher()
             Dispatcher.request_resize()
             
-            if self.gui.wire.get_active():
-                self.change_status_icon("cable")
-            else:
-                self.change_status_icon("wifi_disconnect")
+            #if self.gui.wire.get_active():
+                #self.change_status_icon("cable")
+            #else:
+                #self.change_status_icon("wifi_disconnect")
             net_manager.disactive_wireless_device()
 
     # wireless device singals 
     def wireless_device_active(self,  widget, new_state, old_state, reason):
         tray_log.debug("wireless device active")
         self.change_status_icon("links")
+        event_manager.emit("set_tooltip_text", widget.get_ip4address())
         self.set_active_ap()
 
     def wireless_device_deactive(self, widget, new_state, old_state, reason):
         tray_log.debug("==wireless deactive", new_state, old_state, reason)
         self.this_connection = None
         self.gui.wireless.set_sensitive(True)
-        if net_manager.get_wireless_state()[1]:
-            self.change_status_icon("links")
-        elif self.gui.wire.get_active():
-            self.change_status_icon("cable")
-        else:
-            self.change_status_icon("wifi_disconnect")
+        #if net_manager.get_wireless_state()[1]:
+            #self.change_status_icon("links")
+        #elif self.gui.wire.get_active():
+            #self.change_status_icon("cable")
+        #else:
+            #self.change_status_icon("wifi_disconnect")
 
         if reason == 36:
             net_manager.init_devices()
@@ -307,7 +337,7 @@ class WirelessSection(BaseMixIn):
     def wireless_device_unavailable(self, widget, new_state, old_state, reason):
         tray_log.debug("unaviable")
         self.gui.wireless.set_active((False, False))
-        self.check_net_state()
+        #self.check_net_state()
 
     def wireless_device_available(self, widget, new_state, old_state, reason):
         tray_log.debug("aviable")
@@ -333,7 +363,7 @@ class WirelessSection(BaseMixIn):
             return
 
         self.gui.wireless.set_active((True, True))
-        self.change_status_icon("loading")
+        #self.change_status_icon("loading")
         self.this_device = widget
 
     def wireless_activate_failed(self, widget, new_state, old_state, reason):
@@ -451,12 +481,13 @@ class MobileSection(BaseMixIn):
         tray_log.debug("===mobile active")
         self.gui.mobile.set_active((True, True))
         self.change_status_icon("cable")
+        event_manager.emit("set_tooltip_text", widget.get_ip4address())
 
     def mm_device_deactive(self, widget, new_state, old_state, reason):
         tray_log.debug("===mobile deactive", new_state, reason)
         self.gui.mobile.set_active((True, False))
 
-        self.check_net_state()
+        #self.check_net_state()
         #if self.gui.wire.get_active():
             #self.change_status_icon("cable")
         #elif self.gui.wireless.get_active():
@@ -473,13 +504,13 @@ class MobileSection(BaseMixIn):
     def mm_activate_start(self, widget, new_state, old_state, reason):
         tray_log.debug("===mobile connecting")
         self.gui.mobile.set_active((True, True))
-        self.change_status_icon("loading")
+        #self.change_status_icon("loading")
 
     def mm_activate_failed(self, widget, new_state, old_state, reason):
         tray_log.debug("mobile active failed")
         self.gui.mobile.set_active((True, False))
 
-        self.check_net_state()
+        #self.check_net_state()
         #if self.gui.wire.get_active():
             #self.change_status_icon("cable")
         #elif self.gui.wireless.get_active():
@@ -504,9 +535,9 @@ class VPNSection(BaseMixIn):
             self.gui.vpn_list.connecting_cb = lambda:self.change_status_icon('loading')
             self.active_vpn = None
             self.no_vpn_connecting = False
-            if nm_module.nmclient.get_vpn_active_connection():
-                self.gui.vpn.set_active((True, True))
-                self.change_status_icon("links_vpn")
+            #if nm_module.nmclient.get_vpn_active_connection():
+                #self.gui.vpn.set_active((True, True))
+                #self.change_status_icon("links_vpn")
 
             tray_log.info("vpn section show and start")
         else:
@@ -578,7 +609,7 @@ class VPNSection(BaseMixIn):
             self.user_toggle_off_button()
             tray_log.info("*vpn toggle off*")
             self.gui.vpn_list.clear()
-            self.check_net_state()
+            #self.check_net_state()
             for active in nm_module.nmclient.get_anti_vpn_active_connection():
                 active.device_vpn_disconnect()
             
@@ -607,7 +638,7 @@ class VPNSection(BaseMixIn):
         if not self.gui.vpn.get_active():
             self.gui.vpn.set_active((True, True))
 
-        self.change_status_icon('loading')
+        #self.change_status_icon('loading')
         try:
             self.this_setting = nm_module.cache.getobject(path).get_connection().object_path
         except Exception, e:
@@ -627,21 +658,22 @@ class VPNSection(BaseMixIn):
             tray_log.error(e)
             index = []
         self.gui.vpn_list.set_active_by(index)
+        self.check_net_state()
         return 
 
     def set_device_vpn(self, vpn_active):
         tray_log.debug(vpn_active)
         for d in vpn_active.get_devices():
             tray_log.debug(d)
-            if d.get_device_type() == 1:
-                self.change_status_icon("cable_vpn")
-            else:
-                self.change_status_icon("links_vpn")
+            #if d.get_device_type() == 1:
+                #self.change_status_icon("cable_vpn")
+            #else:
+                #self.change_status_icon("links_vpn")
 
     def __vpn_failed_callback(self, name, event, path):
         tray_log.debug("==Vpn active failed or disconnected")
         #print "vpn failed callback"
-        self.check_net_state()
+        #self.check_net_state()
         self.gui.vpn_list.reset_state()
         self.this_setting = None
         self.vpn_path = None
@@ -663,7 +695,7 @@ class DSLSection(BaseMixIn):
             tray_log.info("dsl section start and show")
             if nm_module.nmclient.get_pppoe_active_connection():
                 self.gui.dsl.set_active((True, True))
-                self.change_status_icon("cable")
+                #self.change_status_icon("cable")
         else:
             self.gui.remove_net("dsl")
 
@@ -693,7 +725,8 @@ class DSLSection(BaseMixIn):
     def device_active(self, name, event, data):
         tray_log.debug("=== dsl active", data)
         self.gui.dsl.set_active((True, True), emit=True)
-        self.change_status_icon("cable")
+        self.check_net_state()
+        #self.change_status_icon("cable")
 
     def device_unavailable(self, name, event, data):
         tray_log.debug("device unavailable")
@@ -702,12 +735,14 @@ class DSLSection(BaseMixIn):
         tray_log.debug('dsl deactive', data) 
         new_state, old_state, reason = data
         if any([d.get_state() == 100 for d in net_manager.wired_devices]):
-            self.change_status_icon("cable")
+            #self.change_status_icon("cable")
+            pass
         else:
-            if any([d.get_state() == 100 for d in net_manager.wireless_devices]):
-                self.change_status_icon("links")
-            else:
-                self.change_status_icon("cable_disconnect")
+            #if any([d.get_state() == 100 for d in net_manager.wireless_devices]):
+                #pass
+                ##self.change_status_icon("links")
+            #else:
+                #self.change_status_icon("cable_disconnect")
             if reason != 0:
                 self.gui.dsl.set_active((True, False))
                 if reason == 40:
@@ -717,7 +752,7 @@ class DSLSection(BaseMixIn):
         tray_log.debug('dsl active start', data)
         if not self.gui.dsl.get_active():
             self.gui.dsl.set_active((True, True))
-        self.change_status_icon("loading")
+        #self.change_status_icon("loading")
 
     def activate_failed(self, name, event, data):
         tray_log.debug("dsl active failed", data)
@@ -790,15 +825,21 @@ class TrayNetworkPlugin(object):
         self.this_device = None
         self.this_connection = None
         self.dialog_toggled_flag = False
+        self.status_icon_name = 'cable_disconnect'
         
         # TODO add section signal init
 
     def _init_sections(self):
         event_manager.add_callback('change-status-icon', self.change_status_icon)
         event_manager.add_callback('hide_menu', self.hide_this_menu)
+        event_manager.add_callback('set_tooltip_text', self.set_tooltip_text)
         self.section_instance = []
         for section in self.sections:
             self.section_instance.append(section(self.gui))
+        map(lambda s: setattr(s, "tray_instance", self), self.section_instance)
+        self.section_instance[-1].check_net_state()
+        event_manager.add_callback('properties_changed', self.section_instance[-1].check_net_state)
+        #self.check_net_state()
 
     def _init_tray_signals(self):
         Dispatcher.connect("request_resize", self.request_resize)
@@ -858,6 +899,8 @@ class TrayNetworkPlugin(object):
         """
         change status icon state
         """
+        if data != 'loading':
+            self.status_icon_name = data
         tray_log.debug("change status icon", data)
         icon_name = data
         self.let_rotate(False)
@@ -867,6 +910,9 @@ class TrayNetworkPlugin(object):
 
     def let_rotate(self, rotate_check, interval=100):
         self.tray_icon.set_rotate(rotate_check, interval)
+
+    def set_tooltip_text(self, name, sender, data):
+        self.tray_icon.set_tooltip_text(data)
 
     def run(self):
         return True

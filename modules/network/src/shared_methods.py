@@ -178,15 +178,22 @@ class NetManager(object):
         self.wired_devices = self.device_manager.get_wired_devices()
         if any([d.get_active_connection() for d in self.wired_devices]):
             return
-
         for device in self.wired_devices:
-            if not device.is_active():
-                connections = nm_module.nm_remote_settings.get_wired_connections()
-                if not connections:
-                    connection = nm_module.nm_remote_settings.new_wired_connection()
-                    nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+            cons = device.get_available_connections()
+            if cons:
+                nm_module.nmclient.activate_connection(cons[0].object_path, device.object_path, "/")
+            else:
+                connection = nm_module.nm_remote_settings.new_wired_connection()
+                nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
                 device_ethernet = nm_module.cache.get_spec_object(device.object_path)
                 device_ethernet.auto_connect()
+            #if not device.is_active():
+                #connections = nm_module.nm_remote_settings.get_wired_connections()
+                #if not connections:
+                    #connection = nm_module.nm_remote_settings.new_wired_connection()
+                    #nm_module.nm_remote_settings.new_connection_finish(connection.settings_dict, 'lan')
+                #device_ethernet = nm_module.cache.get_spec_object(device.object_path)
+                #device_ethernet.auto_connect()
 
     def disactive_wired_device(self, device_spec=[]):
         if device_spec:
