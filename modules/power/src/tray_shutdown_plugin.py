@@ -24,6 +24,8 @@
 from tray_shutdown_gui import Gui
 from tray_dialog import TrayDialog
 from deepin_utils.process import run_command
+from deepin_utils.config import Config
+from deepin_utils.file import touch_file
 import inhibit
 
 from nls import _
@@ -69,6 +71,11 @@ DSC_WARNING_TEXT = _("\n<span foreground='#FF0000'>The Software Center is still 
 
 """ BACKEND_PID is define in deepin software center backend program. """
 BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
+
+
+VIRTUAL_ENV_WARNING_TEXT = _("\n检测出您的设备为<span foreground='#FF0000'>虚拟\
+设备</span>，这将严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统，\
+以获取最好的用户体验。")
 
 def is_software_center_working():
     #return True
@@ -222,6 +229,28 @@ def return_id():
 def return_plugin():
     return TrayShutdownPlugin 
 
+def get_vpc_remind_config():
+    CONFIG_INFO_PATH = os.path.expanduser("~/.config/deepin-system-settings/tray/config.ini")
+    config_info_config = Config(CONFIG_INFO_PATH)
+    if os.path.exists(CONFIG_INFO_PATH):
+        config_info_config.load()
+    else:
+        touch_file(CONFIG_INFO_PATH)
+        config_info_config.load()
+    return config_info_config
+
+def set_vpc_remind(flag='no'):
+    print "no"
+    config = get_vpc_remind_config()
+    config.set("virtual_env", 'remind', "no")
+    config.write()
+
+def get_vpc_remind():
+    config = get_vpc_remind_config()
+    if config.has_option('virtual_env', 'remind'):
+        return 'yes' == config.get("virtual_env", 'remind')
+    else:
+        return True
 
 if __name__ == "__main__":
     class ThisObject(object):
@@ -229,26 +258,7 @@ if __name__ == "__main__":
             pass
         def hide_menu(self, *a, **b):
             pass
-    #def ok_btn_clicked(widget):
-        ##
-        #if len(sys.argv) >= 2:
-            #if sys.argv[1] == 'logout':
-                #gui.cmd_dbus.logout(1)
-            #elif sys.argv[1] == 'shutdown':
-                #gui.cmd_dbus.new_stop()
-            #elif sys.argv[1] == 'suspend':
-                #gui.cmd_dbus.suspend()
-    #gui = Gui()
-    #dialog = TrayDialog()
-    #dialog.connect("hide", lambda w : gtk.main_quit())
-    #dialog.connect("destroy", lambda w : gtk.main_quit())
-    #dialog.ok_btn.connect("clicked", ok_btn_clicked)
 
-    #dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
-    #dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
-    #dialog.show_image.set_from_pixbuf(dialog.show_pixbuf)
-
-    #dialog.argv = 1
     shutdown_obj = TrayShutdownPlugin()
     shutdown_obj.dialog.set_bg_pixbuf(gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_on_off_bg.png'))
     shutdown_obj.dialog.show_pixbuf = gtk.gdk.pixbuf_new_from_file('/usr/share/deepin-system-tray/src/image/on_off_dialog/deepin_hibernate.png')
@@ -282,5 +292,11 @@ if __name__ == "__main__":
         elif sys.argv[1] == 'logout':
             print "logout"
             shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
+        elif sys.argv[1] == 'vpc':
+            if get_vpc_remind():
+                shutdown_obj.dialog.show_warning(VIRTUAL_ENV_WARNING_TEXT, ok_text=_('不再提醒'), cancel_text=_("我知道了"))
+                shutdown_obj.dialog.run_exec = set_vpc_remind
+            else:
+                sys.exit(0)
 
-    gtk.main()
+        gtk.main()
