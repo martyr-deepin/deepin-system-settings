@@ -33,6 +33,8 @@ import gtk
 import os
 import sys
 import subprocess
+import time
+
 sys.path.append("/usr/share/deepin-system-settings/modules/account/src")
 from accounts import User
 try:
@@ -294,6 +296,7 @@ if __name__ == "__main__":
             shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
         elif sys.argv[1] == 'vpc':
             if get_vpc_remind():
+                time.sleep(15)
                 shutdown_obj.dialog.show_warning(VIRTUAL_ENV_WARNING_TEXT, ok_text=_('不再提醒'), cancel_text=_("我知道了"))
                 shutdown_obj.dialog.run_exec = set_vpc_remind
             else:
