@@ -75,21 +75,24 @@ class TrayDialog(Window):
                     info_text,
                     ok_text=OK_TEXT,
                     cancel_text=CANCEL_TEXT,
+                    ok_button_first=False,
                     ):
         self.show_pixbuf = vtk_theme.get_pixbuf("deepin_warning", 50)
         self.info_text = info_text
 
         container_remove_all(self.bottom_hbox)
-        if OK_TEXT:
-            self.ok_button = BottomButton(ok_text, self.btn_text_size)
-            self.ok_button.connect("clicked", self.ok_btn_clicked)
-            self.bottom_hbox.pack_end(self.ok_button, False, False)
+        self.ok_button = BottomButton(ok_text, self.btn_text_size)
+        self.ok_button.connect("clicked", self.ok_btn_clicked)
 
-        if CANCEL_TEXT:
-            self.cancel_button = BottomButton(cancel_text, self.btn_text_size)
-            self.cancel_button.connect("clicked", self.quit_dialog_window)
-            self.cancel_button.set_check(True)
+        self.cancel_button = BottomButton(cancel_text, self.btn_text_size)
+        self.cancel_button.connect("clicked", self.quit_dialog_window)
+        self.cancel_button.set_check(True)
+        if ok_button_first:
+            self.bottom_hbox.pack_end(self.ok_button, False, False)
             self.bottom_hbox.pack_end(self.cancel_button, False, False)
+        else:
+            self.bottom_hbox.pack_end(self.cancel_button, False, False)
+            self.bottom_hbox.pack_end(self.ok_button, False, False)
 
         self.argv = None
         self.run_exec = None

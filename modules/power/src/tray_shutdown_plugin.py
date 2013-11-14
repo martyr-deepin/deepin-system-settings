@@ -3,9 +3,11 @@
 
 # Copyright (C) 2012 Deepin, Inc.
 #               2012 Hailong Qiu
+#               2013 Kaisheng Ye
 #
 # Author:     Hailong Qiu <356752238@qq.com>
 # Maintainer: Hailong Qiu <356752238@qq.com>
+#             Kaisheng Ye <kaisheng.ye@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -75,9 +77,9 @@ DSC_WARNING_TEXT = _("\n<span foreground='#FF0000'>The Software Center is still 
 BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
 
 
-VIRTUAL_ENV_WARNING_TEXT = _("\n检测出您的设备为<span foreground='#FF0000'>虚拟\
-设备</span>，这将严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统，\
-以获取最好的用户体验。")
+VIRTUAL_ENV_WARNING_TEXT = _("\n注意！检测出你的使用环境为<span foreground='#FF0000'>虚拟\
+机</span>加载，这将严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统，\
+获取最好的用户体验。")
 
 def is_software_center_working():
     #return True
@@ -296,7 +298,7 @@ if __name__ == "__main__":
             shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
         elif sys.argv[1] == 'vpc':
             if get_vpc_remind():
-                time.sleep(15)
+                time.sleep(10)
                 shutdown_obj.dialog.show_warning(VIRTUAL_ENV_WARNING_TEXT, ok_text=_('不再提醒'), cancel_text=_("我知道了"))
                 shutdown_obj.dialog.run_exec = set_vpc_remind
             else:
