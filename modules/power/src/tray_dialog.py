@@ -156,7 +156,8 @@ class TrayDialog(Window):
         pass
 
     def focus_out_window(self, widget, event):
-        self.quit_dialog_window(widget)
+        if not hasattr(self, "lose_focus_quit"):
+            self.quit_dialog_window(widget)
 
     def __dialog_realize_event(self, widget):
         self.cancel_btn.grab_focus()

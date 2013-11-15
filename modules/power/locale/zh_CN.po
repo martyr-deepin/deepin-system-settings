@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-15 15:20+0800\n"
+"POT-Creation-Date: 2013-11-15 17:30+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -104,7 +104,7 @@ msgstr ""
 msgid ""
 "\n"
 "It seems that the system is running on a <span foreground='#FF0000'>virtual "
-"machine</span>. This can affect your experience. It is strongly recommended "
+"machine</span>. This can affect your experience. It's strongly recommended "
 "that you install Linux Deepin on your hard disk to get the best experience "
 "possible."
 msgstr ""
@@ -147,11 +147,11 @@ msgstr "注销"
 msgid "Force log out"
 msgstr "强制注销"
 
-#: ../src/tray_shutdown_plugin.py:308
+#: ../src/tray_shutdown_plugin.py:309
 msgid "Don't prompt again"
 msgstr "不再提醒"
 
-#: ../src/tray_shutdown_plugin.py:308
+#: ../src/tray_shutdown_plugin.py:309
 msgid "I see"
 msgstr "我知道了"
 

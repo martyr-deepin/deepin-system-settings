@@ -83,7 +83,7 @@ BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"
 
 VIRTUAL_ENV_WARNING_TEXT = _("\nIt seems that the system is running on a \
 <span foreground='#FF0000'>virtual machine</span>. This can affect your \
-experience. It is strongly recommended that you install Linux Deepin on your \
+experience. It's strongly recommended that you install Linux Deepin on your \
 hard disk to get the best experience possible.")
 
 def is_software_center_working():
@@ -303,7 +303,8 @@ if __name__ == "__main__":
             shutdown_obj.check_system_app_running(shutdown_obj, "deepin_hibernate")
         elif sys.argv[1] == 'vpc':
             if get_vpc_remind():
-                time.sleep(10)
+                shutdown_obj.dialog.lose_focus_quit = False
+                time.sleep(5)
                 shutdown_obj.dialog.show_warning(VIRTUAL_ENV_WARNING_TEXT, 
                     ok_text=_("Don't prompt again"), cancel_text=_("I see"))
                 shutdown_obj.dialog.run_exec = set_vpc_remind
