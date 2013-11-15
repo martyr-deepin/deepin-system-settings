@@ -280,15 +280,12 @@ class TypeConvert(object):
             return True
         if not self.is_valid_ip4(gw_str):
             return False
-        
-        try:
-            return all(map(lambda i: int(ipstr.split(".")[i]) & int(mask_str.split('.')[i]) == 
-                                     int(gw_str.split(".")[i]) & int(mask_str.split(".")[i]), [0,1,2,3]))
-            #return all(map(lambda i: int(bin(int(ipstr.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:]) == 
-                     #int(bin(int(gw_str.split('.')[i]))[2:]) & int(bin(int(mask_str.split('.')[i]))[2:])
-                     #,[0,1,2,3]))
-        except:
-            return False
+        #try:
+        #    return all(map(lambda i: int(ipstr.split(".")[i]) & int(mask_str.split('.')[i]) == 
+        #                             int(gw_str.split(".")[i]) & int(mask_str.split(".")[i]), [0,1,2,3]))
+        #except:
+        #    return False
+        return True
 
     def is_valid_ip6(self, ip_string):
         if len(ip_string.split('::')) > 2:
