@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-14 16:48+0800\n"
+"POT-Creation-Date: 2013-11-15 15:20+0800\n"
 "PO-Revision-Date: 2012-12-27 17:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -101,58 +101,59 @@ msgstr ""
 "\n"
 "<span foreground='#FF0000'>一個程式仍在執行：</span>"
 
-#: ../src/tray_shutdown_plugin.py:80
+#: ../src/tray_shutdown_plugin.py:84
 msgid ""
 "\n"
-"注意！检测出你的使用环境为<span foreground='#FF0000'>虚拟机</span>加载，这将"
-"严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统获取最好的用户体"
-"验。"
+"It seems that the system is running on a <span foreground='#FF0000'>virtual "
+"machine</span>. This can affect your experience. It is strongly recommended "
+"that you install Linux Deepin on your hard disk to get the best experience "
+"possible."
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:102 ../src/tray_shutdown_gui.py:96
+#: ../src/tray_shutdown_plugin.py:107 ../src/tray_shutdown_gui.py:96
 #: ../src/power_view.py:62
 msgid "Shut down"
 msgstr "關機"
 
-#: ../src/tray_shutdown_plugin.py:103
+#: ../src/tray_shutdown_plugin.py:108
 #, fuzzy
 msgid "Force shut down"
 msgstr "關機"
 
-#: ../src/tray_shutdown_plugin.py:108 ../src/tray_shutdown_gui.py:99
+#: ../src/tray_shutdown_plugin.py:113 ../src/tray_shutdown_gui.py:99
 msgid "Restart"
 msgstr "重新啟動"
 
-#: ../src/tray_shutdown_plugin.py:109
+#: ../src/tray_shutdown_plugin.py:114
 #, fuzzy
 msgid "Force restart"
 msgstr "重新啟動"
 
-#: ../src/tray_shutdown_plugin.py:114 ../src/tray_shutdown_gui.py:102
+#: ../src/tray_shutdown_plugin.py:119 ../src/tray_shutdown_gui.py:102
 #: ../src/power_view.py:61 ../src/power_view.py:137
 msgid "Suspend"
 msgstr "暫停"
 
-#: ../src/tray_shutdown_plugin.py:115
+#: ../src/tray_shutdown_plugin.py:120
 #, fuzzy
 msgid "Force suspend"
 msgstr "暫停"
 
-#: ../src/tray_shutdown_plugin.py:120 ../src/tray_shutdown_gui.py:105
+#: ../src/tray_shutdown_plugin.py:125 ../src/tray_shutdown_gui.py:105
 msgid "Log out"
 msgstr "登出"
 
-#: ../src/tray_shutdown_plugin.py:121
+#: ../src/tray_shutdown_plugin.py:126
 #, fuzzy
 msgid "Force log out"
 msgstr "登出"
 
-#: ../src/tray_shutdown_plugin.py:302
-msgid "不再提醒"
+#: ../src/tray_shutdown_plugin.py:308
+msgid "Don't prompt again"
 msgstr ""
 
-#: ../src/tray_shutdown_plugin.py:302
-msgid "我知道了"
+#: ../src/tray_shutdown_plugin.py:308
+msgid "I see"
 msgstr ""
 
 #: ../src/search_keyword.py:29 ../src/power_view.py:74

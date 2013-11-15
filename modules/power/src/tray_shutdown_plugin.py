@@ -77,9 +77,14 @@ DSC_WARNING_TEXT = _("\n<span foreground='#FF0000'>The Software Center is still 
 BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
 
 
-VIRTUAL_ENV_WARNING_TEXT = _("\n注意！检测出你的使用环境为<span foreground='#FF0000'>虚拟\
-机</span>加载，这将严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统\
-获取最好的用户体验。")
+#VIRTUAL_ENV_WARNING_TEXT = _("\n注意！检测出你的使用环境为<span foreground='#FF0000'>虚拟\
+#机</span>加载，这将严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统\
+#获取最好的用户体验。")
+
+VIRTUAL_ENV_WARNING_TEXT = _("\nIt seems that the system is running on a \
+<span foreground='#FF0000'>virtual machine</span>. This can affect your \
+experience. It is strongly recommended that you install Linux Deepin on your \
+hard disk to get the best experience possible.")
 
 def is_software_center_working():
     #return True
@@ -299,7 +304,8 @@ if __name__ == "__main__":
         elif sys.argv[1] == 'vpc':
             if get_vpc_remind():
                 time.sleep(10)
-                shutdown_obj.dialog.show_warning(VIRTUAL_ENV_WARNING_TEXT, ok_text=_('不再提醒'), cancel_text=_("我知道了"))
+                shutdown_obj.dialog.show_warning(VIRTUAL_ENV_WARNING_TEXT, 
+                    ok_text=_("Don't prompt again"), cancel_text=_("I see"))
                 shutdown_obj.dialog.run_exec = set_vpc_remind
             else:
                 sys.exit(0)
