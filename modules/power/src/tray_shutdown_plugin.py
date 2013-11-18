@@ -81,9 +81,9 @@ BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"
 #机</span>加载，这将严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统\
 #获取最好的用户体验。")
 
-VIRTUAL_ENV_WARNING_TEXT = _("\nIt seems that the system is running on a \
-<span foreground='#FF0000'>virtual machine</span>. This can affect your \
-experience. It's strongly recommended that you install Linux Deepin on your \
+VIRTUAL_ENV_WARNING_TEXT = _("\nWe have detected that the system is running on a \
+<span foreground='#FF0000'>virtual machine</span>. \
+It's strongly recommended that you install Linux Deepin on your \
 hard disk to get the best experience possible.")
 
 def is_software_center_working():
