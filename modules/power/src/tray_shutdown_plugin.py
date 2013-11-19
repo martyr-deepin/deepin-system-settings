@@ -50,20 +50,20 @@ power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
 
 DBUS_USER_STR = "/org/freedesktop/Accounts/User%s" % (os.getuid())
 
-SHUTDOWN_TEXT = _("\n<span foreground='#FF0000'>Turn off</span> your computer \
+SHUTDOWN_TEXT = _("\n<span foreground='#cc5744'>Turn off</span> your computer \
 now? \n\nThe system will shut down in %s seconds.")
 
-RESTART_TEXT = _("\n<span foreground='#FF0000'>Restart</span> your computer now?\
+RESTART_TEXT = _("\n<span foreground='#cc5744'>Restart</span> your computer now?\
 \n\nThe system will restart in %s seconds.")
 
-SUSPEND_TEXT = _("\n<span foreground='#FF0000'>Suspend</span> your computer now?\
+SUSPEND_TEXT = _("\n<span foreground='#cc5744'>Suspend</span> your computer now?\
 \n\nThe system will suspend in %s seconds.")
 
-LOGOUT_TEXT = _("\n<span foreground='#FF0000'>Log out</span> of your system now?\
+LOGOUT_TEXT = _("\n<span foreground='#cc5744'>Log out</span> of your system now?\
 \n\nYou will be automatically logged out in %s seconds.")
 
-INHIBIT_HEAD = _("\n<span foreground='#FF0000'>A program is still running:</span>")
-INHIBIT_HEAD_PLURAL = _("\n<span foreground='#FF0000'>%s programs are still running:</span>")
+INHIBIT_HEAD = _("\n<span foreground='#cc5744'>A program is still running:</span>")
+INHIBIT_HEAD_PLURAL = _("\n<span foreground='#cc5744'>%s programs are still running:</span>")
 INHIBIT_TAIL = _("Waiting for applications to terminate. Interrupting these may \
 cause unexpected results.")
 
@@ -71,18 +71,18 @@ RUN_DSS_COMMAND = "deepin-system-settings account"
 RUN_SWITCH_TOGREETER = "switchtogreeter"
 RUN_LOCK_COMMAND = "dlock"
 
-DSC_WARNING_TEXT = _("\n<span foreground='#FF0000'>The Software Center is still running.</span>")
+DSC_WARNING_TEXT = _("\n<span foreground='#cc5744'>The Software Center is still running.</span>")
 
 """ BACKEND_PID is define in deepin software center backend program. """
 BACKEND_PID = "/tmp/deepin-software-center/backend_running.pid"  
 
 
-#VIRTUAL_ENV_WARNING_TEXT = _("\n注意！检测出你的使用环境为<span foreground='#FF0000'>虚拟\
+#VIRTUAL_ENV_WARNING_TEXT = _("\n注意！检测出你的使用环境为<span foreground='#cc5744'>虚拟\
 #机</span>加载，这将严重影响到您的用户体验。建议在真实环境下使用 LinuxDeepin 系统\
 #获取最好的用户体验。")
 
 VIRTUAL_ENV_WARNING_TEXT = _("\nWe have detected that the system is running on a \
-<span foreground='#FF0000'>virtual machine</span>. \
+<span foreground='#cc5744'>virtual machine</span>. \
 It's strongly recommended that you install Linux Deepin on your \
 hard disk to get the best experience possible.")
 
