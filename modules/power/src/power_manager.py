@@ -29,6 +29,29 @@ except ImportError:
 import os
 from xml.dom import minidom
 
+DEFAULT_XMLDOC_STR = """
+<powers version="1">
+  <configuration>
+    <plan name="balance">
+      <close-monitor>600</close-monitor>
+      <suspend>0</suspend>
+    </plan>
+    <plan name="saving">
+      <close-monitor>300</close-monitor>
+      <suspend>900</suspend>
+    </plan>
+    <plan name="high-performance">
+      <close-monitor>0</close-monitor>
+      <suspend>0</suspend>
+    </plan>
+    <plan name="customized">
+      <close-monitor>600</close-monitor>
+      <suspend>600</suspend>
+    </plan>
+  </configuration>
+</powers>
+"""
+
 class PowerManager:
     '''
     enum
@@ -52,16 +75,20 @@ class PowerManager:
         self.power_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.power")
         self.lockdown_settings = deepin_gsettings.new("org.gnome.desktop.screensaver")
         self.session_settings = deepin_gsettings.new("org.gnome.desktop.session")
-
-        self.__powers_xml_filename = "%s/.config/powers.xml" % os.path.expanduser('~')
-        self.__xmldoc = minidom.parse(self.__powers_xml_filename)
+        self.__powers_xml_filename = os.path.expanduser('~/.config/powers.xml')
 
         self.powers_plan = []
 
         self.init_xml()
 
+    def get_xml_doc(self):
+        if os.path.exists(self.__powers_xml_filename):
+            return minidom.parse(self.__powers_xml_filename)
+        else:
+            return minidom.parseString(DEFAULT_XMLDOC_STR)
+
     def init_xml(self):
-        self.__xmldoc = minidom.parse(self.__powers_xml_filename)
+        self.__xmldoc = self.get_xml_doc()
         if self.__xmldoc != None:
             plans = self.__xmldoc.getElementsByTagName("plan")
             for plan in plans:
