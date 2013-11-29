@@ -142,7 +142,7 @@ msgstr "邮件"
 
 #: ../src/app_view.py:44
 msgid "Editor"
-msgstr "文件"
+msgstr "文本"
 
 #: ../src/app_view.py:45
 msgid "Music"
