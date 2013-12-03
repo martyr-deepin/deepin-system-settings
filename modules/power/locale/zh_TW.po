@@ -109,9 +109,8 @@ msgid ""
 "possible."
 msgstr ""
 "\n"
-"注意！檢測出你的使用環境為<span foreground='#cc5744'>虛擬機</span>加載，這將"
-"嚴重影響到您的用戶體驗。建議在真實環境下使用 LinuxDeepin 系統獲取最好的用戶體"
-"驗。"
+"我們注意到您的系統是在<span foreground='#cc5744'>虛擬機</span>下運行，建議您"
+"盡可能使用硬碟安裝 Linux Deepin 以獲得最佳性能體驗。"
 
 #: ../src/tray_shutdown_plugin.py:107 ../src/tray_shutdown_gui.py:96
 #: ../src/power_view.py:62
