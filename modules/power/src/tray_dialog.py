@@ -264,9 +264,11 @@ class TrayDialog(Window):
         self.tick_label.set_text(self.info_text % self.second)
         if self.second == 0:
             timer.Enabled = False
-            self.quit_dialog_window(self)
             if self.run_exec:
                 gtk.timeout_add(1, self.run_exec_timeout)
+                gtk.timeout_add(100, lambda :self.quit_dialog_window(self))
+            else:
+                self.quit_dialog_window(self)
 
     def init_bottom_button(self):
         self.cancel_btn = gtk.Button(self.cancel_text)
