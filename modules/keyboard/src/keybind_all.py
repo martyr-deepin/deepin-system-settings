@@ -40,7 +40,7 @@ shortcuts_group_dict = {
         {'type': TYPE_WM, 'name': "switch-windows-backward", 'description': _("Reverse switch applications"), 'value-type': TYPE_STRV},  # 应用程序反向切换
         {'type': TYPE_COMPIZ, 'plugin': "shift", 'name': "next-key", 'description': _("Switch applications with 3D effect"), 'value-type': TYPE_STRING},             # 应用程序3D切换
         {'type': TYPE_COMPIZ, 'plugin': "shift", 'name': "prev-key", 'description': _("Reverse switch applications with 3D effect"), 'value-type': TYPE_STRING},     # 应用程序3D反向
-        {'type': TYPE_DP, 'name': "key4", 'description': _("Show/Hide the dock"), 'value-type': TYPE_STRING, 'command': "dbus-send --type=method_call --dest=com.deepin.dde.dock /com/deepin/dde/dock com.deepin.dde.dock.ToggleShow"},     # 显示/隐藏Dock
+        {'type': TYPE_DP, 'name': "key4", 'description': _("Show/Hide the dock temporarily"), 'value-type': TYPE_STRING, 'command': "dbus-send --type=method_call --dest=com.deepin.dde.dock /com/deepin/dde/dock com.deepin.dde.dock.ToggleShow"},     # 显示/隐藏Dock
         #{'type': TYPE_MEDIA, 'name': "help", 'description': _("Launch user manual"), 'value-type': TYPE_STRING},
         # {'type': TYPE_DP, 'name': "key6", 'description': _("Launch user manual"), 'value-type': TYPE_STRING, 'command': '/usr/bin/deepin-user-manual'},
         #{'type': TYPE_MEDIA, 'name': "screenshot", 'description': _("Take a screenshot"), 'value-type': TYPE_STRING},  # 截图

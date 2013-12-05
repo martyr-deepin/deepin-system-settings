@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-16 10:11+0800\n"
+"POT-Creation-Date: 2013-12-05 15:17+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -82,7 +82,7 @@ msgid "Reverse switch applications with 3D effect"
 msgstr ""
 
 #: ../src/keybind_all.py:43
-msgid "Show/Hide the dock"
+msgid "Show/Hide the dock temporarily"
 msgstr ""
 
 #: ../src/keybind_all.py:47
