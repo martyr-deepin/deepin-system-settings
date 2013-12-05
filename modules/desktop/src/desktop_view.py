@@ -555,6 +555,8 @@ class DesktopView(gtk.VBox):
                 self.compiz_integrated_settings.set_string("command-11", "")
                 self.compiz_run_command_edge_settings.set_string("run-command10-edge", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "")
+                if topright_current_value == 1:
+                    self.compiz_scale_settings.set_string("initiate-edge", "BottomRight")
             elif item_value == 1:
                 if topright_current_value == 1:
                     self.topright_combo.set_select_index(2)
@@ -585,6 +587,8 @@ class DesktopView(gtk.VBox):
                 self.compiz_integrated_settings.set_string("command-12", "")
                 self.compiz_run_command_edge_settings.set_string("run-command11-edge", "")
                 self.compiz_scale_settings.set_string("initiate-edge", "")
+                if topleft_current_value == 1:
+                    self.compiz_scale_settings.set_string("initiate-edge", "TopLeft")
             elif item_value == 1:
                 if topleft_current_value == 1:
                     self.topleft_combo.set_select_index(2)
