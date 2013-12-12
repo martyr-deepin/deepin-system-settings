@@ -387,6 +387,12 @@ class IconSetPage(gtk.VBox):
         self.account_setting.alignment_widgets["edit_iconfile"].show_all()
         self.account_setting.set_to_page(self.account_setting.alignment_widgets["edit_iconfile"], "right")
         self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Picture"))
+        pos = self.account_setting.container_widgets["icon_edit_page"].draw_area.panel.get_position()
+        allocation = self.account_setting.container_widgets["icon_edit_page"].draw_area.panel.allocation
+        self.account_setting.container_widgets["icon_edit_page"].draw_area.panel.hide_all()
+        self.account_setting.container_widgets["icon_edit_page"].draw_area.panel.move(pos[0], pos[1]+40)
+        self.account_setting.container_widgets["icon_edit_page"].draw_area.panel.resize_panel(allocation.width, 8)
+        self.account_setting.container_widgets["icon_edit_page"].draw_area.panel.resize(allocation.width, 8)
 
     def choose_from_camera(self):
         self.account_setting.container_widgets["icon_edit_page"].set_camera_mode()

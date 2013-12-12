@@ -699,7 +699,6 @@ class IconEditArea(gtk.Layout):
             gtk.timeout_remove(self.__refresh_time_id)
         if self.__button_time_id:
             gtk.timeout_remove(self.__button_time_id)
-        self.__button_time_id = gobject.timeout_add(30, self.__slide_button_show)
         #self.panel_layout.move(self.button_hbox, 0, self.button_hbox_height)
         x = event.x_root - event.x
         y = event.y_root - event.y + self.AREA_HEIGHT - self.button_hbox_height
@@ -709,6 +708,7 @@ class IconEditArea(gtk.Layout):
         self.panel.show_panel()
         self.position = self.POS_OUT
         self.set_cursor()
+        self.__button_time_id = gobject.timeout_add(30, self.__slide_button_show)
 
     def slide_button_hide(self):
         self.panel_layout.move(self.button_hbox, 0, 0)
