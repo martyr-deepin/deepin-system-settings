@@ -360,7 +360,7 @@ class IconSetPage(gtk.VBox):
         self.account_setting.module_frame.send_submodule_crumb(3, _("Edit Picture"))
 
     def choose_from_screenshot(self):
-        cmd = ("/usr/bin/deepin-screenshot", "-d 1", "--sub")
+        cmd = ("/usr/bin/deepin-screenshot", "-d 5", "--sub")
         Popen(cmd)
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         bus = dbus.SessionBus()
