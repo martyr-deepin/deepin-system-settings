@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-16 10:05+0800\n"
+"POT-Creation-Date: 2013-12-16 13:12+0800\n"
 "PO-Revision-Date: 2013-12-10 15:17+0000\n"
 "Last-Translator: kazzike <jeancarlosrivas@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/deepin-system-"
@@ -27,67 +27,67 @@ msgstr "10"
 msgid "Reset"
 msgstr "Reiniciar"
 
-#: ../dss/module_info.py:38
+#: ../dss/module_info.py:37
 msgid "Displays"
 msgstr ""
 
-#: ../dss/module_info.py:39
+#: ../dss/module_info.py:38
 msgid "Desktop"
 msgstr ""
 
-#: ../dss/module_info.py:40
+#: ../dss/module_info.py:39
 msgid "Personalization"
 msgstr ""
 
-#: ../dss/module_info.py:41
+#: ../dss/module_info.py:40
 msgid "Sound"
 msgstr ""
 
-#: ../dss/module_info.py:42
+#: ../dss/module_info.py:41
 msgid "Date &amp; Time"
 msgstr ""
 
-#: ../dss/module_info.py:43
+#: ../dss/module_info.py:42
 msgid "Power"
 msgstr ""
 
-#: ../dss/module_info.py:44
+#: ../dss/module_info.py:43
 msgid "Keyboard"
 msgstr ""
 
-#: ../dss/module_info.py:45
+#: ../dss/module_info.py:44
 msgid "Mouse"
 msgstr ""
 
-#: ../dss/module_info.py:46
+#: ../dss/module_info.py:45
 msgid "Touchpad"
 msgstr ""
 
-#: ../dss/module_info.py:47
+#: ../dss/module_info.py:46
 msgid "Printers"
 msgstr ""
 
-#: ../dss/module_info.py:48
+#: ../dss/module_info.py:47
 msgid "Network"
 msgstr ""
 
-#: ../dss/module_info.py:49
+#: ../dss/module_info.py:48
 msgid "Bluetooth"
 msgstr ""
 
-#: ../dss/module_info.py:50
+#: ../dss/module_info.py:49
 msgid "Additional Drivers"
 msgstr ""
 
-#: ../dss/module_info.py:51
+#: ../dss/module_info.py:50
 msgid "User Accounts"
 msgstr ""
 
-#: ../dss/module_info.py:52
+#: ../dss/module_info.py:51
 msgid "Default Applications"
 msgstr ""
 
-#: ../dss/module_info.py:53
+#: ../dss/module_info.py:52
 #, fuzzy
 msgid "System Information"
 msgstr "Configuración del Sistema"

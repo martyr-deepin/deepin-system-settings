@@ -26,7 +26,6 @@ from deepin_utils.file import get_parent_dir
 import gtk
 import os
 from theme import app_theme
-from constant import MAIN_LANG
 from nls import _
 
 MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        
@@ -67,10 +66,10 @@ class ModuleInfo(object):
         self.config.load()
         self.id = self.config.get("main", "id")
         # TODO: lihongwu req to support i18n
-        self.name = MODULES_NAME_FOR_L18N(self.id)
+        self.name = MODULES_NAME_FOR_L18N.get(self.id, "")
+        self.default_name = self.config.get("name", "default")
 
         """
-        self.default_name = self.config.get("name", "default")
         self.name = self.default_name
         if MAIN_LANG != "en_US":
             self.name = self.config.get("name", MAIN_LANG)
