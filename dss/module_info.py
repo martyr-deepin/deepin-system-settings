@@ -27,11 +27,31 @@ import gtk
 import os
 from theme import app_theme
 from constant import MAIN_LANG
+from nls import _
 
 MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        
 FIRST_MODULE_NAMES = ["display", "desktop", "individuation", "sound", "date_time", "power"]
 SECOND_MODULE_NAMES = ["keyboard", "mouse", "touchpad", "printer", "network", "bluetooth", "driver"]
 THIRD_MODULE_NAMES = ["account", "application_associate", "system_information"]
+
+MODULES_NAME_FOR_L18N = {
+        "display": _("Displays"),
+        "desktop": _("Desktop"),
+        "individuation": _("Personalization"),
+        "sound": _("Sound"),
+        "date_time": _("Date &amp; Time"),
+        "power": _("Power"),
+        "keyboard": _("Keyboard"),
+        "mouse": _("Mouse"),
+        "touchpad": _("Touchpad"),
+        "printer": _("Printers"),
+        "network": _("Network"),
+        "bluetooth": _("Bluetooth"),
+        "driver": _("Additional Drivers"),
+        "account": _("User Accounts"),
+        "application_associate": _("Default Applications"),
+        "system_information": _("System Information"),
+    }
 
 class ModuleInfo(object):
     '''
@@ -47,10 +67,14 @@ class ModuleInfo(object):
         self.config.load()
         self.id = self.config.get("main", "id")
         # TODO: lihongwu req to support i18n
+        self.name = MODULES_NAME_FOR_L18N(self.id)
+
+        """
         self.default_name = self.config.get("name", "default")
         self.name = self.default_name
         if MAIN_LANG != "en_US":
             self.name = self.config.get("name", MAIN_LANG)
+        """
 
         icon_infos = [self.get_system_icon_info(self.id, 48), 
                       self.get_system_icon_info(self.id, 16),

@@ -1,28 +1,31 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2013.
 #
+# Translators:
+# 648trindade <rafaelgt.mbin@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-16 10:05+0800\n"
-"PO-Revision-Date: 2013-01-17 10:16+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_HK\n"
+"PO-Revision-Date: 2013-12-11 05:30+0000\n"
+"Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
+"deepin-system-settings/language/pt_BR/)\n"
+"Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../dss/navigate_page.py:135
 msgid "10"
-msgstr "21"
+msgstr "10"
 
 #: ../dss/foot_box.py:57
 msgid "Reset"
-msgstr ""
+msgstr "Reconfigurar"
 
 #: ../dss/module_info.py:38
 msgid "Displays"
@@ -85,22 +88,23 @@ msgid "Default Applications"
 msgstr ""
 
 #: ../dss/module_info.py:53
+#, fuzzy
 msgid "System Information"
-msgstr ""
+msgstr "Configurações do Sistema"
 
 #: ../dss/action_bar.py:95 ../dss/main.py:339 ../dss/main.py:454
 msgid "System Settings"
-msgstr ""
+msgstr "Configurações do Sistema"
 
 #: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: ../dss/bluetooth_dialog.py:78
 #, python-format
 msgid "Sent %d"
-msgstr ""
+msgstr "Enviar %d"
 
 #: ../dss/bluetooth_dialog.py:113
 msgid "Ok"
-msgstr ""
+msgstr "Ok"

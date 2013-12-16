@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-07 11:47+0800\n"
+"POT-Creation-Date: 2013-12-16 10:12+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,91 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../dss/navigate_page.py:135
+msgid "10"
+msgstr ""
+
 #: ../dss/foot_box.py:57
 msgid "Reset"
 msgstr ""
 
-#: ../dss/action_bar.py:101 ../dss/main.py:337 ../dss/main.py:451
+#: ../dss/module_info.py:38
+msgid "Displays"
+msgstr ""
+
+#: ../dss/module_info.py:39
+msgid "Desktop"
+msgstr ""
+
+#: ../dss/module_info.py:40
+msgid "Personalization"
+msgstr ""
+
+#: ../dss/module_info.py:41
+msgid "Sound"
+msgstr ""
+
+#: ../dss/module_info.py:42
+msgid "Date &amp; Time"
+msgstr ""
+
+#: ../dss/module_info.py:43
+msgid "Power"
+msgstr ""
+
+#: ../dss/module_info.py:44
+msgid "Keyboard"
+msgstr ""
+
+#: ../dss/module_info.py:45
+msgid "Mouse"
+msgstr ""
+
+#: ../dss/module_info.py:46
+msgid "Touchpad"
+msgstr ""
+
+#: ../dss/module_info.py:47
+msgid "Printers"
+msgstr ""
+
+#: ../dss/module_info.py:48
+msgid "Network"
+msgstr ""
+
+#: ../dss/module_info.py:49
+msgid "Bluetooth"
+msgstr ""
+
+#: ../dss/module_info.py:50
+msgid "Additional Drivers"
+msgstr ""
+
+#: ../dss/module_info.py:51
+msgid "User Accounts"
+msgstr ""
+
+#: ../dss/module_info.py:52
+msgid "Default Applications"
+msgstr ""
+
+#: ../dss/module_info.py:53
+msgid "System Information"
+msgstr ""
+
+#: ../dss/action_bar.py:95 ../dss/main.py:339 ../dss/main.py:454
 msgid "System Settings"
 msgstr ""
 
-#: ../dss/navigate_page.py:134
-msgid "10"
-msgstr ""
-
-#: ../dss/bluetooth_dialog.py:62
+#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr ""
 
-#: ../dss/bluetooth_dialog.py:77
+#: ../dss/bluetooth_dialog.py:78
 #, python-format
 msgid "Sent %d"
 msgstr ""
 
-#: ../dss/bluetooth_dialog.py:112
+#: ../dss/bluetooth_dialog.py:113
 msgid "Ok"
 msgstr ""

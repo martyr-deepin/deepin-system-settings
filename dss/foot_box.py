@@ -23,7 +23,7 @@
 from dtk.ui.constant import ALIGN_MIDDLE
 from dtk.ui.utils import color_hex_to_cairo, container_remove_all
 from deepin_utils.ipc import is_dbus_name_exists
-from dtk.ui.draw import cairo_state, draw_line
+from dtk.ui.draw import draw_line
 from dtk.ui.label import Label
 from dtk.ui.button import Button
 import gobject
