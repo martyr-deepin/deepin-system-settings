@@ -26,68 +26,68 @@ msgstr "重設"
 
 #: ../dss/module_info.py:38
 msgid "Displays"
-msgstr ""
+msgstr "顯示"
 
 #: ../dss/module_info.py:39
 msgid "Desktop"
-msgstr ""
+msgstr "桌面"
 
 #: ../dss/module_info.py:40
 msgid "Personalization"
-msgstr ""
+msgstr "個人化"
 
 #: ../dss/module_info.py:41
 msgid "Sound"
-msgstr ""
+msgstr "聲音"
 
 #: ../dss/module_info.py:42
 msgid "Date &amp; Time"
-msgstr ""
+msgstr "日期和時間"
 
 #: ../dss/module_info.py:43
 msgid "Power"
-msgstr ""
+msgstr "電源"
 
 #: ../dss/module_info.py:44
 msgid "Keyboard"
-msgstr ""
+msgstr "鍵盤"
 
 #: ../dss/module_info.py:45
 msgid "Mouse"
-msgstr ""
+msgstr "滑鼠"
 
 #: ../dss/module_info.py:46
 msgid "Touchpad"
-msgstr ""
+msgstr "觸控板"
 
 #: ../dss/module_info.py:47
 msgid "Printers"
-msgstr ""
+msgstr "印表機"
 
 #: ../dss/module_info.py:48
 msgid "Network"
-msgstr ""
+msgstr "網路"
 
 #: ../dss/module_info.py:49
 msgid "Bluetooth"
-msgstr ""
+msgstr "藍牙"
 
 #: ../dss/module_info.py:50
 msgid "Additional Drivers"
-msgstr ""
+msgstr "額外驅動程式"
 
 #: ../dss/module_info.py:51
 msgid "User Accounts"
-msgstr ""
+msgstr "使用者帳號"
 
 #: ../dss/module_info.py:52
 msgid "Default Applications"
-msgstr ""
+msgstr "預設程式"
 
 #: ../dss/module_info.py:53
 #, fuzzy
 msgid "System Information"
-msgstr "系統設定"
+msgstr "系統資訊"
 
 #: ../dss/action_bar.py:95 ../dss/main.py:339 ../dss/main.py:454
 msgid "System Settings"
