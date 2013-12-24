@@ -64,7 +64,7 @@ def resolve_accel_entry_conflict(origin_entry, conflict_entry, tmp_accel_buf):
     dialog.set_keep_above(True)
     dialog.set_modal(True)
     dialog.body_align.set_padding(15, 10, 10, 10)
-    label1 = Label(_("The shortcut \"%s\" is already used for\"%s\"")%
+    label1 = Label(_("The shortcut \"%s\" is already used for \"%s\"")%
                    (tmp_accel_buf.get_accel_label(), conflict_entry.settings_description), enable_select=False, enable_double_click=False)
     label2 = Label(_("If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled.")%
                    (origin_entry.settings_description, conflict_entry.settings_description), enable_select=False, enable_double_click=False)
