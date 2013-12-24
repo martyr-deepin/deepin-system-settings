@@ -53,7 +53,7 @@ class MobileSetting(Settings):
         if connections == []:
             region = slider.get_page_by_name("region")
             region.init(None)
-            slider._slide_to_page("region", "right")
+            slider._slide_to_page("region", "none")
             return [None, -1]
 
         return connections
@@ -156,7 +156,7 @@ class MobileSetting(Settings):
     def add_new_connection(self):
         region = slider.get_page_by_name("region")
         region.init(None)
-        slider._slide_to_page("region", "left")
+        slider._slide_to_page("region", "none")
         return [None, -1]
 
     def add_connection(self):
@@ -168,7 +168,7 @@ class MobileSetting(Settings):
     def slide_to_region(self):
         region = slider.get_page_by_name("region")
         region.init()
-        slider._slide_to_page("region", "left")
+        slider._slide_to_page("region", "none")
         return (None, -1)
 
 #class Settings(object):
@@ -350,7 +350,7 @@ class Broadband(gtk.VBox):
                 region = slider.get_page_by_name("region")
                 region.init(self.connection)
                 #region.need_new_connection =False
-                slider._slide_to_page("region", "left")
+                slider._slide_to_page("region", "none")
 
             if network_type == "gsm":
                 self.button_to_region.connect("clicked", to_region)

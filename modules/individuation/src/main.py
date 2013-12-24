@@ -93,9 +93,9 @@ class DeepinIndividuation(object):
         if message_type == "click_crumb":
             (crumb_index, crumb_label) = message_content
             if crumb_index == 1:
-                self.slider.slide_to_page(self.theme_page, "left")
+                self.slider.slide_to_page(self.theme_page, "none")
             elif crumb_index == 2:    
-                self.slider.slide_to_page(self.detail_page, "left")
+                self.slider.slide_to_page(self.detail_page, "none")
                 
         elif message_type == "show_again":
             self.slider.set_to_page(self.theme_page)
@@ -117,26 +117,26 @@ class DeepinIndividuation(object):
             self.module_frame.exit()
 
     def switch_delete_page(self, name, obj, theme):
-        self.slider.slide_to_page(self.delete_page, "right")
+        self.slider.slide_to_page(self.delete_page, "none")
         self.delete_page.set_theme(theme)
         self.module_frame.send_submodule_crumb(3, _("Delete Wallpaper"))
             
     def back_to_addpage(self, name, obj, data):        
         self.module_frame.send_message("back", 2)
-        self.slider.slide_to_page(self.detail_page, "left")        
+        self.slider.slide_to_page(self.detail_page, "none")        
     
     def back_to_detailpage(self, name, obj, theme):
         self.module_frame.send_message("back", 2)
-        self.slider.slide_to_page(self.detail_page, "left")
+        self.slider.slide_to_page(self.detail_page, "none")
         self.detail_page.set_theme(theme)
     
     def switch_detail_page(self, name, obj, theme):
-        self.slider.slide_to_page(self.detail_page, "right")
+        self.slider.slide_to_page(self.detail_page, "none")
         self.detail_page.set_theme(theme)
         self.module_frame.send_submodule_crumb(2, theme.get_name())
         
     def switch_add_page(self, name, obj, theme):    
-        self.slider.slide_to_page(self.add_page, "right")
+        self.slider.slide_to_page(self.add_page, "none")
         self.add_page.set_theme(theme)
         self.module_frame.send_submodule_crumb(3, _("Add Wallpaper"))
 

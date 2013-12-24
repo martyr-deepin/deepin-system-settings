@@ -201,7 +201,7 @@ class Region(gtk.Alignment):
 
             #broadband.set_new_values(self.prop_dict, provider_type)
 
-        nm_module.slider._slide_to_page("setting", "right")
+        nm_module.slider._slide_to_page("setting", "none")
 
     def init(self, connection):
         if connection == None:
