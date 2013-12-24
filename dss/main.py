@@ -370,10 +370,7 @@ def start_module_process(slider, content_page_info, module_path, module_config, 
     content_page_info.set_active_module_id(module_id)
 
     if module_slide_to_page:
-        if force_direction:
-            slider.slide_to_page(content_page, force_direction)
-        else:
-            slider.slide_to_page(content_page, "none")
+        slider.slide_to_page(content_page, "none")
 
     module_dbus_name = "com.deepin.%s_settings" % (module_id)
     if not is_dbus_name_exists(module_dbus_name):
