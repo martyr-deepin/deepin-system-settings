@@ -512,13 +512,13 @@ class PPPConf(gtk.VBox):
         self.require_mppe_128_label = Label(_("Require 128-bit encryption"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        self.mppe_stateful_label = Label(_("Use stataful MPPE"), text_size=CONTENT_FONT_SIZE,
+        self.mppe_stateful_label = Label(_("Use stateful MPPE"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
         self.nobsdcomp_label = Label(_("Allow BSD data Compression"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
-        self.nodeflate_label = Label(_("Allow Deflate date compression"), text_size=CONTENT_FONT_SIZE,
+        self.nodeflate_label = Label(_("Allow Deflate data compression"), text_size=CONTENT_FONT_SIZE,
                                enable_select=False,
                                enable_double_click=False)
         self.no_vj_comp_label = Label(_("Use TCP header compression"), text_size=CONTENT_FONT_SIZE,

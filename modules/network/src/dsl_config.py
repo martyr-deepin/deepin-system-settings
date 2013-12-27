@@ -412,9 +412,9 @@ class PPPConf(gtk.VBox):
         self.comp_table.row_attach(self.compression_title)
         self.require_mppe = self.comp_table.row_toggle(_("Use point-to-point encryption(mppe)"))
         self.require_mppe_128 = self.comp_table.row_toggle(_("Require 128-bit encryption"), self.sub_item)
-        self.mppe_stateful = self.comp_table.row_toggle(_("Use stataful MPPE"), self.sub_item)
+        self.mppe_stateful = self.comp_table.row_toggle(_("Use stateful MPPE"), self.sub_item)
         self.nobsdcomp = self.comp_table.row_toggle(_("Allow BSD data Compression"))
-        self.nodeflate = self.comp_table.row_toggle(_("Allow Deflate date compression"))
+        self.nodeflate = self.comp_table.row_toggle(_("Allow Deflate data compression"))
         self.no_vj_comp = self.comp_table.row_toggle(_("Use TCP header compression"))
 
         self.echo_table = TableAsm()
