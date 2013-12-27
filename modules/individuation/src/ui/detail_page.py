@@ -81,7 +81,7 @@ class DetailPage(gtk.VBox):
                                              self.__on_random_toggled, 
                                              self.__is_random)
         self.button_align = gtk.Alignment()
-        self.button_box = gtk.HBox(spacing = 10)
+        self.button_box = gtk.HBox(spacing = 5)
         self.select_all_button = Button(_("Select all"))
         self.select_all_button.set_size_request(80, WIDGET_HEIGHT)
         self.select_all_button.connect("clicked", self.__on_select_all)
@@ -96,10 +96,10 @@ class DetailPage(gtk.VBox):
         self.action_bar.pack_start(position_group, False, False)
         self.action_bar.pack_start(time_group, False, False)
         self.action_bar.pack_start(self.unorder_play, False, False)
-        self.action_bar.pack_start(self.button_align)
+        self.action_bar.pack_end(self.button_align, False, False)
         action_bar_align = gtk.Alignment()
         action_bar_align.set_size_request(-1, STATUS_HEIGHT)
-        action_bar_align.set_padding(5, 5, 50, 50)
+        action_bar_align.set_padding(5, 5, 50, 20)
         action_bar_align.add(self.action_bar)
         
         self.wallpaper_box.pack_start(self.wallpaper_view_sw, True, True)

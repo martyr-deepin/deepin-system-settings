@@ -55,17 +55,17 @@ class FootBox(gtk.HBox):
    
     def __setup_reset_button(self):
         self.reset_button = Button(_("Reset"))
-        self.reset_button.set_size_request(self.button_width, WIDGET_HEIGHT)
+        #self.reset_button.set_size_request(self.button_width, WIDGET_HEIGHT)
         self.reset_button.connect("clicked", self.__reset_button_clicked)
 
     def __setup_buttons_align(self, list):
-        buttons_align = self.__setup_align(padding_top = 7,                   
-            padding_left = 80 - (len(list) - 1) * 10,                
-            padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING / 5)
-        buttons_box = gtk.HBox(spacing = 5)                  
+        buttons_align = self.__setup_align(padding_top = 7,
+            padding_left = 80 - (len(list) - 1) * 10,
+            padding_right = TEXT_WINDOW_RIGHT_WIDGET_PADDING)
+        buttons_box = gtk.HBox(spacing = 5)
         i = 0
         while i < len(list):
-            buttons_box.pack_start(list[i]) 
+            buttons_box.pack_start(list[i], False, False)
             i += 1
 
         buttons_align.add(buttons_box)
@@ -79,7 +79,7 @@ class FootBox(gtk.HBox):
         self.right_box.pack_start(self.buttons_align)
         
         self.pack_start(self.status_label)
-        self.pack_start(self.right_box)
+        self.pack_end(self.right_box, False, False)
         self.set_size_request(-1, STATUS_HEIGHT)
         
         self.connect("expose-event", self.__expose)
