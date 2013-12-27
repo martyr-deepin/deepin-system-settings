@@ -245,7 +245,7 @@ class PicturePage(gtk.VBox):
         self.notice_label = Label("")
         self.notice_label.set_size_request(400, -1)
 
-        self.back_button = Button(_("Back"))                                    
+        self.back_button = Button(_("Back"))
         self.back_button.connect("clicked", self.__on_back)
         self.select_all_button = Button(_("Select all"))                        
         self.select_all_button.connect("clicked", self.on_select_all)
@@ -260,7 +260,7 @@ class PicturePage(gtk.VBox):
                                                                                 
         control_align = gtk.Alignment()                                         
         control_align.set(1.0, 0.5, 0, 0)                                       
-        control_align.set_padding(0, 5, 0, 10)                                  
+        control_align.set_padding(0, 5, 0, 10)
         control_align.add(control_box)                                          
         self.pack_start(self.select_view_sw, True, True)                        
         self.pack_start(control_align, False, True)
