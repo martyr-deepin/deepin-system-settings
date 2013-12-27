@@ -175,7 +175,7 @@ class EventDispatcher(gobject.GObject):
 
     def to_main_page(self):
         self.__module_frame.send_message("change_crumb", 1)
-        self.slide_to_page('main', "left")
+        self.slide_to_page('main', "none")
 
     def send_submodule_crumb(self, index, name):
         self.__module_frame.send_submodule_crumb(index, name)

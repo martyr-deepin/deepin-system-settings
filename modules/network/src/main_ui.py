@@ -715,7 +715,7 @@ class HotSpot(gtk.VBox):
     def slide_to_event(self, widget, event):
         self.settings.init("",init_connections=True, all_adhoc=True)
         self.send_to_crumb_cb()
-        slider.slide_to_page(self.settings, "right")
+        slider.slide_to_page(self.settings, "none")
 
     def __init_state(self):
         pass
@@ -1200,7 +1200,7 @@ class Proxy(gtk.VBox):
     def slide_to_event(self, widget, event):
         settings = ProxyConfig()
         settings.init()
-        slider.slide_to_page(settings, "right")
+        slider.slide_to_page(settings, "none")
         Dispatcher.send_submodule_crumb(2, _("Proxy"))
 
     #def add_setting_page(self, setting_page):

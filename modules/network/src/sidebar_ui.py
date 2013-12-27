@@ -91,7 +91,7 @@ class SideBar(gtk.VBox):
         if crumb_name == "":
             crumb_name = _("Hidden network")
         Dispatcher.send_submodule_crumb(2, crumb_name)
-        Dispatcher.slide_to_page("setting", "right")
+        Dispatcher.slide_to_page("setting", "none")
 
     def __init_tree(self, items_list, insert_pos=None):
         if items_list and items_list != [None, -1]:

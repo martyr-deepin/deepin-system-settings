@@ -33,6 +33,7 @@ import dbus
 from deepin_utils.ipc import is_dbus_name_exists
 from deepin_utils.file import get_parent_dir
 from dtk.ui.locales import get_locale_code
+from nls import _
 
 MAIN_LANG = get_locale_code("deepin-system-settings", get_parent_dir(__file__, 2) + "/locale")
 APP_DBUS_NAME = "com.deepin.system_settings"
@@ -108,6 +109,25 @@ Border color and backgroud color for treeview
 '''
 TREEVIEW_BORDER_COLOR = "#d2d2d2"
 TREEVIEW_BG_COLOR = "#f6f6f6"
+
+MODULES_NAME_FOR_L18N = {
+        "display": _("Displays"),
+        "desktop": _("Desktop"),
+        "individuation": _("Personalization"),
+        "sound": _("Sound"),
+        "date_time": _("Date &amp; Time"),
+        "power": _("Power"),
+        "keyboard": _("Keyboard"),
+        "mouse": _("Mouse"),
+        "touchpad": _("Touchpad"),
+        "printer": _("Printers"),
+        "network": _("Network"),
+        "bluetooth": _("Bluetooth"),
+        "driver": _("Additional Drivers"),
+        "account": _("User Accounts"),
+        "application_associate": _("Default Applications"),
+        "system_information": _("System Information"),
+    }
 
 def is_laptop():
     xrandr_settings = deepin_gsettings.new("org.gnome.settings-daemon.plugins.xrandr")

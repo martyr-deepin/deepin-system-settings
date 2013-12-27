@@ -351,7 +351,7 @@ class PPTPConf(gtk.VBox):
         ppp = PPPConf(self.module_frame, Dispatcher.set_button)
         ppp.refresh(self.connection)
         Dispatcher.send_submodule_crumb(3, _("Advanced"))
-        nm_module.slider.slide_to_page(ppp, "right")
+        nm_module.slider.slide_to_page(ppp, "none")
         #pass
 
 class PPPConf(gtk.VBox):
@@ -812,7 +812,7 @@ class PPPConf(gtk.VBox):
 
     def confirm_button_cb(self, widget):
         self.module_frame.send_message("change_crumb", 2)
-        nm_module.slider._slide_to_page("vpn", "left")
+        nm_module.slider._slide_to_page("vpn", "none")
         
     def auth_lock(self):
         if self.refuse_mschap.get_active() or self.refuse_mschapv2.get_active():

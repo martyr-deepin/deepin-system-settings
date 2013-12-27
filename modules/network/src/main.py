@@ -44,9 +44,9 @@ if __name__ == '__main__':
                 print "click_crumb"
                 (crumb_index, crumb_label) = message_content
                 if crumb_index == 1:
-                    slider._slide_to_page("main", "left")
+                    slider._slide_to_page("main", "none")
                 if crumb_label == _("VPN"):
-                    slider._slide_to_page("vpn", "left")
+                    slider._slide_to_page("vpn", "none")
 
         module_frame.module_message_handler = message_handler
         module_frame.run()
