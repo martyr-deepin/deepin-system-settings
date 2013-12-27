@@ -33,6 +33,7 @@ from dbus.mainloop.glib import DBusGMainLoop
 import dbus
 import dbus.service
 import locale
+from constant import MODULES_NAME_FOR_L18N
 
 class ModuleService(dbus.service.Object):
     def __init__(self, 
@@ -146,12 +147,11 @@ class ModuleFrame(gtk.Plug):
         pass
         
     def send_module_info(self):
-        name = self.module_config.get("name", "default")
-        if MAIN_LANG != "en_US":
-            name = self.module_config.get("name", MAIN_LANG)                           
+        module_id = self.module_config.get("main", "id")
+        name = MODULES_NAME_FOR_L18N.get(module_id, "")
         self.send_message("send_module_info", 
                           (1, 
-                           (self.module_config.get("main", "id"), 
+                           (module_id,
                             name), 
                            self.argv))
         self.send_message("send_plug_id", (self.module_id, self.get_id()))
