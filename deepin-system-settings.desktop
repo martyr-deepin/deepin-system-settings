@@ -1,0 +1,18 @@
+[Desktop Entry]
+Categories=GNOME;GTK;System;deepin
+Exec=deepin-system-settings
+Icon=preferences-system
+Keywords=Preferences;Settings
+Keywords[zh_CN]=Preferences;Settings;首选项;设置;
+Keywords[zh_HK]=Preferences;Settings;偏好設定;設定值;
+Keywords[zh_TW]=Preferences;Settings;偏好設定;設定值;
+Name=System Settings
+Name[ar]=إعدادات النظام
+Name[cs]=Nastavení systému
+Name[fr]=Control des Systèmes
+Name[zh_CN]=系统设置
+Name[zh_HK]=系統設定
+Name[zh_TW]=系統設定
+StartupNotify=true
+Terminal=false
+Type=Application
