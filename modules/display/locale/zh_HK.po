@@ -1,20 +1,22 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2012.
-#
+# 
+# Translators:
+# CasperLi_HK <li_waikin@hotmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-03 15:20+0800\n"
-"PO-Revision-Date: 2012-12-29 11:25+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_HK\n"
+"POT-Creation-Date: 2013-06-05 10:41+0800\n"
+"PO-Revision-Date: 2013-12-18 07:20+0000\n"
+"Last-Translator: CasperLi_HK <li_waikin@hotmail.com>\n"
+"Language-Team: Chinese (Hong Kong) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_HK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_HK\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/search_keyword.py:29 ../src/display_view.py:276
 msgid "Display"
@@ -30,20 +32,20 @@ msgstr ""
 
 #: ../src/search_keyword.py:32 ../src/display_view.py:343
 msgid "Rotation"
-msgstr ""
+msgstr "旋轉"
 
 #: ../src/search_keyword.py:33 ../src/display_view.py:371
 #: ../src/display_view.py:380
 msgid "Brightness"
-msgstr ""
+msgstr "亮度"
 
 #: ../src/search_keyword.py:34 ../src/display_view.py:398
 msgid "Auto-Brightness"
-msgstr ""
+msgstr "自動亮度調整"
 
 #: ../src/search_keyword.py:35 ../src/display_view.py:412
 msgid "Turn off monitor"
-msgstr ""
+msgstr "關閉顯示器"
 
 #: ../src/search_keyword.py:36 ../src/display_view.py:431
 msgid "Lock screen automatically"

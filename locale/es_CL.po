@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# gamjachib <drios9420@gmail.com>, 2013
+# gamjachib <drios9420@gmail.com>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-16 13:12+0800\n"
+"PO-Revision-Date: 2013-12-17 03:23+0000\n"
+"Last-Translator: gamjachib <drios9420@gmail.com>\n"
+"Language-Team: Spanish (Chile) (http://www.transifex.com/projects/p/deepin-system-settings/language/es_CL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es_CL\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../dss/navigate_page.py:135
+msgid "10"
+msgstr "10"
+
+#: ../dss/foot_box.py:57
+msgid "Reset"
+msgstr "Reinicializar"
+
+#: ../dss/module_info.py:37
+msgid "Displays"
+msgstr "Pantallas"
+
+#: ../dss/module_info.py:38
+msgid "Desktop"
+msgstr "Escritorio"
+
+#: ../dss/module_info.py:39
+msgid "Personalization"
+msgstr "Personalización"
+
+#: ../dss/module_info.py:40
+msgid "Sound"
+msgstr "Sonido"
+
+#: ../dss/module_info.py:41
+msgid "Date &amp; Time"
+msgstr "Fecha y hora"
+
+#: ../dss/module_info.py:42
+msgid "Power"
+msgstr "Energía"
+
+#: ../dss/module_info.py:43
+msgid "Keyboard"
+msgstr "Teclado"
+
+#: ../dss/module_info.py:44
+msgid "Mouse"
+msgstr "Ratón"
+
+#: ../dss/module_info.py:45
+msgid "Touchpad"
+msgstr "Touchpad"
+
+#: ../dss/module_info.py:46
+msgid "Printers"
+msgstr "Impresoras"
+
+#: ../dss/module_info.py:47
+msgid "Network"
+msgstr "Redes"
+
+#: ../dss/module_info.py:48
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+#: ../dss/module_info.py:49
+msgid "Additional Drivers"
+msgstr "Controladores adicionales"
+
+#: ../dss/module_info.py:50
+msgid "User Accounts"
+msgstr "Cuentas de usuario"
+
+#: ../dss/module_info.py:51
+msgid "Default Applications"
+msgstr "Aplicaciones predeterminadas"
+
+#: ../dss/module_info.py:52
+msgid "System Information"
+msgstr "Información del sistema"
+
+#: ../dss/action_bar.py:95 ../dss/main.py:339 ../dss/main.py:454
+msgid "System Settings"
+msgstr "Ajustes del sistema"
+
+#: ../dss/bluetooth_dialog.py:63
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ../dss/bluetooth_dialog.py:78
+#, python-format
+msgid "Sent %d"
+msgstr "Enviar %d"
+
+#: ../dss/bluetooth_dialog.py:113
+msgid "Ok"
+msgstr "Aceptar"

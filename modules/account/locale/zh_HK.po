@@ -1,20 +1,23 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2012.
-#
+# 
+# Translators:
+# Automatically generated, 2012
+# CasperLi_HK <li_waikin@hotmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-27 16:15+0800\n"
-"PO-Revision-Date: 2012-12-13 14:16+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_HK\n"
+"PO-Revision-Date: 2013-12-18 07:04+0000\n"
+"Last-Translator: CasperLi_HK <li_waikin@hotmail.com>\n"
+"Language-Team: Chinese (Hong Kong) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_HK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_HK\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
 msgid "Standard"
@@ -34,28 +37,27 @@ msgstr "其他帳號"
 
 #: ../src/face_record_page.py:79
 msgid "Start"
-msgstr ""
+msgstr "開始"
 
 #: ../src/face_record_page.py:83
 msgid "Please plug in or enable your camera"
-msgstr ""
+msgstr "請插入或啟動你的相機"
 
 #: ../src/face_record_page.py:84
 msgid "Please keep still for 5 seconds"
-msgstr ""
+msgstr "請保持靜止5秒"
 
 #: ../src/face_record_page.py:86
 msgid "Failed to record your face"
-msgstr ""
+msgstr "未能記錄你的樣貌"
 
 #: ../src/face_record_page.py:94
 msgid "Your face has been successfully recorded"
-msgstr ""
+msgstr "你的樣貌已成功被記錄下"
 
 #: ../src/face_record_page.py:184
-#, fuzzy
 msgid "Try Again"
-msgstr "再次照相"
+msgstr "請再試一次"
 
 #: ../src/main.py:122 ../src/main.py:134
 msgid "Account type"
@@ -87,15 +89,15 @@ msgstr "帳號名稱"
 
 #: ../src/main.py:139
 msgid "Facial recognition"
-msgstr ""
+msgstr "面部識別"
 
 #: ../src/main.py:162
 msgid "Record"
-msgstr ""
+msgstr "記錄"
 
 #: ../src/main.py:163
 msgid "Test"
-msgstr ""
+msgstr "測試"
 
 #: ../src/main.py:176 ../src/main.py:613 ../src/main.py:761
 #: ../src/main.py:1200
@@ -119,7 +121,8 @@ msgid "Cancel"
 msgstr "取消"
 
 #: ../src/main.py:228
-msgid "It is possible to keep the home directory when deleting a user account."
+msgid ""
+"It is possible to keep the home directory when deleting a user account."
 msgstr "刪除使用者時可以保留使用者家目錄。"
 
 #: ../src/main.py:231
@@ -136,11 +139,11 @@ msgstr "儲存"
 
 #: ../src/main.py:244
 msgid "Back"
-msgstr ""
+msgstr "返回"
 
 #: ../src/main.py:245
 msgid "Experience"
-msgstr ""
+msgstr "體驗"
 
 #: ../src/main.py:562
 #, python-format
@@ -265,7 +268,7 @@ msgstr "設定頭像"
 
 #: ../src/main.py:1151
 msgid "Face Record"
-msgstr ""
+msgstr "人臉記錄"
 
 #: ../src/main.py:1355
 msgid "Error:"
@@ -348,15 +351,3 @@ msgstr "照片預覽"
 #: ../src/edit_icon_page.py:924
 msgid "no picture"
 msgstr "沒有照片"
-
-#~ msgid "Action"
-#~ msgstr "動作"
-
-#~ msgid "Set a password now"
-#~ msgstr "現在設置密碼"
-
-#~ msgid "The length of the new password must have 6~16 characters."
-#~ msgstr "新密碼長度必須為6~16位"
-
-#~ msgid "Passwords do not match"
-#~ msgstr "兩次輸入的密碼不一致"

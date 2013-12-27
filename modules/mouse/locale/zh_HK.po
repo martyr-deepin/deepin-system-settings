@@ -1,20 +1,23 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2012.
-#
+# 
+# Translators:
+# Automatically generated, 2012
+# CasperLi_HK <li_waikin@hotmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-05 10:43+0800\n"
-"PO-Revision-Date: 2012-10-10 17:53+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_HK\n"
+"PO-Revision-Date: 2013-12-18 07:24+0000\n"
+"Last-Translator: CasperLi_HK <li_waikin@hotmail.com>\n"
+"Language-Team: Chinese (Hong Kong) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_HK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_HK\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/main.py:85
 msgid "Custom"
@@ -22,7 +25,7 @@ msgstr "自訂"
 
 #: ../src/main.py:86 ../src/search_keyword.py:26
 msgid "Pointer Speed"
-msgstr "指標速度"
+msgstr "鼠標速度"
 
 #: ../src/main.py:87 ../src/search_keyword.py:27
 msgid "Acceleration"
@@ -58,7 +61,7 @@ msgstr "點擊頻率"
 
 #: ../src/main.py:103
 msgid "Double-click on the smiley face to test your settings."
-msgstr "雙擊笑臉來測試點擊頻率設定值。"
+msgstr "雙擊笑臉來測試點擊頻率設定值是否合適。"
 
 #: ../src/main.py:105
 msgid "Relevant Settings"

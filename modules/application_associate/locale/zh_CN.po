@@ -1,20 +1,22 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2013.
-#
+# 
+# Translators:
+# Automatically generated, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-12 16:43+0800\n"
-"PO-Revision-Date: 2013-01-21 09:25+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2013-12-16 09:16+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/widget.py:44
 msgid "Autostart app"
@@ -167,33 +169,3 @@ msgstr "自动运行"
 #: ../src/search_keyword.py:32
 msgid "Application Associate"
 msgstr "应用程序关联"
-
-#~ msgid "other applications"
-#~ msgstr "其他应用程序"
-
-#~ msgid "Software"
-#~ msgstr "软件"
-
-#~ msgid "more option"
-#~ msgstr "更多选项"
-
-#~ msgid "not running"
-#~ msgstr "未运行"
-
-#~ msgid "mail"
-#~ msgstr "邮件"
-
-#~ msgid "You can choose the operation after plugining media or device"
-#~ msgstr "您可以选择插入每种媒体或设备时的后续操作"
-
-#~ msgid "apply auto mount for all media and devices"
-#~ msgstr "为所有媒体和设备使用自动挂载"
-
-#~ msgid "apply auto open for all media and devices"
-#~ msgstr "为所有媒体和设备使用自动播放"
-
-#~ msgid "Description:"
-#~ msgstr "描述:"
-
-#~ msgid "State"
-#~ msgstr "状态"

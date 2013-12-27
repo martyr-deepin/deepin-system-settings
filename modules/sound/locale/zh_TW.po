@@ -1,21 +1,23 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# freddy4212 <freddy4212@gmail.com>, 2013
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013
-# Freddy <freddy4212@gmail.com>, 2013
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-05 10:42+0800\n"
-"PO-Revision-Date: 2012-11-21 15:41+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_TW\n"
+"PO-Revision-Date: 2013-12-16 09:50+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/main.py:95 ../src/main_full.py:82 ../src/search_keyword.py:27
 msgid "Speaker"
@@ -47,8 +49,8 @@ msgstr "輸出音量"
 
 #: ../src/main.py:105 ../src/main.py:117 ../src/main_full.py:92
 #: ../src/main_full.py:104
-msgid "Enable Sound"
-msgstr "啟用音效"
+msgid "Sound Enabled"
+msgstr ""
 
 #: ../src/main.py:108 ../src/main.py:514 ../src/main.py:518 ../src/main.py:781
 #: ../src/main.py:784 ../src/main_full.py:95 ../src/main_full.py:450
@@ -178,9 +180,3 @@ msgstr "音量"
 #: ../src/tray_sound_gui.py:318 ../src/tray_sound_gui_small.py:360
 msgid "Mute"
 msgstr "靜音"
-
-#~ msgid "Playing"
-#~ msgstr "播放中"
-
-#~ msgid "Paused"
-#~ msgstr "已暫停"

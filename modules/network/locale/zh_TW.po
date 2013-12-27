@@ -1,21 +1,23 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
-# Freddy <freddy4212@gmail.com>, 2013.
-#
+# 
+# Translators:
+# freddy4212 <freddy4212@gmail.com>, 2013
+# Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-27 10:06+0800\n"
-"PO-Revision-Date: 2012-12-25 17:35+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_TW\n"
+"PO-Revision-Date: 2013-12-27 02:35+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/lan_config.py:39 ../src/lan_config.py:94 ../src/lan_config.py:124
 #: ../src/search_keyword.py:29 ../src/vpn_config.py:128 ../src/main_ui.py:219
@@ -196,8 +198,8 @@ msgstr "供應商："
 
 #: ../src/regions.py:104
 msgid ""
-"Tips:This assistant helps you easily set up a mobile broadband connection to "
-"a cellular network."
+"Tips:This assistant helps you easily set up a mobile broadband connection to"
+" a cellular network."
 msgstr "這能幫助你輕易地設定行動寬頻連線，連至手機（3G）網絡。"
 
 #: ../src/regions.py:213
@@ -328,9 +330,8 @@ msgstr "需要「128-位元」加密"
 
 #: ../src/mobile_config.py:515 ../src/vpn_config.py:420
 #: ../src/dsl_config.py:415
-#, fuzzy
 msgid "Use stateful MPPE"
-msgstr "使用有狀態的 MPPE"
+msgstr ""
 
 #: ../src/mobile_config.py:518 ../src/vpn_config.py:423
 #: ../src/dsl_config.py:416
@@ -339,9 +340,8 @@ msgstr "允許 BSD 資料壓縮"
 
 #: ../src/mobile_config.py:521 ../src/vpn_config.py:426
 #: ../src/dsl_config.py:417
-#, fuzzy
 msgid "Allow Deflate data compression"
-msgstr "允許 Deflate 資料壓縮"
+msgstr ""
 
 #: ../src/mobile_config.py:524 ../src/vpn_config.py:429
 #: ../src/dsl_config.py:418
@@ -569,39 +569,3 @@ msgstr "GSM 設定"
 #: ../src/nmlib/nm_remote_settings.py:219
 msgid "Config"
 msgstr "設定"
-
-#~ msgid "IPv6 Settings"
-#~ msgstr "IPv6 設定值"
-
-#~ msgid "IPv4 setting"
-#~ msgstr "Ipv4 設定值"
-
-#~ msgid "Obtain an IP address automatically"
-#~ msgstr "自動獲取 IP 位址"
-
-#~ msgid "Obtain DNS server address automatically"
-#~ msgstr "自動設定 DNS 伺服器"
-
-#~ msgid "ssid:"
-#~ msgstr "SSID："
-
-#~ msgid "password:"
-#~ msgstr "密碼："
-
-#~ msgid "Method"
-#~ msgstr "代理方法"
-
-#~ msgid "Show key"
-#~ msgstr "顯示密碼"
-
-#~ msgid "IPv4 Setting"
-#~ msgstr "IPv4 設定值"
-
-#~ msgid "Mask:"
-#~ msgstr "網絡遮罩："
-
-#~ msgid "save"
-#~ msgstr "保存"
-
-#~ msgid "Creat Hidden network"
-#~ msgstr "建立隱藏的網路"

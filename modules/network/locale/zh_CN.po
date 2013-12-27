@@ -1,20 +1,23 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2012.
-#
+# 
+# Translators:
+# Automatically generated, 2012
+# lihongwu <lihongwu1987@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-27 10:06+0800\n"
-"PO-Revision-Date: 2012-12-25 17:35+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2013-12-27 02:45+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/lan_config.py:39 ../src/lan_config.py:94 ../src/lan_config.py:124
 #: ../src/search_keyword.py:29 ../src/vpn_config.py:128 ../src/main_ui.py:219
@@ -48,7 +51,7 @@ msgstr "克隆mac地址:"
 
 #: ../src/lan_config.py:154 ../src/wlan_config.py:621
 msgid "MTU:"
-msgstr ""
+msgstr "MTU:"
 
 #: ../src/wlan_config.py:121 ../src/sidebar_ui.py:92
 msgid "Hidden network"
@@ -123,7 +126,7 @@ msgstr "开放系统"
 #: ../src/wlan_config.py:332 ../src/wlan_config.py:583 ../src/lists.py:488
 #: ../src/settings_widget.py:610
 msgid "SSID:"
-msgstr ""
+msgstr "SSID:"
 
 #: ../src/wlan_config.py:589
 msgid "Mode:"
@@ -151,7 +154,7 @@ msgstr "信道:"
 
 #: ../src/wlan_config.py:608
 msgid "BSSID:"
-msgstr ""
+msgstr "BSSID:"
 
 #: ../src/wlan_config.py:650
 msgid "Default Settings"
@@ -195,8 +198,8 @@ msgstr "运营商:"
 
 #: ../src/regions.py:104
 msgid ""
-"Tips:This assistant helps you easily set up a mobile broadband connection to "
-"a cellular network."
+"Tips:This assistant helps you easily set up a mobile broadband connection to"
+" a cellular network."
 msgstr "提示:请选择设备对应的运营商"
 
 #: ../src/regions.py:213
@@ -205,7 +208,7 @@ msgstr "地区"
 
 #: ../src/lists.py:560
 msgid "active"
-msgstr ""
+msgstr "active"
 
 #: ../src/settings_widget.py:618
 msgid "Active"
@@ -240,7 +243,7 @@ msgstr "网络宽带"
 #: ../src/mobile_config.py:224 ../src/mobile_config.py:461
 #: ../src/dsl_config.py:120 ../src/dsl_config.py:379
 msgid "PPP"
-msgstr ""
+msgstr "PPP"
 
 #: ../src/mobile_config.py:263
 msgid "Code:"
@@ -257,7 +260,7 @@ msgstr "地区设置"
 
 #: ../src/mobile_config.py:282
 msgid "APN:"
-msgstr ""
+msgstr "APN:"
 
 #: ../src/mobile_config.py:285
 msgid "Network ID:"
@@ -269,7 +272,7 @@ msgstr "类别:"
 
 #: ../src/mobile_config.py:291
 msgid "PIN:"
-msgstr ""
+msgstr "PIN:"
 
 #: ../src/mobile_config.py:303
 msgid "Allow roaming if home network is not available"
@@ -283,27 +286,27 @@ msgstr "加密设置"
 #: ../src/mobile_config.py:474 ../src/vpn_config.py:377
 #: ../src/dsl_config.py:393
 msgid "EAP"
-msgstr ""
+msgstr "EAP"
 
 #: ../src/mobile_config.py:477 ../src/vpn_config.py:380
 #: ../src/dsl_config.py:394
 msgid "PAP"
-msgstr ""
+msgstr "PAP"
 
 #: ../src/mobile_config.py:480 ../src/vpn_config.py:383
 #: ../src/dsl_config.py:395
 msgid "CHAP"
-msgstr ""
+msgstr "CHAP"
 
 #: ../src/mobile_config.py:483 ../src/vpn_config.py:386
 #: ../src/dsl_config.py:396
 msgid "MSCHAP"
-msgstr ""
+msgstr "MSCHAP"
 
 #: ../src/mobile_config.py:486 ../src/vpn_config.py:389
 #: ../src/dsl_config.py:397
 msgid "MSCHAP v2"
-msgstr ""
+msgstr "MSCHAP v2"
 
 #: ../src/mobile_config.py:500 ../src/vpn_config.py:403
 #: ../src/dsl_config.py:400
@@ -327,7 +330,6 @@ msgstr "需要128位加密"
 
 #: ../src/mobile_config.py:515 ../src/vpn_config.py:420
 #: ../src/dsl_config.py:415
-#, fuzzy
 msgid "Use stateful MPPE"
 msgstr "使用带有状态的MPPE"
 
@@ -338,7 +340,6 @@ msgstr "允许BSD数据压缩"
 
 #: ../src/mobile_config.py:521 ../src/vpn_config.py:426
 #: ../src/dsl_config.py:417
-#, fuzzy
 msgid "Allow Deflate data compression"
 msgstr "允许Deflate数据压缩"
 
@@ -359,7 +360,7 @@ msgstr "拨号网络"
 
 #: ../src/search_keyword.py:32 ../src/vpn_config.py:27 ../src/main.py:48
 msgid "VPN"
-msgstr ""
+msgstr "VPN"
 
 #: ../src/search_keyword.py:34 ../src/main_ui.py:1166 ../src/main_ui.py:1204
 msgid "Proxy"
@@ -375,7 +376,7 @@ msgstr "PPP设置"
 
 #: ../src/vpn_config.py:156 ../src/vpn_config.py:189
 msgid "PPTP"
-msgstr ""
+msgstr "PPTP"
 
 #: ../src/vpn_config.py:168 ../src/dsl_config.py:262
 msgid "Connection Name:"
@@ -391,7 +392,7 @@ msgstr "NT域:"
 
 #: ../src/vpn_config.py:190
 msgid "L2TP"
-msgstr ""
+msgstr "L2TP"
 
 #: ../src/vpn_config.py:213 ../src/dsl_config.py:301
 msgid "Show Password"
@@ -487,7 +488,7 @@ msgstr "副DNS服务器:"
 
 #: ../src/ipsettings.py:185
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
 #: ../src/ipsettings.py:185
 msgid "Subnet Mask"
@@ -568,67 +569,3 @@ msgstr "GSM配置"
 #: ../src/nmlib/nm_remote_settings.py:219
 msgid "Config"
 msgstr "配置"
-
-#~ msgid "IPv6 Settings"
-#~ msgstr "IPv6设置"
-
-#~ msgid "IPv4 setting"
-#~ msgstr "IPv4设置"
-
-#~ msgid "Obtain an IP address automatically"
-#~ msgstr "自动获取IP地址"
-
-#~ msgid "Obtain DNS server address automatically"
-#~ msgstr "自动获取DNS"
-
-#~ msgid "password:"
-#~ msgstr "密码:"
-
-#~ msgid "Method"
-#~ msgstr "代理方式"
-
-#~ msgid "Show key"
-#~ msgstr "显示密码"
-
-#~ msgid "IPv4 Setting"
-#~ msgstr "IPv4设置"
-
-#~ msgid "Mask:"
-#~ msgstr "掩码:"
-
-#~ msgid "save"
-#~ msgstr "保存"
-
-#~ msgid "Creat Hidden network"
-#~ msgstr "创建隐藏网络"
-
-#~ msgid "DSL Network"
-#~ msgstr "网络"
-
-#~ msgid "Set password"
-#~ msgstr "设置密码"
-
-#~ msgid "more wireless..."
-#~ msgstr "更多无线"
-
-#~ msgid "DSL Configuration"
-#~ msgstr "DSL设置"
-
-#~ msgid "Wireless Setting"
-#~ msgstr "无线"
-
-#~ msgid "IPV4 Settings"
-#~ msgstr "IPV4设置"
-
-#~ msgid "IPV6 Settings"
-#~ msgstr "IPV6设置"
-
-# #, fuzzy
-#~ msgid "Defalut Settings"
-#~ msgstr "无线"
-
-#~ msgid "Advanced Setting"
-#~ msgstr "高级设置"
-
-#~ msgid "connect"
-#~ msgstr "连接"

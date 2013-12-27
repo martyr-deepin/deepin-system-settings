@@ -1,21 +1,23 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013.
-# Freddy <freddy4212@gmail.com>, 2013.
-#
+# 
+# Translators:
+# freddy4212 <freddy4212@gmail.com>, 2013
+# Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-19 09:19+0800\n"
-"PO-Revision-Date: 2012-12-27 17:35+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_TW\n"
+"PO-Revision-Date: 2013-12-16 09:46+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Chinese (Hong Kong) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_HK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_HK\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/tray_shutdown_plugin.py:53
 #, python-format
@@ -24,11 +26,7 @@ msgid ""
 "<span foreground='#cc5744'>Turn off</span> your computer now? \n"
 "\n"
 "The system will shut down in %s seconds."
-msgstr ""
-"\n"
-"現在要<span foreground='#cc5744'>關閉</span>電腦？\n"
-"\n"
-"系統將在 %s 秒後關機。"
+msgstr "\n現在要<span foreground='#cc5744'>關閉</span>電腦？\n\n系統將在 %s 秒後關機。"
 
 #: ../src/tray_shutdown_plugin.py:56
 #, python-format
@@ -37,11 +35,7 @@ msgid ""
 "<span foreground='#cc5744'>Restart</span> your computer now?\n"
 "\n"
 "The system will restart in %s seconds."
-msgstr ""
-"\n"
-"現在要<span foreground='#cc5744'>重新啟動</span>電腦？\n"
-"\n"
-"系統將在 %s 秒後自動重新啟動。"
+msgstr "\n現在要<span foreground='#cc5744'>重新啟動</span>電腦？\n\n系統將在 %s 秒後自動重新啟動。"
 
 #: ../src/tray_shutdown_plugin.py:59
 #, python-format
@@ -50,11 +44,7 @@ msgid ""
 "<span foreground='#cc5744'>Suspend</span> your computer now?\n"
 "\n"
 "The system will suspend in %s seconds."
-msgstr ""
-"\n"
-"現在要<span foreground='#cc5744'>暫停</span>電腦？\n"
-"\n"
-"系統將在 %s 秒後自動暫停。"
+msgstr "\n現在要<span foreground='#cc5744'>暫停</span>電腦？\n\n系統將在 %s 秒後自動暫停。"
 
 #: ../src/tray_shutdown_plugin.py:62
 #, python-format
@@ -63,28 +53,20 @@ msgid ""
 "<span foreground='#cc5744'>Log out</span> of your system now?\n"
 "\n"
 "You will be automatically logged out in %s seconds."
-msgstr ""
-"\n"
-"現在要<span foreground='#cc5744'>登出</span>系統？\n"
-"\n"
-"系統將在 %s 秒後自動登出。"
+msgstr "\n現在要<span foreground='#cc5744'>登出</span>系統？\n\n系統將在 %s 秒後自動登出。"
 
 #: ../src/tray_shutdown_plugin.py:65
 msgid ""
 "\n"
 "<span foreground='#cc5744'>A program is still running:</span>"
-msgstr ""
-"\n"
-"<span foreground='#cc5744'>一個程式仍在執行：</span>"
+msgstr "\n<span foreground='#cc5744'>一個程式仍在執行：</span>"
 
 #: ../src/tray_shutdown_plugin.py:66
 #, python-format
 msgid ""
 "\n"
 "<span foreground='#cc5744'>%s programs are still running:</span>"
-msgstr ""
-"\n"
-"<span foreground='#cc5744'>%s 個程式仍在執行：</span>"
+msgstr "\n<span foreground='#cc5744'>%s 個程式仍在執行：</span>"
 
 #: ../src/tray_shutdown_plugin.py:67
 msgid ""
@@ -96,22 +78,13 @@ msgstr "正在等待程式結束。中斷這個程式可能造成您的工作遺
 msgid ""
 "\n"
 "<span foreground='#cc5744'>The Software Center is still running.</span>"
-msgstr ""
-"\n"
-"<span foreground='#cc5744'>軟體中心正在執行.</span>"
+msgstr "\n<span foreground='#cc5744'>軟體中心正在執行.</span>"
 
 #: ../src/tray_shutdown_plugin.py:84
 msgid ""
 "\n"
-"We have detected that the system is running on a <span "
-"foreground='#cc5744'>virtual machine</span>. It's strongly recommended that "
-"you install Linux Deepin on your hard disk to get the best experience "
-"possible."
-msgstr ""
-"\n"
-"注意！檢測出你的使用環境為<span foreground='#cc5744'>虛擬機</span>加載，這將"
-"嚴重影響到您的用戶體驗。建議在真實環境下使用 LinuxDeepin 系統獲取最好的用戶體"
-"驗。"
+"We have detected that the system is running on a <span foreground='#cc5744'>virtual machine</span>. It's strongly recommended that you install Linux Deepin on your hard disk to get the best experience possible."
+msgstr "\n注意！檢測出你的使用環境為<span foreground='#cc5744'>虛擬機</span>加載，這將嚴重影響到您的用戶體驗。建議在真實環境下使用 LinuxDeepin 系統獲取最好的用戶體驗。"
 
 #: ../src/tray_shutdown_plugin.py:107 ../src/tray_shutdown_gui.py:96
 #: ../src/power_view.py:62
@@ -300,42 +273,3 @@ msgstr "已變更為在系統匣顯示電池狀態圖示"
 #: ../src/power_view.py:418
 msgid "Battery status will not be shown in the tray"
 msgstr "已變更為在系統匣隱藏電池狀態圖示"
-
-#~ msgid ""
-#~ "The Software Center is running. <span foreground='#cc5744'>%s</span> now "
-#~ "may harm your computer.\n"
-#~ "\n"
-#~ "Do you want to view the process in the Software Center?"
-#~ msgstr ""
-#~ "軟體中心正在執行。<span foreground='#cc5744'>%s</span>可能會損壞系統！\n"
-#~ "\n"
-#~ "您是否要打開軟體中心檢視進度？"
-
-#~ msgid "WenQuanYi Micro Hei Bold"
-#~ msgstr "文泉驛微米黑-粗體"
-
-#~ msgid "A program is still running:"
-#~ msgstr "一個程式仍在執行："
-
-#~ msgid ""
-#~ "The system will restart in \n"
-#~ "%s seconds.,12"
-#~ msgstr "系統將會在 %s 秒內重新啟動。,10"
-
-#~ msgid ""
-#~ "The system will suspend in \n"
-#~ "%s seconds.,12"
-#~ msgstr "系統將會在 %s 秒內暫停。,10"
-
-#~ msgid ""
-#~ "You will be automatically logged out in \n"
-#~ "%s seconds.,12"
-#~ msgstr "系統將會在 %s 秒內登出。,10"
-
-#~ msgid "Do you want to view the process in the Software Center?,12"
-#~ msgstr "您要在軟體中心檢視進度嗎？,10"
-
-#~ msgid ""
-#~ "The system will shut down in \n"
-#~ "%s seconds.,12"
-#~ msgstr "系統將會在 %s 秒內關閉。,10"

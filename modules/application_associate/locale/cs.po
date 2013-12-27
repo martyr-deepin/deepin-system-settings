@@ -1,0 +1,171 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# fri <pavelfric@seznam.cz>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-12 16:43+0800\n"
+"PO-Revision-Date: 2013-12-21 23:02+0000\n"
+"Last-Translator: fri <pavelfric@seznam.cz>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/deepin-system-settings/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: ../src/widget.py:44
+msgid "Autostart app"
+msgstr "Automaticky spustit program"
+
+#: ../src/widget.py:53
+msgid "OK"
+msgstr "OK"
+
+#: ../src/widget.py:54
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: ../src/widget.py:87
+msgid "Name:"
+msgstr "Název:"
+
+#: ../src/widget.py:89
+msgid "Exec:"
+msgstr "Spouštěcí soubor:"
+
+#: ../src/widget.py:91
+msgid "Comment:"
+msgstr "Poznámka:"
+
+#: ../src/media_view.py:60
+msgid "CD"
+msgstr "CD"
+
+#: ../src/media_view.py:61
+msgid "DVD"
+msgstr "DVD"
+
+#: ../src/media_view.py:62
+msgid "Audio Player"
+msgstr "Přehrávač zvuku"
+
+#: ../src/media_view.py:63
+msgid "Camera"
+msgstr "Kamera"
+
+#: ../src/media_view.py:64
+msgid "Applications"
+msgstr "Programy"
+
+#: ../src/media_view.py:65
+msgid "Automatically Mount"
+msgstr "Automaticky připojit"
+
+#: ../src/media_view.py:70 ../src/media_view.py:242
+msgid "Other applications"
+msgstr "Jiné programy"
+
+#: ../src/media_view.py:71 ../src/media_view.py:75
+msgid "Ask"
+msgstr "Ptát se"
+
+#: ../src/media_view.py:72 ../src/media_view.py:74
+msgid "Do nothing"
+msgstr "Nedělat nic"
+
+#: ../src/media_view.py:73
+msgid "Open folder"
+msgstr "Otevřít složku"
+
+#: ../src/media_view.py:76
+msgid "Mount"
+msgstr "Připojit"
+
+#: ../src/media_view.py:77
+msgid "Mount and open folder"
+msgstr "Připojit a otevřít složku"
+
+#: ../src/media_view.py:80 ../src/app_asso_view.py:62
+msgid "AutoPlay"
+msgstr "Automaticky přehrát"
+
+#: ../src/app_asso_view.py:61
+msgid "Default Applications"
+msgstr "Výchozí programy"
+
+#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
+msgid "Autostart"
+msgstr "Automaticky spustit"
+
+#: ../src/session_view.py:52
+msgid "Active"
+msgstr "Činné"
+
+#: ../src/session_view.py:52 ../src/search_keyword.py:29
+msgid "Application"
+msgstr "Program"
+
+#: ../src/session_view.py:52
+msgid "Description"
+msgstr "Popis"
+
+#: ../src/session_view.py:52
+msgid "Exec"
+msgstr "Spustitelný soubor"
+
+#: ../src/session_view.py:65
+msgid "New"
+msgstr "Nový"
+
+#: ../src/session_view.py:66
+msgid "Delete"
+msgstr "Smazat"
+
+#: ../src/treeview.py:131
+msgid "No exec"
+msgstr "Žádný spustitelný soubor"
+
+#: ../src/treeview.py:146
+msgid "No description"
+msgstr "Žádný popis"
+
+#: ../src/app_view.py:42
+msgid "Web"
+msgstr "Stránky"
+
+#: ../src/app_view.py:43
+msgid "Mail"
+msgstr "Pošta"
+
+#: ../src/app_view.py:44
+msgid "Editor"
+msgstr "Editor"
+
+#: ../src/app_view.py:45
+msgid "Music"
+msgstr "Hudba"
+
+#: ../src/app_view.py:46
+msgid "Video"
+msgstr "Video"
+
+#: ../src/app_view.py:47
+msgid "Photo"
+msgstr "Fotografie"
+
+#: ../src/app_view.py:48
+msgid "Terminal"
+msgstr "Terminál"
+
+#: ../src/search_keyword.py:30
+msgid "Media"
+msgstr "Záznamy"
+
+#: ../src/search_keyword.py:32
+msgid "Application Associate"
+msgstr "Přiřazení programů"

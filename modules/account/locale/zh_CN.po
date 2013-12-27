@@ -1,21 +1,22 @@
-# Chinese translations for PACKAGE package
-# PACKAGE 软件包的简体中文翻译.
-# Copyright (C) 2012 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2012.
-#
+# 
+# Translators:
+# Automatically generated, 2012
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-27 16:15+0800\n"
-"PO-Revision-Date: 2013-03-14 11:11+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2013-12-16 09:55+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
 msgid "Standard"
@@ -119,7 +120,8 @@ msgid "Cancel"
 msgstr "取消"
 
 #: ../src/main.py:228
-msgid "It is possible to keep the home directory when deleting a user account."
+msgid ""
+"It is possible to keep the home directory when deleting a user account."
 msgstr "删除用户时可以保留用户主目录。"
 
 #: ../src/main.py:231
@@ -348,15 +350,3 @@ msgstr "头像预览"
 #: ../src/edit_icon_page.py:924
 msgid "no picture"
 msgstr "头像为空"
-
-#~ msgid "Action"
-#~ msgstr "动作"
-
-#~ msgid "Set a password now"
-#~ msgstr "现在设置密码"
-
-#~ msgid "The length of the new password must have 6~16 characters."
-#~ msgstr "新密码长度必须为6~16位"
-
-#~ msgid "Passwords do not match"
-#~ msgstr "两次输入的密码不一致"

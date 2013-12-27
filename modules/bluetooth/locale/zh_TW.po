@@ -1,20 +1,22 @@
-# Chinese translations for PACKAGE package.
-# Copyright (C) 2013 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
 # Wang Dianjin <wangdianjin@linuxdeepin.com>, 2013
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-09 19:19+0800\n"
-"PO-Revision-Date: 2013-01-03 13:36+0800\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: zh_TW\n"
+"PO-Revision-Date: 2013-12-16 09:10+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-system-settings/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/tray_bluetooth_plugin.py:91 ../src/bluetooth_view.py:335
 msgid "Bluetooth Audio"
@@ -123,9 +125,7 @@ msgstr "可被搜尋"
 msgid ""
 "Failed!\n"
 "error msg: %s"
-msgstr ""
-"抱歉！文件傳送失敗，請檢視您的藍牙網路設定。\n"
-"錯誤訊息: %s"
+msgstr "抱歉！文件傳送失敗，請檢視您的藍牙網路設定。\n錯誤訊息: %s"
 
 #: ../src/bluetooth_sender.py:68
 #, python-format
@@ -197,24 +197,3 @@ msgstr "是"
 #: ../src/bt/agent.py:141
 msgid "No"
 msgstr "否"
-
-#~ msgid "Authorize connection"
-#~ msgstr "授權連線"
-
-#~ msgid "Authorize connection request from %s?"
-#~ msgstr "授權來自「%s」的連線請求？"
-
-#~ msgid "Transfer failed : %s"
-#~ msgstr "傳送失敗：%s"
-
-#~ msgid "Error occured when connecting to the device."
-#~ msgstr "連線到裝置時發生錯誤。"
-
-#~ msgid "Bluetooth Get Powered"
-#~ msgstr "藍牙是否啟用"
-
-#~ msgid "Be Searchedable"
-#~ msgstr "可被搜尋"
-
-#~ msgid "Succeed!"
-#~ msgstr "傳送成功！"
