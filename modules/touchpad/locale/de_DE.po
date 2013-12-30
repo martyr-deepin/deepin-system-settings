@@ -4,13 +4,14 @@
 # 
 # Translators:
 # corEr <baracus.de@gmail.com>, 2013
+# 胡家润 <hujiadfr@126.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-05 10:42+0800\n"
-"PO-Revision-Date: 2013-12-16 21:41+0000\n"
-"Last-Translator: corEr <baracus.de@gmail.com>\n"
+"PO-Revision-Date: 2013-12-28 15:14+0000\n"
+"Last-Translator: 胡家润 <hujiadfr@126.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/deepin-system-settings/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +21,7 @@ msgstr ""
 
 #: ../src/main.py:104
 msgid "Custom"
-msgstr ""
+msgstr "Brauch"
 
 #: ../src/main.py:105 ../src/search_keyword.py:26
 msgid "Pointer Speed"
@@ -44,19 +45,19 @@ msgstr "Frequenz"
 
 #: ../src/main.py:116
 msgid "Double-click on the smiley face to test your settings."
-msgstr ""
+msgstr "Doppelklicken Sie auf den Smiley, um Ihre Einstellungen zu testen."
 
 #: ../src/main.py:118
 msgid "Drag and Drop"
-msgstr ""
+msgstr "Drag and Drop"
 
 #: ../src/main.py:119 ../src/search_keyword.py:33
 msgid "Drag threshold"
-msgstr ""
+msgstr "Ziehen Sie die Schwelle"
 
 #: ../src/main.py:122
 msgid "Relevant Settings"
-msgstr ""
+msgstr "Relevante Einstellungen"
 
 #: ../src/main.py:125 ../src/search_keyword.py:31
 msgid "Right-handed"
@@ -76,44 +77,44 @@ msgstr "Mauseinstellungen"
 
 #: ../src/main.py:135
 msgid "Reset to Defaults"
-msgstr ""
+msgstr "Auf Standardwerte zurücksetzen"
 
 #: ../src/main.py:302 ../src/main.py:352
 msgid "Slow"
-msgstr ""
+msgstr "Langsam"
 
 #: ../src/main.py:303 ../src/main.py:353
 msgid "Fast"
-msgstr ""
+msgstr "Schnell"
 
 #: ../src/main.py:318
 msgid "Low"
-msgstr ""
+msgstr "Low"
 
 #: ../src/main.py:319
 msgid "High"
-msgstr ""
+msgstr "Hoch"
 
 #: ../src/main.py:395
 msgid "Short"
-msgstr ""
+msgstr "Kurze"
 
 #: ../src/main.py:396
 msgid "Long"
-msgstr ""
+msgstr "lange"
 
 #: ../src/main.py:519
 msgid "Set to right-handed"
-msgstr ""
+msgstr "Auf Rechtshänder Set"
 
 #: ../src/main.py:521
 msgid "Set to left-handed"
-msgstr ""
+msgstr "Auf linkshändige eingestellt"
 
 #: ../src/main.py:622
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Auf Standardeinstellungen zurücksetzen"
 
 #: ../src/search_keyword.py:25
 msgid "Touchpad"
-msgstr ""
+msgstr "Touchpad"

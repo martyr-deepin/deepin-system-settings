@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-12 16:43+0800\n"
-"PO-Revision-Date: 2013-12-26 12:31+0000\n"
+"PO-Revision-Date: 2013-12-27 12:41+0000\n"
 "Last-Translator: 胡家润 <hujiadfr@126.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/deepin-system-settings/language/de_DE/)\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr "DVD"
 
 #: ../src/media_view.py:62
 msgid "Audio Player"
-msgstr ""
+msgstr "Audio Player"
 
 #: ../src/media_view.py:63
 msgid "Camera"
@@ -73,7 +73,7 @@ msgstr "Andere Programme"
 
 #: ../src/media_view.py:71 ../src/media_view.py:75
 msgid "Ask"
-msgstr ""
+msgstr "Frag"
 
 #: ../src/media_view.py:72 ../src/media_view.py:74
 msgid "Do nothing"
@@ -141,7 +141,7 @@ msgstr "Internet"
 
 #: ../src/app_view.py:43
 msgid "Mail"
-msgstr ""
+msgstr "Mail"
 
 #: ../src/app_view.py:44
 msgid "Editor"
@@ -165,8 +165,8 @@ msgstr "Terminal"
 
 #: ../src/search_keyword.py:30
 msgid "Media"
-msgstr ""
+msgstr "Medien"
 
 #: ../src/search_keyword.py:32
 msgid "Application Associate"
-msgstr ""
+msgstr "Application Associate"

@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# 648trindade <rafaelgt.mbin@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-19 09:19+0800\n"
-"PO-Revision-Date: 2013-12-16 08:41+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"PO-Revision-Date: 2013-12-27 19:21+0000\n"
+"Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/deepin-system-settings/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,7 +25,7 @@ msgid ""
 "<span foreground='#cc5744'>Turn off</span> your computer now? \n"
 "\n"
 "The system will shut down in %s seconds."
-msgstr ""
+msgstr "\n<span foreground='#cc5744'>Desligar</span> seu computador agora? \n\nO sistema desligará em %s segundos."
 
 #: ../src/tray_shutdown_plugin.py:56
 #, python-format
@@ -33,7 +34,7 @@ msgid ""
 "<span foreground='#cc5744'>Restart</span> your computer now?\n"
 "\n"
 "The system will restart in %s seconds."
-msgstr ""
+msgstr "\n<span foreground='#cc5744'>Reiniciar</span> seu computador agora?\n\nO sistema reiniciará em %s segundos."
 
 #: ../src/tray_shutdown_plugin.py:59
 #, python-format
@@ -87,60 +88,60 @@ msgstr ""
 #: ../src/tray_shutdown_plugin.py:107 ../src/tray_shutdown_gui.py:96
 #: ../src/power_view.py:62
 msgid "Shut down"
-msgstr ""
+msgstr "Desligar"
 
 #: ../src/tray_shutdown_plugin.py:108
 msgid "Force shut down"
-msgstr ""
+msgstr "Forçar desligamento"
 
 #: ../src/tray_shutdown_plugin.py:113 ../src/tray_shutdown_gui.py:99
 msgid "Restart"
-msgstr ""
+msgstr "Reiniciar"
 
 #: ../src/tray_shutdown_plugin.py:114
 msgid "Force restart"
-msgstr ""
+msgstr "Forçar reinicialização"
 
 #: ../src/tray_shutdown_plugin.py:119 ../src/tray_shutdown_gui.py:102
 #: ../src/power_view.py:61 ../src/power_view.py:137
 msgid "Suspend"
-msgstr ""
+msgstr "Suspender"
 
 #: ../src/tray_shutdown_plugin.py:120
 msgid "Force suspend"
-msgstr ""
+msgstr "Forçar suspensão"
 
 #: ../src/tray_shutdown_plugin.py:125 ../src/tray_shutdown_gui.py:105
 msgid "Log out"
-msgstr ""
+msgstr "Sair"
 
 #: ../src/tray_shutdown_plugin.py:126
 msgid "Force log out"
-msgstr ""
+msgstr "Forçar saída"
 
 #: ../src/tray_shutdown_plugin.py:309
 msgid "Don't prompt again"
-msgstr ""
+msgstr "Não pergunte novamente"
 
 #: ../src/tray_shutdown_plugin.py:309
 msgid "I see"
-msgstr ""
+msgstr "Entendi"
 
 #: ../src/search_keyword.py:29 ../src/power_view.py:74
 msgid "Power Button Settings"
-msgstr ""
+msgstr "Configurações do Botão de Desligar"
 
 #: ../src/search_keyword.py:30 ../src/power_view.py:82
 msgid "When I press the power button"
-msgstr ""
+msgstr "Quando eu pressionar o botão de desligar"
 
 #: ../src/search_keyword.py:31 ../src/power_view.py:94
 msgid "When I close the lid"
-msgstr ""
+msgstr "Quando eu fecho a tampa"
 
 #: ../src/search_keyword.py:32
 msgid "When I press the sleep button"
-msgstr ""
+msgstr "Quando eu pressiono o botão de suspender"
 
 #: ../src/search_keyword.py:33 ../src/power_view.py:107
 msgid "Power Saving Settings"
@@ -148,15 +149,15 @@ msgstr ""
 
 #: ../src/search_keyword.py:34
 msgid "Hibernate"
-msgstr ""
+msgstr "Hibernar"
 
 #: ../src/search_keyword.py:35
 msgid "Turn off hard disk"
-msgstr ""
+msgstr "Desligar disco rígido"
 
 #: ../src/search_keyword.py:36 ../src/power_view.py:125
 msgid "Turn off monitor"
-msgstr ""
+msgstr "Desligar monitor"
 
 #: ../src/search_keyword.py:37 ../src/power_view.py:166
 msgid "Require password when computer wakes"
@@ -168,64 +169,64 @@ msgstr ""
 
 #: ../src/tray_dialog.py:42
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: ../src/tray_dialog.py:43
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: ../src/tray_shutdown_gui.py:93
 msgid "Switch user"
-msgstr ""
+msgstr "Alternar usuário"
 
 #: ../src/tray_shutdown_gui.py:108
 msgid "Lock"
-msgstr ""
+msgstr "Travar"
 
 #: ../src/power_view.py:50
 msgid "Minute"
-msgstr ""
+msgstr "Minuto"
 
 #: ../src/power_view.py:51 ../src/power_view.py:52 ../src/power_view.py:53
 #: ../src/power_view.py:54
 msgid "Minutes"
-msgstr ""
+msgstr "Minutos"
 
 #: ../src/power_view.py:55
 msgid "Hour"
-msgstr ""
+msgstr "Hora"
 
 #: ../src/power_view.py:56
 msgid "Never"
-msgstr ""
+msgstr "Nunca"
 
 #: ../src/power_view.py:60
 msgid "Do nothing"
-msgstr ""
+msgstr "Fazer nada"
 
 #: ../src/power_view.py:64
 msgid "Balanced"
-msgstr ""
+msgstr "Balanceada"
 
 #: ../src/power_view.py:65
 msgid "Power saver"
-msgstr ""
+msgstr "Economia de Energia"
 
 #: ../src/power_view.py:66
 msgid "High performance"
-msgstr ""
+msgstr "Alta performance"
 
 #: ../src/power_view.py:67
 msgid "Custom"
-msgstr ""
+msgstr "Personalizado"
 
 #: ../src/power_view.py:113
 msgid "Power Plan"
-msgstr ""
+msgstr "Plano de Energia"
 
 #: ../src/power_view.py:150
 msgid "Battery power remaining"
-msgstr ""
+msgstr "Energia da bateria restante"
 
 #: ../src/power_view.py:317
 msgid "Power plan has been reset to Balanced"
