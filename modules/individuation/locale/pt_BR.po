@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# 648trindade <rafaelgt.mbin@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-07 11:08+0800\n"
-"PO-Revision-Date: 2013-12-16 08:37+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"PO-Revision-Date: 2013-12-27 19:06+0000\n"
+"Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/deepin-system-settings/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,51 +20,51 @@ msgstr ""
 
 #: ../src/main.py:122 ../src/ui/delete_page.py:97 ../src/ui/select_page.py:357
 msgid "Delete Wallpaper"
-msgstr ""
+msgstr "Excluir Papel de parede"
 
 #: ../src/main.py:141
 msgid "Add Wallpaper"
-msgstr ""
+msgstr "Adicionar Papel de parede"
 
 #: ../src/search_keyword.py:29
 msgid "Personalization"
-msgstr ""
+msgstr "Personalização"
 
 #: ../src/search_keyword.py:30 ../src/ui/theme_page.py:55
 msgid "My Themes"
-msgstr ""
+msgstr "Meus Temas"
 
 #: ../src/search_keyword.py:31 ../src/ui/theme_page.py:60
 msgid "System Themes"
-msgstr ""
+msgstr "Temas do Sistema"
 
 #: ../src/search_keyword.py:32
 msgid "Wallpaper"
-msgstr ""
+msgstr "Papel de Parede"
 
 #: ../src/search_keyword.py:33 ../src/ui/add_page.py:85
 msgid "Pictures"
-msgstr ""
+msgstr "Fotos"
 
 #: ../src/theme_manager.py:420
 msgid "Untitled"
-msgstr ""
+msgstr "Sem título"
 
 #: ../src/ui/add_page.py:79
 msgid "Library"
-msgstr ""
+msgstr "Biblioteca"
 
 #: ../src/ui/add_page.py:80
 msgid "Internet"
-msgstr ""
+msgstr "Internet"
 
 #: ../src/ui/add_page.py:84
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: ../src/ui/add_page.py:86
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritos"
 
 #: ../src/ui/add_page.py:87
 msgid "360 Wallpaper"
@@ -75,25 +76,25 @@ msgstr ""
 
 #: ../src/ui/detail_page.py:37
 msgid "Minute"
-msgstr ""
+msgstr "Minuto"
 
 #: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
 #: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
 msgid "Minutes"
-msgstr ""
+msgstr "Minutos"
 
 #: ../src/ui/detail_page.py:40
 msgid "Hour"
-msgstr ""
+msgstr "Hora"
 
 #: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
 #: ../src/ui/detail_page.py:43
 msgid "Hours"
-msgstr ""
+msgstr "Horas"
 
 #: ../src/ui/detail_page.py:46
 msgid "Stretch"
-msgstr ""
+msgstr "Estender"
 
 #: ../src/ui/detail_page.py:46
 msgid "Tile"
@@ -101,15 +102,15 @@ msgstr ""
 
 #: ../src/ui/detail_page.py:70
 msgid "Position"
-msgstr ""
+msgstr "Posição"
 
 #: ../src/ui/detail_page.py:73
 msgid "Duration"
-msgstr ""
+msgstr "Duração"
 
 #: ../src/ui/detail_page.py:80
 msgid "Random"
-msgstr ""
+msgstr "Aleatório"
 
 #: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
 #: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
@@ -122,12 +123,12 @@ msgstr ""
 #: ../src/ui/select_page.py:336 ../src/ui/select_page.py:350
 #: ../src/ui/select_page.py:354
 msgid "Select all"
-msgstr ""
+msgstr "Selecionar tudo"
 
 #: ../src/ui/detail_page.py:88 ../src/ui/delete_page.py:61
 #: ../src/ui/select_page.py:311
 msgid "Delete"
-msgstr ""
+msgstr "Excluir"
 
 #: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
 #: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
@@ -136,71 +137,71 @@ msgstr ""
 #: ../src/ui/select_page.py:272 ../src/ui/select_page.py:290
 #: ../src/ui/select_page.py:334 ../src/ui/select_page.py:348
 msgid "Clear all"
-msgstr ""
+msgstr "Limpar tudo"
 
 #: ../src/ui/wallpaper_view.py:57
 msgid "Apply Wallpaper"
-msgstr ""
+msgstr "Aplicar Papel de parede"
 
 #: ../src/ui/wallpaper_item.py:1027
 msgid "Downloaded"
-msgstr ""
+msgstr "Baixado"
 
 #: ../src/ui/theme_view.py:94 ../src/ui/theme_view.py:111
 #, python-format
 msgid "Changed User Theme to %s"
-msgstr ""
+msgstr "Tema de Usuário Alterado para %s"
 
 #: ../src/ui/theme_view.py:130 ../src/ui/theme_view.py:256
 msgid "Save Theme As"
-msgstr ""
+msgstr "Salvar Tema Como"
 
 #: ../src/ui/theme_view.py:135
 msgid "Rename Theme"
-msgstr ""
+msgstr "Renomear Tema"
 
 #: ../src/ui/theme_view.py:139 ../src/ui/theme_view.py:156
 msgid "Delete Theme"
-msgstr ""
+msgstr "Excluir Tema"
 
 #: ../src/ui/theme_view.py:140
 #, python-format
 msgid "Are you sure you want to delete the theme %s?"
-msgstr ""
+msgstr "Tem certeza que quer excluir o tema %s?"
 
 #: ../src/ui/theme_view.py:150 ../src/ui/theme_view.py:154
 #: ../src/ui/theme_view.py:260
 msgid "Save As"
-msgstr ""
+msgstr "Salvar Como"
 
 #: ../src/ui/theme_view.py:153
 msgid "Rename"
-msgstr ""
+msgstr "Renomear"
 
 #: ../src/ui/theme_view.py:232 ../src/ui/theme_view.py:241
 #, python-format
 msgid "Changed System Theme to %s"
-msgstr ""
+msgstr "Tema do Sistema Alterado para %s"
 
 #: ../src/ui/cache_page.py:131 ../src/ui/delete_page.py:55
 #: ../src/ui/select_page.py:192 ../src/ui/select_page.py:248
 #: ../src/ui/select_page.py:307
 msgid "Back"
-msgstr ""
+msgstr "Voltar"
 
 #: ../src/ui/cache_page.py:133
 msgid "Download All"
-msgstr ""
+msgstr "Baixar Tudo"
 
 #: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:358
 msgid "Are you sure delete wallpaper?"
-msgstr ""
+msgstr "Tem certeza que quer excluir o papel de parede?"
 
 #: ../src/ui/select_page.py:196 ../src/ui/select_page.py:252
 #: ../src/ui/select_page.py:313
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: ../src/ui/select_page.py:282
 msgid "Your Pictures Folder is empty."
-msgstr ""
+msgstr "Sua Pasta de Imagens está vazia."

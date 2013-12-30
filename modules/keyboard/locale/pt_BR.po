@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# 648trindade <rafaelgt.mbin@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-12-05 15:17+0800\n"
-"PO-Revision-Date: 2013-12-16 08:24+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"PO-Revision-Date: 2013-12-27 19:04+0000\n"
+"Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/deepin-system-settings/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,67 +20,67 @@ msgstr ""
 
 #: ../src/search_keyword.py:25
 msgid "Keyboard"
-msgstr ""
+msgstr "Teclado"
 
 #: ../src/search_keyword.py:26 ../src/main.py:262
 msgid "Shortcuts"
-msgstr ""
+msgstr "Atalhos"
 
 #: ../src/search_keyword.py:27 ../src/main.py:261
 msgid "Typing"
-msgstr ""
+msgstr "Digitando"
 
 #: ../src/search_keyword.py:28
 msgid "Layout"
-msgstr ""
+msgstr "Layout"
 
 #: ../src/search_keyword.py:29 ../src/main.py:117
 msgid "Repeat"
-msgstr ""
+msgstr "Repetir"
 
 #: ../src/search_keyword.py:30 ../src/main.py:120
 msgid "Repeat Delay"
-msgstr ""
+msgstr "Atraso de Repetição"
 
 #: ../src/search_keyword.py:31 ../src/main.py:123
 msgid "Repeat Interval"
-msgstr ""
+msgstr "Intervalo de Repetição"
 
 #: ../src/keybind_all.py:33 ../src/main.py:504
 msgid "System"
-msgstr ""
+msgstr "Sistema"
 
 #: ../src/keybind_all.py:34
 msgid "Launcher"
-msgstr ""
+msgstr "Lançador"
 
 #: ../src/keybind_all.py:35
 msgid "Show desktop"
-msgstr ""
+msgstr "Mostrar desktop"
 
 #: ../src/keybind_all.py:37
 msgid "Lock screen"
-msgstr ""
+msgstr "Travar tela"
 
 #: ../src/keybind_all.py:38
 msgid "File manager"
-msgstr ""
+msgstr "Gerenciador de arquivos"
 
 #: ../src/keybind_all.py:39
 msgid "Switch applications"
-msgstr ""
+msgstr "Alternar aplicações"
 
 #: ../src/keybind_all.py:40
 msgid "Reverse switch applications"
-msgstr ""
+msgstr "Reverter alternar aplicações"
 
 #: ../src/keybind_all.py:41
 msgid "Switch applications with 3D effect"
-msgstr ""
+msgstr "Alternar aplicações com efeito 3D"
 
 #: ../src/keybind_all.py:42
 msgid "Reverse switch applications with 3D effect"
-msgstr ""
+msgstr "Reverter alternar aplicações com efeito 3D"
 
 #: ../src/keybind_all.py:43
 msgid "Show/Hide the dock temporarily"
@@ -87,15 +88,15 @@ msgstr ""
 
 #: ../src/keybind_all.py:47
 msgid "Take a screenshot"
-msgstr ""
+msgstr "Tirar uma captura de tela"
 
 #: ../src/keybind_all.py:49
 msgid "Take a screenshot of full screen"
-msgstr ""
+msgstr "Criar uma captura de tela inteira"
 
 #: ../src/keybind_all.py:51
 msgid "Take a screenshot of a window"
-msgstr ""
+msgstr "Criar uma captura de uma janela"
 
 #: ../src/keybind_all.py:53
 msgid "Take a screenshot delayed"
@@ -103,19 +104,19 @@ msgstr ""
 
 #: ../src/keybind_all.py:56
 msgid "Terminal"
-msgstr ""
+msgstr "Terminal"
 
 #: ../src/keybind_all.py:57
 msgid "Deepin terminal quake mode"
-msgstr ""
+msgstr "Deepin terminal modo terremoto"
 
 #: ../src/keybind_all.py:59
 msgid "Log out"
-msgstr ""
+msgstr "Sair"
 
 #: ../src/keybind_all.py:60 ../src/main.py:505
 msgid "Sound and Media"
-msgstr ""
+msgstr "Som e Mídia"
 
 #: ../src/keybind_all.py:61
 msgid "Launch calculator"
@@ -143,7 +144,7 @@ msgstr ""
 
 #: ../src/keybind_all.py:67
 msgid "Stop playback"
-msgstr ""
+msgstr "Parar reprodução"
 
 #: ../src/keybind_all.py:68
 msgid "Volume mute"
@@ -207,7 +208,7 @@ msgstr ""
 
 #: ../src/keybind_all.py:83 ../src/main.py:507
 msgid "Workspace"
-msgstr ""
+msgstr "Espaço de trabalho"
 
 #: ../src/keybind_all.py:84
 msgid "Switch to workspace 1"
@@ -279,19 +280,19 @@ msgstr ""
 
 #: ../src/main.py:126 ../src/main.py:133 ../src/main.py:340 ../src/main.py:379
 msgid "Fast"
-msgstr ""
+msgstr "Rápido"
 
 #: ../src/main.py:127 ../src/main.py:134 ../src/main.py:338 ../src/main.py:377
 msgid "Slow"
-msgstr ""
+msgstr "Lento"
 
 #: ../src/main.py:128 ../src/main.py:323
 msgid "Long"
-msgstr ""
+msgstr "Longo"
 
 #: ../src/main.py:129 ../src/main.py:325
 msgid "Short"
-msgstr ""
+msgstr "Curto"
 
 #: ../src/main.py:130
 msgid "Cursor Blink"
@@ -307,7 +308,7 @@ msgstr ""
 
 #: ../src/main.py:142
 msgid "Relevant Settings"
-msgstr ""
+msgstr "Configurações relevantes"
 
 #: ../src/main.py:147 ../src/main.py:663
 msgid "Test Repeat Interval"
@@ -315,19 +316,19 @@ msgstr ""
 
 #: ../src/main.py:154
 msgid "Mouse Settings"
-msgstr ""
+msgstr "Configurações do Mouse"
 
 #: ../src/main.py:157
 msgid "TouchPad Settings"
-msgstr ""
+msgstr "Configurações do TouchPad"
 
 #: ../src/main.py:160
 msgid "Reset"
-msgstr ""
+msgstr "Redefinir"
 
 #: ../src/main.py:208 ../src/main.py:770
 msgid "Replace"
-msgstr ""
+msgstr "Substituir"
 
 #: ../src/main.py:209 ../src/main.py:227
 msgid "Remove"
@@ -335,7 +336,7 @@ msgstr ""
 
 #: ../src/main.py:226
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: ../src/main.py:475 ../src/main.py:791 ../src/main.py:810
 #, python-format
@@ -361,7 +362,7 @@ msgstr ""
 
 #: ../src/main.py:772 ../src/accel_entry.py:56 ../src/accel_entry.py:74
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: ../src/main.py:850
 msgid "Deleted custom hotkey"
@@ -396,7 +397,7 @@ msgstr ""
 
 #: ../src/main.py:936
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
 #: ../src/main.py:1009
 msgid "Reset to default"
@@ -433,4 +434,4 @@ msgstr ""
 
 #: ../src/accel_entry.py:295
 msgid "Please input new shortcuts"
-msgstr ""
+msgstr "Por favor insira novos atalhos"
