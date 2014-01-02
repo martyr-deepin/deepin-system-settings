@@ -26,7 +26,7 @@ from deepin_utils.file import get_parent_dir
 import gtk
 import os
 from theme import app_theme
-from nls import _
+from dss_nls import _
 from constant import MODULES_NAME_FOR_L18N
 
 MODULE_DIR = os.path.join(get_parent_dir(__file__, 2), "modules")        

@@ -21,7 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from nls import _
+from dss_nls import _
 from theme import app_theme
 from dtk.ui.entry import InputEntry
 from dtk.ui.button import ImageButton

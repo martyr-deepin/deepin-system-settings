@@ -29,7 +29,7 @@ from dtk.ui.button import Button
 import gobject
 import gtk
 import dbus
-from nls import _
+from dss_nls import _
 from constant import *
     
 class FootBox(gtk.HBox):

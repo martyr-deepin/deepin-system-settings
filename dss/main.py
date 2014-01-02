@@ -22,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from search_page import SearchPage
-from nls import _
+from dss_nls import _
 from constant import APP_DBUS_NAME, APP_OBJECT_NAME, WINDOW_WIDTH, WINDOW_HEIGHT
 from deepin_utils.file import get_parent_dir
 from dtk.ui.application import Application

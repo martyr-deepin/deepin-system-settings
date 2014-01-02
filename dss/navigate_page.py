@@ -29,8 +29,7 @@ import pango
 import gtk
 import gobject
 import os
-import locale
-from nls import _
+from dss_nls import _
 
 from theme import app_theme
 from constant import MAIN_LANG

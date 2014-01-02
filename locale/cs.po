@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # fri <pavelfric@seznam.cz>, 2013
 # fri <pavelfric@seznam.cz>, 2013
@@ -9,14 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-12-16 13:12+0800\n"
+"POT-Creation-Date: 2014-01-02 10:39+0800\n"
 "PO-Revision-Date: 2013-12-22 18:49+0000\n"
 "Last-Translator: fri <pavelfric@seznam.cz>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/deepin-system-settings/language/cs/)\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/cs/)\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../dss/navigate_page.py:135
@@ -27,71 +28,7 @@ msgstr "10"
 msgid "Reset"
 msgstr "Nastavit znovu"
 
-#: ../dss/module_info.py:37
-msgid "Displays"
-msgstr "Obrazovky"
-
-#: ../dss/module_info.py:38
-msgid "Desktop"
-msgstr "Pracovní prostředí"
-
-#: ../dss/module_info.py:39
-msgid "Personalization"
-msgstr "Osobní úpravy"
-
-#: ../dss/module_info.py:40
-msgid "Sound"
-msgstr "Zvuk"
-
-#: ../dss/module_info.py:41
-msgid "Date &amp; Time"
-msgstr "Datum a čas"
-
-#: ../dss/module_info.py:42
-msgid "Power"
-msgstr "Energie"
-
-#: ../dss/module_info.py:43
-msgid "Keyboard"
-msgstr "Klávesnice"
-
-#: ../dss/module_info.py:44
-msgid "Mouse"
-msgstr "Myš"
-
-#: ../dss/module_info.py:45
-msgid "Touchpad"
-msgstr "Dotyková plocha"
-
-#: ../dss/module_info.py:46
-msgid "Printers"
-msgstr "Tiskárny"
-
-#: ../dss/module_info.py:47
-msgid "Network"
-msgstr "Síť"
-
-#: ../dss/module_info.py:48
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/module_info.py:49
-msgid "Additional Drivers"
-msgstr "Další ovladače"
-
-#: ../dss/module_info.py:50
-msgid "User Accounts"
-msgstr "Uživatelské účty"
-
-#: ../dss/module_info.py:51
-msgid "Default Applications"
-msgstr "Výchozí programy"
-
-#: ../dss/module_info.py:52
-msgid "System Information"
-msgstr "Systémové informace"
-
-#: ../dss/action_bar.py:95 ../dss/main.py:339 ../dss/main.py:454
+#: ../dss/action_bar.py:95 ../dss/main.py:340 ../dss/main.py:452
 msgid "System Settings"
 msgstr "Nastavení systému"
 
@@ -107,3 +44,67 @@ msgstr "Posláno %d"
 #: ../dss/bluetooth_dialog.py:113
 msgid "Ok"
 msgstr "OK"
+
+#: ../dss/constant.py:114
+msgid "Displays"
+msgstr "Obrazovky"
+
+#: ../dss/constant.py:115
+msgid "Desktop"
+msgstr "Pracovní prostředí"
+
+#: ../dss/constant.py:116
+msgid "Personalization"
+msgstr "Osobní úpravy"
+
+#: ../dss/constant.py:117
+msgid "Sound"
+msgstr "Zvuk"
+
+#: ../dss/constant.py:118
+msgid "Date &amp; Time"
+msgstr "Datum a čas"
+
+#: ../dss/constant.py:119
+msgid "Power"
+msgstr "Energie"
+
+#: ../dss/constant.py:120
+msgid "Keyboard"
+msgstr "Klávesnice"
+
+#: ../dss/constant.py:121
+msgid "Mouse"
+msgstr "Myš"
+
+#: ../dss/constant.py:122
+msgid "Touchpad"
+msgstr "Dotyková plocha"
+
+#: ../dss/constant.py:123
+msgid "Printers"
+msgstr "Tiskárny"
+
+#: ../dss/constant.py:124
+msgid "Network"
+msgstr "Síť"
+
+#: ../dss/constant.py:125
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+#: ../dss/constant.py:126
+msgid "Additional Drivers"
+msgstr "Další ovladače"
+
+#: ../dss/constant.py:127
+msgid "User Accounts"
+msgstr "Uživatelské účty"
+
+#: ../dss/constant.py:128
+msgid "Default Applications"
+msgstr "Výchozí programy"
+
+#: ../dss/constant.py:129
+msgid "System Information"
+msgstr "Systémové informace"

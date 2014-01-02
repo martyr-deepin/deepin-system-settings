@@ -30,7 +30,7 @@ from dtk.ui.dialog import DIALOG_MASK_SINGLE_PAGE, DialogBox, InputDialog, Confi
 import gobject
 import gtk
 from constant import *
-from nls import _
+from dss_nls import _
 
 class BluetoothProgressDialog(DialogBox):
     DIALOG_MASK_SINGLE_PAGE = 0
