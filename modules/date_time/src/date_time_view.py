@@ -190,25 +190,22 @@ class DatetimeView(gtk.HBox):
         self.calendar.get_handle().connect("day-selected", self.__on_day_selected, self.calendar)
         self.calendar_align.add(self.calendar.get_handle())
         self.change_date_box = gtk.HBox(spacing = 5)
+        self.change_date_box.set_size_request(300, -1)
         self.change_date_align = self.__setup_align()
         self.change_date_button = Button(_("Change Date"))
-        self.change_date_button.set_size_request(80, WIDGET_HEIGHT)
         self.change_date_button.connect("button-press-event", self.__on_change_date)
         self.change_date_align.add(self.change_date_button)
-        self.edit_date_align = self.__setup_align(padding_left = 110)
+        self.edit_date_align = self.__setup_align()
         self.edit_date_box = gtk.HBox(spacing = 5)
         self.cancel_date_button = Button(_("Cancel"))
-        self.cancel_date_button.set_size_request(50, WIDGET_HEIGHT)
         self.cancel_date_button.connect("button-press-event", self.__on_cancel_change_date)
         self.confirm_date_button = Button(_("Confirm"))
-        self.confirm_date_button.set_size_request(50, WIDGET_HEIGHT)
         self.confirm_date_button.connect("button-press-event", self.__on_confirm_change_date)
         self.__widget_pack_start(self.edit_date_box, 
             [self.cancel_date_button, self.confirm_date_button])
         self.edit_date_align.add(self.edit_date_box)
-        self.__widget_pack_start(self.change_date_box, 
-            [self.edit_date_align, self.change_date_align])
-        self.edit_date_align.set_child_visible(False)
+
+        self.change_date_box.pack_end(self.change_date_align, False, False)
         '''
         left box && align
         '''
@@ -415,17 +412,23 @@ class DatetimeView(gtk.HBox):
         pass
 
     def __on_change_date(self, widget, event):
-        self.edit_date_align.set_padding(0, 0 , 195, 0)
-        self.change_date_align.set_padding(0, 0, -100, 0)
-        self.edit_date_align.set_child_visible(True)
-        self.change_date_align.set_child_visible(False)
+        #self.edit_date_align.set_padding(0, 0 , 195, 0)
+        #self.change_date_align.set_padding(0, 0, -100, 0)
+        #self.edit_date_align.set_child_visible(True)
+        #self.change_date_align.set_child_visible(False)
+        self.change_date_box.remove(self.change_date_align)
+        self.change_date_box.pack_end(self.edit_date_align, False, False)
         self.calendar.clear_marks()
+        self.show_all()
 
     def __hide_edit_date(self):
-        self.edit_date_align.set_padding(0, 0, 110, 0)                          
-        self.change_date_align.set_padding(0, 0, 0, 0)                          
-        self.edit_date_align.set_child_visible(False)                           
-        self.change_date_align.set_child_visible(True) 
+        #self.edit_date_align.set_padding(0, 0, 110, 0)                          
+        #self.change_date_align.set_padding(0, 0, 0, 0)                          
+        #self.edit_date_align.set_child_visible(False)                           
+        #self.change_date_align.set_child_visible(True) 
+        self.change_date_box.remove(self.edit_date_align)
+        self.change_date_box.pack_end(self.change_date_align, False, False)
+        self.show_all()
 
     def __on_cancel_change_date(self, widget, event):
         self.__hide_edit_date()
