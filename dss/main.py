@@ -456,26 +456,9 @@ if __name__ == "__main__":
     frame_padding = 2
     frame_padding_top = 0
 
-    # Init main box.
-    # def expose_frame(widget, event):
-    #     cr = widget.window.cairo_create()
-    #     rect = widget.allocation
-
-        # cr.set_source_rgb(*color_hex_to_cairo("#aeaeae"))
-        # cr.rectangle(rect.x + frame_padding - 1, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
-        # cr.rectangle(rect.x + rect.width - frame_padding, rect.y + frame_padding_top, 1, rect.height - frame_padding - frame_padding_top)
-        # cr.rectangle(rect.x + frame_padding - 1, rect.y + rect.height - frame_padding, rect.width - frame_padding * 2 + 2, 1)
-        # cr.fill()
-
-        # Propagate expose.
-        # propagate_expose(widget, event)
-
-        # return True
-
     main_align = gtk.Alignment()
     main_align.set(0.5, 0.5, 1, 1)
     main_align.set_padding(frame_padding_top, frame_padding, frame_padding, frame_padding)
-    # main_align.connect("expose-event", expose_frame)
     main_box = gtk.VBox()
     body_box = gtk.VBox()
     foot_box = FootBox()
@@ -509,11 +492,6 @@ if __name__ == "__main__":
     # Init navigate page.
     navigate_page = NavigatePage(module_infos, lambda path, config: start_module_process(slider, content_page_info, path, config))
 
-    # Append widgets to slider.
-    slider.append_page(search_page)
-    if module_name == "":
-        slider.append_page(navigate_page)
-        application.window.connect("realize", lambda w: slider.set_to_page(navigate_page))
 
     foot_box.hide()
 
@@ -526,24 +504,29 @@ if __name__ == "__main__":
 
     # Connect widgets.
     body_box.pack_start(slider, True, True)
+
     main_box.pack_start(action_bar, False, False)
     main_box.pack_start(body_box, True, True)
-    main_box.pack_start(foot_box, False, False)
+    #main_box.pack_start(foot_box, False, False)
     main_align.add(main_box)
     application.main_box.pack_start(main_align)
 
     # Start dbus service.
-    DBusService(action_bar, content_page_info, application, module_dict, slider, foot_box)
+    DBusService(action_bar, content_page_info, application, module_dict,
+            slider, foot_box)
 
-    if module_name != "":
-        print "not none"
+    if not module_dict.get(module_name):
+        slider.set_to_page(navigate_page)
+    else:
         if is_dbus_name_exists(APP_DBUS_NAME):
-            bus_object = dbus.SessionBus().get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
+            session_bus = dbus.SessionBus()
+            bus_object = session_bus.get_object(APP_DBUS_NAME, APP_OBJECT_NAME)
             method = bus_object.get_dbus_method("message_receiver")
-            method("goto",
-                    (module_name, ""),
-                    reply_handler=handle_dbus_reply,
-                    error_handler=handle_dbus_error
-                  )
+            method(
+                "goto",
+                (module_name, ""),
+                reply_handler=handle_dbus_reply,
+                error_handler=handle_dbus_error
+                )
 
     application.run()
