@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-27 16:49+0800\n"
+"POT-Creation-Date: 2014-01-27 17:04+0800\n"
 "PO-Revision-Date: 2014-01-02 05:44+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -23,13 +23,13 @@ msgstr ""
 msgid "Downloaded"
 msgstr "已下载"
 
-#: ../src/main.py:81
-msgid "Image files"
-msgstr "图片文件"
-
 #: ../src/theme_manager.py:427
 msgid "Untitled"
 msgstr "未命名"
+
+#: ../src/main.py:81
+msgid "Image files"
+msgstr "图片文件"
 
 #: ../src/search_keyword.py:29
 msgid "Personalization"
@@ -50,6 +50,99 @@ msgstr "壁纸"
 #: ../src/search_keyword.py:33 ../src/ui/add_page.py:85
 msgid "Pictures"
 msgstr "本地图片"
+
+#: ../src/ui/detail_page.py:37
+msgid "Minute"
+msgstr "分钟"
+
+#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
+#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
+msgid "Minutes"
+msgstr "分钟"
+
+#: ../src/ui/detail_page.py:40
+msgid "Hour"
+msgstr "小时"
+
+#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
+#: ../src/ui/detail_page.py:43
+msgid "Hours"
+msgstr "小时"
+
+#: ../src/ui/detail_page.py:46
+msgid "Stretch"
+msgstr "缩放"
+
+#: ../src/ui/detail_page.py:46
+msgid "Tile"
+msgstr "平铺"
+
+#: ../src/ui/detail_page.py:70
+msgid "Position"
+msgstr "位置"
+
+#: ../src/ui/detail_page.py:73
+msgid "Duration"
+msgstr "间隔"
+
+#: ../src/ui/detail_page.py:80
+msgid "Random"
+msgstr "随机"
+
+#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
+#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
+#: ../src/ui/detail_page.py:194 ../src/ui/delete_page.py:58
+#: ../src/ui/delete_page.py:81 ../src/ui/delete_page.py:89
+#: ../src/ui/delete_page.py:116
+msgid "Select all"
+msgstr "选择所有"
+
+#: ../src/ui/detail_page.py:88 ../src/ui/delete_page.py:61
+#: ../src/ui/select_page.py:87 ../src/ui/select_page.py:228
+msgid "Delete"
+msgstr "删除"
+
+#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
+#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
+#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
+msgid "Clear all"
+msgstr "取消全选"
+
+#: ../src/ui/theme_view.py:97 ../src/ui/theme_view.py:114
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr "将用户主题改为%s"
+
+#: ../src/ui/theme_view.py:133 ../src/ui/theme_view.py:264
+msgid "Save Theme As"
+msgstr "主题另存为"
+
+#: ../src/ui/theme_view.py:137
+msgid "Rename Theme"
+msgstr "重命名主题"
+
+#: ../src/ui/theme_view.py:141 ../src/ui/theme_view.py:158
+msgid "Delete Theme"
+msgstr "删除主题"
+
+#: ../src/ui/theme_view.py:142
+#, python-format
+msgid "Are you sure you want to delete the theme %s?"
+msgstr "您确定要删除主题%s吗?"
+
+#: ../src/ui/theme_view.py:152 ../src/ui/theme_view.py:156
+#: ../src/ui/theme_view.py:268
+msgid "Save As"
+msgstr "另存为"
+
+#: ../src/ui/theme_view.py:155
+msgid "Rename"
+msgstr "重命名"
+
+#: ../src/ui/theme_view.py:240 ../src/ui/theme_view.py:249
+#, python-format
+msgid "Changed System Theme to %s"
+msgstr "将系统主题改为%s"
 
 #: ../src/ui/add_page.py:79 ../src/ui/local_page.py:88
 msgid "Library"
@@ -79,25 +172,6 @@ msgstr "爱壁纸"
 msgid "Back"
 msgstr "返回"
 
-#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
-#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
-#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
-#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
-#: ../src/ui/detail_page.py:194
-msgid "Select all"
-msgstr "选择所有"
-
-#: ../src/ui/delete_page.py:61 ../src/ui/select_page.py:87
-#: ../src/ui/select_page.py:228 ../src/ui/detail_page.py:88
-msgid "Delete"
-msgstr "删除"
-
-#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
-#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
-#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
-msgid "Clear all"
-msgstr "取消全选"
-
 #: ../src/ui/delete_page.py:97 ../src/ui/select_page.py:166
 #: ../src/ui/select_page.py:296
 msgid "Delete Wallpaper"
@@ -111,6 +185,18 @@ msgstr "您确定要删除壁纸吗？"
 #: ../src/ui/wallpaper_view.py:57
 msgid "Apply Wallpaper"
 msgstr "应用壁纸"
+
+#: ../src/ui/local_page.py:46
+msgid "My Favorites"
+msgstr "收藏夹"
+
+#: ../src/ui/local_page.py:47
+msgid "Local Wallpapers"
+msgstr "本地壁纸"
+
+#: ../src/ui/select_page.py:75
+msgid "Your Local Pictures folder is empty"
+msgstr "您的本地图片目录为空"
 
 #: ../src/ui/select_page.py:81 ../src/ui/select_page.py:225
 msgid "Set as wallpaper"
@@ -160,6 +246,10 @@ msgstr "选中%s张图片"
 msgid "choose %s picture"
 msgstr "选中%s张图片"
 
+#: ../src/ui/select_page.py:211
+msgid "Your Favorites folder is empty."
+msgstr "您的收藏夹是空的"
+
 #: ../src/ui/select_page.py:214
 msgid "Add from Local Pictures"
 msgstr "去本地壁纸添加"
@@ -167,88 +257,6 @@ msgstr "去本地壁纸添加"
 #: ../src/ui/cache_page.py:133
 msgid "Download All"
 msgstr "下载所有"
-
-#: ../src/ui/theme_view.py:97 ../src/ui/theme_view.py:114
-#, python-format
-msgid "Changed User Theme to %s"
-msgstr "将用户主题改为%s"
-
-#: ../src/ui/theme_view.py:133 ../src/ui/theme_view.py:264
-msgid "Save Theme As"
-msgstr "主题另存为"
-
-#: ../src/ui/theme_view.py:137
-msgid "Rename Theme"
-msgstr "重命名主题"
-
-#: ../src/ui/theme_view.py:141 ../src/ui/theme_view.py:158
-msgid "Delete Theme"
-msgstr "删除主题"
-
-#: ../src/ui/theme_view.py:142
-#, python-format
-msgid "Are you sure you want to delete the theme %s?"
-msgstr "您确定要删除主题%s吗?"
-
-#: ../src/ui/theme_view.py:152 ../src/ui/theme_view.py:156
-#: ../src/ui/theme_view.py:268
-msgid "Save As"
-msgstr "另存为"
-
-#: ../src/ui/theme_view.py:155
-msgid "Rename"
-msgstr "重命名"
-
-#: ../src/ui/theme_view.py:240 ../src/ui/theme_view.py:249
-#, python-format
-msgid "Changed System Theme to %s"
-msgstr "将系统主题改为%s"
-
-#: ../src/ui/detail_page.py:37
-msgid "Minute"
-msgstr "分钟"
-
-#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
-#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
-msgid "Minutes"
-msgstr "分钟"
-
-#: ../src/ui/detail_page.py:40
-msgid "Hour"
-msgstr "小时"
-
-#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
-#: ../src/ui/detail_page.py:43
-msgid "Hours"
-msgstr "小时"
-
-#: ../src/ui/detail_page.py:46
-msgid "Stretch"
-msgstr "缩放"
-
-#: ../src/ui/detail_page.py:46
-msgid "Tile"
-msgstr "平铺"
-
-#: ../src/ui/detail_page.py:70
-msgid "Position"
-msgstr "位置"
-
-#: ../src/ui/detail_page.py:73
-msgid "Duration"
-msgstr "间隔"
-
-#: ../src/ui/detail_page.py:80
-msgid "Random"
-msgstr "随机"
-
-#: ../src/ui/local_page.py:46
-msgid "My Favorites"
-msgstr "收藏夹"
-
-#: ../src/ui/local_page.py:47
-msgid "Local Wallpapers"
-msgstr "本地壁纸"
 
 #~ msgid "已设置%s张图片为背景图片"
 #~ msgstr "已设置%s张图片为背景图片"

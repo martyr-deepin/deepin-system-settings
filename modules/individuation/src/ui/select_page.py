@@ -72,7 +72,7 @@ class LocalPicturePage(gtk.VBox):
         self.select_view.connect("double-click-item", self.select_view_double_clicked)
         self.select_view_sw = self.select_view.get_scrolled_window()               
 
-        no_favorites_label = Label("Your Local Pictures folder is empty")
+        no_favorites_label = Label(_("Your Local Pictures folder is empty"))
         self.no_favorites_align = gtk.Alignment(0.5, 0.5, 0, 0)
         self.no_favorites_align.add(no_favorites_label)
 
@@ -208,7 +208,7 @@ class FavoritePage(gtk.VBox):
         self.select_view_sw = self.select_view.get_scrolled_window()
 
         label_box = gtk.VBox()
-        no_favorites_label = Label("Your Favorites folder is empty.")
+        no_favorites_label = Label(_("Your Favorites folder is empty."))
         align_up = get_align(align=(0.5, 0.5, 0, 0))
         align_up.add(no_favorites_label)
         go_to_local_action = ActionButton(_("Add from Local Pictures"), lambda: event_manager.emit("switch-to-local-pictures", self))
