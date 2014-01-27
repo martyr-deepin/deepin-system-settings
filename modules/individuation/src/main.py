@@ -78,7 +78,7 @@ class DeepinIndividuation(object):
         d.set_select_multiple(True)
         d.set_current_folder(get_images_dir())
         pic_filter = gtk.FileFilter()
-        pic_filter.set_name(_("图片文件"))
+        pic_filter.set_name(_("Image files"))
         pic_filter.add_mime_type("image/*")
         d.add_filter(pic_filter)
         response = d.run()

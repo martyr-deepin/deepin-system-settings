@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-06 13:03+0800\n"
+"POT-Creation-Date: 2014-01-27 16:42+0800\n"
 "PO-Revision-Date: 2014-01-02 05:44+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -19,19 +19,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/main.py:500
+#: ../src/main.new.py:500 ../src/ui/wallpaper_item.py:1028
 msgid "Downloaded"
 msgstr "Baixado"
+
+#: ../src/main.py:81
+msgid "Image files"
+msgstr ""
+
+#: ../src/theme_manager.py:427
+msgid "Untitled"
+msgstr ""
 
 #: ../src/search_keyword.py:29
 msgid "Personalization"
 msgstr "Personalização"
 
-#: ../src/search_keyword.py:30
+#: ../src/search_keyword.py:30 ../src/ui/theme_page.py:55
 msgid "My Themes"
 msgstr "Meus Temas"
 
-#: ../src/search_keyword.py:31
+#: ../src/search_keyword.py:31 ../src/ui/theme_page.py:60
 msgid "System Themes"
 msgstr "Temas do Sistema"
 
@@ -39,6 +47,217 @@ msgstr "Temas do Sistema"
 msgid "Wallpaper"
 msgstr "Papel de Parede"
 
-#: ../src/search_keyword.py:33
+#: ../src/search_keyword.py:33 ../src/ui/add_page.py:85
 msgid "Pictures"
 msgstr "Fotos"
+
+#: ../src/ui/add_page.py:79 ../src/ui/local_page.py:88
+msgid "Library"
+msgstr ""
+
+#: ../src/ui/add_page.py:80 ../src/ui/local_page.py:89
+msgid "Internet"
+msgstr ""
+
+#: ../src/ui/add_page.py:84
+#, fuzzy
+msgid "System"
+msgstr "Temas do Sistema"
+
+#: ../src/ui/add_page.py:86
+msgid "Favorites"
+msgstr ""
+
+#: ../src/ui/add_page.py:87 ../src/ui/local_page.py:98
+#, fuzzy
+msgid "360 Wallpaper"
+msgstr "Papel de Parede"
+
+#: ../src/ui/add_page.py:88 ../src/ui/local_page.py:99
+#, fuzzy
+msgid "LoveWallpaper"
+msgstr "Papel de Parede"
+
+#: ../src/ui/delete_page.py:55 ../src/ui/cache_page.py:131
+msgid "Back"
+msgstr ""
+
+#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
+#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
+#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
+#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
+#: ../src/ui/detail_page.py:194
+msgid "Select all"
+msgstr ""
+
+#: ../src/ui/delete_page.py:61 ../src/ui/select_page.py:87
+#: ../src/ui/select_page.py:228 ../src/ui/detail_page.py:88
+msgid "Delete"
+msgstr ""
+
+#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
+#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
+#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
+msgid "Clear all"
+msgstr ""
+
+#: ../src/ui/delete_page.py:97 ../src/ui/select_page.py:166
+#: ../src/ui/select_page.py:296
+#, fuzzy
+msgid "Delete Wallpaper"
+msgstr "Papel de Parede"
+
+#: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:167
+#: ../src/ui/select_page.py:297
+msgid "Are you sure delete wallpaper?"
+msgstr ""
+
+#: ../src/ui/wallpaper_view.py:57
+#, fuzzy
+msgid "Apply Wallpaper"
+msgstr "Papel de Parede"
+
+#: ../src/ui/select_page.py:81 ../src/ui/select_page.py:225
+#, fuzzy
+msgid "Set as wallpaper"
+msgstr "Papel de Parede"
+
+#: ../src/ui/select_page.py:84
+msgid "Add to Favorites"
+msgstr ""
+
+#: ../src/ui/select_page.py:118 ../src/ui/select_page.py:258
+#, fuzzy, python-format
+msgid "%s pictures are set as wallpaper"
+msgstr "Papel de Parede"
+
+#: ../src/ui/select_page.py:120 ../src/ui/select_page.py:260
+#, fuzzy, python-format
+msgid "%s picture is set as wallpaper"
+msgstr "Papel de Parede"
+
+#: ../src/ui/select_page.py:147
+#, python-format
+msgid "add %s pictures to Favorites"
+msgstr ""
+
+#: ../src/ui/select_page.py:149
+#, python-format
+msgid "add %s picture to Favorites"
+msgstr ""
+
+#: ../src/ui/select_page.py:157 ../src/ui/select_page.py:287
+#, python-format
+msgid "delete %s pictures"
+msgstr ""
+
+#: ../src/ui/select_page.py:159 ../src/ui/select_page.py:289
+#, python-format
+msgid "delete %s picture"
+msgstr ""
+
+#: ../src/ui/select_page.py:180 ../src/ui/select_page.py:310
+#, python-format
+msgid "choose %s pictures"
+msgstr ""
+
+#: ../src/ui/select_page.py:182 ../src/ui/select_page.py:312
+#, python-format
+msgid "choose %s picture"
+msgstr ""
+
+#: ../src/ui/select_page.py:214
+msgid "Add from Local Pictures"
+msgstr ""
+
+#: ../src/ui/cache_page.py:133
+#, fuzzy
+msgid "Download All"
+msgstr "Baixado"
+
+#: ../src/ui/theme_view.py:97 ../src/ui/theme_view.py:114
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr ""
+
+#: ../src/ui/theme_view.py:133 ../src/ui/theme_view.py:264
+#, fuzzy
+msgid "Save Theme As"
+msgstr "Temas do Sistema"
+
+#: ../src/ui/theme_view.py:137
+#, fuzzy
+msgid "Rename Theme"
+msgstr "Temas do Sistema"
+
+#: ../src/ui/theme_view.py:141 ../src/ui/theme_view.py:158
+#, fuzzy
+msgid "Delete Theme"
+msgstr "Temas do Sistema"
+
+#: ../src/ui/theme_view.py:142
+#, python-format
+msgid "Are you sure you want to delete the theme %s?"
+msgstr ""
+
+#: ../src/ui/theme_view.py:152 ../src/ui/theme_view.py:156
+#: ../src/ui/theme_view.py:268
+msgid "Save As"
+msgstr ""
+
+#: ../src/ui/theme_view.py:155
+msgid "Rename"
+msgstr ""
+
+#: ../src/ui/theme_view.py:240 ../src/ui/theme_view.py:249
+#, fuzzy, python-format
+msgid "Changed System Theme to %s"
+msgstr "Temas do Sistema"
+
+#: ../src/ui/detail_page.py:37
+msgid "Minute"
+msgstr ""
+
+#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
+#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
+msgid "Minutes"
+msgstr ""
+
+#: ../src/ui/detail_page.py:40
+msgid "Hour"
+msgstr ""
+
+#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
+#: ../src/ui/detail_page.py:43
+msgid "Hours"
+msgstr ""
+
+#: ../src/ui/detail_page.py:46
+msgid "Stretch"
+msgstr ""
+
+#: ../src/ui/detail_page.py:46
+msgid "Tile"
+msgstr ""
+
+#: ../src/ui/detail_page.py:70
+#, fuzzy
+msgid "Position"
+msgstr "Personalização"
+
+#: ../src/ui/detail_page.py:73
+msgid "Duration"
+msgstr ""
+
+#: ../src/ui/detail_page.py:80
+msgid "Random"
+msgstr ""
+
+#: ../src/ui/local_page.py:46
+msgid "My Favorites"
+msgstr ""
+
+#: ../src/ui/local_page.py:47
+#, fuzzy
+msgid "Local Wallpapers"
+msgstr "Papel de Parede"

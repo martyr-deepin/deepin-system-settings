@@ -113,7 +113,12 @@ class LocalPicturePage(gtk.VBox):
 
     def __on_set_as_wallpapper(self, widget, data=None):
         self.select_view.set_multi_wallpapper()
-        self.notice_label.set_text(_("已设置%s张图片为背景图片") % self.select_view.get_select_number())
+        n = self.select_view.get_select_number()
+        if n > 1:
+            notice_text = _("%s pictures are set as wallpaper") % n
+        else:
+            notice_text = _("%s picture is set as wallpaper") % n
+        self.notice_label.set_text(notice_text)
         self.timeout_notice_hide()
 
     def select_view_double_clicked(self, widget, item, x, y):
@@ -137,12 +142,22 @@ class LocalPicturePage(gtk.VBox):
 
     def __on_add_favorites(self, widget, data=None):
         self.select_view.add_favorites()
-        self.notice_label.set_text(_("已收藏%s张图片") % self.select_view.get_select_number())
+        n = self.select_view.get_select_number()
+        if n > 1:
+            notice_text = _("add %s pictures to Favorites") % n
+        else:
+            notice_text = _("add %s picture to Favorites") % n
+        self.notice_label.set_text(notice_text)
         self.timeout_notice_hide()
 
     def __delete_confirm(self):
         self.select_view.delete()
-        self.notice_label.set_text(_("已删除%s张图片") % self.select_view.get_select_number())
+        n = self.select_view.get_select_number()
+        if n > 1:
+            notice_text = _("delete %s pictures") % n
+        else:
+            notice_text = _("delete %s picture") % n
+        self.notice_label.set_text(notice_text)
         self.timeout_notice_hide()
         if self.button_box in self.control_box.get_children():
             self.control_box.remove(self.button_box)
@@ -161,7 +176,11 @@ class LocalPicturePage(gtk.VBox):
     def __on_select_select_wallpaper(self, name, obj, select_item):             
         select_number = self.select_view.get_select_number()
         if select_number > 0:
-            self.notice_label.set_text(_("已选中%s张图片") % select_number)
+            if select_number > 1:
+                notice_text = _("choose %s pictures") % select_number
+            else:
+                notice_text = _("choose %s picture") % select_number
+            self.notice_label.set_text(notice_text)
             if self.button_box not in self.control_box.get_children():
                 self.control_box.pack_end(self.button_box, False, False)
         else:
@@ -189,10 +208,10 @@ class FavoritePage(gtk.VBox):
         self.select_view_sw = self.select_view.get_scrolled_window()
 
         label_box = gtk.VBox()
-        no_favorites_label = Label("Your Favorites folder is empty")
+        no_favorites_label = Label("Your Favorites folder is empty.")
         align_up = get_align(align=(0.5, 0.5, 0, 0))
         align_up.add(no_favorites_label)
-        go_to_local_action = ActionButton("去本地图片中添加", lambda: event_manager.emit("switch-to-local-pictures", self))
+        go_to_local_action = ActionButton(_("Add from Local Pictures"), lambda: event_manager.emit("switch-to-local-pictures", self))
         align_down = get_align(align=(0.5, 0.5, 0, 0))
         align_down.add(go_to_local_action)
 
@@ -234,7 +253,12 @@ class FavoritePage(gtk.VBox):
 
     def __on_set_as_wallpapper(self, widget, data=None):
         self.select_view.set_multi_wallpapper()
-        self.notice_label.set_text(_("已设置%s张图片为背景图片") % self.select_view.get_select_number())
+        n = self.select_view.get_select_number()
+        if n > 1:
+            notice_text = _("%s pictures are set as wallpaper") % n
+        else:
+            notice_text = _("%s picture is set as wallpaper") % n
+        self.notice_label.set_text(notice_text)
         self.timeout_notice_hide()
 
     def select_view_double_clicked(self, widget, item, x, y):
@@ -258,7 +282,12 @@ class FavoritePage(gtk.VBox):
 
     def __delete_confirm(self):
         self.select_view.delete()
-        self.notice_label.set_text(_("已删除%s张图片") % self.select_view.get_select_number())
+        n = self.select_view.get_select_number()
+        if n > 1:
+            notice_text = _("delete %s pictures") % n
+        else:
+            notice_text = _("delete %s picture") % n
+        self.notice_label.set_text(notice_text)
         self.timeout_notice_hide()
         if self.button_box in self.control_box.get_children():
             self.control_box.remove(self.button_box)
@@ -277,7 +306,11 @@ class FavoritePage(gtk.VBox):
     def __on_select_select_wallpaper(self, name, obj, select_item):
         select_number = self.select_view.get_select_number()
         if select_number > 0:
-            self.notice_label.set_text(_("已选中%s张图片") % select_number)
+            if select_number > 1:
+                notice_text = _("choose %s pictures") % select_number
+            else:
+                notice_text = _("choose %s picture") % select_number
+            self.notice_label.set_text(notice_text)
             if self.button_box not in self.control_box.get_children():
                 self.control_box.pack_end(self.button_box, False, False)
         else:
