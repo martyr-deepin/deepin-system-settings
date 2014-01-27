@@ -59,6 +59,11 @@ data_dirs.insert(0, data_home)
 config_dir = os.path.join(program_dir, 'data', 'config')
 config_dirs.insert(0, config_dir)
 
+def get_favorite_dir():
+    favorites_dir = os.path.join(get_config_dir(), "favorites")
+    if not os.path.exists(favorites_dir):
+        os.makedirs(favorites_dir)
+    return favorites_dir
 
 def get_config_dir():
     return config_home
