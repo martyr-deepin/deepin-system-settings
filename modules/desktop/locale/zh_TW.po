@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-04-14 09:24+0800\n"
 "PO-Revision-Date: 2014-01-29 02:30+0000\n"
 "Last-Translator: freddy4212 <freddy4212@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-"
@@ -34,7 +34,7 @@ msgid "Invisible"
 msgstr "一直隱藏"
 
 #: ../src/desktop_view.py:73
-msgid "Buttom"
+msgid "Bottom"
 msgstr "底部"
 
 #: ../src/desktop_view.py:74

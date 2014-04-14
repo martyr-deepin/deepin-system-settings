@@ -70,7 +70,7 @@ class DesktopView(gtk.VBox):
         self.display_style_items = [(_("Default Style"), 0),
                                     (_("Auto Hide"), 1),
                                     (_("Invisible"), 2)]
-        self.place_style_items = [(_("Buttom"), 0),
+        self.place_style_items = [(_("Bottom"), 0),
                                   (_("Top"), 1)]
         self.icon_size_items = [(_("Default Icon"), 0),
                                 (_("Small"), 1)]
