@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-04-17 10:18+0800\n"
 "PO-Revision-Date: 2014-02-10 02:21+0000\n"
 "Last-Translator: cxbii <mycxbii@gmail.com>\n"
 "Language-Team: English (United States) (http://www.transifex.com/projects/p/"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../src/treeitem.py:308 ../src/accel_entry.py:238 ../src/accel_entry.py:426
+msgid "disable"
+msgstr ""
 
 #: ../src/accel_entry.py:52
 #, python-format
@@ -46,10 +50,6 @@ msgstr ""
 
 #: ../src/accel_entry.py:73
 msgid "Reassign"
-msgstr ""
-
-#: ../src/accel_entry.py:238 ../src/accel_entry.py:426 ../src/treeitem.py:308
-msgid "disable"
 msgstr ""
 
 #: ../src/accel_entry.py:295
@@ -406,7 +406,7 @@ msgstr ""
 
 #: ../src/main.py:867
 msgid ""
-"Please input new shortcuts. Press Esc to cancle or press Backspace to clear."
+"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
 msgstr ""
 
 #: ../src/main.py:912

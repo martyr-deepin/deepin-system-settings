@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-04-17 10:18+0800\n"
 "PO-Revision-Date: 2014-02-08 03:50+0000\n"
 "Last-Translator: freddy4212 <freddy4212@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-"
@@ -21,6 +21,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../src/treeitem.py:308 ../src/accel_entry.py:238 ../src/accel_entry.py:426
+msgid "disable"
+msgstr "停用"
 
 #: ../src/accel_entry.py:52
 #, python-format
@@ -51,10 +55,6 @@ msgstr "如果你重新指派捷徑鍵為「%s」，「%s」的捷徑鍵就會�
 #: ../src/accel_entry.py:73
 msgid "Reassign"
 msgstr "重新指派"
-
-#: ../src/accel_entry.py:238 ../src/accel_entry.py:426 ../src/treeitem.py:308
-msgid "disable"
-msgstr "停用"
 
 #: ../src/accel_entry.py:295
 msgid "Please input new shortcuts"
@@ -410,7 +410,7 @@ msgstr "設定「%s」的捷徑鍵為「%s」"
 
 #: ../src/main.py:867
 msgid ""
-"Please input new shortcuts. Press Esc to cancle or press Backspace to clear."
+"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
 msgstr "請鍵入新的捷徑鍵。按 Esc 取消或按 Backspace 來清除。"
 
 #: ../src/main.py:912

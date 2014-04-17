@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-04-17 10:18+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/treeitem.py:308 ../src/accel_entry.py:238 ../src/accel_entry.py:426
+msgid "disable"
+msgstr ""
 
 #: ../src/accel_entry.py:52
 #, python-format
@@ -45,10 +49,6 @@ msgstr ""
 
 #: ../src/accel_entry.py:73
 msgid "Reassign"
-msgstr ""
-
-#: ../src/accel_entry.py:238 ../src/accel_entry.py:426 ../src/treeitem.py:308
-msgid "disable"
 msgstr ""
 
 #: ../src/accel_entry.py:295
@@ -405,7 +405,7 @@ msgstr ""
 
 #: ../src/main.py:867
 msgid ""
-"Please input new shortcuts. Press Esc to cancle or press Backspace to clear."
+"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
 msgstr ""
 
 #: ../src/main.py:912
