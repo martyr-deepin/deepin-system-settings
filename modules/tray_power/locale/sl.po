@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 22:10+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-02-26 19:40+0000\n"
 "Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
@@ -20,49 +20,38 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr "Popolnoma napolnjen"
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr "Polnenje, preostali čas %s"
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "Preostali čas %s"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "Napredno..."
+
+msgid "Balanced"
+msgstr "Uravnoteženo"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "Polnenje, preostali čas %s"
+
+msgid "Custom"
+msgstr "Po meri"
+
+msgid "Fully charged"
+msgstr "Popolnoma napolnjen"
+
+msgid "High performance"
+msgstr "Visoka zmogljivost"
+
 #, python-format
 msgid "Low power(%s%%)"
 msgstr "Prazen akumulator(%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr "Akumulator je skoraj prazen, prosim napolni!"
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr "Napajanje"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr "Uravnoteženo"
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
 msgstr "Varčevanje z energijo"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr "Visoka zmogljivost"
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr "Po meri"
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr "Napredno..."
+msgid "Your battery is running low, please charge!"
+msgstr "Akumulator je skoraj prazen, prosim napolni!"

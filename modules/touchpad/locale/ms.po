@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-10 06:50+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Malay (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/ms/)\n"
+"Language: ms\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Acceleration"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Double-click"
+msgstr ""
+
+msgid "Double-click on the smiley face to test your settings."
+msgstr ""
+
+msgid "Drag and Drop"
+msgstr ""
+
+msgid "Drag threshold"
+msgstr ""
+
+msgid "Fast"
+msgstr ""
+
+msgid "Frequency"
+msgstr ""
+
+msgid "High"
+msgstr ""
+
+msgid "Keyboard Settings"
+msgstr ""
+
+msgid "Left-handed"
+msgstr ""
+
+msgid "Long"
+msgstr ""
+
+msgid "Low"
+msgstr ""
+
+msgid "Mouse Settings"
+msgstr ""
+
+msgid "Pointer Speed"
+msgstr ""
+
+msgid "Relevant Settings"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Reset to defaults"
+msgstr ""
+
+msgid "Right-handed"
+msgstr ""
+
+msgid "Sensitivity"
+msgstr ""
+
+msgid "Set to left-handed"
+msgstr ""
+
+msgid "Set to right-handed"
+msgstr ""
+
+msgid "Short"
+msgstr ""
+
+msgid "Slow"
+msgstr ""
+
+msgid "Touchpad"
+msgstr ""

@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# nen3 <mijbblog@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-16 12:16+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-08 13:42+0000\n"
+"Last-Translator: nen3 <mijbblog@gmail.com>\n"
 "Language-Team: Spanish (Mexico) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/es_MX/)\n"
 "Language: es_MX\n"
@@ -18,49 +19,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
-msgstr ""
+msgstr "%s restante"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "Avanzado..."
+
+msgid "Balanced"
+msgstr "Balanceado"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "Cargando, %s restante"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Fully charged"
+msgstr "Cargada completamente"
+
+msgid "High performance"
+msgstr "Alto rendimiento"
+
 #, python-format
 msgid "Low power(%s%%)"
-msgstr ""
+msgstr "Batería baja(%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr ""
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr ""
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr ""
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
-msgstr ""
+msgstr "Ahorrador de energía"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr ""
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr ""
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr ""
+msgid "Your battery is running low, please charge!"
+msgstr "La carga de la batería es demasiado baja, por favor cargue"

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 11:28+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-06 19:31+0000\n"
 "Last-Translator: ballmet <emkohencel@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sk/)\n"
@@ -19,91 +19,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "10"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "Systémové nastavenia"
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "Obrazovky"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "Pracovné prostredie"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "Personalizácia"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "Zvuk"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "Dátum a čas"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "Energia"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "Klávesnica"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "Myš"
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "Touchpad"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "Tlačiarne"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "Sieť"
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "Ďalšie ovládače"
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "Používateľské účty"
+msgid "Bluetooth"
+msgstr "Bluetooth"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "Predvolené programy"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "Informácie o systéme"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "Nastaviť znovu"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "Zrušiť"
 
-#: ../dss/bluetooth_dialog.py:78
+msgid "Date &amp; Time"
+msgstr "Dátum a čas"
+
+msgid "Default Applications"
+msgstr "Predvolené programy"
+
+msgid "Desktop"
+msgstr "Pracovné prostredie"
+
+msgid "Displays"
+msgstr "Obrazovky"
+
+msgid "Keyboard"
+msgstr "Klávesnica"
+
+msgid "Mouse"
+msgstr "Myš"
+
+msgid "Network"
+msgstr "Sieť"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Personalization"
+msgstr "Personalizácia"
+
+msgid "Power"
+msgstr "Energia"
+
+msgid "Printers"
+msgstr "Tlačiarne"
+
+msgid "Reset"
+msgstr "Nastaviť znovu"
+
 #, python-format
 msgid "Sent %d"
 msgstr "Poslané %d"
 
-#: ../dss/bluetooth_dialog.py:113
-msgid "Ok"
-msgstr "Ok"
+msgid "Sound"
+msgstr "Zvuk"
+
+msgid "System Information"
+msgstr "Informácie o systéme"
+
+msgid "System Settings"
+msgstr "Systémové nastavenia"
+
+msgid "Touchpad"
+msgstr "Touchpad"
+
+msgid "User Accounts"
+msgstr "Používateľské účty"

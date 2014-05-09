@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Gnechen <benperezc@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-01-24 05:20+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
 "Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/es_CL/)\n"
@@ -18,162 +19,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr ""
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
-msgstr ""
+msgstr "Esconder automaticamente"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr ""
-
-#: ../src/desktop_view.py:73
 msgid "Bottom"
 msgstr ""
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr ""
+msgid "Bottom Right"
+msgstr "Abajo a la derecha"
 
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr ""
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr ""
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr ""
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr ""
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "Lanzador"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Maximizar"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr ""
-
-#: ../src/desktop_view.py:94
 msgid "Computer"
 msgstr "Sistema"
 
-#: ../src/desktop_view.py:97
+msgid "Default Icon"
+msgstr "Icono por defecto"
+
+msgid "Default Style"
+msgstr "Estilo por defecto"
+
+msgid "Desktop Icon"
+msgstr "Icono de escritorio"
+
+msgid "Display Style"
+msgstr "Estilo de muestra"
+
+msgid "Dock"
+msgstr "Panel"
+
+msgid "Hide computer icon"
+msgstr "Esconder el icono del equipo"
+
+msgid "Hide deepin software conter icon"
+msgstr "Esconder el icono del Centro de aplicaciones"
+
+msgid "Hide home icon"
+msgstr "Esconder la carpeta principal"
+
+msgid "Hide trash icon"
+msgstr "Esconder el icono del basurero"
+
 msgid "Home"
 msgstr "Principal"
 
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Papelera"
+msgid "Hot Zone"
+msgstr "Area destacada"
 
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Centro de Software"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr ""
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr ""
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr ""
-
-#: ../src/desktop_view.py:156
 msgid "Icon Size"
-msgstr ""
+msgstr "Tamaño del icono"
 
-#: ../src/desktop_view.py:170
+msgid "Invisible"
+msgstr "Invisible"
+
+msgid "Launcher"
+msgstr "Lanzador"
+
+msgid "Left Edge"
+msgstr "Borde izquierdo"
+
+msgid "Lock Page"
+msgstr "Bloquear pagina"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "Ingreso &amp;&amp; Bloquear"
+
+msgid "Login Page"
+msgstr "Pagina de ingreso"
+
+msgid "Maximize"
+msgstr "Maximizar"
+
+msgid "Nothing"
+msgstr "Nada"
+
+msgid "Opening Window"
+msgstr "Abriendo una ventana"
+
+msgid "Place Style"
+msgstr "Estilo de lugar"
+
 msgid "Preview"
 msgstr "Previsualizar"
 
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr ""
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr ""
-
-#: ../src/desktop_view.py:200
-msgid "Bottom Right"
-msgstr ""
-
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr ""
-
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr ""
-
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr ""
-
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr ""
-
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr ""
-
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr ""
-
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr ""
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr ""
-
-#: ../src/desktop_view.py:346
-msgid "Hide computer icon"
-msgstr ""
-
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr ""
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr ""
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr ""
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr ""
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr ""
-
-#: ../src/desktop_view.py:370
-msgid "Hide deepin software conter icon"
-msgstr ""
-
-#: ../src/desktop_view.py:468
 msgid "Reset to default value"
 msgstr "Reinicializar los valores predeterminados"
+
+msgid "Right Edge"
+msgstr "Borde derecho"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "Show computer icon"
+msgstr "Mostrar el icono del equipo"
+
+msgid "Show deepin software center icon"
+msgstr "Mostrar el icono del Centro de aplicaciones"
+
+msgid "Show home icon"
+msgstr "Mostrar la carpeta principal"
+
+msgid "Show trash icon"
+msgstr "Mostrar el icono del basurero"
+
+msgid "Small"
+msgstr "Pequeño"
+
+msgid "Software Center"
+msgstr "Centro de Software"
+
+msgid "Top"
+msgstr "Arriba"
+
+msgid "Top Edge"
+msgstr "Borde de arriba"
+
+msgid "Top Left"
+msgstr "Arriba a la izquierda"
+
+msgid "Trash"
+msgstr "Papelera"

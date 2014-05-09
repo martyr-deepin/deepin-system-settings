@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-09 13:50+0000\n"
 "Last-Translator: aphrxia <aphrxia@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/deepin-system-"
@@ -20,400 +20,327 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/settings_widget.py:610 ../src/lists.py:488 ../src/wlan_config.py:332
-#: ../src/wlan_config.py:583
-msgid "SSID:"
-msgstr "SSID:"
-
-#: ../src/settings_widget.py:614 ../src/lists.py:522
-#: ../src/mobile_config.py:269 ../src/dsl_config.py:280
-#: ../src/vpn_config.py:180 ../src/wlan_config.py:263
-msgid "Password:"
-msgstr "Kata sandi:"
-
-#: ../src/settings_widget.py:618
-msgid "Active"
-msgstr "Aktif"
-
-#: ../src/helper.py:112
 #, python-format
 msgid "%s deleted"
 msgstr "%s telah dihapus"
 
-#: ../src/lists.py:560
-msgid "active"
-msgstr "aktif"
-
-#: ../src/lan_config.py:39 ../src/lan_config.py:94 ../src/lan_config.py:124
-#: ../src/main_ui.py:219 ../src/tray_ui.py:61 ../src/dsl_config.py:118
-#: ../src/dsl_config.py:134 ../src/vpn_config.py:128
-#: ../src/search_keyword.py:29
-msgid "Wired"
-msgstr "Koneksi kabel"
-
-#: ../src/lan_config.py:95 ../src/mobile_config.py:219
-#: ../src/mobile_config.py:281 ../src/dsl_config.py:102
-#: ../src/vpn_config.py:126 ../src/vpn_config.py:353 ../src/wlan_config.py:288
-msgid "Advanced"
-msgstr "Setelan tingkat lanjut..."
-
-#: ../src/lan_config.py:109 ../src/mobile_config.py:223
-#: ../src/ipsettings.py:41 ../src/dsl_config.py:119 ../src/vpn_config.py:142
-#: ../src/wlan_config.py:216
-msgid "IPv4 settings"
-msgstr "Pengaturan IPv4"
-
-#: ../src/lan_config.py:110 ../src/ipsettings.py:314 ../src/wlan_config.py:217
-msgid "IPv6 settings"
-msgstr "Pengaturan IPv6"
-
-#: ../src/lan_config.py:152 ../src/dsl_config.py:144 ../src/wlan_config.py:612
-msgid "Device Mac Address:"
-msgstr "Alamat Mac piranti:"
-
-#: ../src/lan_config.py:153 ../src/dsl_config.py:152 ../src/wlan_config.py:616
-msgid "Cloned Mac Address:"
-msgstr "Alamat Mac terklon:"
-
-#: ../src/lan_config.py:154 ../src/wlan_config.py:621
-msgid "MTU:"
-msgstr "MTU:"
-
-#: ../src/widgets.py:50 ../src/widgets.py:64
-#, python-format
-msgid "Please input password for %s"
-msgstr "Mohon masukkan kata sandi untuk %s"
-
-#: ../src/widgets.py:85 ../src/mobile_config.py:276 ../src/elements.py:248
-#: ../src/wlan_config.py:277
-msgid "Show password"
-msgstr "Tunjukkan karakter kata kunci"
-
-#: ../src/widgets.py:97
-msgid "OK"
-msgstr "OK"
-
-#: ../src/widgets.py:98
-msgid "Cancel"
-msgstr "Batal"
-
-#: ../src/main.py:48 ../src/vpn_config.py:27 ../src/search_keyword.py:32
-msgid "VPN"
-msgstr "VPN"
-
-#: ../src/mobile_config.py:38 ../src/main_ui.py:1097 ../src/tray_ui.py:63
-#: ../src/search_keyword.py:33
-msgid "Mobile Network"
-msgstr "Jaringan mobile"
-
-#: ../src/mobile_config.py:217 ../src/mobile_config.py:262
-#: ../src/dsl_config.py:100 ../src/vpn_config.py:124 ../src/wlan_config.py:199
-msgid "Basic"
-msgstr "Dasar"
-
-#: ../src/mobile_config.py:222 ../src/mobile_config.py:252
-msgid "Broadband"
-msgstr "Broadband"
-
-#: ../src/mobile_config.py:224 ../src/mobile_config.py:461
-#: ../src/dsl_config.py:120 ../src/dsl_config.py:379
-msgid "PPP"
-msgstr "PPP"
-
-#: ../src/mobile_config.py:263
-msgid "Code:"
-msgstr "Kode:"
-
-#: ../src/mobile_config.py:266 ../src/dsl_config.py:268
-#: ../src/vpn_config.py:176
-msgid "Username:"
-msgstr "Nama pengguna:"
-
-#: ../src/mobile_config.py:277
-msgid "Regions setting"
-msgstr "Pengaturan wilayah"
-
-#: ../src/mobile_config.py:282
 msgid "APN:"
 msgstr "APN:"
 
-#: ../src/mobile_config.py:285
-msgid "Network ID:"
-msgstr "ID Jaringan:"
+msgid "Active"
+msgstr "Aktif"
 
-#: ../src/mobile_config.py:288
-msgid "Type:"
-msgstr "Tipe:"
+msgid "Ad-hoc"
+msgstr "Ad-hoc"
 
-#: ../src/mobile_config.py:291
-msgid "PIN:"
-msgstr "PIN:"
+msgid "Advanced"
+msgstr "Setelan tingkat lanjut..."
 
-#: ../src/mobile_config.py:303
-msgid "Allow roaming if home network is not available"
-msgstr "Perbolehkan roaming jika tidak tersedia jaringan lokal"
+msgid "Advanced..."
+msgstr "Setelan tingkat lanjut..."
 
-#: ../src/mobile_config.py:472 ../src/dsl_config.py:387
-#: ../src/vpn_config.py:373
-msgid "Configure Method"
-msgstr "Konfigurasikan Metode"
-
-#: ../src/mobile_config.py:474 ../src/dsl_config.py:393
-#: ../src/vpn_config.py:377
-msgid "EAP"
-msgstr "EAP"
-
-#: ../src/mobile_config.py:477 ../src/dsl_config.py:394
-#: ../src/vpn_config.py:380
-msgid "PAP"
-msgstr "PAP"
-
-#: ../src/mobile_config.py:480 ../src/dsl_config.py:395
-#: ../src/vpn_config.py:383
-msgid "CHAP"
-msgstr "CHAP"
-
-#: ../src/mobile_config.py:483 ../src/dsl_config.py:396
-#: ../src/vpn_config.py:386
-msgid "MSCHAP"
-msgstr "MSCHAP"
-
-#: ../src/mobile_config.py:486 ../src/dsl_config.py:397
-#: ../src/vpn_config.py:389
-msgid "MSCHAP v2"
-msgstr "MSCHAP v2"
-
-#: ../src/mobile_config.py:500 ../src/dsl_config.py:400
-#: ../src/vpn_config.py:403
-msgid "Compression"
-msgstr "Kompresi data"
-
-#: ../src/mobile_config.py:504 ../src/dsl_config.py:404
-#: ../src/vpn_config.py:408
-msgid "Echo"
-msgstr "Echo"
-
-#: ../src/mobile_config.py:509 ../src/dsl_config.py:413
-#: ../src/vpn_config.py:414
-msgid "Use point-to-point encryption(mppe)"
-msgstr "Gunakan point-to-point encryption(mppe)"
-
-#: ../src/mobile_config.py:512 ../src/dsl_config.py:414
-#: ../src/vpn_config.py:417
-msgid "Require 128-bit encryption"
-msgstr "Minta enkripsi 128-bit"
-
-#: ../src/mobile_config.py:515 ../src/dsl_config.py:415
-#: ../src/vpn_config.py:420
-msgid "Use stateful MPPE"
-msgstr "Gunakan MPPE stateful"
-
-#: ../src/mobile_config.py:518 ../src/dsl_config.py:416
-#: ../src/vpn_config.py:423
 msgid "Allow BSD data Compression"
 msgstr "Perbolehkan kompresi BSD untuk data"
 
-#: ../src/mobile_config.py:521 ../src/dsl_config.py:417
-#: ../src/vpn_config.py:426
 msgid "Allow Deflate data compression"
 msgstr "Perbolehkan kompresi deflate untuk data"
 
-#: ../src/mobile_config.py:524 ../src/dsl_config.py:418
-#: ../src/vpn_config.py:429
-msgid "Use TCP header compression"
-msgstr "Gunakan kompresi pada header TCP"
+msgid "Allow roaming if home network is not available"
+msgstr "Perbolehkan roaming jika tidak tersedia jaringan lokal"
 
-#: ../src/mobile_config.py:527 ../src/dsl_config.py:422
-#: ../src/vpn_config.py:433
-msgid "Send PPP echo packets"
-msgstr "Kirim paket echo PPP"
+msgid "Apply"
+msgstr "Terapkan"
 
-#: ../src/ipsettings.py:51 ../src/ipsettings.py:322
-msgid "Link-Local Only"
-msgstr "Hanya Link lokal"
+msgid "Authentication:"
+msgstr "Autentikasi:"
 
-#: ../src/ipsettings.py:53 ../src/ipsettings.py:323
-msgid "Automatic IP address"
-msgstr "Alamat IP otomatis"
+msgid "Automatic"
+msgstr "Otomatis"
 
-#: ../src/ipsettings.py:57 ../src/ipsettings.py:327
-msgid "IP Address:"
-msgstr "Alamat IP:"
-
-#: ../src/ipsettings.py:58
-msgid "Subnet Mask:"
-msgstr "Subnet Mask:"
-
-#: ../src/ipsettings.py:59 ../src/ipsettings.py:329 ../src/vpn_config.py:172
-msgid "Gateway:"
-msgstr "Gateway:"
-
-#: ../src/ipsettings.py:67 ../src/ipsettings.py:338
 msgid "Automatic DNS server address"
 msgstr "Alamat server DNS otomatis"
 
-#: ../src/ipsettings.py:71 ../src/ipsettings.py:342
-msgid "Primary DNS server address:"
-msgstr "Alamat server DNS utama:"
+msgid "Automatic IP address"
+msgstr "Alamat IP otomatis"
 
-#: ../src/ipsettings.py:72 ../src/ipsettings.py:343
-msgid "Slave DNS server address:"
-msgstr "Alamat server DNS cadangan:"
+msgid "BSSID:"
+msgstr "BSSID:"
 
-#: ../src/ipsettings.py:185
-msgid "IPv4"
-msgstr "IPv4"
+msgid "Band:"
+msgstr "Band:"
 
-#: ../src/ipsettings.py:185
-msgid "Subnet Mask"
-msgstr "Subnet Mask"
+msgid "Basic"
+msgstr "Dasar"
 
-#: ../src/ipsettings.py:185
+msgid "Broadband"
+msgstr "Broadband"
+
+msgid "CDMA config"
+msgstr "Konfigurasi CDMA"
+
+msgid "CHAP"
+msgstr "CHAP"
+
+msgid "Cancel"
+msgstr "Batal"
+
+msgid "Channel:"
+msgstr "Channel:"
+
+msgid "Cloned Mac Address:"
+msgstr "Alamat Mac terklon:"
+
+msgid "Code:"
+msgstr "Kode:"
+
+msgid "Compression"
+msgstr "Kompresi data"
+
+msgid "Config"
+msgstr "Konfigurasi"
+
+msgid "Configuration url"
+msgstr "URL Konfigurasi"
+
+msgid "Configure Method"
+msgstr "Konfigurasikan Metode"
+
+msgid "Connection Name:"
+msgstr "Nama Koneksi:"
+
+msgid "Country or Region:"
+msgstr "Negara atau Wilayah:"
+
+msgid "Create a DSL connection"
+msgstr "Buat koneksi DSL"
+
+msgid "Create a VPN connection"
+msgstr "Buat koneksi VPN"
+
+msgid "DSL"
+msgstr "DSL"
+
+msgid "Default Setting"
+msgstr "Setingan awal"
+
+msgid "Default Settings"
+msgstr "Pengaturan awal"
+
+msgid "Delete"
+msgstr "Hapus"
+
+msgid "Device Mac Address:"
+msgstr "Alamat Mac piranti:"
+
+msgid "Dsl config"
+msgstr "Konfigurasi DSL"
+
+msgid "EAP"
+msgstr "EAP"
+
+msgid "Echo"
+msgstr "Echo"
+
+msgid "Enable IPSec tunnel to l2tp host"
+msgstr "Perbolehkan tunnel IPSec ke host l2tp"
+
+msgid "FTP Proxy"
+msgstr "Proxy FTP"
+
+msgid "GSM config"
+msgstr "Konfigurasi GSM"
+
 msgid "Gateway"
 msgstr "Gateway"
 
-#: ../src/ipsettings.py:190
-#, python-format
-msgid "Valid %s address."
-msgstr "Alamat %s valid."
+msgid "Gateway ID:"
+msgstr "ID Gateway:"
 
-#: ../src/ipsettings.py:193
+msgid "Gateway:"
+msgstr "Gateway:"
+
+msgid "Group Name:"
+msgstr "Nama Grup:"
+
+msgid "Hidden network"
+msgstr "Jaringan tersembunyi:"
+
+msgid "Hotspot"
+msgstr "Hotspot"
+
+msgid "Http Proxy"
+msgstr "Proxy HTTP"
+
+msgid "Https Proxy"
+msgstr "Proxy HTTPS"
+
+msgid "IP Address:"
+msgstr "Alamat IP:"
+
+msgid "IPSec Setting"
+msgstr "Pengaturan IPSec"
+
+msgid "IPv4"
+msgstr "IPv4"
+
+msgid "IPv4 settings"
+msgstr "Pengaturan IPv4"
+
+msgid "IPv6 settings"
+msgstr "Pengaturan IPv6"
+
+msgid "Infrastructure"
+msgstr "Infrastruktur jaringan"
+
 #, python-format
 msgid "Invalid %s address."
 msgstr "Alamat %s tidak valid."
 
-#: ../src/ipsettings.py:328
-msgid "Prefix:"
-msgstr "Prefix:"
+msgid "Key:"
+msgstr "Kunci:"
 
-#: ../src/main_ui.py:397 ../src/tray_ui.py:62 ../src/wlan_config.py:215
-#: ../src/wlan_config.py:575 ../src/search_keyword.py:30
-msgid "Wireless"
-msgstr "Jaringan nirkabel"
+msgid "L2TP"
+msgstr "L2TP"
 
-#: ../src/main_ui.py:398
-msgid "Set up a hidden wireless connection"
-msgstr "Set up koneksi ke jaringan nirkabel tersembunyi"
+msgid "Link-Local Only"
+msgstr "Hanya Link lokal"
 
-#: ../src/main_ui.py:599
-msgid "Hotspot"
-msgstr "Hotspot"
+msgid "MSCHAP"
+msgstr "MSCHAP"
 
-#: ../src/main_ui.py:733 ../src/tray_ui.py:66 ../src/dsl_config.py:37
-#: ../src/dsl_config.py:253 ../src/search_keyword.py:31
-msgid "DSL"
-msgstr "DSL"
+msgid "MSCHAP v2"
+msgstr "MSCHAP v2"
 
-#: ../src/main_ui.py:734
-msgid "Create a DSL connection"
-msgstr "Buat koneksi DSL"
+msgid "MTU:"
+msgstr "MTU:"
 
-#: ../src/main_ui.py:883 ../src/tray_ui.py:65
-msgid "VPN Network"
-msgstr "Jaringan VPN"
-
-#: ../src/main_ui.py:884
-msgid "Create a VPN connection"
-msgstr "Buat koneksi VPN"
-
-#: ../src/main_ui.py:1098
-msgid "Mobile Configuration"
-msgstr "Konfigurasi Jaringan Mobile"
-
-#: ../src/main_ui.py:1166 ../src/main_ui.py:1204 ../src/search_keyword.py:34
-msgid "Proxy"
-msgstr "Proxy"
-
-#: ../src/main_ui.py:1186
-msgid "Proxy Configuration"
-msgstr "Konfigurasi Proxy"
-
-#: ../src/tray_ui.py:70
-msgid "Advanced..."
-msgstr "Setelan tingkat lanjut..."
-
-#: ../src/tray_ui.py:485
-#, python-format
-msgid "card %d"
-msgstr "kartu %d"
-
-#: ../src/proxy_config.py:80
 msgid "Manual"
 msgstr "Manual"
 
-#: ../src/proxy_config.py:81
-msgid "Http Proxy"
-msgstr "Proxy HTTP"
+msgid "Mobile Configuration"
+msgstr "Konfigurasi Jaringan Mobile"
 
-#: ../src/proxy_config.py:82
-msgid "Https Proxy"
-msgstr "Proxy HTTPS"
+msgid "Mobile Network"
+msgstr "Jaringan mobile"
 
-#: ../src/proxy_config.py:83
-msgid "FTP Proxy"
-msgstr "Proxy FTP"
+msgid "Mode:"
+msgstr "Mode:"
 
-#: ../src/proxy_config.py:84
-msgid "Socks Proxy"
-msgstr "Proxy Socks"
+msgid "NT Domain:"
+msgstr "Domain NT:"
 
-#: ../src/proxy_config.py:87 ../src/wlan_config.py:599
-msgid "Automatic"
-msgstr "Otomatis"
+msgid "Network"
+msgstr "Jaringan"
 
-#: ../src/proxy_config.py:88
-msgid "Configuration url"
-msgstr "URL Konfigurasi"
+msgid "Network ID:"
+msgstr "ID Jaringan:"
 
-#: ../src/proxy_config.py:102
-msgid "Apply"
-msgstr "Terapkan"
-
-#: ../src/sidebar_ui.py:46
 msgid "New Connection"
 msgstr "Koneksi Baru"
 
-#: ../src/sidebar_ui.py:92 ../src/wlan_config.py:121
-msgid "Hidden network"
-msgstr "Jaringan tersembunyi:"
+msgid "None"
+msgstr "Tidak ada"
 
-#: ../src/foot_box_ui.py:69
-msgid "Delete"
-msgstr "Hapus"
+msgid "OK"
+msgstr "OK"
 
-#: ../src/foot_box_ui.py:96
-msgid "Save"
-msgstr "Simpan"
+msgid "Open System"
+msgstr "Open System"
 
-#: ../src/foot_box_ui.py:140
-msgid "Tip:"
-msgstr "Tip:"
+msgid "PAP"
+msgstr "PAP"
 
-#: ../src/dsl_config.py:182
-msgid "Default Setting"
-msgstr "Setingan awal"
+msgid "PIN:"
+msgstr "PIN:"
 
-#: ../src/dsl_config.py:262 ../src/vpn_config.py:168
-msgid "Connection Name:"
-msgstr "Nama Koneksi:"
+msgid "PPP"
+msgstr "PPP"
 
-#: ../src/dsl_config.py:275
-msgid "Service:"
-msgstr "Servis:"
+msgid "PPP settings"
+msgstr "Pengaturan PPP"
 
-#: ../src/dsl_config.py:301 ../src/vpn_config.py:213
-msgid "Show Password"
-msgstr "Tunjukkan karakter kata sandi"
+msgid "PPTP"
+msgstr "PPTP"
 
-#: ../src/regions.py:71
-msgid "Country or Region:"
-msgstr "Negara atau Wilayah:"
+msgid "Password:"
+msgstr "Kata sandi:"
 
-#: ../src/regions.py:89
+#, python-format
+msgid "Please input password for %s"
+msgstr "Mohon masukkan kata sandi untuk %s"
+
+msgid "Pre_Shared_key"
+msgstr "Pre_Shared_key"
+
+msgid "Prefix:"
+msgstr "Prefix:"
+
+msgid "Primary DNS server address:"
+msgstr "Alamat server DNS utama:"
+
 msgid "Provider:"
 msgstr "Penyedia Layanan:"
 
-#: ../src/regions.py:104
+msgid "Proxy"
+msgstr "Proxy"
+
+msgid "Proxy Configuration"
+msgstr "Konfigurasi Proxy"
+
+msgid "Region"
+msgstr "Wilayah"
+
+msgid "Regions setting"
+msgstr "Pengaturan wilayah"
+
+msgid "Require 128-bit encryption"
+msgstr "Minta enkripsi 128-bit"
+
+msgid "SSID:"
+msgstr "SSID:"
+
+msgid "Save"
+msgstr "Simpan"
+
+msgid "Security"
+msgstr "Keamanan"
+
+msgid "Security:"
+msgstr "Keamanan:"
+
+msgid "Send PPP echo packets"
+msgstr "Kirim paket echo PPP"
+
+msgid "Service:"
+msgstr "Servis:"
+
+msgid "Set up a hidden wireless connection"
+msgstr "Set up koneksi ke jaringan nirkabel tersembunyi"
+
+msgid "Shared Key"
+msgstr "Shared Key"
+
+msgid "Show Password"
+msgstr "Tunjukkan karakter kata sandi"
+
+msgid "Show password"
+msgstr "Tunjukkan karakter kata kunci"
+
+msgid "Slave DNS server address:"
+msgstr "Alamat server DNS cadangan:"
+
+msgid "Socks Proxy"
+msgstr "Proxy Socks"
+
+msgid "Subnet Mask"
+msgstr "Subnet Mask"
+
+msgid "Subnet Mask:"
+msgstr "Subnet Mask:"
+
+msgid "Tip:"
+msgstr "Tip:"
+
 msgid ""
 "Tips:This assistant helps you easily set up a mobile broadband connection to "
 "a cellular network."
@@ -421,154 +348,67 @@ msgstr ""
 "Tips: Asisten ini membantu Anda untuk melakukan setup koneksi mobile "
 "broadband dengan mudah untuk jaringan seluler."
 
-#: ../src/regions.py:213
-msgid "Region"
-msgstr "Wilayah"
+msgid "Type:"
+msgstr "Tipe:"
 
-#: ../src/vpn_config.py:144
-msgid "PPP settings"
-msgstr "Pengaturan PPP"
-
-#: ../src/vpn_config.py:156 ../src/vpn_config.py:189
-msgid "PPTP"
-msgstr "PPTP"
-
-#: ../src/vpn_config.py:184
-msgid "NT Domain:"
-msgstr "Domain NT:"
-
-#: ../src/vpn_config.py:190
-msgid "L2TP"
-msgstr "L2TP"
-
-#: ../src/vpn_config.py:436
-msgid "Use protocal field compression negotiation"
-msgstr "Gunakan negosiasi dengan kompresi field protokol"
-
-#: ../src/vpn_config.py:439
 msgid "Use Address/Control compression"
 msgstr "Gunakan kompresi pada Pengalamatan/Kontrol"
 
-#: ../src/vpn_config.py:457
-msgid "IPSec Setting"
-msgstr "Pengaturan IPSec"
+msgid "Use TCP header compression"
+msgstr "Gunakan kompresi pada header TCP"
 
-#: ../src/vpn_config.py:461
-msgid "Enable IPSec tunnel to l2tp host"
-msgstr "Perbolehkan tunnel IPSec ke host l2tp"
+msgid "Use point-to-point encryption(mppe)"
+msgstr "Gunakan point-to-point encryption(mppe)"
 
-#: ../src/vpn_config.py:464
-msgid "Group Name:"
-msgstr "Nama Grup:"
+msgid "Use protocal field compression negotiation"
+msgstr "Gunakan negosiasi dengan kompresi field protokol"
 
-#: ../src/vpn_config.py:467
-msgid "Gateway ID:"
-msgstr "ID Gateway:"
+msgid "Use stateful MPPE"
+msgstr "Gunakan MPPE stateful"
 
-#: ../src/vpn_config.py:470
-msgid "Pre_Shared_key"
-msgstr "Pre_Shared_key"
+msgid "Username:"
+msgstr "Nama pengguna:"
 
-#: ../src/wlan_config.py:231
-msgid "Security"
-msgstr "Keamanan"
+msgid "VPN"
+msgstr "VPN"
 
-#: ../src/wlan_config.py:250
-msgid "Security:"
-msgstr "Keamanan:"
+msgid "VPN Network"
+msgstr "Jaringan VPN"
 
-#: ../src/wlan_config.py:253
-msgid "Key:"
-msgstr "Kunci:"
-
-#: ../src/wlan_config.py:256
-msgid "Wep index:"
-msgstr "Indeks WEP:"
-
-#: ../src/wlan_config.py:260
-msgid "Authentication:"
-msgstr "Autentikasi:"
-
-#: ../src/wlan_config.py:267
-msgid "None"
-msgstr "Tidak ada"
-
-#: ../src/wlan_config.py:268
-msgid "WEP (Hex or ASCII)"
-msgstr "WEP (Heksa atau ASCII)"
-
-#: ../src/wlan_config.py:269
-msgid "WEP 104/128-bit Passphrase"
-msgstr "Frasa kunci untuk WEP 104/128-bit"
-
-#: ../src/wlan_config.py:270
-msgid "WPA WPA2 Personal"
-msgstr "WPA WPA2 Personal"
-
-#: ../src/wlan_config.py:281
-msgid "Shared Key"
-msgstr "Shared Key"
-
-#: ../src/wlan_config.py:282
-msgid "Open System"
-msgstr "Open System"
-
-#: ../src/wlan_config.py:589
-msgid "Mode:"
-msgstr "Mode:"
-
-#: ../src/wlan_config.py:592
-msgid "Infrastructure"
-msgstr "Infrastruktur jaringan"
-
-#: ../src/wlan_config.py:592
-msgid "Ad-hoc"
-msgstr "Ad-hoc"
-
-#: ../src/wlan_config.py:595
-msgid "Band:"
-msgstr "Band:"
-
-#: ../src/wlan_config.py:603
-msgid "Channel:"
-msgstr "Channel:"
-
-#: ../src/wlan_config.py:608
-msgid "BSSID:"
-msgstr "BSSID:"
-
-#: ../src/wlan_config.py:650
-msgid "Default Settings"
-msgstr "Pengaturan awal"
-
-#: ../src/search_keyword.py:35
-msgid "Network"
-msgstr "Jaringan"
-
-#: ../src/nmlib/nm_remote_settings.py:202
-msgid "Wired config"
-msgstr "Konfigurasi jaringan kabel"
-
-#: ../src/nmlib/nm_remote_settings.py:205
-msgid "Wireless config"
-msgstr "Konfigurasi jaringan nirkabel"
-
-#: ../src/nmlib/nm_remote_settings.py:208
-msgid "Dsl config"
-msgstr "Konfigurasi DSL"
-
-#: ../src/nmlib/nm_remote_settings.py:211
 msgid "VPN config"
 msgstr "Konfigurasi VPN"
 
-#: ../src/nmlib/nm_remote_settings.py:214
-msgid "CDMA config"
-msgstr "Konfigurasi CDMA"
+#, python-format
+msgid "Valid %s address."
+msgstr "Alamat %s valid."
 
-#: ../src/nmlib/nm_remote_settings.py:217
-msgid "GSM config"
-msgstr "Konfigurasi GSM"
+msgid "WEP (Hex or ASCII)"
+msgstr "WEP (Heksa atau ASCII)"
 
-#: ../src/nmlib/nm_remote_settings.py:219
-msgid "Config"
-msgstr "Konfigurasi"
+msgid "WEP 104/128-bit Passphrase"
+msgstr "Frasa kunci untuk WEP 104/128-bit"
+
+msgid "WPA WPA2 Personal"
+msgstr "WPA WPA2 Personal"
+
+msgid "Wep index:"
+msgstr "Indeks WEP:"
+
+msgid "Wired"
+msgstr "Koneksi kabel"
+
+msgid "Wired config"
+msgstr "Konfigurasi jaringan kabel"
+
+msgid "Wireless"
+msgstr "Jaringan nirkabel"
+
+msgid "Wireless config"
+msgstr "Konfigurasi jaringan nirkabel"
+
+msgid "active"
+msgstr "aktif"
+
+#, python-format
+msgid "card %d"
+msgstr "kartu %d"

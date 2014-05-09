@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# kloki <klokimass@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 14:29+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-05 21:30+0000\n"
+"Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
 "Language: sl\n"
@@ -19,233 +20,175 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/date_time_view.py:130
-msgid "(UTC-11:00)Samoa"
-msgstr ""
-
-#: ../src/date_time_view.py:131
-msgid "(UTC-10:00)Hawaii"
-msgstr ""
-
-#: ../src/date_time_view.py:132
-msgid "(UTC-09:00)Alaska"
-msgstr ""
-
-#: ../src/date_time_view.py:133
-msgid "(UTC-08:00)Lower California"
-msgstr ""
-
-#: ../src/date_time_view.py:134
-msgid "(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"
-msgstr ""
-
-#: ../src/date_time_view.py:135
-msgid "(UTC-06:00)Saskatchewan, Mexico City, Monterrey"
-msgstr ""
-
-#: ../src/date_time_view.py:136
-msgid "(UTC-05:00)Indiana, Bogota, Lima, Quito"
-msgstr ""
-
-#: ../src/date_time_view.py:137
-msgid "(UTC-04:00)San Diego, Georgetown, San Juan"
-msgstr ""
-
-#: ../src/date_time_view.py:138
-msgid "(UTC-03:00)Greenland, Brasilia, Fortaleza"
-msgstr ""
-
-#: ../src/date_time_view.py:139
-msgid "(UTC-02:00)Mid-Atlantic"
-msgstr ""
-
-#: ../src/date_time_view.py:140
-msgid "(UTC-01:00)Cape Verde Islands, Azores"
-msgstr ""
-
-#: ../src/date_time_view.py:141
 msgid "(UTC)London, Dublin, Edinburgh, Lisbon, Casablanca"
-msgstr ""
+msgstr "(UTC)London, Dublin, Edinburg, Lizbona, Casablanca"
 
-#: ../src/date_time_view.py:142
 msgid "(UTC+01:00)Paris, Amsterdam, Berlin, Rome, Vienna"
-msgstr ""
+msgstr "(UTC+01:00)Paris, Amsterdam, Berlin, Rim, Dunaj"
 
-#: ../src/date_time_view.py:143
 msgid "(UTC+02:00)Cairo, Athens, Istanbul, Jerusalem"
-msgstr ""
+msgstr "(UTC+02:00)Kairo, Atene, Istanbul, Jeruzalem"
 
-#: ../src/date_time_view.py:144
 msgid "(UTC+03:00)Moscow, St. Petersburg, Baghdad"
-msgstr ""
+msgstr "(UTC+03:00)Moskva, Sankt Peterburg, Bagdad"
 
-#: ../src/date_time_view.py:145
 msgid "(UTC+04:00)Port Louis, Abu Dhabi, Muscat, Yerevan"
-msgstr ""
+msgstr "(UTC+04:00)Port Louis, Abu Dabi, Muscat, Erevan"
 
-#: ../src/date_time_view.py:146
 msgid "(UTC+05:00)Islamabad, Karachi, Tashkent"
-msgstr ""
+msgstr "(UTC+05:00)Islamabad, Karači, Taškent"
 
-#: ../src/date_time_view.py:147
 msgid "(UTC+06:00)Dhaka, Novosibirsk"
-msgstr ""
+msgstr "(UTC+06:00)Daka, Novosibirsk"
 
-#: ../src/date_time_view.py:148
 msgid "(UTC+07:00)Bangkok, Hanoi, Jakarta"
-msgstr ""
+msgstr "(UTC+07:00)Bangkok, Hanoj, Džakarta"
 
-#: ../src/date_time_view.py:149
 msgid "(UTC+08:00)Beijing, Chongqing, HongKong, Taipei, Urumqi"
-msgstr ""
+msgstr "(UTC+08:00)Beijing, Chongqing, HongKong, Taipei, Urumqi"
 
-#: ../src/date_time_view.py:150
 msgid "(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"
-msgstr ""
+msgstr "(UTC+09:00)Osaka, Sapporo, Tokijo, Seul"
 
-#: ../src/date_time_view.py:151
 msgid "(UTC+10:00)Guam, Canberra, Melbourne, Sydney"
-msgstr ""
+msgstr "(UTC+10:00)Guam, Canberra, Melbourne, Sydney"
 
-#: ../src/date_time_view.py:152
 msgid "(UTC+11:00)Magadan, Solomon Islands"
-msgstr ""
+msgstr "(UTC+11:00)Magadan, Salomonovi otoki"
 
-#: ../src/date_time_view.py:153
 msgid "(UTC+12:00)New Zealand, Kiribati"
-msgstr ""
+msgstr "(UTC+12:00)Nova Zelandija, Kiribati"
 
-#: ../src/date_time_view.py:169
+msgid "(UTC-01:00)Cape Verde Islands, Azores"
+msgstr "(UTC-01:00)Kapverdski otoki, Azori"
+
+msgid "(UTC-02:00)Mid-Atlantic"
+msgstr "(UTC-02:00)Srednji-Atlantik"
+
+msgid "(UTC-03:00)Greenland, Brasilia, Fortaleza"
+msgstr "(UTC-03:00)Grenlandija, Brasilia, Fortaleza"
+
+msgid "(UTC-04:00)San Diego, Georgetown, San Juan"
+msgstr "(UTC-04:00)San Diego, Georgetown, San Juan"
+
+msgid "(UTC-05:00)Indiana, Bogota, Lima, Quito"
+msgstr "(UTC-05:00)Indiana, Bogota, Lima, Quito"
+
+msgid "(UTC-06:00)Saskatchewan, Mexico City, Monterrey"
+msgstr "(UTC-06:00)Saskatchewan, Ciudad de México, Monterrey"
+
+msgid "(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"
+msgstr "(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"
+
+msgid "(UTC-08:00)Lower California"
+msgstr "(UTC-08:00)Baja California"
+
+msgid "(UTC-09:00)Alaska"
+msgstr "(UTC-09:00)Aljaska"
+
+msgid "(UTC-10:00)Hawaii"
+msgstr "(UTC-10:00)Havaji"
+
+msgid "(UTC-11:00)Samoa"
+msgstr "(UTC-11:00)Samoa"
+
+msgid "AM"
+msgstr "AM"
+
 msgid "Calendar"
-msgstr ""
+msgstr "Koledar"
 
-#: ../src/date_time_view.py:175 ../src/date_time_view.py:388
-#: ../src/date_time_view.py:440
-#, python-format
-msgid "Current Date: %d-%d-%d"
-msgstr ""
-
-#: ../src/date_time_view.py:195
-msgid "Change Date"
-msgstr ""
-
-#: ../src/date_time_view.py:200
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: ../src/date_time_view.py:202
-msgid "Confirm"
-msgstr ""
+msgid "Change Date"
+msgstr "Spremeni datum"
 
-#: ../src/date_time_view.py:231
+msgid "Change date and time settings"
+msgstr "Spremeni nastavitve datuma in časa"
+
+#, python-format
+msgid "Changed date to %d-%d-%d"
+msgstr "Datum spremenjen na %d-%d-%d"
+
+#, python-format
+msgid "Changed time to %02d:%02d:%02d"
+msgstr "Čas spremenjen na %02d:%02d:%02d"
+
+#, python-format
+msgid "Changed time zone to %s"
+msgstr "Časovni pas spremenjen na %s"
+
+msgid "Confirm"
+msgstr "Potrdi"
+
+#, python-format
+msgid "Current Date: %d-%d-%d"
+msgstr "Trenutni datum: %d-%d-%d"
+
+#, python-format
+msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
+msgstr "Trenutni čas: %s %02d:%02d:%02d (%d ura)"
+
+msgid "Date and Time"
+msgstr "Datum in čas"
+
+msgid "Friday"
+msgstr "Petek"
+
+msgid "Hour"
+msgstr "Ura"
+
+msgid "Monday"
+msgstr "Ponedeljek"
+
+msgid "NTP"
+msgstr "NTP"
+
+msgid "PM"
+msgstr "PM"
+
+msgid "Reset to default value"
+msgstr "Ponastavi na privzete vrednosti"
+
+msgid "Saturday"
+msgstr "Sobota"
+
+msgid "Set Automatically"
+msgstr "Samodejno nastavi"
+
+msgid "Set Time"
+msgstr "Nastavi čas"
+
+msgid "Sunday"
+msgstr "Nedelja"
+
+msgid "Thursday"
+msgstr "Četrtek"
+
 msgid "Time"
 msgstr "Čas"
 
-#: ../src/date_time_view.py:238 ../src/date_time_view.py:247
-#: ../src/date_time_view.py:404
-#, python-format
-msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
-msgstr ""
-
-#: ../src/date_time_view.py:268
-msgid "NTP"
-msgstr ""
-
-#: ../src/date_time_view.py:285
-msgid "Set Time"
-msgstr ""
-
-#: ../src/date_time_view.py:305
-msgid "Hour"
-msgstr ""
-
-#: ../src/date_time_view.py:319 ../src/search_keyword.py:30
 msgid "Time Zone"
-msgstr ""
+msgstr "Časovni pas"
 
-#: ../src/date_time_view.py:350
-msgid "Reset to default value"
-msgstr ""
-
-#: ../src/date_time_view.py:438
-#, python-format
-msgid "Changed date to %d-%d-%d"
-msgstr ""
-
-#: ../src/date_time_view.py:489
-msgid "Time will be synchronized with an Internet time server"
-msgstr ""
-
-#: ../src/date_time_view.py:493
-msgid "Time will not be synchronized with an Internet time server"
-msgstr ""
-
-#: ../src/date_time_view.py:503
-msgid "Time will be shown in 24 hour format"
-msgstr ""
-
-#: ../src/date_time_view.py:505
 msgid "Time will be shown in 12 hour format"
-msgstr ""
+msgstr "Čas bo prikazan v 12-urni obliki"
 
-#: ../src/date_time_view.py:517
-#, python-format
-msgid "Changed time to %02d:%02d:%02d"
-msgstr ""
+msgid "Time will be shown in 24 hour format"
+msgstr "Čas bo prikazan v 24-urni obliki"
 
-#: ../src/date_time_view.py:542
-#, python-format
-msgid "Changed time zone to %s"
-msgstr ""
+msgid "Time will be synchronized with an Internet time server"
+msgstr "Čas bo sinhroniziran z internetnim časovnim strežnikom"
 
-#: ../src/tray_time_plugin.py:42
-msgid "Monday"
-msgstr ""
+msgid "Time will not be synchronized with an Internet time server"
+msgstr "Čas ne bo sinhroniziran z internetnim časovnim strežnikom"
 
-#: ../src/tray_time_plugin.py:42
 msgid "Tuesday"
-msgstr ""
+msgstr "Torek"
 
-#: ../src/tray_time_plugin.py:42
 msgid "Wednesday"
-msgstr ""
+msgstr "Sreda"
 
-#: ../src/tray_time_plugin.py:42
-msgid "Thursday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:43
-msgid "Friday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:43
-msgid "Saturday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:43
-msgid "Sunday"
-msgstr ""
-
-#: ../src/tray_time_plugin.py:122
-msgid "Change date and time settings"
-msgstr ""
-
-#: ../src/tray_time.py:77
-msgid "AM"
-msgstr ""
-
-#: ../src/tray_time.py:78
-msgid "PM"
-msgstr ""
-
-#: ../src/search_keyword.py:29
-msgid "Date and Time"
-msgstr ""
-
-#: ../src/search_keyword.py:31
-msgid "Set Automatically"
-msgstr ""
-
-#: ../src/search_keyword.py:32
 msgid "hour format"
-msgstr ""
+msgstr "oblika zapisa časa"

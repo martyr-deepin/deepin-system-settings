@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-10 06:31+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/tr/)\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#, python-format
+msgid "%d Input"
+msgstr ""
+
+#, python-format
+msgid "%d Inputs"
+msgstr ""
+
+#, python-format
+msgid "%d Output"
+msgstr ""
+
+#, python-format
+msgid "%d Outputs"
+msgstr ""
+
+msgid "Advanced"
+msgstr ""
+
+msgid "Advanced..."
+msgstr ""
+
+msgid "Applications"
+msgstr ""
+
+msgid "Balance"
+msgstr ""
+
+msgid "Choose a device for sound input:"
+msgstr ""
+
+msgid "Choose a device for sound output:"
+msgstr ""
+
+msgid "Choose a device to configure:"
+msgstr ""
+
+msgid "Device"
+msgstr ""
+
+msgid "Enable Sound"
+msgstr ""
+
+msgid "Hardware"
+msgstr ""
+
+msgid "Input"
+msgstr ""
+
+msgid "Input Level"
+msgstr ""
+
+msgid "Input Port"
+msgstr ""
+
+msgid "Input Volume"
+msgstr ""
+
+#, python-format
+msgid "Input device %s selected"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Microphone"
+msgstr ""
+
+msgid "Mute"
+msgstr ""
+
+msgid "Muted input"
+msgstr ""
+
+msgid "Muted output"
+msgstr ""
+
+msgid "Output"
+msgstr ""
+
+msgid "Output Port"
+msgstr ""
+
+msgid "Output Volume"
+msgstr ""
+
+#, python-format
+msgid "Output device %s selected"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+#, python-format
+msgid "Set input port to %s"
+msgstr ""
+
+#, python-format
+msgid "Set output port to %s"
+msgstr ""
+
+msgid "Sound"
+msgstr ""
+
+msgid "Sound Enabled"
+msgstr ""
+
+msgid "Speaker"
+msgstr ""
+
+msgid "Unmuted input"
+msgstr ""
+
+msgid "Unmuted output"
+msgstr ""
+
+msgid "Volume"
+msgstr ""

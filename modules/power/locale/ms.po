@@ -1,0 +1,220 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-10 06:50+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Malay (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/ms/)\n"
+"Language: ms\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, python-format
+msgid ""
+"\n"
+"<span foreground='#cc5744'>%s programs are still running:</span>"
+msgstr ""
+
+msgid ""
+"\n"
+"<span foreground='#cc5744'>A program is still running:</span>"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"<span foreground='#cc5744'>Log out</span> of your system now?\n"
+"\n"
+"You will be automatically logged out in %s seconds."
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"<span foreground='#cc5744'>Restart</span> your computer now?\n"
+"\n"
+"The system will restart in %s seconds."
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"<span foreground='#cc5744'>Suspend</span> your computer now?\n"
+"\n"
+"The system will suspend in %s seconds."
+msgstr ""
+
+msgid ""
+"\n"
+"<span foreground='#cc5744'>The Software Center is still running.</span>"
+msgstr ""
+
+#, python-format
+msgid ""
+"\n"
+"<span foreground='#cc5744'>Turn off</span> your computer now? \n"
+"\n"
+"The system will shut down in %s seconds."
+msgstr ""
+
+msgid ""
+"\n"
+"We have detected that the system is running on a <span "
+"foreground='#cc5744'>virtual machine</span>. It's strongly recommended that "
+"you install Linux Deepin on your hard disk to get the best experience "
+"possible."
+msgstr ""
+
+#, python-format
+msgid "%s when closing the lid"
+msgstr ""
+
+#, python-format
+msgid "%s when pressing the power button"
+msgstr ""
+
+msgid "Always show icon in the tray"
+msgstr ""
+
+msgid "Balanced"
+msgstr ""
+
+msgid "Battery power remaining"
+msgstr ""
+
+msgid "Battery status will be shown in the tray"
+msgstr ""
+
+msgid "Battery status will not be shown in the tray"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+#, python-format
+msgid "Changed Suspend Status to %s"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Do nothing"
+msgstr ""
+
+msgid "Don't prompt again"
+msgstr ""
+
+msgid "Force log out"
+msgstr ""
+
+msgid "Force restart"
+msgstr ""
+
+msgid "Force shut down"
+msgstr ""
+
+msgid "Force suspend"
+msgstr ""
+
+msgid "Hibernate"
+msgstr ""
+
+msgid "High performance"
+msgstr ""
+
+msgid "Hour"
+msgstr ""
+
+msgid "I see"
+msgstr ""
+
+msgid "Lock"
+msgstr ""
+
+msgid "Log out"
+msgstr ""
+
+msgid "Minute"
+msgstr ""
+
+msgid "Minutes"
+msgstr ""
+
+msgid "Never"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Power Button Settings"
+msgstr ""
+
+msgid "Power Plan"
+msgstr ""
+
+msgid "Power Saving Settings"
+msgstr ""
+
+#, python-format
+msgid "Power plan has been changed to %s"
+msgstr ""
+
+msgid "Power plan has been reset to Balanced"
+msgstr ""
+
+msgid "Power saver"
+msgstr ""
+
+msgid "Require password when computer wakes"
+msgstr ""
+
+msgid "Restart"
+msgstr ""
+
+msgid "Shut down"
+msgstr ""
+
+msgid "Suspend"
+msgstr ""
+
+msgid "Switch user"
+msgstr ""
+
+msgid "The system will not requrie a password after sleep"
+msgstr ""
+
+#, python-format
+msgid "The time before turning off monitor has been changed to %s"
+msgstr ""
+
+msgid "Turn off hard disk"
+msgstr ""
+
+msgid "Turn off monitor"
+msgstr ""
+
+msgid ""
+"Waiting for applications to terminate. Interrupting these may cause "
+"unexpected results."
+msgstr ""
+
+msgid "When I close the lid"
+msgstr ""
+
+msgid "When I press the power button"
+msgstr ""
+
+msgid "When I press the sleep button"
+msgstr ""
+
+msgid "You will be asked for a password when computer wakes"
+msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-24 11:29+0000\n"
 "Last-Translator: ballmet <emkohencel@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,190 +19,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/tray_shutdown_gui.py:93
-msgid "Switch user"
-msgstr "Prepnúť používateľa"
-
-#: ../src/tray_shutdown_gui.py:96 ../src/power_view.py:62
-#: ../src/tray_shutdown_plugin.py:107
-msgid "Shut down"
-msgstr "Vypnúť"
-
-#: ../src/tray_shutdown_gui.py:99 ../src/tray_shutdown_plugin.py:113
-msgid "Restart"
-msgstr "Reštartovať"
-
-#: ../src/tray_shutdown_gui.py:102 ../src/power_view.py:61
-#: ../src/power_view.py:137 ../src/tray_shutdown_plugin.py:119
-msgid "Suspend"
-msgstr "Uspať"
-
-#: ../src/tray_shutdown_gui.py:105 ../src/tray_shutdown_plugin.py:125
-msgid "Log out"
-msgstr "Odhlásiť"
-
-#: ../src/tray_shutdown_gui.py:108
-msgid "Lock"
-msgstr "Uzamknúť"
-
-#: ../src/power_view.py:50
-msgid "Minute"
-msgstr "Minúta"
-
-#: ../src/power_view.py:51 ../src/power_view.py:52 ../src/power_view.py:53
-#: ../src/power_view.py:54
-msgid "Minutes"
-msgstr "Minúty"
-
-#: ../src/power_view.py:55
-msgid "Hour"
-msgstr "Hodina"
-
-#: ../src/power_view.py:56
-msgid "Never"
-msgstr "Nikdy"
-
-#: ../src/power_view.py:60
-msgid "Do nothing"
-msgstr "Nič nespraviť"
-
-#: ../src/power_view.py:64
-msgid "Balanced"
-msgstr "Vyvážený"
-
-#: ../src/power_view.py:65
-msgid "Power saver"
-msgstr "Šetrič energie"
-
-#: ../src/power_view.py:66
-msgid "High performance"
-msgstr "Vysoký výkon"
-
-#: ../src/power_view.py:67
-msgid "Custom"
-msgstr "Vlastný"
-
-#: ../src/power_view.py:74 ../src/search_keyword.py:29
-msgid "Power Button Settings"
-msgstr "Nastavenie tlačítka pre energiu"
-
-#: ../src/power_view.py:82 ../src/search_keyword.py:30
-msgid "When I press the power button"
-msgstr "Pri stlačení tlačítka energie"
-
-#: ../src/power_view.py:94 ../src/search_keyword.py:31
-msgid "When I close the lid"
-msgstr "Pri zatvorení veka"
-
-#: ../src/power_view.py:107 ../src/search_keyword.py:33
-msgid "Power Saving Settings"
-msgstr "Nastavenia pre úsporu energie"
-
-#: ../src/power_view.py:113
-msgid "Power Plan"
-msgstr "Energetický plán"
-
-#: ../src/power_view.py:125 ../src/search_keyword.py:36
-msgid "Turn off monitor"
-msgstr "Vypnúť obrazovku"
-
-#: ../src/power_view.py:150
-msgid "Battery power remaining"
-msgstr "Zostávajúca energia v batérií"
-
-#: ../src/power_view.py:166 ../src/search_keyword.py:37
-msgid "Require password when computer wakes"
-msgstr "Vyžadovať heslo pri prebudení"
-
-#: ../src/power_view.py:189 ../src/search_keyword.py:38
-msgid "Always show icon in the tray"
-msgstr "Vždy ukazovať ikonu v paneli"
-
-#: ../src/power_view.py:317
-msgid "Power plan has been reset to Balanced"
-msgstr "Energetický plán bol znovu nastavený na vyvážený"
-
-#: ../src/power_view.py:374
-#, python-format
-msgid "%s when pressing the power button"
-msgstr "%s pri stlačení tlačidla pre energiu"
-
-#: ../src/power_view.py:379
-#, python-format
-msgid "%s when closing the lid"
-msgstr "%s pri zavretí veka"
-
-#: ../src/power_view.py:384
-#, python-format
-msgid "Power plan has been changed to %s"
-msgstr "Energetický plán bol zmenený na %s"
-
-#: ../src/power_view.py:389
-#, python-format
-msgid "Changed Suspend Status to %s"
-msgstr "Zmenený stav uspania na %s"
-
-#: ../src/power_view.py:397
-#, python-format
-msgid "The time before turning off monitor has been changed to %s"
-msgstr "Čas pred vypnutím obrazovky bol zmenený na %s"
-
-#: ../src/power_view.py:407
-msgid "You will be asked for a password when computer wakes"
-msgstr "Pri prebudení počítača budete požiadaný o heslo"
-
-#: ../src/power_view.py:409
-msgid "The system will not requrie a password after sleep"
-msgstr "Systém nebude po uspaní požadovať heslo"
-
-#: ../src/power_view.py:416
-msgid "Battery status will be shown in the tray"
-msgstr "Stav batérie bude zobrazovaný v oznamovacej oblasti panela"
-
-#: ../src/power_view.py:418
-msgid "Battery status will not be shown in the tray"
-msgstr "Stav batérie nebude zobrazovaný v oznamovacej oblasti panela"
-
-#: ../src/tray_shutdown_plugin.py:53
 #, python-format
 msgid ""
 "\n"
-"<span foreground='#cc5744'>Turn off</span> your computer now? \n"
-"\n"
-"The system will shut down in %s seconds."
+"<span foreground='#cc5744'>%s programs are still running:</span>"
 msgstr ""
 "\n"
-"<span foreground='#cc5744'>Vypnúť</span> počítač teraz? \n"
-"\n"
-"Systém sa vypne o %s sekúnd."
+"<span foreground='#cc5744'>%s programy stále bežia:</span>"
 
-#: ../src/tray_shutdown_plugin.py:56
-#, python-format
 msgid ""
 "\n"
-"<span foreground='#cc5744'>Restart</span> your computer now?\n"
-"\n"
-"The system will restart in %s seconds."
+"<span foreground='#cc5744'>A program is still running:</span>"
 msgstr ""
 "\n"
-"<span foreground='#cc5744'>Reštartovať</span> počítač teraz? \n"
-"\n"
-"Systém sa reštartuje o %s sekúnd."
+"<span foreground='#cc5744'>Nejaký program stále beží:</span>"
 
-#: ../src/tray_shutdown_plugin.py:59
-#, python-format
-msgid ""
-"\n"
-"<span foreground='#cc5744'>Suspend</span> your computer now?\n"
-"\n"
-"The system will suspend in %s seconds."
-msgstr ""
-"\n"
-"<span foreground='#cc5744'>Uspať</span> počítač teraz? \n"
-"\n"
-"Systém sa uspí o %s sekúnd."
-
-#: ../src/tray_shutdown_plugin.py:62
 #, python-format
 msgid ""
 "\n"
@@ -215,32 +46,30 @@ msgstr ""
 "\n"
 "Budete automaticky odhlásený o %s sekúnd."
 
-#: ../src/tray_shutdown_plugin.py:65
-msgid ""
-"\n"
-"<span foreground='#cc5744'>A program is still running:</span>"
-msgstr ""
-"\n"
-"<span foreground='#cc5744'>Nejaký program stále beží:</span>"
-
-#: ../src/tray_shutdown_plugin.py:66
 #, python-format
 msgid ""
 "\n"
-"<span foreground='#cc5744'>%s programs are still running:</span>"
+"<span foreground='#cc5744'>Restart</span> your computer now?\n"
+"\n"
+"The system will restart in %s seconds."
 msgstr ""
 "\n"
-"<span foreground='#cc5744'>%s programy stále bežia:</span>"
+"<span foreground='#cc5744'>Reštartovať</span> počítač teraz? \n"
+"\n"
+"Systém sa reštartuje o %s sekúnd."
 
-#: ../src/tray_shutdown_plugin.py:67
+#, python-format
 msgid ""
-"Waiting for applications to terminate. Interrupting these may cause "
-"unexpected results."
+"\n"
+"<span foreground='#cc5744'>Suspend</span> your computer now?\n"
+"\n"
+"The system will suspend in %s seconds."
 msgstr ""
-"Čakám, než sa ukončia aplikácie. Ich prerušenie môže spôsobiť neočakávané "
-"problémy."
+"\n"
+"<span foreground='#cc5744'>Uspať</span> počítač teraz? \n"
+"\n"
+"Systém sa uspí o %s sekúnd."
 
-#: ../src/tray_shutdown_plugin.py:74
 msgid ""
 "\n"
 "<span foreground='#cc5744'>The Software Center is still running.</span>"
@@ -248,7 +77,18 @@ msgstr ""
 "\n"
 "<span foreground='#cc5744'>Centrum softvéru je stále spustené</span>"
 
-#: ../src/tray_shutdown_plugin.py:84
+#, python-format
+msgid ""
+"\n"
+"<span foreground='#cc5744'>Turn off</span> your computer now? \n"
+"\n"
+"The system will shut down in %s seconds."
+msgstr ""
+"\n"
+"<span foreground='#cc5744'>Vypnúť</span> počítač teraz? \n"
+"\n"
+"Systém sa vypne o %s sekúnd."
+
 msgid ""
 "\n"
 "We have detected that the system is running on a <span "
@@ -261,46 +101,149 @@ msgstr ""
 "span>. Dôrazne doporučujeme,  aby ste Linux Deepin nainštalovali na pevný "
 "disk, aby ste vyskúšali len to najlepšie."
 
-#: ../src/tray_shutdown_plugin.py:108
-msgid "Force shut down"
-msgstr "Vynútiť vypnutie"
+#, python-format
+msgid "%s when closing the lid"
+msgstr "%s pri zavretí veka"
 
-#: ../src/tray_shutdown_plugin.py:114
-msgid "Force restart"
-msgstr "Vynútiť reštart"
+#, python-format
+msgid "%s when pressing the power button"
+msgstr "%s pri stlačení tlačidla pre energiu"
 
-#: ../src/tray_shutdown_plugin.py:120
-msgid "Force suspend"
-msgstr "Vynútiť uspanie"
+msgid "Always show icon in the tray"
+msgstr "Vždy ukazovať ikonu v paneli"
 
-#: ../src/tray_shutdown_plugin.py:126
-msgid "Force log out"
-msgstr "Vynútiť odhlásenie"
+msgid "Balanced"
+msgstr "Vyvážený"
 
-#: ../src/tray_shutdown_plugin.py:309
-msgid "Don't prompt again"
-msgstr "Nepýtať sa znovu"
+msgid "Battery power remaining"
+msgstr "Zostávajúca energia v batérií"
 
-#: ../src/tray_shutdown_plugin.py:309
-msgid "I see"
-msgstr "VIdím"
+msgid "Battery status will be shown in the tray"
+msgstr "Stav batérie bude zobrazovaný v oznamovacej oblasti panela"
 
-#: ../src/tray_dialog.py:42
+msgid "Battery status will not be shown in the tray"
+msgstr "Stav batérie nebude zobrazovaný v oznamovacej oblasti panela"
+
 msgid "Cancel"
 msgstr "Zrušiť"
 
-#: ../src/tray_dialog.py:43
-msgid "OK"
-msgstr "OK"
+#, python-format
+msgid "Changed Suspend Status to %s"
+msgstr "Zmenený stav uspania na %s"
 
-#: ../src/search_keyword.py:32
-msgid "When I press the sleep button"
-msgstr "Keď stlačím tlačítko na uspanie"
+msgid "Custom"
+msgstr "Vlastný"
 
-#: ../src/search_keyword.py:34
+msgid "Do nothing"
+msgstr "Nič nespraviť"
+
+msgid "Don't prompt again"
+msgstr "Nepýtať sa znovu"
+
+msgid "Force log out"
+msgstr "Vynútiť odhlásenie"
+
+msgid "Force restart"
+msgstr "Vynútiť reštart"
+
+msgid "Force shut down"
+msgstr "Vynútiť vypnutie"
+
+msgid "Force suspend"
+msgstr "Vynútiť uspanie"
+
 msgid "Hibernate"
 msgstr "Hibernovať"
 
-#: ../src/search_keyword.py:35
+msgid "High performance"
+msgstr "Vysoký výkon"
+
+msgid "Hour"
+msgstr "Hodina"
+
+msgid "I see"
+msgstr "VIdím"
+
+msgid "Lock"
+msgstr "Uzamknúť"
+
+msgid "Log out"
+msgstr "Odhlásiť"
+
+msgid "Minute"
+msgstr "Minúta"
+
+msgid "Minutes"
+msgstr "Minúty"
+
+msgid "Never"
+msgstr "Nikdy"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Power Button Settings"
+msgstr "Nastavenie tlačítka pre energiu"
+
+msgid "Power Plan"
+msgstr "Energetický plán"
+
+msgid "Power Saving Settings"
+msgstr "Nastavenia pre úsporu energie"
+
+#, python-format
+msgid "Power plan has been changed to %s"
+msgstr "Energetický plán bol zmenený na %s"
+
+msgid "Power plan has been reset to Balanced"
+msgstr "Energetický plán bol znovu nastavený na vyvážený"
+
+msgid "Power saver"
+msgstr "Šetrič energie"
+
+msgid "Require password when computer wakes"
+msgstr "Vyžadovať heslo pri prebudení"
+
+msgid "Restart"
+msgstr "Reštartovať"
+
+msgid "Shut down"
+msgstr "Vypnúť"
+
+msgid "Suspend"
+msgstr "Uspať"
+
+msgid "Switch user"
+msgstr "Prepnúť používateľa"
+
+msgid "The system will not requrie a password after sleep"
+msgstr "Systém nebude po uspaní požadovať heslo"
+
+#, python-format
+msgid "The time before turning off monitor has been changed to %s"
+msgstr "Čas pred vypnutím obrazovky bol zmenený na %s"
+
 msgid "Turn off hard disk"
 msgstr "Vypnúť pevný disk"
+
+msgid "Turn off monitor"
+msgstr "Vypnúť obrazovku"
+
+msgid ""
+"Waiting for applications to terminate. Interrupting these may cause "
+"unexpected results."
+msgstr ""
+"Čakám, než sa ukončia aplikácie. Ich prerušenie môže spôsobiť neočakávané "
+"problémy."
+
+msgid "When I close the lid"
+msgstr "Pri zatvorení veka"
+
+msgid "When I press the power button"
+msgstr "Pri stlačení tlačítka energie"
+
+msgid "When I press the sleep button"
+msgstr "Keď stlačím tlačítko na uspanie"
+
+msgid "You will be asked for a password when computer wakes"
+msgstr "Pri prebudení počítača budete požiadaný o heslo"

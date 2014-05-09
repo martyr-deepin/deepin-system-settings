@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# kloki <klokimass@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 14:29+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-04-05 15:20+0000\n"
+"Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
 "Language: sl\n"
@@ -19,182 +20,138 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/bluetooth_transfer.py:104
-#, python-format
-msgid "Incoming file from %s"
-msgstr ""
+msgid "Accept"
+msgstr "Sprejmi"
 
-#: ../src/bluetooth_transfer.py:105
 #, python-format
 msgid "Accept incoming file %s?"
-msgstr ""
+msgstr "Sprejmem dohodno datoteko %s?"
 
-#: ../src/bluetooth_transfer.py:108
-msgid "Accept"
-msgstr ""
+msgid "Adapter"
+msgstr "Adapter"
 
-#: ../src/bluetooth_transfer.py:109
-msgid "Reject"
-msgstr ""
+msgid "Advanced options..."
+msgstr "Napredne možnosti..."
 
-#: ../src/bluetooth_transfer.py:116
-#, python-format
-msgid "Receiving file from %s"
-msgstr ""
-
-#: ../src/bluetooth_transfer.py:142
-#, python-format
-msgid "Failed to receive the file : %s"
-msgstr ""
-
-#: ../src/bluetooth_view.py:85
-msgid "Pair"
-msgstr ""
-
-#: ../src/bluetooth_view.py:90
-msgid "Remove Device"
-msgstr ""
-
-#: ../src/bluetooth_view.py:304 ../src/bluetooth_view.py:306
-msgid "Headset"
-msgstr ""
-
-#: ../src/bluetooth_view.py:311 ../src/bluetooth_view.py:313
-msgid "Audio Sink"
-msgstr ""
-
-#: ../src/bluetooth_view.py:319 ../src/bluetooth_view.py:321
-msgid "Input Service"
-msgstr ""
-
-#: ../src/bluetooth_view.py:323
-msgid "Send File"
-msgstr ""
-
-#: ../src/bluetooth_view.py:335 ../src/tray_bluetooth_plugin.py:91
-msgid "Bluetooth Audio"
-msgstr ""
-
-#: ../src/bluetooth_view.py:336 ../src/tray_bluetooth_plugin.py:92
-msgid "Successfully connected to the Bluetooth audio device."
-msgstr ""
-
-#: ../src/bluetooth_view.py:338 ../src/bluetooth_view.py:359
-#: ../src/bluetooth_view.py:379 ../src/tray_bluetooth_plugin.py:94
-#: ../src/tray_bluetooth_plugin.py:107
-msgid "Connection Failed"
-msgstr ""
-
-#: ../src/bluetooth_view.py:338 ../src/bluetooth_view.py:359
-#: ../src/bluetooth_view.py:379 ../src/tray_bluetooth_plugin.py:94
-#: ../src/tray_bluetooth_plugin.py:107
 msgid "An error occured when connecting to the device."
-msgstr ""
+msgstr "Pri povezovanju z napravo prišlo do napake."
 
-#: ../src/bluetooth_view.py:356 ../src/tray_bluetooth_plugin.py:104
-msgid "Bluetooth Input Service"
-msgstr ""
+msgid "Audio Sink"
+msgstr "Audio izhod"
 
-#: ../src/bluetooth_view.py:357 ../src/tray_bluetooth_plugin.py:105
-msgid "Successfully connected to the Bluetooth input device."
-msgstr ""
-
-#: ../src/bluetooth_view.py:376
-msgid "Bluetooth Headset"
-msgstr ""
-
-#: ../src/bluetooth_view.py:377
-msgid "Successfully connected to the Bluetooth headset."
-msgstr ""
-
-#: ../src/bluetooth_view.py:401
-msgid "Pairing failed!"
-msgstr ""
-
-#: ../src/bluetooth_view.py:469 ../src/bluetooth_view.py:474
-#, python-format
-msgid "in %d seconds"
-msgstr ""
-
-#: ../src/bluetooth_view.py:503 ../src/bluetooth_view.py:507
-#: ../src/bluetooth_view.py:510
 msgid "Bluetooth"
 msgstr "Bluetooth"
 
-#: ../src/bluetooth_view.py:514 ../src/search_keyword.py:29
-msgid "Enable bluetooth"
-msgstr ""
+msgid "Bluetooth Audio"
+msgstr "Bluetooth zvok"
 
-#: ../src/bluetooth_view.py:535 ../src/search_keyword.py:30
-msgid "Device name"
-msgstr ""
+msgid "Bluetooth Headset"
+msgstr "Bluetooth slušalke"
 
-#: ../src/bluetooth_view.py:556 ../src/search_keyword.py:31
-msgid "Discoverable"
-msgstr ""
+msgid "Bluetooth Input Service"
+msgstr "Vhodne storitve Bluetooth"
 
-#: ../src/bluetooth_view.py:589
-msgid "Search"
-msgstr "Iskanje"
-
-#: ../src/bluetooth_view.py:701 ../src/bluetooth_view.py:713
-msgid "Discovering device"
-msgstr ""
-
-#: ../src/tray_bluetooth_plugin.py:285
-msgid "Adapter"
-msgstr ""
-
-#: ../src/tray_bluetooth_plugin.py:317
-msgid "Advanced options..."
-msgstr ""
-
-#: ../src/dialog.py:166
-msgid "OK"
-msgstr "Vredu"
-
-#: ../src/dialog.py:168
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: ../src/bluetooth_sender.py:51
+msgid "Connection Failed"
+msgstr "Povezava ni uspela"
+
+msgid "Device name"
+msgstr "Ime naprave"
+
+msgid "Discoverable"
+msgstr "Vidnost"
+
+msgid "Discovering device"
+msgstr "Odkrivanje naprave"
+
+msgid "Enable bluetooth"
+msgstr "Omogoči Bluetooth"
+
+#, python-format
+msgid "Enter PIN code to pair with %s:"
+msgstr "Vnesi PIN kodo za povezavo z %s:"
+
+#, python-format
+msgid "Failed to receive the file : %s"
+msgstr "Prejemanje datoteke ni uspelo: %s"
+
 #, python-format
 msgid ""
 "Failed!\n"
 "error msg: %s"
 msgstr ""
+"Ni uspelo!\n"
+"sporočilo o napaki: %s"
 
-#: ../src/bluetooth_sender.py:68
+msgid "Headset"
+msgstr "Slušalke"
+
 #, python-format
-msgid "Sending file to %s"
-msgstr ""
+msgid "Incoming file from %s"
+msgstr "Dohodna datoteka od %s"
 
-#: ../src/bluetooth_sender.py:85
-msgid "Transfer complete!"
-msgstr ""
+msgid "Input Service"
+msgstr "Vhodne storitve"
 
-#: ../src/bluetooth_sender.py:116
-msgid "Select File"
-msgstr ""
+msgid "No"
+msgstr "Ne"
 
-#: ../src/search_keyword.py:32
-msgid "Searching Device Timeout"
-msgstr ""
+msgid "OK"
+msgstr "Vredu"
 
-#: ../src/bt/agent.py:88
-#, python-format
-msgid "Enter PIN code to pair with %s:"
-msgstr ""
+msgid "Pair"
+msgstr "Poveži"
 
-#: ../src/bt/agent.py:138
+msgid "Pairing failed!"
+msgstr "Povezovanje ni uspelo!"
+
 #, python-format
 msgid "Please confirm %s pin match as below"
-msgstr ""
+msgstr "Prosim, potrdi %s PIN kodo skladno s spodjim"
 
-#: ../src/bt/agent.py:140
+#, python-format
+msgid "Receiving file from %s"
+msgstr "Prejemanje datoteke od %s"
+
+msgid "Reject"
+msgstr "Zavrni"
+
+msgid "Remove Device"
+msgstr "Odstrani napravo"
+
+msgid "Search"
+msgstr "Iskanje"
+
+msgid "Searching Device Timeout"
+msgstr "Iskanje naprave je časovno poteklo."
+
+msgid "Select File"
+msgstr "Izberi datoteko"
+
+msgid "Send File"
+msgstr "Pošlji datoteko"
+
+#, python-format
+msgid "Sending file to %s"
+msgstr "Pošlji datoteko v %s"
+
+msgid "Successfully connected to the Bluetooth audio device."
+msgstr "Upsešno povezano z Bluetooth zvokovno napravo."
+
+msgid "Successfully connected to the Bluetooth headset."
+msgstr "Uspešno povezano na Bluetooth slušalke."
+
+msgid "Successfully connected to the Bluetooth input device."
+msgstr "Uspešno povezano z vstopno Bluetooth napravo."
+
+msgid "Transfer complete!"
+msgstr "Prenos končan!"
+
 msgid "Yes"
-msgstr ""
+msgstr "Da"
 
-#: ../src/bt/agent.py:141
-msgid "No"
-msgstr ""
+#, python-format
+msgid "in %d seconds"
+msgstr "v %d sekundah"

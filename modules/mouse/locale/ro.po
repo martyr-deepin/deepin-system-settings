@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-17 07:51+0000\n"
 "Last-Translator: cxbii <mycxbii@gmail.com>\n"
 "Language-Team: Romanian (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,86 +19,65 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
 "2:1));\n"
 
-#: ../src/main.py:85
-msgid "Custom"
-msgstr ""
-
-#: ../src/main.py:86 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr ""
-
-#: ../src/main.py:87 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr ""
 
-#: ../src/main.py:90 ../src/main.py:101 ../src/main.py:278 ../src/main.py:325
-msgid "Fast"
+msgid "Custom"
 msgstr ""
 
-#: ../src/main.py:91 ../src/main.py:102 ../src/main.py:277 ../src/main.py:324
-msgid "Slow"
-msgstr ""
-
-#: ../src/main.py:92 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr ""
-
-#: ../src/main.py:95 ../src/main.py:292
-msgid "Low"
-msgstr ""
-
-#: ../src/main.py:96 ../src/main.py:293
-msgid "High"
-msgstr ""
-
-#: ../src/main.py:97 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr ""
 
-#: ../src/main.py:98 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr ""
-
-#: ../src/main.py:103
 msgid "Double-click on the smiley face to test your settings."
 msgstr ""
 
-#: ../src/main.py:105
-msgid "Relevant Settings"
+msgid "Fast"
 msgstr ""
 
-#: ../src/main.py:108 ../src/search_keyword.py:31
-msgid "Right-handed"
+msgid "Frequency"
 msgstr ""
 
-#: ../src/main.py:109 ../src/search_keyword.py:32
-msgid "Left-handed"
+msgid "High"
 msgstr ""
 
-#: ../src/main.py:112
 msgid "Keyboard Settings"
 msgstr ""
 
-#: ../src/main.py:115
-msgid "TouchPad Settings"
+msgid "Left-handed"
 msgstr ""
 
-#: ../src/main.py:118
+msgid "Low"
+msgstr ""
+
+msgid "Mouse"
+msgstr ""
+
+msgid "Pointer Speed"
+msgstr ""
+
+msgid "Relevant Settings"
+msgstr ""
+
 msgid "Reset"
 msgstr "Reinițializare"
 
-#: ../src/main.py:436
-msgid "Set to left-handed"
-msgstr ""
-
-#: ../src/main.py:438
-msgid "Set to right-handed"
-msgstr ""
-
-#: ../src/main.py:525
 msgid "Reset to defaults"
 msgstr ""
 
-#: ../src/search_keyword.py:25
-msgid "Mouse"
+msgid "Right-handed"
+msgstr ""
+
+msgid "Sensitivity"
+msgstr ""
+
+msgid "Set to left-handed"
+msgstr ""
+
+msgid "Set to right-handed"
+msgstr ""
+
+msgid "Slow"
+msgstr ""
+
+msgid "TouchPad Settings"
 msgstr ""

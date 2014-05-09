@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Fox909 <ffox909@mail.ru>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-24 05:20+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-29 08:30+0000\n"
+"Last-Translator: Fox909 <ffox909@mail.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/ru/)\n"
 "Language: ru\n"
@@ -19,38 +20,29 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../src/main.py:59
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr ""
+msgid "CPU"
+msgstr "ЦП"
 
-#: ../src/main.py:61
+msgid "Disk"
+msgstr "Диск"
+
+msgid "Memory"
+msgstr "Память"
+
+msgid "OS Type"
+msgstr "Тип ОС"
+
+msgid "System"
+msgstr "Система"
+
+msgid "System information"
+msgstr "Информации о системе"
+
 msgid "Version"
 msgstr "Версия"
 
-#: ../src/main.py:62 ../src/search_keyword.py:25
-msgid "CPU"
-msgstr ""
+msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
+msgstr "Wuhan Deepin Technology Co.Ltd, Все права защищены"
 
-#: ../src/main.py:63 ../src/search_keyword.py:26
-msgid "Memory"
-msgstr ""
-
-#: ../src/main.py:64 ../src/search_keyword.py:27
-msgid "OS Type"
-msgstr ""
-
-#: ../src/main.py:65 ../src/search_keyword.py:28
-msgid "Disk"
-msgstr ""
-
-#: ../src/main.py:154
 msgid "bit"
-msgstr ""
-
-#: ../src/search_keyword.py:29
-msgid "System"
-msgstr ""
-
-#: ../src/search_keyword.py:30
-msgid "System information"
-msgstr ""
+msgstr "Бит"

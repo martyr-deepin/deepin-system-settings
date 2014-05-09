@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-24 10:10+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-29 03:50+0000\n"
 "Last-Translator: evilscorpio <scorpkillerx@gmail.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/ru/)\n"
@@ -20,49 +20,38 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr "Полностью заряжена"
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr "Заряжается, осталось %s"
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "%s осталось"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "Дополнительно"
+
+msgid "Balanced"
+msgstr "Сбалансированный"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "Заряжается, осталось %s"
+
+msgid "Custom"
+msgstr "Пользовательский"
+
+msgid "Fully charged"
+msgstr "Полностью заряжена"
+
+msgid "High performance"
+msgstr "Высокая производительность"
+
 #, python-format
 msgid "Low power(%s%%)"
 msgstr "Низкий заряд батареи(%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr "Заряд низкий, зарядите батарею!"
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr "Питание"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr "Сбалансированный"
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
 msgstr "Экономичный"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr "Высокая производительность"
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr "Пользовательский"
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr "Дополнительно"
+msgid "Your battery is running low, please charge!"
+msgstr "Заряд низкий, зарядите батарею!"

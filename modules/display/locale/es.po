@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-08 03:50+0000\n"
 "Last-Translator: toolband25 <castilloluis2005@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,163 +19,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/display_view.py:240
-msgid "Copy Display"
-msgstr "Copiar Pantalla"
-
-#: ../src/display_view.py:241
-msgid "Extend Display"
-msgstr "Extender Pantalla"
-
-#: ../src/display_view.py:242
-msgid "Only shown in display 1"
-msgstr "Solo mostrado en pantalla 1"
-
-#: ../src/display_view.py:243
-msgid "Only shown in display 2"
-msgstr "Solo mostrado en pantalla 2"
-
-#: ../src/display_view.py:244
-msgid "Normal"
-msgstr "Normal"
-
-#: ../src/display_view.py:245
-msgid "Right"
-msgstr "Derecha"
-
-#: ../src/display_view.py:246
-msgid "Left"
-msgstr "Izquierda"
-
-#: ../src/display_view.py:247
-msgid "Inverted"
-msgstr "Invertido"
-
-#: ../src/display_view.py:248
-msgid "Minute"
-msgstr "Minuto"
-
-#: ../src/display_view.py:249 ../src/display_view.py:250
-#: ../src/display_view.py:251 ../src/display_view.py:252
-#: ../src/display_view.py:253
-msgid "Minutes"
-msgstr "Minutos"
-
-#: ../src/display_view.py:254
-msgid "Hour"
-msgstr "Tiempo"
-
-#: ../src/display_view.py:255
-msgid "Never"
-msgstr "Nunca"
-
-#: ../src/display_view.py:292 ../src/search_keyword.py:29
-msgid "Display"
-msgstr "Pantalla"
-
-#: ../src/display_view.py:299 ../src/search_keyword.py:30
-msgid "Monitor"
-msgstr "Monitorización"
-
-#: ../src/display_view.py:312
-msgid "Relevant Settings"
-msgstr "Configuraciones Relevantes"
-
-#: ../src/display_view.py:318
 #, python-format
 msgid "<span foreground=\"%s\" underline=\"single\">Personalization</span>"
 msgstr "<span foreground=\"%s\" underline=\"single\">Personalización</span>"
 
-#: ../src/display_view.py:326
 #, python-format
 msgid "<span foreground=\"%s\" underline=\"single\">Power</span>"
 msgstr "<span foreground=\"%s\" underline=\"single\">Encendido</span>"
 
-#: ../src/display_view.py:344 ../src/search_keyword.py:31
-msgid "Resolution"
-msgstr "Resolución"
-
-#: ../src/display_view.py:359 ../src/search_keyword.py:32
-msgid "Rotation"
-msgstr "Rotación"
-
-#: ../src/display_view.py:372
-msgid "Multi-Monitor"
-msgstr "Multi-Monitor"
-
-#: ../src/display_view.py:387 ../src/display_view.py:396
-#: ../src/search_keyword.py:33
-msgid "Brightness"
-msgstr "Brillo"
-
-#: ../src/display_view.py:414 ../src/search_keyword.py:34
 msgid "Auto-Brightness"
 msgstr "Auto-brillo"
 
-#: ../src/display_view.py:428 ../src/search_keyword.py:35
-msgid "Turn off monitor"
-msgstr "Apagar monitor"
+msgid "Brightness"
+msgstr "Brillo"
 
-#: ../src/display_view.py:441 ../src/display_view.py:462
-#: ../src/search_keyword.py:37
-msgid "Lock Screen"
-msgstr "Bloquear Pantalla"
-
-#: ../src/display_view.py:447 ../src/search_keyword.py:36
-msgid "Lock screen automatically"
-msgstr "Bloquear pantalla automaticamente "
-
-#: ../src/display_view.py:513
-msgid "Reset to default value"
-msgstr "Restaurar valores por defecto"
-
-#: ../src/display_view.py:604
 #, python-format
 msgid "Changed brightness to %d%%"
 msgstr "Brillo cambiado a %d%%"
 
-#: ../src/display_view.py:630
-msgid "Changed to manual adjustment"
-msgstr "Cambiado para ajuste manual "
-
-#: ../src/display_view.py:633
-msgid "Changed to automatic adjustment"
-msgstr "Cambiado para ajuste automatico "
-
-#: ../src/display_view.py:639
-msgid "Changed to manual lock"
-msgstr "Cambiado a bloqueo manual"
-
-#: ../src/display_view.py:642
-msgid "Changed to automatic lock"
-msgstr "Cambiado a bloqueo automatico "
-
-#: ../src/display_view.py:647
 #, python-format
 msgid "Changed current output to %s"
 msgstr "Salida automatica cambiada a %s"
 
-#: ../src/display_view.py:653
-#, python-format
-msgid "Changed resolution to %s"
-msgstr "Resolución cambiada a %s"
-
-#: ../src/display_view.py:658
-#, python-format
-msgid "Changed rotation to %s"
-msgstr "Rotación cambiada a %s"
-
-#: ../src/display_view.py:663
 #, python-format
 msgid "Changed multi-monitor mode to %s"
 msgstr "Modo multi-monitor cambiado a %s"
 
-#: ../src/display_view.py:668
+#, python-format
+msgid "Changed resolution to %s"
+msgstr "Resolución cambiada a %s"
+
+#, python-format
+msgid "Changed rotation to %s"
+msgstr "Rotación cambiada a %s"
+
+msgid "Changed to automatic adjustment"
+msgstr "Cambiado para ajuste automatico "
+
+msgid "Changed to automatic lock"
+msgstr "Cambiado a bloqueo automatico "
+
+msgid "Changed to manual adjustment"
+msgstr "Cambiado para ajuste manual "
+
+msgid "Changed to manual lock"
+msgstr "Cambiado a bloqueo manual"
+
+msgid "Copy Display"
+msgstr "Copiar Pantalla"
+
+msgid "Display"
+msgstr "Pantalla"
+
+msgid "Extend Display"
+msgstr "Extender Pantalla"
+
+msgid "Hour"
+msgstr "Tiempo"
+
+#, python-format
+msgid "Idle time before locking display has been changed to %s"
+msgstr "Tiempo de inactividad antes de bloquear pantalla ha sido cambiado a %s"
+
 #, python-format
 msgid "Idle time before turning off display has been changed to to %s"
 msgstr "Tiempo de inactividad antes de apagar pantalla ha sido cambiado a %s"
 
-#: ../src/display_view.py:673
-#, python-format
-msgid "Idle time before locking display has been changed to %s"
-msgstr "Tiempo de inactividad antes de bloquear pantalla ha sido cambiado a %s"
+msgid "Inverted"
+msgstr "Invertido"
+
+msgid "Left"
+msgstr "Izquierda"
+
+msgid "Lock Screen"
+msgstr "Bloquear Pantalla"
+
+msgid "Lock screen automatically"
+msgstr "Bloquear pantalla automaticamente "
+
+msgid "Minute"
+msgstr "Minuto"
+
+msgid "Minutes"
+msgstr "Minutos"
+
+msgid "Monitor"
+msgstr "Monitorización"
+
+msgid "Multi-Monitor"
+msgstr "Multi-Monitor"
+
+msgid "Never"
+msgstr "Nunca"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Only shown in display 1"
+msgstr "Solo mostrado en pantalla 1"
+
+msgid "Only shown in display 2"
+msgstr "Solo mostrado en pantalla 2"
+
+msgid "Relevant Settings"
+msgstr "Configuraciones Relevantes"
+
+msgid "Reset to default value"
+msgstr "Restaurar valores por defecto"
+
+msgid "Resolution"
+msgstr "Resolución"
+
+msgid "Right"
+msgstr "Derecha"
+
+msgid "Rotation"
+msgstr "Rotación"
+
+msgid "Turn off monitor"
+msgstr "Apagar monitor"

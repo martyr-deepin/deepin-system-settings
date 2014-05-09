@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-10 06:31+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/he/)\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "%s remaining"
+msgstr ""
+
+msgid "Advanced..."
+msgstr ""
+
+msgid "Balanced"
+msgstr ""
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Fully charged"
+msgstr ""
+
+msgid "High performance"
+msgstr ""
+
+#, python-format
+msgid "Low power(%s%%)"
+msgstr ""
+
+msgid "Power"
+msgstr ""
+
+msgid "Power saver"
+msgstr ""
+
+msgid "Your battery is running low, please charge!"
+msgstr ""

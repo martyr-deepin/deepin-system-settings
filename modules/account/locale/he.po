@@ -1,0 +1,270 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-11 09:10+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/he/)\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#, python-format
+msgid "%s has been created"
+msgstr ""
+
+#, python-format
+msgid "%s has been deleted"
+msgstr ""
+
+#, python-format
+msgid "%s's account type has been set as %s"
+msgstr ""
+
+#, python-format
+msgid "%s's password has been changed"
+msgstr ""
+
+msgid "Account"
+msgstr ""
+
+msgid "Account Name"
+msgstr ""
+
+msgid "Account disabled"
+msgstr ""
+
+msgid "Account type"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Administrator"
+msgstr "מנהל"
+
+msgid "Automatic login"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Cancel"
+msgstr "ביטול"
+
+msgid "Change"
+msgstr ""
+
+msgid "Change Password"
+msgstr ""
+
+msgid "Choose a new picture for your account"
+msgstr ""
+
+msgid "Clip"
+msgstr ""
+
+msgid "Confirm new password"
+msgstr ""
+
+msgid "Create"
+msgstr ""
+
+msgid "Create Account"
+msgstr ""
+
+msgid "Current password"
+msgstr ""
+
+msgid "Deepin Account"
+msgstr ""
+
+msgid "Delete"
+msgstr "מחיקה"
+
+msgid "Delete Account"
+msgstr ""
+
+msgid "Delete Files"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+#, python-format
+msgid "Disable %s"
+msgstr ""
+
+#, python-format
+msgid "Disabled auto-login for %s"
+msgstr ""
+
+#, python-format
+msgid "Disabled passwordless login for %s"
+msgstr ""
+
+#, python-format
+msgid "Do you want to keep <u>%s</u>'s files?"
+msgstr ""
+
+msgid "Edit Picture"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+#, python-format
+msgid "Enable %s"
+msgstr ""
+
+#, python-format
+msgid "Enabled auto-login for %s"
+msgstr ""
+
+#, python-format
+msgid "Enabled passwordless login for %s"
+msgstr ""
+
+msgid "Error:"
+msgstr ""
+
+msgid "Experience"
+msgstr ""
+
+msgid "Face Record"
+msgstr ""
+
+msgid "Facial recognition"
+msgstr ""
+
+msgid "Failed to record your face"
+msgstr ""
+
+msgid "From camera"
+msgstr ""
+
+msgid "It is possible to keep the home directory when deleting a user account."
+msgstr ""
+
+msgid "Keep Files"
+msgstr ""
+
+msgid "Local picture"
+msgstr ""
+
+msgid "Log in without a password"
+msgstr ""
+
+msgid "My Account"
+msgstr ""
+
+msgid "New password"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Other Accounts"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Password did not match."
+msgstr ""
+
+msgid "Please keep still for 5 seconds"
+msgstr ""
+
+msgid "Please plug in or enable your camera"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Previously used pictures"
+msgstr ""
+
+msgid "Record"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+#, python-format
+msgid "Set <u>%s</u>'s picture"
+msgstr ""
+
+msgid "Set Picture"
+msgstr ""
+
+msgid "Show password"
+msgstr ""
+
+msgid "Standard"
+msgstr ""
+
+msgid "Start"
+msgstr ""
+
+msgid "Take a photo"
+msgstr ""
+
+msgid "Take a screeshot"
+msgstr ""
+
+msgid "Test"
+msgstr ""
+
+msgid "The user name is invalid"
+msgstr ""
+
+msgid "To be set at next login"
+msgstr ""
+
+msgid "Try Again"
+msgstr ""
+
+msgid "Try again"
+msgstr ""
+
+msgid "Unbound"
+msgstr ""
+
+msgid "User Accounts"
+msgstr ""
+
+msgid ""
+"User names can only consist of letters, numbers, underscores and begin with "
+"a letter"
+msgstr ""
+
+msgid "Your face has been successfully recorded"
+msgstr ""
+
+msgid "authentication token manipulation error"
+msgstr ""
+
+msgid "new and old password are too similar"
+msgstr ""
+
+msgid "no picture"
+msgstr ""
+
+msgid "password unchanged"
+msgstr ""
+
+msgid "zoom in"
+msgstr ""
+
+msgid "zoom out"
+msgstr ""

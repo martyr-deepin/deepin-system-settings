@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 22:40+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-02-26 19:40+0000\n"
 "Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
@@ -20,86 +20,65 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/main.py:85
-msgid "Custom"
-msgstr "Po meri"
-
-#: ../src/main.py:86 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr "Hitrost kazalca"
-
-#: ../src/main.py:87 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr "Pospeševanje"
 
-#: ../src/main.py:90 ../src/main.py:101 ../src/main.py:278 ../src/main.py:325
-msgid "Fast"
-msgstr "Hitro"
+msgid "Custom"
+msgstr "Po meri"
 
-#: ../src/main.py:91 ../src/main.py:102 ../src/main.py:277 ../src/main.py:324
-msgid "Slow"
-msgstr "Počasi"
-
-#: ../src/main.py:92 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr "Občutljivost"
-
-#: ../src/main.py:95 ../src/main.py:292
-msgid "Low"
-msgstr "Nizka"
-
-#: ../src/main.py:96 ../src/main.py:293
-msgid "High"
-msgstr "Visoka"
-
-#: ../src/main.py:97 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr "Dvojni klik"
 
-#: ../src/main.py:98 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr "Frekvenca"
-
-#: ../src/main.py:103
 msgid "Double-click on the smiley face to test your settings."
 msgstr "Dvakrat kliknite na smejkota, za preizkus vaših nastavitev."
 
-#: ../src/main.py:105
-msgid "Relevant Settings"
-msgstr "Ustrezne nastavitve"
+msgid "Fast"
+msgstr "Hitro"
 
-#: ../src/main.py:108 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr "Desničar"
+msgid "Frequency"
+msgstr "Frekvenca"
 
-#: ../src/main.py:109 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr "Levičar"
+msgid "High"
+msgstr "Visoka"
 
-#: ../src/main.py:112
 msgid "Keyboard Settings"
 msgstr "Nastavitve za tipkovnico"
 
-#: ../src/main.py:115
-msgid "TouchPad Settings"
-msgstr "Nastavitve sledilne ploščice"
+msgid "Left-handed"
+msgstr "Levičar"
 
-#: ../src/main.py:118
+msgid "Low"
+msgstr "Nizka"
+
+msgid "Mouse"
+msgstr "Miška"
+
+msgid "Pointer Speed"
+msgstr "Hitrost kazalca"
+
+msgid "Relevant Settings"
+msgstr "Ustrezne nastavitve"
+
 msgid "Reset"
 msgstr "Ponastavi"
 
-#: ../src/main.py:436
-msgid "Set to left-handed"
-msgstr "Nastavi za levičarje"
-
-#: ../src/main.py:438
-msgid "Set to right-handed"
-msgstr "Nastavi za desničarje"
-
-#: ../src/main.py:525
 msgid "Reset to defaults"
 msgstr "Ponastavi na privzeto"
 
-#: ../src/search_keyword.py:25
-msgid "Mouse"
-msgstr "Miška"
+msgid "Right-handed"
+msgstr "Desničar"
+
+msgid "Sensitivity"
+msgstr "Občutljivost"
+
+msgid "Set to left-handed"
+msgstr "Nastavi za levičarje"
+
+msgid "Set to right-handed"
+msgstr "Nastavi za desničarje"
+
+msgid "Slow"
+msgstr "Počasi"
+
+msgid "TouchPad Settings"
+msgstr "Nastavitve sledilne ploščice"

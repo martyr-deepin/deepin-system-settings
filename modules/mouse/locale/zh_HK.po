@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-24 05:20+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-08 13:42+0000\n"
 "Last-Translator: CasperLi_HK <casper.hk@hotmail.com>\n"
 "Language-Team: Chinese (Hong Kong) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/zh_HK/)\n"
@@ -20,86 +20,65 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/main.py:85
-msgid "Custom"
-msgstr "自訂"
-
-#: ../src/main.py:86 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr "鼠標速度"
-
-#: ../src/main.py:87 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr "移動速度"
 
-#: ../src/main.py:90 ../src/main.py:101 ../src/main.py:278 ../src/main.py:325
-msgid "Fast"
-msgstr "快速"
+msgid "Custom"
+msgstr "自訂"
 
-#: ../src/main.py:91 ../src/main.py:102 ../src/main.py:277 ../src/main.py:324
-msgid "Slow"
-msgstr "慢速"
-
-#: ../src/main.py:92 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr "靈敏度"
-
-#: ../src/main.py:95 ../src/main.py:292
-msgid "Low"
-msgstr "低"
-
-#: ../src/main.py:96 ../src/main.py:293
-msgid "High"
-msgstr "高"
-
-#: ../src/main.py:97 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr "雙擊速度"
 
-#: ../src/main.py:98 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr "點擊頻率"
-
-#: ../src/main.py:103
 msgid "Double-click on the smiley face to test your settings."
 msgstr "雙擊笑臉來測試點擊頻率設定值是否合適。"
 
-#: ../src/main.py:105
-msgid "Relevant Settings"
-msgstr "關聯設定值"
+msgid "Fast"
+msgstr "快速"
 
-#: ../src/main.py:108 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr "慣用右手"
+msgid "Frequency"
+msgstr "點擊頻率"
 
-#: ../src/main.py:109 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr "慣用左手"
+msgid "High"
+msgstr "高"
 
-#: ../src/main.py:112
 msgid "Keyboard Settings"
 msgstr "鍵盤設定值"
 
-#: ../src/main.py:115
-msgid "TouchPad Settings"
-msgstr "觸控板設定值"
+msgid "Left-handed"
+msgstr "慣用左手"
 
-#: ../src/main.py:118
+msgid "Low"
+msgstr "低"
+
+msgid "Mouse"
+msgstr "滑鼠"
+
+msgid "Pointer Speed"
+msgstr "鼠標速度"
+
+msgid "Relevant Settings"
+msgstr "關聯設定值"
+
 msgid "Reset"
 msgstr "重設為預設值"
 
-#: ../src/main.py:436
-msgid "Set to left-handed"
-msgstr "設定為「慣用左手」"
-
-#: ../src/main.py:438
-msgid "Set to right-handed"
-msgstr "設定為「慣用右手」"
-
-#: ../src/main.py:525
 msgid "Reset to defaults"
 msgstr "重設為預設值"
 
-#: ../src/search_keyword.py:25
-msgid "Mouse"
-msgstr "滑鼠"
+msgid "Right-handed"
+msgstr "慣用右手"
+
+msgid "Sensitivity"
+msgstr "靈敏度"
+
+msgid "Set to left-handed"
+msgstr "設定為「慣用左手」"
+
+msgid "Set to right-handed"
+msgstr "設定為「慣用右手」"
+
+msgid "Slow"
+msgstr "慢速"
+
+msgid "TouchPad Settings"
+msgstr "觸控板設定值"

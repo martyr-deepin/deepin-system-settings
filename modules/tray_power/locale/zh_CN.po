@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2013-12-16 09:04+0000\n"
 "Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -19,49 +19,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr "电源已充满"
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr "正在充电, 剩余%s电量"
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "剩余%s电量"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "更多高级选项..."
+
+msgid "Balanced"
+msgstr "平衡"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "正在充电, 剩余%s电量"
+
+msgid "Custom"
+msgstr "自定义"
+
+msgid "Fully charged"
+msgstr "电源已充满"
+
+msgid "High performance"
+msgstr "高性能"
+
 #, python-format
 msgid "Low power(%s%%)"
 msgstr "电量低(%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr "你的电池电量较低，请及时充电！"
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr "电源"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr "平衡"
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
 msgstr "节能"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr "高性能"
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr "自定义"
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr "更多高级选项..."
+msgid "Your battery is running low, please charge!"
+msgstr "你的电池电量较低，请及时充电！"

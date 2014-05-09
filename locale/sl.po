@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 14:29+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-05 21:30+0000\n"
 "Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
@@ -20,91 +20,69 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "10"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "Sistemske nastavitve"
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "Zasloni"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "Namizje"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "Prilagoditev"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "Zvok"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "Datum &amp; Čas"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "Napajanje"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "Tipkovnica"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "Miška"
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "Sledilna ploščica"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "Tiskalniki"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "Omrežje"
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "Dodatni gonilniki"
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "Uporabniški računi"
+msgid "Bluetooth"
+msgstr "Bluetooth"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "Privzete aplikacije"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "Sistemske informacije"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "Ponastavi"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "Prekliči"
 
-#: ../dss/bluetooth_dialog.py:78
+msgid "Date &amp; Time"
+msgstr "Datum &amp; Čas"
+
+msgid "Default Applications"
+msgstr "Privzete aplikacije"
+
+msgid "Desktop"
+msgstr "Namizje"
+
+msgid "Displays"
+msgstr "Zasloni"
+
+msgid "Keyboard"
+msgstr "Tipkovnica"
+
+msgid "Mouse"
+msgstr "Miška"
+
+msgid "Network"
+msgstr "Omrežje"
+
+msgid "Ok"
+msgstr "Vredu"
+
+msgid "Personalization"
+msgstr "Prilagoditev"
+
+msgid "Power"
+msgstr "Napajanje"
+
+msgid "Printers"
+msgstr "Tiskalniki"
+
+msgid "Reset"
+msgstr "Ponastavi"
+
 #, python-format
 msgid "Sent %d"
 msgstr "Pošlji %d"
 
-#: ../dss/bluetooth_dialog.py:113
-msgid "Ok"
-msgstr "Vredu"
+msgid "Sound"
+msgstr "Zvok"
+
+msgid "System Information"
+msgstr "Sistemske informacije"
+
+msgid "System Settings"
+msgstr "Sistemske nastavitve"
+
+msgid "Touchpad"
+msgstr "Sledilna ploščica"
+
+msgid "User Accounts"
+msgstr "Uporabniški računi"

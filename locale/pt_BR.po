@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 11:28+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-02-28 16:34+0000\n"
 "Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/pt_BR/)\n"
@@ -21,91 +21,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "10"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "Configurações do Sistema"
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "Telas"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "Desktop"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "Personalização"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "Som"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "Date &amp; Hora"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "Energia"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "Teclado"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "Mouse"
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "Touchpad"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "Impressoras"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "Rede"
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "Drivers Adicionais"
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "Contas de Usuário"
+msgid "Bluetooth"
+msgstr "Bluetooth"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "Aplicações Padrão"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "Informações do Sistema"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "Redefinir"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../dss/bluetooth_dialog.py:78
+msgid "Date &amp; Time"
+msgstr "Date &amp; Hora"
+
+msgid "Default Applications"
+msgstr "Aplicações Padrão"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Displays"
+msgstr "Telas"
+
+msgid "Keyboard"
+msgstr "Teclado"
+
+msgid "Mouse"
+msgstr "Mouse"
+
+msgid "Network"
+msgstr "Rede"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Personalization"
+msgstr "Personalização"
+
+msgid "Power"
+msgstr "Energia"
+
+msgid "Printers"
+msgstr "Impressoras"
+
+msgid "Reset"
+msgstr "Redefinir"
+
 #, python-format
 msgid "Sent %d"
 msgstr "Enviar %d"
 
-#: ../dss/bluetooth_dialog.py:113
-msgid "Ok"
-msgstr "Ok"
+msgid "Sound"
+msgstr "Som"
+
+msgid "System Information"
+msgstr "Informações do Sistema"
+
+msgid "System Settings"
+msgstr "Configurações do Sistema"
+
+msgid "Touchpad"
+msgstr "Touchpad"
+
+msgid "User Accounts"
+msgstr "Contas de Usuário"

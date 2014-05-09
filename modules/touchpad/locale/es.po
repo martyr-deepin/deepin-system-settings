@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-27 00:40+0000\n"
 "Last-Translator: toolband25 <castilloluis2005@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,102 +19,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/main.py:104
-msgid "Custom"
-msgstr "Personalizado"
-
-#: ../src/main.py:105 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr "Velocidad del Puntero"
-
-#: ../src/main.py:106 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr "Aceleración"
 
-#: ../src/main.py:109 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr "Sensibilidad"
+msgid "Custom"
+msgstr "Personalizado"
 
-#: ../src/main.py:112 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr "Doble Clic"
 
-#: ../src/main.py:113 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr "Frecuencia"
-
-#: ../src/main.py:116
 msgid "Double-click on the smiley face to test your settings."
 msgstr "Doble clic a la carita feliz para comprobar tu configuración"
 
-#: ../src/main.py:118
 msgid "Drag and Drop"
 msgstr "Arrastrar y Soltar"
 
-#: ../src/main.py:119 ../src/search_keyword.py:33
 msgid "Drag threshold"
 msgstr "Umbral de Arrastre"
 
-#: ../src/main.py:122
-msgid "Relevant Settings"
-msgstr "Configuraciones Relevantes"
-
-#: ../src/main.py:125 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr "Diestro"
-
-#: ../src/main.py:126 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr "Zurdo"
-
-#: ../src/main.py:129
-msgid "Keyboard Settings"
-msgstr "Configuración del Teclado"
-
-#: ../src/main.py:132
-msgid "Mouse Settings"
-msgstr "Configuración del Ratón"
-
-#: ../src/main.py:135
-msgid "Reset"
-msgstr "Reiniciar"
-
-#: ../src/main.py:302 ../src/main.py:352
-msgid "Slow"
-msgstr "Lento"
-
-#: ../src/main.py:303 ../src/main.py:353
 msgid "Fast"
 msgstr "Rapido "
 
-#: ../src/main.py:318
-msgid "Low"
-msgstr "Bajo"
+msgid "Frequency"
+msgstr "Frecuencia"
 
-#: ../src/main.py:319
 msgid "High"
 msgstr "Alto"
 
-#: ../src/main.py:395
-msgid "Short"
-msgstr "Corto"
+msgid "Keyboard Settings"
+msgstr "Configuración del Teclado"
 
-#: ../src/main.py:396
+msgid "Left-handed"
+msgstr "Zurdo"
+
 msgid "Long"
 msgstr "Largo"
 
-#: ../src/main.py:519
-msgid "Set to right-handed"
-msgstr "Fijar a Diestro"
+msgid "Low"
+msgstr "Bajo"
 
-#: ../src/main.py:521
-msgid "Set to left-handed"
-msgstr "Fijar a Zurdo"
+msgid "Mouse Settings"
+msgstr "Configuración del Ratón"
 
-#: ../src/main.py:622
+msgid "Pointer Speed"
+msgstr "Velocidad del Puntero"
+
+msgid "Relevant Settings"
+msgstr "Configuraciones Relevantes"
+
+msgid "Reset"
+msgstr "Reiniciar"
+
 msgid "Reset to defaults"
 msgstr "Restaurar valores por defecto "
 
-#: ../src/search_keyword.py:25
+msgid "Right-handed"
+msgstr "Diestro"
+
+msgid "Sensitivity"
+msgstr "Sensibilidad"
+
+msgid "Set to left-handed"
+msgstr "Fijar a Zurdo"
+
+msgid "Set to right-handed"
+msgstr "Fijar a Diestro"
+
+msgid "Short"
+msgstr "Corto"
+
+msgid "Slow"
+msgstr "Lento"
+
 msgid "Touchpad"
 msgstr "Touchpad"

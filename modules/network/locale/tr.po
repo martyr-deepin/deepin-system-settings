@@ -1,0 +1,410 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-10 06:31+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/tr/)\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#, python-format
+msgid "%s deleted"
+msgstr ""
+
+msgid "APN:"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Ad-hoc"
+msgstr ""
+
+msgid "Advanced"
+msgstr ""
+
+msgid "Advanced..."
+msgstr ""
+
+msgid "Allow BSD data Compression"
+msgstr ""
+
+msgid "Allow Deflate data compression"
+msgstr ""
+
+msgid "Allow roaming if home network is not available"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Authentication:"
+msgstr ""
+
+msgid "Automatic"
+msgstr ""
+
+msgid "Automatic DNS server address"
+msgstr ""
+
+msgid "Automatic IP address"
+msgstr ""
+
+msgid "BSSID:"
+msgstr ""
+
+msgid "Band:"
+msgstr ""
+
+msgid "Basic"
+msgstr ""
+
+msgid "Broadband"
+msgstr ""
+
+msgid "CDMA config"
+msgstr ""
+
+msgid "CHAP"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Channel:"
+msgstr ""
+
+msgid "Cloned Mac Address:"
+msgstr ""
+
+msgid "Code:"
+msgstr ""
+
+msgid "Compression"
+msgstr ""
+
+msgid "Config"
+msgstr ""
+
+msgid "Configuration url"
+msgstr ""
+
+msgid "Configure Method"
+msgstr ""
+
+msgid "Connection Name:"
+msgstr ""
+
+msgid "Country or Region:"
+msgstr ""
+
+msgid "Create a DSL connection"
+msgstr ""
+
+msgid "Create a VPN connection"
+msgstr ""
+
+msgid "DSL"
+msgstr ""
+
+msgid "Default Setting"
+msgstr ""
+
+msgid "Default Settings"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Device Mac Address:"
+msgstr ""
+
+msgid "Dsl config"
+msgstr ""
+
+msgid "EAP"
+msgstr ""
+
+msgid "Echo"
+msgstr ""
+
+msgid "Enable IPSec tunnel to l2tp host"
+msgstr ""
+
+msgid "FTP Proxy"
+msgstr ""
+
+msgid "GSM config"
+msgstr ""
+
+msgid "Gateway"
+msgstr ""
+
+msgid "Gateway ID:"
+msgstr ""
+
+msgid "Gateway:"
+msgstr ""
+
+msgid "Group Name:"
+msgstr ""
+
+msgid "Hidden network"
+msgstr ""
+
+msgid "Hotspot"
+msgstr ""
+
+msgid "Http Proxy"
+msgstr ""
+
+msgid "Https Proxy"
+msgstr ""
+
+msgid "IP Address:"
+msgstr ""
+
+msgid "IPSec Setting"
+msgstr ""
+
+msgid "IPv4"
+msgstr ""
+
+msgid "IPv4 settings"
+msgstr ""
+
+msgid "IPv6 settings"
+msgstr ""
+
+msgid "Infrastructure"
+msgstr ""
+
+#, python-format
+msgid "Invalid %s address."
+msgstr ""
+
+msgid "Key:"
+msgstr ""
+
+msgid "L2TP"
+msgstr ""
+
+msgid "Link-Local Only"
+msgstr ""
+
+msgid "MSCHAP"
+msgstr ""
+
+msgid "MSCHAP v2"
+msgstr ""
+
+msgid "MTU:"
+msgstr ""
+
+msgid "Manual"
+msgstr ""
+
+msgid "Mobile Configuration"
+msgstr ""
+
+msgid "Mobile Network"
+msgstr ""
+
+msgid "Mode:"
+msgstr ""
+
+msgid "NT Domain:"
+msgstr ""
+
+msgid "Network"
+msgstr ""
+
+msgid "Network ID:"
+msgstr ""
+
+msgid "New Connection"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Open System"
+msgstr ""
+
+msgid "PAP"
+msgstr ""
+
+msgid "PIN:"
+msgstr ""
+
+msgid "PPP"
+msgstr ""
+
+msgid "PPP settings"
+msgstr ""
+
+msgid "PPTP"
+msgstr ""
+
+msgid "Password:"
+msgstr ""
+
+#, python-format
+msgid "Please input password for %s"
+msgstr ""
+
+msgid "Pre_Shared_key"
+msgstr ""
+
+msgid "Prefix:"
+msgstr ""
+
+msgid "Primary DNS server address:"
+msgstr ""
+
+msgid "Provider:"
+msgstr ""
+
+msgid "Proxy"
+msgstr ""
+
+msgid "Proxy Configuration"
+msgstr ""
+
+msgid "Region"
+msgstr ""
+
+msgid "Regions setting"
+msgstr ""
+
+msgid "Require 128-bit encryption"
+msgstr ""
+
+msgid "SSID:"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Security"
+msgstr ""
+
+msgid "Security:"
+msgstr ""
+
+msgid "Send PPP echo packets"
+msgstr ""
+
+msgid "Service:"
+msgstr ""
+
+msgid "Set up a hidden wireless connection"
+msgstr ""
+
+msgid "Shared Key"
+msgstr ""
+
+msgid "Show Password"
+msgstr ""
+
+msgid "Show password"
+msgstr ""
+
+msgid "Slave DNS server address:"
+msgstr ""
+
+msgid "Socks Proxy"
+msgstr ""
+
+msgid "Subnet Mask"
+msgstr ""
+
+msgid "Subnet Mask:"
+msgstr ""
+
+msgid "Tip:"
+msgstr ""
+
+msgid ""
+"Tips:This assistant helps you easily set up a mobile broadband connection to "
+"a cellular network."
+msgstr ""
+
+msgid "Type:"
+msgstr ""
+
+msgid "Use Address/Control compression"
+msgstr ""
+
+msgid "Use TCP header compression"
+msgstr ""
+
+msgid "Use point-to-point encryption(mppe)"
+msgstr ""
+
+msgid "Use protocal field compression negotiation"
+msgstr ""
+
+msgid "Use stateful MPPE"
+msgstr ""
+
+msgid "Username:"
+msgstr ""
+
+msgid "VPN"
+msgstr ""
+
+msgid "VPN Network"
+msgstr ""
+
+msgid "VPN config"
+msgstr ""
+
+#, python-format
+msgid "Valid %s address."
+msgstr ""
+
+msgid "WEP (Hex or ASCII)"
+msgstr ""
+
+msgid "WEP 104/128-bit Passphrase"
+msgstr ""
+
+msgid "WPA WPA2 Personal"
+msgstr ""
+
+msgid "Wep index:"
+msgstr ""
+
+msgid "Wired"
+msgstr ""
+
+msgid "Wired config"
+msgstr ""
+
+msgid "Wireless"
+msgstr ""
+
+msgid "Wireless config"
+msgstr ""
+
+msgid "active"
+msgstr ""
+
+#, python-format
+msgid "card %d"
+msgstr ""

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-08 03:50+0000\n"
 "Last-Translator: freddy4212 <freddy4212@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-"
@@ -21,334 +21,253 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/face_record_page.py:79
-msgid "Start"
-msgstr "開始錄製"
-
-#: ../src/face_record_page.py:83
-msgid "Please plug in or enable your camera"
-msgstr "請連接或者開啟視訊鏡頭"
-
-#: ../src/face_record_page.py:84
-msgid "Please keep still for 5 seconds"
-msgstr "請保持靜止5秒鐘"
-
-#: ../src/face_record_page.py:86
-msgid "Failed to record your face"
-msgstr "錄製人臉失敗"
-
-#: ../src/face_record_page.py:94
-msgid "Your face has been successfully recorded"
-msgstr "成功錄製人臉"
-
-#: ../src/face_record_page.py:184
-msgid "Try Again"
-msgstr "重新錄製"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Standard"
-msgstr "標準"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Administrator"
-msgstr "管理員"
-
-#: ../src/treeitem.py:176
-msgid "My Account"
-msgstr "我的帳號"
-
-#: ../src/treeitem.py:180
-msgid "Other Accounts"
-msgstr "其他帳號"
-
-#: ../src/edit_icon_page.py:85
-msgid "zoom in"
-msgstr "拉近"
-
-#: ../src/edit_icon_page.py:90
-msgid "zoom out"
-msgstr "拉遠"
-
-#: ../src/edit_icon_page.py:95
-msgid "Take a photo"
-msgstr "拍照"
-
-#: ../src/edit_icon_page.py:100
-msgid "Try again"
-msgstr "再次拍照"
-
-#: ../src/edit_icon_page.py:856
-msgid "Clip"
-msgstr "照片裁剪"
-
-#: ../src/edit_icon_page.py:872
-msgid "Preview"
-msgstr "照片預覽"
-
-#: ../src/edit_icon_page.py:924
-msgid "no picture"
-msgstr "沒有圖片"
-
-#: ../src/main.py:122 ../src/main.py:134
-msgid "Account type"
-msgstr "帳號類型"
-
-#: ../src/main.py:124
-msgid "Password"
-msgstr "密碼"
-
-#: ../src/main.py:127 ../src/search_keyword.py:25
-msgid "Automatic login"
-msgstr "自動登入"
-
-#: ../src/main.py:129
-msgid "Log in without a password"
-msgstr "不使用密碼登入"
-
-#: ../src/main.py:131 ../src/main.py:135 ../src/search_keyword.py:26
-msgid "Deepin Account"
-msgstr "深度帳號"
-
-#: ../src/main.py:132 ../src/main.py:136
-msgid "Unbound"
-msgstr "未連結"
-
-#: ../src/main.py:133 ../src/search_keyword.py:27
-msgid "Account Name"
-msgstr "帳號名稱"
-
-#: ../src/main.py:139
-msgid "Facial recognition"
-msgstr "人臉辨識"
-
-#: ../src/main.py:162
-msgid "Record"
-msgstr "錄製人臉"
-
-#: ../src/main.py:163
-msgid "Test"
-msgstr "辨識測試"
-
-#: ../src/main.py:176 ../src/main.py:613 ../src/main.py:761
-#: ../src/main.py:1200
-msgid "Enable"
-msgstr "啟用此帳號"
-
-#: ../src/main.py:177
-msgid "Add"
-msgstr "添加帳號"
-
-#: ../src/main.py:178
-msgid "Delete"
-msgstr "刪除帳號"
-
-#: ../src/main.py:179
-msgid "Create"
-msgstr "建立"
-
-#: ../src/main.py:180 ../src/main.py:233 ../src/main.py:239 ../src/main.py:971
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/main.py:228
-msgid "It is possible to keep the home directory when deleting a user account."
-msgstr "刪除使用者時可以保留使用者家目錄。"
-
-#: ../src/main.py:231
-msgid "Delete Files"
-msgstr "刪除檔案"
-
-#: ../src/main.py:232
-msgid "Keep Files"
-msgstr "保留檔案"
-
-#: ../src/main.py:240
-msgid "Save"
-msgstr "儲存"
-
-#: ../src/main.py:244
-msgid "Back"
-msgstr "返回"
-
-#: ../src/main.py:245
-msgid "Experience"
-msgstr "體驗"
-
-#: ../src/main.py:562
-#, python-format
-msgid "Enabled auto-login for %s"
-msgstr "允許 %s 自動登入"
-
-#: ../src/main.py:564
-#, python-format
-msgid "Disabled auto-login for %s"
-msgstr "禁止 %s 自動登入"
-
-#: ../src/main.py:586
-#, python-format
-msgid "Enabled passwordless login for %s"
-msgstr "已啟用 %s 不使用密碼登入"
-
-#: ../src/main.py:593
-#, python-format
-msgid "Disabled passwordless login for %s"
-msgstr "已停用 %s 不使用密碼登入"
-
-#: ../src/main.py:609
-#, python-format
-msgid "Enable %s"
-msgstr "啟用 %s"
-
-#: ../src/main.py:610 ../src/main.py:763 ../src/main.py:1202
-msgid "Disable"
-msgstr "停用此帳號"
-
-#: ../src/main.py:612
-#, python-format
-msgid "Disable %s"
-msgstr "停用 %s"
-
-#: ../src/main.py:659
 #, python-format
 msgid "%s has been created"
 msgstr "%s 帳號已建立"
 
-#: ../src/main.py:665
+#, python-format
+msgid "%s has been deleted"
+msgstr "%s 已被刪除"
+
+#, python-format
+msgid "%s's account type has been set as %s"
+msgstr "%s 的帳號類型已被設定為「%s」"
+
+#, python-format
+msgid "%s's password has been changed"
+msgstr "%s 的密碼變更完成"
+
+msgid "Account"
+msgstr "帳號"
+
+msgid "Account Name"
+msgstr "帳號名稱"
+
+msgid "Account disabled"
+msgstr "帳號已停用"
+
+msgid "Account type"
+msgstr "帳號類型"
+
+msgid "Add"
+msgstr "添加帳號"
+
+msgid "Administrator"
+msgstr "管理員"
+
+msgid "Automatic login"
+msgstr "自動登入"
+
+msgid "Back"
+msgstr "返回"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Change"
+msgstr "變更"
+
+msgid "Change Password"
+msgstr "變更密碼"
+
+msgid "Choose a new picture for your account"
+msgstr "選擇帳號圖片"
+
+msgid "Clip"
+msgstr "照片裁剪"
+
+msgid "Confirm new password"
+msgstr "確認新密碼"
+
+msgid "Create"
+msgstr "建立"
+
+msgid "Create Account"
+msgstr "建立帳號"
+
+msgid "Current password"
+msgstr "目前密碼"
+
+msgid "Deepin Account"
+msgstr "深度帳號"
+
+msgid "Delete"
+msgstr "刪除帳號"
+
+msgid "Delete Account"
+msgstr "刪除帳號"
+
+msgid "Delete Files"
+msgstr "刪除檔案"
+
+msgid "Disable"
+msgstr "停用此帳號"
+
+#, python-format
+msgid "Disable %s"
+msgstr "停用 %s"
+
+#, python-format
+msgid "Disabled auto-login for %s"
+msgstr "禁止 %s 自動登入"
+
+#, python-format
+msgid "Disabled passwordless login for %s"
+msgstr "已停用 %s 不使用密碼登入"
+
+#, python-format
+msgid "Do you want to keep <u>%s</u>'s files?"
+msgstr "你想要保留 <u>%s</u> 的檔案嗎？"
+
+msgid "Edit Picture"
+msgstr "編輯圖片"
+
+msgid "Enable"
+msgstr "啟用此帳號"
+
+#, python-format
+msgid "Enable %s"
+msgstr "啟用 %s"
+
+#, python-format
+msgid "Enabled auto-login for %s"
+msgstr "允許 %s 自動登入"
+
+#, python-format
+msgid "Enabled passwordless login for %s"
+msgstr "已啟用 %s 不使用密碼登入"
+
+msgid "Error:"
+msgstr "錯誤："
+
+msgid "Experience"
+msgstr "體驗"
+
+msgid "Face Record"
+msgstr "錄製人臉"
+
+msgid "Facial recognition"
+msgstr "人臉辨識"
+
+msgid "Failed to record your face"
+msgstr "錄製人臉失敗"
+
+msgid "From camera"
+msgstr "使用視訊鏡頭"
+
+msgid "It is possible to keep the home directory when deleting a user account."
+msgstr "刪除使用者時可以保留使用者家目錄。"
+
+msgid "Keep Files"
+msgstr "保留檔案"
+
+msgid "Local picture"
+msgstr "從本機檔案"
+
+msgid "Log in without a password"
+msgstr "不使用密碼登入"
+
+msgid "My Account"
+msgstr "我的帳號"
+
+msgid "New password"
+msgstr "新密碼"
+
+msgid "None"
+msgstr "沒有"
+
+msgid "Other Accounts"
+msgstr "其他帳號"
+
+msgid "Password"
+msgstr "密碼"
+
+msgid "Password did not match."
+msgstr "兩次輸入的密碼不相同"
+
+msgid "Please keep still for 5 seconds"
+msgstr "請保持靜止5秒鐘"
+
+msgid "Please plug in or enable your camera"
+msgstr "請連接或者開啟視訊鏡頭"
+
+msgid "Preview"
+msgstr "照片預覽"
+
+msgid "Previously used pictures"
+msgstr "曾經用過的圖片"
+
+msgid "Record"
+msgstr "錄製人臉"
+
+msgid "Save"
+msgstr "儲存"
+
+#, python-format
+msgid "Set <u>%s</u>'s picture"
+msgstr "設定 <u>%s</u> 的帳號圖片"
+
+msgid "Set Picture"
+msgstr "設定帳號圖片"
+
+msgid "Show password"
+msgstr "顯示密碼"
+
+msgid "Standard"
+msgstr "標準"
+
+msgid "Start"
+msgstr "開始錄製"
+
+msgid "Take a photo"
+msgstr "拍照"
+
+msgid "Take a screeshot"
+msgstr "使用深度截圖"
+
+msgid "Test"
+msgstr "辨識測試"
+
 msgid "The user name is invalid"
 msgstr "使用者名稱無效"
 
-#: ../src/main.py:680
+msgid "To be set at next login"
+msgstr "在下次登入時設定"
+
+msgid "Try Again"
+msgstr "重新錄製"
+
+msgid "Try again"
+msgstr "再次拍照"
+
+msgid "Unbound"
+msgstr "未連結"
+
+msgid "User Accounts"
+msgstr "使用者帳號"
+
 msgid ""
 "User names can only consist of letters, numbers, underscores and begin with "
 "a letter"
 msgstr "使用者名稱只能由英文字母、數字、下划線組成，並且以字母開頭"
 
-#: ../src/main.py:699
-#, python-format
-msgid "%s has been deleted"
-msgstr "%s 已被刪除"
+msgid "Your face has been successfully recorded"
+msgstr "成功錄製人臉"
 
-#: ../src/main.py:716
-#, python-format
-msgid "Do you want to keep <u>%s</u>'s files?"
-msgstr "你想要保留 <u>%s</u> 的檔案嗎？"
-
-#: ../src/main.py:744 ../src/main.py:1184
-msgid "Account disabled"
-msgstr "帳號已停用"
-
-#: ../src/main.py:746 ../src/main.py:1186
-msgid "To be set at next login"
-msgstr "在下次登入時設定"
-
-#: ../src/main.py:748 ../src/main.py:1188
-msgid "None"
-msgstr "沒有"
-
-#: ../src/main.py:823
-#, python-format
-msgid "%s's account type has been set as %s"
-msgstr "%s 的帳號類型已被設定為「%s」"
-
-#: ../src/main.py:940
-msgid "Current password"
-msgstr "目前密碼"
-
-#: ../src/main.py:942
-msgid "New password"
-msgstr "新密碼"
-
-#: ../src/main.py:944
-msgid "Confirm new password"
-msgstr "確認新密碼"
-
-#: ../src/main.py:958
-msgid "Show password"
-msgstr "顯示密碼"
-
-#: ../src/main.py:972
-msgid "Change"
-msgstr "變更"
-
-#: ../src/main.py:1017
-msgid "Password did not match."
-msgstr "兩次輸入的密碼不相同"
-
-#: ../src/main.py:1033 ../src/main.py:1058
-msgid "password unchanged"
-msgstr "密碼未變更"
-
-#: ../src/main.py:1035
 msgid "authentication token manipulation error"
 msgstr "認證授權操作錯誤"
 
-#: ../src/main.py:1037
 msgid "new and old password are too similar"
 msgstr "新密碼與舊密碼過於相近"
 
-#: ../src/main.py:1051 ../src/main.py:1105
-#, python-format
-msgid "%s's password has been changed"
-msgstr "%s 的密碼變更完成"
+msgid "no picture"
+msgstr "沒有圖片"
 
-#: ../src/main.py:1133 ../src/search_keyword.py:31
-msgid "Set Picture"
-msgstr "設定帳號圖片"
+msgid "password unchanged"
+msgstr "密碼未變更"
 
-#: ../src/main.py:1151
-msgid "Face Record"
-msgstr "錄製人臉"
+msgid "zoom in"
+msgstr "拉近"
 
-#: ../src/main.py:1355
-msgid "Error:"
-msgstr "錯誤："
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:129
-msgid "Local picture"
-msgstr "從本機檔案"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:130
-msgid "Take a screeshot"
-msgstr "使用深度截圖"
-
-#: ../src/set_icon_page.py:131
-msgid "From camera"
-msgstr "使用視訊鏡頭"
-
-#: ../src/set_icon_page.py:149
-msgid "Choose a new picture for your account"
-msgstr "選擇帳號圖片"
-
-#: ../src/set_icon_page.py:153
-msgid "Previously used pictures"
-msgstr "曾經用過的圖片"
-
-#: ../src/set_icon_page.py:197
-#, python-format
-msgid "Set <u>%s</u>'s picture"
-msgstr "設定 <u>%s</u> 的帳號圖片"
-
-#: ../src/set_icon_page.py:360 ../src/set_icon_page.py:389
-#: ../src/set_icon_page.py:401
-msgid "Edit Picture"
-msgstr "編輯圖片"
-
-#: ../src/search_keyword.py:28
-msgid "Create Account"
-msgstr "建立帳號"
-
-#: ../src/search_keyword.py:29
-msgid "Delete Account"
-msgstr "刪除帳號"
-
-#: ../src/search_keyword.py:30
-msgid "Change Password"
-msgstr "變更密碼"
-
-#: ../src/search_keyword.py:32
-msgid "Account"
-msgstr "帳號"
-
-#: ../src/search_keyword.py:33
-msgid "User Accounts"
-msgstr "使用者帳號"
+msgid "zoom out"
+msgstr "拉遠"

@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# fri <pavelfric@seznam.cz>, 2013
-# fri <pavelfric@seznam.cz>, 2013-2014
+# fri, 2013
+# fri, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-01-25 21:30+0000\n"
-"Last-Translator: fri <pavelfric@seznam.cz>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/cs/)\n"
 "Language: cs\n"
@@ -20,163 +20,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr "Výchozí styl"
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
 msgstr "Automatické skrývání"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr "Neviditelný"
-
-#: ../src/desktop_view.py:73
-#, fuzzy
 msgid "Bottom"
-msgstr "Spodní"
+msgstr "Dole"
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr "Nahoře"
-
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr "Výchozí ikona"
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr "Malá"
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr "Nic"
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr "Otevření okna"
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "Spouštěč"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Zvětšit"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr "Ikona na ploše"
-
-#: ../src/desktop_view.py:94
-msgid "Computer"
-msgstr "Počítač"
-
-#: ../src/desktop_view.py:97
-msgid "Home"
-msgstr "Domovská složka"
-
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Koš"
-
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Středisko programů"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr "Panel"
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr "Styl zobrazení"
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr "Styl umístění"
-
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr "Velikost ikony"
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr "Náhled"
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr "Horká oblast"
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr "Vlevo nahoře"
-
-#: ../src/desktop_view.py:200
 msgid "Bottom Right"
 msgstr "Vpravo dole"
 
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr "Horní okraj"
+msgid "Computer"
+msgstr "Počítač"
 
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr "Levý okraj"
+msgid "Default Icon"
+msgstr "Výchozí ikona"
 
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr "Pravý okraj"
+msgid "Default Style"
+msgstr "Výchozí styl"
 
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr "Přihlášení &amp;&amp; zamknutí"
+msgid "Desktop Icon"
+msgstr "Ikona na ploše"
 
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr "Přihlašovací stránka"
+msgid "Display Style"
+msgstr "Styl zobrazení"
 
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr "Vybrat"
+msgid "Dock"
+msgstr "Panel"
 
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr "Uzamykací stránka"
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr "Ukázat ikonu počítače"
-
-#: ../src/desktop_view.py:346
 msgid "Hide computer icon"
 msgstr "Skrýt ikonu počítače"
 
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr "Ukázat ikonu domovské složky"
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr "Skrýt ikonu domovské složky"
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr "Ukázat ikonu koše"
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr "Skrýt ikonu koše"
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr "Ukázat ikonu střediska programů"
-
-#: ../src/desktop_view.py:370
 msgid "Hide deepin software conter icon"
 msgstr "Skrýt ikonu střediska programů"
 
-#: ../src/desktop_view.py:468
+msgid "Hide home icon"
+msgstr "Skrýt ikonu domovské složky"
+
+msgid "Hide trash icon"
+msgstr "Skrýt ikonu koše"
+
+msgid "Home"
+msgstr "Domovská složka"
+
+msgid "Hot Zone"
+msgstr "Horká oblast"
+
+msgid "Icon Size"
+msgstr "Velikost ikony"
+
+msgid "Invisible"
+msgstr "Neviditelný"
+
+msgid "Launcher"
+msgstr "Spouštěč"
+
+msgid "Left Edge"
+msgstr "Levý okraj"
+
+msgid "Lock Page"
+msgstr "Uzamykací stránka"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "Přihlášení &amp;&amp; zamknutí"
+
+msgid "Login Page"
+msgstr "Přihlašovací stránka"
+
+msgid "Maximize"
+msgstr "Zvětšit"
+
+msgid "Nothing"
+msgstr "Nic"
+
+msgid "Opening Window"
+msgstr "Otevření okna"
+
+msgid "Place Style"
+msgstr "Styl umístění"
+
+msgid "Preview"
+msgstr "Náhled"
+
 msgid "Reset to default value"
 msgstr "Nastavit znovu na výchozí hodnotu"
+
+msgid "Right Edge"
+msgstr "Pravý okraj"
+
+msgid "Select"
+msgstr "Vybrat"
+
+msgid "Show computer icon"
+msgstr "Ukázat ikonu počítače"
+
+msgid "Show deepin software center icon"
+msgstr "Ukázat ikonu střediska programů"
+
+msgid "Show home icon"
+msgstr "Ukázat ikonu domovské složky"
+
+msgid "Show trash icon"
+msgstr "Ukázat ikonu koše"
+
+msgid "Small"
+msgstr "Malá"
+
+msgid "Software Center"
+msgstr "Středisko programů"
+
+msgid "Top"
+msgstr "Nahoře"
+
+msgid "Top Edge"
+msgstr "Horní okraj"
+
+msgid "Top Left"
+msgstr "Vlevo nahoře"
+
+msgid "Trash"
+msgstr "Koš"

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-16 01:00+0000\n"
 "Last-Translator: Mohd <mo-hd@windowslive.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/deepin-system-"
@@ -21,40 +21,31 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: ../src/tray_mount_gui.py:170 ../src/tray_mount_gui.py:394
-#: ../src/tray_mount_gui.py:410 ../src/tray_mount_gui.py:415
-msgid "Storage Device"
-msgstr "جهاز التخزين"
-
-#: ../src/tray_mount_gui.py:395
-#, python-format
-msgid "Mount and open device \"%s\"?"
-msgstr "فتح وتركيب جهاز %s ؟"
-
-#: ../src/tray_mount_gui.py:410
-#, python-format
-msgid "Removable media \"%s\" has been removed"
-msgstr "الجهاز الخارجي \"%s\" تم إزالته"
-
-#: ../src/tray_mount_gui.py:415
 #, python-format
 msgid "Found new removable media \"%s\""
 msgstr "تم إيجاد جهاز خارجي جديد \"%s\""
 
-#: ../src/tray_mount_plugin.py:64
-msgid "Mount Failed"
-msgstr "فشل التركيب"
-
-#: ../src/tray_mount_plugin.py:65
 #, python-format
 msgid "Mount '%s' error."
 msgstr "التركيب '%s' خطأ."
 
-#: ../src/tray_mount_plugin.py:68
-msgid "Unmount Failed"
-msgstr "فشل الغاء التركيب"
+msgid "Mount Failed"
+msgstr "فشل التركيب"
 
-#: ../src/tray_mount_plugin.py:70
+#, python-format
+msgid "Mount and open device \"%s\"?"
+msgstr "فتح وتركيب جهاز %s ؟"
+
+#, python-format
+msgid "Removable media \"%s\" has been removed"
+msgstr "الجهاز الخارجي \"%s\" تم إزالته"
+
+msgid "Storage Device"
+msgstr "جهاز التخزين"
+
 #, python-format
 msgid "Unmount '%s' error. Please unmount it in file manager"
 msgstr "خطأ في تركيب '%s'. الرجاء قم بالغاء التركيب من مدير الملفات"
+
+msgid "Unmount Failed"
+msgstr "فشل الغاء التركيب"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-08 04:10+0000\n"
 "Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -19,38 +19,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/main.py:59
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr "武汉深之度科技有限公司 版权所有"
-
-#: ../src/main.py:61
-msgid "Version"
-msgstr "版本"
-
-#: ../src/main.py:62 ../src/search_keyword.py:25
 msgid "CPU"
 msgstr "处理器"
 
-#: ../src/main.py:63 ../src/search_keyword.py:26
-msgid "Memory"
-msgstr "内存"
-
-#: ../src/main.py:64 ../src/search_keyword.py:27
-msgid "OS Type"
-msgstr "操作系统类型"
-
-#: ../src/main.py:65 ../src/search_keyword.py:28
 msgid "Disk"
 msgstr "磁盘"
 
-#: ../src/main.py:154
-msgid "bit"
-msgstr "位"
+msgid "Memory"
+msgstr "内存"
 
-#: ../src/search_keyword.py:29
+msgid "OS Type"
+msgstr "操作系统类型"
+
 msgid "System"
 msgstr "系统"
 
-#: ../src/search_keyword.py:30
 msgid "System information"
 msgstr "系统信息"
+
+msgid "Version"
+msgstr "版本"
+
+msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
+msgstr "武汉深之度科技有限公司 版权所有"
+
+msgid "bit"
+msgstr "位"

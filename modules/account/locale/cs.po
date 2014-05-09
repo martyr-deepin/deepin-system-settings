@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-14 22:50+0000\n"
 "Last-Translator: fri <pavelfric@seznam.cz>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/deepin-system-"
@@ -20,203 +20,231 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/face_record_page.py:79
-msgid "Start"
-msgstr "Začít"
-
-#: ../src/face_record_page.py:83
-msgid "Please plug in or enable your camera"
-msgstr "Zastrčte, prosím, nebo zapněte kameru"
-
-#: ../src/face_record_page.py:84
-msgid "Please keep still for 5 seconds"
-msgstr "Zůstaňte, prosím, v klidu po 5 sekund"
-
-#: ../src/face_record_page.py:86
-msgid "Failed to record your face"
-msgstr "Nepodařilo se zaznamenat vaši tvář"
-
-#: ../src/face_record_page.py:94
-msgid "Your face has been successfully recorded"
-msgstr "Podoba vaší tváře byla úspěšně zaznamenána"
-
-#: ../src/face_record_page.py:184
-msgid "Try Again"
-msgstr "Zkusit znovu"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Standard"
-msgstr "Standardní"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Administrator"
-msgstr "Administrátor"
-
-#: ../src/treeitem.py:176
-msgid "My Account"
-msgstr "Můj účet"
-
-#: ../src/treeitem.py:180
-msgid "Other Accounts"
-msgstr "Další účty"
-
-#: ../src/edit_icon_page.py:85
-msgid "zoom in"
-msgstr "Přiblížit"
-
-#: ../src/edit_icon_page.py:90
-msgid "zoom out"
-msgstr "Oddálit"
-
-#: ../src/edit_icon_page.py:95
-msgid "Take a photo"
-msgstr "Udělat fotku"
-
-#: ../src/edit_icon_page.py:100
-msgid "Try again"
-msgstr "Zkusit znovu"
-
-#: ../src/edit_icon_page.py:856
-msgid "Clip"
-msgstr "Záběr"
-
-#: ../src/edit_icon_page.py:872
-msgid "Preview"
-msgstr "Náhled"
-
-#: ../src/edit_icon_page.py:924
-msgid "no picture"
-msgstr "Žádný obrázek"
-
-#: ../src/main.py:122 ../src/main.py:134
-msgid "Account type"
-msgstr "Typ účtu"
-
-#: ../src/main.py:124
-msgid "Password"
-msgstr "Heslo"
-
-#: ../src/main.py:127 ../src/search_keyword.py:25
-msgid "Automatic login"
-msgstr "Automatické přihlášení"
-
-#: ../src/main.py:129
-msgid "Log in without a password"
-msgstr "Přihlásit se bez hesla"
-
-#: ../src/main.py:131 ../src/main.py:135 ../src/search_keyword.py:26
-msgid "Deepin Account"
-msgstr "Účet"
-
-#: ../src/main.py:132 ../src/main.py:136
-msgid "Unbound"
-msgstr "Rozvázáno"
-
-#: ../src/main.py:133 ../src/search_keyword.py:27
-msgid "Account Name"
-msgstr "Název účtu"
-
-#: ../src/main.py:139
-msgid "Facial recognition"
-msgstr "Rozpoznání obličeje"
-
-#: ../src/main.py:162
-msgid "Record"
-msgstr "Zaznamenat"
-
-#: ../src/main.py:163
-msgid "Test"
-msgstr "Vyzkoušet"
-
-#: ../src/main.py:176 ../src/main.py:613 ../src/main.py:761
-#: ../src/main.py:1200
-msgid "Enable"
-msgstr "Povolit"
-
-#: ../src/main.py:177
-msgid "Add"
-msgstr "Přidat"
-
-#: ../src/main.py:178
-msgid "Delete"
-msgstr "Smazat"
-
-#: ../src/main.py:179
-msgid "Create"
-msgstr "Vytvořit"
-
-#: ../src/main.py:180 ../src/main.py:233 ../src/main.py:239 ../src/main.py:971
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: ../src/main.py:228
-msgid "It is possible to keep the home directory when deleting a user account."
-msgstr "Je možné zachovat domovský adresář při smazání uživatelského účtu."
-
-#: ../src/main.py:231
-msgid "Delete Files"
-msgstr "Smazat soubory"
-
-#: ../src/main.py:232
-msgid "Keep Files"
-msgstr "Zachovat soubory"
-
-#: ../src/main.py:240
-msgid "Save"
-msgstr "Uložit"
-
-#: ../src/main.py:244
-msgid "Back"
-msgstr "Zpět"
-
-#: ../src/main.py:245
-msgid "Experience"
-msgstr "Zkušenost"
-
-#: ../src/main.py:562
-#, python-format
-msgid "Enabled auto-login for %s"
-msgstr "Povoleno automatické přihlášení pro %s"
-
-#: ../src/main.py:564
-#, python-format
-msgid "Disabled auto-login for %s"
-msgstr "Zakázáno automatické přihlášení pro %s"
-
-#: ../src/main.py:586
-#, python-format
-msgid "Enabled passwordless login for %s"
-msgstr "Povoleno přihlášení bez hesla pro %s"
-
-#: ../src/main.py:593
-#, python-format
-msgid "Disabled passwordless login for %s"
-msgstr "Zakázáno přihlášení bez hesla pro %s"
-
-#: ../src/main.py:609
-#, python-format
-msgid "Enable %s"
-msgstr "Povolit %s"
-
-#: ../src/main.py:610 ../src/main.py:763 ../src/main.py:1202
-msgid "Disable"
-msgstr "Zakázat"
-
-#: ../src/main.py:612
-#, python-format
-msgid "Disable %s"
-msgstr "Zakázat %s"
-
-#: ../src/main.py:659
 #, python-format
 msgid "%s has been created"
 msgstr "%s byl vytvořen"
 
-#: ../src/main.py:665
+#, python-format
+msgid "%s has been deleted"
+msgstr "%s byl smazán"
+
+#, python-format
+msgid "%s's account type has been set as %s"
+msgstr "Typ účtu %s byl nastaven jako %s"
+
+#, python-format
+msgid "%s's password has been changed"
+msgstr "%s heslo bylo změněno"
+
+msgid "Account"
+msgstr "Účet"
+
+msgid "Account Name"
+msgstr "Název účtu"
+
+msgid "Account disabled"
+msgstr "Účet zakázán"
+
+msgid "Account type"
+msgstr "Typ účtu"
+
+msgid "Add"
+msgstr "Přidat"
+
+msgid "Administrator"
+msgstr "Administrátor"
+
+msgid "Automatic login"
+msgstr "Automatické přihlášení"
+
+msgid "Back"
+msgstr "Zpět"
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Change"
+msgstr "Změnit"
+
+msgid "Change Password"
+msgstr "Změnit heslo"
+
+msgid "Choose a new picture for your account"
+msgstr "Vyberte nový obrázek pro svůj účet"
+
+msgid "Clip"
+msgstr "Záběr"
+
+msgid "Confirm new password"
+msgstr "Potvrdit nové heslo"
+
+msgid "Create"
+msgstr "Vytvořit"
+
+msgid "Create Account"
+msgstr "Vytvořit účet"
+
+msgid "Current password"
+msgstr "Současné heslo"
+
+msgid "Deepin Account"
+msgstr "Účet"
+
+msgid "Delete"
+msgstr "Smazat"
+
+msgid "Delete Account"
+msgstr "Smazat účet"
+
+msgid "Delete Files"
+msgstr "Smazat soubory"
+
+msgid "Disable"
+msgstr "Zakázat"
+
+#, python-format
+msgid "Disable %s"
+msgstr "Zakázat %s"
+
+#, python-format
+msgid "Disabled auto-login for %s"
+msgstr "Zakázáno automatické přihlášení pro %s"
+
+#, python-format
+msgid "Disabled passwordless login for %s"
+msgstr "Zakázáno přihlášení bez hesla pro %s"
+
+#, python-format
+msgid "Do you want to keep <u>%s</u>'s files?"
+msgstr "Přejete si zachovat soubory <u>%s</u>?"
+
+msgid "Edit Picture"
+msgstr "Upravit obrázek"
+
+msgid "Enable"
+msgstr "Povolit"
+
+#, python-format
+msgid "Enable %s"
+msgstr "Povolit %s"
+
+#, python-format
+msgid "Enabled auto-login for %s"
+msgstr "Povoleno automatické přihlášení pro %s"
+
+#, python-format
+msgid "Enabled passwordless login for %s"
+msgstr "Povoleno přihlášení bez hesla pro %s"
+
+msgid "Error:"
+msgstr "Chyba:"
+
+msgid "Experience"
+msgstr "Zkušenost"
+
+msgid "Face Record"
+msgstr "Záznam obličeje"
+
+msgid "Facial recognition"
+msgstr "Rozpoznání obličeje"
+
+msgid "Failed to record your face"
+msgstr "Nepodařilo se zaznamenat vaši tvář"
+
+msgid "From camera"
+msgstr "Z kamery"
+
+msgid "It is possible to keep the home directory when deleting a user account."
+msgstr "Je možné zachovat domovský adresář při smazání uživatelského účtu."
+
+msgid "Keep Files"
+msgstr "Zachovat soubory"
+
+msgid "Local picture"
+msgstr "Místní obrázek"
+
+msgid "Log in without a password"
+msgstr "Přihlásit se bez hesla"
+
+msgid "My Account"
+msgstr "Můj účet"
+
+msgid "New password"
+msgstr "Nové heslo"
+
+msgid "None"
+msgstr "Žádný"
+
+msgid "Other Accounts"
+msgstr "Další účty"
+
+msgid "Password"
+msgstr "Heslo"
+
+msgid "Password did not match."
+msgstr "Heslo neodpovídá."
+
+msgid "Please keep still for 5 seconds"
+msgstr "Zůstaňte, prosím, v klidu po 5 sekund"
+
+msgid "Please plug in or enable your camera"
+msgstr "Zastrčte, prosím, nebo zapněte kameru"
+
+msgid "Preview"
+msgstr "Náhled"
+
+msgid "Previously used pictures"
+msgstr "Dříve použité obrázky"
+
+msgid "Record"
+msgstr "Zaznamenat"
+
+msgid "Save"
+msgstr "Uložit"
+
+#, python-format
+msgid "Set <u>%s</u>'s picture"
+msgstr "Nastavit obrázek pro <u>%s</u>"
+
+msgid "Set Picture"
+msgstr "Nastavit obrázek"
+
+msgid "Show password"
+msgstr "Ukázat heslo"
+
+msgid "Standard"
+msgstr "Standardní"
+
+msgid "Start"
+msgstr "Začít"
+
+msgid "Take a photo"
+msgstr "Udělat fotku"
+
+msgid "Take a screeshot"
+msgstr "Udělat fotku"
+
+msgid "Test"
+msgstr "Vyzkoušet"
+
 msgid "The user name is invalid"
 msgstr "Uživatelské jméno je neplatné"
 
-#: ../src/main.py:680
+msgid "To be set at next login"
+msgstr "K nastavení jako další přihlášení"
+
+msgid "Try Again"
+msgstr "Zkusit znovu"
+
+msgid "Try again"
+msgstr "Zkusit znovu"
+
+msgid "Unbound"
+msgstr "Rozvázáno"
+
+msgid "User Accounts"
+msgstr "Uživatelské účty"
+
 msgid ""
 "User names can only consist of letters, numbers, underscores and begin with "
 "a letter"
@@ -224,132 +252,23 @@ msgstr ""
 "Uživatelská jména se mohou skládat jen z písmen, čísel, podtržítek a začínat "
 "písmenem"
 
-#: ../src/main.py:699
-#, python-format
-msgid "%s has been deleted"
-msgstr "%s byl smazán"
+msgid "Your face has been successfully recorded"
+msgstr "Podoba vaší tváře byla úspěšně zaznamenána"
 
-#: ../src/main.py:716
-#, python-format
-msgid "Do you want to keep <u>%s</u>'s files?"
-msgstr "Přejete si zachovat soubory <u>%s</u>?"
-
-#: ../src/main.py:744 ../src/main.py:1184
-msgid "Account disabled"
-msgstr "Účet zakázán"
-
-#: ../src/main.py:746 ../src/main.py:1186
-msgid "To be set at next login"
-msgstr "K nastavení jako další přihlášení"
-
-#: ../src/main.py:748 ../src/main.py:1188
-msgid "None"
-msgstr "Žádný"
-
-#: ../src/main.py:823
-#, python-format
-msgid "%s's account type has been set as %s"
-msgstr "Typ účtu %s byl nastaven jako %s"
-
-#: ../src/main.py:940
-msgid "Current password"
-msgstr "Současné heslo"
-
-#: ../src/main.py:942
-msgid "New password"
-msgstr "Nové heslo"
-
-#: ../src/main.py:944
-msgid "Confirm new password"
-msgstr "Potvrdit nové heslo"
-
-#: ../src/main.py:958
-msgid "Show password"
-msgstr "Ukázat heslo"
-
-#: ../src/main.py:972
-msgid "Change"
-msgstr "Změnit"
-
-#: ../src/main.py:1017
-msgid "Password did not match."
-msgstr "Heslo neodpovídá."
-
-#: ../src/main.py:1033 ../src/main.py:1058
-msgid "password unchanged"
-msgstr "Heslo nezměněno"
-
-#: ../src/main.py:1035
 msgid "authentication token manipulation error"
 msgstr "Chyba při zacházení s ověřovacím symbolem"
 
-#: ../src/main.py:1037
 msgid "new and old password are too similar"
 msgstr "Nové a staré heslo jsou si příliš podobné"
 
-#: ../src/main.py:1051 ../src/main.py:1105
-#, python-format
-msgid "%s's password has been changed"
-msgstr "%s heslo bylo změněno"
+msgid "no picture"
+msgstr "Žádný obrázek"
 
-#: ../src/main.py:1133 ../src/search_keyword.py:31
-msgid "Set Picture"
-msgstr "Nastavit obrázek"
+msgid "password unchanged"
+msgstr "Heslo nezměněno"
 
-#: ../src/main.py:1151
-msgid "Face Record"
-msgstr "Záznam obličeje"
+msgid "zoom in"
+msgstr "Přiblížit"
 
-#: ../src/main.py:1355
-msgid "Error:"
-msgstr "Chyba:"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:129
-msgid "Local picture"
-msgstr "Místní obrázek"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:130
-msgid "Take a screeshot"
-msgstr "Udělat fotku"
-
-#: ../src/set_icon_page.py:131
-msgid "From camera"
-msgstr "Z kamery"
-
-#: ../src/set_icon_page.py:149
-msgid "Choose a new picture for your account"
-msgstr "Vyberte nový obrázek pro svůj účet"
-
-#: ../src/set_icon_page.py:153
-msgid "Previously used pictures"
-msgstr "Dříve použité obrázky"
-
-#: ../src/set_icon_page.py:197
-#, python-format
-msgid "Set <u>%s</u>'s picture"
-msgstr "Nastavit obrázek pro <u>%s</u>"
-
-#: ../src/set_icon_page.py:360 ../src/set_icon_page.py:389
-#: ../src/set_icon_page.py:401
-msgid "Edit Picture"
-msgstr "Upravit obrázek"
-
-#: ../src/search_keyword.py:28
-msgid "Create Account"
-msgstr "Vytvořit účet"
-
-#: ../src/search_keyword.py:29
-msgid "Delete Account"
-msgstr "Smazat účet"
-
-#: ../src/search_keyword.py:30
-msgid "Change Password"
-msgstr "Změnit heslo"
-
-#: ../src/search_keyword.py:32
-msgid "Account"
-msgstr "Účet"
-
-#: ../src/search_keyword.py:33
-msgid "User Accounts"
-msgstr "Uživatelské účty"
+msgid "zoom out"
+msgstr "Oddálit"

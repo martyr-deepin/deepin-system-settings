@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-29 02:24+0000\n"
 "Last-Translator: freddy4212 <freddy4212@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-"
@@ -20,145 +20,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/bluetooth_transfer.py:104
-#, python-format
-msgid "Incoming file from %s"
-msgstr "來自“%s”的檔案"
+msgid "Accept"
+msgstr "接受"
 
-#: ../src/bluetooth_transfer.py:105
 #, python-format
 msgid "Accept incoming file %s?"
 msgstr "接收檔案「%s」？"
 
-#: ../src/bluetooth_transfer.py:108
-msgid "Accept"
-msgstr "接受"
+msgid "Adapter"
+msgstr "介面卡"
 
-#: ../src/bluetooth_transfer.py:109
-msgid "Reject"
-msgstr "拒絕"
+msgid "Advanced options..."
+msgstr "進階設定..."
 
-#: ../src/bluetooth_transfer.py:116
+msgid "An error occured when connecting to the device."
+msgstr "連線到裝置時發生錯誤。"
+
+msgid "Audio Sink"
+msgstr "音訊接收卡"
+
+msgid "Bluetooth"
+msgstr "藍牙"
+
+msgid "Bluetooth Audio"
+msgstr "藍牙音訊"
+
+msgid "Bluetooth Headset"
+msgstr "藍牙耳機"
+
+msgid "Bluetooth Input Service"
+msgstr "藍牙輸入服務"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Connection Failed"
+msgstr "連線失敗"
+
+msgid "Device name"
+msgstr "顯示裝置名稱"
+
+msgid "Discoverable"
+msgstr "可被搜尋"
+
+msgid "Discovering device"
+msgstr "可被搜尋"
+
+msgid "Enable bluetooth"
+msgstr "藍牙是否啟用"
+
 #, python-format
-msgid "Receiving file from %s"
-msgstr "正在接收來自「%s」的檔案"
+msgid "Enter PIN code to pair with %s:"
+msgstr "輸入與「%s」配對的 PIN 碼："
 
-#: ../src/bluetooth_transfer.py:142
 #, python-format
 msgid "Failed to receive the file : %s"
 msgstr "接收檔案失敗：「%s」"
 
-#: ../src/bluetooth_view.py:85
-msgid "Pair"
-msgstr "配對"
-
-#: ../src/bluetooth_view.py:90
-msgid "Remove Device"
-msgstr "移除裝置"
-
-#: ../src/bluetooth_view.py:304 ../src/bluetooth_view.py:306
-msgid "Headset"
-msgstr "耳機服務"
-
-#: ../src/bluetooth_view.py:311 ../src/bluetooth_view.py:313
-msgid "Audio Sink"
-msgstr "音訊接收卡"
-
-#: ../src/bluetooth_view.py:319 ../src/bluetooth_view.py:321
-msgid "Input Service"
-msgstr "輸入服務"
-
-#: ../src/bluetooth_view.py:323
-msgid "Send File"
-msgstr "傳送檔案"
-
-#: ../src/bluetooth_view.py:335 ../src/tray_bluetooth_plugin.py:91
-msgid "Bluetooth Audio"
-msgstr "藍牙音訊"
-
-#: ../src/bluetooth_view.py:336 ../src/tray_bluetooth_plugin.py:92
-msgid "Successfully connected to the Bluetooth audio device."
-msgstr "成功連線到藍牙音訊裝置。"
-
-#: ../src/bluetooth_view.py:338 ../src/bluetooth_view.py:359
-#: ../src/bluetooth_view.py:379 ../src/tray_bluetooth_plugin.py:94
-#: ../src/tray_bluetooth_plugin.py:107
-msgid "Connection Failed"
-msgstr "連線失敗"
-
-#: ../src/bluetooth_view.py:338 ../src/bluetooth_view.py:359
-#: ../src/bluetooth_view.py:379 ../src/tray_bluetooth_plugin.py:94
-#: ../src/tray_bluetooth_plugin.py:107
-msgid "An error occured when connecting to the device."
-msgstr "連線到裝置時發生錯誤。"
-
-#: ../src/bluetooth_view.py:356 ../src/tray_bluetooth_plugin.py:104
-msgid "Bluetooth Input Service"
-msgstr "藍牙輸入服務"
-
-#: ../src/bluetooth_view.py:357 ../src/tray_bluetooth_plugin.py:105
-msgid "Successfully connected to the Bluetooth input device."
-msgstr "成功連線到藍牙輸入裝置。"
-
-#: ../src/bluetooth_view.py:376
-msgid "Bluetooth Headset"
-msgstr "藍牙耳機"
-
-#: ../src/bluetooth_view.py:377
-msgid "Successfully connected to the Bluetooth headset."
-msgstr "成功連線到藍牙耳機。"
-
-#: ../src/bluetooth_view.py:401
-msgid "Pairing failed!"
-msgstr "配對失敗"
-
-#: ../src/bluetooth_view.py:469 ../src/bluetooth_view.py:474
-#, python-format
-msgid "in %d seconds"
-msgstr "在 %d 秒內"
-
-#: ../src/bluetooth_view.py:503 ../src/bluetooth_view.py:507
-#: ../src/bluetooth_view.py:510
-msgid "Bluetooth"
-msgstr "藍牙"
-
-#: ../src/bluetooth_view.py:514 ../src/search_keyword.py:29
-msgid "Enable bluetooth"
-msgstr "藍牙是否啟用"
-
-#: ../src/bluetooth_view.py:535 ../src/search_keyword.py:30
-msgid "Device name"
-msgstr "顯示裝置名稱"
-
-#: ../src/bluetooth_view.py:556 ../src/search_keyword.py:31
-msgid "Discoverable"
-msgstr "可被搜尋"
-
-#: ../src/bluetooth_view.py:589
-msgid "Search"
-msgstr "搜尋"
-
-#: ../src/bluetooth_view.py:701 ../src/bluetooth_view.py:713
-msgid "Discovering device"
-msgstr "可被搜尋"
-
-#: ../src/tray_bluetooth_plugin.py:285
-msgid "Adapter"
-msgstr "介面卡"
-
-#: ../src/tray_bluetooth_plugin.py:317
-msgid "Advanced options..."
-msgstr "進階設定..."
-
-#: ../src/dialog.py:166
-msgid "OK"
-msgstr "確定"
-
-#: ../src/dialog.py:168
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/bluetooth_sender.py:51
 #, python-format
 msgid ""
 "Failed!\n"
@@ -167,37 +85,73 @@ msgstr ""
 "抱歉！文件傳送失敗，請檢視您的藍牙網路設定。\n"
 "錯誤訊息: %s"
 
-#: ../src/bluetooth_sender.py:68
+msgid "Headset"
+msgstr "耳機服務"
+
 #, python-format
-msgid "Sending file to %s"
-msgstr "正在傳送檔案到「%s」"
+msgid "Incoming file from %s"
+msgstr "來自“%s”的檔案"
 
-#: ../src/bluetooth_sender.py:85
-msgid "Transfer complete!"
-msgstr "傳送成功！"
+msgid "Input Service"
+msgstr "輸入服務"
 
-#: ../src/bluetooth_sender.py:116
-msgid "Select File"
-msgstr "選擇檔案"
+msgid "No"
+msgstr "否"
 
-#: ../src/search_keyword.py:32
-msgid "Searching Device Timeout"
-msgstr "搜尋裝置逾時"
+msgid "OK"
+msgstr "確定"
 
-#: ../src/bt/agent.py:88
-#, python-format
-msgid "Enter PIN code to pair with %s:"
-msgstr "輸入與「%s」配對的 PIN 碼："
+msgid "Pair"
+msgstr "配對"
 
-#: ../src/bt/agent.py:138
+msgid "Pairing failed!"
+msgstr "配對失敗"
+
 #, python-format
 msgid "Please confirm %s pin match as below"
 msgstr "請確認裝置「%s」上顯示的 PIN 碼與下面的相符"
 
-#: ../src/bt/agent.py:140
+#, python-format
+msgid "Receiving file from %s"
+msgstr "正在接收來自「%s」的檔案"
+
+msgid "Reject"
+msgstr "拒絕"
+
+msgid "Remove Device"
+msgstr "移除裝置"
+
+msgid "Search"
+msgstr "搜尋"
+
+msgid "Searching Device Timeout"
+msgstr "搜尋裝置逾時"
+
+msgid "Select File"
+msgstr "選擇檔案"
+
+msgid "Send File"
+msgstr "傳送檔案"
+
+#, python-format
+msgid "Sending file to %s"
+msgstr "正在傳送檔案到「%s」"
+
+msgid "Successfully connected to the Bluetooth audio device."
+msgstr "成功連線到藍牙音訊裝置。"
+
+msgid "Successfully connected to the Bluetooth headset."
+msgstr "成功連線到藍牙耳機。"
+
+msgid "Successfully connected to the Bluetooth input device."
+msgstr "成功連線到藍牙輸入裝置。"
+
+msgid "Transfer complete!"
+msgstr "傳送成功！"
+
 msgid "Yes"
 msgstr "是"
 
-#: ../src/bt/agent.py:141
-msgid "No"
-msgstr "否"
+#, python-format
+msgid "in %d seconds"
+msgstr "在 %d 秒內"

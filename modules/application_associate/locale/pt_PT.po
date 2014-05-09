@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Black_Scorpion <bscorpion@msn.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-01 22:20+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-08 13:42+0000\n"
+"Last-Translator: Black_Scorpion <bscorpion@msn.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/pt_PT/)\n"
 "Language: pt_PT\n"
@@ -18,154 +19,116 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/session_view.py:52
 msgid "Active"
-msgstr ""
+msgstr "Activa"
 
-#: ../src/session_view.py:52 ../src/search_keyword.py:29
 msgid "Application"
-msgstr ""
+msgstr "Aplicação"
 
-#: ../src/session_view.py:52
-msgid "Description"
-msgstr ""
+msgid "Application Associate"
+msgstr "Associar Aplicação"
 
-#: ../src/session_view.py:52
-msgid "Exec"
-msgstr ""
-
-#: ../src/session_view.py:65
-msgid "New"
-msgstr ""
-
-#: ../src/session_view.py:66
-msgid "Delete"
-msgstr ""
-
-#: ../src/app_asso_view.py:61
-msgid "Default Applications"
-msgstr ""
-
-#: ../src/app_asso_view.py:62 ../src/media_view.py:105
-msgid "AutoPlay"
-msgstr ""
-
-#: ../src/app_asso_view.py:63 ../src/search_keyword.py:31
-msgid "Autostart"
-msgstr ""
-
-#: ../src/media_view.py:85
-msgid "CD"
-msgstr ""
-
-#: ../src/media_view.py:86
-msgid "DVD"
-msgstr ""
-
-#: ../src/media_view.py:87
-msgid "Audio Player"
-msgstr ""
-
-#: ../src/media_view.py:88
-msgid "Camera"
-msgstr ""
-
-#: ../src/media_view.py:89
 msgid "Applications"
-msgstr ""
+msgstr "Aplicações"
 
-#: ../src/media_view.py:90
-msgid "Automatically Mount"
-msgstr ""
-
-#: ../src/media_view.py:95 ../src/media_view.py:266
-msgid "Other applications"
-msgstr ""
-
-#: ../src/media_view.py:96 ../src/media_view.py:100
 msgid "Ask"
-msgstr ""
+msgstr "Perguntar"
 
-#: ../src/media_view.py:97 ../src/media_view.py:99
-msgid "Do nothing"
-msgstr ""
+msgid "Audio Player"
+msgstr "Leitor de Áudio"
 
-#: ../src/media_view.py:98
-msgid "Open folder"
-msgstr ""
+msgid "AutoPlay"
+msgstr "Reprodução Automática"
 
-#: ../src/media_view.py:101
-msgid "Mount"
-msgstr ""
+msgid "Automatically Mount"
+msgstr "Montar Automaticamente"
 
-#: ../src/media_view.py:102
-msgid "Mount and open folder"
-msgstr ""
+msgid "Autostart"
+msgstr "Iniciar Automaticamente"
 
-#: ../src/app_view.py:42
-msgid "Web"
-msgstr ""
-
-#: ../src/app_view.py:43
-msgid "Mail"
-msgstr ""
-
-#: ../src/app_view.py:44
-msgid "Editor"
-msgstr ""
-
-#: ../src/app_view.py:45
-msgid "Music"
-msgstr ""
-
-#: ../src/app_view.py:46
-msgid "Video"
-msgstr ""
-
-#: ../src/app_view.py:47
-msgid "Photo"
-msgstr ""
-
-#: ../src/app_view.py:48
-msgid "Terminal"
-msgstr ""
-
-#: ../src/treeview.py:125
-msgid "No exec"
-msgstr ""
-
-#: ../src/treeview.py:145
-msgid "No description"
-msgstr ""
-
-#: ../src/widget.py:43
 msgid "Autostart app"
-msgstr ""
+msgstr "Iniciar automaticamente aplicação"
 
-#: ../src/widget.py:48
-msgid "OK"
-msgstr "OK"
+msgid "CD"
+msgstr "CD"
 
-#: ../src/widget.py:49
+msgid "Camera"
+msgstr "Câmara"
+
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../src/widget.py:84
-msgid "Name:"
-msgstr ""
-
-#: ../src/widget.py:86
-msgid "Exec:"
-msgstr ""
-
-#: ../src/widget.py:88
 msgid "Comment:"
-msgstr ""
+msgstr "Comentário:"
 
-#: ../src/search_keyword.py:30
+msgid "DVD"
+msgstr "DVD"
+
+msgid "Default Applications"
+msgstr "Aplicações Predefinidas"
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Description"
+msgstr "Descrição"
+
+msgid "Do nothing"
+msgstr "Nenhuma acção"
+
+msgid "Editor"
+msgstr "Editor"
+
+msgid "Exec"
+msgstr "Executar"
+
+msgid "Exec:"
+msgstr "Comando:"
+
+msgid "Mail"
+msgstr "Correio"
+
 msgid "Media"
-msgstr ""
+msgstr "Multimédia"
 
-#: ../src/search_keyword.py:32
-msgid "Application Associate"
-msgstr ""
+msgid "Mount"
+msgstr "Montar"
+
+msgid "Mount and open folder"
+msgstr "Montar e Mostrar pasta"
+
+msgid "Music"
+msgstr "Música"
+
+msgid "Name:"
+msgstr "Nome:"
+
+msgid "New"
+msgstr "Novo"
+
+msgid "No description"
+msgstr "Sem Descrição"
+
+msgid "No exec"
+msgstr "Não Executar"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Open folder"
+msgstr "Abrir pasta"
+
+msgid "Other applications"
+msgstr "Outras Aplicações"
+
+msgid "Photo"
+msgstr "Fotografia"
+
+msgid "Terminal"
+msgstr "Terminal"
+
+msgid "Video"
+msgstr "Vídeo"
+
+msgid "Web"
+msgstr "Rede"

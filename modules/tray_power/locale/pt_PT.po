@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Black_Scorpion <bscorpion@msn.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2013-12-26 01:20+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-08 13:42+0000\n"
+"Last-Translator: Black_Scorpion <bscorpion@msn.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/pt_PT/)\n"
 "Language: pt_PT\n"
@@ -18,49 +19,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
-msgstr ""
+msgstr "Faltam %s"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "Definições Avançadas..."
+
+msgid "Balanced"
+msgstr "Equilibrado"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "A carregar. Faltam %s"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Fully charged"
+msgstr "Totalmente carregada"
+
+msgid "High performance"
+msgstr "Alto desempenho"
+
 #, python-format
 msgid "Low power(%s%%)"
-msgstr ""
+msgstr "Bateria fraca (%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr ""
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
-msgstr ""
+msgstr "Energia"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr ""
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
-msgstr ""
+msgstr "Economia de energia"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr ""
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr ""
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr ""
+msgid "Your battery is running low, please charge!"
+msgstr "Bateria fraca. Por favor, conecte o carregador."

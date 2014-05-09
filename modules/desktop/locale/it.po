@@ -4,13 +4,14 @@
 #
 # Translators:
 # Arreyu <massi_gi@hotmail.it>, 2014
+# Massimo Antonio Carofano <massimo.carofano@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-01-24 05:20+0000\n"
-"Last-Translator: Arreyu <massi_gi@hotmail.it>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
+"Last-Translator: Massimo Antonio Carofano <massimo.carofano@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/it/)\n"
 "Language: it\n"
@@ -19,162 +20,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr "Stile Default"
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
-msgstr ""
+msgstr "Nascondi automaticamente"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr "Invisibile"
-
-#: ../src/desktop_view.py:73
 msgid "Bottom"
-msgstr ""
+msgstr "Sotto"
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr ""
+msgid "Bottom Right"
+msgstr "In basso a destra"
 
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr ""
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr "Piccolo"
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr ""
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr ""
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr ""
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Massimizzare"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr ""
-
-#: ../src/desktop_view.py:94
 msgid "Computer"
 msgstr "Computer"
 
-#: ../src/desktop_view.py:97
-msgid "Home"
-msgstr "Home"
+msgid "Default Icon"
+msgstr "Icona di default"
 
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Cestino"
+msgid "Default Style"
+msgstr "Stile Default"
 
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Software Center"
+msgid "Desktop Icon"
+msgstr "Icona desktop"
 
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr ""
-
-#: ../src/desktop_view.py:124
 msgid "Display Style"
-msgstr ""
+msgstr "Stile del display"
 
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr ""
+msgid "Dock"
+msgstr "Dock"
 
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr "Dimensioni Icona"
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr "Anteprima"
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr ""
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr ""
-
-#: ../src/desktop_view.py:200
-msgid "Bottom Right"
-msgstr ""
-
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr ""
-
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr ""
-
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr ""
-
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr ""
-
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr "Pagina Login"
-
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr ""
-
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr ""
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr "Mostra icona computer"
-
-#: ../src/desktop_view.py:346
 msgid "Hide computer icon"
 msgstr "Nascondi icona computer"
 
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr "Mostra icona home"
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr "Nascondi icona home"
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr "Mostra icona cestino"
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr "Nascondi icona cestino"
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr "Mostra icona deepin software center"
-
-#: ../src/desktop_view.py:370
 msgid "Hide deepin software conter icon"
 msgstr "Nascondi icona deepin software center"
 
-#: ../src/desktop_view.py:468
+msgid "Hide home icon"
+msgstr "Nascondi icona home"
+
+msgid "Hide trash icon"
+msgstr "Nascondi icona cestino"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Hot Zone"
+msgstr "Zona hot"
+
+msgid "Icon Size"
+msgstr "Dimensioni Icona"
+
+msgid "Invisible"
+msgstr "Invisibile"
+
+msgid "Launcher"
+msgstr "Launcher"
+
+msgid "Left Edge"
+msgstr "Angolo sinistro"
+
+msgid "Lock Page"
+msgstr "Blocca pagina"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "Login &amp;&amp; Lock"
+
+msgid "Login Page"
+msgstr "Pagina Login"
+
+msgid "Maximize"
+msgstr "Massimizzare"
+
+msgid "Nothing"
+msgstr "Niente"
+
+msgid "Opening Window"
+msgstr "Apertura finestra"
+
+msgid "Place Style"
+msgstr "Stile luoghi"
+
+msgid "Preview"
+msgstr "Anteprima"
+
 msgid "Reset to default value"
 msgstr "Resetta ai valori di default"
+
+msgid "Right Edge"
+msgstr "Angolo destro"
+
+msgid "Select"
+msgstr "Seleziona"
+
+msgid "Show computer icon"
+msgstr "Mostra icona computer"
+
+msgid "Show deepin software center icon"
+msgstr "Mostra icona deepin software center"
+
+msgid "Show home icon"
+msgstr "Mostra icona home"
+
+msgid "Show trash icon"
+msgstr "Mostra icona cestino"
+
+msgid "Small"
+msgstr "Piccolo"
+
+msgid "Software Center"
+msgstr "Software Center"
+
+msgid "Top"
+msgstr "Top"
+
+msgid "Top Edge"
+msgstr "All'angolo alto"
+
+msgid "Top Left"
+msgstr "In alto a sinistra"
+
+msgid "Trash"
+msgstr "Cestino"

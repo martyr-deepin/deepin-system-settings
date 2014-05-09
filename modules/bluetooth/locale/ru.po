@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Fox909 <ffox909@mail.ru>, 2014
 # evilscorpio <scorpkillerx@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-24 10:30+0000\n"
-"Last-Translator: evilscorpio <scorpkillerx@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-29 09:20+0000\n"
+"Last-Translator: Fox909 <ffox909@mail.ru>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/ru/)\n"
 "Language: ru\n"
@@ -20,182 +21,138 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ../src/bluetooth_transfer.py:104
-#, python-format
-msgid "Incoming file from %s"
-msgstr ""
-
-#: ../src/bluetooth_transfer.py:105
-#, python-format
-msgid "Accept incoming file %s?"
-msgstr ""
-
-#: ../src/bluetooth_transfer.py:108
 msgid "Accept"
 msgstr "Принять"
 
-#: ../src/bluetooth_transfer.py:109
-msgid "Reject"
-msgstr "Отклонить"
-
-#: ../src/bluetooth_transfer.py:116
 #, python-format
-msgid "Receiving file from %s"
-msgstr "Принимаем файл от %s"
+msgid "Accept incoming file %s?"
+msgstr "Разрешить входящий файл %s?"
 
-#: ../src/bluetooth_transfer.py:142
-#, python-format
-msgid "Failed to receive the file : %s"
-msgstr ""
-
-#: ../src/bluetooth_view.py:85
-msgid "Pair"
-msgstr "Связать"
-
-#: ../src/bluetooth_view.py:90
-msgid "Remove Device"
-msgstr "Удалить устройство"
-
-#: ../src/bluetooth_view.py:304 ../src/bluetooth_view.py:306
-msgid "Headset"
-msgstr "Наушники"
-
-#: ../src/bluetooth_view.py:311 ../src/bluetooth_view.py:313
-msgid "Audio Sink"
-msgstr ""
-
-#: ../src/bluetooth_view.py:319 ../src/bluetooth_view.py:321
-msgid "Input Service"
-msgstr ""
-
-#: ../src/bluetooth_view.py:323
-msgid "Send File"
-msgstr "Отправить файл"
-
-#: ../src/bluetooth_view.py:335 ../src/tray_bluetooth_plugin.py:91
-msgid "Bluetooth Audio"
-msgstr "Bluetooth Аудио"
-
-#: ../src/bluetooth_view.py:336 ../src/tray_bluetooth_plugin.py:92
-msgid "Successfully connected to the Bluetooth audio device."
-msgstr "Bluetooth-аудиоустройство успешно подключено."
-
-#: ../src/bluetooth_view.py:338 ../src/bluetooth_view.py:359
-#: ../src/bluetooth_view.py:379 ../src/tray_bluetooth_plugin.py:94
-#: ../src/tray_bluetooth_plugin.py:107
-msgid "Connection Failed"
-msgstr "Поключение не удалось"
-
-#: ../src/bluetooth_view.py:338 ../src/bluetooth_view.py:359
-#: ../src/bluetooth_view.py:379 ../src/tray_bluetooth_plugin.py:94
-#: ../src/tray_bluetooth_plugin.py:107
-msgid "An error occured when connecting to the device."
-msgstr "При подключении возникла ошибка."
-
-#: ../src/bluetooth_view.py:356 ../src/tray_bluetooth_plugin.py:104
-msgid "Bluetooth Input Service"
-msgstr "Сервис Bluetooth-устройств ввода"
-
-#: ../src/bluetooth_view.py:357 ../src/tray_bluetooth_plugin.py:105
-msgid "Successfully connected to the Bluetooth input device."
-msgstr "Bluetooth-устройство ввода успешно подключено."
-
-#: ../src/bluetooth_view.py:376
-msgid "Bluetooth Headset"
-msgstr "Bluetooth-наушники"
-
-#: ../src/bluetooth_view.py:377
-msgid "Successfully connected to the Bluetooth headset."
-msgstr "Bluetooth-наушники успешно подключены."
-
-#: ../src/bluetooth_view.py:401
-msgid "Pairing failed!"
-msgstr "Связка не удалась!"
-
-#: ../src/bluetooth_view.py:469 ../src/bluetooth_view.py:474
-#, python-format
-msgid "in %d seconds"
-msgstr "через %d секунд"
-
-#: ../src/bluetooth_view.py:503 ../src/bluetooth_view.py:507
-#: ../src/bluetooth_view.py:510
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../src/bluetooth_view.py:514 ../src/search_keyword.py:29
-msgid "Enable bluetooth"
-msgstr "Включить Bluetooth"
-
-#: ../src/bluetooth_view.py:535 ../src/search_keyword.py:30
-msgid "Device name"
-msgstr "Имя устройства"
-
-#: ../src/bluetooth_view.py:556 ../src/search_keyword.py:31
-msgid "Discoverable"
-msgstr "Обнаруживаемое"
-
-#: ../src/bluetooth_view.py:589
-msgid "Search"
-msgstr "Поиск"
-
-#: ../src/bluetooth_view.py:701 ../src/bluetooth_view.py:713
-msgid "Discovering device"
-msgstr "Поиск устройства"
-
-#: ../src/tray_bluetooth_plugin.py:285
 msgid "Adapter"
-msgstr ""
+msgstr "Адаптер"
 
-#: ../src/tray_bluetooth_plugin.py:317
 msgid "Advanced options..."
 msgstr "Дополнительные настройки..."
 
-#: ../src/dialog.py:166
-msgid "OK"
-msgstr "ОК"
+msgid "An error occured when connecting to the device."
+msgstr "При подключении возникла ошибка."
 
-#: ../src/dialog.py:168
+msgid "Audio Sink"
+msgstr "Audio Sink"
+
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+msgid "Bluetooth Audio"
+msgstr "Bluetooth Аудио"
+
+msgid "Bluetooth Headset"
+msgstr "Bluetooth-наушники"
+
+msgid "Bluetooth Input Service"
+msgstr "Сервис Bluetooth-устройств ввода"
+
 msgid "Cancel"
 msgstr "Отмена"
 
-#: ../src/bluetooth_sender.py:51
+msgid "Connection Failed"
+msgstr "Поключение не удалось"
+
+msgid "Device name"
+msgstr "Имя устройства"
+
+msgid "Discoverable"
+msgstr "Обнаруживаемое"
+
+msgid "Discovering device"
+msgstr "Поиск устройства"
+
+msgid "Enable bluetooth"
+msgstr "Включить Bluetooth"
+
+#, python-format
+msgid "Enter PIN code to pair with %s:"
+msgstr "Введите PIN код для соединения с %s:"
+
+#, python-format
+msgid "Failed to receive the file : %s"
+msgstr "Не удалось получить файл : %s"
+
 #, python-format
 msgid ""
 "Failed!\n"
 "error msg: %s"
 msgstr ""
+"Ошибка!\n"
+"сообщение ошибки: %s"
 
-#: ../src/bluetooth_sender.py:68
+msgid "Headset"
+msgstr "Наушники"
+
 #, python-format
-msgid "Sending file to %s"
-msgstr ""
+msgid "Incoming file from %s"
+msgstr "Входящий файл из %s"
 
-#: ../src/bluetooth_sender.py:85
-msgid "Transfer complete!"
-msgstr "Передача завершена!"
+msgid "Input Service"
+msgstr "Обслуживание входа"
 
-#: ../src/bluetooth_sender.py:116
+msgid "No"
+msgstr "Нет"
+
+msgid "OK"
+msgstr "ОК"
+
+msgid "Pair"
+msgstr "Связать"
+
+msgid "Pairing failed!"
+msgstr "Связка не удалась!"
+
+#, python-format
+msgid "Please confirm %s pin match as below"
+msgstr "Пожалуйста подтвердите %s соответствие контакт как показано ниже"
+
+#, python-format
+msgid "Receiving file from %s"
+msgstr "Принимаем файл от %s"
+
+msgid "Reject"
+msgstr "Отклонить"
+
+msgid "Remove Device"
+msgstr "Удалить устройство"
+
+msgid "Search"
+msgstr "Поиск"
+
+msgid "Searching Device Timeout"
+msgstr "Превышено ожидание поиска устройства"
+
 msgid "Select File"
 msgstr "Выбрать файл"
 
-#: ../src/search_keyword.py:32
-msgid "Searching Device Timeout"
-msgstr ""
+msgid "Send File"
+msgstr "Отправить файл"
 
-#: ../src/bt/agent.py:88
 #, python-format
-msgid "Enter PIN code to pair with %s:"
-msgstr ""
+msgid "Sending file to %s"
+msgstr "Отправка файла на %s"
 
-#: ../src/bt/agent.py:138
-#, python-format
-msgid "Please confirm %s pin match as below"
-msgstr ""
+msgid "Successfully connected to the Bluetooth audio device."
+msgstr "Bluetooth-аудиоустройство успешно подключено."
 
-#: ../src/bt/agent.py:140
+msgid "Successfully connected to the Bluetooth headset."
+msgstr "Bluetooth-наушники успешно подключены."
+
+msgid "Successfully connected to the Bluetooth input device."
+msgstr "Bluetooth-устройство ввода успешно подключено."
+
+msgid "Transfer complete!"
+msgstr "Передача завершена!"
+
 msgid "Yes"
-msgstr ""
+msgstr "Да"
 
-#: ../src/bt/agent.py:141
-msgid "No"
-msgstr ""
+#, python-format
+msgid "in %d seconds"
+msgstr "через %d секунд"

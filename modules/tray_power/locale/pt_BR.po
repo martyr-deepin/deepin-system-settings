@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2013-12-27 15:56+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-02-26 04:31+0000\n"
 "Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/pt_BR/)\n"
@@ -19,49 +19,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr "Totalmente carregada"
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr "Carregando, %s restantes"
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "%s restantes"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "Avançado..."
+
+msgid "Balanced"
+msgstr "Balanceado"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "Carregando, %s restantes"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Fully charged"
+msgstr "Totalmente carregada"
+
+msgid "High performance"
+msgstr "Alta performance"
+
 #, python-format
 msgid "Low power(%s%%)"
 msgstr "Bateria fraca(%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr "Sua bateria está acabando, por favor recarregue!"
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr "Energia"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr "Balanceado"
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
 msgstr "Economia de Energia"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr "Alta performance"
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr "Personalizado"
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr "Avançado..."
+msgid "Your battery is running low, please charge!"
+msgstr "Sua bateria está acabando, por favor recarregue!"

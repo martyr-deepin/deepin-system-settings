@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-28 04:00+0000\n"
 "Last-Translator: freddy4212 <freddy4212@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-"
@@ -22,102 +22,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/main.py:104
-msgid "Custom"
-msgstr "自訂"
-
-#: ../src/main.py:105 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr "指標速度"
-
-#: ../src/main.py:106 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr "移動速度"
 
-#: ../src/main.py:109 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr "靈敏度"
+msgid "Custom"
+msgstr "自訂"
 
-#: ../src/main.py:112 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr "雙擊速度"
 
-#: ../src/main.py:113 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr "點擊頻率"
-
-#: ../src/main.py:116
 msgid "Double-click on the smiley face to test your settings."
 msgstr "雙擊笑臉即可測試點擊頻率設定值。"
 
-#: ../src/main.py:118
 msgid "Drag and Drop"
 msgstr "拖放速度"
 
-#: ../src/main.py:119 ../src/search_keyword.py:33
 msgid "Drag threshold"
 msgstr "解除延時"
 
-#: ../src/main.py:122
-msgid "Relevant Settings"
-msgstr "相關設定"
-
-#: ../src/main.py:125 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr "慣用右手"
-
-#: ../src/main.py:126 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr "慣用左手"
-
-#: ../src/main.py:129
-msgid "Keyboard Settings"
-msgstr "鍵盤設定"
-
-#: ../src/main.py:132
-msgid "Mouse Settings"
-msgstr "滑鼠設定"
-
-#: ../src/main.py:135
-msgid "Reset"
-msgstr "重設"
-
-#: ../src/main.py:302 ../src/main.py:352
-msgid "Slow"
-msgstr "慢速"
-
-#: ../src/main.py:303 ../src/main.py:353
 msgid "Fast"
 msgstr "快速"
 
-#: ../src/main.py:318
-msgid "Low"
-msgstr "低"
+msgid "Frequency"
+msgstr "點擊頻率"
 
-#: ../src/main.py:319
 msgid "High"
 msgstr "高"
 
-#: ../src/main.py:395
-msgid "Short"
-msgstr "短"
+msgid "Keyboard Settings"
+msgstr "鍵盤設定"
 
-#: ../src/main.py:396
+msgid "Left-handed"
+msgstr "慣用左手"
+
 msgid "Long"
 msgstr "長"
 
-#: ../src/main.py:519
-msgid "Set to right-handed"
-msgstr "設定為「慣用右手」"
+msgid "Low"
+msgstr "低"
 
-#: ../src/main.py:521
-msgid "Set to left-handed"
-msgstr "設定為「慣用左手」"
+msgid "Mouse Settings"
+msgstr "滑鼠設定"
 
-#: ../src/main.py:622
+msgid "Pointer Speed"
+msgstr "指標速度"
+
+msgid "Relevant Settings"
+msgstr "相關設定"
+
+msgid "Reset"
+msgstr "重設"
+
 msgid "Reset to defaults"
 msgstr "重設"
 
-#: ../src/search_keyword.py:25
+msgid "Right-handed"
+msgstr "慣用右手"
+
+msgid "Sensitivity"
+msgstr "靈敏度"
+
+msgid "Set to left-handed"
+msgstr "設定為「慣用左手」"
+
+msgid "Set to right-handed"
+msgstr "設定為「慣用右手」"
+
+msgid "Short"
+msgstr "短"
+
+msgid "Slow"
+msgstr "慢速"
+
 msgid "Touchpad"
 msgstr "觸控板"

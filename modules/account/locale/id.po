@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# ambiya <ambiya90@gmail.com>, 2014
 # aphrxia <aphrxia@gmail.com>, 2014
 # aphrxia <aphrxia@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-09 14:00+0000\n"
-"Last-Translator: aphrxia <aphrxia@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-04-23 08:12+0000\n"
+"Last-Translator: ambiya <ambiya90@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/id/)\n"
 "Language: id\n"
@@ -20,205 +21,233 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/face_record_page.py:79
-msgid "Start"
-msgstr "Mulai"
+#, python-format
+msgid "%s has been created"
+msgstr "%s telah dibuat"
 
-#: ../src/face_record_page.py:83
-msgid "Please plug in or enable your camera"
-msgstr "Silahkan sambungkan atau hidupkan kamera Anda"
+#, python-format
+msgid "%s has been deleted"
+msgstr "%s telah dihapus"
 
-#: ../src/face_record_page.py:84
-msgid "Please keep still for 5 seconds"
-msgstr "Pertahankan posisi wajah Anda selama 5 detik"
+#, python-format
+msgid "%s's account type has been set as %s"
+msgstr "Tipe akun milik %s telah diset sebagai %s"
 
-#: ../src/face_record_page.py:86
-msgid "Failed to record your face"
-msgstr "Gagal merekam citra wajah Anda"
+#, python-format
+msgid "%s's password has been changed"
+msgstr "password akun %s telah diubah"
 
-#: ../src/face_record_page.py:94
-msgid "Your face has been successfully recorded"
-msgstr "Citra wajah Anda telah sukses direkam"
+msgid "Account"
+msgstr "Akun"
 
-#: ../src/face_record_page.py:184
-msgid "Try Again"
-msgstr "Coba Lagi"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Standard"
-msgstr "Standar"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Administrator"
-msgstr "Administrator"
-
-#: ../src/treeitem.py:176
-msgid "My Account"
-msgstr "Akun Saya"
-
-#: ../src/treeitem.py:180
-msgid "Other Accounts"
-msgstr "Akun Lain"
-
-#: ../src/edit_icon_page.py:85
-msgid "zoom in"
-msgstr "perbesar"
-
-#: ../src/edit_icon_page.py:90
-msgid "zoom out"
-msgstr "perkecil"
-
-#: ../src/edit_icon_page.py:95
-msgid "Take a photo"
-msgstr "Ambil foto"
-
-#: ../src/edit_icon_page.py:100
-msgid "Try again"
-msgstr "Coba lagi"
-
-#: ../src/edit_icon_page.py:856
-msgid "Clip"
-msgstr "Klip"
-
-#: ../src/edit_icon_page.py:872
-msgid "Preview"
-msgstr "Pratinjau"
-
-#: ../src/edit_icon_page.py:924
-msgid "no picture"
-msgstr "tidak menggunakan gambar"
-
-#: ../src/main.py:122 ../src/main.py:134
-msgid "Account type"
-msgstr "Tipe akun"
-
-#: ../src/main.py:124
-msgid "Password"
-msgstr "Kata sandi"
-
-#: ../src/main.py:127 ../src/search_keyword.py:25
-msgid "Automatic login"
-msgstr "Login otomatis"
-
-#: ../src/main.py:129
-msgid "Log in without a password"
-msgstr "Masuk tanpa kata kunci"
-
-#: ../src/main.py:131 ../src/main.py:135 ../src/search_keyword.py:26
-msgid "Deepin Account"
-msgstr "Akun Deepin"
-
-#: ../src/main.py:132 ../src/main.py:136
-msgid "Unbound"
-msgstr "Tidak terikat"
-
-#: ../src/main.py:133 ../src/search_keyword.py:27
 msgid "Account Name"
 msgstr "Nama Akun"
 
-#: ../src/main.py:139
-msgid "Facial recognition"
-msgstr "Pengenalan wajah"
+msgid "Account disabled"
+msgstr "Akun di non-aktifkan"
 
-#: ../src/main.py:162
-msgid "Record"
-msgstr "Rekam"
+msgid "Account type"
+msgstr "Tipe akun"
 
-#: ../src/main.py:163
-msgid "Test"
-msgstr "Tes"
-
-#: ../src/main.py:176 ../src/main.py:613 ../src/main.py:761
-#: ../src/main.py:1200
-msgid "Enable"
-msgstr "Hidupkan"
-
-#: ../src/main.py:177
 msgid "Add"
 msgstr "Tambah"
 
-#: ../src/main.py:178
-msgid "Delete"
-msgstr "Hapus"
+msgid "Administrator"
+msgstr "Administrator"
 
-#: ../src/main.py:179
-msgid "Create"
-msgstr "Buat baru"
+msgid "Automatic login"
+msgstr "Login otomatis"
 
-#: ../src/main.py:180 ../src/main.py:233 ../src/main.py:239 ../src/main.py:971
+msgid "Back"
+msgstr "Kembali"
+
 msgid "Cancel"
 msgstr "Batal"
 
-#: ../src/main.py:228
+msgid "Change"
+msgstr "Ubah"
+
+msgid "Change Password"
+msgstr "Ubah Kata Sandi"
+
+msgid "Choose a new picture for your account"
+msgstr "Pilih gambar baru untuk akun Anda"
+
+msgid "Clip"
+msgstr "Klip"
+
+msgid "Confirm new password"
+msgstr "Konfirmasi kata sandi baru"
+
+msgid "Create"
+msgstr "Buat baru"
+
+msgid "Create Account"
+msgstr "Buat Akun Baru"
+
+msgid "Current password"
+msgstr "Kata sandi yang sekarang"
+
+msgid "Deepin Account"
+msgstr "Akun Deepin"
+
+msgid "Delete"
+msgstr "Hapus"
+
+msgid "Delete Account"
+msgstr "Hapus Akun"
+
+msgid "Delete Files"
+msgstr "Hapus berkas"
+
+msgid "Disable"
+msgstr "Matikan"
+
+#, python-format
+msgid "Disable %s"
+msgstr "Matikan %s"
+
+#, python-format
+msgid "Disabled auto-login for %s"
+msgstr "Matikan login otomatis untuk %s"
+
+#, python-format
+msgid "Disabled passwordless login for %s"
+msgstr "Matikan login tanpa sandi untuk %s"
+
+#, python-format
+msgid "Do you want to keep <u>%s</u>'s files?"
+msgstr "Apakah Anda hendak menyimpan berkas-berkas milik <u>%s</u?>"
+
+msgid "Edit Picture"
+msgstr "Edit gambar"
+
+msgid "Enable"
+msgstr "Hidupkan"
+
+#, python-format
+msgid "Enable %s"
+msgstr "Aktifkan %s"
+
+#, python-format
+msgid "Enabled auto-login for %s"
+msgstr "Perbolehkan login otomatis untuk %s"
+
+#, python-format
+msgid "Enabled passwordless login for %s"
+msgstr "Perbolehkan %s untuk masuk tanpa menggunakan kata sandi"
+
+msgid "Error:"
+msgstr "Kesalahan: "
+
+msgid "Experience"
+msgstr "Pengalaman"
+
+msgid "Face Record"
+msgstr "Rekaman wajah"
+
+msgid "Facial recognition"
+msgstr "Pengenalan wajah"
+
+msgid "Failed to record your face"
+msgstr "Gagal merekam citra wajah Anda"
+
+msgid "From camera"
+msgstr "Gunakan kamera"
+
 msgid "It is possible to keep the home directory when deleting a user account."
 msgstr ""
 "Sistem ini memungkinkan untuk menyimpan direktori home saat melakukan "
 "penghapusan akun pengguna."
 
-#: ../src/main.py:231
-msgid "Delete Files"
-msgstr "Hapus berkas"
-
-#: ../src/main.py:232
 msgid "Keep Files"
 msgstr "Simpan Berkas"
 
-#: ../src/main.py:240
+msgid "Local picture"
+msgstr "Gambar lokal"
+
+msgid "Log in without a password"
+msgstr "Masuk tanpa kata kunci"
+
+msgid "My Account"
+msgstr "Akun Saya"
+
+msgid "New password"
+msgstr "Kata sandi baru"
+
+msgid "None"
+msgstr "Tidak ada"
+
+msgid "Other Accounts"
+msgstr "Akun Lain"
+
+msgid "Password"
+msgstr "Kata sandi"
+
+msgid "Password did not match."
+msgstr "Kata sandi yang dimasukkan tidak cocok."
+
+msgid "Please keep still for 5 seconds"
+msgstr "Pertahankan posisi wajah Anda selama 5 detik"
+
+msgid "Please plug in or enable your camera"
+msgstr "Silahkan sambungkan atau hidupkan kamera Anda"
+
+msgid "Preview"
+msgstr "Pratinjau"
+
+msgid "Previously used pictures"
+msgstr "Gambar yang dahulu dipakai"
+
+msgid "Record"
+msgstr "Rekam"
+
 msgid "Save"
 msgstr "Simpan"
 
-#: ../src/main.py:244
-msgid "Back"
-msgstr "Kembali"
-
-#: ../src/main.py:245
-msgid "Experience"
-msgstr ""
-
-#: ../src/main.py:562
 #, python-format
-msgid "Enabled auto-login for %s"
-msgstr "Perbolehkan login otomatis untuk %s"
+msgid "Set <u>%s</u>'s picture"
+msgstr "Tetapkan gambar untuk <u>%s</u>"
 
-#: ../src/main.py:564
-#, python-format
-msgid "Disabled auto-login for %s"
-msgstr "Matikan login otomatis untuk %s"
+msgid "Set Picture"
+msgstr "Tetapkan Gambar"
 
-#: ../src/main.py:586
-#, python-format
-msgid "Enabled passwordless login for %s"
-msgstr "Perbolehkan %s untuk masuk tanpa menggunakan kata sandi"
+msgid "Show password"
+msgstr "Tunjukkan karakter kata kunci"
 
-#: ../src/main.py:593
-#, python-format
-msgid "Disabled passwordless login for %s"
-msgstr "Matikan login tanpa sandi untuk %s"
+msgid "Standard"
+msgstr "Standar"
 
-#: ../src/main.py:609
-#, python-format
-msgid "Enable %s"
-msgstr "Aktifkan %s"
+msgid "Start"
+msgstr "Mulai"
 
-#: ../src/main.py:610 ../src/main.py:763 ../src/main.py:1202
-msgid "Disable"
-msgstr "Matikan"
+msgid "Take a photo"
+msgstr "Ambil foto"
 
-#: ../src/main.py:612
-#, python-format
-msgid "Disable %s"
-msgstr "Matikan %s"
+msgid "Take a screeshot"
+msgstr "Ambil gambar"
 
-#: ../src/main.py:659
-#, python-format
-msgid "%s has been created"
-msgstr "%s telah dibuat"
+msgid "Test"
+msgstr "Tes"
 
-#: ../src/main.py:665
 msgid "The user name is invalid"
 msgstr "Nama pengguna tidak valid"
 
-#: ../src/main.py:680
+msgid "To be set at next login"
+msgstr "Akan diset pada login berikutnya"
+
+msgid "Try Again"
+msgstr "Coba Lagi"
+
+msgid "Try again"
+msgstr "Coba lagi"
+
+msgid "Unbound"
+msgstr "Tidak terikat"
+
+msgid "User Accounts"
+msgstr "Akun Pengguna"
+
 msgid ""
 "User names can only consist of letters, numbers, underscores and begin with "
 "a letter"
@@ -226,132 +255,23 @@ msgstr ""
 "Nama pengguna hanya dapat terdiri atas karakter huruf, angka, garis bawah "
 "dan dimulai dengan huruf"
 
-#: ../src/main.py:699
-#, python-format
-msgid "%s has been deleted"
-msgstr "%s telah dihapus"
+msgid "Your face has been successfully recorded"
+msgstr "Citra wajah Anda telah sukses direkam"
 
-#: ../src/main.py:716
-#, python-format
-msgid "Do you want to keep <u>%s</u>'s files?"
-msgstr "Apakah Anda hendak menyimpan berkas-berkas milik <u>%s</u?>"
-
-#: ../src/main.py:744 ../src/main.py:1184
-msgid "Account disabled"
-msgstr "Akun di non-aktifkan"
-
-#: ../src/main.py:746 ../src/main.py:1186
-msgid "To be set at next login"
-msgstr "Akan diset pada login berikutnya"
-
-#: ../src/main.py:748 ../src/main.py:1188
-msgid "None"
-msgstr "Tidak ada"
-
-#: ../src/main.py:823
-#, python-format
-msgid "%s's account type has been set as %s"
-msgstr "Tipe akun milik %s telah diset sebagai %s"
-
-#: ../src/main.py:940
-msgid "Current password"
-msgstr "Kata sandi yang sekarang"
-
-#: ../src/main.py:942
-msgid "New password"
-msgstr "Kata sandi baru"
-
-#: ../src/main.py:944
-msgid "Confirm new password"
-msgstr "Konfirmasi kata sandi baru"
-
-#: ../src/main.py:958
-msgid "Show password"
-msgstr "Tunjukkan karakter kata kunci"
-
-#: ../src/main.py:972
-msgid "Change"
-msgstr "Ubah"
-
-#: ../src/main.py:1017
-msgid "Password did not match."
-msgstr "Kata sandi yang dimasukkan tidak cocok."
-
-#: ../src/main.py:1033 ../src/main.py:1058
-msgid "password unchanged"
-msgstr "kata sandi tidak diubah"
-
-#: ../src/main.py:1035
 msgid "authentication token manipulation error"
 msgstr "kesalahan manipulasi token autentikasi"
 
-#: ../src/main.py:1037
 msgid "new and old password are too similar"
 msgstr "kata kunci baru dan lama terlalu mirip"
 
-#: ../src/main.py:1051 ../src/main.py:1105
-#, python-format
-msgid "%s's password has been changed"
-msgstr "password akun %s telah diubah"
+msgid "no picture"
+msgstr "tidak menggunakan gambar"
 
-#: ../src/main.py:1133 ../src/search_keyword.py:31
-msgid "Set Picture"
-msgstr "Tetapkan Gambar"
+msgid "password unchanged"
+msgstr "kata sandi tidak diubah"
 
-#: ../src/main.py:1151
-msgid "Face Record"
-msgstr "Rekaman wajah"
+msgid "zoom in"
+msgstr "perbesar"
 
-#: ../src/main.py:1355
-msgid "Error:"
-msgstr "Kesalahan: "
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:129
-msgid "Local picture"
-msgstr "Gambar lokal"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:130
-msgid "Take a screeshot"
-msgstr "Ambil gambar"
-
-#: ../src/set_icon_page.py:131
-msgid "From camera"
-msgstr "Gunakan kamera"
-
-#: ../src/set_icon_page.py:149
-msgid "Choose a new picture for your account"
-msgstr "Pilih gambar baru untuk akun Anda"
-
-#: ../src/set_icon_page.py:153
-msgid "Previously used pictures"
-msgstr "Gambar yang dahulu dipakai"
-
-#: ../src/set_icon_page.py:197
-#, python-format
-msgid "Set <u>%s</u>'s picture"
-msgstr "Tetapkan gambar untuk <u>%s</u>"
-
-#: ../src/set_icon_page.py:360 ../src/set_icon_page.py:389
-#: ../src/set_icon_page.py:401
-msgid "Edit Picture"
-msgstr "Edit gambar"
-
-#: ../src/search_keyword.py:28
-msgid "Create Account"
-msgstr "Buat Akun Baru"
-
-#: ../src/search_keyword.py:29
-msgid "Delete Account"
-msgstr "Hapus Akun"
-
-#: ../src/search_keyword.py:30
-msgid "Change Password"
-msgstr "Ubah Kata Sandi"
-
-#: ../src/search_keyword.py:32
-msgid "Account"
-msgstr "Akun"
-
-#: ../src/search_keyword.py:33
-msgid "User Accounts"
-msgstr "Akun Pengguna"
+msgid "zoom out"
+msgstr "perkecil"

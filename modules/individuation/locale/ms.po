@@ -1,0 +1,192 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-10 06:50+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Malay (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/ms/)\n"
+"Language: ms\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#, python-format
+msgid "%s picture is set as wallpaper"
+msgstr ""
+
+#, python-format
+msgid "%s pictures are set as wallpaper"
+msgstr ""
+
+msgid "360 Wallpaper"
+msgstr ""
+
+msgid "Add from Local Pictures"
+msgstr ""
+
+msgid "Add to Favorites"
+msgstr ""
+
+msgid "Apply Wallpaper"
+msgstr ""
+
+msgid "Are you sure delete wallpaper?"
+msgstr ""
+
+#, python-format
+msgid "Are you sure you want to delete the theme %s?"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+#, python-format
+msgid "Changed System Theme to %s"
+msgstr ""
+
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr ""
+
+msgid "Clear all"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Delete Theme"
+msgstr ""
+
+msgid "Delete Wallpaper"
+msgstr ""
+
+msgid "Download All"
+msgstr ""
+
+msgid "Downloaded"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Favorites"
+msgstr ""
+
+msgid "Hour"
+msgstr ""
+
+msgid "Hours"
+msgstr ""
+
+msgid "Image files"
+msgstr ""
+
+msgid "Internet"
+msgstr ""
+
+msgid "Library"
+msgstr ""
+
+msgid "Local Wallpapers"
+msgstr ""
+
+msgid "LoveWallpaper"
+msgstr ""
+
+msgid "Minute"
+msgstr ""
+
+msgid "Minutes"
+msgstr ""
+
+msgid "My Favorites"
+msgstr ""
+
+msgid "My Themes"
+msgstr ""
+
+msgid "Personalization"
+msgstr ""
+
+msgid "Pictures"
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Random"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Rename Theme"
+msgstr ""
+
+msgid "Save As"
+msgstr ""
+
+msgid "Save Theme As"
+msgstr ""
+
+msgid "Select all"
+msgstr ""
+
+msgid "Set as wallpaper"
+msgstr ""
+
+msgid "Stretch"
+msgstr ""
+
+msgid "System"
+msgstr ""
+
+msgid "System Themes"
+msgstr ""
+
+msgid "Tile"
+msgstr ""
+
+msgid "Untitled"
+msgstr ""
+
+msgid "Wallpaper"
+msgstr ""
+
+msgid "Your Favorites folder is empty."
+msgstr ""
+
+msgid "Your Local Pictures folder is empty"
+msgstr ""
+
+#, python-format
+msgid "add %s picture to Favorites"
+msgstr ""
+
+#, python-format
+msgid "add %s pictures to Favorites"
+msgstr ""
+
+#, python-format
+msgid "choose %s picture"
+msgstr ""
+
+#, python-format
+msgid "choose %s pictures"
+msgstr ""
+
+#, python-format
+msgid "delete %s picture"
+msgstr ""
+
+#, python-format
+msgid "delete %s pictures"
+msgstr ""
