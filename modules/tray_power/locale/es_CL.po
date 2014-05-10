@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Gnechen <benperezc@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-24 05:20+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-07 19:50+0000\n"
+"Last-Translator: Gnechen <benperezc@gmail.com>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/es_CL/)\n"
 "Language: es_CL\n"
@@ -18,49 +19,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr ""
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
-msgstr ""
+msgstr "Faltan %s"
 
-#: ../src/tray_power_plugin.py:203
-#, python-format
-msgid "Low power(%s%%)"
-msgstr ""
+msgid "Advanced..."
+msgstr "Avanzadas..."
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr ""
-
-#: ../src/tray_power_gui.py:45
-msgid "Power"
-msgstr "Energía"
-
-#: ../src/tray_power_gui.py:54
 msgid "Balanced"
-msgstr ""
+msgstr "Equilibrada"
 
-#: ../src/tray_power_gui.py:55
-msgid "Power saver"
-msgstr ""
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "Cargando, quedan %s"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr ""
-
-#: ../src/tray_power_gui.py:57
 msgid "Custom"
 msgstr "Personalizado"
 
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr ""
+msgid "Fully charged"
+msgstr "Carga completa"
+
+msgid "High performance"
+msgstr "Alto desempeño"
+
+#, python-format
+msgid "Low power(%s%%)"
+msgstr "Energia baja(%s%%)"
+
+msgid "Power"
+msgstr "Energía"
+
+msgid "Power saver"
+msgstr "Ahorro de energia"
+
+msgid "Your battery is running low, please charge!"
+msgstr "Su bateria esta descargandose, por favor conecte el cargador!"

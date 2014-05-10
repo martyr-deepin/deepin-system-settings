@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-01-24 05:20+0000\n"
-"Last-Translator: 胡家润 <hujiadfr@126.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: German (Germany) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/de_DE/)\n"
 "Language: de_DE\n"
@@ -20,163 +20,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr "Default Style"
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
 msgstr "Auto Hide"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr "Unsichtbare"
-
-#: ../src/desktop_view.py:73
-#, fuzzy
 msgid "Bottom"
-msgstr "Taste"
+msgstr ""
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr "Top"
-
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr "Standard-Icon"
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr "Kleine"
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr "Nichts"
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr "Öffnungs Fenster"
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "Launcher"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Maximieren"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr "Desktop Icon"
-
-#: ../src/desktop_view.py:94
-msgid "Computer"
-msgstr "Computer"
-
-#: ../src/desktop_view.py:97
-msgid "Home"
-msgstr "Heimat"
-
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Trash"
-
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Software Center"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr "Dock"
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr "Anzeigestil"
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr "Platz Stil"
-
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr "Symbolgröße"
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr "Vorschau"
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr "Hot Zone"
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr "Oben links"
-
-#: ../src/desktop_view.py:200
 msgid "Bottom Right"
 msgstr "Unten rechts"
 
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr "Oberkante"
+msgid "Computer"
+msgstr "Computer"
 
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr "Linken Rand"
+msgid "Default Icon"
+msgstr "Standard-Icon"
 
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr "Rechte Kante"
+msgid "Default Style"
+msgstr "Default Style"
 
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr "Anmelden &amp;&amp; Sperren"
+msgid "Desktop Icon"
+msgstr "Desktop Icon"
 
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr "Login-Seite"
+msgid "Display Style"
+msgstr "Anzeigestil"
 
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr "Wählen"
+msgid "Dock"
+msgstr "Dock"
 
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr "Seite sperren"
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr "Computer-Symbol anzeigen"
-
-#: ../src/desktop_view.py:346
 msgid "Hide computer icon"
 msgstr "Computer-Symbol ausblendenComputer-Symbol ausblenden"
 
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr "Home-Symbol anzeigen"
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr "Home-Symbol ausblenden"
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr "Papierkorb-Symbol anzeigen"
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr "Papierkorb-Symbol ausblenden"
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr "Zeigen deepin Software-Center-Symbol"
-
-#: ../src/desktop_view.py:370
 msgid "Hide deepin software conter icon"
 msgstr "Ausblenden deepin Software conter Symbol"
 
-#: ../src/desktop_view.py:468
+msgid "Hide home icon"
+msgstr "Home-Symbol ausblenden"
+
+msgid "Hide trash icon"
+msgstr "Papierkorb-Symbol ausblenden"
+
+msgid "Home"
+msgstr "Heimat"
+
+msgid "Hot Zone"
+msgstr "Hot Zone"
+
+msgid "Icon Size"
+msgstr "Symbolgröße"
+
+msgid "Invisible"
+msgstr "Unsichtbare"
+
+msgid "Launcher"
+msgstr "Launcher"
+
+msgid "Left Edge"
+msgstr "Linken Rand"
+
+msgid "Lock Page"
+msgstr "Seite sperren"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "Anmelden &amp;&amp; Sperren"
+
+msgid "Login Page"
+msgstr "Login-Seite"
+
+msgid "Maximize"
+msgstr "Maximieren"
+
+msgid "Nothing"
+msgstr "Nichts"
+
+msgid "Opening Window"
+msgstr "Öffnungs Fenster"
+
+msgid "Place Style"
+msgstr "Platz Stil"
+
+msgid "Preview"
+msgstr "Vorschau"
+
 msgid "Reset to default value"
 msgstr "Zurücksetzen auf Standardwert"
+
+msgid "Right Edge"
+msgstr "Rechte Kante"
+
+msgid "Select"
+msgstr "Wählen"
+
+msgid "Show computer icon"
+msgstr "Computer-Symbol anzeigen"
+
+msgid "Show deepin software center icon"
+msgstr "Zeigen deepin Software-Center-Symbol"
+
+msgid "Show home icon"
+msgstr "Home-Symbol anzeigen"
+
+msgid "Show trash icon"
+msgstr "Papierkorb-Symbol anzeigen"
+
+msgid "Small"
+msgstr "Kleine"
+
+msgid "Software Center"
+msgstr "Software Center"
+
+msgid "Top"
+msgstr "Top"
+
+msgid "Top Edge"
+msgstr "Oberkante"
+
+msgid "Top Left"
+msgstr "Oben links"
+
+msgid "Trash"
+msgstr "Trash"

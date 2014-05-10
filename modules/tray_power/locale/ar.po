@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-16 01:10+0000\n"
 "Last-Translator: Mohd <mo-hd@windowslive.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/deepin-system-"
@@ -20,49 +20,38 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr "تم الشحن"
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr "جاري الشحن, %s المتبقي"
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "%s المتبقي"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "متقدم..."
+
+msgid "Balanced"
+msgstr "متوازن"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "جاري الشحن, %s المتبقي"
+
+msgid "Custom"
+msgstr "مخصص"
+
+msgid "Fully charged"
+msgstr "تم الشحن"
+
+msgid "High performance"
+msgstr "أداء عالي"
+
 #, python-format
 msgid "Low power(%s%%)"
 msgstr "الطاقة منخفضة (%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr "أوشكت البطارية على النفاذ ، يرجى الشحن !"
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr "الطاقة"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr "متوازن"
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
 msgstr "توفر الطاقة"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr "أداء عالي"
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr "مخصص"
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr "متقدم..."
+msgid "Your battery is running low, please charge!"
+msgstr "أوشكت البطارية على النفاذ ، يرجى الشحن !"

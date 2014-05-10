@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-11 11:46+0000\n"
 "Last-Translator: lexross <its4moi@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/deepin-system-"
@@ -20,167 +20,121 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/main.py:95 ../src/main_full.py:82 ../src/search_keyword.py:27
-msgid "Speaker"
-msgstr "Haut-parleur"
-
-#: ../src/main.py:96 ../src/main_full.py:83 ../src/search_keyword.py:28
-msgid "Microphone"
-msgstr "Micro"
-
-#: ../src/main.py:97 ../src/main.py:324 ../src/main_full.py:84
-#: ../src/main_full.py:257
-msgid "Left"
-msgstr "Gauche"
-
-#: ../src/main.py:98 ../src/main.py:325 ../src/main_full.py:85
-#: ../src/main_full.py:258
-msgid "Right"
-msgstr "Droite"
-
-#: ../src/main.py:99 ../src/main_full.py:86
-msgid "Output Port"
-msgstr "Source de sortie"
-
-#: ../src/main.py:102 ../src/main.py:513 ../src/main.py:517 ../src/main.py:780
-#: ../src/main.py:783 ../src/main_full.py:89 ../src/main_full.py:449
-#: ../src/main_full.py:453
-msgid "Output Volume"
-msgstr "Volume de sortie"
-
-#: ../src/main.py:105 ../src/main.py:117
-msgid "Enable Sound"
-msgstr "Activer le son"
-
-#: ../src/main.py:108 ../src/main.py:514 ../src/main.py:518 ../src/main.py:781
-#: ../src/main.py:784 ../src/main_full.py:95 ../src/main_full.py:450
-#: ../src/main_full.py:454 ../src/search_keyword.py:26
-msgid "Balance"
-msgstr "Balance"
-
-#: ../src/main.py:111 ../src/main_full.py:98
-msgid "Input Port"
-msgstr "Source d'entrée "
-
-#: ../src/main.py:114 ../src/main.py:532 ../src/main.py:535 ../src/main.py:835
-#: ../src/main.py:837 ../src/main_full.py:101 ../src/main_full.py:467
-#: ../src/main_full.py:470
-msgid "Input Volume"
-msgstr "Volume d'entrée"
-
-#: ../src/main.py:120
-msgid "Input Level"
-msgstr "Niveau d'entrée "
-
-#: ../src/main.py:139 ../src/main.py:742 ../src/main_full.py:123
-#: ../src/main_full.py:631
-msgid "Advanced"
-msgstr "Avancé"
-
-#: ../src/main.py:192 ../src/main_full.py:174
-msgid "Choose a device for sound output:"
-msgstr "Sélectionner un périphérique pour la sortie son:"
-
-#: ../src/main.py:193 ../src/main_full.py:175
-msgid "Choose a device for sound input:"
-msgstr "Choisissez un périphérique pour l'entrée son:"
-
-#: ../src/main.py:194 ../src/main_full.py:176
-msgid "Choose a device to configure:"
-msgstr "Choisissez un périphérique pour configurer:"
-
-#: ../src/main.py:280 ../src/main_full.py:213 ../src/search_keyword.py:30
-msgid "Input"
-msgstr "Entrée"
-
-#: ../src/main.py:281 ../src/main_full.py:214 ../src/search_keyword.py:29
-msgid "Output"
-msgstr "Sortie"
-
-#: ../src/main.py:515 ../src/main_full.py:451
-msgid "Muted output"
-msgstr "Couper le son"
-
-#: ../src/main.py:519 ../src/main_full.py:455
-msgid "Unmuted output"
-msgstr "Réactiver la sortie"
-
-#: ../src/main.py:533 ../src/main_full.py:468
-msgid "Muted input"
-msgstr "Couper l'entrée du son"
-
-#: ../src/main.py:536 ../src/main_full.py:471
-msgid "Unmuted input"
-msgstr "Réactiver l'entrée du son"
-
-#: ../src/main.py:577 ../src/main_full.py:503
-#, python-format
-msgid "Set output port to %s"
-msgstr "Sélectionner le port de sortie %s "
-
-#: ../src/main.py:586 ../src/main_full.py:512
-#, python-format
-msgid "Set input port to %s"
-msgstr "Sélectionner le port d'entrée %s "
-
-#: ../src/main.py:601 ../src/main_full.py:527
-#, python-format
-msgid "Output device %s selected"
-msgstr "Périphérique de sortie %s sélectionné "
-
-#: ../src/main.py:607 ../src/main_full.py:533
-#, python-format
-msgid "Input device %s selected"
-msgstr "Périphérique d'entrée %s sélectionné "
-
-#: ../src/main.py:898 ../src/main_full.py:781
-#, python-format
-msgid "%d Outputs"
-msgstr "%d Sorties"
-
-#: ../src/main.py:900 ../src/main_full.py:783
-#, python-format
-msgid "%d Output"
-msgstr "%d Sortie"
-
-#: ../src/main.py:902 ../src/main_full.py:785
-#, python-format
-msgid "%d Inputs"
-msgstr "%d Entrées"
-
-#: ../src/main.py:904 ../src/main_full.py:787
 #, python-format
 msgid "%d Input"
 msgstr "%d Sorties"
 
-#: ../src/main_full.py:92 ../src/main_full.py:104
-msgid "Sound Enabled"
-msgstr "Son activé"
+#, python-format
+msgid "%d Inputs"
+msgstr "%d Entrées"
 
-#: ../src/tray_sound_gui.py:90 ../src/tray_sound_gui_small.py:91
-msgid "Device"
-msgstr "Périphérique"
+#, python-format
+msgid "%d Output"
+msgstr "%d Sortie"
 
-#: ../src/tray_sound_gui.py:123 ../src/tray_sound_gui_small.py:124
-msgid "Applications"
-msgstr "Applications"
+#, python-format
+msgid "%d Outputs"
+msgstr "%d Sorties"
 
-#: ../src/tray_sound_gui.py:134 ../src/tray_sound_gui_small.py:135
+msgid "Advanced"
+msgstr "Avancé"
+
 msgid "Advanced..."
 msgstr "Avancé..."
 
-#: ../src/tray_sound_gui.py:314 ../src/tray_sound_gui_small.py:364
-msgid "Volume"
-msgstr "Volume"
+msgid "Applications"
+msgstr "Applications"
 
-#: ../src/tray_sound_gui.py:318 ../src/tray_sound_gui_small.py:368
+msgid "Balance"
+msgstr "Balance"
+
+msgid "Choose a device for sound input:"
+msgstr "Choisissez un périphérique pour l'entrée son:"
+
+msgid "Choose a device for sound output:"
+msgstr "Sélectionner un périphérique pour la sortie son:"
+
+msgid "Choose a device to configure:"
+msgstr "Choisissez un périphérique pour configurer:"
+
+msgid "Device"
+msgstr "Périphérique"
+
+msgid "Enable Sound"
+msgstr "Activer le son"
+
+msgid "Hardware"
+msgstr "Matériel"
+
+msgid "Input"
+msgstr "Entrée"
+
+msgid "Input Level"
+msgstr "Niveau d'entrée "
+
+msgid "Input Port"
+msgstr "Source d'entrée "
+
+msgid "Input Volume"
+msgstr "Volume d'entrée"
+
+#, python-format
+msgid "Input device %s selected"
+msgstr "Périphérique d'entrée %s sélectionné "
+
+msgid "Left"
+msgstr "Gauche"
+
+msgid "Microphone"
+msgstr "Micro"
+
 msgid "Mute"
 msgstr "Muet"
 
-#: ../src/search_keyword.py:25
+msgid "Muted input"
+msgstr "Couper l'entrée du son"
+
+msgid "Muted output"
+msgstr "Couper le son"
+
+msgid "Output"
+msgstr "Sortie"
+
+msgid "Output Port"
+msgstr "Source de sortie"
+
+msgid "Output Volume"
+msgstr "Volume de sortie"
+
+#, python-format
+msgid "Output device %s selected"
+msgstr "Périphérique de sortie %s sélectionné "
+
+msgid "Right"
+msgstr "Droite"
+
+#, python-format
+msgid "Set input port to %s"
+msgstr "Sélectionner le port d'entrée %s "
+
+#, python-format
+msgid "Set output port to %s"
+msgstr "Sélectionner le port de sortie %s "
+
 msgid "Sound"
 msgstr "Son"
 
-#: ../src/search_keyword.py:31
-msgid "Hardware"
-msgstr "Matériel"
+msgid "Sound Enabled"
+msgstr "Son activé"
+
+msgid "Speaker"
+msgstr "Haut-parleur"
+
+msgid "Unmuted input"
+msgstr "Réactiver l'entrée du son"
+
+msgid "Unmuted output"
+msgstr "Réactiver la sortie"
+
+msgid "Volume"
+msgstr "Volume"

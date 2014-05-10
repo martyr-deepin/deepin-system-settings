@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2013-12-16 07:32+0000\n"
 "Last-Translator: iceleaf916 <iceleaf916@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -19,91 +19,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "21"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "系统设置"
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "显示"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "桌面"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "个性化"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "声音"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "日期和时间"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "电源"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "键盘"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "鼠标"
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "触摸板"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "打印机"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "网络"
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "蓝牙"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "附加驱动"
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "账户设置"
+msgid "Bluetooth"
+msgstr "蓝牙"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "默认程序"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "系统信息"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "恢复默认"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "取消"
 
-#: ../dss/bluetooth_dialog.py:78
+msgid "Date &amp; Time"
+msgstr "日期和时间"
+
+msgid "Default Applications"
+msgstr "默认程序"
+
+msgid "Desktop"
+msgstr "桌面"
+
+msgid "Displays"
+msgstr "显示"
+
+msgid "Keyboard"
+msgstr "键盘"
+
+msgid "Mouse"
+msgstr "鼠标"
+
+msgid "Network"
+msgstr "网络"
+
+msgid "Ok"
+msgstr "确定"
+
+msgid "Personalization"
+msgstr "个性化"
+
+msgid "Power"
+msgstr "电源"
+
+msgid "Printers"
+msgstr "打印机"
+
+msgid "Reset"
+msgstr "恢复默认"
+
 #, python-format
 msgid "Sent %d"
 msgstr "已发送%d"
 
-#: ../dss/bluetooth_dialog.py:113
-msgid "Ok"
-msgstr "确定"
+msgid "Sound"
+msgstr "声音"
+
+msgid "System Information"
+msgstr "系统信息"
+
+msgid "System Settings"
+msgstr "系统设置"
+
+msgid "Touchpad"
+msgstr "触摸板"
+
+msgid "User Accounts"
+msgstr "账户设置"

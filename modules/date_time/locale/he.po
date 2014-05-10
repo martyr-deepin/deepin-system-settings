@@ -1,0 +1,192 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-11 08:30+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/he/)\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "(UTC)London, Dublin, Edinburgh, Lisbon, Casablanca"
+msgstr ""
+
+msgid "(UTC+01:00)Paris, Amsterdam, Berlin, Rome, Vienna"
+msgstr ""
+
+msgid "(UTC+02:00)Cairo, Athens, Istanbul, Jerusalem"
+msgstr ""
+
+msgid "(UTC+03:00)Moscow, St. Petersburg, Baghdad"
+msgstr ""
+
+msgid "(UTC+04:00)Port Louis, Abu Dhabi, Muscat, Yerevan"
+msgstr ""
+
+msgid "(UTC+05:00)Islamabad, Karachi, Tashkent"
+msgstr ""
+
+msgid "(UTC+06:00)Dhaka, Novosibirsk"
+msgstr ""
+
+msgid "(UTC+07:00)Bangkok, Hanoi, Jakarta"
+msgstr ""
+
+msgid "(UTC+08:00)Beijing, Chongqing, HongKong, Taipei, Urumqi"
+msgstr ""
+
+msgid "(UTC+09:00)Osaka, Sapporo, Tokyo, Seoul"
+msgstr ""
+
+msgid "(UTC+10:00)Guam, Canberra, Melbourne, Sydney"
+msgstr ""
+
+msgid "(UTC+11:00)Magadan, Solomon Islands"
+msgstr ""
+
+msgid "(UTC+12:00)New Zealand, Kiribati"
+msgstr ""
+
+msgid "(UTC-01:00)Cape Verde Islands, Azores"
+msgstr ""
+
+msgid "(UTC-02:00)Mid-Atlantic"
+msgstr ""
+
+msgid "(UTC-03:00)Greenland, Brasilia, Fortaleza"
+msgstr ""
+
+msgid "(UTC-04:00)San Diego, Georgetown, San Juan"
+msgstr ""
+
+msgid "(UTC-05:00)Indiana, Bogota, Lima, Quito"
+msgstr ""
+
+msgid "(UTC-06:00)Saskatchewan, Mexico City, Monterrey"
+msgstr ""
+
+msgid "(UTC-07:00)Arizona, Llamas, Mazatlan, Chihuahua"
+msgstr ""
+
+msgid "(UTC-08:00)Lower California"
+msgstr ""
+
+msgid "(UTC-09:00)Alaska"
+msgstr ""
+
+msgid "(UTC-10:00)Hawaii"
+msgstr ""
+
+msgid "(UTC-11:00)Samoa"
+msgstr ""
+
+msgid "AM"
+msgstr ""
+
+msgid "Calendar"
+msgstr ""
+
+msgid "Cancel"
+msgstr "ביטול"
+
+msgid "Change Date"
+msgstr ""
+
+msgid "Change date and time settings"
+msgstr ""
+
+#, python-format
+msgid "Changed date to %d-%d-%d"
+msgstr ""
+
+#, python-format
+msgid "Changed time to %02d:%02d:%02d"
+msgstr ""
+
+#, python-format
+msgid "Changed time zone to %s"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+#, python-format
+msgid "Current Date: %d-%d-%d"
+msgstr ""
+
+#, python-format
+msgid "Current Time: %s %02d:%02d:%02d (%d Hour)"
+msgstr ""
+
+msgid "Date and Time"
+msgstr ""
+
+msgid "Friday"
+msgstr ""
+
+msgid "Hour"
+msgstr ""
+
+msgid "Monday"
+msgstr ""
+
+msgid "NTP"
+msgstr ""
+
+msgid "PM"
+msgstr ""
+
+msgid "Reset to default value"
+msgstr ""
+
+msgid "Saturday"
+msgstr ""
+
+msgid "Set Automatically"
+msgstr ""
+
+msgid "Set Time"
+msgstr ""
+
+msgid "Sunday"
+msgstr ""
+
+msgid "Thursday"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Time Zone"
+msgstr ""
+
+msgid "Time will be shown in 12 hour format"
+msgstr ""
+
+msgid "Time will be shown in 24 hour format"
+msgstr ""
+
+msgid "Time will be synchronized with an Internet time server"
+msgstr ""
+
+msgid "Time will not be synchronized with an Internet time server"
+msgstr ""
+
+msgid "Tuesday"
+msgstr ""
+
+msgid "Wednesday"
+msgstr ""
+
+msgid "hour format"
+msgstr ""

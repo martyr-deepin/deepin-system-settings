@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-24 05:20+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-04-12 12:00+0000\n"
 "Last-Translator: Arreyu <massi_gi@hotmail.it>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/it/)\n"
@@ -19,87 +19,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/main.py:85
-msgid "Custom"
-msgstr "Personalizzato"
-
-#: ../src/main.py:86 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr "Velocità del Puntatore"
-
-#: ../src/main.py:87 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr "Accelerazione"
 
-#: ../src/main.py:90 ../src/main.py:101 ../src/main.py:278 ../src/main.py:325
-msgid "Fast"
-msgstr "Veloce"
+msgid "Custom"
+msgstr "Personalizzato"
 
-#: ../src/main.py:91 ../src/main.py:102 ../src/main.py:277 ../src/main.py:324
-msgid "Slow"
-msgstr "Lento"
-
-#: ../src/main.py:92 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr "Sensibilità"
-
-#: ../src/main.py:95 ../src/main.py:292
-msgid "Low"
-msgstr "Basso"
-
-#: ../src/main.py:96 ../src/main.py:293
-msgid "High"
-msgstr "Alto"
-
-#: ../src/main.py:97 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr "Doppio-click"
 
-#: ../src/main.py:98 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr "Frequenza"
-
-#: ../src/main.py:103
 msgid "Double-click on the smiley face to test your settings."
 msgstr ""
 "Clicca due volte sulla faccia sorridente per testare le tue impostazioni."
 
-#: ../src/main.py:105
-msgid "Relevant Settings"
-msgstr "Impostazioni Rilevanti"
+msgid "Fast"
+msgstr "Veloce"
 
-#: ../src/main.py:108 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr "Mano destra"
+msgid "Frequency"
+msgstr "Frequenza"
 
-#: ../src/main.py:109 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr "Mano sinistra"
+msgid "High"
+msgstr "Alto"
 
-#: ../src/main.py:112
 msgid "Keyboard Settings"
 msgstr "Impostazioni Tastiera"
 
-#: ../src/main.py:115
-msgid "TouchPad Settings"
-msgstr "Impostazioni TouchPad"
+msgid "Left-handed"
+msgstr "Mano sinistra"
 
-#: ../src/main.py:118
+msgid "Low"
+msgstr "Basso"
+
+msgid "Mouse"
+msgstr "Mouse"
+
+msgid "Pointer Speed"
+msgstr "Velocità del Puntatore"
+
+msgid "Relevant Settings"
+msgstr "Impostazioni Rilevanti"
+
 msgid "Reset"
 msgstr "Reset"
 
-#: ../src/main.py:436
-msgid "Set to left-handed"
-msgstr "Imposta su Mano-sinistra"
-
-#: ../src/main.py:438
-msgid "Set to right-handed"
-msgstr "Imposta su Mano-destra"
-
-#: ../src/main.py:525
 msgid "Reset to defaults"
 msgstr "Resetta ai valori di default"
 
-#: ../src/search_keyword.py:25
-msgid "Mouse"
-msgstr "Mouse"
+msgid "Right-handed"
+msgstr "Mano destra"
+
+msgid "Sensitivity"
+msgstr "Sensibilità"
+
+msgid "Set to left-handed"
+msgstr "Imposta su Mano-sinistra"
+
+msgid "Set to right-handed"
+msgstr "Imposta su Mano-destra"
+
+msgid "Slow"
+msgstr "Lento"
+
+msgid "TouchPad Settings"
+msgstr "Impostazioni TouchPad"

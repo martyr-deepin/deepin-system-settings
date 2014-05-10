@@ -6,12 +6,13 @@
 # toolband25 <castilloluis2005@gmail.com>, 2014
 # kazzike <jeancarlosrivas@gmail.com>, 2013
 # kazzike <jeancarlosrivas@gmail.com>, 2013
+# toolband25 <castilloluis2005@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-01-28 00:20+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-08 15:50+0000\n"
 "Last-Translator: toolband25 <castilloluis2005@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/es/)\n"
@@ -21,91 +22,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "10"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "Configuración del Sistema"
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "Pantallas"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "Escritorio"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "Personalización"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "Sonido"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "Fecha &amp; Tiempo"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "Encendido"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "Teclado"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "Raton "
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "Touchpad"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "Impresoras"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "Redes e Internet"
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "Controladores Adicionales"
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "Cuentas de Usuario"
+msgid "Bluetooth"
+msgstr "Bluetooth"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "Aplicaciones por Defecto"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "Informacion del Sistema"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "Reiniciar"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../dss/bluetooth_dialog.py:78
-#, python-format
-msgid "Sent %d"
-msgstr "Enviar a %d"
+msgid "Date &amp; Time"
+msgstr "Fecha &amp; Hora"
 
-#: ../dss/bluetooth_dialog.py:113
+msgid "Default Applications"
+msgstr "Aplicaciones por Defecto"
+
+msgid "Desktop"
+msgstr "Escritorio"
+
+msgid "Displays"
+msgstr "Pantallas"
+
+msgid "Keyboard"
+msgstr "Teclado"
+
+msgid "Mouse"
+msgstr "Ratón "
+
+msgid "Network"
+msgstr "Redes e Internet"
+
 msgid "Ok"
 msgstr "Ok"
+
+msgid "Personalization"
+msgstr "Personalización"
+
+msgid "Power"
+msgstr "Encendido"
+
+msgid "Printers"
+msgstr "Impresoras"
+
+msgid "Reset"
+msgstr "Reiniciar"
+
+#, python-format
+msgid "Sent %d"
+msgstr "Enviado a %d"
+
+msgid "Sound"
+msgstr "Sonido"
+
+msgid "System Information"
+msgstr "Información del Sistema"
+
+msgid "System Settings"
+msgstr "Configuración del Sistema"
+
+msgid "Touchpad"
+msgstr "Touchpad"
+
+msgid "User Accounts"
+msgstr "Cuentas de Usuario"

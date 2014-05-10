@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# kloki <klokimass@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-02-24 11:48+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
+"Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
 "Language: sl\n"
@@ -19,162 +20,122 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr ""
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
-msgstr ""
+msgstr "Samodejno skrij"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr ""
-
-#: ../src/desktop_view.py:73
 msgid "Bottom"
-msgstr ""
+msgstr "Spodaj"
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr ""
+msgid "Bottom Right"
+msgstr "Spodaj desno"
 
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr ""
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr ""
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr ""
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr ""
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "Zaganjalnik"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Povečaj"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr ""
-
-#: ../src/desktop_view.py:94
 msgid "Computer"
 msgstr "Računalnik"
 
-#: ../src/desktop_view.py:97
+msgid "Default Icon"
+msgstr "Privzeta ikona"
+
+msgid "Default Style"
+msgstr "Privzeti slog"
+
+msgid "Desktop Icon"
+msgstr "Namizna ikona"
+
+msgid "Display Style"
+msgstr "Prikaži slog"
+
+msgid "Dock"
+msgstr "Pult"
+
+msgid "Hide computer icon"
+msgstr "Skrij ikono Računalnik"
+
+msgid "Hide deepin software conter icon"
+msgstr "Skrij ikono Programsko središče Deepin"
+
+msgid "Hide home icon"
+msgstr "Skrij ikono Dom"
+
+msgid "Hide trash icon"
+msgstr "Skrij ikono Smetnjak"
+
 msgid "Home"
 msgstr "Dom"
 
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Smeti"
-
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Programsko Središče"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr ""
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr ""
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr ""
-
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr ""
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr ""
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
 msgid "Hot Zone"
-msgstr ""
+msgstr "Vroča cona"
 
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr ""
+msgid "Icon Size"
+msgstr "Velikost ikone"
 
-#: ../src/desktop_view.py:200
-msgid "Bottom Right"
-msgstr ""
+msgid "Invisible"
+msgstr "Neviden"
 
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr ""
+msgid "Launcher"
+msgstr "Zaganjalnik"
 
-#: ../src/desktop_view.py:233
 msgid "Left Edge"
-msgstr ""
+msgstr "Levi rob"
 
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr ""
+msgid "Lock Page"
+msgstr "Zaklep strani"
 
-#: ../src/desktop_view.py:260
 msgid "Login &amp;&amp; Lock"
-msgstr ""
+msgstr "Prijava &amp;&amp; Zaklep"
 
-#: ../src/desktop_view.py:268
 msgid "Login Page"
-msgstr ""
+msgstr "Prijavna stran"
 
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
+msgid "Maximize"
+msgstr "Povečaj"
+
+msgid "Nothing"
+msgstr "Nič"
+
+msgid "Opening Window"
+msgstr "Odpiranje oken"
+
+msgid "Place Style"
+msgstr "Nastavi slog"
+
+msgid "Preview"
+msgstr "Predogled"
+
+msgid "Reset to default value"
+msgstr "Ponastavi na privzete vrednosti"
+
+msgid "Right Edge"
+msgstr "Desni rob"
+
 msgid "Select"
 msgstr "Izberi"
 
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr ""
-
-#: ../src/desktop_view.py:344
 msgid "Show computer icon"
-msgstr ""
+msgstr "Pokaži ikono Računalnik"
 
-#: ../src/desktop_view.py:346
-msgid "Hide computer icon"
-msgstr ""
-
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr ""
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr ""
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr ""
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr ""
-
-#: ../src/desktop_view.py:368
 msgid "Show deepin software center icon"
-msgstr ""
+msgstr "Pokaži ikono Programsko središče Deepin"
 
-#: ../src/desktop_view.py:370
-msgid "Hide deepin software conter icon"
-msgstr ""
+msgid "Show home icon"
+msgstr "Pokaži ikono Dom"
 
-#: ../src/desktop_view.py:468
-msgid "Reset to default value"
-msgstr ""
+msgid "Show trash icon"
+msgstr "Pokaži ikono Smetnjak"
+
+msgid "Small"
+msgstr "Majhen"
+
+msgid "Software Center"
+msgstr "Programsko Središče"
+
+msgid "Top"
+msgstr "Na vrhu"
+
+msgid "Top Edge"
+msgstr "Zgornji rob"
+
+msgid "Top Left"
+msgstr "Zgoraj levo"
+
+msgid "Trash"
+msgstr "Smetnjak"

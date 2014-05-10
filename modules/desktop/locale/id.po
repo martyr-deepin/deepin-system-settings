@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-02-08 17:00+0000\n"
-"Last-Translator: aphrxia <aphrxia@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-04-14 01:31+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/id/)\n"
 "Language: id\n"
@@ -19,163 +19,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr "Gaya Awal"
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
 msgstr "Sembunyi Otomatis"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr "Tidak terlihat"
-
-#: ../src/desktop_view.py:73
-#, fuzzy
 msgid "Bottom"
-msgstr "Bawah"
-
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr "Atas"
-
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr "Ikon Asli"
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr "Kecil"
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr "Tidak ada"
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr "Membuka Jendela"
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "Launcher"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Perbesar"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr "Ikon Desktop"
-
-#: ../src/desktop_view.py:94
-msgid "Computer"
-msgstr "Komputer"
-
-#: ../src/desktop_view.py:97
-msgid "Home"
-msgstr "Home"
-
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Sampah"
-
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Pusat Aplikasi"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr "Dock"
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr "Gaya Tampilan"
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
 msgstr ""
 
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr "Ukuran ikon"
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr "Pratinjau"
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr "Hot Zone"
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr "Kiri Atas"
-
-#: ../src/desktop_view.py:200
 msgid "Bottom Right"
 msgstr "Kanan Bawah"
 
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr "Tepi Atas"
+msgid "Computer"
+msgstr "Komputer"
 
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr "Tepi Kiri"
+msgid "Default Icon"
+msgstr "Ikon Asli"
 
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr "Tepi Kanan"
+msgid "Default Style"
+msgstr "Gaya Awal"
 
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr "Login &amp;&amp; Kunci"
+msgid "Desktop Icon"
+msgstr "Ikon Desktop"
 
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr "Halaman Login"
+msgid "Display Style"
+msgstr "Gaya Tampilan"
 
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr "Pilih"
+msgid "Dock"
+msgstr "Dock"
 
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr "Kunci Halaman"
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr "Tampilkan ikon komputer"
-
-#: ../src/desktop_view.py:346
 msgid "Hide computer icon"
 msgstr "Sembunyikan ikon komputer"
 
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr "Tampilkan ikon home"
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr "Sembunyikan ikon home"
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr "Tampilkan ikon tong sampah"
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr "Sembunyikan ikon tong sampah"
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr "Tampilkan ikon pusat aplikasi Deepin"
-
-#: ../src/desktop_view.py:370
 msgid "Hide deepin software conter icon"
 msgstr "Sembunyikan ikon pusat aplikasi Deepin"
 
-#: ../src/desktop_view.py:468
+msgid "Hide home icon"
+msgstr "Sembunyikan ikon home"
+
+msgid "Hide trash icon"
+msgstr "Sembunyikan ikon tong sampah"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Hot Zone"
+msgstr "Hot Zone"
+
+msgid "Icon Size"
+msgstr "Ukuran ikon"
+
+msgid "Invisible"
+msgstr "Tidak terlihat"
+
+msgid "Launcher"
+msgstr "Launcher"
+
+msgid "Left Edge"
+msgstr "Tepi Kiri"
+
+msgid "Lock Page"
+msgstr "Kunci Halaman"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "Login &amp;&amp; Kunci"
+
+msgid "Login Page"
+msgstr "Halaman Login"
+
+msgid "Maximize"
+msgstr "Perbesar"
+
+msgid "Nothing"
+msgstr "Tidak ada"
+
+msgid "Opening Window"
+msgstr "Membuka Jendela"
+
+msgid "Place Style"
+msgstr ""
+
+msgid "Preview"
+msgstr "Pratinjau"
+
 msgid "Reset to default value"
 msgstr "Atur ulang ke pengaturan awal"
+
+msgid "Right Edge"
+msgstr "Tepi Kanan"
+
+msgid "Select"
+msgstr "Pilih"
+
+msgid "Show computer icon"
+msgstr "Tampilkan ikon komputer"
+
+msgid "Show deepin software center icon"
+msgstr "Tampilkan ikon pusat aplikasi Deepin"
+
+msgid "Show home icon"
+msgstr "Tampilkan ikon home"
+
+msgid "Show trash icon"
+msgstr "Tampilkan ikon tong sampah"
+
+msgid "Small"
+msgstr "Kecil"
+
+msgid "Software Center"
+msgstr "Pusat Aplikasi"
+
+msgid "Top"
+msgstr "Atas"
+
+msgid "Top Edge"
+msgstr "Tepi Atas"
+
+msgid "Top Left"
+msgstr "Kiri Atas"
+
+msgid "Trash"
+msgstr "Sampah"

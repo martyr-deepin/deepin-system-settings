@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 11:29+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-06 20:21+0000\n"
 "Last-Translator: ballmet <emkohencel@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sk/)\n"
@@ -19,38 +19,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/main.py:59
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr "Wuhan Deepin Technology Co.Ltd, Všetky práva vyradené"
-
-#: ../src/main.py:61
-msgid "Version"
-msgstr "Verzia"
-
-#: ../src/main.py:62 ../src/search_keyword.py:25
 msgid "CPU"
 msgstr "Procesor"
 
-#: ../src/main.py:63 ../src/search_keyword.py:26
-msgid "Memory"
-msgstr "Pamäť"
-
-#: ../src/main.py:64 ../src/search_keyword.py:27
-msgid "OS Type"
-msgstr "Typ operačného systému"
-
-#: ../src/main.py:65 ../src/search_keyword.py:28
 msgid "Disk"
 msgstr "Disk"
 
-#: ../src/main.py:154
-msgid "bit"
-msgstr "bitov"
+msgid "Memory"
+msgstr "Pamäť"
 
-#: ../src/search_keyword.py:29
+msgid "OS Type"
+msgstr "Typ operačného systému"
+
 msgid "System"
 msgstr "Systém"
 
-#: ../src/search_keyword.py:30
 msgid "System information"
 msgstr "Informácie o systéme"
+
+msgid "Version"
+msgstr "Verzia"
+
+msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
+msgstr "Wuhan Deepin Technology Co.Ltd, Všetky práva vyradené"
+
+msgid "bit"
+msgstr "bitov"

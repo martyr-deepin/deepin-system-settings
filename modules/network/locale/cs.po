@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# fri <pavelfric@seznam.cz>, 2013
-# fri <pavelfric@seznam.cz>, 2013-2014
+# fri, 2013
+# fri, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-08 03:50+0000\n"
-"Last-Translator: fri <pavelfric@seznam.cz>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-04-27 20:20+0000\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/cs/)\n"
 "Language: cs\n"
@@ -20,402 +20,329 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/settings_widget.py:610 ../src/lists.py:488 ../src/wlan_config.py:332
-#: ../src/wlan_config.py:583
-msgid "SSID:"
-msgstr "SSID:"
-
-#: ../src/settings_widget.py:614 ../src/lists.py:522
-#: ../src/mobile_config.py:269 ../src/dsl_config.py:280
-#: ../src/vpn_config.py:180 ../src/wlan_config.py:263
-msgid "Password:"
-msgstr "Heslo:"
-
-#: ../src/settings_widget.py:618
-msgid "Active"
-msgstr "Činné"
-
-#: ../src/helper.py:112
 #, python-format
 msgid "%s deleted"
 msgstr "%s smazáno"
 
-#: ../src/lists.py:560
-msgid "active"
-msgstr "Činné"
-
-#: ../src/lan_config.py:39 ../src/lan_config.py:94 ../src/lan_config.py:124
-#: ../src/main_ui.py:219 ../src/tray_ui.py:61 ../src/dsl_config.py:118
-#: ../src/dsl_config.py:134 ../src/vpn_config.py:128
-#: ../src/search_keyword.py:29
-msgid "Wired"
-msgstr "Drátová"
-
-#: ../src/lan_config.py:95 ../src/mobile_config.py:219
-#: ../src/mobile_config.py:281 ../src/dsl_config.py:102
-#: ../src/vpn_config.py:126 ../src/vpn_config.py:353 ../src/wlan_config.py:288
-msgid "Advanced"
-msgstr "Pokročilé"
-
-#: ../src/lan_config.py:109 ../src/mobile_config.py:223
-#: ../src/ipsettings.py:41 ../src/dsl_config.py:119 ../src/vpn_config.py:142
-#: ../src/wlan_config.py:216
-msgid "IPv4 settings"
-msgstr "Nastavení IPv4"
-
-#: ../src/lan_config.py:110 ../src/ipsettings.py:314 ../src/wlan_config.py:217
-msgid "IPv6 settings"
-msgstr "Nastavení IPv6"
-
-#: ../src/lan_config.py:152 ../src/dsl_config.py:144 ../src/wlan_config.py:612
-msgid "Device Mac Address:"
-msgstr "Adresa zařízení MAC"
-
-#: ../src/lan_config.py:153 ../src/dsl_config.py:152 ../src/wlan_config.py:616
-msgid "Cloned Mac Address:"
-msgstr "Klonovaná adresa MAC:"
-
-#: ../src/lan_config.py:154 ../src/wlan_config.py:621
-msgid "MTU:"
-msgstr "MTU:"
-
-#: ../src/widgets.py:50 ../src/widgets.py:64
-#, python-format
-msgid "Please input password for %s"
-msgstr "Zadejte, prosím, heslo pro %s"
-
-#: ../src/widgets.py:85 ../src/mobile_config.py:276 ../src/elements.py:248
-#: ../src/wlan_config.py:277
-msgid "Show password"
-msgstr "Ukázat heslo"
-
-#: ../src/widgets.py:97
-msgid "OK"
-msgstr "OK"
-
-#: ../src/widgets.py:98
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: ../src/main.py:48 ../src/vpn_config.py:27 ../src/search_keyword.py:32
-msgid "VPN"
-msgstr "VPN"
-
-#: ../src/mobile_config.py:38 ../src/main_ui.py:1097 ../src/tray_ui.py:63
-#: ../src/search_keyword.py:33
-msgid "Mobile Network"
-msgstr "Mobilní síť"
-
-#: ../src/mobile_config.py:217 ../src/mobile_config.py:262
-#: ../src/dsl_config.py:100 ../src/vpn_config.py:124 ../src/wlan_config.py:199
-msgid "Basic"
-msgstr "Základní"
-
-#: ../src/mobile_config.py:222 ../src/mobile_config.py:252
-msgid "Broadband"
-msgstr "Širokopásmový přenos"
-
-#: ../src/mobile_config.py:224 ../src/mobile_config.py:461
-#: ../src/dsl_config.py:120 ../src/dsl_config.py:379
-msgid "PPP"
-msgstr "PPP"
-
-#: ../src/mobile_config.py:263
-msgid "Code:"
-msgstr "Kód:"
-
-#: ../src/mobile_config.py:266 ../src/dsl_config.py:268
-#: ../src/vpn_config.py:176
-msgid "Username:"
-msgstr "Uživatelské jméno:"
-
-#: ../src/mobile_config.py:277
-msgid "Regions setting"
-msgstr "Nastavení oblasti"
-
-#: ../src/mobile_config.py:282
 msgid "APN:"
 msgstr "APN:"
 
-#: ../src/mobile_config.py:285
-msgid "Network ID:"
-msgstr "ID sítě:"
+msgid "Active"
+msgstr "Činné"
 
-#: ../src/mobile_config.py:288
-msgid "Type:"
-msgstr "Typ:"
+msgid "Ad-hoc"
+msgstr "Ad-hoc"
 
-#: ../src/mobile_config.py:291
-msgid "PIN:"
-msgstr "PIN:"
+msgid "Advanced"
+msgstr "Pokročilé"
 
-#: ../src/mobile_config.py:303
+msgid "Advanced..."
+msgstr "Pokročilé..."
+
+msgid "Allow BSD data Compression"
+msgstr "Povolit kompresi dat BSD"
+
+msgid "Allow Deflate data compression"
+msgstr "Povolit kompresi dat Deflate"
+
 msgid "Allow roaming if home network is not available"
 msgstr ""
 "Povolit poskytování telekomunikačních služeb účastníkovi v jiné síti "
 "(roaming), pokud domácí síť není dostupná"
 
-#: ../src/mobile_config.py:472 ../src/dsl_config.py:387
-#: ../src/vpn_config.py:373
-msgid "Configure Method"
-msgstr "Metoda nastavení"
+msgid "Apply"
+msgstr "Použít"
 
-#: ../src/mobile_config.py:474 ../src/dsl_config.py:393
-#: ../src/vpn_config.py:377
-msgid "EAP"
-msgstr "EAP"
+msgid "Authentication:"
+msgstr "Ověření:"
 
-#: ../src/mobile_config.py:477 ../src/dsl_config.py:394
-#: ../src/vpn_config.py:380
-msgid "PAP"
-msgstr "PAP"
+msgid "Automatic"
+msgstr "Automaticky"
 
-#: ../src/mobile_config.py:480 ../src/dsl_config.py:395
-#: ../src/vpn_config.py:383
-msgid "CHAP"
-msgstr "CHAP"
-
-#: ../src/mobile_config.py:483 ../src/dsl_config.py:396
-#: ../src/vpn_config.py:386
-msgid "MSCHAP"
-msgstr "MSCHAP"
-
-#: ../src/mobile_config.py:486 ../src/dsl_config.py:397
-#: ../src/vpn_config.py:389
-msgid "MSCHAP v2"
-msgstr "MSCHAP v2"
-
-#: ../src/mobile_config.py:500 ../src/dsl_config.py:400
-#: ../src/vpn_config.py:403
-msgid "Compression"
-msgstr "Komprimace"
-
-#: ../src/mobile_config.py:504 ../src/dsl_config.py:404
-#: ../src/vpn_config.py:408
-msgid "Echo"
-msgstr "Echo"
-
-#: ../src/mobile_config.py:509 ../src/dsl_config.py:413
-#: ../src/vpn_config.py:414
-msgid "Use point-to-point encryption(mppe)"
-msgstr "Použít směrové kódování (od bodu k bodu) (mppe)"
-
-#: ../src/mobile_config.py:512 ../src/dsl_config.py:414
-#: ../src/vpn_config.py:417
-msgid "Require 128-bit encryption"
-msgstr "Vyžadovat 128-bitové kódování"
-
-#: ../src/mobile_config.py:515 ../src/dsl_config.py:415
-#: ../src/vpn_config.py:420
-msgid "Use stateful MPPE"
-msgstr "Použít stavový MPPE"
-
-#: ../src/mobile_config.py:518 ../src/dsl_config.py:416
-#: ../src/vpn_config.py:423
-msgid "Allow BSD data Compression"
-msgstr "Povolit kompresi dat BSD"
-
-#: ../src/mobile_config.py:521 ../src/dsl_config.py:417
-#: ../src/vpn_config.py:426
-msgid "Allow Deflate data compression"
-msgstr "Povolit kompresi dat Deflate"
-
-#: ../src/mobile_config.py:524 ../src/dsl_config.py:418
-#: ../src/vpn_config.py:429
-msgid "Use TCP header compression"
-msgstr "Použít kompresi hlavičky TCP"
-
-#: ../src/mobile_config.py:527 ../src/dsl_config.py:422
-#: ../src/vpn_config.py:433
-msgid "Send PPP echo packets"
-msgstr "Poslat echo pakety PPP"
-
-#: ../src/ipsettings.py:51 ../src/ipsettings.py:322
-msgid "Link-Local Only"
-msgstr "Odkaz-pouze místní"
-
-#: ../src/ipsettings.py:53 ../src/ipsettings.py:323
-msgid "Automatic IP address"
-msgstr "Automatická adresa IP"
-
-#: ../src/ipsettings.py:57 ../src/ipsettings.py:327
-msgid "IP Address:"
-msgstr "Adresa IP"
-
-#: ../src/ipsettings.py:58
-msgid "Subnet Mask:"
-msgstr "Maska podsítě:"
-
-#: ../src/ipsettings.py:59 ../src/ipsettings.py:329 ../src/vpn_config.py:172
-msgid "Gateway:"
-msgstr "Brána:"
-
-#: ../src/ipsettings.py:67 ../src/ipsettings.py:338
 msgid "Automatic DNS server address"
 msgstr "Automatická adresa serveru DNS"
 
-#: ../src/ipsettings.py:71 ../src/ipsettings.py:342
-msgid "Primary DNS server address:"
-msgstr "Hlavní adresa serveru DNS:"
+msgid "Automatic IP address"
+msgstr "Automatická adresa IP"
 
-#: ../src/ipsettings.py:72 ../src/ipsettings.py:343
-msgid "Slave DNS server address:"
-msgstr "Pomocná adresa serveru DNS:"
+msgid "BSSID:"
+msgstr "BSSID:"
 
-#: ../src/ipsettings.py:185
-msgid "IPv4"
-msgstr "IPv4"
+msgid "Band:"
+msgstr "Pásmo:"
 
-#: ../src/ipsettings.py:185
-msgid "Subnet Mask"
-msgstr "Maska podsítě"
+msgid "Basic"
+msgstr "Základní"
 
-#: ../src/ipsettings.py:185
+msgid "Broadband"
+msgstr "Širokopásmový přenos"
+
+msgid "CDMA config"
+msgstr "Nastavení CDMA"
+
+msgid "CHAP"
+msgstr "CHAP"
+
+msgid "Cancel"
+msgstr "Zrušit"
+
+msgid "Channel:"
+msgstr "Kanál:"
+
+msgid "Cloned Mac Address:"
+msgstr "Klonovaná adresa MAC:"
+
+msgid "Code:"
+msgstr "Kód:"
+
+msgid "Compression"
+msgstr "Komprimace"
+
+msgid "Config"
+msgstr "Nastavení"
+
+msgid "Configuration url"
+msgstr "Nastavení URL"
+
+msgid "Configure Method"
+msgstr "Metoda nastavení"
+
+msgid "Connection Name:"
+msgstr "Název připojení:"
+
+msgid "Country or Region:"
+msgstr "Země nebo oblast:"
+
+msgid "Create a DSL connection"
+msgstr "Vytvořit spojení DSL"
+
+msgid "Create a VPN connection"
+msgstr "Vytvořit spojení VPN"
+
+msgid "DSL"
+msgstr "DSL"
+
+msgid "Default Setting"
+msgstr "Výchozí nastavení"
+
+msgid "Default Settings"
+msgstr "Výchozí nastavení"
+
+msgid "Delete"
+msgstr "Smazat"
+
+msgid "Device Mac Address:"
+msgstr "Adresa zařízení MAC"
+
+msgid "Dsl config"
+msgstr "Nastavení DSL"
+
+msgid "EAP"
+msgstr "EAP"
+
+msgid "Echo"
+msgstr "Echo"
+
+msgid "Enable IPSec tunnel to l2tp host"
+msgstr "Povolit IPSec tunel k hostiteli l2tp"
+
+msgid "FTP Proxy"
+msgstr "Proxy FTP"
+
+msgid "GSM config"
+msgstr "Nastavení GSM"
+
 msgid "Gateway"
 msgstr "Brána"
 
-#: ../src/ipsettings.py:190
-#, python-format
-msgid "Valid %s address."
-msgstr "Platná adresa %s."
+msgid "Gateway ID:"
+msgstr "ID brány:"
 
-#: ../src/ipsettings.py:193
+msgid "Gateway:"
+msgstr "Brána:"
+
+msgid "Group Name:"
+msgstr "Název skupiny:"
+
+msgid "Hidden network"
+msgstr "Skrytá síť"
+
+msgid "Hotspot"
+msgstr "Aktivní bod"
+
+msgid "Http Proxy"
+msgstr "Proxy HTTP"
+
+msgid "Https Proxy"
+msgstr "Proxy HTTPS"
+
+msgid "IP Address:"
+msgstr "Adresa IP"
+
+msgid "IPSec Setting"
+msgstr "Nastavení IPSec"
+
+msgid "IPv4"
+msgstr "IPv4"
+
+msgid "IPv4 settings"
+msgstr "Nastavení IPv4"
+
+msgid "IPv6 settings"
+msgstr "Nastavení IPv6"
+
+msgid "Infrastructure"
+msgstr "Infrastruktura"
+
 #, python-format
 msgid "Invalid %s address."
 msgstr "Neplatná adresa %s."
 
-#: ../src/ipsettings.py:328
-msgid "Prefix:"
-msgstr "Předpona:"
+msgid "Key:"
+msgstr "Klíč:"
 
-#: ../src/main_ui.py:397 ../src/tray_ui.py:62 ../src/wlan_config.py:215
-#: ../src/wlan_config.py:575 ../src/search_keyword.py:30
-msgid "Wireless"
-msgstr "Bezdrátová"
+msgid "L2TP"
+msgstr "L2TP"
 
-#: ../src/main_ui.py:398
-msgid "Set up a hidden wireless connection"
-msgstr "Zřídit skryté bezdrátové spojení"
+msgid "Link-Local Only"
+msgstr "Odkaz-pouze místní"
 
-#: ../src/main_ui.py:599
-msgid "Hotspot"
-msgstr "Aktivní bod"
+msgid "MSCHAP"
+msgstr "MSCHAP"
 
-#: ../src/main_ui.py:733 ../src/tray_ui.py:66 ../src/dsl_config.py:37
-#: ../src/dsl_config.py:253 ../src/search_keyword.py:31
-msgid "DSL"
-msgstr "DSL"
+msgid "MSCHAP v2"
+msgstr "MSCHAP v2"
 
-#: ../src/main_ui.py:734
-msgid "Create a DSL connection"
-msgstr "Vytvořit spojení DSL"
+msgid "MTU:"
+msgstr "MTU:"
 
-#: ../src/main_ui.py:883 ../src/tray_ui.py:65
-msgid "VPN Network"
-msgstr "Síť VPN"
-
-#: ../src/main_ui.py:884
-msgid "Create a VPN connection"
-msgstr "Vytvořit spojení VPN"
-
-#: ../src/main_ui.py:1098
-msgid "Mobile Configuration"
-msgstr "Nastavení pro mobilní"
-
-#: ../src/main_ui.py:1166 ../src/main_ui.py:1204 ../src/search_keyword.py:34
-msgid "Proxy"
-msgstr "Proxy"
-
-#: ../src/main_ui.py:1186
-msgid "Proxy Configuration"
-msgstr "Nastavení proxy"
-
-#: ../src/tray_ui.py:70
-msgid "Advanced..."
-msgstr "Pokročilé..."
-
-#: ../src/tray_ui.py:485
-#, python-format
-msgid "card %d"
-msgstr "Karta %d"
-
-#: ../src/proxy_config.py:80
 msgid "Manual"
 msgstr "Ruční"
 
-#: ../src/proxy_config.py:81
-msgid "Http Proxy"
-msgstr "Proxy HTTP"
+msgid "Mobile Configuration"
+msgstr "Nastavení pro mobilní"
 
-#: ../src/proxy_config.py:82
-msgid "Https Proxy"
-msgstr "Proxy HTTPS"
+msgid "Mobile Network"
+msgstr "Mobilní síť"
 
-#: ../src/proxy_config.py:83
-msgid "FTP Proxy"
-msgstr "Proxy FTP"
+msgid "Mode:"
+msgstr "Režim:"
 
-#: ../src/proxy_config.py:84
-msgid "Socks Proxy"
-msgstr "Proxy SOCKS"
+msgid "NT Domain:"
+msgstr "Doména NT:"
 
-#: ../src/proxy_config.py:87 ../src/wlan_config.py:599
-msgid "Automatic"
-msgstr "Automaticky"
+msgid "Network"
+msgstr "Síť"
 
-#: ../src/proxy_config.py:88
-msgid "Configuration url"
-msgstr "Nastavení URL"
+msgid "Network ID:"
+msgstr "ID sítě:"
 
-#: ../src/proxy_config.py:102
-msgid "Apply"
-msgstr "Použít"
-
-#: ../src/sidebar_ui.py:46
 msgid "New Connection"
 msgstr "Nové připojení"
 
-#: ../src/sidebar_ui.py:92 ../src/wlan_config.py:121
-msgid "Hidden network"
-msgstr "Skrytá síť"
+msgid "None"
+msgstr "Žádné"
 
-#: ../src/foot_box_ui.py:69
-msgid "Delete"
-msgstr "Smazat"
+msgid "OK"
+msgstr "OK"
 
-#: ../src/foot_box_ui.py:96
-msgid "Save"
-msgstr "Uložit"
+msgid "Open System"
+msgstr "Otevřený systém"
 
-#: ../src/foot_box_ui.py:140
-msgid "Tip:"
-msgstr "Rada:"
+msgid "PAP"
+msgstr "PAP"
 
-#: ../src/dsl_config.py:182
-msgid "Default Setting"
-msgstr "Výchozí nastavení"
+msgid "PIN:"
+msgstr "PIN:"
 
-#: ../src/dsl_config.py:262 ../src/vpn_config.py:168
-msgid "Connection Name:"
-msgstr "Název připojení:"
+msgid "PPP"
+msgstr "PPP"
 
-#: ../src/dsl_config.py:275
-msgid "Service:"
-msgstr "Služba:"
+msgid "PPP settings"
+msgstr "Nastavení PPP"
 
-#: ../src/dsl_config.py:301 ../src/vpn_config.py:213
-msgid "Show Password"
-msgstr "Ukázat heslo"
+msgid "PPTP"
+msgstr "PPTP"
 
-#: ../src/regions.py:71
-msgid "Country or Region:"
-msgstr "Země nebo oblast:"
+msgid "Password:"
+msgstr "Heslo:"
 
-#: ../src/regions.py:89
+#, python-format
+msgid "Please input password for %s"
+msgstr "Zadejte, prosím, heslo pro %s"
+
+msgid "Pre_Shared_key"
+msgstr "Před_sdílený_klíč"
+
+msgid "Prefix:"
+msgstr "Předpona:"
+
+msgid "Primary DNS server address:"
+msgstr "Hlavní adresa serveru DNS:"
+
 msgid "Provider:"
 msgstr "Poskytovatel:"
 
-#: ../src/regions.py:104
+msgid "Proxy"
+msgstr "Proxy"
+
+msgid "Proxy Configuration"
+msgstr "Nastavení proxy"
+
+msgid "Region"
+msgstr "Oblast"
+
+msgid "Regions setting"
+msgstr "Nastavení oblasti"
+
+msgid "Require 128-bit encryption"
+msgstr "Vyžadovat 128-bitové kódování"
+
+msgid "SSID:"
+msgstr "SSID:"
+
+msgid "Save"
+msgstr "Uložit"
+
+msgid "Security"
+msgstr "Bezpečnost"
+
+msgid "Security:"
+msgstr "Bezpečnost:"
+
+msgid "Send PPP echo packets"
+msgstr "Poslat echo pakety PPP"
+
+msgid "Service:"
+msgstr "Služba:"
+
+msgid "Set up a hidden wireless connection"
+msgstr "Zřídit skryté bezdrátové spojení"
+
+msgid "Shared Key"
+msgstr "Sdílený klíč"
+
+msgid "Show Password"
+msgstr "Ukázat heslo"
+
+msgid "Show password"
+msgstr "Ukázat heslo"
+
+msgid "Slave DNS server address:"
+msgstr "Pomocná adresa serveru DNS:"
+
+msgid "Socks Proxy"
+msgstr "Proxy SOCKS"
+
+msgid "Subnet Mask"
+msgstr "Maska podsítě"
+
+msgid "Subnet Mask:"
+msgstr "Maska podsítě:"
+
+msgid "Tip:"
+msgstr "Rada:"
+
 msgid ""
 "Tips:This assistant helps you easily set up a mobile broadband connection to "
 "a cellular network."
@@ -423,154 +350,67 @@ msgstr ""
 "Rada: Tento průvodce vám pomůže se snadným nastavením mobilního "
 "širokopásmového připojení k buněčné síti."
 
-#: ../src/regions.py:213
-msgid "Region"
-msgstr "Oblast"
+msgid "Type:"
+msgstr "Typ:"
 
-#: ../src/vpn_config.py:144
-msgid "PPP settings"
-msgstr "Nastavení PPP"
-
-#: ../src/vpn_config.py:156 ../src/vpn_config.py:189
-msgid "PPTP"
-msgstr "PPTP"
-
-#: ../src/vpn_config.py:184
-msgid "NT Domain:"
-msgstr "Doména NT:"
-
-#: ../src/vpn_config.py:190
-msgid "L2TP"
-msgstr "L2TP"
-
-#: ../src/vpn_config.py:436
-msgid "Use protocal field compression negotiation"
-msgstr ""
-
-#: ../src/vpn_config.py:439
 msgid "Use Address/Control compression"
-msgstr ""
+msgstr "Použít adresní/kontrolní kompresi"
 
-#: ../src/vpn_config.py:457
-msgid "IPSec Setting"
-msgstr "Nastavení IPSec"
+msgid "Use TCP header compression"
+msgstr "Použít kompresi hlavičky TCP"
 
-#: ../src/vpn_config.py:461
-msgid "Enable IPSec tunnel to l2tp host"
-msgstr "Povolit IPSec tunel k hostiteli l2tp"
+msgid "Use point-to-point encryption(mppe)"
+msgstr "Použít směrové kódování (od bodu k bodu) (mppe)"
 
-#: ../src/vpn_config.py:464
-msgid "Group Name:"
-msgstr "Název skupiny:"
+msgid "Use protocal field compression negotiation"
+msgstr "Použít přenos komprese pole protokolu"
 
-#: ../src/vpn_config.py:467
-msgid "Gateway ID:"
-msgstr "ID brány:"
+msgid "Use stateful MPPE"
+msgstr "Použít stavový MPPE"
 
-#: ../src/vpn_config.py:470
-msgid "Pre_Shared_key"
-msgstr "Před_sdílený_klíč"
+msgid "Username:"
+msgstr "Uživatelské jméno:"
 
-#: ../src/wlan_config.py:231
-msgid "Security"
-msgstr "Bezpečnost"
+msgid "VPN"
+msgstr "VPN"
 
-#: ../src/wlan_config.py:250
-msgid "Security:"
-msgstr "Bezpečnost:"
+msgid "VPN Network"
+msgstr "Síť VPN"
 
-#: ../src/wlan_config.py:253
-msgid "Key:"
-msgstr "Klíč:"
-
-#: ../src/wlan_config.py:256
-msgid "Wep index:"
-msgstr "Wep index:"
-
-#: ../src/wlan_config.py:260
-msgid "Authentication:"
-msgstr "Ověření:"
-
-#: ../src/wlan_config.py:267
-msgid "None"
-msgstr "Žádné"
-
-#: ../src/wlan_config.py:268
-msgid "WEP (Hex or ASCII)"
-msgstr "WEP (Hex nebo ASCII)"
-
-#: ../src/wlan_config.py:269
-msgid "WEP 104/128-bit Passphrase"
-msgstr "Heslo WEP 104/128-bitů"
-
-#: ../src/wlan_config.py:270
-msgid "WPA WPA2 Personal"
-msgstr "Osobní WPA WPA2"
-
-#: ../src/wlan_config.py:281
-msgid "Shared Key"
-msgstr "Sdílený klíč"
-
-#: ../src/wlan_config.py:282
-msgid "Open System"
-msgstr "Otevřený systém"
-
-#: ../src/wlan_config.py:589
-msgid "Mode:"
-msgstr "Režim:"
-
-#: ../src/wlan_config.py:592
-msgid "Infrastructure"
-msgstr "Infrastruktura"
-
-#: ../src/wlan_config.py:592
-msgid "Ad-hoc"
-msgstr "Ad-hoc"
-
-#: ../src/wlan_config.py:595
-msgid "Band:"
-msgstr "Pásmo:"
-
-#: ../src/wlan_config.py:603
-msgid "Channel:"
-msgstr "Kanál:"
-
-#: ../src/wlan_config.py:608
-msgid "BSSID:"
-msgstr "BSSID:"
-
-#: ../src/wlan_config.py:650
-msgid "Default Settings"
-msgstr "Výchozí nastavení"
-
-#: ../src/search_keyword.py:35
-msgid "Network"
-msgstr "Síť"
-
-#: ../src/nmlib/nm_remote_settings.py:202
-msgid "Wired config"
-msgstr "Nastavení drátového připojení"
-
-#: ../src/nmlib/nm_remote_settings.py:205
-msgid "Wireless config"
-msgstr "Nastavení bezdrátového připojení"
-
-#: ../src/nmlib/nm_remote_settings.py:208
-msgid "Dsl config"
-msgstr "Nastavení DSL"
-
-#: ../src/nmlib/nm_remote_settings.py:211
 msgid "VPN config"
 msgstr "Nastavení VPN"
 
-#: ../src/nmlib/nm_remote_settings.py:214
-msgid "CDMA config"
-msgstr "Nastavení CDMA"
+#, python-format
+msgid "Valid %s address."
+msgstr "Platná adresa %s."
 
-#: ../src/nmlib/nm_remote_settings.py:217
-msgid "GSM config"
-msgstr "Nastavení GSM"
+msgid "WEP (Hex or ASCII)"
+msgstr "WEP (Hex nebo ASCII)"
 
-#: ../src/nmlib/nm_remote_settings.py:219
-msgid "Config"
-msgstr "Nastavení"
+msgid "WEP 104/128-bit Passphrase"
+msgstr "Heslo WEP 104/128-bitů"
+
+msgid "WPA WPA2 Personal"
+msgstr "Osobní WPA WPA2"
+
+msgid "Wep index:"
+msgstr "Wep index:"
+
+msgid "Wired"
+msgstr "Drátová"
+
+msgid "Wired config"
+msgstr "Nastavení drátového připojení"
+
+msgid "Wireless"
+msgstr "Bezdrátová"
+
+msgid "Wireless config"
+msgstr "Nastavení bezdrátového připojení"
+
+msgid "active"
+msgstr "Činné"
+
+#, python-format
+msgid "card %d"
+msgstr "Karta %d"

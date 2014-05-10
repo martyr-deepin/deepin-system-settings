@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2013-12-16 08:31+0000\n"
 "Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/deepin-"
@@ -19,40 +19,31 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../src/tray_mount_gui.py:170 ../src/tray_mount_gui.py:394
-#: ../src/tray_mount_gui.py:410 ../src/tray_mount_gui.py:415
-msgid "Storage Device"
-msgstr ""
-
-#: ../src/tray_mount_gui.py:395
-#, python-format
-msgid "Mount and open device \"%s\"?"
-msgstr ""
-
-#: ../src/tray_mount_gui.py:410
-#, python-format
-msgid "Removable media \"%s\" has been removed"
-msgstr ""
-
-#: ../src/tray_mount_gui.py:415
 #, python-format
 msgid "Found new removable media \"%s\""
 msgstr ""
 
-#: ../src/tray_mount_plugin.py:64
-msgid "Mount Failed"
-msgstr ""
-
-#: ../src/tray_mount_plugin.py:65
 #, python-format
 msgid "Mount '%s' error."
 msgstr ""
 
-#: ../src/tray_mount_plugin.py:68
-msgid "Unmount Failed"
+msgid "Mount Failed"
 msgstr ""
 
-#: ../src/tray_mount_plugin.py:70
+#, python-format
+msgid "Mount and open device \"%s\"?"
+msgstr ""
+
+#, python-format
+msgid "Removable media \"%s\" has been removed"
+msgstr ""
+
+msgid "Storage Device"
+msgstr ""
+
 #, python-format
 msgid "Unmount '%s' error. Please unmount it in file manager"
+msgstr ""
+
+msgid "Unmount Failed"
 msgstr ""

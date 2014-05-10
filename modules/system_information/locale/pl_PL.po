@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-08 03:50+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-24 22:41+0000\n"
 "Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Polish (Poland) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/pl_PL/)\n"
@@ -19,38 +19,29 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
 
-#: ../src/main.py:59
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr ""
-
-#: ../src/main.py:61
-msgid "Version"
-msgstr "Wersja"
-
-#: ../src/main.py:62 ../src/search_keyword.py:25
 msgid "CPU"
 msgstr ""
 
-#: ../src/main.py:63 ../src/search_keyword.py:26
-msgid "Memory"
-msgstr ""
-
-#: ../src/main.py:64 ../src/search_keyword.py:27
-msgid "OS Type"
-msgstr ""
-
-#: ../src/main.py:65 ../src/search_keyword.py:28
 msgid "Disk"
 msgstr ""
 
-#: ../src/main.py:154
-msgid "bit"
+msgid "Memory"
 msgstr ""
 
-#: ../src/search_keyword.py:29
+msgid "OS Type"
+msgstr ""
+
 msgid "System"
 msgstr "System"
 
-#: ../src/search_keyword.py:30
 msgid "System information"
+msgstr ""
+
+msgid "Version"
+msgstr "Wersja"
+
+msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
+msgstr ""
+
+msgid "bit"
 msgstr ""

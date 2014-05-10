@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-30 13:40+0000\n"
 "Last-Translator: aphrxia <aphrxia@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,91 +19,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "10"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "Pengaturan Sistem"
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "Tampilan Layar"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "Desktop"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "Personalisasi"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "Suara"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "Tanggal &amp; Waktu"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "Daya"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "Papan ketik"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "Mouse"
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "Touchpad"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "Pencetak"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "Jaringan"
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "Driver tambahan"
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "Akun Pengguna"
+msgid "Bluetooth"
+msgstr "Bluetooth"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "Aplikasi Tetap"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "Informasi Sistem"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "Atur ulang"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "Batal"
 
-#: ../dss/bluetooth_dialog.py:78
+msgid "Date &amp; Time"
+msgstr "Tanggal &amp; Waktu"
+
+msgid "Default Applications"
+msgstr "Aplikasi Tetap"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Displays"
+msgstr "Tampilan Layar"
+
+msgid "Keyboard"
+msgstr "Papan ketik"
+
+msgid "Mouse"
+msgstr "Mouse"
+
+msgid "Network"
+msgstr "Jaringan"
+
+msgid "Ok"
+msgstr "Ok"
+
+msgid "Personalization"
+msgstr "Personalisasi"
+
+msgid "Power"
+msgstr "Daya"
+
+msgid "Printers"
+msgstr "Pencetak"
+
+msgid "Reset"
+msgstr "Atur ulang"
+
 #, python-format
 msgid "Sent %d"
 msgstr "Terkirim %d"
 
-#: ../dss/bluetooth_dialog.py:113
-msgid "Ok"
-msgstr "Ok"
+msgid "Sound"
+msgstr "Suara"
+
+msgid "System Information"
+msgstr "Informasi Sistem"
+
+msgid "System Settings"
+msgstr "Pengaturan Sistem"
+
+msgid "Touchpad"
+msgstr "Touchpad"
+
+msgid "User Accounts"
+msgstr "Akun Pengguna"

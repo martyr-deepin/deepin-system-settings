@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 21:40+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-05 21:30+0000\n"
 "Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
@@ -20,38 +20,29 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/main.py:59
-msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
-msgstr "Wuhan Deepin Technology Co.Ltd, vse pravice pridržane."
-
-#: ../src/main.py:61
-msgid "Version"
-msgstr "Različica"
-
-#: ../src/main.py:62 ../src/search_keyword.py:25
 msgid "CPU"
 msgstr "Procesor"
 
-#: ../src/main.py:63 ../src/search_keyword.py:26
-msgid "Memory"
-msgstr "Spomin"
-
-#: ../src/main.py:64 ../src/search_keyword.py:27
-msgid "OS Type"
-msgstr "Vrsta operacijskega sistema"
-
-#: ../src/main.py:65 ../src/search_keyword.py:28
 msgid "Disk"
 msgstr "Disk"
 
-#: ../src/main.py:154
-msgid "bit"
-msgstr "bitov"
+msgid "Memory"
+msgstr "Spomin"
 
-#: ../src/search_keyword.py:29
+msgid "OS Type"
+msgstr "Vrsta operacijskega sistema"
+
 msgid "System"
 msgstr "Sistem"
 
-#: ../src/search_keyword.py:30
 msgid "System information"
 msgstr "Sistemske informacije"
+
+msgid "Version"
+msgstr "Različica"
+
+msgid "Wuhan Deepin Technology Co.Ltd, All rights reserved"
+msgstr "Wuhan Deepin Technology Co.Ltd, vse pravice pridržane."
+
+msgid "bit"
+msgstr "bitov"

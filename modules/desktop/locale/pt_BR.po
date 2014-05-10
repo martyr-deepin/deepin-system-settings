@@ -4,14 +4,15 @@
 #
 # Translators:
 # 648trindade <rafaelgt.mbin@gmail.com>, 2013
+# alanjhone <alanjhone9@gmail.com>, 2014
 # 648trindade <rafaelgt.mbin@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-02-24 11:28+0000\n"
-"Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
+"Last-Translator: alanjhone <alanjhone9@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/pt_BR/)\n"
 "Language: pt_BR\n"
@@ -20,163 +21,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr "Estilo Padrão"
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
 msgstr "Ocultar Automaticamente"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr "Invisível"
-
-#: ../src/desktop_view.py:73
-#, fuzzy
 msgid "Bottom"
-msgstr "Abaixo"
+msgstr "Bottom"
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr "Acima"
-
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr "Ícone Padrão"
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr "Pequeno"
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr "Nada"
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr "Abrindo Janela"
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "Lançador"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Maximizar"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr "Ícone da Área de Trabalho"
-
-#: ../src/desktop_view.py:94
-msgid "Computer"
-msgstr "Computador"
-
-#: ../src/desktop_view.py:97
-msgid "Home"
-msgstr "Principal"
-
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Lixeira"
-
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Central de Aplicativos"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr "Barra de Aplicativos"
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr "Estilo da Tela"
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr "Colocar Estilo"
-
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr "Tamanho do Ícone"
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr "Pré-visualizar"
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr "Hot Zone"
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr "Superior Esquerdo"
-
-#: ../src/desktop_view.py:200
 msgid "Bottom Right"
 msgstr "Inferior Direito"
 
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr "Limite Acima"
+msgid "Computer"
+msgstr "Computador"
 
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr "Limite à Esquerda"
+msgid "Default Icon"
+msgstr "Ícone Padrão"
 
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr "Limite à Direita"
+msgid "Default Style"
+msgstr "Estilo Padrão"
 
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr "Entrar &amp;&amp; Travar"
+msgid "Desktop Icon"
+msgstr "Ícone da Área de Trabalho"
 
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr "Página de Login"
+msgid "Display Style"
+msgstr "Estilo da Tela"
 
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr "Selecionar"
+msgid "Dock"
+msgstr "Barra de Aplicativos"
 
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr "Página de Bloqueio"
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr "Mostrar ícone do computador"
-
-#: ../src/desktop_view.py:346
 msgid "Hide computer icon"
 msgstr "Ocultar ícone do computador"
 
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr "Mostrar ícone da pasta principal"
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr "Ocultar ícone da pasta principal"
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr "Mostrar ícone da lixeira"
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr "Ocultar ícone da lixeira"
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr "Mostrar ícone da central de aplicativos deepin"
-
-#: ../src/desktop_view.py:370
 msgid "Hide deepin software conter icon"
 msgstr "Ocultar ícone da central de aplicativos deepin"
 
-#: ../src/desktop_view.py:468
+msgid "Hide home icon"
+msgstr "Ocultar ícone da pasta principal"
+
+msgid "Hide trash icon"
+msgstr "Ocultar ícone da lixeira"
+
+msgid "Home"
+msgstr "Principal"
+
+msgid "Hot Zone"
+msgstr "Pontos de Interação"
+
+msgid "Icon Size"
+msgstr "Tamanho do Ícone"
+
+msgid "Invisible"
+msgstr "Invisível"
+
+msgid "Launcher"
+msgstr "Lançador"
+
+msgid "Left Edge"
+msgstr "Limite à Esquerda"
+
+msgid "Lock Page"
+msgstr "Página de Bloqueio"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "Entrar &amp;&amp; Travar"
+
+msgid "Login Page"
+msgstr "Página de Login"
+
+msgid "Maximize"
+msgstr "Maximizar"
+
+msgid "Nothing"
+msgstr "Nada"
+
+msgid "Opening Window"
+msgstr "Janelas Abertas"
+
+msgid "Place Style"
+msgstr "Colocar Estilo"
+
+msgid "Preview"
+msgstr "Pré-visualizar"
+
 msgid "Reset to default value"
 msgstr "Redefinir para valor padrão"
+
+msgid "Right Edge"
+msgstr "Limite à Direita"
+
+msgid "Select"
+msgstr "Selecionar"
+
+msgid "Show computer icon"
+msgstr "Mostrar ícone do computador"
+
+msgid "Show deepin software center icon"
+msgstr "Mostrar ícone da central de aplicativos deepin"
+
+msgid "Show home icon"
+msgstr "Mostrar ícone da pasta principal"
+
+msgid "Show trash icon"
+msgstr "Mostrar ícone da lixeira"
+
+msgid "Small"
+msgstr "Pequeno"
+
+msgid "Software Center"
+msgstr "Central de Aplicativos"
+
+msgid "Top"
+msgstr "Acima"
+
+msgid "Top Edge"
+msgstr "Limite Acima"
+
+msgid "Top Left"
+msgstr "Superior Esquerdo"
+
+msgid "Trash"
+msgstr "Lixeira"

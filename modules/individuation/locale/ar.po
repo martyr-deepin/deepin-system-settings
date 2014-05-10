@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-16 01:10+0000\n"
 "Last-Translator: Mohd <mo-hd@windowslive.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/deepin-system-"
@@ -20,241 +20,175 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: ../src/main.new.py:500 ../src/ui/wallpaper_item.py:1028
-msgid "Downloaded"
-msgstr "‫التنزيلات"
-
-#: ../src/theme_manager.py:427
-msgid "Untitled"
-msgstr "بدون عنوان"
-
-#: ../src/main.py:81
-msgid "Image files"
-msgstr "ملفات الصور"
-
-#: ../src/search_keyword.py:29
-msgid "Personalization"
-msgstr "التخصيص"
-
-#: ../src/search_keyword.py:30 ../src/ui/theme_page.py:55
-msgid "My Themes"
-msgstr "سماتي"
-
-#: ../src/search_keyword.py:31 ../src/ui/theme_page.py:60
-msgid "System Themes"
-msgstr "سمات النظام"
-
-#: ../src/search_keyword.py:32
-msgid "Wallpaper"
-msgstr "الخلفيات"
-
-#: ../src/search_keyword.py:33 ../src/ui/add_page.py:85
-msgid "Pictures"
-msgstr "الصور"
-
-#: ../src/ui/add_page.py:79 ../src/ui/local_page.py:88
-msgid "Library"
-msgstr "المكتبة"
-
-#: ../src/ui/add_page.py:80 ../src/ui/local_page.py:89
-msgid "Internet"
-msgstr "الأنترنت"
-
-#: ../src/ui/add_page.py:84
-msgid "System"
-msgstr "النظام"
-
-#: ../src/ui/add_page.py:86
-msgid "Favorites"
-msgstr "التفضيلات"
-
-#: ../src/ui/add_page.py:87 ../src/ui/local_page.py:98
-msgid "360 Wallpaper"
-msgstr "360 خلفية"
-
-#: ../src/ui/add_page.py:88 ../src/ui/local_page.py:99
-msgid "LoveWallpaper"
-msgstr "خلفية حب"
-
-#: ../src/ui/delete_page.py:55 ../src/ui/cache_page.py:131
-msgid "Back"
-msgstr "الخلف"
-
-#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
-#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
-#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
-#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
-#: ../src/ui/detail_page.py:194
-msgid "Select all"
-msgstr "إختيار الكل"
-
-#: ../src/ui/delete_page.py:61 ../src/ui/detail_page.py:88
-#: ../src/ui/select_page.py:87 ../src/ui/select_page.py:228
-msgid "Delete"
-msgstr "حذف"
-
-#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
-#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
-#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
-msgid "Clear all"
-msgstr "مسح الكل"
-
-#: ../src/ui/delete_page.py:97 ../src/ui/select_page.py:166
-#: ../src/ui/select_page.py:296
-msgid "Delete Wallpaper"
-msgstr "حذف الخلفية"
-
-#: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:167
-#: ../src/ui/select_page.py:297
-msgid "Are you sure delete wallpaper?"
-msgstr "هل أنت متأكد أنك تريد حذف الخلفية ؟"
-
-#: ../src/ui/cache_page.py:133
-msgid "Download All"
-msgstr "تنزيل الكل"
-
-#: ../src/ui/local_page.py:46
-msgid "My Favorites"
-msgstr "تفضيلاتي"
-
-#: ../src/ui/local_page.py:47
-msgid "Local Wallpapers"
-msgstr "الخلفيات المحلية"
-
-#: ../src/ui/detail_page.py:37
-msgid "Minute"
-msgstr "دقيقة"
-
-#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
-#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
-msgid "Minutes"
-msgstr "دقائق"
-
-#: ../src/ui/detail_page.py:40
-msgid "Hour"
-msgstr "ساعة"
-
-#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
-#: ../src/ui/detail_page.py:43
-msgid "Hours"
-msgstr "ساعات"
-
-#: ../src/ui/detail_page.py:46
-msgid "Stretch"
-msgstr "امتداد"
-
-#: ../src/ui/detail_page.py:46
-msgid "Tile"
-msgstr "القرميد"
-
-#: ../src/ui/detail_page.py:70
-msgid "Position"
-msgstr "موضع"
-
-#: ../src/ui/detail_page.py:73
-msgid "Duration"
-msgstr "مدة"
-
-#: ../src/ui/detail_page.py:80
-msgid "Random"
-msgstr "عشوائي"
-
-#: ../src/ui/wallpaper_view.py:57
-msgid "Apply Wallpaper"
-msgstr "تطبيق الخلفية"
-
-#: ../src/ui/select_page.py:75
-msgid "Your Local Pictures folder is empty"
-msgstr "ملف الصور المحلي فارغ"
-
-#: ../src/ui/select_page.py:81 ../src/ui/select_page.py:225
-msgid "Set as wallpaper"
-msgstr "تعيين كخلفية"
-
-#: ../src/ui/select_page.py:84
-msgid "Add to Favorites"
-msgstr "إضافة الى التفضيلات"
-
-#: ../src/ui/select_page.py:118 ../src/ui/select_page.py:258
-#, python-format
-msgid "%s pictures are set as wallpaper"
-msgstr "%s الصور تم تعيينها كخلفية"
-
-#: ../src/ui/select_page.py:120 ../src/ui/select_page.py:260
 #, python-format
 msgid "%s picture is set as wallpaper"
 msgstr "%s الصورة تم تعيينها كخلفية"
 
-#: ../src/ui/select_page.py:147
 #, python-format
-msgid "add %s pictures to Favorites"
-msgstr "أضف %s الصور الى التفضيلات"
+msgid "%s pictures are set as wallpaper"
+msgstr "%s الصور تم تعيينها كخلفية"
 
-#: ../src/ui/select_page.py:149
-#, python-format
-msgid "add %s picture to Favorites"
-msgstr "أضف %s الصورة إلى التفضيلات"
+msgid "360 Wallpaper"
+msgstr "360 خلفية"
 
-#: ../src/ui/select_page.py:157 ../src/ui/select_page.py:287
-#, python-format
-msgid "delete %s pictures"
-msgstr "حذف %s الصور"
-
-#: ../src/ui/select_page.py:159 ../src/ui/select_page.py:289
-#, python-format
-msgid "delete %s picture"
-msgstr "حذف %s الصورة"
-
-#: ../src/ui/select_page.py:180 ../src/ui/select_page.py:310
-#, python-format
-msgid "choose %s pictures"
-msgstr "أختر %s الصور"
-
-#: ../src/ui/select_page.py:182 ../src/ui/select_page.py:312
-#, python-format
-msgid "choose %s picture"
-msgstr "أختر %s الصورة"
-
-#: ../src/ui/select_page.py:211
-msgid "Your Favorites folder is empty."
-msgstr ".ملف تفضيلاتك فارغ"
-
-#: ../src/ui/select_page.py:214
 msgid "Add from Local Pictures"
 msgstr "أضف من الصور المحلية"
 
-#: ../src/ui/theme_view.py:97 ../src/ui/theme_view.py:114
-#, python-format
-msgid "Changed User Theme to %s"
-msgstr "تغيير سمة المستخدم الى %s"
+msgid "Add to Favorites"
+msgstr "إضافة الى التفضيلات"
 
-#: ../src/ui/theme_view.py:133 ../src/ui/theme_view.py:264
-msgid "Save Theme As"
-msgstr "الحفظ السمة كـ"
+msgid "Apply Wallpaper"
+msgstr "تطبيق الخلفية"
 
-#: ../src/ui/theme_view.py:137
-msgid "Rename Theme"
-msgstr "إعادة تسمية السمة"
+msgid "Are you sure delete wallpaper?"
+msgstr "هل أنت متأكد أنك تريد حذف الخلفية ؟"
 
-#: ../src/ui/theme_view.py:141 ../src/ui/theme_view.py:158
-msgid "Delete Theme"
-msgstr "حذف السمة"
-
-#: ../src/ui/theme_view.py:142
 #, python-format
 msgid "Are you sure you want to delete the theme %s?"
 msgstr "هل أنت متأكد أنك تريد حذف السمة %s ؟"
 
-#: ../src/ui/theme_view.py:152 ../src/ui/theme_view.py:156
-#: ../src/ui/theme_view.py:268
-msgid "Save As"
-msgstr "حفظ كـ"
+msgid "Back"
+msgstr "الخلف"
 
-#: ../src/ui/theme_view.py:155
-msgid "Rename"
-msgstr "إعادة تسمية"
-
-#: ../src/ui/theme_view.py:240 ../src/ui/theme_view.py:249
 #, python-format
 msgid "Changed System Theme to %s"
 msgstr "تغيير سمة النظام إلى %s"
+
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr "تغيير سمة المستخدم الى %s"
+
+msgid "Clear all"
+msgstr "مسح الكل"
+
+msgid "Delete"
+msgstr "حذف"
+
+msgid "Delete Theme"
+msgstr "حذف السمة"
+
+msgid "Delete Wallpaper"
+msgstr "حذف الخلفية"
+
+msgid "Download All"
+msgstr "تنزيل الكل"
+
+msgid "Downloaded"
+msgstr "‫التنزيلات"
+
+msgid "Duration"
+msgstr "مدة"
+
+msgid "Favorites"
+msgstr "التفضيلات"
+
+msgid "Hour"
+msgstr "ساعة"
+
+msgid "Hours"
+msgstr "ساعات"
+
+msgid "Image files"
+msgstr "ملفات الصور"
+
+msgid "Internet"
+msgstr "الأنترنت"
+
+msgid "Library"
+msgstr "المكتبة"
+
+msgid "Local Wallpapers"
+msgstr "الخلفيات المحلية"
+
+msgid "LoveWallpaper"
+msgstr "خلفية حب"
+
+msgid "Minute"
+msgstr "دقيقة"
+
+msgid "Minutes"
+msgstr "دقائق"
+
+msgid "My Favorites"
+msgstr "تفضيلاتي"
+
+msgid "My Themes"
+msgstr "سماتي"
+
+msgid "Personalization"
+msgstr "التخصيص"
+
+msgid "Pictures"
+msgstr "الصور"
+
+msgid "Position"
+msgstr "موضع"
+
+msgid "Random"
+msgstr "عشوائي"
+
+msgid "Rename"
+msgstr "إعادة تسمية"
+
+msgid "Rename Theme"
+msgstr "إعادة تسمية السمة"
+
+msgid "Save As"
+msgstr "حفظ كـ"
+
+msgid "Save Theme As"
+msgstr "الحفظ السمة كـ"
+
+msgid "Select all"
+msgstr "إختيار الكل"
+
+msgid "Set as wallpaper"
+msgstr "تعيين كخلفية"
+
+msgid "Stretch"
+msgstr "امتداد"
+
+msgid "System"
+msgstr "النظام"
+
+msgid "System Themes"
+msgstr "سمات النظام"
+
+msgid "Tile"
+msgstr "القرميد"
+
+msgid "Untitled"
+msgstr "بدون عنوان"
+
+msgid "Wallpaper"
+msgstr "الخلفيات"
+
+msgid "Your Favorites folder is empty."
+msgstr ".ملف تفضيلاتك فارغ"
+
+msgid "Your Local Pictures folder is empty"
+msgstr "ملف الصور المحلي فارغ"
+
+#, python-format
+msgid "add %s picture to Favorites"
+msgstr "أضف %s الصورة إلى التفضيلات"
+
+#, python-format
+msgid "add %s pictures to Favorites"
+msgstr "أضف %s الصور الى التفضيلات"
+
+#, python-format
+msgid "choose %s picture"
+msgstr "أختر %s الصورة"
+
+#, python-format
+msgid "choose %s pictures"
+msgstr "أختر %s الصور"
+
+#, python-format
+msgid "delete %s picture"
+msgstr "حذف %s الصورة"
+
+#, python-format
+msgid "delete %s pictures"
+msgstr "حذف %s الصور"

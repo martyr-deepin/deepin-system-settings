@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-12 13:31+0000\n"
 "Last-Translator: Snubbi <carl@manjaro.dk>\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,49 +19,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr "Fuldt opladt"
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr "Oplader, %s mangler"
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "%s mangler"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "Avanceret..."
+
+msgid "Balanced"
+msgstr "Balanceret"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "Oplader, %s mangler"
+
+msgid "Custom"
+msgstr "Tilpasset"
+
+msgid "Fully charged"
+msgstr "Fuldt opladt"
+
+msgid "High performance"
+msgstr "Høj ydeevne"
+
 #, python-format
 msgid "Low power(%s%%)"
 msgstr "Lav batteristand(%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr "Dit batteri er ved at være lavt, oplad det venligst!"
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr "Strøm"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr "Balanceret"
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
 msgstr "Strømsparer"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr "Høj ydeevne"
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr "Tilpasset"
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr "Avanceret..."
+msgid "Your battery is running low, please charge!"
+msgstr "Dit batteri er ved at være lavt, oplad det venligst!"

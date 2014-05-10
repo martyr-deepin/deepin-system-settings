@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Gnechen <benperezc@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-08 03:50+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-08 13:31+0000\n"
+"Last-Translator: Gnechen <benperezc@gmail.com>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/es_CL/)\n"
 "Language: es_CL\n"
@@ -18,553 +19,395 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/settings_widget.py:610 ../src/lists.py:488 ../src/wlan_config.py:332
-#: ../src/wlan_config.py:583
-msgid "SSID:"
-msgstr ""
-
-#: ../src/settings_widget.py:614 ../src/lists.py:522
-#: ../src/mobile_config.py:269 ../src/dsl_config.py:280
-#: ../src/vpn_config.py:180 ../src/wlan_config.py:263
-msgid "Password:"
-msgstr ""
-
-#: ../src/settings_widget.py:618
-msgid "Active"
-msgstr ""
-
-#: ../src/helper.py:112
 #, python-format
 msgid "%s deleted"
-msgstr ""
+msgstr "%s borrados"
 
-#: ../src/lists.py:560
-msgid "active"
-msgstr ""
+msgid "APN:"
+msgstr "APN:"
 
-#: ../src/lan_config.py:39 ../src/lan_config.py:94 ../src/lan_config.py:124
-#: ../src/main_ui.py:219 ../src/tray_ui.py:61 ../src/dsl_config.py:118
-#: ../src/dsl_config.py:134 ../src/vpn_config.py:128
-#: ../src/search_keyword.py:29
-msgid "Wired"
-msgstr ""
+msgid "Active"
+msgstr "Activo"
 
-#: ../src/lan_config.py:95 ../src/mobile_config.py:219
-#: ../src/mobile_config.py:281 ../src/dsl_config.py:102
-#: ../src/vpn_config.py:126 ../src/vpn_config.py:353 ../src/wlan_config.py:288
+msgid "Ad-hoc"
+msgstr "Ad-hoc"
+
 msgid "Advanced"
-msgstr ""
+msgstr "Avanzada"
 
-#: ../src/lan_config.py:109 ../src/mobile_config.py:223
-#: ../src/ipsettings.py:41 ../src/dsl_config.py:119 ../src/vpn_config.py:142
-#: ../src/wlan_config.py:216
-msgid "IPv4 settings"
-msgstr ""
+msgid "Advanced..."
+msgstr "Avanzadas..."
 
-#: ../src/lan_config.py:110 ../src/ipsettings.py:314 ../src/wlan_config.py:217
-msgid "IPv6 settings"
-msgstr ""
+msgid "Allow BSD data Compression"
+msgstr "Permite la compresion de datos BSD"
 
-#: ../src/lan_config.py:152 ../src/dsl_config.py:144 ../src/wlan_config.py:612
-msgid "Device Mac Address:"
-msgstr ""
+msgid "Allow Deflate data compression"
+msgstr "Permitir la reduccion de compresion de datos"
 
-#: ../src/lan_config.py:153 ../src/dsl_config.py:152 ../src/wlan_config.py:616
-msgid "Cloned Mac Address:"
-msgstr ""
+msgid "Allow roaming if home network is not available"
+msgstr "Permitir el roaming si la red principal no esta disponible"
 
-#: ../src/lan_config.py:154 ../src/wlan_config.py:621
-msgid "MTU:"
-msgstr ""
+msgid "Apply"
+msgstr "Aplicar"
 
-#: ../src/widgets.py:50 ../src/widgets.py:64
-#, python-format
-msgid "Please input password for %s"
-msgstr ""
+msgid "Authentication:"
+msgstr "Autenticidad:"
 
-#: ../src/widgets.py:85 ../src/mobile_config.py:276 ../src/elements.py:248
-#: ../src/wlan_config.py:277
-msgid "Show password"
-msgstr "Mostrar contraseña"
+msgid "Automatic"
+msgstr "Automatica"
 
-#: ../src/widgets.py:97
-msgid "OK"
-msgstr "Aceptar"
+msgid "Automatic DNS server address"
+msgstr "Direccion automatica de servidor DNS"
 
-#: ../src/widgets.py:98
+msgid "Automatic IP address"
+msgstr "Direccion automatica IP"
+
+msgid "BSSID:"
+msgstr "BSSID:"
+
+msgid "Band:"
+msgstr "Banda:"
+
+msgid "Basic"
+msgstr "Basico/a"
+
+msgid "Broadband"
+msgstr "Banda ancha"
+
+msgid "CDMA config"
+msgstr "Configuracion de conexion CDMA"
+
+msgid "CHAP"
+msgstr "CHAP"
+
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: ../src/main.py:48 ../src/vpn_config.py:27 ../src/search_keyword.py:32
-msgid "VPN"
-msgstr ""
+msgid "Channel:"
+msgstr "Canal:"
 
-#: ../src/mobile_config.py:38 ../src/main_ui.py:1097 ../src/tray_ui.py:63
-#: ../src/search_keyword.py:33
-msgid "Mobile Network"
-msgstr ""
+msgid "Cloned Mac Address:"
+msgstr "Direccion de Mac clonado"
 
-#: ../src/mobile_config.py:217 ../src/mobile_config.py:262
-#: ../src/dsl_config.py:100 ../src/vpn_config.py:124 ../src/wlan_config.py:199
-msgid "Basic"
-msgstr ""
-
-#: ../src/mobile_config.py:222 ../src/mobile_config.py:252
-msgid "Broadband"
-msgstr ""
-
-#: ../src/mobile_config.py:224 ../src/mobile_config.py:461
-#: ../src/dsl_config.py:120 ../src/dsl_config.py:379
-msgid "PPP"
-msgstr ""
-
-#: ../src/mobile_config.py:263
 msgid "Code:"
-msgstr ""
+msgstr "Codigo:"
 
-#: ../src/mobile_config.py:266 ../src/dsl_config.py:268
-#: ../src/vpn_config.py:176
-msgid "Username:"
-msgstr ""
-
-#: ../src/mobile_config.py:277
-msgid "Regions setting"
-msgstr ""
-
-#: ../src/mobile_config.py:282
-msgid "APN:"
-msgstr ""
-
-#: ../src/mobile_config.py:285
-msgid "Network ID:"
-msgstr ""
-
-#: ../src/mobile_config.py:288
-msgid "Type:"
-msgstr "Tipo:"
-
-#: ../src/mobile_config.py:291
-msgid "PIN:"
-msgstr ""
-
-#: ../src/mobile_config.py:303
-msgid "Allow roaming if home network is not available"
-msgstr ""
-
-#: ../src/mobile_config.py:472 ../src/dsl_config.py:387
-#: ../src/vpn_config.py:373
-msgid "Configure Method"
-msgstr ""
-
-#: ../src/mobile_config.py:474 ../src/dsl_config.py:393
-#: ../src/vpn_config.py:377
-msgid "EAP"
-msgstr ""
-
-#: ../src/mobile_config.py:477 ../src/dsl_config.py:394
-#: ../src/vpn_config.py:380
-msgid "PAP"
-msgstr ""
-
-#: ../src/mobile_config.py:480 ../src/dsl_config.py:395
-#: ../src/vpn_config.py:383
-msgid "CHAP"
-msgstr ""
-
-#: ../src/mobile_config.py:483 ../src/dsl_config.py:396
-#: ../src/vpn_config.py:386
-msgid "MSCHAP"
-msgstr ""
-
-#: ../src/mobile_config.py:486 ../src/dsl_config.py:397
-#: ../src/vpn_config.py:389
-msgid "MSCHAP v2"
-msgstr ""
-
-#: ../src/mobile_config.py:500 ../src/dsl_config.py:400
-#: ../src/vpn_config.py:403
 msgid "Compression"
-msgstr ""
+msgstr "Compresion"
 
-#: ../src/mobile_config.py:504 ../src/dsl_config.py:404
-#: ../src/vpn_config.py:408
-msgid "Echo"
-msgstr ""
+msgid "Config"
+msgstr "Configuracion"
 
-#: ../src/mobile_config.py:509 ../src/dsl_config.py:413
-#: ../src/vpn_config.py:414
-msgid "Use point-to-point encryption(mppe)"
-msgstr ""
-
-#: ../src/mobile_config.py:512 ../src/dsl_config.py:414
-#: ../src/vpn_config.py:417
-msgid "Require 128-bit encryption"
-msgstr ""
-
-#: ../src/mobile_config.py:515 ../src/dsl_config.py:415
-#: ../src/vpn_config.py:420
-msgid "Use stateful MPPE"
-msgstr ""
-
-#: ../src/mobile_config.py:518 ../src/dsl_config.py:416
-#: ../src/vpn_config.py:423
-msgid "Allow BSD data Compression"
-msgstr ""
-
-#: ../src/mobile_config.py:521 ../src/dsl_config.py:417
-#: ../src/vpn_config.py:426
-msgid "Allow Deflate data compression"
-msgstr ""
-
-#: ../src/mobile_config.py:524 ../src/dsl_config.py:418
-#: ../src/vpn_config.py:429
-msgid "Use TCP header compression"
-msgstr ""
-
-#: ../src/mobile_config.py:527 ../src/dsl_config.py:422
-#: ../src/vpn_config.py:433
-msgid "Send PPP echo packets"
-msgstr ""
-
-#: ../src/ipsettings.py:51 ../src/ipsettings.py:322
-msgid "Link-Local Only"
-msgstr ""
-
-#: ../src/ipsettings.py:53 ../src/ipsettings.py:323
-msgid "Automatic IP address"
-msgstr ""
-
-#: ../src/ipsettings.py:57 ../src/ipsettings.py:327
-msgid "IP Address:"
-msgstr ""
-
-#: ../src/ipsettings.py:58
-msgid "Subnet Mask:"
-msgstr ""
-
-#: ../src/ipsettings.py:59 ../src/ipsettings.py:329 ../src/vpn_config.py:172
-msgid "Gateway:"
-msgstr ""
-
-#: ../src/ipsettings.py:67 ../src/ipsettings.py:338
-msgid "Automatic DNS server address"
-msgstr ""
-
-#: ../src/ipsettings.py:71 ../src/ipsettings.py:342
-msgid "Primary DNS server address:"
-msgstr ""
-
-#: ../src/ipsettings.py:72 ../src/ipsettings.py:343
-msgid "Slave DNS server address:"
-msgstr ""
-
-#: ../src/ipsettings.py:185
-msgid "IPv4"
-msgstr ""
-
-#: ../src/ipsettings.py:185
-msgid "Subnet Mask"
-msgstr ""
-
-#: ../src/ipsettings.py:185
-msgid "Gateway"
-msgstr ""
-
-#: ../src/ipsettings.py:190
-#, python-format
-msgid "Valid %s address."
-msgstr ""
-
-#: ../src/ipsettings.py:193
-#, python-format
-msgid "Invalid %s address."
-msgstr ""
-
-#: ../src/ipsettings.py:328
-msgid "Prefix:"
-msgstr ""
-
-#: ../src/main_ui.py:397 ../src/tray_ui.py:62 ../src/wlan_config.py:215
-#: ../src/wlan_config.py:575 ../src/search_keyword.py:30
-msgid "Wireless"
-msgstr ""
-
-#: ../src/main_ui.py:398
-msgid "Set up a hidden wireless connection"
-msgstr ""
-
-#: ../src/main_ui.py:599
-msgid "Hotspot"
-msgstr ""
-
-#: ../src/main_ui.py:733 ../src/tray_ui.py:66 ../src/dsl_config.py:37
-#: ../src/dsl_config.py:253 ../src/search_keyword.py:31
-msgid "DSL"
-msgstr ""
-
-#: ../src/main_ui.py:734
-msgid "Create a DSL connection"
-msgstr ""
-
-#: ../src/main_ui.py:883 ../src/tray_ui.py:65
-msgid "VPN Network"
-msgstr ""
-
-#: ../src/main_ui.py:884
-msgid "Create a VPN connection"
-msgstr ""
-
-#: ../src/main_ui.py:1098
-msgid "Mobile Configuration"
-msgstr ""
-
-#: ../src/main_ui.py:1166 ../src/main_ui.py:1204 ../src/search_keyword.py:34
-msgid "Proxy"
-msgstr ""
-
-#: ../src/main_ui.py:1186
-msgid "Proxy Configuration"
-msgstr ""
-
-#: ../src/tray_ui.py:70
-msgid "Advanced..."
-msgstr ""
-
-#: ../src/tray_ui.py:485
-#, python-format
-msgid "card %d"
-msgstr ""
-
-#: ../src/proxy_config.py:80
-msgid "Manual"
-msgstr ""
-
-#: ../src/proxy_config.py:81
-msgid "Http Proxy"
-msgstr ""
-
-#: ../src/proxy_config.py:82
-msgid "Https Proxy"
-msgstr ""
-
-#: ../src/proxy_config.py:83
-msgid "FTP Proxy"
-msgstr ""
-
-#: ../src/proxy_config.py:84
-msgid "Socks Proxy"
-msgstr ""
-
-#: ../src/proxy_config.py:87 ../src/wlan_config.py:599
-msgid "Automatic"
-msgstr ""
-
-#: ../src/proxy_config.py:88
 msgid "Configuration url"
-msgstr ""
+msgstr "Configuracion url"
 
-#: ../src/proxy_config.py:102
-msgid "Apply"
-msgstr ""
+msgid "Configure Method"
+msgstr "Metodo de configuracion"
 
-#: ../src/sidebar_ui.py:46
-msgid "New Connection"
-msgstr ""
+msgid "Connection Name:"
+msgstr "Nombre de la conexion:"
 
-#: ../src/sidebar_ui.py:92 ../src/wlan_config.py:121
-msgid "Hidden network"
-msgstr ""
+msgid "Country or Region:"
+msgstr "Pais o Region:"
 
-#: ../src/foot_box_ui.py:69
+msgid "Create a DSL connection"
+msgstr "Crear una conexion DSL"
+
+msgid "Create a VPN connection"
+msgstr "Crear una conexion VPN"
+
+msgid "DSL"
+msgstr "DSL"
+
+msgid "Default Setting"
+msgstr "Ajustes por defecto"
+
+msgid "Default Settings"
+msgstr "Ajustes por defecto"
+
 msgid "Delete"
 msgstr "Borrar"
 
-#: ../src/foot_box_ui.py:96
+msgid "Device Mac Address:"
+msgstr "Direccion de unidad Mac"
+
+msgid "Dsl config"
+msgstr "Configuracion de conexion DSL"
+
+msgid "EAP"
+msgstr "EAP"
+
+msgid "Echo"
+msgstr "Eco"
+
+msgid "Enable IPSec tunnel to l2tp host"
+msgstr "Habilita tunel de IPSec para servidor I2tp"
+
+msgid "FTP Proxy"
+msgstr "Servidor FTP Proxy"
+
+msgid "GSM config"
+msgstr "Configuracion de conexion GSM"
+
+msgid "Gateway"
+msgstr "Acceso"
+
+msgid "Gateway ID:"
+msgstr "Numero de acceso:"
+
+msgid "Gateway:"
+msgstr "Acceso:"
+
+msgid "Group Name:"
+msgstr "Nombre del grupo"
+
+msgid "Hidden network"
+msgstr "Redes ocultas"
+
+msgid "Hotspot"
+msgstr "Hotspot/ Punto de expansion wifi"
+
+msgid "Http Proxy"
+msgstr "servidor Http Proxy"
+
+msgid "Https Proxy"
+msgstr "Servidor Https Proxy"
+
+msgid "IP Address:"
+msgstr "Direccion IP:"
+
+msgid "IPSec Setting"
+msgstr "Ajustes para IPSec"
+
+msgid "IPv4"
+msgstr "IPv4"
+
+msgid "IPv4 settings"
+msgstr "Ajustes para IPv4"
+
+msgid "IPv6 settings"
+msgstr "Ajustes para IPv6"
+
+msgid "Infrastructure"
+msgstr "Infraestructura"
+
+#, python-format
+msgid "Invalid %s address."
+msgstr "Direccion invalida %s"
+
+msgid "Key:"
+msgstr "Codigo:"
+
+msgid "L2TP"
+msgstr "L2TP"
+
+msgid "Link-Local Only"
+msgstr "Vinculo local solamente"
+
+msgid "MSCHAP"
+msgstr "MSCHAP"
+
+msgid "MSCHAP v2"
+msgstr "MSCHAP v2"
+
+msgid "MTU:"
+msgstr "MTU:"
+
+msgid "Manual"
+msgstr "Manual"
+
+msgid "Mobile Configuration"
+msgstr "Configurar una red movil"
+
+msgid "Mobile Network"
+msgstr "Red de moviles"
+
+msgid "Mode:"
+msgstr "Modo:"
+
+msgid "NT Domain:"
+msgstr "Dominio NT:"
+
+msgid "Network"
+msgstr "Redes"
+
+msgid "Network ID:"
+msgstr "Nombre de la red:"
+
+msgid "New Connection"
+msgstr "Nueva conexion"
+
+msgid "None"
+msgstr "Ninguno"
+
+msgid "OK"
+msgstr "Aceptar"
+
+msgid "Open System"
+msgstr "Sistema abierto"
+
+msgid "PAP"
+msgstr "PAP"
+
+msgid "PIN:"
+msgstr "PIN:"
+
+msgid "PPP"
+msgstr "PPP"
+
+msgid "PPP settings"
+msgstr "Ajustes de PPP"
+
+msgid "PPTP"
+msgstr "PPTP"
+
+msgid "Password:"
+msgstr "Contraseña"
+
+#, python-format
+msgid "Please input password for %s"
+msgstr "Por favor ingrese su contraseña para %s"
+
+msgid "Pre_Shared_key"
+msgstr "Codigo precompartido"
+
+msgid "Prefix:"
+msgstr "Prefijo:"
+
+msgid "Primary DNS server address:"
+msgstr "Direccion Primaria de servidor DNS"
+
+msgid "Provider:"
+msgstr "Proveedor:"
+
+msgid "Proxy"
+msgstr "Proxy"
+
+msgid "Proxy Configuration"
+msgstr "Configurar conexion proxy"
+
+msgid "Region"
+msgstr "Región"
+
+msgid "Regions setting"
+msgstr "Ajuste regional"
+
+msgid "Require 128-bit encryption"
+msgstr "Requiere encripcion 128-bit"
+
+msgid "SSID:"
+msgstr "SSID:"
+
 msgid "Save"
 msgstr "Guardar"
 
-#: ../src/foot_box_ui.py:140
-msgid "Tip:"
-msgstr ""
+msgid "Security"
+msgstr "Seguridad"
 
-#: ../src/dsl_config.py:182
-msgid "Default Setting"
-msgstr ""
+msgid "Security:"
+msgstr "Seguridad"
 
-#: ../src/dsl_config.py:262 ../src/vpn_config.py:168
-msgid "Connection Name:"
-msgstr ""
+msgid "Send PPP echo packets"
+msgstr "Envia paquetes eco de PPP"
 
-#: ../src/dsl_config.py:275
 msgid "Service:"
-msgstr ""
+msgstr "Servicio:"
 
-#: ../src/dsl_config.py:301 ../src/vpn_config.py:213
+msgid "Set up a hidden wireless connection"
+msgstr "Establezca una conexion con una red inalambrica oculta"
+
+msgid "Shared Key"
+msgstr "Codigo compartido"
+
 msgid "Show Password"
-msgstr ""
+msgstr "Mostrar contraseña"
 
-#: ../src/regions.py:71
-msgid "Country or Region:"
-msgstr ""
+msgid "Show password"
+msgstr "Mostrar contraseña"
 
-#: ../src/regions.py:89
-msgid "Provider:"
-msgstr ""
+msgid "Slave DNS server address:"
+msgstr "Direccion de servidor esclavo DNS"
 
-#: ../src/regions.py:104
+msgid "Socks Proxy"
+msgstr "Soquetes de servidor Proxy"
+
+msgid "Subnet Mask"
+msgstr "Mascara de subred"
+
+msgid "Subnet Mask:"
+msgstr "Mascara de subred:"
+
+msgid "Tip:"
+msgstr "Aviso:"
+
 msgid ""
 "Tips:This assistant helps you easily set up a mobile broadband connection to "
 "a cellular network."
 msgstr ""
+"Consejos: Este asistente le ayudara a configurar su conexion de  banda ancha "
+"movil con la red de su telefono  movil facilmente."
 
-#: ../src/regions.py:213
-msgid "Region"
-msgstr "Región"
+msgid "Type:"
+msgstr "Tipo:"
 
-#: ../src/vpn_config.py:144
-msgid "PPP settings"
-msgstr ""
-
-#: ../src/vpn_config.py:156 ../src/vpn_config.py:189
-msgid "PPTP"
-msgstr ""
-
-#: ../src/vpn_config.py:184
-msgid "NT Domain:"
-msgstr ""
-
-#: ../src/vpn_config.py:190
-msgid "L2TP"
-msgstr ""
-
-#: ../src/vpn_config.py:436
-msgid "Use protocal field compression negotiation"
-msgstr ""
-
-#: ../src/vpn_config.py:439
 msgid "Use Address/Control compression"
-msgstr ""
+msgstr "Usa direccion con ajuste de compresion"
 
-#: ../src/vpn_config.py:457
-msgid "IPSec Setting"
-msgstr ""
+msgid "Use TCP header compression"
+msgstr "Uso de comprension principal TCP"
 
-#: ../src/vpn_config.py:461
-msgid "Enable IPSec tunnel to l2tp host"
-msgstr ""
+msgid "Use point-to-point encryption(mppe)"
+msgstr "Uso de punto a punto encripcion(mppe)"
 
-#: ../src/vpn_config.py:464
-msgid "Group Name:"
-msgstr ""
+msgid "Use protocal field compression negotiation"
+msgstr "Usa protocolo de acuerdo de compresion"
 
-#: ../src/vpn_config.py:467
-msgid "Gateway ID:"
-msgstr ""
+msgid "Use stateful MPPE"
+msgstr "Usa un MPPE establecido"
 
-#: ../src/vpn_config.py:470
-msgid "Pre_Shared_key"
-msgstr ""
+msgid "Username:"
+msgstr "Nombre de usuario:"
 
-#: ../src/wlan_config.py:231
-msgid "Security"
-msgstr "Seguridad"
+msgid "VPN"
+msgstr "VPN"
 
-#: ../src/wlan_config.py:250
-msgid "Security:"
-msgstr ""
+msgid "VPN Network"
+msgstr "Red VPN"
 
-#: ../src/wlan_config.py:253
-msgid "Key:"
-msgstr ""
-
-#: ../src/wlan_config.py:256
-msgid "Wep index:"
-msgstr ""
-
-#: ../src/wlan_config.py:260
-msgid "Authentication:"
-msgstr ""
-
-#: ../src/wlan_config.py:267
-msgid "None"
-msgstr ""
-
-#: ../src/wlan_config.py:268
-msgid "WEP (Hex or ASCII)"
-msgstr ""
-
-#: ../src/wlan_config.py:269
-msgid "WEP 104/128-bit Passphrase"
-msgstr ""
-
-#: ../src/wlan_config.py:270
-msgid "WPA WPA2 Personal"
-msgstr ""
-
-#: ../src/wlan_config.py:281
-msgid "Shared Key"
-msgstr ""
-
-#: ../src/wlan_config.py:282
-msgid "Open System"
-msgstr ""
-
-#: ../src/wlan_config.py:589
-msgid "Mode:"
-msgstr ""
-
-#: ../src/wlan_config.py:592
-msgid "Infrastructure"
-msgstr ""
-
-#: ../src/wlan_config.py:592
-msgid "Ad-hoc"
-msgstr ""
-
-#: ../src/wlan_config.py:595
-msgid "Band:"
-msgstr ""
-
-#: ../src/wlan_config.py:603
-msgid "Channel:"
-msgstr ""
-
-#: ../src/wlan_config.py:608
-msgid "BSSID:"
-msgstr ""
-
-#: ../src/wlan_config.py:650
-msgid "Default Settings"
-msgstr ""
-
-#: ../src/search_keyword.py:35
-msgid "Network"
-msgstr "Redes"
-
-#: ../src/nmlib/nm_remote_settings.py:202
-msgid "Wired config"
-msgstr ""
-
-#: ../src/nmlib/nm_remote_settings.py:205
-msgid "Wireless config"
-msgstr ""
-
-#: ../src/nmlib/nm_remote_settings.py:208
-msgid "Dsl config"
-msgstr ""
-
-#: ../src/nmlib/nm_remote_settings.py:211
 msgid "VPN config"
-msgstr ""
+msgstr "Configuracion de conexion VPN"
 
-#: ../src/nmlib/nm_remote_settings.py:214
-msgid "CDMA config"
-msgstr ""
+#, python-format
+msgid "Valid %s address."
+msgstr "Direccion valida %s"
 
-#: ../src/nmlib/nm_remote_settings.py:217
-msgid "GSM config"
-msgstr ""
+msgid "WEP (Hex or ASCII)"
+msgstr "WEP (hex o ASCII)"
 
-#: ../src/nmlib/nm_remote_settings.py:219
-msgid "Config"
-msgstr ""
+msgid "WEP 104/128-bit Passphrase"
+msgstr "Contraseña WEP 104/128-bit"
+
+msgid "WPA WPA2 Personal"
+msgstr "Contraseña WPA WPA2"
+
+msgid "Wep index:"
+msgstr "Indice WEP:"
+
+msgid "Wired"
+msgstr "Cableado"
+
+msgid "Wired config"
+msgstr "Configuracion de conexion cableada"
+
+msgid "Wireless"
+msgstr "Inalambrico"
+
+msgid "Wireless config"
+msgstr "Configuracion de conexion inalambrica"
+
+msgid "active"
+msgstr "Activo"
+
+#, python-format
+msgid "card %d"
+msgstr "tarjeta %d"

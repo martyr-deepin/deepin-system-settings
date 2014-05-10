@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-01-29 02:30+0000\n"
-"Last-Translator: freddy4212 <freddy4212@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/zh_TW/)\n"
 "Language: zh_TW\n"
@@ -21,162 +21,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr "預設樣式"
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
 msgstr "自動隱藏"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr "一直隱藏"
-
-#: ../src/desktop_view.py:73
 msgid "Bottom"
-msgstr "底部"
+msgstr ""
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr "頂端"
-
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr "預設圖示"
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr "小"
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr "無"
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr "開啟的視窗"
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "啟動器"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "最大化"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr "桌面圖示"
-
-#: ../src/desktop_view.py:94
-msgid "Computer"
-msgstr "電腦"
-
-#: ../src/desktop_view.py:97
-msgid "Home"
-msgstr "家目錄"
-
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "回收筒"
-
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "軟體中心"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr "Dock 列"
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr "顯示樣式"
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr "位置樣式"
-
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr "圖示大小"
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr "預覽"
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr "螢幕熱區"
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr "左上角"
-
-#: ../src/desktop_view.py:200
 msgid "Bottom Right"
 msgstr "右下角"
 
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr "頂部"
+msgid "Computer"
+msgstr "電腦"
 
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr "左側"
+msgid "Default Icon"
+msgstr "預設圖示"
 
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr "右側"
+msgid "Default Style"
+msgstr "預設樣式"
 
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr "登入與鎖定畫面"
+msgid "Desktop Icon"
+msgstr "桌面圖示"
 
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr "登入畫面"
+msgid "Display Style"
+msgstr "顯示樣式"
 
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr "選擇"
+msgid "Dock"
+msgstr "Dock 列"
 
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr "鎖定畫面"
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr "顯示「電腦」圖示"
-
-#: ../src/desktop_view.py:346
 msgid "Hide computer icon"
 msgstr "隱藏「電腦」圖示"
 
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr "顯示「家目錄」圖示"
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr "隱藏「家目錄」圖示"
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr "顯示「回收筒」圖示"
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr "隱藏「回收筒」圖示"
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr "顯示「軟體中心」圖示"
-
-#: ../src/desktop_view.py:370
 msgid "Hide deepin software conter icon"
 msgstr "隱藏「軟體中心」圖示"
 
-#: ../src/desktop_view.py:468
+msgid "Hide home icon"
+msgstr "隱藏「家目錄」圖示"
+
+msgid "Hide trash icon"
+msgstr "隱藏「回收筒」圖示"
+
+msgid "Home"
+msgstr "家目錄"
+
+msgid "Hot Zone"
+msgstr "螢幕熱區"
+
+msgid "Icon Size"
+msgstr "圖示大小"
+
+msgid "Invisible"
+msgstr "一直隱藏"
+
+msgid "Launcher"
+msgstr "啟動器"
+
+msgid "Left Edge"
+msgstr "左側"
+
+msgid "Lock Page"
+msgstr "鎖定畫面"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "登入與鎖定畫面"
+
+msgid "Login Page"
+msgstr "登入畫面"
+
+msgid "Maximize"
+msgstr "最大化"
+
+msgid "Nothing"
+msgstr "無"
+
+msgid "Opening Window"
+msgstr "開啟的視窗"
+
+msgid "Place Style"
+msgstr "位置樣式"
+
+msgid "Preview"
+msgstr "預覽"
+
 msgid "Reset to default value"
 msgstr "重設"
+
+msgid "Right Edge"
+msgstr "右側"
+
+msgid "Select"
+msgstr "選擇"
+
+msgid "Show computer icon"
+msgstr "顯示「電腦」圖示"
+
+msgid "Show deepin software center icon"
+msgstr "顯示「軟體中心」圖示"
+
+msgid "Show home icon"
+msgstr "顯示「家目錄」圖示"
+
+msgid "Show trash icon"
+msgstr "顯示「回收筒」圖示"
+
+msgid "Small"
+msgstr "小"
+
+msgid "Software Center"
+msgstr "軟體中心"
+
+msgid "Top"
+msgstr "頂端"
+
+msgid "Top Edge"
+msgstr "頂部"
+
+msgid "Top Left"
+msgstr "左上角"
+
+msgid "Trash"
+msgstr "回收筒"

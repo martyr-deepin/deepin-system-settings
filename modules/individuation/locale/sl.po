@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# kloki <klokimass@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 14:42+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-05 21:30+0000\n"
+"Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
 "Language: sl\n"
@@ -19,241 +20,175 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/main.new.py:500 ../src/ui/wallpaper_item.py:1028
-msgid "Downloaded"
-msgstr ""
+#, python-format
+msgid "%s picture is set as wallpaper"
+msgstr "%s slika je nastavljena kot ozadje"
 
-#: ../src/theme_manager.py:427
-msgid "Untitled"
-msgstr "Neimenovan"
+#, python-format
+msgid "%s pictures are set as wallpaper"
+msgstr "%s slike so nastavljene kot ozadje"
 
-#: ../src/main.py:81
-msgid "Image files"
-msgstr ""
-
-#: ../src/search_keyword.py:29
-msgid "Personalization"
-msgstr "Prilagoditev"
-
-#: ../src/search_keyword.py:30 ../src/ui/theme_page.py:55
-msgid "My Themes"
-msgstr ""
-
-#: ../src/search_keyword.py:31 ../src/ui/theme_page.py:60
-msgid "System Themes"
-msgstr ""
-
-#: ../src/search_keyword.py:32
-msgid "Wallpaper"
-msgstr ""
-
-#: ../src/search_keyword.py:33 ../src/ui/add_page.py:85
-msgid "Pictures"
-msgstr "Slike"
-
-#: ../src/ui/add_page.py:79 ../src/ui/local_page.py:88
-msgid "Library"
-msgstr ""
-
-#: ../src/ui/add_page.py:80 ../src/ui/local_page.py:89
-msgid "Internet"
-msgstr ""
-
-#: ../src/ui/add_page.py:84
-msgid "System"
-msgstr "Sistem"
-
-#: ../src/ui/add_page.py:86
-msgid "Favorites"
-msgstr ""
-
-#: ../src/ui/add_page.py:87 ../src/ui/local_page.py:98
 msgid "360 Wallpaper"
-msgstr ""
+msgstr "360 ozadij"
 
-#: ../src/ui/add_page.py:88 ../src/ui/local_page.py:99
-msgid "LoveWallpaper"
-msgstr ""
+msgid "Add from Local Pictures"
+msgstr "Dodaj iz lokalnih slik"
 
-#: ../src/ui/delete_page.py:55 ../src/ui/cache_page.py:131
+msgid "Add to Favorites"
+msgstr "Dodaj med najljubše"
+
+msgid "Apply Wallpaper"
+msgstr "Uporabi ozadje"
+
+msgid "Are you sure delete wallpaper?"
+msgstr "Ali ste prepričani, da želite izbrisati ozadje?"
+
+#, python-format
+msgid "Are you sure you want to delete the theme %s?"
+msgstr "Ali ste prepričasni, da želite izbrisati temo %s?"
+
 msgid "Back"
 msgstr "Nazaj"
 
-#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
-#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
-#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
-#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
-#: ../src/ui/detail_page.py:194
-msgid "Select all"
-msgstr "Izberi vse"
+#, python-format
+msgid "Changed System Theme to %s"
+msgstr "Sistemska tema spremenjena na %s"
 
-#: ../src/ui/delete_page.py:61 ../src/ui/detail_page.py:88
-#: ../src/ui/select_page.py:87 ../src/ui/select_page.py:228
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr "Tema uporabnika spremenjena na %s"
+
+msgid "Clear all"
+msgstr "Počisti vse"
+
 msgid "Delete"
 msgstr "Izbriši"
 
-#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
-#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
-#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
-msgid "Clear all"
-msgstr ""
+msgid "Delete Theme"
+msgstr "Izbriši temo"
 
-#: ../src/ui/delete_page.py:97 ../src/ui/select_page.py:166
-#: ../src/ui/select_page.py:296
 msgid "Delete Wallpaper"
-msgstr ""
+msgstr "Izbriši ozadje"
 
-#: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:167
-#: ../src/ui/select_page.py:297
-msgid "Are you sure delete wallpaper?"
-msgstr ""
-
-#: ../src/ui/cache_page.py:133
 msgid "Download All"
-msgstr ""
+msgstr "Prenesi vse"
 
-#: ../src/ui/local_page.py:46
-msgid "My Favorites"
-msgstr ""
+msgid "Downloaded"
+msgstr "Prenesene"
 
-#: ../src/ui/local_page.py:47
-msgid "Local Wallpapers"
-msgstr ""
-
-#: ../src/ui/detail_page.py:37
-msgid "Minute"
-msgstr ""
-
-#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
-#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
-msgid "Minutes"
-msgstr ""
-
-#: ../src/ui/detail_page.py:40
-msgid "Hour"
-msgstr ""
-
-#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
-#: ../src/ui/detail_page.py:43
-msgid "Hours"
-msgstr ""
-
-#: ../src/ui/detail_page.py:46
-msgid "Stretch"
-msgstr ""
-
-#: ../src/ui/detail_page.py:46
-msgid "Tile"
-msgstr ""
-
-#: ../src/ui/detail_page.py:70
-msgid "Position"
-msgstr ""
-
-#: ../src/ui/detail_page.py:73
 msgid "Duration"
 msgstr "Trajanje"
 
-#: ../src/ui/detail_page.py:80
+msgid "Favorites"
+msgstr "Najljubše"
+
+msgid "Hour"
+msgstr "Ura"
+
+msgid "Hours"
+msgstr "Ure"
+
+msgid "Image files"
+msgstr "Slikovne datoteke"
+
+msgid "Internet"
+msgstr "Splet"
+
+msgid "Library"
+msgstr "Knjižnica"
+
+msgid "Local Wallpapers"
+msgstr "Lokalna ozadja"
+
+msgid "LoveWallpaper"
+msgstr "Ljubezenska ozadja"
+
+msgid "Minute"
+msgstr "Minuta"
+
+msgid "Minutes"
+msgstr "Minute"
+
+msgid "My Favorites"
+msgstr "Moje najljubše"
+
+msgid "My Themes"
+msgstr "Moje teme"
+
+msgid "Personalization"
+msgstr "Prilagoditev"
+
+msgid "Pictures"
+msgstr "Slike"
+
+msgid "Position"
+msgstr "Položaj"
+
 msgid "Random"
 msgstr "Naključno"
 
-#: ../src/ui/wallpaper_view.py:57
-msgid "Apply Wallpaper"
-msgstr ""
+msgid "Rename"
+msgstr "Preimenuj"
 
-#: ../src/ui/select_page.py:75
-msgid "Your Local Pictures folder is empty"
-msgstr ""
+msgid "Rename Theme"
+msgstr "Preimenuj temo"
 
-#: ../src/ui/select_page.py:81 ../src/ui/select_page.py:225
+msgid "Save As"
+msgstr "Shrani kot"
+
+msgid "Save Theme As"
+msgstr "Shrani temo kot"
+
+msgid "Select all"
+msgstr "Izberi vse"
+
 msgid "Set as wallpaper"
-msgstr ""
+msgstr "Nastavi kot ozadje"
 
-#: ../src/ui/select_page.py:84
-msgid "Add to Favorites"
-msgstr ""
+msgid "Stretch"
+msgstr "Razširi"
 
-#: ../src/ui/select_page.py:118 ../src/ui/select_page.py:258
-#, python-format
-msgid "%s pictures are set as wallpaper"
-msgstr ""
+msgid "System"
+msgstr "Sistem"
 
-#: ../src/ui/select_page.py:120 ../src/ui/select_page.py:260
-#, python-format
-msgid "%s picture is set as wallpaper"
-msgstr ""
+msgid "System Themes"
+msgstr "Sistemske teme"
 
-#: ../src/ui/select_page.py:147
-#, python-format
-msgid "add %s pictures to Favorites"
-msgstr ""
+msgid "Tile"
+msgstr "Razpostavi"
 
-#: ../src/ui/select_page.py:149
+msgid "Untitled"
+msgstr "Neimenovan"
+
+msgid "Wallpaper"
+msgstr "Ozadje"
+
+msgid "Your Favorites folder is empty."
+msgstr "Mapa Moje najljubše je prazna."
+
+msgid "Your Local Pictures folder is empty"
+msgstr "Vaša mapa s slikami je prazna"
+
 #, python-format
 msgid "add %s picture to Favorites"
-msgstr ""
+msgstr "dodaj %s sliko med Najljubše"
 
-#: ../src/ui/select_page.py:157 ../src/ui/select_page.py:287
 #, python-format
-msgid "delete %s pictures"
-msgstr ""
+msgid "add %s pictures to Favorites"
+msgstr "dodaj %s slike med Najljubše"
 
-#: ../src/ui/select_page.py:159 ../src/ui/select_page.py:289
-#, python-format
-msgid "delete %s picture"
-msgstr ""
-
-#: ../src/ui/select_page.py:180 ../src/ui/select_page.py:310
-#, python-format
-msgid "choose %s pictures"
-msgstr ""
-
-#: ../src/ui/select_page.py:182 ../src/ui/select_page.py:312
 #, python-format
 msgid "choose %s picture"
-msgstr ""
+msgstr "izberi %s sliko"
 
-#: ../src/ui/select_page.py:211
-msgid "Your Favorites folder is empty."
-msgstr ""
-
-#: ../src/ui/select_page.py:214
-msgid "Add from Local Pictures"
-msgstr ""
-
-#: ../src/ui/theme_view.py:97 ../src/ui/theme_view.py:114
 #, python-format
-msgid "Changed User Theme to %s"
-msgstr ""
+msgid "choose %s pictures"
+msgstr "izberi %s slike"
 
-#: ../src/ui/theme_view.py:133 ../src/ui/theme_view.py:264
-msgid "Save Theme As"
-msgstr ""
-
-#: ../src/ui/theme_view.py:137
-msgid "Rename Theme"
-msgstr ""
-
-#: ../src/ui/theme_view.py:141 ../src/ui/theme_view.py:158
-msgid "Delete Theme"
-msgstr ""
-
-#: ../src/ui/theme_view.py:142
 #, python-format
-msgid "Are you sure you want to delete the theme %s?"
-msgstr ""
+msgid "delete %s picture"
+msgstr "izbriši %s sliko"
 
-#: ../src/ui/theme_view.py:152 ../src/ui/theme_view.py:156
-#: ../src/ui/theme_view.py:268
-msgid "Save As"
-msgstr ""
-
-#: ../src/ui/theme_view.py:155
-msgid "Rename"
-msgstr ""
-
-#: ../src/ui/theme_view.py:240 ../src/ui/theme_view.py:249
 #, python-format
-msgid "Changed System Theme to %s"
-msgstr ""
+msgid "delete %s pictures"
+msgstr "izbriši %s slike"

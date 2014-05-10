@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Massimo Antonio Carofano <massimo.carofano@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-08 03:50+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-04-12 12:10+0000\n"
+"Last-Translator: Massimo Antonio Carofano <massimo.carofano@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/it/)\n"
 "Language: it\n"
@@ -18,178 +19,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/tray_shutdown_gui.py:93
-msgid "Switch user"
-msgstr ""
-
-#: ../src/tray_shutdown_gui.py:96 ../src/power_view.py:62
-#: ../src/tray_shutdown_plugin.py:107
-msgid "Shut down"
-msgstr "Arresta"
-
-#: ../src/tray_shutdown_gui.py:99 ../src/tray_shutdown_plugin.py:113
-msgid "Restart"
-msgstr "Riavvia"
-
-#: ../src/tray_shutdown_gui.py:102 ../src/power_view.py:61
-#: ../src/power_view.py:137 ../src/tray_shutdown_plugin.py:119
-msgid "Suspend"
-msgstr "Sospendi"
-
-#: ../src/tray_shutdown_gui.py:105 ../src/tray_shutdown_plugin.py:125
-msgid "Log out"
-msgstr ""
-
-#: ../src/tray_shutdown_gui.py:108
-msgid "Lock"
-msgstr "Blocca"
-
-#: ../src/power_view.py:50
-msgid "Minute"
-msgstr "Minuto"
-
-#: ../src/power_view.py:51 ../src/power_view.py:52 ../src/power_view.py:53
-#: ../src/power_view.py:54
-msgid "Minutes"
-msgstr "Minuti"
-
-#: ../src/power_view.py:55
-msgid "Hour"
-msgstr "Ora"
-
-#: ../src/power_view.py:56
-msgid "Never"
-msgstr "Mai"
-
-#: ../src/power_view.py:60
-msgid "Do nothing"
-msgstr ""
-
-#: ../src/power_view.py:64
-msgid "Balanced"
-msgstr ""
-
-#: ../src/power_view.py:65
-msgid "Power saver"
-msgstr ""
-
-#: ../src/power_view.py:66
-msgid "High performance"
-msgstr "Performance elevate"
-
-#: ../src/power_view.py:67
-msgid "Custom"
-msgstr "Personalizzato"
-
-#: ../src/power_view.py:74 ../src/search_keyword.py:29
-msgid "Power Button Settings"
-msgstr ""
-
-#: ../src/power_view.py:82 ../src/search_keyword.py:30
-msgid "When I press the power button"
-msgstr ""
-
-#: ../src/power_view.py:94 ../src/search_keyword.py:31
-msgid "When I close the lid"
-msgstr ""
-
-#: ../src/power_view.py:107 ../src/search_keyword.py:33
-msgid "Power Saving Settings"
-msgstr ""
-
-#: ../src/power_view.py:113
-msgid "Power Plan"
-msgstr ""
-
-#: ../src/power_view.py:125 ../src/search_keyword.py:36
-msgid "Turn off monitor"
-msgstr "Spegni lo schermo"
-
-#: ../src/power_view.py:150
-msgid "Battery power remaining"
-msgstr ""
-
-#: ../src/power_view.py:166 ../src/search_keyword.py:37
-msgid "Require password when computer wakes"
-msgstr ""
-
-#: ../src/power_view.py:189 ../src/search_keyword.py:38
-msgid "Always show icon in the tray"
-msgstr ""
-
-#: ../src/power_view.py:317
-msgid "Power plan has been reset to Balanced"
-msgstr ""
-
-#: ../src/power_view.py:374
-#, python-format
-msgid "%s when pressing the power button"
-msgstr ""
-
-#: ../src/power_view.py:379
-#, python-format
-msgid "%s when closing the lid"
-msgstr ""
-
-#: ../src/power_view.py:384
-#, python-format
-msgid "Power plan has been changed to %s"
-msgstr ""
-
-#: ../src/power_view.py:389
-#, python-format
-msgid "Changed Suspend Status to %s"
-msgstr ""
-
-#: ../src/power_view.py:397
-#, python-format
-msgid "The time before turning off monitor has been changed to %s"
-msgstr ""
-
-#: ../src/power_view.py:407
-msgid "You will be asked for a password when computer wakes"
-msgstr ""
-
-#: ../src/power_view.py:409
-msgid "The system will not requrie a password after sleep"
-msgstr ""
-
-#: ../src/power_view.py:416
-msgid "Battery status will be shown in the tray"
-msgstr ""
-
-#: ../src/power_view.py:418
-msgid "Battery status will not be shown in the tray"
-msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:53
 #, python-format
 msgid ""
 "\n"
-"<span foreground='#cc5744'>Turn off</span> your computer now? \n"
-"\n"
-"The system will shut down in %s seconds."
+"<span foreground='#cc5744'>%s programs are still running:</span>"
 msgstr ""
+"\n"
+"<span foreground='#cc5744'>%s programmi in esecuzione:</span>"
 
-#: ../src/tray_shutdown_plugin.py:56
-#, python-format
 msgid ""
 "\n"
-"<span foreground='#cc5744'>Restart</span> your computer now?\n"
-"\n"
-"The system will restart in %s seconds."
+"<span foreground='#cc5744'>A program is still running:</span>"
 msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:59
-#, python-format
-msgid ""
 "\n"
-"<span foreground='#cc5744'>Suspend</span> your computer now?\n"
-"\n"
-"The system will suspend in %s seconds."
-msgstr ""
+"<span foreground='#cc5744'>Un programma in esecuzione:</span>"
 
-#: ../src/tray_shutdown_plugin.py:62
 #, python-format
 msgid ""
 "\n"
@@ -197,33 +41,54 @@ msgid ""
 "\n"
 "You will be automatically logged out in %s seconds."
 msgstr ""
-
-#: ../src/tray_shutdown_plugin.py:65
-msgid ""
 "\n"
-"<span foreground='#cc5744'>A program is still running:</span>"
-msgstr ""
+"<span foreground='#cc5744'>Logout</span> dal tuo computer ora?\n"
+"\n"
+"Il logout avverrà automaticamente tra %s secondi."
 
-#: ../src/tray_shutdown_plugin.py:66
 #, python-format
 msgid ""
 "\n"
-"<span foreground='#cc5744'>%s programs are still running:</span>"
+"<span foreground='#cc5744'>Restart</span> your computer now?\n"
+"\n"
+"The system will restart in %s seconds."
 msgstr ""
+"\n"
+"<span foreground='#cc5744'>Riavvia</span> il tuo computer ora?\n"
+"\n"
+"Il sistema si riavvierà in %s secondi."
 
-#: ../src/tray_shutdown_plugin.py:67
+#, python-format
 msgid ""
-"Waiting for applications to terminate. Interrupting these may cause "
-"unexpected results."
+"\n"
+"<span foreground='#cc5744'>Suspend</span> your computer now?\n"
+"\n"
+"The system will suspend in %s seconds."
 msgstr ""
+"\n"
+"<span foreground='#cc5744'>Sospendi</span>il tuo computer ora?\n"
+"\n"
+"Il sistema si sospenderà in %s secondi."
 
-#: ../src/tray_shutdown_plugin.py:74
 msgid ""
 "\n"
 "<span foreground='#cc5744'>The Software Center is still running.</span>"
 msgstr ""
+"\n"
+"<span foreground='#cc5744'>Il Software Center è ancora in funzione.</span>"
 
-#: ../src/tray_shutdown_plugin.py:84
+#, python-format
+msgid ""
+"\n"
+"<span foreground='#cc5744'>Turn off</span> your computer now? \n"
+"\n"
+"The system will shut down in %s seconds."
+msgstr ""
+"\n"
+"<span foreground='#cc5744'>Spegni</span> il tuo computer ora?\n"
+"\n"
+"Il computer si spegnerà in %s secondi."
+
 msgid ""
 "\n"
 "We have detected that the system is running on a <span "
@@ -231,47 +96,155 @@ msgid ""
 "you install Linux Deepin on your hard disk to get the best experience "
 "possible."
 msgstr ""
+"\n"
+"E' stato rilevato che il sistema è in esecuzione su una <span "
+"foreground='#cc5744'>macchina virtuale</span>. E' fortemente consigliato "
+"installare Linux Deepin su un hard disk per godere della miglior esperienza "
+"utente possibile."
 
-#: ../src/tray_shutdown_plugin.py:108
-msgid "Force shut down"
-msgstr ""
+#, python-format
+msgid "%s when closing the lid"
+msgstr "%s quando chiudi il coperchio"
 
-#: ../src/tray_shutdown_plugin.py:114
-msgid "Force restart"
-msgstr ""
+#, python-format
+msgid "%s when pressing the power button"
+msgstr "%s quando premi il pulsante di accensione"
 
-#: ../src/tray_shutdown_plugin.py:120
-msgid "Force suspend"
-msgstr ""
+msgid "Always show icon in the tray"
+msgstr "Mostra sempre le icone nella tray"
 
-#: ../src/tray_shutdown_plugin.py:126
-msgid "Force log out"
-msgstr ""
+msgid "Balanced"
+msgstr "Bilanciato"
 
-#: ../src/tray_shutdown_plugin.py:309
-msgid "Don't prompt again"
-msgstr ""
+msgid "Battery power remaining"
+msgstr "Batteria residua"
 
-#: ../src/tray_shutdown_plugin.py:309
-msgid "I see"
-msgstr ""
+msgid "Battery status will be shown in the tray"
+msgstr "Il livello batteria verrà mostrato nella tray"
 
-#: ../src/tray_dialog.py:42
+msgid "Battery status will not be shown in the tray"
+msgstr "Il livello batteria non verrà mostrato nella tray"
+
 msgid "Cancel"
 msgstr "Cancella"
 
-#: ../src/tray_dialog.py:43
+#, python-format
+msgid "Changed Suspend Status to %s"
+msgstr "Stato di sospensione cambiato in %s"
+
+msgid "Custom"
+msgstr "Personalizzato"
+
+msgid "Do nothing"
+msgstr "Non fare niente"
+
+msgid "Don't prompt again"
+msgstr "Non chiedere nuovamente"
+
+msgid "Force log out"
+msgstr "Forza il logout"
+
+msgid "Force restart"
+msgstr "Forza il riavvio"
+
+msgid "Force shut down"
+msgstr "Forza la chiusura"
+
+msgid "Force suspend"
+msgstr "Forza la sospensione"
+
+msgid "Hibernate"
+msgstr "Iberna"
+
+msgid "High performance"
+msgstr "Performance elevate"
+
+msgid "Hour"
+msgstr "Ora"
+
+msgid "I see"
+msgstr "Visionato"
+
+msgid "Lock"
+msgstr "Blocca"
+
+msgid "Log out"
+msgstr "Logout"
+
+msgid "Minute"
+msgstr "Minuto"
+
+msgid "Minutes"
+msgstr "Minuti"
+
+msgid "Never"
+msgstr "Mai"
+
 msgid "OK"
 msgstr "OK"
 
-#: ../src/search_keyword.py:32
-msgid "When I press the sleep button"
-msgstr ""
+msgid "Power Button Settings"
+msgstr "Impostazioni pulsante di accensione"
 
-#: ../src/search_keyword.py:34
-msgid "Hibernate"
-msgstr ""
+msgid "Power Plan"
+msgstr "Modalità gestione energetica"
 
-#: ../src/search_keyword.py:35
+msgid "Power Saving Settings"
+msgstr "Impostazioni risparmio di energia"
+
+#, python-format
+msgid "Power plan has been changed to %s"
+msgstr "Modalità di gestione energetica impostata in %s"
+
+msgid "Power plan has been reset to Balanced"
+msgstr "La modalità gestione energetica è stata resettata su Bilanciata"
+
+msgid "Power saver"
+msgstr "Risparmio d'energia"
+
+msgid "Require password when computer wakes"
+msgstr "Richiedi password al risveglio"
+
+msgid "Restart"
+msgstr "Riavvia"
+
+msgid "Shut down"
+msgstr "Arresta"
+
+msgid "Suspend"
+msgstr "Sospendi"
+
+msgid "Switch user"
+msgstr "Cambia utente"
+
+msgid "The system will not requrie a password after sleep"
+msgstr "Il sistema non richiederà la password al risveglio"
+
+#, python-format
+msgid "The time before turning off monitor has been changed to %s"
+msgstr "L'intervallo prima che il monitor venga spento è stato cambiato a %s"
+
 msgid "Turn off hard disk"
+msgstr "Disattiva l'hard disk"
+
+msgid "Turn off monitor"
+msgstr "Spegni lo schermo"
+
+msgid ""
+"Waiting for applications to terminate. Interrupting these may cause "
+"unexpected results."
 msgstr ""
+"In attesa che le applicazioni terminino. Interromperle potrebbe causare "
+"qualche problema."
+
+msgid "When I close the lid"
+msgstr "Quando chiudo il coperchio"
+
+msgid "When I press the power button"
+msgstr "Quando premo il pulsante di accensione"
+
+msgid "When I press the sleep button"
+msgstr "Quando premo il pulsante di sospensione"
+
+msgid "You will be asked for a password when computer wakes"
+msgstr "Ti verrà chiesta una password quando risveglierai il PC"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-10 02:17+0000\n"
 "Last-Translator: cxbii <mycxbii@gmail.com>\n"
 "Language-Team: Spanish (Paraguay) (http://www.transifex.com/projects/p/"
@@ -18,102 +18,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/main.py:104
-msgid "Custom"
-msgstr ""
-
-#: ../src/main.py:105 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr ""
-
-#: ../src/main.py:106 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr ""
 
-#: ../src/main.py:109 ../src/search_keyword.py:28
-msgid "Sensitivity"
+msgid "Custom"
 msgstr ""
 
-#: ../src/main.py:112 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr ""
 
-#: ../src/main.py:113 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr ""
-
-#: ../src/main.py:116
 msgid "Double-click on the smiley face to test your settings."
 msgstr ""
 
-#: ../src/main.py:118
 msgid "Drag and Drop"
 msgstr ""
 
-#: ../src/main.py:119 ../src/search_keyword.py:33
 msgid "Drag threshold"
 msgstr ""
 
-#: ../src/main.py:122
-msgid "Relevant Settings"
-msgstr ""
-
-#: ../src/main.py:125 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr ""
-
-#: ../src/main.py:126 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr ""
-
-#: ../src/main.py:129
-msgid "Keyboard Settings"
-msgstr ""
-
-#: ../src/main.py:132
-msgid "Mouse Settings"
-msgstr ""
-
-#: ../src/main.py:135
-msgid "Reset"
-msgstr ""
-
-#: ../src/main.py:302 ../src/main.py:352
-msgid "Slow"
-msgstr ""
-
-#: ../src/main.py:303 ../src/main.py:353
 msgid "Fast"
 msgstr ""
 
-#: ../src/main.py:318
-msgid "Low"
+msgid "Frequency"
 msgstr ""
 
-#: ../src/main.py:319
 msgid "High"
 msgstr ""
 
-#: ../src/main.py:395
-msgid "Short"
+msgid "Keyboard Settings"
 msgstr ""
 
-#: ../src/main.py:396
+msgid "Left-handed"
+msgstr ""
+
 msgid "Long"
 msgstr ""
 
-#: ../src/main.py:519
-msgid "Set to right-handed"
+msgid "Low"
 msgstr ""
 
-#: ../src/main.py:521
-msgid "Set to left-handed"
+msgid "Mouse Settings"
 msgstr ""
 
-#: ../src/main.py:622
+msgid "Pointer Speed"
+msgstr ""
+
+msgid "Relevant Settings"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
 msgid "Reset to defaults"
 msgstr ""
 
-#: ../src/search_keyword.py:25
+msgid "Right-handed"
+msgstr ""
+
+msgid "Sensitivity"
+msgstr ""
+
+msgid "Set to left-handed"
+msgstr ""
+
+msgid "Set to right-handed"
+msgstr ""
+
+msgid "Short"
+msgstr ""
+
+msgid "Slow"
+msgstr ""
+
 msgid "Touchpad"
 msgstr ""

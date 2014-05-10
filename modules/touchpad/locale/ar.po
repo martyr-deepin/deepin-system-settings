@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-16 01:10+0000\n"
 "Last-Translator: Mohd <mo-hd@windowslive.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/deepin-system-"
@@ -20,102 +20,77 @@ msgstr ""
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: ../src/main.py:104
-msgid "Custom"
-msgstr "مخصص"
-
-#: ../src/main.py:105 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr "سرعة المؤشر"
-
-#: ../src/main.py:106 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr "التسارع"
 
-#: ../src/main.py:109 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr "الأستشعار"
+msgid "Custom"
+msgstr "مخصص"
 
-#: ../src/main.py:112 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr "نفر مزدوج"
 
-#: ../src/main.py:113 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr "التردد"
-
-#: ../src/main.py:116
 msgid "Double-click on the smiley face to test your settings."
 msgstr "أنقر نقر مزدوج على الوجه المبتسم لتجربة الأعدادات."
 
-#: ../src/main.py:118
 msgid "Drag and Drop"
 msgstr "سحب وإفلات"
 
-#: ../src/main.py:119 ../src/search_keyword.py:33
 msgid "Drag threshold"
 msgstr "سحب عامل البدء"
 
-#: ../src/main.py:122
-msgid "Relevant Settings"
-msgstr "إعدادات ذات صلة"
-
-#: ../src/main.py:125 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr "مستخدم لليد اليمين"
-
-#: ../src/main.py:126 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr "مستخدم لليد اليسار"
-
-#: ../src/main.py:129
-msgid "Keyboard Settings"
-msgstr "إعدادات لوحة المفاتيح"
-
-#: ../src/main.py:132
-msgid "Mouse Settings"
-msgstr "إعدادات الماوس"
-
-#: ../src/main.py:135
-msgid "Reset"
-msgstr "إعادة ضبط"
-
-#: ../src/main.py:302 ../src/main.py:352
-msgid "Slow"
-msgstr "بطيء"
-
-#: ../src/main.py:303 ../src/main.py:353
 msgid "Fast"
 msgstr "سريع"
 
-#: ../src/main.py:318
-msgid "Low"
-msgstr "منخفض"
+msgid "Frequency"
+msgstr "التردد"
 
-#: ../src/main.py:319
 msgid "High"
 msgstr "عالي"
 
-#: ../src/main.py:395
-msgid "Short"
-msgstr "قصير"
+msgid "Keyboard Settings"
+msgstr "إعدادات لوحة المفاتيح"
 
-#: ../src/main.py:396
+msgid "Left-handed"
+msgstr "مستخدم لليد اليسار"
+
 msgid "Long"
 msgstr "طويل"
 
-#: ../src/main.py:519
-msgid "Set to right-handed"
-msgstr "تحديد الى مستخدم لليد اليمين"
+msgid "Low"
+msgstr "منخفض"
 
-#: ../src/main.py:521
-msgid "Set to left-handed"
-msgstr "تحديد الى مستخدم لليد اليسار"
+msgid "Mouse Settings"
+msgstr "إعدادات الماوس"
 
-#: ../src/main.py:622
+msgid "Pointer Speed"
+msgstr "سرعة المؤشر"
+
+msgid "Relevant Settings"
+msgstr "إعدادات ذات صلة"
+
+msgid "Reset"
+msgstr "إعادة ضبط"
+
 msgid "Reset to defaults"
 msgstr "إعادة تعيين إلى الإعدادات الافتراضية"
 
-#: ../src/search_keyword.py:25
+msgid "Right-handed"
+msgstr "مستخدم لليد اليمين"
+
+msgid "Sensitivity"
+msgstr "الأستشعار"
+
+msgid "Set to left-handed"
+msgstr "تحديد الى مستخدم لليد اليسار"
+
+msgid "Set to right-handed"
+msgstr "تحديد الى مستخدم لليد اليمين"
+
+msgid "Short"
+msgstr "قصير"
+
+msgid "Slow"
+msgstr "بطيء"
+
 msgid "Touchpad"
 msgstr "لوحة اللمس"

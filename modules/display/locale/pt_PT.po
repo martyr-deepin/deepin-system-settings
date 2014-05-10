@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Black_Scorpion <bscorpion@msn.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-01 22:20+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-08 13:42+0000\n"
+"Last-Translator: Black_Scorpion <bscorpion@msn.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/pt_PT/)\n"
 "Language: pt_PT\n"
@@ -18,163 +19,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/display_view.py:240
+#, python-format
+msgid "<span foreground=\"%s\" underline=\"single\">Personalization</span>"
+msgstr "<span foreground=\"%s\" underline=\"single\">Personalização</span>"
+
+#, python-format
+msgid "<span foreground=\"%s\" underline=\"single\">Power</span>"
+msgstr "<span foreground=\"%s\" underline=\"single\">Energia</span>"
+
+msgid "Auto-Brightness"
+msgstr "Luminosidade Automática"
+
+msgid "Brightness"
+msgstr "Luminosidade"
+
+#, python-format
+msgid "Changed brightness to %d%%"
+msgstr "Luminosidade alterada para %d%%"
+
+#, python-format
+msgid "Changed current output to %s"
+msgstr "Saída actual alterada para %s"
+
+#, python-format
+msgid "Changed multi-monitor mode to %s"
+msgstr "Modo de múltiplos monitores alterado para %s"
+
+#, python-format
+msgid "Changed resolution to %s"
+msgstr "Resolução alterada para %s"
+
+#, python-format
+msgid "Changed rotation to %s"
+msgstr "Rotação alterada para %s"
+
+msgid "Changed to automatic adjustment"
+msgstr "Alterada para ajuste automático"
+
+msgid "Changed to automatic lock"
+msgstr "Alterado para bloqueio automático"
+
+msgid "Changed to manual adjustment"
+msgstr "Alterada para ajuste manual"
+
+msgid "Changed to manual lock"
+msgstr "Alterado para bloqueio manual"
+
 msgid "Copy Display"
-msgstr ""
+msgstr "Copiar Ecrã"
 
-#: ../src/display_view.py:241
-msgid "Extend Display"
-msgstr ""
-
-#: ../src/display_view.py:242
-msgid "Only shown in display 1"
-msgstr ""
-
-#: ../src/display_view.py:243
-msgid "Only shown in display 2"
-msgstr ""
-
-#: ../src/display_view.py:244
-msgid "Normal"
-msgstr ""
-
-#: ../src/display_view.py:245
-msgid "Right"
-msgstr ""
-
-#: ../src/display_view.py:246
-msgid "Left"
-msgstr ""
-
-#: ../src/display_view.py:247
-msgid "Inverted"
-msgstr ""
-
-#: ../src/display_view.py:248
-msgid "Minute"
-msgstr ""
-
-#: ../src/display_view.py:249 ../src/display_view.py:250
-#: ../src/display_view.py:251 ../src/display_view.py:252
-#: ../src/display_view.py:253
-msgid "Minutes"
-msgstr ""
-
-#: ../src/display_view.py:254
-msgid "Hour"
-msgstr ""
-
-#: ../src/display_view.py:255
-msgid "Never"
-msgstr ""
-
-#: ../src/display_view.py:292 ../src/search_keyword.py:29
 msgid "Display"
-msgstr ""
+msgstr "Ecrã"
 
-#: ../src/display_view.py:299 ../src/search_keyword.py:30
+msgid "Extend Display"
+msgstr "Ampliar Ecrã"
+
+msgid "Hour"
+msgstr "Hora"
+
+#, python-format
+msgid "Idle time before locking display has been changed to %s"
+msgstr "Tempo de inactividade antes de bloquear ecrã foi alterado para %s"
+
+#, python-format
+msgid "Idle time before turning off display has been changed to to %s"
+msgstr "Tempo de inactividade antes de desligar monitor foi alterado para %s"
+
+msgid "Inverted"
+msgstr "Invertido"
+
+msgid "Left"
+msgstr "Esquerda"
+
+msgid "Lock Screen"
+msgstr "Bloquear Ecrã"
+
+msgid "Lock screen automatically"
+msgstr "Bloquear ecrã automaticamente"
+
+msgid "Minute"
+msgstr "Minuto"
+
+msgid "Minutes"
+msgstr "Minutos"
+
 msgid "Monitor"
 msgstr "Monitor"
 
-#: ../src/display_view.py:312
-msgid "Relevant Settings"
-msgstr ""
-
-#: ../src/display_view.py:318
-#, python-format
-msgid "<span foreground=\"%s\" underline=\"single\">Personalization</span>"
-msgstr ""
-
-#: ../src/display_view.py:326
-#, python-format
-msgid "<span foreground=\"%s\" underline=\"single\">Power</span>"
-msgstr ""
-
-#: ../src/display_view.py:344 ../src/search_keyword.py:31
-msgid "Resolution"
-msgstr ""
-
-#: ../src/display_view.py:359 ../src/search_keyword.py:32
-msgid "Rotation"
-msgstr ""
-
-#: ../src/display_view.py:372
 msgid "Multi-Monitor"
-msgstr ""
+msgstr "Múltiplos Monitores"
 
-#: ../src/display_view.py:387 ../src/display_view.py:396
-#: ../src/search_keyword.py:33
-msgid "Brightness"
-msgstr ""
+msgid "Never"
+msgstr "Nunca"
 
-#: ../src/display_view.py:414 ../src/search_keyword.py:34
-msgid "Auto-Brightness"
-msgstr ""
+msgid "Normal"
+msgstr "Normal"
 
-#: ../src/display_view.py:428 ../src/search_keyword.py:35
-msgid "Turn off monitor"
-msgstr ""
+msgid "Only shown in display 1"
+msgstr "Mostrar só no monitor 1"
 
-#: ../src/display_view.py:441 ../src/display_view.py:462
-#: ../src/search_keyword.py:37
-msgid "Lock Screen"
-msgstr ""
+msgid "Only shown in display 2"
+msgstr "Mostrar só no monitor 2"
 
-#: ../src/display_view.py:447 ../src/search_keyword.py:36
-msgid "Lock screen automatically"
-msgstr ""
+msgid "Relevant Settings"
+msgstr "Definições Relevantes"
 
-#: ../src/display_view.py:513
 msgid "Reset to default value"
-msgstr ""
+msgstr "Repor valor predefinido"
 
-#: ../src/display_view.py:604
-#, python-format
-msgid "Changed brightness to %d%%"
-msgstr ""
+msgid "Resolution"
+msgstr "Resolução"
 
-#: ../src/display_view.py:630
-msgid "Changed to manual adjustment"
-msgstr ""
+msgid "Right"
+msgstr "Direita"
 
-#: ../src/display_view.py:633
-msgid "Changed to automatic adjustment"
-msgstr ""
+msgid "Rotation"
+msgstr "Rotação"
 
-#: ../src/display_view.py:639
-msgid "Changed to manual lock"
-msgstr ""
-
-#: ../src/display_view.py:642
-msgid "Changed to automatic lock"
-msgstr ""
-
-#: ../src/display_view.py:647
-#, python-format
-msgid "Changed current output to %s"
-msgstr ""
-
-#: ../src/display_view.py:653
-#, python-format
-msgid "Changed resolution to %s"
-msgstr ""
-
-#: ../src/display_view.py:658
-#, python-format
-msgid "Changed rotation to %s"
-msgstr ""
-
-#: ../src/display_view.py:663
-#, python-format
-msgid "Changed multi-monitor mode to %s"
-msgstr ""
-
-#: ../src/display_view.py:668
-#, python-format
-msgid "Idle time before turning off display has been changed to to %s"
-msgstr ""
-
-#: ../src/display_view.py:673
-#, python-format
-msgid "Idle time before locking display has been changed to %s"
-msgstr ""
+msgid "Turn off monitor"
+msgstr "Desligar monitor"

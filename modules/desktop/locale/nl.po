@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-14 09:24+0800\n"
-"PO-Revision-Date: 2014-02-24 14:29+0000\n"
-"Last-Translator: jasper580 <jasperweyne@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-05-09 06:00+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/nl/)\n"
 "Language: nl\n"
@@ -19,163 +19,122 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/desktop_view.py:70
-msgid "Default Style"
-msgstr "Standaard Uiterlijk"
-
-#: ../src/desktop_view.py:71
 msgid "Auto Hide"
 msgstr "Verberg Automatisch"
 
-#: ../src/desktop_view.py:72
-msgid "Invisible"
-msgstr "Onzichtbaar"
-
-#: ../src/desktop_view.py:73
-#, fuzzy
 msgid "Bottom"
-msgstr "Onder"
+msgstr ""
 
-#: ../src/desktop_view.py:74
-msgid "Top"
-msgstr "Boven"
-
-#: ../src/desktop_view.py:75
-msgid "Default Icon"
-msgstr "Standaard Icoon"
-
-#: ../src/desktop_view.py:76
-msgid "Small"
-msgstr "Klein"
-
-#: ../src/desktop_view.py:77 ../src/desktop_view.py:80
-msgid "Nothing"
-msgstr "Niks"
-
-#: ../src/desktop_view.py:78
-msgid "Opening Window"
-msgstr "Openend Scherm"
-
-#: ../src/desktop_view.py:79
-msgid "Launcher"
-msgstr "Launcher"
-
-#: ../src/desktop_view.py:80
-msgid "Maximize"
-msgstr "Maximaliseer"
-
-#: ../src/desktop_view.py:86 ../src/search_keyword.py:29
-msgid "Desktop Icon"
-msgstr "Bureaublad Icoon"
-
-#: ../src/desktop_view.py:94
-msgid "Computer"
-msgstr "Computer"
-
-#: ../src/desktop_view.py:97
-msgid "Home"
-msgstr "Thuis"
-
-#: ../src/desktop_view.py:100
-msgid "Trash"
-msgstr "Prullenbak"
-
-#: ../src/desktop_view.py:103
-msgid "Software Center"
-msgstr "Software Center"
-
-#: ../src/desktop_view.py:118 ../src/search_keyword.py:30
-msgid "Dock"
-msgstr "Dock"
-
-#: ../src/desktop_view.py:124
-msgid "Display Style"
-msgstr "Weergave Style"
-
-#: ../src/desktop_view.py:144
-msgid "Place Style"
-msgstr "Locatie Style"
-
-#: ../src/desktop_view.py:156
-msgid "Icon Size"
-msgstr "Icoon Grootte"
-
-#: ../src/desktop_view.py:170
-msgid "Preview"
-msgstr "Voorbeeld"
-
-#: ../src/desktop_view.py:178 ../src/search_keyword.py:31
-msgid "Hot Zone"
-msgstr "Hete Zone"
-
-#: ../src/desktop_view.py:181
-msgid "Top Left"
-msgstr "Linksboven"
-
-#: ../src/desktop_view.py:200
 msgid "Bottom Right"
 msgstr "Rechtsonder"
 
-#: ../src/desktop_view.py:221
-msgid "Top Edge"
-msgstr "Bovenste Rand"
+msgid "Computer"
+msgstr "Computer"
 
-#: ../src/desktop_view.py:233
-msgid "Left Edge"
-msgstr "Linker Rand"
+msgid "Default Icon"
+msgstr "Standaard Icoon"
 
-#: ../src/desktop_view.py:245
-msgid "Right Edge"
-msgstr "Rechter Rand"
+msgid "Default Style"
+msgstr "Standaard Uiterlijk"
 
-#: ../src/desktop_view.py:260
-msgid "Login &amp;&amp; Lock"
-msgstr "Aanmelden &amp;&amp; Vergrendelen"
+msgid "Desktop Icon"
+msgstr "Bureaublad Icoon"
 
-#: ../src/desktop_view.py:268
-msgid "Login Page"
-msgstr "Aanmeld Scherm"
+msgid "Display Style"
+msgstr "Weergave Style"
 
-#: ../src/desktop_view.py:273 ../src/desktop_view.py:289
-msgid "Select"
-msgstr "Selecteer"
+msgid "Dock"
+msgstr "Dock"
 
-#: ../src/desktop_view.py:284
-msgid "Lock Page"
-msgstr "Vergrendel Scherm"
-
-#: ../src/desktop_view.py:344
-msgid "Show computer icon"
-msgstr "Geef computer icoon weer"
-
-#: ../src/desktop_view.py:346
 msgid "Hide computer icon"
 msgstr "Verberg computer icoon"
 
-#: ../src/desktop_view.py:352
-msgid "Show home icon"
-msgstr "Geef thuis icoon weer"
-
-#: ../src/desktop_view.py:354
-msgid "Hide home icon"
-msgstr "Verberg thuis icoon"
-
-#: ../src/desktop_view.py:360
-msgid "Show trash icon"
-msgstr "Geef prullenbak icoon weer"
-
-#: ../src/desktop_view.py:362
-msgid "Hide trash icon"
-msgstr "Verberg prullenbak icoon"
-
-#: ../src/desktop_view.py:368
-msgid "Show deepin software center icon"
-msgstr "Geef deepin software center icoon weer"
-
-#: ../src/desktop_view.py:370
 msgid "Hide deepin software conter icon"
 msgstr "Verberg deepin software center icoon"
 
-#: ../src/desktop_view.py:468
+msgid "Hide home icon"
+msgstr "Verberg thuis icoon"
+
+msgid "Hide trash icon"
+msgstr "Verberg prullenbak icoon"
+
+msgid "Home"
+msgstr "Thuis"
+
+msgid "Hot Zone"
+msgstr "Hete Zone"
+
+msgid "Icon Size"
+msgstr "Icoon Grootte"
+
+msgid "Invisible"
+msgstr "Onzichtbaar"
+
+msgid "Launcher"
+msgstr "Launcher"
+
+msgid "Left Edge"
+msgstr "Linker Rand"
+
+msgid "Lock Page"
+msgstr "Vergrendel Scherm"
+
+msgid "Login &amp;&amp; Lock"
+msgstr "Aanmelden &amp;&amp; Vergrendelen"
+
+msgid "Login Page"
+msgstr "Aanmeld Scherm"
+
+msgid "Maximize"
+msgstr "Maximaliseer"
+
+msgid "Nothing"
+msgstr "Niks"
+
+msgid "Opening Window"
+msgstr "Openend Scherm"
+
+msgid "Place Style"
+msgstr "Locatie Style"
+
+msgid "Preview"
+msgstr "Voorbeeld"
+
 msgid "Reset to default value"
 msgstr "Herstel naar standaard waarde"
+
+msgid "Right Edge"
+msgstr "Rechter Rand"
+
+msgid "Select"
+msgstr "Selecteer"
+
+msgid "Show computer icon"
+msgstr "Geef computer icoon weer"
+
+msgid "Show deepin software center icon"
+msgstr "Geef deepin software center icoon weer"
+
+msgid "Show home icon"
+msgstr "Geef thuis icoon weer"
+
+msgid "Show trash icon"
+msgstr "Geef prullenbak icoon weer"
+
+msgid "Small"
+msgstr "Klein"
+
+msgid "Software Center"
+msgstr "Software Center"
+
+msgid "Top"
+msgstr "Boven"
+
+msgid "Top Edge"
+msgstr "Bovenste Rand"
+
+msgid "Top Left"
+msgstr "Linksboven"
+
+msgid "Trash"
+msgstr "Prullenbak"

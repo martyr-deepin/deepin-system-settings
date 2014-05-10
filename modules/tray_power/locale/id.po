@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-30 13:30+0000\n"
 "Last-Translator: aphrxia <aphrxia@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,49 +19,38 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/tray_power_plugin.py:165 ../src/tray_power_plugin.py:196
-msgid "Fully charged"
-msgstr "Terisi penuh"
-
-#: ../src/tray_power_plugin.py:168
-#, python-format
-msgid "Charging, %s remaining"
-msgstr "Sedang mengisi, tersisa %s"
-
-#: ../src/tray_power_plugin.py:194
 #, python-format
 msgid "%s remaining"
 msgstr "Tersisa %s"
 
-#: ../src/tray_power_plugin.py:203
+msgid "Advanced..."
+msgstr "Setelan tingkat lanjut..."
+
+msgid "Balanced"
+msgstr "Normal"
+
+#, python-format
+msgid "Charging, %s remaining"
+msgstr "Sedang mengisi, tersisa %s"
+
+msgid "Custom"
+msgstr "Penyesuaian setelan"
+
+msgid "Fully charged"
+msgstr "Terisi penuh"
+
+msgid "High performance"
+msgstr "Kinerja tinggi"
+
 #, python-format
 msgid "Low power(%s%%)"
 msgstr "Daya rendah(%s%%)"
 
-#: ../src/tray_power_plugin.py:204
-msgid "Your battery is running low, please charge!"
-msgstr "Daya baterai Anda rendah, silahkan mengisi ulang!"
-
-#: ../src/tray_power_gui.py:45
 msgid "Power"
 msgstr "Daya"
 
-#: ../src/tray_power_gui.py:54
-msgid "Balanced"
-msgstr "Normal"
-
-#: ../src/tray_power_gui.py:55
 msgid "Power saver"
 msgstr "Penghemat daya"
 
-#: ../src/tray_power_gui.py:56
-msgid "High performance"
-msgstr "Kinerja tinggi"
-
-#: ../src/tray_power_gui.py:57
-msgid "Custom"
-msgstr "Penyesuaian setelan"
-
-#: ../src/tray_power_gui.py:72
-msgid "Advanced..."
-msgstr "Setelan tingkat lanjut..."
+msgid "Your battery is running low, please charge!"
+msgstr "Daya baterai Anda rendah, silahkan mengisi ulang!"

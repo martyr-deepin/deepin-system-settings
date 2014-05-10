@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2013-12-16 09:34+0000\n"
 "Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -19,40 +19,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/tray_mount_gui.py:170 ../src/tray_mount_gui.py:394
-#: ../src/tray_mount_gui.py:410 ../src/tray_mount_gui.py:415
-msgid "Storage Device"
-msgstr "储存设备"
-
-#: ../src/tray_mount_gui.py:395
-#, python-format
-msgid "Mount and open device \"%s\"?"
-msgstr "挂载并打开设备“%s”？"
-
-#: ../src/tray_mount_gui.py:410
-#, python-format
-msgid "Removable media \"%s\" has been removed"
-msgstr "可移动设备“%s”已移除"
-
-#: ../src/tray_mount_gui.py:415
 #, python-format
 msgid "Found new removable media \"%s\""
 msgstr "发现新的可移动设备“%s”"
 
-#: ../src/tray_mount_plugin.py:64
-msgid "Mount Failed"
-msgstr "挂载失败"
-
-#: ../src/tray_mount_plugin.py:65
 #, python-format
 msgid "Mount '%s' error."
 msgstr "挂载 '%s' 出错。"
 
-#: ../src/tray_mount_plugin.py:68
-msgid "Unmount Failed"
-msgstr "卸载失败"
+msgid "Mount Failed"
+msgstr "挂载失败"
 
-#: ../src/tray_mount_plugin.py:70
+#, python-format
+msgid "Mount and open device \"%s\"?"
+msgstr "挂载并打开设备“%s”？"
+
+#, python-format
+msgid "Removable media \"%s\" has been removed"
+msgstr "可移动设备“%s”已移除"
+
+msgid "Storage Device"
+msgstr "储存设备"
+
 #, python-format
 msgid "Unmount '%s' error. Please unmount it in file manager"
 msgstr "卸载'%s'出错，请到文件管理将它卸载。"
+
+msgid "Unmount Failed"
+msgstr "卸载失败"

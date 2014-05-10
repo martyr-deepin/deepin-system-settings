@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-25 22:50+0000\n"
 "Last-Translator: fri <pavelfric@seznam.cz>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/deepin-system-"
@@ -20,91 +20,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "10"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "Nastavení systému"
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "Obrazovky"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "Pracovní plocha"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "Přizpůsobení"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "Zvuk"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "Datum a čas"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "Energie"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "Klávesnice"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "Myš"
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "Dotyková plocha"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "Tiskárny"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "Síť"
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "Dodatečné ovladače"
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "Uživatelské účty"
+msgid "Bluetooth"
+msgstr "Bluetooth"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "Výchozí programy"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "Systémové informace"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "Nastavit znovu"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: ../dss/bluetooth_dialog.py:78
+msgid "Date &amp; Time"
+msgstr "Datum a čas"
+
+msgid "Default Applications"
+msgstr "Výchozí programy"
+
+msgid "Desktop"
+msgstr "Pracovní plocha"
+
+msgid "Displays"
+msgstr "Obrazovky"
+
+msgid "Keyboard"
+msgstr "Klávesnice"
+
+msgid "Mouse"
+msgstr "Myš"
+
+msgid "Network"
+msgstr "Síť"
+
+msgid "Ok"
+msgstr "OK"
+
+msgid "Personalization"
+msgstr "Přizpůsobení"
+
+msgid "Power"
+msgstr "Energie"
+
+msgid "Printers"
+msgstr "Tiskárny"
+
+msgid "Reset"
+msgstr "Nastavit znovu"
+
 #, python-format
 msgid "Sent %d"
 msgstr "Posláno %d"
 
-#: ../dss/bluetooth_dialog.py:113
-msgid "Ok"
-msgstr "OK"
+msgid "Sound"
+msgstr "Zvuk"
+
+msgid "System Information"
+msgstr "Systémové informace"
+
+msgid "System Settings"
+msgstr "Nastavení systému"
+
+msgid "Touchpad"
+msgstr "Dotyková plocha"
+
+msgid "User Accounts"
+msgstr "Uživatelské účty"

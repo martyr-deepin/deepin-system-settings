@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 11:29+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-06 20:30+0000\n"
 "Last-Translator: ballmet <emkohencel@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sk/)\n"
@@ -19,241 +19,175 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../src/main.new.py:500 ../src/ui/wallpaper_item.py:1028
-msgid "Downloaded"
-msgstr "Stiahnuté"
-
-#: ../src/theme_manager.py:427
-msgid "Untitled"
-msgstr "Bez názvu"
-
-#: ../src/main.py:81
-msgid "Image files"
-msgstr "Obrázkové súbory"
-
-#: ../src/search_keyword.py:29
-msgid "Personalization"
-msgstr "Personalizácia"
-
-#: ../src/search_keyword.py:30 ../src/ui/theme_page.py:55
-msgid "My Themes"
-msgstr "Moje témy"
-
-#: ../src/search_keyword.py:31 ../src/ui/theme_page.py:60
-msgid "System Themes"
-msgstr "Systémové témy"
-
-#: ../src/search_keyword.py:32
-msgid "Wallpaper"
-msgstr "Pozadie"
-
-#: ../src/search_keyword.py:33 ../src/ui/add_page.py:85
-msgid "Pictures"
-msgstr "Fotografie"
-
-#: ../src/ui/add_page.py:79 ../src/ui/local_page.py:88
-msgid "Library"
-msgstr "Knižnica"
-
-#: ../src/ui/add_page.py:80 ../src/ui/local_page.py:89
-msgid "Internet"
-msgstr "Internet"
-
-#: ../src/ui/add_page.py:84
-msgid "System"
-msgstr "Systém"
-
-#: ../src/ui/add_page.py:86
-msgid "Favorites"
-msgstr "Obľúbené"
-
-#: ../src/ui/add_page.py:87 ../src/ui/local_page.py:98
-msgid "360 Wallpaper"
-msgstr "360 tapiet"
-
-#: ../src/ui/add_page.py:88 ../src/ui/local_page.py:99
-msgid "LoveWallpaper"
-msgstr "Obľúbené pozadie plochy"
-
-#: ../src/ui/delete_page.py:55 ../src/ui/cache_page.py:131
-msgid "Back"
-msgstr "Späť"
-
-#: ../src/ui/delete_page.py:58 ../src/ui/delete_page.py:81
-#: ../src/ui/delete_page.py:89 ../src/ui/delete_page.py:116
-#: ../src/ui/detail_page.py:85 ../src/ui/detail_page.py:135
-#: ../src/ui/detail_page.py:144 ../src/ui/detail_page.py:152
-#: ../src/ui/detail_page.py:194
-msgid "Select all"
-msgstr "Vybrať všetko"
-
-#: ../src/ui/delete_page.py:61 ../src/ui/detail_page.py:88
-#: ../src/ui/select_page.py:87 ../src/ui/select_page.py:228
-msgid "Delete"
-msgstr "Vymazať"
-
-#: ../src/ui/delete_page.py:79 ../src/ui/delete_page.py:87
-#: ../src/ui/detail_page.py:133 ../src/ui/detail_page.py:142
-#: ../src/ui/detail_page.py:150 ../src/ui/detail_page.py:231
-msgid "Clear all"
-msgstr "Zmazať všetko"
-
-#: ../src/ui/delete_page.py:97 ../src/ui/select_page.py:166
-#: ../src/ui/select_page.py:296
-msgid "Delete Wallpaper"
-msgstr "Vymazať pozadie plochy"
-
-#: ../src/ui/delete_page.py:98 ../src/ui/select_page.py:167
-#: ../src/ui/select_page.py:297
-msgid "Are you sure delete wallpaper?"
-msgstr "Ste si istý, že chcete vymazať pozadie plochy?"
-
-#: ../src/ui/cache_page.py:133
-msgid "Download All"
-msgstr "Stiahnuť všetko"
-
-#: ../src/ui/local_page.py:46
-msgid "My Favorites"
-msgstr "Moje obľúbené"
-
-#: ../src/ui/local_page.py:47
-msgid "Local Wallpapers"
-msgstr "Mieste pozadia plôch"
-
-#: ../src/ui/detail_page.py:37
-msgid "Minute"
-msgstr "Minúta"
-
-#: ../src/ui/detail_page.py:37 ../src/ui/detail_page.py:38
-#: ../src/ui/detail_page.py:39 ../src/ui/detail_page.py:40
-msgid "Minutes"
-msgstr "Minúty"
-
-#: ../src/ui/detail_page.py:40
-msgid "Hour"
-msgstr "Hodina"
-
-#: ../src/ui/detail_page.py:41 ../src/ui/detail_page.py:42
-#: ../src/ui/detail_page.py:43
-msgid "Hours"
-msgstr "Hodiny"
-
-#: ../src/ui/detail_page.py:46
-msgid "Stretch"
-msgstr "Roztiahnuť"
-
-#: ../src/ui/detail_page.py:46
-msgid "Tile"
-msgstr "Vydláždiť"
-
-#: ../src/ui/detail_page.py:70
-msgid "Position"
-msgstr "Poloha"
-
-#: ../src/ui/detail_page.py:73
-msgid "Duration"
-msgstr "Doba trvania"
-
-#: ../src/ui/detail_page.py:80
-msgid "Random"
-msgstr "Náhodné"
-
-#: ../src/ui/wallpaper_view.py:57
-msgid "Apply Wallpaper"
-msgstr "Potvrdiť zmenu pozadia"
-
-#: ../src/ui/select_page.py:75
-msgid "Your Local Pictures folder is empty"
-msgstr "Priečinok s vašimi obrázkami je prázdny"
-
-#: ../src/ui/select_page.py:81 ../src/ui/select_page.py:225
-msgid "Set as wallpaper"
-msgstr "Zvoliť ako pozadie plochy"
-
-#: ../src/ui/select_page.py:84
-msgid "Add to Favorites"
-msgstr "Pridať do obľúbených"
-
-#: ../src/ui/select_page.py:118 ../src/ui/select_page.py:258
-#, python-format
-msgid "%s pictures are set as wallpaper"
-msgstr "%s obrázkov je nastavených ako pozadie plochy"
-
-#: ../src/ui/select_page.py:120 ../src/ui/select_page.py:260
 #, python-format
 msgid "%s picture is set as wallpaper"
 msgstr "%s obrázok je nastavený ako pozadie plochy"
 
-#: ../src/ui/select_page.py:147
 #, python-format
-msgid "add %s pictures to Favorites"
-msgstr "Pridať %s obrázkov do obľúbených"
+msgid "%s pictures are set as wallpaper"
+msgstr "%s obrázkov je nastavených ako pozadie plochy"
 
-#: ../src/ui/select_page.py:149
-#, python-format
-msgid "add %s picture to Favorites"
-msgstr "Pridať %s obrázok do obľúbených"
+msgid "360 Wallpaper"
+msgstr "360 tapiet"
 
-#: ../src/ui/select_page.py:157 ../src/ui/select_page.py:287
-#, python-format
-msgid "delete %s pictures"
-msgstr "vymazať %s obrázkov"
-
-#: ../src/ui/select_page.py:159 ../src/ui/select_page.py:289
-#, python-format
-msgid "delete %s picture"
-msgstr "Vymazať %s obrázok"
-
-#: ../src/ui/select_page.py:180 ../src/ui/select_page.py:310
-#, python-format
-msgid "choose %s pictures"
-msgstr "vybrať %s obrázkov"
-
-#: ../src/ui/select_page.py:182 ../src/ui/select_page.py:312
-#, python-format
-msgid "choose %s picture"
-msgstr "vybrať %s obrázok"
-
-#: ../src/ui/select_page.py:211
-msgid "Your Favorites folder is empty."
-msgstr "Zložka s vašími obľúbenými obrázkami je prázdna."
-
-#: ../src/ui/select_page.py:214
 msgid "Add from Local Pictures"
 msgstr "Pridať z miestnych obrázkov"
 
-#: ../src/ui/theme_view.py:97 ../src/ui/theme_view.py:114
-#, python-format
-msgid "Changed User Theme to %s"
-msgstr "Používateľský vzhľad zmenený na %s"
+msgid "Add to Favorites"
+msgstr "Pridať do obľúbených"
 
-#: ../src/ui/theme_view.py:133 ../src/ui/theme_view.py:264
-msgid "Save Theme As"
-msgstr "Uložiť vzhľad ako"
+msgid "Apply Wallpaper"
+msgstr "Potvrdiť zmenu pozadia"
 
-#: ../src/ui/theme_view.py:137
-msgid "Rename Theme"
-msgstr "Premenovať tému"
+msgid "Are you sure delete wallpaper?"
+msgstr "Ste si istý, že chcete vymazať pozadie plochy?"
 
-#: ../src/ui/theme_view.py:141 ../src/ui/theme_view.py:158
-msgid "Delete Theme"
-msgstr "Vymazať tému"
-
-#: ../src/ui/theme_view.py:142
 #, python-format
 msgid "Are you sure you want to delete the theme %s?"
 msgstr "Ste si istý, že chcete vymazať tému %s?"
 
-#: ../src/ui/theme_view.py:152 ../src/ui/theme_view.py:156
-#: ../src/ui/theme_view.py:268
-msgid "Save As"
-msgstr "Uložiť ako"
+msgid "Back"
+msgstr "Späť"
 
-#: ../src/ui/theme_view.py:155
-msgid "Rename"
-msgstr "Premenovať"
-
-#: ../src/ui/theme_view.py:240 ../src/ui/theme_view.py:249
 #, python-format
 msgid "Changed System Theme to %s"
 msgstr "Téma systému zmenená na %s"
+
+#, python-format
+msgid "Changed User Theme to %s"
+msgstr "Používateľský vzhľad zmenený na %s"
+
+msgid "Clear all"
+msgstr "Zmazať všetko"
+
+msgid "Delete"
+msgstr "Vymazať"
+
+msgid "Delete Theme"
+msgstr "Vymazať tému"
+
+msgid "Delete Wallpaper"
+msgstr "Vymazať pozadie plochy"
+
+msgid "Download All"
+msgstr "Stiahnuť všetko"
+
+msgid "Downloaded"
+msgstr "Stiahnuté"
+
+msgid "Duration"
+msgstr "Doba trvania"
+
+msgid "Favorites"
+msgstr "Obľúbené"
+
+msgid "Hour"
+msgstr "Hodina"
+
+msgid "Hours"
+msgstr "Hodiny"
+
+msgid "Image files"
+msgstr "Obrázkové súbory"
+
+msgid "Internet"
+msgstr "Internet"
+
+msgid "Library"
+msgstr "Knižnica"
+
+msgid "Local Wallpapers"
+msgstr "Mieste pozadia plôch"
+
+msgid "LoveWallpaper"
+msgstr "Obľúbené pozadie plochy"
+
+msgid "Minute"
+msgstr "Minúta"
+
+msgid "Minutes"
+msgstr "Minúty"
+
+msgid "My Favorites"
+msgstr "Moje obľúbené"
+
+msgid "My Themes"
+msgstr "Moje témy"
+
+msgid "Personalization"
+msgstr "Personalizácia"
+
+msgid "Pictures"
+msgstr "Fotografie"
+
+msgid "Position"
+msgstr "Poloha"
+
+msgid "Random"
+msgstr "Náhodné"
+
+msgid "Rename"
+msgstr "Premenovať"
+
+msgid "Rename Theme"
+msgstr "Premenovať tému"
+
+msgid "Save As"
+msgstr "Uložiť ako"
+
+msgid "Save Theme As"
+msgstr "Uložiť vzhľad ako"
+
+msgid "Select all"
+msgstr "Vybrať všetko"
+
+msgid "Set as wallpaper"
+msgstr "Zvoliť ako pozadie plochy"
+
+msgid "Stretch"
+msgstr "Roztiahnuť"
+
+msgid "System"
+msgstr "Systém"
+
+msgid "System Themes"
+msgstr "Systémové témy"
+
+msgid "Tile"
+msgstr "Vydláždiť"
+
+msgid "Untitled"
+msgstr "Bez názvu"
+
+msgid "Wallpaper"
+msgstr "Pozadie"
+
+msgid "Your Favorites folder is empty."
+msgstr "Zložka s vašími obľúbenými obrázkami je prázdna."
+
+msgid "Your Local Pictures folder is empty"
+msgstr "Priečinok s vašimi obrázkami je prázdny"
+
+#, python-format
+msgid "add %s picture to Favorites"
+msgstr "Pridať %s obrázok do obľúbených"
+
+#, python-format
+msgid "add %s pictures to Favorites"
+msgstr "Pridať %s obrázkov do obľúbených"
+
+#, python-format
+msgid "choose %s picture"
+msgstr "vybrať %s obrázok"
+
+#, python-format
+msgid "choose %s pictures"
+msgstr "vybrať %s obrázkov"
+
+#, python-format
+msgid "delete %s picture"
+msgstr "Vymazať %s obrázok"
+
+#, python-format
+msgid "delete %s pictures"
+msgstr "vymazať %s obrázkov"

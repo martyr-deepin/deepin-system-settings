@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-17 10:18+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-08 04:10+0000\n"
 "Last-Translator: electricface <songwentai@linuxdeepin.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/deepin-"
@@ -20,421 +20,319 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/treeitem.py:308 ../src/accel_entry.py:238 ../src/accel_entry.py:426
-msgid "disable"
-msgstr "禁用"
+msgid "Activate the window menu"
+msgstr "激活窗口菜单"
 
-#: ../src/accel_entry.py:52
+msgid "Add"
+msgstr "添加"
+
+msgid "Add custom hotkey"
+msgstr "添加自定义快捷键"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Close window"
+msgstr "关闭窗口"
+
+#, python-format
+msgid "Current Layout is: %s"
+msgstr "当前布局设为 %s"
+
+#, python-format
+msgid "Current Layout: %s"
+msgstr "当前布局： %s"
+
+msgid "Cursor Blink"
+msgstr "光标闪烁"
+
+msgid "Custom Shortcuts"
+msgstr "自定义快捷键"
+
+msgid "Deepin terminal quake mode"
+msgstr "深度终端雷神模式"
+
+msgid "Deleted custom hotkey"
+msgstr "删除自定义快捷键"
+
+msgid "Disable touchpad while typing"
+msgstr "打字时禁用触摸板"
+
+#, python-format
+msgid "Disabled hotkey for %s"
+msgstr "禁用%s的快捷键"
+
+msgid "Disabled touchpad while typing"
+msgstr "启用打字时禁用触摸板"
+
+msgid "Eject"
+msgstr "弹出"
+
+msgid "Enabled touchpad while typing"
+msgstr "取消打字时禁用触摸板"
+
+msgid "Fast"
+msgstr "快"
+
+msgid "File manager"
+msgstr "文件管理器"
+
+#, python-format
+msgid ""
+"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
+msgstr "如果你重新分配快捷键\"%s\"，则快捷键\"%s\"将被禁用"
+
+msgid "Keyboard"
+msgstr "键盘"
+
+msgid "Keyboard Layout"
+msgstr "键盘布局"
+
+msgid "Launch calculator"
+msgstr "启动计算器"
+
+msgid "Launch email client"
+msgstr "启动邮件客户端"
+
+msgid "Launch media player"
+msgstr "启动媒体播放器"
+
+msgid "Launch web browser"
+msgstr "启动网页浏览器"
+
+msgid "Launcher"
+msgstr "启动器"
+
+msgid "Layout"
+msgstr "布局"
+
+msgid "Lock screen"
+msgstr "锁定屏幕"
+
+msgid "Log out"
+msgstr "注销"
+
+msgid "Long"
+msgstr "长"
+
+msgid "Maximize window"
+msgstr "最大化窗口"
+
+msgid "Minimize window"
+msgstr "最小化窗口"
+
+msgid "Mouse Settings"
+msgstr "鼠标设置"
+
+msgid "Move window"
+msgstr "移动窗口"
+
+msgid "Move window one workspace down"
+msgstr "将窗口下移一个工作区"
+
+msgid "Move window one workspace to the left"
+msgstr "将窗口左移一个工作区"
+
+msgid "Move window one workspace to the right"
+msgstr "将窗口右移一个工作区"
+
+msgid "Move window one workspace up"
+msgstr "将窗口上移一个工作区"
+
+msgid "Move window to workspace 1"
+msgstr "将窗口移到工作区1"
+
+msgid "Move window to workspace 2"
+msgstr "将窗口移到工作区2"
+
+msgid "Move window to workspace 3"
+msgstr "将窗口移到工作区3"
+
+msgid "Move window to workspace 4"
+msgstr "将窗口移到工作区4"
+
+msgid "Next track"
+msgstr "下一音轨"
+
+msgid "Ok"
+msgstr "确定"
+
+msgid "Pause playback"
+msgstr "暂停播放"
+
+msgid "Play (or play/pause)"
+msgstr "播放(或者 播放/暂停）"
+
+msgid "Please input new shortcuts"
+msgstr "请输入新的快捷键"
+
+msgid ""
+"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
+msgstr "请输入新的快捷键。按Esc取消或按Backspace清除。"
+
+msgid "Please try with a key such as Control, Alt or Shift at the same time."
+msgstr "请组合 Ctrl、Alt 或 Shift 键再试一次"
+
+msgid "Previous track"
+msgstr "上一音轨"
+
+msgid "Reassign"
+msgstr "重新分配"
+
+msgid "Relevant Settings"
+msgstr "相关设置"
+
+msgid "Remove"
+msgstr "删除"
+
+msgid "Repeat"
+msgstr "字符重复"
+
+msgid "Repeat Delay"
+msgstr "重复延迟"
+
+msgid "Repeat Interval"
+msgstr "重复速度"
+
+msgid "Replace"
+msgstr "替换"
+
+msgid "Reset"
+msgstr "恢复默认"
+
+msgid "Reset to default"
+msgstr "恢复默认值"
+
+msgid "Resize window"
+msgstr "改变窗口大小"
+
+msgid "Restore window"
+msgstr "恢复窗口"
+
+msgid "Reverse switch applications"
+msgstr "反向切换应用程序"
+
+msgid "Reverse switch applications with 3D effect"
+msgstr "应用程序3D反向切换"
+
+msgid "Select an input source to add"
+msgstr "选择一个要添加的输入源"
+
+msgid "Short"
+msgstr "短"
+
+msgid "Shortcuts"
+msgstr "快捷键"
+
+msgid "Show desktop"
+msgstr "显示桌面"
+
+msgid "Show/Hide the dock temporarily"
+msgstr "暂时显示/隐藏Dock"
+
+msgid "Slow"
+msgstr "慢"
+
+msgid "Sound and Media"
+msgstr "声音和媒体"
+
+msgid "Stop playback"
+msgstr "停止播放"
+
+msgid "Switch applications"
+msgstr "切换应用程序"
+
+msgid "Switch applications with 3D effect"
+msgstr "应用程序3D切换"
+
+msgid "Switch to workspace 1"
+msgstr "切换到工作区1"
+
+msgid "Switch to workspace 2"
+msgstr "切换到工作区2"
+
+msgid "Switch to workspace 3"
+msgstr "切换到工作区3"
+
+msgid "Switch to workspace 4"
+msgstr "切换到工作区4"
+
+msgid "Switch to workspace above"
+msgstr "切换到上层工作区"
+
+msgid "Switch to workspace below"
+msgstr "切换到下层工作区"
+
+msgid "Switch to workspace left"
+msgstr "切换到左侧工作区"
+
+msgid "Switch to workspace right"
+msgstr "切换到右侧工作区"
+
+msgid "System"
+msgstr "系统"
+
+msgid "Take a screenshot"
+msgstr "截图"
+
+msgid "Take a screenshot delayed"
+msgstr "延时截图"
+
+msgid "Take a screenshot of a window"
+msgstr "窗口截图"
+
+msgid "Take a screenshot of full screen"
+msgstr "屏幕截图"
+
+msgid "Terminal"
+msgstr "终端"
+
+msgid "Test Repeat Interval"
+msgstr "测试重复速度"
+
+#, python-format
+msgid "The hotkey for %s is set to %s"
+msgstr "%s的快捷键设为%s"
+
 #, python-format
 msgid ""
 "The shortcut \"%s\" cannot be used because it will become impossible to type "
 "using this key."
 msgstr "\"%s\"不能用作快捷键，因为使用此键将无法正常输入。"
 
-#: ../src/accel_entry.py:53
-msgid "Please try with a key such as Control, Alt or Shift at the same time."
-msgstr "请组合 Ctrl、Alt 或 Shift 键再试一次"
-
-#: ../src/accel_entry.py:56 ../src/accel_entry.py:74 ../src/main.py:772
-msgid "Cancel"
-msgstr "取消"
-
-#: ../src/accel_entry.py:67
 #, python-format
 msgid "The shortcut \"%s\" is already used for \"%s\""
 msgstr "快捷键\"%s\"已被用于\"%s\""
 
-#: ../src/accel_entry.py:69
-#, python-format
-msgid ""
-"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
-msgstr "如果你重新分配快捷键\"%s\"，则快捷键\"%s\"将被禁用"
-
-#: ../src/accel_entry.py:73
-msgid "Reassign"
-msgstr "重新分配"
-
-#: ../src/accel_entry.py:295
-msgid "Please input new shortcuts"
-msgstr "请输入新的快捷键"
-
-#: ../src/keybind_all.py:33 ../src/main.py:504
-msgid "System"
-msgstr "系统"
-
-#: ../src/keybind_all.py:34
-msgid "Launcher"
-msgstr "启动器"
-
-#: ../src/keybind_all.py:35
-msgid "Show desktop"
-msgstr "显示桌面"
-
-#: ../src/keybind_all.py:37
-msgid "Lock screen"
-msgstr "锁定屏幕"
-
-#: ../src/keybind_all.py:38
-msgid "File manager"
-msgstr "文件管理器"
-
-#: ../src/keybind_all.py:39
-msgid "Switch applications"
-msgstr "切换应用程序"
-
-#: ../src/keybind_all.py:40
-msgid "Reverse switch applications"
-msgstr "反向切换应用程序"
-
-#: ../src/keybind_all.py:41
-msgid "Switch applications with 3D effect"
-msgstr "应用程序3D切换"
-
-#: ../src/keybind_all.py:42
-msgid "Reverse switch applications with 3D effect"
-msgstr "应用程序3D反向切换"
-
-#: ../src/keybind_all.py:43
-msgid "Show/Hide the dock temporarily"
-msgstr "暂时显示/隐藏Dock"
-
-#: ../src/keybind_all.py:47
-msgid "Take a screenshot"
-msgstr "截图"
-
-#: ../src/keybind_all.py:49
-msgid "Take a screenshot of full screen"
-msgstr "屏幕截图"
-
-#: ../src/keybind_all.py:51
-msgid "Take a screenshot of a window"
-msgstr "窗口截图"
-
-#: ../src/keybind_all.py:53
-msgid "Take a screenshot delayed"
-msgstr "延时截图"
-
-#: ../src/keybind_all.py:56
-msgid "Terminal"
-msgstr "终端"
-
-#: ../src/keybind_all.py:57
-msgid "Deepin terminal quake mode"
-msgstr "深度终端雷神模式"
-
-#: ../src/keybind_all.py:59
-msgid "Log out"
-msgstr "注销"
-
-#: ../src/keybind_all.py:60 ../src/main.py:505
-msgid "Sound and Media"
-msgstr "声音和媒体"
-
-#: ../src/keybind_all.py:61
-msgid "Launch calculator"
-msgstr "启动计算器"
-
-#: ../src/keybind_all.py:62
-msgid "Launch email client"
-msgstr "启动邮件客户端"
-
-#: ../src/keybind_all.py:63
-msgid "Launch web browser"
-msgstr "启动网页浏览器"
-
-#: ../src/keybind_all.py:64
-msgid "Launch media player"
-msgstr "启动媒体播放器"
-
-#: ../src/keybind_all.py:65
-msgid "Play (or play/pause)"
-msgstr "播放(或者 播放/暂停）"
-
-#: ../src/keybind_all.py:66
-msgid "Pause playback"
-msgstr "暂停播放"
-
-#: ../src/keybind_all.py:67
-msgid "Stop playback"
-msgstr "停止播放"
-
-#: ../src/keybind_all.py:68
-msgid "Volume mute"
-msgstr "静音"
-
-#: ../src/keybind_all.py:69
-msgid "Volume down"
-msgstr "减小音量"
-
-#: ../src/keybind_all.py:70
-msgid "Volume up"
-msgstr "增大音量"
-
-#: ../src/keybind_all.py:71
-msgid "Previous track"
-msgstr "上一音轨"
-
-#: ../src/keybind_all.py:72
-msgid "Next track"
-msgstr "下一音轨"
-
-#: ../src/keybind_all.py:73
-msgid "Eject"
-msgstr "弹出"
-
-#: ../src/keybind_all.py:74 ../src/main.py:506
-msgid "Windows"
-msgstr "窗口"
-
-#: ../src/keybind_all.py:75
-msgid "Close window"
-msgstr "关闭窗口"
-
-#: ../src/keybind_all.py:76
-msgid "Maximize window"
-msgstr "最大化窗口"
-
-#: ../src/keybind_all.py:77
-msgid "Restore window"
-msgstr "恢复窗口"
-
-#: ../src/keybind_all.py:78
-msgid "Minimize window"
-msgstr "最小化窗口"
-
-#: ../src/keybind_all.py:79
-msgid "Move window"
-msgstr "移动窗口"
-
-#: ../src/keybind_all.py:80
-msgid "Resize window"
-msgstr "改变窗口大小"
-
-#: ../src/keybind_all.py:81
 msgid "Toggle shaded state"
 msgstr "切换卷起状态"
 
-#: ../src/keybind_all.py:82
-msgid "Activate the window menu"
-msgstr "激活窗口菜单"
-
-#: ../src/keybind_all.py:83 ../src/main.py:507
-msgid "Workspace"
-msgstr "工作区"
-
-#: ../src/keybind_all.py:84
-msgid "Switch to workspace 1"
-msgstr "切换到工作区1"
-
-#: ../src/keybind_all.py:85
-msgid "Switch to workspace 2"
-msgstr "切换到工作区2"
-
-#: ../src/keybind_all.py:86
-msgid "Switch to workspace 3"
-msgstr "切换到工作区3"
-
-#: ../src/keybind_all.py:87
-msgid "Switch to workspace 4"
-msgstr "切换到工作区4"
-
-#: ../src/keybind_all.py:88
-msgid "Switch to workspace left"
-msgstr "切换到左侧工作区"
-
-#: ../src/keybind_all.py:89
-msgid "Switch to workspace right"
-msgstr "切换到右侧工作区"
-
-#: ../src/keybind_all.py:90
-msgid "Switch to workspace above"
-msgstr "切换到上层工作区"
-
-#: ../src/keybind_all.py:91
-msgid "Switch to workspace below"
-msgstr "切换到下层工作区"
-
-#: ../src/keybind_all.py:92
-msgid "Move window to workspace 1"
-msgstr "将窗口移到工作区1"
-
-#: ../src/keybind_all.py:93
-msgid "Move window to workspace 2"
-msgstr "将窗口移到工作区2"
-
-#: ../src/keybind_all.py:94
-msgid "Move window to workspace 3"
-msgstr "将窗口移到工作区3"
-
-#: ../src/keybind_all.py:95
-msgid "Move window to workspace 4"
-msgstr "将窗口移到工作区4"
-
-#: ../src/keybind_all.py:100
-msgid "Move window one workspace to the left"
-msgstr "将窗口左移一个工作区"
-
-#: ../src/keybind_all.py:101
-msgid "Move window one workspace to the right"
-msgstr "将窗口右移一个工作区"
-
-#: ../src/keybind_all.py:102
-msgid "Move window one workspace up"
-msgstr "将窗口上移一个工作区"
-
-#: ../src/keybind_all.py:103
-msgid "Move window one workspace down"
-msgstr "将窗口下移一个工作区"
-
-#: ../src/main.py:78 ../src/main.py:508 ../src/main.py:914
-msgid "Custom Shortcuts"
-msgstr "自定义快捷键"
-
-#: ../src/main.py:117 ../src/search_keyword.py:29
-msgid "Repeat"
-msgstr "字符重复"
-
-#: ../src/main.py:120 ../src/search_keyword.py:30
-msgid "Repeat Delay"
-msgstr "重复延迟"
-
-#: ../src/main.py:123 ../src/search_keyword.py:31
-msgid "Repeat Interval"
-msgstr "重复速度"
-
-#: ../src/main.py:126 ../src/main.py:133 ../src/main.py:340 ../src/main.py:379
-msgid "Fast"
-msgstr "快"
-
-#: ../src/main.py:127 ../src/main.py:134 ../src/main.py:338 ../src/main.py:377
-msgid "Slow"
-msgstr "慢"
-
-#: ../src/main.py:128 ../src/main.py:323
-msgid "Long"
-msgstr "长"
-
-#: ../src/main.py:129 ../src/main.py:325
-msgid "Short"
-msgstr "短"
-
-#: ../src/main.py:130
-msgid "Cursor Blink"
-msgstr "光标闪烁"
-
-#: ../src/main.py:135
-msgid "Disable touchpad while typing"
-msgstr "打字时禁用触摸板"
-
-#: ../src/main.py:138
-msgid "Keyboard Layout"
-msgstr "键盘布局"
-
-#: ../src/main.py:142
-msgid "Relevant Settings"
-msgstr "相关设置"
-
-#: ../src/main.py:147 ../src/main.py:663
-msgid "Test Repeat Interval"
-msgstr "测试重复速度"
-
-#: ../src/main.py:154
-msgid "Mouse Settings"
-msgstr "鼠标设置"
-
-#: ../src/main.py:157
 msgid "TouchPad Settings"
 msgstr "触摸板设置"
 
-#: ../src/main.py:160
-msgid "Reset"
-msgstr "恢复默认"
-
-#: ../src/main.py:208 ../src/main.py:770
-msgid "Replace"
-msgstr "替换"
-
-#: ../src/main.py:209 ../src/main.py:227
-msgid "Remove"
-msgstr "删除"
-
-#: ../src/main.py:226
-msgid "Add"
-msgstr "添加"
-
-#: ../src/main.py:261 ../src/search_keyword.py:27
 msgid "Typing"
 msgstr "打字"
 
-#: ../src/main.py:262 ../src/search_keyword.py:26
-msgid "Shortcuts"
-msgstr "快捷键"
+msgid "Volume down"
+msgstr "减小音量"
 
-#: ../src/main.py:475 ../src/main.py:791 ../src/main.py:810
-#, python-format
-msgid "Current Layout: %s"
-msgstr "当前布局： %s"
+msgid "Volume mute"
+msgstr "静音"
 
-#: ../src/main.py:628
-msgid "Disabled touchpad while typing"
-msgstr "启用打字时禁用触摸板"
+msgid "Volume up"
+msgstr "增大音量"
 
-#: ../src/main.py:630
-msgid "Enabled touchpad while typing"
-msgstr "取消打字时禁用触摸板"
+msgid "Windows"
+msgstr "窗口"
 
-#: ../src/main.py:720
-#, python-format
-msgid "Current Layout is: %s"
-msgstr "当前布局设为 %s"
+msgid "Workspace"
+msgstr "工作区"
 
-#: ../src/main.py:742
-msgid "Select an input source to add"
-msgstr "选择一个要添加的输入源"
-
-#: ../src/main.py:850
-msgid "Deleted custom hotkey"
-msgstr "删除自定义快捷键"
-
-#: ../src/main.py:861
-#, python-format
-msgid "Disabled hotkey for %s"
-msgstr "禁用%s的快捷键"
-
-#: ../src/main.py:863
-#, python-format
-msgid "The hotkey for %s is set to %s"
-msgstr "%s的快捷键设为%s"
-
-#: ../src/main.py:867
-msgid ""
-"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
-msgstr "请输入新的快捷键。按Esc取消或按Backspace清除。"
-
-#: ../src/main.py:912
-msgid "Add custom hotkey"
-msgstr "添加自定义快捷键"
-
-#: ../src/main.py:921
-msgid "name"
-msgstr "名称"
-
-#: ../src/main.py:923
 msgid "action"
 msgstr "命令"
 
-#: ../src/main.py:936
-msgid "Ok"
-msgstr "确定"
+msgid "disable"
+msgstr "禁用"
 
-#: ../src/main.py:1009
-msgid "Reset to default"
-msgstr "恢复默认值"
-
-#: ../src/search_keyword.py:25
-msgid "Keyboard"
-msgstr "键盘"
-
-#: ../src/search_keyword.py:28
-msgid "Layout"
-msgstr "布局"
+msgid "name"
+msgstr "名称"

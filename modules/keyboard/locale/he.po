@@ -1,0 +1,336 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-11 08:50+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Hebrew (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/he/)\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Activate the window menu"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Add custom hotkey"
+msgstr ""
+
+msgid "Cancel"
+msgstr "ביטול"
+
+msgid "Close window"
+msgstr ""
+
+#, python-format
+msgid "Current Layout is: %s"
+msgstr ""
+
+#, python-format
+msgid "Current Layout: %s"
+msgstr ""
+
+msgid "Cursor Blink"
+msgstr ""
+
+msgid "Custom Shortcuts"
+msgstr ""
+
+msgid "Deepin terminal quake mode"
+msgstr ""
+
+msgid "Deleted custom hotkey"
+msgstr ""
+
+msgid "Disable touchpad while typing"
+msgstr ""
+
+#, python-format
+msgid "Disabled hotkey for %s"
+msgstr ""
+
+msgid "Disabled touchpad while typing"
+msgstr ""
+
+msgid "Eject"
+msgstr ""
+
+msgid "Enabled touchpad while typing"
+msgstr ""
+
+msgid "Fast"
+msgstr ""
+
+msgid "File manager"
+msgstr ""
+
+#, python-format
+msgid ""
+"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
+msgstr ""
+
+msgid "Keyboard"
+msgstr ""
+
+msgid "Keyboard Layout"
+msgstr ""
+
+msgid "Launch calculator"
+msgstr ""
+
+msgid "Launch email client"
+msgstr ""
+
+msgid "Launch media player"
+msgstr ""
+
+msgid "Launch web browser"
+msgstr ""
+
+msgid "Launcher"
+msgstr "-משגר"
+
+msgid "Layout"
+msgstr ""
+
+msgid "Lock screen"
+msgstr ""
+
+msgid "Log out"
+msgstr "יציאה"
+
+msgid "Long"
+msgstr ""
+
+msgid "Maximize window"
+msgstr ""
+
+msgid "Minimize window"
+msgstr ""
+
+msgid "Mouse Settings"
+msgstr ""
+
+msgid "Move window"
+msgstr ""
+
+msgid "Move window one workspace down"
+msgstr ""
+
+msgid "Move window one workspace to the left"
+msgstr ""
+
+msgid "Move window one workspace to the right"
+msgstr ""
+
+msgid "Move window one workspace up"
+msgstr ""
+
+msgid "Move window to workspace 1"
+msgstr ""
+
+msgid "Move window to workspace 2"
+msgstr ""
+
+msgid "Move window to workspace 3"
+msgstr ""
+
+msgid "Move window to workspace 4"
+msgstr ""
+
+msgid "Next track"
+msgstr ""
+
+msgid "Ok"
+msgstr ""
+
+msgid "Pause playback"
+msgstr ""
+
+msgid "Play (or play/pause)"
+msgstr ""
+
+msgid "Please input new shortcuts"
+msgstr ""
+
+msgid ""
+"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
+msgstr ""
+
+msgid "Please try with a key such as Control, Alt or Shift at the same time."
+msgstr ""
+
+msgid "Previous track"
+msgstr ""
+
+msgid "Reassign"
+msgstr ""
+
+msgid "Relevant Settings"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Repeat"
+msgstr ""
+
+msgid "Repeat Delay"
+msgstr ""
+
+msgid "Repeat Interval"
+msgstr ""
+
+msgid "Replace"
+msgstr "החלפה"
+
+msgid "Reset"
+msgstr "איפוס"
+
+msgid "Reset to default"
+msgstr ""
+
+msgid "Resize window"
+msgstr ""
+
+msgid "Restore window"
+msgstr ""
+
+msgid "Reverse switch applications"
+msgstr ""
+
+msgid "Reverse switch applications with 3D effect"
+msgstr ""
+
+msgid "Select an input source to add"
+msgstr ""
+
+msgid "Short"
+msgstr ""
+
+msgid "Shortcuts"
+msgstr ""
+
+msgid "Show desktop"
+msgstr ""
+
+msgid "Show/Hide the dock temporarily"
+msgstr ""
+
+msgid "Slow"
+msgstr ""
+
+msgid "Sound and Media"
+msgstr ""
+
+msgid "Stop playback"
+msgstr ""
+
+msgid "Switch applications"
+msgstr ""
+
+msgid "Switch applications with 3D effect"
+msgstr ""
+
+msgid "Switch to workspace 1"
+msgstr ""
+
+msgid "Switch to workspace 2"
+msgstr ""
+
+msgid "Switch to workspace 3"
+msgstr ""
+
+msgid "Switch to workspace 4"
+msgstr ""
+
+msgid "Switch to workspace above"
+msgstr ""
+
+msgid "Switch to workspace below"
+msgstr ""
+
+msgid "Switch to workspace left"
+msgstr ""
+
+msgid "Switch to workspace right"
+msgstr ""
+
+msgid "System"
+msgstr ""
+
+msgid "Take a screenshot"
+msgstr ""
+
+msgid "Take a screenshot delayed"
+msgstr ""
+
+msgid "Take a screenshot of a window"
+msgstr ""
+
+msgid "Take a screenshot of full screen"
+msgstr ""
+
+msgid "Terminal"
+msgstr ""
+
+msgid "Test Repeat Interval"
+msgstr ""
+
+#, python-format
+msgid "The hotkey for %s is set to %s"
+msgstr ""
+
+#, python-format
+msgid ""
+"The shortcut \"%s\" cannot be used because it will become impossible to type "
+"using this key."
+msgstr ""
+
+#, python-format
+msgid "The shortcut \"%s\" is already used for \"%s\""
+msgstr ""
+
+msgid "Toggle shaded state"
+msgstr ""
+
+msgid "TouchPad Settings"
+msgstr ""
+
+msgid "Typing"
+msgstr ""
+
+msgid "Volume down"
+msgstr ""
+
+msgid "Volume mute"
+msgstr ""
+
+msgid "Volume up"
+msgstr ""
+
+msgid "Windows"
+msgstr ""
+
+msgid "Workspace"
+msgstr ""
+
+msgid "action"
+msgstr ""
+
+msgid "disable"
+msgstr ""
+
+msgid "name"
+msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-02-08 03:50+0000\n"
 "Last-Translator: lexross <its4moi@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,203 +19,231 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/face_record_page.py:79
-msgid "Start"
-msgstr "Démarrer"
-
-#: ../src/face_record_page.py:83
-msgid "Please plug in or enable your camera"
-msgstr "Veuillez brancher ou activer votre webcam"
-
-#: ../src/face_record_page.py:84
-msgid "Please keep still for 5 seconds"
-msgstr "Veuillez rester immobile pendant 5 secondes "
-
-#: ../src/face_record_page.py:86
-msgid "Failed to record your face"
-msgstr "Échec de l'enregistrement facial"
-
-#: ../src/face_record_page.py:94
-msgid "Your face has been successfully recorded"
-msgstr "Visage enregistré avec succès "
-
-#: ../src/face_record_page.py:184
-msgid "Try Again"
-msgstr "Réessayer"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Standard"
-msgstr "Standard"
-
-#: ../src/treeitem.py:88 ../src/main.py:149 ../src/main.py:181
-msgid "Administrator"
-msgstr "Administrateur"
-
-#: ../src/treeitem.py:176
-msgid "My Account"
-msgstr "Mon compte"
-
-#: ../src/treeitem.py:180
-msgid "Other Accounts"
-msgstr "Autres comptes"
-
-#: ../src/edit_icon_page.py:85
-msgid "zoom in"
-msgstr "zoom avant"
-
-#: ../src/edit_icon_page.py:90
-msgid "zoom out"
-msgstr "zoom arrière"
-
-#: ../src/edit_icon_page.py:95
-msgid "Take a photo"
-msgstr "Prendre une photo"
-
-#: ../src/edit_icon_page.py:100
-msgid "Try again"
-msgstr "Veuillez réessayer"
-
-#: ../src/edit_icon_page.py:856
-msgid "Clip"
-msgstr "Clip"
-
-#: ../src/edit_icon_page.py:872
-msgid "Preview"
-msgstr "Aperçu"
-
-#: ../src/edit_icon_page.py:924
-msgid "no picture"
-msgstr "Aucune image"
-
-#: ../src/main.py:122 ../src/main.py:134
-msgid "Account type"
-msgstr "Type de compte"
-
-#: ../src/main.py:124
-msgid "Password"
-msgstr "Mot de passe"
-
-#: ../src/main.py:127 ../src/search_keyword.py:25
-msgid "Automatic login"
-msgstr "Connexion automatique"
-
-#: ../src/main.py:129
-msgid "Log in without a password"
-msgstr "Identification sans mot de passe"
-
-#: ../src/main.py:131 ../src/main.py:135 ../src/search_keyword.py:26
-msgid "Deepin Account"
-msgstr "Compte Deepin"
-
-#: ../src/main.py:132 ../src/main.py:136
-msgid "Unbound"
-msgstr "Non limité"
-
-#: ../src/main.py:133 ../src/search_keyword.py:27
-msgid "Account Name"
-msgstr "Nom du compte"
-
-#: ../src/main.py:139
-msgid "Facial recognition"
-msgstr "Reconnaissance faciale"
-
-#: ../src/main.py:162
-msgid "Record"
-msgstr "Enregistrement"
-
-#: ../src/main.py:163
-msgid "Test"
-msgstr "test"
-
-#: ../src/main.py:176 ../src/main.py:613 ../src/main.py:761
-#: ../src/main.py:1200
-msgid "Enable"
-msgstr "Activé"
-
-#: ../src/main.py:177
-msgid "Add"
-msgstr "Ajouter"
-
-#: ../src/main.py:178
-msgid "Delete"
-msgstr "Supprimer"
-
-#: ../src/main.py:179
-msgid "Create"
-msgstr "Créer"
-
-#: ../src/main.py:180 ../src/main.py:233 ../src/main.py:239 ../src/main.py:971
-msgid "Cancel"
-msgstr "Annuler"
-
-#: ../src/main.py:228
-msgid "It is possible to keep the home directory when deleting a user account."
-msgstr "Possibilité de garder le dossier principal du compte effacé."
-
-#: ../src/main.py:231
-msgid "Delete Files"
-msgstr "Supprimer les fichiers"
-
-#: ../src/main.py:232
-msgid "Keep Files"
-msgstr "Conserver les fichiers"
-
-#: ../src/main.py:240
-msgid "Save"
-msgstr "Sauvegarder"
-
-#: ../src/main.py:244
-msgid "Back"
-msgstr "Retour"
-
-#: ../src/main.py:245
-msgid "Experience"
-msgstr "Expérience"
-
-#: ../src/main.py:562
-#, python-format
-msgid "Enabled auto-login for %s"
-msgstr "Session automatique activée pendant %s"
-
-#: ../src/main.py:564
-#, python-format
-msgid "Disabled auto-login for %s"
-msgstr "Session automatique désactivée pendant %s"
-
-#: ../src/main.py:586
-#, python-format
-msgid "Enabled passwordless login for %s"
-msgstr "Activer la session sans mot de passe pendant %s"
-
-#: ../src/main.py:593
-#, python-format
-msgid "Disabled passwordless login for %s"
-msgstr "Désactiver la session sans mot de passe pendant %s"
-
-#: ../src/main.py:609
-#, python-format
-msgid "Enable %s"
-msgstr "Activer %s"
-
-#: ../src/main.py:610 ../src/main.py:763 ../src/main.py:1202
-msgid "Disable"
-msgstr "Désactiver"
-
-#: ../src/main.py:612
-#, python-format
-msgid "Disable %s"
-msgstr "Désactiver %s"
-
-#: ../src/main.py:659
 #, python-format
 msgid "%s has been created"
 msgstr "%s a été créer"
 
-#: ../src/main.py:665
+#, python-format
+msgid "%s has been deleted"
+msgstr "%s a été supprimé"
+
+#, python-format
+msgid "%s's account type has been set as %s"
+msgstr "le compte de %s a été défini comme %s"
+
+#, python-format
+msgid "%s's password has been changed"
+msgstr "Le mot de passe de %s a été modifié"
+
+msgid "Account"
+msgstr "Compte"
+
+msgid "Account Name"
+msgstr "Nom du compte"
+
+msgid "Account disabled"
+msgstr "Compte désactivé"
+
+msgid "Account type"
+msgstr "Type de compte"
+
+msgid "Add"
+msgstr "Ajouter"
+
+msgid "Administrator"
+msgstr "Administrateur"
+
+msgid "Automatic login"
+msgstr "Connexion automatique"
+
+msgid "Back"
+msgstr "Retour"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Change"
+msgstr "Modifier"
+
+msgid "Change Password"
+msgstr "Modifier le mot de passe"
+
+msgid "Choose a new picture for your account"
+msgstr "Sélectionnez une nouvelle image pour votre compte"
+
+msgid "Clip"
+msgstr "Clip"
+
+msgid "Confirm new password"
+msgstr "Confirmez le nouveau mot de passe"
+
+msgid "Create"
+msgstr "Créer"
+
+msgid "Create Account"
+msgstr "Créer un nouveau compte"
+
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+msgid "Deepin Account"
+msgstr "Compte Deepin"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Delete Account"
+msgstr "Supprimer un compte"
+
+msgid "Delete Files"
+msgstr "Supprimer les fichiers"
+
+msgid "Disable"
+msgstr "Désactiver"
+
+#, python-format
+msgid "Disable %s"
+msgstr "Désactiver %s"
+
+#, python-format
+msgid "Disabled auto-login for %s"
+msgstr "Session automatique désactivée pendant %s"
+
+#, python-format
+msgid "Disabled passwordless login for %s"
+msgstr "Désactiver la session sans mot de passe pendant %s"
+
+#, python-format
+msgid "Do you want to keep <u>%s</u>'s files?"
+msgstr "Voulez-vous conserver les fichiers de <u>%s</u> ?"
+
+msgid "Edit Picture"
+msgstr "Modifier l'image"
+
+msgid "Enable"
+msgstr "Activé"
+
+#, python-format
+msgid "Enable %s"
+msgstr "Activer %s"
+
+#, python-format
+msgid "Enabled auto-login for %s"
+msgstr "Session automatique activée pendant %s"
+
+#, python-format
+msgid "Enabled passwordless login for %s"
+msgstr "Activer la session sans mot de passe pendant %s"
+
+msgid "Error:"
+msgstr "Erreur:"
+
+msgid "Experience"
+msgstr "Expérience"
+
+msgid "Face Record"
+msgstr "Enregistrement facial"
+
+msgid "Facial recognition"
+msgstr "Reconnaissance faciale"
+
+msgid "Failed to record your face"
+msgstr "Échec de l'enregistrement facial"
+
+msgid "From camera"
+msgstr "De la webcam"
+
+msgid "It is possible to keep the home directory when deleting a user account."
+msgstr "Possibilité de garder le dossier principal du compte effacé."
+
+msgid "Keep Files"
+msgstr "Conserver les fichiers"
+
+msgid "Local picture"
+msgstr "Image locale"
+
+msgid "Log in without a password"
+msgstr "Identification sans mot de passe"
+
+msgid "My Account"
+msgstr "Mon compte"
+
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+msgid "None"
+msgstr "Aucun"
+
+msgid "Other Accounts"
+msgstr "Autres comptes"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "Password did not match."
+msgstr "Le mot de passe ne correspond pas."
+
+msgid "Please keep still for 5 seconds"
+msgstr "Veuillez rester immobile pendant 5 secondes "
+
+msgid "Please plug in or enable your camera"
+msgstr "Veuillez brancher ou activer votre webcam"
+
+msgid "Preview"
+msgstr "Aperçu"
+
+msgid "Previously used pictures"
+msgstr "Images utilisées précédemment "
+
+msgid "Record"
+msgstr "Enregistrement"
+
+msgid "Save"
+msgstr "Sauvegarder"
+
+#, python-format
+msgid "Set <u>%s</u>'s picture"
+msgstr "Image sélectionnée pour <u>%s</u>"
+
+msgid "Set Picture"
+msgstr "Choisir une image"
+
+msgid "Show password"
+msgstr "Afficher le mot de passe"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Start"
+msgstr "Démarrer"
+
+msgid "Take a photo"
+msgstr "Prendre une photo"
+
+msgid "Take a screeshot"
+msgstr "Capture d'écran "
+
+msgid "Test"
+msgstr "test"
+
 msgid "The user name is invalid"
 msgstr "Le nom d'utilisateur est incorrect"
 
-#: ../src/main.py:680
+msgid "To be set at next login"
+msgstr "À définir à la prochaine connexion"
+
+msgid "Try Again"
+msgstr "Réessayer"
+
+msgid "Try again"
+msgstr "Veuillez réessayer"
+
+msgid "Unbound"
+msgstr "Non limité"
+
+msgid "User Accounts"
+msgstr "Comptes utilisateur"
+
 msgid ""
 "User names can only consist of letters, numbers, underscores and begin with "
 "a letter"
@@ -223,132 +251,23 @@ msgstr ""
 "Les noms d'utilisateurs peuvent uniquement être constitués de lettres, "
 "nombres, soulignés et commencer par une lettre"
 
-#: ../src/main.py:699
-#, python-format
-msgid "%s has been deleted"
-msgstr "%s a été supprimé"
+msgid "Your face has been successfully recorded"
+msgstr "Visage enregistré avec succès "
 
-#: ../src/main.py:716
-#, python-format
-msgid "Do you want to keep <u>%s</u>'s files?"
-msgstr "Voulez-vous conserver les fichiers de <u>%s</u> ?"
-
-#: ../src/main.py:744 ../src/main.py:1184
-msgid "Account disabled"
-msgstr "Compte désactivé"
-
-#: ../src/main.py:746 ../src/main.py:1186
-msgid "To be set at next login"
-msgstr "À définir à la prochaine connexion"
-
-#: ../src/main.py:748 ../src/main.py:1188
-msgid "None"
-msgstr "Aucun"
-
-#: ../src/main.py:823
-#, python-format
-msgid "%s's account type has been set as %s"
-msgstr "le compte de %s a été défini comme %s"
-
-#: ../src/main.py:940
-msgid "Current password"
-msgstr "Mot de passe actuel"
-
-#: ../src/main.py:942
-msgid "New password"
-msgstr "Nouveau mot de passe"
-
-#: ../src/main.py:944
-msgid "Confirm new password"
-msgstr "Confirmez le nouveau mot de passe"
-
-#: ../src/main.py:958
-msgid "Show password"
-msgstr "Afficher le mot de passe"
-
-#: ../src/main.py:972
-msgid "Change"
-msgstr "Modifier"
-
-#: ../src/main.py:1017
-msgid "Password did not match."
-msgstr "Le mot de passe ne correspond pas."
-
-#: ../src/main.py:1033 ../src/main.py:1058
-msgid "password unchanged"
-msgstr "Mot de passe inchangé"
-
-#: ../src/main.py:1035
 msgid "authentication token manipulation error"
 msgstr "Erreur d'authentification "
 
-#: ../src/main.py:1037
 msgid "new and old password are too similar"
 msgstr "L'ancien et le nouveau mot de passe sont trop similaires"
 
-#: ../src/main.py:1051 ../src/main.py:1105
-#, python-format
-msgid "%s's password has been changed"
-msgstr "Le mot de passe de %s a été modifié"
+msgid "no picture"
+msgstr "Aucune image"
 
-#: ../src/main.py:1133 ../src/search_keyword.py:31
-msgid "Set Picture"
-msgstr "Choisir une image"
+msgid "password unchanged"
+msgstr "Mot de passe inchangé"
 
-#: ../src/main.py:1151
-msgid "Face Record"
-msgstr "Enregistrement facial"
+msgid "zoom in"
+msgstr "zoom avant"
 
-#: ../src/main.py:1355
-msgid "Error:"
-msgstr "Erreur:"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:129
-msgid "Local picture"
-msgstr "Image locale"
-
-#: ../src/set_icon_page.py:127 ../src/set_icon_page.py:130
-msgid "Take a screeshot"
-msgstr "Capture d'écran "
-
-#: ../src/set_icon_page.py:131
-msgid "From camera"
-msgstr "De la webcam"
-
-#: ../src/set_icon_page.py:149
-msgid "Choose a new picture for your account"
-msgstr "Sélectionnez une nouvelle image pour votre compte"
-
-#: ../src/set_icon_page.py:153
-msgid "Previously used pictures"
-msgstr "Images utilisées précédemment "
-
-#: ../src/set_icon_page.py:197
-#, python-format
-msgid "Set <u>%s</u>'s picture"
-msgstr "Image sélectionnée pour <u>%s</u>"
-
-#: ../src/set_icon_page.py:360 ../src/set_icon_page.py:389
-#: ../src/set_icon_page.py:401
-msgid "Edit Picture"
-msgstr "Modifier l'image"
-
-#: ../src/search_keyword.py:28
-msgid "Create Account"
-msgstr "Créer un nouveau compte"
-
-#: ../src/search_keyword.py:29
-msgid "Delete Account"
-msgstr "Supprimer un compte"
-
-#: ../src/search_keyword.py:30
-msgid "Change Password"
-msgstr "Modifier le mot de passe"
-
-#: ../src/search_keyword.py:32
-msgid "Account"
-msgstr "Compte"
-
-#: ../src/search_keyword.py:33
-msgid "User Accounts"
-msgstr "Comptes utilisateur"
+msgid "zoom out"
+msgstr "zoom arrière"

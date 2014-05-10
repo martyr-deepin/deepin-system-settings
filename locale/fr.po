@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
 "PO-Revision-Date: 2014-01-09 17:12+0000\n"
 "Last-Translator: lexross <its4moi@gmail.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/deepin-system-"
@@ -19,91 +19,69 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../dss/navigate_page.py:134
 msgid "10"
 msgstr "10"
 
-#: ../dss/main.py:339 ../dss/main.py:451 ../dss/action_bar.py:95
-msgid "System Settings"
-msgstr "Configuration du système "
-
-#: ../dss/constant.py:114
-msgid "Displays"
-msgstr "Affichages"
-
-#: ../dss/constant.py:115
-msgid "Desktop"
-msgstr "Bureau"
-
-#: ../dss/constant.py:116
-msgid "Personalization"
-msgstr "Personnalisation"
-
-#: ../dss/constant.py:117
-msgid "Sound"
-msgstr "Son"
-
-#: ../dss/constant.py:118
-msgid "Date &amp; Time"
-msgstr "Date &amp; Heure"
-
-#: ../dss/constant.py:119
-msgid "Power"
-msgstr "Alimentation"
-
-#: ../dss/constant.py:120
-msgid "Keyboard"
-msgstr "Clavier"
-
-#: ../dss/constant.py:121
-msgid "Mouse"
-msgstr "Souris"
-
-#: ../dss/constant.py:122
-msgid "Touchpad"
-msgstr "Pavé tactile"
-
-#: ../dss/constant.py:123
-msgid "Printers"
-msgstr "Imprimantes"
-
-#: ../dss/constant.py:124
-msgid "Network"
-msgstr "Réseau "
-
-#: ../dss/constant.py:125
-msgid "Bluetooth"
-msgstr "Bluetooth"
-
-#: ../dss/constant.py:126
 msgid "Additional Drivers"
 msgstr "Pilotes additionnels "
 
-#: ../dss/constant.py:127
-msgid "User Accounts"
-msgstr "Comptes utilisateur"
+msgid "Bluetooth"
+msgstr "Bluetooth"
 
-#: ../dss/constant.py:128
-msgid "Default Applications"
-msgstr "Applications par défaut"
-
-#: ../dss/constant.py:129
-msgid "System Information"
-msgstr "Informations du système"
-
-#: ../dss/foot_box.py:57
-msgid "Reset"
-msgstr "Réinitialiser"
-
-#: ../dss/bluetooth_dialog.py:63
 msgid "Cancel"
 msgstr "Annuler"
 
-#: ../dss/bluetooth_dialog.py:78
+msgid "Date &amp; Time"
+msgstr "Date &amp; Heure"
+
+msgid "Default Applications"
+msgstr "Applications par défaut"
+
+msgid "Desktop"
+msgstr "Bureau"
+
+msgid "Displays"
+msgstr "Affichages"
+
+msgid "Keyboard"
+msgstr "Clavier"
+
+msgid "Mouse"
+msgstr "Souris"
+
+msgid "Network"
+msgstr "Réseau "
+
+msgid "Ok"
+msgstr "Valider"
+
+msgid "Personalization"
+msgstr "Personnalisation"
+
+msgid "Power"
+msgstr "Alimentation"
+
+msgid "Printers"
+msgstr "Imprimantes"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
 #, python-format
 msgid "Sent %d"
 msgstr "Envoyé %d"
 
-#: ../dss/bluetooth_dialog.py:113
-msgid "Ok"
-msgstr "Valider"
+msgid "Sound"
+msgstr "Son"
+
+msgid "System Information"
+msgstr "Informations du système"
+
+msgid "System Settings"
+msgstr "Configuration du système "
+
+msgid "Touchpad"
+msgstr "Pavé tactile"
+
+msgid "User Accounts"
+msgstr "Comptes utilisateur"

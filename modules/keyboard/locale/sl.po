@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# kloki <klokimass@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-17 10:18+0800\n"
-"PO-Revision-Date: 2014-02-24 22:40+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-04-17 16:04+0000\n"
+"Last-Translator: kloki <klokimass@gmail.com>\n"
 "Language-Team: Slovenian (http://www.transifex.com/projects/p/deepin-system-"
 "settings/language/sl/)\n"
 "Language: sl\n"
@@ -19,421 +20,326 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
 "%100==4 ? 2 : 3);\n"
 
-#: ../src/treeitem.py:308 ../src/accel_entry.py:238 ../src/accel_entry.py:426
-msgid "disable"
-msgstr ""
+msgid "Activate the window menu"
+msgstr "Vključi meni okna"
 
-#: ../src/accel_entry.py:52
+msgid "Add"
+msgstr "Dodaj"
+
+msgid "Add custom hotkey"
+msgstr "Dodaj tipkovnično bližnjico po meri"
+
+msgid "Cancel"
+msgstr "Prekliči"
+
+msgid "Close window"
+msgstr "Zapri okno"
+
+#, python-format
+msgid "Current Layout is: %s"
+msgstr "Trenutna razporeditev je: %s"
+
+#, python-format
+msgid "Current Layout: %s"
+msgstr "Trenutna razporeditev: %s"
+
+msgid "Cursor Blink"
+msgstr "Utripanje kazalca"
+
+msgid "Custom Shortcuts"
+msgstr "Bližnjice po meri"
+
+msgid "Deepin terminal quake mode"
+msgstr "Terminal Deepin v načinu quake"
+
+msgid "Deleted custom hotkey"
+msgstr "Tipkovnična bližnjica po meri je izbrisana"
+
+msgid "Disable touchpad while typing"
+msgstr "Onemogoči sledilno ploščico, medtem ko tipkam"
+
+#, python-format
+msgid "Disabled hotkey for %s"
+msgstr "Onemogočena tipkovnična bližnjica za %s"
+
+msgid "Disabled touchpad while typing"
+msgstr "Sledilna ploščica je med tipkanjem onemogočena"
+
+msgid "Eject"
+msgstr "Izvrzi"
+
+msgid "Enabled touchpad while typing"
+msgstr "Sledilna ploščica je med tipkanjem omogočena"
+
+msgid "Fast"
+msgstr "Hitro"
+
+msgid "File manager"
+msgstr "Upravljalnik datotek"
+
+#, python-format
+msgid ""
+"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
+msgstr ""
+"Če boste bližnjico ponovno dodelili za \"%s\", bo bližnjica \"%s\" "
+"onemogočena. "
+
+msgid "Keyboard"
+msgstr "Tipkovnica"
+
+msgid "Keyboard Layout"
+msgstr "Tipkovnični razpored"
+
+msgid "Launch calculator"
+msgstr "Zaženi kalkulator"
+
+msgid "Launch email client"
+msgstr "Zaženi e-poštni odjemalec"
+
+msgid "Launch media player"
+msgstr "Zaženi večpredstavnostni predvajalnik"
+
+msgid "Launch web browser"
+msgstr "Zaženi spletni brskalnik"
+
+msgid "Launcher"
+msgstr "Zaganjalnik"
+
+msgid "Layout"
+msgstr "Razpored"
+
+msgid "Lock screen"
+msgstr "Zakleni zaslon"
+
+msgid "Log out"
+msgstr "Odjava"
+
+msgid "Long"
+msgstr "Dolg"
+
+msgid "Maximize window"
+msgstr "Povečaj okno"
+
+msgid "Minimize window"
+msgstr "Pomanjšaj okno"
+
+msgid "Mouse Settings"
+msgstr "Nastavitve za miško"
+
+msgid "Move window"
+msgstr "Premakni okno"
+
+msgid "Move window one workspace down"
+msgstr "Premakni okno za eno delovno površino navzdol"
+
+msgid "Move window one workspace to the left"
+msgstr "Premakni okno za eno delovno površino v levo"
+
+msgid "Move window one workspace to the right"
+msgstr "Premakni okno za eno delovno površino v desno"
+
+msgid "Move window one workspace up"
+msgstr "Premakni okno za eno delovno površino navzgor"
+
+msgid "Move window to workspace 1"
+msgstr "Premakni okno na delovno površino 1"
+
+msgid "Move window to workspace 2"
+msgstr "Premakni okno na delovno površino 2"
+
+msgid "Move window to workspace 3"
+msgstr "Premakni okno na delovno površino 3"
+
+msgid "Move window to workspace 4"
+msgstr "Premakni okno na delovno površino 4"
+
+msgid "Next track"
+msgstr "Naslednja skladba"
+
+msgid "Ok"
+msgstr "Vredu"
+
+msgid "Pause playback"
+msgstr "Prekini predvajanje"
+
+msgid "Play (or play/pause)"
+msgstr "Predvajaj (ali predvajaj/premor)"
+
+msgid "Please input new shortcuts"
+msgstr "Prosim vnesite nove bljižnice"
+
+msgid ""
+"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
+msgstr ""
+"Prosim vpišite nove bližnjice. Pritisnite tipko Esc za prekinitev ali "
+"pritisnite tipko Backspace, da pobrišete."
+
+msgid "Please try with a key such as Control, Alt or Shift at the same time."
+msgstr ""
+"Prosim, poskusi pridržati tipke kot so Control, Alt ali Shift istočasno."
+
+msgid "Previous track"
+msgstr "Prejšnja skladba"
+
+msgid "Reassign"
+msgstr "Ponovno dodeli"
+
+msgid "Relevant Settings"
+msgstr "Ustrezne nastavitve"
+
+msgid "Remove"
+msgstr "Odstrani"
+
+msgid "Repeat"
+msgstr "Ponovitev"
+
+msgid "Repeat Delay"
+msgstr "Zamuda pred ponovitvijo"
+
+msgid "Repeat Interval"
+msgstr "Interval ponovitve"
+
+msgid "Replace"
+msgstr "Zamenjaj"
+
+msgid "Reset"
+msgstr "Ponastavi"
+
+msgid "Reset to default"
+msgstr "Ponastavi na privzeto"
+
+msgid "Resize window"
+msgstr "Spremeni velikost okna"
+
+msgid "Restore window"
+msgstr "Obnovi okno"
+
+msgid "Reverse switch applications"
+msgstr "Obratno preklopi med aplikacijami"
+
+msgid "Reverse switch applications with 3D effect"
+msgstr "Obratno preklopi med aplikacijami v 3D načinu"
+
+msgid "Select an input source to add"
+msgstr "Izberite vhodni vir za dodajanje"
+
+msgid "Short"
+msgstr "Kratek"
+
+msgid "Shortcuts"
+msgstr "Bližnjice"
+
+msgid "Show desktop"
+msgstr "Prikaži namizje"
+
+msgid "Show/Hide the dock temporarily"
+msgstr "Začasno Prikaži/Skrij pult "
+
+msgid "Slow"
+msgstr "Počasi"
+
+msgid "Sound and Media"
+msgstr "Večpredstavnost"
+
+msgid "Stop playback"
+msgstr "Zaustavi predvajanje"
+
+msgid "Switch applications"
+msgstr "Preklopi med aplikacijami"
+
+msgid "Switch applications with 3D effect"
+msgstr "Preklopi med aplikacijami v 3D načinu"
+
+msgid "Switch to workspace 1"
+msgstr "Preklopi na delovno površino 1"
+
+msgid "Switch to workspace 2"
+msgstr "Preklopi na delovno površino 2"
+
+msgid "Switch to workspace 3"
+msgstr "Preklopi na delovno površino 3"
+
+msgid "Switch to workspace 4"
+msgstr "Preklopi na delovno površino 4"
+
+msgid "Switch to workspace above"
+msgstr "Preklopi na zgornjo delovno površino"
+
+msgid "Switch to workspace below"
+msgstr "Preklopi na spodnjo delovno površino"
+
+msgid "Switch to workspace left"
+msgstr "Preklopi na levo delovno površino"
+
+msgid "Switch to workspace right"
+msgstr "Preklopi na desno delovno površino"
+
+msgid "System"
+msgstr "Sistem"
+
+msgid "Take a screenshot"
+msgstr "Zajemi sliko zaslona"
+
+msgid "Take a screenshot delayed"
+msgstr "Zajemi sliko zaslona z zamudo"
+
+msgid "Take a screenshot of a window"
+msgstr "Zajemi sliko dela zaslona"
+
+msgid "Take a screenshot of full screen"
+msgstr "Zajemi sliko celotnega zaslona"
+
+msgid "Terminal"
+msgstr "Terminal"
+
+msgid "Test Repeat Interval"
+msgstr "Preizkusi interval ponovitve"
+
+#, python-format
+msgid "The hotkey for %s is set to %s"
+msgstr "Tiipkovnična bližnjica za %s je nastavljena na %s"
+
 #, python-format
 msgid ""
 "The shortcut \"%s\" cannot be used because it will become impossible to type "
 "using this key."
 msgstr ""
+"Bližnjica \"%s\" ne more biti uporabljena, ker bo tipkanje postalo ob "
+"uporabi te tipke nemogoče."
 
-#: ../src/accel_entry.py:53
-msgid "Please try with a key such as Control, Alt or Shift at the same time."
-msgstr ""
-
-#: ../src/accel_entry.py:56 ../src/accel_entry.py:74 ../src/main.py:772
-msgid "Cancel"
-msgstr "Prekliči"
-
-#: ../src/accel_entry.py:67
 #, python-format
 msgid "The shortcut \"%s\" is already used for \"%s\""
-msgstr ""
+msgstr "Bližnjica \"%s\" je že uporabljena za \"%s\""
 
-#: ../src/accel_entry.py:69
-#, python-format
-msgid ""
-"If you reassign the shortcut to \"%s\", the \"%s\" shortcut will be disabled."
-msgstr ""
-
-#: ../src/accel_entry.py:73
-msgid "Reassign"
-msgstr ""
-
-#: ../src/accel_entry.py:295
-msgid "Please input new shortcuts"
-msgstr "Prosim vnesite nove bljižnice"
-
-#: ../src/keybind_all.py:33 ../src/main.py:504
-msgid "System"
-msgstr "Sistem"
-
-#: ../src/keybind_all.py:34
-msgid "Launcher"
-msgstr "Zaganjalnik"
-
-#: ../src/keybind_all.py:35
-msgid "Show desktop"
-msgstr ""
-
-#: ../src/keybind_all.py:37
-msgid "Lock screen"
-msgstr ""
-
-#: ../src/keybind_all.py:38
-msgid "File manager"
-msgstr ""
-
-#: ../src/keybind_all.py:39
-msgid "Switch applications"
-msgstr ""
-
-#: ../src/keybind_all.py:40
-msgid "Reverse switch applications"
-msgstr ""
-
-#: ../src/keybind_all.py:41
-msgid "Switch applications with 3D effect"
-msgstr ""
-
-#: ../src/keybind_all.py:42
-msgid "Reverse switch applications with 3D effect"
-msgstr ""
-
-#: ../src/keybind_all.py:43
-msgid "Show/Hide the dock temporarily"
-msgstr ""
-
-#: ../src/keybind_all.py:47
-msgid "Take a screenshot"
-msgstr ""
-
-#: ../src/keybind_all.py:49
-msgid "Take a screenshot of full screen"
-msgstr "Zajemi sliko celotnega zaslona"
-
-#: ../src/keybind_all.py:51
-msgid "Take a screenshot of a window"
-msgstr "Zajemi sliko dela zaslona"
-
-#: ../src/keybind_all.py:53
-msgid "Take a screenshot delayed"
-msgstr ""
-
-#: ../src/keybind_all.py:56
-msgid "Terminal"
-msgstr ""
-
-#: ../src/keybind_all.py:57
-msgid "Deepin terminal quake mode"
-msgstr ""
-
-#: ../src/keybind_all.py:59
-msgid "Log out"
-msgstr "Odjava"
-
-#: ../src/keybind_all.py:60 ../src/main.py:505
-msgid "Sound and Media"
-msgstr ""
-
-#: ../src/keybind_all.py:61
-msgid "Launch calculator"
-msgstr ""
-
-#: ../src/keybind_all.py:62
-msgid "Launch email client"
-msgstr ""
-
-#: ../src/keybind_all.py:63
-msgid "Launch web browser"
-msgstr ""
-
-#: ../src/keybind_all.py:64
-msgid "Launch media player"
-msgstr ""
-
-#: ../src/keybind_all.py:65
-msgid "Play (or play/pause)"
-msgstr ""
-
-#: ../src/keybind_all.py:66
-msgid "Pause playback"
-msgstr ""
-
-#: ../src/keybind_all.py:67
-msgid "Stop playback"
-msgstr ""
-
-#: ../src/keybind_all.py:68
-msgid "Volume mute"
-msgstr ""
-
-#: ../src/keybind_all.py:69
-msgid "Volume down"
-msgstr ""
-
-#: ../src/keybind_all.py:70
-msgid "Volume up"
-msgstr ""
-
-#: ../src/keybind_all.py:71
-msgid "Previous track"
-msgstr "Prejšnja skladba"
-
-#: ../src/keybind_all.py:72
-msgid "Next track"
-msgstr "Naslednja skladba"
-
-#: ../src/keybind_all.py:73
-msgid "Eject"
-msgstr ""
-
-#: ../src/keybind_all.py:74 ../src/main.py:506
-msgid "Windows"
-msgstr ""
-
-#: ../src/keybind_all.py:75
-msgid "Close window"
-msgstr ""
-
-#: ../src/keybind_all.py:76
-msgid "Maximize window"
-msgstr ""
-
-#: ../src/keybind_all.py:77
-msgid "Restore window"
-msgstr ""
-
-#: ../src/keybind_all.py:78
-msgid "Minimize window"
-msgstr ""
-
-#: ../src/keybind_all.py:79
-msgid "Move window"
-msgstr ""
-
-#: ../src/keybind_all.py:80
-msgid "Resize window"
-msgstr ""
-
-#: ../src/keybind_all.py:81
 msgid "Toggle shaded state"
-msgstr ""
+msgstr "Preklopi v senčno stanje"
 
-#: ../src/keybind_all.py:82
-msgid "Activate the window menu"
-msgstr ""
-
-#: ../src/keybind_all.py:83 ../src/main.py:507
-msgid "Workspace"
-msgstr "Delovna površina"
-
-#: ../src/keybind_all.py:84
-msgid "Switch to workspace 1"
-msgstr ""
-
-#: ../src/keybind_all.py:85
-msgid "Switch to workspace 2"
-msgstr ""
-
-#: ../src/keybind_all.py:86
-msgid "Switch to workspace 3"
-msgstr ""
-
-#: ../src/keybind_all.py:87
-msgid "Switch to workspace 4"
-msgstr ""
-
-#: ../src/keybind_all.py:88
-msgid "Switch to workspace left"
-msgstr ""
-
-#: ../src/keybind_all.py:89
-msgid "Switch to workspace right"
-msgstr ""
-
-#: ../src/keybind_all.py:90
-msgid "Switch to workspace above"
-msgstr ""
-
-#: ../src/keybind_all.py:91
-msgid "Switch to workspace below"
-msgstr ""
-
-#: ../src/keybind_all.py:92
-msgid "Move window to workspace 1"
-msgstr ""
-
-#: ../src/keybind_all.py:93
-msgid "Move window to workspace 2"
-msgstr ""
-
-#: ../src/keybind_all.py:94
-msgid "Move window to workspace 3"
-msgstr ""
-
-#: ../src/keybind_all.py:95
-msgid "Move window to workspace 4"
-msgstr ""
-
-#: ../src/keybind_all.py:100
-msgid "Move window one workspace to the left"
-msgstr ""
-
-#: ../src/keybind_all.py:101
-msgid "Move window one workspace to the right"
-msgstr ""
-
-#: ../src/keybind_all.py:102
-msgid "Move window one workspace up"
-msgstr ""
-
-#: ../src/keybind_all.py:103
-msgid "Move window one workspace down"
-msgstr ""
-
-#: ../src/main.py:78 ../src/main.py:508 ../src/main.py:914
-msgid "Custom Shortcuts"
-msgstr ""
-
-#: ../src/main.py:117 ../src/search_keyword.py:29
-msgid "Repeat"
-msgstr ""
-
-#: ../src/main.py:120 ../src/search_keyword.py:30
-msgid "Repeat Delay"
-msgstr ""
-
-#: ../src/main.py:123 ../src/search_keyword.py:31
-msgid "Repeat Interval"
-msgstr ""
-
-#: ../src/main.py:126 ../src/main.py:133 ../src/main.py:340 ../src/main.py:379
-msgid "Fast"
-msgstr "Hitro"
-
-#: ../src/main.py:127 ../src/main.py:134 ../src/main.py:338 ../src/main.py:377
-msgid "Slow"
-msgstr "Počasi"
-
-#: ../src/main.py:128 ../src/main.py:323
-msgid "Long"
-msgstr ""
-
-#: ../src/main.py:129 ../src/main.py:325
-msgid "Short"
-msgstr ""
-
-#: ../src/main.py:130
-msgid "Cursor Blink"
-msgstr ""
-
-#: ../src/main.py:135
-msgid "Disable touchpad while typing"
-msgstr ""
-
-#: ../src/main.py:138
-msgid "Keyboard Layout"
-msgstr ""
-
-#: ../src/main.py:142
-msgid "Relevant Settings"
-msgstr "Ustrezne nastavitve"
-
-#: ../src/main.py:147 ../src/main.py:663
-msgid "Test Repeat Interval"
-msgstr ""
-
-#: ../src/main.py:154
-msgid "Mouse Settings"
-msgstr ""
-
-#: ../src/main.py:157
 msgid "TouchPad Settings"
 msgstr "Nastavitve sledilne ploščice"
 
-#: ../src/main.py:160
-msgid "Reset"
-msgstr "Ponastavi"
-
-#: ../src/main.py:208 ../src/main.py:770
-msgid "Replace"
-msgstr "Zamenjaj"
-
-#: ../src/main.py:209 ../src/main.py:227
-msgid "Remove"
-msgstr ""
-
-#: ../src/main.py:226
-msgid "Add"
-msgstr "Dodaj"
-
-#: ../src/main.py:261 ../src/search_keyword.py:27
 msgid "Typing"
-msgstr ""
+msgstr "Tipkanje"
 
-#: ../src/main.py:262 ../src/search_keyword.py:26
-msgid "Shortcuts"
-msgstr ""
+msgid "Volume down"
+msgstr "Tišje"
 
-#: ../src/main.py:475 ../src/main.py:791 ../src/main.py:810
-#, python-format
-msgid "Current Layout: %s"
-msgstr ""
+msgid "Volume mute"
+msgstr "Utišaj glasnost"
 
-#: ../src/main.py:628
-msgid "Disabled touchpad while typing"
-msgstr ""
+msgid "Volume up"
+msgstr "Glasneje"
 
-#: ../src/main.py:630
-msgid "Enabled touchpad while typing"
-msgstr ""
+msgid "Windows"
+msgstr "Okna"
 
-#: ../src/main.py:720
-#, python-format
-msgid "Current Layout is: %s"
-msgstr ""
+msgid "Workspace"
+msgstr "Delovna površina"
 
-#: ../src/main.py:742
-msgid "Select an input source to add"
-msgstr ""
-
-#: ../src/main.py:850
-msgid "Deleted custom hotkey"
-msgstr ""
-
-#: ../src/main.py:861
-#, python-format
-msgid "Disabled hotkey for %s"
-msgstr ""
-
-#: ../src/main.py:863
-#, python-format
-msgid "The hotkey for %s is set to %s"
-msgstr ""
-
-#: ../src/main.py:867
-msgid ""
-"Please input new shortcuts. Press Esc to cancel or press Backspace to clear."
-msgstr ""
-
-#: ../src/main.py:912
-msgid "Add custom hotkey"
-msgstr ""
-
-#: ../src/main.py:921
-msgid "name"
-msgstr ""
-
-#: ../src/main.py:923
 msgid "action"
-msgstr ""
+msgstr "dejanje"
 
-#: ../src/main.py:936
-msgid "Ok"
-msgstr "Vredu"
+msgid "disable"
+msgstr "onemogoči"
 
-#: ../src/main.py:1009
-msgid "Reset to default"
-msgstr ""
-
-#: ../src/search_keyword.py:25
-msgid "Keyboard"
-msgstr "Tipkovnica"
-
-#: ../src/search_keyword.py:28
-msgid "Layout"
-msgstr ""
+msgid "name"
+msgstr "ime"

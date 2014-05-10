@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2014-02-24 11:29+0000\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-02-26 04:20+0000\n"
 "Last-Translator: 648trindade <rafaelgt.mbin@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "deepin-system-settings/language/pt_BR/)\n"
@@ -20,102 +20,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ../src/main.py:104
-msgid "Custom"
-msgstr "Personalizado"
-
-#: ../src/main.py:105 ../src/search_keyword.py:26
-msgid "Pointer Speed"
-msgstr "Velocidade do Ponteiro"
-
-#: ../src/main.py:106 ../src/search_keyword.py:27
 msgid "Acceleration"
 msgstr "Aceleração"
 
-#: ../src/main.py:109 ../src/search_keyword.py:28
-msgid "Sensitivity"
-msgstr "Sensibilidade"
+msgid "Custom"
+msgstr "Personalizado"
 
-#: ../src/main.py:112 ../src/search_keyword.py:29
 msgid "Double-click"
 msgstr "Clique duplo"
 
-#: ../src/main.py:113 ../src/search_keyword.py:30
-msgid "Frequency"
-msgstr "Frequência"
-
-#: ../src/main.py:116
 msgid "Double-click on the smiley face to test your settings."
 msgstr "Clique duas vezes no smiley para testar suas configurações"
 
-#: ../src/main.py:118
 msgid "Drag and Drop"
 msgstr "Arrastar e Soltar"
 
-#: ../src/main.py:119 ../src/search_keyword.py:33
 msgid "Drag threshold"
-msgstr "Arrastar limite"
+msgstr "Limite de Arrasto"
 
-#: ../src/main.py:122
-msgid "Relevant Settings"
-msgstr "Configurações relevantes"
-
-#: ../src/main.py:125 ../src/search_keyword.py:31
-msgid "Right-handed"
-msgstr "Destro"
-
-#: ../src/main.py:126 ../src/search_keyword.py:32
-msgid "Left-handed"
-msgstr "Canhoto"
-
-#: ../src/main.py:129
-msgid "Keyboard Settings"
-msgstr "Configurações do Teclado"
-
-#: ../src/main.py:132
-msgid "Mouse Settings"
-msgstr "Configurações do Mouse"
-
-#: ../src/main.py:135
-msgid "Reset"
-msgstr "Reconfigurar"
-
-#: ../src/main.py:302 ../src/main.py:352
-msgid "Slow"
-msgstr "Lento"
-
-#: ../src/main.py:303 ../src/main.py:353
 msgid "Fast"
 msgstr "Rápido"
 
-#: ../src/main.py:318
-msgid "Low"
-msgstr "Baixa"
+msgid "Frequency"
+msgstr "Frequência"
 
-#: ../src/main.py:319
 msgid "High"
 msgstr "Alta"
 
-#: ../src/main.py:395
-msgid "Short"
-msgstr "Curto"
+msgid "Keyboard Settings"
+msgstr "Configurações do Teclado"
 
-#: ../src/main.py:396
+msgid "Left-handed"
+msgstr "Canhoto"
+
 msgid "Long"
 msgstr "Longo"
 
-#: ../src/main.py:519
-msgid "Set to right-handed"
-msgstr "Configurar para destro"
+msgid "Low"
+msgstr "Baixa"
 
-#: ../src/main.py:521
-msgid "Set to left-handed"
-msgstr "Configurar para canhoto"
+msgid "Mouse Settings"
+msgstr "Configurações do Mouse"
 
-#: ../src/main.py:622
+msgid "Pointer Speed"
+msgstr "Velocidade do Ponteiro"
+
+msgid "Relevant Settings"
+msgstr "Configurações relevantes"
+
+msgid "Reset"
+msgstr "Reconfigurar"
+
 msgid "Reset to defaults"
 msgstr "Reconfigurar para padrões"
 
-#: ../src/search_keyword.py:25
+msgid "Right-handed"
+msgstr "Destro"
+
+msgid "Sensitivity"
+msgstr "Sensibilidade"
+
+msgid "Set to left-handed"
+msgstr "Configurar para canhoto"
+
+msgid "Set to right-handed"
+msgstr "Configurar para destro"
+
+msgid "Short"
+msgstr "Curto"
+
+msgid "Slow"
+msgstr "Lento"
+
 msgid "Touchpad"
 msgstr "Touchpad"

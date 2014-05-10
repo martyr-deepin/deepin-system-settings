@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# Gnechen <benperezc@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Deepin System Settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-25 10:50+0800\n"
-"PO-Revision-Date: 2013-12-16 08:31+0000\n"
-"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-07 18:30+0000\n"
+"Last-Translator: Gnechen <benperezc@gmail.com>\n"
 "Language-Team: Spanish (Chile) (http://www.transifex.com/projects/p/deepin-"
 "system-settings/language/es_CL/)\n"
 "Language: es_CL\n"
@@ -18,40 +19,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/tray_mount_gui.py:170 ../src/tray_mount_gui.py:394
-#: ../src/tray_mount_gui.py:410 ../src/tray_mount_gui.py:415
-msgid "Storage Device"
-msgstr ""
-
-#: ../src/tray_mount_gui.py:395
-#, python-format
-msgid "Mount and open device \"%s\"?"
-msgstr ""
-
-#: ../src/tray_mount_gui.py:410
-#, python-format
-msgid "Removable media \"%s\" has been removed"
-msgstr ""
-
-#: ../src/tray_mount_gui.py:415
 #, python-format
 msgid "Found new removable media \"%s\""
-msgstr ""
+msgstr "Se encontro una nueva unidad \"%s\""
 
-#: ../src/tray_mount_plugin.py:64
-msgid "Mount Failed"
-msgstr ""
-
-#: ../src/tray_mount_plugin.py:65
 #, python-format
 msgid "Mount '%s' error."
-msgstr ""
+msgstr "Error al  montar '%s'"
 
-#: ../src/tray_mount_plugin.py:68
-msgid "Unmount Failed"
-msgstr ""
+msgid "Mount Failed"
+msgstr "Fallo montar esta unidad"
 
-#: ../src/tray_mount_plugin.py:70
+#, python-format
+msgid "Mount and open device \"%s\"?"
+msgstr "Desea montar y abrir la unidad %s ?"
+
+#, python-format
+msgid "Removable media \"%s\" has been removed"
+msgstr "Se retiro la unidad de almacenamiento externo %s "
+
+msgid "Storage Device"
+msgstr "Unidad de almacenamiento"
+
 #, python-format
 msgid "Unmount '%s' error. Please unmount it in file manager"
 msgstr ""
+"Error para desmontar '%s'. Por favor desmonte la unidad en administrador de "
+"archivos"
+
+msgid "Unmount Failed"
+msgstr "Fallo desmontar la unidad"

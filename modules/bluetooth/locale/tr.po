@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: Deepin System Settings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-09 18:52+0800\n"
+"PO-Revision-Date: 2014-03-10 06:31+0000\n"
+"Last-Translator: lihongwu <lihongwu1987@gmail.com>\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/deepin-system-"
+"settings/language/tr/)\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Accept"
+msgstr ""
+
+#, python-format
+msgid "Accept incoming file %s?"
+msgstr ""
+
+msgid "Adapter"
+msgstr ""
+
+msgid "Advanced options..."
+msgstr ""
+
+msgid "An error occured when connecting to the device."
+msgstr ""
+
+msgid "Audio Sink"
+msgstr ""
+
+msgid "Bluetooth"
+msgstr ""
+
+msgid "Bluetooth Audio"
+msgstr ""
+
+msgid "Bluetooth Headset"
+msgstr ""
+
+msgid "Bluetooth Input Service"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Connection Failed"
+msgstr ""
+
+msgid "Device name"
+msgstr ""
+
+msgid "Discoverable"
+msgstr ""
+
+msgid "Discovering device"
+msgstr ""
+
+msgid "Enable bluetooth"
+msgstr ""
+
+#, python-format
+msgid "Enter PIN code to pair with %s:"
+msgstr ""
+
+#, python-format
+msgid "Failed to receive the file : %s"
+msgstr ""
+
+#, python-format
+msgid ""
+"Failed!\n"
+"error msg: %s"
+msgstr ""
+
+msgid "Headset"
+msgstr ""
+
+#, python-format
+msgid "Incoming file from %s"
+msgstr ""
+
+msgid "Input Service"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Pair"
+msgstr ""
+
+msgid "Pairing failed!"
+msgstr ""
+
+#, python-format
+msgid "Please confirm %s pin match as below"
+msgstr ""
+
+#, python-format
+msgid "Receiving file from %s"
+msgstr ""
+
+msgid "Reject"
+msgstr ""
+
+msgid "Remove Device"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Searching Device Timeout"
+msgstr ""
+
+msgid "Select File"
+msgstr ""
+
+msgid "Send File"
+msgstr ""
+
+#, python-format
+msgid "Sending file to %s"
+msgstr ""
+
+msgid "Successfully connected to the Bluetooth audio device."
+msgstr ""
+
+msgid "Successfully connected to the Bluetooth headset."
+msgstr ""
+
+msgid "Successfully connected to the Bluetooth input device."
+msgstr ""
+
+msgid "Transfer complete!"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+#, python-format
+msgid "in %d seconds"
+msgstr ""
